@@ -220,6 +220,16 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
       var avgQuality = new DoubleValue();
       Results.Add(new Result("Average quality", avgQuality));
 
+      var totalRollouts = new IntValue();
+      Results.Add(new Result("Total rollouts", totalRollouts));
+      var effRollouts = new IntValue();
+      Results.Add(new Result("Effective rollouts", effRollouts));
+      var funcEvals = new IntValue();
+      Results.Add(new Result("Function evaluations", funcEvals));
+      var gradEvals = new IntValue();
+      Results.Add(new Result("Gradient evaluations", gradEvals));
+
+
       // same as in SymbolicRegressionSingleObjectiveProblem
       var y = Problem.ProblemData.Dataset.GetDoubleValues(Problem.ProblemData.TargetVariable,
         Problem.ProblemData.TrainingIndices);
@@ -265,6 +275,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
           sumQ = 0.0;
           curBestQ = 0.0;
 
+          funcEvals.Value = state.FuncEvaluations;
+          gradEvals.Value = state.GradEvaluations;
+          effRollouts.Value = state.EffectiveRollouts;
+          totalRollouts.Value = state.TotalRollouts;
+
           table.Rows["Best quality"].Values.Add(bestQuality.Value);
           table.Rows["Current best quality"].Values.Add(curQuality.Value);
           table.Rows["Average quality"].Values.Add(avgQuality.Value);
@@ -279,15 +294,22 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
         curQuality.Value = curBestQ;
         avgQuality.Value = sumQ / n;
 
+        funcEvals.Value = state.FuncEvaluations;
+        gradEvals.Value = state.GradEvaluations;
+        effRollouts.Value = state.EffectiveRollouts;
+        totalRollouts.Value = state.TotalRollouts;
+
         table.Rows["Best quality"].Values.Add(bestQuality.Value);
         table.Rows["Current best quality"].Values.Add(curQuality.Value);
         table.Rows["Average quality"].Values.Add(avgQuality.Value);
         iterations.Value = iterations.Value + n;
+
       }
 
 
       Results.Add(new Result("Best solution quality (train)", new DoubleValue(state.BestSolutionTrainingQuality)));
       Results.Add(new Result("Best solution quality (test)", new DoubleValue(state.BestSolutionTestQuality)));
+
 
       // produce solution 
       if (CreateSolution) {

@@ -25,7 +25,20 @@ using System.IO;
 
 namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
   // this is the core class for generating expressions. 
-  // the automaton determines which expressions are allowed
+  // it represents a finite state automaton, each state transition can be associated with an action (e.g. to produce code).
+  // the automaton determines the possible structures for expressions.
+  // 
+  // to understand this code it is worthwile to generate a graphical visualization of the automaton (see PrintAutomaton).
+  // If the code is compiled in debug mode the automaton produces a Graphviz file into the folder of the application
+  // whenever an instance of the automaton is constructed.
+  //
+  // This class relies on two other classes: 
+  // - CodeGenerator to produce code for a stack-based evaluator and
+  // - ConstraintHandler to restrict the allowed set of expressions. 
+  //
+  // The ConstraintHandler extends the automaton and adds semantic restrictions for expressions produced by the automaton.
+  // 
+  // 
   internal class Automaton {
     public const int StateExpr = 1;
     public const int StateExprEnd = 2;
@@ -51,7 +64,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
     public const int StateInvTEnd = 22;
     public const int StateInvTFStart = 23;
     public const int StateInvTFEnd = 24;
-    private const int FirstDynamicState = 25;
+    public const int FirstDynamicState = 25;
+    // more states for individual variables are created dynamically
 
     private const int StartState = StateExpr;
     public int CurrentState { get; private set; }
@@ -220,8 +234,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
       AddTransition(StateLogFactorStart, StateLogTStart,
         () => {
           codeGenerator.Emit1(OpCodes.LoadConst0);
+          constraintHandler.StartNewTermInPoly();
         },
-        "0");
+        "0, StartTermInPoly");
       AddTransition(StateLogTEnd, StateLogFactorEnd,
         () => {
           codeGenerator.Emit1(OpCodes.Add);
@@ -270,8 +285,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
       AddTransition(StateInvFactorStart, StateInvTStart,
         () => {
           codeGenerator.Emit1(OpCodes.LoadConst1);
+          constraintHandler.StartNewTermInPoly();
         },
-        "c");
+        "c, StartTermInPoly");
       AddTransition(StateInvTEnd, StateInvFactorEnd,
         () => {
           codeGenerator.Emit1(OpCodes.Add);
@@ -336,40 +352,28 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
 
     private readonly int[] followStatesBuf = new int[1000];
     public void FollowStates(int state, out int[] buf, out int nElements) {
-      // return followStates[state]
-      //   .Where(s => s < FirstDynamicState || s >= minVarIdx) // for variables we only allow non-decreasing state sequences
-      //   // the following states imply an additional variable being added to the expression
-      //   // F, Sum, Prod
-      //   .Where(s => (s != StateF && s != StateSum && s != StateProd) || variablesRemaining > 0);
-
       // for loop instead of where iterator
       var fs = followStates[state];
       int j = 0;
-      //Console.Write(stateNames[CurrentState] + " allowed: ");
       for (int i = 0; i < fs.Count; i++) {
         var s = fs[i];
         if (constraintHandler.IsAllowedFollowState(state, s)) {
-          //Console.Write(s + " ");
           followStatesBuf[j++] = s;
         }
       }
-      //Console.WriteLine();
       buf = followStatesBuf;
       nElements = j;
     }
 
 
     public void Goto(int targetState) {
-      //Console.WriteLine("->{0}", stateNames[targetState]);
-      // Contract.Assert(FollowStates(CurrentState).Contains(targetState));
-
       if (actions[CurrentState, targetState] != null)
         actions[CurrentState, targetState].ForEach(a => a()); // execute all actions
       CurrentState = targetState;
     }
 
     public bool IsFinalState(int s) {
-      return s == StateExprEnd;
+      return s == StateExprEnd && !constraintHandler.IsInvalidExpression;
     }
 
     public void GetCode(out byte[] code, out int nParams) {

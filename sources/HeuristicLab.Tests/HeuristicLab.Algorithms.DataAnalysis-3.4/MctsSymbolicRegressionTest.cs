@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Threading;
 using HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression;
@@ -30,6 +31,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
       {
         // possible solutions with max two variable references:
+        // TODO: equal terms should not be allowed (see ConstraintHandler)
         // x
         // log(x)
         // exp(x)
@@ -39,7 +41,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         // x * log(x)
         // x * exp(x)
         // x * 1/x
-        // x + x
+        // x + x                                        ?
         // x + log(x)
         // x + exp(x)
         // x + 1/x
@@ -47,24 +49,26 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         // log(x) * log(x)
         // log(x) * exp(x)
         // log(x) * 1/x
-        // log(x) + log(x)
-        // log(x) + exp(x)
+        // log(x) + log(x)                              ?
+        // log(x) + exp(x)                              ?
         // log(x) + 1/x
         //              -- 6
         // exp(x) * exp(x)
         // exp(x) * 1/x
-        // exp(x) + exp(x)
+        // exp(x) + exp(x)                              ?
         // exp(x) + 1/x
         //              -- 4
         // 1/x * 1/x
-        // 1/x + 1/x
+        // 1/x + 1/x                                    ?
         //              -- 2
-        // log(x+x)
+        // log(x+x)                                     ?
         // log(x*x)
         // exp(x*x)
-        // 1/(x+x)
+        // 1/(x+x)                                      ?
         // 1/(x*x)
         //              -- 5
+
+
         TestMctsNumberOfSolutions(regProblem, 2, 29);
       }
       {
@@ -74,45 +78,79 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         // exp(x)
         //              -- 2
         // x * x
-        // x + x
+        // x + x                                            ?
         // x * exp(x)
         // x + exp(x)
         // exp(x) * exp(x)
-        // exp(x) + exp(x)
+        // exp(x) + exp(x)                                  ?
         // exp(x*x)
         //              -- 7
         // x * x * x
-        // x + x * x
-        // x * x + x                                        !! 
-        // x + x + x
+        // x + x * x                                       
+        // x + x + x                                        ?
         // x * x * exp(x)
-        // x + x * exp(x)
-        // x * x + exp(x)
-        // x + x + exp(x)
-        // x * exp(x) + x                                   !!
-        // x * exp(x) + exp(x)
-        // x + exp(x) * exp(x)
-        // x + exp(x) + exp(x)
+        // x + x * exp(x)                                   
+        // x + x + exp(x)                                   ?
+        // exp(x) + x*x
+        // exp(x) + x*exp(x)                                
+        // x + exp(x) * exp(x)                              
+        // x + exp(x) + exp(x)                              ?
         // x * exp(x) * exp(x)
         // x * exp(x*x)
         // x + exp(x*x)
-        //              -- 15
+        //              -- 13
 
         // exp(x) * exp(x) * exp(x)
-        // exp(x) + exp(x) * exp(x)
-        // exp(x) * exp(x) + exp(x)                         !! 
-        // exp(x) + exp(x) + exp(x)
-        //              -- 4
+        // exp(x) + exp(x) * exp(x)                         
+        // exp(x) + exp(x) + exp(x)                         ?
+        //              -- 3
 
         // exp(x)   * exp(x*x)
         // exp(x)   + exp(x*x)
-        // exp(x*x) * exp(x)                                !!
-        // exp(x*x) + exp(x)                                !!
-        //              -- 4
+        //              -- 2
         // exp(x*x*x)
         //              -- 1
+        TestMctsNumberOfSolutions(regProblem, 3, 2 + 7 + 13 + 3 + 2 + 1, allowLog: false, allowInv: false);
+      }
+      {
+        // possible solutions with max 4 variable references:
+        // without exp, log and inv
+        // x       
+        // x*x
+        // x+x                                             ?
+        // x*x*x
+        // x+x*x
+        // x+x+x                                           ?
+        // x*x*x*x
+        // x+x*x*x
+        // x*x+x*x                                         ?
+        // x+x+x*x                                         ?
+        // x+x+x+x                                         ?
 
-        TestMctsNumberOfSolutions(regProblem, 3, 2 + 7 + 15 + 4 + 4 + 1, allowLog: false, allowInv: false);
+        TestMctsNumberOfSolutions(regProblem, 4, 11, allowLog: false, allowInv: false, allowExp: false);
+      }
+      {
+        // possible solutions with max 5 variable references:
+        // without exp, log and inv
+        // x       
+        // xx
+        // x+x                                             ?
+        // xxx
+        // x+xx
+        // x+x+x                                           ?
+        // xxxx
+        // x+xxx
+        // xx+xx                                           ?
+        // x+x+xx                                          ?
+        // x+x+x+x                                         ?
+        // xxxxx 
+        // x+xxxx
+        // xx+xxx
+        // x+x+xxx                                         ?
+        // x+xx+xx                                         ?
+        // x+x+x+xx                                        ?
+        // x+x+x+x+x                                       ?
+        TestMctsNumberOfSolutions(regProblem, 5, 18, allowLog: false, allowInv: false, allowExp: false);
       }
     }
 
@@ -235,6 +273,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
     #endregion
 
+  
     #region Nguyen
     [TestMethod]
     [TestCategory("Algorithms.DataAnalysis")]
@@ -484,6 +523,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     private void TestMctsNumberOfSolutions(IRegressionProblemData problemData, int maxNumberOfVariables, int expectedNumberOfSolutions,
+      bool allowProd = true,
       bool allowExp = true,
       bool allowLog = true,
       bool allowInv = true,
@@ -493,10 +533,14 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       var regProblem = new RegressionProblem();
       regProblem.ProblemDataParameter.Value = problemData;
       #region Algorithm Configuration
+
+      mctsSymbReg.SetSeedRandomly = false;
+      mctsSymbReg.Seed = 1234;
       mctsSymbReg.Problem = regProblem;
       mctsSymbReg.Iterations = int.MaxValue; // stopping when all solutions have been enumerated
       mctsSymbReg.MaxSize = maxNumberOfVariables;
       mctsSymbReg.C = 1000; // essentially breath first seach
+      mctsSymbReg.AllowedFactors.SetItemCheckedState(mctsSymbReg.AllowedFactors.Single(s => s.Value.StartsWith("prod")), allowProd);
       mctsSymbReg.AllowedFactors.SetItemCheckedState(mctsSymbReg.AllowedFactors.Single(s => s.Value.Contains("exp")), allowExp);
       mctsSymbReg.AllowedFactors.SetItemCheckedState(mctsSymbReg.AllowedFactors.Single(s => s.Value.Contains("log")), allowLog);
       mctsSymbReg.AllowedFactors.SetItemCheckedState(mctsSymbReg.AllowedFactors.Single(s => s.Value.Contains("1 /")), allowInv);

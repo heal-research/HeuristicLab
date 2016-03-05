@@ -22,7 +22,6 @@
 using System.Text;
 
 namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
-#if DEBUG
   internal class Disassembler {
     public static string CodeToString(byte[] code, double[] consts) {
       var sb = new StringBuilder();
@@ -50,5 +49,4 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
       return sb.ToString();
     }
   }
-#endif
 }

@@ -43,6 +43,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
       ISymbolicRegressionModel BestModel { get; }
       double BestSolutionTrainingQuality { get; }
       double BestSolutionTestQuality { get; }
+      int TotalRollouts { get; }
+      int EffectiveRollouts { get; }
+      int FuncEvaluations { get; }
+      int GradEvaluations { get; } // number of gradient evaluations (* num parameters) to get a value representative of the effort comparable to the number of function evaluations
+      // TODO other stats on LM optimizer might be interesting here
     }
 
     // created through factory method
@@ -56,6 +61,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
       internal readonly Tree tree;
       internal readonly List<Tree> bestChildrenBuf;
       internal readonly Func<byte[], int, double> evalFun;
+      // MCTS might get stuck. Track statistics on the number of effective rollouts
+      internal int totalRollouts;
+      internal int effectiveRollouts;
 
 
       // state variables used only internally (for eval function)
@@ -76,6 +84,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
       private byte[] bestCode;
       private int bestNParams;
       private double[] bestConsts;
+
+      // stats
+      private int funcEvaluations;
+      private int gradEvaluations;
 
       // buffers
       private readonly double[] ones; // vector of ones (as default params)
@@ -172,6 +184,12 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
           return model;
         }
       }
+
+      public int TotalRollouts { get { return totalRollouts; } }
+      public int EffectiveRollouts { get { return effectiveRollouts; } }
+      public int FuncEvaluations { get { return funcEvaluations; } }
+      public int GradEvaluations { get { return gradEvaluations; } } // number of gradient evaluations (* num parameters) to get a value representative of the effort comparable to the number of function evaluations
+
       #endregion
 
       private double Eval(byte[] code, int nParams) {
@@ -203,6 +221,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
         // reset constants
         Array.Copy(ones, constsBuf, nParams);
         evaluator.Exec(code, x, constsBuf, predBuf, adjustOffsetForLogAndExp: true);
+        funcEvaluations++;
 
         // calc opt scaling (alpha*f(x) + beta)
         OnlineCalculatorError error;
@@ -219,7 +238,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
         } else {
           // optimize constants using the starting point calculated above
           OptimizeConstsLm(code, constsBuf, nParams, 0.0, nIters: constOptIterations);
+
           evaluator.Exec(code, x, constsBuf, predBuf);
+          funcEvaluations++;
+
           rsq = RSq(y, predBuf);
           optConsts = constsBuf;
         }
@@ -236,7 +258,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
 
 
       private void OptimizeConstsLm(byte[] code, double[] consts, int nParams, double epsF = 0.0, int nIters = 100) {
-        double[] optConsts = new double[nParams]; // allocate a smaller buffer for constants opt
+        double[] optConsts = new double[nParams]; // allocate a smaller buffer for constants opt (TODO perf?)
         Array.Copy(consts, optConsts, nParams);
 
         alglib.minlmstate state;
@@ -246,6 +268,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
         //alglib.minlmsetgradientcheck(state, 0.000001);
         alglib.minlmoptimize(state, Func, FuncAndJacobian, null, code);
         alglib.minlmresults(state, out optConsts, out rep);
+        funcEvaluations += rep.nfunc;
+        gradEvaluations += rep.njac * nParams;
 
         if (rep.terminationtype < 0) throw new ArgumentException("lm failed: termination type = " + rep.terminationtype);
 
@@ -310,14 +334,23 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
       var bestChildrenBuf = mctsState.bestChildrenBuf;
       var rand = mctsState.random;
       double c = mctsState.c;
-
-      automaton.Reset();
-      return TreeSearchRec(rand, tree, c, automaton, eval, bestChildrenBuf);
+      double q = 0;
+      bool success = false;
+      do {
+        automaton.Reset();
+        success = TryTreeSearchRec(rand, tree, c, automaton, eval, bestChildrenBuf, out q);
+        mctsState.totalRollouts++;
+      } while (!success && !tree.done);
+      mctsState.effectiveRollouts++;
+      return q;
     }
 
-    private static double TreeSearchRec(IRandom rand, Tree tree, double c, Automaton automaton, Func<byte[], int, double> eval, List<Tree> bestChildrenBuf) {
+    // tree search might fail because of constraints for expressions
+    // in this case we get stuck we just restart
+    // see ConstraintHandler.cs for more info
+    private static bool TryTreeSearchRec(IRandom rand, Tree tree, double c, Automaton automaton, Func<byte[], int, double> eval, List<Tree> bestChildrenBuf,
+      out double q) {
       Tree selectedChild = null;
-      double q;
       Contract.Assert(tree.state == automaton.CurrentState);
       Contract.Assert(!tree.done);
       if (tree.children == null) {
@@ -331,15 +364,22 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
           q = eval(code, nParams);
           tree.visits++;
           tree.sumQuality += q;
-          return q;
+          return true; // we reached a final state
         } else {
           // EXPAND 
           int[] possibleFollowStates;
           int nFs;
           automaton.FollowStates(automaton.CurrentState, out possibleFollowStates, out nFs);
-
+          if (nFs == 0) {
+            // stuck in a dead end (no final state and no allowed follow states)
+            q = 0;
+            tree.done = true;
+            tree.children = null;
+            return false;
+          }
           tree.children = new Tree[nFs];
-          for (int i = 0; i < tree.children.Length; i++) tree.children[i] = new Tree() { children = null, done = false, state = possibleFollowStates[i], visits = 0 };
+          for (int i = 0; i < tree.children.Length; i++)
+            tree.children[i] = new Tree() { children = null, done = false, state = possibleFollowStates[i], visits = 0 };
 
           selectedChild = SelectFinalOrRandom(automaton, tree, rand);
         }
@@ -350,18 +390,20 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
       }
       // make selected step and recurse
       automaton.Goto(selectedChild.state);
-      q = TreeSearchRec(rand, selectedChild, c, automaton, eval, bestChildrenBuf);
-
-      tree.sumQuality += q;
-      tree.visits++;
+      var success = TryTreeSearchRec(rand, selectedChild, c, automaton, eval, bestChildrenBuf, out q);
+      if (success) {
+        // only update if successful
+        tree.sumQuality += q;
+        tree.visits++;
+      }
 
       // tree.done = tree.children.All(ch => ch.done);
       tree.done = true; for (int i = 0; i < tree.children.Length && tree.done; i++) tree.done = tree.children[i].done;
       if (tree.done) {
-        tree.children = null; // cut of the sub-branch if it has been fully explored
+        tree.children = null; // cut off the sub-branch if it has been fully explored
         // TODO: update all qualities and visits to remove the information gained from this whole branch
       }
-      return q;
+      return success;
     }
 
     private static Tree SelectUct(Tree tree, IRandom rand, double c, List<Tree> bestChildrenBuf) {

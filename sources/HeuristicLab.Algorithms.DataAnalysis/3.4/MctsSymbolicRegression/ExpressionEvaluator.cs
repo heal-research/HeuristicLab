@@ -27,23 +27,25 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
   // evalutes expressions (on vectors)
   internal class ExpressionEvaluator {
     // manages it's own vector buffers
-    private readonly List<double[]> vectorBuffers = new List<double[]>();
-    private readonly List<double[]> scalarBuffers = new List<double[]>(); // scalars are vectors of length 1 (to allow mixing scalars and vectors on the same stack)
+    private readonly double[][] vectorBuffers;
+    private readonly double[][] scalarBuffers; // scalars are vectors of length 1 (to allow mixing scalars and vectors on the same stack)
+    private int lastVecBufIdx;
+    private int lastScalarBufIdx;
 
 
     private double[] GetVectorBuffer() {
-      var v = vectorBuffers[vectorBuffers.Count - 1];
-      vectorBuffers.RemoveAt(vectorBuffers.Count - 1);
-      return v;
+      return vectorBuffers[--lastVecBufIdx];
     }
     private double[] GetScalarBuffer() {
-      var v = scalarBuffers[scalarBuffers.Count - 1];
-      scalarBuffers.RemoveAt(scalarBuffers.Count - 1);
-      return v;
+      return scalarBuffers[--lastScalarBufIdx];
     }
 
     private void ReleaseBuffer(double[] buf) {
-      (buf.Length == 1 ? scalarBuffers : vectorBuffers).Add(buf);
+      if (buf.Length == 1) {
+        scalarBuffers[lastScalarBufIdx++] = buf;
+      } else {
+        vectorBuffers[lastVecBufIdx++] = buf;
+      }
     }
 
     public const int MaxStackSize = 100;
@@ -72,6 +74,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
       }
 
       // preallocate buffers 
+      vectorBuffers = new double[MaxStackSize * (1 + MaxParams)][];
+      scalarBuffers = new double[MaxStackSize * (1 + MaxParams)][];
       for (int i = 0; i < MaxStackSize; i++) {
         ReleaseBuffer(new double[vLen]);
         ReleaseBuffer(new double[1]);
@@ -93,8 +97,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
       byte op;
       short arg;
       // checked at the end to make sure we do not leak buffers
-      int initialScalarCount = scalarBuffers.Count;
-      int initialVectorCount = vectorBuffers.Count;
+      int initialScalarCount = lastScalarBufIdx;
+      int initialVectorCount = lastVecBufIdx;
 
       while (true) {
         ReadNext(code, ref pc, out op, out arg);
@@ -178,7 +182,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
                 var maxFx = fxc.Max() / consts[curParamIdx]; // stack[topOfStack] is f(x) * c
 
                 var f = 1.0 / (maxFx * consts[curParamIdx]);
-                // adjust c so that maxFx*c = 1 
+                // adjust c so that maxFx*c = 1 TODO: this is not ideal as enforce positive argument to exp()
                 consts[curParamIdx] *= f;
 
                 // also adjust values on stack
@@ -210,8 +214,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
               }
             }
             ReleaseBuffer(r);
-            Contract.Assert(vectorBuffers.Count == initialVectorCount);
-            Contract.Assert(scalarBuffers.Count == initialScalarCount);
+            Contract.Assert(lastVecBufIdx == initialVectorCount);
+            Contract.Assert(lastScalarBufIdx == initialScalarCount);
             return;
         }
       }
@@ -231,8 +235,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
       Contract.Assert(gradients != null && gradients.Length >= nParams && gradients.All(g => g.Length >= vLen));
 
       // checked at the end to make sure we do not leak buffers
-      int initialScalarCount = scalarBuffers.Count;
-      int initialVectorCount = vectorBuffers.Count;
+      int initialScalarCount = lastScalarBufIdx;
+      int initialVectorCount = lastVecBufIdx;
 
       while (true) {
         ReadNext(code, ref pc, out op, out arg);
@@ -399,8 +403,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
               ReleaseBuffer(g);
             }
 
-            Contract.Assert(vectorBuffers.Count == initialVectorCount);
-            Contract.Assert(scalarBuffers.Count == initialScalarCount);
+            Contract.Assert(lastVecBufIdx == initialVectorCount);
+            Contract.Assert(lastScalarBufIdx == initialScalarCount);
             return; // break loop
         }
       }
