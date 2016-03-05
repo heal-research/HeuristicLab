@@ -112,11 +112,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
             }
             break;
           case OpCodes.Add: {
-              var t1 = stack[topOfStack];
-              var t2 = stack[topOfStack - 1];
+              var t1 = stack[topOfStack - 1];
+              var t2 = stack[topOfStack];
               topOfStack--;
-              if (t2.Symbol is Addition) {
-                t2.AddSubtree(t1);
+              if (t1.Symbol is Addition) {
+                t1.AddSubtree(t2);
               } else {
                 var addNode = addSy.CreateTreeNode();
                 addNode.AddSubtree(t1);
@@ -126,11 +126,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
               break;
             }
           case OpCodes.Mul: {
-              var t1 = stack[topOfStack];
-              var t2 = stack[topOfStack - 1];
+              var t1 = stack[topOfStack - 1];
+              var t2 = stack[topOfStack];
               topOfStack--;
-              if (t2.Symbol is Multiplication) {
-                t2.AddSubtree(t1);
+              if (t1.Symbol is Multiplication) {
+                t1.AddSubtree(t2);
               } else {
                 var mulNode = mulSy.CreateTreeNode();
                 mulNode.AddSubtree(t1);

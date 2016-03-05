@@ -69,7 +69,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
     public IFixedValueParameter<IntValue> IterationsParameter {
       get { return (IFixedValueParameter<IntValue>)Parameters[IterationsParameterName]; }
     }
-    public IFixedValueParameter<IntValue> MaxSizeParameter {
+    public IFixedValueParameter<IntValue> MaxVariableReferencesParameter {
       get { return (IFixedValueParameter<IntValue>)Parameters[MaxVariablesParameterName]; }
     }
     public IFixedValueParameter<BoolValue> ScaleVariablesParameter {
@@ -114,9 +114,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
       get { return SetSeedRandomlyParameter.Value.Value; }
       set { SetSeedRandomlyParameter.Value.Value = value; }
     }
-    public int MaxSize {
-      get { return MaxSizeParameter.Value.Value; }
-      set { MaxSizeParameter.Value.Value = value; }
+    public int MaxVariableReferences {
+      get { return MaxVariableReferencesParameter.Value.Value; }
+      set { MaxVariableReferencesParameter.Value.Value = value; }
     }
     public double C {
       get { return CParameter.Value.Value; }
@@ -243,7 +243,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
       // init
       var problemData = (IRegressionProblemData)Problem.ProblemData.Clone();
       if (!AllowedFactors.CheckedItems.Any()) throw new ArgumentException("At least on type of factor must be allowed");
-      var state = MctsSymbolicRegressionStatic.CreateState(problemData, (uint)Seed, MaxSize, C, ScaleVariables, ConstantOptimizationIterations,
+      var state = MctsSymbolicRegressionStatic.CreateState(problemData, (uint)Seed, MaxVariableReferences, C, ScaleVariables, ConstantOptimizationIterations,
         lowerLimit, upperLimit,
         allowProdOfVars: AllowedFactors.CheckedItems.Any(s => s.Value.Value == VariableProductFactorName),
         allowExp: AllowedFactors.CheckedItems.Any(s => s.Value.Value == ExpFactorName),

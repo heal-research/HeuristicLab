@@ -182,7 +182,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
                 var maxFx = fxc.Max() / consts[curParamIdx]; // stack[topOfStack] is f(x) * c
 
                 var f = 1.0 / (maxFx * consts[curParamIdx]);
-                // adjust c so that maxFx*c = 1 TODO: this is not ideal as enforce positive argument to exp()
+                // adjust c so that maxFx*c = 1 TODO: this is not ideal as it enforces positive arguments to exp()
                 consts[curParamIdx] *= f;
 
                 // also adjust values on stack

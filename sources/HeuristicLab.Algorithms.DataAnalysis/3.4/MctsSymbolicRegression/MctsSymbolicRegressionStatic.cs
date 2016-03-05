@@ -174,11 +174,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
         get {
           var treeGen = new SymbolicExpressionTreeGenerator(problemData.AllowedInputVariables.ToArray());
           var interpreter = new SymbolicDataAnalysisExpressionTreeLinearInterpreter();
-          var simplifier = new SymbolicDataAnalysisExpressionTreeSimplifier();
 
           var t = new SymbolicExpressionTree(treeGen.Exec(bestCode, bestConsts, bestNParams, scalingFactor, scalingOffset));
-          var simpleT = simplifier.Simplify(t);
-          var model = new SymbolicRegressionModel(simpleT, interpreter, lowerEstimationLimit, upperEstimationLimit);
+          var model = new SymbolicRegressionModel(t, interpreter, lowerEstimationLimit, upperEstimationLimit);
 
           // model has already been scaled linearly in Eval
           return model;
@@ -263,7 +261,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
 
         alglib.minlmstate state;
         alglib.minlmreport rep = null;
-        alglib.minlmcreatevj(y.Length, optConsts, out state);
+        alglib.minlmcreatevj(y.Length, optConsts, out state);        
         alglib.minlmsetcond(state, 0.0, epsF, 0.0, nIters);
         //alglib.minlmsetgradientcheck(state, 0.000001);
         alglib.minlmoptimize(state, Func, FuncAndJacobian, null, code);
@@ -280,7 +278,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
       }
 
       private void Func(double[] arg, double[] fi, object obj) {
-        // 0.5 * MSE and gradient
         var code = (byte[])obj;
         evaluator.Exec(code, x, arg, predBuf); // gradients are nParams x vLen
         for (int r = 0; r < predBuf.Length; r++) {
@@ -375,6 +372,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
             q = 0;
             tree.done = true;
             tree.children = null;
+            tree.visits = 1;
             return false;
           }
           tree.children = new Tree[nFs];
@@ -435,7 +433,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
           bestChildrenBuf.Add(ch);
         }
       }
-      return bestChildrenBuf.Count > 0 ? bestChildrenBuf[rand.Next(bestChildrenBuf.Count)] : bestChildrenBuf[0];
+      return bestChildrenBuf[rand.Next(bestChildrenBuf.Count)];
     }
 
     private static Tree SelectFinalOrRandom(Automaton automaton, Tree tree, IRandom rand) {
