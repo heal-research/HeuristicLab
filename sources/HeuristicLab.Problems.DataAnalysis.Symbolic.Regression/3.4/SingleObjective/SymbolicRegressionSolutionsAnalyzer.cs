@@ -94,17 +94,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       ILookupParameter<DoubleValue> trainingQualityParam = null;
       ILookupParameter<DoubleValue> testQualityParam = null;
       // store actual names of parameter because it is changed below
-      string prevTrainingQualityParamName = TrainingQualityParameterName;
-      string prevTestQualityParamName = TestQualityParameterName;
-      if (Parameters.ContainsKey(TrainingQualityParameterName)) {
-        trainingQualityParam = TrainingQualityParameter;
-        prevTrainingQualityParamName = trainingQualityParam.ActualName;
-      }
-      if (Parameters.ContainsKey(TestQualityParameterName)) {
-        testQualityParam = TestQualityParameter;
-        prevTestQualityParamName = testQualityParam.ActualName;
-      }
-
+      trainingQualityParam = TrainingQualityParameter;
+      string prevTrainingQualityParamName = trainingQualityParam.ActualName;
+      testQualityParam = TestQualityParameter;
+      string prevTestQualityParamName = testQualityParam.ActualName;
       foreach (var result in results.Where(r => r.Value is IRegressionSolution)) {
         var solution = (IRegressionSolution)result.Value;
 
@@ -121,18 +114,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
         // also add training and test R² to the scope using the parameters
         // HACK: we change the ActualName of the parameter to write two variables for each solution in the results collection
-        if (trainingQualityParam != null) {
-          trainingQualityParam.ActualName = trainingR2Name;
-          trainingQualityParam.ActualValue = new DoubleValue(solution.TrainingRSquared);
-        }
-        if (testQualityParam != null) {
-          testQualityParam.ActualName = testR2Name;
-          testQualityParam.ActualValue = new DoubleValue(solution.TestRSquared);
-        }
+        trainingQualityParam.ActualName = trainingR2Name;
+        trainingQualityParam.ActualValue = new DoubleValue(solution.TrainingRSquared);
+        testQualityParam.ActualName = testR2Name;
+        testQualityParam.ActualValue = new DoubleValue(solution.TestRSquared);
       }
 
-      if (trainingQualityParam != null) trainingQualityParam.ActualName = prevTrainingQualityParamName;
-      if (testQualityParam != null) testQualityParam.ActualName = prevTestQualityParamName;
+      trainingQualityParam.ActualName = prevTrainingQualityParamName;
+      testQualityParam.ActualName = prevTestQualityParamName;
 
       return base.Apply();
     }
