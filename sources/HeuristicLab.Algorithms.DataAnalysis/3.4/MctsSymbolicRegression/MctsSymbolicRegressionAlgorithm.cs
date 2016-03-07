@@ -23,6 +23,7 @@ using System;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression.Policies;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -51,7 +52,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
     private const string ScaleVariablesParameterName = "Scale variables";
     private const string AllowedFactorsParameterName = "Allowed factors";
     private const string ConstantOptimizationIterationsParameterName = "Iterations (constant optimization)";
-    private const string CParameterName = "C";
+    private const string PolicyParameterName = "Policy";
     private const string SeedParameterName = "Seed";
     private const string SetSeedRandomlyParameterName = "SetSeedRandomly";
     private const string UpdateIntervalParameterName = "UpdateInterval";
@@ -78,8 +79,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
     public IFixedValueParameter<IntValue> ConstantOptimizationIterationsParameter {
       get { return (IFixedValueParameter<IntValue>)Parameters[ConstantOptimizationIterationsParameterName]; }
     }
-    public IFixedValueParameter<DoubleValue> CParameter {
-      get { return (IFixedValueParameter<DoubleValue>)Parameters[CParameterName]; }
+    public IValueParameter<IPolicy> PolicyParameter {
+      get { return (IValueParameter<IPolicy>)Parameters[PolicyParameterName]; }
     }
     public IFixedValueParameter<DoubleValue> PunishmentFactorParameter {
       get { return (IFixedValueParameter<DoubleValue>)Parameters[PunishmentFactorParameterName]; }
@@ -118,11 +119,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
       get { return MaxVariableReferencesParameter.Value.Value; }
       set { MaxVariableReferencesParameter.Value.Value = value; }
     }
-    public double C {
-      get { return CParameter.Value.Value; }
-      set { CParameter.Value.Value = value; }
+    public IPolicy Policy {
+      get { return PolicyParameter.Value; }
+      set { PolicyParameter.Value = value; }
     }
-
     public double PunishmentFactor {
       get { return PunishmentFactorParameter.Value.Value; }
       set { PunishmentFactorParameter.Value.Value = value; }
@@ -172,8 +172,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
         "True if the random seed should be set to a random value, otherwise false.", new BoolValue(true)));
       Parameters.Add(new FixedValueParameter<IntValue>(MaxVariablesParameterName,
         "Maximal number of variables references in the symbolic regression models (multiple usages of the same variable are counted)", new IntValue(5)));
-      Parameters.Add(new FixedValueParameter<DoubleValue>(CParameterName,
-        "Balancing parameter in UCT formula (0 < c < 1000). Small values: greedy search. Large values: enumeration. Default: 1.0", new DoubleValue(1.0)));
+      // Parameters.Add(new FixedValueParameter<DoubleValue>(CParameterName,
+      //   "Balancing parameter in UCT formula (0 < c < 1000). Small values: greedy search. Large values: enumeration. Default: 1.0", new DoubleValue(1.0)));
+      Parameters.Add(new ValueParameter<IPolicy>(PolicyParameterName,
+        "The policy to use for selecting nodes in MCTS (e.g. Ucb)", new Ucb()));
+      PolicyParameter.Hidden = true;
       Parameters.Add(new ValueParameter<ICheckedItemList<StringValue>>(AllowedFactorsParameterName,
         "Choose which expressions are allowed as factors in the model.", defaultFactorsList));
 
@@ -243,7 +246,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
       // init
       var problemData = (IRegressionProblemData)Problem.ProblemData.Clone();
       if (!AllowedFactors.CheckedItems.Any()) throw new ArgumentException("At least on type of factor must be allowed");
-      var state = MctsSymbolicRegressionStatic.CreateState(problemData, (uint)Seed, MaxVariableReferences, C, ScaleVariables, ConstantOptimizationIterations,
+      var state = MctsSymbolicRegressionStatic.CreateState(problemData, (uint)Seed, MaxVariableReferences, ScaleVariables, ConstantOptimizationIterations,
+        Policy,
         lowerLimit, upperLimit,
         allowProdOfVars: AllowedFactors.CheckedItems.Any(s => s.Value.Value == VariableProductFactorName),
         allowExp: AllowedFactors.CheckedItems.Any(s => s.Value.Value == ExpFactorName),

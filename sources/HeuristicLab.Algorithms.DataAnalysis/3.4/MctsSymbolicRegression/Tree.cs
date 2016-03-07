@@ -19,16 +19,17 @@
  */
 #endregion
 
+using HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression.Policies;
+
 namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
   // represents tree nodes for the search tree in MCTS
   internal class Tree {
     public int state;
-    public int visits;
-    public double sumQuality;
-    public double sumSqrQuality; // for variance
-    public double AverageQuality { get { return sumQuality / (double)visits; } }
-    public double QualityVariance { get { return sumSqrQuality / (double)visits - AverageQuality * AverageQuality; } }
-    public bool done;
+    public bool Done {
+      get { return actionStatistics.Done; }
+      set { actionStatistics.Done = value; }
+    }
+    public IActionStatistics actionStatistics;
     public Tree[] children;
   }
 }

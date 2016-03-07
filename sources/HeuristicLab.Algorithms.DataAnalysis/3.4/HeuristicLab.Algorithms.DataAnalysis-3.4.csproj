@@ -262,6 +262,12 @@
     <Compile Include="MctsSymbolicRegression\MctsSymbolicRegressionAlgorithm.cs" />
     <Compile Include="MctsSymbolicRegression\MctsSymbolicRegressionStatic.cs" />
     <Compile Include="MctsSymbolicRegression\OpCodes.cs" />
+    <Compile Include="MctsSymbolicRegression\Policies\EpsGreedy.cs" />
+    <Compile Include="MctsSymbolicRegression\Policies\UcbTuned.cs" />
+    <Compile Include="MctsSymbolicRegression\Policies\IActionStatistics.cs" />
+    <Compile Include="MctsSymbolicRegression\Policies\IPolicy.cs" />
+    <Compile Include="MctsSymbolicRegression\Policies\PolicyBase.cs" />
+    <Compile Include="MctsSymbolicRegression\Policies\Ucb.cs" />
     <Compile Include="MctsSymbolicRegression\SymbolicExpressionGenerator.cs" />
     <Compile Include="MctsSymbolicRegression\Tree.cs" />
     <Compile Include="Nca\Initialization\INcaInitializer.cs" />
