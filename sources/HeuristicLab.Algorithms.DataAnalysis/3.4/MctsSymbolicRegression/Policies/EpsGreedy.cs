@@ -29,7 +29,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression.Policies {
       set { EpsParameter.Value.Value = value; }
     }
 
-    private EpsilonGreedy(EpsilonGreedy original, Cloner cloner)
+    protected EpsilonGreedy(EpsilonGreedy original, Cloner cloner)
       : base(original, cloner) {
     }
     public EpsilonGreedy()

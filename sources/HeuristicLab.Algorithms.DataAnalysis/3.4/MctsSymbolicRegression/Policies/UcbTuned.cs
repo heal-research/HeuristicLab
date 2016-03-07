@@ -31,7 +31,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression.Policies {
       set { CParameter.Value.Value = value; }
     }
 
-    private UcbTuned(UcbTuned original, Cloner cloner)
+    protected UcbTuned(UcbTuned original, Cloner cloner)
       : base(original, cloner) {
     }
     public UcbTuned()

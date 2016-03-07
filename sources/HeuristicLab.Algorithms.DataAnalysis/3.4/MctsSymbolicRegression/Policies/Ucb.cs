@@ -29,7 +29,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression.Policies {
       set { CParameter.Value.Value = value; }
     }
 
-    private Ucb(Ucb original, Cloner cloner)
+    protected Ucb(Ucb original, Cloner cloner)
       : base(original, cloner) {
     }
     public Ucb()
