@@ -261,7 +261,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
 
         alglib.minlmstate state;
         alglib.minlmreport rep = null;
-        alglib.minlmcreatevj(y.Length, optConsts, out state);        
+        alglib.minlmcreatevj(y.Length, optConsts, out state);
         alglib.minlmsetcond(state, 0.0, epsF, 0.0, nIters);
         //alglib.minlmsetgradientcheck(state, 0.000001);
         alglib.minlmoptimize(state, Func, FuncAndJacobian, null, code);
@@ -332,10 +332,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
       var rand = mctsState.random;
       double c = mctsState.c;
       double q = 0;
+      double deltaQ = 0;
+      double deltaSqrQ = 0;
+      int deltaVisits = 0;
       bool success = false;
       do {
         automaton.Reset();
-        success = TryTreeSearchRec(rand, tree, c, automaton, eval, bestChildrenBuf, out q);
+        success = TryTreeSearchRec(rand, tree, c, automaton, eval, bestChildrenBuf, out q, out deltaQ, out deltaSqrQ, out deltaVisits);
         mctsState.totalRollouts++;
       } while (!success && !tree.done);
       mctsState.effectiveRollouts++;
@@ -346,7 +349,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
     // in this case we get stuck we just restart
     // see ConstraintHandler.cs for more info
     private static bool TryTreeSearchRec(IRandom rand, Tree tree, double c, Automaton automaton, Func<byte[], int, double> eval, List<Tree> bestChildrenBuf,
-      out double q) {
+      out double q, // quality of the expression
+      out double deltaQ, out double deltaSqrQ, out int deltaVisits // the updates for total quality and number of visits (can be negative if branches have been fully explored)
+      ) {
       Tree selectedChild = null;
       Contract.Assert(tree.state == automaton.CurrentState);
       Contract.Assert(!tree.done);
@@ -359,8 +364,12 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
           byte[] code; int nParams;
           automaton.GetCode(out code, out nParams);
           q = eval(code, nParams);
-          tree.visits++;
+          tree.visits += 1;
           tree.sumQuality += q;
+          tree.sumSqrQuality += q * q;
+          deltaQ = q;
+          deltaVisits = 1;
+          deltaSqrQ = q * q;
           return true; // we reached a final state
         } else {
           // EXPAND 
@@ -370,6 +379,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
           if (nFs == 0) {
             // stuck in a dead end (no final state and no allowed follow states)
             q = 0;
+            deltaQ = 0;
+            deltaSqrQ = 0.0;
+            deltaVisits = 0;
             tree.done = true;
             tree.children = null;
             tree.visits = 1;
@@ -379,27 +391,33 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
           for (int i = 0; i < tree.children.Length; i++)
             tree.children[i] = new Tree() { children = null, done = false, state = possibleFollowStates[i], visits = 0 };
 
-          selectedChild = SelectFinalOrRandom(automaton, tree, rand);
+          selectedChild = nFs > 1 ? SelectFinalOrRandom(automaton, tree, rand) : tree.children[0];
         }
       } else {
         // tree.children != null
         // UCT selection within tree
-        selectedChild = SelectUct(tree, rand, c, bestChildrenBuf);
+        selectedChild = tree.children.Length > 1 ? SelectUctTuned(tree, rand, c, bestChildrenBuf) : tree.children[0];
       }
       // make selected step and recurse
       automaton.Goto(selectedChild.state);
-      var success = TryTreeSearchRec(rand, selectedChild, c, automaton, eval, bestChildrenBuf, out q);
+      var success = TryTreeSearchRec(rand, selectedChild, c, automaton, eval, bestChildrenBuf,
+        out q, out deltaQ, out deltaSqrQ, out deltaVisits);
       if (success) {
         // only update if successful
-        tree.sumQuality += q;
-        tree.visits++;
+        tree.sumQuality += deltaQ;
+        tree.sumSqrQuality += deltaSqrQ;
+        tree.visits += deltaVisits;
       }
 
-      // tree.done = tree.children.All(ch => ch.done);
-      tree.done = true; for (int i = 0; i < tree.children.Length && tree.done; i++) tree.done = tree.children[i].done;
-      if (tree.done) {
+      if (tree.children.All(ch => ch.done)) {
+        tree.done = true;
+        // update parent nodes to remove information from this branch 
+        if (tree.children.Length > 1) {
+          deltaQ = -(tree.sumQuality - deltaQ);
+          deltaSqrQ = -(tree.sumSqrQuality - deltaSqrQ);
+          deltaVisits = -(tree.visits - deltaVisits);
+        }
         tree.children = null; // cut off the sub-branch if it has been fully explored
-        // TODO: update all qualities and visits to remove the information gained from this whole branch
       }
       return success;
     }
@@ -425,6 +443,40 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
         var ch = tree.children[i];
         if (ch.done) continue;
         var childQ = ch.AverageQuality + c * Math.Sqrt(logTotalTries / ch.visits);
+        if (childQ > bestQ) {
+          bestChildrenBuf.Clear();
+          bestChildrenBuf.Add(ch);
+          bestQ = childQ;
+        } else if (childQ >= bestQ) {
+          bestChildrenBuf.Add(ch);
+        }
+      }
+      return bestChildrenBuf[rand.Next(bestChildrenBuf.Count)];
+    }
+
+    private static Tree SelectUctTuned(Tree tree, IRandom rand, double c, List<Tree> bestChildrenBuf) {
+      // determine total tries of still active children
+      int totalTries = 0;
+      bestChildrenBuf.Clear();
+      for (int i = 0; i < tree.children.Length; i++) {
+        var ch = tree.children[i];
+        if (ch.done) continue;
+        if (ch.visits == 0) bestChildrenBuf.Add(ch);
+        else totalTries += tree.children[i].visits;
+      }
+      // if there are unvisited children select a random child
+      if (bestChildrenBuf.Any()) {
+        return bestChildrenBuf[rand.Next(bestChildrenBuf.Count)];
+      }
+      Contract.Assert(totalTries > 0); // the tree is not done yet so there is at least on child that is not done
+      double logTotalTries = Math.Log(totalTries);
+      var bestQ = double.NegativeInfinity;
+      for (int i = 0; i < tree.children.Length; i++) {
+        var ch = tree.children[i];
+        if (ch.done) continue;
+        var varianceBound = ch.QualityVariance + Math.Sqrt(2.0 * logTotalTries / ch.visits);
+        if (varianceBound > 0.25) varianceBound = 0.25;
+        var childQ = ch.AverageQuality + c * Math.Sqrt(logTotalTries / ch.visits * varianceBound);
         if (childQ > bestQ) {
           bestChildrenBuf.Clear();
           bestChildrenBuf.Add(ch);

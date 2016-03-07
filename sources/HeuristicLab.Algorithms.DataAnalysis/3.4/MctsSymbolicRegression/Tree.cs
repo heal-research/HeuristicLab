@@ -25,7 +25,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
     public int state;
     public int visits;
     public double sumQuality;
+    public double sumSqrQuality; // for variance
     public double AverageQuality { get { return sumQuality / (double)visits; } }
+    public double QualityVariance { get { return sumSqrQuality / (double)visits - AverageQuality * AverageQuality; } }
     public bool done;
     public Tree[] children;
   }
