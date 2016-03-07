@@ -10,7 +10,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression.Policies {
   [StorableClass]
-  internal abstract class PolicyBase : Item, IParameterizedItem, IPolicy {
+  public abstract class PolicyBase : Item, IParameterizedItem, IPolicy {
     [Storable]
     public IKeyedItemCollection<string, IParameter> Parameters { get; private set; }
 

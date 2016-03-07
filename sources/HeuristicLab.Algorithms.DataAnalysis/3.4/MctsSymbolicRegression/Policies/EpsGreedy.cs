@@ -11,7 +11,7 @@ using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression.Policies {
   [Item("EpsilonGreedy", "Epsilon greedy policy with parameter eps to balance between exploitation and exploration")]
-  internal class EpsilonGreedy : PolicyBase {
+  public class EpsilonGreedy : PolicyBase {
     private class ActionStatistics : IActionStatistics {
       public double SumQuality { get; set; }
       public double AverageQuality { get { return SumQuality / Tries; } }

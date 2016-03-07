@@ -3,6 +3,7 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Threading;
 using HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression;
+using HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression.Policies;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Problems.DataAnalysis;
@@ -273,7 +274,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
     #endregion
 
-  
+
     #region Nguyen
     [TestMethod]
     [TestCategory("Algorithms.DataAnalysis")]
@@ -504,7 +505,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       mctsSymbReg.Problem = regProblem;
       mctsSymbReg.Iterations = iterations;
       mctsSymbReg.MaxVariableReferences = 10;
-      mctsSymbReg.C = 2; // less greedy
+      var ucbPolicy = new Ucb();
+      ucbPolicy.C = 2;
+      mctsSymbReg.Policy = ucbPolicy;
       mctsSymbReg.SetSeedRandomly = false;
       mctsSymbReg.Seed = 1234;
       mctsSymbReg.AllowedFactors.SetItemCheckedState(mctsSymbReg.AllowedFactors.Single(s => s.Value.Contains("exp")), allowExp);
@@ -539,7 +542,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       mctsSymbReg.Problem = regProblem;
       mctsSymbReg.Iterations = int.MaxValue; // stopping when all solutions have been enumerated
       mctsSymbReg.MaxVariableReferences = maxNumberOfVariables;
-      mctsSymbReg.C = 1000; // essentially breath first seach
+      var ucbPolicy = new Ucb();
+      ucbPolicy.C = 1000; // essentially breadth first search
+      mctsSymbReg.Policy = ucbPolicy;
       mctsSymbReg.AllowedFactors.SetItemCheckedState(mctsSymbReg.AllowedFactors.Single(s => s.Value.StartsWith("prod")), allowProd);
       mctsSymbReg.AllowedFactors.SetItemCheckedState(mctsSymbReg.AllowedFactors.Single(s => s.Value.Contains("exp")), allowExp);
       mctsSymbReg.AllowedFactors.SetItemCheckedState(mctsSymbReg.AllowedFactors.Single(s => s.Value.Contains("log")), allowLog);

@@ -11,7 +11,7 @@ using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression.Policies {
   [Item("UcbTuned Policy", "UcbTuned is similar to Ucb but tracks empirical variance. Use parameter c to balance between exploitation and exploration")]
-  internal class UcbTuned : PolicyBase {
+  public class UcbTuned : PolicyBase {
     private class ActionStatistics : IActionStatistics {
       public double SumQuality { get; set; }
       public double SumSqrQuality { get; set; }

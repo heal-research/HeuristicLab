@@ -11,7 +11,7 @@ using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression.Policies {
   [Item("Ucb Policy", "Ucb with parameter c to balance between exploitation and exploration")]
-  internal class Ucb : PolicyBase {
+  public class Ucb : PolicyBase {
     private class ActionStatistics : IActionStatistics {
       public double SumQuality { get; set; }
       public double AverageQuality { get { return SumQuality / Tries; } }
