@@ -8,8 +8,10 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression.Policies {
+  [StorableClass]
   [Item("EpsilonGreedy", "Epsilon greedy policy with parameter eps to balance between exploitation and exploration")]
   public class EpsilonGreedy : PolicyBase {
     private class ActionStatistics : IActionStatistics {
@@ -29,6 +31,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression.Policies {
       set { EpsParameter.Value.Value = value; }
     }
 
+    [StorableConstructor]
+    protected EpsilonGreedy(bool deserializing) : base(deserializing) { }
     protected EpsilonGreedy(EpsilonGreedy original, Cloner cloner)
       : base(original, cloner) {
     }

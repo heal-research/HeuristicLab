@@ -15,7 +15,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression.Policies {
     public IKeyedItemCollection<string, IParameter> Parameters { get; private set; }
 
     [StorableConstructor]
-    private PolicyBase(bool deserializing) : base(deserializing) { }
+    protected PolicyBase(bool deserializing) : base(deserializing) { }
     protected PolicyBase(PolicyBase original, Cloner cloner)
       : base(original, cloner) {
       Parameters = cloner.Clone(original.Parameters);

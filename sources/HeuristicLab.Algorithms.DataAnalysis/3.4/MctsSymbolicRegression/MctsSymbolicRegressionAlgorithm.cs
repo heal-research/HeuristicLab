@@ -208,6 +208,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
       var iterations = new IntValue(0);
       Results.Add(new Result("Iterations", iterations));
 
+      var bestSolutionIteration = new IntValue(0);
+      Results.Add(new Result("Best solution iteration", bestSolutionIteration));
+
       var table = new DataTable("Qualities");
       table.Rows.Add(new DataRow("Best quality"));
       table.Rows.Add(new DataRow("Current best quality"));
@@ -260,19 +263,21 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
       double sumQ = 0.0;
       double bestQ = 0.0;
       double curBestQ = 0.0;
-      double q = 0.0;
       int n = 0;
       // Loop until iteration limit reached or canceled.
       for (int i = 0; i < Iterations && !state.Done; i++) {
         cancellationToken.ThrowIfCancellationRequested();
 
-        q = MctsSymbolicRegressionStatic.MakeStep(state);
+        var q = MctsSymbolicRegressionStatic.MakeStep(state);
         sumQ += q; // sum of qs in the last updateinterval iterations
         curBestQ = Math.Max(q, curBestQ); // the best q in the last updateinterval iterations
         bestQ = Math.Max(q, bestQ); // the best q overall
         n++;
         // iteration results
         if (n == updateInterval) {
+          if (bestQ > bestQuality.Value) {
+            bestSolutionIteration.Value = i;
+          }
           bestQuality.Value = bestQ;
           curQuality.Value = curBestQ;
           avgQuality.Value = sumQ / n;
@@ -294,6 +299,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
 
       // final results
       if (n > 0) {
+        if (bestQ > bestQuality.Value) {
+          bestSolutionIteration.Value = iterations.Value + n;
+        }
         bestQuality.Value = bestQ;
         curQuality.Value = curBestQ;
         avgQuality.Value = sumQ / n;

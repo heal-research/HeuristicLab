@@ -8,8 +8,10 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression.Policies {
+  [StorableClass]
   [Item("UcbTuned Policy", "UcbTuned is similar to Ucb but tracks empirical variance. Use parameter c to balance between exploitation and exploration")]
   public class UcbTuned : PolicyBase {
     private class ActionStatistics : IActionStatistics {
@@ -31,6 +33,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression.Policies {
       set { CParameter.Value.Value = value; }
     }
 
+    [StorableConstructor]
+    protected UcbTuned(bool deserializing) : base(deserializing) { }
     protected UcbTuned(UcbTuned original, Cloner cloner)
       : base(original, cloner) {
     }

@@ -417,9 +417,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
           break;
         }
       }
-      // no final state -> select a random child
+      // no final state -> select a the first child
       if (selectedChildIdx == -1) {
-        selectedChildIdx = rand.Next(tree.children.Length);
+        selectedChildIdx = 0;
       }
       return tree.children[selectedChildIdx];
     }
