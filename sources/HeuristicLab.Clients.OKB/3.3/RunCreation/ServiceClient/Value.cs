@@ -34,35 +34,35 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
         case "BoolValue": return new BoolValue() {
           Name = name,
           Value = bool.Parse(strValue)
-        }; break;
+        };
         case "IntValue": return new IntValue() {
           Name = name,
           Value = int.Parse(strValue, CultureInfo.CurrentCulture.NumberFormat)
-        }; break;
+        };
         case "LongValue": return new LongValue() {
           Name = name,
           Value = long.Parse(strValue, CultureInfo.CurrentCulture.NumberFormat)
-        }; break;
+        };
         case "FloatValue": return new FloatValue() {
           Name = name,
           Value = float.Parse(strValue, CultureInfo.CurrentCulture.NumberFormat)
-        }; break;
+        };
         case "DoubleValue": return new DoubleValue() {
           Name = name,
           Value = double.Parse(strValue, CultureInfo.CurrentCulture.NumberFormat)
-        }; break;
+        };
         case "PercentValue": return new PercentValue() {
           Name = name,
           Value = double.Parse(Regex.Match(strValue, "[0-9.,]+").Value, CultureInfo.CurrentCulture.NumberFormat) / 100.0
-        }; break;
+        };
         case "StringValue": return new StringValue() {
           Name = name,
           Value = strValue
-        }; break;
+        };
         case "TimeSpanValue": return new TimeSpanValue() {
           Name = name,
           Value = long.Parse(strValue, CultureInfo.CurrentCulture.NumberFormat)
-        }; break;
+        };
         default: throw new ArgumentException(string.Format("type {0} is unknown", type), "type");
       }
     }

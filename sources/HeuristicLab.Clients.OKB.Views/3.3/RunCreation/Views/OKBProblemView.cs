@@ -20,6 +20,7 @@
 #endregion
 
 using HeuristicLab.Common.Resources;
+using HeuristicLab.Core;
 using HeuristicLab.Core.Views;
 using HeuristicLab.Data;
 using HeuristicLab.MainForm;
@@ -27,6 +28,7 @@ using HeuristicLab.Optimization;
 using HeuristicLab.PluginInfrastructure;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -35,6 +37,8 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
   [Content(typeof(SingleObjectiveOKBProblem), true)]
   [Content(typeof(MultiObjectiveOKBProblem), true)]
   public sealed partial class OKBProblemView : NamedItemView {
+    private readonly CheckedItemList<ICharacteristicCalculator> calculatorList;
+
     public new OKBProblem Content {
       get { return (OKBProblem)base.Content; }
       set { base.Content = value; }
@@ -42,6 +46,24 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
 
     public OKBProblemView() {
       InitializeComponent();
+      var calculatorListView = new CheckedItemListView<ICharacteristicCalculator>() {
+        Anchor = AnchorStyles.Left | AnchorStyles.Bottom | AnchorStyles.Right | AnchorStyles.Top,
+        Location = new Point(flaSplitContainer.Padding.Left, calculateButton.Location.Y + calculateButton.Height + calculateButton.Padding.Bottom + 3),
+      };
+      calculatorListView.Size = new Size(flaSplitContainer.Panel1.Size.Width - flaSplitContainer.Panel1.Padding.Horizontal,
+          flaSplitContainer.Panel1.Height - calculatorListView.Location.Y - flaSplitContainer.Panel1.Padding.Bottom);
+      calculatorList = new CheckedItemList<ICharacteristicCalculator>();
+      calculatorList.ItemsAdded += CalculatorListOnChanged;
+      calculatorList.ItemsRemoved += CalculatorListOnChanged;
+      calculatorList.ItemsReplaced += CalculatorListOnChanged;
+      calculatorList.CollectionReset += CalculatorListOnChanged;
+      calculatorList.CheckedItemsChanged += CalculatorListOnChanged;
+
+      calculatorListView.Content = calculatorList.AsReadOnly();
+
+      flaSplitContainer.Panel1.Controls.Add(calculatorListView);
+      calculateButton.Text = string.Empty;
+      calculateButton.Image = VSImageLibrary.Play;
       refreshButton.Text = string.Empty;
       refreshButton.Image = VSImageLibrary.Refresh;
       cloneProblemButton.Text = string.Empty;
@@ -50,6 +72,10 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       downloadCharacteristicsButton.Image = VSImageLibrary.Refresh;
       uploadCharacteristicsButton.Text = string.Empty;
       uploadCharacteristicsButton.Image = VSImageLibrary.PublishToWeb;
+    }
+
+    private void CalculatorListOnChanged(object sender, EventArgs e) {
+      SetEnabledStateOfControls();
     }
 
     protected override void OnInitialized(System.EventArgs e) {
@@ -90,7 +116,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       downloadCharacteristicsButton.Enabled = Content != null && Content.ProblemId != -1 && !Locked;
       uploadCharacteristicsButton.Enabled = Content != null && Content.ProblemId != -1 && !Locked && !ReadOnly
         && characteristicsMatrixView.Content != null && characteristicsMatrixView.Content.Rows > 0;
-      calculateButton.Enabled = Content != null && Content.ProblemId != -1 && !Locked && !ReadOnly;
+      calculateButton.Enabled = Content != null && Content.ProblemId != -1 && !Locked && !ReadOnly && calculatorList.CheckedItems.Any();
     }
 
     protected override void OnClosed(FormClosedEventArgs e) {
@@ -100,27 +126,15 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
     }
 
     private void UpdateCharacteristicCalculators() {
-      calculatorListView.Items.Clear();
-      calculatorListView.Groups.Clear();
+      calculatorList.Clear();
       if (Content == null || Content.ProblemId == -1) return;
       var problem = Content.CloneProblem();
       var calculators = ApplicationManager.Manager.GetInstances<ICharacteristicCalculator>().ToList();
-      try {
-        calculatorListView.BeginUpdate();
-        foreach (var calc in calculators) {
-          calc.Problem = problem;
-          var group = calculatorListView.Groups.Add(calc.Name, calc.Name);
-          group.Tag = calc;
-
-          var paramItem = calculatorListView.Items.Add(calc.Name + ".Parameters", "Parameters");
-          paramItem.Group = group;
-          paramItem.Tag = "param";
-
-          var charactItem = calculatorListView.Items.Add(calc.Name + ".Characteristics", "Characteristics");
-          charactItem.Group = group;
-          charactItem.Tag = "chara";
-        }
-      } finally { calculatorListView.EndUpdate(); }
+      foreach (var calc in calculators) {
+        calc.Problem = problem;
+        if (!calc.CanCalculate()) continue;
+        calculatorList.Add(calc, true);
+      }
     }
 
     private void RunCreationClient_Refreshing(object sender, EventArgs e) {
@@ -192,26 +206,8 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
         RunCreationClient.SetCharacteristicValues(Content.ProblemId, values);
       } catch (Exception ex) { ErrorHandling.ShowErrorDialog(ex); }
     }
-    private void calculatorListView_SelectedIndexChanged(object sender, EventArgs e) {
-      if (InvokeRequired) {
-        Invoke((Action<object, EventArgs>)calculatorListView_SelectedIndexChanged, sender, e);
-        return;
-      }
-      if (calculatorListView.SelectedIndices.Count == 0) calculatorViewHost.Content = null;
-      else {
-        var item = calculatorListView.SelectedItems[0];
-        if ((string)item.Tag == "param") {
-          calculatorViewHost.Content = ((ICharacteristicCalculator)item.Group.Tag);
-        } else if ((string)item.Tag == "chara") {
-          calculatorViewHost.Content = ((ICharacteristicCalculator)item.Group.Tag).Characteristics;
-        }
-      }
-    }
     private void calculateButton_Click(object sender, EventArgs e) {
-      var calculators = calculatorListView.Groups.OfType<ListViewGroup>()
-                                                     .Select(x => (ICharacteristicCalculator)x.Tag)
-                                                     .Where(x => x.Characteristics.CheckedItems.Any()
-                                                              && x.CanCalculate()).ToList();
+      var calculators = calculatorList.CheckedItems.Select(x => x.Value).Where(x => x.CanCalculate()).ToList();
       if (calculators.Count == 0) return;
 
       var results = new Dictionary<string, Value>();
