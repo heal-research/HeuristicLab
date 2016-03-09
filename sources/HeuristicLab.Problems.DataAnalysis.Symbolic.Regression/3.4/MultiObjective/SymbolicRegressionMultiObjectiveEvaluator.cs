@@ -33,6 +33,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     private const string UseConstantOptimizationParameterName = "Use constant optimization";
     private const string ConstantOptimizationIterationsParameterName = "Constant optimization iterations";
 
+    private const string ConstantOptimizationUpdateVariableWeightsParameterName =
+      "Constant optimization update variable weights";
+
     public IFixedValueParameter<IntValue> DecimalPlacesParameter {
       get { return (IFixedValueParameter<IntValue>)Parameters[DecimalPlacesParameterName]; }
     }
@@ -44,6 +47,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       get { return (IFixedValueParameter<IntValue>)Parameters[ConstantOptimizationIterationsParameterName]; }
     }
 
+    public IFixedValueParameter<BoolValue> ConstantOptimizationUpdateVariableWeightsParameter {
+      get { return (IFixedValueParameter<BoolValue>)Parameters[ConstantOptimizationUpdateVariableWeightsParameterName]; }
+    }
 
     public int DecimalPlaces {
       get { return DecimalPlacesParameter.Value.Value; }
@@ -57,6 +63,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       get { return ConstantOptimizationIterationsParameter.Value.Value; }
       set { ConstantOptimizationIterationsParameter.Value.Value = value; }
     }
+    public bool ConstantOptimizationUpdateVariableWeights {
+      get { return ConstantOptimizationUpdateVariableWeightsParameter.Value.Value; }
+      set { ConstantOptimizationUpdateVariableWeightsParameter.Value.Value = value; }
+    }
 
     [StorableConstructor]
     protected SymbolicRegressionMultiObjectiveEvaluator(bool deserializing) : base(deserializing) { }
@@ -69,6 +79,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       Parameters.Add(new FixedValueParameter<IntValue>(DecimalPlacesParameterName, "The number of decimal places used for rounding the quality values.", new IntValue(5)) { Hidden = true });
       Parameters.Add(new FixedValueParameter<BoolValue>(UseConstantOptimizationParameterName, "", new BoolValue(false)));
       Parameters.Add(new FixedValueParameter<IntValue>(ConstantOptimizationIterationsParameterName, "The number of iterations constant optimization should be applied.", new IntValue(5)));
+      Parameters.Add(new FixedValueParameter<BoolValue>(ConstantOptimizationUpdateVariableWeightsParameterName, "Determines if the variable weights in the tree should be optimized during constant optimization.", new BoolValue(true)));
     }
 
     [StorableHook(HookType.AfterDeserialization)]
@@ -81,6 +92,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       }
       if (!Parameters.ContainsKey(ConstantOptimizationIterationsParameterName)) {
         Parameters.Add(new FixedValueParameter<IntValue>(ConstantOptimizationIterationsParameterName, "The number of iterations constant optimization should be applied.", new IntValue(5)));
+      }
+      if (!Parameters.ContainsKey(ConstantOptimizationUpdateVariableWeightsParameterName)) {
+        Parameters.Add(new FixedValueParameter<BoolValue>(ConstantOptimizationUpdateVariableWeightsParameterName, "Determines if the variable weights in the tree should be optimized during constant optimization.", new BoolValue(true)));
       }
     }
   }
