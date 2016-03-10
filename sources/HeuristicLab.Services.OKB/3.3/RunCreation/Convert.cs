@@ -39,6 +39,16 @@ namespace HeuristicLab.Services.OKB.RunCreation {
       return new DT.Problem { Id = source.Id, Name = source.Name, Description = source.Description, ProblemClass = Convert.ToDto(source.ProblemClass), DataType = Convert.ToDto(source.DataType) };
     }
 
+    public static DT.SingleObjectiveSolution ToDto(DA.SingleObjectiveSolution source) {
+      if (source == null) return null;
+      return new DT.SingleObjectiveSolution() {
+        Id = source.Id,
+        ProblemId = source.ProblemId.Value,
+        RunId = source.RunId,
+        Quality = source.Quality
+      };
+    }
+
     private static DT.DataType ToDto(DA.DataType source) {
       if (source == null) return null;
       return new DT.DataType { Name = source.Name, TypeName = source.TypeName };

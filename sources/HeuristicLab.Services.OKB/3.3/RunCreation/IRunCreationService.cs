@@ -43,6 +43,14 @@ namespace HeuristicLab.Services.OKB.RunCreation {
     byte[] GetProblemData(long problemId);
 
     [OperationContract]
+    [FaultContract(typeof(MissingProblem))]
+    IEnumerable<Solution> GetSolutions(long problemId);
+
+    [OperationContract]
+    [FaultContract(typeof(MissingSolution))]
+    byte[] GetSolutionData(long solutionId);
+
+    [OperationContract]
     void AddRun(Run run);
 
     [OperationContract]

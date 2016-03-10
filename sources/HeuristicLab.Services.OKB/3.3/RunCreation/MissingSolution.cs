@@ -23,12 +23,12 @@ using System.Runtime.Serialization;
 
 namespace HeuristicLab.Services.OKB.RunCreation {
   [DataContract]
-  public class MissingProblem {
+  public class MissingSolution {
     [DataMember]
     public string Message { get; set; }
 
-    public MissingProblem(long problemId) {
-      Message = string.Format("Problem with id {0} cannot be found", problemId);
+    public MissingSolution(long solutionId) {
+      Message = string.Format("Solution with id {0} cannot be found", solutionId);
     }
   }
 }

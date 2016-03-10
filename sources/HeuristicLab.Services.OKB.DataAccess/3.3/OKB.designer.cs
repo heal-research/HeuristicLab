@@ -72,6 +72,9 @@ namespace HeuristicLab.Services.OKB.DataAccess
     partial void InsertCharacteristicValue(CharacteristicValue instance);
     partial void UpdateCharacteristicValue(CharacteristicValue instance);
     partial void DeleteCharacteristicValue(CharacteristicValue instance);
+    partial void InsertSingleObjectiveSolution(SingleObjectiveSolution instance);
+    partial void UpdateSingleObjectiveSolution(SingleObjectiveSolution instance);
+    partial void DeleteSingleObjectiveSolution(SingleObjectiveSolution instance);
     #endregion
 		
 		public OKBDataContext() : 
@@ -213,6 +216,14 @@ namespace HeuristicLab.Services.OKB.DataAccess
 			get
 			{
 				return this.GetTable<CharacteristicValue>();
+			}
+		}
+		
+		public System.Data.Linq.Table<SingleObjectiveSolution> SingleObjectiveSolutions
+		{
+			get
+			{
+				return this.GetTable<SingleObjectiveSolution>();
 			}
 		}
 	}
@@ -933,6 +944,8 @@ namespace HeuristicLab.Services.OKB.DataAccess
 		
 		private EntitySet<CharacteristicValue> _CharacteristicValues;
 		
+		private EntitySet<SingleObjectiveSolution> _SingleObjectiveSolutions;
+		
     #region Extensibility Method Definitions
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -951,6 +964,7 @@ namespace HeuristicLab.Services.OKB.DataAccess
 			this._Problems = new EntitySet<Problem>(new Action<Problem>(this.attach_Problems), new Action<Problem>(this.detach_Problems));
 			this._Values = new EntitySet<Value>(new Action<Value>(this.attach_Values), new Action<Value>(this.detach_Values));
 			this._CharacteristicValues = new EntitySet<CharacteristicValue>(new Action<CharacteristicValue>(this.attach_CharacteristicValues), new Action<CharacteristicValue>(this.detach_CharacteristicValues));
+			this._SingleObjectiveSolutions = new EntitySet<SingleObjectiveSolution>(new Action<SingleObjectiveSolution>(this.attach_SingleObjectiveSolutions), new Action<SingleObjectiveSolution>(this.detach_SingleObjectiveSolutions));
 			OnCreated();
 		}
 		
@@ -1066,6 +1080,19 @@ namespace HeuristicLab.Services.OKB.DataAccess
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="DataType_SingleObjectiveSolution", Storage="_SingleObjectiveSolutions", ThisKey="Id", OtherKey="DataTypeId")]
+		public EntitySet<SingleObjectiveSolution> SingleObjectiveSolutions
+		{
+			get
+			{
+				return this._SingleObjectiveSolutions;
+			}
+			set
+			{
+				this._SingleObjectiveSolutions.Assign(value);
+			}
+		}
+		
 		public event PropertyChangingEventHandler PropertyChanging;
 		
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -1129,6 +1156,18 @@ namespace HeuristicLab.Services.OKB.DataAccess
 		}
 		
 		private void detach_CharacteristicValues(CharacteristicValue entity)
+		{
+			this.SendPropertyChanging();
+			entity.DataType = null;
+		}
+		
+		private void attach_SingleObjectiveSolutions(SingleObjectiveSolution entity)
+		{
+			this.SendPropertyChanging();
+			entity.DataType = this;
+		}
+		
+		private void detach_SingleObjectiveSolutions(SingleObjectiveSolution entity)
 		{
 			this.SendPropertyChanging();
 			entity.DataType = null;
@@ -1749,6 +1788,8 @@ namespace HeuristicLab.Services.OKB.DataAccess
 		
 		private EntitySet<CharacteristicValue> _CharacteristicValues;
 		
+		private EntitySet<SingleObjectiveSolution> _SingleObjectiveSolutions;
+		
 		private EntityRef<DataType> _DataType;
 		
 		private EntityRef<Platform> _Platform;
@@ -1782,6 +1823,7 @@ namespace HeuristicLab.Services.OKB.DataAccess
 			this._ProblemUsers = new EntitySet<ProblemUser>(new Action<ProblemUser>(this.attach_ProblemUsers), new Action<ProblemUser>(this.detach_ProblemUsers));
 			this._Runs = new EntitySet<Run>(new Action<Run>(this.attach_Runs), new Action<Run>(this.detach_Runs));
 			this._CharacteristicValues = new EntitySet<CharacteristicValue>(new Action<CharacteristicValue>(this.attach_CharacteristicValues), new Action<CharacteristicValue>(this.detach_CharacteristicValues));
+			this._SingleObjectiveSolutions = new EntitySet<SingleObjectiveSolution>(new Action<SingleObjectiveSolution>(this.attach_SingleObjectiveSolutions), new Action<SingleObjectiveSolution>(this.detach_SingleObjectiveSolutions));
 			this._DataType = default(EntityRef<DataType>);
 			this._Platform = default(EntityRef<Platform>);
 			this._ProblemClass = default(EntityRef<ProblemClass>);
@@ -1984,6 +2026,19 @@ namespace HeuristicLab.Services.OKB.DataAccess
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Problem_SingleObjectiveSolution", Storage="_SingleObjectiveSolutions", ThisKey="Id", OtherKey="ProblemId")]
+		public EntitySet<SingleObjectiveSolution> SingleObjectiveSolutions
+		{
+			get
+			{
+				return this._SingleObjectiveSolutions;
+			}
+			set
+			{
+				this._SingleObjectiveSolutions.Assign(value);
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="DataType_Problem", Storage="_DataType", ThisKey="DataTypeId", OtherKey="Id", IsForeignKey=true)]
 		public DataType DataType
 		{
@@ -2175,6 +2230,18 @@ namespace HeuristicLab.Services.OKB.DataAccess
 			this.SendPropertyChanging();
 			entity.Problem = null;
 		}
+		
+		private void attach_SingleObjectiveSolutions(SingleObjectiveSolution entity)
+		{
+			this.SendPropertyChanging();
+			entity.Problem = this;
+		}
+		
+		private void detach_SingleObjectiveSolutions(SingleObjectiveSolution entity)
+		{
+			this.SendPropertyChanging();
+			entity.Problem = null;
+		}
 	}
 	
 	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.BinaryData")]
@@ -2195,6 +2262,8 @@ namespace HeuristicLab.Services.OKB.DataAccess
 		
 		private EntitySet<Value> _Values;
 		
+		private EntitySet<SingleObjectiveSolution> _SingleObjectiveSolutions;
+		
     #region Extensibility Method Definitions
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -2212,6 +2281,7 @@ namespace HeuristicLab.Services.OKB.DataAccess
 			this._Algorithms = new EntitySet<Algorithm>(new Action<Algorithm>(this.attach_Algorithms), new Action<Algorithm>(this.detach_Algorithms));
 			this._Problems = new EntitySet<Problem>(new Action<Problem>(this.attach_Problems), new Action<Problem>(this.detach_Problems));
 			this._Values = new EntitySet<Value>(new Action<Value>(this.attach_Values), new Action<Value>(this.detach_Values));
+			this._SingleObjectiveSolutions = new EntitySet<SingleObjectiveSolution>(new Action<SingleObjectiveSolution>(this.attach_SingleObjectiveSolutions), new Action<SingleObjectiveSolution>(this.detach_SingleObjectiveSolutions));
 			OnCreated();
 		}
 		
@@ -2314,6 +2384,19 @@ namespace HeuristicLab.Services.OKB.DataAccess
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="BinaryData_SingleObjectiveSolution", Storage="_SingleObjectiveSolutions", ThisKey="Id", OtherKey="BinaryDataId")]
+		public EntitySet<SingleObjectiveSolution> SingleObjectiveSolutions
+		{
+			get
+			{
+				return this._SingleObjectiveSolutions;
+			}
+			set
+			{
+				this._SingleObjectiveSolutions.Assign(value);
+			}
+		}
+		
 		public event PropertyChangingEventHandler PropertyChanging;
 		
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -2369,6 +2452,18 @@ namespace HeuristicLab.Services.OKB.DataAccess
 			this.SendPropertyChanging();
 			entity.BinaryData = null;
 		}
+		
+		private void attach_SingleObjectiveSolutions(SingleObjectiveSolution entity)
+		{
+			this.SendPropertyChanging();
+			entity.BinaryData = this;
+		}
+		
+		private void detach_SingleObjectiveSolutions(SingleObjectiveSolution entity)
+		{
+			this.SendPropertyChanging();
+			entity.BinaryData = null;
+		}
 	}
 	
 	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Run")]
@@ -2390,6 +2485,8 @@ namespace HeuristicLab.Services.OKB.DataAccess
 		private System.Guid _ClientId;
 		
 		private EntitySet<Value> _Values;
+		
+		private EntitySet<SingleObjectiveSolution> _SingleObjectiveSolutions;
 		
 		private EntityRef<Algorithm> _Algorithm;
 		
@@ -2416,6 +2513,7 @@ namespace HeuristicLab.Services.OKB.DataAccess
 		public Run()
 		{
 			this._Values = new EntitySet<Value>(new Action<Value>(this.attach_Values), new Action<Value>(this.detach_Values));
+			this._SingleObjectiveSolutions = new EntitySet<SingleObjectiveSolution>(new Action<SingleObjectiveSolution>(this.attach_SingleObjectiveSolutions), new Action<SingleObjectiveSolution>(this.detach_SingleObjectiveSolutions));
 			this._Algorithm = default(EntityRef<Algorithm>);
 			this._Problem = default(EntityRef<Problem>);
 			OnCreated();
@@ -2562,6 +2660,19 @@ namespace HeuristicLab.Services.OKB.DataAccess
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Run_SingleObjectiveSolution", Storage="_SingleObjectiveSolutions", ThisKey="Id", OtherKey="RunId")]
+		public EntitySet<SingleObjectiveSolution> SingleObjectiveSolutions
+		{
+			get
+			{
+				return this._SingleObjectiveSolutions;
+			}
+			set
+			{
+				this._SingleObjectiveSolutions.Assign(value);
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Algorithm_Run", Storage="_Algorithm", ThisKey="AlgorithmId", OtherKey="Id", IsForeignKey=true)]
 		public Algorithm Algorithm
 		{
@@ -2657,6 +2768,18 @@ namespace HeuristicLab.Services.OKB.DataAccess
 		}
 		
 		private void detach_Values(Value entity)
+		{
+			this.SendPropertyChanging();
+			entity.Run = null;
+		}
+		
+		private void attach_SingleObjectiveSolutions(SingleObjectiveSolution entity)
+		{
+			this.SendPropertyChanging();
+			entity.Run = this;
+		}
+		
+		private void detach_SingleObjectiveSolutions(SingleObjectiveSolution entity)
 		{
 			this.SendPropertyChanging();
 			entity.Run = null;
@@ -3643,6 +3766,352 @@ namespace HeuristicLab.Services.OKB.DataAccess
 						this._ProblemId = default(long);
 					}
 					this.SendPropertyChanged("Problem");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.SingleObjectiveSolution")]
+	public partial class SingleObjectiveSolution : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private long _Id;
+		
+		private System.Nullable<long> _ProblemId;
+		
+		private System.Nullable<long> _BinaryDataId;
+		
+		private System.Nullable<long> _RunId;
+		
+		private double _Quality;
+		
+		private System.Nullable<long> _DataTypeId;
+		
+		private EntityRef<Problem> _Problem;
+		
+		private EntityRef<BinaryData> _BinaryData;
+		
+		private EntityRef<Run> _Run;
+		
+		private EntityRef<DataType> _DataType;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnIdChanging(long value);
+    partial void OnIdChanged();
+    partial void OnProblemIdChanging(System.Nullable<long> value);
+    partial void OnProblemIdChanged();
+    partial void OnBinaryDataIdChanging(System.Nullable<long> value);
+    partial void OnBinaryDataIdChanged();
+    partial void OnRunIdChanging(System.Nullable<long> value);
+    partial void OnRunIdChanged();
+    partial void OnQualityChanging(double value);
+    partial void OnQualityChanged();
+    partial void OnDataTypeIdChanging(System.Nullable<long> value);
+    partial void OnDataTypeIdChanged();
+    #endregion
+		
+		public SingleObjectiveSolution()
+		{
+			this._Problem = default(EntityRef<Problem>);
+			this._BinaryData = default(EntityRef<BinaryData>);
+			this._Run = default(EntityRef<Run>);
+			this._DataType = default(EntityRef<DataType>);
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", AutoSync=AutoSync.OnInsert, DbType="BigInt NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public long Id
+		{
+			get
+			{
+				return this._Id;
+			}
+			set
+			{
+				if ((this._Id != value))
+				{
+					this.OnIdChanging(value);
+					this.SendPropertyChanging();
+					this._Id = value;
+					this.SendPropertyChanged("Id");
+					this.OnIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ProblemId", DbType="BigInt")]
+		public System.Nullable<long> ProblemId
+		{
+			get
+			{
+				return this._ProblemId;
+			}
+			set
+			{
+				if ((this._ProblemId != value))
+				{
+					if (this._Problem.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnProblemIdChanging(value);
+					this.SendPropertyChanging();
+					this._ProblemId = value;
+					this.SendPropertyChanged("ProblemId");
+					this.OnProblemIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_BinaryDataId", DbType="BigInt")]
+		public System.Nullable<long> BinaryDataId
+		{
+			get
+			{
+				return this._BinaryDataId;
+			}
+			set
+			{
+				if ((this._BinaryDataId != value))
+				{
+					if (this._BinaryData.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnBinaryDataIdChanging(value);
+					this.SendPropertyChanging();
+					this._BinaryDataId = value;
+					this.SendPropertyChanged("BinaryDataId");
+					this.OnBinaryDataIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_RunId", DbType="BigInt")]
+		public System.Nullable<long> RunId
+		{
+			get
+			{
+				return this._RunId;
+			}
+			set
+			{
+				if ((this._RunId != value))
+				{
+					if (this._Run.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnRunIdChanging(value);
+					this.SendPropertyChanging();
+					this._RunId = value;
+					this.SendPropertyChanged("RunId");
+					this.OnRunIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Quality", DbType="Float")]
+		public double Quality
+		{
+			get
+			{
+				return this._Quality;
+			}
+			set
+			{
+				if ((this._Quality != value))
+				{
+					this.OnQualityChanging(value);
+					this.SendPropertyChanging();
+					this._Quality = value;
+					this.SendPropertyChanged("Quality");
+					this.OnQualityChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DataTypeId", DbType="BigInt")]
+		public System.Nullable<long> DataTypeId
+		{
+			get
+			{
+				return this._DataTypeId;
+			}
+			set
+			{
+				if ((this._DataTypeId != value))
+				{
+					if (this._DataType.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnDataTypeIdChanging(value);
+					this.SendPropertyChanging();
+					this._DataTypeId = value;
+					this.SendPropertyChanged("DataTypeId");
+					this.OnDataTypeIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Problem_SingleObjectiveSolution", Storage="_Problem", ThisKey="ProblemId", OtherKey="Id", IsForeignKey=true)]
+		public Problem Problem
+		{
+			get
+			{
+				return this._Problem.Entity;
+			}
+			set
+			{
+				Problem previousValue = this._Problem.Entity;
+				if (((previousValue != value) 
+							|| (this._Problem.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Problem.Entity = null;
+						previousValue.SingleObjectiveSolutions.Remove(this);
+					}
+					this._Problem.Entity = value;
+					if ((value != null))
+					{
+						value.SingleObjectiveSolutions.Add(this);
+						this._ProblemId = value.Id;
+					}
+					else
+					{
+						this._ProblemId = default(Nullable<long>);
+					}
+					this.SendPropertyChanged("Problem");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="BinaryData_SingleObjectiveSolution", Storage="_BinaryData", ThisKey="BinaryDataId", OtherKey="Id", IsForeignKey=true)]
+		public BinaryData BinaryData
+		{
+			get
+			{
+				return this._BinaryData.Entity;
+			}
+			set
+			{
+				BinaryData previousValue = this._BinaryData.Entity;
+				if (((previousValue != value) 
+							|| (this._BinaryData.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._BinaryData.Entity = null;
+						previousValue.SingleObjectiveSolutions.Remove(this);
+					}
+					this._BinaryData.Entity = value;
+					if ((value != null))
+					{
+						value.SingleObjectiveSolutions.Add(this);
+						this._BinaryDataId = value.Id;
+					}
+					else
+					{
+						this._BinaryDataId = default(Nullable<long>);
+					}
+					this.SendPropertyChanged("BinaryData");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Run_SingleObjectiveSolution", Storage="_Run", ThisKey="RunId", OtherKey="Id", IsForeignKey=true)]
+		public Run Run
+		{
+			get
+			{
+				return this._Run.Entity;
+			}
+			set
+			{
+				Run previousValue = this._Run.Entity;
+				if (((previousValue != value) 
+							|| (this._Run.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Run.Entity = null;
+						previousValue.SingleObjectiveSolutions.Remove(this);
+					}
+					this._Run.Entity = value;
+					if ((value != null))
+					{
+						value.SingleObjectiveSolutions.Add(this);
+						this._RunId = value.Id;
+					}
+					else
+					{
+						this._RunId = default(Nullable<long>);
+					}
+					this.SendPropertyChanged("Run");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="DataType_SingleObjectiveSolution", Storage="_DataType", ThisKey="DataTypeId", OtherKey="Id", IsForeignKey=true)]
+		public DataType DataType
+		{
+			get
+			{
+				return this._DataType.Entity;
+			}
+			set
+			{
+				DataType previousValue = this._DataType.Entity;
+				if (((previousValue != value) 
+							|| (this._DataType.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._DataType.Entity = null;
+						previousValue.SingleObjectiveSolutions.Remove(this);
+					}
+					this._DataType.Entity = value;
+					if ((value != null))
+					{
+						value.SingleObjectiveSolutions.Add(this);
+						this._DataTypeId = value.Id;
+					}
+					else
+					{
+						this._DataTypeId = default(Nullable<long>);
+					}
+					this.SendPropertyChanged("DataType");
 				}
 			}
 		}
