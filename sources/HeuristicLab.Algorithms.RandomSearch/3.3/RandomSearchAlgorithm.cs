@@ -34,7 +34,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Algorithms.RandomSearch {
-  [Item("Random Search Algorithm (RS)", "An random search algorithm.")]
+  [Item("Random Search Algorithm (RS)", "A random search algorithm.")]
   [Creatable(CreatableAttribute.Categories.Algorithms, Priority = 150)]
   [StorableClass]
   public sealed class RandomSearchAlgorithm : HeuristicOptimizationEngineAlgorithm, IStorableContent {
