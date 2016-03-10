@@ -19,12 +19,7 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HeuristicLab.Services.OKB.RunCreation.DataTransfer {
   [DataContract]
@@ -36,5 +31,7 @@ namespace HeuristicLab.Services.OKB.RunCreation.DataTransfer {
     public long ProblemId { get; set; }
     [DataMember]
     public long? RunId { get; set; }
+    [DataMember]
+    public DataType DataType { get; set; }
   }
 }

@@ -19,10 +19,10 @@
  */
 #endregion
 
+using HeuristicLab.Services.OKB.RunCreation.DataTransfer;
 using System.Collections.Generic;
 using System.Net.Security;
 using System.ServiceModel;
-using HeuristicLab.Services.OKB.RunCreation.DataTransfer;
 
 namespace HeuristicLab.Services.OKB.RunCreation {
   /// <summary>
@@ -49,6 +49,10 @@ namespace HeuristicLab.Services.OKB.RunCreation {
     [OperationContract]
     [FaultContract(typeof(MissingSolution))]
     byte[] GetSolutionData(long solutionId);
+
+    [OperationContract]
+    [FaultContract(typeof(MissingProblem))]
+    void AddSolution(Solution solution, byte[] data);
 
     [OperationContract]
     void AddRun(Run run);

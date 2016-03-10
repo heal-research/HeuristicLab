@@ -19,13 +19,13 @@
  */
 #endregion
 
+using HeuristicLab.Services.Access;
+using HeuristicLab.Services.OKB.DataAccess;
 using System;
 using System.Collections.Generic;
 using System.Data.Linq;
 using System.Linq;
 using System.ServiceModel;
-using HeuristicLab.Services.Access;
-using HeuristicLab.Services.OKB.DataAccess;
 
 namespace HeuristicLab.Services.OKB.RunCreation {
   /// <summary>
@@ -164,6 +164,19 @@ namespace HeuristicLab.Services.OKB.RunCreation {
           } else {
             return null;
           }
+        }
+      }
+    }
+
+    public void AddSolution(DataTransfer.Solution solution, byte[] data) {
+      roleVerifier.AuthenticateForAnyRole(OKBRoles.OKBAdministrator, OKBRoles.OKBUser);
+
+      using (OKBDataContext okb = new OKBDataContext()) {
+        var soSolution = solution as DataTransfer.SingleObjectiveSolution;
+        if (soSolution != null) {
+          DataAccess.SingleObjectiveSolution entity = Convert.ToEntity(soSolution, data, okb);
+          okb.SingleObjectiveSolutions.InsertOnSubmit(entity);
+          okb.SubmitChanges();
         }
       }
     }
