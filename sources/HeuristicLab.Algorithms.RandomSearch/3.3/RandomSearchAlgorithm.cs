@@ -34,7 +34,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Algorithms.RandomSearch {
-  [Item("Random Search Algorithm", "An random search algorithm.")]
+  [Item("Random Search Algorithm (RS)", "An random search algorithm.")]
   [Creatable(CreatableAttribute.Categories.Algorithms, Priority = 150)]
   [StorableClass]
   public sealed class RandomSearchAlgorithm : HeuristicOptimizationEngineAlgorithm, IStorableContent {
@@ -62,14 +62,14 @@ namespace HeuristicLab.Algorithms.RandomSearch {
     private IFixedValueParameter<MultiAnalyzer> AnalyzerParameter {
       get { return (IFixedValueParameter<MultiAnalyzer>)Parameters["Analyzer"]; }
     }
-    private IFixedValueParameter<IntValue> NumberOfSamplesParameter {
-      get { return (IFixedValueParameter<IntValue>)Parameters["NumberOfSamples"]; }
+    private IFixedValueParameter<IntValue> MaximumEvaluatedSolutionsParameter {
+      get { return (IFixedValueParameter<IntValue>)Parameters["MaximumEvaluatedSolutions"]; }
     }
-    private IFixedValueParameter<IntValue> BatchSizeParameter {
-      get { return (IFixedValueParameter<IntValue>)Parameters["BatchSize"]; }
+    private IFixedValueParameter<IntValue> SampleSizeParameter {
+      get { return (IFixedValueParameter<IntValue>)Parameters["SampleSize"]; }
     }
-    private IFixedValueParameter<IntValue> NumberOfBatchesParameter {
-      get { return (IFixedValueParameter<IntValue>)Parameters["NumberOfBatches"]; }
+    private IFixedValueParameter<IntValue> MaximumIterationsParameter {
+      get { return (IFixedValueParameter<IntValue>)Parameters["MaximumIterations"]; }
     }
     private IFixedValueParameter<MultiTerminator> TerminatorParameter {
       get { return (IFixedValueParameter<MultiTerminator>)Parameters["Terminator"]; }
@@ -88,17 +88,17 @@ namespace HeuristicLab.Algorithms.RandomSearch {
     public MultiAnalyzer Analyzer {
       get { return AnalyzerParameter.Value; }
     }
-    public int NumberOfSamples {
-      get { return NumberOfSamplesParameter.Value.Value; }
-      set { NumberOfSamplesParameter.Value.Value = value; }
+    public int MaximumEvaluatedSolutions {
+      get { return MaximumEvaluatedSolutionsParameter.Value.Value; }
+      set { MaximumEvaluatedSolutionsParameter.Value.Value = value; }
     }
-    public int BatchSize {
-      get { return BatchSizeParameter.Value.Value; }
-      set { BatchSizeParameter.Value.Value = value; }
+    public int SampleSize {
+      get { return SampleSizeParameter.Value.Value; }
+      set { SampleSizeParameter.Value.Value = value; }
     }
-    public int NumberOfBatches {
-      get { return NumberOfBatchesParameter.Value.Value; }
-      set { NumberOfBatchesParameter.Value.Value = value; }
+    public int MaximumIterations {
+      get { return MaximumIterationsParameter.Value.Value; }
+      set { MaximumIterationsParameter.Value.Value = value; }
     }
     public MultiTerminator Terminators {
       get { return TerminatorParameter.Value; }
@@ -151,9 +151,9 @@ namespace HeuristicLab.Algorithms.RandomSearch {
       Parameters.Add(new FixedValueParameter<IntValue>("Seed", "The random seed used to initialize the new pseudo random number generator.", new IntValue(0)));
       Parameters.Add(new FixedValueParameter<BoolValue>("SetSeedRandomly", "True if the random seed should be set to a random value, otherwise false.", new BoolValue(true)));
       Parameters.Add(new FixedValueParameter<MultiAnalyzer>("Analyzer", "The operator used to analyze all individuals from all layers combined.", new MultiAnalyzer()));
-      Parameters.Add(new FixedValueParameter<IntValue>("NumberOfSamples", "The number of random samples the algorithm should evaluate.", new IntValue(1000)));
-      Parameters.Add(new FixedValueParameter<IntValue>("BatchSize", "The number of random samples that are evaluated (in parallel) until they are analyzed.", new IntValue(100)));
-      Parameters.Add(new FixedValueParameter<IntValue>("NumberOfBatches", "The number batch runs (iterations) that the algorithm will run.", new IntValue(10)) { Hidden = true });
+      Parameters.Add(new FixedValueParameter<IntValue>("MaximumEvaluatedSolutions", "The number of random samples the algorithm should evaluate.", new IntValue(1000)));
+      Parameters.Add(new FixedValueParameter<IntValue>("SampleSize", "The number of random samples that are evaluated (in parallel) per iteration.", new IntValue(100)));
+      Parameters.Add(new FixedValueParameter<IntValue>("MaximumIterations", "The number iterations that the algorithm will run.", new IntValue(10)) { Hidden = true });
       Parameters.Add(new FixedValueParameter<MultiTerminator>("Terminator", "The termination criteria that defines if the algorithm should continue or stop.", new MultiTerminator()) { Hidden = true });
       #endregion
 
@@ -186,13 +186,13 @@ namespace HeuristicLab.Algorithms.RandomSearch {
       resultsCollector.CollectedValues.Add(new LookupParameter<IntValue>("EvaluatedSolutions", "The current number of evaluated solutions."));
       resultsCollector.Successor = solutionCreator;
 
-      solutionCreator.NumberOfSolutionsParameter.ActualName = BatchSizeParameter.Name;
+      solutionCreator.NumberOfSolutionsParameter.ActualName = SampleSizeParameter.Name;
       solutionCreator.ParallelParameter.Value.Value = true;
       solutionCreator.Successor = evaluationsCounter;
 
       evaluationsCounter.ValueParameter.ActualName = "EvaluatedSolutions";
       evaluationsCounter.Increment = null;
-      evaluationsCounter.IncrementParameter.ActualName = BatchSizeParameter.Name;
+      evaluationsCounter.IncrementParameter.ActualName = SampleSizeParameter.Name;
       evaluationsCounter.Successor = analyzerPlaceholder;
 
       analyzerPlaceholder.OperatorParameter.ActualName = AnalyzerParameter.Name;
@@ -214,7 +214,7 @@ namespace HeuristicLab.Algorithms.RandomSearch {
       #endregion
 
       #region Create terminators
-      evaluationsTerminator = new ComparisonTerminator<IntValue>("EvaluatedSolutions", ComparisonType.Less, NumberOfSamplesParameter) { Name = "Number of Samples" };
+      evaluationsTerminator = new ComparisonTerminator<IntValue>("EvaluatedSolutions", ComparisonType.Less, MaximumEvaluatedSolutionsParameter) { Name = "Evaluated solutions." };
       qualityTerminator = new SingleObjectiveQualityTerminator() { Name = "Quality" };
       executionTimeTerminator = new ExecutionTimeTerminator(this, new TimeSpanValue(TimeSpan.FromMinutes(5)));
       #endregion
@@ -311,9 +311,9 @@ namespace HeuristicLab.Algorithms.RandomSearch {
 
       singleObjectiveQualityAnalyzer.CurrentBestQualityParameter.NameChanged += QualityAnalyzer_CurrentBestQualityParameter_NameChanged;
 
-      NumberOfSamplesParameter.Value.ValueChanged += NumberOfSamples_ValueChanged;
-      BatchSizeParameter.Value.ValueChanged += BatchSize_ValueChanged;
-      NumberOfBatchesParameter.Value.ValueChanged += NumberOfBatches_ValueChanged;
+      MaximumEvaluatedSolutionsParameter.Value.ValueChanged += MaximumEvaluatedSolutions_ValueChanged;
+      SampleSizeParameter.Value.ValueChanged += SampleSize_ValueChanged;
+      MaximumIterationsParameter.Value.ValueChanged += MaximumIterations_ValueChanged;
     }
     private void ParameterizeSolutionsCreator() {
       SolutionsCreator.EvaluatorParameter.ActualName = Problem.EvaluatorParameter.Name;
@@ -338,7 +338,7 @@ namespace HeuristicLab.Algorithms.RandomSearch {
         foreach (IIterationBasedOperator op in Problem.Operators.OfType<IIterationBasedOperator>()) {
           op.IterationsParameter.ActualName = "BatchNumber";
           op.IterationsParameter.Hidden = true;
-          op.MaximumIterationsParameter.ActualName = NumberOfBatchesParameter.Name;
+          op.MaximumIterationsParameter.ActualName = MaximumIterationsParameter.Name;
         }
       }
     }
@@ -353,14 +353,14 @@ namespace HeuristicLab.Algorithms.RandomSearch {
         stochasticOperator.RandomParameter.Hidden = true;
       }
     }
-    private void NumberOfSamples_ValueChanged(object sender, EventArgs e) {
-      NumberOfBatches = NumberOfSamples / BatchSize;
+    private void MaximumEvaluatedSolutions_ValueChanged(object sender, EventArgs e) {
+      MaximumIterations = MaximumEvaluatedSolutions / SampleSize;
     }
-    private void BatchSize_ValueChanged(object sender, EventArgs e) {
-      NumberOfBatches = NumberOfSamples / BatchSize;
+    private void SampleSize_ValueChanged(object sender, EventArgs e) {
+      MaximumIterations = MaximumEvaluatedSolutions / SampleSize;
     }
-    private void NumberOfBatches_ValueChanged(object sender, EventArgs e) {
-      BatchSize = NumberOfSamples / NumberOfBatches;
+    private void MaximumIterations_ValueChanged(object sender, EventArgs e) {
+      SampleSize = MaximumEvaluatedSolutions / MaximumIterations;
     }
     #endregion
 
