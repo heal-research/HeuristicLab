@@ -260,3 +260,27 @@ CREATE TABLE [statistics].[FactTask] (
 /* dummy for nullable userIds in FactClientInfo */
 INSERT INTO [statistics].[DimUser] ([UserId], [Name])
 VALUES ('00000000-0000-0000-0000-000000000000', 'NULL');
+
+/****** Object:  Index [TaskIdStateLog]    Script Date: 03/10/2016 10:09:14 ******/
+CREATE NONCLUSTERED INDEX [TaskIdStateLog] ON [dbo].[StateLog] 
+(
+	[TaskId] ASC
+)
+INCLUDE ( [StateLogId],
+[State],
+[DateTime],
+[UserId],
+[SlaveId],
+[Exception]) WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+GO
+
+/****** Object:  Index [Index_RequiredPlugins_TaskId]    Script Date: 03/10/2016 10:09:19 ******/
+CREATE NONCLUSTERED INDEX [Index_RequiredPlugins_TaskId] ON [dbo].[RequiredPlugins] 
+(
+	[TaskId] ASC
+)
+INCLUDE ( [RequiredPluginId],
+[PluginId]) WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+GO
+
+
