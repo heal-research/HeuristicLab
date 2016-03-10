@@ -19,11 +19,6 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
-using System.Linq;
 using HeuristicLab.Clients.Access;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
@@ -31,6 +26,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Persistence.Default.Xml;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
+using System.Linq;
 
 namespace HeuristicLab.Clients.OKB.RunCreation {
   [Item("OKB Algorithm", "An algorithm which is stored in the OKB.")]
@@ -221,7 +221,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
     public void Load(long algorithmId) {
       if (this.algorithmId != algorithmId) {
         IAlgorithm algorithm;
-        byte[] algorithmData = RunCreationClient.GetAlgorithmData(algorithmId);
+        byte[] algorithmData = RunCreationClient.Instance.GetAlgorithmData(algorithmId);
         using (MemoryStream stream = new MemoryStream(algorithmData)) {
           algorithm = XmlParser.Deserialize<IAlgorithm>(stream);
         }

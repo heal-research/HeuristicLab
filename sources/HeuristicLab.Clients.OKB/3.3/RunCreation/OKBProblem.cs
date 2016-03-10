@@ -19,15 +19,15 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Persistence.Default.Xml;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
 
 namespace HeuristicLab.Clients.OKB.RunCreation {
   [Item("OKB Problem", "A base class for problems which are stored in the OKB.")]
@@ -147,7 +147,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
     public void Load(long problemId) {
       if (this.problemId != problemId) {
         IHeuristicOptimizationProblem problem;
-        byte[] problemData = RunCreationClient.GetProblemData(problemId);
+        byte[] problemData = RunCreationClient.Instance.GetProblemData(problemId);
         using (MemoryStream stream = new MemoryStream(problemData)) {
           problem = XmlParser.Deserialize<IHeuristicOptimizationProblem>(stream);
         }

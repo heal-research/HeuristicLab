@@ -182,7 +182,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       }
     }
     private void downloadCharacteristicsButton_Click(object sender, EventArgs e) {
-      var values = RunCreationClient.GetCharacteristicValues(Content.ProblemId).ToList();
+      var values = RunCreationClient.Instance.GetCharacteristicValues(Content.ProblemId).ToList();
       var content = new StringMatrix(values.Count, 3);
       for (var i = 0; i < values.Count; i++) {
         content[i, 0] = values[i].Name;
@@ -203,7 +203,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
         values.Add(Value.Create(name, strValue, type));
       }
       try {
-        RunCreationClient.SetCharacteristicValues(Content.ProblemId, values);
+        RunCreationClient.Instance.SetCharacteristicValues(Content.ProblemId, values);
       } catch (Exception ex) { ErrorHandling.ShowErrorDialog(ex); }
     }
     private void calculateButton_Click(object sender, EventArgs e) {

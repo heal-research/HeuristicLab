@@ -19,15 +19,15 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using HeuristicLab.Clients.Common;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.Xml;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 namespace HeuristicLab.Clients.OKB.RunCreation {
   [Item("RunCreationClient", "OKB run creation client.")]
@@ -85,14 +85,32 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
     #endregion
 
     #region Algorithm Methods
-    public static byte[] GetAlgorithmData(long algorithmId) {
+    public byte[] GetAlgorithmData(long algorithmId) {
       return CallRunCreationService<byte[]>(s => s.GetAlgorithmData(algorithmId));
     }
     #endregion
 
     #region Problem Methods
-    public static byte[] GetProblemData(long problemId) {
+    public byte[] GetProblemData(long problemId) {
       return CallRunCreationService<byte[]>(s => s.GetProblemData(problemId));
+    }
+    #endregion
+
+    #region Solution Methods
+    public IEnumerable<Solution> GetSolutions(long problemId) {
+      return CallRunCreationService(s => s.GetSolutions(problemId));
+    }
+
+    public byte[] GetSolutionData(long solutionId) {
+      return CallRunCreationService(s => s.GetSolutionData(solutionId));
+    }
+
+    public long AddSolution(Solution solution, byte[] data) {
+      return CallRunCreationService(s => s.AddSolution(solution, data));
+    }
+
+    public void DeleteSolution(Solution solution) {
+      CallRunCreationService(s => s.DeleteSolution(solution));
     }
     #endregion
 
@@ -103,15 +121,15 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
     #endregion
 
     #region Characteristic Methods
-    public static IEnumerable<Value> GetCharacteristicValues(long problemId) {
+    public IEnumerable<Value> GetCharacteristicValues(long problemId) {
       return CallRunCreationService(s => s.GetCharacteristicValues(problemId));
     }
 
-    public static void SetCharacteristicValue(long problemId, Value v) {
+    public void SetCharacteristicValue(long problemId, Value v) {
       CallRunCreationService(s => s.SetCharacteristicValue(problemId, v));
     }
 
-    public static void SetCharacteristicValues(long problemId, IEnumerable<Value> values) {
+    public void SetCharacteristicValues(long problemId, IEnumerable<Value> values) {
       CallRunCreationService(s => s.SetCharacteristicValues(problemId, values.ToList()));
     }
     #endregion
@@ -207,7 +225,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
     #endregion
 
     #region Helpers
-    private static void CallRunCreationService(Action<IRunCreationService> call) {
+    private void CallRunCreationService(Action<IRunCreationService> call) {
       RunCreationServiceClient client = ClientFactory.CreateClient<RunCreationServiceClient, IRunCreationService>();
       try {
         call(client);
@@ -219,7 +237,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
         }
       }
     }
-    private static T CallRunCreationService<T>(Func<IRunCreationService, T> call) {
+    private T CallRunCreationService<T>(Func<IRunCreationService, T> call) {
       RunCreationServiceClient client = ClientFactory.CreateClient<RunCreationServiceClient, IRunCreationService>();
       try {
         return call(client);

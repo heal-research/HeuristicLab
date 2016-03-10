@@ -168,7 +168,7 @@ namespace HeuristicLab.Services.OKB.RunCreation {
       }
     }
 
-    public void AddSolution(DataTransfer.Solution solution, byte[] data) {
+    public long AddSolution(DataTransfer.Solution solution, byte[] data) {
       roleVerifier.AuthenticateForAnyRole(OKBRoles.OKBAdministrator, OKBRoles.OKBUser);
 
       using (OKBDataContext okb = new OKBDataContext()) {
@@ -176,6 +176,20 @@ namespace HeuristicLab.Services.OKB.RunCreation {
         if (soSolution != null) {
           DataAccess.SingleObjectiveSolution entity = Convert.ToEntity(soSolution, data, okb);
           okb.SingleObjectiveSolutions.InsertOnSubmit(entity);
+          okb.SubmitChanges();
+          return entity.Id;
+        }
+      }
+      throw new FaultException(new FaultReason("The solution could not be added."));
+    }
+
+    public void DeleteSolution(DataTransfer.Solution solution) {
+      roleVerifier.AuthenticateForAnyRole(OKBRoles.OKBAdministrator, OKBRoles.OKBUser);
+
+      using (OKBDataContext okb = new OKBDataContext()) {
+        var soSolution = solution as DataTransfer.SingleObjectiveSolution;
+        if (soSolution != null) {
+          okb.SingleObjectiveSolutions.DeleteOnSubmit(okb.SingleObjectiveSolutions.Single(x => x.Id == soSolution.Id));
           okb.SubmitChanges();
         }
       }
