@@ -55,15 +55,15 @@ namespace HeuristicLab.Optimizer {
 
     private bool createBatchRun;
     private int repetitions;
-    private Dictionary<IProblemInstanceProvider, HashSet<IDataDescriptor>> instances;
-    private Dictionary<IValueParameter, IntArray> intParameters;
-    private Dictionary<IValueParameter, DoubleArray> doubleParameters;
-    private HashSet<IValueParameter> boolParameters;
-    private Dictionary<IValueParameter, HashSet<IItem>> multipleChoiceParameters;
-    private IItem optionalNullChoice = new BoolValue(); // any item will do
+    private readonly Dictionary<IProblemInstanceProvider, HashSet<IDataDescriptor>> instances;
+    private readonly Dictionary<IValueParameter, IntArray> intParameters;
+    private readonly Dictionary<IValueParameter, DoubleArray> doubleParameters;
+    private readonly HashSet<IValueParameter> boolParameters;
+    private readonly Dictionary<IValueParameter, HashSet<IItem>> multipleChoiceParameters;
+    private readonly IItem optionalNullChoice = new BoolValue(); // any item will do
 
     private StringBuilder failedInstances;
-    private EventWaitHandle backgroundWorkerWaitHandle = new ManualResetEvent(false);
+    private readonly EventWaitHandle backgroundWorkerWaitHandle = new ManualResetEvent(false);
     private bool suppressTreeViewEventHandling, suppressCheckAllNoneEventHandling;
 
     public CreateExperimentDialog() : this(null) { }
@@ -488,7 +488,7 @@ namespace HeuristicLab.Optimizer {
                     && typeof(EnumValue<>).IsAssignableFrom(valueParam.Value.GetType().GetGenericTypeDefinition())))
             || typeof(OptionalConstrainedValueParameter<>).IsAssignableFrom(param.GetType().GetGenericTypeDefinition())
             || typeof(ConstrainedValueParameter<>).IsAssignableFrom(param.GetType().GetGenericTypeDefinition()))
-            parametersListView.Items.Add(new ListViewItem(param.Name) { Tag = param });
+            parametersListView.Items.Add(new ListViewItem(param.Name) { Tag = param, ToolTipText = param.Description });
         }
       }
     }
