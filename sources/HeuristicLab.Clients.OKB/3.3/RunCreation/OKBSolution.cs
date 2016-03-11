@@ -72,6 +72,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
     }
 
     public abstract void Download(long solutionId);
+    public abstract void DownloadData();
 
     public abstract void Upload();
 

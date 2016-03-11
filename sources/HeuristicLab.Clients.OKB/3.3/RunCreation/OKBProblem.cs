@@ -173,6 +173,9 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       Solutions.Clear();
       if (ProblemId != -1) {
         Solutions.AddRange(RunCreationClient.Instance.GetSolutions(ProblemId).Select(OKBSolution.Convert));
+        foreach (var sol in Solutions) {
+          sol.DownloadData();
+        }
       }
     }
 

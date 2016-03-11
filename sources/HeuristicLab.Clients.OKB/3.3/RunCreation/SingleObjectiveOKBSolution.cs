@@ -74,6 +74,12 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       Quality = soSol.Quality;
     }
 
+    public override void DownloadData() {
+      using (var stream = new MemoryStream(RunCreationClient.Instance.GetSolutionData(SolutionId))) {
+        Solution = XmlParser.Deserialize<IItem>(stream);
+      }
+    }
+
     public override void Upload() {
       if (SolutionId != -1) throw new InvalidOperationException("Solution exists already.");
       using (var stream = new MemoryStream()) {
