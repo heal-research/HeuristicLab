@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 
 namespace HeuristicLab.Clients.OKB.RunCreation {
   [Item("OKB Problem", "A base class for problems which are stored in the OKB.")]
@@ -62,9 +63,17 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
             OnEvaluatorChanged();
             OnOperatorsChanged();
             OnReset();
+
+            solutions.Clear();
           }
         }
       }
+    }
+
+    [Storable]
+    private ItemList<OKBSolution> solutions; 
+    public ItemList<OKBSolution> Solutions {
+      get { return solutions; }
     }
 
     public override Image ItemImage {
@@ -134,6 +143,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       : base(original, cloner) {
       problemId = original.problemId;
       problem = cloner.Clone(original.problem);
+      solutions = cloner.Clone(original.solutions);
       RegisterProblemEvents();
     }
     protected OKBProblem(IHeuristicOptimizationProblem initialProblem)
@@ -141,6 +151,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       if (initialProblem == null) throw new ArgumentNullException("initialProblem", "Initial problem cannot be null.");
       problemId = -1;
       problem = initialProblem;
+      solutions = new ItemList<OKBSolution>();
       RegisterProblemEvents();
     }
 
@@ -155,6 +166,13 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
           this.problemId = problemId;
           Problem = problem;
         }
+      }
+    }
+
+    public void RefreshSolutions() {
+      Solutions.Clear();
+      if (ProblemId != -1) {
+        Solutions.AddRange(RunCreationClient.Instance.GetSolutions(ProblemId).Select(OKBSolution.Convert));
       }
     }
 
