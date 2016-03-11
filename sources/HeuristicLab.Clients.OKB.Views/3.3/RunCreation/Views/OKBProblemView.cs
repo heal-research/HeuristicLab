@@ -286,6 +286,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
     private void uploadSolutionsButton_Click(object sender, EventArgs e) {
       foreach (var solution in Content.Solutions.Where(x => x.SolutionId == -1))
         solution.Upload();
+      SetEnabledStateOfControls();
     }
 
   }
