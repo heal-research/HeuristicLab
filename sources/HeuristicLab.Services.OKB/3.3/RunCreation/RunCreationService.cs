@@ -147,6 +147,25 @@ namespace HeuristicLab.Services.OKB.RunCreation {
       }
     }
 
+    public DataTransfer.Solution GetSolution(long solutionId) {
+      roleVerifier.AuthenticateForAnyRole(OKBRoles.OKBAdministrator, OKBRoles.OKBUser);
+
+      using (OKBDataContext okb = new OKBDataContext()) {
+        // TODO: In case of multi-objective problems one has to check whether it contains single- or multi-objective problems
+        var result = Convert.ToDto(okb.SingleObjectiveSolutions.SingleOrDefault(x => x.Id == solutionId));
+        if (roleVerifier.IsInRole(OKBRoles.OKBAdministrator)) {
+          return result;
+        } else {
+          var problemUsers = okb.ProblemUsers.Where(x => x.ProblemId == result.ProblemId).ToList();
+          if (problemUsers.Count == 0 || userManager.VerifyUser(userManager.CurrentUserId, problemUsers.Select(y => y.UserGroupId).ToList())) {
+            return result;
+          } else {
+            return null;
+          }
+        }
+      }
+    }
+
     public byte[] GetSolutionData(long solutionId) {
       roleVerifier.AuthenticateForAnyRole(OKBRoles.OKBAdministrator, OKBRoles.OKBUser);
 

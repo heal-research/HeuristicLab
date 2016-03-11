@@ -792,12 +792,12 @@ namespace HeuristicLab.Clients.OKB.RunCreation
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.RunCreation.BoolValue))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.RunCreation.LongValue))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.RunCreation.TimeSpanValue))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.RunCreation.IntValue))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.RunCreation.DoubleValue))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.RunCreation.PercentValue))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.RunCreation.FloatValue))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.RunCreation.IntValue))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.RunCreation.StringValue))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.RunCreation.BinaryValue))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.RunCreation.PercentValue))]
     public partial class Value : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged
     {
         
@@ -948,15 +948,15 @@ namespace HeuristicLab.Clients.OKB.RunCreation
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="IntValue", Namespace="http://schemas.datacontract.org/2004/07/HeuristicLab.Services.OKB.RunCreation.Dat" +
+    [System.Runtime.Serialization.DataContractAttribute(Name="DoubleValue", Namespace="http://schemas.datacontract.org/2004/07/HeuristicLab.Services.OKB.RunCreation.Dat" +
         "aTransfer")]
-    public partial class IntValue : HeuristicLab.Clients.OKB.RunCreation.Value
+    public partial class DoubleValue : HeuristicLab.Clients.OKB.RunCreation.Value
     {
         
-        private int ValueField;
+        private double ValueField;
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public int Value
+        public double Value
         {
             get
             {
@@ -975,9 +975,9 @@ namespace HeuristicLab.Clients.OKB.RunCreation
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="DoubleValue", Namespace="http://schemas.datacontract.org/2004/07/HeuristicLab.Services.OKB.RunCreation.Dat" +
+    [System.Runtime.Serialization.DataContractAttribute(Name="PercentValue", Namespace="http://schemas.datacontract.org/2004/07/HeuristicLab.Services.OKB.RunCreation.Dat" +
         "aTransfer")]
-    public partial class DoubleValue : HeuristicLab.Clients.OKB.RunCreation.Value
+    public partial class PercentValue : HeuristicLab.Clients.OKB.RunCreation.Value
     {
         
         private double ValueField;
@@ -1011,6 +1011,33 @@ namespace HeuristicLab.Clients.OKB.RunCreation
         
         [System.Runtime.Serialization.DataMemberAttribute()]
         public float Value
+        {
+            get
+            {
+                return this.ValueField;
+            }
+            set
+            {
+                if ((this.ValueField.Equals(value) != true))
+                {
+                    this.ValueField = value;
+                    this.RaisePropertyChanged("Value");
+                }
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="IntValue", Namespace="http://schemas.datacontract.org/2004/07/HeuristicLab.Services.OKB.RunCreation.Dat" +
+        "aTransfer")]
+    public partial class IntValue : HeuristicLab.Clients.OKB.RunCreation.Value
+    {
+        
+        private int ValueField;
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int Value
         {
             get
             {
@@ -1073,33 +1100,6 @@ namespace HeuristicLab.Clients.OKB.RunCreation
             set
             {
                 if ((object.ReferenceEquals(this.ValueField, value) != true))
-                {
-                    this.ValueField = value;
-                    this.RaisePropertyChanged("Value");
-                }
-            }
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="PercentValue", Namespace="http://schemas.datacontract.org/2004/07/HeuristicLab.Services.OKB.RunCreation.Dat" +
-        "aTransfer")]
-    public partial class PercentValue : HeuristicLab.Clients.OKB.RunCreation.Value
-    {
-        
-        private double ValueField;
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public double Value
-        {
-            get
-            {
-                return this.ValueField;
-            }
-            set
-            {
-                if ((this.ValueField.Equals(value) != true))
                 {
                     this.ValueField = value;
                     this.RaisePropertyChanged("Value");
@@ -1297,6 +1297,12 @@ namespace HeuristicLab.Clients.OKB.RunCreation
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRunCreationService/GetSolutions", ReplyAction="http://tempuri.org/IRunCreationService/GetSolutionsResponse")]
         System.Threading.Tasks.Task<System.Collections.Generic.List<HeuristicLab.Clients.OKB.RunCreation.Solution>> GetSolutionsAsync(long problemId);
         
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRunCreationService/GetSolution", ReplyAction="http://tempuri.org/IRunCreationService/GetSolutionResponse")]
+        HeuristicLab.Clients.OKB.RunCreation.Solution GetSolution(long solutionId);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRunCreationService/GetSolution", ReplyAction="http://tempuri.org/IRunCreationService/GetSolutionResponse")]
+        System.Threading.Tasks.Task<HeuristicLab.Clients.OKB.RunCreation.Solution> GetSolutionAsync(long solutionId);
+        
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRunCreationService/GetSolutionData", ReplyAction="http://tempuri.org/IRunCreationService/GetSolutionDataResponse")]
         [System.ServiceModel.FaultContractAttribute(typeof(HeuristicLab.Clients.OKB.RunCreation.MissingSolution), Action="http://tempuri.org/IRunCreationService/GetSolutionDataMissingSolutionFault", Name="MissingSolution", Namespace="http://schemas.datacontract.org/2004/07/HeuristicLab.Services.OKB.RunCreation")]
         byte[] GetSolutionData(long solutionId);
@@ -1430,6 +1436,16 @@ namespace HeuristicLab.Clients.OKB.RunCreation
         public System.Threading.Tasks.Task<System.Collections.Generic.List<HeuristicLab.Clients.OKB.RunCreation.Solution>> GetSolutionsAsync(long problemId)
         {
             return base.Channel.GetSolutionsAsync(problemId);
+        }
+        
+        public HeuristicLab.Clients.OKB.RunCreation.Solution GetSolution(long solutionId)
+        {
+            return base.Channel.GetSolution(solutionId);
+        }
+        
+        public System.Threading.Tasks.Task<HeuristicLab.Clients.OKB.RunCreation.Solution> GetSolutionAsync(long solutionId)
+        {
+            return base.Channel.GetSolutionAsync(solutionId);
         }
         
         public byte[] GetSolutionData(long solutionId)

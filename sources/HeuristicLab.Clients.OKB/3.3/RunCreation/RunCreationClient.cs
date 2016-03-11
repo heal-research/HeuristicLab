@@ -101,6 +101,10 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       return CallRunCreationService(s => s.GetSolutions(problemId));
     }
 
+    public Solution GetSolution(long solutionId) {
+      return CallRunCreationService(s => s.GetSolution(solutionId));
+    }
+
     public byte[] GetSolutionData(long solutionId) {
       return CallRunCreationService(s => s.GetSolutionData(solutionId));
     }

@@ -47,6 +47,9 @@ namespace HeuristicLab.Services.OKB.RunCreation {
     IEnumerable<Solution> GetSolutions(long problemId);
 
     [OperationContract]
+    Solution GetSolution(long solutionId);
+
+    [OperationContract]
     [FaultContract(typeof(MissingSolution))]
     byte[] GetSolutionData(long solutionId);
 
