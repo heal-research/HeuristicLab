@@ -32,7 +32,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
   /// </summary>
   [StorableClass]
   [Item("RegressionEnsembleModel", "A regression model that contains an ensemble of multiple regression models")]
-  public class RegressionEnsembleModel : NamedItem, IRegressionEnsembleModel {
+  public sealed class RegressionEnsembleModel : NamedItem, IRegressionEnsembleModel {
 
     private List<IRegressionModel> models;
     public IEnumerable<IRegressionModel> Models {
@@ -45,6 +45,18 @@ namespace HeuristicLab.Problems.DataAnalysis {
       set { models = value.ToList(); }
     }
 
+    [Storable]
+    private bool averageModelEstimates = true;
+    public bool AverageModelEstimates {
+      get { return averageModelEstimates; }
+      set {
+        if (averageModelEstimates != value) {
+          averageModelEstimates = value;
+          OnAverageModelEstimatesChanged();
+        }
+      }
+    }
+
     #region backwards compatiblity 3.3.5
     [Storable(Name = "models", AllowOneWay = true)]
     private List<IRegressionModel> OldStorableModels {
@@ -53,10 +65,14 @@ namespace HeuristicLab.Problems.DataAnalysis {
     #endregion
 
     [StorableConstructor]
-    protected RegressionEnsembleModel(bool deserializing) : base(deserializing) { }
-    protected RegressionEnsembleModel(RegressionEnsembleModel original, Cloner cloner)
+    private RegressionEnsembleModel(bool deserializing) : base(deserializing) { }
+    private RegressionEnsembleModel(RegressionEnsembleModel original, Cloner cloner)
       : base(original, cloner) {
-      this.models = original.Models.Select(m => cloner.Clone(m)).ToList();
+      this.models = original.Models.Select(cloner.Clone).ToList();
+      this.averageModelEstimates = original.averageModelEstimates;
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new RegressionEnsembleModel(this, cloner);
     }
 
     public RegressionEnsembleModel() : this(Enumerable.Empty<IRegressionModel>()) { }
@@ -67,14 +83,11 @@ namespace HeuristicLab.Problems.DataAnalysis {
       this.models = new List<IRegressionModel>(models);
     }
 
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new RegressionEnsembleModel(this, cloner);
-    }
-
     #region IRegressionEnsembleModel Members
     public void Add(IRegressionModel model) {
       models.Add(model);
     }
+
     public void Remove(IRegressionModel model) {
       models.Remove(model);
     }
@@ -98,18 +111,33 @@ namespace HeuristicLab.Problems.DataAnalysis {
       while (rowsEnumerator.MoveNext() & estimatedValuesEnumerators.MoveNext()) {
         int currentRow = rowsEnumerator.Current;
 
-        var filteredEstimates = models.Zip(estimatedValuesEnumerators.Current,
-          (m, e) => new { Model = m, EstimatedValue = e }).Where(f => modelSelectionPredicate(currentRow, f.Model));
+        var filteredEstimates = models.Zip(estimatedValuesEnumerators.Current, (m, e) => new { Model = m, EstimatedValue = e })
+                                      .Where(f => modelSelectionPredicate(currentRow, f.Model))
+                                      .Select(f => f.EstimatedValue).DefaultIfEmpty(double.NaN);
 
-        yield return filteredEstimates.Select(f => f.EstimatedValue).DefaultIfEmpty(double.NaN).Average();
+        yield return AggregateEstimatedValues(filteredEstimates);
       }
+    }
+
+    private double AggregateEstimatedValues(IEnumerable<double> estimatedValuesVector) {
+      if (AverageModelEstimates)
+        return estimatedValuesVector.Average();
+      else
+        return estimatedValuesVector.Sum();
+    }
+
+    public event EventHandler AverageModelEstimatesChanged;
+    private void OnAverageModelEstimatesChanged() {
+      var handler = AverageModelEstimatesChanged;
+      if (handler != null)
+        handler(this, EventArgs.Empty);
     }
     #endregion
 
     #region IRegressionModel Members
     public IEnumerable<double> GetEstimatedValues(IDataset dataset, IEnumerable<int> rows) {
       foreach (var estimatedValuesVector in GetEstimatedValueVectors(dataset, rows)) {
-        yield return estimatedValuesVector.Average();
+        yield return AggregateEstimatedValues(estimatedValuesVector);
       }
     }
 
