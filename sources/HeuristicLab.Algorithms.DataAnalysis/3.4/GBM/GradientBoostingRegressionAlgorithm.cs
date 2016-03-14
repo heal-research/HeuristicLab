@@ -25,7 +25,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using HeuristicLab.Analysis;
-using HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -315,9 +314,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
             Results.Add(new Result("Solution", CreateSymbolicSolution(models, Nu, (IRegressionProblemData)problemData.Clone())));
           }
           // just produce an ensemble solution for now (TODO: correct scaling or linear regression for ensemble model weights)
-          Results.Add(new Result("EnsembleSolution", new RegressionEnsembleSolution(models, (IRegressionProblemData)problemData.Clone())));
+
+          var ensembleModel = new RegressionEnsembleModel(models);
+          var ensembleSolution = ensembleModel.CreateRegressionSolution((IRegressionProblemData)problemData.Clone());
+          Results.Add(new Result("EnsembleSolution", ensembleSolution));
         }
-      } finally {
+      }
+      finally {
         // reset everything
         alg.Prepare(true);
       }
@@ -431,7 +434,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
             symbRegSol.TrainingNaNEvaluations == 0 && symbRegSol.TestNaNEvaluations == 0) {
             model = sol.Model;
           }
-        } finally {
+        }
+        finally {
           alg.ExceptionOccurred -= handler;
           alg.Stopped -= handler2;
         }
