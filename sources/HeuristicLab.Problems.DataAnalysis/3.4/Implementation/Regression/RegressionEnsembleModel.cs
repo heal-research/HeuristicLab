@@ -72,7 +72,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     #region IRegressionEnsembleModel Members
-
     public void Add(IRegressionModel model) {
       models.Add(model);
     }
@@ -105,7 +104,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
         yield return filteredEstimates.Select(f => f.EstimatedValue).DefaultIfEmpty(double.NaN).Average();
       }
     }
-
     #endregion
 
     #region IRegressionModel Members
@@ -116,7 +114,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     public RegressionEnsembleSolution CreateRegressionSolution(IRegressionProblemData problemData) {
-      return new RegressionEnsembleSolution(this.Models, new RegressionEnsembleProblemData(problemData));
+      return new RegressionEnsembleSolution(this, new RegressionEnsembleProblemData(problemData));
     }
     IRegressionSolution IRegressionModel.CreateRegressionSolution(IRegressionProblemData problemData) {
       return CreateRegressionSolution(problemData);

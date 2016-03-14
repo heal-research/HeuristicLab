@@ -92,6 +92,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
         testPartitions[cloner.Clone(pair.Key)] = cloner.Clone(pair.Value);
       }
 
+      evaluationCache = new Dictionary<int, double>(original.ProblemData.Dataset.Rows);
       trainingEvaluationCache = new Dictionary<int, double>(original.ProblemData.TrainingIndices.Count());
       testEvaluationCache = new Dictionary<int, double>(original.ProblemData.TestIndices.Count());
 
@@ -109,45 +110,24 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     public RegressionEnsembleSolution(IRegressionProblemData problemData)
-      : this(Enumerable.Empty<IRegressionModel>(), problemData) {
+      : this(new RegressionEnsembleModel(), problemData) {
     }
 
-    public RegressionEnsembleSolution(IEnumerable<IRegressionModel> models, IRegressionProblemData problemData)
-      : this(models, problemData,
-             models.Select(m => (IntRange)problemData.TrainingPartition.Clone()),
-             models.Select(m => (IntRange)problemData.TestPartition.Clone())
-      ) { }
+    public RegressionEnsembleSolution(IRegressionEnsembleModel model, IRegressionProblemData problemData)
+      : base(model, new RegressionEnsembleProblemData(problemData)) {
+      trainingPartitions = new Dictionary<IRegressionModel, IntRange>();
+      testPartitions = new Dictionary<IRegressionModel, IntRange>();
+      regressionSolutions = new ItemCollection<IRegressionSolution>();
 
-    public RegressionEnsembleSolution(IEnumerable<IRegressionModel> models, IRegressionProblemData problemData, IEnumerable<IntRange> trainingPartitions, IEnumerable<IntRange> testPartitions)
-      : base(new RegressionEnsembleModel(Enumerable.Empty<IRegressionModel>()), new RegressionEnsembleProblemData(problemData)) {
-      this.trainingPartitions = new Dictionary<IRegressionModel, IntRange>();
-      this.testPartitions = new Dictionary<IRegressionModel, IntRange>();
-      this.regressionSolutions = new ItemCollection<IRegressionSolution>();
-
-      List<IRegressionSolution> solutions = new List<IRegressionSolution>();
-      var modelEnumerator = models.GetEnumerator();
-      var trainingPartitionEnumerator = trainingPartitions.GetEnumerator();
-      var testPartitionEnumerator = testPartitions.GetEnumerator();
-
-      while (modelEnumerator.MoveNext() & trainingPartitionEnumerator.MoveNext() & testPartitionEnumerator.MoveNext()) {
-        var p = (IRegressionProblemData)problemData.Clone();
-        p.TrainingPartition.Start = trainingPartitionEnumerator.Current.Start;
-        p.TrainingPartition.End = trainingPartitionEnumerator.Current.End;
-        p.TestPartition.Start = testPartitionEnumerator.Current.Start;
-        p.TestPartition.End = testPartitionEnumerator.Current.End;
-
-        solutions.Add(modelEnumerator.Current.CreateRegressionSolution(p));
-      }
-      if (modelEnumerator.MoveNext() | trainingPartitionEnumerator.MoveNext() | testPartitionEnumerator.MoveNext()) {
-        throw new ArgumentException();
-      }
-
+      evaluationCache = new Dictionary<int, double>(problemData.Dataset.Rows);
       trainingEvaluationCache = new Dictionary<int, double>(problemData.TrainingIndices.Count());
       testEvaluationCache = new Dictionary<int, double>(problemData.TestIndices.Count());
 
       RegisterRegressionSolutionsEventHandler();
+      var solutions = model.Models.Select(m => m.CreateRegressionSolution((IRegressionProblemData)problemData.Clone()));
       regressionSolutions.AddRange(solutions);
     }
+
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new RegressionEnsembleSolution(this, cloner);
