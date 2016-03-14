@@ -19,12 +19,15 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
 namespace HeuristicLab.Problems.DataAnalysis {
   public interface IRegressionEnsembleModel : IRegressionModel {
     void Add(IRegressionModel model);
     void Remove(IRegressionModel model);
     IEnumerable<IRegressionModel> Models { get; }
+
     IEnumerable<IEnumerable<double>> GetEstimatedValueVectors(IDataset dataset, IEnumerable<int> rows);
+    IEnumerable<double> GetEstimatedValues(IDataset dataset, IEnumerable<int> rows, Func<int, IRegressionModel, bool> modelSelectionPredicate);
   }
 }

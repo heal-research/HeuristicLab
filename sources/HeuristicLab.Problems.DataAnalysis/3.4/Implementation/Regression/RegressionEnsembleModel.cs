@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
@@ -90,10 +91,24 @@ namespace HeuristicLab.Problems.DataAnalysis {
       }
     }
 
+    public IEnumerable<double> GetEstimatedValues(IDataset dataset, IEnumerable<int> rows, Func<int, IRegressionModel, bool> modelSelectionPredicate) {
+      var estimatedValuesEnumerators = GetEstimatedValueVectors(dataset, rows).GetEnumerator();
+      var rowsEnumerator = rows.GetEnumerator();
+
+      // aggregate to make sure that MoveNext is called for all enumerators 
+      while (rowsEnumerator.MoveNext() & estimatedValuesEnumerators.MoveNext()) {
+        int currentRow = rowsEnumerator.Current;
+
+        var filteredEstimates = models.Zip(estimatedValuesEnumerators.Current,
+          (m, e) => new { Model = m, EstimatedValue = e }).Where(f => modelSelectionPredicate(currentRow, f.Model));
+
+        yield return filteredEstimates.Select(f => f.EstimatedValue).DefaultIfEmpty(double.NaN).Average();
+      }
+    }
+
     #endregion
 
     #region IRegressionModel Members
-
     public IEnumerable<double> GetEstimatedValues(IDataset dataset, IEnumerable<int> rows) {
       foreach (var estimatedValuesVector in GetEstimatedValueVectors(dataset, rows)) {
         yield return estimatedValuesVector.Average();
@@ -106,7 +121,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
     IRegressionSolution IRegressionModel.CreateRegressionSolution(IRegressionProblemData problemData) {
       return CreateRegressionSolution(problemData);
     }
-
     #endregion
   }
 }

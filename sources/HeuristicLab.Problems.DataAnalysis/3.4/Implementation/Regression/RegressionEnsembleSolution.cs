@@ -168,7 +168,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
         var rows = ProblemData.TrainingIndices;
         var rowsToEvaluate = rows.Except(trainingEvaluationCache.Keys);
         var rowsEnumerator = rowsToEvaluate.GetEnumerator();
-        var valuesEnumerator = GetEstimatedValues(rowsToEvaluate, (r, m) => RowIsTrainingForModel(r, m) && !RowIsTestForModel(r, m)).GetEnumerator();
+        var valuesEnumerator = Model.GetEstimatedValues(ProblemData.Dataset, rowsToEvaluate, (r, m) => RowIsTrainingForModel(r, m) && !RowIsTestForModel(r, m)).GetEnumerator();
 
         while (rowsEnumerator.MoveNext() & valuesEnumerator.MoveNext()) {
           trainingEvaluationCache.Add(rowsEnumerator.Current, valuesEnumerator.Current);
@@ -183,7 +183,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
         var rows = ProblemData.TestIndices;
         var rowsToEvaluate = rows.Except(testEvaluationCache.Keys);
         var rowsEnumerator = rowsToEvaluate.GetEnumerator();
-        var valuesEnumerator = GetEstimatedValues(rowsToEvaluate, RowIsTestForModel).GetEnumerator();
+        var valuesEnumerator = Model.GetEstimatedValues(ProblemData.Dataset, rowsToEvaluate, RowIsTestForModel).GetEnumerator();
 
         while (rowsEnumerator.MoveNext() & valuesEnumerator.MoveNext()) {
           testEvaluationCache.Add(rowsEnumerator.Current, valuesEnumerator.Current);
@@ -192,29 +192,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
         return rows.Select(row => testEvaluationCache[row]);
       }
     }
-
-    private IEnumerable<double> GetEstimatedValues(IEnumerable<int> rows, Func<int, IRegressionModel, bool> modelSelectionPredicate) {
-      var estimatedValuesEnumerators = (from model in Model.Models
-                                        select new { Model = model, EstimatedValuesEnumerator = model.GetEstimatedValues(ProblemData.Dataset, rows).GetEnumerator() })
-                                       .ToList();
-      var rowsEnumerator = rows.GetEnumerator();
-      // aggregate to make sure that MoveNext is called for all enumerators 
-      while (rowsEnumerator.MoveNext() & estimatedValuesEnumerators.Select(en => en.EstimatedValuesEnumerator.MoveNext()).Aggregate(true, (acc, b) => acc & b)) {
-        int currentRow = rowsEnumerator.Current;
-
-        var selectedEnumerators = from pair in estimatedValuesEnumerators
-                                  where modelSelectionPredicate(currentRow, pair.Model)
-                                  select pair.EstimatedValuesEnumerator;
-
-        yield return AggregateEstimatedValues(selectedEnumerators.Select(x => x.Current));
-      }
-    }
-
     private bool RowIsTrainingForModel(int currentRow, IRegressionModel model) {
       return trainingPartitions == null || !trainingPartitions.ContainsKey(model) ||
               (trainingPartitions[model].Start <= currentRow && currentRow < trainingPartitions[model].End);
     }
-
     private bool RowIsTestForModel(int currentRow, IRegressionModel model) {
       return testPartitions == null || !testPartitions.ContainsKey(model) ||
               (testPartitions[model].Start <= currentRow && currentRow < testPartitions[model].End);
@@ -223,9 +204,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public override IEnumerable<double> GetEstimatedValues(IEnumerable<int> rows) {
       var rowsToEvaluate = rows.Except(evaluationCache.Keys);
       var rowsEnumerator = rowsToEvaluate.GetEnumerator();
-      var valuesEnumerator = (from xs in GetEstimatedValueVectors(ProblemData.Dataset, rowsToEvaluate)
-                              select AggregateEstimatedValues(xs))
-                             .GetEnumerator();
+      var valuesEnumerator = Model.GetEstimatedValues(ProblemData.Dataset, rowsToEvaluate).GetEnumerator();
 
       while (rowsEnumerator.MoveNext() & valuesEnumerator.MoveNext()) {
         evaluationCache.Add(rowsEnumerator.Current, valuesEnumerator.Current);
@@ -234,20 +213,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
       return rows.Select(row => evaluationCache[row]);
     }
 
-    public IEnumerable<IEnumerable<double>> GetEstimatedValueVectors(IDataset dataset, IEnumerable<int> rows) {
-      if (!Model.Models.Any()) yield break;
-      var estimatedValuesEnumerators = (from model in Model.Models
-                                        select model.GetEstimatedValues(dataset, rows).GetEnumerator())
-                                       .ToList();
-
-      while (estimatedValuesEnumerators.All(en => en.MoveNext())) {
-        yield return from enumerator in estimatedValuesEnumerators
-                     select enumerator.Current;
-      }
-    }
-
-    private double AggregateEstimatedValues(IEnumerable<double> estimatedValues) {
-      return estimatedValues.DefaultIfEmpty(double.NaN).Average();
+    public IEnumerable<IEnumerable<double>> GetEstimatedValueVectors(IEnumerable<int> rows) {
+      return Model.GetEstimatedValueVectors(ProblemData.Dataset, rows);
     }
     #endregion
 
