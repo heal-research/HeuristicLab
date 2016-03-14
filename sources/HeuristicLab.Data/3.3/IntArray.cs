@@ -27,7 +27,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Data {
   [Item("IntArray", "Represents an array of integer values.")]
   [StorableClass]
-  public class IntArray : ValueTypeArray<int>, IStringConvertibleArray {
+  public class IntArray : StringConvertibleArray<int> {
     [StorableConstructor]
     protected IntArray(bool deserializing) : base(deserializing) { }
     protected IntArray(IntArray original, Cloner cloner)
@@ -41,7 +41,7 @@ namespace HeuristicLab.Data {
       return new IntArray(this, cloner);
     }
 
-    protected virtual bool Validate(string value, out string errorMessage) {
+    protected override bool Validate(string value, out string errorMessage) {
       int val;
       bool valid = int.TryParse(value, out val);
       errorMessage = string.Empty;
@@ -54,10 +54,10 @@ namespace HeuristicLab.Data {
       }
       return valid;
     }
-    protected virtual string GetValue(int index) {
+    protected override string GetValue(int index) {
       return this[index].ToString();
     }
-    protected virtual bool SetValue(string value, int index) {
+    protected override bool SetValue(string value, int index) {
       int val;
       if (int.TryParse(value, out val)) {
         this[index] = val;
@@ -66,21 +66,5 @@ namespace HeuristicLab.Data {
         return false;
       }
     }
-
-    #region IStringConvertibleArray Members
-    int IStringConvertibleArray.Length {
-      get { return Length; }
-      set { Length = value; }
-    }
-    bool IStringConvertibleArray.Validate(string value, out string errorMessage) {
-      return Validate(value, out errorMessage);
-    }
-    string IStringConvertibleArray.GetValue(int index) {
-      return GetValue(index);
-    }
-    bool IStringConvertibleArray.SetValue(string value, int index) {
-      return SetValue(value, index);
-    }
-    #endregion
   }
 }

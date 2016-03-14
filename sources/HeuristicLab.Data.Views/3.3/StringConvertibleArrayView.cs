@@ -79,7 +79,7 @@ namespace HeuristicLab.Data.Views {
       base.SetEnabledStateOfControls();
       lengthTextBox.Enabled = Content != null;
       dataGridView.Enabled = Content != null;
-      lengthTextBox.ReadOnly = ReadOnly;
+      lengthTextBox.ReadOnly = ReadOnly || (Content != null && !Content.Resizable);
       dataGridView.ReadOnly = ReadOnly;
     }
 
