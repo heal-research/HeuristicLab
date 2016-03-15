@@ -276,7 +276,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
 
     #region Nguyen
-    [TestMethod]
+    // [TestMethod]
     [TestCategory("Algorithms.DataAnalysis")]
     [TestProperty("Time", "short")]
     public void MctsSymbRegBenchmarkNguyen1() {
@@ -284,7 +284,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       var regProblem = provider.LoadData(provider.GetDataDescriptors().Single(x => x.Name.Contains("F1 ")));
       TestMcts(regProblem);
     }
-    [TestMethod]
+    // [TestMethod]
     [TestCategory("Algorithms.DataAnalysis")]
     [TestProperty("Time", "short")]
     public void MctsSymbRegBenchmarkNguyen2() {
@@ -292,7 +292,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       var regProblem = provider.LoadData(provider.GetDataDescriptors().Single(x => x.Name.Contains("F2 ")));
       TestMcts(regProblem);
     }
-    [TestMethod]
+    // [TestMethod]
     [TestCategory("Algorithms.DataAnalysis")]
     [TestProperty("Time", "short")]
     public void MctsSymbRegBenchmarkNguyen3() {
@@ -300,7 +300,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       var regProblem = provider.LoadData(provider.GetDataDescriptors().Single(x => x.Name.Contains("F3 ")));
       TestMcts(regProblem, successThreshold: 0.99);
     }
-    [TestMethod]
+    // [TestMethod]
     [TestCategory("Algorithms.DataAnalysis")]
     [TestProperty("Time", "short")]
     public void MctsSymbRegBenchmarkNguyen4() {
@@ -308,7 +308,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       var regProblem = provider.LoadData(provider.GetDataDescriptors().Single(x => x.Name.Contains("F4 ")));
       TestMcts(regProblem);
     }
-    [TestMethod]
+    // [TestMethod]
     [TestCategory("Algorithms.DataAnalysis")]
     [TestProperty("Time", "short")]
     public void MctsSymbRegBenchmarkNguyen5() {
@@ -316,7 +316,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       var regProblem = provider.LoadData(provider.GetDataDescriptors().Single(x => x.Name.Contains("F5 ")));
       TestMcts(regProblem);
     }
-    [TestMethod]
+    // [TestMethod]
     [TestCategory("Algorithms.DataAnalysis")]
     [TestProperty("Time", "short")]
     public void MctsSymbRegBenchmarkNguyen6() {
@@ -324,7 +324,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       var regProblem = provider.LoadData(provider.GetDataDescriptors().Single(x => x.Name.Contains("F6 ")));
       TestMcts(regProblem);
     }
-    [TestMethod]
+    // [TestMethod]
     [TestCategory("Algorithms.DataAnalysis")]
     [TestProperty("Time", "short")]
     public void MctsSymbRegBenchmarkNguyen7() {
@@ -332,7 +332,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       var regProblem = provider.LoadData(provider.GetDataDescriptors().Single(x => x.Name.Contains("F7 ")));
       TestMcts(regProblem);
     }
-    [TestMethod]
+    // [TestMethod]
     [TestCategory("Algorithms.DataAnalysis")]
     [TestProperty("Time", "short")]
     public void MctsSymbRegBenchmarkNguyen8() {
@@ -340,7 +340,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       var regProblem = provider.LoadData(provider.GetDataDescriptors().Single(x => x.Name.Contains("F8 ")));
       TestMcts(regProblem, successThreshold: 0.99);
     }
-    [TestMethod]
+    // [TestMethod]
     [TestCategory("Algorithms.DataAnalysis")]
     [TestProperty("Time", "short")]
     public void MctsSymbRegBenchmarkNguyen9() {
@@ -348,7 +348,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       var regProblem = provider.LoadData(provider.GetDataDescriptors().Single(x => x.Name.Contains("F9 ")));
       TestMcts(regProblem, iterations: 10000);
     }
-    [TestMethod]
+    // [TestMethod]
     [TestCategory("Algorithms.DataAnalysis")]
     [TestProperty("Time", "short")]
     public void MctsSymbRegBenchmarkNguyen10() {
@@ -356,7 +356,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       var regProblem = provider.LoadData(provider.GetDataDescriptors().Single(x => x.Name.Contains("F10 ")));
       TestMcts(regProblem);
     }
-    [TestMethod]
+    // [TestMethod]
     [TestCategory("Algorithms.DataAnalysis")]
     [TestProperty("Time", "short")]
     public void MctsSymbRegBenchmarkNguyen11() {
@@ -364,7 +364,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       var regProblem = provider.LoadData(provider.GetDataDescriptors().Single(x => x.Name.Contains("F11 ")));
       TestMcts(regProblem, 10000, 0.95); // cannot solve exactly in 10000 iterations
     }
-    [TestMethod]
+    // [TestMethod]
     [TestCategory("Algorithms.DataAnalysis")]
     [TestProperty("Time", "short")]
     public void MctsSymbRegBenchmarkNguyen12() {
@@ -376,7 +376,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     #endregion
 
     #region keijzer
-    [TestMethod]
+    // [TestMethod]
     [TestCategory("Algorithms.DataAnalysis")]
     [TestProperty("Time", "long")]
     public void MctsSymbRegBenchmarkKeijzer5() {
@@ -387,7 +387,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       TestMcts(regProblem, iterations: 10000, allowExp: false, allowLog: false, allowSum: false, successThreshold: 0.99);
     }
 
-    [TestMethod]
+    // [TestMethod]
     [TestCategory("Algorithms.DataAnalysis")]
     [TestProperty("Time", "short")]
     public void MctsSymbRegBenchmarkKeijzer6() {
@@ -399,7 +399,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       TestMcts(regProblem, allowLog: false, allowExp: false, successThreshold: 0.995); // cannot solve
     }
 
-    [TestMethod]
+    // [TestMethod]
     [TestCategory("Algorithms.DataAnalysis")]
     [TestProperty("Time", "short")]
     public void MctsSymbRegBenchmarkKeijzer7() {
@@ -411,7 +411,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     [TestMethod]
-    [TestCategory("Algorithms.DataAnalysis")]
+    // [TestCategory("Algorithms.DataAnalysis")]
     [TestProperty("Time", "short")]
     public void MctsSymbRegBenchmarkKeijzer8() {
       var provider = new HeuristicLab.Problems.Instances.DataAnalysis.KeijzerInstanceProvider();
@@ -422,7 +422,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     [TestMethod]
-    [TestCategory("Algorithms.DataAnalysis")]
+    // [TestCategory("Algorithms.DataAnalysis")]
     [TestProperty("Time", "short")]
     public void MctsSymbRegBenchmarkKeijzer9() {
       var provider = new HeuristicLab.Problems.Instances.DataAnalysis.KeijzerInstanceProvider();
@@ -459,7 +459,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       TestMcts(regProblem, successThreshold: 0.99); // cannot solve this yet
     }
      */
-    [TestMethod]
+    // [TestMethod]
     [TestCategory("Algorithms.DataAnalysis")]
     [TestProperty("Time", "short")]
     public void MctsSymbRegBenchmarkKeijzer12() {
@@ -470,7 +470,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       if (regProblem.TestPartition.End - regProblem.TestPartition.Start > 1000) regProblem.TestPartition.End = regProblem.TestPartition.Start + 1000;
       TestMcts(regProblem, iterations: 10000, allowLog: false, allowExp: false, allowInv: false, successThreshold: 0.99); // cannot solve exactly in 10000 iterations
     }
-    [TestMethod]
+    // [TestMethod]
     [TestCategory("Algorithms.DataAnalysis")]
     [TestProperty("Time", "short")]
     public void MctsSymbRegBenchmarkKeijzer14() {
@@ -480,7 +480,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       if (regProblem.TestPartition.End - regProblem.TestPartition.Start > 1000) regProblem.TestPartition.End = regProblem.TestPartition.Start + 1000;
       TestMcts(regProblem);
     }
-    [TestMethod]
+    // [TestMethod]
     [TestCategory("Algorithms.DataAnalysis")]
     [TestProperty("Time", "short")]
     public void MctsSymbRegBenchmarkKeijzer15() {
