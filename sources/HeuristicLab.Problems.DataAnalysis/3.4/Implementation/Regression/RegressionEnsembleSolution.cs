@@ -123,9 +123,16 @@ namespace HeuristicLab.Problems.DataAnalysis {
       trainingEvaluationCache = new Dictionary<int, double>(problemData.TrainingIndices.Count());
       testEvaluationCache = new Dictionary<int, double>(problemData.TestIndices.Count());
 
-      RegisterRegressionSolutionsEventHandler();
+
       var solutions = model.Models.Select(m => m.CreateRegressionSolution((IRegressionProblemData)problemData.Clone()));
-      regressionSolutions.AddRange(solutions);
+      foreach (var solution in solutions) {
+        regressionSolutions.Add(solution);
+        trainingPartitions.Add(solution.Model, solution.ProblemData.TrainingPartition);
+        testPartitions.Add(solution.Model, solution.ProblemData.TestPartition);
+      }
+
+      RecalculateResults();
+      RegisterRegressionSolutionsEventHandler();
     }
 
 
@@ -260,6 +267,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     private void AddRegressionSolution(IRegressionSolution solution) {
       if (Model.Models.Contains(solution.Model)) throw new ArgumentException();
       Model.Add(solution.Model);
+
       trainingPartitions[solution.Model] = solution.ProblemData.TrainingPartition;
       testPartitions[solution.Model] = solution.ProblemData.TestPartition;
 
@@ -271,6 +279,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     private void RemoveRegressionSolution(IRegressionSolution solution) {
       if (!Model.Models.Contains(solution.Model)) throw new ArgumentException();
       Model.Remove(solution.Model);
+
       trainingPartitions.Remove(solution.Model);
       testPartitions.Remove(solution.Model);
 
