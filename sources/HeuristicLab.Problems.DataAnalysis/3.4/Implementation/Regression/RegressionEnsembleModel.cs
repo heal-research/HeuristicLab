@@ -154,8 +154,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public IEnumerable<IEnumerable<double>> GetEstimatedValueVectors(IDataset dataset, IEnumerable<int> rows) {
       var estimatedValuesEnumerators = (from model in models
-                                        select model.GetEstimatedValues(dataset, rows).GetEnumerator())
-                                       .ToList();
+                                        let weight = GetModelWeight(model)
+                                        select model.GetEstimatedValues(dataset, rows).Select(e => weight * e)
+                                        .GetEnumerator()).ToList();
 
       while (estimatedValuesEnumerators.All(en => en.MoveNext())) {
         yield return from enumerator in estimatedValuesEnumerators
