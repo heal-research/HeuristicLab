@@ -78,6 +78,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
           regressionSolutions.Add(model.CreateRegressionSolution(problemData));
         }
       }
+
+      RegisterModelEvents();
       RegisterRegressionSolutionsEventHandler();
     }
 
@@ -97,6 +99,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       testEvaluationCache = new Dictionary<int, double>(original.ProblemData.TestIndices.Count());
 
       regressionSolutions = cloner.Clone(original.regressionSolutions);
+      RegisterModelEvents();
       RegisterRegressionSolutionsEventHandler();
     }
 
@@ -106,6 +109,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       testPartitions = new Dictionary<IRegressionModel, IntRange>();
       regressionSolutions = new ItemCollection<IRegressionSolution>();
 
+      RegisterModelEvents();
       RegisterRegressionSolutionsEventHandler();
     }
 
@@ -132,12 +136,17 @@ namespace HeuristicLab.Problems.DataAnalysis {
       }
 
       RecalculateResults();
+      RegisterModelEvents();
       RegisterRegressionSolutionsEventHandler();
     }
 
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new RegressionEnsembleSolution(this, cloner);
+    }
+
+    private void RegisterModelEvents() {
+      Model.Changed += Model_Changed;
     }
     private void RegisterRegressionSolutionsEventHandler() {
       regressionSolutions.ItemsAdded += new CollectionItemsChangedEventHandler<IRegressionSolution>(regressionSolutions_ItemsAdded);
@@ -154,6 +163,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       get {
         var rows = ProblemData.TrainingIndices;
         var rowsToEvaluate = rows.Except(trainingEvaluationCache.Keys);
+
         var rowsEnumerator = rowsToEvaluate.GetEnumerator();
         var valuesEnumerator = Model.GetEstimatedValues(ProblemData.Dataset, rowsToEvaluate, (r, m) => RowIsTrainingForModel(r, m) && !RowIsTestForModel(r, m)).GetEnumerator();
 
@@ -235,57 +245,58 @@ namespace HeuristicLab.Problems.DataAnalysis {
       base.OnProblemDataChanged();
     }
 
-    public void AddRegressionSolutions(IEnumerable<IRegressionSolution> solutions) {
-      regressionSolutions.AddRange(solutions);
+    private void Model_Changed(object sender, EventArgs e) {
+      var modelSet = new HashSet<IRegressionModel>(Model.Models);
+      foreach (var model in Model.Models) {
+        if (!trainingPartitions.ContainsKey(model)) trainingPartitions.Add(model, ProblemData.TrainingPartition);
+        if (!testPartitions.ContainsKey(model)) testPartitions.Add(model, ProblemData.TrainingPartition);
+      }
+      foreach (var model in trainingPartitions.Keys) {
+        if (modelSet.Contains(model)) continue;
+        trainingPartitions.Remove(model);
+        testPartitions.Remove(model);
+      }
 
       trainingEvaluationCache.Clear();
       testEvaluationCache.Clear();
       evaluationCache.Clear();
+
+      OnModelChanged();
+    }
+
+    public void AddRegressionSolutions(IEnumerable<IRegressionSolution> solutions) {
+      regressionSolutions.AddRange(solutions);
     }
     public void RemoveRegressionSolutions(IEnumerable<IRegressionSolution> solutions) {
       regressionSolutions.RemoveRange(solutions);
-
-      trainingEvaluationCache.Clear();
-      testEvaluationCache.Clear();
-      evaluationCache.Clear();
     }
 
     private void regressionSolutions_ItemsAdded(object sender, CollectionItemsChangedEventArgs<IRegressionSolution> e) {
-      foreach (var solution in e.Items) AddRegressionSolution(solution);
-      RecalculateResults();
+      foreach (var solution in e.Items) {
+        trainingPartitions.Add(solution.Model, solution.ProblemData.TrainingPartition);
+        testPartitions.Add(solution.Model, solution.ProblemData.TestPartition);
+      }
+      Model.AddRange(e.Items.Select(s => s.Model));
     }
     private void regressionSolutions_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<IRegressionSolution> e) {
-      foreach (var solution in e.Items) RemoveRegressionSolution(solution);
-      RecalculateResults();
+      foreach (var solution in e.Items) {
+        trainingPartitions.Remove(solution.Model);
+        testPartitions.Remove(solution.Model);
+      }
+      Model.RemoveRange(e.Items.Select(s => s.Model));
     }
     private void regressionSolutions_CollectionReset(object sender, CollectionItemsChangedEventArgs<IRegressionSolution> e) {
-      foreach (var solution in e.OldItems) RemoveRegressionSolution(solution);
-      foreach (var solution in e.Items) AddRegressionSolution(solution);
-      RecalculateResults();
-    }
+      foreach (var solution in e.OldItems) {
+        trainingPartitions.Remove(solution.Model);
+        testPartitions.Remove(solution.Model);
+      }
+      Model.RemoveRange(e.OldItems.Select(s => s.Model));
 
-    private void AddRegressionSolution(IRegressionSolution solution) {
-      if (Model.Models.Contains(solution.Model)) throw new ArgumentException();
-      Model.Add(solution.Model);
-
-      trainingPartitions[solution.Model] = solution.ProblemData.TrainingPartition;
-      testPartitions[solution.Model] = solution.ProblemData.TestPartition;
-
-      trainingEvaluationCache.Clear();
-      testEvaluationCache.Clear();
-      evaluationCache.Clear();
-    }
-
-    private void RemoveRegressionSolution(IRegressionSolution solution) {
-      if (!Model.Models.Contains(solution.Model)) throw new ArgumentException();
-      Model.Remove(solution.Model);
-
-      trainingPartitions.Remove(solution.Model);
-      testPartitions.Remove(solution.Model);
-
-      trainingEvaluationCache.Clear();
-      testEvaluationCache.Clear();
-      evaluationCache.Clear();
+      foreach (var solution in e.Items) {
+        trainingPartitions.Add(solution.Model, solution.ProblemData.TrainingPartition);
+        testPartitions.Add(solution.Model, solution.ProblemData.TestPartition);
+      }
+      Model.AddRange(e.Items.Select(s => s.Model));
     }
   }
 }

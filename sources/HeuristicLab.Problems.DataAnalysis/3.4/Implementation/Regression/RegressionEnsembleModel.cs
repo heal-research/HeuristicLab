@@ -45,6 +45,17 @@ namespace HeuristicLab.Problems.DataAnalysis {
       set { models = value.ToList(); }
     }
 
+    private List<double> modelWeights;
+    public IEnumerable<double> ModelWeights {
+      get { return modelWeights; }
+    }
+
+    [Storable(Name = "ModelWeights")]
+    private IEnumerable<double> StorableModelWeights {
+      get { return modelWeights; }
+      set { modelWeights = value.ToList(); }
+    }
+
     [Storable]
     private bool averageModelEstimates = true;
     public bool AverageModelEstimates {
@@ -52,7 +63,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       set {
         if (averageModelEstimates != value) {
           averageModelEstimates = value;
-          OnAverageModelEstimatesChanged();
+          OnChanged();
         }
       }
     }
@@ -64,11 +75,21 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
     #endregion
 
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      // BackwardsCompatibility 3.3.14
+      #region Backwards compatible code, remove with 3.4
+      if (modelWeights == null || !modelWeights.Any())
+        modelWeights = new List<double>(models.Select(m => 1.0));
+      #endregion
+    }
+
     [StorableConstructor]
     private RegressionEnsembleModel(bool deserializing) : base(deserializing) { }
     private RegressionEnsembleModel(RegressionEnsembleModel original, Cloner cloner)
       : base(original, cloner) {
       this.models = original.Models.Select(cloner.Clone).ToList();
+      this.modelWeights = new List<double>(original.ModelWeights);
       this.averageModelEstimates = original.averageModelEstimates;
     }
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -76,20 +97,59 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     public RegressionEnsembleModel() : this(Enumerable.Empty<IRegressionModel>()) { }
-    public RegressionEnsembleModel(IEnumerable<IRegressionModel> models)
+    public RegressionEnsembleModel(IEnumerable<IRegressionModel> models) : this(models, models.Select(m => 1.0)) { }
+    public RegressionEnsembleModel(IEnumerable<IRegressionModel> models, IEnumerable<double> modelWeights)
       : base() {
       this.name = ItemName;
       this.description = ItemDescription;
+
+
       this.models = new List<IRegressionModel>(models);
+      this.modelWeights = new List<double>(modelWeights);
     }
 
     #region IRegressionEnsembleModel Members
     public void Add(IRegressionModel model) {
+      Add(model, 1.0);
+    }
+    public void Add(IRegressionModel model, double weight) {
       models.Add(model);
+      modelWeights.Add(weight);
+      OnChanged();
+    }
+
+    public void AddRange(IEnumerable<IRegressionModel> models) {
+      AddRange(models, models.Select(m => 1.0));
+    }
+    public void AddRange(IEnumerable<IRegressionModel> models, IEnumerable<double> weights) {
+      this.models.AddRange(models);
+      modelWeights.AddRange(weights);
+      OnChanged();
     }
 
     public void Remove(IRegressionModel model) {
-      models.Remove(model);
+      var index = models.IndexOf(model);
+      models.RemoveAt(index);
+      modelWeights.RemoveAt(index);
+      OnChanged();
+    }
+    public void RemoveRange(IEnumerable<IRegressionModel> models) {
+      foreach (var model in models) {
+        var index = this.models.IndexOf(model);
+        this.models.RemoveAt(index);
+        modelWeights.RemoveAt(index);
+      }
+      OnChanged();
+    }
+
+    public double GetModelWeight(IRegressionModel model) {
+      var index = models.IndexOf(model);
+      return modelWeights[index];
+    }
+    public void SetModelWeight(IRegressionModel model, double weight) {
+      var index = models.IndexOf(model);
+      modelWeights[index] = weight;
+      OnChanged();
     }
 
     public IEnumerable<IEnumerable<double>> GetEstimatedValueVectors(IDataset dataset, IEnumerable<int> rows) {
@@ -126,9 +186,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
         return estimatedValuesVector.Sum();
     }
 
-    public event EventHandler AverageModelEstimatesChanged;
-    private void OnAverageModelEstimatesChanged() {
-      var handler = AverageModelEstimatesChanged;
+    public event EventHandler Changed;
+    private void OnChanged() {
+      var handler = Changed;
       if (handler != null)
         handler(this, EventArgs.Empty);
     }

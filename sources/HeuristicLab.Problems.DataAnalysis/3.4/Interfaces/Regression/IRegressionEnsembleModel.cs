@@ -24,12 +24,22 @@ using System.Collections.Generic;
 namespace HeuristicLab.Problems.DataAnalysis {
   public interface IRegressionEnsembleModel : IRegressionModel {
     void Add(IRegressionModel model);
+    void Add(IRegressionModel model, double weight);
+    void AddRange(IEnumerable<IRegressionModel> models);
+    void AddRange(IEnumerable<IRegressionModel> models, IEnumerable<double> weights);
+
     void Remove(IRegressionModel model);
+    void RemoveRange(IEnumerable<IRegressionModel> models);
 
     IEnumerable<IRegressionModel> Models { get; }
+    IEnumerable<double> ModelWeights { get; }
+
+    double GetModelWeight(IRegressionModel model);
+    void SetModelWeight(IRegressionModel model, double weight);
 
     bool AverageModelEstimates { get; set; }
-    event EventHandler AverageModelEstimatesChanged;
+
+    event EventHandler Changed;
 
     IEnumerable<IEnumerable<double>> GetEstimatedValueVectors(IDataset dataset, IEnumerable<int> rows);
     IEnumerable<double> GetEstimatedValues(IDataset dataset, IEnumerable<int> rows, Func<int, IRegressionModel, bool> modelSelectionPredicate);
