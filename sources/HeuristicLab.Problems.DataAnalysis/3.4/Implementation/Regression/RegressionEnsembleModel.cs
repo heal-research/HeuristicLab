@@ -137,7 +137,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     #region IRegressionModel Members
     public IEnumerable<double> GetEstimatedValues(IDataset dataset, IEnumerable<int> rows) {
       foreach (var estimatedValuesVector in GetEstimatedValueVectors(dataset, rows)) {
-        yield return AggregateEstimatedValues(estimatedValuesVector);
+        yield return AggregateEstimatedValues(estimatedValuesVector.DefaultIfEmpty(double.NaN));
       }
     }
 
