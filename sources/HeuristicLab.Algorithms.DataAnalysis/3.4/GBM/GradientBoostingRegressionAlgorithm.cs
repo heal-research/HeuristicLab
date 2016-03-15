@@ -315,7 +315,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
           }
           // just produce an ensemble solution for now (TODO: correct scaling or linear regression for ensemble model weights)
 
-          var ensembleModel = new RegressionEnsembleModel(models);
+          var ensembleModel = new RegressionEnsembleModel(models) { AverageModelEstimates = false };
           var ensembleSolution = ensembleModel.CreateRegressionSolution((IRegressionProblemData)problemData.Clone());
           Results.Add(new Result("EnsembleSolution", ensembleSolution));
         }
