@@ -230,9 +230,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
       // init
       var problemData = Problem.ProblemData;
       var targetVarName = Problem.ProblemData.TargetVariable;
+      var activeVariables = problemData.AllowedInputVariables.Concat(new string[] { problemData.TargetVariable });
       var modifiableDataset = new ModifiableDataset(
-        problemData.Dataset.VariableNames,
-        problemData.Dataset.VariableNames.Select(v => problemData.Dataset.GetDoubleValues(v).ToList()));
+        activeVariables,
+        activeVariables.Select(v => problemData.Dataset.GetDoubleValues(v).ToList()));
 
       var trainingRows = problemData.TrainingIndices;
       var testRows = problemData.TestIndices;
