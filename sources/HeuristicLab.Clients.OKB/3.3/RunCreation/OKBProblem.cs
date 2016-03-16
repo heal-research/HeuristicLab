@@ -170,13 +170,11 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
     }
 
     public void RefreshSolutions() {
-      Solutions.Clear();
       if (ProblemId != -1) {
-        Solutions.AddRange(RunCreationClient.Instance.GetSolutions(ProblemId).Select(OKBSolution.Convert));
-        foreach (var sol in Solutions) {
-          sol.DownloadData();
-        }
-      }
+        var sols = RunCreationClient.Instance.GetSolutions(ProblemId).Select(OKBSolution.Convert).ToList();
+        foreach (var sol in sols) sol.DownloadData();
+        Solutions.Replace(sols);
+      } else Solutions.Clear();
     }
 
     public IProblem CloneProblem() {
