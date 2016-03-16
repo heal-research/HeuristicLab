@@ -70,6 +70,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         sortDescendingButton.Enabled = false;
       }
 
+      //forbid sorting
+      protected override void SortItemsListView(SortOrder sortOrder) { }
+
       protected override void itemsListView_DragEnter(object sender, DragEventArgs e) {
         validDragOperation = false;
         if (ReadOnly || Locked) return;

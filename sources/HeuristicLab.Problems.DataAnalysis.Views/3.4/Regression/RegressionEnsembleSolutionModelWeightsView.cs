@@ -66,7 +66,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         if (arrayView.Content != null) DeregisterArrayEvents((DoubleArray)arrayView.Content);
         var array = new DoubleArray(Content.Model.ModelWeights.ToArray());
         array.Resizable = false;
-        array.ElementNames = Content.Model.Models.Select(m => m.Name);
+        array.ElementNames = Content.RegressionSolutions.Select(s => s.Name);
 
         RegisterArrayEvents(array);
 
@@ -93,7 +93,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       for (int i = 0; i < modelWeights.Count; i++)
         array[i] = modelWeights[i];
 
-      array.ElementNames = Content.Model.Models.Select(m => m.Name);
+      array.ElementNames = Content.RegressionSolutions.Select(s => s.Name);
       averageEstimatesCheckBox.Checked = Content.Model.AverageModelEstimates;
     }
 
@@ -107,6 +107,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     }
 
     private void averageEstimatesCheckBox_CheckedChanged(object sender, EventArgs e) {
+      if (Content == null) return;
       Content.Model.AverageModelEstimates = averageEstimatesCheckBox.Checked;
     }
   }
