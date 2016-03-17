@@ -44,6 +44,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       set { base.Content = value; }
     }
 
+    protected override void SetEnabledStateOfControls() {
+      base.SetEnabledStateOfControls();
+      averageEstimatesCheckBox.Enabled = Content != null && !Locked && !ReadOnly;
+    }
+
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
       Content.Model.Changed += Content_ModelChanged;

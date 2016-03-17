@@ -108,7 +108,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
       this.modelWeights = new List<double>(modelWeights);
     }
 
-    #region IRegressionEnsembleModel Members
     public void Add(IRegressionModel model) {
       Add(model, 1.0);
     }
@@ -152,6 +151,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       OnChanged();
     }
 
+    #region evaluation
     public IEnumerable<IEnumerable<double>> GetEstimatedValueVectors(IDataset dataset, IEnumerable<int> rows) {
       var estimatedValuesEnumerators = (from model in models
                                         let weight = GetModelWeight(model)
@@ -164,28 +164,45 @@ namespace HeuristicLab.Problems.DataAnalysis {
       }
     }
 
+    public IEnumerable<double> GetEstimatedValues(IDataset dataset, IEnumerable<int> rows) {
+      double weightsSum = modelWeights.Sum();
+      var summedEstimates = from estimatedValuesVector in GetEstimatedValueVectors(dataset, rows)
+                            select estimatedValuesVector.DefaultIfEmpty(double.NaN).Sum();
+
+      if (AverageModelEstimates)
+        return summedEstimates.Select(v => v / weightsSum);
+      else
+        return summedEstimates;
+
+    }
+
     public IEnumerable<double> GetEstimatedValues(IDataset dataset, IEnumerable<int> rows, Func<int, IRegressionModel, bool> modelSelectionPredicate) {
       var estimatedValuesEnumerators = GetEstimatedValueVectors(dataset, rows).GetEnumerator();
       var rowsEnumerator = rows.GetEnumerator();
 
-      // aggregate to make sure that MoveNext is called for all enumerators 
       while (rowsEnumerator.MoveNext() & estimatedValuesEnumerators.MoveNext()) {
+        var estimatedValueEnumerator = estimatedValuesEnumerators.Current.GetEnumerator();
         int currentRow = rowsEnumerator.Current;
+        double weightsSum = 0.0;
+        double filteredEstimatesSum = 0.0;
 
-        var filteredEstimates = models.Zip(estimatedValuesEnumerators.Current, (m, e) => new { Model = m, EstimatedValue = e })
-                                      .Where(f => modelSelectionPredicate(currentRow, f.Model))
-                                      .Select(f => f.EstimatedValue).DefaultIfEmpty(double.NaN);
+        for (int m = 0; m < models.Count; m++) {
+          estimatedValueEnumerator.MoveNext();
+          var model = models[m];
+          if (!modelSelectionPredicate(currentRow, model)) continue;
 
-        yield return AggregateEstimatedValues(filteredEstimates);
+          filteredEstimatesSum += estimatedValueEnumerator.Current;
+          weightsSum += modelWeights[m];
+        }
+
+        if (AverageModelEstimates)
+          yield return filteredEstimatesSum / weightsSum;
+        else
+          yield return filteredEstimatesSum;
       }
     }
 
-    private double AggregateEstimatedValues(IEnumerable<double> estimatedValuesVector) {
-      if (AverageModelEstimates)
-        return estimatedValuesVector.Average();
-      else
-        return estimatedValuesVector.Sum();
-    }
+    #endregion
 
     public event EventHandler Changed;
     private void OnChanged() {
@@ -193,14 +210,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       if (handler != null)
         handler(this, EventArgs.Empty);
     }
-    #endregion
 
-    #region IRegressionModel Members
-    public IEnumerable<double> GetEstimatedValues(IDataset dataset, IEnumerable<int> rows) {
-      foreach (var estimatedValuesVector in GetEstimatedValueVectors(dataset, rows)) {
-        yield return AggregateEstimatedValues(estimatedValuesVector.DefaultIfEmpty(double.NaN));
-      }
-    }
 
     public RegressionEnsembleSolution CreateRegressionSolution(IRegressionProblemData problemData) {
       return new RegressionEnsembleSolution(this, new RegressionEnsembleProblemData(problemData));
@@ -208,6 +218,5 @@ namespace HeuristicLab.Problems.DataAnalysis {
     IRegressionSolution IRegressionModel.CreateRegressionSolution(IRegressionProblemData problemData) {
       return CreateRegressionSolution(problemData);
     }
-    #endregion
   }
 }
