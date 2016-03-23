@@ -120,7 +120,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       if (p.Length != c) throw new ArgumentException("The length of the parameter vector does not match the number of free parameters for CovarianceRationalQuadraticArd", "p");
     }
 
-    public ParameterizedCovarianceFunction GetParameterizedCovarianceFunction(double[] p, IEnumerable<int> columnIndices) {
+    public ParameterizedCovarianceFunction GetParameterizedCovarianceFunction(double[] p, int[] columnIndices) {
       double scale, shape;
       double[] inverseLength;
       GetParameterValues(p, out scale, out shape, out inverseLength);
@@ -143,7 +143,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return cov;
     }
 
-    private static IEnumerable<double> GetGradient(double[,] x, int i, int j, IEnumerable<int> columnIndices, double scale, double shape, double[] inverseLength,
+    private static IEnumerable<double> GetGradient(double[,] x, int i, int j, int[] columnIndices, double scale, double shape, double[] inverseLength,
       bool fixedInverseLength, bool fixedScale, bool fixedShape) {
       double d = i == j
                    ? 0.0

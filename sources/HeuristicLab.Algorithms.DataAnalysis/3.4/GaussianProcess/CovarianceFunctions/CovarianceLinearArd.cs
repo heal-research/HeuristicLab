@@ -80,7 +80,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
     }
 
-    public ParameterizedCovarianceFunction GetParameterizedCovarianceFunction(double[] p, IEnumerable<int> columnIndices) {
+    public ParameterizedCovarianceFunction GetParameterizedCovarianceFunction(double[] p, int[] columnIndices) {
       double[] inverseLength;
       GetParameterValues(p, out inverseLength);
       var fixedInverseLength = HasFixedInverseLengthParameter;
@@ -95,9 +95,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return cov;
     }
 
-    private static IEnumerable<double> GetGradient(double[,] x, int i, int j, double[] inverseLength, IEnumerable<int> columnIndices) {
+    private static IEnumerable<double> GetGradient(double[,] x, int i, int j, double[] inverseLength, int[] columnIndices) {
       int k = 0;
-      foreach (int columnIndex in columnIndices) {
+      for (int c = 0; c < columnIndices.Length; c++) {
+        var columnIndex = columnIndices[c];
         yield return -2.0 * x[i, columnIndex] * x[j, columnIndex] * inverseLength[k] * inverseLength[k];
         k++;
       }

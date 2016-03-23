@@ -75,7 +75,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
     }
 
-    public ParameterizedCovarianceFunction GetParameterizedCovarianceFunction(double[] p, IEnumerable<int> columnIndices) {
+    public ParameterizedCovarianceFunction GetParameterizedCovarianceFunction(double[] p, int[] columnIndices) {
       if (factors.Count == 0) throw new ArgumentException("at least one factor is necessary for the product covariance function.");
       var functions = new List<ParameterizedCovarianceFunction>();
       foreach (var f in factors) {

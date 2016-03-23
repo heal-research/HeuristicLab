@@ -98,7 +98,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       if (p.Length != c) throw new ArgumentException("The length of the parameter vector does not match the number of free parameters for CovarianceSquaredExponentialArd", "p");
     }
 
-    public ParameterizedCovarianceFunction GetParameterizedCovarianceFunction(double[] p, IEnumerable<int> columnIndices) {
+    public ParameterizedCovarianceFunction GetParameterizedCovarianceFunction(double[] p, int[] columnIndices) {
       double scale;
       double[] inverseLength;
       GetParameterValues(p, out scale, out inverseLength);
@@ -121,7 +121,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     // order of returned gradients must match the order in GetParameterValues!
-    private static IEnumerable<double> GetGradient(double[,] x, int i, int j, IEnumerable<int> columnIndices, double scale, double[] inverseLength,
+    private static IEnumerable<double> GetGradient(double[,] x, int i, int j, int[] columnIndices, double scale, double[] inverseLength,
       bool fixedInverseLength, bool fixedScale) {
       double d = i == j
                    ? 0.0
@@ -129,7 +129,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
       int k = 0;
       if (!fixedInverseLength) {
-        foreach (var columnIndex in columnIndices) {
+        for (int c = 0; c < columnIndices.Length; c++) {
+          var columnIndex = columnIndices[c];
           double sqrDist = Util.SqrDist(x[i, columnIndex] * inverseLength[k], x[j, columnIndex] * inverseLength[k]);
           yield return scale * Math.Exp(-d / 2.0) * sqrDist;
           k++;

@@ -21,7 +21,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq.Expressions;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -103,7 +102,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       if (p.Length != c) throw new ArgumentException("The length of the parameter vector does not match the number of free parameters for CovarianceSquaredExponentialIso", "p");
     }
 
-    public ParameterizedCovarianceFunction GetParameterizedCovarianceFunction(double[] p, IEnumerable<int> columnIndices) {
+    public ParameterizedCovarianceFunction GetParameterizedCovarianceFunction(double[] p, int[] columnIndices) {
       double inverseLength, scale;
       GetParameterValues(p, out scale, out inverseLength);
       var fixedInverseLength = HasFixedInverseLengthParameter;
@@ -113,11 +112,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       cov.Covariance = (x, i, j) => {
         double d = i == j
                 ? 0.0
-                : Util.SqrDist(x, i, j, inverseLength, columnIndices);
+                : Util.SqrDist(x, i, j, columnIndices, inverseLength);
         return scale * Math.Exp(-d / 2.0);
       };
       cov.CrossCovariance = (x, xt, i, j) => {
-        double d = Util.SqrDist(x, i, xt, j, inverseLength, columnIndices);
+        double d = Util.SqrDist(x, i, xt, j, columnIndices, inverseLength);
         return scale * Math.Exp(-d / 2.0);
       };
       cov.CovarianceGradient = (x, i, j) => GetGradient(x, i, j, scale, inverseLength, columnIndices,
@@ -126,11 +125,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     // order of returned gradients must match the order in GetParameterValues!
-    private static IEnumerable<double> GetGradient(double[,] x, int i, int j, double sf2, double inverseLength, IEnumerable<int> columnIndices, 
+    private static IEnumerable<double> GetGradient(double[,] x, int i, int j, double sf2, double inverseLength, int[] columnIndices,
       bool fixedInverseLength, bool fixedScale) {
       double d = i == j
                    ? 0.0
-                   : Util.SqrDist(x, i, j, inverseLength, columnIndices);
+                   : Util.SqrDist(x, i, j, columnIndices, inverseLength);
       double g = Math.Exp(-d / 2.0);
       if (!fixedInverseLength) yield return sf2 * g * d;
       if (!fixedScale) yield return 2.0 * sf2 * g;

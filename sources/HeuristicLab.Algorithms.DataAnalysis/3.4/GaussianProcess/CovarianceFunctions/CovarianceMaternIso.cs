@@ -110,7 +110,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       if (p.Length != c) throw new ArgumentException("The length of the parameter vector does not match the number of free parameters for CovarianceMaternIso", "p");
     }
 
-    public ParameterizedCovarianceFunction GetParameterizedCovarianceFunction(double[] p, IEnumerable<int> columnIndices) {
+    public ParameterizedCovarianceFunction GetParameterizedCovarianceFunction(double[] p, int[] columnIndices) {
       double inverseLength, scale;
       int d = DParameter.Value.Value;
       GetParameterValues(p, out scale, out inverseLength);
@@ -121,11 +121,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       cov.Covariance = (x, i, j) => {
         double dist = i == j
                        ? 0.0
-                       : Math.Sqrt(Util.SqrDist(x, i, j, Math.Sqrt(d) * inverseLength, columnIndices));
+                       : Math.Sqrt(Util.SqrDist(x, i, j, columnIndices, Math.Sqrt(d) * inverseLength));
         return scale * m(d, dist);
       };
       cov.CrossCovariance = (x, xt, i, j) => {
-        double dist = Math.Sqrt(Util.SqrDist(x, i, xt, j, Math.Sqrt(d) * inverseLength, columnIndices));
+        double dist = Math.Sqrt(Util.SqrDist(x, i, xt, j, columnIndices, Math.Sqrt(d) * inverseLength));
         return scale * m(d, dist);
       };
       cov.CovarianceGradient = (x, i, j) => GetGradient(x, i, j, d, scale, inverseLength, columnIndices, fixedInverseLength, fixedScale);
@@ -155,11 +155,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
 
-    private static IEnumerable<double> GetGradient(double[,] x, int i, int j, int d, double scale, double inverseLength, IEnumerable<int> columnIndices,
+    private static IEnumerable<double> GetGradient(double[,] x, int i, int j, int d, double scale, double inverseLength, int[] columnIndices,
       bool fixedInverseLength, bool fixedScale) {
       double dist = i == j
                    ? 0.0
-                   : Math.Sqrt(Util.SqrDist(x, i, j, Math.Sqrt(d) * inverseLength, columnIndices));
+                   : Math.Sqrt(Util.SqrDist(x, i, j, columnIndices, Math.Sqrt(d) * inverseLength));
 
       if (!fixedInverseLength) yield return scale * dm(d, dist);
       if (!fixedScale) yield return 2 * scale * m(d, dist);

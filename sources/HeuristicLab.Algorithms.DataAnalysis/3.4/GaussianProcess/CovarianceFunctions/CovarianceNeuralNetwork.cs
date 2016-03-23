@@ -101,7 +101,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       if (p.Length != c) throw new ArgumentException("The length of the parameter vector does not match the number of free parameters for CovarianceNeuralNetwork", "p");
     }
 
-    public ParameterizedCovarianceFunction GetParameterizedCovarianceFunction(double[] p, IEnumerable<int> columnIndices) {
+    public ParameterizedCovarianceFunction GetParameterizedCovarianceFunction(double[] p, int[] columnIndices) {
       double length, scale;
       GetParameterValues(p, out scale, out length);
       var fixedLength = HasFixedLengthParameter;
@@ -112,7 +112,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         double sx = 1.0;
         double s1 = 1.0;
         double s2 = 1.0;
-        foreach (var col in columnIndices) {
+        for (int c = 0; c < columnIndices.Length; c++) {
+          var col = columnIndices[c];
           sx += x[i, col] * x[j, col];
           s1 += x[i, col] * x[i, col];
           s2 += x[j, col] * x[j, col];
@@ -124,7 +125,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         double sx = 1.0;
         double s1 = 1.0;
         double s2 = 1.0;
-        foreach (var col in columnIndices) {
+        for (int c = 0; c < columnIndices.Length; c++) {
+          var col = columnIndices[c];
           sx += x[i, col] * xt[j, col];
           s1 += x[i, col] * x[i, col];
           s2 += xt[j, col] * xt[j, col];
@@ -137,13 +139,14 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     // order of returned gradients must match the order in GetParameterValues!
-    private static IEnumerable<double> GetGradient(double[,] x, int i, int j, double length, double scale, IEnumerable<int> columnIndices,
+    private static IEnumerable<double> GetGradient(double[,] x, int i, int j, double length, double scale, int[] columnIndices,
       bool fixedLength, bool fixedScale) {
       {
         double sx = 1.0;
         double s1 = 1.0;
         double s2 = 1.0;
-        foreach (var col in columnIndices) {
+        for (int c = 0; c < columnIndices.Length; c++) {
+          var col = columnIndices[c];
           sx += x[i, col] * x[j, col];
           s1 += x[i, col] * x[i, col];
           s2 += x[j, col] * x[j, col];

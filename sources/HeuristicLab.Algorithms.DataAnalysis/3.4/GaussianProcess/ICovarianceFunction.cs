@@ -19,9 +19,7 @@
  */
 #endregion
 
-using System;
 using System.Collections.Generic;
-using System.Linq.Expressions;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
@@ -39,6 +37,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   public interface ICovarianceFunction : IItem {
     int GetNumberOfParameters(int numberOfVariables);
     void SetParameter(double[] p);
-    ParameterizedCovarianceFunction GetParameterizedCovarianceFunction(double[] p, IEnumerable<int> columnIndices);
+    ParameterizedCovarianceFunction GetParameterizedCovarianceFunction(double[] p, int[] columnIndices);
   }
 }

@@ -82,7 +82,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       if (p.Length != c) throw new ArgumentException("The length of the parameter vector does not match the number of free parameters for CovarianceConst", "p");
     }
 
-    public ParameterizedCovarianceFunction GetParameterizedCovarianceFunction(double[] p, IEnumerable<int> columnIndices) {
+    public ParameterizedCovarianceFunction GetParameterizedCovarianceFunction(double[] p, int[] columnIndices) {
       double scale;
       GetParameterValues(p, out scale);
       // create functions
@@ -97,7 +97,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return cov;
     }
 
-    private static IEnumerable<double> GetGradient(double[,] x, int i, int j, double scale, IEnumerable<int> columnIndices) {
+    private static IEnumerable<double> GetGradient(double[,] x, int i, int j, double scale, int[] columnIndices) {
       yield return 2.0 * scale;
     }
   }

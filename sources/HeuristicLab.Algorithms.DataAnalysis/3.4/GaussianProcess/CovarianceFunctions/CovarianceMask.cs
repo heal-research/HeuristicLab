@@ -19,10 +19,7 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -72,11 +69,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       CovarianceFunctionParameter.Value.SetParameter(p);
     }
 
-    public ParameterizedCovarianceFunction GetParameterizedCovarianceFunction(double[] p, IEnumerable<int> columnIndices) {
+    public ParameterizedCovarianceFunction GetParameterizedCovarianceFunction(double[] p, int[] columnIndices) {
       var cov = CovarianceFunctionParameter.Value;
       var selectedDimensions = SelectedDimensionsParameter.Value;
 
-      return cov.GetParameterizedCovarianceFunction(p, selectedDimensions.Intersect(columnIndices));
+      return cov.GetParameterizedCovarianceFunction(p, selectedDimensions.Intersect(columnIndices).ToArray());
     }
   }
 }

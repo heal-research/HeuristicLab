@@ -116,7 +116,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       if (p.Length != c) throw new ArgumentException("The length of the parameter vector does not match the number of free parameters for CovariancePeriodic", "p");
     }
 
-    public ParameterizedCovarianceFunction GetParameterizedCovarianceFunction(double[] p, IEnumerable<int> columnIndices) {
+    public ParameterizedCovarianceFunction GetParameterizedCovarianceFunction(double[] p, int[]columnIndices) {
       double inverseLength, period, scale;
       GetParameterValues(p, out scale, out period, out inverseLength);
       var fixedInverseLength = HasFixedInverseLengthParameter;
@@ -145,7 +145,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
 
-    private static IEnumerable<double> GetGradient(double[,] x, int i, int j, IEnumerable<int> columnIndices, double scale, double period, double inverseLength,
+    private static IEnumerable<double> GetGradient(double[,] x, int i, int j, int[] columnIndices, double scale, double period, double inverseLength,
       bool fixedInverseLength, bool fixedPeriod, bool fixedScale) {
       double k = i == j ? 0.0 : Math.PI * GetDistance(x, x, i, j, columnIndices) / period;
       double gradient = Math.Sin(k) * inverseLength;
@@ -160,8 +160,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     }
 
-    private static double GetDistance(double[,] x, double[,] xt, int i, int j, IEnumerable<int> columnIndices) {
-      return Math.Sqrt(Util.SqrDist(x, i, xt, j, 1, columnIndices));
+    private static double GetDistance(double[,] x, double[,] xt, int i, int j, int[] columnIndices) {
+      return Math.Sqrt(Util.SqrDist(x, i, xt, j, columnIndices, 1));
     }
   }
 }

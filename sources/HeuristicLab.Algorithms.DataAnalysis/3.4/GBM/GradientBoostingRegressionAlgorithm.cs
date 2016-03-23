@@ -316,8 +316,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
           }
           // just produce an ensemble solution for now (TODO: correct scaling or linear regression for ensemble model weights)
 
-          var ensembleModel = new RegressionEnsembleModel(models) { AverageModelEstimates = false };
-          var ensembleSolution = ensembleModel.CreateRegressionSolution((IRegressionProblemData)problemData.Clone());
+          var ensembleSolution = CreateEnsembleSolution(models, (IRegressionProblemData)problemData.Clone());
           Results.Add(new Result("EnsembleSolution", ensembleSolution));
         }
       }
@@ -325,6 +324,45 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
         // reset everything
         alg.Prepare(true);
       }
+    }
+
+    private static IRegressionEnsembleSolution CreateEnsembleSolution(List<IRegressionModel> models,
+      IRegressionProblemData problemData) {
+      var rows = problemData.TrainingPartition.Size;
+      var features = models.Count;
+      double[,] inputMatrix = new double[rows, features + 1];
+
+      //add model estimates
+      for (int m = 0; m < models.Count; m++) {
+        var model = models[m];
+        var estimates = model.GetEstimatedValues(problemData.Dataset, problemData.TrainingIndices);
+        int estimatesCounter = 0;
+        foreach (var estimate in estimates) {
+          inputMatrix[estimatesCounter, m] = estimate;
+          estimatesCounter++;
+        }
+      }
+
+      //add target
+      var targets = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, problemData.TrainingIndices);
+      int targetCounter = 0;
+      foreach (var target in targets) {
+        inputMatrix[targetCounter, models.Count] = target;
+        targetCounter++;
+      }
+
+      alglib.linearmodel lm = new alglib.linearmodel();
+      alglib.lrreport ar = new alglib.lrreport();
+      double[] coefficients;
+      int retVal = 1;
+      alglib.lrbuildz(inputMatrix, rows, features, out retVal, out lm, out ar);
+      if (retVal != 1) throw new ArgumentException("Error in calculation of linear regression solution");
+
+      alglib.lrunpack(lm, out coefficients, out features);
+
+      var ensembleModel = new RegressionEnsembleModel(models, coefficients.Take(models.Count)) { AverageModelEstimates = false };
+      var ensembleSolution = ensembleModel.CreateRegressionSolution((IRegressionProblemData)problemData.Clone());
+      return ensembleSolution;
     }
 
 

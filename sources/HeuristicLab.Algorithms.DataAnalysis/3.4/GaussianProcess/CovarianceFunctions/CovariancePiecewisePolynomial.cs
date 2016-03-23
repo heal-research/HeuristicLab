@@ -112,7 +112,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       if (p.Length != n) throw new ArgumentException("The length of the parameter vector does not match the number of free parameters for CovariancePiecewisePolynomial", "p");
     }
 
-    public ParameterizedCovarianceFunction GetParameterizedCovarianceFunction(double[] p, IEnumerable<int> columnIndices) {
+    public ParameterizedCovarianceFunction GetParameterizedCovarianceFunction(double[] p, int[] columnIndices) {
       double length, scale;
       int v = VParameter.Value.Value;
       GetParameterValues(p, out length, out scale);
@@ -147,20 +147,20 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       // create functions
       var cov = new ParameterizedCovarianceFunction();
       cov.Covariance = (x, i, j) => {
-        double k = Math.Sqrt(Util.SqrDist(x, i, x, j, 1.0 / length, columnIndices));
+        double k = Math.Sqrt(Util.SqrDist(x, i, x, j, columnIndices, 1.0 / length));
         return scale * Math.Pow(Math.Max(1 - k, 0), exp + v) * f(k);
       };
       cov.CrossCovariance = (x, xt, i, j) => {
-        double k = Math.Sqrt(Util.SqrDist(x, i, xt, j, 1.0 / length, columnIndices));
+        double k = Math.Sqrt(Util.SqrDist(x, i, xt, j, columnIndices, 1.0 / length));
         return scale * Math.Pow(Math.Max(1 - k, 0), exp + v) * f(k);
       };
       cov.CovarianceGradient = (x, i, j) => GetGradient(x, i, j, length, scale, v, exp, f, df, columnIndices, fixedLength, fixedScale);
       return cov;
     }
 
-    private static IEnumerable<double> GetGradient(double[,] x, int i, int j, double length, double scale, int v, double exp, Func<double, double> f, Func<double, double> df, IEnumerable<int> columnIndices,
+    private static IEnumerable<double> GetGradient(double[,] x, int i, int j, double length, double scale, int v, double exp, Func<double, double> f, Func<double, double> df, int[] columnIndices,
       bool fixedLength, bool fixedScale) {
-      double k = Math.Sqrt(Util.SqrDist(x, i, x, j, 1.0 / length, columnIndices));
+      double k = Math.Sqrt(Util.SqrDist(x, i, x, j, columnIndices, 1.0 / length));
       if (!fixedLength) yield return scale * Math.Pow(Math.Max(1.0 - k, 0), exp + v - 1) * k * ((exp + v) * f(k) - Math.Max(1 - k, 0) * df(k));
       if (!fixedScale) yield return 2.0 * scale * Math.Pow(Math.Max(1 - k, 0), exp + v) * f(k);
     }

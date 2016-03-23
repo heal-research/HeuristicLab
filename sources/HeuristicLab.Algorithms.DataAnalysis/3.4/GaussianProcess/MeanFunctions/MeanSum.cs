@@ -67,7 +67,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
     }
 
-    public ParameterizedMeanFunction GetParameterizedMeanFunction(double[] p, IEnumerable<int> columnIndices) {
+    public ParameterizedMeanFunction GetParameterizedMeanFunction(double[] p, int[] columnIndices) {
       var termMf = new List<ParameterizedMeanFunction>();
       int totalNumberOfParameters = GetNumberOfParameters(numberOfVariables);
       int[] termIndexMap = new int[totalNumberOfParameters]; // maps k-th parameter to the correct mean-term

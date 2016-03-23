@@ -49,6 +49,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Tests {
 
       var alg = new GaussianProcessRegression();
       alg.Engine = new HeuristicLab.SequentialEngine.SequentialEngine();
+      alg.SetSeedRandomly = false;
 
       alg.Problem = new RegressionProblem();
       var provider = new RegressionCSVInstanceProvider();

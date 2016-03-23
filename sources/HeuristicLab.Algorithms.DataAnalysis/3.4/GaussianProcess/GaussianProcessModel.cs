@@ -166,7 +166,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       sqrSigmaNoise = Math.Exp(2.0 * hyp.Last());
       try {
         CalculateModel(ds, rows, scaleInputs);
-      } catch (alglib.alglibexception ae) {
+      }
+      catch (alglib.alglibexception ae) {
         // wrap exception so that calling code doesn't have to know about alglib implementation
         throw new ArgumentException("There was a problem in the calculation of the Gaussian process model", ae);
       }
@@ -184,12 +185,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
       int n = x.GetLength(0);
 
+      var columns = Enumerable.Range(0, x.GetLength(1)).ToArray();
       // calculate cholesky decomposed (lower triangular) covariance matrix
-      var cov = covarianceFunction.GetParameterizedCovarianceFunction(covarianceParameter, Enumerable.Range(0, x.GetLength(1)));
+      var cov = covarianceFunction.GetParameterizedCovarianceFunction(covarianceParameter, columns);
       this.l = CalculateL(x, cov, sqrSigmaNoise);
 
       // calculate mean
-      var mean = meanFunction.GetParameterizedMeanFunction(meanParameter, Enumerable.Range(0, x.GetLength(1)));
+      var mean = meanFunction.GetParameterizedMeanFunction(meanParameter, columns);
       double[] m = Enumerable.Range(0, x.GetLength(0))
         .Select(r => mean.Mean(x, r))
         .ToArray();
@@ -226,8 +228,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
       double[] meanGradients = new double[meanFunction.GetNumberOfParameters(nAllowedVariables)];
       for (int k = 0; k < meanGradients.Length; k++) {
-        var meanGrad = Enumerable.Range(0, alpha.Length)
-        .Select(r => mean.Gradient(x, r, k));
+        var meanGrad = new double[alpha.Length];
+        for (int g = 0; g < meanGrad.Length; g++)
+          meanGrad[g] = mean.Gradient(x, g, k);
         meanGradients[k] = -Util.ScalarProd(meanGrad, alpha);
       }
 
@@ -319,21 +322,24 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         double[,] newX = GetData(dataset, allowedInputVariables, rows, inputScaling);
         int newN = newX.GetLength(0);
 
-        var Ks = new double[newN, n];
-        var mean = meanFunction.GetParameterizedMeanFunction(meanParameter, Enumerable.Range(0, newX.GetLength(1)));
+        var Ks = new double[newN][];
+        var columns = Enumerable.Range(0, newX.GetLength(1)).ToArray();
+        var mean = meanFunction.GetParameterizedMeanFunction(meanParameter, columns);
         var ms = Enumerable.Range(0, newX.GetLength(0))
         .Select(r => mean.Mean(newX, r))
         .ToArray();
-        var cov = covarianceFunction.GetParameterizedCovarianceFunction(covarianceParameter, Enumerable.Range(0, newX.GetLength(1)));
+        var cov = covarianceFunction.GetParameterizedCovarianceFunction(covarianceParameter, columns);
         for (int i = 0; i < newN; i++) {
+          Ks[i] = new double[n];
           for (int j = 0; j < n; j++) {
-            Ks[i, j] = cov.CrossCovariance(x, newX, j, i);
+            Ks[i][j] = cov.CrossCovariance(x, newX, j, i);
           }
         }
 
         return Enumerable.Range(0, newN)
-          .Select(i => ms[i] + Util.ScalarProd(Util.GetRow(Ks, i), alpha));
-      } catch (alglib.alglibexception ae) {
+          .Select(i => ms[i] + Util.ScalarProd(Ks[i], alpha));
+      }
+      catch (alglib.alglibexception ae) {
         // wrap exception so that calling code doesn't have to know about alglib implementation
         throw new ArgumentException("There was a problem in the calculation of the Gaussian process model", ae);
       }
@@ -351,7 +357,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
         var kss = new double[newN];
         double[,] sWKs = new double[n, newN];
-        var cov = covarianceFunction.GetParameterizedCovarianceFunction(covarianceParameter, Enumerable.Range(0, x.GetLength(1)));
+        var columns = Enumerable.Range(0, newX.GetLength(1)).ToArray();
+        var cov = covarianceFunction.GetParameterizedCovarianceFunction(covarianceParameter, columns);
 
         if (l == null) {
           l = CalculateL(x, cov, sqrSigmaNoise);
@@ -371,13 +378,15 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         alglib.ablas.rmatrixlefttrsm(n, newN, l, 0, 0, false, false, 0, ref sWKs, 0, 0);
 
         for (int i = 0; i < newN; i++) {
-          var sumV = Util.ScalarProd(Util.GetCol(sWKs, i), Util.GetCol(sWKs, i));
+          var col = Util.GetCol(sWKs, i).ToArray();
+          var sumV = Util.ScalarProd(col, col);
           kss[i] += sqrSigmaNoise; // kss is V(f), add noise variance of predictive distibution to get V(y)
           kss[i] -= sumV;
           if (kss[i] < 0) kss[i] = 0;
         }
         return kss;
-      } catch (alglib.alglibexception ae) {
+      }
+      catch (alglib.alglibexception ae) {
         // wrap exception so that calling code doesn't have to know about alglib implementation
         throw new ArgumentException("There was a problem in the calculation of the Gaussian process model", ae);
       }

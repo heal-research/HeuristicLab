@@ -86,7 +86,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
     }
 
-    public ParameterizedCovarianceFunction GetParameterizedCovarianceFunction(double[] p, IEnumerable<int> columnIndices) {
+    public ParameterizedCovarianceFunction GetParameterizedCovarianceFunction(double[] p, int[] columnIndices) {
       double scale;
       GetParameterValues(p, out scale);
       var fixedScale = HasFixedScaleParameter;
@@ -99,7 +99,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return cov;
     }
 
-    private static IEnumerable<double> GetGradient(double[,] x, int i, int j, IEnumerable<int> columnIndices, double scale, ParameterizedCovarianceFunction cov,
+    private static IEnumerable<double> GetGradient(double[,] x, int i, int j, int[] columnIndices, double scale, ParameterizedCovarianceFunction cov,
       bool fixedScale) {
       if (!fixedScale) {
         yield return 2 * scale * cov.Covariance(x, i, j);
