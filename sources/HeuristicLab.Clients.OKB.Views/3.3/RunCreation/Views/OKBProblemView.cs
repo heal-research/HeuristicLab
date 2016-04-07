@@ -103,6 +103,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
     }
 
     private void SolutionsOnChanged(object sender, EventArgs e) {
+      if (InvokeRequired) { Invoke((Action<object, EventArgs>)SolutionsOnChanged, sender, e); return; }
       SetEnabledStateOfControls();
     }
 
