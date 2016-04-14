@@ -19,9 +19,15 @@
  */
 #endregion
 
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
+using HeuristicLab.Data.Views;
 using HeuristicLab.MainForm;
+using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
   [View("RegressionSolution View")]
@@ -34,6 +40,27 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     public new RegressionSolutionBase Content {
       get { return (RegressionSolutionBase)base.Content; }
       set { base.Content = value; }
+    }
+
+    protected virtual void btnImpactCalculation_Click(object sender, EventArgs e) {
+      var mainForm = (MainForm.WindowsForms.MainForm)MainFormManager.MainForm;
+      var view = new StringConvertibleArrayView();
+      view.Caption = Content.Name + " Variable Impacts";
+      view.Show();
+
+      Task.Factory.StartNew(() => {
+        try {
+          mainForm.AddOperationProgressToView(view, "Calculating variable impacts for " + Content.Name);
+
+          var impacts = RegressionSolutionVariableImpactsCalculator.CalculateImpacts(Content);
+          var impactArray = new DoubleArray(impacts.Select(i => i.Item2).ToArray());
+          impactArray.ElementNames = impacts.Select(i => i.Item1);
+          view.Content = (DoubleArray)impactArray.AsReadOnly();
+        }
+        finally {
+          mainForm.RemoveOperationProgressFromView(view);
+        }
+      });
     }
 
     #region drag and drop

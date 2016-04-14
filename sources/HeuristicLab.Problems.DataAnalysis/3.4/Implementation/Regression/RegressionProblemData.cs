@@ -109,6 +109,17 @@ namespace HeuristicLab.Problems.DataAnalysis {
       }
     }
 
+    public IEnumerable<double> TargetVariableValues {
+      get { return Dataset.GetDoubleValues(TargetVariable); }
+    }
+    public IEnumerable<double> TargetVariableTrainingValues {
+      get { return Dataset.GetDoubleValues(TargetVariable, TrainingIndices); }
+    }
+    public IEnumerable<double> TargetVariableTestValues {
+      get { return Dataset.GetDoubleValues(TargetVariable, TestIndices); }
+    }
+
+
     [StorableConstructor]
     protected RegressionProblemData(bool deserializing) : base(deserializing) { }
     [StorableHook(HookType.AfterDeserialization)]
