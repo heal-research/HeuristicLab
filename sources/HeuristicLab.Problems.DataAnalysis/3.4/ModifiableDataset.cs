@@ -74,7 +74,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       OnReset();
     }
 
-    public void ReplaceColumn<T>(string variableName, List<T> values) {
+    public void ReplaceVariable(string variableName, IList values) {
       if (!variableValues.ContainsKey(variableName))
         throw new ArgumentException(string.Format("Variable {0} is not present in the dataset."), variableName);
       if (values.Count != variableValues[variableName].Count)

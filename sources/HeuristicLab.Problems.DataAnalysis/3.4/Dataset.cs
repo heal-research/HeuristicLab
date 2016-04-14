@@ -114,11 +114,11 @@ namespace HeuristicLab.Problems.DataAnalysis {
       var values = new List<IList>();
       foreach (var v in variableNames) {
         if (VariableHasType<double>(v)) {
-          values.Add(((List<double>)variableValues[v]).ToList());
+          values.Add(new List<double>((List<double>)variableValues[v]));
         } else if (VariableHasType<string>(v)) {
-          values.Add(((List<string>)variableValues[v]).ToList());
+          values.Add(new List<string>((List<string>)variableValues[v]));
         } else if (VariableHasType<DateTime>(v)) {
-          values.Add(((List<DateTime>)variableValues[v]).ToList());
+          values.Add(new List<DateTime>((List<DateTime>)variableValues[v]));
         } else {
           throw new ArgumentException("Unknown variable type.");
         }
