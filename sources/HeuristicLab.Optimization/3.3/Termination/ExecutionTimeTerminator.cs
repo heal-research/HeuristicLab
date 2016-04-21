@@ -37,7 +37,7 @@ namespace HeuristicLab.Optimization {
     protected ExecutionTimeTerminator(bool deserializing) : base(deserializing) { }
     protected ExecutionTimeTerminator(ExecutionTimeTerminator original, Cloner cloner)
       : base(original, cloner) {
-      executable = cloner.Clone(executable);
+      executable = cloner.Clone(original.executable);
     }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new ExecutionTimeTerminator(this, cloner);
