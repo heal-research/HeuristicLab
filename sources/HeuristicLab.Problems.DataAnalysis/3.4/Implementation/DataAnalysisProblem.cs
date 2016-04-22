@@ -48,9 +48,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
     public T ProblemData {
       get { return ProblemDataParameter.Value; }
-      protected set {
-        ProblemDataParameter.Value = value;
-      }
+      set { ProblemDataParameter.Value = value; }
     }
     #endregion
     protected DataAnalysisProblem(DataAnalysisProblem<T> original, Cloner cloner)
@@ -59,15 +57,11 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
     [StorableConstructor]
     protected DataAnalysisProblem(bool deserializing) : base(deserializing) { }
-    public DataAnalysisProblem()
-      : base() {
-      Parameters.Add(new ValueParameter<T>(ProblemDataParameterName, ProblemDataParameterDescription));
-      RegisterEventHandlers();
-    }
 
     protected DataAnalysisProblem(T problemData)
-      : this() {
-      ProblemData = problemData;
+      : base() {
+      Parameters.Add(new ValueParameter<T>(ProblemDataParameterName, ProblemDataParameterDescription, problemData));
+      RegisterEventHandlers();
     }
 
     [StorableHook(HookType.AfterDeserialization)]

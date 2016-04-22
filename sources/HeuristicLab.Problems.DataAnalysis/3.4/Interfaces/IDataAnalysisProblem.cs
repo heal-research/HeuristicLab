@@ -33,6 +33,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
   public interface IDataAnalysisProblem<T> : IDataAnalysisProblem
   where T : class, IDataAnalysisProblemData {
     new IValueParameter<T> ProblemDataParameter { get; }
-    new T ProblemData { get; }
+    new T ProblemData { get; set; }
   }
 }

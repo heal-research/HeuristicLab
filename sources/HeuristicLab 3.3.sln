@@ -9,6 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		ConfigMerger.exe = ConfigMerger.exe
 		..\documentation\License\gpl-3.0.txt = ..\documentation\License\gpl-3.0.txt
 		MergeConfigs.cmd = MergeConfigs.cmd
+		Performance1.psess = Performance1.psess
 		PreBuildEvent.cmd = PreBuildEvent.cmd
 	EndProjectSection
 EndProject
@@ -2243,5 +2244,8 @@ Global
 		{71CDE004-C50F-48DF-858E-AB0AAA3537BC} = {D1B1DE45-F9C7-4FBF-B73C-E759BC4223D5}
 		{5E516C4F-9935-437F-8B15-ECEF4451744E} = {D1B1DE45-F9C7-4FBF-B73C-E759BC4223D5}
 		{7FC70D74-1813-48B7-9CE5-0BD913457579} = {D1B1DE45-F9C7-4FBF-B73C-E759BC4223D5}
+	EndGlobalSection
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
 	EndGlobalSection
 EndGlobal
