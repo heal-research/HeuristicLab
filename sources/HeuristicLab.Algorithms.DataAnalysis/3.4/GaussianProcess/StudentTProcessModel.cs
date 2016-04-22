@@ -251,13 +251,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       if (covGradients.Length > 0) {
         for (int i = 0; i < n; i++) {
           for (int j = 0; j < i; j++) {
-            var g = cov.CovarianceGradient(x, i, j).ToArray();
+            var g = cov.CovarianceGradient(x, i, j);
             for (int k = 0; k < covGradients.Length; k++) {
               covGradients[k] += lCopy[i, j] * g[k];
             }
           }
 
-          var gDiag = cov.CovarianceGradient(x, i, i).ToArray();
+          var gDiag = cov.CovarianceGradient(x, i, i);
           for (int k = 0; k < covGradients.Length; k++) {
             // diag
             covGradients[k] += 0.5 * lCopy[i, i] * gDiag[k];

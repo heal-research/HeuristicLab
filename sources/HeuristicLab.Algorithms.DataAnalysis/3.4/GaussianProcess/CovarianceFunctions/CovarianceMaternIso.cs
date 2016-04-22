@@ -154,15 +154,16 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return df * t * Math.Exp(-t);
     }
 
-
-    private static IEnumerable<double> GetGradient(double[,] x, int i, int j, int d, double scale, double inverseLength, int[] columnIndices,
+    private static IList<double> GetGradient(double[,] x, int i, int j, int d, double scale, double inverseLength, int[] columnIndices,
       bool fixedInverseLength, bool fixedScale) {
       double dist = i == j
                    ? 0.0
                    : Math.Sqrt(Util.SqrDist(x, i, j, columnIndices, Math.Sqrt(d) * inverseLength));
 
-      if (!fixedInverseLength) yield return scale * dm(d, dist);
-      if (!fixedScale) yield return 2 * scale * m(d, dist);
+      var g = new List<double>(2);
+      if (!fixedInverseLength) g.Add(scale * dm(d, dist));
+      if (!fixedScale) g.Add(2 * scale * m(d, dist));
+      return g;
     }
   }
 }

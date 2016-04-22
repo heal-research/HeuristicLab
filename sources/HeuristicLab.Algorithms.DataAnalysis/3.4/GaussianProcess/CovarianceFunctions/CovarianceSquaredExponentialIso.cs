@@ -125,14 +125,16 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     // order of returned gradients must match the order in GetParameterValues!
-    private static IEnumerable<double> GetGradient(double[,] x, int i, int j, double sf2, double inverseLength, int[] columnIndices,
+    private static IList<double> GetGradient(double[,] x, int i, int j, double sf2, double inverseLength, int[] columnIndices,
       bool fixedInverseLength, bool fixedScale) {
       double d = i == j
                    ? 0.0
                    : Util.SqrDist(x, i, j, columnIndices, inverseLength);
       double g = Math.Exp(-d / 2.0);
-      if (!fixedInverseLength) yield return sf2 * g * d;
-      if (!fixedScale) yield return 2.0 * sf2 * g;
+      var gr = new List<double>(2);
+      if (!fixedInverseLength) gr.Add(sf2 * g * d);
+      if (!fixedScale) gr.Add(2.0 * sf2 * g);
+      return gr;
     }
   }
 }

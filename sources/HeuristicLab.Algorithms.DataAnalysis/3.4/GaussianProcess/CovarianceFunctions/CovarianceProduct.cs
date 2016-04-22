@@ -22,7 +22,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -92,16 +91,18 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return product;
     }
 
-    public static IEnumerable<double> GetGradient(double[,] x, int i, int j, List<ParameterizedCovarianceFunction> factorFunctions) {
+    public static IList<double> GetGradient(double[,] x, int i, int j, List<ParameterizedCovarianceFunction> factorFunctions) {
       var covariances = factorFunctions.Select(f => f.Covariance(x, i, j)).ToArray();
+      var gr = new List<double>(factorFunctions.Sum(f => f.CovarianceGradient(x, i, j).Count));
       for (int ii = 0; ii < factorFunctions.Count; ii++) {
         foreach (var g in factorFunctions[ii].CovarianceGradient(x, i, j)) {
           double res = g;
           for (int jj = 0; jj < covariances.Length; jj++)
             if (ii != jj) res *= covariances[jj];
-          yield return res;
+          gr.Add(res);
         }
       }
+      return gr;
     }
   }
 }

@@ -120,11 +120,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return cov;
     }
 
-    private static IEnumerable<double> GetGradient(double[,] x, int i, int j, double c, double scale, int degree, int[] columnIndices,
+    private static IList<double> GetGradient(double[,] x, int i, int j, double c, double scale, int degree, int[] columnIndices,
       bool fixedConst, bool fixedScale) {
       double s = Util.ScalarProd(x, i, j, columnIndices, 1.0);
-      if (!fixedConst) yield return c * degree * scale * Math.Pow(c + s, degree - 1);
-      if (!fixedScale) yield return 2 * scale * Math.Pow(c + s, degree);
+      var g = new List<double>(2);
+      if (!fixedConst) g.Add(c * degree * scale * Math.Pow(c + s, degree - 1));
+      if (!fixedScale) g.Add(2 * scale * Math.Pow(c + s, degree));
+      return g;
     }
   }
 }

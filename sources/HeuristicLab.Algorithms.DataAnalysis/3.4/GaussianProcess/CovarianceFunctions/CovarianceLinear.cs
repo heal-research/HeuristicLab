@@ -20,7 +20,6 @@
 #endregion
 
 using System;
-using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -56,7 +55,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       var cov = new ParameterizedCovarianceFunction();
       cov.Covariance = (x, i, j) => Util.ScalarProd(x, i, j, columnIndices, 1.0);
       cov.CrossCovariance = (x, xt, i, j) => Util.ScalarProd(x, i, xt, j, columnIndices, 1.0);
-      cov.CovarianceGradient = (x, i, j) => Enumerable.Empty<double>();
+      cov.CovarianceGradient = (x, i, j) => new double[0];
       return cov;
     }
   }

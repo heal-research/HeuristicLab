@@ -21,7 +21,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -116,7 +115,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       if (p.Length != c) throw new ArgumentException("The length of the parameter vector does not match the number of free parameters for CovariancePeriodic", "p");
     }
 
-    public ParameterizedCovarianceFunction GetParameterizedCovarianceFunction(double[] p, int[]columnIndices) {
+    public ParameterizedCovarianceFunction GetParameterizedCovarianceFunction(double[] p, int[] columnIndices) {
       double inverseLength, period, scale;
       GetParameterValues(p, out scale, out period, out inverseLength);
       var fixedInverseLength = HasFixedInverseLengthParameter;
@@ -144,20 +143,21 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return cov;
     }
 
-
-    private static IEnumerable<double> GetGradient(double[,] x, int i, int j, int[] columnIndices, double scale, double period, double inverseLength,
+    private static IList<double> GetGradient(double[,] x, int i, int j, int[] columnIndices, double scale, double period, double inverseLength,
       bool fixedInverseLength, bool fixedPeriod, bool fixedScale) {
       double k = i == j ? 0.0 : Math.PI * GetDistance(x, x, i, j, columnIndices) / period;
       double gradient = Math.Sin(k) * inverseLength;
       gradient *= gradient;
-      if (!fixedInverseLength) yield return 4.0 * scale * Math.Exp(-2.0 * gradient) * gradient;
+      var g = new List<double>(3);
+      if (!fixedInverseLength) 
+        g.Add(4.0 * scale * Math.Exp(-2.0 * gradient) * gradient);
       if (!fixedPeriod) {
         double r = Math.Sin(k) * inverseLength;
-        yield return 2.0 * k * scale * Math.Exp(-2 * r * r) * Math.Sin(2 * k) * inverseLength * inverseLength;
+        g.Add(2.0 * k * scale * Math.Exp(-2 * r * r) * Math.Sin(2 * k) * inverseLength * inverseLength);
       }
       if (!fixedScale)
-        yield return 2.0 * scale * Math.Exp(-2 * gradient);
-
+        g.Add(2.0 * scale * Math.Exp(-2 * gradient));
+      return g;
     }
 
     private static double GetDistance(double[,] x, double[,] xt, int i, int j, int[] columnIndices) {

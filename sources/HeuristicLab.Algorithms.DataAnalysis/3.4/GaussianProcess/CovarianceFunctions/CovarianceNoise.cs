@@ -20,7 +20,6 @@
 #endregion
 
 using System;
-using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -91,9 +90,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       cov.Covariance = (x, i, j) => i == j ? scale : 0.0;
       cov.CrossCovariance = (x, xt, i, j) => Util.SqrDist(x, i, xt, j, columnIndices, 1.0) < 1e-9 ? scale : 0.0;
       if (fixedScale)
-        cov.CovarianceGradient = (x, i, j) => Enumerable.Empty<double>();
+        cov.CovarianceGradient = (x, i, j) => new double[0];
       else
-        cov.CovarianceGradient = (x, i, j) => Enumerable.Repeat(i == j ? 2.0 * scale : 0.0, 1);
+        cov.CovarianceGradient = (x, i, j) => new double[1] { i == j ? 2.0 * scale : 0.0 };
       return cov;
     }
   }

@@ -20,8 +20,6 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -90,15 +88,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       cov.Covariance = (x, i, j) => scale;
       cov.CrossCovariance = (x, xt, i, j) => scale;
       if (HasFixedScaleParameter) {
-        cov.CovarianceGradient = (x, i, j) => Enumerable.Empty<double>();
+        cov.CovarianceGradient = (x, i, j) => new double[0];
       } else {
-        cov.CovarianceGradient = (x, i, j) => GetGradient(x, i, j, scale, columnIndices);
+        cov.CovarianceGradient = (x, i, j) => new[] { 2.0 * scale };
       }
       return cov;
-    }
-
-    private static IEnumerable<double> GetGradient(double[,] x, int i, int j, double scale, int[] columnIndices) {
-      yield return 2.0 * scale;
     }
   }
 }

@@ -99,13 +99,15 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return cov;
     }
 
-    private static IEnumerable<double> GetGradient(double[,] x, int i, int j, int[] columnIndices, double scale, ParameterizedCovarianceFunction cov,
+    private static IList<double> GetGradient(double[,] x, int i, int j, int[] columnIndices, double scale, ParameterizedCovarianceFunction cov,
       bool fixedScale) {
+      var gr = new List<double>((!fixedScale ? 1 : 0) + cov.CovarianceGradient(x, i, j).Count);
       if (!fixedScale) {
-        yield return 2 * scale * cov.Covariance(x, i, j);
+        gr.Add(2 * scale * cov.Covariance(x, i, j));
       }
       foreach (var g in cov.CovarianceGradient(x, i, j))
-        yield return scale * g;
+        gr.Add(scale * g);
+      return gr;
     }
   }
 }

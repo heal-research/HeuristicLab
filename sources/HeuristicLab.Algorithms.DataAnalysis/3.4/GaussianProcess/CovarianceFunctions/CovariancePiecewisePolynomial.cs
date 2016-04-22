@@ -68,10 +68,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       Parameters.Add(new OptionalValueParameter<DoubleValue>("Length", "The length parameter of the isometric piecewise polynomial covariance function."));
       Parameters.Add(new OptionalValueParameter<DoubleValue>("Scale", "The scale parameter of the piecewise polynomial covariance function."));
 
-      var validValues = new ItemSet<IntValue>(new IntValue[] { 
-        (IntValue)(new IntValue().AsReadOnly()), 
-        (IntValue)(new IntValue(1).AsReadOnly()), 
-        (IntValue)(new IntValue(2).AsReadOnly()), 
+      var validValues = new ItemSet<IntValue>(new IntValue[] {
+        (IntValue)(new IntValue().AsReadOnly()),
+        (IntValue)(new IntValue(1).AsReadOnly()),
+        (IntValue)(new IntValue(2).AsReadOnly()),
         (IntValue)(new IntValue(3).AsReadOnly()) });
       Parameters.Add(new ConstrainedValueParameter<IntValue>("V", "The v parameter of the piecewise polynomial function (allowed values 0, 1, 2, 3).", validValues, validValues.First()));
     }
@@ -158,11 +158,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return cov;
     }
 
-    private static IEnumerable<double> GetGradient(double[,] x, int i, int j, double length, double scale, int v, double exp, Func<double, double> f, Func<double, double> df, int[] columnIndices,
+    private static IList<double> GetGradient(double[,] x, int i, int j, double length, double scale, int v, double exp, Func<double, double> f, Func<double, double> df, int[] columnIndices,
       bool fixedLength, bool fixedScale) {
       double k = Math.Sqrt(Util.SqrDist(x, i, x, j, columnIndices, 1.0 / length));
-      if (!fixedLength) yield return scale * Math.Pow(Math.Max(1.0 - k, 0), exp + v - 1) * k * ((exp + v) * f(k) - Math.Max(1 - k, 0) * df(k));
-      if (!fixedScale) yield return 2.0 * scale * Math.Pow(Math.Max(1 - k, 0), exp + v) * f(k);
+      var g = new List<double>(2);
+      if (!fixedLength) g.Add(scale * Math.Pow(Math.Max(1.0 - k, 0), exp + v - 1) * k * ((exp + v) * f(k) - Math.Max(1 - k, 0) * df(k)));
+      if (!fixedScale) g.Add(2.0 * scale * Math.Pow(Math.Max(1 - k, 0), exp + v) * f(k));
+      return g;
     }
   }
 }

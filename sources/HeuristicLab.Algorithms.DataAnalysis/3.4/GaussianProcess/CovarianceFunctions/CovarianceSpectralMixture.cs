@@ -180,11 +180,12 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     // order of returned gradients must match the order in GetParameterValues!
-    private static IEnumerable<double> GetGradient(double[,] x, int i, int j, int maxQ, double[] weight, double[] frequency, double[] lengthScale, int[] columnIndices,
+    private static IList<double> GetGradient(double[,] x, int i, int j, int maxQ, double[] weight, double[] frequency, double[] lengthScale, int[] columnIndices,
       bool fixedWeight, bool fixedFrequency, bool fixedLengthScale) {
       double[] tau = Util.GetRow(x, i, columnIndices).Zip(Util.GetRow(x, j, columnIndices), (xi, xj) => xi - xj).ToArray();
       int numberOfVariables = lengthScale.Length / maxQ;
 
+      var g = new List<double>((!fixedWeight ? maxQ : 0) + (!fixedFrequency ? maxQ * columnIndices.Length : 0) + (!fixedLengthScale ? maxQ * columnIndices.Length : 0));
       if (!fixedWeight) {
         // weight
         // for each component
@@ -197,7 +198,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
             k *= f1(tau[idx], lengthScale[q * numberOfVariables + col]) * f2(tau[idx], frequency[q * numberOfVariables + col]);
             idx++;
           }
-          yield return k;
+          g.Add(k);
         }
       }
 
@@ -212,7 +213,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
                        -2 * Math.PI * tau[idx] * frequency[q * numberOfVariables + c] *
                        Math.Sin(2 * Math.PI * tau[idx] * frequency[q * numberOfVariables + c]);
             idx++;
-            yield return weight[q] * k;
+            g.Add(weight[q] * k);
           }
         }
       }
@@ -228,10 +229,12 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
                        f1(tau[idx], lengthScale[q * numberOfVariables + c]) *
                        f2(tau[idx], frequency[q * numberOfVariables + c]);
             idx++;
-            yield return weight[q] * k;
+            g.Add(weight[q] * k);
           }
         }
       }
+
+      return g;
     }
   }
 }

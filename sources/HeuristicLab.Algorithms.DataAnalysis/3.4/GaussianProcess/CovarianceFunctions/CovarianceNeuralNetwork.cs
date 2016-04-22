@@ -139,27 +139,24 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     // order of returned gradients must match the order in GetParameterValues!
-    private static IEnumerable<double> GetGradient(double[,] x, int i, int j, double length, double scale, int[] columnIndices,
+    private static IList<double> GetGradient(double[,] x, int i, int j, double length, double scale, int[] columnIndices,
       bool fixedLength, bool fixedScale) {
-      {
-        double sx = 1.0;
-        double s1 = 1.0;
-        double s2 = 1.0;
-        for (int c = 0; c < columnIndices.Length; c++) {
-          var col = columnIndices[c];
-          sx += x[i, col] * x[j, col];
-          s1 += x[i, col] * x[i, col];
-          s2 += x[j, col] * x[j, col];
-        }
-        var h = (length + s1) * (length + s2);
-        var f = sx / Math.Sqrt(h);
-        if (!fixedLength) {
-          yield return -scale / Math.Sqrt(1.0 - f * f) * ((length * sx * (2.0 * length + s1 + s2)) / Math.Pow(h, 3.0 / 2.0));
-        }
-        if (!fixedScale) {
-          yield return 2.0 * scale * Math.Asin(f);
-        }
+      double sx = 1.0;
+      double s1 = 1.0;
+      double s2 = 1.0;
+      for (int c = 0; c < columnIndices.Length; c++) {
+        var col = columnIndices[c];
+        sx += x[i, col] * x[j, col];
+        s1 += x[i, col] * x[i, col];
+        s2 += x[j, col] * x[j, col];
       }
+      var h = (length + s1) * (length + s2);
+      var f = sx / Math.Sqrt(h);
+
+      var g = new List<double>(2);
+      if (!fixedLength) g.Add(-scale / Math.Sqrt(1.0 - f * f) * ((length * sx * (2.0 * length + s1 + s2)) / Math.Pow(h, 3.0 / 2.0)));
+      if (!fixedScale) g.Add(2.0 * scale * Math.Asin(f));
+      return g;
     }
   }
 }

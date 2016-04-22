@@ -26,7 +26,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
   public delegate double CovarianceFunctionDelegate(double[,] x, int i, int j);
   public delegate double CrossCovarianceFunctionDelegate(double[,] x, double[,] xt, int i, int j);
-  public delegate IEnumerable<double> CovarianceGradientFunctionDelegate(double[,] x, int i, int j);
+  public delegate IList<double> CovarianceGradientFunctionDelegate(double[,] x, int i, int j);
 
   public class ParameterizedCovarianceFunction {
     public CovarianceFunctionDelegate Covariance { get; set; }

@@ -89,19 +89,21 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       cov.Covariance = (x, i, j) => Util.ScalarProd(x, i, j, inverseLength, columnIndices);
       cov.CrossCovariance = (x, xt, i, j) => Util.ScalarProd(x, i, xt, j, inverseLength, columnIndices);
       if (fixedInverseLength)
-        cov.CovarianceGradient = (x, i, j) => Enumerable.Empty<double>();
+        cov.CovarianceGradient = (x, i, j) => new double[0];
       else
         cov.CovarianceGradient = (x, i, j) => GetGradient(x, i, j, inverseLength, columnIndices);
       return cov;
     }
 
-    private static IEnumerable<double> GetGradient(double[,] x, int i, int j, double[] inverseLength, int[] columnIndices) {
+    private static IList<double> GetGradient(double[,] x, int i, int j, double[] inverseLength, int[] columnIndices) {
       int k = 0;
+      var g = new List<double>(columnIndices.Length);
       for (int c = 0; c < columnIndices.Length; c++) {
         var columnIndex = columnIndices[c];
-        yield return -2.0 * x[i, columnIndex] * x[j, columnIndex] * inverseLength[k] * inverseLength[k];
+        g.Add(-2.0 * x[i, columnIndex] * x[j, columnIndex] * inverseLength[k] * inverseLength[k]);
         k++;
       }
+      return g;
     }
   }
 }

@@ -121,22 +121,24 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     // order of returned gradients must match the order in GetParameterValues!
-    private static IEnumerable<double> GetGradient(double[,] x, int i, int j, int[] columnIndices, double scale, double[] inverseLength,
+    private static IList<double> GetGradient(double[,] x, int i, int j, int[] columnIndices, double scale, double[] inverseLength,
       bool fixedInverseLength, bool fixedScale) {
       double d = i == j
                    ? 0.0
                    : Util.SqrDist(x, i, j, inverseLength, columnIndices);
 
       int k = 0;
+      var g = new List<double>((!fixedInverseLength ? columnIndices.Length : 0) + (!fixedScale ? 1 : 0));
       if (!fixedInverseLength) {
         for (int c = 0; c < columnIndices.Length; c++) {
           var columnIndex = columnIndices[c];
           double sqrDist = Util.SqrDist(x[i, columnIndex] * inverseLength[k], x[j, columnIndex] * inverseLength[k]);
-          yield return scale * Math.Exp(-d / 2.0) * sqrDist;
+          g.Add(scale * Math.Exp(-d / 2.0) * sqrDist);
           k++;
         }
       }
-      if (!fixedScale) yield return 2.0 * scale * Math.Exp(-d / 2.0);
+      if (!fixedScale) g.Add(2.0 * scale * Math.Exp(-d / 2.0));
+      return g;
     }
   }
 }
