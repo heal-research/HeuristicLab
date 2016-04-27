@@ -128,6 +128,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
       TrainingNormalizedGiniCoefficient = trainingNormalizedGini;
       TestNormalizedGiniCoefficient = testNormalizedGini;
 
+      ClassificationPerformanceMeasures.Reset();
+
       trainingPerformanceCalculator.Calculate(originalTrainingClassValues, estimatedTrainingClassValues);
       if (trainingPerformanceCalculator.ErrorState == OnlineCalculatorError.None)
         ClassificationPerformanceMeasures.SetTrainingResults(trainingPerformanceCalculator);
