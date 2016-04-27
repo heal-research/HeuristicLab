@@ -43,7 +43,7 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
     }
 
     private static int Decimals(this double x) {
-      if (double.IsInfinity(x) || double.IsNaN(x))
+      if (x.IsAlmost(0) || double.IsInfinity(x) || double.IsNaN(x))
         return 0;
 
       var v = Math.Abs(x);
@@ -69,6 +69,10 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
     private static double Round(this double value, int precision) {
       var n = Math.Pow(10, precision);
       return Math.Round(Math.Round(value * n) / n, precision);
+    }
+
+    private static bool IsAlmost(this double value, double other, double eps = 1e-12) {
+      return Math.Abs(value - other) < eps;
     }
   }
 }
