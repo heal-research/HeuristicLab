@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2016 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 
@@ -27,6 +28,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
   public interface IDataAnalysisSolution : INamedItem, IStorableContent {
     IDataAnalysisModel Model { get; }
     IDataAnalysisProblemData ProblemData { get; set; }
+    IEnumerable<string> GetUsedVariablesForPrediction();
 
     event EventHandler ModelChanged;
     event EventHandler ProblemDataChanged;
