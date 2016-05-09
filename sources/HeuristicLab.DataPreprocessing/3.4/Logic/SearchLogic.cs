@@ -92,6 +92,38 @@ namespace HeuristicLab.DataPreprocessing {
       return dic;
     }
 
+    public IList<int> GetMissingValueIndices(int columnIndex) {
+      int index = 0;
+      var indices = new List<int>();
+
+      if (MissingValueIndicies.ContainsKey(columnIndex)) {
+        return MissingValueIndicies[columnIndex];
+      }
+
+      if (preprocessingData.VariableHasType<double>(columnIndex)) {
+        foreach (var v in preprocessingData.GetValues<double>(columnIndex)) {
+          if (double.IsNaN(v)) indices.Add(index);
+          index++;
+        }
+      } else if (preprocessingData.VariableHasType<string>(columnIndex)) {
+        foreach (var v in preprocessingData.GetValues<string>(columnIndex)) {
+          if (string.IsNullOrEmpty(v)) indices.Add(index);
+          index++;
+        }
+      } else if (preprocessingData.VariableHasType<DateTime>(columnIndex)) {
+        foreach (var v in preprocessingData.GetValues<DateTime>(columnIndex)) {
+          if (DateTime.MinValue.Equals(v)) indices.Add(index);
+          index++;
+        }
+      } else {
+        throw new ArgumentException("column " + columnIndex + " contains a non supported type.");
+      }
+
+      MissingValueIndicies[columnIndex] = indices;
+      return MissingValueIndicies[columnIndex];
+    }
+
+
     public bool IsMissingValue(int columnIndex, int rowIndex) {
       if (preprocessingData.VariableHasType<double>(columnIndex)) {
         return double.IsNaN(preprocessingData.GetCell<double>(columnIndex, rowIndex));
@@ -102,33 +134,6 @@ namespace HeuristicLab.DataPreprocessing {
       } else {
         throw new ArgumentException("cell in column " + columnIndex + " and row index " + rowIndex + " contains a non supported type.");
       }
-    }
-
-    public IList<int> GetMissingValueIndices(int columnIndex) {
-      if (!MissingValueIndicies.ContainsKey(columnIndex)) {
-        if (preprocessingData.VariableHasType<double>(columnIndex)) {
-          MissingValueIndicies[columnIndex] = GetMissingValueIndices<double>(columnIndex);
-        } else if (preprocessingData.VariableHasType<string>(columnIndex)) {
-          MissingValueIndicies[columnIndex] = GetMissingValueIndices<string>(columnIndex);
-        } else if (preprocessingData.VariableHasType<DateTime>(columnIndex)) {
-          MissingValueIndicies[columnIndex] = GetMissingValueIndices<DateTime>(columnIndex);
-        } else {
-          throw new ArgumentException("column " + columnIndex + " contains a non supported type.");
-        }
-      }
-      return MissingValueIndicies[columnIndex];
-    }
-
-    private IList<int> GetMissingValueIndices<T>(int columnIndex) {
-      List<int> missingIndices = new List<int>();
-
-      for (int row = 0; row < preprocessingData.Rows; ++row) {
-        if (IsMissingValue(columnIndex, row)) {
-          missingIndices.Add(row);
-        }
-      }
-
-      return missingIndices;
     }
 
     public IEnumerable<T> GetValuesWithoutNaN<T>(int columnIndex, bool considerSelection) {
