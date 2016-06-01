@@ -336,44 +336,57 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       }
       if (node.Symbol is Multiplication) {
         AutoDiff.Term a, b;
-        if (!TryTransformToAutoDiff(node.GetSubtree(0), variables, parameters, variableNames, updateVariableWeights, out a) ||
-          !TryTransformToAutoDiff(node.GetSubtree(1), variables, parameters, variableNames, updateVariableWeights, out b)) {
-          term = null;
-          return false;
-        } else {
-          List<AutoDiff.Term> factors = new List<Term>();
-          foreach (var subTree in node.Subtrees.Skip(2)) {
-            AutoDiff.Term f;
-            if (!TryTransformToAutoDiff(subTree, variables, parameters, variableNames, updateVariableWeights, out f)) {
-              term = null;
-              return false;
-            }
-            factors.Add(f);
+        if (node.SubtreeCount == 1) {
+          a = AutoDiff.TermBuilder.Constant(1);
+          if (!TryTransformToAutoDiff(node.GetSubtree(0), variables, parameters, variableNames, updateVariableWeights, out b)) {
+            term = null;
+            return false;
           }
-          term = AutoDiff.TermBuilder.Product(a, b, factors.ToArray());
-          return true;
+        } else {
+          if (!TryTransformToAutoDiff(node.GetSubtree(0), variables, parameters, variableNames, updateVariableWeights, out a) ||
+              !TryTransformToAutoDiff(node.GetSubtree(1), variables, parameters, variableNames, updateVariableWeights, out b)) {
+            term = null;
+            return false;
+          }
         }
+        List<AutoDiff.Term> factors = new List<Term>();
+        foreach (var subTree in node.Subtrees.Skip(2)) {
+          AutoDiff.Term f;
+          if (!TryTransformToAutoDiff(subTree, variables, parameters, variableNames, updateVariableWeights, out f)) {
+            term = null;
+            return false;
+          }
+          factors.Add(f);
+        }
+        term = AutoDiff.TermBuilder.Product(a, b, factors.ToArray());
+        return true;
       }
       if (node.Symbol is Division) {
-        // only works for at least two subtrees
         AutoDiff.Term a, b;
-        if (!TryTransformToAutoDiff(node.GetSubtree(0), variables, parameters, variableNames, updateVariableWeights, out a) ||
-          !TryTransformToAutoDiff(node.GetSubtree(1), variables, parameters, variableNames, updateVariableWeights, out b)) {
-          term = null;
-          return false;
-        } else {
-          List<AutoDiff.Term> factors = new List<Term>();
-          foreach (var subTree in node.Subtrees.Skip(2)) {
-            AutoDiff.Term f;
-            if (!TryTransformToAutoDiff(subTree, variables, parameters, variableNames, updateVariableWeights, out f)) {
-              term = null;
-              return false;
-            }
-            factors.Add(1.0 / f);
+        if (node.SubtreeCount == 1) {
+          a = AutoDiff.TermBuilder.Constant(1);
+          if (!TryTransformToAutoDiff(node.GetSubtree(0), variables, parameters, variableNames, updateVariableWeights, out b)) {
+            term = null;
+            return false;
           }
-          term = AutoDiff.TermBuilder.Product(a, 1.0 / b, factors.ToArray());
-          return true;
+        } else {
+          if (!TryTransformToAutoDiff(node.GetSubtree(0), variables, parameters, variableNames, updateVariableWeights, out a) ||
+              !TryTransformToAutoDiff(node.GetSubtree(1), variables, parameters, variableNames, updateVariableWeights, out b)) {
+            term = null;
+            return false;
+          }
         }
+        List<AutoDiff.Term> factors = new List<Term>();
+        foreach (var subTree in node.Subtrees.Skip(2)) {
+          AutoDiff.Term f;
+          if (!TryTransformToAutoDiff(subTree, variables, parameters, variableNames, updateVariableWeights, out f)) {
+            term = null;
+            return false;
+          }
+          factors.Add(1.0 / f);
+        }
+        term = AutoDiff.TermBuilder.Product(a, 1.0 / b, factors.ToArray());
+        return true;
       }
       if (node.Symbol is Logarithm) {
         AutoDiff.Term t;
@@ -404,7 +417,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
           term = AutoDiff.TermBuilder.Power(t, 2.0);
           return true;
         }
-      } if (node.Symbol is SquareRoot) {
+      }
+      if (node.Symbol is SquareRoot) {
         AutoDiff.Term t;
         if (!TryTransformToAutoDiff(node.GetSubtree(0), variables, parameters, variableNames, updateVariableWeights, out t)) {
           term = null;
@@ -413,7 +427,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
           term = AutoDiff.TermBuilder.Power(t, 0.5);
           return true;
         }
-      } if (node.Symbol is Sine) {
+      }
+      if (node.Symbol is Sine) {
         AutoDiff.Term t;
         if (!TryTransformToAutoDiff(node.GetSubtree(0), variables, parameters, variableNames, updateVariableWeights, out t)) {
           term = null;
@@ -422,7 +437,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
           term = sin(t);
           return true;
         }
-      } if (node.Symbol is Cosine) {
+      }
+      if (node.Symbol is Cosine) {
         AutoDiff.Term t;
         if (!TryTransformToAutoDiff(node.GetSubtree(0), variables, parameters, variableNames, updateVariableWeights, out t)) {
           term = null;
@@ -431,7 +447,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
           term = cos(t);
           return true;
         }
-      } if (node.Symbol is Tangent) {
+      }
+      if (node.Symbol is Tangent) {
         AutoDiff.Term t;
         if (!TryTransformToAutoDiff(node.GetSubtree(0), variables, parameters, variableNames, updateVariableWeights, out t)) {
           term = null;
@@ -440,7 +457,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
           term = tan(t);
           return true;
         }
-      } if (node.Symbol is Erf) {
+      }
+      if (node.Symbol is Erf) {
         AutoDiff.Term t;
         if (!TryTransformToAutoDiff(node.GetSubtree(0), variables, parameters, variableNames, updateVariableWeights, out t)) {
           term = null;
@@ -449,7 +467,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
           term = erf(t);
           return true;
         }
-      } if (node.Symbol is Norm) {
+      }
+      if (node.Symbol is Norm) {
         AutoDiff.Term t;
         if (!TryTransformToAutoDiff(node.GetSubtree(0), variables, parameters, variableNames, updateVariableWeights, out t)) {
           term = null;
