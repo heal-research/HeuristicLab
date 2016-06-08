@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.Clients.Access;
@@ -60,6 +61,25 @@ namespace HeuristicLab.Optimizer {
       }
 
       if (mainForm != null) {
+        if (CheckSavedMainFormSettings()) {
+          mainForm.Location = Settings.Default.MainFormLocation;
+          mainForm.Size = Settings.Default.MainFormSize;
+          mainForm.WindowState = Settings.Default.MainFormWindowState;
+        }
+
+        mainForm.FormClosing += (sender, eventArgs) => {
+          if (mainForm.WindowState != FormWindowState.Minimized)
+            Settings.Default.MainFormWindowState = mainForm.WindowState;
+          if (mainForm.WindowState != FormWindowState.Normal) {
+            Settings.Default.MainFormLocation = mainForm.RestoreBounds.Location;
+            Settings.Default.MainFormSize = mainForm.RestoreBounds.Size;
+          } else if (mainForm.WindowState == FormWindowState.Normal) {
+            Settings.Default.MainFormLocation = mainForm.Location;
+            Settings.Default.MainFormSize = mainForm.Size;
+          }
+        };
+
+
         ClientInformation.InitializeAsync();
         UserInformation.InitializeAsync();
 
@@ -70,6 +90,14 @@ namespace HeuristicLab.Optimizer {
       } else {
         MessageBox.Show("Error loading setting for the MainForm Type. Please check your configuration file!", "HeuristicLab", MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
+    }
+
+    private bool CheckSavedMainFormSettings() {
+      var formArea = new Rectangle(Settings.Default.MainFormLocation, Settings.Default.MainFormSize);
+      var screenArea = Screen.FromRectangle(formArea).WorkingArea;
+      var overlappingArea = Rectangle.Intersect(formArea, screenArea);
+      bool offLimits = overlappingArea.IsEmpty || overlappingArea.Width * overlappingArea.Height < formArea.Width * formArea.Height * 0.25;
+      return !formArea.IsEmpty && !offLimits;
     }
   }
 }
