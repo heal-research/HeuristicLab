@@ -63,6 +63,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
     private const string SeedParameterName = "Seed";
     private const string SetSeedRandomlyParameterName = "SetSeedRandomly";
     private const string CreateSolutionParameterName = "CreateSolution";
+    private const string StoreRunsParameterName = "StoreRuns";
     private const string RegressionAlgorithmSolutionResultParameterName = "RegressionAlgorithmResult";
 
     #endregion
@@ -105,6 +106,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
     public IFixedValueParameter<BoolValue> CreateSolutionParameter {
       get { return (IFixedValueParameter<BoolValue>)Parameters[CreateSolutionParameterName]; }
     }
+    public IFixedValueParameter<BoolValue> StoreRunsParameter {
+      get { return (IFixedValueParameter<BoolValue>)Parameters[StoreRunsParameterName]; }
+    }
 
     #endregion
 
@@ -145,6 +149,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
       set { CreateSolutionParameter.Value.Value = value; }
     }
 
+    public bool StoreRuns {
+      get { return StoreRunsParameter.Value.Value; }
+      set { StoreRunsParameter.Value.Value = value; }
+    }
+
     public IAlgorithm RegressionAlgorithm {
       get { return RegressionAlgorithmParameter.Value; }
     }
@@ -177,7 +186,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
       var sgp = CreateOSGP();
       var regressionAlgs = new ItemSet<IAlgorithm>(new IAlgorithm[] {
         new RandomForestRegression(),
-        sgp, 
+        sgp,
         mctsSymbReg
       });
       foreach (var alg in regressionAlgs) alg.Prepare();
@@ -205,6 +214,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
       Parameters.Add(new FixedValueParameter<BoolValue>(CreateSolutionParameterName,
         "Flag that indicates if a solution should be produced at the end of the run", new BoolValue(true)));
       Parameters[CreateSolutionParameterName].Hidden = true;
+      Parameters.Add(new FixedValueParameter<BoolValue>(StoreRunsParameterName,
+        "Flag that indicates if the results of the individual runs should be stored for detailed analysis", new BoolValue(false)));
+      Parameters[StoreRunsParameterName].Hidden = true;
     }
 
     protected override void Run(CancellationToken cancellationToken) {
@@ -217,19 +229,20 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
       Results.Add(new Result("Iterations", iterations));
 
       var table = new DataTable("Qualities");
-      table.Rows.Add(new DataRow("Loss (train)"));
-      table.Rows.Add(new DataRow("Loss (test)"));
+      table.Rows.Add(new DataRow("R² (train)"));
+      table.Rows.Add(new DataRow("R² (test)"));
       Results.Add(new Result("Qualities", table));
       var curLoss = new DoubleValue();
       var curTestLoss = new DoubleValue();
-      Results.Add(new Result("Loss (train)", curLoss));
-      Results.Add(new Result("Loss (test)", curTestLoss));
+      Results.Add(new Result("R² (train)", curLoss));
+      Results.Add(new Result("R² (test)", curTestLoss));
       var runCollection = new RunCollection();
-      Results.Add(new Result("Runs", runCollection));
+      if (StoreRuns)
+        Results.Add(new Result("Runs", runCollection));
 
       // init
       var problemData = Problem.ProblemData;
-      var targetVarName = Problem.ProblemData.TargetVariable;
+      var targetVarName = problemData.TargetVariable;
       var activeVariables = problemData.AllowedInputVariables.Concat(new string[] { problemData.TargetVariable });
       var modifiableDataset = new ModifiableDataset(
         activeVariables,
@@ -302,9 +315,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
 
           }
 
-          runCollection.Add(run);
-          table.Rows["Loss (train)"].Values.Add(curLoss.Value);
-          table.Rows["Loss (test)"].Values.Add(curTestLoss.Value);
+          if (StoreRuns)
+            runCollection.Add(run);
+          table.Rows["R² (train)"].Values.Add(curLoss.Value);
+          table.Rows["R² (test)"].Values.Add(curTestLoss.Value);
           iterations.Value = i + 1;
         }
 
@@ -407,7 +421,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
     private static bool TryExecute(IAlgorithm alg, string regressionAlgorithmResultName, out IRegressionModel model, out IRun run) {
       model = null;
       using (var wh = new AutoResetEvent(false)) {
-        EventHandler<EventArgs<Exception>> handler = (sender, args) => wh.Set();
+        Exception ex = null;
+        EventHandler<EventArgs<Exception>> handler = (sender, args) => {
+          ex = args.Value;
+          wh.Set();
+        };
         EventHandler handler2 = (sender, args) => wh.Set();
         alg.ExceptionOccurred += handler;
         alg.Stopped += handler2;
@@ -416,7 +434,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
           alg.Start();
           wh.WaitOne();
 
+          if (ex != null) throw new AggregateException(ex);
           run = alg.Runs.Last();
+          alg.Runs.Clear();
           var sols = alg.Results.Select(r => r.Value).OfType<IRegressionSolution>();
           if (!sols.Any()) return false;
           var sol = sols.First();
