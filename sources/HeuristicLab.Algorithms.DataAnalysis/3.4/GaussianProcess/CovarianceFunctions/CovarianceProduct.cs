@@ -93,7 +93,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     public static IList<double> GetGradient(double[,] x, int i, int j, List<ParameterizedCovarianceFunction> factorFunctions) {
       var covariances = factorFunctions.Select(f => f.Covariance(x, i, j)).ToArray();
-      var gr = new List<double>(factorFunctions.Sum(f => f.CovarianceGradient(x, i, j).Count));
+      var gr = new List<double>();
       for (int ii = 0; ii < factorFunctions.Count; ii++) {
         foreach (var g in factorFunctions[ii].CovarianceGradient(x, i, j)) {
           double res = g;

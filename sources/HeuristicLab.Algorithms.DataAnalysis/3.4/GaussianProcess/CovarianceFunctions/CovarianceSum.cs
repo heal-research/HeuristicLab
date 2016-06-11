@@ -87,7 +87,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       sum.Covariance = (x, i, j) => functions.Select(e => e.Covariance(x, i, j)).Sum();
       sum.CrossCovariance = (x, xt, i, j) => functions.Select(e => e.CrossCovariance(x, xt, i, j)).Sum();
       sum.CovarianceGradient = (x, i, j) => {
-        var g = new List<double>(functions.Sum(e => e.CovarianceGradient(x, i, j).Count));
+        var g = new List<double>();
         foreach (var e in functions)
           g.AddRange(e.CovarianceGradient(x, i, j));
         return g;
