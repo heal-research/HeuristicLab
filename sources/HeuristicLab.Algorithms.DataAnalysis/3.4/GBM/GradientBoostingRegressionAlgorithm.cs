@@ -285,8 +285,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
 
           IRegressionModel model;
           IRun run;
+
           // try to find a model. The algorithm might fail to produce a model. In this case we just retry until the iterations are exhausted
-          if (TryExecute(alg, RegressionAlgorithmResult, out model, out run)) {
+          if (TryExecute(alg, rand.Next(), RegressionAlgorithmResult, out model, out run)) {
             int row = 0;
             // update predictions for training and test
             // update new targets (in the case of squared error loss we simply use negative residuals)
@@ -418,8 +419,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
       } else return false;
     }
 
-    private static bool TryExecute(IAlgorithm alg, string regressionAlgorithmResultName, out IRegressionModel model, out IRun run) {
+    private static bool TryExecute(IAlgorithm alg, int seed, string regressionAlgorithmResultName, out IRegressionModel model, out IRun run) {
       model = null;
+      SetSeed(alg, seed);
       using (var wh = new AutoResetEvent(false)) {
         Exception ex = null;
         EventHandler<EventArgs<Exception>> handler = (sender, args) => {
@@ -462,6 +464,19 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
         }
       }
       return model != null;
+    }
+
+    private static void SetSeed(IAlgorithm alg, int seed) {
+      // no common interface for algs that use a PRNG -> use naming convention to set seed
+      var paramItem = alg as IParameterizedItem;
+
+      if (paramItem.Parameters.ContainsKey("SetSeedRandomly")) {
+        ((BoolValue)paramItem.Parameters["SetSeedRandomly"].ActualValue).Value = false;
+        ((IntValue)paramItem.Parameters["Seed"].ActualValue).Value = seed;
+      } else {
+        throw new ArgumentException("Base learner does not have a seed parameter (algorithm {0})", alg.Name);
+      }
+
     }
   }
 }
