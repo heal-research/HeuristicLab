@@ -39,18 +39,21 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     internal struct TreeNode {
       public readonly static string NO_VARIABLE = null;
 
-      public TreeNode(string varName, double val, int leftIdx = -1, int rightIdx = -1)
+      public TreeNode(string varName, double val, int leftIdx = -1, int rightIdx = -1, double weightLeft = -1.0)
         : this() {
         VarName = varName;
         Val = val;
         LeftIdx = leftIdx;
         RightIdx = rightIdx;
+        WeightLeft = weightLeft;
       }
 
-      public string VarName { get; private set; } // name of the variable for splitting or NO_VARIABLE if terminal node
-      public double Val { get; private set; } // threshold
-      public int LeftIdx { get; private set; }
-      public int RightIdx { get; private set; }
+      public string VarName { get; internal set; } // name of the variable for splitting or NO_VARIABLE if terminal node
+      public double Val { get; internal set; } // threshold
+      public int LeftIdx { get; internal set; }
+      public int RightIdx { get; internal set; }
+      public double WeightLeft { get; internal set; } // for partial dependence plots (value in range [0..1] describes the fraction of training samples for the left sub-tree
+
 
       // necessary because the default implementation of GetHashCode for structs in .NET would only return the hashcode of val here
       public override int GetHashCode() {
@@ -63,6 +66,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
           return Val.Equals(other.Val) &&
             LeftIdx.Equals(other.LeftIdx) &&
             RightIdx.Equals(other.RightIdx) &&
+            WeightLeft.Equals(other.WeightLeft) &&
             EqualStrings(VarName, other.VarName);
         } else {
           return false;
@@ -78,13 +82,71 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     // not storable!
     private TreeNode[] tree;
 
-    [Storable]
+    #region old storable format 
+    // remove with HL 3.4
+    [Storable(AllowOneWay = true)]
     // to prevent storing the references to data caches in nodes
-    // TODO seemingly it is bad (performance-wise) to persist tuples (tuples are used as keys in a dictionary)
+    // seemingly, it is bad (performance-wise) to persist tuples (tuples are used as keys in a dictionary)
     private Tuple<string, double, int, int>[] SerializedTree {
-      get { return tree.Select(t => Tuple.Create(t.VarName, t.Val, t.LeftIdx, t.RightIdx)).ToArray(); }
-      set { this.tree = value.Select(t => new TreeNode(t.Item1, t.Item2, t.Item3, t.Item4)).ToArray(); }
+      // get { return tree.Select(t => Tuple.Create(t.VarName, t.Val, t.LeftIdx, t.RightIdx)).ToArray(); }
+      set { this.tree = value.Select(t => new TreeNode(t.Item1, t.Item2, t.Item3, t.Item4, -1.0)).ToArray(); } // use a weight of -1.0 to indicate that partial dependence cannot be calculated for old models 
     }
+    #endregion
+    #region new storable format
+    [Storable]
+    private string[] SerializedTreeVarNames {
+      get { return tree.Select(t => t.VarName).ToArray(); }
+      set {
+        if (tree == null) tree = new TreeNode[value.Length];
+        for (int i = 0; i < value.Length; i++) {
+          tree[i].VarName = value[i];
+        }
+      }
+    }
+    [Storable]
+    private double[] SerializedTreeValues {
+      get { return tree.Select(t => t.Val).ToArray(); }
+      set {
+        if (tree == null) tree = new TreeNode[value.Length];
+        for (int i = 0; i < value.Length; i++) {
+          tree[i].Val = value[i];
+        }
+      }
+    }
+    [Storable]
+    private int[] SerializedTreeLeftIdx {
+      get { return tree.Select(t => t.LeftIdx).ToArray(); }
+      set {
+        if (tree == null) tree = new TreeNode[value.Length];
+        for (int i = 0; i < value.Length; i++) {
+          tree[i].LeftIdx = value[i];
+        }
+      }
+    }
+    [Storable]
+    private int[] SerializedTreeRightIdx {
+      get { return tree.Select(t => t.RightIdx).ToArray(); }
+      set {
+        if (tree == null) tree = new TreeNode[value.Length];
+        for (int i = 0; i < value.Length; i++) {
+          tree[i].RightIdx = value[i];
+        }
+      }
+    }
+    [Storable]
+    private double[] SerializedTreeWeightLeft {
+      get { return tree.Select(t => t.WeightLeft).ToArray(); }
+      set {
+        if (tree == null) tree = new TreeNode[value.Length];
+        for (int i = 0; i < value.Length; i++) {
+          tree[i].WeightLeft = value[i];
+        }
+      }
+    }
+    #endregion
+
+
+
 
     [StorableConstructor]
     private RegressionTreeModel(bool serializing) : base(serializing) { }
@@ -107,8 +169,12 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         var node = t[nodeIdx];
         if (node.VarName == TreeNode.NO_VARIABLE)
           return node.Val;
-
-        if (columnCache[nodeIdx][row] <= node.Val)
+        if (columnCache[nodeIdx] == null) {
+          if (node.WeightLeft.IsAlmost(-1.0)) throw new InvalidOperationException("Cannot calculate partial dependence for trees loaded from older versions of HeuristicLab.");
+          // weighted average for partial dependence plot (recursive here because we need to calculate both sub-trees)
+          return node.WeightLeft * GetPredictionForRow(t, columnCache, node.LeftIdx, row) +
+                 (1.0 - node.WeightLeft) * GetPredictionForRow(t, columnCache, node.RightIdx, row);
+        } else if (columnCache[nodeIdx][row] <= node.Val)
           nodeIdx = node.LeftIdx;
         else
           nodeIdx = node.RightIdx;
@@ -126,7 +192,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
       for (int i = 0; i < tree.Length; i++) {
         if (tree[i].VarName != TreeNode.NO_VARIABLE) {
-          columnCache[i] = ds.GetReadOnlyDoubleValues(tree[i].VarName);
+          // tree models also support calculating estimations if not all variables used for training are available in the dataset
+          if (ds.ColumnNames.Contains(tree[i].VarName))
+            columnCache[i] = ds.GetReadOnlyDoubleValues(tree[i].VarName);
         }
       }
       return rows.Select(r => GetPredictionForRow(tree, columnCache, 0, r));
@@ -147,8 +215,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         return string.Format(CultureInfo.InvariantCulture, "{0} -> {1:F}{2}", part, n.Val, Environment.NewLine);
       } else {
         return
-          TreeToString(n.LeftIdx, string.Format(CultureInfo.InvariantCulture, "{0}{1}{2} <= {3:F}", part, string.IsNullOrEmpty(part) ? "" : " and ", n.VarName, n.Val))
-        + TreeToString(n.RightIdx, string.Format(CultureInfo.InvariantCulture, "{0}{1}{2} >  {3:F}", part, string.IsNullOrEmpty(part) ? "" : " and ", n.VarName, n.Val));
+          TreeToString(n.LeftIdx, string.Format(CultureInfo.InvariantCulture, "{0}{1}{2} <= {3:F} ({4:N3})", part, string.IsNullOrEmpty(part) ? "" : " and ", n.VarName, n.Val, n.WeightLeft))
+        + TreeToString(n.RightIdx, string.Format(CultureInfo.InvariantCulture, "{0}{1}{2}  >  {3:F} ({4:N3}))", part, string.IsNullOrEmpty(part) ? "" : " and ", n.VarName, n.Val, 1.0 - n.WeightLeft));
       }
     }
   }

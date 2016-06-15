@@ -179,7 +179,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
 
-    // processes potential splits from the queue as long as splits are left and the maximum size of the tree is not reached
+    // processes potential splits from the queue as long as splits are remaining and the maximum size of the tree is not reached
     private void CreateRegressionTreeFromQueue(int maxNodes, ILossFunction lossFunction) {
       while (queue.Any() && curTreeNodeIdx + 1 < maxNodes) { // two nodes are created in each loop
         var f = queue[queue.Count - 1]; // last element has the largest improvement
@@ -203,7 +203,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         var rightTreeIdx = CreateLeafNode(splitIdx + 1, endIdx, lossFunction);
 
         // overwrite existing leaf node with an internal node
-        tree[f.ParentNodeIdx] = new RegressionTreeModel.TreeNode(f.SplittingVariable, f.SplittingThreshold, leftTreeIdx, rightTreeIdx);
+        tree[f.ParentNodeIdx] = new RegressionTreeModel.TreeNode(f.SplittingVariable, f.SplittingThreshold, leftTreeIdx, rightTreeIdx, weightLeft: (splitIdx - startIdx + 1) / (double)(endIdx - startIdx + 1));
       }
     }
 
