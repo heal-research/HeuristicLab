@@ -335,57 +335,32 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         return true;
       }
       if (node.Symbol is Multiplication) {
-        AutoDiff.Term a, b;
-        if (node.SubtreeCount == 1) {
-          a = AutoDiff.TermBuilder.Constant(1);
-          if (!TryTransformToAutoDiff(node.GetSubtree(0), variables, parameters, variableNames, updateVariableWeights, out b)) {
+        List<AutoDiff.Term> terms = new List<Term>();
+        foreach (var subTree in node.Subtrees) {
+          AutoDiff.Term t;
+          if (!TryTransformToAutoDiff(subTree, variables, parameters, variableNames, updateVariableWeights, out t)) {
             term = null;
             return false;
           }
-        } else {
-          if (!TryTransformToAutoDiff(node.GetSubtree(0), variables, parameters, variableNames, updateVariableWeights, out a) ||
-              !TryTransformToAutoDiff(node.GetSubtree(1), variables, parameters, variableNames, updateVariableWeights, out b)) {
-            term = null;
-            return false;
-          }
+          terms.Add(t);
         }
-        List<AutoDiff.Term> factors = new List<Term>();
-        foreach (var subTree in node.Subtrees.Skip(2)) {
-          AutoDiff.Term f;
-          if (!TryTransformToAutoDiff(subTree, variables, parameters, variableNames, updateVariableWeights, out f)) {
-            term = null;
-            return false;
-          }
-          factors.Add(f);
-        }
-        term = AutoDiff.TermBuilder.Product(a, b, factors.ToArray());
+        if (terms.Count == 1) term = terms[0];
+        else term = terms.Aggregate((a, b) => new AutoDiff.Product(a, b));
         return true;
+
       }
       if (node.Symbol is Division) {
-        AutoDiff.Term a, b;
-        if (node.SubtreeCount == 1) {
-          a = AutoDiff.TermBuilder.Constant(1);
-          if (!TryTransformToAutoDiff(node.GetSubtree(0), variables, parameters, variableNames, updateVariableWeights, out b)) {
+        List<AutoDiff.Term> terms = new List<Term>();
+        foreach (var subTree in node.Subtrees) {
+          AutoDiff.Term t;
+          if (!TryTransformToAutoDiff(subTree, variables, parameters, variableNames, updateVariableWeights, out t)) {
             term = null;
             return false;
           }
-        } else {
-          if (!TryTransformToAutoDiff(node.GetSubtree(0), variables, parameters, variableNames, updateVariableWeights, out a) ||
-              !TryTransformToAutoDiff(node.GetSubtree(1), variables, parameters, variableNames, updateVariableWeights, out b)) {
-            term = null;
-            return false;
-          }
+          terms.Add(t);
         }
-        List<AutoDiff.Term> factors = new List<Term>();
-        foreach (var subTree in node.Subtrees.Skip(2)) {
-          AutoDiff.Term f;
-          if (!TryTransformToAutoDiff(subTree, variables, parameters, variableNames, updateVariableWeights, out f)) {
-            term = null;
-            return false;
-          }
-          factors.Add(1.0 / f);
-        }
-        term = AutoDiff.TermBuilder.Product(a, 1.0 / b, factors.ToArray());
+        if (terms.Count == 1) term = 1.0 / terms[0];
+        else term = terms.Aggregate((a, b) => new AutoDiff.Product(a, 1.0 / b));
         return true;
       }
       if (node.Symbol is Logarithm) {
