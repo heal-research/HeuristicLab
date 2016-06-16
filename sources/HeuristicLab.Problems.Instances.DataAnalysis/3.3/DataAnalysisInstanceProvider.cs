@@ -101,7 +101,10 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
         strBuilder.AppendLine();
       }
       using (var fileStream = new FileStream(path, FileMode.Create)) {
-        using (var writer = new StreamWriter(fileStream, Encoding.Default)) {
+        Encoding encoding = Encoding.GetEncoding(Encoding.Default.CodePage,
+          new EncoderReplacementFallback("*"),
+          new DecoderReplacementFallback("*"));
+        using (var writer = new StreamWriter(fileStream, encoding)) {
           writer.Write(strBuilder);
         }
       }
