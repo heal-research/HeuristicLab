@@ -107,26 +107,28 @@ namespace HeuristicLab.Common {
     public static IEnumerable<IEnumerable<T>> Combinations<T>(this IList<T> elements, int k) {
       if (k > elements.Count)
         throw new ArgumentException();
+
       if (k == 1) {
-        foreach(var element in elements) yield return new[] { element };
-      } else {
-        int n = elements.Count;
-        var range = new int[k];
-        for (int i = 1; i < k; ++i)
-          range[i] = i;
+        foreach (var element in elements)
+          yield return new[] { element };
+        yield break;
+      }
 
-        var length = BinomialCoefficient(n, k);
+      int n = elements.Count;
+      var range = Enumerable.Range(0, k).ToArray();
+      var length = BinomialCoefficient(n, k);
 
-        for (int i = 0; i < length; ++i) {
-          yield return range.Select(x => elements[x]);
-          if (i == length-1) break;
-          var m = k - 1;
-          var max = n - 1;
-          while (range[m] == max) { --m; --max; }
-          range[m]++;
-          for (int j = m + 1; j < k; ++j) {
-            range[j] = range[j-1] + 1;
-          }
+      for (int i = 0; i < length; ++i) {
+        yield return range.Select(x => elements[x]);
+
+        if (i == length - 1) break;
+        var m = k - 1;
+        var max = n - 1;
+
+        while (range[m] == max) { --m; --max; }
+        range[m]++;
+        for (int j = m + 1; j < k; ++j) {
+          range[j] = range[j - 1] + 1;
         }
       }
     }
@@ -137,17 +139,18 @@ namespace HeuristicLab.Common {
     /// It calculates the total number of unique combinations C(N, K) = N! / ( K! (N - K)! )
     /// using the  recursion C(N+1, K+1) = (N+1 / K+1) * C(N, K).
     /// <remarks>http://blog.plover.com/math/choose.html</remarks>
+    /// <remark>https://en.wikipedia.org/wiki/Binomial_coefficient#Multiplicative_formula</remark>
     /// <param name="n">The number of elements</param>
     /// <param name="k">The size of the group</param>
     /// <returns>The binomial coefficient C(N, K)</returns>
     /// </summary>
-    public static long BinomialCoefficient(long n, long k) 	{
+    public static long BinomialCoefficient(long n, long k) {
       if (k > n) return 0;
       if (k == n) return 1;
       if (k > n - k)
         k = n - k;
       long r = 1;
-      for (long d = 1; d <= k; d++) 	{
+      for (long d = 1; d <= k; d++) {
         r *= n--;
         r /= d;
       }
