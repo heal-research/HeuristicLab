@@ -25,7 +25,6 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Text;
-using System.Threading;
 using System.Windows.Forms;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -63,7 +62,6 @@ namespace HeuristicLab.Optimizer {
     private readonly IItem optionalNullChoice = new BoolValue(); // any item will do
 
     private StringBuilder failedInstances;
-    private readonly EventWaitHandle backgroundWorkerWaitHandle = new ManualResetEvent(false);
     private bool suppressTreeViewEventHandling, suppressCheckAllNoneEventHandling;
 
     public CreateExperimentDialog() : this(null) { }
@@ -104,7 +102,6 @@ namespace HeuristicLab.Optimizer {
     private void okButton_Click(object sender, EventArgs e) {
       SetMode(DialogMode.CreatingExperiment);
       experimentCreationBackgroundWorker.RunWorkerAsync();
-      backgroundWorkerWaitHandle.WaitOne(); // make sure the background worker has started before exiting
     }
 
     #region Parameters variation
@@ -766,7 +763,6 @@ namespace HeuristicLab.Optimizer {
 
     #region Experiment creation
     private void experimentCreationBackgroundWorker_DoWork(object sender, DoWorkEventArgs e) {
-      backgroundWorkerWaitHandle.Set(); // notify the ok button that we're busy now
       failedInstances = new StringBuilder();
       var localExperiment = new Experiment();
 
