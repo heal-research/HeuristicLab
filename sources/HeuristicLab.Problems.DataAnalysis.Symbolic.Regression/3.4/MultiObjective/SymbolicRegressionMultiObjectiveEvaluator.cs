@@ -79,7 +79,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       Parameters.Add(new FixedValueParameter<IntValue>(DecimalPlacesParameterName, "The number of decimal places used for rounding the quality values.", new IntValue(5)) { Hidden = true });
       Parameters.Add(new FixedValueParameter<BoolValue>(UseConstantOptimizationParameterName, "", new BoolValue(false)));
       Parameters.Add(new FixedValueParameter<IntValue>(ConstantOptimizationIterationsParameterName, "The number of iterations constant optimization should be applied.", new IntValue(5)));
-      Parameters.Add(new FixedValueParameter<BoolValue>(ConstantOptimizationUpdateVariableWeightsParameterName, "Determines if the variable weights in the tree should be optimized during constant optimization.", new BoolValue(true)));
+      Parameters.Add(new FixedValueParameter<BoolValue>(ConstantOptimizationUpdateVariableWeightsParameterName, "Determines if the variable weights in the tree should be optimized during constant optimization.", new BoolValue(true)) { Hidden = true });
     }
 
     [StorableHook(HookType.AfterDeserialization)]
