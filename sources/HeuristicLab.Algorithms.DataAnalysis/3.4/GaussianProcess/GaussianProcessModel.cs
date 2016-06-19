@@ -34,7 +34,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
   [Item("GaussianProcessModel", "Represents a Gaussian process posterior.")]
   public sealed class GaussianProcessModel : NamedItem, IGaussianProcessModel {
-    public IEnumerable<string> VariablesUsedForPrediction { get; }
+    public IEnumerable<string> VariablesUsedForPrediction {
+      get { return allowedInputVariables; }
+    }
 
     [Storable]
     private double negativeLogLikelihood;
