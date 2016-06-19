@@ -24,5 +24,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
   public interface IClassificationModel : IDataAnalysisModel {
     IEnumerable<double> GetEstimatedClassValues(IDataset dataset, IEnumerable<int> rows);
     IClassificationSolution CreateClassificationSolution(IClassificationProblemData problemData);
+    string TargetVariable { get; }
   }
 }

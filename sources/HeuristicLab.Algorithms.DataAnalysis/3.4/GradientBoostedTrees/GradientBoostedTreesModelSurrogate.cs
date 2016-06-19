@@ -21,6 +21,7 @@
 #endregion
 
 using System.Collections.Generic;
+using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -53,6 +54,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     [Storable]
     private int maxSize;
 
+    public string TargetVariable {
+      get { return trainingProblemData.TargetVariable; }
+    }
+
+    public IEnumerable<string> VariablesUsedForPrediction {
+      get { return actualModel.Models.SelectMany(x => x.VariablesUsedForPrediction).Distinct().OrderBy(x => x); }
+    }
 
     [StorableConstructor]
     private GradientBoostedTreesModelSurrogate(bool deserializing) : base(deserializing) { }
@@ -72,7 +80,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     // create only the surrogate model without an actual model
-    public GradientBoostedTreesModelSurrogate(IRegressionProblemData trainingProblemData, uint seed, ILossFunction lossFunction, int iterations, int maxSize, double r, double m, double nu)
+    public GradientBoostedTreesModelSurrogate(IRegressionProblemData trainingProblemData, uint seed,
+      ILossFunction lossFunction, int iterations, int maxSize, double r, double m, double nu)
       : base("Gradient boosted tree model", string.Empty) {
       this.trainingProblemData = trainingProblemData;
       this.seed = seed;
@@ -85,7 +94,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     // wrap an actual model in a surrograte
-    public GradientBoostedTreesModelSurrogate(IRegressionProblemData trainingProblemData, uint seed, ILossFunction lossFunction, int iterations, int maxSize, double r, double m, double nu, IGradientBoostedTreesModel model)
+    public GradientBoostedTreesModelSurrogate(IRegressionProblemData trainingProblemData, uint seed,
+      ILossFunction lossFunction, int iterations, int maxSize, double r, double m, double nu,
+      IGradientBoostedTreesModel model)
       : this(trainingProblemData, seed, lossFunction, iterations, maxSize, r, m, nu) {
       this.actualModel = model;
     }
@@ -103,7 +114,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public IRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData) {
       return new RegressionSolution(this, (IRegressionProblemData)problemData.Clone());
     }
-
 
     private IGradientBoostedTreesModel RecalculateModel() {
       return GradientBoostedTreesAlgorithmStatic.TrainGbm(trainingProblemData, lossFunction, maxSize, nu, r, m, iterations, seed).Model;

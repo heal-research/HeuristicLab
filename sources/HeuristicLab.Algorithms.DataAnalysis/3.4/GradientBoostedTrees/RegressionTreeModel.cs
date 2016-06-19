@@ -34,6 +34,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
   [Item("RegressionTreeModel", "Represents a decision tree for regression.")]
   public sealed class RegressionTreeModel : NamedItem, IRegressionModel {
+    public IEnumerable<string> VariablesUsedForPrediction {
+      get { return Enumerable.Empty<string>(); }
+    }
+
+    public string TargetVariable {
+      get { return string.Empty; }
+    }
 
     // trees are represented as a flat array    
     internal struct TreeNode {

@@ -31,6 +31,14 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
   [Item("OneR Classification Model", "A model that uses intervals for one variable to determine the class.")]
   public class OneRClassificationModel : NamedItem, IClassificationModel {
+    public IEnumerable<string> VariablesUsedForPrediction {
+      get { return Enumerable.Empty<string>(); }
+    }
+
+    public string TargetVariable {
+      get { return variable; }
+    }
+
     [Storable]
     protected string variable;
     public string Variable {

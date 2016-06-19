@@ -33,6 +33,12 @@ namespace HeuristicLab.Problems.DataAnalysis {
   [StorableClass]
   [Item("DiscriminantFunctionClassificationModel", "Represents a classification model that uses a discriminant function and classification thresholds.")]
   public class DiscriminantFunctionClassificationModel : NamedItem, IDiscriminantFunctionClassificationModel {
+    public IEnumerable<string> VariablesUsedForPrediction {
+      get { return model.VariablesUsedForPrediction; }
+    }
+
+    public string TargetVariable { get { return model.TargetVariable; } }
+
     [Storable]
     private IRegressionModel model;
     public IRegressionModel Model {

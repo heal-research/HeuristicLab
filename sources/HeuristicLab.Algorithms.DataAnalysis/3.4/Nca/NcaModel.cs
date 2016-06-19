@@ -30,6 +30,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   [Item("NCA Model", "")]
   [StorableClass]
   public class NcaModel : NamedItem, INcaModel {
+    public IEnumerable<string> VariablesUsedForPrediction {
+      get { return allowedInputVariables; }
+    }
+
+    public string TargetVariable {
+      get { return targetVariable; }
+    }
 
     [Storable]
     private double[,] transformationMatrix;

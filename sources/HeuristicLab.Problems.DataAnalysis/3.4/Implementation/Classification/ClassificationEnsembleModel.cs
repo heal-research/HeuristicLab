@@ -32,6 +32,13 @@ namespace HeuristicLab.Problems.DataAnalysis {
   [StorableClass]
   [Item("ClassificationEnsembleModel", "A classification model that contains an ensemble of multiple classification models")]
   public class ClassificationEnsembleModel : NamedItem, IClassificationEnsembleModel {
+    public IEnumerable<string> VariablesUsedForPrediction {
+      get { return models.SelectMany(x => x.VariablesUsedForPrediction).Distinct().OrderBy(x => x); }
+    }
+
+    public string TargetVariable {
+      get { return models.First().TargetVariable; }
+    }
 
     [Storable]
     private List<IClassificationModel> models;

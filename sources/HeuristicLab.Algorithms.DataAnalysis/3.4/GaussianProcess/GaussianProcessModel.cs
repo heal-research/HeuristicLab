@@ -34,6 +34,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
   [Item("GaussianProcessModel", "Represents a Gaussian process posterior.")]
   public sealed class GaussianProcessModel : NamedItem, IGaussianProcessModel {
+    public IEnumerable<string> VariablesUsedForPrediction { get; }
+
     [Storable]
     private double negativeLogLikelihood;
     public double NegativeLogLikelihood {
@@ -391,5 +393,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         throw new ArgumentException("There was a problem in the calculation of the Gaussian process model", ae);
       }
     }
+
   }
 }

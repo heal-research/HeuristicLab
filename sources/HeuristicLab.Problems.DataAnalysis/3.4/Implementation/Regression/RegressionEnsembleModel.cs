@@ -33,10 +33,19 @@ namespace HeuristicLab.Problems.DataAnalysis {
   [StorableClass]
   [Item("RegressionEnsembleModel", "A regression model that contains an ensemble of multiple regression models")]
   public sealed class RegressionEnsembleModel : NamedItem, IRegressionEnsembleModel {
+    public IEnumerable<string> VariablesUsedForPrediction {
+      get { return models.SelectMany(x => x.VariablesUsedForPrediction).Distinct().OrderBy(x => x); }
+    }
 
     private List<IRegressionModel> models;
     public IEnumerable<IRegressionModel> Models {
       get { return new List<IRegressionModel>(models); }
+    }
+
+    [Storable]
+    private readonly string target;
+    public string TargetVariable {
+      get { return models.First().TargetVariable; }
     }
 
     [Storable(Name = "Models")]

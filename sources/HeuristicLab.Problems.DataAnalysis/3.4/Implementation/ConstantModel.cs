@@ -31,8 +31,16 @@ namespace HeuristicLab.Problems.DataAnalysis {
   [StorableClass]
   [Item("Constant Model", "A model that always returns the same constant value regardless of the presented input data.")]
   public class ConstantModel : NamedItem, IRegressionModel, IClassificationModel, ITimeSeriesPrognosisModel, IStringConvertibleValue {
+    public IEnumerable<string> VariablesUsedForPrediction { get { return Enumerable.Empty<string>(); } }
+
     [Storable]
-    private double constant;
+    private readonly string targetVariable;
+    public string TargetVariable {
+      get { return targetVariable; }
+    }
+
+    [Storable]
+    private readonly double constant;
     public double Constant {
       get { return constant; }
       // setter not implemented because manipulation of the constant is not allowed
@@ -43,15 +51,18 @@ namespace HeuristicLab.Problems.DataAnalysis {
     protected ConstantModel(ConstantModel original, Cloner cloner)
       : base(original, cloner) {
       this.constant = original.constant;
+      this.targetVariable = original.targetVariable;
     }
+
     public override IDeepCloneable Clone(Cloner cloner) { return new ConstantModel(this, cloner); }
 
-    public ConstantModel(double constant)
+    public ConstantModel(double constant, string targetVariable = "Target")
       : base() {
       this.name = ItemName;
       this.description = ItemDescription;
       this.constant = constant;
       this.ReadOnly = true; // changing a constant regression model is not supported
+      this.targetVariable = targetVariable;
     }
 
     public IEnumerable<double> GetEstimatedValues(IDataset dataset, IEnumerable<int> rows) {

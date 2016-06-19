@@ -34,6 +34,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
   [Item("StudentTProcessModel", "Represents a Student-t process posterior.")]
   public sealed class StudentTProcessModel : NamedItem, IGaussianProcessModel {
+    public IEnumerable<string> VariablesUsedForPrediction {
+      get { return allowedInputVariables; }
+    }
+
     [Storable]
     private double negativeLogLikelihood;
     public double NegativeLogLikelihood {

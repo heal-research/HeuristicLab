@@ -57,6 +57,14 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
     #endregion
 
+    public string TargetVariable {
+      get { return models.First().TargetVariable; }
+    }
+
+    public IEnumerable<string> VariablesUsedForPrediction {
+      get { return models.SelectMany(x => x.VariablesUsedForPrediction).Distinct().OrderBy(x => x); }
+    }
+
     private readonly IList<IRegressionModel> models;
     public IEnumerable<IRegressionModel> Models { get { return models; } }
 
@@ -107,5 +115,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public IRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData) {
       return new RegressionSolution(this, (IRegressionProblemData)problemData.Clone());
     }
+
   }
 }

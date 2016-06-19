@@ -47,6 +47,14 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
     }
 
+    public IEnumerable<string> VariablesUsedForPrediction {
+      get { return allowedInputVariables; }
+    }
+
+    public string TargetVariable {
+      get { return targetVariable; }
+    }
+
     [Storable]
     private string targetVariable;
     [Storable]

@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2016 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -109,10 +109,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
     //mkommend avoid unnecessary event registration for result name changes
     protected override void RegisterItemEvents(IEnumerable<IResult> items) { }
     protected override void DeregisterItemEvents(IEnumerable<IResult> items) { }
-
-    public virtual IEnumerable<string> GetUsedVariablesForPrediction() {
-      return this.ProblemData.AllowedInputVariables;
-    }
 
     #region INamedItem Members
     [Storable]

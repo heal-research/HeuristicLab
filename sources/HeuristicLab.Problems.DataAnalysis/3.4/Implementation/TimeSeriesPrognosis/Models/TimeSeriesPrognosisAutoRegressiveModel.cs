@@ -30,6 +30,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
   [StorableClass]
   [Item("Autoregressive TimeSeries Model", "A linear autoregressive time series model used to predict future values.")]
   public class TimeSeriesPrognosisAutoRegressiveModel : NamedItem, ITimeSeriesPrognosisModel {
+    public IEnumerable<string> VariablesUsedForPrediction {
+      get { return Enumerable.Empty<string>(); } // what to return here?
+    }
+
     [Storable]
     public double[] Phi { get; private set; }
     [Storable]

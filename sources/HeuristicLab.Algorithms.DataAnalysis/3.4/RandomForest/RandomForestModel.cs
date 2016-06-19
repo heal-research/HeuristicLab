@@ -44,6 +44,22 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
     }
 
+    public IEnumerable<string> VariablesUsedForPrediction {
+      get { return originalTrainingData.AllowedInputVariables; }
+    }
+
+    public string TargetVariable {
+      get {
+        var regressionProblemData = originalTrainingData as IRegressionProblemData;
+        var classificationProblemData = originalTrainingData as IClassificationProblemData;
+        if (classificationProblemData != null)
+          return classificationProblemData.TargetVariable;
+        if (regressionProblemData != null)
+          return regressionProblemData.TargetVariable;
+        throw new InvalidOperationException("Getting the target variable requires either a regression or a classification problem data.");
+      }
+    }
+
     // instead of storing the data of the model itself
     // we instead only store data necessary to recalculate the same model lazily on demand
     [Storable]

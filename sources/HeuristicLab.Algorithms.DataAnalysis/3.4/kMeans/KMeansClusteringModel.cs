@@ -38,6 +38,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Function; }
     }
 
+    public IEnumerable<string> VariablesUsedForPrediction {
+      get { return allowedInputVariables; }
+    }
+
     [Storable]
     private string[] allowedInputVariables;
     public IEnumerable<string> AllowedInputVariables {

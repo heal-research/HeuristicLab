@@ -37,6 +37,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
   [Item("SupportVectorMachineModel", "Represents a support vector machine model.")]
   public sealed class SupportVectorMachineModel : NamedItem, ISupportVectorMachineModel {
+    public IEnumerable<string> VariablesUsedForPrediction {
+      get { return allowedInputVariables; }
+    }
+
+    public string TargetVariable {
+      get { return targetVariable; }
+    }
 
     private svm_model model;
     /// <summary>

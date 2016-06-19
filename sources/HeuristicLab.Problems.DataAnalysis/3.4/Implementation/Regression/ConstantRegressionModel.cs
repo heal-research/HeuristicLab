@@ -32,6 +32,14 @@ namespace HeuristicLab.Problems.DataAnalysis {
   [Item("Constant Regression Model", "A model that always returns the same constant value regardless of the presented input data.")]
   [Obsolete]
   public class ConstantRegressionModel : NamedItem, IRegressionModel, IStringConvertibleValue {
+    public IEnumerable<string> VariablesUsedForPrediction { get { return Enumerable.Empty<string>(); } }
+
+    [Storable]
+    private readonly string targetVariable;
+    public string TargetVariable {
+      get { return targetVariable; }
+    }
+
     [Storable]
     private double constant;
     public double Constant {
@@ -44,15 +52,18 @@ namespace HeuristicLab.Problems.DataAnalysis {
     protected ConstantRegressionModel(ConstantRegressionModel original, Cloner cloner)
       : base(original, cloner) {
       this.constant = original.constant;
+      this.targetVariable = original.targetVariable;
     }
+
     public override IDeepCloneable Clone(Cloner cloner) { return new ConstantRegressionModel(this, cloner); }
 
-    public ConstantRegressionModel(double constant)
+    public ConstantRegressionModel(double constant, string targetVariable = "Target")
       : base() {
       this.name = ItemName;
       this.description = ItemDescription;
       this.constant = constant;
       this.ReadOnly = true; // changing a constant regression model is not supported
+      this.targetVariable = targetVariable;
     }
 
     public IEnumerable<double> GetEstimatedValues(IDataset dataset, IEnumerable<int> rows) {

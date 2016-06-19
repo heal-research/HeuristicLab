@@ -47,6 +47,14 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
     }
 
+    public IEnumerable<string> VariablesUsedForPrediction {
+      get { return allowedInputVariables; }
+    }
+
+    public string TargetVariable {
+      get { return targetVariable; }
+    }
+
     [Storable]
     private string targetVariable;
     [Storable]
@@ -110,6 +118,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public MultinomialLogitClassificationSolution CreateClassificationSolution(IClassificationProblemData problemData) {
       return new MultinomialLogitClassificationSolution(new ClassificationProblemData(problemData), this);
     }
+
+
+
     IClassificationSolution IClassificationModel.CreateClassificationSolution(IClassificationProblemData problemData) {
       return CreateClassificationSolution(problemData);
     }
@@ -134,5 +145,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
     }
     #endregion
+
   }
 }
