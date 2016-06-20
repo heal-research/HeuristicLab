@@ -513,14 +513,10 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
         if (!reader.EndOfStream) {
           CurrentLine = reader.ReadLine();
           CurrentLineNumber++;
-          try {
+          if (reader.BaseStream.CanSeek) {
             BytesRead = reader.BaseStream.Position;
-          }
-          catch (IOException) {
+          } else {
             BytesRead += CurrentLine.Length + 2; // guess
-          }
-          catch (NotSupportedException) {
-            BytesRead += CurrentLine.Length + 2;
           }
           int i = 0;
           if (!string.IsNullOrWhiteSpace(CurrentLine)) {
