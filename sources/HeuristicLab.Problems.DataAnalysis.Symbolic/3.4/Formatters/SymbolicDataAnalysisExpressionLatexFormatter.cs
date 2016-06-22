@@ -402,7 +402,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             // replace "." with ".&" to align decimal points
             var constStr = string.Format(System.Globalization.NumberFormatInfo.InvariantInfo, "{0:G5}", constant);
             if (!constStr.Contains(".")) constStr = constStr + ".0";
-            constStr = constStr.Replace(".", "\\negthickspace&.");  // fix problem in rendering of aligned expressions
+            constStr = constStr.Replace(".", "&.");  // fix problem in rendering of aligned expressions
             strBuilder.Append("c_{" + i + "}& = & " + constStr);
             strBuilder.Append(@"\\");
             i++;

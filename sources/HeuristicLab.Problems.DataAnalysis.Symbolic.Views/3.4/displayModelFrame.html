@@ -1,53 +1,43 @@
-﻿<!-- this file is derived from sample.html from the MathJax distribution -->
-<!-- Copyright (c) 2009-2011 Design Science, Inc. -->
+﻿<!-- this file is derived from sample_tex.html from the MathJax distribution -->
+<!-- Copyright (c) 2010-2015 The MathJax Consortium -->
 <!-- adapted by HEAL for HeuristicLab-->
 <!DOCTYPE html>
 <html>
 <head>
-  <!-- title change by HEAL -->
-  <title>Symbolic Expression Tree</title>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
-  <script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
-    jax: ["input/TeX","output/HTML-CSS"],
-    tex2jax: {inlineMath: [["$","$"],["\\(","\\)"]]},
-    imageFont: null
-  });
-  
-</script>
-  <script type="text/javascript" src="./MathJax.js"></script>
-  <!-- begin changes by HEAL -->
-  <script type="text/javascript">
-  function refreshModel() {
-    var model = document.getElementById("model");
-    MathJax.Hub.Queue(["Typeset",MathJax.Hub,model]);
-  }
-</script>
-  <!-- end changes by HEAL -->
-  <style>
-h1 {text-align:center}
-h2 {
-  font-weight: bold;
-  background-color: #DDDDDD;
-  padding: .2em .5em;
-  margin-top: 1.5em;
-  border-top: 3px solid #666666;
-  border-bottom: 2px solid #999999;
-}
-</style>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- title change by HEAL -->
+    <title>Symbolic Expression Tree</title>
+
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+        extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+        jax: ["input/TeX","output/SVG"],
+        tex2jax: {inlineMath: [["$","$"],["\\(","\\)"]]},
+        "HTML-CSS": {preferredFont: "STIX-Web"},
+        MathMenu: { showLocale:false},
+        imageFont: null
+        });
+    </script>
+
+    <script type="text/javascript" async
+            src="./MathJax/MathJax.js?config=TeX-AMS_SVG&locale=en">
+    </script>
 </head>
 <body id="body">
-  <noscript>
-    <div style="color: #CC0000; text-align: center">
-      <b>Warning: <a href="http://www.mathjax.org/">MathJax</a> requires JavaScript to process
-        the mathematics on this page.<br />
-        If your browser supports JavaScript, be sure it is enabled.</b>
-    </div>
-    <hr>
-  </noscript>
-  <p id="model">
-  </p>
+    <noscript>
+        <div style="color: #CC0000; text-align: center">
+            <b>
+                Warning: <a href="http://www.mathjax.org/">MathJax</a> requires JavaScript to process
+                the mathematics on this page.<br />
+                If your browser supports JavaScript, be sure it is enabled.
+            </b>
+        </div>
+        <hr>
+    </noscript>
+    <p id="model">
+    </p>
 </body>
 </html>

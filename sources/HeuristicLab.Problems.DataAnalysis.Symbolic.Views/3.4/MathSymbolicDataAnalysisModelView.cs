@@ -64,7 +64,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
         HtmlElement newElement = webBrowser.Document.GetElementById("model");
         newElement.InnerText = string.Empty;
       }
-      webBrowser.Document.InvokeScript("refreshModel");
     }
   }
 }
