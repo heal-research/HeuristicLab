@@ -164,9 +164,9 @@ namespace HeuristicLab.DataPreprocessing {
     public double GetOneQuarterPercentile(int columnIndex) {
       double percentile = double.NaN;
       if (preprocessingData.VariableHasType<double>(columnIndex)) {
-        percentile = GetValuesWithoutNaN<double>(columnIndex).Quantile(0.25);
+        percentile = GetValuesWithoutNaN<double>(columnIndex).DefaultIfEmpty(double.NaN).Quantile(0.25);
       } else if (preprocessingData.VariableHasType<DateTime>(columnIndex)) {
-        percentile = GetDateTimeAsSeconds(columnIndex).Quantile(0.25);
+        percentile = GetDateTimeAsSeconds(columnIndex).DefaultIfEmpty(double.NaN).Quantile(0.25);
       }
       return percentile;
     }
@@ -174,9 +174,9 @@ namespace HeuristicLab.DataPreprocessing {
     public double GetThreeQuarterPercentile(int columnIndex) {
       double percentile = double.NaN;
       if (preprocessingData.VariableHasType<double>(columnIndex)) {
-        percentile = GetValuesWithoutNaN<double>(columnIndex).Quantile(0.75);
+        percentile = GetValuesWithoutNaN<double>(columnIndex).DefaultIfEmpty(double.NaN).Quantile(0.75);
       } else if (preprocessingData.VariableHasType<DateTime>(columnIndex)) {
-        percentile = GetDateTimeAsSeconds(columnIndex).Quantile(0.75);
+        percentile = GetDateTimeAsSeconds(columnIndex).DefaultIfEmpty(double.NaN).Quantile(0.75);
       }
       return percentile;
     }
