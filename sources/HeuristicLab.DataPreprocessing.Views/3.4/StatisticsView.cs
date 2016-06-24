@@ -145,15 +145,15 @@ namespace HeuristicLab.DataPreprocessing.Views {
       return new List<string> {
         logic.GetColumnTypeAsString(columnIndex),
         logic.GetMissingValueCount(columnIndex).ToString(),
-        logic.GetMin<double>(columnIndex).ToString(),
-        logic.GetMax<double>(columnIndex).ToString(),
+        logic.GetMin<double>(columnIndex,double.NaN).ToString(),
+        logic.GetMax<double>(columnIndex,double.NaN).ToString(),
         logic.GetMedian(columnIndex).ToString(),
         logic.GetAverage(columnIndex).ToString(),
         logic.GetStandardDeviation(columnIndex).ToString(),
         logic.GetVariance(columnIndex).ToString(),
         logic.GetOneQuarterPercentile(columnIndex).ToString(),
         logic.GetThreeQuarterPercentile(columnIndex).ToString(),
-        logic.GetMostCommonValue<double>(columnIndex).ToString(),
+        logic.GetMostCommonValue<double>(columnIndex,double.NaN).ToString(),
         logic.GetDifferentValuesCount<double>(columnIndex).ToString()
       };
     }
@@ -171,7 +171,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
         "", //variance
         "", //quarter percentile
         "", //three quarter percentile
-        logic.GetMostCommonValue<string>(columnIndex) ?? "",
+        logic.GetMostCommonValue<string>(columnIndex,string.Empty) ?? "",
         logic.GetDifferentValuesCount<string>(columnIndex).ToString()
       };
     }
@@ -181,15 +181,15 @@ namespace HeuristicLab.DataPreprocessing.Views {
       return new List<string> {
         logic.GetColumnTypeAsString(columnIndex),
         logic.GetMissingValueCount(columnIndex).ToString(),
-        logic.GetMin<DateTime>(columnIndex).ToString(),
-        logic.GetMax<DateTime>(columnIndex).ToString(),
+        logic.GetMin<DateTime>(columnIndex,DateTime.MinValue).ToString(),
+        logic.GetMax<DateTime>(columnIndex,DateTime.MinValue).ToString(),
         logic.GetMedianDateTime(columnIndex).ToString(),
         logic.GetAverageDateTime(columnIndex).ToString(),
         logic.GetStandardDeviation(columnIndex).ToString(),
         logic.GetVariance(columnIndex).ToString(), //variance
         logic.GetOneQuarterPercentile(columnIndex).ToString(),
         logic.GetThreeQuarterPercentile(columnIndex).ToString(),
-        logic.GetMostCommonValue<DateTime>(columnIndex).ToString(),
+        logic.GetMostCommonValue<DateTime>(columnIndex,DateTime.MinValue).ToString(),
         logic.GetDifferentValuesCount<DateTime>(columnIndex).ToString()
       };
     }

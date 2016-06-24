@@ -84,16 +84,16 @@ namespace HeuristicLab.DataPreprocessing {
 
         foreach (var column in cells) {
           if (preprocessingData.VariableHasType<double>(column.Key)) {
-            double max = statisticsLogic.GetMax<double>(column.Key, considerSelection);
-            double min = statisticsLogic.GetMin<double>(column.Key, considerSelection);
+            double max = statisticsLogic.GetMax<double>(column.Key, double.NaN, considerSelection);
+            double min = statisticsLogic.GetMin<double>(column.Key, double.NaN, considerSelection);
             double randMultiplier = (max - min);
             foreach (int index in column.Value) {
               double rand = r.NextDouble() * randMultiplier + min;
               preprocessingData.SetCell<double>(column.Key, index, rand);
             }
           } else if (preprocessingData.VariableHasType<DateTime>(column.Key)) {
-            DateTime min = statisticsLogic.GetMin<DateTime>(column.Key, considerSelection);
-            DateTime max = statisticsLogic.GetMax<DateTime>(column.Key, considerSelection);
+            DateTime min = statisticsLogic.GetMin<DateTime>(column.Key, DateTime.MinValue, considerSelection);
+            DateTime max = statisticsLogic.GetMax<DateTime>(column.Key, DateTime.MinValue, considerSelection);
             double randMultiplier = (max - min).TotalSeconds;
             foreach (int index in column.Value) {
               double rand = r.NextDouble() * randMultiplier;
@@ -212,11 +212,11 @@ namespace HeuristicLab.DataPreprocessing {
       preprocessingData.InTransaction(() => {
         foreach (var column in cells) {
           if (preprocessingData.VariableHasType<double>(column.Key)) {
-            ReplaceIndicesByValue<double>(column.Key, column.Value, statisticsLogic.GetMostCommonValue<double>(column.Key, considerSelection));
+            ReplaceIndicesByValue<double>(column.Key, column.Value, statisticsLogic.GetMostCommonValue<double>(column.Key, double.NaN, considerSelection));
           } else if (preprocessingData.VariableHasType<string>(column.Key)) {
-            ReplaceIndicesByValue<string>(column.Key, column.Value, statisticsLogic.GetMostCommonValue<string>(column.Key, considerSelection));
+            ReplaceIndicesByValue<string>(column.Key, column.Value, statisticsLogic.GetMostCommonValue<string>(column.Key, string.Empty, considerSelection));
           } else if (preprocessingData.VariableHasType<DateTime>(column.Key)) {
-            ReplaceIndicesByValue<DateTime>(column.Key, column.Value, statisticsLogic.GetMostCommonValue<DateTime>(column.Key, considerSelection));
+            ReplaceIndicesByValue<DateTime>(column.Key, column.Value, statisticsLogic.GetMostCommonValue<DateTime>(column.Key, DateTime.MinValue, considerSelection));
           } else {
             throw new ArgumentException("column with index: " + column.Key + " contains a non supported type.");
           }

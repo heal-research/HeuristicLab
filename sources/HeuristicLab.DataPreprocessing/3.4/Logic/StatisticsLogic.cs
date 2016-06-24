@@ -70,8 +70,8 @@ namespace HeuristicLab.DataPreprocessing {
       return searchLogic.GetMissingValueIndices(columnIndex).Count();
     }
 
-    public T GetMin<T>(int columnIndex, bool considerSelection = false) where T : IComparable<T> {
-      var min = default(T);
+    public T GetMin<T>(int columnIndex, T defaultValue, bool considerSelection = false) where T : IComparable<T> {
+      var min = defaultValue;
       if (preprocessingData.VariableHasType<T>(columnIndex)) {
         var values = GetValuesWithoutNaN<T>(columnIndex, considerSelection);
         if (values.Any()) {
@@ -81,8 +81,8 @@ namespace HeuristicLab.DataPreprocessing {
       return min;
     }
 
-    public T GetMax<T>(int columnIndex, bool considerSelection = false) where T : IComparable<T> {
-      var max = default(T);
+    public T GetMax<T>(int columnIndex, T defaultValue, bool considerSelection = false) where T : IComparable<T> {
+      var max = defaultValue;
       if (preprocessingData.VariableHasType<T>(columnIndex)) {
         var values = GetValuesWithoutNaN<T>(columnIndex, considerSelection);
         if (values.Any()) {
@@ -130,10 +130,10 @@ namespace HeuristicLab.DataPreprocessing {
       return avg;
     }
 
-    public T GetMostCommonValue<T>(int columnIndex, bool considerSelection = false) {
+    public T GetMostCommonValue<T>(int columnIndex, T defaultValue, bool considerSelection = false) {
       var values = GetValuesWithoutNaN<T>(columnIndex, considerSelection);
       if (!values.Any())
-        return default(T);
+        return defaultValue;
       return values.GroupBy(x => x)
                               .OrderByDescending(g => g.Count())
                               .Select(g => g.Key)
