@@ -33,10 +33,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
   public partial class FeatureCorrelationView : AbstractFeatureCorrelationView {
 
     private FeatureCorrelationCache correlationCache;
+    private new FeatureCorrelationCalculator CorrelationCalculator {
+      get { return (FeatureCorrelationCalculator)base.CorrelationCalculator; }
+      set { base.CorrelationCalculator = value; }
+    }
 
     public FeatureCorrelationView()
       : base() {
       InitializeComponent();
+      CorrelationCalculator = new FeatureCorrelationCalculator();
       correlationCache = new FeatureCorrelationCache();
     }
 
@@ -48,6 +53,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       base.OnContentChanged();
     }
 
+    private void ignoreMissingValuesCheckbox_CheckedChanged(object sender, EventArgs e) {
+      CalculateCorrelation();
+    }
+
     protected override void CalculateCorrelation() {
       if (correlationCalcComboBox.SelectedItem == null) return;
       if (partitionComboBox.SelectedItem == null) return;
@@ -55,31 +64,30 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       IDependencyCalculator calc = (IDependencyCalculator)correlationCalcComboBox.SelectedValue;
       string partition = (string)partitionComboBox.SelectedValue;
       dataView.Enabled = false;
-      double[,] corr = correlationCache.GetCorrelation(calc, partition);
+      double[,] corr = correlationCache.GetCorrelation(calc, partition, ignoreMissingValuesCheckbox.Checked);
       if (corr == null) {
-        fcc.CalculateElements(calc, partition);
+        CorrelationCalculator.CalculateElements(Content, calc, partition, ignoreMissingValuesCheckbox.Checked);
       } else {
-        fcc.TryCancelCalculation();
+        CorrelationCalculator.TryCancelCalculation();
         var correlation = new DoubleMatrix(corr, Content.Dataset.DoubleVariables, Content.Dataset.DoubleVariables);
         UpdateDataView(correlation);
       }
     }
 
-
-
-    protected override void Content_CorrelationCalculationFinished(object sender, FeatureCorrelationCalculator.CorrelationCalculationFinishedArgs e) {
+    protected override void FeatureCorrelation_CalculationFinished(object sender, AbstractFeatureCorrelationCalculator.CorrelationCalculationFinishedArgs e) {
       if (InvokeRequired) {
-        Invoke(new FeatureCorrelationCalculator.CorrelationCalculationFinishedHandler(Content_CorrelationCalculationFinished), sender, e);
+        Invoke(new AbstractFeatureCorrelationCalculator.CorrelationCalculationFinishedHandler(FeatureCorrelation_CalculationFinished), sender, e);
         return;
       }
-      correlationCache.SetCorrelation(e.Calculcator, e.Partition, e.Correlation);
+      correlationCache.SetCorrelation(e.Calculcator, e.Partition, e.IgnoreMissingValues, e.Correlation);
+
       var correlation = new DoubleMatrix(e.Correlation, Content.Dataset.DoubleVariables, Content.Dataset.DoubleVariables);
       UpdateDataView(correlation);
     }
 
     [NonDiscoverableType]
     private class FeatureCorrelationCache : Object {
-      private Dictionary<Tuple<IDependencyCalculator, string>, double[,]> correlationsCache;
+      private Dictionary<Tuple<IDependencyCalculator, string, bool>, double[,]> correlationsCache;
 
       public FeatureCorrelationCache()
         : base() {
@@ -87,22 +95,22 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       }
 
       private void InitializeCaches() {
-        correlationsCache = new Dictionary<Tuple<IDependencyCalculator, string>, double[,]>();
+        correlationsCache = new Dictionary<Tuple<IDependencyCalculator, string, bool>, double[,]>();
       }
 
       public void Reset() {
         InitializeCaches();
       }
 
-      public double[,] GetCorrelation(IDependencyCalculator calc, string partition) {
+      public double[,] GetCorrelation(IDependencyCalculator calc, string partition, bool ignoreMissingValues) {
         double[,] corr;
-        var key = new Tuple<IDependencyCalculator, string>(calc, partition);
+        var key = Tuple.Create(calc, partition, ignoreMissingValues);
         correlationsCache.TryGetValue(key, out corr);
         return corr;
       }
 
-      public void SetCorrelation(IDependencyCalculator calc, string partition, double[,] correlation) {
-        var key = new Tuple<IDependencyCalculator, string>(calc, partition);
+      public void SetCorrelation(IDependencyCalculator calc, string partition, bool ignoreMissingValues, double[,] correlation) {
+        var key = Tuple.Create(calc, partition, ignoreMissingValues);
         correlationsCache[key] = correlation;
       }
     }

@@ -35,8 +35,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     private FeatureCorrelationTimeframeCache correlationTimeframCache;
     private string lastFramesValue;
 
+    private new TimeframeFeatureCorrelationCalculator CorrelationCalculator {
+      get { return (TimeframeFeatureCorrelationCalculator)base.CorrelationCalculator; }
+      set { base.CorrelationCalculator = value; }
+    }
+
+
     public TimeframeFeatureCorrelationView() {
       InitializeComponent();
+      CorrelationCalculator = new TimeframeFeatureCorrelationCalculator();
       correlationTimeframCache = new FeatureCorrelationTimeframeCache();
       errorProvider.SetIconAlignment(timeframeTextbox, ErrorIconAlignment.MiddleRight);
       errorProvider.SetIconPadding(timeframeTextbox, 2);
@@ -92,32 +99,33 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     }
 
     protected override void CalculateCorrelation() {
-      if (correlationCalcComboBox.SelectedItem != null && partitionComboBox.SelectedItem != null
-        && variableSelectionComboBox.SelectedItem != null) {
-        string variable = (string)variableSelectionComboBox.SelectedItem;
-        IDependencyCalculator calc = (IDependencyCalculator)correlationCalcComboBox.SelectedValue;
-        string partition = (string)partitionComboBox.SelectedValue;
-        int frames;
-        int.TryParse(timeframeTextbox.Text, out frames);
-        dataView.Enabled = false;
-        double[,] corr = correlationTimeframCache.GetTimeframeCorrelation(calc, partition, variable);
-        if (corr == null) {
-          fcc.CalculateTimeframeElements(calc, partition, variable, frames);
-        } else if (corr.GetLength(1) <= frames) {
-          fcc.CalculateTimeframeElements(calc, partition, variable, frames, corr);
-        } else {
-          fcc.TryCancelCalculation();
-          var columnNames = Enumerable.Range(0, corr.GetLength(1)).Select(x => x.ToString());
-          var correlation = new DoubleMatrix(corr, columnNames, Content.Dataset.DoubleVariables);
-          ((IStringConvertibleMatrix)correlation).Columns = frames + 1;
-          UpdateDataView(correlation);
-        }
+      if (correlationCalcComboBox.SelectedItem == null) return;
+      if (partitionComboBox.SelectedItem == null) return;
+      if (variableSelectionComboBox.SelectedItem == null) return;
+
+      string variable = (string)variableSelectionComboBox.SelectedItem;
+      IDependencyCalculator calc = (IDependencyCalculator)correlationCalcComboBox.SelectedValue;
+      string partition = (string)partitionComboBox.SelectedValue;
+      int frames;
+      int.TryParse(timeframeTextbox.Text, out frames);
+      dataView.Enabled = false;
+      double[,] corr = correlationTimeframCache.GetTimeframeCorrelation(calc, partition, variable);
+      if (corr == null) {
+        CorrelationCalculator.CalculateTimeframeElements(Content, calc, partition, variable, frames);
+      } else if (corr.GetLength(1) <= frames) {
+        CorrelationCalculator.CalculateTimeframeElements(Content, calc, partition, variable, frames, corr);
+      } else {
+        CorrelationCalculator.TryCancelCalculation();
+        var columnNames = Enumerable.Range(0, corr.GetLength(1)).Select(x => x.ToString());
+        var correlation = new DoubleMatrix(corr, columnNames, Content.Dataset.DoubleVariables);
+        ((IStringConvertibleMatrix)correlation).Columns = frames + 1;
+        UpdateDataView(correlation);
       }
     }
 
-    protected override void Content_CorrelationCalculationFinished(object sender, FeatureCorrelationCalculator.CorrelationCalculationFinishedArgs e) {
+    protected override void FeatureCorrelation_CalculationFinished(object sender, AbstractFeatureCorrelationCalculator.CorrelationCalculationFinishedArgs e) {
       if (InvokeRequired) {
-        Invoke(new FeatureCorrelationCalculator.CorrelationCalculationFinishedHandler(Content_CorrelationCalculationFinished), sender, e);
+        Invoke(new AbstractFeatureCorrelationCalculator.CorrelationCalculationFinishedHandler(FeatureCorrelation_CalculationFinished), sender, e);
       } else {
         correlationTimeframCache.SetTimeframeCorrelation(e.Calculcator, e.Partition, e.Variable, e.Correlation);
         var columnNames = Enumerable.Range(0, e.Correlation.GetLength(1)).Select(x => x.ToString());

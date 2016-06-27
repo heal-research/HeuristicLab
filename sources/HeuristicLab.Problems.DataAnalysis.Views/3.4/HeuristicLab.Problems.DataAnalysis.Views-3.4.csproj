@@ -119,6 +119,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FeatureCorrelation\TimeframeFeatureCorrelationCalculator.cs" />
+    <Compile Include="FeatureCorrelation\AbstractFeatureCorrelationCalculator.cs" />
     <Compile Include="Classification\ClassificationEnsembleSolutionEstimatedClassValuesView.cs">
       <SubType>UserControl</SubType>
     </Compile>
