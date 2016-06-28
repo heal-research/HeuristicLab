@@ -66,7 +66,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       this.btnImpactCalculation.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
       this.btnImpactCalculation.UseVisualStyleBackColor = true;
       this.btnImpactCalculation.Click += new System.EventHandler(this.btnImpactCalculation_Click);
-      this.toolTip.SetToolTip(this.btnImpactCalculation, "Simplify solution");
+      this.toolTip.SetToolTip(this.btnImpactCalculation, "Calculate impacts");
       // 
       // flowLayoutPanel
       // 

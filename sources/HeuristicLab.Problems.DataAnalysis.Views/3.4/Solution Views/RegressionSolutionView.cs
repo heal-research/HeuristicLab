@@ -42,6 +42,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       set { base.Content = value; }
     }
 
+    protected override void SetEnabledStateOfControls() {
+      base.SetEnabledStateOfControls();
+      btnImpactCalculation.Enabled = Content != null && !Locked;
+    }
+
     protected virtual void btnImpactCalculation_Click(object sender, EventArgs e) {
       var mainForm = (MainForm.WindowsForms.MainForm)MainFormManager.MainForm;
       var view = new StringConvertibleArrayView();
