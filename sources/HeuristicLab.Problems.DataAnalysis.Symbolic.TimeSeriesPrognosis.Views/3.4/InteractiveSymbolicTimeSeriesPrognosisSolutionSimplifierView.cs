@@ -74,7 +74,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis.Views 
         // impact = 0 if no change
         // impact < 0 if new solution is better
         // impact > 0 if new solution is worse
-        double impact = (originalR*originalR) - (newR*newR);
+        double impact = (originalR * originalR) - (newR * newR);
         impactAndReplacementValues[node] = new Tuple<double, double>(impact, constantNode.Value);
         SwitchNode(parent, replacementNode, node);
       }
@@ -82,7 +82,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis.Views 
     }
 
     protected override void UpdateModel(ISymbolicExpressionTree tree) {
-      var model = new SymbolicTimeSeriesPrognosisModel(tree, Content.Model.Interpreter);
+      var model = new SymbolicTimeSeriesPrognosisModel(Content.ProblemData.TargetVariable, tree, Content.Model.Interpreter);
       model.Scale(Content.ProblemData);
       Content.Model = model;
     }

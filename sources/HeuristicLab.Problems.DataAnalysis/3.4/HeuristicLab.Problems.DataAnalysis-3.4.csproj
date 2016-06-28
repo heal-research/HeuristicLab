@@ -131,10 +131,12 @@
     <Compile Include="Implementation\Classification\ClassificationSolutionBase.cs" />
     <Compile Include="Implementation\Classification\ConstantClassificationSolution.cs" />
     <Compile Include="Implementation\Classification\DiscriminantFunctionClassificationSolutionBase.cs" />
+    <Compile Include="Implementation\Classification\ClassificationModel.cs" />
     <Compile Include="Implementation\Clustering\ClusteringProblem.cs" />
     <Compile Include="Implementation\Clustering\ClusteringProblemData.cs" />
     <Compile Include="Implementation\Clustering\ClusteringSolution.cs" />
     <Compile Include="Implementation\ConstantModel.cs" />
+    <Compile Include="Implementation\DataAnalysisModel.cs" />
     <Compile Include="Implementation\Regression\ConstantRegressionModel.cs" />
     <Compile Include="Implementation\Regression\ConstantRegressionSolution.cs" />
     <Compile Include="Implementation\Regression\RegressionEnsembleProblemData.cs" />
@@ -142,6 +144,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Implementation\Regression\RegressionEnsembleSolution.cs" />
+    <Compile Include="Implementation\Regression\RegressionModel.cs" />
     <Compile Include="Implementation\Regression\RegressionSolutionVariableImpactsCalculator.cs" />
     <Compile Include="Implementation\TimeSeriesPrognosis\Models\ConstantTimeSeriesPrognosisModel.cs" />
     <Compile Include="Implementation\TimeSeriesPrognosis\Models\TimeSeriesPrognosisAutoRegressiveModel.cs" />

@@ -24,7 +24,6 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression.Policies;
-using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Problems.DataAnalysis;
@@ -176,7 +175,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
           var interpreter = new SymbolicDataAnalysisExpressionTreeLinearInterpreter();
 
           var t = new SymbolicExpressionTree(treeGen.Exec(bestCode, bestConsts, bestNParams, scalingFactor, scalingOffset));
-          var model = new SymbolicRegressionModel(t, interpreter, lowerEstimationLimit, upperEstimationLimit);
+          var model = new SymbolicRegressionModel(problemData.TargetVariable, t, interpreter, lowerEstimationLimit, upperEstimationLimit);
 
           // model has already been scaled linearly in Eval
           return model;

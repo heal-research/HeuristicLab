@@ -42,7 +42,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private RandomForestClassificationSolution(RandomForestClassificationSolution original, Cloner cloner)
       : base(original, cloner) {
     }
-    public RandomForestClassificationSolution(IClassificationProblemData problemData, IRandomForestModel randomForestModel)
+    public RandomForestClassificationSolution(IRandomForestModel randomForestModel, IClassificationProblemData problemData)
       : base(randomForestModel, problemData) {
     }
 

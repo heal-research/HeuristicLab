@@ -42,7 +42,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private NearestNeighbourRegressionSolution(NearestNeighbourRegressionSolution original, Cloner cloner)
       : base(original, cloner) {
     }
-    public NearestNeighbourRegressionSolution(IRegressionProblemData problemData, INearestNeighbourModel nnModel)
+    public NearestNeighbourRegressionSolution(INearestNeighbourModel nnModel, IRegressionProblemData problemData)
       : base(nnModel, problemData) {
     }
 

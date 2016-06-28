@@ -31,13 +31,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
   /// </summary>
   [StorableClass]
   [Item("ClassificationEnsembleModel", "A classification model that contains an ensemble of multiple classification models")]
-  public class ClassificationEnsembleModel : NamedItem, IClassificationEnsembleModel {
-    public IEnumerable<string> VariablesUsedForPrediction {
+  public class ClassificationEnsembleModel : ClassificationModel, IClassificationEnsembleModel {
+    public override IEnumerable<string> VariablesUsedForPrediction {
       get { return models.SelectMany(x => x.VariablesUsedForPrediction).Distinct().OrderBy(x => x); }
-    }
-
-    public string TargetVariable {
-      get { return models.First().TargetVariable; }
     }
 
     [Storable]
@@ -55,22 +51,25 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public ClassificationEnsembleModel() : this(Enumerable.Empty<IClassificationModel>()) { }
     public ClassificationEnsembleModel(IEnumerable<IClassificationModel> models)
-      : base() {
+      : base(string.Empty) {
       this.name = ItemName;
       this.description = ItemDescription;
       this.models = new List<IClassificationModel>(models);
+
+      if (this.models.Any()) this.TargetVariable = this.models.First().TargetVariable;
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new ClassificationEnsembleModel(this, cloner);
     }
 
-    #region IClassificationEnsembleModel Members
     public void Add(IClassificationModel model) {
+      if (string.IsNullOrEmpty(TargetVariable)) TargetVariable = model.TargetVariable;
       models.Add(model);
     }
     public void Remove(IClassificationModel model) {
       models.Remove(model);
+      if (!models.Any()) TargetVariable = string.Empty;
     }
 
     public IEnumerable<IEnumerable<double>> GetEstimatedClassValueVectors(IDataset dataset, IEnumerable<int> rows) {
@@ -84,11 +83,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
       }
     }
 
-    #endregion
 
-    #region IClassificationModel Members
-
-    public IEnumerable<double> GetEstimatedClassValues(IDataset dataset, IEnumerable<int> rows) {
+    public override IEnumerable<double> GetEstimatedClassValues(IDataset dataset, IEnumerable<int> rows) {
       foreach (var estimatedValuesVector in GetEstimatedClassValueVectors(dataset, rows)) {
         // return the class which is most often occuring
         yield return
@@ -100,9 +96,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
       }
     }
 
-    IClassificationSolution IClassificationModel.CreateClassificationSolution(IClassificationProblemData problemData) {
+    public override IClassificationSolution CreateClassificationSolution(IClassificationProblemData problemData) {
       return new ClassificationEnsembleSolution(models, new ClassificationEnsembleProblemData(problemData));
     }
-    #endregion
+
+
   }
 }

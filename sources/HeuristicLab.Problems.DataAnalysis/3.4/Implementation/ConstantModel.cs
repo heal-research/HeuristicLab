@@ -30,14 +30,9 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Problems.DataAnalysis {
   [StorableClass]
   [Item("Constant Model", "A model that always returns the same constant value regardless of the presented input data.")]
-  public class ConstantModel : NamedItem, IRegressionModel, IClassificationModel, ITimeSeriesPrognosisModel, IStringConvertibleValue {
-    public IEnumerable<string> VariablesUsedForPrediction { get { return Enumerable.Empty<string>(); } }
+  public class ConstantModel : RegressionModel, IClassificationModel, ITimeSeriesPrognosisModel, IStringConvertibleValue {
+    public override IEnumerable<string> VariablesUsedForPrediction { get { return Enumerable.Empty<string>(); } }
 
-    [Storable]
-    private readonly string targetVariable;
-    public string TargetVariable {
-      get { return targetVariable; }
-    }
 
     [Storable]
     private readonly double constant;
@@ -51,21 +46,19 @@ namespace HeuristicLab.Problems.DataAnalysis {
     protected ConstantModel(ConstantModel original, Cloner cloner)
       : base(original, cloner) {
       this.constant = original.constant;
-      this.targetVariable = original.targetVariable;
     }
 
     public override IDeepCloneable Clone(Cloner cloner) { return new ConstantModel(this, cloner); }
 
     public ConstantModel(double constant, string targetVariable = "Target")
-      : base() {
+      : base(targetVariable) {
       this.name = ItemName;
       this.description = ItemDescription;
       this.constant = constant;
       this.ReadOnly = true; // changing a constant regression model is not supported
-      this.targetVariable = targetVariable;
     }
 
-    public IEnumerable<double> GetEstimatedValues(IDataset dataset, IEnumerable<int> rows) {
+    public override IEnumerable<double> GetEstimatedValues(IDataset dataset, IEnumerable<int> rows) {
       return rows.Select(row => Constant);
     }
     public IEnumerable<double> GetEstimatedClassValues(IDataset dataset, IEnumerable<int> rows) {
@@ -75,7 +68,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       return rows.Select(_ => horizons.Select(__ => Constant));
     }
 
-    public IRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData) {
+    public override IRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData) {
       return new ConstantRegressionSolution(this, new RegressionProblemData(problemData));
     }
     public IClassificationSolution CreateClassificationSolution(IClassificationProblemData problemData) {

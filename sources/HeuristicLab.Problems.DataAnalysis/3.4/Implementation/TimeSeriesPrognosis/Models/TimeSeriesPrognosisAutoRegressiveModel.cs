@@ -29,8 +29,8 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Problems.DataAnalysis {
   [StorableClass]
   [Item("Autoregressive TimeSeries Model", "A linear autoregressive time series model used to predict future values.")]
-  public class TimeSeriesPrognosisAutoRegressiveModel : NamedItem, ITimeSeriesPrognosisModel {
-    public IEnumerable<string> VariablesUsedForPrediction {
+  public class TimeSeriesPrognosisAutoRegressiveModel : RegressionModel, ITimeSeriesPrognosisModel {
+    public override IEnumerable<string> VariablesUsedForPrediction {
       get { return Enumerable.Empty<string>(); } // what to return here?
     }
 
@@ -38,8 +38,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public double[] Phi { get; private set; }
     [Storable]
     public double Constant { get; private set; }
-    [Storable]
-    public string TargetVariable { get; private set; }
 
     public int TimeOffset { get { return Phi.Length; } }
 
@@ -49,16 +47,14 @@ namespace HeuristicLab.Problems.DataAnalysis {
       : base(original, cloner) {
       this.Phi = (double[])original.Phi.Clone();
       this.Constant = original.Constant;
-      this.TargetVariable = original.TargetVariable;
     }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new TimeSeriesPrognosisAutoRegressiveModel(this, cloner);
     }
     public TimeSeriesPrognosisAutoRegressiveModel(string targetVariable, double[] phi, double constant)
-      : base("AR(1) Model") {
+      : base(targetVariable, "AR(1) Model") {
       Phi = (double[])phi.Clone();
       Constant = constant;
-      TargetVariable = targetVariable;
     }
 
     public IEnumerable<IEnumerable<double>> GetPrognosedValues(IDataset dataset, IEnumerable<int> rows, IEnumerable<int> horizons) {
@@ -94,7 +90,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
         throw new ArgumentException("Number of elements in rows and horizon enumerations doesn't match.");
     }
 
-    public IEnumerable<double> GetEstimatedValues(IDataset dataset, IEnumerable<int> rows) {
+    public override IEnumerable<double> GetEstimatedValues(IDataset dataset, IEnumerable<int> rows) {
       var targetVariables = dataset.GetReadOnlyDoubleValues(TargetVariable);
       foreach (int row in rows) {
         double estimatedValue = 0.0;
@@ -114,7 +110,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public ITimeSeriesPrognosisSolution CreateTimeSeriesPrognosisSolution(ITimeSeriesPrognosisProblemData problemData) {
       return new TimeSeriesPrognosisSolution(this, new TimeSeriesPrognosisProblemData(problemData));
     }
-    public IRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData) {
+    public override IRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData) {
       throw new NotSupportedException();
     }
 

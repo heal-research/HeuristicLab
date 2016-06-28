@@ -41,12 +41,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     [StorableConstructor]
     protected SymbolicClassificationModel(bool deserializing) : base(deserializing) { }
 
-    protected SymbolicClassificationModel(SymbolicClassificationModel original, Cloner cloner) : base(original, cloner) {
+    protected SymbolicClassificationModel(SymbolicClassificationModel original, Cloner cloner)
+      : base(original, cloner) {
       targetVariable = original.targetVariable;
     }
 
-    protected SymbolicClassificationModel(ISymbolicExpressionTree tree, ISymbolicDataAnalysisExpressionTreeInterpreter interpreter,
-      double lowerEstimationLimit = double.MinValue, double upperEstimationLimit = double.MaxValue, string targetVariable = "Target")
+    protected SymbolicClassificationModel(string targetVariable, ISymbolicExpressionTree tree, ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, double lowerEstimationLimit = double.MinValue, double upperEstimationLimit = double.MaxValue)
       : base(tree, interpreter, lowerEstimationLimit, upperEstimationLimit) {
       this.targetVariable = targetVariable;
     }

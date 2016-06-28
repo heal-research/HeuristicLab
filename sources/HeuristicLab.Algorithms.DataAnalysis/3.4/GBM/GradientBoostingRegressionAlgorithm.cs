@@ -375,7 +375,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
       alglib.lrunpack(lm, out coefficients, out features);
 
       var ensembleModel = new RegressionEnsembleModel(models, coefficients.Take(models.Count)) { AverageModelEstimates = false };
-      var ensembleSolution = ensembleModel.CreateRegressionSolution(problemData);
+      var ensembleSolution = (IRegressionEnsembleSolution)ensembleModel.CreateRegressionSolution(problemData);
       return ensembleSolution;
     }
 
@@ -442,7 +442,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
       startNode.AddSubtree(mulNode);
       progRootNode.AddSubtree(startNode);
       var t = new SymbolicExpressionTree(progRootNode);
-      var combinedModel = new SymbolicRegressionModel(t, interpreter, lowerLimit, upperLimit);
+      var combinedModel = new SymbolicRegressionModel(problemData.TargetVariable, t, interpreter, lowerLimit, upperLimit);
       var sol = new SymbolicRegressionSolution(combinedModel, problemData);
       return sol;
     }

@@ -31,14 +31,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
   [StorableClass]
   [Item("Constant Regression Model", "A model that always returns the same constant value regardless of the presented input data.")]
   [Obsolete]
-  public class ConstantRegressionModel : NamedItem, IRegressionModel, IStringConvertibleValue {
-    public IEnumerable<string> VariablesUsedForPrediction { get { return Enumerable.Empty<string>(); } }
-
-    [Storable]
-    private readonly string targetVariable;
-    public string TargetVariable {
-      get { return targetVariable; }
-    }
+  public class ConstantRegressionModel : RegressionModel, IStringConvertibleValue {
+    public override IEnumerable<string> VariablesUsedForPrediction { get { return Enumerable.Empty<string>(); } }
 
     [Storable]
     private double constant;
@@ -52,25 +46,23 @@ namespace HeuristicLab.Problems.DataAnalysis {
     protected ConstantRegressionModel(ConstantRegressionModel original, Cloner cloner)
       : base(original, cloner) {
       this.constant = original.constant;
-      this.targetVariable = original.targetVariable;
     }
 
     public override IDeepCloneable Clone(Cloner cloner) { return new ConstantRegressionModel(this, cloner); }
 
     public ConstantRegressionModel(double constant, string targetVariable = "Target")
-      : base() {
+      : base(targetVariable) {
       this.name = ItemName;
       this.description = ItemDescription;
       this.constant = constant;
       this.ReadOnly = true; // changing a constant regression model is not supported
-      this.targetVariable = targetVariable;
     }
 
-    public IEnumerable<double> GetEstimatedValues(IDataset dataset, IEnumerable<int> rows) {
+    public override IEnumerable<double> GetEstimatedValues(IDataset dataset, IEnumerable<int> rows) {
       return rows.Select(row => Constant);
     }
 
-    public IRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData) {
+    public override IRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData) {
       return new ConstantRegressionSolution(new ConstantModel(constant), new RegressionProblemData(problemData));
     }
 

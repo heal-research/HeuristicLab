@@ -33,7 +33,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// </summary>
   [StorableClass]
   [Item("NearestNeighbourModel", "Represents a nearest neighbour model for regression and classification.")]
-  public sealed class NearestNeighbourModel : NamedItem, INearestNeighbourModel {
+  public sealed class NearestNeighbourModel : ClassificationModel, INearestNeighbourModel {
 
     private alglib.nearestneighbor.kdtree kdTree;
     public alglib.nearestneighbor.kdtree KDTree {
@@ -47,16 +47,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
     }
 
-    public IEnumerable<string> VariablesUsedForPrediction {
+    public override IEnumerable<string> VariablesUsedForPrediction {
       get { return allowedInputVariables; }
     }
 
-    public string TargetVariable {
-      get { return targetVariable; }
-    }
-
-    [Storable]
-    private string targetVariable;
     [Storable]
     private string[] allowedInputVariables;
     [Storable]
@@ -98,16 +92,15 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       kdTree.xy = (double[,])original.kdTree.xy.Clone();
 
       k = original.k;
-      targetVariable = original.targetVariable;
       allowedInputVariables = (string[])original.allowedInputVariables.Clone();
       if (original.classValues != null)
         this.classValues = (double[])original.classValues.Clone();
     }
-    public NearestNeighbourModel(IDataset dataset, IEnumerable<int> rows, int k, string targetVariable, IEnumerable<string> allowedInputVariables, double[] classValues = null) {
+    public NearestNeighbourModel(IDataset dataset, IEnumerable<int> rows, int k, string targetVariable, IEnumerable<string> allowedInputVariables, double[] classValues = null)
+      : base(targetVariable) {
       Name = ItemName;
       Description = ItemDescription;
       this.k = k;
-      this.targetVariable = targetVariable;
       this.allowedInputVariables = allowedInputVariables.ToArray();
 
       var inputMatrix = AlglibUtil.PrepareInputMatrix(dataset,
@@ -170,7 +163,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
     }
 
-    public IEnumerable<double> GetEstimatedClassValues(IDataset dataset, IEnumerable<int> rows) {
+    public override IEnumerable<double> GetEstimatedClassValues(IDataset dataset, IEnumerable<int> rows) {
       if (classValues == null) throw new InvalidOperationException("No class values are defined.");
       double[,] inputData = AlglibUtil.PrepareInputMatrix(dataset, allowedInputVariables, rows);
 
@@ -208,17 +201,12 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
     }
 
-    public INearestNeighbourRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData) {
-      return new NearestNeighbourRegressionSolution(new RegressionProblemData(problemData), this);
-    }
+
     IRegressionSolution IRegressionModel.CreateRegressionSolution(IRegressionProblemData problemData) {
-      return CreateRegressionSolution(problemData);
+      return new NearestNeighbourRegressionSolution(this, new RegressionProblemData(problemData));
     }
-    public INearestNeighbourClassificationSolution CreateClassificationSolution(IClassificationProblemData problemData) {
-      return new NearestNeighbourClassificationSolution(new ClassificationProblemData(problemData), this);
-    }
-    IClassificationSolution IClassificationModel.CreateClassificationSolution(IClassificationProblemData problemData) {
-      return CreateClassificationSolution(problemData);
+    public override IClassificationSolution CreateClassificationSolution(IClassificationProblemData problemData) {
+      return new NearestNeighbourClassificationSolution(this, new ClassificationProblemData(problemData));
     }
 
     #region events

@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -41,14 +42,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     [StorableConstructor]
     protected SymbolicRegressionModel(bool deserializing) : base(deserializing) { }
 
-    protected SymbolicRegressionModel(SymbolicRegressionModel original, Cloner cloner) : base(original, cloner) {
+    protected SymbolicRegressionModel(SymbolicRegressionModel original, Cloner cloner)
+      : base(original, cloner) {
       this.targetVariable = original.targetVariable;
     }
 
-    public SymbolicRegressionModel(ISymbolicExpressionTree tree,
+    public SymbolicRegressionModel(string targetVariable, ISymbolicExpressionTree tree,
       ISymbolicDataAnalysisExpressionTreeInterpreter interpreter,
-      double lowerEstimationLimit = double.MinValue, double upperEstimationLimit = double.MaxValue,
-      string targetVariable = "Target")
+      double lowerEstimationLimit = double.MinValue, double upperEstimationLimit = double.MaxValue)
       : base(tree, interpreter, lowerEstimationLimit, upperEstimationLimit) {
       this.targetVariable = targetVariable;
     }

@@ -29,13 +29,9 @@ using HeuristicLab.Problems.DataAnalysis;
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [Item("NCA Model", "")]
   [StorableClass]
-  public class NcaModel : NamedItem, INcaModel {
-    public IEnumerable<string> VariablesUsedForPrediction {
+  public class NcaModel : ClassificationModel, INcaModel {
+    public override IEnumerable<string> VariablesUsedForPrediction {
       get { return allowedInputVariables; }
-    }
-
-    public string TargetVariable {
-      get { return targetVariable; }
     }
 
     [Storable]
@@ -45,8 +41,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
     [Storable]
     private string[] allowedInputVariables;
-    [Storable]
-    private string targetVariable;
     [Storable]
     private INearestNeighbourModel nnModel;
     [Storable]
@@ -58,16 +52,15 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       : base(original, cloner) {
       this.transformationMatrix = (double[,])original.transformationMatrix.Clone();
       this.allowedInputVariables = (string[])original.allowedInputVariables.Clone();
-      this.targetVariable = original.targetVariable;
       this.nnModel = cloner.Clone(original.nnModel);
       this.classValues = (double[])original.classValues.Clone();
     }
-    public NcaModel(int k, double[,] transformationMatrix, IDataset dataset, IEnumerable<int> rows, string targetVariable, IEnumerable<string> allowedInputVariables, double[] classValues) {
+    public NcaModel(int k, double[,] transformationMatrix, IDataset dataset, IEnumerable<int> rows, string targetVariable, IEnumerable<string> allowedInputVariables, double[] classValues)
+      : base(targetVariable) {
       Name = ItemName;
       Description = ItemDescription;
       this.transformationMatrix = (double[,])transformationMatrix.Clone();
       this.allowedInputVariables = allowedInputVariables.ToArray();
-      this.targetVariable = targetVariable;
       this.classValues = (double[])classValues.Clone();
 
       var ds = ReduceDataset(dataset, rows);
@@ -78,23 +71,23 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return new NcaModel(this, cloner);
     }
 
-    public IEnumerable<double> GetEstimatedClassValues(IDataset dataset, IEnumerable<int> rows) {
+    public override IEnumerable<double> GetEstimatedClassValues(IDataset dataset, IEnumerable<int> rows) {
       var ds = ReduceDataset(dataset, rows);
       return nnModel.GetEstimatedClassValues(ds, Enumerable.Range(0, ds.Rows));
     }
 
-    public INcaClassificationSolution CreateClassificationSolution(IClassificationProblemData problemData) {
-      return new NcaClassificationSolution(new ClassificationProblemData(problemData), this);
+    public override IClassificationSolution CreateClassificationSolution(IClassificationProblemData problemData) {
+      return new NcaClassificationSolution(this, new ClassificationProblemData(problemData));
     }
 
-    IClassificationSolution IClassificationModel.CreateClassificationSolution(IClassificationProblemData problemData) {
-      return CreateClassificationSolution(problemData);
+    INcaClassificationSolution INcaModel.CreateClassificationSolution(IClassificationProblemData problemData) {
+      return new NcaClassificationSolution(this, new ClassificationProblemData(problemData));
     }
 
     public double[,] Reduce(IDataset dataset, IEnumerable<int> rows) {
       var data = AlglibUtil.PrepareInputMatrix(dataset, allowedInputVariables, rows);
 
-      var targets = dataset.GetDoubleValues(targetVariable, rows).ToArray();
+      var targets = dataset.GetDoubleValues(TargetVariable, rows).ToArray();
       var result = new double[data.GetLength(0), transformationMatrix.GetLength(1) + 1];
       for (int i = 0; i < data.GetLength(0); i++)
         for (int j = 0; j < data.GetLength(1); j++) {
@@ -110,7 +103,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return new Dataset(Enumerable
           .Range(0, transformationMatrix.GetLength(1))
           .Select(x => "X" + x.ToString())
-          .Concat(targetVariable.ToEnumerable()),
+          .Concat(TargetVariable.ToEnumerable()),
         Reduce(dataset, rows));
     }
   }

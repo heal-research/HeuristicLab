@@ -33,7 +33,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// </summary>
   [StorableClass]
   [Item("Multinomial Logit Model", "Represents a multinomial logit model for classification.")]
-  public sealed class MultinomialLogitModel : NamedItem, IClassificationModel {
+  public sealed class MultinomialLogitModel : ClassificationModel {
 
     private alglib.logitmodel logitModel;
     public alglib.logitmodel Model {
@@ -47,16 +47,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
     }
 
-    public IEnumerable<string> VariablesUsedForPrediction {
+    public override IEnumerable<string> VariablesUsedForPrediction {
       get { return allowedInputVariables; }
     }
 
-    public string TargetVariable {
-      get { return targetVariable; }
-    }
-
-    [Storable]
-    private string targetVariable;
     [Storable]
     private string[] allowedInputVariables;
     [Storable]
@@ -71,16 +65,14 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       : base(original, cloner) {
       logitModel = new alglib.logitmodel();
       logitModel.innerobj.w = (double[])original.logitModel.innerobj.w.Clone();
-      targetVariable = original.targetVariable;
       allowedInputVariables = (string[])original.allowedInputVariables.Clone();
       classValues = (double[])original.classValues.Clone();
     }
     public MultinomialLogitModel(alglib.logitmodel logitModel, string targetVariable, IEnumerable<string> allowedInputVariables, double[] classValues)
-      : base() {
+      : base(targetVariable) {
       this.name = ItemName;
       this.description = ItemDescription;
       this.logitModel = logitModel;
-      this.targetVariable = targetVariable;
       this.allowedInputVariables = allowedInputVariables.ToArray();
       this.classValues = (double[])classValues.Clone();
     }
@@ -89,7 +81,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return new MultinomialLogitModel(this, cloner);
     }
 
-    public IEnumerable<double> GetEstimatedClassValues(IDataset dataset, IEnumerable<int> rows) {
+    public override IEnumerable<double> GetEstimatedClassValues(IDataset dataset, IEnumerable<int> rows) {
       double[,] inputData = AlglibUtil.PrepareInputMatrix(dataset, allowedInputVariables, rows);
 
       int n = inputData.GetLength(0);
@@ -115,14 +107,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
     }
 
-    public MultinomialLogitClassificationSolution CreateClassificationSolution(IClassificationProblemData problemData) {
-      return new MultinomialLogitClassificationSolution(new ClassificationProblemData(problemData), this);
-    }
-
-
-
-    IClassificationSolution IClassificationModel.CreateClassificationSolution(IClassificationProblemData problemData) {
-      return CreateClassificationSolution(problemData);
+    public override IClassificationSolution CreateClassificationSolution(IClassificationProblemData problemData) {
+      return new MultinomialLogitClassificationSolution(this, new ClassificationProblemData(problemData));
     }
 
     #region events

@@ -33,7 +33,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   // since the actual GBT model would be very large when persisted we only store all necessary information to
   // recalculate the actual GBT model on demand
   [Item("Gradient boosted tree model", "")]
-  public sealed class GradientBoostedTreesModelSurrogate : NamedItem, IGradientBoostedTreesModel {
+  public sealed class GradientBoostedTreesModelSurrogate : RegressionModel, IGradientBoostedTreesModel {
     // don't store the actual model!
     private IGradientBoostedTreesModel actualModel; // the actual model is only recalculated when necessary
 
@@ -54,11 +54,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     [Storable]
     private int maxSize;
 
-    public string TargetVariable {
-      get { return trainingProblemData.TargetVariable; }
-    }
 
-    public IEnumerable<string> VariablesUsedForPrediction {
+    public override IEnumerable<string> VariablesUsedForPrediction {
       get { return actualModel.Models.SelectMany(x => x.VariablesUsedForPrediction).Distinct().OrderBy(x => x); }
     }
 
@@ -82,7 +79,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     // create only the surrogate model without an actual model
     public GradientBoostedTreesModelSurrogate(IRegressionProblemData trainingProblemData, uint seed,
       ILossFunction lossFunction, int iterations, int maxSize, double r, double m, double nu)
-      : base("Gradient boosted tree model", string.Empty) {
+      : base(trainingProblemData.TargetVariable, "Gradient boosted tree model", string.Empty) {
       this.trainingProblemData = trainingProblemData;
       this.seed = seed;
       this.lossFunction = lossFunction;
@@ -106,12 +103,12 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     // forward message to actual model (recalculate model first if necessary)
-    public IEnumerable<double> GetEstimatedValues(IDataset dataset, IEnumerable<int> rows) {
+    public override IEnumerable<double> GetEstimatedValues(IDataset dataset, IEnumerable<int> rows) {
       if (actualModel == null) actualModel = RecalculateModel();
       return actualModel.GetEstimatedValues(dataset, rows);
     }
 
-    public IRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData) {
+    public override IRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData) {
       return new RegressionSolution(this, (IRegressionProblemData)problemData.Clone());
     }
 

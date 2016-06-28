@@ -79,7 +79,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     public static IRegressionSolution CreateNearestNeighbourRegressionSolution(IRegressionProblemData problemData, int k) {
       var clonedProblemData = (IRegressionProblemData)problemData.Clone();
-      return new NearestNeighbourRegressionSolution(clonedProblemData, Train(problemData, k));
+      return new NearestNeighbourRegressionSolution(Train(problemData, k), clonedProblemData);
     }
 
     public static INearestNeighbourModel Train(IRegressionProblemData problemData, int k) {

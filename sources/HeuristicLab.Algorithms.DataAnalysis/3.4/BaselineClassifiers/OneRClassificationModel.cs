@@ -30,13 +30,9 @@ using HeuristicLab.Problems.DataAnalysis;
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
   [Item("OneR Classification Model", "A model that uses intervals for one variable to determine the class.")]
-  public class OneRClassificationModel : NamedItem, IClassificationModel {
-    public IEnumerable<string> VariablesUsedForPrediction {
-      get { return Enumerable.Empty<string>(); }
-    }
-
-    public string TargetVariable {
-      get { return variable; }
+  public class OneRClassificationModel : ClassificationModel {
+    public override IEnumerable<string> VariablesUsedForPrediction {
+      get { return new[] { Variable }; }
     }
 
     [Storable]
@@ -73,8 +69,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
     public override IDeepCloneable Clone(Cloner cloner) { return new OneRClassificationModel(this, cloner); }
 
-    public OneRClassificationModel(string variable, double[] splits, double[] classes, double missingValuesClass = double.NaN)
-      : base() {
+    public OneRClassificationModel(string targetVariable, string variable, double[] splits, double[] classes, double missingValuesClass = double.NaN)
+      : base(targetVariable) {
       if (splits.Length != classes.Length) {
         throw new ArgumentException("Number of splits and classes has to be equal.");
       }
@@ -91,7 +87,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     // uses sorting to return the values in the order of rows, instead of using nested for loops
     // to avoid O(n²) runtime
-    public IEnumerable<double> GetEstimatedClassValues(IDataset dataset, IEnumerable<int> rows) {
+    public override IEnumerable<double> GetEstimatedClassValues(IDataset dataset, IEnumerable<int> rows) {
       var values = dataset.GetDoubleValues(Variable, rows).ToArray();
       var rowsArray = rows.ToArray();
       var order = Enumerable.Range(0, rowsArray.Length).ToArray();
@@ -115,7 +111,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return estimated;
     }
 
-    public IClassificationSolution CreateClassificationSolution(IClassificationProblemData problemData) {
+    public override IClassificationSolution CreateClassificationSolution(IClassificationProblemData problemData) {
       return new OneRClassificationSolution(this, new ClassificationProblemData(problemData));
     }
 

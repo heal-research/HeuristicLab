@@ -60,12 +60,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     public IEnumerable<string> VariablesUsedForPrediction {
       get {
-        return
+        var variables =
           SymbolicExpressionTree.IterateNodesPrefix()
             .OfType<VariableTreeNode>()
             .Select(x => x.VariableName)
-            .Distinct()
-            .OrderBy(x => x);
+            .Distinct();
+        var variableConditions = SymbolicExpressionTree.IterateNodesPrefix()
+          .OfType<VariableConditionTreeNode>().Select(x => x.VariableName).Distinct();
+
+        return variables.Union(variableConditions).OrderBy(x => x);
       }
     }
 

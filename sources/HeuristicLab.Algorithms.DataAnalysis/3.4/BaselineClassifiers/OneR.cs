@@ -138,7 +138,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         }
       }
 
-      var model = new OneRClassificationModel(bestVariable, bestSplits.Select(s => s.thresholdValue).ToArray(), bestSplits.Select(s => s.classValue).ToArray(), bestMissingValuesClass);
+      var model = new OneRClassificationModel(problemData.TargetVariable, bestVariable, bestSplits.Select(s => s.thresholdValue).ToArray(), bestSplits.Select(s => s.classValue).ToArray(), bestMissingValuesClass);
       var solution = new OneRClassificationSolution(model, (IClassificationProblemData)problemData.Clone());
 
       return solution;

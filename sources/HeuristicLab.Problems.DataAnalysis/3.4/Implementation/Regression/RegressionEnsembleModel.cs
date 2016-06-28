@@ -32,20 +32,14 @@ namespace HeuristicLab.Problems.DataAnalysis {
   /// </summary>
   [StorableClass]
   [Item("RegressionEnsembleModel", "A regression model that contains an ensemble of multiple regression models")]
-  public sealed class RegressionEnsembleModel : NamedItem, IRegressionEnsembleModel {
-    public IEnumerable<string> VariablesUsedForPrediction {
+  public sealed class RegressionEnsembleModel : RegressionModel, IRegressionEnsembleModel {
+    public override IEnumerable<string> VariablesUsedForPrediction {
       get { return models.SelectMany(x => x.VariablesUsedForPrediction).Distinct().OrderBy(x => x); }
     }
 
     private List<IRegressionModel> models;
     public IEnumerable<IRegressionModel> Models {
       get { return new List<IRegressionModel>(models); }
-    }
-
-    [Storable]
-    private readonly string target;
-    public string TargetVariable {
-      get { return models.First().TargetVariable; }
     }
 
     [Storable(Name = "Models")]
@@ -108,19 +102,23 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public RegressionEnsembleModel() : this(Enumerable.Empty<IRegressionModel>()) { }
     public RegressionEnsembleModel(IEnumerable<IRegressionModel> models) : this(models, models.Select(m => 1.0)) { }
     public RegressionEnsembleModel(IEnumerable<IRegressionModel> models, IEnumerable<double> modelWeights)
-      : base() {
+      : base(string.Empty) {
       this.name = ItemName;
       this.description = ItemDescription;
 
-
       this.models = new List<IRegressionModel>(models);
       this.modelWeights = new List<double>(modelWeights);
+
+      if (this.models.Any()) this.TargetVariable = this.models.First().TargetVariable;
     }
 
     public void Add(IRegressionModel model) {
+      if (string.IsNullOrEmpty(TargetVariable)) TargetVariable = model.TargetVariable;
       Add(model, 1.0);
     }
     public void Add(IRegressionModel model, double weight) {
+      if (string.IsNullOrEmpty(TargetVariable)) TargetVariable = model.TargetVariable;
+
       models.Add(model);
       modelWeights.Add(weight);
       OnChanged();
@@ -130,6 +128,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
       AddRange(models, models.Select(m => 1.0));
     }
     public void AddRange(IEnumerable<IRegressionModel> models, IEnumerable<double> weights) {
+      if (string.IsNullOrEmpty(TargetVariable)) TargetVariable = models.First().TargetVariable;
+
       this.models.AddRange(models);
       modelWeights.AddRange(weights);
       OnChanged();
@@ -139,6 +139,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
       var index = models.IndexOf(model);
       models.RemoveAt(index);
       modelWeights.RemoveAt(index);
+
+      if (!models.Any()) TargetVariable = string.Empty;
       OnChanged();
     }
     public void RemoveRange(IEnumerable<IRegressionModel> models) {
@@ -147,6 +149,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
         this.models.RemoveAt(index);
         modelWeights.RemoveAt(index);
       }
+
+      if (!models.Any()) TargetVariable = string.Empty;
       OnChanged();
     }
 
@@ -173,7 +177,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       }
     }
 
-    public IEnumerable<double> GetEstimatedValues(IDataset dataset, IEnumerable<int> rows) {
+    public override IEnumerable<double> GetEstimatedValues(IDataset dataset, IEnumerable<int> rows) {
       double weightsSum = modelWeights.Sum();
       var summedEstimates = from estimatedValuesVector in GetEstimatedValueVectors(dataset, rows)
                             select estimatedValuesVector.DefaultIfEmpty(double.NaN).Sum();
@@ -221,11 +225,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
 
-    public RegressionEnsembleSolution CreateRegressionSolution(IRegressionProblemData problemData) {
+    public override IRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData) {
       return new RegressionEnsembleSolution(this, new RegressionEnsembleProblemData(problemData));
-    }
-    IRegressionSolution IRegressionModel.CreateRegressionSolution(IRegressionProblemData problemData) {
-      return CreateRegressionSolution(problemData);
     }
   }
 }

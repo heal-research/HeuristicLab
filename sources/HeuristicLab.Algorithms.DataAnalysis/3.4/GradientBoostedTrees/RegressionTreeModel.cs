@@ -33,13 +33,9 @@ using HeuristicLab.Problems.DataAnalysis;
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
   [Item("RegressionTreeModel", "Represents a decision tree for regression.")]
-  public sealed class RegressionTreeModel : NamedItem, IRegressionModel {
-    public IEnumerable<string> VariablesUsedForPrediction {
-      get { return Enumerable.Empty<string>(); }
-    }
-
-    public string TargetVariable {
-      get { return string.Empty; }
+  public sealed class RegressionTreeModel : RegressionModel {
+    public override IEnumerable<string> VariablesUsedForPrediction {
+      get { return tree.Select(t => t.VarName).Where(v => v != TreeNode.NO_VARIABLE); }
     }
 
     // trees are represented as a flat array    
@@ -89,7 +85,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     // not storable!
     private TreeNode[] tree;
 
-    #region old storable format 
+    #region old storable format
     // remove with HL 3.4
     [Storable(AllowOneWay = true)]
     // to prevent storing the references to data caches in nodes
@@ -166,8 +162,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
     }
 
-    internal RegressionTreeModel(TreeNode[] tree)
-      : base("RegressionTreeModel", "Represents a decision tree for regression.") {
+    internal RegressionTreeModel(TreeNode[] tree, string target = "Target")
+      : base(target, "RegressionTreeModel", "Represents a decision tree for regression.") {
       this.tree = tree;
     }
 
@@ -193,7 +189,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return new RegressionTreeModel(this, cloner);
     }
 
-    public IEnumerable<double> GetEstimatedValues(IDataset ds, IEnumerable<int> rows) {
+    public override IEnumerable<double> GetEstimatedValues(IDataset ds, IEnumerable<int> rows) {
       // lookup columns for variableNames in one pass over the tree to speed up evaluation later on
       ReadOnlyCollection<double>[] columnCache = new ReadOnlyCollection<double>[tree.Length];
 
@@ -207,7 +203,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return rows.Select(r => GetPredictionForRow(tree, columnCache, 0, r));
     }
 
-    public IRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData) {
+    public override IRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData) {
       return new RegressionSolution(this, new RegressionProblemData(problemData));
     }
 
@@ -226,5 +222,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         + TreeToString(n.RightIdx, string.Format(CultureInfo.InvariantCulture, "{0}{1}{2}  >  {3:F} ({4:N3}))", part, string.IsNullOrEmpty(part) ? "" : " and ", n.VarName, n.Val, 1.0 - n.WeightLeft));
       }
     }
+
   }
 }

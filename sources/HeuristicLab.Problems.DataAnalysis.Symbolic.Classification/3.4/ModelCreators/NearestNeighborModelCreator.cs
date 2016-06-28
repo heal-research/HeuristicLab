@@ -53,8 +53,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     public override IDeepCloneable Clone(Cloner cloner) { return new NearestNeighborModelCreator(this, cloner); }
 
 
-    public ISymbolicClassificationModel CreateSymbolicClassificationModel(ISymbolicExpressionTree tree, ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, double lowerEstimationLimit = double.MinValue, double upperEstimationLimit = double.MaxValue) {
-      return new SymbolicNearestNeighbourClassificationModel(KParameter.Value.Value, tree, interpreter, lowerEstimationLimit, upperEstimationLimit);
+    public ISymbolicClassificationModel CreateSymbolicClassificationModel(string targetVariable, ISymbolicExpressionTree tree, ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, double lowerEstimationLimit = double.MinValue, double upperEstimationLimit = double.MaxValue) {
+      return new SymbolicNearestNeighbourClassificationModel(targetVariable, KParameter.Value.Value, tree, interpreter, lowerEstimationLimit, upperEstimationLimit);
     }
 
   }

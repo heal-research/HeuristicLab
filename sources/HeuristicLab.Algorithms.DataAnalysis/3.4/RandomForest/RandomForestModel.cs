@@ -33,7 +33,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// </summary>
   [StorableClass]
   [Item("RandomForestModel", "Represents a random forest for regression and classification.")]
-  public sealed class RandomForestModel : NamedItem, IRandomForestModel {
+  public sealed class RandomForestModel : ClassificationModel, IRandomForestModel {
     // not persisted
     private alglib.decisionforest randomForest;
     private alglib.decisionforest RandomForest {
@@ -44,21 +44,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
     }
 
-    public IEnumerable<string> VariablesUsedForPrediction {
+    public override IEnumerable<string> VariablesUsedForPrediction {
       get { return originalTrainingData.AllowedInputVariables; }
     }
 
-    public string TargetVariable {
-      get {
-        var regressionProblemData = originalTrainingData as IRegressionProblemData;
-        var classificationProblemData = originalTrainingData as IClassificationProblemData;
-        if (classificationProblemData != null)
-          return classificationProblemData.TargetVariable;
-        if (regressionProblemData != null)
-          return regressionProblemData.TargetVariable;
-        throw new InvalidOperationException("Getting the target variable requires either a regression or a classification problem data.");
-      }
-    }
 
     // instead of storing the data of the model itself
     // we instead only store data necessary to recalculate the same model lazily on demand
@@ -106,10 +95,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     // random forest models can only be created through the static factory methods CreateRegressionModel and CreateClassificationModel
-    private RandomForestModel(alglib.decisionforest randomForest,
+    private RandomForestModel(string targetVariable, alglib.decisionforest randomForest,
       int seed, IDataAnalysisProblemData originalTrainingData,
       int nTrees, double r, double m, double[] classValues = null)
-      : base() {
+      : base(targetVariable) {
       this.name = ItemName;
       this.description = ItemDescription;
       // the model itself
@@ -162,7 +151,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
     }
 
-    public IEnumerable<double> GetEstimatedClassValues(IDataset dataset, IEnumerable<int> rows) {
+    public override IEnumerable<double> GetEstimatedClassValues(IDataset dataset, IEnumerable<int> rows) {
       double[,] inputData = AlglibUtil.PrepareInputMatrix(dataset, AllowedInputVariables, rows);
       AssertInputMatrix(inputData);
 
@@ -189,17 +178,12 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
     }
 
-    public IRandomForestRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData) {
-      return new RandomForestRegressionSolution(new RegressionProblemData(problemData), this);
+
+    public IRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData) {
+      return new RandomForestRegressionSolution(this, new RegressionProblemData(problemData));
     }
-    IRegressionSolution IRegressionModel.CreateRegressionSolution(IRegressionProblemData problemData) {
-      return CreateRegressionSolution(problemData);
-    }
-    public IRandomForestClassificationSolution CreateClassificationSolution(IClassificationProblemData problemData) {
-      return new RandomForestClassificationSolution(new ClassificationProblemData(problemData), this);
-    }
-    IClassificationSolution IClassificationModel.CreateClassificationSolution(IClassificationProblemData problemData) {
-      return CreateClassificationSolution(problemData);
+    public override IClassificationSolution CreateClassificationSolution(IClassificationProblemData problemData) {
+      return new RandomForestClassificationSolution(this, new ClassificationProblemData(problemData));
     }
 
     public static RandomForestModel CreateRegressionModel(IRegressionProblemData problemData, int nTrees, double r, double m, int seed,
@@ -220,7 +204,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       outOfBagAvgRelError = rep.oobavgrelerror;
       outOfBagRmsError = rep.oobrmserror;
 
-      return new RandomForestModel(dForest, seed, problemData, nTrees, r, m);
+      return new RandomForestModel(problemData.TargetVariable, dForest, seed, problemData, nTrees, r, m);
     }
 
     public static RandomForestModel CreateClassificationModel(IClassificationProblemData problemData, int nTrees, double r, double m, int seed,
@@ -257,7 +241,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       relClassificationError = rep.relclserror;
       outOfBagRelClassificationError = rep.oobrelclserror;
 
-      return new RandomForestModel(dForest, seed, problemData, nTrees, r, m, classValues);
+      return new RandomForestModel(problemData.TargetVariable, dForest, seed, problemData, nTrees, r, m, classValues);
     }
 
     private static alglib.decisionforest CreateRandomForestModel(int seed, double[,] inputMatrix, int nTrees, double r, double m, int nClasses, out alglib.dfreport rep) {

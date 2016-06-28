@@ -133,7 +133,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.TimeSeries {
       addition.AddSubtree(cNode);
 
       var interpreter = new SymbolicTimeSeriesPrognosisExpressionTreeInterpreter(problemData.TargetVariable);
-      var model = new SymbolicTimeSeriesPrognosisModel(tree, interpreter);
+      var model = new SymbolicTimeSeriesPrognosisModel(problemData.TargetVariable, tree, interpreter);
       var solution = model.CreateTimeSeriesPrognosisSolution((ITimeSeriesPrognosisProblemData)problemData.Clone());
       return solution;
     }

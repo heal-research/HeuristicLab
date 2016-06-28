@@ -72,8 +72,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     }
 
     protected override ISymbolicDataAnalysisModel CreateModel(ISymbolicExpressionTree tree, ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, IDataAnalysisProblemData problemData, DoubleLimit estimationLimits) {
-      var model = ModelCreatorParameter.ActualValue.CreateSymbolicClassificationModel(tree, interpreter, estimationLimits.Lower, estimationLimits.Upper);
       var classificationProblemData = (IClassificationProblemData)problemData;
+      var model = ModelCreatorParameter.ActualValue.CreateSymbolicClassificationModel(classificationProblemData.TargetVariable, tree, interpreter, estimationLimits.Lower, estimationLimits.Upper);
+
       var rows = classificationProblemData.TrainingIndices;
       model.RecalculateModelParameters(classificationProblemData, rows);
       return model;
@@ -92,7 +93,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
       IClassificationProblemData problemData, DoubleLimit estimationLimits, IEnumerable<int> rows,
       double nodeImpactThreshold = 0.0, bool pruneOnlyZeroImpactNodes = false) {
       var clonedTree = (ISymbolicExpressionTree)tree.Clone();
-      var model = modelCreator.CreateSymbolicClassificationModel(clonedTree, interpreter, estimationLimits.Lower, estimationLimits.Upper);
+      var model = modelCreator.CreateSymbolicClassificationModel(problemData.TargetVariable, clonedTree, interpreter, estimationLimits.Lower, estimationLimits.Upper);
 
       var nodes = clonedTree.Root.GetSubtree(0).GetSubtree(0).IterateNodesPrefix().ToList();
       double qualityForImpactsCalculation = double.NaN;

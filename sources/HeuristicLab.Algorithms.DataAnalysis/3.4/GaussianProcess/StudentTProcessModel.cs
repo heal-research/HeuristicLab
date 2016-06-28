@@ -33,8 +33,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// </summary>
   [StorableClass]
   [Item("StudentTProcessModel", "Represents a Student-t process posterior.")]
-  public sealed class StudentTProcessModel : NamedItem, IGaussianProcessModel {
-    public IEnumerable<string> VariablesUsedForPrediction {
+  public sealed class StudentTProcessModel : RegressionModel, IGaussianProcessModel {
+    public override IEnumerable<string> VariablesUsedForPrediction {
       get { return allowedInputVariables; }
     }
 
@@ -64,11 +64,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public IMeanFunction MeanFunction {
       get { return meanFunction; }
     }
-    [Storable]
-    private string targetVariable;
-    public string TargetVariable {
-      get { return targetVariable; }
-    }
+
     [Storable]
     private string[] allowedInputVariables;
     public string[] AllowedInputVariables {
@@ -134,7 +130,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         this.inputScaling = cloner.Clone(original.inputScaling);
       this.trainingDataset = cloner.Clone(original.trainingDataset);
       this.negativeLogLikelihood = original.negativeLogLikelihood;
-      this.targetVariable = original.targetVariable;
       if (original.meanParameter != null) {
         this.meanParameter = (double[])original.meanParameter.Clone();
       }
@@ -154,12 +149,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public StudentTProcessModel(IDataset ds, string targetVariable, IEnumerable<string> allowedInputVariables, IEnumerable<int> rows,
       IEnumerable<double> hyp, IMeanFunction meanFunction, ICovarianceFunction covarianceFunction,
       bool scaleInputs = true)
-      : base() {
+      : base(targetVariable) {
       this.name = ItemName;
       this.description = ItemDescription;
       this.meanFunction = (IMeanFunction)meanFunction.Clone();
       this.covarianceFunction = (ICovarianceFunction)covarianceFunction.Clone();
-      this.targetVariable = targetVariable;
       this.allowedInputVariables = allowedInputVariables.ToArray();
 
 
@@ -189,7 +183,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       x = GetData(ds, this.allowedInputVariables, this.trainingRows, this.inputScaling);
 
       IEnumerable<double> y;
-      y = ds.GetDoubleValues(targetVariable, rows);
+      y = ds.GetDoubleValues(TargetVariable, rows);
 
       int n = x.GetLength(0);
       var columns = Enumerable.Range(0, x.GetLength(1)).ToArray();
@@ -321,14 +315,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     #region IRegressionModel Members
-    public IEnumerable<double> GetEstimatedValues(IDataset dataset, IEnumerable<int> rows) {
+    public override IEnumerable<double> GetEstimatedValues(IDataset dataset, IEnumerable<int> rows) {
       return GetEstimatedValuesHelper(dataset, rows);
     }
-    public GaussianProcessRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData) {
+    public override IRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData) {
       return new GaussianProcessRegressionSolution(this, new RegressionProblemData(problemData));
-    }
-    IRegressionSolution IRegressionModel.CreateRegressionSolution(IRegressionProblemData problemData) {
-      return CreateRegressionSolution(problemData);
     }
     #endregion
 
