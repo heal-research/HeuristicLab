@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2016 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -115,6 +115,22 @@ namespace HeuristicLab.Problems.DataAnalysis {
         }
         this.variableValues.Add(columName, values);
       }
+    }
+
+    public ModifiableDataset ToModifiable() {
+      var values = new List<IList>();
+      foreach (var v in variableNames) {
+        if (VariableHasType<double>(v)) {
+          values.Add(new List<double>((List<double>)variableValues[v]));
+        } else if (VariableHasType<string>(v)) {
+          values.Add(new List<string>((List<string>)variableValues[v]));
+        } else if (VariableHasType<DateTime>(v)) {
+          values.Add(new List<DateTime>((List<DateTime>)variableValues[v]));
+        } else {
+          throw new ArgumentException("Unknown variable type.");
+        }
+      }
+      return new ModifiableDataset(variableNames, values);
     }
 
     protected Dataset(Dataset dataset) : this(dataset.variableNames, dataset.variableValues.Values) { }
