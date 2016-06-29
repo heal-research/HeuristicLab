@@ -24,7 +24,6 @@ using System.Windows.Forms;
 using HeuristicLab.Data;
 using HeuristicLab.Data.Views;
 using HeuristicLab.MainForm;
-using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
   [View("Estimated Values")]
@@ -67,11 +66,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       Content.ProblemDataChanged -= new EventHandler(Content_ProblemDataChanged);
     }
 
-    private void Content_ProblemDataChanged(object sender, EventArgs e) {
+    protected virtual void Content_ProblemDataChanged(object sender, EventArgs e) {
       OnContentChanged();
     }
 
-    private void Content_ModelChanged(object sender, EventArgs e) {
+    protected virtual void Content_ModelChanged(object sender, EventArgs e) {
       OnContentChanged();
     }
 
@@ -80,42 +79,47 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       UpdateEstimatedValues();
     }
 
-    private void UpdateEstimatedValues() {
+    protected virtual StringMatrix CreateValueMatrix() {
+      string[,] values = new string[Content.ProblemData.Dataset.Rows, 7];
+
+      double[] target = Content.ProblemData.Dataset.GetDoubleValues(Content.ProblemData.TargetVariable).ToArray();
+      var estimated = Content.EstimatedValues.GetEnumerator();
+      var estimated_training = Content.EstimatedTrainingValues.GetEnumerator();
+      var estimated_test = Content.EstimatedTestValues.GetEnumerator();
+
+      foreach (var row in Content.ProblemData.TrainingIndices) {
+        estimated_training.MoveNext();
+        values[row, 3] = estimated_training.Current.ToString();
+      }
+
+      foreach (var row in Content.ProblemData.TestIndices) {
+        estimated_test.MoveNext();
+        values[row, 4] = estimated_test.Current.ToString();
+      }
+
+      foreach (var row in Enumerable.Range(0, Content.ProblemData.Dataset.Rows)) {
+        estimated.MoveNext();
+        double est = estimated.Current;
+        double res = Math.Abs(est - target[row]);
+        values[row, 0] = row.ToString();
+        values[row, 1] = target[row].ToString();
+        values[row, 2] = est.ToString();
+        values[row, 5] = Math.Abs(res).ToString();
+        values[row, 6] = Math.Abs(res / target[row]).ToString();
+      }
+
+      var matrix = new StringMatrix(values);
+      matrix.ColumnNames = new string[] { "Id", TARGETVARIABLE_SERIES_NAME, ESTIMATEDVALUES_SERIES_NAME, ESTIMATEDVALUES_TRAINING_SERIES_NAME, ESTIMATEDVALUES_TEST_SERIES_NAME, "Absolute Error (all)", "Relative Error (all)" };
+      matrix.SortableView = true;
+      return matrix;
+    }
+
+    protected virtual void UpdateEstimatedValues() {
       if (InvokeRequired) Invoke((Action)UpdateEstimatedValues);
       else {
         StringMatrix matrix = null;
         if (Content != null) {
-          string[,] values = new string[Content.ProblemData.Dataset.Rows, 7];
-
-          double[] target = Content.ProblemData.Dataset.GetDoubleValues(Content.ProblemData.TargetVariable).ToArray();
-          var estimated = Content.EstimatedValues.GetEnumerator();
-          var estimated_training = Content.EstimatedTrainingValues.GetEnumerator();
-          var estimated_test = Content.EstimatedTestValues.GetEnumerator();
-
-          foreach (var row in Content.ProblemData.TrainingIndices) {
-            estimated_training.MoveNext();
-            values[row, 3] = estimated_training.Current.ToString();
-          }
-
-          foreach (var row in Content.ProblemData.TestIndices) {
-            estimated_test.MoveNext();
-            values[row, 4] = estimated_test.Current.ToString();
-          }
-
-          foreach (var row in Enumerable.Range(0, Content.ProblemData.Dataset.Rows)) {
-            estimated.MoveNext();
-            double est = estimated.Current;
-            double res = Math.Abs(est - target[row]);
-            values[row, 0] = row.ToString();
-            values[row, 1] = target[row].ToString();
-            values[row, 2] = est.ToString();
-            values[row, 5] = Math.Abs(res).ToString();
-            values[row, 6] = Math.Abs(res / target[row]).ToString();
-          }
-
-          matrix = new StringMatrix(values);
-          matrix.ColumnNames = new string[] { "Id", TARGETVARIABLE_SERIES_NAME, ESTIMATEDVALUES_SERIES_NAME, ESTIMATEDVALUES_TRAINING_SERIES_NAME, ESTIMATEDVALUES_TEST_SERIES_NAME, "Absolute Error (all)", "Relative Error (all)" };
-          matrix.SortableView = true;
+          matrix = CreateValueMatrix();
         }
         matrixView.Content = matrix;
       }

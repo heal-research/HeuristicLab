@@ -124,6 +124,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GaussianProcessRegressionSolutionEstimatedValuesView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GaussianProcessRegressionSolutionEstimatedValuesView.Designer.cs">
+      <DependentUpon>GaussianProcessRegressionSolutionEstimatedValuesView.cs</DependentUpon>
+    </Compile>
     <Compile Include="MeanProdView.cs">
       <SubType>UserControl</SubType>
     </Compile>
