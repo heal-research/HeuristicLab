@@ -35,6 +35,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     private const string TRAINING_SERIES = "Training samples";
     private const string TEST_SERIES = "Test samples";
 
+    private const int OPACITY_LEVEL = 150;
+
     public new IRegressionSolution Content {
       get { return (IRegressionSolution)base.Content; }
       set { base.Content = value; }
@@ -59,6 +61,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
       this.chart.TextAntiAliasingQuality = TextAntiAliasingQuality.High;
       this.chart.AxisViewChanged += new EventHandler<System.Windows.Forms.DataVisualization.Charting.ViewEventArgs>(chart_AxisViewChanged);
+
+      //make series colors semi transparent
+      this.chart.ApplyPaletteColors();
+      this.chart.Series[ALL_SERIES].Color = Color.FromArgb(OPACITY_LEVEL, this.chart.Series[ALL_SERIES].Color);
+      this.chart.Series[TRAINING_SERIES].Color = Color.FromArgb(OPACITY_LEVEL, this.chart.Series[TRAINING_SERIES].Color);
+      this.chart.Series[TEST_SERIES].Color = Color.FromArgb(OPACITY_LEVEL, this.chart.Series[TEST_SERIES].Color);
+
+      //change all markers to circles
+      this.chart.Series[ALL_SERIES].MarkerStyle = MarkerStyle.Circle;
+      this.chart.Series[TRAINING_SERIES].MarkerStyle = MarkerStyle.Circle;
+      this.chart.Series[TEST_SERIES].MarkerStyle = MarkerStyle.Circle;
 
       //configure axis 
       this.chart.CustomizeAllChartAreas();
