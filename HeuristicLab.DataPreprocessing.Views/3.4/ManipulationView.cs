@@ -154,8 +154,10 @@ namespace HeuristicLab.DataPreprocessing.Views {
         var filteredColumns = Content.ManipulationLogic.ColumnsWithMissingValuesGreater(getDeleteColumnsInfo());
         int count = filteredColumns.Count;
         int columnCount = Content.FilterLogic.PreprocessingData.Columns;
-        lblPreviewColumnsInfo.Text = count + " column" + (count > 1 || count == 0 ? "s" : "") + " of " + columnCount + " (" + string.Format("{0:F2}%", 100d / columnCount * count) + ") were detected with more than " + txtDeleteColumnsInfo.Text + "% missing values.";
-        if (count > 0) {
+        lblPreviewColumnsInfo.Text = string.Format("{0} column{1} of {2} ({3}) were detected with more than {4}% missing values.", count, (count > 1 || count == 0 ? "s" : ""), columnCount, string.Format("{0:F2}%", 100d / columnCount * count), txtDeleteColumnsInfo.Text);
+
+        //only display column names more than 0 and fewer than 50 are affected
+        if (count > 0 && count < 50) {
           StringBuilder sb = new StringBuilder();
           sb.Append(Environment.NewLine);
           sb.Append("Columns: ");
@@ -169,9 +171,9 @@ namespace HeuristicLab.DataPreprocessing.Views {
           sb.Append("Please press the button \"Apply Manipulation\" if you wish to delete those columns.");
 
           lblPreviewColumnsInfo.Text += sb.ToString();
-        } else {
-          btnApply.Enabled = false;
         }
+
+        btnApply.Enabled = count > 0;
       } else {
         lblPreviewColumnsInfo.Text = "Preview not possible yet - please input the limit above.";
       }
@@ -183,8 +185,10 @@ namespace HeuristicLab.DataPreprocessing.Views {
         var filteredColumns = Content.ManipulationLogic.ColumnsWithVarianceSmaller(getDeleteColumnsVariance());
         int count = filteredColumns.Count;
         int columnCount = Content.FilterLogic.PreprocessingData.Columns;
-        lblPreviewColumnsVariance.Text = count + " column" + (count > 1 || count == 0 ? "s" : "") + " of " + columnCount + " (" + string.Format("{0:F2}%", 100d / columnCount * count) + ") were detected with a variance smaller than " + txtDeleteColumnsVariance.Text + ".";
-        if (count > 0) {
+        lblPreviewColumnsVariance.Text = string.Format("{0} column{1} of {2} ({3}) were detected with a variance smaller than {4}.", count, (count > 1 || count == 0 ? "s" : ""), columnCount, string.Format("{0:F2}%", 100d / columnCount * count), txtDeleteColumnsVariance.Text);
+
+        //only display column names more than 0 and fewer than 50 are affected
+        if (count > 0 && count < 50) {
           StringBuilder sb = new StringBuilder();
           sb.Append(Environment.NewLine);
           sb.Append("Columns: ");
@@ -198,9 +202,9 @@ namespace HeuristicLab.DataPreprocessing.Views {
           sb.Append("Please press the button \"Apply Manipulation\" if you wish to delete those columns.");
 
           lblPreviewColumnsVariance.Text += sb.ToString();
-        } else {
-          btnApply.Enabled = false;
         }
+
+        btnApply.Enabled = count > 0;
       } else {
         lblPreviewColumnsVariance.Text = "Preview not possible yet - please input the limit for the variance above.";
       }
