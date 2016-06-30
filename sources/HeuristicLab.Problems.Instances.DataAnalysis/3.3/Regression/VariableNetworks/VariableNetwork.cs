@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows.Forms;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Random;
@@ -95,10 +96,12 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       int numLvl0 = (int)Math.Ceiling(numberOfFeatures * 0.33);
 
       List<string> description = new List<string>(); // store information how the variable is actually produced
+      List<string[]> inputVarNames = new List<string[]>(); // store information to produce graphviz file
 
       var nrand = new NormalDistributedRandom(random, 0, 1);
       for (int c = 0; c < numLvl0; c++) {
         var datai = Enumerable.Range(0, TestPartitionEnd).Select(_ => nrand.NextDouble()).ToList();
+        inputVarNames.Add(new string[] { });
         description.Add("~ N(0, 1)");
         lvl0.Add(datai);
       }
@@ -107,11 +110,14 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       List<List<double>> lvl1 = new List<List<double>>();
       int numLvl1 = (int)Math.Ceiling(numberOfFeatures * 0.33);
       for (int c = 0; c < numLvl1; c++) {
-        string desc;
-        var x = GenerateRandomFunction(random, lvl0, out desc);
+        string[] selectedVarNames;
+        var x = GenerateRandomFunction(random, lvl0, out selectedVarNames);
         var sigma = x.StandardDeviation();
         var noisePrng = new NormalDistributedRandom(random, 0, sigma * Math.Sqrt(noiseRatio / (1.0 - noiseRatio)));
         lvl1.Add(x.Select(t => t + noisePrng.NextDouble()).ToList());
+
+        inputVarNames.Add(selectedVarNames);
+        var desc = string.Format("f({0})", string.Join(",", selectedVarNames));
         description.Add(string.Format(" ~ N({0}, {1:N3})", desc, noisePrng.Sigma));
       }
 
@@ -119,11 +125,14 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       List<List<double>> lvl2 = new List<List<double>>();
       int numLvl2 = (int)Math.Ceiling(numberOfFeatures * 0.2);
       for (int c = 0; c < numLvl2; c++) {
-        string desc;
-        var x = GenerateRandomFunction(random, lvl0.Concat(lvl1).ToList(), out desc);
+        string[] selectedVarNames;
+        var x = GenerateRandomFunction(random, lvl0.Concat(lvl1).ToList(), out selectedVarNames);
         var sigma = x.StandardDeviation();
         var noisePrng = new NormalDistributedRandom(random, 0, sigma * Math.Sqrt(noiseRatio / (1.0 - noiseRatio)));
         lvl2.Add(x.Select(t => t + noisePrng.NextDouble()).ToList());
+
+        inputVarNames.Add(selectedVarNames);
+        var desc = string.Format("f({0})", string.Join(",", selectedVarNames));
         description.Add(string.Format(" ~ N({0}, {1:N3})", desc, noisePrng.Sigma));
       }
 
@@ -131,26 +140,38 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       List<List<double>> lvl3 = new List<List<double>>();
       int numLvl3 = numberOfFeatures - numLvl0 - numLvl1 - numLvl2;
       for (int c = 0; c < numLvl3; c++) {
-        string desc;
-        var x = GenerateRandomFunction(random, lvl0.Concat(lvl1).Concat(lvl2).ToList(), out desc);
+        string[] selectedVarNames;
+        var x = GenerateRandomFunction(random, lvl0.Concat(lvl1).Concat(lvl2).ToList(), out selectedVarNames);
         var sigma = x.StandardDeviation();
         var noisePrng = new NormalDistributedRandom(random, 0, sigma * Math.Sqrt(noiseRatio / (1.0 - noiseRatio)));
         lvl3.Add(x.Select(t => t + noisePrng.NextDouble()).ToList());
+
+        inputVarNames.Add(selectedVarNames);
+        var desc = string.Format("f({0})", string.Join(",", selectedVarNames));
         description.Add(string.Format(" ~ N({0}, {1:N3})", desc, noisePrng.Sigma));
       }
 
+      networkDefinition = string.Join(Environment.NewLine, variableNames.Zip(description, (n, d) => n + d));
+      // for graphviz
+      networkDefinition += Environment.NewLine + "digraph G {";
+      foreach (var t in variableNames.Zip(inputVarNames, Tuple.Create).OrderBy(t => t.Item1)) {
+        var name = t.Item1;
+        var selectedVarNames = t.Item2;
+        foreach (var selectedVarName in selectedVarNames) {
+          networkDefinition += Environment.NewLine + selectedVarName + " -> " + name;
+        }
+      }
+      networkDefinition += Environment.NewLine + "}";
+
       // return a random permutation of all variables
       var allVars = lvl0.Concat(lvl1).Concat(lvl2).Concat(lvl3).ToList();
-      networkDefinition = string.Join(Environment.NewLine, variableNames.Zip(description, (n, d) => n + d));
       var orderedVars = allVars.Zip(variableNames, Tuple.Create).OrderBy(t => t.Item2).Select(t => t.Item1).ToList();
       variableNames = variableNames.OrderBy(n => n).ToArray();
       return orderedVars;
     }
 
     // sample the input variables that are actually used and sample from a Gaussian process
-    private IEnumerable<double> GenerateRandomFunction(IRandom rand, List<List<double>> xs, out string desc) {
-      int nRows = xs.First().Count;
-
+    private IEnumerable<double> GenerateRandomFunction(IRandom rand, List<List<double>> xs, out string[] selectedVarNames) {
       double r = -Math.Log(1.0 - rand.NextDouble()) * 2.0; // r is exponentially distributed with lambda = 2
       int nl = (int)Math.Floor(1.5 + r); // number of selected vars is likely to be between three and four
       if (nl > xs.Count) nl = xs.Count; // limit max
@@ -159,7 +180,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
         .Take(nl).ToArray();
 
       var selectedVars = selectedIdx.Select(i => xs[i]).ToArray();
-      desc = string.Format("f({0})", string.Join(",", selectedIdx.Select(i => VariableNames[i])));
+      selectedVarNames = selectedIdx.Select(i => VariableNames[i]).ToArray();
       return SampleGaussianProcess(random, selectedVars);
     }
 
@@ -170,7 +191,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
 
       // sample length-scales
       var l = Enumerable.Range(0, nl)
-        .Select(_ => random.NextDouble()*2+0.5)
+        .Select(_ => random.NextDouble() * 2 + 0.5)
         .ToArray();
       // calculate covariance matrix
       for (int r = 0; r < nRows; r++) {
