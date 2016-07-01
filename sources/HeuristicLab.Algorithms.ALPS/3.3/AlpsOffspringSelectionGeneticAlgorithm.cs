@@ -283,8 +283,6 @@ namespace HeuristicLab.Algorithms.ALPS {
     #region Preconfigured Terminators
     [Storable]
     private ComparisonTerminator<IntValue> generationsTerminator;
-    //[Storable]
-    //private ComparisonTerminator<DoubleValue> selectionPressureTerminator;
     [Storable]
     private ComparisonTerminator<IntValue> evaluationsTerminator;
     [Storable]
@@ -313,7 +311,6 @@ namespace HeuristicLab.Algorithms.ALPS {
       layerSelectionPressureAnalyzer = cloner.Clone(original.layerSelectionPressureAnalyzer);
       currentSuccessRatioAnalyzer = cloner.Clone(original.currentSuccessRatioAnalyzer);
       generationsTerminator = cloner.Clone(original.generationsTerminator);
-      //selectionPressureTerminator = cloner.Clone(original.selectionPressureTerminator);
       evaluationsTerminator = cloner.Clone(original.evaluationsTerminator);
       qualityTerminator = cloner.Clone(original.qualityTerminator);
       executionTimeTerminator = cloner.Clone(original.executionTimeTerminator);
@@ -469,7 +466,6 @@ namespace HeuristicLab.Algorithms.ALPS {
 
       #region Create terminators
       generationsTerminator = new ComparisonTerminator<IntValue>("Generations", ComparisonType.Less, new IntValue(1000)) { Name = "Generations" };
-      //selectionPressureTerminator = new ComparisonTerminator<DoubleValue>("SelectionPressure", ComparisonType.Less, MaximumSelectionPressureParameter);
       evaluationsTerminator = new ComparisonTerminator<IntValue>("EvaluatedSolutions", ComparisonType.Less, new IntValue(int.MaxValue)) { Name = "Evaluations" };
       qualityTerminator = new SingleObjectiveQualityTerminator() { Name = "Quality" };
       executionTimeTerminator = new ExecutionTimeTerminator(this, new TimeSpanValue(TimeSpan.FromMinutes(5)));
@@ -721,7 +717,7 @@ namespace HeuristicLab.Algorithms.ALPS {
       Analyzer.Operators.Add(qualityAnalyzer, qualityAnalyzer.EnabledByDefault);
       Analyzer.Operators.Add(ageAnalyzer, ageAnalyzer.EnabledByDefault);
       Analyzer.Operators.Add(ageDistributionAnalyzer, ageDistributionAnalyzer.EnabledByDefault);
-      Analyzer.Operators.Add(selectionPressureAnalyzer, false); // find way to make history "pretty"
+      Analyzer.Operators.Add(selectionPressureAnalyzer, false);
       selectionPressureAnalyzer.ValueParameter.Depth = 1; // Adding analyzer sets depth to 2
       Analyzer.Operators.Add(currentSuccessRatioAnalyzer, false);
       currentSuccessRatioAnalyzer.ValueParameter.Depth = 1; // Adding analyzer sets depth to 2
@@ -773,7 +769,6 @@ namespace HeuristicLab.Algorithms.ALPS {
     private void UpdateTerminators() {
       var newTerminators = new Dictionary<ITerminator, bool> {
         {generationsTerminator, !Terminators.Operators.Contains(generationsTerminator) || Terminators.Operators.ItemChecked(generationsTerminator)},
-        //{selectionPressureTerminator, !Terminators.Operators.Contains(selectionPressureTerminator) || Terminators.Operators.ItemChecked(selectionPressureTerminator)},
         {evaluationsTerminator, Terminators.Operators.Contains(evaluationsTerminator) && Terminators.Operators.ItemChecked(evaluationsTerminator)},
         {qualityTerminator, Terminators.Operators.Contains(qualityTerminator) && Terminators.Operators.ItemChecked(qualityTerminator) },
         {executionTimeTerminator, Terminators.Operators.Contains(executionTimeTerminator) && Terminators.Operators.ItemChecked(executionTimeTerminator)}
