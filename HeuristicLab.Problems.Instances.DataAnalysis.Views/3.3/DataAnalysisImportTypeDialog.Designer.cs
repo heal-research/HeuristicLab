@@ -62,6 +62,10 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       this.SeparatorLabel = new System.Windows.Forms.Label();
       this.SeparatorComboBox = new System.Windows.Forms.ComboBox();
       this.CSVSettingsGroupBox = new System.Windows.Forms.GroupBox();
+      this.EncodingInfoLabel = new System.Windows.Forms.Label();
+      this.EncodingLabel = new System.Windows.Forms.Label();
+      this.EncodingComboBox = new System.Windows.Forms.ComboBox();
+      this.CheckboxColumnNames = new System.Windows.Forms.CheckBox();
       this.DateTimeFormatInfoLabel = new System.Windows.Forms.Label();
       this.DecimalSeparatorInfoLabel = new System.Windows.Forms.Label();
       this.SeparatorInfoLabel = new System.Windows.Forms.Label();
@@ -71,7 +75,6 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       this.PreviewLabel = new System.Windows.Forms.Label();
       this.PreviewDatasetMatrix = new HeuristicLab.Data.Views.StringConvertibleMatrixView();
       this.ToolTip = new System.Windows.Forms.ToolTip(this.components);
-      this.CheckboxColumnNames = new System.Windows.Forms.CheckBox();
       ((System.ComponentModel.ISupportInitialize)(this.TrainingTestTrackBar)).BeginInit();
       this.CSVSettingsGroupBox.SuspendLayout();
       this.ProblemDataSettingsGroupBox.SuspendLayout();
@@ -248,6 +251,9 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       // 
       this.CSVSettingsGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
+      this.CSVSettingsGroupBox.Controls.Add(this.EncodingInfoLabel);
+      this.CSVSettingsGroupBox.Controls.Add(this.EncodingLabel);
+      this.CSVSettingsGroupBox.Controls.Add(this.EncodingComboBox);
       this.CSVSettingsGroupBox.Controls.Add(this.CheckboxColumnNames);
       this.CSVSettingsGroupBox.Controls.Add(this.DateTimeFormatInfoLabel);
       this.CSVSettingsGroupBox.Controls.Add(this.DecimalSeparatorInfoLabel);
@@ -260,10 +266,55 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       this.CSVSettingsGroupBox.Controls.Add(this.DateTimeFormatLabel);
       this.CSVSettingsGroupBox.Location = new System.Drawing.Point(12, 32);
       this.CSVSettingsGroupBox.Name = "CSVSettingsGroupBox";
-      this.CSVSettingsGroupBox.Size = new System.Drawing.Size(447, 126);
+      this.CSVSettingsGroupBox.Size = new System.Drawing.Size(447, 153);
       this.CSVSettingsGroupBox.TabIndex = 16;
       this.CSVSettingsGroupBox.TabStop = false;
       this.CSVSettingsGroupBox.Text = "CSV Settings";
+      // 
+      // EncodingInfoLabel
+      // 
+      this.EncodingInfoLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.EncodingInfoLabel.Image = HeuristicLab.Common.Resources.VSImageLibrary.Information;
+      this.EncodingInfoLabel.Location = new System.Drawing.Point(421, 102);
+      this.EncodingInfoLabel.Name = "EncodingInfoLabel";
+      this.EncodingInfoLabel.Size = new System.Drawing.Size(16, 16);
+      this.EncodingInfoLabel.TabIndex = 27;
+      this.EncodingInfoLabel.Tag = "Select the encoding the file was saved with.";
+      this.ToolTip.SetToolTip(this.EncodingInfoLabel, "Select the encoding the file was saved with.");
+      this.EncodingInfoLabel.DoubleClick += new System.EventHandler(this.ControlToolTip_DoubleClick);
+      // 
+      // EncodingLabel
+      // 
+      this.EncodingLabel.AutoSize = true;
+      this.EncodingLabel.Location = new System.Drawing.Point(6, 103);
+      this.EncodingLabel.Name = "EncodingLabel";
+      this.EncodingLabel.Size = new System.Drawing.Size(52, 13);
+      this.EncodingLabel.TabIndex = 26;
+      this.EncodingLabel.Text = "Encoding";
+      // 
+      // EncodingComboBox
+      // 
+      this.EncodingComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.EncodingComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.EncodingComboBox.Enabled = false;
+      this.EncodingComboBox.FormattingEnabled = true;
+      this.EncodingComboBox.Location = new System.Drawing.Point(111, 100);
+      this.EncodingComboBox.Name = "EncodingComboBox";
+      this.EncodingComboBox.Size = new System.Drawing.Size(300, 21);
+      this.EncodingComboBox.TabIndex = 25;
+      this.EncodingComboBox.SelectionChangeCommitted += new System.EventHandler(this.CSVFormatComboBoxSelectionChangeCommitted);
+      // 
+      // CheckboxColumnNames
+      // 
+      this.CheckboxColumnNames.AutoSize = true;
+      this.CheckboxColumnNames.Location = new System.Drawing.Point(9, 127);
+      this.CheckboxColumnNames.Name = "CheckboxColumnNames";
+      this.CheckboxColumnNames.Size = new System.Drawing.Size(144, 17);
+      this.CheckboxColumnNames.TabIndex = 24;
+      this.CheckboxColumnNames.Text = "Column names in first line";
+      this.CheckboxColumnNames.UseVisualStyleBackColor = true;
+      this.CheckboxColumnNames.CheckedChanged += new System.EventHandler(this.CheckboxColumnNames_CheckedChanged);
       // 
       // DateTimeFormatInfoLabel
       // 
@@ -314,9 +365,9 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       this.ProblemDataSettingsGroupBox.Controls.Add(this.TrainingLabel);
       this.ProblemDataSettingsGroupBox.Controls.Add(this.TrainingTestTrackBar);
       this.ProblemDataSettingsGroupBox.Controls.Add(this.ShuffleDataCheckbox);
-      this.ProblemDataSettingsGroupBox.Location = new System.Drawing.Point(12, 164);
+      this.ProblemDataSettingsGroupBox.Location = new System.Drawing.Point(12, 191);
       this.ProblemDataSettingsGroupBox.Name = "ProblemDataSettingsGroupBox";
-      this.ProblemDataSettingsGroupBox.Size = new System.Drawing.Size(447, 252);
+      this.ProblemDataSettingsGroupBox.Size = new System.Drawing.Size(447, 225);
       this.ProblemDataSettingsGroupBox.TabIndex = 17;
       this.ProblemDataSettingsGroupBox.TabStop = false;
       this.ProblemDataSettingsGroupBox.Text = "ProblemData Settings";
@@ -364,19 +415,8 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       this.PreviewDatasetMatrix.ReadOnly = true;
       this.PreviewDatasetMatrix.ShowRowsAndColumnsTextBox = false;
       this.PreviewDatasetMatrix.ShowStatisticalInformation = false;
-      this.PreviewDatasetMatrix.Size = new System.Drawing.Size(435, 138);
+      this.PreviewDatasetMatrix.Size = new System.Drawing.Size(435, 111);
       this.PreviewDatasetMatrix.TabIndex = 0;
-      // 
-      // CheckboxColumnNames
-      // 
-      this.CheckboxColumnNames.AutoSize = true;
-      this.CheckboxColumnNames.Location = new System.Drawing.Point(9, 103);
-      this.CheckboxColumnNames.Name = "CheckboxColumnNames";
-      this.CheckboxColumnNames.Size = new System.Drawing.Size(144, 17);
-      this.CheckboxColumnNames.TabIndex = 24;
-      this.CheckboxColumnNames.Text = "Column names in first line";
-      this.CheckboxColumnNames.UseVisualStyleBackColor = true;
-      this.CheckboxColumnNames.CheckedChanged += new System.EventHandler(this.CheckboxColumnNames_CheckedChanged);
       // 
       // DataAnalysisImportTypeDialog
       // 
@@ -436,5 +476,8 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
     protected System.Windows.Forms.Label ShuffelInfoLabel;
     protected System.Windows.Forms.ToolTip ToolTip;
     private System.Windows.Forms.CheckBox CheckboxColumnNames;
+    protected System.Windows.Forms.Label EncodingInfoLabel;
+    protected System.Windows.Forms.Label EncodingLabel;
+    protected System.Windows.Forms.ComboBox EncodingComboBox;
   }
 }

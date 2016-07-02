@@ -51,6 +51,11 @@ namespace HeuristicLab.Problems.DataAnalysis {
       rows = 0;
     }
 
+    /// <summary>
+    /// Creates a new dataset. The variableValues are not cloned.
+    /// </summary>
+    /// <param name="variableNames">The names of the variables in the dataset</param>
+    /// <param name="variableValues">The values for the variables (column-oriented storage). Values are not cloned!</param>
     public Dataset(IEnumerable<string> variableNames, IEnumerable<IList> variableValues)
       : base() {
       Name = "-";
@@ -74,19 +79,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       this.variableValues = new Dictionary<string, IList>(this.variableNames.Count);
       for (int i = 0; i < this.variableNames.Count; i++) {
         var values = variableValues.ElementAt(i);
-        IList clonedValues = null;
-        if (values is IList<double>)
-          clonedValues = new List<double>(values.Cast<double>());
-        else if (values is IList<string>)
-          clonedValues = new List<string>(values.Cast<string>());
-        else if (values is IList<DateTime>)
-          clonedValues = new List<DateTime>(values.Cast<DateTime>());
-        else {
-          this.variableNames = new List<string>();
-          this.variableValues = new Dictionary<string, IList>();
-          throw new ArgumentException("The variable values must be of type IList<double>, IList<string> or IList<DateTime>");
-        }
-        this.variableValues.Add(this.variableNames[i], clonedValues);
+        this.variableValues.Add(this.variableNames[i], values);
       }
     }
 

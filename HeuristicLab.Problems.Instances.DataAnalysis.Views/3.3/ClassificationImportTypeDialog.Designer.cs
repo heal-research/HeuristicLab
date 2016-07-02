@@ -86,7 +86,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       this.ProblemDataSettingsGroupBox.Controls.Add(this.TargetVariableLabel);
       this.ProblemDataSettingsGroupBox.Controls.Add(this.TargetVariableComboBox);
       this.ProblemDataSettingsGroupBox.Controls.Add(this.UniformDistributionOfClassesCheckbox);
-      this.ProblemDataSettingsGroupBox.Size = new System.Drawing.Size(447, 312);
+      this.ProblemDataSettingsGroupBox.Size = new System.Drawing.Size(447, 285);
       this.ProblemDataSettingsGroupBox.Controls.SetChildIndex(this.UniformDistributionOfClassesCheckbox, 0);
       this.ProblemDataSettingsGroupBox.Controls.SetChildIndex(this.TargetVariableComboBox, 0);
       this.ProblemDataSettingsGroupBox.Controls.SetChildIndex(this.TargetVariableLabel, 0);
@@ -109,7 +109,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       // PreviewDatasetMatrix
       // 
       this.PreviewDatasetMatrix.Location = new System.Drawing.Point(6, 134);
-      this.PreviewDatasetMatrix.Size = new System.Drawing.Size(435, 172);
+      this.PreviewDatasetMatrix.Size = new System.Drawing.Size(435, 145);
       // 
       // PreviewLabel
       // 
@@ -117,7 +117,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       // 
       // TargetVariableComboBox
       // 
-      this.TargetVariableComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.TargetVariableComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.TargetVariableComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.TargetVariableComboBox.FormattingEnabled = true;
