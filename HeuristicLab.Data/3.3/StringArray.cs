@@ -60,7 +60,7 @@ namespace HeuristicLab.Data {
 
     public virtual int Length {
       get { return array.Length; }
-      protected set {
+      set {
         if (ReadOnly) throw new NotSupportedException("Length cannot be set. StringArray is read-only.");
         if (value != Length) {
           Array.Resize<string>(ref array, value);
@@ -71,6 +71,18 @@ namespace HeuristicLab.Data {
         }
       }
     }
+    [Storable]
+    protected bool resizable = true;
+    public bool Resizable {
+      get { return resizable; }
+      set {
+        if (resizable != value) {
+          resizable = value;
+          OnResizableChanged();
+        }
+      }
+    }
+
     public virtual string this[int index] {
       get { return array[index]; }
       set {
@@ -101,11 +113,13 @@ namespace HeuristicLab.Data {
       : base(original, cloner) {
       this.array = (string[])original.array.Clone();
       this.readOnly = original.readOnly;
+      this.resizable = original.resizable;
       this.elementNames = new List<string>(original.elementNames);
     }
     public StringArray() {
       array = new string[0];
       readOnly = false;
+      resizable = true;
       elementNames = new List<string>();
     }
     public StringArray(int length) {
@@ -113,6 +127,7 @@ namespace HeuristicLab.Data {
       for (int i = 0; i < array.Length; i++)
         array[i] = string.Empty;
       readOnly = false;
+      resizable = true;
       elementNames = new List<string>();
     }
     public StringArray(string[] elements) {
@@ -121,6 +136,7 @@ namespace HeuristicLab.Data {
       for (int i = 0; i < array.Length; i++)
         array[i] = elements[i] == null ? string.Empty : elements[i];
       readOnly = false;
+      resizable = true;
       elementNames = new List<string>();
     }
 
@@ -132,6 +148,9 @@ namespace HeuristicLab.Data {
       StringArray readOnlyStringArray = (StringArray)this.Clone();
       readOnlyStringArray.readOnly = true;
       return readOnlyStringArray;
+    }
+    IValueTypeArray IValueTypeArray.AsReadOnly() {
+      return AsReadOnly();
     }
 
     public override string ToString() {
@@ -154,7 +173,6 @@ namespace HeuristicLab.Data {
     public virtual IEnumerator<string> GetEnumerator() {
       return array.Cast<string>().GetEnumerator();
     }
-
     IEnumerator IEnumerable.GetEnumerator() {
       return GetEnumerator();
     }
@@ -180,13 +198,18 @@ namespace HeuristicLab.Data {
       }
     }
 
+    public event EventHandler ResizableChanged;
+    protected virtual void OnResizableChanged() {
+      EventHandler handler = ResizableChanged;
+      if (handler != null)
+        handler(this, EventArgs.Empty);
+    }
     public event EventHandler ElementNamesChanged;
     protected virtual void OnElementNamesChanged() {
       EventHandler handler = ElementNamesChanged;
       if (handler != null)
         handler(this, EventArgs.Empty);
     }
-
     public event EventHandler<EventArgs<int>> ItemChanged;
     protected virtual void OnItemChanged(int index) {
       if (ItemChanged != null)
@@ -202,10 +225,6 @@ namespace HeuristicLab.Data {
     }
 
     #region IStringConvertibleArray Members
-    int IStringConvertibleArray.Length {
-      get { return Length; }
-      set { Length = value; }
-    }
     bool IStringConvertibleArray.Validate(string value, out string errorMessage) {
       return Validate(value, out errorMessage);
     }

@@ -1,6 +1,7 @@
-#region License Information
+﻿#region License Information
+
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2016 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -17,14 +18,34 @@
  * You should have received a copy of the GNU General Public License
  * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
  */
+
 #endregion
 
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using HeuristicLab.Common;
+using HeuristicLab.Core;
 
 namespace HeuristicLab.Data {
-  public interface IStringConvertibleArray : IContent, IValueTypeArray {
-    bool Validate(string value, out string errorMessage);
-    string GetValue(int index);
-    bool SetValue(string value, int index);
+  public interface IValueTypeArray : IItem, IEnumerable {
+    bool ReadOnly { get; }
+    IValueTypeArray AsReadOnly();
+
+    int Length { get; set; }
+    bool Resizable { get; set; }
+    event EventHandler ResizableChanged;
+
+    IEnumerable<string> ElementNames { get; set; }
+    event EventHandler ElementNamesChanged;
+
+    event EventHandler<EventArgs<int>> ItemChanged;
+    event EventHandler Reset;
+  }
+
+  public interface IValueTypeArray<T> : IValueTypeArray, IEnumerable<T> where T : struct {
+    T this[int index] { get; set; }
   }
 }
+
+

@@ -123,6 +123,7 @@
     <Compile Include="Comparison.cs" />
     <Compile Include="ComparisonType.cs" />
     <Compile Include="EnumValue.cs" />
+    <Compile Include="Interfaces\IValueTypeArray.cs" />
     <Compile Include="Path Types\DirectoryValue.cs" />
     <Compile Include="Path Types\FileValue.cs" />
     <Compile Include="Path Types\PathValue.cs" />
@@ -147,6 +148,7 @@
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StringArray.cs" />
+    <Compile Include="StringConvertibleArray.cs" />
     <Compile Include="StringMatrix.cs" />
     <Compile Include="StringValue.cs" />
     <Compile Include="TimeSpanValue.cs" />
