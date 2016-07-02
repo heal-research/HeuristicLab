@@ -62,11 +62,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     private class ModelsView : ItemCollectionView<IRegressionSolution> {
       protected override void SetEnabledStateOfControls() {
         base.SetEnabledStateOfControls();
-        addButton.Enabled = Content != null && !Content.IsReadOnly && !Locked;
-        removeButton.Enabled = Content != null && !Content.IsReadOnly && !Locked && itemsListView.SelectedItems.Count > 0;
+        addButton.Enabled = false;
+        removeButton.Enabled = Content != null && !Content.IsReadOnly && !Locked && !ReadOnly && itemsListView.SelectedItems.Count > 0;
         itemsListView.Enabled = Content != null && !Locked;
         detailsGroupBox.Enabled = Content != null && itemsListView.SelectedItems.Count == 1;
+        sortAscendingButton.Enabled = false;
+        sortDescendingButton.Enabled = false;
       }
+
+      //forbid sorting
+      protected override void SortItemsListView(SortOrder sortOrder) { }
 
       protected override void itemsListView_DragEnter(object sender, DragEventArgs e) {
         validDragOperation = false;

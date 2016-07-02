@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
@@ -31,7 +32,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
   /// </summary>
   [StorableClass]
   [Item("RegressionEnsembleModel", "A regression model that contains an ensemble of multiple regression models")]
-  public class RegressionEnsembleModel : NamedItem, IRegressionEnsembleModel {
+  public sealed class RegressionEnsembleModel : NamedItem, IRegressionEnsembleModel {
 
     private List<IRegressionModel> models;
     public IEnumerable<IRegressionModel> Models {
@@ -44,6 +45,29 @@ namespace HeuristicLab.Problems.DataAnalysis {
       set { models = value.ToList(); }
     }
 
+    private List<double> modelWeights;
+    public IEnumerable<double> ModelWeights {
+      get { return modelWeights; }
+    }
+
+    [Storable(Name = "ModelWeights")]
+    private IEnumerable<double> StorableModelWeights {
+      get { return modelWeights; }
+      set { modelWeights = value.ToList(); }
+    }
+
+    [Storable]
+    private bool averageModelEstimates = true;
+    public bool AverageModelEstimates {
+      get { return averageModelEstimates; }
+      set {
+        if (averageModelEstimates != value) {
+          averageModelEstimates = value;
+          OnChanged();
+        }
+      }
+    }
+
     #region backwards compatiblity 3.3.5
     [Storable(Name = "models", AllowOneWay = true)]
     private List<IRegressionModel> OldStorableModels {
@@ -51,38 +75,88 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
     #endregion
 
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      // BackwardsCompatibility 3.3.14
+      #region Backwards compatible code, remove with 3.4
+      if (modelWeights == null || !modelWeights.Any())
+        modelWeights = new List<double>(models.Select(m => 1.0));
+      #endregion
+    }
+
     [StorableConstructor]
-    protected RegressionEnsembleModel(bool deserializing) : base(deserializing) { }
-    protected RegressionEnsembleModel(RegressionEnsembleModel original, Cloner cloner)
+    private RegressionEnsembleModel(bool deserializing) : base(deserializing) { }
+    private RegressionEnsembleModel(RegressionEnsembleModel original, Cloner cloner)
       : base(original, cloner) {
-      this.models = original.Models.Select(m => cloner.Clone(m)).ToList();
+      this.models = original.Models.Select(cloner.Clone).ToList();
+      this.modelWeights = new List<double>(original.ModelWeights);
+      this.averageModelEstimates = original.averageModelEstimates;
     }
-
-    public RegressionEnsembleModel() : this(Enumerable.Empty<IRegressionModel>()) { }
-    public RegressionEnsembleModel(IEnumerable<IRegressionModel> models)
-      : base() {
-      this.name = ItemName;
-      this.description = ItemDescription;
-      this.models = new List<IRegressionModel>(models);
-    }
-
     public override IDeepCloneable Clone(Cloner cloner) {
       return new RegressionEnsembleModel(this, cloner);
     }
 
-    #region IRegressionEnsembleModel Members
+    public RegressionEnsembleModel() : this(Enumerable.Empty<IRegressionModel>()) { }
+    public RegressionEnsembleModel(IEnumerable<IRegressionModel> models) : this(models, models.Select(m => 1.0)) { }
+    public RegressionEnsembleModel(IEnumerable<IRegressionModel> models, IEnumerable<double> modelWeights)
+      : base() {
+      this.name = ItemName;
+      this.description = ItemDescription;
+
+
+      this.models = new List<IRegressionModel>(models);
+      this.modelWeights = new List<double>(modelWeights);
+    }
 
     public void Add(IRegressionModel model) {
-      models.Add(model);
+      Add(model, 1.0);
     }
-    public void Remove(IRegressionModel model) {
-      models.Remove(model);
+    public void Add(IRegressionModel model, double weight) {
+      models.Add(model);
+      modelWeights.Add(weight);
+      OnChanged();
     }
 
+    public void AddRange(IEnumerable<IRegressionModel> models) {
+      AddRange(models, models.Select(m => 1.0));
+    }
+    public void AddRange(IEnumerable<IRegressionModel> models, IEnumerable<double> weights) {
+      this.models.AddRange(models);
+      modelWeights.AddRange(weights);
+      OnChanged();
+    }
+
+    public void Remove(IRegressionModel model) {
+      var index = models.IndexOf(model);
+      models.RemoveAt(index);
+      modelWeights.RemoveAt(index);
+      OnChanged();
+    }
+    public void RemoveRange(IEnumerable<IRegressionModel> models) {
+      foreach (var model in models) {
+        var index = this.models.IndexOf(model);
+        this.models.RemoveAt(index);
+        modelWeights.RemoveAt(index);
+      }
+      OnChanged();
+    }
+
+    public double GetModelWeight(IRegressionModel model) {
+      var index = models.IndexOf(model);
+      return modelWeights[index];
+    }
+    public void SetModelWeight(IRegressionModel model, double weight) {
+      var index = models.IndexOf(model);
+      modelWeights[index] = weight;
+      OnChanged();
+    }
+
+    #region evaluation
     public IEnumerable<IEnumerable<double>> GetEstimatedValueVectors(IDataset dataset, IEnumerable<int> rows) {
       var estimatedValuesEnumerators = (from model in models
-                                        select model.GetEstimatedValues(dataset, rows).GetEnumerator())
-                                       .ToList();
+                                        let weight = GetModelWeight(model)
+                                        select model.GetEstimatedValues(dataset, rows).Select(e => weight * e)
+                                        .GetEnumerator()).ToList();
 
       while (estimatedValuesEnumerators.All(en => en.MoveNext())) {
         yield return from enumerator in estimatedValuesEnumerators
@@ -90,23 +164,59 @@ namespace HeuristicLab.Problems.DataAnalysis {
       }
     }
 
-    #endregion
-
-    #region IRegressionModel Members
-
     public IEnumerable<double> GetEstimatedValues(IDataset dataset, IEnumerable<int> rows) {
-      foreach (var estimatedValuesVector in GetEstimatedValueVectors(dataset, rows)) {
-        yield return estimatedValuesVector.Average();
+      double weightsSum = modelWeights.Sum();
+      var summedEstimates = from estimatedValuesVector in GetEstimatedValueVectors(dataset, rows)
+                            select estimatedValuesVector.DefaultIfEmpty(double.NaN).Sum();
+
+      if (AverageModelEstimates)
+        return summedEstimates.Select(v => v / weightsSum);
+      else
+        return summedEstimates;
+
+    }
+
+    public IEnumerable<double> GetEstimatedValues(IDataset dataset, IEnumerable<int> rows, Func<int, IRegressionModel, bool> modelSelectionPredicate) {
+      var estimatedValuesEnumerators = GetEstimatedValueVectors(dataset, rows).GetEnumerator();
+      var rowsEnumerator = rows.GetEnumerator();
+
+      while (rowsEnumerator.MoveNext() & estimatedValuesEnumerators.MoveNext()) {
+        var estimatedValueEnumerator = estimatedValuesEnumerators.Current.GetEnumerator();
+        int currentRow = rowsEnumerator.Current;
+        double weightsSum = 0.0;
+        double filteredEstimatesSum = 0.0;
+
+        for (int m = 0; m < models.Count; m++) {
+          estimatedValueEnumerator.MoveNext();
+          var model = models[m];
+          if (!modelSelectionPredicate(currentRow, model)) continue;
+
+          filteredEstimatesSum += estimatedValueEnumerator.Current;
+          weightsSum += modelWeights[m];
+        }
+
+        if (AverageModelEstimates)
+          yield return filteredEstimatesSum / weightsSum;
+        else
+          yield return filteredEstimatesSum;
       }
     }
 
+    #endregion
+
+    public event EventHandler Changed;
+    private void OnChanged() {
+      var handler = Changed;
+      if (handler != null)
+        handler(this, EventArgs.Empty);
+    }
+
+
     public RegressionEnsembleSolution CreateRegressionSolution(IRegressionProblemData problemData) {
-      return new RegressionEnsembleSolution(this.Models, new RegressionEnsembleProblemData(problemData));
+      return new RegressionEnsembleSolution(this, new RegressionEnsembleProblemData(problemData));
     }
     IRegressionSolution IRegressionModel.CreateRegressionSolution(IRegressionProblemData problemData) {
       return CreateRegressionSolution(problemData);
     }
-
-    #endregion
   }
 }

@@ -195,6 +195,12 @@
     <Compile Include="ProblemDataView.Designer.cs">
       <DependentUpon>ProblemDataView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Regression\RegressionEnsembleSolutionModelWeightsView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Regression\RegressionEnsembleSolutionModelWeightsView.Designer.cs">
+      <DependentUpon>RegressionEnsembleSolutionModelWeightsView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Regression\RegressionFeatureCorrelationView.cs">
       <SubType>UserControl</SubType>
     </Compile>
