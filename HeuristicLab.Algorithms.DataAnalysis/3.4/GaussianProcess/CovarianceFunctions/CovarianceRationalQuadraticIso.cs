@@ -116,7 +116,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       if (p.Length != c) throw new ArgumentException("The length of the parameter vector does not match the number of free parameters for CovarianceRationalQuadraticIso", "p");
     }
 
-    public ParameterizedCovarianceFunction GetParameterizedCovarianceFunction(double[] p, IEnumerable<int> columnIndices) {
+    public ParameterizedCovarianceFunction GetParameterizedCovarianceFunction(double[] p, int[] columnIndices) {
       double scale, shape, inverseLength;
       GetParameterValues(p, out scale, out shape, out inverseLength);
       var fixedInverseLength = HasFixedInverseLengthParameter;
@@ -127,27 +127,29 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       cov.Covariance = (x, i, j) => {
         double d = i == j
                     ? 0.0
-                    : Util.SqrDist(x, i, j, inverseLength, columnIndices);
+                    : Util.SqrDist(x, i, j, columnIndices, inverseLength);
         return scale * Math.Pow(1 + 0.5 * d / shape, -shape);
       };
       cov.CrossCovariance = (x, xt, i, j) => {
-        double d = Util.SqrDist(x, i, xt, j, inverseLength, columnIndices);
+        double d = Util.SqrDist(x, i, xt, j, columnIndices, inverseLength);
         return scale * Math.Pow(1 + 0.5 * d / shape, -shape);
       };
       cov.CovarianceGradient = (x, i, j) => GetGradient(x, i, j, columnIndices, scale, shape, inverseLength, fixedInverseLength, fixedScale, fixedShape);
       return cov;
     }
 
-    private static IEnumerable<double> GetGradient(double[,] x, int i, int j, IEnumerable<int> columnIndices, double scale, double shape, double inverseLength,
+    private static IList<double> GetGradient(double[,] x, int i, int j, int[] columnIndices, double scale, double shape, double inverseLength,
       bool fixedInverseLength, bool fixedScale, bool fixedShape) {
       double d = i == j
                    ? 0.0
-                   : Util.SqrDist(x, i, j, inverseLength, columnIndices);
+                   : Util.SqrDist(x, i, j, columnIndices, inverseLength);
 
       double b = 1 + 0.5 * d / shape;
-      if (!fixedInverseLength) yield return scale * Math.Pow(b, -shape - 1) * d;
-      if (!fixedScale) yield return 2 * scale * Math.Pow(b, -shape);
-      if (!fixedShape) yield return scale * Math.Pow(b, -shape) * (0.5 * d / b - shape * Math.Log(b));
+      var g = new List<double>(3);
+      if (!fixedInverseLength) g.Add(scale * Math.Pow(b, -shape - 1) * d);
+      if (!fixedScale) g.Add(2 * scale * Math.Pow(b, -shape));
+      if (!fixedShape) g.Add(scale * Math.Pow(b, -shape) * (0.5 * d / b - shape * Math.Log(b)));
+      return g;
     }
   }
 }

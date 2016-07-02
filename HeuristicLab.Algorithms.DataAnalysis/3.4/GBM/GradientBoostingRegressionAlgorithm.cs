@@ -342,6 +342,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
       var rows = problemData.TrainingPartition.Size;
       var features = models.Count;
       double[,] inputMatrix = new double[rows, features + 1];
+
       //add model estimates
       for (int m = 0; m < models.Count; m++) {
         var model = models[m];
@@ -371,7 +372,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
       alglib.lrunpack(lm, out coefficients, out features);
 
       var ensembleModel = new RegressionEnsembleModel(models, coefficients.Take(models.Count)) { AverageModelEstimates = false };
-      var ensembleSolution = ensembleModel.CreateRegressionSolution(problemData);
+      var ensembleSolution = ensembleModel.CreateRegressionSolution((IRegressionProblemData)problemData.Clone());
       return ensembleSolution;
     }
 

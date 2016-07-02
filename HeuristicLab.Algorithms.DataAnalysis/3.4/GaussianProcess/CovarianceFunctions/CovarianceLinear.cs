@@ -20,8 +20,6 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -51,13 +49,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       if (p.Length > 0) throw new ArgumentException("No parameters are allowed for the linear covariance function.");
     }
 
-    public ParameterizedCovarianceFunction GetParameterizedCovarianceFunction(double[] p, IEnumerable<int> columnIndices) {
+    public ParameterizedCovarianceFunction GetParameterizedCovarianceFunction(double[] p, int[] columnIndices) {
       if (p.Length > 0) throw new ArgumentException("No parameters are allowed for the linear covariance function.");
       // create functions
       var cov = new ParameterizedCovarianceFunction();
-      cov.Covariance = (x, i, j) => Util.ScalarProd(x, i, j, 1, columnIndices);
-      cov.CrossCovariance = (x, xt, i, j) =>  Util.ScalarProd(x, i, xt, j, 1.0 , columnIndices);
-      cov.CovarianceGradient = (x, i, j) => Enumerable.Empty<double>();
+      cov.Covariance = (x, i, j) => Util.ScalarProd(x, i, j, columnIndices, 1.0);
+      cov.CrossCovariance = (x, xt, i, j) => Util.ScalarProd(x, i, xt, j, columnIndices, 1.0);
+      cov.CovarianceGradient = (x, i, j) => new double[0];
       return cov;
     }
   }

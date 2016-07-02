@@ -22,7 +22,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -75,7 +74,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
     }
 
-    public ParameterizedCovarianceFunction GetParameterizedCovarianceFunction(double[] p, IEnumerable<int> columnIndices) {
+    public ParameterizedCovarianceFunction GetParameterizedCovarianceFunction(double[] p, int[] columnIndices) {
       if (factors.Count == 0) throw new ArgumentException("at least one factor is necessary for the product covariance function.");
       var functions = new List<ParameterizedCovarianceFunction>();
       foreach (var f in factors) {
@@ -92,16 +91,18 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return product;
     }
 
-    public static IEnumerable<double> GetGradient(double[,] x, int i, int j, List<ParameterizedCovarianceFunction> factorFunctions) {
+    public static IList<double> GetGradient(double[,] x, int i, int j, List<ParameterizedCovarianceFunction> factorFunctions) {
       var covariances = factorFunctions.Select(f => f.Covariance(x, i, j)).ToArray();
+      var gr = new List<double>();
       for (int ii = 0; ii < factorFunctions.Count; ii++) {
         foreach (var g in factorFunctions[ii].CovarianceGradient(x, i, j)) {
           double res = g;
           for (int jj = 0; jj < covariances.Length; jj++)
             if (ii != jj) res *= covariances[jj];
-          yield return res;
+          gr.Add(res);
         }
       }
+      return gr;
     }
   }
 }

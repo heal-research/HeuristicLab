@@ -72,11 +72,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       if (p.Length > 0) throw new ArgumentException("No parameters allowed for model-based mean function.", "p");
     }
 
-    public ParameterizedMeanFunction GetParameterizedMeanFunction(double[] p, IEnumerable<int> columnIndices) {
+    public ParameterizedMeanFunction GetParameterizedMeanFunction(double[] p, int[] columnIndices) {
       if (p.Length > 0) throw new ArgumentException("No parameters allowed for model-based mean function.", "p");
       var solution = RegressionSolution;
       var variableNames = solution.ProblemData.AllowedInputVariables.ToArray();
-      if (variableNames.Length != columnIndices.Count())
+      if (variableNames.Length != columnIndices.Length)
         throw new ArgumentException("The number of input variables does not match in MeanModel");
       var variableValues = variableNames.Select(_ => new List<double>() { 0.0 }).ToArray(); // or of zeros
       // uses modifyable dataset to pass values to the model

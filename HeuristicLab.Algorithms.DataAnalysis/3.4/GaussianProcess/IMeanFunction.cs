@@ -19,8 +19,6 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
@@ -35,6 +33,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   public interface IMeanFunction : IItem {
     int GetNumberOfParameters(int numberOfVariables);
     void SetParameter(double[] p);
-    ParameterizedMeanFunction GetParameterizedMeanFunction(double[] p, IEnumerable<int> columnIndices);
+    ParameterizedMeanFunction GetParameterizedMeanFunction(double[] p, int[] columnIndices);
   }
 }

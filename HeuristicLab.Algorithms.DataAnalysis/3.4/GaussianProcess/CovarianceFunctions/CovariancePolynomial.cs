@@ -21,7 +21,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -106,7 +105,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       if (p.Length != n) throw new ArgumentException("The length of the parameter vector does not match the number of free parameters for CovariancePolynomial", "p");
     }
 
-    public ParameterizedCovarianceFunction GetParameterizedCovarianceFunction(double[] p, IEnumerable<int> columnIndices) {
+    public ParameterizedCovarianceFunction GetParameterizedCovarianceFunction(double[] p, int[] columnIndices) {
       double @const, scale;
       int degree = DegreeParameter.Value.Value;
       if (degree <= 0) throw new ArgumentException("The degree parameter for CovariancePolynomial must be greater than zero.");
@@ -115,17 +114,19 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       var fixedScale = HasFixedScaleParameter;
       // create functions
       var cov = new ParameterizedCovarianceFunction();
-      cov.Covariance = (x, i, j) => scale * Math.Pow(@const + Util.ScalarProd(x, i, j, 1.0, columnIndices), degree);
-      cov.CrossCovariance = (x, xt, i, j) => scale * Math.Pow(@const + Util.ScalarProd(x, i, xt, j, 1.0, columnIndices), degree);
+      cov.Covariance = (x, i, j) => scale * Math.Pow(@const + Util.ScalarProd(x, i, j, columnIndices, 1.0), degree);
+      cov.CrossCovariance = (x, xt, i, j) => scale * Math.Pow(@const + Util.ScalarProd(x, i, xt, j, columnIndices, 1.0), degree);
       cov.CovarianceGradient = (x, i, j) => GetGradient(x, i, j, @const, scale, degree, columnIndices, fixedConst, fixedScale);
       return cov;
     }
 
-    private static IEnumerable<double> GetGradient(double[,] x, int i, int j, double c, double scale, int degree, IEnumerable<int> columnIndices,
+    private static IList<double> GetGradient(double[,] x, int i, int j, double c, double scale, int degree, int[] columnIndices,
       bool fixedConst, bool fixedScale) {
-      double s = Util.ScalarProd(x, i, j, 1.0, columnIndices);
-      if (!fixedConst) yield return c * degree * scale * Math.Pow(c + s, degree - 1);
-      if (!fixedScale) yield return 2 * scale * Math.Pow(c + s, degree);
+      double s = Util.ScalarProd(x, i, j, columnIndices, 1.0);
+      var g = new List<double>(2);
+      if (!fixedConst) g.Add(c * degree * scale * Math.Pow(c + s, degree - 1));
+      if (!fixedScale) g.Add(2 * scale * Math.Pow(c + s, degree));
+      return g;
     }
   }
 }

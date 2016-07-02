@@ -22,7 +22,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -75,7 +74,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
     }
 
-    public ParameterizedCovarianceFunction GetParameterizedCovarianceFunction(double[] p, IEnumerable<int> columnIndices) {
+    public ParameterizedCovarianceFunction GetParameterizedCovarianceFunction(double[] p, int[] columnIndices) {
       if (terms.Count == 0) throw new ArgumentException("at least one term is necessary for the product covariance function.");
       var functions = new List<ParameterizedCovarianceFunction>();
       foreach (var t in terms) {
@@ -87,7 +86,12 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       var sum = new ParameterizedCovarianceFunction();
       sum.Covariance = (x, i, j) => functions.Select(e => e.Covariance(x, i, j)).Sum();
       sum.CrossCovariance = (x, xt, i, j) => functions.Select(e => e.CrossCovariance(x, xt, i, j)).Sum();
-      sum.CovarianceGradient = (x, i, j) => functions.Select(e => e.CovarianceGradient(x, i, j)).Aggregate(Enumerable.Concat);
+      sum.CovarianceGradient = (x, i, j) => {
+        var g = new List<double>();
+        foreach (var e in functions)
+          g.AddRange(e.CovarianceGradient(x, i, j));
+        return g;
+      };
       return sum;
     }
   }

@@ -22,7 +22,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -130,7 +129,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       if (p.Length != c) throw new ArgumentException("The length of the parameter vector does not match the number of free parameters for CovarianceSpectralMixture", "p");
     }
 
-    public ParameterizedCovarianceFunction GetParameterizedCovarianceFunction(double[] p, IEnumerable<int> columnIndices) {
+    public ParameterizedCovarianceFunction GetParameterizedCovarianceFunction(double[] p, int[] columnIndices) {
       double[] weight, frequency, lengthScale;
       GetParameterValues(p, out weight, out frequency, out lengthScale);
       var fixedWeight = HasFixedWeightParameter;
@@ -151,7 +150,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return cov;
     }
 
-    private static double GetCovariance(double[,] x, double[,] xt, int i, int j, int maxQ, double[] weight, double[] frequency, double[] lengthScale, IEnumerable<int> columnIndices) {
+    private static double GetCovariance(double[,] x, double[,] xt, int i, int j, int maxQ, double[] weight, double[] frequency, double[] lengthScale, int[] columnIndices) {
       // tau = x - x' (only for selected variables)
       double[] tau =
         Util.GetRow(x, i, columnIndices).Zip(Util.GetRow(xt, j, columnIndices), (xi, xj) => xi - xj).ToArray();
@@ -163,8 +162,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
         int idx = 0; // helper index for tau
         // for each selected variable
-        foreach (var c in columnIndices) {
-          kc *= f1(tau[idx], lengthScale[q * numberOfVariables + c]) * f2(tau[idx], frequency[q * numberOfVariables + c]);
+        for (int c = 0; c < columnIndices.Length; c++) {
+          var col = columnIndices[c];
+          kc *= f1(tau[idx], lengthScale[q * numberOfVariables + col]) * f2(tau[idx], frequency[q * numberOfVariables + col]);
           idx++;
         }
         k += kc;
@@ -180,11 +180,12 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     // order of returned gradients must match the order in GetParameterValues!
-    private static IEnumerable<double> GetGradient(double[,] x, int i, int j, int maxQ, double[] weight, double[] frequency, double[] lengthScale, IEnumerable<int> columnIndices,
+    private static IList<double> GetGradient(double[,] x, int i, int j, int maxQ, double[] weight, double[] frequency, double[] lengthScale, int[] columnIndices,
       bool fixedWeight, bool fixedFrequency, bool fixedLengthScale) {
       double[] tau = Util.GetRow(x, i, columnIndices).Zip(Util.GetRow(x, j, columnIndices), (xi, xj) => xi - xj).ToArray();
       int numberOfVariables = lengthScale.Length / maxQ;
 
+      var g = new List<double>((!fixedWeight ? maxQ : 0) + (!fixedFrequency ? maxQ * columnIndices.Length : 0) + (!fixedLengthScale ? maxQ * columnIndices.Length : 0));
       if (!fixedWeight) {
         // weight
         // for each component
@@ -192,11 +193,12 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
           double k = weight[q];
           int idx = 0; // helper index for tau
           // for each selected variable
-          foreach (var c in columnIndices) {
-            k *= f1(tau[idx], lengthScale[q * numberOfVariables + c]) * f2(tau[idx], frequency[q * numberOfVariables + c]);
+          for (int c = 0; c < columnIndices.Length; c++) {
+            var col = columnIndices[c];
+            k *= f1(tau[idx], lengthScale[q * numberOfVariables + col]) * f2(tau[idx], frequency[q * numberOfVariables + col]);
             idx++;
           }
-          yield return k;
+          g.Add(k);
         }
       }
 
@@ -211,7 +213,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
                        -2 * Math.PI * tau[idx] * frequency[q * numberOfVariables + c] *
                        Math.Sin(2 * Math.PI * tau[idx] * frequency[q * numberOfVariables + c]);
             idx++;
-            yield return weight[q] * k;
+            g.Add(weight[q] * k);
           }
         }
       }
@@ -227,10 +229,12 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
                        f1(tau[idx], lengthScale[q * numberOfVariables + c]) *
                        f2(tau[idx], frequency[q * numberOfVariables + c]);
             idx++;
-            yield return weight[q] * k;
+            g.Add(weight[q] * k);
           }
         }
       }
+
+      return g;
     }
   }
 }

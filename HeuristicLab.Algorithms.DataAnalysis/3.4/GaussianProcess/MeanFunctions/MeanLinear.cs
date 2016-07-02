@@ -20,7 +20,6 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -69,15 +68,15 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
     }
 
-    public ParameterizedMeanFunction GetParameterizedMeanFunction(double[] p, IEnumerable<int> columnIndices) {
+    public ParameterizedMeanFunction GetParameterizedMeanFunction(double[] p, int[] columnIndices) {
       double[] weights;
-      int[] columns = columnIndices.ToArray();
+      int[] columns = columnIndices;
       GetParameter(p, out weights);
       var mf = new ParameterizedMeanFunction();
       mf.Mean = (x, i) => {
         // sanity check
         if (weights.Length != columns.Length) throw new ArgumentException("The number of rparameters must match the number of variables for the linear mean function.");
-        return Util.ScalarProd(weights, Util.GetRow(x, i, columns));
+        return Util.ScalarProd(weights, Util.GetRow(x, i, columns).ToArray());
       };
       mf.Gradient = (x, i, k) => {
         if (k > columns.Length) throw new ArgumentException();

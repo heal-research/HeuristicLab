@@ -32,8 +32,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// Represents a Gaussian process model.
   /// </summary>
   [StorableClass]
-  [Item("GaussianProcessModel", "Represents a Gaussian process posterior.")]
-  public sealed class GaussianProcessModel : NamedItem, IGaussianProcessModel {
+  [Item("StudentTProcessModel", "Represents a Student-t process posterior.")]
+  public sealed class StudentTProcessModel : NamedItem, IGaussianProcessModel {
     [Storable]
     private double negativeLogLikelihood;
     public double NegativeLogLikelihood {
@@ -74,15 +74,18 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     [Storable]
     private double[] alpha;
     [Storable]
-    private double sqrSigmaNoise;
+    private double beta;
+
     public double SigmaNoise {
-      get { return Math.Sqrt(sqrSigmaNoise); }
+      get { return 0; }
     }
 
     [Storable]
     private double[] meanParameter;
     [Storable]
     private double[] covarianceParameter;
+    [Storable]
+    private double nu;
 
     private double[,] l; // used to be storable in previous versions (is calculated lazily now)
     private double[,] x; // scaled training dataset, used to be storable in previous versions (is calculated lazily now)
@@ -118,8 +121,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
 
     [StorableConstructor]
-    private GaussianProcessModel(bool deserializing) : base(deserializing) { }
-    private GaussianProcessModel(GaussianProcessModel original, Cloner cloner)
+    private StudentTProcessModel(bool deserializing) : base(deserializing) { }
+    private StudentTProcessModel(StudentTProcessModel original, Cloner cloner)
       : base(original, cloner) {
       this.meanFunction = cloner.Clone(original.meanFunction);
       this.covarianceFunction = cloner.Clone(original.covarianceFunction);
@@ -128,22 +131,23 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       this.trainingDataset = cloner.Clone(original.trainingDataset);
       this.negativeLogLikelihood = original.negativeLogLikelihood;
       this.targetVariable = original.targetVariable;
-      this.sqrSigmaNoise = original.sqrSigmaNoise;
       if (original.meanParameter != null) {
         this.meanParameter = (double[])original.meanParameter.Clone();
       }
       if (original.covarianceParameter != null) {
         this.covarianceParameter = (double[])original.covarianceParameter.Clone();
       }
+      nu = original.nu;
 
       // shallow copies of arrays because they cannot be modified
       this.trainingRows = original.trainingRows;
       this.allowedInputVariables = original.allowedInputVariables;
       this.alpha = original.alpha;
+      this.beta = original.beta;
       this.l = original.l;
       this.x = original.x;
     }
-    public GaussianProcessModel(IDataset ds, string targetVariable, IEnumerable<string> allowedInputVariables, IEnumerable<int> rows,
+    public StudentTProcessModel(IDataset ds, string targetVariable, IEnumerable<string> allowedInputVariables, IEnumerable<int> rows,
       IEnumerable<double> hyp, IMeanFunction meanFunction, ICovarianceFunction covarianceFunction,
       bool scaleInputs = true)
       : base() {
@@ -160,10 +164,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         .Take(this.meanFunction.GetNumberOfParameters(nVariables))
         .ToArray();
 
-      covarianceParameter = hyp.Skip(this.meanFunction.GetNumberOfParameters(nVariables))
+      covarianceParameter = hyp.Skip(meanParameter.Length)
                                              .Take(this.covarianceFunction.GetNumberOfParameters(nVariables))
                                              .ToArray();
-      sqrSigmaNoise = Math.Exp(2.0 * hyp.Last());
+      nu = Math.Exp(hyp.Skip(meanParameter.Length + covarianceParameter.Length).First()) + 2; //TODO check gradient
       try {
         CalculateModel(ds, rows, scaleInputs);
       }
@@ -184,11 +188,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       y = ds.GetDoubleValues(targetVariable, rows);
 
       int n = x.GetLength(0);
-
       var columns = Enumerable.Range(0, x.GetLength(1)).ToArray();
+
       // calculate cholesky decomposed (lower triangular) covariance matrix
       var cov = covarianceFunction.GetParameterizedCovarianceFunction(covarianceParameter, columns);
-      this.l = CalculateL(x, cov, sqrSigmaNoise);
+      this.l = CalculateL(x, cov);
 
       // calculate mean
       var mean = meanFunction.GetParameterizedMeanFunction(meanParameter, columns);
@@ -206,9 +210,19 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       alglib.densesolverreport denseSolveRep;
 
       alglib.spdmatrixcholeskysolve(l, n, false, ym, out info, out denseSolveRep, out alpha);
-      for (int i = 0; i < alpha.Length; i++)
-        alpha[i] = alpha[i] / sqrSigmaNoise;
-      negativeLogLikelihood = 0.5 * Util.ScalarProd(ym, alpha) + diagSum + (n / 2.0) * Math.Log(2.0 * Math.PI * sqrSigmaNoise);
+
+      beta = Util.ScalarProd(ym, alpha);
+      double sign0, sign1;
+      double lngamma0 = alglib.lngamma(0.5 * (nu + n), out sign0);
+      lngamma0 *= sign0;
+      double lngamma1 = alglib.lngamma(0.5 * nu, out sign1);
+      lngamma1 *= sign1;
+      negativeLogLikelihood =
+        0.5 * n * Math.Log((nu - 2) * Math.PI) +
+        diagSum +
+        -lngamma0 + lngamma1 +
+        //-Math.Log(alglib.gammafunction((n + nu) / 2) / alglib.gammafunction(nu / 2)) +
+        0.5 * (nu + n) * Math.Log(1 + beta / (nu - 2));
 
       // derivatives
       int nAllowedVariables = x.GetLength(1);
@@ -218,20 +232,19 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       Array.Copy(l, lCopy, lCopy.Length);
 
       alglib.spdmatrixcholeskyinverse(ref lCopy, n, false, out info, out matInvRep);
+      double c = (nu + n) / (nu + beta - 2);
       if (info != 1) throw new ArgumentException("Can't invert matrix to calculate gradients.");
       for (int i = 0; i < n; i++) {
         for (int j = 0; j <= i; j++)
-          lCopy[i, j] = lCopy[i, j] / sqrSigmaNoise - alpha[i] * alpha[j];
+          lCopy[i, j] = lCopy[i, j] - c * alpha[i] * alpha[j];
       }
-
-      double noiseGradient = sqrSigmaNoise * Enumerable.Range(0, n).Select(i => lCopy[i, i]).Sum();
 
       double[] meanGradients = new double[meanFunction.GetNumberOfParameters(nAllowedVariables)];
       for (int k = 0; k < meanGradients.Length; k++) {
         var meanGrad = new double[alpha.Length];
         for (int g = 0; g < meanGrad.Length; g++)
           meanGrad[g] = mean.Gradient(x, g, k);
-        meanGradients[k] = -Util.ScalarProd(meanGrad, alpha);
+        meanGradients[k] = -Util.ScalarProd(meanGrad, alpha);//TODO not working yet, try to fix with gradient check
       }
 
       double[] covGradients = new double[covarianceFunction.GetNumberOfParameters(nAllowedVariables)];
@@ -252,10 +265,15 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         }
       }
 
+      double nuGradient = 0.5 * n
+        - 0.5 * (nu - 2) * alglib.psi((n + nu) / 2) + 0.5 * (nu - 2) * alglib.psi(nu / 2)
+        + 0.5 * (nu - 2) * Math.Log(1 + beta / (nu - 2)) - beta * (n + nu) / (2 * (beta + (nu - 2)));
+
+      //nuGradient = (nu-2) * nuGradient;
       hyperparameterGradients =
         meanGradients
         .Concat(covGradients)
-        .Concat(new double[] { noiseGradient }).ToArray();
+        .Concat(new double[] { nuGradient }).ToArray();
 
     }
 
@@ -267,15 +285,14 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
     }
 
-    private static double[,] CalculateL(double[,] x, ParameterizedCovarianceFunction cov, double sqrSigmaNoise) {
+    private static double[,] CalculateL(double[,] x, ParameterizedCovarianceFunction cov) {
       int n = x.GetLength(0);
       var l = new double[n, n];
 
       // calculate covariances
       for (int i = 0; i < n; i++) {
         for (int j = i; j < n; j++) {
-          l[j, i] = cov.Covariance(x, i, j) / sqrSigmaNoise;
-          if (j == i) l[j, i] += 1.0;
+          l[j, i] = cov.Covariance(x, i, j);
         }
       }
 
@@ -287,7 +304,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new GaussianProcessModel(this, cloner);
+      return new StudentTProcessModel(this, cloner);
     }
 
     // is called by the solution creator to set all parameter values of the covariance and mean function
@@ -321,9 +338,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
         double[,] newX = GetData(dataset, allowedInputVariables, rows, inputScaling);
         int newN = newX.GetLength(0);
+        var columns = Enumerable.Range(0, newX.GetLength(1)).ToArray();
 
         var Ks = new double[newN][];
-        var columns = Enumerable.Range(0, newX.GetLength(1)).ToArray();
         var mean = meanFunction.GetParameterizedMeanFunction(meanParameter, columns);
         var ms = Enumerable.Range(0, newX.GetLength(0))
         .Select(r => mean.Mean(newX, r))
@@ -357,11 +374,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
         var kss = new double[newN];
         double[,] sWKs = new double[n, newN];
-        var columns = Enumerable.Range(0, newX.GetLength(1)).ToArray();
-        var cov = covarianceFunction.GetParameterizedCovarianceFunction(covarianceParameter, columns);
+        var cov = covarianceFunction.GetParameterizedCovarianceFunction(covarianceParameter, Enumerable.Range(0, x.GetLength(1)).ToArray());
 
         if (l == null) {
-          l = CalculateL(x, cov, sqrSigmaNoise);
+          l = CalculateL(x, cov);
         }
 
         // for stddev 
@@ -370,7 +386,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
         for (int i = 0; i < newN; i++) {
           for (int j = 0; j < n; j++) {
-            sWKs[j, i] = cov.CrossCovariance(x, newX, j, i) / Math.Sqrt(sqrSigmaNoise);
+            sWKs[j, i] = cov.CrossCovariance(x, newX, j, i);
           }
         }
 
@@ -380,8 +396,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         for (int i = 0; i < newN; i++) {
           var col = Util.GetCol(sWKs, i).ToArray();
           var sumV = Util.ScalarProd(col, col);
-          kss[i] += sqrSigmaNoise; // kss is V(f), add noise variance of predictive distibution to get V(y)
           kss[i] -= sumV;
+          kss[i] *= (nu + beta - 2) / (nu + n - 2);
           if (kss[i] < 0) kss[i] = 0;
         }
         return kss;

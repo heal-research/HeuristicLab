@@ -20,8 +20,6 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -82,7 +80,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       if (p.Length != c) throw new ArgumentException("The length of the parameter vector does not match the number of free parameters for CovarianceConst", "p");
     }
 
-    public ParameterizedCovarianceFunction GetParameterizedCovarianceFunction(double[] p, IEnumerable<int> columnIndices) {
+    public ParameterizedCovarianceFunction GetParameterizedCovarianceFunction(double[] p, int[] columnIndices) {
       double scale;
       GetParameterValues(p, out scale);
       // create functions
@@ -90,15 +88,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       cov.Covariance = (x, i, j) => scale;
       cov.CrossCovariance = (x, xt, i, j) => scale;
       if (HasFixedScaleParameter) {
-        cov.CovarianceGradient = (x, i, j) => Enumerable.Empty<double>();
+        cov.CovarianceGradient = (x, i, j) => new double[0];
       } else {
-        cov.CovarianceGradient = (x, i, j) => GetGradient(x, i, j, scale, columnIndices);
+        cov.CovarianceGradient = (x, i, j) => new[] { 2.0 * scale };
       }
       return cov;
-    }
-
-    private static IEnumerable<double> GetGradient(double[,] x, int i, int j, double scale, IEnumerable<int> columnIndices) {
-      yield return 2.0 * scale;
     }
   }
 }
