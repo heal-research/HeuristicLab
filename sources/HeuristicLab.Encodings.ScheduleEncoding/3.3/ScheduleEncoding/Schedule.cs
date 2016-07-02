@@ -30,7 +30,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("Schedule", "Represents the general solution for scheduling problems.")]
   [StorableClass]
-  public class Schedule : NamedItem, IScheduleEncoding {
+  public sealed class Schedule : NamedItem, IScheduleEncoding {
 
     #region Properties
     [Storable]
@@ -62,14 +62,16 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
     #endregion
 
     [StorableConstructor]
-    protected Schedule(bool deserializing) : base(deserializing) { }
-    protected Schedule(Schedule original, Cloner cloner)
+    private Schedule(bool deserializing) : base(deserializing) { }
+    private Schedule(Schedule original, Cloner cloner)
       : base(original, cloner) {
       this.Resources = cloner.Clone(original.Resources);
       this.Quality = cloner.Clone(original.Quality);
       this.lastScheduledTaskOfJob = new Dictionary<int, ScheduledTask>(original.lastScheduledTaskOfJob);
     }
     public Schedule(int nrOfResources) {
+      Name = "Schedule";
+
       Resources = new ItemList<Resource>();
       for (int i = 0; i < nrOfResources; i++) {
         Resources.Add(new Resource(i));
