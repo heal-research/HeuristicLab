@@ -180,14 +180,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
 
     public GradientBoostingRegressionAlgorithm() {
       Problem = new RegressionProblem(); // default problem
-      var mctsSymbReg = new MctsSymbolicRegressionAlgorithm();
-      mctsSymbReg.Iterations = 10000;
-      mctsSymbReg.StoreAlgorithmInEachRun = false;
-      var sgp = CreateOSGP();
+      var osgp = CreateOSGP();
       var regressionAlgs = new ItemSet<IAlgorithm>(new IAlgorithm[] {
         new RandomForestRegression(),
-        sgp,
-        mctsSymbReg
+        osgp,
       });
       foreach (var alg in regressionAlgs) alg.Prepare();
 
@@ -207,7 +203,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
         "The fraction of variables that are sampled randomly for the base learner in each iteration (0 < m <= 1)",
         new DoubleValue(0.5)));
       Parameters.Add(new ConstrainedValueParameter<IAlgorithm>(RegressionAlgorithmParameterName,
-        "The regression algorithm to use as a base learner", regressionAlgs, mctsSymbReg));
+        "The regression algorithm to use as a base learner", regressionAlgs, osgp));
       Parameters.Add(new FixedValueParameter<StringValue>(RegressionAlgorithmSolutionResultParameterName,
         "The name of the solution produced by the regression algorithm", new StringValue("Solution")));
       Parameters[RegressionAlgorithmSolutionResultParameterName].Hidden = true;
