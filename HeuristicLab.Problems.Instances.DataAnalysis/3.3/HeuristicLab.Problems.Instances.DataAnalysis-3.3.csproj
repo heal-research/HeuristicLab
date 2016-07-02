@@ -195,6 +195,7 @@
     <Compile Include="Regression\RealWorld\Powermeter.cs" />
     <Compile Include="Regression\RealWorld\Housing.cs" />
     <Compile Include="Regression\RealWorld\RealWorldRegressionInstanceProvider.cs" />
+    <Compile Include="Regression\RealWorld\SARCOS.cs" />
     <Compile Include="Regression\RealWorld\Tower.cs" />
     <Compile Include="Regression\RegressionDataDescriptor.cs" />
     <Compile Include="Regression\RegressionImportType.cs" />
