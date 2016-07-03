@@ -32,7 +32,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.DataAnalysis {
   [StorableClass]
-  [Item("RegressionSolution Impacts Calculator", "Calculation of the impacts of input variables for a concrete ")]
+  [Item("RegressionSolution Impacts Calculator", "Calculation of the impacts of input variables for any regression solution")]
   public sealed class RegressionSolutionVariableImpactsCalculator : ParameterizedNamedItem {
     public enum ReplacementMethodEnum {
       Median,
@@ -76,7 +76,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public RegressionSolutionVariableImpactsCalculator()
       : base() {
       Parameters.Add(new FixedValueParameter<EnumValue<ReplacementMethodEnum>>(ReplacementParameterName, "The replacement method for variables during impact calculation.", new EnumValue<ReplacementMethodEnum>(ReplacementMethodEnum.Median)));
-      Parameters.Add(new FixedValueParameter<EnumValue<DataPartitionEnum>>(ReplacementParameterName, "The data partition on which the impacts are calculated.", new EnumValue<DataPartitionEnum>(DataPartitionEnum.Training)));
+      Parameters.Add(new FixedValueParameter<EnumValue<DataPartitionEnum>>(DataPartitionParameterName, "The data partition on which the impacts are calculated.", new EnumValue<DataPartitionEnum>(DataPartitionEnum.Training)));
     }
 
     //mkommend: annoying name clash with static method, open to better naming suggestions
