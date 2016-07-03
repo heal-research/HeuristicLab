@@ -29,6 +29,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.DataAnalysis {
   [StorableClass]
@@ -36,7 +37,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
   public sealed class RegressionSolutionVariableImpactsCalculator : ParameterizedNamedItem {
     public enum ReplacementMethodEnum {
       Median,
-      Average
+      Average,
+      Shuffle,
+      Noise
     }
 
     public enum DataPartitionEnum {
@@ -137,19 +140,35 @@ namespace HeuristicLab.Problems.DataAnalysis {
     private static IEnumerable<double> EvaluateModelWithReplacedVariable(IRegressionModel model, string variable, ModifiableDataset dataset, IEnumerable<int> rows, ReplacementMethodEnum replacement = ReplacementMethodEnum.Median) {
       var originalValues = dataset.GetReadOnlyDoubleValues(variable).ToList();
       double replacementValue;
+      List<double> replacementValues;
+      IRandom rand;
 
       switch (replacement) {
         case ReplacementMethodEnum.Median:
           replacementValue = rows.Select(r => originalValues[r]).Median();
+          replacementValues = Enumerable.Repeat(replacementValue, dataset.Rows).ToList();
           break;
         case ReplacementMethodEnum.Average:
           replacementValue = rows.Select(r => originalValues[r]).Average();
+          replacementValues = Enumerable.Repeat(replacementValue, dataset.Rows).ToList();
           break;
+        case ReplacementMethodEnum.Shuffle:
+          // new var has same empirical distribution but the relation to y is broken
+          rand = new FastRandom(31415);
+          replacementValues = rows.Select(r => originalValues[r]).Shuffle(rand).ToList();
+          break;
+        case ReplacementMethodEnum.Noise:
+          var avg = rows.Select(r => originalValues[r]).Average();
+          var stdDev = rows.Select(r => originalValues[r]).StandardDeviation();
+          rand = new FastRandom(31415);
+          replacementValues = rows.Select(_ => NormalDistributedRandom.NextDouble(rand, avg, stdDev)).ToList();
+          break;
+
         default:
           throw new ArgumentException(string.Format("ReplacementMethod {0} cannot be handled.", replacement));
       }
 
-      dataset.ReplaceVariable(variable, Enumerable.Repeat(replacementValue, dataset.Rows).ToList());
+      dataset.ReplaceVariable(variable, replacementValues);
       //mkommend: ToList is used on purpose to avoid lazy evaluation that could result in wrong estimates due to variable replacements
       var estimates = model.GetEstimatedValues(dataset, rows).ToList();
       dataset.ReplaceVariable(variable, originalValues);
