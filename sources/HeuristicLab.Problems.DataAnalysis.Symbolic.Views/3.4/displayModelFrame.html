@@ -25,6 +25,14 @@
     <script type="text/javascript" async
             src="./MathJax/MathJax.js?config=TeX-AMS_SVG&locale=en">
     </script>
+    <script type="text/javascript">
+        <!-- necessary to re-typeset when the model is changed-->
+        function refreshModel() {
+            var model = document.getElementById("model");
+            <!-- see https://docs.mathjax.org/en/v1.1-latest/typeset.html -->
+            MathJax.Hub.Queue(["Typeset",MathJax.Hub,model]);
+        }
+    </script> 
 </head>
 <body id="body">
     <noscript>
