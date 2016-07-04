@@ -148,9 +148,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
     #endregion
 
-
-
-
     [StorableConstructor]
     private RegressionTreeModel(bool serializing) : base(serializing) { }
     // cloning ctor

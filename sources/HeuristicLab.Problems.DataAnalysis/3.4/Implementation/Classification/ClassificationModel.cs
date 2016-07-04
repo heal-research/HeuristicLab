@@ -54,6 +54,14 @@ namespace HeuristicLab.Problems.DataAnalysis {
       this.targetVariable = targetVariable;
     }
 
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code, remove with 3.4
+      targetVariable = string.Empty;
+      #endregion
+    }
+
     public abstract IEnumerable<double> GetEstimatedClassValues(IDataset dataset, IEnumerable<int> rows);
     public abstract IClassificationSolution CreateClassificationSolution(IClassificationProblemData problemData);
   }

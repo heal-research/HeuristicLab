@@ -63,7 +63,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     public override IRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData) {
-      return new ConstantRegressionSolution(new ConstantModel(constant), new RegressionProblemData(problemData));
+      return new ConstantRegressionSolution(new ConstantModel(constant, TargetVariable), new RegressionProblemData(problemData));
     }
 
     public override string ToString() {
