@@ -175,7 +175,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       // process the priority queue to complete the tree
       CreateRegressionTreeFromQueue(maxSize, lossFunction);
 
-      return new RegressionTreeModel(tree.ToArray(), problemData.TargetVariable, );
+      return new RegressionTreeModel(tree.ToArray(), problemData.TargetVariable);
     }
 
 

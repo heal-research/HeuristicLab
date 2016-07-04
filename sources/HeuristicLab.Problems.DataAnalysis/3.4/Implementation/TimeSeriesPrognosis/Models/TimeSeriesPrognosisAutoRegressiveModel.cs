@@ -31,7 +31,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
   [Item("Autoregressive TimeSeries Model", "A linear autoregressive time series model used to predict future values.")]
   public class TimeSeriesPrognosisAutoRegressiveModel : RegressionModel, ITimeSeriesPrognosisModel {
     public override IEnumerable<string> VariablesUsedForPrediction {
-      get { return Enumerable.Empty<string>(); } // what to return here?
+      get { return new[] { TargetVariable }; } 
     }
 
     [Storable]
