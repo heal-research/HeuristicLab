@@ -38,7 +38,6 @@ namespace HeuristicLab.Problems.GrammaticalEvolution {
   [Creatable(CreatableAttribute.Categories.GeneticProgrammingProblems, Priority = 170)]
   [StorableClass]
   public sealed class GEArtificialAntProblem : SingleObjectiveBasicProblem<IntegerVectorEncoding>, IStorableContent {
-    public string Filename { get; set; }
 
     #region Parameter Properties
     public IValueParameter<BoolMatrix> WorldParameter {

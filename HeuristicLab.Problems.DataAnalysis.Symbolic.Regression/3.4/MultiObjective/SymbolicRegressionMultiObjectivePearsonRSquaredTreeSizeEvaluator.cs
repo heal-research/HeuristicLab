@@ -53,7 +53,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       var applyLinearScaling = ApplyLinearScalingParameter.ActualValue.Value;
 
       if (UseConstantOptimization) {
-        SymbolicRegressionConstantOptimizationEvaluator.OptimizeConstants(interpreter, solution, problemData, rows, applyLinearScaling, ConstantOptimizationIterations, estimationLimits.Upper, estimationLimits.Lower);
+        SymbolicRegressionConstantOptimizationEvaluator.OptimizeConstants(interpreter, solution, problemData, rows, applyLinearScaling, ConstantOptimizationIterations, updateVariableWeights: ConstantOptimizationUpdateVariableWeights, lowerEstimationLimit: estimationLimits.Lower, upperEstimationLimit: estimationLimits.Upper);
       }
       double[] qualities = Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, solution, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper, ProblemDataParameter.ActualValue, rows, ApplyLinearScalingParameter.ActualValue.Value, DecimalPlaces);
       QualitiesParameter.ActualValue = new DoubleArray(qualities);
