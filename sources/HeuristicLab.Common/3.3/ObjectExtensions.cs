@@ -62,6 +62,7 @@ namespace HeuristicLab.Common {
     /// Types not collected:
     ///   * System.Delegate
     ///   * System.Reflection.Pointer
+    ///   * System.RuntimeType
     ///   * Primitives (Boolean, Byte, SByte, Int16, UInt16, Int32, UInt32, Int64, UInt64, IntPtr, UIntPtr, Char, Double, Single)
     ///   * string, decimal, DateTime
     ///   * Arrays of types not collected
@@ -78,6 +79,8 @@ namespace HeuristicLab.Common {
              typeof(Delegate).IsAssignableFrom(type) ||
              typeof(Pointer).IsAssignableFrom(type) ||
              type.Namespace == "System.Reflection.Emit" ||
+             type.Assembly.GetName().Name == "System.Runtime.Serialization" ||
+             typeof(TypeInfo).IsAssignableFrom(type) ||
              (type.HasElementType && ExcludeType(type.GetElementType()));
     }
 
