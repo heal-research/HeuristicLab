@@ -42,6 +42,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
       return d;
     }
 
+    public double Calculate(IEnumerable<Tuple<double, double>> values, out OnlineCalculatorError errorState) {
+      return HoeffD(values.Select(v => v.Item1), values.Select(v => v.Item2), out errorState);
+    }
+
     /// <summary>
     /// computes Hoeffding's dependence coefficient. 
     /// Source: hoeffd.r from R package hmisc http://cran.r-project.org/web/packages/Hmisc/index.html

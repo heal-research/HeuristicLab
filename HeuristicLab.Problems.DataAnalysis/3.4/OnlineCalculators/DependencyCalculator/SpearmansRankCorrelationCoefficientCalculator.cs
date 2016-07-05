@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -32,7 +33,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public string Name { get { return "Spearmans Rank"; } }
 
     public double Calculate(IEnumerable<double> originalValues, IEnumerable<double> estimatedValues, out OnlineCalculatorError errorState) {
-      return SpearmansRankCorrelationCoefficientCalculator.CalculateSpearmansRank(originalValues, estimatedValues, out errorState);
+      return CalculateSpearmansRank(originalValues, estimatedValues, out errorState);
+    }
+    public double Calculate(IEnumerable<Tuple<double, double>> values, out OnlineCalculatorError errorState) {
+      return CalculateSpearmansRank(values.Select(v => v.Item1), values.Select(v => v.Item2), out errorState);
     }
 
     public static double CalculateSpearmansRank(IEnumerable<double> originalValues, IEnumerable<double> estimatedValues, out OnlineCalculatorError errorState) {
@@ -49,5 +53,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
       return rs;
     }
+
+
   }
 }
