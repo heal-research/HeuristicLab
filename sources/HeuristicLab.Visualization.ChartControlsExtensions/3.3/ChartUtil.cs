@@ -26,7 +26,7 @@ using System;
 namespace HeuristicLab.Visualization.ChartControlsExtensions {
   public static class ChartUtil {
     public static void CalculateAxisInterval(double min, double max, int ticks, out double axisMin, out double axisMax, out double axisInterval) {
-      var dmin = min.Decimals();
+      var dmin = (max - min).Decimals();
       axisMin = min.Floor(dmin);
       var range = max - axisMin;
       var slice = range / ticks;
