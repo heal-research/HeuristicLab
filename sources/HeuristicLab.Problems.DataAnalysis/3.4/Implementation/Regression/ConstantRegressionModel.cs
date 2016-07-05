@@ -50,7 +50,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public override IDeepCloneable Clone(Cloner cloner) { return new ConstantRegressionModel(this, cloner); }
 
-    public ConstantRegressionModel(double constant, string targetVariable = "Target")
+    public ConstantRegressionModel(double constant, string targetVariable)
       : base(targetVariable) {
       this.name = ItemName;
       this.description = ItemDescription;

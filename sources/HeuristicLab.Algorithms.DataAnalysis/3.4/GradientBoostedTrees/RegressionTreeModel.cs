@@ -159,8 +159,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
     }
 
-    internal RegressionTreeModel(TreeNode[] tree, string target = "Target")
-      : base(target, "RegressionTreeModel", "Represents a decision tree for regression.") {
+    internal RegressionTreeModel(TreeNode[] tree, string targetVariable)
+      : base(targetVariable, "RegressionTreeModel", "Represents a decision tree for regression.") {
       this.tree = tree;
     }
 

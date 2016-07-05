@@ -50,7 +50,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public override IDeepCloneable Clone(Cloner cloner) { return new ConstantModel(this, cloner); }
 
-    public ConstantModel(double constant, string targetVariable = "Target")
+    public ConstantModel(double constant, string targetVariable)
       : base(targetVariable) {
       this.name = ItemName;
       this.description = ItemDescription;
