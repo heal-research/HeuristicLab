@@ -60,11 +60,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       if (Content != null) {
         HtmlElement newElement = webBrowser.Document.GetElementById("model");
         newElement.InnerText = formatter.Format(Content.SymbolicExpressionTree);
+        webBrowser.Document.InvokeScript("refreshModel");
       } else {
         HtmlElement newElement = webBrowser.Document.GetElementById("model");
         newElement.InnerText = string.Empty;
       }
-      webBrowser.Document.InvokeScript("refreshModel");
     }
   }
 }

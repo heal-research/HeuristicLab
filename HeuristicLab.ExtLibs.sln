@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.DayView-1.0", "HeuristicLab.ExtLibs\HeuristicLab.DayView\1.0\HeuristicLab.DayView-1.0.csproj", "{02766ECC-D0F5-4115-9ECA-47409167B638}"
 EndProject
@@ -15,8 +15,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		PreBuildEvent.cmd = PreBuildEvent.cmd
 	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.MathJax-1.1", "HeuristicLab.ExtLibs\HeuristicLab.MathJax\1.1\HeuristicLab.MathJax-1.1\HeuristicLab.MathJax-1.1.csproj", "{BF4C452F-4903-44E6-89B7-DF93D02C4819}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProtocolBuffers-2.4.1.473", "HeuristicLab.ExtLibs\HeuristicLab.ProtobufCS\2.4.1\ProtobufCS\src\ProtocolBuffers\ProtocolBuffers-2.4.1.473.csproj", "{6908BDCE-D925-43F3-94AC-A531E6DF2591}"
 EndProject
@@ -71,6 +69,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimSharp-3.0.7", "HeuristicLab.ExtLibs\HeuristicLab.SimSharp\3.0.7\SimSharp-3.0.7\SimSharp-3.0.7.csproj", "{9FE9C740-7859-4D01-AD07-7D4E15A6320B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.SimSharp-3.0.7", "HeuristicLab.ExtLibs\HeuristicLab.SimSharp\3.0.7\HeuristicLab.SimSharp-3.0.7\HeuristicLab.SimSharp-3.0.7.csproj", "{5C93CAF7-AE6A-4540-95B2-5DA6761A2677}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.MathJax-2.6.1", "HeuristicLab.ExtLibs\HeuristicLab.MathJax\2.6.1\HeuristicLab.MathJax-2.6.1\HeuristicLab.MathJax-2.6.1.csproj", "{BCDA17A6-5B4A-495C-B182-E856CA081BE6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -130,18 +130,6 @@ Global
 		{94186A6A-5176-4402-AE83-886557B53CCA}.Release|x64.Build.0 = Release|x64
 		{94186A6A-5176-4402-AE83-886557B53CCA}.Release|x86.ActiveCfg = Release|x86
 		{94186A6A-5176-4402-AE83-886557B53CCA}.Release|x86.Build.0 = Release|x86
-		{BF4C452F-4903-44E6-89B7-DF93D02C4819}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BF4C452F-4903-44E6-89B7-DF93D02C4819}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BF4C452F-4903-44E6-89B7-DF93D02C4819}.Debug|x64.ActiveCfg = Debug|x64
-		{BF4C452F-4903-44E6-89B7-DF93D02C4819}.Debug|x64.Build.0 = Debug|x64
-		{BF4C452F-4903-44E6-89B7-DF93D02C4819}.Debug|x86.ActiveCfg = Debug|x86
-		{BF4C452F-4903-44E6-89B7-DF93D02C4819}.Debug|x86.Build.0 = Debug|x86
-		{BF4C452F-4903-44E6-89B7-DF93D02C4819}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BF4C452F-4903-44E6-89B7-DF93D02C4819}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BF4C452F-4903-44E6-89B7-DF93D02C4819}.Release|x64.ActiveCfg = Release|x64
-		{BF4C452F-4903-44E6-89B7-DF93D02C4819}.Release|x64.Build.0 = Release|x64
-		{BF4C452F-4903-44E6-89B7-DF93D02C4819}.Release|x86.ActiveCfg = Release|x86
-		{BF4C452F-4903-44E6-89B7-DF93D02C4819}.Release|x86.Build.0 = Release|x86
 		{6908BDCE-D925-43F3-94AC-A531E6DF2591}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6908BDCE-D925-43F3-94AC-A531E6DF2591}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6908BDCE-D925-43F3-94AC-A531E6DF2591}.Debug|x64.ActiveCfg = Debug|x64
@@ -466,6 +454,18 @@ Global
 		{5C93CAF7-AE6A-4540-95B2-5DA6761A2677}.Release|x64.Build.0 = Release|x64
 		{5C93CAF7-AE6A-4540-95B2-5DA6761A2677}.Release|x86.ActiveCfg = Release|x86
 		{5C93CAF7-AE6A-4540-95B2-5DA6761A2677}.Release|x86.Build.0 = Release|x86
+		{BCDA17A6-5B4A-495C-B182-E856CA081BE6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BCDA17A6-5B4A-495C-B182-E856CA081BE6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BCDA17A6-5B4A-495C-B182-E856CA081BE6}.Debug|x64.ActiveCfg = Debug|x64
+		{BCDA17A6-5B4A-495C-B182-E856CA081BE6}.Debug|x64.Build.0 = Debug|x64
+		{BCDA17A6-5B4A-495C-B182-E856CA081BE6}.Debug|x86.ActiveCfg = Debug|x86
+		{BCDA17A6-5B4A-495C-B182-E856CA081BE6}.Debug|x86.Build.0 = Debug|x86
+		{BCDA17A6-5B4A-495C-B182-E856CA081BE6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BCDA17A6-5B4A-495C-B182-E856CA081BE6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BCDA17A6-5B4A-495C-B182-E856CA081BE6}.Release|x64.ActiveCfg = Release|x64
+		{BCDA17A6-5B4A-495C-B182-E856CA081BE6}.Release|x64.Build.0 = Release|x64
+		{BCDA17A6-5B4A-495C-B182-E856CA081BE6}.Release|x86.ActiveCfg = Release|x86
+		{BCDA17A6-5B4A-495C-B182-E856CA081BE6}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
