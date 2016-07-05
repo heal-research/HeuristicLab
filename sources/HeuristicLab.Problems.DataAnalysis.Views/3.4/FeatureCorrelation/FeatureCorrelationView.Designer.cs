@@ -88,7 +88,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       this.ignoreMissingValuesCheckbox.Name = "ignoreMissingValuesCheckbox";
       this.ignoreMissingValuesCheckbox.Size = new System.Drawing.Size(122, 17);
       this.ignoreMissingValuesCheckbox.TabIndex = 11;
-      this.ignoreMissingValuesCheckbox.Text = "ignoreMissingValues";
+      this.ignoreMissingValuesCheckbox.Text = "Ignore missing values";
       this.ignoreMissingValuesCheckbox.UseVisualStyleBackColor = true;
       this.ignoreMissingValuesCheckbox.CheckedChanged += new System.EventHandler(this.ignoreMissingValuesCheckbox_CheckedChanged);
       // 
