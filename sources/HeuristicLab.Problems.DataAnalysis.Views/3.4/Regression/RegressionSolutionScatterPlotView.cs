@@ -170,7 +170,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         double min = Content.EstimatedTrainingValues.Concat(Content.EstimatedTestValues.Concat(Content.EstimatedValues.Concat(dataset.GetDoubleValues(targetVariableName)))).Min();
 
         double axisMin, axisMax, axisInterval;
-        ChartUtil.CalculateAxisInterval(min, max, 5, out axisMin, out axisMax, out axisInterval);
+        ChartUtil.CalculateOptimalAxisInterval(min, max, out axisMin, out axisMax, out axisInterval);
         this.chart.ChartAreas[0].AxisX.Maximum = axisMax;
         this.chart.ChartAreas[0].AxisX.Minimum = axisMin;
         this.chart.ChartAreas[0].AxisX.Interval = axisInterval;

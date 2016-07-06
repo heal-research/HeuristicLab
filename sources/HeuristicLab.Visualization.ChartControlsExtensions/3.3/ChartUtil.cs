@@ -42,12 +42,35 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
       axisMax = axisMin + axisRange;
     }
 
+    // this method tries to find an axis interval with as few fractional digits as possible (because it looks nicer)
+    // we only try between 3 and 5 ticks (inclusive) because it wouldn't make sense to exceed this interval
+    public static void CalculateOptimalAxisInterval(double min, double max, out double axisMin, out double axisMax, out double axisInterval) {
+      CalculateAxisInterval(min, max, 5, out axisMin, out axisMax, out axisInterval);
+      int bestLsp = int.MaxValue;
+      for (int ticks = 3; ticks <= 5; ++ticks) {
+        double aMin, aMax, aInterval;
+        CalculateAxisInterval(min, max, ticks, out aMin, out aMax, out aInterval);
+        var x = aInterval;
+        int lsp = 0; // position of the least significant fractional digit
+        while (x - Math.Floor(x) > 0) {
+          ++lsp;
+          x *= 10;
+        }
+        if (lsp <= bestLsp) {
+          axisMin = aMin;
+          axisMax = aMax;
+          axisInterval = aInterval;
+          bestLsp = lsp;
+        }
+      }
+    }
+
     private static int Decimals(this double x) {
       if (x.IsAlmost(0) || double.IsInfinity(x) || double.IsNaN(x))
         return 0;
 
       var v = Math.Abs(x);
-      int d = 0;
+      int d = 1;
       while (v < 1) {
         v *= 10;
         d++;
