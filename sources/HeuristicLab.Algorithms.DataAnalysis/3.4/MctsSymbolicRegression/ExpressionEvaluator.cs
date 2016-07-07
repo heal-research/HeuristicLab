@@ -88,8 +88,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
     }
 
     // pred must be allocated by the caller
-    // if adjustOffsetForLogAndExp is set to true we determine c in log(c + f(x)) to make sure that c + f(x) is positive
-    public void Exec(byte[] code, double[][] vars, double[] consts, double[] pred, bool adjustOffsetForLogAndExp = false) {
+    // if adjustParameters is set to true we determine parameters in function to make sure that the function output is valid
+    // e.g. in log(c + f(x)) to make sure that c + f(x) is positive
+    public void Exec(byte[] code, double[][] vars, double[] consts, double[] pred, bool adjustParameters = false) {
       Contract.Assert(pred != null && pred.Length >= vLen);
       int topOfStack = -1;
       int pc = 0;
@@ -152,7 +153,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
               break;
             }
           case (byte)OpCodes.Log: {
-              if (adjustOffsetForLogAndExp) {
+              if (adjustParameters) {
                 // here we assume that the last used parameter is c in log(f(x) + c)
                 // this must match actions for producing code in the automaton!
 
@@ -173,7 +174,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
               break;
             }
           case (byte)OpCodes.Exp: {
-              if (adjustOffsetForLogAndExp) {
+              if (adjustParameters) {
                 // here we assume that the last used parameter is c in exp(f(x) * c)
                 // this must match actions for producing code in the automaton!
 
