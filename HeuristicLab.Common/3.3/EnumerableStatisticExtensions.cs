@@ -163,7 +163,7 @@ namespace HeuristicLab.Common {
 
 
     /// <summary>
-    /// Calculates the standard deviation of values.
+    /// Calculates the sample standard deviation of values.
     /// </summary>
     /// <param name="values"></param>
     /// <returns></returns>
@@ -172,11 +172,33 @@ namespace HeuristicLab.Common {
     }
 
     /// <summary>
-    /// Calculates the variance of values. (sum (x - x_mean)² / n)
+    /// Calculates the population standard deviation of values.
+    /// </summary>
+    /// <param name="values"></param>
+    /// <returns></returns>
+    public static double StandardDeviationPop(this IEnumerable<double> values) {
+      return Math.Sqrt(VariancePop(values));
+    }
+
+    /// <summary>
+    /// Calculates the sample variance of values. (sum (x - x_mean)² / (n-1))
     /// </summary>
     /// <param name="values"></param>
     /// <returns></returns>
     public static double Variance(this IEnumerable<double> values) {
+      return Variance(values, true);
+    }
+
+    /// <summary>
+    /// Calculates the population variance of values. (sum (x - x_mean)² / n)
+    /// </summary>
+    /// <param name="values"></param>
+    /// <returns></returns>
+    public static double VariancePop(this IEnumerable<double> values) {
+      return Variance(values, false);
+    }
+
+    private static double Variance(IEnumerable<double> values, bool sampleVariance) {
       int m_n = 0;
       double m_oldM = 0.0;
       double m_newM = 0.0;
@@ -196,7 +218,12 @@ namespace HeuristicLab.Common {
           m_oldS = m_newS;
         }
       }
-      return ((m_n > 1) ? m_newS / (m_n - 1) : 0.0);
+
+      if (m_n == 0) return double.NaN;
+      if (m_n == 1) return 0.0;
+
+      if (sampleVariance) return m_newS / (m_n - 1);
+      else return m_newS / m_n;
     }
 
     public static IEnumerable<double> LimitToRange(this IEnumerable<double> values, double min, double max) {
