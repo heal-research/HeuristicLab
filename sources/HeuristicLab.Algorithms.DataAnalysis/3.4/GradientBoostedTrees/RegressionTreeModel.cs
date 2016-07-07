@@ -169,7 +169,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         var node = t[nodeIdx];
         if (node.VarName == TreeNode.NO_VARIABLE)
           return node.Val;
-        if (columnCache[nodeIdx] == null || double.IsNaN(columnCache[nodeIdx][row])) {
+        if (columnCache[nodeIdx] == null) {
           if (node.WeightLeft.IsAlmost(-1.0)) throw new InvalidOperationException("Cannot calculate partial dependence for trees loaded from older versions of HeuristicLab.");
           // weighted average for partial dependence plot (recursive here because we need to calculate both sub-trees)
           return node.WeightLeft * GetPredictionForRow(t, columnCache, node.LeftIdx, row) +
