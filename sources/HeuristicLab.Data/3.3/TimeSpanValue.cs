@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Globalization;
 using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -51,7 +52,7 @@ namespace HeuristicLab.Data {
 
     protected virtual bool Validate(string value, out string errorMessage) {
       TimeSpan val;
-      bool valid = TimeSpan.TryParse(value, out val);
+      bool valid = TimeSpan.TryParseExact(value, "c", CultureInfo.CurrentCulture, out val);
       errorMessage = string.Empty;
       if (!valid) {
         StringBuilder sb = new StringBuilder();
@@ -67,7 +68,7 @@ namespace HeuristicLab.Data {
     }
     protected virtual bool SetValue(string value) {
       TimeSpan val;
-      if (TimeSpan.TryParse(value, out val)) {
+      if (TimeSpan.TryParseExact(value, "c", CultureInfo.CurrentCulture, out val)) {
         Value = val;
         return true;
       } else {
