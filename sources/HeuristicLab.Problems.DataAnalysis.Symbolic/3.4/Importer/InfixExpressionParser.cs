@@ -35,7 +35,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   /// It is also possible to use functions e.g. log("x1") or real-valued constants e.g. 3.1415 . 
   /// Variable names are case sensitive. Function names are not case sensitive.
   /// </summary>
-  public class InfixExpressionParser {
+  public sealed class InfixExpressionParser {
     private enum TokenType { Operator, Identifier, Number, LeftPar, RightPar, End, NA };
     private class Token {
       internal double doubleVal;

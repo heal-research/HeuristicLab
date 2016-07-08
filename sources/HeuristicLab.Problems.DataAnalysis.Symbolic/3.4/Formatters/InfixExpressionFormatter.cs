@@ -36,7 +36,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableClass]
   [Item("Infix Symbolic Expression Tree Formatter", "A string formatter that converts symbolic expression trees to infix expressions.")]
 
-  public class InfixExpressionFormatter : NamedItem, ISymbolicExpressionTreeStringFormatter {
+  public sealed class InfixExpressionFormatter : NamedItem, ISymbolicExpressionTreeStringFormatter {
 
 
     [StorableConstructor]
