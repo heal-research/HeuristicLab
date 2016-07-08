@@ -32,7 +32,11 @@ namespace HeuristicLab.Problems.DataAnalysis {
   /// </summary>
   [StorableClass]
   [Item("DiscriminantFunctionClassificationModel", "Represents a classification model that uses a discriminant function and classification thresholds.")]
-  public class DiscriminantFunctionClassificationModel : NamedItem, IDiscriminantFunctionClassificationModel {
+  public class DiscriminantFunctionClassificationModel : ClassificationModel, IDiscriminantFunctionClassificationModel {
+    public override IEnumerable<string> VariablesUsedForPrediction {
+      get { return model.VariablesUsedForPrediction; }
+    }
+
     [Storable]
     private IRegressionModel model;
     public IRegressionModel Model {
@@ -72,9 +76,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     public DiscriminantFunctionClassificationModel(IRegressionModel model, IDiscriminantFunctionThresholdCalculator thresholdCalculator)
-      : base() {
+      : base(model.TargetVariable) {
       this.name = ItemName;
       this.description = ItemDescription;
+
       this.model = model;
       this.classValues = new double[0];
       this.thresholds = new double[0];
@@ -114,7 +119,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       return model.GetEstimatedValues(dataset, rows);
     }
 
-    public IEnumerable<double> GetEstimatedClassValues(IDataset dataset, IEnumerable<int> rows) {
+    public override IEnumerable<double> GetEstimatedClassValues(IDataset dataset, IEnumerable<int> rows) {
       if (!Thresholds.Any() && !ClassValues.Any()) throw new ArgumentException("No thresholds and class values were set for the current classification model.");
       foreach (var x in GetEstimatedValues(dataset, rows)) {
         int classIndex = 0;
@@ -134,12 +139,12 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
     #endregion
 
-    public virtual IDiscriminantFunctionClassificationSolution CreateDiscriminantFunctionClassificationSolution(IClassificationProblemData problemData) {
-      return new DiscriminantFunctionClassificationSolution(this, new ClassificationProblemData(problemData));
-    }
-
-    public virtual IClassificationSolution CreateClassificationSolution(IClassificationProblemData problemData) {
+    public override IClassificationSolution CreateClassificationSolution(IClassificationProblemData problemData) {
       return CreateDiscriminantFunctionClassificationSolution(problemData);
+    }
+    public virtual IDiscriminantFunctionClassificationSolution CreateDiscriminantFunctionClassificationSolution(
+      IClassificationProblemData problemData) {
+      return new DiscriminantFunctionClassificationSolution(this, new ClassificationProblemData(problemData));
     }
   }
 }

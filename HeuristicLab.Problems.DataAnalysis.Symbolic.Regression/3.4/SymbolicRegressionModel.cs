@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -32,15 +33,26 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   [StorableClass]
   [Item(Name = "Symbolic Regression Model", Description = "Represents a symbolic regression model.")]
   public class SymbolicRegressionModel : SymbolicDataAnalysisModel, ISymbolicRegressionModel {
-
+    [Storable]
+    private readonly string targetVariable;
+    public string TargetVariable {
+      get { return targetVariable; }
+    }
 
     [StorableConstructor]
     protected SymbolicRegressionModel(bool deserializing) : base(deserializing) { }
-    protected SymbolicRegressionModel(SymbolicRegressionModel original, Cloner cloner) : base(original, cloner) { }
 
-    public SymbolicRegressionModel(ISymbolicExpressionTree tree, ISymbolicDataAnalysisExpressionTreeInterpreter interpreter,
+    protected SymbolicRegressionModel(SymbolicRegressionModel original, Cloner cloner)
+      : base(original, cloner) {
+      this.targetVariable = original.targetVariable;
+    }
+
+    public SymbolicRegressionModel(string targetVariable, ISymbolicExpressionTree tree,
+      ISymbolicDataAnalysisExpressionTreeInterpreter interpreter,
       double lowerEstimationLimit = double.MinValue, double upperEstimationLimit = double.MaxValue)
-      : base(tree, interpreter, lowerEstimationLimit, upperEstimationLimit) { }
+      : base(tree, interpreter, lowerEstimationLimit, upperEstimationLimit) {
+      this.targetVariable = targetVariable;
+    }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new SymbolicRegressionModel(this, cloner);

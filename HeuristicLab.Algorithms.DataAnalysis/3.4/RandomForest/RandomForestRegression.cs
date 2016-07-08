@@ -142,7 +142,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       Results.Add(new Result("Average relative error (out-of-bag)", "The out-of-bag average of relative errors of the random forest regression solution.", new PercentValue(outOfBagAvgRelError)));
 
       if (CreateSolution) {
-        var solution = new RandomForestRegressionSolution((IRegressionProblemData)Problem.ProblemData.Clone(), model);
+        var solution = new RandomForestRegressionSolution(model, (IRegressionProblemData)Problem.ProblemData.Clone());
         Results.Add(new Result(RandomForestRegressionModelResultName, "The random forest regression solution.", solution));
       }
     }
@@ -152,7 +152,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       out double rmsError, out double avgRelError, out double outOfBagRmsError, out double outOfBagAvgRelError) {
       var model = CreateRandomForestRegressionModel(problemData, nTrees, r, m, seed,
         out rmsError, out avgRelError, out outOfBagRmsError, out outOfBagAvgRelError);
-      return new RandomForestRegressionSolution((IRegressionProblemData)problemData.Clone(), model);
+      return new RandomForestRegressionSolution(model, (IRegressionProblemData)problemData.Clone());
     }
 
     public static RandomForestModel CreateRandomForestRegressionModel(IRegressionProblemData problemData, int nTrees,

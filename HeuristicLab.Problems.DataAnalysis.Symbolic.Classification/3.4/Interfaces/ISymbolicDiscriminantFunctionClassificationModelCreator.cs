@@ -24,6 +24,6 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
   public interface ISymbolicDiscriminantFunctionClassificationModelCreator : ISymbolicClassificationModelCreator {
-    ISymbolicDiscriminantFunctionClassificationModel CreateSymbolicDiscriminantFunctionClassificationModel(ISymbolicExpressionTree tree, ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, double lowerEstimationLimit, double upperEstimationLimit);
+    ISymbolicDiscriminantFunctionClassificationModel CreateSymbolicDiscriminantFunctionClassificationModel(string targetVariable, ISymbolicExpressionTree tree, ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, double lowerEstimationLimit, double upperEstimationLimit);
   }
 }

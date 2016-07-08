@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2016 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,32 +19,23 @@
  */
 #endregion
 
+using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Problems.DataAnalysis;
 
-namespace HeuristicLab.Algorithms.DataAnalysis {
-  [Item("NCA Classification Solution", "")]
+namespace HeuristicLab.Problems.DataAnalysis {
   [StorableClass]
-  public class NcaClassificationSolution : ClassificationSolution, INcaClassificationSolution {
-
-    public new INcaModel Model {
-      get { return (INcaModel)base.Model; }
-      set { base.Model = value; }
-    }
-
+  [Item("DataAnalysisModel", "Base class for data analysis models.")]
+  public abstract class DataAnalysisModel : NamedItem, IDataAnalysisModel {
     [StorableConstructor]
-    protected NcaClassificationSolution(bool deserializing) : base(deserializing) { }
-    protected NcaClassificationSolution(NcaClassificationSolution original, Cloner cloner)
-      : base(original, cloner) {
-    }
-    public NcaClassificationSolution(INcaModel ncaModel, IClassificationProblemData problemData)
-      : base(ncaModel, problemData) {
-    }
+    protected DataAnalysisModel(bool deserializing) : base(deserializing) { }
+    protected DataAnalysisModel(DataAnalysisModel original, Cloner cloner)
+      : base(original, cloner) { }
+    protected DataAnalysisModel() { }
+    protected DataAnalysisModel(string name) : base(name) { }
+    protected DataAnalysisModel(string name, string description) : base(name, description) { }
 
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new NcaClassificationSolution(this, cloner);
-    }
+    public abstract IEnumerable<string> VariablesUsedForPrediction { get; }
   }
 }

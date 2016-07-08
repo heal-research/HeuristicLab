@@ -136,7 +136,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
       int nRows = idx.Count();
 
-      // shuffle variable idx
+      // shuffle variable names
       HeuristicLab.Random.ListExtensions.ShuffleInPlace(allowedVariables, random);
 
       // only select a part of the rows and columns randomly
@@ -175,7 +175,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       // process the priority queue to complete the tree
       CreateRegressionTreeFromQueue(maxSize, lossFunction);
 
-      return new RegressionTreeModel(tree.ToArray());
+      return new RegressionTreeModel(tree.ToArray(), problemData.TargetVariable);
     }
 
 

@@ -19,9 +19,11 @@
  */
 #endregion
 
+using System.Collections.Generic;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Problems.DataAnalysis {
   public interface IDataAnalysisModel : INamedItem {
+    IEnumerable<string> VariablesUsedForPrediction { get; }
   }
 }

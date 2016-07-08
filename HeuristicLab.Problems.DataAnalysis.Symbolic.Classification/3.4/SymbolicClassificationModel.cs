@@ -32,13 +32,24 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
   [StorableClass]
   [Item(Name = "SymbolicClassificationModel", Description = "Represents a symbolic classification model.")]
   public abstract class SymbolicClassificationModel : SymbolicDataAnalysisModel, ISymbolicClassificationModel {
+    [Storable]
+    private readonly string targetVariable;
+    public string TargetVariable {
+      get { return targetVariable; }
+    }
 
     [StorableConstructor]
     protected SymbolicClassificationModel(bool deserializing) : base(deserializing) { }
-    protected SymbolicClassificationModel(SymbolicClassificationModel original, Cloner cloner) : base(original, cloner) { }
-    protected SymbolicClassificationModel(ISymbolicExpressionTree tree, ISymbolicDataAnalysisExpressionTreeInterpreter interpreter,
-      double lowerEstimationLimit = double.MinValue, double upperEstimationLimit = double.MaxValue)
-      : base(tree, interpreter, lowerEstimationLimit, upperEstimationLimit) { }
+
+    protected SymbolicClassificationModel(SymbolicClassificationModel original, Cloner cloner)
+      : base(original, cloner) {
+      targetVariable = original.targetVariable;
+    }
+
+    protected SymbolicClassificationModel(string targetVariable, ISymbolicExpressionTree tree, ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, double lowerEstimationLimit = double.MinValue, double upperEstimationLimit = double.MaxValue)
+      : base(tree, interpreter, lowerEstimationLimit, upperEstimationLimit) {
+      this.targetVariable = targetVariable;
+    }
 
     public abstract IEnumerable<double> GetEstimatedClassValues(IDataset dataset, IEnumerable<int> rows);
     public abstract void RecalculateModelParameters(IClassificationProblemData problemData, IEnumerable<int> rows);

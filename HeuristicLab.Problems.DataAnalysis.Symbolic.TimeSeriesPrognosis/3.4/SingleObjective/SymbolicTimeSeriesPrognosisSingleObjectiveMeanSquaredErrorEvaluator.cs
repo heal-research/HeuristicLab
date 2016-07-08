@@ -71,7 +71,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis {
         errorState = mseCalculator.ErrorState;
         mse = mseCalculator.MeanSquaredError;
       } else if (applyLinearScaling) { //first create model to perform linear scaling and afterwards calculate fitness for the scaled model
-        var model = new SymbolicTimeSeriesPrognosisModel((ISymbolicExpressionTree)solution.Clone(), interpreter, lowerEstimationLimit, upperEstimationLimit);
+        var model = new SymbolicTimeSeriesPrognosisModel(problemData.TargetVariable, (ISymbolicExpressionTree)solution.Clone(), interpreter, lowerEstimationLimit, upperEstimationLimit);
         model.Scale(problemData);
         var scaledSolution = model.SymbolicExpressionTree;
         estimatedValues = interpreter.GetSymbolicExpressionTreeValues(scaledSolution, problemData.Dataset, rows, horizions).SelectMany(x => x);

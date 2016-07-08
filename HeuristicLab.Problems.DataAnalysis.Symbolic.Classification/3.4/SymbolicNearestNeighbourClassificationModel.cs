@@ -54,8 +54,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
       trainedEstimatedValues = new List<double>(original.trainedEstimatedValues);
       trainedClasses = new List<double>(original.trainedClasses);
     }
-    public SymbolicNearestNeighbourClassificationModel(int k, ISymbolicExpressionTree tree, ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, double lowerEstimationLimit = double.MinValue, double upperEstimationLimit = double.MaxValue)
-      : base(tree, interpreter, lowerEstimationLimit, upperEstimationLimit) {
+    public SymbolicNearestNeighbourClassificationModel(string targetVariable, int k, ISymbolicExpressionTree tree, ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, double lowerEstimationLimit = double.MinValue, double upperEstimationLimit = double.MaxValue)
+      : base(targetVariable, tree, interpreter, lowerEstimationLimit, upperEstimationLimit) {
       this.k = k;
       frequencyComparer = new ClassFrequencyComparer();
 

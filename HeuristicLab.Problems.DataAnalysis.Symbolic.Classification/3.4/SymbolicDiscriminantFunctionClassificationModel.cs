@@ -64,9 +64,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
       thresholds = (double[])original.thresholds.Clone();
       thresholdCalculator = cloner.Clone(original.thresholdCalculator);
     }
-    public SymbolicDiscriminantFunctionClassificationModel(ISymbolicExpressionTree tree, ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, IDiscriminantFunctionThresholdCalculator thresholdCalculator,
+    public SymbolicDiscriminantFunctionClassificationModel(string targetVariable, ISymbolicExpressionTree tree, ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, IDiscriminantFunctionThresholdCalculator thresholdCalculator,
       double lowerEstimationLimit = double.MinValue, double upperEstimationLimit = double.MaxValue)
-      : base(tree, interpreter, lowerEstimationLimit, upperEstimationLimit) {
+      : base(targetVariable, tree, interpreter, lowerEstimationLimit, upperEstimationLimit) {
       this.thresholds = new double[0];
       this.classValues = new double[0];
       this.ThresholdCalculator = thresholdCalculator;

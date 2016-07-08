@@ -30,9 +30,12 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Problems.DataAnalysis {
   [StorableClass]
   [Item("Constant Model", "A model that always returns the same constant value regardless of the presented input data.")]
-  public class ConstantModel : NamedItem, IRegressionModel, IClassificationModel, ITimeSeriesPrognosisModel, IStringConvertibleValue {
+  public class ConstantModel : RegressionModel, IClassificationModel, ITimeSeriesPrognosisModel, IStringConvertibleValue {
+    public override IEnumerable<string> VariablesUsedForPrediction { get { return Enumerable.Empty<string>(); } }
+
+
     [Storable]
-    private double constant;
+    private readonly double constant;
     public double Constant {
       get { return constant; }
       // setter not implemented because manipulation of the constant is not allowed
@@ -44,17 +47,18 @@ namespace HeuristicLab.Problems.DataAnalysis {
       : base(original, cloner) {
       this.constant = original.constant;
     }
+
     public override IDeepCloneable Clone(Cloner cloner) { return new ConstantModel(this, cloner); }
 
-    public ConstantModel(double constant)
-      : base() {
+    public ConstantModel(double constant, string targetVariable)
+      : base(targetVariable) {
       this.name = ItemName;
       this.description = ItemDescription;
       this.constant = constant;
       this.ReadOnly = true; // changing a constant regression model is not supported
     }
 
-    public IEnumerable<double> GetEstimatedValues(IDataset dataset, IEnumerable<int> rows) {
+    public override IEnumerable<double> GetEstimatedValues(IDataset dataset, IEnumerable<int> rows) {
       return rows.Select(row => Constant);
     }
     public IEnumerable<double> GetEstimatedClassValues(IDataset dataset, IEnumerable<int> rows) {
@@ -64,7 +68,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       return rows.Select(_ => horizons.Select(__ => Constant));
     }
 
-    public IRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData) {
+    public override IRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData) {
       return new ConstantRegressionSolution(this, new RegressionProblemData(problemData));
     }
     public IClassificationSolution CreateClassificationSolution(IClassificationProblemData problemData) {

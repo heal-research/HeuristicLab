@@ -21,6 +21,7 @@
 #endregion
 
 using System.Collections.Generic;
+using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -32,7 +33,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   // since the actual GBT model would be very large when persisted we only store all necessary information to
   // recalculate the actual GBT model on demand
   [Item("Gradient boosted tree model", "")]
-  public sealed class GradientBoostedTreesModelSurrogate : NamedItem, IGradientBoostedTreesModel {
+  public sealed class GradientBoostedTreesModelSurrogate : RegressionModel, IGradientBoostedTreesModel {
     // don't store the actual model!
     private IGradientBoostedTreesModel actualModel; // the actual model is only recalculated when necessary
 
@@ -54,6 +55,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private int maxSize;
 
 
+    public override IEnumerable<string> VariablesUsedForPrediction {
+      get { return actualModel.Models.SelectMany(x => x.VariablesUsedForPrediction).Distinct().OrderBy(x => x); }
+    }
+
     [StorableConstructor]
     private GradientBoostedTreesModelSurrogate(bool deserializing) : base(deserializing) { }
 
@@ -72,8 +77,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     // create only the surrogate model without an actual model
-    public GradientBoostedTreesModelSurrogate(IRegressionProblemData trainingProblemData, uint seed, ILossFunction lossFunction, int iterations, int maxSize, double r, double m, double nu)
-      : base("Gradient boosted tree model", string.Empty) {
+    public GradientBoostedTreesModelSurrogate(IRegressionProblemData trainingProblemData, uint seed,
+      ILossFunction lossFunction, int iterations, int maxSize, double r, double m, double nu)
+      : base(trainingProblemData.TargetVariable, "Gradient boosted tree model", string.Empty) {
       this.trainingProblemData = trainingProblemData;
       this.seed = seed;
       this.lossFunction = lossFunction;
@@ -85,7 +91,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     // wrap an actual model in a surrograte
-    public GradientBoostedTreesModelSurrogate(IRegressionProblemData trainingProblemData, uint seed, ILossFunction lossFunction, int iterations, int maxSize, double r, double m, double nu, IGradientBoostedTreesModel model)
+    public GradientBoostedTreesModelSurrogate(IRegressionProblemData trainingProblemData, uint seed,
+      ILossFunction lossFunction, int iterations, int maxSize, double r, double m, double nu,
+      IGradientBoostedTreesModel model)
       : this(trainingProblemData, seed, lossFunction, iterations, maxSize, r, m, nu) {
       this.actualModel = model;
     }
@@ -95,15 +103,14 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     // forward message to actual model (recalculate model first if necessary)
-    public IEnumerable<double> GetEstimatedValues(IDataset dataset, IEnumerable<int> rows) {
+    public override IEnumerable<double> GetEstimatedValues(IDataset dataset, IEnumerable<int> rows) {
       if (actualModel == null) actualModel = RecalculateModel();
       return actualModel.GetEstimatedValues(dataset, rows);
     }
 
-    public IRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData) {
+    public override IRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData) {
       return new RegressionSolution(this, (IRegressionProblemData)problemData.Clone());
     }
-
 
     private IGradientBoostedTreesModel RecalculateModel() {
       return GradientBoostedTreesAlgorithmStatic.TrainGbm(trainingProblemData, lossFunction, maxSize, nu, r, m, iterations, seed).Model;

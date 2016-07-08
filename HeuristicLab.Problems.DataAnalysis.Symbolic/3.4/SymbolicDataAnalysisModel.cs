@@ -20,7 +20,9 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
@@ -55,6 +57,21 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public ISymbolicDataAnalysisExpressionTreeInterpreter Interpreter {
       get { return interpreter; }
     }
+
+    public IEnumerable<string> VariablesUsedForPrediction {
+      get {
+        var variables =
+          SymbolicExpressionTree.IterateNodesPrefix()
+            .OfType<VariableTreeNode>()
+            .Select(x => x.VariableName)
+            .Distinct();
+        var variableConditions = SymbolicExpressionTree.IterateNodesPrefix()
+          .OfType<VariableConditionTreeNode>().Select(x => x.VariableName).Distinct();
+
+        return variables.Union(variableConditions).OrderBy(x => x);
+      }
+    }
+
     #endregion
 
     [StorableConstructor]
@@ -159,5 +176,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       return node;
     }
     #endregion
+
   }
 }

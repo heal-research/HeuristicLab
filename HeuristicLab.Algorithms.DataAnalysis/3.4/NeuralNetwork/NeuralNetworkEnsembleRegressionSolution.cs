@@ -42,7 +42,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private NeuralNetworkEnsembleRegressionSolution(NeuralNetworkEnsembleRegressionSolution original, Cloner cloner)
       : base(original, cloner) {
     }
-    public NeuralNetworkEnsembleRegressionSolution(IRegressionProblemData problemData, INeuralNetworkEnsembleModel nnModel)
+    public NeuralNetworkEnsembleRegressionSolution(INeuralNetworkEnsembleModel nnModel, IRegressionProblemData problemData)
       : base(nnModel, problemData) {
       RecalculateResults();
     }

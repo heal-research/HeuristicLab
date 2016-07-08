@@ -80,7 +80,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     public static IClassificationSolution CreateNearestNeighbourClassificationSolution(IClassificationProblemData problemData, int k) {
       var problemDataClone = (IClassificationProblemData)problemData.Clone();
-      return new NearestNeighbourClassificationSolution(problemDataClone, Train(problemDataClone, k));
+      return new NearestNeighbourClassificationSolution(Train(problemDataClone, k), problemDataClone);
     }
 
     public static INearestNeighbourModel Train(IClassificationProblemData problemData, int k) {

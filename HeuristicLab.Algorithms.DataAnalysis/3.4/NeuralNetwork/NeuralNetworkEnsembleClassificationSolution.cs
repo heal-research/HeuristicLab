@@ -42,7 +42,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private NeuralNetworkEnsembleClassificationSolution(NeuralNetworkEnsembleClassificationSolution original, Cloner cloner)
       : base(original, cloner) {
     }
-    public NeuralNetworkEnsembleClassificationSolution(IClassificationProblemData problemData, INeuralNetworkEnsembleModel nnModel)
+    public NeuralNetworkEnsembleClassificationSolution(INeuralNetworkEnsembleModel nnModel, IClassificationProblemData problemData)
       : base(nnModel, problemData) {
     }
 

@@ -32,7 +32,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
   [Item("Gradient boosted tree model", "")]
   // this is essentially a collection of weighted regression models
-  public sealed class GradientBoostedTreesModel : NamedItem, IGradientBoostedTreesModel {
+  public sealed class GradientBoostedTreesModel : RegressionModel, IGradientBoostedTreesModel {
     // BackwardsCompatibility3.4 for allowing deserialization & serialization of old models
     #region Backwards compatible code, remove with 3.5
     private bool isCompatibilityLoaded = false; // only set to true if the model is deserialized from the old format, needed to make sure that information is serialized again if it was loaded from the old format
@@ -57,6 +57,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
     #endregion
 
+    public override IEnumerable<string> VariablesUsedForPrediction {
+      get { return models.SelectMany(x => x.VariablesUsedForPrediction).Distinct().OrderBy(x => x); }
+    }
+
     private readonly IList<IRegressionModel> models;
     public IEnumerable<IRegressionModel> Models { get { return models; } }
 
@@ -76,8 +80,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       this.isCompatibilityLoaded = original.isCompatibilityLoaded;
     }
     [Obsolete("The constructor of GBTModel should not be used directly anymore (use GBTModelSurrogate instead)")]
-    public GradientBoostedTreesModel(IEnumerable<IRegressionModel> models, IEnumerable<double> weights)
-      : base("Gradient boosted tree model", string.Empty) {
+    internal GradientBoostedTreesModel(IEnumerable<IRegressionModel> models, IEnumerable<double> weights)
+      : base(string.Empty, "Gradient boosted tree model", string.Empty) {
       this.models = new List<IRegressionModel>(models);
       this.weights = new List<double>(weights);
 
@@ -88,7 +92,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return new GradientBoostedTreesModel(this, cloner);
     }
 
-    public IEnumerable<double> GetEstimatedValues(IDataset dataset, IEnumerable<int> rows) {
+    public override IEnumerable<double> GetEstimatedValues(IDataset dataset, IEnumerable<int> rows) {
       // allocate target array go over all models and add up weighted estimation for each row
       if (!rows.Any()) return Enumerable.Empty<double>(); // return immediately if rows is empty. This prevents multiple iteration over lazy rows enumerable.
       // (which essentially looks up indexes in a dictionary)
@@ -104,8 +108,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return res;
     }
 
-    public IRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData) {
+    public override IRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData) {
       return new RegressionSolution(this, (IRegressionProblemData)problemData.Clone());
     }
+
   }
 }
