@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using HeuristicLab.Data;
@@ -159,6 +161,64 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         // x2 >  1.5 AND x1 <= 1.5 -> -1.0
         // x2 >  1.5 AND x1 >  1.5 ->  3.0
         BuildTree(xy, allVariables, 10);
+      }
+    }
+
+    [TestMethod]
+    [TestCategory("Algorithms.DataAnalysis")]
+    [TestProperty("Time", "short")]
+    public void TestDecisionTreePartialDependence() {
+      var provider = new HeuristicLab.Problems.Instances.DataAnalysis.RegressionRealWorldInstanceProvider();
+      var instance = provider.GetDataDescriptors().Single(x => x.Name.Contains("Tower"));
+      var regProblem = new RegressionProblem();
+      regProblem.Load(provider.LoadData(instance));
+      var problemData = regProblem.ProblemData;
+      var state = GradientBoostedTreesAlgorithmStatic.CreateGbmState(problemData, new SquaredErrorLoss(), randSeed: 31415, maxSize: 10, r: 0.5, m: 1, nu: 0.02);
+      for (int i = 0; i < 1000; i++)
+        GradientBoostedTreesAlgorithmStatic.MakeStep(state);
+
+
+      var mostImportantVar = state.GetVariableRelevance().OrderByDescending(kvp => kvp.Value).First();
+      Console.WriteLine("var: {0} relevance: {1}", mostImportantVar.Key, mostImportantVar.Value);
+      var model = ((IGradientBoostedTreesModel)state.GetModel());
+      var treeM = model.Models.Skip(1).First();
+      Console.WriteLine(treeM.ToString());
+      Console.WriteLine();
+
+      var mostImportantVarValues = problemData.Dataset.GetDoubleValues(mostImportantVar.Key).OrderBy(x => x).ToArray();
+      var ds = new ModifiableDataset(new string[] { mostImportantVar.Key },
+        new IList[] { mostImportantVarValues.ToList<double>() });
+
+      var estValues = model.GetEstimatedValues(ds, Enumerable.Range(0, mostImportantVarValues.Length)).ToArray();
+
+      for (int i = 0; i < mostImportantVarValues.Length; i += 10) {
+        Console.WriteLine("{0,-5:N3} {1,-5:N3}", mostImportantVarValues[i], estValues[i]);
+      }
+    }
+
+    [TestMethod]
+    [TestCategory("Algorithms.DataAnalysis")]
+    [TestProperty("Time", "short")]
+    public void TestDecisionTreePersistence() {
+      var provider = new HeuristicLab.Problems.Instances.DataAnalysis.RegressionRealWorldInstanceProvider();
+      var instance = provider.GetDataDescriptors().Single(x => x.Name.Contains("Tower"));
+      var regProblem = new RegressionProblem();
+      regProblem.Load(provider.LoadData(instance));
+      var problemData = regProblem.ProblemData;
+      var state = GradientBoostedTreesAlgorithmStatic.CreateGbmState(problemData, new SquaredErrorLoss(), randSeed: 31415, maxSize: 100, r: 0.5, m: 1, nu: 1);
+      GradientBoostedTreesAlgorithmStatic.MakeStep(state);
+
+      var model = ((IGradientBoostedTreesModel)state.GetModel());
+      var treeM = model.Models.Skip(1).First();
+      var origStr = treeM.ToString();
+      using (var memStream = new MemoryStream()) {
+        Persistence.Default.Xml.XmlGenerator.Serialize(treeM, memStream);
+        var buf = memStream.GetBuffer();
+        using (var restoreStream = new MemoryStream(buf)) {
+          var restoredTree = Persistence.Default.Xml.XmlParser.Deserialize(restoreStream);
+          var restoredStr = restoredTree.ToString();
+          Assert.AreEqual(origStr, restoredStr);
+        }
       }
     }
 
