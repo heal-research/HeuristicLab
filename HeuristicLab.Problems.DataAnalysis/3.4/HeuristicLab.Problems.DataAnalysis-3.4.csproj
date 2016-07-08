@@ -142,6 +142,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Implementation\Regression\RegressionEnsembleSolution.cs" />
+    <Compile Include="Implementation\Regression\RegressionSolutionVariableImpactsCalculator.cs" />
     <Compile Include="Implementation\TimeSeriesPrognosis\Models\ConstantTimeSeriesPrognosisModel.cs" />
     <Compile Include="Implementation\TimeSeriesPrognosis\Models\TimeSeriesPrognosisAutoRegressiveModel.cs" />
     <Compile Include="Implementation\TimeSeriesPrognosis\TimeSeriesPrognosisProblem.cs" />
@@ -311,6 +312,10 @@
       <Project>{3540E29E-4793-49E7-8EE2-FEA7F61C3994}</Project>
       <Name>HeuristicLab.Problems.Instances-3.3</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Random\3.3\HeuristicLab.Random-3.3.csproj">
+      <Project>{F4539FB6-4708-40C9-BE64-0A1390AEA197}</Project>
+      <Name>HeuristicLab.Random-3.3</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

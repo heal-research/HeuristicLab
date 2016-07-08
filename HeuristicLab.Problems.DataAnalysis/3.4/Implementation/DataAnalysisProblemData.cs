@@ -79,6 +79,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
       get { return TestPartitionParameter.Value; }
     }
 
+    public virtual IEnumerable<int> AllIndices {
+      get { return Enumerable.Range(0, Dataset.Rows); }
+    }
     public virtual IEnumerable<int> TrainingIndices {
       get {
         return Enumerable.Range(TrainingPartition.Start, Math.Max(0, TrainingPartition.End - TrainingPartition.Start))

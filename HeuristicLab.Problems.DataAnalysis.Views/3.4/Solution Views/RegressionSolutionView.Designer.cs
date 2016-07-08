@@ -19,6 +19,7 @@
  */
 #endregion
 
+
 namespace HeuristicLab.Problems.DataAnalysis.Views {
   partial class RegressionSolutionView {
     /// <summary> 
@@ -44,6 +45,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
+      this.btnImpactCalculation = new System.Windows.Forms.Button();
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
       this.splitContainer.Panel1.SuspendLayout();
       this.splitContainer.Panel2.SuspendLayout();
@@ -51,6 +53,24 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       this.itemsGroupBox.SuspendLayout();
       this.detailsGroupBox.SuspendLayout();
       this.SuspendLayout();
+      // 
+      // btnImpactCalculation
+      // 
+      this.btnImpactCalculation.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
+      this.btnImpactCalculation.Image = HeuristicLab.Common.Resources.VSImageLibrary.Zoom;
+      this.btnImpactCalculation.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+      this.btnImpactCalculation.Name = "btnImpactCalculation";
+      this.btnImpactCalculation.TabIndex = 6;
+      this.btnImpactCalculation.Size = new System.Drawing.Size(110, 24);
+      this.btnImpactCalculation.Text = "Variable Impacts";
+      this.btnImpactCalculation.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+      this.btnImpactCalculation.UseVisualStyleBackColor = true;
+      this.btnImpactCalculation.Click += new System.EventHandler(this.btnImpactCalculation_Click);
+      this.toolTip.SetToolTip(this.btnImpactCalculation, "Calculate impacts");
+      // 
+      // flowLayoutPanel
+      // 
+      this.flowLayoutPanel.Controls.Add(this.btnImpactCalculation);
       // 
       // splitContainer
       // 
@@ -83,5 +103,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     }
 
     #endregion
+
+    protected System.Windows.Forms.Button btnImpactCalculation;
   }
 }

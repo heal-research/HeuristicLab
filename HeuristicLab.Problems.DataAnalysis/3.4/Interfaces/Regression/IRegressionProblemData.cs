@@ -19,8 +19,14 @@
  */
 #endregion
 
+using System.Collections.Generic;
+
 namespace HeuristicLab.Problems.DataAnalysis {
   public interface IRegressionProblemData : IDataAnalysisProblemData {
     string TargetVariable { get; set; }
+
+    IEnumerable<double> TargetVariableValues { get; }
+    IEnumerable<double> TargetVariableTrainingValues { get; }
+    IEnumerable<double> TargetVariableTestValues { get; }
   }
 }
