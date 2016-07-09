@@ -29,6 +29,12 @@ using System.Security;
 using System.Threading;
 
 namespace HeuristicLab.Common {
+
+  [AttributeUsage(System.AttributeTargets.Field)]
+  // this attribute can be used to mark fields that should be excluded from object graph traversal
+  public class ExcludeFromObjectGraphTraversalAttribute : Attribute {
+  }
+
   public static class ObjectExtensions {
     public static IEnumerable<T> ToEnumerable<T>(this T obj) {
       yield return obj;
@@ -62,7 +68,6 @@ namespace HeuristicLab.Common {
     /// Types not collected:
     ///   * System.Delegate
     ///   * System.Reflection.Pointer
-    ///   * System.RuntimeType
     ///   * Primitives (Boolean, Byte, SByte, Int16, UInt16, Int32, UInt32, Int64, UInt64, IntPtr, UIntPtr, Char, Double, Single)
     ///   * string, decimal, DateTime
     ///   * Arrays of types not collected
@@ -79,8 +84,6 @@ namespace HeuristicLab.Common {
              typeof(Delegate).IsAssignableFrom(type) ||
              typeof(Pointer).IsAssignableFrom(type) ||
              type.Namespace == "System.Reflection.Emit" ||
-             type.Assembly.GetName().Name == "System.Runtime.Serialization" ||
-             typeof(TypeInfo).IsAssignableFrom(type) ||
              (type.HasElementType && ExcludeType(type.GetElementType()));
     }
 
@@ -116,7 +119,9 @@ namespace HeuristicLab.Common {
         }
       } else {
         if (!fieldInfos.ContainsKey(type))
-          fieldInfos[type] = type.GetAllFields().ToArray();
+          fieldInfos[type] = type.GetAllFields()
+            .Where(fi => !fi.GetCustomAttributes<ExcludeFromObjectGraphTraversalAttribute>().Any())
+            .ToArray();
         foreach (FieldInfo f in fieldInfos[type]) {
           if (excludeStaticMembers && f.IsStatic) continue;
           object fieldValue;
