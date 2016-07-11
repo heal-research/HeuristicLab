@@ -64,7 +64,7 @@ namespace HeuristicLab.Data {
       return valid;
     }
     protected virtual string GetValue() {
-      return Value.ToString();
+      return Value.ToString("c");
     }
     protected virtual bool SetValue(string value) {
       TimeSpan val;
@@ -74,6 +74,9 @@ namespace HeuristicLab.Data {
       } else {
         return false;
       }
+    }
+    public override string ToString() {
+      return Value.ToString("c");
     }
 
     #region IStringConvertibleValue Members
