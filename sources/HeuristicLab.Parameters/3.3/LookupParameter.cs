@@ -49,8 +49,8 @@ namespace HeuristicLab.Parameters {
     }
     public string TranslatedName {
       get {
-        string translatedName;
-        GetValueParameterAndTranslateName(out translatedName);
+        string translatedName = Name;
+        GetValueParameterAndTranslateName(ExecutionContext, ref translatedName);
         return translatedName;
       }
     }
@@ -60,8 +60,9 @@ namespace HeuristicLab.Parameters {
     }
 
     private Lazy<ThreadLocal<IItem>> cachedActualValues;
-    private IItem CachedActualValue {
+    protected IItem CachedActualValue {
       get { return cachedActualValues.Value.Value; }
+      set { cachedActualValues.Value.Value = value; }
     }
 
     private Lazy<ThreadLocal<IExecutionContext>> executionContexts;
@@ -127,49 +128,55 @@ namespace HeuristicLab.Parameters {
         return Name + ": " + ActualName;
     }
 
-    private IValueParameter GetValueParameterAndTranslateName(out string actualName) {
+    protected static IValueParameter GetValueParameterAndTranslateName(IExecutionContext executionContext, ref string translatedName) {
       IValueParameter valueParam;
       ILookupParameter lookupParam;
-      IExecutionContext currentExecutionContext = ExecutionContext;
+      IExecutionContext currentExecutionContext = executionContext;
 
-      actualName = Name;
       while (currentExecutionContext != null) {
-        valueParam = currentExecutionContext.Parameters[actualName] as IValueParameter;
-        lookupParam = currentExecutionContext.Parameters[actualName] as ILookupParameter;
+        valueParam = currentExecutionContext.Parameters[translatedName] as IValueParameter;
+        lookupParam = currentExecutionContext.Parameters[translatedName] as ILookupParameter;
 
         if ((valueParam == null) && (lookupParam == null))
           throw new InvalidOperationException(
             string.Format("Parameter look-up chain broken. Parameter \"{0}\" is not an \"{1}\" or an \"{2}\".",
-                          actualName, typeof(IValueParameter).GetPrettyName(), typeof(ILookupParameter).GetPrettyName())
+                          translatedName, typeof(IValueParameter).GetPrettyName(), typeof(ILookupParameter).GetPrettyName())
           );
 
         if (valueParam != null) {
           if (valueParam.Value != null) return valueParam;
           else if (lookupParam == null) return valueParam;
         }
-        if (lookupParam != null) actualName = lookupParam.ActualName;
+        if (lookupParam != null) translatedName = lookupParam.ActualName;
 
         currentExecutionContext = currentExecutionContext.Parent;
-        while ((currentExecutionContext != null) && !currentExecutionContext.Parameters.ContainsKey(actualName))
+        while ((currentExecutionContext != null) && !currentExecutionContext.Parameters.ContainsKey(translatedName))
           currentExecutionContext = currentExecutionContext.Parent;
       }
       return null;
     }
-    private IVariable LookupVariable(string name) {
-      IScope scope = ExecutionContext.Scope;
+    protected static IVariable LookupVariable(IScope scope, string name) {
       while ((scope != null) && !scope.Variables.ContainsKey(name))
         scope = scope.Parent;
       return scope != null ? scope.Variables[name] : null;
     }
+
     protected override IItem GetActualValue() {
       if (CachedActualValue != null) return CachedActualValue;
-      string name;
+
+      string translatedName = Name;
+      var value = GetValue(ExecutionContext, ref translatedName);
+      CachedActualValue = value;
+      return value;
+    }
+
+    protected static IItem GetValue(IExecutionContext executionContext, ref string name) {
       // try to get value from context stack
-      IValueParameter param = GetValueParameterAndTranslateName(out name);
+      IValueParameter param = GetValueParameterAndTranslateName(executionContext, ref name);
       if (param != null) return param.Value;
 
       // try to get variable from scope
-      IVariable var = LookupVariable(name);
+      IVariable var = LookupVariable(executionContext.Scope, name);
       if (var != null) {
         if (!(var.Value is T))
           throw new InvalidOperationException(
@@ -177,36 +184,40 @@ namespace HeuristicLab.Parameters {
                           name,
                           typeof(T).GetPrettyName())
           );
-        cachedActualValues.Value.Value = var.Value;
         return var.Value;
       }
       return null;
     }
+
     protected override void SetActualValue(IItem value) {
       if (!(value is T))
         throw new InvalidOperationException(
           string.Format("Type mismatch. Value is not a \"{0}\".",
                         typeof(T).GetPrettyName())
         );
-      cachedActualValues.Value.Value = value;
+      CachedActualValue = value;
 
+      string translatedName = Name;
+      SetValue(ExecutionContext, ref translatedName, value);
+    }
+
+    protected static void SetValue(IExecutionContext executionContext, ref string name, IItem value) {
       // try to set value in context stack
-      string name;
-      IValueParameter param = GetValueParameterAndTranslateName(out name);
+      IValueParameter param = GetValueParameterAndTranslateName(executionContext, ref name);
       if (param != null) {
         param.Value = value;
         return;
       }
 
       // try to set value in scope
-      IVariable var = LookupVariable(name);
+      IVariable var = LookupVariable(executionContext.Scope, name);
       if (var != null) {
         var.Value = value;
         return;
       }
 
       // create new variable
-      ExecutionContext.Scope.Variables.Add(new Variable(name, value));
+      executionContext.Scope.Variables.Add(new Variable(name, value));
     }
 
     public virtual void InitializeState() {
