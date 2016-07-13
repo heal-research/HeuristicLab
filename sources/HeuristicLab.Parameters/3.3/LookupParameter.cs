@@ -170,27 +170,24 @@ namespace HeuristicLab.Parameters {
 
       string translatedName = Name;
       var value = GetValue(ExecutionContext, ref translatedName);
+      if (value != null && !(value is T))
+        throw new InvalidOperationException(
+          string.Format("Type mismatch. Variable \"{0}\" does not contain a \"{1}\".",
+                        translatedName,
+                        typeof(T).GetPrettyName())
+        );
       CachedActualValue = value;
       return value;
     }
 
-    protected static IItem GetValue(IExecutionContext executionContext, ref string name, bool verifyType = true) {
+    protected static IItem GetValue(IExecutionContext executionContext, ref string name) {
       // try to get value from context stack
       IValueParameter param = GetValueParameterAndTranslateName(executionContext, ref name);
       if (param != null) return param.Value;
 
       // try to get variable from scope
       IVariable var = LookupVariable(executionContext.Scope, name);
-      if (var != null) {
-        if (verifyType && !(var.Value is T))
-          throw new InvalidOperationException(
-            string.Format("Type mismatch. Variable \"{0}\" does not contain a \"{1}\".",
-                          name,
-                          typeof(T).GetPrettyName())
-          );
-        return var.Value;
-      }
-      return null;
+      return var != null ? var.Value : null;
     }
 
     protected override void SetActualValue(IItem value) {
