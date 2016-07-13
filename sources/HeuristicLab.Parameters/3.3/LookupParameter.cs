@@ -134,8 +134,13 @@ namespace HeuristicLab.Parameters {
       IExecutionContext currentExecutionContext = executionContext;
 
       while (currentExecutionContext != null) {
-        valueParam = currentExecutionContext.Parameters[translatedName] as IValueParameter;
-        lookupParam = currentExecutionContext.Parameters[translatedName] as ILookupParameter;
+        IParameter param = null;
+        while (currentExecutionContext != null && !currentExecutionContext.Parameters.TryGetValue(translatedName, out param))
+          currentExecutionContext = currentExecutionContext.Parent;
+        if (currentExecutionContext == null) break;
+
+        valueParam = param as IValueParameter;
+        lookupParam = param as ILookupParameter;
 
         if ((valueParam == null) && (lookupParam == null))
           throw new InvalidOperationException(
@@ -147,18 +152,17 @@ namespace HeuristicLab.Parameters {
           if (valueParam.Value != null) return valueParam;
           else if (lookupParam == null) return valueParam;
         }
-        if (lookupParam != null) translatedName = lookupParam.ActualName;
+        translatedName = lookupParam.ActualName;
 
         currentExecutionContext = currentExecutionContext.Parent;
-        while ((currentExecutionContext != null) && !currentExecutionContext.Parameters.ContainsKey(translatedName))
-          currentExecutionContext = currentExecutionContext.Parent;
       }
       return null;
     }
     protected static IVariable LookupVariable(IScope scope, string name) {
-      while ((scope != null) && !scope.Variables.ContainsKey(name))
+      IVariable variable = null;
+      while (scope != null && !scope.Variables.TryGetValue(name, out variable))
         scope = scope.Parent;
-      return scope != null ? scope.Variables[name] : null;
+      return scope != null ? variable : null;
     }
 
     protected override IItem GetActualValue() {
@@ -170,7 +174,7 @@ namespace HeuristicLab.Parameters {
       return value;
     }
 
-    protected static IItem GetValue(IExecutionContext executionContext, ref string name) {
+    protected static IItem GetValue(IExecutionContext executionContext, ref string name, bool verifyType = true) {
       // try to get value from context stack
       IValueParameter param = GetValueParameterAndTranslateName(executionContext, ref name);
       if (param != null) return param.Value;
@@ -178,7 +182,7 @@ namespace HeuristicLab.Parameters {
       // try to get variable from scope
       IVariable var = LookupVariable(executionContext.Scope, name);
       if (var != null) {
-        if (!(var.Value is T))
+        if (verifyType && !(var.Value is T))
           throw new InvalidOperationException(
             string.Format("Type mismatch. Variable \"{0}\" does not contain a \"{1}\".",
                           name,
