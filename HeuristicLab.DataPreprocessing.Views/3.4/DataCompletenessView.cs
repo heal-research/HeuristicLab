@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using HeuristicLab.Core.Views;
@@ -32,18 +33,14 @@ namespace HeuristicLab.DataPreprocessing.Views {
   [View("Histogram View")]
   [Content(typeof(DataCompletenessChartContent), true)]
   public partial class DataCompletenessView : ItemView {
-
-    //list of columns, bool indicates wether the cell is a missing value or not
-    private List<List<bool>> matrix = new List<List<bool>>();
     //series colors
-    private static Color colorNonMissingVal = Color.CornflowerBlue;
-    private static Color colorMissingVal = Color.Orange;
+    private static readonly Color colorNonMissingValue = Color.CornflowerBlue;
+    private static readonly Color colorMissingValue = Color.Orange;
 
     public new DataCompletenessChartContent Content {
       get { return (DataCompletenessChartContent)base.Content; }
       set { base.Content = value; }
     }
-
 
     public DataCompletenessView() {
       InitializeComponent();
@@ -51,22 +48,21 @@ namespace HeuristicLab.DataPreprocessing.Views {
 
     protected override void OnContentChanged() {
       base.OnContentChanged();
-      if (Content != null) {
-        InitData();
-      }
+      if (Content == null) return;
+      InitData();
     }
 
     private void InitData() {
       IDictionary<int, IList<int>> missingValueIndices = Content.SearchLogic.GetMissingValueIndices();
-      for (int i = 0; i < Content.SearchLogic.Columns; i++) {
-        //append column
-        List<bool> column = new List<bool>();
-        for (int j = 0; j < Content.SearchLogic.Rows; j++) {
-          column.Add(missingValueIndices[i].Contains(j));
-        }
-        matrix.Add(column);
+
+      bool[,] valueMissing = new bool[Content.SearchLogic.Rows, Content.SearchLogic.Columns];
+      foreach (var columnMissingValues in missingValueIndices) {
+        var column = columnMissingValues.Key;
+        foreach (var missingValueIndex in columnMissingValues.Value)
+          valueMissing[missingValueIndex, column] = true;
       }
-      List<List<int>> yValuesPerColumn = ProcessMatrixForCharting(matrix, missingValueIndices);
+
+      var yValuesPerColumn = ProcessMatrixForCharting(valueMissing);
       PrepareChart();
       CreateSeries(yValuesPerColumn);
     }
@@ -94,35 +90,22 @@ namespace HeuristicLab.DataPreprocessing.Views {
     }
 
     private void CreateSeries(List<List<int>> yValuesPerColumn) {
+      chart.Series.SuspendUpdates();
       //prepare series
       int seriesCount = DetermineSeriesCount(yValuesPerColumn);
       for (int i = 0; i < seriesCount; i++) {
-        chart.Series.Add(CreateSeriesName(i));
-        Series series = chart.Series[CreateSeriesName(i)];
+        Series series = new Series(CreateSeriesName(i));
         series.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.StackedColumn;
         series.IsVisibleInLegend = false;
         series["PointWidth"] = "1.0";
-        if (i % 2 == 0) {
-          if (i == 0) //show legend for non missing values only once
-            series.IsVisibleInLegend = true;
-          series.Color = colorNonMissingVal;
-        } else {
-          if (i == 1) //show legend for missing values only once
-            series.IsVisibleInLegend = true;
-          series.Color = colorMissingVal;
-        }
+        series.IsVisibleInLegend = i < 2; //only first two series are visible, non-missing and missing values
+        series.Color = i % 2 == 0 ? colorNonMissingValue : colorMissingValue;
+
+        var values = yValuesPerColumn.Select(y => i < y.Count ? y[i] : 0).ToArray();
+        series.Points.DataBindY(values);
+        chart.Series.Add(series);
       }
-      //fill series
-      for (int i = 0; i < yValuesPerColumn.Count; i++) {
-        List<int> column = yValuesPerColumn[i];
-        for (int j = 0; j < seriesCount; j++) {
-          if (column.Count - 1 < j) {
-            chart.Series[CreateSeriesName(j)].Points.AddY(0);
-          } else {
-            chart.Series[CreateSeriesName(j)].Points.AddY(column[j]);
-          }
-        }
-      }
+      chart.Series.ResumeUpdates();
     }
 
     private String CreateSeriesName(int index) {
@@ -135,23 +118,18 @@ namespace HeuristicLab.DataPreprocessing.Views {
 
     #region data_preparation_for_chartseries
     private int DetermineSeriesCount(List<List<int>> yValuesPerColumn) {
-      int highest = 0;
-      foreach (List<int> values in yValuesPerColumn) {
-        highest = Math.Max(values.Count, highest);
-      }
-      return highest;
+      return yValuesPerColumn.Max(values => values.Count);
     }
 
-    private List<List<int>> ProcessMatrixForCharting(List<List<bool>> matrix, IDictionary<int, IList<int>> missingValueIndices) {
-      List<List<int>> columnsYValues = new List<List<int>>();
-      for (int i = 0; i < matrix.Count; i++) //column
-      {
-        List<int> yValues = new List<int>();
-        List<bool> column = matrix[i];
+    private List<List<int>> ProcessMatrixForCharting(bool[,] matrix) {
+      var columnsYValues = new List<List<int>>();
+      for (int column = 0; column < matrix.GetLength(1); column++) {
+        var yValues = new List<int>();
         bool missingState = false;
         int valueCount = 0;
-        for (int j = 0; j < column.Count; j++) {
-          if (missingState == missingValueIndices[i].Contains(j)) {
+
+        for (int row = 0; row < matrix.GetLength(0); row++) {
+          if (missingState == matrix[row, column]) {
             valueCount++;
           } else {
             yValues.Add(valueCount);
@@ -164,7 +142,6 @@ namespace HeuristicLab.DataPreprocessing.Views {
         {
           yValues.Add(0);
         }
-        //yValues.Reverse();
         columnsYValues.Add(yValues);
       }
       return columnsYValues;
