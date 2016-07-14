@@ -20,26 +20,14 @@
 #endregion
 
 using System;
-using System.Windows.Forms;
-using HeuristicLab.Core;
-using HeuristicLab.Core.Views;
-using HeuristicLab.DataPreprocessing.Filter;
-using HeuristicLab.MainForm;
 
-namespace HeuristicLab.DataPreprocessing.Views {
-  [View("CheckedFilterCollection View")]
-  [Content(typeof(ICheckedItemCollection<>), false)]
-  [Content(typeof(CheckedItemCollection<>), false)]
-  public partial class CheckedFilterCollectionView : CheckedItemCollectionView<IFilter> {
-    public CheckedFilterCollectionView() {
-      InitializeComponent();
-    }
+namespace HeuristicLab.DataPreprocessing {
+  public interface IFilteredPreprocessingData : ITransactionalPreprocessingData {
+    void SetFilter(bool[] rowFilters);
+    void PersistFilter();
+    void ResetFilter();
+    bool IsFiltered { get; }
 
-    protected override void addButton_Click(object sender, EventArgs e) {
-      IFilter filter = new ComparisonFilter();
-      Content.Add(filter);
-      Content.SetItemCheckedState(filter, false);
-    }
-
+    event EventHandler FilterChanged;
   }
 }

@@ -28,7 +28,7 @@ using HeuristicLab.Problems.DataAnalysis;
 namespace HeuristicLab.DataPreprocessing {
   public class ProblemDataCreator {
 
-    private readonly IPreprocessingContext context;
+    private readonly PreprocessingContext context;
 
     private Dataset ExportedDataset {
       get {
@@ -38,17 +38,18 @@ namespace HeuristicLab.DataPreprocessing {
 
     private IList<ITransformation> Transformations { get { return context.Data.Transformations; } }
 
-    public ProblemDataCreator(IPreprocessingContext context) {
+    public ProblemDataCreator(PreprocessingContext context) {
       this.context = context;
     }
 
-    public IDataAnalysisProblemData CreateProblemData() {
+    public IDataAnalysisProblemData CreateProblemData(IDataAnalysisProblemData oldProblemData) {
       if (context.Data.Rows == 0 || context.Data.Columns == 0) return null;
 
-      var oldProblemData = context.ProblemData;
       IDataAnalysisProblemData problemData;
 
-      if (oldProblemData is RegressionProblemData) {
+      if (oldProblemData is TimeSeriesPrognosisProblemData) {
+        problemData = CreateTimeSeriesPrognosisData((TimeSeriesPrognosisProblemData)oldProblemData);
+      } else if (oldProblemData is RegressionProblemData) {
         problemData = CreateRegressionData((RegressionProblemData)oldProblemData);
       } else if (oldProblemData is ClassificationProblemData) {
         problemData = CreateClassificationData((ClassificationProblemData)oldProblemData);
@@ -69,6 +70,18 @@ namespace HeuristicLab.DataPreprocessing {
       return problemData;
     }
 
+    private IDataAnalysisProblemData CreateTimeSeriesPrognosisData(TimeSeriesPrognosisProblemData oldProblemData) {
+      var targetVariable = oldProblemData.TargetVariable;
+      if (!context.Data.VariableNames.Contains(targetVariable))
+        targetVariable = context.Data.VariableNames.First();
+      var inputVariables = GetDoubleInputVariables(targetVariable);
+      var newProblemData = new TimeSeriesPrognosisProblemData(ExportedDataset, inputVariables, targetVariable, Transformations) {
+        TrainingHorizon = oldProblemData.TrainingHorizon,
+        TestHorizon = oldProblemData.TestHorizon
+      };
+      return newProblemData;
+    }
+
     private IDataAnalysisProblemData CreateRegressionData(RegressionProblemData oldProblemData) {
       var targetVariable = oldProblemData.TargetVariable;
       if (!context.Data.VariableNames.Contains(targetVariable))
@@ -83,8 +96,9 @@ namespace HeuristicLab.DataPreprocessing {
       if (!context.Data.VariableNames.Contains(targetVariable))
         targetVariable = context.Data.VariableNames.First();
       var inputVariables = GetDoubleInputVariables(targetVariable);
-      var newProblemData = new ClassificationProblemData(ExportedDataset, inputVariables, targetVariable, Transformations);
-      newProblemData.PositiveClass = oldProblemData.PositiveClass;
+      var newProblemData = new ClassificationProblemData(ExportedDataset, inputVariables, targetVariable, Transformations) {
+        PositiveClass = oldProblemData.PositiveClass
+      };
       return newProblemData;
     }
 

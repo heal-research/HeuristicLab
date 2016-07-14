@@ -27,11 +27,9 @@ using HeuristicLab.Analysis;
 using HeuristicLab.Collections;
 using HeuristicLab.Core.Views;
 using HeuristicLab.Data;
-using HeuristicLab.DataPreprocessing.Implementations;
 using HeuristicLab.MainForm;
 
 namespace HeuristicLab.DataPreprocessing.Views {
-
   [View("Preprocessing Chart View")]
   [Content(typeof(PreprocessingChartContent), false)]
   public partial class PreprocessingChartView : ItemView {

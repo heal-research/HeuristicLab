@@ -461,6 +461,6 @@ namespace HeuristicLab.DataPreprocessing.Views {
     private void chart_DoubleClick(object sender, EventArgs e) {
       if (chartDoubleClick != null)
         chartDoubleClick(this, e);
-    } 
+    }
   }
 }

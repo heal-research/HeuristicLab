@@ -34,6 +34,7 @@ namespace HeuristicLab.DataPreprocessing {
   [PluginDependency("HeuristicLab.Collections", "3.3")]
   [PluginDependency("HeuristicLab.Data","3.3")]
   [PluginDependency("HeuristicLab.Optimization", "3.3")]
+  [PluginDependency("HeuristicLab.Persistence", "3.3")]
   [PluginDependency("HeuristicLab.Problems.DataAnalysis","3.4")]
   public class HeuristicLabDataPreprocessingPlugin : PluginBase {
   }

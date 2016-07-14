@@ -1,5 +1,4 @@
 ﻿#region License Information
-
 /* HeuristicLab
  * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -18,39 +17,13 @@
  * You should have received a copy of the GNU General Public License
  * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
  */
-
 #endregion
 
 using HeuristicLab.Core;
-using HeuristicLab.Core.Views;
-using HeuristicLab.Data;
-using HeuristicLab.MainForm;
 
-namespace HeuristicLab.DataPreprocessing.Views {
-
-  [View("PreprocessingCheckedItemList View")]
-  [Content(typeof(CheckedItemList<StringValue>), false)]
-  [Content(typeof(ICheckedItemList<StringValue>), false)]
-  public partial class PreprocessingCheckedItemListView : CheckedItemListView<StringValue> {
-
-    public new ICheckedItemList<StringValue> Content {
-      get { return (ICheckedItemList<StringValue>)base.Content; }
-      set { base.Content = value; }
-    }
-
-    public PreprocessingCheckedItemListView()
-      : base() {
-      InitializeComponent();
-      DisableDetails();
-    }
-
-    private void DisableDetails() {
-      splitContainer.Panel2Collapsed = true;
-      viewHost.Content = null;
-      showDetailsCheckBox.Visible = false;
-
-    }
+namespace HeuristicLab.DataPreprocessing.Filter {
+  public interface IFilter : IConstraint {
+    new bool[] Check();
+    new bool[] Check(out string errorMessage);
   }
-
-
 }

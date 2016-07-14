@@ -19,27 +19,35 @@
  */
 #endregion
 
-using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
-using HeuristicLab.Core;
-using HeuristicLab.Core.Views;
-using HeuristicLab.DataPreprocessing.Filter;
 using HeuristicLab.MainForm;
+using HeuristicLab.Optimizer;
+using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.DataPreprocessing.Views {
-  [View("CheckedFilterCollection View")]
-  [Content(typeof(ICheckedItemCollection<>), false)]
-  [Content(typeof(CheckedItemCollection<>), false)]
-  public partial class CheckedFilterCollectionView : CheckedItemCollectionView<IFilter> {
-    public CheckedFilterCollectionView() {
-      InitializeComponent();
-    }
+  public class DataPreprocessingMenuItem {
+    internal class CreateExperimentMenuItem : HeuristicLab.MainForm.WindowsForms.MenuItem, IOptimizerUserInterfaceItemProvider {
+      public override string Name {
+        get { return "Data &Preprocessing"; }
+      }
+      public override IEnumerable<string> Structure {
+        get { return new string[] { "&Edit", "&Data Analysis" }; }
+      }
+      public override int Position {
+        get { return 5500; }
+      }
+      public override string ToolTipText {
+        get { return "Create a new data preprocessing"; }
+      }
 
-    protected override void addButton_Click(object sender, EventArgs e) {
-      IFilter filter = new ComparisonFilter();
-      Content.Add(filter);
-      Content.SetItemCheckedState(filter, false);
-    }
+      public override void Execute() {
+        MainFormManager.MainForm.ShowContent(new PreprocessingContext(new RegressionProblemData()));
+      }
 
+      public override Keys ShortCutKeys {
+        get { return Keys.Control | Keys.D; }
+      }
+    }
   }
 }

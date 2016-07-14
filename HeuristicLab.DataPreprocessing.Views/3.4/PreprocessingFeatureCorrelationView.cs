@@ -19,26 +19,18 @@
  */
 #endregion
 
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
 using System.Windows.Forms;
-using HeuristicLab.Data;
+using HeuristicLab.DataPreprocessing;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
-using HeuristicLab.PluginInfrastructure;
-using System;
-using HeuristicLab.DataPreprocessing;
-using HeuristicLab.Problems.DataAnalysis.Views;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
   [View("Preprocessing Feature Correlation View")]
   [Content(typeof(CorrelationMatrixContent), false)]
   public partial class PreprocessingFeatureCorrelationView : AsynchronousContentView {
 
-    public new CorrelationMatrixContent Content
-    {
-      get { return (CorrelationMatrixContent) base.Content; }
+    public new CorrelationMatrixContent Content {
+      get { return (CorrelationMatrixContent)base.Content; }
       set { base.Content = value; }
     }
 
@@ -54,11 +46,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
-      Content.Changed += Data_Changed;      
+      Content.Changed += Data_Changed;
     }
 
     protected override void DeregisterContentEvents() {
-      Content.Changed -= Data_Changed;      
+      Content.Changed -= Data_Changed;
       base.DeregisterContentEvents();
     }
 

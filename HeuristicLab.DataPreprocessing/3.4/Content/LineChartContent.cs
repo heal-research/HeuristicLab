@@ -1,5 +1,4 @@
 ﻿#region License Information
-
 /* HeuristicLab
  * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -18,39 +17,30 @@
  * You should have received a copy of the GNU General Public License
  * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
  */
-
 #endregion
 
+using System.Drawing;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Core.Views;
-using HeuristicLab.Data;
-using HeuristicLab.MainForm;
 
-namespace HeuristicLab.DataPreprocessing.Views {
+namespace HeuristicLab.DataPreprocessing {
 
-  [View("PreprocessingCheckedItemList View")]
-  [Content(typeof(CheckedItemList<StringValue>), false)]
-  [Content(typeof(ICheckedItemList<StringValue>), false)]
-  public partial class PreprocessingCheckedItemListView : CheckedItemListView<StringValue> {
+  [Item("LineChart", "Represents the line chart grid.")]
+  public class LineChartContent : PreprocessingChartContent {
 
-    public new ICheckedItemList<StringValue> Content {
-      get { return (ICheckedItemList<StringValue>)base.Content; }
-      set { base.Content = value; }
+    public static new Image StaticItemImage {
+      get { return HeuristicLab.Common.Resources.VSImageLibrary.Performance; }
     }
 
-    public PreprocessingCheckedItemListView()
-      : base() {
-      InitializeComponent();
-      DisableDetails();
+    public LineChartContent(IFilteredPreprocessingData preprocessingData)
+      : base(preprocessingData) {
     }
 
-    private void DisableDetails() {
-      splitContainer.Panel2Collapsed = true;
-      viewHost.Content = null;
-      showDetailsCheckBox.Visible = false;
-
+    public LineChartContent(LineChartContent content, Cloner cloner)
+      : base(content, cloner) {
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new LineChartContent(this, cloner);
     }
   }
-
-
 }

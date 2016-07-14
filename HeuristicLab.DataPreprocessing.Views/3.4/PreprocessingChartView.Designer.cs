@@ -19,7 +19,6 @@
  */
 #endregion
 
-using HeuristicLab.Data;
 namespace HeuristicLab.DataPreprocessing.Views {
   partial class PreprocessingChartView {
     /// <summary> 
@@ -64,8 +63,8 @@ namespace HeuristicLab.DataPreprocessing.Views {
       // 
       // tableLayoutPanel
       // 
-      this.tableLayoutPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+      this.tableLayoutPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.tableLayoutPanel.AutoScroll = true;
       this.tableLayoutPanel.ColumnCount = 1;
@@ -81,7 +80,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
       // 
       // checkedItemList
       // 
-      this.checkedItemList.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+      this.checkedItemList.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
             | System.Windows.Forms.AnchorStyles.Left)));
       this.checkedItemList.Caption = "View";
       this.checkedItemList.Content = null;

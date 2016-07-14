@@ -25,12 +25,11 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
-using HeuristicLab.Collections;
-using HeuristicLab.Core.Views;
-using HeuristicLab.DataPreprocessing.Implementations;
-using HeuristicLab.MainForm;
 using HeuristicLab.Analysis;
 using HeuristicLab.Analysis.Views;
+using HeuristicLab.Collections;
+using HeuristicLab.Core.Views;
+using HeuristicLab.MainForm;
 
 namespace HeuristicLab.DataPreprocessing.Views {
   [View("Preprocessing DataTable View")]
@@ -745,7 +744,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
                               select new Tuple<double, double>(g.First(), g.Count())).ToList();
 
       //  shift the chart to the left so the bars are placed on the intervals
-      if (Classification != null || valueFrequencies.First().Item1 < doubleRange.First()) {
+      if (Classification != null || (valueFrequencies.Any() && valueFrequencies.First().Item1 < doubleRange.First())) {
         series.Points.Add(new DataPoint(min - intervalWidth, 0));
         series.Points.Add(new DataPoint(max + intervalWidth, 0));
       }
