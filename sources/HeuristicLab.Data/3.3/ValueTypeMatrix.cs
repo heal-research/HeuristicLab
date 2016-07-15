@@ -194,6 +194,12 @@ namespace HeuristicLab.Data {
       return readOnlyValueTypeMatrix;
     }
 
+   
+    public T[,] CloneAsMatrix() {
+      //mkommend: this works because T must be a value type (struct constraint);
+      return (T[,])matrix.Clone();
+    }
+
     public override string ToString() {
       if (matrix.Length == 0) return "[]";
 

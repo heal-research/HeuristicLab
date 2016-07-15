@@ -145,6 +145,11 @@ namespace HeuristicLab.Data {
       return readOnlyValueTypeArray;
     }
 
+    public T[,] CloneAsArray() {
+      //mkommend: this works because T must be a value type (struct constraint);
+      return (T[,])array.Clone();
+    }
+
     public override string ToString() {
       if (array.Length == 0) return "[]";
 
