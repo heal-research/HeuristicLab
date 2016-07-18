@@ -65,7 +65,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Tests {
         Assert.AreEqual(310.5930, predTrain[0], 1e-3);
         Assert.AreEqual(347.9993, predTrain[1], 1e-3);
 
-        var predTrainVar = model.GetEstimatedVariance(problemData.Dataset, problemData.TrainingIndices).ToArray();
+        var predTrainVar = model.GetEstimatedVariances(problemData.Dataset, problemData.TrainingIndices).ToArray();
       }
 
       {
