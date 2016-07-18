@@ -124,12 +124,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GaussianProcessRegressionSolutionEstimatedValuesView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="GaussianProcessRegressionSolutionEstimatedValuesView.Designer.cs">
-      <DependentUpon>GaussianProcessRegressionSolutionEstimatedValuesView.cs</DependentUpon>
-    </Compile>
     <Compile Include="MeanProdView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -179,12 +173,6 @@
       <DependentUpon>OneRClassificationModelView.cs</DependentUpon>
     </Compile>
     <Compile Include="Plugin.cs" />
-    <Compile Include="GaussianProcessRegressionSolutionLineChartView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="GaussianProcessRegressionSolutionLineChartView.Designer.cs">
-      <DependentUpon>GaussianProcessRegressionSolutionLineChartView.cs</DependentUpon>
-    </Compile>
     <Compile Include="SupportVectorMachineModelSupportVectorsView.cs">
       <SubType>UserControl</SubType>
     </Compile>

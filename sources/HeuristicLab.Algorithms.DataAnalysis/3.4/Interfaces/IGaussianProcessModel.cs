@@ -19,21 +19,19 @@
  */
 #endregion
 
-using System.Collections.Generic;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>
   /// Interface to represent a Gaussian process posterior
   /// </summary>
-  public interface IGaussianProcessModel : IRegressionModel {
+  public interface IGaussianProcessModel : IConfidenceBoundRegressionModel {
     double NegativeLogLikelihood { get; }
     double SigmaNoise { get; }
     IMeanFunction MeanFunction { get; }
     ICovarianceFunction CovarianceFunction { get; }
     double[] HyperparameterGradients { get; }
 
-    IEnumerable<double> GetEstimatedVariance(IDataset ds, IEnumerable<int> rows);
     void FixParameters();
   }
 }

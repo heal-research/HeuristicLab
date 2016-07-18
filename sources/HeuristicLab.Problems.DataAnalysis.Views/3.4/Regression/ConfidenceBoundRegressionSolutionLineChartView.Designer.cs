@@ -19,7 +19,7 @@
  */
 #endregion
 namespace HeuristicLab.Algorithms.DataAnalysis.Views {
-  partial class GaussianProcessRegressionSolutionLineChartView {
+  partial class ConfidenceBasedRegressionSolutionLineChartView {
     /// <summary> 
     /// Required designer variable.
     /// </summary>

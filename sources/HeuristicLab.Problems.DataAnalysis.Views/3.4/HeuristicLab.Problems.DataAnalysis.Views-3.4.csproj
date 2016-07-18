@@ -119,6 +119,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DensityChart.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="DensityChart.Designer.cs">
+      <DependentUpon>DensityChart.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DensityTrackbar.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="DensityTrackbar.Designer.cs">
+      <DependentUpon>DensityTrackbar.cs</DependentUpon>
+    </Compile>
     <Compile Include="FeatureCorrelation\TimeframeFeatureCorrelationCalculator.cs" />
     <Compile Include="FeatureCorrelation\AbstractFeatureCorrelationCalculator.cs" />
     <Compile Include="Classification\ClassificationEnsembleSolutionEstimatedClassValuesView.cs">
@@ -182,6 +194,18 @@
     <Compile Include="FeatureCorrelation\FeatureCorrelationView.Designer.cs">
       <DependentUpon>FeatureCorrelationView.cs</DependentUpon>
     </Compile>
+    <Compile Include="GradientChart.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GradientChart.Designer.cs">
+      <DependentUpon>GradientChart.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GradientChartConfigurationDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GradientChartConfigurationDialog.Designer.cs">
+      <DependentUpon>GradientChartConfigurationDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Interfaces\IDataPreprocessorStarter.cs" />
     <Compile Include="MenuItems\ShrinkDataAnalysisRunsMenuItem.cs" />
     <Compile Include="ModifiableDatasetView.cs">
@@ -197,6 +221,18 @@
     <Compile Include="ProblemDataView.Designer.cs">
       <DependentUpon>ProblemDataView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Regression\ConfidenceBoundRegressionSolutionEstimatedValuesView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Regression\ConfidenceBoundRegressionSolutionEstimatedValuesView.Designer.cs">
+      <DependentUpon>ConfidenceBoundRegressionSolutionEstimatedValuesView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Regression\ConfidenceBoundRegressionSolutionLineChartView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Regression\ConfidenceBoundRegressionSolutionLineChartView.Designer.cs">
+      <DependentUpon>ConfidenceBoundRegressionSolutionLineChartView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Regression\RegressionEnsembleSolutionModelWeightsView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -208,6 +244,18 @@
     </Compile>
     <Compile Include="Regression\RegressionFeatureCorrelationView.Designer.cs">
       <DependentUpon>RegressionFeatureCorrelationView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Regression\RegressionSolutionGradientView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Regression\RegressionSolutionGradientView.Designer.cs">
+      <DependentUpon>RegressionSolutionGradientView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Regression\RegressionSolutionTargetResponseGradientView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Regression\RegressionSolutionTargetResponseGradientView.Designer.cs">
+      <DependentUpon>RegressionSolutionTargetResponseGradientView.cs</DependentUpon>
     </Compile>
     <Compile Include="Regression\RegressionTimeframeFeatureCorrelationView.cs">
       <SubType>UserControl</SubType>

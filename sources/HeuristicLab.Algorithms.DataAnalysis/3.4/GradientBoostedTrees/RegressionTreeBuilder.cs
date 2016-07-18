@@ -21,7 +21,6 @@
 #endregion
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -128,8 +127,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       Debug.Assert(m <= 1.0);
 
       // y and curPred are changed in gradient boosting
-      this.y = y; 
-      this.curPred = curPred; 
+      this.y = y;
+      this.curPred = curPred;
 
       // shuffle row idx
       HeuristicLab.Random.ListExtensions.ShuffleInPlace(idx, random);

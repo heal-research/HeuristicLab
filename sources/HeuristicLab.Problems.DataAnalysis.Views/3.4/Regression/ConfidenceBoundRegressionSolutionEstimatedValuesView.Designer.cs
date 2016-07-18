@@ -19,7 +19,7 @@
  */
 #endregion
 namespace HeuristicLab.Algorithms.DataAnalysis.Views {
-  partial class GaussianProcessRegressionSolutionEstimatedValuesView {
+  partial class ConfidenceBoundRegressionSolutionEstimatedValuesView {
     /// <summary> 
     /// Required designer variable.
     /// </summary>

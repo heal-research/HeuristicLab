@@ -26,4 +26,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
     IRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData);
     string TargetVariable { get; }
   }
+
+  public interface IConfidenceBoundRegressionModel : IRegressionModel {
+    IEnumerable<double> GetEstimatedVariances(IDataset dataset, IEnumerable<int> rows);
+  }
 }

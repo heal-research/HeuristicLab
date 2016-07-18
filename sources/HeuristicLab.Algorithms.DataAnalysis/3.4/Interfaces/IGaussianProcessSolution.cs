@@ -25,7 +25,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>
   /// Interface to represent a Gaussian process solution (either regression or classification)
   /// </summary>
-  public interface IGaussianProcessSolution : IDataAnalysisSolution {
+  public interface IGaussianProcessSolution : IConfidenceBoundRegressionSolution {
     new IGaussianProcessModel Model { get; }
   }
 }
