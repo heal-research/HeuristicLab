@@ -22,9 +22,12 @@
 using System.Collections.Generic;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  public interface IRegressionModel : IDataAnalysisModel {
-    IEnumerable<double> GetEstimatedValues(IDataset dataset, IEnumerable<int> rows);
-    IRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData);
-    string TargetVariable { get; }
+  public interface IConfidenceRegressionSolution : IRegressionSolution {
+    new IConfidenceRegressionModel Model { get; }
+
+    IEnumerable<double> EstimatedVariances { get; }
+    IEnumerable<double> EstimatedTrainingVariances { get; }
+    IEnumerable<double> EstimatedTestVariances { get; }
+    IEnumerable<double> GetEstimatedVariances(IEnumerable<int> rows);
   }
 }

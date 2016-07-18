@@ -175,6 +175,8 @@
     <Compile Include="Interfaces\IDependencyCalculator.cs" />
     <Compile Include="Interfaces\ITransformation.cs" />
     <Compile Include="Interfaces\ITransformationMapper.cs" />
+    <Compile Include="Interfaces\Regression\IConfidenceRegressionModel.cs" />
+    <Compile Include="Interfaces\Regression\IConfidenceRegressionSolution.cs" />
     <Compile Include="Interfaces\Regression\IRegressionEnsembleModel.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -30,19 +30,19 @@ using HeuristicLab.Problems.DataAnalysis.Views;
 
 namespace HeuristicLab.Algorithms.DataAnalysis.Views {
   [View("Line Chart (95% confidence interval)")]
-  [Content(typeof(IConfidenceBoundRegressionSolution))]
-  public partial class ConfidenceBasedRegressionSolutionLineChartView : DataAnalysisSolutionEvaluationView {
+  [Content(typeof(IConfidenceRegressionSolution))]
+  public partial class ConfidenceRegressionSolutionLineChartView : DataAnalysisSolutionEvaluationView {
     private const string TARGETVARIABLE_SERIES_NAME = "Target Variable";
     private const string ESTIMATEDVALUES_TRAINING_SERIES_NAME = "Estimated Values (training)";
     private const string ESTIMATEDVALUES_TEST_SERIES_NAME = "Estimated Values (test)";
     private const string ESTIMATEDVALUES_ALL_SERIES_NAME = "Estimated Values (all samples)";
 
-    public new IConfidenceBoundRegressionSolution Content {
-      get { return (IConfidenceBoundRegressionSolution)base.Content; }
+    public new IConfidenceRegressionSolution Content {
+      get { return (IConfidenceRegressionSolution)base.Content; }
       set { base.Content = value; }
     }
 
-    public ConfidenceBasedRegressionSolutionLineChartView()
+    public ConfidenceRegressionSolutionLineChartView()
       : base() {
       InitializeComponent();
       //configure axis

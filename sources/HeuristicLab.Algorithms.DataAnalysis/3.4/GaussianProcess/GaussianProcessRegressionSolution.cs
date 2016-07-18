@@ -30,7 +30,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// </summary>
   [Item("GaussianProcessRegressionSolution", "Represents a Gaussian process solution for a regression problem which can be visualized in the GUI.")]
   [StorableClass]
-  public sealed class GaussianProcessRegressionSolution : ConfidenceBoundRegressionSolution, IGaussianProcessSolution {
+  public sealed class GaussianProcessRegressionSolution : ConfidenceRegressionSolution, IGaussianProcessSolution {
 
     public new IGaussianProcessModel Model {
       get { return (IGaussianProcessModel)base.Model; }

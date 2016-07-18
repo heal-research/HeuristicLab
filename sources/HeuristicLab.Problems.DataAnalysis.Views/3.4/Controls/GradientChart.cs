@@ -386,7 +386,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       };
       series.LegendText = series.Name;
 
-      var confidenceBoundSolution = solution as IConfidenceBoundRegressionSolution;
+      var confidenceBoundSolution = solution as IConfidenceRegressionSolution;
       Series confidenceIntervalSeries = null;
       if (confidenceBoundSolution != null) {
         confidenceIntervalSeries = new Series {
@@ -453,7 +453,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
           if (yvalues[i] > max) max = yvalues[i];
         }
 
-        var confidenceBoundSolution = solution as IConfidenceBoundRegressionSolution;
+        var confidenceBoundSolution = solution as IConfidenceRegressionSolution;
         if (confidenceBoundSolution != null) {
           var confidenceIntervalSeries = ciSeriesCache[solution];
 

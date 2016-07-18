@@ -29,30 +29,30 @@ namespace HeuristicLab.Problems.DataAnalysis {
   /// Represents a regression data analysis solution that supports confidence estimates
   /// </summary>
   [StorableClass]
-  public class ConfidenceBoundRegressionSolution : RegressionSolution, IConfidenceBoundRegressionSolution {
+  public class ConfidenceRegressionSolution : RegressionSolution, IConfidenceRegressionSolution {
     protected readonly Dictionary<int, double> varianceEvaluationCache;
 
-    public new IConfidenceBoundRegressionModel Model {
-      get { return (IConfidenceBoundRegressionModel)base.Model; }
+    public new IConfidenceRegressionModel Model {
+      get { return (IConfidenceRegressionModel)base.Model; }
       set { base.Model = value; }
     }
 
     [StorableConstructor]
-    protected ConfidenceBoundRegressionSolution(bool deserializing)
+    protected ConfidenceRegressionSolution(bool deserializing)
       : base(deserializing) {
       varianceEvaluationCache = new Dictionary<int, double>();
     }
-    protected ConfidenceBoundRegressionSolution(ConfidenceBoundRegressionSolution original, Cloner cloner)
+    protected ConfidenceRegressionSolution(ConfidenceRegressionSolution original, Cloner cloner)
       : base(original, cloner) {
       varianceEvaluationCache = new Dictionary<int, double>(original.varianceEvaluationCache);
     }
-    public ConfidenceBoundRegressionSolution(IConfidenceBoundRegressionModel model, IRegressionProblemData problemData)
+    public ConfidenceRegressionSolution(IConfidenceRegressionModel model, IRegressionProblemData problemData)
       : base(model, problemData) {
       varianceEvaluationCache = new Dictionary<int, double>(problemData.Dataset.Rows);
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new ConfidenceBoundRegressionSolution(this, cloner);
+      return new ConfidenceRegressionSolution(this, cloner);
     }
 
     public IEnumerable<double> EstimatedVariances {

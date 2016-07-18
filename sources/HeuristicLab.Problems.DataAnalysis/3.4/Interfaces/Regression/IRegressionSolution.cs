@@ -43,13 +43,4 @@ namespace HeuristicLab.Problems.DataAnalysis {
     double TrainingRootMeanSquaredError { get; }
     double TestRootMeanSquaredError { get; }
   }
-
-  public interface IConfidenceBoundRegressionSolution : IRegressionSolution {
-    new IConfidenceBoundRegressionModel Model { get; }
-
-    IEnumerable<double> EstimatedVariances { get; }
-    IEnumerable<double> EstimatedTrainingVariances { get; }
-    IEnumerable<double> EstimatedTestVariances { get; }
-    IEnumerable<double> GetEstimatedVariances(IEnumerable<int> rows);
-  }
 }

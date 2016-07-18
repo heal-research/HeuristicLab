@@ -27,18 +27,18 @@ using HeuristicLab.Problems.DataAnalysis.Views;
 
 namespace HeuristicLab.Algorithms.DataAnalysis.Views {
   [View("Estimated Values")]
-  [Content(typeof(IConfidenceBoundRegressionSolution), false)]
-  public partial class ConfidenceBoundRegressionSolutionEstimatedValuesView : RegressionSolutionEstimatedValuesView {
+  [Content(typeof(IConfidenceRegressionSolution), false)]
+  public partial class ConfidenceRegressionSolutionEstimatedValuesView : RegressionSolutionEstimatedValuesView {
     private const string ESTIMATEDVARIANCES_SERIES_NAME = "Estimated Variances (all)";
     private const string ESTIMATEDVARIANCES_TRAINING_SERIES_NAME = "Estimated Variances (training)";
     private const string ESTIMATEDVARIANCES_TEST_SERIES_NAME = "Estimated Variances (test)";
 
-    public new IConfidenceBoundRegressionSolution Content {
-      get { return (IConfidenceBoundRegressionSolution)base.Content; }
+    public new IConfidenceRegressionSolution Content {
+      get { return (IConfidenceRegressionSolution)base.Content; }
       set { base.Content = value; }
     }
 
-    public ConfidenceBoundRegressionSolutionEstimatedValuesView()
+    public ConfidenceRegressionSolutionEstimatedValuesView()
       : base() {
       InitializeComponent();
     }

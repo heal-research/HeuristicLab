@@ -25,7 +25,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>
   /// Interface to represent a Gaussian process posterior
   /// </summary>
-  public interface IGaussianProcessModel : IConfidenceBoundRegressionModel {
+  public interface IGaussianProcessModel : IConfidenceRegressionModel {
     double NegativeLogLikelihood { get; }
     double SigmaNoise { get; }
     IMeanFunction MeanFunction { get; }

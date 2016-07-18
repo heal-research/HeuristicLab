@@ -127,8 +127,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       if (LimitsChanged != null)
         LimitsChanged(this, EventArgs.Empty);
     }
-    #region Hepers
 
+    #region Helpers
     private decimal TickToValue(int tick) {
       return TickToValue(tick, trackBar.Maximum - trackBar.Minimum, (decimal)Limits.Lower, (decimal)Limits.Upper);
     }
