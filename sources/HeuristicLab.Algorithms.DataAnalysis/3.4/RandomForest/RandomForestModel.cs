@@ -151,6 +151,24 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
     }
 
+    public IEnumerable<double> GetEstimatedVariances(IDataset dataset, IEnumerable<int> rows) {
+      double[,] inputData = AlglibUtil.PrepareInputMatrix(dataset, AllowedInputVariables, rows);
+      AssertInputMatrix(inputData);
+
+      int n = inputData.GetLength(0);
+      int columns = inputData.GetLength(1);
+      double[] x = new double[columns];
+      double[] ys = new double[columns];
+
+      for (int row = 0; row < n; row++) {
+        for (int column = 0; column < columns; column++) {
+          x[column] = inputData[row, column];
+        }
+        alglib.dforest.dfprocessraw(RandomForest.innerobj, x, ref ys);
+        yield return ys.VariancePop();
+      }
+    }
+
     public override IEnumerable<double> GetEstimatedClassValues(IDataset dataset, IEnumerable<int> rows) {
       double[,] inputData = AlglibUtil.PrepareInputMatrix(dataset, AllowedInputVariables, rows);
       AssertInputMatrix(inputData);

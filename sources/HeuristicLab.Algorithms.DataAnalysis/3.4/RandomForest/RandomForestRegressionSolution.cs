@@ -30,7 +30,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// </summary>
   [Item("RandomForestRegressionSolution", "Represents a random forest solution for a regression problem which can be visualized in the GUI.")]
   [StorableClass]
-  public sealed class RandomForestRegressionSolution : RegressionSolution, IRandomForestRegressionSolution {
+  public sealed class RandomForestRegressionSolution : ConfidenceRegressionSolution, IRandomForestRegressionSolution {
 
     public new IRandomForestModel Model {
       get { return (IRandomForestModel)base.Model; }

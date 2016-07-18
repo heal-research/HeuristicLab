@@ -10045,18 +10045,70 @@ public partial class alglib
         }
 
 
+        // HEAL pfleck
+        /*************************************************************************
+        Procesing
+
+        INPUT PARAMETERS:
+            DF      -   decision forest model
+            X       -   input vector,  array[0..NVars-1].
+
+        OUTPUT PARAMETERS:
+            ys      -   result. Regression estimates for each tree when solving regression task.
+
+          -- HeuristicLab --
+              Copyright 18.07.2016 by HEAL, based on implementation of dfprocess by Bochkanov Sergey
+        *************************************************************************/
+        public static void dfprocessraw(decisionforest df,
+            double[] x,
+            ref double[] ys) 
+        {
+            int offs = 0;
+            int i = 0;
+            var y = new double[1];
+
+            if (df.nclasses != 1)
+                return;
+
+            //
+            // Proceed
+            //
+            if (alglib.ap.len(ys)<df.ntrees) 
+            {
+                ys = new double[df.ntrees];
+            }
+            offs = 0;
+            for (i=0; i<=df.ntrees-1; i++) {
+
+                //
+                // Process basic tree
+                //
+                y[0] = 0;
+                dfprocessinternal(df, offs, x, ref y);
+                ys[i] = y[0];
+                
+
+                //
+                // Next tree
+                //
+                offs = offs+(int)Math.Round(df.trees[offs]);
+            }
+        }
+
+
+
         /*************************************************************************
         Relative classification error on the test set
-
+        
         INPUT PARAMETERS:
             DF      -   decision forest model
             XY      -   test set
             NPoints -   test set size
-
+        
         RESULT:
             percent of incorrectly classified cases.
             Zero if model solves regression task.
-
+        
           -- ALGLIB --
              Copyright 16.02.2009 by Bochkanov Sergey
         *************************************************************************/
