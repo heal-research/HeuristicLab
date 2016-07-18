@@ -32,6 +32,7 @@ namespace HeuristicLab.Optimization {
   [StorableClass]
   public sealed class ResultParameter<T> : LookupParameter<T>, IResultParameter<T> where T : class, IItem {
     public override Image ItemImage { get { return VSImageLibrary.Exception; } }
+    public override bool CanChangeDescription { get { return true; } }
 
     [Storable]
     private string resultCollectionName;
@@ -70,12 +71,13 @@ namespace HeuristicLab.Optimization {
       return new ResultParameter<T>(this, cloner);
     }
     public ResultParameter() : this("Anonymous", string.Empty, "Results") { }
-    public ResultParameter(string name) : this(name, string.Empty, "Results") { }
     public ResultParameter(string name, string description) : this(name, description, "Results") { }
+
     public ResultParameter(string name, string description, string resultCollectionName)
       : base(name, description, string.Empty) {
       if (string.IsNullOrEmpty(resultCollectionName)) throw new ArgumentException("resultCollectionName");
       this.resultCollectionName = resultCollectionName;
+      Hidden = false;
     }
     public ResultParameter(string name, string description, string resultCollectionName, T defaultValue)
       : base(name, description, string.Empty) {
@@ -83,6 +85,7 @@ namespace HeuristicLab.Optimization {
       if (defaultValue == null) throw new ArgumentNullException("defaultValue");
       this.resultCollectionName = resultCollectionName;
       this.defaultValue = defaultValue;
+      Hidden = false;
     }
 
     protected override IItem GetActualValue() {
@@ -101,7 +104,7 @@ namespace HeuristicLab.Optimization {
       IResult result;
       if (!results.TryGetValue(ActualName, out result)) {
         if (DefaultValue == null) throw new InvalidOperationException("ResultParameter (" + ActualName + "): Result not found and no default value specified.");
-        result = new Result(ActualName, (T)DefaultValue.Clone());
+        result = ItemDescription == Description ? new Result(ActualName, (T)DefaultValue.Clone()) : new Result(ActualName, Description, (T)DefaultValue.Clone());
         results.Add(result);
       }
 
@@ -126,7 +129,7 @@ namespace HeuristicLab.Optimization {
 
       IResult result;
       if (!results.TryGetValue(ActualName, out result)) {
-        result = new Result(ActualName, value);
+        result = ItemDescription == Description ? new Result(ActualName, value) : new Result(ActualName, Description, value);
         results.Add(result);
       } else result.Value = value;
     }
