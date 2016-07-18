@@ -130,6 +130,8 @@
     <Compile Include="AlleleFrequencyAnalysis\AlleleFrequencyCollection.cs" />
     <Compile Include="AlleleFrequencyAnalysis\AlleleFrequencyCollectionHistory.cs" />
     <Compile Include="BestScopeSolutionAnalyzer.cs" />
+    <Compile Include="DataVisualization\IndexedDataRow.cs" />
+    <Compile Include="DataVisualization\IndexedDataTable.cs" />
     <Compile Include="DataVisualization\ScatterPlotDataRowVisualProperties.cs" />
     <Compile Include="DataVisualization\ScatterPlotDataRow.cs" />
     <Compile Include="DataVisualization\ScatterPlotVisualProperties.cs" />
@@ -153,11 +155,14 @@
     <Compile Include="QualityAnalysis\BestAverageWorstQualityAnalyzer.cs" />
     <Compile Include="QualityAnalysis\BestAverageWorstQualityCalculator.cs" />
     <Compile Include="QualityAnalysis\BestQualityMemorizer.cs" />
+    <Compile Include="QualityAnalysis\ExpectedRuntimeHelper.cs" />
     <Compile Include="QualityAnalysis\QualityAnalyzer.cs" />
     <Compile Include="QualityAnalysis\QualityDifferenceCalculator.cs" />
     <Compile Include="MultiAnalyzer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QualityAnalysis\QualityDistributionAnalyzer.cs" />
+    <Compile Include="QualityAnalysis\QualityPerClockAnalyzer.cs" />
+    <Compile Include="QualityAnalysis\QualityPerEvaluationsAnalyzer.cs" />
     <Compile Include="QualityAnalysis\ScaledQualityDifferenceAnalyzer.cs" />
     <Compile Include="Statistics\BonferroniHolm.cs" />
     <Compile Include="Statistics\EnumerableStatisticsExtension.cs" />

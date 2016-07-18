@@ -121,6 +121,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IndexedDataTableView.cs" />
+    <Compile Include="IndexedDataTableView.Designer.cs">
+      <DependentUpon>IndexedDataTableView.cs</DependentUpon>
+    </Compile>
     <Compile Include="ScatterPlotVisualPropertiesDialog.cs">
       <SubType>Form</SubType>
     </Compile>
