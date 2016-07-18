@@ -83,16 +83,14 @@ namespace HeuristicLab.Operators {
     protected override IEnumerable<KeyValuePair<string, IItem>> GetCollectedValues(IValueParameter param) {
       foreach (var b in base.GetCollectedValues(param)) yield return b;
       if (param != BeforeExecutionOperatorsParameter && param != AfterExecutionOperatorsParameter) yield break;
-      var operatorList = param.Value as OperatorList;
-      if (operatorList != null) {
-        var counter = 0;
-        foreach (var op in operatorList) {
-          yield return new KeyValuePair<string, IItem>(counter.ToString(), op);
-          var children = new Dictionary<string, IItem>();
-          op.CollectParameterValues(children);
-          foreach (var c in children) yield return new KeyValuePair<string, IItem>(counter + "." + c.Key, c.Value);
-          counter++;
-        }
+      var operatorList = (OperatorList)param.Value;
+      var counter = 0;
+      foreach (var op in operatorList) {
+        yield return new KeyValuePair<string, IItem>(counter.ToString(), op);
+        var children = new Dictionary<string, IItem>();
+        op.CollectParameterValues(children);
+        foreach (var c in children) yield return new KeyValuePair<string, IItem>(counter + "." + c.Key, c.Value);
+        counter++;
       }
     }
 
