@@ -38,6 +38,8 @@ namespace HeuristicLab.Problems.TestFunctions.Views {
   [PluginDependency("HeuristicLab.Optimization", "3.3")]
   [PluginDependency("HeuristicLab.Optimization.Views", "3.3")]
   [PluginDependency("HeuristicLab.Problems.TestFunctions", "3.3")]
+  [PluginDependency("HeuristicLab.Problems.TestFunctions.MultiObjective", "3.3")]
+  [PluginDependency("HeuristicLab.Visualization.ChartControlsExtensions", "3.3")]
   public class HeuristicLabProblemsTestFunctionsViewsPlugin : PluginBase {
   }
 }
