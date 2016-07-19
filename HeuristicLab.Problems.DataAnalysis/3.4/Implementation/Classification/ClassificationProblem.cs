@@ -34,9 +34,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
     protected ClassificationProblem(ClassificationProblem original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) { return new ClassificationProblem(this, cloner); }
 
-    public ClassificationProblem()
-      : base() {
-      ProblemData = new ClassificationProblemData();
-    }
+    public ClassificationProblem() : base(new ClassificationProblemData()) { }
   }
 }

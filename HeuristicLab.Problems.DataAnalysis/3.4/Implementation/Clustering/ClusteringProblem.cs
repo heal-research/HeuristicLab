@@ -32,9 +32,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
     protected ClusteringProblem(ClusteringProblem original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) { return new ClusteringProblem(this, cloner); }
 
-    public ClusteringProblem()
-      : base() {
-      ProblemData = new ClusteringProblemData();
-    }
+    public ClusteringProblem() : base(new ClusteringProblemData()) { }
   }
 }
