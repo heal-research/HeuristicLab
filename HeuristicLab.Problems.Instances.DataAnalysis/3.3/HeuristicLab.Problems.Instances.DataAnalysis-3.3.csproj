@@ -104,6 +104,10 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ALGLIB-3.7.0, Version=3.7.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\ALGLIB-3.7.0.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -146,6 +150,8 @@
     <Compile Include="Regression\FeatureSelection\FeatureSelectionRegressionProblemData.cs" />
     <Compile Include="Regression\FeatureSelection\FeatureSelection.cs" />
     <Compile Include="Regression\FeatureSelection\FeatureSelectionInstanceProvider.cs" />
+    <Compile Include="Regression\VariableNetworks\VariableNetwork.cs" />
+    <Compile Include="Regression\VariableNetworks\VariableNetworkInstanceProvider.cs" />
     <Compile Include="Regression\Keijzer\KeijzerFunctionFourteen.cs" />
     <Compile Include="Regression\Keijzer\KeijzerFunctionEleven.cs" />
     <Compile Include="Regression\Keijzer\KeijzerFunctionFive.cs" />
@@ -178,6 +184,8 @@
     <Compile Include="Regression\Korns\KornsFunctionTwelve.cs" />
     <Compile Include="Regression\Korns\KornsFunctionTwo.cs" />
     <Compile Include="Regression\Korns\KornsInstanceProvider.cs" />
+    <Compile Include="Regression\Friedman\FriedmanRandomFunction.cs" />
+    <Compile Include="Regression\Friedman\FriedmanRandomFunctionInstanceProvider.cs" />
     <Compile Include="Regression\Nguyen\NguyenFunctionEight.cs" />
     <Compile Include="Regression\Nguyen\NguyenFunctionEleven.cs" />
     <Compile Include="Regression\Nguyen\NguyenFunctionFive.cs" />
