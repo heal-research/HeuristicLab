@@ -30,13 +30,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
     [TestMethod]
     [TestCategory("Problems.DataAnalysis.Symbolic")]
     [TestProperty("Time", "short")]
-    public void StandardInterpreterTestTypeCoherentGrammarPerformance() {
+    public void InfixExpressionParserTestFormatting() {
       var formatter = new InfixExpressionFormatter();
       var parser = new InfixExpressionParser();
       Console.WriteLine(formatter.Format(parser.Parse("3")));
       Console.WriteLine(formatter.Format(parser.Parse("3*3")));
       Console.WriteLine(formatter.Format(parser.Parse("3 * 4")));
-      Console.WriteLine(formatter.Format(parser.Parse("123E-03")));
+      Console.WriteLine(formatter.Format(parser.Parse("123E-03")  ));
       Console.WriteLine(formatter.Format(parser.Parse("123e-03")));
       Console.WriteLine(formatter.Format(parser.Parse("123e+03")));
       Console.WriteLine(formatter.Format(parser.Parse("123E+03")));

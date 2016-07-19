@@ -41,7 +41,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   [Creatable(CreatableAttribute.Categories.DataAnalysisRegression, Priority = 120)]
   [StorableClass]
   public sealed class NonlinearRegression : FixedDataAnalysisAlgorithm<IRegressionProblem> {
-    private const string LinearRegressionModelResultName = "Regression solution";
+    private const string RegressionSolutionResultName = "Regression solution";
     private const string ModelStructureParameterName = "Model structure";
     private const string IterationsParameterName = "Iterations";
 
@@ -84,7 +84,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     #region nonlinear regression
     protected override void Run() {
       var solution = CreateRegressionSolution(Problem.ProblemData, ModelStructure, Iterations);
-      Results.Add(new Result(LinearRegressionModelResultName, "The nonlinear regression solution.", solution));
+      Results.Add(new Result(RegressionSolutionResultName, "The nonlinear regression solution.", solution));
       Results.Add(new Result("Root mean square error (train)", "The root of the mean of squared errors of the regression solution on the training set.", new DoubleValue(solution.TrainingRootMeanSquaredError)));
       Results.Add(new Result("Root mean square error (test)", "The root of the mean of squared errors of the regression solution on the test set.", new DoubleValue(solution.TestRootMeanSquaredError)));
     }
