@@ -281,6 +281,7 @@
     <Compile Include="NeuralNetwork\NeuralNetworkModel.cs" />
     <Compile Include="NeuralNetwork\NeuralNetworkRegression.cs" />
     <Compile Include="NeuralNetwork\NeuralNetworkRegressionSolution.cs" />
+    <Compile Include="NonlinearRegression\NonlinearRegression.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RandomForest\RandomForestClassificationSolution.cs" />

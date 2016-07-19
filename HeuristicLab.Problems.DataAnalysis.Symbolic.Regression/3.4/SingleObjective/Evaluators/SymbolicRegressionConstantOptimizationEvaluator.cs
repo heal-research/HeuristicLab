@@ -331,7 +331,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
           if (i > 0) t = -t;
           terms.Add(t);
         }
-        term = AutoDiff.TermBuilder.Sum(terms);
+        if (terms.Count == 1) term = -terms[0];
+        else term = AutoDiff.TermBuilder.Sum(terms);
         return true;
       }
       if (node.Symbol is Multiplication) {
