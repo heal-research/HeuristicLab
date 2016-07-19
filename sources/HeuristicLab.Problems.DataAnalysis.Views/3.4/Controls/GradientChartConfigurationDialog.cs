@@ -50,6 +50,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
     private async void okButton_Click(object sender, System.EventArgs e) {
       try {
+        Enabled = false;
         chart.SuspendRepaint();
         if (xAutomaticCheckBox.Checked) {
           chart.FixedXAxisMin = null;
@@ -81,6 +82,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         MessageBox.Show(this, "Illegal number format", "Wrong format", MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
       finally {
+        Enabled = true;
         chart.ResumeRepaint(true);
       }
     }

@@ -88,6 +88,7 @@
       this.chart.Size = new System.Drawing.Size(453, 308);
       this.chart.TabIndex = 0;
       this.chart.SelectionRangeChanged += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.CursorEventArgs>(this.chart_SelectionRangeChanged);
+      this.chart.AnnotationPositionChanged += new System.EventHandler(this.chart_AnnotationPositionChanged);
       this.chart.AnnotationPositionChanging += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.AnnotationPositionChangingEventArgs>(this.chart_AnnotationPositionChanging);
       this.chart.DragDrop += new System.Windows.Forms.DragEventHandler(this.chart_DragDrop);
       this.chart.DragEnter += new System.Windows.Forms.DragEventHandler(this.chart_DragEnter);

@@ -266,25 +266,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
           ciSeriesCache.Add(solution, series.Item2);
       }
 
-      ResizeAllSeriesData();
-      OrderAndColorSeries();
-    }
-
-    public async Task RecalculateAsync(bool updateOnFinish = true, bool resetYAxis = true) {
-      if (IsDisposed
-        || sharedFixedVariables == null || !solutions.Any() || string.IsNullOrEmpty(freeVariable)
-        || trainingMin.IsAlmost(trainingMax) || trainingMin > trainingMax || drawingSteps == 0)
-        return;
-
-      calculationPendingTimer.Start();
-
-      Update(); // immediately show label
-
-      // cancel previous recalculate call
-      if (cancelCurrentRecalculateSource != null)
-        cancelCurrentRecalculateSource.Cancel();
-      cancelCurrentRecalculateSource = new CancellationTokenSource();
-
       // Set cursor and x-axis
       // Make sure to allow a small offset to be able to distinguish the vertical line annotation from the axis
       var defaultValue = sharedFixedVariables.GetDoubleValue(freeVariable, 0);
@@ -301,11 +282,27 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       if (ShowCursor)
         chart.ChartAreas[0].AxisX.Title = FreeVariable + " : " + defaultValue.ToString("N3", CultureInfo.CurrentCulture);
 
-      // Update series
+      ResizeAllSeriesData();
+      OrderAndColorSeries();
+    }
+
+    public async Task RecalculateAsync(bool updateOnFinish = true, bool resetYAxis = true) {
+      if (IsDisposed
+        || sharedFixedVariables == null || !solutions.Any() || string.IsNullOrEmpty(freeVariable)
+        || trainingMin.IsAlmost(trainingMax) || trainingMin > trainingMax || drawingSteps == 0)
+        return;
+
+      calculationPendingTimer.Start();
+
+      // cancel previous recalculate call
+      if (cancelCurrentRecalculateSource != null)
+        cancelCurrentRecalculateSource.Cancel();
+      cancelCurrentRecalculateSource = new CancellationTokenSource();
       var cancellationToken = cancelCurrentRecalculateSource.Token;
+
+      // Update series
       try {
         var limits = await UpdateAllSeriesDataAsync(cancellationToken);
-        //cancellationToken.ThrowIfCancellationRequested();
 
         yMin = limits.Lower;
         yMax = limits.Upper;
@@ -452,15 +449,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
           if (yvalues[i] < min) min = yvalues[i];
           if (yvalues[i] > max) max = yvalues[i];
         }
+        chart.Invalidate();
+
+        cancellationToken.ThrowIfCancellationRequested();
 
         var confidenceBoundSolution = solution as IConfidenceRegressionSolution;
         if (confidenceBoundSolution != null) {
           var confidenceIntervalSeries = ciSeriesCache[solution];
-
-          cancellationToken.ThrowIfCancellationRequested();
-          var variances =
-            confidenceBoundSolution.Model.GetEstimatedVariances(internalDataset,
-              Enumerable.Range(0, internalDataset.Rows)).ToList();
+          var variances = confidenceBoundSolution.Model.GetEstimatedVariances(internalDataset, Enumerable.Range(0, internalDataset.Rows)).ToList();
           for (int i = 0; i < xvalues.Count; i++) {
             var lower = yvalues[i] - 1.96 * Math.Sqrt(variances[i]);
             var upper = yvalues[i] + 1.96 * Math.Sqrt(variances[i]);
@@ -468,6 +464,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
             if (lower < min) min = lower;
             if (upper > max) max = upper;
           }
+          chart.Invalidate();
         }
 
         cancellationToken.ThrowIfCancellationRequested();
@@ -618,8 +615,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         newLocation = axisX.Minimum + step;
 
       e.NewLocationX = newLocation;
-      var annotation = VerticalLineAnnotation;
-      var x = annotation.X;
+
+      UpdateCursor();
+    }
+    private void chart_AnnotationPositionChanged(object sender, EventArgs e) {
+      UpdateCursor();
+    }
+    void UpdateCursor() {
+      var x = VerticalLineAnnotation.X;
       sharedFixedVariables.SetVariableValue(x, FreeVariable, 0);
 
       if (ShowCursor) {
