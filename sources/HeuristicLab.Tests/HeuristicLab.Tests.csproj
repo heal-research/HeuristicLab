@@ -386,6 +386,11 @@
       <HintPath>..\bin\HeuristicLab.Problems.TestFunctions-3.3.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="HeuristicLab.Problems.TestFunctions.MultiObjective-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\bin\HeuristicLab.Problems.TestFunctions.MultiObjective-3.3.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="HeuristicLab.Problems.TravelingSalesman-3.3">
       <HintPath>..\bin\HeuristicLab.Problems.TravelingSalesman-3.3.dll</HintPath>
       <Private>False</Private>
@@ -593,6 +598,12 @@
     <Compile Include="HeuristicLab.Problems.TestFunctions-3.3\SphereEvaluatorTest.cs" />
     <Compile Include="HeuristicLab.Problems.TestFunctions-3.3\SumSquaresEvaluatorTest.cs" />
     <Compile Include="HeuristicLab.Problems.TestFunctions-3.3\ZakharovEvaluatorTest.cs" />
+    <Compile Include="HeuristicLab.Problems.TestFunctions.MultiObjective-3.3\CrowdingTest.cs" />
+    <Compile Include="HeuristicLab.Problems.TestFunctions.MultiObjective-3.3\FastHyperVolumeTests.cs" />
+    <Compile Include="HeuristicLab.Problems.TestFunctions.MultiObjective-3.3\GenerationalDistanceTest.cs" />
+    <Compile Include="HeuristicLab.Problems.TestFunctions.MultiObjective-3.3\HyperVolumeTests.cs" />
+    <Compile Include="HeuristicLab.Problems.TestFunctions.MultiObjective-3.3\InvertedGenerationalDistanceTest.cs" />
+    <Compile Include="HeuristicLab.Problems.TestFunctions.MultiObjective-3.3\SpacingTest.cs" />
     <Compile Include="HeuristicLab.Problems.TravelingSalesman-3.3\TSPMoveEvaluatorTest.cs" />
     <Compile Include="HeuristicLab.Problems.LinearAssignment-3.3\LinearAssignmentProblemSolverTest.cs" />
     <Compile Include="HeuristicLab.Problems.VehicleRouting-3.4\VRPInstancesTest.cs" />
