@@ -28,12 +28,12 @@ using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
   public class FriedmanRandomFunction : ArtificialRegressionDataDescriptor {
-    private int nTrainingSamples;
-    private int nTestSamples;
+    private readonly int nTrainingSamples;
+    private readonly int nTestSamples;
 
-    private int numberOfFeatures;
-    private double noiseRatio;
-    private IRandom random;
+    private readonly int numberOfFeatures;
+    private readonly double noiseRatio;
+    private readonly IRandom random;
 
     public override string Name { get { return string.Format("FriedmanRandomFunction-{0:0%} ({1} dim)", noiseRatio, numberOfFeatures); } }
     public override string Description {

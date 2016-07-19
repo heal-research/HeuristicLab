@@ -22,8 +22,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Windows.Forms;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Random;
@@ -86,12 +84,10 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
 
 
     protected override List<List<double>> GenerateValues() {
-      // var shuffledIdx = Enumerable.Range(0, numberOfFeatures).Shuffle(random).ToList();
-
       // variable names are shuffled in the beginning (and sorted at the end)
       variableNames = variableNames.Shuffle(random).ToArray();
 
-      // a third of all variables are independen vars
+      // a third of all variables are independent vars
       List<List<double>> lvl0 = new List<List<double>>();
       int numLvl0 = (int)Math.Ceiling(numberOfFeatures * 0.33);
 

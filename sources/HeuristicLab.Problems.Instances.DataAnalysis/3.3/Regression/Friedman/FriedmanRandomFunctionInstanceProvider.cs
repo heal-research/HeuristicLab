@@ -21,7 +21,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;                                                         
+using System.Linq;
 using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Random;
 
@@ -52,22 +52,10 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     }
 
     public override IRegressionProblemData LoadData(IDataDescriptor descriptor) {
-      var varNetwork = descriptor as FriedmanRandomFunction;
-      if (varNetwork == null) throw new ArgumentException("FriedmanRandomFunctionInstanceProvider expects an FriedmanRandomFunction data descriptor.");
+      var frfDescriptor = descriptor as FriedmanRandomFunction;
+      if (frfDescriptor == null) throw new ArgumentException("FriedmanRandomFunctionInstanceProvider expects an FriedmanRandomFunction data descriptor.");
       // base call generates a regression problem data
-      var regProblemData = base.LoadData(varNetwork);
-      var problemData =
-        new RegressionProblemData(
-          regProblemData.Dataset, regProblemData.AllowedInputVariables, regProblemData.TargetVariable);
-
-      // copy values from regProblemData to feature selection problem data
-      problemData.Name = regProblemData.Name;
-      problemData.Description = regProblemData.Description;
-      problemData.TrainingPartition.Start = regProblemData.TrainingPartition.Start;
-      problemData.TrainingPartition.End = regProblemData.TrainingPartition.End;
-      problemData.TestPartition.Start = regProblemData.TestPartition.Start;
-      problemData.TestPartition.End = regProblemData.TestPartition.End;
-
+      var problemData = base.LoadData(frfDescriptor);
       return problemData;
     }
   }
