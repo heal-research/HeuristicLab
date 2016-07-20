@@ -26,8 +26,9 @@ using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
+using HeuristicLab.Problems.TestFunctions.MultiObjective;
 
-namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
+namespace HeuristicLab.Problems.TestFunctions.Views {
   [View("Scatter Plot")]
   [Content(typeof(ScatterPlotContent))]
   public partial class MultiObjectiveTestFunctionParetoFrontScatterPlotView : ItemView {

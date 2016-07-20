@@ -18,7 +18,8 @@
  * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
  */
 #endregion
-namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
+
+namespace HeuristicLab.Problems.TestFunctions.Views {
   partial class MultiObjectiveTestFunctionParetoFrontScatterPlotView {
     /// <summary> 
     /// Required designer variable.
