@@ -30,16 +30,21 @@ namespace HeuristicLab.CodeEditor {
       var document = codeEditor.TextEditor.Document;
       var result = new CodeFoldingResult();
 
-      var foldingContext = new CSharpCodeFoldingContext(document);
-      var v = new FoldingVisitor();
-      v.document = foldingContext.Document;
-      foldingContext.SyntaxTree.AcceptVisitor(v);
-      result.FoldingData = v.foldings.OrderBy(x => x.StartOffset).ToList();
+      try {
+        var foldingContext = new CSharpCodeFoldingContext(document);
+        var v = new FoldingVisitor();
+        v.document = foldingContext.Document;
+        foldingContext.SyntaxTree.AcceptVisitor(v);
+        result.FoldingData = v.foldings.OrderBy(x => x.StartOffset).ToList();
 
-      var firstError = foldingContext.SyntaxTree.Errors.FirstOrDefault();
-      firstErrorOffset = firstError != null
-        ? foldingContext.Document.GetOffset(firstError.Region.Begin)
-        : int.MaxValue;
+        var firstError = foldingContext.SyntaxTree.Errors.FirstOrDefault();
+        firstErrorOffset = firstError != null
+          ? foldingContext.Document.GetOffset(firstError.Region.Begin)
+          : int.MaxValue;
+      } catch {
+        // ignore exceptions thrown during code folding
+        firstErrorOffset = int.MaxValue;
+      }
 
       return result;
     }
