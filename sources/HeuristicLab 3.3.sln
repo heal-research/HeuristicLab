@@ -404,6 +404,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.Exter
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.GrammaticalEvolution-3.3", "HeuristicLab.Problems.GrammaticalEvolution\3.3\HeuristicLab.Problems.GrammaticalEvolution-3.3.csproj", "{7FC70D74-1813-48B7-9CE5-0BD913457579}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.ExternalEvaluation.Matlab-3.3", "HeuristicLab.Problems.ExternalEvaluation.Matlab\3.3\HeuristicLab.Problems.ExternalEvaluation.Matlab-3.3.csproj", "{362A5DC3-969D-43FB-A552-D2F52B780188}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.DataPreprocessing-3.4", "HeuristicLab.DataPreprocessing\3.4\HeuristicLab.DataPreprocessing-3.4.csproj", "{3B90F866-70F8-43EF-A541-51819D255B7B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.DataPreprocessing.Views-3.4", "HeuristicLab.DataPreprocessing.Views\3.4\HeuristicLab.DataPreprocessing.Views-3.4.csproj", "{3FC7515E-D8A0-41FE-8CFA-50E3ADA61A1E}"
@@ -419,6 +421,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.Programmable-3.3", "HeuristicLab.Problems.Programmable\3.3\HeuristicLab.Problems.Programmable-3.3.csproj", "{EE07BFF8-B23D-41F5-8AD7-AC9598D7A2C9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.Programmable.Views-3.3", "HeuristicLab.Problems.Programmable.Views\3.3\HeuristicLab.Problems.Programmable.Views-3.3.csproj", "{6F023B90-2091-40A9-8AC0-B0338DFF8E5F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.ExternalEvaluation-3.4", "HeuristicLab.Problems.ExternalEvaluation\3.4\HeuristicLab.Problems.ExternalEvaluation-3.4.csproj", "{8A0B2A2B-47A7-410D-97A0-4296293BB00D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.ExternalEvaluation.GP-3.5", "HeuristicLab.Problems.ExternalEvaluation.GP\3.5\HeuristicLab.Problems.ExternalEvaluation.GP-3.5.csproj", "{64CC53AC-156B-4D8A-8DB0-B68990BEA4D3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.ExternalEvaluation.Views-3.4", "HeuristicLab.Problems.ExternalEvaluation.Views\3.4\HeuristicLab.Problems.ExternalEvaluation.Views-3.4.csproj", "{F7E5B975-FDF2-45A4-91CB-FF6D3C33D65E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.NK-3.3", "HeuristicLab.Problems.NK\3.3\HeuristicLab.Problems.NK-3.3.csproj", "{C3AD50E6-E717-490E-ABC7-32EF7FB03C97}"
 EndProject

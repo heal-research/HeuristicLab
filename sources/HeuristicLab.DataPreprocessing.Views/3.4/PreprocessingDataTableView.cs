@@ -664,7 +664,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
                                        .ToDictionary(x => x.Key, x => x.Select(v => v.i)
                                        .ToList());
 
-		chart.Titles.Add(new Title(row.Name));
+        chart.Titles.Add(row.Name);
         int featureOverallValueCount = 0;
         if (IsDetailedChartViewEnabled)
           featureOverallValueCount = row.Values.Count(x => !IsInvalidValue(x));

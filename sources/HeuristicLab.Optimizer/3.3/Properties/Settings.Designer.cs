@@ -85,7 +85,7 @@ namespace HeuristicLab.Optimizer.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("MultipleDocumentMainForm")]
+        [global::System.Configuration.DefaultSettingValueAttribute("DockingMainForm")]
         public global::HeuristicLab.Optimizer.OptimizerMainFormTypes MainFormType {
             get {
                 return ((global::HeuristicLab.Optimizer.OptimizerMainFormTypes)(this["MainFormType"]));

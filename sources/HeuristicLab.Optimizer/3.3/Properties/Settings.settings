@@ -18,7 +18,7 @@
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="MainFormType" Type="HeuristicLab.Optimizer.OptimizerMainFormTypes" Scope="User">
-      <Value Profile="(Default)">MultipleDocumentMainForm</Value>
+      <Value Profile="(Default)">DockingMainForm</Value>
     </Setting>
     <Setting Name="MainFormLocation" Type="System.Drawing.Point" Scope="User">
       <Value Profile="(Default)">0, 0</Value>

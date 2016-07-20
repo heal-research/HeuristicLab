@@ -63,7 +63,7 @@
       <Value Profile="(Default)">00:00:20</Value>
     </Setting>
     <Setting Name="NrOfCoresToScavenge" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">-1</Value>
+      <Value Profile="(Default)">4</Value>
     </Setting>
     <Setting Name="ShutdownCommand" Type="System.String" Scope="User">
       <Value Profile="(Default)">shutdown.exe</Value>
