@@ -126,7 +126,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
           Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right,
           Margin = Padding.Empty,
           Height = 12,
-          Visible = false
+          Visible = false,
+          Top = (int)(gradientChart.Height * 0.1),
         };
         densityCharts.Add(variableName, densityChart);
 
@@ -136,6 +137,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
           density.Visible = densityComboBox.SelectedIndex != 0 && !gradient.IsZoomed;
           if (density.Visible)
             UpdateDensityChart(density, gradient.FreeVariable);
+        };
+        gradientChart.SizeChanged += (o, e) => {
+          var gradient = (GradientChart)o;
+          var density = densityCharts[gradient.FreeVariable];
+          density.Top = (int)(gradient.Height * 0.1);
         };
 
         var panel = new Panel() {
@@ -371,6 +377,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
         densityChart.Visible = true;
       }
+
+      gradientChart.UpdateTitlePosition();
     }
 
     private void columnsNumericUpDown_ValueChanged(object sender, EventArgs e) {

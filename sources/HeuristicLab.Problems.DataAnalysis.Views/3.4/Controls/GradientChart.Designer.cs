@@ -30,6 +30,7 @@
       System.Windows.Forms.DataVisualization.Charting.StripLine stripLine1 = new System.Windows.Forms.DataVisualization.Charting.StripLine();
       System.Windows.Forms.DataVisualization.Charting.StripLine stripLine2 = new System.Windows.Forms.DataVisualization.Charting.StripLine();
       System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+      System.Windows.Forms.DataVisualization.Charting.Title title1 = new System.Windows.Forms.DataVisualization.Charting.Title();
       this.calculationPendingLabel = new System.Windows.Forms.Label();
       this.calculationPendingTimer = new System.Windows.Forms.Timer(this.components);
       this.chart = new HeuristicLab.Visualization.ChartControlsExtensions.EnhancedChart();
@@ -73,8 +74,9 @@
       chartArea1.AxisX.StripLines.Add(stripLine2);
       chartArea1.Name = "ChartArea";
       chartArea1.Position.Auto = false;
-      chartArea1.Position.Height = 100F;
+      chartArea1.Position.Height = 90F;
       chartArea1.Position.Width = 100F;
+      chartArea1.Position.Y = 10F;
       this.chart.ChartAreas.Add(chartArea1);
       this.chart.Dock = System.Windows.Forms.DockStyle.Fill;
       legend1.Alignment = System.Drawing.StringAlignment.Center;
@@ -87,12 +89,20 @@
       this.chart.Name = "chart";
       this.chart.Size = new System.Drawing.Size(453, 308);
       this.chart.TabIndex = 0;
+      title1.Alignment = System.Drawing.ContentAlignment.TopCenter;
+      title1.DockedToChartArea = "ChartArea";
+      title1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      title1.IsDockedInsideChartArea = false;
+      title1.Name = "Title";
+      title1.Text = "[Title]";
+      this.chart.Titles.Add(title1);
       this.chart.SelectionRangeChanged += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.CursorEventArgs>(this.chart_SelectionRangeChanged);
       this.chart.AnnotationPositionChanged += new System.EventHandler(this.chart_AnnotationPositionChanged);
       this.chart.AnnotationPositionChanging += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.AnnotationPositionChangingEventArgs>(this.chart_AnnotationPositionChanging);
       this.chart.DragDrop += new System.Windows.Forms.DragEventHandler(this.chart_DragDrop);
       this.chart.DragEnter += new System.Windows.Forms.DragEventHandler(this.chart_DragEnter);
       this.chart.MouseMove += new System.Windows.Forms.MouseEventHandler(this.chart_MouseMove);
+      this.chart.Resize += new System.EventHandler(this.chart_Resize);
       // 
       // configurationButton
       // 

@@ -161,29 +161,29 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       trackbar.LimitsChanged -= trackbar_LimitsChanged;
     }
 
-    private void trackbar_CheckedChanged(object sender, EventArgs e) {
+    private async void trackbar_CheckedChanged(object sender, EventArgs e) {
       var trackBar = sender as DensityTrackbar;
       if (trackBar == null || !trackBar.Checked) return;
       // Uncheck all others
       foreach (var tb in trackbars.Except(new[] { trackBar }))
         tb.Checked = false;
       gradientChart.FreeVariable = variableNames[trackbars.IndexOf(trackBar)];
-      gradientChart.RecalculateAsync();
+      await gradientChart.RecalculateAsync();
     }
 
-    private void trackbar_LimitsChanged(object sender, EventArgs e) {
+    private async void trackbar_LimitsChanged(object sender, EventArgs e) {
       var trackBar = sender as DensityTrackbar;
       if (trackBar == null || !trackBar.Checked) return;
       gradientChart.FixedXAxisMin = trackBar.Limits.Lower;
       gradientChart.FixedXAxisMax = trackBar.Limits.Upper;
-      gradientChart.RecalculateAsync();
+      await gradientChart.RecalculateAsync();
     }
 
-    private void trackbar_ValueChanged(object sender, EventArgs e) {
+    private async void trackbar_ValueChanged(object sender, EventArgs e) {
       var trackBar = sender as DensityTrackbar;
       if (trackBar == null) return;
       sharedFixedVariables.SetVariableValue((double)trackBar.Value, variableNames[trackbars.IndexOf(trackBar)], 0);
-      gradientChart.RecalculateAsync();
+      await gradientChart.RecalculateAsync();
     }
 
     #region Events

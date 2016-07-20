@@ -65,7 +65,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       get { return chart.Annotations[0].Visible; }
       set {
         chart.Annotations[0].Visible = value;
-        if (!value) chart.ChartAreas[0].AxisX.Title = string.Empty;
+        if (!value) chart.Titles[0].Text = string.Empty;
       }
     }
 
@@ -280,7 +280,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         VerticalLineAnnotation.X = defaultValue;
 
       if (ShowCursor)
-        chart.ChartAreas[0].AxisX.Title = FreeVariable + " : " + defaultValue.ToString("N3", CultureInfo.CurrentCulture);
+        chart.Titles[0].Text = FreeVariable + " : " + defaultValue.ToString("N3", CultureInfo.CurrentCulture);
 
       ResizeAllSeriesData();
       OrderAndColorSeries();
@@ -322,6 +322,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         if (!ae.InnerExceptions.Any(e => e is OperationCanceledException))
           throw;
       }
+    }
+
+    public void UpdateTitlePosition() {
+      var title = chart.Titles[0];
+      var plotArea = InnerPlotPosition;
+
+      title.Visible = plotArea.Width != 0;
+
+      title.Position.X = plotArea.X + (plotArea.Width / 2);
     }
 
     private void SetupAxis(Axis axis, double minValue, double maxValue, int ticks, double? fixedAxisMin, double? fixedAxisMax) {
@@ -626,7 +635,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       sharedFixedVariables.SetVariableValue(x, FreeVariable, 0);
 
       if (ShowCursor) {
-        chart.ChartAreas[0].AxisX.Title = FreeVariable + " : " + x.ToString("N3", CultureInfo.CurrentCulture);
+        chart.Titles[0].Text = FreeVariable + " : " + x.ToString("N3", CultureInfo.CurrentCulture);
         chart.Update();
       }
 
@@ -638,12 +647,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       chart.Cursor = hitCursor ? Cursors.VSplit : Cursors.Default;
     }
 
-    private void chart_DragDrop(object sender, DragEventArgs e) {
+    private async void chart_DragDrop(object sender, DragEventArgs e) {
       var data = e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat);
       if (data != null) {
         var solution = data as IRegressionSolution;
         if (!solutions.Contains(solution))
-          AddSolutionAsync(solution);
+          await AddSolutionAsync(solution);
       }
     }
     private void chart_DragEnter(object sender, DragEventArgs e) {
@@ -669,6 +678,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     private void chart_SelectionRangeChanged(object sender, CursorEventArgs e) {
       OnZoomChanged(this, EventArgs.Empty);
     }
+
+    private void chart_Resize(object sender, EventArgs e) {
+      UpdateTitlePosition();
+    }
     #endregion
   }
 }
+
