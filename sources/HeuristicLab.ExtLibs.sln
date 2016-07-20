@@ -44,8 +44,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.DotNetScilab-1
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.MatlabConnector-1.0", "HeuristicLab.ExtLibs\HeuristicLab.MatlabConnector\1.0\HeuristicLab.MatlabConnector-1.0\HeuristicLab.MatlabConnector-1.0.csproj", "{52C66DEA-0250-477B-97F8-5CD2CD4B7332}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ICSharpCode.AvalonEdit-5.0.1", "HeuristicLab.ExtLibs\HeuristicLab.AvalonEdit\5.0.1\AvalonEdit-5.0.1\ICSharpCode.AvalonEdit-5.0.1.csproj", "{255C7DEB-3C98-4BC2-92D4-B683F82A7E52}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.AvalonEdit-5.0.1", "HeuristicLab.ExtLibs\HeuristicLab.AvalonEdit\5.0.1\HeuristicLab.AvalonEdit-5.0.1\HeuristicLab.AvalonEdit-5.0.1.csproj", "{644B1CCE-1B2A-4C61-B0E3-A2EDB89DF872}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ICSharpCode.NRefactory-5.5.0", "HeuristicLab.ExtLibs\HeuristicLab.NRefactory\5.5.0\NRefactory-5.5.0\ICSharpCode.NRefactory-5.5.0.csproj", "{1022483B-7CF4-4162-827F-984B64EAF8B3}"

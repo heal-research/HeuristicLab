@@ -68,7 +68,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
     }
 
     private void PrepareChart() {
-      chart.Titles.Add("DataCompletenessChart");
+ 	  chart.Titles.Add(new Title("DataCompletenessChart"));
       chart.EnableDoubleClickResetsZoom = true;
       chart.ChartAreas[0].AxisX.MajorGrid.LineWidth = 0;
       chart.ChartAreas[0].AxisY.MajorGrid.LineWidth = 0;

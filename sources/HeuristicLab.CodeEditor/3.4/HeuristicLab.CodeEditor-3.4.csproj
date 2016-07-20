@@ -124,68 +124,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyLoader.cs" />
-    <Compile Include="CodeViewer.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CodeViewer.Designer.cs">
-      <DependentUpon>CodeViewer.cs</DependentUpon>
-    </Compile>
-    <Compile Include="GoToLineDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="GoToLineDialog.Designer.cs">
-      <DependentUpon>GoToLineDialog.cs</DependentUpon>
-    </Compile>
     <Compile Include="CodeEditorBase.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="LanguageFeatures\CodeFolding\CodeFoldingResult.cs" />
-    <Compile Include="LanguageFeatures\CodeFolding\CodeFoldingStrategy.cs" />
-    <Compile Include="LanguageFeatures\CodeFolding\CSharp\CSharpCodeFoldingContext.cs" />
-    <Compile Include="LanguageFeatures\CodeFolding\CSharp\CSharpCodeFoldingStrategy.cs" />
-    <Compile Include="LanguageFeatures\CodeFolding\CSharp\FoldingVisitor.cs" />
-    <Compile Include="LanguageFeatures\CodeFolding\XML\XmlCodeFoldingStrategy.cs" />
-    <Compile Include="ITextMarker.cs" />
-    <Compile Include="LanguageFeatures\CodeCompletion\CodeCompletionResult.cs" />
-    <Compile Include="LanguageFeatures\CodeCompletion\CodeCompletionStrategy.cs" />
-    <Compile Include="LanguageFeatures\CodeCompletion\CSharp\CompletionData\Images\CompletionImage.cs" />
-    <Compile Include="LanguageFeatures\CodeCompletion\CSharp\CSharpInsightItem.cs" />
-    <Compile Include="LanguageFeatures\CodeCompletion\CSharp\CSharpOverloadProvider.cs" />
-    <Compile Include="LanguageFeatures\Interfaces\IUpdatableOverloadProvider.cs" />
-    <Compile Include="LanguageFeatures\Interfaces\ICodeCompletionStrategy.cs" />
-    <Compile Include="LanguageFeatures\CodeCompletion\CSharp\CompletionData\CodeCompletionData.cs" />
-    <Compile Include="LanguageFeatures\CodeCompletion\CSharp\CSharpCodeCompletionStrategy.cs" />
-    <Compile Include="LanguageFeatures\CodeCompletion\CSharp\CSharpDocumentationBuilder.cs" />
-    <Compile Include="LanguageFeatures\CodeCompletion\CSharp\CSharpCodeCompletionContext.cs" />
-    <Compile Include="LanguageFeatures\CodeCompletion\CSharp\CSharpCodeCompletionDataFactory.cs" />
-    <Compile Include="LanguageFeatures\Helpers\CSharpParsingHelpers.cs" />
-    <Compile Include="LanguageFeatures\CodeCompletion\CSharp\CompletionData\EntityCompletionData.cs" />
-    <Compile Include="LanguageFeatures\CodeCompletion\CSharp\CompletionData\VariableCompletionData.cs" />
-    <Compile Include="LanguageFeatures\Interfaces\ICodeFoldingStrategy.cs" />
-    <Compile Include="LanguageFeatures\LanguageFeatures.cs" />
-    <Compile Include="MethodDefinitionReadOnlySectionProvider.cs" />
-    <Compile Include="TextMarkerService.cs" />
-    <Compile Include="LanguageFeatures\XmlLanguageFeatures.cs" />
     <None Include="HeuristicLab.snk" />
     <None Include="Properties\AssemblyInfo.cs.frame" />
     <None Include="Plugin.cs.frame" />
-    <Compile Include="CodeEditor.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="CodeEditor.Designer.cs">
-      <DependentUpon>CodeEditor.cs</DependentUpon>
-    </Compile>
     <Compile Include="SimpleCodeEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="SimpleCodeEditor.Designer.cs">
       <DependentUpon>SimpleCodeEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="AvalonEditWrapper.xaml.cs">
-      <DependentUpon>AvalonEditWrapper.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="LanguageFeatures\CSharpLanguageFeatures.cs" />
-    <Compile Include="LanguageFeatures\Interfaces\ILanguageFeatures.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -207,10 +157,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="AvalonEditWrapper.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="LanguageFeatures\CodeCompletion\CSharp\CompletionData\Images\Class.png" />

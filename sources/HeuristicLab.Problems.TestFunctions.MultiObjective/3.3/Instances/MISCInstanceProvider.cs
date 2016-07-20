@@ -32,7 +32,7 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
     }
 
     public override string Description {
-      get { return "Miscellaneous Testfunctions"; }
+      get { return "Miscellaneous TestFunctions"; }
     }
 
     public override Uri WebLink {
