@@ -511,9 +511,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
       op = code[pc++];
       s = 0;
       if (op == (byte)OpCodes.LoadVar) {
-#pragma warning disable 0675
-        s = (short)(((short)code[pc] << 8) | (short)code[pc + 1]);
-#pragma warning restore 0675
+        s = (short)((code[pc] << 8) | code[pc + 1]);
         pc += 2;
       }
     }
