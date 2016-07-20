@@ -159,6 +159,12 @@
     <Compile Include="ExperimentListView.Designer.cs">
       <DependentUpon>ExperimentListView.cs</DependentUpon>
     </Compile>
+    <Compile Include="ResultParameterView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ResultParameterView.Designer.cs">
+      <DependentUpon>ResultParameterView.cs</DependentUpon>
+    </Compile>
     <Compile Include="MultiEncodingView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -398,6 +404,16 @@
     <ProjectReference Include="..\..\HeuristicLab.Optimization\3.3\HeuristicLab.Optimization-3.3.csproj">
       <Project>{14AB8D24-25BC-400C-A846-4627AA945192}</Project>
       <Name>HeuristicLab.Optimization-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Parameters.Views\3.3\HeuristicLab.Parameters.Views-3.3.csproj">
+      <Project>{ae5b1ce5-9862-4d6f-a700-d72cd9aea295}</Project>
+      <Name>HeuristicLab.Parameters.Views-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Parameters\3.3\HeuristicLab.Parameters-3.3.csproj">
+      <Project>{56f9106a-079f-4c61-92f6-86a84c2d84b7}</Project>
+      <Name>HeuristicLab.Parameters-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\3.3\HeuristicLab.PluginInfrastructure-3.3.csproj">
