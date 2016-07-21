@@ -39,9 +39,8 @@ namespace HeuristicLab.Optimization {
     public string ResultCollectionName {
       get { return resultCollectionName; }
       set {
-        if (value == null) throw new ArgumentNullException();
         if (string.IsNullOrWhiteSpace(value)) throw new ArgumentNullException();
-        else if (!resultCollectionName.Equals(value)) {
+        else if (!value.Equals(resultCollectionName)) {
           resultCollectionName = value;
           OnResultCollectionNameChanged();
         }
