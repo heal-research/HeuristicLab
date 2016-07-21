@@ -25,6 +25,7 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using HeuristicLab.MainForm;
+using HeuristicLab.Visualization.ChartControlsExtensions;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
   [View("Line Chart")]
@@ -94,6 +95,25 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         }
         this.chart.Series[ESTIMATEDVALUES_ALL_SERIES_NAME].Tag = Content;
         this.ToggleSeriesData(this.chart.Series[ESTIMATEDVALUES_ALL_SERIES_NAME]);
+
+        // set the y-axis bounds
+        var axisY = this.chart.ChartAreas[0].AxisY;
+        double min = double.MaxValue, max = double.MinValue;
+        foreach (var point in chart.Series.SelectMany(x => x.Points)) {
+          if (!point.YValues.Any() || double.IsInfinity(point.YValues[0]) || double.IsNaN(point.YValues[0]))
+            continue;
+          var y = point.YValues[0];
+          if (y < min)
+            min = y;
+          if (y > max)
+            max = y;
+        }
+
+        double axisMin, axisMax, axisInterval;
+        ChartUtil.CalculateOptimalAxisInterval(min, max, out axisMin, out axisMax, out axisInterval);
+        axisY.Minimum = axisMin;
+        axisY.Maximum = axisMax;
+        axisY.Interval = axisInterval;
 
         UpdateCursorInterval();
         this.UpdateStripLines();

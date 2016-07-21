@@ -25,6 +25,7 @@ using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
+using HeuristicLab.Visualization.ChartControlsExtensions;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
   [View("Scatter Plot")]
@@ -168,19 +169,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         double max = Content.EstimatedTrainingValues.Concat(Content.EstimatedTestValues.Concat(Content.EstimatedValues.Concat(dataset.GetDoubleValues(targetVariableName)))).Max();
         double min = Content.EstimatedTrainingValues.Concat(Content.EstimatedTestValues.Concat(Content.EstimatedValues.Concat(dataset.GetDoubleValues(targetVariableName)))).Min();
 
-        max = max + 0.2 * Math.Abs(max);
-        min = min - 0.2 * Math.Abs(min);
+        double axisMin, axisMax, axisInterval;
+        ChartUtil.CalculateOptimalAxisInterval(min, max, out axisMin, out axisMax, out axisInterval);
+        this.chart.ChartAreas[0].AxisX.Maximum = axisMax;
+        this.chart.ChartAreas[0].AxisX.Minimum = axisMin;
+        this.chart.ChartAreas[0].AxisX.Interval = axisInterval;
+        this.chart.ChartAreas[0].AxisY.Maximum = axisMax;
+        this.chart.ChartAreas[0].AxisY.Minimum = axisMin;
+        this.chart.ChartAreas[0].AxisY.Interval = axisInterval;
 
-        double interestingValuesRange = max - min;
-        int digits = Math.Max(0, 3 - (int)Math.Log10(interestingValuesRange));
-
-        max = Math.Round(max, digits);
-        min = Math.Round(min, digits);
-
-        this.chart.ChartAreas[0].AxisX.Maximum = max;
-        this.chart.ChartAreas[0].AxisX.Minimum = min;
-        this.chart.ChartAreas[0].AxisY.Maximum = max;
-        this.chart.ChartAreas[0].AxisY.Minimum = min;
         UpdateCursorInterval();
       }
     }
