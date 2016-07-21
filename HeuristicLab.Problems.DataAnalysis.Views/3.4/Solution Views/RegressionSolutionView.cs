@@ -30,7 +30,7 @@ using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
-  [View("RegressionSolution View")]
+  [View("Solution View")]
   [Content(typeof(RegressionSolutionBase), false)]
   public partial class RegressionSolutionView : DataAnalysisSolutionView {
     public RegressionSolutionView() {

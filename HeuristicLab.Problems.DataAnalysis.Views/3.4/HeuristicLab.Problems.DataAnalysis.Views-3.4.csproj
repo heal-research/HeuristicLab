@@ -119,6 +119,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\DensityChart.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\DensityChart.Designer.cs">
+      <DependentUpon>DensityChart.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\DensityTrackbar.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\DensityTrackbar.Designer.cs">
+      <DependentUpon>DensityTrackbar.cs</DependentUpon>
+    </Compile>
     <Compile Include="FeatureCorrelation\TimeframeFeatureCorrelationCalculator.cs" />
     <Compile Include="FeatureCorrelation\AbstractFeatureCorrelationCalculator.cs" />
     <Compile Include="Classification\ClassificationEnsembleSolutionEstimatedClassValuesView.cs">
@@ -182,6 +194,18 @@
     <Compile Include="FeatureCorrelation\FeatureCorrelationView.Designer.cs">
       <DependentUpon>FeatureCorrelationView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\GradientChart.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\GradientChart.Designer.cs">
+      <DependentUpon>GradientChart.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\GradientChartConfigurationDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\GradientChartConfigurationDialog.Designer.cs">
+      <DependentUpon>GradientChartConfigurationDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Interfaces\IDataPreprocessorStarter.cs" />
     <Compile Include="MenuItems\ShrinkDataAnalysisRunsMenuItem.cs" />
     <Compile Include="ModifiableDatasetView.cs">
@@ -197,6 +221,18 @@
     <Compile Include="ProblemDataView.Designer.cs">
       <DependentUpon>ProblemDataView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Regression\ConfidenceRegressionSolutionEstimatedValuesView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Regression\ConfidenceRegressionSolutionEstimatedValuesView.Designer.cs">
+      <DependentUpon>ConfidenceRegressionSolutionEstimatedValuesView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Regression\ConfidenceRegressionSolutionLineChartView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Regression\ConfidenceRegressionSolutionLineChartView.Designer.cs">
+      <DependentUpon>ConfidenceRegressionSolutionLineChartView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Regression\RegressionEnsembleSolutionModelWeightsView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -208,6 +244,18 @@
     </Compile>
     <Compile Include="Regression\RegressionFeatureCorrelationView.Designer.cs">
       <DependentUpon>RegressionFeatureCorrelationView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Regression\RegressionSolutionGradientView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Regression\RegressionSolutionGradientView.Designer.cs">
+      <DependentUpon>RegressionSolutionGradientView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Regression\RegressionSolutionTargetResponseGradientView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Regression\RegressionSolutionTargetResponseGradientView.Designer.cs">
+      <DependentUpon>RegressionSolutionTargetResponseGradientView.cs</DependentUpon>
     </Compile>
     <Compile Include="Regression\RegressionTimeframeFeatureCorrelationView.cs">
       <SubType>UserControl</SubType>
@@ -317,10 +365,10 @@
     <Compile Include="Solution Views\DataAnalysisSolutionView.Designer.cs">
       <DependentUpon>DataAnalysisSolutionView.cs</DependentUpon>
     </Compile>
-    <Compile Include="DoubleLimitView.cs">
+    <Compile Include="Controls\DoubleLimitView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="DoubleLimitView.Designer.cs">
+    <Compile Include="Controls\DoubleLimitView.Designer.cs">
       <DependentUpon>DoubleLimitView.cs</DependentUpon>
     </Compile>
     <Compile Include="Interfaces\IDataAnalysisSolutionEvaluationView.cs" />

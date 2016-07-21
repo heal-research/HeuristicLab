@@ -43,7 +43,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
   [PluginDependency("HeuristicLab.Optimization.Views", "3.3")]
   [PluginDependency("HeuristicLab.Problems.DataAnalysis", "3.4")]
   [PluginDependency("HeuristicLab.Problems.DataAnalysis.Views", "3.4")]
-  [PluginDependency("HeuristicLab.Visualization.ChartControlsExtensions", "3.3")]
   public class HeuristicLabAlgorithmsDataAnalysisViewsPlugin : PluginBase {
   }
 }

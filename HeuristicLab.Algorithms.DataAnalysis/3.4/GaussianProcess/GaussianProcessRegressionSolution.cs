@@ -19,8 +19,6 @@
  */
 #endregion
 
-using System.Collections.Generic;
-using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -32,8 +30,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// </summary>
   [Item("GaussianProcessRegressionSolution", "Represents a Gaussian process solution for a regression problem which can be visualized in the GUI.")]
   [StorableClass]
-  public sealed class GaussianProcessRegressionSolution : RegressionSolution, IGaussianProcessSolution {
-    private new readonly Dictionary<int, double> evaluationCache;
+  public sealed class GaussianProcessRegressionSolution : ConfidenceRegressionSolution, IGaussianProcessSolution {
 
     public new IGaussianProcessModel Model {
       get { return (IGaussianProcessModel)base.Model; }
@@ -43,52 +40,14 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     [StorableConstructor]
     private GaussianProcessRegressionSolution(bool deserializing)
       : base(deserializing) {
-      evaluationCache = new Dictionary<int, double>();
-
     }
     private GaussianProcessRegressionSolution(GaussianProcessRegressionSolution original, Cloner cloner)
-      : base(original, cloner) {
-      evaluationCache = new Dictionary<int, double>(original.evaluationCache);
-    }
+      : base(original, cloner) { }
     public GaussianProcessRegressionSolution(IGaussianProcessModel model, IRegressionProblemData problemData)
-      : base(model, problemData) {
-
-      evaluationCache = new Dictionary<int, double>(problemData.Dataset.Rows);
-    }
+      : base(model, problemData) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new GaussianProcessRegressionSolution(this, cloner);
-    }
-
-    public IEnumerable<double> EstimatedVariance {
-      get { return GetEstimatedVariance(Enumerable.Range(0, ProblemData.Dataset.Rows)); }
-    }
-    public IEnumerable<double> EstimatedTrainingVariance {
-      get { return GetEstimatedVariance(ProblemData.TrainingIndices); }
-    }
-    public IEnumerable<double> EstimatedTestVariance {
-      get { return GetEstimatedVariance(ProblemData.TestIndices); }
-    }
-
-    public IEnumerable<double> GetEstimatedVariance(IEnumerable<int> rows) {
-      var rowsToEvaluate = rows.Except(evaluationCache.Keys);
-      var rowsEnumerator = rowsToEvaluate.GetEnumerator();
-      var valuesEnumerator = Model.GetEstimatedVariance(ProblemData.Dataset, rowsToEvaluate).GetEnumerator();
-
-      while (rowsEnumerator.MoveNext() & valuesEnumerator.MoveNext()) {
-        evaluationCache.Add(rowsEnumerator.Current, valuesEnumerator.Current);
-      }
-
-      return rows.Select(row => evaluationCache[row]);
-    }
-
-    protected override void OnModelChanged() {
-      evaluationCache.Clear();
-      base.OnModelChanged();
-    }
-    protected override void OnProblemDataChanged() {
-      evaluationCache.Clear();
-      base.OnProblemDataChanged();
     }
   }
 }

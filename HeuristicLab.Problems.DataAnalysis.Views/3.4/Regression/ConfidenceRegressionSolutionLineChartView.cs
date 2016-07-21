@@ -25,23 +25,24 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using HeuristicLab.MainForm;
+using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Problems.DataAnalysis.Views;
 
 namespace HeuristicLab.Algorithms.DataAnalysis.Views {
   [View("Line Chart (95% confidence interval)")]
-  [Content(typeof(GaussianProcessRegressionSolution))]
-  public partial class GaussianProcessRegressionSolutionLineChartView : DataAnalysisSolutionEvaluationView {
+  [Content(typeof(IConfidenceRegressionSolution))]
+  public partial class ConfidenceRegressionSolutionLineChartView : DataAnalysisSolutionEvaluationView {
     private const string TARGETVARIABLE_SERIES_NAME = "Target Variable";
     private const string ESTIMATEDVALUES_TRAINING_SERIES_NAME = "Estimated Values (training)";
     private const string ESTIMATEDVALUES_TEST_SERIES_NAME = "Estimated Values (test)";
     private const string ESTIMATEDVALUES_ALL_SERIES_NAME = "Estimated Values (all samples)";
 
-    public new GaussianProcessRegressionSolution Content {
-      get { return (GaussianProcessRegressionSolution)base.Content; }
+    public new IConfidenceRegressionSolution Content {
+      get { return (IConfidenceRegressionSolution)base.Content; }
       set { base.Content = value; }
     }
 
-    public GaussianProcessRegressionSolutionLineChartView()
+    public ConfidenceRegressionSolutionLineChartView()
       : base() {
       InitializeComponent();
       //configure axis
@@ -68,7 +69,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
         this.chart.Series[ESTIMATEDVALUES_TRAINING_SERIES_NAME].ChartType = SeriesChartType.Range;
         this.chart.Series[ESTIMATEDVALUES_TRAINING_SERIES_NAME].EmptyPointStyle.Color = this.chart.Series[ESTIMATEDVALUES_TRAINING_SERIES_NAME].Color;
         var mean = Content.EstimatedTrainingValues.ToArray();
-        var s2 = Content.EstimatedTrainingVariance.ToArray();
+        var s2 = Content.EstimatedTrainingVariances.ToArray();
         var lower = mean.Zip(s2, GetLowerConfBound).ToArray();
         var upper = mean.Zip(s2, GetUpperConfBound).ToArray();
         this.chart.Series[ESTIMATEDVALUES_TRAINING_SERIES_NAME].Points.DataBindXY(Content.ProblemData.TrainingIndices.ToArray(), lower, upper);
@@ -81,7 +82,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
         this.chart.Series[ESTIMATEDVALUES_TEST_SERIES_NAME].ChartType = SeriesChartType.Range;
 
         mean = Content.EstimatedTestValues.ToArray();
-        s2 = Content.EstimatedTestVariance.ToArray();
+        s2 = Content.EstimatedTestVariances.ToArray();
         lower = mean.Zip(s2, GetLowerConfBound).ToArray();
         upper = mean.Zip(s2, GetUpperConfBound).ToArray();
         this.chart.Series[ESTIMATEDVALUES_TEST_SERIES_NAME].Points.DataBindXY(Content.ProblemData.TestIndices.ToArray(), lower, upper);
@@ -91,7 +92,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
         // series of remaining points
         int[] allIndices = Enumerable.Range(0, Content.ProblemData.Dataset.Rows).Except(Content.ProblemData.TrainingIndices).Except(Content.ProblemData.TestIndices).ToArray();
         mean = Content.EstimatedValues.ToArray();
-        s2 = Content.EstimatedVariance.ToArray();
+        s2 = Content.EstimatedVariances.ToArray();
         lower = mean.Zip(s2, GetLowerConfBound).ToArray();
         upper = mean.Zip(s2, GetUpperConfBound).ToArray();
         List<double> allLower = allIndices.Select(index => lower[index]).ToList();
@@ -263,7 +264,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
           case ESTIMATEDVALUES_ALL_SERIES_NAME:
             indices = Enumerable.Range(0, Content.ProblemData.Dataset.Rows).Except(Content.ProblemData.TrainingIndices).Except(Content.ProblemData.TestIndices).ToArray();
             mean = Content.EstimatedValues.ToArray();
-            s2 = Content.EstimatedVariance.ToArray();
+            s2 = Content.EstimatedVariances.ToArray();
             lower = mean.Zip(s2, GetLowerConfBound).ToArray();
             upper = mean.Zip(s2, GetUpperConfBound).ToArray();
             lower = indices.Select(index => lower[index]).ToArray();
@@ -272,14 +273,14 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
           case ESTIMATEDVALUES_TRAINING_SERIES_NAME:
             indices = Content.ProblemData.TrainingIndices.ToArray();
             mean = Content.EstimatedTrainingValues.ToArray();
-            s2 = Content.EstimatedTrainingVariance.ToArray();
+            s2 = Content.EstimatedTrainingVariances.ToArray();
             lower = mean.Zip(s2, GetLowerConfBound).ToArray();
             upper = mean.Zip(s2, GetUpperConfBound).ToArray();
             break;
           case ESTIMATEDVALUES_TEST_SERIES_NAME:
             indices = Content.ProblemData.TestIndices.ToArray();
             mean = Content.EstimatedTestValues.ToArray();
-            s2 = Content.EstimatedTestVariance.ToArray();
+            s2 = Content.EstimatedTestVariances.ToArray();
             lower = mean.Zip(s2, GetLowerConfBound).ToArray();
             upper = mean.Zip(s2, GetUpperConfBound).ToArray();
             break;
