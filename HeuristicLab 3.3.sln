@@ -455,6 +455,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.PTSP.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Algorithms.RandomSearch-3.3", "HeuristicLab.Algorithms.RandomSearch\3.3\HeuristicLab.Algorithms.RandomSearch-3.3.csproj", "{4A15DC1A-51EE-4CB7-AC05-F5AFDDECE1B1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.TestFunctions.MultiObjective-3.3", "HeuristicLab.Problems.TestFunctions.MultiObjective\3.3\HeuristicLab.Problems.TestFunctions.MultiObjective-3.3.csproj", "{D53E8E48-CFAA-4F57-AC35-63BEF4476159}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -2217,6 +2219,14 @@ Global
 		{4A15DC1A-51EE-4CB7-AC05-F5AFDDECE1B1}.Release|x64.Build.0 = Release|x64
 		{4A15DC1A-51EE-4CB7-AC05-F5AFDDECE1B1}.Release|x86.ActiveCfg = Release|x86
 		{4A15DC1A-51EE-4CB7-AC05-F5AFDDECE1B1}.Release|x86.Build.0 = Release|x86
+		{D53E8E48-CFAA-4F57-AC35-63BEF4476159}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D53E8E48-CFAA-4F57-AC35-63BEF4476159}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D53E8E48-CFAA-4F57-AC35-63BEF4476159}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D53E8E48-CFAA-4F57-AC35-63BEF4476159}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D53E8E48-CFAA-4F57-AC35-63BEF4476159}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D53E8E48-CFAA-4F57-AC35-63BEF4476159}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D53E8E48-CFAA-4F57-AC35-63BEF4476159}.Release|x64.ActiveCfg = Release|Any CPU
+		{D53E8E48-CFAA-4F57-AC35-63BEF4476159}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
