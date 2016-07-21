@@ -334,11 +334,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     }
 
     private void SetupAxis(Axis axis, double minValue, double maxValue, int ticks, double? fixedAxisMin, double? fixedAxisMax) {
-      double axisMin, axisMax, axisInterval;
-      ChartUtil.CalculateAxisInterval(minValue, maxValue, ticks, out axisMin, out axisMax, out axisInterval);
-      axis.Minimum = fixedAxisMin ?? axisMin;
-      axis.Maximum = fixedAxisMax ?? axisMax;
-      axis.Interval = (axis.Maximum - axis.Minimum) / ticks;
+      if (minValue < maxValue) {
+        double axisMin, axisMax, axisInterval;
+        ChartUtil.CalculateAxisInterval(minValue, maxValue, ticks, out axisMin, out axisMax, out axisInterval);
+        axis.Minimum = fixedAxisMin ?? axisMin;
+        axis.Maximum = fixedAxisMax ?? axisMax;
+        axis.Interval = (axis.Maximum - axis.Minimum) / ticks;
+      }
 
       try {
         chart.ChartAreas[0].RecalculateAxesScale();
