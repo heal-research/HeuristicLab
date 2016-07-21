@@ -36,10 +36,12 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
       var aMax = max.RoundUp(decimalRank);
 
       // if one of the interval ends is a multiple of 5 or 10, change the other interval end to be a multiple as well
-      if (((aMin % 5).IsAlmost(0) || (aMin % 10).IsAlmost(0)) && !((aMax % 5).IsAlmost(0) || (aMax % 10).IsAlmost(0))) {
-        aMax = Math.Min(aMax + 5 - aMax % 5, aMax + 10 - aMax % 10);
-      } else if (((aMax % 5).IsAlmost(0) || (aMax % 10).IsAlmost(0)) && !((aMin % 5).IsAlmost(0) || (aMin % 10).IsAlmost(0))) {
-        aMin = Math.Max(aMin - aMin % 5, aMin - aMin % 10);
+      if (decimalRank > 0) {
+        if (((aMin % 5).IsAlmost(0) || (aMin % 10).IsAlmost(0)) && !((aMax % 5).IsAlmost(0) || (aMax % 10).IsAlmost(0))) {
+          aMax = Math.Min(aMax + 5 - aMax % 5, aMax + 10 - aMax % 10);
+        } else if (((aMax % 5).IsAlmost(0) || (aMax % 10).IsAlmost(0)) && !((aMin % 5).IsAlmost(0) || (aMin % 10).IsAlmost(0))) {
+          aMin = Math.Max(aMin - aMin % 5, aMin - aMin % 10);
+        }
       }
 
       axisMin = aMin;
