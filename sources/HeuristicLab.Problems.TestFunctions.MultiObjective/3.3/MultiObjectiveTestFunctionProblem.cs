@@ -55,8 +55,8 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
     public IValueParameter<DoubleArray> ReferencePointParameter {
       get { return (IValueParameter<DoubleArray>)Parameters["ReferencePoint"]; }
     }
-    public IValueParameter<DoubleMatrix> BestKnownFrontParameter {
-      get { return (IValueParameter<DoubleMatrix>)Parameters["BestKnownFront"]; }
+    public OptionalValueParameter<DoubleMatrix> BestKnownFrontParameter {
+      get { return (OptionalValueParameter<DoubleMatrix>)Parameters["BestKnownFront"]; }
     }
 
     #endregion
@@ -117,7 +117,7 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
       Parameters.Add(new ValueParameter<DoubleMatrix>("Bounds", "The bounds of the solution given as either one line for all variables or a line for each variable. The first column specifies lower bound, the second upper bound.", new DoubleMatrix(new double[,] { { -4, 4 } })));
       Parameters.Add(new ValueParameter<DoubleArray>("ReferencePoint", "The reference point used for hypervolume calculation."));
       Parameters.Add(new ValueParameter<IMultiObjectiveTestFunction>("TestFunction", "The function that is to be optimized.", new Fonseca()));
-      Parameters.Add(new ValueParameter<DoubleMatrix>("BestKnownFront", "The currently best known Pareto front"));
+      Parameters.Add(new OptionalValueParameter<DoubleMatrix>("BestKnownFront", "The currently best known Pareto front"));
 
       Encoding.LengthParameter = ProblemSizeParameter;
       Encoding.BoundsParameter = BoundsParameter;
