@@ -29,6 +29,12 @@ using System.Security;
 using System.Threading;
 
 namespace HeuristicLab.Common {
+
+  [AttributeUsage(AttributeTargets.Field)]
+  // this attribute can be used to mark fields that should be excluded from object graph traversal
+  public class ExcludeFromObjectGraphTraversalAttribute : Attribute {
+  }
+
   public static class ObjectExtensions {
     public static IEnumerable<T> ToEnumerable<T>(this T obj) {
       yield return obj;
@@ -112,15 +118,19 @@ namespace HeuristicLab.Common {
           yield return value;
         }
       } else {
-        if (!fieldInfos.ContainsKey(type))
-          fieldInfos[type] = type.GetAllFields().ToArray();
-        foreach (FieldInfo f in fieldInfos[type]) {
+        FieldInfo[] fieldInfo;
+        if (!fieldInfos.TryGetValue(type, out fieldInfo)) {
+          fieldInfo = type.GetAllFields()
+            .Where(fi => !Attribute.IsDefined(fi, typeof(ExcludeFromObjectGraphTraversalAttribute)))
+            .ToArray();
+          fieldInfos.Add(type, fieldInfo);
+        }
+        foreach (FieldInfo f in fieldInfo) {
           if (excludeStaticMembers && f.IsStatic) continue;
           object fieldValue;
           try {
             fieldValue = f.GetValue(obj);
-          }
-          catch (SecurityException) {
+          } catch (SecurityException) {
             continue;
           }
           if (excludedMembers.Contains(fieldValue)) continue;
