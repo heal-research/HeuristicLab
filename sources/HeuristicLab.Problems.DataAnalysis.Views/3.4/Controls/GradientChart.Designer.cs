@@ -97,6 +97,7 @@
       title1.Text = "[Title]";
       this.chart.Titles.Add(title1);
       this.chart.SelectionRangeChanged += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.CursorEventArgs>(this.chart_SelectionRangeChanged);
+      this.chart.PostPaint += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.ChartPaintEventArgs>(this.chart_PostPaint);
       this.chart.AnnotationPositionChanged += new System.EventHandler(this.chart_AnnotationPositionChanged);
       this.chart.AnnotationPositionChanging += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.AnnotationPositionChangingEventArgs>(this.chart_AnnotationPositionChanging);
       this.chart.DragDrop += new System.Windows.Forms.DragEventHandler(this.chart_DragDrop);

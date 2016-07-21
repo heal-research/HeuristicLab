@@ -206,6 +206,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     }
     #endregion
 
+    public event EventHandler ChartPostPaint;
+
     public GradientChart() {
       InitializeComponent();
 
@@ -683,6 +685,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
     private void chart_Resize(object sender, EventArgs e) {
       UpdateTitlePosition();
+    }
+
+    private void chart_PostPaint(object sender, ChartPaintEventArgs e) {
+      if (ChartPostPaint != null)
+        ChartPostPaint(this, EventArgs.Empty);
     }
     #endregion
   }

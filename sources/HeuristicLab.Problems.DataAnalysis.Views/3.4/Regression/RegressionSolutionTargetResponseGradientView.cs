@@ -144,6 +144,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
           density.Top = (int)(gradient.Height * 0.1);
         };
 
+        // Initially, the inner plot areas are not initialized for hidden charts (scollpanel, ...)
+        // This event handler listens for the paint event once (where everything is already initialized) to do some manual layouting.
+        gradientChart.ChartPostPaint += OnGradientChartOnChartPostPaint;
+
         var panel = new Panel() {
           Dock = DockStyle.Fill,
           Margin = Padding.Empty,
@@ -166,6 +170,22 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       variableListView.ItemChecked += variableListView_ItemChecked;
 
       RecalculateAndRelayoutCharts();
+    }
+
+    private void OnGradientChartOnChartPostPaint(object o, EventArgs e) {
+      var gradient = (GradientChart)o;
+      var density = densityCharts[gradient.FreeVariable];
+
+      density.Width = gradient.Width;
+
+      var gcPlotPosition = gradient.InnerPlotPosition;
+      density.Left = (int)(gcPlotPosition.X / 100.0 * gradient.Width);
+      density.Width = (int)(gcPlotPosition.Width / 100.0 * gradient.Width);
+      gradient.UpdateTitlePosition();
+
+      // removed after succesful layouting due to performance reasons
+      if (gcPlotPosition.Width != 0)
+        gradient.ChartPostPaint -= OnGradientChartOnChartPostPaint;
     }
 
     private async void RecalculateAndRelayoutCharts() {
