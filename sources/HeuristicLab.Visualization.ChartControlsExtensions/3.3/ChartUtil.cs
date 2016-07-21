@@ -30,20 +30,8 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
         throw new ArgumentOutOfRangeException("Invalid range provided.");
 
       var range = max - min;
-      var minLog = Math.Log10(Math.Abs(min));
-      var maxLog = Math.Log10(Math.Abs(max));
-      var rangeLog = Math.Log10(range);
-
-      var dMin = (int)Math.Floor(minLog);
-      var dMax = (int)Math.Floor(maxLog);
-      var dRange = (int)Math.Floor(rangeLog);
-
-      int decimalRank;
-      if (dMin == dMax && dMax == dRange)
-        decimalRank = dMin - 1;
-      else
-        decimalRank = Math.Min(Math.Min(dMin, dMax), dRange);
-
+      var dRange = (int)Math.Round(Math.Log10(range));
+      int decimalRank = dRange - 1;
       var aMin = min.RoundDown(decimalRank);
       var aMax = max.RoundUp(decimalRank);
 
@@ -59,8 +47,9 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
       axisInterval = (aMax - aMin) / ticks;
     }
 
-    // this method tries to find an axis interval with as few fractional digits as possible (because it looks nicer)
-    // we only try between 3 and 5 ticks (inclusive) because it wouldn't make sense to exceed this interval
+    /// <summary>
+    /// Tries to find an axis interval with as few fractional digits as possible (because it looks nicer).  we only try between 3 and 5 ticks (inclusive) because it wouldn't make sense to exceed this interval.
+    /// </summary>
     public static void CalculateOptimalAxisInterval(double min, double max, out double axisMin, out double axisMax, out double axisInterval) {
       CalculateAxisInterval(min, max, 5, out axisMin, out axisMax, out axisInterval);
       int bestLsp = int.MaxValue;
@@ -100,8 +89,8 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
       if (decimalRank > 0) {
         var floor = (int)Math.Floor(value);
         var pow = (int)Math.Pow(10, decimalRank);
-        // round down to nearest multiple of 5 or 10
-        var mod = Math.Min(floor % pow, floor % (pow / 2));
+        var mod = floor % pow;
+        if (mod < 0) mod += pow;
         return floor - mod;
       }
       return value.Floor(Math.Abs(decimalRank));
@@ -111,9 +100,9 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
       if (decimalRank > 0) {
         var ceil = (int)Math.Ceiling(value);
         var pow = (int)Math.Pow(10, decimalRank);
-        // round up to nearest multiple of 5 or 10
-        var mod = ceil % (pow / 2) == 0 || ceil % pow == 0 ? 0 : Math.Min(pow / 2 - ceil % (pow / 2), pow - ceil % pow);
-        return ceil + mod;
+        var mod = ceil % pow;
+        if (mod < 0) mod += pow;
+        return ceil - mod + pow;
       }
       return value.Ceil(Math.Abs(decimalRank));
     }
