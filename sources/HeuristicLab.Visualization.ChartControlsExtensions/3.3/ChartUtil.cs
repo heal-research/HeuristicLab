@@ -36,12 +36,10 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
       var aMax = max.RoundUp(decimalRank);
 
       // if one of the interval ends is a multiple of 5 or 10, change the other interval end to be a multiple as well
-      if (decimalRank > 0) {
-        if (((aMin % 5).IsAlmost(0) || (aMin % 10).IsAlmost(0)) && !((aMax % 5).IsAlmost(0) || (aMax % 10).IsAlmost(0))) {
-          aMax = Math.Min(aMax + 5 - aMax % 5, aMax + 10 - aMax % 10);
-        } else if (((aMax % 5).IsAlmost(0) || (aMax % 10).IsAlmost(0)) && !((aMin % 5).IsAlmost(0) || (aMin % 10).IsAlmost(0))) {
-          aMin = Math.Max(aMin - aMin % 5, aMin - aMin % 10);
-        }
+      if ((aMin.Mod(5).IsAlmost(0) || aMin.Mod(10).IsAlmost(0)) && Math.Abs(aMax) >= 5 && !(aMax.Mod(5).IsAlmost(0) || aMax.Mod(10).IsAlmost(0))) {
+        aMax = Math.Min(aMax + 5 - aMax % 5, aMax + 10 - aMax % 10);
+      } else if ((aMax.Mod(5).IsAlmost(0) || aMax.Mod(10).IsAlmost(0)) && Math.Abs(aMin) >= 5 && !(aMin.Mod(5).IsAlmost(0) || aMin.Mod(10).IsAlmost(0))) {
+        aMin = Math.Max(aMin - aMin.Mod(5), aMin - aMin.Mod(10));
       }
 
       axisMin = aMin;
@@ -91,8 +89,7 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
       if (decimalRank > 0) {
         var floor = (int)Math.Floor(value);
         var pow = (int)Math.Pow(10, decimalRank);
-        var mod = floor % pow;
-        if (mod < 0) mod += pow;
+        var mod = Mod(floor, pow);
         return floor - mod;
       }
       return value.Floor(Math.Abs(decimalRank));
@@ -102,8 +99,7 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
       if (decimalRank > 0) {
         var ceil = (int)Math.Ceiling(value);
         var pow = (int)Math.Pow(10, decimalRank);
-        var mod = ceil % pow;
-        if (mod < 0) mod += pow;
+        var mod = Mod(ceil, pow);
         return ceil - mod + pow;
       }
       return value.Ceil(Math.Abs(decimalRank));
@@ -133,6 +129,10 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
 
     private static bool IsAlmost(this double value, double other, double eps = 1e-12) {
       return Math.Abs(value - other) < eps;
+    }
+
+    private static double Mod(this double a, double b) {
+      return a - b * Math.Floor(a / b);
     }
   }
 }
