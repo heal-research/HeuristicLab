@@ -7,8 +7,8 @@ namespace HeuristicLab.Problems.BinPacking3D {
   [Item("Bin Packing Solution (3d)", "Represents a solution for a 3D bin packing problem.")]
   [StorableClass]
   public class Solution : PackingPlan<PackingPosition, PackingShape, PackingItem> {
-    public Solution(PackingShape binMeasures) : this(binMeasures, false, false) { }
-    public Solution(PackingShape binMeasures, bool useExtremePoints, bool stackingConstraints) : base(binMeasures, useExtremePoints, stackingConstraints) { }
+    public Solution(PackingShape binShape) : this(binShape, false, false) { }
+    public Solution(PackingShape binShape, bool useExtremePoints, bool stackingConstraints) : base(binShape, useExtremePoints, stackingConstraints) { }
     [StorableConstructor]
     protected Solution(bool deserializing) : base(deserializing) { }
     protected Solution(Solution original, Cloner cloner)

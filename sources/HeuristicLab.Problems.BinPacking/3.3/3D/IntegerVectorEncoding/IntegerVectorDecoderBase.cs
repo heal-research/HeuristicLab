@@ -46,14 +46,14 @@ namespace HeuristicLab.Problems.BinPacking3D {
       IList<int> remainingIDs = new List<int>();
       foreach (var sequence in sequenceMatrix) {
         remainingIDs = remainingIDs.Concat(sequence).ToList();
-        result.BinPackings.Add(CreatePacking(result, ref remainingIDs, items, useStackingConstraints));
+        result.Bins.Add(CreatePacking(result, ref remainingIDs, items, useStackingConstraints));
       }
       result.UpdateBinPackings();
 
       //Try to put remaining items in existing bins
       var temp = new List<int>(remainingIDs);
       foreach (int id in temp) {
-        foreach (BinPacking3D bp in result.BinPackings) {
+        foreach (BinPacking3D bp in result.Bins) {
           var position = FindPositionForItem(bp, items[id], useStackingConstraints);
           if (position != null) {
             bp.PackItem(id, items[id], position);
@@ -65,7 +65,7 @@ namespace HeuristicLab.Problems.BinPacking3D {
 
       //Put still remaining items in new bins
       while (remainingIDs.Count > 0) {
-        result.BinPackings.Add(CreatePacking(result, ref remainingIDs, items, useStackingConstraints));
+        result.Bins.Add(CreatePacking(result, ref remainingIDs, items, useStackingConstraints));
       }
       result.UpdateBinPackings();
 

@@ -52,7 +52,7 @@ namespace HeuristicLab.Problems.BinPacking2D {
     protected override BinPacking2D CreatePacking(
       Solution partialSolution,
       ref IList<int> remainingIDs, IList<PackingItem> items) {
-      var bp = new BinPacking2D(partialSolution.BinMeasures);
+      var bp = new BinPacking2D(partialSolution.BinShape);
       bp.SlidingBasedPacking(ref remainingIDs, items);
       return bp;
     }

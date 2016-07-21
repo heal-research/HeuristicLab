@@ -77,6 +77,7 @@ namespace HeuristicLab.Problems.BinPacking {
     public abstract void ApplyHorizontalOrientation();
     public abstract int CompareTo(object obj);
 
+    [Storable]
     public IKeyedItemCollection<string, IParameter> Parameters { get; private set; }
   }
 }

@@ -46,7 +46,7 @@ namespace HeuristicLab.Problems.BinPacking.Views {
         packingPlan3D.Packing = null;
       } else {
         int i = 0;
-        foreach (var bp in Content.BinPackings)
+        foreach (var bp in Content.Bins)
           binSelection.Items.Add(i++ + " (" + Math.Round(bp.PackingDensity * 100, 2) + "%)");
 
         binSelection.SelectedIndex = 0;
@@ -56,7 +56,7 @@ namespace HeuristicLab.Problems.BinPacking.Views {
 
     private void ShowSelectedPacking() {
       int currentBin = (binSelection != null) ? (int)(binSelection.SelectedIndex) : 0;
-      packingPlan3D.Packing = Content.BinPackings[currentBin];
+      packingPlan3D.Packing = Content.Bins[currentBin];
     }
 
     private void binSelection_SelectedIndexChanged(object sender, EventArgs e) {
@@ -65,7 +65,7 @@ namespace HeuristicLab.Problems.BinPacking.Views {
 
       // add items of this container
       int currentBin = (binSelection != null) ? (int)(binSelection.SelectedIndex) : 0;
-      var packing = Content.BinPackings[currentBin];
+      var packing = Content.Bins[currentBin];
       foreach (var item in packing.Items) {
         itemSelection.Items.Add(item.Key);
       }

@@ -33,7 +33,6 @@ namespace HeuristicLab.Problems.BinPacking3D {
   [StorableClass]
   [Creatable(Category = CreatableAttribute.Categories.CombinatorialProblems, Priority = 320)]
   public sealed class PermutationProblem : ProblemBase<PermutationEncoding, Permutation> {
-    // persistence
     [StorableConstructor]
     private PermutationProblem(bool deserializing) : base(deserializing) { }
 

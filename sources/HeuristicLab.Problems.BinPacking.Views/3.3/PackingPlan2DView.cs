@@ -56,7 +56,7 @@ namespace HeuristicLab.Problems.BinPacking.Views {
 
     private void UpdateState(PackingPlan<BinPacking2D.PackingPosition, PackingShape, PackingItem> plan) {
       int currentBin = (binSelection != null && binSelection.SelectedItem != null) ? (int)(binSelection.SelectedItem) : 0;
-      container2DView.Packing = plan.BinPackings[currentBin];
+      container2DView.Packing = plan.Bins[currentBin];
     }
 
     private void binSelection_SelectedIndexChanged(object sender, EventArgs e) {

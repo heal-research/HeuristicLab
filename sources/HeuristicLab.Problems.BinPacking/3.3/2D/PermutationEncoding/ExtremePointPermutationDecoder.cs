@@ -46,7 +46,7 @@ namespace HeuristicLab.Problems.BinPacking2D {
       while (remainingIDs.Count > 0) {
         var bp = new BinPacking2D(binShape);
         bp.ExtremePointBasedPacking(ref remainingIDs, items, stackingConstraints: false);
-        result.BinPackings.Add(bp);
+        result.Bins.Add(bp);
       }
       result.UpdateBinPackings();
       return result;

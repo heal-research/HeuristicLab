@@ -37,8 +37,8 @@ namespace HeuristicLab.Problems.BinPacking {
     #region Properties
     public int NrOfBins {
       get {
-        if (BinPackings != null)
-          return BinPackings.Count;
+        if (Bins != null)
+          return Bins.Count;
         else return 0;
       }
     }
@@ -48,10 +48,10 @@ namespace HeuristicLab.Problems.BinPacking {
     protected bool UseExtremePoints { get; set; }
 
     [Storable]
-    public B BinMeasures { get; private set; }
+    public B BinShape { get; private set; }
 
     [Storable]
-    public ObservableList<BinPacking<D, B, I>> BinPackings { get; set; }
+    public ObservableList<BinPacking<D, B, I>> Bins { get; set; }
 
     [Storable]
     private DoubleValue quality;
@@ -68,29 +68,29 @@ namespace HeuristicLab.Problems.BinPacking {
     }
     #endregion
 
-    protected PackingPlan(B binMeasures, bool useExtremePoints, bool stackingConstraints)
+    protected PackingPlan(B binShape, bool useExtremePoints, bool stackingConstraints)
       : base() {
-      BinMeasures = (B)binMeasures.Clone();
+      BinShape = (B)binShape.Clone();
       StackingConstraints = stackingConstraints;
       UseExtremePoints = useExtremePoints;
-      BinPackings = new ObservableList<BinPacking<D, B, I>>();
+      Bins = new ObservableList<BinPacking<D, B, I>>();
     }
 
     [StorableConstructor]
     protected PackingPlan(bool deserializing) : base(deserializing) { }
     protected PackingPlan(PackingPlan<D, B, I> original, Cloner cloner)
       : base(original, cloner) {
-      this.BinPackings = new ObservableList<BinPacking<D, B, I>>(original.BinPackings.Select(p => cloner.Clone(p)));
+      this.Bins = new ObservableList<BinPacking<D, B, I>>(original.Bins.Select(p => cloner.Clone(p)));
       UseExtremePoints = original.UseExtremePoints;
       StackingConstraints = original.StackingConstraints;
-      BinMeasures = cloner.Clone(original.BinMeasures);
+      BinShape = cloner.Clone(original.BinShape);
       Quality = cloner.Clone(original.Quality);
     }
 
 
     public void UpdateBinPackings() {
-      BinPackings.RemoveAll(x => x.Positions.Count == 0);
-      BinPackings = new ObservableList<BinPacking<D, B, I>>(BinPackings.OrderByDescending(bp => bp.PackingDensity));
+      Bins.RemoveAll(x => x.Positions.Count == 0);
+      Bins = new ObservableList<BinPacking<D, B, I>>(Bins.OrderByDescending(bp => bp.PackingDensity));
     }
 
     #region Events
@@ -109,8 +109,6 @@ namespace HeuristicLab.Problems.BinPacking {
     private void Quality_ValueChanged(object sender, EventArgs e) {
       OnQualityChanged();
     }
-
-    public event EventHandler BinPackingsChanged;
     #endregion
   }
 }

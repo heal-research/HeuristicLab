@@ -53,8 +53,8 @@ namespace HeuristicLab.Problems.BinPacking3D {
       double totalUsableSpace = 0;
 
       for (int i = 0; i < nrOfBins; i++) {
-        totalUsableSpace += solution.BinPackings[i].BinShape.Volume;
-        totalUsedSpace += solution.BinPackings[i].Items.Sum(kvp => kvp.Value.Volume);
+        totalUsableSpace += solution.Bins[i].BinShape.Volume;
+        totalUsedSpace += solution.Bins[i].Items.Sum(kvp => kvp.Value.Volume);
       }
 
       return totalUsedSpace / totalUsableSpace;

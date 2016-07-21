@@ -59,8 +59,8 @@ namespace HeuristicLab.Problems.BinPacking2D {
       double result = 0;
       const double k = 2;
       for (int i = 0; i < nrOfBins; i++) {
-        double f = solution.BinPackings[i].Items.Sum(kvp => kvp.Value.Volume);
-        double c = solution.BinPackings[i].BinShape.Volume;
+        double f = solution.Bins[i].Items.Sum(kvp => kvp.Value.Volume);
+        double c = solution.Bins[i].BinShape.Volume;
         result += Math.Pow(f / c, k);
       }
 

@@ -34,7 +34,6 @@ namespace HeuristicLab.Problems.BinPacking3D {
   [StorableClass]
   [Creatable(Category = CreatableAttribute.Categories.CombinatorialProblems, Priority = 330)]
   public sealed class IntegerVectorProblem : ProblemBase<IntegerVectorEncoding, IntegerVector> {
-    // persistence
     [StorableConstructor]
     private IntegerVectorProblem(bool deserializing) : base(deserializing) { }
 

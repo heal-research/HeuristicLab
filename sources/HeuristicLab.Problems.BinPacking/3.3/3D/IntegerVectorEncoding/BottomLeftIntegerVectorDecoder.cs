@@ -59,7 +59,7 @@ namespace HeuristicLab.Problems.BinPacking3D {
     protected override BinPacking3D CreatePacking(
       Solution partialSolution,
       ref IList<int> remainingIDs, IList<PackingItem> items, bool useStackingConstraints) {
-      var bp = new BinPacking3D(partialSolution.BinMeasures);
+      var bp = new BinPacking3D(partialSolution.BinShape);
       bp.SlidingBasedPacking(ref remainingIDs, items);
       return bp;
     }
