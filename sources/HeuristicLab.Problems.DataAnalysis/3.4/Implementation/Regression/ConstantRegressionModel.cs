@@ -84,9 +84,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       throw new NotSupportedException(); // changing a constant regression model is not supported
     }
 
-#pragma warning disable 0067
     public event EventHandler ValueChanged;
-#pragma warning restore 0067
     #endregion
   }
 }

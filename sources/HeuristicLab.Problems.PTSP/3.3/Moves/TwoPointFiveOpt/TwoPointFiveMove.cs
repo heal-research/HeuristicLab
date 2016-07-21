@@ -29,13 +29,13 @@ namespace HeuristicLab.Problems.PTSP {
   [StorableClass]
   public sealed class TwoPointFiveMove : Item {
     [Storable]
-    public int Index1 { get; private set; }
+    public int Index1 { get; protected set; }
     [Storable]
-    public int Index2 { get; private set; }
+    public int Index2 { get; protected set; }
     [Storable]
-    public Permutation Permutation { get; private set; }
+    public Permutation Permutation { get; protected set; }
     [Storable]
-    public bool IsInvert { get; private set; }
+    public bool IsInvert { get; protected set; }
 
     [StorableConstructor]
     public TwoPointFiveMove() : this(-1, -1, null, true) { }

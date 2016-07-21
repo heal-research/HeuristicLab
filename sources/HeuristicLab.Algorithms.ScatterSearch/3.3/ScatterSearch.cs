@@ -161,8 +161,8 @@ namespace HeuristicLab.Algorithms.ScatterSearch {
     private void AfterDeserialization() {
       // BackwardsCompatibility3.3
       #region Backwards compatible code, remove with 3.4
-#pragma warning disable 0618
       if (Parameters.ContainsKey("SimilarityCalculator") && Parameters["SimilarityCalculator"] is IConstrainedValueParameter<ISingleObjectiveSolutionSimilarityCalculator>) {
+#pragma warning disable 0618
         var oldParameter = (IConstrainedValueParameter<ISingleObjectiveSolutionSimilarityCalculator>)Parameters["SimilarityCalculator"];
 #pragma warning restore 0618
         Parameters.Remove(oldParameter);

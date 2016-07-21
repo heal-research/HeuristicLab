@@ -536,7 +536,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
       }
     }
 
-    protected override void dataGridView_KeyDown(object sender, KeyEventArgs e) {
+    private void dataGridView_KeyDown(object sender, KeyEventArgs e) {
       var selectedRows = dataGridView.SelectedRows;
       var selectedCells = dataGridView.SelectedCells;
       if (!Content.FilterLogic.IsFiltered) { //data is in read only mode....
