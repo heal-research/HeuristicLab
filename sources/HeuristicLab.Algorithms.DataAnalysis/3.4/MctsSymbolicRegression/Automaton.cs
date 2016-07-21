@@ -391,8 +391,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
       using (var writer = new StreamWriter("automaton.gv")) {
         writer.WriteLine("digraph {");
         // writer.WriteLine("rankdir=LR");
-        int[] fs;
-        int nFs;
         for (int s = StartState; s < stateNames.Count; s++) {
           for (int i = 0; i < followStates[s].Count; i++) {
             if (followStates[s][i] <= 0) continue;

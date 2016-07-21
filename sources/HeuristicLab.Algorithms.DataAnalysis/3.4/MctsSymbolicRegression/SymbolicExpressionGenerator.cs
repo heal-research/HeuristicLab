@@ -175,7 +175,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
       op = (OpCodes)Enum.ToObject(typeof(OpCodes), code[pc++]);
       s = 0;
       if (op == OpCodes.LoadVar) {
-        s = (short)(((short)code[pc] << 8) | (short)code[pc + 1]);
+        s = (short)((code[pc] << 8) | code[pc + 1]);
         pc += 2;
       }
     }

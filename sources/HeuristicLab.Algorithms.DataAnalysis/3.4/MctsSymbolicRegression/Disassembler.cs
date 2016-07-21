@@ -37,7 +37,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
           case (byte)OpCodes.LoadParamN: sb.AppendFormat(" {0:N3} ", consts[++nextParamIdx]); break;
           case (byte)OpCodes.LoadVar:
           {
-              short arg = (short)(((short)code[pc] << 8) | (short)code[pc + 1]);
+              short arg = (short)((code[pc] << 8) | code[pc + 1]);
               pc += 2;
             sb.AppendFormat(" var{0} ", arg); break;
           }
