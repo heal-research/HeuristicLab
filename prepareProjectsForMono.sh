@@ -12,7 +12,7 @@ done;
 # remove projects that do not build
 unamestr=`uname`
 if [[ "$unamestr" == 'Darwin' ]]; then
-   awk '/ICSharpCode.AvalonEdit-5.0.1|HeuristicLab.AvalonEdit-5.0.1/ {while (/ICSharpCode.AvalonEdit-5.0.1|HeuristicLab.AvalonEdit-5.0.1/ && getline>0) ; next} 1' HeuristicLab.ExtLibs.sln > tmp
+   awk '/ICSharpCode.AvalonEdit-5.0.1|HeuristicLab.AvalonEdit-5.0.1|HeuristicLab.SharpDX-2.6.3/ {while (/ICSharpCode.AvalonEdit-5.0.1|HeuristicLab.AvalonEdit-5.0.1|HeuristicLab.SharpDX-2.6.3/ && getline>0) ; next} 1' HeuristicLab.ExtLibs.sln > tmp
    mv tmp HeuristicLab.ExtLibs.sln
 
    awk '/HeuristicLab.Problems.ExternalEvaluation-3.4|HeuristicLab.Problems.ExternalEvaluation.GP-3.5|HeuristicLab.Problems.ExternalEvaluation.Views-3.4|HeuristicLab.Problems.ExternalEvaluation.Matlab-3.3/ {while (/HeuristicLab.Problems.ExternalEvaluation-3.4|HeuristicLab.Problems.ExternalEvaluation.GP-3.5|HeuristicLab.Problems.ExternalEvaluation.Views-3.4|HeuristicLab.Problems.ExternalEvaluation.Matlab-3.3/ && getline>0) ; next} 1' "HeuristicLab 3.3.sln" > tmp
@@ -23,7 +23,7 @@ if [[ "$unamestr" == 'Darwin' ]]; then
    mv tmp HeuristicLab.CodeEditor/3.4/HeuristicLab.CodeEditor-3.4.csproj 
 
 elif [[ "$unamestr" == 'Linux' ]]; then
-   sed -e '/ICSharpCode.AvalonEdit-5.0.1/,+1d' -e '/HeuristicLab.AvalonEdit-5.0.1/,+1d' HeuristicLab.ExtLibs.sln > tmp
+   sed -e '/ICSharpCode.AvalonEdit-5.0.1/,+1d' -e '/HeuristicLab.SharpDX-2.6.3/,+1d' HeuristicLab.ExtLibs.sln > tmp
    mv tmp HeuristicLab.ExtLibs.sln
    sed -e '/HeuristicLab.Problems.ExternalEvaluation-3.4/,+1d' -e '/HeuristicLab.Problems.ExternalEvaluation.GP-3.5/,+1d' -e '/HeuristicLab.Problems.ExternalEvaluation.Views-3.4/,+1d' -e '/HeuristicLab.Problems.ExternalEvaluation.Matlab-3.3/,+1d' "HeuristicLab 3.3.sln" > tmp
    mv tmp "HeuristicLab 3.3.sln"
