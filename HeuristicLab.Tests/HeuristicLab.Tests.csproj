@@ -455,6 +455,7 @@
     <Compile Include="HeuristicLab-3.3\PluginDependenciesTest.cs" />
     <Compile Include="HeuristicLab-3.3\PluginLoader.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\AlpsSampleTest.cs" />
+    <Compile Include="HeuristicLab-3.3\Samples\GABppSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\GPRobocodeSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\OSESGriewankSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\GAGroupingProblemSampleTest.cs" />
