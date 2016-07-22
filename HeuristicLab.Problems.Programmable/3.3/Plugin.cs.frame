@@ -22,7 +22,7 @@
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.Programmable {
-  [Plugin("HeuristicLab.Problems.Programmable", "Programmable problem for defining custom representation and evaluation function.", "3.3.13.$WCREV$")]
+  [Plugin("HeuristicLab.Problems.Programmable", "Programmable problem for defining custom representation and evaluation function.", "3.3.14.$WCREV$")]
   [PluginFile("HeuristicLab.Problems.Programmable-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Analysis", "3.3")]
   [PluginDependency("HeuristicLab.Collections", "3.3")]

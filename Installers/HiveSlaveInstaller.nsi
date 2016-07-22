@@ -26,7 +26,7 @@ OutFile "HeuristicLab Hive Slave Installer.exe"
 ; Build configuration is either Debug or Release
 !define BUILDCONFIGURATION "Debug"
 !define SLAVEBUILDPATH "..\HeuristicLab.Clients.Hive.Slave.WindowsService\3.3\bin\${BUILDCONFIGURATION}"
-!define VERSION "3.3.13"
+!define VERSION "3.3.14"
 
 InstallDir $PROGRAMFILES\HeuristicLabHiveSlave
 RequestExecutionLevel admin
