@@ -52,6 +52,8 @@ namespace HeuristicLab.Tests {
 
       foreach (var symbolType in ApplicationManager.Manager.GetTypes(typeof(HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbol)))
         excludedTypes.Add(symbolType);
+      // SimpleSymbol is a non-discoverable type and thus needs to be added manually
+      excludedTypes.Add(typeof(HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.SimpleSymbol));
       foreach (var grammarType in ApplicationManager.Manager.GetTypes(typeof(HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.SymbolicExpressionGrammarBase)))
         excludedTypes.Add(grammarType);
     }

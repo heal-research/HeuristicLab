@@ -6,7 +6,7 @@ IF "%TargetDir%"=="" (
 )
 
 echo Recreating HeuristicLab 3.3.exe.config...
-copy /Y "%TargetDir%app.config" "%TargetDir%HeuristicLab 3.3.exe.config"
+copy /Y "%SolutionDir%\HeuristicLab\3.3\app.config" "%TargetDir%HeuristicLab 3.3.exe.config"
 
 echo Merging...
 FOR /F "tokens=*" %%A IN ('dir /B "%TargetDir%*.dll.config"') DO (
