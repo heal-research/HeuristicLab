@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ordesignerObjectsDiagram dslVersion="1.0.0.0" absoluteBounds="0, 0, 11, 8.5" name="PluginStoreClasses">
+  <DataContextMoniker Name="/DeploymentDataContext" />
+  <nestedChildShapes>
+    <classShape Id="16e9d26d-f78e-4457-8cdb-0cee0835a0b6" absoluteBounds="3.5, 2, 2, 1.1939925130208335">
+      <DataClassMoniker Name="/DeploymentDataContext/Dependency" />
+      <nestedChildShapes>
+        <elementListCompartment Id="90573696-5cb0-44c5-a492-6e26800047b3" absoluteBounds="3.515, 2.46, 1.9700000000000002, 0.63399251302083326" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="86708203-9aa2-44f4-a85f-7fad2c542e23" absoluteBounds="3.5, 4, 2, 1.1939925130208344">
+      <DataClassMoniker Name="/DeploymentDataContext/ProductPlugin" />
+      <nestedChildShapes>
+        <elementListCompartment Id="da9607ee-b60e-44f0-8e80-704abd6dd898" absoluteBounds="3.515, 4.46, 1.9700000000000002, 0.63399251302083326" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="1e228e3e-9436-4cd0-b7f7-492427268001" absoluteBounds="0.75, 2.625, 2, 1.9631982421874996">
+      <DataClassMoniker Name="/DeploymentDataContext/Plugin" />
+      <nestedChildShapes>
+        <elementListCompartment Id="81f74f1f-d4d0-4dce-991e-fb10afa63eb5" absoluteBounds="0.765, 3.085, 1.9700000000000002, 1.4031982421875" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="d660db81-846c-4661-9a86-09567e927f9d" absoluteBounds="3.5, 6, 2, 1.1939925130208344">
+      <DataClassMoniker Name="/DeploymentDataContext/PluginPackage" />
+      <nestedChildShapes>
+        <elementListCompartment Id="31a89e0e-c915-41d6-926b-d8c0f029f27d" absoluteBounds="3.515, 6.46, 1.9700000000000002, 0.63399251302083326" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="55486421-017b-44b9-894d-6cc4501cda04" absoluteBounds="0.75, 5.875, 2, 1.3862939453125005">
+      <DataClassMoniker Name="/DeploymentDataContext/Product" />
+      <nestedChildShapes>
+        <elementListCompartment Id="5abad42a-034c-4331-916c-e757c0c6c777" absoluteBounds="0.765, 6.335, 1.9700000000000002, 0.8262939453125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <associationConnector edgePoints="[(2.75 : 4.5881982421875); (3.125 : 4.9631982421875); (3.125 : 6.59699625651042); (3.5 : 6.59699625651042)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/DeploymentDataContext/Plugin/Plugin_PluginPackage" />
+      <nodes>
+        <classShapeMoniker Id="1e228e3e-9436-4cd0-b7f7-492427268001" />
+        <classShapeMoniker Id="d660db81-846c-4661-9a86-09567e927f9d" />
+      </nodes>
+    </associationConnector>
+  </nestedChildShapes>
+</ordesignerObjectsDiagram>

@@ -1,0 +1,387 @@
+﻿<header class="view-header">
+    <ul class="nav nav-list nav-list-topbar pull-left">
+        <li class="active">
+            <a ng-href="#/status">Status</a>
+        </li>
+        <li>
+            <a ng-href="#/status/history">History</a>
+        </li>
+    </ul>
+</header>
+
+<div class="default-view-container">
+<div class="row">
+    <div class="col-lg-3 col-md-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Cores</h3>
+            </div>
+            <div class="panel-body">
+                <div class="text-center">
+                    <knob knob-data="core.knobData" knob-options="knobOptions"></knob>
+                </div>
+                <table class="table table-no-border table-condensed table-auto-width table-content">
+                    <tr data-toggle="tooltip" data-placement="bottom" title="All online slaves">
+                        <td class="text-left">
+                            Total:
+                        </td>
+                        <td class="text-right">{{status.CoreStatus.TotalCores | number}}</td>
+                    </tr>
+                    <tr data-toggle="tooltip" data-placement="bottom" title="All calculating and idle slaves that are allowed to calculate">
+                        <td class="text-left">Active:</td>
+                        <td class="text-right">{{status.CoreStatus.ActiveCores | number}}</td>
+                    </tr>
+                    <tr data-toggle="tooltip" data-placement="bottom" title="All calculating slaves that are allowed to calculate">
+                        <td class="text-left">Calculating:</td>
+                        <td class="text-right">{{status.CoreStatus.CalculatingCores | number}}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">CPU Utilization</h3>
+            </div>
+            <div class="panel-body">
+                <div class="text-center">
+                    <knob knob-data="cpu.knobData" knob-options="knobOptions"></knob>
+                </div>
+                <table class="table table-no-border table-condensed table-auto-width table-content">
+                    <tr data-toggle="tooltip" data-placement="bottom" title="All online slaves">
+                        <td class="text-left">Total:</td>
+                        <td class="text-right">{{status.CpuUtilizationStatus.TotalCpuUtilization | number: 2}} %</td>
+                    </tr>
+                    <tr data-toggle="tooltip" data-placement="bottom" title="All calculating and idle slaves that are allowed to calculate">
+                        <td class="text-left">Active:</td>
+                        <td class="text-right">{{status.CpuUtilizationStatus.ActiveCpuUtilization | number: 2}} %</td>
+                    </tr>
+                    <tr data-toggle="tooltip" data-placement="bottom" title="All calculating slaves that are allowed to calculate">
+                        <td class="text-left">Calculating:</td>
+                        <td class="text-right">{{status.CpuUtilizationStatus.CalculatingCpuUtilization | number: 2}} %</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Memory</h3>
+            </div>
+            <div class="panel-body">
+                <div class="text-center">
+                    <knob knob-data="memory.knobData" knob-options="knobOptions"></knob>
+                </div>
+                <table class="table table-no-border table-condensed table-auto-width table-content">
+                    <tr data-toggle="tooltip" data-placement="bottom" title="All online slaves">
+                        <td class="text-left">Total:</td>
+                        <td class="text-right">{{status.MemoryStatus.TotalMemory | kbToGB}} GB</td>
+                    </tr>
+                    <tr data-toggle="tooltip" data-placement="bottom" title="All calculating and idle slaves that are allowed to calculate">
+                        <td class="text-left">Active:</td>
+                        <td class="text-right">{{status.MemoryStatus.ActiveMemory | kbToGB}} GB</td>
+                    </tr>
+                    <tr data-toggle="tooltip" data-placement="bottom" title="All calculating slaves that are allowed to calculate">
+                        <td class="text-left">Calculating:</td>
+                        <td class="text-right">{{status.MemoryStatus.CalculatingMemory | kbToGB}} GB</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Tasks</h3>
+            </div>
+            <div class="panel-body">
+                <table class="table table-no-border table-condensed table-auto-width table-content">
+                    <tr>
+                        <td class="text-left">Total:</td>
+                        <td class="text-right">{{tasks.WaitingTasks + tasks.CalculatingTasks | number}}</td>
+                    </tr>
+                    <tr>
+                        <td class="text-left">Waiting:</td>
+                        <td class="text-right">{{tasks.WaitingTasks | number}}</td>
+                    </tr>
+                    <tr>
+                        <td class="text-left">Calculating:</td>
+                        <td class="text-right">{{tasks.CalculatingTasks | number}}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Status Overview</h3>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <table class="table table-no-border table-condensed table-auto-width table-content">
+                            <tr>
+                                <td class="text-left">Current Average Waiting Time:</td>
+                                <td class="text-right">{{status.TimeStatus.AvgWaitingTime | toTimespan}}</td>
+                            </tr>
+                            <tr>
+                                <td class="text-left">Total CPU Time:</td>
+                                <td class="text-right">{{status.TimeStatus.TotalCpuTime | toTimespan}}</td>
+                            </tr>
+                            <tr>
+                                <td class="text-left">Since:</td>
+                                <td class="text-right">{{status.TimeStatus.BeginDate | toDate}}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <table class="table table-no-border table-condensed table-auto-width table-content">
+                            <tr>
+                                <td class="text-left">Minimum Calculating Time:</td>
+                                <td class="text-right">{{status.TimeStatus.MinCalculatingTime | toTimespan}}</td>
+                            </tr>
+                            <tr>
+                                <td class="text-left">Maximum Calculating Time:</td>
+                                <td class="text-right">{{status.TimeStatus.MaxCalculatingTime | toTimespan}}</td>
+                            </tr>
+                            <tr>
+                                <td class="text-left">Average Calculating Time:</td>
+                                <td class="text-right">{{status.TimeStatus.AvgCalculatingTime | toTimespan}}</td>
+                            </tr>
+                            <tr>
+                                <td class="text-left">Standard Deviation Calculating Time:</td>
+                                <td class="text-right">{{status.TimeStatus.StandardDeviationCalculatingTime | toTimespan}}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">CPU Utilization Chart</h3>
+            </div>
+            <div class="panel-body">
+                <flot dataset="cpu.series" options="chartOptions"></flot>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Core Chart</h3>
+            </div>
+            <div class="panel-body">
+                <flot dataset="core.series" options="fillChartOptions"></flot>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Memory Chart</h3>
+            </div>
+            <div class="panel-body">
+                <flot dataset="memory.series" options="fillChartOptions"></flot>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Tasks by User</h3>
+            </div>
+            <div class="panel-body">
+                <table class="table table-hover" ts-wrapper>
+                    <thead>
+                        <tr>
+                            <th ts-criteria="User.Name">Username</th>
+                            <th ts-criteria="CalculatingTasks|parseInt">Calculating Tasks</th>
+                            <th ts-criteria="WaitingTasks|parseInt">Waiting Tasks</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="task in status.TasksStatus" ts-repeat>
+                            <td>{{task.User.Name}}</td>
+                            <td>{{task.CalculatingTasks | number}}</td>
+                            <td>{{task.WaitingTasks | number}}</td>
+                        </tr>
+                        <tr ng-hide="status.TasksStatus.length">
+                            <td colspan="3" class="text-center">
+                                There are no waiting or calculating tasks available!
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <a data-toggle="collapse" data-target="#collapseActiveCalculatingSlaves"
+                       ng-href="#/status">
+                        Active Calculating Slaves
+                    </a>
+                </h3>
+            </div>
+            <div id="collapseActiveCalculatingSlaves"
+                 class="panel-collapse collapse in">
+                <div class="panel-body">
+                    <table class="table table-hover" ts-wrapper>
+                        <thead>
+                            <tr>
+                                <th ts-criteria="Slave.Name">Slave</th>
+                                <th ts-criteria="CpuUtilization|parseFloat">CPU Utilization</th>
+                                <th ts-criteria="Cores|parseInt">Cores</th>
+                                <th ts-criteria="Memory|parseInt">Memory</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="slave in activeCalculatingSlaves = (status.SlavesStatus
+                                | filter: {
+                                    IsAllowedToCalculate: true,
+                                    State: 'Calculating'
+                                  })" ts-repeat>
+                                <td>{{slave.Slave.Name}}</td>
+                                <td>{{slave.CpuUtilization | number: 2}} %</td>
+                                <td>{{slave.Cores - slave.FreeCores | number}} / {{slave.Cores | number}}</td>
+                                <td>{{slave.Memory - slave.FreeMemory | kbToGB}} / {{slave.Memory | kbToGB}} GB</td>
+                            </tr>
+                            <tr ng-hide="activeCalculatingSlaves.length">
+                                <td colspan="4" class="text-center">
+                                    There are no active calculating slaves available!
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <a data-toggle="collapse" data-target="#collapseActiveIdleSlaves"
+                       ng-href="#/status" class="collapsed">
+                        Active Idle Slaves
+                    </a>
+                </h3>
+            </div>
+            <div id="collapseActiveIdleSlaves"
+                 class="panel-collapse collapse">
+                <div class="panel-body">
+                    <table class="table table-hover" ts-wrapper>
+                        <thead>
+                        <tr>
+                            <th ts-criteria="Slave.Name">Slave</th>
+                            <th ts-criteria="CpuUtilization|parseFloat">CPU Utilization</th>
+                            <th ts-criteria="Cores|parseInt">Cores</th>
+                            <th ts-criteria="Memory|parseInt">Memory</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="slave in activeIdleSlaves = (status.SlavesStatus
+                                | filter: {
+                                    IsAllowedToCalculate: true,
+                                    State: 'Idle'
+                                  })" ts-repeat>
+                                <td>{{slave.Slave.Name}}</td>
+                                <td>{{slave.CpuUtilization | number: 2}} %</td>
+                                <td>{{slave.Cores - slave.FreeCores | number}} / {{slave.Cores | number}}</td>
+                                <td>{{slave.Memory - slave.FreeMemory | kbToGB}} / {{slave.Memory | kbToGB}} GB</td>
+                            </tr>
+                            <tr ng-hide="activeIdleSlaves.length">
+                                <td colspan="4" class="text-center">
+                                    There are no active idle slaves available!
+                                <td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <a data-toggle="collapse" data-target="#collapseInactiveSlaves"
+                       ng-href="#/status" class="collapsed">
+                        Inactive Slaves
+                    </a>
+                </h3>
+            </div>
+            <div id="collapseInactiveSlaves"
+                 class="panel-collapse collapse">
+                <div class="panel-body">
+                    <table class="table table-hover" ts-wrapper>
+                        <thead>
+                            <tr>
+                                <th ts-criteria="Slave.Name">Slave</th>
+                                <th ts-criteria="CpuUtilization|parseFloat">CPU Utilization</th>
+                                <th ts-criteria="Cores|parseInt">Cores</th>
+                                <th ts-criteria="Memory|parseInt">Memory</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="slave in inactiveSlaves = (status.SlavesStatus
+                                | filter: {
+                                    IsAllowedToCalculate: false
+                                  })" ts-repeat>
+                                <td>{{slave.Slave.Name}}</td>
+                                <td>{{slave.CpuUtilization | number: 2}} %</td>
+                                <td>{{slave.Cores - slave.FreeCores | number}} / {{slave.Cores | number}}</td>
+                                <td>{{slave.Memory - slave.FreeMemory | kbToGB}} / {{slave.Memory | kbToGB}} GB</td>
+                            </tr>
+                            <tr ng-hide="inactiveSlaves.length">
+                                <td colspan="4" class="text-center">No inactive slaves available!</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+</script>
