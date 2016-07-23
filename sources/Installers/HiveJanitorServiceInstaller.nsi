@@ -26,7 +26,7 @@ OutFile "HeuristicLab Hive Janitor Service Installer.exe"
 ; Build configuration is either Debug or Release
 !define BUILDCONFIGURATION "Debug"
 !define JANITORBUILDPATH "..\HeuristicLab.Services.Hive.JanitorService\3.3\bin\${BUILDCONFIGURATION}"
-!define VERSION "3.3.13"
+!define VERSION "3.3.14"
 
 InstallDir $PROGRAMFILES\HeuristicLabHiveJanitorService
 RequestExecutionLevel admin

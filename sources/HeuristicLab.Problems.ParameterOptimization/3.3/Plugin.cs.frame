@@ -25,7 +25,7 @@ namespace HeuristicLab.Problems.ParameterOptimization {
   /// <summary>
   /// Plugin class for HeuristicLab.Problems.ParameterOptimization.
   /// </summary>
-  [Plugin("HeuristicLab.Problems.ParameterOptimization", "3.3.13.$WCREV$")]
+  [Plugin("HeuristicLab.Problems.ParameterOptimization", "3.3.14.$WCREV$")]
   [PluginFile("HeuristicLab.Problems.ParameterOptimization-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Collections", "3.3")]
   [PluginDependency("HeuristicLab.Common", "3.3")]

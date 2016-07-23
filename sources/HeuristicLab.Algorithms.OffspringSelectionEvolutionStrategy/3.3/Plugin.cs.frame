@@ -25,7 +25,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionEvolutionStrategy {
   /// <summary>
   /// Plugin class for HeuristicLab.Algorithms.OffspringSelectionEvolutionStrategy plugin.
   /// </summary>
-  [Plugin("HeuristicLab.Algorithms.OffspringSelectionEvolutionStrategy", "3.3.13.$WCREV$")]
+  [Plugin("HeuristicLab.Algorithms.OffspringSelectionEvolutionStrategy", "3.3.14.$WCREV$")]
   [PluginFile("HeuristicLab.Algorithms.OffspringSelectionEvolutionStrategy-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Analysis", "3.3")]
   [PluginDependency("HeuristicLab.Collections", "3.3")]

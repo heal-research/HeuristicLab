@@ -22,7 +22,7 @@
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.QuadraticAssignment.Views {
-  [Plugin("HeuristicLab.Problems.QuadraticAssignment.Views", "3.3.13.$WCREV$")]
+  [Plugin("HeuristicLab.Problems.QuadraticAssignment.Views", "3.3.14.$WCREV$")]
   [PluginFile("HeuristicLab.Problems.QuadraticAssignment.Views-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Analysis", "3.3")]
   [PluginDependency("HeuristicLab.Common", "3.3")]

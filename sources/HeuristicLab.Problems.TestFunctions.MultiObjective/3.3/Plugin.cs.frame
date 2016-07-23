@@ -22,7 +22,7 @@
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
-  [Plugin("HeuristicLab.Problems.TestFunctions.MultiObjective", "3.3.13.$WCREV$")]
+  [Plugin("HeuristicLab.Problems.TestFunctions.MultiObjective", "3.3.14.$WCREV$")]
   [PluginFile("HeuristicLab.Problems.TestFunctions.MultiObjective-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Collections", "3.3")] 
   [PluginDependency("HeuristicLab.Common", "3.3")]

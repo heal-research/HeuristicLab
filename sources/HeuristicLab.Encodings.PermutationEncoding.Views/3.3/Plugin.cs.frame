@@ -25,7 +25,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding.Views {
   /// <summary>
   /// Plugin class for HeuristicLab.Encodings.PermutationEncoding.Views plugin.
   /// </summary>
-  [Plugin("HeuristicLab.Encodings.PermutationEncoding.Views", "3.3.13.$WCREV$")]
+  [Plugin("HeuristicLab.Encodings.PermutationEncoding.Views", "3.3.14.$WCREV$")]
   [PluginFile("HeuristicLab.Encodings.PermutationEncoding.Views-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Core", "3.3")]
   [PluginDependency("HeuristicLab.Core.Views", "3.3")]
