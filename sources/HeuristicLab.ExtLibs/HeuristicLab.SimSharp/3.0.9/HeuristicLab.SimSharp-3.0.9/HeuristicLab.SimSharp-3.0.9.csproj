@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>HeuristicLab.SimSharp</RootNamespace>
-    <AssemblyName>HeuristicLab.SimSharp-3.0.7</AssemblyName>
+    <AssemblyName>HeuristicLab.SimSharp-3.0.9</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>
@@ -91,13 +91,13 @@
       <Name>HeuristicLab.PluginInfrastructure-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\SimSharp-3.0.7\SimSharp-3.0.7.csproj">
+    <ProjectReference Include="..\SimSharp-3.0.9\SimSharp-3.0.9.csproj">
       <Project>{9fe9c740-7859-4d01-ad07-7d4e15a6320b}</Project>
-      <Name>SimSharp-3.0.7</Name>
+      <Name>SimSharp-3.0.9</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="SimSharp-3.0.7 License.txt">
+    <Content Include="SimSharp-3.0.9 License.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

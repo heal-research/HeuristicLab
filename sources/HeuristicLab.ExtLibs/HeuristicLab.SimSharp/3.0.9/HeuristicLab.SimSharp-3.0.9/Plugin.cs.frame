@@ -22,10 +22,10 @@
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.SimSharp {
-  [Plugin("HeuristicLab.SimSharp", "Transport plugin for the simulation framework Sim#", "3.0.7.$WCREV$")]
-  [PluginFile("HeuristicLab.SimSharp-3.0.7.dll", PluginFileType.Assembly)]
-  [PluginFile("SimSharp-3.0.7.dll", PluginFileType.Assembly)]
-  [PluginFile("SimSharp-3.0.7 License.txt", PluginFileType.License)]
+  [Plugin("HeuristicLab.SimSharp", "Transport plugin for the simulation framework Sim#", "3.0.9.$WCREV$")]
+  [PluginFile("HeuristicLab.SimSharp-3.0.9.dll", PluginFileType.Assembly)]
+  [PluginFile("SimSharp-3.0.9.dll", PluginFileType.Assembly)]
+  [PluginFile("SimSharp-3.0.9 License.txt", PluginFileType.License)]
   public class HeuristicLabSimSharpPlugin : PluginBase {
   }
 }

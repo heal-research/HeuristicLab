@@ -21,7 +21,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace SimSharp {
-  public class PriorityResource {
+  public class PreemptiveResource {
 
     public int Capacity { get; protected set; }
 
@@ -31,29 +31,29 @@ namespace SimSharp {
 
     protected Environment Environment { get; private set; }
 
-    protected SortedList<int, Queue<PriorityRequest>> RequestQueue { get; private set; }
+    protected SortedList<int, LinkedList<PreemptiveRequest>> RequestQueue { get; private set; }
     protected Queue<Release> ReleaseQueue { get; private set; }
     protected HashSet<Request> Users { get; private set; }
 
-    public PriorityResource(Environment environment, int capacity = 1) {
+    public PreemptiveResource(Environment environment, int capacity = 1) {
       if (capacity <= 0) throw new ArgumentException("Capacity must be > 0.", "capacity");
       Environment = environment;
       Capacity = capacity;
-      RequestQueue = new SortedList<int, Queue<PriorityRequest>>();
+      RequestQueue = new SortedList<int, LinkedList<PreemptiveRequest>>();
       ReleaseQueue = new Queue<Release>();
       Users = new HashSet<Request>();
     }
 
-    public virtual PriorityRequest Request(int priority = 1) {
-      var request = new PriorityRequest(Environment, TriggerRelease, DisposeCallback, priority);
-      if (!RequestQueue.ContainsKey(priority))
-        RequestQueue.Add(priority, new Queue<PriorityRequest>());
-      RequestQueue[priority].Enqueue(request);
+    public virtual PreemptiveRequest Request(int priority = 1, bool preempt = false) {
+      var request = new PreemptiveRequest(Environment, TriggerRelease, DisposeCallback, priority, preempt);
+      if (!RequestQueue.ContainsKey(request.Priority))
+        RequestQueue.Add(request.Priority, new LinkedList<PreemptiveRequest>());
+      RequestQueue[request.Priority].AddLast(request);
       TriggerRequest();
       return request;
     }
 
-    public virtual Release Release(PriorityRequest request) {
+    public virtual Release Release(PreemptiveRequest request) {
       var release = new Release(Environment, request, TriggerRequest);
       ReleaseQueue.Enqueue(release);
       TriggerRelease();
@@ -61,11 +61,26 @@ namespace SimSharp {
     }
 
     protected void DisposeCallback(Event @event) {
-      var request = @event as PriorityRequest;
+      var request = @event as PreemptiveRequest;
       if (request != null) Release(request);
     }
 
-    protected virtual void DoRequest(Request request) {
+    protected virtual void DoRequest(PreemptiveRequest request) {
+      if (Users.Count >= Capacity && request.Preempt) {
+        // Check if we can preempt another process
+        var oldest = Users.OfType<PreemptiveRequest>().Select((r, i) => new { Request = r, Index = i })
+          .OrderByDescending(x => x.Request.Priority)
+          .ThenByDescending(x => x.Request.Time)
+          .ThenByDescending(x => x.Request.Preempt)
+          .ThenByDescending(x => x.Index)
+          .First().Request;
+        if (oldest.Priority > request.Priority || (oldest.Priority == request.Priority
+            && (!oldest.Preempt && request.Preempt || (oldest.Preempt == request.Preempt
+              && oldest.Time > request.Time)))) {
+          Users.Remove(oldest);
+          oldest.Process.Interrupt(new Preempted(request.Process, oldest.Time));
+        }
+      }
       if (Users.Count < Capacity) {
         Users.Add(request);
         request.Succeed();
@@ -73,25 +88,31 @@ namespace SimSharp {
     }
 
     protected virtual void DoRelease(Release release) {
-      Users.Remove(release.Request);
+      if (!Users.Remove(release.Request)) {
+        var preemptRequest = release.Request as PreemptiveRequest;
+        if (preemptRequest != null) {
+          var current = RequestQueue[preemptRequest.Priority].First;
+          while (current != null && current.Value != release.Request)
+            current = current.Next;
+          if (current != null) RequestQueue[preemptRequest.Priority].Remove(current);
+        }
+      }
       release.Succeed();
     }
 
     protected virtual void TriggerRequest(Event @event = null) {
       foreach (var entry in RequestQueue) {
-        var cascade = false;
         var requests = entry.Value;
-        while (requests.Count > 0) {
-          var req = requests.Peek();
-          DoRequest(req);
-          if (req.IsTriggered) {
-            requests.Dequeue();
-          } else {
-            cascade = true;
-            break;
-          }
+        var current = requests.First;
+        while (current != null) {
+          var request = current.Value;
+          DoRequest(request);
+          if (request.IsTriggered) {
+            var next = current.Next;
+            requests.Remove(current);
+            current = next;
+          } else current = current.Next;
         }
-        if (cascade) break;
       }
     }
 
