@@ -224,5 +224,16 @@ export TargetDir=$(TargetDir)
 
 $SolutionDir/MergeConfigs.sh
 </PostBuildEvent>
-  </PropertyGroup> 
+  </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
+set ProjectDir=$(ProjectDir)
+set SolutionDir=$(SolutionDir)
+set OutDir=$(OutDir)
+set TargetDir=$(TargetDir)
+set Platform=$(PlatformName)
+set Configuration=$(ConfigurationName)
+
+call "$(SolutionDir)MergeConfigs.cmd"</PostBuildEvent>
+  </PropertyGroup>
 </Project>

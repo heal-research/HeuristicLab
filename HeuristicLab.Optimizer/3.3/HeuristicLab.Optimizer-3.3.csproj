@@ -149,6 +149,8 @@
     <EmbeddedResource Include="Documents\ALPSGP_SymReg.hl" />
     <EmbeddedResource Include="Documents\ALPSGA_TSP.hl" />
     <EmbeddedResource Include="Documents\GA_BPP.hl" />
+    <EmbeddedResource Include="Documents\OSES_Griewank.hl" />
+    <EmbeddedResource Include="Documents\SGP_Robocode.hl" />
     <None Include="Plugin.cs.frame" />
     <Compile Include="OptimizerSingleDocumentMainForm.cs">
       <SubType>Form</SubType>
