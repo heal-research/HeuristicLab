@@ -121,7 +121,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IndexedDataTableView.cs" />
+    <Compile Include="IndexedDataTableView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="IndexedDataTableView.Designer.cs">
       <DependentUpon>IndexedDataTableView.cs</DependentUpon>
     </Compile>
