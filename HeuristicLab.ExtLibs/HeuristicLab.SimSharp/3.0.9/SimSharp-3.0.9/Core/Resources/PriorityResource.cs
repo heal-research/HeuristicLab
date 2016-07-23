@@ -18,10 +18,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.*/
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace SimSharp {
-  public class Resource {
+  public class PriorityResource {
 
     public int Capacity { get; protected set; }
 
@@ -31,35 +30,37 @@ namespace SimSharp {
 
     protected Environment Environment { get; private set; }
 
-    protected Queue<Request> RequestQueue { get; private set; }
+    protected SortedList<int, LinkedList<PriorityRequest>> RequestQueue { get; private set; }
     protected Queue<Release> ReleaseQueue { get; private set; }
     protected HashSet<Request> Users { get; private set; }
 
-    public Resource(Environment environment, int capacity = 1) {
-      if (capacity <= 0) throw new ArgumentException("Capacity must > 0.", "capacity");
+    public PriorityResource(Environment environment, int capacity = 1) {
+      if (capacity <= 0) throw new ArgumentException("Capacity must be > 0.", "capacity");
       Environment = environment;
       Capacity = capacity;
-      RequestQueue = new Queue<Request>();
+      RequestQueue = new SortedList<int, LinkedList<PriorityRequest>>();
       ReleaseQueue = new Queue<Release>();
       Users = new HashSet<Request>();
     }
 
-    public virtual Request Request() {
-      var request = new Request(Environment, TriggerRelease, DisposeCallback);
-      RequestQueue.Enqueue(request);
+    public virtual PriorityRequest Request(int priority = 1) {
+      var request = new PriorityRequest(Environment, TriggerRelease, DisposeCallback, priority);
+      if (!RequestQueue.ContainsKey(priority))
+        RequestQueue.Add(priority, new LinkedList<PriorityRequest>());
+      RequestQueue[priority].AddLast(request);
       TriggerRequest();
       return request;
     }
 
-    public virtual Release Release(Request request) {
+    public virtual Release Release(PriorityRequest request) {
       var release = new Release(Environment, request, TriggerRequest);
       ReleaseQueue.Enqueue(release);
       TriggerRelease();
       return release;
     }
 
-    protected virtual void DisposeCallback(Event @event) {
-      var request = @event as Request;
+    protected void DisposeCallback(Event @event) {
+      var request = @event as PriorityRequest;
       if (request != null) Release(request);
     }
 
@@ -71,17 +72,33 @@ namespace SimSharp {
     }
 
     protected virtual void DoRelease(Release release) {
-      Users.Remove(release.Request);
+      if (!Users.Remove(release.Request)) {
+        var prioRequest = release.Request as PriorityRequest;
+        if (prioRequest != null) {
+          var current = RequestQueue[prioRequest.Priority].First;
+          while (current != null && current.Value != release.Request)
+            current = current.Next;
+          if (current != null) RequestQueue[prioRequest.Priority].Remove(current);
+        }
+      }
       release.Succeed();
     }
 
     protected virtual void TriggerRequest(Event @event = null) {
-      while (RequestQueue.Count > 0) {
-        var request = RequestQueue.Peek();
-        DoRequest(request);
-        if (request.IsTriggered) {
-          RequestQueue.Dequeue();
-        } else break;
+      foreach (var entry in RequestQueue) {
+        var cascade = false;
+        var requests = entry.Value;
+        while (requests.Count > 0) {
+          var req = requests.First.Value;
+          DoRequest(req);
+          if (req.IsTriggered) {
+            requests.RemoveFirst();
+          } else {
+            cascade = true;
+            break;
+          }
+        }
+        if (cascade) break;
       }
     }
 
