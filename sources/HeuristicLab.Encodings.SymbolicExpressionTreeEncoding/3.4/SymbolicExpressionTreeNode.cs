@@ -87,7 +87,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     private void AfterDeserialization() {
       if (subtrees != null) {
         foreach (var subtree in subtrees)
-          if (subtree.Parent != null)
+          if (subtree.Parent == null)
             subtree.Parent = this;
       }
     }
