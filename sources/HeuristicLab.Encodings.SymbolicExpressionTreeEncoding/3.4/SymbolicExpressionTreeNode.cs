@@ -42,7 +42,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       protected set { symbol = value; }
     }
 
-    // parent relation is not persisted or cloned (will be set on AddSubtree or RemoveSubtree)
     [Storable]
     private ISymbolicExpressionTreeNode parent;
     public ISymbolicExpressionTreeNode Parent {
