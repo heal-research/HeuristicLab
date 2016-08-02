@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HeuristicLab.Core;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
@@ -42,17 +43,22 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     protected override int TestPartitionStart { get { return 5001; } }
     protected override int TestPartitionEnd { get { return 10001; } }
 
-    protected static FastRandom rand = new FastRandom();
+    public int Seed { get; }
+
+    public BreimanOne() : this((int)DateTime.Now.Ticks) { }
+    public BreimanOne(int seed) : base() {
+      Seed = seed;
+    }
 
     protected override List<List<double>> GenerateValues() {
       List<List<double>> data = new List<List<double>>();
       List<int> values = new List<int>() { -1, 1 };
-      data.Add(GenerateUniformIntegerDistribution(values, TestPartitionEnd));
+      var rand = new MersenneTwister((uint)Seed);
+      data.Add(GenerateUniformIntegerDistribution(rand, values, TestPartitionEnd));
       values.Add(0);
       for (int i = 0; i < AllowedInputVariables.Count() - 1; i++) {
-        data.Add(GenerateUniformIntegerDistribution(values, TestPartitionEnd));
+        data.Add(GenerateUniformIntegerDistribution(rand, values, TestPartitionEnd));
       }
-
       double x1, x2, x3, x4, x5, x6, x7;
       double f;
       List<double> results = new List<double>();
@@ -78,7 +84,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       return data;
     }
 
-    private List<double> GenerateUniformIntegerDistribution(List<int> classes, int amount) {
+    private List<double> GenerateUniformIntegerDistribution(IRandom rand, List<int> classes, int amount) {
       List<double> values = new List<double>();
       for (int i = 0; i < amount; i++) {
         values.Add(classes[rand.Next(0, classes.Count)]);

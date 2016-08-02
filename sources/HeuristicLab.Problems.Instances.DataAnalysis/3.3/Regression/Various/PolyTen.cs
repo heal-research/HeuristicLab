@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
   public class PolyTen : ArtificialRegressionDataDescriptor {
@@ -44,11 +45,19 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     protected override int TrainingPartitionEnd { get { return 250; } }
     protected override int TestPartitionStart { get { return 250; } }
     protected override int TestPartitionEnd { get { return 500; } }
+    public int Seed { get; }
 
+    public PolyTen() : this((int)DateTime.Now.Ticks) { }
+
+    public PolyTen(int seed) : base() {
+      Seed = seed;
+    }
     protected override List<List<double>> GenerateValues() {
       List<List<double>> data = new List<List<double>>();
+      var rand = new MersenneTwister((uint)Seed);
+
       for (int i = 0; i < AllowedInputVariables.Count(); i++) {
-        data.Add(ValueGenerator.GenerateUniformDistributedValues(TestPartitionEnd, -1, 1).ToList());
+        data.Add(ValueGenerator.GenerateUniformDistributedValues(rand.Next(), TestPartitionEnd, -1, 1).ToList());
       }
 
       double x1, x2, x3, x4, x5, x6, x7, x8, x9, x10;

@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
   public class NguyenFunctionTwelve : ArtificialRegressionDataDescriptor {
@@ -44,11 +45,18 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     protected override int TrainingPartitionEnd { get { return 20; } }
     protected override int TestPartitionStart { get { return 20; } }
     protected override int TestPartitionEnd { get { return 1020; } }
+    public int Seed { get; }
 
+    public NguyenFunctionTwelve() : this((int)System.DateTime.Now.Ticks) { }
+    public NguyenFunctionTwelve(int seed) : base() {
+      Seed = seed;
+    }
     protected override List<List<double>> GenerateValues() {
       List<List<double>> data = new List<List<double>>();
-      data.Add(ValueGenerator.GenerateUniformDistributedValues(1020, 0, 1).ToList());
-      data.Add(ValueGenerator.GenerateUniformDistributedValues(1020, 0, 1).ToList());
+      var rand = new MersenneTwister((uint)Seed);
+
+      data.Add(ValueGenerator.GenerateUniformDistributedValues(rand.Next(), 1020, 0, 1).ToList());
+      data.Add(ValueGenerator.GenerateUniformDistributedValues(rand.Next(), 1020, 0, 1).ToList());
 
       double x, y;
       List<double> results = new List<double>();

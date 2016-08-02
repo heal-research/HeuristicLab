@@ -44,10 +44,15 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     protected override int TrainingPartitionEnd { get { return 20; } }
     protected override int TestPartitionStart { get { return 20; } }
     protected override int TestPartitionEnd { get { return 520; } }
+    public int Seed { get; }
 
+    public NguyenFunctionFour() : this((int)System.DateTime.Now.Ticks) { }
+    public NguyenFunctionFour(int seed) : base() {
+      Seed = seed;
+    }
     protected override List<List<double>> GenerateValues() {
       List<List<double>> data = new List<List<double>>();
-      data.Add(ValueGenerator.GenerateUniformDistributedValues(520, -1, 1).ToList());
+      data.Add(ValueGenerator.GenerateUniformDistributedValues(Seed, 520, -1, 1).ToList());
 
       double x;
       List<double> results = new List<double>();

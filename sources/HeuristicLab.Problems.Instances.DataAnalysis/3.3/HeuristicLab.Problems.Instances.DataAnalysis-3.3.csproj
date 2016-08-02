@@ -171,7 +171,7 @@
     <Compile Include="Regression\Korns\KornsFunctionEight.cs" />
     <Compile Include="Regression\Korns\KornsFunctionEleven.cs" />
     <Compile Include="Regression\Korns\KornsFunctionFive.cs" />
-    <Compile Include="Regression\Korns\KornsFunctionFiveteen.cs" />
+    <Compile Include="Regression\Korns\KornsFunctionFifteen.cs" />
     <Compile Include="Regression\Korns\KornsFunctionFour.cs" />
     <Compile Include="Regression\Korns\KornsFunctionFourteen.cs" />
     <Compile Include="Regression\Korns\KornsFunctionNine.cs" />

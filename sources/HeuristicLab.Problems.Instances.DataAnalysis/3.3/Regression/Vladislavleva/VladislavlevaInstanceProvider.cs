@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
   public class VladislavlevaInstanceProvider : ArtificialRegressionInstanceProvider {
@@ -37,16 +38,24 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       get { return "McDermott et al., 2012 \"Genetic Programming Needs Better Benchmarks\", in Proc. of GECCO 2012."; }
     }
 
+    public int Seed { get; }
+
+    public VladislavlevaInstanceProvider() : this((int)DateTime.Now.Ticks) { }
+    public VladislavlevaInstanceProvider(int seed) : base() {
+      Seed = seed;
+    }
+
     public override IEnumerable<IDataDescriptor> GetDataDescriptors() {
       List<IDataDescriptor> descriptorList = new List<IDataDescriptor>();
-      descriptorList.Add(new KotanchekFunction());
+      var rand = new MersenneTwister((uint)Seed);
+      descriptorList.Add(new KotanchekFunction(rand.Next()));
       descriptorList.Add(new SalutowiczFunctionOneDimensional());
       descriptorList.Add(new SalutowiczFunctionTwoDimensional());
-      descriptorList.Add(new UnwrappedBallFunctionFiveDimensional());
-      descriptorList.Add(new RationalPolynomialThreeDimensional());
-      descriptorList.Add(new SineCosineFunction());
-      descriptorList.Add(new RippleFunction());
-      descriptorList.Add(new RationalPolynomialTwoDimensional());
+      descriptorList.Add(new UnwrappedBallFunctionFiveDimensional(rand.Next()));
+      descriptorList.Add(new RationalPolynomialThreeDimensional(rand.Next()));
+      descriptorList.Add(new SineCosineFunction(rand.Next()));
+      descriptorList.Add(new RippleFunction(rand.Next()));
+      descriptorList.Add(new RationalPolynomialTwoDimensional(rand.Next()));
       return descriptorList;
     }
   }

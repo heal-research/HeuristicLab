@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
   public class UnwrappedBallFunctionFiveDimensional : ArtificialRegressionDataDescriptor {
@@ -44,12 +45,19 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     protected override int TrainingPartitionEnd { get { return 1024; } }
     protected override int TestPartitionStart { get { return 1024; } }
     protected override int TestPartitionEnd { get { return 6024; } }
+    public int Seed { get; }
 
+    public UnwrappedBallFunctionFiveDimensional() : this((int)DateTime.Now.Ticks) { }
+
+    public UnwrappedBallFunctionFiveDimensional(int seed) : base() {
+      Seed = seed;
+    }
     protected override List<List<double>> GenerateValues() {
       List<List<double>> data = new List<List<double>>();
+      var rand = new MersenneTwister((uint)Seed);
       for (int i = 0; i < AllowedInputVariables.Count(); i++) {
-        data.Add(ValueGenerator.GenerateUniformDistributedValues(1024, 0.05, 6.05).ToList());
-        data[i].AddRange(ValueGenerator.GenerateUniformDistributedValues(5000, -0.25, 6.35));
+        data.Add(ValueGenerator.GenerateUniformDistributedValues(rand.Next(), 1024, 0.05, 6.05).ToList());
+        data[i].AddRange(ValueGenerator.GenerateUniformDistributedValues(rand.Next(), 5000, -0.25, 6.35));
       }
 
       double x1, x2, x3, x4, x5;

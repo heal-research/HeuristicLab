@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
+using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
   public class KeijzerFunctionFifteen : ArtificialRegressionDataDescriptor {
@@ -45,16 +46,23 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     protected override int TrainingPartitionEnd { get { return 20; } }
     protected override int TestPartitionStart { get { return 20; } }
     protected override int TestPartitionEnd { get { return 20 + (601 * 601); } }
+    public int Seed { get; }
 
+    public KeijzerFunctionFifteen() : this((int)System.DateTime.Now.Ticks) {
+    }
+    public KeijzerFunctionFifteen(int seed) : base() {
+      Seed = seed;
+    }
     protected override List<List<double>> GenerateValues() {
       List<List<double>> data = new List<List<double>>();
       List<double> oneVariableTestData = SequenceGenerator.GenerateSteps(-3, 3, 0.01m).Select(v => (double)v).ToList();
       List<List<double>> testData = new List<List<double>>() { oneVariableTestData, oneVariableTestData };
 
       var combinations = ValueGenerator.GenerateAllCombinationsOfValuesInLists(testData).ToList();
+      var rand = new MersenneTwister((uint)Seed);
 
       for (int i = 0; i < AllowedInputVariables.Count(); i++) {
-        data.Add(ValueGenerator.GenerateUniformDistributedValues(20, -3, 3).ToList());
+        data.Add(ValueGenerator.GenerateUniformDistributedValues(rand.Next(), 20, -3, 3).ToList());
         data[i].AddRange(combinations[i]);
       }
 

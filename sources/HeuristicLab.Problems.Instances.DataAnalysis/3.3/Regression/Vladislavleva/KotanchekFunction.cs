@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
+using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
   public class KotanchekFunction : ArtificialRegressionDataDescriptor {
@@ -46,14 +47,23 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     protected override int TestPartitionStart { get { return 100; } }
     protected override int TestPartitionEnd { get { return 100 + (45 * 45); } }
 
+    public int Seed { get; }
+
+    public KotanchekFunction() : this((int)DateTime.Now.Ticks) { }
+
+    public KotanchekFunction(int seed) : base() {
+      Seed = seed;
+    }
     protected override List<List<double>> GenerateValues() {
       List<List<double>> data = new List<List<double>>();
 
       List<double> oneVariableTestData = SequenceGenerator.GenerateSteps(-0.2m, 4.2m, 0.1m).Select(v => (double)v).ToList();
       List<List<double>> testData = new List<List<double>>() { oneVariableTestData, oneVariableTestData };
       var combinations = ValueGenerator.GenerateAllCombinationsOfValuesInLists(testData).ToList<IEnumerable<double>>();
+      var rand = new MersenneTwister((uint)Seed);
+
       for (int i = 0; i < AllowedInputVariables.Count(); i++) {
-        data.Add(ValueGenerator.GenerateUniformDistributedValues(100, 0.3, 4).ToList());
+        data.Add(ValueGenerator.GenerateUniformDistributedValues(rand.Next(), 100, 0.3, 4).ToList());
         data[i].AddRange(combinations[i]);
       }
 
