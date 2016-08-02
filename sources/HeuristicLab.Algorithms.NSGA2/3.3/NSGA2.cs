@@ -38,7 +38,7 @@ namespace HeuristicLab.Algorithms.NSGA2 {
   /// The Nondominated Sorting Genetic Algorithm II was introduced in Deb et al. 2002. A Fast and Elitist Multiobjective Genetic Algorithm: NSGA-II. IEEE Transactions on Evolutionary Computation, 6(2), pp. 182-197.
   /// </summary>
   [Item("NSGA-II", "The Nondominated Sorting Genetic Algorithm II was introduced in Deb et al. 2002. A Fast and Elitist Multiobjective Genetic Algorithm: NSGA-II. IEEE Transactions on Evolutionary Computation, 6(2), pp. 182-197.")]
-  [Creatable(CreatableAttribute.Categories.Algorithms, Priority = 100)]
+  [Creatable(CreatableAttribute.Categories.PopulationBasedAlgorithms, Priority = 135)]
   [StorableClass]
   public class NSGA2 : HeuristicOptimizationEngineAlgorithm, IStorableContent {
     public string Filename { get; set; }

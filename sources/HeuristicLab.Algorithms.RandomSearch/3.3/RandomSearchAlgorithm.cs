@@ -35,7 +35,7 @@ using HeuristicLab.Random;
 
 namespace HeuristicLab.Algorithms.RandomSearch {
   [Item("Random Search Algorithm (RS)", "A random search algorithm.")]
-  [Creatable(CreatableAttribute.Categories.Algorithms, Priority = 150)]
+  [Creatable(CreatableAttribute.Categories.SingleSolutionAlgorithms, Priority = 150)]
   [StorableClass]
   public sealed class RandomSearchAlgorithm : HeuristicOptimizationEngineAlgorithm, IStorableContent {
     public string Filename { get; set; }
