@@ -29,7 +29,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public double NormalizedMeanSquaredError {
       get {
-        double var = originalVarianceCalculator.Variance;
+        double var = originalVarianceCalculator.PopulationVariance;
         double m = meanSquaredErrorCalculator.Mean;
         return var > 0 ? m / var : 0.0;
       }
@@ -43,7 +43,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     #region IOnlineCalculator Members
     public OnlineCalculatorError ErrorState {
-      get { return meanSquaredErrorCalculator.MeanErrorState | originalVarianceCalculator.VarianceErrorState; }
+      get { return meanSquaredErrorCalculator.MeanErrorState | originalVarianceCalculator.PopulationVarianceErrorState; }
     }
     public double Value {
       get { return NormalizedMeanSquaredError; }
