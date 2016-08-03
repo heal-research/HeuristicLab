@@ -158,7 +158,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       int n = inputData.GetLength(0);
       int columns = inputData.GetLength(1);
       double[] x = new double[columns];
-      double[] ys = new double[columns];
+      double[] ys = new double[this.RandomForest.innerobj.ntrees];
 
       for (int row = 0; row < n; row++) {
         for (int column = 0; column < columns; column++) {
