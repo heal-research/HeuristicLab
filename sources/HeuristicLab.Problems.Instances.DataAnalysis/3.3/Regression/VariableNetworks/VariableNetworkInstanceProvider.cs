@@ -39,7 +39,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     public override string ReferencePublication {
       get { return ""; }
     }
-    public int Seed { get; }
+    public int Seed { get; private set; }
 
     public VariableNetworkInstanceProvider() : this((int)DateTime.Now.Ticks) { }
     public VariableNetworkInstanceProvider(int seed) : base() {

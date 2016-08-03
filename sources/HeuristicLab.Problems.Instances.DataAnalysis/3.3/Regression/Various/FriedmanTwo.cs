@@ -42,7 +42,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     protected override int TestPartitionStart { get { return 5000; } }
     protected override int TestPartitionEnd { get { return 10000; } }
 
-    public int Seed { get; }
+    public int Seed { get; private set; }
 
     public FriedmanTwo() : this((int)DateTime.Now.Ticks) { }
 

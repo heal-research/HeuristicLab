@@ -46,7 +46,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     protected override int TrainingPartitionEnd { get { return 30; } }
     protected override int TestPartitionStart { get { return 30; } }
     protected override int TestPartitionEnd { get { return 30 + (306 * 306); } }
-    public int Seed { get; }
+    public int Seed { get; private set; }
 
     public SineCosineFunction() : this((int)DateTime.Now.Ticks) { }
 

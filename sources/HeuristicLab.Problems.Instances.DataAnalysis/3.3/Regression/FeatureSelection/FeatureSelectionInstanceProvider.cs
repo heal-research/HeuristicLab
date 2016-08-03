@@ -40,7 +40,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     public override string ReferencePublication {
       get { return ""; }
     }
-    public int Seed { get; }
+    public int Seed { get; private set; }
 
     public FeatureSelectionInstanceProvider() : base() {
       Seed = (int)DateTime.Now.Ticks;

@@ -49,7 +49,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     protected override int TrainingPartitionEnd { get { return 10000; } }
     protected override int TestPartitionStart { get { return 10000; } }
     protected override int TestPartitionEnd { get { return 20000; } }
-    public int Seed { get; }
+    public int Seed { get; private set; }
 
     public KornsFunctionFourteen() : this((int)System.DateTime.Now.Ticks) {
     }

@@ -45,7 +45,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     protected override int TrainingPartitionEnd { get { return 250; } }
     protected override int TestPartitionStart { get { return 250; } }
     protected override int TestPartitionEnd { get { return 500; } }
-    public int Seed { get; }
+    public int Seed { get; private set; }
 
     public PolyTen() : this((int)DateTime.Now.Ticks) { }
 

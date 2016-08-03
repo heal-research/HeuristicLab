@@ -50,7 +50,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     protected override int TrainingPartitionEnd { get { return 676; } }
     protected override int TestPartitionStart { get { return 676; } }
     protected override int TestPartitionEnd { get { return 1676; } }
-    public int Seed { get; }
+    public int Seed { get; private set; }
 
     public SpatialCoevolution() : this((int)DateTime.Now.Ticks) { }
 

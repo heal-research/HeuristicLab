@@ -47,7 +47,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     protected override int TestPartitionStart { get { return 50; } }
     protected override int TestPartitionEnd { get { return 50 + (34 * 34); } }
 
-    public int Seed { get; }
+    public int Seed { get; private set; }
 
     public RationalPolynomialTwoDimensional() : this((int)DateTime.Now.Ticks) { }
 

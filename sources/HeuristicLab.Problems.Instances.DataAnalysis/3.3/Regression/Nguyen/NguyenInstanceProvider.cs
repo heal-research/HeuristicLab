@@ -37,7 +37,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     public override string ReferencePublication {
       get { return "McDermott et al., 2012 \"Genetic Programming Needs Better Benchmarks\", in Proc. of GECCO 2012."; }
     }
-    public int Seed { get; }
+    public int Seed { get; private set; }
 
     public NguyenInstanceProvider() : this((int)System.DateTime.Now.Ticks) { }
     public NguyenInstanceProvider(int seed) : base() {

@@ -39,7 +39,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     public override string ReferencePublication {
       get { return "Friedman, Jerome H. 'Greedy function approximation: a gradient boosting machine.' Annals of statistics (2001): 1189-1232."; }
     }
-    public int Seed { get; }
+    public int Seed { get; private set; }
 
     public FriedmanRandomFunctionInstanceProvider() : base() {
     }

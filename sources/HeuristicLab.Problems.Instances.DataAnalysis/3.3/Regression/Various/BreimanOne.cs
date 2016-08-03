@@ -43,7 +43,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     protected override int TestPartitionStart { get { return 5001; } }
     protected override int TestPartitionEnd { get { return 10001; } }
 
-    public int Seed { get; }
+    public int Seed { get; private set; }
 
     public BreimanOne() : this((int)DateTime.Now.Ticks) { }
     public BreimanOne(int seed) : base() {

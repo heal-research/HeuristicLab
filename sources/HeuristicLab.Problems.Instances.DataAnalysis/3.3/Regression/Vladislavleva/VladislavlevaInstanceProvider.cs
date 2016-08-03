@@ -38,7 +38,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       get { return "McDermott et al., 2012 \"Genetic Programming Needs Better Benchmarks\", in Proc. of GECCO 2012."; }
     }
 
-    public int Seed { get; }
+    public int Seed { get; private set; }
 
     public VladislavlevaInstanceProvider() : this((int)DateTime.Now.Ticks) { }
     public VladislavlevaInstanceProvider(int seed) : base() {

@@ -44,7 +44,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     protected override int TrainingPartitionEnd { get { return 20; } }
     protected override int TestPartitionStart { get { return 20; } }
     protected override int TestPartitionEnd { get { return 520; } }
-    public int Seed { get; }
+    public int Seed { get; private set; }
 
     public NguyenFunctionOne() : this((int)System.DateTime.Now.Ticks) { }
     public NguyenFunctionOne(int seed) : base() {

@@ -45,7 +45,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     protected override int TrainingPartitionEnd { get { return 300; } }
     protected override int TestPartitionStart { get { return 300; } }
     protected override int TestPartitionEnd { get { return 300 + 1000; } }
-    public int Seed { get; }
+    public int Seed { get; private set; }
 
     public RippleFunction() : this((int)DateTime.Now.Ticks) { }
 

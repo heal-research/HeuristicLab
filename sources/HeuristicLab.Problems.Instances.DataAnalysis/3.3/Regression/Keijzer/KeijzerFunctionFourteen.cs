@@ -46,7 +46,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     protected override int TrainingPartitionEnd { get { return 20; } }
     protected override int TestPartitionStart { get { return 20; } }
     protected override int TestPartitionEnd { get { return 20 + (601 * 601); } }
-    public int Seed { get; }
+    public int Seed { get; private set; }
 
     public KeijzerFunctionFourteen() : this((int)System.DateTime.Now.Ticks) {
     }

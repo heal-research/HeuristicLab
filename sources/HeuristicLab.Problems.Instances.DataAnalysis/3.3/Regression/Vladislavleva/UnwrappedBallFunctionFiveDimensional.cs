@@ -45,7 +45,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     protected override int TrainingPartitionEnd { get { return 1024; } }
     protected override int TestPartitionStart { get { return 1024; } }
     protected override int TestPartitionEnd { get { return 6024; } }
-    public int Seed { get; }
+    public int Seed { get; private set; }
 
     public UnwrappedBallFunctionFiveDimensional() : this((int)DateTime.Now.Ticks) { }
 
