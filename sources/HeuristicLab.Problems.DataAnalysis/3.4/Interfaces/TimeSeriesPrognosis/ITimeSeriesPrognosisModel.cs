@@ -21,6 +21,10 @@
 
 using System.Collections.Generic;
 namespace HeuristicLab.Problems.DataAnalysis {
+  /// <summary>
+  /// Interface for all time series prognosis models.
+  /// <remarks>All methods and properties in in this interface must be implemented thread safely</remarks>
+  /// </summary> 
   public interface ITimeSeriesPrognosisModel : IRegressionModel {
     IEnumerable<IEnumerable<double>> GetPrognosedValues(IDataset dataset, IEnumerable<int> rows, IEnumerable<int> horizons);
     ITimeSeriesPrognosisSolution CreateTimeSeriesPrognosisSolution(ITimeSeriesPrognosisProblemData problemData);

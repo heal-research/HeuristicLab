@@ -56,7 +56,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
 
     public override IEnumerable<string> VariablesUsedForPrediction {
-      get { return actualModel.Models.SelectMany(x => x.VariablesUsedForPrediction).Distinct().OrderBy(x => x); }
+      get
+      {
+        lock (actualModel) { if (actualModel == null) actualModel = RecalculateModel(); }
+        return actualModel.Models.SelectMany(x => x.VariablesUsedForPrediction).Distinct().OrderBy(x => x);
+      }
     }
 
     [StorableConstructor]
@@ -104,7 +108,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     // forward message to actual model (recalculate model first if necessary)
     public override IEnumerable<double> GetEstimatedValues(IDataset dataset, IEnumerable<int> rows) {
-      if (actualModel == null) actualModel = RecalculateModel();
+      lock (actualModel) { if (actualModel == null) actualModel = RecalculateModel(); }
       return actualModel.GetEstimatedValues(dataset, rows);
     }
 
@@ -118,14 +122,14 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     public IEnumerable<IRegressionModel> Models {
       get {
-        if (actualModel == null) actualModel = RecalculateModel();
+        lock(actualModel) { if (actualModel == null) actualModel = RecalculateModel();}
         return actualModel.Models;
       }
     }
 
     public IEnumerable<double> Weights {
       get {
-        if (actualModel == null) actualModel = RecalculateModel();
+        lock(actualModel) { if (actualModel == null) actualModel = RecalculateModel();}
         return actualModel.Weights;
       }
     }

@@ -199,13 +199,16 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         for (int column = 0; column < columns; column++) {
           x[column] = inputData[row, column];
         }
-        int actNeighbours = alglib.nearestneighbor.kdtreequeryknn(kdTree, x, k, false);
-        alglib.nearestneighbor.kdtreequeryresultsdistances(kdTree, ref dists);
-        alglib.nearestneighbor.kdtreequeryresultsxy(kdTree, ref neighbours); // gkronber: this call changes the kdTree data structure
+        int numNeighbours;
+        lock (kdTree) { // gkronber: the following calls change the kdTree data structure
+          numNeighbours = alglib.nearestneighbor.kdtreequeryknn(kdTree, x, k, false);
+          alglib.nearestneighbor.kdtreequeryresultsdistances(kdTree, ref dists);
+          alglib.nearestneighbor.kdtreequeryresultsxy(kdTree, ref neighbours);
+        }
 
         double distanceWeightedValue = 0.0;
         double distsSum = 0.0;
-        for (int i = 0; i < actNeighbours; i++) {
+        for (int i = 0; i < numNeighbours; i++) {
           distanceWeightedValue += neighbours[i, columns] / dists[i];
           distsSum += 1.0 / dists[i];
         }
@@ -232,12 +235,15 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         for (int column = 0; column < columns; column++) {
           x[column] = inputData[row, column];
         }
-        int actNeighbours = alglib.nearestneighbor.kdtreequeryknn(kdTree, x, k, false);
-        alglib.nearestneighbor.kdtreequeryresultsdistances(kdTree, ref dists);
-        alglib.nearestneighbor.kdtreequeryresultsxy(kdTree, ref neighbours);
-
+        int numNeighbours;
+        lock (kdTree) {
+          // gkronber: the following calls change the kdTree data structure
+          numNeighbours = alglib.nearestneighbor.kdtreequeryknn(kdTree, x, k, false);
+          alglib.nearestneighbor.kdtreequeryresultsdistances(kdTree, ref dists);
+          alglib.nearestneighbor.kdtreequeryresultsxy(kdTree, ref neighbours);
+        }
         Array.Clear(y, 0, y.Length);
-        for (int i = 0; i < actNeighbours; i++) {
+        for (int i = 0; i < numNeighbours; i++) {
           int classValue = (int)Math.Round(neighbours[i, columns]);
           y[classValue]++;
         }

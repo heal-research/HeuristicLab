@@ -21,6 +21,10 @@
 
 using System.Collections.Generic;
 namespace HeuristicLab.Problems.DataAnalysis {
+  /// <summary>
+  /// Interface for all classification models.
+  /// <remarks>All methods and properties in in this interface must be implemented thread safely</remarks>
+  /// </summary>
   public interface IClassificationModel : IDataAnalysisModel {
     IEnumerable<double> GetEstimatedClassValues(IDataset dataset, IEnumerable<int> rows);
     IClassificationSolution CreateClassificationSolution(IClassificationProblemData problemData);
