@@ -20,6 +20,8 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace HeuristicLab.IGraph.Wrappers {
   public sealed class Vector : IDisposable {
@@ -38,13 +40,17 @@ namespace HeuristicLab.IGraph.Wrappers {
       vector = new igraph_vector_t();
       DllImporter.igraph_vector_init(vector, length);
     }
-
+    public Vector(IEnumerable<double> data) {
+      if (data == null) throw new ArgumentNullException("data");
+      var vec = data.ToArray();
+      vector = new igraph_vector_t();
+      DllImporter.igraph_vector_init_copy(vector, vec);
+    }
     public Vector(Vector other) {
       if (other == null) throw new ArgumentNullException("other");
       vector = new igraph_vector_t();
       DllImporter.igraph_vector_copy(vector, other.NativeInstance);
     }
-
     ~Vector() {
       DllImporter.igraph_vector_destroy(vector);
     }
@@ -54,6 +60,22 @@ namespace HeuristicLab.IGraph.Wrappers {
       DllImporter.igraph_vector_destroy(vector);
       vector = null;
       GC.SuppressFinalize(this);
+    }
+
+    public void Fill(double v) {
+      DllImporter.igraph_vector_fill(vector, v);
+    }
+
+    public void Reverse() {
+      DllImporter.igraph_vector_reverse(vector);
+    }
+
+    public void Shuffle() {
+      DllImporter.igraph_vector_shuffle(vector);
+    }
+
+    public void Scale(double by) {
+      DllImporter.igraph_vector_scale(vector, by);
     }
 
     public double this[int index] {
@@ -68,11 +90,7 @@ namespace HeuristicLab.IGraph.Wrappers {
     }
 
     public double[] ToArray() {
-      var result = new double[Length];
-      for (var i = 0; i < result.Length; i++) {
-        result[i] = DllImporter.igraph_vector_e(vector, i);
-      }
-      return result;
+      return DllImporter.igraph_vector_to_array(vector);
     }
   }
 }

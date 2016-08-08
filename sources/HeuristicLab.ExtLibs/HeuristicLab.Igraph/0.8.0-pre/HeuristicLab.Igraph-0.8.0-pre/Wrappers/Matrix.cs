@@ -38,6 +38,18 @@ namespace HeuristicLab.IGraph.Wrappers {
       matrix = new igraph_matrix_t();
       DllImporter.igraph_matrix_copy(matrix, other.NativeInstance);
     }
+    public Matrix(double[,] mat) {
+      if (mat == null) throw new ArgumentNullException("mat");
+      matrix = new igraph_matrix_t();
+      var nrows = mat.GetLength(0);
+      var ncols = mat.GetLength(1);
+      DllImporter.igraph_matrix_init(matrix, nrows, ncols);
+      var colwise = new double[ncols * nrows];
+      for (var j = 0; j < ncols; j++)
+        for (var i = 0; i < nrows; i++)
+          colwise[j * nrows + i] = mat[i, j];
+      DllImporter.igraph_vector_init_copy(matrix.data, colwise);
+    }
     ~Matrix() {
       DllImporter.igraph_matrix_destroy(matrix);
     }
@@ -47,6 +59,18 @@ namespace HeuristicLab.IGraph.Wrappers {
       DllImporter.igraph_matrix_destroy(matrix);
       matrix = null;
       GC.SuppressFinalize(this);
+    }
+
+    public void Fill(double v) {
+      DllImporter.igraph_matrix_fill(matrix, v);
+    }
+
+    public void Transpose() {
+      DllImporter.igraph_matrix_transpose(matrix);
+    }
+
+    public void Scale(double by) {
+      DllImporter.igraph_matrix_scale(matrix, by);
     }
 
     public double this[int row, int col] {

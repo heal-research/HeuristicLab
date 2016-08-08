@@ -86,7 +86,7 @@ namespace HeuristicLab.IGraph {
       arpackoptions.which[0] = arpackoptions.which[1] = 'X';
       arpackoptions.nev = 1;
       arpackoptions.ishift = 1;
-      arpackoptions.mxiter = 3000;
+      arpackoptions.mxiter = 1000;
       arpackoptions.nb = 1;
       arpackoptions.mode = 1;
       arpackoptions.iparam[0] = arpackoptions.ishift;
@@ -167,12 +167,22 @@ namespace HeuristicLab.IGraph {
     internal static int igraph_vector_init(igraph_vector_t vector, int length) {
       return X86 ? igraph_vector_init_x86(vector, length) : igraph_vector_init_x64(vector, length);
     }
+    internal static int igraph_vector_init_copy(igraph_vector_t vector, double[] vec) {
+      return X86 ? igraph_vector_init_copy_x86(vector, vec, vec.Length) : igraph_vector_init_copy_x64(vector, vec, vec.Length);
+    }
     internal static void igraph_vector_destroy(igraph_vector_t vector) {
       if (X86) igraph_vector_destroy_x86(vector);
       else igraph_vector_destroy_x64(vector);
     }
     internal static int igraph_vector_copy(igraph_vector_t to, igraph_vector_t from) {
       return X86 ? igraph_vector_copy_x86(to, from) : igraph_vector_copy_x64(to, from);
+    }
+    internal static double[] igraph_vector_to_array(igraph_vector_t from) {
+      var len = igraph_vector_size(from);
+      var result = new double[len];
+      if (X86) igraph_vector_copy_to_x86(from, result);
+      else igraph_vector_copy_to_x64(from, result);
+      return result;
     }
 
     internal static int igraph_vector_size(igraph_vector_t vector) {
@@ -187,12 +197,31 @@ namespace HeuristicLab.IGraph {
       if (X86) igraph_vector_set_x86(vector, index, value);
       else igraph_vector_set_x64(vector, index, value);
     }
+    internal static void igraph_vector_fill(igraph_vector_t vector, double v) {
+      if (X86) igraph_vector_fill_x86(vector, v);
+      else igraph_vector_fill_x64(vector, v);
+    }
+    internal static void igraph_vector_scale(igraph_vector_t vector, double by) {
+      if (X86) igraph_vector_scale_x86(vector, by);
+      else igraph_vector_scale_x64(vector, by);
+    }
+
+    internal static int igraph_vector_reverse(igraph_vector_t vector) {
+      return X86 ? igraph_vector_reverse_x86(vector) : igraph_vector_reverse_x64(vector);
+    }
+    internal static int igraph_vector_shuffle(igraph_vector_t vector) {
+      return X86 ? igraph_vector_shuffle_x86(vector) : igraph_vector_shuffle_x64(vector);
+    }
 
     #region Platform specific DLL imports
     [DllImport(X86Dll, EntryPoint = "igraph_vector_init", CallingConvention = CallingConvention.Cdecl)]
     private static extern int igraph_vector_init_x86([In, Out]igraph_vector_t vector, int length);
     [DllImport(X64Dll, EntryPoint = "igraph_vector_init", CallingConvention = CallingConvention.Cdecl)]
     private static extern int igraph_vector_init_x64([In, Out]igraph_vector_t vector, int length);
+    [DllImport(X86Dll, EntryPoint = "igraph_vector_init_copy", CallingConvention = CallingConvention.Cdecl)]
+    private static extern int igraph_vector_init_copy_x86([In, Out]igraph_vector_t vector, double[] vec, int length);
+    [DllImport(X64Dll, EntryPoint = "igraph_vector_init_copy", CallingConvention = CallingConvention.Cdecl)]
+    private static extern int igraph_vector_init_copy_x64([In, Out]igraph_vector_t vector, double[] vec, int length);
     [DllImport(X86Dll, EntryPoint = "igraph_vector_destroy", CallingConvention = CallingConvention.Cdecl)]
     private static extern void igraph_vector_destroy_x86([In, Out]igraph_vector_t vector);
     [DllImport(X64Dll, EntryPoint = "igraph_vector_destroy", CallingConvention = CallingConvention.Cdecl)]
@@ -213,6 +242,26 @@ namespace HeuristicLab.IGraph {
     private static extern int igraph_vector_copy_x86([In, Out]igraph_vector_t to, igraph_vector_t from);
     [DllImport(X64Dll, EntryPoint = "igraph_vector_copy", CallingConvention = CallingConvention.Cdecl)]
     private static extern int igraph_vector_copy_x64([In, Out]igraph_vector_t to, igraph_vector_t from);
+    [DllImport(X86Dll, EntryPoint = "igraph_vector_copy_to", CallingConvention = CallingConvention.Cdecl)]
+    private static extern void igraph_vector_copy_to_x86(igraph_vector_t from, [In, Out]double[] to);
+    [DllImport(X64Dll, EntryPoint = "igraph_vector_copy", CallingConvention = CallingConvention.Cdecl)]
+    private static extern void igraph_vector_copy_to_x64(igraph_vector_t from, [In, Out]double[] to);
+    [DllImport(X86Dll, EntryPoint = "igraph_vector_fill", CallingConvention = CallingConvention.Cdecl)]
+    private static extern int igraph_vector_fill_x86([In, Out]igraph_vector_t vector, double v);
+    [DllImport(X64Dll, EntryPoint = "igraph_vector_fill", CallingConvention = CallingConvention.Cdecl)]
+    private static extern int igraph_vector_fill_x64([In, Out]igraph_vector_t vector, double v);
+    [DllImport(X86Dll, EntryPoint = "igraph_vector_reverse", CallingConvention = CallingConvention.Cdecl)]
+    private static extern int igraph_vector_reverse_x86([In, Out]igraph_vector_t vector);
+    [DllImport(X64Dll, EntryPoint = "igraph_vector_reverse", CallingConvention = CallingConvention.Cdecl)]
+    private static extern int igraph_vector_reverse_x64([In, Out]igraph_vector_t vector);
+    [DllImport(X86Dll, EntryPoint = "igraph_vector_shuffle", CallingConvention = CallingConvention.Cdecl)]
+    private static extern int igraph_vector_shuffle_x86([In, Out]igraph_vector_t vector);
+    [DllImport(X64Dll, EntryPoint = "igraph_vector_shuffle", CallingConvention = CallingConvention.Cdecl)]
+    private static extern int igraph_vector_shuffle_x64([In, Out]igraph_vector_t vector);
+    [DllImport(X86Dll, EntryPoint = "igraph_vector_scale", CallingConvention = CallingConvention.Cdecl)]
+    private static extern void igraph_vector_scale_x86([In, Out]igraph_vector_t vector, double by);
+    [DllImport(X64Dll, EntryPoint = "igraph_vector_scale", CallingConvention = CallingConvention.Cdecl)]
+    private static extern void igraph_vector_scale_x64([In, Out]igraph_vector_t vector, double by);
     #endregion
     #endregion
 
@@ -237,6 +286,20 @@ namespace HeuristicLab.IGraph {
       else igraph_matrix_set_x64(matrix, row, col, value);
     }
 
+    internal static void igraph_matrix_fill(igraph_matrix_t matrix, double v) {
+      if (X86) igraph_matrix_fill_x86(matrix, v);
+      else igraph_matrix_fill_x64(matrix, v);
+    }
+
+    internal static int igraph_matrix_transpose(igraph_matrix_t matrix) {
+      return X86 ? igraph_matrix_transpose_x86(matrix) : igraph_matrix_transpose_x64(matrix);
+    }
+
+    internal static void igraph_matrix_scale(igraph_matrix_t matrix, double by) {
+      if (X86) igraph_matrix_scale_x86(matrix, by);
+      else igraph_matrix_scale_x64(matrix, by);
+    }
+
     #region Platform specific DLL imports
     [DllImport(X86Dll, EntryPoint = "igraph_matrix_init", CallingConvention = CallingConvention.Cdecl)]
     private static extern int igraph_matrix_init_x86([In, Out]igraph_matrix_t matrix, int nrow, int ncol);
@@ -258,6 +321,18 @@ namespace HeuristicLab.IGraph {
     private static extern int igraph_matrix_copy_x86([In, Out]igraph_matrix_t to, igraph_matrix_t from);
     [DllImport(X64Dll, EntryPoint = "igraph_matrix_copy", CallingConvention = CallingConvention.Cdecl)]
     private static extern int igraph_matrix_copy_x64([In, Out]igraph_matrix_t to, igraph_matrix_t from);
+    [DllImport(X86Dll, EntryPoint = "igraph_matrix_fill", CallingConvention = CallingConvention.Cdecl)]
+    private static extern void igraph_matrix_fill_x86([In, Out]igraph_matrix_t matrix, double v);
+    [DllImport(X64Dll, EntryPoint = "igraph_matrix_fill", CallingConvention = CallingConvention.Cdecl)]
+    private static extern void igraph_matrix_fill_x64([In, Out]igraph_matrix_t matrix, double v);
+    [DllImport(X86Dll, EntryPoint = "igraph_matrix_transpose", CallingConvention = CallingConvention.Cdecl)]
+    private static extern int igraph_matrix_transpose_x86([In, Out]igraph_matrix_t matrix);
+    [DllImport(X64Dll, EntryPoint = "igraph_matrix_transpose", CallingConvention = CallingConvention.Cdecl)]
+    private static extern int igraph_matrix_transpose_x64([In, Out]igraph_matrix_t matrix);
+    [DllImport(X86Dll, EntryPoint = "igraph_matrix_scale", CallingConvention = CallingConvention.Cdecl)]
+    private static extern int igraph_matrix_scale_x86([In, Out]igraph_matrix_t matrix, double by);
+    [DllImport(X64Dll, EntryPoint = "igraph_matrix_scale", CallingConvention = CallingConvention.Cdecl)]
+    private static extern int igraph_matrix_scale_x64([In, Out]igraph_matrix_t matrix, double by);
     #endregion
     #endregion
 
@@ -270,6 +345,17 @@ namespace HeuristicLab.IGraph {
     }
     internal static int igraph_layout_davidson_harel(igraph_t graph, igraph_matrix_t res, bool use_seed, int maxiter, int fineiter, double cool_fact, double weight_node_dist, double weight_border, double weight_edge_lengths, double weight_edge_crossings, double weight_node_edge_dist) {
       return X86 ? igraph_layout_davidson_harel_x86(graph, res, use_seed, maxiter, fineiter, cool_fact, weight_node_dist, weight_border, weight_edge_lengths, weight_edge_crossings, weight_node_edge_dist) : igraph_layout_davidson_harel_x64(graph, res, use_seed, maxiter, fineiter, cool_fact, weight_node_dist, weight_border, weight_edge_lengths, weight_edge_crossings, weight_node_edge_dist);
+    }
+    internal static int igraph_layout_mds(igraph_t graph, igraph_matrix_t res, igraph_matrix_t dist = null, int dim = 2) {
+      var arpackoptions = GetDefaultArpackOptions();
+      var options = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(igraph_arpack_options_t)));
+      Marshal.StructureToPtr(arpackoptions, options, false);
+      try {
+        return X86 ? igraph_layout_mds_x86(graph, res, dist, dim, options) : igraph_layout_mds_x64(graph, res, dist, dim, options);
+      } finally {
+        Marshal.DestroyStructure(options, typeof(igraph_arpack_options_t));
+        Marshal.FreeHGlobal(options);
+      }
     }
 
     #region Platform specific DLL imports
@@ -285,6 +371,10 @@ namespace HeuristicLab.IGraph {
     private static extern int igraph_layout_davidson_harel_x86(igraph_t graph, [In, Out]igraph_matrix_t res, bool use_seed, int maxiter, int fineiter, double cool_fact, double weight_node_dist, double weight_border, double weight_edge_lengths, double weight_edge_crossings, double weight_node_edge_dist);
     [DllImport(X64Dll, EntryPoint = "igraph_layout_davidson_harel", CallingConvention = CallingConvention.Cdecl)]
     private static extern int igraph_layout_davidson_harel_x64(igraph_t graph, [In, Out]igraph_matrix_t res, bool use_seed, int maxiter, int fineiter, double cool_fact, double weight_node_dist, double weight_border, double weight_edge_lengths, double weight_edge_crossings, double weight_node_edge_dist);
+    [DllImport(X86Dll, EntryPoint = "igraph_layout_mds", CallingConvention = CallingConvention.Cdecl)]
+    private static extern int igraph_layout_mds_x86(igraph_t graph, [In, Out]igraph_matrix_t res, igraph_matrix_t dist, int dim, IntPtr options);
+    [DllImport(X64Dll, EntryPoint = "igraph_layout_mds", CallingConvention = CallingConvention.Cdecl)]
+    private static extern int igraph_layout_mds_x64(igraph_t graph, [In, Out]igraph_matrix_t res, igraph_matrix_t dist, int dim, IntPtr options);
     #endregion
     #endregion
 

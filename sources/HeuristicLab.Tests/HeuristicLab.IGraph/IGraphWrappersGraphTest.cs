@@ -28,6 +28,9 @@ namespace HeuristicLab.Tests {
   [TestClass]
   public class IGraphWrappersGraphTest {
     [TestMethod]
+    [TestCategory("ExtLibs")]
+    [TestCategory("igraph")]
+    [TestProperty("Time", "short")]
     public void IGraphWrappersGraphConstructionAndFinalization() {
       var graph = new Graph(5, new[] {
         Tuple.Create(0, 1),
@@ -50,6 +53,9 @@ namespace HeuristicLab.Tests {
     }
 
     [TestMethod]
+    [TestCategory("ExtLibs")]
+    [TestCategory("igraph")]
+    [TestProperty("Time", "short")]
     public void TestDensity() {
       var graph = new Graph(5, new[] {
         Tuple.Create(0, 1),
@@ -81,6 +87,9 @@ namespace HeuristicLab.Tests {
     }
 
     [TestMethod]
+    [TestCategory("ExtLibs")]
+    [TestCategory("igraph")]
+    [TestProperty("Time", "short")]
     public void TestPageRank() {
       var graph = new Graph(4, new[] {
         Tuple.Create(0, 1),

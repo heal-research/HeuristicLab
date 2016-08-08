@@ -85,9 +85,9 @@ namespace HeuristicLab.IGraph.Wrappers {
       return LayoutWithFruchtermanReingold(500, Math.Sqrt(Vertices), initialCoords);
     }
     public Matrix LayoutWithFruchtermanReingold(int niter, double startTemp, Matrix initialCoords = null) {
-      if (initialCoords != null && (initialCoords.Rows != graph.n || initialCoords.Columns != 2))
+      if (initialCoords != null && (initialCoords.Rows != Vertices || initialCoords.Columns != 2))
         throw new ArgumentException("Initial coordinate matrix does not contain the required number of rows and columns.", "initialCoords");
-      var coords = initialCoords != null ? new Matrix(initialCoords) : new Matrix(graph.n, 2);
+      var coords = initialCoords != null ? new Matrix(initialCoords) : new Matrix(Vertices, 2);
       DllImporter.igraph_layout_fruchterman_reingold(graph, coords.NativeInstance, initialCoords != null, niter, startTemp, igraph_layout_grid_t.IGRAPH_LAYOUT_AUTOGRID, null, null, null, null, null);
       return coords;
     }
@@ -96,9 +96,9 @@ namespace HeuristicLab.IGraph.Wrappers {
       return LayoutWithKamadaKawai(50 * Vertices, 0, Vertices, initialCoords);
     }
     public Matrix LayoutWithKamadaKawai(int maxiter, double epsilon, double kkconst, Matrix initialCoords = null) {
-      if (initialCoords != null && (initialCoords.Rows != graph.n || initialCoords.Columns != 2))
+      if (initialCoords != null && (initialCoords.Rows != Vertices || initialCoords.Columns != 2))
         throw new ArgumentException("Initial coordinate matrix does not contain the required number of rows and columns.", "initialCoords");
-      var coords = initialCoords != null ? new Matrix(initialCoords) : new Matrix(graph.n, 2);
+      var coords = initialCoords != null ? new Matrix(initialCoords) : new Matrix(Vertices, 2);
       DllImporter.igraph_layout_kamada_kawai(graph, coords.NativeInstance, initialCoords != null, maxiter, epsilon, kkconst, null, null, null, null, null);
       return coords;
     }
@@ -108,10 +108,27 @@ namespace HeuristicLab.IGraph.Wrappers {
       return LayoutWithDavidsonHarel(10, Math.Max(10, (int)Math.Log(Vertices, 2)), 0.75, 1.0, 0.0, density / 10.0, 1.0 - Math.Sqrt(density), 0.2 * (1 - density), initialCoords);
     }
     public Matrix LayoutWithDavidsonHarel(int maxiter, int fineiter, double cool_fact, double weight_node_dist, double weight_border, double weight_edge_lengths, double weight_edge_crossings, double weight_node_edge_dist, Matrix initialCoords = null) {
-      if (initialCoords != null && (initialCoords.Rows != graph.n || initialCoords.Columns != 2))
+      if (initialCoords != null && (initialCoords.Rows != Vertices || initialCoords.Columns != 2))
         throw new ArgumentException("Initial coordinate matrix does not contain the required number of rows and columns.", "initialCoords");
-      var coords = initialCoords != null ? new Matrix(initialCoords) : new Matrix(graph.n, 2);
+      var coords = initialCoords != null ? new Matrix(initialCoords) : new Matrix(Vertices, 2);
       DllImporter.igraph_layout_davidson_harel(graph, coords.NativeInstance, initialCoords != null, maxiter, fineiter, cool_fact, weight_node_dist, weight_border, weight_edge_lengths, weight_edge_crossings, weight_node_edge_dist);
+      return coords;
+    }
+
+    /// <summary>
+    /// Use multi-dimensional scaling to layout vertices. 
+    /// A distance matrix can be used to specify the distances between the vertices.
+    /// Otherwise the distances will be calculated by shortest-path-length.
+    /// </summary>
+    /// <remarks>
+    /// For disconnected graphs, dimension must be 2.
+    /// </remarks>
+    /// <param name="dist">The distance matrix to layout the vertices.</param>
+    /// <param name="dim">How many dimensions should be used.</param>
+    /// <returns>The coordinates matrix of the aligned vertices.</returns>
+    public Matrix LayoutWithMds(Matrix dist = null, int dim = 2) {
+      var coords = new Matrix(Vertices, dim);
+      DllImporter.igraph_layout_mds(graph, coords.NativeInstance, dist != null ? dist.NativeInstance : null, dim);
       return coords;
     }
   }

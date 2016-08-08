@@ -48,7 +48,7 @@ namespace HeuristicLab.IGraph {
 
   [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
   internal class igraph_matrix_t {
-    igraph_vector_t data = new igraph_vector_t();
+    internal igraph_vector_t data = new igraph_vector_t();
     internal int nrow;
     internal int ncol;
   };
