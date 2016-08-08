@@ -218,6 +218,10 @@
       <HintPath>..\bin\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="HeuristicLab.igraph-0.8.0-pre, Version=0.8.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\bin\HeuristicLab.igraph-0.8.0-pre.dll</HintPath>
+    </Reference>
     <Reference Include="HeuristicLab.MainForm-3.3">
       <HintPath>..\bin\HeuristicLab.MainForm-3.3.dll</HintPath>
       <Private>False</Private>
@@ -560,6 +564,10 @@
     <Compile Include="HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4\SubroutineDuplicaterTest.cs" />
     <Compile Include="HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4\SubtreeCrossoverTest.cs" />
     <Compile Include="HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4\Util.cs" />
+    <Compile Include="HeuristicLab.IGraph\IGraphWrappersGraphTest.cs" />
+    <Compile Include="HeuristicLab.IGraph\IGraphLayoutTest.cs" />
+    <Compile Include="HeuristicLab.IGraph\IGraphWrappersVectorTest.cs" />
+    <Compile Include="HeuristicLab.IGraph\IGraphWrappersMatrixTest.cs" />
     <Compile Include="HeuristicLab.Persistence-3.3\StorableAttributeTests.cs" />
     <Compile Include="HeuristicLab.Persistence-3.3\UseCases.cs" />
     <Compile Include="HeuristicLab.PluginInfraStructure-3.3\InstallationManagerTest.cs" />
@@ -678,6 +686,7 @@
       <CustomToolNamespace>HeuristicLab.Tests</CustomToolNamespace>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

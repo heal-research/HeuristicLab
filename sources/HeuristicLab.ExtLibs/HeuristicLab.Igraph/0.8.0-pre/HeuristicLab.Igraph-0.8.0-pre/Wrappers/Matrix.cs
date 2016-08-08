@@ -1,17 +1,42 @@
-﻿using System;
-using System.Runtime.InteropServices;
+﻿#region License Information
+/* HeuristicLab
+ * Copyright (C) 2002-2016 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ *
+ * This file is part of HeuristicLab.
+ *
+ * HeuristicLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * HeuristicLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
+ */
+#endregion
 
-namespace HeuristicLab.igraph.Wrappers {
-  [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
-  public class Matrix : IDisposable {
+using System;
+
+namespace HeuristicLab.IGraph.Wrappers {
+  public sealed class Matrix : IDisposable {
     igraph_matrix_t matrix;
     internal igraph_matrix_t NativeInstance { get { return matrix; } }
     public int Rows { get { return matrix.nrow; } }
     public int Columns { get { return matrix.ncol; } }
 
     public Matrix(int nrow, int ncol) {
+      if (nrow < 0 || ncol < 0) throw new ArgumentException("Rows and Columns must be >= 0");
       matrix = new igraph_matrix_t();
       DllImporter.igraph_matrix_init(matrix, nrow, ncol);
+    }
+    public Matrix(Matrix other) {
+      if (other == null) throw new ArgumentNullException("other");
+      matrix = new igraph_matrix_t();
+      DllImporter.igraph_matrix_copy(matrix, other.NativeInstance);
     }
     ~Matrix() {
       DllImporter.igraph_matrix_destroy(matrix);

@@ -1,10 +1,34 @@
-﻿using System;
+﻿#region License Information
+/* HeuristicLab
+ * Copyright (C) 2002-2016 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ *
+ * This file is part of HeuristicLab.
+ *
+ * HeuristicLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * HeuristicLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
+ */
+#endregion
+
+using System;
 using System.Collections.Generic;
 
-namespace HeuristicLab.igraph.Wrappers {
-  public class Graph : IDisposable {
+namespace HeuristicLab.IGraph.Wrappers {
+  public sealed class Graph : IDisposable {
     private igraph_t graph;
+    internal igraph_t NativeInstance { get { return graph; } }
+
     public int Vertices { get { return graph.n; } }
+    public bool IsDirected { get { return graph.directed; } }
 
     public Graph() : this(0) { }
     public Graph(int vertices) : this(vertices, false) { }
@@ -38,14 +62,57 @@ namespace HeuristicLab.igraph.Wrappers {
       return DllImporter.igraph_rng_get_integer(inclLower, inclUpper);
     }
 
-    public double[,] LayoutWithFruchtermanReingold() {
-      return LayoutWithFruchtermanReingold(500, Math.Sqrt(Vertices));
+    public double Density() {
+      double density;
+      DllImporter.igraph_density(graph, out density, false);
+      return density;
     }
-    public double[,] LayoutWithFruchtermanReingold(int niter, double startTemp) {
-      using (var coords = new Matrix(graph.n, 2)) {
-        DllImporter.igraph_layout_fruchterman_reingold(graph, coords.NativeInstance, false, niter, startTemp, igraph_layout_grid_t.IGRAPH_LAYOUT_AUTOGRID, null, null, null, null, null);
-        return coords.ToMatrix();
+
+    public Vector PageRank(double damping = 0.85, Vector weights = null) {
+      var vec = new Vector(Vertices);
+      var all = new igraph_vs_t();
+      DllImporter.igraph_vs_all(ref all);
+      try {
+        double eigenv = 0;
+        DllImporter.igraph_pagerank(graph, igraph_pagerank_algo_t.IGRAPH_PAGERANK_ALGO_PRPACK, vec.NativeInstance, out eigenv, all, IsDirected, damping, weights != null ? weights.NativeInstance : null);
+      } finally {
+        DllImporter.igraph_vs_destroy(ref all);
       }
+      return vec;
+    }
+
+    public Matrix LayoutWithFruchtermanReingold(Matrix initialCoords = null) {
+      return LayoutWithFruchtermanReingold(500, Math.Sqrt(Vertices), initialCoords);
+    }
+    public Matrix LayoutWithFruchtermanReingold(int niter, double startTemp, Matrix initialCoords = null) {
+      if (initialCoords != null && (initialCoords.Rows != graph.n || initialCoords.Columns != 2))
+        throw new ArgumentException("Initial coordinate matrix does not contain the required number of rows and columns.", "initialCoords");
+      var coords = initialCoords != null ? new Matrix(initialCoords) : new Matrix(graph.n, 2);
+      DllImporter.igraph_layout_fruchterman_reingold(graph, coords.NativeInstance, initialCoords != null, niter, startTemp, igraph_layout_grid_t.IGRAPH_LAYOUT_AUTOGRID, null, null, null, null, null);
+      return coords;
+    }
+
+    public Matrix LayoutWithKamadaKawai(Matrix initialCoords = null) {
+      return LayoutWithKamadaKawai(50 * Vertices, 0, Vertices, initialCoords);
+    }
+    public Matrix LayoutWithKamadaKawai(int maxiter, double epsilon, double kkconst, Matrix initialCoords = null) {
+      if (initialCoords != null && (initialCoords.Rows != graph.n || initialCoords.Columns != 2))
+        throw new ArgumentException("Initial coordinate matrix does not contain the required number of rows and columns.", "initialCoords");
+      var coords = initialCoords != null ? new Matrix(initialCoords) : new Matrix(graph.n, 2);
+      DllImporter.igraph_layout_kamada_kawai(graph, coords.NativeInstance, initialCoords != null, maxiter, epsilon, kkconst, null, null, null, null, null);
+      return coords;
+    }
+
+    public Matrix LayoutWithDavidsonHarel(Matrix initialCoords = null) {
+      var density = Density();
+      return LayoutWithDavidsonHarel(10, Math.Max(10, (int)Math.Log(Vertices, 2)), 0.75, 1.0, 0.0, density / 10.0, 1.0 - Math.Sqrt(density), 0.2 * (1 - density), initialCoords);
+    }
+    public Matrix LayoutWithDavidsonHarel(int maxiter, int fineiter, double cool_fact, double weight_node_dist, double weight_border, double weight_edge_lengths, double weight_edge_crossings, double weight_node_edge_dist, Matrix initialCoords = null) {
+      if (initialCoords != null && (initialCoords.Rows != graph.n || initialCoords.Columns != 2))
+        throw new ArgumentException("Initial coordinate matrix does not contain the required number of rows and columns.", "initialCoords");
+      var coords = initialCoords != null ? new Matrix(initialCoords) : new Matrix(graph.n, 2);
+      DllImporter.igraph_layout_davidson_harel(graph, coords.NativeInstance, initialCoords != null, maxiter, fineiter, cool_fact, weight_node_dist, weight_border, weight_edge_lengths, weight_edge_crossings, weight_node_edge_dist);
+      return coords;
     }
   }
 }
