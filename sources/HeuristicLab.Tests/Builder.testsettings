@@ -2,8 +2,9 @@
 <TestSettings name="Builder" id="2a6da91c-43f0-41c6-bcb4-341a1380c277" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
   <Description>Test settings to run unit tests on the HL build server.</Description>
   <Deployment>
-    <DeploymentItem filename="HeuristicLab.Tests\HeuristicLab-3.3\Resources\" />
+    <DeploymentItem filename="bin\igraph-0.8.0-pre-x64.dll" />
     <DeploymentItem filename="bin\" />
+    <DeploymentItem filename="bin\igraph-0.8.0-pre-x86.dll" />
   </Deployment>
   <Execution hostProcessPlatform="MSIL">
     <TestTypeSpecific>
@@ -26,4 +27,5 @@
     <AgentRule name="LocalMachineDefaultRole">
     </AgentRule>
   </Execution>
+  <Properties />
 </TestSettings>
