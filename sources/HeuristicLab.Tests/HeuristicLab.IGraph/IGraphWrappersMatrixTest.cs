@@ -29,7 +29,7 @@ namespace HeuristicLab.Tests {
     [TestCategory("ExtLibs")]
     [TestCategory("igraph")]
     [TestProperty("Time", "short")]
-    public void IGraphWrappersMatrixConstructionAndFinalization() {
+    public void IGraphWrappersMatrixConstructionAndFinalizationTest() {
       var matrix = new Matrix(3, 2);
       Assert.AreEqual(3, matrix.Rows);
       Assert.AreEqual(2, matrix.Columns);
@@ -85,7 +85,7 @@ namespace HeuristicLab.Tests {
     [TestCategory("ExtLibs")]
     [TestCategory("igraph")]
     [TestProperty("Time", "short")]
-    public void IGraphWrappersMatrixFill() {
+    public void IGraphWrappersMatrixFillTest() {
       var matrix = new Matrix(3, 2);
       matrix.Fill(2.6);
       Assert.AreEqual(2.6, matrix[0, 0]);
@@ -100,7 +100,7 @@ namespace HeuristicLab.Tests {
     [TestCategory("ExtLibs")]
     [TestCategory("igraph")]
     [TestProperty("Time", "short")]
-    public void IGraphWrappersMatrixTranspose() {
+    public void IGraphWrappersMatrixTransposeTest() {
       var matrix = new Matrix(3, 2);
       matrix.Transpose();
       Assert.AreEqual(2, matrix.Rows);
@@ -111,7 +111,7 @@ namespace HeuristicLab.Tests {
     [TestCategory("ExtLibs")]
     [TestCategory("igraph")]
     [TestProperty("Time", "short")]
-    public void IGraphWrappersMatrixScale() {
+    public void IGraphWrappersMatrixScaleTest() {
       var matrix = new Matrix(3, 2);
       matrix[0, 0] = matrix[0, 1] = 4;
       matrix[1, 0] = 3;

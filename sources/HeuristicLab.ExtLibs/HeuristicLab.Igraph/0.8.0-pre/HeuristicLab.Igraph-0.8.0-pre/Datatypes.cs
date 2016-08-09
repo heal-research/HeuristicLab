@@ -127,6 +127,14 @@ namespace HeuristicLab.IGraph {
   }
   #endregion
 
+  #region Delegates
+  [UnmanagedFunctionPointer(CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+  internal delegate bool igraph_bfshandler_t(igraph_t graph, int vid, int pred, int succ, int rank, int dist, IntPtr extra);
+
+  [UnmanagedFunctionPointer(CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+  internal delegate bool igraph_dfshandler_t(igraph_t graph, int vid, int dist, IntPtr extra);
+  #endregion
+
   #region Enums
   internal enum igraph_layout_grid_t {
     IGRAPH_LAYOUT_GRID,

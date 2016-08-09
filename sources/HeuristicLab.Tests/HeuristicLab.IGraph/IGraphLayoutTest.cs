@@ -31,7 +31,7 @@ namespace HeuristicLab.Tests {
     [TestCategory("ExtLibs")]
     [TestCategory("igraph")]
     [TestProperty("Time", "short")]
-    public void FruchtermanReingoldLayoutTest() {
+    public void IGraphWrappersLayoutFruchtermanReingoldTest() {
       var graph = new Graph(5, new[] {
         Tuple.Create(0, 1),
         Tuple.Create(0, 2),

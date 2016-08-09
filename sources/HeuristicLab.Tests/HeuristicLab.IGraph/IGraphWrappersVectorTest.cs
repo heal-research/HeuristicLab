@@ -30,7 +30,7 @@ namespace HeuristicLab.Tests {
     [TestCategory("ExtLibs")]
     [TestCategory("igraph")]
     [TestProperty("Time", "short")]
-    public void IGraphWrappersVectorConstructionAndFinalization() {
+    public void IGraphWrappersVectorConstructionAndFinalizationTest() {
       var vector = new Vector(7);
       Assert.AreEqual(7, vector.Length);
       Assert.AreEqual(0, vector[0]);

@@ -20,18 +20,21 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.IGraph.Wrappers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HeuristicLab.Tests {
   [TestClass]
+  [DeploymentItem("igraph-0.8.0-pre-x86.dll")]
+  [DeploymentItem("igraph-0.8.0-pre-x64.dll")]
   public class IGraphWrappersGraphTest {
     [TestMethod]
     [TestCategory("ExtLibs")]
     [TestCategory("igraph")]
     [TestProperty("Time", "short")]
-    public void IGraphWrappersGraphConstructionAndFinalization() {
+    public void IGraphWrappersGraphConstructionAndFinalizationTest() {
       var graph = new Graph(5, new[] {
         Tuple.Create(0, 1),
         Tuple.Create(0, 2),
@@ -56,7 +59,7 @@ namespace HeuristicLab.Tests {
     [TestCategory("ExtLibs")]
     [TestCategory("igraph")]
     [TestProperty("Time", "short")]
-    public void TestDensity() {
+    public void IGraphWrappersGraphDensityTest() {
       var graph = new Graph(5, new[] {
         Tuple.Create(0, 1),
         Tuple.Create(0, 2),
@@ -90,7 +93,7 @@ namespace HeuristicLab.Tests {
     [TestCategory("ExtLibs")]
     [TestCategory("igraph")]
     [TestProperty("Time", "short")]
-    public void TestPageRank() {
+    public void IGraphWrappersGraphPageRankTest() {
       var graph = new Graph(4, new[] {
         Tuple.Create(0, 1),
         Tuple.Create(0, 2),
@@ -132,6 +135,56 @@ namespace HeuristicLab.Tests {
       Assert.AreEqual(0.173, ranks[1], 0.01);
       Assert.AreEqual(0.173, ranks[2], 0.01);
       Assert.AreEqual(0.173, ranks[3], 0.01);
+    }
+
+    [TestMethod]
+    [TestCategory("ExtLibs")]
+    [TestCategory("igraph")]
+    [TestProperty("Time", "short")]
+    public void IGraphWrappersGraphBreadthFirstWalkTest() {
+      var graph = new Graph(4, new[] {
+        Tuple.Create(0, 1),
+        Tuple.Create(0, 2),
+        Tuple.Create(1, 2),
+        Tuple.Create(2, 0),
+        Tuple.Create(3, 2),
+      }, directed: true);
+      var visited = new HashSet<int>();
+      BreadthFirstHandler handler = (graph1, currentVertexId, previousVertexId, nextVertexId, rank, distance, tag) => {
+        visited.Add(currentVertexId);
+        return false;
+      };
+      graph.BreadthFirstWalk(handler, 0, DirectedWalkMode.All, true, null);
+      Assert.AreEqual(4, visited.Count);
+      Assert.IsTrue(visited.Contains(0));
+      Assert.IsTrue(visited.Contains(1));
+      Assert.IsTrue(visited.Contains(2));
+      Assert.IsTrue(visited.Contains(3));
+    }
+
+    [TestMethod]
+    [TestCategory("ExtLibs")]
+    [TestCategory("igraph")]
+    [TestProperty("Time", "short")]
+    public void IGraphWrappersGraphDepthFirstWalkTest() {
+      var graph = new Graph(4, new[] {
+        Tuple.Create(0, 1),
+        Tuple.Create(0, 2),
+        Tuple.Create(1, 2),
+        Tuple.Create(2, 0),
+        Tuple.Create(3, 2),
+      }, directed: true);
+      var visited = new HashSet<int>();
+      DepthFirstHandler handler = (graph1, vertexId, distance, tag) => {
+        visited.Add(vertexId);
+        return false;
+      };
+      graph.DepthFirstWalk(handler, handler, 0, DirectedWalkMode.All, true, null);
+      Assert.AreEqual(4, visited.Count);
+      Assert.IsTrue(visited.Contains(0));
+      Assert.IsTrue(visited.Contains(1));
+      Assert.IsTrue(visited.Contains(2));
+      Assert.IsTrue(visited.Contains(3));
     }
   }
 }

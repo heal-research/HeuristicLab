@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.IO;
 using System.Runtime.InteropServices;
 
 namespace HeuristicLab.IGraph {
@@ -28,8 +29,14 @@ namespace HeuristicLab.IGraph {
     private const string X64Dll = "igraph-0.8.0-pre-x64.dll";
     private readonly static bool X86 = false;
 
+    [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+    private static extern bool SetDllDirectory(string lpPathName);
+
     static DllImporter() {
       X86 = !Environment.Is64BitProcess;
+      // Possible workaround as the builder doesn't execute the tests within the bin directory
+      if (Directory.Exists(Path.Combine(Environment.CurrentDirectory, "bin")))
+        SetDllDirectory(Path.Combine(Environment.CurrentDirectory, "bin"));
     }
 
     #region igraph
@@ -111,6 +118,15 @@ namespace HeuristicLab.IGraph {
     }
     #endregion
 
+    #region igraph visits
+    internal static int igraph_bfs(igraph_t graph, int root, igraph_vector_t roots, igraph_neimode_t mode, bool unreachable, igraph_vector_t restricted, igraph_vector_t order, igraph_vector_t rank, igraph_vector_t father, igraph_vector_t pred, igraph_vector_t succ, igraph_vector_t dist, igraph_bfshandler_t callback, object tag) {
+      return MarshalIfExistsAndCall(tag, ptr => X86 ? igraph_bfs_x86(graph, root, roots, mode, unreachable, restricted, order, rank, father, pred, succ, dist, callback, ptr) : igraph_bfs_x64(graph, root, roots, mode, unreachable, restricted, order, rank, father, pred, succ, dist, callback, ptr));
+    }
+    internal static int igraph_dfs(igraph_t graph, int root, igraph_neimode_t mode, bool unreachable, igraph_vector_t order, igraph_vector_t order_out, igraph_vector_t father, igraph_vector_t dist, igraph_dfshandler_t inWrapper, igraph_dfshandler_t outWrapper, object tag) {
+      return MarshalIfExistsAndCall(tag, ptr => X86 ? igraph_dfs_x86(graph, root, mode, unreachable, order, order_out, father, dist, inWrapper, outWrapper, ptr) : igraph_dfs_x64(graph, root, mode, unreachable, order, order_out, father, dist, inWrapper, outWrapper, ptr));
+    }
+    #endregion
+
     #region Platform specific DLL imports
     [DllImport(X86Dll, EntryPoint = "igraph_empty", CallingConvention = CallingConvention.Cdecl)]
     private static extern void igraph_empty_x86([In, Out]igraph_t graph, int n, bool directed);
@@ -136,6 +152,14 @@ namespace HeuristicLab.IGraph {
     private static extern int igraph_pagerank_x86(igraph_t graph, igraph_pagerank_algo_t algo, [In, Out]igraph_vector_t vector, ref double value, igraph_vs_t vids, bool directed, double damping, igraph_vector_t weights, IntPtr options);
     [DllImport(X64Dll, EntryPoint = "igraph_pagerank", CallingConvention = CallingConvention.Cdecl)]
     private static extern int igraph_pagerank_x64(igraph_t graph, igraph_pagerank_algo_t algo, [In, Out]igraph_vector_t vector, ref double value, igraph_vs_t vids, bool directed, double damping, igraph_vector_t weights, IntPtr options);
+    [DllImport(X86Dll, EntryPoint = "igraph_bfs", CallingConvention = CallingConvention.Cdecl)]
+    private static extern int igraph_bfs_x86(igraph_t graph, int root, igraph_vector_t roots, igraph_neimode_t mode, bool unreachable, igraph_vector_t restricted, [In, Out]igraph_vector_t order, [In, Out]igraph_vector_t rank, [In, Out]igraph_vector_t father, [In, Out]igraph_vector_t pred, [In, Out]igraph_vector_t succ, [In, Out]igraph_vector_t dist, igraph_bfshandler_t callback, IntPtr extra);
+    [DllImport(X64Dll, EntryPoint = "igraph_bfs", CallingConvention = CallingConvention.Cdecl)]
+    private static extern int igraph_bfs_x64(igraph_t graph, int root, igraph_vector_t roots, igraph_neimode_t mode, bool unreachable, igraph_vector_t restricted, [In, Out]igraph_vector_t order, [In, Out]igraph_vector_t rank, [In, Out]igraph_vector_t father, [In, Out]igraph_vector_t pred, [In, Out]igraph_vector_t succ, [In, Out]igraph_vector_t dist, igraph_bfshandler_t callback, IntPtr extra);
+    [DllImport(X86Dll, EntryPoint = "igraph_dfs", CallingConvention = CallingConvention.Cdecl)]
+    private static extern int igraph_dfs_x86(igraph_t graph, int root, igraph_neimode_t mode, bool unreachable, [In, Out]igraph_vector_t order, [In, Out]igraph_vector_t order_out, [In, Out]igraph_vector_t father, [In, Out]igraph_vector_t dist, igraph_dfshandler_t in_callback, igraph_dfshandler_t out_callback, IntPtr extra);
+    [DllImport(X64Dll, EntryPoint = "igraph_dfs", CallingConvention = CallingConvention.Cdecl)]
+    private static extern int igraph_dfs_x64(igraph_t graph, int root, igraph_neimode_t mode, bool unreachable, [In, Out]igraph_vector_t order, [In, Out]igraph_vector_t order_out, [In, Out]igraph_vector_t father, [In, Out]igraph_vector_t dist, igraph_dfshandler_t in_callback, igraph_dfshandler_t out_callback, IntPtr extra);
     #endregion
     #endregion
 
@@ -347,15 +371,7 @@ namespace HeuristicLab.IGraph {
       return X86 ? igraph_layout_davidson_harel_x86(graph, res, use_seed, maxiter, fineiter, cool_fact, weight_node_dist, weight_border, weight_edge_lengths, weight_edge_crossings, weight_node_edge_dist) : igraph_layout_davidson_harel_x64(graph, res, use_seed, maxiter, fineiter, cool_fact, weight_node_dist, weight_border, weight_edge_lengths, weight_edge_crossings, weight_node_edge_dist);
     }
     internal static int igraph_layout_mds(igraph_t graph, igraph_matrix_t res, igraph_matrix_t dist = null, int dim = 2) {
-      var arpackoptions = GetDefaultArpackOptions();
-      var options = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(igraph_arpack_options_t)));
-      Marshal.StructureToPtr(arpackoptions, options, false);
-      try {
-        return X86 ? igraph_layout_mds_x86(graph, res, dist, dim, options) : igraph_layout_mds_x64(graph, res, dist, dim, options);
-      } finally {
-        Marshal.DestroyStructure(options, typeof(igraph_arpack_options_t));
-        Marshal.FreeHGlobal(options);
-      }
+      return MarshalIfExistsAndCall(GetDefaultArpackOptions(), ptr => X86 ? igraph_layout_mds_x86(graph, res, dist, dim, ptr) : igraph_layout_mds_x64(graph, res, dist, dim, ptr));
     }
 
     #region Platform specific DLL imports
@@ -398,5 +414,41 @@ namespace HeuristicLab.IGraph {
     private static extern void igraph_vs_destroy_x64([In, Out]ref igraph_vs_t vs);
     #endregion
     #endregion
+
+    private static int MarshalIfExistsAndCall(object o, Func<IntPtr, int> call) {
+      var ptr = IntPtr.Zero;
+      if (o != null) {
+        try {
+          ptr = Marshal.AllocHGlobal(Marshal.SizeOf(o));
+        } catch (OutOfMemoryException e) { throw new InvalidOperationException("Not enough memory to perform operation.", e); }
+        Marshal.StructureToPtr(o, ptr, false);
+      }
+      try {
+        return call(ptr);
+      } finally {
+        if (o != null) {
+          Marshal.DestroyStructure(ptr, o.GetType());
+          Marshal.FreeHGlobal(ptr);
+        }
+      }
+    }
+
+    private static void MarshalIfExistsAndCall(object o, Action<IntPtr> call) {
+      var ptr = IntPtr.Zero;
+      if (o != null) {
+        try {
+          ptr = Marshal.AllocHGlobal(Marshal.SizeOf(o));
+        } catch (OutOfMemoryException e) { throw new InvalidOperationException("Not enough memory to perform operation.", e); }
+        Marshal.StructureToPtr(o, ptr, false);
+      }
+      try {
+        call(ptr);
+      } finally {
+        if (o != null) {
+          Marshal.DestroyStructure(ptr, o.GetType());
+          Marshal.FreeHGlobal(ptr);
+        }
+      }
+    }
   }
 }

@@ -131,5 +131,16 @@ namespace HeuristicLab.IGraph.Wrappers {
       DllImporter.igraph_layout_mds(graph, coords.NativeInstance, dist != null ? dist.NativeInstance : null, dim);
       return coords;
     }
+
+    public void BreadthFirstWalk(BreadthFirstHandler handler, int root, DirectedWalkMode mode, bool includeUnreachableFromRoot = false, object tag = null) {
+      igraph_bfshandler_t wrapper = (t, vid, pred, succ, rank, dist, extra) => handler != null && handler(this, vid, pred, succ, rank, dist, tag);
+      DllImporter.igraph_bfs(graph, root, null, (igraph_neimode_t)mode, includeUnreachableFromRoot, null, null, null, null, null, null, null, wrapper, tag);
+    }
+
+    public void DepthFirstWalk(DepthFirstHandler inHandler, DepthFirstHandler outHandler, int root, DirectedWalkMode mode, bool includeUnreachableFromRoot = false, object tag = null) {
+      igraph_dfshandler_t inWrapper = (t, vid, dist, extra) => inHandler != null && inHandler(this, vid, dist, tag);
+      igraph_dfshandler_t outWrapper = (t, vid, dist, extra) => outHandler != null && outHandler(this, vid, dist, tag);
+      DllImporter.igraph_dfs(graph, root, (igraph_neimode_t)mode, includeUnreachableFromRoot, null, null, null, null, inWrapper, outWrapper, tag);
+    }
   }
 }

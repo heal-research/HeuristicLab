@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DllImporter.cs" />
+    <Compile Include="Wrappers\Datatypes.cs" />
     <Compile Include="Wrappers\Graph.cs" />
     <Compile Include="Wrappers\Matrix.cs" />
     <Compile Include="Plugin.cs" />
