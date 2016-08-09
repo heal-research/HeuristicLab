@@ -218,9 +218,10 @@
       <HintPath>..\bin\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="HeuristicLab.igraph-0.8.0-pre, Version=0.8.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+    <Reference Include="HeuristicLab.IGraph-0.8.0-pre, Version=0.8.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\bin\HeuristicLab.igraph-0.8.0-pre.dll</HintPath>
+      <HintPath>..\bin\HeuristicLab.IGraph-0.8.0-pre.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="HeuristicLab.MainForm-3.3">
       <HintPath>..\bin\HeuristicLab.MainForm-3.3.dll</HintPath>

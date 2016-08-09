@@ -20,7 +20,6 @@
 #endregion
 
 using System;
-using System.IO;
 using System.Runtime.InteropServices;
 
 namespace HeuristicLab.IGraph {
@@ -29,14 +28,8 @@ namespace HeuristicLab.IGraph {
     private const string X64Dll = "igraph-0.8.0-pre-x64.dll";
     private readonly static bool X86 = false;
 
-    [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-    private static extern bool SetDllDirectory(string lpPathName);
-
     static DllImporter() {
       X86 = !Environment.Is64BitProcess;
-      // Possible workaround as the builder doesn't execute the tests within the bin directory
-      if (Directory.Exists(Path.Combine(Environment.CurrentDirectory, "bin")))
-        SetDllDirectory(Path.Combine(Environment.CurrentDirectory, "bin"));
     }
 
     #region igraph
