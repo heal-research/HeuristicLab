@@ -261,7 +261,7 @@ namespace HeuristicLab.IGraph {
     private static extern int igraph_vector_copy_x64([In, Out]igraph_vector_t to, igraph_vector_t from);
     [DllImport(X86Dll, EntryPoint = "igraph_vector_copy_to", CallingConvention = CallingConvention.Cdecl)]
     private static extern void igraph_vector_copy_to_x86(igraph_vector_t from, [In, Out]double[] to);
-    [DllImport(X64Dll, EntryPoint = "igraph_vector_copy", CallingConvention = CallingConvention.Cdecl)]
+    [DllImport(X64Dll, EntryPoint = "igraph_vector_copy_to", CallingConvention = CallingConvention.Cdecl)]
     private static extern void igraph_vector_copy_to_x64(igraph_vector_t from, [In, Out]double[] to);
     [DllImport(X86Dll, EntryPoint = "igraph_vector_fill", CallingConvention = CallingConvention.Cdecl)]
     private static extern int igraph_vector_fill_x86([In, Out]igraph_vector_t vector, double v);
