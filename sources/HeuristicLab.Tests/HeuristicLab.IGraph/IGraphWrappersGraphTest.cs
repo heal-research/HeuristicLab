@@ -32,7 +32,7 @@ namespace HeuristicLab.Tests {
   public class IGraphWrappersGraphTest {
     [TestMethod]
     [TestCategory("ExtLibs")]
-    [TestCategory("igraph")]
+    [TestCategory("ExtLibs.igraph")]
     [TestProperty("Time", "short")]
     public void IGraphWrappersGraphConstructionAndFinalizationTest() {
       var graph = new Graph(5, new[] {
@@ -57,7 +57,7 @@ namespace HeuristicLab.Tests {
 
     [TestMethod]
     [TestCategory("ExtLibs")]
-    [TestCategory("igraph")]
+    [TestCategory("ExtLibs.igraph")]
     [TestProperty("Time", "short")]
     public void IGraphWrappersGraphDensityTest() {
       var graph = new Graph(5, new[] {
@@ -91,7 +91,7 @@ namespace HeuristicLab.Tests {
 
     [TestMethod]
     [TestCategory("ExtLibs")]
-    [TestCategory("igraph")]
+    [TestCategory("ExtLibs.igraph")]
     [TestProperty("Time", "short")]
     public void IGraphWrappersGraphPageRankTest() {
       var graph = new Graph(4, new[] {
@@ -139,7 +139,7 @@ namespace HeuristicLab.Tests {
 
     [TestMethod]
     [TestCategory("ExtLibs")]
-    [TestCategory("igraph")]
+    [TestCategory("ExtLibs.igraph")]
     [TestProperty("Time", "short")]
     public void IGraphWrappersGraphBreadthFirstWalkTest() {
       var graph = new Graph(4, new[] {
@@ -164,7 +164,7 @@ namespace HeuristicLab.Tests {
 
     [TestMethod]
     [TestCategory("ExtLibs")]
-    [TestCategory("igraph")]
+    [TestCategory("ExtLibs.igraph")]
     [TestProperty("Time", "short")]
     public void IGraphWrappersGraphDepthFirstWalkTest() {
       var graph = new Graph(4, new[] {

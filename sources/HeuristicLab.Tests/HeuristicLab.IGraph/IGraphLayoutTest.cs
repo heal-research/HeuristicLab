@@ -29,7 +29,7 @@ namespace HeuristicLab.Tests {
   public class IGraphLayoutTest {
     [TestMethod]
     [TestCategory("ExtLibs")]
-    [TestCategory("igraph")]
+    [TestCategory("ExtLibs.igraph")]
     [TestProperty("Time", "short")]
     public void IGraphWrappersLayoutFruchtermanReingoldTest() {
       var graph = new Graph(5, new[] {

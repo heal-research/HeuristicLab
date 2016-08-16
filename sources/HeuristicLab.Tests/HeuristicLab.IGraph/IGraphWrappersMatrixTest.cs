@@ -27,7 +27,7 @@ namespace HeuristicLab.Tests {
   public class IGraphWrappersMatrixTest {
     [TestMethod]
     [TestCategory("ExtLibs")]
-    [TestCategory("igraph")]
+    [TestCategory("ExtLibs.igraph")]
     [TestProperty("Time", "short")]
     public void IGraphWrappersMatrixConstructionAndFinalizationTest() {
       var matrix = new Matrix(3, 2);
@@ -57,7 +57,7 @@ namespace HeuristicLab.Tests {
 
     [TestMethod]
     [TestCategory("ExtLibs")]
-    [TestCategory("igraph")]
+    [TestCategory("ExtLibs.igraph")]
     [TestProperty("Time", "short")]
     public void IGraphWrappersMatrixGetSetTest() {
       var matrix = new Matrix(3, 2);
@@ -83,7 +83,7 @@ namespace HeuristicLab.Tests {
 
     [TestMethod]
     [TestCategory("ExtLibs")]
-    [TestCategory("igraph")]
+    [TestCategory("ExtLibs.igraph")]
     [TestProperty("Time", "short")]
     public void IGraphWrappersMatrixFillTest() {
       var matrix = new Matrix(3, 2);
@@ -98,7 +98,7 @@ namespace HeuristicLab.Tests {
 
     [TestMethod]
     [TestCategory("ExtLibs")]
-    [TestCategory("igraph")]
+    [TestCategory("ExtLibs.igraph")]
     [TestProperty("Time", "short")]
     public void IGraphWrappersMatrixTransposeTest() {
       var matrix = new Matrix(3, 2);
@@ -109,7 +109,7 @@ namespace HeuristicLab.Tests {
 
     [TestMethod]
     [TestCategory("ExtLibs")]
-    [TestCategory("igraph")]
+    [TestCategory("ExtLibs.igraph")]
     [TestProperty("Time", "short")]
     public void IGraphWrappersMatrixScaleTest() {
       var matrix = new Matrix(3, 2);

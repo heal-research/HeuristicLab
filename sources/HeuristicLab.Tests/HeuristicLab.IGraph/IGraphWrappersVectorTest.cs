@@ -28,7 +28,7 @@ namespace HeuristicLab.Tests {
   public class IGraphWrappersVectorTest {
     [TestMethod]
     [TestCategory("ExtLibs")]
-    [TestCategory("igraph")]
+    [TestCategory("ExtLibs.igraph")]
     [TestProperty("Time", "short")]
     public void IGraphWrappersVectorConstructionAndFinalizationTest() {
       var vector = new Vector(7);
@@ -49,7 +49,7 @@ namespace HeuristicLab.Tests {
 
     [TestMethod]
     [TestCategory("ExtLibs")]
-    [TestCategory("igraph")]
+    [TestCategory("ExtLibs.igraph")]
     [TestProperty("Time", "short")]
     public void IGraphWrappersVectorGetSetTest() {
       var vector = new Vector(5);
@@ -71,7 +71,7 @@ namespace HeuristicLab.Tests {
 
     [TestMethod]
     [TestCategory("ExtLibs")]
-    [TestCategory("igraph")]
+    [TestCategory("ExtLibs.igraph")]
     [TestProperty("Time", "short")]
     public void IGraphWrappersVectorFillTest() {
       var vector = new Vector(5);
@@ -81,7 +81,7 @@ namespace HeuristicLab.Tests {
 
     [TestMethod]
     [TestCategory("ExtLibs")]
-    [TestCategory("igraph")]
+    [TestCategory("ExtLibs.igraph")]
     [TestProperty("Time", "short")]
     public void IGraphWrappersVectorReverseTest() {
       var vector = new Vector(5);
@@ -95,7 +95,7 @@ namespace HeuristicLab.Tests {
 
     [TestMethod]
     [TestCategory("ExtLibs")]
-    [TestCategory("igraph")]
+    [TestCategory("ExtLibs.igraph")]
     [TestProperty("Time", "short")]
     public void IGraphWrappersVectorShuffleTest() {
       var vector = new Vector(5);
@@ -110,7 +110,7 @@ namespace HeuristicLab.Tests {
 
     [TestMethod]
     [TestCategory("ExtLibs")]
-    [TestCategory("igraph")]
+    [TestCategory("ExtLibs.igraph")]
     [TestProperty("Time", "short")]
     public void IGraphWrappersVectorScaleTest() {
       var vector = new Vector(5);
