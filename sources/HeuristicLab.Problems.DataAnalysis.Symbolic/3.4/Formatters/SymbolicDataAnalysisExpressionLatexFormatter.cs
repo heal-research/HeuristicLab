@@ -35,6 +35,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private readonly List<double> constants;
     private int targetCount;
     private int currentLag;
+    private string targetVariable;
+    private bool containsTimeSeriesSymbol;
 
     [StorableConstructor]
     private SymbolicDataAnalysisExpressionLatexFormatter(bool deserializing) : base(deserializing) { }
@@ -54,15 +56,23 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     public string Format(ISymbolicExpressionTree symbolicExpressionTree) {
+      return Format(symbolicExpressionTree, null);
+    }
+    public string Format(ISymbolicExpressionTree symbolicExpressionTree, string targetVariable) {
       try {
         StringBuilder strBuilder = new StringBuilder();
         constants.Clear();
+        this.targetVariable = targetVariable;
+        containsTimeSeriesSymbol = symbolicExpressionTree.IterateNodesBreadth().Any(n => IsTimeSeriesSymbol(n.Symbol));
         strBuilder.AppendLine(FormatRecursively(symbolicExpressionTree.Root));
         return strBuilder.ToString();
       }
       catch (NotImplementedException ex) {
         return ex.Message + Environment.NewLine + ex.StackTrace;
       }
+    }
+    static bool IsTimeSeriesSymbol(ISymbol s) {
+      return s is TimeLag || s is Integral || s is Derivative || s is LaggedVariable;
     }
 
     private string FormatRecursively(ISymbolicExpressionTreeNode node) {
@@ -196,7 +206,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         var invokeNode = node as InvokeFunctionTreeNode;
         strBuilder.Append(invokeNode.Symbol.FunctionName + @" \left( ");
       } else if (node.Symbol is StartSymbol) {
-        strBuilder.Append("target_" + (targetCount++) + "(t) & = ");
+        FormatStartSymbol(strBuilder);
       } else if (node.Symbol is Argument) {
         var argSym = node.Symbol as Argument;
         strBuilder.Append(" ARG+" + argSym.ArgumentIndex + " ");
@@ -302,7 +312,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         strBuilder.Append(" , ");
       } else if (node.Symbol is StartSymbol) {
         strBuilder.Append(@"\\" + Environment.NewLine);
-        strBuilder.Append("target_" + (targetCount++) + "(t) & = ");
+        FormatStartSymbol(strBuilder);
       } else if (node.Symbol is Power) {
         strBuilder.Append(@"\right) ^ { \operatorname{round} \left(");
       } else if (node.Symbol is Root) {
@@ -430,6 +440,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       } else {
         throw new NotImplementedException("Export of " + node.Symbol + " is not implemented.");
       }
+    }
+
+    private void FormatStartSymbol(StringBuilder strBuilder) {
+      strBuilder.Append(targetVariable ?? "target_" + (targetCount++));
+      if (containsTimeSeriesSymbol)
+        strBuilder.Append("(t)");
+      strBuilder.Append(" & = ");
     }
 
     private string LagToString(int lag) {

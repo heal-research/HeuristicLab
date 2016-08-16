@@ -144,6 +144,12 @@
     <Compile Include="SymbolicDiscriminantFunctionClassificationSolutionView.Designer.cs">
       <DependentUpon>SymbolicDiscriminantFunctionClassificationSolutionView.cs</DependentUpon>
     </Compile>
+    <Compile Include="SymbolicClassificationModelMathView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SymbolicClassificationModelMathView.designer.cs">
+      <DependentUpon>SymbolicClassificationModelMathView.cs</DependentUpon>
+    </Compile>
     <None Include="HeuristicLab.snk" />
     <None Include="Plugin.cs.frame" />
     <None Include="Properties\AssemblyInfo.cs.frame" />

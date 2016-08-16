@@ -153,7 +153,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         AddSeries(sol);
       }
 
-      chart.ChartAreas[0].AxisX.Title = residualComboBox.SelectedItem.ToString();
+      chart.ChartAreas[0].AxisX.Title = string.Format("{0} ({1})", residualComboBox.SelectedItem, Content.ProblemData.TargetVariable);
     }
 
     protected void AddSeries(IRegressionSolution solution) {

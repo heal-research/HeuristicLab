@@ -171,9 +171,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
         double axisMin, axisMax, axisInterval;
         ChartUtil.CalculateOptimalAxisInterval(min, max, out axisMin, out axisMax, out axisInterval);
+        this.chart.ChartAreas[0].AxisX.Title = "Estimated " + targetVariableName;
         this.chart.ChartAreas[0].AxisX.Maximum = axisMax;
         this.chart.ChartAreas[0].AxisX.Minimum = axisMin;
         this.chart.ChartAreas[0].AxisX.Interval = axisInterval;
+        this.chart.ChartAreas[0].AxisY.Title = targetVariableName;
         this.chart.ChartAreas[0].AxisY.Maximum = axisMax;
         this.chart.ChartAreas[0].AxisY.Minimum = axisMin;
         this.chart.ChartAreas[0].AxisY.Interval = axisInterval;

@@ -28,9 +28,9 @@ using HeuristicLab.MainForm.WindowsForms;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
   [View("Mathematical Representation")]
   [Content(typeof(ISymbolicDataAnalysisModel))]
-  public partial class MathSymbolicDataAnalysisModelView : AsynchronousContentView {
-    private SymbolicDataAnalysisExpressionLatexFormatter formatter = new SymbolicDataAnalysisExpressionLatexFormatter();
-    public MathSymbolicDataAnalysisModelView()
+  public partial class SymbolicDataAnalysisModelMathView : AsynchronousContentView {
+    protected readonly SymbolicDataAnalysisExpressionLatexFormatter Formatter = new SymbolicDataAnalysisExpressionLatexFormatter();
+    public SymbolicDataAnalysisModelMathView()
       : base() {
       InitializeComponent();
       webBrowser.ScrollBarsEnabled = true;
@@ -59,12 +59,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
 
       if (Content != null) {
         HtmlElement newElement = webBrowser.Document.GetElementById("model");
-        newElement.InnerText = formatter.Format(Content.SymbolicExpressionTree);
+        newElement.InnerText = GetFormattedTree();
         webBrowser.Document.InvokeScript("refreshModel");
       } else {
         HtmlElement newElement = webBrowser.Document.GetElementById("model");
         newElement.InnerText = string.Empty;
       }
+    }
+
+    protected virtual string GetFormattedTree() {
+      return Formatter.Format(Content.SymbolicExpressionTree);
     }
   }
 }
