@@ -48,7 +48,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
 
     public override IEnumerable<IDataDescriptor> GetDataDescriptors() {
       var numVariables = new int[] { 10, 20, 50, 100 };
-      var noiseRatios = new double[] { 0.01, 0.05, 0.1 };
+      var noiseRatios = new double[] { 0, 0.01, 0.05, 0.1 };
       var rand = new MersenneTwister((uint)Seed); // use fixed seed for deterministic problem generation
       return (from size in numVariables
               from noiseRatio in noiseRatios

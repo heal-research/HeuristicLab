@@ -98,7 +98,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       for (int c = 0; c < numLvl0; c++) {
         var datai = Enumerable.Range(0, TestPartitionEnd).Select(_ => nrand.NextDouble()).ToList();
         inputVarNames.Add(new string[] { });
-        description.Add("~ N(0, 1)");
+        description.Add(" ~ N(0, 1)");
         lvl0.Add(datai);
       }
 
@@ -111,7 +111,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
         var sigma = x.StandardDeviation();
         var noisePrng = new NormalDistributedRandom(random, 0, sigma * Math.Sqrt(noiseRatio / (1.0 - noiseRatio)));
         lvl1.Add(x.Select(t => t + noisePrng.NextDouble()).ToList());
-
+        Array.Sort(selectedVarNames);
         inputVarNames.Add(selectedVarNames);
         var desc = string.Format("f({0})", string.Join(",", selectedVarNames));
         description.Add(string.Format(" ~ N({0}, {1:N3})", desc, noisePrng.Sigma));
@@ -126,7 +126,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
         var sigma = x.StandardDeviation();
         var noisePrng = new NormalDistributedRandom(random, 0, sigma * Math.Sqrt(noiseRatio / (1.0 - noiseRatio)));
         lvl2.Add(x.Select(t => t + noisePrng.NextDouble()).ToList());
-
+        Array.Sort(selectedVarNames);
         inputVarNames.Add(selectedVarNames);
         var desc = string.Format("f({0})", string.Join(",", selectedVarNames));
         description.Add(string.Format(" ~ N({0}, {1:N3})", desc, noisePrng.Sigma));
@@ -141,13 +141,12 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
         var sigma = x.StandardDeviation();
         var noisePrng = new NormalDistributedRandom(random, 0, sigma * Math.Sqrt(noiseRatio / (1.0 - noiseRatio)));
         lvl3.Add(x.Select(t => t + noisePrng.NextDouble()).ToList());
-
+        Array.Sort(selectedVarNames);
         inputVarNames.Add(selectedVarNames);
         var desc = string.Format("f({0})", string.Join(",", selectedVarNames));
         description.Add(string.Format(" ~ N({0}, {1:N3})", desc, noisePrng.Sigma));
       }
-
-      networkDefinition = string.Join(Environment.NewLine, variableNames.Zip(description, (n, d) => n + d));
+      networkDefinition = string.Join(Environment.NewLine, variableNames.Zip(description, (n, d) => n + d).OrderBy(x => x));
       // for graphviz
       networkDefinition += Environment.NewLine + "digraph G {";
       foreach (var t in variableNames.Zip(inputVarNames, Tuple.Create).OrderBy(t => t.Item1)) {
