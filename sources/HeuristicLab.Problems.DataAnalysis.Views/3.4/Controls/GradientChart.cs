@@ -282,7 +282,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         VerticalLineAnnotation.X = defaultValue;
 
       if (ShowCursor)
-        chart.Titles[0].Text = FreeVariable + " : " + defaultValue.ToString("N3", CultureInfo.CurrentCulture);
+        chart.Titles[0].Text = FreeVariable + " : " + defaultValue.ToString("G5", CultureInfo.CurrentCulture);
 
       ResizeAllSeriesData();
       OrderAndColorSeries();
@@ -639,7 +639,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       sharedFixedVariables.SetVariableValue(x, FreeVariable, 0);
 
       if (ShowCursor) {
-        chart.Titles[0].Text = FreeVariable + " : " + x.ToString("N3", CultureInfo.CurrentCulture);
+        chart.Titles[0].Text = FreeVariable + " : " + x.ToString("G5", CultureInfo.CurrentCulture);
         chart.Update();
       }
 
