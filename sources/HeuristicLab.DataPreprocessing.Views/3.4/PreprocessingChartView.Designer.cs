@@ -44,61 +44,87 @@ namespace HeuristicLab.DataPreprocessing.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      this.dataTableView = new DataPreprocessing.Views.PreprocessingDataTableView();
       this.tableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
+      this.dataTableView = new HeuristicLab.DataPreprocessing.Views.PreprocessingDataTableView();
+      this.splitContainer = new System.Windows.Forms.SplitContainer();
       this.checkedItemList = new HeuristicLab.DataPreprocessing.Views.PreprocessingCheckedItemListView();
       this.tableLayoutPanel.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
+      this.splitContainer.Panel1.SuspendLayout();
+      this.splitContainer.Panel2.SuspendLayout();
+      this.splitContainer.SuspendLayout();
       this.SuspendLayout();
-      // 
-      // dataTableView
-      // 
-      this.dataTableView.Caption = "DataTable View";
-      this.dataTableView.Content = null;
-      this.dataTableView.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.dataTableView.Location = new System.Drawing.Point(3, 3);
-      this.dataTableView.Name = "dataTableView";
-      this.dataTableView.ReadOnly = false;
-      this.dataTableView.Size = new System.Drawing.Size(486, 390);
-      this.dataTableView.TabIndex = 0;
       // 
       // tableLayoutPanel
       // 
-      this.tableLayoutPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.tableLayoutPanel.AutoScroll = true;
       this.tableLayoutPanel.ColumnCount = 1;
       this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
       this.tableLayoutPanel.Controls.Add(this.dataTableView, 0, 0);
-      this.tableLayoutPanel.Location = new System.Drawing.Point(162, 4);
+      this.tableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.tableLayoutPanel.Location = new System.Drawing.Point(0, 0);
       this.tableLayoutPanel.Name = "tableLayoutPanel";
       this.tableLayoutPanel.RowCount = 1;
       this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
-      this.tableLayoutPanel.Size = new System.Drawing.Size(492, 396);
+      this.tableLayoutPanel.Size = new System.Drawing.Size(559, 403);
       this.tableLayoutPanel.TabIndex = 6;
       this.tableLayoutPanel.Layout += new System.Windows.Forms.LayoutEventHandler(this.tableLayoutPanel_Layout);
       // 
+      // dataTableView
+      // 
+      this.dataTableView.AutoScroll = true;
+      this.dataTableView.Caption = "DataTable View";
+      this.dataTableView.Classification = null;
+      this.dataTableView.Content = null;
+      this.dataTableView.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.dataTableView.IsDetailedChartViewEnabled = false;
+      this.dataTableView.Location = new System.Drawing.Point(3, 3);
+      this.dataTableView.Name = "dataTableView";
+      this.dataTableView.ReadOnly = false;
+      this.dataTableView.Size = new System.Drawing.Size(553, 397);
+      this.dataTableView.TabIndex = 0;
+      // 
+      // splitContainer
+      // 
+      this.splitContainer.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.splitContainer.Location = new System.Drawing.Point(0, 0);
+      this.splitContainer.Name = "splitContainer";
+      // 
+      // splitContainer.Panel1
+      // 
+      this.splitContainer.Panel1.Controls.Add(this.checkedItemList);
+      // 
+      // splitContainer.Panel2
+      // 
+      this.splitContainer.Panel2.Controls.Add(this.tableLayoutPanel);
+      this.splitContainer.Size = new System.Drawing.Size(654, 403);
+      this.splitContainer.SplitterDistance = 91;
+      this.splitContainer.TabIndex = 7;
+      // 
       // checkedItemList
       // 
-      this.checkedItemList.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)));
+      this.checkedItemList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.checkedItemList.Caption = "View";
       this.checkedItemList.Content = null;
       this.checkedItemList.Location = new System.Drawing.Point(4, 4);
       this.checkedItemList.Name = "checkedItemList";
       this.checkedItemList.ReadOnly = false;
-      this.checkedItemList.Size = new System.Drawing.Size(152, 252);
+      this.checkedItemList.Size = new System.Drawing.Size(84, 252);
       this.checkedItemList.TabIndex = 4;
       // 
       // PreprocessingChartView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.Controls.Add(this.tableLayoutPanel);
-      this.Controls.Add(this.checkedItemList);
+      this.Controls.Add(this.splitContainer);
       this.Name = "PreprocessingChartView";
       this.Size = new System.Drawing.Size(654, 403);
       this.tableLayoutPanel.ResumeLayout(false);
+      this.splitContainer.Panel1.ResumeLayout(false);
+      this.splitContainer.Panel2.ResumeLayout(false);
+      ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();
+      this.splitContainer.ResumeLayout(false);
       this.ResumeLayout(false);
 
     }
@@ -108,5 +134,6 @@ namespace HeuristicLab.DataPreprocessing.Views {
     private PreprocessingCheckedItemListView checkedItemList;
     private DataPreprocessing.Views.PreprocessingDataTableView dataTableView;
     private System.Windows.Forms.TableLayoutPanel tableLayoutPanel;
+    protected System.Windows.Forms.SplitContainer splitContainer;
   }
 }
