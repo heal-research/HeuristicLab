@@ -140,15 +140,24 @@ namespace HeuristicLab.MainForm.WindowsForms {
     }
 
     private void UpdateProgressValue() {
-      if (InvokeRequired) Invoke((Action)UpdateProgressValue);
-      else {
+      // prevent problems with object disposal and invoke as suggested by http://stackoverflow.com/a/18647091
+      if (!IsHandleCreated) return;
+      if (InvokeRequired) {
+        try {
+          Invoke((Action)UpdateProgressValue);
+        }
+        catch (InvalidOperationException) {
+          if (this.IsHandleCreated) throw;
+        }
+      } else {
         if (content != null) {
           double progressValue = content.ProgressValue;
           if (progressValue <= 0.0 || progressValue > 1.0) {
             progressBar.Style = ProgressBarStyle.Marquee;
           } else {
             progressBar.Style = ProgressBarStyle.Blocks;
-            progressBar.Value = (int)Math.Round(progressBar.Minimum + progressValue * (progressBar.Maximum - progressBar.Minimum));
+            progressBar.Value =
+              (int)Math.Round(progressBar.Minimum + progressValue * (progressBar.Maximum - progressBar.Minimum));
           }
         }
       }
