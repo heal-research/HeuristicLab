@@ -889,7 +889,7 @@ str,a string --> column is converted to List<string>
           // Parse should fail with an exception
           Assert.Fail("expected exception TableFileParser.DataFormatException");
         }
-        catch (TableFileParser.DataFormatException) {
+        catch (IOException) {
           // ignore the expected exception
         }
 
