@@ -605,27 +605,8 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     }
 
     private void Error(string message, string token, int lineNumber) {
-      throw new DataFormatException("Error while parsing.\n" + message, token, lineNumber);
+      throw new IOException(string.Format("Error while parsing. {0} (token: {1} lineNumber: {2}).", message, token, lineNumber));
     }
     #endregion
-
-    [Serializable]
-    public class DataFormatException : Exception {
-      private int line;
-      public int Line {
-        get { return line; }
-      }
-      private string token;
-      public string Token {
-        get { return token; }
-      }
-      public DataFormatException(string message, string token, int line)
-        : base(message + "\nToken: " + token + " (line: " + line + ")") {
-        this.token = token;
-        this.line = line;
-      }
-
-      public DataFormatException(SerializationInfo info, StreamingContext context) : base(info, context) { }
-    }
   }
 }

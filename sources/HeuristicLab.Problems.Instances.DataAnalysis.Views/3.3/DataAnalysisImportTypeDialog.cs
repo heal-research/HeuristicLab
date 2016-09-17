@@ -157,7 +157,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
         OkButton.Enabled = true;
       }
       catch (Exception ex) {
-        if (ex is IOException || ex is InvalidOperationException || ex is ArgumentException || ex is TableFileParser.DataFormatException) {
+        if (ex is IOException || ex is InvalidOperationException || ex is ArgumentException) {
           OkButton.Enabled = false;
           ErrorTextBox.Text = ex.Message;
           ErrorTextBox.Visible = true;
