@@ -19,7 +19,6 @@
  */
 #endregion
 
-using System;
 using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -40,7 +39,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     }
 
     [StorableConstructor]
-    protected SymbolicRegressionModel(bool deserializing) : base(deserializing) { }
+    protected SymbolicRegressionModel(bool deserializing)
+      : base(deserializing) {
+      targetVariable = string.Empty;
+    }
 
     protected SymbolicRegressionModel(SymbolicRegressionModel original, Cloner cloner)
       : base(original, cloner) {

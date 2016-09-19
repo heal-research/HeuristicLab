@@ -35,7 +35,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
       protected set { targetVariable = value; }
     }
 
-    protected RegressionModel(bool deserializing) : base(deserializing) { }
+    protected RegressionModel(bool deserializing)
+      : base(deserializing) {
+      targetVariable = string.Empty;
+    }
 
     protected RegressionModel(RegressionModel original, Cloner cloner)
       : base(original, cloner) {
@@ -55,13 +58,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
       this.targetVariable = targetVariable;
     }
 
-    [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserialization() {
-      // BackwardsCompatibility3.3
-      #region Backwards compatible code, remove with 3.4
-      targetVariable = string.Empty;
-      #endregion
-    }
     public abstract IEnumerable<double> GetEstimatedValues(IDataset dataset, IEnumerable<int> rows);
     public abstract IRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData);
   }

@@ -39,7 +39,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     }
 
     [StorableConstructor]
-    protected SymbolicClassificationModel(bool deserializing) : base(deserializing) { }
+    protected SymbolicClassificationModel(bool deserializing)
+      : base(deserializing) {
+      targetVariable = string.Empty;
+    }
 
     protected SymbolicClassificationModel(SymbolicClassificationModel original, Cloner cloner)
       : base(original, cloner) {

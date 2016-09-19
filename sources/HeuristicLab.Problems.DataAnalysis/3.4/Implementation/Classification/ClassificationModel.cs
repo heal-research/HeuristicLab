@@ -35,7 +35,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
       protected set { targetVariable = value; }
     }
 
-    protected ClassificationModel(bool deserializing) : base(deserializing) { }
+    protected ClassificationModel(bool deserializing)
+      : base(deserializing) {
+      targetVariable = string.Empty;
+    }
     protected ClassificationModel(ClassificationModel original, Cloner cloner)
       : base(original, cloner) {
       this.targetVariable = original.targetVariable;
@@ -52,14 +55,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
     protected ClassificationModel(string targetVariable, string name, string description)
       : base(name, description) {
       this.targetVariable = targetVariable;
-    }
-
-    [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserialization() {
-      // BackwardsCompatibility3.3
-      #region Backwards compatible code, remove with 3.4
-      targetVariable = string.Empty;
-      #endregion
     }
 
     public abstract IEnumerable<double> GetEstimatedClassValues(IDataset dataset, IEnumerable<int> rows);
