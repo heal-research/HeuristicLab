@@ -25,6 +25,7 @@ using System.Globalization;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
@@ -194,13 +195,72 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     private IEnumerable<double> SampleGaussianProcess(IRandom random, List<double>[] xs, out double[] relevance) {
       int nl = xs.Length;
       int nRows = xs.First().Count;
-      double[,] K = new double[nRows, nRows];
 
-      // sample length-scales
+      // sample u iid ~ N(0, 1)
+      var u = Enumerable.Range(0, nRows).Select(_ => NormalDistributedRandom.NextDouble(random, 0, 1)).ToArray();
+
+      // sample actual length-scales
       var l = Enumerable.Range(0, nl)
         .Select(_ => random.NextDouble() * 2 + 0.5)
         .ToArray();
-      // calculate covariance matrix
+
+      double[,] K = CalculateCovariance(xs, l);
+
+      // decompose
+      alglib.trfac.spdmatrixcholesky(ref K, nRows, false);
+
+
+      // calc y = Lu
+      var y = new double[u.Length];
+      alglib.ablas.rmatrixmv(nRows, nRows, K, 0, 0, 0, u, 0, ref y, 0);
+
+      // calculate relevance by removing dimensions
+      relevance = CalculateRelevance(y, u, xs, l);
+
+
+      // calculate variable relevance
+      // as per Rasmussen and Williams "Gaussian Processes for Machine Learning" page 106:
+      // ,,For the squared exponential covariance function [...] the l1, ..., lD hyperparameters
+      // play the role of characteristic length scales [...]. Such a covariance function implements 
+      // automatic relevance determination (ARD) [Neal, 1996], since the inverse of the length-scale 
+      // determines how relevant an input is: if the length-scale has a very large value, the covariance 
+      // will become almost independent of that input, effectively removing it from inference.''
+      // relevance = l.Select(li => 1.0 / li).ToArray();
+
+      return y;
+    }
+
+    // calculate variable relevance based on removal of variables
+    //  1) to remove a variable we set it's length scale to infinity (no relation of the variable value to the target)
+    //  2) calculate MSE of the original target values (y) to the updated targes y' (after variable removal)
+    //  3) relevance is larger if MSE(y,y') is large
+    //  4) scale impacts so that the most important variable has impact = 1
+    private double[] CalculateRelevance(double[] y, double[] u, List<double>[] xs, double[] l) {
+      int nRows = xs.First().Count;
+      var changedL = new double[l.Length];
+      var relevance = new double[l.Length];
+      for (int i = 0; i < l.Length; i++) {
+        Array.Copy(l, changedL, changedL.Length);
+        changedL[i] = double.MaxValue;
+        var changedK = CalculateCovariance(xs, changedL);
+
+        var yChanged = new double[u.Length];
+        alglib.ablas.rmatrixmv(nRows, nRows, changedK, 0, 0, 0, u, 0, ref yChanged, 0);
+
+        OnlineCalculatorError error;
+        var mse = OnlineMeanSquaredErrorCalculator.Calculate(y, yChanged, out error);
+        if (error != OnlineCalculatorError.None) mse = double.MaxValue;
+        relevance[i] = mse;
+      }
+      // scale so that max relevance is 1.0
+      var maxRel = relevance.Max();
+      for (int i = 0; i < relevance.Length; i++) relevance[i] /= maxRel;
+      return relevance;
+    }
+
+    private double[,] CalculateCovariance(List<double>[] xs, double[] l) {
+      int nRows = xs.First().Count;
+      double[,] K = new double[nRows, nRows];
       for (int r = 0; r < nRows; r++) {
         double[] xi = xs.Select(x => x[r]).ToArray();
         for (int c = 0; c <= r; c++) {
@@ -212,32 +272,12 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
           K[r, c] = Math.Exp(-dSqr);
         }
       }
-
       // add a small diagonal matrix for numeric stability
       for (int i = 0; i < nRows; i++) {
         K[i, i] += 1.0E-7;
       }
 
-      // decompose
-      alglib.trfac.spdmatrixcholesky(ref K, nRows, false);
-
-      // sample u iid ~ N(0, 1)
-      var u = Enumerable.Range(0, nRows).Select(_ => NormalDistributedRandom.NextDouble(random, 0, 1)).ToArray();
-
-      // calc y = Lu
-      var y = new double[u.Length];
-      alglib.ablas.rmatrixmv(nRows, nRows, K, 0, 0, 0, u, 0, ref y, 0);
-
-      // calculate variable relevance
-      // as per Rasmussen and Williams "Gaussian Processes for Machine Learning" page 106:
-      // ,,For the squared exponential covariance function [...] the l1, ..., lD hyperparameters
-      // play the role of characteristic length scales [...]. Such a covariance function implements 
-      // automatic relevance determination (ARD) [Neal, 1996], since the inverse of the length-scale 
-      // determines how relevant an input is: if the length-scale has a very large value, the covariance 
-      // will become almost independent of that input, effectively removing it from inference.''
-      relevance = l.Select(li => 1.0 / li).ToArray();
-
-      return y;
+      return K;
     }
   }
 }
