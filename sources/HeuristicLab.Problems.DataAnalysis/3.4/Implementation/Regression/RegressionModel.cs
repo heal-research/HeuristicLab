@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -32,7 +33,11 @@ namespace HeuristicLab.Problems.DataAnalysis {
     private string targetVariable;
     public string TargetVariable {
       get { return targetVariable; }
-      protected set { targetVariable = value; }
+      set {
+        if (string.IsNullOrEmpty(value) || targetVariable == value) return;
+        targetVariable = value;
+        OnTargetVariableChanged(this, EventArgs.Empty);
+      }
     }
 
     protected RegressionModel(bool deserializing)
@@ -60,5 +65,14 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public abstract IEnumerable<double> GetEstimatedValues(IDataset dataset, IEnumerable<int> rows);
     public abstract IRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData);
+
+    #region events
+    public event EventHandler TargetVariableChanged;
+    private void OnTargetVariableChanged(object sender, EventArgs args) {
+      var changed = TargetVariableChanged;
+      if (changed != null)
+        changed(sender, args);
+    }
+    #endregion
   }
 }
