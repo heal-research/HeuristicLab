@@ -44,7 +44,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     protected OnlineNormalizedMeanSquaredErrorCalculator(OnlineNormalizedMeanSquaredErrorCalculator other, Cloner cloner) {
       meanSquaredErrorCalculator = (OnlineMeanAndVarianceCalculator)other.meanSquaredErrorCalculator.Clone(cloner);
-      originalVarianceCalculator = (OnlineMeanAndVarianceCalculator)originalVarianceCalculator.Clone(cloner);
+      originalVarianceCalculator = (OnlineMeanAndVarianceCalculator)other.originalVarianceCalculator.Clone(cloner);
     }
 
     #region IOnlineCalculator Members
