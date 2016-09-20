@@ -21,9 +21,10 @@
 
 using System;
 using System.Collections.Generic;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  public class OnlineTheilsUStatisticCalculator : IOnlineTimeSeriesCalculator {
+  public class OnlineTheilsUStatisticCalculator : IOnlineTimeSeriesCalculator, IDeepCloneable {
     private OnlineMeanAndVarianceCalculator squaredErrorMeanCalculator;
     private OnlineMeanAndVarianceCalculator unbiasedEstimatorMeanCalculator;
 
@@ -42,6 +43,12 @@ namespace HeuristicLab.Problems.DataAnalysis {
       squaredErrorMeanCalculator = new OnlineMeanAndVarianceCalculator();
       unbiasedEstimatorMeanCalculator = new OnlineMeanAndVarianceCalculator();
       Reset();
+    }
+
+    // private constructor used internally by the Clone() method
+    private OnlineTheilsUStatisticCalculator(OnlineMeanAndVarianceCalculator squaredErrorMeanCalculator, OnlineMeanAndVarianceCalculator unbiasedEstimatorMeanCalculator) {
+      this.squaredErrorMeanCalculator = squaredErrorMeanCalculator;
+      this.unbiasedEstimatorMeanCalculator = unbiasedEstimatorMeanCalculator;
     }
 
     #region IOnlineEvaluator Members
@@ -123,6 +130,24 @@ namespace HeuristicLab.Problems.DataAnalysis {
         errorState = calculator.ErrorState;
         return calculator.TheilsUStatistic;
       }
+    }
+
+    // IDeepCloneable members
+    public object Clone() {
+      var squaredErrorMeanCalculatorClone = (OnlineMeanAndVarianceCalculator)squaredErrorMeanCalculator.Clone();
+      var unbiasedEstimatorMeanCalculatorClone = (OnlineMeanAndVarianceCalculator)unbiasedEstimatorMeanCalculator.Clone();
+      return new OnlineTheilsUStatisticCalculator(squaredErrorMeanCalculatorClone, unbiasedEstimatorMeanCalculatorClone);
+    }
+
+    public IDeepCloneable Clone(Cloner cloner) {
+      var clone = cloner.GetClone(this);
+      if (clone == null) {
+        var squaredErrorMeanCalculatorClone = (OnlineMeanAndVarianceCalculator)squaredErrorMeanCalculator.Clone(cloner);
+        var unbiasedEstimatorMeanCalculatorClone = (OnlineMeanAndVarianceCalculator)unbiasedEstimatorMeanCalculator.Clone(cloner);
+        clone = new OnlineTheilsUStatisticCalculator(squaredErrorMeanCalculatorClone, unbiasedEstimatorMeanCalculatorClone);
+        cloner.RegisterClonedObject(this, clone);
+      }
+      return clone;
     }
   }
 }

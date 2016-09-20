@@ -21,9 +21,10 @@
 
 using System;
 using System.Collections.Generic;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  public class OnlineBoundedMeanSquaredErrorCalculator : IOnlineCalculator {
+  public class OnlineBoundedMeanSquaredErrorCalculator : IOnlineCalculator, IDeepCloneable {
 
     private double errorSum;
     private int n;
@@ -37,10 +38,19 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public double UpperBound { get; private set; }
 
 
-    public OnlineBoundedMeanSquaredErrorCalculator(double lowerBound, double upperbound) {
+    public OnlineBoundedMeanSquaredErrorCalculator(double lowerBound, double upperBound) {
       LowerBound = lowerBound;
-      UpperBound = upperbound;
+      UpperBound = upperBound;
       Reset();
+    }
+
+    // private constructor used internally by the Clone() method
+    private OnlineBoundedMeanSquaredErrorCalculator(OnlineBoundedMeanSquaredErrorCalculator other) {
+      LowerBound = other.LowerBound;
+      UpperBound = other.UpperBound;
+      n = other.n;
+      errorSum = other.errorSum;
+      errorState = other.ErrorState;
     }
 
     #region IOnlineCalculator Members
@@ -94,6 +104,20 @@ namespace HeuristicLab.Problems.DataAnalysis {
         errorState = boundedMseCalculator.ErrorState;
         return boundedMseCalculator.BoundedMeanSquaredError;
       }
+    }
+
+    // IDeepCloneable interface members
+    public object Clone() {
+      return new OnlineBoundedMeanSquaredErrorCalculator(this);
+    }
+
+    public IDeepCloneable Clone(Cloner cloner) {
+      var clone = cloner.GetClone(this);
+      if (clone == null) {
+        clone = (IDeepCloneable)this.Clone();
+        cloner.RegisterClonedObject(this, clone);
+      }
+      return clone;
     }
   }
 }

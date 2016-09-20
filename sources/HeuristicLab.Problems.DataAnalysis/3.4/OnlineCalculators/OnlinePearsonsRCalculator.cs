@@ -24,7 +24,7 @@ using System.Collections.Generic;
 using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  public class OnlinePearsonsRCalculator : IOnlineCalculator {
+  public class OnlinePearsonsRCalculator : IOnlineCalculator, IDeepCloneable {
     private OnlineCovarianceCalculator covCalculator = new OnlineCovarianceCalculator();
     private OnlineMeanAndVarianceCalculator sxCalculator = new OnlineMeanAndVarianceCalculator();
     private OnlineMeanAndVarianceCalculator syCalculator = new OnlineMeanAndVarianceCalculator();
@@ -45,6 +45,13 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     public OnlinePearsonsRCalculator() { }
+
+    // private constructor used internally by the Clone() method
+    private OnlinePearsonsRCalculator(OnlineCovarianceCalculator covCalculator, OnlineMeanAndVarianceCalculator sxCalculator, OnlineMeanAndVarianceCalculator syCalculator) {
+      this.covCalculator = covCalculator;
+      this.sxCalculator = sxCalculator;
+      this.syCalculator = syCalculator;
+    }
 
     #region IOnlineCalculator Members
     public OnlineCalculatorError ErrorState {
@@ -89,6 +96,26 @@ namespace HeuristicLab.Problems.DataAnalysis {
         errorState = calculator.ErrorState;
         return calculator.R;
       }
+    }
+
+    // IDeepCloneable members
+    public object Clone() {
+      var covCalculatorClone = (OnlineCovarianceCalculator)covCalculator.Clone();
+      var sxCalculatorClone = (OnlineMeanAndVarianceCalculator)sxCalculator.Clone();
+      var syCalculatorClone = (OnlineMeanAndVarianceCalculator)syCalculator.Clone();
+      return new OnlinePearsonsRCalculator(covCalculatorClone, sxCalculatorClone, syCalculatorClone);
+    }
+
+    public IDeepCloneable Clone(Cloner cloner) {
+      var clone = cloner.GetClone(this);
+      if (clone == null) {
+        var covCalculatorClone = (OnlineCovarianceCalculator)covCalculator.Clone(cloner);
+        var sxCalculatorClone = (OnlineMeanAndVarianceCalculator)sxCalculator.Clone(cloner);
+        var syCalculatorClone = (OnlineMeanAndVarianceCalculator)syCalculator.Clone(cloner);
+        clone = new OnlinePearsonsRCalculator(covCalculatorClone, sxCalculatorClone, syCalculatorClone);
+        cloner.RegisterClonedObject(this, clone);
+      }
+      return clone;
     }
   }
 }

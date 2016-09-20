@@ -21,9 +21,10 @@
 
 using System;
 using System.Collections.Generic;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  public class OnlineMeanErrorCalculator : IOnlineCalculator {
+  public class OnlineMeanErrorCalculator : IOnlineCalculator, IDeepCloneable {
 
     private readonly OnlineMeanAndVarianceCalculator meanAndVarianceCalculator;
     public double MeanError {
@@ -33,6 +34,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public OnlineMeanErrorCalculator() {
       meanAndVarianceCalculator = new OnlineMeanAndVarianceCalculator();
       Reset();
+    }
+
+    private OnlineMeanErrorCalculator(OnlineMeanAndVarianceCalculator meanAndVarianceCalculator) {
+      this.meanAndVarianceCalculator = meanAndVarianceCalculator;
     }
 
     #region IOnlineCalculator Members
@@ -72,6 +77,22 @@ namespace HeuristicLab.Problems.DataAnalysis {
         errorState = meCalculator.ErrorState;
         return meCalculator.MeanError;
       }
+    }
+
+    // IDeepCloneable members
+    public object Clone() {
+      var meanAndVarianceCalculatorClone = (OnlineMeanAndVarianceCalculator)meanAndVarianceCalculator.Clone();
+      return new OnlineMeanErrorCalculator(meanAndVarianceCalculatorClone);
+    }
+
+    public IDeepCloneable Clone(Cloner cloner) {
+      var clone = cloner.GetClone(this);
+      if (clone == null) {
+        var meanAndVarianceCalculatorClone = (OnlineMeanAndVarianceCalculator)meanAndVarianceCalculator.Clone(cloner);
+        clone = new OnlineMeanErrorCalculator(meanAndVarianceCalculatorClone);
+        cloner.RegisterClonedObject(this, clone);
+      }
+      return clone;
     }
   }
 }

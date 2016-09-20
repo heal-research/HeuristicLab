@@ -24,7 +24,7 @@ using System.Collections.Generic;
 using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  public class OnlineLinearScalingParameterCalculator {
+  public class OnlineLinearScalingParameterCalculator : IDeepCloneable {
 
     /// <summary>
     /// Additive constant
@@ -64,6 +64,15 @@ namespace HeuristicLab.Problems.DataAnalysis {
       originalTargetCovarianceCalculator = new OnlineCovarianceCalculator();
       Reset();
     }
+
+    // private constructor used internally by the Clone() method
+    private OnlineLinearScalingParameterCalculator(OnlineMeanAndVarianceCalculator targetMeanCalculator, OnlineMeanAndVarianceCalculator originalMeanAndVarianceCalculator, OnlineCovarianceCalculator originalTargetCovarianceCalculator) {
+      this.targetMeanCalculator = targetMeanCalculator;
+      this.originalMeanAndVarianceCalculator = originalMeanAndVarianceCalculator;
+      this.originalTargetCovarianceCalculator = originalTargetCovarianceCalculator;
+      // do not reset the calculators here
+    }
+
 
     public void Reset() {
       targetMeanCalculator.Reset();
@@ -115,6 +124,26 @@ namespace HeuristicLab.Problems.DataAnalysis {
         alpha = calculator.Alpha;
         beta = calculator.Beta;
       }
+    }
+
+    // IDeepCloneable interface members
+    public object Clone() {
+      var targetMeanCalculatorClone = (OnlineMeanAndVarianceCalculator)targetMeanCalculator.Clone();
+      var originalMeanAndVarianceCalculatorClone = (OnlineMeanAndVarianceCalculator)originalMeanAndVarianceCalculator.Clone();
+      var originalTargetCovarianceCalculatorClone = (OnlineCovarianceCalculator)originalTargetCovarianceCalculator.Clone();
+      return new OnlineLinearScalingParameterCalculator(targetMeanCalculatorClone, originalMeanAndVarianceCalculatorClone, originalTargetCovarianceCalculatorClone);
+    }
+
+    public IDeepCloneable Clone(Cloner cloner) {
+      var clone = cloner.GetClone(this);
+      if (clone == null) {
+        var targetMeanCalculatorClone = (OnlineMeanAndVarianceCalculator)targetMeanCalculator.Clone(cloner);
+        var originalMeanAndVarianceCalculatorClone = (OnlineMeanAndVarianceCalculator)originalMeanAndVarianceCalculator.Clone(cloner);
+        var originalTargetCovarianceCalculatorClone = (OnlineCovarianceCalculator)originalTargetCovarianceCalculator.Clone(cloner);
+        clone = new OnlineLinearScalingParameterCalculator(targetMeanCalculatorClone, originalMeanAndVarianceCalculatorClone, originalTargetCovarianceCalculatorClone);
+        cloner.RegisterClonedObject(this, clone);
+      }
+      return clone;
     }
   }
 }

@@ -20,9 +20,10 @@
 #endregion
 
 using System.Collections.Generic;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  public class OnlineMeanAndVarianceCalculator {
+  public class OnlineMeanAndVarianceCalculator : IDeepCloneable {
 
     private double m_oldM, m_newM, m_oldS, m_newS;
     private int n;
@@ -65,6 +66,16 @@ namespace HeuristicLab.Problems.DataAnalysis {
       Reset();
     }
 
+    private OnlineMeanAndVarianceCalculator(OnlineMeanAndVarianceCalculator other) : this() {
+      m_oldS = other.m_oldS;
+      m_oldM = other.m_oldM;
+      m_newS = other.m_newS;
+      m_newM = other.m_newM;
+      n = other.n;
+      errorState = other.errorState;
+      varianceErrorState = other.varianceErrorState;
+    }
+
     public void Reset() {
       n = 0;
       errorState = OnlineCalculatorError.InsufficientElementsAdded;
@@ -104,6 +115,20 @@ namespace HeuristicLab.Problems.DataAnalysis {
       variance = meanAndVarianceCalculator.Variance;
       meanErrorState = meanAndVarianceCalculator.MeanErrorState;
       varianceErrorState = meanAndVarianceCalculator.VarianceErrorState;
+    }
+
+    // IDeepCloneable members
+    public object Clone() {
+      return new OnlineMeanAndVarianceCalculator(this);
+    }
+
+    public IDeepCloneable Clone(Cloner cloner) {
+      var clone = cloner.GetClone(this);
+      if (clone == null) {
+        clone = (IDeepCloneable)this.Clone();
+        cloner.RegisterClonedObject(this, clone);
+      }
+      return clone;
     }
   }
 }

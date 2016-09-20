@@ -21,9 +21,10 @@
 
 using System;
 using System.Collections.Generic;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  public class OnlineMaxAbsoluteErrorCalculator : IOnlineCalculator {
+  public class OnlineMaxAbsoluteErrorCalculator : IOnlineCalculator, IDeepCloneable {
 
     private double mae;
     private int n;
@@ -35,6 +36,13 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public OnlineMaxAbsoluteErrorCalculator() {
       Reset();
+    }
+
+    // private constructor used internally by the Clone() method
+    private OnlineMaxAbsoluteErrorCalculator(OnlineMaxAbsoluteErrorCalculator other) {
+      mae = other.mae;
+      n = other.n;
+      errorState = other.errorState;
     }
 
     #region IOnlineCalculator Members
@@ -86,6 +94,20 @@ namespace HeuristicLab.Problems.DataAnalysis {
         errorState = maeCalculator.ErrorState;
         return maeCalculator.MaxAbsoluteError;
       }
+    }
+
+    // IDeepCloneable interface members
+    public object Clone() {
+      return new OnlineMaxAbsoluteErrorCalculator(this);
+    }
+
+    public IDeepCloneable Clone(Cloner cloner) {
+      var clone = cloner.GetClone(this);
+      if (clone == null) {
+        clone = (IDeepCloneable)this.Clone();
+        cloner.RegisterClonedObject(this, clone);
+      }
+      return clone;
     }
   }
 }

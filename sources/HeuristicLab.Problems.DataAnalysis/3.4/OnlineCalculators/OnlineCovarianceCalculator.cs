@@ -21,9 +21,10 @@
 
 using System;
 using System.Collections.Generic;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  public class OnlineCovarianceCalculator : IOnlineCalculator {
+  public class OnlineCovarianceCalculator : IOnlineCalculator, IDeepCloneable {
 
     private double xMean, yMean, Cn;
     private int n;
@@ -35,6 +36,15 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public OnlineCovarianceCalculator() {
       Reset();
+    }
+
+    // private constructor used internally by the Clone() method
+    private OnlineCovarianceCalculator(OnlineCovarianceCalculator other) : this() {
+      Cn = other.Cn;
+      xMean = other.xMean;
+      yMean = other.yMean;
+      n = other.n;
+      errorState = other.errorState;
     }
 
     #region IOnlineCalculator Members
@@ -92,6 +102,20 @@ namespace HeuristicLab.Problems.DataAnalysis {
         errorState = covarianceCalculator.ErrorState;
         return covarianceCalculator.Covariance;
       }
+    }
+
+    // IDeepCloneable interface members
+    public object Clone() {
+      return new OnlineCovarianceCalculator(this);
+    }
+
+    public IDeepCloneable Clone(Cloner cloner) {
+      var clone = cloner.GetClone(this);
+      if (clone == null) {
+        clone = (IDeepCloneable)this.Clone();
+        cloner.RegisterClonedObject(this, clone);
+      }
+      return clone;
     }
   }
 }

@@ -22,15 +22,26 @@
 using System;
 using System.Collections.Generic;
 using HeuristicLab.Common;
-using HeuristicLab.Problems.DataAnalysis.OnlineCalculators;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  public class ClassificationPerformanceMeasuresCalculator {
+  public class ClassificationPerformanceMeasuresCalculator : IDeepCloneable {
 
     public ClassificationPerformanceMeasuresCalculator(string positiveClassName, double positiveClassValue) {
       this.positiveClassName = positiveClassName;
       this.positiveClassValue = positiveClassValue;
       Reset();
+    }
+
+    // private constructor used internally by the Clone() method
+    private ClassificationPerformanceMeasuresCalculator(ClassificationPerformanceMeasuresCalculator other) {
+      // copy everything including the errorState
+      positiveClassName = other.positiveClassName;
+      positiveClassValue = other.positiveClassValue;
+      truePositiveCount = other.truePositiveCount;
+      falsePositiveCount = other.falsePositiveCount;
+      trueNegativeCount = other.trueNegativeCount;
+      falseNegativeCount = other.falseNegativeCount;
+      errorState = other.errorState;
     }
 
     #region Properties
@@ -136,6 +147,20 @@ namespace HeuristicLab.Problems.DataAnalysis {
         throw new ArgumentException("Number of elements in originalValues and estimatedValues enumerations doesn't match.");
       }
       errorState = ErrorState;
+    }
+
+    // IDeepCloneable interface members
+    public object Clone() {
+      return new ClassificationPerformanceMeasuresCalculator(this);
+    }
+
+    public IDeepCloneable Clone(Cloner cloner) {
+      var clone = cloner.GetClone(this);
+      if (clone == null) {
+        clone = (IDeepCloneable)this.Clone();
+        cloner.RegisterClonedObject(this, clone);
+      }
+      return clone;
     }
   }
 }

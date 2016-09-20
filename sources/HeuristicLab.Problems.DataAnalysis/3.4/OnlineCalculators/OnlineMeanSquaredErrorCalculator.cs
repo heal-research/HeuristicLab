@@ -21,9 +21,10 @@
 
 using System;
 using System.Collections.Generic;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  public class OnlineMeanSquaredErrorCalculator : IOnlineCalculator {
+  public class OnlineMeanSquaredErrorCalculator : IOnlineCalculator, IDeepCloneable {
 
     private double sse;
     private int n;
@@ -35,6 +36,13 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public OnlineMeanSquaredErrorCalculator() {
       Reset();
+    }
+
+    // private constructor used internally by the Clone() method
+    private OnlineMeanSquaredErrorCalculator(OnlineMeanSquaredErrorCalculator other) {
+      sse = other.sse;
+      n = other.n;
+      errorState = other.errorState;
     }
 
     #region IOnlineCalculator Members
@@ -85,6 +93,20 @@ namespace HeuristicLab.Problems.DataAnalysis {
         errorState = mseCalculator.ErrorState;
         return mseCalculator.MeanSquaredError;
       }
+    }
+
+    // IDeepCloneable members
+    public object Clone() {
+      return new OnlineMeanSquaredErrorCalculator(this);
+    }
+
+    public IDeepCloneable Clone(Cloner cloner) {
+      var clone = cloner.GetClone(this);
+      if (clone == null) {
+        clone = (IDeepCloneable)this.Clone();
+        cloner.RegisterClonedObject(this, clone);
+      }
+      return clone;
     }
   }
 }

@@ -25,7 +25,7 @@ using HeuristicLab.Common;
 
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  public class OnlineDirectionalSymmetryCalculator : IOnlineTimeSeriesCalculator {
+  public class OnlineDirectionalSymmetryCalculator : IOnlineTimeSeriesCalculator, IDeepCloneable {
     private int n;
     private int nCorrect;
 
@@ -38,6 +38,13 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public OnlineDirectionalSymmetryCalculator() {
       Reset();
+    }
+
+    // private constructor used internally by the Clone() method
+    private OnlineDirectionalSymmetryCalculator(OnlineDirectionalSymmetryCalculator other) {
+      n = other.n;
+      nCorrect = other.nCorrect;
+      errorState = other.errorState;
     }
 
     public double Value {
@@ -93,7 +100,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       errorState = dsCalculator.ErrorState;
       return dsCalculator.DirectionalSymmetry;
     }
-    
+
     public static double Calculate(IEnumerable<double> startValues, IEnumerable<IEnumerable<double>> actualContinuations, IEnumerable<IEnumerable<double>> predictedContinuations, out OnlineCalculatorError errorState) {
       IEnumerator<double> startValueEnumerator = startValues.GetEnumerator();
       IEnumerator<IEnumerable<double>> actualContinuationsEnumerator = actualContinuations.GetEnumerator();
@@ -114,6 +121,20 @@ namespace HeuristicLab.Problems.DataAnalysis {
         errorState = dsCalculator.ErrorState;
         return dsCalculator.DirectionalSymmetry;
       }
+    }
+
+    // IDeepCloneable interface members
+    public object Clone() {
+      return new OnlineDirectionalSymmetryCalculator(this);
+    }
+
+    public IDeepCloneable Clone(Cloner cloner) {
+      var clone = cloner.GetClone(this);
+      if (clone == null) {
+        clone = (IDeepCloneable)this.Clone();
+        cloner.RegisterClonedObject(this, clone);
+      }
+      return clone;
     }
   }
 }

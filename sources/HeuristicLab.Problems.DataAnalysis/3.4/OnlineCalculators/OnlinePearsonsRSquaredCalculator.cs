@@ -25,7 +25,7 @@ using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.DataAnalysis {
   [Obsolete("Use OnlinePearsonsRCalculator directly")]
-  public class OnlinePearsonsRSquaredCalculator : IOnlineCalculator {
+  public class OnlinePearsonsRSquaredCalculator : IOnlineCalculator, IDeepCloneable {
     private readonly OnlinePearsonsRCalculator rCalculator = new OnlinePearsonsRCalculator();
 
     public double RSquared {
@@ -36,6 +36,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     public OnlinePearsonsRSquaredCalculator() { }
+
+    private OnlinePearsonsRSquaredCalculator(OnlinePearsonsRCalculator rCalculator) {
+      this.rCalculator = rCalculator;
+    }
 
     #region IOnlineCalculator Members
     public OnlineCalculatorError ErrorState {
@@ -57,6 +61,22 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public static double Calculate(IEnumerable<double> first, IEnumerable<double> second, out OnlineCalculatorError errorState) {
       var r = OnlinePearsonsRCalculator.Calculate(first, second, out errorState);
       return r * r;
+    }
+
+    // IDeepCloneable members
+    public object Clone() {
+      var rCalculatorClone = (OnlinePearsonsRCalculator)rCalculator.Clone();
+      return new OnlinePearsonsRSquaredCalculator(rCalculatorClone);
+    }
+
+    public IDeepCloneable Clone(Cloner cloner) {
+      var clone = cloner.GetClone(this);
+      if (clone == null) {
+        var rCalculatorClone = (OnlinePearsonsRCalculator)rCalculator.Clone(cloner);
+        clone = new OnlinePearsonsRSquaredCalculator(rCalculatorClone);
+        cloner.RegisterClonedObject(this, clone);
+      }
+      return clone;
     }
   }
 }

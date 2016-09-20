@@ -21,9 +21,10 @@
 
 using System;
 using System.Collections.Generic;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  public class OnlineNormalizedMeanSquaredErrorCalculator : IOnlineCalculator {
+  public class OnlineNormalizedMeanSquaredErrorCalculator : IOnlineCalculator, IDeepCloneable {
     private OnlineMeanAndVarianceCalculator meanSquaredErrorCalculator;
     private OnlineMeanAndVarianceCalculator originalVarianceCalculator;
 
@@ -39,6 +40,12 @@ namespace HeuristicLab.Problems.DataAnalysis {
       meanSquaredErrorCalculator = new OnlineMeanAndVarianceCalculator();
       originalVarianceCalculator = new OnlineMeanAndVarianceCalculator();
       Reset();
+    }
+
+    // private constructor used internally by the Clone() method
+    public OnlineNormalizedMeanSquaredErrorCalculator(OnlineMeanAndVarianceCalculator meanSquaredErrorCalculator, OnlineMeanAndVarianceCalculator originalVarianceCalculator) {
+      this.meanSquaredErrorCalculator = meanSquaredErrorCalculator;
+      this.originalVarianceCalculator = originalVarianceCalculator;
     }
 
     #region IOnlineCalculator Members
@@ -90,6 +97,24 @@ namespace HeuristicLab.Problems.DataAnalysis {
         errorState = normalizedMSECalculator.ErrorState;
         return normalizedMSECalculator.NormalizedMeanSquaredError;
       }
+    }
+
+    // IDeepCloneable members
+    public object Clone() {
+      var meanSquaredErrorCalculatorClone = (OnlineMeanAndVarianceCalculator)meanSquaredErrorCalculator.Clone();
+      var originalVarianceCalculatorClone = (OnlineMeanAndVarianceCalculator)originalVarianceCalculator.Clone();
+      return new OnlineNormalizedMeanSquaredErrorCalculator(meanSquaredErrorCalculatorClone, originalVarianceCalculatorClone);
+    }
+
+    public IDeepCloneable Clone(Cloner cloner) {
+      var clone = cloner.GetClone(this);
+      if (clone == null) {
+        var meanSquaredErrorCalculatorClone = (OnlineMeanAndVarianceCalculator)meanSquaredErrorCalculator.Clone(cloner);
+        var originalVarianceCalculatorClone = (OnlineMeanAndVarianceCalculator)originalVarianceCalculator.Clone(cloner);
+        clone = new OnlineNormalizedMeanSquaredErrorCalculator(meanSquaredErrorCalculatorClone, originalVarianceCalculatorClone);
+        cloner.RegisterClonedObject(this, clone);
+      }
+      return clone;
     }
   }
 }
