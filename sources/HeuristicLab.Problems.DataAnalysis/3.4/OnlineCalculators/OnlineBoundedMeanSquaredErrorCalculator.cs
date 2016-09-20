@@ -44,13 +44,12 @@ namespace HeuristicLab.Problems.DataAnalysis {
       Reset();
     }
 
-    // private constructor used internally by the Clone() method
-    private OnlineBoundedMeanSquaredErrorCalculator(OnlineBoundedMeanSquaredErrorCalculator other) {
-      LowerBound = other.LowerBound;
-      UpperBound = other.UpperBound;
-      n = other.n;
-      errorSum = other.errorSum;
-      errorState = other.ErrorState;
+    protected OnlineBoundedMeanSquaredErrorCalculator(OnlineBoundedMeanSquaredErrorCalculator original, Cloner cloner = null) {
+      LowerBound = original.LowerBound;
+      UpperBound = original.UpperBound;
+      n = original.n;
+      errorSum = original.errorSum;
+      errorState = original.ErrorState;
     }
 
     #region IOnlineCalculator Members
@@ -114,7 +113,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public IDeepCloneable Clone(Cloner cloner) {
       var clone = cloner.GetClone(this);
       if (clone == null) {
-        clone = (IDeepCloneable)this.Clone();
+        clone = new OnlineBoundedMeanSquaredErrorCalculator(this);
         cloner.RegisterClonedObject(this, clone);
       }
       return clone;

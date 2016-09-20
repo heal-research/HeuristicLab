@@ -38,8 +38,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       Reset();
     }
 
-    // private constructor used internally by the Clone() method
-    private OnlineMeanAbsolutePercentageErrorCalculator(OnlineMeanAbsolutePercentageErrorCalculator other) {
+    protected OnlineMeanAbsolutePercentageErrorCalculator(OnlineMeanAbsolutePercentageErrorCalculator other, Cloner cloner = null) {
       sre = other.sre;
       n = other.n;
       errorState = other.errorState;
@@ -104,7 +103,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public IDeepCloneable Clone(Cloner cloner) {
       var clone = cloner.GetClone(this);
       if (clone == null) {
-        clone = (IDeepCloneable)this.Clone();
+        clone = new OnlineMeanAbsolutePercentageErrorCalculator(this);
         cloner.RegisterClonedObject(this, clone);
       }
       return clone;

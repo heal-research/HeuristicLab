@@ -38,7 +38,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       Reset();
     }
 
-    private OnlineMeanAbsoluteErrorCalculator(OnlineMeanAbsoluteErrorCalculator other) {
+    protected OnlineMeanAbsoluteErrorCalculator(OnlineMeanAbsoluteErrorCalculator other, Cloner cloner = null) {
       sae = other.sae;
       n = other.n;
       errorState = other.errorState;
@@ -102,7 +102,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public IDeepCloneable Clone(Cloner cloner) {
       var clone = cloner.GetClone(this);
       if (clone == null) {
-        clone = (IDeepCloneable)this.Clone();
+        clone = new OnlineMeanAbsoluteErrorCalculator(this);
         cloner.RegisterClonedObject(this, clone);
       }
       return clone;

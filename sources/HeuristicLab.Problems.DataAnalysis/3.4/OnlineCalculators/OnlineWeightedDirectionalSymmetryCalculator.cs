@@ -41,8 +41,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       Reset();
     }
 
-    // private constructor used internally by the Clone() method
-    private OnlineWeightedDirectionalSymmetryCalculator(OnlineWeightedDirectionalSymmetryCalculator other) {
+    protected OnlineWeightedDirectionalSymmetryCalculator(OnlineWeightedDirectionalSymmetryCalculator other, Cloner cloner = null) {
       n = other.n;
       correctSum = other.correctSum;
       incorrectSum = other.incorrectSum;
@@ -134,7 +133,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public IDeepCloneable Clone(Cloner cloner) {
       var clone = cloner.GetClone(this);
       if (clone == null) {
-        clone = (IDeepCloneable)this.Clone();
+        clone = new OnlineWeightedDirectionalSymmetryCalculator(this);
         cloner.RegisterClonedObject(this, clone);
       }
       return clone;

@@ -32,16 +32,14 @@ namespace HeuristicLab.Problems.DataAnalysis {
       Reset();
     }
 
-    // private constructor used internally by the Clone() method
-    private ClassificationPerformanceMeasuresCalculator(ClassificationPerformanceMeasuresCalculator other) {
-      // copy everything including the errorState
-      positiveClassName = other.positiveClassName;
-      positiveClassValue = other.positiveClassValue;
-      truePositiveCount = other.truePositiveCount;
-      falsePositiveCount = other.falsePositiveCount;
-      trueNegativeCount = other.trueNegativeCount;
-      falseNegativeCount = other.falseNegativeCount;
-      errorState = other.errorState;
+    protected ClassificationPerformanceMeasuresCalculator(ClassificationPerformanceMeasuresCalculator original, Cloner cloner = null) {
+      positiveClassName = original.positiveClassName;
+      positiveClassValue = original.positiveClassValue;
+      truePositiveCount = original.truePositiveCount;
+      falsePositiveCount = original.falsePositiveCount;
+      trueNegativeCount = original.trueNegativeCount;
+      falseNegativeCount = original.falseNegativeCount;
+      errorState = original.errorState;
     }
 
     #region Properties
@@ -157,7 +155,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public IDeepCloneable Clone(Cloner cloner) {
       var clone = cloner.GetClone(this);
       if (clone == null) {
-        clone = (IDeepCloneable)this.Clone();
+        clone = new ClassificationPerformanceMeasuresCalculator(this);
         cloner.RegisterClonedObject(this, clone);
       }
       return clone;

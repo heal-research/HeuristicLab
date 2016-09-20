@@ -39,7 +39,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     // private constructor used internally by the Clone() method
-    private OnlineAccuracyCalculator(OnlineAccuracyCalculator other) {
+    protected OnlineAccuracyCalculator(OnlineAccuracyCalculator other, Cloner cloner = null) {
       correctlyClassified = other.correctlyClassified;
       n = other.n;
       errorState = other.errorState;
@@ -105,7 +105,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public IDeepCloneable Clone(Cloner cloner) {
       var clone = cloner.GetClone(this);
       if (clone == null) {
-        clone = (IDeepCloneable)this.Clone();
+        clone = new OnlineAccuracyCalculator(this);
         cloner.RegisterClonedObject(this, clone);
       }
       return clone;

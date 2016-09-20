@@ -40,8 +40,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       Reset();
     }
 
-    // private constructor used internally by the Clone() method
-    private OnlineDirectionalSymmetryCalculator(OnlineDirectionalSymmetryCalculator other) {
+    protected OnlineDirectionalSymmetryCalculator(OnlineDirectionalSymmetryCalculator other, Cloner cloner = null) {
       n = other.n;
       nCorrect = other.nCorrect;
       errorState = other.errorState;
@@ -131,7 +130,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public IDeepCloneable Clone(Cloner cloner) {
       var clone = cloner.GetClone(this);
       if (clone == null) {
-        clone = (IDeepCloneable)this.Clone();
+        clone = new OnlineDirectionalSymmetryCalculator(this);
         cloner.RegisterClonedObject(this, clone);
       }
       return clone;

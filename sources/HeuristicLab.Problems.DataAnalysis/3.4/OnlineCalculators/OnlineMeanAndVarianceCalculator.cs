@@ -66,7 +66,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       Reset();
     }
 
-    private OnlineMeanAndVarianceCalculator(OnlineMeanAndVarianceCalculator other) : this() {
+    protected OnlineMeanAndVarianceCalculator(OnlineMeanAndVarianceCalculator other, Cloner cloner = null) {
       m_oldS = other.m_oldS;
       m_oldM = other.m_oldM;
       m_newS = other.m_newS;
@@ -125,7 +125,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public IDeepCloneable Clone(Cloner cloner) {
       var clone = cloner.GetClone(this);
       if (clone == null) {
-        clone = (IDeepCloneable)this.Clone();
+        clone = new OnlineMeanAndVarianceCalculator(this);
         cloner.RegisterClonedObject(this, clone);
       }
       return clone;

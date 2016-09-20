@@ -38,8 +38,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       Reset();
     }
 
-    // private constructor used internally by the Clone() method
-    private OnlineMaxAbsoluteErrorCalculator(OnlineMaxAbsoluteErrorCalculator other) {
+    protected OnlineMaxAbsoluteErrorCalculator(OnlineMaxAbsoluteErrorCalculator other, Cloner cloner = null) {
       mae = other.mae;
       n = other.n;
       errorState = other.errorState;
@@ -104,7 +103,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public IDeepCloneable Clone(Cloner cloner) {
       var clone = cloner.GetClone(this);
       if (clone == null) {
-        clone = (IDeepCloneable)this.Clone();
+        clone = new OnlineMaxAbsoluteErrorCalculator(this);
         cloner.RegisterClonedObject(this, clone);
       }
       return clone;

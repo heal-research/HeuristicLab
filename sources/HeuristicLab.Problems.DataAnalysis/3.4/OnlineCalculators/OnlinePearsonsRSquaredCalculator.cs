@@ -37,8 +37,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public OnlinePearsonsRSquaredCalculator() { }
 
-    private OnlinePearsonsRSquaredCalculator(OnlinePearsonsRCalculator rCalculator) {
-      this.rCalculator = rCalculator;
+    protected OnlinePearsonsRSquaredCalculator(OnlinePearsonsRSquaredCalculator other, Cloner cloner) {
+      this.rCalculator = (OnlinePearsonsRCalculator)other.rCalculator.Clone(cloner);
     }
 
     #region IOnlineCalculator Members
@@ -65,15 +65,14 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     // IDeepCloneable members
     public object Clone() {
-      var rCalculatorClone = (OnlinePearsonsRCalculator)rCalculator.Clone();
-      return new OnlinePearsonsRSquaredCalculator(rCalculatorClone);
+      var cloner = new Cloner();
+      return new OnlinePearsonsRSquaredCalculator(this, cloner);
     }
 
     public IDeepCloneable Clone(Cloner cloner) {
       var clone = cloner.GetClone(this);
       if (clone == null) {
-        var rCalculatorClone = (OnlinePearsonsRCalculator)rCalculator.Clone(cloner);
-        clone = new OnlinePearsonsRSquaredCalculator(rCalculatorClone);
+        clone = new OnlinePearsonsRSquaredCalculator(this, cloner);
         cloner.RegisterClonedObject(this, clone);
       }
       return clone;

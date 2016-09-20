@@ -42,10 +42,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
       Reset();
     }
 
-    // private constructor used internally by the Clone() method
-    public OnlineNormalizedMeanSquaredErrorCalculator(OnlineMeanAndVarianceCalculator meanSquaredErrorCalculator, OnlineMeanAndVarianceCalculator originalVarianceCalculator) {
-      this.meanSquaredErrorCalculator = meanSquaredErrorCalculator;
-      this.originalVarianceCalculator = originalVarianceCalculator;
+    protected OnlineNormalizedMeanSquaredErrorCalculator(OnlineNormalizedMeanSquaredErrorCalculator other, Cloner cloner) {
+      meanSquaredErrorCalculator = (OnlineMeanAndVarianceCalculator)other.meanSquaredErrorCalculator.Clone(cloner);
+      originalVarianceCalculator = (OnlineMeanAndVarianceCalculator)originalVarianceCalculator.Clone(cloner);
     }
 
     #region IOnlineCalculator Members
@@ -101,17 +100,14 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     // IDeepCloneable members
     public object Clone() {
-      var meanSquaredErrorCalculatorClone = (OnlineMeanAndVarianceCalculator)meanSquaredErrorCalculator.Clone();
-      var originalVarianceCalculatorClone = (OnlineMeanAndVarianceCalculator)originalVarianceCalculator.Clone();
-      return new OnlineNormalizedMeanSquaredErrorCalculator(meanSquaredErrorCalculatorClone, originalVarianceCalculatorClone);
+      var cloner = new Cloner();
+      return new OnlineNormalizedMeanSquaredErrorCalculator(this, cloner);
     }
 
     public IDeepCloneable Clone(Cloner cloner) {
       var clone = cloner.GetClone(this);
       if (clone == null) {
-        var meanSquaredErrorCalculatorClone = (OnlineMeanAndVarianceCalculator)meanSquaredErrorCalculator.Clone(cloner);
-        var originalVarianceCalculatorClone = (OnlineMeanAndVarianceCalculator)originalVarianceCalculator.Clone(cloner);
-        clone = new OnlineNormalizedMeanSquaredErrorCalculator(meanSquaredErrorCalculatorClone, originalVarianceCalculatorClone);
+        clone = new OnlineNormalizedMeanSquaredErrorCalculator(this, cloner);
         cloner.RegisterClonedObject(this, clone);
       }
       return clone;
