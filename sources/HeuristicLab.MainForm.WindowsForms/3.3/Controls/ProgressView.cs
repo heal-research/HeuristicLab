@@ -147,7 +147,8 @@ namespace HeuristicLab.MainForm.WindowsForms {
           Invoke((Action)UpdateProgressValue);
         }
         catch (InvalidOperationException) {
-          if (this.IsHandleCreated) throw;
+          // swallow ObjectDisposedException 
+          // which might occur if the invoke call is executed after or while the control is disposing
         }
       } else {
         if (content != null) {
