@@ -59,7 +59,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
 
             instance = Content.ImportData(importTypeDialog.Path, importTypeDialog.ImportType,
               importTypeDialog.CSVFormat);
-          } catch (IOException ex) {
+          } catch (Exception ex) {
             ErrorWhileParsing(ex);
             return;
           } finally {
@@ -68,7 +68,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
 
           try {
             GenericConsumer.Load(instance);
-          } catch (IOException ex) {
+          } catch (Exception ex) {
             ErrorWhileLoading(ex, importTypeDialog.Path);
           } finally {
             Invoke((Action)(() => instancesComboBox.SelectedIndex = -1));
