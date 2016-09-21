@@ -22,6 +22,7 @@
 using System;
 using System.ComponentModel;
 using System.Drawing;
+using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using HeuristicLab.Common;
@@ -202,6 +203,8 @@ namespace HeuristicLab.Data.Views {
         DataGridViewColumn column = dataGridView.Columns.GetFirstColumn(DataGridViewElementStates.Visible);
         DataGridViewCell cell = dataGridView[column.Index, i];
         if (cell.Selected) {
+          s.Append(Content.ElementNames.ElementAt(i));
+          s.Append("\t");
           s.Append(Content.GetValue(i));
           s.Append(Environment.NewLine);
         }
