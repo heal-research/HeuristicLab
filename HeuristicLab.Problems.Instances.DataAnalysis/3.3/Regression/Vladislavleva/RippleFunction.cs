@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
   public class RippleFunction : ArtificialRegressionDataDescriptor {
@@ -44,15 +45,22 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     protected override int TrainingPartitionEnd { get { return 300; } }
     protected override int TestPartitionStart { get { return 300; } }
     protected override int TestPartitionEnd { get { return 300 + 1000; } }
+    public int Seed { get; private set; }
 
+    public RippleFunction() : this((int)DateTime.Now.Ticks) { }
+
+    public RippleFunction(int seed) : base() {
+      Seed = seed;
+    }
     protected override List<List<double>> GenerateValues() {
       List<List<double>> data = new List<List<double>>();
+      var rand = new MersenneTwister((uint)Seed);
       for (int i = 0; i < AllowedInputVariables.Count(); i++) {
-        data.Add(ValueGenerator.GenerateUniformDistributedValues(300, 0.05, 6.05).ToList());
+        data.Add(ValueGenerator.GenerateUniformDistributedValues(rand.Next(), 300, 0.05, 6.05).ToList());
       }
 
       for (int i = 0; i < AllowedInputVariables.Count(); i++) {
-        data[i].AddRange(ValueGenerator.GenerateUniformDistributedValues(1000, -0.25, 6.35));
+        data[i].AddRange(ValueGenerator.GenerateUniformDistributedValues(rand.Next(), 1000, -0.25, 6.35));
       }
 
       double x1, x2;

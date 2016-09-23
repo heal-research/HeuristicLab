@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
+using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
   public class KeijzerFunctionTen : ArtificialRegressionDataDescriptor {
@@ -45,7 +46,13 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     protected override int TrainingPartitionEnd { get { return 100; } }
     protected override int TestPartitionStart { get { return 100; } }
     protected override int TestPartitionEnd { get { return 100 + (101 * 101); } }
+    public int Seed { get; private set; }
 
+    public KeijzerFunctionTen() : this((int)System.DateTime.Now.Ticks) {
+    }
+    public KeijzerFunctionTen(int seed) : base() {
+      Seed = seed;
+    }
     protected override List<List<double>> GenerateValues() {
       List<List<double>> data = new List<List<double>>();
 
@@ -53,8 +60,9 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       List<List<double>> testData = new List<List<double>>() { oneVariableTestData, oneVariableTestData };
 
       var combinations = ValueGenerator.GenerateAllCombinationsOfValuesInLists(testData).ToList<IEnumerable<double>>();
+      var rand = new MersenneTwister((uint)Seed);
       for (int i = 0; i < AllowedInputVariables.Count(); i++) {
-        data.Add(ValueGenerator.GenerateUniformDistributedValues(100, 0, 1).ToList());
+        data.Add(ValueGenerator.GenerateUniformDistributedValues(rand.Next(), 100, 0, 1).ToList());
         data[i].AddRange(combinations[i]);
       }
 

@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
   public class KornsFunctionSeven : ArtificialRegressionDataDescriptor {
@@ -49,14 +50,19 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     protected override int TrainingPartitionEnd { get { return 10000; } }
     protected override int TestPartitionStart { get { return 10000; } }
     protected override int TestPartitionEnd { get { return 20000; } }
+    public int Seed { get; private set; }
 
+    public KornsFunctionSeven() : this((int)System.DateTime.Now.Ticks) {
+    }
+    public KornsFunctionSeven(int seed) : base() {
+      Seed = seed;
+    }
     protected override List<List<double>> GenerateValues() {
       List<List<double>> data = new List<List<double>>();
-      data.Add(ValueGenerator.GenerateUniformDistributedValues(TestPartitionEnd, -50, 50).ToList());
-      data.Add(ValueGenerator.GenerateUniformDistributedValues(TestPartitionEnd, -50, 50).ToList());
-      data.Add(ValueGenerator.GenerateUniformDistributedValues(TestPartitionEnd, -50, 50).ToList());
-      data.Add(ValueGenerator.GenerateUniformDistributedValues(TestPartitionEnd, -50, 50).ToList());
-      data.Add(ValueGenerator.GenerateUniformDistributedValues(TestPartitionEnd, -50, 50).ToList());
+      var rand = new MersenneTwister((uint)Seed);
+
+      for (int i = 0; i < 5; i++)
+        data.Add(ValueGenerator.GenerateUniformDistributedValues(rand.Next(), TestPartitionEnd, -50, 50).ToList());
 
       double x0;
       List<double> results = new List<double>();

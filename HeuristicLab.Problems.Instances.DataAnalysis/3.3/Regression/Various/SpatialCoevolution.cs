@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
+using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
   public class SpatialCoevolution : ArtificialRegressionDataDescriptor {
@@ -49,17 +50,24 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     protected override int TrainingPartitionEnd { get { return 676; } }
     protected override int TestPartitionStart { get { return 676; } }
     protected override int TestPartitionEnd { get { return 1676; } }
+    public int Seed { get; private set; }
 
+    public SpatialCoevolution() : this((int)DateTime.Now.Ticks) { }
+
+    public SpatialCoevolution(int seed) : base() {
+      Seed = seed;
+    }
     protected override List<List<double>> GenerateValues() {
       List<List<double>> data = new List<List<double>>();
 
       List<double> evenlySpacedSequence = SequenceGenerator.GenerateSteps(-5, 5, 0.4m).Select(v => (double)v).ToList();
       List<List<double>> trainingData = new List<List<double>>() { evenlySpacedSequence, evenlySpacedSequence };
       var combinations = ValueGenerator.GenerateAllCombinationsOfValuesInLists(trainingData).ToList();
+      var rand = new MersenneTwister((uint)Seed);
 
       for (int i = 0; i < AllowedInputVariables.Count(); i++) {
         data.Add(combinations[i].ToList());
-        data[i].AddRange(ValueGenerator.GenerateUniformDistributedValues(1000, -5, 5).ToList());
+        data[i].AddRange(ValueGenerator.GenerateUniformDistributedValues(rand.Next(), 1000, -5, 5).ToList());
       }
 
       double x, y;

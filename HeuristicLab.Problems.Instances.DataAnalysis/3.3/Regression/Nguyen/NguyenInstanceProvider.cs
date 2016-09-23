@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
   public class NguyenInstanceProvider : ArtificialRegressionInstanceProvider {
@@ -36,21 +37,28 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     public override string ReferencePublication {
       get { return "McDermott et al., 2012 \"Genetic Programming Needs Better Benchmarks\", in Proc. of GECCO 2012."; }
     }
+    public int Seed { get; private set; }
+
+    public NguyenInstanceProvider() : this((int)System.DateTime.Now.Ticks) { }
+    public NguyenInstanceProvider(int seed) : base() {
+      Seed = seed;
+    }
 
     public override IEnumerable<IDataDescriptor> GetDataDescriptors() {
       List<IDataDescriptor> descriptorList = new List<IDataDescriptor>();
-      descriptorList.Add(new NguyenFunctionOne());
-      descriptorList.Add(new NguyenFunctionTwo());
-      descriptorList.Add(new NguyenFunctionThree());
-      descriptorList.Add(new NguyenFunctionFour());
-      descriptorList.Add(new NguyenFunctionFive());
-      descriptorList.Add(new NguyenFunctionSix());
-      descriptorList.Add(new NguyenFunctionSeven());
-      descriptorList.Add(new NguyenFunctionEight());
-      descriptorList.Add(new NguyenFunctionNine());
-      descriptorList.Add(new NguyenFunctionTen());
-      descriptorList.Add(new NguyenFunctionEleven());
-      descriptorList.Add(new NguyenFunctionTwelve());
+      var rand = new MersenneTwister((uint)Seed);
+      descriptorList.Add(new NguyenFunctionOne(rand.Next()));
+      descriptorList.Add(new NguyenFunctionTwo(rand.Next()));
+      descriptorList.Add(new NguyenFunctionThree(rand.Next()));
+      descriptorList.Add(new NguyenFunctionFour(rand.Next()));
+      descriptorList.Add(new NguyenFunctionFive(rand.Next()));
+      descriptorList.Add(new NguyenFunctionSix(rand.Next()));
+      descriptorList.Add(new NguyenFunctionSeven(rand.Next()));
+      descriptorList.Add(new NguyenFunctionEight(rand.Next()));
+      descriptorList.Add(new NguyenFunctionNine(rand.Next()));
+      descriptorList.Add(new NguyenFunctionTen(rand.Next()));
+      descriptorList.Add(new NguyenFunctionEleven(rand.Next()));
+      descriptorList.Add(new NguyenFunctionTwelve(rand.Next()));
       return descriptorList;
     }
   }
