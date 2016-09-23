@@ -115,7 +115,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       var allowedInputVariables = Content.ProblemData.AllowedInputVariables;
       var variableValues = allowedInputVariables.Select(x => new List<double> { problemData.Dataset.GetDoubleValues(x, problemData.TrainingIndices).Median() });
       if (sharedFixedVariables != null)
-        sharedFixedVariables.ItemChanged += SharedFixedVariables_ItemChanged;
+        sharedFixedVariables.ItemChanged -= SharedFixedVariables_ItemChanged;
       sharedFixedVariables = new ModifiableDataset(allowedInputVariables, variableValues);
       // ItemChanged eventhandler is registered later, after creating the gradient charts
 
