@@ -36,7 +36,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private const string CheckExpressionsWithIntervalArithmeticParameterName = "CheckExpressionsWithIntervalArithmetic";
     private const string EvaluatedSolutionsParameterName = "EvaluatedSolutions";
 
-    private readonly SymbolicDataAnalysisExpressionTreeInterpreter interpreter;
+    private SymbolicDataAnalysisExpressionTreeInterpreter interpreter;
 
     public override bool CanChangeName {
       get { return false; }
@@ -70,7 +70,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     [StorableConstructor]
     private SymbolicDataAnalysisExpressionTreeLinearInterpreter(bool deserializing)
       : base(deserializing) {
-      interpreter = new SymbolicDataAnalysisExpressionTreeInterpreter();
     }
 
     private SymbolicDataAnalysisExpressionTreeLinearInterpreter(SymbolicDataAnalysisExpressionTreeLinearInterpreter original, Cloner cloner)
