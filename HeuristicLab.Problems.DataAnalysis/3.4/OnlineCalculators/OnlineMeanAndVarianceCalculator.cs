@@ -74,7 +74,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public void Add(double x) {
       if (double.IsNaN(x) || double.IsInfinity(x) || x > 1E13 || x < -1E13 || (errorState & OnlineCalculatorError.InvalidValueAdded) > 0) {
         errorState = errorState | OnlineCalculatorError.InvalidValueAdded;
-        varianceErrorState = errorState | OnlineCalculatorError.InvalidValueAdded;
+        varianceErrorState = varianceErrorState | OnlineCalculatorError.InvalidValueAdded;
       } else {
         n++;
         // See Knuth TAOCP vol 2, 3rd edition, page 232
