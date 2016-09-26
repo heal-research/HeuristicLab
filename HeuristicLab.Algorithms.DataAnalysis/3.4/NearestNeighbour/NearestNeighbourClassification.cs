@@ -39,10 +39,15 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   public sealed class NearestNeighbourClassification : FixedDataAnalysisAlgorithm<IClassificationProblem> {
     private const string KParameterName = "K";
     private const string NearestNeighbourClassificationModelResultName = "Nearest neighbour classification solution";
+    private const string WeightsParameterName = "Weights";
+
 
     #region parameter properties
     public IFixedValueParameter<IntValue> KParameter {
       get { return (IFixedValueParameter<IntValue>)Parameters[KParameterName]; }
+    }
+    public IValueParameter<DoubleArray> WeightsParameter {
+      get { return (IValueParameter<DoubleArray>)Parameters[WeightsParameterName]; }
     }
     #endregion
     #region properties
@@ -52,6 +57,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         if (value <= 0) throw new ArgumentException("K must be larger than zero.", "K");
         else KParameter.Value.Value = value;
       }
+    }
+    public DoubleArray Weights {
+      get { return WeightsParameter.Value; }
+      set { WeightsParameter.Value = value; }
     }
     #endregion
 
@@ -63,10 +72,18 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public NearestNeighbourClassification()
       : base() {
       Parameters.Add(new FixedValueParameter<IntValue>(KParameterName, "The number of nearest neighbours to consider for regression.", new IntValue(3)));
+      Parameters.Add(new OptionalValueParameter<DoubleArray>(WeightsParameterName, "Optional: use weights to specify individual scaling values for all features. If not set the weights are calculated automatically (each feature is scaled to unit variance)"));
       Problem = new ClassificationProblem();
     }
     [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserialization() { }
+    private void AfterDeserialization() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code, remove with 3.4
+      if (!Parameters.ContainsKey(WeightsParameterName)) {
+        Parameters.Add(new OptionalValueParameter<DoubleArray>(WeightsParameterName, "Optional: use weights to specify individual scaling values for all features. If not set the weights are calculated automatically (each feature is scaled to unit variance)"));
+      }
+      #endregion
+    }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new NearestNeighbourClassification(this, cloner);
@@ -74,21 +91,24 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     #region nearest neighbour
     protected override void Run() {
-      var solution = CreateNearestNeighbourClassificationSolution(Problem.ProblemData, K);
+      double[] weights = null;
+      if (Weights != null) weights = Weights.CloneAsArray();
+      var solution = CreateNearestNeighbourClassificationSolution(Problem.ProblemData, K, weights);
       Results.Add(new Result(NearestNeighbourClassificationModelResultName, "The nearest neighbour classification solution.", solution));
     }
 
-    public static IClassificationSolution CreateNearestNeighbourClassificationSolution(IClassificationProblemData problemData, int k) {
+    public static IClassificationSolution CreateNearestNeighbourClassificationSolution(IClassificationProblemData problemData, int k, double[] weights = null) {
       var problemDataClone = (IClassificationProblemData)problemData.Clone();
-      return new NearestNeighbourClassificationSolution(Train(problemDataClone, k), problemDataClone);
+      return new NearestNeighbourClassificationSolution(Train(problemDataClone, k, weights), problemDataClone);
     }
 
-    public static INearestNeighbourModel Train(IClassificationProblemData problemData, int k) {
+    public static INearestNeighbourModel Train(IClassificationProblemData problemData, int k, double[] weights = null) {
       return new NearestNeighbourModel(problemData.Dataset,
         problemData.TrainingIndices,
         k,
         problemData.TargetVariable,
         problemData.AllowedInputVariables,
+        weights,
         problemData.ClassValues.ToArray());
     }
     #endregion
