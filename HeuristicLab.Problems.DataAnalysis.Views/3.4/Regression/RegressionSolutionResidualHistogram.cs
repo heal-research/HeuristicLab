@@ -95,6 +95,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         CalculateResidualParameters(residuals, out roundedMax, out intervalWidth);
 
         ChartArea chartArea = chart.ChartAreas[0];
+        chartArea.AxisX.Title = string.Format("Residuals ({0})", Content.ProblemData.TargetVariable);
         chartArea.AxisX.Minimum = -roundedMax - intervalWidth;
         chartArea.AxisX.Maximum = roundedMax + intervalWidth;
         // get the highest frequency of a residual of any series

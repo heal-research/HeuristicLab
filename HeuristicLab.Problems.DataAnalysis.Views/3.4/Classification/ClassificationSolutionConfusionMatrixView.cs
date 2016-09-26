@@ -75,6 +75,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         if (Content == null) {
           dataGridView.RowCount = 1;
           dataGridView.ColumnCount = 1;
+          dataGridView.TopLeftHeaderCell.Value = string.Empty;
         } else {
           dataGridView.ColumnCount = Content.ProblemData.Classes + 1;
           dataGridView.RowCount = Content.ProblemData.Classes + 1;
@@ -90,6 +91,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
           dataGridView.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.ColumnHeader);
           dataGridView.AutoResizeRowHeadersWidth(DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders);
+
+          dataGridView.TopLeftHeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+          dataGridView.TopLeftHeaderCell.Value = Content.Model.TargetVariable;
 
           FillDataGridView();
         }

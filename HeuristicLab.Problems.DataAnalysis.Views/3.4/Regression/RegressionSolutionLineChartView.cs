@@ -63,7 +63,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         this.chart.ChartAreas[0].AxisX.Maximum = Content.ProblemData.Dataset.Rows - 1;
 
         this.chart.Series.Add(TARGETVARIABLE_SERIES_NAME);
-        this.chart.Series[TARGETVARIABLE_SERIES_NAME].LegendText = Content.ProblemData.TargetVariable;
+        this.chart.Series[TARGETVARIABLE_SERIES_NAME].LegendText = TARGETVARIABLE_SERIES_NAME;
         this.chart.Series[TARGETVARIABLE_SERIES_NAME].ChartType = SeriesChartType.FastLine;
         this.chart.Series[TARGETVARIABLE_SERIES_NAME].Points.DataBindXY(Enumerable.Range(0, Content.ProblemData.Dataset.Rows).ToArray(),
           Content.ProblemData.Dataset.GetDoubleValues(Content.ProblemData.TargetVariable).ToArray());
@@ -96,8 +96,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         this.chart.Series[ESTIMATEDVALUES_ALL_SERIES_NAME].Tag = Content;
         this.ToggleSeriesData(this.chart.Series[ESTIMATEDVALUES_ALL_SERIES_NAME]);
 
-        // set the y-axis bounds
+        // set the y-axis
         var axisY = this.chart.ChartAreas[0].AxisY;
+        axisY.Title = Content.ProblemData.TargetVariable;
         double min = double.MaxValue, max = double.MinValue;
         foreach (var point in chart.Series.SelectMany(x => x.Points)) {
           if (!point.YValues.Any() || double.IsInfinity(point.YValues[0]) || double.IsNaN(point.YValues[0]))

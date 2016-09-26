@@ -19,8 +19,8 @@
  */
 #endregion
 
-namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
-  partial class MathSymbolicDataAnalysisModelView {
+namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification.Views {
+  partial class SymbolicClassificationModelMathView {
     /// <summary> 
     /// Required designer variable.
     /// </summary>

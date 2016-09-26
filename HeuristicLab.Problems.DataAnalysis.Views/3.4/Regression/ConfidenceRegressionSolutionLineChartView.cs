@@ -27,6 +27,7 @@ using System.Windows.Forms.DataVisualization.Charting;
 using HeuristicLab.MainForm;
 using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Problems.DataAnalysis.Views;
+using HeuristicLab.Visualization.ChartControlsExtensions;
 
 namespace HeuristicLab.Algorithms.DataAnalysis.Views {
   [View("Line Chart (95% confidence interval)")]
@@ -108,7 +109,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
 
         // target
         this.chart.Series.Add(TARGETVARIABLE_SERIES_NAME);
-        this.chart.Series[TARGETVARIABLE_SERIES_NAME].LegendText = Content.ProblemData.TargetVariable;
+        this.chart.Series[TARGETVARIABLE_SERIES_NAME].LegendText = TARGETVARIABLE_SERIES_NAME;
         this.chart.Series[TARGETVARIABLE_SERIES_NAME].ChartType = SeriesChartType.FastLine;
         this.chart.Series[TARGETVARIABLE_SERIES_NAME].Points.DataBindXY(Enumerable.Range(0, Content.ProblemData.Dataset.Rows).ToArray(),
           Content.ProblemData.Dataset.GetDoubleValues(Content.ProblemData.TargetVariable).ToArray());
@@ -125,6 +126,26 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
         var s2Color = chart.Series[2].Color;
         var s3Color = chart.Series[3].Color;
         this.chart.PaletteCustomColors = new Color[] { s1Color, s2Color, s3Color, s0Color };
+
+        // set the y-axis
+        var axisY = this.chart.ChartAreas[0].AxisY;
+        axisY.Title = Content.ProblemData.TargetVariable;
+        double min = double.MaxValue, max = double.MinValue;
+        foreach (var point in chart.Series.SelectMany(x => x.Points)) {
+          if (!point.YValues.Any() || double.IsInfinity(point.YValues[0]) || double.IsNaN(point.YValues[0]))
+            continue;
+          var y = point.YValues[0];
+          if (y < min)
+            min = y;
+          if (y > max)
+            max = y;
+        }
+
+        double axisMin, axisMax, axisInterval;
+        ChartUtil.CalculateOptimalAxisInterval(min, max, out axisMin, out axisMax, out axisInterval);
+        axisY.Minimum = axisMin;
+        axisY.Maximum = axisMax;
+        axisY.Interval = axisInterval;
 
         UpdateCursorInterval();
         this.UpdateStripLines();
