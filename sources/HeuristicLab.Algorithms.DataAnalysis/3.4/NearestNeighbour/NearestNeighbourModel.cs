@@ -35,6 +35,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   [Item("NearestNeighbourModel", "Represents a nearest neighbour model for regression and classification.")]
   public sealed class NearestNeighbourModel : ClassificationModel, INearestNeighbourModel {
 
+    private object kdTreeLockObject = new object();
     private alglib.nearestneighbor.kdtree kdTree;
     public alglib.nearestneighbor.kdtree KDTree {
       get { return kdTree; }
@@ -46,6 +47,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         }
       }
     }
+
 
     public override IEnumerable<string> VariablesUsedForPrediction {
       get { return allowedInputVariables; }
@@ -200,7 +202,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
           x[column] = inputData[row, column];
         }
         int numNeighbours;
-        lock (kdTree) { // gkronber: the following calls change the kdTree data structure
+        lock (kdTreeLockObject) { // gkronber: the following calls change the kdTree data structure
           numNeighbours = alglib.nearestneighbor.kdtreequeryknn(kdTree, x, k, false);
           alglib.nearestneighbor.kdtreequeryresultsdistances(kdTree, ref dists);
           alglib.nearestneighbor.kdtreequeryresultsxy(kdTree, ref neighbours);
@@ -236,7 +238,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
           x[column] = inputData[row, column];
         }
         int numNeighbours;
-        lock (kdTree) {
+        lock (kdTreeLockObject) {
           // gkronber: the following calls change the kdTree data structure
           numNeighbours = alglib.nearestneighbor.kdtreequeryknn(kdTree, x, k, false);
           alglib.nearestneighbor.kdtreequeryresultsdistances(kdTree, ref dists);
