@@ -20,14 +20,12 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Parameters;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Optimization;
+using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
@@ -129,10 +127,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     protected override void Run() {
       if (SetSeedRandomly) Seed = (new System.Random()).Next();
       var rand = new MersenneTwister((uint)Seed);
-      IRegressionSolution bestSolution = null;
+
+      var bestSolution = CreateRegressionSolution(Problem.ProblemData, ModelStructure, Iterations, rand);
       for (int r = 0; r < Restarts; r++) {
         var solution = CreateRegressionSolution(Problem.ProblemData, ModelStructure, Iterations, rand);
-        if (bestSolution == null || solution.TrainingRootMeanSquaredError < bestSolution.TrainingRootMeanSquaredError) {
+        if (solution.TrainingRootMeanSquaredError < bestSolution.TrainingRootMeanSquaredError) {
           bestSolution = solution;
         }
       }
@@ -148,7 +147,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     /// Model is specified as infix expression containing variable names and numbers. 
     /// The starting point for the numeric constants is initialized randomly if a random number generator is specified (~N(0,1)). Otherwise the user specified constants are
     /// used as a starting point. 
-    /// </summary>
+    /// </summary>-
     /// <param name="problemData">Training and test data</param>
     /// <param name="modelStructure">The function as infix expression</param>
     /// <param name="maxIterations">Number of constant optimization iterations (using Levenberg-Marquardt algorithm)</param>
