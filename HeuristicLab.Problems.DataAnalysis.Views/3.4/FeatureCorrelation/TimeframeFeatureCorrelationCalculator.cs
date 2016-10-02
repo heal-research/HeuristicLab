@@ -71,6 +71,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         start = alreadyCalculated.GetLength(1);
       }
 
+      var var1 = dataset.GetDoubleValues(variable, indices).ToArray();
+
       for (int i = 0; i < length; i++) {
         for (int j = start; j <= frames; j++) {
           if (worker.CancellationPending) {
@@ -79,16 +81,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
             return;
           }
 
-          IEnumerable<double> var1 = dataset.GetDoubleValues(variable, indices);
           IEnumerable<double> var2 = dataset.GetDoubleValues(doubleVariableNames[i], indices);
 
-          var valuesInFrame = var1.Take(j);
-          var help = var1.Skip(j).ToList();
-          help.AddRange(valuesInFrame);
-          var1 = help;
-
           var error = OnlineCalculatorError.None;
-          elements[i, j] = calc.Calculate(var1, var2, out error);
+          elements[i, j] = calc.Calculate(var1.Skip(j), var2.Take(var1.Length-j), out error);
 
           if (!error.Equals(OnlineCalculatorError.None)) {
             elements[i, j] = double.NaN;
