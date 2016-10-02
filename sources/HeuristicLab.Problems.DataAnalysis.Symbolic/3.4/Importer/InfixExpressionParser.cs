@@ -142,9 +142,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           sb.Append(str[pos]);
           pos++;
           while (pos < str.Length && !char.IsWhiteSpace(str[pos])
-            && (str[pos] != '+' || str[pos-1] == 'e' || str[pos-1] == 'E')     // continue reading exponents
+            && (str[pos] != '+' || str[pos - 1] == 'e' || str[pos - 1] == 'E')     // continue reading exponents
             && (str[pos] != '-' || str[pos - 1] == 'e' || str[pos - 1] == 'E')
-            && str[pos] != '*'           
+            && str[pos] != '*'
             && str[pos] != '/'
             && str[pos] != ')') {
             sb.Append(str[pos]);
@@ -210,6 +210,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         } else if (str[pos] == ')') {
           pos++;
           yield return new Token { TokenType = TokenType.RightPar, strVal = ")" };
+        } else {
+          throw new ArgumentException("Invalid character: " + str[pos]);
         }
       }
     }
