@@ -35,7 +35,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   [Item("NearestNeighbourModel", "Represents a nearest neighbour model for regression and classification.")]
   public sealed class NearestNeighbourModel : ClassificationModel, INearestNeighbourModel {
 
-    private object kdTreeLockObject = new object();
+    private readonly object kdTreeLockObject = new object();
     private alglib.nearestneighbor.kdtree kdTree;
     public alglib.nearestneighbor.kdtree KDTree {
       get { return kdTree; }
