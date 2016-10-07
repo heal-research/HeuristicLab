@@ -22,6 +22,10 @@
 using System.Collections.Generic;
 
 namespace HeuristicLab.Problems.DataAnalysis {
+  /// <summary>
+  /// Interface for all regression models.
+  /// <remarks>All methods and properties in in this interface must be implemented thread safely</remarks>
+  /// </summary>
   public interface IRegressionModel : IDataAnalysisModel {
     IEnumerable<double> GetEstimatedValues(IDataset dataset, IEnumerable<int> rows);
     IRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData);

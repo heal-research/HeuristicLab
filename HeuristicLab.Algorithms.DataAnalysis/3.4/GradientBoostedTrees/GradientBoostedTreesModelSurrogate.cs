@@ -20,7 +20,9 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -35,7 +37,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   [Item("Gradient boosted tree model", "")]
   public sealed class GradientBoostedTreesModelSurrogate : RegressionModel, IGradientBoostedTreesModel {
     // don't store the actual model!
-    private IGradientBoostedTreesModel actualModel; // the actual model is only recalculated when necessary
+    // the actual model is only recalculated when necessary
+    private readonly Lazy<IGradientBoostedTreesModel> actualModel;
+    private IGradientBoostedTreesModel ActualModel {
+      get { return actualModel.Value; }
+    }
 
     [Storable]
     private readonly IRegressionProblemData trainingProblemData;
@@ -56,15 +62,22 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
 
     public override IEnumerable<string> VariablesUsedForPrediction {
-      get { return actualModel.Models.SelectMany(x => x.VariablesUsedForPrediction).Distinct().OrderBy(x => x); }
+      get {
+        return ActualModel.Models.SelectMany(x => x.VariablesUsedForPrediction).Distinct().OrderBy(x => x);
+      }
     }
 
     [StorableConstructor]
-    private GradientBoostedTreesModelSurrogate(bool deserializing) : base(deserializing) { }
+    private GradientBoostedTreesModelSurrogate(bool deserializing)
+      : base(deserializing) {
+      actualModel = new Lazy<IGradientBoostedTreesModel>(() => RecalculateModel());
+    }
 
     private GradientBoostedTreesModelSurrogate(GradientBoostedTreesModelSurrogate original, Cloner cloner)
       : base(original, cloner) {
-      if (original.actualModel != null) this.actualModel = cloner.Clone(original.actualModel);
+      IGradientBoostedTreesModel clonedModel = null;
+      if (original.ActualModel != null) clonedModel = cloner.Clone(original.ActualModel);
+      actualModel = new Lazy<IGradientBoostedTreesModel>(CreateLazyInitFunc(clonedModel)); // only capture clonedModel in the closure
 
       this.trainingProblemData = cloner.Clone(original.trainingProblemData);
       this.lossFunction = cloner.Clone(original.lossFunction);
@@ -74,6 +87,12 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       this.r = original.r;
       this.m = original.m;
       this.nu = original.nu;
+    }
+
+    private Func<IGradientBoostedTreesModel> CreateLazyInitFunc(IGradientBoostedTreesModel clonedModel) {
+      return () => {
+        return clonedModel == null ? RecalculateModel() : clonedModel;
+      };
     }
 
     // create only the surrogate model without an actual model
@@ -95,7 +114,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       ILossFunction lossFunction, int iterations, int maxSize, double r, double m, double nu,
       IGradientBoostedTreesModel model)
       : this(trainingProblemData, seed, lossFunction, iterations, maxSize, r, m, nu) {
-      this.actualModel = model;
+      actualModel = new Lazy<IGradientBoostedTreesModel>(() => model);
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -104,8 +123,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     // forward message to actual model (recalculate model first if necessary)
     public override IEnumerable<double> GetEstimatedValues(IDataset dataset, IEnumerable<int> rows) {
-      if (actualModel == null) actualModel = RecalculateModel();
-      return actualModel.GetEstimatedValues(dataset, rows);
+      return ActualModel.GetEstimatedValues(dataset, rows);
     }
 
     public override IRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData) {
@@ -118,15 +136,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     public IEnumerable<IRegressionModel> Models {
       get {
-        if (actualModel == null) actualModel = RecalculateModel();
-        return actualModel.Models;
+        return ActualModel.Models;
       }
     }
 
     public IEnumerable<double> Weights {
       get {
-        if (actualModel == null) actualModel = RecalculateModel();
-        return actualModel.Weights;
+        return ActualModel.Weights;
       }
     }
   }
