@@ -66,7 +66,7 @@ namespace HeuristicLab.DataPreprocessing {
     public void Import(IDataAnalysisProblemData problemData, IItem source = null) {
       if (problemData == null) throw new ArgumentNullException("problemData");
       if (source != null && ExtractProblemData(source) != problemData)
-        throw new ArgumentException("The ProblemData extracted from the Source is different than the given ProblemData.");
+        source = null; // ignore the source if the source's problem data is different
       Source = source ?? problemData;
       var namedSource = Source as INamedItem;
       if (namedSource != null)
