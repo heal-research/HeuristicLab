@@ -564,6 +564,7 @@
     <Compile Include="HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4\SubroutineDeleterTest.cs" />
     <Compile Include="HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4\SubroutineDuplicaterTest.cs" />
     <Compile Include="HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4\SubtreeCrossoverTest.cs" />
+    <Compile Include="HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4\GrammarsTest.cs" />
     <Compile Include="HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4\Util.cs" />
     <Compile Include="HeuristicLab.Persistence-3.3\StorableAttributeTests.cs" />
     <Compile Include="HeuristicLab.Persistence-3.3\UseCases.cs" />
