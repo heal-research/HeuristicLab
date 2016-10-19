@@ -60,6 +60,10 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       return new SimpleSymbol(this, cloner);
     }
 
+    public SimpleSymbol(string name, int arity)
+      : this(name, string.Empty, arity, arity) {
+    }
+
     public SimpleSymbol(string name, string description, int minimumArity, int maximumArity)
       : base(name, description) {
       this.minimumArity = minimumArity;
