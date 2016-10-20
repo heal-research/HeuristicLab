@@ -81,7 +81,8 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
           Separator = (char)SeparatorComboBox.SelectedValue,
           NumberFormatInfo = (NumberFormatInfo)DecimalSeparatorComboBox.SelectedValue,
           DateTimeFormatInfo = (DateTimeFormatInfo)DateTimeFormatComboBox.SelectedValue,
-          VariableNamesAvailable = CheckboxColumnNames.Checked
+          VariableNamesAvailable = CheckboxColumnNames.Checked,
+          Encoding = (Encoding) EncodingComboBox.SelectedValue
         };
       }
     }
