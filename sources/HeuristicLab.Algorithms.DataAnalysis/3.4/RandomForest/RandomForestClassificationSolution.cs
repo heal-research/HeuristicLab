@@ -37,6 +37,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       set { base.Model = value; }
     }
 
+    public int NumberOfTrees {
+      get { return Model.NumberOfTrees; }
+    }
+
     [StorableConstructor]
     private RandomForestClassificationSolution(bool deserializing) : base(deserializing) { }
     private RandomForestClassificationSolution(RandomForestClassificationSolution original, Cloner cloner)

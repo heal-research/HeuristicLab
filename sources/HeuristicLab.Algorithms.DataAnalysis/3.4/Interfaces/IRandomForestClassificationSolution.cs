@@ -29,5 +29,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// </summary>
   public interface IRandomForestClassificationSolution : IClassificationSolution {
     new IRandomForestModel Model { get; }
+    int NumberOfTrees { get; }
   }
 }

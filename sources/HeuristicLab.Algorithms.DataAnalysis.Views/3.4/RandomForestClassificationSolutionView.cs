@@ -1,4 +1,4 @@
-#region License Information
+﻿#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2016 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -19,16 +19,25 @@
  */
 #endregion
 
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Problems.DataAnalysis;
+using HeuristicLab.MainForm;
+using HeuristicLab.Problems.DataAnalysis.Views;
 
+namespace HeuristicLab.Algorithms.DataAnalysis.Views {
+  [Content(typeof(RandomForestClassificationSolution), true)]
+  [View("RandomForestClassificationSolution View")]
+  public partial class RandomForestClassificationSolutionView : ClassificationSolutionView {
+    public RandomForestClassificationSolutionView() {
+      InitializeComponent();
+    }
 
-namespace HeuristicLab.Algorithms.DataAnalysis {
-  /// <summary>
-  /// Interface to represent a random forest model for either regression or classification
-  /// </summary>
-  public interface IRandomForestModel : IConfidenceRegressionModel, IClassificationModel {
-    int NumberOfTrees { get; }
-    ISymbolicExpressionTree ExtractTree(int treeIdx); // returns a specific tree from the random forest as a ISymbolicRegressionModel
+    protected new RandomForestClassificationSolution Content {
+      get { return (RandomForestClassificationSolution)base.Content; }
+      set { base.Content = value; }
+    }
+
+    protected override void OnContentChanged() {
+      base.OnContentChanged();
+      itemsListView.Items.Remove(itemsListView.FindItemWithText("Model: RandomForestModel"));
+    }
   }
 }

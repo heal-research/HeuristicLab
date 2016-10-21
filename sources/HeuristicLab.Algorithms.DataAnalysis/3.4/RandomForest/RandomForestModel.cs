@@ -24,8 +24,10 @@ using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.DataAnalysis;
+using HeuristicLab.Problems.DataAnalysis.Symbolic;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>
@@ -48,6 +50,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       get { return originalTrainingData.AllowedInputVariables; }
     }
 
+    public int NumberOfTrees {
+      get { return nTrees; }
+    }
 
     // instead of storing the data of the model itself
     // we instead only store data necessary to recalculate the same model lazily on demand
@@ -63,7 +68,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private double r;
     [Storable]
     private double m;
-
 
     [StorableConstructor]
     private RandomForestModel(bool deserializing)
@@ -193,6 +197,82 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
           }
         }
         yield return classValues[maxProbClassIndex];
+      }
+    }
+
+    public ISymbolicExpressionTree ExtractTree(int treeIdx) {
+      // hoping that the internal representation of alglib is stable
+
+      // TREE FORMAT
+      // W[Offs]      -   size of sub-array (for the tree)
+      //     node info:
+      // W[K+0]       -   variable number        (-1 for leaf mode)
+      // W[K+1]       -   threshold              (class/value for leaf node)
+      // W[K+2]       -   ">=" branch index      (absent for leaf node)
+
+      // skip irrelevant trees
+      int offset = 0;
+      for (int i = 0; i < treeIdx - 1; i++) {
+        offset = offset + (int)Math.Round(randomForest.innerobj.trees[offset]);
+      }
+
+      var constSy = new Constant();
+      var varCondSy = new VariableCondition() { IgnoreSlope = true };
+
+      var node = CreateRegressionTreeRec(randomForest.innerobj.trees, offset, offset + 1, constSy, varCondSy);
+
+      var startNode = new StartSymbol().CreateTreeNode();
+      startNode.AddSubtree(node);
+      var root = new ProgramRootSymbol().CreateTreeNode();
+      root.AddSubtree(startNode);
+      return new SymbolicExpressionTree(root);
+    }
+
+    private ISymbolicExpressionTreeNode CreateRegressionTreeRec(double[] trees, int offset, int k, Constant constSy, VariableCondition varCondSy) {
+
+      // alglib source for evaluation of one tree (dfprocessinternal)
+      // offs = 0
+      //
+      // Set pointer to the root
+      //
+      // k = offs + 1;
+      // 
+      // //
+      // // Navigate through the tree
+      // //
+      // while (true) {
+      //   if ((double)(df.trees[k]) == (double)(-1)) {
+      //     if (df.nclasses == 1) {
+      //       y[0] = y[0] + df.trees[k + 1];
+      //     } else {
+      //       idx = (int)Math.Round(df.trees[k + 1]);
+      //       y[idx] = y[idx] + 1;
+      //     }
+      //     break;
+      //   }
+      //   if ((double)(x[(int)Math.Round(df.trees[k])]) < (double)(df.trees[k + 1])) {
+      //     k = k + innernodewidth;
+      //   } else {
+      //     k = offs + (int)Math.Round(df.trees[k + 2]);
+      //   }
+      // }
+
+      if ((double)(trees[k]) == (double)(-1)) {
+        var constNode = (ConstantTreeNode)constSy.CreateTreeNode();
+        constNode.Value = trees[k + 1];
+        return constNode;
+      } else {
+        var condNode = (VariableConditionTreeNode)varCondSy.CreateTreeNode();
+        condNode.VariableName = AllowedInputVariables[(int)Math.Round(trees[k])];
+        condNode.Threshold = trees[k + 1];
+        condNode.Slope = double.PositiveInfinity;
+
+        var left = CreateRegressionTreeRec(trees, offset, k + 3, constSy, varCondSy);
+        var right = CreateRegressionTreeRec(trees, offset, offset + (int)Math.Round(trees[k + 2]), constSy, varCondSy);
+
+        condNode.AddSubtree(left); // not 100% correct because interpreter uses: if(x <= thres) left() else right() and RF uses if(x < thres) left() else right() (see above)
+        condNode.AddSubtree(right);
+        return condNode;
       }
     }
 

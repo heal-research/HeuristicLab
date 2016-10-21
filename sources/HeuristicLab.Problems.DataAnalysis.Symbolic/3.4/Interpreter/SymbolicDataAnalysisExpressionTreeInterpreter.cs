@@ -470,14 +470,27 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         case OpCodes.VariableCondition: {
             if (row < 0 || row >= dataset.Rows) return double.NaN;
             var variableConditionTreeNode = (VariableConditionTreeNode)currentInstr.dynamicNode;
-            double variableValue = ((IList<double>)currentInstr.data)[row];
-            double x = variableValue - variableConditionTreeNode.Threshold;
-            double p = 1 / (1 + Math.Exp(-variableConditionTreeNode.Slope * x));
+            if (!variableConditionTreeNode.Symbol.IgnoreSlope) {
+              double variableValue = ((IList<double>)currentInstr.data)[row];
+              double x = variableValue - variableConditionTreeNode.Threshold;
+              double p = 1 / (1 + Math.Exp(-variableConditionTreeNode.Slope * x));
 
-            double trueBranch = Evaluate(dataset, ref row, state);
-            double falseBranch = Evaluate(dataset, ref row, state);
+              double trueBranch = Evaluate(dataset, ref row, state);
+              double falseBranch = Evaluate(dataset, ref row, state);
 
-            return trueBranch * p + falseBranch * (1 - p);
+              return trueBranch * p + falseBranch * (1 - p);
+            } else {
+              // strict threshold
+              double variableValue = ((IList<double>)currentInstr.data)[row];
+              if (variableValue <= variableConditionTreeNode.Threshold) {
+                var left = Evaluate(dataset, ref row, state);
+                state.SkipInstructions();
+                return left;
+              } else {
+                state.SkipInstructions();
+                return Evaluate(dataset, ref row, state);
+              }
+            }
           }
         default:
           throw new NotSupportedException();
