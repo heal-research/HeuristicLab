@@ -245,6 +245,12 @@
     <Compile Include="Regression\RegressionFeatureCorrelationView.Designer.cs">
       <DependentUpon>RegressionFeatureCorrelationView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Regression\RegressionSolutionVariableImpactsView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Regression\RegressionSolutionVariableImpactsView.Designer.cs">
+      <DependentUpon>RegressionSolutionVariableImpactsView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Regression\RegressionSolutionGradientView.cs">
       <SubType>UserControl</SubType>
     </Compile>
