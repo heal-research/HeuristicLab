@@ -60,6 +60,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       return 2.0 * map.Count / (t1.Length + t2.Length);
     }
 
+    public static double CalculateBottomUpSimilarity(ISymbolicExpressionTree t1, ISymbolicExpressionTree t2) {
+      return new SymbolicExpressionTreeBottomUpSimilarityCalculator().CalculateSimilarity(t1, t2);
+    }
+
     public override double CalculateSolutionSimilarity(IScope leftSolution, IScope rightSolution) {
       if (leftSolution == rightSolution)
         return 1.0;
@@ -72,7 +76,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
       var similarity = CalculateSimilarity(t1, t2);
       if (similarity > 1.0)
-        throw new Exception("Similarity value cannot be greater than 1");
+        throw new Exception("Similarity value " + similarity + " cannot be greater than 1");
 
       return similarity;
     }

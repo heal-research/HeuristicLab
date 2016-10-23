@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Core;
 using HeuristicLab.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -29,6 +30,41 @@ namespace HeuristicLab.Encodings.RealVectorEncoding.Tests {
   ///</summary>
   [TestClass()]
   public class RandomConvexCrossoverTest {
+    /// <summary>
+    ///A test for Cross
+    ///</summary>
+    [TestMethod()]
+    [TestCategory("Encodings.RealVector")]
+    [TestProperty("Time", "short")]
+    public void RandomConvexCrossoverCrossTest() {
+      var privateObject = new PrivateObject(typeof(RandomConvexCrossover));
+      ItemArray<RealVector> parents;
+      TestRandom random = new TestRandom();
+      bool exceptionFired;
+      // The following test checks if there is an exception when there are more than 2 parents
+      random.Reset();
+      parents = new ItemArray<RealVector>(new RealVector[] { new RealVector(5), new RealVector(6), new RealVector(4) });
+      exceptionFired = false;
+      try {
+        var actual = (RealVector)privateObject.Invoke("Cross", random, parents);
+      }
+      catch (System.ArgumentException) {
+        exceptionFired = true;
+      }
+      Assert.IsTrue(exceptionFired);
+      // The following test checks if there is an exception when there are less than 2 parents
+      random.Reset();
+      parents = new ItemArray<RealVector>(new RealVector[] { new RealVector(4) });
+      exceptionFired = false;
+      try {
+        var actual = (RealVector)privateObject.Invoke("Cross", random, parents);
+      }
+      catch (System.ArgumentException) {
+        exceptionFired = true;
+      }
+      Assert.IsTrue(exceptionFired);
+    }
+
     /// <summary>
     ///A test for Apply
     ///</summary>

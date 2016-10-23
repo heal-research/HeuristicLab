@@ -69,7 +69,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         r = OnlinePearsonsRCalculator.Calculate(targetValues, boundedEstimatedValues, out errorState);
       }
       if (errorState != OnlineCalculatorError.None) return double.NaN;
-      return r*r;
+      return r * r;
     }
 
     public override double Evaluate(IExecutionContext context, ISymbolicExpressionTree tree, IRegressionProblemData problemData, IEnumerable<int> rows) {

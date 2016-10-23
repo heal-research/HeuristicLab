@@ -86,6 +86,26 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Tests {
         Assert.AreEqual(3, grammar.GetMinimumExpressionLength(x));
         Assert.AreEqual(2, grammar.GetMinimumExpressionLength(y));
       }
+
+      {
+        var grammar = CreateTestGrammar6();
+        var prs = grammar.ProgramRootSymbol;
+        var ss = grammar.StartSymbol;
+        var x = grammar.Symbols.First(s => s.Name == "<x>");
+        var s_ = grammar.Symbols.First(s => s.Name == "<s>");
+        var a = grammar.Symbols.First(s => s.Name == "<a>");
+        var b = grammar.Symbols.First(s => s.Name == "<b>");
+        var c = grammar.Symbols.First(s => s.Name == "<c>");
+        var d = grammar.Symbols.First(s => s.Name == "<d>");
+        Assert.AreEqual(4, grammar.GetMinimumExpressionLength(prs));
+        Assert.AreEqual(3, grammar.GetMinimumExpressionLength(ss));
+        Assert.AreEqual(2, grammar.GetMinimumExpressionLength(x));
+        Assert.AreEqual(5, grammar.GetMinimumExpressionLength(s_));
+        Assert.AreEqual(4, grammar.GetMinimumExpressionLength(a));
+        Assert.AreEqual(3, grammar.GetMinimumExpressionLength(b));
+        Assert.AreEqual(4, grammar.GetMinimumExpressionLength(c));
+        Assert.AreEqual(3, grammar.GetMinimumExpressionLength(d));
+      }
     }
 
     [TestMethod]
@@ -168,6 +188,26 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Tests {
         Assert.AreEqual(4, grammar.GetMinimumExpressionDepth(ss));
         Assert.AreEqual(3, grammar.GetMinimumExpressionDepth(x));
         Assert.AreEqual(2, grammar.GetMinimumExpressionDepth(y));
+      }
+
+      {
+        var grammar = CreateTestGrammar6();
+        var prs = grammar.ProgramRootSymbol;
+        var ss = grammar.StartSymbol;
+        var x = grammar.Symbols.First(s => s.Name == "<x>");
+        var s_ = grammar.Symbols.First(s => s.Name == "<s>");
+        var a = grammar.Symbols.First(s => s.Name == "<a>");
+        var b = grammar.Symbols.First(s => s.Name == "<b>");
+        var c = grammar.Symbols.First(s => s.Name == "<c>");
+        var d = grammar.Symbols.First(s => s.Name == "<d>");
+        Assert.AreEqual(4, grammar.GetMinimumExpressionDepth(prs));
+        Assert.AreEqual(3, grammar.GetMinimumExpressionDepth(ss));
+        Assert.AreEqual(2, grammar.GetMinimumExpressionDepth(x));
+        Assert.AreEqual(5, grammar.GetMinimumExpressionDepth(s_));
+        Assert.AreEqual(4, grammar.GetMinimumExpressionDepth(a));
+        Assert.AreEqual(3, grammar.GetMinimumExpressionDepth(b));
+        Assert.AreEqual(4, grammar.GetMinimumExpressionDepth(c));
+        Assert.AreEqual(3, grammar.GetMinimumExpressionDepth(d));
       }
     }
 
@@ -283,6 +323,43 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Tests {
       grammar.AddAllowedChildSymbol(y, x);
       grammar.AddAllowedChildSymbol(y, y);
       grammar.AddAllowedChildSymbol(y, _x);
+      return grammar;
+    }
+
+    private static ISymbolicExpressionGrammar CreateTestGrammar6() {
+      var grammar = new SimpleSymbolicExpressionGrammar();
+      var x = new SimpleSymbol("<x>", 1);
+      var s = new SimpleSymbol("<s>", 1);
+      var a = new SimpleSymbol("<a>", 1);
+      var b = new SimpleSymbol("<b>", 1);
+      var c = new SimpleSymbol("<c>", 1);
+      var d = new SimpleSymbol("<d>", 1);
+      var e = new SimpleSymbol("<e>", 1);
+
+      var _x = new SimpleSymbol("x", 0);
+      var _y = new SimpleSymbol("y", 0);
+
+      grammar.AddSymbol(x);
+      grammar.AddSymbol(s);
+      grammar.AddSymbol(a);
+      grammar.AddSymbol(b);
+      grammar.AddSymbol(c);
+      grammar.AddSymbol(d);
+      grammar.AddSymbol(e);
+      grammar.AddSymbol(_x);
+      grammar.AddSymbol(_y);
+
+      grammar.AddAllowedChildSymbol(grammar.StartSymbol, x);
+      grammar.AddAllowedChildSymbol(x, s);
+      grammar.AddAllowedChildSymbol(x, _x);
+      grammar.AddAllowedChildSymbol(s, a);
+      grammar.AddAllowedChildSymbol(a, b);
+      grammar.AddAllowedChildSymbol(a, c);
+      grammar.AddAllowedChildSymbol(b, x);
+      grammar.AddAllowedChildSymbol(c, d);
+      grammar.AddAllowedChildSymbol(d, e);
+      grammar.AddAllowedChildSymbol(e, _y);
+
       return grammar;
     }
   }

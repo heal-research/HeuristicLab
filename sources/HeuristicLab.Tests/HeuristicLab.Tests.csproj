@@ -499,7 +499,6 @@
     <Compile Include="HeuristicLab.Collections-3.3\BidirectionalDictionaryTest.cs" />
     <Compile Include="HeuristicLab.Collections-3.3\BidirectionalLookupTest.cs" />
     <Compile Include="HeuristicLab.Collections-3.3\ObservableKeyedListTest.cs" />
-    <Compile Include="HeuristicLab.Common-3.3\EnumerableStatisticExtensions.cs" />
     <Compile Include="HeuristicLab.Encodings.BinaryVectorEncoding-3.3\Auxiliary.cs" />
     <Compile Include="HeuristicLab.Encodings.BinaryVectorEncoding-3.3\NPointCrossoverTest.cs" />
     <Compile Include="HeuristicLab.Encodings.BinaryVectorEncoding-3.3\SinglePositionBitflipManipulatorTest.cs" />
@@ -573,7 +572,7 @@
     <Compile Include="HeuristicLab.Problems.DataAnalysis-3.4\ThresholdCalculatorsTest.cs" />
     <Compile Include="HeuristicLab.Problems.DataAnalysis-3.4\OnlineCalculatorPerformanceTest.cs" />
     <Compile Include="HeuristicLab.Problems.DataAnalysis-3.4\StatisticCalculatorsTest.cs" />
-    <Compile Include="HeuristicLab.Problems.DataAnalysis.Symbolic-3.4\InfixExpressionParserTest.cs" />
+    <Compile Include="HeuristicLab.Problems.DataAnalysis.Symbolic-3.4\DoubleConverter.cs" />
     <Compile Include="HeuristicLab.Problems.DataAnalysis.Symbolic-3.4\SymbolicExpressionTreeBottomUpSimilarityCalculatorTest.cs" />
     <Compile Include="HeuristicLab.Problems.DataAnalysis.Symbolic-3.4\SymbolicExpressionTreeMaxCommonSubtreeSimilarityCalculatorTest.cs" />
     <Compile Include="HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis-3.4\SymbolicDataAnalysisExpressionTreeInterpreterTest.cs" />
@@ -684,8 +683,9 @@
       <CustomToolNamespace>HeuristicLab.Tests</CustomToolNamespace>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup />
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Folder Include="Test References\" />
+  </ItemGroup>  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

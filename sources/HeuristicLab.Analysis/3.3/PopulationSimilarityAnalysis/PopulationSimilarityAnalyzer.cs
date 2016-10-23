@@ -135,6 +135,7 @@ namespace HeuristicLab.Analysis {
     private void Value_ValueChanged(object sender, EventArgs e) {
       var similarityCalculators = SimilarityCalculatorParameter.ValidValues;
       foreach (var similarityCalculator in similarityCalculators) {
+        if (similarityCalculator == null) continue;
         similarityCalculator.ExecuteInParallel = ExecuteInParallel;
         similarityCalculator.MaxDegreeOfParallelism = MaxDegreeOfParallelism;
       }

@@ -36,13 +36,15 @@ namespace HeuristicLab.Problems.TestFunctions.Tests {
     [TestCategory("Problems.TestFunctions")]
     [TestProperty("Time", "short")]
     public void SphereEvaluateFunctionTest() {
-      SphereEvaluator target = new SphereEvaluator();
+      var privateObject = new PrivateObject(typeof(SphereEvaluator));
       RealVector point = null;
-      double expected = target.BestKnownQuality;
+      double expected = (double)privateObject.GetProperty("BestKnownQuality");
       double actual;
-      for (int dimension = target.MinimumProblemSize; dimension <= System.Math.Min(10, target.MaximumProblemSize); dimension++) {
-        point = target.GetBestKnownSolution(dimension);
-        actual = target.Evaluate(point);
+      int minimumProblemSize = (int)privateObject.GetProperty("MinimumProblemSize");
+      int maximumProblemSize = (int)privateObject.GetProperty("MaximumProblemSize");
+      for (int dimension = minimumProblemSize; dimension <= System.Math.Min(10, maximumProblemSize); dimension++) {
+        point = (RealVector)privateObject.Invoke("GetBestKnownSolution", dimension);
+        actual = (double)privateObject.Invoke("Evaluate", point);
         Assert.AreEqual(expected, actual);
       }
     }

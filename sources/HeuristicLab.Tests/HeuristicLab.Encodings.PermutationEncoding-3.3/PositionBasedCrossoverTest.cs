@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Core;
 using HeuristicLab.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -29,6 +30,29 @@ namespace HeuristicLab.Encodings.PermutationEncoding.Tests {
   ///</summary>
   [TestClass()]
   public class PositionBasedCrossoverTest {
+    /// <summary>
+    ///A test for Cross
+    ///</summary>
+    [TestMethod]
+    [TestCategory("Encodings.Permutation")]
+    [TestProperty("Time", "short")]
+    public void PositionBasedCrossoverCrossTest() {
+      TestRandom random = new TestRandom();
+      var privateObject = new PrivateObject(typeof(PositionBasedCrossover));
+
+      // perform a test with more than two parents
+      random.Reset();
+      bool exceptionFired = false;
+      try {
+        privateObject.Invoke("Cross", random, new ItemArray<Permutation>(new Permutation[] {
+          new Permutation(PermutationTypes.RelativeUndirected, 4), new Permutation(PermutationTypes.RelativeUndirected, 4), new Permutation(PermutationTypes.RelativeUndirected, 4) }));
+      }
+      catch (System.InvalidOperationException) {
+        exceptionFired = true;
+      }
+      Assert.IsTrue(exceptionFired);
+    }
+
     /// <summary>
     ///A test for Apply
     ///</summary>
