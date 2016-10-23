@@ -24,54 +24,78 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   public static class GrammarUtils {
-
-    public static void CalculateMinimumExpressionLengths(ISymbolicExpressionGrammarBase grammar,
-      Dictionary<string, int> minimumExpressionLengths) {
-
-      minimumExpressionLengths.Clear();
-      //terminal symbols => minimum expression length = 1
-      foreach (var s in grammar.Symbols.Where(s => grammar.GetMinimumSubtreeCount(s) == 0))
-        minimumExpressionLengths[s.Name] = 1;
-
-      var symbolAdded = true;
-      while (symbolAdded) {
-        symbolAdded = false;
-        foreach (var remainingSymbol in grammar.Symbols) {
-          if (minimumExpressionLengths.ContainsKey(remainingSymbol.Name)) continue;
-
-          var arguments = grammar.GetMinimumSubtreeCount(remainingSymbol);
-          int minLength = 1;
-
-          foreach (int argumentIndex in Enumerable.Range(0, arguments)) {
-            var capturedMinimumLengths = minimumExpressionLengths;
-            var childSymbols = grammar.GetAllowedChildSymbols(remainingSymbol, argumentIndex)
-              .Where(c => c.InitialFrequency > 0.0 && capturedMinimumLengths.ContainsKey(c.Name));
-
-            if (!childSymbols.Any()) {
-              minLength = -1;
-              break;
-            }
-            var minLengthPerArgument = childSymbols.Min(c => capturedMinimumLengths[c.Name]);
-            minLength += minLengthPerArgument;
-          }
-
-          if (minLength != -1) {
-            minimumExpressionLengths[remainingSymbol.Name] = minLength;
-            symbolAdded = true;
+    private static IEnumerable<ISymbol> GetTopmostSymbols(this ISymbolicExpressionGrammarBase grammar) {
+      // build parents list so we can find out the topmost symbol(s)
+      var parents = new Dictionary<ISymbol, List<ISymbol>>();
+      foreach (var symbol in grammar.Symbols.Where(x => grammar.GetMinimumSubtreeCount(x) > 0)) {
+        var minSubtreeCount = grammar.GetMinimumSubtreeCount(symbol);
+        for (int argIndex = 0; argIndex < minSubtreeCount; ++argIndex) {
+          foreach (var childSymbol in grammar.GetAllowedChildSymbols(symbol, argIndex)) {
+            if (!parents.ContainsKey(childSymbol))
+              parents[childSymbol] = new List<ISymbol>();
+            parents[childSymbol].Add(symbol);
           }
         }
       }
+      // the topmost symbols have no parents
+      return parents.Values.SelectMany(x => x).Distinct().Where(x => !parents.ContainsKey(x));
+    }
 
-      //set minLength to int.Maxvalue for all symbols that are not reacheable
+    public static void CalculateMinimumExpressionLengths(ISymbolicExpressionGrammarBase grammar,
+      Dictionary<string, int> minimumExpressionLengths) {
+      minimumExpressionLengths.Clear();
+      //terminal symbols => minimum expression length = 1
+      foreach (var symbol in grammar.Symbols.Where(x => grammar.GetMinimumSubtreeCount(x) == 0))
+        minimumExpressionLengths.Add(symbol.Name, 1);
+
+      foreach (var topSymbol in grammar.GetTopmostSymbols()) {
+        // sort symbols in reverse breadth order (starting from the topSymbol)
+        // each symbol is visited only once (this avoids infinite recursion)
+        var numberedSymbols = new List<Tuple<ISymbol, int>> { Tuple.Create(topSymbol, 0) };
+        var visited = new HashSet<ISymbol> { topSymbol };
+        int i = 0, index = 0;
+        while (i < numberedSymbols.Count) {
+          var symbol = numberedSymbols[i].Item1;
+          var minSubtreeCount = grammar.GetMinimumSubtreeCount(symbol);
+
+          for (int argIndex = 0; argIndex < minSubtreeCount; ++argIndex) {
+            foreach (var childSymbol in grammar.GetAllowedChildSymbols(symbol, argIndex)) {
+              if (grammar.GetMinimumSubtreeCount(childSymbol) == 0)
+                continue;
+
+              if (visited.Add(childSymbol)) {
+                numberedSymbols.Add(Tuple.Create(childSymbol, ++index));
+              }
+            }
+          }
+          ++i;
+        }
+        numberedSymbols.Reverse(); // sort descending by index
+
+        // going bottom-up (reverse breadth order), we ensure lengths are calculated bottom-up
+        foreach (var symbol in numberedSymbols.Select(x => x.Item1)) {
+          long minLength = 1;
+          for (int argIndex = 0; argIndex < grammar.GetMinimumSubtreeCount(symbol); ++argIndex) {
+            long length = grammar.GetAllowedChildSymbols(symbol, argIndex)
+              .Where(x => minimumExpressionLengths.ContainsKey(x.Name))
+              .Select(x => minimumExpressionLengths[x.Name]).DefaultIfEmpty(int.MaxValue).Min();
+            minLength += length;
+          }
+          int oldLength;
+          if (minimumExpressionLengths.TryGetValue(symbol.Name, out oldLength))
+            minLength = Math.Min(minLength, oldLength);
+          minimumExpressionLengths[symbol.Name] = (int)Math.Min(int.MaxValue, minLength);
+        }
+      }
+
+      //set minLength to int.MaxValue for all symbols that are not reacheable
       foreach (var remainingSymbols in grammar.Symbols) {
         if (!minimumExpressionLengths.ContainsKey(remainingSymbols.Name))
           minimumExpressionLengths[remainingSymbols.Name] = int.MaxValue;
       }
     }
-
 
     public static void CalculateMinimumExpressionDepth(ISymbolicExpressionGrammarBase grammar,
       Dictionary<string, int> minimumExpressionDepths) {
@@ -81,31 +105,43 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       foreach (var s in grammar.Symbols.Where(s => grammar.GetMinimumSubtreeCount(s) == 0))
         minimumExpressionDepths[s.Name] = 1;
 
-      var symbolAdded = true;
-      while (symbolAdded) {
-        symbolAdded = false;
-        foreach (var remainingSymbol in grammar.Symbols) {
-          if (minimumExpressionDepths.ContainsKey(remainingSymbol.Name)) continue;
+      foreach (var topSymbol in grammar.GetTopmostSymbols()) {
+        // sort symbols in reverse breadth order (starting from the topSymbol)
+        // each symbol is visited only once (this avoids infinite recursion)
+        var numberedSymbols = new List<Tuple<ISymbol, int>> { Tuple.Create(topSymbol, 0) };
+        var visited = new HashSet<ISymbol> { topSymbol };
+        int i = 0, index = 0;
+        while (i < numberedSymbols.Count) {
+          var symbol = numberedSymbols[i].Item1;
+          var minSubtreeCount = grammar.GetMinimumSubtreeCount(symbol);
 
-          var arguments = grammar.GetMinimumSubtreeCount(remainingSymbol);
-          int minDepth = -1;
+          for (int argIndex = 0; argIndex < minSubtreeCount; ++argIndex) {
+            foreach (var childSymbol in grammar.GetAllowedChildSymbols(symbol, argIndex)) {
+              if (grammar.GetMinimumSubtreeCount(childSymbol) == 0)
+                continue;
 
-          foreach (int argumentIndex in Enumerable.Range(0, arguments)) {
-            var capturedMinimumDepths = minimumExpressionDepths;
-            var childSymbols = grammar.GetAllowedChildSymbols(remainingSymbol, argumentIndex)
-              .Where(c => c.InitialFrequency > 0.0 && capturedMinimumDepths.ContainsKey(c.Name));
-            if (!childSymbols.Any()) {
-              minDepth = -1;
-              break;
+              if (visited.Add(childSymbol)) {
+                numberedSymbols.Add(Tuple.Create(childSymbol, ++index));
+              }
             }
-            var minDepthPerArgument = childSymbols.Min(c => capturedMinimumDepths[c.Name]);
-            minDepth = Math.Max(minDepth, 1 + minDepthPerArgument);
           }
+          ++i;
+        }
+        numberedSymbols.Reverse(); // sort descending by index
 
-          if (minDepth != -1) {
-            minimumExpressionDepths[remainingSymbol.Name] = minDepth;
-            symbolAdded = true;
+        // going bottom-up (reverse breadth order), we ensure depths are calculated bottom-up
+        foreach (var symbol in numberedSymbols.Select(x => x.Item1)) {
+          long minDepth = int.MaxValue;
+          for (int argIndex = 0; argIndex < grammar.GetMinimumSubtreeCount(symbol); ++argIndex) {
+            long depth = grammar.GetAllowedChildSymbols(symbol, argIndex)
+              .Where(x => minimumExpressionDepths.ContainsKey(x.Name))
+              .Select(x => minimumExpressionDepths[x.Name]).DefaultIfEmpty(int.MaxValue).Min();
+            minDepth = Math.Min(minDepth, depth + 1);
           }
+          int oldDepth;
+          if (minimumExpressionDepths.TryGetValue(symbol.Name, out oldDepth))
+            minDepth = Math.Min(minDepth, oldDepth);
+          minimumExpressionDepths[symbol.Name] = (int)Math.Min(int.MaxValue, minDepth);
         }
       }
 
