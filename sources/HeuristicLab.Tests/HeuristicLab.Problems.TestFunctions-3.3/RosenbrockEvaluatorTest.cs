@@ -36,15 +36,13 @@ namespace HeuristicLab.Problems.TestFunctions.Tests {
     [TestCategory("Problems.TestFunctions")]
     [TestProperty("Time", "short")]
     public void RosenbrockEvaluateFunctionTest() {
-      var privateObject = new PrivateObject(typeof(RosenbrockEvaluator));
+      RosenbrockEvaluator target = new RosenbrockEvaluator();
       RealVector point = null;
-      double expected = (double)privateObject.GetProperty("BestKnownQuality");
+      double expected = target.BestKnownQuality;
       double actual;
-      int minimumProblemSize = (int)privateObject.GetProperty("MinimumProblemSize");
-      int maximumProblemSize = (int)privateObject.GetProperty("MaximumProblemSize");
-      for (int dimension = minimumProblemSize; dimension <= System.Math.Min(10, maximumProblemSize); dimension++) {
-        point = (RealVector)privateObject.Invoke("GetBestKnownSolution", dimension);
-        actual = (double)privateObject.Invoke("Evaluate", point);
+      for (int dimension = target.MinimumProblemSize; dimension <= System.Math.Min(10, target.MaximumProblemSize); dimension++) {
+        point = target.GetBestKnownSolution(dimension);
+        actual = target.Evaluate(point);
         Assert.AreEqual(expected, actual);
       }
     }

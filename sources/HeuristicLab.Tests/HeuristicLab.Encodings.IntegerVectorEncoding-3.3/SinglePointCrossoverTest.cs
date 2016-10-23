@@ -37,7 +37,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding.Tests {
     [TestCategory("Encodings.IntegerVector")]
     [TestProperty("Time", "short")]
     public void SinglePointCrossoverCrossTest() {
-      var privateObject = new PrivateObject(typeof(SinglePointCrossover));
+      var target = new PrivateObject(typeof(SinglePointCrossover));
       ItemArray<IntegerVector> parents;
       TestRandom random = new TestRandom();
       bool exceptionFired;
@@ -46,7 +46,8 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding.Tests {
       parents = new ItemArray<IntegerVector>(new IntegerVector[] { new IntegerVector(5), new IntegerVector(6), new IntegerVector(4) });
       exceptionFired = false;
       try {
-        var actual = (IntegerVector)privateObject.Invoke("Cross", random, parents);
+        IntegerVector actual;
+        actual = (IntegerVector)target.Invoke("Cross", random, parents);
       }
       catch (System.ArgumentException) {
         exceptionFired = true;
@@ -57,7 +58,8 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding.Tests {
       parents = new ItemArray<IntegerVector>(new IntegerVector[] { new IntegerVector(4) });
       exceptionFired = false;
       try {
-        var actual = (IntegerVector)privateObject.Invoke("Cross", random, parents);
+        IntegerVector actual;
+        actual = (IntegerVector)target.Invoke("Cross", random, parents);
       }
       catch (System.ArgumentException) {
         exceptionFired = true;

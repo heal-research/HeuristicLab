@@ -161,13 +161,11 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       Comparator maxGenerationsComparator = new Comparator();
       Comparator maxSelectionPressureComparator = new Comparator();
       Comparator maxEvaluatedSolutionsComparator = new Comparator();
-      Comparator maxSolutionQualityComparator = new Comparator();
       Placeholder comparisonFactorModifier = new Placeholder();
       Placeholder analyzer2 = new Placeholder();
       ConditionalBranch conditionalBranch1 = new ConditionalBranch();
       ConditionalBranch conditionalBranch2 = new ConditionalBranch();
       ConditionalBranch conditionalBranch3 = new ConditionalBranch();
-      ConditionalBranch conditionalBranch4 = new ConditionalBranch();
 
       variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("Generations", new IntValue(0))); // Class OffspringSelectionGeneticAlgorithm expects this to be called Generations
       variableCreator.CollectedValues.Add(new ValueParameter<DoubleValue>("SelectionPressure", new DoubleValue(0)));
@@ -224,11 +222,6 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       maxEvaluatedSolutionsComparator.ResultParameter.ActualName = "TerminateEvaluatedSolutions";
       maxEvaluatedSolutionsComparator.RightSideParameter.ActualName = "MaximumEvaluatedSolutions";
 
-      maxSolutionQualityComparator.Comparison = new Comparison(ComparisonType.GreaterOrEqual);
-      maxSolutionQualityComparator.LeftSideParameter.ActualName = "MaximumQuality";
-      maxSolutionQualityComparator.ResultParameter.ActualName = "TerminateMaximumQuality";
-      maxSolutionQualityComparator.RightSideParameter.ActualName = "BestQuality";
-
       comparisonFactorModifier.Name = "Update ComparisonFactor (placeholder)";
       comparisonFactorModifier.OperatorParameter.ActualName = ComparisonFactorModifierParameter.Name;
 
@@ -243,9 +236,6 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
 
       conditionalBranch3.Name = "MaximumEvaluatedSolutions reached?";
       conditionalBranch3.ConditionParameter.ActualName = "TerminateEvaluatedSolutions";
-
-      conditionalBranch4.Name = "MaximumQuality reached?";
-      conditionalBranch3.ConditionParameter.ActualName = "TerminateMaximumQuality";
       #endregion
 
       #region Create operator graph
@@ -258,8 +248,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       generationsCounter.Successor = maxGenerationsComparator;
       maxGenerationsComparator.Successor = maxSelectionPressureComparator;
       maxSelectionPressureComparator.Successor = maxEvaluatedSolutionsComparator;
-      maxEvaluatedSolutionsComparator.Successor = maxSolutionQualityComparator;
-      maxSolutionQualityComparator.Successor = comparisonFactorModifier;
+      maxEvaluatedSolutionsComparator.Successor = comparisonFactorModifier;
       comparisonFactorModifier.Successor = analyzer2;
       analyzer2.Successor = conditionalBranch1;
       conditionalBranch1.FalseBranch = conditionalBranch2;
@@ -268,12 +257,9 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       conditionalBranch2.FalseBranch = conditionalBranch3;
       conditionalBranch2.TrueBranch = null;
       conditionalBranch2.Successor = null;
-      conditionalBranch3.FalseBranch = conditionalBranch4;
+      conditionalBranch3.FalseBranch = mainOperator;
       conditionalBranch3.TrueBranch = null;
       conditionalBranch3.Successor = null;
-      conditionalBranch4.FalseBranch = mainOperator;
-      conditionalBranch4.TrueBranch = null;
-      conditionalBranch4.Successor = null;
       #endregion
     }
   }

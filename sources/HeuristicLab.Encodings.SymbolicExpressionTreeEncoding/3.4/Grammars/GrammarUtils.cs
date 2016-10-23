@@ -65,8 +65,9 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
               if (grammar.GetMinimumSubtreeCount(childSymbol) == 0)
                 continue;
 
-              if (visited.Add(childSymbol))
+              if (visited.Add(childSymbol)) {
                 numberedSymbols.Add(Tuple.Create(childSymbol, ++index));
+              }
             }
           }
           ++i;
@@ -86,20 +87,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
           if (minimumExpressionLengths.TryGetValue(symbol.Name, out oldLength))
             minLength = Math.Min(minLength, oldLength);
           minimumExpressionLengths[symbol.Name] = (int)Math.Min(int.MaxValue, minLength);
-        }
-        // correction step for cycles
-        bool changed = true;
-        while (changed) {
-          changed = false;
-          foreach (var symbol in numberedSymbols.Select(x => x.Item1)) {
-            long minLength = Enumerable.Range(0, grammar.GetMinimumSubtreeCount(symbol))
-              .Sum(x => grammar.GetAllowedChildSymbols(symbol, x)
-              .Min(s => (long)minimumExpressionLengths[s.Name])) + 1;
-            if (minLength < minimumExpressionLengths[symbol.Name]) {
-              minimumExpressionLengths[symbol.Name] = (int)Math.Min(minLength, int.MaxValue);
-              changed = true;
-            }
-          }
         }
       }
 
@@ -133,8 +120,9 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
               if (grammar.GetMinimumSubtreeCount(childSymbol) == 0)
                 continue;
 
-              if (visited.Add(childSymbol))
+              if (visited.Add(childSymbol)) {
                 numberedSymbols.Add(Tuple.Create(childSymbol, ++index));
+              }
             }
           }
           ++i;
@@ -143,31 +131,17 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
 
         // going bottom-up (reverse breadth order), we ensure depths are calculated bottom-up
         foreach (var symbol in numberedSymbols.Select(x => x.Item1)) {
-          long minDepth = -1;
+          long minDepth = int.MaxValue;
           for (int argIndex = 0; argIndex < grammar.GetMinimumSubtreeCount(symbol); ++argIndex) {
             long depth = grammar.GetAllowedChildSymbols(symbol, argIndex)
               .Where(x => minimumExpressionDepths.ContainsKey(x.Name))
-              .Select(x => (long)minimumExpressionDepths[x.Name]).DefaultIfEmpty(int.MaxValue).Min() + 1;
-            minDepth = Math.Max(minDepth, depth);
+              .Select(x => minimumExpressionDepths[x.Name]).DefaultIfEmpty(int.MaxValue).Min();
+            minDepth = Math.Min(minDepth, depth + 1);
           }
           int oldDepth;
           if (minimumExpressionDepths.TryGetValue(symbol.Name, out oldDepth))
             minDepth = Math.Min(minDepth, oldDepth);
           minimumExpressionDepths[symbol.Name] = (int)Math.Min(int.MaxValue, minDepth);
-        }
-        // correction step for cycles
-        bool changed = true;
-        while (changed) {
-          changed = false;
-          foreach (var symbol in numberedSymbols.Select(x => x.Item1)) {
-            long minDepth = Enumerable.Range(0, grammar.GetMinimumSubtreeCount(symbol))
-              .Max(x => grammar.GetAllowedChildSymbols(symbol, x)
-              .Min(s => (long)minimumExpressionDepths[s.Name])) + 1;
-            if (minDepth < minimumExpressionDepths[symbol.Name]) {
-              minimumExpressionDepths[symbol.Name] = (int)Math.Min(minDepth, int.MaxValue);
-              changed = true;
-            }
-          }
         }
       }
 

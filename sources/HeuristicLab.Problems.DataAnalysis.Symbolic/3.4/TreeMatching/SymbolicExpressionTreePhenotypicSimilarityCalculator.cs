@@ -91,6 +91,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var r = OnlinePearsonsRCalculator.Calculate(leftValues, rightValues, out error);
 
       var r2 = error == OnlineCalculatorError.None ? r * r : 0;
+
+      if (r2 > 1.0)
+        r2 = 1.0;
+
       return r2;
     }
   }

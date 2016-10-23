@@ -14,10 +14,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
     private const int Columns = 10;
 
     public BottomUpSimilarityCalculatorTest() {
-      busCalculator = new SymbolicExpressionTreeBottomUpSimilarityCalculator {
-        //        MatchConstantValues = true,
-        //        MatchVariableWeights = true
-      };
+      busCalculator = new SymbolicExpressionTreeBottomUpSimilarityCalculator();
       importer = new SymbolicExpressionImporter();
     }
 

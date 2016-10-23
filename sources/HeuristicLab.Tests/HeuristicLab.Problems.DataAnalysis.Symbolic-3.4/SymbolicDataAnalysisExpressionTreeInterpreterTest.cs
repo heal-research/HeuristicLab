@@ -32,7 +32,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
   [TestClass]
   public class SymbolicDataAnalysisExpressionTreeInterpreterTest {
     private const int N = 1000;
-    private const int Rows = 5000;
+    private const int Rows = 1000;
     private const int Columns = 50;
 
     private static Dataset ds = new Dataset(new string[] { "Y", "A", "B" }, new double[,] {
@@ -67,6 +67,25 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
     [TestProperty("Time", "long")]
     public void StandardInterpreterTestArithmeticGrammarPerformance() {
       TestArithmeticGrammarPerformance(new SymbolicDataAnalysisExpressionTreeInterpreter(), 12.5e6);
+    }
+
+    [TestMethod]
+    [TestCategory("Problems.DataAnalysis.Symbolic")]
+    [TestProperty("Time", "long")]
+    public void CompiledInterpreterTestTypeCoherentGrammarPerformance() {
+      TestTypeCoherentGrammarPerformance(new SymbolicDataAnalysisExpressionCompiledTreeInterpreter(), 12.5e6);
+    }
+    [TestMethod]
+    [TestCategory("Problems.DataAnalysis.Symbolic")]
+    [TestProperty("Time", "long")]
+    public void CompiledInterpreterTestFullGrammarPerformance() {
+      TestFullGrammarPerformance(new SymbolicDataAnalysisExpressionCompiledTreeInterpreter(), 12.5e6);
+    }
+    [TestMethod]
+    [TestCategory("Problems.DataAnalysis.Symbolic")]
+    [TestProperty("Time", "long")]
+    public void CompiledInterpreterTestArithmeticGrammarPerformance() {
+      TestArithmeticGrammarPerformance(new SymbolicDataAnalysisExpressionCompiledTreeInterpreter(), 12.5e6);
     }
 
     [TestMethod]
@@ -165,6 +184,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
     [TestMethod]
     [TestCategory("Problems.DataAnalysis.Symbolic")]
     [TestProperty("Time", "short")]
+    public void CompiledInterpreterTestEvaluation() {
+      var interpreter = new SymbolicDataAnalysisExpressionCompiledTreeInterpreter();
+      // ADFs are not supported by the compiled tree interpreter
+      EvaluateTerminals(interpreter, ds);
+      EvaluateOperations(interpreter, ds);
+      EvaluateSpecialFunctions(interpreter, ds);
+    }
+
+    [TestMethod]
+    [TestCategory("Problems.DataAnalysis.Symbolic")]
+    [TestProperty("Time", "short")]
     public void LinearInterpreterTestEvaluation() {
       var interpreter = new SymbolicDataAnalysisExpressionTreeLinearInterpreter();
       //ADFs are not supported by the linear interpreter
@@ -238,6 +268,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       }
 
       var interpreters = new ISymbolicDataAnalysisExpressionTreeInterpreter[] {
+        new SymbolicDataAnalysisExpressionCompiledTreeInterpreter(),
         new SymbolicDataAnalysisExpressionTreeInterpreter(),
         new SymbolicDataAnalysisExpressionTreeLinearInterpreter(),
       };

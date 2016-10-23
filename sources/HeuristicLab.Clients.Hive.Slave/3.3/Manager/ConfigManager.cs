@@ -69,7 +69,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
       slave.Id = GetUniqueMachineId();
       slave.Name = Environment.MachineName;
       if (Settings.Default.NrOfCoresToScavenge < 1 || Settings.Default.NrOfCoresToScavenge > Environment.ProcessorCount) {
-        slave.Cores = Environment.ProcessorCount / 2;
+        slave.Cores = Environment.ProcessorCount;
       } else {
         slave.Cores = Settings.Default.NrOfCoresToScavenge;
       }

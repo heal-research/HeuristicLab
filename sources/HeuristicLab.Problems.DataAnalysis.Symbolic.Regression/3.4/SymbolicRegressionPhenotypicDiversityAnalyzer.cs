@@ -41,7 +41,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     private const string SymbolicDataAnalysisTreeInterpreterParameterName = "SymbolicExpressionTreeInterpreter";
     private const string ProblemDataParameterName = "ProblemData";
     private const string EstimationLimitsParameterName = "EstimationLimits";
-    private const string ApplyLinearScalingParameterName = "ApplyLinearScaling";
     #endregion
 
     #region parameter properties
@@ -60,9 +59,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     public IValueLookupParameter<DoubleLimit> EstimationLimitsParameter {
       get { return (IValueLookupParameter<DoubleLimit>)Parameters[EstimationLimitsParameterName]; }
     }
-    public ILookupParameter<BoolValue> ApplyLinearScalingParameter {
-      get { return (ILookupParameter<BoolValue>)Parameters[ApplyLinearScalingParameterName]; }
-    }
     #endregion
 
     public SymbolicRegressionPhenotypicDiversityAnalyzer(IEnumerable<ISolutionSimilarityCalculator> validSimilarityCalculators)
@@ -73,7 +69,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       Parameters.Add(new LookupParameter<ISymbolicDataAnalysisExpressionTreeInterpreter>(SymbolicDataAnalysisTreeInterpreterParameterName, "The interpreter that should be used to calculate the output values of the symbolic data analysis tree."));
       Parameters.Add(new ValueLookupParameter<IRegressionProblemData>(ProblemDataParameterName, "The problem data on which the symbolic data analysis solution should be evaluated."));
       Parameters.Add(new ValueLookupParameter<DoubleLimit>(EstimationLimitsParameterName, "The upper and lower limit that should be used as cut off value for the output values of symbolic data analysis trees."));
-      Parameters.Add(new LookupParameter<BoolValue>(ApplyLinearScalingParameterName, "Whether or not to apply linear scaling to the estimated values"));
       #endregion
 
       UpdateCounterParameter.ActualName = "PhenotypicDiversityAnalyzerUpdateCounter";
@@ -83,12 +78,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     [StorableConstructor]
     protected SymbolicRegressionPhenotypicDiversityAnalyzer(bool deserializing)
       : base(deserializing) {
-    }
-
-    [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserialization() {
-      if (!Parameters.ContainsKey(ApplyLinearScalingParameterName))
-        Parameters.Add(new LookupParameter<BoolValue>(ApplyLinearScalingParameterName, "Whether or not to apply linear scaling to the estimated values"));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -108,40 +97,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         UpdateCounterParameter.ActualValue = updateCounter;
       }
 
-      if (updateCounter.Value != updateInterval) return base.Apply();
-
-      var scopes = ExecutionContext.Scope.SubScopes;
-      var applyLinearScaling = ApplyLinearScalingParameter.ActualValue.Value;
-
-      foreach (var scope in scopes.Where(x => !x.Variables.ContainsKey("EstimatedValues"))) {
-        var tree = (ISymbolicExpressionTree)scope.Variables["SymbolicExpressionTree"].Value;
+      if (updateCounter.Value == updateInterval) {
+        var trees = SymbolicExpressionTreeParameter.ActualValue;
         var interpreter = SymbolicDataAnalysisTreeInterpreterParameter.ActualValue;
         var ds = ProblemDataParameter.ActualValue.Dataset;
         var rows = ProblemDataParameter.ActualValue.TrainingIndices;
-        var estimatedValues = interpreter.GetSymbolicExpressionTreeValues(tree, ds, rows).ToArray();
 
-        var estimationLimits = EstimationLimitsParameter.ActualValue;
-
-        if (applyLinearScaling) {
-          var linearScalingCalculator = new OnlineLinearScalingParameterCalculator();
-          var targetValues = ds.GetDoubleValues(ProblemDataParameter.ActualValue.TargetVariable, rows);
-          int i = 0;
-          foreach (var target in targetValues) {
-            var estimated = estimatedValues[i];
-            if (!double.IsNaN(estimated) && !double.IsInfinity(estimated))
-              linearScalingCalculator.Add(estimated, target);
-            i++;
-          }
-          if (linearScalingCalculator.ErrorState == OnlineCalculatorError.None) {
-            var alpha = linearScalingCalculator.Alpha;
-            var beta = linearScalingCalculator.Beta;
-            for (i = 0; i < estimatedValues.Length; ++i) {
-              estimatedValues[i] = estimatedValues[i] * beta + alpha;
-            }
-          }
-        }
-        // add estimated values to escope
-        scope.Variables.Add(new Core.Variable("EstimatedValues", new DoubleArray(estimatedValues.LimitToRange(estimationLimits.Lower, estimationLimits.Upper).ToArray())));
+        var evaluatedValues = new ItemArray<DoubleArray>(trees.Select(t => new DoubleArray(interpreter.GetSymbolicExpressionTreeValues(t, ds, rows).ToArray())));
+        EvaluatedValuesParameter.ActualValue = evaluatedValues;
       }
       return base.Apply();
     }

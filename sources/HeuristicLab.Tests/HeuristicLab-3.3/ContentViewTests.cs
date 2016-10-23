@@ -23,6 +23,7 @@ using System;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.MainForm;
+using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.PluginInfrastructure;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

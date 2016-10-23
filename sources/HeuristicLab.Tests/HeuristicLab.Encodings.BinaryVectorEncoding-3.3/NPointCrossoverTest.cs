@@ -19,7 +19,6 @@
  */
 #endregion
 
-using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -31,41 +30,6 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding.Tests {
   ///</summary>
   [TestClass()]
   public class NPointCrossoverTest {
-    /// <summary>
-    ///A test for Cross
-    ///</summary>
-    [TestMethod]
-    [TestCategory("Encodings.BinaryVector")]
-    [TestProperty("Time", "short")]
-    public void NPointCrossoverCrossTest() {
-      var privateObject = new PrivateObject(typeof(NPointCrossover));
-      ItemArray<BinaryVector> parents;
-      TestRandom random = new TestRandom();
-      bool exceptionFired;
-      // The following test checks if there is an exception when there are more than 2 parents
-      random.Reset();
-      parents = new ItemArray<BinaryVector>(new BinaryVector[] { new BinaryVector(5), new BinaryVector(6), new BinaryVector(4) });
-      exceptionFired = false;
-      try {
-        var actual = (BinaryVector)privateObject.Invoke("Cross", random, parents);
-      }
-      catch (System.ArgumentException) {
-        exceptionFired = true;
-      }
-      Assert.IsTrue(exceptionFired);
-      // The following test checks if there is an exception when there are less than 2 parents
-      random.Reset();
-      parents = new ItemArray<BinaryVector>(new BinaryVector[] { new BinaryVector(4) });
-      exceptionFired = false;
-      try {
-        var actual = (BinaryVector)privateObject.Invoke("Cross", random, parents);
-      }
-      catch (System.ArgumentException) {
-        exceptionFired = true;
-      }
-      Assert.IsTrue(exceptionFired);
-    }
-
     /// <summary>
     ///A test for Apply
     ///</summary>
