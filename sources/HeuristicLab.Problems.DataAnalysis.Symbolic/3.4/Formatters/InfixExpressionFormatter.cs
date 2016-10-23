@@ -109,7 +109,23 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         }
       } else {
         // no subtrees
-        if (node.Symbol is Variable) {
+        if (node.Symbol is LaggedVariable) {
+          var varNode = node as LaggedVariableTreeNode;
+          if (!varNode.Weight.IsAlmost(1.0)) {
+            strBuilder.Append("(");
+            strBuilder.AppendFormat(CultureInfo.InvariantCulture, "{0}", varNode.Weight);
+            strBuilder.Append("*");
+          }
+          strBuilder.Append("LAG(");
+          if (varNode.VariableName.Contains("'")) {
+            strBuilder.AppendFormat("\"{0}\"", varNode.VariableName);
+          } else {
+            strBuilder.AppendFormat("'{0}'", varNode.VariableName);
+          }
+          strBuilder.Append(", ")
+            .AppendFormat(CultureInfo.InvariantCulture, "{0}", varNode.Lag)
+            .Append(")");
+        } else if (node.Symbol is Variable) {
           var varNode = node as VariableTreeNode;
           if (!varNode.Weight.IsAlmost(1.0)) {
             strBuilder.Append("(");
@@ -129,7 +145,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           if (constNode.Value >= 0.0)
             strBuilder.AppendFormat(CultureInfo.InvariantCulture, "{0}", constNode.Value);
           else
-            strBuilder.AppendFormat(CultureInfo.InvariantCulture, "({0})", constNode.Value);     // (-1)
+            strBuilder.AppendFormat(CultureInfo.InvariantCulture, "({0})", constNode.Value); // (-1
         }
       }
     }

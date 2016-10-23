@@ -100,6 +100,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       Console.WriteLine(formatter.Format(parser.Parse("IF(GT( 0, 1), 1, 0)")));
       Console.WriteLine(formatter.Format(parser.Parse("IF(LT(0,1), 1 , 0)")));
 
+      Console.WriteLine(formatter.Format(parser.Parse("LAG(x, 1)")));
+      Console.WriteLine(formatter.Format(parser.Parse("LAG(x, -1)")));
+      Console.WriteLine(formatter.Format(parser.Parse("LAG(x, +1)")));
+      Console.WriteLine(formatter.Format(parser.Parse("x * LAG('x', +1)")));
+
     }
   }
 }
