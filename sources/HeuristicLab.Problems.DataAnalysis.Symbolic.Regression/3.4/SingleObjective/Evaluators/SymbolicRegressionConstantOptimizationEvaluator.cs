@@ -304,7 +304,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
           variables.Add(w);
           term = AutoDiff.TermBuilder.Product(w, par);
         } else {
-          term = par;
+          term = varNode.Weight * par;
         }
         return true;
       }
@@ -320,7 +320,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
           variables.Add(w);
           term = AutoDiff.TermBuilder.Product(w, par);
         } else {
-          term = par;
+          term = varNode.Weight * par;
         }
         return true;
       }
