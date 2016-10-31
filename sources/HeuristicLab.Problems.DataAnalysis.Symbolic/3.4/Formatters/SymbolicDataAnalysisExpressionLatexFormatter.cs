@@ -66,8 +66,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         containsTimeSeriesSymbol = symbolicExpressionTree.IterateNodesBreadth().Any(n => IsTimeSeriesSymbol(n.Symbol));
         strBuilder.AppendLine(FormatRecursively(symbolicExpressionTree.Root));
         return strBuilder.ToString();
-      }
-      catch (NotImplementedException ex) {
+      } catch (NotImplementedException ex) {
         return ex.Message + Environment.NewLine + ex.StackTrace;
       }
     }
@@ -108,7 +107,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       } else if (node.Symbol is Multiplication) {
       } else if (node.Symbol is Division) {
         if (node.SubtreeCount == 1) {
-          strBuilder.Append(@" \cfrac{1");
+          strBuilder.Append(@" \cfrac{1}{");
         } else {
           strBuilder.Append(@" \cfrac{ ");
         }
@@ -175,9 +174,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       } else if (node.Symbol is IfThenElse) {
         strBuilder.Append(@" \operatorname{if}  \left( ");
       } else if (node.Symbol is Constant) {
-        strBuilder.Append("c_{" + constants.Count + "} ");
         var constNode = node as ConstantTreeNode;
-        constants.Add(constNode.Value);
+        if (constNode.Value.IsAlmost(1.0)) {
+          strBuilder.Append("1 ");
+        } else {
+          strBuilder.Append("c_{" + constants.Count + "} ");
+          constants.Add(constNode.Value);
+        }
       } else if (node.Symbol is LaggedVariable) {
         var laggedVarNode = node as LaggedVariableTreeNode;
         if (!laggedVarNode.Weight.IsAlmost(1.0)) {
