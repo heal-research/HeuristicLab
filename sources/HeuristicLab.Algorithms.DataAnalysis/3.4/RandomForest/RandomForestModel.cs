@@ -201,6 +201,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     public ISymbolicExpressionTree ExtractTree(int treeIdx) {
+      var rf = RandomForest;
       // hoping that the internal representation of alglib is stable
 
       // TREE FORMAT
@@ -213,13 +214,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       // skip irrelevant trees
       int offset = 0;
       for (int i = 0; i < treeIdx - 1; i++) {
-        offset = offset + (int)Math.Round(randomForest.innerobj.trees[offset]);
+        offset = offset + (int)Math.Round(rf.innerobj.trees[offset]);
       }
 
       var constSy = new Constant();
       var varCondSy = new VariableCondition() { IgnoreSlope = true };
 
-      var node = CreateRegressionTreeRec(randomForest.innerobj.trees, offset, offset + 1, constSy, varCondSy);
+      var node = CreateRegressionTreeRec(rf.innerobj.trees, offset, offset + 1, constSy, varCondSy);
 
       var startNode = new StartSymbol().CreateTreeNode();
       startNode.AddSubtree(node);
