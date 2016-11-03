@@ -27,12 +27,16 @@ using System.Windows.Forms.DataVisualization.Charting;
 
 namespace HeuristicLab.Visualization.ChartControlsExtensions {
   public partial class EnhancedChart : Chart {
+
     private ImageExportDialog exportDialog;
+
+    private ImageExportDialog ExportDialog {
+      get { return exportDialog ?? (exportDialog = new ImageExportDialog(this)); }
+    }
 
     public EnhancedChart()
       : base() {
       InitializeComponent();
-      exportDialog = new ImageExportDialog(this);
       EnableDoubleClickResetsZoom = true;
       EnableMiddleClickPanning = true;
       CustomizeAllChartAreas();
@@ -165,7 +169,7 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
     }
 
     private void exportToolStripMenuItem_Click(object sender, EventArgs e) {
-      exportDialog.ShowDialog();
+      ExportDialog.ShowDialog();
     }
 
     private void copyImageToClipboardBitmapToolStripMenuItem_Click(object sender, EventArgs e) {
