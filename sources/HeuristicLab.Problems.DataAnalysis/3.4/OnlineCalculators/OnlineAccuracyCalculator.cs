@@ -24,7 +24,7 @@ using System.Collections.Generic;
 using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  public class OnlineAccuracyCalculator : IOnlineCalculator, IDeepCloneable {
+  public class OnlineAccuracyCalculator : DeepCloneable, IOnlineCalculator {
 
     private int correctlyClassified;
     private int n;
@@ -38,12 +38,17 @@ namespace HeuristicLab.Problems.DataAnalysis {
       Reset();
     }
 
-    // private constructor used internally by the Clone() method
-    protected OnlineAccuracyCalculator(OnlineAccuracyCalculator other, Cloner cloner = null) {
-      correctlyClassified = other.correctlyClassified;
-      n = other.n;
-      errorState = other.errorState;
+    protected OnlineAccuracyCalculator(OnlineAccuracyCalculator original, Cloner cloner)
+      : base(original, cloner) {
+      correctlyClassified = original.correctlyClassified;
+      n = original.n;
+      errorState = original.errorState;
     }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new OnlineAccuracyCalculator(this, cloner);
+    }
+
 
     #region IOnlineCalculator Members
     private OnlineCalculatorError errorState;
@@ -97,18 +102,5 @@ namespace HeuristicLab.Problems.DataAnalysis {
       }
     }
 
-    // IDeepCloneable interface members
-    public object Clone() {
-      return new OnlineAccuracyCalculator(this);
-    }
-
-    public IDeepCloneable Clone(Cloner cloner) {
-      var clone = cloner.GetClone(this);
-      if (clone == null) {
-        clone = new OnlineAccuracyCalculator(this);
-        cloner.RegisterClonedObject(this, clone);
-      }
-      return clone;
-    }
   }
 }
