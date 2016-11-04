@@ -74,7 +74,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
 
           PreprocessingDataTable pdt = new PreprocessingDataTable(variableName);
           pdt.Rows.Add(row);
-          // dataTablePerVariable does not contain unchecked variables => reduce insert position by number of uncheckt variables to correct the index
+          // dataTablePerVariable does not contain unchecked variables => reduce insert position by number of unchecked variables to correct the index
           int uncheckedUntilVariable = checkedItemList.Content.TakeWhile(x => x.Value != variableName).Count(x => !checkedItemList.Content.ItemChecked(x));
           dataTablePerVariable.Insert(item.Index - uncheckedUntilVariable, pdt);
 
