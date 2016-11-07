@@ -24,7 +24,7 @@ using System.Collections.Generic;
 using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  public class OnlineLinearScalingParameterCalculator : IDeepCloneable {
+  public class OnlineLinearScalingParameterCalculator : DeepCloneable {
 
     /// <summary>
     /// Additive constant
@@ -125,19 +125,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
       }
     }
 
-    // IDeepCloneable interface members
-    public object Clone() {
-      var cloner = new Cloner();
+    public override IDeepCloneable Clone(Cloner cloner) {
       return new OnlineLinearScalingParameterCalculator(this, cloner);
-    }
-
-    public IDeepCloneable Clone(Cloner cloner) {
-      var clone = cloner.GetClone(this);
-      if (clone == null) {
-        clone = new OnlineLinearScalingParameterCalculator(this, cloner);
-        cloner.RegisterClonedObject(this, clone);
-      }
-      return clone;
     }
   }
 }

@@ -24,7 +24,7 @@ using System.Collections.Generic;
 using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  public class OnlinePearsonsRCalculator : IOnlineCalculator, IDeepCloneable {
+  public class OnlinePearsonsRCalculator : DeepCloneable, IOnlineCalculator {
     private OnlineCovarianceCalculator covCalculator = new OnlineCovarianceCalculator();
     private OnlineMeanAndVarianceCalculator sxCalculator = new OnlineMeanAndVarianceCalculator();
     private OnlineMeanAndVarianceCalculator syCalculator = new OnlineMeanAndVarianceCalculator();
@@ -97,19 +97,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
       }
     }
 
-    // IDeepCloneable members
-    public object Clone() {
-      var cloner = new Cloner();
+    public override IDeepCloneable Clone(Cloner cloner) {
       return new OnlinePearsonsRCalculator(this, cloner);
-    }
-
-    public IDeepCloneable Clone(Cloner cloner) {
-      var clone = cloner.GetClone(this);
-      if (clone == null) {
-        clone = new OnlinePearsonsRCalculator(this, cloner);
-        cloner.RegisterClonedObject(this, clone);
-      }
-      return clone;
     }
   }
 }

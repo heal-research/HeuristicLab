@@ -23,7 +23,7 @@ using System.Collections.Generic;
 using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  public class OnlineMeanAndVarianceCalculator : IDeepCloneable {
+  public class OnlineMeanAndVarianceCalculator : DeepCloneable {
 
     private double m_oldM, m_newM, m_oldS, m_newS;
     private int n;
@@ -117,18 +117,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
       varianceErrorState = meanAndVarianceCalculator.VarianceErrorState;
     }
 
-    // IDeepCloneable members
-    public object Clone() {
-      return new OnlineMeanAndVarianceCalculator(this);
-    }
-
-    public IDeepCloneable Clone(Cloner cloner) {
-      var clone = cloner.GetClone(this);
-      if (clone == null) {
-        clone = new OnlineMeanAndVarianceCalculator(this);
-        cloner.RegisterClonedObject(this, clone);
-      }
-      return clone;
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new OnlineMeanAndVarianceCalculator(this, cloner);
     }
   }
 }

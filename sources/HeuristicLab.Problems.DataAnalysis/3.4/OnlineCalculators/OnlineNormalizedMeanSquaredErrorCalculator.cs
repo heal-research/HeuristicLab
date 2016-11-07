@@ -24,7 +24,7 @@ using System.Collections.Generic;
 using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  public class OnlineNormalizedMeanSquaredErrorCalculator : IOnlineCalculator, IDeepCloneable {
+  public class OnlineNormalizedMeanSquaredErrorCalculator : DeepCloneable, IOnlineCalculator {
     private OnlineMeanAndVarianceCalculator meanSquaredErrorCalculator;
     private OnlineMeanAndVarianceCalculator originalVarianceCalculator;
 
@@ -98,19 +98,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
       }
     }
 
-    // IDeepCloneable members
-    public object Clone() {
-      var cloner = new Cloner();
+    public override IDeepCloneable Clone(Cloner cloner) {
       return new OnlineNormalizedMeanSquaredErrorCalculator(this, cloner);
-    }
-
-    public IDeepCloneable Clone(Cloner cloner) {
-      var clone = cloner.GetClone(this);
-      if (clone == null) {
-        clone = new OnlineNormalizedMeanSquaredErrorCalculator(this, cloner);
-        cloner.RegisterClonedObject(this, clone);
-      }
-      return clone;
     }
   }
 }

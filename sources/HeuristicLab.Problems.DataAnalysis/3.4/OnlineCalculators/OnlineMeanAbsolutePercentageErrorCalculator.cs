@@ -24,7 +24,7 @@ using System.Collections.Generic;
 using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  public class OnlineMeanAbsolutePercentageErrorCalculator : IOnlineCalculator, IDeepCloneable {
+  public class OnlineMeanAbsolutePercentageErrorCalculator : DeepCloneable, IOnlineCalculator {
 
     private double sre;
     private int n;
@@ -95,18 +95,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
       }
     }
 
-    // IDeepCloneable interface members
-    public object Clone() {
-      return new OnlineMeanAbsolutePercentageErrorCalculator(this);
-    }
-
-    public IDeepCloneable Clone(Cloner cloner) {
-      var clone = cloner.GetClone(this);
-      if (clone == null) {
-        clone = new OnlineMeanAbsolutePercentageErrorCalculator(this);
-        cloner.RegisterClonedObject(this, clone);
-      }
-      return clone;
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new OnlineMeanAbsolutePercentageErrorCalculator(this, cloner);
     }
   }
 }

@@ -24,7 +24,7 @@ using System.Collections.Generic;
 using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  public class ClassificationPerformanceMeasuresCalculator : IDeepCloneable {
+  public class ClassificationPerformanceMeasuresCalculator : DeepCloneable {
 
     public ClassificationPerformanceMeasuresCalculator(string positiveClassName, double positiveClassValue) {
       this.positiveClassName = positiveClassName;
@@ -32,7 +32,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       Reset();
     }
 
-    protected ClassificationPerformanceMeasuresCalculator(ClassificationPerformanceMeasuresCalculator original, Cloner cloner = null) {
+    protected ClassificationPerformanceMeasuresCalculator(ClassificationPerformanceMeasuresCalculator original, Cloner cloner) {
       positiveClassName = original.positiveClassName;
       positiveClassValue = original.positiveClassValue;
       truePositiveCount = original.truePositiveCount;
@@ -147,18 +147,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
       errorState = ErrorState;
     }
 
-    // IDeepCloneable interface members
-    public object Clone() {
-      return new ClassificationPerformanceMeasuresCalculator(this);
-    }
-
-    public IDeepCloneable Clone(Cloner cloner) {
-      var clone = cloner.GetClone(this);
-      if (clone == null) {
-        clone = new ClassificationPerformanceMeasuresCalculator(this);
-        cloner.RegisterClonedObject(this, clone);
-      }
-      return clone;
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new ClassificationPerformanceMeasuresCalculator(this, cloner);
     }
   }
 }

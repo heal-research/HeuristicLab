@@ -25,7 +25,7 @@ using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.DataAnalysis {
   [Obsolete("Use OnlinePearsonsRCalculator directly")]
-  public class OnlinePearsonsRSquaredCalculator : IOnlineCalculator, IDeepCloneable {
+  public class OnlinePearsonsRSquaredCalculator : DeepCloneable, IOnlineCalculator {
     private readonly OnlinePearsonsRCalculator rCalculator = new OnlinePearsonsRCalculator();
 
     public double RSquared {
@@ -63,19 +63,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
       return r * r;
     }
 
-    // IDeepCloneable members
-    public object Clone() {
-      var cloner = new Cloner();
+    public override IDeepCloneable Clone(Cloner cloner) {
       return new OnlinePearsonsRSquaredCalculator(this, cloner);
-    }
-
-    public IDeepCloneable Clone(Cloner cloner) {
-      var clone = cloner.GetClone(this);
-      if (clone == null) {
-        clone = new OnlinePearsonsRSquaredCalculator(this, cloner);
-        cloner.RegisterClonedObject(this, clone);
-      }
-      return clone;
     }
   }
 }

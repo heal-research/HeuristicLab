@@ -25,7 +25,7 @@ using HeuristicLab.Common;
 
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  public class OnlineDirectionalSymmetryCalculator : IOnlineTimeSeriesCalculator, IDeepCloneable {
+  public class OnlineDirectionalSymmetryCalculator : DeepCloneable, IOnlineTimeSeriesCalculator {
     private int n;
     private int nCorrect;
 
@@ -122,18 +122,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
       }
     }
 
-    // IDeepCloneable interface members
-    public object Clone() {
-      return new OnlineDirectionalSymmetryCalculator(this);
-    }
-
-    public IDeepCloneable Clone(Cloner cloner) {
-      var clone = cloner.GetClone(this);
-      if (clone == null) {
-        clone = new OnlineDirectionalSymmetryCalculator(this);
-        cloner.RegisterClonedObject(this, clone);
-      }
-      return clone;
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new OnlineDirectionalSymmetryCalculator(this, cloner);
     }
   }
 }
