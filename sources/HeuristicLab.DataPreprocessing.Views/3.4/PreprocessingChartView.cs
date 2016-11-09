@@ -25,19 +25,18 @@ using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.Analysis;
 using HeuristicLab.Collections;
-using HeuristicLab.Core.Views;
 using HeuristicLab.Data;
 using HeuristicLab.MainForm;
 
 namespace HeuristicLab.DataPreprocessing.Views {
   [View("Preprocessing Chart View")]
   [Content(typeof(PreprocessingChartContent), false)]
-  public partial class PreprocessingChartView : ItemView {
+  public partial class PreprocessingChartView : PreprocessingCheckedVariablesView {
 
-    private PreprocessingDataTable dataTable;
-    private List<PreprocessingDataTable> dataTablePerVariable;
-    private List<DataRow> dataRows;
-    private List<DataRow> selectedDataRows;
+    protected PreprocessingDataTable dataTable;
+    protected List<PreprocessingDataTable> dataTablePerVariable;
+    protected List<DataRow> dataRows;
+    protected List<DataRow> selectedDataRows;
 
     protected DataRowVisualProperties.DataRowChartType chartType;
     protected string chartTitle;
@@ -45,6 +44,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
     private const string DEFAULT_CHART_TITLE = "Chart";
     private const int FIXED_CHART_SIZE = 300;
     private const int MAX_TABLE_AUTO_SIZE_ROWS = 3;
+
 
     public IEnumerable<double> Classification { get; set; }
     public bool IsDetailedChartViewEnabled { get; set; }
@@ -55,74 +55,15 @@ namespace HeuristicLab.DataPreprocessing.Views {
       chartTitle = DEFAULT_CHART_TITLE;
     }
 
-    //Variable selection changed
-    //Add or remove data row
-    private void CheckedItemsChanged(object sender, CollectionItemsChangedEventArgs<IndexedItem<StringValue>> checkedItems) {
-      tableLayoutPanel.SuspendLayout();
-      foreach (IndexedItem<StringValue> item in checkedItems.Items) {
-        string variableName = item.Value.Value;
-
-        // not checked -> remove
-        if (!VariableIsChecked(variableName)) {
-          dataTableView.SetRowEnabled(variableName, false);
-          dataTable.SelectedRows.Remove(variableName);
-          dataTablePerVariable.Remove(dataTablePerVariable.Find(x => (x.Name == variableName)));
-        } else {
-          DataRow row = GetDataRow(variableName);
-          DataRow selectedRow = GetSelectedDataRow(variableName);
-          dataTableView.SetRowEnabled(variableName, true);
-
-          PreprocessingDataTable pdt = new PreprocessingDataTable(variableName);
-          pdt.Rows.Add(row);
-          // dataTablePerVariable does not contain unchecked variables => reduce insert position by number of unchecked variables to correct the index
-          int uncheckedUntilVariable = checkedItemList.Content.TakeWhile(x => x.Value != variableName).Count(x => !checkedItemList.Content.ItemChecked(x));
-          dataTablePerVariable.Insert(item.Index - uncheckedUntilVariable, pdt);
-
-          //update selection
-          if (selectedRow != null) {
-            dataTable.SelectedRows.Add(selectedRow);
-            pdt.SelectedRows.Add(selectedRow);
-          }
-        }
-      }
-
-      // update chart if not in all in one mode
-      if (Content != null && !Content.AllInOneMode)
+    protected override void OnContentChanged() {
+      base.OnContentChanged();
+      if (Content != null) {
+        InitData();
         GenerateChart();
-      tableLayoutPanel.ResumeLayout(true);
-    }
-
-    private bool VariableIsChecked(string name) {
-      return Content.VariableItemList.CheckedItems.Any(x => x.Value.Value == name);
-    }
-
-    protected override void RegisterContentEvents() {
-      base.RegisterContentEvents();
-      Content.PreprocessingData.Changed += PreprocessingData_Changed;
-      Content.PreprocessingData.SelectionChanged += PreprocessingData_SelctionChanged;
-
-    }
-
-    protected override void DeregisterContentEvents() {
-      base.DeregisterContentEvents();
-      Content.PreprocessingData.Changed -= PreprocessingData_Changed;
-      Content.PreprocessingData.SelectionChanged -= PreprocessingData_SelctionChanged;
-    }
-
-    public new PreprocessingChartContent Content {
-      get { return (PreprocessingChartContent)base.Content; }
-      set { base.Content = value; }
+      }
     }
 
     private void InitData() {
-      if (Content.VariableItemList == null) {
-        Content.VariableItemList = Content.CreateVariableItemList();
-      } else {
-        var checkedNames = Content.VariableItemList.CheckedItems.Select(x => x.Value.Value);
-        Content.VariableItemList = Content.CreateVariableItemList(checkedNames);
-      }
-      checkedItemList.Content = Content.VariableItemList;
-
       //Create data tables and data rows
       dataRows = Content.CreateAllDataRows(chartType);
       dataTable = new PreprocessingDataTable(chartTitle);
@@ -147,24 +88,39 @@ namespace HeuristicLab.DataPreprocessing.Views {
       UpdateSelection();
     }
 
-    private void UpdateSelection() {
+    protected override void CheckedItemsChanged(object sender, CollectionItemsChangedEventArgs<IndexedItem<StringValue>> checkedItems) {
+      base.CheckedItemsChanged(sender, checkedItems);
 
-      //update data table selection
-      selectedDataRows = Content.CreateAllSelectedDataRows(chartType);
-      dataTable.SelectedRows.Clear();
-      foreach (var selectedRow in selectedDataRows) {
-        if (VariableIsChecked(selectedRow.Name))
-          dataTable.SelectedRows.Add(selectedRow);
+      foreach (IndexedItem<StringValue> item in checkedItems.Items) {
+        string variableName = item.Value.Value;
+
+        // not checked -> remove
+        if (!VariableIsChecked(variableName)) {
+          dataTableView.SetRowEnabled(variableName, false);
+          dataTable.SelectedRows.Remove(variableName);
+          dataTablePerVariable.Remove(dataTablePerVariable.Find(x => (x.Name == variableName)));
+        } else {
+          DataRow row = GetDataRow(variableName);
+          DataRow selectedRow = GetSelectedDataRow(variableName);
+          dataTableView.SetRowEnabled(variableName, true);
+
+          PreprocessingDataTable pdt = new PreprocessingDataTable(variableName);
+          pdt.Rows.Add(row);
+          // dataTablePerVariable does not contain unchecked variables => reduce insert position by number of uncheckt variables to correct the index
+          int uncheckedUntilVariable = checkedItemList.Content.TakeWhile(x => x.Value != variableName).Count(x => !checkedItemList.Content.ItemChecked(x));
+          dataTablePerVariable.Insert(item.Index - uncheckedUntilVariable, pdt);
+
+          //update selection
+          if (selectedRow != null) {
+            dataTable.SelectedRows.Add(selectedRow);
+            pdt.SelectedRows.Add(selectedRow);
+          }
+        }
       }
 
-      //update data table per variable selection
-      foreach (PreprocessingDataTable d in dataTablePerVariable) {
-        d.SelectedRows.Clear();
-        DataRow row = selectedDataRows.Find(x => x.Name == d.Name);
-        if (row != null)
-          d.SelectedRows.Add(row);
-      }
-
+      // update chart if not in all in one mode
+      if (Content != null && !Content.AllInOneMode)
+        GenerateChart();
     }
 
     private DataRow GetSelectedDataRow(string variableName) {
@@ -174,7 +130,6 @@ namespace HeuristicLab.DataPreprocessing.Views {
       }
       return null;
     }
-
     private DataRow GetDataRow(string variableName) {
       foreach (DataRow row in dataRows) {
         if (row.Name == variableName)
@@ -183,103 +138,52 @@ namespace HeuristicLab.DataPreprocessing.Views {
       return null;
     }
 
-    protected override void OnContentChanged() {
-      base.OnContentChanged();
-      if (Content != null) {
-        InitData();
-        Content.VariableItemList.CheckedItemsChanged += CheckedItemsChanged;
-        GenerateChart();
-      }
-    }
-
-    // TODO : handle also other changed events
-    void PreprocessingData_Changed(object sender, DataPreprocessingChangedEventArgs e) {
-      switch (e.Type) {
-        case DataPreprocessingChangedEventType.DeleteColumn:
-          RemoveVariable(Content.PreprocessingData.GetVariableName(e.Column));
-          break;
-        case DataPreprocessingChangedEventType.AddColumn:
-          AddVariable(Content.PreprocessingData.GetVariableName(e.Column));
-          break;
-        case DataPreprocessingChangedEventType.ChangeColumn:
-        case DataPreprocessingChangedEventType.ChangeItem:
-          UpdateDataForVariable(Content.PreprocessingData.GetVariableName(e.Column));
-          break;
-        case DataPreprocessingChangedEventType.DeleteRow:
-        case DataPreprocessingChangedEventType.AddRow:
-        case DataPreprocessingChangedEventType.Any:
-        default:
-          //TODO: test with transform
-          InitData();
-          GenerateChart();
-          break;
-      }
-    }
-
-    private void PreprocessingData_SelctionChanged(object sender, EventArgs e) {
-      UpdateSelection();
-    }
-
-    private void UpdateDataForVariable(string variableName) {
-      DataRow newRow = Content.CreateDataRow(variableName, chartType);
-      dataTable.Rows.Remove(variableName);
-      dataTable.Rows.Add(newRow);
-      DataTable dt = dataTablePerVariable.Find(x => x.Rows.Find(y => y.Name == variableName) != null);
-      if (dt != null) {
-        dt.Rows.Remove(variableName);
-        dt.Rows.Add(newRow);
-      }
-    }
-
-    // add variable to data table and item list
-    private void AddVariable(string name) {
+    #region Add/Remove/Update Variable, Reset
+    protected override void AddVariable(string name) {
+      base.AddVariable(name);
       DataRow row = Content.CreateDataRow(name, chartType);
       dataTable.Rows.Add(row);
       PreprocessingDataTable d = new PreprocessingDataTable(name);
       d.Rows.Add(row);
       dataTablePerVariable.Add(d);
-      Content.VariableItemList.Add(new StringValue(name));
+
       if (!Content.AllInOneMode)
         GenerateChart();
     }
 
     // remove variable from data table and item list
-    private void RemoveVariable(string name) {
+    protected override void RemoveVariable(string name) {
+      base.RemoveVariable(name);
       dataTable.Rows.Remove(name);
       dataTablePerVariable.Remove(dataTablePerVariable.Find(x => (x.Name == name)));
 
-      StringValue stringValue = FindVariableItemList(name);
-      if (stringValue != null)
-        Content.VariableItemList.Remove(stringValue);
       if (!Content.AllInOneMode)
         GenerateChart();
     }
 
-    private StringValue FindVariableItemList(string name) {
-      foreach (StringValue stringValue in Content.VariableItemList) {
-        if (stringValue.Value == name)
-          return stringValue;
+    protected override void UpdateVariable(string name) {
+      base.UpdateVariable(name);
+      DataRow newRow = Content.CreateDataRow(name, chartType);
+      dataTable.Rows.Remove(name);
+      dataTable.Rows.Add(newRow);
+      DataTable dt = dataTablePerVariable.Find(x => x.Rows.Find(y => y.Name == name) != null);
+      if (dt != null) {
+        dt.Rows.Remove(name);
+        dt.Rows.Add(newRow);
       }
-      return null;
     }
+    protected override void ResetAllVariables() {
+      InitData();
+    }
+    #endregion
 
+    #region Generate Charts
     protected void GenerateChart() {
       ClearTableLayout();
       if (Content.AllInOneMode) {
         GenerateSingleChartLayout();
       } else
         GenerateMultiChartLayout();
-    }
-
-    private void ClearTableLayout() {
-      //Clear out the existing controls
-      tableLayoutPanel.Controls.Clear();
-
-      //Clear out the existing row and column styles
-      tableLayoutPanel.ColumnStyles.Clear();
-      tableLayoutPanel.RowStyles.Clear();
-      tableLayoutPanel.AutoScroll = false;
-      tableLayoutPanel.AutoScroll = true;
     }
 
     private void GenerateSingleChartLayout() {
@@ -290,29 +194,6 @@ namespace HeuristicLab.DataPreprocessing.Views {
       tableLayoutPanel.Controls.Add(dataTableView, 0, 0);
       dataTableView.Content = dataTable;
     }
-
-    private int GetNrOfMultiChartColumns(int itemCount) {
-      int columns = 0;
-      if (itemCount <= 2)
-        columns = 1;
-      else if (itemCount <= 6)
-        columns = 2;
-      else
-        columns = 3;
-      return columns;
-    }
-
-    private int GetNrOfMultiChartRows(int itemCount, int columns) {
-      int rows = 0;
-      if (columns == 3)
-        rows = (itemCount + 2) / columns;
-      else if (columns == 2)
-        rows = (itemCount + 1) / columns;
-      else
-        rows = itemCount / columns;
-      return rows;
-    }
-
 
     private void GenerateMultiChartLayout() {
       int checkedItemsCnt = 0;
@@ -351,6 +232,26 @@ namespace HeuristicLab.DataPreprocessing.Views {
         }
       }
     }
+    private int GetNrOfMultiChartColumns(int itemCount) {
+      int columns = 0;
+      if (itemCount <= 2)
+        columns = 1;
+      else if (itemCount <= 6)
+        columns = 2;
+      else
+        columns = 3;
+      return columns;
+    }
+    private int GetNrOfMultiChartRows(int itemCount, int columns) {
+      int rows = 0;
+      if (columns == 3)
+        rows = (itemCount + 2) / columns;
+      else if (columns == 2)
+        rows = (itemCount + 1) / columns;
+      else
+        rows = itemCount / columns;
+      return rows;
+    }
 
     private void AddDataTableToTableLayout(PreprocessingDataTable dataTable, int x, int y) {
       PreprocessingDataTableView dataView = new PreprocessingDataTableView();
@@ -369,6 +270,16 @@ namespace HeuristicLab.DataPreprocessing.Views {
       }
     }
 
+    protected void ClearTableLayout() {
+      //Clear out the existing controls
+      tableLayoutPanel.Controls.Clear();
+
+      //Clear out the existing row and column styles
+      tableLayoutPanel.ColumnStyles.Clear();
+      tableLayoutPanel.RowStyles.Clear();
+      tableLayoutPanel.AutoScroll = false;
+      tableLayoutPanel.AutoScroll = true;
+    }
     //Remove horizontal scroll bar if visible
     private void tableLayoutPanel_Layout(object sender, LayoutEventArgs e) {
       if (tableLayoutPanel.HorizontalScroll.Visible) {
@@ -380,8 +291,31 @@ namespace HeuristicLab.DataPreprocessing.Views {
         tableLayoutPanel.Padding = new Padding(0);
       }
     }
+    #endregion
 
+    #region Update Selection
+    protected override void PreprocessingData_SelctionChanged(object sender, EventArgs e) {
+      base.PreprocessingData_SelctionChanged(sender, e);
+      UpdateSelection();
+    }
+
+    private void UpdateSelection() {
+      //update data table selection
+      selectedDataRows = Content.CreateAllSelectedDataRows(chartType);
+      dataTable.SelectedRows.Clear();
+      foreach (var selectedRow in selectedDataRows) {
+        if (VariableIsChecked(selectedRow.Name))
+          dataTable.SelectedRows.Add(selectedRow);
+      }
+
+      //update data table per variable selection
+      foreach (PreprocessingDataTable d in dataTablePerVariable) {
+        d.SelectedRows.Clear();
+        DataRow row = selectedDataRows.Find(x => x.Name == d.Name);
+        if (row != null)
+          d.SelectedRows.Add(row);
+      }
+    }
+    #endregion
   }
 }
-
-

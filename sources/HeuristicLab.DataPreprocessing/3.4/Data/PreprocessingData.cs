@@ -58,6 +58,9 @@ namespace HeuristicLab.DataPreprocessing {
       return doubleVariableNames;
     }
 
+    public IList<string> InputVariables { get; private set; }
+    public string TargetVariable { get; private set; } // optional
+
     public int Columns {
       get { return variableNames.Count; }
     }
@@ -81,7 +84,10 @@ namespace HeuristicLab.DataPreprocessing {
       variableNames = new List<string>(original.variableNames);
       TrainingPartition = (IntRange)original.TrainingPartition.Clone(cloner);
       TestPartition = (IntRange)original.TestPartition.Clone(cloner);
-      transformations = new List<ITransformation>();
+      transformations = new List<ITransformation>(original.transformations.Select(cloner.Clone));
+
+      InputVariables = new List<string>(original.InputVariables);
+      TargetVariable = original.TargetVariable;
 
       RegisterEventHandler();
     }
@@ -101,6 +107,10 @@ namespace HeuristicLab.DataPreprocessing {
     public void Import(IDataAnalysisProblemData problemData) {
       Dataset dataset = (Dataset)problemData.Dataset;
       variableNames = new List<string>(problemData.Dataset.VariableNames);
+      InputVariables = new List<string>(problemData.AllowedInputVariables);
+      TargetVariable = (problemData is IRegressionProblemData) ? ((IRegressionProblemData)problemData).TargetVariable
+        : (problemData is IClassificationProblemData) ? ((IClassificationProblemData)problemData).TargetVariable
+        : null;
 
       int columnIndex = 0;
       variableValues = new List<IList>();

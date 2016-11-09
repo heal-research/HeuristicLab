@@ -4,23 +4,42 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.Analysis;
+using HeuristicLab.Collections;
 using HeuristicLab.Common;
-using HeuristicLab.Core.Views;
+using HeuristicLab.Data;
 using HeuristicLab.MainForm;
+using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.DataPreprocessing.Views {
   [View("Scatter Plot Multi View")]
   [Content(typeof(ScatterPlotContent), false)]
-  public partial class ScatterPlotMultiView : ItemView {
-
-    private const int HEADER_WIDTH = 50;
-    private const int HEADER_HEIGHT = 50;
+  public partial class ScatterPlotMultiView : PreprocessingCheckedVariablesView {
     private const int MAX_AUTO_SIZE_ELEMENTS = 6;
     private const int FIXED_CHART_WIDTH = 250;
     private const int FIXED_CHART_HEIGHT = 150;
 
     public ScatterPlotMultiView() {
       InitializeComponent();
+
+      columnHeaderTableLayoutPanel.HorizontalScroll.Enabled = true;
+      columnHeaderTableLayoutPanel.VerticalScroll.Enabled = false;
+      columnHeaderTableLayoutPanel.HorizontalScroll.Visible = false;
+      columnHeaderTableLayoutPanel.VerticalScroll.Visible = false;
+
+      rowHeaderTableLayoutPanel.HorizontalScroll.Enabled = false;
+      rowHeaderTableLayoutPanel.VerticalScroll.Enabled = true;
+      rowHeaderTableLayoutPanel.HorizontalScroll.Visible = false;
+      rowHeaderTableLayoutPanel.VerticalScroll.Visible = false;
+
+      bodyTableLayoutPanel.HorizontalScroll.Enabled = true;
+      bodyTableLayoutPanel.VerticalScroll.Enabled = true;
+      bodyTableLayoutPanel.HorizontalScroll.Visible = true;
+      bodyTableLayoutPanel.VerticalScroll.Visible = true;
+      bodyTableLayoutPanel.AutoScroll = true;
+
+      bodyTableLayoutPanel.MouseWheel += bodyTableLayoutPanel_MouseWheel;
+
+      splitContainer.Panel1Collapsed = true; // ToDo: remove after correctly handling unchecks
     }
 
     public new ScatterPlotContent Content {
@@ -31,133 +50,154 @@ namespace HeuristicLab.DataPreprocessing.Views {
     protected override void OnContentChanged() {
       base.OnContentChanged();
       if (Content != null) {
-        GenerateMultiLayout();
+        GenerateCharts();
       }
     }
 
-    //Add header elements to the table layout panel
-    private void addHeaderToTableLayoutPanels() {
+    protected override void CheckedItemsChanged(object sender, CollectionItemsChangedEventArgs<IndexedItem<StringValue>> checkedItems) {
+      base.CheckedItemsChanged(sender, checkedItems);
 
+    }
+
+    #region Add/Remove/Update Variable, Reset
+    protected override void AddVariable(string name) {
+      base.AddVariable(name);
+    }
+    protected override void RemoveVariable(string name) {
+      base.RemoveVariable(name);
+
+    }
+    protected override void UpdateVariable(string name) {
+      base.UpdateVariable(name);
+
+    }
+    protected override void ResetAllVariables() {
+      GenerateCharts();
+    }
+    #endregion
+
+    #region Generate Charts
+    private void GenerateCharts() {
       List<string> variables = Content.PreprocessingData.GetDoubleVariableNames().ToList();
+      var contentTableLayoutPanels = new[] { columnHeaderTableLayoutPanel, rowHeaderTableLayoutPanel, bodyTableLayoutPanel };
 
-      for (int i = 1; i < variables.Count + 1; i++) {
-        // Use buttons for header elements
-        Button xButton = new Button();
-        xButton.Enabled = false;
-        xButton.BackColor = Color.Gainsboro;
-        xButton.Text = variables[i - 1];
-        xButton.Dock = DockStyle.Fill;
-        tableLayoutPanel.Controls.Add(xButton, 0, i);
-        Button yButton = new Button();
-        yButton.Enabled = false;
-        yButton.BackColor = Color.Gainsboro;
-        yButton.Text = variables[i - 1];
-        yButton.Dock = DockStyle.Fill;
-        tableLayoutPanel.Controls.Add(yButton, i, 0);
+      // Clear table layouts
+      foreach (var tlp in contentTableLayoutPanels) {
+        tlp.Controls.Clear();
+        //Clear out the existing row and column styles
+        tlp.ColumnStyles.Clear();
+        tlp.RowStyles.Clear();
       }
+
+      // Set row and column count
+      columnHeaderTableLayoutPanel.ColumnCount = variables.Count + 1;
+      rowHeaderTableLayoutPanel.RowCount = variables.Count + 1;
+      bodyTableLayoutPanel.ColumnCount = variables.Count;
+      bodyTableLayoutPanel.RowCount = variables.Count;
+
+      // Set column and row layout
+      int width = variables.Count <= MAX_AUTO_SIZE_ELEMENTS ? bodyTableLayoutPanel.Width / variables.Count : FIXED_CHART_WIDTH;
+      int height = variables.Count <= MAX_AUTO_SIZE_ELEMENTS ? bodyTableLayoutPanel.Height / variables.Count : FIXED_CHART_HEIGHT;
+      for (int i = 0; i < variables.Count; i++) {
+        columnHeaderTableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, width));
+        rowHeaderTableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, height));
+        bodyTableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, width));
+        bodyTableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, height));
+      }
+
+      //frameTableLayoutPanel.SuspendLayout();
+      AddHeaderToTableLayoutPanels();
+      AddChartsToTableLayoutPanel();
+      //frameTableLayoutPanel.ResumeLayout(true);
     }
 
-    private void GenerateMultiLayout() {
+    private void AddHeaderToTableLayoutPanels() {
       List<string> variables = Content.PreprocessingData.GetDoubleVariableNames().ToList();
-
-      tableLayoutPanel.Controls.Clear();
-      //Clear out the existing row and column styles
-      tableLayoutPanel.ColumnStyles.Clear();
-      tableLayoutPanel.RowStyles.Clear();
-
-      //Set row and column count
-      tableLayoutPanel.ColumnCount = variables.Count + 1;
-      tableLayoutPanel.RowCount = variables.Count + 1;
-
-      tableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, HEADER_WIDTH));
-      tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, HEADER_HEIGHT));
-      // set column and row layout
-      for (int x = 0; x < variables.Count; x++) {
-        // auto size
-        if (variables.Count <= MAX_AUTO_SIZE_ELEMENTS) {
-          tableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, (tableLayoutPanel.Width - HEADER_WIDTH) / variables.Count));
-          tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, (tableLayoutPanel.Height - HEADER_HEIGHT) / variables.Count));
-        }
-        // fixed size
-        else {
-          tableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, FIXED_CHART_WIDTH));
-          tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, FIXED_CHART_HEIGHT));
-        }
+      int width = variables.Count <= MAX_AUTO_SIZE_ELEMENTS ? bodyTableLayoutPanel.Width / variables.Count : FIXED_CHART_WIDTH;
+      int height = variables.Count <= MAX_AUTO_SIZE_ELEMENTS ? bodyTableLayoutPanel.Height / variables.Count : FIXED_CHART_HEIGHT;
+      for (int i = 0; i < variables.Count; i++) {
+        columnHeaderTableLayoutPanel.Controls.Add(new Label() {
+          Text = variables[i],
+          TextAlign = ContentAlignment.MiddleCenter,
+          Width = width,
+          Height = columnHeaderTableLayoutPanel.Height,
+          Dock = DockStyle.Fill,
+          Margin = new Padding(3)
+        }, i, 0);
+        rowHeaderTableLayoutPanel.Controls.Add(new Label() {
+          Text = variables[i],
+          TextAlign = ContentAlignment.MiddleCenter,
+          Width = rowHeaderTableLayoutPanel.Width,
+          Height = height,
+          Dock = DockStyle.Fill,
+          Margin = new Padding(3)
+        }, 0, i);
       }
 
-      addHeaderToTableLayoutPanels();
-      addChartsToTableLayoutPanel();
-
+      // Add empty labels with fixed size to correct scollbar width/height in headers
+      columnHeaderTableLayoutPanel.Controls.Add(new Panel() {
+        Width = bodyTableLayoutPanel.VerticalScroll.Visible ? SystemInformation.VerticalScrollBarWidth : 0,
+        Height = columnHeaderTableLayoutPanel.Height,
+        Dock = DockStyle.Fill,
+        //BackColor = Color.DarkRed
+      }, variables.Count, 0);
+      rowHeaderTableLayoutPanel.Controls.Add(new Panel() {
+        Width = rowHeaderTableLayoutPanel.Width,
+        Height = bodyTableLayoutPanel.HorizontalScroll.Visible ? SystemInformation.HorizontalScrollBarHeight : 0,
+        Dock = DockStyle.Fill,
+        //BackColor = Color.DarkRed
+      }, 0, variables.Count);
     }
-
-    private void addChartsToTableLayoutPanel() {
-
+    private void AddChartsToTableLayoutPanel() {
       List<string> variables = Content.PreprocessingData.GetDoubleVariableNames().ToList();
 
       //set scatter plots and histograms
-      for (int x = 1; x < variables.Count + 1; x++) {
-
-        for (int y = 1; y < variables.Count + 1; y++) {
-          // use historgram if x and y variable are equal
-          if (x == y) {
+      for (int x = 0; x < variables.Count; x++) {
+        for (int y = 0; y < variables.Count; y++) {
+          if (x == y) { // use historgram if x and y variable are equal
             PreprocessingDataTable dataTable = new PreprocessingDataTable();
-            DataRow dataRow = Content.CreateDataRow(variables[x - 1], DataRowVisualProperties.DataRowChartType.Histogram);
+            DataRow dataRow = Content.CreateDataRow(variables[x], DataRowVisualProperties.DataRowChartType.Histogram);
             dataTable.Rows.Add(dataRow);
-            PreprocessingDataTableView pcv = new PreprocessingDataTableView();
+            PreprocessingDataTableView pcv = new PreprocessingDataTableView {
+              Content = dataTable,
+              Dock = DockStyle.Fill,
+              ShowLegend = false,
+              XAxisFormat = "G3"
+            };
             pcv.ChartDoubleClick += HistogramDoubleClick;
-            pcv.Content = dataTable;
-            tableLayoutPanel.Controls.Add(pcv, y, x);
-          }
-          //scatter plot
-          else {
-            ScatterPlot scatterPlot = Content.CreateScatterPlot(variables[x - 1], variables[y - 1]);
-            PreprocessingScatterPlotView pspv = new PreprocessingScatterPlotView();
+            bodyTableLayoutPanel.Controls.Add(pcv, y, x);
+          } else { //scatter plot
+            ScatterPlot scatterPlot = Content.CreateScatterPlot(variables[x], variables[y]);
+            PreprocessingScatterPlotView pspv = new PreprocessingScatterPlotView {
+              Content = scatterPlot,
+              Dock = DockStyle.Fill,
+              ShowLegend = false,
+              XAxisFormat = "G3"
+            };
             pspv.ChartDoubleClick += ScatterPlotDoubleClick;
-            pspv.Content = scatterPlot;
-            pspv.Dock = DockStyle.Fill;
-            tableLayoutPanel.Controls.Add(pspv, x, y);
+            bodyTableLayoutPanel.Controls.Add(pspv, x, y);
           }
         }
       }
     }
 
+    #endregion
+
+    #region DoubleClick Events
     //Open scatter plot in new tab with new content when double clicked
     private void ScatterPlotDoubleClick(object sender, EventArgs e) {
       PreprocessingScatterPlotView pspv = (PreprocessingScatterPlotView)sender;
       ScatterPlotContent scatterContent = new ScatterPlotContent(Content, new Cloner());  // create new content
       ScatterPlot scatterPlot = pspv.Content;
-      setVariablesInContentFromScatterPlot(scatterContent, scatterPlot);
 
-      MainFormManager.MainForm.ShowContent(scatterContent, typeof(ScatterPlotSingleView));  // open in new tab
-    }
-
-    //Extract variable names from scatter plot and set them in content
-    private void setVariablesInContentFromScatterPlot(ScatterPlotContent scatterContent, ScatterPlot scatterPlot) {
-
-      // only one data row should be in scatter plot
+      //Extract variable names from scatter plot and set them in content
       if (scatterPlot.Rows.Count == 1) {
         string[] variables = scatterPlot.Rows.ElementAt(0).Name.Split(new string[] { " - " }, StringSplitOptions.None); // extract variable names from string
         scatterContent.SelectedXVariable = variables[0];
         scatterContent.SelectedYVariable = variables[1];
       }
-    }
 
-    //Set variable item list from with variable from data table
-    private void setVariableItemListFromDataTable(HistogramContent histoContent, PreprocessingDataTable dataTable) {
-
-      // only one data row should be in data table 
-      if (dataTable.Rows.Count == 1) {
-        string variableName = dataTable.Rows.ElementAt(0).Name;
-
-        // set only variable name checked
-        foreach (var checkedItem in histoContent.VariableItemList) {
-          if (checkedItem.Value == variableName)
-            histoContent.VariableItemList.SetItemCheckedState(checkedItem, true);
-          else
-            histoContent.VariableItemList.SetItemCheckedState(checkedItem, false);
-
-        }
-      }
+      MainFormManager.MainForm.ShowContent(scatterContent, typeof(ScatterPlotSingleView));  // open in new tab
     }
 
     //open histogram in new tab with new content when double clicked
@@ -166,13 +206,52 @@ namespace HeuristicLab.DataPreprocessing.Views {
       HistogramContent histoContent = new HistogramContent(Content.PreprocessingData);  // create new content     
       histoContent.VariableItemList = Content.CreateVariableItemList();
       PreprocessingDataTable dataTable = pcv.Content;
-      setVariableItemListFromDataTable(histoContent, dataTable);
 
+      //Set variable item list from with variable from data table
+      if (dataTable.Rows.Count == 1) { // only one data row should be in data table 
+        string variableName = dataTable.Rows.ElementAt(0).Name;
+
+        // set only variable name checked
+        foreach (var checkedItem in histoContent.VariableItemList) {
+          histoContent.VariableItemList.SetItemCheckedState(checkedItem, checkedItem.Value == variableName);
+        }
+      }
       MainFormManager.MainForm.ShowContent(histoContent, typeof(HistogramView));  // open in new tab
     }
+    #endregion
 
+    private void bodyTableLayoutPanel_Scroll(object sender, ScrollEventArgs e) {
+      SyncScroll();
 
+      // update "padding labels" after scrollbars are added or removed
+      var columHeaderPadding = columnHeaderTableLayoutPanel.Controls[columnHeaderTableLayoutPanel.Controls.Count - 1];
+      var rowHeaderPadding = rowHeaderTableLayoutPanel.Controls[rowHeaderTableLayoutPanel.ColumnCount - 1];
+      columHeaderPadding.Width = bodyTableLayoutPanel.VerticalScroll.Visible ? SystemInformation.VerticalScrollBarWidth : 0;
+      rowHeaderPadding.Height = bodyTableLayoutPanel.HorizontalScroll.Visible ? SystemInformation.HorizontalScrollBarHeight : 0;
+    }
+    private void bodyTableLayoutPanel_MouseWheel(object sender, MouseEventArgs e) {
+      // Scrolling with the mouse wheel is not captured in the Scoll event
+      SyncScroll();
+    }
+    private void SyncScroll() {
+      //Debug.WriteLine("H: {0} <- {1}", columnHeaderTableLayoutPanel.HorizontalScroll.Value, bodyTableLayoutPanel.HorizontalScroll.Value);
+      //Debug.WriteLine("V: {0} <- {1}", rowHeaderTableLayoutPanel.VerticalScroll.Value, bodyTableLayoutPanel.VerticalScroll.Value);
+
+      frameTableLayoutPanel.SuspendRepaint();
+
+      columnHeaderTableLayoutPanel.HorizontalScroll.Minimum = bodyTableLayoutPanel.HorizontalScroll.Minimum;
+      columnHeaderTableLayoutPanel.HorizontalScroll.Maximum = bodyTableLayoutPanel.HorizontalScroll.Maximum;
+      rowHeaderTableLayoutPanel.VerticalScroll.Minimum = bodyTableLayoutPanel.VerticalScroll.Minimum;
+      rowHeaderTableLayoutPanel.VerticalScroll.Maximum = bodyTableLayoutPanel.VerticalScroll.Maximum;
+
+      columnHeaderTableLayoutPanel.HorizontalScroll.Value = Math.Max(bodyTableLayoutPanel.HorizontalScroll.Value, 1);
+      rowHeaderTableLayoutPanel.VerticalScroll.Value = Math.Max(bodyTableLayoutPanel.VerticalScroll.Value, 1);
+      // minimum 1 is nececary  because of two factors:
+      // - setting the Value-property of Horizontal/VerticalScroll updates the internal state but the Value-property stays 0
+      // - setting the same number of the Value-property has no effect
+      // since the Value-property is always 0, setting it to 0 would have no effect; so it is set to 1 instead
+
+      frameTableLayoutPanel.ResumeRepaint(true);
+    }
   }
-
-
 }
