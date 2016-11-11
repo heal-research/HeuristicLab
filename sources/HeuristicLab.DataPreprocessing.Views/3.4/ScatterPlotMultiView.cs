@@ -15,10 +15,6 @@ namespace HeuristicLab.DataPreprocessing.Views {
   [View("Scatter Plot Multi View")]
   [Content(typeof(ScatterPlotContent), false)]
   public partial class ScatterPlotMultiView : PreprocessingCheckedVariablesView {
-    private const int MaxAutoSizeElements = 6;
-    private const int FixedChartWidth = 250;
-    private const int FixedChartHeight = 150;
-
     private readonly IDictionary<string, Label> columnHeaderCache;
     private readonly IDictionary<string, Label> rowHeaderCache;
     private readonly IDictionary<Tuple<string/*col*/, string/*row*/>, ItemView> bodyCache;
@@ -26,6 +22,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
     public ScatterPlotMultiView() {
       InitializeComponent();
 
+      #region Initialize Scrollbars
       columnHeaderScrollPanel.HorizontalScroll.Enabled = true;
       columnHeaderScrollPanel.VerticalScroll.Enabled = false;
       columnHeaderScrollPanel.HorizontalScroll.Visible = false;
@@ -41,6 +38,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
       bodyScrollPanel.HorizontalScroll.Visible = true;
       bodyScrollPanel.VerticalScroll.Visible = true;
       bodyScrollPanel.AutoScroll = true;
+      #endregion
 
       columnHeaderCache = new Dictionary<string, Label>();
       rowHeaderCache = new Dictionary<string, Label>();
@@ -71,10 +69,72 @@ namespace HeuristicLab.DataPreprocessing.Views {
       }
     }
 
+    #region Add and remove charts
     private void AddChartToTable(string variable) {
+      frameTableLayoutPanel.SuspendLayout();
+
+      // find index to insert 
+      var variables = checkedItemList.Content.Select(v => v.Value).ToList();
+      int idx = variables              // all variables
+        .TakeWhile(t => t != variable) // ... until the variable that was checked
+        .Count(IsVariableChecked);     // ... how many checked variables
+
+      // add column header
+      var colH = columnHeaderTableLayoutPanel;
+      AddColumnHelper(colH, idx, _ => GetColumnHeader(variable));
+
+      // add row header
+      var rowH = rowHeaderTableLayoutPanel;
+      AddRowHelper(rowH, idx, _ => GetRowHeader(variable));
+
+      // add body
+      var body = bodyTableLayoutPanel;
+      var vars = GetCheckedVariables();
+      var varsMinus = vars.Except(new[] { variable }).ToList();
+      AddColumnHelper(body, idx, r => GetBody(variable, varsMinus[r])); // exclude "variable" because the row for it does not exist yet
+      AddRowHelper(body, idx, c => GetBody(vars[c], variable));
+
+      frameTableLayoutPanel.ResumeLayout(true);
+    }
+    private void AddColumnHelper(TableLayoutPanel tlp, int idx, Func<int, Control> creatorFunc) {
+      // add column
+      tlp.ColumnCount++;
+      tlp.ColumnStyles.Insert(idx, new ColumnStyle(SizeType.Absolute, GetColumnWidth()));
+      // shift right
+      for (int c = tlp.ColumnCount; c >  idx - 1; c--) {
+        for (int r = 0; r < tlp.RowCount; r++) {
+          var control = tlp.GetControlFromPosition(c, r);
+          if (control != null) {
+            tlp.SetColumn(control, c + 1);
+          }
+        }
+      }
+      // add controls
+      for (int r = 0; r < tlp.RowCount; r++) {
+        if (tlp.GetControlFromPosition(idx, r) == null)
+          tlp.Controls.Add(creatorFunc(r), idx, r);
+      }
 
     }
-    // remove from headers and body and shift remaining slots to fill the gap
+    private void AddRowHelper(TableLayoutPanel tlp, int idx, Func<int, Control> creatorFunc) {
+      // add row
+      tlp.RowCount++;
+      tlp.RowStyles.Insert(idx, new RowStyle(SizeType.Absolute, GetRowHeight()));
+      // shift right
+      for (int r = tlp.RowCount; r > idx - 1; r--) {
+        for (int c = 0; c < tlp.ColumnCount; c++) {
+          var control = tlp.GetControlFromPosition(c, r);
+          if (control != null) {
+            tlp.SetRow(control, r + 1);
+          }
+        }
+      }
+      // add controls
+      for (int c = 0; c < tlp.ColumnCount; c++)
+        if (tlp.GetControlFromPosition(c, idx) == null)
+          tlp.Controls.Add(creatorFunc(c), c, idx);
+    }
+
     private void RemoveChartFromTable(string variable) {
       frameTableLayoutPanel.SuspendLayout();
 
@@ -95,10 +155,11 @@ namespace HeuristicLab.DataPreprocessing.Views {
 
       frameTableLayoutPanel.ResumeLayout(true);
     }
-
     private void RemoveColumnHelper(TableLayoutPanel tlp, int idx) {
+      // remove controls
       for (int r = 0; r < tlp.RowCount; r++)
         tlp.Controls.Remove(tlp.GetControlFromPosition(idx, r));
+      // shift left
       for (int c = idx + 1; c < tlp.ColumnCount; c++) {
         for (int r = 0; r < tlp.RowCount; r++) {
           var control = tlp.GetControlFromPosition(c, r);
@@ -107,12 +168,15 @@ namespace HeuristicLab.DataPreprocessing.Views {
           }
         }
       }
+      // delete column
       tlp.ColumnStyles.RemoveAt(tlp.ColumnCount - 1);
       tlp.ColumnCount--;
     }
     private void RemoveRowHelper(TableLayoutPanel tlp, int idx) {
+      // remove controls
       for (int c = 0; c < tlp.ColumnCount; c++)
         tlp.Controls.Remove(tlp.GetControlFromPosition(c, idx));
+      // shift left
       for (int r = idx + 1; r < tlp.RowCount; r++) {
         for (int c = 0; c < tlp.ColumnCount; c++) {
           var control = tlp.GetControlFromPosition(c, r);
@@ -121,15 +185,18 @@ namespace HeuristicLab.DataPreprocessing.Views {
           }
         }
       }
+      // delete rows
       tlp.RowStyles.RemoveAt(tlp.RowCount - 1);
       tlp.RowCount--;
     }
+    #endregion
 
-    #region Add/Remove/Update Variable, Reset
+    #region Add/Remove/Update Variable
     protected override void AddVariable(string name) {
       base.AddVariable(name);
+      if (IsVariableChecked(name))
+        AddChartToTable(name);
     }
-
     protected override void RemoveVariable(string name) {
       base.RemoveVariable(name);
 
@@ -146,14 +213,15 @@ namespace HeuristicLab.DataPreprocessing.Views {
     }
     protected override void UpdateVariable(string name) {
       base.UpdateVariable(name);
+      RemoveVariable(name);
+      AddVariable(name);
     }
     protected override void ResetAllVariables() {
       GenerateCharts();
     }
     #endregion
 
-
-    #region Creating Header and Body 
+    #region Creating Headers and Body 
     private Label GetColumnHeader(string variable) {
       if (!columnHeaderCache.ContainsKey(variable)) {
         columnHeaderCache.Add(variable, new Label() {
@@ -213,9 +281,6 @@ namespace HeuristicLab.DataPreprocessing.Views {
     }
     #endregion
 
-
-
-
     #region Generate Charts
     private void GenerateCharts() {
       var variables = GetCheckedVariables();
@@ -237,13 +302,11 @@ namespace HeuristicLab.DataPreprocessing.Views {
       bodyTableLayoutPanel.RowCount = variables.Count;
 
       // Set column and row layout
-      int width = variables.Count <= MaxAutoSizeElements ? bodyTableLayoutPanel.Width / variables.Count : FixedChartWidth;
-      int height = variables.Count <= MaxAutoSizeElements ? bodyTableLayoutPanel.Height / variables.Count : FixedChartHeight;
       for (int i = 0; i < variables.Count; i++) {
-        columnHeaderTableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, width));
-        rowHeaderTableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, height));
-        bodyTableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, width));
-        bodyTableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, height));
+        columnHeaderTableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, GetColumnWidth()));
+        rowHeaderTableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, GetRowHeight()));
+        bodyTableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, GetColumnWidth()));
+        bodyTableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, GetRowHeight()));
       }
 
       frameTableLayoutPanel.SuspendLayout();
@@ -314,6 +377,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
     }
     #endregion
 
+    #region Scrolling
     private void bodyScrollPanel_Scroll(object sender, ScrollEventArgs e) {
       SyncScroll();
 
@@ -324,9 +388,6 @@ namespace HeuristicLab.DataPreprocessing.Views {
       SyncScroll();
     }
     private void SyncScroll() {
-      //Debug.WriteLine("H: {0} <- {1}", columnHeaderScrollPanel.HorizontalScroll.Value, bodyScrollPanel.HorizontalScroll.Value);
-      //Debug.WriteLine("V: {0} <- {1}", rowScrollLayoutPanel.VerticalScroll.Value, bodyScrollPanel.VerticalScroll.Value);
-
       frameTableLayoutPanel.SuspendRepaint();
 
       columnHeaderScrollPanel.HorizontalScroll.Minimum = bodyScrollPanel.HorizontalScroll.Minimum;
@@ -343,11 +404,33 @@ namespace HeuristicLab.DataPreprocessing.Views {
 
       frameTableLayoutPanel.ResumeRepaint(true);
     }
-
     // add a margin to the header table layouts if the scollbar is visible to account for the width/height of the scrollbar
     private void UpdateHeaderMargin() {
       columnHeaderScrollPanel.Margin = new Padding(0, 0, bodyScrollPanel.VerticalScroll.Visible ? SystemInformation.VerticalScrollBarWidth : 0, 0);
       rowHeaderScrollPanel.Margin = new Padding(0, 0, 0, bodyScrollPanel.HorizontalScroll.Visible ? SystemInformation.HorizontalScrollBarHeight : 0);
     }
+    #endregion
+
+    #region Sizing of Charts
+    private int GetColumnWidth() { return (int)(bodyScrollPanel.Width * ((float)widthTrackBar.Value / 100)); }
+    private int GetRowHeight() { return (int)(bodyScrollPanel.Height * ((float)heightTrackBar.Value / 100)); }
+    private void widthTrackBar_ValueChanged(object sender, EventArgs e) {
+      frameTableLayoutPanel.SuspendRepaint();
+      for (int i = 0; i < columnHeaderTableLayoutPanel.ColumnCount; i++) {
+        columnHeaderTableLayoutPanel.ColumnStyles[i].Width = GetColumnWidth();
+        bodyTableLayoutPanel.ColumnStyles[i].Width = GetColumnWidth();
+      }
+      frameTableLayoutPanel.ResumeRepaint(true);
+    }
+    private void heightTrackBar_ValueChanged(object sender, EventArgs e) {
+      frameTableLayoutPanel.SuspendRepaint();
+
+      for (int i = 0; i < rowHeaderTableLayoutPanel.RowCount; i++) {
+        rowHeaderTableLayoutPanel.RowStyles[i].Height = GetRowHeight();
+        bodyTableLayoutPanel.RowStyles[i].Height = GetRowHeight();
+      }
+      frameTableLayoutPanel.ResumeRepaint(true);
+    }
+    #endregion
   }
 }
