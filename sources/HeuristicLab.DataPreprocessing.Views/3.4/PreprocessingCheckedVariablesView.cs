@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -42,10 +43,12 @@ namespace HeuristicLab.DataPreprocessing.Views {
       InitializeComponent();
     }
 
-    protected bool VariableIsChecked(string name) {
+    protected bool IsVariableChecked(string name) {
       return Content.VariableItemList.CheckedItems.Any(x => x.Value.Value == name);
     }
-
+    protected IList<string> GetCheckedVariables() {
+      return checkedItemList.Content.CheckedItems.Select(i => i.Value.Value).ToList();
+    }
 
     protected override void OnContentChanged() {
       base.OnContentChanged();

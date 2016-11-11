@@ -95,7 +95,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
         string variableName = item.Value.Value;
 
         // not checked -> remove
-        if (!VariableIsChecked(variableName)) {
+        if (!IsVariableChecked(variableName)) {
           dataTableView.SetRowEnabled(variableName, false);
           dataTable.SelectedRows.Remove(variableName);
           dataTablePerVariable.Remove(dataTablePerVariable.Find(x => (x.Name == variableName)));
@@ -304,7 +304,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
       selectedDataRows = Content.CreateAllSelectedDataRows(chartType);
       dataTable.SelectedRows.Clear();
       foreach (var selectedRow in selectedDataRows) {
-        if (VariableIsChecked(selectedRow.Name))
+        if (IsVariableChecked(selectedRow.Name))
           dataTable.SelectedRows.Add(selectedRow);
       }
 

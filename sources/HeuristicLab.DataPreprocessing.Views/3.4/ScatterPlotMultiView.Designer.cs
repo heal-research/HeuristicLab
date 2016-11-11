@@ -45,14 +45,20 @@ namespace HeuristicLab.DataPreprocessing.Views {
     /// </summary>
     private void InitializeComponent() {
       this.frameTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
+      this.columnHeaderScrollPanel = new System.Windows.Forms.Panel();
       this.columnHeaderTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
+      this.rowHeaderScrollPanel = new System.Windows.Forms.Panel();
       this.rowHeaderTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
+      this.bodyScrollPanel = new System.Windows.Forms.Panel();
       this.bodyTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
       this.splitContainer.Panel1.SuspendLayout();
       this.splitContainer.Panel2.SuspendLayout();
       this.splitContainer.SuspendLayout();
       this.frameTableLayoutPanel.SuspendLayout();
+      this.columnHeaderScrollPanel.SuspendLayout();
+      this.rowHeaderScrollPanel.SuspendLayout();
+      this.bodyScrollPanel.SuspendLayout();
       this.SuspendLayout();
       // 
       // splitContainer
@@ -67,9 +73,9 @@ namespace HeuristicLab.DataPreprocessing.Views {
       this.frameTableLayoutPanel.ColumnCount = 2;
       this.frameTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 40F));
       this.frameTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-      this.frameTableLayoutPanel.Controls.Add(this.columnHeaderTableLayoutPanel, 1, 0);
-      this.frameTableLayoutPanel.Controls.Add(this.rowHeaderTableLayoutPanel, 0, 1);
-      this.frameTableLayoutPanel.Controls.Add(this.bodyTableLayoutPanel, 1, 1);
+      this.frameTableLayoutPanel.Controls.Add(this.columnHeaderScrollPanel, 1, 0);
+      this.frameTableLayoutPanel.Controls.Add(this.rowHeaderScrollPanel, 0, 1);
+      this.frameTableLayoutPanel.Controls.Add(this.bodyScrollPanel, 1, 1);
       this.frameTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
       this.frameTableLayoutPanel.Location = new System.Drawing.Point(0, 0);
       this.frameTableLayoutPanel.Name = "frameTableLayoutPanel";
@@ -79,48 +85,87 @@ namespace HeuristicLab.DataPreprocessing.Views {
       this.frameTableLayoutPanel.Size = new System.Drawing.Size(739, 517);
       this.frameTableLayoutPanel.TabIndex = 0;
       // 
+      // columnHeaderScrollPanel
+      // 
+      this.columnHeaderScrollPanel.Controls.Add(this.columnHeaderTableLayoutPanel);
+      this.columnHeaderScrollPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.columnHeaderScrollPanel.Location = new System.Drawing.Point(40, 0);
+      this.columnHeaderScrollPanel.Margin = new System.Windows.Forms.Padding(0);
+      this.columnHeaderScrollPanel.Name = "columnHeaderScrollPanel";
+      this.columnHeaderScrollPanel.Size = new System.Drawing.Size(699, 40);
+      this.columnHeaderScrollPanel.TabIndex = 3;
+      // 
       // columnHeaderTableLayoutPanel
       // 
+      this.columnHeaderTableLayoutPanel.AutoSize = true;
+      this.columnHeaderTableLayoutPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
       this.columnHeaderTableLayoutPanel.ColumnCount = 2;
       this.columnHeaderTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
       this.columnHeaderTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-      this.columnHeaderTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.columnHeaderTableLayoutPanel.Location = new System.Drawing.Point(43, 3);
+      this.columnHeaderTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Left;
+      this.columnHeaderTableLayoutPanel.Location = new System.Drawing.Point(0, 0);
+      this.columnHeaderTableLayoutPanel.Margin = new System.Windows.Forms.Padding(0);
       this.columnHeaderTableLayoutPanel.Name = "columnHeaderTableLayoutPanel";
       this.columnHeaderTableLayoutPanel.RowCount = 1;
       this.columnHeaderTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
       this.columnHeaderTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-      this.columnHeaderTableLayoutPanel.Size = new System.Drawing.Size(693, 34);
+      this.columnHeaderTableLayoutPanel.Size = new System.Drawing.Size(0, 40);
       this.columnHeaderTableLayoutPanel.TabIndex = 1;
+      // 
+      // rowHeaderScrollPanel
+      // 
+      this.rowHeaderScrollPanel.Controls.Add(this.rowHeaderTableLayoutPanel);
+      this.rowHeaderScrollPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.rowHeaderScrollPanel.Location = new System.Drawing.Point(0, 40);
+      this.rowHeaderScrollPanel.Margin = new System.Windows.Forms.Padding(0);
+      this.rowHeaderScrollPanel.Name = "rowHeaderScrollPanel";
+      this.rowHeaderScrollPanel.Size = new System.Drawing.Size(40, 477);
+      this.rowHeaderScrollPanel.TabIndex = 4;
       // 
       // rowHeaderTableLayoutPanel
       // 
+      this.rowHeaderTableLayoutPanel.AutoSize = true;
+      this.rowHeaderTableLayoutPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
       this.rowHeaderTableLayoutPanel.ColumnCount = 1;
       this.rowHeaderTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
       this.rowHeaderTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-      this.rowHeaderTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.rowHeaderTableLayoutPanel.Location = new System.Drawing.Point(3, 43);
+      this.rowHeaderTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Top;
+      this.rowHeaderTableLayoutPanel.Location = new System.Drawing.Point(0, 0);
+      this.rowHeaderTableLayoutPanel.Margin = new System.Windows.Forms.Padding(0);
       this.rowHeaderTableLayoutPanel.Name = "rowHeaderTableLayoutPanel";
       this.rowHeaderTableLayoutPanel.RowCount = 2;
       this.rowHeaderTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
       this.rowHeaderTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-      this.rowHeaderTableLayoutPanel.Size = new System.Drawing.Size(34, 471);
+      this.rowHeaderTableLayoutPanel.Size = new System.Drawing.Size(40, 0);
       this.rowHeaderTableLayoutPanel.TabIndex = 2;
+      // 
+      // bodyScrollPanel
+      // 
+      this.bodyScrollPanel.AutoScroll = true;
+      this.bodyScrollPanel.Controls.Add(this.bodyTableLayoutPanel);
+      this.bodyScrollPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.bodyScrollPanel.Location = new System.Drawing.Point(40, 40);
+      this.bodyScrollPanel.Margin = new System.Windows.Forms.Padding(0);
+      this.bodyScrollPanel.Name = "bodyScrollPanel";
+      this.bodyScrollPanel.Size = new System.Drawing.Size(699, 477);
+      this.bodyScrollPanel.TabIndex = 5;
+      this.bodyScrollPanel.Scroll += new System.Windows.Forms.ScrollEventHandler(this.bodyScrollPanel_Scroll);
       // 
       // bodyTableLayoutPanel
       // 
+      this.bodyTableLayoutPanel.AutoSize = true;
+      this.bodyTableLayoutPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
       this.bodyTableLayoutPanel.ColumnCount = 2;
       this.bodyTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
       this.bodyTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-      this.bodyTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.bodyTableLayoutPanel.Location = new System.Drawing.Point(43, 43);
+      this.bodyTableLayoutPanel.Location = new System.Drawing.Point(0, 0);
+      this.bodyTableLayoutPanel.Margin = new System.Windows.Forms.Padding(0);
       this.bodyTableLayoutPanel.Name = "bodyTableLayoutPanel";
       this.bodyTableLayoutPanel.RowCount = 2;
       this.bodyTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
       this.bodyTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-      this.bodyTableLayoutPanel.Size = new System.Drawing.Size(693, 471);
+      this.bodyTableLayoutPanel.Size = new System.Drawing.Size(0, 0);
       this.bodyTableLayoutPanel.TabIndex = 0;
-      this.bodyTableLayoutPanel.Scroll += new System.Windows.Forms.ScrollEventHandler(this.bodyTableLayoutPanel_Scroll);
       // 
       // ScatterPlotMultiView
       // 
@@ -133,6 +178,12 @@ namespace HeuristicLab.DataPreprocessing.Views {
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();
       this.splitContainer.ResumeLayout(false);
       this.frameTableLayoutPanel.ResumeLayout(false);
+      this.columnHeaderScrollPanel.ResumeLayout(false);
+      this.columnHeaderScrollPanel.PerformLayout();
+      this.rowHeaderScrollPanel.ResumeLayout(false);
+      this.rowHeaderScrollPanel.PerformLayout();
+      this.bodyScrollPanel.ResumeLayout(false);
+      this.bodyScrollPanel.PerformLayout();
       this.ResumeLayout(false);
 
     }
@@ -143,5 +194,8 @@ namespace HeuristicLab.DataPreprocessing.Views {
     private System.Windows.Forms.TableLayoutPanel columnHeaderTableLayoutPanel;
     private System.Windows.Forms.TableLayoutPanel rowHeaderTableLayoutPanel;
     private System.Windows.Forms.TableLayoutPanel bodyTableLayoutPanel;
+    private System.Windows.Forms.Panel columnHeaderScrollPanel;
+    private System.Windows.Forms.Panel rowHeaderScrollPanel;
+    private System.Windows.Forms.Panel bodyScrollPanel;
   }
 }
