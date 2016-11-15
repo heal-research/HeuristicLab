@@ -72,6 +72,11 @@ namespace HeuristicLab.Problems.DataAnalysis {
       get { return InputVariables.CheckedItems.Select(x => x.Value.Value); }
     }
 
+    public double[,] AllowedInputsTrainingValues {
+      get { return Dataset.ToArray(AllowedInputVariables, TrainingIndices); }
+    }
+
+    public double[,] AllowedInputsTestValues { get { return Dataset.ToArray(AllowedInputVariables, TestIndices); } }
     public IntRange TrainingPartition {
       get { return TrainingPartitionParameter.Value; }
     }
