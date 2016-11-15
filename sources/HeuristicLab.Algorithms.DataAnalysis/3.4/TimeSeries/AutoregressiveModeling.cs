@@ -113,24 +113,12 @@ namespace HeuristicLab.Algorithms.DataAnalysis.TimeSeries {
 
       alglib.lrunpack(lm, out coefficients, out nFeatures);
 
-
-      ISymbolicExpressionTree tree = new SymbolicExpressionTree(new ProgramRootSymbol().CreateTreeNode());
-      ISymbolicExpressionTreeNode startNode = new StartSymbol().CreateTreeNode();
-      tree.Root.AddSubtree(startNode);
-      ISymbolicExpressionTreeNode addition = new Addition().CreateTreeNode();
-      startNode.AddSubtree(addition);
-
-      for (int i = 0; i < timeOffset; i++) {
-        LaggedVariableTreeNode node = (LaggedVariableTreeNode)new LaggedVariable().CreateTreeNode();
-        node.VariableName = targetVariable;
-        node.Weight = coefficients[i];
-        node.Lag = (i + 1) * -1;
-        addition.AddSubtree(node);
-      }
-
-      ConstantTreeNode cNode = (ConstantTreeNode)new Constant().CreateTreeNode();
-      cNode.Value = coefficients[coefficients.Length - 1];
-      addition.AddSubtree(cNode);
+      var tree = LinearModelToTreeConverter.CreateTree(
+        variableNames: Enumerable.Repeat(problemData.TargetVariable, nFeatures).ToArray(),
+        lags: Enumerable.Range(0, timeOffset).Select(i => (i + 1) * -1).ToArray(),
+        coefficients: coefficients.Take(nFeatures).ToArray(),
+        @const: coefficients[nFeatures]
+        );
 
       var interpreter = new SymbolicTimeSeriesPrognosisExpressionTreeInterpreter(problemData.TargetVariable);
       var model = new SymbolicTimeSeriesPrognosisModel(problemData.TargetVariable, tree, interpreter);

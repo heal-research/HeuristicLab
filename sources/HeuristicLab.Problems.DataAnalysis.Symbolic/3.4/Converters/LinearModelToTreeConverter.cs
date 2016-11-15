@@ -27,9 +27,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   public static class LinearModelToTreeConverter {
     public static ISymbolicExpressionTree CreateTree(string[] variableNames, double[] coefficients,
       double @const = 0) {
+      return CreateTree(variableNames, new int[variableNames.Length], coefficients, @const);
+    }
+
+    public static ISymbolicExpressionTree CreateTree(string[] variableNames, int[] lags, double[] coefficients,
+      double @const = 0) {
       if (variableNames.Length == 0 ||
-        variableNames.Length != coefficients.Length)
-        throw new ArgumentException("The length of the variable names and coefficients vectors must match");
+        variableNames.Length != coefficients.Length ||
+        variableNames.Length != lags.Length)
+        throw new ArgumentException("The length of the variable names, lags, and coefficients vectors must match");
+
       ISymbolicExpressionTree tree = new SymbolicExpressionTree(new ProgramRootSymbol().CreateTreeNode());
       ISymbolicExpressionTreeNode startNode = new StartSymbol().CreateTreeNode();
       tree.Root.AddSubtree(startNode);
@@ -37,10 +44,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       startNode.AddSubtree(addition);
 
       for (int i = 0; i < variableNames.Length; i++) {
-        VariableTreeNode vNode = (VariableTreeNode)new Variable().CreateTreeNode();
-        vNode.VariableName = variableNames[i];
-        vNode.Weight = coefficients[i];
-        addition.AddSubtree(vNode);
+        if (lags[i] == 0) {
+          VariableTreeNode vNode = (VariableTreeNode)new Variable().CreateTreeNode();
+          vNode.VariableName = variableNames[i];
+          vNode.Weight = coefficients[i];
+          addition.AddSubtree(vNode);
+        } else {
+          LaggedVariableTreeNode vNode = (LaggedVariableTreeNode)new LaggedVariable().CreateTreeNode();
+          vNode.VariableName = variableNames[i];
+          vNode.Weight = coefficients[i];
+          vNode.Lag = lags[i];
+          addition.AddSubtree(vNode);
+        }
       }
 
       if (!@const.IsAlmost(0.0)) {

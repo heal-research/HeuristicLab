@@ -47,5 +47,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       double @const = 0) {
       return LinearModelToTreeConverter.CreateTree(variableNames, coefficients, @const);
     }
+    public static ISymbolicExpressionTree CreateLinearModel(string[] variableNames, int[] lags, double[] coefficients,
+      double @const = 0) {
+      return LinearModelToTreeConverter.CreateTree(variableNames, coefficients, @const);
+    }
   }
 }
