@@ -70,7 +70,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     public override IEnumerable<double> Apply(IEnumerable<double> data) {
-      ConfigureParameters(data);
       if (OriginalStandardDeviation.IsAlmost(0.0)) {
         return data;
       }
@@ -93,7 +92,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       return true;
     }
 
-    protected void ConfigureParameters(IEnumerable<double> data) {
+    public override void ConfigureParameters(IEnumerable<double> data) {
       OriginalStandardDeviation = data.StandardDeviation();
       OriginalMean = data.Average();
     }

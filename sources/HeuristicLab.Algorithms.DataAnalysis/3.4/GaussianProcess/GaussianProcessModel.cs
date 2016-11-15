@@ -164,8 +164,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       sqrSigmaNoise = Math.Exp(2.0 * hyp.Last());
       try {
         CalculateModel(ds, rows, scaleInputs);
-      }
-      catch (alglib.alglibexception ae) {
+      } catch (alglib.alglibexception ae) {
         // wrap exception so that calling code doesn't have to know about alglib implementation
         throw new ArgumentException("There was a problem in the calculation of the Gaussian process model", ae);
       }
@@ -259,9 +258,20 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     private static double[,] GetData(IDataset ds, IEnumerable<string> allowedInputs, IEnumerable<int> rows, Scaling scaling) {
       if (scaling != null) {
-        return AlglibUtil.PrepareAndScaleInputMatrix(ds, allowedInputs, rows, scaling);
+        // TODO: completely remove Scaling class
+        List<ITransformation<double>> transformations = new List<ITransformation<double>>();
+
+        foreach (var varName in allowedInputs) {
+          double min;
+          double max;
+          scaling.GetScalingParameters(varName, out min, out max);
+          var add = -min / (max - min);
+          var mult = 1.0 / (max - min);
+          transformations.Add(new LinearTransformation(allowedInputs) { Addend = add, Multiplier = mult });
+        }
+        return ds.ToArray(allowedInputs, transformations, rows);
       } else {
-        return AlglibUtil.PrepareInputMatrix(ds, allowedInputs, rows);
+        return ds.ToArray(allowedInputs, rows);
       }
     }
 
@@ -333,8 +343,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
         return Enumerable.Range(0, newN)
           .Select(i => ms[i] + Util.ScalarProd(Ks[i], alpha));
-      }
-      catch (alglib.alglibexception ae) {
+      } catch (alglib.alglibexception ae) {
         // wrap exception so that calling code doesn't have to know about alglib implementation
         throw new ArgumentException("There was a problem in the calculation of the Gaussian process model", ae);
       }
@@ -380,8 +389,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
           if (kss[i] < 0) kss[i] = 0;
         }
         return kss;
-      }
-      catch (alglib.alglibexception ae) {
+      } catch (alglib.alglibexception ae) {
         // wrap exception so that calling code doesn't have to know about alglib implementation
         throw new ArgumentException("There was a problem in the calculation of the Gaussian process model", ae);
       }

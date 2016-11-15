@@ -132,6 +132,13 @@ namespace HeuristicLab.Common {
         }
       }
     }
+    public static IEnumerable<T> TakeEvery<T>(this IEnumerable<T> xs, int nth) {
+      int i = 0;
+      foreach (var x in xs) {
+        if (i % nth == 0) yield return x;
+        i++;
+      }
+    }
 
     /// <summary>
     /// This function gets the total number of unique combinations based upon N and K,

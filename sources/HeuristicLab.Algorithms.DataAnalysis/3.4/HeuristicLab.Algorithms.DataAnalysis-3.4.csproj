@@ -243,8 +243,6 @@
     <Compile Include="kMeans\KMeansClusteringUtil.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Linear\AlglibUtil.cs" />
-    <Compile Include="Linear\Scaling.cs" />
     <Compile Include="Linear\LinearDiscriminantAnalysis.cs" />
     <Compile Include="Linear\LinearRegression.cs">
       <SubType>Code</SubType>
@@ -252,6 +250,7 @@
     <Compile Include="Linear\MultinomialLogitClassification.cs" />
     <Compile Include="Linear\MultinomialLogitClassificationSolution.cs" />
     <Compile Include="Linear\MultinomialLogitModel.cs" />
+    <Compile Include="Linear\Scaling.cs" />
     <Compile Include="MctsSymbolicRegression\Automaton.cs" />
     <Compile Include="MctsSymbolicRegression\CodeGenerator.cs" />
     <Compile Include="MctsSymbolicRegression\ConstraintHandler.cs" />
