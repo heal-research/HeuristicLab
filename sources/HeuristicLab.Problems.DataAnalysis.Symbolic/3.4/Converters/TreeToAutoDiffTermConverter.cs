@@ -26,7 +26,7 @@ using AutoDiff;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
-  public class TreeToAutoDiffTermTransformator {
+  public class TreeToAutoDiffTermConverter {
     public delegate double ParametricFunction(double[] vars, double[] @params);
     public delegate Tuple<double[], double> ParametricFunctionGradient(double[] vars, double[] @params);
 
@@ -59,7 +59,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       out ParametricFunctionGradient func_grad) {
 
       // use a transformator object which holds the state (variable list, parameter list, ...) for recursive transformation of the tree
-      var transformator = new TreeToAutoDiffTermTransformator(makeVariableWeightsVariable);
+      var transformator = new TreeToAutoDiffTermConverter(makeVariableWeightsVariable);
       AutoDiff.Term term;
       var success = transformator.TryTransformToAutoDiff(tree.Root.GetSubtree(0), out term);
       if (success) {
@@ -87,7 +87,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private readonly List<AutoDiff.Variable> variables;
     private readonly bool makeVariableWeightsVariable;
 
-    private TreeToAutoDiffTermTransformator(bool makeVariableWeightsVariable) {
+    private TreeToAutoDiffTermConverter(bool makeVariableWeightsVariable) {
       this.makeVariableWeightsVariable = makeVariableWeightsVariable;
       this.variableNames = new List<string>();
       this.lags = new List<int>();

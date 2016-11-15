@@ -80,7 +80,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       alglib.lrreport ar = new alglib.lrreport();
       int nRows = inputMatrix.GetLength(0);
       int nFeatures = inputMatrix.GetLength(1) - 1;
-      double[] coefficients = new double[nFeatures + 1]; // last coefficient is for the constant
+      double[] coefficients;
 
       int retVal = 1;
       alglib.lrbuild(inputMatrix, nRows, nFeatures, out retVal, out lm, out ar);
@@ -90,24 +90,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
       alglib.lrunpack(lm, out coefficients, out nFeatures);
 
-      ISymbolicExpressionTree tree = new SymbolicExpressionTree(new ProgramRootSymbol().CreateTreeNode());
-      ISymbolicExpressionTreeNode startNode = new StartSymbol().CreateTreeNode();
-      tree.Root.AddSubtree(startNode);
-      ISymbolicExpressionTreeNode addition = new Addition().CreateTreeNode();
-      startNode.AddSubtree(addition);
-
-      int col = 0;
-      foreach (string column in allowedInputVariables) {
-        VariableTreeNode vNode = (VariableTreeNode)new HeuristicLab.Problems.DataAnalysis.Symbolic.Variable().CreateTreeNode();
-        vNode.VariableName = column;
-        vNode.Weight = coefficients[col];
-        addition.AddSubtree(vNode);
-        col++;
-      }
-
-      ConstantTreeNode cNode = (ConstantTreeNode)new Constant().CreateTreeNode();
-      cNode.Value = coefficients[coefficients.Length - 1];
-      addition.AddSubtree(cNode);
+      var tree = LinearModelToTreeConverter.CreateTree(allowedInputVariables.ToArray(),
+        coefficients.Take(nFeatures).ToArray(), @const: coefficients[nFeatures]);
 
       SymbolicRegressionSolution solution = new SymbolicRegressionSolution(new SymbolicRegressionModel(problemData.TargetVariable, tree, new SymbolicDataAnalysisExpressionTreeInterpreter()), (IRegressionProblemData)problemData.Clone());
       solution.Model.Name = "Linear Regression Model";

@@ -157,9 +157,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       int[] lags;
       double[] constants;
 
-      TreeToAutoDiffTermTransformator.ParametricFunction func;
-      TreeToAutoDiffTermTransformator.ParametricFunctionGradient func_grad;
-      if (!TreeToAutoDiffTermTransformator.TryTransformToAutoDiff(tree, updateVariableWeights, out variableNames, out lags, out constants, out func, out func_grad))
+      TreeToAutoDiffTermConverter.ParametricFunction func;
+      TreeToAutoDiffTermConverter.ParametricFunctionGradient func_grad;
+      if (!TreeToAutoDiffTermConverter.TryTransformToAutoDiff(tree, updateVariableWeights, out variableNames, out lags, out constants, out func, out func_grad))
         throw new NotSupportedException("Could not optimize constants of symbolic expression tree due to not supported symbols used in the tree.");
       if (variableNames.Length == 0) return 0.0;
 
@@ -230,13 +230,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       }
     }
 
-    private static alglib.ndimensional_pfunc CreatePFunc(TreeToAutoDiffTermTransformator.ParametricFunction func) {
+    private static alglib.ndimensional_pfunc CreatePFunc(TreeToAutoDiffTermConverter.ParametricFunction func) {
       return (double[] c, double[] x, ref double fx, object o) => {
         fx = func(c, x);
       };
     }
 
-    private static alglib.ndimensional_pgrad CreatePGrad(TreeToAutoDiffTermTransformator.ParametricFunctionGradient func_grad) {
+    private static alglib.ndimensional_pgrad CreatePGrad(TreeToAutoDiffTermConverter.ParametricFunctionGradient func_grad) {
       return (double[] c, double[] x, ref double fx, double[] grad, object o) => {
         var tupel = func_grad(c, x);
         fx = tupel.Item2;
@@ -245,7 +245,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     }
 
     public static bool CanOptimizeConstants(ISymbolicExpressionTree tree) {
-      return TreeToAutoDiffTermTransformator.IsCompatible(tree);
+      return TreeToAutoDiffTermConverter.IsCompatible(tree);
     }
   }
 }

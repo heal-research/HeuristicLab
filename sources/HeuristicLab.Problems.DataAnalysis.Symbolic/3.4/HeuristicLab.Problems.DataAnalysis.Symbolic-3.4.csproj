@@ -136,6 +136,10 @@
     <Compile Include="Analyzers\SymbolicDataAnalysisSingleObjectiveTrainingBestSolutionAnalyzer.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Converters\Convert.cs" />
+    <Compile Include="Converters\LinearModelToTreeConverter.cs" />
+    <Compile Include="Converters\TreeSimplifier.cs" />
+    <Compile Include="Converters\TreeToAutoDiffTermConverter.cs" />
     <Compile Include="Formatters\InfixExpressionFormatter.cs" />
     <Compile Include="Formatters\SymbolicDataAnalysisExpressionMathematicaFormatter.cs" />
     <Compile Include="Formatters\SymbolicDataAnalysisExpressionCSharpFormatter.cs" />
@@ -241,10 +245,8 @@
     <Compile Include="Symbols\VariableCondition.cs" />
     <Compile Include="Symbols\VariableConditionTreeNode.cs" />
     <Compile Include="Symbols\VariableTreeNode.cs" />
-    <Compile Include="Transformation\SymbolicDataAnalysisExpressionTreeSimplifier.cs" />
-    <Compile Include="Transformation\SymbolicExpressionTreeBacktransformator.cs" />
-    <Compile Include="Transformation\TreeToAutoDiffTermTransformator.cs" />
-    <Compile Include="Transformation\TransformationToSymbolicTreeMapper.cs" />
+    <Compile Include="Transformations\SymbolicExpressionTreeBacktransformator.cs" />
+    <Compile Include="Transformations\TransformationToSymbolicTreeMapper.cs" />
     <Compile Include="TreeMatching\SymbolicExpressionTreeBottomUpSimilarityCalculator.cs" />
     <Compile Include="TreeMatching\SymbolicExpressionTreeCanonicalSorter.cs" />
     <Compile Include="TreeMatching\SymbolicExpressionTreeEqualityComparer.cs" />

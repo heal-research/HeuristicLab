@@ -52,8 +52,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
 
       //check inputVariables used in the symbolic regression model
       var usedVariables =
-        Content.Model.SymbolicExpressionTree.IterateNodesPostfix().OfType<VariableTreeNode>().Select(
-          node => node.VariableName).Distinct();
+        Content.Model.VariablesUsedForPrediction;
       foreach (var variable in usedVariables) {
         problemData.InputVariables.SetItemCheckedState(
           problemData.InputVariables.First(x => x.Value == variable), true);
