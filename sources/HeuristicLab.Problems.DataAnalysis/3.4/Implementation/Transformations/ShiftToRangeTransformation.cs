@@ -43,12 +43,17 @@ namespace HeuristicLab.Problems.DataAnalysis {
       return new ShiftToRangeTransformation(this, cloner);
     }
 
+    public override IEnumerable<double> Apply(IEnumerable<double> data) {
+      ConfigureParameters(data);
+      return base.Apply(data);
+    }
+
     public override bool Check(IEnumerable<double> data, out string errorMsg) {
       ConfigureParameters(data);
       return base.Check(data, out errorMsg);
     }
 
-    public override void ConfigureParameters(IEnumerable<double> data) {
+    protected void ConfigureParameters(IEnumerable<double> data) {
       double originalRangeStart = data.Min();
       double originalRangeEnd = data.Max();
 

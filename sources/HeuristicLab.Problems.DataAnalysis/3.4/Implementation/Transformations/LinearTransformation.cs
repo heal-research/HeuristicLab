@@ -51,14 +51,14 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
     public double Multiplier {
       get { return MultiplierParameter.Value.Value; }
-      set {
+      protected set {
         MultiplierParameter.Value.Value = value;
       }
     }
 
     public double Addend {
       get { return AddendParameter.Value.Value; }
-      set {
+      protected set {
         AddendParameter.Value.Value = value;
       }
     }

@@ -98,8 +98,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         NcaMatrixGradientsParameter.ActualValue = gradients;
       }
 
-      var data = problemData.Dataset.ToArray(problemData.AllowedInputVariables,
-                                             problemData.TrainingIndices);
+      var data = AlglibUtil.PrepareInputMatrix(problemData.Dataset, problemData.AllowedInputVariables,
+                                               problemData.TrainingIndices);
       var classes = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, problemData.TrainingIndices).ToArray();
 
       var quality = Gradient(vector, gradients, data, classes, dimensions, neighborSamples, regularization);

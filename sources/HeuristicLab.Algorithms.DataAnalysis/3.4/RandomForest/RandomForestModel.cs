@@ -138,7 +138,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     public IEnumerable<double> GetEstimatedValues(IDataset dataset, IEnumerable<int> rows) {
-      double[,] inputData = dataset.ToArray(AllowedInputVariables, rows);
+      double[,] inputData = AlglibUtil.PrepareInputMatrix(dataset, AllowedInputVariables, rows);
       AssertInputMatrix(inputData);
 
       int n = inputData.GetLength(0);
@@ -156,7 +156,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     public IEnumerable<double> GetEstimatedVariances(IDataset dataset, IEnumerable<int> rows) {
-      double[,] inputData = dataset.ToArray(AllowedInputVariables, rows);
+      double[,] inputData = AlglibUtil.PrepareInputMatrix(dataset, AllowedInputVariables, rows);
       AssertInputMatrix(inputData);
 
       int n = inputData.GetLength(0);
@@ -174,7 +174,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     public override IEnumerable<double> GetEstimatedClassValues(IDataset dataset, IEnumerable<int> rows) {
-      double[,] inputData = dataset.ToArray(AllowedInputVariables, rows);
+      double[,] inputData = AlglibUtil.PrepareInputMatrix(dataset, AllowedInputVariables, rows);
       AssertInputMatrix(inputData);
 
       int n = inputData.GetLength(0);
@@ -293,7 +293,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public static RandomForestModel CreateRegressionModel(IRegressionProblemData problemData, IEnumerable<int> trainingIndices, int nTrees, double r, double m, int seed,
       out double rmsError, out double outOfBagRmsError, out double avgRelError, out double outOfBagAvgRelError) {
       var variables = problemData.AllowedInputVariables.Concat(new string[] { problemData.TargetVariable });
-      double[,] inputMatrix = problemData.Dataset.ToArray(variables, trainingIndices);
+      double[,] inputMatrix = AlglibUtil.PrepareInputMatrix(problemData.Dataset, variables, trainingIndices);
 
       alglib.dfreport rep;
       var dForest = CreateRandomForestModel(seed, inputMatrix, nTrees, r, m, 1, out rep);
@@ -315,7 +315,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       out double rmsError, out double outOfBagRmsError, out double relClassificationError, out double outOfBagRelClassificationError) {
 
       var variables = problemData.AllowedInputVariables.Concat(new string[] { problemData.TargetVariable });
-      double[,] inputMatrix = problemData.Dataset.ToArray(variables, trainingIndices);
+      double[,] inputMatrix = AlglibUtil.PrepareInputMatrix(problemData.Dataset, variables, trainingIndices);
 
       var classValues = problemData.ClassValues.ToArray();
       int nClasses = classValues.Length;

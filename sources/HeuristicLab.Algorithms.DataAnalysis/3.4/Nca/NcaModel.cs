@@ -85,7 +85,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     public double[,] Reduce(IDataset dataset, IEnumerable<int> rows) {
-      var data = dataset.ToArray(allowedInputVariables, rows);
+      var data = AlglibUtil.PrepareInputMatrix(dataset, allowedInputVariables, rows);
 
       var targets = dataset.GetDoubleValues(TargetVariable, rows).ToArray();
       var result = new double[data.GetLength(0), transformationMatrix.GetLength(1) + 1];

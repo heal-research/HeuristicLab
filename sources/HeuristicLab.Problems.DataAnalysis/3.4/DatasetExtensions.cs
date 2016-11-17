@@ -19,38 +19,16 @@
  */
 #endregion
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace HeuristicLab.Problems.DataAnalysis {
   public static class DatasetExtensions {
-    public static double[,] ToArray(this IDataset dataset, IEnumerable<string> variables, IEnumerable<int> rows) {
-      return ToArray(dataset,
-        variables,
-        transformations: variables.Select(_ => (ITransformation<double>)null),  // no transform
-        rows: rows);
-    }
-    public static double[,] ToArray(this IDataset dataset, IEnumerable<string> variables, IEnumerable<ITransformation<double>> transformations, IEnumerable<int> rows) {
-      string[] variablesArr = variables.ToArray();
-      int[] rowsArr = rows.ToArray();
-      ITransformation<double>[] transformArr = transformations.ToArray();
-      if (transformArr.Length != variablesArr.Length)
-        throw new ArgumentException("Number of variables and number of transformations must match.");
-
-      double[,] matrix = new double[rowsArr.Length, variablesArr.Length];
-
-      for (int i = 0; i < variablesArr.Length; i++) {
-        var origValues = dataset.GetDoubleValues(variablesArr[i], rowsArr);
-        var values = transformArr[i] != null ? transformArr[i].Apply(origValues) : origValues;
-        int row = 0;
-        foreach (var value in values) {
-          matrix[row, i] = value;
-          row++;
-        }
+    public static IEnumerable<T> TakeEvery<T>(this IEnumerable<T> xs, int nth) {
+      int i = 0;
+      foreach (var x in xs) {
+        if (i % nth == 0) yield return x;
+        i++;
       }
-
-      return matrix;
     }
   }
 }

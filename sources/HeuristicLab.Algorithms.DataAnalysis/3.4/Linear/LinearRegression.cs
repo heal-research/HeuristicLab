@@ -72,7 +72,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       string targetVariable = problemData.TargetVariable;
       IEnumerable<string> allowedInputVariables = problemData.AllowedInputVariables;
       IEnumerable<int> rows = problemData.TrainingIndices;
-      double[,] inputMatrix = dataset.ToArray(allowedInputVariables.Concat(new string[] { targetVariable }), rows);
+      double[,] inputMatrix = AlglibUtil.PrepareInputMatrix(dataset, allowedInputVariables.Concat(new string[] { targetVariable }), rows);
       if (inputMatrix.Cast<double>().Any(x => double.IsNaN(x) || double.IsInfinity(x)))
         throw new NotSupportedException("Linear regression does not support NaN or infinity values in the input dataset.");
 
@@ -80,7 +80,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       alglib.lrreport ar = new alglib.lrreport();
       int nRows = inputMatrix.GetLength(0);
       int nFeatures = inputMatrix.GetLength(1) - 1;
-      double[] coefficients;
+      double[] coefficients = new double[nFeatures + 1]; // last coefficient is for the constant
 
       int retVal = 1;
       alglib.lrbuild(inputMatrix, nRows, nFeatures, out retVal, out lm, out ar);
@@ -90,8 +90,24 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
       alglib.lrunpack(lm, out coefficients, out nFeatures);
 
-      var tree = LinearModelToTreeConverter.CreateTree(allowedInputVariables.ToArray(),
-        coefficients.Take(nFeatures).ToArray(), @const: coefficients[nFeatures]);
+      ISymbolicExpressionTree tree = new SymbolicExpressionTree(new ProgramRootSymbol().CreateTreeNode());
+      ISymbolicExpressionTreeNode startNode = new StartSymbol().CreateTreeNode();
+      tree.Root.AddSubtree(startNode);
+      ISymbolicExpressionTreeNode addition = new Addition().CreateTreeNode();
+      startNode.AddSubtree(addition);
+
+      int col = 0;
+      foreach (string column in allowedInputVariables) {
+        VariableTreeNode vNode = (VariableTreeNode)new HeuristicLab.Problems.DataAnalysis.Symbolic.Variable().CreateTreeNode();
+        vNode.VariableName = column;
+        vNode.Weight = coefficients[col];
+        addition.AddSubtree(vNode);
+        col++;
+      }
+
+      ConstantTreeNode cNode = (ConstantTreeNode)new Constant().CreateTreeNode();
+      cNode.Value = coefficients[coefficients.Length - 1];
+      addition.AddSubtree(cNode);
 
       SymbolicRegressionSolution solution = new SymbolicRegressionSolution(new SymbolicRegressionModel(problemData.TargetVariable, tree, new SymbolicDataAnalysisExpressionTreeInterpreter()), (IRegressionProblemData)problemData.Clone());
       solution.Model.Name = "Linear Regression Model";

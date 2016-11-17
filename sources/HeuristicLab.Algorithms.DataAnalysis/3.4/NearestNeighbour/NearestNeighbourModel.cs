@@ -118,7 +118,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       double[,] inputMatrix;
       if (IsCompatibilityLoaded) {
         // no scaling
-        inputMatrix = dataset.ToArray(
+        inputMatrix = AlglibUtil.PrepareInputMatrix(dataset,
           this.allowedInputVariables.Concat(new string[] { targetVariable }),
           rows);
       } else {
@@ -166,11 +166,17 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     private static double[,] CreateScaledData(IDataset dataset, IEnumerable<string> variables, IEnumerable<int> rows, double[] offsets, double[] factors) {
-      var transforms =
-        variables.Select(
-          (_, colIdx) =>
-            new LinearTransformation(variables) { Addend = offsets[colIdx] * factors[colIdx], Multiplier = factors[colIdx] });
-      return dataset.ToArray(variables, transforms, rows);
+      var x = new double[rows.Count(), variables.Count()];
+      var colIdx = 0;
+      foreach (var variableName in variables) {
+        var rowIdx = 0;
+        foreach (var val in dataset.GetDoubleValues(variableName, rows)) {
+          x[rowIdx, colIdx] = (val + offsets[colIdx]) * factors[colIdx];
+          rowIdx++;
+        }
+        colIdx++;
+      }
+      return x;
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -180,7 +186,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public IEnumerable<double> GetEstimatedValues(IDataset dataset, IEnumerable<int> rows) {
       double[,] inputData;
       if (IsCompatibilityLoaded) {
-        inputData = dataset.ToArray(allowedInputVariables, rows);
+        inputData = AlglibUtil.PrepareInputMatrix(dataset, allowedInputVariables, rows);
       } else {
         inputData = CreateScaledData(dataset, allowedInputVariables, rows, offsets, weights);
       }
@@ -216,7 +222,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       if (classValues == null) throw new InvalidOperationException("No class values are defined.");
       double[,] inputData;
       if (IsCompatibilityLoaded) {
-        inputData = dataset.ToArray(allowedInputVariables, rows);
+        inputData = AlglibUtil.PrepareInputMatrix(dataset, allowedInputVariables, rows);
       } else {
         inputData = CreateScaledData(dataset, allowedInputVariables, rows, offsets, weights);
       }

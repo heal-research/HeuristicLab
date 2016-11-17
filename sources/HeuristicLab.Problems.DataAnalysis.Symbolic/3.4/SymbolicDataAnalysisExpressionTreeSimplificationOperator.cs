@@ -36,7 +36,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       get { return (ILookupParameter<ISymbolicExpressionTree>)Parameters[SymbolicExpressionTreeParameterName]; }
     }
 
-    private readonly TreeSimplifier simplifier = new TreeSimplifier();
+    private readonly SymbolicDataAnalysisExpressionTreeSimplifier simplifier = new SymbolicDataAnalysisExpressionTreeSimplifier();
 
     [StorableConstructor]
     protected SymbolicDataAnalysisExpressionTreeSimplificationOperator(bool deserializing) : base(deserializing) { }

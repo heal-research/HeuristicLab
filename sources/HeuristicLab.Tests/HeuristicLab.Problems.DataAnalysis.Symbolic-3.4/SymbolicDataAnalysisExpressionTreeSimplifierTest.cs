@@ -35,7 +35,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
     [TestProperty("Time", "short")]
     public void SimplifierAxiomsTest() {
       SymbolicExpressionImporter importer = new SymbolicExpressionImporter();
-      TreeSimplifier simplifier = new TreeSimplifier();
+      SymbolicDataAnalysisExpressionTreeSimplifier simplifier = new SymbolicDataAnalysisExpressionTreeSimplifier();
       SymbolicExpressionTreeStringFormatter formatter = new SymbolicExpressionTreeStringFormatter();
       #region single argument arithmetics
       {

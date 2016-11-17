@@ -29,7 +29,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   /// <summary>
   /// Simplifier for symbolic expressions
   /// </summary>
-  public class TreeSimplifier {
+  public class SymbolicDataAnalysisExpressionTreeSimplifier {
     private Addition addSymbol = new Addition();
     private Subtraction subSymbol = new Subtraction();
     private Multiplication mulSymbol = new Multiplication();
@@ -715,8 +715,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       if (IsConstant(a) && IsConstant(b)) {
         // fold constants
         return MakeConstant(((ConstantTreeNode)a).Value / ((ConstantTreeNode)b).Value);
-      }
-      if (IsConstant(a) && !((ConstantTreeNode)a).Value.IsAlmost(1.0)) {
+      } if (IsConstant(a) && !((ConstantTreeNode)a).Value.IsAlmost(1.0)) {
         return MakeFraction(MakeConstant(1.0), MakeProduct(b, Invert(a)));
       } else if (IsVariable(a) && IsConstant(b)) {
         // merge constant values into variable weights
