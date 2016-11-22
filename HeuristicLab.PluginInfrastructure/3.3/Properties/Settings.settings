@@ -1,0 +1,30 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="HeuristicLab.PluginInfrastructure.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="UpdateLocationUserName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">anonymous</Value>
+    </Setting>
+    <Setting Name="UpdateLocationPassword" Type="System.String" Scope="User">
+      <Value Profile="(Default)">GetTheLab!</Value>
+    </Setting>
+    <Setting Name="ShowPluginUploadControls" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="UpdateLocation" Type="System.String" Scope="User">
+      <Value Profile="(Default)">http://services.heuristiclab.com/Deployment-3.3/UpdateService.svc</Value>
+    </Setting>
+    <Setting Name="UpdateLocationAdministrationAddress" Type="System.String" Scope="User">
+      <Value Profile="(Default)">http://services.heuristiclab.com/Deployment-3.3/AdminService.svc</Value>
+    </Setting>
+    <Setting Name="StarterFormLocation" Type="System.Drawing.Point" Scope="User">
+      <Value Profile="(Default)">0, 0</Value>
+    </Setting>
+    <Setting Name="StarterFormSize" Type="System.Drawing.Size" Scope="User">
+      <Value Profile="(Default)">0, 0</Value>
+    </Setting>
+    <Setting Name="StarterFormWindowState" Type="System.Windows.Forms.FormWindowState" Scope="User">
+      <Value Profile="(Default)">Normal</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

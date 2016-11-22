@@ -1,0 +1,14 @@
+delete from [HeuristicLab.OKB].[dbo].ProblemUser;
+delete from [HeuristicLab.OKB].[dbo].AlgorithmUser;
+delete from [HeuristicLab.OKB].[dbo].Problem;
+delete from [HeuristicLab.OKB].[dbo].ProblemClass;
+delete from [HeuristicLab.OKB].[dbo].Algorithm;
+delete from [HeuristicLab.OKB].[dbo].AlgorithmClass;
+delete from [HeuristicLab.OKB].[dbo].Platform;
+delete from [HeuristicLab.OKB].[dbo].ValueName;
+delete from [HeuristicLab.OKB].[dbo].Value;
+delete from [HeuristicLab.OKB].[dbo].DataType;
+delete from [HeuristicLab.OKB].[dbo].Run;
+delete from [HeuristicLab.OKB].[dbo].BinaryData;
+delete from [HeuristicLab.OKB].[dbo].Characteristic;
+delete from [HeuristicLab.OKB].[dbo].CharacteristicValue;

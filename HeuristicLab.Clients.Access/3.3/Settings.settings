@@ -1,0 +1,12 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="HeuristicLab.Clients.Access" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="HLExeName" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">HeuristicLab 3.3</Value>
+    </Setting>
+    <Setting Name="ClientTypeName" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">HLClient</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
