@@ -27,7 +27,6 @@ using System.Diagnostics.Contracts;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.Text;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
@@ -558,7 +557,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
                 type = TokenTypeEnum.Double;
                 doubleVals[i] = doubleVal;
               } else if (DateTime.TryParse(tok, dateTimeFormatInfo, DateTimeStyles.NoCurrentDateDefault, out dateTimeValue)
-                && dateTimeValue.Year > 1 && dateTimeValue.Month > 1 && dateTimeValue.Day > 1 // if no date is given it is returned as 1.1.0001 -> don't allow this
+                && (dateTimeValue.Year > 1 || dateTimeValue.Month > 1 || dateTimeValue.Day > 1)// if no date is given it is returned as 1.1.0001 -> don't allow this
                 ) {
                 type = TokenTypeEnum.DateTime;
                 dateTimeVals[i] = dateTimeValue;
