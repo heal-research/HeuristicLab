@@ -60,6 +60,15 @@ namespace HeuristicLab.DataPreprocessing.Views {
       if (Content != null) {
         InitData();
         GenerateChart();
+
+        foreach (var row in dataRows) {
+          string variableName = row.Name;
+          if (!IsVariableChecked(variableName)) {
+            dataTableView.SetRowEnabled(variableName, false);
+            dataTable.SelectedRows.Remove(variableName);
+            dataTablePerVariable.Remove(dataTablePerVariable.Find(x => (x.Name == variableName)));
+          }
+        }
       }
     }
 
@@ -70,19 +79,16 @@ namespace HeuristicLab.DataPreprocessing.Views {
       dataTablePerVariable = new List<PreprocessingDataTable>();
 
       //add data rows to data tables according to checked item list
-      foreach (var checkedItem in Content.VariableItemList.CheckedItems) {
-        string variableName = Content.VariableItemList[checkedItem.Index].Value;
+      foreach (var row in dataRows) {
+        string variableName = row.Name;
+
+        //add row to data table
+        dataTable.Rows.Add(row);
+
+        //add row to data table per variable
         PreprocessingDataTable d = new PreprocessingDataTable(variableName);
-        DataRow row = GetDataRow(variableName);
-
-        if (row != null) {
-          //add row to data table
-          dataTable.Rows.Add(row);
-
-          //add row to data table per variable
-          d.Rows.Add(row);
-          dataTablePerVariable.Add(d);
-        }
+        d.Rows.Add(row);
+        dataTablePerVariable.Add(d);
       }
 
       UpdateSelection();
@@ -94,12 +100,14 @@ namespace HeuristicLab.DataPreprocessing.Views {
       foreach (IndexedItem<StringValue> item in checkedItems.Items) {
         string variableName = item.Value.Value;
 
-        // not checked -> remove
+
         if (!IsVariableChecked(variableName)) {
+          // not checked -> remove
           dataTableView.SetRowEnabled(variableName, false);
           dataTable.SelectedRows.Remove(variableName);
           dataTablePerVariable.Remove(dataTablePerVariable.Find(x => (x.Name == variableName)));
         } else {
+          // checked -> add
           DataRow row = GetDataRow(variableName);
           DataRow selectedRow = GetSelectedDataRow(variableName);
           dataTableView.SetRowEnabled(variableName, true);

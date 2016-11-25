@@ -55,10 +55,13 @@ namespace HeuristicLab.DataPreprocessing.Views {
       if (Content == null) return;
 
       if (Content.VariableItemList == null) {
-        Content.VariableItemList = Content.CreateVariableItemList();
+        IList<string> inputs = Content.PreprocessingData.InputVariables;
+        if (Content.PreprocessingData.TargetVariable != null)
+          inputs = inputs.Union(new[] {Content.PreprocessingData.TargetVariable}).ToList();
+        Content.VariableItemList = Content.CreateVariableItemList(inputs);
       } else {
         var checkedNames = Content.VariableItemList.CheckedItems.Select(x => x.Value.Value);
-        Content.VariableItemList = Content.CreateVariableItemList(checkedNames);
+        Content.VariableItemList = Content.CreateVariableItemList(checkedNames.ToList());
       }
       Content.VariableItemList.CheckedItemsChanged += CheckedItemsChanged;
 
