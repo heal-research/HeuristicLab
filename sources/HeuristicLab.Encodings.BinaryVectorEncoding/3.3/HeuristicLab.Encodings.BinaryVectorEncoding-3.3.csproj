@@ -125,6 +125,7 @@
     <Compile Include="Crossovers\SinglePointCrossover.cs" />
     <Compile Include="Crossovers\NPointCrossover.cs" />
     <Compile Include="BinaryVector.cs" />
+    <Compile Include="HammingSimilarityCalculator.cs" />
     <Compile Include="Interfaces\IBinaryVectorMultiNeighborhoodShakingOperator.cs" />
     <Compile Include="Interfaces\IOneBitflipMoveOperator.cs" />
     <Compile Include="Interfaces\IBinaryVectorCreator.cs" />
