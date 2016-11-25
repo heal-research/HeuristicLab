@@ -22,29 +22,24 @@
 using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Encodings.BinaryVectorEncoding;
 using HeuristicLab.Optimization.Operators;
-using HeuristicLab.PluginInfrastructure;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Problems.Knapsack {
-  /// <summary>
-  /// An operator that performs similarity calculation between two knapsack solutions.
-  /// </summary>
-  /// <remarks>
-  /// The operator calculates the similarity based on the number of elements the two solutions have in common.
-  /// </remarks>
-  [Item("KnapsackSimilarityCalculator", "An operator that performs similarity calculation between two knapsack solutions. The operator calculates the similarity based on the number of elements the two solutions have in common.")]
-  [NonDiscoverableType]
-  [Obsolete("Please use the HammingSimilarityCalculator in the HeuristicLab.Encodings.BinaryVector plugin.")]
-  internal sealed class KnapsackSimilarityCalculator : SingleObjectiveSolutionSimilarityCalculator {
-    protected override bool IsCommutative { get { return true; } }
+namespace HeuristicLab.Encodings.BinaryVectorEncoding {
+  [Item("Hamming Similarity Calculator for BinaryVector", "Calculates the solution similarity based on the Hamming distance between two binary vectors.")]
+  [StorableClass]
+  public sealed class HammingSimilarityCalculator : SingleObjectiveSolutionSimilarityCalculator {
+    protected override bool IsCommutative {
+      get { return true; }
+    }
 
-    private KnapsackSimilarityCalculator(bool deserializing) : base(deserializing) { }
-    private KnapsackSimilarityCalculator(KnapsackSimilarityCalculator original, Cloner cloner) : base(original, cloner) { }
-    public KnapsackSimilarityCalculator() : base() { }
+    [StorableConstructor]
+    private HammingSimilarityCalculator(bool deserializing) : base(deserializing) { }
+    private HammingSimilarityCalculator(HammingSimilarityCalculator original, Cloner cloner) : base(original, cloner) { }
+    public HammingSimilarityCalculator() { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new KnapsackSimilarityCalculator(this, cloner);
+      return new HammingSimilarityCalculator(this, cloner);
     }
 
     public static double CalculateSimilarity(BinaryVector left, BinaryVector right) {
@@ -58,13 +53,14 @@ namespace HeuristicLab.Problems.Knapsack {
       for (int i = 0; i < left.Length; i++)
         if (left[i] == right[i]) similarity++;
       return similarity / left.Length;
+
     }
 
     public override double CalculateSolutionSimilarity(IScope leftSolution, IScope rightSolution) {
-      var sol1 = leftSolution.Variables[SolutionVariableName].Value as BinaryVector;
-      var sol2 = rightSolution.Variables[SolutionVariableName].Value as BinaryVector;
+      var left = leftSolution.Variables[SolutionVariableName].Value as BinaryVector;
+      var right = rightSolution.Variables[SolutionVariableName].Value as BinaryVector;
 
-      return CalculateSimilarity(sol1, sol2);
+      return CalculateSimilarity(left, right);
     }
   }
 }
