@@ -31,8 +31,8 @@ namespace HeuristicLab.Core {
     IScope Scope { get; }
 
     IAtomicOperation CreateOperation(IOperator op);
-    IAtomicOperation CreateOperation(IOperator op, IScope scope);
+    IAtomicOperation CreateOperation(IOperator op, IScope s);
     IAtomicOperation CreateChildOperation(IOperator op);
-    IAtomicOperation CreateChildOperation(IOperator op, IScope scope);
+    IAtomicOperation CreateChildOperation(IOperator op, IScope s);
   }
 }

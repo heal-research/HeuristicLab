@@ -211,7 +211,7 @@ namespace HeuristicLab.Random {
       }
     }
 
-    private static double[] PrepareProportional(IEnumerable<double> weights, bool windowing, bool inverseProportional) {
+    public static double[] PrepareProportional(IEnumerable<double> weights, bool windowing, bool inverseProportional) {
       double maxValue = double.MinValue, minValue = double.MaxValue;
       double[] valueArray = weights.ToArray();
 

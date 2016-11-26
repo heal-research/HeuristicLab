@@ -406,7 +406,8 @@ namespace HeuristicLab.Optimization.Views {
           var rowShade = new Series(list.Key + "-range") {
             IsVisibleInLegend = false,
             ChartType = SeriesChartType.Range,
-            Color = Color.FromArgb(32, colors[colorCount])
+            Color = Color.FromArgb(32, colors[colorCount]),
+            YValuesPerPoint = 2
           };
 
           var ecdf = 0.0;

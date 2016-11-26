@@ -76,14 +76,14 @@ namespace HeuristicLab.Core {
     public IAtomicOperation CreateOperation(IOperator op) {
       return new ExecutionContext(parent, op, scope);
     }
-    public IAtomicOperation CreateOperation(IOperator op, IScope scope) {
-      return new ExecutionContext(parent, op, scope);
+    public IAtomicOperation CreateOperation(IOperator op, IScope s) {
+      return new ExecutionContext(parent, op, s);
     }
     public IAtomicOperation CreateChildOperation(IOperator op) {
       return new ExecutionContext(this, op, scope);
     }
-    public IAtomicOperation CreateChildOperation(IOperator op, IScope scope) {
-      return new ExecutionContext(this, op, scope);
+    public IAtomicOperation CreateChildOperation(IOperator op, IScope s) {
+      return new ExecutionContext(this, op, s);
     }
   }
 }
