@@ -27,6 +27,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     IEnumerable<IEnumerable<double>> GetPrognosedValues(IEnumerable<int> rows, IEnumerable<int> horizon);
 
+    IEnumerable<double> PrognosedTestValues { get; }
+
     double TrainingTheilsUStatisticAR1 { get; }
     double TestTheilsUStatisticAR1 { get; }
     double TrainingTheilsUStatisticMean { get; }
