@@ -57,7 +57,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
       if (Content.VariableItemList == null) {
         IList<string> inputs = Content.PreprocessingData.InputVariables;
         if (Content.PreprocessingData.TargetVariable != null)
-          inputs = inputs.Union(new[] {Content.PreprocessingData.TargetVariable}).ToList();
+          inputs = inputs.Union(new[] { Content.PreprocessingData.TargetVariable }).ToList();
         Content.VariableItemList = Content.CreateVariableItemList(inputs);
       } else {
         var checkedNames = Content.VariableItemList.CheckedItems.Select(x => x.Value.Value);
@@ -69,7 +69,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
       var target = Content.PreprocessingData.TargetVariable;
       var inputAndTarget = Content.PreprocessingData.InputVariables.Union(target != null ? new[] { target } : new string[] { });
       foreach (var col in Content.PreprocessingData.GetDoubleVariableNames().Except(inputAndTarget)) {
-        var listViewItem = checkedItemList.ItemsListView.FindItemWithText(col);
+        var listViewItem = checkedItemList.ItemsListView.FindItemWithText(col, false, 0, false);
         listViewItem.ForeColor = Color.LightGray;
       }
     }
@@ -108,7 +108,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
     protected virtual void AddVariable(string name) {
       Content.VariableItemList.Add(new StringValue(name));
       if (!Content.PreprocessingData.InputVariables.Contains(name) && Content.PreprocessingData.TargetVariable != name) {
-        var listViewItem = checkedItemList.ItemsListView.FindItemWithText(name);
+        var listViewItem = checkedItemList.ItemsListView.FindItemWithText(name, false, 0, false);
         listViewItem.ForeColor = Color.LightGray;
       }
     }
