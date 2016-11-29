@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2016 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,19 +19,9 @@
  */
 #endregion
 
-using HeuristicLab.Core;
-using HeuristicLab.Optimization;
-using HeuristicLab.Optimization.Crossover;
+using HeuristicLab.Optimization.LocalSearch;
 
 namespace HeuristicLab.Encodings.BinaryVectorEncoding {
-  /// <summary>
-  /// An interface which represents an operator for crossing vectors of bool-valued data.
-  /// </summary>
-  public interface IBinaryVectorCrossover : IBinaryVectorOperator, ICrossover {
-    ILookupParameter<ItemArray<BinaryVector>> ParentsParameter { get; }
-    ILookupParameter<BinaryVector> ChildParameter { get; }
+  public interface IBinaryLocalSearch<TContext> : ILocalSearch<TContext> {
   }
-
-  // TODO: probably unecessary
-  public interface IBinaryCrossover<TContext> : ICrossover<TContext> { }
 }

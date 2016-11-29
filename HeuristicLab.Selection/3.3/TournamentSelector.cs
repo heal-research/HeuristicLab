@@ -26,6 +26,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
+using HeuristicLab.Optimization.Selection;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -87,6 +88,65 @@ namespace HeuristicLab.Selection {
         }
       }
       return selected;
+    }
+  }
+
+  [Item("Tournament Selector", "", ExcludeGenericTypeInfo = true)]
+  [StorableClass]
+  public sealed class TournamentSelector<TContext, TProblem, TEncoding, TSolution> : ParameterizedNamedItem, ISelector<TContext>
+      where TContext : ISingleObjectivePopulationContext<TSolution>, IMatingpoolContext<TSolution>, IStochasticContext,
+                       IProblemContext<TProblem, TEncoding, TSolution>
+      where TProblem : class, ISingleObjectiveProblem<TEncoding, TSolution>, ISingleObjectiveProblemDefinition<TEncoding, TSolution>
+      where TEncoding : class, IEncoding<TSolution>
+      where TSolution : class, ISolution {
+
+    [Storable]
+    private IValueParameter<IntValue> groupSizeParameter;
+    public int GroupSize {
+      get { return groupSizeParameter.Value.Value; }
+      set {
+        if (value < 1) throw new ArgumentException("Cannot use a group size less than 1 in tournament selection.");
+        groupSizeParameter.Value.Value = value;
+      }
+    }
+    
+    [StorableConstructor]
+    private TournamentSelector(bool deserializing) : base(deserializing) { }
+    private TournamentSelector(TournamentSelector<TContext, TProblem, TEncoding, TSolution> original, Cloner cloner)
+      : base(original, cloner) {
+      groupSizeParameter = cloner.Clone(groupSizeParameter);
+    }
+    public TournamentSelector() {
+      Parameters.Add(groupSizeParameter = new ValueParameter<IntValue>("GroupSize", "The group size that competes in the tournament.", new IntValue(2)));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new TournamentSelector<TContext, TProblem, TEncoding, TSolution>(this, cloner);
+    }
+
+    public void Select(TContext context, int n, bool withRepetition) {
+      context.MatingPool = Select(context.Random, context.Problem.IsBetter, context.Population, GroupSize, n, withRepetition);
+    }
+
+    public static IEnumerable<ISingleObjectiveSolutionScope<TSolution>> Select(IRandom random, Func<double, double, bool> isBetterFunc, IEnumerable<ISingleObjectiveSolutionScope<TSolution>> population, int groupSize, int n, bool withRepetition) {
+      var pop = population.Where(x => !double.IsNaN(x.Fitness)).ToList();
+
+      var i = n;
+      while (i > 0 && pop.Count > 0) {
+        var best = random.Next(pop.Count);
+        for (var j = 1; j < groupSize; j++) {
+          var index = random.Next(pop.Count);
+          if (isBetterFunc(pop[index].Fitness, pop[best].Fitness)) {
+            best = index;
+          }
+        }
+
+        yield return pop[best];
+        i--;
+        if (!withRepetition) {
+          pop.RemoveAt(i);
+        }
+      }
     }
   }
 }

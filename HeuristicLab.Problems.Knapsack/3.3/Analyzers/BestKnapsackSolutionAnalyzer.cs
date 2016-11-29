@@ -59,7 +59,7 @@ namespace HeuristicLab.Problems.Knapsack {
       get { return (IScopeTreeLookupParameter<DoubleValue>)Parameters["Quality"]; }
     }
     public ILookupParameter<KnapsackSolution> BestSolutionParameter {
-      get { return (ILookupParameter<KnapsackSolution>)Parameters["BestSolution"]; }
+      get { return (ILookupParameter<KnapsackSolution>)Parameters["BestKnapsackSolution"]; }
     }
     public IValueLookupParameter<ResultCollection> ResultsParameter {
       get { return (IValueLookupParameter<ResultCollection>)Parameters["Results"]; }
@@ -83,7 +83,7 @@ namespace HeuristicLab.Problems.Knapsack {
       Parameters.Add(new LookupParameter<IntArray>("Values", "The values of the items."));
 
       Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Quality", "The qualities of the Knapsack solutions which should be visualized."));
-      Parameters.Add(new LookupParameter<KnapsackSolution>("BestSolution", "The best Knapsack solution."));
+      Parameters.Add(new LookupParameter<KnapsackSolution>("BestKnapsackSolution", "The best Knapsack solution."));
       Parameters.Add(new ValueLookupParameter<ResultCollection>("Results", "The result collection where the knapsack solution should be stored."));
       Parameters.Add(new LookupParameter<DoubleValue>("BestKnownQuality", "The quality of the best known solution."));
       Parameters.Add(new LookupParameter<BinaryVector>("BestKnownSolution", "The best known solution."));
