@@ -109,6 +109,14 @@ namespace HeuristicLab.Optimization {
     int EvaluatedSolutions { get; set; }
   }
 
+  public interface IBestQualityContext : IExecutionContext {
+    double BestQuality { get; set; }
+  }
+
+  public interface IBestSolutionContext<TSolution> : IExecutionContext {
+    TSolution BestSolution { get; set; }
+  }
+
   public interface IIterationsContext : IExecutionContext {
     int Iterations { get; }
   }
