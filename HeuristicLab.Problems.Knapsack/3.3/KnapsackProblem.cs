@@ -90,18 +90,21 @@ namespace HeuristicLab.Problems.Knapsack {
       Parameters.Add(new OptionalValueParameter<BinaryVector>("BestKnownSolution", "The best known solution of this Knapsack instance."));
 
       InitializeRandomKnapsackInstance();
+      Encoding.Length = Weights.Length;
 
       InitializeOperators();
       RegisterEventHandlers();
     }
 
     public override double Evaluate(BinaryVector solution, IRandom random) {
+      var weights = Weights;
+      var values = Values;
       var totalWeight = 0.0;
       var totalValue = 0.0;
       for (var i = 0; i < solution.Length; i++) {
         if (!solution[i]) continue;
-        totalWeight += Weights[i];
-        totalValue += Values[i];
+        totalWeight += weights[i];
+        totalValue += values[i];
       }
       return totalWeight > KnapsackCapacity ? KnapsackCapacity - totalWeight : totalValue;
     }
@@ -252,22 +255,23 @@ namespace HeuristicLab.Problems.Knapsack {
     private void InitializeRandomKnapsackInstance() {
       var sysrand = new System.Random();
 
-      var itemCount = sysrand.Next(10, 100);
+      var power = sysrand.Next(5, 11);
+      var itemCount = (int)Math.Pow(2, power);
       Weights = new IntArray(itemCount);
       Values = new IntArray(itemCount);
 
       double totalWeight = 0;
 
       for (int i = 0; i < itemCount; i++) {
-        var value = sysrand.Next(1, 10);
-        var weight = sysrand.Next(1, 10);
+        var value = sysrand.Next(1, 30);
+        var weight = sysrand.Next(1, 30);
 
         Values[i] = value;
         Weights[i] = weight;
         totalWeight += weight;
       }
 
-      KnapsackCapacity = (int)Math.Round(0.7 * totalWeight);
+      KnapsackCapacity = (int)Math.Round(0.5 * totalWeight);
     }
   }
 }

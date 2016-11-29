@@ -56,7 +56,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
     protected override BinaryVector Cross(IRandom random, ItemArray<BinaryVector> parents) {
       if (parents.Length != 2) throw new ArgumentException("ERROR in SinglePointCrossover: The number of parents is not equal to 2");
 
-      return NPointCrossover.Apply(random, parents[0], parents[1], new IntValue(1));
+      return NPointCrossover.Apply(random, parents[0], parents[1], 1);
     }
   }
 }
