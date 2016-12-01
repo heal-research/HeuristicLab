@@ -49,6 +49,7 @@ namespace HeuristicLab.Analysis.Views {
       invisibleSeries = new List<Series>();
       chart.CustomizeAllChartAreas();
       chart.ChartAreas[0].CursorX.Interval = 1;
+      chart.ContextMenuStrip.Items.Add(configureToolStripMenuItem);
     }
 
     #region Event Handler Registration
@@ -394,6 +395,9 @@ namespace HeuristicLab.Analysis.Views {
       }
     }
     #endregion
+    private void configureToolStripMenuItem_Click(object sender, System.EventArgs e) {
+      ShowConfiguration();
+    }
     #endregion
 
     #region Chart Event Handlers

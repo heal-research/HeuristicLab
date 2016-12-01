@@ -49,6 +49,7 @@ namespace HeuristicLab.Analysis.Views {
       System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
       System.Windows.Forms.DataVisualization.Charting.Title title1 = new System.Windows.Forms.DataVisualization.Charting.Title();
       this.chart = new HeuristicLab.Visualization.ChartControlsExtensions.EnhancedChart();
+      this.configureToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.chart)).BeginInit();
       this.SuspendLayout();
@@ -99,6 +100,13 @@ namespace HeuristicLab.Analysis.Views {
       this.chart.MouseDown += new System.Windows.Forms.MouseEventHandler(this.chart_MouseDown);
       this.chart.MouseMove += new System.Windows.Forms.MouseEventHandler(this.chart_MouseMove);
       // 
+      // configureToolStripMenuItem
+      // 
+      this.configureToolStripMenuItem.Name = "configureToolStripMenuItem";
+      this.configureToolStripMenuItem.Size = new System.Drawing.Size(256, 22);
+      this.configureToolStripMenuItem.Text = "Configure Chart";
+      this.configureToolStripMenuItem.Click += new System.EventHandler(configureToolStripMenuItem_Click);
+      // 
       // ScatterPlotView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -116,10 +124,9 @@ namespace HeuristicLab.Analysis.Views {
       this.PerformLayout();
 
     }
-
     #endregion
 
     protected HeuristicLab.Visualization.ChartControlsExtensions.EnhancedChart chart;
-
+    private System.Windows.Forms.ToolStripMenuItem configureToolStripMenuItem;
   }
 }

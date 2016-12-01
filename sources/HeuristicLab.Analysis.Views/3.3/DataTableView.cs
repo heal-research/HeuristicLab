@@ -19,15 +19,15 @@
  */
 #endregion
 
-using HeuristicLab.Collections;
-using HeuristicLab.Core.Views;
-using HeuristicLab.MainForm;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
+using HeuristicLab.Collections;
+using HeuristicLab.Core.Views;
+using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Analysis.Views {
   [View("DataTable View")]
@@ -47,6 +47,7 @@ namespace HeuristicLab.Analysis.Views {
       invisibleSeries = new List<Series>();
       chart.CustomizeAllChartAreas();
       chart.ChartAreas[0].CursorX.Interval = 1;
+      chart.ContextMenuStrip.Items.Add(configureToolStripMenuItem);
     }
 
     #region Event Handler Registration
@@ -450,6 +451,9 @@ namespace HeuristicLab.Analysis.Views {
       }
     }
     #endregion
+    private void configureToolStripMenuItem_Click(object sender, EventArgs e) {
+      ShowConfiguration();
+    }
     #endregion
 
     #region Chart Event Handlers
