@@ -55,11 +55,13 @@ namespace HeuristicLab.Analysis.Views {
       this.commonGroupBox = new System.Windows.Forms.GroupBox();
       this.displayNameTextBox = new System.Windows.Forms.TextBox();
       this.axisGroupBox = new System.Windows.Forms.GroupBox();
+      this.panel2 = new System.Windows.Forms.Panel();
       this.yAxisSecondaryRadioButton = new System.Windows.Forms.RadioButton();
-      this.xAxisPrimaryRadioButton = new System.Windows.Forms.RadioButton();
       this.yAxisPrimaryRadioButton = new System.Windows.Forms.RadioButton();
-      this.label5 = new System.Windows.Forms.Label();
+      this.panel1 = new System.Windows.Forms.Panel();
+      this.xAxisPrimaryRadioButton = new System.Windows.Forms.RadioButton();
       this.xAxisSecondaryRadioButton = new System.Windows.Forms.RadioButton();
+      this.label5 = new System.Windows.Forms.Label();
       this.label6 = new System.Windows.Forms.Label();
       this.label9 = new System.Windows.Forms.Label();
       this.histoGramGroupBox = new System.Windows.Forms.GroupBox();
@@ -71,16 +73,14 @@ namespace HeuristicLab.Analysis.Views {
       this.label7 = new System.Windows.Forms.Label();
       this.lineStyleComboBox = new System.Windows.Forms.ComboBox();
       this.label8 = new System.Windows.Forms.Label();
-      this.panel1 = new System.Windows.Forms.Panel();
-      this.panel2 = new System.Windows.Forms.Panel();
       ((System.ComponentModel.ISupportInitialize)(this.binsNumericUpDown)).BeginInit();
       this.commonGroupBox.SuspendLayout();
       this.axisGroupBox.SuspendLayout();
+      this.panel2.SuspendLayout();
+      this.panel1.SuspendLayout();
       this.histoGramGroupBox.SuspendLayout();
       this.lineChartGroupBox.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.lineWidthNumericUpDown)).BeginInit();
-      this.panel1.SuspendLayout();
-      this.panel2.SuspendLayout();
       this.SuspendLayout();
       // 
       // chartTypeComboBox
@@ -211,6 +211,17 @@ namespace HeuristicLab.Analysis.Views {
       this.axisGroupBox.TabStop = false;
       this.axisGroupBox.Text = "Axes";
       // 
+      // panel2
+      // 
+      this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.panel2.Controls.Add(this.yAxisSecondaryRadioButton);
+      this.panel2.Controls.Add(this.yAxisPrimaryRadioButton);
+      this.panel2.Location = new System.Drawing.Point(51, 42);
+      this.panel2.Name = "panel2";
+      this.panel2.Size = new System.Drawing.Size(258, 17);
+      this.panel2.TabIndex = 7;
+      // 
       // yAxisSecondaryRadioButton
       // 
       this.yAxisSecondaryRadioButton.AutoSize = true;
@@ -222,18 +233,6 @@ namespace HeuristicLab.Analysis.Views {
       this.yAxisSecondaryRadioButton.Text = "&Secondary";
       this.yAxisSecondaryRadioButton.UseVisualStyleBackColor = true;
       this.yAxisSecondaryRadioButton.CheckedChanged += new System.EventHandler(this.yAxisRadioButton_CheckedChanged);
-      // 
-      // xAxisPrimaryRadioButton
-      // 
-      this.xAxisPrimaryRadioButton.AutoSize = true;
-      this.xAxisPrimaryRadioButton.Location = new System.Drawing.Point(0, 0);
-      this.xAxisPrimaryRadioButton.Name = "xAxisPrimaryRadioButton";
-      this.xAxisPrimaryRadioButton.Size = new System.Drawing.Size(59, 17);
-      this.xAxisPrimaryRadioButton.TabIndex = 1;
-      this.xAxisPrimaryRadioButton.TabStop = true;
-      this.xAxisPrimaryRadioButton.Text = "&Primary";
-      this.xAxisPrimaryRadioButton.UseVisualStyleBackColor = true;
-      this.xAxisPrimaryRadioButton.CheckedChanged += new System.EventHandler(this.xAxisRadioButton_CheckedChanged);
       // 
       // yAxisPrimaryRadioButton
       // 
@@ -247,14 +246,28 @@ namespace HeuristicLab.Analysis.Views {
       this.yAxisPrimaryRadioButton.UseVisualStyleBackColor = true;
       this.yAxisPrimaryRadioButton.CheckedChanged += new System.EventHandler(this.yAxisRadioButton_CheckedChanged);
       // 
-      // label5
+      // panel1
       // 
-      this.label5.AutoSize = true;
-      this.label5.Location = new System.Drawing.Point(6, 44);
-      this.label5.Name = "label5";
-      this.label5.Size = new System.Drawing.Size(39, 13);
-      this.label5.TabIndex = 3;
-      this.label5.Text = "&Y-Axis:";
+      this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.panel1.Controls.Add(this.xAxisPrimaryRadioButton);
+      this.panel1.Controls.Add(this.xAxisSecondaryRadioButton);
+      this.panel1.Location = new System.Drawing.Point(51, 19);
+      this.panel1.Name = "panel1";
+      this.panel1.Size = new System.Drawing.Size(258, 17);
+      this.panel1.TabIndex = 6;
+      // 
+      // xAxisPrimaryRadioButton
+      // 
+      this.xAxisPrimaryRadioButton.AutoSize = true;
+      this.xAxisPrimaryRadioButton.Location = new System.Drawing.Point(0, 0);
+      this.xAxisPrimaryRadioButton.Name = "xAxisPrimaryRadioButton";
+      this.xAxisPrimaryRadioButton.Size = new System.Drawing.Size(59, 17);
+      this.xAxisPrimaryRadioButton.TabIndex = 1;
+      this.xAxisPrimaryRadioButton.TabStop = true;
+      this.xAxisPrimaryRadioButton.Text = "&Primary";
+      this.xAxisPrimaryRadioButton.UseVisualStyleBackColor = true;
+      this.xAxisPrimaryRadioButton.CheckedChanged += new System.EventHandler(this.xAxisRadioButton_CheckedChanged);
       // 
       // xAxisSecondaryRadioButton
       // 
@@ -267,6 +280,15 @@ namespace HeuristicLab.Analysis.Views {
       this.xAxisSecondaryRadioButton.Text = "&Secondary";
       this.xAxisSecondaryRadioButton.UseVisualStyleBackColor = true;
       this.xAxisSecondaryRadioButton.CheckedChanged += new System.EventHandler(this.xAxisRadioButton_CheckedChanged);
+      // 
+      // label5
+      // 
+      this.label5.AutoSize = true;
+      this.label5.Location = new System.Drawing.Point(6, 44);
+      this.label5.Name = "label5";
+      this.label5.Size = new System.Drawing.Size(39, 13);
+      this.label5.TabIndex = 3;
+      this.label5.Text = "&Y-Axis:";
       // 
       // label6
       // 
@@ -403,31 +425,8 @@ namespace HeuristicLab.Analysis.Views {
       this.label8.TabIndex = 0;
       this.label8.Text = "&Style:";
       // 
-      // panel1
-      // 
-      this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.panel1.Controls.Add(this.xAxisPrimaryRadioButton);
-      this.panel1.Controls.Add(this.xAxisSecondaryRadioButton);
-      this.panel1.Location = new System.Drawing.Point(51, 19);
-      this.panel1.Name = "panel1";
-      this.panel1.Size = new System.Drawing.Size(258, 17);
-      this.panel1.TabIndex = 6;
-      // 
-      // panel2
-      // 
-      this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.panel2.Controls.Add(this.yAxisSecondaryRadioButton);
-      this.panel2.Controls.Add(this.yAxisPrimaryRadioButton);
-      this.panel2.Location = new System.Drawing.Point(51, 42);
-      this.panel2.Name = "panel2";
-      this.panel2.Size = new System.Drawing.Size(258, 17);
-      this.panel2.TabIndex = 7;
-      // 
       // DataRowVisualPropertiesControl
       // 
-      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.Controls.Add(this.lineChartGroupBox);
       this.Controls.Add(this.histoGramGroupBox);
@@ -439,15 +438,15 @@ namespace HeuristicLab.Analysis.Views {
       this.commonGroupBox.PerformLayout();
       this.axisGroupBox.ResumeLayout(false);
       this.axisGroupBox.PerformLayout();
+      this.panel2.ResumeLayout(false);
+      this.panel2.PerformLayout();
+      this.panel1.ResumeLayout(false);
+      this.panel1.PerformLayout();
       this.histoGramGroupBox.ResumeLayout(false);
       this.histoGramGroupBox.PerformLayout();
       this.lineChartGroupBox.ResumeLayout(false);
       this.lineChartGroupBox.PerformLayout();
       ((System.ComponentModel.ISupportInitialize)(this.lineWidthNumericUpDown)).EndInit();
-      this.panel1.ResumeLayout(false);
-      this.panel1.PerformLayout();
-      this.panel2.ResumeLayout(false);
-      this.panel2.PerformLayout();
       this.ResumeLayout(false);
 
     }
