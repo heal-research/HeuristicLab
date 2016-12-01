@@ -93,6 +93,7 @@ namespace HeuristicLab.Analysis.Views {
           binsApproximatelyRadioButton.Checked = !Content.ExactBins;
           binsExactRadioButton.Checked = Content.ExactBins;
           displayNameTextBox.Text = Content.DisplayName;
+          isVisibleInLegendCheckBox.Checked = Content.IsVisibleInLegend;
         }
       } finally { SuppressEvents = false; }
       SetEnabledStateOfControls();
@@ -102,6 +103,7 @@ namespace HeuristicLab.Analysis.Views {
       commonGroupBox.Enabled = Content != null;
       lineChartGroupBox.Enabled = Content != null && Content.ChartType == DataRowVisualProperties.DataRowChartType.Line;
       histoGramGroupBox.Enabled = Content != null && Content.ChartType == DataRowVisualProperties.DataRowChartType.Histogram;
+      isVisibleInLegendCheckBox.Enabled = Content != null;
     }
 
     #region Event Handlers
@@ -185,6 +187,12 @@ namespace HeuristicLab.Analysis.Views {
         try {
           Content.DisplayName = displayNameTextBox.Text;
         } finally { SuppressEvents = false; }
+      }
+    }
+
+    private void isVisibleInLegendCheckBox_CheckedChanged(object sender, EventArgs e) {
+      if (!SuppressEvents && Content != null) {
+        Content.IsVisibleInLegend = isVisibleInLegendCheckBox.Checked;
       }
     }
     #endregion
