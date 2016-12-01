@@ -288,14 +288,25 @@ namespace HeuristicLab.Optimization {
     }
     public event EventHandler Stopped;
     protected virtual void OnStopped() {
-      foreach (IStatefulItem statefulObject in this.GetObjectGraphObjects(new HashSet<object>() { Runs }).OfType<IStatefulItem>()) {
-        statefulObject.ClearState();
+      try {
+        foreach (
+          IStatefulItem statefulObject in
+          this.GetObjectGraphObjects(new HashSet<object>() {Runs}).OfType<IStatefulItem>()) {
+          statefulObject.ClearState();
+        }
+        runsCounter++;
+        try {
+          runs.Add(new Run(string.Format("{0} Run {1}", Name, runsCounter), this));
+        }
+        catch (ArgumentException e) {
+          OnExceptionOccurred(new InvalidOperationException("Run creation failed.", e));
+        }
+      }    
+      finally {
+        ExecutionState = ExecutionState.Stopped;
+        EventHandler handler = Stopped;
+        if (handler != null) handler(this, EventArgs.Empty);
       }
-      runsCounter++;
-      runs.Add(new Run(string.Format("{0} Run {1}", Name, runsCounter), this));
-      ExecutionState = ExecutionState.Stopped;
-      EventHandler handler = Stopped;
-      if (handler != null) handler(this, EventArgs.Empty);
     }
     public event EventHandler<EventArgs<Exception>> ExceptionOccurred;
     protected virtual void OnExceptionOccurred(Exception exception) {
