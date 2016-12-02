@@ -23,15 +23,16 @@ using System.Linq;
 using HeuristicLab.Algorithms.MemPR.Interfaces;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Encodings.BinaryVectorEncoding;
+using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Algorithms.MemPR.Binary.SolutionModel.Univariate {
-  [Item("Unbiased Univariate Model Trainer (binary)", "", ExcludeGenericTypeInfo = true)]
+namespace HeuristicLab.Algorithms.MemPR.Permutation.SolutionModel.Univariate {
+  [Item("Unbiased Univariate Model Trainer (Permutation)", "", ExcludeGenericTypeInfo = true)]
   [StorableClass]
   public class UniasedModelTrainer<TContext> : NamedItem, ISolutionModelTrainer<TContext>
-    where TContext : IPopulationBasedHeuristicAlgorithmContext<SingleObjectiveBasicProblem<BinaryVectorEncoding>, BinaryVector>, ISolutionModelContext<BinaryVector> {
+    where TContext : IPopulationBasedHeuristicAlgorithmContext<SingleObjectiveBasicProblem<PermutationEncoding>, Encodings.PermutationEncoding.Permutation>,
+    ISolutionModelContext<Encodings.PermutationEncoding.Permutation> {
     
     [StorableConstructor]
     protected UniasedModelTrainer(bool deserializing) : base(deserializing) { }
@@ -46,7 +47,7 @@ namespace HeuristicLab.Algorithms.MemPR.Binary.SolutionModel.Univariate {
     }
 
     public void TrainModel(TContext context) {
-      context.Model = Trainer.TrainUnbiased(context.Random, context.Population.Select(x => x.Solution));
+      context.Model = Trainer.Train(context.Random, context.Population.Select(x => x.Solution).ToList(), context.Problem.Encoding.Length);
     }
   }
 }

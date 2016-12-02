@@ -19,38 +19,63 @@
  */
 #endregion
 
+using System.Threading;
+using HeuristicLab.Algorithms.MemPR.Interfaces;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Encodings.Binary.LocalSearch;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
 using HeuristicLab.Optimization;
-using HeuristicLab.Optimization.LocalSearch;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Encodings.Binary.LocalSearch {
-  [Item("Exhaustive Bitflip Local (Subspace) Search (binary)", "")]
+namespace HeuristicLab.Algorithms.MemPR.Binary.LocalSearch {
+  [Item("Exhaustive Bitflip Local (Subspace) Search (binary)", "", ExcludeGenericTypeInfo = true)]
   [StorableClass]
-  public class ExhaustiveBitflipSubspace<TContext> : ExhaustiveBitflipOperator, IBinaryLocalSearch<TContext>
-      where TContext : ISingleObjectiveSolutionContext<BinaryVector>, IStochasticContext, IMaximizationContext,
-                       IEvaluatedSolutionsContext, IIterationsManipulationContext, IBinarySolutionSubspaceContext {
+  public class ExhaustiveBitflipSubspace<TContext> : NamedItem, ILocalSearch<TContext>
+      where TContext : ISingleSolutionHeuristicAlgorithmContext<SingleObjectiveBasicProblem<BinaryVectorEncoding>, BinaryVector>, IBinaryVectorSubspaceContext {
 
     [StorableConstructor]
     protected ExhaustiveBitflipSubspace(bool deserializing) : base(deserializing) { }
     protected ExhaustiveBitflipSubspace(ExhaustiveBitflipSubspace<TContext> original, Cloner cloner) : base(original, cloner) { }
-    public ExhaustiveBitflipSubspace() { }
+    public ExhaustiveBitflipSubspace() {
+      Name = ItemName;
+      Description = ItemDescription;
+    }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new ExhaustiveBitflipSubspace<TContext>(this, cloner);
     }
 
     public void Optimize(TContext context) {
+      var evalWrapper = new EvaluationWrapper(context);
       var quality = context.Solution.Fitness;
       try {
-        var result = Heuristic.ExhaustiveBitFlipSearch(context.Random, context.Solution.Solution, ref quality,
-          context.Maximization, EvaluateFunc, CancellationToken, context.Subspace != null ? context.Subspace.Subspace : null);
-        context.EvaluatedSolutions = result.Item1;
+        var result = ExhaustiveBitflip.Optimize(context.Random, context.Solution.Solution, ref quality,
+          context.Problem.Maximization, evalWrapper.Evaluate, CancellationToken.None, context.Subspace.Subspace);
+        context.IncrementEvaluatedSolutions(result.Item1);
         context.Iterations = result.Item2;
       } finally {
         context.Solution.Fitness = quality;
+      }
+    }
+
+    public sealed class EvaluationWrapper {
+      private readonly TContext context;
+      private readonly ISingleObjectiveSolutionScope<BinaryVector> scope;
+      private readonly SingleEncodingIndividual individual;
+
+      public EvaluationWrapper(TContext context) {
+        this.context = context;
+        // don't clone the solution, which is thrown away again
+        var cloner = new Cloner();
+        cloner.RegisterClonedObject(context.Solution.Solution, null);
+        this.scope = (ISingleObjectiveSolutionScope<BinaryVector>)context.Solution.Clone(cloner);
+        this.individual = new SingleEncodingIndividual(context.Problem.Encoding, this.scope);
+      }
+
+      public double Evaluate(BinaryVector b) {
+        scope.Solution = b;
+        return context.Problem.Evaluate(individual, null);
       }
     }
   }

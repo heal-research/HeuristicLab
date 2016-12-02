@@ -22,30 +22,29 @@
 using HeuristicLab.Algorithms.MemPR.Interfaces;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Encodings.BinaryVectorEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Algorithms.MemPR.Binary {
-  [Item("Solution subspace (binary)", "")]
+namespace HeuristicLab.Algorithms.MemPR.Permutation {
+  [Item("Solution subspace (Permutation)", "")]
   [StorableClass]
-  public sealed class BinarySolutionSubspace : Item, ISolutionSubspace<BinaryVector> {
+  public sealed class PermutationSolutionSubspace : Item, ISolutionSubspace<Encodings.PermutationEncoding.Permutation> {
 
     [Storable]
-    private bool[] subspace;
-    public bool[] Subspace { get { return subspace; } }
+    private bool[,] subspace;
+    public bool[,] Subspace { get { return subspace; } }
 
     [StorableConstructor]
-    private BinarySolutionSubspace(bool deserializing) : base(deserializing) { }
-    private BinarySolutionSubspace(BinarySolutionSubspace original, Cloner cloner)
+    private PermutationSolutionSubspace(bool deserializing) : base(deserializing) { }
+    private PermutationSolutionSubspace(PermutationSolutionSubspace original, Cloner cloner)
       : base(original, cloner) {
-      subspace = (bool[])original.subspace.Clone();
+      subspace = (bool[,])original.subspace.Clone();
     }
-    public BinarySolutionSubspace(bool[] subspace) {
+    public PermutationSolutionSubspace(bool[,] subspace) {
       this.subspace = subspace;
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new BinarySolutionSubspace(this, cloner);
+      return new PermutationSolutionSubspace(this, cloner);
     }
   }
 }

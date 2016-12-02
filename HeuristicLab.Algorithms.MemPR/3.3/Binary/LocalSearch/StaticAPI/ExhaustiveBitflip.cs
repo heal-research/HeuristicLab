@@ -22,18 +22,14 @@
 using System;
 using System.Linq;
 using System.Threading;
+using HeuristicLab.Algorithms.MemPR.Util;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Encodings.Binary.LocalSearch {
-  public static class Heuristic {
-    private static bool IsBetter(bool maximization, double a, double b) {
-      return maximization && a > b
-        || !maximization && a < b;
-    }
-
-    public static Tuple<int, int> ExhaustiveBitFlipSearch(IRandom random, BinaryVector solution, ref double quality, bool maximization, Func<BinaryVector, double> evalFunc, CancellationToken token, bool[] subspace = null) {
+  public static class ExhaustiveBitflip {
+    public static Tuple<int, int> Optimize(IRandom random, BinaryVector solution, ref double quality, bool maximization, Func<BinaryVector, double> evalFunc, CancellationToken token, bool[] subspace = null) {
       if (double.IsNaN(quality)) quality = evalFunc(solution);
       var improved = false;
       var order = Enumerable.Range(0, solution.Length).Shuffle(random).ToArray();
@@ -52,7 +48,7 @@ namespace HeuristicLab.Encodings.Binary.LocalSearch {
           solution[idx] = !solution[idx];
           var after = evalFunc(solution);
           evaluations++;
-          if (IsBetter(maximization, after, quality)) {
+          if (FitnessComparer.IsBetter(maximization, after, quality)) {
             steps++;
             quality = after;
             lastImp = i;
@@ -64,7 +60,7 @@ namespace HeuristicLab.Encodings.Binary.LocalSearch {
           token.ThrowIfCancellationRequested();
         }
       } while (improved);
-      
+
       return Tuple.Create(evaluations, steps);
     }
   }

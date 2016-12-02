@@ -23,12 +23,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using HeuristicLab.Algorithms.MemPR.Interfaces;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
 using HeuristicLab.Optimization;
-using HeuristicLab.Optimization.LocalSearch;
-using HeuristicLab.Optimization.SolutionModel;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Random;
@@ -37,37 +36,23 @@ namespace HeuristicLab.Algorithms.MemPR.Binary {
   [Item("MemPR (binary)", "MemPR implementation for binary vectors.")]
   [StorableClass]
   [Creatable(CreatableAttribute.Categories.PopulationBasedAlgorithms, Priority = 999)]
-  public class BinaryMemPR : MemPRAlgorithm<BinaryVector, BinaryMemPRContext, BinarySingleSolutionMemPRContext> {
+  public class BinaryMemPR : MemPRAlgorithm<SingleObjectiveBasicProblem<BinaryVectorEncoding>, BinaryVector, BinaryMemPRPopulationContext, BinaryMemPRSolutionContext> {
     private const double UncommonBitSubsetMutationProbabilityMagicConst = 0.05;
     
     [StorableConstructor]
     protected BinaryMemPR(bool deserializing) : base(deserializing) { }
     protected BinaryMemPR(BinaryMemPR original, Cloner cloner) : base(original, cloner) { }
     public BinaryMemPR() {
-      foreach (var trainer in ApplicationManager.Manager.GetInstances<IBinarySolutionModelTrainer<BinaryMemPRContext>>())
+      foreach (var trainer in ApplicationManager.Manager.GetInstances<ISolutionModelTrainer<BinaryMemPRPopulationContext>>())
         SolutionModelTrainerParameter.ValidValues.Add(trainer);
       
-      foreach (var localSearch in ApplicationManager.Manager.GetInstances<IBinaryLocalSearch<BinarySingleSolutionMemPRContext>>()) {
-        // only use local search operators that can deal with a restricted solution space
-        var lsType = localSearch.GetType();
-        var genTypeDef = lsType.GetGenericTypeDefinition();
-        // TODO: By convention, context type must be put last
-        // TODO: Fails with non-generic types
-        if (genTypeDef.GetGenericArguments().Last().GetGenericParameterConstraints().Any(x => typeof(IBinarySolutionSubspaceContext).IsAssignableFrom(x))) {
-          localSearch.EvaluateFunc = EvaluateFunc;
-          LocalSearchParameter.ValidValues.Add(localSearch);
-        }
+      foreach (var localSearch in ApplicationManager.Manager.GetInstances<ILocalSearch<BinaryMemPRSolutionContext>>()) {
+        LocalSearchParameter.ValidValues.Add(localSearch);
       }
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new BinaryMemPR(this, cloner);
-    }
-
-    protected double EvaluateFunc(BinaryVector solution) {
-      var scope = ToScope(solution);
-      Evaluate(scope, CancellationToken.None);
-      return scope.Fitness;
     }
 
     protected override bool Eq(ISingleObjectiveSolutionScope<BinaryVector> a, ISingleObjectiveSolutionScope<BinaryVector> b) {
@@ -97,7 +82,7 @@ namespace HeuristicLab.Algorithms.MemPR.Binary {
       };
     }
 
-    protected override ISolutionSubspace CalculateSubspace(IEnumerable<BinaryVector> solutions, bool inverse = false) {
+    protected override ISolutionSubspace<BinaryVector> CalculateSubspace(IEnumerable<BinaryVector> solutions, bool inverse = false) {
       var pop = solutions.ToList();
       var N = pop[0].Length;
       var subspace = new bool[N];
@@ -111,13 +96,7 @@ namespace HeuristicLab.Algorithms.MemPR.Binary {
       return new BinarySolutionSubspace(subspace);
     }
 
-    protected override ISingleObjectiveSolutionScope<BinaryVector> Create(CancellationToken token) {
-      var child = ToScope(null);
-      RunOperator(Problem.SolutionCreator, child, token);
-      return child;
-    }
-
-    protected override void TabuWalk(ISingleObjectiveSolutionScope<BinaryVector> scope, int steps, CancellationToken token, ISolutionSubspace subspace = null) {
+    protected override void TabuWalk(ISingleObjectiveSolutionScope<BinaryVector> scope, int steps, CancellationToken token, ISolutionSubspace<BinaryVector> subspace = null) {
       var subset = subspace != null ? ((BinarySolutionSubspace)subspace).Subspace : null;
       if (double.IsNaN(scope.Fitness)) Evaluate(scope, token);
       SingleObjectiveSolutionScope<BinaryVector> bestOfTheWalk = null;
@@ -182,11 +161,10 @@ namespace HeuristicLab.Algorithms.MemPR.Binary {
       var bp = 0;
       var lastbp = 0;
       for (var i = 0; i < code.Length; i++) {
-        if (code[i] == p2Code[i]) continue; // common bit
         if (bp % 2 == 1) {
           code[i] = p2Code[i];
         }
-        if (Context.Random.Next(code.Length) < i - lastbp) {
+        if (Context.Random.Next(code.Length) < i - lastbp + 1) {
           bp = (bp + 1) % 2;
           lastbp = i;
         }
@@ -194,7 +172,7 @@ namespace HeuristicLab.Algorithms.MemPR.Binary {
       return offspring;
     }
 
-    protected override void Mutate(ISingleObjectiveSolutionScope<BinaryVector> offspring, CancellationToken token, ISolutionSubspace subspace = null) {
+    protected override void Mutate(ISingleObjectiveSolutionScope<BinaryVector> offspring, CancellationToken token, ISolutionSubspace<BinaryVector> subspace = null) {
       var subset = subspace != null ? ((BinarySolutionSubspace)subspace).Subspace : null;
       offspring.Fitness = double.NaN;
       var code = offspring.Solution;

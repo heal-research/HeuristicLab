@@ -25,40 +25,33 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using HeuristicLab.Algorithms.MemPR.Interfaces;
 using HeuristicLab.Algorithms.MemPR.Util;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
-using HeuristicLab.Optimization.LocalSearch;
-using HeuristicLab.Optimization.SolutionModel;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Algorithms.MemPR {
   [Item("MemPR Algorithm", "Base class for MemPR algorithms")]
   [StorableClass]
-  public abstract class MemPRAlgorithm<TSolution, TContext, TSolutionContext> : BasicAlgorithm, INotifyPropertyChanged
+  public abstract class MemPRAlgorithm<TProblem, TSolution, TPopulationContext, TSolutionContext> : BasicAlgorithm, INotifyPropertyChanged
+      where TProblem : class, IItem, ISingleObjectiveHeuristicOptimizationProblem, ISingleObjectiveProblemDefinition
       where TSolution : class, IItem
-      where TContext : MemPRContext<TSolution, TContext, TSolutionContext>, new()
-      where TSolutionContext : SingleSolutionMemPRContext<TSolution, TContext, TSolutionContext> {
+      where TPopulationContext : MemPRPopulationContext<TProblem, TSolution, TPopulationContext, TSolutionContext>, new()
+      where TSolutionContext : MemPRSolutionContext<TProblem, TSolution, TPopulationContext, TSolutionContext> {
     private const double MutationProbabilityMagicConst = 0.1;
 
     public override Type ProblemType {
-      get { return typeof(ISingleObjectiveHeuristicOptimizationProblem); }
+      get { return typeof(TProblem); }
     }
 
-    public new ISingleObjectiveHeuristicOptimizationProblem Problem {
-      get { return (ISingleObjectiveHeuristicOptimizationProblem)base.Problem; }
+    public new TProblem Problem {
+      get { return (TProblem)base.Problem; }
       set { base.Problem = value; }
-    }
-
-    protected bool Maximization {
-      get {
-        return Problem != null && Problem.MaximizationParameter is IValueParameter<BoolValue>
-          && ((IValueParameter<BoolValue>)Problem.MaximizationParameter).Value.Value;
-      }
     }
 
     protected string QualityName {
@@ -121,17 +114,17 @@ namespace HeuristicLab.Algorithms.MemPR {
       set { ((ValueParameter<IAnalyzer>)Parameters["Analyzer"]).Value = value; }
     }
 
-    public IConstrainedValueParameter<ISolutionModelTrainer<TSolution, TContext>> SolutionModelTrainerParameter {
-      get { return (IConstrainedValueParameter<ISolutionModelTrainer<TSolution, TContext>>)Parameters["SolutionModelTrainer"]; }
+    public IConstrainedValueParameter<ISolutionModelTrainer<TPopulationContext>> SolutionModelTrainerParameter {
+      get { return (IConstrainedValueParameter<ISolutionModelTrainer<TPopulationContext>>)Parameters["SolutionModelTrainer"]; }
     }
 
-    public IConstrainedValueParameter<ILocalSearch<TSolution, TSolutionContext>> LocalSearchParameter {
-      get { return (IConstrainedValueParameter<ILocalSearch<TSolution, TSolutionContext>>)Parameters["LocalSearch"]; }
+    public IConstrainedValueParameter<ILocalSearch<TSolutionContext>> LocalSearchParameter {
+      get { return (IConstrainedValueParameter<ILocalSearch<TSolutionContext>>)Parameters["LocalSearch"]; }
     }
 
     [Storable]
-    private TContext context;
-    public TContext Context {
+    private TPopulationContext context;
+    public TPopulationContext Context {
       get { return context; }
       protected set {
         if (context == value) return;
@@ -145,7 +138,7 @@ namespace HeuristicLab.Algorithms.MemPR {
 
     [StorableConstructor]
     protected MemPRAlgorithm(bool deserializing) : base(deserializing) { }
-    protected MemPRAlgorithm(MemPRAlgorithm<TSolution, TContext, TSolutionContext> original, Cloner cloner) : base(original, cloner) {
+    protected MemPRAlgorithm(MemPRAlgorithm<TProblem, TSolution, TPopulationContext, TSolutionContext> original, Cloner cloner) : base(original, cloner) {
       context = cloner.Clone(original.context);
       qualityAnalyzer = cloner.Clone(original.qualityAnalyzer);
       RegisterEventHandlers();
@@ -158,8 +151,8 @@ namespace HeuristicLab.Algorithms.MemPR {
       Parameters.Add(new OptionalValueParameter<DoubleValue>("TargetQuality", "The target quality at which the algorithm terminates."));
       Parameters.Add(new FixedValueParameter<BoolValue>("SetSeedRandomly", "Whether each run of the algorithm should be conducted with a new random seed.", new BoolValue(true)));
       Parameters.Add(new FixedValueParameter<IntValue>("Seed", "The random number seed that is used in case SetSeedRandomly is false.", new IntValue(0)));
-      Parameters.Add(new ConstrainedValueParameter<ISolutionModelTrainer<TSolution, TContext>>("SolutionModelTrainer", "The object that creates a solution model that can be sampled."));
-      Parameters.Add(new ConstrainedValueParameter<ILocalSearch<TSolution, TSolutionContext>>("LocalSearch", "The local search operator to use."));
+      Parameters.Add(new ConstrainedValueParameter<ISolutionModelTrainer<TPopulationContext>>("SolutionModelTrainer", "The object that creates a solution model that can be sampled."));
+      Parameters.Add(new ConstrainedValueParameter<ILocalSearch<TSolutionContext>>("LocalSearch", "The local search operator to use."));
 
       qualityAnalyzer = new BestAverageWorstQualityAnalyzer();
       RegisterEventHandlers();
@@ -210,8 +203,8 @@ namespace HeuristicLab.Algorithms.MemPR {
       Context = null;
     }
 
-    protected virtual TContext CreateContext() {
-      return new TContext();
+    protected virtual TPopulationContext CreateContext() {
+      return new TPopulationContext();
     }
 
     protected sealed override void Run(CancellationToken token) {
@@ -220,7 +213,7 @@ namespace HeuristicLab.Algorithms.MemPR {
         if (SetSeedRandomly) Seed = new System.Random().Next();
         Context.Random.Reset(Seed);
         Context.Scope.Variables.Add(new Variable("Results", Results));
-        Context.Maximization = Maximization;
+        Context.Problem = Problem;
       }
 
       IExecutionContext context = null;
@@ -302,7 +295,7 @@ namespace HeuristicLab.Algorithms.MemPR {
             replaced = true;
           }
         } else {
-          offspring = (SingleObjectiveSolutionScope<TSolution>)Context.AtPopulation(Context.Random.Next(Context.PopulationCount)).Clone();
+          offspring = (ISingleObjectiveSolutionScope<TSolution>)Context.AtPopulation(Context.Random.Next(Context.PopulationCount)).Clone();
           Mutate(offspring, token);
           PerformTabuWalk(offspring, Context.HcSteps, token);
           replPos = Replace(offspring, token);
@@ -457,14 +450,14 @@ namespace HeuristicLab.Algorithms.MemPR {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected bool IsBetter(double a, double b) {
       return double.IsNaN(b) && !double.IsNaN(a)
-        || Maximization && a > b
-        || !Maximization && a < b;
+        || Problem.Maximization && a > b
+        || !Problem.Maximization && a < b;
     }
     
     protected abstract bool Eq(ISingleObjectiveSolutionScope<TSolution> a, ISingleObjectiveSolutionScope<TSolution> b);
     protected abstract double Dist(ISingleObjectiveSolutionScope<TSolution> a, ISingleObjectiveSolutionScope<TSolution> b);
     protected abstract ISingleObjectiveSolutionScope<TSolution> ToScope(TSolution code, double fitness = double.NaN);
-    protected abstract ISolutionSubspace CalculateSubspace(IEnumerable<TSolution> solutions, bool inverse = false);
+    protected abstract ISolutionSubspace<TSolution> CalculateSubspace(IEnumerable<TSolution> solutions, bool inverse = false);
     protected virtual void Evaluate(ISingleObjectiveSolutionScope<TSolution> scope, CancellationToken token) {
       Context.EvaluatedSolutions++;
       var prob = Problem as ISingleObjectiveProblemDefinition;
@@ -477,11 +470,15 @@ namespace HeuristicLab.Algorithms.MemPR {
     }
 
     #region Create
-    protected abstract ISingleObjectiveSolutionScope<TSolution> Create(CancellationToken token);
+    protected virtual ISingleObjectiveSolutionScope<TSolution> Create(CancellationToken token) {
+      var child = ToScope(null);
+      RunOperator(Problem.SolutionCreator, child, token);
+      return child;
+    }
     #endregion
 
     #region Improve
-    protected virtual int HillClimb(ISingleObjectiveSolutionScope<TSolution> scope, CancellationToken token, ISolutionSubspace subspace = null) {
+    protected virtual int HillClimb(ISingleObjectiveSolutionScope<TSolution> scope, CancellationToken token, ISolutionSubspace<TSolution> subspace = null) {
       if (double.IsNaN(scope.Fitness)) Evaluate(scope, token);
       var before = scope.Fitness;
       var lscontext = Context.CreateSingleSolutionContext(scope);
@@ -491,7 +488,7 @@ namespace HeuristicLab.Algorithms.MemPR {
       return lscontext.Iterations;
     }
 
-    protected virtual void PerformTabuWalk(ISingleObjectiveSolutionScope<TSolution> scope, int steps, CancellationToken token, ISolutionSubspace subspace = null) {
+    protected virtual void PerformTabuWalk(ISingleObjectiveSolutionScope<TSolution> scope, int steps, CancellationToken token, ISolutionSubspace<TSolution> subspace = null) {
       if (double.IsNaN(scope.Fitness)) Evaluate(scope, token);
       var before = scope.Fitness;
       var newScope = (ISingleObjectiveSolutionScope<TSolution>)scope.Clone();
@@ -500,8 +497,8 @@ namespace HeuristicLab.Algorithms.MemPR {
       if (IsBetter(newScope, scope) || (newScope.Fitness == scope.Fitness && Dist(newScope, scope) > 0))
         scope.Adopt(newScope);
     }
-    protected abstract void TabuWalk(ISingleObjectiveSolutionScope<TSolution> scope, int steps, CancellationToken token, ISolutionSubspace subspace = null);
-    protected virtual void TabuClimb(ISingleObjectiveSolutionScope<TSolution> scope, int steps, CancellationToken token, ISolutionSubspace subspace = null) {
+    protected abstract void TabuWalk(ISingleObjectiveSolutionScope<TSolution> scope, int steps, CancellationToken token, ISolutionSubspace<TSolution> subspace = null);
+    protected virtual void TabuClimb(ISingleObjectiveSolutionScope<TSolution> scope, int steps, CancellationToken token, ISolutionSubspace<TSolution> subspace = null) {
       if (double.IsNaN(scope.Fitness)) Evaluate(scope, token);
       var before = scope.Fitness;
       var newScope = (ISingleObjectiveSolutionScope<TSolution>)scope.Clone();
@@ -545,7 +542,7 @@ namespace HeuristicLab.Algorithms.MemPR {
     }
 
     protected abstract ISingleObjectiveSolutionScope<TSolution> Cross(ISingleObjectiveSolutionScope<TSolution> p1, ISingleObjectiveSolutionScope<TSolution> p2, CancellationToken token);
-    protected abstract void Mutate(ISingleObjectiveSolutionScope<TSolution> offspring, CancellationToken token, ISolutionSubspace subspace = null);
+    protected abstract void Mutate(ISingleObjectiveSolutionScope<TSolution> offspring, CancellationToken token, ISolutionSubspace<TSolution> subspace = null);
     #endregion
 
     #region Relink
@@ -650,7 +647,7 @@ namespace HeuristicLab.Algorithms.MemPR {
       var biasedMean = meanEnd + cov / varStart * (startingFitness - meanStart);
       var biasedStdev = Math.Sqrt(varEnd - (cov * cov) / varStart);
 
-      if (Maximization) {
+      if (Problem.Maximization) {
         var goal = Context.Population.Min(x => x.Fitness);
         var z = (goal - biasedMean) / biasedStdev;
         return 1.0 - Phi(z); // P(X >= z)
@@ -664,8 +661,8 @@ namespace HeuristicLab.Algorithms.MemPR {
     protected virtual bool Terminate() {
       return MaximumEvaluations.HasValue && Context.EvaluatedSolutions >= MaximumEvaluations.Value
         || MaximumExecutionTime.HasValue && ExecutionTime >= MaximumExecutionTime.Value
-        || TargetQuality.HasValue && (Maximization && Context.BestQuality >= TargetQuality.Value
-                                  || !Maximization && Context.BestQuality <= TargetQuality.Value);
+        || TargetQuality.HasValue && (Problem.Maximization && Context.BestQuality >= TargetQuality.Value
+                                  || !Problem.Maximization && Context.BestQuality <= TargetQuality.Value);
     }
 
     public event PropertyChangedEventHandler PropertyChanged;

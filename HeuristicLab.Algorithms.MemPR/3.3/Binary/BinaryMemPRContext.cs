@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Algorithms.MemPR.Interfaces;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
@@ -27,53 +28,53 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Algorithms.MemPR.Binary {
-  [Item("BinaryMemPRContext", "MemPR context for binary encoded problems.")]
+  [Item("MemPR Population Context (binary)", "MemPR population context for binary encoded problems.")]
   [StorableClass]
-  public sealed class BinaryMemPRContext : MemPRContext<BinaryVector, BinaryMemPRContext, BinarySingleSolutionMemPRContext> {
+  public sealed class BinaryMemPRPopulationContext : MemPRPopulationContext<SingleObjectiveBasicProblem<BinaryVectorEncoding>, BinaryVector, BinaryMemPRPopulationContext, BinaryMemPRSolutionContext> {
 
     [StorableConstructor]
-    private BinaryMemPRContext(bool deserializing) : base(deserializing) { }
-    private BinaryMemPRContext(BinaryMemPRContext original, Cloner cloner)
+    private BinaryMemPRPopulationContext(bool deserializing) : base(deserializing) { }
+    private BinaryMemPRPopulationContext(BinaryMemPRPopulationContext original, Cloner cloner)
       : base(original, cloner) { }
-    public BinaryMemPRContext() : base("BinaryMemPRContext") { }
-    public BinaryMemPRContext(string name) : base(name) { }
+    public BinaryMemPRPopulationContext() : base("BinaryMemPRPopulationContext") { }
+    public BinaryMemPRPopulationContext(string name) : base(name) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new BinaryMemPRContext(this, cloner);
+      return new BinaryMemPRPopulationContext(this, cloner);
     }
 
-    public override BinarySingleSolutionMemPRContext CreateSingleSolutionContext(ISingleObjectiveSolutionScope<BinaryVector> solution) {
-      return new BinarySingleSolutionMemPRContext(this, solution);
+    public override BinaryMemPRSolutionContext CreateSingleSolutionContext(ISingleObjectiveSolutionScope<BinaryVector> solution) {
+      return new BinaryMemPRSolutionContext(this, solution);
     }
   }
 
-  [Item("BinarySingleSolutionMemPRContext", "Single solution MemPR context for binary encoded problems.")]
+  [Item("MemPR Solution Context (binary)", "MemPR solution context for binary encoded problems.")]
   [StorableClass]
-  public sealed class BinarySingleSolutionMemPRContext : SingleSolutionMemPRContext<BinaryVector, BinaryMemPRContext, BinarySingleSolutionMemPRContext>, IBinarySolutionSubspaceContext {
+  public sealed class BinaryMemPRSolutionContext : MemPRSolutionContext<SingleObjectiveBasicProblem<BinaryVectorEncoding>, BinaryVector, BinaryMemPRPopulationContext, BinaryMemPRSolutionContext>, IBinaryVectorSubspaceContext {
 
     [Storable]
     private IValueParameter<BinarySolutionSubspace> subspace;
     public BinarySolutionSubspace Subspace {
       get { return subspace.Value; }
     }
-    ISolutionSubspace ISolutionSubspaceContext.Subspace {
+    ISolutionSubspace<BinaryVector> ISolutionSubspaceContext<BinaryVector>.Subspace {
       get { return Subspace; }
     }
 
     [StorableConstructor]
-    private BinarySingleSolutionMemPRContext(bool deserializing) : base(deserializing) { }
-    private BinarySingleSolutionMemPRContext(BinarySingleSolutionMemPRContext original, Cloner cloner)
+    private BinaryMemPRSolutionContext(bool deserializing) : base(deserializing) { }
+    private BinaryMemPRSolutionContext(BinaryMemPRSolutionContext original, Cloner cloner)
       : base(original, cloner) {
 
     }
-    public BinarySingleSolutionMemPRContext(BinaryMemPRContext baseContext, ISingleObjectiveSolutionScope<BinaryVector> solution)
+    public BinaryMemPRSolutionContext(BinaryMemPRPopulationContext baseContext, ISingleObjectiveSolutionScope<BinaryVector> solution)
       : base(baseContext, solution) {
 
       Parameters.Add(subspace = new ValueParameter<BinarySolutionSubspace>("Subspace", new BinarySolutionSubspace(null)));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new BinarySingleSolutionMemPRContext(this, cloner);
+      return new BinaryMemPRSolutionContext(this, cloner);
     }
   }
 }

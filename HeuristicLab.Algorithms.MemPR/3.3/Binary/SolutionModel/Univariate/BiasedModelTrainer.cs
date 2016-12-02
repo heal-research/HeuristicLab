@@ -20,30 +20,44 @@
 #endregion
 
 using System.Linq;
+using HeuristicLab.Algorithms.MemPR.Interfaces;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
 using HeuristicLab.Optimization;
-using HeuristicLab.Optimization.SolutionModel;
+using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Encodings.Binary.SolutionModel.Univariate {
-  [Item("Biased Univariate Model Trainer (binary)", "")]
+namespace HeuristicLab.Algorithms.MemPR.Binary.SolutionModel.Univariate {
+  [Item("Biased Univariate Model Trainer (binary)", "", ExcludeGenericTypeInfo = true)]
   [StorableClass]
-  public class BiasedModelTrainer<TContext> : BiasedModelTrainerOperator, IBinarySolutionModelTrainer<TContext>, IBinaryVectorOperator
-    where TContext : ISingleObjectivePopulationContext<BinaryVector>, ISolutionModelContext<BinaryVector>, IStochasticContext, IMaximizationContext {
+  public class BiasedModelTrainer<TContext> : ParameterizedNamedItem, ISolutionModelTrainer<TContext>
+    where TContext : IPopulationBasedHeuristicAlgorithmContext<SingleObjectiveBasicProblem<BinaryVectorEncoding>, BinaryVector>, ISolutionModelContext<BinaryVector> {
     
+    [Storable]
+    private IValueParameter<EnumValue<ModelBiasOptions>> modelBiasParameter;
+    public ModelBiasOptions ModelBias {
+      get { return modelBiasParameter.Value.Value; }
+      set { modelBiasParameter.Value.Value = value; }
+    }
+
     [StorableConstructor]
     protected BiasedModelTrainer(bool deserializing) : base(deserializing) { }
-    protected BiasedModelTrainer(BiasedModelTrainer<TContext> original, Cloner cloner) : base(original, cloner) { }
-    public BiasedModelTrainer() { }
+    protected BiasedModelTrainer(BiasedModelTrainer<TContext> original, Cloner cloner)
+      : base(original, cloner) {
+      modelBiasParameter = cloner.Clone(original.modelBiasParameter);
+    }
+    public BiasedModelTrainer() {
+      Parameters.Add(modelBiasParameter = new ValueParameter<EnumValue<ModelBiasOptions>>("Model Bias", "What kind of bias towards better individuals is chosen."));
+    }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new BiasedModelTrainer<TContext>(this, cloner);
     }
 
     public void TrainModel(TContext context) {
-      context.Model = Trainer.TrainBiased(ModelBias, context.Random, context.Maximization, context.Population.Select(x => x.Solution), context.Population.Select(x => x.Fitness));
+      context.Model = Trainer.TrainBiased(ModelBias, context.Random, context.Problem.Maximization, context.Population.Select(x => x.Solution), context.Population.Select(x => x.Fitness));
     }
   }
 }

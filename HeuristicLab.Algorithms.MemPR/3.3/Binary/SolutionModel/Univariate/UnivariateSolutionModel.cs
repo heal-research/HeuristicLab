@@ -22,15 +22,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HeuristicLab.Algorithms.MemPR.Interfaces;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
-using HeuristicLab.Optimization.SolutionModel;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Random;
 
-namespace HeuristicLab.Encodings.Binary.SolutionModel.Univariate {
+namespace HeuristicLab.Algorithms.MemPR.Binary.SolutionModel.Univariate {
   [Item("Univariate solution model (binary)", "")]
   [StorableClass]
   public sealed class UnivariateModel : Item, ISolutionModel<BinaryVector> {

@@ -21,11 +21,11 @@
 
 using System;
 using System.Collections.Generic;
+using HeuristicLab.Algorithms.MemPR.Interfaces;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
-using HeuristicLab.Optimization.SolutionModel;
 
-namespace HeuristicLab.Encodings.Binary.SolutionModel.Univariate {
+namespace HeuristicLab.Algorithms.MemPR.Binary.SolutionModel.Univariate {
   public enum ModelBiasOptions { Rank, Fitness }
 
   public static class Trainer {

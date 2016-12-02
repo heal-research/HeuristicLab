@@ -89,21 +89,34 @@
     <Compile Include="Binary\BinarySolutionSubspace.cs" />
     <Compile Include="Binary\LocalSearch\ExhaustiveBitflipSubspace.cs" />
     <Compile Include="Binary\LocalSearch\ExhaustiveBitflip.cs" />
-    <Compile Include="Binary\LocalSearch\ExhaustiveBitflipOperator.cs" />
-    <Compile Include="Binary\LocalSearch\Heuristic.cs" />
-    <Compile Include="Binary\SolutionModel\Univariate\BiasedModelTrainerOperator.cs" />
-    <Compile Include="Binary\SolutionModel\Univariate\Trainer.cs" />
-    <Compile Include="Binary\SolutionModel\Univariate\UnbiasedModelTrainerOperator.cs" />
+    <Compile Include="Binary\LocalSearch\StaticAPI\ExhaustiveBitflip.cs" />
+    <Compile Include="Binary\SolutionModel\Univariate\StaticAPI\Trainer.cs" />
     <Compile Include="Binary\SolutionModel\Univariate\UnivariateSolutionModel.cs" />
     <Compile Include="Binary\SolutionModel\Univariate\BiasedModelTrainer.cs" />
     <Compile Include="Binary\SolutionModel\Univariate\UnbiasedModelTrainer.cs" />
-    <Compile Include="Optimization\Interfaces.cs" />
+    <Compile Include="Interfaces\Interfaces.cs" />
     <Compile Include="MemPRAlgorithm.cs" />
+    <Compile Include="Permutation\PermutationMemPR.cs" />
+    <Compile Include="Permutation\PermutationMemPRContext.cs" />
+    <Compile Include="Permutation\LocalSearch\ExhaustiveHillClimbSubspace.cs" />
+    <Compile Include="Permutation\LocalSearch\ExhaustiveHillClimb.cs" />
+    <Compile Include="Permutation\PermutationSolutionSubspace.cs" />
+    <Compile Include="Permutation\LocalSearch\StaticAPI\Exhaustive.cs" />
+    <Compile Include="Permutation\LocalSearch\StaticAPI\Exhaustive1Shift.cs" />
+    <Compile Include="Permutation\LocalSearch\StaticAPI\Exhaustive2Opt.cs" />
+    <Compile Include="Permutation\LocalSearch\StaticAPI\ExhaustiveSwap2.cs" />
+    <Compile Include="Permutation\SimilarityCalculator.cs" />
+    <Compile Include="Permutation\SolutionModel\Univariate\StaticAPI\Trainer.cs" />
+    <Compile Include="Permutation\SolutionModel\Univariate\UnbiasedModelTrainer.cs" />
+    <Compile Include="Permutation\SolutionModel\Univariate\UnivariateRelativeModel.cs" />
+    <Compile Include="Permutation\SolutionModel\Univariate\UnivariateAbsoluteModel.cs" />
     <Compile Include="SingleObjectiveSolutionScope.cs" />
     <Compile Include="MemPRContext.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Util\CkMeans1D.cs" />
+    <Compile Include="Util\EvaluationWrapper.cs" />
+    <Compile Include="Util\FitnessComparer.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\HeuristicLab.Analysis\3.3\HeuristicLab.Analysis-3.3.csproj">
@@ -141,6 +154,11 @@
       <Name>HeuristicLab.Encodings.BinaryVectorEncoding-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Encodings.PermutationEncoding\3.3\HeuristicLab.Encodings.PermutationEncoding-3.3.csproj">
+      <Project>{dbecb8b0-b166-4133-baf1-ed67c3fd7fca}</Project>
+      <Name>HeuristicLab.Encodings.PermutationEncoding-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Operators\3.3\HeuristicLab.Operators-3.3.csproj">
       <Project>{23da7ff4-d5b8-41b6-aa96-f0561d24f3ee}</Project>
       <Name>HeuristicLab.Operators-3.3</Name>
@@ -175,6 +193,7 @@
   <ItemGroup>
     <None Include="HeuristicLab.snk" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>set Path=%25Path%25;$(ProjectDir);$(SolutionDir)

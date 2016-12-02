@@ -22,30 +22,29 @@
 using HeuristicLab.Algorithms.MemPR.Interfaces;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Encodings.BinaryVectorEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Optimization;
 
-namespace HeuristicLab.Algorithms.MemPR.Binary {
-  [Item("Solution subspace (binary)", "")]
-  [StorableClass]
-  public sealed class BinarySolutionSubspace : Item, ISolutionSubspace<BinaryVector> {
+namespace HeuristicLab.Algorithms.MemPR.Util {
+  public sealed class EvaluationWrapper<TSolution>
+      where TSolution : class, IItem {
+    private readonly ISingleObjectiveProblemDefinition problem;
+    private readonly ISingleObjectiveSolutionScope<TSolution> scope;
+    private readonly SingleEncodingIndividual individual;
 
-    [Storable]
-    private bool[] subspace;
-    public bool[] Subspace { get { return subspace; } }
-
-    [StorableConstructor]
-    private BinarySolutionSubspace(bool deserializing) : base(deserializing) { }
-    private BinarySolutionSubspace(BinarySolutionSubspace original, Cloner cloner)
-      : base(original, cloner) {
-      subspace = (bool[])original.subspace.Clone();
-    }
-    public BinarySolutionSubspace(bool[] subspace) {
-      this.subspace = subspace;
+    public EvaluationWrapper(ISingleObjectiveProblemDefinition problem, ISingleObjectiveSolutionScope<TSolution> solution) {
+      this.problem = problem;
+      this.scope = (ISingleObjectiveSolutionScope<TSolution>)solution.Clone();
+      this.individual = new SingleEncodingIndividual(problem.Encoding, this.scope);
     }
 
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new BinarySolutionSubspace(this, cloner);
+    public double Evaluate(TSolution b) {
+      scope.Solution = b;
+      return problem.Evaluate(individual, null);
+    }
+
+    public double Evaluate(TSolution b, IRandom random) {
+      scope.Solution = b;
+      return problem.Evaluate(individual, random);
     }
   }
 }

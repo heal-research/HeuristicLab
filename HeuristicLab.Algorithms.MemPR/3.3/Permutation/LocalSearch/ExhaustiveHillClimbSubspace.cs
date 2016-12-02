@@ -24,34 +24,35 @@ using HeuristicLab.Algorithms.MemPR.Interfaces;
 using HeuristicLab.Algorithms.MemPR.Util;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Encodings.Binary.LocalSearch;
-using HeuristicLab.Encodings.BinaryVectorEncoding;
+using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Algorithms.MemPR.Binary.LocalSearch {
-  [Item("Exhaustive Bitflip Local Search (binary)", "", ExcludeGenericTypeInfo = true)]
+namespace HeuristicLab.Algorithms.MemPR.Permutation.LocalSearch {
+  [Item("Exhaustive Subspace Hillclimber (permutation)", "", ExcludeGenericTypeInfo = true)]
   [StorableClass]
-  public class ExhaustiveBitflip<TContext> : NamedItem, ILocalSearch<TContext> where TContext : ISingleSolutionHeuristicAlgorithmContext<SingleObjectiveBasicProblem<BinaryVectorEncoding>, BinaryVector> {
-    
+  public class ExhaustiveHillClimbSubspace<TContext> : NamedItem, ILocalSearch<TContext>
+      where TContext : ISingleSolutionHeuristicAlgorithmContext<SingleObjectiveBasicProblem<PermutationEncoding>, Encodings.PermutationEncoding.Permutation>,
+                       IPermutationSubspaceContext {
+
     [StorableConstructor]
-    protected ExhaustiveBitflip(bool deserializing) : base(deserializing) { }
-    protected ExhaustiveBitflip(ExhaustiveBitflip<TContext> original, Cloner cloner) : base(original, cloner) { }
-    public ExhaustiveBitflip() {
+    protected ExhaustiveHillClimbSubspace(bool deserializing) : base(deserializing) { }
+    protected ExhaustiveHillClimbSubspace(ExhaustiveHillClimbSubspace<TContext> original, Cloner cloner) : base(original, cloner) { }
+    public ExhaustiveHillClimbSubspace() {
       Name = ItemName;
       Description = ItemDescription;
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new ExhaustiveBitflip<TContext>(this, cloner);
+      return new ExhaustiveHillClimbSubspace<TContext>(this, cloner);
     }
 
     public void Optimize(TContext context) {
-      var evalWrapper = new EvaluationWrapper<BinaryVector>(context.Problem, context.Solution);
+      var evalWrapper = new EvaluationWrapper<Encodings.PermutationEncoding.Permutation>(context.Problem, context.Solution);
       var quality = context.Solution.Fitness;
       try {
-        var result = ExhaustiveBitflip.Optimize(context.Random, context.Solution.Solution, ref quality,
-          context.Problem.Maximization, evalWrapper.Evaluate, CancellationToken.None);
+        var result = Exhaustive.HillClimb(context.Random, context.Solution.Solution, ref quality,
+          context.Problem.Maximization, evalWrapper.Evaluate, CancellationToken.None, context.Subspace.Subspace);
         context.IncrementEvaluatedSolutions(result.Item1);
         context.Iterations = result.Item2;
       } finally {

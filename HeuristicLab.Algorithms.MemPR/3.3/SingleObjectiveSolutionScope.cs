@@ -20,6 +20,7 @@
 #endregion
 
 using System.Drawing;
+using HeuristicLab.Algorithms.MemPR.Interfaces;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -137,11 +138,6 @@ namespace HeuristicLab.Algorithms.MemPR {
     public void Adopt(ISingleObjectiveSolutionScope<T> orphan) {
       Solution = orphan.Solution;
       Fitness = orphan.Fitness;
-    }
-
-    public void Adopt(ISolutionScope<T> orphan) {
-      Solution = orphan.Solution;
-      Fitness = double.NaN;
     }
   }
 }

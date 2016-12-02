@@ -22,11 +22,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HeuristicLab.Algorithms.MemPR.Interfaces;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
-using HeuristicLab.Optimization.SolutionModel;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Random;
@@ -34,12 +34,12 @@ using HeuristicLab.Random;
 namespace HeuristicLab.Algorithms.MemPR {
   [Item("MemPRContext", "Abstract base class for MemPR contexts.")]
   [StorableClass]
-  public abstract class MemPRContext<TSolution, TContext, TSolutionContext> : ParameterizedNamedItem,
-      ISingleObjectivePopulationContext<TSolution>, ISolutionModelContext<TSolution>, IStochasticContext,
-      IMaximizationContext, IEvaluatedSolutionsContext
+  public abstract class MemPRPopulationContext<TProblem, TSolution, TPopulationContext, TSolutionContext> : ParameterizedNamedItem,
+    IPopulationBasedHeuristicAlgorithmContext<TProblem, TSolution>, ISolutionModelContext<TSolution>
+      where TProblem : class, IItem, ISingleObjectiveProblemDefinition
       where TSolution : class, IItem
-      where TContext : MemPRContext<TSolution, TContext, TSolutionContext>
-      where TSolutionContext : SingleSolutionMemPRContext<TSolution, TContext, TSolutionContext> {
+      where TPopulationContext : MemPRPopulationContext<TProblem, TSolution, TPopulationContext, TSolutionContext>
+      where TSolutionContext : MemPRSolutionContext<TProblem, TSolution, TPopulationContext, TSolutionContext> {
 
     private IExecutionContext parent;
     public IExecutionContext Parent {
@@ -59,10 +59,10 @@ namespace HeuristicLab.Algorithms.MemPR {
     }
 
     [Storable]
-    private IValueParameter<BoolValue> maximization;
-    public bool Maximization {
-      get { return maximization.Value.Value; }
-      set { maximization.Value.Value = value; }
+    private IValueParameter<TProblem> problem;
+    public TProblem Problem {
+      get { return problem.Value; }
+      set { problem.Value = value; }
     }
 
     [Storable]
@@ -91,6 +91,13 @@ namespace HeuristicLab.Algorithms.MemPR {
     public double BestQuality {
       get { return bestQuality.Value.Value; }
       set { bestQuality.Value.Value = value; }
+    }
+
+    [Storable]
+    private IValueParameter<TSolution> bestSolution;
+    public TSolution BestSolution {
+      get { return bestSolution.Value; }
+      set { bestSolution.Value = value; }
     }
 
     [Storable]
@@ -141,10 +148,6 @@ namespace HeuristicLab.Algorithms.MemPR {
       get { return random.Value; }
       set { random.Value = value; }
     }
-
-    IEnumerable<IScope> IPopulationContext.Population {
-      get { return scope.SubScopes; }
-    }
     
     public IEnumerable<ISingleObjectiveSolutionScope<TSolution>> Population {
       get { return scope.SubScopes.OfType<ISingleObjectiveSolutionScope<TSolution>>(); }
@@ -182,15 +185,16 @@ namespace HeuristicLab.Algorithms.MemPR {
     public ISolutionModel<TSolution> Model { get; set; }
 
     [StorableConstructor]
-    protected MemPRContext(bool deserializing) : base(deserializing) { }
-    protected MemPRContext(MemPRContext<TSolution, TContext, TSolutionContext> original, Cloner cloner)
+    protected MemPRPopulationContext(bool deserializing) : base(deserializing) { }
+    protected MemPRPopulationContext(MemPRPopulationContext<TProblem, TSolution, TPopulationContext, TSolutionContext> original, Cloner cloner)
       : base(original, cloner) {
       scope = cloner.Clone(original.scope);
-      maximization = cloner.Clone(original.maximization);
+      problem = cloner.Clone(original.problem);
       initialized = cloner.Clone(original.initialized);
       iterations = cloner.Clone(original.iterations);
       evaluatedSolutions = cloner.Clone(original.evaluatedSolutions);
       bestQuality = cloner.Clone(original.bestQuality);
+      bestSolution = cloner.Clone(original.bestSolution);
       hcSteps = cloner.Clone(original.hcSteps);
       byBreeding = cloner.Clone(original.byBreeding);
       byRelinking = cloner.Clone(original.byRelinking);
@@ -204,15 +208,16 @@ namespace HeuristicLab.Algorithms.MemPR {
 
       Model = cloner.Clone(original.Model);
     }
-    public MemPRContext() : this("MemPRContext") { }
-    public MemPRContext(string name) : base(name) {
+    public MemPRPopulationContext() : this("MemPRContext") { }
+    public MemPRPopulationContext(string name) : base(name) {
       scope = new Scope("Global");
 
-      Parameters.Add(maximization = new ValueParameter<BoolValue>("Maximization", new BoolValue(false)));
+      Parameters.Add(problem = new ValueParameter<TProblem>("Problem"));
       Parameters.Add(initialized = new ValueParameter<BoolValue>("Initialized", new BoolValue(false)));
       Parameters.Add(iterations = new ValueParameter<IntValue>("Iterations", new IntValue(0)));
       Parameters.Add(evaluatedSolutions = new ValueParameter<IntValue>("EvaluatedSolutions", new IntValue(0)));
       Parameters.Add(bestQuality = new ValueParameter<DoubleValue>("BestQuality", new DoubleValue(double.NaN)));
+      Parameters.Add(bestSolution = new ValueParameter<TSolution>("BestSolution"));
       Parameters.Add(hcSteps = new ValueParameter<IntValue>("HcSteps", new IntValue(0)));
       Parameters.Add(byBreeding = new ValueParameter<IntValue>("ByBreeding", new IntValue(0)));
       Parameters.Add(byRelinking = new ValueParameter<IntValue>("ByRelinking", new IntValue(0)));
@@ -227,6 +232,11 @@ namespace HeuristicLab.Algorithms.MemPR {
     }
 
     public abstract TSolutionContext CreateSingleSolutionContext(ISingleObjectiveSolutionScope<TSolution> solution);
+
+    public void IncrementEvaluatedSolutions(int byEvaluations) {
+      if (byEvaluations < 0) throw new ArgumentException("Can only increment and not decrement evaluated solutions.");
+      EvaluatedSolutions += byEvaluations;
+    }
 
     #region IExecutionContext members
     public IAtomicOperation CreateOperation(IOperator op) {
@@ -245,20 +255,16 @@ namespace HeuristicLab.Algorithms.MemPR {
       return new ExecutionContext(this, op, s);
     }
     #endregion
-
-    IEnumerable<ISolutionScope<TSolution>> IPopulationContext<TSolution>.Population {
-      get { return Population; }
-    }
   }
 
   [Item("SingleSolutionMemPRContext", "Abstract base class for single solution MemPR contexts.")]
   [StorableClass]
-  public abstract class SingleSolutionMemPRContext<TSolution, TContext, TSolutionContext> : ParameterizedNamedItem,
-      ISingleObjectiveSolutionContext<TSolution>, IEvaluatedSolutionsContext,
-      IIterationsManipulationContext, IStochasticContext, IMaximizationContext
+  public abstract class MemPRSolutionContext<TProblem, TSolution, TContext, TSolutionContext> : ParameterizedNamedItem,
+    ISingleSolutionHeuristicAlgorithmContext<TProblem, TSolution>
+      where TProblem : class, IItem, ISingleObjectiveProblemDefinition
       where TSolution : class, IItem
-      where TContext : MemPRContext<TSolution, TContext, TSolutionContext>
-      where TSolutionContext : SingleSolutionMemPRContext<TSolution, TContext, TSolutionContext> {
+      where TContext : MemPRPopulationContext<TProblem, TSolution, TContext, TSolutionContext>
+      where TSolutionContext : MemPRSolutionContext<TProblem, TSolution, TContext, TSolutionContext> {
 
     private TContext parent;
     public IExecutionContext Parent {
@@ -275,9 +281,19 @@ namespace HeuristicLab.Algorithms.MemPR {
     IKeyedItemCollection<string, IParameter> IExecutionContext.Parameters {
       get { return Parameters; }
     }
-    
-    public bool Maximization {
-      get { return parent.Maximization; }
+
+    public TProblem Problem {
+      get { return parent.Problem; }
+    }
+
+    public double BestQuality {
+      get { return parent.BestQuality; }
+      set { parent.BestQuality = value; }
+    }
+
+    public TSolution BestSolution {
+      get { return parent.BestSolution; }
+      set { parent.BestSolution = value; }
     }
 
     public IRandom Random {
@@ -298,32 +314,29 @@ namespace HeuristicLab.Algorithms.MemPR {
       set { iterations.Value.Value = value; }
     }
 
-    IScope ISolutionContext.Solution {
-      get { return scope; }
-    }
-
-    ISolutionScope<TSolution> ISolutionContext<TSolution>.Solution {
-      get { return scope; }
-    }
-
-    ISingleObjectiveSolutionScope<TSolution> ISingleObjectiveSolutionContext<TSolution>.Solution {
+    ISingleObjectiveSolutionScope<TSolution> ISingleSolutionHeuristicAlgorithmContext<TProblem, TSolution>.Solution {
       get { return scope; }
     }
 
     [StorableConstructor]
-    protected SingleSolutionMemPRContext(bool deserializing) : base(deserializing) { }
-    protected SingleSolutionMemPRContext(SingleSolutionMemPRContext<TSolution, TContext, TSolutionContext> original, Cloner cloner)
+    protected MemPRSolutionContext(bool deserializing) : base(deserializing) { }
+    protected MemPRSolutionContext(MemPRSolutionContext<TProblem, TSolution, TContext, TSolutionContext> original, Cloner cloner)
       : base(original, cloner) {
       scope = cloner.Clone(original.scope);
       evaluatedSolutions = cloner.Clone(original.evaluatedSolutions);
       iterations = cloner.Clone(original.iterations);
     }
-    public SingleSolutionMemPRContext(TContext baseContext, ISingleObjectiveSolutionScope<TSolution> solution) {
+    public MemPRSolutionContext(TContext baseContext, ISingleObjectiveSolutionScope<TSolution> solution) {
       parent = baseContext;
       scope = solution;
       
       Parameters.Add(evaluatedSolutions = new ValueParameter<IntValue>("EvaluatedSolutions", new IntValue(0)));
       Parameters.Add(iterations = new ValueParameter<IntValue>("Iterations", new IntValue(0)));
+    }
+
+    public void IncrementEvaluatedSolutions(int byEvaluations) {
+      if (byEvaluations < 0) throw new ArgumentException("Can only increment and not decrement evaluated solutions.");
+      EvaluatedSolutions += byEvaluations;
     }
 
     #region IExecutionContext members
