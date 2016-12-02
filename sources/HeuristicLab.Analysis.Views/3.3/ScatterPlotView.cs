@@ -101,6 +101,7 @@ namespace HeuristicLab.Analysis.Views {
       chart.Series.Clear();
       if (Content != null) {
         chart.Titles[0].Text = Content.Name;
+        chart.Titles[0].Visible = !string.IsNullOrEmpty(Content.Name);
         AddScatterPlotDataRows(Content.Rows);
         ConfigureChartArea(chart.ChartAreas[0]);
         RecalculateMinMaxPointValues();
@@ -183,6 +184,7 @@ namespace HeuristicLab.Analysis.Views {
       if (Content.VisualProperties.TitleFont != null) chart.Titles[0].Font = Content.VisualProperties.TitleFont;
       if (!Content.VisualProperties.TitleColor.IsEmpty) chart.Titles[0].ForeColor = Content.VisualProperties.TitleColor;
       chart.Titles[0].Text = Content.VisualProperties.Title;
+      chart.Titles[0].Visible = !string.IsNullOrEmpty(Content.VisualProperties.Title);
 
       if (Content.VisualProperties.AxisTitleFont != null) area.AxisX.TitleFont = Content.VisualProperties.AxisTitleFont;
       if (!Content.VisualProperties.AxisTitleColor.IsEmpty) area.AxisX.TitleForeColor = Content.VisualProperties.AxisTitleColor;
@@ -254,6 +256,7 @@ namespace HeuristicLab.Analysis.Views {
         Invoke(new EventHandler(Content_NameChanged), sender, e);
       else {
         chart.Titles[0].Text = Content.Name;
+        chart.Titles[0].Visible = !string.IsNullOrEmpty(Content.Name);
         base.Content_NameChanged(sender, e);
       }
     }
