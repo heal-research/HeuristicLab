@@ -121,11 +121,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataTableControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="DataTableControl.Designer.cs">
+      <DependentUpon>DataTableControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="IndexedDataTableView.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="IndexedDataTableView.Designer.cs">
       <DependentUpon>IndexedDataTableView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ScatterPlotControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ScatterPlotControl.Designer.cs">
+      <DependentUpon>ScatterPlotControl.cs</DependentUpon>
     </Compile>
     <Compile Include="ScatterPlotVisualPropertiesDialog.cs">
       <SubType>Form</SubType>
