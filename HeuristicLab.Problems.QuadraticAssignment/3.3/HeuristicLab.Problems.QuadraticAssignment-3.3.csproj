@@ -136,6 +136,7 @@
     <Compile Include="LocalImprovement\QAPExhaustiveSwap2LocalImprovement.cs" />
     <Compile Include="LocalImprovement\QAPExhaustiveInversionLocalImprovement.cs" />
     <Compile Include="QAPAssignment.cs" />
+    <Compile Include="QAPBasicProblem.cs" />
     <Compile Include="QAPPermutationProximityCalculator.cs" />
     <Compile Include="QuadraticAssignmentProblem.cs" />
     <Compile Include="QAPSimilarityCalculator.cs" />
