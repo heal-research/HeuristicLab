@@ -371,6 +371,8 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       } else if (data.BestKnownQuality.HasValue) {
         BestKnownQuality = data.BestKnownQuality.Value;
       }
+      Encoding.Length = data.Dimension;
+
       OnReset();
     }
 

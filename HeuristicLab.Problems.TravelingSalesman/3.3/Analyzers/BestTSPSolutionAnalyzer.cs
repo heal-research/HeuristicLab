@@ -52,8 +52,8 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     public ScopeTreeLookupParameter<DoubleValue> QualityParameter {
       get { return (ScopeTreeLookupParameter<DoubleValue>)Parameters["Quality"]; }
     }
-    public LookupParameter<PathTSPTour> BestSolutionParameter {
-      get { return (LookupParameter<PathTSPTour>)Parameters["BestSolution"]; }
+    public LookupParameter<PathTSPTour> BestTSPSolutionParameter {
+      get { return (LookupParameter<PathTSPTour>)Parameters["BestTSPSolution"]; }
     }
     public ValueLookupParameter<ResultCollection> ResultsParameter {
       get { return (ValueLookupParameter<ResultCollection>)Parameters["Results"]; }
@@ -77,7 +77,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       Parameters.Add(new LookupParameter<DoubleMatrix>("Coordinates", "The x- and y-Coordinates of the cities."));
       Parameters.Add(new ScopeTreeLookupParameter<Permutation>("Permutation", "The TSP solutions given in path representation from which the best solution should be analyzed."));
       Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Quality", "The qualities of the TSP solutions which should be analyzed."));
-      Parameters.Add(new LookupParameter<PathTSPTour>("BestSolution", "The best TSP solution."));
+      Parameters.Add(new LookupParameter<PathTSPTour>("BestTSPSolution", "The best TSP solution."));
       Parameters.Add(new ValueLookupParameter<ResultCollection>("Results", "The result collection where the best TSP solution should be stored."));
       Parameters.Add(new LookupParameter<DoubleValue>("BestKnownQuality", "The quality of the best known solution of this TSP instance."));
       Parameters.Add(new LookupParameter<Permutation>("BestKnownSolution", "The best known solution of this TSP instance."));
@@ -86,7 +86,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       CoordinatesParameter.Hidden = true;
       PermutationParameter.Hidden = true;
       QualityParameter.Hidden = true;
-      BestSolutionParameter.Hidden = true;
+      BestTSPSolutionParameter.Hidden = true;
       ResultsParameter.Hidden = true;
       BestKnownQualityParameter.Hidden = true;
       BestKnownSolutionParameter.Hidden = true;
@@ -112,10 +112,10 @@ namespace HeuristicLab.Problems.TravelingSalesman {
         BestKnownSolutionParameter.ActualValue = (Permutation)permutations[i].Clone();
       }
 
-      PathTSPTour tour = BestSolutionParameter.ActualValue;
+      PathTSPTour tour = BestTSPSolutionParameter.ActualValue;
       if (tour == null) {
         tour = new PathTSPTour(coordinates, (Permutation)permutations[i].Clone(), new DoubleValue(qualities[i].Value));
-        BestSolutionParameter.ActualValue = tour;
+        BestTSPSolutionParameter.ActualValue = tour;
         results.Add(new Result("Best TSP Solution", tour));
       } else {
         if (max && tour.Quality.Value < qualities[i].Value ||
