@@ -97,8 +97,12 @@ namespace HeuristicLab.Algorithms.MemPR.Binary {
     }
 
     protected override void TabuWalk(ISingleObjectiveSolutionScope<BinaryVector> scope, int steps, CancellationToken token, ISolutionSubspace<BinaryVector> subspace = null) {
+      var evaluations = 0;
       var subset = subspace != null ? ((BinarySolutionSubspace)subspace).Subspace : null;
-      if (double.IsNaN(scope.Fitness)) Evaluate(scope, token);
+      if (double.IsNaN(scope.Fitness)) {
+        Evaluate(scope, token);
+        evaluations++;
+      }
       SingleObjectiveSolutionScope<BinaryVector> bestOfTheWalk = null;
       var currentScope = (SingleObjectiveSolutionScope<BinaryVector>)scope.Clone();
       var current = currentScope.Solution;
@@ -120,6 +124,7 @@ namespace HeuristicLab.Algorithms.MemPR.Binary {
           var before = currentScope.Fitness;
           current[idx] = !current[idx];
           Evaluate(currentScope, token);
+          evaluations++;
           var after = currentScope.Fitness;
 
           if (IsBetter(after, before) && (bestOfTheWalk == null || IsBetter(after, bestOfTheWalk.Fitness))) {
@@ -150,6 +155,7 @@ namespace HeuristicLab.Algorithms.MemPR.Binary {
         } else if (allTabu) break;
       }
 
+      Context.IncrementEvaluatedSolutions(evaluations);
       scope.Adopt(bestOfTheWalk ?? currentScope);
     }
 
@@ -186,14 +192,21 @@ namespace HeuristicLab.Algorithms.MemPR.Binary {
     }
 
     protected override ISingleObjectiveSolutionScope<BinaryVector> Relink(ISingleObjectiveSolutionScope<BinaryVector> a, ISingleObjectiveSolutionScope<BinaryVector> b, CancellationToken token) {
-      if (double.IsNaN(a.Fitness)) Evaluate(a, token);
-      if (double.IsNaN(b.Fitness)) Evaluate(b, token);
+      if (double.IsNaN(a.Fitness)) {
+        Evaluate(a, token);
+        Context.IncrementEvaluatedSolutions(1);
+      }
+      if (double.IsNaN(b.Fitness)) {
+        Evaluate(b, token);
+        Context.IncrementEvaluatedSolutions(1);
+      }
       if (Context.Random.NextDouble() < 0.5)
         return IsBetter(a, b) ? Relink(a, b, token, false) : Relink(b, a, token, true);
       else return IsBetter(a, b) ? Relink(b, a, token, true) : Relink(a, b, token, false);
     }
 
     protected virtual ISingleObjectiveSolutionScope<BinaryVector> Relink(ISingleObjectiveSolutionScope<BinaryVector> betterScope, ISingleObjectiveSolutionScope<BinaryVector> worseScope, CancellationToken token, bool fromWorseToBetter) {
+      var evaluations = 0;
       var childScope = (ISingleObjectiveSolutionScope<BinaryVector>)(fromWorseToBetter ? worseScope : betterScope).Clone();
       var child = childScope.Solution;
       var better = betterScope.Solution;
@@ -212,6 +225,7 @@ namespace HeuristicLab.Algorithms.MemPR.Binary {
             !fromWorseToBetter && child[idx] != worse[idx]) continue;
           child[idx] = !child[idx]; // move
           Evaluate(childScope, token);
+          evaluations++;
           var s = childScope.Fitness;
           childScope.Fitness = cF;
           child[idx] = !child[idx]; // undo move
@@ -235,6 +249,7 @@ namespace HeuristicLab.Algorithms.MemPR.Binary {
           best = (ISingleObjectiveSolutionScope<BinaryVector>)childScope.Clone();
         }
       }
+      Context.IncrementEvaluatedSolutions(evaluations);
       return best ?? childScope;
     }
   }

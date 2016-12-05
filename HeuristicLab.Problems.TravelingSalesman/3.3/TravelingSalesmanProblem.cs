@@ -232,9 +232,8 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       Operators.Add(new TSPMultipleGuidesPathRelinker());
       Operators.Add(new TSPPathRelinker());
       Operators.Add(new TSPSimultaneousPathRelinker());
-      Operators.Add(new TSPSimilarityCalculator());
+      Operators.Add(new HammingSimilarityCalculator());
       Operators.Add(new QualitySimilarityCalculator());
-      Operators.Add(new NoSimilarityCalculator());
 
       Operators.Add(new BestTSPSolutionAnalyzer());
       Operators.Add(new TSPAlleleFrequencyAnalyzer());

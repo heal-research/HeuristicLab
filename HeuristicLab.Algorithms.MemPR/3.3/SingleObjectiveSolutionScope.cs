@@ -28,7 +28,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Algorithms.MemPR {
-  [Item("MemPRScope", "Scope for a MemPR individual.")]
+  [Item("Solution Scope", "Scope for an individual/solution of a single-objective single-encoded problem.")]
   [StorableClass]
   public sealed class SingleObjectiveSolutionScope<T> : NamedItem, ISingleObjectiveSolutionScope<T> where T : class, IItem {
     public new static Image StaticItemImage {

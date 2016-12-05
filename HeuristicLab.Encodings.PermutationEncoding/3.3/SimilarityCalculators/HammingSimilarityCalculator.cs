@@ -22,29 +22,19 @@
 using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Optimization.Operators;
-using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.Problems.TravelingSalesman {
-  /// <summary>
-  /// An operator that performs similarity calculation between two traveling salesman solutions.
-  /// </summary>
-  /// <remarks>
-  /// The operator calculates the similarity based on the number of edges the two solutions have in common.
-  /// </remarks>
-  [Item("TSPSimilarityCalculator", "An operator that performs similarity calculation between two traveling salesman solutions. The operator calculates the similarity based on the number of edges the two solutions have in common.")]
-  [Obsolete("Please use the HammingSimilarityCalculator in the Encodings.PermutationEncoding plugin.")]
-  [NonDiscoverableType]
-  internal sealed class TSPSimilarityCalculator : SingleObjectiveSolutionSimilarityCalculator {
+namespace HeuristicLab.Encodings.PermutationEncoding {
+  [Item("Hamming Similarity Calculator for Permutation", "An operator that performs similarity calculation between two permutation-encoded solutions.")]
+  public sealed class HammingSimilarityCalculator : SingleObjectiveSolutionSimilarityCalculator {
     protected override bool IsCommutative { get { return true; } }
 
-    private TSPSimilarityCalculator(bool deserializing) : base(deserializing) { }
-    private TSPSimilarityCalculator(TSPSimilarityCalculator original, Cloner cloner) : base(original, cloner) { }
-    public TSPSimilarityCalculator() : base() { }
+    private HammingSimilarityCalculator(bool deserializing) : base(deserializing) { }
+    private HammingSimilarityCalculator(HammingSimilarityCalculator original, Cloner cloner) : base(original, cloner) { }
+    public HammingSimilarityCalculator() : base() { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new TSPSimilarityCalculator(this, cloner);
+      return new HammingSimilarityCalculator(this, cloner);
     }
 
     public static double CalculateSimilarity(Permutation left, Permutation right) {

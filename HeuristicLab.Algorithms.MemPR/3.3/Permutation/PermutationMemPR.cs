@@ -153,7 +153,7 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation {
       }
     }
 
-    public static void TabuWalk(IRandom random, Encodings.PermutationEncoding.Permutation perm, Func<Encodings.PermutationEncoding.Permutation, IRandom, double> eval, ref double quality, int maxIterations = int.MaxValue, bool[,] noTouch = null) {
+    public void TabuWalk(IRandom random, Encodings.PermutationEncoding.Permutation perm, Func<Encodings.PermutationEncoding.Permutation, IRandom, double> eval, ref double quality, int maxIterations = int.MaxValue, bool[,] noTouch = null) {
       switch (perm.PermutationType) {
         case PermutationTypes.Absolute:
           TabuWalkSwap(random, perm, eval, ref quality, maxIterations, noTouch);
@@ -169,14 +169,17 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation {
       if (VALIDATE && !perm.Validate()) throw new ArgumentException("TabuWalk produced invalid child");
     }
 
-    public static void TabuWalkSwap(IRandom random, Encodings.PermutationEncoding.Permutation perm, Func<Encodings.PermutationEncoding.Permutation, IRandom, double> eval, ref double quality, int maxIterations = int.MaxValue, bool[,] noTouch = null) {
-      if (double.IsNaN(quality)) quality = eval(perm, random);
+    public void TabuWalkSwap(IRandom random, Encodings.PermutationEncoding.Permutation perm, Func<Encodings.PermutationEncoding.Permutation, IRandom, double> eval, ref double quality, int maxIterations = int.MaxValue, bool[,] noTouch = null) {
+      var evaluations = 0;
+      if (double.IsNaN(quality)) {
+        quality = eval(perm, random);
+        evaluations++;
+      }
       Encodings.PermutationEncoding.Permutation bestOfTheWalk = null;
       double bestOfTheWalkF = double.NaN;
       var current = (Encodings.PermutationEncoding.Permutation)perm.Clone();
       var currentF = quality;
       var overallImprovement = false;
-      //Console.WriteLine("Current    {0}", string.Join(", ", current));
       var tabu = new double[current.Length, current.Length];
       for (var i = 0; i < current.Length; i++) {
         for (var j = i; j < current.Length; j++) {
@@ -190,7 +193,6 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation {
         var bestOfTheRestF = double.NaN;
         Swap2Move bestOfTheRest = null;
         var improved = false;
-        //LogAlways("TabuWalk ({0}/{2}): {1}   ({3})", iter, currentF, maxIterations, string.Join(", ", current));
         foreach (var swap in ExhaustiveSwap2MoveGenerator.Generate(current).Shuffle(random)) {
           if (noTouch != null && (noTouch[swap.Index1, 0] || noTouch[swap.Index2, 0]))
             continue;
@@ -199,6 +201,7 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation {
           current[swap.Index1] = current[swap.Index2];
           current[swap.Index2] = h;
           var q = eval(current, random);
+          evaluations++;
           if (q < quality) {
             overallImprovement = true;
             quality = q;
@@ -232,9 +235,7 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation {
         }
         if (!allTabu && !improved) {
           tabu[bestOfTheRest.Index1, current[bestOfTheRest.Index1]] = Math.Min(currentF, tabu[bestOfTheRest.Index1, current[bestOfTheRest.Index1]]);
-          //LogAlways("Making Tabu [{0},{1}] = {2}", bestOfTheRest.Index1, current[bestOfTheRest.Index1], tabu[bestOfTheRest.Index1, current[bestOfTheRest.Index1]]);
           tabu[bestOfTheRest.Index2, current[bestOfTheRest.Index2]] = Math.Min(currentF, tabu[bestOfTheRest.Index2, current[bestOfTheRest.Index2]]);
-          //LogAlways("Making Tabu [{0},{1}] = {2}", bestOfTheRest.Index2, current[bestOfTheRest.Index2], tabu[bestOfTheRest.Index2, current[bestOfTheRest.Index2]]);
 
           var h = current[bestOfTheRest.Index1];
           current[bestOfTheRest.Index1] = current[bestOfTheRest.Index2];
@@ -243,18 +244,23 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation {
           currentF = bestOfTheRestF;
         } else if (allTabu) break;
       }
+      Context.IncrementEvaluatedSolutions(evaluations);
       if (!overallImprovement && bestOfTheWalk != null) {
         quality = bestOfTheWalkF;
         for (var i = 0; i < current.Length; i++) perm[i] = bestOfTheWalk[i];
       }
     }
 
-    public static void TabuWalkShift(IRandom random, Encodings.PermutationEncoding.Permutation perm, Func<Encodings.PermutationEncoding.Permutation, IRandom, double> eval, ref double quality, int maxIterations = int.MaxValue, bool[,] noTouch = null) {
+    public void TabuWalkShift(IRandom random, Encodings.PermutationEncoding.Permutation perm, Func<Encodings.PermutationEncoding.Permutation, IRandom, double> eval, ref double quality, int maxIterations = int.MaxValue, bool[,] noTouch = null) {
       return;
     }
 
-    public static void TabuWalkOpt(IRandom random, Encodings.PermutationEncoding.Permutation perm, Func<Encodings.PermutationEncoding.Permutation, IRandom, double> eval, ref double quality, int maxIterations = int.MaxValue, bool[,] noTouch = null) {
-      if (double.IsNaN(quality)) quality = eval(perm, random);
+    public void TabuWalkOpt(IRandom random, Encodings.PermutationEncoding.Permutation perm, Func<Encodings.PermutationEncoding.Permutation, IRandom, double> eval, ref double quality, int maxIterations = int.MaxValue, bool[,] noTouch = null) {
+      var evaluations = 0;
+      if (double.IsNaN(quality)) {
+        quality = eval(perm, random);
+        evaluations++;
+      }
       Encodings.PermutationEncoding.Permutation bestOfTheWalk = null;
       double bestOfTheWalkF = double.NaN;
       var current = (Encodings.PermutationEncoding.Permutation)perm.Clone();
@@ -286,6 +292,7 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation {
           InversionManipulator.Apply(current, opt.Index1, opt.Index2);
 
           var q = eval(current, random);
+          evaluations++;
           if (q < quality) {
             overallImprovement = true;
             quality = q;
@@ -332,6 +339,7 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation {
           currentF = bestOfTheRestF;
         } else if (allTabu) break;
       }
+      Context.IncrementEvaluatedSolutions(evaluations);
       if (!overallImprovement && bestOfTheWalk != null) {
         quality = bestOfTheWalkF;
         for (var i = 0; i < current.Length; i++) perm[i] = bestOfTheWalk[i];
@@ -455,7 +463,7 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation {
       return ToScope(Relink(Context.Random, betterScope.Solution, worseScope.Solution, wrapper.Evaluate, out quality));
     }
 
-    public static Encodings.PermutationEncoding.Permutation Relink(IRandom random, Encodings.PermutationEncoding.Permutation p1, Encodings.PermutationEncoding.Permutation p2, Func<Encodings.PermutationEncoding.Permutation, IRandom, double> eval, out double best) {
+    public Encodings.PermutationEncoding.Permutation Relink(IRandom random, Encodings.PermutationEncoding.Permutation p1, Encodings.PermutationEncoding.Permutation p2, Func<Encodings.PermutationEncoding.Permutation, IRandom, double> eval, out double best) {
       if (p1.PermutationType != p2.PermutationType) throw new ArgumentException(string.Format("Unequal permutation types {0} and {1}", p1.PermutationType, p2.PermutationType));
       switch (p1.PermutationType) {
         case PermutationTypes.Absolute:
@@ -468,7 +476,8 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation {
       }
     }
 
-    public static Encodings.PermutationEncoding.Permutation RelinkSwap(IRandom random, Encodings.PermutationEncoding.Permutation p1, Encodings.PermutationEncoding.Permutation p2, Func<Encodings.PermutationEncoding.Permutation, IRandom, double> eval, out double best) {
+    public Encodings.PermutationEncoding.Permutation RelinkSwap(IRandom random, Encodings.PermutationEncoding.Permutation p1, Encodings.PermutationEncoding.Permutation p2, Func<Encodings.PermutationEncoding.Permutation, IRandom, double> eval, out double best) {
+      var evaluations = 0;
       var child = (Encodings.PermutationEncoding.Permutation)p1.Clone();
 
       best = double.NaN;
@@ -491,6 +500,7 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation {
           }
           Swap(child, invChild[p2[idx]], idx);
           var moveF = eval(child, random);
+          evaluations++;
           if (double.IsNaN(bestChange) || moveF < bestChange) {
             bestChange = moveF;
             bestOption = j;
@@ -514,16 +524,17 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation {
           options.RemoveAt(bestOption);
         }
       }
-      //Log(string.Join(", ", p2));
+      Context.IncrementEvaluatedSolutions(evaluations);
 
       if (VALIDATE && bestChild != null && !bestChild.Validate()) throw new ArgumentException("Relinking produced invalid child");
       if (VALIDATE && Dist(child, p2) > 0) throw new InvalidOperationException("Child is not equal to p2 after relinking");
-
+      
       if (bestChild == null) best = eval(child, random);
       return bestChild ?? child;
     }
 
-    public static Encodings.PermutationEncoding.Permutation RelinkShift(IRandom random, Encodings.PermutationEncoding.Permutation p1, Encodings.PermutationEncoding.Permutation p2, Func<Encodings.PermutationEncoding.Permutation, IRandom, double> eval, out double best) {
+    public Encodings.PermutationEncoding.Permutation RelinkShift(IRandom random, Encodings.PermutationEncoding.Permutation p1, Encodings.PermutationEncoding.Permutation p2, Func<Encodings.PermutationEncoding.Permutation, IRandom, double> eval, out double best) {
+      var evaluations = 0;
       var child = (Encodings.PermutationEncoding.Permutation)p1.Clone();
 
       best = double.NaN;
@@ -544,6 +555,7 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation {
           if (c < n) Shift(child, from: n, to: c + 1);
           else Shift(child, from: c, to: n);
           var moveF = eval(child, random);
+          evaluations++;
           if (double.IsNaN(bestChange) || moveF < bestChange) {
             bestChange = moveF;
             bestFrom = c < n ? n : c;
@@ -563,12 +575,14 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation {
         }
       } while (!double.IsNaN(bestChange));
 
+      Context.IncrementEvaluatedSolutions(evaluations);
       if (VALIDATE && !bestChild.Validate()) throw new ArgumentException("Relinking produced invalid child");
       if (VALIDATE && Dist(child, p2) > 0) throw new InvalidOperationException("Child is not equal to p2 after relinking");
       return bestChild;
     }
 
-    public static Encodings.PermutationEncoding.Permutation RelinkOpt(IRandom random, Encodings.PermutationEncoding.Permutation p1, Encodings.PermutationEncoding.Permutation p2, Func<Encodings.PermutationEncoding.Permutation, IRandom, double> eval, out double best) {
+    public Encodings.PermutationEncoding.Permutation RelinkOpt(IRandom random, Encodings.PermutationEncoding.Permutation p1, Encodings.PermutationEncoding.Permutation p2, Func<Encodings.PermutationEncoding.Permutation, IRandom, double> eval, out double best) {
+      var evaluations = 0;
       var child = (Encodings.PermutationEncoding.Permutation)p1.Clone();
 
       best = double.NaN;
@@ -645,6 +659,7 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation {
             undoStack.Push(m);
           }
           var moveF = eval(child, random);
+          evaluations++;
           if (double.IsNaN(bestChange) || moveF < bestChange) {
             bestChange = moveF;
             bestQueue = new Queue<Tuple<int, int>>(undoStack.Reverse());
@@ -658,10 +673,7 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation {
         if (!double.IsNaN(bestChange)) {
           while (bestQueue.Count > 0) {
             var m = bestQueue.Dequeue();
-            //Log("Applying opt {0} {1}", m.Item1, m.Item2);
-            //Log("{0}", string.Join(" ", child));
             Opt(child, m.Item1, m.Item2);
-            //Log("{0}", string.Join(" ", child));
           }
           for (var i = 0; i < child.Length; i++) invChild[child[i]] = i;
           if (double.IsNaN(best) || bestChange < best) {
@@ -671,7 +683,8 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation {
         }
       } while (!double.IsNaN(bestChange));
 
-      //Log("{0}", string.Join(" ", p2));
+      Context.IncrementEvaluatedSolutions(evaluations);
+      
       if (VALIDATE && !bestChild.Validate()) throw new ArgumentException("Relinking produced invalid child");
       if (VALIDATE && Dist(child, p2) > 0) throw new InvalidOperationException("Child is not equal to p2 after relinking");
       return bestChild;
@@ -680,68 +693,6 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation {
     private static bool IsUndirectedEdge(int[] invP, int a, int b) {
       var d = Math.Abs(invP[a] - invP[b]);
       return d == 1 || d == invP.Length - 1;
-    }
-
-    private static void Move(Encodings.PermutationEncoding.Permutation child, int from, int to) {
-      if (child.PermutationType == PermutationTypes.Absolute) {
-        // swap
-        Swap(child, from, to);
-      } else if (child.PermutationType == PermutationTypes.RelativeDirected) {
-        // shift
-        Shift(child, from, to);
-      } else if (child.PermutationType == PermutationTypes.RelativeUndirected) {
-        // opt
-        Opt(child, from, to);
-      } else throw new ArgumentException(string.Format("Unknown permutation type {0}", child.PermutationType));
-    }
-
-    private static void Move(PermutationTypes type, bool[] arr, int from, int to) {
-      switch (type) {
-        case PermutationTypes.Absolute: {
-            /*var h = arr[from];
-            arr[from] = arr[to];
-            arr[to] = h;*/
-            arr[from] = false;
-            arr[to] = false;
-            break;
-          }
-        case PermutationTypes.RelativeDirected: {
-            var original = (bool[])arr.Clone();
-            var number = original[from];
-            int i = 0;  // index in new permutation
-            int j = 0;  // index in old permutation
-            while (i < original.Length) {
-              if (j == from) {
-                j++;
-              }
-              if (i == to) {
-                arr[i] = number;
-                i++;
-              }
-              if ((i < original.Length) && (j < original.Length)) {
-                arr[i] = original[j];
-                i++;
-                j++;
-              }
-            }
-            break;
-          }
-        case PermutationTypes.RelativeUndirected: {
-            if (from > to) {
-              var hu = from;
-              from = to;
-              to = hu;
-            }
-            for (int i = 0; i <= (to - from) / 2; i++) {  // invert permutation between breakpoints
-              var temp = arr[from + i];
-              arr[from + i] = arr[to - i];
-              arr[to - i] = temp;
-            }
-            break;
-          }
-        default:
-          throw new ArgumentException(string.Format("Unknown permutation type {0}", type));
-      }
     }
 
     private static void Swap(Encodings.PermutationEncoding.Permutation child, int from, int to) {

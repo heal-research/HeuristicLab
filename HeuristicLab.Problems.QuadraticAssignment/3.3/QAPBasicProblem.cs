@@ -19,17 +19,20 @@
  */
 #endregion
 
+using System.Linq;
+using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Optimization;
+using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.Instances;
 
 namespace HeuristicLab.Problems.QuadraticAssignment {
-  [Item("Basic Quadratic Assignment Problem (BQAP)", "The Quadratic Assignment Problem (QAP) can be described as the problem of assigning N facilities to N fixed locations such that there is exactly one facility in each location and that the sum of the distances multiplied by the connection strength between the facilities becomes minimal.")]
+  [Item("Basic Quadratic Assignment Problem (QAP)", "The Quadratic Assignment Problem (QAP) can be described as the problem of assigning N facilities to N fixed locations such that there is exactly one facility in each location and that the sum of the distances multiplied by the connection strength between the facilities becomes minimal.")]
   [Creatable(CreatableAttribute.Categories.CombinatorialProblems, Priority = 141)]
   [StorableClass]
   public sealed class QAPBasicProblem : SingleObjectiveBasicProblem<PermutationEncoding>,
@@ -61,10 +64,28 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
     public QAPBasicProblem() {
       Parameters.Add(weightsParameter = new ValueParameter<DoubleMatrix>("Weights", "The weights matrix.", new DoubleMatrix(5, 5)));
       Parameters.Add(distancesParameter = new ValueParameter<DoubleMatrix>("Distances", "The distances matrix.", new DoubleMatrix(5, 5)));
+
+      Operators.Add(new HammingSimilarityCalculator());
+      Operators.Add(new QualitySimilarityCalculator());
+      Operators.Add(new PopulationSimilarityAnalyzer(Operators.OfType<ISolutionSimilarityCalculator>()));
+
+      Parameterize();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new QAPBasicProblem(this, cloner);
+    }
+
+    protected override void OnEncodingChanged() {
+      base.OnEncodingChanged();
+      Parameterize();
+    }
+
+    private void Parameterize() {
+      foreach (var similarityCalculator in Operators.OfType<ISolutionSimilarityCalculator>()) {
+        similarityCalculator.SolutionVariableName = Encoding.SolutionCreator.PermutationParameter.ActualName;
+        similarityCalculator.QualityVariableName = Evaluator.QualityParameter.ActualName;
+      }
     }
 
     public override bool Maximization {
@@ -115,6 +136,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
 
       Weights = weights;
       Distances = distances;
+      Encoding.Length = Weights.Rows;
 
       BestKnownQuality = double.NaN;
     }

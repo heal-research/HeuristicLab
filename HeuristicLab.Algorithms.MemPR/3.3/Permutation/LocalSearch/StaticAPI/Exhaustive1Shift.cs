@@ -66,7 +66,7 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation.LocalSearch {
         }
         if (lastSuccessMove == null) break;
       }
-      return Tuple.Create(steps, evaluations);
+      return Tuple.Create(evaluations, steps);
     }
   }
 }

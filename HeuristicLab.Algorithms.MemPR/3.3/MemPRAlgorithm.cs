@@ -252,9 +252,6 @@ namespace HeuristicLab.Algorithms.MemPR {
       var p1 = Context.AtPopulation(i1);
       var p2 = Context.AtPopulation(i2);
 
-      if (double.IsNaN(p1.Fitness)) Evaluate(p1, token);
-      if (double.IsNaN(p2.Fitness)) Evaluate(p2, token);
-
       var parentDist = Dist(p1, p2);
 
       ISingleObjectiveSolutionScope<TSolution> offspring = null;
@@ -360,7 +357,14 @@ namespace HeuristicLab.Algorithms.MemPR {
     }
 
     protected int Replace(ISingleObjectiveSolutionScope<TSolution> child, CancellationToken token) {
-      if (double.IsNaN(child.Fitness)) Evaluate(child, token);
+      if (double.IsNaN(child.Fitness)) {
+        Evaluate(child, token);
+        Context.IncrementEvaluatedSolutions(1);
+      }
+      if (IsBetter(child.Fitness, Context.BestQuality)) {
+        Context.BestQuality = child.Fitness;
+        Context.BestSolution = (TSolution)child.Solution.Clone();
+      }
 
       var popSize = MaximumPopulationSize;
       if (Context.Population.All(p => !Eq(p, child))) {
@@ -459,14 +463,11 @@ namespace HeuristicLab.Algorithms.MemPR {
     protected abstract ISingleObjectiveSolutionScope<TSolution> ToScope(TSolution code, double fitness = double.NaN);
     protected abstract ISolutionSubspace<TSolution> CalculateSubspace(IEnumerable<TSolution> solutions, bool inverse = false);
     protected virtual void Evaluate(ISingleObjectiveSolutionScope<TSolution> scope, CancellationToken token) {
-      Context.EvaluatedSolutions++;
       var prob = Problem as ISingleObjectiveProblemDefinition;
       if (prob != null) {
         var ind = new SingleEncodingIndividual(prob.Encoding, scope);
         scope.Fitness = prob.Evaluate(ind, Context.Random);
       } else RunOperator(Problem.Evaluator, scope, token);
-      if (IsBetter(scope.Fitness, Context.BestQuality))
-        Context.BestQuality = scope.Fitness;
     }
 
     #region Create
@@ -479,17 +480,24 @@ namespace HeuristicLab.Algorithms.MemPR {
 
     #region Improve
     protected virtual int HillClimb(ISingleObjectiveSolutionScope<TSolution> scope, CancellationToken token, ISolutionSubspace<TSolution> subspace = null) {
-      if (double.IsNaN(scope.Fitness)) Evaluate(scope, token);
+      if (double.IsNaN(scope.Fitness)) {
+        Evaluate(scope, token);
+        Context.IncrementEvaluatedSolutions(1);
+      }
       var before = scope.Fitness;
       var lscontext = Context.CreateSingleSolutionContext(scope);
       LocalSearchParameter.Value.Optimize(lscontext);
       var after = scope.Fitness;
       Context.HillclimbingStat.Add(Tuple.Create(before, after));
+      Context.IncrementEvaluatedSolutions(lscontext.EvaluatedSolutions);
       return lscontext.Iterations;
     }
 
     protected virtual void PerformTabuWalk(ISingleObjectiveSolutionScope<TSolution> scope, int steps, CancellationToken token, ISolutionSubspace<TSolution> subspace = null) {
-      if (double.IsNaN(scope.Fitness)) Evaluate(scope, token);
+      if (double.IsNaN(scope.Fitness)) {
+        Evaluate(scope, token);
+        Context.IncrementEvaluatedSolutions(1);
+      }
       var before = scope.Fitness;
       var newScope = (ISingleObjectiveSolutionScope<TSolution>)scope.Clone();
       TabuWalk(newScope, steps, token, subspace);
@@ -499,7 +507,10 @@ namespace HeuristicLab.Algorithms.MemPR {
     }
     protected abstract void TabuWalk(ISingleObjectiveSolutionScope<TSolution> scope, int steps, CancellationToken token, ISolutionSubspace<TSolution> subspace = null);
     protected virtual void TabuClimb(ISingleObjectiveSolutionScope<TSolution> scope, int steps, CancellationToken token, ISolutionSubspace<TSolution> subspace = null) {
-      if (double.IsNaN(scope.Fitness)) Evaluate(scope, token);
+      if (double.IsNaN(scope.Fitness)) {
+        Evaluate(scope, token);
+        Context.IncrementEvaluatedSolutions(1);
+      }
       var before = scope.Fitness;
       var newScope = (ISingleObjectiveSolutionScope<TSolution>)scope.Clone();
       TabuWalk(newScope, steps, token, subspace);
@@ -519,8 +530,14 @@ namespace HeuristicLab.Algorithms.MemPR {
       var p1 = Context.AtPopulation(i1);
       var p2 = Context.AtPopulation(i2);
 
-      if (double.IsNaN(p1.Fitness)) Evaluate(p1, token);
-      if (double.IsNaN(p2.Fitness)) Evaluate(p2, token);
+      if (double.IsNaN(p1.Fitness)) {
+        Evaluate(p1, token);
+        Context.IncrementEvaluatedSolutions(1);
+      }
+      if (double.IsNaN(p2.Fitness)) {
+        Evaluate(p2, token);
+        Context.IncrementEvaluatedSolutions(1);
+      }
 
       return BreedAndImprove(p1, p2, token);
     }
@@ -531,7 +548,10 @@ namespace HeuristicLab.Algorithms.MemPR {
       if (Context.Random.NextDouble() < MutationProbabilityMagicConst) {
         Mutate(offspring, token, subspace); // mutate the solutions, especially to widen the sub-space
       }
-      if (double.IsNaN(offspring.Fitness)) Evaluate(offspring, token);
+      if (double.IsNaN(offspring.Fitness)) {
+        Evaluate(offspring, token);
+        Context.IncrementEvaluatedSolutions(1);
+      }
       Context.BreedingStat.Add(Tuple.Create(p1.Fitness, p2.Fitness, offspring.Fitness));
       if ((IsBetter(offspring, p1) && IsBetter(offspring, p2))
         || Context.Population.Any(p => IsBetter(offspring, p))) return offspring;
@@ -554,9 +574,6 @@ namespace HeuristicLab.Algorithms.MemPR {
 
       var p1 = Context.AtPopulation(i1);
       var p2 = Context.AtPopulation(i2);
-
-      if (double.IsNaN(p1.Fitness)) Evaluate(p1, token);
-      if (double.IsNaN(p2.Fitness)) Evaluate(p2, token);
 
       return RelinkAndImprove(p1, p2, token);
     }
@@ -583,6 +600,8 @@ namespace HeuristicLab.Algorithms.MemPR {
     protected virtual ISingleObjectiveSolutionScope<TSolution> PerformSampling(CancellationToken token) {
       SolutionModelTrainerParameter.Value.TrainModel(Context);
       var sample = ToScope(Context.Model.Sample());
+      Evaluate(sample, token);
+      Context.IncrementEvaluatedSolutions(1);
       if (Context.Population.Any(p => IsBetter(sample, p) || sample.Fitness == p.Fitness)) return sample;
 
       if (HillclimbingSuited(sample)) {
@@ -607,7 +626,10 @@ namespace HeuristicLab.Algorithms.MemPR {
     }
 
     protected double ProbabilityAccept(ISingleObjectiveSolutionScope<TSolution> scope, IList<Tuple<double, double>> data) {
-      if (double.IsNaN(scope.Fitness)) Evaluate(scope, CancellationToken.None);
+      if (double.IsNaN(scope.Fitness)) {
+        Evaluate(scope, CancellationToken.None);
+        Context.IncrementEvaluatedSolutions(1);
+      }
       return ProbabilityAccept(scope.Fitness, data);
     }
     protected double ProbabilityAccept(double startingFitness, IList<Tuple<double, double>> data) {
