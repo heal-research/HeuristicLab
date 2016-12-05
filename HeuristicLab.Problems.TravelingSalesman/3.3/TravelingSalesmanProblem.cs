@@ -20,7 +20,6 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using HeuristicLab.Analysis;
@@ -36,45 +35,68 @@ using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Problems.Instances;
 
 namespace HeuristicLab.Problems.TravelingSalesman {
+  public enum TSPDistanceFunction { Euclidean, RoundedEuclidean, UpperEuclidean, Geo, DistanceMatrix };
+
   [Item("Traveling Salesman Problem (TSP)", "Represents a symmetric Traveling Salesman Problem.")]
-  [Creatable(CreatableAttribute.Categories.CombinatorialProblems, Priority = 100)]
+  [Creatable(CreatableAttribute.Categories.CombinatorialProblems, Priority = 999)]
   [StorableClass]
-  public sealed class TravelingSalesmanProblem : SingleObjectiveHeuristicOptimizationProblem<ITSPEvaluator, IPermutationCreator>, IStorableContent,
-    IProblemInstanceConsumer<TSPData> {
+  public sealed class TravelingSalesmanProblem : SingleObjectiveBasicProblem<PermutationEncoding>, IStorableContent, IProblemInstanceConsumer<TSPData> {
+    public const double PI = 3.141592;
+    public const double RADIUS = 6378.388;
     private static readonly int DistanceMatrixSizeLimit = 1000;
-    public string Filename { get; set; }
+
+    public override bool Maximization {
+      get { return false; }
+    }
 
     #region Parameter Properties
+    [Storable]
+    private IFixedValueParameter<EnumValue<TSPDistanceFunction>> distanceFunctionParameter;
+    public IFixedValueParameter<EnumValue<TSPDistanceFunction>> DistanceFunctionParameter {
+      get { return distanceFunctionParameter; }
+    }
+    [Storable]
+    private OptionalValueParameter<DoubleMatrix> coordinatesParameter;
     public OptionalValueParameter<DoubleMatrix> CoordinatesParameter {
-      get { return (OptionalValueParameter<DoubleMatrix>)Parameters["Coordinates"]; }
+      get { return coordinatesParameter; }
     }
+    [Storable]
+    private OptionalValueParameter<DistanceMatrix> distanceMatrixParameter;
     public OptionalValueParameter<DistanceMatrix> DistanceMatrixParameter {
-      get { return (OptionalValueParameter<DistanceMatrix>)Parameters["DistanceMatrix"]; }
+      get { return distanceMatrixParameter; }
     }
-    public ValueParameter<BoolValue> UseDistanceMatrixParameter {
-      get { return (ValueParameter<BoolValue>)Parameters["UseDistanceMatrix"]; }
+    [Storable]
+    private IFixedValueParameter<BoolValue> useDistanceMatrixParameter;
+    public IFixedValueParameter<BoolValue> UseDistanceMatrixParameter {
+      get { return useDistanceMatrixParameter; }
     }
+    [Storable]
+    private OptionalValueParameter<Permutation> bestKnownSolutionParameter;
     public OptionalValueParameter<Permutation> BestKnownSolutionParameter {
-      get { return (OptionalValueParameter<Permutation>)Parameters["BestKnownSolution"]; }
+      get { return bestKnownSolutionParameter; }
     }
     #endregion
 
     #region Properties
+    public TSPDistanceFunction DistanceFunction {
+      get { return distanceFunctionParameter.Value.Value; }
+      set { distanceFunctionParameter.Value.Value = value; }
+    }
     public DoubleMatrix Coordinates {
-      get { return CoordinatesParameter.Value; }
-      set { CoordinatesParameter.Value = value; }
+      get { return coordinatesParameter.Value; }
+      set { coordinatesParameter.Value = value; }
     }
     public DistanceMatrix DistanceMatrix {
-      get { return DistanceMatrixParameter.Value; }
-      set { DistanceMatrixParameter.Value = value; }
+      get { return distanceMatrixParameter.Value; }
+      set { distanceMatrixParameter.Value = value; }
     }
-    public BoolValue UseDistanceMatrix {
-      get { return UseDistanceMatrixParameter.Value; }
-      set { UseDistanceMatrixParameter.Value = value; }
+    public bool UseDistanceMatrix {
+      get { return useDistanceMatrixParameter.Value.Value; }
+      set { useDistanceMatrixParameter.Value.Value = value; }
     }
     public Permutation BestKnownSolution {
-      get { return BestKnownSolutionParameter.Value; }
-      set { BestKnownSolutionParameter.Value = value; }
+      get { return bestKnownSolutionParameter.Value; }
+      set { bestKnownSolutionParameter.Value = value; }
     }
     private BestTSPSolutionAnalyzer BestTSPSolutionAnalyzer {
       get { return Operators.OfType<BestTSPSolutionAnalyzer>().FirstOrDefault(); }
@@ -84,39 +106,31 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     }
     #endregion
 
-    // BackwardsCompatibility3.3
-    #region Backwards compatible code, remove with 3.4
-    [Obsolete]
-    [Storable(Name = "operators")]
-    private IEnumerable<IOperator> oldOperators {
-      get { return null; }
-      set {
-        if (value != null && value.Any())
-          Operators.AddRange(value);
-      }
-    }
-    #endregion
-
     [StorableConstructor]
     private TravelingSalesmanProblem(bool deserializing) : base(deserializing) { }
     private TravelingSalesmanProblem(TravelingSalesmanProblem original, Cloner cloner)
       : base(original, cloner) {
+      distanceFunctionParameter = cloner.Clone(original.distanceFunctionParameter);
+      coordinatesParameter = cloner.Clone(original.coordinatesParameter);
+      distanceMatrixParameter = cloner.Clone(original.distanceMatrixParameter);
+      useDistanceMatrixParameter = cloner.Clone(original.useDistanceMatrixParameter);
+      bestKnownSolutionParameter = cloner.Clone(original.bestKnownSolutionParameter);
       RegisterEventHandlers();
     }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new TravelingSalesmanProblem(this, cloner);
     }
-    public TravelingSalesmanProblem()
-      : base(new TSPRoundedEuclideanPathEvaluator(), new RandomPermutationCreator()) {
-      Parameters.Add(new OptionalValueParameter<DoubleMatrix>("Coordinates", "The x- and y-Coordinates of the cities."));
-      Parameters.Add(new OptionalValueParameter<DistanceMatrix>("DistanceMatrix", "The matrix which contains the distances between the cities."));
-      Parameters.Add(new ValueParameter<BoolValue>("UseDistanceMatrix", "True if the coordinates based evaluators should calculate the distance matrix from the coordinates and use it for evaluation similar to the distance matrix evaluator, otherwise false.", new BoolValue(true)));
-      Parameters.Add(new OptionalValueParameter<Permutation>("BestKnownSolution", "The best known solution of this TSP instance."));
+    public TravelingSalesmanProblem() : base() {
+      Encoding = new PermutationEncoding("TSPTour") { Length = 16 };
 
-      Maximization.Value = false;
-      MaximizationParameter.Hidden = true;
-      UseDistanceMatrixParameter.Hidden = true;
-      DistanceMatrixParameter.ReactOnValueToStringChangedAndValueItemImageChanged = false;
+      Parameters.Add(distanceFunctionParameter = new FixedValueParameter<EnumValue<TSPDistanceFunction>>("DistanceFunction", "The distance function that is used to calculate distance among the coordinates.", new EnumValue<TSPDistanceFunction>(TSPDistanceFunction.RoundedEuclidean)));
+      Parameters.Add(coordinatesParameter = new OptionalValueParameter<DoubleMatrix>("Coordinates", "The x- and y-Coordinates of the cities."));
+      Parameters.Add(distanceMatrixParameter = new OptionalValueParameter<DistanceMatrix>("DistanceMatrix", "The matrix which contains the distances between the cities."));
+      Parameters.Add(useDistanceMatrixParameter = new FixedValueParameter<BoolValue>("UseDistanceMatrix", "True if the coordinates based evaluators should calculate the distance matrix from the coordinates and use it for evaluation similar to the distance matrix evaluator, otherwise false.", new BoolValue(true)));
+      Parameters.Add(bestKnownSolutionParameter = new OptionalValueParameter<Permutation>("BestKnownSolution", "The best known solution of this TSP instance."));
+      
+      useDistanceMatrixParameter.Hidden = true;
+      distanceMatrixParameter.ReactOnValueToStringChangedAndValueItemImageChanged = false;
 
       Coordinates = new DoubleMatrix(new double[,] {
         { 100, 100 }, { 100, 200 }, { 100, 300 }, { 100, 400 },
@@ -124,107 +138,86 @@ namespace HeuristicLab.Problems.TravelingSalesman {
         { 300, 100 }, { 300, 200 }, { 300, 300 }, { 300, 400 },
         { 400, 100 }, { 400, 200 }, { 400, 300 }, { 400, 400 }
       });
-
-      SolutionCreator.PermutationParameter.ActualName = "TSPTour";
+      
       Evaluator.QualityParameter.ActualName = "TSPTourLength";
-      ParameterizeSolutionCreator();
-      ParameterizeEvaluator();
 
       InitializeOperators();
       RegisterEventHandlers();
     }
-
-    #region Events
-    protected override void OnSolutionCreatorChanged() {
-      base.OnSolutionCreatorChanged();
-      SolutionCreator.PermutationParameter.ActualNameChanged += new EventHandler(SolutionCreator_PermutationParameter_ActualNameChanged);
-      ParameterizeSolutionCreator();
-      ParameterizeEvaluator();
-      ParameterizeAnalyzers();
-      ParameterizeOperators();
-    }
-    protected override void OnEvaluatorChanged() {
-      base.OnEvaluatorChanged();
-      Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
-      ParameterizeEvaluator();
-      ParameterizeSolutionCreator();
-      UpdateMoveEvaluators();
-      ParameterizeAnalyzers();
-      if (Evaluator is ITSPCoordinatesPathEvaluator && Coordinates != null)
-        ClearDistanceMatrix();
-    }
-    private void CoordinatesParameter_ValueChanged(object sender, EventArgs e) {
-      if (Coordinates != null) {
-        Coordinates.ItemChanged += new EventHandler<EventArgs<int, int>>(Coordinates_ItemChanged);
-        Coordinates.Reset += new EventHandler(Coordinates_Reset);
-      }
-      if (Evaluator is ITSPCoordinatesPathEvaluator) {
-        ParameterizeSolutionCreator();
-        ClearDistanceMatrix();
-      }
-    }
-    private void Coordinates_ItemChanged(object sender, EventArgs<int, int> e) {
-      if (Evaluator is ITSPCoordinatesPathEvaluator) {
-        ClearDistanceMatrix();
-      }
-    }
-    private void Coordinates_Reset(object sender, EventArgs e) {
-      if (Evaluator is ITSPCoordinatesPathEvaluator) {
-        ParameterizeSolutionCreator();
-        ClearDistanceMatrix();
-      }
-    }
-    private void SolutionCreator_PermutationParameter_ActualNameChanged(object sender, EventArgs e) {
-      ParameterizeEvaluator();
-      ParameterizeAnalyzers();
-      ParameterizeOperators();
-    }
-    private void Evaluator_QualityParameter_ActualNameChanged(object sender, EventArgs e) {
-      ParameterizeAnalyzers();
-    }
-    #endregion
-
+    
     #region Helpers
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
-      // BackwardsCompatibility3.3
-      #region Backwards compatible code (remove with 3.4)
-      OptionalValueParameter<DoubleMatrix> oldDistanceMatrixParameter = Parameters["DistanceMatrix"] as OptionalValueParameter<DoubleMatrix>;
-      if (oldDistanceMatrixParameter != null) {
-        Parameters.Remove(oldDistanceMatrixParameter);
-        Parameters.Add(new OptionalValueParameter<DistanceMatrix>("DistanceMatrix", "The matrix which contains the distances between the cities."));
-        DistanceMatrixParameter.GetsCollected = oldDistanceMatrixParameter.GetsCollected;
-        DistanceMatrixParameter.ReactOnValueToStringChangedAndValueItemImageChanged = false;
-        if (oldDistanceMatrixParameter.Value != null) {
-          DoubleMatrix oldDM = oldDistanceMatrixParameter.Value;
-          DistanceMatrix newDM = new DistanceMatrix(oldDM.Rows, oldDM.Columns, oldDM.ColumnNames, oldDM.RowNames);
-          newDM.SortableView = oldDM.SortableView;
-          for (int i = 0; i < newDM.Rows; i++)
-            for (int j = 0; j < newDM.Columns; j++)
-              newDM[i, j] = oldDM[i, j];
-          DistanceMatrixParameter.Value = (DistanceMatrix)newDM.AsReadOnly();
-        }
-      }
-
-      ValueParameter<DoubleMatrix> oldCoordinates = (Parameters["Coordinates"] as ValueParameter<DoubleMatrix>);
-      if (oldCoordinates != null) {
-        Parameters.Remove(oldCoordinates);
-        Parameters.Add(new OptionalValueParameter<DoubleMatrix>("Coordinates", "The x- and y-Coordinates of the cities.", oldCoordinates.Value, oldCoordinates.GetsCollected));
-      }
-
-      if (Operators.Count == 0) InitializeOperators();
-      #endregion
       RegisterEventHandlers();
     }
 
+    public override double Evaluate(Individual individual, IRandom random) {
+      var tour = individual.Permutation(Encoding.Name);
+      return Evaluate(tour);
+    }
+
+    public double Evaluate(Permutation tour) {
+      if (UseDistanceMatrix) return EvaluateWithDistanceMatrix(tour);
+
+      switch (DistanceFunction) {
+        case TSPDistanceFunction.DistanceMatrix:
+          return EvaluateWithDistanceMatrix(tour);
+        case TSPDistanceFunction.Euclidean:
+        case TSPDistanceFunction.RoundedEuclidean:
+        case TSPDistanceFunction.UpperEuclidean:
+        case TSPDistanceFunction.Geo:
+          return EvaluateWithDistanceCalculation(tour);
+        default: throw new InvalidOperationException(string.Format("Unknown distance function: {0}", DistanceFunction));
+      }
+    }
+
+    private double EvaluateWithDistanceMatrix(Permutation tour) {
+      var distances = DistanceMatrix;
+      double length = 0;
+      for (var i = 0; i < tour.Length - 1; i++)
+        length += distances[tour[i], tour[i + 1]];
+      length += distances[tour[tour.Length - 1], tour[0]];
+      return length;
+    }
+
+    private double EvaluateWithDistanceCalculation(Permutation tour) {
+      var coordinates = Coordinates;
+      var distanceFunction = DistanceFunction;
+      double length = 0;
+      for (var i = 0; i < tour.Length - 1; i++)
+        length += CalculateDistance(distanceFunction, coordinates[tour[i], 0], coordinates[tour[i], 1], coordinates[tour[i + 1], 0], coordinates[tour[i + 1], 1]);
+      length += CalculateDistance(distanceFunction, coordinates[tour[tour.Length - 1], 0], coordinates[tour[tour.Length - 1], 1], coordinates[tour[0], 0], coordinates[tour[0], 1]);
+      return length;
+    }
+
     private void RegisterEventHandlers() {
-      CoordinatesParameter.ValueChanged += new EventHandler(CoordinatesParameter_ValueChanged);
+      coordinatesParameter.ValueChanged += coordinatesParameter_ValueChanged;
+      if (Coordinates != null) {
+        Coordinates.ItemChanged += Coordinates_ItemChanged;
+        Coordinates.Reset += Coordinates_Reset;
+      }
+      Evaluator.QualityParameter.ActualNameChanged += Evaluator_QualityParameter_ActualNameChanged;
+    }
+
+    private void Evaluator_QualityParameter_ActualNameChanged(object sender, EventArgs e) {
+      ParameterizeAnalyzers();
+      ParameterizeOperators();
+    }
+
+    private void Coordinates_Reset(object sender, EventArgs e) {
+      DistanceMatrix = null;
+    }
+
+    private void Coordinates_ItemChanged(object sender, EventArgs<int, int> e) {
+      DistanceMatrix = null;
+    }
+
+    private void coordinatesParameter_ValueChanged(object sender, EventArgs e) {
       if (Coordinates != null) {
         Coordinates.ItemChanged += new EventHandler<EventArgs<int, int>>(Coordinates_ItemChanged);
         Coordinates.Reset += new EventHandler(Coordinates_Reset);
+        DistanceMatrix = null;
       }
-      SolutionCreator.PermutationParameter.ActualNameChanged += new EventHandler(SolutionCreator_PermutationParameter_ActualNameChanged);
-      Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
     }
 
     private void InitializeOperators() {
@@ -238,133 +231,80 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       Operators.Add(new BestTSPSolutionAnalyzer());
       Operators.Add(new TSPAlleleFrequencyAnalyzer());
       Operators.Add(new PopulationSimilarityAnalyzer(Operators.OfType<ISolutionSimilarityCalculator>()));
+      Operators.AddRange(ApplicationManager.Manager.GetInstances<ITSPMoveEvaluator>());
+
       ParameterizeAnalyzers();
-      var operators = new HashSet<IPermutationOperator>(new IPermutationOperator[] {
-        new OrderCrossover2(),
-        new InversionManipulator(),
-        new StochasticInversionMultiMoveGenerator()
-      }, new TypeEqualityComparer<IPermutationOperator>());
-      foreach (var op in ApplicationManager.Manager.GetInstances<IPermutationOperator>())
-        operators.Add(op);
-      Operators.AddRange(operators);
       ParameterizeOperators();
       UpdateMoveEvaluators();
     }
     private void UpdateMoveEvaluators() {
-      Operators.RemoveAll(x => x is ISingleObjectiveMoveEvaluator);
-      foreach (var op in ApplicationManager.Manager.GetInstances<ITSPMoveEvaluator>())
-        if (op.EvaluatorType == Evaluator.GetType()) {
-          Operators.Add(op);
-        }
       ParameterizeOperators();
       OnOperatorsChanged();
-    }
-    private void ParameterizeSolutionCreator() {
-      if (Evaluator is ITSPDistanceMatrixEvaluator && DistanceMatrix != null)
-        SolutionCreator.LengthParameter.Value = new IntValue(DistanceMatrix.Rows);
-      else if (Evaluator is ITSPCoordinatesPathEvaluator && Coordinates != null)
-        SolutionCreator.LengthParameter.Value = new IntValue(Coordinates.Rows);
-      else {
-        SolutionCreator.LengthParameter.Value = null;
-        string error = "The given problem does not support the selected evaluator.";
-        if (Evaluator is ITSPDistanceMatrixEvaluator)
-          error += Environment.NewLine + "Please review that the " + DistanceMatrixParameter.Name + " parameter is defined or choose another evaluator.";
-        else error += Environment.NewLine + "Please review that the " + CoordinatesParameter.Name + " parameter is defined or choose another evaluator.";
-        PluginInfrastructure.ErrorHandling.ShowErrorDialog(error, null);
-      }
-      SolutionCreator.LengthParameter.Hidden = SolutionCreator.LengthParameter.Value != null;
-      SolutionCreator.PermutationTypeParameter.Value = new PermutationType(PermutationTypes.RelativeUndirected);
-      SolutionCreator.PermutationTypeParameter.Hidden = true;
-    }
-    private void ParameterizeEvaluator() {
-      if (Evaluator is ITSPPathEvaluator) {
-        ITSPPathEvaluator evaluator = (ITSPPathEvaluator)Evaluator;
-        evaluator.PermutationParameter.ActualName = SolutionCreator.PermutationParameter.ActualName;
-        evaluator.PermutationParameter.Hidden = true;
-      }
-      if (Evaluator is ITSPCoordinatesPathEvaluator) {
-        ITSPCoordinatesPathEvaluator evaluator = (ITSPCoordinatesPathEvaluator)Evaluator;
-        evaluator.CoordinatesParameter.ActualName = CoordinatesParameter.Name;
-        evaluator.CoordinatesParameter.Hidden = true;
-        evaluator.DistanceMatrixParameter.ActualName = DistanceMatrixParameter.Name;
-        evaluator.DistanceMatrixParameter.Hidden = true;
-        evaluator.UseDistanceMatrixParameter.ActualName = UseDistanceMatrixParameter.Name;
-        evaluator.UseDistanceMatrixParameter.Hidden = true;
-      }
-      if (Evaluator is ITSPDistanceMatrixEvaluator) {
-        var evaluator = (ITSPDistanceMatrixEvaluator)Evaluator;
-        evaluator.DistanceMatrixParameter.ActualName = DistanceMatrixParameter.Name;
-        evaluator.DistanceMatrixParameter.Hidden = true;
-      }
     }
     private void ParameterizeAnalyzers() {
       if (BestTSPSolutionAnalyzer != null) {
         BestTSPSolutionAnalyzer.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
-        BestTSPSolutionAnalyzer.CoordinatesParameter.ActualName = CoordinatesParameter.Name;
-        BestTSPSolutionAnalyzer.PermutationParameter.ActualName = SolutionCreator.PermutationParameter.ActualName;
+        BestTSPSolutionAnalyzer.CoordinatesParameter.ActualName = coordinatesParameter.Name;
+        BestTSPSolutionAnalyzer.PermutationParameter.ActualName = Encoding.SolutionCreator.PermutationParameter.ActualName;
         BestTSPSolutionAnalyzer.ResultsParameter.ActualName = "Results";
         BestTSPSolutionAnalyzer.BestKnownQualityParameter.ActualName = BestKnownQualityParameter.Name;
-        BestTSPSolutionAnalyzer.BestKnownSolutionParameter.ActualName = BestKnownSolutionParameter.Name;
-        BestTSPSolutionAnalyzer.MaximizationParameter.ActualName = MaximizationParameter.Name;
+        BestTSPSolutionAnalyzer.BestKnownSolutionParameter.ActualName = bestKnownSolutionParameter.Name;
+        BestTSPSolutionAnalyzer.MaximizationParameter.ActualName = ((ISingleObjectiveHeuristicOptimizationProblem)this).MaximizationParameter.Name;
       }
 
       if (TSPAlleleFrequencyAnalyzer != null) {
-        TSPAlleleFrequencyAnalyzer.MaximizationParameter.ActualName = MaximizationParameter.Name;
-        TSPAlleleFrequencyAnalyzer.CoordinatesParameter.ActualName = CoordinatesParameter.Name;
-        TSPAlleleFrequencyAnalyzer.DistanceMatrixParameter.ActualName = DistanceMatrixParameter.Name;
-        TSPAlleleFrequencyAnalyzer.SolutionParameter.ActualName = SolutionCreator.PermutationParameter.ActualName;
+        TSPAlleleFrequencyAnalyzer.MaximizationParameter.ActualName = ((ISingleObjectiveHeuristicOptimizationProblem)this).MaximizationParameter.Name;
+        TSPAlleleFrequencyAnalyzer.CoordinatesParameter.ActualName = coordinatesParameter.Name;
+        TSPAlleleFrequencyAnalyzer.DistanceMatrixParameter.ActualName = distanceMatrixParameter.Name;
+        TSPAlleleFrequencyAnalyzer.SolutionParameter.ActualName = Encoding.SolutionCreator.PermutationParameter.ActualName;
         TSPAlleleFrequencyAnalyzer.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
-        TSPAlleleFrequencyAnalyzer.BestKnownSolutionParameter.ActualName = BestKnownSolutionParameter.Name;
+        TSPAlleleFrequencyAnalyzer.BestKnownSolutionParameter.ActualName = bestKnownSolutionParameter.Name;
         TSPAlleleFrequencyAnalyzer.ResultsParameter.ActualName = "Results";
       }
     }
     private void ParameterizeOperators() {
-      foreach (IPermutationCrossover op in Operators.OfType<IPermutationCrossover>()) {
-        op.ParentsParameter.ActualName = SolutionCreator.PermutationParameter.ActualName;
-        op.ParentsParameter.Hidden = true;
-        op.ChildParameter.ActualName = SolutionCreator.PermutationParameter.ActualName;
-        op.ChildParameter.Hidden = true;
-      }
-      foreach (IPermutationManipulator op in Operators.OfType<IPermutationManipulator>()) {
-        op.PermutationParameter.ActualName = SolutionCreator.PermutationParameter.ActualName;
-        op.PermutationParameter.Hidden = true;
-      }
-      foreach (IPermutationMoveOperator op in Operators.OfType<IPermutationMoveOperator>()) {
-        op.PermutationParameter.ActualName = SolutionCreator.PermutationParameter.ActualName;
-        op.PermutationParameter.Hidden = true;
-      }
       foreach (ITSPPathMoveEvaluator op in Operators.OfType<ITSPPathMoveEvaluator>()) {
-        op.CoordinatesParameter.ActualName = CoordinatesParameter.Name;
+        op.DistanceFunctionParameter.ActualName = distanceFunctionParameter.Name;
+        op.DistanceFunctionParameter.Hidden = true;
+        op.CoordinatesParameter.ActualName = coordinatesParameter.Name;
         op.CoordinatesParameter.Hidden = true;
-        op.DistanceMatrixParameter.ActualName = DistanceMatrixParameter.Name;
+        op.DistanceMatrixParameter.ActualName = distanceMatrixParameter.Name;
         op.DistanceMatrixParameter.Hidden = true;
-        op.UseDistanceMatrixParameter.ActualName = UseDistanceMatrixParameter.Name;
+        op.UseDistanceMatrixParameter.ActualName = useDistanceMatrixParameter.Name;
         op.UseDistanceMatrixParameter.Hidden = true;
         op.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
         op.QualityParameter.Hidden = true;
-        op.PermutationParameter.ActualName = SolutionCreator.PermutationParameter.ActualName;
-        op.PermutationParameter.Hidden = true;
-      }
-      foreach (IPermutationMultiNeighborhoodShakingOperator op in Operators.OfType<IPermutationMultiNeighborhoodShakingOperator>()) {
-        op.PermutationParameter.ActualName = SolutionCreator.PermutationParameter.ActualName;
+        op.PermutationParameter.ActualName = Encoding.SolutionCreator.PermutationParameter.ActualName;
         op.PermutationParameter.Hidden = true;
       }
       foreach (ISingleObjectiveImprovementOperator op in Operators.OfType<ISingleObjectiveImprovementOperator>()) {
-        op.SolutionParameter.ActualName = SolutionCreator.PermutationParameter.ActualName;
+        op.SolutionParameter.ActualName = Encoding.SolutionCreator.PermutationParameter.ActualName;
         op.SolutionParameter.Hidden = true;
       }
       foreach (ISingleObjectivePathRelinker op in Operators.OfType<ISingleObjectivePathRelinker>()) {
-        op.ParentsParameter.ActualName = SolutionCreator.PermutationParameter.ActualName;
+        op.ParentsParameter.ActualName = Encoding.SolutionCreator.PermutationParameter.ActualName;
         op.ParentsParameter.Hidden = true;
       }
       foreach (ISolutionSimilarityCalculator op in Operators.OfType<ISolutionSimilarityCalculator>()) {
-        op.SolutionVariableName = SolutionCreator.PermutationParameter.ActualName;
+        op.SolutionVariableName = Encoding.SolutionCreator.PermutationParameter.ActualName;
         op.QualityVariableName = Evaluator.QualityParameter.ActualName;
       }
     }
 
-    private void ClearDistanceMatrix() {
-      DistanceMatrixParameter.Value = null;
+    public void UpdateDistanceMatrix() {
+      var df = DistanceFunction;
+      var c = Coordinates;
+      if (c == null) throw new InvalidOperationException("No coordinates are given to calculate distance matrix.");
+      DistanceMatrix = CalculateDistanceMatrix(df, c);
+    }
+
+    public static DistanceMatrix CalculateDistanceMatrix(TSPDistanceFunction distance, DoubleMatrix coordinates) {
+      var dm = new double[coordinates.Rows, coordinates.Rows];
+      for (var i = 0; i < dm.GetLength(0); i++) {
+        for (var j = 0; j < dm.GetLength(1); j++)
+          dm[i, j] = CalculateDistance(distance, coordinates[i, 0], coordinates[i, 1], coordinates[j, 0], coordinates[j, 1]);
+      }
+      return new DistanceMatrix(dm, readOnly: true);
     }
     #endregion
 
@@ -380,62 +320,56 @@ namespace HeuristicLab.Problems.TravelingSalesman {
 
       Name = data.Name;
       Description = data.Description;
-
-      bool clearCoordinates = false, clearDistanceMatrix = false;
+      
       if (data.Coordinates != null && data.Coordinates.GetLength(0) > 0)
         Coordinates = new DoubleMatrix(data.Coordinates);
-      else clearCoordinates = true;
-
-      TSPEvaluator evaluator;
+      else Coordinates = null;
+      
       if (data.DistanceMeasure == DistanceMeasure.Att
         || data.DistanceMeasure == DistanceMeasure.Manhattan
         || data.DistanceMeasure == DistanceMeasure.Maximum) {
-        evaluator = new TSPDistanceMatrixEvaluator();
-        UseDistanceMatrix = new BoolValue(true);
+        UseDistanceMatrix = true;
         DistanceMatrix = new DistanceMatrix(data.GetDistanceMatrix());
+        DistanceFunction = TSPDistanceFunction.DistanceMatrix;
       } else if (data.DistanceMeasure == DistanceMeasure.Direct && data.Distances != null) {
-        evaluator = new TSPDistanceMatrixEvaluator();
-        UseDistanceMatrix = new BoolValue(true);
+        UseDistanceMatrix = true;
         DistanceMatrix = new DistanceMatrix(data.Distances);
+        DistanceFunction = TSPDistanceFunction.DistanceMatrix;
       } else {
-        clearDistanceMatrix = true;
-        UseDistanceMatrix = new BoolValue(data.Dimension <= DistanceMatrixSizeLimit);
+        UseDistanceMatrix = data.Dimension <= DistanceMatrixSizeLimit;
         switch (data.DistanceMeasure) {
           case DistanceMeasure.Euclidean:
-            evaluator = new TSPEuclideanPathEvaluator();
+            DistanceFunction = TSPDistanceFunction.Euclidean;
             break;
           case DistanceMeasure.RoundedEuclidean:
-            evaluator = new TSPRoundedEuclideanPathEvaluator();
+            DistanceFunction = TSPDistanceFunction.RoundedEuclidean;
             break;
           case DistanceMeasure.UpperEuclidean:
-            evaluator = new TSPUpperEuclideanPathEvaluator();
+            DistanceFunction = TSPDistanceFunction.UpperEuclidean;
             break;
           case DistanceMeasure.Geo:
-            evaluator = new TSPGeoPathEvaluator();
+            DistanceFunction = TSPDistanceFunction.Geo;
             break;
           default:
             throw new InvalidDataException("An unknown distance measure is given in the instance!");
         }
+        if (UseDistanceMatrix) UpdateDistanceMatrix();
+        else DistanceMatrix = null;
       }
-      evaluator.QualityParameter.ActualName = "TSPTourLength";
-      Evaluator = evaluator;
-
-      // reset them after assigning the evaluator
-      if (clearCoordinates) Coordinates = null;
-      if (clearDistanceMatrix) DistanceMatrix = null;
-
+      Evaluator.QualityParameter.ActualName = "TSPTourLength";
+      
       BestKnownSolution = null;
-      BestKnownQuality = null;
+      BestKnownQualityParameter.Value = null;
 
       if (data.BestKnownTour != null) {
         try {
           EvaluateAndLoadTour(data.BestKnownTour);
         } catch (InvalidOperationException) {
           if (data.BestKnownQuality.HasValue)
-            BestKnownQuality = new DoubleValue(data.BestKnownQuality.Value);
+            BestKnownQuality = data.BestKnownQuality.Value;
         }
       } else if (data.BestKnownQuality.HasValue) {
-        BestKnownQuality = new DoubleValue(data.BestKnownQuality.Value);
+        BestKnownQuality = data.BestKnownQuality.Value;
       }
       OnReset();
     }
@@ -443,16 +377,55 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     public void EvaluateAndLoadTour(int[] tour) {
       var route = new Permutation(PermutationTypes.RelativeUndirected, tour);
       BestKnownSolution = route;
+      BestKnownQuality = Evaluate(route);
+    }
 
-      double quality;
-      if (Evaluator is ITSPDistanceMatrixEvaluator) {
-        quality = TSPDistanceMatrixEvaluator.Apply(DistanceMatrix, route);
-      } else if (Evaluator is ITSPCoordinatesPathEvaluator) {
-        quality = TSPCoordinatesPathEvaluator.Apply((TSPCoordinatesPathEvaluator)Evaluator, Coordinates, route);
-      } else {
-        throw new InvalidOperationException("Cannot calculate solution quality, evaluator type is unknown.");
+    public static double CalculateDistance(TSPDistanceFunction distanceFunction, double x1, double y1, double x2, double y2) {
+      switch (distanceFunction) {
+        case TSPDistanceFunction.Euclidean:
+          return CalculateEuclideanDistance(x1, y1, x2, y2);
+        case TSPDistanceFunction.RoundedEuclidean:
+          return CalculateRoundedEuclideanDistance(x1, y1, x2, y2);
+        case TSPDistanceFunction.UpperEuclidean:
+          return CalculateUpperEuclideanDistance(x1, y1, x2, y2);
+        case TSPDistanceFunction.Geo:
+          return CalculateGeoDistance(x1, y1, x2, y2);
+        default: throw new ArgumentException(string.Format("Distance calculation not available for {0}", distanceFunction));
       }
-      BestKnownQuality = new DoubleValue(quality);
+    }
+
+    public static double CalculateEuclideanDistance(double x1, double y1, double x2, double y2) {
+      return Math.Sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
+    }
+
+    public static double CalculateRoundedEuclideanDistance(double x1, double y1, double x2, double y2) {
+      return Math.Round(Math.Sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2)));
+    }
+
+    public static double CalculateUpperEuclideanDistance(double x1, double y1, double x2, double y2) {
+      return Math.Ceiling(Math.Sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2)));
+    }
+
+    public static double CalculateGeoDistance(double x1, double y1, double x2, double y2) {
+      double latitude1, longitude1, latitude2, longitude2;
+      double q1, q2, q3;
+      double length;
+
+      latitude1 = ConvertToRadian(x1);
+      longitude1 = ConvertToRadian(y1);
+      latitude2 = ConvertToRadian(x2);
+      longitude2 = ConvertToRadian(y2);
+
+      q1 = Math.Cos(longitude1 - longitude2);
+      q2 = Math.Cos(latitude1 - latitude2);
+      q3 = Math.Cos(latitude1 + latitude2);
+
+      length = (int)(RADIUS * Math.Acos(0.5 * ((1.0 + q1) * q2 - (1.0 - q1) * q3)) + 1.0);
+      return (length);
+    }
+
+    private static double ConvertToRadian(double x) {
+      return PI * (Math.Truncate(x) + 5.0 * (x - Math.Truncate(x)) / 3.0) / 180.0;
     }
   }
 }

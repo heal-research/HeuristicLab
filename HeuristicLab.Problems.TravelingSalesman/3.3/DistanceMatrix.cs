@@ -43,6 +43,9 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     public DistanceMatrix(int rows, int columns, IEnumerable<string> columnNames) : base(rows, columns, columnNames) { }
     public DistanceMatrix(int rows, int columns, IEnumerable<string> columnNames, IEnumerable<string> rowNames) : base(rows, columns, columnNames, rowNames) { }
     public DistanceMatrix(double[,] elements) : base(elements) { }
+    public DistanceMatrix(double[,] elements, bool readOnly) : base(elements) {
+      this.readOnly = readOnly;
+    }
     public DistanceMatrix(double[,] elements, IEnumerable<string> columnNames) : base(elements, columnNames) { }
     public DistanceMatrix(double[,] elements, IEnumerable<string> columnNames, IEnumerable<string> rowNames) : base(elements, columnNames, rowNames) { }
 

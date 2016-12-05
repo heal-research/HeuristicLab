@@ -32,7 +32,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
   /// </summary>
   [Item("TSPInversionMovePathEvaluator", "Evaluates an inversion move (2-opt) by summing up the length of all added edges and subtracting the length of all deleted edges.")]
   [StorableClass]
-  public abstract class TSPInversionMovePathEvaluator : TSPPathMoveEvaluator, IPermutationInversionMoveOperator {
+  public class TSPInversionMovePathEvaluator : TSPPathMoveEvaluator, IPermutationInversionMoveOperator {
     public ILookupParameter<InversionMove> InversionMoveParameter {
       get { return (ILookupParameter<InversionMove>)Parameters["InversionMove"]; }
     }
@@ -45,7 +45,11 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       Parameters.Add(new LookupParameter<InversionMove>("InversionMove", "The move to evaluate."));
     }
 
-    public static double EvaluateByCoordinates(Permutation permutation, InversionMove move, DoubleMatrix coordinates, TSPInversionMovePathEvaluator evaluator) {
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new TSPInversionMovePathEvaluator(this, cloner);
+    }
+
+    public static double EvaluateByCoordinates(Permutation permutation, InversionMove move, DoubleMatrix coordinates, TSPDistanceFunction distanceFunction) {
       int edge1source = permutation.GetCircular(move.Index1 - 1);
       int edge1target = permutation[move.Index1];
       int edge2source = permutation[move.Index2];
@@ -53,14 +57,14 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       if (move.Index2 - move.Index1 >= permutation.Length - 2) return 0;
       double moveQuality = 0;
       // remove two edges
-      moveQuality -= evaluator.CalculateDistance(coordinates[edge1source, 0], coordinates[edge1source, 1],
+      moveQuality -= TravelingSalesmanProblem.CalculateDistance(distanceFunction, coordinates[edge1source, 0], coordinates[edge1source, 1],
             coordinates[edge1target, 0], coordinates[edge1target, 1]);
-      moveQuality -= evaluator.CalculateDistance(coordinates[edge2source, 0], coordinates[edge2source, 1],
+      moveQuality -= TravelingSalesmanProblem.CalculateDistance(distanceFunction, coordinates[edge2source, 0], coordinates[edge2source, 1],
         coordinates[edge2target, 0], coordinates[edge2target, 1]);
       // add two edges
-      moveQuality += evaluator.CalculateDistance(coordinates[edge1source, 0], coordinates[edge1source, 1],
+      moveQuality += TravelingSalesmanProblem.CalculateDistance(distanceFunction, coordinates[edge1source, 0], coordinates[edge1source, 1],
         coordinates[edge2source, 0], coordinates[edge2source, 1]);
-      moveQuality += evaluator.CalculateDistance(coordinates[edge1target, 0], coordinates[edge1target, 1],
+      moveQuality += TravelingSalesmanProblem.CalculateDistance(distanceFunction, coordinates[edge1target, 0], coordinates[edge1target, 1],
         coordinates[edge2target, 0], coordinates[edge2target, 1]);
       return moveQuality;
     }
@@ -81,8 +85,8 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       return moveQuality;
     }
 
-    protected override double EvaluateByCoordinates(Permutation permutation, DoubleMatrix coordinates) {
-      return EvaluateByCoordinates(permutation, InversionMoveParameter.ActualValue, coordinates, this);
+    protected override double EvaluateByCoordinates(Permutation permutation, DoubleMatrix coordinates, TSPDistanceFunction distanceFunction) {
+      return EvaluateByCoordinates(permutation, InversionMoveParameter.ActualValue, coordinates, distanceFunction);
     }
 
     protected override double EvaluateByDistanceMatrix(Permutation permutation, DistanceMatrix distanceMatrix) {

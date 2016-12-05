@@ -45,7 +45,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       Parameters.Add(new LookupParameter<TranslocationMove>("TranslocationMove", "The move to evaluate."));
     }
 
-    public static double EvaluateByCoordinates(Permutation permutation, TranslocationMove move, DoubleMatrix coordinates, TSPTranslocationMovePathEvaluator evaluator) {
+    public static double EvaluateByCoordinates(Permutation permutation, TranslocationMove move, DoubleMatrix coordinates, TSPDistanceFunction distanceFunction) {
       if (move.Index1 == move.Index3
         || move.Index2 == permutation.Length - 1 && move.Index3 == 0
         || move.Index1 == 0 && move.Index3 == permutation.Length - 1 - move.Index2) return 0;
@@ -64,18 +64,18 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       }
       double moveQuality = 0;
       // remove three edges
-      moveQuality -= evaluator.CalculateDistance(coordinates[edge1source, 0], coordinates[edge1source, 1],
+      moveQuality -= TravelingSalesmanProblem.CalculateDistance(distanceFunction, coordinates[edge1source, 0], coordinates[edge1source, 1],
         coordinates[edge1target, 0], coordinates[edge1target, 1]);
-      moveQuality -= evaluator.CalculateDistance(coordinates[edge2source, 0], coordinates[edge2source, 1],
+      moveQuality -= TravelingSalesmanProblem.CalculateDistance(distanceFunction, coordinates[edge2source, 0], coordinates[edge2source, 1],
         coordinates[edge2target, 0], coordinates[edge2target, 1]);
-      moveQuality -= evaluator.CalculateDistance(coordinates[edge3source, 0], coordinates[edge3source, 1],
+      moveQuality -= TravelingSalesmanProblem.CalculateDistance(distanceFunction, coordinates[edge3source, 0], coordinates[edge3source, 1],
         coordinates[edge3target, 0], coordinates[edge3target, 1]);
       // add three edges
-      moveQuality += evaluator.CalculateDistance(coordinates[edge3source, 0], coordinates[edge3source, 1],
+      moveQuality += TravelingSalesmanProblem.CalculateDistance(distanceFunction, coordinates[edge3source, 0], coordinates[edge3source, 1],
         coordinates[edge1target, 0], coordinates[edge1target, 1]);
-      moveQuality += evaluator.CalculateDistance(coordinates[edge2source, 0], coordinates[edge2source, 1],
+      moveQuality += TravelingSalesmanProblem.CalculateDistance(distanceFunction, coordinates[edge2source, 0], coordinates[edge2source, 1],
         coordinates[edge3target, 0], coordinates[edge3target, 1]);
-      moveQuality += evaluator.CalculateDistance(coordinates[edge1source, 0], coordinates[edge1source, 1],
+      moveQuality += TravelingSalesmanProblem.CalculateDistance(distanceFunction, coordinates[edge1source, 0], coordinates[edge1source, 1],
         coordinates[edge2target, 0], coordinates[edge2target, 1]);
       return moveQuality;
     }
@@ -109,8 +109,8 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       return moveQuality;
     }
 
-    protected override double EvaluateByCoordinates(Permutation permutation, DoubleMatrix coordinates) {
-      return EvaluateByCoordinates(permutation, TranslocationMoveParameter.ActualValue, coordinates, this);
+    protected override double EvaluateByCoordinates(Permutation permutation, DoubleMatrix coordinates, TSPDistanceFunction distanceFunction) {
+      return EvaluateByCoordinates(permutation, TranslocationMoveParameter.ActualValue, coordinates, distanceFunction);
     }
 
     protected override double EvaluateByDistanceMatrix(Permutation permutation, DistanceMatrix distanceMatrix) {

@@ -46,6 +46,9 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     public ILookupParameter<BoolValue> UseDistanceMatrixParameter {
       get { return (ILookupParameter<BoolValue>)Parameters["UseDistanceMatrix"]; }
     }
+    public ILookupParameter<EnumValue<TSPDistanceFunction>> DistanceFunctionParameter {
+      get { return (ILookupParameter<EnumValue<TSPDistanceFunction>>)Parameters["DistanceFunction"]; }
+    }
 
     [StorableConstructor]
     protected TSPPathMoveEvaluator(bool deserializing) : base(deserializing) { }
@@ -56,54 +59,30 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       Parameters.Add(new LookupParameter<DoubleMatrix>("Coordinates", "The city's coordinates."));
       Parameters.Add(new LookupParameter<DistanceMatrix>("DistanceMatrix", "The matrix which contains the distances between the cities."));
       Parameters.Add(new LookupParameter<BoolValue>("UseDistanceMatrix", "True if a distance matrix should be calculated (if it does not exist already) and used for evaluation, otherwise false."));
-    }
-
-    [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserialization() {
-      // BackwardsCompatibility3.3
-      #region Backwards compatible code (remove with 3.4)
-      LookupParameter<DoubleMatrix> oldDistanceMatrixParameter = Parameters["DistanceMatrix"] as LookupParameter<DoubleMatrix>;
-      if (oldDistanceMatrixParameter != null) {
-        Parameters.Remove(oldDistanceMatrixParameter);
-        Parameters.Add(new LookupParameter<DistanceMatrix>("DistanceMatrix", "The matrix which contains the distances between the cities."));
-        DistanceMatrixParameter.ActualName = oldDistanceMatrixParameter.ActualName;
-      }
-      #endregion
+      Parameters.Add(new LookupParameter<EnumValue<TSPDistanceFunction>>("DistanceFunction", "The distance function to use when the distance matrix is not being used."));
     }
 
     public override IOperation Apply() {
-      Permutation permutation = PermutationParameter.ActualValue;
-      DoubleMatrix coordinates = CoordinatesParameter.ActualValue;
+      var permutation = PermutationParameter.ActualValue;
+      var coordinates = CoordinatesParameter.ActualValue;
+      var distanceFunction = DistanceFunctionParameter.ActualValue.Value;
       double relativeQualityDifference = 0;
       if (UseDistanceMatrixParameter.ActualValue.Value) {
         DistanceMatrix distanceMatrix = DistanceMatrixParameter.ActualValue;
         if (distanceMatrix == null) {
-          if (coordinates == null) throw new InvalidOperationException("Neither a distance matrix nor coordinates were given.");
-          distanceMatrix = CalculateDistanceMatrix(coordinates);
-          DistanceMatrixParameter.ActualValue = distanceMatrix;
+          throw new InvalidOperationException("Distance matrix is not given.");
         }
         relativeQualityDifference = EvaluateByDistanceMatrix(permutation, distanceMatrix);
       } else {
         if (coordinates == null) throw new InvalidOperationException("No coordinates were given.");
-        relativeQualityDifference = EvaluateByCoordinates(permutation, coordinates);
+        relativeQualityDifference = EvaluateByCoordinates(permutation, coordinates, distanceFunction);
       }
       DoubleValue moveQuality = MoveQualityParameter.ActualValue;
       if (moveQuality == null) MoveQualityParameter.ActualValue = new DoubleValue(QualityParameter.ActualValue.Value + relativeQualityDifference);
       else moveQuality.Value = QualityParameter.ActualValue.Value + relativeQualityDifference;
       return base.Apply();
     }
-
-    protected abstract double CalculateDistance(double x1, double y1, double x2, double y2);
     protected abstract double EvaluateByDistanceMatrix(Permutation permutation, DistanceMatrix distanceMatrix);
-    protected abstract double EvaluateByCoordinates(Permutation permutation, DoubleMatrix coordinates);
-
-    private DistanceMatrix CalculateDistanceMatrix(DoubleMatrix c) {
-      DistanceMatrix distanceMatrix = new DistanceMatrix(c.Rows, c.Rows);
-      for (int i = 0; i < distanceMatrix.Rows; i++) {
-        for (int j = 0; j < distanceMatrix.Columns; j++)
-          distanceMatrix[i, j] = CalculateDistance(c[i, 0], c[i, 1], c[j, 0], c[j, 1]);
-      }
-      return (DistanceMatrix)distanceMatrix.AsReadOnly();
-    }
+    protected abstract double EvaluateByCoordinates(Permutation permutation, DoubleMatrix coordinates, TSPDistanceFunction distanceFunction);
   }
 }

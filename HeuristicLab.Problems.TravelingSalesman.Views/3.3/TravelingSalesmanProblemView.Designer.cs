@@ -44,6 +44,7 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
       this.parametersTabPage = new System.Windows.Forms.TabPage();
       this.visualizationTabPage = new System.Windows.Forms.TabPage();
       this.pathTSPTourView = new HeuristicLab.Problems.TravelingSalesman.Views.PathTSPTourView();
+      this.updateDistanceMatrixButton = new System.Windows.Forms.Button();
       ((System.ComponentModel.ISupportInitialize)(this.problemInstanceSplitContainer)).BeginInit();
       this.problemInstanceSplitContainer.Panel1.SuspendLayout();
       this.problemInstanceSplitContainer.Panel2.SuspendLayout();
@@ -59,6 +60,7 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
       // 
       // problemInstanceSplitContainer.Panel2
       // 
+      this.problemInstanceSplitContainer.Panel2.Controls.Add(this.updateDistanceMatrixButton);
       this.problemInstanceSplitContainer.Panel2.Controls.Add(this.tabControl);
       // 
       // parameterCollectionView
@@ -66,7 +68,7 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
       this.parameterCollectionView.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)));
       this.parameterCollectionView.Dock = System.Windows.Forms.DockStyle.Fill;
       this.parameterCollectionView.Location = new System.Drawing.Point(3, 3);
-      this.parameterCollectionView.Size = new System.Drawing.Size(497, 274);
+      this.parameterCollectionView.Size = new System.Drawing.Size(497, 245);
       // 
       // nameTextBox
       // 
@@ -76,15 +78,15 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
       // tabControl
       // 
       this.tabControl.AllowDrop = true;
-      this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.tabControl.Controls.Add(this.parametersTabPage);
       this.tabControl.Controls.Add(this.visualizationTabPage);
-      this.tabControl.Location = new System.Drawing.Point(0, 27);
+      this.tabControl.Location = new System.Drawing.Point(0, 56);
       this.tabControl.Name = "tabControl";
       this.tabControl.SelectedIndex = 0;
-      this.tabControl.Size = new System.Drawing.Size(511, 306);
+      this.tabControl.Size = new System.Drawing.Size(511, 277);
       this.tabControl.TabIndex = 4;
       // 
       // parametersTabPage
@@ -93,7 +95,7 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
       this.parametersTabPage.Location = new System.Drawing.Point(4, 22);
       this.parametersTabPage.Name = "parametersTabPage";
       this.parametersTabPage.Padding = new System.Windows.Forms.Padding(3);
-      this.parametersTabPage.Size = new System.Drawing.Size(503, 280);
+      this.parametersTabPage.Size = new System.Drawing.Size(503, 251);
       this.parametersTabPage.TabIndex = 0;
       this.parametersTabPage.Text = "Parameters";
       this.parametersTabPage.UseVisualStyleBackColor = true;
@@ -111,9 +113,9 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
       // 
       // pathTSPTourView
       // 
-      this.pathTSPTourView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.pathTSPTourView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.pathTSPTourView.Caption = "PathTSPTour View";
       this.pathTSPTourView.Content = null;
       this.pathTSPTourView.Location = new System.Drawing.Point(6, 6);
@@ -122,9 +124,18 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
       this.pathTSPTourView.Size = new System.Drawing.Size(491, 268);
       this.pathTSPTourView.TabIndex = 0;
       // 
+      // updateDistanceMatrixButton
+      // 
+      this.updateDistanceMatrixButton.Location = new System.Drawing.Point(3, 27);
+      this.updateDistanceMatrixButton.Name = "updateDistanceMatrixButton";
+      this.updateDistanceMatrixButton.Size = new System.Drawing.Size(133, 23);
+      this.updateDistanceMatrixButton.TabIndex = 5;
+      this.updateDistanceMatrixButton.Text = "Update Distance Matrix";
+      this.updateDistanceMatrixButton.UseVisualStyleBackColor = true;
+      this.updateDistanceMatrixButton.Click += new System.EventHandler(this.updateDistanceMatrixButton_Click);
+      // 
       // TravelingSalesmanProblemView
       // 
-      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.Name = "TravelingSalesmanProblemView";
       this.problemInstanceSplitContainer.Panel1.ResumeLayout(false);
@@ -147,5 +158,6 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
     private System.Windows.Forms.TabPage parametersTabPage;
     private System.Windows.Forms.TabPage visualizationTabPage;
     private PathTSPTourView pathTSPTourView;
+    private System.Windows.Forms.Button updateDistanceMatrixButton;
   }
 }

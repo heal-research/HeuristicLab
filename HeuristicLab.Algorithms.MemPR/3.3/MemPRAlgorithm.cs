@@ -556,7 +556,9 @@ namespace HeuristicLab.Algorithms.MemPR {
       if ((IsBetter(offspring, p1) && IsBetter(offspring, p2))
         || Context.Population.Any(p => IsBetter(offspring, p))) return offspring;
 
-      if (HillclimbingSuited(offspring))
+      if (IsBetter(offspring.Fitness, Context.BestQuality))
+        HillClimb(offspring, token); // perform hillclimb in full solution space
+      else if (HillclimbingSuited(offspring))
         HillClimb(offspring, token, subspace); // perform hillclimb in the solution sub-space
       return offspring;
     }
@@ -586,8 +588,10 @@ namespace HeuristicLab.Algorithms.MemPR {
       var dist2 = Dist(child, b);
       if (dist1 > 0 && dist2 > 0) {
         var subspace = CalculateSubspace(new[] { a.Solution, b.Solution }, inverse: true);
-        if (HillclimbingSuited(child)) {
-          HillClimb(child, token, subspace);
+        if (IsBetter(child.Fitness, Context.BestQuality))
+          HillClimb(child, token); // perform hillclimb in full solution space
+        else if (HillclimbingSuited(child)) {
+          HillClimb(child, token, subspace); // perform hillclimb in solution sub-space
         }
       }
       return child;

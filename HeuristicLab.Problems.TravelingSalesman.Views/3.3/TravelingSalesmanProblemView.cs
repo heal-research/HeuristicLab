@@ -21,6 +21,7 @@
 
 using System;
 using System.Windows.Forms;
+using HeuristicLab.Data;
 using HeuristicLab.MainForm;
 using HeuristicLab.Optimization.Views;
 
@@ -45,14 +46,14 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
 
     protected override void DeregisterContentEvents() {
       Content.CoordinatesParameter.ValueChanged -= new EventHandler(CoordinatesParameter_ValueChanged);
-      Content.BestKnownQualityParameter.ValueChanged -= new EventHandler(BestKnownQualityParameter_ValueChanged);
+      //Content.BestKnownQualityParameter.ValueChanged -= new EventHandler(BestKnownQualityParameter_ValueChanged);
       Content.BestKnownSolutionParameter.ValueChanged -= new EventHandler(BestKnownSolutionParameter_ValueChanged);
       base.DeregisterContentEvents();
     }
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
       Content.CoordinatesParameter.ValueChanged += new EventHandler(CoordinatesParameter_ValueChanged);
-      Content.BestKnownQualityParameter.ValueChanged += new EventHandler(BestKnownQualityParameter_ValueChanged);
+      //Content.BestKnownQualityParameter.ValueChanged += new EventHandler(BestKnownQualityParameter_ValueChanged);
       Content.BestKnownSolutionParameter.ValueChanged += new EventHandler(BestKnownSolutionParameter_ValueChanged);
     }
 
@@ -61,23 +62,28 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
       if (Content == null) {
         pathTSPTourView.Content = null;
       } else {
-        pathTSPTourView.Content = new PathTSPTour(Content.Coordinates, Content.BestKnownSolution, Content.BestKnownQuality);
+        pathTSPTourView.Content = new PathTSPTour(Content.Coordinates, Content.BestKnownSolution, new DoubleValue(Content.BestKnownQuality));
       }
     }
 
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
       pathTSPTourView.Enabled = Content != null;
+      updateDistanceMatrixButton.Enabled = Content != null && !ReadOnly && !Locked;
     }
 
     private void CoordinatesParameter_ValueChanged(object sender, EventArgs e) {
       pathTSPTourView.Content.Coordinates = Content.Coordinates;
     }
     private void BestKnownQualityParameter_ValueChanged(object sender, EventArgs e) {
-      pathTSPTourView.Content.Quality = Content.BestKnownQuality;
+      pathTSPTourView.Content.Quality = new DoubleValue(Content.BestKnownQuality);
     }
     private void BestKnownSolutionParameter_ValueChanged(object sender, EventArgs e) {
       pathTSPTourView.Content.Permutation = Content.BestKnownSolution;
+    }
+
+    private void updateDistanceMatrixButton_Click(object sender, EventArgs e) {
+      Content.UpdateDistanceMatrix();
     }
   }
 }

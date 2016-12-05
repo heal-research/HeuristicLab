@@ -23,7 +23,5 @@ using System;
 using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Problems.TravelingSalesman {
-  public interface ITSPMoveEvaluator : ISingleObjectiveMoveEvaluator, IMoveOperator {
-    Type EvaluatorType { get; }
-  }
+  public interface ITSPMoveEvaluator : ISingleObjectiveMoveEvaluator, IMoveOperator { }
 }
