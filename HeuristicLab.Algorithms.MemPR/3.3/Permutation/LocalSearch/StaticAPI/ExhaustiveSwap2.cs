@@ -20,28 +20,35 @@
 #endregion
 
 using System;
+using System.Linq;
 using System.Threading;
 using HeuristicLab.Algorithms.MemPR.Util;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
+using HeuristicLab.Random;
 
 namespace HeuristicLab.Algorithms.MemPR.Permutation.LocalSearch {
   public static class ExhaustiveSwap2 {
     public static Tuple<int, int> HillClimb(IRandom random, Encodings.PermutationEncoding.Permutation perm,
       ref double quality, bool maximization, Func<Encodings.PermutationEncoding.Permutation, double> eval,
-      CancellationToken token, bool[,] noTouch = null) {
+      CancellationToken token, bool[,] subspace = null) {
+      var evaluations = 0;
       var current = perm;
-      if (double.IsNaN(quality)) quality = eval(current);
+      if (double.IsNaN(quality)) {
+        quality = eval(current);
+        evaluations++;
+      }
       Swap2Move lastSuccessMove = null;
-      int steps = 0, evaluations = 0;
+      var steps = 0;
+      var neighborhood = ExhaustiveSwap2MoveGenerator.Generate(current).Shuffle(random).ToList();
       while (true) {
-        foreach (var swap in ExhaustiveSwap2MoveGenerator.Generate(current)) {
+        foreach (var swap in neighborhood) {
           if (lastSuccessMove != null && swap.Index1 == lastSuccessMove.Index1 && swap.Index2 == lastSuccessMove.Index2) {
             // been there, done that
             lastSuccessMove = null;
             break;
           }
-          if (noTouch != null && (noTouch[swap.Index1, 0] || noTouch[swap.Index2, 0]))
+          if (subspace != null && !(subspace[swap.Index1, 0] && subspace[swap.Index2, 0]))
             continue;
 
           var h = current[swap.Index1];

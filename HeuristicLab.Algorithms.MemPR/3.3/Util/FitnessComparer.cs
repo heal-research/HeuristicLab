@@ -22,8 +22,9 @@
 namespace HeuristicLab.Algorithms.MemPR.Util {
   public static class FitnessComparer {
     public static bool IsBetter(bool maximization, double a, double b) {
-      return maximization && a > b
-             || !maximization && a < b;
+      return double.IsNaN(b) && !double.IsNaN(a)
+        || maximization && a > b
+        || !maximization && a < b;
     }
   }
 }

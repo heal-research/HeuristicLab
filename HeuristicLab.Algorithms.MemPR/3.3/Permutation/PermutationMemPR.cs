@@ -143,34 +143,37 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation {
       return new PermutationSolutionSubspace(subspace);
     }
 
-    protected override void TabuWalk(ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> scope, int steps, CancellationToken token, ISolutionSubspace<Encodings.PermutationEncoding.Permutation> subspace = null) {
+    protected override int TabuWalk(ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> scope, int maxEvals, CancellationToken token, ISolutionSubspace<Encodings.PermutationEncoding.Permutation> subspace = null) {
       var wrapper = new EvaluationWrapper<Encodings.PermutationEncoding.Permutation>(Context.Problem, scope);
       var quality = scope.Fitness;
       try {
-        TabuWalk(Context.Random, scope.Solution, wrapper.Evaluate, ref quality, Context.HcSteps, subspace != null ? ((PermutationSolutionSubspace)subspace).Subspace : null);
+        return TabuWalk(Context.Random, scope.Solution, wrapper.Evaluate, ref quality, maxEvals, subspace != null ? ((PermutationSolutionSubspace)subspace).Subspace : null);
       } finally {
         scope.Fitness = quality;
       }
     }
 
-    public void TabuWalk(IRandom random, Encodings.PermutationEncoding.Permutation perm, Func<Encodings.PermutationEncoding.Permutation, IRandom, double> eval, ref double quality, int maxIterations = int.MaxValue, bool[,] noTouch = null) {
+    public int TabuWalk(IRandom random, Encodings.PermutationEncoding.Permutation perm, Func<Encodings.PermutationEncoding.Permutation, IRandom, double> eval, ref double quality, int maxEvals = int.MaxValue, bool[,] subspace = null) {
+      int newSteps = 0;
       switch (perm.PermutationType) {
         case PermutationTypes.Absolute:
-          TabuWalkSwap(random, perm, eval, ref quality, maxIterations, noTouch);
+          newSteps = TabuWalkSwap(random, perm, eval, ref quality, maxEvals, subspace);
           break;
         case PermutationTypes.RelativeDirected:
-          TabuWalkShift(random, perm, eval, ref quality, maxIterations, noTouch);
+          newSteps = TabuWalkShift(random, perm, eval, ref quality, maxEvals, subspace);
           break;
         case PermutationTypes.RelativeUndirected:
-          TabuWalkOpt(random, perm, eval, ref quality, maxIterations, noTouch);
+          newSteps = TabuWalkOpt(random, perm, eval, ref quality, maxEvals, subspace);
           break;
         default: throw new ArgumentException(string.Format("Permutation type {0} is not known", perm.PermutationType));
       }
       if (VALIDATE && !perm.Validate()) throw new ArgumentException("TabuWalk produced invalid child");
+      return newSteps;
     }
 
-    public void TabuWalkSwap(IRandom random, Encodings.PermutationEncoding.Permutation perm, Func<Encodings.PermutationEncoding.Permutation, IRandom, double> eval, ref double quality, int maxIterations = int.MaxValue, bool[,] noTouch = null) {
+    public int TabuWalkSwap(IRandom random, Encodings.PermutationEncoding.Permutation perm, Func<Encodings.PermutationEncoding.Permutation, IRandom, double> eval, ref double quality, int maxEvals = int.MaxValue, bool[,] subspace = null) {
       var evaluations = 0;
+      var maximization = Context.Problem.Maximization;
       if (double.IsNaN(quality)) {
         quality = eval(perm, random);
         evaluations++;
@@ -188,13 +191,15 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation {
         tabu[i, current[i]] = currentF;
       }
 
-      for (var iter = 0; iter < maxIterations; iter++) {
+      var steps = 0;
+      var stepsUntilBestOfWalk = 0;
+      for (var iter = 0; iter < int.MaxValue; iter++) {
         var allTabu = true;
         var bestOfTheRestF = double.NaN;
         Swap2Move bestOfTheRest = null;
         var improved = false;
         foreach (var swap in ExhaustiveSwap2MoveGenerator.Generate(current).Shuffle(random)) {
-          if (noTouch != null && (noTouch[swap.Index1, 0] || noTouch[swap.Index2, 0]))
+          if (subspace != null && !(subspace[swap.Index1, 0] && subspace[swap.Index2, 0]))
             continue;
 
           var h = current[swap.Index1];
@@ -202,71 +207,79 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation {
           current[swap.Index2] = h;
           var q = eval(current, random);
           evaluations++;
-          if (q < quality) {
+          if (FitnessComparer.IsBetter(maximization, q, quality)) {
             overallImprovement = true;
             quality = q;
             for (var i = 0; i < current.Length; i++) perm[i] = current[i];
           }
           // check if it would not be an improvement to swap these into their positions
-          var isTabu = q >= tabu[swap.Index1, current[swap.Index1]] && q >= tabu[swap.Index2, current[swap.Index2]];
+          var isTabu = !FitnessComparer.IsBetter(maximization, q, tabu[swap.Index1, current[swap.Index1]])
+                    && !FitnessComparer.IsBetter(maximization, q, tabu[swap.Index2, current[swap.Index2]]);
           if (!isTabu) allTabu = false;
-          if (q < currentF && !isTabu) {
-            if (double.IsNaN(bestOfTheWalkF) || bestOfTheWalkF > q) {
+          if (FitnessComparer.IsBetter(maximization, q, currentF) && !isTabu) {
+            if (FitnessComparer.IsBetter(maximization, q, bestOfTheWalkF)) {
               bestOfTheWalk = (Encodings.PermutationEncoding.Permutation)current.Clone();
               bestOfTheWalkF = q;
+              stepsUntilBestOfWalk = steps;
             }
-
+            steps++;
             improved = true;
             // perform the move
             currentF = q;
             // mark that to move them to their previous position requires to make an improvement
-            tabu[swap.Index1, current[swap.Index2]] = Math.Min(q, tabu[swap.Index1, current[swap.Index2]]);
-            //LogAlways("Making Tabu [{0},{1}] = {2}", swap.Index1, current[swap.Index2], tabu[swap.Index1, current[swap.Index2]]);
-            tabu[swap.Index2, current[swap.Index1]] = Math.Min(q, tabu[swap.Index2, current[swap.Index1]]);
-            //LogAlways("Making Tabu [{0},{1}] = {2}", swap.Index2, current[swap.Index1], tabu[swap.Index2, current[swap.Index1]]);
+            tabu[swap.Index1, current[swap.Index2]] = maximization ? Math.Max(q, tabu[swap.Index1, current[swap.Index2]])
+                                                                   : Math.Min(q, tabu[swap.Index1, current[swap.Index2]]);
+            tabu[swap.Index2, current[swap.Index1]] = maximization ? Math.Max(q, tabu[swap.Index2, current[swap.Index1]])
+                                                                   : Math.Min(q, tabu[swap.Index2, current[swap.Index1]]);
           } else { // undo the move
-            if (!isTabu && (double.IsNaN(bestOfTheRestF) || q < bestOfTheRestF)) {
+            if (!isTabu && FitnessComparer.IsBetter(maximization, q, bestOfTheRestF)) {
               bestOfTheRest = swap;
               bestOfTheRestF = q;
             }
             current[swap.Index2] = current[swap.Index1];
             current[swap.Index1] = h;
           }
+          if (evaluations >= maxEvals) break;
         }
-        if (!allTabu && !improved) {
-          tabu[bestOfTheRest.Index1, current[bestOfTheRest.Index1]] = Math.Min(currentF, tabu[bestOfTheRest.Index1, current[bestOfTheRest.Index1]]);
-          tabu[bestOfTheRest.Index2, current[bestOfTheRest.Index2]] = Math.Min(currentF, tabu[bestOfTheRest.Index2, current[bestOfTheRest.Index2]]);
+        if (!allTabu && !improved && bestOfTheRest != null) {
+          tabu[bestOfTheRest.Index1, current[bestOfTheRest.Index1]] = maximization ? Math.Max(currentF, tabu[bestOfTheRest.Index1, current[bestOfTheRest.Index1]])
+                                                                                   : Math.Min(currentF, tabu[bestOfTheRest.Index1, current[bestOfTheRest.Index1]]);
+          tabu[bestOfTheRest.Index2, current[bestOfTheRest.Index2]] = maximization ? Math.Max(currentF, tabu[bestOfTheRest.Index2, current[bestOfTheRest.Index2]])
+                                                                                   : Math.Min(currentF, tabu[bestOfTheRest.Index2, current[bestOfTheRest.Index2]]);
 
           var h = current[bestOfTheRest.Index1];
           current[bestOfTheRest.Index1] = current[bestOfTheRest.Index2];
           current[bestOfTheRest.Index2] = h;
 
           currentF = bestOfTheRestF;
+          steps++;
         } else if (allTabu) break;
+        if (evaluations >= maxEvals) break;
       }
       Context.IncrementEvaluatedSolutions(evaluations);
       if (!overallImprovement && bestOfTheWalk != null) {
         quality = bestOfTheWalkF;
         for (var i = 0; i < current.Length; i++) perm[i] = bestOfTheWalk[i];
       }
+      return stepsUntilBestOfWalk;
     }
 
-    public void TabuWalkShift(IRandom random, Encodings.PermutationEncoding.Permutation perm, Func<Encodings.PermutationEncoding.Permutation, IRandom, double> eval, ref double quality, int maxIterations = int.MaxValue, bool[,] noTouch = null) {
-      return;
+    public int TabuWalkShift(IRandom random, Encodings.PermutationEncoding.Permutation perm, Func<Encodings.PermutationEncoding.Permutation, IRandom, double> eval, ref double quality, int maxEvals = int.MaxValue, bool[,] subspace = null) {
+      return 0;
     }
 
-    public void TabuWalkOpt(IRandom random, Encodings.PermutationEncoding.Permutation perm, Func<Encodings.PermutationEncoding.Permutation, IRandom, double> eval, ref double quality, int maxIterations = int.MaxValue, bool[,] noTouch = null) {
+    public int TabuWalkOpt(IRandom random, Encodings.PermutationEncoding.Permutation perm, Func<Encodings.PermutationEncoding.Permutation, IRandom, double> eval, ref double quality, int maxEvals = int.MaxValue, bool[,] subspace = null) {
+      var maximization = Context.Problem.Maximization;
       var evaluations = 0;
       if (double.IsNaN(quality)) {
         quality = eval(perm, random);
         evaluations++;
       }
       Encodings.PermutationEncoding.Permutation bestOfTheWalk = null;
-      double bestOfTheWalkF = double.NaN;
+      var bestOfTheWalkF = double.NaN;
       var current = (Encodings.PermutationEncoding.Permutation)perm.Clone();
       var currentF = quality;
       var overallImprovement = false;
-      //Console.WriteLine("Current    {0}", string.Join(", ", current));
       var tabu = new double[current.Length, current.Length];
       for (var i = 0; i < current.Length; i++) {
         for (var j = i; j < current.Length; j++) {
@@ -276,7 +289,9 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation {
         tabu[current.GetCircular(i + 1), current[i]] = currentF;
       }
 
-      for (var iter = 0; iter < maxIterations; iter++) {
+      var steps = 0;
+      var stepsUntilBestOfWalk = 0;
+      for (var iter = 0; iter < int.MaxValue; iter++) {
         var allTabu = true;
         var bestOfTheRestF = double.NaN;
         InversionMove bestOfTheRest = null;
@@ -286,64 +301,84 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation {
           var prev = opt.Index1 - 1;
           var next = (opt.Index2 + 1) % current.Length;
           if (prev < 0) prev += current.Length;
-          if (noTouch != null && ((noTouch[current[prev], current[opt.Index1]]) || (noTouch[current[opt.Index2], current[next]])))
+          if (subspace != null && !(subspace[current[prev], current[opt.Index1]] && subspace[current[opt.Index2], current[next]]))
             continue;
 
           InversionManipulator.Apply(current, opt.Index1, opt.Index2);
 
           var q = eval(current, random);
           evaluations++;
-          if (q < quality) {
+          if (FitnessComparer.IsBetter(maximization, q, quality)) {
             overallImprovement = true;
             quality = q;
             for (var i = 0; i < current.Length; i++) perm[i] = current[i];
           }
           // check if it would not be an improvement to opt these into their positions
-          var isTabu = q >= tabu[current[prev], current[opt.Index1]] && q >= tabu[current[opt.Index2], current[next]];
+          var isTabu = !FitnessComparer.IsBetter(maximization, q, tabu[current[prev], current[opt.Index1]])
+                    && !FitnessComparer.IsBetter(maximization, q, tabu[current[opt.Index2], current[next]]);
           if (!isTabu) allTabu = false;
-          if (q < currentF && !isTabu) {
-            if (double.IsNaN(bestOfTheWalkF) || bestOfTheWalkF > q) {
+          if (!isTabu && FitnessComparer.IsBetter(maximization, q, currentF)) {
+            if (FitnessComparer.IsBetter(maximization, q, bestOfTheWalkF)) {
               bestOfTheWalk = (Encodings.PermutationEncoding.Permutation)current.Clone();
               bestOfTheWalkF = q;
+              stepsUntilBestOfWalk = steps;
             }
 
+            steps++;
             improved = true;
             // perform the move
             currentF = q;
             // mark that to move them to their previous position requires to make an improvement
-            tabu[current[prev], current[opt.Index2]] = Math.Min(q, tabu[current[prev], current[opt.Index2]]);
-            tabu[current[opt.Index2], current[prev]] = Math.Min(q, tabu[current[opt.Index2], current[prev]]);
-            tabu[current[opt.Index1], current[next]] = Math.Min(q, tabu[current[opt.Index1], current[next]]);
-            tabu[current[next], current[opt.Index1]] = Math.Min(q, tabu[current[next], current[opt.Index1]]);
+            if (maximization) {
+              tabu[current[prev], current[opt.Index2]] = Math.Max(q, tabu[current[prev], current[opt.Index2]]);
+              tabu[current[opt.Index2], current[prev]] = Math.Max(q, tabu[current[opt.Index2], current[prev]]);
+              tabu[current[opt.Index1], current[next]] = Math.Max(q, tabu[current[opt.Index1], current[next]]);
+              tabu[current[next], current[opt.Index1]] = Math.Max(q, tabu[current[next], current[opt.Index1]]);
+            } else {
+              tabu[current[prev], current[opt.Index2]] = Math.Min(q, tabu[current[prev], current[opt.Index2]]);
+              tabu[current[opt.Index2], current[prev]] = Math.Min(q, tabu[current[opt.Index2], current[prev]]);
+              tabu[current[opt.Index1], current[next]] = Math.Min(q, tabu[current[opt.Index1], current[next]]);
+              tabu[current[next], current[opt.Index1]] = Math.Min(q, tabu[current[next], current[opt.Index1]]);
+            }
           } else { // undo the move
-            if (!isTabu && (double.IsNaN(bestOfTheRestF) || q < bestOfTheRestF)) {
+            if (!isTabu && FitnessComparer.IsBetter(maximization, q, bestOfTheRestF)) {
               bestOfTheRest = opt;
               bestOfTheRestF = q;
             }
 
             InversionManipulator.Apply(current, opt.Index1, opt.Index2);
           }
+          if (evaluations >= maxEvals) break;
         }
-        if (!allTabu && !improved) {
+        if (!allTabu && !improved && bestOfTheRest != null) {
           var prev = bestOfTheRest.Index1 - 1;
           var next = (bestOfTheRest.Index2 + 1) % current.Length;
           if (prev < 0) prev += current.Length;
 
-          tabu[current[prev], current[bestOfTheRest.Index1]] = Math.Min(currentF, tabu[current[prev], current[bestOfTheRest.Index1]]);
-          tabu[current[bestOfTheRest.Index1], current[prev]] = Math.Min(currentF, tabu[current[bestOfTheRest.Index1], current[prev]]);
-          tabu[current[bestOfTheRest.Index2], current[next]] = Math.Min(currentF, tabu[current[bestOfTheRest.Index2], current[next]]);
-          tabu[current[next], current[bestOfTheRest.Index2]] = Math.Min(currentF, tabu[current[next], current[bestOfTheRest.Index2]]);
-
+          if (maximization) {
+            tabu[current[prev], current[bestOfTheRest.Index1]] = Math.Max(currentF, tabu[current[prev], current[bestOfTheRest.Index1]]);
+            tabu[current[bestOfTheRest.Index1], current[prev]] = Math.Max(currentF, tabu[current[bestOfTheRest.Index1], current[prev]]);
+            tabu[current[bestOfTheRest.Index2], current[next]] = Math.Max(currentF, tabu[current[bestOfTheRest.Index2], current[next]]);
+            tabu[current[next], current[bestOfTheRest.Index2]] = Math.Max(currentF, tabu[current[next], current[bestOfTheRest.Index2]]);
+          } else {
+            tabu[current[prev], current[bestOfTheRest.Index1]] = Math.Min(currentF, tabu[current[prev], current[bestOfTheRest.Index1]]);
+            tabu[current[bestOfTheRest.Index1], current[prev]] = Math.Min(currentF, tabu[current[bestOfTheRest.Index1], current[prev]]);
+            tabu[current[bestOfTheRest.Index2], current[next]] = Math.Min(currentF, tabu[current[bestOfTheRest.Index2], current[next]]);
+            tabu[current[next], current[bestOfTheRest.Index2]] = Math.Min(currentF, tabu[current[next], current[bestOfTheRest.Index2]]);
+          }
           InversionManipulator.Apply(current, bestOfTheRest.Index1, bestOfTheRest.Index2);
 
           currentF = bestOfTheRestF;
+          steps++;
         } else if (allTabu) break;
+        if (evaluations >= maxEvals) break;
       }
       Context.IncrementEvaluatedSolutions(evaluations);
       if (!overallImprovement && bestOfTheWalk != null) {
         quality = bestOfTheWalkF;
         for (var i = 0; i < current.Length; i++) perm[i] = bestOfTheWalk[i];
       }
+      return stepsUntilBestOfWalk;
     }
 
     protected override ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> Cross(ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> p1, ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> p2, CancellationToken token) {
@@ -477,6 +512,7 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation {
     }
 
     public Encodings.PermutationEncoding.Permutation RelinkSwap(IRandom random, Encodings.PermutationEncoding.Permutation p1, Encodings.PermutationEncoding.Permutation p2, Func<Encodings.PermutationEncoding.Permutation, IRandom, double> eval, out double best) {
+      var maximization = Context.Problem.Maximization;
       var evaluations = 0;
       var child = (Encodings.PermutationEncoding.Permutation)p1.Clone();
 
@@ -501,7 +537,7 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation {
           Swap(child, invChild[p2[idx]], idx);
           var moveF = eval(child, random);
           evaluations++;
-          if (double.IsNaN(bestChange) || moveF < bestChange) {
+          if (FitnessComparer.IsBetter(maximization, moveF, bestChange)) {
             bestChange = moveF;
             bestOption = j;
           }
@@ -515,7 +551,7 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation {
           invChild[child[idx1]] = idx1;
           invChild[child[idx2]] = idx2;
           //Log(string.Join(", ", child));
-          if (double.IsNaN(best) || bestChange < best) {
+          if (FitnessComparer.IsBetter(maximization, bestChange, best)) {
             if (Dist(child, p2) > 0) {
               best = bestChange;
               bestChild = (Encodings.PermutationEncoding.Permutation)child.Clone();
@@ -524,16 +560,20 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation {
           options.RemoveAt(bestOption);
         }
       }
+      if (bestChild == null) {
+        best = eval(child, random);
+        evaluations++;
+      }
       Context.IncrementEvaluatedSolutions(evaluations);
 
       if (VALIDATE && bestChild != null && !bestChild.Validate()) throw new ArgumentException("Relinking produced invalid child");
       if (VALIDATE && Dist(child, p2) > 0) throw new InvalidOperationException("Child is not equal to p2 after relinking");
-      
-      if (bestChild == null) best = eval(child, random);
+
       return bestChild ?? child;
     }
 
     public Encodings.PermutationEncoding.Permutation RelinkShift(IRandom random, Encodings.PermutationEncoding.Permutation p1, Encodings.PermutationEncoding.Permutation p2, Func<Encodings.PermutationEncoding.Permutation, IRandom, double> eval, out double best) {
+      var maximization = Context.Problem.Maximization;
       var evaluations = 0;
       var child = (Encodings.PermutationEncoding.Permutation)p1.Clone();
 
@@ -556,7 +596,7 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation {
           else Shift(child, from: c, to: n);
           var moveF = eval(child, random);
           evaluations++;
-          if (double.IsNaN(bestChange) || moveF < bestChange) {
+          if (FitnessComparer.IsBetter(maximization, moveF, bestChange)) {
             bestChange = moveF;
             bestFrom = c < n ? n : c;
             bestTo = c < n ? c + 1 : n;
@@ -568,20 +608,27 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation {
         if (!double.IsNaN(bestChange)) {
           Shift(child, bestFrom, bestTo);
           for (var i = Math.Min(bestFrom, bestTo); i < Math.Max(bestFrom, bestTo); i++) invChild[child[i]] = i;
-          if (double.IsNaN(best) || bestChange < best) {
+          if (FitnessComparer.IsBetter(maximization, bestChange, best)) {
             best = bestChange;
             bestChild = (Encodings.PermutationEncoding.Permutation)child.Clone();
           }
         }
       } while (!double.IsNaN(bestChange));
 
+      if (bestChild == null) {
+        best = eval(child, random);
+        evaluations++;
+      }
       Context.IncrementEvaluatedSolutions(evaluations);
-      if (VALIDATE && !bestChild.Validate()) throw new ArgumentException("Relinking produced invalid child");
+
+      if (VALIDATE && bestChild != null && !bestChild.Validate()) throw new ArgumentException("Relinking produced invalid child");
       if (VALIDATE && Dist(child, p2) > 0) throw new InvalidOperationException("Child is not equal to p2 after relinking");
-      return bestChild;
+
+      return bestChild ?? child;
     }
 
     public Encodings.PermutationEncoding.Permutation RelinkOpt(IRandom random, Encodings.PermutationEncoding.Permutation p1, Encodings.PermutationEncoding.Permutation p2, Func<Encodings.PermutationEncoding.Permutation, IRandom, double> eval, out double best) {
+      var maximization = Context.Problem.Maximization;
       var evaluations = 0;
       var child = (Encodings.PermutationEncoding.Permutation)p1.Clone();
 
@@ -601,7 +648,6 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation {
       do {
         Queue<Tuple<int, int>> bestQueue = null;
         bestChange = double.NaN;
-        //Log("{0}", string.Join(" ", child));
         for (var j = 0; j < p2.Length; j++) {
           if (IsUndirectedEdge(invChild, p2[j], p2.GetCircular(j + 1))) continue;
 
@@ -660,7 +706,7 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation {
           }
           var moveF = eval(child, random);
           evaluations++;
-          if (double.IsNaN(bestChange) || moveF < bestChange) {
+          if (FitnessComparer.IsBetter(maximization, moveF, bestChange)) {
             bestChange = moveF;
             bestQueue = new Queue<Tuple<int, int>>(undoStack.Reverse());
           }
@@ -676,18 +722,22 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation {
             Opt(child, m.Item1, m.Item2);
           }
           for (var i = 0; i < child.Length; i++) invChild[child[i]] = i;
-          if (double.IsNaN(best) || bestChange < best) {
+          if (FitnessComparer.IsBetter(maximization, bestChange, best)) {
             best = bestChange;
             bestChild = (Encodings.PermutationEncoding.Permutation)child.Clone();
           }
         }
       } while (!double.IsNaN(bestChange));
 
+      if (bestChild == null) {
+        best = eval(child, random);
+        evaluations++;
+      }
       Context.IncrementEvaluatedSolutions(evaluations);
       
-      if (VALIDATE && !bestChild.Validate()) throw new ArgumentException("Relinking produced invalid child");
+      if (VALIDATE && bestChild != null && !bestChild.Validate()) throw new ArgumentException("Relinking produced invalid child");
       if (VALIDATE && Dist(child, p2) > 0) throw new InvalidOperationException("Child is not equal to p2 after relinking");
-      return bestChild;
+      return bestChild ?? child;
     }
 
     private static bool IsUndirectedEdge(int[] invP, int a, int b) {

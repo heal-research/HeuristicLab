@@ -122,6 +122,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     }
     public TravelingSalesmanProblem() : base() {
       Encoding = new PermutationEncoding("TSPTour") { Length = 16 };
+      Encoding.PermutationTypeParameter.Value.Value = PermutationTypes.RelativeUndirected;
 
       Parameters.Add(distanceFunctionParameter = new FixedValueParameter<EnumValue<TSPDistanceFunction>>("DistanceFunction", "The distance function that is used to calculate distance among the coordinates.", new EnumValue<TSPDistanceFunction>(TSPDistanceFunction.RoundedEuclidean)));
       Parameters.Add(coordinatesParameter = new OptionalValueParameter<DoubleMatrix>("Coordinates", "The x- and y-Coordinates of the cities."));

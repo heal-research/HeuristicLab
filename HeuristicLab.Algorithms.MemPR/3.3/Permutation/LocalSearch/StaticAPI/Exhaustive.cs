@@ -34,18 +34,18 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation.LocalSearch {
 
     public static Tuple<int, int> HillClimb(IRandom random, Encodings.PermutationEncoding.Permutation perm,
       ref double quality, bool maximization, Func<Encodings.PermutationEncoding.Permutation, double> eval,
-      CancellationToken token, bool[,] noTouch = null) {
+      CancellationToken token, bool[,] subspace = null) {
       if (double.IsNaN(quality)) quality = eval(perm);
       Tuple<int, int> changes;
       switch (perm.PermutationType) {
         case PermutationTypes.Absolute:
-          changes = ExhaustiveSwap2.HillClimb(random, perm, ref quality, maximization, eval, token, noTouch);
+          changes = ExhaustiveSwap2.HillClimb(random, perm, ref quality, maximization, eval, token, subspace);
           break;
         case PermutationTypes.RelativeDirected:
-          changes = Exhaustive1Shift.HillClimb(random, perm, ref quality, maximization, eval, token, noTouch);
+          changes = Exhaustive1Shift.HillClimb(random, perm, ref quality, maximization, eval, token, subspace);
           break;
         case PermutationTypes.RelativeUndirected:
-          changes = Exhaustive2Opt.HillClimb(random, perm, ref quality, maximization, eval, token, noTouch);
+          changes = Exhaustive2Opt.HillClimb(random, perm, ref quality, maximization, eval, token, subspace);
           break;
         default: throw new ArgumentException(string.Format("Permutation type {0} is not known", perm.PermutationType));
       }

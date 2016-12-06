@@ -96,7 +96,7 @@ namespace HeuristicLab.Algorithms.MemPR.Binary {
       return new BinarySolutionSubspace(subspace);
     }
 
-    protected override void TabuWalk(ISingleObjectiveSolutionScope<BinaryVector> scope, int steps, CancellationToken token, ISolutionSubspace<BinaryVector> subspace = null) {
+    protected override int TabuWalk(ISingleObjectiveSolutionScope<BinaryVector> scope, int maxEvals, CancellationToken token, ISolutionSubspace<BinaryVector> subspace = null) {
       var evaluations = 0;
       var subset = subspace != null ? ((BinarySolutionSubspace)subspace).Subspace : null;
       if (double.IsNaN(scope.Fitness)) {
@@ -110,10 +110,12 @@ namespace HeuristicLab.Algorithms.MemPR.Binary {
       var tabu = new Tuple<double, double>[N];
       for (var i = 0; i < N; i++) tabu[i] = Tuple.Create(current[i] ? double.NaN : currentScope.Fitness, !current[i] ? double.NaN : currentScope.Fitness);
       var subN = subset != null ? subset.Count(x => x) : N;
-      if (subN == 0) return;
+      if (subN == 0) return 0;
       var order = Enumerable.Range(0, N).Where(x => subset == null || subset[x]).Shuffle(Context.Random).ToArray();
 
-      for (var iter = 0; iter < steps; iter++) {
+      var steps = 0;
+      var stepsUntilBestOfWalk = 0;
+      for (var iter = 0; iter < int.MaxValue; iter++) {
         var allTabu = true;
         var bestOfTheRestF = double.NaN;
         int bestOfTheRest = -1;
@@ -129,6 +131,7 @@ namespace HeuristicLab.Algorithms.MemPR.Binary {
 
           if (IsBetter(after, before) && (bestOfTheWalk == null || IsBetter(after, bestOfTheWalk.Fitness))) {
             bestOfTheWalk = (SingleObjectiveSolutionScope<BinaryVector>)currentScope.Clone();
+            stepsUntilBestOfWalk = steps;
           }
 
           var qualityToBeat = current[idx] ? tabu[idx].Item2 : tabu[idx].Item1;
@@ -137,6 +140,7 @@ namespace HeuristicLab.Algorithms.MemPR.Binary {
 
           if (IsBetter(after, before) && !isTabu) {
             improved = true;
+            steps++;
             tabu[idx] = current[idx] ? Tuple.Create(after, tabu[idx].Item2) : Tuple.Create(tabu[idx].Item1, after);
           } else { // undo the move
             if (!isTabu && IsBetter(after, bestOfTheRestF)) {
@@ -146,17 +150,21 @@ namespace HeuristicLab.Algorithms.MemPR.Binary {
             current[idx] = !current[idx];
             currentScope.Fitness = before;
           }
+          if (evaluations >= maxEvals) break;
         }
         if (!allTabu && !improved) {
           var better = currentScope.Fitness;
           current[bestOfTheRest] = !current[bestOfTheRest];
           tabu[bestOfTheRest] = current[bestOfTheRest] ? Tuple.Create(better, tabu[bestOfTheRest].Item2) : Tuple.Create(tabu[bestOfTheRest].Item1, better);
           currentScope.Fitness = bestOfTheRestF;
+          steps++;
         } else if (allTabu) break;
+        if (evaluations >= maxEvals) break;
       }
 
       Context.IncrementEvaluatedSolutions(evaluations);
       scope.Adopt(bestOfTheWalk ?? currentScope);
+      return stepsUntilBestOfWalk;
     }
 
     protected override ISingleObjectiveSolutionScope<BinaryVector> Cross(ISingleObjectiveSolutionScope<BinaryVector> p1, ISingleObjectiveSolutionScope<BinaryVector> p2, CancellationToken token) {

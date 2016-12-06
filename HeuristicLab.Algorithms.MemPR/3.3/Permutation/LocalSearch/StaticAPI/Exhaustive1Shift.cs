@@ -20,22 +20,29 @@
 #endregion
 
 using System;
+using System.Linq;
 using System.Threading;
 using HeuristicLab.Algorithms.MemPR.Util;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
+using HeuristicLab.Random;
 
 namespace HeuristicLab.Algorithms.MemPR.Permutation.LocalSearch {
   public static class Exhaustive1Shift {
     public static Tuple<int, int> HillClimb(IRandom random, Encodings.PermutationEncoding.Permutation perm,
       ref double quality, bool maximization, Func<Encodings.PermutationEncoding.Permutation, double> eval,
-      CancellationToken token, bool[,] noTouch = null) {
+      CancellationToken token, bool[,] subspace = null) {
+      var evaluations = 0;
       var current = perm;
-      if (double.IsNaN(quality)) quality = eval(current);
+      if (double.IsNaN(quality)) {
+        quality = eval(current);
+        evaluations++;
+      }
       TranslocationMove lastSuccessMove = null;
-      int steps = 0, evaluations = 0;
+      var steps = 0;
+      var neighborhood = ExhaustiveInsertionMoveGenerator.Generate(current).Shuffle(random).ToList();
       while (true) {
-        foreach (var shift in ExhaustiveInsertionMoveGenerator.Generate(current)) {
+        foreach (var shift in neighborhood) {
           if (lastSuccessMove != null && shift.Index1 == lastSuccessMove.Index1 && shift.Index2 == lastSuccessMove.Index2 && shift.Index3 == lastSuccessMove.Index3) {
             // been there, done that
             lastSuccessMove = null;
@@ -47,8 +54,8 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation.LocalSearch {
           var prev3 = shift.Index3 - 1;
           var next3 = (shift.Index3 + 1) % current.Length;
           if (prev3 < 0) prev3 += current.Length;
-          if (noTouch != null && ((noTouch[current[prev1], current[shift.Index1]] || noTouch[current[shift.Index1], current[next1]]
-                                || noTouch[current[prev3], current[shift.Index3]] || noTouch[current[shift.Index3], current[next3]])))
+          if (subspace != null && !(subspace[current[prev1], current[shift.Index1]] && subspace[current[shift.Index1], current[next1]]
+                                && subspace[current[prev3], current[shift.Index3]] && subspace[current[shift.Index3], current[next3]]))
             continue;
           TranslocationManipulator.Apply(current, shift.Index1, shift.Index2, shift.Index3);
           var q = eval(current);

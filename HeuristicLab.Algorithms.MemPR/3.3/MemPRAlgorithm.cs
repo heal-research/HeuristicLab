@@ -230,6 +230,7 @@ namespace HeuristicLab.Algorithms.MemPR {
           Context.AddToPopulation(child);
           Analyze(token);
           token.ThrowIfCancellationRequested();
+          if (Terminate()) return;
         }
         Context.HcSteps /= 2;
         Context.Initialized = true;
@@ -313,6 +314,9 @@ namespace HeuristicLab.Algorithms.MemPR {
       if (!Results.TryGetValue("Iterations", out res))
         Results.Add(new Result("Iterations", new IntValue(Context.Iterations)));
       else ((IntValue)res.Value).Value = Context.Iterations;
+      if (!Results.TryGetValue("HcSteps", out res))
+        Results.Add(new Result("HcSteps", new IntValue(Context.HcSteps)));
+      else ((IntValue)res.Value).Value = Context.HcSteps;
       if (!Results.TryGetValue("ByBreeding", out res))
         Results.Add(new Result("ByBreeding", new IntValue(Context.ByBreeding)));
       else ((IntValue)res.Value).Value = Context.ByBreeding;
@@ -490,7 +494,7 @@ namespace HeuristicLab.Algorithms.MemPR {
       var after = scope.Fitness;
       Context.HillclimbingStat.Add(Tuple.Create(before, after));
       Context.IncrementEvaluatedSolutions(lscontext.EvaluatedSolutions);
-      return lscontext.Iterations;
+      return lscontext.EvaluatedSolutions;
     }
 
     protected virtual void PerformTabuWalk(ISingleObjectiveSolutionScope<TSolution> scope, int steps, CancellationToken token, ISolutionSubspace<TSolution> subspace = null) {
@@ -500,12 +504,13 @@ namespace HeuristicLab.Algorithms.MemPR {
       }
       var before = scope.Fitness;
       var newScope = (ISingleObjectiveSolutionScope<TSolution>)scope.Clone();
-      TabuWalk(newScope, steps, token, subspace);
+      var newSteps = TabuWalk(newScope, steps, token, subspace);
       Context.TabuwalkingStat.Add(Tuple.Create(before, newScope.Fitness));
+      //Context.HcSteps = (int)Math.Ceiling(Context.HcSteps * (1.0 + Context.TabuwalkingStat.Count) / (2.0 + Context.TabuwalkingStat.Count) + newSteps / (2.0 + Context.TabuwalkingStat.Count));
       if (IsBetter(newScope, scope) || (newScope.Fitness == scope.Fitness && Dist(newScope, scope) > 0))
         scope.Adopt(newScope);
     }
-    protected abstract void TabuWalk(ISingleObjectiveSolutionScope<TSolution> scope, int steps, CancellationToken token, ISolutionSubspace<TSolution> subspace = null);
+    protected abstract int TabuWalk(ISingleObjectiveSolutionScope<TSolution> scope, int maxEvals, CancellationToken token, ISolutionSubspace<TSolution> subspace = null);
     protected virtual void TabuClimb(ISingleObjectiveSolutionScope<TSolution> scope, int steps, CancellationToken token, ISolutionSubspace<TSolution> subspace = null) {
       if (double.IsNaN(scope.Fitness)) {
         Evaluate(scope, token);
@@ -513,8 +518,9 @@ namespace HeuristicLab.Algorithms.MemPR {
       }
       var before = scope.Fitness;
       var newScope = (ISingleObjectiveSolutionScope<TSolution>)scope.Clone();
-      TabuWalk(newScope, steps, token, subspace);
+      var newSteps = TabuWalk(newScope, steps, token, subspace);
       Context.TabuwalkingStat.Add(Tuple.Create(before, newScope.Fitness));
+      //Context.HcSteps = (int)Math.Ceiling(Context.HcSteps * (1.0 + Context.TabuwalkingStat.Count) / (2.0 + Context.TabuwalkingStat.Count) + newSteps / (2.0 + Context.TabuwalkingStat.Count));
       if (IsBetter(newScope, scope) || (newScope.Fitness == scope.Fitness && Dist(newScope, scope) > 0))
         scope.Adopt(newScope);
     }
@@ -556,9 +562,7 @@ namespace HeuristicLab.Algorithms.MemPR {
       if ((IsBetter(offspring, p1) && IsBetter(offspring, p2))
         || Context.Population.Any(p => IsBetter(offspring, p))) return offspring;
 
-      if (IsBetter(offspring.Fitness, Context.BestQuality))
-        HillClimb(offspring, token); // perform hillclimb in full solution space
-      else if (HillclimbingSuited(offspring))
+      if (HillclimbingSuited(offspring))
         HillClimb(offspring, token, subspace); // perform hillclimb in the solution sub-space
       return offspring;
     }
@@ -588,9 +592,7 @@ namespace HeuristicLab.Algorithms.MemPR {
       var dist2 = Dist(child, b);
       if (dist1 > 0 && dist2 > 0) {
         var subspace = CalculateSubspace(new[] { a.Solution, b.Solution }, inverse: true);
-        if (IsBetter(child.Fitness, Context.BestQuality))
-          HillClimb(child, token); // perform hillclimb in full solution space
-        else if (HillclimbingSuited(child)) {
+        if (HillclimbingSuited(child)) {
           HillClimb(child, token, subspace); // perform hillclimb in solution sub-space
         }
       }
