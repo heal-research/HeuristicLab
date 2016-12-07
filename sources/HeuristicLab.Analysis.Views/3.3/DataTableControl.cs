@@ -541,9 +541,9 @@ namespace HeuristicLab.Analysis.Views {
       if (!row.Values.Any()) return;
 
       int bins = histogramRows.Max(r => r.VisualProperties.Bins);
-      double minValue = histogramRows.Min(r => r.Values.Min());
-      double maxValue = histogramRows.Max(r => r.Values.Max());
-      double intervalWidth = (maxValue - minValue) / bins;
+      decimal minValue = (decimal)histogramRows.Min(r => r.Values.Min());
+      decimal maxValue = (decimal)histogramRows.Max(r => r.Values.Max());
+      decimal intervalWidth = (maxValue - minValue) / bins;
       if (intervalWidth < 0) return;
       if (intervalWidth == 0) {
         series.Points.AddXY(minValue, row.Values.Count);
@@ -551,22 +551,22 @@ namespace HeuristicLab.Analysis.Views {
       }
 
       if (!histogramRows.Any(r => r.VisualProperties.ExactBins)) {
-        intervalWidth = HumanRoundRange(intervalWidth);
+        intervalWidth = (decimal)HumanRoundRange((double)intervalWidth);
         minValue = Math.Floor(minValue / intervalWidth) * intervalWidth;
         maxValue = Math.Ceiling(maxValue / intervalWidth) * intervalWidth;
       }
 
-      double intervalCenter = intervalWidth / 2;
+      decimal intervalCenter = intervalWidth / 2;
 
-      double min = 0.0, max = 0.0;
+      decimal min = 0.0m, max = 0.0m;
       if (!Double.IsNaN(Content.VisualProperties.XAxisMinimumFixedValue) && !Content.VisualProperties.XAxisMinimumAuto)
-        min = Content.VisualProperties.XAxisMinimumFixedValue;
+        min = (decimal)Content.VisualProperties.XAxisMinimumFixedValue;
       else min = minValue;
       if (!Double.IsNaN(Content.VisualProperties.XAxisMaximumFixedValue) && !Content.VisualProperties.XAxisMaximumAuto)
-        max = Content.VisualProperties.XAxisMaximumFixedValue;
+        max = (decimal)Content.VisualProperties.XAxisMaximumFixedValue;
       else max = maxValue + intervalWidth;
 
-      double axisInterval = intervalWidth / row.VisualProperties.ScaleFactor;
+      double axisInterval = (double)intervalWidth / row.VisualProperties.ScaleFactor;
 
       var area = chart.ChartAreas[0];
       area.AxisX.Interval = axisInterval;
@@ -574,7 +574,7 @@ namespace HeuristicLab.Analysis.Views {
       series.SetCustomProperty("PointWidth", "1"); // 0.8 is the default value
 
       // get the range or intervals which define the grouping of the frequency values
-      var doubleRange = DoubleRange(min, max, intervalWidth).Skip(1).ToList();
+      var range = Range(min, max, intervalWidth).Skip(1).ToList();
 
       // aggregate the row values by unique key and frequency value
       var valueFrequencies = (from v in row.Values
@@ -584,15 +584,15 @@ namespace HeuristicLab.Analysis.Views {
                               select new Tuple<double, double>(g.First(), g.Count())).ToList();
 
       // ensure that each column is displayed completely on the chart by adding two dummy datapoints on the upper and lower range
-      series.Points.Add(new DataPoint(min - intervalWidth, 0));
-      series.Points.Add(new DataPoint(max + intervalWidth, 0));
+      series.Points.Add(new DataPoint((double)(min - intervalWidth), 0));
+      series.Points.Add(new DataPoint((double)(max + intervalWidth), 0));
 
       // add data points
       int j = 0;
-      foreach (var d in doubleRange) {
+      foreach (var d in range) {
         double sum = 0.0;
         // sum the frequency values that fall within the same interval
-        while (j < valueFrequencies.Count && valueFrequencies[j].Item1 < d) {
+        while (j < valueFrequencies.Count && (decimal)valueFrequencies[j].Item1 < d) {
           sum += valueFrequencies[j].Item2;
           ++j;
         }
@@ -602,7 +602,7 @@ namespace HeuristicLab.Analysis.Views {
         string yAxisTitle = string.IsNullOrEmpty(Content.VisualProperties.YAxisTitle)
                               ? "Y"
                               : Content.VisualProperties.YAxisTitle;
-        series.Points.Add(new DataPoint(d - intervalCenter, sum) {
+        series.Points.Add(new DataPoint((double)(d - intervalCenter), sum) {
           ToolTip =
             xAxisTitle + ": [" + (d - intervalWidth) + "-" + d + ")" + Environment.NewLine +
             yAxisTitle + ": " + sum
@@ -611,8 +611,8 @@ namespace HeuristicLab.Analysis.Views {
     }
 
     #region Helpers
-    public static IEnumerable<double> DoubleRange(double min, double max, double step) {
-      double i;
+    public static IEnumerable<decimal> Range(decimal min, decimal max, decimal step) {
+      decimal i;
       for (i = min; i <= max; i += step)
         yield return i;
 
