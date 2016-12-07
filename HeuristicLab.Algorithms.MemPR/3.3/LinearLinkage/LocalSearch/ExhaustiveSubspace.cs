@@ -24,34 +24,33 @@ using HeuristicLab.Algorithms.MemPR.Interfaces;
 using HeuristicLab.Algorithms.MemPR.Util;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Encodings.Binary.LocalSearch;
-using HeuristicLab.Encodings.BinaryVectorEncoding;
+using HeuristicLab.Encodings.LinearLinkageEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Algorithms.MemPR.Binary.LocalSearch {
-  [Item("Exhaustive Bitflip Local (Subspace) Search (binary)", "", ExcludeGenericTypeInfo = true)]
+namespace HeuristicLab.Algorithms.MemPR.LinearLinkage.LocalSearch {
+  [Item("Exhaustive Local (Subspace) Search (linear linkage)", "", ExcludeGenericTypeInfo = true)]
   [StorableClass]
-  public class ExhaustiveBitflipSubspace<TContext> : NamedItem, ILocalSearch<TContext>
-      where TContext : ISingleSolutionHeuristicAlgorithmContext<SingleObjectiveBasicProblem<BinaryVectorEncoding>, BinaryVector>, IBinaryVectorSubspaceContext {
+  public class ExhaustiveSubspace<TContext> : NamedItem, ILocalSearch<TContext>
+      where TContext : ISingleSolutionHeuristicAlgorithmContext<SingleObjectiveBasicProblem<LinearLinkageEncoding>, Encodings.LinearLinkageEncoding.LinearLinkage>, ILinearLinkageSubspaceContext {
 
     [StorableConstructor]
-    protected ExhaustiveBitflipSubspace(bool deserializing) : base(deserializing) { }
-    protected ExhaustiveBitflipSubspace(ExhaustiveBitflipSubspace<TContext> original, Cloner cloner) : base(original, cloner) { }
-    public ExhaustiveBitflipSubspace() {
+    protected ExhaustiveSubspace(bool deserializing) : base(deserializing) { }
+    protected ExhaustiveSubspace(ExhaustiveSubspace<TContext> original, Cloner cloner) : base(original, cloner) { }
+    public ExhaustiveSubspace() {
       Name = ItemName;
       Description = ItemDescription;
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new ExhaustiveBitflipSubspace<TContext>(this, cloner);
+      return new ExhaustiveSubspace<TContext>(this, cloner);
     }
 
     public void Optimize(TContext context) {
-      var evalWrapper = new EvaluationWrapper<BinaryVector>(context.Problem, context.Solution);
+      var evalWrapper = new EvaluationWrapper<Encodings.LinearLinkageEncoding.LinearLinkage>(context.Problem, context.Solution);
       var quality = context.Solution.Fitness;
       try {
-        var result = ExhaustiveBitflip.Optimize(context.Random, context.Solution.Solution, ref quality,
+        var result = ExhaustiveLocalSearch.Optimize(context.Random, context.Solution.Solution, ref quality,
           context.Problem.Maximization, evalWrapper.Evaluate, CancellationToken.None, context.Subspace.Subspace);
         context.IncrementEvaluatedSolutions(result.Item1);
         context.Iterations = result.Item2;

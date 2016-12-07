@@ -95,6 +95,14 @@
     <Compile Include="Binary\SolutionModel\Univariate\BiasedModelTrainer.cs" />
     <Compile Include="Binary\SolutionModel\Univariate\UnbiasedModelTrainer.cs" />
     <Compile Include="Interfaces\Interfaces.cs" />
+    <Compile Include="LinearLinkage\LinearLinkageMemPR.cs" />
+    <Compile Include="LinearLinkage\LinearLinkageSolutionSubspace.cs" />
+    <Compile Include="LinearLinkage\LinearLinkageMemPRContext.cs" />
+    <Compile Include="LinearLinkage\LocalSearch\ExhaustiveSubspace.cs" />
+    <Compile Include="LinearLinkage\LocalSearch\StaticAPI\ExhaustiveLocalSearch.cs" />
+    <Compile Include="LinearLinkage\SolutionModel\Univariate\StaticAPI\Trainer.cs" />
+    <Compile Include="LinearLinkage\SolutionModel\Univariate\UnbiasedModelTrainer.cs" />
+    <Compile Include="LinearLinkage\SolutionModel\Univariate\UnivariateSolutionModel.cs" />
     <Compile Include="MemPRAlgorithm.cs" />
     <Compile Include="Permutation\PermutationMemPR.cs" />
     <Compile Include="Permutation\PermutationMemPRContext.cs" />
@@ -105,7 +113,6 @@
     <Compile Include="Permutation\LocalSearch\StaticAPI\Exhaustive1Shift.cs" />
     <Compile Include="Permutation\LocalSearch\StaticAPI\Exhaustive2Opt.cs" />
     <Compile Include="Permutation\LocalSearch\StaticAPI\ExhaustiveSwap2.cs" />
-    <Compile Include="Permutation\SimilarityCalculator.cs" />
     <Compile Include="Permutation\SolutionModel\Univariate\StaticAPI\Trainer.cs" />
     <Compile Include="Permutation\SolutionModel\Univariate\UnbiasedModelTrainer.cs" />
     <Compile Include="Permutation\SolutionModel\Univariate\UnivariateRelativeModel.cs" />
@@ -154,6 +161,11 @@
       <Name>HeuristicLab.Encodings.BinaryVectorEncoding-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Encodings.LinearLinkageEncoding\3.3\HeuristicLab.Encodings.LinearLinkageEncoding-3.3.csproj">
+      <Project>{BE698769-975A-429E-828C-72BB2B6182C8}</Project>
+      <Name>HeuristicLab.Encodings.LinearLinkageEncoding-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Encodings.PermutationEncoding\3.3\HeuristicLab.Encodings.PermutationEncoding-3.3.csproj">
       <Project>{dbecb8b0-b166-4133-baf1-ed67c3fd7fca}</Project>
       <Name>HeuristicLab.Encodings.PermutationEncoding-3.3</Name>
@@ -162,6 +174,11 @@
     <ProjectReference Include="..\..\HeuristicLab.Operators\3.3\HeuristicLab.Operators-3.3.csproj">
       <Project>{23da7ff4-d5b8-41b6-aa96-f0561d24f3ee}</Project>
       <Name>HeuristicLab.Operators-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Optimization.Operators\3.3\HeuristicLab.Optimization.Operators-3.3.csproj">
+      <Project>{25087811-F74C-4128-BC86-8324271DA13E}</Project>
+      <Name>HeuristicLab.Optimization.Operators-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Optimization\3.3\HeuristicLab.Optimization-3.3.csproj">

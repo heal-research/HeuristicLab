@@ -71,7 +71,7 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation {
     }
 
     private static double Dist(Encodings.PermutationEncoding.Permutation a, Encodings.PermutationEncoding.Permutation b) {
-      return 1.0 - PermutationSimilarityCalculator.CalculateSimilarity(a, b);
+      return 1.0 - HammingSimilarityCalculator.CalculateSimilarity(a, b);
     }
 
     protected override ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> ToScope(Encodings.PermutationEncoding.Permutation code, double fitness = double.NaN) {

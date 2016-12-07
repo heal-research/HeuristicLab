@@ -21,6 +21,7 @@
  
 using System.Collections.Generic;
 using HeuristicLab.Algorithms.MemPR.Binary;
+using HeuristicLab.Algorithms.MemPR.LinearLinkage;
 using HeuristicLab.Algorithms.MemPR.Permutation;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
@@ -93,6 +94,9 @@ namespace HeuristicLab.Algorithms.MemPR.Interfaces {
   }
   public interface IPermutationSubspaceContext : ISolutionSubspaceContext<Encodings.PermutationEncoding.Permutation> {
     new PermutationSolutionSubspace Subspace { get; }
+  }
+  public interface ILinearLinkageSubspaceContext : ISolutionSubspaceContext<Encodings.LinearLinkageEncoding.LinearLinkage> {
+    new LinearLinkageSolutionSubspace Subspace { get; }
   }
 
 
