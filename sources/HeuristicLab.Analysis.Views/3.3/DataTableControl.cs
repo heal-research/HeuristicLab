@@ -180,7 +180,7 @@ namespace HeuristicLab.Analysis.Views {
           series.ChartType = SeriesChartType.FastPoint;
           break;
         case DataRowVisualProperties.DataRowChartType.Histogram:
-          series.ChartType = SeriesChartType.Column;
+          series.ChartType = SeriesChartType.StackedColumn;
           series.SetCustomProperty("PointWidth", "1");
           if (!series.Color.IsEmpty && series.Color.GetBrightness() < 0.25)
             series.BorderColor = Color.White;
@@ -499,7 +499,20 @@ namespace HeuristicLab.Analysis.Views {
     private void FillSeriesWithRowValues(Series series, DataRow row) {
       switch (row.VisualProperties.ChartType) {
         case DataRowVisualProperties.DataRowChartType.Histogram:
-          CalculateHistogram(series, row);
+          // when a single histogram is updated, all histograms must be updated. otherwise the value ranges and bin sizes may not be equal.
+          var histograms = Content.Rows
+            .Where(r => r.VisualProperties.ChartType == DataRowVisualProperties.DataRowChartType.Histogram)
+            .ToList();
+          CalculateHistogram(series, row, histograms);
+          foreach (var h in from r in histograms
+                            where r != row
+                            let s = chart.Series.FindByName(r.Name)
+                            where s != null
+                            where !invisibleSeries.Contains(s)
+                            select new { row = r, series = s }) {
+            h.series.Points.Clear();
+            CalculateHistogram(h.series, h.row, histograms);
+          }
           break;
         default: {
             bool yLogarithmic = series.YAxisType == AxisType.Primary
@@ -523,13 +536,13 @@ namespace HeuristicLab.Analysis.Views {
       }
     }
 
-    protected virtual void CalculateHistogram(Series series, DataRow row) {
+    protected virtual void CalculateHistogram(Series series, DataRow row, IEnumerable<DataRow> histogramRows) {
       series.Points.Clear();
       if (!row.Values.Any()) return;
-      int bins = row.VisualProperties.Bins;
 
-      double minValue = row.Values.Min();
-      double maxValue = row.Values.Max();
+      int bins = histogramRows.Max(r => r.VisualProperties.Bins);
+      double minValue = histogramRows.Min(r => r.Values.Min());
+      double maxValue = histogramRows.Max(r => r.Values.Max());
       double intervalWidth = (maxValue - minValue) / bins;
       if (intervalWidth < 0) return;
       if (intervalWidth == 0) {
@@ -537,7 +550,7 @@ namespace HeuristicLab.Analysis.Views {
         return;
       }
 
-      if (!row.VisualProperties.ExactBins) {
+      if (!histogramRows.Any(r => r.VisualProperties.ExactBins)) {
         intervalWidth = HumanRoundRange(intervalWidth);
         minValue = Math.Floor(minValue / intervalWidth) * intervalWidth;
         maxValue = Math.Ceiling(maxValue / intervalWidth) * intervalWidth;
@@ -570,9 +583,9 @@ namespace HeuristicLab.Analysis.Views {
                               group v by v into g
                               select new Tuple<double, double>(g.First(), g.Count())).ToList();
 
-      // shift the chart to the left so the bars are placed on the intervals
-      if (valueFrequencies.First().Item1 < doubleRange.First())
-        series.Points.Add(new DataPoint(min - intervalWidth, 0));
+      // ensure that each column is displayed completely on the chart by adding two dummy datapoints on the upper and lower range
+      series.Points.Add(new DataPoint(min - intervalWidth, 0));
+      series.Points.Add(new DataPoint(max + intervalWidth, 0));
 
       // add data points
       int j = 0;
