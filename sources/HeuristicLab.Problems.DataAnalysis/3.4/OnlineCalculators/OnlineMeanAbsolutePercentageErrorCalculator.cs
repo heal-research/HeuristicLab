@@ -38,10 +38,15 @@ namespace HeuristicLab.Problems.DataAnalysis {
       Reset();
     }
 
-    protected OnlineMeanAbsolutePercentageErrorCalculator(OnlineMeanAbsolutePercentageErrorCalculator other, Cloner cloner = null) {
-      sre = other.sre;
-      n = other.n;
-      errorState = other.errorState;
+    protected OnlineMeanAbsolutePercentageErrorCalculator(OnlineMeanAbsolutePercentageErrorCalculator original, Cloner cloner = null)
+      : base(original, cloner) {
+      sre = original.sre;
+      n = original.n;
+      errorState = original.errorState;
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new OnlineMeanAbsolutePercentageErrorCalculator(this, cloner);
     }
 
     #region IOnlineCalculator Members
@@ -93,10 +98,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
         errorState = calculator.ErrorState;
         return calculator.MeanAbsolutePercentageError;
       }
-    }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new OnlineMeanAbsolutePercentageErrorCalculator(this, cloner);
     }
   }
 }

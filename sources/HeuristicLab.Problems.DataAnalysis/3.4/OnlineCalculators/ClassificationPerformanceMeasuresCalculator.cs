@@ -32,7 +32,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
       Reset();
     }
 
-    protected ClassificationPerformanceMeasuresCalculator(ClassificationPerformanceMeasuresCalculator original, Cloner cloner) {
+    protected ClassificationPerformanceMeasuresCalculator(ClassificationPerformanceMeasuresCalculator original, Cloner cloner)
+      : base(original, cloner) {
       positiveClassName = original.positiveClassName;
       positiveClassValue = original.positiveClassValue;
       truePositiveCount = original.truePositiveCount;
@@ -40,6 +41,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
       trueNegativeCount = original.trueNegativeCount;
       falseNegativeCount = original.falseNegativeCount;
       errorState = original.errorState;
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new ClassificationPerformanceMeasuresCalculator(this, cloner);
     }
 
     #region Properties
@@ -145,10 +149,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
         throw new ArgumentException("Number of elements in originalValues and estimatedValues enumerations doesn't match.");
       }
       errorState = ErrorState;
-    }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new ClassificationPerformanceMeasuresCalculator(this, cloner);
     }
   }
 }

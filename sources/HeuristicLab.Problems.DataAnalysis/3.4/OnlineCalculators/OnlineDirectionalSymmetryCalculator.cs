@@ -40,10 +40,15 @@ namespace HeuristicLab.Problems.DataAnalysis {
       Reset();
     }
 
-    protected OnlineDirectionalSymmetryCalculator(OnlineDirectionalSymmetryCalculator other, Cloner cloner = null) {
-      n = other.n;
-      nCorrect = other.nCorrect;
-      errorState = other.errorState;
+    protected OnlineDirectionalSymmetryCalculator(OnlineDirectionalSymmetryCalculator original, Cloner cloner = null)
+      : base(original, cloner) {
+      n = original.n;
+      nCorrect = original.nCorrect;
+      errorState = original.errorState;
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new OnlineDirectionalSymmetryCalculator(this, cloner);
     }
 
     public double Value {
@@ -120,10 +125,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
         errorState = dsCalculator.ErrorState;
         return dsCalculator.DirectionalSymmetry;
       }
-    }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new OnlineDirectionalSymmetryCalculator(this, cloner);
     }
   }
 }

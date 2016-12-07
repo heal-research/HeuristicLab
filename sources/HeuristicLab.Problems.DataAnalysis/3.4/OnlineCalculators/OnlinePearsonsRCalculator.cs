@@ -46,10 +46,14 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public OnlinePearsonsRCalculator() { }
 
-    protected OnlinePearsonsRCalculator(OnlinePearsonsRCalculator other, Cloner cloner) {
-      covCalculator = (OnlineCovarianceCalculator)other.covCalculator.Clone(cloner);
-      sxCalculator = (OnlineMeanAndVarianceCalculator)other.sxCalculator.Clone(cloner);
-      syCalculator = (OnlineMeanAndVarianceCalculator)other.syCalculator.Clone(cloner);
+    protected OnlinePearsonsRCalculator(OnlinePearsonsRCalculator original, Cloner cloner)
+      : base(original, cloner) {
+      covCalculator = cloner.Clone(original.covCalculator);
+      sxCalculator = cloner.Clone(original.sxCalculator);
+      syCalculator = cloner.Clone(original.syCalculator);
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new OnlinePearsonsRCalculator(this, cloner);
     }
 
     #region IOnlineCalculator Members
@@ -95,10 +99,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
         errorState = calculator.ErrorState;
         return calculator.R;
       }
-    }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new OnlinePearsonsRCalculator(this, cloner);
     }
   }
 }
