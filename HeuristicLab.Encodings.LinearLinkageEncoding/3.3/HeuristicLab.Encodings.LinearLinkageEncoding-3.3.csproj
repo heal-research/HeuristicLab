@@ -181,6 +181,7 @@
     <Compile Include="Moves\Swap\Swap2MoveGenerator.cs" />
     <Compile Include="Moves\Swap\Swap2MoveMaker.cs" />
     <Compile Include="ShakingOperators\LLEShakingOperator.cs" />
+    <Compile Include="SimilarityCalculators\HammingSimilarityCalculator.cs" />
     <None Include="HeuristicLab.snk" />
     <None Include="Plugin.cs.frame" />
     <Compile Include="Crossovers\LowestIndexFirstCrossover.cs" />

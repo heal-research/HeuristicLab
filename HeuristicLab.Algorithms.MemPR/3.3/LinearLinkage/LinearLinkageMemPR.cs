@@ -57,16 +57,16 @@ namespace HeuristicLab.Algorithms.MemPR.LinearLinkage {
     }
 
     protected override bool Eq(ISingleObjectiveSolutionScope<Encodings.LinearLinkageEncoding.LinearLinkage> a, ISingleObjectiveSolutionScope<Encodings.LinearLinkageEncoding.LinearLinkage> b) {
-      return a.Solution.SequenceEqual(b.Solution);
+      var s1 = a.Solution;
+      var s2 = b.Solution;
+      if (s1.Length != s2.Length) return false;
+      for (var i = 0; i < s1.Length; i++)
+        if (s1[i] != s2[i]) return false;
+      return true;
     }
 
     protected override double Dist(ISingleObjectiveSolutionScope<Encodings.LinearLinkageEncoding.LinearLinkage> a, ISingleObjectiveSolutionScope<Encodings.LinearLinkageEncoding.LinearLinkage> b) {
-      if (a.Solution.Length != b.Solution.Length) throw new ArgumentException("Comparing encodings of unequal length");
-      var dist = 0;
-      for (var i = 0; i < a.Solution.Length; i++) {
-        if (a.Solution[i] != b.Solution[i]) dist++;
-      }
-      return dist / (double)a.Solution.Length;
+      return HammingSimilarityCalculator.CalculateSimilarity(a.Solution, b.Solution);
     }
 
     protected override ISingleObjectiveSolutionScope<Encodings.LinearLinkageEncoding.LinearLinkage> ToScope(Encodings.LinearLinkageEncoding.LinearLinkage code, double fitness = double.NaN) {
@@ -93,6 +93,98 @@ namespace HeuristicLab.Algorithms.MemPR.LinearLinkage {
 
     protected override int TabuWalk(ISingleObjectiveSolutionScope<Encodings.LinearLinkageEncoding.LinearLinkage> scope, int maxEvals, CancellationToken token, ISolutionSubspace<Encodings.LinearLinkageEncoding.LinearLinkage> subspace = null) {
       return 0;
+      /*Func<Encodings.LinearLinkageEncoding.LinearLinkage, IRandom, double> eval = new EvaluationWrapper<Encodings.LinearLinkageEncoding.LinearLinkage>(Context.Problem, scope).Evaluate;
+      var quality = scope.Fitness;
+      var lle = scope.Solution;
+      var random = Context.Random;
+      var evaluations = 0;
+      var maximization = Context.Problem.Maximization;
+      if (double.IsNaN(quality)) {
+        quality = eval(lle, random);
+        evaluations++;
+      }
+      Encodings.LinearLinkageEncoding.LinearLinkage bestOfTheWalk = null;
+      double bestOfTheWalkF = double.NaN;
+      var current = (Encodings.LinearLinkageEncoding.LinearLinkage)lle.Clone();
+      var currentF = quality;
+      var overallImprovement = false;
+      var tabu = new double[current.Length, current.Length];
+      for (var i = 0; i < current.Length; i++) {
+        for (var j = i; j < current.Length; j++) {
+          tabu[i, j] = tabu[j, i] = double.MaxValue;
+        }
+        tabu[i, current[i]] = currentF;
+      }
+
+      var steps = 0;
+      var stepsUntilBestOfWalk = 0;
+      for (var iter = 0; iter < int.MaxValue; iter++) {
+        var allTabu = true;
+        var bestOfTheRestF = double.NaN;
+        object bestOfTheRest = null;
+        var improved = false;
+        foreach () {
+          if (subspace != null && !(subspace[swap.Index1, 0] && subspace[swap.Index2, 0]))
+            continue;
+
+
+          var q = eval(current, random);
+          evaluations++;
+          if (FitnessComparer.IsBetter(maximization, q, quality)) {
+            overallImprovement = true;
+            quality = q;
+            for (var i = 0; i < current.Length; i++) lle[i] = current[i];
+          }
+          // check if it would not be an improvement to swap these into their positions
+          var isTabu = !FitnessComparer.IsBetter(maximization, q, tabu[swap.Index1, current[swap.Index1]])
+                    && !FitnessComparer.IsBetter(maximization, q, tabu[swap.Index2, current[swap.Index2]]);
+          if (!isTabu) allTabu = false;
+          if (FitnessComparer.IsBetter(maximization, q, currentF) && !isTabu) {
+            if (FitnessComparer.IsBetter(maximization, q, bestOfTheWalkF)) {
+              bestOfTheWalk = (Encodings.LinearLinkageEncoding.LinearLinkage)current.Clone();
+              bestOfTheWalkF = q;
+              stepsUntilBestOfWalk = steps;
+            }
+            steps++;
+            improved = true;
+            // perform the move
+            currentF = q;
+            // mark that to move them to their previous position requires to make an improvement
+            tabu[swap.Index1, current[swap.Index2]] = maximization ? Math.Max(q, tabu[swap.Index1, current[swap.Index2]])
+                                                                   : Math.Min(q, tabu[swap.Index1, current[swap.Index2]]);
+            tabu[swap.Index2, current[swap.Index1]] = maximization ? Math.Max(q, tabu[swap.Index2, current[swap.Index1]])
+                                                                   : Math.Min(q, tabu[swap.Index2, current[swap.Index1]]);
+          } else { // undo the move
+            if (!isTabu && FitnessComparer.IsBetter(maximization, q, bestOfTheRestF)) {
+              bestOfTheRest = swap;
+              bestOfTheRestF = q;
+            }
+            current[swap.Index2] = current[swap.Index1];
+            current[swap.Index1] = h;
+          }
+          if (evaluations >= maxEvals) break;
+        }
+        if (!allTabu && !improved && bestOfTheRest != null) {
+          tabu[bestOfTheRest.Index1, current[bestOfTheRest.Index1]] = maximization ? Math.Max(currentF, tabu[bestOfTheRest.Index1, current[bestOfTheRest.Index1]])
+                                                                                   : Math.Min(currentF, tabu[bestOfTheRest.Index1, current[bestOfTheRest.Index1]]);
+          tabu[bestOfTheRest.Index2, current[bestOfTheRest.Index2]] = maximization ? Math.Max(currentF, tabu[bestOfTheRest.Index2, current[bestOfTheRest.Index2]])
+                                                                                   : Math.Min(currentF, tabu[bestOfTheRest.Index2, current[bestOfTheRest.Index2]]);
+
+          var h = current[bestOfTheRest.Index1];
+          current[bestOfTheRest.Index1] = current[bestOfTheRest.Index2];
+          current[bestOfTheRest.Index2] = h;
+
+          currentF = bestOfTheRestF;
+          steps++;
+        } else if (allTabu) break;
+        if (evaluations >= maxEvals) break;
+      }
+      Context.IncrementEvaluatedSolutions(evaluations);
+      if (!overallImprovement && bestOfTheWalk != null) {
+        quality = bestOfTheWalkF;
+        for (var i = 0; i < current.Length; i++) lle[i] = bestOfTheWalk[i];
+      }
+      return stepsUntilBestOfWalk;*/
     }
 
     protected override ISingleObjectiveSolutionScope<Encodings.LinearLinkageEncoding.LinearLinkage> Cross(ISingleObjectiveSolutionScope<Encodings.LinearLinkageEncoding.LinearLinkage> p1Scope, ISingleObjectiveSolutionScope<Encodings.LinearLinkageEncoding.LinearLinkage> p2Scope, CancellationToken token) {
