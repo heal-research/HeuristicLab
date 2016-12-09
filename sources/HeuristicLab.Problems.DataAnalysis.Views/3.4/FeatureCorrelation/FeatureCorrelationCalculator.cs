@@ -79,7 +79,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
           }
           elements[j, i] = elements[i, j];
         });
-
+        worker.ReportProgress((int)(((double)counter) / length * 100));
       }
 
       e.Result = elements;
