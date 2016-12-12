@@ -31,10 +31,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
   [View("Line Chart")]
   [Content(typeof(IRegressionSolution))]
   public partial class RegressionSolutionLineChartView : DataAnalysisSolutionEvaluationView {
-    private const string TARGETVARIABLE_SERIES_NAME = "Target Variable";
-    private const string ESTIMATEDVALUES_TRAINING_SERIES_NAME = "Estimated Values (training)";
-    private const string ESTIMATEDVALUES_TEST_SERIES_NAME = "Estimated Values (test)";
-    private const string ESTIMATEDVALUES_ALL_SERIES_NAME = "Estimated Values (all samples)";
+    protected const string TARGETVARIABLE_SERIES_NAME = "Target Variable";
+    protected const string ESTIMATEDVALUES_TRAINING_SERIES_NAME = "Estimated Values (training)";
+    protected const string ESTIMATEDVALUES_TEST_SERIES_NAME = "Estimated Values (test)";
+    protected const string ESTIMATEDVALUES_ALL_SERIES_NAME = "Estimated Values (all samples)";
 
     public new IRegressionSolution Content {
       get { return (IRegressionSolution)base.Content; }
@@ -72,7 +72,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       y = x.Select(index => tmp[index]).ToArray();
     }
 
-    private void RedrawChart() {
+    protected virtual void RedrawChart() {
       this.chart.Series.Clear();
       if (Content != null) {
         this.chart.ChartAreas[0].AxisX.Minimum = 0;

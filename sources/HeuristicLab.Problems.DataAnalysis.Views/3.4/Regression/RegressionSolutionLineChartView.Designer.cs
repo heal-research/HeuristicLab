@@ -82,6 +82,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
     #endregion
 
-    private HeuristicLab.Visualization.ChartControlsExtensions.EnhancedChart chart;
+    protected HeuristicLab.Visualization.ChartControlsExtensions.EnhancedChart chart;
   }
 }
