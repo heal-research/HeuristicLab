@@ -20,7 +20,6 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -63,18 +62,21 @@ namespace HeuristicLab.Problems.Instances.VehicleRouting {
         string authors = ExtractValue(reader.ReadLine());
         string date = ExtractValue(reader.ReadLine());
         string reference = ExtractValue(reader.ReadLine());
-        reader.ReadLine(); // Solution
-
-        var routesQuery =
-          from line in reader.ReadAllLines()
-          where !string.IsNullOrEmpty(line)
-          let tokens = ExtractValue(line).Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
-          let stops = tokens.Select(int.Parse).Select(s => s - 1)
-          select stops;
-
-        var routes = routesQuery.Select(s => s.ToArray()).ToArray();
-
-        instance.BestKnownTour = routes;
+        switch (reader.ReadLine().Trim()) { // "Solution" or "Distance"
+          case "Solution":
+            var routesQuery = from line in reader.ReadAllLines()
+                              where !string.IsNullOrEmpty(line)
+                              let tokens = ExtractValue(line).Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
+                              let stops = tokens.Select(int.Parse).Select(s => s - 1)
+                              select stops;
+            var routes = routesQuery.Select(s => s.ToArray()).ToArray();
+            instance.BestKnownTour = routes;
+            break;
+          case "Distance":
+            double quality = double.Parse(reader.ReadLine());
+            instance.BestKnownQuality = quality;
+            break;
+        }
       }
     }
 
