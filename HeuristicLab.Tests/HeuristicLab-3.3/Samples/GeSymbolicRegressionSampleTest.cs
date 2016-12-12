@@ -56,7 +56,7 @@ namespace HeuristicLab.Tests {
       OffspringSelectionGeneticAlgorithm ga = new OffspringSelectionGeneticAlgorithm();
 
       #region Problem Configuration
-      var problem = new HeuristicLab.Problems.GrammaticalEvolution.GEArtificialAntProblem();
+      var problem = new global::HeuristicLab.Problems.GrammaticalEvolution.GEArtificialAntProblem();
       #endregion
       #region Algorithm Configuration
       ga.Name = "Grammatical Evolution - Artificial Ant (SantaFe)";
@@ -95,7 +95,7 @@ namespace HeuristicLab.Tests {
       var ga = new OffspringSelectionGeneticAlgorithm();
 
       #region Problem Configuration
-      var problem = new HeuristicLab.Problems.GrammaticalEvolution.GESymbolicRegressionSingleObjectiveProblem();
+      var problem = new global::HeuristicLab.Problems.GrammaticalEvolution.GESymbolicRegressionSingleObjectiveProblem();
 
       #endregion
       #region Algorithm Configuration

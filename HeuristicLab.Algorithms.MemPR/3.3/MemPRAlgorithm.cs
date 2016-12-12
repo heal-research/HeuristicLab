@@ -216,6 +216,9 @@ namespace HeuristicLab.Algorithms.MemPR {
         Context.Problem = Problem;
       }
 
+      if (MaximumExecutionTime.HasValue)
+        CancellationTokenSource.CancelAfter(MaximumExecutionTime.Value);
+
       IExecutionContext context = null;
       foreach (var item in Problem.ExecutionContextItems)
         context = new Core.ExecutionContext(context, item, Context.Scope);

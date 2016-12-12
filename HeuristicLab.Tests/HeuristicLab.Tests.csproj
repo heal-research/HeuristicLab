@@ -509,6 +509,7 @@
     <Compile Include="HeuristicLab.Encodings.IntegerVectorEncoding-3.3\DiscreteCrossoverTest.cs" />
     <Compile Include="HeuristicLab.Encodings.IntegerVectorEncoding-3.3\SinglePointCrossoverTest.cs" />
     <Compile Include="HeuristicLab.Encodings.IntegerVectorEncoding-3.3\UniformOnePositionManipulatorTest.cs" />
+    <Compile Include="HeuristicLab.Encodings.LinearLinkageEncoding-3.3\MoveTests.cs" />
     <Compile Include="HeuristicLab.Encodings.PermutationEncoding-3.3\Auxiliary.cs" />
     <Compile Include="HeuristicLab.Encodings.PermutationEncoding-3.3\CosaCrossoverTest.cs" />
     <Compile Include="HeuristicLab.Encodings.PermutationEncoding-3.3\CyclicCrossover2Test.cs" />

@@ -59,7 +59,7 @@ namespace HeuristicLab.Tests {
       #region Problem Configuration
       KnapsackProblem problem = new KnapsackProblem();
       problem.BestKnownQuality = new DoubleValue(362);
-      problem.BestKnownSolution = new HeuristicLab.Encodings.BinaryVectorEncoding.BinaryVector(new bool[] { 
+      problem.BestKnownSolution = new global::HeuristicLab.Encodings.BinaryVectorEncoding.BinaryVector(new bool[] { 
        true , false, false, true , true , true , true , true , false, true , true , true , true , true , true , false, true , false, true , true , false, true , true , false, true , false, true , true , true , false, true , true , false, true , true , false, true , false, true , true , true , true , true , true , true , true , true , true , true , true , true , false, true , false, false, true , true , false, true , true , true , true , true , true , true , true , false, true , false, true , true , true , true , false, true , true , true , true , true , true , true , true});
       problem.EvaluatorParameter.Value = new KnapsackEvaluator();
       problem.SolutionCreatorParameter.Value = new RandomBinaryVectorCreator();

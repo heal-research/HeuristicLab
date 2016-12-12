@@ -186,7 +186,7 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation {
       var tabu = new double[current.Length, current.Length];
       for (var i = 0; i < current.Length; i++) {
         for (var j = i; j < current.Length; j++) {
-          tabu[i, j] = tabu[j, i] = double.MaxValue;
+          tabu[i, j] = tabu[j, i] = maximization ? double.MinValue : double.MaxValue;
         }
         tabu[i, current[i]] = currentF;
       }

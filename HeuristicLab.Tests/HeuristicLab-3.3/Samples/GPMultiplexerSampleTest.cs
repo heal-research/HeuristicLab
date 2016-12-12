@@ -54,7 +54,7 @@ namespace HeuristicLab.Tests {
     }
 
     public static OffspringSelectionGeneticAlgorithm CreateGpMultiplexerSample() {
-      var problem = new HeuristicLab.Problems.GeneticProgramming.Boolean.MultiplexerProblem();
+      var problem = new global::HeuristicLab.Problems.GeneticProgramming.Boolean.MultiplexerProblem();
       problem.Name = "11-Multiplexer Problem";
       problem.Encoding.TreeLength = 50;
       problem.Encoding.TreeDepth = 50;

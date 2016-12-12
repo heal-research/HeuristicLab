@@ -180,6 +180,12 @@
     <Compile Include="Moves\Swap\Swap2Move.cs" />
     <Compile Include="Moves\Swap\Swap2MoveGenerator.cs" />
     <Compile Include="Moves\Swap\Swap2MoveMaker.cs" />
+    <Compile Include="Moves\ExtractMove.cs" />
+    <Compile Include="Moves\MergeMove.cs" />
+    <Compile Include="Moves\Move.cs" />
+    <Compile Include="Moves\ShiftMove.cs" />
+    <Compile Include="Moves\SplitMove.cs" />
+    <Compile Include="Moves\StaticAPI\MoveGenerator.cs" />
     <Compile Include="ShakingOperators\LLEShakingOperator.cs" />
     <Compile Include="SimilarityCalculators\HammingSimilarityCalculator.cs" />
     <None Include="HeuristicLab.snk" />

@@ -87,7 +87,7 @@ namespace HeuristicLab.Tests {
       var instance = provider.GetDataDescriptors().Single(x => x.Name == "ch130");
       TravelingSalesmanProblem tspProblem = new TravelingSalesmanProblem();
       tspProblem.Load(provider.LoadData(instance));
-      tspProblem.UseDistanceMatrix.Value = true;
+      tspProblem.UseDistanceMatrix = true;
       #endregion
       #region Algorithm Configuration
       alpsGa.Name = "ALPS Genetic Algorithm - TSP";

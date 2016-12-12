@@ -41,20 +41,20 @@ namespace HeuristicLab.Tests {
 
     public DeepCloneableCloningTest() {
       excludedTypes = new HashSet<Type> {
-        typeof (HeuristicLab.Problems.DataAnalysis.Dataset),
-        typeof (HeuristicLab.Problems.TravelingSalesman.DistanceMatrix),
-        typeof (HeuristicLab.Problems.DataAnalysis.ClassificationEnsembleSolution),
-        typeof (HeuristicLab.Problems.DataAnalysis.RegressionEnsembleSolution),
-        typeof (HeuristicLab.Problems.Orienteering.DistanceMatrix),
-        typeof (HeuristicLab.Problems.PTSP.DistanceMatrix)
+        typeof (global::HeuristicLab.Problems.DataAnalysis.Dataset),
+        typeof (global::HeuristicLab.Problems.TravelingSalesman.DistanceMatrix),
+        typeof (global::HeuristicLab.Problems.DataAnalysis.ClassificationEnsembleSolution),
+        typeof (global::HeuristicLab.Problems.DataAnalysis.RegressionEnsembleSolution),
+        typeof (global::HeuristicLab.Problems.Orienteering.DistanceMatrix),
+        typeof (global::HeuristicLab.Problems.PTSP.DistanceMatrix)
       };
       excludedTypes.Add(typeof(SymbolicExpressionGrammar).Assembly.GetType("HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.EmptySymbolicExpressionTreeGrammar"));
 
-      foreach (var symbolType in ApplicationManager.Manager.GetTypes(typeof(HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbol)))
+      foreach (var symbolType in ApplicationManager.Manager.GetTypes(typeof(global::HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbol)))
         excludedTypes.Add(symbolType);
       // SimpleSymbol is a non-discoverable type and thus needs to be added manually
-      excludedTypes.Add(typeof(HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.SimpleSymbol));
-      foreach (var grammarType in ApplicationManager.Manager.GetTypes(typeof(HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.SymbolicExpressionGrammarBase)))
+      excludedTypes.Add(typeof(global::HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.SimpleSymbol));
+      foreach (var grammarType in ApplicationManager.Manager.GetTypes(typeof(global::HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.SymbolicExpressionGrammarBase)))
         excludedTypes.Add(grammarType);
     }
 

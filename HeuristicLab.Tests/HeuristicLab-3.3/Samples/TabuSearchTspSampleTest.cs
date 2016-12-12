@@ -61,7 +61,7 @@ namespace HeuristicLab.Tests {
       var instance = provider.GetDataDescriptors().Where(x => x.Name == "ch130").Single();
       TravelingSalesmanProblem tspProblem = new TravelingSalesmanProblem();
       tspProblem.Load(provider.LoadData(instance));
-      tspProblem.UseDistanceMatrix.Value = true;
+      tspProblem.UseDistanceMatrix = true;
       #endregion
       #region Algorithm Configuration
       ts.Name = "Tabu Search - TSP";
@@ -75,7 +75,7 @@ namespace HeuristicLab.Tests {
         .Single();
       ts.MoveGenerator = moveGenerator;
       var moveEvaluator = ts.MoveEvaluatorParameter.ValidValues
-        .OfType<TSPInversionMoveRoundedEuclideanPathEvaluator>()
+        .OfType<TSPInversionMovePathEvaluator>()
         .Single();
       ts.MoveEvaluator = moveEvaluator;
       var moveMaker = ts.MoveMakerParameter.ValidValues

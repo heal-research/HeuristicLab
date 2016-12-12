@@ -48,11 +48,10 @@ namespace HeuristicLab.Algorithms.MemPR.LinearLinkage.LocalSearch {
             links.Add(i, current[i]);
             continue;
           }
-          var isFirst = !links.ContainsSecond(i);
           var pred = -1;
+          var isFirst = !links.TryGetBySecond(i, out pred);
           var keepLink = false;
           if (!isFirst) {
-            pred = links.GetBySecond(i);
             keepLink = subspace != null && !subspace[pred];
           }
           var next = current[i];

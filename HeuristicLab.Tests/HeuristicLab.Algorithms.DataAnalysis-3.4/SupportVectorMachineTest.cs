@@ -60,7 +60,7 @@ namespace HeuristicLab.Tests {
 
       var cv = new CrossValidation();
       cv.Algorithm = new SupportVectorRegression();
-      var rand = new HeuristicLab.Random.MersenneTwister();
+      var rand = new global::HeuristicLab.Random.MersenneTwister();
       double[,] data = GenerateData(1000, rand);
       List<string> variables = new List<string>() { "x1", "x2", "x3", "x4", "x5", "x6", "x7", "x8", "x9", "x10", "y" };
       Dataset ds = new Dataset(variables, data);

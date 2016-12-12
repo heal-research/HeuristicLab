@@ -19,12 +19,15 @@
  */
 #endregion
 
-using HeuristicLab.PluginInfrastructure;
+using HeuristicLab.Collections;
 
-namespace HeuristicLab.Problems.Instances.DIMACS {
-  [Plugin("HeuristicLab.Problems.Instances.DIMACS", "Adds the DIMACS benchmark instances, e.g. graph coloring.", "3.3.14.14185")]
-  [PluginFile("HeuristicLab.Problems.Instances.DIMACS-3.3.dll", PluginFileType.Assembly)]
-  [PluginDependency("HeuristicLab.Common", "3.3")]
-  [PluginDependency("HeuristicLab.Problems.Instances", "3.3")]
-  public class HeuristicLabProblemsInstancesDIMACSPlugin : PluginBase { }
+namespace HeuristicLab.Encodings.LinearLinkageEncoding {
+  public abstract class Move {
+    public int Item { get; protected set; }
+
+    public abstract void Apply(LinearLinkage lle);
+    public abstract void Undo(LinearLinkage lle);
+
+    public abstract void UpdateLinks(BidirectionalDictionary<int, int> links);
+  }
 }

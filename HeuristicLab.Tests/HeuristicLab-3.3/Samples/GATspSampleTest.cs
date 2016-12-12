@@ -64,7 +64,7 @@ namespace HeuristicLab.Tests {
       var instance = provider.GetDataDescriptors().Where(x => x.Name == "ch130").Single();
       TravelingSalesmanProblem tspProblem = new TravelingSalesmanProblem();
       tspProblem.Load(provider.LoadData(instance));
-      tspProblem.UseDistanceMatrix.Value = true;
+      tspProblem.UseDistanceMatrix = true;
       #endregion
       #region Algorithm Configuration
       ga.Name = "Genetic Algorithm - TSP";

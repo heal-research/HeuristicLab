@@ -134,6 +134,14 @@ namespace HeuristicLab.Collections {
       }
     }
 
+    public bool TryGetByFirst(TFirst key, out TSecond secondValue) {
+      return firstToSecond.TryGetValue(key, out secondValue);
+    }
+
+    public bool TryGetBySecond(TSecond key, out TFirst firstValue) {
+      return secondToFirst.TryGetValue(key, out firstValue);
+    }
+
     public void Clear() {
       firstToSecond.Clear();
       secondToFirst.Clear();
