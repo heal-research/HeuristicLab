@@ -197,7 +197,7 @@
       <Private>False</Private>
       <HintPath>..\bin\HeuristicLab.Encodings.IntegerVectorEncoding-3.3.dll</HintPath>
     </Reference>
-    <Reference Include="HeuristicLab.Encodings.LinearLinkageEncoding-3.4, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+    <Reference Include="HeuristicLab.Encodings.LinearLinkageEncoding-3.4, Version=3.4.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\bin\HeuristicLab.Encodings.LinearLinkageEncoding-3.4.dll</HintPath>
     </Reference>

@@ -22,8 +22,8 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding.Creators {
     }
 
     [StorableConstructor]
-    private MaxGroupSizeLinearLinkageCreator(bool deserializing) : base(deserializing) { }
-    private MaxGroupSizeLinearLinkageCreator(MaxGroupSizeLinearLinkageCreator original, Cloner cloner) : base(original, cloner) { }
+    protected MaxGroupSizeLinearLinkageCreator(bool deserializing) : base(deserializing) { }
+    protected MaxGroupSizeLinearLinkageCreator(MaxGroupSizeLinearLinkageCreator original, Cloner cloner) : base(original, cloner) { }
 
     public MaxGroupSizeLinearLinkageCreator() {
       Parameters.Add(new ValueLookupParameter<IntValue>("MaxGroupSize", "The maximum number items in every group.", new IntValue(4)));
