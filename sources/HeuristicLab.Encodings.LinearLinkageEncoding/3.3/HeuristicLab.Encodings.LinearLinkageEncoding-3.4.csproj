@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>HeuristicLab.Encodings.LinearLinkageEncoding</RootNamespace>
-    <AssemblyName>HeuristicLab.Encodings.LinearLinkageEncoding-3.3</AssemblyName>
+    <AssemblyName>HeuristicLab.Encodings.LinearLinkageEncoding-3.4</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -155,6 +155,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Creators\ExactGroupsLinearLinkageCreator.cs" />
+    <Compile Include="Creators\MaxGroupSizeLinearLinkageCreator.cs" />
     <Compile Include="Creators\MaxGroupsLinearLinkageCreator.cs" />
     <Compile Include="Creators\RandomLinearLinkageCreator.cs" />
     <Compile Include="Crossovers\GreedyPartitionCrossover.cs" />

@@ -36,8 +36,67 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
     private LinearLinkage(bool deserializing) : base(deserializing) { }
     private LinearLinkage(LinearLinkage original, Cloner cloner) : base(original, cloner) { }
     public LinearLinkage() { }
-    public LinearLinkage(int length) : base(length) { }
-    public LinearLinkage(int[] elements) : base(elements) { }
+
+    private LinearLinkage(int length) : base(length) { }
+    private LinearLinkage(int[] elements) : base(elements) { }
+
+    /// <summary>
+    /// Create a new LinearLinkage object where every element is in a seperate group.
+    /// </summary>
+    public static LinearLinkage SingleElementGroups(int length) {
+      var elements = new int[length];
+      for (var i = 0; i < length; i++) {
+        elements[i] = i;
+      }
+      return new LinearLinkage(elements);
+    }
+
+    /// <summary>
+    /// Create a new LinearLinkage object from an int[] in LLE
+    /// </summary>
+    /// <remarks>
+    /// This operation checks if the argument is a well formed LLE
+    /// and throws an ArgumentException otherwise.
+    /// </remarks>
+    /// <param name="lle">The LLE representation</param>
+    public static LinearLinkage FromForwardLinks(int[] lle) {
+      if (!Validate(lle)) {
+        throw new ArgumentException("Array is malformed and does not represent a valid LLE forward encoding.", "elements");
+      }
+      return new LinearLinkage(lle);
+    }
+
+    /// <summary>
+    /// Create a new LinearLinkage object by parsing an LLE-e representation
+    /// and modifing the underlying array so that it is in LLE representation.
+    /// </summary>
+    /// <remarks>
+    /// This operation runs in O(n) time, but requires additional memory
+    /// in form of a int[].
+    /// </remarks>
+    /// <param name="llee">The LLE-e representation</param>
+    /// <returns>LinearLinkage</returns>
+    public static LinearLinkage FromEndLinks(int[] llee) {
+      var result = new LinearLinkage(llee.Length);
+      result.SetEndLinks(llee);
+      return result;
+    }
+
+    /// <summary>
+    /// Create a new LinearLinkage object by translating
+    /// an enumeration of groups into the underlying array representation.
+    /// </summary>
+    /// <remarks>
+    /// Throws an ArgumentException when there is an element assigned to
+    /// multiple groups or elements that are not assigned to any group.
+    /// </remarks>
+    /// <param name="grouping">The grouping of the elements, each element must
+    /// be part of exactly one group.</param>
+    public static LinearLinkage FromGroups(int length, IEnumerable<IEnumerable<int>> grouping) {
+      var result = new LinearLinkage(length);
+      result.SetGroups(grouping);
+      return result;
+    }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new LinearLinkage(this, cloner);
@@ -54,25 +113,44 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
     /// <returns>An enumeration of all groups.</returns>
     public IEnumerable<List<int>> GetGroups() {
       var len = array.Length;
-      var remaining = new HashSet<int>(Enumerable.Range(0, len));
-      // iterate from lowest to highest index
+      var used = new bool[len];
       for (var i = 0; i < len; i++) {
-        if (!remaining.Contains(i)) continue;
-        var group = new List<int> { i };
-        remaining.Remove(i);
-        var next = array[i];
-        if (next != i) {
-          int prev;
-          do {
-            group.Add(next);
-            if (!remaining.Remove(next))
-              throw new ArgumentException("Array is malformed and does not represent a valid LLE forward encoding.");
-            prev = next;
-            next = array[next];
-          } while (next != prev);
+        if (used[i]) continue;
+        var curr = i;
+        var next = array[curr];
+        var group = new List<int> { curr };
+        while (next > curr && next < len && !used[next]) {
+          used[curr] = true;
+          curr = next;
+          next = array[next];
+          group.Add(curr);
         }
+        if (curr != next) throw new ArgumentException("Array is malformed and does not represent a valid LLE forward encoding.");
+        used[curr] = true;
         yield return group;
       }
+      /*
+      var len = array.Length;
+      var used = new bool[len];
+      // iterate from lowest to highest index
+      for (var i = 0; i < len; i++) {
+        if (used[i]) continue;
+        var group = new List<int> { i };
+        used[i] = true;
+        var next = array[i];
+        if (next < i || next >= len) {
+          throw new ArgumentException("Array is malformed and does not represent a valid LLE forward encoding.");
+        }
+        while (next != array[next]) {
+          if (next < 0 || next >= len || used[next]) {
+            throw new ArgumentException("Array is malformed and does not represent a valid LLE forward encoding.");
+          }
+          group.Add(next);
+          used[next] = true;
+          next = array[next];
+        }
+        yield return group;
+      }*/
     }
 
     /// <summary>
@@ -150,19 +228,22 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
     /// be part of exactly one group.</param>
     public void SetGroups(IEnumerable<IEnumerable<int>> grouping) {
       var len = array.Length;
-      var remaining = new HashSet<int>(Enumerable.Range(0, len));
+      var used = new bool[len];
       foreach (var group in grouping) {
         var prev = -1;
         foreach (var g in group.OrderBy(x => x)) {
+          if (g < prev || g >= len) throw new ArgumentException(string.Format("Element {0} is bigger than {1} or smaller than 0.", g, len - 1), "grouping");
           if (prev >= 0) array[prev] = g;
           prev = g;
-          if (!remaining.Remove(prev))
+          if (used[prev]) {
             throw new ArgumentException(string.Format("Element {0} is contained at least twice.", prev), "grouping");
+          }
+          used[prev] = true;
         }
-        if (prev >= 0) array[prev] = prev;
+        array[prev] = prev;
       }
-      if (remaining.Count > 0)
-        throw new ArgumentException(string.Format("Elements are not assigned a group: {0}", string.Join(", ", remaining)));
+      if (!used.All(x => x))
+        throw new ArgumentException(string.Format("Elements are not assigned a group: {0}", string.Join(", ", used.Select((x, i) => new { x, i }).Where(x => !x.x).Select(x => x.i))));
     }
 
     /// <summary>
@@ -174,21 +255,25 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
     /// </remarks>
     /// <returns>True if the encoding is valid.</returns>
     public bool Validate() {
+      return Validate(array);
+    }
+
+    private static bool Validate(int[] array) {
       var len = array.Length;
-      var remaining = new HashSet<int>(Enumerable.Range(0, len));
+      var used = new bool[len];
       for (var i = 0; i < len; i++) {
-        if (!remaining.Contains(i)) continue;
-        remaining.Remove(i);
-        var next = array[i];
-        if (next == i) continue;
-        int prev;
-        do {
-          if (!remaining.Remove(next)) return false;
-          prev = next;
+        if (used[i]) continue;
+        var curr = i;
+        var next = array[curr];
+        while (next > curr && next < len && !used[next]) {
+          used[curr] = true;
+          curr = next;
           next = array[next];
-        } while (next != prev);
+        }
+        if (curr!=next) return false;
+        used[curr] = true;
       }
-      return remaining.Count == 0;
+      return true;
     }
 
     /// <summary>
@@ -215,9 +300,9 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
     /// </remarks>
     public void LinearizeTreeStructures() {
       // Step 1: Convert the array into LLE-e
-      ToLLEeInplace(array);
+      ToEndLinksInplace(array);
       // Step 2: For all groups linearize the links
-      FromLLEe(array);
+      SetEndLinks(array);
     }
 
     /// <summary>
@@ -232,17 +317,21 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
     /// This operation runs in O(n) time.
     /// </remarks>
     /// <returns>An integer array in LLE-e representation</returns>
-    public int[] ToLLEe() {
+    public int[] ToEndLinks() {
       var result = (int[])array.Clone();
-      ToLLEeInplace(result);
+      ToEndLinksInplace(result);
       return result;
     }
 
-    private void ToLLEeInplace(int[] a) {
-      var length = a.Length;
+    private static void ToEndLinksInplace(int[] array) {
+      var length = array.Length;
       for (var i = length - 1; i >= 0; i--) {
-        if (array[i] == i) a[i] = i;
-        else a[i] = a[a[i]];
+        var next = array[i];
+        if (next > i) {
+          array[i] = array[next];
+        } else if (next < i) {
+          throw new ArgumentException("Array is malformed and does not represent a valid LLE encoding.", "array");
+        }
       }
     }
 
@@ -252,20 +341,25 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
     /// </summary>
     /// <remarks>
     /// This operation runs in O(n) time, but requires additional memory
-    /// in form of a dictionary.
+    /// in form of a int[].
     /// </remarks>
     /// <param name="llee">The LLE-e representation</param>
-    public void FromLLEe(int[] llee) {
+    public void SetEndLinks(int[] llee) {
       var length = array.Length;
-      var groups = new Dictionary<int, int>();
+      if (length != llee.Length) {
+        throw new ArgumentException(string.Format("Expected length {0} but length was {1}", length, llee.Length), "llee");
+      }
+      // If we are ok with mutating llee we can avoid this clone
+      var lookup = (int[])llee.Clone();
       for (var i = length - 1; i >= 0; i--) {
-        if (llee[i] == i) {
-          array[i] = i;
-          groups[i] = i;
+        var end = llee[i];
+        if (end == i) {
+          array[i] = end;
+        } else if (end > i && end < length) {
+          array[i] = lookup[end];
+          lookup[end] = i;
         } else {
-          var g = llee[i];
-          array[i] = groups[g];
-          groups[g] = i;
+          throw new ArgumentException("Array is malformed and does not represent a valid LLE end encoding.", "llee");
         }
       }
     }

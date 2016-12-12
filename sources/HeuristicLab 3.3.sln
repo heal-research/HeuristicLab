@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{96396439-A764-4022-A8D2-BE021449B8D1}"
 	ProjectSection(SolutionItems) = preProject
@@ -419,7 +419,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OutdatedPlugins", "Outdated
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Algorithms.CMAEvolutionStrategy-3.4", "HeuristicLab.Algorithms.CMAEvolutionStrategy\3.4\HeuristicLab.Algorithms.CMAEvolutionStrategy-3.4.csproj", "{291010E4-2F4E-4D29-A795-753CFF293FDB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Encodings.LinearLinkageEncoding-3.3", "HeuristicLab.Encodings.LinearLinkageEncoding\3.3\HeuristicLab.Encodings.LinearLinkageEncoding-3.3.csproj", "{BE698769-975A-429E-828C-72BB2B6182C8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Encodings.LinearLinkageEncoding-3.4", "HeuristicLab.Encodings.LinearLinkageEncoding\3.3\HeuristicLab.Encodings.LinearLinkageEncoding-3.4.csproj", "{BE698769-975A-429E-828C-72BB2B6182C8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.Orienteering-3.3", "HeuristicLab.Problems.Orienteering\3.3\HeuristicLab.Problems.Orienteering-3.3.csproj", "{D1EFA4CC-909F-41D5-9C1F-C3AF1957A372}"
 EndProject

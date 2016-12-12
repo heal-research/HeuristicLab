@@ -43,7 +43,7 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
 
     public static LinearLinkage Apply(IRandom random, ItemArray<LinearLinkage> parents) {
       var len = parents[0].Length;
-      var child = new LinearLinkage(len);
+      var child = LinearLinkage.SingleElementGroups(len);
       var remaining = new SortedSet<int>(Enumerable.Range(0, len));
       do {
         var groups = parents.Select(x => x.GetGroupForward(remaining.Min).Where(y => remaining.Contains(y)).ToList()).ToList();

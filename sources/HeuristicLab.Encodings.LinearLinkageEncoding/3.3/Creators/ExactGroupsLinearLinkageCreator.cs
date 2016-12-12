@@ -55,15 +55,13 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
     }
 
     public static LinearLinkage Apply(IRandom random, int length, int groups) {
-      var solution = new LinearLinkage(length);
       var groupNumbers = Enumerable.Range(0, length).Select(x => x % groups).Shuffle(random);
       var grouping = Enumerable.Range(0, groups).Select(x => new List<int>()).ToList();
       var idx = 0;
       foreach (var g in groupNumbers)
         grouping[g].Add(idx++);
 
-      solution.SetGroups(grouping);
-      return solution;
+      return LinearLinkage.FromGroups(length, grouping);
     }
 
     protected override LinearLinkage Create(IRandom random, int length) {

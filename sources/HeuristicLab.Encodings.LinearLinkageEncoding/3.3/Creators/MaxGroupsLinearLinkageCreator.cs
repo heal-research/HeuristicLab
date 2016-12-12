@@ -54,12 +54,10 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
     }
 
     public static LinearLinkage Apply(IRandom random, int length, int maxGroups) {
-      var solution = new LinearLinkage(length);
       var groups = Enumerable.Range(0, length).Select(x => Tuple.Create(x, random.Next(maxGroups)))
                                               .GroupBy(x => x.Item2)
                                               .Select(x => x.Select(y => y.Item1).ToList());
-      solution.SetGroups(groups);
-      return solution;
+      return LinearLinkage.FromGroups(length, groups);
     }
 
     protected override LinearLinkage Create(IRandom random, int length) {

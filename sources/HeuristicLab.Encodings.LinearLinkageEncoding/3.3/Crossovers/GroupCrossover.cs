@@ -38,32 +38,43 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
     public override IDeepCloneable Clone(Cloner cloner) {
       return new GroupCrossover(this, cloner);
     }
-
+    
     public static LinearLinkage Apply(IRandom random, LinearLinkage p1, LinearLinkage p2) {
       var length = p1.Length;
-      var child = new LinearLinkage(length);
-      var endNodes = new HashSet<int>();
-      for (var i = 0; i < length; i++) {
-        if ((p1[i] == i && p2[i] == i)
-          || ((p1[i] == i || p2[i] == i) && random.NextDouble() < 0.5)) {
-          child[i] = i;
-          endNodes.Add(i);
+      var lleeP1 = p1.ToEndLinks();
+      var lleeP2 = p2.ToEndLinks();
+      var lleeChild = new int[length];
+      var isTransfered = new bool[length];
+
+      for (var i = p1.Length - 1; i >= 0; i--) {
+        lleeChild[i] = i;
+
+        // Step 1
+        var isEndP1 = p1[i] == i;
+        var isEndP2 = p2[i] == i;
+        if (isEndP1 & isEndP2 || (isEndP1 | isEndP2 && random.NextDouble() < 0.5)) {
+          isTransfered[i] = true;
+          continue;
         }
-      }
-      for (var i = 0; i < length; i++) {
-        if (endNodes.Contains(i)) continue;
-        var p1End = endNodes.Contains(p1[i]);
-        var p2End = endNodes.Contains(p2[i]);
-        if ((p1End && p2End) || (!p1End && !p2End)) {
-          child[i] = random.NextDouble() < 0.5 ? p1[i] : p2[i];
-        } else if (p1End) {
-          child[i] = p1[i];
+
+        // Step 2
+        var end1 = lleeP1[i];
+        var end2 = lleeP2[i];
+
+        if (isTransfered[end1] & isTransfered[end2]) {
+          var end = random.NextDouble() < 0.5 ? end1 : end2;
+          lleeChild[i] = end;
+        } else if (isTransfered[end1]) {
+          lleeChild[i] = end1;
+        } else if (isTransfered[end2]) {
+          lleeChild[i] = end2;
         } else {
-          child[i] = p2[i];
+          var next = random.NextDouble() < 0.5 ? p1[i] : p2[i];
+          var end = lleeChild[next];
+          lleeChild[i] = end;
         }
       }
-      child.LinearizeTreeStructures();
-      return child;
+      return LinearLinkage.FromEndLinks(lleeChild);
     }
 
     protected override LinearLinkage Cross(IRandom random, ItemArray<LinearLinkage> parents) {
