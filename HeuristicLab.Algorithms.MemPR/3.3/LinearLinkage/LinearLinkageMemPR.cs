@@ -100,15 +100,17 @@ namespace HeuristicLab.Algorithms.MemPR.LinearLinkage {
       var subspace = sub_space is LinearLinkageSolutionSubspace ? ((LinearLinkageSolutionSubspace)sub_space).Subspace : null;
       var evaluations = 0;
       var quality = scope.Fitness;
-      var bestQuality = quality;
       if (double.IsNaN(quality)) {
         Evaluate(scope, token);
         quality = scope.Fitness;
         evaluations++;
         if (evaluations >= maxEvals) return evaluations;
       }
+      var bestQuality = quality;
       var currentScope = (ISingleObjectiveSolutionScope<Encodings.LinearLinkageEncoding.LinearLinkage>)scope.Clone();
       var current = currentScope.Solution;
+      Encodings.LinearLinkageEncoding.LinearLinkage bestOfTheWalk = null;
+      var bestOfTheWalkF = double.NaN;
 
       var tabu = new double[current.Length, current.Length];
       for (var i = 0; i < current.Length; i++) {
@@ -120,9 +122,10 @@ namespace HeuristicLab.Algorithms.MemPR.LinearLinkage {
       
       // this dictionary holds the last relevant links
       var links = new BidirectionalDictionary<int, int>();
-      bool allMoveTabu;
+      Move bestOfTheRest = null;
+      var bestOfTheRestF = double.NaN;
+      var lastAppliedMove = -1;
       for (var iter = 0; iter < int.MaxValue; iter++) {
-        allMoveTabu = true;
         // clear the dictionary before a new pass through the array is made
         links.Clear();
         for (var i = 0; i < current.Length; i++) {
@@ -133,42 +136,112 @@ namespace HeuristicLab.Algorithms.MemPR.LinearLinkage {
           }
 
           var next = current[i];
-          foreach (var move in MoveGenerator.GenerateForItem(i, next, links)) {
-            // we intend to break link i -> next
-            var qualityToBreak = tabu[i, next];
-            move.Apply(current);
-            var qualityToRestore = tabu[i, current[i]]; // current[i] is new next
-            Evaluate(currentScope, token);
-            evaluations++;
-            var moveF = currentScope.Fitness;
-            var isNotTabu = FitnessComparer.IsBetter(maximization, moveF, qualityToBreak)
-                         && FitnessComparer.IsBetter(maximization, moveF, qualityToRestore);
-            if (isNotTabu) allMoveTabu = false;
-            var isImprovement = FitnessComparer.IsBetter(maximization, moveF, bestQuality);
-            if (isNotTabu || isImprovement) {
-              if (maximization) {
-                tabu[i, next] = Math.Max(tabu[i, next], moveF);
-                tabu[i, current[i]] = Math.Max(tabu[i, current[i]], moveF);
-              } else {
-                tabu[i, next] = Math.Min(tabu[i, next], moveF);
-                tabu[i, current[i]] = Math.Min(tabu[i, current[i]], moveF);
-              }
-              quality = moveF;
-              if (isImprovement) bestQuality = quality;
 
-              move.UpdateLinks(links);
-              break;
-            } else move.Undo(current);
-            if (evaluations >= maxEvals) break;
+          if (lastAppliedMove == i) {
+            if (bestOfTheRest != null) {
+              bestOfTheRest.Apply(current);
+              currentScope.Fitness = bestOfTheRestF;
+              quality = bestOfTheRestF;
+              if (maximization) {
+                tabu[i, next] = Math.Max(tabu[i, next], bestOfTheRestF);
+                tabu[i, current[i]] = Math.Max(tabu[i, current[i]], bestOfTheRestF);
+              } else {
+                tabu[i, next] = Math.Min(tabu[i, next], bestOfTheRestF);
+                tabu[i, current[i]] = Math.Min(tabu[i, current[i]], bestOfTheRestF);
+              }
+              if (FitnessComparer.IsBetter(maximization, bestOfTheRestF, bestOfTheWalkF)) {
+                bestOfTheWalk = (Encodings.LinearLinkageEncoding.LinearLinkage)current.Clone();
+                bestOfTheWalkF = bestOfTheRestF;
+              }
+              bestOfTheRest = null;
+              bestOfTheRestF = double.NaN;
+              lastAppliedMove = i;
+            } else {
+              lastAppliedMove = -1;
+            }
+            break;
+          } else {
+            foreach (var move in MoveGenerator.GenerateForItem(i, next, links)) {
+              // we intend to break link i -> next
+              var qualityToBreak = tabu[i, next];
+              move.Apply(current);
+              var qualityToRestore = tabu[i, current[i]]; // current[i] is new next
+              Evaluate(currentScope, token);
+              evaluations++;
+              var moveF = currentScope.Fitness;
+              var isNotTabu = FitnessComparer.IsBetter(maximization, moveF, qualityToBreak)
+                              && FitnessComparer.IsBetter(maximization, moveF, qualityToRestore);
+              var isImprovement = FitnessComparer.IsBetter(maximization, moveF, quality);
+              var isAspired = FitnessComparer.IsBetter(maximization, moveF, bestQuality);
+              if ((isNotTabu && isImprovement) || isAspired) {
+                if (maximization) {
+                  tabu[i, next] = Math.Max(tabu[i, next], moveF);
+                  tabu[i, current[i]] = Math.Max(tabu[i, current[i]], moveF);
+                } else {
+                  tabu[i, next] = Math.Min(tabu[i, next], moveF);
+                  tabu[i, current[i]] = Math.Min(tabu[i, current[i]], moveF);
+                }
+                quality = moveF;
+                if (isAspired) bestQuality = quality;
+
+                move.UpdateLinks(links);
+
+                if (FitnessComparer.IsBetter(maximization, moveF, bestOfTheWalkF)) {
+                  bestOfTheWalk = (Encodings.LinearLinkageEncoding.LinearLinkage)current.Clone();
+                  bestOfTheWalkF = moveF;
+                }
+
+                bestOfTheRest = null;
+                bestOfTheRestF = double.NaN;
+                lastAppliedMove = i;
+                break;
+              } else {
+                if (isNotTabu) {
+                  if (FitnessComparer.IsBetter(maximization, moveF, bestOfTheRestF)) {
+                    bestOfTheRest = move;
+                    bestOfTheRestF = moveF;
+                  }
+                }
+                move.Undo(current);
+                currentScope.Fitness = quality;
+              }
+              if (evaluations >= maxEvals) break;
+            }
           }
           links.RemoveBySecond(i);
           links.Add(i, current[i]);
           if (evaluations >= maxEvals) break;
           if (token.IsCancellationRequested) break;
         }
-        if (allMoveTabu) break;
+        if (lastAppliedMove == -1) { // no move has been applied
+          if (bestOfTheRest != null) {
+            var i = bestOfTheRest.Item;
+            var next = current[i];
+            bestOfTheRest.Apply(current);
+            currentScope.Fitness = bestOfTheRestF;
+            quality = bestOfTheRestF;
+            if (maximization) {
+              tabu[i, next] = Math.Max(tabu[i, next], bestOfTheRestF);
+              tabu[i, current[i]] = Math.Max(tabu[i, current[i]], bestOfTheRestF);
+            } else {
+              tabu[i, next] = Math.Min(tabu[i, next], bestOfTheRestF);
+              tabu[i, current[i]] = Math.Min(tabu[i, current[i]], bestOfTheRestF);
+            }
+            if (FitnessComparer.IsBetter(maximization, bestOfTheRestF, bestOfTheWalkF)) {
+              bestOfTheWalk = (Encodings.LinearLinkageEncoding.LinearLinkage)current.Clone();
+              bestOfTheWalkF = bestOfTheRestF;
+            }
+
+            bestOfTheRest = null;
+            bestOfTheRestF = double.NaN;
+          } else break;
+        }
         if (evaluations >= maxEvals) break;
         if (token.IsCancellationRequested) break;
+      }
+      if (bestOfTheWalk != null) {
+        scope.Solution = bestOfTheWalk;
+        scope.Fitness = bestOfTheWalkF;
       }
       return evaluations;
     }
