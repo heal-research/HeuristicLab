@@ -26,9 +26,9 @@ using HeuristicLab.MainForm;
 
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
-  [View("Line Chart (residuals)")]
+  [View("Residuals Line Chart")]
   [Content(typeof(IRegressionSolution))]
-  public partial class RegressionSolutionResidualsLineChartView : RegressionSolutionLineChartView, IDataAnalysisSolutionEvaluationView {
+  public partial class RegressionSolutionResidualsLineChartView : RegressionSolutionLineChartViewBase, IDataAnalysisSolutionEvaluationView {
 
 
     public RegressionSolutionResidualsLineChartView()
@@ -36,31 +36,30 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       InitializeComponent();
     }
 
-    protected override void GetTrainingSeries(out int[] x, out double[] y) {
-      base.GetTrainingSeries(out x, out y);
+    protected override void GetTrainingSeries(out int[] idx, out double[] y) {
+      idx = Content.ProblemData.TrainingIndices.ToArray();
+      y = Content.EstimatedTrainingValues.ToArray();
+      CalcResiduals(idx, y);
+    }
+
+    private void CalcResiduals(int[] idx, double[] x) {
       var problemData = Content.ProblemData;
-      var target = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, x).ToArray();
-      for (int i = 0; i < x.Length; i++) {
-        y[i] -= target[i];
+      var target = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, idx).ToArray();
+      for (int i = 0; i < idx.Length; i++) {
+        x[i] -= target[i];
       }
     }
 
-    protected override void GetTestSeries(out int[] x, out double[] y) {
-      base.GetTestSeries(out x, out y);
-      var problemData = Content.ProblemData;
-      var target = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, x).ToArray();
-      for (int i = 0; i < x.Length; i++) {
-        y[i] -= target[i];
-      }
+    protected override void GetTestSeries(out int[] idx, out double[] y) {
+      idx = Content.ProblemData.TestIndices.ToArray();
+      y = Content.EstimatedTestValues.ToArray();
+      CalcResiduals(idx, y);
     }
 
-    protected override void GetAllValuesSeries(out int[] x, out double[] y) {
-      base.GetAllValuesSeries(out x, out y);
-      var problemData = Content.ProblemData;
-      var target = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, x).ToArray();
-      for (int i = 0; i < x.Length; i++) {
-        y[i] -= target[i];
-      }
+    protected override void GetAllValuesSeries(out int[] idx, out double[] y) {
+      idx = Content.ProblemData.AllIndices.ToArray();
+      y = Content.EstimatedValues.ToArray();
+      CalcResiduals(idx, y);
     }
 
     protected override void RedrawChart() {
@@ -69,9 +68,26 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     }
 
     private void UpdateSeriesStyle() {
-      base.chart.Series[RegressionSolutionLineChartView.ESTIMATEDVALUES_TRAINING_SERIES_NAME].YAxisType = AxisType.Secondary;
-      base.chart.Series[RegressionSolutionLineChartView.ESTIMATEDVALUES_TEST_SERIES_NAME].YAxisType = AxisType.Secondary;
-      base.chart.Series[RegressionSolutionLineChartView.ESTIMATEDVALUES_ALL_SERIES_NAME].YAxisType = AxisType.Secondary;
+      if (InvokeRequired) Invoke((Action)UpdateSeriesStyle);
+      else {
+        if (Content == null) return;
+        double[] res;
+        int[] idx;
+        GetTrainingSeries(out idx, out res);
+        base.chart.Series[RegressionSolutionLineChartView.ESTIMATEDVALUES_TRAINING_SERIES_NAME].YAxisType = AxisType.Secondary;
+        base.chart.Series[RegressionSolutionLineChartView.ESTIMATEDVALUES_TRAINING_SERIES_NAME].ChartType = SeriesChartType.RangeColumn;
+        base.chart.Series[RegressionSolutionLineChartView.ESTIMATEDVALUES_TRAINING_SERIES_NAME].Points.DataBindXY(idx, res.Select(_ => 0.0).ToArray(), res);
+
+        GetTestSeries(out idx, out res);
+        base.chart.Series[RegressionSolutionLineChartView.ESTIMATEDVALUES_TEST_SERIES_NAME].YAxisType = AxisType.Secondary;
+        base.chart.Series[RegressionSolutionLineChartView.ESTIMATEDVALUES_TEST_SERIES_NAME].ChartType = SeriesChartType.RangeColumn;
+        base.chart.Series[RegressionSolutionLineChartView.ESTIMATEDVALUES_TEST_SERIES_NAME].Points.DataBindXY(idx, res.Select(_ => 0.0).ToArray(), res);
+
+        GetAllValuesSeries(out idx, out res);
+        base.chart.Series[RegressionSolutionLineChartView.ESTIMATEDVALUES_ALL_SERIES_NAME].YAxisType = AxisType.Secondary;
+        base.chart.Series[RegressionSolutionLineChartView.ESTIMATEDVALUES_ALL_SERIES_NAME].ChartType = SeriesChartType.RangeColumn;
+        base.chart.Series[RegressionSolutionLineChartView.ESTIMATEDVALUES_ALL_SERIES_NAME].Points.DataBindXY(idx, res.Select(_ => 0.0).ToArray(), res);
+      }
     }
 
   }

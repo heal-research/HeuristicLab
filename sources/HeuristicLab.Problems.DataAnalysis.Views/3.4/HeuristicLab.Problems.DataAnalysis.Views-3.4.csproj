@@ -245,6 +245,12 @@
     <Compile Include="Regression\RegressionFeatureCorrelationView.Designer.cs">
       <DependentUpon>RegressionFeatureCorrelationView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Regression\RegressionSolutionLineChartViewBase.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Regression\RegressionSolutionLineChartViewBase.Designer.cs">
+      <DependentUpon>RegressionSolutionLineChartViewBase.cs</DependentUpon>
+    </Compile>
     <Compile Include="Regression\RegressionSolutionResidualsLineChartView.cs">
       <SubType>UserControl</SubType>
     </Compile>
