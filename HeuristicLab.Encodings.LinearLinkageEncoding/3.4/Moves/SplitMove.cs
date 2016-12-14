@@ -20,7 +20,6 @@
 #endregion
 
 using System;
-using HeuristicLab.Collections;
 
 namespace HeuristicLab.Encodings.LinearLinkageEncoding {
   public class SplitMove : Move {
@@ -44,8 +43,9 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
       lle[Item] = nextItem;
     }
 
-    public override void UpdateLinks(BidirectionalDictionary<int, int> links) {
-      // nothing has to be done
+    public override void ApplyToLLEb(int[] lleb) {
+      if (nextItem < 0) throw new InvalidOperationException("Cannot undo move that has not been applied first to LLE.");
+      lleb[nextItem] = nextItem;
     }
   }
 }

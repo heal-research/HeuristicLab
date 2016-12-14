@@ -197,9 +197,9 @@
       <Private>False</Private>
       <HintPath>..\bin\HeuristicLab.Encodings.IntegerVectorEncoding-3.3.dll</HintPath>
     </Reference>
-    <Reference Include="HeuristicLab.Encodings.LinearLinkageEncoding-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+    <Reference Include="HeuristicLab.Encodings.LinearLinkageEncoding-3.4, Version=3.4.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\bin\HeuristicLab.Encodings.LinearLinkageEncoding-3.3.dll</HintPath>
+      <HintPath>..\bin\HeuristicLab.Encodings.LinearLinkageEncoding-3.4.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="HeuristicLab.Encodings.PermutationEncoding-3.3">
@@ -510,6 +510,7 @@
     <Compile Include="HeuristicLab.Encodings.IntegerVectorEncoding-3.3\SinglePointCrossoverTest.cs" />
     <Compile Include="HeuristicLab.Encodings.IntegerVectorEncoding-3.3\UniformOnePositionManipulatorTest.cs" />
     <Compile Include="HeuristicLab.Encodings.LinearLinkageEncoding-3.3\MoveTests.cs" />
+    <Compile Include="HeuristicLab.Encodings.LinearLinkageEncoding-3.3\ConversionTests.cs" />
     <Compile Include="HeuristicLab.Encodings.PermutationEncoding-3.3\Auxiliary.cs" />
     <Compile Include="HeuristicLab.Encodings.PermutationEncoding-3.3\CosaCrossoverTest.cs" />
     <Compile Include="HeuristicLab.Encodings.PermutationEncoding-3.3\CyclicCrossover2Test.cs" />

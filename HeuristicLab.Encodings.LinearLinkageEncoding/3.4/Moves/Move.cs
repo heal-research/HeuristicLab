@@ -28,6 +28,6 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
     public abstract void Apply(LinearLinkage lle);
     public abstract void Undo(LinearLinkage lle);
 
-    public abstract void UpdateLinks(BidirectionalDictionary<int, int> links);
+    public abstract void ApplyToLLEb(int[] lleb);
   }
 }

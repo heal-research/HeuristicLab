@@ -32,6 +32,8 @@ namespace HeuristicLab.Algorithms.MemPR {
   [PluginDependency("HeuristicLab.Core", "3.3")]
   [PluginDependency("HeuristicLab.Data", "3.3")]
   [PluginDependency("HeuristicLab.Encodings.BinaryVectorEncoding", "3.3")]
+  [PluginDependency("HeuristicLab.Encodings.LinearLinkageEncoding", "3.4")]
+  [PluginDependency("HeuristicLab.Encodings.PermutationEncoding", "3.3")]
   [PluginDependency("HeuristicLab.Operators", "3.3")]
   [PluginDependency("HeuristicLab.Optimization", "3.3")]
   [PluginDependency("HeuristicLab.Parameters", "3.3")]

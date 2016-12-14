@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{BE698769-975A-429E-828C-72BB2B6182C8}</ProjectGuid>
+    <ProjectGuid>{166507C9-EF26-4370-BB80-699742A29D4F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>HeuristicLab.Encodings.LinearLinkageEncoding</RootNamespace>
-    <AssemblyName>HeuristicLab.Encodings.LinearLinkageEncoding-3.3</AssemblyName>
+    <AssemblyName>HeuristicLab.Encodings.LinearLinkageEncoding-3.4</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -155,6 +155,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Creators\ExactGroupsLinearLinkageCreator.cs" />
+    <Compile Include="Creators\MaxGroupSizeLinearLinkageCreator.cs" />
     <Compile Include="Creators\MaxGroupsLinearLinkageCreator.cs" />
     <Compile Include="Creators\RandomLinearLinkageCreator.cs" />
     <Compile Include="Crossovers\GreedyPartitionCrossover.cs" />
@@ -174,18 +175,18 @@
     <Compile Include="Manipulators\MoveItemManipulator.cs" />
     <Compile Include="Manipulators\MergeGroupManipulator.cs" />
     <Compile Include="Manipulators\MultiLLEManipulator.cs" />
-    <Compile Include="Moves\Swap\ExhaustiveSwap2MoveGenerator.cs" />
-    <Compile Include="Moves\Swap\StochasticSwap2MultiMoveGenerator.cs" />
-    <Compile Include="Moves\Swap\StochasticSwap2SingleMoveGenerator.cs" />
-    <Compile Include="Moves\Swap\Swap2Move.cs" />
-    <Compile Include="Moves\Swap\Swap2MoveGenerator.cs" />
-    <Compile Include="Moves\Swap\Swap2MoveMaker.cs" />
     <Compile Include="Moves\ExtractMove.cs" />
     <Compile Include="Moves\MergeMove.cs" />
     <Compile Include="Moves\Move.cs" />
     <Compile Include="Moves\ShiftMove.cs" />
     <Compile Include="Moves\SplitMove.cs" />
     <Compile Include="Moves\StaticAPI\MoveGenerator.cs" />
+    <Compile Include="Moves\Swap\ExhaustiveSwap2MoveGenerator.cs" />
+    <Compile Include="Moves\Swap\StochasticSwap2MultiMoveGenerator.cs" />
+    <Compile Include="Moves\Swap\StochasticSwap2SingleMoveGenerator.cs" />
+    <Compile Include="Moves\Swap\Swap2Move.cs" />
+    <Compile Include="Moves\Swap\Swap2MoveGenerator.cs" />
+    <Compile Include="Moves\Swap\Swap2MoveMaker.cs" />
     <Compile Include="ShakingOperators\LLEShakingOperator.cs" />
     <Compile Include="SimilarityCalculators\HammingSimilarityCalculator.cs" />
     <None Include="HeuristicLab.snk" />

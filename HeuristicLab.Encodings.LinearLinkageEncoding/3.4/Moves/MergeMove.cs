@@ -20,35 +20,29 @@
 #endregion
 
 using System;
-using HeuristicLab.Collections;
 
 namespace HeuristicLab.Encodings.LinearLinkageEncoding {
   public class MergeMove : Move {
 
     public int LastItemOfOtherGroup { get; private set; }
-    private int nextItemOfOtherGroup; // undo information
 
     public MergeMove(int item, int lastOfOther) {
       Item = item;
       LastItemOfOtherGroup = lastOfOther;
-      nextItemOfOtherGroup = -1;
     }
 
     public override void Apply(LinearLinkage lle) {
       if (lle[LastItemOfOtherGroup] != LastItemOfOtherGroup) throw new ArgumentException("Move conditions have changed, group does not terminate at " + LastItemOfOtherGroup);
-      nextItemOfOtherGroup = lle[LastItemOfOtherGroup];
       lle[LastItemOfOtherGroup] = Item;
     }
 
     public override void Undo(LinearLinkage lle) {
       if (lle[LastItemOfOtherGroup] != Item) throw new ArgumentException("Move conditions have changed, groups are no longer linked between " + LastItemOfOtherGroup + " and " + Item);
-      if (nextItemOfOtherGroup < 0) throw new InvalidOperationException("Cannot undo move that has not been applied first.");
-      lle[LastItemOfOtherGroup] = nextItemOfOtherGroup;
+      lle[LastItemOfOtherGroup] = LastItemOfOtherGroup;
     }
 
-    public override void UpdateLinks(BidirectionalDictionary<int, int> links) {
-      if (nextItemOfOtherGroup < 0) throw new InvalidOperationException("Cannot update links for move that has not been applied first.");
-      links.RemoveBySecond(nextItemOfOtherGroup);
+    public override void ApplyToLLEb(int[] lleb) {
+      lleb[Item] = LastItemOfOtherGroup;
     }
   }
 }

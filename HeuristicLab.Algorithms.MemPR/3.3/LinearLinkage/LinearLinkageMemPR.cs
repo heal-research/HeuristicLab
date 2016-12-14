@@ -119,19 +119,21 @@ namespace HeuristicLab.Algorithms.MemPR.LinearLinkage {
         }
         tabu[i, current[i]] = quality;
       }
-      
+
       // this dictionary holds the last relevant links
-      var links = new BidirectionalDictionary<int, int>();
+      var groupItems = new List<int>();
+      var lleb = current.ToBackLinks();
       Move bestOfTheRest = null;
       var bestOfTheRestF = double.NaN;
       var lastAppliedMove = -1;
       for (var iter = 0; iter < int.MaxValue; iter++) {
         // clear the dictionary before a new pass through the array is made
-        links.Clear();
+        groupItems.Clear();
         for (var i = 0; i < current.Length; i++) {
           if (subspace != null && !subspace[i]) {
-            links.RemoveBySecond(i);
-            links.Add(i, current[i]);
+            if (lleb[i] != i)
+              groupItems.Remove(lleb[i]);
+            groupItems.Add(i);
             continue;
           }
 
@@ -140,6 +142,7 @@ namespace HeuristicLab.Algorithms.MemPR.LinearLinkage {
           if (lastAppliedMove == i) {
             if (bestOfTheRest != null) {
               bestOfTheRest.Apply(current);
+              bestOfTheRest.ApplyToLLEb(lleb);
               currentScope.Fitness = bestOfTheRestF;
               quality = bestOfTheRestF;
               if (maximization) {
@@ -161,7 +164,7 @@ namespace HeuristicLab.Algorithms.MemPR.LinearLinkage {
             }
             break;
           } else {
-            foreach (var move in MoveGenerator.GenerateForItem(i, next, links)) {
+            foreach (var move in MoveGenerator.GenerateForItem(i, groupItems, current, lleb)) {
               // we intend to break link i -> next
               var qualityToBreak = tabu[i, next];
               move.Apply(current);
@@ -184,7 +187,7 @@ namespace HeuristicLab.Algorithms.MemPR.LinearLinkage {
                 quality = moveF;
                 if (isAspired) bestQuality = quality;
 
-                move.UpdateLinks(links);
+                move.ApplyToLLEb(lleb);
 
                 if (FitnessComparer.IsBetter(maximization, moveF, bestOfTheWalkF)) {
                   bestOfTheWalk = (Encodings.LinearLinkageEncoding.LinearLinkage)current.Clone();
@@ -208,8 +211,9 @@ namespace HeuristicLab.Algorithms.MemPR.LinearLinkage {
               if (evaluations >= maxEvals) break;
             }
           }
-          links.RemoveBySecond(i);
-          links.Add(i, current[i]);
+          if (lleb[i] != i)
+            groupItems.Remove(lleb[i]);
+          groupItems.Add(i);
           if (evaluations >= maxEvals) break;
           if (token.IsCancellationRequested) break;
         }

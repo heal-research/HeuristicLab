@@ -25,14 +25,15 @@ using HeuristicLab.Collections;
 
 namespace HeuristicLab.Encodings.LinearLinkageEncoding {
   public static class MoveGenerator {
-    public static IEnumerable<Move> GenerateForItem(int i, int next, BidirectionalDictionary<int, int> links) {
-      var pred = -1;
-      var isFirst = !links.TryGetBySecond(i, out pred);
+    public static IEnumerable<Move> GenerateForItem(int i, List<int> groupItems, LinearLinkage lle, int[] lleb) {
+      var pred = lleb[i];
+      var next = lle[i];
+      var isFirst = pred == i;
       var isLast = next == i;
 
       // First: shift i into each previous group
-      foreach (var l in links.Where(x => x.Value != i)) {
-        yield return new ShiftMove(i, isFirst ? i : pred, l.Key, next, l.Value);
+      foreach (var m in groupItems.Where(x => lle[x] != i)) {
+        yield return new ShiftMove(i, pred, m, next, lle[m]);
       }
 
       if (!isLast) {
@@ -41,11 +42,11 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
 
         if (isFirst) {
           // Third: merge with closed groups
-          foreach (var l in links.Where(x => x.Key == x.Value)) {
-            yield return new MergeMove(i, l.Key);
+          foreach (var m in groupItems.Where(x => lle[x] == x)) {
+            yield return new MergeMove(i, m);
           }
         } else {
-          // Fourth: extract i into group of its own (exclude first, because of Second)
+          // Fourth: extract i into group of its own (exclude first and last, because of SplitMove)
           yield return new ExtractMove(i, pred, next);
         }
       }
@@ -54,12 +55,14 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
     }
 
     public static IEnumerable<Move> Generate(LinearLinkage lle) {
-      var links = new BidirectionalDictionary<int, int>();
+      var groupItems = new List<int>();
+      var lleb = lle.ToBackLinks();
       for (var i = 0; i < lle.Length; i++) {
-        foreach (var move in GenerateForItem(i, lle[i], links))
+        foreach (var move in GenerateForItem(i, groupItems, lle, lleb))
           yield return move;
-        links.RemoveBySecond(i);
-        links.Add(i, lle[i]);
+        if (lleb[i] != i)
+          groupItems.Remove(lleb[i]);
+        groupItems.Add(i);
       }
     }
   }

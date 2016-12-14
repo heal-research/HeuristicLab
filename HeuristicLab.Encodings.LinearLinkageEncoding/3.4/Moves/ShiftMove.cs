@@ -64,10 +64,12 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
       lle[Item] = NextItemOfOldGroup;
     }
 
-    public override void UpdateLinks(BidirectionalDictionary<int, int> links) {
-      links.RemoveBySecond(Item);
-      links.SetByFirst(PreviousItemOfNewGroup, Item);
-      if (!IsFirst) links.SetByFirst(PreviousItemOfOldGroup, IsLast ? PreviousItemOfOldGroup : NextItemOfOldGroup);
+    public override void ApplyToLLEb(int[] lleb) {
+      if (!IsLast)
+        lleb[NextItemOfOldGroup] = IsFirst ? NextItemOfOldGroup : PreviousItemOfOldGroup;
+      lleb[Item] = PreviousItemOfNewGroup;
+      if (!NewGroupClosed)
+        lleb[NextItemOfNewGroup] = Item;
     }
   }
 }

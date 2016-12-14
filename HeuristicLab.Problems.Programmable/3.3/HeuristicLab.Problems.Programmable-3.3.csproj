@@ -148,7 +148,7 @@
       <Project>{ddfb14dd-2a85-493c-a52d-e69729bbaeb0}</Project>
       <Name>HeuristicLab.Encodings.IntegerVectorEncoding-3.3</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Encodings.LinearLinkageEncoding\3.3\HeuristicLab.Encodings.LinearLinkageEncoding-3.4.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.Encodings.LinearLinkageEncoding\3.4\HeuristicLab.Encodings.LinearLinkageEncoding-3.4.csproj">
       <Project>{166507c9-ef26-4370-bb80-699742a29d4f}</Project>
       <Name>HeuristicLab.Encodings.LinearLinkageEncoding-3.4</Name>
     </ProjectReference>

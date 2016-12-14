@@ -20,7 +20,6 @@
 #endregion
 
 using System;
-using HeuristicLab.Collections;
 
 namespace HeuristicLab.Encodings.LinearLinkageEncoding {
   public class ExtractMove : Move {
@@ -40,8 +39,7 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
       if ((!IsFirst && lle[PreviousItem] != Item)
         || lle[Item] != NextItem)
         throw new ArgumentException("Move conditions have changed!");
-      if (!IsFirst)
-        lle[PreviousItem] = IsLast ? PreviousItem : NextItem;
+      if (!IsFirst) lle[PreviousItem] = IsLast ? PreviousItem : NextItem;
       lle[Item] = Item;
     }
 
@@ -50,16 +48,13 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
         || lle[Item] != Item)
         throw new ArgumentException("Move conditions have changed, cannot undo move.");
 
-      if (!IsFirst)
-        lle[PreviousItem] = Item;
+      if (!IsFirst) lle[PreviousItem] = Item;
       lle[Item] = NextItem;
     }
 
-    public override void UpdateLinks(BidirectionalDictionary<int, int> links) {
-      if (!IsFirst) {
-        links.RemoveBySecond(Item);
-        links.SetByFirst(PreviousItem, IsLast ? PreviousItem : NextItem);
-      }
+    public override void ApplyToLLEb(int[] lleb) {
+      if (!IsLast) lleb[NextItem] = IsFirst ? NextItem : PreviousItem;
+      lleb[Item] = Item;
     }
   }
 }

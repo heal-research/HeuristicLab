@@ -58,12 +58,38 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
     /// This operation checks if the argument is a well formed LLE
     /// and throws an ArgumentException otherwise.
     /// </remarks>
+    /// <exception cref="ArgumentException">If <paramref name="lle"/> does not represent a valid LLE array.</exception>
     /// <param name="lle">The LLE representation</param>
+    /// <returns>The linear linkage encoding in LLE format (with forward-links).</returns>
     public static LinearLinkage FromForwardLinks(int[] lle) {
-      if (!Validate(lle)) {
+      if (!Validate(lle))
         throw new ArgumentException("Array is malformed and does not represent a valid LLE forward encoding.", "elements");
-      }
       return new LinearLinkage(lle);
+    }
+
+    /// <summary>
+    /// Create a new LinearLinkage object by parsing a LLE-b representation
+    /// and modifing the underlying array so that it is in LLE representation.
+    /// </summary>
+    /// <remarks>
+    /// This operation runs in O(n) time, the parameter <paramref name="lleb"/> is not modified.
+    /// </remarks>
+    /// <exception cref="ArgumentException">If <paramref name="lleb"/> does not represent a valid LLE-b array.</exception>
+    /// <param name="lleb">The LLE-b representation (LLE with back-links)</param>
+    /// <returns>The linear linkage encoding in LLE format (with forward-links).</returns>
+    public static LinearLinkage FromBackLinks(int[] lleb) {
+      var result = new LinearLinkage(lleb.Length);
+      for (var i = lleb.Length - 1; i > 0; i--) {
+        if (lleb[i] == i) {
+          if (result[i] == 0) result[i] = i;
+          continue;
+        }
+        result[lleb[i]] = i;
+        if (result[i] == 0) result[i] = i;
+      }
+      if (!Validate(result.array))
+        throw new ArgumentException("Array is malformed and does not represent a valid LLE-b encoding (with back-links).", "lleb");
+      return result;
     }
 
     /// <summary>
@@ -75,7 +101,7 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
     /// in form of a int[].
     /// </remarks>
     /// <param name="llee">The LLE-e representation</param>
-    /// <returns>LinearLinkage</returns>
+    /// <returns>The linear linkage encoding in LLE format (with forward-links).</returns>
     public static LinearLinkage FromEndLinks(int[] llee) {
       var result = new LinearLinkage(llee.Length);
       result.SetEndLinks(llee);
@@ -110,6 +136,7 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
     /// Runtime complexity of this method is O(n) where n is the length of the
     /// array.
     /// </remarks>
+    /// <exception cref="InvalidOperationException">If this object is not vaild LLE.</exception>
     /// <returns>An enumeration of all groups.</returns>
     public IEnumerable<List<int>> GetGroups() {
       var len = array.Length;
@@ -125,32 +152,10 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
           next = array[next];
           group.Add(curr);
         }
-        if (curr != next) throw new ArgumentException("Array is malformed and does not represent a valid LLE forward encoding.");
+        if (curr != next) throw new InvalidOperationException("Array is malformed and does not represent a valid LLE forward encoding.");
         used[curr] = true;
         yield return group;
       }
-      /*
-      var len = array.Length;
-      var used = new bool[len];
-      // iterate from lowest to highest index
-      for (var i = 0; i < len; i++) {
-        if (used[i]) continue;
-        var group = new List<int> { i };
-        used[i] = true;
-        var next = array[i];
-        if (next < i || next >= len) {
-          throw new ArgumentException("Array is malformed and does not represent a valid LLE forward encoding.");
-        }
-        while (next != array[next]) {
-          if (next < 0 || next >= len || used[next]) {
-            throw new ArgumentException("Array is malformed and does not represent a valid LLE forward encoding.");
-          }
-          group.Add(next);
-          used[next] = true;
-          next = array[next];
-        }
-        yield return group;
-      }*/
     }
 
     /// <summary>
@@ -226,6 +231,10 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
     /// </remarks>
     /// <param name="grouping">The grouping of the elements, each element must
     /// be part of exactly one group.</param>
+    /// <exception cref="ArgumentException">If <paramref name="grouping"/> cannot be converted
+    /// to a valid LLE representation. For instance, because elements are too big or too small,
+    /// or they're contained in multiple groups, or there are elements not assigned to any group.
+    /// </exception>
     public void SetGroups(IEnumerable<IEnumerable<int>> grouping) {
       var len = array.Length;
       var used = new bool[len];
@@ -280,20 +289,20 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
     /// This method flattens tree structures that may be present in groups.
     /// These tree structures may be created by e.g. merging two groups by
     /// linking one end node to the end node of another.
-    /// Consider following 1-based index array: 6, 6, 7, 5, 5, 8, 8, 8, 9.
-    /// This results in the following tree structure for group 8:
-    ///      8
+    /// Consider following array: 5, 5, 6, 4, 4, 7, 7, 7, 8.
+    /// This results in the following tree structure for group 7:
+    ///      7
     ///    /   \
-    ///   6     7
+    ///   5     6
     ///  / \    |
-    /// 1   2   3
-    /// After this operation the array will be 2, 3, 6, 5, 5, 7, 8, 8, 9.
-    /// Representing a tree with one branch: 1 -> 2 -> 3 -> 6 -> 7 -> 8
+    /// 0   1   2
+    /// After this operation the array will be 1, 2, 5, 4, 4, 6, 7, 7, 8.
+    /// Representing a tree with one branch: 0 -> 1 -> 2 -> 5 -> 6 -> 7.
     /// </summary>
     /// <remarks>
     /// The method first converts the array to LLE-e format and then
     /// linearizes the links. This requires two passes of the whole array
-    /// as well as a dictionary to hold the smallest index of each group.
+    /// as well as another copy of the underlying array.
     /// The runtime complexity is O(n).
     /// 
     /// The method assumes that there are no back links present.
@@ -311,11 +320,14 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
     /// <remarks>
     /// LLE-e is a special format where each element points to the
     /// ending item of a group.
-    /// The LLE representation 2, 3, 5, 6, 5, 7, 8, 8 would become 
-    /// 5, 5, 5, 8, 5, 8, 8, 8 in LLE-e.
+    /// The LLE representation 1, 2, 4, 5, 4, 6, 7, 7 would become 
+    /// 4, 4, 4, 7, 4, 7, 7, 7 in LLE-e.
     /// 
     /// This operation runs in O(n) time.
     /// </remarks>
+    /// <exception cref="ArgumentException">In case, this object does not
+    /// represent a valid LLE encoding.
+    /// </exception>
     /// <returns>An integer array in LLE-e representation</returns>
     public int[] ToEndLinks() {
       var result = (int[])array.Clone();
@@ -344,6 +356,10 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
     /// in form of a int[].
     /// </remarks>
     /// <param name="llee">The LLE-e representation</param>
+    /// <exception cref="ArgumentException">
+    /// If <paramref name="llee"/> does not contain a valid LLE-e representation or
+    /// has a different length to the given instance.
+    /// </exception>
     public void SetEndLinks(int[] llee) {
       var length = array.Length;
       if (length != llee.Length) {
@@ -359,9 +375,35 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
           array[i] = lookup[end];
           lookup[end] = i;
         } else {
-          throw new ArgumentException("Array is malformed and does not represent a valid LLE end encoding.", "llee");
+          throw new ArgumentException("Array is malformed and does not represent a valid LLE-e end encoding.", "llee");
         }
       }
+    }
+
+    /// <summary>
+    /// Creates a copy of the underlying array and turns it into LLE-b.
+    /// </summary>
+    /// <remarks>
+    /// LLE-b is a special format where each element points to the
+    /// predecessor instead of the successor.
+    /// The LLE representation 1, 2, 4, 5, 4, 6, 7, 7
+    /// would become           0, 0, 1, 3, 2, 3, 5, 6 in LLE-b.
+    /// 
+    /// This operation runs in O(n) time.
+    /// </remarks>
+    /// <returns>An integer array in LLE-b representation</returns>
+    public int[] ToBackLinks() {
+      var result = new int[array.Length];
+      var zeroLink = array[0];
+      for (var i = 0; i < array.Length; i++) {
+        if (array[i] == i) {
+          if (result[i] == 0 && i != zeroLink) result[i] = i;
+          continue;
+        }
+        result[array[i]] = i;
+        if (result[i] == 0 && i != zeroLink) result[i] = i;
+      }
+      return result;
     }
   }
 }
