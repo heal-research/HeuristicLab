@@ -44,11 +44,12 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
           foreach (var l in links.Where(x => x.Key == x.Value)) {
             yield return new MergeMove(i, l.Key);
           }
+        } else {
+          // Fourth: extract i into group of its own (exclude first, because of Second)
+          yield return new ExtractMove(i, pred, next);
         }
       }
-      if (!isFirst)
-        // Fourth: extract i into group of its own (exclude first, because of Second)
-        yield return new ExtractMove(i, pred, next);
+        
 
     }
 

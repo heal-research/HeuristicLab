@@ -79,7 +79,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab-3.3", "Heurist
 		{97198965-AFEA-496B-B3B1-316905C43FD6} = {97198965-AFEA-496B-B3B1-316905C43FD6}
 		{3B90F866-70F8-43EF-A541-51819D255B7B} = {3B90F866-70F8-43EF-A541-51819D255B7B}
 		{07486E68-1517-4B9D-A58D-A38E99AE71AB} = {07486E68-1517-4B9D-A58D-A38E99AE71AB}
-		{BE698769-975A-429E-828C-72BB2B6182C8} = {BE698769-975A-429E-828C-72BB2B6182C8}
 		{4AE3FC69-C575-42D2-BC46-0FAD5850EFC5} = {4AE3FC69-C575-42D2-BC46-0FAD5850EFC5}
 		{56F9106A-079F-4C61-92F6-86A84C2D84B7} = {56F9106A-079F-4C61-92F6-86A84C2D84B7}
 		{9D792B6D-836B-46DC-9D69-50B4B1E7B87F} = {9D792B6D-836B-46DC-9D69-50B4B1E7B87F}
@@ -422,8 +421,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OutdatedPlugins", "Outdated
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Algorithms.CMAEvolutionStrategy-3.4", "HeuristicLab.Algorithms.CMAEvolutionStrategy\3.4\HeuristicLab.Algorithms.CMAEvolutionStrategy-3.4.csproj", "{291010E4-2F4E-4D29-A795-753CFF293FDB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Encodings.LinearLinkageEncoding-3.3", "HeuristicLab.Encodings.LinearLinkageEncoding\3.3\HeuristicLab.Encodings.LinearLinkageEncoding-3.3.csproj", "{BE698769-975A-429E-828C-72BB2B6182C8}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.Orienteering-3.3", "HeuristicLab.Problems.Orienteering\3.3\HeuristicLab.Problems.Orienteering-3.3.csproj", "{D1EFA4CC-909F-41D5-9C1F-C3AF1957A372}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.Orienteering.Views-3.3", "HeuristicLab.Problems.Orienteering.Views\3.3\HeuristicLab.Problems.Orienteering.Views-3.3.csproj", "{BBF2CCC8-4D87-4297-8E18-8241FF93F966}"
@@ -457,6 +454,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.GraphColoring-3.3", "HeuristicLab.Problems.GraphColoring\3.3\HeuristicLab.Problems.GraphColoring-3.3.csproj", "{4B76E2CB-A990-4959-B080-1D81D418D325}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.Instances.DIMACS-3.3", "HeuristicLab.Problems.Instances.DIMACS\3.3\HeuristicLab.Problems.Instances.DIMACS-3.3.csproj", "{9943FF23-8619-459C-B84A-E7FBDCBA04E6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Encodings.LinearLinkageEncoding-3.4", "HeuristicLab.Encodings.LinearLinkageEncoding\3.3\HeuristicLab.Encodings.LinearLinkageEncoding-3.4.csproj", "{166507C9-EF26-4370-BB80-699742A29D4F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -2016,18 +2015,6 @@ Global
 		{291010E4-2F4E-4D29-A795-753CFF293FDB}.Release|x64.Build.0 = Release|x64
 		{291010E4-2F4E-4D29-A795-753CFF293FDB}.Release|x86.ActiveCfg = Release|x86
 		{291010E4-2F4E-4D29-A795-753CFF293FDB}.Release|x86.Build.0 = Release|x86
-		{BE698769-975A-429E-828C-72BB2B6182C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BE698769-975A-429E-828C-72BB2B6182C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BE698769-975A-429E-828C-72BB2B6182C8}.Debug|x64.ActiveCfg = Debug|x64
-		{BE698769-975A-429E-828C-72BB2B6182C8}.Debug|x64.Build.0 = Debug|x64
-		{BE698769-975A-429E-828C-72BB2B6182C8}.Debug|x86.ActiveCfg = Debug|x86
-		{BE698769-975A-429E-828C-72BB2B6182C8}.Debug|x86.Build.0 = Debug|x86
-		{BE698769-975A-429E-828C-72BB2B6182C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BE698769-975A-429E-828C-72BB2B6182C8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BE698769-975A-429E-828C-72BB2B6182C8}.Release|x64.ActiveCfg = Release|x64
-		{BE698769-975A-429E-828C-72BB2B6182C8}.Release|x64.Build.0 = Release|x64
-		{BE698769-975A-429E-828C-72BB2B6182C8}.Release|x86.ActiveCfg = Release|x86
-		{BE698769-975A-429E-828C-72BB2B6182C8}.Release|x86.Build.0 = Release|x86
 		{D1EFA4CC-909F-41D5-9C1F-C3AF1957A372}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D1EFA4CC-909F-41D5-9C1F-C3AF1957A372}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D1EFA4CC-909F-41D5-9C1F-C3AF1957A372}.Debug|x64.ActiveCfg = Debug|x64
@@ -2232,6 +2219,18 @@ Global
 		{9943FF23-8619-459C-B84A-E7FBDCBA04E6}.Release|x64.Build.0 = Release|Any CPU
 		{9943FF23-8619-459C-B84A-E7FBDCBA04E6}.Release|x86.ActiveCfg = Release|Any CPU
 		{9943FF23-8619-459C-B84A-E7FBDCBA04E6}.Release|x86.Build.0 = Release|Any CPU
+		{166507C9-EF26-4370-BB80-699742A29D4F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{166507C9-EF26-4370-BB80-699742A29D4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{166507C9-EF26-4370-BB80-699742A29D4F}.Debug|x64.ActiveCfg = Debug|x64
+		{166507C9-EF26-4370-BB80-699742A29D4F}.Debug|x64.Build.0 = Debug|x64
+		{166507C9-EF26-4370-BB80-699742A29D4F}.Debug|x86.ActiveCfg = Debug|x86
+		{166507C9-EF26-4370-BB80-699742A29D4F}.Debug|x86.Build.0 = Debug|x86
+		{166507C9-EF26-4370-BB80-699742A29D4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{166507C9-EF26-4370-BB80-699742A29D4F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{166507C9-EF26-4370-BB80-699742A29D4F}.Release|x64.ActiveCfg = Release|x64
+		{166507C9-EF26-4370-BB80-699742A29D4F}.Release|x64.Build.0 = Release|x64
+		{166507C9-EF26-4370-BB80-699742A29D4F}.Release|x86.ActiveCfg = Release|x86
+		{166507C9-EF26-4370-BB80-699742A29D4F}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

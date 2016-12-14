@@ -40,7 +40,7 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
 
     public static LinearLinkage Apply(IRandom random, LinearLinkage p1, LinearLinkage p2) {
       var length = p1.Length;
-      var child = new LinearLinkage(length);
+      var child = LinearLinkage.SingleElementGroups(length);
       var bp = random.Next(length - 1);
       for (var i = 0; i <= bp; i++) child[i] = p1[i];
       for (var i = bp + 1; i < length; i++) child[i] = p2[i];

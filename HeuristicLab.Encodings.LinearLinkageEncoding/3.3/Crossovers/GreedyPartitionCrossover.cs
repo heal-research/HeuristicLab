@@ -43,8 +43,6 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
 
     public static LinearLinkage Apply(IRandom random, ItemArray<LinearLinkage> parents) {
       var len = parents[0].Length;
-
-      var child = new LinearLinkage(len);
       var childGroup = new List<HashSet<int>>();
       var currentParent = random.Next(parents.Length);
       var groups = parents.Select(x => x.GetGroups().Select(y => new HashSet<int>(y)).ToList()).ToList();
@@ -68,8 +66,7 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
         currentParent = (currentParent + 1) % parents.Length;
       } while (remaining);
 
-      child.SetGroups(childGroup);
-      return child;
+      return LinearLinkage.FromGroups(len, childGroup);
     }
 
     protected override LinearLinkage Cross(IRandom random, ItemArray<LinearLinkage> parents) {

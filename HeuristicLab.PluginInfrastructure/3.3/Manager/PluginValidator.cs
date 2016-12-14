@@ -259,7 +259,7 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
           pluginDescriptions.AddRange(assemblyPluginDescriptions);
         }
         // ignore exceptions. Just don't yield a plugin description when an exception is thrown
-        catch (FileNotFoundException) {
+        catch (FileNotFoundException e) {
         }
         catch (FileLoadException) {
         }
@@ -467,7 +467,8 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
         // if one of the dependencies is the original plugin we found a cycle and can return
         // if the dependency is already disabled we can ignore the cycle detection because we will disable the plugin anyway
         // if following one of the dependencies recursively leads to a cycle then we also return
-        if (dep == plugin || dep.PluginState == PluginState.Disabled || HasCycleInDependencies(plugin, dep.Dependencies)) return true;
+        if (dep == plugin || dep.PluginState == PluginState.Disabled || HasCycleInDependencies(plugin, dep.Dependencies))
+          return true;
       }
       // no cycle found and none of the direct and indirect dependencies is disabled
       return false;

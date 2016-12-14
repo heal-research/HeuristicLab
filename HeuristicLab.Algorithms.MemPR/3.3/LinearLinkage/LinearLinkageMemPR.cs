@@ -249,51 +249,7 @@ namespace HeuristicLab.Algorithms.MemPR.LinearLinkage {
     protected override ISingleObjectiveSolutionScope<Encodings.LinearLinkageEncoding.LinearLinkage> Cross(ISingleObjectiveSolutionScope<Encodings.LinearLinkageEncoding.LinearLinkage> p1Scope, ISingleObjectiveSolutionScope<Encodings.LinearLinkageEncoding.LinearLinkage> p2Scope, CancellationToken token) {
       var p1 = p1Scope.Solution;
       var p2 = p2Scope.Solution;
-      var transfered = new bool[p1.Length];
-      var subspace = new bool[p1.Length];
-      var lleeChild = new int[p1.Length];
-      var lleep1 = p1.ToLLEe();
-      var lleep2 = p2.ToLLEe();
-      for (var i = p1.Length - 1; i >= 0; i--) {
-        // Step 1
-        subspace[i] = p1[i] != p2[i];
-        var p1IsEnd = p1[i] == i;
-        var p2IsEnd = p2[i] == i;
-        if (p1IsEnd & p2IsEnd) {
-          transfered[i] = true;
-        } else if (p1IsEnd | p2IsEnd) {
-          transfered[i] = Context.Random.NextDouble() < 0.5;
-        }
-        lleeChild[i] = i;
-
-        // Step 2
-        if (transfered[i]) continue;
-        var end1 = lleep1[i];
-        var end2 = lleep2[i];
-        var containsEnd1 = transfered[end1];
-        var containsEnd2 = transfered[end2];
-        if (containsEnd1 & containsEnd2) {
-          if (Context.Random.NextDouble() < 0.5) {
-            lleeChild[i] = end1;
-          } else {
-            lleeChild[i] = end2;
-          }
-        } else if (containsEnd1) {
-          lleeChild[i] = end1;
-        } else if (containsEnd2) {
-          lleeChild[i] = end2;
-        } else {
-          if (Context.Random.NextDouble() < 0.5) {
-            lleeChild[i] = lleeChild[p1[i]];
-          } else {
-            lleeChild[i] = lleeChild[p2[i]];
-          }
-        }
-      }
-      var child = new Encodings.LinearLinkageEncoding.LinearLinkage(lleeChild.Length);
-      child.FromLLEe(lleeChild);
-      
-      return ToScope(child);
+      return ToScope(GroupCrossover.Apply(Context.Random, p1, p2));
     }
 
     protected override void Mutate(ISingleObjectiveSolutionScope<Encodings.LinearLinkageEncoding.LinearLinkage> offspring, CancellationToken token, ISolutionSubspace<Encodings.LinearLinkageEncoding.LinearLinkage> subspace = null) {

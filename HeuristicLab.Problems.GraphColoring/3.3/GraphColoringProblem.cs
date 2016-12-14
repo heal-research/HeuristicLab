@@ -113,7 +113,7 @@ namespace HeuristicLab.Problems.GraphColoring {
     public override double Evaluate(Individual individual, IRandom random) {
       var fitFun = FitnessFunctionParameter.Value.Value;
       var adjList = adjacencyListParameter.Value;
-      var lle = individual.LinearLinkage(Encoding.Name).ToLLEe(); // LLE-e encoding uses the highest indexed member as group number
+      var lle = individual.LinearLinkage(Encoding.Name).ToEndLinks(); // LLE-e encoding uses the highest indexed member as group number
 
       switch (fitFun) {
         case FitnessFunction.Prioritized: {
@@ -157,7 +157,7 @@ namespace HeuristicLab.Problems.GraphColoring {
       var best = Maximization ? orderedIndividuals.Last().Individual.LinearLinkage(Encoding.Name) : orderedIndividuals.First().Individual.LinearLinkage(Encoding.Name);
 
       var adjList = AdjacencyListParameter.Value;
-      var lle = best.ToLLEe();
+      var lle = best.ToEndLinks();
       var conflicts = 0;
       var colors = lle.Distinct().Count();
       for (var r = 0; r < adjList.Rows; r++) {

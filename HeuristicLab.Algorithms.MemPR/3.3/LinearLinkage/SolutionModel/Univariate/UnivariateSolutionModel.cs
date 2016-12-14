@@ -62,7 +62,7 @@ namespace HeuristicLab.Algorithms.MemPR.LinearLinkage.SolutionModel.Univariate {
 
     public Encodings.LinearLinkageEncoding.LinearLinkage Sample() {
       var N = Frequencies.Rows;
-      var centroid = new Encodings.LinearLinkageEncoding.LinearLinkage(N);
+      var centroid = Encodings.LinearLinkageEncoding.LinearLinkage.SingleElementGroups(N);
       var dict = new Dictionary<int, int>();
       for (var i = N - 1; i >= 0; i--) {
         centroid[i] = i; // default be a cluster of your own
