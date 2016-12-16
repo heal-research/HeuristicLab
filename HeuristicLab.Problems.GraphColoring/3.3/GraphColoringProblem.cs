@@ -53,6 +53,10 @@ namespace HeuristicLab.Problems.GraphColoring {
     public IValueParameter<EnumValue<FitnessFunction>> FitnessFunctionParameter {
       get { return fitnessFunctionParameter; }
     }
+    public FitnessFunction FitnessFunction {
+      get { return fitnessFunctionParameter.Value.Value; }
+      set { fitnessFunctionParameter.Value.Value = value; }
+    }
 
     [StorableConstructor]
     private GraphColoringProblem(bool deserializing) : base(deserializing) { }
@@ -65,7 +69,7 @@ namespace HeuristicLab.Problems.GraphColoring {
     public GraphColoringProblem() {
       Encoding = new LinearLinkageEncoding("lle");
       Parameters.Add(adjacencyListParameter = new ValueParameter<IntMatrix>("Adjacency List", "The adjacency list that describes the (symmetric) edges in the graph with nodes from 0 to N-1."));
-      Parameters.Add(fitnessFunctionParameter = new ValueParameter<EnumValue<FitnessFunction>>("Fitness Function", "The function to use for evaluating the quality of a solution.", new EnumValue<FitnessFunction>(FitnessFunction.Prioritized)));
+      Parameters.Add(fitnessFunctionParameter = new ValueParameter<EnumValue<FitnessFunction>>("Fitness Function", "The function to use for evaluating the quality of a solution.", new EnumValue<FitnessFunction>(FitnessFunction.Penalized)));
 
       var imat = new IntMatrix(defaultInstance.Length, 2);
       for (var i = 0; i < defaultInstance.Length; i++) {
@@ -74,7 +78,7 @@ namespace HeuristicLab.Problems.GraphColoring {
       }
       Encoding.Length = defaultInstanceNodes;
       AdjacencyListParameter.Value = imat;
-      BestKnownQuality = 7;
+      BestKnownQualityParameter.Value = null;
 
       InitializeOperators();
       RegisterEventHandlers();
@@ -111,21 +115,17 @@ namespace HeuristicLab.Problems.GraphColoring {
     }
 
     public override double Evaluate(Individual individual, IRandom random) {
-      var fitFun = FitnessFunctionParameter.Value.Value;
       var adjList = adjacencyListParameter.Value;
-      var lle = individual.LinearLinkage(Encoding.Name).ToEndLinks(); // LLE-e encoding uses the highest indexed member as group number
+      var llee = individual.LinearLinkage(Encoding.Name).ToEndLinks(); // LLE-e encoding uses the highest indexed member as group number
 
-      switch (fitFun) {
+      switch (FitnessFunction) {
         case FitnessFunction.Prioritized: {
-            var conflicts = 0;
-            var colors = lle.Distinct().Count();
-            for (var r = 0; r < adjList.Rows; r++) {
-              if (lle[adjList[r, 0]] == lle[adjList[r, 1]]) conflicts++; // both nodes are adjacent and have the same color (are in the same group)
-            }
+            var colors = llee.Distinct().Count();
+            var conflicts = CalculateConflicts(llee);
             // number of conflicts is the integer part of the quality
             // number of colors constitutes the fractional part
             // the number of fractional digits is defined by the maximum number of possible colors (each node its own color)
-            var mag = Math.Pow(10, -(int)Math.Ceiling(Math.Log10(lle.Length)));
+            var mag = Math.Pow(10, -(int)Math.Ceiling(Math.Log10(llee.Length)));
             // the value is e.g. 4.03 for 4 conflicts with 3 colors (and less than 100 nodes)
             return conflicts + colors * mag;
           }
@@ -135,15 +135,16 @@ namespace HeuristicLab.Problems.GraphColoring {
             // Optimization by simulated annealing: An experimental evaluation; part II, graph coloring and number partitioning.
             // Operations Research 39(3), pp. 378–406.
             // All local optima of this function correspond to legal colorings.
-            var colors = lle.GroupBy(x => x).ToDictionary(x => x.Key, x => new EvaluationHelper() { ColorCount = x.Count() });
+            // We need to calculate conflicts and nodes per color
+            var colors = llee.GroupBy(x => x).ToDictionary(x => x.Key, x => new EvaluationHelper() { ColorCount = x.Count() });
             for (var r = 0; r < adjList.Rows; r++) {
-              var color1 = lle[adjList[r, 0]];
-              var color2 = lle[adjList[r, 1]];
+              var color1 = llee[adjList[r, 0]];
+              var color2 = llee[adjList[r, 1]];
               if (color1 == color2) colors[color1].ConflictCount++;
             }
             return 2 * colors.Sum(x => x.Value.ColorCount * x.Value.ConflictCount) - colors.Sum(x => x.Value.ColorCount * x.Value.ColorCount);
           }
-        default: throw new InvalidOperationException(string.Format("Unknown fitness function {0}.", fitFun));
+        default: throw new InvalidOperationException(string.Format("Unknown fitness function {0}.", FitnessFunction));
       }
     }
 
@@ -155,14 +156,10 @@ namespace HeuristicLab.Problems.GraphColoring {
     public override void Analyze(Individual[] individuals, double[] qualities, ResultCollection results, IRandom random) {
       var orderedIndividuals = individuals.Zip(qualities, (i, q) => new { Individual = i, Quality = q }).OrderBy(z => z.Quality);
       var best = Maximization ? orderedIndividuals.Last().Individual.LinearLinkage(Encoding.Name) : orderedIndividuals.First().Individual.LinearLinkage(Encoding.Name);
-
-      var adjList = AdjacencyListParameter.Value;
+        
       var lle = best.ToEndLinks();
-      var conflicts = 0;
       var colors = lle.Distinct().Count();
-      for (var r = 0; r < adjList.Rows; r++) {
-        if (lle[adjList[r, 0]] == lle[adjList[r, 1]]) conflicts++; // both nodes are adjacent and have the same color (are in the same group)
-      }
+      var conflicts = CalculateConflicts(lle);
 
       IResult res;
       if (!results.TryGetValue("Best Solution Colors", out res)) {
@@ -175,13 +172,29 @@ namespace HeuristicLab.Problems.GraphColoring {
       } else ((IntValue)res.Value).Value = conflicts;
     }
 
+    private int CalculateConflicts(int[] llee) {
+      var adjList = AdjacencyListParameter.Value;
+      var conflicts = 0;
+      for (var r = 0; r < adjList.Rows; r++) {
+        if (llee[adjList[r, 0]] == llee[adjList[r, 1]]) conflicts++; // both nodes are adjacent and have the same color (are in the same group)
+      }
+      return conflicts;
+    }
+
     public void Load(GCPData data) {
       Encoding.Length = data.Nodes;
       AdjacencyListParameter.Value = new IntMatrix(data.Adjacencies);
-      if (FitnessFunctionParameter.Value.Value == FitnessFunction.Prioritized && data.BestKnownColors.HasValue) {
+      if (data.BestKnownColors.HasValue && FitnessFunction == FitnessFunction.Prioritized) {
         var mag = Math.Pow(10, -(int)Math.Ceiling(Math.Log10(data.Nodes)));
-        // the value is e.g. 4.03 for 4 conflicts with 3 colors (and less than 100 nodes)
+        // the value is e.g. 0.051 for 0 conflicts with 51 colors (and less than 1000 nodes)
         BestKnownQuality = data.BestKnownColors.Value * mag;
+      } else if (data.BestKnownColoring != null && FitnessFunction == FitnessFunction.Prioritized) {
+        var mag = Math.Pow(10, -(int)Math.Ceiling(Math.Log10(data.Nodes)));
+        var colors = data.BestKnownColoring.Distinct().Count();
+        BestKnownQuality = colors * mag;
+      } else if (data.BestKnownColoring != null && FitnessFunction == FitnessFunction.Penalized) {
+        var colors = data.BestKnownColoring.GroupBy(x => x).Select(x => x.Count());
+        BestKnownQuality = -colors.Sum(x => x * x);
       } else BestKnownQualityParameter.Value = null;
       Name = data.Name;
       Description = data.Description;

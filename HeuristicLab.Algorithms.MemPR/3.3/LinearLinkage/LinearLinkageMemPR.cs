@@ -25,7 +25,6 @@ using System.Linq;
 using System.Threading;
 using HeuristicLab.Algorithms.MemPR.Interfaces;
 using HeuristicLab.Algorithms.MemPR.Util;
-using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.LinearLinkageEncoding;
@@ -67,7 +66,7 @@ namespace HeuristicLab.Algorithms.MemPR.LinearLinkage {
     }
 
     protected override double Dist(ISingleObjectiveSolutionScope<Encodings.LinearLinkageEncoding.LinearLinkage> a, ISingleObjectiveSolutionScope<Encodings.LinearLinkageEncoding.LinearLinkage> b) {
-      return HammingSimilarityCalculator.CalculateSimilarity(a.Solution, b.Solution);
+      return 1.0 - HammingSimilarityCalculator.CalculateSimilarity(a.Solution, b.Solution);
     }
 
     protected override ISingleObjectiveSolutionScope<Encodings.LinearLinkageEncoding.LinearLinkage> ToScope(Encodings.LinearLinkageEncoding.LinearLinkage code, double fitness = double.NaN) {

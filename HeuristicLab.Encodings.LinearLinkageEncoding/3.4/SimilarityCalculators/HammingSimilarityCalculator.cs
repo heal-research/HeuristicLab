@@ -45,11 +45,11 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
 
     public static double CalculateSimilarity(LinearLinkage left, LinearLinkage right) {
       if (left.Length != right.Length) throw new ArgumentException("Comparing encodings of unequal length");
-      var dist = 0;
+      var similarity = 0;
       for (var i = 0; i < left.Length; i++) {
-        if (left[i] != right[i]) dist++;
+        if (left[i] == right[i]) similarity++;
       }
-      return dist / (double)left.Length;
+      return similarity / (double)left.Length;
     }
 
     public override double CalculateSolutionSimilarity(IScope leftSolution, IScope rightSolution) {

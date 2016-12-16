@@ -47,8 +47,9 @@ namespace HeuristicLab.Problems.Instances {
     /// </summary>
     public int[] BestKnownColoring { get; set; }
     /// <summary>
-    /// Optional! The quality value of the <see cref="BestKnownColoring"/>
+    /// Optional! The least amount of colors that would not result in conflicts.
+    /// The amount of colors in <see cref="BestKnownColoring"/> if it is given as well.
     /// </summary>
-    public double? BestKnownColors { get; set; }
+    public int? BestKnownColors { get; set; }
   }
 }

@@ -20,35 +20,45 @@
 #endregion
 
 using System.Linq;
-using HeuristicLab.Algorithms.MemPR.Binary.SolutionModel.Univariate;
 using HeuristicLab.Algorithms.MemPR.Interfaces;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Optimization;
+using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Algorithms.MemPR.Permutation.SolutionModel.Univariate {
-  [Item("Unbiased Univariate Model Trainer (Permutation)", "", ExcludeGenericTypeInfo = true)]
+  [Item("Biased Univariate Model Trainer (Permutation)", "", ExcludeGenericTypeInfo = true)]
   [StorableClass]
-  public class UnbiasedModelTrainer<TContext> : NamedItem, ISolutionModelTrainer<TContext>
+  public class BiasedModelTrainer<TContext> : ParameterizedNamedItem, ISolutionModelTrainer<TContext>
     where TContext : IPopulationBasedHeuristicAlgorithmContext<SingleObjectiveBasicProblem<PermutationEncoding>, Encodings.PermutationEncoding.Permutation>,
     ISolutionModelContext<Encodings.PermutationEncoding.Permutation> {
-    
+
+    [Storable]
+    private IValueParameter<EnumValue<ModelBiasOptions>> modelBiasParameter;
+    public ModelBiasOptions ModelBias {
+      get { return modelBiasParameter.Value.Value; }
+      set { modelBiasParameter.Value.Value = value; }
+    }
+
     [StorableConstructor]
-    protected UnbiasedModelTrainer(bool deserializing) : base(deserializing) { }
-    protected UnbiasedModelTrainer(UnbiasedModelTrainer<TContext> original, Cloner cloner) : base(original, cloner) { }
-    public UnbiasedModelTrainer() {
-      Name = ItemName;
-      Description = ItemDescription;
+    protected BiasedModelTrainer(bool deserializing) : base(deserializing) { }
+    protected BiasedModelTrainer(BiasedModelTrainer<TContext> original, Cloner cloner)
+      : base(original, cloner) {
+      modelBiasParameter = cloner.Clone(original.modelBiasParameter);
+    }
+    public BiasedModelTrainer() {
+      Parameters.Add(modelBiasParameter = new ValueParameter<EnumValue<ModelBiasOptions>>("Model Bias", "What kind of bias towards better individuals is chosen."));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new UnbiasedModelTrainer<TContext>(this, cloner);
+      return new BiasedModelTrainer<TContext>(this, cloner);
     }
 
     public void TrainModel(TContext context) {
-      context.Model = Trainer.TrainUnbiased(context.Random, context.Population.Select(x => x.Solution).ToList(), context.Problem.Encoding.Length);
+      context.Model = Trainer.TrainBiased(ModelBias, context.Random, context.Problem.Maximization, context.Population.Select(x => x.Solution).ToList(), context.Population.Select(x => x.Fitness).ToList(), context.Problem.Encoding.Length);
     }
   }
 }

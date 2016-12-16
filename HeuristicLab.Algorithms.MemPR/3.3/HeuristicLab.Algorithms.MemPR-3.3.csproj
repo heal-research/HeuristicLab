@@ -113,6 +113,7 @@
     <Compile Include="Permutation\LocalSearch\StaticAPI\Exhaustive1Shift.cs" />
     <Compile Include="Permutation\LocalSearch\StaticAPI\Exhaustive2Opt.cs" />
     <Compile Include="Permutation\LocalSearch\StaticAPI\ExhaustiveSwap2.cs" />
+    <Compile Include="Permutation\SolutionModel\Univariate\BiasedModelTrainer.cs" />
     <Compile Include="Permutation\SolutionModel\Univariate\StaticAPI\Trainer.cs" />
     <Compile Include="Permutation\SolutionModel\Univariate\UnbiasedModelTrainer.cs" />
     <Compile Include="Permutation\SolutionModel\Univariate\UnivariateRelativeModel.cs" />

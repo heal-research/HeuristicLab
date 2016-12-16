@@ -26,18 +26,50 @@ using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
 
 namespace HeuristicLab.Algorithms.MemPR.Permutation.SolutionModel.Univariate {
+  public enum ModelBiasOptions { Rank, Fitness }
+
   public static class Trainer {
-    public static ISolutionModel<Encodings.PermutationEncoding.Permutation> Train(IRandom random, IList<Encodings.PermutationEncoding.Permutation> pop, int N) {
+    public static ISolutionModel<Encodings.PermutationEncoding.Permutation> TrainUnbiased(IRandom random, IList<Encodings.PermutationEncoding.Permutation> pop, int N) {
       ISolutionModel<Encodings.PermutationEncoding.Permutation> model;
       switch (pop[0].PermutationType) {
         case PermutationTypes.Absolute:
-          model = UnivariateAbsoluteModel.Create(random, pop, N);
+          model = UnivariateAbsoluteModel.CreateUnbiased(random, pop, N);
           break;
         case PermutationTypes.RelativeDirected:
           model = UnivariateRelativeModel.CreateDirected(random, pop, N);
           break;
         case PermutationTypes.RelativeUndirected:
           model = UnivariateRelativeModel.CreateUndirected(random, pop, N);
+          break;
+        default: throw new ArgumentException(string.Format("unknown permutation type {0}", pop[0].PermutationType));
+      }
+      return model;
+    }
+
+    public static ISolutionModel<Encodings.PermutationEncoding.Permutation> TrainBiased(ModelBiasOptions modelBias, IRandom random, bool maximization, IList<Encodings.PermutationEncoding.Permutation> pop, IList<double> qualities, int N) {
+      if (pop.Count != qualities.Count) throw new ArgumentException("Unequal length of population and qualities list.");
+      ISolutionModel<Encodings.PermutationEncoding.Permutation> model;
+      switch (pop[0].PermutationType) {
+        case PermutationTypes.Absolute:
+          if (modelBias == ModelBiasOptions.Rank)
+            model = UnivariateAbsoluteModel.CreateWithRankBias(random, maximization, pop, qualities, N);
+          else if (modelBias == ModelBiasOptions.Fitness)
+            model = UnivariateAbsoluteModel.CreateWithFitnessBias(random, maximization, pop, qualities, N);
+          else throw new ArgumentException(string.Format("Bias type {0} is not supported.", modelBias));
+          break;
+        case PermutationTypes.RelativeDirected:
+          if (modelBias == ModelBiasOptions.Rank)
+            model = UnivariateRelativeModel.CreateDirectedWithRankBias(random, maximization, pop, qualities, N);
+          else if (modelBias == ModelBiasOptions.Fitness)
+            model = UnivariateRelativeModel.CreateDirectedWithFitnessBias(random, maximization, pop, qualities, N);
+          else throw new ArgumentException(string.Format("Bias type {0} is not supported.", modelBias));
+          break;
+        case PermutationTypes.RelativeUndirected:
+          if (modelBias == ModelBiasOptions.Rank)
+            model = UnivariateRelativeModel.CreateUndirectedWithRankBias(random, maximization, pop, qualities, N);
+          else if (modelBias == ModelBiasOptions.Fitness)
+            model = UnivariateRelativeModel.CreateUndirectedWithFitnessBias(random, maximization, pop, qualities, N);
+          else throw new ArgumentException(string.Format("Bias type {0} is not supported.", modelBias));
           break;
         default: throw new ArgumentException(string.Format("unknown permutation type {0}", pop[0].PermutationType));
       }

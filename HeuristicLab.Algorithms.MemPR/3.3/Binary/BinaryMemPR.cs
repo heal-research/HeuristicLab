@@ -65,13 +65,7 @@ namespace HeuristicLab.Algorithms.MemPR.Binary {
     }
 
     protected override double Dist(ISingleObjectiveSolutionScope<BinaryVector> a, ISingleObjectiveSolutionScope<BinaryVector> b) {
-      var len = a.Solution.Length;
-      var acode = a.Solution;
-      var bcode = b.Solution;
-      var hamming = 0;
-      for (var i = 0; i < len; i++)
-        if (acode[i] != bcode[i]) hamming++;
-      return hamming / (double)len;
+      return 1.0 - HammingSimilarityCalculator.CalculateSimilarity(a.Solution, b.Solution);
     }
 
     protected override ISingleObjectiveSolutionScope<BinaryVector> ToScope(BinaryVector code, double fitness = double.NaN) {

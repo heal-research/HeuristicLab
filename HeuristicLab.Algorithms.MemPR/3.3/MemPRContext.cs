@@ -101,10 +101,10 @@ namespace HeuristicLab.Algorithms.MemPR {
     }
 
     [Storable]
-    private IValueParameter<IntValue> hcSteps;
-    public int HcSteps {
-      get { return hcSteps.Value.Value; }
-      set { hcSteps.Value.Value = value; }
+    private IValueParameter<IntValue> localSearchEvaluations;
+    public int LocalSearchEvaluations {
+      get { return localSearchEvaluations.Value.Value; }
+      set { localSearchEvaluations.Value.Value = value; }
     }
 
     [Storable]
@@ -195,7 +195,7 @@ namespace HeuristicLab.Algorithms.MemPR {
       evaluatedSolutions = cloner.Clone(original.evaluatedSolutions);
       bestQuality = cloner.Clone(original.bestQuality);
       bestSolution = cloner.Clone(original.bestSolution);
-      hcSteps = cloner.Clone(original.hcSteps);
+      localSearchEvaluations = cloner.Clone(original.localSearchEvaluations);
       byBreeding = cloner.Clone(original.byBreeding);
       byRelinking = cloner.Clone(original.byRelinking);
       bySampling = cloner.Clone(original.bySampling);
@@ -218,7 +218,7 @@ namespace HeuristicLab.Algorithms.MemPR {
       Parameters.Add(evaluatedSolutions = new ValueParameter<IntValue>("EvaluatedSolutions", new IntValue(0)));
       Parameters.Add(bestQuality = new ValueParameter<DoubleValue>("BestQuality", new DoubleValue(double.NaN)));
       Parameters.Add(bestSolution = new ValueParameter<TSolution>("BestSolution"));
-      Parameters.Add(hcSteps = new ValueParameter<IntValue>("HcSteps", new IntValue(0)));
+      Parameters.Add(localSearchEvaluations = new ValueParameter<IntValue>("LocalSearchEvaluations", new IntValue(0)));
       Parameters.Add(byBreeding = new ValueParameter<IntValue>("ByBreeding", new IntValue(0)));
       Parameters.Add(byRelinking = new ValueParameter<IntValue>("ByRelinking", new IntValue(0)));
       Parameters.Add(bySampling = new ValueParameter<IntValue>("BySampling", new IntValue(0)));

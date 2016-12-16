@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Algorithms.MemPR.Interfaces;
@@ -34,7 +35,7 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation.SolutionModel.Univariate {
   [StorableClass]
   public sealed class UnivariateAbsoluteModel : Item, ISolutionModel<Encodings.PermutationEncoding.Permutation> {
     [Storable]
-    public IntMatrix Probabilities { get; set; }
+    public DoubleMatrix Probabilities { get; set; }
     [Storable]
     public IRandom Random { get; set; }
 
@@ -45,11 +46,11 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation.SolutionModel.Univariate {
       Probabilities = cloner.Clone(original.Probabilities);
       Random = cloner.Clone(original.Random);
     }
-    public UnivariateAbsoluteModel(IRandom random, int[,] probabilities) {
-      Probabilities = new IntMatrix(probabilities);
+    public UnivariateAbsoluteModel(IRandom random, double[,] probabilities) {
+      Probabilities = new DoubleMatrix(probabilities);
       Random = random;
     }
-    public UnivariateAbsoluteModel(IRandom random, IntMatrix probabilties) {
+    public UnivariateAbsoluteModel(IRandom random, DoubleMatrix probabilties) {
       Probabilities = probabilties;
       Random = random;
     }
@@ -65,30 +66,69 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation.SolutionModel.Univariate {
       var values = Enumerable.Range(0, N).Shuffle(Random).ToList();
       for (var i = N - 1; i > 0; i--) {
         var nextIndex = indices[i];
-        var total = 0.0;
-        for (var v = 0; v < values.Count; v++) {
-          total += Probabilities[nextIndex, values[v]] + 1.0 / N;
-        }
-        var ball = Random.NextDouble() * total;
+        var ball = Random.NextDouble();
         for (var v = 0; v < values.Count; v++) {
           ball -= Probabilities[nextIndex, values[v]] + 1.0 / N;
-          if (ball <= 0.0) {
-            child[nextIndex] = values[v];
-            values.RemoveAt(v);
-            indices.RemoveAt(i);
-            break;
-          }
+          if (ball > 0.0) continue;
+          child[nextIndex] = values[v];
+          values.RemoveAt(v);
+          indices.RemoveAt(i);
+          break;
+        }
+        if (ball > 0) {
+          var v = values.Count - 1;
+          child[nextIndex] = values[v];
+          values.RemoveAt(v);
+          indices.RemoveAt(i);
         }
       }
       child[indices[0]] = values[0];
       return child;
     }
 
-    public static UnivariateAbsoluteModel Create(IRandom random, IList<Encodings.PermutationEncoding.Permutation> pop, int N) {
-      var model = new int[N, N];
+    public static UnivariateAbsoluteModel CreateUnbiased(IRandom random, IList<Encodings.PermutationEncoding.Permutation> pop, int N) {
+      var model = new double[N, N];
+      var factor = 1.0 / pop.Count;
       for (var i = 0; i < pop.Count; i++) {
         for (var j = 0; j < N; j++) {
-          model[j, pop[i][j]]++;
+          model[j, pop[i][j]] += factor;
+        }
+      }
+      return new UnivariateAbsoluteModel(random, model);
+    }
+
+    public static UnivariateAbsoluteModel CreateWithRankBias(IRandom random, bool maximization, IList<Encodings.PermutationEncoding.Permutation> population, IEnumerable<double> qualities, int N) {
+      var popSize = 0;
+      var model = new double[N, N];
+
+      var pop = population.Zip(qualities, (b, q) => new { Solution = b, Fitness = q });
+      foreach (var ind in maximization ? pop.OrderBy(x => x.Fitness) : pop.OrderByDescending(x => x.Fitness)) {
+        // from worst to best, worst solution has 1 vote, best solution N votes
+        popSize++;
+        for (var j = 0; j < N; j++) {
+          model[j, ind.Solution[j]] += popSize;
+        }
+      }
+      // normalize to [0;1]
+      var factor = 2.0 / (popSize + 1);
+      for (var i = 0; i < N; i++) {
+        for (var j = 0; j < N; j++)
+          model[i, j] *= factor / popSize;
+      }
+      if (popSize == 0) throw new ArgumentException("Cannot train model from empty population.");
+      return new UnivariateAbsoluteModel(random, model);
+    }
+
+    public static UnivariateAbsoluteModel CreateWithFitnessBias(IRandom random, bool maximization, IList<Encodings.PermutationEncoding.Permutation> population, IEnumerable<double> qualities, int N) {
+      var proportions = RandomEnumerable.PrepareProportional(qualities, true, !maximization);
+      var factor = 1.0 / proportions.Sum();
+      var model = new double[N, N];
+
+      foreach (var ind in population.Zip(proportions, (p, q) => new { Solution = p, Proportion = q })) {
+        for (var x = 0; x < model.Length; x++) {
+          for (var j = 0; j < N; j++) {
+            model[j, ind.Solution[j]] += ind.Proportion * factor;
+          }
         }
       }
       return new UnivariateAbsoluteModel(random, model);

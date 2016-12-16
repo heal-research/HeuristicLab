@@ -229,13 +229,13 @@ namespace HeuristicLab.Algorithms.MemPR {
         // We initialize the population with two local optima
         while (Context.PopulationCount < 2) {
           var child = Create(token);
-          Context.HcSteps += HillClimb(child, token);
-          Context.AddToPopulation(child);
-          Analyze(token);
+          Context.LocalSearchEvaluations += HillClimb(child, token);
+          if (Replace(child, token) >= 0)
+            Analyze(token);
           token.ThrowIfCancellationRequested();
           if (Terminate()) return;
         }
-        Context.HcSteps /= 2;
+        Context.LocalSearchEvaluations /= 2;
         Context.Initialized = true;
       }
 
@@ -261,7 +261,7 @@ namespace HeuristicLab.Algorithms.MemPR {
       ISingleObjectiveSolutionScope<TSolution> offspring = null;
       int replPos = -1;
 
-      if (Context.Random.NextDouble() > parentDist) {
+      if (Context.Random.NextDouble() > parentDist * parentDist) {
         offspring = BreedAndImprove(p1, p2, token);
         replPos = Replace(offspring, token);
         if (replPos >= 0) {
@@ -270,7 +270,7 @@ namespace HeuristicLab.Algorithms.MemPR {
         }
       }
 
-      if (Context.Random.NextDouble() < parentDist) {
+      if (Context.Random.NextDouble() < Math.Sqrt(parentDist)) {
         offspring = RelinkAndImprove(p1, p2, token);
         replPos = Replace(offspring, token);
         if (replPos >= 0) {
@@ -298,7 +298,7 @@ namespace HeuristicLab.Algorithms.MemPR {
         } else {
           offspring = (ISingleObjectiveSolutionScope<TSolution>)Context.AtPopulation(Context.Random.Next(Context.PopulationCount)).Clone();
           Mutate(offspring, token);
-          PerformTabuWalk(offspring, Context.HcSteps, token);
+          PerformTabuWalk(offspring, Context.LocalSearchEvaluations, token);
           replPos = Replace(offspring, token);
           if (replPos >= 0) {
             Context.ByTabuwalking++;
@@ -317,9 +317,9 @@ namespace HeuristicLab.Algorithms.MemPR {
       if (!Results.TryGetValue("Iterations", out res))
         Results.Add(new Result("Iterations", new IntValue(Context.Iterations)));
       else ((IntValue)res.Value).Value = Context.Iterations;
-      if (!Results.TryGetValue("HcSteps", out res))
-        Results.Add(new Result("HcSteps", new IntValue(Context.HcSteps)));
-      else ((IntValue)res.Value).Value = Context.HcSteps;
+      if (!Results.TryGetValue("LocalSearch Evaluations", out res))
+        Results.Add(new Result("LocalSearch Evaluations", new IntValue(Context.LocalSearchEvaluations)));
+      else ((IntValue)res.Value).Value = Context.LocalSearchEvaluations;
       if (!Results.TryGetValue("ByBreeding", out res))
         Results.Add(new Result("ByBreeding", new IntValue(Context.ByBreeding)));
       else ((IntValue)res.Value).Value = Context.ByBreeding;

@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Algorithms.MemPR.Interfaces;
@@ -34,7 +35,7 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation.SolutionModel.Univariate {
   [StorableClass]
   public sealed class UnivariateRelativeModel : Item, ISolutionModel<Encodings.PermutationEncoding.Permutation> {
     [Storable]
-    public IntMatrix Probabilities { get; set; }
+    public DoubleMatrix Probabilities { get; set; }
 
     [Storable]
     public IRandom Random { get; set; }
@@ -50,12 +51,12 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation.SolutionModel.Univariate {
       Random = cloner.Clone(original.Random);
       PermutationType = original.PermutationType;
     }
-    public UnivariateRelativeModel(IRandom random, int[,] probabilities, PermutationTypes permutationType) {
-      Probabilities = new IntMatrix(probabilities);
+    public UnivariateRelativeModel(IRandom random, double[,] probabilities, PermutationTypes permutationType) {
+      Probabilities = new DoubleMatrix(probabilities);
       Random = random;
       PermutationType = permutationType;
     }
-    public UnivariateRelativeModel(IRandom random, IntMatrix probabilties, PermutationTypes permutationType) {
+    public UnivariateRelativeModel(IRandom random, DoubleMatrix probabilties, PermutationTypes permutationType) {
       Probabilities = probabilties;
       Random = random;
       PermutationType = permutationType;
@@ -92,7 +93,7 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation.SolutionModel.Univariate {
     }
 
     public static UnivariateRelativeModel CreateDirected(IRandom random, IList<Encodings.PermutationEncoding.Permutation> pop, int N) {
-      var model = new int[N, N];
+      var model = new double[N, N];
       for (var i = 0; i < pop.Count; i++) {
         for (var j = 0; j < N - 1; j++) {
           for (var k = j + 1; k < N; k++) {
@@ -104,8 +105,45 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation.SolutionModel.Univariate {
       return new UnivariateRelativeModel(random, model, PermutationTypes.RelativeDirected);
     }
 
+    public static UnivariateRelativeModel CreateDirectedWithRankBias(IRandom random, bool maximization, IList<Encodings.PermutationEncoding.Permutation> population, IEnumerable<double> qualities, int N) {
+      var popSize = 0;
+      var model = new double[N, N];
+
+      var pop = population.Zip(qualities, (b, q) => new { Solution = b, Fitness = q });
+      foreach (var ind in maximization ? pop.OrderBy(x => x.Fitness) : pop.OrderByDescending(x => x.Fitness)) {
+        // from worst to best, worst solution has 1 vote, best solution N votes
+        popSize++;
+        for (var j = 0; j < N - 1; j++) {
+          for (var k = j + 1; k < N; k++) {
+            model[ind.Solution[j], ind.Solution[k]] += popSize;
+          }
+          model[ind.Solution[N - 1], ind.Solution[0]] += popSize;
+        }
+      }
+      if (popSize == 0) throw new ArgumentException("Cannot train model from empty population.");
+      return new UnivariateRelativeModel(random, model, PermutationTypes.RelativeDirected);
+    }
+
+    public static UnivariateRelativeModel CreateDirectedWithFitnessBias(IRandom random, bool maximization, IList<Encodings.PermutationEncoding.Permutation> population, IEnumerable<double> qualities, int N) {
+      var proportions = RandomEnumerable.PrepareProportional(qualities, true, !maximization);
+      var factor = 1.0 / proportions.Sum();
+      var model = new double[N, N];
+
+      foreach (var ind in population.Zip(proportions, (p, q) => new { Solution = p, Proportion = q })) {
+        for (var x = 0; x < model.Length; x++) {
+          for (var j = 0; j < N - 1; j++) {
+            for (var k = j + 1; k < N; k++) {
+              model[ind.Solution[j], ind.Solution[k]] += ind.Proportion * factor;
+            }
+            model[ind.Solution[N - 1], ind.Solution[0]] += ind.Proportion * factor;
+          }
+        }
+      }
+      return new UnivariateRelativeModel(random, model, PermutationTypes.RelativeDirected);
+    }
+
     public static UnivariateRelativeModel CreateUndirected(IRandom random, IList<Encodings.PermutationEncoding.Permutation> pop, int N) {
-      var model = new int[N, N];
+      var model = new double[N, N];
       for (var i = 0; i < pop.Count; i++) {
         for (var j = 0; j < N - 1; j++) {
           for (var k = j + 1; k < N; k++) {
@@ -114,6 +152,47 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation.SolutionModel.Univariate {
           }
           model[pop[i][0], pop[i][N - 1]]++;
           model[pop[i][N - 1], pop[i][0]]++;
+        }
+      }
+      return new UnivariateRelativeModel(random, model, PermutationTypes.RelativeUndirected);
+    }
+
+    public static UnivariateRelativeModel CreateUndirectedWithRankBias(IRandom random, bool maximization, IList<Encodings.PermutationEncoding.Permutation> population, IEnumerable<double> qualities, int N) {
+      var popSize = 0;
+      var model = new double[N, N];
+
+      var pop = population.Zip(qualities, (b, q) => new { Solution = b, Fitness = q });
+      foreach (var ind in maximization ? pop.OrderBy(x => x.Fitness) : pop.OrderByDescending(x => x.Fitness)) {
+        // from worst to best, worst solution has 1 vote, best solution N votes
+        popSize++;
+        for (var j = 0; j < N - 1; j++) {
+          for (var k = j + 1; k < N; k++) {
+            model[ind.Solution[j], ind.Solution[k]] += popSize;
+            model[ind.Solution[k], ind.Solution[j]] += popSize;
+          }
+          model[ind.Solution[0], ind.Solution[N - 1]] += popSize;
+          model[ind.Solution[N - 1], ind.Solution[0]] += popSize;
+        }
+      }
+      if (popSize == 0) throw new ArgumentException("Cannot train model from empty population.");
+      return new UnivariateRelativeModel(random, model, PermutationTypes.RelativeUndirected);
+    }
+
+    public static UnivariateRelativeModel CreateUndirectedWithFitnessBias(IRandom random, bool maximization, IList<Encodings.PermutationEncoding.Permutation> population, IEnumerable<double> qualities, int N) {
+      var proportions = RandomEnumerable.PrepareProportional(qualities, true, !maximization);
+      var factor = 1.0 / proportions.Sum();
+      var model = new double[N, N];
+
+      foreach (var ind in population.Zip(proportions, (p, q) => new { Solution = p, Proportion = q })) {
+        for (var x = 0; x < model.Length; x++) {
+          for (var j = 0; j < N - 1; j++) {
+            for (var k = j + 1; k < N; k++) {
+              model[ind.Solution[j], ind.Solution[k]] += ind.Proportion * factor;
+              model[ind.Solution[k], ind.Solution[j]] += ind.Proportion * factor;
+            }
+            model[ind.Solution[0], ind.Solution[N - 1]] += ind.Proportion * factor;
+            model[ind.Solution[N - 1], ind.Solution[0]] += ind.Proportion * factor;
+          }
         }
       }
       return new UnivariateRelativeModel(random, model, PermutationTypes.RelativeUndirected);
