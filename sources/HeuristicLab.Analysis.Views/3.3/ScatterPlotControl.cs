@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using HeuristicLab.Collections;
@@ -32,6 +33,7 @@ namespace HeuristicLab.Analysis.Views {
   public partial class ScatterPlotControl : UserControl {
     protected List<Series> invisibleSeries;
     protected Dictionary<IObservableList<Point2D<double>>, ScatterPlotDataRow> pointsRowsTable;
+    protected Dictionary<Series, Series> seriesToRegressionSeriesTable;
     private double xMin, xMax, yMin, yMax;
 
     private ScatterPlot content;
@@ -50,6 +52,7 @@ namespace HeuristicLab.Analysis.Views {
     public ScatterPlotControl() {
       InitializeComponent();
       pointsRowsTable = new Dictionary<IObservableList<Point2D<double>>, ScatterPlotDataRow>();
+      seriesToRegressionSeriesTable = new Dictionary<Series, Series>();
       invisibleSeries = new List<Series>();
       chart.CustomizeAllChartAreas();
       chart.ChartAreas[0].CursorX.Interval = 1;
@@ -125,17 +128,30 @@ namespace HeuristicLab.Analysis.Views {
     protected virtual void AddScatterPlotDataRows(IEnumerable<ScatterPlotDataRow> rows) {
       foreach (var row in rows) {
         RegisterScatterPlotDataRowEvents(row);
-        Series series = new Series(row.Name);
+        Series series = new Series(row.Name) {
+          Tag = row
+        };
         if (row.VisualProperties.DisplayName.Trim() != String.Empty) series.LegendText = row.VisualProperties.DisplayName;
         else series.LegendText = row.Name;
-        ConfigureSeries(series, row);
+        var regressionSeries = new Series(row.Name + "_Regression") {
+          Tag = row,
+          ChartType = SeriesChartType.Line,
+          BorderDashStyle = ChartDashStyle.Dot,
+          IsVisibleInLegend = false,
+          Color = Color.Transparent // to avoid auto color assignment via color palette 
+        };
+        seriesToRegressionSeriesTable.Add(series, regressionSeries);
+        ConfigureSeries(series, regressionSeries, row);
         FillSeriesWithRowValues(series, row);
         chart.Series.Add(series);
+        chart.Series.Add(regressionSeries);
+        FillRegressionSeries(regressionSeries, row);
       }
       ConfigureChartArea(chart.ChartAreas[0]);
       RecalculateMinMaxPointValues();
       RecalculateAxesScale(chart.ChartAreas[0]);
       UpdateYCursorInterval();
+      UpdateRegressionSeriesColors();
     }
 
     protected virtual void RemoveScatterPlotDataRows(IEnumerable<ScatterPlotDataRow> rows) {
@@ -145,12 +161,14 @@ namespace HeuristicLab.Analysis.Views {
         chart.Series.Remove(series);
         if (invisibleSeries.Contains(series))
           invisibleSeries.Remove(series);
+        chart.Series.Remove(seriesToRegressionSeriesTable[series]);
+        seriesToRegressionSeriesTable.Remove(series);
       }
       RecalculateMinMaxPointValues();
       RecalculateAxesScale(chart.ChartAreas[0]);
     }
 
-    private void ConfigureSeries(Series series, ScatterPlotDataRow row) {
+    private void ConfigureSeries(Series series, Series regressionSeries, ScatterPlotDataRow row) {
       series.BorderWidth = 1;
       series.BorderDashStyle = ChartDashStyle.Solid;
       series.BorderColor = Color.Empty;
@@ -178,6 +196,13 @@ namespace HeuristicLab.Analysis.Views {
         series.LegendText + Environment.NewLine +
         xAxisTitle + " = " + "#VALX," + Environment.NewLine +
         yAxisTitle + " = " + "#VAL";
+
+      regressionSeries.BorderWidth = Math.Max(1, row.VisualProperties.PointSize / 2);
+      regressionSeries.IsVisibleInLegend = row.VisualProperties.IsRegressionVisibleInLegend &&
+        row.VisualProperties.RegressionType != ScatterPlotDataRowVisualProperties.ScatterPlotDataRowRegressionType.None;
+      regressionSeries.LegendText = string.IsNullOrEmpty(row.VisualProperties.RegressionDisplayName)
+        ? string.Format("{0}({1})", row.VisualProperties.RegressionType, row.Name)
+        : row.VisualProperties.RegressionDisplayName;
     }
 
     private void ConfigureChartArea(ChartArea area) {
@@ -249,6 +274,15 @@ namespace HeuristicLab.Analysis.Views {
       this.chart.ChartAreas[0].CursorY.Interval = yZoomInterval;
     }
 
+    protected void UpdateRegressionSeriesColors() {
+      chart.ApplyPaletteColors();
+      foreach (var row in Content.Rows) {
+        var series = chart.Series[row.Name];
+        var regressionSeries = seriesToRegressionSeriesTable[series];
+        regressionSeries.Color = series.Color;
+      }
+    }
+
     #region Event Handlers
     #region Content Event Handlers
     private void Content_VisualPropertiesChanged(object sender, EventArgs e) {
@@ -299,11 +333,15 @@ namespace HeuristicLab.Analysis.Views {
       else {
         ScatterPlotDataRow row = (ScatterPlotDataRow)sender;
         Series series = chart.Series[row.Name];
+        Series regressionSeries = seriesToRegressionSeriesTable[series];
         series.Points.Clear();
-        ConfigureSeries(series, row);
+        regressionSeries.Points.Clear();
+        ConfigureSeries(series, regressionSeries, row);
         FillSeriesWithRowValues(series, row);
+        FillRegressionSeries(regressionSeries, row);
         RecalculateMinMaxPointValues();
         RecalculateAxesScale(chart.ChartAreas[0]);
+        UpdateRegressionSeriesColors();
       }
     }
     private void Row_NameChanged(object sender, EventArgs e) {
@@ -324,9 +362,12 @@ namespace HeuristicLab.Analysis.Views {
         pointsRowsTable.TryGetValue((IObservableList<Point2D<double>>)sender, out row);
         if (row != null) {
           Series rowSeries = chart.Series[row.Name];
+          Series regressionSeries = seriesToRegressionSeriesTable[rowSeries];
           if (!invisibleSeries.Contains(rowSeries)) {
             rowSeries.Points.Clear();
+            regressionSeries.Points.Clear();
             FillSeriesWithRowValues(rowSeries, row);
+            FillRegressionSeries(regressionSeries, row);
             RecalculateMinMaxPointValues();
             RecalculateAxesScale(chart.ChartAreas[0]);
             UpdateYCursorInterval();
@@ -342,9 +383,12 @@ namespace HeuristicLab.Analysis.Views {
         pointsRowsTable.TryGetValue((IObservableList<Point2D<double>>)sender, out row);
         if (row != null) {
           Series rowSeries = chart.Series[row.Name];
+          Series regressionSeries = seriesToRegressionSeriesTable[rowSeries];
           if (!invisibleSeries.Contains(rowSeries)) {
             rowSeries.Points.Clear();
+            regressionSeries.Points.Clear();
             FillSeriesWithRowValues(rowSeries, row);
+            FillRegressionSeries(regressionSeries, row);
             RecalculateMinMaxPointValues();
             RecalculateAxesScale(chart.ChartAreas[0]);
             UpdateYCursorInterval();
@@ -360,9 +404,12 @@ namespace HeuristicLab.Analysis.Views {
         pointsRowsTable.TryGetValue((IObservableList<Point2D<double>>)sender, out row);
         if (row != null) {
           Series rowSeries = chart.Series[row.Name];
+          Series regressionSeries = seriesToRegressionSeriesTable[rowSeries];
           if (!invisibleSeries.Contains(rowSeries)) {
             rowSeries.Points.Clear();
+            regressionSeries.Points.Clear();
             FillSeriesWithRowValues(rowSeries, row);
+            FillRegressionSeries(regressionSeries, row);
             RecalculateMinMaxPointValues();
             RecalculateAxesScale(chart.ChartAreas[0]);
             UpdateYCursorInterval();
@@ -378,9 +425,12 @@ namespace HeuristicLab.Analysis.Views {
         pointsRowsTable.TryGetValue((IObservableList<Point2D<double>>)sender, out row);
         if (row != null) {
           Series rowSeries = chart.Series[row.Name];
+          Series regressionSeries = seriesToRegressionSeriesTable[rowSeries];
           if (!invisibleSeries.Contains(rowSeries)) {
             rowSeries.Points.Clear();
+            regressionSeries.Points.Clear();
             FillSeriesWithRowValues(rowSeries, row);
+            FillRegressionSeries(regressionSeries, row);
             RecalculateMinMaxPointValues();
             RecalculateAxesScale(chart.ChartAreas[0]);
             UpdateYCursorInterval();
@@ -429,11 +479,11 @@ namespace HeuristicLab.Analysis.Views {
       } else {
         invisibleSeries.Remove(series);
         if (Content != null) {
-
-          var row = (from r in Content.Rows
-                     where r.Name == series.Name
-                     select r).Single();
-          FillSeriesWithRowValues(series, row);
+          var row = (ScatterPlotDataRow)series.Tag;
+          if (seriesToRegressionSeriesTable.ContainsKey(series))
+            FillSeriesWithRowValues(series, row);
+          else
+            FillRegressionSeries(series, row);
           RecalculateMinMaxPointValues();
           this.chart.Legends[series.Legend].ForeColor = Color.Black;
           RecalculateAxesScale(chart.ChartAreas[0]);
@@ -468,6 +518,33 @@ namespace HeuristicLab.Analysis.Views {
         }
         series.Points.Add(point);
       }
+      double correlation = Correlation(row.Points);
+      series.LegendToolTip = string.Format("Correlation (R²) = {0:G4}", correlation * correlation);
+    }
+
+    private void FillRegressionSeries(Series regressionSeries, ScatterPlotDataRow row) {
+      if (row.VisualProperties.RegressionType == ScatterPlotDataRowVisualProperties.ScatterPlotDataRowRegressionType.None
+        || invisibleSeries.Contains(regressionSeries))
+        return;
+
+      double[] coefficients;
+      if (!Fitting(row, out coefficients))
+        return;
+
+      // Fill regrssion series
+      var validPoints = row.Points.Where(p => !IsInvalidValue(p.X));
+      double min = validPoints.Min(p => p.X), max = validPoints.Max(p => p.X);
+      double range = max - min, delta = range / row.Points.Count;
+      for (double x = min; x < max; x += delta) {
+        regressionSeries.Points.AddXY(x, Estimate(x, row, coefficients));
+      }
+
+      // Correlation
+      var data = row.Points.Select(p => new Point2D<double>(p.Y, Estimate(p.X, row, coefficients)));
+      double correlation = Correlation(data.ToList());
+      regressionSeries.LegendToolTip = GetStringFormula(row, coefficients) + Environment.NewLine +
+                                       string.Format("Correlation (R²) = {0:G4}", correlation * correlation);
+      regressionSeries.ToolTip = GetStringFormula(row, coefficients);
     }
 
     #region Helpers
@@ -498,6 +575,173 @@ namespace HeuristicLab.Analysis.Views {
 
     protected static bool IsInvalidValue(double x) {
       return double.IsNaN(x) || x < (double)decimal.MinValue || x > (double)decimal.MaxValue;
+    }
+    #endregion
+
+    #region Correlation and Fitting Helper
+    protected static double Correlation(IList<Point2D<double>> values) {
+      // sums of x, y, x squared etc.
+      double sx = 0.0;
+      double sy = 0.0;
+      double sxx = 0.0;
+      double syy = 0.0;
+      double sxy = 0.0;
+
+      int n = 0;
+      for (int i = 0; i < values.Count; i++) {
+        double x = values[i].X;
+        double y = values[i].Y;
+        if (IsInvalidValue(x) || IsInvalidValue(y))
+          continue;
+
+        sx += x;
+        sy += y;
+        sxx += x * x;
+        syy += y * y;
+        sxy += x * y;
+        n++;
+      }
+
+      // covariation
+      double cov = sxy / n - sx * sy / n / n;
+      // standard error of x
+      double sigmaX = Math.Sqrt(sxx / n -  sx * sx / n / n);
+      // standard error of y
+      double sigmaY = Math.Sqrt(syy / n -  sy * sy / n / n);
+
+      // correlation
+      return cov / sigmaX / sigmaY;
+    }
+
+    protected static bool Fitting(ScatterPlotDataRow row, out double[] coefficients) {
+      var xs = row.Points.Select(p => p.X).ToList();
+      var ys = row.Points.Select(p => p.Y).ToList();
+
+      // Input transformations
+      double[,] matrix;
+      int nRows;
+      switch (row.VisualProperties.RegressionType) {
+        case ScatterPlotDataRowVisualProperties.ScatterPlotDataRowRegressionType.Linear:
+          matrix = CreateMatrix(out nRows, ys, xs);
+          break;
+        case ScatterPlotDataRowVisualProperties.ScatterPlotDataRowRegressionType.Polynomial:
+          var xss = Enumerable.Range(1, row.VisualProperties.PolynomialRegressionOrder)
+            .Select(o => xs.Select(x => Math.Pow(x, o)).ToList())
+            .Reverse(); // higher order first
+          matrix = CreateMatrix(out nRows, ys, xss.ToArray());
+          break;
+        case ScatterPlotDataRowVisualProperties.ScatterPlotDataRowRegressionType.Exponential:
+          matrix = CreateMatrix(out nRows, ys.Select(y => Math.Log(y)).ToList(), xs);
+          break;
+        case ScatterPlotDataRowVisualProperties.ScatterPlotDataRowRegressionType.Power:
+          matrix = CreateMatrix(out nRows, ys.Select(y => Math.Log(y)).ToList(), xs.Select(x => Math.Log(x)).ToList());
+          break;
+        case ScatterPlotDataRowVisualProperties.ScatterPlotDataRowRegressionType.Logarithmic:
+          matrix = CreateMatrix(out nRows, ys, xs.Select(x => Math.Log(x)).ToList());
+          break;
+        default:
+          throw new ArgumentException("Unknown RegressionType: " + row.VisualProperties.RegressionType);
+      }
+
+      // Linear fitting
+      bool success = LinearFitting(matrix, nRows, out coefficients);
+      if (!success) return success;
+
+      // Output transformation
+      switch (row.VisualProperties.RegressionType) {
+        case ScatterPlotDataRowVisualProperties.ScatterPlotDataRowRegressionType.Exponential:
+        case ScatterPlotDataRowVisualProperties.ScatterPlotDataRowRegressionType.Power:
+          coefficients[1] = Math.Exp(coefficients[1]);
+          break;
+      }
+
+      return true;
+    }
+    protected static double[,] CreateMatrix(out int nRows, IList<double> ys, params IList<double>[] xss) {
+      var matrix = new double[ys.Count, xss.Length + 1];
+      int rowIdx = 0;
+      for (int i = 0; i < ys.Count; i++) {
+        if (IsInvalidValue(ys[i]) || xss.Any(xs => IsInvalidValue(xs[i])))
+          continue;
+        for (int j = 0; j < xss.Length; j++) {
+          matrix[rowIdx, j] = xss[j][i];
+        }
+        matrix[rowIdx, xss.Length] = ys[i];
+        rowIdx++;
+      }
+      nRows = rowIdx;
+      return matrix;
+    }
+
+    protected static bool LinearFitting(double[,] xsy, int nRows, out double[] coefficients) {
+      int nFeatures = xsy.GetLength(1) - 1;
+
+      alglib.linearmodel lm;
+      alglib.lrreport ar;
+      int retVal;
+      alglib.lrbuild(xsy, nRows, nFeatures, out retVal, out lm, out ar);
+      if (retVal != 1) {
+        coefficients = new double[0];
+        return false;
+      }
+
+      alglib.lrunpack(lm, out coefficients, out nFeatures);
+      return true;
+    }
+
+    protected static double Estimate(double x, ScatterPlotDataRow row, double[] coefficients) {
+      switch (row.VisualProperties.RegressionType) {
+        case ScatterPlotDataRowVisualProperties.ScatterPlotDataRowRegressionType.Linear:
+          return coefficients[0] * x + coefficients[1];
+        case ScatterPlotDataRowVisualProperties.ScatterPlotDataRowRegressionType.Polynomial:
+          return coefficients
+            .Reverse() // to match index and order
+            .Select((c, o) => c * Math.Pow(x, o))
+            .Sum();
+        case ScatterPlotDataRowVisualProperties.ScatterPlotDataRowRegressionType.Exponential:
+          return coefficients[1] * Math.Exp(coefficients[0] * x);
+        case ScatterPlotDataRowVisualProperties.ScatterPlotDataRowRegressionType.Power:
+          return coefficients[1] * Math.Pow(x, coefficients[0]);
+        case ScatterPlotDataRowVisualProperties.ScatterPlotDataRowRegressionType.Logarithmic:
+          return coefficients[0] * Math.Log(x) + coefficients[1];
+        default:
+          throw new ArgumentException("Unknown RegressionType: " + row.VisualProperties.RegressionType);
+      }
+    }
+
+    protected static string GetStringFormula(ScatterPlotDataRow row, double[] coefficients) {
+      switch (row.VisualProperties.RegressionType) {
+        case ScatterPlotDataRowVisualProperties.ScatterPlotDataRowRegressionType.Linear:
+          return string.Format("{0:G4} x {1} {2:G4}", coefficients[0], Sign(coefficients[1]), Math.Abs(coefficients[1]));
+        case ScatterPlotDataRowVisualProperties.ScatterPlotDataRowRegressionType.Polynomial:
+          var sb = new StringBuilder();
+          sb.AppendFormat("{0:G4}{1}", coefficients[0], PolyFactor(coefficients.Length - 1));
+          foreach (var x in coefficients
+            .Reverse() // match index and order
+            .Select((c, o) => new { c, o })
+            .Reverse() // higher order first
+            .Skip(1)) // highest order poly already added
+            sb.AppendFormat(" {0} {1:G4}{2}", Sign(x.c), Math.Abs(x.c), PolyFactor(x.o));
+          return sb.ToString();
+        case ScatterPlotDataRowVisualProperties.ScatterPlotDataRowRegressionType.Exponential:
+          return string.Format("{0:G4} e^({1:G4} x)", coefficients[1], coefficients[0]);
+        case ScatterPlotDataRowVisualProperties.ScatterPlotDataRowRegressionType.Power:
+          return string.Format("{0:G4} x^({1:G4})", coefficients[1], coefficients[0]);
+        case ScatterPlotDataRowVisualProperties.ScatterPlotDataRowRegressionType.Logarithmic:
+          return string.Format("{0:G4} ln(x) {1} {2:G4}", coefficients[0], Sign(coefficients[1]), Math.Abs(coefficients[1]));
+        default:
+          throw new ArgumentException("Unknown RegressionType: " + row.VisualProperties.RegressionType);
+      }
+    }
+    private static string Sign(double value) {
+      return value >= 0 ? "+" : "-";
+    }
+    private static string PolyFactor(int order) {
+      if (order == 0) return "";
+      if (order == 1) return " x";
+      if (order == 2) return " x²";
+      if (order == 3) return " x³";
+      return " x^" + order;
     }
     #endregion
   }
