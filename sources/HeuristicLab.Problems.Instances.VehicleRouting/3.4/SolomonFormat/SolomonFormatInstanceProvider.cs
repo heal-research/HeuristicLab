@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 
@@ -73,7 +74,7 @@ namespace HeuristicLab.Problems.Instances.VehicleRouting {
             instance.BestKnownTour = routes;
             break;
           case "Distance":
-            double quality = double.Parse(reader.ReadLine());
+            double quality = double.Parse(reader.ReadLine(), CultureInfo.InvariantCulture);
             instance.BestKnownQuality = quality;
             break;
         }
