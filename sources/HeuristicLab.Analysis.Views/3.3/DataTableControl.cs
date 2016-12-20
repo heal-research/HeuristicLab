@@ -540,9 +540,12 @@ namespace HeuristicLab.Analysis.Views {
       series.Points.Clear();
       if (!row.Values.Any()) return;
 
+      var validValues = histogramRows.SelectMany(r => r.Values).Where(x => !IsInvalidValue(x)).ToList();
+      if (!validValues.Any()) return;
+
       int bins = histogramRows.Max(r => r.VisualProperties.Bins);
-      decimal minValue = (decimal)histogramRows.Min(r => r.Values.Min());
-      decimal maxValue = (decimal)histogramRows.Max(r => r.Values.Max());
+      decimal minValue = (decimal)validValues.Min();
+      decimal maxValue = (decimal)validValues.Max();
       decimal intervalWidth = (maxValue - minValue) / bins;
       if (intervalWidth < 0) return;
       if (intervalWidth == 0) {
