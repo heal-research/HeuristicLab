@@ -42,6 +42,8 @@ namespace HeuristicLab.Problems.Scheduling {
   public sealed class JobShopSchedulingProblem : SchedulingProblem, IProblemInstanceConsumer<JSSPData>, IProblemInstanceExporter<JSSPData>, IStorableContent {
     #region Default Instance
     private static readonly JSSPData DefaultInstance = new JSSPData() {
+      Name = "Job Shop Scheduling Problem (JSSP)",
+      Description = "The default instance of the JSSP problem in HeuristicLab",
       Jobs = 10,
       Resources = 10,
       BestKnownQuality = 930,
