@@ -224,7 +224,8 @@ namespace HeuristicLab.Problems.Scheduling {
         else if (ScheduleEvaluator is MakespanEvaluator)
           BestKnownQuality = new DoubleValue(MakespanEvaluator.GetMakespan(BestKnownSolution));
       }
-
+      Name = data.Name;
+      Description = data.Description;
       JobData = jobData;
       Jobs = data.Jobs;
       Resources = data.Resources;
