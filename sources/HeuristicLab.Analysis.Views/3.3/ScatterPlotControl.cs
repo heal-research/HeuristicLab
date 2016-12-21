@@ -507,6 +507,7 @@ namespace HeuristicLab.Analysis.Views {
     }
 
     private void FillSeriesWithRowValues(Series series, ScatterPlotDataRow row) {
+      bool zerosOnly = true;
       for (int i = 0; i < row.Points.Count; i++) {
         var value = row.Points[i];
         DataPoint point = new DataPoint();
@@ -517,7 +518,11 @@ namespace HeuristicLab.Analysis.Views {
           point.YValues = new double[] { value.Y };
         }
         series.Points.Add(point);
+        if (value.X != 0.0f)
+          zerosOnly = false;
       }
+      if (zerosOnly) // if all x-values are zero, the x-values are interpreted as 1, 2, 3, ...
+        series.Points.Add(new DataPoint(1, 1) { IsEmpty = true });
       double correlation = Correlation(row.Points);
       series.LegendToolTip = string.Format("Correlation (R²) = {0:G4}", correlation * correlation);
     }
