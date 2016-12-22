@@ -186,6 +186,9 @@ namespace HeuristicLab.Tools.ConfigMerger {
       destinationNode = destination.SelectSingleNode("/configuration/system.diagnostics");
       Merge(sourceNode, destinationNode, destination, "/configuration");
 
+      sourceNode = source.SelectSingleNode("/configuration/oracle.manageddataaccess.client/version/dataSources");
+      destinationNode = destination.SelectSingleNode("/configuration/oracle.manageddataaccess.client/version/dataSources");
+      Merge(sourceNode, destinationNode, destination, "/configuration");
 
 
 
