@@ -28,25 +28,18 @@ using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
+using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Analysis.Views {
-  public partial class ScatterPlotControl : UserControl {
+  public partial class ScatterPlotControl : AsynchronousContentView {
     protected List<Series> invisibleSeries;
     protected Dictionary<IObservableList<Point2D<double>>, ScatterPlotDataRow> pointsRowsTable;
     protected Dictionary<Series, Series> seriesToRegressionSeriesTable;
     private double xMin, xMax, yMin, yMax;
 
-    private ScatterPlot content;
-    public ScatterPlot Content {
-      get { return content; }
-      set {
-        if (value == content) return;
-        if (content != null) DeregisterContentEvents();
-        content = value;
-        if (content != null) RegisterContentEvents();
-        OnContentChanged();
-        SetEnabledStateOfControls();
-      }
+    public new ScatterPlot Content {
+      get { return (ScatterPlot)base.Content; }
+      set { base.Content = value; }
     }
 
     public ScatterPlotControl() {
@@ -60,7 +53,7 @@ namespace HeuristicLab.Analysis.Views {
     }
 
     #region Event Handler Registration
-    protected virtual void DeregisterContentEvents() {
+    protected override void DeregisterContentEvents() {
       foreach (ScatterPlotDataRow row in Content.Rows)
         DeregisterScatterPlotDataRowEvents(row);
       Content.VisualPropertiesChanged -= new EventHandler(Content_VisualPropertiesChanged);
@@ -69,7 +62,7 @@ namespace HeuristicLab.Analysis.Views {
       Content.Rows.ItemsReplaced -= new CollectionItemsChangedEventHandler<ScatterPlotDataRow>(Rows_ItemsReplaced);
       Content.Rows.CollectionReset -= new CollectionItemsChangedEventHandler<ScatterPlotDataRow>(Rows_CollectionReset);
     }
-    protected virtual void RegisterContentEvents() {
+    protected override void RegisterContentEvents() {
       Content.VisualPropertiesChanged += new EventHandler(Content_VisualPropertiesChanged);
       Content.Rows.ItemsAdded += new CollectionItemsChangedEventHandler<ScatterPlotDataRow>(Rows_ItemsAdded);
       Content.Rows.ItemsRemoved += new CollectionItemsChangedEventHandler<ScatterPlotDataRow>(Rows_ItemsRemoved);
@@ -97,7 +90,7 @@ namespace HeuristicLab.Analysis.Views {
     }
     #endregion
 
-    protected virtual void OnContentChanged() {
+    protected override void OnContentChanged() {
       invisibleSeries.Clear();
       chart.Titles[0].Text = string.Empty;
       chart.ChartAreas[0].AxisX.Title = string.Empty;
@@ -113,7 +106,7 @@ namespace HeuristicLab.Analysis.Views {
       }
     }
 
-    protected virtual void SetEnabledStateOfControls() {
+    protected override void SetEnabledStateOfControls() {
       chart.Enabled = Content != null;
     }
 

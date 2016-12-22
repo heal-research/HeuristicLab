@@ -26,23 +26,16 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using HeuristicLab.Collections;
+using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Analysis.Views {
-  public partial class DataTableControl : UserControl {
+  public partial class DataTableControl : AsynchronousContentView {
     protected List<Series> invisibleSeries;
     protected Dictionary<IObservableList<double>, DataRow> valuesRowsTable;
 
-    private DataTable content;
-    public DataTable Content {
-      get { return content; }
-      set {
-        if (value == content) return;
-        if (content != null) DeregisterContentEvents();
-        content = value;
-        if (content != null) RegisterContentEvents();
-        OnContentChanged();
-        SetEnabledStateOfControls();
-      }
+    public new DataTable Content {
+      get { return (DataTable)base.Content; }
+      set { base.Content = value; }
     }
 
     public DataTableControl() {
@@ -55,7 +48,7 @@ namespace HeuristicLab.Analysis.Views {
     }
 
     #region Event Handler Registration
-    protected virtual void DeregisterContentEvents() {
+    protected override void DeregisterContentEvents() {
       foreach (DataRow row in Content.Rows)
         DeregisterDataRowEvents(row);
       Content.VisualPropertiesChanged -= new EventHandler(Content_VisualPropertiesChanged);
@@ -64,7 +57,7 @@ namespace HeuristicLab.Analysis.Views {
       Content.Rows.ItemsReplaced -= new CollectionItemsChangedEventHandler<DataRow>(Rows_ItemsReplaced);
       Content.Rows.CollectionReset -= new CollectionItemsChangedEventHandler<DataRow>(Rows_CollectionReset);
     }
-    protected virtual void RegisterContentEvents() {
+    protected override void RegisterContentEvents() {
       Content.VisualPropertiesChanged += new EventHandler(Content_VisualPropertiesChanged);
       Content.Rows.ItemsAdded += new CollectionItemsChangedEventHandler<DataRow>(Rows_ItemsAdded);
       Content.Rows.ItemsRemoved += new CollectionItemsChangedEventHandler<DataRow>(Rows_ItemsRemoved);
@@ -94,7 +87,7 @@ namespace HeuristicLab.Analysis.Views {
     }
     #endregion
 
-    protected virtual void OnContentChanged() {
+    protected override void OnContentChanged() {
       invisibleSeries.Clear();
       chart.Titles[0].Text = string.Empty;
       chart.ChartAreas[0].AxisX.Title = string.Empty;
@@ -110,7 +103,7 @@ namespace HeuristicLab.Analysis.Views {
       }
     }
 
-    protected virtual void SetEnabledStateOfControls() {
+    protected override void SetEnabledStateOfControls() {
       chart.Enabled = Content != null;
     }
 
