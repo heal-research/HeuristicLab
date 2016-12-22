@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
@@ -58,7 +59,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     #region Fisher LDA
-    protected override void Run() {
+    protected override void Run(CancellationToken cancellationToken) {
       var solution = CreateLinearDiscriminantAnalysisSolution(Problem.ProblemData);
       Results.Add(new Result(LinearDiscriminantAnalysisSolutionResultName, "The linear discriminant analysis.", solution));
     }

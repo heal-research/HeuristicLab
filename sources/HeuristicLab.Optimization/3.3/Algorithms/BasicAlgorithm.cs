@@ -29,16 +29,18 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Optimization {
   [StorableClass]
   public abstract class BasicAlgorithm : Algorithm, IStorableContent {
-    private bool initialized;
+
     private bool pausePending;
     private DateTime lastUpdateTime;
-    protected bool pausable;
 
     public string Filename { get; set; }
-    public bool Pausable { get { return pausable; } }
+
+    public abstract bool SupportsPause { get; }
 
     [Storable]
-    private ResultCollection results;
+    private bool initialized;
+    [Storable]
+    private readonly ResultCollection results;
     public override ResultCollection Results {
       get { return results; }
     }
@@ -53,7 +55,6 @@ namespace HeuristicLab.Optimization {
     protected BasicAlgorithm(bool deserializing) : base(deserializing) { }
     protected BasicAlgorithm(BasicAlgorithm original, Cloner cloner)
       : base(original, cloner) {
-      pausable = original.pausable;
       results = cloner.Clone(original.Results);
     }
     protected BasicAlgorithm()
@@ -74,14 +75,17 @@ namespace HeuristicLab.Optimization {
       CancellationTokenSource = new CancellationTokenSource();
       pausePending = false;
       OnStarted();
-      Task task = Task.Factory.StartNew(Run, cancellationTokenSource.Token, cancellationTokenSource.Token);
+
+      Task task = Task.Factory.StartNew(Run, CancellationTokenSource.Token, CancellationTokenSource.Token);
       task.ContinueWith(t => {
         try {
           t.Wait();
-        } catch (AggregateException ex) {
+        }
+        catch (AggregateException ex) {
           try {
             ex.Flatten().Handle(x => x is OperationCanceledException);
-          } catch (AggregateException remaining) {
+          }
+          catch (AggregateException remaining) {
             if (remaining.InnerExceptions.Count == 1) OnExceptionOccurred(remaining.InnerExceptions[0]);
             else OnExceptionOccurred(remaining);
           }
@@ -94,12 +98,14 @@ namespace HeuristicLab.Optimization {
     }
 
     public override void Pause() {
-      if (!Pausable)
+      // CancellationToken.ThrowIfCancellationRequested() must be called from within the Run method, otherwise pause does nothing
+      // alternatively check the IsCancellationRequested property of the cancellation token
+      if (!SupportsPause)
         throw new NotSupportedException("Pause is not supported by this algorithm.");
 
       base.Pause();
       pausePending = true;
-      cancellationTokenSource.Cancel();
+      CancellationTokenSource.Cancel();
     }
 
     public override void Stop() {
@@ -122,7 +128,8 @@ namespace HeuristicLab.Optimization {
           Initialize(cancellationToken);
         initialized = true;
         Run(cancellationToken);
-      } finally {
+      }
+      finally {
         timer.Elapsed -= new System.Timers.ElapsedEventHandler(timer_Elapsed);
         timer.Stop();
         ExecutionTime += DateTime.UtcNow - lastUpdateTime;

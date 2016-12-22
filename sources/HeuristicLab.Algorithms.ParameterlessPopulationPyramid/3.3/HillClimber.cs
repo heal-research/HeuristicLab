@@ -53,6 +53,9 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
     public override Type ProblemType {
       get { return typeof(BinaryProblem); }
     }
+
+    public override bool SupportsPause { get { return false; } }
+
     public new BinaryProblem Problem {
       get { return (BinaryProblem)base.Problem; }
       set { base.Problem = value; }
@@ -89,18 +92,10 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
 
     public HillClimber()
       : base() {
-      pausable = true;
       random = new MersenneTwister();
       Parameters.Add(new FixedValueParameter<IntValue>(IterationsParameterName, "", new IntValue(100)));
     }
 
-    [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserialization() {
-      // BackwardsCompatibility3.3
-      #region Backwards compatible code, remove with 3.4
-      pausable = true;
-      #endregion
-    }
 
     protected override void Initialize(CancellationToken cancellationToken) {
       Results.Add(new Result(BestQualityResultName, new DoubleValue(double.NaN)));

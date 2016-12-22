@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -142,7 +143,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     #region support vector classification
-    protected override void Run() {
+    protected override void Run(CancellationToken cancellationToken) {
       IClassificationProblemData problemData = Problem.ProblemData;
       IEnumerable<string> selectedInputVariables = problemData.AllowedInputVariables;
       int nSv;

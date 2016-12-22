@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -59,7 +60,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     #region linear regression
-    protected override void Run() {
+    protected override void Run(CancellationToken cancellationToken) {
       double rmsError, cvRmsError;
       var solution = CreateLinearRegressionSolution(Problem.ProblemData, out rmsError, out cvRmsError);
       Results.Add(new Result(LinearRegressionModelResultName, "The linear regression solution.", solution));

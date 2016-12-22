@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System.Threading;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -130,7 +131,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     #region random forest
-    protected override void Run() {
+    protected override void Run(CancellationToken cancellationToken) {
       double rmsError, avgRelError, outOfBagRmsError, outOfBagAvgRelError;
       if (SetSeedRandomly) Seed = new System.Random().Next();
       var model = CreateRandomForestRegressionModel(Problem.ProblemData, NumberOfTrees, R, M, Seed,

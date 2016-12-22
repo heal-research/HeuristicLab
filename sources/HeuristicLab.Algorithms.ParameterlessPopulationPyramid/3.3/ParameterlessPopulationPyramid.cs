@@ -55,7 +55,7 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
     private EvaluationTracker tracker;
 
     // Tracks all solutions in Pyramid for quick membership checks
-    private HashSet<BinaryVector> seen = new HashSet<BinaryVector>(new EnumerableBoolEqualityComparer());
+    private readonly HashSet<BinaryVector> seen = new HashSet<BinaryVector>(new EnumerableBoolEqualityComparer());
 
     #region ParameterNames
     private const string MaximumIterationsParameterName = "Maximum Iterations";
@@ -152,6 +152,8 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
     }
     #endregion
 
+    public override bool SupportsPause { get { return true; } }
+
     [StorableConstructor]
     protected ParameterlessPopulationPyramid(bool deserializing) : base(deserializing) { }
 
@@ -164,20 +166,11 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
     }
 
     public ParameterlessPopulationPyramid() {
-      pausable = true;
       Parameters.Add(new FixedValueParameter<IntValue>(MaximumIterationsParameterName, "", new IntValue(Int32.MaxValue)));
       Parameters.Add(new FixedValueParameter<IntValue>(MaximumEvaluationsParameterName, "", new IntValue(Int32.MaxValue)));
       Parameters.Add(new FixedValueParameter<IntValue>(MaximumRuntimeParameterName, "The maximum runtime in seconds after which the algorithm stops. Use -1 to specify no limit for the runtime", new IntValue(3600)));
       Parameters.Add(new FixedValueParameter<IntValue>(SeedParameterName, "The random seed used to initialize the new pseudo random number generator.", new IntValue(0)));
       Parameters.Add(new FixedValueParameter<BoolValue>(SetSeedRandomlyParameterName, "True if the random seed should be set to a random value, otherwise false.", new BoolValue(true)));
-    }
-
-    [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserialization() {
-      // BackwardsCompatibility3.3
-      #region Backwards compatible code, remove with 3.4
-      pausable = true;
-      #endregion
     }
 
     protected override void OnExecutionTimeChanged() {

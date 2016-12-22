@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -167,7 +168,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     #region neural network
-    protected override void Run() {
+    protected override void Run(CancellationToken cancellationToken) {
       double rmsError, avgRelError, relClassError;
       var solution = CreateNeuralNetworkClassificationSolution(Problem.ProblemData, HiddenLayers, NodesInFirstHiddenLayer, NodesInSecondHiddenLayer, Decay, Restarts, out rmsError, out avgRelError, out relClassError);
       Results.Add(new Result(NeuralNetworkClassificationModelResultName, "The neural network classification solution.", solution));
