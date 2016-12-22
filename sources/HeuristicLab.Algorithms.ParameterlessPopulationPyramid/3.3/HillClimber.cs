@@ -47,6 +47,8 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
     private IRandom random;
 
     private const string IterationsParameterName = "Iterations";
+    private const string BestQualityResultName = "Best quality";
+    private const string IterationsResultName = "Iterations";
 
     public override Type ProblemType {
       get { return typeof(BinaryProblem); }
@@ -65,6 +67,17 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
       set { IterationsParameter.Value.Value = value; }
     }
 
+    #region ResultsProperties
+    private double ResultsBestQuality {
+      get { return ((DoubleValue)Results[BestQualityResultName].Value).Value; }
+      set { ((DoubleValue)Results[BestQualityResultName].Value).Value = value; }
+    }
+    private int ResultsIterations {
+      get { return ((IntValue)Results[IterationsResultName].Value).Value; }
+      set { ((IntValue)Results[IterationsResultName].Value).Value = value; }
+    }
+    #endregion
+
     [StorableConstructor]
     protected HillClimber(bool deserializing) : base(deserializing) { }
     protected HillClimber(HillClimber original, Cloner cloner)
@@ -76,13 +89,28 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
 
     public HillClimber()
       : base() {
+      pausable = true;
       random = new MersenneTwister();
       Parameters.Add(new FixedValueParameter<IntValue>(IterationsParameterName, "", new IntValue(100)));
     }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code, remove with 3.4
+      pausable = true;
+      #endregion
+    }
+
+    protected override void Initialize(CancellationToken cancellationToken) {
+      Results.Add(new Result(BestQualityResultName, new DoubleValue(double.NaN)));
+      Results.Add(new Result(IterationsResultName, new IntValue(0)));
+      base.Initialize(cancellationToken);
+    }
     protected override void Run(CancellationToken cancellationToken) {
-      var BestQuality = new DoubleValue(double.NaN);
-      Results.Add(new Result("Best quality", BestQuality));
-      for (int iteration = 0; iteration < Iterations; iteration++) {
+      while (ResultsIterations < Iterations) {
+        cancellationToken.ThrowIfCancellationRequested();
+
         var solution = new BinaryVector(Problem.Length);
         for (int i = 0; i < solution.Length; i++) {
           solution[i] = random.Next(2) == 1;
@@ -91,9 +119,11 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
         var fitness = Problem.Evaluate(solution, random);
 
         fitness = ImproveToLocalOptimum(Problem, solution, fitness, random);
-        if (double.IsNaN(BestQuality.Value) || Problem.IsBetter(fitness, BestQuality.Value)) {
-          BestQuality.Value = fitness;
+        if (double.IsNaN(ResultsBestQuality) || Problem.IsBetter(fitness, ResultsBestQuality)) {
+          ResultsBestQuality = fitness;
         }
+
+        ResultsIterations++;
       }
     }
     // In the GECCO paper, Section 2.1

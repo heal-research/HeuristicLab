@@ -23,12 +23,19 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using HeuristicLab.Common;
+using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Optimization {
   [StorableClass]
   public abstract class BasicAlgorithm : Algorithm, IStorableContent {
+    private bool initialized;
+    private bool pausePending;
+    private DateTime lastUpdateTime;
+    protected bool pausable;
+
     public string Filename { get; set; }
+    public bool Pausable { get { return pausable; } }
 
     [Storable]
     private ResultCollection results;
@@ -46,6 +53,7 @@ namespace HeuristicLab.Optimization {
     protected BasicAlgorithm(bool deserializing) : base(deserializing) { }
     protected BasicAlgorithm(BasicAlgorithm original, Cloner cloner)
       : base(original, cloner) {
+      pausable = original.pausable;
       results = cloner.Clone(original.Results);
     }
     protected BasicAlgorithm()
@@ -57,13 +65,14 @@ namespace HeuristicLab.Optimization {
       if (Problem == null) return;
       base.Prepare();
       results.Clear();
+      initialized = false;
       OnPrepared();
     }
 
     public override void Start() {
       base.Start();
       CancellationTokenSource = new CancellationTokenSource();
-
+      pausePending = false;
       OnStarted();
       Task task = Task.Factory.StartNew(Run, cancellationTokenSource.Token, cancellationTokenSource.Token);
       task.ContinueWith(t => {
@@ -79,23 +88,28 @@ namespace HeuristicLab.Optimization {
         }
         CancellationTokenSource.Dispose();
         CancellationTokenSource = null;
-        OnStopped();
+        if (pausePending) OnPaused();
+        else OnStopped();
       });
     }
 
     public override void Pause() {
-      throw new NotSupportedException("Pause is not supported in basic algorithms.");
+      if (!Pausable)
+        throw new NotSupportedException("Pause is not supported by this algorithm.");
+
+      base.Pause();
+      pausePending = true;
+      cancellationTokenSource.Cancel();
     }
 
     public override void Stop() {
       // CancellationToken.ThrowIfCancellationRequested() must be called from within the Run method, otherwise stop does nothing
       // alternatively check the IsCancellationRequested property of the cancellation token
       base.Stop();
-      CancellationTokenSource.Cancel();
+      if (ExecutionState == ExecutionState.Paused) OnStopped();
+      else CancellationTokenSource.Cancel();
     }
 
-
-    private DateTime lastUpdateTime;
     private void Run(object state) {
       CancellationToken cancellationToken = (CancellationToken)state;
       lastUpdateTime = DateTime.UtcNow;
@@ -104,6 +118,9 @@ namespace HeuristicLab.Optimization {
       timer.Elapsed += new System.Timers.ElapsedEventHandler(timer_Elapsed);
       timer.Start();
       try {
+        if (!initialized)
+          Initialize(cancellationToken);
+        initialized = true;
         Run(cancellationToken);
       } finally {
         timer.Elapsed -= new System.Timers.ElapsedEventHandler(timer_Elapsed);
@@ -112,6 +129,7 @@ namespace HeuristicLab.Optimization {
       }
     }
 
+    protected virtual void Initialize(CancellationToken cancellationToken) { }
     protected abstract void Run(CancellationToken cancellationToken);
 
     #region Events
