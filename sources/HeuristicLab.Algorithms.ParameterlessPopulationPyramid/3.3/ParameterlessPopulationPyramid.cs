@@ -249,19 +249,22 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
     protected override void Run(CancellationToken cancellationToken) {
       // Loop until iteration limit reached or canceled.
       while (ResultsIterations < MaximumIterations) {
-        cancellationToken.ThrowIfCancellationRequested();
-        double fitness = iterate();
+        double fitness = double.NaN;
 
-        ResultsEvaluations = tracker.Evaluations;
-        ResultsBestSolution = new BinaryVector(tracker.BestSolution);
-        ResultsBestQuality = tracker.BestQuality;
-        ResultsBestFoundOnEvaluation = tracker.BestFoundOnEvaluation;
-        ResultsQualitiesBest.Values.Add(tracker.BestQuality);
-        ResultsQualitiesIteration.Values.Add(fitness);
-        ResultsLevels.Values.Add(pyramid.Count);
-        ResultsSolutions.Values.Add(seen.Count);
-
-        ResultsIterations++;
+        try {
+          fitness = iterate();
+          ResultsIterations++;
+          cancellationToken.ThrowIfCancellationRequested();
+        } finally {
+          ResultsEvaluations = tracker.Evaluations;
+          ResultsBestSolution = new BinaryVector(tracker.BestSolution);
+          ResultsBestQuality = tracker.BestQuality;
+          ResultsBestFoundOnEvaluation = tracker.BestFoundOnEvaluation;
+          ResultsQualitiesBest.Values.Add(tracker.BestQuality);
+          ResultsQualitiesIteration.Values.Add(fitness);
+          ResultsLevels.Values.Add(pyramid.Count);
+          ResultsSolutions.Values.Add(seen.Count);
+        }
       }
     }
   }

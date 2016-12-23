@@ -38,7 +38,9 @@ namespace ParameterlessPopulationPyramid.Test {
       solver.SetSeedRandomly = false;
       PrivateObject hidden = new PrivateObject(solver);
       try {
-        hidden.Invoke("Run", new CancellationToken());
+        var ct = new CancellationToken();
+        hidden.Invoke("Initialize", ct);
+        hidden.Invoke("Run", ct);
       } catch (OperationCanceledException) {
         // Ignore
       }
