@@ -121,11 +121,13 @@ namespace HeuristicLab.Problems.DataAnalysis {
         default: throw new ArgumentException(string.Format("DataPartition {0} cannot be handled.", data));
       }
 
-
       var impacts = new Dictionary<string, double>();
       var modifiableDataset = ((Dataset)dataset).ToModifiable();
 
-      foreach (var inputVariable in problemData.AllowedInputVariables) {
+      var inputvariables = new HashSet<string>(problemData.AllowedInputVariables.Union(solution.Model.VariablesUsedForPrediction));
+      var allowedInputVariables = dataset.VariableNames.Where(v => inputvariables.Contains(v)).ToList();
+
+      foreach (var inputVariable in allowedInputVariables) {
         var newEstimates = EvaluateModelWithReplacedVariable(solution.Model, inputVariable, modifiableDataset, rows, replacement);
         var newR2 = OnlinePearsonsRCalculator.Calculate(targetValues, newEstimates, out error);
         if (error != OnlineCalculatorError.None) throw new InvalidOperationException("Error during R² calculation with replaced inputs.");
@@ -155,13 +157,26 @@ namespace HeuristicLab.Problems.DataAnalysis {
         case ReplacementMethodEnum.Shuffle:
           // new var has same empirical distribution but the relation to y is broken
           rand = new FastRandom(31415);
-          replacementValues = rows.Select(r => originalValues[r]).Shuffle(rand).ToList();
+          // prepare a complete column for the dataset
+          replacementValues = Enumerable.Repeat(double.NaN, dataset.Rows).ToList();
+          // shuffle only the selected rows
+          var shuffledValues = rows.Select(r => originalValues[r]).Shuffle(rand).ToList();
+          int i = 0;
+          // update column values 
+          foreach (var r in rows) {
+            replacementValues[r] = shuffledValues[i++];
+          }
           break;
         case ReplacementMethodEnum.Noise:
           var avg = rows.Select(r => originalValues[r]).Average();
           var stdDev = rows.Select(r => originalValues[r]).StandardDeviation();
           rand = new FastRandom(31415);
-          replacementValues = rows.Select(_ => NormalDistributedRandom.NextDouble(rand, avg, stdDev)).ToList();
+          // prepare a complete column for the dataset
+          replacementValues = Enumerable.Repeat(double.NaN, dataset.Rows).ToList();
+          // update column values 
+          foreach (var r in rows) {
+            replacementValues[r] = NormalDistributedRandom.NextDouble(rand, avg, stdDev);
+          }
           break;
 
         default:
