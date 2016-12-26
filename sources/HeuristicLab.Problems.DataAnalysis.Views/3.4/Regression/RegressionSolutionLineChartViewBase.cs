@@ -252,7 +252,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       this.chart.ChartAreas[0].AxisX.StripLines.Add(stripLine);
     }
 
-    private void ToggleSeriesData(Series series) {
+    public void ToggleSeriesData(Series series) {
       if (series.Points.Count > 0) {  //checks if series is shown
         if (this.chart.Series.Any(s => s != series && s.Points.Count > 0)) {
           ClearPointsQuick(series.Points);

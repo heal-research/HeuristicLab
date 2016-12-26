@@ -42,7 +42,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       CalcResiduals(idx, y);
     }
 
-    private void CalcResiduals(int[] idx, double[] x) {
+    protected void CalcResiduals(int[] idx, double[] x) {
       var problemData = Content.ProblemData;
       var target = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, idx).ToArray();
       for (int i = 0; i < idx.Length; i++) {
@@ -87,6 +87,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         base.chart.Series[RegressionSolutionLineChartView.ESTIMATEDVALUES_ALL_SERIES_NAME].YAxisType = AxisType.Secondary;
         base.chart.Series[RegressionSolutionLineChartView.ESTIMATEDVALUES_ALL_SERIES_NAME].ChartType = SeriesChartType.RangeColumn;
         base.chart.Series[RegressionSolutionLineChartView.ESTIMATEDVALUES_ALL_SERIES_NAME].Points.DataBindXY(idx, res.Select(_ => 0.0).ToArray(), res);
+        ToggleSeriesData(base.chart.Series[RegressionSolutionLineChartView.ESTIMATEDVALUES_ALL_SERIES_NAME]); // don't show by default
       }
     }
 
