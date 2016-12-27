@@ -33,6 +33,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       this.isShown = false;
       this.closeReason = CloseReason.None;
       this.readOnly = false;
+
       if (ViewAttribute.HasViewAttribute(this.GetType()))
         this.Caption = ViewAttribute.GetViewName(this.GetType());
       else
@@ -44,7 +45,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       get { return caption; }
       set {
         if (InvokeRequired) {
-          Action<string> action = delegate(string s) { this.Caption = s; };
+          Action<string> action = delegate (string s) { this.Caption = s; };
           Invoke(action, value);
         } else {
           if (value != caption) {
@@ -60,7 +61,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       get { return this.readOnly; }
       set {
         if (InvokeRequired) {
-          Action<bool> action = delegate(bool b) { this.ReadOnly = b; };
+          Action<bool> action = delegate (bool b) { this.ReadOnly = b; };
           Invoke(action, value);
         } else {
           if (value != readOnly) {
@@ -93,8 +94,10 @@ namespace HeuristicLab.MainForm.WindowsForms {
     }
 
     protected override void OnEnabledChanged(EventArgs e) {
+      SuspendRepaint();
       base.OnEnabledChanged(e);
       if (Enabled) SetEnabledStateOfControls();
+      ResumeRepaint(true);
     }
 
     /// <summary>
