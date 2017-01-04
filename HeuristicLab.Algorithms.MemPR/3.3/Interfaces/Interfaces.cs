@@ -21,7 +21,7 @@
  
 using System.Collections.Generic;
 using HeuristicLab.Algorithms.MemPR.Binary;
-using HeuristicLab.Algorithms.MemPR.LinearLinkage;
+using HeuristicLab.Algorithms.MemPR.Grouping;
 using HeuristicLab.Algorithms.MemPR.Permutation;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.BinaryVectorEncoding;

@@ -25,12 +25,13 @@ using HeuristicLab.Algorithms.MemPR.Interfaces;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Encodings.LinearLinkageEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Algorithms.MemPR.LinearLinkage.SolutionModel.Univariate {
+namespace HeuristicLab.Algorithms.MemPR.Grouping.SolutionModel.Univariate {
   [Item("Univariate solution model (linear linkage)", "")]
   [StorableClass]
-  public sealed class UnivariateModel : Item, ISolutionModel<Encodings.LinearLinkageEncoding.LinearLinkage> {
+  public sealed class UnivariateModel : Item, ISolutionModel<LinearLinkage> {
     [Storable]
     public IntMatrix Frequencies { get; set; }
     [Storable]
@@ -60,9 +61,9 @@ namespace HeuristicLab.Algorithms.MemPR.LinearLinkage.SolutionModel.Univariate {
       return new UnivariateModel(this, cloner);
     }
 
-    public Encodings.LinearLinkageEncoding.LinearLinkage Sample() {
+    public LinearLinkage Sample() {
       var N = Frequencies.Rows;
-      var centroid = Encodings.LinearLinkageEncoding.LinearLinkage.SingleElementGroups(N);
+      var centroid = LinearLinkage.SingleElementGroups(N);
       var dict = new Dictionary<int, int>();
       for (var i = N - 1; i >= 0; i--) {
         centroid[i] = i; // default be a cluster of your own
@@ -86,7 +87,7 @@ namespace HeuristicLab.Algorithms.MemPR.LinearLinkage.SolutionModel.Univariate {
       return centroid;
     }
 
-    public static ISolutionModel<Encodings.LinearLinkageEncoding.LinearLinkage> Create(IRandom random, IEnumerable<Encodings.LinearLinkageEncoding.LinearLinkage> population) {
+    public static ISolutionModel<LinearLinkage> Create(IRandom random, IEnumerable<LinearLinkage> population) {
       var iter = population.GetEnumerator();
       if (!iter.MoveNext()) throw new ArgumentException("Cannot create solution model from empty population.");
       var popSize = 1;

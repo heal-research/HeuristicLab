@@ -20,7 +20,6 @@
 #endregion
 
 using System;
-using HeuristicLab.Collections;
 
 namespace HeuristicLab.Encodings.LinearLinkageEncoding {
   public class ShiftMove : Move {

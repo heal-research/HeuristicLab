@@ -20,16 +20,25 @@
 #endregion
 
 using System.Collections.Generic;
-using HeuristicLab.Algorithms.MemPR.Interfaces;
-using HeuristicLab.Core;
-using HeuristicLab.Encodings.LinearLinkageEncoding;
 
-namespace HeuristicLab.Algorithms.MemPR.Grouping.SolutionModel.Univariate {
-  public static class Trainer {
+namespace HeuristicLab.Encodings.LinearLinkageEncoding {
+  public class LinearLinkageEqualityComparer : EqualityComparer<LinearLinkage> {
+    public override bool Equals(LinearLinkage x, LinearLinkage y) {
+      if (x == null && y == null) return true;
+      if (x == null || y == null) return false;
+      if (x.Length != y.Length) return false;
+      for (var i = 0; i < x.Length; i++)
+        if (x[i] != y[i]) return false;
+      return true;
+    }
 
-    public static ISolutionModel<LinearLinkage> Train(IRandom random,
-        IEnumerable<LinearLinkage> pop) {
-      return UnivariateModel.Create(random, pop);
+    public override int GetHashCode(LinearLinkage obj) {
+      unchecked {
+        int hash = 17;
+        foreach (var o in obj)
+          hash = hash * 31 + o.GetHashCode();
+        return hash;
+      }
     }
   }
 }

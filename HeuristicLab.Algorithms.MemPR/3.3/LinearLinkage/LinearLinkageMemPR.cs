@@ -33,13 +33,11 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Random;
 
-namespace HeuristicLab.Algorithms.MemPR.LinearLinkage {
+namespace HeuristicLab.Algorithms.MemPR.Grouping {
   [Item("MemPR (linear linkage)", "MemPR implementation for linear linkage vectors.")]
   [StorableClass]
   [Creatable(CreatableAttribute.Categories.PopulationBasedAlgorithms, Priority = 999)]
-  public class LinearLinkageMemPR : MemPRAlgorithm<SingleObjectiveBasicProblem<LinearLinkageEncoding>, Encodings.LinearLinkageEncoding.LinearLinkage, LinearLinkageMemPRPopulationContext, LinearLinkageMemPRSolutionContext> {
-    private const double UncommonBitSubsetMutationProbabilityMagicConst = 0.05;
-    
+  public class LinearLinkageMemPR : MemPRAlgorithm<SingleObjectiveBasicProblem<LinearLinkageEncoding>, LinearLinkage, LinearLinkageMemPRPopulationContext, LinearLinkageMemPRSolutionContext> {
     [StorableConstructor]
     protected LinearLinkageMemPR(bool deserializing) : base(deserializing) { }
     protected LinearLinkageMemPR(LinearLinkageMemPR original, Cloner cloner) : base(original, cloner) { }
@@ -56,7 +54,7 @@ namespace HeuristicLab.Algorithms.MemPR.LinearLinkage {
       return new LinearLinkageMemPR(this, cloner);
     }
 
-    protected override bool Eq(ISingleObjectiveSolutionScope<Encodings.LinearLinkageEncoding.LinearLinkage> a, ISingleObjectiveSolutionScope<Encodings.LinearLinkageEncoding.LinearLinkage> b) {
+    protected override bool Eq(ISingleObjectiveSolutionScope<LinearLinkage> a, ISingleObjectiveSolutionScope<LinearLinkage> b) {
       var s1 = a.Solution;
       var s2 = b.Solution;
       if (s1.Length != s2.Length) return false;
@@ -65,19 +63,23 @@ namespace HeuristicLab.Algorithms.MemPR.LinearLinkage {
       return true;
     }
 
-    protected override double Dist(ISingleObjectiveSolutionScope<Encodings.LinearLinkageEncoding.LinearLinkage> a, ISingleObjectiveSolutionScope<Encodings.LinearLinkageEncoding.LinearLinkage> b) {
-      return 1.0 - HammingSimilarityCalculator.CalculateSimilarity(a.Solution, b.Solution);
+    protected override double Dist(ISingleObjectiveSolutionScope<LinearLinkage> a, ISingleObjectiveSolutionScope<LinearLinkage> b) {
+      return Dist(a.Solution, b.Solution);
     }
 
-    protected override ISingleObjectiveSolutionScope<Encodings.LinearLinkageEncoding.LinearLinkage> ToScope(Encodings.LinearLinkageEncoding.LinearLinkage code, double fitness = double.NaN) {
+    private double Dist(LinearLinkage a, LinearLinkage b) {
+      return 1.0 - HammingSimilarityCalculator.CalculateSimilarity(a, b);
+    }
+
+    protected override ISingleObjectiveSolutionScope<LinearLinkage> ToScope(LinearLinkage code, double fitness = double.NaN) {
       var creator = Problem.SolutionCreator as ILinearLinkageCreator;
       if (creator == null) throw new InvalidOperationException("Can only solve linear linkage encoded problems with MemPR (linear linkage)");
-      return new SingleObjectiveSolutionScope<Encodings.LinearLinkageEncoding.LinearLinkage>(code, creator.LLEParameter.ActualName, fitness, Problem.Evaluator.QualityParameter.ActualName) {
+      return new SingleObjectiveSolutionScope<LinearLinkage>(code, creator.LLEParameter.ActualName, fitness, Problem.Evaluator.QualityParameter.ActualName) {
         Parent = Context.Scope
       };
     }
 
-    protected override ISolutionSubspace<Encodings.LinearLinkageEncoding.LinearLinkage> CalculateSubspace(IEnumerable<Encodings.LinearLinkageEncoding.LinearLinkage> solutions, bool inverse = false) {
+    protected override ISolutionSubspace<LinearLinkage> CalculateSubspace(IEnumerable<LinearLinkage> solutions, bool inverse = false) {
       var pop = solutions.ToList();
       var N = pop[0].Length;
       var subspace = new bool[N];
@@ -91,10 +93,10 @@ namespace HeuristicLab.Algorithms.MemPR.LinearLinkage {
       return new LinearLinkageSolutionSubspace(subspace);
     }
 
-    protected override int TabuWalk(
-        ISingleObjectiveSolutionScope<Encodings.LinearLinkageEncoding.LinearLinkage> scope,
+    protected override void AdaptiveWalk(
+        ISingleObjectiveSolutionScope<LinearLinkage> scope,
         int maxEvals, CancellationToken token,
-        ISolutionSubspace<Encodings.LinearLinkageEncoding.LinearLinkage> sub_space = null) {
+        ISolutionSubspace<LinearLinkage> sub_space = null) {
       var maximization = Context.Problem.Maximization;
       var subspace = sub_space is LinearLinkageSolutionSubspace ? ((LinearLinkageSolutionSubspace)sub_space).Subspace : null;
       var evaluations = 0;
@@ -103,12 +105,12 @@ namespace HeuristicLab.Algorithms.MemPR.LinearLinkage {
         Evaluate(scope, token);
         quality = scope.Fitness;
         evaluations++;
-        if (evaluations >= maxEvals) return evaluations;
+        if (evaluations >= maxEvals) return;
       }
       var bestQuality = quality;
-      var currentScope = (ISingleObjectiveSolutionScope<Encodings.LinearLinkageEncoding.LinearLinkage>)scope.Clone();
+      var currentScope = (ISingleObjectiveSolutionScope<LinearLinkage>)scope.Clone();
       var current = currentScope.Solution;
-      Encodings.LinearLinkageEncoding.LinearLinkage bestOfTheWalk = null;
+      LinearLinkage bestOfTheWalk = null;
       var bestOfTheWalkF = double.NaN;
 
       var tabu = new double[current.Length, current.Length];
@@ -152,7 +154,7 @@ namespace HeuristicLab.Algorithms.MemPR.LinearLinkage {
                 tabu[i, current[i]] = Math.Min(tabu[i, current[i]], bestOfTheRestF);
               }
               if (FitnessComparer.IsBetter(maximization, bestOfTheRestF, bestOfTheWalkF)) {
-                bestOfTheWalk = (Encodings.LinearLinkageEncoding.LinearLinkage)current.Clone();
+                bestOfTheWalk = (LinearLinkage)current.Clone();
                 bestOfTheWalkF = bestOfTheRestF;
               }
               bestOfTheRest = null;
@@ -189,7 +191,7 @@ namespace HeuristicLab.Algorithms.MemPR.LinearLinkage {
                 move.ApplyToLLEb(lleb);
 
                 if (FitnessComparer.IsBetter(maximization, moveF, bestOfTheWalkF)) {
-                  bestOfTheWalk = (Encodings.LinearLinkageEncoding.LinearLinkage)current.Clone();
+                  bestOfTheWalk = (LinearLinkage)current.Clone();
                   bestOfTheWalkF = moveF;
                 }
 
@@ -231,7 +233,7 @@ namespace HeuristicLab.Algorithms.MemPR.LinearLinkage {
               tabu[i, current[i]] = Math.Min(tabu[i, current[i]], bestOfTheRestF);
             }
             if (FitnessComparer.IsBetter(maximization, bestOfTheRestF, bestOfTheWalkF)) {
-              bestOfTheWalk = (Encodings.LinearLinkageEncoding.LinearLinkage)current.Clone();
+              bestOfTheWalk = (LinearLinkage)current.Clone();
               bestOfTheWalkF = bestOfTheRestF;
             }
 
@@ -246,74 +248,78 @@ namespace HeuristicLab.Algorithms.MemPR.LinearLinkage {
         scope.Solution = bestOfTheWalk;
         scope.Fitness = bestOfTheWalkF;
       }
-      return evaluations;
     }
 
-    protected override ISingleObjectiveSolutionScope<Encodings.LinearLinkageEncoding.LinearLinkage> Cross(ISingleObjectiveSolutionScope<Encodings.LinearLinkageEncoding.LinearLinkage> p1Scope, ISingleObjectiveSolutionScope<Encodings.LinearLinkageEncoding.LinearLinkage> p2Scope, CancellationToken token) {
-      var p1 = p1Scope.Solution;
-      var p2 = p2Scope.Solution;
-      return ToScope(GroupCrossover.Apply(Context.Random, p1, p2));
-    }
-
-    protected override void Mutate(ISingleObjectiveSolutionScope<Encodings.LinearLinkageEncoding.LinearLinkage> offspring, CancellationToken token, ISolutionSubspace<Encodings.LinearLinkageEncoding.LinearLinkage> subspace = null) {
-      var lle = offspring.Solution;
-      var subset = subspace is LinearLinkageSolutionSubspace ? ((LinearLinkageSolutionSubspace)subspace).Subspace : null;
-      for (var i = 0; i < lle.Length - 1; i++) {
-        if (subset == null || subset[i]) continue; // mutation works against crossover so aims to mutate noTouch points
-        if (Context.Random.NextDouble() < UncommonBitSubsetMutationProbabilityMagicConst) {
-          subset[i] = true;
-          var index = Context.Random.Next(i, lle.Length);
-          for (var j = index - 1; j >= i; j--) {
-            if (lle[j] == index) index = j;
-          }
-          lle[i] = index;
-          index = i;
-          var idx2 = i;
-          for (var j = i - 1; j >= 0; j--) {
-            if (lle[j] == lle[index]) {
-              lle[j] = idx2;
-              index = idx2 = j;
-            } else if (lle[j] == idx2) idx2 = j;
-          }
+    protected override ISingleObjectiveSolutionScope<LinearLinkage> Breed(ISingleObjectiveSolutionScope<LinearLinkage> p1Scope, ISingleObjectiveSolutionScope<LinearLinkage> p2Scope, CancellationToken token) {
+      var cache = new HashSet<LinearLinkage>(new LinearLinkageEqualityComparer());
+      var cachehits = 0;
+      var evaluations = 1;
+      ISingleObjectiveSolutionScope<LinearLinkage> offspring = null;
+      for (; evaluations < Context.LocalSearchEvaluations; evaluations++) {
+        var code = GroupCrossover.Apply(Context.Random, p1Scope.Solution, p2Scope.Solution);
+        if (cache.Contains(code)) {
+          cachehits++;
+          if (cachehits > 10) break;
+          continue;
+        }
+        var probe = ToScope(code);
+        Evaluate(probe, token);
+        cache.Add(code);
+        if (offspring == null || Context.IsBetter(probe, offspring)) {
+          offspring = probe;
+          if (Context.IsBetter(offspring, p1Scope) && Context.IsBetter(offspring, p2Scope))
+            break;
         }
       }
+      Context.IncrementEvaluatedSolutions(evaluations-1);
+      return offspring;
     }
 
-    protected override ISingleObjectiveSolutionScope<Encodings.LinearLinkageEncoding.LinearLinkage> Relink(ISingleObjectiveSolutionScope<Encodings.LinearLinkageEncoding.LinearLinkage> a, ISingleObjectiveSolutionScope<Encodings.LinearLinkageEncoding.LinearLinkage> b, CancellationToken token) {
-      var maximization = Context.Problem.Maximization;
+    protected override ISingleObjectiveSolutionScope<LinearLinkage> Link(ISingleObjectiveSolutionScope<LinearLinkage> a, ISingleObjectiveSolutionScope<LinearLinkage> b, CancellationToken token, bool delink = false) {
+      var evaluations = 0;
       if (double.IsNaN(a.Fitness)) {
         Evaluate(a, token);
-        Context.IncrementEvaluatedSolutions(1);
+        evaluations++;
       }
       if (double.IsNaN(b.Fitness)) {
         Evaluate(b, token);
-        Context.IncrementEvaluatedSolutions(1);
+        evaluations++;
       }
-      var child = (ISingleObjectiveSolutionScope<Encodings.LinearLinkageEncoding.LinearLinkage>)a.Clone();
-      var cgroups = child.Solution.GetGroups().Select(x => new HashSet<int>(x)).ToList();
-      var g2 = b.Solution.GetGroups().ToList();
-      var order = Enumerable.Range(0, g2.Count).Shuffle(Context.Random).ToList();
-      ISingleObjectiveSolutionScope <Encodings.LinearLinkageEncoding.LinearLinkage> bestChild = null;
-      for (var j = 0; j < g2.Count; j++) {
-        var g = g2[order[j]];
-        var changed = false;
-        for (var k = j; k < cgroups.Count; k++) {
-          foreach (var f in g) if (cgroups[k].Remove(f)) changed = true;
-          if (cgroups[k].Count == 0) {
-            cgroups.RemoveAt(k);
-            k--;
-          }
+
+      var probe = (ISingleObjectiveSolutionScope<LinearLinkage>)a.Clone();
+      ISingleObjectiveSolutionScope<LinearLinkage> best = null;
+      while (true) {
+        Move bestMove = null;
+        var bestMoveQ = double.NaN;
+        // this approach may not fully relink the two solutions
+        foreach (var m in MoveGenerator.Generate(probe.Solution)) {
+          var distBefore = Dist(probe, b);
+          m.Apply(probe.Solution);
+          var distAfter = Dist(probe, b);
+          if (delink && distAfter > distBefore || !delink && distAfter < distBefore) {
+            var beforeQ = probe.Fitness;
+            Evaluate(probe, token);
+            evaluations++;
+            var q = probe.Fitness;
+            m.Undo(probe.Solution);
+            probe.Fitness = beforeQ;
+
+            if (Context.IsBetter(q, bestMoveQ)) {
+              bestMove = m;
+              bestMoveQ = q;
+            }
+            if (Context.IsBetter(q, beforeQ)) break;
+          } else m.Undo(probe.Solution);
         }
-        cgroups.Insert(0, new HashSet<int>(g));
-        child.Solution.SetGroups(cgroups);
-        if (changed) {
-          Evaluate(child, token);
-          if (bestChild == null || FitnessComparer.IsBetter(maximization, child.Fitness, bestChild.Fitness)) {
-            bestChild = (ISingleObjectiveSolutionScope<Encodings.LinearLinkageEncoding.LinearLinkage>)child.Clone();
-          }
-        }
-      };
-      return bestChild;
+        if (bestMove == null) break;
+        bestMove.Apply(probe.Solution);
+        probe.Fitness = bestMoveQ;
+        if (best == null || Context.IsBetter(probe, best))
+          best = (ISingleObjectiveSolutionScope<LinearLinkage>)probe.Clone();
+      }
+      Context.IncrementEvaluatedSolutions(evaluations);
+
+      return best ?? probe;
     }
   }
 }

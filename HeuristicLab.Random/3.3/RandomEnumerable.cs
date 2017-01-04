@@ -268,7 +268,8 @@ namespace HeuristicLab.Random {
         // we don't actually perform the swap, we can forget about the
         // swapped element because we already returned it.
       }
-      yield return elements[0];
+      if (elements.Length > 0)
+        yield return elements[0];
     }
   }
 }

@@ -166,6 +166,7 @@
     <Compile Include="Interfaces\ILinearLinkageMoveOperator.cs" />
     <Compile Include="Interfaces\ILinearLinkageSwap2MoveOperator.cs" />
     <Compile Include="Interfaces\ILinearLinkageCreator.cs" />
+    <Compile Include="LinearLinkageEqualityComparer.cs" />
     <Compile Include="LinearLinkage.cs" />
     <Compile Include="LinearLinkageCreator.cs" />
     <Compile Include="LinearLinkageEncoding.cs" />

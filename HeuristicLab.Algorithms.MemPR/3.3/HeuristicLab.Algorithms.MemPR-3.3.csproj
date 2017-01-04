@@ -73,6 +73,11 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ALGLIB-3.7.0, Version=3.7.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\ALGLIB-3.7.0.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -127,6 +132,11 @@
     <Compile Include="Util\FitnessComparer.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\HeuristicLab.Algorithms.DataAnalysis\3.4\HeuristicLab.Algorithms.DataAnalysis-3.4.csproj">
+      <Project>{2e782078-fa81-4b70-b56f-74ce38dac6c8}</Project>
+      <Name>HeuristicLab.Algorithms.DataAnalysis-3.4</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Analysis\3.3\HeuristicLab.Analysis-3.3.csproj">
       <Project>{887425b4-4348-49ed-a457-b7d2c26ddbf9}</Project>
       <Name>HeuristicLab.Analysis-3.3</Name>
@@ -201,6 +211,10 @@
       <Project>{94186a6a-5176-4402-ae83-886557b53cca}</Project>
       <Name>HeuristicLab.PluginInfrastructure-3.3</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Problems.DataAnalysis\3.4\HeuristicLab.Problems.DataAnalysis-3.4.csproj">
+      <Project>{df87c13e-a889-46ff-8153-66dcaa8c5674}</Project>
+      <Name>HeuristicLab.Problems.DataAnalysis-3.4</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Random\3.3\HeuristicLab.Random-3.3.csproj">
       <Project>{f4539fb6-4708-40c9-be64-0a1390aea197}</Project>

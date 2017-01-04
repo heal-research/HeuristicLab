@@ -27,10 +27,10 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Algorithms.MemPR.LinearLinkage {
+namespace HeuristicLab.Algorithms.MemPR.Grouping {
   [Item("MemPR Population Context (linear linkage)", "MemPR population context for linear linkage encoded problems.")]
   [StorableClass]
-  public sealed class LinearLinkageMemPRPopulationContext : MemPRPopulationContext<SingleObjectiveBasicProblem<LinearLinkageEncoding>, Encodings.LinearLinkageEncoding.LinearLinkage, LinearLinkageMemPRPopulationContext, LinearLinkageMemPRSolutionContext> {
+  public sealed class LinearLinkageMemPRPopulationContext : MemPRPopulationContext<SingleObjectiveBasicProblem<LinearLinkageEncoding>, LinearLinkage, LinearLinkageMemPRPopulationContext, LinearLinkageMemPRSolutionContext> {
 
     [StorableConstructor]
     private LinearLinkageMemPRPopulationContext(bool deserializing) : base(deserializing) { }
@@ -43,21 +43,21 @@ namespace HeuristicLab.Algorithms.MemPR.LinearLinkage {
       return new LinearLinkageMemPRPopulationContext(this, cloner);
     }
 
-    public override LinearLinkageMemPRSolutionContext CreateSingleSolutionContext(ISingleObjectiveSolutionScope<Encodings.LinearLinkageEncoding.LinearLinkage> solution) {
+    public override LinearLinkageMemPRSolutionContext CreateSingleSolutionContext(ISingleObjectiveSolutionScope<LinearLinkage> solution) {
       return new LinearLinkageMemPRSolutionContext(this, solution);
     }
   }
 
   [Item("MemPR Solution Context (linear linkage)", "MemPR solution context for linear linkage encoded problems.")]
   [StorableClass]
-  public sealed class LinearLinkageMemPRSolutionContext : MemPRSolutionContext<SingleObjectiveBasicProblem<LinearLinkageEncoding>, Encodings.LinearLinkageEncoding.LinearLinkage, LinearLinkageMemPRPopulationContext, LinearLinkageMemPRSolutionContext>, ILinearLinkageSubspaceContext {
+  public sealed class LinearLinkageMemPRSolutionContext : MemPRSolutionContext<SingleObjectiveBasicProblem<LinearLinkageEncoding>, LinearLinkage, LinearLinkageMemPRPopulationContext, LinearLinkageMemPRSolutionContext>, ILinearLinkageSubspaceContext {
 
     [Storable]
     private IValueParameter<LinearLinkageSolutionSubspace> subspace;
     public LinearLinkageSolutionSubspace Subspace {
       get { return subspace.Value; }
     }
-    ISolutionSubspace<Encodings.LinearLinkageEncoding.LinearLinkage> ISolutionSubspaceContext<Encodings.LinearLinkageEncoding.LinearLinkage>.Subspace {
+    ISolutionSubspace<LinearLinkage> ISolutionSubspaceContext<LinearLinkage>.Subspace {
       get { return Subspace; }
     }
 
@@ -67,7 +67,7 @@ namespace HeuristicLab.Algorithms.MemPR.LinearLinkage {
       : base(original, cloner) {
 
     }
-    public LinearLinkageMemPRSolutionContext(LinearLinkageMemPRPopulationContext baseContext, ISingleObjectiveSolutionScope<Encodings.LinearLinkageEncoding.LinearLinkage> solution)
+    public LinearLinkageMemPRSolutionContext(LinearLinkageMemPRPopulationContext baseContext, ISingleObjectiveSolutionScope<LinearLinkage> solution)
       : base(baseContext, solution) {
 
       Parameters.Add(subspace = new ValueParameter<LinearLinkageSolutionSubspace>("Subspace", new LinearLinkageSolutionSubspace(null)));

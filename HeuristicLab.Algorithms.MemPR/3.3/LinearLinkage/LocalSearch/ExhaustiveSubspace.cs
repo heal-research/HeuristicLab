@@ -28,11 +28,11 @@ using HeuristicLab.Encodings.LinearLinkageEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Algorithms.MemPR.LinearLinkage.LocalSearch {
+namespace HeuristicLab.Algorithms.MemPR.Grouping.LocalSearch {
   [Item("Exhaustive Local (Subspace) Search (linear linkage)", "", ExcludeGenericTypeInfo = true)]
   [StorableClass]
   public class ExhaustiveSubspace<TContext> : NamedItem, ILocalSearch<TContext>
-      where TContext : ISingleSolutionHeuristicAlgorithmContext<SingleObjectiveBasicProblem<LinearLinkageEncoding>, Encodings.LinearLinkageEncoding.LinearLinkage>, ILinearLinkageSubspaceContext {
+      where TContext : ISingleSolutionHeuristicAlgorithmContext<SingleObjectiveBasicProblem<LinearLinkageEncoding>, LinearLinkage>, ILinearLinkageSubspaceContext {
 
     [StorableConstructor]
     protected ExhaustiveSubspace(bool deserializing) : base(deserializing) { }
@@ -47,7 +47,7 @@ namespace HeuristicLab.Algorithms.MemPR.LinearLinkage.LocalSearch {
     }
 
     public void Optimize(TContext context) {
-      var evalWrapper = new EvaluationWrapper<Encodings.LinearLinkageEncoding.LinearLinkage>(context.Problem, context.Solution);
+      var evalWrapper = new EvaluationWrapper<LinearLinkage>(context.Problem, context.Solution);
       var quality = context.Solution.Fitness;
       try {
         var result = ExhaustiveLocalSearch.Optimize(context.Random, context.Solution.Solution, ref quality,

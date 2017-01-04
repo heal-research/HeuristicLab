@@ -37,8 +37,6 @@ namespace HeuristicLab.Algorithms.MemPR.Binary {
   [StorableClass]
   [Creatable(CreatableAttribute.Categories.PopulationBasedAlgorithms, Priority = 999)]
   public class BinaryMemPR : MemPRAlgorithm<SingleObjectiveBasicProblem<BinaryVectorEncoding>, BinaryVector, BinaryMemPRPopulationContext, BinaryMemPRSolutionContext> {
-    private const double UncommonBitSubsetMutationProbabilityMagicConst = 0.05;
-    
     [StorableConstructor]
     protected BinaryMemPR(bool deserializing) : base(deserializing) { }
     protected BinaryMemPR(BinaryMemPR original, Cloner cloner) : base(original, cloner) { }
@@ -90,7 +88,7 @@ namespace HeuristicLab.Algorithms.MemPR.Binary {
       return new BinarySolutionSubspace(subspace);
     }
 
-    protected override int TabuWalk(ISingleObjectiveSolutionScope<BinaryVector> scope, int maxEvals, CancellationToken token, ISolutionSubspace<BinaryVector> subspace = null) {
+    protected override void AdaptiveWalk(ISingleObjectiveSolutionScope<BinaryVector> scope, int maxEvals, CancellationToken token, ISolutionSubspace<BinaryVector> subspace = null) {
       var evaluations = 0;
       var subset = subspace != null ? ((BinarySolutionSubspace)subspace).Subspace : null;
       if (double.IsNaN(scope.Fitness)) {
@@ -101,19 +99,26 @@ namespace HeuristicLab.Algorithms.MemPR.Binary {
       var currentScope = (SingleObjectiveSolutionScope<BinaryVector>)scope.Clone();
       var current = currentScope.Solution;
       var N = current.Length;
-      var tabu = new Tuple<double, double>[N];
-      for (var i = 0; i < N; i++) tabu[i] = Tuple.Create(current[i] ? double.NaN : currentScope.Fitness, !current[i] ? double.NaN : currentScope.Fitness);
+
       var subN = subset != null ? subset.Count(x => x) : N;
-      if (subN == 0) return 0;
+      if (subN == 0) return;
       var order = Enumerable.Range(0, N).Where(x => subset == null || subset[x]).Shuffle(Context.Random).ToArray();
 
-      var steps = 0;
-      var stepsUntilBestOfWalk = 0;
+      var max = Context.Population.Max(x => x.Fitness);
+      var min = Context.Population.Min(x => x.Fitness);
+      var range = (max - min);
+      if (range.IsAlmost(0)) range = Math.Abs(max * 0.05);
+      //else range += range * 0.05;
+      if (range.IsAlmost(0)) { // because min = max = 0
+        Context.IncrementEvaluatedSolutions(evaluations);
+        return;
+      }
+
+      //var upperBound = Problem.Maximization ? min - range : max + range;
+      //var lowerBound = Problem.Maximization ? max : min;
+      var temp = 1.0;
       for (var iter = 0; iter < int.MaxValue; iter++) {
-        var allTabu = true;
-        var bestOfTheRestF = double.NaN;
-        int bestOfTheRest = -1;
-        var improved = false;
+        var moved = false;
 
         for (var i = 0; i < subN; i++) {
           var idx = order[i];
@@ -123,133 +128,134 @@ namespace HeuristicLab.Algorithms.MemPR.Binary {
           evaluations++;
           var after = currentScope.Fitness;
 
-          if (IsBetter(after, before) && (bestOfTheWalk == null || IsBetter(after, bestOfTheWalk.Fitness))) {
+          if (Context.IsBetter(after, before) && (bestOfTheWalk == null || Context.IsBetter(after, bestOfTheWalk.Fitness))) {
             bestOfTheWalk = (SingleObjectiveSolutionScope<BinaryVector>)currentScope.Clone();
-            stepsUntilBestOfWalk = steps;
           }
-
-          var qualityToBeat = current[idx] ? tabu[idx].Item2 : tabu[idx].Item1;
-          var isTabu = !IsBetter(after, qualityToBeat);
-          if (!isTabu) allTabu = false;
-
-          if (IsBetter(after, before) && !isTabu) {
-            improved = true;
-            steps++;
-            tabu[idx] = current[idx] ? Tuple.Create(after, tabu[idx].Item2) : Tuple.Create(tabu[idx].Item1, after);
-          } else { // undo the move
-            if (!isTabu && IsBetter(after, bestOfTheRestF)) {
-              bestOfTheRest = idx;
-              bestOfTheRestF = after;
+          var diff = Problem.Maximization ? after - before : before - after;
+          if (diff > 0) moved = true;
+          else {
+            var prob = Math.Exp(temp * diff / range);
+            if (Context.Random.NextDouble() >= prob) {
+              // the move is not good enough -> undo the move
+              current[idx] = !current[idx];
+              currentScope.Fitness = before;
             }
-            current[idx] = !current[idx];
-            currentScope.Fitness = before;
           }
+          temp += 100.0 / maxEvals;
           if (evaluations >= maxEvals) break;
         }
-        if (!allTabu && !improved) {
-          var better = currentScope.Fitness;
-          current[bestOfTheRest] = !current[bestOfTheRest];
-          tabu[bestOfTheRest] = current[bestOfTheRest] ? Tuple.Create(better, tabu[bestOfTheRest].Item2) : Tuple.Create(tabu[bestOfTheRest].Item1, better);
-          currentScope.Fitness = bestOfTheRestF;
-          steps++;
-        } else if (allTabu) break;
+        if (!moved) break;
         if (evaluations >= maxEvals) break;
       }
 
       Context.IncrementEvaluatedSolutions(evaluations);
       scope.Adopt(bestOfTheWalk ?? currentScope);
-      return stepsUntilBestOfWalk;
     }
 
-    protected override ISingleObjectiveSolutionScope<BinaryVector> Cross(ISingleObjectiveSolutionScope<BinaryVector> p1, ISingleObjectiveSolutionScope<BinaryVector> p2, CancellationToken token) {
-      var offspring = (ISingleObjectiveSolutionScope<BinaryVector>)p1.Clone();
-      offspring.Fitness = double.NaN;
-      var code = offspring.Solution;
-      var p2Code = p2.Solution;
-      var bp = 0;
-      var lastbp = 0;
-      for (var i = 0; i < code.Length; i++) {
-        if (bp % 2 == 1) {
-          code[i] = p2Code[i];
-        }
-        if (Context.Random.Next(code.Length) < i - lastbp + 1) {
-          bp = (bp + 1) % 2;
-          lastbp = i;
+    protected override ISingleObjectiveSolutionScope<BinaryVector> Breed(ISingleObjectiveSolutionScope<BinaryVector> p1, ISingleObjectiveSolutionScope<BinaryVector> p2, CancellationToken token) {
+      var evaluations = 0;
+      var N = p1.Solution.Length;
+      if (double.IsNaN(p1.Fitness)) {
+        Evaluate(p1, token);
+        evaluations++;
+      }
+      if (double.IsNaN(p2.Fitness)) {
+        Evaluate(p2, token);
+        evaluations++;
+      }
+      var better = Problem.Maximization ? Math.Max(p1.Fitness, p2.Fitness)
+                                        : Math.Min(p1.Fitness, p2.Fitness);
+
+      var offspring = ToScope(null);
+      var probe = ToScope(new BinaryVector(N));
+      var order = Enumerable.Range(0, N - 1).Shuffle(Context.Random).ToList();
+      for (var x = 0; x < N - 1; x++) {
+        var b = order[x];
+        if (p1.Solution[b] == p2.Solution[b]) continue;
+        for (var i = 0; i <= b; i++)
+          probe.Solution[i] = p1.Solution[i];
+        for (var i = b + 1; i < probe.Solution.Length; i++)
+          probe.Solution[i] = p2.Solution[i];
+
+        Evaluate(probe, token);
+        evaluations++;
+        if (Context.IsBetter(probe, offspring)) {
+          if (Context.IsBetter(probe.Fitness, better)) {
+            Context.IncrementEvaluatedSolutions(evaluations);
+            return probe;
+          }
+          offspring = (ISingleObjectiveSolutionScope<BinaryVector>)probe.Clone();
         }
       }
+
+      while (evaluations < Context.LocalSearchEvaluations) {
+        probe.Solution = UniformCrossover.Apply(Context.Random, p1.Solution, p2.Solution);
+        Evaluate(probe, token);
+        evaluations++;
+        if (Context.IsBetter(probe, offspring)) {
+          if (Context.IsBetter(probe.Fitness, better)) {
+            Context.IncrementEvaluatedSolutions(evaluations);
+            return probe;
+          }
+          offspring = (ISingleObjectiveSolutionScope<BinaryVector>)probe.Clone();
+        }
+      }
+      Context.IncrementEvaluatedSolutions(evaluations);
       return offspring;
     }
 
-    protected override void Mutate(ISingleObjectiveSolutionScope<BinaryVector> offspring, CancellationToken token, ISolutionSubspace<BinaryVector> subspace = null) {
-      var subset = subspace != null ? ((BinarySolutionSubspace)subspace).Subspace : null;
-      offspring.Fitness = double.NaN;
-      var code = offspring.Solution;
-      for (var i = 0; i < code.Length; i++) {
-        if (subset != null && subset[i]) continue;
-        if (Context.Random.NextDouble() < UncommonBitSubsetMutationProbabilityMagicConst) {
-          code[i] = !code[i];
-          if (subset != null) subset[i] = true;
-        }
-      }
-    }
-
-    protected override ISingleObjectiveSolutionScope<BinaryVector> Relink(ISingleObjectiveSolutionScope<BinaryVector> a, ISingleObjectiveSolutionScope<BinaryVector> b, CancellationToken token) {
+    protected override ISingleObjectiveSolutionScope<BinaryVector> Link(ISingleObjectiveSolutionScope<BinaryVector> a, ISingleObjectiveSolutionScope<BinaryVector> b, CancellationToken token, bool delink = false) {
+      var evaluations = 0;
       if (double.IsNaN(a.Fitness)) {
         Evaluate(a, token);
-        Context.IncrementEvaluatedSolutions(1);
+        evaluations++;
       }
       if (double.IsNaN(b.Fitness)) {
         Evaluate(b, token);
-        Context.IncrementEvaluatedSolutions(1);
+        evaluations++;
       }
-      if (Context.Random.NextDouble() < 0.5)
-        return IsBetter(a, b) ? Relink(a, b, token, false) : Relink(b, a, token, true);
-      else return IsBetter(a, b) ? Relink(b, a, token, true) : Relink(a, b, token, false);
-    }
 
-    protected virtual ISingleObjectiveSolutionScope<BinaryVector> Relink(ISingleObjectiveSolutionScope<BinaryVector> betterScope, ISingleObjectiveSolutionScope<BinaryVector> worseScope, CancellationToken token, bool fromWorseToBetter) {
-      var evaluations = 0;
-      var childScope = (ISingleObjectiveSolutionScope<BinaryVector>)(fromWorseToBetter ? worseScope : betterScope).Clone();
+      var childScope = (ISingleObjectiveSolutionScope<BinaryVector>)a.Clone();
       var child = childScope.Solution;
-      var better = betterScope.Solution;
-      var worse = worseScope.Solution;
       ISingleObjectiveSolutionScope<BinaryVector> best = null;
-      var cF = fromWorseToBetter ? worseScope.Fitness : betterScope.Fitness;
+      var cF = a.Fitness;
       var bF = double.NaN;
-      var order = Enumerable.Range(0, better.Length).Shuffle(Context.Random).ToArray();
+      var order = Enumerable.Range(0, child.Length)
+        .Where(x => !delink && child[x] != b.Solution[x] || delink && child[x] == b.Solution[x])
+        .Shuffle(Context.Random).ToList();
+      if (order.Count == 0) return childScope;
+
       while (true) {
         var bestS = double.NaN;
-        var bestIdx = -1;
-        for (var i = 0; i < child.Length; i++) {
+        var bestI = -1;
+        for (var i = 0; i < order.Count; i++) {
           var idx = order[i];
-          // either move from worse to better or move from better away from worse
-          if (fromWorseToBetter && child[idx] == better[idx] ||
-            !fromWorseToBetter && child[idx] != worse[idx]) continue;
           child[idx] = !child[idx]; // move
           Evaluate(childScope, token);
           evaluations++;
           var s = childScope.Fitness;
           childScope.Fitness = cF;
           child[idx] = !child[idx]; // undo move
-          if (IsBetter(s, cF)) {
+          if (Context.IsBetter(s, cF)) {
             bestS = s;
-            bestIdx = idx;
+            bestI = i;
             break; // first-improvement
           }
-          if (double.IsNaN(bestS) || IsBetter(s, bestS)) {
+          if (Context.IsBetter(s, bestS)) {
             // least-degrading
             bestS = s;
-            bestIdx = idx;
+            bestI = i;
           }
         }
-        if (bestIdx < 0) break;
-        child[bestIdx] = !child[bestIdx];
+        child[order[bestI]] = !child[order[bestI]];
+        order.RemoveAt(bestI);
         cF = bestS;
         childScope.Fitness = cF;
-        if (IsBetter(cF, bF)) {
+        if (Context.IsBetter(cF, bF)) {
           bF = cF;
           best = (ISingleObjectiveSolutionScope<BinaryVector>)childScope.Clone();
         }
+        if (order.Count == 0) break;
       }
       Context.IncrementEvaluatedSolutions(evaluations);
       return best ?? childScope;

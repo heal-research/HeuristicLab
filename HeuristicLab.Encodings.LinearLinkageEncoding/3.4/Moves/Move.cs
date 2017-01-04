@@ -19,8 +19,6 @@
  */
 #endregion
 
-using HeuristicLab.Collections;
-
 namespace HeuristicLab.Encodings.LinearLinkageEncoding {
   public abstract class Move {
     public int Item { get; protected set; }

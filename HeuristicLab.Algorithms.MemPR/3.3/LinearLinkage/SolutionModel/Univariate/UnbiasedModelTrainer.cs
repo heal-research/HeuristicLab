@@ -23,14 +23,15 @@ using System.Linq;
 using HeuristicLab.Algorithms.MemPR.Interfaces;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Encodings.LinearLinkageEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Algorithms.MemPR.LinearLinkage.SolutionModel.Univariate {
+namespace HeuristicLab.Algorithms.MemPR.Grouping.SolutionModel.Univariate {
   [Item("Unbiased Univariate Model Trainer (linear linkage)", "", ExcludeGenericTypeInfo = true)]
   [StorableClass]
   public class UniasedModelTrainer<TContext> : NamedItem, ISolutionModelTrainer<TContext>
-    where TContext : IPopulationBasedHeuristicAlgorithmContext<SingleObjectiveBasicProblem<Encodings.LinearLinkageEncoding.LinearLinkageEncoding>, Encodings.LinearLinkageEncoding.LinearLinkage>, ISolutionModelContext<Encodings.LinearLinkageEncoding.LinearLinkage> {
+    where TContext : IPopulationBasedHeuristicAlgorithmContext<SingleObjectiveBasicProblem<LinearLinkageEncoding>, LinearLinkage>, ISolutionModelContext<LinearLinkage> {
     
     [StorableConstructor]
     protected UniasedModelTrainer(bool deserializing) : base(deserializing) { }

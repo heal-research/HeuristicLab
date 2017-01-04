@@ -25,10 +25,11 @@ using System.Threading;
 using HeuristicLab.Algorithms.MemPR.Util;
 using HeuristicLab.Collections;
 using HeuristicLab.Core;
+using HeuristicLab.Encodings.LinearLinkageEncoding;
 
-namespace HeuristicLab.Algorithms.MemPR.LinearLinkage.LocalSearch {
+namespace HeuristicLab.Algorithms.MemPR.Grouping.LocalSearch {
   public static class ExhaustiveLocalSearch {
-    public static Tuple<int, int> Optimize(IRandom random, Encodings.LinearLinkageEncoding.LinearLinkage solution, ref double quality, bool maximization, Func<Encodings.LinearLinkageEncoding.LinearLinkage, IRandom, double> eval, CancellationToken token, bool[] subspace = null) {
+    public static Tuple<int, int> Optimize(IRandom random, LinearLinkage solution, ref double quality, bool maximization, Func<LinearLinkage, IRandom, double> eval, CancellationToken token, bool[] subspace = null) {
       var evaluations = 0;
       var current = solution;
       if (double.IsNaN(quality)) {
@@ -152,7 +153,7 @@ namespace HeuristicLab.Algorithms.MemPR.LinearLinkage.LocalSearch {
       return Tuple.Create(evaluations, steps);
     }
 
-    public static Tuple<int, int> OptimizeSwapOnly(IRandom random, Encodings.LinearLinkageEncoding.LinearLinkage solution, ref double quality, bool maximization, Func<Encodings.LinearLinkageEncoding.LinearLinkage, IRandom, double> eval, CancellationToken token) {
+    public static Tuple<int, int> OptimizeSwapOnly(IRandom random, LinearLinkage solution, ref double quality, bool maximization, Func<LinearLinkage, IRandom, double> eval, CancellationToken token) {
       var evaluations = 0;
       var current = solution;
       if (double.IsNaN(quality)) {

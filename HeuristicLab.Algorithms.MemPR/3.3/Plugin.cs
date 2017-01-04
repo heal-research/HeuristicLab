@@ -25,6 +25,7 @@ namespace HeuristicLab.Algorithms.MemPR {
 
   [Plugin("HeuristicLab.Algorithms.MemPR", "Provides the MemPR (MEMetic Path Relinking) algorithm.", "3.3.14.0")]
   [PluginFile("HeuristicLab.Algorithms.MemPR-3.3.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.Algorithms.DataAnalysis", "3.4")]
   [PluginDependency("HeuristicLab.Analysis", "3.3")]
   [PluginDependency("HeuristicLab.Collections", "3.3")]
   [PluginDependency("HeuristicLab.Common", "3.3")]

@@ -38,8 +38,6 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation {
   [StorableClass]
   [Creatable(CreatableAttribute.Categories.PopulationBasedAlgorithms, Priority = 999)]
   public class PermutationMemPR : MemPRAlgorithm<SingleObjectiveBasicProblem<PermutationEncoding>, Encodings.PermutationEncoding.Permutation, PermutationMemPRPopulationContext, PermutationMemPRSolutionContext> {
-    private const double UncommonBitSubsetMutationProbabilityMagicConst = 0.05;
-
 #if DEBUG
     private const bool VALIDATE = true;
 #else
@@ -143,32 +141,30 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation {
       return new PermutationSolutionSubspace(subspace);
     }
 
-    protected override int TabuWalk(ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> scope, int maxEvals, CancellationToken token, ISolutionSubspace<Encodings.PermutationEncoding.Permutation> subspace = null) {
+    protected override void AdaptiveWalk(ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> scope, int maxEvals, CancellationToken token, ISolutionSubspace<Encodings.PermutationEncoding.Permutation> subspace = null) {
       var wrapper = new EvaluationWrapper<Encodings.PermutationEncoding.Permutation>(Context.Problem, scope);
       var quality = scope.Fitness;
       try {
-        return TabuWalk(Context.Random, scope.Solution, wrapper.Evaluate, ref quality, maxEvals, subspace != null ? ((PermutationSolutionSubspace)subspace).Subspace : null);
+        TabuWalk(Context.Random, scope.Solution, wrapper.Evaluate, ref quality, maxEvals, subspace != null ? ((PermutationSolutionSubspace)subspace).Subspace : null);
       } finally {
         scope.Fitness = quality;
       }
     }
 
-    public int TabuWalk(IRandom random, Encodings.PermutationEncoding.Permutation perm, Func<Encodings.PermutationEncoding.Permutation, IRandom, double> eval, ref double quality, int maxEvals = int.MaxValue, bool[,] subspace = null) {
-      int newSteps = 0;
+    public void TabuWalk(IRandom random, Encodings.PermutationEncoding.Permutation perm, Func<Encodings.PermutationEncoding.Permutation, IRandom, double> eval, ref double quality, int maxEvals = int.MaxValue, bool[,] subspace = null) {
       switch (perm.PermutationType) {
         case PermutationTypes.Absolute:
-          newSteps = TabuWalkSwap(random, perm, eval, ref quality, maxEvals, subspace);
+          TabuWalkSwap(random, perm, eval, ref quality, maxEvals, subspace);
           break;
         case PermutationTypes.RelativeDirected:
-          newSteps = TabuWalkShift(random, perm, eval, ref quality, maxEvals, subspace);
+          TabuWalkShift(random, perm, eval, ref quality, maxEvals, subspace);
           break;
         case PermutationTypes.RelativeUndirected:
-          newSteps = TabuWalkOpt(random, perm, eval, ref quality, maxEvals, subspace);
+          TabuWalkOpt(random, perm, eval, ref quality, maxEvals, subspace);
           break;
         default: throw new ArgumentException(string.Format("Permutation type {0} is not known", perm.PermutationType));
       }
       if (VALIDATE && !perm.Validate()) throw new ArgumentException("TabuWalk produced invalid child");
-      return newSteps;
     }
 
     public int TabuWalkSwap(IRandom random, Encodings.PermutationEncoding.Permutation perm, Func<Encodings.PermutationEncoding.Permutation, IRandom, double> eval, ref double quality, int maxEvals = int.MaxValue, bool[,] subspace = null) {
@@ -381,118 +377,105 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation {
       return stepsUntilBestOfWalk;
     }
 
-    protected override ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> Cross(ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> p1, ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> p2, CancellationToken token) {
-      Encodings.PermutationEncoding.Permutation child = null;
+    protected override ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> Breed(ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> p1, ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> p2, CancellationToken token) {
+      ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> child = null;
 
       if (p1.Solution.PermutationType == PermutationTypes.Absolute) {
-        child = CyclicCrossover.Apply(Context.Random, p1.Solution, p2.Solution);
+        child = CrossAbsolute(p1, p2, token);
       } else if (p1.Solution.PermutationType == PermutationTypes.RelativeDirected) {
-        child = PartiallyMatchedCrossover.Apply(Context.Random, p1.Solution, p2.Solution);
+        child = CrossRelativeDirected(p1, p2, token);
       } else if (p1.Solution.PermutationType == PermutationTypes.RelativeUndirected) {
-        child = EdgeRecombinationCrossover.Apply(Context.Random, p1.Solution, p2.Solution);
+        child = CrossRelativeUndirected(p1, p2, token);
       } else throw new ArgumentException(string.Format("Unknown permutation type {0}", p1.Solution.PermutationType));
 
-      if (VALIDATE && !child.Validate()) throw new ArgumentException("Cross produced invalid child");
-      return ToScope(child);
+      if (VALIDATE && !child.Solution.Validate()) throw new ArgumentException("Cross produced invalid child");
+      return child;
     }
 
-    protected override void Mutate(ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> offspring, CancellationToken token, ISolutionSubspace<Encodings.PermutationEncoding.Permutation> subspace = null) {
-      Mutate(Context.Random, offspring.Solution, UncommonBitSubsetMutationProbabilityMagicConst, subspace != null ? ((PermutationSolutionSubspace)subspace).Subspace : null);
-    }
-
-    public static void Mutate(IRandom random, Encodings.PermutationEncoding.Permutation perm, double p, bool[,] subspace) {
-      switch (perm.PermutationType) {
-        case PermutationTypes.Absolute:
-          MutateSwap(random, perm, p, subspace);
-          break;
-        case PermutationTypes.RelativeDirected:
-          MutateShift(random, perm, p, subspace);
-          break;
-        case PermutationTypes.RelativeUndirected:
-          MutateOpt(random, perm, p, subspace);
-          break;
-        default: throw new ArgumentException(string.Format("Permutation type {0} is not known", perm.PermutationType));
-      }
-      if (VALIDATE && !perm.Validate()) throw new ArgumentException("Mutate produced invalid child");
-    }
-
-    public static void MutateSwap(IRandom random, Encodings.PermutationEncoding.Permutation perm, double p, bool[,] subspace) {
-      //Log("BEFOR: {0}", string.Join(", ", lle));
-      // The goal of the mutation is to disrupt crossover when it's in an agreeing position
-      var options = new List<int>(Enumerable.Range(0, perm.Length).Where(x => subspace == null || !subspace[x, 0]));
-      if (options.Count < 1) return;
-
-      for (var i = options.Count - 1; i > 0; i--) {
-        if (random.NextDouble() < p) {
-          var j = random.Next(0, i);
-          var h = perm[options[i]];
-          perm[options[i]] = perm[options[j]];
-          perm[options[j]] = h;
-          if (subspace != null) {
-            subspace[options[i], 0] = true;
-            subspace[options[j], 0] = true;
-          }
+    private ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> CrossAbsolute(ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> p1, ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> p2, CancellationToken token) {
+      var cache = new HashSet<Encodings.PermutationEncoding.Permutation>(new PermutationEqualityComparer());
+      var cacheHits = 0;
+      var evaluations = 1;
+      ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> offspring = null;
+      for (; evaluations <= Context.LocalSearchEvaluations; evaluations++) {
+        var c = CyclicCrossover2.Apply(Context.Random, p1.Solution, p2.Solution);
+        if (cache.Contains(c)) {
+          cacheHits++;
+          if (cacheHits > 10) break;
+          continue;
+        }
+        var probe = ToScope(c);
+        Evaluate(probe, token);
+        cache.Add(c);
+        if (offspring == null || Context.IsBetter(probe, offspring)) {
+          offspring = probe;
+          if (Context.IsBetter(offspring, p1) && Context.IsBetter(offspring, p2))
+            break;
         }
       }
+      Context.IncrementEvaluatedSolutions(evaluations-1);
+      return offspring;
     }
 
-    public static void MutateShift(IRandom random, Encodings.PermutationEncoding.Permutation perm, double p, bool[,] subspace) {
-      //Log("BEFOR: {0}", string.Join(", ", lle));
-      // The goal of the mutation is to disrupt crossover when it's in an agreeing position
-      foreach (var shift in ExhaustiveInsertionMoveGenerator.Generate(perm).Shuffle(random)) {
-        var prev1 = shift.Index1 - 1;
-        var next1 = (shift.Index1 + 1) % perm.Length;
-        if (prev1 < 0) prev1 += perm.Length;
-        var prev3 = shift.Index3 - 1;
-        var next3 = (shift.Index3 + 1) % perm.Length;
-        if (prev3 < 0) prev3 += perm.Length;
-        if (subspace == null || !(subspace[perm[prev1], perm[shift.Index1]] && subspace[perm[shift.Index1], perm[next1]]
-            && subspace[perm[prev3], perm[shift.Index3]] && subspace[perm[shift.Index3], perm[next3]])) {
-          if (random.NextDouble() < p) {
-            if (subspace != null) {
-              subspace[perm[prev1], perm[shift.Index1]] = true;
-              subspace[perm[shift.Index1], perm[next1]] = true;
-              subspace[perm[prev3], perm[shift.Index3]] = true;
-              subspace[perm[shift.Index3], perm[next3]] = true;
-            }
-            TranslocationManipulator.Apply(perm, shift.Index1, shift.Index2, shift.Index3);
-            return;
-          }
+    private ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> CrossRelativeDirected(ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> p1, ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> p2, CancellationToken token) {
+      var cache = new HashSet<Encodings.PermutationEncoding.Permutation>(new PermutationEqualityComparer());
+      var cacheHits = 0;
+      var evaluations = 1;
+      ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> offspring = null;
+      for (; evaluations <= Context.LocalSearchEvaluations; evaluations++) {
+        var c = PartiallyMatchedCrossover.Apply(Context.Random, p1.Solution, p2.Solution);
+        if (cache.Contains(c)) {
+          cacheHits++;
+          if (cacheHits > 10) break;
+          continue;
+        }
+        var probe = ToScope(c);
+        Evaluate(probe, token);
+        cache.Add(c);
+        if (offspring == null || Context.IsBetter(probe, offspring)) {
+          offspring = probe;
+          if (Context.IsBetter(offspring, p1) && Context.IsBetter(offspring, p2))
+            break;
         }
       }
+      Context.IncrementEvaluatedSolutions(evaluations-1);
+      return offspring;
     }
 
-    public static void MutateOpt(IRandom random, Encodings.PermutationEncoding.Permutation perm, double p, bool[,] subspace) {
-      //Log("BEFOR: {0}", string.Join(", ", lle));
-      // The goal of the mutation is to disrupt crossover when it's in an agreeing position
-      foreach (var opt in ExhaustiveInversionMoveGenerator.Generate(perm).Shuffle(random)) {
-        var prev = opt.Index1 - 1;
-        var next = (opt.Index2 + 1) % perm.Length;
-        if (prev < 0) prev += perm.Length;
-        if (subspace == null || !(subspace[perm[prev], perm[opt.Index1]] && subspace[perm[opt.Index2], perm[next]])) {
-          if (random.NextDouble() < p) {
-            if (subspace != null) {
-              subspace[perm[prev], perm[opt.Index1]] = true;
-              subspace[perm[opt.Index1], perm[prev]] = true;
-              subspace[perm[opt.Index2], perm[next]] = true;
-              subspace[perm[next], perm[opt.Index2]] = true;
-            }
-            InversionManipulator.Apply(perm, opt.Index1, opt.Index2);
-            return;
-          }
+    private ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> CrossRelativeUndirected(ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> p1, ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> p2, CancellationToken token) {
+      var cache = new HashSet<Encodings.PermutationEncoding.Permutation>(new PermutationEqualityComparer());
+      var cacheHits = 0;
+      var evaluations = 1;
+      ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> offspring = null;
+      for (; evaluations <= Context.LocalSearchEvaluations; evaluations++) {
+        var c = EdgeRecombinationCrossover.Apply(Context.Random, p1.Solution, p2.Solution);
+        if (cache.Contains(c)) {
+          cacheHits++;
+          if (cacheHits > 10) break;
+          continue;
+        }
+        var probe = ToScope(c);
+        Evaluate(probe, token);
+        cache.Add(c);
+        if (offspring == null || Context.IsBetter(probe, offspring)) {
+          offspring = probe;
+          if (Context.IsBetter(offspring, p1) && Context.IsBetter(offspring, p2))
+            break;
         }
       }
+      Context.IncrementEvaluatedSolutions(evaluations-1);
+      return offspring;
     }
 
-    protected override ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> Relink(ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> a, ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> b, CancellationToken token) {
+    protected override ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> Link(ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> a, ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> b, CancellationToken token, bool delink = false) {
       if (double.IsNaN(a.Fitness)) Evaluate(a, token);
       if (double.IsNaN(b.Fitness)) Evaluate(b, token);
       if (Context.Random.NextDouble() < 0.5)
-        return IsBetter(a, b) ? Relink(a, b, token, false) : Relink(b, a, token, true);
-      else return IsBetter(a, b) ? Relink(b, a, token, true) : Relink(a, b, token, false);
+        return Context.IsBetter(a, b) ? Relink(a, b, token) : Relink(b, a, token);
+      else return Context.IsBetter(a, b) ? Relink(b, a, token) : Relink(a, b, token);
     }
 
-    protected virtual ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> Relink(ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> betterScope, ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> worseScope, CancellationToken token, bool fromWorseToBetter) {
+    protected virtual ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> Relink(ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> betterScope, ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> worseScope, CancellationToken token) {
       var wrapper = new EvaluationWrapper<Encodings.PermutationEncoding.Permutation>(Problem, betterScope);
       double quality;
       return ToScope(Relink(Context.Random, betterScope.Solution, worseScope.Solution, wrapper.Evaluate, out quality));

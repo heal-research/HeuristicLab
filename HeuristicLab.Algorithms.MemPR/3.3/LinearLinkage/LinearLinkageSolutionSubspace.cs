@@ -22,12 +22,13 @@
 using HeuristicLab.Algorithms.MemPR.Interfaces;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Encodings.LinearLinkageEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Algorithms.MemPR.LinearLinkage {
+namespace HeuristicLab.Algorithms.MemPR.Grouping {
   [Item("Solution subspace (linear linkage)", "")]
   [StorableClass]
-  public sealed class LinearLinkageSolutionSubspace : Item, ISolutionSubspace<Encodings.LinearLinkageEncoding.LinearLinkage> {
+  public sealed class LinearLinkageSolutionSubspace : Item, ISolutionSubspace<LinearLinkage> {
 
     [Storable]
     private bool[] subspace;
