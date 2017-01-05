@@ -113,6 +113,13 @@ namespace HeuristicLab.Algorithms.MemPR {
     }
 
     [Storable]
+    private IValueParameter<DoubleValue> localOptimaLevel;
+    public double LocalOptimaLevel {
+      get { return localOptimaLevel.Value.Value; }
+      set { localOptimaLevel.Value.Value = value; }
+    }
+
+    [Storable]
     private IValueParameter<IntValue> byBreeding;
     public int ByBreeding {
       get { return byBreeding.Value.Value; }
@@ -256,6 +263,7 @@ namespace HeuristicLab.Algorithms.MemPR {
       bestQuality = cloner.Clone(original.bestQuality);
       bestSolution = cloner.Clone(original.bestSolution);
       localSearchEvaluations = cloner.Clone(original.localSearchEvaluations);
+      localOptimaLevel = cloner.Clone(original.localOptimaLevel);
       byBreeding = cloner.Clone(original.byBreeding);
       byRelinking = cloner.Clone(original.byRelinking);
       byDelinking = cloner.Clone(original.byDelinking);
@@ -289,6 +297,7 @@ namespace HeuristicLab.Algorithms.MemPR {
       Parameters.Add(bestQuality = new ValueParameter<DoubleValue>("BestQuality", new DoubleValue(double.NaN)));
       Parameters.Add(bestSolution = new ValueParameter<TSolution>("BestSolution"));
       Parameters.Add(localSearchEvaluations = new ValueParameter<IntValue>("LocalSearchEvaluations", new IntValue(0)));
+      Parameters.Add(localOptimaLevel = new ValueParameter<DoubleValue>("LocalOptimaLevel", new DoubleValue(0)));
       Parameters.Add(byBreeding = new ValueParameter<IntValue>("ByBreeding", new IntValue(0)));
       Parameters.Add(byRelinking = new ValueParameter<IntValue>("ByRelinking", new IntValue(0)));
       Parameters.Add(byDelinking = new ValueParameter<IntValue>("ByDelinking", new IntValue(0)));
@@ -494,11 +503,6 @@ namespace HeuristicLab.Algorithms.MemPR {
       }
     }
 
-    protected double ProbabilityAccept(ISingleObjectiveSolutionScope<TSolution> scope, IList<Tuple<double, double>> data) {
-      if (double.IsNaN(scope.Fitness)) throw new ArgumentException("solution not evaluated or quality unknown", "scope");
-      return ProbabilityAccept2d(scope.Fitness, data);
-    }
-
     private double ProbabilityAccept2dModel(double a, IConfidenceRegressionModel model) {
       var ds = new Dataset(new[] { "in", "out" }, new[] { new List<double> { a }, new List<double> { double.NaN } });
       var mean = model.GetEstimatedValues(ds, new[] { 0 }).Single();
@@ -507,46 +511,6 @@ namespace HeuristicLab.Algorithms.MemPR {
       var goal = Problem.Maximization ? Population.Min(x => x.Fitness) : Population.Max(x => x.Fitness);
       var z = (goal - mean) / sdev;
       return Problem.Maximization ? 1.0 - Phi(z) /* P(X >= z) */ : Phi(z); // P(X <= z)
-    }
-    protected double ProbabilityAccept2d(double startingFitness, IList<Tuple<double, double>> data) {
-      if (data.Count < 10) return 1.0;
-      var samples = 0;
-      double meanStart = 0, meanStartOld = 0, meanEnd = 0, meanEndOld = 0;
-      double varStart = 0, varStartOld = 0, varEnd = 0, varEndOld = 0;
-      for (var i = 0; i < data.Count; i++) {
-        samples++;
-        var x = data[i].Item1;
-        var y = data[i].Item2;
-
-        if (samples == 1) {
-          meanStartOld = x;
-          meanEndOld = y;
-        } else {
-          meanStart = meanStartOld + (x - meanStartOld) / samples;
-          meanEnd = meanEndOld + (y - meanEndOld) / samples;
-          varStart = varStartOld + (x - meanStartOld) * (x - meanStart) / (samples - 1);
-          varEnd = varEndOld + (y - meanEndOld) * (y - meanEnd) / (samples - 1);
-
-          meanStartOld = meanStart;
-          meanEndOld = meanEnd;
-          varStartOld = varStart;
-          varEndOld = varEnd;
-        }
-      }
-      var cov = data.Select((v, i) => new { Index = i, Value = v }).Select(x => x.Value).Sum(x => (x.Item1 - meanStart) * (x.Item2 - meanEnd)) / data.Count;
-
-      var biasedMean = meanEnd + cov / varStart * (startingFitness - meanStart);
-      var biasedStdev = Math.Sqrt(varEnd - (cov * cov) / varStart);
-
-      if (Problem.Maximization) {
-        var goal = Population.Min(x => x.Fitness);
-        var z = (goal - biasedMean) / biasedStdev;
-        return 1.0 - Phi(z); // P(X >= z)
-      } else {
-        var goal = Population.Max(x => x.Fitness);
-        var z = (goal - biasedMean) / biasedStdev;
-        return Phi(z); // P(X <= z)
-      }
     }
 
     private double ProbabilityAccept3dModel(double a, double b, IConfidenceRegressionModel model) {
@@ -557,56 +521,6 @@ namespace HeuristicLab.Algorithms.MemPR {
       var goal = Problem.Maximization ? Population.Min(x => x.Fitness) : Population.Max(x => x.Fitness);
       var z = (goal - mean) / sdev;
       return Problem.Maximization ? 1.0 - Phi(z) /* P(X >= z) */ : Phi(z); // P(X <= z)
-    }
-    protected double ProbabilityAccept3d(double startingFitness1, double startingFitness2, IList<Tuple<double, double, double>> data) {
-      if (data.Count < 20) return 1.0;
-      var samples = 0;
-      double meanX1 = 0, meanX1Old = 0, meanX2 = 0, meanX2Old = 0, meanY = 0, meanYOld = 0;
-      double varX1 = 0, varX1Old = 0, varX2 = 0, varX2Old = 0, varY = 0, varYOld = 0;
-      for (var i = 0; i < data.Count; i++) {
-        samples++;
-        var x1 = data[i].Item1;
-        var x2 = data[i].Item2;
-        var y = data[i].Item3;
-
-        if (samples == 1) {
-          meanX1Old = x1;
-          meanX2Old = x2;
-          meanYOld = y;
-        } else {
-          meanX1 = meanX1Old + (x1 - meanX1Old) / samples;
-          meanX2 = meanX2Old + (x2 - meanX2Old) / samples;
-          meanY = meanYOld + (y - meanYOld) / samples;
-          varX1 = varX1Old + (x1 - meanX1Old) * (x1 - meanX1) / (samples - 1);
-          varX2 = varX2Old + (x2 - meanX2Old) * (x2 - meanX2) / (samples - 1);
-          varY = varYOld + (y - meanYOld) * (y - meanY) / (samples - 1);
-
-          meanX1Old = meanX1;
-          meanX2Old = meanX2;
-          meanYOld = meanY;
-          varX1Old = varX1;
-          varX2Old = varX2;
-          varYOld = varY;
-        }
-      }
-      double covX1X2 = 0, covX1Y = 0, covX2Y = 0;
-      for (var i = 0; i < data.Count; i++) {
-        covX1X2 += (data[i].Item1 - meanX1) * (data[i].Item2 - meanX2) / data.Count;
-        covX1Y += (data[i].Item1 - meanX1) * (data[i].Item3 - meanY) / data.Count;
-        covX2Y += (data[i].Item2 - meanX2) * (data[i].Item3 - meanY) / data.Count;
-      }
-
-      var biasedMean = meanY + ((covX1Y * varX2 - covX2Y * covX1X2) * (startingFitness1 - meanX1) - (covX1Y * covX1X2 - covX2Y * varX1) * (startingFitness2 - meanX2)) / (varX1 * varX2 - covX1X2 * covX1X2);
-      var biasedStdev = Math.Sqrt(varY - (covX1Y * covX1Y * varX2 - 2 * covX1Y * covX2Y * covX1X2 + covX2Y * covX2Y * varX1) / (varX1 * varX2 - covX1X2 * covX1X2));
-      if (Problem.Maximization) {
-        var goal = Population.Min(x => x.Fitness);
-        var z = (goal - biasedMean) / biasedStdev;
-        return 1.0 - Phi(z); // P(X >= z)
-      } else {
-        var goal = Population.Max(x => x.Fitness);
-        var z = (goal - biasedMean) / biasedStdev;
-        return Phi(z); // P(X <= z)
-      }
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

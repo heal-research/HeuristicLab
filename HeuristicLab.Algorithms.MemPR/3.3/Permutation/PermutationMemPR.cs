@@ -60,8 +60,8 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation {
       return new PermutationMemPR(this, cloner);
     }
 
-    protected override bool Eq(ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> a, ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> b) {
-      return new PermutationEqualityComparer().Equals(a.Solution, b.Solution);
+    protected override bool Eq(Encodings.PermutationEncoding.Permutation a, Encodings.PermutationEncoding.Permutation b) {
+      return new PermutationEqualityComparer().Equals(a, b);
     }
 
     protected override double Dist(ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> a, ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> b) {
@@ -397,8 +397,14 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation {
       var cacheHits = 0;
       var evaluations = 1;
       ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> offspring = null;
-      for (; evaluations <= Context.LocalSearchEvaluations; evaluations++) {
-        var c = CyclicCrossover2.Apply(Context.Random, p1.Solution, p2.Solution);
+      for (; evaluations <= p1.Solution.Length; evaluations++) {
+        Encodings.PermutationEncoding.Permutation c = null;
+        var xochoice = Context.Random.Next(3);
+        switch (xochoice) {
+          case 0: c = CyclicCrossover2.Apply(Context.Random, p1.Solution, p2.Solution); break;
+          case 1: c = PartiallyMatchedCrossover.Apply(Context.Random, p1.Solution, p2.Solution); break;
+          case 2: c = UniformLikeCrossover.Apply(Context.Random, p1.Solution, p2.Solution); break;
+        }
         if (cache.Contains(c)) {
           cacheHits++;
           if (cacheHits > 10) break;
@@ -422,8 +428,14 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation {
       var cacheHits = 0;
       var evaluations = 1;
       ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> offspring = null;
-      for (; evaluations <= Context.LocalSearchEvaluations; evaluations++) {
-        var c = PartiallyMatchedCrossover.Apply(Context.Random, p1.Solution, p2.Solution);
+      for (; evaluations <= p1.Solution.Length; evaluations++) {
+        Encodings.PermutationEncoding.Permutation c = null;
+        var xochoice = Context.Random.Next(3);
+        switch (xochoice) {
+          case 0: c = OrderCrossover2.Apply(Context.Random, p1.Solution, p2.Solution); break;
+          case 1: c = PartiallyMatchedCrossover.Apply(Context.Random, p1.Solution, p2.Solution); break;
+          case 2: c = MaximalPreservativeCrossover.Apply(Context.Random, p1.Solution, p2.Solution); break;
+        }
         if (cache.Contains(c)) {
           cacheHits++;
           if (cacheHits > 10) break;
@@ -447,8 +459,14 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation {
       var cacheHits = 0;
       var evaluations = 1;
       ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> offspring = null;
-      for (; evaluations <= Context.LocalSearchEvaluations; evaluations++) {
-        var c = EdgeRecombinationCrossover.Apply(Context.Random, p1.Solution, p2.Solution);
+      for (; evaluations <= p1.Solution.Length; evaluations++) {
+        Encodings.PermutationEncoding.Permutation c = null;
+        var xochoice = Context.Random.Next(3);
+        switch (xochoice) {
+          case 0: c = OrderCrossover2.Apply(Context.Random, p1.Solution, p2.Solution); break;
+          case 1: c = EdgeRecombinationCrossover.Apply(Context.Random, p1.Solution, p2.Solution); break;
+          case 2: c = MaximalPreservativeCrossover.Apply(Context.Random, p1.Solution, p2.Solution); break;
+        }
         if (cache.Contains(c)) {
           cacheHits++;
           if (cacheHits > 10) break;
@@ -468,28 +486,29 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation {
     }
 
     protected override ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> Link(ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> a, ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> b, CancellationToken token, bool delink = false) {
-      if (double.IsNaN(a.Fitness)) Evaluate(a, token);
-      if (double.IsNaN(b.Fitness)) Evaluate(b, token);
-      if (Context.Random.NextDouble() < 0.5)
-        return Context.IsBetter(a, b) ? Relink(a, b, token) : Relink(b, a, token);
-      else return Context.IsBetter(a, b) ? Relink(b, a, token) : Relink(a, b, token);
-    }
+      if (double.IsNaN(a.Fitness)) {
+        Evaluate(a, token);
+        Context.IncrementEvaluatedSolutions(1);
+      }
+      if (double.IsNaN(b.Fitness)) {
+        Evaluate(b, token);
+        Context.IncrementEvaluatedSolutions(1);
+      }
 
-    protected virtual ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> Relink(ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> betterScope, ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> worseScope, CancellationToken token) {
-      var wrapper = new EvaluationWrapper<Encodings.PermutationEncoding.Permutation>(Problem, betterScope);
+      var wrapper = new EvaluationWrapper<Encodings.PermutationEncoding.Permutation>(Problem, ToScope(null));
       double quality;
-      return ToScope(Relink(Context.Random, betterScope.Solution, worseScope.Solution, wrapper.Evaluate, out quality));
+      return ToScope(Relink(Context.Random, a.Solution, b.Solution, wrapper.Evaluate, delink, out quality));
     }
 
-    public Encodings.PermutationEncoding.Permutation Relink(IRandom random, Encodings.PermutationEncoding.Permutation p1, Encodings.PermutationEncoding.Permutation p2, Func<Encodings.PermutationEncoding.Permutation, IRandom, double> eval, out double best) {
+    public Encodings.PermutationEncoding.Permutation Relink(IRandom random, Encodings.PermutationEncoding.Permutation p1, Encodings.PermutationEncoding.Permutation p2, Func<Encodings.PermutationEncoding.Permutation, IRandom, double> eval, bool delink, out double best) {
       if (p1.PermutationType != p2.PermutationType) throw new ArgumentException(string.Format("Unequal permutation types {0} and {1}", p1.PermutationType, p2.PermutationType));
       switch (p1.PermutationType) {
         case PermutationTypes.Absolute:
-          return RelinkSwap(random, p1, p2, eval, out best);
+          return delink ? DelinkSwap(random, p1, p2, eval, out best) : RelinkSwap(random, p1, p2, eval, out best);
         case PermutationTypes.RelativeDirected:
-          return RelinkShift(random, p1, p2, eval, out best);
+          return RelinkShift(random, p1, p2, eval, delink, out best);
         case PermutationTypes.RelativeUndirected:
-          return RelinkOpt(random, p1, p2, eval, out best);
+          return RelinkOpt(random, p1, p2, eval, delink, out best);
         default: throw new ArgumentException(string.Format("Unknown permutation type {0}", p1.PermutationType));
       }
     }
@@ -505,8 +524,7 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation {
       var options = Enumerable.Range(0, child.Length).Where(x => child[x] != p2[x]).ToList();
       var invChild = new int[child.Length];
       for (var i = 0; i < child.Length; i++) invChild[child[i]] = i;
-
-      //Log(string.Join(", ", child));
+      
       while (options.Count > 0) {
         int bestOption = -1;
         var bestChange = double.NaN;
@@ -533,7 +551,6 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation {
           Swap(child, idx1, idx2);
           invChild[child[idx1]] = idx1;
           invChild[child[idx2]] = idx2;
-          //Log(string.Join(", ", child));
           if (FitnessComparer.IsBetter(maximization, bestChange, best)) {
             if (Dist(child, p2) > 0) {
               best = bestChange;
@@ -555,7 +572,66 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation {
       return bestChild ?? child;
     }
 
-    public Encodings.PermutationEncoding.Permutation RelinkShift(IRandom random, Encodings.PermutationEncoding.Permutation p1, Encodings.PermutationEncoding.Permutation p2, Func<Encodings.PermutationEncoding.Permutation, IRandom, double> eval, out double best) {
+    public Encodings.PermutationEncoding.Permutation DelinkSwap(IRandom random, Encodings.PermutationEncoding.Permutation p1, Encodings.PermutationEncoding.Permutation p2, Func<Encodings.PermutationEncoding.Permutation, IRandom, double> eval, out double best) {
+      var maximization = Context.Problem.Maximization;
+      var evaluations = 0;
+      var child = (Encodings.PermutationEncoding.Permutation)p1.Clone();
+
+      best = double.NaN;
+      Encodings.PermutationEncoding.Permutation bestChild = null;
+
+      var options = Enumerable.Range(0, child.Length).Where(x => child[x] == p2[x]).ToList();
+      
+      while (options.Count > 0) {
+        int bestOption = -1;
+        int bestCompanion = -1;
+        var bestChange = double.NaN;
+        for (var j = 0; j < options.Count; j++) {
+          var idx = options[j];
+          if (child[idx] != p2[idx]) {
+            options.RemoveAt(j);
+            j--;
+            continue;
+          }
+          for (var k = 0; k < child.Length; k++) {
+            if (k == idx) continue;
+            Swap(child, k, idx);
+            var moveF = eval(child, random);
+            evaluations++;
+            if (FitnessComparer.IsBetter(maximization, moveF, bestChange)) {
+              bestChange = moveF;
+              bestOption = j;
+              bestCompanion = k;
+            }
+            // undo
+            Swap(child, k, idx);
+          }
+        }
+        if (!double.IsNaN(bestChange)) {
+          var idx1 = options[bestOption];
+          Swap(child, idx1, bestCompanion);
+          if (FitnessComparer.IsBetter(maximization, bestChange, best)) {
+            if (!Eq(child, p2)) {
+              best = bestChange;
+              bestChild = (Encodings.PermutationEncoding.Permutation)child.Clone();
+            }
+          }
+          options.RemoveAt(bestOption);
+        }
+      }
+      if (bestChild == null) {
+        best = eval(child, random);
+        evaluations++;
+      }
+      Context.IncrementEvaluatedSolutions(evaluations);
+
+      if (VALIDATE && bestChild != null && !bestChild.Validate()) throw new ArgumentException("Relinking produced invalid child");
+      if (VALIDATE && Dist(child, p2) > 0) throw new InvalidOperationException("Child is not equal to p2 after relinking");
+
+      return bestChild ?? child;
+    }
+
+    public Encodings.PermutationEncoding.Permutation RelinkShift(IRandom random, Encodings.PermutationEncoding.Permutation p1, Encodings.PermutationEncoding.Permutation p2, Func<Encodings.PermutationEncoding.Permutation, IRandom, double> eval, bool delink, out double best) {
       var maximization = Context.Problem.Maximization;
       var evaluations = 0;
       var child = (Encodings.PermutationEncoding.Permutation)p1.Clone();
@@ -610,7 +686,7 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation {
       return bestChild ?? child;
     }
 
-    public Encodings.PermutationEncoding.Permutation RelinkOpt(IRandom random, Encodings.PermutationEncoding.Permutation p1, Encodings.PermutationEncoding.Permutation p2, Func<Encodings.PermutationEncoding.Permutation, IRandom, double> eval, out double best) {
+    public Encodings.PermutationEncoding.Permutation RelinkOpt(IRandom random, Encodings.PermutationEncoding.Permutation p1, Encodings.PermutationEncoding.Permutation p2, Func<Encodings.PermutationEncoding.Permutation, IRandom, double> eval, bool delink, out double best) {
       var maximization = Context.Problem.Maximization;
       var evaluations = 0;
       var child = (Encodings.PermutationEncoding.Permutation)p1.Clone();

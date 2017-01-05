@@ -31,7 +31,6 @@ using HeuristicLab.Encodings.LinearLinkageEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
-using HeuristicLab.Random;
 
 namespace HeuristicLab.Algorithms.MemPR.Grouping {
   [Item("MemPR (linear linkage)", "MemPR implementation for linear linkage vectors.")]
@@ -54,12 +53,10 @@ namespace HeuristicLab.Algorithms.MemPR.Grouping {
       return new LinearLinkageMemPR(this, cloner);
     }
 
-    protected override bool Eq(ISingleObjectiveSolutionScope<LinearLinkage> a, ISingleObjectiveSolutionScope<LinearLinkage> b) {
-      var s1 = a.Solution;
-      var s2 = b.Solution;
-      if (s1.Length != s2.Length) return false;
-      for (var i = 0; i < s1.Length; i++)
-        if (s1[i] != s2[i]) return false;
+    protected override bool Eq(LinearLinkage a, LinearLinkage b) {
+      if (a.Length != b.Length) return false;
+      for (var i = 0; i < a.Length; i++)
+        if (a[i] != b[i]) return false;
       return true;
     }
 
@@ -255,7 +252,7 @@ namespace HeuristicLab.Algorithms.MemPR.Grouping {
       var cachehits = 0;
       var evaluations = 1;
       ISingleObjectiveSolutionScope<LinearLinkage> offspring = null;
-      for (; evaluations < Context.LocalSearchEvaluations; evaluations++) {
+      for (; evaluations < p1Scope.Solution.Length; evaluations++) {
         var code = GroupCrossover.Apply(Context.Random, p1Scope.Solution, p2Scope.Solution);
         if (cache.Contains(code)) {
           cachehits++;
@@ -296,6 +293,8 @@ namespace HeuristicLab.Algorithms.MemPR.Grouping {
           var distBefore = Dist(probe, b);
           m.Apply(probe.Solution);
           var distAfter = Dist(probe, b);
+          // consider all moves that would increase the distance between probe and b
+          // or decrease it depending on whether we do delinking or relinking
           if (delink && distAfter > distBefore || !delink && distAfter < distBefore) {
             var beforeQ = probe.Fitness;
             Evaluate(probe, token);

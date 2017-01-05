@@ -229,6 +229,7 @@ namespace HeuristicLab.Algorithms.MemPR {
         while (Context.PopulationCount < 2) {
           var child = Create(token);
           Context.LocalSearchEvaluations += HillClimb(child, token);
+          Context.LocalOptimaLevel += child.Fitness;
           Context.AddToPopulation(child);
           Context.BestQuality = child.Fitness;
           Analyze(token);
@@ -236,6 +237,7 @@ namespace HeuristicLab.Algorithms.MemPR {
           if (Terminate()) return;
         }
         Context.LocalSearchEvaluations /= 2;
+        Context.LocalOptimaLevel /= 2;
         Context.Initialized = true;
       }
 
@@ -253,7 +255,7 @@ namespace HeuristicLab.Algorithms.MemPR {
       offspring = Breed(token);
       if (offspring != null) {
         if (Context.PopulationCount < MaximumPopulationSize)
-          HillClimb(offspring, token);
+          AdaptiveClimb(offspring, Context.LocalSearchEvaluations, token);
         var replNew = Replace(offspring, token);
         if (replNew) {
           replaced = true;
@@ -264,7 +266,7 @@ namespace HeuristicLab.Algorithms.MemPR {
       offspring = Relink(token);
       if (offspring != null) {
         if (Context.PopulationCount < MaximumPopulationSize)
-          HillClimb(offspring, token);
+          AdaptiveClimb(offspring, Context.LocalSearchEvaluations, token);
         if (Replace(offspring, token)) {
           replaced = true;
           Context.ByRelinking++;
@@ -274,7 +276,7 @@ namespace HeuristicLab.Algorithms.MemPR {
       offspring = Delink(token);
       if (offspring != null) {
         if (Context.PopulationCount < MaximumPopulationSize)
-          HillClimb(offspring, token);
+          AdaptiveClimb(offspring, Context.LocalSearchEvaluations, token);
         if (Replace(offspring, token)) {
           replaced = true;
           Context.ByDelinking++;
@@ -284,7 +286,7 @@ namespace HeuristicLab.Algorithms.MemPR {
       offspring = Sample(token);
       if (offspring != null) {
         if (Context.PopulationCount < MaximumPopulationSize)
-          HillClimb(offspring, token);
+          AdaptiveClimb(offspring, Context.LocalSearchEvaluations, token);
         if (Replace(offspring, token)) {
           replaced = true;
           Context.BySampling++;
@@ -293,7 +295,7 @@ namespace HeuristicLab.Algorithms.MemPR {
 
       if (!replaced && offspring != null) {
         if (Context.HillclimbingSuited(offspring)) {
-          HillClimb(offspring, token);
+          AdaptiveClimb(offspring, Context.LocalSearchEvaluations, token);
           if (Replace(offspring, token)) {
             Context.ByHillclimbing++;
             replaced = true;
@@ -515,8 +517,11 @@ namespace HeuristicLab.Algorithms.MemPR {
       }
       return false;// -1;
     }
-    
-    protected abstract bool Eq(ISingleObjectiveSolutionScope<TSolution> a, ISingleObjectiveSolutionScope<TSolution> b);
+
+    protected bool Eq(ISingleObjectiveSolutionScope<TSolution> a, ISingleObjectiveSolutionScope<TSolution> b) {
+      return Eq(a.Solution, b.Solution);
+    }
+    protected abstract bool Eq(TSolution a, TSolution b);
     protected abstract double Dist(ISingleObjectiveSolutionScope<TSolution> a, ISingleObjectiveSolutionScope<TSolution> b);
     protected abstract ISingleObjectiveSolutionScope<TSolution> ToScope(TSolution code, double fitness = double.NaN);
     protected abstract ISolutionSubspace<TSolution> CalculateSubspace(IEnumerable<TSolution> solutions, bool inverse = false);
@@ -598,7 +603,8 @@ namespace HeuristicLab.Algorithms.MemPR {
         // new best solutions are improved using hill climbing in full solution space
         if (Context.Population.All(p => Context.IsBetter(offspring, p)))
           HillClimb(offspring, token);
-        else HillClimb(offspring, token, CalculateSubspace(new[] { p1.Solution, p2.Solution }));
+        else if (!Eq(offspring, p1) && !Eq(offspring, p2) && Context.HillclimbingSuited(offspring.Fitness))
+          HillClimb(offspring, token, CalculateSubspace(new[] { p1.Solution, p2.Solution }, inverse: false));
 
         Context.AddBreedingResult(p1, p2, offspring);
         if (Context.BreedingStat.Count % 10 == 0) Context.RelearnBreedingPerformanceModel();
@@ -619,7 +625,20 @@ namespace HeuristicLab.Algorithms.MemPR {
       var p1 = Context.AtPopulation(i1);
       var p2 = Context.AtPopulation(i2);
 
-      return Context.RelinkSuited(p1, p2) ? PerformRelinking(p1, p2, token, delink: false) : null;
+      if (!Context.RelinkSuited(p1, p2)) return null;
+
+      var link = PerformRelinking(p1, p2, token, delink: false);
+      if (double.IsNaN(link.Fitness)) {
+        Evaluate(link, token);
+        Context.IncrementEvaluatedSolutions(1);
+      }
+      // new best solutions are improved using hill climbing in full solution space
+      if (Context.Population.All(p => Context.IsBetter(link, p)))
+        HillClimb(link, token);
+      else if (!Eq(link, p1) && !Eq(link, p2) && Context.HillclimbingSuited(link.Fitness))
+        HillClimb(link, token, CalculateSubspace(new[] { p1.Solution, p2.Solution }, inverse: true));
+
+      return link;
     }
 
     protected virtual ISingleObjectiveSolutionScope<TSolution> Delink(CancellationToken token) {
@@ -629,8 +648,21 @@ namespace HeuristicLab.Algorithms.MemPR {
 
       var p1 = Context.AtPopulation(i1);
       var p2 = Context.AtPopulation(i2);
+      
+      if (!Context.DelinkSuited(p1, p2)) return null;
 
-      return Context.DelinkSuited(p1, p2) ? PerformRelinking(p1, p2, token, delink: true) : null;
+      var link = PerformRelinking(p1, p2, token, delink: true);
+      if (double.IsNaN(link.Fitness)) {
+        Evaluate(link, token);
+        Context.IncrementEvaluatedSolutions(1);
+      }
+      // new best solutions are improved using hill climbing in full solution space
+      if (Context.Population.All(p => Context.IsBetter(link, p)))
+        HillClimb(link, token);
+      /*else if (!Eq(link, p1) && !Eq(link, p2) && Context.HillclimbingSuited(link.Fitness))
+        HillClimb(link, token, CalculateSubspace(new[] { p1.Solution, p2.Solution }, inverse: false));*/
+
+      return link;
     }
 
     protected virtual ISingleObjectiveSolutionScope<TSolution> PerformRelinking(ISingleObjectiveSolutionScope<TSolution> a, ISingleObjectiveSolutionScope<TSolution> b, CancellationToken token, bool delink = false) {
@@ -660,17 +692,18 @@ namespace HeuristicLab.Algorithms.MemPR {
 
     #region Sample
     protected virtual ISingleObjectiveSolutionScope<TSolution> Sample(CancellationToken token) {
-      if (Context.PopulationCount == MaximumPopulationSize && Context.SamplingSuited()) {
+      if (Context.PopulationCount == MaximumPopulationSize) {
         SolutionModelTrainerParameter.Value.TrainModel(Context);
         ISingleObjectiveSolutionScope<TSolution> bestSample = null;
         var tries = 1;
-        for (; tries < Context.LocalSearchEvaluations; tries++) {
+        for (; tries < 100; tries++) {
           var sample = ToScope(Context.Model.Sample());
           Evaluate(sample, token);
           if (bestSample == null || Context.IsBetter(sample, bestSample)) {
             bestSample = sample;
+            if (Context.Population.Any(x => !Context.IsBetter(x, bestSample))) break;
           }
-          if (Context.Population.Any(x => !Context.IsBetter(x, bestSample))) break;
+          if (!Context.SamplingSuited()) break;
         }
         Context.IncrementEvaluatedSolutions(tries);
         Context.AddSamplingResult(bestSample);

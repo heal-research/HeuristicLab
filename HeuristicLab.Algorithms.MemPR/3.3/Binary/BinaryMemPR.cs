@@ -53,12 +53,10 @@ namespace HeuristicLab.Algorithms.MemPR.Binary {
       return new BinaryMemPR(this, cloner);
     }
 
-    protected override bool Eq(ISingleObjectiveSolutionScope<BinaryVector> a, ISingleObjectiveSolutionScope<BinaryVector> b) {
-      var len = a.Solution.Length;
-      var acode = a.Solution;
-      var bcode = b.Solution;
+    protected override bool Eq(BinaryVector a, BinaryVector b) {
+      var len = a.Length;
       for (var i = 0; i < len; i++)
-        if (acode[i] != bcode[i]) return false;
+        if (a[i] != b[i]) return false;
       return true;
     }
 
@@ -104,19 +102,17 @@ namespace HeuristicLab.Algorithms.MemPR.Binary {
       if (subN == 0) return;
       var order = Enumerable.Range(0, N).Where(x => subset == null || subset[x]).Shuffle(Context.Random).ToArray();
 
-      var max = Context.Population.Max(x => x.Fitness);
-      var min = Context.Population.Min(x => x.Fitness);
-      var range = (max - min);
-      if (range.IsAlmost(0)) range = Math.Abs(max * 0.05);
-      //else range += range * 0.05;
-      if (range.IsAlmost(0)) { // because min = max = 0
+      var bound = Problem.Maximization ? Context.Population.Max(x => x.Fitness) : Context.Population.Min(x => x.Fitness);
+      var range = Math.Abs(bound - Context.LocalOptimaLevel);
+      if (range.IsAlmost(0)) range = Math.Abs(bound * 0.05);
+      if (range.IsAlmost(0)) { // because bound = localoptimalevel = 0
         Context.IncrementEvaluatedSolutions(evaluations);
         return;
       }
-
-      //var upperBound = Problem.Maximization ? min - range : max + range;
-      //var lowerBound = Problem.Maximization ? max : min;
-      var temp = 1.0;
+      
+      var temp = -range / Math.Log(1.0 / maxEvals);
+      var endtemp = -range / Math.Log(0.1 / maxEvals);
+      var annealFactor = Math.Pow(endtemp / temp, 1.0 / maxEvals);
       for (var iter = 0; iter < int.MaxValue; iter++) {
         var moved = false;
 
@@ -130,18 +126,22 @@ namespace HeuristicLab.Algorithms.MemPR.Binary {
 
           if (Context.IsBetter(after, before) && (bestOfTheWalk == null || Context.IsBetter(after, bestOfTheWalk.Fitness))) {
             bestOfTheWalk = (SingleObjectiveSolutionScope<BinaryVector>)currentScope.Clone();
+            if (Context.IsBetter(bestOfTheWalk, scope)) {
+              moved = false;
+              break;
+            }
           }
           var diff = Problem.Maximization ? after - before : before - after;
           if (diff > 0) moved = true;
           else {
-            var prob = Math.Exp(temp * diff / range);
+            var prob = Math.Exp(diff / temp);
             if (Context.Random.NextDouble() >= prob) {
               // the move is not good enough -> undo the move
               current[idx] = !current[idx];
               currentScope.Fitness = before;
             }
           }
-          temp += 100.0 / maxEvals;
+          temp *= annealFactor;
           if (evaluations >= maxEvals) break;
         }
         if (!moved) break;
@@ -166,33 +166,49 @@ namespace HeuristicLab.Algorithms.MemPR.Binary {
       var better = Problem.Maximization ? Math.Max(p1.Fitness, p2.Fitness)
                                         : Math.Min(p1.Fitness, p2.Fitness);
 
-      var offspring = ToScope(null);
+
+      var cache = new HashSet<BinaryVector>(new BinaryVectorEqualityComparer());
+      cache.Add(p1.Solution);
+      cache.Add(p2.Solution);
+
+      ISingleObjectiveSolutionScope<BinaryVector> offspring = null;
       var probe = ToScope(new BinaryVector(N));
-      var order = Enumerable.Range(0, N - 1).Shuffle(Context.Random).ToList();
-      for (var x = 0; x < N - 1; x++) {
-        var b = order[x];
-        if (p1.Solution[b] == p2.Solution[b]) continue;
+      // first try all possible combinations of 1-point crossover
+      /*var order = Enumerable.Range(1, N - 2).Where(x => p1.Solution[x] != p2.Solution[x]).Shuffle(Context.Random).ToList();
+      foreach (var b in order) {
         for (var i = 0; i <= b; i++)
           probe.Solution[i] = p1.Solution[i];
         for (var i = b + 1; i < probe.Solution.Length; i++)
           probe.Solution[i] = p2.Solution[i];
 
+        // only add to cache, because all solutions must be unique
+        if (cache.Contains(probe.Solution)) continue;
+        cache.Add(probe.Solution);
         Evaluate(probe, token);
         evaluations++;
-        if (Context.IsBetter(probe, offspring)) {
+        if (offspring == null || Context.IsBetter(probe, offspring)) {
+          // immediately return upon finding a better offspring than better parent
           if (Context.IsBetter(probe.Fitness, better)) {
             Context.IncrementEvaluatedSolutions(evaluations);
             return probe;
           }
           offspring = (ISingleObjectiveSolutionScope<BinaryVector>)probe.Clone();
         }
-      }
+      }*/
 
-      while (evaluations < Context.LocalSearchEvaluations) {
+      var cacheHits = 0;
+      // if we got some evaluations left, try uniform crossover
+      while (evaluations < Math.Min(Context.LocalSearchEvaluations, N)) {
         probe.Solution = UniformCrossover.Apply(Context.Random, p1.Solution, p2.Solution);
+        if (cache.Contains(probe.Solution)) {
+          cacheHits++;
+          if (cacheHits > 10) break; // variability of uniform crossover is too low -> parents are too similar
+          continue;
+        } else cache.Add(probe.Solution);
         Evaluate(probe, token);
         evaluations++;
-        if (Context.IsBetter(probe, offspring)) {
+        if (offspring == null || Context.IsBetter(probe, offspring)) {
+          // immediately return upon finding a better offspring than better parent
           if (Context.IsBetter(probe.Fitness, better)) {
             Context.IncrementEvaluatedSolutions(evaluations);
             return probe;
@@ -201,7 +217,8 @@ namespace HeuristicLab.Algorithms.MemPR.Binary {
         }
       }
       Context.IncrementEvaluatedSolutions(evaluations);
-      return offspring;
+      // return best offspring found
+      return offspring ?? probe;
     }
 
     protected override ISingleObjectiveSolutionScope<BinaryVector> Link(ISingleObjectiveSolutionScope<BinaryVector> a, ISingleObjectiveSolutionScope<BinaryVector> b, CancellationToken token, bool delink = false) {
