@@ -553,8 +553,10 @@ namespace HeuristicLab.DataPreprocessing.Views {
 
       if (e.KeyCode == Keys.Delete) {
         //Delete column
-        if (dataGridView.SelectedColumns.Count == 1) {
-          Content.DeleteColumn(dataGridView.SelectedColumns[0].Index);
+        if (dataGridView.SelectedColumns.Count > 0) {
+          var columnsToDelete = dataGridView.SelectedColumns.Cast<DataGridViewColumn>().OrderByDescending(col => col.Index).ToList();
+          foreach (var col in columnsToDelete)
+            Content.DeleteColumn(col.Index);
         }
         //Delete row
         if (dataGridView.SelectedRows.Count > 0) {
