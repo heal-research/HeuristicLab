@@ -128,7 +128,6 @@
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Util\CkMeans1D.cs" />
-    <Compile Include="Util\EvaluationWrapper.cs" />
     <Compile Include="Util\FitnessComparer.cs" />
   </ItemGroup>
   <ItemGroup>

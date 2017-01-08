@@ -19,6 +19,8 @@
  */
 #endregion
 
+using System;
+using System.Runtime.Remoting.Contexts;
 using HeuristicLab.Algorithms.MemPR.Interfaces;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -30,7 +32,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Algorithms.MemPR.Grouping {
   [Item("MemPR Population Context (linear linkage)", "MemPR population context for linear linkage encoded problems.")]
   [StorableClass]
-  public sealed class LinearLinkageMemPRPopulationContext : MemPRPopulationContext<SingleObjectiveBasicProblem<LinearLinkageEncoding>, LinearLinkage, LinearLinkageMemPRPopulationContext, LinearLinkageMemPRSolutionContext> {
+  public sealed class LinearLinkageMemPRPopulationContext : MemPRPopulationContext<ISingleObjectiveHeuristicOptimizationProblem, LinearLinkage, LinearLinkageMemPRPopulationContext, LinearLinkageMemPRSolutionContext> {
 
     [StorableConstructor]
     private LinearLinkageMemPRPopulationContext(bool deserializing) : base(deserializing) { }
@@ -46,11 +48,19 @@ namespace HeuristicLab.Algorithms.MemPR.Grouping {
     public override LinearLinkageMemPRSolutionContext CreateSingleSolutionContext(ISingleObjectiveSolutionScope<LinearLinkage> solution) {
       return new LinearLinkageMemPRSolutionContext(this, solution);
     }
+
+    public override ISingleObjectiveSolutionScope<LinearLinkage> ToScope(LinearLinkage code, double fitness = double.NaN) {
+      var creator = Problem.SolutionCreator as ILinearLinkageCreator;
+      if (creator == null) throw new InvalidOperationException("Can only solve linear linkage encoded problems with MemPR (linear linkage)");
+      return new SingleObjectiveSolutionScope<LinearLinkage>(code, creator.LLEParameter.ActualName, fitness, Problem.Evaluator.QualityParameter.ActualName) {
+        Parent = Scope
+      };
+    }
   }
 
   [Item("MemPR Solution Context (linear linkage)", "MemPR solution context for linear linkage encoded problems.")]
   [StorableClass]
-  public sealed class LinearLinkageMemPRSolutionContext : MemPRSolutionContext<SingleObjectiveBasicProblem<LinearLinkageEncoding>, LinearLinkage, LinearLinkageMemPRPopulationContext, LinearLinkageMemPRSolutionContext>, ILinearLinkageSubspaceContext {
+  public sealed class LinearLinkageMemPRSolutionContext : MemPRSolutionContext<ISingleObjectiveHeuristicOptimizationProblem, LinearLinkage, LinearLinkageMemPRPopulationContext, LinearLinkageMemPRSolutionContext>, ILinearLinkageSubspaceContext {
 
     [Storable]
     private IValueParameter<LinearLinkageSolutionSubspace> subspace;

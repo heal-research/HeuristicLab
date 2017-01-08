@@ -20,131 +20,45 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using HeuristicLab.Algorithms.MemPR.Util;
-using HeuristicLab.Collections;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.LinearLinkageEncoding;
 
 namespace HeuristicLab.Algorithms.MemPR.Grouping.LocalSearch {
   public static class ExhaustiveLocalSearch {
-    public static Tuple<int, int> Optimize(IRandom random, LinearLinkage solution, ref double quality, bool maximization, Func<LinearLinkage, IRandom, double> eval, CancellationToken token, bool[] subspace = null) {
+    public static Tuple<int, int> Optimize(IRandom random, LinearLinkage solution, ref double quality, bool maximization, Func<LinearLinkage, CancellationToken, double> eval, CancellationToken token, bool[] subspace = null) {
       var evaluations = 0;
-      var current = solution;
       if (double.IsNaN(quality)) {
-        quality = eval(current, random);
+        quality = eval(solution, token);
         evaluations++;
       }
       var steps = 0;
-      // this dictionary holds the last relevant links
-      var links = new BidirectionalDictionary<int, int>();
+      var lleb = solution.ToBackLinks();
       for (var iter = 0; iter < int.MaxValue; iter++) {
         var change = false;
-        // clear the dictionary before a new pass through the array is made
-        links.Clear();
-        for (var i = 0; i < current.Length; i++) {
-          if (subspace != null && !subspace[i]) {
-            links.RemoveBySecond(i);
-            links.Add(i, current[i]);
-            continue;
-          }
-          var pred = -1;
-          var isFirst = !links.TryGetBySecond(i, out pred);
-          var keepLink = false;
-          if (!isFirst) {
-            keepLink = subspace != null && !subspace[pred];
-          }
-          var next = current[i];
-          var isLast = next == i;
-
-          if (!keepLink) {
-            // try to insert current into each previous group
-            // first remove i from its group
-            var linksList = links.Where(x => x.Value != i).ToList();
-            if (linksList.Count > 0 && !isFirst) current[pred] = isLast ? pred : next;
-            for (var k = 0; k < linksList.Count; k++) {
-              var l = linksList[k];
-              current[l.Key] = i;
-              current[i] = Math.Max(i, l.Value);
-              var moveF = eval(current, random);
-              evaluations++;
-              if (FitnessComparer.IsBetter(maximization, moveF, quality)) {
-                steps++;
-                quality = moveF;
-                change = true;
-                links.RemoveBySecond(i);
-                links.SetByFirst(l.Key, i); // otherwise the link won't be removed
-                if (!isFirst) links.SetByFirst(pred, isLast ? pred : next);
-                next = current[i];
-                if (next == i) { isLast = true; }
-                pred = l.Key;
-                isFirst = false;
-                break;
-              } else { // undo
-                current[l.Key] = l.Value;
-                if (k == linksList.Count - 1) {
-                  // all attempts unsuccessful
-                  if (!isFirst) current[pred] = i; // undo - readd i to its group
-                  current[i] = next;
-                }
-              }
-            }
-          }
-
-          if (!isLast) {
-            // try to split group at this point
-            // this is safe even if keepLink was true
-            current[i] = i;
-            var moveF = eval(current, random);
+        var groupItems = new List<int>();
+        for (var i = 0; i < solution.Length; i++) {
+          foreach (var move in MoveGenerator.GenerateForItem(i, groupItems, solution, lleb).ToList()) {
+            move.Apply(solution);
+            var moveF = eval(solution, token);
             evaluations++;
             if (FitnessComparer.IsBetter(maximization, moveF, quality)) {
+              move.ApplyToLLEb(lleb);
               steps++;
               quality = moveF;
               change = true;
-              isLast = true;
-              next = i;
-              links.SetBySecond(i, i);
-              continue;
-            } else current[i] = next; // undo
-          }
-
-          if (isFirst && !isLast) {
-            // try merge with all terminated groups
-            foreach (var l in links.Where(x => x.Key == x.Value && (subspace == null || subspace[x.Key]))) {
-              current[l.Key] = i;
-              var moveF = eval(current, random);
-              evaluations++;
-              if (FitnessComparer.IsBetter(maximization, moveF, quality)) {
-                steps++;
-                quality = moveF;
-                change = true;
-                isFirst = false;
-                pred = l.Key;
-                links.SetByFirst(l.Key, i);
-                break;
-              } else {
-                current[l.Key] = l.Value;
-              }
+              break;
+            } else {
+              move.Undo(solution);
             }
-          } else if (!isFirst && !keepLink) {
-            // try to extract current into own group
-            current[pred] = isLast ? pred : next;
-            current[i] = i;
-            var moveF = eval(current, random);
-            evaluations++;
-            if (FitnessComparer.IsBetter(maximization, moveF, quality)) {
-              steps++;
-              links.SetByFirst(pred, current[pred]);
-              quality = moveF;
-              change = true;
-            } else { // undo
-              current[pred] = i;
-              current[i] = next;
-            }
+            if (token.IsCancellationRequested) break;
           }
-          links.RemoveBySecond(i);
-          links.Add(i, current[i]);
+          if (lleb[i] != i)
+            groupItems.Remove(lleb[i]);
+          groupItems.Add(i);
           if (token.IsCancellationRequested) break;
         }
         if (!change || token.IsCancellationRequested) break;
@@ -153,7 +67,7 @@ namespace HeuristicLab.Algorithms.MemPR.Grouping.LocalSearch {
       return Tuple.Create(evaluations, steps);
     }
 
-    public static Tuple<int, int> OptimizeSwapOnly(IRandom random, LinearLinkage solution, ref double quality, bool maximization, Func<LinearLinkage, IRandom, double> eval, CancellationToken token) {
+    public static Tuple<int, int> OptimizeSwap(IRandom random, LinearLinkage solution, ref double quality, bool maximization, Func<LinearLinkage, IRandom, double> eval, CancellationToken token) {
       var evaluations = 0;
       var current = solution;
       if (double.IsNaN(quality)) {

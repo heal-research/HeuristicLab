@@ -86,6 +86,7 @@
     <Compile Include="DeceptiveTrapProblem.cs" />
     <Compile Include="HIFFProblem.cs" />
     <Compile Include="BinaryKnapsackProblem.cs" />
+    <Compile Include="AlternatingBitsProblem.cs" />
     <Compile Include="OneMaxProblem.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

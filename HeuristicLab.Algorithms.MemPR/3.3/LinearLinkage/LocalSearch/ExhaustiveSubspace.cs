@@ -21,7 +21,6 @@
 
 using System.Threading;
 using HeuristicLab.Algorithms.MemPR.Interfaces;
-using HeuristicLab.Algorithms.MemPR.Util;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.LinearLinkageEncoding;
@@ -32,7 +31,8 @@ namespace HeuristicLab.Algorithms.MemPR.Grouping.LocalSearch {
   [Item("Exhaustive Local (Subspace) Search (linear linkage)", "", ExcludeGenericTypeInfo = true)]
   [StorableClass]
   public class ExhaustiveSubspace<TContext> : NamedItem, ILocalSearch<TContext>
-      where TContext : ISingleSolutionHeuristicAlgorithmContext<SingleObjectiveBasicProblem<LinearLinkageEncoding>, LinearLinkage>, ILinearLinkageSubspaceContext {
+      where TContext : ISingleSolutionHeuristicAlgorithmContext<ISingleObjectiveHeuristicOptimizationProblem, LinearLinkage>,
+                       ILinearLinkageSubspaceContext, IEvaluationServiceContext<LinearLinkage> {
 
     [StorableConstructor]
     protected ExhaustiveSubspace(bool deserializing) : base(deserializing) { }
@@ -47,11 +47,10 @@ namespace HeuristicLab.Algorithms.MemPR.Grouping.LocalSearch {
     }
 
     public void Optimize(TContext context) {
-      var evalWrapper = new EvaluationWrapper<LinearLinkage>(context.Problem, context.Solution);
       var quality = context.Solution.Fitness;
       try {
         var result = ExhaustiveLocalSearch.Optimize(context.Random, context.Solution.Solution, ref quality,
-          context.Problem.Maximization, evalWrapper.Evaluate, CancellationToken.None, context.Subspace.Subspace);
+          context.Maximization, context.Evaluate, CancellationToken.None, context.Subspace.Subspace);
         context.IncrementEvaluatedSolutions(result.Item1);
         context.Iterations = result.Item2;
       } finally {

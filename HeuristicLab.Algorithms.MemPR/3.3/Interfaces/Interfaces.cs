@@ -20,6 +20,7 @@
 #endregion
  
 using System.Collections.Generic;
+using System.Threading;
 using HeuristicLab.Algorithms.MemPR.Binary;
 using HeuristicLab.Algorithms.MemPR.Grouping;
 using HeuristicLab.Algorithms.MemPR.Permutation;
@@ -62,8 +63,9 @@ namespace HeuristicLab.Algorithms.MemPR.Interfaces {
    *************************************************/
 
   public interface IHeuristicAlgorithmContext<TProblem, TSolution> : IExecutionContext
-      where TProblem : class, ISingleObjectiveProblemDefinition {
+      where TProblem : class, ISingleObjectiveHeuristicOptimizationProblem {
     TProblem Problem { get; }
+    bool Maximization { get; }
     IRandom Random { get; }
     int Iterations { get; set; }
     int EvaluatedSolutions { get; }
@@ -72,13 +74,18 @@ namespace HeuristicLab.Algorithms.MemPR.Interfaces {
     TSolution BestSolution { get; set; }
   }
 
+  public interface IEvaluationServiceContext<TSolution> : IExecutionContext {
+    double Evaluate(TSolution solution, CancellationToken token);
+    void Evaluate(ISingleObjectiveSolutionScope<TSolution> scope, CancellationToken token);
+  }
+
   public interface IPopulationBasedHeuristicAlgorithmContext<TProblem, TSolution> : IHeuristicAlgorithmContext<TProblem, TSolution>
-      where TProblem : class, ISingleObjectiveProblemDefinition {
+      where TProblem : class, ISingleObjectiveHeuristicOptimizationProblem {
     IEnumerable<ISingleObjectiveSolutionScope<TSolution>> Population { get; }
   }
 
   public interface ISingleSolutionHeuristicAlgorithmContext<TProblem, TSolution> : IHeuristicAlgorithmContext<TProblem, TSolution>
-      where TProblem : class, ISingleObjectiveProblemDefinition {
+      where TProblem : class, ISingleObjectiveHeuristicOptimizationProblem {
     ISingleObjectiveSolutionScope<TSolution> Solution { get; }
   }
 

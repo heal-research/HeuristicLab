@@ -31,7 +31,7 @@ namespace HeuristicLab.Algorithms.MemPR.Binary.SolutionModel.Univariate {
   [Item("Unbiased Univariate Model Trainer (binary)", "", ExcludeGenericTypeInfo = true)]
   [StorableClass]
   public class UniasedModelTrainer<TContext> : NamedItem, ISolutionModelTrainer<TContext>
-    where TContext : IPopulationBasedHeuristicAlgorithmContext<SingleObjectiveBasicProblem<BinaryVectorEncoding>, BinaryVector>, ISolutionModelContext<BinaryVector> {
+    where TContext : IPopulationBasedHeuristicAlgorithmContext<ISingleObjectiveHeuristicOptimizationProblem, BinaryVector>, ISolutionModelContext<BinaryVector> {
     
     [StorableConstructor]
     protected UniasedModelTrainer(bool deserializing) : base(deserializing) { }

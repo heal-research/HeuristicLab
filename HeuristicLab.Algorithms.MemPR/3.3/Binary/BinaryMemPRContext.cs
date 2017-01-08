@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using HeuristicLab.Algorithms.MemPR.Interfaces;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -30,7 +31,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Algorithms.MemPR.Binary {
   [Item("MemPR Population Context (binary)", "MemPR population context for binary encoded problems.")]
   [StorableClass]
-  public sealed class BinaryMemPRPopulationContext : MemPRPopulationContext<SingleObjectiveBasicProblem<BinaryVectorEncoding>, BinaryVector, BinaryMemPRPopulationContext, BinaryMemPRSolutionContext> {
+  public sealed class BinaryMemPRPopulationContext : MemPRPopulationContext<ISingleObjectiveHeuristicOptimizationProblem, BinaryVector, BinaryMemPRPopulationContext, BinaryMemPRSolutionContext> {
 
     [StorableConstructor]
     private BinaryMemPRPopulationContext(bool deserializing) : base(deserializing) { }
@@ -46,11 +47,19 @@ namespace HeuristicLab.Algorithms.MemPR.Binary {
     public override BinaryMemPRSolutionContext CreateSingleSolutionContext(ISingleObjectiveSolutionScope<BinaryVector> solution) {
       return new BinaryMemPRSolutionContext(this, solution);
     }
+
+    public override ISingleObjectiveSolutionScope<BinaryVector> ToScope(BinaryVector code, double fitness = double.NaN) {
+      var creator = Problem.SolutionCreator as IBinaryVectorCreator;
+      if (creator == null) throw new InvalidOperationException("MemPR (binary) context expects a problem with an IBinaryVectorCreator as solution creator.");
+      return new SingleObjectiveSolutionScope<BinaryVector>(code, creator.BinaryVectorParameter.ActualName, fitness, Problem.Evaluator.QualityParameter.ActualName) {
+        Parent = Scope
+      };
+    }
   }
 
   [Item("MemPR Solution Context (binary)", "MemPR solution context for binary encoded problems.")]
   [StorableClass]
-  public sealed class BinaryMemPRSolutionContext : MemPRSolutionContext<SingleObjectiveBasicProblem<BinaryVectorEncoding>, BinaryVector, BinaryMemPRPopulationContext, BinaryMemPRSolutionContext>, IBinaryVectorSubspaceContext {
+  public sealed class BinaryMemPRSolutionContext : MemPRSolutionContext<ISingleObjectiveHeuristicOptimizationProblem, BinaryVector, BinaryMemPRPopulationContext, BinaryMemPRSolutionContext>, IBinaryVectorSubspaceContext {
 
     [Storable]
     private IValueParameter<BinarySolutionSubspace> subspace;

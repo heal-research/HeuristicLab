@@ -37,7 +37,7 @@ namespace HeuristicLab.Algorithms.MemPR.Binary {
   [Item("MemPR (binary)", "MemPR implementation for binary vectors.")]
   [StorableClass]
   [Creatable(CreatableAttribute.Categories.PopulationBasedAlgorithms, Priority = 999)]
-  public class BinaryMemPR : MemPRAlgorithm<SingleObjectiveBasicProblem<BinaryVectorEncoding>, BinaryVector, BinaryMemPRPopulationContext, BinaryMemPRSolutionContext> {
+  public class BinaryMemPR : MemPRAlgorithm<ISingleObjectiveHeuristicOptimizationProblem, BinaryVector, BinaryMemPRPopulationContext, BinaryMemPRSolutionContext> {
     [StorableConstructor]
     protected BinaryMemPR(bool deserializing) : base(deserializing) { }
     protected BinaryMemPR(BinaryMemPR original, Cloner cloner) : base(original, cloner) { }
@@ -65,14 +65,6 @@ namespace HeuristicLab.Algorithms.MemPR.Binary {
       return 1.0 - HammingSimilarityCalculator.CalculateSimilarity(a.Solution, b.Solution);
     }
 
-    protected override ISingleObjectiveSolutionScope<BinaryVector> ToScope(BinaryVector code, double fitness = double.NaN) {
-      var creator = Problem.SolutionCreator as IBinaryVectorCreator;
-      if (creator == null) throw new InvalidOperationException("Can only solve binary encoded problems with MemPR (binary)");
-      return new SingleObjectiveSolutionScope<BinaryVector>(code, creator.BinaryVectorParameter.ActualName, fitness, Problem.Evaluator.QualityParameter.ActualName) {
-        Parent = Context.Scope
-      };
-    }
-
     protected override ISolutionSubspace<BinaryVector> CalculateSubspace(IEnumerable<BinaryVector> solutions, bool inverse = false) {
       var pop = solutions.ToList();
       var N = pop[0].Length;
@@ -91,7 +83,7 @@ namespace HeuristicLab.Algorithms.MemPR.Binary {
       var evaluations = 0;
       var subset = subspace != null ? ((BinarySolutionSubspace)subspace).Subspace : null;
       if (double.IsNaN(scope.Fitness)) {
-        Evaluate(scope, token);
+        Context.Evaluate(scope, token);
         evaluations++;
       }
       SingleObjectiveSolutionScope<BinaryVector> bestOfTheWalk = null;
@@ -103,7 +95,7 @@ namespace HeuristicLab.Algorithms.MemPR.Binary {
       if (subN == 0) return;
       var order = Enumerable.Range(0, N).Where(x => subset == null || subset[x]).Shuffle(Context.Random).ToArray();
 
-      var bound = Problem.Maximization ? Context.Population.Max(x => x.Fitness) : Context.Population.Min(x => x.Fitness);
+      var bound = Context.Maximization ? Context.Population.Max(x => x.Fitness) : Context.Population.Min(x => x.Fitness);
       var range = Math.Abs(bound - Context.LocalOptimaLevel);
       if (range.IsAlmost(0)) range = Math.Abs(bound * 0.05);
       if (range.IsAlmost(0)) { // because bound = localoptimalevel = 0
@@ -121,7 +113,7 @@ namespace HeuristicLab.Algorithms.MemPR.Binary {
           var idx = order[i];
           var before = currentScope.Fitness;
           current[idx] = !current[idx];
-          Evaluate(currentScope, token);
+          Context.Evaluate(currentScope, token);
           evaluations++;
           var after = currentScope.Fitness;
 
@@ -132,7 +124,7 @@ namespace HeuristicLab.Algorithms.MemPR.Binary {
               break;
             }
           }
-          var diff = Problem.Maximization ? after - before : before - after;
+          var diff = Context.Maximization ? after - before : before - after;
           if (diff > 0) moved = true;
           else {
             var prob = Math.Exp(diff / temp);
@@ -157,7 +149,7 @@ namespace HeuristicLab.Algorithms.MemPR.Binary {
       var evaluations = 0;
       var N = p1.Solution.Length;
 
-      var probe = ToScope((BinaryVector)p1.Solution.Clone());
+      var probe = Context.ToScope((BinaryVector)p1.Solution.Clone());
 
       var cache = new HashSet<BinaryVector>(new BinaryVectorEqualityComparer());
       cache.Add(p1.Solution);
@@ -178,7 +170,7 @@ namespace HeuristicLab.Algorithms.MemPR.Binary {
           if (cacheHits > 10) break;
           continue;
         }
-        Evaluate(probe, token);
+        Context.Evaluate(probe, token);
         evaluations++;
         cache.Add(c);
         if (offspring == null || Context.IsBetter(probe, offspring)) {
@@ -209,7 +201,7 @@ namespace HeuristicLab.Algorithms.MemPR.Binary {
         for (var i = 0; i < order.Count; i++) {
           var idx = order[i];
           child[idx] = !child[idx]; // move
-          Evaluate(childScope, token);
+          Context.Evaluate(childScope, token);
           evaluations++;
           var s = childScope.Fitness;
           childScope.Fitness = cF;

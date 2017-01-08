@@ -36,7 +36,7 @@ namespace HeuristicLab.Algorithms.MemPR.Grouping {
   [Item("MemPR (linear linkage)", "MemPR implementation for linear linkage vectors.")]
   [StorableClass]
   [Creatable(CreatableAttribute.Categories.PopulationBasedAlgorithms, Priority = 999)]
-  public class LinearLinkageMemPR : MemPRAlgorithm<SingleObjectiveBasicProblem<LinearLinkageEncoding>, LinearLinkage, LinearLinkageMemPRPopulationContext, LinearLinkageMemPRSolutionContext> {
+  public class LinearLinkageMemPR : MemPRAlgorithm<ISingleObjectiveHeuristicOptimizationProblem, LinearLinkage, LinearLinkageMemPRPopulationContext, LinearLinkageMemPRSolutionContext> {
     [StorableConstructor]
     protected LinearLinkageMemPR(bool deserializing) : base(deserializing) { }
     protected LinearLinkageMemPR(LinearLinkageMemPR original, Cloner cloner) : base(original, cloner) { }
@@ -68,14 +68,6 @@ namespace HeuristicLab.Algorithms.MemPR.Grouping {
       return 1.0 - HammingSimilarityCalculator.CalculateSimilarity(a, b);
     }
 
-    protected override ISingleObjectiveSolutionScope<LinearLinkage> ToScope(LinearLinkage code, double fitness = double.NaN) {
-      var creator = Problem.SolutionCreator as ILinearLinkageCreator;
-      if (creator == null) throw new InvalidOperationException("Can only solve linear linkage encoded problems with MemPR (linear linkage)");
-      return new SingleObjectiveSolutionScope<LinearLinkage>(code, creator.LLEParameter.ActualName, fitness, Problem.Evaluator.QualityParameter.ActualName) {
-        Parent = Context.Scope
-      };
-    }
-
     protected override ISolutionSubspace<LinearLinkage> CalculateSubspace(IEnumerable<LinearLinkage> solutions, bool inverse = false) {
       var pop = solutions.ToList();
       var N = pop[0].Length;
@@ -94,12 +86,12 @@ namespace HeuristicLab.Algorithms.MemPR.Grouping {
         ISingleObjectiveSolutionScope<LinearLinkage> scope,
         int maxEvals, CancellationToken token,
         ISolutionSubspace<LinearLinkage> sub_space = null) {
-      var maximization = Context.Problem.Maximization;
+      var maximization = Context.Maximization;
       var subspace = sub_space is LinearLinkageSolutionSubspace ? ((LinearLinkageSolutionSubspace)sub_space).Subspace : null;
       var evaluations = 0;
       var quality = scope.Fitness;
       if (double.IsNaN(quality)) {
-        Evaluate(scope, token);
+        Context.Evaluate(scope, token);
         quality = scope.Fitness;
         evaluations++;
         if (evaluations >= maxEvals) return;
@@ -167,7 +159,7 @@ namespace HeuristicLab.Algorithms.MemPR.Grouping {
               var qualityToBreak = tabu[i, next];
               move.Apply(current);
               var qualityToRestore = tabu[i, current[i]]; // current[i] is new next
-              Evaluate(currentScope, token);
+              Context.Evaluate(currentScope, token);
               evaluations++;
               var moveF = currentScope.Fitness;
               var isNotTabu = FitnessComparer.IsBetter(maximization, moveF, qualityToBreak)
@@ -254,7 +246,7 @@ namespace HeuristicLab.Algorithms.MemPR.Grouping {
 
       var cachehits = 0;
       var evaluations = 0;
-      var probe = ToScope((LinearLinkage)p1.Solution.Clone());
+      var probe = Context.ToScope((LinearLinkage)p1.Solution.Clone());
       ISingleObjectiveSolutionScope<LinearLinkage> offspring = null;
       while (evaluations < p1.Solution.Length) {
         LinearLinkage c = null;
@@ -267,7 +259,7 @@ namespace HeuristicLab.Algorithms.MemPR.Grouping {
           if (cachehits > 10) break;
           continue;
         }
-        Evaluate(probe, token);
+        Context.Evaluate(probe, token);
         evaluations++;
         cache.Add(c);
         if (offspring == null || Context.IsBetter(probe, offspring)) {
@@ -282,15 +274,6 @@ namespace HeuristicLab.Algorithms.MemPR.Grouping {
 
     protected override ISingleObjectiveSolutionScope<LinearLinkage> Link(ISingleObjectiveSolutionScope<LinearLinkage> a, ISingleObjectiveSolutionScope<LinearLinkage> b, CancellationToken token, bool delink = false) {
       var evaluations = 0;
-      if (double.IsNaN(a.Fitness)) {
-        Evaluate(a, token);
-        evaluations++;
-      }
-      if (double.IsNaN(b.Fitness)) {
-        Evaluate(b, token);
-        evaluations++;
-      }
-
       var probe = (ISingleObjectiveSolutionScope<LinearLinkage>)a.Clone();
       ISingleObjectiveSolutionScope<LinearLinkage> best = null;
       while (true) {
@@ -305,7 +288,7 @@ namespace HeuristicLab.Algorithms.MemPR.Grouping {
           // or decrease it depending on whether we do delinking or relinking
           if (delink && distAfter > distBefore || !delink && distAfter < distBefore) {
             var beforeQ = probe.Fitness;
-            Evaluate(probe, token);
+            Context.Evaluate(probe, token);
             evaluations++;
             var q = probe.Fitness;
             m.Undo(probe.Solution);

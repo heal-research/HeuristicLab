@@ -33,8 +33,8 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation.SolutionModel.Univariate {
   [Item("Biased Univariate Model Trainer (Permutation)", "", ExcludeGenericTypeInfo = true)]
   [StorableClass]
   public class BiasedModelTrainer<TContext> : ParameterizedNamedItem, ISolutionModelTrainer<TContext>
-    where TContext : IPopulationBasedHeuristicAlgorithmContext<SingleObjectiveBasicProblem<PermutationEncoding>, Encodings.PermutationEncoding.Permutation>,
-    ISolutionModelContext<Encodings.PermutationEncoding.Permutation> {
+    where TContext : IPopulationBasedHeuristicAlgorithmContext<ISingleObjectiveHeuristicOptimizationProblem, Encodings.PermutationEncoding.Permutation>,
+    ISolutionModelContext<Encodings.PermutationEncoding.Permutation>, IEvaluationServiceContext<Encodings.PermutationEncoding.Permutation> {
 
     [Storable]
     private IValueParameter<EnumValue<ModelBiasOptions>> modelBiasParameter;
@@ -58,7 +58,7 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation.SolutionModel.Univariate {
     }
 
     public void TrainModel(TContext context) {
-      context.Model = Trainer.TrainBiased(ModelBias, context.Random, context.Problem.Maximization, context.Population.Select(x => x.Solution).ToList(), context.Population.Select(x => x.Fitness).ToList(), context.Problem.Encoding.Length);
+      context.Model = Trainer.TrainBiased(ModelBias, context.Random, context.Maximization, context.Population.Select(x => x.Solution).ToList(), context.Population.Select(x => x.Fitness).ToList(), context.Population.First().Solution.Length);
     }
   }
 }

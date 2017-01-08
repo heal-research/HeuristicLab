@@ -31,7 +31,7 @@ namespace HeuristicLab.Algorithms.MemPR.Grouping.SolutionModel.Univariate {
   [Item("Unbiased Univariate Model Trainer (linear linkage)", "", ExcludeGenericTypeInfo = true)]
   [StorableClass]
   public class UniasedModelTrainer<TContext> : NamedItem, ISolutionModelTrainer<TContext>
-    where TContext : IPopulationBasedHeuristicAlgorithmContext<SingleObjectiveBasicProblem<LinearLinkageEncoding>, LinearLinkage>, ISolutionModelContext<LinearLinkage> {
+    where TContext : IPopulationBasedHeuristicAlgorithmContext<ISingleObjectiveHeuristicOptimizationProblem, LinearLinkage>, ISolutionModelContext<LinearLinkage> {
     
     [StorableConstructor]
     protected UniasedModelTrainer(bool deserializing) : base(deserializing) { }

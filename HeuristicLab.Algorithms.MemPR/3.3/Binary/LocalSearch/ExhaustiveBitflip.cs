@@ -32,7 +32,9 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Algorithms.MemPR.Binary.LocalSearch {
   [Item("Exhaustive Bitflip Local Search (binary)", "", ExcludeGenericTypeInfo = true)]
   [StorableClass]
-  public class ExhaustiveBitflip<TContext> : NamedItem, ILocalSearch<TContext> where TContext : ISingleSolutionHeuristicAlgorithmContext<SingleObjectiveBasicProblem<BinaryVectorEncoding>, BinaryVector> {
+  public class ExhaustiveBitflip<TContext> : NamedItem, ILocalSearch<TContext>
+    where TContext : ISingleSolutionHeuristicAlgorithmContext<ISingleObjectiveHeuristicOptimizationProblem, BinaryVector>,
+                     IEvaluationServiceContext<BinaryVector> {
     
     [StorableConstructor]
     protected ExhaustiveBitflip(bool deserializing) : base(deserializing) { }
@@ -47,11 +49,10 @@ namespace HeuristicLab.Algorithms.MemPR.Binary.LocalSearch {
     }
 
     public void Optimize(TContext context) {
-      var evalWrapper = new EvaluationWrapper<BinaryVector>(context.Problem, context.Solution);
       var quality = context.Solution.Fitness;
       try {
         var result = ExhaustiveBitflip.Optimize(context.Random, context.Solution.Solution, ref quality,
-          context.Problem.Maximization, evalWrapper.Evaluate, CancellationToken.None);
+          context.Maximization, context.Evaluate, CancellationToken.None);
         context.IncrementEvaluatedSolutions(result.Item1);
         context.Iterations = result.Item2;
       } finally {

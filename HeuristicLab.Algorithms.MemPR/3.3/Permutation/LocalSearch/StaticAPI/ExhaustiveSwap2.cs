@@ -30,12 +30,12 @@ using HeuristicLab.Random;
 namespace HeuristicLab.Algorithms.MemPR.Permutation.LocalSearch {
   public static class ExhaustiveSwap2 {
     public static Tuple<int, int> HillClimb(IRandom random, Encodings.PermutationEncoding.Permutation perm,
-      ref double quality, bool maximization, Func<Encodings.PermutationEncoding.Permutation, double> eval,
+      ref double quality, bool maximization, Func<Encodings.PermutationEncoding.Permutation, CancellationToken, double> eval,
       CancellationToken token, bool[,] subspace = null) {
       var evaluations = 0;
       var current = perm;
       if (double.IsNaN(quality)) {
-        quality = eval(current);
+        quality = eval(current, token);
         evaluations++;
       }
       Swap2Move lastSuccessMove = null;
@@ -54,7 +54,7 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation.LocalSearch {
           var h = current[swap.Index1];
           current[swap.Index1] = current[swap.Index2];
           current[swap.Index2] = h;
-          var q = eval(current);
+          var q = eval(current, token);
           evaluations++;
           if (FitnessComparer.IsBetter(maximization, q, quality)) {
             steps++;

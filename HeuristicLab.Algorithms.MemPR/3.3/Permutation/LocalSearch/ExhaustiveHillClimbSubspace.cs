@@ -33,7 +33,7 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation.LocalSearch {
   [StorableClass]
   public class ExhaustiveHillClimbSubspace<TContext> : NamedItem, ILocalSearch<TContext>
       where TContext : ISingleSolutionHeuristicAlgorithmContext<SingleObjectiveBasicProblem<PermutationEncoding>, Encodings.PermutationEncoding.Permutation>,
-                       IPermutationSubspaceContext {
+                       IPermutationSubspaceContext, IEvaluationServiceContext<Encodings.PermutationEncoding.Permutation> {
 
     [StorableConstructor]
     protected ExhaustiveHillClimbSubspace(bool deserializing) : base(deserializing) { }
@@ -48,11 +48,10 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation.LocalSearch {
     }
 
     public void Optimize(TContext context) {
-      var evalWrapper = new EvaluationWrapper<Encodings.PermutationEncoding.Permutation>(context.Problem, context.Solution);
       var quality = context.Solution.Fitness;
       try {
         var result = Exhaustive.HillClimb(context.Random, context.Solution.Solution, ref quality,
-          context.Problem.Maximization, evalWrapper.Evaluate, CancellationToken.None, context.Subspace.Subspace);
+          context.Problem.Maximization, context.Evaluate, CancellationToken.None, context.Subspace.Subspace);
         context.IncrementEvaluatedSolutions(result.Item1);
         context.Iterations = result.Item2;
       } finally {

@@ -33,7 +33,8 @@ namespace HeuristicLab.Algorithms.MemPR.Binary.LocalSearch {
   [Item("Exhaustive Bitflip Local (Subspace) Search (binary)", "", ExcludeGenericTypeInfo = true)]
   [StorableClass]
   public class ExhaustiveBitflipSubspace<TContext> : NamedItem, ILocalSearch<TContext>
-      where TContext : ISingleSolutionHeuristicAlgorithmContext<SingleObjectiveBasicProblem<BinaryVectorEncoding>, BinaryVector>, IBinaryVectorSubspaceContext {
+      where TContext : ISingleSolutionHeuristicAlgorithmContext<SingleObjectiveBasicProblem<BinaryVectorEncoding>, BinaryVector>,
+                       IBinaryVectorSubspaceContext, IEvaluationServiceContext<BinaryVector> {
 
     [StorableConstructor]
     protected ExhaustiveBitflipSubspace(bool deserializing) : base(deserializing) { }
@@ -48,11 +49,10 @@ namespace HeuristicLab.Algorithms.MemPR.Binary.LocalSearch {
     }
 
     public void Optimize(TContext context) {
-      var evalWrapper = new EvaluationWrapper<BinaryVector>(context.Problem, context.Solution);
       var quality = context.Solution.Fitness;
       try {
         var result = ExhaustiveBitflip.Optimize(context.Random, context.Solution.Solution, ref quality,
-          context.Problem.Maximization, evalWrapper.Evaluate, CancellationToken.None, context.Subspace.Subspace);
+          context.Problem.Maximization, context.Evaluate, CancellationToken.None, context.Subspace.Subspace);
         context.IncrementEvaluatedSolutions(result.Item1);
         context.Iterations = result.Item2;
       } finally {

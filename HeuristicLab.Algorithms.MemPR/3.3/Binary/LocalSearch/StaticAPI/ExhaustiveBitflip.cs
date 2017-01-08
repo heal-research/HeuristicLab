@@ -29,8 +29,8 @@ using HeuristicLab.Random;
 
 namespace HeuristicLab.Encodings.Binary.LocalSearch {
   public static class ExhaustiveBitflip {
-    public static Tuple<int, int> Optimize(IRandom random, BinaryVector solution, ref double quality, bool maximization, Func<BinaryVector, double> evalFunc, CancellationToken token, bool[] subspace = null) {
-      if (double.IsNaN(quality)) quality = evalFunc(solution);
+    public static Tuple<int, int> Optimize(IRandom random, BinaryVector solution, ref double quality, bool maximization, Func<BinaryVector, CancellationToken, double> evalFunc, CancellationToken token, bool[] subspace = null) {
+      if (double.IsNaN(quality)) quality = evalFunc(solution, token);
       var improved = false;
       var order = Enumerable.Range(0, solution.Length).Shuffle(random).ToArray();
       var lastImp = -1;
@@ -46,7 +46,7 @@ namespace HeuristicLab.Encodings.Binary.LocalSearch {
           if (subspace != null && !subspace[idx]) continue;
           // bitflip the solution
           solution[idx] = !solution[idx];
-          var after = evalFunc(solution);
+          var after = evalFunc(solution, token);
           evaluations++;
           if (FitnessComparer.IsBetter(maximization, after, quality)) {
             steps++;

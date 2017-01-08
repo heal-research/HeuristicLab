@@ -38,7 +38,7 @@ namespace HeuristicLab.Algorithms.MemPR {
   [Item("MemPR Algorithm", "Base class for MemPR algorithms")]
   [StorableClass]
   public abstract class MemPRAlgorithm<TProblem, TSolution, TPopulationContext, TSolutionContext> : BasicAlgorithm, INotifyPropertyChanged
-      where TProblem : class, IItem, ISingleObjectiveHeuristicOptimizationProblem, ISingleObjectiveProblemDefinition
+      where TProblem : class, IItem, ISingleObjectiveHeuristicOptimizationProblem
       where TSolution : class, IItem
       where TPopulationContext : MemPRPopulationContext<TProblem, TSolution, TPopulationContext, TSolutionContext>, new()
       where TSolutionContext : MemPRSolutionContext<TProblem, TSolution, TPopulationContext, TSolutionContext> {
@@ -424,12 +424,12 @@ namespace HeuristicLab.Algorithms.MemPR {
         } else res.Value = sol;
       }
 
-      RunOperator(Analyzer, Context.Scope, token);
+      Context.RunOperator(Analyzer, Context.Scope, token);
     }
 
     protected bool Replace(ISingleObjectiveSolutionScope<TSolution> child, CancellationToken token) {
       if (double.IsNaN(child.Fitness)) {
-        Evaluate(child, token);
+        Context.Evaluate(child, token);
         Context.IncrementEvaluatedSolutions(1);
       }
       if (Context.IsBetter(child.Fitness, Context.BestQuality)) {
@@ -523,20 +523,12 @@ namespace HeuristicLab.Algorithms.MemPR {
     }
     protected abstract bool Eq(TSolution a, TSolution b);
     protected abstract double Dist(ISingleObjectiveSolutionScope<TSolution> a, ISingleObjectiveSolutionScope<TSolution> b);
-    protected abstract ISingleObjectiveSolutionScope<TSolution> ToScope(TSolution code, double fitness = double.NaN);
     protected abstract ISolutionSubspace<TSolution> CalculateSubspace(IEnumerable<TSolution> solutions, bool inverse = false);
-    protected virtual void Evaluate(ISingleObjectiveSolutionScope<TSolution> scope, CancellationToken token) {
-      var prob = Problem as ISingleObjectiveProblemDefinition;
-      if (prob != null) {
-        var ind = new SingleEncodingIndividual(prob.Encoding, scope);
-        scope.Fitness = prob.Evaluate(ind, Context.Random);
-      } else RunOperator(Problem.Evaluator, scope, token);
-    }
 
     #region Create
     protected virtual ISingleObjectiveSolutionScope<TSolution> Create(CancellationToken token) {
-      var child = ToScope(null);
-      RunOperator(Problem.SolutionCreator, child, token);
+      var child = Context.ToScope(null);
+      Context.RunOperator(Problem.SolutionCreator, child, token);
       return child;
     }
     #endregion
@@ -544,7 +536,7 @@ namespace HeuristicLab.Algorithms.MemPR {
     #region Improve
     protected virtual int HillClimb(ISingleObjectiveSolutionScope<TSolution> scope, CancellationToken token, ISolutionSubspace<TSolution> subspace = null) {
       if (double.IsNaN(scope.Fitness)) {
-        Evaluate(scope, token);
+        Context.Evaluate(scope, token);
         Context.IncrementEvaluatedSolutions(1);
       }
       var before = scope.Fitness;
@@ -559,7 +551,7 @@ namespace HeuristicLab.Algorithms.MemPR {
 
     protected virtual void AdaptiveClimb(ISingleObjectiveSolutionScope<TSolution> scope, int maxEvals, CancellationToken token, ISolutionSubspace<TSolution> subspace = null) {
       if (double.IsNaN(scope.Fitness)) {
-        Evaluate(scope, token);
+        Context.Evaluate(scope, token);
         Context.IncrementEvaluatedSolutions(1);
       }
       var before = scope.Fitness;
@@ -584,11 +576,11 @@ namespace HeuristicLab.Algorithms.MemPR {
       var p2 = Context.AtPopulation(i2);
 
       if (double.IsNaN(p1.Fitness)) {
-        Evaluate(p1, token);
+        Context.Evaluate(p1, token);
         Context.IncrementEvaluatedSolutions(1);
       }
       if (double.IsNaN(p2.Fitness)) {
-        Evaluate(p2, token);
+        Context.Evaluate(p2, token);
         Context.IncrementEvaluatedSolutions(1);
       }
 
@@ -596,7 +588,7 @@ namespace HeuristicLab.Algorithms.MemPR {
         var offspring = Breed(p1, p2, token);
 
         if (double.IsNaN(offspring.Fitness)) {
-          Evaluate(offspring, token);
+          Context.Evaluate(offspring, token);
           Context.IncrementEvaluatedSolutions(1);
         }
 
@@ -629,7 +621,7 @@ namespace HeuristicLab.Algorithms.MemPR {
 
       var link = PerformRelinking(p1, p2, token, delink: false);
       if (double.IsNaN(link.Fitness)) {
-        Evaluate(link, token);
+        Context.Evaluate(link, token);
         Context.IncrementEvaluatedSolutions(1);
       }
       // new best solutions are improved using hill climbing in full solution space
@@ -653,7 +645,7 @@ namespace HeuristicLab.Algorithms.MemPR {
 
       var link = PerformRelinking(p1, p2, token, delink: true);
       if (double.IsNaN(link.Fitness)) {
-        Evaluate(link, token);
+        Context.Evaluate(link, token);
         Context.IncrementEvaluatedSolutions(1);
       }
       // new best solutions are improved using hill climbing in full solution space
@@ -667,7 +659,7 @@ namespace HeuristicLab.Algorithms.MemPR {
       var relink = Link(a, b, token, delink);
 
       if (double.IsNaN(relink.Fitness)) {
-        Evaluate(relink, token);
+        Context.Evaluate(relink, token);
         Context.IncrementEvaluatedSolutions(1);
       }
 
@@ -695,8 +687,8 @@ namespace HeuristicLab.Algorithms.MemPR {
         ISingleObjectiveSolutionScope<TSolution> bestSample = null;
         var tries = 1;
         for (; tries < 100; tries++) {
-          var sample = ToScope(Context.Model.Sample());
-          Evaluate(sample, token);
+          var sample = Context.ToScope(Context.Model.Sample());
+          Context.Evaluate(sample, token);
           if (bestSample == null || Context.IsBetter(sample, bestSample)) {
             bestSample = sample;
             if (Context.Population.Any(x => !Context.IsBetter(x, bestSample))) break;
@@ -713,10 +705,11 @@ namespace HeuristicLab.Algorithms.MemPR {
     #endregion
 
     protected virtual bool Terminate() {
+      var maximization = ((IValueParameter<BoolValue>)Problem.MaximizationParameter).Value.Value;
       return MaximumEvaluations.HasValue && Context.EvaluatedSolutions >= MaximumEvaluations.Value
         || MaximumExecutionTime.HasValue && ExecutionTime >= MaximumExecutionTime.Value
-        || TargetQuality.HasValue && (Problem.Maximization && Context.BestQuality >= TargetQuality.Value
-                                  || !Problem.Maximization && Context.BestQuality <= TargetQuality.Value);
+        || TargetQuality.HasValue && (maximization && Context.BestQuality >= TargetQuality.Value
+                                  || !maximization && Context.BestQuality <= TargetQuality.Value);
     }
 
     public event PropertyChangedEventHandler PropertyChanged;
@@ -724,33 +717,5 @@ namespace HeuristicLab.Algorithms.MemPR {
       var handler = PropertyChanged;
       if (handler != null) handler(this, new PropertyChangedEventArgs(property));
     }
-
-    #region Engine Helper
-    protected void RunOperator(IOperator op, IScope scope, CancellationToken cancellationToken) {
-      var stack = new Stack<IOperation>();
-      stack.Push(Context.CreateChildOperation(op, scope));
-
-      while (stack.Count > 0) {
-        cancellationToken.ThrowIfCancellationRequested();
-
-        var next = stack.Pop();
-        if (next is OperationCollection) {
-          var coll = (OperationCollection)next;
-          for (int i = coll.Count - 1; i >= 0; i--)
-            if (coll[i] != null) stack.Push(coll[i]);
-        } else if (next is IAtomicOperation) {
-          var operation = (IAtomicOperation)next;
-          try {
-            next = operation.Operator.Execute((IExecutionContext)operation, cancellationToken);
-          } catch (Exception ex) {
-            stack.Push(operation);
-            if (ex is OperationCanceledException) throw ex;
-            else throw new OperatorExecutionException(operation.Operator, ex);
-          }
-          if (next != null) stack.Push(next);
-        }
-      }
-    }
-    #endregion
   }
 }

@@ -33,7 +33,7 @@ namespace HeuristicLab.Algorithms.MemPR.Binary.SolutionModel.Univariate {
   [Item("Biased Univariate Model Trainer (binary)", "", ExcludeGenericTypeInfo = true)]
   [StorableClass]
   public class BiasedModelTrainer<TContext> : ParameterizedNamedItem, ISolutionModelTrainer<TContext>
-    where TContext : IPopulationBasedHeuristicAlgorithmContext<SingleObjectiveBasicProblem<BinaryVectorEncoding>, BinaryVector>, ISolutionModelContext<BinaryVector> {
+    where TContext : IPopulationBasedHeuristicAlgorithmContext<ISingleObjectiveHeuristicOptimizationProblem, BinaryVector>, ISolutionModelContext<BinaryVector> {
     
     [Storable]
     private IValueParameter<EnumValue<ModelBiasOptions>> modelBiasParameter;
@@ -57,7 +57,7 @@ namespace HeuristicLab.Algorithms.MemPR.Binary.SolutionModel.Univariate {
     }
 
     public void TrainModel(TContext context) {
-      context.Model = Trainer.TrainBiased(ModelBias, context.Random, context.Problem.Maximization, context.Population.Select(x => x.Solution), context.Population.Select(x => x.Fitness));
+      context.Model = Trainer.TrainBiased(ModelBias, context.Random, context.Maximization, context.Population.Select(x => x.Solution), context.Population.Select(x => x.Fitness));
     }
   }
 }

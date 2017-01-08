@@ -40,8 +40,8 @@ namespace HeuristicLab.Algorithms.MemPR {
   [Item("MemPRContext", "Abstract base class for MemPR contexts.")]
   [StorableClass]
   public abstract class MemPRPopulationContext<TProblem, TSolution, TPopulationContext, TSolutionContext> : ParameterizedNamedItem,
-    IPopulationBasedHeuristicAlgorithmContext<TProblem, TSolution>, ISolutionModelContext<TSolution>
-      where TProblem : class, IItem, ISingleObjectiveProblemDefinition
+    IPopulationBasedHeuristicAlgorithmContext<TProblem, TSolution>, ISolutionModelContext<TSolution>, IEvaluationServiceContext<TSolution>
+      where TProblem : class, IItem, ISingleObjectiveHeuristicOptimizationProblem
       where TSolution : class, IItem
       where TPopulationContext : MemPRPopulationContext<TProblem, TSolution, TPopulationContext, TSolutionContext>
       where TSolutionContext : MemPRSolutionContext<TProblem, TSolution, TPopulationContext, TSolutionContext> {
@@ -68,6 +68,9 @@ namespace HeuristicLab.Algorithms.MemPR {
     public TProblem Problem {
       get { return problem.Value; }
       set { problem.Value = value; }
+    }
+    public bool Maximization {
+      get { return ((IValueParameter<BoolValue>)Problem.MaximizationParameter).Value.Value; }
     }
 
     [Storable]
@@ -181,7 +184,7 @@ namespace HeuristicLab.Algorithms.MemPR {
       return scope.SubScopes[index] as ISingleObjectiveSolutionScope<TSolution>;
     }
     public void SortPopulation() {
-      scope.SubScopes.Replace(scope.SubScopes.OfType<ISingleObjectiveSolutionScope<TSolution>>().OrderBy(x => Problem.Maximization ? -x.Fitness : x.Fitness).ToList());
+      scope.SubScopes.Replace(scope.SubScopes.OfType<ISingleObjectiveSolutionScope<TSolution>>().OrderBy(x => Maximization ? -x.Fitness : x.Fitness).ToList());
     }
     public int PopulationCount {
       get { return scope.SubScopes.Count; }
@@ -295,7 +298,7 @@ namespace HeuristicLab.Algorithms.MemPR {
       Parameters.Add(iterations = new ValueParameter<IntValue>("Iterations", new IntValue(0)));
       Parameters.Add(evaluatedSolutions = new ValueParameter<IntValue>("EvaluatedSolutions", new IntValue(0)));
       Parameters.Add(bestQuality = new ValueParameter<DoubleValue>("BestQuality", new DoubleValue(double.NaN)));
-      Parameters.Add(bestSolution = new ValueParameter<TSolution>("BestSolution"));
+      Parameters.Add(bestSolution = new ValueParameter<TSolution>("BestFoundSolution"));
       Parameters.Add(localSearchEvaluations = new ValueParameter<IntValue>("LocalSearchEvaluations", new IntValue(0)));
       Parameters.Add(localOptimaLevel = new ValueParameter<DoubleValue>("LocalOptimaLevel", new DoubleValue(0)));
       Parameters.Add(byBreeding = new ValueParameter<IntValue>("ByBreeding", new IntValue(0)));
@@ -312,6 +315,24 @@ namespace HeuristicLab.Algorithms.MemPR {
       samplingStat = new List<Tuple<double, double>>();
       hillclimbingStat = new List<Tuple<double, double>>();
       adaptivewalkingStat = new List<Tuple<double, double>>();
+    }
+
+    public abstract ISingleObjectiveSolutionScope<TSolution> ToScope(TSolution code, double fitness = double.NaN);
+
+    public virtual double Evaluate(TSolution solution, CancellationToken token) {
+      var solScope = ToScope(solution);
+      Evaluate(solScope, token);
+      return solScope.Fitness;
+    }
+
+    public virtual void Evaluate(ISingleObjectiveSolutionScope<TSolution> solScope, CancellationToken token) {
+      var pdef = Problem as ISingleObjectiveProblemDefinition;
+      if (pdef != null) {
+        var ind = new SingleEncodingIndividual(pdef.Encoding, solScope);
+        solScope.Fitness = pdef.Evaluate(ind, Random);
+      } else {
+        RunOperator(Problem.Evaluator, solScope, token);
+      }
     }
 
     public abstract TSolutionContext CreateSingleSolutionContext(ISingleObjectiveSolutionScope<TSolution> solution);
@@ -508,9 +529,9 @@ namespace HeuristicLab.Algorithms.MemPR {
       var mean = model.GetEstimatedValues(ds, new[] { 0 }).Single();
       var sdev = Math.Sqrt(model.GetEstimatedVariances(ds, new[] { 0 }).Single());
 
-      var goal = Problem.Maximization ? Population.Min(x => x.Fitness) : Population.Max(x => x.Fitness);
+      var goal = Maximization ? Population.Min(x => x.Fitness) : Population.Max(x => x.Fitness);
       var z = (goal - mean) / sdev;
-      return Problem.Maximization ? 1.0 - Phi(z) /* P(X >= z) */ : Phi(z); // P(X <= z)
+      return Maximization ? 1.0 - Phi(z) /* P(X >= z) */ : Phi(z); // P(X <= z)
     }
 
     private double ProbabilityAccept3dModel(double a, double b, IConfidenceRegressionModel model) {
@@ -518,9 +539,9 @@ namespace HeuristicLab.Algorithms.MemPR {
       var mean = model.GetEstimatedValues(ds, new[] { 0 }).Single();
       var sdev = Math.Sqrt(model.GetEstimatedVariances(ds, new[] { 0 }).Single());
 
-      var goal = Problem.Maximization ? Population.Min(x => x.Fitness) : Population.Max(x => x.Fitness);
+      var goal = Maximization ? Population.Min(x => x.Fitness) : Population.Max(x => x.Fitness);
       var z = (goal - mean) / sdev;
-      return Problem.Maximization ? 1.0 - Phi(z) /* P(X >= z) */ : Phi(z); // P(X <= z)
+      return Maximization ? 1.0 - Phi(z) /* P(X >= z) */ : Phi(z); // P(X <= z)
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -530,8 +551,8 @@ namespace HeuristicLab.Algorithms.MemPR {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IsBetter(double a, double b) {
       return double.IsNaN(b) && !double.IsNaN(a)
-        || Problem.Maximization && a > b
-        || !Problem.Maximization && a < b;
+        || Maximization && a > b
+        || !Maximization && a < b;
     }
 
     public void AddBreedingResult(ISingleObjectiveSolutionScope<TSolution> a, ISingleObjectiveSolutionScope<TSolution> b, ISingleObjectiveSolutionScope<TSolution> child) {
@@ -609,13 +630,41 @@ namespace HeuristicLab.Algorithms.MemPR {
       return 0.5 * (1.0 + sign * y);
     }
     #endregion
+
+    #region Engine Helper
+    public void RunOperator(IOperator op, IScope scope, CancellationToken cancellationToken) {
+      var stack = new Stack<IOperation>();
+      stack.Push(CreateChildOperation(op, scope));
+
+      while (stack.Count > 0) {
+        cancellationToken.ThrowIfCancellationRequested();
+
+        var next = stack.Pop();
+        if (next is OperationCollection) {
+          var coll = (OperationCollection)next;
+          for (int i = coll.Count - 1; i >= 0; i--)
+            if (coll[i] != null) stack.Push(coll[i]);
+        } else if (next is IAtomicOperation) {
+          var operation = (IAtomicOperation)next;
+          try {
+            next = operation.Operator.Execute((IExecutionContext)operation, cancellationToken);
+          } catch (Exception ex) {
+            stack.Push(operation);
+            if (ex is OperationCanceledException) throw ex;
+            else throw new OperatorExecutionException(operation.Operator, ex);
+          }
+          if (next != null) stack.Push(next);
+        }
+      }
+    }
+    #endregion
   }
 
   [Item("SingleSolutionMemPRContext", "Abstract base class for single solution MemPR contexts.")]
   [StorableClass]
   public abstract class MemPRSolutionContext<TProblem, TSolution, TContext, TSolutionContext> : ParameterizedNamedItem,
-    ISingleSolutionHeuristicAlgorithmContext<TProblem, TSolution>
-      where TProblem : class, IItem, ISingleObjectiveProblemDefinition
+    ISingleSolutionHeuristicAlgorithmContext<TProblem, TSolution>, IEvaluationServiceContext<TSolution>
+      where TProblem : class, IItem, ISingleObjectiveHeuristicOptimizationProblem
       where TSolution : class, IItem
       where TContext : MemPRPopulationContext<TProblem, TSolution, TContext, TSolutionContext>
       where TSolutionContext : MemPRSolutionContext<TProblem, TSolution, TContext, TSolutionContext> {
@@ -638,6 +687,9 @@ namespace HeuristicLab.Algorithms.MemPR {
 
     public TProblem Problem {
       get { return parent.Problem; }
+    }
+    public bool Maximization {
+      get { return parent.Maximization; }
     }
 
     public double BestQuality {
@@ -691,6 +743,13 @@ namespace HeuristicLab.Algorithms.MemPR {
     public void IncrementEvaluatedSolutions(int byEvaluations) {
       if (byEvaluations < 0) throw new ArgumentException("Can only increment and not decrement evaluated solutions.");
       EvaluatedSolutions += byEvaluations;
+    }
+    public virtual double Evaluate(TSolution solution, CancellationToken token) {
+      return parent.Evaluate(solution, token);
+    }
+
+    public virtual void Evaluate(ISingleObjectiveSolutionScope<TSolution> solScope, CancellationToken token) {
+      parent.Evaluate(solScope, token);
     }
 
     #region IExecutionContext members

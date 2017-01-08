@@ -32,7 +32,7 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation.SolutionModel.Univariate {
   [Item("Unbiased Univariate Model Trainer (Permutation)", "", ExcludeGenericTypeInfo = true)]
   [StorableClass]
   public class UnbiasedModelTrainer<TContext> : NamedItem, ISolutionModelTrainer<TContext>
-    where TContext : IPopulationBasedHeuristicAlgorithmContext<SingleObjectiveBasicProblem<PermutationEncoding>, Encodings.PermutationEncoding.Permutation>,
+    where TContext : IPopulationBasedHeuristicAlgorithmContext<ISingleObjectiveHeuristicOptimizationProblem, Encodings.PermutationEncoding.Permutation>,
     ISolutionModelContext<Encodings.PermutationEncoding.Permutation> {
     
     [StorableConstructor]
@@ -48,7 +48,7 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation.SolutionModel.Univariate {
     }
 
     public void TrainModel(TContext context) {
-      context.Model = Trainer.TrainUnbiased(context.Random, context.Population.Select(x => x.Solution).ToList(), context.Problem.Encoding.Length);
+      context.Model = Trainer.TrainUnbiased(context.Random, context.Population.Select(x => x.Solution).ToList(), context.Population.First().Solution.Length);
     }
   }
 }

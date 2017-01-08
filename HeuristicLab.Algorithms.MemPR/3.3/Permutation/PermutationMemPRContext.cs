@@ -19,6 +19,8 @@
  */
 #endregion
 
+using System;
+using System.Runtime.Remoting.Contexts;
 using HeuristicLab.Algorithms.MemPR.Interfaces;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -30,7 +32,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Algorithms.MemPR.Permutation {
   [Item("MemPR Population Context (permutation)", "MemPR population context for permutation encoded problems.")]
   [StorableClass]
-  public sealed class PermutationMemPRPopulationContext : MemPRPopulationContext<SingleObjectiveBasicProblem<PermutationEncoding>, Encodings.PermutationEncoding.Permutation, PermutationMemPRPopulationContext, PermutationMemPRSolutionContext> {
+  public sealed class PermutationMemPRPopulationContext : MemPRPopulationContext<ISingleObjectiveHeuristicOptimizationProblem, Encodings.PermutationEncoding.Permutation, PermutationMemPRPopulationContext, PermutationMemPRSolutionContext> {
 
     [StorableConstructor]
     private PermutationMemPRPopulationContext(bool deserializing) : base(deserializing) { }
@@ -46,11 +48,19 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation {
     public override PermutationMemPRSolutionContext CreateSingleSolutionContext(ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> solution) {
       return new PermutationMemPRSolutionContext(this, solution);
     }
+
+    public override ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> ToScope(Encodings.PermutationEncoding.Permutation code, double fitness = double.NaN) {
+      var creator = Problem.SolutionCreator as IPermutationCreator;
+      if (creator == null) throw new InvalidOperationException("Can only solve binary encoded problems with MemPR (binary)");
+      return new SingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation>(code, creator.PermutationParameter.ActualName, fitness, Problem.Evaluator.QualityParameter.ActualName) {
+        Parent = Scope
+      };
+    }
   }
 
   [Item("MemPR Solution Context (permutation)", "MemPR solution context for permutation encoded problems.")]
   [StorableClass]
-  public sealed class PermutationMemPRSolutionContext : MemPRSolutionContext<SingleObjectiveBasicProblem<PermutationEncoding>, Encodings.PermutationEncoding.Permutation, PermutationMemPRPopulationContext, PermutationMemPRSolutionContext>, IPermutationSubspaceContext {
+  public sealed class PermutationMemPRSolutionContext : MemPRSolutionContext<ISingleObjectiveHeuristicOptimizationProblem, Encodings.PermutationEncoding.Permutation, PermutationMemPRPopulationContext, PermutationMemPRSolutionContext>, IPermutationSubspaceContext {
 
     [Storable]
     private IValueParameter<PermutationSolutionSubspace> subspace;

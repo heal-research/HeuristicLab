@@ -33,9 +33,9 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation.LocalSearch {
 #endif
 
     public static Tuple<int, int> HillClimb(IRandom random, Encodings.PermutationEncoding.Permutation perm,
-      ref double quality, bool maximization, Func<Encodings.PermutationEncoding.Permutation, double> eval,
+      ref double quality, bool maximization, Func<Encodings.PermutationEncoding.Permutation, CancellationToken, double> eval,
       CancellationToken token, bool[,] subspace = null) {
-      if (double.IsNaN(quality)) quality = eval(perm);
+      if (double.IsNaN(quality)) quality = eval(perm, token);
       Tuple<int, int> changes;
       switch (perm.PermutationType) {
         case PermutationTypes.Absolute:
