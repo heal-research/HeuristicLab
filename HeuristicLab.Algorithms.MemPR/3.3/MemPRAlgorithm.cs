@@ -659,9 +659,7 @@ namespace HeuristicLab.Algorithms.MemPR {
       // new best solutions are improved using hill climbing in full solution space
       if (Context.Population.All(p => Context.IsBetter(link, p)))
         HillClimb(link, token);
-      /*else if (!Eq(link, p1) && !Eq(link, p2) && Context.HillclimbingSuited(link.Fitness))
-        HillClimb(link, token, CalculateSubspace(new[] { p1.Solution, p2.Solution }, inverse: false));*/
-
+      // intentionally not making hill climbing after delinking in sub-space
       return link;
     }
 

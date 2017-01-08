@@ -26,6 +26,7 @@ using System.Threading;
 using HeuristicLab.Algorithms.MemPR.Interfaces;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -155,83 +156,43 @@ namespace HeuristicLab.Algorithms.MemPR.Binary {
     protected override ISingleObjectiveSolutionScope<BinaryVector> Breed(ISingleObjectiveSolutionScope<BinaryVector> p1, ISingleObjectiveSolutionScope<BinaryVector> p2, CancellationToken token) {
       var evaluations = 0;
       var N = p1.Solution.Length;
-      if (double.IsNaN(p1.Fitness)) {
-        Evaluate(p1, token);
-        evaluations++;
-      }
-      if (double.IsNaN(p2.Fitness)) {
-        Evaluate(p2, token);
-        evaluations++;
-      }
-      var better = Problem.Maximization ? Math.Max(p1.Fitness, p2.Fitness)
-                                        : Math.Min(p1.Fitness, p2.Fitness);
 
+      var probe = ToScope((BinaryVector)p1.Solution.Clone());
 
       var cache = new HashSet<BinaryVector>(new BinaryVectorEqualityComparer());
       cache.Add(p1.Solution);
       cache.Add(p2.Solution);
 
-      ISingleObjectiveSolutionScope<BinaryVector> offspring = null;
-      var probe = ToScope(new BinaryVector(N));
-      // first try all possible combinations of 1-point crossover
-      /*var order = Enumerable.Range(1, N - 2).Where(x => p1.Solution[x] != p2.Solution[x]).Shuffle(Context.Random).ToList();
-      foreach (var b in order) {
-        for (var i = 0; i <= b; i++)
-          probe.Solution[i] = p1.Solution[i];
-        for (var i = b + 1; i < probe.Solution.Length; i++)
-          probe.Solution[i] = p2.Solution[i];
-
-        // only add to cache, because all solutions must be unique
-        if (cache.Contains(probe.Solution)) continue;
-        cache.Add(probe.Solution);
-        Evaluate(probe, token);
-        evaluations++;
-        if (offspring == null || Context.IsBetter(probe, offspring)) {
-          // immediately return upon finding a better offspring than better parent
-          if (Context.IsBetter(probe.Fitness, better)) {
-            Context.IncrementEvaluatedSolutions(evaluations);
-            return probe;
-          }
-          offspring = (ISingleObjectiveSolutionScope<BinaryVector>)probe.Clone();
-        }
-      }*/
-
       var cacheHits = 0;
-      // if we got some evaluations left, try uniform crossover
-      while (evaluations < Math.Min(Context.LocalSearchEvaluations, N)) {
-        probe.Solution = UniformCrossover.Apply(Context.Random, p1.Solution, p2.Solution);
-        if (cache.Contains(probe.Solution)) {
+      ISingleObjectiveSolutionScope<BinaryVector> offspring = null;
+      while (evaluations < N) {
+        BinaryVector c = null;
+        var xochoice = Context.Random.Next(3);
+        switch (xochoice) {
+          case 0: c = NPointCrossover.Apply(Context.Random, p1.Solution, p2.Solution, new IntValue(1)); break;
+          case 1: c = NPointCrossover.Apply(Context.Random, p1.Solution, p2.Solution, new IntValue(2)); break;
+          case 2: c = UniformCrossover.Apply(Context.Random, p1.Solution, p2.Solution); break;
+        }
+        if (cache.Contains(c)) {
           cacheHits++;
-          if (cacheHits > 10) break; // variability of uniform crossover is too low -> parents are too similar
+          if (cacheHits > 10) break;
           continue;
-        } else cache.Add(probe.Solution);
+        }
         Evaluate(probe, token);
         evaluations++;
+        cache.Add(c);
         if (offspring == null || Context.IsBetter(probe, offspring)) {
-          // immediately return upon finding a better offspring than better parent
-          if (Context.IsBetter(probe.Fitness, better)) {
-            Context.IncrementEvaluatedSolutions(evaluations);
-            return probe;
-          }
-          offspring = (ISingleObjectiveSolutionScope<BinaryVector>)probe.Clone();
+          offspring = probe;
+          if (Context.IsBetter(offspring, p1) && Context.IsBetter(offspring, p2))
+            break;
         }
       }
       Context.IncrementEvaluatedSolutions(evaluations);
-      // return best offspring found
       return offspring ?? probe;
     }
 
     protected override ISingleObjectiveSolutionScope<BinaryVector> Link(ISingleObjectiveSolutionScope<BinaryVector> a, ISingleObjectiveSolutionScope<BinaryVector> b, CancellationToken token, bool delink = false) {
       var evaluations = 0;
-      if (double.IsNaN(a.Fitness)) {
-        Evaluate(a, token);
-        evaluations++;
-      }
-      if (double.IsNaN(b.Fitness)) {
-        Evaluate(b, token);
-        evaluations++;
-      }
-
       var childScope = (ISingleObjectiveSolutionScope<BinaryVector>)a.Clone();
       var child = childScope.Solution;
       ISingleObjectiveSolutionScope<BinaryVector> best = null;

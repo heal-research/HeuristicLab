@@ -247,29 +247,37 @@ namespace HeuristicLab.Algorithms.MemPR.Grouping {
       }
     }
 
-    protected override ISingleObjectiveSolutionScope<LinearLinkage> Breed(ISingleObjectiveSolutionScope<LinearLinkage> p1Scope, ISingleObjectiveSolutionScope<LinearLinkage> p2Scope, CancellationToken token) {
+    protected override ISingleObjectiveSolutionScope<LinearLinkage> Breed(ISingleObjectiveSolutionScope<LinearLinkage> p1, ISingleObjectiveSolutionScope<LinearLinkage> p2, CancellationToken token) {
       var cache = new HashSet<LinearLinkage>(new LinearLinkageEqualityComparer());
+      cache.Add(p1.Solution);
+      cache.Add(p2.Solution);
+
       var cachehits = 0;
-      var evaluations = 1;
+      var evaluations = 0;
+      var probe = ToScope((LinearLinkage)p1.Solution.Clone());
       ISingleObjectiveSolutionScope<LinearLinkage> offspring = null;
-      for (; evaluations < p1Scope.Solution.Length; evaluations++) {
-        var code = GroupCrossover.Apply(Context.Random, p1Scope.Solution, p2Scope.Solution);
-        if (cache.Contains(code)) {
+      while (evaluations < p1.Solution.Length) {
+        LinearLinkage c = null;
+        if (Context.Random.NextDouble() < 0.8)
+          c = GroupCrossover.Apply(Context.Random, p1.Solution, p2.Solution);
+        else c = SinglePointCrossover.Apply(Context.Random, p1.Solution, p2.Solution);
+        
+        if (cache.Contains(c)) {
           cachehits++;
           if (cachehits > 10) break;
           continue;
         }
-        var probe = ToScope(code);
         Evaluate(probe, token);
-        cache.Add(code);
+        evaluations++;
+        cache.Add(c);
         if (offspring == null || Context.IsBetter(probe, offspring)) {
           offspring = probe;
-          if (Context.IsBetter(offspring, p1Scope) && Context.IsBetter(offspring, p2Scope))
+          if (Context.IsBetter(offspring, p1) && Context.IsBetter(offspring, p2))
             break;
         }
       }
-      Context.IncrementEvaluatedSolutions(evaluations-1);
-      return offspring;
+      Context.IncrementEvaluatedSolutions(evaluations);
+      return offspring ?? probe;
     }
 
     protected override ISingleObjectiveSolutionScope<LinearLinkage> Link(ISingleObjectiveSolutionScope<LinearLinkage> a, ISingleObjectiveSolutionScope<LinearLinkage> b, CancellationToken token, bool delink = false) {

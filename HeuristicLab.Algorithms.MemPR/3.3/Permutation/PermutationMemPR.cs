@@ -394,10 +394,13 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation {
 
     private ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> CrossAbsolute(ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> p1, ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> p2, CancellationToken token) {
       var cache = new HashSet<Encodings.PermutationEncoding.Permutation>(new PermutationEqualityComparer());
+      cache.Add(p1.Solution);
+      cache.Add(p2.Solution);
+
       var cacheHits = 0;
-      var evaluations = 1;
+      var evaluations = 0;
       ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> offspring = null;
-      for (; evaluations <= p1.Solution.Length; evaluations++) {
+      while (evaluations < p1.Solution.Length) {
         Encodings.PermutationEncoding.Permutation c = null;
         var xochoice = Context.Random.Next(3);
         switch (xochoice) {
@@ -412,6 +415,7 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation {
         }
         var probe = ToScope(c);
         Evaluate(probe, token);
+        evaluations++;
         cache.Add(c);
         if (offspring == null || Context.IsBetter(probe, offspring)) {
           offspring = probe;
@@ -419,16 +423,19 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation {
             break;
         }
       }
-      Context.IncrementEvaluatedSolutions(evaluations-1);
+      Context.IncrementEvaluatedSolutions(evaluations);
       return offspring;
     }
 
     private ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> CrossRelativeDirected(ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> p1, ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> p2, CancellationToken token) {
       var cache = new HashSet<Encodings.PermutationEncoding.Permutation>(new PermutationEqualityComparer());
+      cache.Add(p1.Solution);
+      cache.Add(p2.Solution);
+
       var cacheHits = 0;
-      var evaluations = 1;
+      var evaluations = 0;
       ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> offspring = null;
-      for (; evaluations <= p1.Solution.Length; evaluations++) {
+      while(evaluations < p1.Solution.Length) {
         Encodings.PermutationEncoding.Permutation c = null;
         var xochoice = Context.Random.Next(3);
         switch (xochoice) {
@@ -443,6 +450,7 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation {
         }
         var probe = ToScope(c);
         Evaluate(probe, token);
+        evaluations++;
         cache.Add(c);
         if (offspring == null || Context.IsBetter(probe, offspring)) {
           offspring = probe;
@@ -450,16 +458,19 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation {
             break;
         }
       }
-      Context.IncrementEvaluatedSolutions(evaluations-1);
+      Context.IncrementEvaluatedSolutions(evaluations);
       return offspring;
     }
 
     private ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> CrossRelativeUndirected(ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> p1, ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> p2, CancellationToken token) {
       var cache = new HashSet<Encodings.PermutationEncoding.Permutation>(new PermutationEqualityComparer());
+      cache.Add(p1.Solution);
+      cache.Add(p2.Solution);
+
       var cacheHits = 0;
-      var evaluations = 1;
+      var evaluations = 0;
       ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> offspring = null;
-      for (; evaluations <= p1.Solution.Length; evaluations++) {
+      while(evaluations <= p1.Solution.Length) {
         Encodings.PermutationEncoding.Permutation c = null;
         var xochoice = Context.Random.Next(3);
         switch (xochoice) {
@@ -474,6 +485,7 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation {
         }
         var probe = ToScope(c);
         Evaluate(probe, token);
+        evaluations++;
         cache.Add(c);
         if (offspring == null || Context.IsBetter(probe, offspring)) {
           offspring = probe;
@@ -481,20 +493,11 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation {
             break;
         }
       }
-      Context.IncrementEvaluatedSolutions(evaluations-1);
+      Context.IncrementEvaluatedSolutions(evaluations);
       return offspring;
     }
 
     protected override ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> Link(ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> a, ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> b, CancellationToken token, bool delink = false) {
-      if (double.IsNaN(a.Fitness)) {
-        Evaluate(a, token);
-        Context.IncrementEvaluatedSolutions(1);
-      }
-      if (double.IsNaN(b.Fitness)) {
-        Evaluate(b, token);
-        Context.IncrementEvaluatedSolutions(1);
-      }
-
       var wrapper = new EvaluationWrapper<Encodings.PermutationEncoding.Permutation>(Problem, ToScope(null));
       double quality;
       return ToScope(Relink(Context.Random, a.Solution, b.Solution, wrapper.Evaluate, delink, out quality));
@@ -625,8 +628,7 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation {
       }
       Context.IncrementEvaluatedSolutions(evaluations);
 
-      if (VALIDATE && bestChild != null && !bestChild.Validate()) throw new ArgumentException("Relinking produced invalid child");
-      if (VALIDATE && Dist(child, p2) > 0) throw new InvalidOperationException("Child is not equal to p2 after relinking");
+      if (VALIDATE && bestChild != null && !bestChild.Validate()) throw new ArgumentException("Delinking produced invalid child");
 
       return bestChild ?? child;
     }
