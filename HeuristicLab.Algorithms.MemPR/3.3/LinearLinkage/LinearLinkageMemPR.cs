@@ -259,6 +259,7 @@ namespace HeuristicLab.Algorithms.MemPR.Grouping {
           if (cachehits > 10) break;
           continue;
         }
+        probe.Solution = c;
         Context.Evaluate(probe, token);
         evaluations++;
         cache.Add(c);

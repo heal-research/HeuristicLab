@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using HeuristicLab.Algorithms.MemPR.Interfaces;
 using HeuristicLab.Algorithms.MemPR.Util;
@@ -296,7 +297,7 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation {
           if (subspace != null && !(subspace[current[prev], current[opt.Index1]] && subspace[current[opt.Index2], current[next]]))
             continue;
 
-          InversionManipulator.Apply(current, opt.Index1, opt.Index2);
+          current.Reverse(opt.Index1, opt.Index2 - opt.Index1 + 1);
 
           var q = eval(current, token);
           evaluations++;
@@ -337,8 +338,8 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation {
               bestOfTheRest = opt;
               bestOfTheRestF = q;
             }
-
-            InversionManipulator.Apply(current, opt.Index1, opt.Index2);
+            
+            current.Reverse(opt.Index1, opt.Index2 - opt.Index1 + 1);
           }
           if (evaluations >= maxEvals) break;
         }
@@ -358,7 +359,7 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation {
             tabu[current[bestOfTheRest.Index2], current[next]] = Math.Min(currentF, tabu[current[bestOfTheRest.Index2], current[next]]);
             tabu[current[next], current[bestOfTheRest.Index2]] = Math.Min(currentF, tabu[current[next], current[bestOfTheRest.Index2]]);
           }
-          InversionManipulator.Apply(current, bestOfTheRest.Index1, bestOfTheRest.Index2);
+          current.Reverse(bestOfTheRest.Index1, bestOfTheRest.Index2 - bestOfTheRest.Index1 + 1);
 
           currentF = bestOfTheRestF;
           steps++;
@@ -396,6 +397,7 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation {
       var cacheHits = 0;
       var evaluations = 0;
       ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> offspring = null;
+      var probe = Context.ToScope((Encodings.PermutationEncoding.Permutation)p1.Solution.Clone());
       while (evaluations < p1.Solution.Length) {
         Encodings.PermutationEncoding.Permutation c = null;
         var xochoice = Context.Random.Next(3);
@@ -409,7 +411,7 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation {
           if (cacheHits > 10) break;
           continue;
         }
-        var probe = Context.ToScope(c);
+        probe.Solution = c;
         Context.Evaluate(probe, token);
         evaluations++;
         cache.Add(c);
@@ -431,7 +433,8 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation {
       var cacheHits = 0;
       var evaluations = 0;
       ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> offspring = null;
-      while(evaluations < p1.Solution.Length) {
+      var probe = Context.ToScope((Encodings.PermutationEncoding.Permutation)p1.Solution.Clone());
+      while (evaluations < p1.Solution.Length) {
         Encodings.PermutationEncoding.Permutation c = null;
         var xochoice = Context.Random.Next(3);
         switch (xochoice) {
@@ -444,7 +447,7 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation {
           if (cacheHits > 10) break;
           continue;
         }
-        var probe = Context.ToScope(c);
+        probe.Solution = c;
         Context.Evaluate(probe, token);
         evaluations++;
         cache.Add(c);
@@ -466,7 +469,8 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation {
       var cacheHits = 0;
       var evaluations = 0;
       ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> offspring = null;
-      while(evaluations <= p1.Solution.Length) {
+      var probe = Context.ToScope((Encodings.PermutationEncoding.Permutation)p1.Solution.Clone());
+      while (evaluations <= p1.Solution.Length) {
         Encodings.PermutationEncoding.Permutation c = null;
         var xochoice = Context.Random.Next(3);
         switch (xochoice) {
@@ -479,7 +483,7 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation {
           if (cacheHits > 10) break;
           continue;
         }
-        var probe = Context.ToScope(c);
+        probe.Solution = c;
         Context.Evaluate(probe, token);
         evaluations++;
         cache.Add(c);
@@ -506,7 +510,7 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation {
         case PermutationTypes.RelativeDirected:
           return RelinkShift(random, p1, p2, eval, token, delink, out best);
         case PermutationTypes.RelativeUndirected:
-          return RelinkOpt(random, p1, p2, eval, token, delink, out best);
+          return delink ? DelinkOpt(random, p1, p2, eval, token, out best) : RelinkOpt(random, p1, p2, eval, token, out best);
         default: throw new ArgumentException(string.Format("Unknown permutation type {0}", p1.PermutationType));
       }
     }
@@ -683,7 +687,7 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation {
       return bestChild ?? child;
     }
 
-    public Encodings.PermutationEncoding.Permutation RelinkOpt(IRandom random, Encodings.PermutationEncoding.Permutation p1, Encodings.PermutationEncoding.Permutation p2, Func<Encodings.PermutationEncoding.Permutation, CancellationToken, double> eval, CancellationToken token, bool delink, out double best) {
+    public Encodings.PermutationEncoding.Permutation RelinkOpt(IRandom random, Encodings.PermutationEncoding.Permutation p1, Encodings.PermutationEncoding.Permutation p2, Func<Encodings.PermutationEncoding.Permutation, CancellationToken, double> eval, CancellationToken token, out double best) {
       var maximization = Context.Maximization;
       var evaluations = 0;
       var child = (Encodings.PermutationEncoding.Permutation)p1.Clone();
@@ -776,8 +780,8 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation {
           while (bestQueue.Count > 0) {
             var m = bestQueue.Dequeue();
             Opt(child, m.Item1, m.Item2);
+            for (var i = m.Item1; i <= m.Item2; i++) invChild[child[i]] = i;
           }
-          for (var i = 0; i < child.Length; i++) invChild[child[i]] = i;
           if (FitnessComparer.IsBetter(maximization, bestChange, best)) {
             best = bestChange;
             bestChild = (Encodings.PermutationEncoding.Permutation)child.Clone();
@@ -796,6 +800,79 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation {
       return bestChild ?? child;
     }
 
+    public Encodings.PermutationEncoding.Permutation DelinkOpt(IRandom random, Encodings.PermutationEncoding.Permutation p1, Encodings.PermutationEncoding.Permutation p2, Func<Encodings.PermutationEncoding.Permutation, CancellationToken, double> eval, CancellationToken token, out double best) {
+      var evaluations = 0;
+      var child = (Encodings.PermutationEncoding.Permutation)p1.Clone();
+
+      best = double.NaN;
+      Encodings.PermutationEncoding.Permutation bestChild = null;
+
+      var invChild = new int[child.Length];
+      var invP2 = new int[child.Length];
+      for (var i = 0; i < child.Length; i++) {
+        invChild[child[i]] = i;
+        invP2[p2[i]] = i;
+      }
+
+      var order = Enumerable.Range(0, p2.Length).Where(x => IsUndirectedEdge(invP2, child[x], child.GetCircular(x + 1))).Shuffle(Context.Random).ToList();
+      while (order.Count > 0) {
+        var idx = order.First();
+        var bestChange = double.NaN;
+        var bestIdx = -1;
+        for (var m = 0; m < p2.Length; m++) {
+          if (Math.Abs(m - idx) <= 1 || Math.Abs(m - idx) >= p2.Length - 2) continue;
+          if (m < idx) {
+            if (IsUndirectedEdge(invP2, child.GetCircular(m - 1), child[idx])
+              || IsUndirectedEdge(invP2, child[m], child.GetCircular(idx + 1))) continue;
+            Opt(child, m, idx);
+            var moveF = eval(child, token);
+            evaluations++;
+            if (Context.IsBetter(moveF, bestChange)) {
+              bestChange = moveF;
+              bestIdx = m;
+            }
+            // undo
+            Opt(child, m, idx);
+          } else {
+            if (IsUndirectedEdge(invP2, child[idx], child[m])
+              || IsUndirectedEdge(invP2, child.GetCircular(idx + 1), child.GetCircular(m + 1))) continue;
+            Opt(child, idx + 1, m);
+            var moveF = eval(child, token);
+            evaluations++;
+            if (Context.IsBetter(moveF, bestChange)) {
+              bestChange = moveF;
+              bestIdx = m;
+            }
+            // undo
+            Opt(child, idx + 1, m);
+          }
+        }
+        if (bestIdx >= 0) {
+          if (bestIdx > idx)
+            Opt(child, idx + 1, bestIdx);
+          else Opt(child, bestIdx, idx);
+          for (var i = Math.Min(idx, bestIdx); i <= Math.Max(idx, bestIdx); i++)
+            invChild[child[i]] = i;
+
+          order = Enumerable.Range(0, p2.Length).Where(x => IsUndirectedEdge(invP2, child[x], child.GetCircular(x + 1))).Shuffle(Context.Random).ToList();
+          if (Context.IsBetter(bestChange, best)) {
+            best = bestChange;
+            bestChild = (Encodings.PermutationEncoding.Permutation)child.Clone();
+          }
+        }
+      }
+
+      if (bestChild == null) {
+        best = eval(child, token);
+        evaluations++;
+      }
+      Context.IncrementEvaluatedSolutions(evaluations);
+
+      if (VALIDATE && bestChild != null && !bestChild.Validate()) throw new ArgumentException("Delinking produced invalid child");
+      if (VALIDATE && Dist(child, p2) < 1) throw new InvalidOperationException("Child is not different from p2 after delinking");
+      return bestChild ?? child;
+    }
+
     private static bool IsUndirectedEdge(int[] invP, int a, int b) {
       var d = Math.Abs(invP[a] - invP[b]);
       return d == 1 || d == invP.Length - 1;
@@ -809,13 +886,10 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation {
       TranslocationManipulator.Apply(child, from, from, to);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static void Opt(Encodings.PermutationEncoding.Permutation child, int from, int to) {
-      if (from > to) {
-        var h = from;
-        from = to;
-        to = h;
-      }
-      InversionManipulator.Apply(child, from, to);
+      if (from > to) child.Reverse(to, from - to + 1);
+      else child.Reverse(from, to - from + 1);
     }
   }
 }

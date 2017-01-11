@@ -120,6 +120,10 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
       return this[position];
     }
 
+    public virtual void Reverse(int startIndex, int length) {
+      Array.Reverse(array, startIndex, length);
+    }
+
     public event EventHandler PermutationTypeChanged;
 
     protected virtual void OnPermutationTypeChanged() {

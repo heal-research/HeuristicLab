@@ -42,7 +42,6 @@ namespace HeuristicLab.Algorithms.MemPR {
       where TSolution : class, IItem
       where TPopulationContext : MemPRPopulationContext<TProblem, TSolution, TPopulationContext, TSolutionContext>, new()
       where TSolutionContext : MemPRSolutionContext<TProblem, TSolution, TPopulationContext, TSolutionContext> {
-    private const double MutationProbabilityMagicConst = 0.1;
 
     public override Type ProblemType {
       get { return typeof(TProblem); }

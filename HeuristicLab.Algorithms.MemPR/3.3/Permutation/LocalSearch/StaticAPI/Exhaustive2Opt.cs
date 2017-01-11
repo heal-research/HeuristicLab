@@ -54,14 +54,14 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation.LocalSearch {
           if (subspace != null && !(subspace[current[prev], current[opt.Index1]] && subspace[current[opt.Index2], current[next]]))
             continue;
 
-          InversionManipulator.Apply(current, opt.Index1, opt.Index2);
+          current.Reverse(opt.Index1, opt.Index2 - opt.Index1 + 1);
           var q = eval(current, token);
           evaluations++;
           if (FitnessComparer.IsBetter(maximization, q, quality)) {
             steps++;
             quality = q;
             lastSuccessMove = opt;
-          } else InversionManipulator.Apply(current, opt.Index1, opt.Index2);
+          } else current.Reverse(opt.Index1, opt.Index2 - opt.Index1 + 1);
 
           if (token.IsCancellationRequested) {
             lastSuccessMove = null;
