@@ -159,15 +159,15 @@ namespace HeuristicLab.Algorithms.MemPR.Binary {
       ISingleObjectiveSolutionScope<BinaryVector> offspring = null;
       while (evaluations < N) {
         BinaryVector c = null;
-        var xochoice = Context.Random.NextDouble();
-        if (xochoice < 0.2)
-          c = NPointCrossover.Apply(Context.Random, p1.Solution, p2.Solution, new IntValue(1));
-        else if (xochoice < 0.5)
-          c = NPointCrossover.Apply(Context.Random, p1.Solution, p2.Solution, new IntValue(2));
-        else c = UniformCrossover.Apply(Context.Random, p1.Solution, p2.Solution);
+        var xochoice = Context.Random.Next(3);
+        switch (xochoice) {
+          case 0: c = NPointCrossover.Apply(Context.Random, p1.Solution, p2.Solution, new IntValue(1)); break;
+          case 1: c = NPointCrossover.Apply(Context.Random, p1.Solution, p2.Solution, new IntValue(2)); break;
+          case 2: c = UniformCrossover.Apply(Context.Random, p1.Solution, p2.Solution); break;
+        }
         if (cache.Contains(c)) {
           cacheHits++;
-          if (cacheHits > 20) break;
+          if (cacheHits > 50) break;
           continue;
         }
         probe.Solution = c;

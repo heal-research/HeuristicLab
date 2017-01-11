@@ -253,8 +253,6 @@ namespace HeuristicLab.Algorithms.MemPR {
       
       offspring = Breed(token);
       if (offspring != null) {
-        if (Context.PopulationCount < MaximumPopulationSize)
-          AdaptiveClimb(offspring, Context.LocalSearchEvaluations, token);
         var replNew = Replace(offspring, token);
         if (replNew) {
           replaced = true;
@@ -264,8 +262,6 @@ namespace HeuristicLab.Algorithms.MemPR {
 
       offspring = Relink(token);
       if (offspring != null) {
-        if (Context.PopulationCount < MaximumPopulationSize)
-          AdaptiveClimb(offspring, Context.LocalSearchEvaluations, token);
         if (Replace(offspring, token)) {
           replaced = true;
           Context.ByRelinking++;
@@ -274,8 +270,6 @@ namespace HeuristicLab.Algorithms.MemPR {
 
       offspring = Delink(token);
       if (offspring != null) {
-        if (Context.PopulationCount < MaximumPopulationSize)
-          AdaptiveClimb(offspring, Context.LocalSearchEvaluations, token);
         if (Replace(offspring, token)) {
           replaced = true;
           Context.ByDelinking++;
@@ -284,8 +278,6 @@ namespace HeuristicLab.Algorithms.MemPR {
 
       offspring = Sample(token);
       if (offspring != null) {
-        if (Context.PopulationCount < MaximumPopulationSize)
-          AdaptiveClimb(offspring, Context.LocalSearchEvaluations, token);
         if (Replace(offspring, token)) {
           replaced = true;
           Context.BySampling++;
@@ -294,7 +286,7 @@ namespace HeuristicLab.Algorithms.MemPR {
 
       if (!replaced && offspring != null) {
         if (Context.HillclimbingSuited(offspring)) {
-          AdaptiveClimb(offspring, Context.LocalSearchEvaluations, token);
+          HillClimb(offspring, token, CalculateSubspace(Context.Population.Select(x => x.Solution)));
           if (Replace(offspring, token)) {
             Context.ByHillclimbing++;
             replaced = true;
