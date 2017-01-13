@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using HeuristicLab.Data;
@@ -29,6 +30,15 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
   public partial class InsertNodeDialog : Form {
+    public string SelectedVariableName {
+      get {
+        var variable = SelectedSymbol as Variable;
+        if (variable == null)
+          return string.Empty;
+        return variable.VariableNames.Any() ? variableNamesCombo.Text : variableNameTextBox.Text;
+      }
+    }
+
     public InsertNodeDialog() {
       InitializeComponent();
     }
@@ -39,8 +49,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       allowedSymbolsCombo.SelectedIndex = 0;
     }
 
-    public ISymbol SelectedSymbol() {
-      return (ISymbol)allowedSymbolsCombo.SelectedItem;
+    public ISymbol SelectedSymbol {
+      get { return (ISymbol)allowedSymbolsCombo.SelectedItem; }
     }
 
     private void allowedSymbolsCombo_SelectedIndexChanged(object sender, EventArgs e) {
@@ -55,11 +65,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
         constantValueLabel.Visible = true;
         constantValueTextBox.Visible = true;
       } else if (symbol is Variable) {
-        var variable = (Variable)symbol;
-        foreach (var name in variable.VariableNames) variableNamesCombo.Items.Add(name);
-        variableNamesCombo.SelectedIndex = 0;
+        var variableSymbol = (Variable)symbol;
+        if (variableSymbol.VariableNames.Any()) {
+          foreach (var name in variableSymbol.VariableNames)
+            variableNamesCombo.Items.Add(name);
+          variableNamesCombo.SelectedIndex = 0;
+          variableNamesCombo.Visible = true;
+          variableNameTextBox.Visible = false;
+        } else {
+          variableNamesCombo.Visible = false;
+          variableNameTextBox.Visible = true;
+        }
         variableNameLabel.Visible = true;
-        variableNamesCombo.Visible = true;
         variableWeightLabel.Visible = true;
         variableWeightTextBox.Visible = true;
         constantValueLabel.Visible = false;

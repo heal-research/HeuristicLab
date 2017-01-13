@@ -111,8 +111,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       limitView.Content.Lower = axisMin;
       limitView.Content.Upper = axisMax;
 
-      // create dataset
-      var allowedInputVariables = Content.ProblemData.AllowedInputVariables;
+      // create dataset of problemData input variables and model input variables
+      // necessary workaround to have the variables in the occuring order
+      var inputvariables =
+        new HashSet<string>(Content.ProblemData.AllowedInputVariables.Union(Content.Model.VariablesUsedForPrediction));
+      var allowedInputVariables =
+        Content.ProblemData.Dataset.VariableNames.Where(v => inputvariables.Contains(v)).ToList();
+
+
       var variableValues = allowedInputVariables.Select(x => new List<double> { problemData.Dataset.GetDoubleValues(x, problemData.TrainingIndices).Median() });
       if (sharedFixedVariables != null)
         sharedFixedVariables.ItemChanged -= SharedFixedVariables_ItemChanged;

@@ -111,7 +111,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
     private bool IsValid(ISymbolicExpressionTree tree) {
       treeChart.Tree = tree;
       treeChart.Repaint();
-      bool valid = !tree.IterateNodesPostfix().Any(node => node.SubtreeCount < GetMinArity(node.Symbol) || node.SubtreeCount > node.Symbol.MaximumArity);
+      // check if all nodes have a legal arity
+      var nodes = tree.IterateNodesPostfix().ToList();
+      bool valid = !nodes.Any(node => node.SubtreeCount < GetMinArity(node.Symbol) || node.SubtreeCount > node.Symbol.MaximumArity);
+
+      if (valid) {
+        // check if all variables are contained in the dataset
+        var variables = new HashSet<string>(Content.ProblemData.Dataset.DoubleVariables);
+        valid = nodes.OfType<VariableTreeNode>().All(x => variables.Contains(x.VariableName));
+      }
+
       if (valid) {
         btnOptimizeConstants.Enabled = true;
         btnSimplify.Enabled = true;

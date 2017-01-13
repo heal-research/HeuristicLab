@@ -57,9 +57,9 @@ namespace HeuristicLab.DataPreprocessing.Views {
 
     public DataGridContentView() {
       InitializeComponent();
+      dataGridView.MouseDown += dataGridView_MouseDown;
       dataGridView.CellMouseClick += dataGridView_CellMouseClick;
       dataGridView.RowHeaderMouseClick += dataGridView_RowHeaderMouseClick;
-      dataGridView.KeyDown += dataGridView_KeyDown;
       dataGridView.MouseUp += dataGridView_MouseUp;
       contextMenuCell.Items.Add(ShowHideColumns);
       _highlightedCellsBackground = new Dictionary<int, IList<int>>();
@@ -203,24 +203,34 @@ namespace HeuristicLab.DataPreprocessing.Views {
       base.ClearSorting();
     }
 
-    protected override void dataGridView_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e) {
-      if (Content != null) {
-        if (e.Button == MouseButtons.Left) {
-          dataGridView.Focus();
-          dataGridView.ClearSelection();
-          dataGridView.SelectionChanged -= dataGridView_SelectionChanged;
-          for (int i = 0; i < dataGridView.RowCount; i++) {
-            if (i + 1 == dataGridView.RowCount)
-              dataGridView.SelectionChanged += dataGridView_SelectionChanged;
-            dataGridView[e.ColumnIndex, i].Selected = true;
-          }
-        } else if (e.Button == MouseButtons.Middle) {
-          int newIndex = e.ColumnIndex >= 0 ? e.ColumnIndex : 0;
-          Content.PreProcessingData.InsertColumn<double>(newIndex.ToString(), newIndex);
-        } else if (e.Button == MouseButtons.Right && Content.SortableView) {
-          SortColumn(e.ColumnIndex);
+    //Necessary so that dataGridView.SelectedRows and SelectedColumns are populated correctly
+    //further information: https://msdn.microsoft.com/en-us/library/system.windows.forms.datagridview.selectedcolumns.aspx
+    private void dataGridView_MouseDown(object sender, MouseEventArgs e) {
+      var hitTestInfo = dataGridView.HitTest(e.X, e.Y);
+      // row header click
+      if (hitTestInfo.ColumnIndex == -1 && hitTestInfo.RowIndex >= 0) {
+        if (dataGridView.SelectionMode != DataGridViewSelectionMode.RowHeaderSelect) {
+          dataGridView.SelectionMode = DataGridViewSelectionMode.RowHeaderSelect;
         }
       }
+      // column header click
+      if (hitTestInfo.RowIndex == -1 && hitTestInfo.ColumnIndex >= 0) {
+        if (dataGridView.SelectionMode != DataGridViewSelectionMode.ColumnHeaderSelect) {
+          dataGridView.SelectionMode = DataGridViewSelectionMode.ColumnHeaderSelect;
+        }
+      }
+    }
+
+    protected override void dataGridView_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e) {
+      if (Content == null) return;
+
+      if (e.Button == MouseButtons.Middle) {
+        int newIndex = e.ColumnIndex >= 0 ? e.ColumnIndex : 0;
+        Content.PreProcessingData.InsertColumn<double>(newIndex.ToString(), newIndex);
+      } else if (e.Button == MouseButtons.Right && Content.SortableView) {
+        SortColumn(e.ColumnIndex);
+      }
+
       searchIterator = null;
     }
     private void dataGridView_RowHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e) {
@@ -537,26 +547,29 @@ namespace HeuristicLab.DataPreprocessing.Views {
     }
 
     protected override void dataGridView_KeyDown(object sender, KeyEventArgs e) {
-      var selectedRows = dataGridView.SelectedRows;
-      var selectedCells = dataGridView.SelectedCells;
-      if (!Content.FilterLogic.IsFiltered) { //data is in read only mode....
-        if (e.KeyCode == Keys.Delete && selectedCells.Count == Content.Rows && selectedCells.Count > 0) {
-          Content.DeleteColumn(selectedCells[0].ColumnIndex);
-        } else if (e.KeyCode == Keys.Delete && selectedRows.Count > 0) {
-          List<int> rows = new List<int>();
-          for (int i = 0; i < selectedRows.Count; ++i) {
-            int index = (sortedColumnIndices.Count != 0) ? (Convert.ToInt32(selectedRows[i].HeaderCell.Value) - 1) :
-              selectedRows[i].Index;
-            rows.Add(index);
-          }
-          Content.DeleteRows(rows);
-        } else if (e.Control && e.KeyCode == Keys.F) {
-          CreateFindAndReplaceDialog();
-          findAndReplaceDialog.ActivateSearch();
-        } else if (e.Control && e.KeyCode == Keys.R) {
-          CreateFindAndReplaceDialog();
-          findAndReplaceDialog.ActivateReplace();
+      base.dataGridView_KeyDown(sender, e);
+      //data is in read only mode....
+      if (Content.FilterLogic.IsFiltered) return;
+
+      if (e.KeyCode == Keys.Delete) {
+        //Delete column
+        if (dataGridView.SelectedColumns.Count > 0) {
+          var columnsToDelete = dataGridView.SelectedColumns.Cast<DataGridViewColumn>().OrderByDescending(col => col.Index).ToList();
+          foreach (var col in columnsToDelete)
+            Content.DeleteColumn(col.Index);
         }
+        //Delete row
+        if (dataGridView.SelectedRows.Count > 0) {
+          //necessary if columns are sorted to translate the selected row index
+          var rowIndexes = dataGridView.SelectedRows.Cast<DataGridViewRow>().Select(row => GetRowIndex(row.Index)).ToList();
+          Content.DeleteRows(rowIndexes);
+        }
+      } else if (e.Control && e.KeyCode == Keys.F) {
+        CreateFindAndReplaceDialog();
+        findAndReplaceDialog.ActivateSearch();
+      } else if (e.Control && e.KeyCode == Keys.R) {
+        CreateFindAndReplaceDialog();
+        findAndReplaceDialog.ActivateReplace();
       }
     }
 

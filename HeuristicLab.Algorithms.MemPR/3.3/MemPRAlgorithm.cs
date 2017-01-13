@@ -52,6 +52,10 @@ namespace HeuristicLab.Algorithms.MemPR {
       set { base.Problem = value; }
     }
 
+    public override bool SupportsPause {
+      get { return true; }
+    }
+
     protected string QualityName {
       get { return Problem != null && Problem.Evaluator != null ? Problem.Evaluator.QualityParameter.ActualName : null; }
     }

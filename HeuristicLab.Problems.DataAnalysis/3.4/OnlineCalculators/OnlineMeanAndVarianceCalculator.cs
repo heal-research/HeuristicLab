@@ -66,14 +66,18 @@ namespace HeuristicLab.Problems.DataAnalysis {
       Reset();
     }
 
-    protected OnlineMeanAndVarianceCalculator(OnlineMeanAndVarianceCalculator other, Cloner cloner = null) {
-      m_oldS = other.m_oldS;
-      m_oldM = other.m_oldM;
-      m_newS = other.m_newS;
-      m_newM = other.m_newM;
-      n = other.n;
-      errorState = other.errorState;
-      varianceErrorState = other.varianceErrorState;
+    protected OnlineMeanAndVarianceCalculator(OnlineMeanAndVarianceCalculator original, Cloner cloner = null)
+      : base(original, cloner) {
+      m_oldS = original.m_oldS;
+      m_oldM = original.m_oldM;
+      m_newS = original.m_newS;
+      m_newM = original.m_newM;
+      n = original.n;
+      errorState = original.errorState;
+      varianceErrorState = original.varianceErrorState;
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new OnlineMeanAndVarianceCalculator(this, cloner);
     }
 
     public void Reset() {
@@ -115,10 +119,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
       variance = meanAndVarianceCalculator.Variance;
       meanErrorState = meanAndVarianceCalculator.MeanErrorState;
       varianceErrorState = meanAndVarianceCalculator.VarianceErrorState;
-    }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new OnlineMeanAndVarianceCalculator(this, cloner);
     }
   }
 }

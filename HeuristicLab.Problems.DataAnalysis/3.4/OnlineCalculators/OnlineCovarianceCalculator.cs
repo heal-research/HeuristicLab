@@ -38,12 +38,17 @@ namespace HeuristicLab.Problems.DataAnalysis {
       Reset();
     }
 
-    protected OnlineCovarianceCalculator(OnlineCovarianceCalculator other, Cloner cloner) {
-      Cn = other.Cn;
-      xMean = other.xMean;
-      yMean = other.yMean;
-      n = other.n;
-      errorState = other.errorState;
+    protected OnlineCovarianceCalculator(OnlineCovarianceCalculator original, Cloner cloner)
+      : base(original, cloner) {
+      Cn = original.Cn;
+      xMean = original.xMean;
+      yMean = original.yMean;
+      n = original.n;
+      errorState = original.errorState;
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new OnlineCovarianceCalculator(this, cloner);
     }
 
     #region IOnlineCalculator Members
@@ -101,10 +106,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
         errorState = covarianceCalculator.ErrorState;
         return covarianceCalculator.Covariance;
       }
-    }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new OnlineCovarianceCalculator(this, cloner);
     }
   }
 }

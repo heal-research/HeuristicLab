@@ -121,11 +121,13 @@ namespace HeuristicLab.Problems.DataAnalysis {
         default: throw new ArgumentException(string.Format("DataPartition {0} cannot be handled.", data));
       }
 
-
       var impacts = new Dictionary<string, double>();
       var modifiableDataset = ((Dataset)dataset).ToModifiable();
 
-      foreach (var inputVariable in problemData.AllowedInputVariables) {
+      var inputvariables = new HashSet<string>(problemData.AllowedInputVariables.Union(solution.Model.VariablesUsedForPrediction));
+      var allowedInputVariables = dataset.VariableNames.Where(v => inputvariables.Contains(v)).ToList();
+
+      foreach (var inputVariable in allowedInputVariables) {
         var newEstimates = EvaluateModelWithReplacedVariable(solution.Model, inputVariable, modifiableDataset, rows, replacement);
         var newR2 = OnlinePearsonsRCalculator.Calculate(targetValues, newEstimates, out error);
         if (error != OnlineCalculatorError.None) throw new InvalidOperationException("Error during R² calculation with replaced inputs.");

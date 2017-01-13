@@ -44,12 +44,16 @@ namespace HeuristicLab.Problems.DataAnalysis {
       Reset();
     }
 
-    protected OnlineBoundedMeanSquaredErrorCalculator(OnlineBoundedMeanSquaredErrorCalculator original, Cloner cloner) {
+    protected OnlineBoundedMeanSquaredErrorCalculator(OnlineBoundedMeanSquaredErrorCalculator original, Cloner cloner)
+      : base(original, cloner) {
       LowerBound = original.LowerBound;
       UpperBound = original.UpperBound;
       n = original.n;
       errorSum = original.errorSum;
       errorState = original.ErrorState;
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new OnlineBoundedMeanSquaredErrorCalculator(this, cloner);
     }
 
     #region IOnlineCalculator Members
@@ -103,11 +107,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
         errorState = boundedMseCalculator.ErrorState;
         return boundedMseCalculator.BoundedMeanSquaredError;
       }
-    }
-
-    // IDeepCloneable interface members
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new OnlineBoundedMeanSquaredErrorCalculator(this, cloner);
     }
   }
 }

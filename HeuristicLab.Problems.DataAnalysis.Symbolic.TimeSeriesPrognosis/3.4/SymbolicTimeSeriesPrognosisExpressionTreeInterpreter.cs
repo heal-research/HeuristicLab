@@ -44,11 +44,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis {
       set { TargetVariableParameter.Value.Value = value; }
     }
 
-    [ThreadStatic]
-    private static double[] targetVariableCache;
-    [ThreadStatic]
-    private static List<int> invalidateCacheIndexes;
-
     [StorableConstructor]
     private SymbolicTimeSeriesPrognosisExpressionTreeInterpreter(bool deserializing) : base(deserializing) { }
     private SymbolicTimeSeriesPrognosisExpressionTreeInterpreter(SymbolicTimeSeriesPrognosisExpressionTreeInterpreter original, Cloner cloner) : base(original, cloner) { }
@@ -76,12 +71,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis {
     public IEnumerable<IEnumerable<double>> GetSymbolicExpressionTreeValues(ISymbolicExpressionTree tree, IDataset dataset, IEnumerable<int> rows, IEnumerable<int> horizons) {
       if (CheckExpressionsWithIntervalArithmetic)
         throw new NotSupportedException("Interval arithmetic is not yet supported in the symbolic data analysis interpreter.");
-      if (targetVariableCache == null || targetVariableCache.GetLength(0) < dataset.Rows)
-        targetVariableCache = dataset.GetDoubleValues(TargetVariable).ToArray();
-      if (invalidateCacheIndexes == null)
-        invalidateCacheIndexes = new List<int>(10);
 
       string targetVariable = TargetVariable;
+      double[] targetVariableCache = dataset.GetDoubleValues(targetVariable).ToArray();
       lock (syncRoot) {
         EvaluatedSolutions++; // increment the evaluated solutions counter
       }
@@ -99,17 +91,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis {
           int localRow = i + row; // create a local variable for the ref parameter
           vProgs[i] = Evaluate(dataset, ref localRow, state);
           targetVariableCache[localRow] = vProgs[i];
-          invalidateCacheIndexes.Add(localRow);
           state.Reset();
         }
         yield return vProgs;
-
-        int j = 0;
-        foreach (var targetValue in dataset.GetDoubleValues(targetVariable, invalidateCacheIndexes)) {
-          targetVariableCache[invalidateCacheIndexes[j]] = targetValue;
-          j++;
-        }
-        invalidateCacheIndexes.Clear();
       }
 
       if (rowsEnumerator.MoveNext() || horizonsEnumerator.MoveNext())

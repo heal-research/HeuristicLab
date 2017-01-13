@@ -37,15 +37,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   [Item("Gradient Boosted Trees (GBT)", "Gradient boosted trees algorithm. Specific implementation of gradient boosting for regression trees. Friedman, J. \"Greedy Function Approximation: A Gradient Boosting Machine\", IMS 1999 Reitz Lecture.")]
   [StorableClass]
   [Creatable(CreatableAttribute.Categories.DataAnalysisRegression, Priority = 125)]
-  public class GradientBoostedTreesAlgorithm : BasicAlgorithm {
-    public override Type ProblemType {
-      get { return typeof(IRegressionProblem); }
-    }
-    public new IRegressionProblem Problem {
-      get { return (IRegressionProblem)base.Problem; }
-      set { base.Problem = value; }
-    }
-
+  public class GradientBoostedTreesAlgorithm : FixedDataAnalysisAlgorithm<IRegressionProblem> {
     #region ParameterNames
     private const string IterationsParameterName = "Iterations";
     private const string MaxSizeParameterName = "Maximum Tree Size";

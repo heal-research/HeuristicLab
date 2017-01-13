@@ -20,6 +20,7 @@
 #endregion
 
 using System.Linq;
+using System.Threading;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
@@ -48,7 +49,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return new ZeroR(this, cloner);
     }
 
-    protected override void Run() {
+    protected override void Run(CancellationToken cancellationToken) {
       var solution = CreateZeroRSolution(Problem.ProblemData);
       Results.Add(new Result("ZeroR solution", "The simplest possible classifier, ZeroR always predicts the majority class.", solution));
     }

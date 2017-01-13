@@ -21,6 +21,7 @@
 
 using System;
 using System.Linq;
+using System.Threading;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -90,7 +91,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     #region nearest neighbour
-    protected override void Run() {
+    protected override void Run(CancellationToken cancellationToken) {
       double[] weights = null;
       if (Weights != null) weights = Weights.CloneAsArray();
       var solution = CreateNearestNeighbourClassificationSolution(Problem.ProblemData, K, weights);

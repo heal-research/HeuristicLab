@@ -42,9 +42,13 @@ namespace HeuristicLab.Problems.DataAnalysis {
       Reset();
     }
 
-    protected OnlineNormalizedMeanSquaredErrorCalculator(OnlineNormalizedMeanSquaredErrorCalculator other, Cloner cloner) {
-      meanSquaredErrorCalculator = (OnlineMeanAndVarianceCalculator)other.meanSquaredErrorCalculator.Clone(cloner);
-      originalVarianceCalculator = (OnlineMeanAndVarianceCalculator)other.originalVarianceCalculator.Clone(cloner);
+    protected OnlineNormalizedMeanSquaredErrorCalculator(OnlineNormalizedMeanSquaredErrorCalculator original, Cloner cloner)
+      : base(original, cloner) {
+      meanSquaredErrorCalculator = cloner.Clone(original.meanSquaredErrorCalculator);
+      originalVarianceCalculator = cloner.Clone(original.originalVarianceCalculator);
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new OnlineNormalizedMeanSquaredErrorCalculator(this, cloner);
     }
 
     #region IOnlineCalculator Members
@@ -98,8 +102,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
       }
     }
 
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new OnlineNormalizedMeanSquaredErrorCalculator(this, cloner);
-    }
+
   }
 }

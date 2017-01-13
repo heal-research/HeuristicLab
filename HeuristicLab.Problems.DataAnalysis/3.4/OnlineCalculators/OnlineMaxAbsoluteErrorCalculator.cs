@@ -38,10 +38,14 @@ namespace HeuristicLab.Problems.DataAnalysis {
       Reset();
     }
 
-    protected OnlineMaxAbsoluteErrorCalculator(OnlineMaxAbsoluteErrorCalculator other, Cloner cloner = null) {
-      mae = other.mae;
-      n = other.n;
-      errorState = other.errorState;
+    protected OnlineMaxAbsoluteErrorCalculator(OnlineMaxAbsoluteErrorCalculator original, Cloner cloner = null)
+      : base(original, cloner) {
+      mae = original.mae;
+      n = original.n;
+      errorState = original.errorState;
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new OnlineMaxAbsoluteErrorCalculator(this, cloner);
     }
 
     #region IOnlineCalculator Members
@@ -93,10 +97,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
         errorState = maeCalculator.ErrorState;
         return maeCalculator.MaxAbsoluteError;
       }
-    }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new OnlineMaxAbsoluteErrorCalculator(this, cloner);
     }
   }
 }

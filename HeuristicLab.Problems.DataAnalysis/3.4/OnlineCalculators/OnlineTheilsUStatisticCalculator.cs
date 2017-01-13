@@ -25,8 +25,8 @@ using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.DataAnalysis {
   public class OnlineTheilsUStatisticCalculator : DeepCloneable, IOnlineTimeSeriesCalculator {
-    private OnlineMeanAndVarianceCalculator squaredErrorMeanCalculator;
-    private OnlineMeanAndVarianceCalculator unbiasedEstimatorMeanCalculator;
+    private readonly OnlineMeanAndVarianceCalculator squaredErrorMeanCalculator;
+    private readonly OnlineMeanAndVarianceCalculator unbiasedEstimatorMeanCalculator;
 
     public double TheilsUStatistic {
       get {
@@ -45,9 +45,13 @@ namespace HeuristicLab.Problems.DataAnalysis {
       Reset();
     }
 
-    protected OnlineTheilsUStatisticCalculator(OnlineTheilsUStatisticCalculator other, Cloner cloner) {
-      squaredErrorMeanCalculator = (OnlineMeanAndVarianceCalculator)other.squaredErrorMeanCalculator.Clone(cloner);
-      unbiasedEstimatorMeanCalculator = (OnlineMeanAndVarianceCalculator)other.unbiasedEstimatorMeanCalculator.Clone(cloner);
+    protected OnlineTheilsUStatisticCalculator(OnlineTheilsUStatisticCalculator original, Cloner cloner)
+      : base(original, cloner) {
+      squaredErrorMeanCalculator = cloner.Clone(original.squaredErrorMeanCalculator);
+      unbiasedEstimatorMeanCalculator = cloner.Clone(original.unbiasedEstimatorMeanCalculator);
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new OnlineTheilsUStatisticCalculator(this, cloner);
     }
 
     #region IOnlineEvaluator Members
@@ -129,10 +133,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
         errorState = calculator.ErrorState;
         return calculator.TheilsUStatistic;
       }
-    }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new OnlineTheilsUStatisticCalculator(this, cloner);
     }
   }
 }

@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{166507C9-EF26-4370-BB80-699742A29D4F}</ProjectGuid>
+    <ProjectGuid>{BE698769-975A-429E-828C-72BB2B6182C8}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>HeuristicLab.Encodings.LinearLinkageEncoding</RootNamespace>

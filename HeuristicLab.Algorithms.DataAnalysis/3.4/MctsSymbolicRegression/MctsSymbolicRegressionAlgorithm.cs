@@ -37,14 +37,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
   [Item("MCTS Symbolic Regression", "Monte carlo tree search for symbolic regression. Useful mainly as a base learner in gradient boosting.")]
   [StorableClass]
   [Creatable(CreatableAttribute.Categories.DataAnalysisRegression, Priority = 250)]
-  public class MctsSymbolicRegressionAlgorithm : BasicAlgorithm {
-    public override Type ProblemType {
-      get { return typeof(IRegressionProblem); }
-    }
-    public new IRegressionProblem Problem {
-      get { return (IRegressionProblem)base.Problem; }
-      set { base.Problem = value; }
-    }
+  public class MctsSymbolicRegressionAlgorithm : FixedDataAnalysisAlgorithm<IRegressionProblem> {
 
     #region ParameterNames
     private const string IterationsParameterName = "Iterations";

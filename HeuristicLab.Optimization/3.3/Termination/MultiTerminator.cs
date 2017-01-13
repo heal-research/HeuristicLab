@@ -37,7 +37,7 @@ namespace HeuristicLab.Optimization {
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.FlagRed; }
     }
-
+    
     public ILookupParameter<BoolValue> TerminateParameter {
       get { return (ILookupParameter<BoolValue>)Parameters["Terminate"]; }
     }

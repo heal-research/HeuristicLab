@@ -21,6 +21,7 @@
 
 using System;
 using System.Linq;
+using System.Threading;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -156,7 +157,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     #region nonlinear regression
-    protected override void Run() {
+    protected override void Run(CancellationToken cancellationToken) {
       IRegressionSolution bestSolution = null;
       if (InitializeParametersRandomly) {
         var qualityTable = new DataTable("RMSE table");

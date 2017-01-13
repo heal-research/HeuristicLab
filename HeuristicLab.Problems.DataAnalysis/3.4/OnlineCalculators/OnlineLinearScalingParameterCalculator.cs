@@ -54,9 +54,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
       }
     }
 
-    private OnlineMeanAndVarianceCalculator targetMeanCalculator;
-    private OnlineMeanAndVarianceCalculator originalMeanAndVarianceCalculator;
-    private OnlineCovarianceCalculator originalTargetCovarianceCalculator;
+    private readonly OnlineMeanAndVarianceCalculator targetMeanCalculator;
+    private readonly OnlineMeanAndVarianceCalculator originalMeanAndVarianceCalculator;
+    private readonly OnlineCovarianceCalculator originalTargetCovarianceCalculator;
 
     public OnlineLinearScalingParameterCalculator() {
       targetMeanCalculator = new OnlineMeanAndVarianceCalculator();
@@ -65,11 +65,15 @@ namespace HeuristicLab.Problems.DataAnalysis {
       Reset();
     }
 
-    protected OnlineLinearScalingParameterCalculator(OnlineLinearScalingParameterCalculator other, Cloner cloner) {
-      targetMeanCalculator = (OnlineMeanAndVarianceCalculator)other.targetMeanCalculator.Clone(cloner);
-      originalMeanAndVarianceCalculator = (OnlineMeanAndVarianceCalculator)other.originalMeanAndVarianceCalculator.Clone(cloner);
-      originalTargetCovarianceCalculator = (OnlineCovarianceCalculator)other.originalTargetCovarianceCalculator.Clone(cloner);
+    protected OnlineLinearScalingParameterCalculator(OnlineLinearScalingParameterCalculator original, Cloner cloner)
+      : base(original, cloner) {
+      targetMeanCalculator = cloner.Clone(original.targetMeanCalculator);
+      originalMeanAndVarianceCalculator = cloner.Clone(original.originalMeanAndVarianceCalculator);
+      originalTargetCovarianceCalculator = cloner.Clone(original.originalTargetCovarianceCalculator);
       // do not reset the calculators here
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new OnlineLinearScalingParameterCalculator(this, cloner);
     }
 
 
@@ -123,10 +127,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
         alpha = calculator.Alpha;
         beta = calculator.Beta;
       }
-    }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new OnlineLinearScalingParameterCalculator(this, cloner);
     }
   }
 }

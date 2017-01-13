@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
@@ -199,12 +200,18 @@ namespace HeuristicLab.Data.Views {
         maxRowIndex = temp;
       }
 
+      var elementNames = Content.ElementNames.ToList();
       for (int i = minRowIndex; i <= maxRowIndex; i++) {
         DataGridViewColumn column = dataGridView.Columns.GetFirstColumn(DataGridViewElementStates.Visible);
         DataGridViewCell cell = dataGridView[column.Index, i];
         if (cell.Selected) {
-          s.Append(Content.ElementNames.ElementAt(i));
-          s.Append("\t");
+          if (i < elementNames.Count) {
+            s.Append(elementNames[i]);
+            s.Append("\t");
+          } else if (elementNames.Count > 0) {
+            s.Append("Index " + i);
+            s.Append("\t");
+          }
           s.Append(Content.GetValue(i));
           s.Append(Environment.NewLine);
         }
@@ -212,19 +219,69 @@ namespace HeuristicLab.Data.Views {
       Clipboard.SetText(s.ToString());
     }
     private void PasteValuesToDataGridView() {
-      string[] values = SplitClipboardString(Clipboard.GetText());
+      Tuple<string, string>[] values = null;
+      try {
+        values = SplitClipboardString(Clipboard.GetText()).ToArray();
+      } catch (ArgumentException ex) {
+        MessageBox.Show(this, ex.Message, "Error while parsing clipboard text.", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        return;
+      }
       int rowIndex = 0;
       if (dataGridView.CurrentCell != null)
         rowIndex = dataGridView.CurrentCell.RowIndex;
 
       if (Content.Length < rowIndex + values.Length) Content.Length = rowIndex + values.Length;
-      for (int row = 0; row < values.Length; row++)
-        Content.SetValue(values[row], row + rowIndex);
+      for (int row = 0; row < values.Length; row++) {
+        Content.SetValue(values[row].Item2, row + rowIndex);
+      }
+      if (values.Any(x => !string.IsNullOrEmpty(x.Item1))) {
+        var elementNames = Content.ElementNames.ToList();
+        for (int row = 0; row < values.Length; row++) {
+          if (row + rowIndex < elementNames.Count)
+            elementNames[row + rowIndex] = values[row].Item1;
+          else elementNames.Add(values[row].Item1);
+        }
+        Content.ElementNames = elementNames;
+      }
     }
-    private string[] SplitClipboardString(string clipboardText) {
+    private IEnumerable<Tuple<string, string>> SplitClipboardString(string clipboardText) {
       if (clipboardText.EndsWith(Environment.NewLine))
         clipboardText = clipboardText.Remove(clipboardText.Length - Environment.NewLine.Length);  //remove last newline constant
-      return clipboardText.Split(new string[] { Environment.NewLine, "\t" }, StringSplitOptions.None);
+
+      var lines = clipboardText.Split(new [] { Environment.NewLine }, StringSplitOptions.None);
+      var tabSep = new[] { '\t' };
+      if (lines.Length > 2) {
+        // Case 1: Each line contains either "elementName \t value" or just "value" (one or two vertical vectors)
+        foreach (var l in lines) {
+          var row = l.Split(tabSep, StringSplitOptions.RemoveEmptyEntries);
+          if (row.Length > 2) throw new ArgumentException("Clipboard may have either at most two rows or at most two columns.");
+          if (row.Length == 2) yield return Tuple.Create(row[0], row[1]);
+          else if (row.Length == 1) yield return Tuple.Create(string.Empty, row[0]);
+          else yield return Tuple.Create(string.Empty, string.Empty);
+        }
+      } else if (lines.Length == 2) {
+        var firstLine = lines[0].Split(tabSep, StringSplitOptions.None);
+        var secondLine = lines[1].Split(tabSep, StringSplitOptions.None);
+        if (firstLine.Length <= 2 && secondLine.Length <= 2) {
+          // Case 2a: The two lines contain either "elementName \t value" or just "value" (one or two vertical vectors)
+          yield return firstLine.Length >= 2 ? Tuple.Create(firstLine[0], firstLine[1]) : Tuple.Create(string.Empty, firstLine[0]);
+          yield return secondLine.Length >= 2 ? Tuple.Create(secondLine[0], secondLine[1]) : Tuple.Create(string.Empty, secondLine[0]);
+        } else {
+          // Case 2b: The first line contains the elementNames, the second line contains the values (two horizontal vectors)
+          var max = Math.Max(firstLine.Length, secondLine.Length);
+          for (var i = 0; i < max; i++) {
+            var elemName = i < firstLine.Length ? firstLine[i] : string.Empty;
+            var value = i < secondLine.Length ? secondLine[i] : string.Empty;
+            yield return Tuple.Create(elemName, value);
+          }
+        }
+      } else if (lines.Length == 1) {
+        // Case 3: The line contains the values (one horizontal vector)
+        var entries = lines[0].Split(tabSep, StringSplitOptions.None);
+        foreach (var e in entries) {
+          yield return Tuple.Create(string.Empty, e);
+        }
+      }
     }
     #endregion
   }

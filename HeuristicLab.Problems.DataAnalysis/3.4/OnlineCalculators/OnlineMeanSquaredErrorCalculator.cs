@@ -38,10 +38,14 @@ namespace HeuristicLab.Problems.DataAnalysis {
       Reset();
     }
 
-    protected OnlineMeanSquaredErrorCalculator(OnlineMeanSquaredErrorCalculator other, Cloner cloner = null) {
-      sse = other.sse;
-      n = other.n;
-      errorState = other.errorState;
+    protected OnlineMeanSquaredErrorCalculator(OnlineMeanSquaredErrorCalculator original, Cloner cloner)
+      : base(original, cloner) {
+      sse = original.sse;
+      n = original.n;
+      errorState = original.errorState;
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new OnlineMeanSquaredErrorCalculator(this, cloner);
     }
 
     #region IOnlineCalculator Members
@@ -92,10 +96,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
         errorState = mseCalculator.ErrorState;
         return mseCalculator.MeanSquaredError;
       }
-    }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new OnlineMeanSquaredErrorCalculator(this, cloner);
     }
   }
 }

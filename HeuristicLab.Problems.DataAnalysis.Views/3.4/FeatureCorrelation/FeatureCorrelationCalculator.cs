@@ -49,7 +49,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       IDependencyCalculator calc = bwInfo.Calculator;
 
       IList<string> doubleVariableNames = dataset.DoubleVariables.ToList();
-      OnlineCalculatorError error = OnlineCalculatorError.None;
+
       int length = doubleVariableNames.Count;
       double[,] elements = new double[length, length];
 
@@ -67,6 +67,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
           var var1 = dataset.GetDoubleValues(doubleVariableNames[i], indices);
           var var2 = dataset.GetDoubleValues(doubleVariableNames[j], indices);
 
+          OnlineCalculatorError error = OnlineCalculatorError.None;
           if (bwInfo.IgnoreMissingValues) {
             var filtered = FilterNaNValues(var1, var2);
             elements[i, j] = calc.Calculate(filtered, out error);
@@ -77,10 +78,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
             elements[i, j] = double.NaN;
           }
           elements[j, i] = elements[i, j];
-
         });
         worker.ReportProgress((int)(((double)counter) / length * 100));
       }
+
       e.Result = elements;
       worker.ReportProgress(100);
     }

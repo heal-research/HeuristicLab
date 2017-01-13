@@ -23,6 +23,7 @@ using System;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text;
 
 namespace HeuristicLab.Problems.Instances.Scheduling {
   public class JSSPORLIBParser {
@@ -52,7 +53,7 @@ namespace HeuristicLab.Problems.Instances.Scheduling {
     }
 
     public void Export(string file) {
-      using (Stream stream = new FileStream(file, FileMode.Open, FileAccess.Read)) {
+      using (Stream stream = new FileStream(file, FileMode.Create, FileAccess.ReadWrite)) {
         Export(stream);
       }
     }
@@ -64,50 +65,57 @@ namespace HeuristicLab.Problems.Instances.Scheduling {
     /// The stream is not closed or disposed. The caller has to take care of that.
     /// </remarks>
     /// <param name="stream">The stream to read data from.</param>
-    /// <returns>True if the file was successfully read or false otherwise.</returns>
     public void Parse(Stream stream) {
-      var reader = new StreamReader(stream);
-      Name = reader.ReadLine().Trim();
-      Description = reader.ReadLine().Trim();
-      var delim = new char[] { ' ', '\t' };
+      using (var reader = new StreamReader(stream, Encoding.UTF8, true, 4092, true)) {
+        Name = reader.ReadLine().Trim();
+        Description = reader.ReadLine().Trim();
+        var delim = new char[] {' ', '\t'};
 
-      var info = reader.ReadLine().Split(delim, StringSplitOptions.RemoveEmptyEntries);
-      Jobs = int.Parse(info[0]);
-      Resources = int.Parse(info[1]);
-      ProcessingTimes = new double[Jobs, Resources];
-      Demands = new int[Jobs, Resources];
+        var info = reader.ReadLine().Split(delim, StringSplitOptions.RemoveEmptyEntries);
+        Jobs = int.Parse(info[0]);
+        Resources = int.Parse(info[1]);
+        ProcessingTimes = new double[Jobs, Resources];
+        Demands = new int[Jobs, Resources];
 
-      for (int k = 0; k < Jobs; k++) {
-        if (reader.EndOfStream) throw new InvalidDataException("Unexpected End of Stream.");
-        var valLine = reader.ReadLine();
-        while (String.IsNullOrWhiteSpace(valLine)) valLine = reader.ReadLine();
-        var vals = valLine.Split(delim, StringSplitOptions.RemoveEmptyEntries);
-        if (vals.Length > 2 * Resources) {
-          if (DueDates == null) DueDates = new double[Jobs];
-          DueDates[k] = double.Parse(vals.Last(), CultureInfo.InvariantCulture.NumberFormat);
-        }
+        for (int k = 0; k < Jobs; k++) {
+          if (reader.EndOfStream) throw new InvalidDataException("Unexpected End of Stream.");
+          var valLine = reader.ReadLine();
+          while (String.IsNullOrWhiteSpace(valLine)) valLine = reader.ReadLine();
+          var vals = valLine.Split(delim, StringSplitOptions.RemoveEmptyEntries);
+          if (vals.Length > 2 * Resources) {
+            if (DueDates == null) DueDates = new double[Jobs];
+            DueDates[k] = double.Parse(vals.Last(), CultureInfo.InvariantCulture.NumberFormat);
+          }
 
-        for (int i = 0; i < Resources; i++) {
-          Demands[k, i] = int.Parse(vals[2 * i]);
-          ProcessingTimes[k, i] = double.Parse(vals[2 * i + 1], CultureInfo.InvariantCulture.NumberFormat);
+          for (int i = 0; i < Resources; i++) {
+            Demands[k, i] = int.Parse(vals[2 * i]);
+            ProcessingTimes[k, i] = double.Parse(vals[2 * i + 1], CultureInfo.InvariantCulture.NumberFormat);
+          }
         }
       }
-
     }
 
+    /// <summary>
+    /// Writes to the given stream data which is expected to be in the JSSP ORLIB format.
+    /// </summary>
+    /// <remarks>
+    /// The stream is not closed or disposed. The caller has to take care of that.
+    /// </remarks>
+    /// <param name="stream">The stream to write data to.</param>
     public void Export(Stream stream) {
-      var writer = new StreamWriter(stream);
-      writer.WriteLine(Name);
-      writer.WriteLine(Description);
-      writer.WriteLine(Jobs.ToString(CultureInfo.InvariantCulture.NumberFormat) + " " + Resources.ToString(CultureInfo.InvariantCulture.NumberFormat));
-      for (int i = 0; i < Jobs; i++) {
-        for (int j = 0; j < Resources; j++) {
-          writer.Write(Demands[i, j] + " " + ProcessingTimes[i, j] + " ");
+      using (var writer = new StreamWriter(stream, Encoding.UTF8, 4092, true)) {
+        writer.WriteLine(Name);
+        writer.WriteLine(Description);
+        writer.WriteLine(Jobs.ToString(CultureInfo.InvariantCulture.NumberFormat) + " " + Resources.ToString(CultureInfo.InvariantCulture.NumberFormat));
+        for (int i = 0; i < Jobs; i++) {
+          for (int j = 0; j < Resources; j++) {
+            writer.Write(Demands[i, j] + " " + ProcessingTimes[i, j] + " ");
+          }
+          if (DueDates != null) writer.Write(DueDates[i].ToString("r", CultureInfo.InvariantCulture.NumberFormat));
+          writer.WriteLine();
         }
-        if (DueDates != null) writer.Write(DueDates[i].ToString(CultureInfo.InvariantCulture.NumberFormat));
-        writer.WriteLine();
+        writer.Flush();
       }
-      writer.Flush();
     }
 
   }
