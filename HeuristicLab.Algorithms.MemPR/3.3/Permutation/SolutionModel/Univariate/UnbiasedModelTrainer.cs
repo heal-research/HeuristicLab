@@ -20,11 +20,9 @@
 #endregion
 
 using System.Linq;
-using HeuristicLab.Algorithms.MemPR.Binary.SolutionModel.Univariate;
 using HeuristicLab.Algorithms.MemPR.Interfaces;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -34,7 +32,9 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation.SolutionModel.Univariate {
   public class UnbiasedModelTrainer<TContext> : NamedItem, ISolutionModelTrainer<TContext>
     where TContext : IPopulationBasedHeuristicAlgorithmContext<ISingleObjectiveHeuristicOptimizationProblem, Encodings.PermutationEncoding.Permutation>,
     ISolutionModelContext<Encodings.PermutationEncoding.Permutation> {
-    
+
+    public bool Bias { get { return false; } }
+
     [StorableConstructor]
     protected UnbiasedModelTrainer(bool deserializing) : base(deserializing) { }
     protected UnbiasedModelTrainer(UnbiasedModelTrainer<TContext> original, Cloner cloner) : base(original, cloner) { }

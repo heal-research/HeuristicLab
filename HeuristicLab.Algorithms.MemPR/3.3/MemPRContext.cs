@@ -196,8 +196,8 @@ namespace HeuristicLab.Algorithms.MemPR {
       get { return breedingPerformanceModel; }
     }
     [Storable]
-    private List<Tuple<double, double, double>> breedingStat;
-    public List<Tuple<double, double, double>> BreedingStat {
+    private List<Tuple<double, double, double, double>> breedingStat;
+    public IEnumerable<Tuple<double, double, double, double>> BreedingStat {
       get { return breedingStat; }
     }
     [Storable]
@@ -206,8 +206,8 @@ namespace HeuristicLab.Algorithms.MemPR {
       get { return relinkingPerformanceModel; }
     }
     [Storable]
-    private List<Tuple<double, double, double>> relinkingStat;
-    public List<Tuple<double, double, double>> RelinkingStat {
+    private List<Tuple<double, double, double, double>> relinkingStat;
+    public IEnumerable<Tuple<double, double, double, double>> RelinkingStat {
       get { return relinkingStat; }
     }
     [Storable]
@@ -216,8 +216,8 @@ namespace HeuristicLab.Algorithms.MemPR {
       get { return delinkingPerformanceModel; }
     }
     [Storable]
-    private List<Tuple<double, double, double>> delinkingStat;
-    public List<Tuple<double, double, double>> DelinkingStat {
+    private List<Tuple<double, double, double, double>> delinkingStat;
+    public IEnumerable<Tuple<double, double, double, double>> DelinkingStat {
       get { return delinkingStat; }
     }
     [Storable]
@@ -227,7 +227,7 @@ namespace HeuristicLab.Algorithms.MemPR {
     }
     [Storable]
     private List<Tuple<double, double>> samplingStat;
-    public List<Tuple<double, double>> SamplingStat {
+    public IEnumerable<Tuple<double, double>> SamplingStat {
       get { return samplingStat; }
     }
     [Storable]
@@ -237,7 +237,7 @@ namespace HeuristicLab.Algorithms.MemPR {
     }
     [Storable]
     private List<Tuple<double, double>> hillclimbingStat;
-    public List<Tuple<double, double>> HillclimbingStat {
+    public IEnumerable<Tuple<double, double>> HillclimbingStat {
       get { return hillclimbingStat; }
     }
     [Storable]
@@ -247,7 +247,7 @@ namespace HeuristicLab.Algorithms.MemPR {
     }
     [Storable]
     private List<Tuple<double, double>> adaptivewalkingStat;
-    public List<Tuple<double, double>> AdaptivewalkingStat {
+    public IEnumerable<Tuple<double, double>> AdaptivewalkingStat {
       get { return adaptivewalkingStat; }
     }
 
@@ -275,11 +275,11 @@ namespace HeuristicLab.Algorithms.MemPR {
       byAdaptivewalking = cloner.Clone(original.byAdaptivewalking);
       random = cloner.Clone(original.random);
       breedingPerformanceModel = cloner.Clone(original.breedingPerformanceModel);
-      breedingStat = original.breedingStat.Select(x => Tuple.Create(x.Item1, x.Item2, x.Item3)).ToList();
+      breedingStat = original.breedingStat.Select(x => Tuple.Create(x.Item1, x.Item2, x.Item3, x.Item4)).ToList();
       relinkingPerformanceModel = cloner.Clone(original.relinkingPerformanceModel);
-      relinkingStat = original.relinkingStat.Select(x => Tuple.Create(x.Item1, x.Item2, x.Item3)).ToList();
+      relinkingStat = original.relinkingStat.Select(x => Tuple.Create(x.Item1, x.Item2, x.Item3, x.Item4)).ToList();
       delinkingPerformanceModel = cloner.Clone(original.delinkingPerformanceModel);
-      delinkingStat = original.delinkingStat.Select(x => Tuple.Create(x.Item1, x.Item2, x.Item3)).ToList();
+      delinkingStat = original.delinkingStat.Select(x => Tuple.Create(x.Item1, x.Item2, x.Item3, x.Item4)).ToList();
       samplingPerformanceModel = cloner.Clone(original.samplingPerformanceModel);
       samplingStat = original.samplingStat.Select(x => Tuple.Create(x.Item1, x.Item2)).ToList();
       hillclimbingPerformanceModel = cloner.Clone(original.hillclimbingPerformanceModel);
@@ -309,9 +309,9 @@ namespace HeuristicLab.Algorithms.MemPR {
       Parameters.Add(byAdaptivewalking = new ValueParameter<IntValue>("ByAdaptivewalking", new IntValue(0)));
       Parameters.Add(random = new ValueParameter<IRandom>("Random", new MersenneTwister()));
 
-      breedingStat = new List<Tuple<double, double, double>>();
-      relinkingStat = new List<Tuple<double, double, double>>();
-      delinkingStat = new List<Tuple<double, double, double>>();
+      breedingStat = new List<Tuple<double, double, double, double>>();
+      relinkingStat = new List<Tuple<double, double, double, double>>();
+      delinkingStat = new List<Tuple<double, double, double, double>>();
       samplingStat = new List<Tuple<double, double>>();
       hillclimbingStat = new List<Tuple<double, double>>();
       adaptivewalkingStat = new List<Tuple<double, double>>();
@@ -343,9 +343,9 @@ namespace HeuristicLab.Algorithms.MemPR {
     }
 
     public void RelearnBreedingPerformanceModel() {
-      breedingPerformanceModel = RunRegression(PrepareRegression(BreedingStat), breedingPerformanceModel).Model;
+      breedingPerformanceModel = RunRegression(PrepareRegression(ToListRow(breedingStat)), breedingPerformanceModel).Model;
     }
-    public bool BreedingSuited(ISingleObjectiveSolutionScope<TSolution> p1, ISingleObjectiveSolutionScope<TSolution> p2) {
+    public bool BreedingSuited(ISingleObjectiveSolutionScope<TSolution> p1, ISingleObjectiveSolutionScope<TSolution> p2, double dist) {
       if (breedingPerformanceModel == null) return true;
       double minI1 = double.MaxValue, minI2 = double.MaxValue, maxI1 = double.MinValue, maxI2 = double.MinValue;
       foreach (var d in BreedingStat) {
@@ -354,20 +354,16 @@ namespace HeuristicLab.Algorithms.MemPR {
         if (d.Item2 < minI2) minI2 = d.Item2;
         if (d.Item2 > maxI2) maxI2 = d.Item2;
       }
-      if (IsBetter(p1, p2)) {
-        if (p1.Fitness < minI1 || p1.Fitness > maxI1 || p2.Fitness < minI2 || p2.Fitness > maxI2)
-          return true;
-        return Random.NextDouble() < ProbabilityAccept3dModel(p1.Fitness, p2.Fitness, breedingPerformanceModel);
-      }
-      if (p1.Fitness < minI2 || p1.Fitness > maxI2 || p2.Fitness < minI1 || p2.Fitness > maxI1)
+      if (p1.Fitness < minI1 || p1.Fitness > maxI1 || p2.Fitness < minI2 || p2.Fitness > maxI2)
         return true;
-      return Random.NextDouble() < ProbabilityAccept3dModel(p2.Fitness, p1.Fitness, breedingPerformanceModel);
+      
+      return Random.NextDouble() < ProbabilityAcceptAbsolutePerformanceModel(new List<double> { p1.Fitness, p2.Fitness, dist }, breedingPerformanceModel);
     }
 
     public void RelearnRelinkingPerformanceModel() {
-      relinkingPerformanceModel = RunRegression(PrepareRegression(RelinkingStat), relinkingPerformanceModel).Model;
+      relinkingPerformanceModel = RunRegression(PrepareRegression(ToListRow(relinkingStat)), relinkingPerformanceModel).Model;
     }
-    public bool RelinkSuited(ISingleObjectiveSolutionScope<TSolution> p1, ISingleObjectiveSolutionScope<TSolution> p2) {
+    public bool RelinkSuited(ISingleObjectiveSolutionScope<TSolution> p1, ISingleObjectiveSolutionScope<TSolution> p2, double dist) {
       if (relinkingPerformanceModel == null) return true;
       double minI1 = double.MaxValue, minI2 = double.MaxValue, maxI1 = double.MinValue, maxI2 = double.MinValue;
       foreach (var d in RelinkingStat) {
@@ -376,20 +372,19 @@ namespace HeuristicLab.Algorithms.MemPR {
         if (d.Item2 < minI2) minI2 = d.Item2;
         if (d.Item2 > maxI2) maxI2 = d.Item2;
       }
-      if (IsBetter(p1, p2)) {
-        if (p1.Fitness < minI1 || p1.Fitness > maxI1 || p2.Fitness < minI2 || p2.Fitness > maxI2)
-          return true;
-        return Random.NextDouble() < ProbabilityAccept3dModel(p1.Fitness, p2.Fitness, relinkingPerformanceModel);
-      }
-      if (p1.Fitness < minI2 || p1.Fitness > maxI2 || p2.Fitness < minI1 || p2.Fitness > maxI1)
+      if (p1.Fitness < minI1 || p1.Fitness > maxI1 || p2.Fitness < minI2 || p2.Fitness > maxI2)
         return true;
-      return Random.NextDouble() < ProbabilityAccept3dModel(p2.Fitness, p1.Fitness, relinkingPerformanceModel);
+
+      if (IsBetter(p1, p2)) {
+        return Random.NextDouble() < ProbabilityAcceptRelativePerformanceModel(p1.Fitness, new List<double> { p1.Fitness, p2.Fitness, dist }, relinkingPerformanceModel);
+      }
+      return Random.NextDouble() < ProbabilityAcceptRelativePerformanceModel(p2.Fitness, new List<double> { p1.Fitness, p2.Fitness, dist }, relinkingPerformanceModel);
     }
 
     public void RelearnDelinkingPerformanceModel() {
-      delinkingPerformanceModel = RunRegression(PrepareRegression(DelinkingStat), delinkingPerformanceModel).Model;
+      delinkingPerformanceModel = RunRegression(PrepareRegression(ToListRow(delinkingStat)), delinkingPerformanceModel).Model;
     }
-    public bool DelinkSuited(ISingleObjectiveSolutionScope<TSolution> p1, ISingleObjectiveSolutionScope<TSolution> p2) {
+    public bool DelinkSuited(ISingleObjectiveSolutionScope<TSolution> p1, ISingleObjectiveSolutionScope<TSolution> p2, double dist) {
       if (delinkingPerformanceModel == null) return true;
       double minI1 = double.MaxValue, minI2 = double.MaxValue, maxI1 = double.MinValue, maxI2 = double.MinValue;
       foreach (var d in DelinkingStat) {
@@ -398,89 +393,68 @@ namespace HeuristicLab.Algorithms.MemPR {
         if (d.Item2 < minI2) minI2 = d.Item2;
         if (d.Item2 > maxI2) maxI2 = d.Item2;
       }
-      if (IsBetter(p1, p2)) {
-        if (p1.Fitness < minI1 || p1.Fitness > maxI1 || p2.Fitness < minI2 || p2.Fitness > maxI2)
-          return true;
-        return Random.NextDouble() < ProbabilityAccept3dModel(p1.Fitness, p2.Fitness, delinkingPerformanceModel);
-      }
-      if (p1.Fitness < minI2 || p1.Fitness > maxI2 || p2.Fitness < minI1 || p2.Fitness > maxI1)
+      if (p1.Fitness < minI1 || p1.Fitness > maxI1 || p2.Fitness < minI2 || p2.Fitness > maxI2)
         return true;
-      return Random.NextDouble() < ProbabilityAccept3dModel(p2.Fitness, p1.Fitness, delinkingPerformanceModel);
+      if (IsBetter(p1, p2)) {
+        return Random.NextDouble() < ProbabilityAcceptRelativePerformanceModel(p1.Fitness, new List<double> { p1.Fitness, p2.Fitness, dist }, delinkingPerformanceModel);
+      }
+      return Random.NextDouble() < ProbabilityAcceptRelativePerformanceModel(p2.Fitness, new List<double> { p1.Fitness, p2.Fitness, dist }, delinkingPerformanceModel);
     }
 
     public void RelearnSamplingPerformanceModel() {
-      samplingPerformanceModel = RunRegression(PrepareRegression(SamplingStat), samplingPerformanceModel).Model;
+      samplingPerformanceModel = RunRegression(PrepareRegression(ToListRow(samplingStat)), samplingPerformanceModel).Model;
     }
-    public bool SamplingSuited() {
+    public bool SamplingSuited(double avgDist) {
       if (samplingPerformanceModel == null) return true;
-      return Random.NextDouble() < ProbabilityAccept2dModel(Population.Average(x => x.Fitness), samplingPerformanceModel);
+      if (avgDist < samplingStat.Min(x => x.Item1) || avgDist > samplingStat.Max(x => x.Item1)) return true;
+      return Random.NextDouble() < ProbabilityAcceptAbsolutePerformanceModel(new List<double> { avgDist }, samplingPerformanceModel);
     }
 
     public void RelearnHillclimbingPerformanceModel() {
-      hillclimbingPerformanceModel = RunRegression(PrepareRegression(HillclimbingStat), hillclimbingPerformanceModel).Model;
+      hillclimbingPerformanceModel = RunRegression(PrepareRegression(ToListRow(hillclimbingStat)), hillclimbingPerformanceModel).Model;
     }
     public bool HillclimbingSuited(ISingleObjectiveSolutionScope<TSolution> scope) {
-      if (hillclimbingPerformanceModel == null) return true;
-      if (scope.Fitness < HillclimbingStat.Min(x => x.Item1) || scope.Fitness > HillclimbingStat.Max(x => x.Item1))
-        return true;
-      return Random.NextDouble() < ProbabilityAccept2dModel(scope.Fitness, hillclimbingPerformanceModel);
+      return HillclimbingSuited(scope.Fitness);
     }
     public bool HillclimbingSuited(double startingFitness) {
       if (hillclimbingPerformanceModel == null) return true;
       if (startingFitness < HillclimbingStat.Min(x => x.Item1) || startingFitness > HillclimbingStat.Max(x => x.Item1))
         return true;
-      return Random.NextDouble() < ProbabilityAccept2dModel(startingFitness, hillclimbingPerformanceModel);
+      return Random.NextDouble() < ProbabilityAcceptRelativePerformanceModel(startingFitness, new List<double> { startingFitness }, hillclimbingPerformanceModel);
     }
 
     public void RelearnAdaptiveWalkPerformanceModel() {
-      adaptiveWalkPerformanceModel = RunRegression(PrepareRegression(AdaptivewalkingStat), adaptiveWalkPerformanceModel).Model;
+      adaptiveWalkPerformanceModel = RunRegression(PrepareRegression(ToListRow(adaptivewalkingStat)), adaptiveWalkPerformanceModel).Model;
     }
     public bool AdaptivewalkingSuited(ISingleObjectiveSolutionScope<TSolution> scope) {
-      if (adaptiveWalkPerformanceModel == null) return true;
-      if (scope.Fitness < AdaptivewalkingStat.Min(x => x.Item1) || scope.Fitness > AdaptivewalkingStat.Max(x => x.Item1))
-        return true;
-      return Random.NextDouble() < ProbabilityAccept2dModel(scope.Fitness, adaptiveWalkPerformanceModel);
+      return AdaptivewalkingSuited(scope.Fitness);
     }
     public bool AdaptivewalkingSuited(double startingFitness) {
       if (adaptiveWalkPerformanceModel == null) return true;
       if (startingFitness < AdaptivewalkingStat.Min(x => x.Item1) || startingFitness > AdaptivewalkingStat.Max(x => x.Item1))
         return true;
-      return Random.NextDouble() < ProbabilityAccept2dModel(startingFitness, adaptiveWalkPerformanceModel);
+      return Random.NextDouble() < ProbabilityAcceptAbsolutePerformanceModel(new List<double> { startingFitness }, adaptiveWalkPerformanceModel);
     }
 
-    public IConfidenceRegressionSolution GetSolution(IConfidenceRegressionModel model, List<Tuple<double, double>> data) {
-      return new ConfidenceRegressionSolution(model, PrepareRegression(data));
+    public IConfidenceRegressionSolution GetSolution(IConfidenceRegressionModel model, IEnumerable<Tuple<double, double>> data) {
+      return new ConfidenceRegressionSolution(model, PrepareRegression(ToListRow(data.ToList())));
     }
-    public IConfidenceRegressionSolution GetSolution(IConfidenceRegressionModel model, List<Tuple<double, double, double>> data) {
-      return new ConfidenceRegressionSolution(model, PrepareRegression(data));
+    public IConfidenceRegressionSolution GetSolution(IConfidenceRegressionModel model, IEnumerable<Tuple<double, double, double>> data) {
+      return new ConfidenceRegressionSolution(model, PrepareRegression(ToListRow(data.ToList())));
+    }
+    public IConfidenceRegressionSolution GetSolution(IConfidenceRegressionModel model, IEnumerable<Tuple<double, double, double, double>> data) {
+      return new ConfidenceRegressionSolution(model, PrepareRegression(ToListRow(data.ToList())));
     }
 
-    protected RegressionProblemData PrepareRegression(List<Tuple<double, double>> sample) {
-      var inCol = new List<double>();
-      var outCol = new List<double>();
+    protected RegressionProblemData PrepareRegression(List<List<double>> sample) {
+      var columns = sample.First().Select(y => new List<double>()).ToList();
       foreach (var next in sample.Shuffle(Random)) {
-        inCol.Add(next.Item1);
-        outCol.Add(next.Item2);
+        for (var i = 0; i < next.Count; i++) {
+          columns[i].Add(next[i]);
+        }
       }
-      var ds = new Dataset(new[] { "in", "out" }, new[] { inCol, outCol });
-      var regPrb = new RegressionProblemData(ds, new[] { "in" }, "out") {
-        TrainingPartition = { Start = 0, End = Math.Min(50, sample.Count) },
-        TestPartition = { Start = Math.Min(50, sample.Count), End = sample.Count }
-      };
-      return regPrb;
-    }
-
-    protected RegressionProblemData PrepareRegression(List<Tuple<double, double, double>> sample) {
-      var in1Col = new List<double>();
-      var in2Col = new List<double>();
-      var outCol = new List<double>();
-      foreach (var next in sample.Shuffle(Random)) {
-        in1Col.Add(next.Item1);
-        in2Col.Add(next.Item2);
-        outCol.Add(next.Item3);
-      }
-      var ds = new Dataset(new[] { "in1", "in2", "out" }, new[] { in1Col, in2Col, outCol });
-      var regPrb = new RegressionProblemData(ds, new[] { "in1", "in2" }, "out") {
+      var ds = new Dataset(columns.Select((v, i) => i < columns.Count - 1 ? "in" + i : "out").ToList(), columns);
+      var regPrb = new RegressionProblemData(ds, Enumerable.Range(0, columns.Count - 1).Select(x => "in" + x), "out") {
         TrainingPartition = { Start = 0, End = Math.Min(50, sample.Count) },
         TestPartition = { Start = Math.Min(50, sample.Count), End = sample.Count }
       };
@@ -524,24 +498,41 @@ namespace HeuristicLab.Algorithms.MemPR {
       }
     }
 
-    private double ProbabilityAccept2dModel(double a, IConfidenceRegressionModel model) {
-      var ds = new Dataset(new[] { "in", "out" }, new[] { new List<double> { a }, new List<double> { double.NaN } });
+    private double ProbabilityAcceptAbsolutePerformanceModel(List<double> inputs, IConfidenceRegressionModel model) {
+      var inputVariables = inputs.Select((v, i) => "in" + i);
+      var ds = new Dataset(inputVariables.Concat( new [] { "out" }), inputs.Select(x => new List<double> { x }).Concat(new [] { new List<double> { double.NaN } }));
       var mean = model.GetEstimatedValues(ds, new[] { 0 }).Single();
       var sdev = Math.Sqrt(model.GetEstimatedVariances(ds, new[] { 0 }).Single());
 
+      // calculate the fitness goal
       var goal = Maximization ? Population.Min(x => x.Fitness) : Population.Max(x => x.Fitness);
       var z = (goal - mean) / sdev;
-      return Maximization ? 1.0 - Phi(z) /* P(X >= z) */ : Phi(z); // P(X <= z)
+      // return the probability of achieving or surpassing that goal
+      var y = alglib.invnormaldistribution(z);
+      return Maximization ? 1.0 - y /* P(X >= z) */ : y; // P(X <= z)
     }
 
-    private double ProbabilityAccept3dModel(double a, double b, IConfidenceRegressionModel model) {
-      var ds = new Dataset(new[] { "in1", "in2", "out" }, new[] { new List<double> { a }, new List<double> { b }, new List<double> { double.NaN } });
+    private double ProbabilityAcceptRelativePerformanceModel(double basePerformance, List<double> inputs, IConfidenceRegressionModel model) {
+      var inputVariables = inputs.Select((v, i) => "in" + i);
+      var ds = new Dataset(inputVariables.Concat(new[] { "out" }), inputs.Select(x => new List<double> { x }).Concat(new[] { new List<double> { double.NaN } }));
       var mean = model.GetEstimatedValues(ds, new[] { 0 }).Single();
       var sdev = Math.Sqrt(model.GetEstimatedVariances(ds, new[] { 0 }).Single());
 
-      var goal = Maximization ? Population.Min(x => x.Fitness) : Population.Max(x => x.Fitness);
+      // calculate the improvement goal
+      var goal = Maximization ? Population.Min(x => x.Fitness) - basePerformance : basePerformance - Population.Max(x => x.Fitness);
       var z = (goal - mean) / sdev;
-      return Maximization ? 1.0 - Phi(z) /* P(X >= z) */ : Phi(z); // P(X <= z)
+      // return the probability of achieving or surpassing that goal
+      return 1.0 - alglib.invnormaldistribution(z); /* P(X >= z) */
+    }
+
+    private static List<List<double>> ToListRow(List<Tuple<double, double>> rows) {
+      return rows.Select(x => new List<double> { x.Item1, x.Item2 }).ToList();
+    }
+    private static List<List<double>> ToListRow(List<Tuple<double, double, double>> rows) {
+      return rows.Select(x => new List<double> { x.Item1, x.Item2, x.Item3 }).ToList();
+    }
+    private static List<List<double>> ToListRow(List<Tuple<double, double, double, double>> rows) {
+      return rows.Select(x => new List<double> { x.Item1, x.Item2, x.Item3, x.Item4 }).ToList();
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -555,34 +546,40 @@ namespace HeuristicLab.Algorithms.MemPR {
         || !Maximization && a < b;
     }
 
-    public void AddBreedingResult(ISingleObjectiveSolutionScope<TSolution> a, ISingleObjectiveSolutionScope<TSolution> b, ISingleObjectiveSolutionScope<TSolution> child) {
+    public void AddBreedingResult(ISingleObjectiveSolutionScope<TSolution> a, ISingleObjectiveSolutionScope<TSolution> b, double parentDist, ISingleObjectiveSolutionScope<TSolution> child) {
       if (IsBetter(a, b))
-        BreedingStat.Add(Tuple.Create(a.Fitness, b.Fitness, child.Fitness));
-      else BreedingStat.Add(Tuple.Create(b.Fitness, a.Fitness, child.Fitness));
+        breedingStat.Add(Tuple.Create(a.Fitness, b.Fitness, parentDist, child.Fitness));
+      else breedingStat.Add(Tuple.Create(b.Fitness, a.Fitness, parentDist, child.Fitness));
+      if (breedingStat.Count % 10 == 0) RelearnBreedingPerformanceModel();
     }
 
-    public void AddRelinkingResult(ISingleObjectiveSolutionScope<TSolution> a, ISingleObjectiveSolutionScope<TSolution> b, ISingleObjectiveSolutionScope<TSolution> child) {
+    public void AddRelinkingResult(ISingleObjectiveSolutionScope<TSolution> a, ISingleObjectiveSolutionScope<TSolution> b, double parentDist, ISingleObjectiveSolutionScope<TSolution> child) {
       if (IsBetter(a, b))
-        RelinkingStat.Add(Tuple.Create(a.Fitness, b.Fitness, child.Fitness));
-      else RelinkingStat.Add(Tuple.Create(b.Fitness, a.Fitness, child.Fitness));
+        relinkingStat.Add(Tuple.Create(a.Fitness, b.Fitness, parentDist, Maximization ? child.Fitness - a.Fitness : a.Fitness - child.Fitness));
+      else relinkingStat.Add(Tuple.Create(a.Fitness, b.Fitness, parentDist, Maximization ? child.Fitness - b.Fitness : b.Fitness - child.Fitness));
+      if (relinkingStat.Count % 10 == 0) RelearnRelinkingPerformanceModel();
     }
 
-    public void AddDelinkingResult(ISingleObjectiveSolutionScope<TSolution> a, ISingleObjectiveSolutionScope<TSolution> b, ISingleObjectiveSolutionScope<TSolution> child) {
+    public void AddDelinkingResult(ISingleObjectiveSolutionScope<TSolution> a, ISingleObjectiveSolutionScope<TSolution> b, double parentDist, ISingleObjectiveSolutionScope<TSolution> child) {
       if (IsBetter(a, b))
-        DelinkingStat.Add(Tuple.Create(a.Fitness, b.Fitness, child.Fitness));
-      else DelinkingStat.Add(Tuple.Create(b.Fitness, a.Fitness, child.Fitness));
+        delinkingStat.Add(Tuple.Create(a.Fitness, b.Fitness, parentDist, Maximization ? child.Fitness - a.Fitness : a.Fitness - child.Fitness));
+      else delinkingStat.Add(Tuple.Create(a.Fitness, b.Fitness, parentDist, Maximization ? child.Fitness - b.Fitness : b.Fitness - child.Fitness));
+      if (delinkingStat.Count % 10 == 0) RelearnDelinkingPerformanceModel();
     }
 
-    public void AddSamplingResult(ISingleObjectiveSolutionScope<TSolution> sample) {
-      SamplingStat.Add(Tuple.Create(Population.Average(x => x.Fitness), sample.Fitness));
+    public void AddSamplingResult(ISingleObjectiveSolutionScope<TSolution> sample, double avgDist) {
+      samplingStat.Add(Tuple.Create(avgDist, sample.Fitness));
+      if (samplingStat.Count % 10 == 0) RelearnSamplingPerformanceModel();
     }
 
     public void AddHillclimbingResult(ISingleObjectiveSolutionScope<TSolution> input, ISingleObjectiveSolutionScope<TSolution> outcome) {
-      HillclimbingStat.Add(Tuple.Create(input.Fitness, outcome.Fitness));
+      hillclimbingStat.Add(Tuple.Create(input.Fitness, Maximization ? outcome.Fitness - input.Fitness : input.Fitness - outcome.Fitness));
+      if (hillclimbingStat.Count % 10 == 0) RelearnHillclimbingPerformanceModel();
     }
 
-    public void AddTabuwalkingResult(ISingleObjectiveSolutionScope<TSolution> input, ISingleObjectiveSolutionScope<TSolution> outcome) {
-      AdaptivewalkingStat.Add(Tuple.Create(input.Fitness, outcome.Fitness));
+    public void AddAdaptivewalkingResult(ISingleObjectiveSolutionScope<TSolution> input, ISingleObjectiveSolutionScope<TSolution> outcome) {
+      adaptivewalkingStat.Add(Tuple.Create(input.Fitness, outcome.Fitness));
+      if (adaptivewalkingStat.Count % 10 == 0) RelearnAdaptiveWalkPerformanceModel();
     }
 
     #region IExecutionContext members
@@ -608,7 +605,7 @@ namespace HeuristicLab.Algorithms.MemPR {
     // from http://www.johndcook.com/blog/csharp_phi/
     // license: "This code is in the public domain. Do whatever you want with it, no strings attached."
     // added: 2016-11-19 21:46 CET
-    protected static double Phi(double x) {
+    /*protected static double Phi(double x) {
       // constants
       double a1 = 0.254829592;
       double a2 = -0.284496736;
@@ -628,7 +625,7 @@ namespace HeuristicLab.Algorithms.MemPR {
       double y = 1.0 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * Math.Exp(-x * x);
 
       return 0.5 * (1.0 + sign * y);
-    }
+    }*/
     #endregion
 
     #region Engine Helper

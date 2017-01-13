@@ -35,6 +35,8 @@ namespace HeuristicLab.Algorithms.MemPR.Binary.SolutionModel.Univariate {
   public class BiasedModelTrainer<TContext> : ParameterizedNamedItem, ISolutionModelTrainer<TContext>
     where TContext : IPopulationBasedHeuristicAlgorithmContext<ISingleObjectiveHeuristicOptimizationProblem, BinaryVector>, ISolutionModelContext<BinaryVector> {
     
+    public bool Bias { get { return true; } }
+
     [Storable]
     private IValueParameter<EnumValue<ModelBiasOptions>> modelBiasParameter;
     public ModelBiasOptions ModelBias {

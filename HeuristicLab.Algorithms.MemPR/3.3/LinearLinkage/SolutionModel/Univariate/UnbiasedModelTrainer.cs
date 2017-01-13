@@ -32,7 +32,9 @@ namespace HeuristicLab.Algorithms.MemPR.Grouping.SolutionModel.Univariate {
   [StorableClass]
   public class UniasedModelTrainer<TContext> : NamedItem, ISolutionModelTrainer<TContext>
     where TContext : IPopulationBasedHeuristicAlgorithmContext<ISingleObjectiveHeuristicOptimizationProblem, LinearLinkage>, ISolutionModelContext<LinearLinkage> {
-    
+
+    public bool Bias { get { return false; } }
+
     [StorableConstructor]
     protected UniasedModelTrainer(bool deserializing) : base(deserializing) { }
     protected UniasedModelTrainer(UniasedModelTrainer<TContext> original, Cloner cloner) : base(original, cloner) { }

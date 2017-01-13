@@ -24,7 +24,6 @@ using HeuristicLab.Algorithms.MemPR.Interfaces;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -35,6 +34,8 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation.SolutionModel.Univariate {
   public class BiasedModelTrainer<TContext> : ParameterizedNamedItem, ISolutionModelTrainer<TContext>
     where TContext : IPopulationBasedHeuristicAlgorithmContext<ISingleObjectiveHeuristicOptimizationProblem, Encodings.PermutationEncoding.Permutation>,
     ISolutionModelContext<Encodings.PermutationEncoding.Permutation>, IEvaluationServiceContext<Encodings.PermutationEncoding.Permutation> {
+
+    public bool Bias { get { return true; } }
 
     [Storable]
     private IValueParameter<EnumValue<ModelBiasOptions>> modelBiasParameter;

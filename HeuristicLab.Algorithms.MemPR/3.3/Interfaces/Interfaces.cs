@@ -49,6 +49,7 @@ namespace HeuristicLab.Algorithms.MemPR.Interfaces {
    *************************************************/
    
   public interface ISolutionModelTrainer<TContext> : IItem {
+    bool Bias { get; }
     void TrainModel(TContext context);
   }
 

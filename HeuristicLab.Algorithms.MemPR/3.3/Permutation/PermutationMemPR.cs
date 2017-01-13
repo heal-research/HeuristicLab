@@ -51,7 +51,12 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation {
     public PermutationMemPR() {
       foreach (var trainer in ApplicationManager.Manager.GetInstances<ISolutionModelTrainer<PermutationMemPRPopulationContext>>())
         SolutionModelTrainerParameter.ValidValues.Add(trainer);
-      
+
+      if (SolutionModelTrainerParameter.ValidValues.Count > 0) {
+        var unbiased = SolutionModelTrainerParameter.ValidValues.FirstOrDefault(x => !x.Bias);
+        if (unbiased != null) SolutionModelTrainerParameter.Value = unbiased;
+      }
+
       foreach (var localSearch in ApplicationManager.Manager.GetInstances<ILocalSearch<PermutationMemPRSolutionContext>>()) {
         LocalSearchParameter.ValidValues.Add(localSearch);
       }
@@ -289,7 +294,7 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation {
         var bestOfTheRestF = double.NaN;
         InversionMove bestOfTheRest = null;
         var improved = false;
-
+        
         foreach (var opt in ExhaustiveInversionMoveGenerator.Generate(current).Shuffle(random)) {
           var prev = opt.Index1 - 1;
           var next = (opt.Index2 + 1) % current.Length;
@@ -394,21 +399,24 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation {
       cache.Add(p1.Solution);
       cache.Add(p2.Solution);
 
-      var cacheHits = 0;
+      var cacheHits = new Dictionary<int, int>() { { 0, 0 }, { 1, 0 }, { 2, 0 } };
       var evaluations = 0;
       ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> offspring = null;
       var probe = Context.ToScope((Encodings.PermutationEncoding.Permutation)p1.Solution.Clone());
       while (evaluations < p1.Solution.Length) {
         Encodings.PermutationEncoding.Permutation c = null;
-        var xochoice = Context.Random.Next(3);
+        var xochoice = cacheHits.SampleRandom(Context.Random).Key;
         switch (xochoice) {
           case 0: c = CyclicCrossover2.Apply(Context.Random, p1.Solution, p2.Solution); break;
           case 1: c = PartiallyMatchedCrossover.Apply(Context.Random, p1.Solution, p2.Solution); break;
           case 2: c = UniformLikeCrossover.Apply(Context.Random, p1.Solution, p2.Solution); break;
         }
         if (cache.Contains(c)) {
-          cacheHits++;
-          if (cacheHits > 10) break;
+          cacheHits[xochoice]++;
+          if (cacheHits[xochoice] > 10) {
+            cacheHits.Remove(xochoice);
+            if (cacheHits.Count == 0) break;
+          }
           continue;
         }
         probe.Solution = c;
@@ -430,21 +438,24 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation {
       cache.Add(p1.Solution);
       cache.Add(p2.Solution);
 
-      var cacheHits = 0;
+      var cacheHits = new Dictionary<int, int>() { { 0, 0 }, { 1, 0 }, { 2, 0 } };
       var evaluations = 0;
       ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> offspring = null;
       var probe = Context.ToScope((Encodings.PermutationEncoding.Permutation)p1.Solution.Clone());
       while (evaluations < p1.Solution.Length) {
         Encodings.PermutationEncoding.Permutation c = null;
-        var xochoice = Context.Random.Next(3);
+        var xochoice = cacheHits.SampleRandom(Context.Random).Key;
         switch (xochoice) {
           case 0: c = OrderCrossover2.Apply(Context.Random, p1.Solution, p2.Solution); break;
           case 1: c = PartiallyMatchedCrossover.Apply(Context.Random, p1.Solution, p2.Solution); break;
           case 2: c = MaximalPreservativeCrossover.Apply(Context.Random, p1.Solution, p2.Solution); break;
         }
         if (cache.Contains(c)) {
-          cacheHits++;
-          if (cacheHits > 10) break;
+          cacheHits[xochoice]++;
+          if (cacheHits[xochoice] > 10) {
+            cacheHits.Remove(xochoice);
+            if (cacheHits.Count == 0) break;
+          }
           continue;
         }
         probe.Solution = c;
@@ -466,21 +477,24 @@ namespace HeuristicLab.Algorithms.MemPR.Permutation {
       cache.Add(p1.Solution);
       cache.Add(p2.Solution);
 
-      var cacheHits = 0;
+      var cacheHits = new Dictionary<int, int>() { { 0, 0 }, { 1, 0 }, { 2, 0 } };
       var evaluations = 0;
       ISingleObjectiveSolutionScope<Encodings.PermutationEncoding.Permutation> offspring = null;
       var probe = Context.ToScope((Encodings.PermutationEncoding.Permutation)p1.Solution.Clone());
       while (evaluations <= p1.Solution.Length) {
         Encodings.PermutationEncoding.Permutation c = null;
-        var xochoice = Context.Random.Next(3);
+        var xochoice = cacheHits.SampleRandom(Context.Random).Key;
         switch (xochoice) {
           case 0: c = OrderCrossover2.Apply(Context.Random, p1.Solution, p2.Solution); break;
           case 1: c = EdgeRecombinationCrossover.Apply(Context.Random, p1.Solution, p2.Solution); break;
           case 2: c = MaximalPreservativeCrossover.Apply(Context.Random, p1.Solution, p2.Solution); break;
         }
         if (cache.Contains(c)) {
-          cacheHits++;
-          if (cacheHits > 10) break;
+          cacheHits[xochoice]++;
+          if (cacheHits[xochoice] > 10) {
+            cacheHits.Remove(xochoice);
+            if (cacheHits.Count == 0) break;
+          }
           continue;
         }
         probe.Solution = c;

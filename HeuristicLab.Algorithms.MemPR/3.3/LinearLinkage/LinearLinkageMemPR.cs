@@ -31,6 +31,7 @@ using HeuristicLab.Encodings.LinearLinkageEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
+using HeuristicLab.Random;
 
 namespace HeuristicLab.Algorithms.MemPR.Grouping {
   [Item("MemPR (linear linkage)", "MemPR implementation for linear linkage vectors.")]
@@ -43,7 +44,12 @@ namespace HeuristicLab.Algorithms.MemPR.Grouping {
     public LinearLinkageMemPR() {
       foreach (var trainer in ApplicationManager.Manager.GetInstances<ISolutionModelTrainer<LinearLinkageMemPRPopulationContext>>())
         SolutionModelTrainerParameter.ValidValues.Add(trainer);
-      
+
+      if (SolutionModelTrainerParameter.ValidValues.Count > 0) {
+        var unbiased = SolutionModelTrainerParameter.ValidValues.FirstOrDefault(x => !x.Bias);
+        if (unbiased != null) SolutionModelTrainerParameter.Value = unbiased;
+      }
+
       foreach (var localSearch in ApplicationManager.Manager.GetInstances<ILocalSearch<LinearLinkageMemPRSolutionContext>>()) {
         LocalSearchParameter.ValidValues.Add(localSearch);
       }
@@ -244,19 +250,23 @@ namespace HeuristicLab.Algorithms.MemPR.Grouping {
       cache.Add(p1.Solution);
       cache.Add(p2.Solution);
 
-      var cachehits = 0;
+      var cacheHits = new Dictionary<int, int>() { { 0, 0 }, { 1, 0 } };
       var evaluations = 0;
       var probe = Context.ToScope((LinearLinkage)p1.Solution.Clone());
       ISingleObjectiveSolutionScope<LinearLinkage> offspring = null;
       while (evaluations < p1.Solution.Length) {
         LinearLinkage c = null;
-        if (Context.Random.NextDouble() < 0.8)
-          c = GroupCrossover.Apply(Context.Random, p1.Solution, p2.Solution);
-        else c = SinglePointCrossover.Apply(Context.Random, p1.Solution, p2.Solution);
-        
+        var xochoice = cacheHits.SampleRandom(Context.Random).Key;
+        switch (xochoice) {
+          case 0: c = GroupCrossover.Apply(Context.Random, p1.Solution, p2.Solution); break;
+          case 1: c = SinglePointCrossover.Apply(Context.Random, p1.Solution, p2.Solution); break;
+        }
         if (cache.Contains(c)) {
-          cachehits++;
-          if (cachehits > 10) break;
+          cacheHits[xochoice]++;
+          if (cacheHits[xochoice] > 10) {
+            cacheHits.Remove(xochoice);
+            if (cacheHits.Count == 0) break;
+          }
           continue;
         }
         probe.Solution = c;

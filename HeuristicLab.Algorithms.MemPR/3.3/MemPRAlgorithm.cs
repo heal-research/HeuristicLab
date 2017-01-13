@@ -137,19 +137,26 @@ namespace HeuristicLab.Algorithms.MemPR {
 
     [Storable]
     private BestAverageWorstQualityAnalyzer qualityAnalyzer;
+    [Storable]
+    private QualityPerClockAnalyzer qualityPerClockAnalyzer;
+    [Storable]
+    private QualityPerEvaluationsAnalyzer qualityPerEvaluationsAnalyzer;
 
     [StorableConstructor]
     protected MemPRAlgorithm(bool deserializing) : base(deserializing) { }
     protected MemPRAlgorithm(MemPRAlgorithm<TProblem, TSolution, TPopulationContext, TSolutionContext> original, Cloner cloner) : base(original, cloner) {
       context = cloner.Clone(original.context);
       qualityAnalyzer = cloner.Clone(original.qualityAnalyzer);
+      qualityPerClockAnalyzer = cloner.Clone(original.qualityPerClockAnalyzer);
+      qualityPerEvaluationsAnalyzer = cloner.Clone(original.qualityPerEvaluationsAnalyzer);
+
       RegisterEventHandlers();
     }
     protected MemPRAlgorithm() {
       Parameters.Add(new ValueParameter<IAnalyzer>("Analyzer", "The analyzer to apply to the population.", new MultiAnalyzer()));
       Parameters.Add(new FixedValueParameter<IntValue>("MaximumPopulationSize", "The maximum size of the population that is evolved.", new IntValue(20)));
       Parameters.Add(new OptionalValueParameter<IntValue>("MaximumEvaluations", "The maximum number of solution evaluations."));
-      Parameters.Add(new OptionalValueParameter<TimeSpanValue>("MaximumExecutionTime", "The maximum runtime.", new TimeSpanValue(TimeSpan.FromMinutes(1))));
+      Parameters.Add(new OptionalValueParameter<TimeSpanValue>("MaximumExecutionTime", "The maximum runtime.", new TimeSpanValue(TimeSpan.FromMinutes(10))));
       Parameters.Add(new OptionalValueParameter<DoubleValue>("TargetQuality", "The target quality at which the algorithm terminates."));
       Parameters.Add(new FixedValueParameter<BoolValue>("SetSeedRandomly", "Whether each run of the algorithm should be conducted with a new random seed.", new BoolValue(true)));
       Parameters.Add(new FixedValueParameter<IntValue>("Seed", "The random number seed that is used in case SetSeedRandomly is false.", new IntValue(0)));
@@ -157,6 +164,9 @@ namespace HeuristicLab.Algorithms.MemPR {
       Parameters.Add(new ConstrainedValueParameter<ILocalSearch<TSolutionContext>>("LocalSearch", "The local search operator to use."));
 
       qualityAnalyzer = new BestAverageWorstQualityAnalyzer();
+      qualityPerClockAnalyzer = new QualityPerClockAnalyzer();
+      qualityPerEvaluationsAnalyzer = new QualityPerEvaluationsAnalyzer();
+
       RegisterEventHandlers();
     }
 
@@ -192,10 +202,12 @@ namespace HeuristicLab.Algorithms.MemPR {
           foreach (var analyzer in Problem.Operators.OfType<IAnalyzer>()) {
             foreach (var param in analyzer.Parameters.OfType<IScopeTreeLookupParameter>())
               param.Depth = 1;
-            multiAnalyzer.Operators.Add(analyzer, analyzer.EnabledByDefault);
+            multiAnalyzer.Operators.Add(analyzer, analyzer.EnabledByDefault || analyzer is ISimilarityBasedOperator);
           }
         }
         multiAnalyzer.Operators.Add(qualityAnalyzer, qualityAnalyzer.EnabledByDefault);
+        multiAnalyzer.Operators.Add(qualityPerClockAnalyzer, true);
+        multiAnalyzer.Operators.Add(qualityPerEvaluationsAnalyzer, true);
       }
     }
 
@@ -299,11 +311,11 @@ namespace HeuristicLab.Algorithms.MemPR {
       }
 
       if (!replaced) {
-        offspring = (ISingleObjectiveSolutionScope<TSolution>)Context.Population.SampleRandom(Context.Random).Clone();
-        var before = offspring.Fitness;
+        var before = Context.Population.SampleRandom(Context.Random);
+        offspring = (ISingleObjectiveSolutionScope<TSolution>)before.Clone();
         AdaptiveWalk(offspring, Context.LocalSearchEvaluations * 2, token);
-        Context.AdaptivewalkingStat.Add(Tuple.Create(before, offspring.Fitness));
-        if (Context.AdaptivewalkingStat.Count % 10 == 0) Context.RelearnAdaptiveWalkPerformanceModel();
+        if (!Eq(before, offspring))
+          Context.AddAdaptivewalkingResult(before, offspring);
         if (Replace(offspring, token)) {
           Context.ByAdaptivewalking++;
           replaced = true;
@@ -344,22 +356,25 @@ namespace HeuristicLab.Algorithms.MemPR {
       else ((IntValue)res.Value).Value = Context.ByAdaptivewalking;
 
       var sp = new ScatterPlot("Breeding Correlation", "");
-      sp.Rows.Add(new ScatterPlotDataRow("Parent1 vs Offspring", "", Context.BreedingStat.Select(x => new Point2D<double>(x.Item1, x.Item3))) { VisualProperties = { PointSize = 6 }});
-      sp.Rows.Add(new ScatterPlotDataRow("Parent2 vs Offspring", "", Context.BreedingStat.Select(x => new Point2D<double>(x.Item2, x.Item3))) { VisualProperties = { PointSize = 6 } });
+      sp.Rows.Add(new ScatterPlotDataRow("Parent1 vs Offspring", "", Context.BreedingStat.Select(x => new Point2D<double>(x.Item1, x.Item4))) { VisualProperties = { PointSize = 6 }});
+      sp.Rows.Add(new ScatterPlotDataRow("Parent2 vs Offspring", "", Context.BreedingStat.Select(x => new Point2D<double>(x.Item2, x.Item4))) { VisualProperties = { PointSize = 6 } });
+      sp.Rows.Add(new ScatterPlotDataRow("Parent Distance vs Offspring", "", Context.BreedingStat.Select(x => new Point2D<double>(x.Item3, x.Item4))) { VisualProperties = { PointSize = 6 } });
       if (!Results.TryGetValue("BreedingStat", out res)) {
         Results.Add(new Result("BreedingStat", sp));
       } else res.Value = sp;
 
       sp = new ScatterPlot("Relinking Correlation", "");
-      sp.Rows.Add(new ScatterPlotDataRow("A vs Relink", "", Context.RelinkingStat.Select(x => new Point2D<double>(x.Item1, x.Item3))) { VisualProperties = { PointSize = 6 } });
-      sp.Rows.Add(new ScatterPlotDataRow("B vs Relink", "", Context.RelinkingStat.Select(x => new Point2D<double>(x.Item2, x.Item3))) { VisualProperties = { PointSize = 6 } });
+      sp.Rows.Add(new ScatterPlotDataRow("A vs Relink", "", Context.RelinkingStat.Select(x => new Point2D<double>(x.Item1, x.Item4))) { VisualProperties = { PointSize = 6 } });
+      sp.Rows.Add(new ScatterPlotDataRow("B vs Relink", "", Context.RelinkingStat.Select(x => new Point2D<double>(x.Item2, x.Item4))) { VisualProperties = { PointSize = 6 } });
+      sp.Rows.Add(new ScatterPlotDataRow("d(A,B) vs Offspring", "", Context.RelinkingStat.Select(x => new Point2D<double>(x.Item3, x.Item4))) { VisualProperties = { PointSize = 6 } });
       if (!Results.TryGetValue("RelinkingStat", out res)) {
         Results.Add(new Result("RelinkingStat", sp));
       } else res.Value = sp;
 
       sp = new ScatterPlot("Delinking Correlation", "");
-      sp.Rows.Add(new ScatterPlotDataRow("A vs Delink", "", Context.DelinkingStat.Select(x => new Point2D<double>(x.Item1, x.Item3))) { VisualProperties = { PointSize = 6 } });
-      sp.Rows.Add(new ScatterPlotDataRow("B vs Delink", "", Context.DelinkingStat.Select(x => new Point2D<double>(x.Item2, x.Item3))) { VisualProperties = { PointSize = 6 } });
+      sp.Rows.Add(new ScatterPlotDataRow("A vs Delink", "", Context.DelinkingStat.Select(x => new Point2D<double>(x.Item1, x.Item4))) { VisualProperties = { PointSize = 6 } });
+      sp.Rows.Add(new ScatterPlotDataRow("B vs Delink", "", Context.DelinkingStat.Select(x => new Point2D<double>(x.Item2, x.Item4))) { VisualProperties = { PointSize = 6 } });
+      sp.Rows.Add(new ScatterPlotDataRow("d(A,B) vs Offspring", "", Context.DelinkingStat.Select(x => new Point2D<double>(x.Item3, x.Item4))) { VisualProperties = { PointSize = 6 } });
       if (!Results.TryGetValue("DelinkingStat", out res)) {
         Results.Add(new Result("DelinkingStat", sp));
       } else res.Value = sp;
@@ -371,7 +386,7 @@ namespace HeuristicLab.Algorithms.MemPR {
       } else res.Value = sp;
 
       sp = new ScatterPlot("Hillclimbing Correlation", "");
-      sp.Rows.Add(new ScatterPlotDataRow("Start vs End", "", Context.HillclimbingStat.Select(x => new Point2D<double>(x.Item1, x.Item2))) { VisualProperties = { PointSize = 6 } });
+      sp.Rows.Add(new ScatterPlotDataRow("Start vs Improvement", "", Context.HillclimbingStat.Select(x => new Point2D<double>(x.Item1, x.Item2))) { VisualProperties = { PointSize = 6 } });
       if (!Results.TryGetValue("HillclimbingStat", out res)) {
         Results.Add(new Result("HillclimbingStat", sp));
       } else res.Value = sp;
@@ -534,12 +549,10 @@ namespace HeuristicLab.Algorithms.MemPR {
         Context.Evaluate(scope, token);
         Context.IncrementEvaluatedSolutions(1);
       }
-      var before = scope.Fitness;
+      var before = (ISingleObjectiveSolutionScope<TSolution>)scope.Clone();
       var lscontext = Context.CreateSingleSolutionContext(scope);
       LocalSearchParameter.Value.Optimize(lscontext);
-      var after = scope.Fitness;
-      Context.HillclimbingStat.Add(Tuple.Create(before, after));
-      if (Context.HillclimbingStat.Count % 10 == 0) Context.RelearnHillclimbingPerformanceModel();
+      Context.AddHillclimbingResult(before, scope);
       Context.IncrementEvaluatedSolutions(lscontext.EvaluatedSolutions);
       return lscontext.EvaluatedSolutions;
     }
@@ -549,13 +562,14 @@ namespace HeuristicLab.Algorithms.MemPR {
         Context.Evaluate(scope, token);
         Context.IncrementEvaluatedSolutions(1);
       }
-      var before = scope.Fitness;
       var newScope = (ISingleObjectiveSolutionScope<TSolution>)scope.Clone();
       AdaptiveWalk(newScope, maxEvals, token, subspace);
-      Context.AdaptivewalkingStat.Add(Tuple.Create(before, newScope.Fitness));
-      if (Context.AdaptivewalkingStat.Count % 10 == 0) Context.RelearnAdaptiveWalkPerformanceModel();
-      if (Context.IsBetter(newScope, scope))
+      
+      if (Context.IsBetter(newScope, scope)) {
+        Context.AddAdaptivewalkingResult(scope, newScope);
         scope.Adopt(newScope);
+      } else if (!Eq(newScope, scope))
+        Context.AddAdaptivewalkingResult(scope, newScope);
     }
     protected abstract void AdaptiveWalk(ISingleObjectiveSolutionScope<TSolution> scope, int maxEvals, CancellationToken token, ISolutionSubspace<TSolution> subspace = null);
     
@@ -579,25 +593,24 @@ namespace HeuristicLab.Algorithms.MemPR {
         Context.IncrementEvaluatedSolutions(1);
       }
 
-      if (Context.BreedingSuited(p1, p2)) {
-        var offspring = Breed(p1, p2, token);
+      if (!Context.BreedingSuited(p1, p2, Dist(p1, p2))) return null;
 
-        if (double.IsNaN(offspring.Fitness)) {
-          Context.Evaluate(offspring, token);
-          Context.IncrementEvaluatedSolutions(1);
-        }
+      var offspring = Breed(p1, p2, token);
 
-        // new best solutions are improved using hill climbing in full solution space
-        if (Context.Population.All(p => Context.IsBetter(offspring, p)))
-          HillClimb(offspring, token);
-        else if (!Eq(offspring, p1) && !Eq(offspring, p2) && Context.HillclimbingSuited(offspring.Fitness))
-          HillClimb(offspring, token, CalculateSubspace(new[] { p1.Solution, p2.Solution }, inverse: false));
-
-        Context.AddBreedingResult(p1, p2, offspring);
-        if (Context.BreedingStat.Count % 10 == 0) Context.RelearnBreedingPerformanceModel();
-        return offspring;
+      if (double.IsNaN(offspring.Fitness)) {
+        Context.Evaluate(offspring, token);
+        Context.IncrementEvaluatedSolutions(1);
       }
-      return null;
+
+      Context.AddBreedingResult(p1, p2, Dist(p1, p2), offspring);
+
+      // new best solutions are improved using hill climbing in full solution space
+      if (Context.Population.All(p => Context.IsBetter(offspring, p)))
+        HillClimb(offspring, token);
+      else if (!Eq(offspring, p1) && !Eq(offspring, p2) && Context.HillclimbingSuited(offspring.Fitness))
+        HillClimb(offspring, token, CalculateSubspace(new[] { p1.Solution, p2.Solution }, inverse: false));
+
+      return offspring;
     }
 
     protected abstract ISingleObjectiveSolutionScope<TSolution> Breed(ISingleObjectiveSolutionScope<TSolution> p1, ISingleObjectiveSolutionScope<TSolution> p2, CancellationToken token);
@@ -612,13 +625,10 @@ namespace HeuristicLab.Algorithms.MemPR {
       var p1 = Context.AtPopulation(i1);
       var p2 = Context.AtPopulation(i2);
 
-      if (!Context.RelinkSuited(p1, p2)) return null;
+      if (!Context.RelinkSuited(p1, p2, Dist(p1, p2))) return null;
 
       var link = PerformRelinking(p1, p2, token, delink: false);
-      if (double.IsNaN(link.Fitness)) {
-        Context.Evaluate(link, token);
-        Context.IncrementEvaluatedSolutions(1);
-      }
+
       // new best solutions are improved using hill climbing in full solution space
       if (Context.Population.All(p => Context.IsBetter(link, p)))
         HillClimb(link, token);
@@ -636,17 +646,14 @@ namespace HeuristicLab.Algorithms.MemPR {
       var p1 = Context.AtPopulation(i1);
       var p2 = Context.AtPopulation(i2);
       
-      if (!Context.DelinkSuited(p1, p2)) return null;
+      if (!Context.DelinkSuited(p1, p2, Dist(p1, p2))) return null;
 
       var link = PerformRelinking(p1, p2, token, delink: true);
-      if (double.IsNaN(link.Fitness)) {
-        Context.Evaluate(link, token);
-        Context.IncrementEvaluatedSolutions(1);
-      }
+
       // new best solutions are improved using hill climbing in full solution space
       if (Context.Population.All(p => Context.IsBetter(link, p)))
         HillClimb(link, token);
-      // intentionally not making hill climbing after delinking in sub-space
+      // intentionally not making hill climbing otherwise after delinking in sub-space
       return link;
     }
 
@@ -658,17 +665,12 @@ namespace HeuristicLab.Algorithms.MemPR {
         Context.IncrementEvaluatedSolutions(1);
       }
 
-      // new best solutions are improved using hill climbing
-      if (Context.Population.All(p => Context.IsBetter(relink, p)))
-        HillClimb(relink, token);
-
       if (delink) {
-        Context.AddDelinkingResult(a, b, relink);
-        if (Context.DelinkingStat.Count % 10 == 0) Context.RelearnDelinkingPerformanceModel();
+        Context.AddDelinkingResult(a, b, Dist(a, b), relink);
       } else {
-        Context.AddRelinkingResult(a, b, relink);
-        if (context.RelinkingStat.Count % 10 == 0) Context.RelearnRelinkingPerformanceModel();
+        Context.AddRelinkingResult(a, b, Dist(a, b), relink);
       }
+
       return relink;
     }
 
@@ -681,6 +683,9 @@ namespace HeuristicLab.Algorithms.MemPR {
         SolutionModelTrainerParameter.Value.TrainModel(Context);
         ISingleObjectiveSolutionScope<TSolution> bestSample = null;
         var tries = 1;
+        var avgDist = (from a in Context.Population.Shuffle(Context.Random)
+                       from b in Context.Population.Shuffle(Context.Random)
+                       select Dist(a, b)).Average();
         for (; tries < 100; tries++) {
           var sample = Context.ToScope(Context.Model.Sample());
           Context.Evaluate(sample, token);
@@ -688,11 +693,10 @@ namespace HeuristicLab.Algorithms.MemPR {
             bestSample = sample;
             if (Context.Population.Any(x => !Context.IsBetter(x, bestSample))) break;
           }
-          if (!Context.SamplingSuited()) break;
+          if (!Context.SamplingSuited(avgDist)) break;
         }
         Context.IncrementEvaluatedSolutions(tries);
-        Context.AddSamplingResult(bestSample);
-        if (Context.SamplingStat.Count % 10 == 0) Context.RelearnSamplingPerformanceModel();
+        Context.AddSamplingResult(bestSample, avgDist);
         return bestSample;
       }
       return null;

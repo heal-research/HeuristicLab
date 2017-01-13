@@ -44,7 +44,12 @@ namespace HeuristicLab.Algorithms.MemPR.Binary {
     public BinaryMemPR() {
       foreach (var trainer in ApplicationManager.Manager.GetInstances<ISolutionModelTrainer<BinaryMemPRPopulationContext>>())
         SolutionModelTrainerParameter.ValidValues.Add(trainer);
-      
+
+      if (SolutionModelTrainerParameter.ValidValues.Count > 0) {
+        var unbiased = SolutionModelTrainerParameter.ValidValues.FirstOrDefault(x => !x.Bias);
+        if (unbiased != null) SolutionModelTrainerParameter.Value = unbiased;
+      }
+
       foreach (var localSearch in ApplicationManager.Manager.GetInstances<ILocalSearch<BinaryMemPRSolutionContext>>()) {
         LocalSearchParameter.ValidValues.Add(localSearch);
       }
@@ -155,19 +160,23 @@ namespace HeuristicLab.Algorithms.MemPR.Binary {
       cache.Add(p1.Solution);
       cache.Add(p2.Solution);
 
-      var cacheHits = 0;
+      var cacheHits = new Dictionary<int, int>() { { 0, 0 }, { 1, 0 }, { 2, 0 } };
       ISingleObjectiveSolutionScope<BinaryVector> offspring = null;
+      
       while (evaluations < N) {
         BinaryVector c = null;
-        var xochoice = Context.Random.Next(3);
+        var xochoice = cacheHits.SampleRandom(Context.Random).Key;
         switch (xochoice) {
           case 0: c = NPointCrossover.Apply(Context.Random, p1.Solution, p2.Solution, new IntValue(1)); break;
           case 1: c = NPointCrossover.Apply(Context.Random, p1.Solution, p2.Solution, new IntValue(2)); break;
           case 2: c = UniformCrossover.Apply(Context.Random, p1.Solution, p2.Solution); break;
         }
         if (cache.Contains(c)) {
-          cacheHits++;
-          if (cacheHits > 50) break;
+          cacheHits[xochoice]++;
+          if (cacheHits[xochoice] > 10) {
+            cacheHits.Remove(xochoice);
+            if (cacheHits.Count == 0) break;
+          }
           continue;
         }
         probe.Solution = c;
