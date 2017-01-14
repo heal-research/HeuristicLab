@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
 
 namespace HeuristicLab.Problems.DataAnalysis {
@@ -29,6 +30,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
   public interface IRegressionModel : IDataAnalysisModel {
     IEnumerable<double> GetEstimatedValues(IDataset dataset, IEnumerable<int> rows);
     IRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData);
-    string TargetVariable { get; }
+    string TargetVariable { get; set; }
+    event EventHandler TargetVariableChanged;
   }
 }

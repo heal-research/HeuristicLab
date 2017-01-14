@@ -19,7 +19,9 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
+
 namespace HeuristicLab.Problems.DataAnalysis {
   /// <summary>
   /// Interface for all classification models.
@@ -28,6 +30,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
   public interface IClassificationModel : IDataAnalysisModel {
     IEnumerable<double> GetEstimatedClassValues(IDataset dataset, IEnumerable<int> rows);
     IClassificationSolution CreateClassificationSolution(IClassificationProblemData problemData);
-    string TargetVariable { get; }
+    string TargetVariable { get; set; }
+    event EventHandler TargetVariableChanged;
   }
 }

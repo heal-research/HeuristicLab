@@ -87,6 +87,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
+      if (string.IsNullOrEmpty(Model.TargetVariable))
+        Model.TargetVariable = this.ProblemData.TargetVariable;
+
       if (!this.ContainsKey(TrainingNormalizedGiniCoefficientResultName))
         Add(new Result(TrainingNormalizedGiniCoefficientResultName, "Normalized Gini coefficient of the model on the training partition.", new DoubleValue()));
       if (!this.ContainsKey(TestNormalizedGiniCoefficientResultName))

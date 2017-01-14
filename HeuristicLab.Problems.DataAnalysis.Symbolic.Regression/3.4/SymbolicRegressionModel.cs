@@ -34,13 +34,21 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   [Item(Name = "Symbolic Regression Model", Description = "Represents a symbolic regression model.")]
   public class SymbolicRegressionModel : SymbolicDataAnalysisModel, ISymbolicRegressionModel {
     [Storable]
-    private readonly string targetVariable;
+    private string targetVariable;
     public string TargetVariable {
       get { return targetVariable; }
+      set {
+        if (string.IsNullOrEmpty(value) || targetVariable == value) return;
+        targetVariable = value;
+        OnTargetVariableChanged(this, EventArgs.Empty);
+      }
     }
 
     [StorableConstructor]
-    protected SymbolicRegressionModel(bool deserializing) : base(deserializing) { }
+    protected SymbolicRegressionModel(bool deserializing)
+      : base(deserializing) {
+      targetVariable = string.Empty;
+    }
 
     protected SymbolicRegressionModel(SymbolicRegressionModel original, Cloner cloner)
       : base(original, cloner) {
@@ -73,5 +81,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     public void Scale(IRegressionProblemData problemData) {
       Scale(problemData, problemData.TargetVariable);
     }
+
+    #region events
+    public event EventHandler TargetVariableChanged;
+    private void OnTargetVariableChanged(object sender, EventArgs args) {
+      var changed = TargetVariableChanged;
+      if (changed != null)
+        changed(sender, args);
+    }
+    #endregion
   }
 }

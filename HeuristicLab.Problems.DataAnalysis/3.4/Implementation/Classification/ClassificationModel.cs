@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -32,10 +33,17 @@ namespace HeuristicLab.Problems.DataAnalysis {
     private string targetVariable;
     public string TargetVariable {
       get { return targetVariable; }
-      protected set { targetVariable = value; }
+      set {
+        if (string.IsNullOrEmpty(value) || targetVariable == value) return;
+        targetVariable = value;
+        OnTargetVariableChanged(this, EventArgs.Empty);
+      }
     }
 
-    protected ClassificationModel(bool deserializing) : base(deserializing) { }
+    protected ClassificationModel(bool deserializing)
+      : base(deserializing) {
+      targetVariable = string.Empty;
+    }
     protected ClassificationModel(ClassificationModel original, Cloner cloner)
       : base(original, cloner) {
       this.targetVariable = original.targetVariable;
@@ -54,15 +62,16 @@ namespace HeuristicLab.Problems.DataAnalysis {
       this.targetVariable = targetVariable;
     }
 
-    [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserialization() {
-      // BackwardsCompatibility3.3
-      #region Backwards compatible code, remove with 3.4
-      targetVariable = string.Empty;
-      #endregion
-    }
-
     public abstract IEnumerable<double> GetEstimatedClassValues(IDataset dataset, IEnumerable<int> rows);
     public abstract IClassificationSolution CreateClassificationSolution(IClassificationProblemData problemData);
+
+    #region events
+    public event EventHandler TargetVariableChanged;
+    private void OnTargetVariableChanged(object sender, EventArgs args) {
+      var changed = TargetVariableChanged;
+      if (changed != null)
+        changed(sender, args);
+    }
+    #endregion
   }
 }

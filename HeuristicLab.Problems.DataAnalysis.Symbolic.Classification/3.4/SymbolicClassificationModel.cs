@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -33,13 +34,21 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
   [Item(Name = "SymbolicClassificationModel", Description = "Represents a symbolic classification model.")]
   public abstract class SymbolicClassificationModel : SymbolicDataAnalysisModel, ISymbolicClassificationModel {
     [Storable]
-    private readonly string targetVariable;
+    private string targetVariable;
     public string TargetVariable {
       get { return targetVariable; }
+      set {
+        if (string.IsNullOrEmpty(value) || targetVariable == value) return;
+        targetVariable = value;
+        OnTargetVariableChanged(this, EventArgs.Empty);
+      }
     }
 
     [StorableConstructor]
-    protected SymbolicClassificationModel(bool deserializing) : base(deserializing) { }
+    protected SymbolicClassificationModel(bool deserializing)
+      : base(deserializing) {
+      targetVariable = string.Empty;
+    }
 
     protected SymbolicClassificationModel(SymbolicClassificationModel original, Cloner cloner)
       : base(original, cloner) {
@@ -63,5 +72,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     public void Scale(IClassificationProblemData problemData) {
       Scale(problemData, problemData.TargetVariable);
     }
+
+    #region events
+    public event EventHandler TargetVariableChanged;
+    private void OnTargetVariableChanged(object sender, EventArgs args) {
+      var changed = TargetVariableChanged;
+      if (changed != null)
+        changed(sender, args);
+    }
+    #endregion
   }
 }
