@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -36,6 +37,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     private readonly Dictionary<string, GradientChart> gradientCharts;
     private readonly Dictionary<string, DensityChart> densityCharts;
     private readonly Dictionary<string, Panel> groupingPanels;
+    private ModifiableDataset sharedFixedVariables;
 
     private const int Points = 200;
     private int MaxColumns = 4;
@@ -112,7 +114,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       // create dataset
       var allowedInputVariables = Content.ProblemData.AllowedInputVariables;
       var variableValues = allowedInputVariables.Select(x => new List<double> { problemData.Dataset.GetDoubleValues(x, problemData.TrainingIndices).Median() });
-      var sharedFixedVariables = new ModifiableDataset(allowedInputVariables, variableValues);
+      if (sharedFixedVariables != null)
+        sharedFixedVariables.ItemChanged -= SharedFixedVariables_ItemChanged;
+      sharedFixedVariables = new ModifiableDataset(allowedInputVariables, variableValues);
+      // ItemChanged eventhandler is registered later, after creating the gradient charts
 
       // create controls
       gradientCharts.Clear();
@@ -169,7 +174,19 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         variableListView.Items[variable].Checked = true;
       variableListView.ItemChecked += variableListView_ItemChecked;
 
+      sharedFixedVariables.ItemChanged += SharedFixedVariables_ItemChanged;
+
       RecalculateAndRelayoutCharts();
+    }
+
+    private void SharedFixedVariables_ItemChanged(object sender, EventArgs<int, int> e) {
+      double yValue = Content.Model.GetEstimatedValues(sharedFixedVariables, new[] { 0 }).Single();
+      string title = Content.ProblemData.TargetVariable + ": " + yValue.ToString("G5", CultureInfo.CurrentCulture);
+      foreach (var chart in gradientCharts.Values) {
+        if (!string.IsNullOrEmpty(chart.YAxisTitle)) { // only show title for first column in grid
+          chart.YAxisTitle = title;
+        }
+      }
     }
 
     private void OnGradientChartOnChartPostPaint(object o, EventArgs e) {
@@ -256,12 +273,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       var tl = gradientChartTableLayout;
       tl.Controls.Clear();
       int row = 0, column = 0;
+      double yValue = Content.Model.GetEstimatedValues(sharedFixedVariables, new[] { 0 }).Single();
+      string title = Content.ProblemData.TargetVariable + ": " + yValue.ToString("G5", CultureInfo.CurrentCulture);
+
       foreach (var v in VisibleVariables) {
         var chartsPanel = groupingPanels[v];
         tl.Controls.Add(chartsPanel, column, row);
 
         var chart = gradientCharts[v];
-        chart.YAxisTitle = column == 0 ? Content.ProblemData.TargetVariable : string.Empty;
+        chart.YAxisTitle = column == 0 ? title : string.Empty;
         column++;
 
         if (column == MaxColumns) {
