@@ -75,16 +75,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
       //configure axis 
       this.chart.CustomizeAllChartAreas();
-      this.chart.ChartAreas[0].AxisX.Title = "Estimated Values";
-      this.chart.ChartAreas[0].CursorX.IsUserSelectionEnabled = true;
-      this.chart.ChartAreas[0].AxisX.ScaleView.Zoomable = true;
+      this.chart.ChartAreas[0].AxisY.Title = "Estimated Values";
+      this.chart.ChartAreas[0].CursorY.IsUserSelectionEnabled = true;
+      this.chart.ChartAreas[0].AxisY.ScaleView.Zoomable = true;
       this.chart.ChartAreas[0].CursorX.Interval = 1;
       this.chart.ChartAreas[0].CursorY.Interval = 1;
 
-      this.chart.ChartAreas[0].AxisY.Title = "Target Values";
-      this.chart.ChartAreas[0].CursorY.IsUserSelectionEnabled = true;
-      this.chart.ChartAreas[0].AxisY.ScaleView.Zoomable = true;
-      this.chart.ChartAreas[0].AxisY.IsStartedFromZero = true;
+      this.chart.ChartAreas[0].AxisX.Title = "Target Values";
+      this.chart.ChartAreas[0].CursorX.IsUserSelectionEnabled = true;
+      this.chart.ChartAreas[0].AxisX.ScaleView.Zoomable = true;
+      this.chart.ChartAreas[0].AxisX.IsStartedFromZero = true;
     }
 
     protected override void RegisterContentEvents() {
@@ -157,28 +157,27 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         string targetVariableName = Content.ProblemData.TargetVariable;
         var dataset = Content.ProblemData.Dataset;
         if (this.chart.Series[ALL_SERIES].Points.Count > 0)
-          this.chart.Series[ALL_SERIES].Points.DataBindXY(Content.EstimatedValues.ToArray(), "",
-            dataset.GetDoubleValues(targetVariableName).ToArray(), "");
+          this.chart.Series[ALL_SERIES].Points.DataBindXY(dataset.GetDoubleValues(targetVariableName).ToArray(), "",
+            Content.EstimatedValues.ToArray(), "");
         if (this.chart.Series[TRAINING_SERIES].Points.Count > 0)
-          this.chart.Series[TRAINING_SERIES].Points.DataBindXY(Content.EstimatedTrainingValues.ToArray(), "",
-            dataset.GetDoubleValues(targetVariableName, Content.ProblemData.TrainingIndices).ToArray(), "");
+          this.chart.Series[TRAINING_SERIES].Points.DataBindXY(dataset.GetDoubleValues(targetVariableName, Content.ProblemData.TrainingIndices).ToArray(), "",
+            Content.EstimatedTrainingValues.ToArray(), "");
         if (this.chart.Series[TEST_SERIES].Points.Count > 0)
-          this.chart.Series[TEST_SERIES].Points.DataBindXY(Content.EstimatedTestValues.ToArray(), "",
-           dataset.GetDoubleValues(targetVariableName, Content.ProblemData.TestIndices).ToArray(), "");
-
+          this.chart.Series[TEST_SERIES].Points.DataBindXY(dataset.GetDoubleValues(targetVariableName, Content.ProblemData.TestIndices).ToArray(), "",
+            Content.EstimatedTestValues.ToArray(), "");
         double max = Content.EstimatedTrainingValues.Concat(Content.EstimatedTestValues.Concat(Content.EstimatedValues.Concat(dataset.GetDoubleValues(targetVariableName)))).Max();
         double min = Content.EstimatedTrainingValues.Concat(Content.EstimatedTestValues.Concat(Content.EstimatedValues.Concat(dataset.GetDoubleValues(targetVariableName)))).Min();
 
         double axisMin, axisMax, axisInterval;
         ChartUtil.CalculateOptimalAxisInterval(min, max, out axisMin, out axisMax, out axisInterval);
-        this.chart.ChartAreas[0].AxisX.Title = "Estimated " + targetVariableName;
-        this.chart.ChartAreas[0].AxisX.Maximum = axisMax;
-        this.chart.ChartAreas[0].AxisX.Minimum = axisMin;
-        this.chart.ChartAreas[0].AxisX.Interval = axisInterval;
-        this.chart.ChartAreas[0].AxisY.Title = targetVariableName;
+        this.chart.ChartAreas[0].AxisY.Title = "Estimated " + targetVariableName;
         this.chart.ChartAreas[0].AxisY.Maximum = axisMax;
         this.chart.ChartAreas[0].AxisY.Minimum = axisMin;
         this.chart.ChartAreas[0].AxisY.Interval = axisInterval;
+        this.chart.ChartAreas[0].AxisX.Title = targetVariableName;
+        this.chart.ChartAreas[0].AxisX.Maximum = axisMax;
+        this.chart.ChartAreas[0].AxisX.Minimum = axisMin;
+        this.chart.ChartAreas[0].AxisX.Interval = axisInterval;
 
         UpdateCursorInterval();
       }
@@ -215,7 +214,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
             break;
         }
         if (predictedValues.Length == targetValues.Length)
-          series.Points.DataBindXY(predictedValues, "", targetValues, "");
+          series.Points.DataBindXY(targetValues, "", predictedValues, "");
         this.chart.Legends[series.Legend].ForeColor = Color.Black;
         UpdateCursorInterval();
       }
