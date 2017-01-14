@@ -36,7 +36,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   /// Variable names are case sensitive. Function names are not case sensitive.
   /// </summary>
   public sealed class InfixExpressionParser {
-    private enum TokenType { Operator, Identifier, Number, LeftPar, RightPar, End, NA };
+    private enum TokenType { Operator, Identifier, Number, LeftPar, RightPar, Comma, End, NA };
     private class Token {
       internal double doubleVal;
       internal string strVal;
@@ -101,8 +101,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         { "EXPINT", new ExponentialIntegralEi()},
         { "MEAN", new Average()},
         { "IF", new IfThenElse()},
-        { ">", new GreaterThan()},
-        { "<", new LessThan()},
+        { "GT", new GreaterThan()},
+        { "LT", new LessThan()},
         { "AND", new And()},
         { "OR", new Or()},
         { "NOT", new Not()},
@@ -137,16 +137,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           yield break;
         }
         if (char.IsDigit(str[pos])) {
-          // read number (=> read until white space or operator)
+          // read number (=> read until white space or operator or comma)
           var sb = new StringBuilder();
           sb.Append(str[pos]);
           pos++;
           while (pos < str.Length && !char.IsWhiteSpace(str[pos])
-            && (str[pos] != '+' || str[pos-1] == 'e' || str[pos-1] == 'E')     // continue reading exponents
+            && (str[pos] != '+' || str[pos - 1] == 'e' || str[pos - 1] == 'E')     // continue reading exponents
             && (str[pos] != '-' || str[pos - 1] == 'e' || str[pos - 1] == 'E')
-            && str[pos] != '*'           
+            && str[pos] != '*'
             && str[pos] != '/'
-            && str[pos] != ')') {
+            && str[pos] != ')'
+            && str[pos] != ',') {
             sb.Append(str[pos]);
             pos++;
           }
@@ -210,14 +211,20 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         } else if (str[pos] == ')') {
           pos++;
           yield return new Token { TokenType = TokenType.RightPar, strVal = ")" };
+        } else if (str[pos] == ',') {
+          pos++;
+          yield return new Token { TokenType = TokenType.Comma, strVal = "," };
+        } else {
+          throw new ArgumentException("Invalid character: " + str[pos]);
         }
       }
     }
 
-    // S = Expr EOF
-    // Expr = ['-' | '+'] Term { '+' Term | '-' Term }
-    // Term = Fact { '*' Fact | '/' Fact }
-    // Fact = '(' Expr ')' | funcId '(' Expr ')' | varId | number
+    // S       = Expr EOF
+    // Expr    = ['-' | '+'] Term { '+' Term | '-' Term }
+    // Term    = Fact { '*' Fact | '/' Fact }
+    // Fact    = '(' Expr ')' | funcId '(' ArgList ')' | varId | number
+    // ArgList = Expr { ',' Expr }
     private ISymbolicExpressionTreeNode ParseS(Queue<Token> tokens) {
       var expr = ParseExpr(tokens);
 
@@ -325,7 +332,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
     }
 
-    // Fact = '(' Expr ')' | funcId '(' Expr ')' | varId | number
+    // Fact = '(' Expr ')' | funcId '(' ArgList ')' | varId | number
     private ISymbolicExpressionTreeNode ParseFact(Queue<Token> tokens) {
       var next = tokens.Peek();
       if (next.TokenType == TokenType.LeftPar) {
@@ -345,12 +352,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           var lPar = tokens.Dequeue();
           if (lPar.TokenType != TokenType.LeftPar)
             throw new ArgumentException("expected (");
-          var expr = ParseExpr(tokens);
+          var args = ParseArgList(tokens);
+
+          // check semantic constraints
+          if (funcNode.Symbol.MinimumArity > args.Length || funcNode.Symbol.MaximumArity < args.Length)
+            throw new ArgumentException(string.Format("Symbol {0} requires between {1} and  {2} arguments.", funcId,
+              funcNode.Symbol.MinimumArity, funcNode.Symbol.MaximumArity));
+          foreach (var arg in args) funcNode.AddSubtree(arg);
+
           var rPar = tokens.Dequeue();
           if (rPar.TokenType != TokenType.RightPar)
             throw new ArgumentException("expected )");
 
-          funcNode.AddSubtree(expr);
           return funcNode;
         } else {
           // variable
@@ -367,6 +380,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       } else {
         throw new ArgumentException(string.Format("unexpected token in expression {0}", next.strVal));
       }
+    }
+
+    // ArgList = Expr { ',' Expr }
+    private ISymbolicExpressionTreeNode[] ParseArgList(Queue<Token> tokens) {
+      var exprList = new List<ISymbolicExpressionTreeNode>();
+      exprList.Add(ParseExpr(tokens));
+      while (tokens.Peek().TokenType != TokenType.RightPar) {
+        var comma = tokens.Dequeue();
+        if (comma.TokenType != TokenType.Comma) throw new ArgumentException("expected ',' ");
+        exprList.Add(ParseExpr(tokens));
+      }
+      return exprList.ToArray();
     }
   }
 }

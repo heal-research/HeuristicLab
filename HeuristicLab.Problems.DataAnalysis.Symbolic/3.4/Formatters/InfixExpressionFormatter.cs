@@ -80,6 +80,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             FormatRecursively(subtree, strBuilder);
           }
           strBuilder.Append(")");
+        } else {
+          // function with multiple arguments
+          strBuilder.Append(token).Append("(");
+          FormatRecursively(node.Subtrees.First(), strBuilder);
+          foreach (var subtree in node.Subtrees.Skip(1)) {
+            strBuilder.Append(", ");
+            FormatRecursively(subtree, strBuilder);
+          }
+          strBuilder.Append(")");
         }
       } else if (node.SubtreeCount == 1) {
         var token = GetToken(node.Symbol);
@@ -93,7 +102,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         } else if (token == "+" || token == "*") {
           FormatRecursively(node.GetSubtree(0), strBuilder);
         } else {
-          // function
+          // function with only one argument
           strBuilder.Append(token).Append("(");
           FormatRecursively(node.GetSubtree(0), strBuilder);
           strBuilder.Append(")");

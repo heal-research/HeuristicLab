@@ -85,6 +85,21 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       Console.WriteLine(formatter.Format(parser.Parse("\"x1\"*\"x2\"+\"x3\"*\"x4\"")));
       Console.WriteLine(formatter.Format(parser.Parse("x1*x2+x3*x4")));
 
+
+      Console.WriteLine(formatter.Format(parser.Parse("POW(3, 2)")));
+      Console.WriteLine(formatter.Format(parser.Parse("POW(3.1, 2.1)")));
+      Console.WriteLine(formatter.Format(parser.Parse("POW(3.1 , 2.1)")));
+      Console.WriteLine(formatter.Format(parser.Parse("POW(3.1 ,2.1)")));
+      Console.WriteLine(formatter.Format(parser.Parse("POW(-3.1 , - 2.1)")));
+      Console.WriteLine(formatter.Format(parser.Parse("ROOT(3, 2)")));
+      Console.WriteLine(formatter.Format(parser.Parse("ROOT(3.1, 2.1)")));
+      Console.WriteLine(formatter.Format(parser.Parse("ROOT(3.1 , 2.1)")));
+      Console.WriteLine(formatter.Format(parser.Parse("ROOT(3.1 ,2.1)")));
+      Console.WriteLine(formatter.Format(parser.Parse("ROOT(-3.1 , - 2.1)")));
+
+      Console.WriteLine(formatter.Format(parser.Parse("IF(GT( 0, 1), 1, 0)")));
+      Console.WriteLine(formatter.Format(parser.Parse("IF(LT(0,1), 1 , 0)")));
+
     }
   }
 }
