@@ -25,6 +25,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using HeuristicLab.Collections;
+using HeuristicLab.Common;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
@@ -108,6 +109,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         { "NOT", new Not()},
         { "XOR", new Xor()},
         { "DIFF", new Derivative()},
+        { "LAG", new LaggedVariable() },
       };
 
 
@@ -332,7 +334,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
     }
 
-    // Fact = '(' Expr ')' | funcId '(' ArgList ')' | varId | number
+    // Fact = '(' Expr ')' | 'LAG' '(' varId ',' ['+' | '-'] number ')' | funcId '(' ArgList ')' | varId | number
     private ISymbolicExpressionTreeNode ParseFact(Queue<Token> tokens) {
       var next = tokens.Peek();
       if (next.TokenType == TokenType.LeftPar) {
@@ -352,13 +354,37 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           var lPar = tokens.Dequeue();
           if (lPar.TokenType != TokenType.LeftPar)
             throw new ArgumentException("expected (");
-          var args = ParseArgList(tokens);
 
-          // check semantic constraints
-          if (funcNode.Symbol.MinimumArity > args.Length || funcNode.Symbol.MaximumArity < args.Length)
-            throw new ArgumentException(string.Format("Symbol {0} requires between {1} and  {2} arguments.", funcId,
-              funcNode.Symbol.MinimumArity, funcNode.Symbol.MaximumArity));
-          foreach (var arg in args) funcNode.AddSubtree(arg);
+          // handle 'lag' specifically
+          if (funcNode.Symbol is LaggedVariable) {
+            var varId = tokens.Dequeue();
+            if (varId.TokenType != TokenType.Identifier) throw new ArgumentException("Identifier expected. Format for lagged variables: \"lag(x, -1)\"");
+            var comma = tokens.Dequeue();
+            if (comma.TokenType != TokenType.Comma) throw new ArgumentException("',' expected, Format for lagged variables: \"lag(x, -1)\"");
+            double sign = 1.0;
+            if (tokens.Peek().strVal == "+" || tokens.Peek().strVal == "-") {
+              // read sign
+              var signTok = tokens.Dequeue();
+              if (signTok.strVal == "-") sign = -1.0;
+            }
+            var lagToken = tokens.Dequeue();
+            if (lagToken.TokenType != TokenType.Number) throw new ArgumentException("Number expected, Format for lagged variables: \"lag(x, -1)\"");
+            if (!lagToken.doubleVal.IsAlmost(Math.Round(lagToken.doubleVal)))
+              throw new ArgumentException("Time lags must be integer values");
+            var laggedVarNode = funcNode as LaggedVariableTreeNode;
+            laggedVarNode.VariableName = varId.strVal;
+            laggedVarNode.Lag = (int)Math.Round(sign * lagToken.doubleVal);
+            laggedVarNode.Weight = 1.0;
+          } else {
+            // functions
+            var args = ParseArgList(tokens);
+            // check number of arguments
+            if (funcNode.Symbol.MinimumArity > args.Length || funcNode.Symbol.MaximumArity < args.Length) {
+              throw new ArgumentException(string.Format("Symbol {0} requires between {1} and  {2} arguments.", funcId,
+                funcNode.Symbol.MinimumArity, funcNode.Symbol.MaximumArity));
+            }
+            foreach (var arg in args) funcNode.AddSubtree(arg);
+          }
 
           var rPar = tokens.Dequeue();
           if (rPar.TokenType != TokenType.RightPar)
