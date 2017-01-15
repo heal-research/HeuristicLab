@@ -301,7 +301,7 @@ namespace HeuristicLab.Algorithms.MemPR {
       }
 
       if (!replaced && offspring != null) {
-        if (Context.HillclimbingSuited(offspring)) {
+        if (Context.HillclimbingSuited(offspring.Fitness)) {
           HillClimb(offspring, token, CalculateSubspace(Context.Population.Select(x => x.Solution)));
           if (Replace(offspring, token)) {
             Context.ByHillclimbing++;
@@ -565,11 +565,10 @@ namespace HeuristicLab.Algorithms.MemPR {
       var newScope = (ISingleObjectiveSolutionScope<TSolution>)scope.Clone();
       AdaptiveWalk(newScope, maxEvals, token, subspace);
       
+      Context.AddAdaptivewalkingResult(scope, newScope);
       if (Context.IsBetter(newScope, scope)) {
-        Context.AddAdaptivewalkingResult(scope, newScope);
         scope.Adopt(newScope);
-      } else if (!Eq(newScope, scope))
-        Context.AddAdaptivewalkingResult(scope, newScope);
+      }
     }
     protected abstract void AdaptiveWalk(ISingleObjectiveSolutionScope<TSolution> scope, int maxEvals, CancellationToken token, ISolutionSubspace<TSolution> subspace = null);
     

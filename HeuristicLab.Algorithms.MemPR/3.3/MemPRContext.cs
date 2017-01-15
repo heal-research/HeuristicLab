@@ -26,6 +26,7 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using HeuristicLab.Algorithms.DataAnalysis;
 using HeuristicLab.Algorithms.MemPR.Interfaces;
+using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -342,6 +343,13 @@ namespace HeuristicLab.Algorithms.MemPR {
       EvaluatedSolutions += byEvaluations;
     }
 
+    #region Breeding Performance
+    public void AddBreedingResult(ISingleObjectiveSolutionScope<TSolution> a, ISingleObjectiveSolutionScope<TSolution> b, double parentDist, ISingleObjectiveSolutionScope<TSolution> child) {
+      if (IsBetter(a, b))
+        breedingStat.Add(Tuple.Create(a.Fitness, b.Fitness, parentDist, child.Fitness));
+      else breedingStat.Add(Tuple.Create(b.Fitness, a.Fitness, parentDist, child.Fitness));
+      if (breedingStat.Count % 10 == 0) RelearnBreedingPerformanceModel();
+    }
     public void RelearnBreedingPerformanceModel() {
       breedingPerformanceModel = RunRegression(PrepareRegression(ToListRow(breedingStat)), breedingPerformanceModel).Model;
     }
@@ -359,7 +367,15 @@ namespace HeuristicLab.Algorithms.MemPR {
       
       return Random.NextDouble() < ProbabilityAcceptAbsolutePerformanceModel(new List<double> { p1.Fitness, p2.Fitness, dist }, breedingPerformanceModel);
     }
+    #endregion
 
+    #region Relinking Performance
+    public void AddRelinkingResult(ISingleObjectiveSolutionScope<TSolution> a, ISingleObjectiveSolutionScope<TSolution> b, double parentDist, ISingleObjectiveSolutionScope<TSolution> child) {
+      if (IsBetter(a, b))
+        relinkingStat.Add(Tuple.Create(a.Fitness, b.Fitness, parentDist, Maximization ? child.Fitness - a.Fitness : a.Fitness - child.Fitness));
+      else relinkingStat.Add(Tuple.Create(a.Fitness, b.Fitness, parentDist, Maximization ? child.Fitness - b.Fitness : b.Fitness - child.Fitness));
+      if (relinkingStat.Count % 10 == 0) RelearnRelinkingPerformanceModel();
+    }
     public void RelearnRelinkingPerformanceModel() {
       relinkingPerformanceModel = RunRegression(PrepareRegression(ToListRow(relinkingStat)), relinkingPerformanceModel).Model;
     }
@@ -380,7 +396,15 @@ namespace HeuristicLab.Algorithms.MemPR {
       }
       return Random.NextDouble() < ProbabilityAcceptRelativePerformanceModel(p2.Fitness, new List<double> { p1.Fitness, p2.Fitness, dist }, relinkingPerformanceModel);
     }
+    #endregion
 
+    #region Delinking Performance
+    public void AddDelinkingResult(ISingleObjectiveSolutionScope<TSolution> a, ISingleObjectiveSolutionScope<TSolution> b, double parentDist, ISingleObjectiveSolutionScope<TSolution> child) {
+      if (IsBetter(a, b))
+        delinkingStat.Add(Tuple.Create(a.Fitness, b.Fitness, parentDist, Maximization ? child.Fitness - a.Fitness : a.Fitness - child.Fitness));
+      else delinkingStat.Add(Tuple.Create(a.Fitness, b.Fitness, parentDist, Maximization ? child.Fitness - b.Fitness : b.Fitness - child.Fitness));
+      if (delinkingStat.Count % 10 == 0) RelearnDelinkingPerformanceModel();
+    }
     public void RelearnDelinkingPerformanceModel() {
       delinkingPerformanceModel = RunRegression(PrepareRegression(ToListRow(delinkingStat)), delinkingPerformanceModel).Model;
     }
@@ -400,7 +424,13 @@ namespace HeuristicLab.Algorithms.MemPR {
       }
       return Random.NextDouble() < ProbabilityAcceptRelativePerformanceModel(p2.Fitness, new List<double> { p1.Fitness, p2.Fitness, dist }, delinkingPerformanceModel);
     }
+    #endregion
 
+    #region Sampling Performance
+    public void AddSamplingResult(ISingleObjectiveSolutionScope<TSolution> sample, double avgDist) {
+      samplingStat.Add(Tuple.Create(avgDist, sample.Fitness));
+      if (samplingStat.Count % 10 == 0) RelearnSamplingPerformanceModel();
+    }
     public void RelearnSamplingPerformanceModel() {
       samplingPerformanceModel = RunRegression(PrepareRegression(ToListRow(samplingStat)), samplingPerformanceModel).Model;
     }
@@ -409,12 +439,15 @@ namespace HeuristicLab.Algorithms.MemPR {
       if (avgDist < samplingStat.Min(x => x.Item1) || avgDist > samplingStat.Max(x => x.Item1)) return true;
       return Random.NextDouble() < ProbabilityAcceptAbsolutePerformanceModel(new List<double> { avgDist }, samplingPerformanceModel);
     }
+    #endregion
 
+    #region Hillclimbing Performance
+    public void AddHillclimbingResult(ISingleObjectiveSolutionScope<TSolution> input, ISingleObjectiveSolutionScope<TSolution> outcome) {
+      hillclimbingStat.Add(Tuple.Create(input.Fitness, Maximization ? outcome.Fitness - input.Fitness : input.Fitness - outcome.Fitness));
+      if (hillclimbingStat.Count % 10 == 0) RelearnHillclimbingPerformanceModel();
+    }
     public void RelearnHillclimbingPerformanceModel() {
       hillclimbingPerformanceModel = RunRegression(PrepareRegression(ToListRow(hillclimbingStat)), hillclimbingPerformanceModel).Model;
-    }
-    public bool HillclimbingSuited(ISingleObjectiveSolutionScope<TSolution> scope) {
-      return HillclimbingSuited(scope.Fitness);
     }
     public bool HillclimbingSuited(double startingFitness) {
       if (hillclimbingPerformanceModel == null) return true;
@@ -422,19 +455,23 @@ namespace HeuristicLab.Algorithms.MemPR {
         return true;
       return Random.NextDouble() < ProbabilityAcceptRelativePerformanceModel(startingFitness, new List<double> { startingFitness }, hillclimbingPerformanceModel);
     }
+    #endregion
 
+    #region Adaptivewalking Performance
+    public void AddAdaptivewalkingResult(ISingleObjectiveSolutionScope<TSolution> input, ISingleObjectiveSolutionScope<TSolution> outcome) {
+      adaptivewalkingStat.Add(Tuple.Create(input.Fitness, Maximization ? outcome.Fitness - input.Fitness : input.Fitness - outcome.Fitness));
+      if (adaptivewalkingStat.Count % 10 == 0) RelearnAdaptiveWalkPerformanceModel();
+    }
     public void RelearnAdaptiveWalkPerformanceModel() {
       adaptiveWalkPerformanceModel = RunRegression(PrepareRegression(ToListRow(adaptivewalkingStat)), adaptiveWalkPerformanceModel).Model;
-    }
-    public bool AdaptivewalkingSuited(ISingleObjectiveSolutionScope<TSolution> scope) {
-      return AdaptivewalkingSuited(scope.Fitness);
     }
     public bool AdaptivewalkingSuited(double startingFitness) {
       if (adaptiveWalkPerformanceModel == null) return true;
       if (startingFitness < AdaptivewalkingStat.Min(x => x.Item1) || startingFitness > AdaptivewalkingStat.Max(x => x.Item1))
         return true;
-      return Random.NextDouble() < ProbabilityAcceptAbsolutePerformanceModel(new List<double> { startingFitness }, adaptiveWalkPerformanceModel);
+      return Random.NextDouble() < ProbabilityAcceptRelativePerformanceModel(startingFitness, new List<double> { startingFitness }, adaptiveWalkPerformanceModel);
     }
+    #endregion
 
     public IConfidenceRegressionSolution GetSolution(IConfidenceRegressionModel model, IEnumerable<Tuple<double, double>> data) {
       return new ConfidenceRegressionSolution(model, PrepareRegression(ToListRow(data.ToList())));
@@ -446,23 +483,25 @@ namespace HeuristicLab.Algorithms.MemPR {
       return new ConfidenceRegressionSolution(model, PrepareRegression(ToListRow(data.ToList())));
     }
 
-    protected RegressionProblemData PrepareRegression(List<List<double>> sample) {
-      var columns = sample.First().Select(y => new List<double>()).ToList();
-      foreach (var next in sample.Shuffle(Random)) {
+    protected RegressionProblemData PrepareRegression(List<List<double>> data) {
+      var columns = data.First().Select(y => new List<double>()).ToList();
+      foreach (var next in data.Shuffle(Random)) {
         for (var i = 0; i < next.Count; i++) {
           columns[i].Add(next[i]);
         }
       }
       var ds = new Dataset(columns.Select((v, i) => i < columns.Count - 1 ? "in" + i : "out").ToList(), columns);
       var regPrb = new RegressionProblemData(ds, Enumerable.Range(0, columns.Count - 1).Select(x => "in" + x), "out") {
-        TrainingPartition = { Start = 0, End = Math.Min(50, sample.Count) },
-        TestPartition = { Start = Math.Min(50, sample.Count), End = sample.Count }
+        TrainingPartition = { Start = 0, End = Math.Min(50, data.Count) },
+        TestPartition = { Start = Math.Min(50, data.Count), End = data.Count }
       };
       return regPrb;
     }
 
     protected static IConfidenceRegressionSolution RunRegression(RegressionProblemData trainingData, IConfidenceRegressionModel baseLineModel = null) {
+      var targetValues = trainingData.Dataset.GetDoubleValues(trainingData.TargetVariable, trainingData.TrainingIndices).ToList();
       var baseline = baseLineModel != null ? new ConfidenceRegressionSolution(baseLineModel, trainingData) : null;
+      var constantSolution = new ConfidenceRegressionSolution(new ConfidenceConstantModel(targetValues.Average(), targetValues.Variance(), trainingData.TargetVariable), trainingData);
       var gpr = new GaussianProcessRegression { Problem = { ProblemData = trainingData } };
       if (trainingData.InputVariables.CheckedItems.Any(x => alglib.pearsoncorr2(trainingData.Dataset.GetDoubleValues(x.Value.Value).ToArray(), trainingData.TargetVariableValues.ToArray()) > 0.8)) {
         gpr.MeanFunction = new MeanZero();
@@ -478,20 +517,40 @@ namespace HeuristicLab.Algorithms.MemPR {
         solution = (IConfidenceRegressionSolution)gpr.Results["Solution"].Value;
         cnt++;
       } while (cnt < 10 && (solution == null || solution.TrainingRSquared.IsAlmost(0)));
-      if (baseline == null) return solution;
-      if (trainingData.Dataset.Rows < 60)
-        return solution.TrainingMeanAbsoluteError < baseline.TrainingMeanAbsoluteError ? solution : baseline;
-      return solution.TestMeanAbsoluteError < baseline.TestMeanAbsoluteError ? solution : baseline;
+
+      return GetBestRegressionSolution(constantSolution, baseline, solution);
+    }
+
+    private static IConfidenceRegressionSolution GetBestRegressionSolution(IConfidenceRegressionSolution constant, IConfidenceRegressionSolution baseline, IConfidenceRegressionSolution solution) {
+      if (baseline == null)
+        return constant.TrainingMeanAbsoluteError < solution.TrainingMeanAbsoluteError ? constant : solution;
+
+      double a, b, c;
+      if (constant.ProblemData.Dataset.Rows < 60) {
+        c = constant.TrainingMeanAbsoluteError;
+        b = baseline.TrainingMeanAbsoluteError;
+        a = solution.TrainingMeanAbsoluteError;
+      } else {
+        c = constant.TestMeanAbsoluteError;
+        b = baseline.TestMeanAbsoluteError;
+        a = solution.TestMeanAbsoluteError;
+      }
+      if (c < b && (c < a || b < a)) return constant;
+      if (b < c && (b < a || c < a)) return baseline;
+      return solution;
     }
 
     protected static void ExecuteAlgorithm(IAlgorithm algorithm) {
       using (var evt = new AutoResetEvent(false)) {
         EventHandler exeStateChanged = (o, args) => {
-          if (algorithm.ExecutionState == ExecutionState.Paused || algorithm.ExecutionState == ExecutionState.Stopped)
+          if (algorithm.ExecutionState != ExecutionState.Started)
             evt.Set();
         };
         algorithm.ExecutionStateChanged += exeStateChanged;
-        algorithm.Prepare(true);
+        if (algorithm.ExecutionState != ExecutionState.Prepared) {
+          algorithm.Prepare(true);
+          evt.WaitOne();
+        }
         algorithm.Start();
         evt.WaitOne();
         algorithm.ExecutionStateChanged -= exeStateChanged;
@@ -546,42 +605,6 @@ namespace HeuristicLab.Algorithms.MemPR {
         || !Maximization && a < b;
     }
 
-    public void AddBreedingResult(ISingleObjectiveSolutionScope<TSolution> a, ISingleObjectiveSolutionScope<TSolution> b, double parentDist, ISingleObjectiveSolutionScope<TSolution> child) {
-      if (IsBetter(a, b))
-        breedingStat.Add(Tuple.Create(a.Fitness, b.Fitness, parentDist, child.Fitness));
-      else breedingStat.Add(Tuple.Create(b.Fitness, a.Fitness, parentDist, child.Fitness));
-      if (breedingStat.Count % 10 == 0) RelearnBreedingPerformanceModel();
-    }
-
-    public void AddRelinkingResult(ISingleObjectiveSolutionScope<TSolution> a, ISingleObjectiveSolutionScope<TSolution> b, double parentDist, ISingleObjectiveSolutionScope<TSolution> child) {
-      if (IsBetter(a, b))
-        relinkingStat.Add(Tuple.Create(a.Fitness, b.Fitness, parentDist, Maximization ? child.Fitness - a.Fitness : a.Fitness - child.Fitness));
-      else relinkingStat.Add(Tuple.Create(a.Fitness, b.Fitness, parentDist, Maximization ? child.Fitness - b.Fitness : b.Fitness - child.Fitness));
-      if (relinkingStat.Count % 10 == 0) RelearnRelinkingPerformanceModel();
-    }
-
-    public void AddDelinkingResult(ISingleObjectiveSolutionScope<TSolution> a, ISingleObjectiveSolutionScope<TSolution> b, double parentDist, ISingleObjectiveSolutionScope<TSolution> child) {
-      if (IsBetter(a, b))
-        delinkingStat.Add(Tuple.Create(a.Fitness, b.Fitness, parentDist, Maximization ? child.Fitness - a.Fitness : a.Fitness - child.Fitness));
-      else delinkingStat.Add(Tuple.Create(a.Fitness, b.Fitness, parentDist, Maximization ? child.Fitness - b.Fitness : b.Fitness - child.Fitness));
-      if (delinkingStat.Count % 10 == 0) RelearnDelinkingPerformanceModel();
-    }
-
-    public void AddSamplingResult(ISingleObjectiveSolutionScope<TSolution> sample, double avgDist) {
-      samplingStat.Add(Tuple.Create(avgDist, sample.Fitness));
-      if (samplingStat.Count % 10 == 0) RelearnSamplingPerformanceModel();
-    }
-
-    public void AddHillclimbingResult(ISingleObjectiveSolutionScope<TSolution> input, ISingleObjectiveSolutionScope<TSolution> outcome) {
-      hillclimbingStat.Add(Tuple.Create(input.Fitness, Maximization ? outcome.Fitness - input.Fitness : input.Fitness - outcome.Fitness));
-      if (hillclimbingStat.Count % 10 == 0) RelearnHillclimbingPerformanceModel();
-    }
-
-    public void AddAdaptivewalkingResult(ISingleObjectiveSolutionScope<TSolution> input, ISingleObjectiveSolutionScope<TSolution> outcome) {
-      adaptivewalkingStat.Add(Tuple.Create(input.Fitness, outcome.Fitness));
-      if (adaptivewalkingStat.Count % 10 == 0) RelearnAdaptiveWalkPerformanceModel();
-    }
-
     #region IExecutionContext members
     public IAtomicOperation CreateOperation(IOperator op) {
       return new ExecutionContext(this, op, Scope);
@@ -598,34 +621,6 @@ namespace HeuristicLab.Algorithms.MemPR {
     public IAtomicOperation CreateChildOperation(IOperator op, IScope s) {
       return new ExecutionContext(this, op, s);
     }
-    #endregion
-
-    #region Math Helper
-    // normal distribution CDF (left of x) for N(0;1) standard normal distribution
-    // from http://www.johndcook.com/blog/csharp_phi/
-    // license: "This code is in the public domain. Do whatever you want with it, no strings attached."
-    // added: 2016-11-19 21:46 CET
-    /*protected static double Phi(double x) {
-      // constants
-      double a1 = 0.254829592;
-      double a2 = -0.284496736;
-      double a3 = 1.421413741;
-      double a4 = -1.453152027;
-      double a5 = 1.061405429;
-      double p = 0.3275911;
-
-      // Save the sign of x
-      int sign = 1;
-      if (x < 0)
-        sign = -1;
-      x = Math.Abs(x) / Math.Sqrt(2.0);
-
-      // A&S formula 7.1.26
-      double t = 1.0 / (1.0 + p * x);
-      double y = 1.0 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * Math.Exp(-x * x);
-
-      return 0.5 * (1.0 + sign * y);
-    }*/
     #endregion
 
     #region Engine Helper

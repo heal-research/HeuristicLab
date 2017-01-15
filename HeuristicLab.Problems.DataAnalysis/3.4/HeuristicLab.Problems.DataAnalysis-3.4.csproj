@@ -135,6 +135,7 @@
     <Compile Include="Implementation\Clustering\ClusteringProblem.cs" />
     <Compile Include="Implementation\Clustering\ClusteringProblemData.cs" />
     <Compile Include="Implementation\Clustering\ClusteringSolution.cs" />
+    <Compile Include="Implementation\ConfidenceConstantModel.cs" />
     <Compile Include="Implementation\ConstantModel.cs" />
     <Compile Include="Implementation\DataAnalysisModel.cs" />
     <Compile Include="Implementation\Regression\ConfidenceBoundRegressionSolution.cs" />
