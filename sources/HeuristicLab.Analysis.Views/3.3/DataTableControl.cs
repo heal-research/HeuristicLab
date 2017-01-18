@@ -117,7 +117,9 @@ namespace HeuristicLab.Analysis.Views {
     protected virtual void AddDataRows(IEnumerable<DataRow> rows) {
       foreach (var row in rows) {
         RegisterDataRowEvents(row);
-        var series = new Series(row.Name);
+        var series = new Series(row.Name) {
+          Tag = row
+        };
         if (row.VisualProperties.DisplayName.Trim() != String.Empty) series.LegendText = row.VisualProperties.DisplayName;
         else series.LegendText = row.Name;
         ConfigureSeries(series, row);
@@ -127,6 +129,7 @@ namespace HeuristicLab.Analysis.Views {
       ConfigureChartArea(chart.ChartAreas[0]);
       RecalculateAxesScale(chart.ChartAreas[0]);
       UpdateYCursorInterval();
+      UpdateHistogramTransparency();
     }
 
     protected virtual void RemoveDataRows(IEnumerable<DataRow> rows) {
@@ -173,7 +176,10 @@ namespace HeuristicLab.Analysis.Views {
           series.ChartType = SeriesChartType.FastPoint;
           break;
         case DataRowVisualProperties.DataRowChartType.Histogram:
-          series.ChartType = SeriesChartType.StackedColumn;
+          bool stacked = row.VisualProperties.Aggregation == DataRowVisualProperties.DataRowHistogramAggregation.Stacked;
+          series.ChartType = stacked ? SeriesChartType.StackedColumn : SeriesChartType.Column;
+          bool sideBySide = row.VisualProperties.Aggregation == DataRowVisualProperties.DataRowHistogramAggregation.SideBySide;
+          series.SetCustomProperty("DrawSideBySide", sideBySide ? "True" : "False");
           series.SetCustomProperty("PointWidth", "1");
           if (!series.Color.IsEmpty && series.Color.GetBrightness() < 0.25)
             series.BorderColor = Color.White;
@@ -274,6 +280,29 @@ namespace HeuristicLab.Analysis.Views {
       this.chart.ChartAreas[0].CursorY.Interval = yZoomInterval;
     }
 
+    protected void UpdateHistogramTransparency() {
+      if (Content.Rows.Any(r => RequiresTransparency(r) && r.VisualProperties.Color.IsEmpty)) {
+        foreach (var series in chart.Series) // sync colors before applying palette colors
+          series.Color = ((DataRow)series.Tag).VisualProperties.Color;
+        chart.ApplyPaletteColors();
+      }
+
+      var numTransparent = Content.Rows.Count(RequiresTransparency);
+      if (numTransparent <= 1) return;
+      foreach (var series in chart.Series) {
+        var row = (DataRow)series.Tag;
+        if (!RequiresTransparency(row))
+          continue;
+        var baseColor = row.VisualProperties.Color;
+        if (baseColor.IsEmpty) baseColor = series.Color;
+        series.Color = Color.FromArgb(180, baseColor);
+      }
+    }
+    private bool RequiresTransparency(DataRow row) {
+      return row.VisualProperties.ChartType == DataRowVisualProperties.DataRowChartType.Histogram
+             && row.VisualProperties.Aggregation == DataRowVisualProperties.DataRowHistogramAggregation.Overlapping;
+    }
+
     #region Event Handlers
     #region Content Event Handlers
     private void Content_VisualPropertiesChanged(object sender, EventArgs e) {
@@ -326,8 +355,11 @@ namespace HeuristicLab.Analysis.Views {
         Series series = chart.Series[row.Name];
         series.Points.Clear();
         ConfigureSeries(series, row);
-        FillSeriesWithRowValues(series, row);
-        RecalculateAxesScale(chart.ChartAreas[0]);
+        if (!invisibleSeries.Contains(series)) {
+          FillSeriesWithRowValues(series, row);
+          RecalculateAxesScale(chart.ChartAreas[0]);
+          UpdateHistogramTransparency();
+        }
       }
     }
     private void Row_NameChanged(object sender, EventArgs e) {

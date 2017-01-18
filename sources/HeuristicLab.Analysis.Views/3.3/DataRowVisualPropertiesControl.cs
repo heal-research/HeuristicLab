@@ -22,6 +22,7 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using HeuristicLab.Common.Resources;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 
@@ -44,6 +45,9 @@ namespace HeuristicLab.Analysis.Views {
       InitializeComponent();
       chartTypeComboBox.DataSource = Enum.GetValues(typeof(DataRowVisualProperties.DataRowChartType));
       lineStyleComboBox.DataSource = Enum.GetValues(typeof(DataRowVisualProperties.DataRowLineStyle));
+      aggregationComboBox.DataSource = Enum.GetValues(typeof(DataRowVisualProperties.DataRowHistogramAggregation));
+      clearColorButton.BackColor = Color.Transparent;
+      clearColorButton.BackgroundImage = VSImageLibrary.Delete;
       SetEnabledStateOfControls();
     }
 
@@ -64,6 +68,7 @@ namespace HeuristicLab.Analysis.Views {
           binsNumericUpDown.Value = 1;
           binsApproximatelyRadioButton.Checked = false;
           binsExactRadioButton.Checked = false;
+          aggregationComboBox.SelectedIndex = -1;
           displayNameTextBox.Text = String.Empty;
         } else {
           chartTypeComboBox.SelectedItem = Content.ChartType;
@@ -92,6 +97,7 @@ namespace HeuristicLab.Analysis.Views {
           else binsNumericUpDown.Value = Content.Bins;
           binsApproximatelyRadioButton.Checked = !Content.ExactBins;
           binsExactRadioButton.Checked = Content.ExactBins;
+          aggregationComboBox.SelectedItem = Content.Aggregation;
           displayNameTextBox.Text = Content.DisplayName;
           isVisibleInLegendCheckBox.Checked = Content.IsVisibleInLegend;
         }
@@ -101,6 +107,7 @@ namespace HeuristicLab.Analysis.Views {
 
     protected virtual void SetEnabledStateOfControls() {
       commonGroupBox.Enabled = Content != null;
+      clearColorButton.Visible = Content != null && !Content.Color.IsEmpty;
       lineChartGroupBox.Enabled = Content != null && Content.ChartType == DataRowVisualProperties.DataRowChartType.Line;
       histoGramGroupBox.Enabled = Content != null && Content.ChartType == DataRowVisualProperties.DataRowChartType.Histogram;
       isVisibleInLegendCheckBox.Enabled = Content != null;
@@ -127,6 +134,19 @@ namespace HeuristicLab.Analysis.Views {
         Content.Color = colorDialog.Color;
         colorButton.BackColor = Content.Color;
         colorButton.Text = String.Empty;
+        clearColorButton.Visible = true;
+      }
+    }
+
+    private void clearColorButton_Click(object sender, EventArgs e) {
+      if (!SuppressEvents && Content != null) {
+        SuppressEvents = true;
+        try {
+          Content.Color = Color.Empty;
+          colorButton.BackColor = SystemColors.Control;
+          colorButton.Text = "?";
+          clearColorButton.Visible = false;
+        } finally { SuppressEvents = false; }
       }
     }
 
@@ -177,6 +197,15 @@ namespace HeuristicLab.Analysis.Views {
         SuppressEvents = true;
         try {
           Content.ExactBins = binsExactRadioButton.Checked;
+        } finally { SuppressEvents = false; }
+      }
+    }
+
+    private void aggregationComboBox_SelectedValueChanged(object sender, EventArgs e) {
+      if (!SuppressEvents && Content != null) {
+        SuppressEvents = true;
+        try {
+          Content.Aggregation = (DataRowVisualProperties.DataRowHistogramAggregation)aggregationComboBox.SelectedValue;
         } finally { SuppressEvents = false; }
       }
     }

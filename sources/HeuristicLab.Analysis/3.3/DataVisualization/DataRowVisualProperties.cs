@@ -51,6 +51,13 @@ namespace HeuristicLab.Analysis {
       Solid
     }
     #endregion
+    #region Histogram Aggregation
+    public enum DataRowHistogramAggregation {
+      Overlapping,
+      SideBySide,
+      Stacked
+    }
+    #endregion
 
     private DataRowChartType chartType;
     public DataRowChartType ChartType {
@@ -142,6 +149,16 @@ namespace HeuristicLab.Analysis {
         }
       }
     }
+    private DataRowHistogramAggregation aggregation;
+    public DataRowHistogramAggregation Aggregation {
+      get { return aggregation; }
+      set {
+        if (aggregation != value) {
+          aggregation = value;
+          OnPropertyChanged("Aggregation");
+        }
+      }
+    }
     private double scaleFactor;
     public double ScaleFactor {
       get { return scaleFactor; }
@@ -224,6 +241,11 @@ namespace HeuristicLab.Analysis {
       get { return exactBins; }
       set { exactBins = value; }
     }
+    [Storable(Name = "Aggregation", DefaultValue = DataRowHistogramAggregation.Overlapping)]
+    private DataRowHistogramAggregation StorableAggregation {
+      get { return aggregation; }
+      set { aggregation = value; }
+    }
     [Storable(Name = "ScaleFactor")]
     private double StorableScaleFactor {
       get { return scaleFactor; }
@@ -254,6 +276,7 @@ namespace HeuristicLab.Analysis {
       this.lineWidth = original.lineWidth;
       this.bins = original.bins;
       this.exactBins = original.exactBins;
+      this.aggregation = original.aggregation;
       this.scaleFactor = original.scaleFactor;
       this.displayName = original.displayName;
       this.isVisibleInLegend = original.isVisibleInLegend;
@@ -268,6 +291,7 @@ namespace HeuristicLab.Analysis {
       lineWidth = 1;
       bins = 10;
       exactBins = false;
+      aggregation = DataRowHistogramAggregation.Overlapping;
       scaleFactor = 1.0;
       displayName = String.Empty;
       isVisibleInLegend = true;

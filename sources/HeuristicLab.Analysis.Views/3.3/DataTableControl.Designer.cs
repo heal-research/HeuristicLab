@@ -70,6 +70,7 @@ namespace HeuristicLab.Analysis.Views {
       this.chart.ChartAreas.Add(chartArea1);
       legend1.Alignment = System.Drawing.StringAlignment.Center;
       legend1.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Top;
+      legend1.LegendItemOrder = System.Windows.Forms.DataVisualization.Charting.LegendItemOrder.ReversedSeriesOrder;
       legend1.Name = "Default";
       this.chart.Legends.Add(legend1);
       this.chart.Location = new System.Drawing.Point(0, 0);
