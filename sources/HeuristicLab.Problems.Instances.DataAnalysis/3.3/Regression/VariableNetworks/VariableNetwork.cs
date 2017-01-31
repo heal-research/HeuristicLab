@@ -217,16 +217,6 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       // calculate relevance by removing dimensions
       relevance = CalculateRelevance(y, u, xs, l);
 
-
-      // calculate variable relevance
-      // as per Rasmussen and Williams "Gaussian Processes for Machine Learning" page 106:
-      // ,,For the squared exponential covariance function [...] the l1, ..., lD hyperparameters
-      // play the role of characteristic length scales [...]. Such a covariance function implements 
-      // automatic relevance determination (ARD) [Neal, 1996], since the inverse of the length-scale 
-      // determines how relevant an input is: if the length-scale has a very large value, the covariance 
-      // will become almost independent of that input, effectively removing it from inference.''
-      // relevance = l.Select(li => 1.0 / li).ToArray();
-
       return y;
     }
 
