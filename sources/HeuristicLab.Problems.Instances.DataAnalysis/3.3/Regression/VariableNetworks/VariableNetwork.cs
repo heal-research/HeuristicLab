@@ -29,7 +29,7 @@ using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
-  public class VariableNetwork : ArtificialRegressionDataDescriptor {
+  public abstract class VariableNetwork : ArtificialRegressionDataDescriptor {
     private int nTrainingSamples;
     private int nTestSamples;
 
@@ -37,7 +37,6 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     private double noiseRatio;
     private IRandom random;
 
-    public override string Name { get { return string.Format("VariableNetwork-{0:0%} ({1} dim)", noiseRatio, numberOfFeatures); } }
     private string networkDefinition;
     public string NetworkDefinition { get { return networkDefinition; } }
     public override string Description {
@@ -46,11 +45,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       }
     }
 
-    public VariableNetwork(int numberOfFeatures, double noiseRatio,
-      IRandom rand)
-      : this(250, 250, numberOfFeatures, noiseRatio, rand) { }
-
-    public VariableNetwork(int nTrainingSamples, int nTestSamples,
+    protected VariableNetwork(int nTrainingSamples, int nTestSamples,
       int numberOfFeatures, double noiseRatio, IRandom rand) {
       this.nTrainingSamples = nTrainingSamples;
       this.nTestSamples = nTestSamples;
@@ -104,11 +99,17 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       List<double[]> relevances = new List<double[]>(); // stores variable relevance information (same order as given in inputVarNames)
 
       var nrand = new NormalDistributedRandom(random, 0, 1);
-      for (int c = 0; c < numLvl0; c++) {
+      for(int c = 0; c < numLvl0; c++) {
         inputVarNames.Add(new string[] { });
         relevances.Add(new double[] { });
-        description.Add(" ~ N(0, 1)");
-        lvl0.Add(Enumerable.Range(0, TestPartitionEnd).Select(_ => nrand.NextDouble()).ToList());
+        description.Add(" ~ N(0, 1 + noiseLvl)");
+        // use same generation procedure for all variables
+        var x = Enumerable.Range(0, TestPartitionEnd).Select(_ => nrand.NextDouble()).ToList();
+        var sigma = x.StandardDeviationPop();
+        var mean = x.Average();
+        for(int i = 0; i < x.Count; i++) x[i] = (x[i] - mean) / sigma;
+        var noisePrng = new NormalDistributedRandom(random, 0, Math.Sqrt(noiseRatio / (1.0 - noiseRatio)));
+        lvl0.Add(x.Select(t => t + noisePrng.NextDouble()).ToList());
       }
 
       // lvl1 contains variables which are functions of vars in lvl0 (+ noise)
@@ -124,7 +125,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       List<List<double>> lvl3 = CreateVariables(lvl0.Concat(lvl1).Concat(lvl2).ToList(), numLvl3, inputVarNames, description, relevances);
 
       this.variableRelevances.Clear();
-      for (int i = 0; i < variableNames.Length; i++) {
+      for(int i = 0; i < variableNames.Length; i++) {
         var targetVarName = variableNames[i];
         var targetRelevantInputs =
           inputVarNames[i].Zip(relevances[i], (inputVar, rel) => new KeyValuePair<string, double>(inputVar, rel))
@@ -135,11 +136,11 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       networkDefinition = string.Join(Environment.NewLine, variableNames.Zip(description, (n, d) => n + d).OrderBy(x => x));
       // for graphviz
       networkDefinition += Environment.NewLine + "digraph G {";
-      for (int i = 0; i < variableNames.Length; i++) {
+      for(int i = 0; i < variableNames.Length; i++) {
         var name = variableNames[i];
         var selectedVarNames = inputVarNames[i];
         var selectedRelevances = relevances[i];
-        for (int j = 0; j < selectedVarNames.Length; j++) {
+        for(int j = 0; j < selectedVarNames.Length; j++) {
           var selectedVarName = selectedVarNames[j];
           var selectedRelevance = selectedRelevances[j];
           networkDefinition += Environment.NewLine + selectedVarName + " -> " + name +
@@ -156,14 +157,18 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     }
 
     private List<List<double>> CreateVariables(List<List<double>> allowedInputs, int numVars, List<string[]> inputVarNames, List<string> description, List<double[]> relevances) {
-      var res = new List<List<double>>();
-      for (int c = 0; c < numVars; c++) {
+      var newVariables = new List<List<double>>();
+      for(int c = 0; c < numVars; c++) {
         string[] selectedVarNames;
         double[] relevance;
-        var x = GenerateRandomFunction(random, allowedInputs, out selectedVarNames, out relevance);
+        var x = GenerateRandomFunction(random, allowedInputs, out selectedVarNames, out relevance).ToArray();
+        // standardize x
         var sigma = x.StandardDeviation();
-        var noisePrng = new NormalDistributedRandom(random, 0, sigma * Math.Sqrt(noiseRatio / (1.0 - noiseRatio)));
-        res.Add(x.Select(t => t + noisePrng.NextDouble()).ToList());
+        var mean = x.Average();
+        for(int i = 0; i < x.Length; i++) x[i] = (x[i] - mean) / sigma;
+
+        var noisePrng = new NormalDistributedRandom(random, 0, Math.Sqrt(noiseRatio / (1.0 - noiseRatio)));
+        newVariables.Add(x.Select(t => t + noisePrng.NextDouble()).ToList());
         Array.Sort(selectedVarNames, relevance);
         inputVarNames.Add(selectedVarNames);
         relevances.Add(relevance);
@@ -175,99 +180,16 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
           .Select(t => string.Format(CultureInfo.InvariantCulture, "{0}: {1:N3}", t.Item1, t.Item2)));
         description.Add(string.Format(" ~ N({0}, {1:N3}) [Relevances: {2}]", desc, noisePrng.Sigma, relevanceStr));
       }
-      return res;
+      return newVariables;
     }
 
-    // sample the input variables that are actually used and sample from a Gaussian process
-    private IEnumerable<double> GenerateRandomFunction(IRandom rand, List<List<double>> xs, out string[] selectedVarNames, out double[] relevance) {
+    public int SampleNumberOfVariables(IRandom rand, int maxNumberOfVariables) {
       double r = -Math.Log(1.0 - rand.NextDouble()) * 2.0; // r is exponentially distributed with lambda = 2
       int nl = (int)Math.Floor(1.5 + r); // number of selected vars is likely to be between three and four
-      if (nl > xs.Count) nl = xs.Count; // limit max
-
-      var selectedIdx = Enumerable.Range(0, xs.Count).Shuffle(random)
-        .Take(nl).ToArray();
-
-      var selectedVars = selectedIdx.Select(i => xs[i]).ToArray();
-      selectedVarNames = selectedIdx.Select(i => VariableNames[i]).ToArray();
-      return SampleGaussianProcess(random, selectedVars, out relevance);
+      return Math.Min(maxNumberOfVariables, nl);
     }
 
-    private IEnumerable<double> SampleGaussianProcess(IRandom random, List<double>[] xs, out double[] relevance) {
-      int nl = xs.Length;
-      int nRows = xs.First().Count;
-
-      // sample u iid ~ N(0, 1)
-      var u = Enumerable.Range(0, nRows).Select(_ => NormalDistributedRandom.NextDouble(random, 0, 1)).ToArray();
-
-      // sample actual length-scales
-      var l = Enumerable.Range(0, nl)
-        .Select(_ => random.NextDouble() * 2 + 0.5)
-        .ToArray();
-
-      double[,] K = CalculateCovariance(xs, l);
-
-      // decompose
-      alglib.trfac.spdmatrixcholesky(ref K, nRows, false);
-
-
-      // calc y = Lu
-      var y = new double[u.Length];
-      alglib.ablas.rmatrixmv(nRows, nRows, K, 0, 0, 0, u, 0, ref y, 0);
-
-      // calculate relevance by removing dimensions
-      relevance = CalculateRelevance(y, u, xs, l);
-
-      return y;
-    }
-
-    // calculate variable relevance based on removal of variables
-    //  1) to remove a variable we set it's length scale to infinity (no relation of the variable value to the target)
-    //  2) calculate MSE of the original target values (y) to the updated targes y' (after variable removal)
-    //  3) relevance is larger if MSE(y,y') is large
-    //  4) scale impacts so that the most important variable has impact = 1
-    private double[] CalculateRelevance(double[] y, double[] u, List<double>[] xs, double[] l) {
-      int nRows = xs.First().Count;
-      var changedL = new double[l.Length];
-      var relevance = new double[l.Length];
-      for (int i = 0; i < l.Length; i++) {
-        Array.Copy(l, changedL, changedL.Length);
-        changedL[i] = double.MaxValue;
-        var changedK = CalculateCovariance(xs, changedL);
-
-        var yChanged = new double[u.Length];
-        alglib.ablas.rmatrixmv(nRows, nRows, changedK, 0, 0, 0, u, 0, ref yChanged, 0);
-
-        OnlineCalculatorError error;
-        var mse = OnlineMeanSquaredErrorCalculator.Calculate(y, yChanged, out error);
-        if (error != OnlineCalculatorError.None) mse = double.MaxValue;
-        relevance[i] = mse;
-      }
-      // scale so that max relevance is 1.0
-      var maxRel = relevance.Max();
-      for (int i = 0; i < relevance.Length; i++) relevance[i] /= maxRel;
-      return relevance;
-    }
-
-    private double[,] CalculateCovariance(List<double>[] xs, double[] l) {
-      int nRows = xs.First().Count;
-      double[,] K = new double[nRows, nRows];
-      for (int r = 0; r < nRows; r++) {
-        double[] xi = xs.Select(x => x[r]).ToArray();
-        for (int c = 0; c <= r; c++) {
-          double[] xj = xs.Select(x => x[c]).ToArray();
-          double dSqr = xi.Zip(xj, (xik, xjk) => (xik - xjk))
-            .Select(dk => dk * dk)
-            .Zip(l, (dk, lk) => dk / lk)
-            .Sum();
-          K[r, c] = Math.Exp(-dSqr);
-        }
-      }
-      // add a small diagonal matrix for numeric stability
-      for (int i = 0; i < nRows; i++) {
-        K[i, i] += 1.0E-7;
-      }
-
-      return K;
-    }
+    // sample a random function and calculate the variable relevances
+    protected abstract IEnumerable<double> GenerateRandomFunction(IRandom rand, List<List<double>> xs, out string[] selectedVarNames, out double[] relevance);
   }
 }
