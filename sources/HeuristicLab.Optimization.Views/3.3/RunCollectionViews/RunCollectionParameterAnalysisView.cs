@@ -241,9 +241,10 @@ namespace HeuristicLab.Optimization.Views {
     private void UpdateChart() {
       if (suppressUpdates) return;
 
-      var selectedNode = groupsTreeView.Focused ? groupsTreeView.SelectedNode : parametersTreeView.SelectedNode;
       chart.Series.Clear();
       chart.Legends[0].CustomItems.Clear();
+      var selectedNode = groupsTreeView.Focused ? groupsTreeView.SelectedNode : parametersTreeView.SelectedNode;
+      if (selectedNode == null) return;
       if (selectedNode.Parent == null) {
         var series = BuildSeries(selectedNode.Tag as IEnumerable<IRun>, colors[0]);
         chart.Titles[0].Text = selectedNode.Text;
