@@ -531,7 +531,7 @@ namespace HeuristicLab.Optimization.Views {
     #region Inner Types
     class ParameterInfo {
       public string Name { get; }
-      public Dictionary<string, ParameterValueInfo> Values { get; } = new Dictionary<string, ParameterValueInfo>();
+      public Dictionary<string, ParameterValueInfo> Values { get; }
       public IEnumerable<IRun> Runs {
         get { return Values.Values.SelectMany(x => x.Runs); }
       }
@@ -541,6 +541,7 @@ namespace HeuristicLab.Optimization.Views {
 
       public ParameterInfo(string name, string value, IRun run) {
         Name = name;
+        Values = new Dictionary<string, ParameterValueInfo>();
         AddValue(value, run);
       }
       public void AddValue(string value, IRun run) {
@@ -555,13 +556,14 @@ namespace HeuristicLab.Optimization.Views {
     class ParameterValueInfo {
       public string Value { get; }
       public Color Color { get; set; }
-      public IList<IRun> Runs { get; } = new List<IRun>();
+      public IList<IRun> Runs { get; }
       public int RunCount {
         get { return Runs.Count; }
       }
 
       public ParameterValueInfo(string value, IRun run) {
         Value = value;
+        Runs = new List<IRun>();
         Runs.Add(run);
       }
       public ParameterValueInfo(string value, Color color, IRun run) : this(value, run) {
