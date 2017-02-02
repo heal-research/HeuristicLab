@@ -530,8 +530,8 @@ namespace HeuristicLab.Optimization.Views {
 
     #region Inner Types
     class ParameterInfo {
-      public string Name { get; }
-      public Dictionary<string, ParameterValueInfo> Values { get; }
+      public string Name { get; private set; }
+      public Dictionary<string, ParameterValueInfo> Values { get; private set; }
       public IEnumerable<IRun> Runs {
         get { return Values.Values.SelectMany(x => x.Runs); }
       }
@@ -554,9 +554,9 @@ namespace HeuristicLab.Optimization.Views {
       }
     }
     class ParameterValueInfo {
-      public string Value { get; }
+      public string Value { get; private set; }
       public Color Color { get; set; }
-      public IList<IRun> Runs { get; }
+      public IList<IRun> Runs { get; private set; }
       public int RunCount {
         get { return Runs.Count; }
       }
@@ -571,10 +571,10 @@ namespace HeuristicLab.Optimization.Views {
       }
     }
     class GroupInfo {
-      public string Text { get; }
-      public Color Color { get; }
-      public IList<IRun> Runs { get; }
-      public bool IsParameter { get; }
+      public string Text { get; private set; }
+      public Color Color { get; private set; }
+      public IList<IRun> Runs { get; private set; }
+      public bool IsParameter { get; private set; }
       public GroupInfo(string text, Color color, IEnumerable<IRun> runs, bool isParamter) {
         Text = text;
         Color = color;
@@ -589,17 +589,17 @@ namespace HeuristicLab.Optimization.Views {
       Median
     }
     class SeriesInfo {
-      public Color Color { get; }
-      public SeriesTypes Type { get; }
+      public Color Color { get; private set; }
+      public SeriesTypes Type { get; private set; }
       public SeriesInfo(Color color, SeriesTypes type) {
         Color = color;
         Type = type;
       }
     }
     class LegendItemInfo {
-      public Color Color { get; }
+      public Color Color { get; private set; }
       public bool SeriesVisible { get; set; }
-      public IEnumerable<Series> Series { get; }
+      public IEnumerable<Series> Series { get; private set; }
       public LegendItemInfo(Color color, IEnumerable<Series> series) {
         Color = color;
         SeriesVisible = true;
