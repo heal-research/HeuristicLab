@@ -201,6 +201,7 @@ namespace HeuristicLab.Optimization.Views {
       }
       parametersTreeView.Nodes.Add(paramsRoot);
       paramsRoot.Expand();
+      paramsRoot.Checked = true;
       parametersTreeView.SelectedNode = paramsRoot;
 
       // populate groupsTreeView
@@ -243,78 +244,87 @@ namespace HeuristicLab.Optimization.Views {
 
       chart.Series.Clear();
       chart.Legends[0].CustomItems.Clear();
-      var selectedNode = groupsTreeView.Focused ? groupsTreeView.SelectedNode : parametersTreeView.SelectedNode;
-      if (selectedNode == null) return;
-      if (selectedNode.Parent == null) {
-        var series = BuildSeries(selectedNode.Tag as IEnumerable<IRun>, colors[0]);
-        chart.Titles[0].Text = selectedNode.Text;
-        foreach (var s in series)
-          chart.Series.Add(s);
-        var legendItem = new LegendItem();
-        var legendItemInfo = new LegendItemInfo(colors[0], series);
-        legendItem.Color = legendItemInfo.Color;
-        legendItem.BorderColor = Color.Transparent;
-        legendItem.Name = selectedNode.Text;
-        legendItem.Tag = legendItemInfo;
-        chart.Legends[0].CustomItems.Add(legendItem);
-      } else if (selectedNode.Tag is ParameterInfo) {
-        var paramInfo = selectedNode.Tag as ParameterInfo;
-        chart.Titles[0].Text = paramInfo.Name + " (" + paramInfo.RunCount + ")";
-        foreach (var value in paramInfo.Values) {
-          var series = BuildSeries(value.Value.Runs, value.Value.Color);
+      chart.Titles[0].Text = string.Empty;
+
+      var checkedNodes = TraverseTreeNodes(parametersTreeView.Nodes)
+                           .Where(x => x.Checked)
+                           .Concat(
+                             TraverseTreeNodes(groupsTreeView.Nodes)
+                               .Where(x => x.Checked)
+                           );
+
+      foreach (var node in checkedNodes) {
+        if (node.Parent == null) {
+          var series = BuildSeries(node.Tag as IEnumerable<IRun>, colors[0]);
+          chart.Titles[0].Text = node.Text;
           foreach (var s in series)
             chart.Series.Add(s);
           var legendItem = new LegendItem();
-          var legendItemInfo = new LegendItemInfo(value.Value.Color, series);
+          var legendItemInfo = new LegendItemInfo(colors[0], series);
           legendItem.Color = legendItemInfo.Color;
           legendItem.BorderColor = Color.Transparent;
-          legendItem.Name = value.Key + " (" + value.Value.RunCount + ")";
+          legendItem.Name = node.Text;
           legendItem.Tag = legendItemInfo;
           chart.Legends[0].CustomItems.Add(legendItem);
-        }
-      } else if (selectedNode.Tag is ParameterValueInfo) {
-        var valueInfo = selectedNode.Tag as ParameterValueInfo;
-        var series = BuildSeries(valueInfo.Runs, valueInfo.Color);
-        chart.Titles[0].Text = selectedNode.Parent.Text;
-        foreach (var s in series)
-          chart.Series.Add(s);
-        var legendItem = new LegendItem();
-        var legendItemInfo = new LegendItemInfo(valueInfo.Color, series);
-        legendItem.Color = legendItemInfo.Color;
-        legendItem.BorderColor = Color.Transparent;
-        legendItem.Name = selectedNode.Text;
-        legendItem.Tag = legendItemInfo;
-        chart.Legends[0].CustomItems.Add(legendItem);
-      } else if (selectedNode.Tag is GroupInfo) {
-        var groupInfo = selectedNode.Tag as GroupInfo;
-        if (groupInfo.IsParameter) {
-          chart.Titles[0].Text = groupInfo.Text + " (" + groupInfo.Runs.Count + ")";
-          foreach (TreeNode node in selectedNode.Nodes) {
-            var childInfo = node.Tag as GroupInfo;
-            var series = BuildSeries(childInfo.Runs, childInfo.Color);
+        } else if (node.Tag is ParameterInfo) {
+          var paramInfo = node.Tag as ParameterInfo;
+          chart.Titles[0].Text = paramInfo.Name + " (" + paramInfo.RunCount + ")";
+          foreach (var value in paramInfo.Values) {
+            var series = BuildSeries(value.Value.Runs, value.Value.Color);
             foreach (var s in series)
               chart.Series.Add(s);
             var legendItem = new LegendItem();
-            var legendItemInfo = new LegendItemInfo(childInfo.Color, series);
+            var legendItemInfo = new LegendItemInfo(value.Value.Color, series);
             legendItem.Color = legendItemInfo.Color;
             legendItem.BorderColor = Color.Transparent;
-            legendItem.Name = childInfo.Text + " (" + childInfo.Runs.Count + ")";
+            legendItem.Name = value.Key + " (" + value.Value.RunCount + ")";
             legendItem.Tag = legendItemInfo;
             chart.Legends[0].CustomItems.Add(legendItem);
           }
-        } else {
-          var parentInfo = selectedNode.Parent.Tag as GroupInfo;
-          chart.Titles[0].Text = parentInfo.Text + " (" + parentInfo.Runs.Count + ")";
-          var series = BuildSeries(groupInfo.Runs, groupInfo.Color);
+        } else if (node.Tag is ParameterValueInfo) {
+          var valueInfo = node.Tag as ParameterValueInfo;
+          var series = BuildSeries(valueInfo.Runs, valueInfo.Color);
+          chart.Titles[0].Text = node.Parent.Text;
           foreach (var s in series)
             chart.Series.Add(s);
           var legendItem = new LegendItem();
-          var legendItemInfo = new LegendItemInfo(groupInfo.Color, series);
+          var legendItemInfo = new LegendItemInfo(valueInfo.Color, series);
           legendItem.Color = legendItemInfo.Color;
           legendItem.BorderColor = Color.Transparent;
-          legendItem.Name = groupInfo.Text + " (" + groupInfo.Runs.Count + ")";
+          legendItem.Name = node.Text;
           legendItem.Tag = legendItemInfo;
           chart.Legends[0].CustomItems.Add(legendItem);
+        } else if (node.Tag is GroupInfo) {
+          var groupInfo = node.Tag as GroupInfo;
+          if (groupInfo.IsParameter) {
+            chart.Titles[0].Text = groupInfo.Text + " (" + groupInfo.Runs.Count + ")";
+            foreach (TreeNode child in node.Nodes) {
+              var childInfo = child.Tag as GroupInfo;
+              var series = BuildSeries(childInfo.Runs, childInfo.Color);
+              foreach (var s in series)
+                chart.Series.Add(s);
+              var legendItem = new LegendItem();
+              var legendItemInfo = new LegendItemInfo(childInfo.Color, series);
+              legendItem.Color = legendItemInfo.Color;
+              legendItem.BorderColor = Color.Transparent;
+              legendItem.Name = childInfo.Text + " (" + childInfo.Runs.Count + ")";
+              legendItem.Tag = legendItemInfo;
+              chart.Legends[0].CustomItems.Add(legendItem);
+            }
+          } else {
+            var parentInfo = node.Parent.Tag as GroupInfo;
+            chart.Titles[0].Text = parentInfo.Text + " (" + parentInfo.Runs.Count + ")";
+            var series = BuildSeries(groupInfo.Runs, groupInfo.Color);
+            foreach (var s in series)
+              chart.Series.Add(s);
+            var legendItem = new LegendItem();
+            var legendItemInfo = new LegendItemInfo(groupInfo.Color, series);
+            legendItem.Color = legendItemInfo.Color;
+            legendItem.BorderColor = Color.Transparent;
+            legendItem.Name = groupInfo.Text + " (" + groupInfo.Runs.Count + ")";
+            legendItem.Tag = legendItemInfo;
+            chart.Legends[0].CustomItems.Add(legendItem);
+          }
         }
       }
     }
@@ -473,14 +483,18 @@ namespace HeuristicLab.Optimization.Views {
     #endregion
     #region parametersTreeView
     private void parametersTreeView_AfterSelect(object sender, TreeViewEventArgs e) {
-      UpdateChart();
       addGroupButton.Enabled = (parametersTreeView.SelectedNode != null) && (parametersTreeView.SelectedNode.Parent != null);
+    }
+    private void parametersTreeView_AfterCheck(object sender, TreeViewEventArgs e) {
+      UpdateChart();
     }
     #endregion
     #region groupsTreeView
     private void groupsTreeView_AfterSelect(object sender, TreeViewEventArgs e) {
-      UpdateChart();
       removeGroupButton.Enabled = (groupsTreeView.SelectedNode != null) && (groupsTreeView.SelectedNode.Parent != null);
+    }
+    private void groupsTreeView_AfterCheck(object sender, TreeViewEventArgs e) {
+      UpdateChart();
     }
     #endregion
     #region addGroupButton, removeGroupButton
@@ -492,25 +506,25 @@ namespace HeuristicLab.Optimization.Views {
       if (param.Tag is ParameterInfo) {
         var paramInfo = param.Tag as ParameterInfo;
         var paramNode = new TreeNode();
-        int count = 0;
         foreach (var valueInfo in paramInfo.Values.Values) {
-          var runs = groupRuns.Intersect(valueInfo.Runs);
-          var valueNode = new TreeNode(valueInfo.Value + " (" + runs.Count() + ")");
-          count += runs.Count();
-          valueNode.Tag = new GroupInfo(valueInfo.Value, valueInfo.Color, runs, false);
+          var valueRuns = groupRuns.Intersect(valueInfo.Runs);
+          var valueNode = new TreeNode(valueInfo.Value + " (" + valueRuns.Count() + ")");
+          valueNode.Tag = new GroupInfo(valueInfo.Value, valueInfo.Color, valueRuns, false);
           paramNode.Nodes.Add(valueNode);
         }
-        paramNode.Text = paramInfo.Name + " (" + count + ")";
-        paramNode.Tag = new GroupInfo(paramInfo.Name, Color.Empty, paramInfo.Values.Values.SelectMany(x => x.Runs), true);
+        var paramRuns = groupRuns.Intersect(paramInfo.Runs);
+        paramNode.Text = paramInfo.Name + " (" + paramRuns.Count() + ")";
+        paramNode.Tag = new GroupInfo(paramInfo.Name, Color.Empty, paramRuns, true);
         group.Nodes.Add(paramNode);
       } else if (param.Tag is ParameterValueInfo) {
         var paramInfo = param.Parent.Tag as ParameterInfo;
         var valueInfo = param.Tag as ParameterValueInfo;
-        var runs = groupRuns.Intersect(valueInfo.Runs);
-        var paramNode = new TreeNode(paramInfo.Name + " (" + runs.Count() + ")");
-        var valueNode = new TreeNode(valueInfo.Value + " (" + runs.Count() + ")");
-        valueNode.Tag = new GroupInfo(valueInfo.Value, valueInfo.Color, runs, false);
-        paramNode.Tag = new GroupInfo(paramInfo.Name, Color.Empty, runs, true);
+        var valueRuns = groupRuns.Intersect(valueInfo.Runs);
+        var paramRuns = groupRuns.Intersect(paramInfo.Runs);
+        var paramNode = new TreeNode(paramInfo.Name + " (" + paramRuns.Count() + ")");
+        var valueNode = new TreeNode(valueInfo.Value + " (" + valueRuns.Count() + ")");
+        valueNode.Tag = new GroupInfo(valueInfo.Value, valueInfo.Color, valueRuns, false);
+        paramNode.Tag = new GroupInfo(paramInfo.Name, Color.Empty, paramRuns, true);
         paramNode.Nodes.Add(valueNode);
         group.Nodes.Add(paramNode);
       }
@@ -527,6 +541,16 @@ namespace HeuristicLab.Optimization.Views {
       UpdateSeriesVisibility();
     }
     #endregion
+    #endregion
+
+    #region Helpers
+    private IEnumerable<TreeNode> TraverseTreeNodes(TreeNodeCollection nodes) {
+      foreach (var node in nodes.OfType<TreeNode>()) {
+        yield return node;
+        foreach (var child in TraverseTreeNodes(node.Nodes))
+          yield return child;
+      }
+    }
     #endregion
 
     #region Inner Types

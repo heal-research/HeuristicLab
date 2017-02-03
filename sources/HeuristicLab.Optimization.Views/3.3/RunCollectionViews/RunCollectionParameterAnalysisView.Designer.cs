@@ -57,30 +57,30 @@ namespace HeuristicLab.Optimization.Views {
       this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
       this.groupsTreeView = new System.Windows.Forms.TreeView();
       this.splitContainer = new System.Windows.Forms.SplitContainer();
+      this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+      this.parametersGroupBox = new System.Windows.Forms.GroupBox();
+      this.parametersTreeView = new System.Windows.Forms.TreeView();
       this.groupsGroupBox = new System.Windows.Forms.GroupBox();
       this.removeGroupButton = new System.Windows.Forms.Button();
       this.addGroupButton = new System.Windows.Forms.Button();
-      this.parametersGroupBox = new System.Windows.Forms.GroupBox();
-      this.parametersTreeView = new System.Windows.Forms.TreeView();
       this.dataRowsGroupBox = new System.Windows.Forms.GroupBox();
       this.minMaxCheckBox = new System.Windows.Forms.CheckBox();
       this.medianCheckBox = new System.Windows.Forms.CheckBox();
       this.quartilesCheckBox = new System.Windows.Forms.CheckBox();
       this.averageCheckBox = new System.Windows.Forms.CheckBox();
-      this.splitContainer1 = new System.Windows.Forms.SplitContainer();
       ((System.ComponentModel.ISupportInitialize)(this.chart)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
       this.splitContainer.Panel1.SuspendLayout();
       this.splitContainer.Panel2.SuspendLayout();
       this.splitContainer.SuspendLayout();
-      this.groupsGroupBox.SuspendLayout();
-      this.parametersGroupBox.SuspendLayout();
-      this.dataRowsGroupBox.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
       this.splitContainer1.Panel1.SuspendLayout();
       this.splitContainer1.Panel2.SuspendLayout();
       this.splitContainer1.SuspendLayout();
+      this.parametersGroupBox.SuspendLayout();
+      this.groupsGroupBox.SuspendLayout();
+      this.dataRowsGroupBox.SuspendLayout();
       this.SuspendLayout();
       // 
       // chart
@@ -123,7 +123,6 @@ namespace HeuristicLab.Optimization.Views {
       this.chart.Text = "chart";
       title1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       title1.Name = "title";
-      title1.Text = "Title";
       this.chart.Titles.Add(title1);
       this.chart.CustomizeLegend += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.CustomizeLegendEventArgs>(this.chart_CustomizeLegend);
       this.chart.MouseDown += new System.Windows.Forms.MouseEventHandler(this.chart_MouseDown);
@@ -174,12 +173,14 @@ namespace HeuristicLab.Optimization.Views {
       this.groupsTreeView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+      this.groupsTreeView.CheckBoxes = true;
       this.groupsTreeView.HideSelection = false;
       this.groupsTreeView.Location = new System.Drawing.Point(6, 49);
       this.groupsTreeView.Name = "groupsTreeView";
       this.groupsTreeView.ShowRootLines = false;
       this.groupsTreeView.Size = new System.Drawing.Size(255, 524);
       this.groupsTreeView.TabIndex = 2;
+      this.groupsTreeView.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.groupsTreeView_AfterCheck);
       this.groupsTreeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.groupsTreeView_AfterSelect);
       // 
       // splitContainer
@@ -202,6 +203,52 @@ namespace HeuristicLab.Optimization.Views {
       this.splitContainer.Size = new System.Drawing.Size(1101, 851);
       this.splitContainer.SplitterDistance = 273;
       this.splitContainer.TabIndex = 0;
+      // 
+      // splitContainer1
+      // 
+      this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.splitContainer1.Location = new System.Drawing.Point(0, 0);
+      this.splitContainer1.Name = "splitContainer1";
+      this.splitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal;
+      // 
+      // splitContainer1.Panel1
+      // 
+      this.splitContainer1.Panel1.Controls.Add(this.parametersGroupBox);
+      // 
+      // splitContainer1.Panel2
+      // 
+      this.splitContainer1.Panel2.Controls.Add(this.groupsGroupBox);
+      this.splitContainer1.Size = new System.Drawing.Size(273, 851);
+      this.splitContainer1.SplitterDistance = 261;
+      this.splitContainer1.TabIndex = 0;
+      // 
+      // parametersGroupBox
+      // 
+      this.parametersGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.parametersGroupBox.Controls.Add(this.parametersTreeView);
+      this.parametersGroupBox.Location = new System.Drawing.Point(3, 3);
+      this.parametersGroupBox.Name = "parametersGroupBox";
+      this.parametersGroupBox.Size = new System.Drawing.Size(267, 255);
+      this.parametersGroupBox.TabIndex = 0;
+      this.parametersGroupBox.TabStop = false;
+      this.parametersGroupBox.Text = "&Parameters";
+      // 
+      // parametersTreeView
+      // 
+      this.parametersTreeView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.parametersTreeView.CheckBoxes = true;
+      this.parametersTreeView.HideSelection = false;
+      this.parametersTreeView.Location = new System.Drawing.Point(6, 19);
+      this.parametersTreeView.Name = "parametersTreeView";
+      this.parametersTreeView.ShowRootLines = false;
+      this.parametersTreeView.Size = new System.Drawing.Size(255, 230);
+      this.parametersTreeView.TabIndex = 0;
+      this.parametersTreeView.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.parametersTreeView_AfterCheck);
+      this.parametersTreeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.parametersTreeView_AfterSelect);
       // 
       // groupsGroupBox
       // 
@@ -239,32 +286,6 @@ namespace HeuristicLab.Optimization.Views {
       this.addGroupButton.TabIndex = 0;
       this.addGroupButton.UseVisualStyleBackColor = true;
       this.addGroupButton.Click += new System.EventHandler(this.addGroupButton_Click);
-      // 
-      // parametersGroupBox
-      // 
-      this.parametersGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.parametersGroupBox.Controls.Add(this.parametersTreeView);
-      this.parametersGroupBox.Location = new System.Drawing.Point(3, 3);
-      this.parametersGroupBox.Name = "parametersGroupBox";
-      this.parametersGroupBox.Size = new System.Drawing.Size(267, 255);
-      this.parametersGroupBox.TabIndex = 0;
-      this.parametersGroupBox.TabStop = false;
-      this.parametersGroupBox.Text = "&Parameters";
-      // 
-      // parametersTreeView
-      // 
-      this.parametersTreeView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.parametersTreeView.HideSelection = false;
-      this.parametersTreeView.Location = new System.Drawing.Point(6, 19);
-      this.parametersTreeView.Name = "parametersTreeView";
-      this.parametersTreeView.ShowRootLines = false;
-      this.parametersTreeView.Size = new System.Drawing.Size(255, 230);
-      this.parametersTreeView.TabIndex = 0;
-      this.parametersTreeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.parametersTreeView_AfterSelect);
       // 
       // dataRowsGroupBox
       // 
@@ -328,24 +349,6 @@ namespace HeuristicLab.Optimization.Views {
       this.averageCheckBox.UseVisualStyleBackColor = true;
       this.averageCheckBox.CheckedChanged += new System.EventHandler(this.dataRowCheckBox_CheckedChanged);
       // 
-      // splitContainer1
-      // 
-      this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.splitContainer1.Location = new System.Drawing.Point(0, 0);
-      this.splitContainer1.Name = "splitContainer1";
-      this.splitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal;
-      // 
-      // splitContainer1.Panel1
-      // 
-      this.splitContainer1.Panel1.Controls.Add(this.parametersGroupBox);
-      // 
-      // splitContainer1.Panel2
-      // 
-      this.splitContainer1.Panel2.Controls.Add(this.groupsGroupBox);
-      this.splitContainer1.Size = new System.Drawing.Size(273, 851);
-      this.splitContainer1.SplitterDistance = 261;
-      this.splitContainer1.TabIndex = 0;
-      // 
       // RunCollectionParameterAnalysisView
       // 
       this.BackColor = System.Drawing.SystemColors.Window;
@@ -360,14 +363,14 @@ namespace HeuristicLab.Optimization.Views {
       this.splitContainer.Panel2.PerformLayout();
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();
       this.splitContainer.ResumeLayout(false);
-      this.groupsGroupBox.ResumeLayout(false);
-      this.parametersGroupBox.ResumeLayout(false);
-      this.dataRowsGroupBox.ResumeLayout(false);
-      this.dataRowsGroupBox.PerformLayout();
       this.splitContainer1.Panel1.ResumeLayout(false);
       this.splitContainer1.Panel2.ResumeLayout(false);
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
       this.splitContainer1.ResumeLayout(false);
+      this.parametersGroupBox.ResumeLayout(false);
+      this.groupsGroupBox.ResumeLayout(false);
+      this.dataRowsGroupBox.ResumeLayout(false);
+      this.dataRowsGroupBox.PerformLayout();
       this.ResumeLayout(false);
 
     }
