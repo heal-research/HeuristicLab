@@ -65,6 +65,7 @@ namespace HeuristicLab.Optimization.Views {
       this.byTargetTabPage = new System.Windows.Forms.TabPage();
       this.targetChart = new HeuristicLab.Visualization.ChartControlsExtensions.EnhancedChart();
       this.boundShadingCheckBox = new System.Windows.Forms.CheckBox();
+      this.targetsRelativeCheckBox = new System.Windows.Forms.CheckBox();
       this.byCostTabPage = new System.Windows.Forms.TabPage();
       this.byCostViewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
       this.budgetLogScalingCheckBox = new System.Windows.Forms.CheckBox();
@@ -142,7 +143,7 @@ namespace HeuristicLab.Optimization.Views {
             | System.Windows.Forms.AnchorStyles.Right)));
       this.targetsTextBox.Location = new System.Drawing.Point(59, 8);
       this.targetsTextBox.Name = "targetsTextBox";
-      this.targetsTextBox.Size = new System.Drawing.Size(287, 20);
+      this.targetsTextBox.Size = new System.Drawing.Size(211, 20);
       this.targetsTextBox.TabIndex = 1;
       this.toolTip.SetToolTip(this.targetsTextBox, "The order of the targets is important, first to-hit targets\r\nshould be given firs" +
         "t. The sequence should be monotonous.\r\n\r\nTargets should be separated by semicolo" +
@@ -220,7 +221,7 @@ namespace HeuristicLab.Optimization.Views {
       this.aggregateTargetsCheckBox.AutoSize = true;
       this.aggregateTargetsCheckBox.Checked = true;
       this.aggregateTargetsCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-      this.aggregateTargetsCheckBox.Location = new System.Drawing.Point(352, 10);
+      this.aggregateTargetsCheckBox.Location = new System.Drawing.Point(353, 10);
       this.aggregateTargetsCheckBox.Name = "aggregateTargetsCheckBox";
       this.aggregateTargetsCheckBox.Size = new System.Drawing.Size(74, 17);
       this.aggregateTargetsCheckBox.TabIndex = 2;
@@ -248,6 +249,7 @@ namespace HeuristicLab.Optimization.Views {
       this.byTargetTabPage.Controls.Add(this.boundShadingCheckBox);
       this.byTargetTabPage.Controls.Add(this.targetLogScalingCheckBox);
       this.byTargetTabPage.Controls.Add(this.targetsLabel);
+      this.byTargetTabPage.Controls.Add(this.targetsRelativeCheckBox);
       this.byTargetTabPage.Controls.Add(this.aggregateTargetsCheckBox);
       this.byTargetTabPage.Controls.Add(this.targetsTextBox);
       this.byTargetTabPage.Controls.Add(this.generateTargetsButton);
@@ -303,6 +305,21 @@ namespace HeuristicLab.Optimization.Views {
       this.boundShadingCheckBox.Text = "bound shading";
       this.boundShadingCheckBox.UseVisualStyleBackColor = true;
       this.boundShadingCheckBox.CheckedChanged += new System.EventHandler(this.boundShadingCheckBox_CheckedChanged);
+      // 
+      // targetsRelativeCheckBox
+      // 
+      this.targetsRelativeCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.targetsRelativeCheckBox.Appearance = System.Windows.Forms.Appearance.Button;
+      this.targetsRelativeCheckBox.Checked = true;
+      this.targetsRelativeCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+      this.targetsRelativeCheckBox.Location = new System.Drawing.Point(276, 6);
+      this.targetsRelativeCheckBox.Name = "targetsRelativeCheckBox";
+      this.targetsRelativeCheckBox.Size = new System.Drawing.Size(65, 23);
+      this.targetsRelativeCheckBox.TabIndex = 2;
+      this.targetsRelativeCheckBox.Text = "relative";
+      this.targetsRelativeCheckBox.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+      this.targetsRelativeCheckBox.UseVisualStyleBackColor = true;
+      this.targetsRelativeCheckBox.CheckedChanged += new System.EventHandler(this.targetsRelativeCheckBox_CheckedChanged);
       // 
       // byCostTabPage
       // 
@@ -472,5 +489,6 @@ namespace HeuristicLab.Optimization.Views {
     private Visualization.ChartControlsExtensions.EnhancedChart targetChart;
     private MainForm.WindowsForms.ViewHost byCostViewHost;
     private System.Windows.Forms.CheckBox boundShadingCheckBox;
+    private System.Windows.Forms.CheckBox targetsRelativeCheckBox;
   }
 }
