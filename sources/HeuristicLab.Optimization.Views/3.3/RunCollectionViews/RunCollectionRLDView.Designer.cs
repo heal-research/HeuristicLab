@@ -63,13 +63,14 @@ namespace HeuristicLab.Optimization.Views {
       this.aggregateTargetsCheckBox = new System.Windows.Forms.CheckBox();
       this.tabControl = new System.Windows.Forms.TabControl();
       this.byTargetTabPage = new System.Windows.Forms.TabPage();
+      this.relativeOrAbsoluteComboBox = new System.Windows.Forms.ComboBox();
       this.targetChart = new HeuristicLab.Visualization.ChartControlsExtensions.EnhancedChart();
+      this.markerCheckBox = new System.Windows.Forms.CheckBox();
       this.boundShadingCheckBox = new System.Windows.Forms.CheckBox();
-      this.targetsRelativeCheckBox = new System.Windows.Forms.CheckBox();
       this.byCostTabPage = new System.Windows.Forms.TabPage();
       this.byCostViewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
       this.budgetLogScalingCheckBox = new System.Windows.Forms.CheckBox();
-      this.eachOrAllBudgetsCheckBox = new System.Windows.Forms.CheckBox();
+      this.aggregateBudgetsCheckBox = new System.Windows.Forms.CheckBox();
       this.generateBudgetsButton = new System.Windows.Forms.Button();
       this.byTableTabPage = new System.Windows.Forms.TabPage();
       this.ertTableView = new HeuristicLab.Data.Views.StringConvertibleMatrixView();
@@ -143,7 +144,7 @@ namespace HeuristicLab.Optimization.Views {
             | System.Windows.Forms.AnchorStyles.Right)));
       this.targetsTextBox.Location = new System.Drawing.Point(59, 8);
       this.targetsTextBox.Name = "targetsTextBox";
-      this.targetsTextBox.Size = new System.Drawing.Size(211, 20);
+      this.targetsTextBox.Size = new System.Drawing.Size(204, 20);
       this.targetsTextBox.TabIndex = 1;
       this.toolTip.SetToolTip(this.targetsTextBox, "The order of the targets is important, first to-hit targets\r\nshould be given firs" +
         "t. The sequence should be monotonous.\r\n\r\nTargets should be separated by semicolo" +
@@ -200,7 +201,7 @@ namespace HeuristicLab.Optimization.Views {
             | System.Windows.Forms.AnchorStyles.Right)));
       this.budgetsTextBox.Location = new System.Drawing.Point(59, 8);
       this.budgetsTextBox.Name = "budgetsTextBox";
-      this.budgetsTextBox.Size = new System.Drawing.Size(326, 20);
+      this.budgetsTextBox.Size = new System.Drawing.Size(309, 20);
       this.budgetsTextBox.TabIndex = 6;
       this.budgetsTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.budgetsTextBox_Validating);
       // 
@@ -221,7 +222,7 @@ namespace HeuristicLab.Optimization.Views {
       this.aggregateTargetsCheckBox.AutoSize = true;
       this.aggregateTargetsCheckBox.Checked = true;
       this.aggregateTargetsCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-      this.aggregateTargetsCheckBox.Location = new System.Drawing.Point(353, 10);
+      this.aggregateTargetsCheckBox.Location = new System.Drawing.Point(374, 10);
       this.aggregateTargetsCheckBox.Name = "aggregateTargetsCheckBox";
       this.aggregateTargetsCheckBox.Size = new System.Drawing.Size(74, 17);
       this.aggregateTargetsCheckBox.TabIndex = 2;
@@ -245,11 +246,12 @@ namespace HeuristicLab.Optimization.Views {
       // 
       // byTargetTabPage
       // 
+      this.byTargetTabPage.Controls.Add(this.relativeOrAbsoluteComboBox);
       this.byTargetTabPage.Controls.Add(this.targetChart);
+      this.byTargetTabPage.Controls.Add(this.markerCheckBox);
       this.byTargetTabPage.Controls.Add(this.boundShadingCheckBox);
       this.byTargetTabPage.Controls.Add(this.targetLogScalingCheckBox);
       this.byTargetTabPage.Controls.Add(this.targetsLabel);
-      this.byTargetTabPage.Controls.Add(this.targetsRelativeCheckBox);
       this.byTargetTabPage.Controls.Add(this.aggregateTargetsCheckBox);
       this.byTargetTabPage.Controls.Add(this.targetsTextBox);
       this.byTargetTabPage.Controls.Add(this.generateTargetsButton);
@@ -261,6 +263,20 @@ namespace HeuristicLab.Optimization.Views {
       this.byTargetTabPage.TabIndex = 0;
       this.byTargetTabPage.Text = "Performance by Target";
       this.byTargetTabPage.UseVisualStyleBackColor = true;
+      // 
+      // relativeOrAbsoluteComboBox
+      // 
+      this.relativeOrAbsoluteComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.relativeOrAbsoluteComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.relativeOrAbsoluteComboBox.FormattingEnabled = true;
+      this.relativeOrAbsoluteComboBox.Items.AddRange(new object[] {
+            "relative",
+            "absolute"});
+      this.relativeOrAbsoluteComboBox.Location = new System.Drawing.Point(269, 8);
+      this.relativeOrAbsoluteComboBox.Name = "relativeOrAbsoluteComboBox";
+      this.relativeOrAbsoluteComboBox.Size = new System.Drawing.Size(99, 21);
+      this.relativeOrAbsoluteComboBox.TabIndex = 8;
+      this.relativeOrAbsoluteComboBox.SelectedIndexChanged += new System.EventHandler(this.relativeOrAbsoluteComboBox_SelectedIndexChanged);
       // 
       // targetChart
       // 
@@ -292,6 +308,18 @@ namespace HeuristicLab.Optimization.Views {
       this.targetChart.MouseDown += new System.Windows.Forms.MouseEventHandler(this.chart_MouseDown);
       this.targetChart.MouseMove += new System.Windows.Forms.MouseEventHandler(this.chart_MouseMove);
       // 
+      // markerCheckBox
+      // 
+      this.markerCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.markerCheckBox.AutoSize = true;
+      this.markerCheckBox.Location = new System.Drawing.Point(229, 364);
+      this.markerCheckBox.Name = "markerCheckBox";
+      this.markerCheckBox.Size = new System.Drawing.Size(91, 17);
+      this.markerCheckBox.TabIndex = 6;
+      this.markerCheckBox.Text = "show markers";
+      this.markerCheckBox.UseVisualStyleBackColor = true;
+      this.markerCheckBox.CheckedChanged += new System.EventHandler(this.markerCheckBox_CheckedChanged);
+      // 
       // boundShadingCheckBox
       // 
       this.boundShadingCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -306,26 +334,11 @@ namespace HeuristicLab.Optimization.Views {
       this.boundShadingCheckBox.UseVisualStyleBackColor = true;
       this.boundShadingCheckBox.CheckedChanged += new System.EventHandler(this.boundShadingCheckBox_CheckedChanged);
       // 
-      // targetsRelativeCheckBox
-      // 
-      this.targetsRelativeCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.targetsRelativeCheckBox.Appearance = System.Windows.Forms.Appearance.Button;
-      this.targetsRelativeCheckBox.Checked = true;
-      this.targetsRelativeCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-      this.targetsRelativeCheckBox.Location = new System.Drawing.Point(276, 6);
-      this.targetsRelativeCheckBox.Name = "targetsRelativeCheckBox";
-      this.targetsRelativeCheckBox.Size = new System.Drawing.Size(65, 23);
-      this.targetsRelativeCheckBox.TabIndex = 2;
-      this.targetsRelativeCheckBox.Text = "relative";
-      this.targetsRelativeCheckBox.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-      this.targetsRelativeCheckBox.UseVisualStyleBackColor = true;
-      this.targetsRelativeCheckBox.CheckedChanged += new System.EventHandler(this.targetsRelativeCheckBox_CheckedChanged);
-      // 
       // byCostTabPage
       // 
       this.byCostTabPage.Controls.Add(this.byCostViewHost);
       this.byCostTabPage.Controls.Add(this.budgetLogScalingCheckBox);
-      this.byCostTabPage.Controls.Add(this.eachOrAllBudgetsCheckBox);
+      this.byCostTabPage.Controls.Add(this.aggregateBudgetsCheckBox);
       this.byCostTabPage.Controls.Add(this.generateBudgetsButton);
       this.byCostTabPage.Controls.Add(this.budgetsLabel);
       this.byCostTabPage.Controls.Add(this.addBudgetsAsResultButton);
@@ -366,17 +379,19 @@ namespace HeuristicLab.Optimization.Views {
       this.budgetLogScalingCheckBox.UseVisualStyleBackColor = true;
       this.budgetLogScalingCheckBox.CheckedChanged += new System.EventHandler(this.logScalingCheckBox_CheckedChanged);
       // 
-      // eachOrAllBudgetsCheckBox
+      // aggregateBudgetsCheckBox
       // 
-      this.eachOrAllBudgetsCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.eachOrAllBudgetsCheckBox.AutoSize = true;
-      this.eachOrAllBudgetsCheckBox.Location = new System.Drawing.Point(414, 10);
-      this.eachOrAllBudgetsCheckBox.Name = "eachOrAllBudgetsCheckBox";
-      this.eachOrAllBudgetsCheckBox.Size = new System.Drawing.Size(36, 17);
-      this.eachOrAllBudgetsCheckBox.TabIndex = 10;
-      this.eachOrAllBudgetsCheckBox.Text = "all";
-      this.eachOrAllBudgetsCheckBox.UseVisualStyleBackColor = true;
-      this.eachOrAllBudgetsCheckBox.CheckedChanged += new System.EventHandler(this.eachOrAllBudgetsCheckBox_CheckedChanged);
+      this.aggregateBudgetsCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.aggregateBudgetsCheckBox.AutoSize = true;
+      this.aggregateBudgetsCheckBox.Checked = true;
+      this.aggregateBudgetsCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+      this.aggregateBudgetsCheckBox.Location = new System.Drawing.Point(374, 10);
+      this.aggregateBudgetsCheckBox.Name = "aggregateBudgetsCheckBox";
+      this.aggregateBudgetsCheckBox.Size = new System.Drawing.Size(74, 17);
+      this.aggregateBudgetsCheckBox.TabIndex = 10;
+      this.aggregateBudgetsCheckBox.Text = "aggregate";
+      this.aggregateBudgetsCheckBox.UseVisualStyleBackColor = true;
+      this.aggregateBudgetsCheckBox.CheckedChanged += new System.EventHandler(this.aggregateBudgetsCheckBox_CheckedChanged);
       // 
       // generateBudgetsButton
       // 
@@ -480,7 +495,7 @@ namespace HeuristicLab.Optimization.Views {
     private System.Windows.Forms.TabPage byTargetTabPage;
     private System.Windows.Forms.TabPage byCostTabPage;
     private System.Windows.Forms.TabPage byTableTabPage;
-    private System.Windows.Forms.CheckBox eachOrAllBudgetsCheckBox;
+    private System.Windows.Forms.CheckBox aggregateBudgetsCheckBox;
     private System.Windows.Forms.Button generateBudgetsButton;
     private System.Windows.Forms.CheckBox budgetLogScalingCheckBox;
     private System.Windows.Forms.Label problemLabel;
@@ -489,6 +504,7 @@ namespace HeuristicLab.Optimization.Views {
     private Visualization.ChartControlsExtensions.EnhancedChart targetChart;
     private MainForm.WindowsForms.ViewHost byCostViewHost;
     private System.Windows.Forms.CheckBox boundShadingCheckBox;
-    private System.Windows.Forms.CheckBox targetsRelativeCheckBox;
+    private System.Windows.Forms.CheckBox markerCheckBox;
+    private System.Windows.Forms.ComboBox relativeOrAbsoluteComboBox;
   }
 }

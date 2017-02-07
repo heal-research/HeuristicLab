@@ -105,7 +105,8 @@ namespace HeuristicLab.Optimization.Views {
         }
       };
       byCostViewHost.Content = byCostDataTable;
-      targetsRelativeCheckBox.Checked = targetsAreRelative;
+      suppressUpdates = true;
+      relativeOrAbsoluteComboBox.SelectedItem = targetsAreRelative ? "relative" : "absolute";
       problems = new BindingList<ProblemInstance>();
       problemComboBox.DataSource = new BindingSource() { DataSource = problems };
       problemComboBox.DataBindings.DefaultDataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged;
@@ -398,10 +399,11 @@ namespace HeuristicLab.Optimization.Views {
             noRuns++;
           }
         }
+        var showMarkers = markerCheckBox.Checked;
         foreach (var list in hits) {
           var row = new Series(list.Key) {
             ChartType = SeriesChartType.StepLine,
-            BorderWidth = 2,
+            BorderWidth = 3,
             Color = colors[colorCount],
             BorderDashStyle = lineStyles[lineStyleCount],
           };
@@ -419,24 +421,66 @@ namespace HeuristicLab.Optimization.Views {
           var totalTargets = noRuns;
           if (aggregateTargetsCheckBox.Checked) totalTargets *= targets.Length;
           var movingTargets = totalTargets;
+          var labelPrinted = false;
           foreach (var h in list.Value) {
+            var prevmissedecdf = missedecdf;
             while (moreMisses && iter.Current.Key <= h.Key) {
+              if (!labelPrinted && row.Points.Count > 0) {
+                var point = row.Points.Last();
+                point.Label = row.Name;
+                point.MarkerStyle = MarkerStyle.Cross;
+                point.MarkerBorderWidth = 1;
+                point.MarkerSize = 10;
+                labelPrinted = true;
+                rowShade.Points.Add(new DataPoint(point.XValue, new[] { ecdf / totalTargets, (ecdf + missedecdf) / totalTargets }));
+              }
               missedecdf += iter.Current.Value;
               movingTargets -= iter.Current.Value;
-              if (row.Points.Count > 0 && row.Points.Last().XValue == iter.Current.Key)
+              if (row.Points.Count > 0 && row.Points.Last().XValue == iter.Current.Key) {
                 row.Points.Last().SetValueY(ecdf / movingTargets);
-              else row.Points.AddXY(iter.Current.Key, ecdf / movingTargets);
+                row.Points.Last().Color = Color.FromArgb(255 - (int)Math.Floor(255 * (prevmissedecdf / totalTargets)), colors[colorCount]);
+              } else {
+                var dp = new DataPoint(iter.Current.Key, ecdf / movingTargets) {
+                  Color = Color.FromArgb(255 - (int)Math.Floor(255 * (prevmissedecdf / totalTargets)), colors[colorCount])
+                };
+                if (showMarkers) {
+                  dp.MarkerStyle = MarkerStyle.Circle;
+                  dp.MarkerBorderWidth = 1;
+                  dp.MarkerSize = 5;
+                }
+                row.Points.Add(dp);
+                prevmissedecdf = missedecdf;
+              }
               if (boundShadingCheckBox.Checked) {
                 if (rowShade.Points.Count > 0 && rowShade.Points.Last().XValue == iter.Current.Key)
                   rowShade.Points.Last().SetValueY(ecdf / totalTargets, (ecdf + missedecdf) / totalTargets);
                 else rowShade.Points.Add(new DataPoint(iter.Current.Key, new[] { ecdf / totalTargets, (ecdf + missedecdf) / totalTargets }));
               }
               moreMisses = iter.MoveNext();
+              if (!labelPrinted) {
+                var point = row.Points.Last();
+                point.Label = row.Name;
+                point.MarkerStyle = MarkerStyle.Cross;
+                point.MarkerBorderWidth = 1;
+                point.MarkerSize = 10;
+                labelPrinted = true;
+              }
             }
             ecdf += h.Value;
-            if (row.Points.Count > 0 && row.Points.Last().XValue == h.Key)
+            if (row.Points.Count > 0 && row.Points.Last().XValue == h.Key) {
               row.Points.Last().SetValueY(ecdf / movingTargets);
-            else row.Points.AddXY(h.Key, ecdf / movingTargets);
+              row.Points.Last().Color = Color.FromArgb(255 - (int)Math.Floor(255 * (missedecdf / totalTargets)), colors[colorCount]);
+            } else {
+              var dp = new DataPoint(h.Key, ecdf / movingTargets) {
+                Color = Color.FromArgb(255 - (int)Math.Floor(255 * (missedecdf / totalTargets)), colors[colorCount])
+              };
+              if (showMarkers) {
+                dp.MarkerStyle = MarkerStyle.Circle;
+                dp.MarkerBorderWidth = 1;
+                dp.MarkerSize = 5;
+              }
+              row.Points.Add(dp);
+            }
             if (missedecdf > 0 && boundShadingCheckBox.Checked) {
               if (rowShade.Points.Count > 0 && rowShade.Points.Last().XValue == h.Key)
                 rowShade.Points.Last().SetValueY(ecdf / totalTargets, (ecdf + missedecdf) / totalTargets);
@@ -444,13 +488,33 @@ namespace HeuristicLab.Optimization.Views {
             }
           }
 
+          if (!labelPrinted && row.Points.Count > 0) {
+            var point = row.Points.Last();
+            point.Label = row.Name;
+            point.MarkerStyle = MarkerStyle.Cross;
+            point.MarkerBorderWidth = 1;
+            point.MarkerSize = 10;
+            rowShade.Points.Add(new DataPoint(point.XValue, new[] { ecdf / totalTargets, (ecdf + missedecdf) / totalTargets }));
+          }
+
           while (moreMisses) {
             // if there are misses beyond the last hit we extend the shaded area
             missedecdf += iter.Current.Value;
             //movingTargets -= iter.Current.Value;
-            if (row.Points.Count > 0 && row.Points.Last().XValue == iter.Current.Key)
+            if (row.Points.Count > 0 && row.Points.Last().XValue == iter.Current.Key) {
               row.Points.Last().SetValueY(ecdf / movingTargets);
-            else row.Points.AddXY(iter.Current.Key, ecdf / movingTargets);
+              row.Points.Last().Color = Color.FromArgb(255 - (int)Math.Floor(255 * (missedecdf / totalTargets)), colors[colorCount]);
+            } else {
+              var dp = new DataPoint(iter.Current.Key, ecdf / movingTargets) {
+                Color = Color.FromArgb(255 - (int)Math.Floor(255 * (missedecdf / totalTargets)), colors[colorCount])
+              };
+              if (showMarkers) {
+                dp.MarkerStyle = MarkerStyle.Circle;
+                dp.MarkerBorderWidth = 1;
+                dp.MarkerSize = 5;
+              }
+              row.Points.Add(dp);
+            }
             if (boundShadingCheckBox.Checked) {
               if (rowShade.Points.Count > 0 && rowShade.Points.Last().XValue == iter.Current.Key)
                 rowShade.Points.Last().SetValueY(ecdf / totalTargets, (ecdf + missedecdf) / totalTargets);
@@ -459,14 +523,16 @@ namespace HeuristicLab.Optimization.Views {
             moreMisses = iter.MoveNext();
           }
 
-          if (maxLength > 0 && (row.Points.Count == 0 || row.Points.Last().XValue < maxLength))
-            row.Points.AddXY(maxLength, ecdf / movingTargets);
-
-          if (row.Points.Count > 0) {
-            var point = row.Points.Last();
-            point.Label = row.Name;
-            point.MarkerStyle = MarkerStyle.Cross;
-            point.MarkerBorderWidth = 1;
+          if (maxLength > 0 && (row.Points.Count == 0 || row.Points.Last().XValue < maxLength)) {
+            var dp = new DataPoint(maxLength, ecdf / movingTargets) {
+              Color = Color.FromArgb(255 - (int)Math.Floor(255 * (missedecdf / totalTargets)), colors[colorCount])
+            };
+            if (showMarkers) {
+              dp.MarkerStyle = MarkerStyle.Circle;
+              dp.MarkerBorderWidth = 1;
+              dp.MarkerSize = 5;
+            }
+            row.Points.Add(dp);
           }
 
           ConfigureSeries(row);
@@ -650,10 +716,10 @@ namespace HeuristicLab.Optimization.Views {
           foreach (var run in problem.Value) {
             var resultsTable = (IndexedDataTable<double>)run.Results[table];
 
-            if (eachOrAllBudgetsCheckBox.Checked) {
-              CalculateHitsForEachBudget(hits, resultsTable.Rows.First(), group.Value.Count, problem.Key, group.Key, problem.Value.Count);
-            } else {
+            if (aggregateBudgetsCheckBox.Checked) {
               CalculateHitsForAllBudgets(hits, resultsTable.Rows.First(), group.Value.Count, problem.Key, group.Key, problem.Value.Count);
+            } else {
+              CalculateHitsForEachBudget(hits, resultsTable.Rows.First(), group.Value.Count, problem.Key, group.Key, problem.Value.Count);
             }
           }
         }
@@ -834,8 +900,7 @@ namespace HeuristicLab.Optimization.Views {
       } finally { ResumeRepaint(true); }
     }
 
-    private void targetsRelativeCheckBox_CheckedChanged(object sender, EventArgs e) {
-      targetsRelativeCheckBox.Text = targetsRelativeCheckBox.Checked ? "relative" : "absolute";
+    private void relativeOrAbsoluteComboBox_SelectedIndexChanged(object sender, EventArgs e) {
       if (suppressUpdates) return;
       var pd = (ProblemInstance)problemComboBox.SelectedItem;
       if (!double.IsNaN(pd.BestKnownQuality)) {
@@ -850,7 +915,7 @@ namespace HeuristicLab.Optimization.Views {
           }
         }
       }
-      targetsAreRelative = targetsRelativeCheckBox.Checked;
+      targetsAreRelative = (string)relativeOrAbsoluteComboBox.SelectedItem == "relative";
       SuspendRepaint();
       suppressTargetsEvents = true;
       try {
@@ -918,6 +983,13 @@ namespace HeuristicLab.Optimization.Views {
         }
       }
     }
+
+    private void markerCheckBox_CheckedChanged(object sender, EventArgs e) {
+      SuspendRepaint();
+      try {
+        UpdateResultsByTarget();
+      } finally { ResumeRepaint(true); }
+    }
     #endregion
 
     #region Event handlers for cost analysis
@@ -947,9 +1019,7 @@ namespace HeuristicLab.Optimization.Views {
       SetEnabledStateOfControls();
     }
 
-    private void eachOrAllBudgetsCheckBox_CheckedChanged(object sender, EventArgs e) {
-      var each = eachOrAllBudgetsCheckBox.Checked;
-      eachOrAllBudgetsCheckBox.Text = each ? "each" : "all";
+    private void aggregateBudgetsCheckBox_CheckedChanged(object sender, EventArgs e) {
       SuspendRepaint();
       try {
         UpdateResultsByCost();
