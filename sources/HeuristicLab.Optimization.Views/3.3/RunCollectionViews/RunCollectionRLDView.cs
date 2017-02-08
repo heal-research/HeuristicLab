@@ -298,7 +298,8 @@ namespace HeuristicLab.Optimization.Views {
                            && selectedProblem.Match(r)
                            && r.Results.ContainsKey(table)
                            && r.Visible
-                         group r by selectedGroup == AllRuns ? AllRuns : r.Parameters[selectedGroup].ToString() into g
+                         let key = selectedGroup == AllRuns ? AllRuns : r.Parameters[selectedGroup].ToString()
+                         group r by key into g
                          select Tuple.Create(g.Key, g.ToList()))) {
         var pDict = problems.ToDictionary(r => r, _ => new List<IRun>());
         foreach (var y in x.Item2) {
@@ -328,40 +329,211 @@ namespace HeuristicLab.Optimization.Views {
       if (groupedRuns.Count == 0) return;
 
       var xAxisTitles = new HashSet<string>();
-      var colorCount = 0;
-      var lineStyleCount = 0;
 
-      // if the group contains multiple different problem instances we want to use the
-      // minimal maximal observed effort otherwise we run into situations where we don't
-      // have data for a certain problem instance anymore this is a special case when
-      // aggregating over multiple problem instances      
-      var maxEfforts = new Dictionary<ProblemInstance, double>();
+      // hits describes the number of target hits at a certain time for a certain group
+      var hits = new Dictionary<string, SortedList<double, int>>();
+      // misses describes the number of target misses after a certain time for a certain group
+      // for instance when a run ends, but has not achieved all targets, misses describes
+      // how many targets have been left open at the point when the run ended
+      var misses = new Dictionary<string, SortedList<double, int>>();
+
+      var aggregate = aggregateTargetsCheckBox.Checked;
       double minEff = double.MaxValue, maxEff = double.MinValue;
+      var noRuns = 0;
       foreach (var group in groupedRuns) {
+        SortedList<double, int> epdfHits = null, epdfMisses = null;
+        if (aggregate) {
+          hits[group.Key] = epdfHits = new SortedList<double, int>();
+          misses[group.Key] = epdfMisses = new SortedList<double, int>();
+        }
         foreach (var problem in group.Value) {
-          double problemSpecificMaxEff;
-          if (!maxEfforts.TryGetValue(problem.Key, out problemSpecificMaxEff)) {
-            problemSpecificMaxEff = 0;
-          }
           var max = problem.Key.IsMaximization();
-          var absTargets = GetAbsoluteTargetsWorstToBest(max, problem.Key.BestKnownQuality);
-          var worstTarget = absTargets.First();
-          var bestTarget = absTargets.Last();
+          var absTargets = GetAbsoluteTargets(problem.Key).ToArray();
           foreach (var run in problem.Value) {
-            var row = ((IndexedDataTable<double>)run.Results[table]).Rows.First().Values;
-            var a = row.FirstOrDefault(x => max ? x.Item2 >= worstTarget : x.Item2 <= worstTarget);
-            var b = row.FirstOrDefault(x => max ? x.Item2 >= bestTarget : x.Item2 <= bestTarget);
-            var firstEff = (a == default(Tuple<double, double>)) ? row.Last().Item1 : a.Item1;
-            var lastEff = (b == default(Tuple<double, double>)) ? row.Last().Item1 : b.Item1;
-            if (minEff > firstEff) minEff = firstEff;
-            if (maxEff < lastEff) maxEff = lastEff;
-            if (problemSpecificMaxEff < lastEff) problemSpecificMaxEff = lastEff;
+            noRuns++;
+            var resultsTable = (IndexedDataTable<double>)run.Results[table];
+            xAxisTitles.Add(resultsTable.VisualProperties.XAxisTitle);
+
+            var efforts = absTargets.Select(t => GetEffortToHitTarget(resultsTable.Rows.First().Values, t, max)).ToArray();
+            minEff = Math.Min(minEff, efforts.Min(x => x.Item2));
+            maxEff = Math.Max(maxEff, efforts.Max(x => x.Item2));
+            for (var idx = 0; idx < efforts.Length; idx++) {
+              var e = efforts[idx];
+              if (!aggregate) {
+                var key = group.Key + "@" + (targetsAreRelative
+                  ? (targets[idx] * 100).ToString(CultureInfo.CurrentCulture.NumberFormat) + "%"
+                  : targets[idx].ToString(CultureInfo.CurrentCulture.NumberFormat));
+                if (!hits.TryGetValue(key, out epdfHits))
+                  hits[key] = epdfHits = new SortedList<double, int>();
+                if (!misses.TryGetValue(key, out epdfMisses))
+                  misses[key] = epdfMisses = new SortedList<double, int>();
+              }
+              var list = e.Item1 ? epdfHits : epdfMisses;
+              int v;
+              if (list.TryGetValue(e.Item2, out v))
+                list[e.Item2] = v + 1;
+              else list[e.Item2] = 1;
+            }
           }
-          maxEfforts[problem.Key] = problemSpecificMaxEff;
         }
       }
-      maxEff = Math.Min(maxEff, maxEfforts.Values.Min());
 
+      UpdateTargetChartAxisXBounds(minEff, maxEff);
+
+      DrawTargetsEcdf(hits, misses, noRuns);
+
+      if (targets.Length == 1) {
+        if (targetsAreRelative)
+          targetChart.ChartAreas[0].AxisY.Title = "Probability to be " + (targets[0] * 100) + "% worse than best";
+        else targetChart.ChartAreas[0].AxisY.Title = "Probability to reach at least a fitness of " + targets[0];
+      } else targetChart.ChartAreas[0].AxisY.Title = "Proportion of reached targets";
+      targetChart.ChartAreas[0].AxisX.Title = string.Join(" / ", xAxisTitles);
+      targetChart.ChartAreas[0].AxisX.IsLogarithmic = CanDisplayLogarithmic();
+      targetChart.ChartAreas[0].CursorY.Interval = 0.05;
+
+      UpdateErtTables(groupedRuns);
+    }
+
+    private void DrawTargetsEcdf(Dictionary<string, SortedList<double, int>> hits, Dictionary<string, SortedList<double, int>> misses, int noRuns) {
+      var colorCount = 0;
+      var lineStyleCount = 0;
+      
+      var showMarkers = markerCheckBox.Checked;
+      foreach (var list in hits) {
+        var row = new Series(list.Key) {
+          ChartType = SeriesChartType.StepLine,
+          BorderWidth = 3,
+          Color = colors[colorCount],
+          BorderDashStyle = lineStyles[lineStyleCount],
+        };
+        var rowShade = new Series(list.Key + "-range") {
+          IsVisibleInLegend = false,
+          ChartType = SeriesChartType.Range,
+          Color = Color.FromArgb(32, colors[colorCount]),
+          YValuesPerPoint = 2
+        };
+
+        var ecdf = 0.0;
+        var missedecdf = 0.0;
+        var iter = misses[list.Key].GetEnumerator();
+        var moreMisses = iter.MoveNext();
+        var totalTargets = noRuns;
+        if (aggregateTargetsCheckBox.Checked) totalTargets *= targets.Length;
+        var movingTargets = totalTargets;
+        var labelPrinted = false;
+        foreach (var h in list.Value) {
+          var prevmissedecdf = missedecdf;
+          while (moreMisses && iter.Current.Key <= h.Key) {
+            if (!labelPrinted && row.Points.Count > 0) {
+              var point = row.Points.Last();
+              point.Label = row.Name;
+              point.MarkerStyle = MarkerStyle.Cross;
+              point.MarkerBorderWidth = 1;
+              point.MarkerSize = 10;
+              labelPrinted = true;
+              rowShade.Points.Add(new DataPoint(point.XValue, new[] {ecdf / totalTargets, (ecdf + missedecdf) / totalTargets}));
+            }
+            missedecdf += iter.Current.Value;
+            movingTargets -= iter.Current.Value;
+            if (row.Points.Count > 0 && row.Points.Last().XValue == iter.Current.Key) {
+              row.Points.Last().SetValueY(ecdf / movingTargets);
+              row.Points.Last().Color = Color.FromArgb(255 - (int)Math.Floor(255 * (prevmissedecdf / totalTargets)), colors[colorCount]);
+            } else {
+              var dp = new DataPoint(iter.Current.Key, ecdf / movingTargets) {
+                Color = Color.FromArgb(255 - (int)Math.Floor(255 * (prevmissedecdf / totalTargets)), colors[colorCount])
+              };
+              if (showMarkers) {
+                dp.MarkerStyle = MarkerStyle.Circle;
+                dp.MarkerBorderWidth = 1;
+                dp.MarkerSize = 5;
+              }
+              row.Points.Add(dp);
+              prevmissedecdf = missedecdf;
+            }
+            if (boundShadingCheckBox.Checked) {
+              if (rowShade.Points.Count > 0 && rowShade.Points.Last().XValue == iter.Current.Key)
+                rowShade.Points.Last().SetValueY(ecdf / totalTargets, (ecdf + missedecdf) / totalTargets);
+              else rowShade.Points.Add(new DataPoint(iter.Current.Key, new[] {ecdf / totalTargets, (ecdf + missedecdf) / totalTargets}));
+            }
+            moreMisses = iter.MoveNext();
+            if (!labelPrinted) {
+              var point = row.Points.Last();
+              point.Label = row.Name;
+              point.MarkerStyle = MarkerStyle.Cross;
+              point.MarkerBorderWidth = 1;
+              point.MarkerSize = 10;
+              labelPrinted = true;
+            }
+          }
+          ecdf += h.Value;
+          if (row.Points.Count > 0 && row.Points.Last().XValue == h.Key) {
+            row.Points.Last().SetValueY(ecdf / movingTargets);
+            row.Points.Last().Color = Color.FromArgb(255 - (int)Math.Floor(255 * (missedecdf / totalTargets)), colors[colorCount]);
+          } else {
+            var dp = new DataPoint(h.Key, ecdf / movingTargets) {
+              Color = Color.FromArgb(255 - (int)Math.Floor(255 * (missedecdf / totalTargets)), colors[colorCount])
+            };
+            if (showMarkers) {
+              dp.MarkerStyle = MarkerStyle.Circle;
+              dp.MarkerBorderWidth = 1;
+              dp.MarkerSize = 5;
+            }
+            row.Points.Add(dp);
+          }
+          if (missedecdf > 0 && boundShadingCheckBox.Checked) {
+            if (rowShade.Points.Count > 0 && rowShade.Points.Last().XValue == h.Key)
+              rowShade.Points.Last().SetValueY(ecdf / totalTargets, (ecdf + missedecdf) / totalTargets);
+            else rowShade.Points.Add(new DataPoint(h.Key, new[] {ecdf / totalTargets, (ecdf + missedecdf) / totalTargets}));
+          }
+        }
+
+        while (moreMisses) {
+          // if there are misses beyond the last hit we extend the shaded area
+          missedecdf += iter.Current.Value;
+          var dp = new DataPoint(iter.Current.Key, ecdf / movingTargets) {
+            Color = Color.FromArgb(255 - (int)Math.Floor(255 * (missedecdf / totalTargets)), colors[colorCount])
+          };
+          if (showMarkers) {
+            dp.MarkerStyle = MarkerStyle.Circle;
+            dp.MarkerBorderWidth = 1;
+            dp.MarkerSize = 5;
+          }
+          row.Points.Add(dp);
+          if (boundShadingCheckBox.Checked) {
+            rowShade.Points.Add(new DataPoint(iter.Current.Key, new[] {ecdf / totalTargets, (ecdf + missedecdf) / totalTargets}));
+          }
+          moreMisses = iter.MoveNext();
+
+          if (!labelPrinted && row.Points.Count > 0) {
+            var point = row.Points.Last();
+            point.Label = row.Name;
+            point.MarkerStyle = MarkerStyle.Cross;
+            point.MarkerBorderWidth = 1;
+            point.MarkerSize = 10;
+            labelPrinted = true;
+          }
+        }
+
+        if (!labelPrinted) {
+          var point = row.Points.Last();
+          point.Label = row.Name;
+          point.MarkerStyle = MarkerStyle.Cross;
+          point.MarkerBorderWidth = 1;
+          point.MarkerSize = 10;
+          rowShade.Points.Add(new DataPoint(point.XValue, new[] {ecdf / totalTargets, (ecdf + missedecdf) / totalTargets}));
+          labelPrinted = true;
+        }
+
+        ConfigureSeries(row);
+        targetChart.Series.Add(rowShade);
+        targetChart.Series.Add(row);
+
+        colorCount = (colorCount + 1) % colors.Length;
+        if (colorCount == 0) lineStyleCount = (lineStyleCount + 1) % lineStyles.Length;
+      }
+    }
+
+    private void UpdateTargetChartAxisXBounds(double minEff, double maxEff) {
       var minZeros = (int)Math.Floor(Math.Log10(minEff));
       var maxZeros = (int)Math.Floor(Math.Log10(maxEff));
       var axisMin = (decimal)Math.Pow(10, minZeros);
@@ -374,188 +546,13 @@ namespace HeuristicLab.Optimization.Views {
       } else axisMax = (decimal)Math.Pow(10, (int)Math.Ceiling(Math.Log10(maxEff)));
       targetChart.ChartAreas[0].AxisX.Minimum = (double)axisMin;
       targetChart.ChartAreas[0].AxisX.Maximum = (double)axisMax;
-
-      foreach (var group in groupedRuns) {
-        // hits describes the number of target hits at a certain time for a certain group
-        var hits = new Dictionary<string, SortedList<double, int>>();
-        // misses describes the number of target misses after a certain time for a certain group
-        // for instance when a run ends, but has not achieved all targets, misses describes
-        // how many targets have been left open at the point when the run ended
-        var misses = new Dictionary<string, SortedList<double, int>>();
-        var maxLength = 0.0;
-
-        var noRuns = 0;
-        foreach (var problem in group.Value) {
-          foreach (var run in problem.Value) {
-            var resultsTable = (IndexedDataTable<double>)run.Results[table];
-            xAxisTitles.Add(resultsTable.VisualProperties.XAxisTitle);
-
-            if (aggregateTargetsCheckBox.Checked) {
-              var length = CalculateHitsForAllTargets(hits, misses, resultsTable.Rows.First(), problem.Key, group.Key, problem.Key.BestKnownQuality, maxEff);
-              maxLength = Math.Max(length, maxLength);
-            } else {
-              CalculateHitsForEachTarget(hits, misses, resultsTable.Rows.First(), problem.Key, group.Key, problem.Key.BestKnownQuality, maxEff);
-            }
-            noRuns++;
-          }
-        }
-        var showMarkers = markerCheckBox.Checked;
-        foreach (var list in hits) {
-          var row = new Series(list.Key) {
-            ChartType = SeriesChartType.StepLine,
-            BorderWidth = 3,
-            Color = colors[colorCount],
-            BorderDashStyle = lineStyles[lineStyleCount],
-          };
-          var rowShade = new Series(list.Key + "-range") {
-            IsVisibleInLegend = false,
-            ChartType = SeriesChartType.Range,
-            Color = Color.FromArgb(32, colors[colorCount]),
-            YValuesPerPoint = 2
-          };
-
-          var ecdf = 0.0;
-          var missedecdf = 0.0;
-          var iter = misses[list.Key].GetEnumerator();
-          var moreMisses = iter.MoveNext();
-          var totalTargets = noRuns;
-          if (aggregateTargetsCheckBox.Checked) totalTargets *= targets.Length;
-          var movingTargets = totalTargets;
-          var labelPrinted = false;
-          foreach (var h in list.Value) {
-            var prevmissedecdf = missedecdf;
-            while (moreMisses && iter.Current.Key <= h.Key) {
-              if (!labelPrinted && row.Points.Count > 0) {
-                var point = row.Points.Last();
-                point.Label = row.Name;
-                point.MarkerStyle = MarkerStyle.Cross;
-                point.MarkerBorderWidth = 1;
-                point.MarkerSize = 10;
-                labelPrinted = true;
-                rowShade.Points.Add(new DataPoint(point.XValue, new[] { ecdf / totalTargets, (ecdf + missedecdf) / totalTargets }));
-              }
-              missedecdf += iter.Current.Value;
-              movingTargets -= iter.Current.Value;
-              if (row.Points.Count > 0 && row.Points.Last().XValue == iter.Current.Key) {
-                row.Points.Last().SetValueY(ecdf / movingTargets);
-                row.Points.Last().Color = Color.FromArgb(255 - (int)Math.Floor(255 * (prevmissedecdf / totalTargets)), colors[colorCount]);
-              } else {
-                var dp = new DataPoint(iter.Current.Key, ecdf / movingTargets) {
-                  Color = Color.FromArgb(255 - (int)Math.Floor(255 * (prevmissedecdf / totalTargets)), colors[colorCount])
-                };
-                if (showMarkers) {
-                  dp.MarkerStyle = MarkerStyle.Circle;
-                  dp.MarkerBorderWidth = 1;
-                  dp.MarkerSize = 5;
-                }
-                row.Points.Add(dp);
-                prevmissedecdf = missedecdf;
-              }
-              if (boundShadingCheckBox.Checked) {
-                if (rowShade.Points.Count > 0 && rowShade.Points.Last().XValue == iter.Current.Key)
-                  rowShade.Points.Last().SetValueY(ecdf / totalTargets, (ecdf + missedecdf) / totalTargets);
-                else rowShade.Points.Add(new DataPoint(iter.Current.Key, new[] { ecdf / totalTargets, (ecdf + missedecdf) / totalTargets }));
-              }
-              moreMisses = iter.MoveNext();
-              if (!labelPrinted) {
-                var point = row.Points.Last();
-                point.Label = row.Name;
-                point.MarkerStyle = MarkerStyle.Cross;
-                point.MarkerBorderWidth = 1;
-                point.MarkerSize = 10;
-                labelPrinted = true;
-              }
-            }
-            ecdf += h.Value;
-            if (row.Points.Count > 0 && row.Points.Last().XValue == h.Key) {
-              row.Points.Last().SetValueY(ecdf / movingTargets);
-              row.Points.Last().Color = Color.FromArgb(255 - (int)Math.Floor(255 * (missedecdf / totalTargets)), colors[colorCount]);
-            } else {
-              var dp = new DataPoint(h.Key, ecdf / movingTargets) {
-                Color = Color.FromArgb(255 - (int)Math.Floor(255 * (missedecdf / totalTargets)), colors[colorCount])
-              };
-              if (showMarkers) {
-                dp.MarkerStyle = MarkerStyle.Circle;
-                dp.MarkerBorderWidth = 1;
-                dp.MarkerSize = 5;
-              }
-              row.Points.Add(dp);
-            }
-            if (missedecdf > 0 && boundShadingCheckBox.Checked) {
-              if (rowShade.Points.Count > 0 && rowShade.Points.Last().XValue == h.Key)
-                rowShade.Points.Last().SetValueY(ecdf / totalTargets, (ecdf + missedecdf) / totalTargets);
-              else rowShade.Points.Add(new DataPoint(h.Key, new[] { ecdf / totalTargets, (ecdf + missedecdf) / totalTargets }));
-            }
-          }
-
-          if (!labelPrinted && row.Points.Count > 0) {
-            var point = row.Points.Last();
-            point.Label = row.Name;
-            point.MarkerStyle = MarkerStyle.Cross;
-            point.MarkerBorderWidth = 1;
-            point.MarkerSize = 10;
-            rowShade.Points.Add(new DataPoint(point.XValue, new[] { ecdf / totalTargets, (ecdf + missedecdf) / totalTargets }));
-          }
-
-          while (moreMisses) {
-            // if there are misses beyond the last hit we extend the shaded area
-            missedecdf += iter.Current.Value;
-            //movingTargets -= iter.Current.Value;
-            if (row.Points.Count > 0 && row.Points.Last().XValue == iter.Current.Key) {
-              row.Points.Last().SetValueY(ecdf / movingTargets);
-              row.Points.Last().Color = Color.FromArgb(255 - (int)Math.Floor(255 * (missedecdf / totalTargets)), colors[colorCount]);
-            } else {
-              var dp = new DataPoint(iter.Current.Key, ecdf / movingTargets) {
-                Color = Color.FromArgb(255 - (int)Math.Floor(255 * (missedecdf / totalTargets)), colors[colorCount])
-              };
-              if (showMarkers) {
-                dp.MarkerStyle = MarkerStyle.Circle;
-                dp.MarkerBorderWidth = 1;
-                dp.MarkerSize = 5;
-              }
-              row.Points.Add(dp);
-            }
-            if (boundShadingCheckBox.Checked) {
-              if (rowShade.Points.Count > 0 && rowShade.Points.Last().XValue == iter.Current.Key)
-                rowShade.Points.Last().SetValueY(ecdf / totalTargets, (ecdf + missedecdf) / totalTargets);
-              else rowShade.Points.Add(new DataPoint(iter.Current.Key, new[] { ecdf / totalTargets, (ecdf + missedecdf) / totalTargets }));
-            }
-            moreMisses = iter.MoveNext();
-          }
-
-          if (maxLength > 0 && (row.Points.Count == 0 || row.Points.Last().XValue < maxLength)) {
-            var dp = new DataPoint(maxLength, ecdf / movingTargets) {
-              Color = Color.FromArgb(255 - (int)Math.Floor(255 * (missedecdf / totalTargets)), colors[colorCount])
-            };
-            if (showMarkers) {
-              dp.MarkerStyle = MarkerStyle.Circle;
-              dp.MarkerBorderWidth = 1;
-              dp.MarkerSize = 5;
-            }
-            row.Points.Add(dp);
-          }
-
-          ConfigureSeries(row);
-          targetChart.Series.Add(rowShade);
-          targetChart.Series.Add(row);
-        }
-        colorCount = (colorCount + 1) % colors.Length;
-        if (colorCount == 0) lineStyleCount = (lineStyleCount + 1) % lineStyles.Length;
-      }
-
-      if (targets.Length == 1) {
-        if (targetsAreRelative)
-          targetChart.ChartAreas[0].AxisY.Title = "Probability to be " + (targets[0] * 100) + "% worse than best";
-        else targetChart.ChartAreas[0].AxisY.Title = "Probability to reach at least a fitness of " + targets[0];
-      } else targetChart.ChartAreas[0].AxisY.Title = "Proportion of reached targets";
-      targetChart.ChartAreas[0].AxisX.Title = string.Join(" / ", xAxisTitles);
-      targetChart.ChartAreas[0].AxisX.IsLogarithmic = CanDisplayLogarithmic();
-      targetChart.ChartAreas[0].CursorY.Interval = 0.05;
-      UpdateErtTables(groupedRuns);
     }
-    
-    private IEnumerable<double> GetAbsoluteTargets(bool maximization, double bestKnown) {
+
+    private IEnumerable<double> GetAbsoluteTargets(ProblemInstance pInstance) {
       if (!targetsAreRelative) return targets;
+      var maximization = pInstance.IsMaximization();
+      var bestKnown = pInstance.BestKnownQuality;
+      if (double.IsNaN(bestKnown)) throw new ArgumentException("Problem instance does not have a defined best - known quality.");
       IEnumerable<double> tmp = null;
       if (bestKnown > 0) {
         tmp = targets.Select(x => (maximization ? (1 - x) : (1 + x)) * bestKnown);
@@ -568,85 +565,32 @@ namespace HeuristicLab.Optimization.Views {
       return tmp;
     }
 
-    private double[] GetAbsoluteTargetsWorstToBest(bool maximization, double bestKnown) {
-      var absTargets = GetAbsoluteTargets(maximization, bestKnown);
-      return maximization ? absTargets.OrderBy(x => x).ToArray() : absTargets.OrderByDescending(x => x).ToArray();
+    private double[] GetAbsoluteTargetsWorstToBest(ProblemInstance pInstance) {
+      if (double.IsNaN(pInstance.BestKnownQuality)) throw new ArgumentException("Problem instance does not have a defined best-known quality.");
+      var absTargets = GetAbsoluteTargets(pInstance);
+      return (pInstance.IsMaximization()
+        ? absTargets.OrderBy(x => x) : absTargets.OrderByDescending(x => x)).ToArray();
     }
 
     private void GenerateDefaultTargets() {
-      targets = new[] { 0.1, 0.05, 0.02, 0.01, 0 };
+      targets = new[] { 0.1, 0.095, 0.09, 0.085, 0.08, 0.075, 0.07, 0.065, 0.06, 0.055, 0.05, 0.045, 0.04, 0.035, 0.03, 0.025, 0.02, 0.015, 0.01, 0.005, 0 };
       suppressTargetsEvents = true;
       targetsTextBox.Text = string.Join("% ; ", targets.Select(x => x * 100)) + "%";
       suppressTargetsEvents = false;
     }
 
-    private void CalculateHitsForEachTarget(Dictionary<string, SortedList<double, int>> hits,
-                                            Dictionary<string, SortedList<double, int>> misses,
-                                            IndexedDataRow<double> row, ProblemInstance problem,
-                                            string group, double bestTarget, double maxEffort) {
-      var maximization = problem.IsMaximization();
-      foreach (var t in targets.Zip(GetAbsoluteTargets(maximization, bestTarget), (rt, at) => Tuple.Create(at, rt))) {
-        var l = t.Item1;
-        var key = group + "_" + (targetsAreRelative ? (t.Item2 * 100) + "%_" + l : l.ToString());
-        if (!hits.ContainsKey(key)) {
-          hits.Add(key, new SortedList<double, int>());
-          misses.Add(key, new SortedList<double, int>());
-        }
-        var hit = false;
-        foreach (var v in row.Values) {
-          if (v.Item1 > maxEffort) break;
-          if (maximization && v.Item2 >= l || !maximization && v.Item2 <= l) {
-            if (hits[key].ContainsKey(v.Item1))
-              hits[key][v.Item1]++;
-            else hits[key][v.Item1] = 1;
-            hit = true;
-            break;
-          }
-        }
-        if (!hit) {
-          var max = Math.Min(row.Values.Last().Item1, maxEffort);
-          if (misses[key].ContainsKey(max))
-            misses[key][max]++;
-          else misses[key][max] = 1;
-        }
+    private Tuple<bool, double> GetEffortToHitTarget(
+        IEnumerable<Tuple<double, double>> convergenceGraph,
+        double absTarget, bool maximization) {
+      var hit = false;
+      var effort = double.NaN;
+      foreach (var dent in convergenceGraph) {
+        effort = dent.Item1;
+        hit = maximization && dent.Item2 >= absTarget || !maximization && dent.Item2 <= absTarget;
+        if (hit) break;
       }
-    }
-
-    private double CalculateHitsForAllTargets(Dictionary<string, SortedList<double, int>> hits,
-                                              Dictionary<string, SortedList<double, int>> misses,
-                                              IndexedDataRow<double> row, ProblemInstance problem,
-                                              string group, double bestTarget, double maxEffort) {
-      var values = row.Values;
-      if (!hits.ContainsKey(group)) {
-        hits.Add(group, new SortedList<double, int>());
-        misses.Add(group, new SortedList<double, int>());
-      }
-
-      var i = 0;
-      var j = 0;
-      var max = problem.IsMaximization();
-      var absTargets = GetAbsoluteTargetsWorstToBest(max, bestTarget);
-      while (i < absTargets.Length && j < values.Count) {
-        var target = absTargets[i];
-        var current = values[j];
-        if (current.Item1 > maxEffort) break;
-        if (problem.IsMaximization() && current.Item2 >= target
-          || !problem.IsMaximization() && current.Item2 <= target) {
-          if (hits[group].ContainsKey(current.Item1)) hits[group][current.Item1]++;
-          else hits[group][current.Item1] = 1;
-          i++;
-        } else {
-          j++;
-        }
-      }
-      if (j == values.Count) j--;
-      var effort = Math.Min(values[j].Item1, maxEffort);
-      if (i < absTargets.Length) {
-        if (misses[group].ContainsKey(effort))
-          misses[group][effort] += absTargets.Length - i;
-        else misses[group][effort] = absTargets.Length - i;
-      }
-      return effort;
+      if (double.IsNaN(effort)) throw new ArgumentException("Convergence graph is empty.", "convergenceGraph");
+      return Tuple.Create(hit, effort);
     }
 
     private void UpdateErtTables(Dictionary<string, Dictionary<ProblemInstance, List<IRun>>> groupedRuns) {
@@ -663,7 +607,7 @@ namespace HeuristicLab.Optimization.Views {
       foreach (var problem in problems) {
         var max = problem.IsMaximization();
         matrix[rowCount, 0] = problem.ToString();
-        var absTargets = GetAbsoluteTargetsWorstToBest(max, problem.BestKnownQuality);
+        var absTargets = GetAbsoluteTargetsWorstToBest(problem);
         for (var i = 0; i < absTargets.Length; i++) {
           matrix[rowCount, i + 1] = absTargets[i].ToString(CultureInfo.CurrentCulture.NumberFormat);
         }
@@ -755,18 +699,8 @@ namespace HeuristicLab.Optimization.Views {
       var runs = GroupRuns().SelectMany(x => x.Value.Values).SelectMany(x => x).ToList();
       var min = runs.Select(x => ((IndexedDataTable<double>)x.Results[table]).Rows.First().Values.Select(y => y.Item1).Min()).Min();
       var max = runs.Select(x => ((IndexedDataTable<double>)x.Results[table]).Rows.First().Values.Select(y => y.Item1).Max()).Max();
-
-      var maxMagnitude = (int)Math.Ceiling(Math.Log10(max));
-      var minMagnitude = (int)Math.Floor(Math.Log10(min));
-      if (maxMagnitude - minMagnitude >= 3) {
-        budgets = new double[maxMagnitude - minMagnitude];
-        for (var i = minMagnitude; i < maxMagnitude; i++) {
-          budgets[i - minMagnitude] = Math.Pow(10, i);
-        }
-      } else {
-        var range = max - min;
-        budgets = Enumerable.Range(0, 6).Select(x => min + (x / 5.0) * range).ToArray();
-      }
+      var points = 20;
+      budgets = Enumerable.Range(1, points).Select(x => min + (x / (double)points) * (max - min)).ToArray();
       suppressBudgetsEvents = true;
       budgetsTextBox.Text = string.Join(" ; ", budgets);
       suppressBudgetsEvents = false;
@@ -783,7 +717,7 @@ namespace HeuristicLab.Optimization.Views {
             // the budget may be too low to achieve any target
             if (prev == null && v.Item1 != b) break;
             var tgt = ((prev == null || v.Item1 == b) ? v.Item2 : prev.Item2);
-            var relTgt = CalculateRelativeDifference(max, problem.BestKnownQuality, tgt);
+            var relTgt = CalculateRelativeDifference(max, problem.BestKnownQuality, tgt) + 1;
             if (hits[key].ContainsKey(relTgt))
               hits[key][relTgt] += 1.0 / (groupCount * problemCount);
             else hits[key][relTgt] = 1.0 / (groupCount * problemCount);
@@ -808,7 +742,7 @@ namespace HeuristicLab.Optimization.Views {
         if (current.Item1 >= budgets[i]) {
           if (prev != null || current.Item1 == budgets[i]) {
             var tgt = (prev == null || current.Item1 == budgets[i]) ? current.Item2 : prev.Item2;
-            var relTgt = CalculateRelativeDifference(max, problem.BestKnownQuality, tgt);
+            var relTgt = CalculateRelativeDifference(max, problem.BestKnownQuality, tgt) + 1;
             if (!hits[groupName].ContainsKey(relTgt)) hits[groupName][relTgt] = 0;
             hits[groupName][relTgt] += 1.0 / (groupCount * problemCount * budgets.Length);
           }
@@ -819,7 +753,7 @@ namespace HeuristicLab.Optimization.Views {
         }
       }
       var lastTgt = values.Last().Item2;
-      var lastRelTgt = CalculateRelativeDifference(max, problem.BestKnownQuality, lastTgt);
+      var lastRelTgt = CalculateRelativeDifference(max, problem.BestKnownQuality, lastTgt) + 1;
       if (i < budgets.Length && !hits[groupName].ContainsKey(lastRelTgt)) hits[groupName][lastRelTgt] = 0;
       while (i < budgets.Length) {
         hits[groupName][lastRelTgt] += 1.0 / (groupCount * problemCount * budgets.Length);
@@ -905,7 +839,7 @@ namespace HeuristicLab.Optimization.Views {
       var pd = (ProblemInstance)problemComboBox.SelectedItem;
       if (!double.IsNaN(pd.BestKnownQuality)) {
         var max = pd.IsMaximization();
-        if (targetsAreRelative) targets = GetAbsoluteTargets(max, pd.BestKnownQuality).ToArray();
+        if (targetsAreRelative) targets = GetAbsoluteTargets(pd).ToArray();
         else {
           // Rounding to 5 digits since it's certainly appropriate for this application
           if (pd.BestKnownQuality > 0) {
@@ -959,9 +893,7 @@ namespace HeuristicLab.Optimization.Views {
     private void addTargetsAsResultButton_Click(object sender, EventArgs e) {
       var table = (string)dataTableComboBox.SelectedItem;
       if (string.IsNullOrEmpty(table)) return;
-
-      var targetsPerProblem = problems.ToDictionary(x => x, x => x.BestKnownQuality);
-
+      
       foreach (var run in Content) {
         if (!run.Results.ContainsKey(table)) continue;
         var resultsTable = (IndexedDataTable<double>)run.Results[table];
@@ -970,7 +902,7 @@ namespace HeuristicLab.Optimization.Views {
         var j = 0;
         var pd = new ProblemInstance(run);
         var max = pd.IsMaximization();
-        var absTargets = GetAbsoluteTargetsWorstToBest(max, targetsPerProblem[pd]);
+        var absTargets = GetAbsoluteTargetsWorstToBest(problems.Single(x => x.Equals(pd)));
         while (i < absTargets.Length && j < values.Count) {
           var target = absTargets[i];
           var current = values[j];
