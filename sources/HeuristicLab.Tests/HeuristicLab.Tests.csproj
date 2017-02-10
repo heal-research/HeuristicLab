@@ -511,6 +511,7 @@
     <Compile Include="HeuristicLab.Encodings.LinearLinkageEncoding-3.4\Auxiliary.cs" />
     <Compile Include="HeuristicLab.Encodings.LinearLinkageEncoding-3.4\ConversionsTest.cs" />
     <Compile Include="HeuristicLab.Encodings.LinearLinkageEncoding-3.4\GroupCrossoverTest.cs" />
+    <Compile Include="HeuristicLab.Encodings.LinearLinkageEncoding-3.4\MoveTests.cs" />
     <Compile Include="HeuristicLab.Encodings.PermutationEncoding-3.3\Auxiliary.cs" />
     <Compile Include="HeuristicLab.Encodings.PermutationEncoding-3.3\CosaCrossoverTest.cs" />
     <Compile Include="HeuristicLab.Encodings.PermutationEncoding-3.3\CyclicCrossover2Test.cs" />

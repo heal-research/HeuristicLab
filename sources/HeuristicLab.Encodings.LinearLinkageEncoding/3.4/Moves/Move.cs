@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2017 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2016 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,19 +19,13 @@
  */
 #endregion
 
-namespace HeuristicLab.Encodings.LinearLinkageEncoding.Tests {
-  public static class Auxiliary {
-    public static bool LinearLinkageIsEqualByPosition(LinearLinkage p1, LinearLinkage p2) {
-      bool equal = (p1.Length == p2.Length);
-      if (equal) {
-        for (int i = 0; i < p1.Length; i++) {
-          if (!p1[i].Equals(p2[i])) {
-            equal = false;
-            break;
-          }
-        }
-      }
-      return equal;
-    }
+namespace HeuristicLab.Encodings.LinearLinkageEncoding {
+  public abstract class Move {
+    public int Item { get; protected set; }
+
+    public abstract void Apply(LinearLinkage lle);
+    public abstract void Undo(LinearLinkage lle);
+
+    public abstract void ApplyToLLEb(int[] lleb);
   }
 }

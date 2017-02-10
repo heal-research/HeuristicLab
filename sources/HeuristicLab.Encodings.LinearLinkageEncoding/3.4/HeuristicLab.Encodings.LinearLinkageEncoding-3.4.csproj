@@ -176,6 +176,12 @@
     <Compile Include="Manipulators\MoveItemManipulator.cs" />
     <Compile Include="Manipulators\MergeGroupManipulator.cs" />
     <Compile Include="Manipulators\MultiLLEManipulator.cs" />
+    <Compile Include="Moves\ExtractMove.cs" />
+    <Compile Include="Moves\MergeMove.cs" />
+    <Compile Include="Moves\Move.cs" />
+    <Compile Include="Moves\ShiftMove.cs" />
+    <Compile Include="Moves\SplitMove.cs" />
+    <Compile Include="Moves\StaticAPI\MoveGenerator.cs" />
     <Compile Include="Moves\Swap\ExhaustiveSwap2MoveGenerator.cs" />
     <Compile Include="Moves\Swap\StochasticSwap2MultiMoveGenerator.cs" />
     <Compile Include="Moves\Swap\StochasticSwap2SingleMoveGenerator.cs" />
