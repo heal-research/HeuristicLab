@@ -49,29 +49,12 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     /// <param name="random">The random number generator.</param>
     /// <param name="permutation">The permutation to manipulate.</param>
     public static void Apply(IRandom random, Permutation permutation) {
-      Permutation original = (Permutation)permutation.Clone();
-      int cutIndex, insertIndex, number;
+      var cutIndex = random.Next(permutation.Length);
+      var insertIndex = random.Next(permutation.Length);
 
-      cutIndex = random.Next(original.Length);
-      insertIndex = random.Next(original.Length);
-      number = original[cutIndex];
+      if (cutIndex == insertIndex) return;
 
-      int i = 0;  // index in new permutation
-      int j = 0;  // index in old permutation
-      while (i < original.Length) {
-        if (j == cutIndex) {
-          j++;
-        }
-        if (i == insertIndex) {
-          permutation[i] = number;
-          i++;
-        }
-        if ((i < original.Length) && (j < original.Length)) {
-          permutation[i] = original[j];
-          i++;
-          j++;
-        }
-      }
+      permutation.Move(cutIndex, cutIndex, insertIndex);
     }
 
     /// <summary>

@@ -57,9 +57,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     }
 
     public static void Apply(Permutation permutation, int index1, int index2) {
-      int temp = permutation[index1];
-      permutation[index1] = permutation[index2];
-      permutation[index2] = temp;
+      permutation.Swap(index1, index2);
     }
 
     /// <summary>
