@@ -169,6 +169,7 @@
     <Compile Include="LinearLinkage.cs" />
     <Compile Include="LinearLinkageCreator.cs" />
     <Compile Include="LinearLinkageEncoding.cs" />
+    <Compile Include="LinearLinkageEqualityComparer.cs" />
     <Compile Include="LinearLinkageManipulator.cs" />
     <Compile Include="LinearLinkageCrossover.cs" />
     <Compile Include="Manipulators\GraftManipulator.cs" />
@@ -182,6 +183,7 @@
     <Compile Include="Moves\Swap\Swap2MoveGenerator.cs" />
     <Compile Include="Moves\Swap\Swap2MoveMaker.cs" />
     <Compile Include="ShakingOperators\LLEShakingOperator.cs" />
+    <Compile Include="SimilarityCalculators\HammingSimilarityCalculator.cs" />
     <None Include="HeuristicLab.snk" />
     <None Include="Plugin.cs.frame" />
     <Compile Include="Crossovers\LowestIndexFirstCrossover.cs" />

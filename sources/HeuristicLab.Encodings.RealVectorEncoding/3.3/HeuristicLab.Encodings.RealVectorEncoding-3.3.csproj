@@ -136,6 +136,7 @@
     <Compile Include="RealVectorCrossover.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RealVectorEncoding.cs" />
+    <Compile Include="RealVectorEqualityComparer.cs" />
     <Compile Include="RealVectorManipulator.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -181,6 +182,7 @@
     <Compile Include="Manipulators\UniformOnePositionManipulator.cs" />
     <Compile Include="ReflectiveBoundsChecker.cs" />
     <Compile Include="ShakingOperators\RealVectorShakingOperator.cs" />
+    <Compile Include="SimilarityCalculators\HammingSimilarityCalculator.cs" />
     <Compile Include="StrategyParameters\StdDevStrategyVectorCreator.cs" />
     <Compile Include="StrategyParameters\StdDevStrategyVectorCrossover.cs" />
     <Compile Include="StrategyParameters\StdDevStrategyVectorManipulator.cs" />
