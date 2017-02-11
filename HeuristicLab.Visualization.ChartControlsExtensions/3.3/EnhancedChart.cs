@@ -74,7 +74,7 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
         HitTestResult result = HitTest(e.X, e.Y);
         if (result.ChartArea != null && (result.ChartElementType == ChartElementType.PlottingArea || result.ChartElementType == ChartElementType.Gridlines)) {
           foreach (var axis in result.ChartArea.Axes)
-            axis.ScaleView.ZoomReset(int.MaxValue);
+            axis.ScaleView.ZoomReset(0);
         }
       }
       base.OnMouseDoubleClick(e);
