@@ -345,15 +345,18 @@ namespace HeuristicLab.Algorithms.MemPR {
 
     #region Breeding Performance
     public void AddBreedingResult(ISingleObjectiveSolutionScope<TSolution> a, ISingleObjectiveSolutionScope<TSolution> b, double parentDist, ISingleObjectiveSolutionScope<TSolution> child) {
+      return;
       if (IsBetter(a, b))
         breedingStat.Add(Tuple.Create(a.Fitness, b.Fitness, parentDist, child.Fitness));
       else breedingStat.Add(Tuple.Create(b.Fitness, a.Fitness, parentDist, child.Fitness));
       if (breedingStat.Count % 10 == 0) RelearnBreedingPerformanceModel();
     }
     public void RelearnBreedingPerformanceModel() {
+      return;
       breedingPerformanceModel = RunRegression(PrepareRegression(ToListRow(breedingStat)), breedingPerformanceModel).Model;
     }
     public bool BreedingSuited(ISingleObjectiveSolutionScope<TSolution> p1, ISingleObjectiveSolutionScope<TSolution> p2, double dist) {
+      return true;
       if (breedingPerformanceModel == null) return true;
       double minI1 = double.MaxValue, minI2 = double.MaxValue, maxI1 = double.MinValue, maxI2 = double.MinValue;
       foreach (var d in BreedingStat) {
@@ -371,15 +374,18 @@ namespace HeuristicLab.Algorithms.MemPR {
 
     #region Relinking Performance
     public void AddRelinkingResult(ISingleObjectiveSolutionScope<TSolution> a, ISingleObjectiveSolutionScope<TSolution> b, double parentDist, ISingleObjectiveSolutionScope<TSolution> child) {
+      return;
       if (IsBetter(a, b))
         relinkingStat.Add(Tuple.Create(a.Fitness, b.Fitness, parentDist, Maximization ? child.Fitness - a.Fitness : a.Fitness - child.Fitness));
       else relinkingStat.Add(Tuple.Create(a.Fitness, b.Fitness, parentDist, Maximization ? child.Fitness - b.Fitness : b.Fitness - child.Fitness));
       if (relinkingStat.Count % 10 == 0) RelearnRelinkingPerformanceModel();
     }
     public void RelearnRelinkingPerformanceModel() {
+      return;
       relinkingPerformanceModel = RunRegression(PrepareRegression(ToListRow(relinkingStat)), relinkingPerformanceModel).Model;
     }
     public bool RelinkSuited(ISingleObjectiveSolutionScope<TSolution> p1, ISingleObjectiveSolutionScope<TSolution> p2, double dist) {
+      return true;
       if (relinkingPerformanceModel == null) return true;
       double minI1 = double.MaxValue, minI2 = double.MaxValue, maxI1 = double.MinValue, maxI2 = double.MinValue;
       foreach (var d in RelinkingStat) {
@@ -400,15 +406,18 @@ namespace HeuristicLab.Algorithms.MemPR {
 
     #region Delinking Performance
     public void AddDelinkingResult(ISingleObjectiveSolutionScope<TSolution> a, ISingleObjectiveSolutionScope<TSolution> b, double parentDist, ISingleObjectiveSolutionScope<TSolution> child) {
+      return;
       if (IsBetter(a, b))
         delinkingStat.Add(Tuple.Create(a.Fitness, b.Fitness, parentDist, Maximization ? child.Fitness - a.Fitness : a.Fitness - child.Fitness));
       else delinkingStat.Add(Tuple.Create(a.Fitness, b.Fitness, parentDist, Maximization ? child.Fitness - b.Fitness : b.Fitness - child.Fitness));
       if (delinkingStat.Count % 10 == 0) RelearnDelinkingPerformanceModel();
     }
     public void RelearnDelinkingPerformanceModel() {
+      return;
       delinkingPerformanceModel = RunRegression(PrepareRegression(ToListRow(delinkingStat)), delinkingPerformanceModel).Model;
     }
     public bool DelinkSuited(ISingleObjectiveSolutionScope<TSolution> p1, ISingleObjectiveSolutionScope<TSolution> p2, double dist) {
+      return true;
       if (delinkingPerformanceModel == null) return true;
       double minI1 = double.MaxValue, minI2 = double.MaxValue, maxI1 = double.MinValue, maxI2 = double.MinValue;
       foreach (var d in DelinkingStat) {
@@ -428,13 +437,16 @@ namespace HeuristicLab.Algorithms.MemPR {
 
     #region Sampling Performance
     public void AddSamplingResult(ISingleObjectiveSolutionScope<TSolution> sample, double avgDist) {
+      return;
       samplingStat.Add(Tuple.Create(avgDist, sample.Fitness));
       if (samplingStat.Count % 10 == 0) RelearnSamplingPerformanceModel();
     }
     public void RelearnSamplingPerformanceModel() {
+      return;
       samplingPerformanceModel = RunRegression(PrepareRegression(ToListRow(samplingStat)), samplingPerformanceModel).Model;
     }
     public bool SamplingSuited(double avgDist) {
+      return true;
       if (samplingPerformanceModel == null) return true;
       if (avgDist < samplingStat.Min(x => x.Item1) || avgDist > samplingStat.Max(x => x.Item1)) return true;
       return Random.NextDouble() < ProbabilityAcceptAbsolutePerformanceModel(new List<double> { avgDist }, samplingPerformanceModel);
@@ -443,13 +455,16 @@ namespace HeuristicLab.Algorithms.MemPR {
 
     #region Hillclimbing Performance
     public void AddHillclimbingResult(ISingleObjectiveSolutionScope<TSolution> input, ISingleObjectiveSolutionScope<TSolution> outcome) {
+      return;
       hillclimbingStat.Add(Tuple.Create(input.Fitness, Maximization ? outcome.Fitness - input.Fitness : input.Fitness - outcome.Fitness));
       if (hillclimbingStat.Count % 10 == 0) RelearnHillclimbingPerformanceModel();
     }
     public void RelearnHillclimbingPerformanceModel() {
+      return;
       hillclimbingPerformanceModel = RunRegression(PrepareRegression(ToListRow(hillclimbingStat)), hillclimbingPerformanceModel).Model;
     }
     public bool HillclimbingSuited(double startingFitness) {
+      return true;
       if (hillclimbingPerformanceModel == null) return true;
       if (startingFitness < HillclimbingStat.Min(x => x.Item1) || startingFitness > HillclimbingStat.Max(x => x.Item1))
         return true;
@@ -459,13 +474,16 @@ namespace HeuristicLab.Algorithms.MemPR {
 
     #region Adaptivewalking Performance
     public void AddAdaptivewalkingResult(ISingleObjectiveSolutionScope<TSolution> input, ISingleObjectiveSolutionScope<TSolution> outcome) {
+      return;
       adaptivewalkingStat.Add(Tuple.Create(input.Fitness, Maximization ? outcome.Fitness - input.Fitness : input.Fitness - outcome.Fitness));
       if (adaptivewalkingStat.Count % 10 == 0) RelearnAdaptiveWalkPerformanceModel();
     }
     public void RelearnAdaptiveWalkPerformanceModel() {
+      return;
       adaptiveWalkPerformanceModel = RunRegression(PrepareRegression(ToListRow(adaptivewalkingStat)), adaptiveWalkPerformanceModel).Model;
     }
     public bool AdaptivewalkingSuited(double startingFitness) {
+      return true;
       if (adaptiveWalkPerformanceModel == null) return true;
       if (startingFitness < AdaptivewalkingStat.Min(x => x.Item1) || startingFitness > AdaptivewalkingStat.Max(x => x.Item1))
         return true;

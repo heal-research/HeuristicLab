@@ -29,6 +29,7 @@ using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using HeuristicLab.Analysis;
 using HeuristicLab.Collections;
+using HeuristicLab.Common;
 using HeuristicLab.Core.Views;
 using HeuristicLab.Data;
 using HeuristicLab.MainForm;
@@ -333,6 +334,7 @@ namespace HeuristicLab.Optimization.Views {
       // have data for a certain problem instance anymore this is a special case when
       // aggregating over multiple problem instances      
       var maxEfforts = new Dictionary<ProblemDescription, double>();
+      var worstKnowns = new Dictionary<ProblemDescription, double>();
       double minEff = double.MaxValue, maxEff = double.MinValue;
       foreach (var group in groupedRuns) {
         foreach (var problem in group.Value) {
@@ -342,8 +344,22 @@ namespace HeuristicLab.Optimization.Views {
           }
           var bestKnownTarget = problem.Value.Item1;
           var max = problem.Key.IsMaximization();
-          var worstTarget = (max ? (1 - targets.Max()) : (1 + targets.Max())) * bestKnownTarget;
-          var bestTarget = (max ? (1 - targets.Min()) : (1 + targets.Min())) * bestKnownTarget;
+          double worstTarget = 0, bestTarget = 0;
+          if (bestKnownTarget > 0) {
+            worstTarget = (max ? (1 - targets.Max()) : (1 + targets.Max())) * bestKnownTarget;
+            bestTarget = (max ? (1 - targets.Min()) : (1 + targets.Min())) * bestKnownTarget;
+          } else if (bestKnownTarget < 0) {
+            worstTarget = (max ? (1 + targets.Max()) : (1 - targets.Max())) * bestKnownTarget;
+            bestTarget = (max ? (1 + targets.Min()) : (1 - targets.Min())) * bestKnownTarget;
+          } else {
+            var initials = problem.Value.Item2.Select(x => ((IndexedDataTable<double>)x.Results[table]).Rows.First().Values.First().Item2);
+            var worstKnown = max ? initials.Min() : initials.Max();
+            if (!worstKnown.IsAlmost(0)) {
+              worstTarget = targets.Max() * worstKnown;
+              bestTarget = targets.Min() * worstKnown;
+              worstKnowns[problem.Key] = worstKnown;
+            }
+          }
           foreach (var run in problem.Value.Item2) {
             var row = ((IndexedDataTable<double>)run.Results[table]).Rows.First().Values;
             var a = row.FirstOrDefault(x => max ? x.Item2 >= worstTarget : x.Item2 <= worstTarget);
@@ -388,10 +404,10 @@ namespace HeuristicLab.Optimization.Views {
             xAxisTitles.Add(resultsTable.VisualProperties.XAxisTitle);
 
             if (aggregateTargetsCheckBox.Checked) {
-              var length = CalculateHitsForAllTargets(hits, misses, resultsTable.Rows.First(), problem.Key, group.Key, problem.Value.Item1, maxEff);
+              var length = CalculateHitsForAllTargets(hits, misses, resultsTable.Rows.First(), problem.Key, group.Key, problem.Value.Item1, worstKnowns.ContainsKey(problem.Key) ? worstKnowns[problem.Key] : 0, maxEff);
               maxLength = Math.Max(length, maxLength);
             } else {
-              CalculateHitsForEachTarget(hits, misses, resultsTable.Rows.First(), problem.Key, group.Key, problem.Value.Item1, maxEff);
+              CalculateHitsForEachTarget(hits, misses, resultsTable.Rows.First(), problem.Key, group.Key, problem.Value.Item1, worstKnowns.ContainsKey(problem.Key) ? worstKnowns[problem.Key] : 0, maxEff);
             }
             noRuns++;
           }
@@ -494,8 +510,21 @@ namespace HeuristicLab.Optimization.Views {
     private void CalculateHitsForEachTarget(Dictionary<string, SortedList<double, int>> hits,
                                             Dictionary<string, SortedList<double, int>> misses,
                                             IndexedDataRow<double> row, ProblemDescription problem,
-                                            string group, double bestTarget, double maxEffort) {
-      foreach (var t in targets.Select(x => Tuple.Create((problem.IsMaximization() ? (1 - x) : (1 + x)) * bestTarget, x))) {
+                                            string group, double bestTarget, double worstKnown, double maxEffort) {
+      var max = problem.IsMaximization();
+      var targetValues = targets.Select(t => {
+        double target = 0;
+        if (bestTarget > 0) {
+          target = (max ? (1 - t) : (1 + t)) * bestTarget;
+        } else if (bestTarget < 0) {
+          target = (max ? (1 + t) : (1 - t)) * bestTarget;
+        } else {
+          if (!worstKnown.IsAlmost(0))
+            target = t * worstKnown;
+        }
+        return Tuple.Create(target, t);
+      });
+      foreach (var t in targetValues) {
         var l = t.Item1;
         var key = group + "_" + (t.Item2 * 100) + "%_" + l;
         if (!hits.ContainsKey(key)) {
@@ -514,10 +543,10 @@ namespace HeuristicLab.Optimization.Views {
           }
         }
         if (!hit) {
-          var max = Math.Min(row.Values.Last().Item1, maxEffort);
-          if (misses[key].ContainsKey(max))
-            misses[key][max]++;
-          else misses[key][max] = 1;
+          var maxEff = Math.Min(row.Values.Last().Item1, maxEffort);
+          if (misses[key].ContainsKey(maxEff))
+            misses[key][maxEff]++;
+          else misses[key][maxEff] = 1;
         }
       }
     }
@@ -525,7 +554,7 @@ namespace HeuristicLab.Optimization.Views {
     private double CalculateHitsForAllTargets(Dictionary<string, SortedList<double, int>> hits,
                                               Dictionary<string, SortedList<double, int>> misses,
                                               IndexedDataRow<double> row, ProblemDescription problem,
-                                              string group, double bestTarget, double maxEffort) {
+                                              string group, double bestTarget, double worstKnown, double maxEffort) {
       var values = row.Values;
       if (!hits.ContainsKey(group)) {
         hits.Add(group, new SortedList<double, int>());
@@ -535,7 +564,16 @@ namespace HeuristicLab.Optimization.Views {
       var i = 0;
       var j = 0;
       while (i < targets.Length && j < values.Count) {
-        var target = (problem.IsMaximization() ? (1 - targets[i]) : (1 + targets[i])) * bestTarget;
+        var max = problem.IsMaximization();
+        double target = 0;
+        if (bestTarget > 0) {
+          target = (max ? (1 - targets[i]) : (1 + targets[i])) * bestTarget;
+        } else if (bestTarget < 0) {
+          target = (max ? (1 + targets[i]) : (1 - targets[i])) * bestTarget;
+        } else {
+          if (!worstKnown.IsAlmost(0))
+            target = targets[i] * worstKnown;
+        }
         var current = values[j];
         if (current.Item1 > maxEffort) break;
         if (problem.IsMaximization() && current.Item2 >= target

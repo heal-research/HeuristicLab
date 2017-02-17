@@ -247,7 +247,7 @@ namespace HeuristicLab.Algorithms.MemPR {
           Context.LocalOptimaLevel += child.Fitness;
           Context.AddToPopulation(child);
           Context.BestQuality = child.Fitness;
-          Analyze(token);
+          Analyze(CancellationToken.None);
           token.ThrowIfCancellationRequested();
           if (Terminate()) return;
         }

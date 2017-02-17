@@ -200,6 +200,18 @@ namespace HeuristicLab.Data {
       return (T[,])matrix.Clone();
     }
 
+    public virtual IEnumerable<T> GetRow(int row) {
+      for (var col = 0; col < Columns; col++) {
+        yield return matrix[row, col];
+      }
+    }
+
+    public virtual IEnumerable<T> GetColumn(int col) {
+      for (var row = 0; row < Rows; row++) {
+        yield return matrix[row, col];
+      }
+    }
+
     public override string ToString() {
       if (matrix.Length == 0) return "[]";
 

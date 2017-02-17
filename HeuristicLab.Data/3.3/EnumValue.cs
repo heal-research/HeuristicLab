@@ -51,8 +51,6 @@ namespace HeuristicLab.Data {
     private EnumValue(bool deserializing) : base(deserializing) { }
     private EnumValue(EnumValue<T> original, Cloner cloner)
       : base(original, cloner) {
-      this.value = original.value;
-      this.readOnly = original.readOnly;
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -61,6 +59,19 @@ namespace HeuristicLab.Data {
 
     public int CompareTo(EnumValue<T> other) {
       return Value.CompareTo(other.Value);
+    }
+  }
+
+  public static class EnumHelper {
+    public static T SetFlag<T>(this Enum value, T flag, bool set) {
+      var baseType = Enum.GetUnderlyingType(value.GetType());
+      dynamic valueAsBase = Convert.ChangeType(value, baseType);
+      dynamic flagAsBase = Convert.ChangeType(flag, baseType);
+      if (set)
+        valueAsBase |= flagAsBase;
+      else
+        valueAsBase &= ~flagAsBase;
+      return (T)valueAsBase;
     }
   }
 }
