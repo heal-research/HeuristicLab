@@ -53,7 +53,7 @@ namespace HeuristicLab.Problems.Instances.Scheduling {
     }
 
     public void Export(string file) {
-      using (Stream stream = new FileStream(file, FileMode.Create, FileAccess.ReadWrite)) {
+      using (Stream stream = new FileStream(file, FileMode.Create, FileAccess.Write)) {
         Export(stream);
       }
     }
