@@ -25,7 +25,7 @@ namespace HeuristicLab.Problems.Instances.TSPLIB {
     public int Seed { get; internal set; }
 
     internal TSPLIBHeterogeneousPTSPDataDescriptor(string name, string description, string instanceIdentifier, string solutionIdentifier, int seed)
-      : base(name, description, instanceIdentifier, solutionIdentifier) {
+      : base(name, description, instanceIdentifier, solutionIdentifier, null) {
       this.Name = name;
       this.Description = description;
       this.InstanceIdentifier = instanceIdentifier;

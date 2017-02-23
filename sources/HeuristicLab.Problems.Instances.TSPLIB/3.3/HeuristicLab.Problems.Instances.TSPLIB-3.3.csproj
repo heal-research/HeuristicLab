@@ -129,6 +129,8 @@
     <EmbeddedResource Include="Data\tsp.zip" />
     <EmbeddedResource Include="Data\tsp.opt.tour.zip" />
     <EmbeddedResource Include="Data\vrp.zip" />
+    <EmbeddedResource Include="Data\tsp.qual" />
+    <EmbeddedResource Include="Data\atsp.qual" />
     <None Include="Plugin.cs.frame" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

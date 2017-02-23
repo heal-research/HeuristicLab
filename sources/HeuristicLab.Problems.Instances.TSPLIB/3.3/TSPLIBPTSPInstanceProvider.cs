@@ -80,6 +80,10 @@ namespace HeuristicLab.Problems.Instances.TSPLIB {
       instance.BestKnownTour = parser.Tour.FirstOrDefault();
     }
 
+    protected override void LoadQuality(double? bestQuality, PTSPData instance) {
+      instance.BestKnownQuality = bestQuality;
+    }
+
     public PTSPData LoadData(string tspFile, string tourFile, double? bestQuality) {
       var data = LoadInstance(new TSPLIBParser(tspFile));
       if (!String.IsNullOrEmpty(tourFile)) {

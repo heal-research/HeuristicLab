@@ -24,7 +24,7 @@ namespace HeuristicLab.Problems.Instances.TSPLIB {
     public double Probability { get; internal set; }
 
     internal TSPLIBHomogeneousPTSPDataDescriptor(string name, string description, string instanceIdentifier, string solutionIdentifier, double probability)
-      : base(name, description, instanceIdentifier, solutionIdentifier) {
+      : base(name, description, instanceIdentifier, solutionIdentifier, null) {
       this.Name = name;
       this.Description = description;
       this.InstanceIdentifier = instanceIdentifier;

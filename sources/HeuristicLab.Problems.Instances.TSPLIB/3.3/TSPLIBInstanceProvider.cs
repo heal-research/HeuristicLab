@@ -46,6 +46,7 @@ ORSA Journal on Computing, 3, pp. 376-384.";
 
     protected abstract T LoadInstance(TSPLIBParser parser, IDataDescriptor descriptor = null);
     protected abstract void LoadSolution(TSPLIBParser parser, T instance);
+    protected abstract void LoadQuality(double? bestQuality, T instance);
 
     public override IEnumerable<IDataDescriptor> GetDataDescriptors() {
       Dictionary<string, string> solutions = new Dictionary<string, string>();
@@ -56,12 +57,28 @@ ORSA Journal on Computing, 3, pp. 376-384.";
             solutions.Add(entry.Name.Substring(0, entry.Name.Length - ".opt.tour".Length) + "." + FileExtension, entry.Name);
         }
       }
+
+      Dictionary<string, double> qualities = new Dictionary<string, double>();
+      var qualitiesArchiveName = GetResourceName(FileExtension + @"\.qual");
+      if (!String.IsNullOrEmpty(qualitiesArchiveName)) {
+        using (var qualitiesReader = new StreamReader(GetType().Assembly.GetManifestResourceStream(qualitiesArchiveName))) {
+          while (!qualitiesReader.EndOfStream) {
+            var line = qualitiesReader.ReadLine().Split(';');
+            qualities.Add(line[0] + "." + FileExtension, double.Parse(line[1]));
+          }
+        }
+      }
+
       var instanceArchiveName = GetResourceName(FileExtension + @"\.zip");
       if (String.IsNullOrEmpty(instanceArchiveName)) yield break;
 
       using (var instanceStream = new ZipArchive(GetType().Assembly.GetManifestResourceStream(instanceArchiveName), ZipArchiveMode.Read)) {
         foreach (var entry in instanceStream.Entries.Select(x => x.Name).OrderBy(x => x)) {
-          yield return new TSPLIBDataDescriptor(Path.GetFileNameWithoutExtension(entry), GetInstanceDescription(), entry, solutions.ContainsKey(entry) ? solutions[entry] : String.Empty);
+          yield return new TSPLIBDataDescriptor(Path.GetFileNameWithoutExtension(entry),
+                                                GetInstanceDescription(),
+                                                entry,
+                                                solutions.ContainsKey(entry) ? solutions[entry] : String.Empty,
+                                                qualities.ContainsKey(entry) ? (double?)qualities[entry] : null);
         }
       }
     }
@@ -74,6 +91,7 @@ ORSA Journal on Computing, 3, pp. 376-384.";
         var stream = entry.Open();
         var parser = new TSPLIBParser(stream);
         var instance = LoadInstance(parser, id);
+        LoadQuality(descriptor.BestQuality, instance);
 
         if (!String.IsNullOrEmpty(descriptor.SolutionIdentifier)) {
           var solutionsArchiveName = GetResourceName(FileExtension + @"\.opt\.tour\.zip");
