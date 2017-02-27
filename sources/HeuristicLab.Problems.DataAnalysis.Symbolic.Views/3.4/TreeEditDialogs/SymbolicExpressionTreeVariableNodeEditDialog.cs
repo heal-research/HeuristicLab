@@ -33,10 +33,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
     public VariableTreeNode NewNode {
       get { return variableTreeNode; }
       set {
-        if (InvokeRequired)
-          Invoke(new Action<SymbolicExpressionTreeNode>(x => variableTreeNode = (VariableTreeNode)x), value);
-        else
+        if (InvokeRequired) {
+          Invoke(new Action<SymbolicExpressionTreeNode>(x =>
+          {
+            variableTreeNode = (VariableTreeNode) x;
+            variableNameTextBox.Text = variableTreeNode.VariableName;
+          }), value);
+        } else {
           variableTreeNode = value;
+          variableNameTextBox.Text = variableTreeNode.VariableName;
+        }
       }
     }
 
