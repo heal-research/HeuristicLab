@@ -115,7 +115,10 @@ namespace HeuristicLab.Problems.BinPacking.Views {
           material = hiddenMaterial;
         else {
           if (!materials.TryGetValue(item.Value.Material, out material)) {
-            var color = colors[(item.Value.Material - 1) % colors.Length];
+            var colorIdx = item.Value.Material;
+            while (colorIdx < 0) colorIdx += colors.Length;
+            colorIdx = colorIdx % colors.Length;
+            var color = colors[colorIdx];
             material = new DiffuseMaterial { Brush = new SolidColorBrush(color) };
             materials[item.Value.Material] = material;
           }
