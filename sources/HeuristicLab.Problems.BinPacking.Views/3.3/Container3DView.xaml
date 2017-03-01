@@ -29,6 +29,7 @@
              MouseMove="Container3DView_MouseMove" MouseDown="Container3DView_MouseDown" MouseUp="Container3DView_MouseUp"
              MouseWheel="Container3DView_OnMouseWheel" 
              MouseEnter="Container3DView_OnMouseEnter"
+             KeyDown="Container3DView_OnKeyDown"
              Focusable="true"
              >
     <Grid>
@@ -47,69 +48,6 @@
             <ModelVisual3D x:Name="MyModel">
                 <ModelVisual3D.Content>
                     <Model3DGroup>
-                        <GeometryModel3D>
-                            <GeometryModel3D.Geometry>
-                                <!-- two opaque cubes, one in front one in back-->
-                                <MeshGeometry3D x:Name="meshMain" 
-                                Positions="0 0 -2.5 1 0 -2.5  0 1 -2.5  1 1 -2.5  0 0 -1.5  1 0 -1.5  0 1 -1.5  1 1 -1.5
-                                           0 0 0 1 0 0  0 1 0  1 1 0  0 0 1  1 0 1  0 1 1  1 1 1" 
-                                TriangleIndices="10 11 9  10 9 8  15 9 11  15 13 9  14 13 15  14 12 13  14 10 12  10 8 12  10 15 11  10 14 15  0 9 13  8 13 12
-                                                 2 3 1  2 1 0  7 1 3  7 5 1  6 5 7  6 4 5  6 2 4  2 0 4  2 7 3  2 6 7  0 1 5  0 5 4 ">
-                                </MeshGeometry3D>
-                            </GeometryModel3D.Geometry>
-                            <GeometryModel3D.Material>
-                                <DiffuseMaterial>
-                                    <DiffuseMaterial.Brush>
-                                        <SolidColorBrush Color="LightGreen"/>
-                                    </DiffuseMaterial.Brush>
-                                </DiffuseMaterial>
-                            </GeometryModel3D.Material>
-                        </GeometryModel3D>
-                        <GeometryModel3D>
-                            <GeometryModel3D.Geometry>
-                                <!-- two transparent cubes, one in front one in back-->
-                                <!-- draw transparent cubes from back to front and always draw outer and inner triangles and draw from front to back-->
-                                <MeshGeometry3D x:Name="meshInsides" 
-                                Positions="-1 -1 -1  2 -1 -1  -1 2 -1  2 2 -1  -1 -1 2  2 -1 2  -1 2 2  2 2 2
-                                           -1 -1 -3  2 -1 -3  -1 2 -3  2 2 -3  -1 -1 -1  2 -1 -1  -1 2 -1  2 2 -1" 
-                                TriangleIndices="9 11 10  8 9 10  11 9 15  9 13 15  15 13 14  13 12 14  12 10 14  12 8 10  11 15 10  15 14 10  13 9 8  12 13 8
-                                                 1 3 2  0 1 2  3 1 7  1 5 7  7 5 6  5 4 6  4 2 6  4 0 2  3 7 2  7 6 2  5 1 0  4 5 0 
-                                                 ">
-                                </MeshGeometry3D>
-                            </GeometryModel3D.Geometry>
-                            <GeometryModel3D.Material>
-                                <MaterialGroup>
-                                    <DiffuseMaterial>
-                                        <DiffuseMaterial.Brush>
-                                            <SolidColorBrush Opacity="0.1"  Color="DarkGray"/>
-                                        </DiffuseMaterial.Brush>
-                                    </DiffuseMaterial>
-                                </MaterialGroup>
-                            </GeometryModel3D.Material>
-                        </GeometryModel3D>
-                        <GeometryModel3D>
-                            <GeometryModel3D.Geometry>
-                                <!-- two transparent cubes, one in front one in back-->
-                                <!-- draw transparent cubes from back to front and always draw outer and inner triangles and draw from front to back-->
-                                <MeshGeometry3D x:Name="meshTransparent" 
-                                Positions="-1 -1 -1  2 -1 -1  -1 2 -1  2 2 -1  -1 -1 2  2 -1 2  -1 2 2  2 2 2
-                                           -1 -1 -3  2 -1 -3  -1 2 -3  2 2 -3  -1 -1 -1  2 -1 -1  -1 2 -1  2 2 -1" 
-                                TriangleIndices="2 3 1  2 1 0  7 1 3  7 5 1  6 5 7  6 4 5  6 2 4  2 0 4  2 7 3  2 6 7  0 1 5  0 5 4                                                 
-                                                 10 11 9  10 9 8  15 9 11  15 13 9  14 13 15  14 12 13  14 10 12  10 8 12  10 15 11  10 14 15  0 9 13  8 13 12
-                                                 ">
-                                </MeshGeometry3D>
-                            </GeometryModel3D.Geometry>
-                            <GeometryModel3D.Material>
-                                <MaterialGroup>
-                                    <DiffuseMaterial>
-                                        <DiffuseMaterial.Brush>
-                                            <SolidColorBrush Opacity="0.1"  Color="DarkGray"/>
-                                        </DiffuseMaterial.Brush>
-                                    </DiffuseMaterial>
-                                </MaterialGroup>
-                            </GeometryModel3D.Material>
-                        </GeometryModel3D>
-
                     </Model3DGroup>
                 </ModelVisual3D.Content>
                 <ModelVisual3D.Transform>
