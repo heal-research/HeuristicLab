@@ -1,30 +1,52 @@
-echo off
+@ECHO OFF
 
-echo.
-echo *******************************************************************************************
-echo Generating AccessService client
-echo.
+SET HOST=
+SET GENERATECONFIG=
 
-svcutil.exe ^
-  http://localhost:81/AccessService?wsdl ^
-  /out:AccessServiceClient ^
-  /namespace:*,HeuristicLab.Clients.Access ^
-  /collectionType:System.Collections.Generic.List`1 ^
-  /targetClientVersion:Version35 ^
-  /serializable ^
-  /enableDataBinding ^
-  /config:..\app.config 
+ECHO.
+ECHO *******************************************************************************************
 
-echo.
-echo ---------------------------------------------------------------------------------------
-echo !!! ATTENTION !!! ATTENTION !!! ATTENTION !!! ATTENTION !!! ATTENTION !!! ATTENTION !!!
-echo.
-echo Following modifications have to be done manually in generated data contracts:
-echo  * Remove method "protected void RaisePropertyChanged(string propertyName)" in AccessServiceItem
-echo.
-echo !!! ATTENTION !!! ATTENTION !!! ATTENTION !!! ATTENTION !!! ATTENTION !!! ATTENTION !!!
-echo ---------------------------------------------------------------------------------------
-echo.
-echo Generation of AccessService client finished.
-echo *******************************************************************************************
+SET /P HOST=Which host should be used? [services.heuristiclab.com]: 
+IF "%HOST%"=="" SET HOST=services.heuristiclab.com
 
+SET /P GENERATECONFIG=Would you like to generate the configuration file? [y]: 
+IF "%GENERATECONFIG%"=="" SET GENERATECONFIG=y
+
+SET ARGS=http://%HOST%/AccessService-3.3/AccessService.svc?wsdl ^
+/out:AccessServiceClient ^
+/namespace:*,HeuristicLab.Clients.Access ^
+/collectionType:System.Collections.Generic.List`1 ^
+/targetClientVersion:Version35 ^
+/serializable ^
+/enableDataBinding ^
+/syncOnly
+
+IF "%GENERATECONFIG%"=="y" (
+  SET ARGS=%ARGS% /config:..\app.config /mergeConfig
+) ELSE (
+  SET ARGS=%ARGS% /noConfig
+)
+
+ECHO.
+ECHO Generating AccessService client
+ECHO.
+
+SETLOCAL ENABLEDELAYEDEXPANSION
+svcutil.exe %ARGS%
+ENDLOCAL
+
+ECHO.
+ECHO ---------------------------------------------------------------------------------------
+ECHO !!! ATTENTION !!! ATTENTION !!! ATTENTION !!! ATTENTION !!! ATTENTION !!! ATTENTION !!!
+ECHO.
+ECHO Following modifications have to be done manually in generated data contracts:
+ECHO  * Remove method "protected void RaisePropertyChanged(string propertyName)" in generated AccessItem
+ECHO.
+ECHO !!! ATTENTION !!! ATTENTION !!! ATTENTION !!! ATTENTION !!! ATTENTION !!! ATTENTION !!!
+ECHO ---------------------------------------------------------------------------------------
+ECHO.
+ECHO Generation of AccessService client finished.
+ECHO *******************************************************************************************
+ECHO.
+
+PAUSE
