@@ -130,6 +130,7 @@
     <Compile Include="AlleleFrequencyAnalysis\AlleleFrequencyCollection.cs" />
     <Compile Include="AlleleFrequencyAnalysis\AlleleFrequencyCollectionHistory.cs" />
     <Compile Include="BestScopeSolutionAnalyzer.cs" />
+    <Compile Include="DataVisualization\GanttData.cs" />
     <Compile Include="DataVisualization\IndexedDataRow.cs" />
     <Compile Include="DataVisualization\IndexedDataTable.cs" />
     <Compile Include="DataVisualization\ScatterPlotDataRowVisualProperties.cs" />

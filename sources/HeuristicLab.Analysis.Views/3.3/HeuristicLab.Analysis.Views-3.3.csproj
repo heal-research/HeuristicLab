@@ -131,6 +131,12 @@
     <Compile Include="DataTableControl.Designer.cs">
       <DependentUpon>DataTableControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="GanttDataView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GanttDataView.Designer.cs">
+      <DependentUpon>GanttDataView.cs</DependentUpon>
+    </Compile>
     <Compile Include="IndexedDataTableView.cs">
       <SubType>UserControl</SubType>
     </Compile>
