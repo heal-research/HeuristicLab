@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.ServiceModel;
 using HeuristicLab.Clients.Common;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -38,6 +39,9 @@ namespace HeuristicLab.Clients.OKB.Query {
         return instance;
       }
     }
+
+    private int endpointRetries;
+    private string workingEndpoint;
 
     #region Properties
     private List<Filter> filters;
@@ -67,7 +71,7 @@ namespace HeuristicLab.Clients.OKB.Query {
       }
     }
     public void RefreshAsync(Action<Exception> exceptionCallback) {
-      var call = new Func<Exception>(delegate() {
+      var call = new Func<Exception>(delegate () {
         try {
           Refresh();
         } catch (Exception ex) {
@@ -75,7 +79,7 @@ namespace HeuristicLab.Clients.OKB.Query {
         }
         return null;
       });
-      call.BeginInvoke(delegate(IAsyncResult result) {
+      call.BeginInvoke(delegate (IAsyncResult result) {
         Exception ex = call.EndInvoke(result);
         if (ex != null) exceptionCallback(ex);
       }, null);
@@ -155,8 +159,36 @@ namespace HeuristicLab.Clients.OKB.Query {
     #endregion
 
     #region Helpers
+    private QueryServiceClient NewServiceClient() {
+      if (endpointRetries >= Properties.Settings.Default.MaxEndpointRetries)
+        return CreateClient(workingEndpoint);
+
+      var configurations = Properties.Settings.Default.EndpointConfigurationPriorities;
+      Exception exception = null;
+
+      foreach (var endpointConfigurationName in configurations) {
+        try {
+          var cl = CreateClient(endpointConfigurationName);
+          cl.Open();
+          workingEndpoint = endpointConfigurationName;
+          return cl;
+        } catch (EndpointNotFoundException e) {
+          exception = e;
+          ++endpointRetries;
+        }
+      }
+
+      throw exception ?? new EndpointNotFoundException("No endpoint for Query service found.");
+    }
+
+    private QueryServiceClient CreateClient(string endpointConfigurationName) {
+      var cl = ClientFactory.CreateClient<QueryServiceClient, IQueryService>(endpointConfigurationName);
+      return cl;
+    }
+
     private T CallQueryService<T>(Func<IQueryService, T> call) {
-      QueryServiceClient client = ClientFactory.CreateClient<QueryServiceClient, IQueryService>();
+      QueryServiceClient client = NewServiceClient();
+
       try {
         return call(client);
       } finally {
