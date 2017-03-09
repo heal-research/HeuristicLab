@@ -617,6 +617,7 @@ namespace HeuristicLab.Analysis.Views {
 
       // add data points
       int j = 0;
+      int overallCount = row.Values.Count(x => !IsInvalidValue(x));
       foreach (var d in range) {
         double sum = 0.0;
         // sum the frequency values that fall within the same interval
@@ -632,8 +633,8 @@ namespace HeuristicLab.Analysis.Views {
                               : Content.VisualProperties.YAxisTitle;
         series.Points.Add(new DataPoint((double)(d - intervalCenter), sum) {
           ToolTip =
-            xAxisTitle + ": [" + (d - intervalWidth) + "-" + d + ")" + Environment.NewLine +
-            yAxisTitle + ": " + sum
+            string.Format("{0}: [{1} - {2})", xAxisTitle, (d - intervalWidth), d) + Environment.NewLine +
+            string.Format("{0}: {1} ({2:F2}%)", yAxisTitle, sum, sum / overallCount * 100)
         });
       }
     }
