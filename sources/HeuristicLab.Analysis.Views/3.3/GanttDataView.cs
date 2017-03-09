@@ -49,6 +49,10 @@ namespace HeuristicLab.Analysis.Views {
       Content.Rows.ItemsRemoved += GanttRowsOnRemoved;
       Content.Rows.ItemsReplaced += GanttRowsOnChanged;
       Content.Rows.CollectionReset += GanttRowsOnChanged;
+      Content.CategoryColors.ItemsAdded += GanttCategoryColorsOnChanged;
+      Content.CategoryColors.ItemsRemoved += GanttCategoryColorsOnChanged;
+      Content.CategoryColors.ItemsReplaced += GanttCategoryColorsOnChanged;
+      Content.CategoryColors.CollectionReset += GanttCategoryColorsOnChanged;
       foreach (var row in Content.Rows)
         RegisterGanttRowEvents(row);
     }
@@ -72,6 +76,10 @@ namespace HeuristicLab.Analysis.Views {
       Content.Rows.ItemsRemoved -= GanttRowsOnRemoved;
       Content.Rows.ItemsReplaced -= GanttRowsOnChanged;
       Content.Rows.CollectionReset -= GanttRowsOnChanged;
+      Content.CategoryColors.ItemsAdded -= GanttCategoryColorsOnChanged;
+      Content.CategoryColors.ItemsRemoved -= GanttCategoryColorsOnChanged;
+      Content.CategoryColors.ItemsReplaced -= GanttCategoryColorsOnChanged;
+      Content.CategoryColors.CollectionReset -= GanttCategoryColorsOnChanged;
       foreach (var row in Content.Rows)
         DeregisterGanttRowEvents(row);
     }
@@ -120,6 +128,7 @@ namespace HeuristicLab.Analysis.Views {
       }
       
       ganttChart.Hide();
+      ganttChart.Title = string.IsNullOrWhiteSpace(Content.Name) ? null : Content.Name;
       foreach (var row in Content.Rows) {
         foreach (var item in row.Items) {
           ganttChart.AddData(row.Name, item.Category ?? string.Empty, item.StartDate, item.EndDate, item.ToolTip, item.ShowLabel);
@@ -137,11 +146,13 @@ namespace HeuristicLab.Analysis.Views {
 
       UpdateVisualization();
     }
-
     private void GanttRowsOnRemoved(object sender, CollectionItemsChangedEventArgs<GanttRow> e) {
       foreach (var row in e.Items)
         DeregisterGanttRowEvents(row);
 
+      UpdateVisualization();
+    }
+    private void GanttCategoryColorsOnChanged(object sender, EventArgs e) {
       UpdateVisualization();
     }
     private void GanttRowItemsOnChanged(object sender, CollectionItemsChangedEventArgs<IndexedItem<GanttItem>> e) {

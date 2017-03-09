@@ -33,7 +33,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Analysis {
   [Item("Gantt Data", "Data of a Gantt visualization")]
   [StorableClass]
-  public class GanttData : Item {
+  public class GanttData : NamedItem {
 
     [Storable]
     private NamedItemCollection<GanttRow> rows;
@@ -50,11 +50,15 @@ namespace HeuristicLab.Analysis {
       rows = cloner.Clone(original.rows);
       categoryColors = new ObservableDictionary<string, Color>(original.categoryColors);
     }
-    public GanttData() {
+    public GanttData() : this("Gantt Data", "Data of a Gantt visualization") { }
+    public GanttData(string name) : this(name, string.Empty) { }
+    public GanttData(string name, string description) : base(name, description) {
       rows = new NamedItemCollection<GanttRow>();
       categoryColors = new ObservableDictionary<string, Color>();
     }
-    public GanttData(IEnumerable<GanttRow> rows) {
+    public GanttData(IEnumerable<GanttRow> rows) : this("Gantt Data", rows) { }
+    public GanttData(string name, IEnumerable<GanttRow> rows) : this(name, string.Empty, rows) { }
+    public GanttData(string name, string description, IEnumerable<GanttRow> rows) : base(name, description) {
       this.rows = new NamedItemCollection<GanttRow>(rows);
       categoryColors = new ObservableDictionary<string, Color>();
     }
@@ -77,10 +81,14 @@ namespace HeuristicLab.Analysis {
       : base(original, cloner) {
       items = cloner.Clone(original.items);
     }
-    public GanttRow() {
+    public GanttRow() : this("Gantt Row", "Row of a Gantt chart") { }
+    public GanttRow(string name) : this(name, string.Empty) { }
+    public GanttRow(string name, string description) : base(name, description) {
       items = new ItemList<GanttItem>();
     }
-    public GanttRow(IEnumerable<GanttItem> items) {
+    public GanttRow(IEnumerable<GanttItem> items) : this("Gantt Row", items) { }
+    public GanttRow(string name, IEnumerable<GanttItem> items) : this(name, string.Empty, items) { }
+    public GanttRow(string name, string description, IEnumerable<GanttItem> items) : base(name, description) {
       this.items = new ItemList<GanttItem>(items);
     }
 
