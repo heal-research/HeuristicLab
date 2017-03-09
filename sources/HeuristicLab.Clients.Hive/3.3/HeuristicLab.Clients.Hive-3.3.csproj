@@ -124,9 +124,6 @@
     <Compile Include="Exceptions\AnonymousUserException.cs" />
     <Compile Include="HiveAdminClient.cs" />
     <Compile Include="HiveClient.cs" />
-    <Compile Include="ServiceClients\SlaveStatistics.cs" />
-    <Compile Include="ServiceClients\UserStatistics.cs" />
-    <Compile Include="ServiceClients\Statistics.cs" />
     <Compile Include="ServiceClients\UserPriority.cs" />
     <Compile Include="ServiceClients\ResourcePermission.cs" />
     <Compile Include="Settings.Designer.cs">

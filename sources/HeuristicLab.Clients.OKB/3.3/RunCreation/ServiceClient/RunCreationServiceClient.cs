@@ -1269,70 +1269,37 @@ namespace HeuristicLab.Clients.OKB.RunCreation
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRunCreationService/GetAlgorithms", ReplyAction="http://tempuri.org/IRunCreationService/GetAlgorithmsResponse")]
         System.Collections.Generic.List<HeuristicLab.Clients.OKB.RunCreation.Algorithm> GetAlgorithms(string platformName);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRunCreationService/GetAlgorithms", ReplyAction="http://tempuri.org/IRunCreationService/GetAlgorithmsResponse")]
-        System.Threading.Tasks.Task<System.Collections.Generic.List<HeuristicLab.Clients.OKB.RunCreation.Algorithm>> GetAlgorithmsAsync(string platformName);
-        
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRunCreationService/GetAlgorithmData", ReplyAction="http://tempuri.org/IRunCreationService/GetAlgorithmDataResponse")]
         byte[] GetAlgorithmData(long algorithmId);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRunCreationService/GetAlgorithmData", ReplyAction="http://tempuri.org/IRunCreationService/GetAlgorithmDataResponse")]
-        System.Threading.Tasks.Task<byte[]> GetAlgorithmDataAsync(long algorithmId);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRunCreationService/GetProblems", ReplyAction="http://tempuri.org/IRunCreationService/GetProblemsResponse")]
         System.Collections.Generic.List<HeuristicLab.Clients.OKB.RunCreation.Problem> GetProblems(string platformName);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRunCreationService/GetProblems", ReplyAction="http://tempuri.org/IRunCreationService/GetProblemsResponse")]
-        System.Threading.Tasks.Task<System.Collections.Generic.List<HeuristicLab.Clients.OKB.RunCreation.Problem>> GetProblemsAsync(string platformName);
-        
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRunCreationService/GetProblemData", ReplyAction="http://tempuri.org/IRunCreationService/GetProblemDataResponse")]
         byte[] GetProblemData(long problemId);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRunCreationService/GetProblemData", ReplyAction="http://tempuri.org/IRunCreationService/GetProblemDataResponse")]
-        System.Threading.Tasks.Task<byte[]> GetProblemDataAsync(long problemId);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRunCreationService/GetSolutions", ReplyAction="http://tempuri.org/IRunCreationService/GetSolutionsResponse")]
         [System.ServiceModel.FaultContractAttribute(typeof(HeuristicLab.Clients.OKB.RunCreation.MissingProblem), Action="http://tempuri.org/IRunCreationService/GetSolutionsMissingProblemFault", Name="MissingProblem", Namespace="http://schemas.datacontract.org/2004/07/HeuristicLab.Services.OKB.RunCreation")]
         System.Collections.Generic.List<HeuristicLab.Clients.OKB.RunCreation.Solution> GetSolutions(long problemId);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRunCreationService/GetSolutions", ReplyAction="http://tempuri.org/IRunCreationService/GetSolutionsResponse")]
-        System.Threading.Tasks.Task<System.Collections.Generic.List<HeuristicLab.Clients.OKB.RunCreation.Solution>> GetSolutionsAsync(long problemId);
-        
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRunCreationService/GetSolution", ReplyAction="http://tempuri.org/IRunCreationService/GetSolutionResponse")]
         HeuristicLab.Clients.OKB.RunCreation.Solution GetSolution(long solutionId);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRunCreationService/GetSolution", ReplyAction="http://tempuri.org/IRunCreationService/GetSolutionResponse")]
-        System.Threading.Tasks.Task<HeuristicLab.Clients.OKB.RunCreation.Solution> GetSolutionAsync(long solutionId);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRunCreationService/GetSolutionData", ReplyAction="http://tempuri.org/IRunCreationService/GetSolutionDataResponse")]
         [System.ServiceModel.FaultContractAttribute(typeof(HeuristicLab.Clients.OKB.RunCreation.MissingSolution), Action="http://tempuri.org/IRunCreationService/GetSolutionDataMissingSolutionFault", Name="MissingSolution", Namespace="http://schemas.datacontract.org/2004/07/HeuristicLab.Services.OKB.RunCreation")]
         byte[] GetSolutionData(long solutionId);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRunCreationService/GetSolutionData", ReplyAction="http://tempuri.org/IRunCreationService/GetSolutionDataResponse")]
-        System.Threading.Tasks.Task<byte[]> GetSolutionDataAsync(long solutionId);
-        
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRunCreationService/AddSolution", ReplyAction="http://tempuri.org/IRunCreationService/AddSolutionResponse")]
         long AddSolution(HeuristicLab.Clients.OKB.RunCreation.Solution solution, byte[] data);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRunCreationService/AddSolution", ReplyAction="http://tempuri.org/IRunCreationService/AddSolutionResponse")]
-        System.Threading.Tasks.Task<long> AddSolutionAsync(HeuristicLab.Clients.OKB.RunCreation.Solution solution, byte[] data);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRunCreationService/DeleteSolution", ReplyAction="http://tempuri.org/IRunCreationService/DeleteSolutionResponse")]
         void DeleteSolution(HeuristicLab.Clients.OKB.RunCreation.Solution solution);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRunCreationService/DeleteSolution", ReplyAction="http://tempuri.org/IRunCreationService/DeleteSolutionResponse")]
-        System.Threading.Tasks.Task DeleteSolutionAsync(HeuristicLab.Clients.OKB.RunCreation.Solution solution);
-        
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRunCreationService/AddRun", ReplyAction="http://tempuri.org/IRunCreationService/AddRunResponse")]
         void AddRun(HeuristicLab.Clients.OKB.RunCreation.Run run);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRunCreationService/AddRun", ReplyAction="http://tempuri.org/IRunCreationService/AddRunResponse")]
-        System.Threading.Tasks.Task AddRunAsync(HeuristicLab.Clients.OKB.RunCreation.Run run);
-        
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRunCreationService/GetCharacteristicValues", ReplyAction="http://tempuri.org/IRunCreationService/GetCharacteristicValuesResponse")]
         System.Collections.Generic.List<HeuristicLab.Clients.OKB.RunCreation.Value> GetCharacteristicValues(long problemId);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRunCreationService/GetCharacteristicValues", ReplyAction="http://tempuri.org/IRunCreationService/GetCharacteristicValuesResponse")]
-        System.Threading.Tasks.Task<System.Collections.Generic.List<HeuristicLab.Clients.OKB.RunCreation.Value>> GetCharacteristicValuesAsync(long problemId);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRunCreationService/SetCharacteristicValue", ReplyAction="http://tempuri.org/IRunCreationService/SetCharacteristicValueResponse")]
         [System.ServiceModel.FaultContractAttribute(typeof(HeuristicLab.Clients.OKB.RunCreation.MissingProblem), Action="http://tempuri.org/IRunCreationService/SetCharacteristicValueMissingProblemFault", Name="MissingProblem", Namespace="http://schemas.datacontract.org/2004/07/HeuristicLab.Services.OKB.RunCreation")]
@@ -1340,18 +1307,12 @@ namespace HeuristicLab.Clients.OKB.RunCreation
             "cTypeFault", Name="UnknownCharacteristicType", Namespace="http://schemas.datacontract.org/2004/07/HeuristicLab.Services.OKB.RunCreation")]
         void SetCharacteristicValue(long problemId, HeuristicLab.Clients.OKB.RunCreation.Value value);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRunCreationService/SetCharacteristicValue", ReplyAction="http://tempuri.org/IRunCreationService/SetCharacteristicValueResponse")]
-        System.Threading.Tasks.Task SetCharacteristicValueAsync(long problemId, HeuristicLab.Clients.OKB.RunCreation.Value value);
-        
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRunCreationService/SetCharacteristicValues", ReplyAction="http://tempuri.org/IRunCreationService/SetCharacteristicValuesResponse")]
         [System.ServiceModel.FaultContractAttribute(typeof(HeuristicLab.Clients.OKB.RunCreation.UnknownCharacteristicType), Action="http://tempuri.org/IRunCreationService/SetCharacteristicValuesUnknownCharacterist" +
             "icTypeFault", Name="UnknownCharacteristicType", Namespace="http://schemas.datacontract.org/2004/07/HeuristicLab.Services.OKB.RunCreation")]
         [System.ServiceModel.FaultContractAttribute(typeof(HeuristicLab.Clients.OKB.RunCreation.MissingProblem), Action="http://tempuri.org/IRunCreationService/SetCharacteristicValuesMissingProblemFault" +
             "", Name="MissingProblem", Namespace="http://schemas.datacontract.org/2004/07/HeuristicLab.Services.OKB.RunCreation")]
         void SetCharacteristicValues(long problemId, System.Collections.Generic.List<HeuristicLab.Clients.OKB.RunCreation.Value> values);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRunCreationService/SetCharacteristicValues", ReplyAction="http://tempuri.org/IRunCreationService/SetCharacteristicValuesResponse")]
-        System.Threading.Tasks.Task SetCharacteristicValuesAsync(long problemId, System.Collections.Generic.List<HeuristicLab.Clients.OKB.RunCreation.Value> values);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -1393,19 +1354,9 @@ namespace HeuristicLab.Clients.OKB.RunCreation
             return base.Channel.GetAlgorithms(platformName);
         }
         
-        public System.Threading.Tasks.Task<System.Collections.Generic.List<HeuristicLab.Clients.OKB.RunCreation.Algorithm>> GetAlgorithmsAsync(string platformName)
-        {
-            return base.Channel.GetAlgorithmsAsync(platformName);
-        }
-        
         public byte[] GetAlgorithmData(long algorithmId)
         {
             return base.Channel.GetAlgorithmData(algorithmId);
-        }
-        
-        public System.Threading.Tasks.Task<byte[]> GetAlgorithmDataAsync(long algorithmId)
-        {
-            return base.Channel.GetAlgorithmDataAsync(algorithmId);
         }
         
         public System.Collections.Generic.List<HeuristicLab.Clients.OKB.RunCreation.Problem> GetProblems(string platformName)
@@ -1413,19 +1364,9 @@ namespace HeuristicLab.Clients.OKB.RunCreation
             return base.Channel.GetProblems(platformName);
         }
         
-        public System.Threading.Tasks.Task<System.Collections.Generic.List<HeuristicLab.Clients.OKB.RunCreation.Problem>> GetProblemsAsync(string platformName)
-        {
-            return base.Channel.GetProblemsAsync(platformName);
-        }
-        
         public byte[] GetProblemData(long problemId)
         {
             return base.Channel.GetProblemData(problemId);
-        }
-        
-        public System.Threading.Tasks.Task<byte[]> GetProblemDataAsync(long problemId)
-        {
-            return base.Channel.GetProblemDataAsync(problemId);
         }
         
         public System.Collections.Generic.List<HeuristicLab.Clients.OKB.RunCreation.Solution> GetSolutions(long problemId)
@@ -1433,19 +1374,9 @@ namespace HeuristicLab.Clients.OKB.RunCreation
             return base.Channel.GetSolutions(problemId);
         }
         
-        public System.Threading.Tasks.Task<System.Collections.Generic.List<HeuristicLab.Clients.OKB.RunCreation.Solution>> GetSolutionsAsync(long problemId)
-        {
-            return base.Channel.GetSolutionsAsync(problemId);
-        }
-        
         public HeuristicLab.Clients.OKB.RunCreation.Solution GetSolution(long solutionId)
         {
             return base.Channel.GetSolution(solutionId);
-        }
-        
-        public System.Threading.Tasks.Task<HeuristicLab.Clients.OKB.RunCreation.Solution> GetSolutionAsync(long solutionId)
-        {
-            return base.Channel.GetSolutionAsync(solutionId);
         }
         
         public byte[] GetSolutionData(long solutionId)
@@ -1453,19 +1384,9 @@ namespace HeuristicLab.Clients.OKB.RunCreation
             return base.Channel.GetSolutionData(solutionId);
         }
         
-        public System.Threading.Tasks.Task<byte[]> GetSolutionDataAsync(long solutionId)
-        {
-            return base.Channel.GetSolutionDataAsync(solutionId);
-        }
-        
         public long AddSolution(HeuristicLab.Clients.OKB.RunCreation.Solution solution, byte[] data)
         {
             return base.Channel.AddSolution(solution, data);
-        }
-        
-        public System.Threading.Tasks.Task<long> AddSolutionAsync(HeuristicLab.Clients.OKB.RunCreation.Solution solution, byte[] data)
-        {
-            return base.Channel.AddSolutionAsync(solution, data);
         }
         
         public void DeleteSolution(HeuristicLab.Clients.OKB.RunCreation.Solution solution)
@@ -1473,19 +1394,9 @@ namespace HeuristicLab.Clients.OKB.RunCreation
             base.Channel.DeleteSolution(solution);
         }
         
-        public System.Threading.Tasks.Task DeleteSolutionAsync(HeuristicLab.Clients.OKB.RunCreation.Solution solution)
-        {
-            return base.Channel.DeleteSolutionAsync(solution);
-        }
-        
         public void AddRun(HeuristicLab.Clients.OKB.RunCreation.Run run)
         {
             base.Channel.AddRun(run);
-        }
-        
-        public System.Threading.Tasks.Task AddRunAsync(HeuristicLab.Clients.OKB.RunCreation.Run run)
-        {
-            return base.Channel.AddRunAsync(run);
         }
         
         public System.Collections.Generic.List<HeuristicLab.Clients.OKB.RunCreation.Value> GetCharacteristicValues(long problemId)
@@ -1493,29 +1404,14 @@ namespace HeuristicLab.Clients.OKB.RunCreation
             return base.Channel.GetCharacteristicValues(problemId);
         }
         
-        public System.Threading.Tasks.Task<System.Collections.Generic.List<HeuristicLab.Clients.OKB.RunCreation.Value>> GetCharacteristicValuesAsync(long problemId)
-        {
-            return base.Channel.GetCharacteristicValuesAsync(problemId);
-        }
-        
         public void SetCharacteristicValue(long problemId, HeuristicLab.Clients.OKB.RunCreation.Value value)
         {
             base.Channel.SetCharacteristicValue(problemId, value);
         }
         
-        public System.Threading.Tasks.Task SetCharacteristicValueAsync(long problemId, HeuristicLab.Clients.OKB.RunCreation.Value value)
-        {
-            return base.Channel.SetCharacteristicValueAsync(problemId, value);
-        }
-        
         public void SetCharacteristicValues(long problemId, System.Collections.Generic.List<HeuristicLab.Clients.OKB.RunCreation.Value> values)
         {
             base.Channel.SetCharacteristicValues(problemId, values);
-        }
-        
-        public System.Threading.Tasks.Task SetCharacteristicValuesAsync(long problemId, System.Collections.Generic.List<HeuristicLab.Clients.OKB.RunCreation.Value> values)
-        {
-            return base.Channel.SetCharacteristicValuesAsync(problemId, values);
         }
     }
 }

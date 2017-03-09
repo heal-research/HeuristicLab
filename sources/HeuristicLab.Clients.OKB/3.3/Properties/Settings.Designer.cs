@@ -25,21 +25,23 @@ namespace HeuristicLab.Clients.OKB.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsi=\"http://www.w3." +
-            "org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\r\n  <s" +
-            "tring>WSHttpBinding_IQueryService</string>\r\n</ArrayOfString>")]
-        public global::System.Collections.Specialized.StringCollection EndpointConfigurationPriorities {
+        [global::System.Configuration.DefaultSettingValueAttribute("3")]
+        public int MaxEndpointRetries {
             get {
-                return ((global::System.Collections.Specialized.StringCollection)(this["EndpointConfigurationPriorities"]));
+                return ((int)(this["MaxEndpointRetries"]));
             }
         }
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("3")]
-        public int MaxEndpointRetries {
+        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
+<ArrayOfString xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
+  <string>NetBinding_IQueryService</string>
+  <string>WSHttpBinding_IQueryService</string>
+</ArrayOfString>")]
+        public global::System.Collections.Specialized.StringCollection EndpointConfigurationPriorities {
             get {
-                return ((int)(this["MaxEndpointRetries"]));
+                return ((global::System.Collections.Specialized.StringCollection)(this["EndpointConfigurationPriorities"]));
             }
         }
     }
