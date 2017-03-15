@@ -149,12 +149,16 @@ namespace HeuristicLab.Common {
       if (k == n) return 1;
       if (k > n - k)
         k = n - k;
-      long r = 1;
-      for (long d = 1; d <= k; d++) {
-        r *= n--;
-        r /= d;
+
+      // enable explicit overflow checking for very large coefficients
+      checked {
+        long r = 1;
+        for (long d = 1; d <= k; d++) {
+          r *= n--;
+          r /= d;
+        }
+        return r;
       }
-      return r;
     }
   }
 }
