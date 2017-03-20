@@ -119,7 +119,7 @@ namespace HeuristicLab.Common {
       var length = BinomialCoefficient(n, k);
 
       for (int i = 0; i < length; ++i) {
-        yield return range.Select(x => elements[x]);
+        yield return range.Select(x => elements[x]).ToArray();
 
         if (i == length - 1) break;
         var m = k - 1;
