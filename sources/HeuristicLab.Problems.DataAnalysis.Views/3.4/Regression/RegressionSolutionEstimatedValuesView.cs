@@ -80,7 +80,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     }
 
     protected virtual StringMatrix CreateValueMatrix() {
-      string[,] values = new string[Content.ProblemData.Dataset.Rows, 7];
+      string[,] values = new string[Content.ProblemData.Dataset.Rows, 8];
 
       double[] target = Content.ProblemData.Dataset.GetDoubleValues(Content.ProblemData.TargetVariable).ToArray();
       var estimated = Content.EstimatedValues.GetEnumerator();
@@ -100,16 +100,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       foreach (var row in Enumerable.Range(0, Content.ProblemData.Dataset.Rows)) {
         estimated.MoveNext();
         double est = estimated.Current;
-        double res = Math.Abs(est - target[row]);
+        double res = target[row] - est;
         values[row, 0] = row.ToString();
         values[row, 1] = target[row].ToString();
         values[row, 2] = est.ToString();
-        values[row, 5] = Math.Abs(res).ToString();
-        values[row, 6] = Math.Abs(res / target[row]).ToString();
+        values[row, 5] = res.ToString();
+        values[row, 6] = Math.Abs(res).ToString();
+        values[row, 7] = Math.Abs(res / target[row]).ToString();
       }
 
       var matrix = new StringMatrix(values);
-      matrix.ColumnNames = new string[] { "Id", TARGETVARIABLE_SERIES_NAME, ESTIMATEDVALUES_SERIES_NAME, ESTIMATEDVALUES_TRAINING_SERIES_NAME, ESTIMATEDVALUES_TEST_SERIES_NAME, "Absolute Error (all)", "Relative Error (all)" };
+      matrix.ColumnNames = new string[] { "Id", TARGETVARIABLE_SERIES_NAME, ESTIMATEDVALUES_SERIES_NAME, ESTIMATEDVALUES_TRAINING_SERIES_NAME, ESTIMATEDVALUES_TEST_SERIES_NAME, "Residuals (all)", "Absolute Error (all)", "Relative Error (all)" };
       matrix.SortableView = true;
       return matrix;
     }
