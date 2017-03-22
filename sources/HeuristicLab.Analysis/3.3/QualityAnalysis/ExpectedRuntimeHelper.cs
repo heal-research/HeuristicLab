@@ -29,7 +29,7 @@ namespace HeuristicLab.Analysis {
       var nRuns = successful.Count + unsuccessful.Count;
       if (successful.Count > 0) {
         var succAvg = successful.Average();
-        var succDev = successful.StandardDeviation();
+        var succDev = successful.StandardDeviation() + 1e-7;
         successful.RemoveAll(x => x < succAvg - 2 * succDev);
         unsuccessful.RemoveAll(x => x < succAvg - 2 * succDev);
         nRuns = successful.Count + unsuccessful.Count;

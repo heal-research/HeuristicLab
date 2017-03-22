@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2016 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2017 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -41,7 +41,7 @@ namespace HeuristicLab.Optimization.Views {
   public partial class RunCollectionRLDView : ItemView {
     private List<Series> invisibleTargetSeries;
 
-    private const string AllRuns = "All Runs";
+    private const string AllInstances = "All Instances";
 
     private static readonly Color[] colors = new[] {
       Color.FromArgb(0x40, 0x6A, 0xB7),
@@ -222,7 +222,7 @@ namespace HeuristicLab.Optimization.Views {
 
       var groupings = Content.ParameterNames.OrderBy(x => x).ToArray();
       groupComboBox.Items.Clear();
-      groupComboBox.Items.Add(AllRuns);
+      groupComboBox.Items.Add(AllInstances);
       groupComboBox.Items.AddRange(groupings);
       if (selectedGroupItem != null && groupComboBox.Items.Contains(selectedGroupItem)) {
         groupComboBox.SelectedItem = selectedGroupItem;
@@ -240,8 +240,12 @@ namespace HeuristicLab.Optimization.Views {
       var allEqual = !problemTypesDifferent && !problemNamesDifferent && !evaluatorDifferent && !maximizationDifferent;
 
       var selectedProblemItem = (ProblemInstance)problemComboBox.SelectedItem;
+      problemComboBox.DataSource = null;
+      problemComboBox.Items.Clear();
       problems.Clear();
       problems.Add(ProblemInstance.MatchAll);
+      problemComboBox.DataSource = new BindingSource() { DataSource = problems };
+      problemComboBox.DataBindings.DefaultDataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged;
       if (problems[0].Equals(selectedProblemItem)) problemComboBox.SelectedItem = problems[0];
       foreach (var p in problemDict.ToList()) {
         p.Key.BestKnownQuality = p.Value;
@@ -281,36 +285,26 @@ namespace HeuristicLab.Optimization.Views {
       addBudgetsAsResultButton.Enabled = Content != null && budgets != null && dataTableComboBox.SelectedIndex >= 0;
     }
 
-    private Dictionary<string, Dictionary<ProblemInstance, List<IRun>>> GroupRuns() {
-      var groupedRuns = new Dictionary<string, Dictionary<ProblemInstance, List<IRun>>>();
-
+    private IEnumerable<AlgorithmInstance> GroupRuns() {
       var table = (string)dataTableComboBox.SelectedItem;
-      if (string.IsNullOrEmpty(table)) return groupedRuns;
+      if (string.IsNullOrEmpty(table)) yield break;
 
       var selectedGroup = (string)groupComboBox.SelectedItem;
-      if (string.IsNullOrEmpty(selectedGroup)) return groupedRuns;
+      if (string.IsNullOrEmpty(selectedGroup)) yield break;
 
       var selectedProblem = (ProblemInstance)problemComboBox.SelectedItem;
-      if (selectedProblem == null) return groupedRuns;
+      if (selectedProblem == null) yield break;
       
       foreach (var x in (from r in Content
-                         where (selectedGroup == AllRuns || r.Parameters.ContainsKey(selectedGroup))
+                         where (selectedGroup == AllInstances || r.Parameters.ContainsKey(selectedGroup))
                            && selectedProblem.Match(r)
                            && r.Results.ContainsKey(table)
                            && r.Visible
-                         let key = selectedGroup == AllRuns ? AllRuns : r.Parameters[selectedGroup].ToString()
+                         let key = selectedGroup == AllInstances ? AllInstances : r.Parameters[selectedGroup].ToString()
                          group r by key into g
-                         select Tuple.Create(g.Key, g.ToList()))) {
-        var pDict = problems.ToDictionary(r => r, _ => new List<IRun>());
-        foreach (var y in x.Item2) {
-          var pd = new ProblemInstance(y);
-          List<IRun> l;
-          if (pDict.TryGetValue(pd, out l)) l.Add(y);
-        }
-        groupedRuns[x.Item1] = pDict.Where(a => a.Value.Count > 0).ToDictionary(a => a.Key, a => a.Value);
+                         select new AlgorithmInstance(g.Key, g, problems))) {
+        yield return x;
       }
-
-      return groupedRuns;
     }
 
     #region Performance analysis by (multiple) target(s)
@@ -325,8 +319,8 @@ namespace HeuristicLab.Optimization.Views {
 
       if (targets == null) GenerateDefaultTargets();
 
-      var groupedRuns = GroupRuns();
-      if (groupedRuns.Count == 0) return;
+      var algInstances = GroupRuns().ToList();
+      if (algInstances.Count == 0) return;
 
       var xAxisTitles = new HashSet<string>();
 
@@ -336,20 +330,21 @@ namespace HeuristicLab.Optimization.Views {
       // for instance when a run ends, but has not achieved all targets, misses describes
       // how many targets have been left open at the point when the run ended
       var misses = new Dictionary<string, SortedList<double, int>>();
+      var totalRuns = new Dictionary<string, int>();
 
       var aggregate = aggregateTargetsCheckBox.Checked;
       double minEff = double.MaxValue, maxEff = double.MinValue;
-      var noRuns = 0;
-      foreach (var group in groupedRuns) {
+      foreach (var alg in algInstances) {
+        var noRuns = 0;
         SortedList<double, int> epdfHits = null, epdfMisses = null;
         if (aggregate) {
-          hits[group.Key] = epdfHits = new SortedList<double, int>();
-          misses[group.Key] = epdfMisses = new SortedList<double, int>();
+          hits[alg.Name] = epdfHits = new SortedList<double, int>();
+          misses[alg.Name] = epdfMisses = new SortedList<double, int>();
         }
-        foreach (var problem in group.Value) {
-          var max = problem.Key.IsMaximization();
-          var absTargets = GetAbsoluteTargets(problem.Key).ToArray();
-          foreach (var run in problem.Value) {
+        foreach (var problem in alg.GetProblemInstances()) {
+          var max = problem.IsMaximization();
+          var absTargets = GetAbsoluteTargets(problem).ToArray();
+          foreach (var run in alg.GetRuns(problem)) {
             noRuns++;
             var resultsTable = (IndexedDataTable<double>)run.Results[table];
             xAxisTitles.Add(resultsTable.VisualProperties.XAxisTitle);
@@ -360,14 +355,15 @@ namespace HeuristicLab.Optimization.Views {
             for (var idx = 0; idx < efforts.Length; idx++) {
               var e = efforts[idx];
               if (!aggregate) {
-                var key = group.Key + "@" + (targetsAreRelative
-                  ? (targets[idx] * 100).ToString(CultureInfo.CurrentCulture.NumberFormat) + "%"
-                  : targets[idx].ToString(CultureInfo.CurrentCulture.NumberFormat));
+                var key = alg.Name + "@" + (targetsAreRelative
+                            ? (targets[idx] * 100).ToString(CultureInfo.CurrentCulture.NumberFormat) + "%"
+                            : targets[idx].ToString(CultureInfo.CurrentCulture.NumberFormat));
                 if (!hits.TryGetValue(key, out epdfHits))
                   hits[key] = epdfHits = new SortedList<double, int>();
                 if (!misses.TryGetValue(key, out epdfMisses))
                   misses[key] = epdfMisses = new SortedList<double, int>();
-              }
+                totalRuns[key] = noRuns;
+              };
               var list = e.Item1 ? epdfHits : epdfMisses;
               int v;
               if (list.TryGetValue(e.Item2, out v))
@@ -376,11 +372,12 @@ namespace HeuristicLab.Optimization.Views {
             }
           }
         }
+        if (aggregate) totalRuns[alg.Name] = noRuns;
       }
 
       UpdateTargetChartAxisXBounds(minEff, maxEff);
 
-      DrawTargetsEcdf(hits, misses, noRuns);
+      DrawTargetsEcdf(hits, misses, totalRuns);
 
       if (targets.Length == 1) {
         if (targetsAreRelative)
@@ -391,10 +388,10 @@ namespace HeuristicLab.Optimization.Views {
       targetChart.ChartAreas[0].AxisX.IsLogarithmic = CanDisplayLogarithmic();
       targetChart.ChartAreas[0].CursorY.Interval = 0.05;
 
-      UpdateErtTables(groupedRuns);
+      UpdateErtTables(algInstances);
     }
 
-    private void DrawTargetsEcdf(Dictionary<string, SortedList<double, int>> hits, Dictionary<string, SortedList<double, int>> misses, int noRuns) {
+    private void DrawTargetsEcdf(Dictionary<string, SortedList<double, int>> hits, Dictionary<string, SortedList<double, int>> misses, Dictionary<string, int> noRuns) {
       var colorCount = 0;
       var lineStyleCount = 0;
       
@@ -417,7 +414,7 @@ namespace HeuristicLab.Optimization.Views {
         var missedecdf = 0.0;
         var iter = misses[list.Key].GetEnumerator();
         var moreMisses = iter.MoveNext();
-        var totalTargets = noRuns;
+        var totalTargets = noRuns[list.Key];
         if (aggregateTargetsCheckBox.Checked) totalTargets *= targets.Length;
         var movingTargets = totalTargets;
         var labelPrinted = false;
@@ -593,16 +590,16 @@ namespace HeuristicLab.Optimization.Views {
       return Tuple.Create(hit, effort);
     }
 
-    private void UpdateErtTables(Dictionary<string, Dictionary<ProblemInstance, List<IRun>>> groupedRuns) {
+    private void UpdateErtTables(List<AlgorithmInstance> algorithmInstances) {
       ertTableView.Content = null;
       var columns = 1 + targets.Length + 1;
-      var matrix = new string[groupedRuns.Count * groupedRuns.Max(x => x.Value.Count) + groupedRuns.Max(x => x.Value.Count), columns];
+      var matrix = new string[algorithmInstances.Count * algorithmInstances.Max(x => x.GetNumberOfProblemInstances()) + algorithmInstances.Max(x => x.GetNumberOfProblemInstances()), columns];
       var rowCount = 0;
 
       var tableName = (string)dataTableComboBox.SelectedItem;
       if (string.IsNullOrEmpty(tableName)) return;
       
-      var problems = groupedRuns.SelectMany(x => x.Value.Keys).Distinct().ToList();
+      var problems = algorithmInstances.SelectMany(x => x.GetProblemInstances()).Distinct().ToList();
 
       foreach (var problem in problems) {
         var max = problem.IsMaximization();
@@ -614,14 +611,14 @@ namespace HeuristicLab.Optimization.Views {
         matrix[rowCount, columns - 1] = "#succ";
         rowCount++;
 
-        foreach (var group in groupedRuns) {
-          matrix[rowCount, 0] = group.Key;
-          if (!group.Value.ContainsKey(problem)) {
+        foreach (var alg in algorithmInstances) {
+          matrix[rowCount, 0] = alg.Name;
+          var runs = alg.GetRuns(problem).ToList();
+          if (runs.Count == 0) {
             matrix[rowCount, columns - 1] = "N/A";
             rowCount++;
             continue;
           }
-          var runs = group.Value[problem];
           var result = default(ErtCalculationResult);
           for (var i = 0; i < absTargets.Length; i++) {
             result = ExpectedRuntimeHelper.CalculateErt(runs, tableName, absTargets[i], max);
@@ -647,23 +644,23 @@ namespace HeuristicLab.Optimization.Views {
 
       if (budgets == null) GenerateDefaultBudgets(table);
 
-      var groupedRuns = GroupRuns();
-      if (groupedRuns.Count == 0) return;
+      var algInstances = GroupRuns().ToList();
+      if (algInstances.Count == 0) return;
 
       var colorCount = 0;
       var lineStyleCount = 0;
       
-      foreach (var group in groupedRuns) {
+      foreach (var alg in algInstances) {
         var hits = new Dictionary<string, SortedList<double, double>>();
 
-        foreach (var problem in group.Value) {
-          foreach (var run in problem.Value) {
+        foreach (var problem in alg.GetProblemInstances()) {
+          foreach (var run in alg.GetRuns(problem)) {
             var resultsTable = (IndexedDataTable<double>)run.Results[table];
 
             if (aggregateBudgetsCheckBox.Checked) {
-              CalculateHitsForAllBudgets(hits, resultsTable.Rows.First(), group.Value.Count, problem.Key, group.Key, problem.Value.Count);
+              CalculateHitsForAllBudgets(hits, resultsTable.Rows.First(), alg.GetNumberOfProblemInstances(), problem, alg.Name, alg.GetNumberOfRuns(problem));
             } else {
-              CalculateHitsForEachBudget(hits, resultsTable.Rows.First(), group.Value.Count, problem.Key, group.Key, problem.Value.Count);
+              CalculateHitsForEachBudget(hits, resultsTable.Rows.First(), alg.GetNumberOfProblemInstances(), problem, alg.Name, alg.GetNumberOfRuns(problem));
             }
           }
         }
@@ -696,7 +693,7 @@ namespace HeuristicLab.Optimization.Views {
     }
 
     private void GenerateDefaultBudgets(string table) {
-      var runs = GroupRuns().SelectMany(x => x.Value.Values).SelectMany(x => x).ToList();
+      var runs = Content;
       var min = runs.Select(x => ((IndexedDataTable<double>)x.Results[table]).Rows.First().Values.Select(y => y.Item1).Min()).Min();
       var max = runs.Select(x => ((IndexedDataTable<double>)x.Results[table]).Rows.First().Values.Select(y => y.Item1).Max()).Max();
       var points = 20;
@@ -1169,6 +1166,74 @@ namespace HeuristicLab.Optimization.Views {
       if (targetChart.Series.Count <= index)
         targetChart.Series.Add(s);
       else targetChart.Series.Insert(index, s);
+    }
+
+    private class AlgorithmInstance : INotifyPropertyChanged {
+      private string name;
+      public string Name {
+        get { return name; }
+        set {
+          if (name == value) return;
+          name = value;
+          OnPropertyChanged("Name");
+        }
+      }
+
+      private Dictionary<ProblemInstance, List<IRun>> performanceData;
+
+      public int GetNumberOfProblemInstances() {
+        return performanceData.Count;
+      }
+
+      public IEnumerable<ProblemInstance> GetProblemInstances() {
+        return performanceData.Keys;
+      }
+
+      public int GetNumberOfRuns(ProblemInstance p) {
+        if (p == ProblemInstance.MatchAll) return performanceData.Select(x => x.Value.Count).Sum();
+        List<IRun> runs;
+        if (performanceData.TryGetValue(p, out runs))
+          return runs.Count;
+
+        return 0;
+      }
+
+      public IEnumerable<IRun> GetRuns(ProblemInstance p) {
+        if (p == ProblemInstance.MatchAll) return performanceData.SelectMany(x => x.Value);
+        List<IRun> runs;
+        if (performanceData.TryGetValue(p, out runs))
+          return runs;
+
+        return Enumerable.Empty<IRun>();
+      }
+
+      public AlgorithmInstance(string name, IEnumerable<IRun> runs, IEnumerable<ProblemInstance> problems) {
+        this.name = name;
+
+        var pDict = problems.ToDictionary(r => r, _ => new List<IRun>());
+        foreach (var y in runs) {
+          var pd = new ProblemInstance(y);
+          List<IRun> l;
+          if (pDict.TryGetValue(pd, out l)) l.Add(y);
+        }
+        performanceData = pDict.Where(x => x.Value.Count > 0).ToDictionary(x => x.Key, x => x.Value);
+      }
+
+      public override bool Equals(object obj) {
+        var other = obj as AlgorithmInstance;
+        if (other == null) return false;
+        return name == other.name;
+      }
+
+      public override int GetHashCode() {
+        return name.GetHashCode();
+      }
+
+      public event PropertyChangedEventHandler PropertyChanged;
+      protected virtual void OnPropertyChanged(string propertyName = null) {
+        var handler = PropertyChanged;
+        if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
+      }
     }
 
     private class ProblemInstance : INotifyPropertyChanged {
