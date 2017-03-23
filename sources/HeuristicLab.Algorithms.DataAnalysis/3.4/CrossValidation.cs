@@ -450,9 +450,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
       var aggregatedResults = new List<IResult>();
       foreach (KeyValuePair<string, List<IClassificationSolution>> solutions in resultSolutions) {
-        // clone manually to correctly clone references between cloned root objects 
-        Cloner cloner = new Cloner();
-        var problemDataClone = (IClassificationProblemData)cloner.Clone(Problem.ProblemData);
+        // at least one algorithm (GBT with logistic regression loss) produces a classification solution even though the original problem is a regression problem.
+        var targetVariable = solutions.Value.First().ProblemData.TargetVariable;
+        var problemDataClone = new ClassificationProblemData(Problem.ProblemData.Dataset,
+          Problem.ProblemData.AllowedInputVariables, targetVariable);
         // set partitions of problem data clone correctly
         problemDataClone.TrainingPartition.Start = SamplesStart.Value; problemDataClone.TrainingPartition.End = SamplesEnd.Value;
         problemDataClone.TestPartition.Start = SamplesStart.Value; problemDataClone.TestPartition.End = SamplesEnd.Value;
