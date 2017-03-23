@@ -254,7 +254,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
             new AccuracyMaximizationThresholdCalculator());
           var classificationProblemData = new ClassificationProblemData(problemData.Dataset,
             problemData.AllowedInputVariables, problemData.TargetVariable, problemData.Transformations);
-          classificationModel.RecalculateModelParameters(classificationProblemData, classificationProblemData.TrainingIndices);
+          classificationModel.SetThresholdsAndClassValues(new double[] { double.NegativeInfinity, 0.0 }, new []{ 0.0, 1.0 });
 
           var classificationSolution = new DiscriminantFunctionClassificationSolution(classificationModel, classificationProblemData);
           Results.Add(new Result("Solution", classificationSolution));
