@@ -156,6 +156,14 @@
     <Compile Include="Regression\FeatureSelection\FeatureSelectionRegressionProblemData.cs" />
     <Compile Include="Regression\FeatureSelection\FeatureSelection.cs" />
     <Compile Include="Regression\FeatureSelection\FeatureSelectionInstanceProvider.cs" />
+    <Compile Include="Regression\MibaFriction\CF3.cs" />
+    <Compile Include="Regression\MibaFriction\Wear1.cs" />
+    <Compile Include="Regression\MibaFriction\Wear2.cs" />
+    <Compile Include="Regression\MibaFriction\Temp2.cs" />
+    <Compile Include="Regression\MibaFriction\Temp1.cs" />
+    <Compile Include="Regression\MibaFriction\NvhRating.cs" />
+    <Compile Include="Regression\MibaFriction\CF4.cs" />
+    <Compile Include="Regression\MibaFriction\CF2.cs" />
     <Compile Include="Regression\MibaFriction\CF1.cs" />
     <Compile Include="Regression\MibaFriction\MibaFrictionRegressionInstanceProvider.cs" />
     <Compile Include="Regression\VariableNetworks\LinearVariableNetwork.cs" />

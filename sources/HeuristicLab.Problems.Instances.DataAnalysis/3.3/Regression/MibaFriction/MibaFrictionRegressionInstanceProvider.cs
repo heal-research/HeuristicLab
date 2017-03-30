@@ -47,14 +47,14 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     public override IEnumerable<IDataDescriptor> GetDataDescriptors() {
       List<ResourceRegressionDataDescriptor> descriptorList = new List<ResourceRegressionDataDescriptor>();
       descriptorList.Add(new CF1());
-      // descriptorList.Add(new CF2());
-      // descriptorList.Add(new CF3());
-      // descriptorList.Add(new CF4());
-      // descriptorList.Add(new NvhRating());
-      // descriptorList.Add(new Temperature1());
-      // descriptorList.Add(new Temperature2());
-      // descriptorList.Add(new Wear1());
-      // descriptorList.Add(new Wear2());
+      descriptorList.Add(new CF2());
+      descriptorList.Add(new CF3());
+      descriptorList.Add(new CF4());
+      descriptorList.Add(new NvhRating());
+      descriptorList.Add(new Temp1());
+      descriptorList.Add(new Temp2());
+      descriptorList.Add(new Wear1());
+      descriptorList.Add(new Wear2());
       var solutionsArchiveName = GetResourceName(FileName + @"\.zip");
       if (!String.IsNullOrEmpty(solutionsArchiveName)) {
         using (var solutionsZipFile = new ZipArchive(GetType().Assembly.GetManifestResourceStream(solutionsArchiveName), ZipArchiveMode.Read)) {
