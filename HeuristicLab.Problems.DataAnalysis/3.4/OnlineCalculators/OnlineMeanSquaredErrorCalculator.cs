@@ -21,9 +21,10 @@
 
 using System;
 using System.Collections.Generic;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  public class OnlineMeanSquaredErrorCalculator : IOnlineCalculator {
+  public class OnlineMeanSquaredErrorCalculator : DeepCloneable, IOnlineCalculator {
 
     private double sse;
     private int n;
@@ -35,6 +36,16 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public OnlineMeanSquaredErrorCalculator() {
       Reset();
+    }
+
+    protected OnlineMeanSquaredErrorCalculator(OnlineMeanSquaredErrorCalculator original, Cloner cloner)
+      : base(original, cloner) {
+      sse = original.sse;
+      n = original.n;
+      errorState = original.errorState;
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new OnlineMeanSquaredErrorCalculator(this, cloner);
     }
 
     #region IOnlineCalculator Members

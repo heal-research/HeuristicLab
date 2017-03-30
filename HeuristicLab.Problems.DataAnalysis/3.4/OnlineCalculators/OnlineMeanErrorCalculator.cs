@@ -21,9 +21,10 @@
 
 using System;
 using System.Collections.Generic;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  public class OnlineMeanErrorCalculator : IOnlineCalculator {
+  public class OnlineMeanErrorCalculator : DeepCloneable, IOnlineCalculator {
 
     private readonly OnlineMeanAndVarianceCalculator meanAndVarianceCalculator;
     public double MeanError {
@@ -33,6 +34,14 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public OnlineMeanErrorCalculator() {
       meanAndVarianceCalculator = new OnlineMeanAndVarianceCalculator();
       Reset();
+    }
+
+    protected OnlineMeanErrorCalculator(OnlineMeanErrorCalculator original, Cloner cloner)
+      : base(original, cloner) {
+      meanAndVarianceCalculator = cloner.Clone(original.meanAndVarianceCalculator);
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new OnlineMeanErrorCalculator(this, cloner);
     }
 
     #region IOnlineCalculator Members

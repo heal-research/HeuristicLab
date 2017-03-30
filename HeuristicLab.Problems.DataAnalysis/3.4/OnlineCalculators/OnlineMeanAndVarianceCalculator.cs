@@ -20,9 +20,10 @@
 #endregion
 
 using System.Collections.Generic;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  public class OnlineMeanAndVarianceCalculator {
+  public class OnlineMeanAndVarianceCalculator : DeepCloneable {
 
     private double m_oldM, m_newM, m_oldS, m_newS;
     private int n;
@@ -63,6 +64,20 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public OnlineMeanAndVarianceCalculator() {
       Reset();
+    }
+
+    protected OnlineMeanAndVarianceCalculator(OnlineMeanAndVarianceCalculator original, Cloner cloner = null)
+      : base(original, cloner) {
+      m_oldS = original.m_oldS;
+      m_oldM = original.m_oldM;
+      m_newS = original.m_newS;
+      m_newM = original.m_newM;
+      n = original.n;
+      errorState = original.errorState;
+      varianceErrorState = original.varianceErrorState;
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new OnlineMeanAndVarianceCalculator(this, cloner);
     }
 
     public void Reset() {

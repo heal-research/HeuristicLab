@@ -24,7 +24,7 @@ using System.Collections.Generic;
 using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  public class OnlineLinearScalingParameterCalculator {
+  public class OnlineLinearScalingParameterCalculator : DeepCloneable {
 
     /// <summary>
     /// Additive constant
@@ -54,9 +54,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
       }
     }
 
-    private OnlineMeanAndVarianceCalculator targetMeanCalculator;
-    private OnlineMeanAndVarianceCalculator originalMeanAndVarianceCalculator;
-    private OnlineCovarianceCalculator originalTargetCovarianceCalculator;
+    private readonly OnlineMeanAndVarianceCalculator targetMeanCalculator;
+    private readonly OnlineMeanAndVarianceCalculator originalMeanAndVarianceCalculator;
+    private readonly OnlineCovarianceCalculator originalTargetCovarianceCalculator;
 
     public OnlineLinearScalingParameterCalculator() {
       targetMeanCalculator = new OnlineMeanAndVarianceCalculator();
@@ -64,6 +64,18 @@ namespace HeuristicLab.Problems.DataAnalysis {
       originalTargetCovarianceCalculator = new OnlineCovarianceCalculator();
       Reset();
     }
+
+    protected OnlineLinearScalingParameterCalculator(OnlineLinearScalingParameterCalculator original, Cloner cloner)
+      : base(original, cloner) {
+      targetMeanCalculator = cloner.Clone(original.targetMeanCalculator);
+      originalMeanAndVarianceCalculator = cloner.Clone(original.originalMeanAndVarianceCalculator);
+      originalTargetCovarianceCalculator = cloner.Clone(original.originalTargetCovarianceCalculator);
+      // do not reset the calculators here
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new OnlineLinearScalingParameterCalculator(this, cloner);
+    }
+
 
     public void Reset() {
       targetMeanCalculator.Reset();

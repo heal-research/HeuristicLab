@@ -21,9 +21,10 @@
 
 using System;
 using System.Collections.Generic;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  public class OnlineCovarianceCalculator : IOnlineCalculator {
+  public class OnlineCovarianceCalculator : DeepCloneable, IOnlineCalculator {
 
     private double xMean, yMean, Cn;
     private int n;
@@ -35,6 +36,19 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public OnlineCovarianceCalculator() {
       Reset();
+    }
+
+    protected OnlineCovarianceCalculator(OnlineCovarianceCalculator original, Cloner cloner)
+      : base(original, cloner) {
+      Cn = original.Cn;
+      xMean = original.xMean;
+      yMean = original.yMean;
+      n = original.n;
+      errorState = original.errorState;
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new OnlineCovarianceCalculator(this, cloner);
     }
 
     #region IOnlineCalculator Members

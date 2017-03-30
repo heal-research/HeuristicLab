@@ -21,11 +21,12 @@
 
 using System;
 using System.Collections.Generic;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  public class OnlineTheilsUStatisticCalculator : IOnlineTimeSeriesCalculator {
-    private OnlineMeanAndVarianceCalculator squaredErrorMeanCalculator;
-    private OnlineMeanAndVarianceCalculator unbiasedEstimatorMeanCalculator;
+  public class OnlineTheilsUStatisticCalculator : DeepCloneable, IOnlineTimeSeriesCalculator {
+    private readonly OnlineMeanAndVarianceCalculator squaredErrorMeanCalculator;
+    private readonly OnlineMeanAndVarianceCalculator unbiasedEstimatorMeanCalculator;
 
     public double TheilsUStatistic {
       get {
@@ -42,6 +43,15 @@ namespace HeuristicLab.Problems.DataAnalysis {
       squaredErrorMeanCalculator = new OnlineMeanAndVarianceCalculator();
       unbiasedEstimatorMeanCalculator = new OnlineMeanAndVarianceCalculator();
       Reset();
+    }
+
+    protected OnlineTheilsUStatisticCalculator(OnlineTheilsUStatisticCalculator original, Cloner cloner)
+      : base(original, cloner) {
+      squaredErrorMeanCalculator = cloner.Clone(original.squaredErrorMeanCalculator);
+      unbiasedEstimatorMeanCalculator = cloner.Clone(original.unbiasedEstimatorMeanCalculator);
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new OnlineTheilsUStatisticCalculator(this, cloner);
     }
 
     #region IOnlineEvaluator Members
