@@ -58,24 +58,25 @@ namespace HeuristicLab.DataPreprocessing.Views {
     //Variable selection changed
     //Add or remove data row
     private void CheckedItemsChanged(object sender, CollectionItemsChangedEventArgs<IndexedItem<StringValue>> checkedItems) {
-
+      tableLayoutPanel.SuspendLayout();
       foreach (IndexedItem<StringValue> item in checkedItems.Items) {
         string variableName = item.Value.Value;
 
-        //variable is displayed -> remove
-        if (VariableIsDisplayed(variableName)) {
-          dataTable.Rows.Remove(variableName);
+        // not checked -> remove
+        if (!VariableIsChecked(variableName)) {
+          dataTableView.SetRowEnabled(variableName, false);
           dataTable.SelectedRows.Remove(variableName);
           dataTablePerVariable.Remove(dataTablePerVariable.Find(x => (x.Name == variableName)));
-          //variable isnt't displayed -> add
         } else {
           DataRow row = GetDataRow(variableName);
           DataRow selectedRow = GetSelectedDataRow(variableName);
-          dataTable.Rows.Add(row);
+          dataTableView.SetRowEnabled(variableName, true);
 
           PreprocessingDataTable pdt = new PreprocessingDataTable(variableName);
           pdt.Rows.Add(row);
-          dataTablePerVariable.Add(pdt);
+          // dataTablePerVariable does not contain unchecked variables => reduce insert position by number of unchecked variables to correct the index
+          int uncheckedUntilVariable = checkedItemList.Content.TakeWhile(x => x.Value != variableName).Count(x => !checkedItemList.Content.ItemChecked(x));
+          dataTablePerVariable.Insert(item.Index - uncheckedUntilVariable, pdt);
 
           //update selection
           if (selectedRow != null) {
@@ -88,16 +89,11 @@ namespace HeuristicLab.DataPreprocessing.Views {
       // update chart if not in all in one mode
       if (Content != null && !Content.AllInOneMode)
         GenerateChart();
-
+      tableLayoutPanel.ResumeLayout(true);
     }
 
-    private bool VariableIsDisplayed(string name) {
-
-      foreach (var item in dataTable.Rows) {
-        if (item.Name == name)
-          return true;
-      }
-      return false;
+    private bool VariableIsChecked(string name) {
+      return Content.VariableItemList.CheckedItems.Any(x => x.Value.Value == name);
     }
 
     protected override void RegisterContentEvents() {
@@ -157,7 +153,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
       selectedDataRows = Content.CreateAllSelectedDataRows(chartType);
       dataTable.SelectedRows.Clear();
       foreach (var selectedRow in selectedDataRows) {
-        if (VariableIsDisplayed(selectedRow.Name))
+        if (VariableIsChecked(selectedRow.Name))
           dataTable.SelectedRows.Add(selectedRow);
       }
 

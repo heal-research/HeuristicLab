@@ -46,16 +46,27 @@ namespace HeuristicLab.DataPreprocessing.Views {
     private void InitializeComponent() {
       this.optionsBox = new System.Windows.Forms.GroupBox();
       this.allInOneCheckBox = new System.Windows.Forms.CheckBox();
+      ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
+      this.splitContainer.Panel1.SuspendLayout();
+      this.splitContainer.SuspendLayout();
       this.optionsBox.SuspendLayout();
       this.SuspendLayout();
       // 
+      // splitContainer
+      // 
+      // 
+      // splitContainer.Panel1
+      // 
+      this.splitContainer.Panel1.Controls.Add(this.optionsBox);
+      // 
       // optionsBox
       // 
-      this.optionsBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.optionsBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.optionsBox.Controls.Add(this.allInOneCheckBox);
       this.optionsBox.Location = new System.Drawing.Point(4, 262);
       this.optionsBox.Name = "optionsBox";
-      this.optionsBox.Size = new System.Drawing.Size(151, 134);
+      this.optionsBox.Size = new System.Drawing.Size(84, 138);
       this.optionsBox.TabIndex = 7;
       this.optionsBox.TabStop = false;
       this.optionsBox.Text = "Options";
@@ -77,9 +88,10 @@ namespace HeuristicLab.DataPreprocessing.Views {
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.Controls.Add(this.optionsBox);
       this.Name = "LineChartView";
-      this.Controls.SetChildIndex(this.optionsBox, 0);
+      this.splitContainer.Panel1.ResumeLayout(false);
+      ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();
+      this.splitContainer.ResumeLayout(false);
       this.optionsBox.ResumeLayout(false);
       this.optionsBox.PerformLayout();
       this.ResumeLayout(false);

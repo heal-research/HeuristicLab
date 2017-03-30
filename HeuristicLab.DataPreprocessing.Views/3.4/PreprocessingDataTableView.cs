@@ -140,6 +140,14 @@ namespace HeuristicLab.DataPreprocessing.Views {
       } else MessageBox.Show("Nothing to configure.");
     }
 
+    public bool IsRowEnabled(string name) {
+      return chart.Series.FindByName(name) != null && chart.Series[name].Enabled;
+    }
+    public void SetRowEnabled(string name, bool enabled) {
+      if (chart.Series.FindByName(name) != null)
+        chart.Series[name].Enabled = enabled;
+    }
+
     protected virtual void AddDataRows(IEnumerable<DataRow> rows) {
       foreach (var row in rows) {
         RegisterDataRowEvents(row);
