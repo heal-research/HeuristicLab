@@ -54,6 +54,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.variableNamesCombo = new System.Windows.Forms.ComboBox();
       this.okButton = new System.Windows.Forms.Button();
       this.cancelButton = new System.Windows.Forms.Button();
+      this.variableNameTextBox = new System.Windows.Forms.TextBox();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.SuspendLayout();
       // 
@@ -145,6 +146,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.cancelButton.UseVisualStyleBackColor = true;
       this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
       // 
+      // variableNameTextBox
+      // 
+      this.variableNameTextBox.Location = new System.Drawing.Point(101, 12);
+      this.variableNameTextBox.Name = "variableNameTextBox";
+      this.variableNameTextBox.Size = new System.Drawing.Size(131, 20);
+      this.variableNameTextBox.TabIndex = 12;
+      this.variableNameTextBox.Visible = false;
+      // 
       // VariableNodeEditDialog
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -153,6 +162,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.CancelButton = this.cancelButton;
       this.ClientSize = new System.Drawing.Size(244, 134);
       this.ControlBox = false;
+      this.Controls.Add(this.variableNameTextBox);
       this.Controls.Add(this.cancelButton);
       this.Controls.Add(this.okButton);
       this.Controls.Add(this.variableNamesCombo);
@@ -187,5 +197,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
     private System.Windows.Forms.Button okButton;
     public System.Windows.Forms.TextBox newValueTextBox;
     public System.Windows.Forms.ComboBox variableNamesCombo;
+    private System.Windows.Forms.TextBox variableNameTextBox;
   }
 }

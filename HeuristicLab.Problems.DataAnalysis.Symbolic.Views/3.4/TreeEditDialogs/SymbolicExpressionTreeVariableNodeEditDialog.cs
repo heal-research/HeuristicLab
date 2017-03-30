@@ -21,6 +21,7 @@
 
 using System;
 using System.ComponentModel;
+using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using HeuristicLab.Data;
@@ -32,17 +33,26 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
     public VariableTreeNode NewNode {
       get { return variableTreeNode; }
       set {
-        if (InvokeRequired)
-          Invoke(new Action<SymbolicExpressionTreeNode>(x => variableTreeNode = (VariableTreeNode)x), value);
-        else
+        if (InvokeRequired) {
+          Invoke(new Action<SymbolicExpressionTreeNode>(x =>
+          {
+            variableTreeNode = (VariableTreeNode) x;
+            variableNameTextBox.Text = variableTreeNode.VariableName;
+          }), value);
+        } else {
           variableTreeNode = value;
+          variableNameTextBox.Text = variableTreeNode.VariableName;
+        }
       }
+    }
+
+    public string SelectedVariableName {
+      get { return variableNamesCombo.Visible ? variableNamesCombo.Text : variableNameTextBox.Text; }
     }
 
     public VariableNodeEditDialog(ISymbolicExpressionTreeNode node) {
       InitializeComponent();
       oldValueTextBox.TabStop = false; // cannot receive focus using tab key
-
       NewNode = (VariableTreeNode)node; // will throw an invalid cast exception if node is not of the correct type
       InitializeFields();
     }
@@ -56,8 +66,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
         // add a dropbox containing all the available variable names
         variableNameLabel.Visible = true;
         variableNamesCombo.Visible = true;
-        foreach (var name in variableTreeNode.Symbol.VariableNames) variableNamesCombo.Items.Add(name);
-        variableNamesCombo.SelectedIndex = variableNamesCombo.Items.IndexOf(variableTreeNode.VariableName);
+        if (variableTreeNode.Symbol.VariableNames.Any()) {
+          foreach (var name in variableTreeNode.Symbol.VariableNames)
+            variableNamesCombo.Items.Add(name);
+          variableNamesCombo.SelectedIndex = variableNamesCombo.Items.IndexOf(variableTreeNode.VariableName);
+          variableNamesCombo.Visible = true;
+          variableNameTextBox.Visible = false;
+        } else {
+          variableNamesCombo.Visible = false;
+          variableNameTextBox.Visible = true;
+        }
       }
     }
 
@@ -92,6 +110,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
 
     #region combo box validation and events
     private void variableNamesCombo_Validating(object sender, CancelEventArgs e) {
+      if (variableNamesCombo.Items.Count == 0) return;
       if (variableNamesCombo.Items.Contains(variableNamesCombo.SelectedItem)) return;
       e.Cancel = true;
       errorProvider.SetError(variableNamesCombo, "Invalid variable name");
@@ -118,8 +137,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
     public event EventHandler DialogValidated;
     private void OnDialogValidated(object sender, EventArgs e) {
       double weight = double.Parse(newValueTextBox.Text);
-      var variableName = (string)variableNamesCombo.SelectedItem;
       // we impose an extra validation condition: that the weight/value be different than the original ones
+      var variableName = SelectedVariableName;
       if (variableTreeNode.Weight.Equals(weight) && variableTreeNode.VariableName.Equals(variableName)) return;
       variableTreeNode.Weight = weight;
       variableTreeNode.VariableName = variableName;
