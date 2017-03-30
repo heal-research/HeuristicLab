@@ -40,13 +40,13 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     // TODO: include string variables after factor branch integration
     protected override string[] AllowedInputVariables {
       get { return new string[] { /* "Material_Cat", */
-        "Source1", "Source2", "x1", "x2", "x3", "x4", "x5", "x6", "x7", "x8", "x9", "x10", "x11", "x12", "x13", "x14", "x15", "x16",
+        "x1", "x2", "x3", "x4", "x5", "x6", "x8", "x9", "x10", "x11", "x12", "x13", "x14", "x15", "x16",
         /* "Material", "Grooving", "Oil", */                                           
-        "x17", "x18", "x19", "x20", "x21", "x22" }; }
+        "x17", "x22" }; }
     }
     protected override int TrainingPartitionStart { get { return 0; } }
-    protected override int TrainingPartitionEnd { get { return 9999; } }
-    protected override int TestPartitionStart { get { return 9999; } }
-    protected override int TestPartitionEnd { get { return 9999; } }
+    protected override int TrainingPartitionEnd { get { return 437; } }
+    protected override int TestPartitionStart { get { return 437; } }
+    protected override int TestPartitionEnd { get { return 649; } }
   }
 }

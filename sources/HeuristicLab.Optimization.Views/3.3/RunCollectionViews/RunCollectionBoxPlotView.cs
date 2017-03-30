@@ -462,6 +462,11 @@ namespace HeuristicLab.Optimization.Views {
       splitContainer.Panel2Collapsed = !showStatisticsCheckBox.Checked;
     }
 
+	public bool StatisticsVisible {
+		get { return splitContainer.Panel2Collapsed; }
+		set { splitContainer.Panel2Collapsed = value; }
+	}
+	
     public void SetXAxis(string axisName) {
       xAxisComboBox.SelectedItem = axisName;
     }
