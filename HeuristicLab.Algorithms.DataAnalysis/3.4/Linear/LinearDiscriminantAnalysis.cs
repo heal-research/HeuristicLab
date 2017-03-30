@@ -99,7 +99,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         col++;
       }
 
-      var model = LinearDiscriminantAnalysis.CreateDiscriminantFunctionModel(tree, new SymbolicDataAnalysisExpressionTreeInterpreter(), problemData, rows);
+      var model = CreateDiscriminantFunctionModel(tree, new SymbolicDataAnalysisExpressionTreeLinearInterpreter(), problemData, rows);
       SymbolicDiscriminantFunctionClassificationSolution solution = new SymbolicDiscriminantFunctionClassificationSolution(model, (IClassificationProblemData)problemData.Clone());
 
       return solution;
