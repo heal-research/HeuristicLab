@@ -136,6 +136,7 @@ namespace HeuristicLab.Data.Views {
         DataGridViewColumn[] columns = new DataGridViewColumn[Content.Columns];
         for (int i = 0; i < columns.Length; ++i) {
           var column = new DataGridViewTextBoxColumn();
+          column.SortMode = DataGridViewColumnSortMode.Programmatic;
           column.FillWeight = 1;
           columns[i] = column;
         }
