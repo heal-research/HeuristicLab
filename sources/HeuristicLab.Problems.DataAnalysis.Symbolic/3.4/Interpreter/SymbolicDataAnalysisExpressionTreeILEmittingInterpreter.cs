@@ -258,7 +258,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
               CompileInstructions(il, state, ds);
               il.Emit(System.Reflection.Emit.OpCodes.Add);
             }
-            il.Emit(System.Reflection.Emit.OpCodes.Ldc_I4, nArgs);
+            il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, (double)nArgs);
             il.Emit(System.Reflection.Emit.OpCodes.Div);
             return;
           }
@@ -456,6 +456,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             CompileInstructions(il, state, ds);
             il.Emit(System.Reflection.Emit.OpCodes.Ldc_I4_0); // > 0
             il.Emit(System.Reflection.Emit.OpCodes.Cgt);
+            il.Emit(System.Reflection.Emit.OpCodes.Conv_R8); // convert to float64
             il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, 2.0); // * 2
             il.Emit(System.Reflection.Emit.OpCodes.Mul);
             il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, 1.0); // - 1
@@ -474,6 +475,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
               il.Emit(System.Reflection.Emit.OpCodes.Cgt);// > 0
               il.Emit(System.Reflection.Emit.OpCodes.Xor);
             }
+            il.Emit(System.Reflection.Emit.OpCodes.Conv_R8); // convert to float64
+
             il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, 2.0); // * 2
             il.Emit(System.Reflection.Emit.OpCodes.Mul);
             il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, 1.0); // - 1
@@ -485,6 +488,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             CompileInstructions(il, state, ds);
 
             il.Emit(System.Reflection.Emit.OpCodes.Cgt); // 1 (>) / 0 (otherwise)
+            il.Emit(System.Reflection.Emit.OpCodes.Conv_R8); // convert to float64
             il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, 2.0); // * 2
             il.Emit(System.Reflection.Emit.OpCodes.Mul);
             il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, 1.0); // - 1
@@ -495,6 +499,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             CompileInstructions(il, state, ds);
             CompileInstructions(il, state, ds);
             il.Emit(System.Reflection.Emit.OpCodes.Clt);
+            il.Emit(System.Reflection.Emit.OpCodes.Conv_R8); // convert to float64
             il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, 2.0); // * 2
             il.Emit(System.Reflection.Emit.OpCodes.Mul);
             il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, 1.0); // - 1
