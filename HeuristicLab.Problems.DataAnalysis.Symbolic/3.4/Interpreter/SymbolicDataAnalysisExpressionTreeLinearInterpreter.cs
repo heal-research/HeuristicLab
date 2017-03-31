@@ -34,9 +34,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [Item("SymbolicDataAnalysisExpressionTreeLinearInterpreter", "Fast linear (non-recursive) interpreter for symbolic expression trees. Does not support ADFs.")]
   public sealed class SymbolicDataAnalysisExpressionTreeLinearInterpreter : ParameterizedNamedItem, ISymbolicDataAnalysisExpressionTreeInterpreter {
     private const string CheckExpressionsWithIntervalArithmeticParameterName = "CheckExpressionsWithIntervalArithmetic";
+    private const string CheckExpressionsWithIntervalArithmeticParameterDescription = "Switch that determines if the interpreter checks the validity of expressions with interval arithmetic before evaluating the expression.";
     private const string EvaluatedSolutionsParameterName = "EvaluatedSolutions";
 
-    private SymbolicDataAnalysisExpressionTreeInterpreter interpreter;
+    private readonly SymbolicDataAnalysisExpressionTreeInterpreter interpreter;
 
     public override bool CanChangeName {
       get { return false; }
@@ -47,29 +48,30 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     #region parameter properties
-    public IValueParameter<BoolValue> CheckExpressionsWithIntervalArithmeticParameter {
-      get { return (IValueParameter<BoolValue>)Parameters[CheckExpressionsWithIntervalArithmeticParameterName]; }
+    public IFixedValueParameter<BoolValue> CheckExpressionsWithIntervalArithmeticParameter {
+      get { return (IFixedValueParameter<BoolValue>)Parameters[CheckExpressionsWithIntervalArithmeticParameterName]; }
     }
 
-    public IValueParameter<IntValue> EvaluatedSolutionsParameter {
-      get { return (IValueParameter<IntValue>)Parameters[EvaluatedSolutionsParameterName]; }
+    public IFixedValueParameter<IntValue> EvaluatedSolutionsParameter {
+      get { return (IFixedValueParameter<IntValue>)Parameters[EvaluatedSolutionsParameterName]; }
     }
     #endregion
 
     #region properties
-    public BoolValue CheckExpressionsWithIntervalArithmetic {
-      get { return CheckExpressionsWithIntervalArithmeticParameter.Value; }
-      set { CheckExpressionsWithIntervalArithmeticParameter.Value = value; }
+    public bool CheckExpressionsWithIntervalArithmetic {
+      get { return CheckExpressionsWithIntervalArithmeticParameter.Value.Value; }
+      set { CheckExpressionsWithIntervalArithmeticParameter.Value.Value = value; }
     }
-    public IntValue EvaluatedSolutions {
-      get { return EvaluatedSolutionsParameter.Value; }
-      set { EvaluatedSolutionsParameter.Value = value; }
+    public int EvaluatedSolutions {
+      get { return EvaluatedSolutionsParameter.Value.Value; }
+      set { EvaluatedSolutionsParameter.Value.Value = value; }
     }
     #endregion
 
     [StorableConstructor]
     private SymbolicDataAnalysisExpressionTreeLinearInterpreter(bool deserializing)
       : base(deserializing) {
+      interpreter = new SymbolicDataAnalysisExpressionTreeInterpreter();
     }
 
     private SymbolicDataAnalysisExpressionTreeLinearInterpreter(SymbolicDataAnalysisExpressionTreeLinearInterpreter original, Cloner cloner)
@@ -83,30 +85,51 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     public SymbolicDataAnalysisExpressionTreeLinearInterpreter()
       : base("SymbolicDataAnalysisExpressionTreeLinearInterpreter", "Linear (non-recursive) interpreter for symbolic expression trees (does not support ADFs).") {
-      Parameters.Add(new ValueParameter<BoolValue>(CheckExpressionsWithIntervalArithmeticParameterName, "Switch that determines if the interpreter checks the validity of expressions with interval arithmetic before evaluating the expression.", new BoolValue(false)));
-      Parameters.Add(new ValueParameter<IntValue>(EvaluatedSolutionsParameterName, "A counter for the total number of solutions the interpreter has evaluated", new IntValue(0)));
+      Parameters.Add(new FixedValueParameter<BoolValue>(CheckExpressionsWithIntervalArithmeticParameterName, CheckExpressionsWithIntervalArithmeticParameterDescription, new BoolValue(false)));
+      Parameters.Add(new FixedValueParameter<IntValue>(EvaluatedSolutionsParameterName, "A counter for the total number of solutions the interpreter has evaluated", new IntValue(0)));
+      interpreter = new SymbolicDataAnalysisExpressionTreeInterpreter();
+    }
+
+    public SymbolicDataAnalysisExpressionTreeLinearInterpreter(string name, string description)
+      : base(name, description) {
+      Parameters.Add(new FixedValueParameter<BoolValue>(CheckExpressionsWithIntervalArithmeticParameterName, CheckExpressionsWithIntervalArithmeticParameterDescription, new BoolValue(false)));
+      Parameters.Add(new FixedValueParameter<IntValue>(EvaluatedSolutionsParameterName, "A counter for the total number of solutions the interpreter has evaluated", new IntValue(0)));
       interpreter = new SymbolicDataAnalysisExpressionTreeInterpreter();
     }
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
-      if (interpreter == null) interpreter = new SymbolicDataAnalysisExpressionTreeInterpreter();
+      var evaluatedSolutions = new IntValue(0);
+      var checkExpressionsWithIntervalArithmetic = new BoolValue(false);
+      if (Parameters.ContainsKey(EvaluatedSolutionsParameterName)) {
+        var evaluatedSolutionsParameter = (IValueParameter<IntValue>)Parameters[EvaluatedSolutionsParameterName];
+        evaluatedSolutions = evaluatedSolutionsParameter.Value;
+        Parameters.Remove(EvaluatedSolutionsParameterName);
+      }
+      Parameters.Add(new FixedValueParameter<IntValue>(EvaluatedSolutionsParameterName, "A counter for the total number of solutions the interpreter has evaluated", evaluatedSolutions));
+      if (Parameters.ContainsKey(CheckExpressionsWithIntervalArithmeticParameterName)) {
+        var checkExpressionsWithIntervalArithmeticParameter = (IValueParameter<BoolValue>)Parameters[CheckExpressionsWithIntervalArithmeticParameterName];
+        Parameters.Remove(CheckExpressionsWithIntervalArithmeticParameterName);
+        checkExpressionsWithIntervalArithmetic = checkExpressionsWithIntervalArithmeticParameter.Value;
+      }
+      Parameters.Add(new FixedValueParameter<BoolValue>(CheckExpressionsWithIntervalArithmeticParameterName, CheckExpressionsWithIntervalArithmeticParameterDescription, checkExpressionsWithIntervalArithmetic));
     }
 
     #region IStatefulItem
     public void InitializeState() {
-      EvaluatedSolutions.Value = 0;
+      EvaluatedSolutions = 0;
     }
 
     public void ClearState() { }
     #endregion
 
+    private readonly object syncRoot = new object();
     public IEnumerable<double> GetSymbolicExpressionTreeValues(ISymbolicExpressionTree tree, IDataset dataset, IEnumerable<int> rows) {
-      if (CheckExpressionsWithIntervalArithmetic.Value)
+      if (CheckExpressionsWithIntervalArithmetic)
         throw new NotSupportedException("Interval arithmetic is not yet supported in the symbolic data analysis interpreter.");
 
-      lock (EvaluatedSolutions) {
-        EvaluatedSolutions.Value++; // increment the evaluated solutions counter
+      lock (syncRoot) {
+        EvaluatedSolutions++; // increment the evaluated solutions counter
       }
 
       var code = SymbolicExpressionTreeLinearCompiler.Compile(tree, OpCodes.MapSymbolToOpCode);
@@ -189,7 +212,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           instr.value = Math.Sqrt(code[instr.childIndex].value);
         } else if (instr.opCode == OpCodes.Root) {
           double x = code[instr.childIndex].value;
-          double y = code[instr.childIndex + 1].value;
+          double y = Math.Round(code[instr.childIndex + 1].value);
           instr.value = Math.Pow(x, 1 / y);
         } else if (instr.opCode == OpCodes.Exp) {
           instr.value = Math.Exp(code[instr.childIndex].value);

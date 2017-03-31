@@ -139,6 +139,7 @@
     <Compile Include="Importer\SymbolicExpressionImporter.cs" />
     <Compile Include="Importer\Token.cs" />
     <Compile Include="Interfaces\IModelBacktransformator.cs" />
+    <Compile Include="Interpreter\SymbolicDataAnalysisExpressionCompiledTreeInterpreter.cs" />
     <Compile Include="SymbolicDataAnalysisExpressionTreeSimplificationOperator.cs" />
     <Compile Include="SymbolicDataAnalysisModelComplexityCalculator.cs" />
     <Compile Include="SymbolicExpressionTreeBacktransformator.cs" />

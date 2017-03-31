@@ -150,6 +150,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
     }
 
+    public override bool Enabled {
+      get {
+        if (variableNames.Count == 0) return false;
+        return base.Enabled;
+      }
+      set {
+        if (variableNames.Count == 0) base.Enabled = false;
+        else base.Enabled = value;
+      }
+    }
+
     private const int minimumArity = 2;
     private const int maximumArity = 2;
 

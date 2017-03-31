@@ -72,8 +72,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis {
       return GetSymbolicExpressionTreeValues(tree, dataset, rows, rows.Select(row => horizon));
     }
 
+    private readonly object syncRoot = new object();
     public IEnumerable<IEnumerable<double>> GetSymbolicExpressionTreeValues(ISymbolicExpressionTree tree, IDataset dataset, IEnumerable<int> rows, IEnumerable<int> horizons) {
-      if (CheckExpressionsWithIntervalArithmetic.Value)
+      if (CheckExpressionsWithIntervalArithmetic)
         throw new NotSupportedException("Interval arithmetic is not yet supported in the symbolic data analysis interpreter.");
       if (targetVariableCache == null || targetVariableCache.GetLength(0) < dataset.Rows)
         targetVariableCache = dataset.GetDoubleValues(TargetVariable).ToArray();
@@ -81,8 +82,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis {
         invalidateCacheIndexes = new List<int>(10);
 
       string targetVariable = TargetVariable;
-      lock (EvaluatedSolutions) {
-        EvaluatedSolutions.Value++; // increment the evaluated solutions counter
+      lock (syncRoot) {
+        EvaluatedSolutions++; // increment the evaluated solutions counter
       }
       var state = PrepareInterpreterState(tree, dataset, targetVariableCache, TargetVariable);
       var rowsEnumerator = rows.GetEnumerator();
