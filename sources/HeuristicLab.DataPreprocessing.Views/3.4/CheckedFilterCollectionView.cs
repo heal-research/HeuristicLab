@@ -33,14 +33,5 @@ namespace HeuristicLab.DataPreprocessing.Views {
     public CheckedFilterCollectionView() {
       InitializeComponent();
     }
-
-    protected override void addButton_Click(object sender, EventArgs e) {
-      IFilter filter = CreateItem();
-      if (filter != null) {
-        Content.Add(filter);
-        Content.SetItemCheckedState(filter, false);
-      }
-    }
-
   }
 }
