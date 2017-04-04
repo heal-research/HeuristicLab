@@ -29,19 +29,19 @@
                     <h3 class="panel-title">Groups</h3>
                 </div>
                 <div class="panel-body">
-                    <table class="table table-hover table-condensed">
+                    <table class="table table-hover table-condensed" ts-wrapper>
                         <thead>
                         <tr>
                             <th>#</th>
-                            <th>Job</th>
-                            <th>Task</th>
-                            <th>Username</th>
-                            <th>Client</th>
-                            <th>Date</th>
+                            <th ts-criteria="JobName">Job</th>
+                            <th ts-criteria="TaskId">Task</th>
+                            <th ts-criteria="UserName">Username</th>
+                            <th ts-criteria="ClientName">Client</th>
+                            <th ts-criteria="Date">Date</th>
                             <th></th>
                         </tr>
                         </thead>
-                        <tr ng-repeat="exception in exceptionPage.Exceptions">
+                        <tr ng-repeat="exception in exceptionPage.Exceptions" ts-repeat>
                             <td>{{($index + 1)+((curExceptionsPage-1)*(exceptionsPageSize))}}</td>
                             <td><a ng-href="#/statistics/jobs/{{exception.JobId}}">{{exception.JobName}}</a></td>
                             <td>{{exception.TaskId}}</td>

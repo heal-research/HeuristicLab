@@ -1,7 +1,7 @@
 ﻿var appStatisticsPlugin = app.registerPlugin('statistics');
 (function () {
     var plugin = appStatisticsPlugin;
-    plugin.dependencies = ['ngResource', 'ui.knob', 'ui.bootstrap', 'ngFitText'];
+    plugin.dependencies = ['ngResource', 'ui.knob', 'ui.bootstrap', 'ngFitText', 'tableSort'];
     plugin.files = [
         'WebApp/statistics.css',
         'WebApp/services/statisticsService.js',
