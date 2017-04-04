@@ -1,0 +1,7 @@
+ALGLIB changes by HEAL
+
+ap.cs(ln 573)
+mkommend: added thread static attribute to RNG to have a separate instance per thread and allow modification of the seed
+
+dataanalysis.cs(ln 10048)
+pfleck: added "raw" version of dfprocess that returns the regression estimate for each tree

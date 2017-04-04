@@ -28,6 +28,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>
   /// Interface to represent a random forest model for either regression or classification
   /// </summary>
-  public interface IRandomForestModel : IRegressionModel, IClassificationModel {
+  public interface IRandomForestModel : IConfidenceRegressionModel, IClassificationModel {
   }
 }

@@ -27,7 +27,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>
   /// Interface to represent a random forest regression solution
   /// </summary>
-  public interface IRandomForestRegressionSolution : IRegressionSolution {
+  public interface IRandomForestRegressionSolution : IConfidenceRegressionSolution {
     new IRandomForestModel Model { get; }
   }
 }
