@@ -42,6 +42,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       InitializeComponent();
       this.dataPartitionComboBox.SelectedIndex = 0;
       this.replacementComboBox.SelectedIndex = 0;
+      this.factorVarReplComboBox.SelectedIndex = 0;
     }
 
     #region events
@@ -75,11 +76,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     }
 
     private void UpdateVariableImpacts() {
-      if (Content == null || replacementComboBox.SelectedIndex < 0 || dataPartitionComboBox.SelectedIndex < 0) return;
+      if (Content == null || replacementComboBox.SelectedIndex < 0
+        || factorVarReplComboBox.SelectedIndex < 0
+        || dataPartitionComboBox.SelectedIndex < 0) return;
       var mainForm = (MainForm.WindowsForms.MainForm)MainFormManager.MainForm;
       variableImactsArrayView.Caption = Content.Name + " Variable Impacts";
       var replMethod =
-         (RegressionSolutionVariableImpactsCalculator.ReplacementMethodEnum)replacementComboBox.Items[replacementComboBox.SelectedIndex];
+         (RegressionSolutionVariableImpactsCalculator.ReplacementMethodEnum)
+           replacementComboBox.Items[replacementComboBox.SelectedIndex];
+      var factorReplMethod =
+        (RegressionSolutionVariableImpactsCalculator.FactorReplacementMethodEnum)
+          factorVarReplComboBox.Items[factorVarReplComboBox.SelectedIndex];
       var dataPartition =
         (RegressionSolutionVariableImpactsCalculator.DataPartitionEnum)dataPartitionComboBox.SelectedItem;
 
@@ -87,7 +94,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         try {
           mainForm.AddOperationProgressToView(this, "Calculating variable impacts for " + Content.Name);
 
-          var impacts = RegressionSolutionVariableImpactsCalculator.CalculateImpacts(Content, dataPartition, replMethod);
+          var impacts = RegressionSolutionVariableImpactsCalculator.CalculateImpacts(Content, dataPartition, replMethod, factorReplMethod);
           var impactArray = new DoubleArray(impacts.Select(i => i.Item2).ToArray());
           impactArray.ElementNames = impacts.Select(i => i.Item1);
           variableImactsArrayView.Content = (DoubleArray)impactArray.AsReadOnly();

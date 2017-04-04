@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -64,17 +65,48 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     public static IClassificationSolution CreateOneRSolution(IClassificationProblemData problemData, int minBucketSize = 6) {
+      var classValues = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, problemData.TrainingIndices);
+      var model1 = FindBestDoubleVariableModel(problemData, minBucketSize);
+      var model2 = FindBestFactorModel(problemData);
+
+      if (model1 == null && model2 == null) throw new InvalidProgramException("Could not create OneR solution");
+      else if (model1 == null) return new OneFactorClassificationSolution(model2, (IClassificationProblemData)problemData.Clone());
+      else if (model2 == null) return new OneRClassificationSolution(model1, (IClassificationProblemData)problemData.Clone());
+      else {
+        var model1EstimatedValues = model1.GetEstimatedClassValues(problemData.Dataset, problemData.TrainingIndices);
+        var model1NumCorrect = classValues.Zip(model1EstimatedValues, (a, b) => a.IsAlmost(b)).Count(e => e);
+
+        var model2EstimatedValues = model2.GetEstimatedClassValues(problemData.Dataset, problemData.TrainingIndices);
+        var model2NumCorrect = classValues.Zip(model2EstimatedValues, (a, b) => a.IsAlmost(b)).Count(e => e);
+
+        if (model1NumCorrect > model2NumCorrect) {
+          return new OneRClassificationSolution(model1, (IClassificationProblemData)problemData.Clone());
+        } else {
+          return new OneFactorClassificationSolution(model2, (IClassificationProblemData)problemData.Clone());
+        }
+      }
+    }
+
+    private static OneRClassificationModel FindBestDoubleVariableModel(IClassificationProblemData problemData, int minBucketSize = 6) {
       var bestClassified = 0;
       List<Split> bestSplits = null;
       string bestVariable = string.Empty;
       double bestMissingValuesClass = double.NaN;
       var classValues = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, problemData.TrainingIndices);
 
-      foreach (var variable in problemData.AllowedInputVariables) {
+      var allowedInputVariables = problemData.AllowedInputVariables.Where(problemData.Dataset.VariableHasType<double>);
+
+      if (!allowedInputVariables.Any()) return null;
+
+      foreach (var variable in allowedInputVariables) {
         var inputValues = problemData.Dataset.GetDoubleValues(variable, problemData.TrainingIndices);
         var samples = inputValues.Zip(classValues, (i, v) => new Sample(i, v)).OrderBy(s => s.inputValue);
 
-        var missingValuesDistribution = samples.Where(s => double.IsNaN(s.inputValue)).GroupBy(s => s.classValue).ToDictionary(s => s.Key, s => s.Count()).MaxItems(s => s.Value).FirstOrDefault();
+        var missingValuesDistribution = samples
+          .Where(s => double.IsNaN(s.inputValue)).GroupBy(s => s.classValue)
+          .ToDictionary(s => s.Key, s => s.Count())
+          .MaxItems(s => s.Value)
+          .FirstOrDefault();
 
         //calculate class distributions for all distinct inputValues
         List<Dictionary<double, int>> classDistributions = new List<Dictionary<double, int>>();
@@ -119,7 +151,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         foreach (var sample in samples.Where(s => !double.IsNaN(s.inputValue))) {
           while (sample.inputValue >= splits[splitIndex].thresholdValue)
             splitIndex++;
-          correctClassified += sample.classValue == splits[splitIndex].classValue ? 1 : 0;
+          correctClassified += sample.classValue.IsAlmost(splits[splitIndex].classValue) ? 1 : 0;
         }
         correctClassified += missingValuesDistribution.Value;
 
@@ -133,16 +165,52 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
       //remove neighboring splits with the same class value
       for (int i = 0; i < bestSplits.Count - 1; i++) {
-        if (bestSplits[i].classValue == bestSplits[i + 1].classValue) {
+        if (bestSplits[i].classValue.IsAlmost(bestSplits[i + 1].classValue)) {
           bestSplits.Remove(bestSplits[i]);
           i--;
         }
       }
 
-      var model = new OneRClassificationModel(problemData.TargetVariable, bestVariable, bestSplits.Select(s => s.thresholdValue).ToArray(), bestSplits.Select(s => s.classValue).ToArray(), bestMissingValuesClass);
-      var solution = new OneRClassificationSolution(model, (IClassificationProblemData)problemData.Clone());
+      var model = new OneRClassificationModel(problemData.TargetVariable, bestVariable,
+        bestSplits.Select(s => s.thresholdValue).ToArray(),
+        bestSplits.Select(s => s.classValue).ToArray(), bestMissingValuesClass);
 
-      return solution;
+      return model;
+    }
+    private static OneFactorClassificationModel FindBestFactorModel(IClassificationProblemData problemData) {
+      var classValues = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, problemData.TrainingIndices);
+      var defaultClass = FindMostFrequentClassValue(classValues);
+      // only select string variables
+      var allowedInputVariables = problemData.AllowedInputVariables.Where(problemData.Dataset.VariableHasType<string>);
+
+      if (!allowedInputVariables.Any()) return null;
+
+      OneFactorClassificationModel bestModel = null;
+      var bestModelNumCorrect = 0;
+
+      foreach (var variable in allowedInputVariables) {
+        var variableValues = problemData.Dataset.GetStringValues(variable, problemData.TrainingIndices);
+        var groupedClassValues = variableValues
+          .Zip(classValues, (v, c) => new KeyValuePair<string, double>(v, c))
+          .GroupBy(kvp => kvp.Key)
+          .ToDictionary(g => g.Key, g => FindMostFrequentClassValue(g.Select(kvp => kvp.Value)));
+
+        var model = new OneFactorClassificationModel(problemData.TargetVariable, variable,
+          groupedClassValues.Select(kvp => kvp.Key).ToArray(), groupedClassValues.Select(kvp => kvp.Value).ToArray(), defaultClass);
+
+        var modelEstimatedValues = model.GetEstimatedClassValues(problemData.Dataset, problemData.TrainingIndices);
+        var modelNumCorrect = classValues.Zip(modelEstimatedValues, (a, b) => a.IsAlmost(b)).Count(e => e);
+        if (modelNumCorrect > bestModelNumCorrect) {
+          bestModelNumCorrect = modelNumCorrect;
+          bestModel = model;
+        }
+      }
+
+      return bestModel;
+    }
+
+    private static double FindMostFrequentClassValue(IEnumerable<double> classValues) {
+      return classValues.GroupBy(c => c).OrderByDescending(g => g.Count()).Select(g => g.Key).First();
     }
 
     #region helper classes

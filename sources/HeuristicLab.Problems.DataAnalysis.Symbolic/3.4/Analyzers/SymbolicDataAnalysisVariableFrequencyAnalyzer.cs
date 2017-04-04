@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
@@ -40,6 +41,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   public sealed class SymbolicDataAnalysisVariableFrequencyAnalyzer : SymbolicDataAnalysisAnalyzer {
     private const string VariableFrequenciesParameterName = "VariableFrequencies";
     private const string AggregateLaggedVariablesParameterName = "AggregateLaggedVariables";
+    private const string AggregateFactorVariablesParameterName = "AggregateFactorVariables";
     private const string VariableImpactsParameterName = "VariableImpacts";
 
     #region parameter properties
@@ -52,11 +54,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public IValueLookupParameter<BoolValue> AggregateLaggedVariablesParameter {
       get { return (IValueLookupParameter<BoolValue>)Parameters[AggregateLaggedVariablesParameterName]; }
     }
+    public IValueLookupParameter<BoolValue> AggregateFactorVariablesParameter {
+      get { return (IValueLookupParameter<BoolValue>)Parameters[AggregateFactorVariablesParameterName]; }
+    }
     #endregion
     #region properties
     public BoolValue AggregateLaggedVariables {
       get { return AggregateLaggedVariablesParameter.ActualValue; }
       set { AggregateLaggedVariablesParameter.Value = value; }
+    }
+    public BoolValue AggregateFactorVariables {
+      get { return AggregateFactorVariablesParameter.ActualValue; }
+      set { AggregateFactorVariablesParameter.Value = value; }
     }
     #endregion
     [StorableConstructor]
@@ -69,6 +78,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       Parameters.Add(new LookupParameter<DataTable>(VariableFrequenciesParameterName, "The relative variable reference frequencies aggregated over all trees in the population."));
       Parameters.Add(new LookupParameter<DoubleMatrix>(VariableImpactsParameterName, "The relative variable relevance calculated as the average relative variable frequency over the whole run."));
       Parameters.Add(new ValueLookupParameter<BoolValue>(AggregateLaggedVariablesParameterName, "Switch that determines whether all references to a variable should be aggregated regardless of time-offsets. Turn off to analyze all variable references with different time offsets separately.", new BoolValue(true)));
+      Parameters.Add(new ValueLookupParameter<BoolValue>(AggregateFactorVariablesParameterName, "Switch that determines whether all references to factor variables should be aggregated regardless of the value. Turn off to analyze all factor variable references with different values separately.", new BoolValue(true)));
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code, remove with 3.4
+      if (!Parameters.ContainsKey(AggregateFactorVariablesParameterName)) {
+        Parameters.Add(new ValueLookupParameter<BoolValue>(AggregateFactorVariablesParameterName, "Switch that determines whether all references to factor variables should be aggregated regardless of the value. Turn off to analyze all factor variable references with different values separately.", new BoolValue(true)));
+      }
+      #endregion
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -92,7 +112,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       // all rows must have the same number of values so we can just take the first
       int numberOfValues = datatable.Rows.Select(r => r.Values.Count).DefaultIfEmpty().First();
 
-      foreach (var pair in SymbolicDataAnalysisVariableFrequencyAnalyzer.CalculateVariableFrequencies(expressions, AggregateLaggedVariables.Value)) {
+      foreach (var pair in CalculateVariableFrequencies(expressions, AggregateLaggedVariables.Value, AggregateFactorVariables.Value)) {
         if (!datatable.Rows.ContainsKey(pair.Key)) {
           // initialize a new row for the variable and pad with zeros
           DataRow row = new DataRow(pair.Key, "", Enumerable.Repeat(0.0, numberOfValues));
@@ -127,10 +147,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       return base.Apply();
     }
 
-    public static IEnumerable<KeyValuePair<string, double>> CalculateVariableFrequencies(IEnumerable<ISymbolicExpressionTree> trees, bool aggregateLaggedVariables = true) {
+    public static IEnumerable<KeyValuePair<string, double>> CalculateVariableFrequencies(IEnumerable<ISymbolicExpressionTree> trees,
+      bool aggregateLaggedVariables = true, bool aggregateFactorVariables = true) {
 
       var variableFrequencies = trees
-        .SelectMany(t => GetVariableReferences(t, aggregateLaggedVariables))
+        .SelectMany(t => GetVariableReferences(t, aggregateLaggedVariables, aggregateFactorVariables))
         .GroupBy(pair => pair.Key, pair => pair.Value)
         .ToDictionary(g => g.Key, g => (double)g.Sum());
 
@@ -140,51 +161,63 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         yield return new KeyValuePair<string, double>(pair.Key, pair.Value / totalNumberOfSymbols);
     }
 
-    private static IEnumerable<KeyValuePair<string, int>> GetVariableReferences(ISymbolicExpressionTree tree, bool aggregateLaggedVariables = true) {
+    private static IEnumerable<KeyValuePair<string, int>> GetVariableReferences(ISymbolicExpressionTree tree,
+      bool aggregateLaggedVariables = true, bool aggregateFactorVariables = true) {
       Dictionary<string, int> references = new Dictionary<string, int>();
       if (aggregateLaggedVariables) {
         tree.Root.ForEachNodePrefix(node => {
-          if (node.Symbol is Variable) {
-            var varNode = node as VariableTreeNode;
-            IncReferenceCount(references, varNode.VariableName);
-          } else if (node.Symbol is VariableCondition) {
-            var varCondNode = node as VariableConditionTreeNode;
-            IncReferenceCount(references, varCondNode.VariableName);
+          if (node is IVariableTreeNode) {
+            var factorNode = node as BinaryFactorVariableTreeNode;
+            if (factorNode != null && !aggregateFactorVariables) {
+              IncReferenceCount(references, factorNode.VariableName + "=" + factorNode.VariableValue);
+            } else {
+              var varNode = node as IVariableTreeNode;
+              IncReferenceCount(references, varNode.VariableName);
+            }
           }
         });
       } else {
-        GetVariableReferences(references, tree.Root, 0);
+        GetVariableReferences(references, tree.Root, 0, aggregateFactorVariables);
       }
       return references;
     }
 
-    private static void GetVariableReferences(Dictionary<string, int> references, ISymbolicExpressionTreeNode node, int currentLag) {
-      if (node.Symbol is LaggedVariable) {
-        var laggedVarNode = node as LaggedVariableTreeNode;
-        IncReferenceCount(references, laggedVarNode.VariableName, currentLag + laggedVarNode.Lag);
-      } else if (node.Symbol is Variable) {
-        var varNode = node as VariableTreeNode;
-        IncReferenceCount(references, varNode.VariableName, currentLag);
-      } else if (node.Symbol is VariableCondition) {
-        var varCondNode = node as VariableConditionTreeNode;
-        IncReferenceCount(references, varCondNode.VariableName, currentLag);
-        GetVariableReferences(references, node.GetSubtree(0), currentLag);
-        GetVariableReferences(references, node.GetSubtree(1), currentLag);
+    private static void GetVariableReferences(Dictionary<string, int> references, ISymbolicExpressionTreeNode node, int currentLag, bool aggregateFactorVariables) {
+      if (node is IVariableTreeNode) {
+        var laggedVarTreeNode = node as LaggedVariableTreeNode;
+        var binFactorVariableTreeNode = node as BinaryFactorVariableTreeNode;
+        var varConditionTreeNode = node as VariableConditionTreeNode;
+        if (laggedVarTreeNode != null) {
+          IncReferenceCount(references, laggedVarTreeNode.VariableName, currentLag + laggedVarTreeNode.Lag);
+        } else if (binFactorVariableTreeNode != null) {
+          if (aggregateFactorVariables) {
+            IncReferenceCount(references, binFactorVariableTreeNode.VariableName, currentLag);
+          } else {
+            IncReferenceCount(references, binFactorVariableTreeNode.VariableName + "=" + binFactorVariableTreeNode.VariableValue, currentLag);
+          }
+        } else if (varConditionTreeNode != null) {
+          IncReferenceCount(references, varConditionTreeNode.VariableName, currentLag);
+          GetVariableReferences(references, node.GetSubtree(0), currentLag, aggregateFactorVariables);
+          GetVariableReferences(references, node.GetSubtree(1), currentLag, aggregateFactorVariables);
+        } else {
+          var varNode = node as IVariableTreeNode;
+          IncReferenceCount(references, varNode.VariableName, currentLag);
+        }
       } else if (node.Symbol is Integral) {
         var laggedNode = node as LaggedTreeNode;
         for (int l = laggedNode.Lag; l <= 0; l++) {
-          GetVariableReferences(references, node.GetSubtree(0), currentLag + l);
+          GetVariableReferences(references, node.GetSubtree(0), currentLag + l, aggregateFactorVariables);
         }
       } else if (node.Symbol is Derivative) {
         for (int l = -4; l <= 0; l++) {
-          GetVariableReferences(references, node.GetSubtree(0), currentLag + l);
+          GetVariableReferences(references, node.GetSubtree(0), currentLag + l, aggregateFactorVariables);
         }
       } else if (node.Symbol is TimeLag) {
         var laggedNode = node as LaggedTreeNode;
-        GetVariableReferences(references, node.GetSubtree(0), currentLag + laggedNode.Lag);
+        GetVariableReferences(references, node.GetSubtree(0), currentLag + laggedNode.Lag, aggregateFactorVariables);
       } else {
         foreach (var subtree in node.Subtrees) {
-          GetVariableReferences(references, subtree, currentLag);
+          GetVariableReferences(references, subtree, currentLag, aggregateFactorVariables);
         }
       }
     }

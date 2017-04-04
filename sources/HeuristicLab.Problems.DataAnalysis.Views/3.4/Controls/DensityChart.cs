@@ -29,12 +29,22 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       InitializeComponent();
     }
 
+    public void UpdateChart(IList<string> data, double minimumHeight = 0.1) {
+      if (data == null || !data.Any())
+        return;
+      UpdateChartWithBuckets(CalculateBuckets(data));
+    }
+
+
     public void UpdateChart(IList<double> data, double min, double max, int numBuckets, double minimumHeight = 0.1) {
       if (data == null || numBuckets < 0 || min > max || max < min)
         return;
 
-      var buckets = CalculateBuckets(data, numBuckets, min, max);
+      UpdateChartWithBuckets(CalculateBuckets(data, numBuckets, min, max));
+    }
 
+
+    private void UpdateChartWithBuckets(double[] buckets) {
       // set minimum height of all non-zero buckets on 10% of maximum
       double minHeight = buckets.Max() * 0.1;
       for (int i = 0; i < buckets.Length; i++) {
@@ -67,6 +77,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         }
       }
       return buckets;
+    }
+    private double[] CalculateBuckets(IList<string> data) {
+      return data.GroupBy(val => val).OrderBy(g => g.Key).Select(g => (double)g.Count()).Concat(new double[] { 0.0 }).ToArray();
     }
   }
 }

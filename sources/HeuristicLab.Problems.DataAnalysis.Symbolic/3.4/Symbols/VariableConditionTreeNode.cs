@@ -28,7 +28,7 @@ using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableClass]
-  public sealed class VariableConditionTreeNode : SymbolicExpressionTreeNode {
+  public sealed class VariableConditionTreeNode : SymbolicExpressionTreeNode, IVariableTreeNode {
     #region properties
     public new VariableCondition Symbol {
       get { return (VariableCondition)base.Symbol; }

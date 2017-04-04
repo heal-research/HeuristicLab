@@ -79,9 +79,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Classification {
         } else {
 
           IClassificationProblemData problemData = Content.ProblemData;
-          var dataset = problemData.Dataset;
           solutions = new List<IClassificationSolution>() { Content };
-          solutions.AddRange(GenerateClassificationSolutions(problemData));
+          solutions.AddRange(GenerateClassificationSolutions().OrderBy(s=>s.Name));
 
           dataGridView.ColumnCount = 4;
           dataGridView.RowCount = solutions.Count();
@@ -104,11 +103,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Classification {
 
             var trainingIndizes = problemData.TrainingIndices;
             var originalTrainingValues = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, trainingIndizes);
-            var estimatedTrainingValues = solution.Model.GetEstimatedClassValues(dataset, trainingIndizes);
+            var estimatedTrainingValues = solution.EstimatedTrainingClassValues;
 
             var testIndices = problemData.TestIndices;
             var originalTestValues = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, testIndices);
-            var estimatedTestValues = solution.Model.GetEstimatedClassValues(dataset, testIndices);
+            var estimatedTestValues = solution.EstimatedTestClassValues;
 
             OnlineCalculatorError errorState;
             dataGridView[2, row].Value = MatthewsCorrelationCoefficientCalculator.Calculate(originalTrainingValues, estimatedTrainingValues, out errorState);
@@ -125,17 +124,20 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Classification {
       }
     }
 
-    private IEnumerable<IClassificationSolution> GenerateClassificationSolutions(IClassificationProblemData problemData) {
+    protected virtual IEnumerable<IClassificationSolution> GenerateClassificationSolutions() {
+      var problemData = Content.ProblemData;
       var newSolutions = new List<IClassificationSolution>();
       var zeroR = ZeroR.CreateZeroRSolution(problemData);
       zeroR.Name = "ZeroR Classification Solution";
       newSolutions.Add(zeroR);
-      var oneR = OneR.CreateOneRSolution(problemData);
-      oneR.Name = "OneR Classification Solution";
-      newSolutions.Add(oneR);
+      try {
+        var oneR = OneR.CreateOneRSolution(problemData);
+        oneR.Name = "OneR Classification Solution (all variables)";
+        newSolutions.Add(oneR);
+      } catch (NotSupportedException) { } catch (ArgumentException) { }
       try {
         var lda = LinearDiscriminantAnalysis.CreateLinearDiscriminantAnalysisSolution(problemData);
-        lda.Name = "Linear Discriminant Analysis Solution";
+        lda.Name = "Linear Discriminant Analysis Solution (all variables)";
         newSolutions.Add(lda);
       } catch (NotSupportedException) { } catch (ArgumentException) { }
       return newSolutions;

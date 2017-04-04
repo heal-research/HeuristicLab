@@ -109,12 +109,27 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           throw new NotSupportedException("Formatting of symbol: " + node.Symbol + " is not supported.");
         }
       } else {
-        if (node is VariableTreeNode) {
+        // terminals
+        if (node.Symbol is Variable) {
           var varNode = node as VariableTreeNode;
           strBuilder.AppendFormat("Times[{0}, {1}]", varNode.VariableName, varNode.Weight.ToString("G17", CultureInfo.InvariantCulture));
-        } else if (node is ConstantTreeNode) {
+        } else if (node.Symbol is Constant) {
           var constNode = node as ConstantTreeNode;
           strBuilder.Append(constNode.Value.ToString("G17", CultureInfo.InvariantCulture));
+        } else if (node.Symbol is FactorVariable) {
+          var factorNode = node as FactorVariableTreeNode;
+          strBuilder.AppendFormat("Switch[{0},", factorNode.VariableName);
+          var varValues = factorNode.Symbol.GetVariableValues(factorNode.VariableName).ToArray();
+          var weights = varValues.Select(factorNode.GetValue).ToArray();
+
+          var weightStr = string.Join(", ",
+            varValues.Zip(weights, (s, d) => string.Format(CultureInfo.InvariantCulture, "\"{0}\", {1:G17}", s, d)));
+          strBuilder.Append(weightStr);
+          strBuilder.Append("]");
+        } else if (node.Symbol is BinaryFactorVariable) {
+          var factorNode = node as BinaryFactorVariableTreeNode;
+          strBuilder.AppendFormat(CultureInfo.InvariantCulture, "If[{0}==\"{1}\",{2:G17},0.0]",
+            factorNode.VariableName, factorNode.VariableValue, factorNode.Weight);
         } else {
           throw new NotSupportedException("Formatting of symbol: " + node.Symbol + " is not supported.");
         }

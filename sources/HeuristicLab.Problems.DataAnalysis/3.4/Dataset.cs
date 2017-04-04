@@ -167,6 +167,11 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public IEnumerable<string> DoubleVariables {
       get { return variableValues.Where(p => p.Value is List<double>).Select(p => p.Key); }
     }
+
+    public IEnumerable<string> StringVariables {
+      get { return variableValues.Where(p => p.Value is List<string>).Select(p => p.Key); }
+    }
+
     public IEnumerable<double> GetDoubleValues(string variableName) {
       return GetValues<double>(variableName);
     }
@@ -188,6 +193,20 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public IEnumerable<double> GetDoubleValues(string variableName, IEnumerable<int> rows) {
       return GetValues<double>(variableName, rows);
     }
+
+    public string GetStringValue(string variableName, int row) {
+      var values = GetValues<string>(variableName);
+      return values[row];
+    }
+
+    public IEnumerable<string> GetStringValues(string variableName, IEnumerable<int> rows) {
+      return GetValues<string>(variableName, rows);
+    }
+    public ReadOnlyCollection<string> GetReadOnlyStringValues(string variableName) {
+      var values = GetValues<string>(variableName);
+      return values.AsReadOnly();
+    }
+
     private IEnumerable<T> GetValues<T>(string variableName, IEnumerable<int> rows) {
       var values = GetValues<T>(variableName);
       return rows.Select(x => values[x]);

@@ -118,6 +118,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="SolutionComparisonView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SolutionComparisonView.Designer.cs">
+      <DependentUpon>SolutionComparisonView.cs</DependentUpon>
+    </Compile>
     <Compile Include="InteractiveSymbolicClassificationSolutionSimplifierView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -162,6 +168,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\HeuristicLab.Algorithms.DataAnalysis\3.4\HeuristicLab.Algorithms.DataAnalysis-3.4.csproj">
+      <Project>{2E782078-FA81-4B70-B56F-74CE38DAC6C8}</Project>
+      <Name>HeuristicLab.Algorithms.DataAnalysis-3.4</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">
       <Project>{958B43BC-CC5C-4FA2-8628-2B3B01D890B6}</Project>
       <Name>HeuristicLab.Collections-3.3</Name>

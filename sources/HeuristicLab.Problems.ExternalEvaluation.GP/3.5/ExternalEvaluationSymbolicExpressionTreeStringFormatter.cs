@@ -57,7 +57,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation.GP {
     private string FormatRecursively(ISymbolicExpressionTreeNode node, int indentLength) {
       StringBuilder strBuilder = new StringBuilder();
       if (Indent) strBuilder.Append(' ', indentLength);
-      if (node.Subtrees.Count() > 0) { // internal node
+      if (node.Subtrees.Any()) { // internal node
         strBuilder.Append("(");
         if (node.Symbol is Addition) {
           strBuilder.AppendLine("+");
@@ -102,10 +102,10 @@ namespace HeuristicLab.Problems.ExternalEvaluation.GP {
         if (Indent) strBuilder.Append(' ', indentLength);
         strBuilder.Append(")");
       } else {
-        if (node is VariableTreeNode) {
+        if (node.Symbol is HeuristicLab.Problems.DataAnalysis.Symbolic.Variable) {
           var varNode = node as VariableTreeNode;
           strBuilder.AppendFormat("(* {0} {1})", varNode.VariableName, varNode.Weight.ToString("g17", CultureInfo.InvariantCulture));
-        } else if (node is ConstantTreeNode) {
+        } else if (node.Symbol is Constant) {
           var constNode = node as ConstantTreeNode;
           strBuilder.Append(constNode.Value.ToString("g17", CultureInfo.InvariantCulture));
         } else {

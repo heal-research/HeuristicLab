@@ -182,8 +182,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       PaintNodeImpacts();
     }
 
-    protected abstract Dictionary<ISymbolicExpressionTreeNode, double> CalculateReplacementValues(ISymbolicExpressionTree tree);
-    protected abstract Dictionary<ISymbolicExpressionTreeNode, double> CalculateImpactValues(ISymbolicExpressionTree tree);
     protected abstract Dictionary<ISymbolicExpressionTreeNode, Tuple<double, double>> CalculateImpactAndReplacementValues(ISymbolicExpressionTree tree);
     protected abstract void UpdateModel(ISymbolicExpressionTree tree);
 

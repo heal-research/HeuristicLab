@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
@@ -34,7 +35,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
   [View("Target Response Gradients")]
   [Content(typeof(IRegressionSolution))]
   public partial class RegressionSolutionTargetResponseGradientView : DataAnalysisSolutionEvaluationView {
-    private readonly Dictionary<string, GradientChart> gradientCharts;
+    private readonly Dictionary<string, IGradientChart> gradientCharts;
     private readonly Dictionary<string, DensityChart> densityCharts;
     private readonly Dictionary<string, Panel> groupingPanels;
     private ModifiableDataset sharedFixedVariables;
@@ -48,7 +49,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
           yield return item.Text;
       }
     }
-    private IEnumerable<GradientChart> VisibleGradientCharts {
+    private IEnumerable<IGradientChart> VisibleGradientCharts {
       get { return VisibleVariables.Select(v => gradientCharts[v]); }
     }
     private IEnumerable<DensityChart> VisibleDensityCharts {
@@ -60,7 +61,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
     public RegressionSolutionTargetResponseGradientView() {
       InitializeComponent();
-      gradientCharts = new Dictionary<string, GradientChart>();
+      gradientCharts = new Dictionary<string, IGradientChart>();
       densityCharts = new Dictionary<string, DensityChart>();
       groupingPanels = new Dictionary<string, Panel>();
 
@@ -119,17 +120,26 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         Content.ProblemData.Dataset.VariableNames.Where(v => inputvariables.Contains(v)).ToList();
 
 
-      var variableValues = allowedInputVariables.Select(x => new List<double> { problemData.Dataset.GetDoubleValues(x, problemData.TrainingIndices).Median() });
+      var doubleVariables = allowedInputVariables.Where(problemData.Dataset.VariableHasType<double>);
+      var doubleVariableValues = (IEnumerable<IList>)doubleVariables.Select(x => new List<double> { problemData.Dataset.GetDoubleValues(x, problemData.TrainingIndices).Median() });
+
+      var factorVariables = allowedInputVariables.Where(problemData.Dataset.VariableHasType<string>);
+      var factorVariableValues = (IEnumerable<IList>)factorVariables.Select(x => new List<string> {
+        problemData.Dataset.GetStringValues(x, problemData.TrainingIndices)
+        .GroupBy(val => val).OrderByDescending(g => g.Count()).First().Key // most frequent value
+      });
+
       if (sharedFixedVariables != null)
         sharedFixedVariables.ItemChanged -= SharedFixedVariables_ItemChanged;
-      sharedFixedVariables = new ModifiableDataset(allowedInputVariables, variableValues);
-      // ItemChanged eventhandler is registered later, after creating the gradient charts
+
+      sharedFixedVariables = new ModifiableDataset(doubleVariables.Concat(factorVariables), doubleVariableValues.Concat(factorVariableValues));
+
 
       // create controls
       gradientCharts.Clear();
       densityCharts.Clear();
       groupingPanels.Clear();
-      foreach (var variableName in allowedInputVariables) {
+      foreach (var variableName in doubleVariables) {
         var gradientChart = CreateGradientChart(variableName, sharedFixedVariables);
         gradientCharts.Add(variableName, gradientChart);
 
@@ -157,7 +167,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
         // Initially, the inner plot areas are not initialized for hidden charts (scollpanel, ...)
         // This event handler listens for the paint event once (where everything is already initialized) to do some manual layouting.
-        gradientChart.ChartPostPaint += OnGradientChartOnChartPostPaint;
+        gradientChart.ChartPostPaint += OnGradientChartPostPaint;
 
         var panel = new Panel() {
           Dock = DockStyle.Fill,
@@ -169,7 +179,45 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         panel.Controls.Add(gradientChart);
         groupingPanels.Add(variableName, panel);
       }
+      foreach (var variableName in factorVariables) {
+        var gradientChart = CreateFactorGradientChart(variableName, sharedFixedVariables);
+        gradientCharts.Add(variableName, gradientChart);
 
+        var densityChart = new DensityChart() {
+          Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right,
+          Margin = Padding.Empty,
+          Height = 12,
+          Visible = false,
+          Top = (int)(gradientChart.Height * 0.1),
+        };
+        densityCharts.Add(variableName, densityChart);
+        gradientChart.ZoomChanged += (o, e) => {
+          var gradient = (FactorGradientChart)o;
+          var density = densityCharts[gradient.FreeVariable];
+          density.Visible = densityComboBox.SelectedIndex != 0 && !gradient.IsZoomed;
+          if (density.Visible)
+            UpdateDensityChart(density, gradient.FreeVariable);
+        };
+        gradientChart.SizeChanged += (o, e) => {
+          var gradient = (FactorGradientChart)o;
+          var density = densityCharts[gradient.FreeVariable];
+          density.Top = (int)(gradient.Height * 0.1);
+        };
+
+        // Initially, the inner plot areas are not initialized for hidden charts (scollpanel, ...)
+        // This event handler listens for the paint event once (where everything is already initialized) to do some manual layouting.
+        gradientChart.ChartPostPaint += OnFactorGradientChartPostPaint;
+
+        var panel = new Panel() {
+          Dock = DockStyle.Fill,
+          Margin = Padding.Empty,
+          BackColor = Color.White
+        };
+
+        panel.Controls.Add(densityChart);
+        panel.Controls.Add(gradientChart);
+        groupingPanels.Add(variableName, panel);
+      }
       // update variable list
       variableListView.ItemChecked -= variableListView_ItemChecked;
       variableListView.Items.Clear();
@@ -195,7 +243,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       }
     }
 
-    private void OnGradientChartOnChartPostPaint(object o, EventArgs e) {
+
+    private void OnGradientChartPostPaint(object o, EventArgs e) {
       var gradient = (GradientChart)o;
       var density = densityCharts[gradient.FreeVariable];
 
@@ -208,13 +257,29 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
       // removed after succesful layouting due to performance reasons
       if (gcPlotPosition.Width != 0)
-        gradient.ChartPostPaint -= OnGradientChartOnChartPostPaint;
+        gradient.ChartPostPaint -= OnGradientChartPostPaint;
+    }
+
+    private void OnFactorGradientChartPostPaint(object o, EventArgs e) {
+      var gradient = (FactorGradientChart)o;
+      var density = densityCharts[gradient.FreeVariable];
+
+      density.Width = gradient.Width;
+
+      var gcPlotPosition = gradient.InnerPlotPosition;
+      density.Left = (int)(gcPlotPosition.X / 100.0 * gradient.Width);
+      density.Width = (int)(gcPlotPosition.Width / 100.0 * gradient.Width);
+      gradient.UpdateTitlePosition();
+
+      // removed after succesful layouting due to performance reasons
+      if (gcPlotPosition.Width != 0)
+        gradient.ChartPostPaint -= OnFactorGradientChartPostPaint;
     }
 
     private async void RecalculateAndRelayoutCharts() {
       foreach (var variable in VisibleVariables) {
         var gradientChart = gradientCharts[variable];
-        await gradientChart.RecalculateAsync();
+        await gradientChart.RecalculateAsync(false, false);
       }
       gradientChartTableLayout.SuspendLayout();
       SetupYAxis();
@@ -223,8 +288,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       gradientChartTableLayout.ResumeLayout();
       gradientChartTableLayout.Refresh();
       foreach (var variable in VisibleVariables) {
-        var densityChart = densityCharts[variable];
-        UpdateDensityChart(densityChart, variable);
+        DensityChart densityChart;
+        if (densityCharts.TryGetValue(variable, out densityChart)) {
+          UpdateDensityChart(densityChart, variable);
+        }
       }
     }
     private GradientChart CreateGradientChart(string variableName, ModifiableDataset sharedFixedVariables) {
@@ -237,9 +304,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         YAxisTicks = 5,
       };
       gradientChart.VariableValueChanged += async (o, e) => {
-        var recalculations = VisibleGradientCharts.Except(new[] { (GradientChart)o }).Select(async chart => {
-          await chart.RecalculateAsync(updateOnFinish: false, resetYAxis: false);
-        }).ToList();
+        var recalculations = VisibleGradientCharts
+          .Except(new[] { (IGradientChart)o })
+          .Select(async chart => {
+            await chart.RecalculateAsync(updateOnFinish: false, resetYAxis: false);
+          }).ToList();
         await Task.WhenAll(recalculations);
 
         if (recalculations.All(t => t.IsCompleted))
@@ -250,7 +319,31 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       gradientChart.SolutionRemoved += gradientChart_SolutionRemoved;
       return gradientChart;
     }
+    private FactorGradientChart CreateFactorGradientChart(string variableName, ModifiableDataset sharedFixedVariables) {
+      var gradientChart = new FactorGradientChart {
+        Dock = DockStyle.Fill,
+        Margin = Padding.Empty,
+        ShowLegend = false,
+        ShowCursor = true,
+        YAxisTicks = 5,
+      };
+      gradientChart.VariableValueChanged += async (o, e) => {
+        var recalculations = VisibleGradientCharts
+          .Except(new[] { (FactorGradientChart)o })
+          .Select(async chart => {
+            await chart.RecalculateAsync(updateOnFinish: false, resetYAxis: false);
+          }).ToList();
+        await Task.WhenAll(recalculations);
 
+        if (recalculations.All(t => t.IsCompleted))
+          SetupYAxis();
+      };
+      var variableValues = Content.ProblemData.Dataset.GetStringValues(variableName).Distinct().OrderBy(n => n).ToList();
+      gradientChart.Configure(new[] { Content }, sharedFixedVariables, variableName, variableValues);
+      gradientChart.SolutionAdded += gradientChart_SolutionAdded;
+      gradientChart.SolutionRemoved += gradientChart_SolutionRemoved;
+      return gradientChart;
+    }
     private void SetupYAxis() {
       double axisMin, axisMax;
       if (automaticYAxisCheckBox.Checked) {
@@ -344,7 +437,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       tl.SuspendLayout();
       if (item.Checked) {
         tl.Controls.Add(chartsPanel);
-        await gradientChart.RecalculateAsync();
+        await gradientChart.RecalculateAsync(false, false);
       } else {
         tl.Controls.Remove(chartsPanel);
       }
@@ -408,23 +501,41 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       if (indices == null) {
         indices = GetDensityIndices(densityComboBox.SelectedIndex).ToList();
       }
-      var data = Content.ProblemData.Dataset.GetDoubleValues(variable, indices).ToList();
-      var gradientChart = gradientCharts[variable];
-      var min = gradientChart.FixedXAxisMin;
-      var max = gradientChart.FixedXAxisMax;
-      var buckets = gradientChart.DrawingSteps;
-      if (min.HasValue && max.HasValue) {
-        densityChart.UpdateChart(data, min.Value, max.Value, buckets);
-        densityChart.Width = gradientChart.Width;
+      if (Content.ProblemData.Dataset.VariableHasType<double>(variable)) {
+        var data = Content.ProblemData.Dataset.GetDoubleValues(variable, indices).ToList();
+        var gradientChart = gradientCharts[variable] as GradientChart;
+        if (gradientChart != null) {
+          var min = gradientChart.FixedXAxisMin;
+          var max = gradientChart.FixedXAxisMax;
+          var buckets = gradientChart.DrawingSteps;
+          if (min.HasValue && max.HasValue) {
+            densityChart.UpdateChart(data, min.Value, max.Value, buckets);
+            densityChart.Width = gradientChart.Width;
 
-        var gcPlotPosition = gradientChart.InnerPlotPosition;
-        densityChart.Left = (int)(gcPlotPosition.X / 100.0 * gradientChart.Width);
-        densityChart.Width = (int)(gcPlotPosition.Width / 100.0 * gradientChart.Width);
+            var gcPlotPosition = gradientChart.InnerPlotPosition;
+            densityChart.Left = (int)(gcPlotPosition.X / 100.0 * gradientChart.Width);
+            densityChart.Width = (int)(gcPlotPosition.Width / 100.0 * gradientChart.Width);
 
-        densityChart.Visible = true;
+            densityChart.Visible = true;
+          }
+          gradientChart.UpdateTitlePosition();
+        }
+      } else if (Content.ProblemData.Dataset.VariableHasType<string>(variable)) {
+        var data = Content.ProblemData.Dataset.GetStringValues(variable).ToList();
+        var gradientChart = gradientCharts[variable] as FactorGradientChart;
+        if (gradientChart != null) {
+          densityChart.UpdateChart(data);
+          densityChart.Width = gradientChart.Width;
+
+          var gcPlotPosition = gradientChart.InnerPlotPosition;
+          densityChart.Left = (int)(gcPlotPosition.X / 100.0 * gradientChart.Width);
+          densityChart.Width = (int)(gcPlotPosition.Width / 100.0 * gradientChart.Width);
+
+          densityChart.Visible = true;
+
+          gradientChart.UpdateTitlePosition();
+        }
       }
-
-      gradientChart.UpdateTitlePosition();
     }
 
     private void columnsNumericUpDown_ValueChanged(object sender, EventArgs e) {
@@ -447,7 +558,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         var gradientChart = gradientCharts[variable];
         var densityChart = densityCharts[variable];
         // recalculate and refresh
-        await gradientChart.RecalculateAsync();
+        await gradientChart.RecalculateAsync(false, false);
         gradientChart.Refresh();
         UpdateDensityChart(densityChart, variable);
       }

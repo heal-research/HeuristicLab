@@ -29,7 +29,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableClass]
   [Item("Variable Condition", "Represents a condition that tests a given variable against a specified threshold.")]
-  public sealed class VariableCondition : Symbol {
+  public sealed class VariableCondition : Symbol, IVariableSymbol {
     #region properties
     [Storable]
     private double thresholdInitializerMu;

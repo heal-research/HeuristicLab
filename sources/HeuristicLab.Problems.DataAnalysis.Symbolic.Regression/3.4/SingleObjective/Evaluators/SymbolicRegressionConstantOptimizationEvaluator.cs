@@ -175,25 +175,37 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     #endregion
 
 
-    public static double OptimizeConstants(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, ISymbolicExpressionTree tree, IRegressionProblemData problemData, IEnumerable<int> rows, bool applyLinearScaling, int maxIterations, bool updateVariableWeights = true, double lowerEstimationLimit = double.MinValue, double upperEstimationLimit = double.MaxValue, bool updateConstantsInTree = true) {
 
-      List<AutoDiff.Variable> variables = new List<AutoDiff.Variable>();
-      List<AutoDiff.Variable> parameters = new List<AutoDiff.Variable>();
-      List<string> variableNames = new List<string>();
-      List<int> lags = new List<int>();
+    public static double OptimizeConstants(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter,
+      ISymbolicExpressionTree tree, IRegressionProblemData problemData, IEnumerable<int> rows, bool applyLinearScaling,
+      int maxIterations, bool updateVariableWeights = true,
+      double lowerEstimationLimit = double.MinValue, double upperEstimationLimit = double.MaxValue,
+      bool updateConstantsInTree = true) {
+
+      // numeric constants in the tree become variables for constant opt
+      // variables in the tree become parameters (fixed values) for constant opt
+      // for each parameter (variable in the original tree) we store the 
+      // variable name, variable value (for factor vars) and lag as a DataForVariable object.
+      // A dictionary is used to find parameters
+      var variables = new List<AutoDiff.Variable>();
+      var parameters = new Dictionary<DataForVariable, AutoDiff.Variable>();
 
       AutoDiff.Term func;
-      if (!TryTransformToAutoDiff(tree.Root.GetSubtree(0), variables, parameters, variableNames, lags, updateVariableWeights, out func))
+      if (!TryTransformToAutoDiff(tree.Root.GetSubtree(0), variables, parameters, updateVariableWeights, out func))
         throw new NotSupportedException("Could not optimize constants of symbolic expression tree due to not supported symbols used in the tree.");
-      if (variableNames.Count == 0) return 0.0;
+      if (parameters.Count == 0) return 0.0; // gkronber: constant expressions always have a R² of 0.0 
 
-      AutoDiff.IParametricCompiledTerm compiledFunc = func.Compile(variables.ToArray(), parameters.ToArray());
+      var parameterEntries = parameters.ToArray(); // order of entries must be the same for x
+      AutoDiff.IParametricCompiledTerm compiledFunc = func.Compile(variables.ToArray(), parameterEntries.Select(kvp => kvp.Value).ToArray());
 
-      List<SymbolicExpressionTreeTerminalNode> terminalNodes = null;
+      List<SymbolicExpressionTreeTerminalNode> terminalNodes = null; // gkronber only used for extraction of initial constants
       if (updateVariableWeights)
         terminalNodes = tree.Root.IterateNodesPrefix().OfType<SymbolicExpressionTreeTerminalNode>().ToList();
       else
-        terminalNodes = new List<SymbolicExpressionTreeTerminalNode>(tree.Root.IterateNodesPrefix().OfType<ConstantTreeNode>());
+        terminalNodes = new List<SymbolicExpressionTreeTerminalNode>
+          (tree.Root.IterateNodesPrefix()
+          .OfType<SymbolicExpressionTreeTerminalNode>()
+          .Where(node => node is ConstantTreeNode || node is FactorVariableTreeNode));
 
       //extract inital constants
       double[] c = new double[variables.Count];
@@ -204,10 +216,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         foreach (var node in terminalNodes) {
           ConstantTreeNode constantTreeNode = node as ConstantTreeNode;
           VariableTreeNode variableTreeNode = node as VariableTreeNode;
+          BinaryFactorVariableTreeNode binFactorVarTreeNode = node as BinaryFactorVariableTreeNode;
+          FactorVariableTreeNode factorVarTreeNode = node as FactorVariableTreeNode;
           if (constantTreeNode != null)
             c[i++] = constantTreeNode.Value;
           else if (updateVariableWeights && variableTreeNode != null)
             c[i++] = variableTreeNode.Weight;
+          else if (updateVariableWeights && binFactorVarTreeNode != null)
+            c[i++] = binFactorVarTreeNode.Weight;
+          else if (factorVarTreeNode != null) {
+            // gkronber: a factorVariableTreeNode holds a category-specific constant therefore we can consider factors to be the same as constants
+            foreach (var w in factorVarTreeNode.Weights) c[i++] = w;
+          }
         }
       }
       double[] originalConstants = (double[])c.Clone();
@@ -215,15 +235,22 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
       alglib.lsfitstate state;
       alglib.lsfitreport rep;
-      int info;
+      int retVal;
 
       IDataset ds = problemData.Dataset;
-      double[,] x = new double[rows.Count(), variableNames.Count];
+      double[,] x = new double[rows.Count(), parameters.Count];
       int row = 0;
       foreach (var r in rows) {
-        for (int col = 0; col < variableNames.Count; col++) {
-          int lag = lags[col];
-          x[row, col] = ds.GetDoubleValue(variableNames[col], r + lag);
+        int col = 0;
+        foreach (var kvp in parameterEntries) {
+          var info = kvp.Key;
+          int lag = info.lag;
+          if (ds.VariableHasType<double>(info.variableName)) {
+            x[row, col] = ds.GetDoubleValue(info.variableName, r + lag);
+          } else if (ds.VariableHasType<string>(info.variableName)) {
+            x[row, col] = ds.GetStringValue(info.variableName, r) == info.variableValue ? 1 : 0;
+          } else throw new InvalidProgramException("found a variable of unknown type");
+          col++;
         }
         row++;
       }
@@ -240,15 +267,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         alglib.lsfitsetcond(state, 0.0, 0.0, maxIterations);
         //alglib.lsfitsetgradientcheck(state, 0.001);
         alglib.lsfitfit(state, function_cx_1_func, function_cx_1_grad, null, null);
-        alglib.lsfitresults(state, out info, out c, out rep);
+        alglib.lsfitresults(state, out retVal, out c, out rep);
       } catch (ArithmeticException) {
         return originalQuality;
       } catch (alglib.alglibexception) {
         return originalQuality;
       }
 
-      //info == -7  => constant optimization failed due to wrong gradient
-      if (info != -7) UpdateConstants(tree, c.Skip(2).ToArray(), updateVariableWeights);
+      //retVal == -7  => constant optimization failed due to wrong gradient
+      if (retVal != -7) UpdateConstants(tree, c.Skip(2).ToArray(), updateVariableWeights);
       var quality = SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.Calculate(interpreter, tree, lowerEstimationLimit, upperEstimationLimit, problemData, rows, applyLinearScaling);
 
       if (!updateConstantsInTree) UpdateConstants(tree, originalConstants.Skip(2).ToArray(), updateVariableWeights);
@@ -264,10 +291,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       foreach (var node in tree.Root.IterateNodesPrefix().OfType<SymbolicExpressionTreeTerminalNode>()) {
         ConstantTreeNode constantTreeNode = node as ConstantTreeNode;
         VariableTreeNode variableTreeNode = node as VariableTreeNode;
+        BinaryFactorVariableTreeNode binFactorVarTreeNode = node as BinaryFactorVariableTreeNode;
+        FactorVariableTreeNode factorVarTreeNode = node as FactorVariableTreeNode;
         if (constantTreeNode != null)
           constantTreeNode.Value = constants[i++];
         else if (updateVariableWeights && variableTreeNode != null)
           variableTreeNode.Weight = constants[i++];
+        else if (updateVariableWeights && binFactorVarTreeNode != null)
+          binFactorVarTreeNode.Weight = constants[i++];
+        else if (factorVarTreeNode != null) {
+          for (int j = 0; j < factorVarTreeNode.Weights.Length; j++)
+            factorVarTreeNode.Weights[j] = constants[i++];
+        }
       }
     }
 
@@ -285,19 +320,21 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       };
     }
 
-    private static bool TryTransformToAutoDiff(ISymbolicExpressionTreeNode node, List<AutoDiff.Variable> variables, List<AutoDiff.Variable> parameters, List<string> variableNames, List<int> lags, bool updateVariableWeights, out AutoDiff.Term term) {
+    private static bool TryTransformToAutoDiff(ISymbolicExpressionTreeNode node,
+      List<AutoDiff.Variable> variables, Dictionary<DataForVariable, AutoDiff.Variable> parameters,
+      bool updateVariableWeights, out AutoDiff.Term term) {
       if (node.Symbol is Constant) {
         var var = new AutoDiff.Variable();
         variables.Add(var);
         term = var;
         return true;
       }
-      if (node.Symbol is Variable) {
-        var varNode = node as VariableTreeNode;
-        var par = new AutoDiff.Variable();
-        parameters.Add(par);
-        variableNames.Add(varNode.VariableName);
-        lags.Add(0);
+      if (node.Symbol is Variable || node.Symbol is BinaryFactorVariable) {
+        var varNode = node as VariableTreeNodeBase;
+        var factorVarNode = node as BinaryFactorVariableTreeNode;
+        // factor variable values are only 0 or 1 and set in x accordingly
+        var varValue = factorVarNode != null ? factorVarNode.VariableValue : string.Empty;
+        var par = FindOrCreateParameter(parameters, varNode.VariableName, varValue);
 
         if (updateVariableWeights) {
           var w = new AutoDiff.Variable();
@@ -308,12 +345,23 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         }
         return true;
       }
+      if (node.Symbol is FactorVariable) {
+        var factorVarNode = node as FactorVariableTreeNode;
+        var products = new List<Term>();
+        foreach (var variableValue in factorVarNode.Symbol.GetVariableValues(factorVarNode.VariableName)) {
+          var par = FindOrCreateParameter(parameters, factorVarNode.VariableName, variableValue);
+
+          var wVar = new AutoDiff.Variable();
+          variables.Add(wVar);
+
+          products.Add(AutoDiff.TermBuilder.Product(wVar, par));
+        }
+        term = AutoDiff.TermBuilder.Sum(products);
+        return true;
+      }
       if (node.Symbol is LaggedVariable) {
         var varNode = node as LaggedVariableTreeNode;
-        var par = new AutoDiff.Variable();
-        parameters.Add(par);
-        variableNames.Add(varNode.VariableName);
-        lags.Add(varNode.Lag);
+        var par = FindOrCreateParameter(parameters, varNode.VariableName, string.Empty, varNode.Lag);
 
         if (updateVariableWeights) {
           var w = new AutoDiff.Variable();
@@ -328,7 +376,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         List<AutoDiff.Term> terms = new List<Term>();
         foreach (var subTree in node.Subtrees) {
           AutoDiff.Term t;
-          if (!TryTransformToAutoDiff(subTree, variables, parameters, variableNames, lags, updateVariableWeights, out t)) {
+          if (!TryTransformToAutoDiff(subTree, variables, parameters, updateVariableWeights, out t)) {
             term = null;
             return false;
           }
@@ -341,7 +389,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         List<AutoDiff.Term> terms = new List<Term>();
         for (int i = 0; i < node.SubtreeCount; i++) {
           AutoDiff.Term t;
-          if (!TryTransformToAutoDiff(node.GetSubtree(i), variables, parameters, variableNames, lags, updateVariableWeights, out t)) {
+          if (!TryTransformToAutoDiff(node.GetSubtree(i), variables, parameters, updateVariableWeights, out t)) {
             term = null;
             return false;
           }
@@ -356,7 +404,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         List<AutoDiff.Term> terms = new List<Term>();
         foreach (var subTree in node.Subtrees) {
           AutoDiff.Term t;
-          if (!TryTransformToAutoDiff(subTree, variables, parameters, variableNames, lags, updateVariableWeights, out t)) {
+          if (!TryTransformToAutoDiff(subTree, variables, parameters, updateVariableWeights, out t)) {
             term = null;
             return false;
           }
@@ -371,7 +419,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         List<AutoDiff.Term> terms = new List<Term>();
         foreach (var subTree in node.Subtrees) {
           AutoDiff.Term t;
-          if (!TryTransformToAutoDiff(subTree, variables, parameters, variableNames, lags, updateVariableWeights, out t)) {
+          if (!TryTransformToAutoDiff(subTree, variables, parameters, updateVariableWeights, out t)) {
             term = null;
             return false;
           }
@@ -383,7 +431,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       }
       if (node.Symbol is Logarithm) {
         AutoDiff.Term t;
-        if (!TryTransformToAutoDiff(node.GetSubtree(0), variables, parameters, variableNames, lags, updateVariableWeights, out t)) {
+        if (!TryTransformToAutoDiff(node.GetSubtree(0), variables, parameters, updateVariableWeights, out t)) {
           term = null;
           return false;
         } else {
@@ -393,7 +441,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       }
       if (node.Symbol is Exponential) {
         AutoDiff.Term t;
-        if (!TryTransformToAutoDiff(node.GetSubtree(0), variables, parameters, variableNames, lags, updateVariableWeights, out t)) {
+        if (!TryTransformToAutoDiff(node.GetSubtree(0), variables, parameters, updateVariableWeights, out t)) {
           term = null;
           return false;
         } else {
@@ -403,7 +451,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       }
       if (node.Symbol is Square) {
         AutoDiff.Term t;
-        if (!TryTransformToAutoDiff(node.GetSubtree(0), variables, parameters, variableNames, lags, updateVariableWeights, out t)) {
+        if (!TryTransformToAutoDiff(node.GetSubtree(0), variables, parameters, updateVariableWeights, out t)) {
           term = null;
           return false;
         } else {
@@ -413,7 +461,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       }
       if (node.Symbol is SquareRoot) {
         AutoDiff.Term t;
-        if (!TryTransformToAutoDiff(node.GetSubtree(0), variables, parameters, variableNames, lags, updateVariableWeights, out t)) {
+        if (!TryTransformToAutoDiff(node.GetSubtree(0), variables, parameters, updateVariableWeights, out t)) {
           term = null;
           return false;
         } else {
@@ -423,7 +471,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       }
       if (node.Symbol is Sine) {
         AutoDiff.Term t;
-        if (!TryTransformToAutoDiff(node.GetSubtree(0), variables, parameters, variableNames, lags, updateVariableWeights, out t)) {
+        if (!TryTransformToAutoDiff(node.GetSubtree(0), variables, parameters, updateVariableWeights, out t)) {
           term = null;
           return false;
         } else {
@@ -433,7 +481,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       }
       if (node.Symbol is Cosine) {
         AutoDiff.Term t;
-        if (!TryTransformToAutoDiff(node.GetSubtree(0), variables, parameters, variableNames, lags, updateVariableWeights, out t)) {
+        if (!TryTransformToAutoDiff(node.GetSubtree(0), variables, parameters, updateVariableWeights, out t)) {
           term = null;
           return false;
         } else {
@@ -443,7 +491,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       }
       if (node.Symbol is Tangent) {
         AutoDiff.Term t;
-        if (!TryTransformToAutoDiff(node.GetSubtree(0), variables, parameters, variableNames, lags, updateVariableWeights, out t)) {
+        if (!TryTransformToAutoDiff(node.GetSubtree(0), variables, parameters, updateVariableWeights, out t)) {
           term = null;
           return false;
         } else {
@@ -453,7 +501,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       }
       if (node.Symbol is Erf) {
         AutoDiff.Term t;
-        if (!TryTransformToAutoDiff(node.GetSubtree(0), variables, parameters, variableNames, lags, updateVariableWeights, out t)) {
+        if (!TryTransformToAutoDiff(node.GetSubtree(0), variables, parameters, updateVariableWeights, out t)) {
           term = null;
           return false;
         } else {
@@ -463,7 +511,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       }
       if (node.Symbol is Norm) {
         AutoDiff.Term t;
-        if (!TryTransformToAutoDiff(node.GetSubtree(0), variables, parameters, variableNames, lags, updateVariableWeights, out t)) {
+        if (!TryTransformToAutoDiff(node.GetSubtree(0), variables, parameters, updateVariableWeights, out t)) {
           term = null;
           return false;
         } else {
@@ -477,7 +525,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         variables.Add(beta);
         variables.Add(alpha);
         AutoDiff.Term branchTerm;
-        if (TryTransformToAutoDiff(node.GetSubtree(0), variables, parameters, variableNames, lags, updateVariableWeights, out branchTerm)) {
+        if (TryTransformToAutoDiff(node.GetSubtree(0), variables, parameters, updateVariableWeights, out branchTerm)) {
           term = branchTerm * alpha + beta;
           return true;
         } else {
@@ -489,11 +537,28 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       return false;
     }
 
+    // for each factor variable value we need a parameter which represents a binary indicator for that variable & value combination
+    // each binary indicator is only necessary once. So we only create a parameter if this combination is not yet available
+    private static Term FindOrCreateParameter(Dictionary<DataForVariable, AutoDiff.Variable> parameters,
+      string varName, string varValue = "", int lag = 0) {
+      var data = new DataForVariable(varName, varValue, lag);
+
+      AutoDiff.Variable par = null;
+      if (!parameters.TryGetValue(data, out par)) {
+        // not found -> create new parameter and entries in names and values lists
+        par = new AutoDiff.Variable();
+        parameters.Add(data, par);
+      }
+      return par;
+    }
+
     public static bool CanOptimizeConstants(ISymbolicExpressionTree tree) {
       var containsUnknownSymbol = (
         from n in tree.Root.GetSubtree(0).IterateNodesPrefix()
         where
          !(n.Symbol is Variable) &&
+         !(n.Symbol is BinaryFactorVariable) &&
+         !(n.Symbol is FactorVariable) &&
          !(n.Symbol is LaggedVariable) &&
          !(n.Symbol is Constant) &&
          !(n.Symbol is Addition) &&
@@ -514,5 +579,32 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       Any();
       return !containsUnknownSymbol;
     }
+
+
+    #region helper class
+    private class DataForVariable {
+      public readonly string variableName;
+      public readonly string variableValue; // for factor vars
+      public readonly int lag;
+
+      public DataForVariable(string varName, string varValue, int lag) {
+        this.variableName = varName;
+        this.variableValue = varValue;
+        this.lag = lag;
+      }
+
+      public override bool Equals(object obj) {
+        var other = obj as DataForVariable;
+        if (other == null) return false;
+        return other.variableName.Equals(this.variableName) &&
+               other.variableValue.Equals(this.variableValue) &&
+               other.lag == this.lag;
+      }
+
+      public override int GetHashCode() {
+        return variableName.GetHashCode() ^ variableValue.GetHashCode() ^ lag;
+      }
+    }
+    #endregion
   }
 }

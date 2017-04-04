@@ -62,13 +62,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       get {
         var variables =
           SymbolicExpressionTree.IterateNodesPrefix()
-            .OfType<VariableTreeNode>()
+            .OfType<IVariableTreeNode>()
             .Select(x => x.VariableName)
             .Distinct();
-        var variableConditions = SymbolicExpressionTree.IterateNodesPrefix()
-          .OfType<VariableConditionTreeNode>().Select(x => x.VariableName).Distinct();
 
-        return variables.Union(variableConditions).OrderBy(x => x);
+        return variables.OrderBy(x => x);
       }
     }
 

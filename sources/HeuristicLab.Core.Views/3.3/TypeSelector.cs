@@ -234,7 +234,8 @@ namespace HeuristicLab.Core.Views {
           else i++;
         }
         return node.Nodes.Count == 0;
-      } if (node.Tag is Type) { // Type node
+      }
+      if (node.Tag is Type) { // Type node
         var text = node.Text;
         if (searchTokens.Any(searchToken => !text.ToLower().Contains(searchToken))) {
           var typeTag = (Type)node.Tag;

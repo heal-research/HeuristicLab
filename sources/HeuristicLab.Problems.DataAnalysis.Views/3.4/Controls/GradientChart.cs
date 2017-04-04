@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
@@ -33,7 +34,7 @@ using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.Visualization.ChartControlsExtensions;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
-  public partial class GradientChart : UserControl {
+  public partial class GradientChart : UserControl, IGradientChart {
     private ModifiableDataset sharedFixedVariables; // used for syncronising variable values between charts
     private ModifiableDataset internalDataset; // holds the x values for each point drawn
 
@@ -318,9 +319,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         calculationPendingLabel.Visible = false;
         if (updateOnFinish)
           Update();
-      }
-      catch (OperationCanceledException) { }
-      catch (AggregateException ae) {
+      } catch (OperationCanceledException) { } catch (AggregateException ae) {
         if (!ae.InnerExceptions.Any(e => e is OperationCanceledException))
           throw;
       }
@@ -346,8 +345,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
       try {
         chart.ChartAreas[0].RecalculateAxesScale();
-      }
-      catch (InvalidOperationException) {
+      } catch (InvalidOperationException) {
         // Can occur if eg. axis min == axis max
       }
     }
@@ -380,13 +378,22 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       for (int i = 0; i < drawingSteps; i++)
         xvalues.Add(xmin + i * step);
 
-      var variables = sharedFixedVariables.DoubleVariables.ToList();
-      internalDataset = new ModifiableDataset(variables,
-        variables.Select(x => x == FreeVariable
-          ? xvalues
-          : Enumerable.Repeat(sharedFixedVariables.GetDoubleValue(x, 0), xvalues.Count).ToList()
-        )
-      );
+      if (sharedFixedVariables == null)
+        return;
+
+      var variables = sharedFixedVariables.VariableNames.ToList();
+      var values = new List<IList>();
+      foreach (var varName in variables) {
+        if (varName == FreeVariable) {
+          values.Add(xvalues);
+        } else if (sharedFixedVariables.VariableHasType<double>(varName)) {
+          values.Add(Enumerable.Repeat(sharedFixedVariables.GetDoubleValue(varName, 0), xvalues.Count).ToList());
+        } else if (sharedFixedVariables.VariableHasType<string>(varName)) {
+          values.Add(Enumerable.Repeat(sharedFixedVariables.GetStringValue(varName, 0), xvalues.Count).ToList());
+        }
+      }
+
+      internalDataset = new ModifiableDataset(variables, values);
     }
 
     private Tuple<Series, Series> CreateSeries(IRegressionSolution solution) {
@@ -551,14 +558,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     }
 
     private static bool SolutionsCompatible(IEnumerable<IRegressionSolution> solutions) {
-      foreach (var solution1 in solutions) {
-        var variables1 = solution1.ProblemData.Dataset.DoubleVariables;
-        foreach (var solution2 in solutions) {
-          if (solution1 == solution2)
-            continue;
-          var variables2 = solution2.ProblemData.Dataset.DoubleVariables;
-          if (!variables1.All(variables2.Contains))
-            return false;
+      var refSolution = solutions.First();
+      var refSolVars = refSolution.ProblemData.Dataset.VariableNames;
+      foreach (var solution in solutions.Skip(1)) {
+        var variables1 = solution.ProblemData.Dataset.VariableNames;
+        if (!variables1.All(refSolVars.Contains))
+          return false;
+
+        foreach (var factorVar in variables1.Where(solution.ProblemData.Dataset.VariableHasType<string>)) {
+          var distinctVals = refSolution.ProblemData.Dataset.GetStringValues(factorVar).Distinct();
+          if (solution.ProblemData.Dataset.GetStringValues(factorVar).Any(val => !distinctVals.Contains(val))) return false;
         }
       }
       return true;
@@ -607,15 +616,24 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
     private void sharedFixedVariables_ItemChanged(object o, EventArgs<int, int> e) {
       if (o != sharedFixedVariables) return;
-      var variables = sharedFixedVariables.DoubleVariables.ToList();
+      var variables = sharedFixedVariables.VariableNames.ToList();
       var rowIndex = e.Value;
       var columnIndex = e.Value2;
 
       var variableName = variables[columnIndex];
       if (variableName == FreeVariable) return;
-      var v = sharedFixedVariables.GetDoubleValue(variableName, rowIndex);
-      var values = new List<double>(Enumerable.Repeat(v, DrawingSteps));
-      internalDataset.ReplaceVariable(variableName, values);
+      if (internalDataset.VariableHasType<double>(variableName)) {
+        var v = sharedFixedVariables.GetDoubleValue(variableName, rowIndex);
+        var values = new List<double>(Enumerable.Repeat(v, internalDataset.Rows));
+        internalDataset.ReplaceVariable(variableName, values);
+      } else if (internalDataset.VariableHasType<string>(variableName)) {
+        var v = sharedFixedVariables.GetStringValue(variableName, rowIndex);
+        var values = new List<String>(Enumerable.Repeat(v, internalDataset.Rows));
+        internalDataset.ReplaceVariable(variableName, values);
+      } else {
+        // unsupported type 
+        throw new NotSupportedException();
+      }
     }
 
     private void chart_AnnotationPositionChanging(object sender, AnnotationPositionChangingEventArgs e) {
@@ -634,7 +652,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     private void chart_AnnotationPositionChanged(object sender, EventArgs e) {
       UpdateCursor();
     }
-    void UpdateCursor() {
+    private void UpdateCursor() {
       var x = VerticalLineAnnotation.X;
       sharedFixedVariables.SetVariableValue(x, FreeVariable, 0);
 

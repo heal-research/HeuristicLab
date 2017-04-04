@@ -64,8 +64,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
         variableWeightTextBox.Visible = false;
         constantValueLabel.Visible = true;
         constantValueTextBox.Visible = true;
-      } else if (symbol is Variable) {
-        var variableSymbol = (Variable)symbol;
+      } else if (symbol is VariableBase) {
+        var variableSymbol = (VariableBase)symbol;
         if (variableSymbol.VariableNames.Any()) {
           foreach (var name in variableSymbol.VariableNames)
             variableNamesCombo.Items.Add(name);

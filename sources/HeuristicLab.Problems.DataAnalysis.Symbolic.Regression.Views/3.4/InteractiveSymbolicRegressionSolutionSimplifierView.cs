@@ -47,17 +47,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
       Content.Model = model;
     }
 
-    protected override Dictionary<ISymbolicExpressionTreeNode, double> CalculateReplacementValues(ISymbolicExpressionTree tree) {
-      return tree.Root.GetSubtree(0).GetSubtree(0).IterateNodesPrefix().ToDictionary(
-        n => n,
-        n => calculator.CalculateReplacementValue(Content.Model, n, Content.ProblemData, Content.ProblemData.TrainingIndices)
-        );
-    }
-
-    protected override Dictionary<ISymbolicExpressionTreeNode, double> CalculateImpactValues(ISymbolicExpressionTree tree) {
-      var values = CalculateImpactAndReplacementValues(tree);
-      return values.ToDictionary(x => x.Key, x => x.Value.Item1);
-    }
 
     protected override Dictionary<ISymbolicExpressionTreeNode, Tuple<double, double>> CalculateImpactAndReplacementValues(ISymbolicExpressionTree tree) {
       var impactAndReplacementValues = new Dictionary<ISymbolicExpressionTreeNode, Tuple<double, double>>();

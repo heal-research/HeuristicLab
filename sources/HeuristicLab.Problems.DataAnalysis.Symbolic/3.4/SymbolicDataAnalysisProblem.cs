@@ -207,18 +207,34 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     protected virtual void UpdateGrammar() {
-      SymbolicExpressionTreeGrammar.MaximumFunctionArguments = MaximumFunctionArguments.Value;
-      SymbolicExpressionTreeGrammar.MaximumFunctionDefinitions = MaximumFunctionDefinitions.Value;
-      foreach (var varSymbol in SymbolicExpressionTreeGrammar.Symbols.OfType<HeuristicLab.Problems.DataAnalysis.Symbolic.Variable>()) {
+      var problemData = ProblemData;
+      var ds = problemData.Dataset;
+      var grammar = SymbolicExpressionTreeGrammar;
+      grammar.MaximumFunctionArguments = MaximumFunctionArguments.Value;
+      grammar.MaximumFunctionDefinitions = MaximumFunctionDefinitions.Value;
+      foreach (var varSymbol in grammar.Symbols.OfType<HeuristicLab.Problems.DataAnalysis.Symbolic.VariableBase>()) {
         if (!varSymbol.Fixed) {
-          varSymbol.AllVariableNames = ProblemData.InputVariables.Select(x => x.Value);
-          varSymbol.VariableNames = ProblemData.AllowedInputVariables;
+          varSymbol.AllVariableNames = problemData.InputVariables.Select(x => x.Value).Where(x => ds.VariableHasType<double>(x));
+          varSymbol.VariableNames = problemData.AllowedInputVariables.Where(x => ds.VariableHasType<double>(x));
         }
       }
-      foreach (var varSymbol in SymbolicExpressionTreeGrammar.Symbols.OfType<HeuristicLab.Problems.DataAnalysis.Symbolic.VariableCondition>()) {
-        if (!varSymbol.Fixed) {
-          varSymbol.AllVariableNames = ProblemData.InputVariables.Select(x => x.Value);
-          varSymbol.VariableNames = ProblemData.AllowedInputVariables;
+      foreach (var factorSymbol in grammar.Symbols.OfType<BinaryFactorVariable>()) {
+        if (!factorSymbol.Fixed) {
+          factorSymbol.AllVariableNames = problemData.InputVariables.Select(x => x.Value).Where(x => ds.VariableHasType<string>(x));
+          factorSymbol.VariableNames = problemData.AllowedInputVariables.Where(x => ds.VariableHasType<string>(x));
+          factorSymbol.VariableValues = factorSymbol.VariableNames
+            .ToDictionary(varName => varName, varName => ds.GetStringValues(varName).Distinct().ToList());
+        }
+      }
+      foreach (var factorSymbol in grammar.Symbols.OfType<FactorVariable>()) {
+        if (!factorSymbol.Fixed) {
+          factorSymbol.AllVariableNames = problemData.InputVariables.Select(x => x.Value).Where(x => ds.VariableHasType<string>(x));
+          factorSymbol.VariableNames = problemData.AllowedInputVariables.Where(x => ds.VariableHasType<string>(x));
+          factorSymbol.VariableValues = factorSymbol.VariableNames
+            .ToDictionary(varName => varName,
+            varName => ds.GetStringValues(varName).Distinct()
+            .Select((n, i) => Tuple.Create(n, i))
+            .ToDictionary(tup => tup.Item1, tup => tup.Item2));
         }
       }
     }

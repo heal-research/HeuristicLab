@@ -65,6 +65,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private static MethodInfo norm = thisType.GetMethod("Norm", new Type[] { typeof(double) });
     private static MethodInfo erf = thisType.GetMethod("Erf", new Type[] { typeof(double) });
     private static MethodInfo bessel = thisType.GetMethod("Bessel", new Type[] { typeof(double) });
+    private static MethodInfo string_eq = typeof(string).GetMethod("Equals", new Type[] { typeof(string) });
     #endregion
 
     private const string CheckExpressionsWithIntervalArithmeticParameterName = "CheckExpressionsWithIntervalArithmetic";

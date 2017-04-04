@@ -25,7 +25,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableClass]
-  public sealed class LaggedVariableTreeNode : VariableTreeNode, ILaggedTreeNode {
+  public sealed class LaggedVariableTreeNode : VariableTreeNodeBase, ILaggedTreeNode {
     public new LaggedVariable Symbol {
       get { return (LaggedVariable)base.Symbol; }
     }

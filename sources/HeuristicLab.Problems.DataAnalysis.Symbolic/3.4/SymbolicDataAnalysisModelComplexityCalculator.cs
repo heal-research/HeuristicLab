@@ -38,10 +38,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         case OpCodes.Constant: {
             return 1;
           }
-        case OpCodes.Variable: {
+        case OpCodes.Variable:
+        case OpCodes.BinaryFactorVariable:
+        case OpCodes.FactorVariable: {
             return 2;
           }
-        case OpCodes.Add: 
+        case OpCodes.Add:
         case OpCodes.Sub: {
             double complexity = 0;
             for (int i = 0; i < node.SubtreeCount; i++) {
@@ -49,7 +51,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             }
             return complexity;
           }
-        case OpCodes.Mul: 
+        case OpCodes.Mul:
         case OpCodes.Div: {
             double complexity = 1;
             for (int i = 0; i < node.SubtreeCount; i++) {
@@ -59,9 +61,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             return complexity;
           }
         case OpCodes.Sin:
-        case OpCodes.Cos: 
+        case OpCodes.Cos:
         case OpCodes.Tan:
-        case OpCodes.Exp: 
+        case OpCodes.Exp:
         case OpCodes.Log: {
             double complexity = CalculateComplexity(node.GetSubtree(0));
             return Math.Pow(2.0, complexity);
@@ -74,7 +76,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             double complexity = CalculateComplexity(node.GetSubtree(0));
             return complexity * complexity * complexity;
           }
-        case OpCodes.Power:          
+        case OpCodes.Power:
         case OpCodes.Root: {
             double complexity = CalculateComplexity(node.GetSubtree(0));
             var exponent = node.GetSubtree(1) as ConstantTreeNode;

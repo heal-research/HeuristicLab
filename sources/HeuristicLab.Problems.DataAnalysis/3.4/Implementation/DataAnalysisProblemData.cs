@@ -151,12 +151,13 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     protected DataAnalysisProblemData(IDataset dataset, IEnumerable<string> allowedInputVariables, IEnumerable<ITransformation> transformations = null) {
       if (dataset == null) throw new ArgumentNullException("The dataset must not be null.");
-      if (allowedInputVariables == null) throw new ArgumentNullException("The allowedInputVariables must not be null.");
+      if (allowedInputVariables == null) throw new ArgumentNullException("The allowed input variables must not be null.");
 
-      if (allowedInputVariables.Except(dataset.DoubleVariables).Any())
-        throw new ArgumentException("All allowed input variables must be present in the dataset and of type double.");
+      if (allowedInputVariables.Except(dataset.DoubleVariables).Except(dataset.StringVariables).Any())
+        throw new ArgumentException("All allowed input variables must be present in the dataset and of type double or string.");
 
-      var inputVariables = new CheckedItemList<StringValue>(dataset.DoubleVariables.Select(x => new StringValue(x)));
+      var variables = dataset.VariableNames.Where(variable => dataset.VariableHasType<double>(variable) || dataset.VariableHasType<string>(variable));
+      var inputVariables = new CheckedItemList<StringValue>(variables.Select(x => new StringValue(x)));
       foreach (StringValue x in inputVariables)
         inputVariables.SetItemCheckedState(x, allowedInputVariables.Contains(x.Value));
 

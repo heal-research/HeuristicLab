@@ -97,11 +97,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataPreprocessingMenuItem.cs" />
-    <Compile Include="PreprocessingChartView.cs">
+    <Compile Include="PreprocessingCheckedVariablesView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="PreprocessingChartView.Designer.cs">
-      <DependentUpon>PreprocessingChartView.cs</DependentUpon>
+    <Compile Include="PreprocessingCheckedVariablesView.Designer.cs">
+      <DependentUpon>PreprocessingCheckedVariablesView.cs</DependentUpon>
     </Compile>
     <Compile Include="PreprocessingFeatureCorrelationView.cs">
       <SubType>UserControl</SubType>
@@ -207,11 +207,11 @@
       <DependentUpon>ManipulationView.cs</DependentUpon>
     </Compile>
     <Compile Include="Plugin.cs" />
-    <Compile Include="PreprocessingCheckedVariablesView.cs">
+    <Compile Include="PreprocessingChartView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="PreprocessingCheckedVariablesView.Designer.cs">
-      <DependentUpon>PreprocessingCheckedVariablesView.cs</DependentUpon>
+    <Compile Include="PreprocessingChartView.Designer.cs">
+      <DependentUpon>PreprocessingChartView.cs</DependentUpon>
     </Compile>
     <Compile Include="PreprocessingCheckedItemListView.cs">
       <SubType>UserControl</SubType>

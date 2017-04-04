@@ -30,42 +30,43 @@ using HeuristicLab.Problems.DataAnalysis;
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
   [Item("OneR Classification Model", "A model that uses intervals for one variable to determine the class.")]
-  public class OneRClassificationModel : ClassificationModel {
+  public sealed class OneRClassificationModel : ClassificationModel {
     public override IEnumerable<string> VariablesUsedForPrediction {
       get { return new[] { Variable }; }
     }
 
     [Storable]
-    protected string variable;
+    private string variable;
     public string Variable {
       get { return variable; }
     }
 
     [Storable]
-    protected double[] splits;
+    private double[] splits;
     public double[] Splits {
       get { return splits; }
     }
 
     [Storable]
-    protected double[] classes;
+    private double[] classes;
     public double[] Classes {
       get { return classes; }
     }
 
     [Storable]
-    protected double missingValuesClass;
+    private double missingValuesClass;
     public double MissingValuesClass {
       get { return missingValuesClass; }
     }
 
     [StorableConstructor]
-    protected OneRClassificationModel(bool deserializing) : base(deserializing) { }
-    protected OneRClassificationModel(OneRClassificationModel original, Cloner cloner)
+    private OneRClassificationModel(bool deserializing) : base(deserializing) { }
+    private OneRClassificationModel(OneRClassificationModel original, Cloner cloner)
       : base(original, cloner) {
       this.variable = (string)original.variable;
       this.splits = (double[])original.splits.Clone();
       this.classes = (double[])original.classes.Clone();
+      this.missingValuesClass = original.missingValuesClass;
     }
     public override IDeepCloneable Clone(Cloner cloner) { return new OneRClassificationModel(this, cloner); }
 
