@@ -73,6 +73,10 @@ namespace HeuristicLab.Tests {
           autoRegressiveSymbol.MinLag = -30;
           autoRegressiveSymbol.MaxLag = -1;
         }
+        if (symbol is VariableBase) {
+          var varSy = symbol as VariableBase;
+          varSy.VariableChangeProbability = 1.0; // backwards compatibility
+        }
       }
 
       var osga = new OffspringSelectionGeneticAlgorithm();
