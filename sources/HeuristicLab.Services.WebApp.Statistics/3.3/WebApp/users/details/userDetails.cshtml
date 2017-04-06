@@ -67,17 +67,17 @@
                     <h3 class="panel-title">Current Jobs</h3>
                 </div>
                 <div class="panel-body">
-                    <table class="table table-hover table-condensed">
+                    <table class="table table-hover table-condensed" ts-wrapper>
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Job Name</th>
-                                <th>Date Created</th>
+                                <th ts-criteria="Name">Job Name</th>
+                                <th ts-criteria="DateCreated">Date Created</th>
                                 <th>Progress</th>
                                 <th></th>
                             </tr>
                         </thead>
-                        <tr ng-repeat="job in jobs">
+                        <tr ng-repeat="job in jobs" ts-repeat>
                             <td>{{$index + 1}}</td>
                             <td>{{job.Name}}</td>
                             <td>{{job.DateCreated | toDate}}</td>
@@ -104,18 +104,18 @@
                     <h3 class="panel-title">Completed Jobs</h3>
                 </div>
                 <div class="panel-body">
-                    <table class="table table-hover table-condensed">
+                    <table class="table table-hover table-condensed" ts-wrapper>
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Job Name</th>
-                                <th>Date Created</th>
-                                <th>Date Completed</th>
-                                <th>Tasks</th>
+                                <th ts-criteria="Name">Job Name</th>
+                                <th ts-criteria="DateCreated">Date Created</th>
+                                <th ts-criteria="DateCompleted">Date Completed</th>
+                                <th ts-criteria="TotalTasks">Tasks</th>
                                 <th></th>
                             </tr>
                         </thead>
-                        <tr ng-repeat="job in completedJobPage.Jobs">
+                        <tr ng-repeat="job in completedJobPage.Jobs" ts-repeat>
                             <td>{{($index + 1)+((completedJobCurPage-1)*(completedJobPageSize))}}</td>
                             <td>{{job.Name}}</td>
                             <td>{{job.DateCreated | toDate}}</td>
