@@ -78,12 +78,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         weight = weight * x;
       }
 
-      if (Symbol.VariableChangeProbability >= 1.0 || random.NextDouble() < Symbol.VariableChangeProbability) {
-        var oldName = variableName;
+      if (Symbol.VariableChangeProbability >= 1.0) {
+        // old behaviour for backwards compatibility
+        #region Backwards compatible code, remove with 3.4
 #pragma warning disable 612, 618
         variableName = Symbol.VariableNames.SelectRandom(random);
 #pragma warning restore 612, 618
+        #endregion
+      } else if (random.NextDouble() < Symbol.VariableChangeProbability) {
+        var oldName = variableName;
+        variableName = Symbol.VariableNames.SampleRandom(random);
         if (oldName != variableName) {
+          // re-initialize weight if the variable is changed
           weight = NormalDistributedRandom.NextDouble(random, Symbol.WeightMu, Symbol.WeightSigma);
         }
       }
