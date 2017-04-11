@@ -23,7 +23,7 @@ using HeuristicLab.MainForm;
 using HeuristicLab.Problems.DataAnalysis.Views;
 
 namespace HeuristicLab.Algorithms.DataAnalysis.Views {
-  [Content(typeof(RandomForestRegressionSolution), true)]
+  [Content(typeof(RandomForestRegressionSolution), false)]
   [View("RandomForestRegressionSolution View")]
   public partial class RandomForestRegressionSolutionView : RegressionSolutionView {
     public RandomForestRegressionSolutionView() {

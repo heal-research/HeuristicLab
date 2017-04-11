@@ -23,7 +23,7 @@ using HeuristicLab.MainForm;
 using HeuristicLab.Problems.DataAnalysis.Views;
 
 namespace HeuristicLab.Algorithms.DataAnalysis.Views {
-  [Content(typeof(GradientBoostedTreesSolution), true)]
+  [Content(typeof(GradientBoostedTreesSolution), false)]
   [View("GradientBoostedTreesSolution View")]
   public partial class GradientBoostedTreesSolutionView : RegressionSolutionView {
     public GradientBoostedTreesSolutionView() {
