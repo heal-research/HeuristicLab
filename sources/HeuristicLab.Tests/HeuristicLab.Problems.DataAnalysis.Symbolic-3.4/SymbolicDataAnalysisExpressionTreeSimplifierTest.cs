@@ -232,7 +232,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
 
 
     private void AssertEqualAfterSimplification(string original, string expected) {
-      var simplifier = new SymbolicDataAnalysisExpressionTreeSimplifier();
+      var simplifier = new TreeSimplifier();
       var formatter = new SymbolicExpressionTreeStringFormatter();
       var importer = new SymbolicExpressionImporter();
       var actualTree = simplifier.Simplify(importer.Import(original));
