@@ -20,7 +20,6 @@
  */
 #endregion
 
-using System;
 using System.Linq;
 using System.Threading;
 using HeuristicLab.Analysis;
@@ -195,6 +194,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       var table = new DataTable("Qualities");
       table.Rows.Add(new DataRow("Loss (train)"));
       table.Rows.Add(new DataRow("Loss (test)"));
+      table.Rows["Loss (train)"].VisualProperties.StartIndexZero = true;
+      table.Rows["Loss (test)"].VisualProperties.StartIndexZero = true;
+
       Results.Add(new Result("Qualities", table));
       var curLoss = new DoubleValue();
       Results.Add(new Result("Loss (train)", curLoss));
@@ -259,7 +261,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
           classificationProblemData.TestPartition.Start = Problem.ProblemData.TestPartition.Start;
           classificationProblemData.TestPartition.End = Problem.ProblemData.TestPartition.End;
 
-          classificationModel.SetThresholdsAndClassValues(new double[] { double.NegativeInfinity, 0.0 }, new []{ 0.0, 1.0 });
+          classificationModel.SetThresholdsAndClassValues(new double[] { double.NegativeInfinity, 0.0 }, new[] { 0.0, 1.0 });
 
 
           var classificationSolution = new DiscriminantFunctionClassificationSolution(classificationModel, classificationProblemData);
