@@ -31,7 +31,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   /// <summary>
   /// Simplifier for symbolic expressions
   /// </summary>
-  public class SymbolicDataAnalysisExpressionTreeSimplifier {
+  public class TreeSimplifier {
     private Addition addSymbol = new Addition();
     private Multiplication mulSymbol = new Multiplication();
     private Division divSymbol = new Division();

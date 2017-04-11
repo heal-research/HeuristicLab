@@ -112,7 +112,7 @@ namespace HeuristicLab.DataPreprocessing {
       success = transformation.Check(data, out errorMsg);
       // don't apply when the check fails
       if (success)
-        return transformation.Apply(data);
+        return transformation.ConfigureAndApply(data);
       else
         return data;
     }

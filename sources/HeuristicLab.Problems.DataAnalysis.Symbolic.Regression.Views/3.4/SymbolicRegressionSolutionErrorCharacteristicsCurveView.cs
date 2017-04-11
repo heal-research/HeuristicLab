@@ -47,9 +47,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
       var problemData = (IRegressionProblemData)ProblemData.Clone();
       if (!problemData.TrainingIndices.Any()) return null; // don't create an LR model if the problem does not have a training set (e.g. loaded into an existing model)
 
-      var usedVariables = Content.Model.SymbolicExpressionTree.IterateNodesPostfix()
-        .OfType<IVariableTreeNode>()
-        .Select(node => node.VariableName).ToArray();
+      var usedVariables = Content.Model.VariablesUsedForPrediction;
 
       var usedDoubleVariables = usedVariables
         .Where(name => problemData.Dataset.VariableHasType<double>(name))

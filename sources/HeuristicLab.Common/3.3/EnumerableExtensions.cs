@@ -87,6 +87,14 @@ namespace HeuristicLab.Common {
       return result;
     }
 
+    public static IEnumerable<T> TakeEvery<T>(this IEnumerable<T> xs, int nth) {
+      int i = 0;
+      foreach (var x in xs) {
+        if (i % nth == 0) yield return x;
+        i++;
+      }
+    }
+
     /// <summary>
     /// Compute the n-ary cartesian product of arbitrarily many sequences: http://blogs.msdn.com/b/ericlippert/archive/2010/06/28/computing-a-cartesian-product-with-linq.aspx
     /// </summary>

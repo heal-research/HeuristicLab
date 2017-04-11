@@ -72,10 +72,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       int nClasses = problemData.ClassNames.Count();
       var doubleVariableNames = allowedInputVariables.Where(dataset.VariableHasType<double>).ToArray();
       var factorVariableNames = allowedInputVariables.Where(dataset.VariableHasType<string>).ToArray();
-      double[,] inputMatrix = AlglibUtil.PrepareInputMatrix(dataset, doubleVariableNames.Concat(new string[] { targetVariable }), rows);
+      double[,] inputMatrix = dataset.ToArray(doubleVariableNames.Concat(new string[] { targetVariable }), rows);
 
-      var factorVariables = AlglibUtil.GetFactorVariableValues(dataset, factorVariableNames, rows);
-      double[,] factorMatrix = AlglibUtil.PrepareInputMatrix(dataset, factorVariables, rows);
+      var factorVariables = dataset.GetFactorVariableValues(factorVariableNames, rows);
+      var factorMatrix = dataset.ToArray(factorVariables, rows);
 
       inputMatrix = factorMatrix.HorzCat(inputMatrix);
 
@@ -93,32 +93,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       alglib.fisherlda(inputMatrix, inputMatrix.GetLength(0), inputMatrix.GetLength(1) - 1, nClasses, out info, out w);
       if (info < 1) throw new ArgumentException("Error in calculation of linear discriminant analysis solution");
 
-      ISymbolicExpressionTree tree = new SymbolicExpressionTree(new ProgramRootSymbol().CreateTreeNode());
-      ISymbolicExpressionTreeNode startNode = new StartSymbol().CreateTreeNode();
-      tree.Root.AddSubtree(startNode);
-      ISymbolicExpressionTreeNode addition = new Addition().CreateTreeNode();
-      startNode.AddSubtree(addition);
-
-      int col = 0;
-      foreach (var kvp in factorVariables) {
-        var varName = kvp.Key;
-        foreach (var cat in kvp.Value) {
-          BinaryFactorVariableTreeNode vNode =
-            (BinaryFactorVariableTreeNode)new HeuristicLab.Problems.DataAnalysis.Symbolic.BinaryFactorVariable().CreateTreeNode();
-          vNode.VariableName = varName;
-          vNode.VariableValue = cat;
-          vNode.Weight = w[col];
-          addition.AddSubtree(vNode);
-          col++;
-        }
-      }
-      foreach (string column in doubleVariableNames) {
-        VariableTreeNode vNode = (VariableTreeNode)new HeuristicLab.Problems.DataAnalysis.Symbolic.Variable().CreateTreeNode();
-        vNode.VariableName = column;
-        vNode.Weight = w[col];
-        addition.AddSubtree(vNode);
-        col++;
-      }
+      var nFactorCoeff = factorMatrix.GetLength(1);
+      var tree = LinearModelToTreeConverter.CreateTree(factorVariables, w.Take(nFactorCoeff).ToArray(),
+        doubleVariableNames, w.Skip(nFactorCoeff).Take(doubleVariableNames.Length).ToArray());
 
       var model = CreateDiscriminantFunctionModel(tree, new SymbolicDataAnalysisExpressionTreeLinearInterpreter(), problemData, rows);
       SymbolicDiscriminantFunctionClassificationSolution solution = new SymbolicDiscriminantFunctionClassificationSolution(model, (IClassificationProblemData)problemData.Clone());

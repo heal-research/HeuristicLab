@@ -32,6 +32,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
     ICheckedItemList<StringValue> InputVariables { get; }
     IEnumerable<string> AllowedInputVariables { get; }
 
+    double[,] AllowedInputsTrainingValues { get; }
+    double[,] AllowedInputsTestValues { get; }
+
     IntRange TrainingPartition { get; }
     IntRange TestPartition { get; }
 

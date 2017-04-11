@@ -43,9 +43,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       var instances = data.TrainingIndices.Count();
       var attributes = data.AllowedInputVariables.Count();
 
-      var ldaDs = AlglibUtil.PrepareInputMatrix(data.Dataset,
-                                                data.AllowedInputVariables.Concat(data.TargetVariable.ToEnumerable()),
-                                                data.TrainingIndices);
+      var ldaDs = data.Dataset.ToArray(
+                                       data.AllowedInputVariables.Concat(data.TargetVariable.ToEnumerable()),
+                                       data.TrainingIndices);
 
       // map class values to sequential natural numbers (required by alglib)
       var uniqueClasses = data.Dataset.GetDoubleValues(data.TargetVariable, data.TrainingIndices)

@@ -75,9 +75,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       IEnumerable<int> rows = problemData.TrainingIndices;
       var doubleVariables = allowedInputVariables.Where(dataset.VariableHasType<double>);
       var factorVariableNames = allowedInputVariables.Where(dataset.VariableHasType<string>);
-      var factorVariables = AlglibUtil.GetFactorVariableValues(dataset, factorVariableNames, rows);
-      double[,] binaryMatrix = AlglibUtil.PrepareInputMatrix(dataset, factorVariables, rows);
-      double[,] doubleVarMatrix = AlglibUtil.PrepareInputMatrix(dataset, doubleVariables.Concat(new string[] { targetVariable }), rows);
+      var factorVariables = dataset.GetFactorVariableValues(factorVariableNames, rows);
+      double[,] binaryMatrix = dataset.ToArray(factorVariables, rows);
+      double[,] doubleVarMatrix = dataset.ToArray(doubleVariables.Concat(new string[] { targetVariable }), rows);
       var inputMatrix = binaryMatrix.HorzCat(doubleVarMatrix);
 
       if (inputMatrix.Cast<double>().Any(x => double.IsNaN(x) || double.IsInfinity(x)))
@@ -97,37 +97,12 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
       alglib.lrunpack(lm, out coefficients, out nFeatures);
 
-      ISymbolicExpressionTree tree = new SymbolicExpressionTree(new ProgramRootSymbol().CreateTreeNode());
-      ISymbolicExpressionTreeNode startNode = new StartSymbol().CreateTreeNode();
-      tree.Root.AddSubtree(startNode);
-      ISymbolicExpressionTreeNode addition = new Addition().CreateTreeNode();
-      startNode.AddSubtree(addition);
-
-      int col = 0;
-      foreach (var kvp in factorVariables) {
-        var varName = kvp.Key;
-        foreach (var cat in kvp.Value) {
-          BinaryFactorVariableTreeNode vNode =
-            (BinaryFactorVariableTreeNode)new HeuristicLab.Problems.DataAnalysis.Symbolic.BinaryFactorVariable().CreateTreeNode();
-          vNode.VariableName = varName;
-          vNode.VariableValue = cat;
-          vNode.Weight = coefficients[col];
-          addition.AddSubtree(vNode);
-          col++;
-        }
-      }
-      foreach (string column in doubleVariables) {
-        VariableTreeNode vNode = (VariableTreeNode)new HeuristicLab.Problems.DataAnalysis.Symbolic.Variable().CreateTreeNode();
-        vNode.VariableName = column;
-        vNode.Weight = coefficients[col];
-        addition.AddSubtree(vNode);
-        col++;
-      }
-
-      ConstantTreeNode cNode = (ConstantTreeNode)new Constant().CreateTreeNode();
-      cNode.Value = coefficients[coefficients.Length - 1];
-      addition.AddSubtree(cNode);
-
+      int nFactorCoeff = binaryMatrix.GetLength(1);
+      int nVarCoeff = doubleVariables.Count();
+      var tree = LinearModelToTreeConverter.CreateTree(factorVariables, coefficients.Take(nFactorCoeff).ToArray(),
+        doubleVariables.ToArray(), coefficients.Skip(nFactorCoeff).Take(nVarCoeff).ToArray(), 
+        @const: coefficients[nFeatures]);
+      
       SymbolicRegressionSolution solution = new SymbolicRegressionSolution(new SymbolicRegressionModel(problemData.TargetVariable, tree, new SymbolicDataAnalysisExpressionTreeLinearInterpreter()), (IRegressionProblemData)problemData.Clone());
       solution.Model.Name = "Linear Regression Model";
       solution.Name = "Linear Regression Solution";

@@ -28,6 +28,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
+  [Obsolete("Use transformation classes in Problems.DataAnalysis instead")]
   [StorableClass]
   [Item(Name = "Scaling", Description = "Contains information about scaling of variables for data-analysis algorithms.")]
   public class Scaling : Item {
