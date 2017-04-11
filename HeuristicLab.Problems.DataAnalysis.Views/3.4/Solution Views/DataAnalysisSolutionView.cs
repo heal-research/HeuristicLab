@@ -28,7 +28,6 @@ using HeuristicLab.Core;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 using HeuristicLab.Optimization;
-using HeuristicLab.Optimization.Views;
 using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.PluginInfrastructure;
 
@@ -96,14 +95,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       }
     }
 
-    protected override void itemsListView_DoubleClick(object sender, EventArgs e) {
+    protected sealed override void itemsListView_DoubleClick(object sender, EventArgs e) {
       if (itemsListView.SelectedItems.Count != 1) return;
 
       IResult result = itemsListView.SelectedItems[0].Tag as IResult;
       Type viewType = itemsListView.SelectedItems[0].Tag as Type;
       if (result != null) {
-        IContentView view = MainFormManager.MainForm.ShowContent(result, typeof(ResultView));
+        IContentView view = MainFormManager.MainForm.ShowContent(result.Value);
         if (view != null) {
+          view.Caption = result.Name;
           view.ReadOnly = ReadOnly;
           view.Locked = Locked;
         }
