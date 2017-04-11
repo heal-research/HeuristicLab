@@ -119,7 +119,7 @@ namespace HeuristicLab.Common {
       var length = BinomialCoefficient(n, k);
 
       for (int i = 0; i < length; ++i) {
-        yield return range.Select(x => elements[x]);
+        yield return range.Select(x => elements[x]).ToArray();
 
         if (i == length - 1) break;
         var m = k - 1;
@@ -149,12 +149,16 @@ namespace HeuristicLab.Common {
       if (k == n) return 1;
       if (k > n - k)
         k = n - k;
-      long r = 1;
-      for (long d = 1; d <= k; d++) {
-        r *= n--;
-        r /= d;
+
+      // enable explicit overflow checking for very large coefficients
+      checked {
+        long r = 1;
+        for (long d = 1; d <= k; d++) {
+          r *= n--;
+          r /= d;
+        }
+        return r;
       }
-      return r;
     }
   }
 }
