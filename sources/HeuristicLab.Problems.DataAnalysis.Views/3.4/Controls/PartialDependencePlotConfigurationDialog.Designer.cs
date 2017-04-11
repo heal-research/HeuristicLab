@@ -20,7 +20,7 @@
 #endregion
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
-  partial class GradientChartConfigurationDialog {
+  partial class PartialDependencePlotConfigurationDialog {
     /// <summary>
     /// Required designer variable.
     /// </summary>
@@ -271,7 +271,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       this.errorProvider.BlinkStyle = System.Windows.Forms.ErrorBlinkStyle.NeverBlink;
       this.errorProvider.ContainerControl = this;
       // 
-      // GradientChartConfigurationDialog
+      // PartialDependencePlotConfigurationDialog
       // 
       this.AcceptButton = this.applyButton;
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
@@ -285,12 +285,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
       this.MaximizeBox = false;
       this.MinimizeBox = false;
-      this.Name = "GradientChartConfigurationDialog";
+      this.Name = "PartialDependencePlotConfigurationDialog";
       this.ShowIcon = false;
       this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
       this.Text = "Configure Gradient Chart";
       this.TopMost = true;
-      this.Shown += new System.EventHandler(this.GradientChartConfigurationDialog_Shown);
+      this.Shown += new System.EventHandler(this.PartialDependencePlotConfigurationDialog_Shown);
       this.xAxisGroupBox.ResumeLayout(false);
       this.xAxisGroupBox.PerformLayout();
       this.yAxisGroupBox.ResumeLayout(false);

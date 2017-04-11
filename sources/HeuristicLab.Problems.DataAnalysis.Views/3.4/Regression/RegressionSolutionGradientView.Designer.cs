@@ -45,7 +45,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
     /// </summary>
     private void InitializeComponent() {
       this.splitContainer = new System.Windows.Forms.SplitContainer();
-      this.gradientChart = new HeuristicLab.Problems.DataAnalysis.Views.GradientChart();
+      this._partialDependencePlot = new HeuristicLab.Problems.DataAnalysis.Views.PartialDependencePlot();
       this.configurationGroupBox = new System.Windows.Forms.GroupBox();
       this.tableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
@@ -64,7 +64,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       // 
       // splitContainer.Panel1
       // 
-      this.splitContainer.Panel1.Controls.Add(this.gradientChart);
+      this.splitContainer.Panel1.Controls.Add(this._partialDependencePlot);
       // 
       // splitContainer.Panel2
       // 
@@ -73,18 +73,18 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       this.splitContainer.SplitterDistance = 376;
       this.splitContainer.TabIndex = 1;
       // 
-      // gradientChart
+      // _partialDependencePlot
       // 
-      this.gradientChart.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.gradientChart.DrawingSteps = 1000;
-      this.gradientChart.Location = new System.Drawing.Point(0, 0);
-      this.gradientChart.Name = "gradientChart";
-      this.gradientChart.ShowCursor = false;
-      this.gradientChart.ShowLegend = false;
-      this.gradientChart.Size = new System.Drawing.Size(715, 376);
-      this.gradientChart.TabIndex = 0;
-      this.gradientChart.XAxisTicks = 10;
-      this.gradientChart.YAxisTicks = 5;
+      this._partialDependencePlot.Dock = System.Windows.Forms.DockStyle.Fill;
+      this._partialDependencePlot.DrawingSteps = 1000;
+      this._partialDependencePlot.Location = new System.Drawing.Point(0, 0);
+      this._partialDependencePlot.Name = "_partialDependencePlot";
+      this._partialDependencePlot.ShowCursor = false;
+      this._partialDependencePlot.ShowLegend = false;
+      this._partialDependencePlot.Size = new System.Drawing.Size(715, 376);
+      this._partialDependencePlot.TabIndex = 0;
+      this._partialDependencePlot.XAxisTicks = 10;
+      this._partialDependencePlot.YAxisTicks = 5;
       // 
       // configurationGroupBox
       // 
@@ -130,6 +130,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
     private System.Windows.Forms.SplitContainer splitContainer;
     private System.Windows.Forms.GroupBox configurationGroupBox;
     private System.Windows.Forms.TableLayoutPanel tableLayoutPanel;
-    private Problems.DataAnalysis.Views.GradientChart gradientChart;
+    private Problems.DataAnalysis.Views.PartialDependencePlot _partialDependencePlot;
   }
 }

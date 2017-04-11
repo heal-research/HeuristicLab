@@ -1,5 +1,5 @@
 ﻿namespace HeuristicLab.Problems.DataAnalysis.Views {
-  partial class GradientChart {
+  partial class FactorPartialDependencePlot {
     /// <summary> 
     /// Required designer variable.
     /// </summary>
@@ -29,11 +29,14 @@
       System.Windows.Forms.DataVisualization.Charting.StripLine stripLine1 = new System.Windows.Forms.DataVisualization.Charting.StripLine();
       System.Windows.Forms.DataVisualization.Charting.StripLine stripLine2 = new System.Windows.Forms.DataVisualization.Charting.StripLine();
       System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+      System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+      System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
+      System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
+      System.Windows.Forms.DataVisualization.Charting.Series series4 = new System.Windows.Forms.DataVisualization.Charting.Series();
       System.Windows.Forms.DataVisualization.Charting.Title title1 = new System.Windows.Forms.DataVisualization.Charting.Title();
       this.calculationPendingLabel = new System.Windows.Forms.Label();
       this.calculationPendingTimer = new System.Windows.Forms.Timer(this.components);
       this.chart = new HeuristicLab.Visualization.ChartControlsExtensions.EnhancedChart();
-      this.configurationButton = new System.Windows.Forms.Button();
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
       ((System.ComponentModel.ISupportInitialize)(this.chart)).BeginInit();
       this.SuspendLayout();
@@ -67,6 +70,7 @@
       verticalLineAnnotation1.Name = "VerticalLineAnnotation";
       verticalLineAnnotation1.YAxisName = "ChartArea\\rY";
       this.chart.Annotations.Add(verticalLineAnnotation1);
+      chartArea1.AxisX.IsMarginVisible = false;
       stripLine1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(223)))), ((int)(((byte)(58)))), ((int)(((byte)(2)))));
       stripLine2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(223)))), ((int)(((byte)(58)))), ((int)(((byte)(2)))));
       chartArea1.AxisX.StripLines.Add(stripLine1);
@@ -86,6 +90,36 @@
       this.chart.Legends.Add(legend1);
       this.chart.Location = new System.Drawing.Point(0, 0);
       this.chart.Name = "chart";
+      series1.BorderColor = System.Drawing.Color.Red;
+      series1.BorderDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dash;
+      series1.ChartArea = "ChartArea";
+      series1.IsVisibleInLegend = false;
+      series1.Legend = "Default";
+      series1.Name = "Series1";
+      series1.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.String;
+      series1.YValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Double;
+      series2.ChartArea = "ChartArea";
+      series2.IsVisibleInLegend = false;
+      series2.Legend = "Default";
+      series2.Name = "Series2";
+      series2.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.String;
+      series3.ChartArea = "ChartArea";
+      series3.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.BoxPlot;
+      series3.Color = System.Drawing.Color.Black;
+      series3.Legend = "Default";
+      series3.Name = "Series3";
+      series3.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.String;
+      series3.YValuesPerPoint = 6;
+      series4.ChartArea = "ChartArea";
+      series4.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.BoxPlot;
+      series4.Legend = "Default";
+      series4.Name = "Series4";
+      series4.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.String;
+      series4.YValuesPerPoint = 6;
+      this.chart.Series.Add(series1);
+      this.chart.Series.Add(series2);
+      this.chart.Series.Add(series3);
+      this.chart.Series.Add(series4);
       this.chart.Size = new System.Drawing.Size(453, 308);
       this.chart.TabIndex = 0;
       title1.Alignment = System.Drawing.ContentAlignment.TopCenter;
@@ -97,39 +131,21 @@
       this.chart.Titles.Add(title1);
       this.chart.SelectionRangeChanged += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.CursorEventArgs>(this.chart_SelectionRangeChanged);
       this.chart.PostPaint += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.ChartPaintEventArgs>(this.chart_PostPaint);
-      this.chart.AnnotationPositionChanged += new System.EventHandler(this.chart_AnnotationPositionChanged);
-      this.chart.AnnotationPositionChanging += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.AnnotationPositionChangingEventArgs>(this.chart_AnnotationPositionChanging);
       this.chart.DragDrop += new System.Windows.Forms.DragEventHandler(this.chart_DragDrop);
       this.chart.DragEnter += new System.Windows.Forms.DragEventHandler(this.chart_DragEnter);
-      this.chart.MouseMove += new System.Windows.Forms.MouseEventHandler(this.chart_MouseMove);
+      this.chart.MouseClick += new System.Windows.Forms.MouseEventHandler(this.chart_MouseClick);
       this.chart.Resize += new System.EventHandler(this.chart_Resize);
       // 
-      // configurationButton
-      // 
-      this.configurationButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.configurationButton.AutoSize = true;
-      this.configurationButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Properties;
-      this.configurationButton.Location = new System.Drawing.Point(426, 3);
-      this.configurationButton.Name = "configurationButton";
-      this.configurationButton.Size = new System.Drawing.Size(24, 24);
-      this.configurationButton.TabIndex = 2;
-      this.configurationButton.TabStop = false;
-      this.toolTip.SetToolTip(this.configurationButton, "Configuration");
-      this.configurationButton.UseVisualStyleBackColor = true;
-      this.configurationButton.Click += new System.EventHandler(this.config_Click);
-      // 
-      // GradientChart
+      // FactorPartialDependencePlot
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.Controls.Add(this.configurationButton);
       this.Controls.Add(this.calculationPendingLabel);
       this.Controls.Add(this.chart);
-      this.Name = "GradientChart";
+      this.Name = "FactorPartialDependencePlot";
       this.Size = new System.Drawing.Size(453, 308);
       ((System.ComponentModel.ISupportInitialize)(this.chart)).EndInit();
       this.ResumeLayout(false);
-      this.PerformLayout();
 
     }
 
@@ -138,7 +154,6 @@
     private HeuristicLab.Visualization.ChartControlsExtensions.EnhancedChart chart;
     private System.Windows.Forms.Label calculationPendingLabel;
     private System.Windows.Forms.Timer calculationPendingTimer;
-    private System.Windows.Forms.Button configurationButton;
     private System.Windows.Forms.ToolTip toolTip;
   }
 }

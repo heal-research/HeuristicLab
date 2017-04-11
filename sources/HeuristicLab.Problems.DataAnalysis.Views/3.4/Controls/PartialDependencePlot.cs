@@ -34,7 +34,7 @@ using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.Visualization.ChartControlsExtensions;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
-  public partial class GradientChart : UserControl, IGradientChart {
+  public partial class PartialDependencePlot : UserControl, IPartialDependencePlot {
     private ModifiableDataset sharedFixedVariables; // used for syncronising variable values between charts
     private ModifiableDataset internalDataset; // holds the x values for each point drawn
 
@@ -45,7 +45,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     private readonly Dictionary<IRegressionSolution, Series> ciSeriesCache;
 
     private readonly ToolStripMenuItem configToolStripMenuItem;
-    private readonly GradientChartConfigurationDialog configurationDialog;
+    private readonly PartialDependencePlotConfigurationDialog configurationDialog;
 
     #region Properties
     public string XAxisTitle {
@@ -209,7 +209,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
     public event EventHandler ChartPostPaint;
 
-    public GradientChart() {
+    public PartialDependencePlot() {
       InitializeComponent();
 
       solutions = new List<IRegressionSolution>();
@@ -230,12 +230,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       configToolStripMenuItem.Click += config_Click;
       chart.ContextMenuStrip.Items.Add(new ToolStripSeparator());
       chart.ContextMenuStrip.Items.Add(configToolStripMenuItem);
-      configurationDialog = new GradientChartConfigurationDialog(this);
+      configurationDialog = new PartialDependencePlotConfigurationDialog(this);
 
-      Disposed += GradientChart_Disposed;
+      Disposed += Control_Disposed;
     }
 
-    private void GradientChart_Disposed(object sender, EventArgs e) {
+    private void Control_Disposed(object sender, EventArgs e) {
       if (cancelCurrentRecalculateSource != null)
         cancelCurrentRecalculateSource.Cancel();
     }

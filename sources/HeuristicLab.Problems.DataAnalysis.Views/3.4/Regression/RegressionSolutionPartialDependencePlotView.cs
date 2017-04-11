@@ -32,10 +32,10 @@ using HeuristicLab.MainForm;
 using HeuristicLab.Visualization.ChartControlsExtensions;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
-  [View("Target Response Gradients")]
+  [View("Partial Dependence Plots")]
   [Content(typeof(IRegressionSolution))]
-  public partial class RegressionSolutionTargetResponseGradientView : DataAnalysisSolutionEvaluationView {
-    private readonly Dictionary<string, IGradientChart> gradientCharts;
+  public partial class RegressionSolutionPartialDependencePlotView : DataAnalysisSolutionEvaluationView {
+    private readonly Dictionary<string, IPartialDependencePlot> partialDependencePlots;
     private readonly Dictionary<string, DensityChart> densityCharts;
     private readonly Dictionary<string, Panel> groupingPanels;
     private ModifiableDataset sharedFixedVariables;
@@ -49,8 +49,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
           yield return item.Text;
       }
     }
-    private IEnumerable<IGradientChart> VisibleGradientCharts {
-      get { return VisibleVariables.Select(v => gradientCharts[v]); }
+    private IEnumerable<IPartialDependencePlot> VisiblePartialDependencePlots {
+      get { return VisibleVariables.Select(v => partialDependencePlots[v]); }
     }
     private IEnumerable<DensityChart> VisibleDensityCharts {
       get { return VisibleVariables.Select(v => densityCharts[v]); }
@@ -59,9 +59,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       get { return VisibleVariables.Select(v => groupingPanels[v]); }
     }
 
-    public RegressionSolutionTargetResponseGradientView() {
+    public RegressionSolutionPartialDependencePlotView() {
       InitializeComponent();
-      gradientCharts = new Dictionary<string, IGradientChart>();
+      partialDependencePlots = new Dictionary<string, IPartialDependencePlot>();
       densityCharts = new Dictionary<string, DensityChart>();
       groupingPanels = new Dictionary<string, Panel>();
 
@@ -136,38 +136,38 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
 
       // create controls
-      gradientCharts.Clear();
+      partialDependencePlots.Clear();
       densityCharts.Clear();
       groupingPanels.Clear();
       foreach (var variableName in doubleVariables) {
-        var gradientChart = CreateGradientChart(variableName, sharedFixedVariables);
-        gradientCharts.Add(variableName, gradientChart);
+        var plot = CreatePartialDependencePlot(variableName, sharedFixedVariables);
+        partialDependencePlots.Add(variableName, plot);
 
         var densityChart = new DensityChart() {
           Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right,
           Margin = Padding.Empty,
           Height = 12,
           Visible = false,
-          Top = (int)(gradientChart.Height * 0.1),
+          Top = (int)(plot.Height * 0.1),
         };
         densityCharts.Add(variableName, densityChart);
 
-        gradientChart.ZoomChanged += (o, e) => {
-          var gradient = (GradientChart)o;
-          var density = densityCharts[gradient.FreeVariable];
-          density.Visible = densityComboBox.SelectedIndex != 0 && !gradient.IsZoomed;
+        plot.ZoomChanged += (o, e) => {
+          var pdp = (PartialDependencePlot)o;
+          var density = densityCharts[pdp.FreeVariable];
+          density.Visible = densityComboBox.SelectedIndex != 0 && !pdp.IsZoomed;
           if (density.Visible)
-            UpdateDensityChart(density, gradient.FreeVariable);
+            UpdateDensityChart(density, pdp.FreeVariable);
         };
-        gradientChart.SizeChanged += (o, e) => {
-          var gradient = (GradientChart)o;
-          var density = densityCharts[gradient.FreeVariable];
-          density.Top = (int)(gradient.Height * 0.1);
+        plot.SizeChanged += (o, e) => {
+          var pdp = (PartialDependencePlot)o;
+          var density = densityCharts[pdp.FreeVariable];
+          density.Top = (int)(pdp.Height * 0.1);
         };
 
         // Initially, the inner plot areas are not initialized for hidden charts (scollpanel, ...)
         // This event handler listens for the paint event once (where everything is already initialized) to do some manual layouting.
-        gradientChart.ChartPostPaint += OnGradientChartPostPaint;
+        plot.ChartPostPaint += OnPartialDependencePlotPostPaint;
 
         var panel = new Panel() {
           Dock = DockStyle.Fill,
@@ -176,37 +176,37 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         };
 
         panel.Controls.Add(densityChart);
-        panel.Controls.Add(gradientChart);
+        panel.Controls.Add(plot);
         groupingPanels.Add(variableName, panel);
       }
       foreach (var variableName in factorVariables) {
-        var gradientChart = CreateFactorGradientChart(variableName, sharedFixedVariables);
-        gradientCharts.Add(variableName, gradientChart);
+        var plot = CreateFactorPartialDependencePlot(variableName, sharedFixedVariables);
+        partialDependencePlots.Add(variableName, plot);
 
         var densityChart = new DensityChart() {
           Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right,
           Margin = Padding.Empty,
           Height = 12,
           Visible = false,
-          Top = (int)(gradientChart.Height * 0.1),
+          Top = (int)(plot.Height * 0.1),
         };
         densityCharts.Add(variableName, densityChart);
-        gradientChart.ZoomChanged += (o, e) => {
-          var gradient = (FactorGradientChart)o;
-          var density = densityCharts[gradient.FreeVariable];
-          density.Visible = densityComboBox.SelectedIndex != 0 && !gradient.IsZoomed;
+        plot.ZoomChanged += (o, e) => {
+          var pdp = (FactorPartialDependencePlot)o;
+          var density = densityCharts[pdp.FreeVariable];
+          density.Visible = densityComboBox.SelectedIndex != 0 && !pdp.IsZoomed;
           if (density.Visible)
-            UpdateDensityChart(density, gradient.FreeVariable);
+            UpdateDensityChart(density, pdp.FreeVariable);
         };
-        gradientChart.SizeChanged += (o, e) => {
-          var gradient = (FactorGradientChart)o;
-          var density = densityCharts[gradient.FreeVariable];
-          density.Top = (int)(gradient.Height * 0.1);
+        plot.SizeChanged += (o, e) => {
+          var pdp = (FactorPartialDependencePlot)o;
+          var density = densityCharts[pdp.FreeVariable];
+          density.Top = (int)(pdp.Height * 0.1);
         };
 
         // Initially, the inner plot areas are not initialized for hidden charts (scollpanel, ...)
         // This event handler listens for the paint event once (where everything is already initialized) to do some manual layouting.
-        gradientChart.ChartPostPaint += OnFactorGradientChartPostPaint;
+        plot.ChartPostPaint += OnFactorPartialDependencePlotPostPaint;
 
         var panel = new Panel() {
           Dock = DockStyle.Fill,
@@ -215,7 +215,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         };
 
         panel.Controls.Add(densityChart);
-        panel.Controls.Add(gradientChart);
+        panel.Controls.Add(plot);
         groupingPanels.Add(variableName, panel);
       }
       // update variable list
@@ -236,7 +236,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     private void SharedFixedVariables_ItemChanged(object sender, EventArgs<int, int> e) {
       double yValue = Content.Model.GetEstimatedValues(sharedFixedVariables, new[] { 0 }).Single();
       string title = Content.ProblemData.TargetVariable + ": " + yValue.ToString("G5", CultureInfo.CurrentCulture);
-      foreach (var chart in gradientCharts.Values) {
+      foreach (var chart in partialDependencePlots.Values) {
         if (!string.IsNullOrEmpty(chart.YAxisTitle)) { // only show title for first column in grid
           chart.YAxisTitle = title;
         }
@@ -244,49 +244,49 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     }
 
 
-    private void OnGradientChartPostPaint(object o, EventArgs e) {
-      var gradient = (GradientChart)o;
-      var density = densityCharts[gradient.FreeVariable];
+    private void OnPartialDependencePlotPostPaint(object o, EventArgs e) {
+      var plot = (PartialDependencePlot)o;
+      var density = densityCharts[plot.FreeVariable];
 
-      density.Width = gradient.Width;
+      density.Width = plot.Width;
 
-      var gcPlotPosition = gradient.InnerPlotPosition;
-      density.Left = (int)(gcPlotPosition.X / 100.0 * gradient.Width);
-      density.Width = (int)(gcPlotPosition.Width / 100.0 * gradient.Width);
-      gradient.UpdateTitlePosition();
+      var gcPlotPosition = plot.InnerPlotPosition;
+      density.Left = (int)(gcPlotPosition.X / 100.0 * plot.Width);
+      density.Width = (int)(gcPlotPosition.Width / 100.0 * plot.Width);
+      plot.UpdateTitlePosition();
 
       // removed after succesful layouting due to performance reasons
       if (gcPlotPosition.Width != 0)
-        gradient.ChartPostPaint -= OnGradientChartPostPaint;
+        plot.ChartPostPaint -= OnPartialDependencePlotPostPaint;
     }
 
-    private void OnFactorGradientChartPostPaint(object o, EventArgs e) {
-      var gradient = (FactorGradientChart)o;
-      var density = densityCharts[gradient.FreeVariable];
+    private void OnFactorPartialDependencePlotPostPaint(object o, EventArgs e) {
+      var plot = (FactorPartialDependencePlot)o;
+      var density = densityCharts[plot.FreeVariable];
 
-      density.Width = gradient.Width;
+      density.Width = plot.Width;
 
-      var gcPlotPosition = gradient.InnerPlotPosition;
-      density.Left = (int)(gcPlotPosition.X / 100.0 * gradient.Width);
-      density.Width = (int)(gcPlotPosition.Width / 100.0 * gradient.Width);
-      gradient.UpdateTitlePosition();
+      var gcPlotPosition = plot.InnerPlotPosition;
+      density.Left = (int)(gcPlotPosition.X / 100.0 * plot.Width);
+      density.Width = (int)(gcPlotPosition.Width / 100.0 * plot.Width);
+      plot.UpdateTitlePosition();
 
       // removed after succesful layouting due to performance reasons
       if (gcPlotPosition.Width != 0)
-        gradient.ChartPostPaint -= OnFactorGradientChartPostPaint;
+        plot.ChartPostPaint -= OnFactorPartialDependencePlotPostPaint;
     }
 
     private async void RecalculateAndRelayoutCharts() {
       foreach (var variable in VisibleVariables) {
-        var gradientChart = gradientCharts[variable];
-        await gradientChart.RecalculateAsync(false, false);
+        var plot = partialDependencePlots[variable];
+        await plot.RecalculateAsync(false, false);
       }
-      gradientChartTableLayout.SuspendLayout();
+      partialDependencePlotTableLayout.SuspendLayout();
       SetupYAxis();
       ReOrderControls();
       SetStyles();
-      gradientChartTableLayout.ResumeLayout();
-      gradientChartTableLayout.Refresh();
+      partialDependencePlotTableLayout.ResumeLayout();
+      partialDependencePlotTableLayout.Refresh();
       foreach (var variable in VisibleVariables) {
         DensityChart densityChart;
         if (densityCharts.TryGetValue(variable, out densityChart)) {
@@ -294,8 +294,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         }
       }
     }
-    private GradientChart CreateGradientChart(string variableName, ModifiableDataset sharedFixedVariables) {
-      var gradientChart = new GradientChart {
+    private PartialDependencePlot CreatePartialDependencePlot(string variableName, ModifiableDataset sharedFixedVariables) {
+      var plot = new PartialDependencePlot {
         Dock = DockStyle.Fill,
         Margin = Padding.Empty,
         ShowLegend = false,
@@ -303,9 +303,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         ShowConfigButton = false,
         YAxisTicks = 5,
       };
-      gradientChart.VariableValueChanged += async (o, e) => {
-        var recalculations = VisibleGradientCharts
-          .Except(new[] { (IGradientChart)o })
+      plot.VariableValueChanged += async (o, e) => {
+        var recalculations = VisiblePartialDependencePlots
+          .Except(new[] { (IPartialDependencePlot)o })
           .Select(async chart => {
             await chart.RecalculateAsync(updateOnFinish: false, resetYAxis: false);
           }).ToList();
@@ -314,22 +314,22 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         if (recalculations.All(t => t.IsCompleted))
           SetupYAxis();
       };
-      gradientChart.Configure(new[] { Content }, sharedFixedVariables, variableName, Points);
-      gradientChart.SolutionAdded += gradientChart_SolutionAdded;
-      gradientChart.SolutionRemoved += gradientChart_SolutionRemoved;
-      return gradientChart;
+      plot.Configure(new[] { Content }, sharedFixedVariables, variableName, Points);
+      plot.SolutionAdded += partialDependencePlot_SolutionAdded;
+      plot.SolutionRemoved += partialDependencePlot_SolutionRemoved;
+      return plot;
     }
-    private FactorGradientChart CreateFactorGradientChart(string variableName, ModifiableDataset sharedFixedVariables) {
-      var gradientChart = new FactorGradientChart {
+    private FactorPartialDependencePlot CreateFactorPartialDependencePlot(string variableName, ModifiableDataset sharedFixedVariables) {
+      var plot = new FactorPartialDependencePlot {
         Dock = DockStyle.Fill,
         Margin = Padding.Empty,
         ShowLegend = false,
         ShowCursor = true,
         YAxisTicks = 5,
       };
-      gradientChart.VariableValueChanged += async (o, e) => {
-        var recalculations = VisibleGradientCharts
-          .Except(new[] { (FactorGradientChart)o })
+      plot.VariableValueChanged += async (o, e) => {
+        var recalculations = VisiblePartialDependencePlots
+          .Except(new[] { (FactorPartialDependencePlot)o })
           .Select(async chart => {
             await chart.RecalculateAsync(updateOnFinish: false, resetYAxis: false);
           }).ToList();
@@ -339,16 +339,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
           SetupYAxis();
       };
       var variableValues = Content.ProblemData.Dataset.GetStringValues(variableName).Distinct().OrderBy(n => n).ToList();
-      gradientChart.Configure(new[] { Content }, sharedFixedVariables, variableName, variableValues);
-      gradientChart.SolutionAdded += gradientChart_SolutionAdded;
-      gradientChart.SolutionRemoved += gradientChart_SolutionRemoved;
-      return gradientChart;
+      plot.Configure(new[] { Content }, sharedFixedVariables, variableName, variableValues);
+      plot.SolutionAdded += partialDependencePlot_SolutionAdded;
+      plot.SolutionRemoved += partialDependencePlot_SolutionRemoved;
+      return plot;
     }
     private void SetupYAxis() {
       double axisMin, axisMax;
       if (automaticYAxisCheckBox.Checked) {
         double min = double.MaxValue, max = double.MinValue;
-        foreach (var chart in VisibleGradientCharts) {
+        foreach (var chart in VisiblePartialDependencePlots) {
           if (chart.YMin < min) min = chart.YMin;
           if (chart.YMax > max) max = chart.YMax;
         }
@@ -360,7 +360,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         axisMax = limitView.Content.Upper;
       }
 
-      foreach (var chart in VisibleGradientCharts) {
+      foreach (var chart in VisiblePartialDependencePlots) {
         chart.FixedYAxisMin = axisMin;
         chart.FixedYAxisMax = axisMax;
       }
@@ -369,7 +369,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     // reorder chart controls so that they always appear in the same order as in the list view
     // the table layout containing the controls should be suspended before calling this method
     private void ReOrderControls() {
-      var tl = gradientChartTableLayout;
+      var tl = partialDependencePlotTableLayout;
       tl.Controls.Clear();
       int row = 0, column = 0;
       double yValue = Content.Model.GetEstimatedValues(sharedFixedVariables, new[] { 0 }).Single();
@@ -379,7 +379,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         var chartsPanel = groupingPanels[v];
         tl.Controls.Add(chartsPanel, column, row);
 
-        var chart = gradientCharts[v];
+        var chart = partialDependencePlots[v];
         chart.YAxisTitle = column == 0 ? title : string.Empty;
         column++;
 
@@ -391,7 +391,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     }
 
     private void SetStyles() {
-      var tl = gradientChartTableLayout;
+      var tl = partialDependencePlotTableLayout;
       tl.RowStyles.Clear();
       tl.ColumnStyles.Clear();
       int numVariables = VisibleVariables.Count();
@@ -411,17 +411,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         tl.RowStyles.Add(new RowStyle(SizeType.Absolute, rowHeight));
     }
 
-    private async void gradientChart_SolutionAdded(object sender, EventArgs<IRegressionSolution> e) {
+    private async void partialDependencePlot_SolutionAdded(object sender, EventArgs<IRegressionSolution> e) {
       var solution = e.Value;
-      foreach (var chart in gradientCharts.Values) {
+      foreach (var chart in partialDependencePlots.Values) {
         if (sender == chart) continue;
         await chart.AddSolutionAsync(solution);
       }
     }
 
-    private async void gradientChart_SolutionRemoved(object sender, EventArgs<IRegressionSolution> e) {
+    private async void partialDependencePlot_SolutionRemoved(object sender, EventArgs<IRegressionSolution> e) {
       var solution = e.Value;
-      foreach (var chart in gradientCharts.Values) {
+      foreach (var chart in partialDependencePlots.Values) {
         if (sender == chart) continue;
         await chart.RemoveSolutionAsync(solution);
       }
@@ -430,14 +430,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     private async void variableListView_ItemChecked(object sender, ItemCheckedEventArgs e) {
       var item = e.Item;
       var variable = item.Text;
-      var gradientChart = gradientCharts[variable];
+      var plot = partialDependencePlots[variable];
       var chartsPanel = groupingPanels[variable];
-      var tl = gradientChartTableLayout;
+      var tl = partialDependencePlotTableLayout;
 
       tl.SuspendLayout();
       if (item.Checked) {
         tl.Controls.Add(chartsPanel);
-        await gradientChart.RecalculateAsync(false, false);
+        await plot.RecalculateAsync(false, false);
       } else {
         tl.Controls.Remove(chartsPanel);
       }
@@ -455,7 +455,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     private void automaticYAxisCheckBox_CheckedChanged(object sender, EventArgs e) {
       limitView.ReadOnly = automaticYAxisCheckBox.Checked;
       SetupYAxis();
-      gradientChartTableLayout.Refresh();
+      partialDependencePlotTableLayout.Refresh();
       densityComboBox_SelectedIndexChanged(this, EventArgs.Empty); // necessary to realign the density plots
     }
 
@@ -463,7 +463,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       if (automaticYAxisCheckBox.Checked)
         return;
       SetupYAxis();
-      gradientChartTableLayout.Refresh();
+      partialDependencePlotTableLayout.Refresh();
       densityComboBox_SelectedIndexChanged(this, EventArgs.Empty); // necessary to realign the density plots
     }
 
@@ -481,7 +481,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         foreach (var entry in densityCharts) {
           var variableName = entry.Key;
           var densityChart = entry.Value;
-          if (!VisibleVariables.Contains(variableName) || gradientCharts[variableName].IsZoomed)
+          if (!VisibleVariables.Contains(variableName) || partialDependencePlots[variableName].IsZoomed)
             continue;
 
           UpdateDensityChart(densityChart, variableName, indices);
@@ -503,37 +503,37 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       }
       if (Content.ProblemData.Dataset.VariableHasType<double>(variable)) {
         var data = Content.ProblemData.Dataset.GetDoubleValues(variable, indices).ToList();
-        var gradientChart = gradientCharts[variable] as GradientChart;
-        if (gradientChart != null) {
-          var min = gradientChart.FixedXAxisMin;
-          var max = gradientChart.FixedXAxisMax;
-          var buckets = gradientChart.DrawingSteps;
+        var plot = partialDependencePlots[variable] as PartialDependencePlot;
+        if (plot != null) {
+          var min = plot.FixedXAxisMin;
+          var max = plot.FixedXAxisMax;
+          var buckets = plot.DrawingSteps;
           if (min.HasValue && max.HasValue) {
             densityChart.UpdateChart(data, min.Value, max.Value, buckets);
-            densityChart.Width = gradientChart.Width;
+            densityChart.Width = plot.Width;
 
-            var gcPlotPosition = gradientChart.InnerPlotPosition;
-            densityChart.Left = (int)(gcPlotPosition.X / 100.0 * gradientChart.Width);
-            densityChart.Width = (int)(gcPlotPosition.Width / 100.0 * gradientChart.Width);
+            var gcPlotPosition = plot.InnerPlotPosition;
+            densityChart.Left = (int)(gcPlotPosition.X / 100.0 * plot.Width);
+            densityChart.Width = (int)(gcPlotPosition.Width / 100.0 * plot.Width);
 
             densityChart.Visible = true;
           }
-          gradientChart.UpdateTitlePosition();
+          plot.UpdateTitlePosition();
         }
       } else if (Content.ProblemData.Dataset.VariableHasType<string>(variable)) {
         var data = Content.ProblemData.Dataset.GetStringValues(variable).ToList();
-        var gradientChart = gradientCharts[variable] as FactorGradientChart;
-        if (gradientChart != null) {
+        var plot = partialDependencePlots[variable] as FactorPartialDependencePlot;
+        if (plot != null) {
           densityChart.UpdateChart(data);
-          densityChart.Width = gradientChart.Width;
+          densityChart.Width = plot.Width;
 
-          var gcPlotPosition = gradientChart.InnerPlotPosition;
-          densityChart.Left = (int)(gcPlotPosition.X / 100.0 * gradientChart.Width);
-          densityChart.Width = (int)(gcPlotPosition.Width / 100.0 * gradientChart.Width);
+          var gcPlotPosition = plot.InnerPlotPosition;
+          densityChart.Left = (int)(gcPlotPosition.X / 100.0 * plot.Width);
+          densityChart.Width = (int)(gcPlotPosition.Width / 100.0 * plot.Width);
 
           densityChart.Visible = true;
 
-          gradientChart.UpdateTitlePosition();
+          plot.UpdateTitlePosition();
         }
       }
     }
@@ -542,7 +542,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       MaxColumns = (int)columnsNumericUpDown.Value;
       int columns = Math.Min(VisibleVariables.Count(), MaxColumns);
       if (columns > 0) {
-        var tl = gradientChartTableLayout;
+        var tl = partialDependencePlotTableLayout;
         MaxColumns = columns;
         tl.SuspendLayout();
         ReOrderControls();
@@ -555,11 +555,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
     private async void solution_ModelChanged(object sender, EventArgs e) {
       foreach (var variable in VisibleVariables) {
-        var gradientChart = gradientCharts[variable];
+        var pdp = partialDependencePlots[variable];
         var densityChart = densityCharts[variable];
         // recalculate and refresh
-        await gradientChart.RecalculateAsync(false, false);
-        gradientChart.Refresh();
+        await pdp.RecalculateAsync(false, false);
+        pdp.Refresh();
         UpdateDensityChart(densityChart, variable);
       }
     }
