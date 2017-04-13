@@ -73,7 +73,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
           message += duplicateVariableName + Environment.NewLine;
         throw new ArgumentException(message);
       }
-
+      DatasetUtil.ValidateInputData(variableValues); // the validation call checks if every values IList is actually a list of the supported type
       rows = variableValues.First().Count;
       this.variableNames = new List<string>(variableNames);
       this.variableValues = new Dictionary<string, IList>(this.variableNames.Count);
