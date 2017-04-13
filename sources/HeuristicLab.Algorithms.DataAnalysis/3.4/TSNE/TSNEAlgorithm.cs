@@ -197,8 +197,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private TSNEAlgorithm(bool deserializing) : base(deserializing) { }
 
     private TSNEAlgorithm(TSNEAlgorithm original, Cloner cloner) : base(original, cloner) {
+      if(original.dataRowNames!=null)
       this.dataRowNames = new Dictionary<string, List<int>>(original.dataRowNames);
-      this.dataRows = original.dataRows.ToDictionary(kvp => kvp.Key, kvp => cloner.Clone(kvp.Value));
+      if (original.dataRows != null)
+        this.dataRows = original.dataRows.ToDictionary(kvp => kvp.Key, kvp => cloner.Clone(kvp.Value));
       if (original.state != null)
         this.state = cloner.Clone(original.state);
       this.iter = original.iter;
