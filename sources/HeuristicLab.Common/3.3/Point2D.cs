@@ -25,7 +25,7 @@ using System.Globalization;
 
 namespace HeuristicLab.Common {
   [Serializable]
-  public struct Point2D<T> where T : struct {
+  public struct Point2D<T> where T : struct, IEquatable<T> {
     public static readonly Point2D<T> Empty = new Point2D<T>();
 
     private T x;
@@ -37,18 +37,24 @@ namespace HeuristicLab.Common {
       get { return y; }
     }
 
+    private object tag;
+    public object Tag {
+      get { return tag; }
+    }
+
     [Browsable(false)]
     public bool IsEmpty {
       get { return Equals(Empty); }
     }
 
-    public Point2D(T x, T y) {
+    public Point2D(T x, T y, object tag = null) {
       this.x = x;
       this.y = y;
+      this.tag = tag;
     }
 
     public static bool operator ==(Point2D<T> left, Point2D<T> right) {
-      return left.x.Equals(right.x) && left.y.Equals(right.y);
+      return left.x.Equals(right.x) && left.y.Equals(right.y) && left.tag == right.tag;
     }
     public static bool operator !=(Point2D<T> left, Point2D<T> right) {
       return !(left == right);
@@ -58,7 +64,8 @@ namespace HeuristicLab.Common {
       if (!(obj is Point2D<T>))
         return false;
       Point2D<T> point = (Point2D<T>)obj;
-      return x.Equals(point.x) && y.Equals(point.y) && GetType().Equals(point.GetType());
+      return GetType() == point.GetType() && x.Equals(point.x) && y.Equals(point.y) &&
+             ((tag != null && tag.Equals(point.tag)) || tag == point.tag);
     }
     public override int GetHashCode() {
       return base.GetHashCode();

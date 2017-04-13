@@ -28,6 +28,7 @@ using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
+using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Analysis.Views {
@@ -121,11 +122,11 @@ namespace HeuristicLab.Analysis.Views {
     protected virtual void AddScatterPlotDataRows(IEnumerable<ScatterPlotDataRow> rows) {
       foreach (var row in rows) {
         RegisterScatterPlotDataRowEvents(row);
-        Series series = new Series(row.Name) {
-          Tag = row
-        };
+        Series series = new Series(row.Name) { Tag = row };
+
         if (row.VisualProperties.DisplayName.Trim() != String.Empty) series.LegendText = row.VisualProperties.DisplayName;
         else series.LegendText = row.Name;
+
         var regressionSeries = new Series(row.Name + "_Regression") {
           Tag = row,
           ChartType = SeriesChartType.Line,
@@ -133,9 +134,11 @@ namespace HeuristicLab.Analysis.Views {
           IsVisibleInLegend = false,
           Color = Color.Transparent // to avoid auto color assignment via color palette 
         };
+
         seriesToRegressionSeriesTable.Add(series, regressionSeries);
         ConfigureSeries(series, regressionSeries, row);
         FillSeriesWithRowValues(series, row);
+
         chart.Series.Add(series);
         chart.Series.Add(regressionSeries);
         FillRegressionSeries(regressionSeries, row);
@@ -438,6 +441,21 @@ namespace HeuristicLab.Analysis.Views {
     #endregion
 
     #region Chart Event Handlers
+    private void chart_MouseDoubleClick(object sender, MouseEventArgs e) {
+      HitTestResult result = chart.HitTest(e.X, e.Y,ChartElementType.DataPoint);
+      if (result.ChartElementType != ChartElementType.DataPoint) return;
+
+      var series = result.Series;
+      var dataPoint = series.Points[result.PointIndex];
+      var tag = dataPoint.Tag;
+      var content = tag as IContent;
+
+      if (tag == null) return;
+      if (content == null) return;
+
+      MainFormManager.MainForm.ShowContent(content);
+    }
+
     private void chart_MouseDown(object sender, MouseEventArgs e) {
       HitTestResult result = chart.HitTest(e.X, e.Y);
       if (result.ChartElementType == ChartElementType.LegendItem) {
@@ -510,6 +528,7 @@ namespace HeuristicLab.Analysis.Views {
           point.XValue = value.X;
           point.YValues = new double[] { value.Y };
         }
+        point.Tag = value.Tag;
         series.Points.Add(point);
         if (value.X != 0.0f)
           zerosOnly = false;
@@ -603,9 +622,9 @@ namespace HeuristicLab.Analysis.Views {
       // covariation
       double cov = sxy / n - sx * sy / n / n;
       // standard error of x
-      double sigmaX = Math.Sqrt(sxx / n -  sx * sx / n / n);
+      double sigmaX = Math.Sqrt(sxx / n - sx * sx / n / n);
       // standard error of y
-      double sigmaY = Math.Sqrt(syy / n -  sy * sy / n / n);
+      double sigmaY = Math.Sqrt(syy / n - sy * sy / n / n);
 
       // correlation
       return cov / sigmaX / sigmaY;
