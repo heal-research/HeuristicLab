@@ -196,6 +196,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
     #endregion
 
     #region GUI events
+    private void shuffleSamplesCheckBox_CheckedChanged(object sender, EventArgs e) {
+      Content.ShuffleSamples.Value = shuffleSamplesCheckBox.Checked;
+    }
     private void foldsNumericUpDown_Validated(object sender, EventArgs e) {
       if (foldsNumericUpDown.Text == string.Empty)
         foldsNumericUpDown.Text = foldsNumericUpDown.Value.ToString();
@@ -237,8 +240,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       if (algorithmTypeSelectorDialog.ShowDialog(this) == DialogResult.OK) {
         try {
           Content.Algorithm = (IAlgorithm)algorithmTypeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType();
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
           ErrorHandling.ShowErrorDialog(this, ex);
         }
       }
@@ -249,7 +251,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       if (openFileDialog.ShowDialog(this) == DialogResult.OK) {
         algorithmTabControl.Enabled = false;
 
-        ContentManager.LoadAsync(openFileDialog.FileName, delegate(IStorableContent content, Exception error) {
+        ContentManager.LoadAsync(openFileDialog.FileName, delegate (IStorableContent content, Exception error) {
           try {
             if (error != null) throw error;
             IAlgorithm algorithm = content as IAlgorithm;
@@ -257,12 +259,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
               MessageBox.Show(this, "The selected file does not contain an algorithm or the problem of the algorithm is not a DataAnalysisProblem.", "Invalid File", MessageBoxButtons.OK, MessageBoxIcon.Error);
             else
               Content.Algorithm = algorithm;
-          }
-          catch (Exception ex) {
+          } catch (Exception ex) {
             ErrorHandling.ShowErrorDialog(this, ex);
-          }
-          finally {
-            Invoke(new Action(delegate() {
+          } finally {
+            Invoke(new Action(delegate () {
               algorithmTabControl.Enabled = true;
             }));
           }
@@ -288,7 +288,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
         newProblemButton.Enabled = openProblemButton.Enabled = false;
         algorithmProblemViewHost.Enabled = false;
 
-        ContentManager.LoadAsync(openFileDialog.FileName, delegate(IStorableContent content, Exception error) {
+        ContentManager.LoadAsync(openFileDialog.FileName, delegate (IStorableContent content, Exception error) {
           try {
             if (error != null) throw error;
             IDataAnalysisProblem problem = content as IDataAnalysisProblem;
@@ -297,12 +297,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
                 MessageBox.Show(this, "The selected file does not contain a DataAnalysisProblem problem.", "Invalid File", MessageBoxButtons.OK, MessageBoxIcon.Error)));
             else
               Content.Problem = problem;
-          }
-          catch (Exception ex) {
+          } catch (Exception ex) {
             Invoke(new Action(() => ErrorHandling.ShowErrorDialog(this, ex)));
-          }
-          finally {
-            Invoke(new Action(delegate() {
+          } finally {
+            Invoke(new Action(delegate () {
               algorithmProblemViewHost.Enabled = true;
               newProblemButton.Enabled = openProblemButton.Enabled = true;
             }));
@@ -356,6 +354,5 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       if (Content != null) Content.StoreAlgorithmInEachRun = storeAlgorithmInEachRunCheckBox.Checked;
     }
     #endregion
-
   }
 }

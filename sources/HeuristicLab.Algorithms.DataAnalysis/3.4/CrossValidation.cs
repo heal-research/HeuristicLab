@@ -32,6 +32,7 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
+using HeuristicLab.Random;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [Item("Cross Validation (CV)", "Cross-validation wrapper for data analysis algorithms.")]
@@ -55,6 +56,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       numberOfWorkers = new IntValue(1);
       samplesStart = new IntValue(0);
       samplesEnd = new IntValue(0);
+      shuffleSamples = new BoolValue(false);
       storeAlgorithmInEachRun = false;
 
       RegisterEvents();
@@ -88,6 +90,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       numberOfWorkers = cloner.Clone(original.numberOfWorkers);
       samplesStart = cloner.Clone(original.samplesStart);
       samplesEnd = cloner.Clone(original.samplesEnd);
+      shuffleSamples = cloner.Clone(original.shuffleSamples);
       RegisterEvents();
       if (Algorithm != null) RegisterAlgorithmEvents();
     }
@@ -169,7 +172,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public ResultCollection Results {
       get { return results; }
     }
-
+    [Storable]
+    private BoolValue shuffleSamples;
+    public BoolValue ShuffleSamples {
+      get { return shuffleSamples; }
+    }
     [Storable]
     private IntValue folds;
     public IntValue Folds {
@@ -273,9 +280,16 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         //create cloned algorithms
         if (clonedAlgorithms.Count == 0) {
           int testSamplesCount = (SamplesEnd.Value - SamplesStart.Value) / Folds.Value;
-
+          IDataset shuffledDataset = null;
           for (int i = 0; i < Folds.Value; i++) {
-            IAlgorithm clonedAlgorithm = (IAlgorithm)algorithm.Clone();
+            var cloner = new Cloner();
+            if (ShuffleSamples.Value) {
+              var dataAnalysisProblem = (IDataAnalysisProblem)algorithm.Problem;
+              var dataset = (Dataset)dataAnalysisProblem.ProblemData.Dataset;
+              shuffledDataset = shuffledDataset ?? dataset.Shuffle(new FastRandom());
+              cloner.RegisterClonedObject(dataset, shuffledDataset);
+            }
+            IAlgorithm clonedAlgorithm = cloner.Clone(Algorithm);
             clonedAlgorithm.Name = algorithm.Name + " Fold " + i;
             IDataAnalysisProblem problem = clonedAlgorithm.Problem as IDataAnalysisProblem;
             ISymbolicDataAnalysisProblem symbolicProblem = problem as ISymbolicDataAnalysisProblem;
@@ -589,11 +603,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     private void Algorithm_ExecutionStateChanged(object sender, EventArgs e) {
       switch (Algorithm.ExecutionState) {
-        case ExecutionState.Prepared: OnPrepared();
+        case ExecutionState.Prepared:
+          OnPrepared();
           break;
         case ExecutionState.Started: throw new InvalidOperationException("Algorithm template can not be started.");
         case ExecutionState.Paused: throw new InvalidOperationException("Algorithm template can not be paused.");
-        case ExecutionState.Stopped: OnStopped();
+        case ExecutionState.Stopped:
+          OnStopped();
           break;
       }
     }
@@ -723,6 +739,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       Dictionary<string, IItem> collectedResults = new Dictionary<string, IItem>();
       AggregateResultValues(collectedResults);
       results.AddRange(collectedResults.Select(x => new Result(x.Key, x.Value)).Cast<IResult>().ToArray());
+      clonedAlgorithms.Clear();
       runsCounter++;
       runs.Add(new Run(string.Format("{0} Run {1}", Name, runsCounter), this));
       ExecutionState = ExecutionState.Stopped;
