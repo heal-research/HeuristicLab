@@ -320,6 +320,19 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="TimeSeries\AutoregressiveModeling.cs" />
+    <Compile Include="TSNE\Distances\DistanceBase.cs" />
+    <Compile Include="TSNE\Distances\EuclideanDistance.cs" />
+    <Compile Include="TSNE\Distances\IndexedItemDistance.cs" />
+    <Compile Include="TSNE\Distances\InnerProductDistance.cs" />
+    <Compile Include="TSNE\Interfaces\IDistance.cs" />
+    <Compile Include="TSNE\Interfaces\ISpacePartitioningTree.cs" />
+    <Compile Include="TSNE\Interfaces\IVantagePointTree.cs" />
+    <Compile Include="TSNE\PriorityQueue.cs" />
+    <Compile Include="TSNE\SpacePartitioningTree.cs" />
+    <Compile Include="TSNE\TSNEAlgorithm.cs" />
+    <Compile Include="TSNE\TSNEStatic.cs" />
+    <Compile Include="TSNE\TSNEUtils.cs" />
+    <Compile Include="TSNE\VantagePointTree.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\HeuristicLab.Algorithms.GradientDescent\3.3\HeuristicLab.Algorithms.GradientDescent-3.3.csproj">
