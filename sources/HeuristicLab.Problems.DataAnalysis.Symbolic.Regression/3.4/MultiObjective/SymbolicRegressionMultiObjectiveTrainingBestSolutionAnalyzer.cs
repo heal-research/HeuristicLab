@@ -143,13 +143,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       }
 
       qualityToTreeSize.Rows.Clear();
-      var trainingRow = new ScatterPlotDataRow("Training NMSE", "", sizeParetoFront.Select(x => new Point2D<double>(x.Model.SymbolicExpressionTree.Length, x.TrainingNormalizedMeanSquaredError)));
+      var trainingRow = new ScatterPlotDataRow("Training NMSE", "", sizeParetoFront.Select(x => new Point2D<double>(x.Model.SymbolicExpressionTree.Length, x.TrainingNormalizedMeanSquaredError, x)));
       trainingRow.VisualProperties.PointSize = 8;
       qualityToTreeSize.Rows.Add(trainingRow);
 
       if (AnalyzeTestError) {
         var testRow = new ScatterPlotDataRow("Test NMSE", "",
-          sizeParetoFront.Select(x => new Point2D<double>(x.Model.SymbolicExpressionTree.Length, x.TestNormalizedMeanSquaredError)));
+          sizeParetoFront.Select(x => new Point2D<double>(x.Model.SymbolicExpressionTree.Length, x.TestNormalizedMeanSquaredError, x)));
         testRow.VisualProperties.PointSize = 8;
         qualityToTreeSize.Rows.Add(testRow);
       }
