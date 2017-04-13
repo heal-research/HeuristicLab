@@ -45,7 +45,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CrossValidationView));
       this.startButton = new System.Windows.Forms.Button();
       this.pauseButton = new System.Windows.Forms.Button();
       this.stopButton = new System.Windows.Forms.Button();
@@ -110,7 +109,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       // startButton
       // 
       this.startButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.startButton.Image = ((System.Drawing.Image)(resources.GetObject("startButton.Image")));
+      this.startButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Play;
       this.startButton.Location = new System.Drawing.Point(0, 514);
       this.startButton.Name = "startButton";
       this.startButton.Size = new System.Drawing.Size(24, 24);
@@ -121,7 +120,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       // pauseButton
       // 
       this.pauseButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.pauseButton.Image = ((System.Drawing.Image)(resources.GetObject("pauseButton.Image")));
+      this.pauseButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Pause;
       this.pauseButton.Location = new System.Drawing.Point(30, 514);
       this.pauseButton.Name = "pauseButton";
       this.pauseButton.Size = new System.Drawing.Size(24, 24);
@@ -132,7 +131,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       // stopButton
       // 
       this.stopButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.stopButton.Image = ((System.Drawing.Image)(resources.GetObject("stopButton.Image")));
+      this.stopButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Stop;
       this.stopButton.Location = new System.Drawing.Point(60, 514);
       this.stopButton.Name = "stopButton";
       this.stopButton.Size = new System.Drawing.Size(24, 24);
@@ -143,7 +142,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       // resetButton
       // 
       this.resetButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.resetButton.Image = ((System.Drawing.Image)(resources.GetObject("resetButton.Image")));
+      this.resetButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Restart;
       this.resetButton.Location = new System.Drawing.Point(90, 514);
       this.resetButton.Name = "resetButton";
       this.resetButton.Size = new System.Drawing.Size(24, 24);
@@ -172,7 +171,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       // 
       // foldsNumericUpDown
       // 
-      this.foldsNumericUpDown.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.foldsNumericUpDown.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.foldsNumericUpDown.Location = new System.Drawing.Point(55, 26);
       this.foldsNumericUpDown.Maximum = new decimal(new int[] {
@@ -208,7 +207,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       // 
       // workersNumericUpDown
       // 
-      this.workersNumericUpDown.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.workersNumericUpDown.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.workersNumericUpDown.Location = new System.Drawing.Point(55, 0);
       this.workersNumericUpDown.Maximum = new decimal(new int[] {
@@ -262,7 +261,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       // 
       // samplesEndStringConvertibleValueView
       // 
-      this.samplesEndStringConvertibleValueView.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.samplesEndStringConvertibleValueView.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.samplesEndStringConvertibleValueView.Caption = "StringConvertibleValue View";
       this.samplesEndStringConvertibleValueView.Content = null;
@@ -275,7 +274,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       // 
       // samplesStartStringConvertibleValueView
       // 
-      this.samplesStartStringConvertibleValueView.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.samplesStartStringConvertibleValueView.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.samplesStartStringConvertibleValueView.Caption = "StringConvertibleValue View";
       this.samplesStartStringConvertibleValueView.Content = null;
@@ -289,8 +288,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       // tabControl
       // 
       this.tabControl.AllowDrop = true;
-      this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+      this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.tabControl.Controls.Add(this.algorithmTabPage);
       this.tabControl.Controls.Add(this.resultsTabPage);
@@ -321,7 +320,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       // 
       // algorithmNamedItemView
       // 
-      this.algorithmNamedItemView.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.algorithmNamedItemView.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.algorithmNamedItemView.Caption = "NamedItem View";
       this.algorithmNamedItemView.Content = null;
@@ -334,8 +333,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       // algorithmTabControl
       // 
       this.algorithmTabControl.AllowDrop = true;
-      this.algorithmTabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+      this.algorithmTabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.algorithmTabControl.Controls.Add(this.algorithmProblemTabPage);
       this.algorithmTabControl.Controls.Add(this.algorithmParametersTabPage);
@@ -364,7 +363,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       // 
       // openProblemButton
       // 
-      this.openProblemButton.Image = ((System.Drawing.Image)(resources.GetObject("openProblemButton.Image")));
+      this.openProblemButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Open;
       this.openProblemButton.Location = new System.Drawing.Point(36, 6);
       this.openProblemButton.Name = "openProblemButton";
       this.openProblemButton.Size = new System.Drawing.Size(24, 24);
@@ -375,8 +374,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       // 
       // algorithmProblemViewHost
       // 
-      this.algorithmProblemViewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+      this.algorithmProblemViewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.algorithmProblemViewHost.Caption = "View";
       this.algorithmProblemViewHost.Content = null;
@@ -391,7 +390,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       // 
       // newProblemButton
       // 
-      this.newProblemButton.Image = ((System.Drawing.Image)(resources.GetObject("newProblemButton.Image")));
+      this.newProblemButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.NewDocument;
       this.newProblemButton.Location = new System.Drawing.Point(6, 6);
       this.newProblemButton.Name = "newProblemButton";
       this.newProblemButton.Size = new System.Drawing.Size(24, 24);
@@ -426,7 +425,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       // 
       // openAlgorithmButton
       // 
-      this.openAlgorithmButton.Image = ((System.Drawing.Image)(resources.GetObject("openAlgorithmButton.Image")));
+      this.openAlgorithmButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Open;
       this.openAlgorithmButton.Location = new System.Drawing.Point(38, 6);
       this.openAlgorithmButton.Name = "openAlgorithmButton";
       this.openAlgorithmButton.Size = new System.Drawing.Size(24, 24);
@@ -437,7 +436,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       // 
       // newAlgorithmButton
       // 
-      this.newAlgorithmButton.Image = ((System.Drawing.Image)(resources.GetObject("newAlgorithmButton.Image")));
+      this.newAlgorithmButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.NewDocument;
       this.newAlgorithmButton.Location = new System.Drawing.Point(8, 6);
       this.newAlgorithmButton.Name = "newAlgorithmButton";
       this.newAlgorithmButton.Size = new System.Drawing.Size(24, 24);
@@ -517,7 +516,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       // 
       // splitContainer
       // 
-      this.splitContainer.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.splitContainer.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.splitContainer.Location = new System.Drawing.Point(0, 26);
       this.splitContainer.Name = "splitContainer";
