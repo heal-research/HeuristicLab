@@ -207,6 +207,7 @@
       <DependentUpon>GradientChartConfigurationDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Interfaces\IDataPreprocessorStarter.cs" />
+    <Compile Include="MenuItems\ChangeDataOfOptimizersMenuItem.cs" />
     <Compile Include="MenuItems\ShrinkDataAnalysisRunsMenuItem.cs" />
     <Compile Include="ModifiableDatasetView.cs">
       <SubType>UserControl</SubType>
