@@ -31,26 +31,17 @@ namespace HeuristicLab.Optimization {
       if (!scope.Variables.ContainsKey(encoding.Name)) throw new ArgumentException("The provided scope does not contain an individual.");
     }
 
-    public override IItem this[string name] {
-      get {
-        if (Name != name) throw new ArgumentException(string.Format("{0} is not part of the individual.", name));
-        return ExtractScopeValue(Name, Scope);
-      }
-      set {
-        if (Name != name) throw new ArgumentException(string.Format("{0} is not part of the individual.", name));
-        SetScopeValue(Name, Scope, value);
-      }
+    private SingleEncodingIndividual(SingleEncodingIndividual copy) : base(copy.Encoding, new Scope()) {
+      copy.CopyToScope(Scope);
+    }
+    public override Individual Copy() {
+      return new SingleEncodingIndividual(this);
     }
 
     public override TEncoding GetEncoding<TEncoding>() {
       TEncoding encoding = Encoding as TEncoding;
       if (encoding == null) throw new InvalidOperationException(string.Format("The individual does not use a {0}.", typeof(TEncoding).GetPrettyName()));
       return encoding;
-    }
-
-    public override Individual CopyToScope(IScope scope) {
-      SetScopeValue(Name, scope, (IItem)this[Name].Clone());
-      return new SingleEncodingIndividual(Encoding, scope);
     }
   }
 

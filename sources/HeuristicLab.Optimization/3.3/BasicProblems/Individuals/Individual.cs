@@ -20,13 +20,14 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Optimization {
   public abstract class Individual {
     protected IEncoding Encoding { get; private set; }
     protected IScope Scope { get; private set; }
-
     public string Name { get { return Encoding.Name; } }
 
     protected Individual(IEncoding encoding, IScope scope) {
@@ -34,24 +35,34 @@ namespace HeuristicLab.Optimization {
       Scope = scope;
     }
 
-    public abstract IItem this[string name] { get; set; }
-    public abstract TEncoding GetEncoding<TEncoding>() where TEncoding : class, IEncoding;
-
-    public Individual Copy() {
-      return CopyToScope(new Scope());
+    public IItem this[string name] {
+      get { return ExtractScopeValue(name, Scope); }
+      set { SetScopeValue(name, Scope, value); }
     }
 
-    public abstract Individual CopyToScope(IScope scope);
+    public IEnumerable<KeyValuePair<string, IItem>> Values {
+      get { return Scope.Variables.Select(v => new KeyValuePair<string, IItem>(v.Name, v.Value)); }
+    }
+    public abstract TEncoding GetEncoding<TEncoding>() where TEncoding : class, IEncoding;
 
-    protected static IItem ExtractScopeValue(string name, IScope scope) {
+    public abstract Individual Copy();
+    internal void CopyToScope(IScope scope) {
+      foreach (var val in Values)
+        SetScopeValue(val.Key, scope, val.Value);
+    }
+
+    private static IItem ExtractScopeValue(string name, IScope scope) {
+      if (scope == null) throw new ArgumentNullException("scope");
       if (!scope.Variables.ContainsKey(name)) throw new ArgumentException(string.Format(" {0} cannot be found in the provided scope.", name));
       var value = scope.Variables[name].Value;
       if (value == null) throw new InvalidOperationException(string.Format("Value of {0} is null.", name));
       return value;
     }
 
-    protected static void SetScopeValue(string name, IScope scope, IItem value) {
+    private static void SetScopeValue(string name, IScope scope, IItem value) {
+      if (scope == null) throw new ArgumentNullException("scope");
       if (value == null) throw new ArgumentNullException("value");
+
       if (!scope.Variables.ContainsKey(name)) scope.Variables.Add(new Variable(name, value));
       else scope.Variables[name].Value = value;
     }
