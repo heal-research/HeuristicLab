@@ -271,6 +271,12 @@
     <Compile Include="Regression\RegressionSolutionResidualsLineChartView.Designer.cs">
       <DependentUpon>RegressionSolutionResidualsLineChartView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Regression\RegressionSolutionResidualAnalysisView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Regression\RegressionSolutionResidualAnalysisView.Designer.cs">
+      <DependentUpon>RegressionSolutionResidualAnalysisView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Regression\RegressionSolutionVariableImpactsView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -587,6 +593,9 @@
   <ItemGroup>
     <EmbeddedResource Include="FeatureCorrelation\AbstractFeatureCorrelationView.resx">
       <DependentUpon>AbstractFeatureCorrelationView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Regression\RegressionSolutionResidualAnalysisView.resx">
+      <DependentUpon>RegressionSolutionResidualAnalysisView.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
