@@ -40,6 +40,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private const string TrainingRSquaredResultName = "Training R²";
     private const string TestRSquaredResultName = "Test R²";
     private const string CreateSolutionParameterName = "CreateSolution";
+    private const string NegLogPredictiveProbability = "NegativeLogPredictiveProbability (LOO-CV)";
 
     #region Parameter Properties
     public ILookupParameter<IRegressionProblemData> ProblemDataParameter {
@@ -107,10 +108,14 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
           results.Add(new Result(TestRSquaredResultName,
                                  "The Pearson's R² of the Gaussian process solution on the test partition.",
                                  new DoubleValue(s.TestRSquared)));
+          results.Add(new Result(NegLogPredictiveProbability, 
+                                 "The leave-one-out-cross-validation negative log predictive probability.", 
+                                 new DoubleValue(m.NegativeLooPredictiveProbability)));
         } else {
           results[SolutionParameterName].Value = s;
           results[TrainingRSquaredResultName].Value = new DoubleValue(s.TrainingRSquared);
           results[TestRSquaredResultName].Value = new DoubleValue(s.TestRSquared);
+          results[NegLogPredictiveProbability].Value = new DoubleValue(m.NegativeLooPredictiveProbability);
         }
       }
       return base.Apply();
