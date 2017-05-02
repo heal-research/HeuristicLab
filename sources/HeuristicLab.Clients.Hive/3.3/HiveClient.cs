@@ -440,7 +440,9 @@ namespace HeuristicLab.Clients.Hive {
         refreshableJob.HiveTasks = new ItemCollection<HiveTask>(parents);
         if (refreshableJob.IsFinished()) {
           refreshableJob.ExecutionState = Core.ExecutionState.Stopped;
-        } else {
+        } else if (refreshableJob.IsPaused()) {
+          refreshableJob.ExecutionState = Core.ExecutionState.Paused;
+        } else { 
           refreshableJob.ExecutionState = Core.ExecutionState.Started;
         }
         refreshableJob.OnLoaded();
