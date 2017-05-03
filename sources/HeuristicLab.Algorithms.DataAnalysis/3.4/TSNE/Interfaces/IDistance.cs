@@ -19,11 +19,12 @@
  */
 #endregion
 
+using System.Collections;
 using System.Collections.Generic;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
-  public interface IDistance<in T> : IItem {
+  public interface IDistance<in T> : IItem, IDistance {
     /// <summary>
     /// Calculates a distance measure between two objects.
     /// 1.) non-negative d(x,y) >= 0
@@ -39,5 +40,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     /// <param name="item"></param>
     /// <returns></returns>
     IComparer<T> GetDistanceComparer(T item);
+  }
+
+
+  public interface IDistance : IItem {
+    double Get(object x, object y);
+    IComparer GetDistanceComparer(object item);
   }
 }

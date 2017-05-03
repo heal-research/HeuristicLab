@@ -239,6 +239,16 @@
     <Compile Include="Interfaces\ISupportVectorMachineModel.cs" />
     <Compile Include="Interfaces\ISupportVectorMachineSolution.cs" />
     <Compile Include="Interfaces\IDataAnalysisAlgorithm.cs" />
+    <Compile Include="KernelRidgeRegression\KernelFunctions\CicularKernel.cs" />
+    <Compile Include="KernelRidgeRegression\KernelFunctions\GaussianKernel.cs" />
+    <Compile Include="KernelRidgeRegression\KernelFunctions\IKernel.cs" />
+    <Compile Include="KernelRidgeRegression\KernelFunctions\InverseMultiquadraticKernel.cs" />
+    <Compile Include="KernelRidgeRegression\KernelFunctions\KernelBase.cs" />
+    <Compile Include="KernelRidgeRegression\KernelFunctions\MultiquadraticKernel.cs" />
+    <Compile Include="KernelRidgeRegression\KernelFunctions\PolysplineKernel.cs" />
+    <Compile Include="KernelRidgeRegression\KernelFunctions\ThinPlatePolysplineKernel.cs" />
+    <Compile Include="KernelRidgeRegression\KernelRidgeRegression.cs" />
+    <Compile Include="KernelRidgeRegression\KernelRidgeRegressionModel.cs" />
     <Compile Include="kMeans\KMeansClustering.cs" />
     <Compile Include="kMeans\KMeansClusteringModel.cs" />
     <Compile Include="kMeans\KMeansClusteringSolution.cs" />
@@ -324,6 +334,7 @@
     <Compile Include="TSNE\Distances\EuclideanDistance.cs" />
     <Compile Include="TSNE\Distances\IndexedItemDistance.cs" />
     <Compile Include="TSNE\Distances\InnerProductDistance.cs" />
+    <Compile Include="TSNE\Distances\ManhattanDistance.cs" />
     <Compile Include="TSNE\Interfaces\IDistance.cs" />
     <Compile Include="TSNE\Interfaces\ISpacePartitioningTree.cs" />
     <Compile Include="TSNE\Interfaces\IVantagePointTree.cs" />

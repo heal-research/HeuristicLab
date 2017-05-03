@@ -19,54 +19,38 @@
  */
 #endregion
 
-using System.Collections;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
-  public abstract class DistanceBase<T> : Item, IDistance<T> {
+  [Item("ManhattanDistance", "A distance function that uses block distance")]
+  public class ManhattanDistance : DistanceBase<IEnumerable<double>> {
 
     #region HLConstructors & Boilerplate
     [StorableConstructor]
-    protected DistanceBase(bool deserializing) : base(deserializing) { }
-    protected DistanceBase(DistanceBase<T> original, Cloner cloner) : base(original, cloner) { }
-    protected DistanceBase() { }
+    protected ManhattanDistance(bool deserializing) : base(deserializing) { }
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() { }
+    protected ManhattanDistance(ManhattanDistance original, Cloner cloner)
+      : base(original, cloner) { }
+    public ManhattanDistance() { }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new ManhattanDistance(this, cloner);
+    }
     #endregion
 
-    public abstract double Get(T a, T b);
-
-    public IComparer<T> GetDistanceComparer(T item) {
-      return new DistanceComparer(item, this);
+    public static double GetDistance(double[] point1, double[] point2) {
+      if (point1.Length != point2.Length) throw new ArgumentException("Manhattan distance not defined on vectors of different length");
+      return point1.Zip(point2, (a1, b1) => Math.Abs(a1 - b1)).Sum();
     }
 
-
-    public double Get(object x, object y) {
-      return Get((T)x, (T)y);
-    }
-
-    public IComparer GetDistanceComparer(object item) {
-      return new DistanceComparer((T)item, this);
-    }
-
-    private class DistanceComparer : IComparer<T>, IComparer {
-      private readonly T item;
-      private readonly IDistance<T> dist;
-
-      public DistanceComparer(T item, IDistance<T> dist) {
-        this.dist = dist;
-        this.item = item;
-      }
-
-      public int Compare(T x, T y) {
-        return dist.Get(x, item).CompareTo(dist.Get(y, item));
-      }
-
-      public int Compare(object x, object y) {
-        return Compare((T)x, (T)y);
-      }
+    public override double Get(IEnumerable<double> a, IEnumerable<double> b) {
+      return GetDistance(a.ToArray(), b.ToArray());
     }
   }
 }
