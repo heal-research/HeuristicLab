@@ -24,30 +24,27 @@ using System.Linq;
 using System.Windows.Forms.DataVisualization.Charting;
 using HeuristicLab.MainForm;
 
-
 namespace HeuristicLab.Problems.DataAnalysis.Views {
   [View("Residuals Line Chart")]
   [Content(typeof(IRegressionSolution))]
   public partial class RegressionSolutionResidualsLineChartView : RegressionSolutionLineChartViewBase, IDataAnalysisSolutionEvaluationView {
 
-
-    public RegressionSolutionResidualsLineChartView()
-      : base() {
+    public RegressionSolutionResidualsLineChartView() : base() {
       InitializeComponent();
-    }
-
-    protected override void GetTrainingSeries(out int[] idx, out double[] y) {
-      idx = Content.ProblemData.TrainingIndices.ToArray();
-      y = Content.EstimatedTrainingValues.ToArray();
-      CalcResiduals(idx, y);
     }
 
     protected void CalcResiduals(int[] idx, double[] x) {
       var problemData = Content.ProblemData;
       var target = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, idx).ToArray();
       for (int i = 0; i < idx.Length; i++) {
-        x[i] -= target[i];
+        x[i] = target[i] - x[i];
       }
+    }
+
+    protected override void GetTrainingSeries(out int[] idx, out double[] y) {
+      idx = Content.ProblemData.TrainingIndices.ToArray();
+      y = Content.EstimatedTrainingValues.ToArray();
+      CalcResiduals(idx, y);
     }
 
     protected override void GetTestSeries(out int[] idx, out double[] y) {
@@ -68,27 +65,30 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     }
 
     private void UpdateSeriesStyle() {
-      if (InvokeRequired) Invoke((Action)UpdateSeriesStyle);
-      else {
-        if (Content == null) return;
-        double[] res;
-        int[] idx;
-        GetTrainingSeries(out idx, out res);
-        base.chart.Series[RegressionSolutionLineChartView.ESTIMATEDVALUES_TRAINING_SERIES_NAME].YAxisType = AxisType.Secondary;
-        base.chart.Series[RegressionSolutionLineChartView.ESTIMATEDVALUES_TRAINING_SERIES_NAME].ChartType = SeriesChartType.RangeColumn;
-        base.chart.Series[RegressionSolutionLineChartView.ESTIMATEDVALUES_TRAINING_SERIES_NAME].Points.DataBindXY(idx, res.Select(_ => 0.0).ToArray(), res);
+      if (Content == null) return;
 
-        GetTestSeries(out idx, out res);
-        base.chart.Series[RegressionSolutionLineChartView.ESTIMATEDVALUES_TEST_SERIES_NAME].YAxisType = AxisType.Secondary;
-        base.chart.Series[RegressionSolutionLineChartView.ESTIMATEDVALUES_TEST_SERIES_NAME].ChartType = SeriesChartType.RangeColumn;
-        base.chart.Series[RegressionSolutionLineChartView.ESTIMATEDVALUES_TEST_SERIES_NAME].Points.DataBindXY(idx, res.Select(_ => 0.0).ToArray(), res);
-
-        GetAllValuesSeries(out idx, out res);
-        base.chart.Series[RegressionSolutionLineChartView.ESTIMATEDVALUES_ALL_SERIES_NAME].YAxisType = AxisType.Secondary;
-        base.chart.Series[RegressionSolutionLineChartView.ESTIMATEDVALUES_ALL_SERIES_NAME].ChartType = SeriesChartType.RangeColumn;
-        base.chart.Series[RegressionSolutionLineChartView.ESTIMATEDVALUES_ALL_SERIES_NAME].Points.DataBindXY(idx, res.Select(_ => 0.0).ToArray(), res);
-        ToggleSeriesData(base.chart.Series[RegressionSolutionLineChartView.ESTIMATEDVALUES_ALL_SERIES_NAME]); // don't show by default
+      if (InvokeRequired) {
+        Invoke((Action)UpdateSeriesStyle);
+        return;
       }
+
+      double[] res;
+      int[] idx;
+      GetTrainingSeries(out idx, out res);
+      chart.Series[ESTIMATEDVALUES_TRAINING_SERIES_NAME].YAxisType = AxisType.Secondary;
+      chart.Series[ESTIMATEDVALUES_TRAINING_SERIES_NAME].ChartType = SeriesChartType.RangeColumn;
+      chart.Series[ESTIMATEDVALUES_TRAINING_SERIES_NAME].Points.DataBindXY(idx, res.Select(_ => 0.0).ToArray(), res);
+
+      GetTestSeries(out idx, out res);
+      chart.Series[ESTIMATEDVALUES_TEST_SERIES_NAME].YAxisType = AxisType.Secondary;
+      chart.Series[ESTIMATEDVALUES_TEST_SERIES_NAME].ChartType = SeriesChartType.RangeColumn;
+      chart.Series[ESTIMATEDVALUES_TEST_SERIES_NAME].Points.DataBindXY(idx, res.Select(_ => 0.0).ToArray(), res);
+
+      GetAllValuesSeries(out idx, out res);
+      chart.Series[ESTIMATEDVALUES_ALL_SERIES_NAME].YAxisType = AxisType.Secondary;
+      chart.Series[ESTIMATEDVALUES_ALL_SERIES_NAME].ChartType = SeriesChartType.RangeColumn;
+      chart.Series[ESTIMATEDVALUES_ALL_SERIES_NAME].Points.DataBindXY(idx, res.Select(_ => 0.0).ToArray(), res);
+      ToggleSeriesData(chart.Series[ESTIMATEDVALUES_ALL_SERIES_NAME]); // don't show by default
     }
 
   }
