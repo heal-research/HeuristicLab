@@ -20,6 +20,7 @@
 #endregion
 
 using System.Collections.Generic;
+using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -41,6 +42,13 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public override IEnumerable<IEnumerable<double>> GetPrognosedValues(IEnumerable<int> rows, IEnumerable<int> horizons) {
       return Model.GetPrognosedValues(ProblemData.Dataset, rows, horizons);
+    }
+
+    public override IEnumerable<double> PrognosedTestValues {
+      get {
+        return Model.GetPrognosedValues(ProblemData.Dataset, ProblemData.TestIndices.Take(1),
+          new int[] { ProblemData.TestIndices.Count() }).First();
+      }
     }
   }
 }

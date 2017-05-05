@@ -56,6 +56,22 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       this.chart.ChartAreas[0].CursorY.Interval = 0;
     }
 
+    protected virtual void GetTrainingSeries(out int[] x, out double[] y) {
+      x = Content.ProblemData.TrainingIndices.ToArray();
+      y = Content.EstimatedTrainingValues.ToArray();
+    }
+
+    protected virtual void GetTestSeries(out int[] x, out double[] y) {
+      x = Content.ProblemData.TestIndices.ToArray();
+      y = Content.EstimatedTestValues.ToArray();
+    }
+
+    protected virtual void GetAllValuesSeries(out int[] x, out double[] y) {
+      x = Enumerable.Range(0, Content.ProblemData.Dataset.Rows).Except(Content.ProblemData.TrainingIndices).Except(Content.ProblemData.TestIndices).ToArray();
+      var tmp = Content.EstimatedValues.ToArray();
+      y = x.Select(index => tmp[index]).ToArray();
+    }
+
     private void RedrawChart() {
       this.chart.Series.Clear();
       if (Content != null) {
@@ -72,25 +88,34 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         this.chart.Series[ESTIMATEDVALUES_TRAINING_SERIES_NAME].LegendText = ESTIMATEDVALUES_TRAINING_SERIES_NAME;
         this.chart.Series[ESTIMATEDVALUES_TRAINING_SERIES_NAME].ChartType = SeriesChartType.FastLine;
         this.chart.Series[ESTIMATEDVALUES_TRAINING_SERIES_NAME].EmptyPointStyle.Color = this.chart.Series[ESTIMATEDVALUES_TRAINING_SERIES_NAME].Color;
-        this.chart.Series[ESTIMATEDVALUES_TRAINING_SERIES_NAME].Points.DataBindXY(Content.ProblemData.TrainingIndices.ToArray(), Content.EstimatedTrainingValues.ToArray());
+        int[] trainingIdx;
+        double[] trainingY;
+        GetTrainingSeries(out trainingIdx, out trainingY);
+        this.chart.Series[ESTIMATEDVALUES_TRAINING_SERIES_NAME].Points.DataBindXY(trainingIdx, trainingY);
         this.InsertEmptyPoints(this.chart.Series[ESTIMATEDVALUES_TRAINING_SERIES_NAME]);
         this.chart.Series[ESTIMATEDVALUES_TRAINING_SERIES_NAME].Tag = Content;
+
         // test series
         this.chart.Series.Add(ESTIMATEDVALUES_TEST_SERIES_NAME);
         this.chart.Series[ESTIMATEDVALUES_TEST_SERIES_NAME].LegendText = ESTIMATEDVALUES_TEST_SERIES_NAME;
         this.chart.Series[ESTIMATEDVALUES_TEST_SERIES_NAME].ChartType = SeriesChartType.FastLine;
-        this.chart.Series[ESTIMATEDVALUES_TEST_SERIES_NAME].Points.DataBindXY(Content.ProblemData.TestIndices.ToArray(), Content.EstimatedTestValues.ToArray());
+        int[] testIdx;
+        double[] testY;
+        GetTestSeries(out testIdx, out testY);
+        this.chart.Series[ESTIMATEDVALUES_TEST_SERIES_NAME].Points.DataBindXY(testIdx, testY);
         this.InsertEmptyPoints(this.chart.Series[ESTIMATEDVALUES_TEST_SERIES_NAME]);
         this.chart.Series[ESTIMATEDVALUES_TEST_SERIES_NAME].Tag = Content;
+
         // series of remaining points
-        int[] allIndices = Enumerable.Range(0, Content.ProblemData.Dataset.Rows).Except(Content.ProblemData.TrainingIndices).Except(Content.ProblemData.TestIndices).ToArray();
-        var estimatedValues = Content.EstimatedValues.ToArray();
-        List<double> allEstimatedValues = allIndices.Select(index => estimatedValues[index]).ToList();
+        int[] allIdx;
+        double[] allEstimatedValues;
+        GetAllValuesSeries(out allIdx, out allEstimatedValues);
+
         this.chart.Series.Add(ESTIMATEDVALUES_ALL_SERIES_NAME);
         this.chart.Series[ESTIMATEDVALUES_ALL_SERIES_NAME].LegendText = ESTIMATEDVALUES_ALL_SERIES_NAME;
         this.chart.Series[ESTIMATEDVALUES_ALL_SERIES_NAME].ChartType = SeriesChartType.FastLine;
-        if (allEstimatedValues.Count > 0) {
-          this.chart.Series[ESTIMATEDVALUES_ALL_SERIES_NAME].Points.DataBindXY(allIndices, allEstimatedValues);
+        if (allEstimatedValues.Length > 0) {
+          this.chart.Series[ESTIMATEDVALUES_ALL_SERIES_NAME].Points.DataBindXY(allIdx, allEstimatedValues);
           this.InsertEmptyPoints(this.chart.Series[ESTIMATEDVALUES_ALL_SERIES_NAME]);
         }
         this.chart.Series[ESTIMATEDVALUES_ALL_SERIES_NAME].Tag = Content;
@@ -243,23 +268,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
           ClearPointsQuick(series.Points);
         }
       } else if (Content != null) {
-        string targetVariableName = Content.ProblemData.TargetVariable;
 
-        IEnumerable<int> indices = null;
+        int[] indices = null;
         double[] predictedValues = null;
         switch (series.Name) {
           case ESTIMATEDVALUES_ALL_SERIES_NAME:
-            indices = Enumerable.Range(0, Content.ProblemData.Dataset.Rows).Except(Content.ProblemData.TrainingIndices).Except(Content.ProblemData.TestIndices).ToArray();
-            var estimatedValues = Content.EstimatedValues.ToArray();
-            predictedValues = indices.Select(index => estimatedValues[index]).ToArray();
+            GetAllValuesSeries(out indices, out predictedValues);
             break;
           case ESTIMATEDVALUES_TRAINING_SERIES_NAME:
-            indices = Content.ProblemData.TrainingIndices.ToArray();
-            predictedValues = Content.EstimatedTrainingValues.ToArray();
+            GetTrainingSeries(out indices, out predictedValues);
             break;
           case ESTIMATEDVALUES_TEST_SERIES_NAME:
-            indices = Content.ProblemData.TestIndices.ToArray();
-            predictedValues = Content.EstimatedTestValues.ToArray();
+            GetTestSeries(out indices, out predictedValues);
             break;
         }
         if (predictedValues.Length > 0) {

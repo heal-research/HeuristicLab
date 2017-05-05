@@ -410,6 +410,12 @@
     <Compile Include="Solution Views\TimeSeriesPrognosisSolutionView.Designer.cs">
       <DependentUpon>TimeSeriesPrognosisSolutionView.cs</DependentUpon>
     </Compile>
+    <Compile Include="TimeSeriesPrognosis\TimeSeriesPrognosisLineChartView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TimeSeriesPrognosis\TimeSeriesPrognosisLineChartView.Designer.cs">
+      <DependentUpon>TimeSeriesPrognosisLineChartView.cs</DependentUpon>
+    </Compile>
     <Compile Include="TimeSeriesPrognosis\TimeSeriesPrognosisResultsView.cs">
       <SubType>UserControl</SubType>
     </Compile>
