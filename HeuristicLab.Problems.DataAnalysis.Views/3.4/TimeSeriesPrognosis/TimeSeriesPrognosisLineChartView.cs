@@ -39,15 +39,20 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
     }
 
-    protected override void GetTestSeries(out int[] x, out double[] y) {
+    protected override void GetTrainingSeries(out int[] idx, out double[] y) {
+      idx = Content.ProblemData.TrainingIndices.ToArray();
+      y = Content.EstimatedTrainingValues.ToArray();
+    }
+
+    protected override void GetTestSeries(out int[] idx, out double[] y) {
       // treat the whole test partition as prognosis horizon
-      x = Content.ProblemData.TestIndices.ToArray();
+      idx = Content.ProblemData.TestIndices.ToArray();
       y = Content.PrognosedTestValues.ToArray();
     }
 
-    protected override void GetAllValuesSeries(out int[] x, out double[] y) {
+    protected override void GetAllValuesSeries(out int[] idx, out double[] y) {
       // not supported
-      x = new int[0];
+      idx = new int[0];
       y = new double[0];
     }
   }

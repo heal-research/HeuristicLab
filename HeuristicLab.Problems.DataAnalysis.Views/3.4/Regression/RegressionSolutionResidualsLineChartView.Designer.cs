@@ -19,7 +19,7 @@
  */
 #endregion
 namespace HeuristicLab.Problems.DataAnalysis.Views {
-  partial class RegressionSolutionLineChartView {
+  partial class RegressionSolutionResidualsLineChartView {
     /// <summary> 
     /// Required designer variable.
     /// </summary>
