@@ -32,29 +32,28 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   /// Simplifier for symbolic expressions
   /// </summary>
   public class TreeSimplifier {
-    private Addition addSymbol = new Addition();
-    private Multiplication mulSymbol = new Multiplication();
-    private Division divSymbol = new Division();
-    private Constant constSymbol = new Constant();
-    private Variable varSymbol = new Variable();
-    private Logarithm logSymbol = new Logarithm();
-    private Exponential expSymbol = new Exponential();
-    private Root rootSymbol = new Root();
-    private Square sqrSymbol = new Square();
-    private SquareRoot sqrtSymbol = new SquareRoot();
-    private Power powSymbol = new Power();
-    private Sine sineSymbol = new Sine();
-    private Cosine cosineSymbol = new Cosine();
-    private Tangent tanSymbol = new Tangent();
-    private IfThenElse ifThenElseSymbol = new IfThenElse();
-    private And andSymbol = new And();
-    private Or orSymbol = new Or();
-    private Not notSymbol = new Not();
-    private GreaterThan gtSymbol = new GreaterThan();
-    private LessThan ltSymbol = new LessThan();
-    private Integral integralSymbol = new Integral();
-    private LaggedVariable laggedVariableSymbol = new LaggedVariable();
-    private TimeLag timeLagSymbol = new TimeLag();
+    private readonly Addition addSymbol = new Addition();
+    private readonly Multiplication mulSymbol = new Multiplication();
+    private readonly Division divSymbol = new Division();
+    private readonly Constant constSymbol = new Constant();
+    private readonly Logarithm logSymbol = new Logarithm();
+    private readonly Exponential expSymbol = new Exponential();
+    private readonly Root rootSymbol = new Root();
+    private readonly Square sqrSymbol = new Square();
+    private readonly SquareRoot sqrtSymbol = new SquareRoot();
+    private readonly Power powSymbol = new Power();
+    private readonly Sine sineSymbol = new Sine();
+    private readonly Cosine cosineSymbol = new Cosine();
+    private readonly Tangent tanSymbol = new Tangent();
+    private readonly IfThenElse ifThenElseSymbol = new IfThenElse();
+    private readonly And andSymbol = new And();
+    private readonly Or orSymbol = new Or();
+    private readonly Not notSymbol = new Not();
+    private readonly GreaterThan gtSymbol = new GreaterThan();
+    private readonly LessThan ltSymbol = new LessThan();
+    private readonly Integral integralSymbol = new Integral();
+    private readonly LaggedVariable laggedVariableSymbol = new LaggedVariable();
+    private readonly TimeLag timeLagSymbol = new TimeLag();
 
     public ISymbolicExpressionTree Simplify(ISymbolicExpressionTree originalTree) {
       var clone = (ISymbolicExpressionTreeNode)originalTree.Root.Clone();
