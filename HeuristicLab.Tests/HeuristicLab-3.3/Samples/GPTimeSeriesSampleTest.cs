@@ -49,10 +49,10 @@ namespace HeuristicLab.Tests {
       osga.SetSeedRandomly.Value = false;
       SamplesUtils.RunAlgorithm(osga);
 
-      Assert.AreEqual(0.020952753415199643, SamplesUtils.GetDoubleResult(osga, "BestQuality"), 1E-8);
-      Assert.AreEqual(0.023220938866319357, SamplesUtils.GetDoubleResult(osga, "CurrentAverageQuality"), 1E-8);
-      Assert.AreEqual(0.023716788824595391, SamplesUtils.GetDoubleResult(osga, "CurrentWorstQuality"), 1E-8);
-      Assert.AreEqual(48200, SamplesUtils.GetIntResult(osga, "EvaluatedSolutions"));
+      Assert.AreEqual(0.015441526903606416, SamplesUtils.GetDoubleResult(osga, "BestQuality"), 1E-8);
+      Assert.AreEqual(0.017420834241279298, SamplesUtils.GetDoubleResult(osga, "CurrentAverageQuality"), 1E-8);
+      Assert.AreEqual(0.065195703753298972, SamplesUtils.GetDoubleResult(osga, "CurrentWorstQuality"), 1E-8);
+      Assert.AreEqual(92000, SamplesUtils.GetIntResult(osga, "EvaluatedSolutions"));
     }
 
     public static OffspringSelectionGeneticAlgorithm CreateGpTimeSeriesSample() {
@@ -62,6 +62,7 @@ namespace HeuristicLab.Tests {
       problem.MaximumSymbolicExpressionTreeLength.Value = 125;
       problem.MaximumSymbolicExpressionTreeDepth.Value = 12;
       problem.EvaluatorParameter.Value.HorizonParameter.Value.Value = 10;
+      problem.ApplyLinearScaling.Value = true;
 
       foreach (var symbol in problem.SymbolicExpressionTreeGrammar.Symbols) {
         if (symbol is Exponential || symbol is Logarithm) {
