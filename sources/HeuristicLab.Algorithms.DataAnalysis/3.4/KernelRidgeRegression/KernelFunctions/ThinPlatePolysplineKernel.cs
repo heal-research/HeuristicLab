@@ -26,7 +26,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Algorithms.DataAnalysis.KernelRidgeRegression {
+namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
   // conditionally positive definite. (need to add polynomials) see http://num.math.uni-goettingen.de/schaback/teaching/sc.pdf 
   [Item("ThinPlatePolysplineKernel", "A kernel function that uses the ThinPlatePolyspline function (||x-c||/Beta)^(Degree)*log(||x-c||/Beta) as described in \"Thin-Plate Spline Radial Basis Function Scheme for Advection-Diffusion Problems\" with beta as a scaling parameter.")]

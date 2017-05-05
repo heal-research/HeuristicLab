@@ -27,7 +27,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Algorithms.DataAnalysis.KernelRidgeRegression {
+namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
   public abstract class KernelBase : ParameterizedNamedItem, IKernel {
 

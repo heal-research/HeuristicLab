@@ -26,7 +26,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Algorithms.DataAnalysis.KernelRidgeRegression {
+namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
   // conditionally positive definite. (need to add polynomials) see http://num.math.uni-goettingen.de/schaback/teaching/sc.pdf 
   [Item("PolysplineKernel", "A kernel function that uses the polyharmonic function (||x-c||/Beta)^Degree as given in http://num.math.uni-goettingen.de/schaback/teaching/sc.pdf with beta as a scaling parameters.")]

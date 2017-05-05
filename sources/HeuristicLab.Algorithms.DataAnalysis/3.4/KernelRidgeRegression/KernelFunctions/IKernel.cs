@@ -20,7 +20,7 @@
 #endregion
 
 
-namespace HeuristicLab.Algorithms.DataAnalysis.KernelRidgeRegression {
+namespace HeuristicLab.Algorithms.DataAnalysis {
   public interface IKernel : ICovarianceFunction {
     double? Beta { get; set; } // a kernel parameter
     IDistance Distance { get; set; } // the distance function to use

@@ -30,7 +30,7 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.DataAnalysis;
 
-namespace HeuristicLab.Algorithms.DataAnalysis.KernelRidgeRegression {
+namespace HeuristicLab.Algorithms.DataAnalysis {
   [Item("Kernel Ridge Regression", "Kernelized ridge regression e.g. for radial basis function (RBF) regression.")]
   [Creatable(CreatableAttribute.Categories.DataAnalysisRegression, Priority = 100)]
   [StorableClass]

@@ -26,7 +26,7 @@ using HeuristicLab.Core;
 
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Algorithms.DataAnalysis.KernelRidgeRegression {
+namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
   [Item("GaussianKernel", "A kernel function that uses Gaussian function exp(-n²/beta²). As described in http://crsouza.com/2010/03/17/kernel-functions-for-machine-learning-applications/")]
   public class GaussianKernel : KernelBase {

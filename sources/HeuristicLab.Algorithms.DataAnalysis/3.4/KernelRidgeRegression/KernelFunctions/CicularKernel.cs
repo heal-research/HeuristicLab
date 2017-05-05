@@ -24,7 +24,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Algorithms.DataAnalysis.KernelRidgeRegression {
+namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
   [Item("CircularKernel", "A circular kernel function 2*pi*(acos(-d)-d*(1-d²)^(0.5)) where n = ||x-c|| and d = n/beta \n  As described in http://crsouza.com/2010/03/17/kernel-functions-for-machine-learning-applications/")]
   public class CircularKernel : KernelBase {

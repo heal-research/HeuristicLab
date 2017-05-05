@@ -27,7 +27,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.DataAnalysis;
 
-namespace HeuristicLab.Algorithms.DataAnalysis.KernelRidgeRegression {
+namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
   [Item("KernelRidgeRegressionModel", "A kernel ridge regression model")]
   public sealed class KernelRidgeRegressionModel : RegressionModel {

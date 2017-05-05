@@ -24,7 +24,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Algorithms.DataAnalysis.KernelRidgeRegression {
+namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
   [Item("InverseMultiquadraticKernel", "A kernel function that uses the inverse multi-quadratic function  1 / sqrt(1+||x-c||²/beta²). Similar to http://crsouza.com/2010/03/17/kernel-functions-for-machine-learning-applications/ with beta as a scaling factor.")]
   public class InverseMultiquadraticKernel : KernelBase {
