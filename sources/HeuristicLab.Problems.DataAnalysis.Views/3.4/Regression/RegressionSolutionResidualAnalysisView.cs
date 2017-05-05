@@ -21,8 +21,6 @@
 using System;
 using System.Drawing;
 using System.Linq;
-using System.Runtime.Remoting.Contexts;
-using System.Threading.Tasks;
 using HeuristicLab.Data;
 using HeuristicLab.MainForm;
 using HeuristicLab.Optimization;
@@ -30,17 +28,22 @@ using HeuristicLab.Optimization;
 namespace HeuristicLab.Problems.DataAnalysis.Views {
   [View("Residual Analysis")]
   [Content(typeof(IRegressionSolution))]
-  public partial class RegressionSolutionResidualAnalysisView : DataAnalysisSolutionEvaluationView {
+  public sealed partial class RegressionSolutionResidualAnalysisView : DataAnalysisSolutionEvaluationView {
+
+    // names should be relatively save to prevent collisions with variable names in the dataset
+    private const string PredictionLabel = "> Prediction";
+    private const string ResidualLabel = "> Residual";
+    private const string AbsResidualLabel = "> Residual (abs.)";
+    private const string RelativeErrorLabel = "> Relative Error";
+    private const string AbsRelativeErrorLabel = "> Relative Error (abs.)";
+    private const string PartitionLabel = "> Partition";
 
     public new IRegressionSolution Content {
       get { return (IRegressionSolution)base.Content; }
-      set {
-        base.Content = value;
-      }
+      set { base.Content = value; }
     }
 
-    public RegressionSolutionResidualAnalysisView()
-      : base() {
+    public RegressionSolutionResidualAnalysisView() : base() {
       InitializeComponent();
     }
 
@@ -57,11 +60,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       Content.ProblemDataChanged -= new EventHandler(Content_ProblemDataChanged);
     }
 
-    protected virtual void Content_ProblemDataChanged(object sender, EventArgs e) {
+    private void Content_ProblemDataChanged(object sender, EventArgs e) {
       OnContentChanged();
     }
 
-    protected virtual void Content_ModelChanged(object sender, EventArgs e) {
+    private void Content_ModelChanged(object sender, EventArgs e) {
       OnContentChanged();
     }
 
@@ -85,13 +88,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       // produce training and test values separately as they might overlap (e.g. for ensembles)
       var predictedValuesTrain = Content.EstimatedTrainingValues.ToArray();
       int j = 0; // idx for predictedValues array
-      var partitionId = "Partition";
-      while (ds.VariableNames.Contains(partitionId)) partitionId += "_";
       foreach (var i in problemData.TrainingIndices) {
         var run = CreateRunForIdx(i, problemData);
         var targetValue = ds.GetDoubleValue(problemData.TargetVariable, i);
         AddErrors(run, predictedValuesTrain[j++], targetValue);
-        run.Results.Add(partitionId, new StringValue("Training"));
+        run.Results.Add(PartitionLabel, new StringValue("Training"));
         run.Color = Color.Gold;
         runs.Add(run);
       }
@@ -101,7 +102,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         var run = CreateRunForIdx(i, problemData);
         var targetValue = ds.GetDoubleValue(problemData.TargetVariable, i);
         AddErrors(run, predictedValuesTest[j++], targetValue);
-        run.Results.Add(partitionId, new StringValue("Test"));
+        run.Results.Add(PartitionLabel, new StringValue("Test"));
         run.Color = Color.Red;
         runs.Add(run);
       }
@@ -118,15 +119,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     private void AddErrors(IRun run, double pred, double target) {
       var residual = target - pred;
       var relError = residual / target;
-      var predId = "Prediction";
-      while (run.Results.ContainsKey(predId)) predId += "_";
-      var resId = "Residual";
-      while (run.Results.ContainsKey(resId)) resId += "_";
-      var relErrorId = "Rel. Error";
-      while (run.Results.ContainsKey(relErrorId)) relErrorId+= "_";
-      run.Results.Add(predId, new DoubleValue(pred));
-      run.Results.Add(resId, new DoubleValue(residual));
-      run.Results.Add(relErrorId, new DoubleValue(relError));
+      run.Results.Add(PredictionLabel, new DoubleValue(pred));
+      run.Results.Add(ResidualLabel, new DoubleValue(residual));
+      run.Results.Add(AbsResidualLabel, new DoubleValue(Math.Abs(residual)));
+      run.Results.Add(RelativeErrorLabel, new DoubleValue(relError));
+      run.Results.Add(AbsRelativeErrorLabel, new DoubleValue(Math.Abs(relError)));
     }
 
     private IRun CreateRunForIdx(int i, IRegressionProblemData problemData) {
