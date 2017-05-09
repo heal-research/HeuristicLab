@@ -148,7 +148,7 @@ namespace HeuristicLab.DataPreprocessing {
     }
 
     private void CheckPartitionRanges() {
-      int maxRowIndex = Math.Max(0, Rows - 1);
+      int maxRowIndex = Math.Max(0, Rows);
       TrainingPartition.Start = Math.Min(TrainingPartition.Start, maxRowIndex);
       TrainingPartition.End = Math.Min(TrainingPartition.End, maxRowIndex);
       TestPartition.Start = Math.Min(TestPartition.Start, maxRowIndex);
