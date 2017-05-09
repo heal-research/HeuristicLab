@@ -22,12 +22,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using AutoDiff;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   public class TreeToAutoDiffTermConverter {
     public delegate double ParametricFunction(double[] vars, double[] @params);
+
     public delegate Tuple<double[], double> ParametricFunctionGradient(double[] vars, double[] @params);
 
     #region helper class
@@ -61,18 +63,23 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private static readonly Func<Term, UnaryFunc> arctan = UnaryFunc.Factory(
       eval: Math.Atan,
       diff: x => 1 / (1 + x * x));
+
     private static readonly Func<Term, UnaryFunc> sin = UnaryFunc.Factory(
       eval: Math.Sin,
       diff: Math.Cos);
+
     private static readonly Func<Term, UnaryFunc> cos = UnaryFunc.Factory(
-       eval: Math.Cos,
-       diff: x => -Math.Sin(x));
+      eval: Math.Cos,
+      diff: x => -Math.Sin(x));
+
     private static readonly Func<Term, UnaryFunc> tan = UnaryFunc.Factory(
       eval: Math.Tan,
       diff: x => 1 + Math.Tan(x) * Math.Tan(x));
+
     private static readonly Func<Term, UnaryFunc> erf = UnaryFunc.Factory(
       eval: alglib.errorfunction,
       diff: x => 2.0 * Math.Exp(-(x * x)) / Math.Sqrt(Math.PI));
+
     private static readonly Func<Term, UnaryFunc> norm = UnaryFunc.Factory(
       eval: alglib.normaldistribution,
       diff: x => -(Math.Exp(-(x * x)) * Math.Sqrt(Math.Exp(x * x)) * x) / Math.Sqrt(2 * Math.PI));
@@ -87,25 +94,28 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       // use a transformator object which holds the state (variable list, parameter list, ...) for recursive transformation of the tree
       var transformator = new TreeToAutoDiffTermConverter(makeVariableWeightsVariable);
       AutoDiff.Term term;
-      var success = transformator.TryConvertToAutoDiff(tree.Root.GetSubtree(0), out term);
-      if (success) {
+      try {
+        term = transformator.ConvertToAutoDiff(tree.Root.GetSubtree(0));
         var parameterEntries = transformator.parameters.ToArray(); // guarantee same order for keys and values
-        var compiledTerm = term.Compile(transformator.variables.ToArray(), parameterEntries.Select(kvp => kvp.Value).ToArray());
+        var compiledTerm = term.Compile(transformator.variables.ToArray(),
+          parameterEntries.Select(kvp => kvp.Value).ToArray());
         parameters = new List<DataForVariable>(parameterEntries.Select(kvp => kvp.Key));
         initialConstants = transformator.initialConstants.ToArray();
         func = (vars, @params) => compiledTerm.Evaluate(vars, @params);
         func_grad = (vars, @params) => compiledTerm.Differentiate(vars, @params);
-      } else {
+        return true;
+      } catch (ConversionException) {
         func = null;
         func_grad = null;
         parameters = null;
         initialConstants = null;
       }
-      return success;
+      return false;
     }
 
     // state for recursive transformation of trees 
-    private readonly List<double> initialConstants;
+    private readonly
+    List<double> initialConstants;
     private readonly Dictionary<DataForVariable, AutoDiff.Variable> parameters;
     private readonly List<AutoDiff.Variable> variables;
     private readonly bool makeVariableWeightsVariable;
@@ -117,13 +127,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       this.variables = new List<AutoDiff.Variable>();
     }
 
-    private bool TryConvertToAutoDiff(ISymbolicExpressionTreeNode node, out AutoDiff.Term term) {
+    private AutoDiff.Term ConvertToAutoDiff(ISymbolicExpressionTreeNode node) {
       if (node.Symbol is Constant) {
         initialConstants.Add(((ConstantTreeNode)node).Value);
         var var = new AutoDiff.Variable();
         variables.Add(var);
-        term = var;
-        return true;
+        return var;
       }
       if (node.Symbol is Variable || node.Symbol is BinaryFactorVariable) {
         var varNode = node as VariableTreeNodeBase;
@@ -136,11 +145,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           initialConstants.Add(varNode.Weight);
           var w = new AutoDiff.Variable();
           variables.Add(w);
-          term = AutoDiff.TermBuilder.Product(w, par);
+          return AutoDiff.TermBuilder.Product(w, par);
         } else {
-          term = varNode.Weight * par;
+          return varNode.Weight * par;
         }
-        return true;
       }
       if (node.Symbol is FactorVariable) {
         var factorVarNode = node as FactorVariableTreeNode;
@@ -154,8 +162,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
           products.Add(AutoDiff.TermBuilder.Product(wVar, par));
         }
-        term = AutoDiff.TermBuilder.Sum(products);
-        return true;
+        return AutoDiff.TermBuilder.Sum(products);
       }
       if (node.Symbol is LaggedVariable) {
         var varNode = node as LaggedVariableTreeNode;
@@ -165,175 +172,88 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           initialConstants.Add(varNode.Weight);
           var w = new AutoDiff.Variable();
           variables.Add(w);
-          term = AutoDiff.TermBuilder.Product(w, par);
+          return AutoDiff.TermBuilder.Product(w, par);
         } else {
-          term = varNode.Weight * par;
+          return varNode.Weight * par;
         }
-        return true;
       }
       if (node.Symbol is Addition) {
         List<AutoDiff.Term> terms = new List<Term>();
         foreach (var subTree in node.Subtrees) {
-          AutoDiff.Term t;
-          if (!TryConvertToAutoDiff(subTree, out t)) {
-            term = null;
-            return false;
-          }
-          terms.Add(t);
+          terms.Add(ConvertToAutoDiff(subTree));
         }
-        term = AutoDiff.TermBuilder.Sum(terms);
-        return true;
+        return AutoDiff.TermBuilder.Sum(terms);
       }
       if (node.Symbol is Subtraction) {
         List<AutoDiff.Term> terms = new List<Term>();
         for (int i = 0; i < node.SubtreeCount; i++) {
-          AutoDiff.Term t;
-          if (!TryConvertToAutoDiff(node.GetSubtree(i), out t)) {
-            term = null;
-            return false;
-          }
+          AutoDiff.Term t = ConvertToAutoDiff(node.GetSubtree(i));
           if (i > 0) t = -t;
           terms.Add(t);
         }
-        if (terms.Count == 1) term = -terms[0];
-        else term = AutoDiff.TermBuilder.Sum(terms);
-        return true;
+        if (terms.Count == 1) return -terms[0];
+        else return AutoDiff.TermBuilder.Sum(terms);
       }
       if (node.Symbol is Multiplication) {
         List<AutoDiff.Term> terms = new List<Term>();
         foreach (var subTree in node.Subtrees) {
-          AutoDiff.Term t;
-          if (!TryConvertToAutoDiff(subTree, out t)) {
-            term = null;
-            return false;
-          }
-          terms.Add(t);
+          terms.Add(ConvertToAutoDiff(subTree));
         }
-        if (terms.Count == 1) term = terms[0];
-        else term = terms.Aggregate((a, b) => new AutoDiff.Product(a, b));
-        return true;
-
+        if (terms.Count == 1) return terms[0];
+        else return terms.Aggregate((a, b) => new AutoDiff.Product(a, b));
       }
       if (node.Symbol is Division) {
         List<AutoDiff.Term> terms = new List<Term>();
         foreach (var subTree in node.Subtrees) {
-          AutoDiff.Term t;
-          if (!TryConvertToAutoDiff(subTree, out t)) {
-            term = null;
-            return false;
-          }
-          terms.Add(t);
+          terms.Add(ConvertToAutoDiff(subTree));
         }
-        if (terms.Count == 1) term = 1.0 / terms[0];
-        else term = terms.Aggregate((a, b) => new AutoDiff.Product(a, 1.0 / b));
-        return true;
+        if (terms.Count == 1) return 1.0 / terms[0];
+        else return terms.Aggregate((a, b) => new AutoDiff.Product(a, 1.0 / b));
       }
       if (node.Symbol is Logarithm) {
-        AutoDiff.Term t;
-        if (!TryConvertToAutoDiff(node.GetSubtree(0), out t)) {
-          term = null;
-          return false;
-        } else {
-          term = AutoDiff.TermBuilder.Log(t);
-          return true;
-        }
+        return AutoDiff.TermBuilder.Log(
+          ConvertToAutoDiff(node.GetSubtree(0)));
       }
       if (node.Symbol is Exponential) {
-        AutoDiff.Term t;
-        if (!TryConvertToAutoDiff(node.GetSubtree(0), out t)) {
-          term = null;
-          return false;
-        } else {
-          term = AutoDiff.TermBuilder.Exp(t);
-          return true;
-        }
+        return AutoDiff.TermBuilder.Exp(
+          ConvertToAutoDiff(node.GetSubtree(0)));
       }
       if (node.Symbol is Square) {
-        AutoDiff.Term t;
-        if (!TryConvertToAutoDiff(node.GetSubtree(0), out t)) {
-          term = null;
-          return false;
-        } else {
-          term = AutoDiff.TermBuilder.Power(t, 2.0);
-          return true;
-        }
+        return AutoDiff.TermBuilder.Power(
+          ConvertToAutoDiff(node.GetSubtree(0)), 2.0);
       }
       if (node.Symbol is SquareRoot) {
-        AutoDiff.Term t;
-        if (!TryConvertToAutoDiff(node.GetSubtree(0), out t)) {
-          term = null;
-          return false;
-        } else {
-          term = AutoDiff.TermBuilder.Power(t, 0.5);
-          return true;
-        }
+        return AutoDiff.TermBuilder.Power(
+          ConvertToAutoDiff(node.GetSubtree(0)), 0.5);
       }
       if (node.Symbol is Sine) {
-        AutoDiff.Term t;
-        if (!TryConvertToAutoDiff(node.GetSubtree(0), out t)) {
-          term = null;
-          return false;
-        } else {
-          term = sin(t);
-          return true;
-        }
+        return sin(
+          ConvertToAutoDiff(node.GetSubtree(0)));
       }
       if (node.Symbol is Cosine) {
-        AutoDiff.Term t;
-        if (!TryConvertToAutoDiff(node.GetSubtree(0), out t)) {
-          term = null;
-          return false;
-        } else {
-          term = cos(t);
-          return true;
-        }
+        return cos(
+          ConvertToAutoDiff(node.GetSubtree(0)));
       }
       if (node.Symbol is Tangent) {
-        AutoDiff.Term t;
-        if (!TryConvertToAutoDiff(node.GetSubtree(0), out t)) {
-          term = null;
-          return false;
-        } else {
-          term = tan(t);
-          return true;
-        }
+        return tan(
+          ConvertToAutoDiff(node.GetSubtree(0)));
       }
       if (node.Symbol is Erf) {
-        AutoDiff.Term t;
-        if (!TryConvertToAutoDiff(node.GetSubtree(0), out t)) {
-          term = null;
-          return false;
-        } else {
-          term = erf(t);
-          return true;
-        }
+        return erf(
+          ConvertToAutoDiff(node.GetSubtree(0)));
       }
       if (node.Symbol is Norm) {
-        AutoDiff.Term t;
-        if (!TryConvertToAutoDiff(node.GetSubtree(0), out t)) {
-          term = null;
-          return false;
-        } else {
-          term = norm(t);
-          return true;
-        }
+        return norm(
+          ConvertToAutoDiff(node.GetSubtree(0)));
       }
       if (node.Symbol is StartSymbol) {
         var alpha = new AutoDiff.Variable();
         var beta = new AutoDiff.Variable();
         variables.Add(beta);
         variables.Add(alpha);
-        AutoDiff.Term branchTerm;
-        if (TryConvertToAutoDiff(node.GetSubtree(0), out branchTerm)) {
-          term = branchTerm * alpha + beta;
-          return true;
-        } else {
-          term = null;
-          return false;
-        }
+        return ConvertToAutoDiff(node.GetSubtree(0)) * alpha + beta;
       }
-      term = null;
-      return false;
+      throw new ConversionException();
     }
 
 
@@ -356,27 +276,46 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var containsUnknownSymbol = (
         from n in tree.Root.GetSubtree(0).IterateNodesPrefix()
         where
-        !(n.Symbol is Variable) &&
-        !(n.Symbol is BinaryFactorVariable) &&
-        !(n.Symbol is FactorVariable) &&
-        !(n.Symbol is LaggedVariable) &&
-        !(n.Symbol is Constant) &&
-        !(n.Symbol is Addition) &&
-        !(n.Symbol is Subtraction) &&
-        !(n.Symbol is Multiplication) &&
-        !(n.Symbol is Division) &&
-        !(n.Symbol is Logarithm) &&
-        !(n.Symbol is Exponential) &&
-        !(n.Symbol is SquareRoot) &&
-        !(n.Symbol is Square) &&
-        !(n.Symbol is Sine) &&
-        !(n.Symbol is Cosine) &&
-        !(n.Symbol is Tangent) &&
-        !(n.Symbol is Erf) &&
-        !(n.Symbol is Norm) &&
-        !(n.Symbol is StartSymbol)
+          !(n.Symbol is Variable) &&
+          !(n.Symbol is BinaryFactorVariable) &&
+          !(n.Symbol is FactorVariable) &&
+          !(n.Symbol is LaggedVariable) &&
+          !(n.Symbol is Constant) &&
+          !(n.Symbol is Addition) &&
+          !(n.Symbol is Subtraction) &&
+          !(n.Symbol is Multiplication) &&
+          !(n.Symbol is Division) &&
+          !(n.Symbol is Logarithm) &&
+          !(n.Symbol is Exponential) &&
+          !(n.Symbol is SquareRoot) &&
+          !(n.Symbol is Square) &&
+          !(n.Symbol is Sine) &&
+          !(n.Symbol is Cosine) &&
+          !(n.Symbol is Tangent) &&
+          !(n.Symbol is Erf) &&
+          !(n.Symbol is Norm) &&
+          !(n.Symbol is StartSymbol)
         select n).Any();
       return !containsUnknownSymbol;
     }
+    #region exception class
+    [Serializable]
+    public class ConversionException : Exception {
+
+      public ConversionException() {
+      }
+
+      public ConversionException(string message) : base(message) {
+      }
+
+      public ConversionException(string message, Exception inner) : base(message, inner) {
+      }
+
+      protected ConversionException(
+        SerializationInfo info,
+        StreamingContext context) : base(info, context) {
+      }
+    }
+    #endregion
   }
 }
