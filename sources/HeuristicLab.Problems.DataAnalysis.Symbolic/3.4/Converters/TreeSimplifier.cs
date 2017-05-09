@@ -32,30 +32,33 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   /// Simplifier for symbolic expressions
   /// </summary>
   public class TreeSimplifier {
-    private readonly Addition addSymbol = new Addition();
-    private readonly Multiplication mulSymbol = new Multiplication();
-    private readonly Division divSymbol = new Division();
-    private readonly Constant constSymbol = new Constant();
-    private readonly Logarithm logSymbol = new Logarithm();
-    private readonly Exponential expSymbol = new Exponential();
-    private readonly Root rootSymbol = new Root();
-    private readonly Square sqrSymbol = new Square();
-    private readonly SquareRoot sqrtSymbol = new SquareRoot();
-    private readonly Power powSymbol = new Power();
-    private readonly Sine sineSymbol = new Sine();
-    private readonly Cosine cosineSymbol = new Cosine();
-    private readonly Tangent tanSymbol = new Tangent();
-    private readonly IfThenElse ifThenElseSymbol = new IfThenElse();
-    private readonly And andSymbol = new And();
-    private readonly Or orSymbol = new Or();
-    private readonly Not notSymbol = new Not();
-    private readonly GreaterThan gtSymbol = new GreaterThan();
-    private readonly LessThan ltSymbol = new LessThan();
-    private readonly Integral integralSymbol = new Integral();
-    private readonly LaggedVariable laggedVariableSymbol = new LaggedVariable();
-    private readonly TimeLag timeLagSymbol = new TimeLag();
+    private static readonly Addition addSymbol = new Addition();
+    private static readonly Multiplication mulSymbol = new Multiplication();
+    private static readonly Division divSymbol = new Division();
+    private static readonly Constant constSymbol = new Constant();
+    private static readonly Logarithm logSymbol = new Logarithm();
+    private static readonly Exponential expSymbol = new Exponential();
+    private static readonly Root rootSymbol = new Root();
+    private static readonly Square sqrSymbol = new Square();
+    private static readonly SquareRoot sqrtSymbol = new SquareRoot();
+    private static readonly Power powSymbol = new Power();
+    private static readonly Sine sineSymbol = new Sine();
+    private static readonly Cosine cosineSymbol = new Cosine();
+    private static readonly Tangent tanSymbol = new Tangent();
+    private static readonly IfThenElse ifThenElseSymbol = new IfThenElse();
+    private static readonly And andSymbol = new And();
+    private static readonly Or orSymbol = new Or();
+    private static readonly Not notSymbol = new Not();
+    private static readonly GreaterThan gtSymbol = new GreaterThan();
+    private static readonly LessThan ltSymbol = new LessThan();
+    private static readonly Integral integralSymbol = new Integral();
+    private static readonly LaggedVariable laggedVariableSymbol = new LaggedVariable();
+    private static readonly TimeLag timeLagSymbol = new TimeLag();
 
-    public ISymbolicExpressionTree Simplify(ISymbolicExpressionTree originalTree) {
+    [Obsolete("Use static method TreeSimplifier.Simplify instead")]
+    public TreeSimplifier() { }
+
+    public static ISymbolicExpressionTree Simplify(ISymbolicExpressionTree originalTree) {
       var clone = (ISymbolicExpressionTreeNode)originalTree.Root.Clone();
       // macro expand (initially no argument trees)
       var macroExpandedTree = MacroExpand(clone, clone.GetSubtree(0), new List<ISymbolicExpressionTreeNode>());
@@ -65,13 +68,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 #if DEBUG
       // check that each node is only referenced once
       var nodes = rootNode.IterateNodesPrefix().ToArray();
-      foreach(var n in nodes) if(nodes.Count(ni => ni == n) > 1) throw new InvalidOperationException();
+      foreach (var n in nodes) if (nodes.Count(ni => ni == n) > 1) throw new InvalidOperationException();
 #endif
       return new SymbolicExpressionTree(rootNode);
     }
 
     // the argumentTrees list contains already expanded trees used as arguments for invocations
-    private ISymbolicExpressionTreeNode MacroExpand(ISymbolicExpressionTreeNode root, ISymbolicExpressionTreeNode node,
+    private static ISymbolicExpressionTreeNode MacroExpand(ISymbolicExpressionTreeNode root, ISymbolicExpressionTreeNode node,
       IList<ISymbolicExpressionTreeNode> argumentTrees) {
       List<ISymbolicExpressionTreeNode> subtrees = new List<ISymbolicExpressionTreeNode>(node.Subtrees);
       while (node.SubtreeCount > 0) node.RemoveSubtree(0);
@@ -96,7 +99,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
     }
 
-    private ISymbolicExpressionTreeNode FindFunctionDefinition(ISymbolicExpressionTreeNode root, string functionName) {
+    private static ISymbolicExpressionTreeNode FindFunctionDefinition(ISymbolicExpressionTreeNode root, string functionName) {
       foreach (var subtree in root.Subtrees.OfType<DefunTreeNode>()) {
         if (subtree.FunctionName == functionName) return subtree.GetSubtree(0);
       }
@@ -107,91 +110,91 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     #region symbol predicates
 
     // arithmetic
-    private bool IsDivision(ISymbolicExpressionTreeNode node) {
+    private static bool IsDivision(ISymbolicExpressionTreeNode node) {
       return node.Symbol is Division;
     }
 
-    private bool IsMultiplication(ISymbolicExpressionTreeNode node) {
+    private static bool IsMultiplication(ISymbolicExpressionTreeNode node) {
       return node.Symbol is Multiplication;
     }
 
-    private bool IsSubtraction(ISymbolicExpressionTreeNode node) {
+    private static bool IsSubtraction(ISymbolicExpressionTreeNode node) {
       return node.Symbol is Subtraction;
     }
 
-    private bool IsAddition(ISymbolicExpressionTreeNode node) {
+    private static bool IsAddition(ISymbolicExpressionTreeNode node) {
       return node.Symbol is Addition;
     }
 
-    private bool IsAverage(ISymbolicExpressionTreeNode node) {
+    private static bool IsAverage(ISymbolicExpressionTreeNode node) {
       return node.Symbol is Average;
     }
 
     // exponential
-    private bool IsLog(ISymbolicExpressionTreeNode node) {
+    private static bool IsLog(ISymbolicExpressionTreeNode node) {
       return node.Symbol is Logarithm;
     }
 
-    private bool IsExp(ISymbolicExpressionTreeNode node) {
+    private static bool IsExp(ISymbolicExpressionTreeNode node) {
       return node.Symbol is Exponential;
     }
 
-    private bool IsRoot(ISymbolicExpressionTreeNode node) {
+    private static bool IsRoot(ISymbolicExpressionTreeNode node) {
       return node.Symbol is Root;
     }
 
-    private bool IsSquare(ISymbolicExpressionTreeNode node) {
+    private static bool IsSquare(ISymbolicExpressionTreeNode node) {
       return node.Symbol is Square;
     }
 
-    private bool IsSquareRoot(ISymbolicExpressionTreeNode node) {
+    private static bool IsSquareRoot(ISymbolicExpressionTreeNode node) {
       return node.Symbol is SquareRoot;
     }
 
-    private bool IsPower(ISymbolicExpressionTreeNode node) {
+    private static bool IsPower(ISymbolicExpressionTreeNode node) {
       return node.Symbol is Power;
     }
 
     // trigonometric
-    private bool IsSine(ISymbolicExpressionTreeNode node) {
+    private static bool IsSine(ISymbolicExpressionTreeNode node) {
       return node.Symbol is Sine;
     }
 
-    private bool IsCosine(ISymbolicExpressionTreeNode node) {
+    private static bool IsCosine(ISymbolicExpressionTreeNode node) {
       return node.Symbol is Cosine;
     }
 
-    private bool IsTangent(ISymbolicExpressionTreeNode node) {
+    private static bool IsTangent(ISymbolicExpressionTreeNode node) {
       return node.Symbol is Tangent;
     }
 
     // boolean
-    private bool IsIfThenElse(ISymbolicExpressionTreeNode node) {
+    private static bool IsIfThenElse(ISymbolicExpressionTreeNode node) {
       return node.Symbol is IfThenElse;
     }
 
-    private bool IsAnd(ISymbolicExpressionTreeNode node) {
+    private static bool IsAnd(ISymbolicExpressionTreeNode node) {
       return node.Symbol is And;
     }
 
-    private bool IsOr(ISymbolicExpressionTreeNode node) {
+    private static bool IsOr(ISymbolicExpressionTreeNode node) {
       return node.Symbol is Or;
     }
 
-    private bool IsNot(ISymbolicExpressionTreeNode node) {
+    private static bool IsNot(ISymbolicExpressionTreeNode node) {
       return node.Symbol is Not;
     }
 
     // comparison
-    private bool IsGreaterThan(ISymbolicExpressionTreeNode node) {
+    private static bool IsGreaterThan(ISymbolicExpressionTreeNode node) {
       return node.Symbol is GreaterThan;
     }
 
-    private bool IsLessThan(ISymbolicExpressionTreeNode node) {
+    private static bool IsLessThan(ISymbolicExpressionTreeNode node) {
       return node.Symbol is LessThan;
     }
 
-    private bool IsBoolean(ISymbolicExpressionTreeNode node) {
+    private static bool IsBoolean(ISymbolicExpressionTreeNode node) {
       return
         node.Symbol is GreaterThan ||
         node.Symbol is LessThan ||
@@ -200,32 +203,32 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     // terminals
-    private bool IsVariable(ISymbolicExpressionTreeNode node) {
+    private static bool IsVariable(ISymbolicExpressionTreeNode node) {
       return node.Symbol is Variable;
     }
 
-    private bool IsVariableBase(ISymbolicExpressionTreeNode node) {
+    private static bool IsVariableBase(ISymbolicExpressionTreeNode node) {
       return node is VariableTreeNodeBase;
     }
 
-    private bool IsFactor(ISymbolicExpressionTreeNode node) {
+    private static bool IsFactor(ISymbolicExpressionTreeNode node) {
       return node is FactorVariableTreeNode;
     }
 
-    private bool IsBinFactor(ISymbolicExpressionTreeNode node) {
+    private static bool IsBinFactor(ISymbolicExpressionTreeNode node) {
       return node is BinaryFactorVariableTreeNode;
     }
 
-    private bool IsConstant(ISymbolicExpressionTreeNode node) {
+    private static bool IsConstant(ISymbolicExpressionTreeNode node) {
       return node.Symbol is Constant;
     }
 
     // dynamic
-    private bool IsTimeLag(ISymbolicExpressionTreeNode node) {
+    private static bool IsTimeLag(ISymbolicExpressionTreeNode node) {
       return node.Symbol is TimeLag;
     }
 
-    private bool IsIntegral(ISymbolicExpressionTreeNode node) {
+    private static bool IsIntegral(ISymbolicExpressionTreeNode node) {
       return node.Symbol is Integral;
     }
 
@@ -236,7 +239,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     /// </summary>
     /// <param name="original"></param>
     /// <returns></returns>
-    public ISymbolicExpressionTreeNode GetSimplifiedTree(ISymbolicExpressionTreeNode original) {
+    public static ISymbolicExpressionTreeNode GetSimplifiedTree(ISymbolicExpressionTreeNode original) {
       if (IsConstant(original) || IsVariableBase(original)) {
         return (ISymbolicExpressionTreeNode)original.Clone();
       } else if (IsAddition(original)) {
@@ -290,7 +293,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     #region specific simplification routines
 
-    private ISymbolicExpressionTreeNode SimplifyAny(ISymbolicExpressionTreeNode original) {
+    private static ISymbolicExpressionTreeNode SimplifyAny(ISymbolicExpressionTreeNode original) {
       // can't simplify this function but simplify all subtrees 
       List<ISymbolicExpressionTreeNode> subtrees = new List<ISymbolicExpressionTreeNode>(original.Subtrees);
       while (original.Subtrees.Count() > 0) original.RemoveSubtree(0);
@@ -309,12 +312,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       return clone;
     }
 
-    private ISymbolicExpressionTreeNode SimplifyConstantExpression(ISymbolicExpressionTreeNode original) {
+    private static ISymbolicExpressionTreeNode SimplifyConstantExpression(ISymbolicExpressionTreeNode original) {
       // not yet implemented
       return original;
     }
 
-    private ISymbolicExpressionTreeNode SimplifyAverage(ISymbolicExpressionTreeNode original) {
+    private static ISymbolicExpressionTreeNode SimplifyAverage(ISymbolicExpressionTreeNode original) {
       if (original.Subtrees.Count() == 1) {
         return GetSimplifiedTree(original.GetSubtree(0));
       } else {
@@ -327,7 +330,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
     }
 
-    private ISymbolicExpressionTreeNode SimplifyDivision(ISymbolicExpressionTreeNode original) {
+    private static ISymbolicExpressionTreeNode SimplifyDivision(ISymbolicExpressionTreeNode original) {
       if (original.Subtrees.Count() == 1) {
         return Invert(GetSimplifiedTree(original.GetSubtree(0)));
       } else {
@@ -342,7 +345,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
     }
 
-    private ISymbolicExpressionTreeNode SimplifyMultiplication(ISymbolicExpressionTreeNode original) {
+    private static ISymbolicExpressionTreeNode SimplifyMultiplication(ISymbolicExpressionTreeNode original) {
       if (original.Subtrees.Count() == 1) {
         return GetSimplifiedTree(original.GetSubtree(0));
       } else {
@@ -352,7 +355,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
     }
 
-    private ISymbolicExpressionTreeNode SimplifySubtraction(ISymbolicExpressionTreeNode original) {
+    private static ISymbolicExpressionTreeNode SimplifySubtraction(ISymbolicExpressionTreeNode original) {
       if (original.Subtrees.Count() == 1) {
         return Negate(GetSimplifiedTree(original.GetSubtree(0)));
       } else {
@@ -364,7 +367,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
     }
 
-    private ISymbolicExpressionTreeNode SimplifyAddition(ISymbolicExpressionTreeNode original) {
+    private static ISymbolicExpressionTreeNode SimplifyAddition(ISymbolicExpressionTreeNode original) {
       if (original.Subtrees.Count() == 1) {
         return GetSimplifiedTree(original.GetSubtree(0));
       } else {
@@ -376,72 +379,72 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
     }
 
-    private ISymbolicExpressionTreeNode SimplifyNot(ISymbolicExpressionTreeNode original) {
+    private static ISymbolicExpressionTreeNode SimplifyNot(ISymbolicExpressionTreeNode original) {
       return MakeNot(GetSimplifiedTree(original.GetSubtree(0)));
     }
 
-    private ISymbolicExpressionTreeNode SimplifyOr(ISymbolicExpressionTreeNode original) {
+    private static ISymbolicExpressionTreeNode SimplifyOr(ISymbolicExpressionTreeNode original) {
       return original.Subtrees
         .Select(GetSimplifiedTree)
         .Aggregate(MakeOr);
     }
 
-    private ISymbolicExpressionTreeNode SimplifyAnd(ISymbolicExpressionTreeNode original) {
+    private static ISymbolicExpressionTreeNode SimplifyAnd(ISymbolicExpressionTreeNode original) {
       return original.Subtrees
         .Select(GetSimplifiedTree)
         .Aggregate(MakeAnd);
     }
 
-    private ISymbolicExpressionTreeNode SimplifyLessThan(ISymbolicExpressionTreeNode original) {
+    private static ISymbolicExpressionTreeNode SimplifyLessThan(ISymbolicExpressionTreeNode original) {
       return MakeLessThan(GetSimplifiedTree(original.GetSubtree(0)), GetSimplifiedTree(original.GetSubtree(1)));
     }
 
-    private ISymbolicExpressionTreeNode SimplifyGreaterThan(ISymbolicExpressionTreeNode original) {
+    private static ISymbolicExpressionTreeNode SimplifyGreaterThan(ISymbolicExpressionTreeNode original) {
       return MakeGreaterThan(GetSimplifiedTree(original.GetSubtree(0)), GetSimplifiedTree(original.GetSubtree(1)));
     }
 
-    private ISymbolicExpressionTreeNode SimplifyIfThenElse(ISymbolicExpressionTreeNode original) {
+    private static ISymbolicExpressionTreeNode SimplifyIfThenElse(ISymbolicExpressionTreeNode original) {
       return MakeIfThenElse(GetSimplifiedTree(original.GetSubtree(0)), GetSimplifiedTree(original.GetSubtree(1)),
         GetSimplifiedTree(original.GetSubtree(2)));
     }
 
-    private ISymbolicExpressionTreeNode SimplifyTangent(ISymbolicExpressionTreeNode original) {
+    private static ISymbolicExpressionTreeNode SimplifyTangent(ISymbolicExpressionTreeNode original) {
       return MakeTangent(GetSimplifiedTree(original.GetSubtree(0)));
     }
 
-    private ISymbolicExpressionTreeNode SimplifyCosine(ISymbolicExpressionTreeNode original) {
+    private static ISymbolicExpressionTreeNode SimplifyCosine(ISymbolicExpressionTreeNode original) {
       return MakeCosine(GetSimplifiedTree(original.GetSubtree(0)));
     }
 
-    private ISymbolicExpressionTreeNode SimplifySine(ISymbolicExpressionTreeNode original) {
+    private static ISymbolicExpressionTreeNode SimplifySine(ISymbolicExpressionTreeNode original) {
       return MakeSine(GetSimplifiedTree(original.GetSubtree(0)));
     }
 
-    private ISymbolicExpressionTreeNode SimplifyExp(ISymbolicExpressionTreeNode original) {
+    private static ISymbolicExpressionTreeNode SimplifyExp(ISymbolicExpressionTreeNode original) {
       return MakeExp(GetSimplifiedTree(original.GetSubtree(0)));
     }
 
-    private ISymbolicExpressionTreeNode SimplifySquare(ISymbolicExpressionTreeNode original) {
+    private static ISymbolicExpressionTreeNode SimplifySquare(ISymbolicExpressionTreeNode original) {
       return MakeSquare(GetSimplifiedTree(original.GetSubtree(0)));
     }
 
-    private ISymbolicExpressionTreeNode SimplifySquareRoot(ISymbolicExpressionTreeNode original) {
+    private static ISymbolicExpressionTreeNode SimplifySquareRoot(ISymbolicExpressionTreeNode original) {
       return MakeSquareRoot(GetSimplifiedTree(original.GetSubtree(0)));
     }
 
-    private ISymbolicExpressionTreeNode SimplifyLog(ISymbolicExpressionTreeNode original) {
+    private static ISymbolicExpressionTreeNode SimplifyLog(ISymbolicExpressionTreeNode original) {
       return MakeLog(GetSimplifiedTree(original.GetSubtree(0)));
     }
 
-    private ISymbolicExpressionTreeNode SimplifyRoot(ISymbolicExpressionTreeNode original) {
+    private static ISymbolicExpressionTreeNode SimplifyRoot(ISymbolicExpressionTreeNode original) {
       return MakeRoot(GetSimplifiedTree(original.GetSubtree(0)), GetSimplifiedTree(original.GetSubtree(1)));
     }
 
-    private ISymbolicExpressionTreeNode SimplifyPower(ISymbolicExpressionTreeNode original) {
+    private static ISymbolicExpressionTreeNode SimplifyPower(ISymbolicExpressionTreeNode original) {
       return MakePower(GetSimplifiedTree(original.GetSubtree(0)), GetSimplifiedTree(original.GetSubtree(1)));
     }
 
-    private ISymbolicExpressionTreeNode SimplifyTimeLag(ISymbolicExpressionTreeNode original) {
+    private static ISymbolicExpressionTreeNode SimplifyTimeLag(ISymbolicExpressionTreeNode original) {
       var laggedTreeNode = original as ILaggedTreeNode;
       var simplifiedSubtree = GetSimplifiedTree(original.GetSubtree(0));
       if (!ContainsVariableCondition(simplifiedSubtree)) {
@@ -451,7 +454,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
     }
 
-    private ISymbolicExpressionTreeNode SimplifyIntegral(ISymbolicExpressionTreeNode original) {
+    private static ISymbolicExpressionTreeNode SimplifyIntegral(ISymbolicExpressionTreeNode original) {
       var laggedTreeNode = original as ILaggedTreeNode;
       var simplifiedSubtree = GetSimplifiedTree(original.GetSubtree(0));
       if (IsConstant(simplifiedSubtree)) {
@@ -465,7 +468,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     #region low level tree restructuring
 
-    private ISymbolicExpressionTreeNode MakeTimeLag(ISymbolicExpressionTreeNode subtree, int lag) {
+    private static ISymbolicExpressionTreeNode MakeTimeLag(ISymbolicExpressionTreeNode subtree, int lag) {
       if (lag == 0) return subtree;
       if (IsConstant(subtree)) return subtree;
       var lagNode = (LaggedTreeNode)timeLagSymbol.CreateTreeNode();
@@ -474,7 +477,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       return lagNode;
     }
 
-    private ISymbolicExpressionTreeNode MakeIntegral(ISymbolicExpressionTreeNode subtree, int lag) {
+    private static ISymbolicExpressionTreeNode MakeIntegral(ISymbolicExpressionTreeNode subtree, int lag) {
       if (lag == 0) return subtree;
       else if (lag == -1 || lag == 1) {
         return MakeSum(subtree, AddLagToDynamicNodes((ISymbolicExpressionTreeNode)subtree.Clone(), lag));
@@ -486,7 +489,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
     }
 
-    private ISymbolicExpressionTreeNode MakeNot(ISymbolicExpressionTreeNode t) {
+    private static ISymbolicExpressionTreeNode MakeNot(ISymbolicExpressionTreeNode t) {
       if (IsConstant(t)) {
         var constNode = t as ConstantTreeNode;
         if (constNode.Value > 0) return MakeConstant(-1.0);
@@ -507,7 +510,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
     }
 
-    private ISymbolicExpressionTreeNode MakeOr(ISymbolicExpressionTreeNode a, ISymbolicExpressionTreeNode b) {
+    private static ISymbolicExpressionTreeNode MakeOr(ISymbolicExpressionTreeNode a, ISymbolicExpressionTreeNode b) {
       if (IsConstant(a) && IsConstant(b)) {
         var constA = a as ConstantTreeNode;
         var constB = b as ConstantTreeNode;
@@ -537,7 +540,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
     }
 
-    private ISymbolicExpressionTreeNode MakeAnd(ISymbolicExpressionTreeNode a, ISymbolicExpressionTreeNode b) {
+    private static ISymbolicExpressionTreeNode MakeAnd(ISymbolicExpressionTreeNode a, ISymbolicExpressionTreeNode b) {
       if (IsConstant(a) && IsConstant(b)) {
         var constA = a as ConstantTreeNode;
         var constB = b as ConstantTreeNode;
@@ -567,7 +570,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
     }
 
-    private ISymbolicExpressionTreeNode MakeLessThan(ISymbolicExpressionTreeNode leftSide,
+    private static ISymbolicExpressionTreeNode MakeLessThan(ISymbolicExpressionTreeNode leftSide,
       ISymbolicExpressionTreeNode rightSide) {
       if (IsConstant(leftSide) && IsConstant(rightSide)) {
         var lsConst = leftSide as ConstantTreeNode;
@@ -582,7 +585,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
     }
 
-    private ISymbolicExpressionTreeNode MakeGreaterThan(ISymbolicExpressionTreeNode leftSide,
+    private static ISymbolicExpressionTreeNode MakeGreaterThan(ISymbolicExpressionTreeNode leftSide,
       ISymbolicExpressionTreeNode rightSide) {
       if (IsConstant(leftSide) && IsConstant(rightSide)) {
         var lsConst = leftSide as ConstantTreeNode;
@@ -597,7 +600,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
     }
 
-    private ISymbolicExpressionTreeNode MakeIfThenElse(ISymbolicExpressionTreeNode condition,
+    private static ISymbolicExpressionTreeNode MakeIfThenElse(ISymbolicExpressionTreeNode condition,
       ISymbolicExpressionTreeNode trueBranch, ISymbolicExpressionTreeNode falseBranch) {
       if (IsConstant(condition)) {
         var constT = condition as ConstantTreeNode;
@@ -619,7 +622,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
     }
 
-    private ISymbolicExpressionTreeNode MakeSine(ISymbolicExpressionTreeNode node) {
+    private static ISymbolicExpressionTreeNode MakeSine(ISymbolicExpressionTreeNode node) {
       if (IsConstant(node)) {
         var constT = node as ConstantTreeNode;
         return MakeConstant(Math.Sin(constT.Value));
@@ -636,7 +639,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
     }
 
-    private ISymbolicExpressionTreeNode MakeTangent(ISymbolicExpressionTreeNode node) {
+    private static ISymbolicExpressionTreeNode MakeTangent(ISymbolicExpressionTreeNode node) {
       if (IsConstant(node)) {
         var constT = node as ConstantTreeNode;
         return MakeConstant(Math.Tan(constT.Value));
@@ -653,7 +656,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
     }
 
-    private ISymbolicExpressionTreeNode MakeCosine(ISymbolicExpressionTreeNode node) {
+    private static ISymbolicExpressionTreeNode MakeCosine(ISymbolicExpressionTreeNode node) {
       if (IsConstant(node)) {
         var constT = node as ConstantTreeNode;
         return MakeConstant(Math.Cos(constT.Value));
@@ -672,7 +675,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
     }
 
-    private ISymbolicExpressionTreeNode MakeExp(ISymbolicExpressionTreeNode node) {
+    private static ISymbolicExpressionTreeNode MakeExp(ISymbolicExpressionTreeNode node) {
       if (IsConstant(node)) {
         var constT = node as ConstantTreeNode;
         return MakeConstant(Math.Exp(constT.Value));
@@ -696,7 +699,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         return expNode;
       }
     }
-    private ISymbolicExpressionTreeNode MakeLog(ISymbolicExpressionTreeNode node) {
+    private static ISymbolicExpressionTreeNode MakeLog(ISymbolicExpressionTreeNode node) {
       if (IsConstant(node)) {
         var constT = node as ConstantTreeNode;
         return MakeConstant(Math.Log(constT.Value));
@@ -714,7 +717,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
     }
 
-    private ISymbolicExpressionTreeNode MakeSquare(ISymbolicExpressionTreeNode node) {
+    private static ISymbolicExpressionTreeNode MakeSquare(ISymbolicExpressionTreeNode node) {
       if (IsConstant(node)) {
         var constT = node as ConstantTreeNode;
         return MakeConstant(constT.Value * constT.Value);
@@ -733,7 +736,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
     }
 
-    private ISymbolicExpressionTreeNode MakeSquareRoot(ISymbolicExpressionTreeNode node) {
+    private static ISymbolicExpressionTreeNode MakeSquareRoot(ISymbolicExpressionTreeNode node) {
       if (IsConstant(node)) {
         var constT = node as ConstantTreeNode;
         return MakeConstant(Math.Sqrt(constT.Value));
@@ -752,7 +755,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
     }
 
-    private ISymbolicExpressionTreeNode MakeRoot(ISymbolicExpressionTreeNode a, ISymbolicExpressionTreeNode b) {
+    private static ISymbolicExpressionTreeNode MakeRoot(ISymbolicExpressionTreeNode a, ISymbolicExpressionTreeNode b) {
       if (IsConstant(a) && IsConstant(b)) {
         var constA = a as ConstantTreeNode;
         var constB = b as ConstantTreeNode;
@@ -807,7 +810,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
 
-    private ISymbolicExpressionTreeNode MakePower(ISymbolicExpressionTreeNode a, ISymbolicExpressionTreeNode b) {
+    private static ISymbolicExpressionTreeNode MakePower(ISymbolicExpressionTreeNode a, ISymbolicExpressionTreeNode b) {
       if (IsConstant(a) && IsConstant(b)) {
         var constA = a as ConstantTreeNode;
         var constB = b as ConstantTreeNode;
@@ -862,7 +865,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
 
     // MakeFraction, MakeProduct and MakeSum take two already simplified trees and create a new simplified tree
-    private ISymbolicExpressionTreeNode MakeFraction(ISymbolicExpressionTreeNode a, ISymbolicExpressionTreeNode b) {
+    private static ISymbolicExpressionTreeNode MakeFraction(ISymbolicExpressionTreeNode a, ISymbolicExpressionTreeNode b) {
       if (IsConstant(a) && IsConstant(b)) {
         // fold constants
         return MakeConstant(((ConstantTreeNode)a).Value / ((ConstantTreeNode)b).Value);
@@ -931,7 +934,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
     }
 
-    private ISymbolicExpressionTreeNode MakeSum(ISymbolicExpressionTreeNode a, ISymbolicExpressionTreeNode b) {
+    private static ISymbolicExpressionTreeNode MakeSum(ISymbolicExpressionTreeNode a, ISymbolicExpressionTreeNode b) {
       if (IsConstant(a) && IsConstant(b)) {
         // fold constants
         ((ConstantTreeNode)a).Value += ((ConstantTreeNode)b).Value;
@@ -1026,7 +1029,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     // makes sure variable symbols in sums are combined
-    private void MergeVariablesInSum(ISymbolicExpressionTreeNode sum) {
+    private static void MergeVariablesInSum(ISymbolicExpressionTreeNode sum) {
       var subtrees = new List<ISymbolicExpressionTreeNode>(sum.Subtrees);
       while (sum.Subtrees.Any()) sum.RemoveSubtree(0);
       var groupedVarNodes = from node in subtrees.OfType<IVariableTreeNode>()
@@ -1065,7 +1068,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     // nodes referencing variables can be grouped if they have
-    private string GroupId(IVariableTreeNode node) {
+    private static string GroupId(IVariableTreeNode node) {
       var binaryFactorNode = node as BinaryFactorVariableTreeNode;
       var factorNode = node as FactorVariableTreeNode;
       var variableNode = node as VariableTreeNode;
@@ -1084,7 +1087,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
 
-    private ISymbolicExpressionTreeNode MakeProduct(ISymbolicExpressionTreeNode a, ISymbolicExpressionTreeNode b) {
+    private static ISymbolicExpressionTreeNode MakeProduct(ISymbolicExpressionTreeNode a, ISymbolicExpressionTreeNode b) {
       if (IsConstant(a) && IsConstant(b)) {
         // fold constants
         return MakeConstant(((ConstantTreeNode)a).Value * ((ConstantTreeNode)b).Value);
@@ -1165,14 +1168,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     #region helper functions
 
-    private bool ContainsVariableCondition(ISymbolicExpressionTreeNode node) {
+    private static bool ContainsVariableCondition(ISymbolicExpressionTreeNode node) {
       if (node.Symbol is VariableCondition) return true;
       foreach (var subtree in node.Subtrees)
         if (ContainsVariableCondition(subtree)) return true;
       return false;
     }
 
-    private ISymbolicExpressionTreeNode AddLagToDynamicNodes(ISymbolicExpressionTreeNode node, int lag) {
+    private static ISymbolicExpressionTreeNode AddLagToDynamicNodes(ISymbolicExpressionTreeNode node, int lag) {
       var laggedTreeNode = node as ILaggedTreeNode;
       var variableNode = node as VariableTreeNode;
       var variableConditionNode = node as VariableConditionTreeNode;
@@ -1194,12 +1197,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       return node;
     }
 
-    private bool AreSameTypeAndVariable(ISymbolicExpressionTreeNode a, ISymbolicExpressionTreeNode b) {
+    private static bool AreSameTypeAndVariable(ISymbolicExpressionTreeNode a, ISymbolicExpressionTreeNode b) {
       return GroupId((IVariableTreeNode)a) == GroupId((IVariableTreeNode)b);
     }
 
     // helper to combine the constant factors in products and to combine variables (powers of 2, 3...)
-    private void MergeVariablesAndConstantsInProduct(ISymbolicExpressionTreeNode prod) {
+    private static void MergeVariablesAndConstantsInProduct(ISymbolicExpressionTreeNode prod) {
       var subtrees = new List<ISymbolicExpressionTreeNode>(prod.Subtrees);
       while (prod.Subtrees.Any()) prod.RemoveSubtree(0);
       var groupedVarNodes = from node in subtrees.OfType<IVariableTreeNode>()
@@ -1263,7 +1266,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     /// </summary>
     /// <param name="x"></param>
     /// <returns>-x</returns>
-    private ISymbolicExpressionTreeNode Negate(ISymbolicExpressionTreeNode x) {
+    private static ISymbolicExpressionTreeNode Negate(ISymbolicExpressionTreeNode x) {
       if (IsConstant(x)) {
         ((ConstantTreeNode)x).Value *= -1;
       } else if (IsVariableBase(x)) {
@@ -1300,7 +1303,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     /// </summary>
     /// <param name="x"></param>
     /// <returns></returns>
-    private ISymbolicExpressionTreeNode Invert(ISymbolicExpressionTreeNode x) {
+    private static ISymbolicExpressionTreeNode Invert(ISymbolicExpressionTreeNode x) {
       if (IsConstant(x)) {
         return MakeConstant(1.0 / ((ConstantTreeNode)x).Value);
       } else if (IsFactor(x)) {
@@ -1314,19 +1317,19 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
     }
 
-    private ISymbolicExpressionTreeNode MakeConstant(double value) {
+    private static ISymbolicExpressionTreeNode MakeConstant(double value) {
       ConstantTreeNode constantTreeNode = (ConstantTreeNode)(constSymbol.CreateTreeNode());
       constantTreeNode.Value = value;
       return constantTreeNode;
     }
 
-    private ISymbolicExpressionTreeNode MakeFactor(FactorVariable sy, string variableName, IEnumerable<double> weights) {
+    private static ISymbolicExpressionTreeNode MakeFactor(FactorVariable sy, string variableName, IEnumerable<double> weights) {
       var tree = (FactorVariableTreeNode)sy.CreateTreeNode();
       tree.VariableName = variableName;
       tree.Weights = weights.ToArray();
       return tree;
     }
-    private ISymbolicExpressionTreeNode MakeBinFactor(BinaryFactorVariable sy, string variableName, string variableValue, double weight) {
+    private static ISymbolicExpressionTreeNode MakeBinFactor(BinaryFactorVariable sy, string variableName, string variableValue, double weight) {
       var tree = (BinaryFactorVariableTreeNode)sy.CreateTreeNode();
       tree.VariableName = variableName;
       tree.VariableValue = variableValue;

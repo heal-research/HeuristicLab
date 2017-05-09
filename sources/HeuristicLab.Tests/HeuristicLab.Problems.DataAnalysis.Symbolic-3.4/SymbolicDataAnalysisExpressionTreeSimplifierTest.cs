@@ -33,7 +33,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
     [TestProperty("Time", "short")]
     public void SimplifierAxiomsTest() {
       SymbolicExpressionImporter importer = new SymbolicExpressionImporter();
-      TreeSimplifier simplifier = new TreeSimplifier();
       SymbolicExpressionTreeStringFormatter formatter = new SymbolicExpressionTreeStringFormatter();
       #region single argument arithmetics
 
@@ -232,10 +231,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
 
 
     private void AssertEqualAfterSimplification(string original, string expected) {
-      var simplifier = new TreeSimplifier();
       var formatter = new SymbolicExpressionTreeStringFormatter();
       var importer = new SymbolicExpressionImporter();
-      var actualTree = simplifier.Simplify(importer.Import(original));
+      var actualTree = TreeSimplifier.Simplify(importer.Import(original));
       var expectedTree = importer.Import(expected);
       Assert.AreEqual(formatter.Format(expectedTree), formatter.Format(actualTree));
 
