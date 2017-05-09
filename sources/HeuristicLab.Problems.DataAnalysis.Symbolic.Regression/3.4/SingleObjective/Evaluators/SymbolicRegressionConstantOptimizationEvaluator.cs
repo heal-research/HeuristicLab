@@ -195,7 +195,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         foreach (var info in parameterEntries) {
           int lag = info.lag;
           if (ds.VariableHasType<double>(info.variableName)) {
-            x[row, col] = ds.GetDoubleValue(info.variableName, r + lag);
+            x[row, col] = ds.GetDoubleValue(info.variableName, r + info.lag);
           } else if (ds.VariableHasType<string>(info.variableName)) {
             x[row, col] = ds.GetStringValue(info.variableName, r) == info.variableValue ? 1 : 0;
           } else throw new InvalidProgramException("found a variable of unknown type");
@@ -217,9 +217,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         //alglib.lsfitsetgradientcheck(state, 0.001);
         alglib.lsfitfit(state, function_cx_1_func, function_cx_1_grad, null, null);
         alglib.lsfitresults(state, out retVal, out c, out rep);
-      } catch (ArithmeticException) {
+      }
+      catch (ArithmeticException) {
         return originalQuality;
-      } catch (alglib.alglibexception) {
+      }
+      catch (alglib.alglibexception) {
         return originalQuality;
       }
 
@@ -240,12 +242,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       foreach (var node in tree.Root.IterateNodesPrefix().OfType<SymbolicExpressionTreeTerminalNode>()) {
         ConstantTreeNode constantTreeNode = node as ConstantTreeNode;
         VariableTreeNode variableTreeNode = node as VariableTreeNode;
+        LaggedVariableTreeNode laggedVarTreeNode = node as LaggedVariableTreeNode;
         BinaryFactorVariableTreeNode binFactorVarTreeNode = node as BinaryFactorVariableTreeNode;
         FactorVariableTreeNode factorVarTreeNode = node as FactorVariableTreeNode;
         if (constantTreeNode != null)
           constantTreeNode.Value = constants[i++];
         else if (updateVariableWeights && variableTreeNode != null)
           variableTreeNode.Weight = constants[i++];
+        else if (updateVariableWeights && laggedVarTreeNode != null)
+          laggedVarTreeNode.Weight = constants[i++];
         else if (updateVariableWeights && binFactorVarTreeNode != null)
           binFactorVarTreeNode.Weight = constants[i++];
         else if (factorVarTreeNode != null) {
