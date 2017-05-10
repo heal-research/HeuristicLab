@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Data;
+using HeuristicLab.Random;
 
 namespace HeuristicLab.DataPreprocessing {
   public class ManipulationLogic {
@@ -80,7 +81,7 @@ namespace HeuristicLab.DataPreprocessing {
 
     public void ReplaceIndicesByRandomValue(IDictionary<int, IList<int>> cells, bool considerSelection = false) {
       preprocessingData.InTransaction(() => {
-        Random r = new Random();
+        System.Random r = new System.Random();
 
         foreach (var column in cells) {
           if (preprocessingData.VariableHasType<double>(column.Key)) {
@@ -225,95 +226,55 @@ namespace HeuristicLab.DataPreprocessing {
     }
 
     public void Shuffle(bool shuffleRangesSeparately) {
-      Random random = new Random();
-      var ranges = new[] { preprocessingData.TestPartition, preprocessingData.TrainingPartition };
+      var random = new FastRandom();
+
       if (shuffleRangesSeparately) {
+        var ranges = new[] { preprocessingData.TestPartition, preprocessingData.TrainingPartition };
         preprocessingData.InTransaction(() => {
           // process all given ranges - e.g. TrainingPartition, TestPartition
           foreach (IntRange range in ranges) {
-            List<Tuple<int, int>> shuffledIndices = new List<Tuple<int, int>>();
+            var indices = Enumerable.Range(0, preprocessingData.Rows).ToArray();
+            var shuffledIndices = Enumerable.Range(range.Start, range.Size).Shuffle(random).ToArray();
+            for (int i = range.Start, j = 0; i < range.End; i++, j++)
+              indices[i] = shuffledIndices[j];
 
-            // generate random indices used for shuffeling each column
-            for (int i = range.End - 1; i >= range.Start; --i) {
-              int rand = random.Next(range.Start, i);
-              shuffledIndices.Add(new Tuple<int, int>(i, rand));
-            }
-
-            ShuffleToIndices(shuffledIndices);
+            ReOrderToIndices(indices);
           }
         });
+
       } else {
         preprocessingData.InTransaction(() => {
-          var indices = ranges.SelectMany(x => Enumerable.Range(x.Start, x.Size)).ToList();
-          var shuffledIndices = indices.OrderBy(x => random.Next());
-          ShuffleToIndices(indices.Zip(shuffledIndices, (i, j) => new Tuple<int, int>(i, j)).ToList());
+          var indices = Enumerable.Range(0, preprocessingData.Rows);
+          var shuffledIndices = indices.Shuffle(random).ToArray();
+          ReOrderToIndices(shuffledIndices);
         });
       }
     }
 
-    public void ReOrderToIndices(IEnumerable<int> indices) {
-      List<Tuple<int, int>> indicesTuple = new List<Tuple<int, int>>();
-
-      for (int i = 0; i < indices.Count(); ++i) {
-        indicesTuple.Add(new Tuple<int, int>(i, indices.ElementAt(i)));
-      }
-
-      ReOrderToIndices(indicesTuple);
-    }
-
-    public void ReOrderToIndices(IList<System.Tuple<int, int>> indices) {
+    public void ReOrderToIndices(int[] indices) {
       preprocessingData.InTransaction(() => {
         for (int i = 0; i < preprocessingData.Columns; ++i) {
           if (preprocessingData.VariableHasType<double>(i)) {
-            reOrderToIndices<double>(i, indices);
+            ReOrderToIndices<double>(i, indices);
           } else if (preprocessingData.VariableHasType<string>(i)) {
-            reOrderToIndices<string>(i, indices);
+            ReOrderToIndices<string>(i, indices);
           } else if (preprocessingData.VariableHasType<DateTime>(i)) {
-            reOrderToIndices<DateTime>(i, indices);
+            ReOrderToIndices<DateTime>(i, indices);
           }
         }
       });
     }
 
-    public void ShuffleToIndices(IList<System.Tuple<int, int>> indices) {
-      preprocessingData.InTransaction(() => {
-        for (int i = 0; i < preprocessingData.Columns; ++i) {
-          if (preprocessingData.VariableHasType<double>(i)) {
-            ShuffleToIndices<double>(i, indices);
-          } else if (preprocessingData.VariableHasType<string>(i)) {
-            ShuffleToIndices<string>(i, indices);
-          } else if (preprocessingData.VariableHasType<DateTime>(i)) {
-            ShuffleToIndices<DateTime>(i, indices);
-          }
-        }
-      });
-    }
-
-    private void reOrderToIndices<T>(int columnIndex, IList<Tuple<int, int>> indices) {
-
+    private void ReOrderToIndices<T>(int columnIndex, int[] indices) {
       List<T> originalData = new List<T>(preprocessingData.GetValues<T>(columnIndex));
+      if (indices.Length != originalData.Count) throw new InvalidOperationException("The number of provided indices does not match the values.");
 
-      // process all columns equally
-      foreach (Tuple<int, int> index in indices) {
-        int originalIndex = index.Item1;
-        int replaceIndex = index.Item2;
+      for (int i = 0; i < indices.Length; i++) {
+        int originalIndex = i;
+        int replaceIndex = indices[i];
 
         T replaceValue = originalData.ElementAt<T>(replaceIndex);
         preprocessingData.SetCell<T>(columnIndex, originalIndex, replaceValue);
-      }
-    }
-
-    private void ShuffleToIndices<T>(int columnIndex, IList<Tuple<int, int>> indices) {
-      // process all columns equally
-      foreach (Tuple<int, int> index in indices) {
-        int originalIndex = index.Item1;
-        int replaceIndex = index.Item2;
-
-        T tmp = preprocessingData.GetCell<T>(columnIndex, originalIndex);
-        T replaceValue = preprocessingData.GetCell<T>(columnIndex, replaceIndex);
-
-        preprocessingData.SetCell<T>(columnIndex, originalIndex, replaceValue);
-        preprocessingData.SetCell<T>(columnIndex, replaceIndex, tmp);
       }
     }
 
