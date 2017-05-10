@@ -193,7 +193,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       foreach (var r in rows) {
         int col = 0;
         foreach (var info in parameterEntries) {
-          int lag = info.lag;
           if (ds.VariableHasType<double>(info.variableName)) {
             x[row, col] = ds.GetDoubleValue(info.variableName, r + info.lag);
           } else if (ds.VariableHasType<string>(info.variableName)) {
@@ -241,18 +240,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       int i = 0;
       foreach (var node in tree.Root.IterateNodesPrefix().OfType<SymbolicExpressionTreeTerminalNode>()) {
         ConstantTreeNode constantTreeNode = node as ConstantTreeNode;
-        VariableTreeNode variableTreeNode = node as VariableTreeNode;
-        LaggedVariableTreeNode laggedVarTreeNode = node as LaggedVariableTreeNode;
-        BinaryFactorVariableTreeNode binFactorVarTreeNode = node as BinaryFactorVariableTreeNode;
+        VariableTreeNodeBase variableTreeNodeBase = node as VariableTreeNodeBase;
         FactorVariableTreeNode factorVarTreeNode = node as FactorVariableTreeNode;
         if (constantTreeNode != null)
           constantTreeNode.Value = constants[i++];
-        else if (updateVariableWeights && variableTreeNode != null)
-          variableTreeNode.Weight = constants[i++];
-        else if (updateVariableWeights && laggedVarTreeNode != null)
-          laggedVarTreeNode.Weight = constants[i++];
-        else if (updateVariableWeights && binFactorVarTreeNode != null)
-          binFactorVarTreeNode.Weight = constants[i++];
+        else if (updateVariableWeights && variableTreeNodeBase != null)
+          variableTreeNodeBase.Weight = constants[i++];
         else if (factorVarTreeNode != null) {
           for (int j = 0; j < factorVarTreeNode.Weights.Length; j++)
             factorVarTreeNode.Weights[j] = constants[i++];
