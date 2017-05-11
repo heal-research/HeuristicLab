@@ -45,6 +45,20 @@ namespace HeuristicLab.DataPreprocessing.Views {
       set { base.Content = value; }
     }
 
+    public bool ShowLegend {
+      get { return chart.Legends[0].Enabled; }
+      set { chart.Legends[0].Enabled = value; }
+    }
+
+    public string XAxisFormat {
+      get { return chart.ChartAreas[0].AxisX.LabelStyle.Format; }
+      set { chart.ChartAreas[0].AxisX.LabelStyle.Format = value; }
+    }
+    public string YAxisFormat {
+      get { return chart.ChartAreas[0].AxisY.LabelStyle.Format; }
+      set { chart.ChartAreas[0].AxisY.LabelStyle.Format = value; }
+    }
+
     public PreprocessingScatterPlotView() {
       InitializeComponent();
       pointsRowsTable = new Dictionary<IObservableList<Point2D<double>>, ScatterPlotDataRow>();

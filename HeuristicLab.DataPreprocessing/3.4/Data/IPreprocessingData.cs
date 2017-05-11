@@ -64,6 +64,9 @@ namespace HeuristicLab.DataPreprocessing {
 
     bool VariableHasType<T>(int columnIndex);
 
+    IList<string> InputVariables { get; }
+    string TargetVariable { get; } // optional
+
     int Columns { get; }
     int Rows { get; }
 

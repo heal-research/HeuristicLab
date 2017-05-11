@@ -47,6 +47,9 @@ namespace HeuristicLab.DataPreprocessing {
       get { return ActiveData.VariableNames; }
     }
 
+    public IList<string> InputVariables { get { return ActiveData.InputVariables; } }
+    public string TargetVariable { get { return ActiveData.TargetVariable; } } // optional
+
     public IDictionary<int, IList<int>> Selection {
       get { return originalData.Selection; }
       set { originalData.Selection = value; }
