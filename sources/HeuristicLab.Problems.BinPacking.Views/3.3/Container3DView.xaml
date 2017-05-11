@@ -33,42 +33,44 @@
              Focusable="true"
              >
     <Grid>
-        <Viewport3D Name="viewport3D1" >
-            <Viewport3D.Camera>
-                <PerspectiveCamera x:Name="camMain" Position="0.5 8 8" LookDirection="0 -1 -1"> <!-- camera position for design time-->
-                </PerspectiveCamera>
-            </Viewport3D.Camera>
-            <ModelVisual3D>
-                <ModelVisual3D.Content>
-                    <DirectionalLight x:Name="dirLightMain" Direction="0,-1,-1"/>
-                </ModelVisual3D.Content>
-            </ModelVisual3D>
-            <ModelVisual3D>
-            </ModelVisual3D>
-            <ModelVisual3D x:Name="MyModel">
-                <ModelVisual3D.Content>
-                    <Model3DGroup>
-                    </Model3DGroup>
-                </ModelVisual3D.Content>
-                <ModelVisual3D.Transform>
-                    <Transform3DGroup>
-                        <ScaleTransform3D x:Name="scale" ScaleX="1" ScaleY="1" ScaleZ="1"/>
-                        <TranslateTransform3D OffsetX="-0.5" OffsetY="-0.5" OffsetZ="-0.5" />
-                        <RotateTransform3D>
-                            <RotateTransform3D.Rotation>
-                                <AxisAngleRotation3D x:Name="rotateX" Axis="0 1 0"/>
-                            </RotateTransform3D.Rotation>
-                        </RotateTransform3D>
-                        <RotateTransform3D>
-                            <RotateTransform3D.Rotation>
-                                <AxisAngleRotation3D x:Name="rotateY" Axis="1 0 0"/>
-                            </RotateTransform3D.Rotation>
-                        </RotateTransform3D>
-                        <TranslateTransform3D OffsetX="0.5" OffsetY="0.5" OffsetZ="0.5" />
-                        <ScaleTransform3D x:Name="scaleZoom" CenterX="0.5" CenterY="0.5" CenterZ="0.5" ScaleX="1" ScaleY="1" ScaleZ="1"/>
-                    </Transform3DGroup>
-                </ModelVisual3D.Transform>
-            </ModelVisual3D>
-        </Viewport3D>
+        <Border BorderThickness="1" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
+            <Viewport3D Name="viewport3D1" >
+                <Viewport3D.Camera>
+                    <PerspectiveCamera x:Name="camMain" Position="0.5 8 8" LookDirection="0 -1 -1"> <!-- camera position for design time-->
+                    </PerspectiveCamera>
+                </Viewport3D.Camera>
+                <ModelVisual3D>
+                    <ModelVisual3D.Content>
+                        <DirectionalLight x:Name="dirLightMain" Direction="0,-1,-1"/>
+                    </ModelVisual3D.Content>
+                </ModelVisual3D>
+                <ModelVisual3D>
+                </ModelVisual3D>
+                <ModelVisual3D x:Name="MyModel">
+                    <ModelVisual3D.Content>
+                        <Model3DGroup>
+                        </Model3DGroup>
+                    </ModelVisual3D.Content>
+                    <ModelVisual3D.Transform>
+                        <Transform3DGroup>
+                            <ScaleTransform3D x:Name="scale" ScaleX="1" ScaleY="1" ScaleZ="1"/>
+                            <TranslateTransform3D OffsetX="-0.5" OffsetY="-0.5" OffsetZ="-0.5" />
+                            <RotateTransform3D>
+                                <RotateTransform3D.Rotation>
+                                    <AxisAngleRotation3D x:Name="rotateX" Axis="0 1 0"/>
+                                </RotateTransform3D.Rotation>
+                            </RotateTransform3D>
+                            <RotateTransform3D>
+                                <RotateTransform3D.Rotation>
+                                    <AxisAngleRotation3D x:Name="rotateY" Axis="1 0 0"/>
+                                </RotateTransform3D.Rotation>
+                            </RotateTransform3D>
+                            <TranslateTransform3D OffsetX="0.5" OffsetY="0.5" OffsetZ="0.5" />
+                            <ScaleTransform3D x:Name="scaleZoom" CenterX="0.5" CenterY="0.5" CenterZ="0.5" ScaleX="1" ScaleY="1" ScaleZ="1"/>
+                        </Transform3DGroup>
+                    </ModelVisual3D.Transform>
+                </ModelVisual3D>
+            </Viewport3D>
+        </Border>
     </Grid>
 </UserControl>
