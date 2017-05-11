@@ -523,6 +523,7 @@
     <Compile Include="HeuristicLab.Encodings.PermutationEncoding-3.3\TranslocationInversionManipulatorTest.cs" />
     <Compile Include="HeuristicLab.Encodings.PermutationEncoding-3.3\TranslocationManipulatorTest.cs" />
     <Compile Include="HeuristicLab.Encodings.PermutationEncoding-3.3\UniformLikeCrossoverTest.cs" />
+    <Compile Include="HeuristicLab.Encodings.PermutationEncoding-3.3\PermutationManipulationTest.cs" />
     <Compile Include="HeuristicLab.Encodings.RealVectorEncoding-3.3\Auxiliary.cs" />
     <Compile Include="HeuristicLab.Encodings.RealVectorEncoding-3.3\BlendAlphaBetaCrossoverTest.cs" />
     <Compile Include="HeuristicLab.Encodings.RealVectorEncoding-3.3\BlendAlphaCrossoverTest.cs" />
