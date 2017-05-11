@@ -66,11 +66,7 @@ namespace HeuristicLab.Problems.Instances.Scheduling {
         using (var stream = entry.Open()) {
           var parser = new JSSPORLIBParser();
           parser.Parse(stream);
-          var instance = Load(parser);
-          instance.Name = id.Name;
-          instance.Description = id.Description;
-
-          return instance;
+          return Load(parser);
         }
       }
     }
@@ -81,14 +77,13 @@ namespace HeuristicLab.Problems.Instances.Scheduling {
     public override JSSPData ImportData(string path) {
       var parser = new JSSPORLIBParser();
       parser.Parse(path);
-      var instance = Load(parser);
-      instance.Name = Path.GetFileName(path);
-      instance.Description = "Loaded from file \"" + path + "\" on " + DateTime.Now.ToString();
-      return instance;
+      return Load(parser);
     }
 
     private JSSPData Load(JSSPORLIBParser parser) {
       var instance = new JSSPData {
+        Name = parser.Name,
+        Description = parser.Description,
         Jobs = parser.Jobs,
         Resources = parser.Resources,
         ProcessingTimes = parser.ProcessingTimes,
