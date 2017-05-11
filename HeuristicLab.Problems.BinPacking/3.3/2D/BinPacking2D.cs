@@ -82,7 +82,10 @@ namespace HeuristicLab.Problems.BinPacking2D {
       PackingItem rotatedItem = new PackingItem(
         rotated ? item.Height : item.Width,
         rotated ? item.Width : item.Height,
-        item.TargetBin);
+        item.TargetBin) {
+        Material = item.Material,
+        Weight = item.Weight
+      };
 
       int epIndex = 0;
       while (epIndex < ExtremePoints.Count && (!IsPositionFeasible(rotatedItem, ExtremePoints.ElementAt(epIndex)))) { epIndex++; }

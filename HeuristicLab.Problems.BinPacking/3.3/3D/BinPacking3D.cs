@@ -136,7 +136,7 @@ namespace HeuristicLab.Problems.BinPacking3D {
         rotated ? item.Depth : item.Width,
         item.Height,
         rotated ? item.Width : item.Depth,
-        item.TargetBin);
+        item.TargetBin, item.Weight, item.Material);
 
       int epIndex = 0;
       while (epIndex < ExtremePoints.Count && (
