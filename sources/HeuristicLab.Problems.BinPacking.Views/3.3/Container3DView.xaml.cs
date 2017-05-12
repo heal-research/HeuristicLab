@@ -102,18 +102,46 @@ namespace HeuristicLab.Problems.BinPacking.Views {
       var modelGroup = (Model3DGroup)MyModel.Content;
       var hiddenMaterial = new DiffuseMaterial(new SolidColorBrush(hiddenColor));
 
-      foreach (var item in packing.Items) {
-        var position = packing.Positions[item.Key];
-
-        var w = position.Rotated ? item.Value.Depth : item.Value.Width;
-        var h = item.Value.Height;
-        var d = position.Rotated ? item.Value.Width : item.Value.Depth;
-
-        var model = new GeometryModel3D { Geometry = new MeshGeometry3D() };
+      if (selectedItemKey >= 0) {
+        var selectedItem = packing.Items.Single(x => selectedItemKey == x.Key);
+        var selectedPos = packing.Positions[selectedItem.Key];
         DiffuseMaterial material;
-        if (selectedItemKey >= 0 && selectedItemKey != item.Key)
-          material = hiddenMaterial;
-        else {
+        if (!materials.TryGetValue(selectedItem.Value.Material, out material)) {
+          var colorIdx = selectedItem.Value.Material;
+          while (colorIdx < 0) colorIdx += colors.Length;
+          colorIdx = colorIdx % colors.Length;
+          var color = colors[colorIdx];
+          material = new DiffuseMaterial { Brush = new SolidColorBrush(color) };
+          materials[selectedItem.Value.Material] = material;
+        }
+        var selectedModel = new GeometryModel3D { Geometry = new MeshGeometry3D(), Material = material };
+        AddSolidCube((MeshGeometry3D)selectedModel.Geometry, selectedPos.X, selectedPos.Y, selectedPos.Z,
+          selectedPos.Rotated ? selectedItem.Value.Depth : selectedItem.Value.Width,
+          selectedItem.Value.Height,
+          selectedPos.Rotated ? selectedItem.Value.Width : selectedItem.Value.Depth);
+        modelGroup.Children.Add(selectedModel);
+
+        foreach (var item in packing.Items.Where(x => selectedItemKey != x.Key)) {
+          var position = packing.Positions[item.Key];
+
+          var w = position.Rotated ? item.Value.Depth : item.Value.Width;
+          var h = item.Value.Height;
+          var d = position.Rotated ? item.Value.Width : item.Value.Depth;
+
+          var model = new GeometryModel3D { Geometry = new MeshGeometry3D(), Material = hiddenMaterial };
+          AddWireframeCube((MeshGeometry3D)model.Geometry, position.X, position.Y, position.Z, w, h, d, 1);
+          modelGroup.Children.Add(model);
+        }
+      } else {
+        foreach (var item in packing.Items) {
+          var position = packing.Positions[item.Key];
+
+          var w = position.Rotated ? item.Value.Depth : item.Value.Width;
+          var h = item.Value.Height;
+          var d = position.Rotated ? item.Value.Width : item.Value.Depth;
+
+          var model = new GeometryModel3D { Geometry = new MeshGeometry3D() };
+          DiffuseMaterial material;
           if (!materials.TryGetValue(item.Value.Material, out material)) {
             var colorIdx = item.Value.Material;
             while (colorIdx < 0) colorIdx += colors.Length;
@@ -122,11 +150,10 @@ namespace HeuristicLab.Problems.BinPacking.Views {
             material = new DiffuseMaterial { Brush = new SolidColorBrush(color) };
             materials[item.Value.Material] = material;
           }
+          var selectedModel = new GeometryModel3D { Geometry = new MeshGeometry3D(), Material = material };
+          AddSolidCube((MeshGeometry3D)selectedModel.Geometry, position.X, position.Y, position.Z, w, h, d);
+          modelGroup.Children.Add(selectedModel);
         }
-        model.Material = material;
-        modelGroup.Children.Add(model);
-
-        AddSolidCube((MeshGeometry3D)model.Geometry, position.X, position.Y, position.Z, w, h, d);
       }
 
       var container = packing.BinShape;
@@ -139,9 +166,9 @@ namespace HeuristicLab.Problems.BinPacking.Views {
       scale.ScaleY = 1.0 / ratio;
       scale.ScaleZ = 1.0 / ratio;
 
-      scale.CenterX = .5;
-      scale.CenterY = .5;
-      scale.CenterZ = 0;
+      scaleZoom.CenterX = rotateX.CenterX = rotateY.CenterX = container.Width / (2.0 * ratio);
+      scaleZoom.CenterY = rotateX.CenterY = rotateY.CenterY = container.Height / (2.0 * ratio);
+      scaleZoom.CenterZ = rotateX.CenterZ = rotateY.CenterZ = container.Depth / (2.0 * ratio);
     }
 
 
@@ -158,13 +185,13 @@ namespace HeuristicLab.Problems.BinPacking.Views {
       if (!mouseDown) return;
       var pos = e.GetPosition((IInputElement)this);
       
-      rotateX.Angle = startAngleX + (pos.X - startPos.X) / 4;
-      rotateY.Angle = startAngleY + (pos.Y - startPos.Y) / 4;
+      ((AxisAngleRotation3D)rotateX.Rotation).Angle = startAngleX + (pos.X - startPos.X) / 4;
+      ((AxisAngleRotation3D)rotateY.Rotation).Angle = startAngleY + (pos.Y - startPos.Y) / 4;
     }
 
     private void Container3DView_MouseDown(object sender, MouseButtonEventArgs e) {
-      startAngleX = rotateX.Angle;
-      startAngleY = rotateY.Angle;
+      startAngleX = ((AxisAngleRotation3D)rotateX.Rotation).Angle;
+      startAngleY = ((AxisAngleRotation3D)rotateY.Rotation).Angle;
       this.startPos = e.GetPosition((IInputElement)this);
       this.mouseDown = true;
     }
@@ -301,41 +328,118 @@ namespace HeuristicLab.Problems.BinPacking.Views {
       mesh.Positions.Add(new Point3D(x, y + height, z + depth - thickness));
       mesh.Positions.Add(new Point3D(x + thickness, y + height, z + depth));
 
-      AddPlane(mesh, 0, 4, 6, 2);
-      AddPlane(mesh, 0, 3, 5, 4);
+      // Point 0, non-edge
+      mesh.Positions.Add(new Point3D(x + thickness, y, z + thickness));
+      mesh.Positions.Add(new Point3D(x, y + thickness, z + thickness));
+      mesh.Positions.Add(new Point3D(x + thickness, y + thickness, z));
 
-      AddPlane(mesh, 4, 8, 10, 6);
-      AddPlane(mesh, 4, 7, 9, 8);
+      // Point 1, non-edge
+      mesh.Positions.Add(new Point3D(x + width, y + thickness, z + thickness));
+      mesh.Positions.Add(new Point3D(x + width - thickness, y, z + thickness));
+      mesh.Positions.Add(new Point3D(x + width - thickness, y + thickness, z));
 
-      AddPlane(mesh, 8, 12, 14, 10);
-      AddPlane(mesh, 8, 11, 13, 12);
+      // Point 2, non-edge
+      mesh.Positions.Add(new Point3D(x + width - thickness, y + height, z + thickness));
+      mesh.Positions.Add(new Point3D(x + width, y + height - thickness, z + thickness));
+      mesh.Positions.Add(new Point3D(x + width - thickness, y + height - thickness, z));
 
-      AddPlane(mesh, 0, 2, 14, 12);
-      AddPlane(mesh, 0, 12, 15, 1);
+      // Point 3, non-edge
+      mesh.Positions.Add(new Point3D(x, y + height - thickness, z + thickness));
+      mesh.Positions.Add(new Point3D(x + thickness, y + height, z + thickness));
+      mesh.Positions.Add(new Point3D(x + thickness, y + height - thickness, z));
 
-      AddPlane(mesh, 0, 1, 17, 16);
-      AddPlane(mesh, 0, 16, 19, 3);
+      // Point 4, non-edge
+      mesh.Positions.Add(new Point3D(x + thickness, y, z + depth - thickness));
+      mesh.Positions.Add(new Point3D(x, y + thickness, z + depth - thickness));
+      mesh.Positions.Add(new Point3D(x + thickness, y + thickness, z + depth));
 
-      AddPlane(mesh, 4, 20, 23, 7);
-      AddPlane(mesh, 4, 5, 21, 20);
+      // Point 5, non-edge
+      mesh.Positions.Add(new Point3D(x + width, y + thickness, z + depth - thickness));
+      mesh.Positions.Add(new Point3D(x + width - thickness, y, z + depth - thickness));
+      mesh.Positions.Add(new Point3D(x + width - thickness, y + thickness, z + depth));
 
-      AddPlane(mesh, 8, 24, 27, 11);
-      AddPlane(mesh, 8, 9, 25, 24);
+      // Point 6, non-edge
+      mesh.Positions.Add(new Point3D(x + width - thickness, y + height, z + depth - thickness));
+      mesh.Positions.Add(new Point3D(x + width, y + height - thickness, z + depth - thickness));
+      mesh.Positions.Add(new Point3D(x + width - thickness, y + height - thickness, z + depth));
 
-      AddPlane(mesh, 12, 28, 31, 15);
-      AddPlane(mesh, 12, 13, 29, 28);
+      // Point 7, non-edge
+      mesh.Positions.Add(new Point3D(x, y + height - thickness, z + depth - thickness));
+      mesh.Positions.Add(new Point3D(x + thickness, y + height, z + depth - thickness));
+      mesh.Positions.Add(new Point3D(x + thickness, y + height - thickness, z + depth));
 
-      AddPlane(mesh, 16, 18, 22, 20);
-      AddPlane(mesh, 16, 20, 21, 19);
+      // Draw the 24 corner plates
+      AddPlane(mesh, 0, 1, 32, 2);
+      AddPlane(mesh, 0, 2, 33, 3);
+      AddPlane(mesh, 0, 3, 34, 1);
 
-      AddPlane(mesh, 20, 22, 26, 24);
-      AddPlane(mesh, 20, 24, 25, 23);
+      AddPlane(mesh, 4, 6, 36, 7);
+      AddPlane(mesh, 4, 5, 35, 6);
+      AddPlane(mesh, 4, 7, 37, 5);
 
-      AddPlane(mesh, 24, 28, 29, 27);
-      AddPlane(mesh, 24, 26, 30, 28);
+      AddPlane(mesh, 8, 10, 39, 11);
+      AddPlane(mesh, 8, 9, 38, 10);
+      AddPlane(mesh, 8, 11, 40, 9);
 
-      AddPlane(mesh, 28, 30, 18, 16);
-      AddPlane(mesh, 28, 16, 17, 31);
+      AddPlane(mesh, 12, 13, 41, 14);
+      AddPlane(mesh, 12, 14, 42, 15);
+      AddPlane(mesh, 12, 15, 43, 13);
+
+      AddPlane(mesh, 16, 18, 44, 17);
+      AddPlane(mesh, 16, 19, 45, 18);
+      AddPlane(mesh, 16, 17, 46, 19);
+
+      AddPlane(mesh, 20, 23, 48, 22);
+      AddPlane(mesh, 20, 22, 47, 21);
+      AddPlane(mesh, 20, 21, 49, 23);
+
+      AddPlane(mesh, 24, 27, 51, 26);
+      AddPlane(mesh, 24, 26, 50, 25);
+      AddPlane(mesh, 24, 25, 52, 27);
+
+      AddPlane(mesh, 28, 31, 54, 30);
+      AddPlane(mesh, 28, 30, 53, 29);
+      AddPlane(mesh, 28, 29, 55, 31);
+
+      // Draw the connecting plates
+      // on the bottom
+      AddPlane(mesh, 1, 7, 36, 32);
+      AddPlane(mesh, 1, 34, 37, 7);
+
+      AddPlane(mesh, 5, 11, 39, 35);
+      AddPlane(mesh, 5, 37, 40, 11);
+
+      AddPlane(mesh, 9, 15, 42, 38);
+      AddPlane(mesh, 9, 40, 43, 15);
+
+      AddPlane(mesh, 13, 3, 33, 41);
+      AddPlane(mesh, 13, 43, 34, 3);
+
+      // between bottom and top
+      AddPlane(mesh, 2, 32, 44, 18);
+      AddPlane(mesh, 2, 18, 45, 33);
+
+      AddPlane(mesh, 6, 22, 48, 36);
+      AddPlane(mesh, 6, 35, 47, 22);
+
+      AddPlane(mesh, 10, 26, 51, 39);
+      AddPlane(mesh, 10, 38, 50, 26);
+
+      AddPlane(mesh, 14, 30, 54, 42);
+      AddPlane(mesh, 14, 41, 53, 30);
+
+      // on the top
+      AddPlane(mesh, 17, 44, 48, 23);
+      AddPlane(mesh, 17, 23, 49, 46);
+
+      AddPlane(mesh, 21, 47, 51, 27);
+      AddPlane(mesh, 21, 27, 52, 49);
+
+      AddPlane(mesh, 25, 50, 54, 31);
+      AddPlane(mesh, 25, 31, 55, 52);
+
+      AddPlane(mesh, 29, 19, 46, 55);
+      AddPlane(mesh, 29, 53, 45, 19);
     }
 
     /// <summary>
