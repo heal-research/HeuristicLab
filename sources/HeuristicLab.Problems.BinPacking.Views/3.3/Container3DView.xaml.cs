@@ -169,6 +169,15 @@ namespace HeuristicLab.Problems.BinPacking.Views {
       scaleZoom.CenterX = rotateX.CenterX = rotateY.CenterX = container.Width / (2.0 * ratio);
       scaleZoom.CenterY = rotateX.CenterY = rotateY.CenterY = container.Height / (2.0 * ratio);
       scaleZoom.CenterZ = rotateX.CenterZ = rotateY.CenterZ = container.Depth / (2.0 * ratio);
+
+      camMain.Position = new Point3D(
+        scaleZoom.CenterX,
+        3,
+        3);
+      camMain.LookDirection = new Vector3D(
+        0,
+        scaleZoom.CenterY - camMain.Position.Y,
+        scaleZoom.CenterZ - camMain.Position.Z);
     }
 
 
