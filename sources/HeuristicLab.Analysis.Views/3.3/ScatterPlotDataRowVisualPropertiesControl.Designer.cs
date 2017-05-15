@@ -64,6 +64,7 @@ namespace HeuristicLab.Analysis.Views {
       this.orderLabel = new System.Windows.Forms.Label();
       this.regressionLegendTextBox = new System.Windows.Forms.TextBox();
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+      this.clearColorButton = new System.Windows.Forms.Button();
       ((System.ComponentModel.ISupportInitialize)(this.pointSizeNumericUpDown)).BeginInit();
       this.regressionGroupBox.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.polynomialRegressionOrderNumericUpDown)).BeginInit();
@@ -277,9 +278,26 @@ namespace HeuristicLab.Analysis.Views {
       this.regressionLegendTextBox.TabIndex = 10;
       this.regressionLegendTextBox.Validated += new System.EventHandler(this.regressionLegendTextBox_Validated);
       // 
+      // clearColorButton
+      // 
+      this.clearColorButton.BackColor = System.Drawing.SystemColors.ActiveCaption;
+      this.clearColorButton.Cursor = System.Windows.Forms.Cursors.Default;
+      this.clearColorButton.FlatAppearance.BorderSize = 0;
+      this.clearColorButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.clearColorButton.ForeColor = System.Drawing.Color.Transparent;
+      this.clearColorButton.Location = new System.Drawing.Point(125, 65);
+      this.clearColorButton.Margin = new System.Windows.Forms.Padding(0);
+      this.clearColorButton.Name = "clearColorButton";
+      this.clearColorButton.Size = new System.Drawing.Size(15, 16);
+      this.clearColorButton.TabIndex = 11;
+      this.clearColorButton.TabStop = false;
+      this.clearColorButton.UseVisualStyleBackColor = false;
+      this.clearColorButton.Click += new System.EventHandler(this.clearColorButton_Click);
+      // 
       // ScatterPlotDataRowVisualPropertiesControl
       // 
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
+      this.Controls.Add(this.clearColorButton);
       this.Controls.Add(this.regressionGroupBox);
       this.Controls.Add(this.pointSizeNumericUpDown);
       this.Controls.Add(this.isVisibleInLegendCheckBox);
@@ -323,5 +341,6 @@ namespace HeuristicLab.Analysis.Views {
     private System.Windows.Forms.Label orderLabel;
     private System.Windows.Forms.ToolTip toolTip;
     private System.Windows.Forms.CheckBox isRegressionVisibleInLegendCheckBox;
+    private System.Windows.Forms.Button clearColorButton;
   }
 }

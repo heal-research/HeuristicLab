@@ -22,6 +22,7 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using HeuristicLab.Common.Resources;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 
@@ -44,6 +45,8 @@ namespace HeuristicLab.Analysis.Views {
       InitializeComponent();
       pointStyleComboBox.DataSource = Enum.GetValues(typeof(ScatterPlotDataRowVisualProperties.ScatterPlotDataRowPointStyle));
       regressionTypeComboBox.DataSource = Enum.GetValues(typeof(ScatterPlotDataRowVisualProperties.ScatterPlotDataRowRegressionType));
+      clearColorButton.BackColor = Color.Transparent;
+      clearColorButton.BackgroundImage = VSImageLibrary.Delete;
       SetEnabledStateOfControls();
     }
 
@@ -86,7 +89,7 @@ namespace HeuristicLab.Analysis.Views {
     protected virtual void SetEnabledStateOfControls() {
       pointStyleComboBox.Enabled = Content != null;
       colorButton.Enabled = Content != null;
-      colorButton.Enabled = Content != null;
+      clearColorButton.Visible = Content != null && !Content.Color.IsEmpty;
       isVisibleInLegendCheckBox.Enabled = Content != null;
       pointSizeNumericUpDown.Enabled = Content != null;
       displayNameTextBox.Enabled = Content != null;
@@ -110,6 +113,16 @@ namespace HeuristicLab.Analysis.Views {
         Content.Color = colorDialog.Color;
         colorButton.BackColor = Content.Color;
         colorButton.Text = String.Empty;
+        clearColorButton.Visible = true;
+      }
+    }
+
+    private void clearColorButton_Click(object sender, EventArgs e) {
+      if (!SuppressEvents && Content != null) {
+        Content.Color = Color.Empty;
+        colorButton.BackColor = SystemColors.Control;
+        colorButton.Text = "?";
+        clearColorButton.Visible = false;
       }
     }
 
