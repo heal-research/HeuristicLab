@@ -125,11 +125,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DataTableControl.cs">
+    <Compile Include="DataTableView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="DataTableControl.Designer.cs">
-      <DependentUpon>DataTableControl.cs</DependentUpon>
+    <Compile Include="DataTableView.Designer.cs">
+      <DependentUpon>DataTableView.cs</DependentUpon>
     </Compile>
     <Compile Include="GanttDataView.cs">
       <SubType>UserControl</SubType>
@@ -143,11 +143,11 @@
     <Compile Include="IndexedDataTableView.Designer.cs">
       <DependentUpon>IndexedDataTableView.cs</DependentUpon>
     </Compile>
-    <Compile Include="ScatterPlotControl.cs">
+    <Compile Include="ScatterPlotView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ScatterPlotControl.Designer.cs">
-      <DependentUpon>ScatterPlotControl.cs</DependentUpon>
+    <Compile Include="ScatterPlotView.Designer.cs">
+      <DependentUpon>ScatterPlotView.cs</DependentUpon>
     </Compile>
     <Compile Include="ScatterPlotVisualPropertiesDialog.cs">
       <SubType>Form</SubType>
@@ -166,12 +166,6 @@
     </Compile>
     <Compile Include="ScatterPlotDataRowVisualPropertiesControl.Designer.cs">
       <DependentUpon>ScatterPlotDataRowVisualPropertiesControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ScatterPlotView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="ScatterPlotView.Designer.cs">
-      <DependentUpon>ScatterPlotView.cs</DependentUpon>
     </Compile>
     <Compile Include="ScatterPlotHistoryView.cs">
       <SubType>UserControl</SubType>
@@ -236,12 +230,6 @@
     </Compile>
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="DataTableView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="DataTableView.Designer.cs">
-      <DependentUpon>DataTableView.cs</DependentUpon>
-    </Compile>
     <Compile Include="HistogramControl.cs">
       <SubType>UserControl</SubType>
     </Compile>

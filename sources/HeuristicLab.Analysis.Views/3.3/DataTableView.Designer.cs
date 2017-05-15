@@ -44,8 +44,15 @@ namespace HeuristicLab.Analysis.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      this.chart = new HeuristicLab.Analysis.Views.DataTableControl();
+      this.components = new System.ComponentModel.Container();
+      System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+      System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+      System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+      System.Windows.Forms.DataVisualization.Charting.Title title1 = new System.Windows.Forms.DataVisualization.Charting.Title();
+      this.chart = new HeuristicLab.Visualization.ChartControlsExtensions.EnhancedChart();
+      this.configureToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.chart)).BeginInit();
       this.SuspendLayout();
       // 
       // nameTextBox
@@ -54,40 +61,74 @@ namespace HeuristicLab.Analysis.Views {
       this.errorProvider.SetIconPadding(this.nameTextBox, 2);
       this.nameTextBox.Location = new System.Drawing.Point(55, 0);
       this.nameTextBox.Size = new System.Drawing.Size(279, 20);
-      // 
+      //
       // infoLabel
-      // 
+      //
       this.infoLabel.Location = new System.Drawing.Point(340, 3);
       // 
       // chart
       // 
       this.chart.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+            | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.chart.BorderlineColor = System.Drawing.Color.Black;
+      this.chart.BorderlineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Solid;
+      chartArea1.AxisX.Minimum = 0D;
+      chartArea1.CursorX.IsUserEnabled = true;
+      chartArea1.CursorX.IsUserSelectionEnabled = true;
+      chartArea1.CursorY.IsUserEnabled = true;
+      chartArea1.CursorY.IsUserSelectionEnabled = true;
+      chartArea1.Name = "Default";
+      this.chart.ChartAreas.Add(chartArea1);
+      legend1.Alignment = System.Drawing.StringAlignment.Center;
+      legend1.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Top;
+      legend1.LegendItemOrder = System.Windows.Forms.DataVisualization.Charting.LegendItemOrder.ReversedSeriesOrder;
+      legend1.Name = "Default";
+      this.chart.Legends.Add(legend1);
       this.chart.Location = new System.Drawing.Point(0, 26);
       this.chart.Name = "chart";
+      series1.ChartArea = "Default";
+      series1.Legend = "Default";
+      series1.Name = "Default";
+      this.chart.Series.Add(series1);
       this.chart.Size = new System.Drawing.Size(359, 248);
       this.chart.TabIndex = 3;
       this.chart.Text = "chart";
+      title1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      title1.Name = "Default";
+      title1.Text = "Title";
+      this.chart.Titles.Add(title1);
+      this.chart.CustomizeLegend += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.CustomizeLegendEventArgs>(this.chart_CustomizeLegend);
+      this.chart.MouseDown += new System.Windows.Forms.MouseEventHandler(this.chart_MouseDown);
+      this.chart.MouseMove += new System.Windows.Forms.MouseEventHandler(this.chart_MouseMove);
+      // 
+      // configureToolStripMenuItem
+      // 
+      this.configureToolStripMenuItem.Name = "configureToolStripMenuItem";
+      this.configureToolStripMenuItem.Size = new System.Drawing.Size(256, 22);
+      this.configureToolStripMenuItem.Text = "Configure Chart";
+      this.configureToolStripMenuItem.Click += new System.EventHandler(this.configureToolStripMenuItem_Click);
       // 
       // DataTableView
       // 
-      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.Controls.Add(this.chart);
       this.Name = "DataTableView";
       this.Size = new System.Drawing.Size(359, 274);
-      this.Controls.SetChildIndex(this.infoLabel, 0);
       this.Controls.SetChildIndex(this.chart, 0);
       this.Controls.SetChildIndex(this.nameLabel, 0);
       this.Controls.SetChildIndex(this.nameTextBox, 0);
+      this.Controls.SetChildIndex(this.infoLabel, 0);
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.chart)).EndInit();
       this.ResumeLayout(false);
       this.PerformLayout();
+
     }
 
     #endregion
 
-    protected HeuristicLab.Analysis.Views.DataTableControl chart;
+    protected HeuristicLab.Visualization.ChartControlsExtensions.EnhancedChart chart;
+    private System.Windows.Forms.ToolStripMenuItem configureToolStripMenuItem;
   }
 }
