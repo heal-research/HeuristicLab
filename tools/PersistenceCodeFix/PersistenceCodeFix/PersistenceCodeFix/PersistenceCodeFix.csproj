@@ -34,8 +34,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="CodeFixProvider.cs" />
-    <Compile Include="DiagnosticAnalyzer.cs" />
+    <Compile Include="Analyzers\DiagnosticIds.cs" />
+    <Compile Include="Analyzers\MissingStorableConstructor\MissingStorableConstructorAnalyzer.cs" />
+    <Compile Include="Analyzers\MissingStorableConstructor\MissingStorableConstructorFix.cs" />
+    <Compile Include="Analyzers\ObsoleteStorableClass\ObsoleteStorableClassAnalyzer.cs" />
+    <Compile Include="Analyzers\ObsoleteStorableClass\ObsoleteStorableClassFix.cs" />
+    <Compile Include="Analyzers\MissingStorableType\MissingStorableTypeAnalyzer.cs" />
+    <Compile Include="Analyzers\MissingStorableType\MissingStorableTypeFix.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources.Designer.cs">
       <AutoGen>True</AutoGen>

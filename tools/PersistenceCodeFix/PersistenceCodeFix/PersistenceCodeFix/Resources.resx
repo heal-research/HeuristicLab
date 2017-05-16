@@ -117,6 +117,15 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="MissingStorableConstructorAnalyzerDescription" xml:space="preserve">
+    <value>All StorableTypes should have a storable constructor</value>
+  </data>
+  <data name="MissingStorableConstructorAnalyzerMessageFormat" xml:space="preserve">
+    <value>Type '{0}' has no storable constructor</value>
+  </data>
+  <data name="MissingStorableConstructorAnalyzerTitle" xml:space="preserve">
+    <value>Missing storable constructor</value>
+  </data>
   <data name="MissingStorableTypeAnalyzerDescription" xml:space="preserve">
     <value>All types should be marked with a StorableType attribute</value>
   </data>
@@ -124,6 +133,15 @@
     <value>Type '{0}' is not marked as StorableType</value>
   </data>
   <data name="MissingStorableTypeAnalyzerTitle" xml:space="preserve">
-    <value>Missing StorableTypeAttribute</value>
+    <value>Missing StorableType attribute</value>
+  </data>
+  <data name="ObsoleteStorableClassAnalyzerDescription" xml:space="preserve">
+    <value>The StorableClass attribute is obsolete; Use the StorableType attribute instead</value>
+  </data>
+  <data name="ObsoleteStorableClassAnalyzerMessageFormat" xml:space="preserve">
+    <value>Type '{0}' should be marked as StorableType instead of StorableClass</value>
+  </data>
+  <data name="ObsoleteStorableClassAnalyzerTitle" xml:space="preserve">
+    <value>Obsolete StorableClass attribute</value>
   </data>
 </root>

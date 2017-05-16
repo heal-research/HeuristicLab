@@ -62,6 +62,33 @@ namespace PersistenceCodeFix {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to All StorableTypes should have a storable constructor.
+        /// </summary>
+        internal static string MissingStorableConstructorAnalyzerDescription {
+            get {
+                return ResourceManager.GetString("MissingStorableConstructorAnalyzerDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Type &apos;{0}&apos; has no storable constructor.
+        /// </summary>
+        internal static string MissingStorableConstructorAnalyzerMessageFormat {
+            get {
+                return ResourceManager.GetString("MissingStorableConstructorAnalyzerMessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Missing storable constructor.
+        /// </summary>
+        internal static string MissingStorableConstructorAnalyzerTitle {
+            get {
+                return ResourceManager.GetString("MissingStorableConstructorAnalyzerTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to All types should be marked with a StorableType attribute.
         /// </summary>
         internal static string MissingStorableTypeAnalyzerDescription {
@@ -80,11 +107,38 @@ namespace PersistenceCodeFix {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Missing StorableTypeAttribute.
+        ///   Looks up a localized string similar to Missing StorableType attribute.
         /// </summary>
         internal static string MissingStorableTypeAnalyzerTitle {
             get {
                 return ResourceManager.GetString("MissingStorableTypeAnalyzerTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The StorableClass attribute is obsolete; Use the StorableType attribute instead.
+        /// </summary>
+        internal static string ObsoleteStorableClassAnalyzerDescription {
+            get {
+                return ResourceManager.GetString("ObsoleteStorableClassAnalyzerDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Type &apos;{0}&apos; should be marked as StorableType instead of StorableClass.
+        /// </summary>
+        internal static string ObsoleteStorableClassAnalyzerMessageFormat {
+            get {
+                return ResourceManager.GetString("ObsoleteStorableClassAnalyzerMessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Obsolete StorableClass attribute.
+        /// </summary>
+        internal static string ObsoleteStorableClassAnalyzerTitle {
+            get {
+                return ResourceManager.GetString("ObsoleteStorableClassAnalyzerTitle", resourceCulture);
             }
         }
     }
