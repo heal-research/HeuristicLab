@@ -570,14 +570,15 @@ namespace HeuristicLab.Analysis.Views {
         return;
 
       double[] coefficients;
-      if (!Fitting(row, out coefficients))
+      if (!Fitting(row, out coefficients)) {
+        regressionSeries.LegendToolTip = "Could not calculate regression.";
         return;
+      }
 
       // Fill regrssion series
-      var validPoints = row.Points.Where(p => !IsInvalidValue(p.X));
-      double min = validPoints.Min(p => p.X), max = validPoints.Max(p => p.X);
-      double range = max - min, delta = range / row.Points.Count;
-      for (double x = min; x < max; x += delta) {
+      double min = row.Points.Min(p => p.X), max = row.Points.Max(p => p.X);
+      double range = max - min, delta = range / Math.Max(row.Points.Count - 1, 50);
+      for (double x = min; x <= max; x += delta) {
         regressionSeries.Points.AddXY(x, Estimate(x, row, coefficients));
       }
 
@@ -656,6 +657,11 @@ namespace HeuristicLab.Analysis.Views {
     }
 
     protected static bool Fitting(ScatterPlotDataRow row, out double[] coefficients) {
+      if (!IsValidRegressionData(row)) {
+        coefficients = new double[0];
+        return false;
+      }
+
       var xs = row.Points.Select(p => p.X).ToList();
       var ys = row.Points.Select(p => p.Y).ToList();
 
@@ -687,7 +693,7 @@ namespace HeuristicLab.Analysis.Views {
 
       // Linear fitting
       bool success = LinearFitting(matrix, nRows, out coefficients);
-      if (!success) return success;
+      if (!success) return false;
 
       // Output transformation
       switch (row.VisualProperties.RegressionType) {
@@ -697,6 +703,35 @@ namespace HeuristicLab.Analysis.Views {
           break;
       }
 
+      return true;
+    }
+    protected static bool IsValidRegressionData(ScatterPlotDataRow row) {
+      // No invalid values allowed
+      for (int i = 0; i < row.Points.Count; i++) {
+        if (IsInvalidValue(row.Points[i].X) || IsInvalidValue(row.Points[i].Y))
+          return false;
+      }
+      // Exp, Power and Log Regression do not work with negative values
+      switch (row.VisualProperties.RegressionType) {
+        case ScatterPlotDataRowVisualProperties.ScatterPlotDataRowRegressionType.Exponential:
+          for (int i = 0; i < row.Points.Count; i++) {
+            if (row.Points[i].Y <= 0)
+              return false;
+          }
+          break;
+        case ScatterPlotDataRowVisualProperties.ScatterPlotDataRowRegressionType.Power:
+          for (int i = 0; i < row.Points.Count; i++) {
+            if (row.Points[i].X <= 0 || row.Points[i].Y <= 0)
+              return false;
+          }
+          break;
+        case ScatterPlotDataRowVisualProperties.ScatterPlotDataRowRegressionType.Logarithmic:
+          for (int i = 0; i < row.Points.Count; i++) {
+            if (row.Points[i].X <= 0)
+              return false;
+          }
+          break;
+      }
       return true;
     }
     protected static double[,] CreateMatrix(out int nRows, IList<double> ys, params IList<double>[] xss) {

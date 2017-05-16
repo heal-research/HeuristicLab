@@ -106,7 +106,7 @@ namespace HeuristicLab.Analysis.Views {
       // 
       this.configureToolStripMenuItem.Name = "configureToolStripMenuItem";
       this.configureToolStripMenuItem.Size = new System.Drawing.Size(256, 22);
-      this.configureToolStripMenuItem.Text = "Configure Chart";
+      this.configureToolStripMenuItem.Text = "Configure Chart...";
       this.configureToolStripMenuItem.Click += new System.EventHandler(this.configureToolStripMenuItem_Click);
       // 
       // DataTableView

@@ -68,8 +68,8 @@ namespace HeuristicLab.Analysis.Views {
       // 
       // chart
       // 
-      this.chart.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+      this.chart.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.chart.BorderlineColor = System.Drawing.Color.Black;
       this.chart.BorderlineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Solid;
@@ -106,7 +106,7 @@ namespace HeuristicLab.Analysis.Views {
       // 
       this.configureToolStripMenuItem.Name = "configureToolStripMenuItem";
       this.configureToolStripMenuItem.Size = new System.Drawing.Size(256, 22);
-      this.configureToolStripMenuItem.Text = "Configure Chart";
+      this.configureToolStripMenuItem.Text = "Configure Chart...";
       this.configureToolStripMenuItem.Click += new System.EventHandler(this.configureToolStripMenuItem_Click);
       // 
       // ScatterPlotView
