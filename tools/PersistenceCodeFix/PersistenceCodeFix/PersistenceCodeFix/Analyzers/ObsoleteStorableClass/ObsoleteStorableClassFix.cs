@@ -13,7 +13,7 @@ using Microsoft.CodeAnalysis.Formatting;
 
 namespace PersistenceCodeFix {
   [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(ObsoleteStorableClassFix)), Shared]
-  public sealed class ObsoleteStorableClassFix : CodeFixProvider {
+  public sealed class ObsoleteStorableClassFix : CodeFixProvider, IDocumentCodeFixProvider {
     private const string title = "Change to StorableType attribute";
 
     public sealed override ImmutableArray<string> FixableDiagnosticIds {
@@ -21,7 +21,7 @@ namespace PersistenceCodeFix {
     }
 
     public sealed override FixAllProvider GetFixAllProvider() {
-      return WellKnownFixAllProviders.BatchFixer;
+      return SequentialFixAllProvider.Instance;
     }
 
     public sealed override async Task RegisterCodeFixesAsync(CodeFixContext context) {
@@ -89,6 +89,10 @@ namespace PersistenceCodeFix {
       }
 
       return document.WithSyntaxRoot(newRoot);
+    }
+
+    public Task<Document> FixDocumentAsync(Document document, SyntaxNode node, CancellationToken cancellationToken) {
+      return ChangeToStorableTypeAttribute(document, (AttributeSyntax)node, cancellationToken);
     }
   }
 }

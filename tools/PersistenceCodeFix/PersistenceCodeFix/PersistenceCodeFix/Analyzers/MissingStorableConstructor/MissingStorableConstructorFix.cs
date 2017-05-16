@@ -14,7 +14,7 @@ using Microsoft.CodeAnalysis.Formatting;
 
 namespace PersistenceCodeFix {
   [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(MissingStorableConstructorFix)), Shared]
-  public sealed class MissingStorableConstructorFix : CodeFixProvider {
+  public sealed class MissingStorableConstructorFix : CodeFixProvider, IDocumentCodeFixProvider {
     private const string title = "Add storable constructor";
 
     public sealed override ImmutableArray<string> FixableDiagnosticIds {
@@ -22,7 +22,7 @@ namespace PersistenceCodeFix {
     }
 
     public sealed override FixAllProvider GetFixAllProvider() {
-      return WellKnownFixAllProviders.BatchFixer;
+      return SequentialFixAllProvider.Instance;
     }
 
     public sealed override async Task RegisterCodeFixesAsync(CodeFixContext context) {
@@ -122,6 +122,10 @@ namespace PersistenceCodeFix {
       }
 
       return members;
+    }
+
+    public Task<Document> FixDocumentAsync(Document document, SyntaxNode node, CancellationToken cancellationToken) {
+      return AddStorableConstructor(document, (BaseTypeDeclarationSyntax)node, cancellationToken);
     }
   }
 }
