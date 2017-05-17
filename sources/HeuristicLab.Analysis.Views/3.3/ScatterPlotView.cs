@@ -578,8 +578,10 @@ namespace HeuristicLab.Analysis.Views {
       // Fill regrssion series
       double min = row.Points.Min(p => p.X), max = row.Points.Max(p => p.X);
       double range = max - min, delta = range / Math.Max(row.Points.Count - 1, 50);
-      for (double x = min; x <= max; x += delta) {
-        regressionSeries.Points.AddXY(x, Estimate(x, row, coefficients));
+      if (range > double.Epsilon) {
+        for (double x = min; x <= max; x += delta) {
+          regressionSeries.Points.AddXY(x, Estimate(x, row, coefficients));
+        }
       }
 
       // Correlation
