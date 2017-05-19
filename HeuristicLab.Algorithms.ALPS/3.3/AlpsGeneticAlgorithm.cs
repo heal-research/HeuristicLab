@@ -474,6 +474,9 @@ namespace HeuristicLab.Algorithms.ALPS {
     }
     protected override void Problem_EvaluatorChanged(object sender, EventArgs e) {
       base.Problem_EvaluatorChanged(sender, e);
+
+      ParameterizeStochasticOperatorForLayer(Problem.Evaluator);
+
       foreach (var @operator in Problem.Operators.OfType<IOperator>())
         ParameterizeStochasticOperator(@operator);
 
