@@ -36,13 +36,12 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
   /// </summary>
   public class TaskManager {
     private static readonly ReaderWriterLockSlim slaveTasksLocker = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
-    private readonly Dictionary<Guid, SnapshotInfo> slaveTasks;
+    private readonly Dictionary<Guid, Tuple<SlaveTask, DateTime>> slaveTasks;
     private readonly ILog log;
     private readonly PluginManager pluginManager;
     private readonly CancellationTokenSource cts;
     private readonly CancellationToken ct;
     private readonly AutoResetEvent waitHandle;
-    private readonly WcfService wcfService;
     private readonly TimeSpan checkpointInterval;
     private readonly TimeSpan checkpointCheckInterval;
 
@@ -69,12 +68,11 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
     public TaskManager(PluginManager pluginCache, ILog log) {
       this.pluginManager = pluginCache;
       this.log = log;
-      this.slaveTasks = new Dictionary<Guid, SnapshotInfo>();
+      this.slaveTasks = new Dictionary<Guid, Tuple<SlaveTask, DateTime>>();
 
       cts = new CancellationTokenSource();
       ct = cts.Token;
       waitHandle = new AutoResetEvent(true);
-      wcfService = WcfService.Instance;
       checkpointInterval = Settings.Default.CheckpointInterval;
       checkpointCheckInterval = Settings.Default.CheckpointCheckInterval;
 
@@ -84,24 +82,13 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
     #region Checkpointing
     private void Checkpointing() {
       while (!ct.IsCancellationRequested) {
-        slaveTasksLocker.EnterWriteLock();
+        slaveTasksLocker.EnterUpgradeableReadLock();
         try {
           foreach (var entry in slaveTasks) {
-            var taskId = entry.Key;
-            var snapshotInfo = entry.Value;
-
-            if (DateTime.Now - snapshotInfo.LastSnapshot <= checkpointInterval) continue;
-
-            var task = wcfService.GetTask(taskId);
-            var snapshot = snapshotInfo.Task.GetTaskDataSnapshot();
-
-            if (snapshot == null) continue;
-
-            slaveTasks[taskId].LastSnapshot = snapshot.Item2;
-            var slaveId = ConfigManager.Instance.GetClientInfo().Id;
-            wcfService.UpdateTaskData(task, snapshot.Item1, slaveId, TaskState.Calculating);
+            if (DateTime.Now - entry.Value.Item2 > checkpointInterval)
+              PauseTaskAsync(entry.Key);
           }
-        } finally { slaveTasksLocker.ExitWriteLock(); }
+        } finally { slaveTasksLocker.ExitUpgradeableReadLock(); }
         waitHandle.WaitOne(checkpointCheckInterval);
       }
     }
@@ -145,7 +132,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
       slaveTasksLocker.EnterUpgradeableReadLock();
       try {
         if (!slaveTasks.ContainsKey(taskId)) throw new TaskNotRunningException(taskId);
-        SlaveTask slaveTask = slaveTasks[taskId].Task;
+        SlaveTask slaveTask = slaveTasks[taskId].Item1;
         slaveTask.PauseTask();
       }
       finally { slaveTasksLocker.ExitUpgradeableReadLock(); }
@@ -155,7 +142,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
       slaveTasksLocker.EnterUpgradeableReadLock();
       try {
         if (!slaveTasks.ContainsKey(taskId)) throw new TaskNotRunningException(taskId);
-        SlaveTask slaveTask = slaveTasks[taskId].Task;
+        SlaveTask slaveTask = slaveTasks[taskId].Item1;
         slaveTask.StopTask();
       }
       finally { slaveTasksLocker.ExitUpgradeableReadLock(); }
@@ -166,7 +153,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
       slaveTasksLocker.EnterUpgradeableReadLock();
       try {
         if (!slaveTasks.ContainsKey(taskId)) throw new TaskNotRunningException(taskId);
-        slaveTask = slaveTasks[taskId].Task;
+        slaveTask = slaveTasks[taskId].Item1;
         if (!slaveTask.IsPrepared) throw new AppDomainNotCreatedException();
         RemoveSlaveTask(taskId, slaveTask);
       }
@@ -180,7 +167,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
       slaveTasksLocker.EnterUpgradeableReadLock();
       try {
         foreach (var slaveTask in slaveTasks.Values) {
-          slaveTask.Task.PauseTask();
+          slaveTask.Item1.PauseTask();
         }
       }
       finally { slaveTasksLocker.ExitUpgradeableReadLock(); }
@@ -190,7 +177,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
       slaveTasksLocker.EnterUpgradeableReadLock();
       try {
         foreach (var slaveTask in slaveTasks.Values) {
-          slaveTask.Task.StopTask();
+          slaveTask.Item1.StopTask();
         }
       }
       finally { slaveTasksLocker.ExitUpgradeableReadLock(); }
@@ -200,7 +187,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
       slaveTasksLocker.EnterUpgradeableReadLock();
       try {
         foreach (var slaveTask in slaveTasks.Values.ToArray()) {
-          AbortTask(slaveTask.Task.TaskId);
+          AbortTask(slaveTask.Item1.TaskId);
         }
       }
       finally { slaveTasksLocker.ExitUpgradeableReadLock(); }
@@ -211,7 +198,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
     private void AddSlaveTask(Task task, SlaveTask slaveTask) {
       slaveTasksLocker.EnterWriteLock();
       try {
-        slaveTasks.Add(task.Id, new SnapshotInfo { Task = slaveTask, LastSnapshot = task.DateCreated.GetValueOrDefault() });
+        slaveTasks.Add(task.Id, Tuple.Create(slaveTask, DateTime.Now));
         RegisterSlaveTaskEvents(slaveTask);
       }
       finally { slaveTasksLocker.ExitWriteLock(); }
@@ -246,7 +233,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
       SlaveTask slaveTask;
       slaveTasksLocker.EnterUpgradeableReadLock();
       try {
-        slaveTask = slaveTasks[e.Value].Task;
+        slaveTask = slaveTasks[e.Value].Item1;
       }
       finally { slaveTasksLocker.ExitUpgradeableReadLock(); }
 
@@ -258,7 +245,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
       SlaveTask slaveTask;
       slaveTasksLocker.EnterUpgradeableReadLock();
       try {
-        slaveTask = slaveTasks[e.Value].Task;
+        slaveTask = slaveTasks[e.Value].Item1;
         RemoveSlaveTask(e.Value, slaveTask);
       }
       finally { slaveTasksLocker.ExitUpgradeableReadLock(); }
@@ -280,7 +267,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
       SlaveTask slaveTask;
       slaveTasksLocker.EnterUpgradeableReadLock();
       try {
-        slaveTask = slaveTasks[e.Value].Task;
+        slaveTask = slaveTasks[e.Value].Item1;
         RemoveSlaveTask(e.Value, slaveTask);
       }
       finally { slaveTasksLocker.ExitUpgradeableReadLock(); }
@@ -302,7 +289,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
       SlaveTask slaveTask;
       slaveTasksLocker.EnterUpgradeableReadLock();
       try {
-        slaveTask = slaveTasks[e.Value].Task;
+        slaveTask = slaveTasks[e.Value].Item1;
         RemoveSlaveTask(e.Value, slaveTask);
       }
       finally { slaveTasksLocker.ExitUpgradeableReadLock(); }
@@ -352,14 +339,9 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
     public Dictionary<Guid, TimeSpan> GetExecutionTimes() {
       slaveTasksLocker.EnterReadLock();
       try {
-        return slaveTasks.ToDictionary(x => x.Key, x => x.Value.Task.ExecutionTime);
+        return slaveTasks.ToDictionary(x => x.Key, x => x.Value.Item1.ExecutionTime);
       }
       finally { slaveTasksLocker.ExitReadLock(); }
-    }
-
-    private sealed class SnapshotInfo {
-      public SlaveTask Task { get; set; }
-      public DateTime LastSnapshot { get; set; }
     }
   }
 }
