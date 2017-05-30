@@ -136,6 +136,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
           pauseButton.Enabled = Content.ExecutionState == ExecutionState.Started;
           stopButton.Enabled = (Content.ExecutionState == ExecutionState.Started) || (Content.ExecutionState == ExecutionState.Paused);
           resetButton.Enabled = Content.ExecutionState != ExecutionState.Started;
+          shuffleSamplesCheckBox.Checked = Content.ShuffleSamples.Value;
+          // prevent changing the shuffle if the algorithm is not finished
+          shuffleSamplesCheckBox.Enabled = Content.ExecutionState == ExecutionState.Prepared ||
+                                           Content.ExecutionState == ExecutionState.Stopped;
         }
       }
     }

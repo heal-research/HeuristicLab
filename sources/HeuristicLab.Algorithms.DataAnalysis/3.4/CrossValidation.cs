@@ -39,7 +39,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   [Creatable(CreatableAttribute.Categories.DataAnalysis, Priority = 100)]
   [StorableClass]
   public sealed class CrossValidation : ParameterizedNamedItem, IAlgorithm, IStorableContent {
-    private IDataAnalysisProblemData shuffledProblemData;
+    [Storable]
+    private int seed;
 
     public CrossValidation()
       : base() {
@@ -93,6 +94,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       samplesStart = cloner.Clone(original.samplesStart);
       samplesEnd = cloner.Clone(original.samplesEnd);
       shuffleSamples = cloner.Clone(original.shuffleSamples);
+      seed = original.seed;
+
       RegisterEvents();
       if (Algorithm != null) RegisterAlgorithmEvents();
     }
@@ -278,6 +281,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       if ((ExecutionState != ExecutionState.Prepared) && (ExecutionState != ExecutionState.Paused))
         throw new InvalidOperationException(string.Format("Start not allowed in execution state \"{0}\".", ExecutionState));
 
+      seed = new FastRandom().NextInt();
+
       if (Algorithm != null) {
         //create cloned algorithms
         if (clonedAlgorithms.Count == 0) {
@@ -286,9 +291,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
           for (int i = 0; i < Folds.Value; i++) {
             var cloner = new Cloner();
             if (ShuffleSamples.Value) {
+              var random = new FastRandom(seed);
               var dataAnalysisProblem = (IDataAnalysisProblem)algorithm.Problem;
               var dataset = (Dataset)dataAnalysisProblem.ProblemData.Dataset;
-              shuffledDataset = shuffledDataset ?? dataset.Shuffle(new FastRandom());
+              shuffledDataset = shuffledDataset ?? dataset.Shuffle(random);
               cloner.RegisterClonedObject(dataset, shuffledDataset);
             }
             IAlgorithm clonedAlgorithm = cloner.Clone(Algorithm);
@@ -315,14 +321,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
             }
             clonedAlgorithm.Prepare();
             clonedAlgorithms.Add(clonedAlgorithm);
-          }
-          // save the shuffled problem data because it is necessary when creating the ensemble solution
-          if (shuffledProblemData == null && shuffledDataset != null) {
-            var dataAnalysisProblem = (IDataAnalysisProblem)algorithm.Problem;
-            var dataset = (Dataset)dataAnalysisProblem.ProblemData.Dataset;
-            var cloner = new Cloner();
-            cloner.RegisterClonedObject(dataset, shuffledDataset);
-            shuffledProblemData = cloner.Clone(dataAnalysisProblem.ProblemData);
           }
         }
 
@@ -445,9 +443,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       foreach (KeyValuePair<string, List<IRegressionSolution>> solutions in resultSolutions) {
         // clone manually to correctly clone references between cloned root objects 
         Cloner cloner = new Cloner();
-        var problemDataClone = ShuffleSamples.Value
-          ? (IRegressionProblemData)cloner.Clone(shuffledProblemData)
-          : (IRegressionProblemData)cloner.Clone(Problem.ProblemData);
+        if (ShuffleSamples.Value) {
+          var dataset = (Dataset)Problem.ProblemData.Dataset;
+          var random = new FastRandom(seed);
+          var shuffledDataset = dataset.Shuffle(random);
+          cloner.RegisterClonedObject(dataset, shuffledDataset);
+        }
+        var problemDataClone = (IRegressionProblemData)cloner.Clone(Problem.ProblemData);
         // set partitions of problem data clone correctly
         problemDataClone.TrainingPartition.Start = SamplesStart.Value; problemDataClone.TrainingPartition.End = SamplesEnd.Value;
         problemDataClone.TestPartition.Start = SamplesStart.Value; problemDataClone.TestPartition.End = SamplesEnd.Value;
@@ -478,9 +480,12 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       foreach (KeyValuePair<string, List<IClassificationSolution>> solutions in resultSolutions) {
         // at least one algorithm (GBT with logistic regression loss) produces a classification solution even though the original problem is a regression problem.
         var targetVariable = solutions.Value.First().ProblemData.TargetVariable;
-        var problemDataClone = ShuffleSamples.Value
-          ? new ClassificationProblemData(shuffledProblemData.Dataset, shuffledProblemData.AllowedInputVariables, targetVariable)
-          : new ClassificationProblemData(Problem.ProblemData.Dataset, Problem.ProblemData.AllowedInputVariables, targetVariable);
+        var dataset = (Dataset)Problem.ProblemData.Dataset;
+        if (ShuffleSamples.Value) {
+          var random = new FastRandom(seed);
+          dataset = dataset.Shuffle(random);
+        }
+        var problemDataClone = new ClassificationProblemData(dataset, Problem.ProblemData.AllowedInputVariables, targetVariable);
         // set partitions of problem data clone correctly
         problemDataClone.TrainingPartition.Start = SamplesStart.Value; problemDataClone.TrainingPartition.End = SamplesEnd.Value;
         problemDataClone.TestPartition.Start = SamplesStart.Value; problemDataClone.TestPartition.End = SamplesEnd.Value;
@@ -565,7 +570,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       algorithm.ExecutionStateChanged += new EventHandler(Algorithm_ExecutionStateChanged);
       if (Problem != null) {
         Problem.Reset += new EventHandler(Problem_Reset);
-        Problem.ProblemDataChanged += Problem_ProblemDataChanged;
       }
     }
     private void DeregisterAlgorithmEvents() {
@@ -573,7 +577,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       algorithm.ExecutionStateChanged -= new EventHandler(Algorithm_ExecutionStateChanged);
       if (Problem != null) {
         Problem.Reset -= new EventHandler(Problem_Reset);
-        Problem.ProblemDataChanged -= Problem_ProblemDataChanged;
       }
     }
     private void Algorithm_ProblemChanged(object sender, EventArgs e) {
@@ -591,15 +594,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       EventHandler handler = ProblemChanged;
       if (handler != null) handler(this, EventArgs.Empty);
       ConfigureProblem();
-    }
-    public event EventHandler ProblemDataChanged;
-    private void OnProblemDataChanged() {
-      var handler = ProblemDataChanged;
-      if (handler != null) handler(this, EventArgs.Empty);
-      shuffledProblemData = null;
-    }
-    private void Problem_ProblemDataChanged(object sender, EventArgs e) {
-      OnProblemDataChanged();
     }
     private void Problem_Reset(object sender, EventArgs e) {
       ConfigureProblem();
