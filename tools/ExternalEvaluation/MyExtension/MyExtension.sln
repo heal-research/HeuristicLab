@@ -1,0 +1,30 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plugin", "Plugin\Plugin.csproj", "{73064F29-50DE-47EC-B10D-2197B12EE28B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D2A52FA2-D627-4610-BF8A-B7CA369AEAD3}"
+	ProjectSection(SolutionItems) = preProject
+		ExternalEvaluationMessages.proto = ExternalEvaluationMessages.proto
+		Google.ProtocolBuffers-2.4.1.473.dll = Google.ProtocolBuffers-2.4.1.473.dll
+		Google.ProtocolBuffers-license-2.4.1.473.txt = Google.ProtocolBuffers-license-2.4.1.473.txt
+		ProcessProtos.cmd = ProcessProtos.cmd
+		protoc.exe = protoc.exe
+		ProtoGen.exe = ProtoGen.exe
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{73064F29-50DE-47EC-B10D-2197B12EE28B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73064F29-50DE-47EC-B10D-2197B12EE28B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73064F29-50DE-47EC-B10D-2197B12EE28B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73064F29-50DE-47EC-B10D-2197B12EE28B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

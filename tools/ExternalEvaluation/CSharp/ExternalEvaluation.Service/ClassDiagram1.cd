@@ -1,0 +1,134 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="HeuristicLab.Problems.ExternalEvaluation.Service.BlockingQueue&lt;T&gt;" Collapsed="true">
+    <Position X="9" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAAABAAAAAAAAAABEAAAAAAACBAAAAAAAAADAAAA=</HashCode>
+      <FileName>BlockingQueue.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="HeuristicLab.Problems.ExternalEvaluation.Service.QueueClosedException" Collapsed="true">
+    <Position X="10.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>BlockingQueue.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="HeuristicLab.Problems.ExternalEvaluation.Service.Channel" Collapsed="true">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAABAAIAAAAEAAAAAAAAAAAAAQAAAABACAAAA=</HashCode>
+      <FileName>Channel.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="HeuristicLab.Problems.ExternalEvaluation.Service.EventArgs&lt;T&gt;" Collapsed="true">
+    <Position X="10.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAgAAAAAAA=</HashCode>
+      <FileName>EventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="HeuristicLab.Problems.ExternalEvaluation.Service.PollService">
+    <Position X="5.5" Y="1.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAAAAAgAEAAAAAAAAAAAAAAAQAAAIAAAAAAAEAA=</HashCode>
+      <FileName>PollService.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="HeuristicLab.Problems.ExternalEvaluation.Service.ServerSocketListener" BaseTypeListCollapsed="true">
+    <Position X="2.75" Y="1.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAABAQAAAEIAAAAAAAAAAAAAQAgAIAAAAAAAAAI=</HashCode>
+      <FileName>ServerSocketListener.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="HeuristicLab.Problems.ExternalEvaluation.Service.ServerSocketListenerFactory" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="9.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAIAAAAAAAAAAAAAAAAgAAAAAAAAAIAA=</HashCode>
+      <FileName>ServerSocketListenerFactory.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="HeuristicLab.Problems.ExternalEvaluation.Service.Service" Collapsed="true">
+    <Position X="5.75" Y="0.5" Width="1.5" />
+    <NestedTypes>
+      <Class Name="HeuristicLab.Problems.ExternalEvaluation.Service.Service.SolutionProducer" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Service.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAIABAAAACAAAAAAAEAAAAAAAJAAQAAAKAAQAAAAAAA=</HashCode>
+      <FileName>Service.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="HeuristicLab.Problems.ExternalEvaluation.Service.StreamChannel">
+    <Position X="0.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAIAAAAMAAQAAACAAAABAQAAAAAACAAAA=</HashCode>
+      <FileName>StreamChannel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="HeuristicLab.Problems.ExternalEvaluation.ExternalEvaluationMessages" Collapsed="true">
+    <Position X="9" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>iIIAACAAAEAFCSBAAAECQgAAACBAgAAQAAABAAQAIIA=</HashCode>
+      <FileName>ExternalEvaluationMessages.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="HeuristicLab.Problems.ExternalEvaluation.SolutionMessage" Collapsed="true">
+    <Position X="10.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>XGEAApEgkUOSJEQREEkgQAFBQRQHASKyAQ0CDCQAoAA=</HashCode>
+      <FileName>ExternalEvaluationMessages.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="HeuristicLab.Problems.ExternalEvaluation.QualityMessage" Collapsed="true">
+    <Position X="9" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>VGAAgAAgAMEAIABAAAggAAEAAIABAgIwAAgADAAAgAA=</HashCode>
+      <FileName>ExternalEvaluationMessages.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="HeuristicLab.Problems.ExternalEvaluation.EvaluationService" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="9" Y="0.5" Width="1.5" />
+    <NestedTypes>
+      <Class Name="HeuristicLab.Problems.ExternalEvaluation.EvaluationService.Stub" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>ExternalEvaluationMessages.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAgAEAAAAAAAAIAAgAAAAAAAAAAAAAAAAEAgIA=</HashCode>
+      <FileName>ExternalEvaluationMessages.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Interface Name="HeuristicLab.Problems.ExternalEvaluation.Service.IChannel" Collapsed="true">
+    <Position X="2.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAIAAAAEAAAAAAAAAAAAAQAAAABACAAAA=</HashCode>
+      <FileName>Interfaces\IChannel.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="HeuristicLab.Problems.ExternalEvaluation.Service.IListener" Collapsed="true">
+    <Position X="4" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAABAAAAAEAAAAAAAAAAAAAAAAAAIAAAAAAAAAA=</HashCode>
+      <FileName>Interfaces\IListener.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="HeuristicLab.Problems.ExternalEvaluation.Service.IListenerFactory" Collapsed="true">
+    <Position X="10.75" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAA=</HashCode>
+      <FileName>Interfaces\IListenerFactory.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
