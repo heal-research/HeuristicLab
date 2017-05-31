@@ -407,7 +407,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
         else oldMutator = null;
       }
 
-      if (oldMutator != null && defaultMutator != null)
+      if (oldMutator == null && defaultMutator != null)
         MutatorParameter.Value = defaultMutator;
     }
     private void UpdateAnalyzers() {
