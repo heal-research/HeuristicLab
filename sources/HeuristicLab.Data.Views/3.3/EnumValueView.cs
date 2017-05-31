@@ -49,7 +49,7 @@ namespace HeuristicLab.Data.Views {
 
     public EnumValueView() {
       InitializeComponent();
-      this.Caption = typeof(T).Name + "EnumView";
+      this.Caption = typeof(T).Name + " View";
 
       valueComboBox.DataSource = Enum.GetValues(typeof(T));
       foreach (T flag in Enum.GetValues(typeof(T)))
