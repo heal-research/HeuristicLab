@@ -73,7 +73,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
           message += duplicateVariableName + Environment.NewLine;
         throw new ArgumentException(message);
       }
-      DatasetUtil.ValidateInputData(variableValues); // the validation call checks if every values IList is actually a list of the supported type
       rows = variableValues.First().Count;
       this.variableNames = new List<string>(variableNames);
       this.variableValues = new Dictionary<string, IList>(this.variableNames.Count);
@@ -174,11 +173,11 @@ namespace HeuristicLab.Problems.DataAnalysis {
       }
     }
     public IEnumerable<string> DoubleVariables {
-      get { return variableValues.Where(p => p.Value is List<double>).Select(p => p.Key); }
+      get { return variableValues.Where(p => p.Value is IList<double>).Select(p => p.Key); }
     }
 
     public IEnumerable<string> StringVariables {
-      get { return variableValues.Where(p => p.Value is List<string>).Select(p => p.Key); }
+      get { return variableValues.Where(p => p.Value is IList<string>).Select(p => p.Key); }
     }
 
     public IEnumerable<double> GetDoubleValues(string variableName) {
@@ -193,7 +192,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public ReadOnlyCollection<double> GetReadOnlyDoubleValues(string variableName) {
       var values = GetValues<double>(variableName);
-      return values.AsReadOnly();
+      return new ReadOnlyCollection<double>(values);
     }
     public double GetDoubleValue(string variableName, int row) {
       var values = GetValues<double>(variableName);
@@ -213,18 +212,18 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
     public ReadOnlyCollection<string> GetReadOnlyStringValues(string variableName) {
       var values = GetValues<string>(variableName);
-      return values.AsReadOnly();
+      return new ReadOnlyCollection<string>(values);
     }
 
     private IEnumerable<T> GetValues<T>(string variableName, IEnumerable<int> rows) {
       var values = GetValues<T>(variableName);
       return rows.Select(x => values[x]);
     }
-    private List<T> GetValues<T>(string variableName) {
+    private IList<T> GetValues<T>(string variableName) {
       IList list;
       if (!variableValues.TryGetValue(variableName, out list))
         throw new ArgumentException("The variable " + variableName + " does not exist in the dataset.");
-      List<T> values = list as List<T>;
+      IList<T> values = list as IList<T>;
       if (values == null) throw new ArgumentException("The variable " + variableName + " is not a " + typeof(T) + " variable.");
       return values;
     }
