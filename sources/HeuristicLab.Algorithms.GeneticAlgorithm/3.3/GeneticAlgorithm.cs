@@ -396,12 +396,19 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
     private void UpdateMutators() {
       IManipulator oldMutator = MutatorParameter.Value;
       MutatorParameter.ValidValues.Clear();
+      IManipulator defaultMutator = Problem.Operators.OfType<IManipulator>().FirstOrDefault();
+
       foreach (IManipulator mutator in Problem.Operators.OfType<IManipulator>().OrderBy(x => x.Name))
         MutatorParameter.ValidValues.Add(mutator);
+
       if (oldMutator != null) {
         IManipulator mutator = MutatorParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldMutator.GetType());
         if (mutator != null) MutatorParameter.Value = mutator;
+        else oldMutator = null;
       }
+
+      if (oldMutator != null && defaultMutator != null)
+        MutatorParameter.Value = defaultMutator;
     }
     private void UpdateAnalyzers() {
       Analyzer.Operators.Clear();
