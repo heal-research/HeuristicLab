@@ -42,9 +42,14 @@ namespace HeuristicLab.Data.Views {
       set { base.ReadOnly = value; }
     }
 
+    static EnumValueView() {
+      if (!typeof(T).IsEnum)
+        throw new InvalidOperationException("Generic type " + typeof(T).Name + " is not an enum.");
+    }
+
     public EnumValueView() {
       InitializeComponent();
-      this.Name = typeof(T).Name + "EnumView";
+      this.Caption = typeof(T).Name + "EnumView";
 
       valueComboBox.DataSource = Enum.GetValues(typeof(T));
       foreach (T flag in Enum.GetValues(typeof(T)))
@@ -118,6 +123,20 @@ namespace HeuristicLab.Data.Views {
       var flag = (T)e.Item.Tag;
       if ((Content != null) && !Content.ReadOnly)
         Content.Value = ((Enum)(object)Content.Value).SetFlag(flag, e.Item.Checked);
+    }
+  }
+
+  internal static class EnumHelper {
+    //https://stackoverflow.com/a/21581418
+    public static T SetFlag<T>(this Enum value, T flag, bool set) {
+      var baseType = Enum.GetUnderlyingType(value.GetType());
+      dynamic valueAsBase = Convert.ChangeType(value, baseType);
+      dynamic flagAsBase = Convert.ChangeType(flag, baseType);
+      if (set)
+        valueAsBase |= flagAsBase;
+      else
+        valueAsBase &= ~flagAsBase;
+      return (T)valueAsBase;
     }
   }
 }
