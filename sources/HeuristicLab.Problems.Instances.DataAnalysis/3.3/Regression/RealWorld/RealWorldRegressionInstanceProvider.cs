@@ -46,29 +46,12 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
 
     public override IEnumerable<IDataDescriptor> GetDataDescriptors() {
       List<ResourceRegressionDataDescriptor> descriptorList = new List<ResourceRegressionDataDescriptor>();
-      descriptorList.Add(new ChemicalOne());
-      descriptorList.Add(new Housing());
-      descriptorList.Add(new Tower());
-      descriptorList.Add(new Powermeter());
-      descriptorList.Add(new SARCOS());
-      var solutionsArchiveName = GetResourceName(FileName + @"\.zip");
-      if (!String.IsNullOrEmpty(solutionsArchiveName)) {
-        using (var solutionsZipFile = new ZipArchive(GetType().Assembly.GetManifestResourceStream(solutionsArchiveName), ZipArchiveMode.Read)) {
-          IList<string> entries = new List<string>();
-          foreach (var curEntry in solutionsZipFile.Entries) {
-            entries.Add(curEntry.Name);
-          }
-          foreach (var entry in entries.OrderBy(x => x)) {
-            string prettyName = Path.GetFileNameWithoutExtension(entry);
-            ResourceRegressionDataDescriptor desc = descriptorList.Where(x => x.Name.Equals(prettyName)).FirstOrDefault();
-            if (desc != null) {
-              desc.ResourceName = entry;
-              yield return desc;
-            } else
-              throw new ArgumentNullException("No Descriptor could be found for this entry.");
-          }
-        }
-      }
+      descriptorList.Add(new ChemicalOne() { ResourceName = "Chemical-I.csv" });
+      descriptorList.Add(new Housing() { ResourceName = "Housing.csv" });
+      descriptorList.Add(new Tower() { ResourceName = "Tower.txt" });
+      descriptorList.Add(new Powermeter() { ResourceName = "Powermeter.txt" });
+      descriptorList.Add(new SARCOS() { ResourceName = "SARCOS - Inverse Dynamics.txt" });
+      return descriptorList;
     }
   }
 }

@@ -46,33 +46,17 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
 
     public override IEnumerable<IDataDescriptor> GetDataDescriptors() {
       List<ResourceRegressionDataDescriptor> descriptorList = new List<ResourceRegressionDataDescriptor>();
-      descriptorList.Add(new CF1());
-      descriptorList.Add(new CF2());
-      descriptorList.Add(new CF3());
-      descriptorList.Add(new CF4());
-      descriptorList.Add(new NvhRating());
-      descriptorList.Add(new Temp1());
-      descriptorList.Add(new Temp2());
-      descriptorList.Add(new Wear1());
-      descriptorList.Add(new Wear2());
-      var solutionsArchiveName = GetResourceName(FileName + @"\.zip");
-      if (!String.IsNullOrEmpty(solutionsArchiveName)) {
-        using (var solutionsZipFile = new ZipArchive(GetType().Assembly.GetManifestResourceStream(solutionsArchiveName), ZipArchiveMode.Read)) {
-          IList<string> entries = new List<string>();
-          foreach (var curEntry in solutionsZipFile.Entries) {
-            entries.Add(curEntry.Name);
-          }
-          foreach (var entry in entries.OrderBy(x => x)) {
-            string prettyName = Path.GetFileNameWithoutExtension(entry);
-            ResourceRegressionDataDescriptor desc = descriptorList.Where(x => x.Name.Equals(prettyName)).FirstOrDefault();
-            if (desc != null) {
-              desc.ResourceName = entry;
-              yield return desc;
-            } else
-              throw new ArgumentNullException("No descriptor could be found for this entry.");
-          }
-        }
-      }
+      descriptorList.Add(new CF1() { ResourceName = "CF1.csv" });
+      descriptorList.Add(new CF2() { ResourceName = "CF2.csv" });
+      descriptorList.Add(new CF3() { ResourceName = "CF3.csv" });
+      descriptorList.Add(new CF4() { ResourceName = "CF4.csv" });
+      descriptorList.Add(new NvhRating() { ResourceName = "NvhRating.csv" });
+      descriptorList.Add(new Temp1() { ResourceName = "Temp1.csv" });
+      descriptorList.Add(new Temp2() { ResourceName = "Temp2.csv" });
+      descriptorList.Add(new Wear1() { ResourceName = "Wear1.csv" });
+      descriptorList.Add(new Wear2() { ResourceName = "Wear2.csv" });
+
+      return descriptorList;
     }
   }
 }
