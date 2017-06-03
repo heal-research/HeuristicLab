@@ -19,8 +19,10 @@
  */
 #endregion
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using HeuristicLab.Common;
 using HeuristicLab.Data;
 using HeuristicLab.MainForm;
 using HeuristicLab.Optimization;
@@ -85,11 +87,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       var problemData = Content.ProblemData;
       var ds = problemData.Dataset;
       var runs = new RunCollection();
+      // determine relevant variables (at least two different values)
+      var doubleVars = ds.DoubleVariables.Where(vn => ds.GetDoubleValues(vn).Max() > ds.GetDoubleValues(vn).Min()).ToArray();
+      var stringVars = ds.StringVariables.Where(vn => ds.GetStringValues(vn).Distinct().Skip(1).Any()).ToArray();
+
       // produce training and test values separately as they might overlap (e.g. for ensembles)
       var predictedValuesTrain = Content.EstimatedTrainingValues.ToArray();
       int j = 0; // idx for predictedValues array
       foreach (var i in problemData.TrainingIndices) {
-        var run = CreateRunForIdx(i, problemData);
+        var run = CreateRunForIdx(i, problemData, doubleVars, stringVars);
         var targetValue = ds.GetDoubleValue(problemData.TargetVariable, i);
         AddErrors(run, predictedValuesTrain[j++], targetValue);
         run.Results.Add(PartitionLabel, new StringValue("Training"));
@@ -99,7 +105,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       var predictedValuesTest = Content.EstimatedTestValues.ToArray();
       j = 0;
       foreach (var i in problemData.TestIndices) {
-        var run = CreateRunForIdx(i, problemData);
+        var run = CreateRunForIdx(i, problemData, doubleVars, stringVars);
         var targetValue = ds.GetDoubleValue(problemData.TargetVariable, i);
         AddErrors(run, predictedValuesTest[j++], targetValue);
         run.Results.Add(PartitionLabel, new StringValue("Test"));
@@ -126,16 +132,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       run.Results.Add(AbsRelativeErrorLabel, new DoubleValue(Math.Abs(relError)));
     }
 
-    private IRun CreateRunForIdx(int i, IRegressionProblemData problemData) {
+    private IRun CreateRunForIdx(int i, IRegressionProblemData problemData, IEnumerable<string> doubleVars, IEnumerable<string> stringVars) {
       var ds = problemData.Dataset;
       var run = new Run();
-      foreach (var variableName in ds.DoubleVariables) {
+      foreach (var variableName in doubleVars) {
         run.Results.Add(variableName, new DoubleValue(ds.GetDoubleValue(variableName, i)));
       }
-      foreach (var variableName in ds.StringVariables) {
+      foreach (var variableName in stringVars) {
         run.Results.Add(variableName, new StringValue(ds.GetStringValue(variableName, i)));
       }
-
       return run;
     }
     #endregion
