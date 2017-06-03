@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using HeuristicLab.Analysis;
@@ -93,17 +94,44 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Glmnet {
       Results.Add(new Result("NMSE (train)", new DoubleValue(trainNMSE)));
       Results.Add(new Result("NMSE (test)", new DoubleValue(testNMSE)));
 
+      var ds = Problem.ProblemData.Dataset;
       var allVariables = Problem.ProblemData.AllowedInputVariables.ToArray();
+      var doubleVariables = allVariables.Where(ds.VariableHasType<double>);
+      var factorVariableNames = allVariables.Where(ds.VariableHasType<string>);
+      var factorVariablesAndValues = ds.GetFactorVariableValues(factorVariableNames, Enumerable.Range(0, ds.Rows)); // must consider all factor values (in train and test set)
 
-      var remainingVars = Enumerable.Range(0, allVariables.Length)
-        .Where(idx => !coeff[idx].IsAlmost(0.0)).Select(idx => allVariables[idx])
-        .ToArray();
-      var remainingCoeff = Enumerable.Range(0, allVariables.Length)
-        .Select(idx => coeff[idx])
-        .Where(c => !c.IsAlmost(0.0))
-        .ToArray();
+      List<KeyValuePair<string, IEnumerable<string>>> remainingFactorVariablesAndValues = new List<KeyValuePair<string, IEnumerable<string>>>();
+      List<double> factorCoeff = new List<double>();
+      List<string> remainingDoubleVariables = new List<string>();
+      List<double> doubleVarCoeff = new List<double>();
 
-      var tree = LinearModelToTreeConverter.CreateTree(remainingVars, remainingCoeff, coeff.Last());
+      {
+        int i = 0;
+        // find factor varibles & value combinations with non-zero coeff
+        foreach (var factorVarAndValues in factorVariablesAndValues) {
+          var l = new List<string>();
+          foreach (var factorValue in factorVarAndValues.Value) {
+            if (!coeff[i].IsAlmost(0.0)) {
+              l.Add(factorValue);
+              factorCoeff.Add(coeff[i]);
+            }
+            i++;
+          }
+          if (l.Any()) remainingFactorVariablesAndValues.Add(new KeyValuePair<string, IEnumerable<string>>(factorVarAndValues.Key, l));
+        }
+        // find double variables with non-zero coeff
+        foreach (var doubleVar in doubleVariables) {
+          if (!coeff[i].IsAlmost(0.0)) {
+            remainingDoubleVariables.Add(doubleVar);
+            doubleVarCoeff.Add(coeff[i]);
+          }
+          i++;
+        }
+      }
+      var tree = LinearModelToTreeConverter.CreateTree(
+        remainingFactorVariablesAndValues, factorCoeff.ToArray(), 
+        remainingDoubleVariables.ToArray(), doubleVarCoeff.ToArray(),
+        coeff.Last());
 
 
       SymbolicRegressionSolution solution = new SymbolicRegressionSolution(
@@ -139,15 +167,34 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Glmnet {
       var dataRows = new IndexedDataRow<double>[nCoeff];
       var allowedVars = Problem.ProblemData.AllowedInputVariables.ToArray();
       var numNonZeroCoeffs = new int[nLambdas];
-      for (int i = 0; i < nCoeff; i++) {
-        var coeffId = allowedVars[i];
-        double sigma = Problem.ProblemData.Dataset.GetDoubleValues(coeffId).StandardDeviation();
-        var path = Enumerable.Range(0, nLambdas).Select(r => Tuple.Create(lambda[r], coeff[r, i] * sigma)).ToArray();
-        dataRows[i] = new IndexedDataRow<double>(coeffId, coeffId, path);
-      }
-      // add to coeffTable by total weight (larger area under the curve => more important);
-      foreach (var r in dataRows.OrderByDescending(r => r.Values.Select(t => t.Item2).Sum(x => Math.Abs(x)))) {
-        coeffTable.Rows.Add(r);
+
+      var ds = Problem.ProblemData.Dataset;
+      var doubleVariables = allowedVars.Where(ds.VariableHasType<double>);
+      var factorVariableNames = allowedVars.Where(ds.VariableHasType<string>);
+      var factorVariablesAndValues = ds.GetFactorVariableValues(factorVariableNames, Enumerable.Range(0, ds.Rows)); // must consider all factor values (in train and test set)
+      {
+        int i = 0;
+        foreach (var factorVariableAndValues in factorVariablesAndValues) {
+          foreach (var factorValue in factorVariableAndValues.Value) {
+            double sigma = ds.GetStringValues(factorVariableAndValues.Key)
+              .Select(s => s == factorValue ? 1.0 : 0.0)
+              .StandardDeviation(); // calc std dev of binary indicator
+            var path = Enumerable.Range(0, nLambdas).Select(r => Tuple.Create(lambda[r], coeff[r, i] * sigma)).ToArray();
+            dataRows[i] = new IndexedDataRow<double>(factorVariableAndValues.Key + "=" + factorValue, factorVariableAndValues.Key + "=" + factorValue, path);
+            i++;
+          }
+        }
+
+        foreach (var doubleVariable in doubleVariables) {
+          double sigma = ds.GetDoubleValues(doubleVariable).StandardDeviation();
+          var path = Enumerable.Range(0, nLambdas).Select(r => Tuple.Create(lambda[r], coeff[r, i] * sigma)).ToArray();
+          dataRows[i] = new IndexedDataRow<double>(doubleVariable, doubleVariable, path);
+          i++;
+        }
+        // add to coeffTable by total weight (larger area under the curve => more important);
+        foreach (var r in dataRows.OrderByDescending(r => r.Values.Select(t => t.Item2).Sum(x => Math.Abs(x)))) {
+          coeffTable.Rows.Add(r);
+        }
       }
 
       for (int i = 0; i < coeff.GetLength(0); i++) {
@@ -329,18 +376,24 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Glmnet {
 
     private static void PrepareData(IRegressionProblemData problemData, out double[,] trainX, out double[] trainY,
       out double[,] testX, out double[] testY) {
-
       var ds = problemData.Dataset;
-      trainX = ds.ToArray(problemData.AllowedInputVariables, problemData.TrainingIndices);
-      trainX = trainX.Transpose();
-      trainY = problemData.Dataset.GetDoubleValues(problemData.TargetVariable,
-        problemData.TrainingIndices)
-        .ToArray();
-      testX = ds.ToArray(problemData.AllowedInputVariables, problemData.TestIndices);
-      testX = testX.Transpose();
-      testY = problemData.Dataset.GetDoubleValues(problemData.TargetVariable,
-        problemData.TestIndices)
-        .ToArray();
+      var targetVariable = problemData.TargetVariable;
+      var allowedInputs = problemData.AllowedInputVariables;
+      trainX = PrepareInputData(ds, allowedInputs, problemData.TrainingIndices);
+      trainY = ds.GetDoubleValues(targetVariable, problemData.TrainingIndices).ToArray();
+
+      testX = PrepareInputData(ds, allowedInputs, problemData.TestIndices);
+      testY = ds.GetDoubleValues(targetVariable, problemData.TestIndices).ToArray();
+    }
+
+    private static double[,] PrepareInputData(IDataset ds, IEnumerable<string> allowedInputs, IEnumerable<int> rows) {
+      var doubleVariables = allowedInputs.Where(ds.VariableHasType<double>);
+      var factorVariableNames = allowedInputs.Where(ds.VariableHasType<string>);
+      var factorVariables = ds.GetFactorVariableValues(factorVariableNames, Enumerable.Range(0, ds.Rows)); // must consider all factor values (in train and test set)
+      double[,] binaryMatrix = ds.ToArray(factorVariables, rows);
+      double[,] doubleVarMatrix = ds.ToArray(doubleVariables, rows);
+      var x = binaryMatrix.HorzCat(doubleVarMatrix);
+      return x.Transpose();
     }
   }
 }
