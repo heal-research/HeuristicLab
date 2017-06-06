@@ -77,6 +77,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private void AfterDeserialization() {
       RegisterEvents();
       if (Algorithm != null) RegisterAlgorithmEvents();
+
+      if (shuffleSamples == null)
+        shuffleSamples = new BoolValue(false);
     }
 
     private CrossValidation(CrossValidation original, Cloner cloner)
