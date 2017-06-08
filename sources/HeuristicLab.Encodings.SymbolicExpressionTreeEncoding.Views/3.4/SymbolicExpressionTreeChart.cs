@@ -286,8 +286,15 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       if (actualRoot.Symbol is ProgramRootSymbol && actualRoot.SubtreeCount == 1) {
         actualRoot = tree.Root.GetSubtree(0);
       }
+      var paddingX = 20; // add 10px padding on each side (left and right)
+      var paddingY = 20; // add 10px padding on top and bottom
+      var visualNodes = layoutEngine.CalculateLayout(actualRoot, Width - paddingX, Height - paddingY).ToList();
+      // add the padding
+      foreach (var vn in visualNodes) {
+        vn.X += paddingX / 2;
+        vn.Y += paddingY / 2;
+      }
 
-      var visualNodes = layoutEngine.CalculateLayout(actualRoot, Width, Height).ToList();
       visualTreeNodes = visualNodes.ToDictionary(x => x.Content, x => x);
       visualLines = new Dictionary<Tuple<ISymbolicExpressionTreeNode, ISymbolicExpressionTreeNode>, VisualTreeNodeConnection>();
       foreach (var node in visualNodes.Select(n => n.Content)) {
@@ -320,6 +327,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       }
     }
 
+    private Action<Brush, int, int, int, int> fill;
+    private Action<Pen, int, int, int, int> draw;
     protected void DrawTreeNode(Graphics graphics, VisualTreeNode<ISymbolicExpressionTreeNode> visualTreeNode) {
       graphics.Clip = new Region(new Rectangle(visualTreeNode.X, visualTreeNode.Y, visualTreeNode.Width + 1, visualTreeNode.Height + 1));
       graphics.Clear(backgroundColor);
@@ -327,17 +336,20 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       using (var textBrush = new SolidBrush(visualTreeNode.TextColor))
       using (var nodeLinePen = new Pen(visualTreeNode.LineColor))
       using (var nodeFillBrush = new SolidBrush(visualTreeNode.FillColor)) {
-        //draw terminal node
-        if (node.SubtreeCount == 0) {
-          graphics.FillRectangle(nodeFillBrush, visualTreeNode.X, visualTreeNode.Y, visualTreeNode.Width, visualTreeNode.Height);
-          graphics.DrawRectangle(nodeLinePen, visualTreeNode.X, visualTreeNode.Y, visualTreeNode.Width, visualTreeNode.Height);
+        var x = visualTreeNode.X;
+        var y = visualTreeNode.Y;
+        var w = visualTreeNode.Width - 1;  // allow 1px for the drawing of the line
+        var h = visualTreeNode.Height - 1; // allow 1px for the drawing of the line
+        // draw leaf nodes as rectangles and internal nodes as ellipses
+        if (node.SubtreeCount > 0) {
+          fill = graphics.FillEllipse; draw = graphics.DrawEllipse;
         } else {
-          graphics.FillEllipse(nodeFillBrush, visualTreeNode.X, visualTreeNode.Y, visualTreeNode.Width, visualTreeNode.Height);
-          graphics.DrawEllipse(nodeLinePen, visualTreeNode.X, visualTreeNode.Y, visualTreeNode.Width, visualTreeNode.Height);
+          fill = graphics.FillRectangle; draw = graphics.DrawRectangle;
         }
+        fill(nodeFillBrush, x, y, w, h);
+        draw(nodeLinePen, x, y, w, h);
         //draw name of symbol
-        var text = node.ToString();
-        graphics.DrawString(text, textFont, textBrush, new RectangleF(visualTreeNode.X, visualTreeNode.Y, visualTreeNode.Width, visualTreeNode.Height), stringFormat);
+        graphics.DrawString(node.ToString(), textFont, textBrush, new RectangleF(x, y, w, h), stringFormat);
       }
     }
 
