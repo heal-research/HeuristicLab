@@ -152,6 +152,13 @@
     <EmbeddedResource Include="Documents\OSES_Griewank.hl" />
     <EmbeddedResource Include="Documents\SGP_Robocode.hl" />
     <None Include="Plugin.cs.frame" />
+    <Compile Include="ChangeNestingLevelDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ChangeNestingLevelDialog.Designer.cs">
+      <DependentUpon>ChangeNestingLevelDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MenuItems\ChangeNestingLevelMenuItem.cs" />
     <Compile Include="OptimizerSingleDocumentMainForm.cs">
       <SubType>Form</SubType>
     </Compile>
