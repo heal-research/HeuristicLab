@@ -36,10 +36,41 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
     private Dictionary<Tuple<ISymbolicExpressionTreeNode, ISymbolicExpressionTreeNode>, VisualTreeNodeConnection> visualLines;
     private ILayoutEngine<ISymbolicExpressionTreeNode> layoutEngine;
 
-    private const int preferredNodeWidth = 70;
-    private const int preferredNodeHeight = 46;
+    private int preferredNodeWidth = 70;
+    public int PreferredNodeWidth {
+      get { return preferredNodeWidth; }
+      set { preferredNodeWidth = value; }
+    }
+
+    private int preferredNodeHeight = 46;
+    public int PreferredNodeHeight {
+      get { return preferredNodeHeight; }
+      set { preferredNodeHeight = value; }
+    }
+
     private int minHorizontalDistance = 30;
+    public int MinimumHorizontalDistance {
+      get { return minHorizontalDistance; }
+      set { minHorizontalDistance = value; }
+    }
+
     private int minVerticalDistance = 30;
+    public int MinimumVerticalDistance {
+      get { return minVerticalDistance; }
+      set { minVerticalDistance = value; }
+    }
+
+    private int minHorizontalPadding = 20;
+    public int MinimumHorizontalPadding {
+      get { return minHorizontalPadding; }
+      set { minHorizontalPadding = value; }
+    }
+
+    private int minVerticalPadding = 20;
+    public int MinimumVerticalPadding {
+      get { return minVerticalPadding; }
+      set { minVerticalPadding = value; }
+    }
 
     public SymbolicExpressionTreeChart() {
       InitializeComponent();
@@ -286,13 +317,11 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       if (actualRoot.Symbol is ProgramRootSymbol && actualRoot.SubtreeCount == 1) {
         actualRoot = tree.Root.GetSubtree(0);
       }
-      var paddingX = 20; // add 10px padding on each side (left and right)
-      var paddingY = 20; // add 10px padding on top and bottom
-      var visualNodes = layoutEngine.CalculateLayout(actualRoot, Width - paddingX, Height - paddingY).ToList();
+      var visualNodes = layoutEngine.CalculateLayout(actualRoot, Width - minHorizontalPadding, Height - minVerticalPadding).ToList();
       // add the padding
       foreach (var vn in visualNodes) {
-        vn.X += paddingX / 2;
-        vn.Y += paddingY / 2;
+        vn.X += minHorizontalPadding / 2;
+        vn.Y += minVerticalPadding / 2;
       }
 
       visualTreeNodes = visualNodes.ToDictionary(x => x.Content, x => x);
