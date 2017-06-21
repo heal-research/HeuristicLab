@@ -35,21 +35,19 @@ namespace HeuristicLab.Analysis.Views {
   public partial class DataTableView : NamedItemView, IConfigureableView {
     protected List<Series> invisibleSeries;
     protected Dictionary<IObservableList<double>, DataRow> valuesRowsTable;
+    protected bool showChartOnly = false;
 
     public new DataTable Content {
       get { return (DataTable)base.Content; }
       set { base.Content = value; }
     }
 
-    public bool ShowName {
-      get { return nameTextBox.Visible; }
+    public bool ShowChartOnly {
+      get { return showChartOnly; }
       set {
-        if (nameTextBox.Visible != value) {
-          foreach (Control c in Controls) {
-            if (c == chart) continue;
-            c.Visible = value;
-          }
-          chart.Dock = value ? DockStyle.None : DockStyle.Fill;
+        if (showChartOnly != value) {
+          showChartOnly = value;
+          UpdateControlsVisibility();
         }
       }
     }
@@ -132,6 +130,19 @@ namespace HeuristicLab.Analysis.Views {
         }
       } else MessageBox.Show("Nothing to configure.");
     }
+
+    protected void UpdateControlsVisibility() {
+      if (InvokeRequired)
+        Invoke(new Action(UpdateControlsVisibility));
+      else {
+        foreach (Control c in Controls) {
+          if (c == chart) continue;
+          c.Visible = !showChartOnly;
+        }
+        chart.Dock = showChartOnly ? DockStyle.Fill : DockStyle.None;
+      }
+    }
+
     protected virtual void AddDataRows(IEnumerable<DataRow> rows) {
       foreach (var row in rows) {
         RegisterDataRowEvents(row);
