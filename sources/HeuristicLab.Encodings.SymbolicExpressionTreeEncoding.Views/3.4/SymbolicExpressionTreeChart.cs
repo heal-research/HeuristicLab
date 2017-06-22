@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2016 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2017 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -36,47 +36,10 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
     private Dictionary<Tuple<ISymbolicExpressionTreeNode, ISymbolicExpressionTreeNode>, VisualTreeNodeConnection> visualLines;
     private ILayoutEngine<ISymbolicExpressionTreeNode> layoutEngine;
 
-    private int preferredNodeWidth = 70;
-    public int PreferredNodeWidth {
-      get { return preferredNodeWidth; }
-      set { preferredNodeWidth = value; }
-    }
-
-    private int preferredNodeHeight = 46;
-    public int PreferredNodeHeight {
-      get { return preferredNodeHeight; }
-      set { preferredNodeHeight = value; }
-    }
-
-    private int minHorizontalDistance = 30;
-    public int MinimumHorizontalDistance {
-      get { return minHorizontalDistance; }
-      set { minHorizontalDistance = value; }
-    }
-
-    private int minVerticalDistance = 30;
-    public int MinimumVerticalDistance {
-      get { return minVerticalDistance; }
-      set { minVerticalDistance = value; }
-    }
-
-    private int minHorizontalPadding = 20;
-    public int MinimumHorizontalPadding {
-      get { return minHorizontalPadding; }
-      set { minHorizontalPadding = value; }
-    }
-
-    private int minVerticalPadding = 20;
-    public int MinimumVerticalPadding {
-      get { return minVerticalPadding; }
-      set { minVerticalPadding = value; }
-    }
-
     public SymbolicExpressionTreeChart() {
       InitializeComponent();
       this.image = new Bitmap(Width, Height);
       this.stringFormat = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
-      this.spacing = 5;
       this.lineColor = Color.Black;
       this.backgroundColor = Color.White;
       this.textFont = new Font(FontFamily.GenericSansSerif, 12);
@@ -85,10 +48,10 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       visualLines = new Dictionary<Tuple<ISymbolicExpressionTreeNode, ISymbolicExpressionTreeNode>, VisualTreeNodeConnection>();
 
       layoutEngine = new ReingoldTilfordLayoutEngine<ISymbolicExpressionTreeNode>(n => n.Subtrees) {
-        NodeWidth = preferredNodeWidth,
-        NodeHeight = preferredNodeHeight,
-        HorizontalSpacing = minHorizontalDistance,
-        VerticalSpacing = minVerticalDistance
+        NodeWidth = PreferredNodeWidth,
+        NodeHeight = PreferredNodeHeight,
+        HorizontalSpacing = MinimumHorizontalDistance,
+        VerticalSpacing = MinimumVerticalDistance
       };
       reingoldTilfordToolStripMenuItem.Checked = true;
     }
@@ -99,12 +62,57 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
     }
 
     #region Public properties
-    private int spacing;
-    public int Spacing {
-      get { return this.spacing; }
+    private int preferredNodeWidth = 70;
+    public int PreferredNodeWidth {
+      get { return preferredNodeWidth; }
       set {
-        this.spacing = value;
-        this.Repaint();
+        preferredNodeWidth = value;
+        Repaint();
+      }
+    }
+
+    private int preferredNodeHeight = 46;
+    public int PreferredNodeHeight {
+      get { return preferredNodeHeight; }
+      set {
+        preferredNodeHeight = value;
+        Repaint();
+      }
+    }
+
+    private int minHorizontalDistance = 30;
+    public int MinimumHorizontalDistance {
+      get { return minHorizontalDistance; }
+      set {
+        minHorizontalDistance = value;
+        Repaint();
+      }
+    }
+
+    private int minVerticalDistance = 30;
+    public int MinimumVerticalDistance {
+      get { return minVerticalDistance; }
+      set {
+        minVerticalDistance = value;
+        Repaint();
+      }
+    }
+
+    private int minHorizontalPadding = 20;
+    public int MinimumHorizontalPadding {
+      get { return minHorizontalPadding; }
+      set {
+        minHorizontalPadding = value;
+        Repaint();
+      }
+    }
+
+    private int minVerticalPadding = 20;
+    public int MinimumVerticalPadding {
+      get { return minVerticalPadding; }
+      set {
+        minVerticalPadding = value;
+        Repaint();
       }
     }
 
@@ -216,7 +224,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
         graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
         graphics.Clear(backgroundColor);
         if (tree != null) {
-          DrawFunctionTree(graphics, preferredNodeWidth, preferredNodeHeight, minHorizontalDistance, minVerticalDistance);
+          DrawFunctionTree(graphics, PreferredNodeWidth, PreferredNodeHeight, MinimumHorizontalDistance, MinimumVerticalDistance);
         }
       }
     }
@@ -317,11 +325,11 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       if (actualRoot.Symbol is ProgramRootSymbol && actualRoot.SubtreeCount == 1) {
         actualRoot = tree.Root.GetSubtree(0);
       }
-      var visualNodes = layoutEngine.CalculateLayout(actualRoot, Width - minHorizontalPadding, Height - minVerticalPadding).ToList();
+      var visualNodes = layoutEngine.CalculateLayout(actualRoot, Width - MinimumHorizontalPadding, Height - MinimumVerticalPadding).ToList();
       // add the padding
       foreach (var vn in visualNodes) {
-        vn.X += minHorizontalPadding / 2;
-        vn.Y += minVerticalPadding / 2;
+        vn.X += MinimumHorizontalPadding / 2;
+        vn.Y += MinimumVerticalPadding / 2;
       }
 
       visualTreeNodes = visualNodes.ToDictionary(x => x.Content, x => x);
@@ -407,7 +415,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       if (tree == null) return;
       Image image = new Bitmap(Width, Height);
       using (Graphics g = Graphics.FromImage(image)) {
-        DrawFunctionTree(g, preferredNodeWidth, preferredNodeHeight, minHorizontalDistance, minVerticalDistance, false);
+        DrawFunctionTree(g, PreferredNodeWidth, PreferredNodeHeight, MinimumHorizontalDistance, MinimumVerticalDistance, false);
       }
       image.Save(filename);
     }
@@ -417,7 +425,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       using (Graphics g = CreateGraphics()) {
         using (Metafile file = new Metafile(filename, g.GetHdc())) {
           using (Graphics emfFile = Graphics.FromImage(file)) {
-            DrawFunctionTree(emfFile, preferredNodeWidth, preferredNodeHeight, minHorizontalDistance, minVerticalDistance, false);
+            DrawFunctionTree(emfFile, PreferredNodeWidth, PreferredNodeHeight, MinimumHorizontalDistance, MinimumVerticalDistance, false);
           }
         }
         g.ReleaseHdc();
@@ -438,13 +446,11 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
     #endregion
 
     private void reingoldTilfordToolStripMenuItem_Click(object sender, EventArgs e) {
-      minHorizontalDistance = 30;
-      minVerticalDistance = 30;
       layoutEngine = new ReingoldTilfordLayoutEngine<ISymbolicExpressionTreeNode>(n => n.Subtrees) {
-        NodeWidth = preferredNodeWidth,
-        NodeHeight = preferredNodeHeight,
-        HorizontalSpacing = minHorizontalDistance,
-        VerticalSpacing = minVerticalDistance
+        NodeWidth = PreferredNodeWidth,
+        NodeHeight = PreferredNodeHeight,
+        HorizontalSpacing = MinimumHorizontalDistance,
+        VerticalSpacing = MinimumVerticalDistance
       };
       reingoldTilfordToolStripMenuItem.Checked = true;
       boxesToolStripMenuItem.Checked = false;
@@ -452,13 +458,11 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
     }
 
     private void boxesToolStripMenuItem_Click(object sender, EventArgs e) {
-      minHorizontalDistance = 5;
-      minVerticalDistance = 5;
       layoutEngine = new BoxesLayoutEngine<ISymbolicExpressionTreeNode>(n => n.Subtrees, n => n.GetLength(), n => n.GetDepth()) {
-        NodeWidth = preferredNodeWidth,
-        NodeHeight = preferredNodeHeight,
-        HorizontalSpacing = minHorizontalDistance,
-        VerticalSpacing = minVerticalDistance
+        NodeWidth = PreferredNodeWidth,
+        NodeHeight = PreferredNodeHeight,
+        HorizontalSpacing = MinimumHorizontalDistance,
+        VerticalSpacing = MinimumVerticalDistance
       };
       reingoldTilfordToolStripMenuItem.Checked = false;
       boxesToolStripMenuItem.Checked = true;
