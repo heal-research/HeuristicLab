@@ -87,23 +87,25 @@ namespace HeuristicLab.Analysis {
       if (evalSols != null) evaluations += evalSols.Value;
       if (evalMoves != null) evaluations += evalMoves.Value * MoveCostPerSolutionParameter.ActualValue.Value;
 
-      var dataTable = QualityPerEvaluationsParameter.ActualValue;
-      var values = dataTable.Rows["First-hit Graph"].Values;
-      if (evaluations == 0 || values.Count > 0 && evaluations < values.Last().Item1) evaluations = 1;
-      var newEntry = Tuple.Create(evaluations, bestQuality);
+      if (evaluations > 0) {
+        var dataTable = QualityPerEvaluationsParameter.ActualValue;
+        var values = dataTable.Rows["First-hit Graph"].Values;
 
-      if (values.Count == 0) {
-        values.Add(newEntry);
-        values.Add(Tuple.Create(evaluations, bestQuality)); // duplicate entry that will be replaced
-        return base.Apply();
-      }
+        var newEntry = Tuple.Create(evaluations, bestQuality);
 
-      var improvement = values.Last().Item2 != bestQuality;
-      if (improvement) {
-        values[values.Count - 1] = newEntry;
-        values.Add(Tuple.Create(evaluations, bestQuality)); // duplicate entry that will be replaced
-      } else {
-        values[values.Count - 1] = Tuple.Create(evaluations, bestQuality);
+        if (values.Count == 0) {
+          values.Add(newEntry); // record the first data
+          values.Add(Tuple.Create(evaluations, bestQuality)); // last entry records max number of evaluations
+          return base.Apply();
+        }
+
+        var improvement = values.Last().Item2 != bestQuality;
+        if (improvement) {
+          values[values.Count - 1] = newEntry; // record the improvement
+          values.Add(Tuple.Create(evaluations, bestQuality)); // last entry records max number of evaluations
+        } else {
+          values[values.Count - 1] = Tuple.Create(evaluations, bestQuality); // the last entry is updated
+        }
       }
       return base.Apply();
     }

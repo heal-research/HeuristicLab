@@ -29,7 +29,7 @@ using System.ComponentModel;
 using System.Linq;
 
 namespace HeuristicLab.Analysis {
-  [Item("IndexedDataRow", "A data row that contains time series.")]
+  [Item("IndexedDataRow", "A data row that contains a series of points.")]
   [StorableClass]
   public class IndexedDataRow<T> : NamedItem {
 
@@ -103,6 +103,10 @@ namespace HeuristicLab.Analysis {
 
     private void VisualProperties_PropertyChanged(object sender, PropertyChangedEventArgs e) {
       OnVisualPropertiesChanged();
+    }
+    protected override void OnNameChanged() {
+      base.OnNameChanged();
+      VisualProperties.DisplayName = Name;
     }
   }
 }

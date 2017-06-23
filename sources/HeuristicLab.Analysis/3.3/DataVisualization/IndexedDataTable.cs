@@ -106,7 +106,7 @@ namespace HeuristicLab.Analysis {
 
     public event EventHandler VisualPropertiesChanged;
     protected virtual void OnVisualPropertiesChanged() {
-      EventHandler handler = VisualPropertiesChanged;
+      var handler = VisualPropertiesChanged;
       if (handler != null) handler(this, EventArgs.Empty);
     }
 
@@ -114,13 +114,14 @@ namespace HeuristicLab.Analysis {
       OnVisualPropertiesChanged();
     }
 
-    protected virtual void RegisterRowsEvents() {
-      rows.ItemsAdded += new CollectionItemsChangedEventHandler<IndexedDataRow<T>>(rows_ItemsAdded);
-      rows.ItemsRemoved += new CollectionItemsChangedEventHandler<IndexedDataRow<T>>(rows_ItemsRemoved);
-      rows.ItemsReplaced += new CollectionItemsChangedEventHandler<IndexedDataRow<T>>(rows_ItemsReplaced);
-      rows.CollectionReset += new CollectionItemsChangedEventHandler<IndexedDataRow<T>>(rows_CollectionReset);
+    private void RegisterRowsEvents() {
+      rows.ItemsAdded += new CollectionItemsChangedEventHandler<IndexedDataRow<T>>(RowsOnItemsAdded);
+      rows.ItemsRemoved += new CollectionItemsChangedEventHandler<IndexedDataRow<T>>(RowsOnItemsRemoved);
+      rows.ItemsReplaced += new CollectionItemsChangedEventHandler<IndexedDataRow<T>>(RowsOnItemsReplaced);
+      rows.CollectionReset += new CollectionItemsChangedEventHandler<IndexedDataRow<T>>(RowsOnCollectionReset);
+      foreach (var row in Rows) RegisterRowEvents(row);
     }
-    private void rows_ItemsAdded(object sender, CollectionItemsChangedEventArgs<IndexedDataRow<T>> e) {
+    protected virtual void RowsOnItemsAdded(object sender, CollectionItemsChangedEventArgs<IndexedDataRow<T>> e) {
       foreach (var row in e.Items)
         this.RegisterRowEvents(row);
 
@@ -128,7 +129,7 @@ namespace HeuristicLab.Analysis {
       this.OnColumnNamesChanged();
       this.OnReset();
     }
-    private void rows_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<IndexedDataRow<T>> e) {
+    protected virtual void RowsOnItemsRemoved(object sender, CollectionItemsChangedEventArgs<IndexedDataRow<T>> e) {
       foreach (var row in e.Items)
         this.DeregisterRowEvents(row);
 
@@ -136,7 +137,7 @@ namespace HeuristicLab.Analysis {
       this.OnColumnNamesChanged();
       this.OnReset();
     }
-    private void rows_ItemsReplaced(object sender, CollectionItemsChangedEventArgs<IndexedDataRow<T>> e) {
+    protected virtual void RowsOnItemsReplaced(object sender, CollectionItemsChangedEventArgs<IndexedDataRow<T>> e) {
       foreach (var row in e.OldItems)
         this.DeregisterRowEvents(row);
       foreach (var row in e.Items)
@@ -146,7 +147,7 @@ namespace HeuristicLab.Analysis {
       this.OnColumnNamesChanged();
       this.OnReset();
     }
-    private void rows_CollectionReset(object sender, CollectionItemsChangedEventArgs<IndexedDataRow<T>> e) {
+    protected virtual void RowsOnCollectionReset(object sender, CollectionItemsChangedEventArgs<IndexedDataRow<T>> e) {
       foreach (var row in e.OldItems)
         this.DeregisterRowEvents(row);
       foreach (var row in e.Items)
@@ -158,34 +159,34 @@ namespace HeuristicLab.Analysis {
       this.OnReset();
     }
 
-    protected virtual void RegisterRowEvents(IndexedDataRow<T> row) {
-      row.Values.ItemsAdded += new CollectionItemsChangedEventHandler<IndexedItem<Tuple<T, double>>>(Values_ItemsAdded);
-      row.Values.ItemsMoved += new CollectionItemsChangedEventHandler<IndexedItem<Tuple<T, double>>>(Values_ItemsMoved);
-      row.Values.ItemsRemoved += new CollectionItemsChangedEventHandler<IndexedItem<Tuple<T, double>>>(Values_ItemsRemoved);
-      row.Values.ItemsReplaced += new CollectionItemsChangedEventHandler<IndexedItem<Tuple<T, double>>>(Values_ItemsReplaced);
-      row.Values.CollectionReset += new CollectionItemsChangedEventHandler<IndexedItem<Tuple<T, double>>>(Values_CollectionReset);
+    private void RegisterRowEvents(IndexedDataRow<T> row) {
+      row.Values.ItemsAdded += new CollectionItemsChangedEventHandler<IndexedItem<Tuple<T, double>>>(ValuesOnItemsAdded);
+      row.Values.ItemsMoved += new CollectionItemsChangedEventHandler<IndexedItem<Tuple<T, double>>>(ValuesOnItemsMoved);
+      row.Values.ItemsRemoved += new CollectionItemsChangedEventHandler<IndexedItem<Tuple<T, double>>>(ValuesOnItemsRemoved);
+      row.Values.ItemsReplaced += new CollectionItemsChangedEventHandler<IndexedItem<Tuple<T, double>>>(ValuesOnItemsReplaced);
+      row.Values.CollectionReset += new CollectionItemsChangedEventHandler<IndexedItem<Tuple<T, double>>>(ValuesOnCollectionReset);
     }
-    protected virtual void DeregisterRowEvents(IndexedDataRow<T> row) {
-      row.Values.ItemsAdded -= new CollectionItemsChangedEventHandler<IndexedItem<Tuple<T, double>>>(Values_ItemsAdded);
-      row.Values.ItemsMoved -= new CollectionItemsChangedEventHandler<IndexedItem<Tuple<T, double>>>(Values_ItemsMoved);
-      row.Values.ItemsRemoved -= new CollectionItemsChangedEventHandler<IndexedItem<Tuple<T, double>>>(Values_ItemsRemoved);
-      row.Values.ItemsReplaced -= new CollectionItemsChangedEventHandler<IndexedItem<Tuple<T, double>>>(Values_ItemsReplaced);
-      row.Values.CollectionReset -= new CollectionItemsChangedEventHandler<IndexedItem<Tuple<T, double>>>(Values_CollectionReset);
+    private void DeregisterRowEvents(IndexedDataRow<T> row) {
+      row.Values.ItemsAdded -= new CollectionItemsChangedEventHandler<IndexedItem<Tuple<T, double>>>(ValuesOnItemsAdded);
+      row.Values.ItemsMoved -= new CollectionItemsChangedEventHandler<IndexedItem<Tuple<T, double>>>(ValuesOnItemsMoved);
+      row.Values.ItemsRemoved -= new CollectionItemsChangedEventHandler<IndexedItem<Tuple<T, double>>>(ValuesOnItemsRemoved);
+      row.Values.ItemsReplaced -= new CollectionItemsChangedEventHandler<IndexedItem<Tuple<T, double>>>(ValuesOnItemsReplaced);
+      row.Values.CollectionReset -= new CollectionItemsChangedEventHandler<IndexedItem<Tuple<T, double>>>(ValuesOnCollectionReset);
     }
 
-    private void Values_ItemsAdded(object sender, CollectionItemsChangedEventArgs<IndexedItem<Tuple<T, double>>> e) {
+    protected virtual void ValuesOnItemsAdded(object sender, CollectionItemsChangedEventArgs<IndexedItem<Tuple<T, double>>> e) {
       this.OnReset();
     }
-    private void Values_ItemsMoved(object sender, CollectionItemsChangedEventArgs<IndexedItem<Tuple<T, double>>> e) {
+    protected virtual void ValuesOnItemsMoved(object sender, CollectionItemsChangedEventArgs<IndexedItem<Tuple<T, double>>> e) {
       this.OnReset();
     }
-    private void Values_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<IndexedItem<Tuple<T, double>>> e) {
+    protected virtual void ValuesOnItemsRemoved(object sender, CollectionItemsChangedEventArgs<IndexedItem<Tuple<T, double>>> e) {
       this.OnReset();
     }
-    private void Values_ItemsReplaced(object sender, CollectionItemsChangedEventArgs<IndexedItem<Tuple<T, double>>> e) {
+    protected virtual void ValuesOnItemsReplaced(object sender, CollectionItemsChangedEventArgs<IndexedItem<Tuple<T, double>>> e) {
       this.OnReset();
     }
-    private void Values_CollectionReset(object sender, CollectionItemsChangedEventArgs<IndexedItem<Tuple<T, double>>> e) {
+    protected virtual void ValuesOnCollectionReset(object sender, CollectionItemsChangedEventArgs<IndexedItem<Tuple<T, double>>> e) {
       this.OnReset();
     }
 

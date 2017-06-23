@@ -45,9 +45,9 @@ namespace HeuristicLab.Analysis {
   }
 
   public struct ErtCalculationResult {
-    public int SuccessfulRuns;
-    public int TotalRuns;
-    public double ExpectedRuntime;
+    public readonly int SuccessfulRuns;
+    public readonly int TotalRuns;
+    public readonly double ExpectedRuntime;
 
     public ErtCalculationResult(int successful, int total, double ert) {
       SuccessfulRuns = successful;
@@ -56,8 +56,7 @@ namespace HeuristicLab.Analysis {
     }
 
     public override string ToString() {
-      return SuccessfulRuns == 0 ? "\u221e" // infinity symbol
-                                 : ExpectedRuntime.ToString("##,0.0", CultureInfo.CurrentCulture.NumberFormat);
+      return ExpectedRuntime.ToString("##,0.0", CultureInfo.CurrentCulture.NumberFormat);
     }
   }
 }

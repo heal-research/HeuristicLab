@@ -157,9 +157,7 @@ namespace HeuristicLab.Analysis.Views {
       series.BorderDashStyle = ChartDashStyle.Solid;
       series.BorderColor = Color.Empty;
 
-      if (row.VisualProperties.Color != Color.Empty)
-        series.Color = row.VisualProperties.Color;
-      else series.Color = Color.Empty;
+      series.Color = row.VisualProperties.Color;
       series.IsVisibleInLegend = row.VisualProperties.IsVisibleInLegend;
 
       series.SmartLabelStyle.Enabled = true;
@@ -560,6 +558,7 @@ namespace HeuristicLab.Analysis.Views {
     private void FillSeriesWithRowValues(Series series, IndexedDataRow<T> row) {
       for (int i = 0; i < row.Values.Count; i++) {
         var value = row.Values[i];
+        if (IsInvalidValue(value.Item2)) continue;
         var point = new DataPoint();
         point.SetValueXY(value.Item1, value.Item2);
         if (i == row.Values.Count - 1) {

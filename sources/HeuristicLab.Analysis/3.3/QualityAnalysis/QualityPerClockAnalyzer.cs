@@ -90,15 +90,15 @@ namespace HeuristicLab.Analysis {
       var newEntry = Tuple.Create(runtimeSoFar, bestQuality);
 
       if (values.Count == 0) {
-        values.Add(newEntry);
-        values.Add(Tuple.Create(runtimeSoFar, bestQuality)); // duplicate entry that will be replaced
+        values.Add(newEntry); // record the first data
+        values.Add(Tuple.Create(runtimeSoFar, bestQuality)); // last entry records max number of evaluations
         return base.Apply();
       }
 
       var improvement = values.Last().Item2 != bestQuality;
       if (improvement) {
-        values[values.Count - 1] = newEntry;
-        values.Add(Tuple.Create(runtimeSoFar, bestQuality)); // duplicate entry that will be replaced
+        values[values.Count - 1] = newEntry; // record the improvement
+        values.Add(Tuple.Create(runtimeSoFar, bestQuality)); // last entry records max number of evaluations
       } else {
         values[values.Count - 1] = Tuple.Create(runtimeSoFar, bestQuality);
       }
