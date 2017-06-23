@@ -87,15 +87,20 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Glmnet {
       }
     }
 
-    private void CreateSolution(double lambda) {
+  private void CreateSolution(double lambda) {
       double trainNMSE;
       double testNMSE;
-      var coeff = CreateElasticNetLinearRegressionSolution(Problem.ProblemData, Penality, lambda, out trainNMSE, out testNMSE);
+      var coeff = CalculateModelCoefficients(Problem.ProblemData, Penality, lambda, out trainNMSE, out testNMSE);
       Results.Add(new Result("NMSE (train)", new DoubleValue(trainNMSE)));
       Results.Add(new Result("NMSE (test)", new DoubleValue(testNMSE)));
 
-      var ds = Problem.ProblemData.Dataset;
-      var allVariables = Problem.ProblemData.AllowedInputVariables.ToArray();
+      var solution = CreateSymbolicSolution(coeff, Problem.ProblemData);
+      Results.Add(new Result(solution.Name, solution.Description, solution));
+    }
+
+    public static IRegressionSolution CreateSymbolicSolution(double[] coeff, IRegressionProblemData problemData) {
+      var ds = problemData.Dataset;
+      var allVariables = problemData.AllowedInputVariables.ToArray();
       var doubleVariables = allVariables.Where(ds.VariableHasType<double>);
       var factorVariableNames = allVariables.Where(ds.VariableHasType<string>);
       var factorVariablesAndValues = ds.GetFactorVariableValues(factorVariableNames, Enumerable.Range(0, ds.Rows)); // must consider all factor values (in train and test set)
@@ -129,18 +134,18 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Glmnet {
         }
       }
       var tree = LinearModelToTreeConverter.CreateTree(
-        remainingFactorVariablesAndValues, factorCoeff.ToArray(), 
+        remainingFactorVariablesAndValues, factorCoeff.ToArray(),
         remainingDoubleVariables.ToArray(), doubleVarCoeff.ToArray(),
         coeff.Last());
 
 
       SymbolicRegressionSolution solution = new SymbolicRegressionSolution(
-        new SymbolicRegressionModel(Problem.ProblemData.TargetVariable, tree, new SymbolicDataAnalysisExpressionTreeInterpreter()),
-        (IRegressionProblemData)Problem.ProblemData.Clone());
+        new SymbolicRegressionModel(problemData.TargetVariable, tree, new SymbolicDataAnalysisExpressionTreeInterpreter()),
+        (IRegressionProblemData)problemData.Clone());
       solution.Model.Name = "Elastic-net Linear Regression Model";
       solution.Name = "Elastic-net Linear Regression Solution";
 
-      Results.Add(new Result(solution.Name, solution.Description, solution));
+      return solution;
     }
 
     private void CreateSolutionPath() {
@@ -241,18 +246,18 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Glmnet {
       Results.Add(new Result(errorTable.Name, errorTable.Description, errorTable));
     }
 
-    public static double[] CreateElasticNetLinearRegressionSolution(IRegressionProblemData problemData, double penalty, double lambda,
+    public static double[] CalculateModelCoefficients(IRegressionProblemData problemData, double penalty, double lambda,
             out double trainNMSE, out double testNMSE,
             double coeffLowerBound = double.NegativeInfinity, double coeffUpperBound = double.PositiveInfinity) {
       double[] trainNMSEs;
       double[] testNMSEs;
       // run for exactly one lambda
-      var coeffs = CreateElasticNetLinearRegressionSolution(problemData, penalty, new double[] { lambda }, out trainNMSEs, out testNMSEs, coeffLowerBound, coeffUpperBound);
+      var coeffs = CalculateModelCoefficients(problemData, penalty, new double[] { lambda }, out trainNMSEs, out testNMSEs, coeffLowerBound, coeffUpperBound);
       trainNMSE = trainNMSEs[0];
       testNMSE = testNMSEs[0];
       return coeffs[0];
     }
-    public static double[][] CreateElasticNetLinearRegressionSolution(IRegressionProblemData problemData, double penalty, double[] lambda,
+    public static double[][] CalculateModelCoefficients(IRegressionProblemData problemData, double penalty, double[] lambda,
             out double[] trainNMSEs, out double[] testNMSEs,
             double coeffLowerBound = double.NegativeInfinity, double coeffUpperBound = double.PositiveInfinity,
             int maxVars = -1) {
