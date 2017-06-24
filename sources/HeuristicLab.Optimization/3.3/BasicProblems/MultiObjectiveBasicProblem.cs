@@ -19,6 +19,8 @@
  */
 #endregion
 
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -56,6 +58,98 @@ namespace HeuristicLab.Optimization {
     public abstract bool[] Maximization { get; }
     public abstract double[] Evaluate(Individual individual, IRandom random);
     public virtual void Analyze(Individual[] individuals, double[][] qualities, ResultCollection results, IRandom random) { }
+
+    protected List<List<Tuple<Individual, double[]>>> GetParetoFronts(Individual[] individuals, double[][] qualities, bool dominateOnEqualQualities = true) {
+      return GetParetoFronts(individuals, qualities, Maximization, dominateOnEqualQualities);
+    }
+    public static List<List<Tuple<Individual, double[]>>> GetParetoFronts(Individual[] individuals, double[][] qualities, bool[] maximization, bool dominateOnEqualQualities = true) {
+      int populationSize = individuals.Length;
+
+      var fronts = new List<List<Tuple<Individual, double[]>>>();
+      fronts.Add(new List<Tuple<Individual, double[]>>());
+      Dictionary<Individual, List<int>> dominatedIndividuals = new Dictionary<Individual, List<int>>();
+      int[] dominationCounter = new int[populationSize];
+      ItemArray<IntValue> rank = new ItemArray<IntValue>(populationSize);
+
+      for (int pI = 0; pI < populationSize - 1; pI++) {
+        var p = individuals[pI];
+        List<int> dominatedIndividualsByp;
+        if (!dominatedIndividuals.TryGetValue(p, out dominatedIndividualsByp))
+          dominatedIndividuals[p] = dominatedIndividualsByp = new List<int>();
+        for (int qI = pI + 1; qI < populationSize; qI++) {
+          var test = Dominates(qualities[pI], qualities[qI], maximization, dominateOnEqualQualities);
+          if (test == 1) {
+            dominatedIndividualsByp.Add(qI);
+            dominationCounter[qI] += 1;
+          } else if (test == -1) {
+            dominationCounter[pI] += 1;
+            if (!dominatedIndividuals.ContainsKey(individuals[qI]))
+              dominatedIndividuals.Add(individuals[qI], new List<int>());
+            dominatedIndividuals[individuals[qI]].Add(pI);
+          }
+          if (pI == populationSize - 2
+            && qI == populationSize - 1
+            && dominationCounter[qI] == 0) {
+            rank[qI] = new IntValue(0);
+            fronts[0].Add(Tuple.Create(individuals[qI], qualities[qI]));
+          }
+        }
+        if (dominationCounter[pI] == 0) {
+          rank[pI] = new IntValue(0);
+          fronts[0].Add(Tuple.Create(p, qualities[pI]));
+        }
+      }
+      int i = 0;
+      while (i < fronts.Count && fronts[i].Count > 0) {
+        var nextFront = new List<Tuple<Individual, double[]>>();
+        foreach (var p in fronts[i]) {
+          List<int> dominatedIndividualsByp;
+          if (dominatedIndividuals.TryGetValue(p.Item1, out dominatedIndividualsByp)) {
+            for (int k = 0; k < dominatedIndividualsByp.Count; k++) {
+              int dominatedIndividual = dominatedIndividualsByp[k];
+              dominationCounter[dominatedIndividual] -= 1;
+              if (dominationCounter[dominatedIndividual] == 0) {
+                rank[dominatedIndividual] = new IntValue(i + 1);
+                nextFront.Add(Tuple.Create(individuals[dominatedIndividual], qualities[dominatedIndividual]));
+              }
+            }
+          }
+        }
+        i += 1;
+        fronts.Add(nextFront);
+      }
+      return fronts;
+    }
+
+    private static int Dominates(double[] left, double[] right, bool[] maximizations, bool dominateOnEqualQualities) {
+      //mkommend Caution: do not use LINQ.SequenceEqual for comparing the two quality arrays (left and right) due to performance reasons
+      if (dominateOnEqualQualities) {
+        var equal = true;
+        for (int i = 0; i < left.Length; i++) {
+          if (left[i] != right[i]) {
+            equal = false;
+            break;
+          }
+        }
+        if (equal) return 1;
+      }
+
+      bool leftIsBetter = false, rightIsBetter = false;
+      for (int i = 0; i < left.Length; i++) {
+        if (IsDominated(left[i], right[i], maximizations[i])) rightIsBetter = true;
+        else if (IsDominated(right[i], left[i], maximizations[i])) leftIsBetter = true;
+        if (leftIsBetter && rightIsBetter) break;
+      }
+
+      if (leftIsBetter && !rightIsBetter) return 1;
+      if (!leftIsBetter && rightIsBetter) return -1;
+      return 0;
+    }
+
+    private static bool IsDominated(double left, double right, bool maximization) {
+      return maximization && left < right
+        || !maximization && left > right;
+    }
 
     protected override void OnOperatorsChanged() {
       base.OnOperatorsChanged();

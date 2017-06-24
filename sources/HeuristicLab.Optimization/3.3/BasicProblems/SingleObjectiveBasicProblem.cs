@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
@@ -81,6 +82,15 @@ namespace HeuristicLab.Optimization {
     public virtual void Analyze(Individual[] individuals, double[] qualities, ResultCollection results, IRandom random) { }
     public virtual IEnumerable<Individual> GetNeighbors(Individual individual, IRandom random) {
       return Enumerable.Empty<Individual>();
+    }
+
+    protected Tuple<Individual, double> GetBestIndividual(Individual[] individuals, double[] qualities) {
+      return GetBestIndividual(individuals, qualities, Maximization);
+    }
+    public static Tuple<Individual, double> GetBestIndividual(Individual[] individuals, double[] qualities, bool maximization) {
+      var zipped = individuals.Zip(qualities, (i, q) => new { Individual = i, Quality = q });
+      var best = (maximization ? zipped.OrderByDescending(z => z.Quality) : zipped.OrderBy(z => z.Quality)).First();
+      return Tuple.Create(best.Individual, best.Quality);
     }
 
     protected override void OnOperatorsChanged() {
