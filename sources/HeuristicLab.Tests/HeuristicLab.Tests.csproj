@@ -481,7 +481,6 @@
     <Compile Include="HeuristicLab-3.3\StorableTest.cs" />
     <Compile Include="HeuristicLab-3.3\ThreadSafeLogTest.cs" />
     <Compile Include="HeuristicLab-3.3\ToStringTest.cs" />
-    <Compile Include="HeuristicLab.Algorithms.DataAnalysis-3.4\MctsSymbolicRegressionTest.cs" />
     <Compile Include="HeuristicLab.Algorithms.DataAnalysis-3.4\GradientBoostingTest.cs" />
     <Compile Include="HeuristicLab.Algorithms.DataAnalysis-3.4\SupportVectorMachineTest.cs" />
     <Compile Include="HeuristicLab.Algorithms.DataAnalysis-3.4\GaussianProcessModelTest.cs" />
