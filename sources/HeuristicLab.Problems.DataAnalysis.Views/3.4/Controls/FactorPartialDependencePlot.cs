@@ -418,7 +418,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     }
 
     public async Task RemoveSolutionAsync(IRegressionSolution solution) {
-      throw new NotSupportedException();
+      if (!solutions.Remove(solution))
+        return;
+
+      seriesCache.Remove(solution);
+      ciSeriesCache.Remove(solution);
+
+      await RecalculateAsync();
+      var args = new EventArgs<IRegressionSolution>(solution);
+      OnSolutionRemoved(this, args);
     }
 
     private static bool SolutionsCompatible(IEnumerable<IRegressionSolution> solutions) {
