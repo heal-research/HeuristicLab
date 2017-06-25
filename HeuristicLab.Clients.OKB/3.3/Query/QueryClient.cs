@@ -21,10 +21,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using HeuristicLab.Clients.Common;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Persistence.Default.Xml;
 
 namespace HeuristicLab.Clients.OKB.Query {
   [Item("QueryClient", "OKB query client.")]
@@ -60,8 +62,7 @@ namespace HeuristicLab.Clients.OKB.Query {
       try {
         filters.AddRange(CallQueryService<List<Filter>>(s => s.GetFilters()));
         valueNames.AddRange(CallQueryService<List<ValueName>>(s => s.GetValueNames()));
-      }
-      finally {
+      } finally {
         OnRefreshed();
       }
     }
@@ -69,8 +70,7 @@ namespace HeuristicLab.Clients.OKB.Query {
       var call = new Func<Exception>(delegate() {
         try {
           Refresh();
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
           return ex;
         }
         return null;
@@ -97,6 +97,50 @@ namespace HeuristicLab.Clients.OKB.Query {
     }
     #endregion
 
+    #region OKB-Item Conversion
+    public Optimization.IRun ConvertToOptimizationRun(Run run) {
+      Optimization.Run optRun = new Optimization.Run();
+      foreach (Value value in run.ParameterValues)
+        optRun.Parameters.Add(value.Name, ConvertToItem(value));
+      foreach (Value value in run.ResultValues)
+        optRun.Results.Add(value.Name, ConvertToItem(value));
+      return optRun;
+    }
+
+    public IItem ConvertToItem(Value value) {
+      if (value is BinaryValue) {
+        IItem item = null;
+        var binaryValue = (BinaryValue)value;
+        if (binaryValue.Value != null) {
+          using (var stream = new MemoryStream(binaryValue.Value)) {
+            try {
+              item = XmlParser.Deserialize<IItem>(stream);
+            } catch (Exception) { }
+            stream.Close();
+          }
+        }
+        return item ?? new Data.StringValue(value.DataType.Name);
+      } else if (value is BoolValue) {
+        return new Data.BoolValue(((BoolValue)value).Value);
+      } else if (value is FloatValue) {
+        return new Data.DoubleValue(((FloatValue)value).Value);
+      } else if (value is PercentValue) {
+        return new Data.PercentValue(((PercentValue)value).Value);
+      } else if (value is DoubleValue) {
+        return new Data.DoubleValue(((DoubleValue)value).Value);
+      } else if (value is IntValue) {
+        return new Data.IntValue((int)((IntValue)value).Value);
+      } else if (value is LongValue) {
+        return new Data.IntValue((int)((LongValue)value).Value);
+      } else if (value is StringValue) {
+        return new Data.StringValue(((StringValue)value).Value);
+      } else if (value is TimeSpanValue) {
+        return new Data.TimeSpanValue(TimeSpan.FromSeconds((long)((TimeSpanValue)value).Value));
+      }
+      return null;
+    }
+    #endregion
+
     #region Events
     public event EventHandler Refreshing;
     private void OnRefreshing() {
@@ -115,12 +159,10 @@ namespace HeuristicLab.Clients.OKB.Query {
       QueryServiceClient client = ClientFactory.CreateClient<QueryServiceClient, IQueryService>();
       try {
         return call(client);
-      }
-      finally {
+      } finally {
         try {
           client.Close();
-        }
-        catch (Exception) {
+        } catch (Exception) {
           client.Abort();
         }
       }
