@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -76,7 +77,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     #region k-Means clustering
-    protected override void Run() {
+    protected override void Run(CancellationToken cancellationToken) {
       var solution = CreateKMeansSolution(Problem.ProblemData, K.Value, Restarts.Value);
       Results.Add(new Result(KMeansSolutionResultName, "The k-Means clustering solution.", solution));
     }

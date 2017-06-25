@@ -21,6 +21,7 @@
 
 using System;
 using System.Linq;
+using System.Threading;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -62,7 +63,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.TimeSeries {
       Problem = new TimeSeriesPrognosisProblem();
     }
 
-    protected override void Run() {
+    protected override void Run(CancellationToken cancellationToken) {
       double rmsError, cvRmsError;
       var solution = CreateAutoRegressiveSolution(Problem.ProblemData, TimeOffset, out rmsError, out cvRmsError);
       Results.Add(new Result("Autoregressive solution", "The autoregressive time series prognosis solution.", solution));

@@ -43,15 +43,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
     "Gradient boosting for any regression base learner (e.g. MCTS symbolic regression)")]
   [StorableClass]
   [Creatable(CreatableAttribute.Categories.DataAnalysisRegression, Priority = 350)]
-  public class GradientBoostingRegressionAlgorithm : BasicAlgorithm {
-    public override Type ProblemType {
-      get { return typeof(IRegressionProblem); }
-    }
-
-    public new IRegressionProblem Problem {
-      get { return (IRegressionProblem)base.Problem; }
-      set { base.Problem = value; }
-    }
+  public class GradientBoostingRegressionAlgorithm : FixedDataAnalysisAlgorithm<IRegressionProblem> {
 
     #region ParameterNames
 

@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -56,7 +57,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     #region logit classification
-    protected override void Run() {
+    protected override void Run(CancellationToken cancellationToken) {
       double rmsError, relClassError;
       var solution = CreateLogitClassificationSolution(Problem.ProblemData, out rmsError, out relClassError);
       Results.Add(new Result(LogitClassificationModelResultName, "The logit classification solution.", solution));

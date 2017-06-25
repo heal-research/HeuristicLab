@@ -21,6 +21,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -57,7 +58,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return new OneR(this, cloner);
     }
 
-    protected override void Run() {
+    protected override void Run(CancellationToken cancellationToken) {
       var solution = CreateOneRSolution(Problem.ProblemData, MinBucketSizeParameter.Value.Value);
       Results.Add(new Result("OneR solution", "The 1R classifier.", solution));
     }

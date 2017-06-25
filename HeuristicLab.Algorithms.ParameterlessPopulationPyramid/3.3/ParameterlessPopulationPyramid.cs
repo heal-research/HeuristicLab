@@ -55,7 +55,7 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
     private EvaluationTracker tracker;
 
     // Tracks all solutions in Pyramid for quick membership checks
-    private HashSet<BinaryVector> seen = new HashSet<BinaryVector>(new EnumerableBoolEqualityComparer());
+    private readonly HashSet<BinaryVector> seen = new HashSet<BinaryVector>(new EnumerableBoolEqualityComparer());
 
     #region ParameterNames
     private const string MaximumIterationsParameterName = "Maximum Iterations";
@@ -152,6 +152,8 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
     }
     #endregion
 
+    public override bool SupportsPause { get { return true; } }
+
     [StorableConstructor]
     protected ParameterlessPopulationPyramid(bool deserializing) : base(deserializing) { }
 
@@ -212,7 +214,7 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
       return fitness;
     }
 
-    protected override void Run(CancellationToken cancellationToken) {
+    protected override void Initialize(CancellationToken cancellationToken) {
       // Set up the algorithm
       if (SetSeedRandomly) Seed = new System.Random().Next();
       pyramid = new List<Population>();
@@ -241,12 +243,17 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
       table.Rows.Add(new DataRow("Solutions"));
       Results.Add(new Result("Stored Solutions", table));
 
+      base.Initialize(cancellationToken);
+    }
+
+    protected override void Run(CancellationToken cancellationToken) {
       // Loop until iteration limit reached or canceled.
-      for (ResultsIterations = 0; ResultsIterations < MaximumIterations; ResultsIterations++) {
+      while (ResultsIterations < MaximumIterations) {
         double fitness = double.NaN;
 
         try {
           fitness = iterate();
+          ResultsIterations++;
           cancellationToken.ThrowIfCancellationRequested();
         } finally {
           ResultsEvaluations = tracker.Evaluations;
