@@ -148,7 +148,7 @@ namespace HeuristicLab.Problems.Instances.VehicleRouting {
           throw new InvalidDataException("File has wrong format!");
 
         vehicles = int.Parse(m[0].Value);
-        capacity = double.Parse(m[1].Value);
+        capacity = double.Parse(m[1].Value, System.Globalization.CultureInfo.InvariantCulture);
 
         line = reader.ReadLine();
         while ((line != null) && (line.Length > 5)) {

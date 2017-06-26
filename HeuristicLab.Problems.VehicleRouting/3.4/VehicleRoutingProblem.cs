@@ -197,8 +197,6 @@ namespace HeuristicLab.Problems.VehicleRouting {
         //call evaluator
         BestKnownQuality = new DoubleValue(ProblemInstance.Evaluate(BestKnownSolution.Solution).Quality);
         BestKnownSolution.Quality = BestKnownQuality;
-      } else {
-        BestKnownQuality = null;
       }
     }
 
@@ -207,6 +205,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
     }
 
     void ProblemInstance_EvaluationChanged(object sender, EventArgs e) {
+      BestKnownQuality = null;
       EvalBestKnownSolution();
     }
 
