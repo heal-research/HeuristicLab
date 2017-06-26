@@ -146,6 +146,7 @@
     <Compile Include="Manipulators\UniformSomePositionsManipulator.cs" />
     <Compile Include="Manipulators\RoundedNormalAllPositionsManipulator.cs" />
     <Compile Include="Manipulators\SelfAdaptiveRoundedNormalAllPositionsManipulator.cs" />
+    <Compile Include="SimilarityCalculators\EuclideanSimilarityCalculator.cs" />
     <Compile Include="SimilarityCalculators\HammingSimilarityCalculator.cs" />
     <Compile Include="StrategyParameters\StdDevStrategyVectorCreator.cs" />
     <Compile Include="StrategyParameters\StdDevStrategyVectorCrossover.cs" />

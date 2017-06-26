@@ -182,6 +182,7 @@
     <Compile Include="Manipulators\UniformOnePositionManipulator.cs" />
     <Compile Include="ReflectiveBoundsChecker.cs" />
     <Compile Include="ShakingOperators\RealVectorShakingOperator.cs" />
+    <Compile Include="SimilarityCalculators\EuclideanSimilarityCalculator.cs" />
     <Compile Include="SimilarityCalculators\HammingSimilarityCalculator.cs" />
     <Compile Include="StrategyParameters\StdDevStrategyVectorCreator.cs" />
     <Compile Include="StrategyParameters\StdDevStrategyVectorCrossover.cs" />

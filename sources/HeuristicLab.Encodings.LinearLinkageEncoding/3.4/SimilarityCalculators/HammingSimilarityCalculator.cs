@@ -29,22 +29,26 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
   [Item("Hamming Similarity Calculator for LinearLinkage", "Calculates the hamming similarity for two linear linkage encoded solutions.")]
   [StorableClass]
   public sealed class HammingSimilarityCalculator : SingleObjectiveSolutionSimilarityCalculator {
-
-    protected override bool IsCommutative {
-      get { return true; }
-    }
+    protected override bool IsCommutative { get { return true; } }
 
     [StorableConstructor]
     private HammingSimilarityCalculator(bool deserializing) : base(deserializing) { }
     private HammingSimilarityCalculator(HammingSimilarityCalculator original, Cloner cloner) : base(original, cloner) { }
-    public HammingSimilarityCalculator() { }
+    public HammingSimilarityCalculator() : base() { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new HammingSimilarityCalculator(this, cloner);
     }
 
     public static double CalculateSimilarity(LinearLinkage left, LinearLinkage right) {
-      if (left.Length != right.Length) throw new ArgumentException("Comparing encodings of unequal length");
+      if (left == null || right == null)
+        throw new ArgumentException("Cannot calculate similarity because one or both of the provided solutions is null.");
+      if (left.Length != right.Length)
+        throw new ArgumentException("Cannot calculate similarity because the provided solutions have different lengths.");
+      if (left.Length == 0)
+        throw new ArgumentException("Cannot calculate similarity because solutions are of length 0.");
+      if (ReferenceEquals(left, right)) return 1.0;
+
       var similarity = 0;
       for (var i = 0; i < left.Length; i++) {
         if (left[i] == right[i]) similarity++;

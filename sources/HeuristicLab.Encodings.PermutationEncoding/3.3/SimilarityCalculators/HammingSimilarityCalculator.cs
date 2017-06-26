@@ -23,12 +23,15 @@ using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization.Operators;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("Hamming Similarity Calculator for Permutation", "An operator that performs similarity calculation between two permutation-encoded solutions.")]
+  [StorableClass]
   public sealed class HammingSimilarityCalculator : SingleObjectiveSolutionSimilarityCalculator {
     protected override bool IsCommutative { get { return true; } }
 
+    [StorableConstructor]
     private HammingSimilarityCalculator(bool deserializing) : base(deserializing) { }
     private HammingSimilarityCalculator(HammingSimilarityCalculator original, Cloner cloner) : base(original, cloner) { }
     public HammingSimilarityCalculator() : base() { }
@@ -39,12 +42,14 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
 
     public static double CalculateSimilarity(Permutation left, Permutation right) {
       if (left == null || right == null)
-        throw new ArgumentException("Cannot calculate similarity because one of the provided solutions or both are null.");
+        throw new ArgumentException("Cannot calculate similarity because one or both of the provided solutions is null.");
       if (left.PermutationType != right.PermutationType)
-        throw new ArgumentException("Cannot calculate similarity because the provided solutions have different types.");
+        throw new ArgumentException("Cannot calculate similarity because the provided solutions have different permutation types.");
       if (left.Length != right.Length)
         throw new ArgumentException("Cannot calculate similarity because the provided solutions have different lengths.");
-      if (object.ReferenceEquals(left, right)) return 1.0;
+      if (left.Length == 0)
+        throw new ArgumentException("Cannot calculate similarity because solutions are of length 0.");
+      if (ReferenceEquals(left, right)) return 1.0;
 
       switch (left.PermutationType) {
         case PermutationTypes.Absolute:

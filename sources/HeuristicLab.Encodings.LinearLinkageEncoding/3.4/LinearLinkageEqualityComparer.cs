@@ -19,13 +19,17 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Encodings.LinearLinkageEncoding {
+  [NonDiscoverableType]
   public class LinearLinkageEqualityComparer : EqualityComparer<LinearLinkage> {
     public override bool Equals(LinearLinkage x, LinearLinkage y) {
       if (x == null && y == null) return true;
       if (x == null || y == null) return false;
+      if (ReferenceEquals(x, y)) return true;
       if (x.Length != y.Length) return false;
       for (var i = 0; i < x.Length; i++)
         if (x[i] != y[i]) return false;
@@ -33,6 +37,7 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
     }
 
     public override int GetHashCode(LinearLinkage obj) {
+      if (obj == null) throw new ArgumentNullException("obj", "LinearLinkageEqualityComparer: Cannot compute hash value of null.");
       unchecked {
         int hash = 17;
         foreach (var o in obj)

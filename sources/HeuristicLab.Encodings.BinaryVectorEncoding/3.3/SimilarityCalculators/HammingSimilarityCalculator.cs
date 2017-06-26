@@ -44,10 +44,12 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
 
     public static double CalculateSimilarity(BinaryVector left, BinaryVector right) {
       if (left == null || right == null)
-        throw new ArgumentException("Cannot calculate similarity because one or both of the provided scopes is null.");
+        throw new ArgumentException("Cannot calculate similarity because one or both of the provided solutions is null.");
       if (left.Length != right.Length)
         throw new ArgumentException("Cannot calculate similarity because the provided solutions have different lengths.");
-      if (left == right) return 1.0;
+      if (left.Length == 0)
+        throw new ArgumentException("Cannot calculate similarity because solutions are of length 0.");
+      if (ReferenceEquals(left, right)) return 1.0;
 
       double similarity = 0.0;
       for (int i = 0; i < left.Length; i++)
