@@ -279,6 +279,7 @@ namespace HeuristicLab.Problems.Scheduling {
         Operators.AddRange(ApplicationManager.Manager.GetInstances<IDirectScheduleOperator>());
         ScheduleDecoder = null;
       }
+      if (ScheduleDecoder != null) Operators.Add(ScheduleDecoder);
     }
 
     private void ParameterizeOperators() {
