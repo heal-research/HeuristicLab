@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -109,67 +110,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     #endregion
 
     #endregion
-
-    #region Parameter values
-    private DoubleValue SwarmBestQuality {
-      get { return SwarmBestQualityParameter.ActualValue; }
-      set { SwarmBestQualityParameter.ActualValue = value; }
-    }
-    private RealVector BestRealVector {
-      get { return BestRealVectorParameter.ActualValue; }
-      set { BestRealVectorParameter.ActualValue = value; }
-    }
-    private ItemArray<DoubleValue> Quality {
-      get { return QualityParameter.ActualValue; }
-    }
-    private ItemArray<DoubleValue> PersonalBestQuality {
-      get { return PersonalBestQualityParameter.ActualValue; }
-      set { PersonalBestQualityParameter.ActualValue = value; }
-    }
-    private ItemArray<DoubleValue> NeighborBestQuality {
-      get { return NeighborBestQualityParameter.ActualValue; }
-      set { NeighborBestQualityParameter.ActualValue = value; }
-    }
-    private ItemArray<RealVector> RealVector {
-      get { return RealVectorParameter.ActualValue; }
-    }
-    private ItemArray<RealVector> PersonalBest {
-      get { return PersonalBestParameter.ActualValue; }
-      set { PersonalBestParameter.ActualValue = value; }
-    }
-    private ItemArray<RealVector> NeighborBest {
-      get { return NeighborBestParameter.ActualValue; }
-      set { NeighborBestParameter.ActualValue = value; }
-    }
-    private bool Maximization {
-      get { return MaximizationParameter.ActualValue.Value; }
-    }
-    private ItemArray<IntArray> Neighbors {
-      get { return NeighborsParameter.ActualValue; }
-    }
-    private DoubleMatrix VelocityBounds {
-      get { return VelocityBoundsParameter.ActualValue; }
-    }
-    private DoubleMatrix CurrentVelocityBounds {
-      get { return CurrentVelocityBoundsParameter.ActualValue; }
-      set { CurrentVelocityBoundsParameter.ActualValue = value; }
-    }
-    private DoubleValue VelocityBoundsScale {
-      get { return VelocityBoundsScaleParameter.ActualValue; }
-      set { VelocityBoundsScaleParameter.ActualValue = value; }
-    }
-    private DoubleValue VelocityBoundsStartValue {
-      get { return VelocityBoundsStartValueParameter.ActualValue; }
-    }
-    public IDiscreteDoubleValueModifier VelocityBoundsScalingOperator {
-      get { return VelocityBoundsScalingOperatorParameter.Value; }
-      set { VelocityBoundsScalingOperatorParameter.Value = value; }
-    }
-    private ResultCollection Results {
-      get { return ResultsParameter.ActualValue; }
-    }
-    #endregion
-
+    
     #region Construction & Cloning
 
     [StorableConstructor]
@@ -277,76 +218,94 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     }
 
     public override IOperation Apply() {
-      UpdateGlobalBest();
-      UpdateNeighborBest();
-      UpdatePersonalBest();
+      var max = MaximizationParameter.ActualValue.Value;
+      var points = RealVectorParameter.ActualValue;
+      var qualities = QualityParameter.ActualValue;
+      var particles = points.Select((p, i) => new { Particle = p, Index = i })
+        .Zip(qualities, (p, q) => Tuple.Create(p.Index, p.Particle, q.Value)).ToList();
+      UpdateGlobalBest(max, particles);
+      UpdateNeighborBest(max, particles);
+      UpdatePersonalBest(max, particles);
       return UpdateVelocityBounds();
     }
 
-    private void UpdateGlobalBest() {
-      if (SwarmBestQuality == null)
-        SwarmBestQuality = new DoubleValue();
-      SwarmBestQuality.Value = Maximization ? Quality.Max(v => v.Value) : Quality.Min(v => v.Value);
-      BestRealVector = (RealVector)RealVector[Quality.FindIndex(v => v.Value == SwarmBestQuality.Value)].Clone();
+    private void UpdateGlobalBest(bool maximization, IList<Tuple<int, RealVector, double>> particles) {
+      var best = maximization ? particles.MaxItems(x => x.Item3).First() : particles.MinItems(x => x.Item3).First();
+      var bestQuality = SwarmBestQualityParameter.ActualValue;
+      if (bestQuality == null) {
+        SwarmBestQualityParameter.ActualValue = new DoubleValue(best.Item3);
+      } else bestQuality.Value = best.Item3;
+      BestRealVectorParameter.ActualValue = (RealVector)best.Item2.Clone();
     }
 
-    private void UpdateNeighborBest() {
-      if (Neighbors.Length > 0) {
-        var neighborBest = new ItemArray<RealVector>(Neighbors.Length);
-        var neighborBestQuality = new ItemArray<DoubleValue>(Neighbors.Length);
-        for (int n = 0; n < Neighbors.Length; n++) {
-          var pairs = Quality.Zip(RealVector, (q, p) => new { Quality = q, Point = p })
-            .Where((p, i) => i == n || Neighbors[n].Contains(i));
-          var bestNeighbor = Maximization ?
-            pairs.OrderByDescending(p => p.Quality.Value).First() :
-            pairs.OrderBy(p => p.Quality.Value).First();
-          neighborBest[n] = bestNeighbor.Point;
-          neighborBestQuality[n] = bestNeighbor.Quality;
+    private void UpdateNeighborBest(bool maximization, IList<Tuple<int, RealVector, double>> particles) {
+      var neighbors = NeighborsParameter.ActualValue;
+      if (neighbors.Length > 0) {
+        var neighborBest = new ItemArray<RealVector>(neighbors.Length);
+        var neighborBestQuality = new ItemArray<DoubleValue>(neighbors.Length);
+        for (int n = 0; n < neighbors.Length; n++) {
+          var pairs = particles.Where(x => x.Item1 == n || neighbors[n].Contains(x.Item1));
+          var bestNeighbor = (maximization ? pairs.MaxItems(p => p.Item3)
+                                           : pairs.MinItems(p => p.Item3)).First();
+          neighborBest[n] = bestNeighbor.Item2;
+          neighborBestQuality[n] = new DoubleValue(bestNeighbor.Item3);
         }
-        NeighborBest = neighborBest;
-        NeighborBestQuality = neighborBestQuality;
+        NeighborBestParameter.ActualValue = neighborBest;
+        NeighborBestQualityParameter.ActualValue = neighborBestQuality;
       }
     }
 
-    private void UpdatePersonalBest() {
-      if (PersonalBestQuality.Length == 0)
-        PersonalBestQuality = (ItemArray<DoubleValue>)Quality.Clone();
-      for (int i = 0; i < RealVector.Length; i++) {
-        if (Maximization && Quality[i].Value > PersonalBestQuality[i].Value ||
-          !Maximization && Quality[i].Value < PersonalBestQuality[i].Value) {
-          PersonalBestQuality[i].Value = Quality[i].Value;
-          PersonalBest[i] = RealVector[i];
+    private void UpdatePersonalBest(bool maximization, IList<Tuple<int, RealVector, double>> particles) {
+      var personalBest = PersonalBestParameter.ActualValue;
+      var personalBestQuality = PersonalBestQualityParameter.ActualValue;
+
+      if (personalBestQuality.Length == 0) {
+        personalBestQuality = new ItemArray<DoubleValue>(particles.Select(x => new DoubleValue(x.Item3)));
+        PersonalBestQualityParameter.ActualValue = personalBestQuality;
+      }
+      foreach (var p in particles) {
+        if (maximization && p.Item3 > personalBestQuality[p.Item1].Value ||
+          !maximization && p.Item3 < personalBestQuality[p.Item1].Value) {
+          personalBestQuality[p.Item1].Value = p.Item3;
+          personalBest[p.Item1] = p.Item2;
         }
       }
+      PersonalBestParameter.ActualValue = personalBest;
     }
 
     private IOperation UpdateVelocityBounds() {
-      if (CurrentVelocityBounds == null)
-        CurrentVelocityBounds = (DoubleMatrix)VelocityBounds.Clone();
+      var currentVelocityBounds = CurrentVelocityBoundsParameter.ActualValue;
 
-      if (VelocityBoundsScalingOperator == null)
+      if (currentVelocityBounds == null) {
+        currentVelocityBounds = (DoubleMatrix)VelocityBoundsParameter.ActualValue.Clone();
+        CurrentVelocityBoundsParameter.ActualValue = currentVelocityBounds;
+      }
+      if (VelocityBoundsScalingOperatorParameter.Value == null)
         return new OperationCollection() {
           ExecutionContext.CreateChildOperation(ResultsCollector),        
           base.Apply()
         };
 
-      DoubleMatrix matrix = CurrentVelocityBounds;
-      if (VelocityBoundsScale == null && VelocityBoundsStartValue != null) {
-        VelocityBoundsScale = new DoubleValue(VelocityBoundsStartValue.Value);
+      var velocityBoundsScale = VelocityBoundsScaleParameter.ActualValue;
+      var velocityBoundsStartValue = VelocityBoundsStartValueParameter.ActualValue;
+
+      if (velocityBoundsScale == null && velocityBoundsStartValue != null) {
+        velocityBoundsScale = new DoubleValue(velocityBoundsStartValue.Value);
+        VelocityBoundsScaleParameter.ActualValue = velocityBoundsScale;
       }
-      for (int i = 0; i < matrix.Rows; i++) {
-        for (int j = 0; j < matrix.Columns; j++) {
-          if (matrix[i, j] >= 0) {
-            matrix[i, j] = VelocityBoundsScale.Value;
+      for (int i = 0; i < currentVelocityBounds.Rows; i++) {
+        for (int j = 0; j < currentVelocityBounds.Columns; j++) {
+          if (currentVelocityBounds[i, j] >= 0) {
+            currentVelocityBounds[i, j] = velocityBoundsScale.Value;
           } else {
-            matrix[i, j] = (-1) * VelocityBoundsScale.Value;
+            currentVelocityBounds[i, j] = (-1) * velocityBoundsScale.Value;
           }
         }
       }
 
       return new OperationCollection() {
         ExecutionContext.CreateChildOperation(ResultsCollector),
-        ExecutionContext.CreateChildOperation(VelocityBoundsScalingOperator),        
+        ExecutionContext.CreateChildOperation(VelocityBoundsScalingOperatorParameter.Value),
         base.Apply()
       };
     }
