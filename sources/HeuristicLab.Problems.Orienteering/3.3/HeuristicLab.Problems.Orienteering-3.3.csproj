@@ -111,14 +111,17 @@
     <ProjectReference Include="..\..\HeuristicLab.Analysis\3.3\HeuristicLab.Analysis-3.3.csproj">
       <Project>{887425B4-4348-49ED-A457-B7D2C26DDBF9}</Project>
       <Name>HeuristicLab.Analysis-3.3</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">
       <Project>{958B43BC-CC5C-4FA2-8628-2B3B01D890B6}</Project>
       <Name>HeuristicLab.Collections-3.3</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Common.Resources\3.3\HeuristicLab.Common.Resources-3.3.csproj">
       <Project>{0e27a536-1c4a-4624-a65e-dc4f4f23e3e1}</Project>
       <Name>HeuristicLab.Common.Resources-3.3</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Common\3.3\HeuristicLab.Common-3.3.csproj">
       <Project>{A9AD58B9-3EF9-4CC1-97E5-8D909039FF5C}</Project>
@@ -133,34 +136,47 @@
     <ProjectReference Include="..\..\HeuristicLab.Data\3.3\HeuristicLab.Data-3.3.csproj">
       <Project>{BBAB9DF5-5EF3-4BA8-ADE9-B36E82114937}</Project>
       <Name>HeuristicLab.Data-3.3</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Encodings.IntegerVectorEncoding\3.3\HeuristicLab.Encodings.IntegerVectorEncoding-3.3.csproj">
       <Project>{DDFB14DD-2A85-493C-A52D-E69729BBAEB0}</Project>
       <Name>HeuristicLab.Encodings.IntegerVectorEncoding-3.3</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Operators\3.3\HeuristicLab.Operators-3.3.csproj">
       <Project>{23DA7FF4-D5B8-41B6-AA96-F0561D24F3EE}</Project>
       <Name>HeuristicLab.Operators-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Optimization.Operators\3.3\HeuristicLab.Optimization.Operators-3.3.csproj">
+      <Project>{25087811-F74C-4128-BC86-8324271DA13E}</Project>
+      <Name>HeuristicLab.Optimization.Operators-3.3</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Optimization\3.3\HeuristicLab.Optimization-3.3.csproj">
       <Project>{14AB8D24-25BC-400C-A846-4627AA945192}</Project>
       <Name>HeuristicLab.Optimization-3.3</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Parameters\3.3\HeuristicLab.Parameters-3.3.csproj">
       <Project>{56F9106A-079F-4C61-92F6-86A84C2D84B7}</Project>
       <Name>HeuristicLab.Parameters-3.3</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Persistence\3.3\HeuristicLab.Persistence-3.3.csproj">
       <Project>{102BC7D3-0EF9-439C-8F6D-96FF0FDB8E1B}</Project>
       <Name>HeuristicLab.Persistence-3.3</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\3.3\HeuristicLab.PluginInfrastructure-3.3.csproj">
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
       <Name>HeuristicLab.PluginInfrastructure-3.3</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Problems.Instances\3.3\HeuristicLab.Problems.Instances-3.3.csproj">
       <Project>{3540E29E-4793-49E7-8EE2-FEA7F61C3994}</Project>
       <Name>HeuristicLab.Problems.Instances-3.3</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Random\3.3\HeuristicLab.Random-3.3.csproj">
       <Project>{F4539FB6-4708-40C9-BE64-0A1390AEA197}</Project>
@@ -170,6 +186,7 @@
     <ProjectReference Include="..\..\HeuristicLab.Scripting\3.3\HeuristicLab.Scripting-3.3.csproj">
       <Project>{21977CC3-1757-4B3B-87BD-FF817AAA900F}</Project>
       <Name>HeuristicLab.Scripting-3.3</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

@@ -22,11 +22,13 @@
 using System;
 using System.Drawing;
 using System.Linq;
+using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Optimization;
+using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
@@ -177,6 +179,10 @@ namespace HeuristicLab.Problems.LinearAssignment {
       Operators.AddRange(ApplicationManager.Manager.GetInstances<IPermutationOperator>());
       Operators.RemoveAll(x => x is IMoveOperator);
       Operators.Add(bestLAPSolutionAnalyzer);
+
+      Operators.Add(new HammingSimilarityCalculator());
+      Operators.Add(new QualitySimilarityCalculator());
+      Operators.Add(new PopulationSimilarityAnalyzer(Operators.OfType<ISolutionSimilarityCalculator>()));
     }
 
     private void Parameterize() {
@@ -204,6 +210,11 @@ namespace HeuristicLab.Problems.LinearAssignment {
       foreach (var op in Operators.OfType<IPermutationMultiNeighborhoodShakingOperator>()) {
         op.PermutationParameter.ActualName = SolutionCreator.PermutationParameter.ActualName;
         op.PermutationParameter.Hidden = true;
+      }
+
+      foreach (var similarityCalculator in Operators.OfType<ISolutionSimilarityCalculator>()) {
+        similarityCalculator.SolutionVariableName = SolutionCreator.PermutationParameter.ActualName;
+        similarityCalculator.QualityVariableName = Evaluator.QualityParameter.ActualName;
       }
 
       bestLAPSolutionAnalyzer.AssignmentParameter.ActualName = SolutionCreator.PermutationParameter.ActualName;

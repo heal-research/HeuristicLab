@@ -21,11 +21,13 @@
 
 using System;
 using System.Linq;
+using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Optimization;
+using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.Instances;
@@ -118,12 +120,26 @@ namespace HeuristicLab.Problems.PTSP {
       DistanceMatrix = new DistanceMatrix(CalculateDistances());
       Probabilities = new DoubleArray(Enumerable.Range(0, coordinates.Rows).Select(x => 0.5).ToArray());
 
+      InitializeOperators();
+      Parameterize();
       RegisterEventHandlers();
+    }
+
+    private void InitializeOperators() {
+      Operators.Add(new HammingSimilarityCalculator());
+      Operators.Add(new QualitySimilarityCalculator());
+      Operators.Add(new PopulationSimilarityAnalyzer(Operators.OfType<ISolutionSimilarityCalculator>()));
     }
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       RegisterEventHandlers();
+    }
+
+    protected override void OnEncodingChanged() {
+      base.OnEncodingChanged();
+      Encoding.Length = Coordinates.Rows;
+      Parameterize();
     }
 
     private void RegisterEventHandlers() {
@@ -234,6 +250,13 @@ namespace HeuristicLab.Problems.PTSP {
     private int GetProblemDimension() {
       if (Coordinates == null && DistanceMatrix == null) throw new InvalidOperationException("Both coordinates and distance matrix are null, please specify at least one of them.");
       return Coordinates != null ? Coordinates.Rows : DistanceMatrix.Rows;
+    }
+
+    private void Parameterize() {
+      foreach (var similarityCalculator in Operators.OfType<ISolutionSimilarityCalculator>()) {
+        similarityCalculator.SolutionVariableName = Encoding.SolutionCreator.PermutationParameter.ActualName;
+        similarityCalculator.QualityVariableName = Evaluator.QualityParameter.ActualName;
+      }
     }
   }
 }

@@ -22,10 +22,12 @@
 #endregion
 
 using System.Linq;
+using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Optimization;
+using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.BinPacking3D {
@@ -48,6 +50,7 @@ namespace HeuristicLab.Problems.BinPacking3D {
 
       Encoding = new PermutationEncoding(EncodedSolutionName, Items.Count, PermutationTypes.Absolute);
       AddOperators();
+      Parameterize();
       RegisterEventHandlers();
     }
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -59,6 +62,10 @@ namespace HeuristicLab.Problems.BinPacking3D {
       RegisterEventHandlers();
     }
 
+    protected override void OnEncodingChanged() {
+      base.OnEncodingChanged();
+      Parameterize();
+    }
 
     private void AddOperators() {
       Operators.Add(new TranslocationMoveEvaluator());
@@ -67,6 +74,9 @@ namespace HeuristicLab.Problems.BinPacking3D {
       Operators.RemoveAll(x => x is SingleObjectiveMoveGenerator);
       Operators.RemoveAll(x => x is SingleObjectiveMoveMaker);
       Operators.RemoveAll(x => x is SingleObjectiveMoveEvaluator);
+      Operators.Add(new HammingSimilarityCalculator());
+      Operators.Add(new QualitySimilarityCalculator());
+      Operators.Add(new PopulationSimilarityAnalyzer(Operators.OfType<ISolutionSimilarityCalculator>()));
 
       Encoding.ConfigureOperators(Operators.OfType<IOperator>());
 
@@ -81,7 +91,15 @@ namespace HeuristicLab.Problems.BinPacking3D {
 
     private void RegisterEventHandlers() {
       // update encoding length when number of items is changed
-      ItemsParameter.ValueChanged += (sender, args) => Encoding.Length = Items.Count;
+      ItemsParameter.ValueChanged += (sender, args) => Parameterize();
+    }
+
+    private void Parameterize() {
+      Encoding.Length = Items.Count;
+      foreach (var similarityCalculator in Operators.OfType<ISolutionSimilarityCalculator>()) {
+        similarityCalculator.SolutionVariableName = Encoding.SolutionCreator.PermutationParameter.ActualName;
+        similarityCalculator.QualityVariableName = Evaluator.QualityParameter.ActualName;
+      }
     }
   }
 }

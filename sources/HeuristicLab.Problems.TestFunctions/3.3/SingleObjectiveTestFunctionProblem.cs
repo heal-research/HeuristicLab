@@ -260,8 +260,9 @@ namespace HeuristicLab.Problems.TestFunctions {
       Operators.Add(new SingleObjectiveTestFunctionImprovementOperator());
       Operators.Add(new SingleObjectiveTestFunctionPathRelinker());
       Operators.Add(new SingleObjectiveTestFunctionSimilarityCalculator());
+      Operators.Add(new HammingSimilarityCalculator());
+      Operators.Add(new EuclideanSimilarityCalculator());
       Operators.Add(new QualitySimilarityCalculator());
-      Operators.Add(new NoSimilarityCalculator());
 
       Operators.Add(new BestSingleObjectiveTestFunctionSolutionAnalyzer());
       Operators.Add(new PopulationSimilarityAnalyzer(Operators.OfType<ISolutionSimilarityCalculator>()));

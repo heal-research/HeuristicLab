@@ -22,11 +22,13 @@
 using System;
 using System.IO;
 using System.Linq;
+using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.IntegerVectorEncoding;
 using HeuristicLab.Optimization;
+using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.Instances;
@@ -271,6 +273,9 @@ namespace HeuristicLab.Problems.Orienteering {
 
       Operators.Add(new OrienteeringLocalImprovementOperator());
       Operators.Add(new OrienteeringShakingOperator());
+      Operators.Add(new QualitySimilarityCalculator());
+      Operators.Add(new PopulationSimilarityAnalyzer(Operators.OfType<ISolutionSimilarityCalculator>()));
+
       ParameterizeOperators();
     }
     private void ParameterizeOperators() {
@@ -291,6 +296,10 @@ namespace HeuristicLab.Problems.Orienteering {
         op.StartingPointParameter.ActualName = StartingPointParameter.Name;
         op.TerminalPointParameter.ActualName = TerminalPointParameter.Name;
         op.PointVisitingCostsParameter.ActualName = PointVisitingCostsParameter.Name;
+      }
+      foreach (var similarityCalculator in Operators.OfType<ISolutionSimilarityCalculator>()) {
+        similarityCalculator.SolutionVariableName = SolutionCreator.IntegerVectorParameter.ActualName;
+        similarityCalculator.QualityVariableName = Evaluator.QualityParameter.ActualName;
       }
     }
     #endregion

@@ -23,10 +23,12 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.IntegerVectorEncoding;
 using HeuristicLab.Optimization;
+using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.BinPacking2D {
@@ -51,6 +53,7 @@ namespace HeuristicLab.Problems.BinPacking2D {
       // the int vector contains the target bin number for each item
       Encoding = new IntegerVectorEncoding(EncodedSolutionName, Items.Count, min: 0, max: LowerBound + 1); // NOTE: assumes that all items can be packed into LowerBound+1 bins
       AddOperators();
+      Parameterize();
       RegisterEventHandlers();
     }
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -62,25 +65,28 @@ namespace HeuristicLab.Problems.BinPacking2D {
       RegisterEventHandlers();
     }
 
+    protected override void OnEncodingChanged() {
+      base.OnEncodingChanged();
+      Parameterize();
+    }
 
     private void AddOperators() {
-
       // move operators are not yet supported (TODO)
       Operators.RemoveAll(x => x is SingleObjectiveMoveGenerator);
       Operators.RemoveAll(x => x is SingleObjectiveMoveMaker);
       Operators.RemoveAll(x => x is SingleObjectiveMoveEvaluator);
+      Operators.Add(new HammingSimilarityCalculator());
+      Operators.Add(new EuclideanSimilarityCalculator());
+      Operators.Add(new QualitySimilarityCalculator());
+      Operators.Add(new PopulationSimilarityAnalyzer(Operators.OfType<ISolutionSimilarityCalculator>()));
 
-      Encoding.ConfigureOperators(Operators.OfType<IOperator>()); // gkronber: not strictly necessary (only when customer ops are added)
+      Encoding.ConfigureOperators(Operators.OfType<IOperator>());
     }
 
     private void RegisterEventHandlers() {
       // update encoding length when number of items is changed
-      ItemsParameter.ValueChanged += (sender, args) => Encoding.Length = Items.Count;
-      LowerBoundParameter.Value.ValueChanged += (sender, args) => {
-        for (int i = 0; i < Encoding.Bounds.Rows; i++) {
-          Encoding.Bounds[i, 1] = LowerBound + 1;
-        }
-      };
+      ItemsParameter.ValueChanged += (sender, args) => Parameterize();
+      LowerBoundParameter.Value.ValueChanged += (sender, args) => Parameterize();
     }
 
     #region helpers
@@ -94,6 +100,17 @@ namespace HeuristicLab.Problems.BinPacking2D {
         result[intVec[i]].Add(i);
       }
       return result;
+    }
+
+    private void Parameterize() {
+      Encoding.Length = Items.Count;
+      for (int i = 0; i < Encoding.Bounds.Rows; i++) {
+        Encoding.Bounds[i, 1] = LowerBound + 1;
+      }
+      foreach (var similarityCalculator in Operators.OfType<ISolutionSimilarityCalculator>()) {
+        similarityCalculator.SolutionVariableName = Encoding.SolutionCreator.IntegerVectorParameter.ActualName;
+        similarityCalculator.QualityVariableName = Evaluator.QualityParameter.ActualName;
+      }
     }
     #endregion
   }
