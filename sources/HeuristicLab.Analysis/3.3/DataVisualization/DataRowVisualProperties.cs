@@ -51,13 +51,6 @@ namespace HeuristicLab.Analysis {
       Solid
     }
     #endregion
-    #region Histogram Aggregation
-    public enum DataRowHistogramAggregation {
-      Overlapping,
-      SideBySide,
-      Stacked
-    }
-    #endregion
 
     private DataRowChartType chartType;
     public DataRowChartType ChartType {
@@ -129,36 +122,7 @@ namespace HeuristicLab.Analysis {
         }
       }
     }
-    private int bins;
-    public int Bins {
-      get { return bins; }
-      set {
-        if (bins != value) {
-          bins = value;
-          OnPropertyChanged("Bins");
-        }
-      }
-    }
-    private bool exactBins;
-    public bool ExactBins {
-      get { return exactBins; }
-      set {
-        if (exactBins != value) {
-          exactBins = value;
-          OnPropertyChanged("ExactBins");
-        }
-      }
-    }
-    private DataRowHistogramAggregation aggregation;
-    public DataRowHistogramAggregation Aggregation {
-      get { return aggregation; }
-      set {
-        if (aggregation != value) {
-          aggregation = value;
-          OnPropertyChanged("Aggregation");
-        }
-      }
-    }
+
     private double scaleFactor;
     public double ScaleFactor {
       get { return scaleFactor; }
@@ -231,21 +195,6 @@ namespace HeuristicLab.Analysis {
       get { return lineWidth; }
       set { lineWidth = value; }
     }
-    [Storable(Name = "Bins")]
-    private int StorableBins {
-      get { return bins; }
-      set { bins = value; }
-    }
-    [Storable(Name = "ExactBins")]
-    private bool StorableExactBins {
-      get { return exactBins; }
-      set { exactBins = value; }
-    }
-    [Storable(Name = "Aggregation", DefaultValue = DataRowHistogramAggregation.Overlapping)]
-    private DataRowHistogramAggregation StorableAggregation {
-      get { return aggregation; }
-      set { aggregation = value; }
-    }
     [Storable(Name = "ScaleFactor")]
     private double StorableScaleFactor {
       get { return scaleFactor; }
@@ -263,6 +212,25 @@ namespace HeuristicLab.Analysis {
     }
     #endregion
 
+    #region Histogram Properties - Backwards Compatability
+    internal enum DataRowHistogramAggregation {
+      Overlapping,
+      SideBySide,
+      Stacked
+    }
+
+    internal int? Bins { get; private set; }
+    internal bool? ExactBins { get; private set; }
+    internal DataRowHistogramAggregation? Aggregation { get; private set; }
+
+    [Storable(Name = "Bins", AllowOneWay = true)]
+    private int StorableBins { set { Bins = value; } }
+    [Storable(Name = "ExactBins", AllowOneWay = true)]
+    private bool StorableExactBins { set { ExactBins = value; } }
+    [Storable(Name = "Aggregation", AllowOneWay = true)]
+    private DataRowHistogramAggregation StorableAggregation { set { Aggregation = value; } }
+    #endregion
+
     [StorableConstructor]
     protected DataRowVisualProperties(bool deserializing) : base() { }
     protected DataRowVisualProperties(DataRowVisualProperties original, Cloner cloner)
@@ -274,9 +242,6 @@ namespace HeuristicLab.Analysis {
       this.lineStyle = original.lineStyle;
       this.startIndexZero = original.startIndexZero;
       this.lineWidth = original.lineWidth;
-      this.bins = original.bins;
-      this.exactBins = original.exactBins;
-      this.aggregation = original.aggregation;
       this.scaleFactor = original.scaleFactor;
       this.displayName = original.displayName;
       this.isVisibleInLegend = original.isVisibleInLegend;
@@ -289,9 +254,6 @@ namespace HeuristicLab.Analysis {
       lineStyle = DataRowLineStyle.Solid;
       startIndexZero = false;
       lineWidth = 1;
-      bins = 10;
-      exactBins = false;
-      aggregation = DataRowHistogramAggregation.Overlapping;
       scaleFactor = 1.0;
       displayName = String.Empty;
       isVisibleInLegend = true;
@@ -317,13 +279,10 @@ namespace HeuristicLab.Analysis {
       #region Backwards compatible code, remove with 3.4
       if (secondXAxis == default(bool)
         && lineStyle == default(DataRowLineStyle)
-        && lineWidth == default(int) && bins == default(int) && exactBins == default(bool)
         && displayName == default(string)) {
         secondXAxis = false;
         lineStyle = DataRowLineStyle.Solid;
         lineWidth = 1;
-        bins = 10;
-        exactBins = false;
         displayName = String.Empty;
       }
       #endregion

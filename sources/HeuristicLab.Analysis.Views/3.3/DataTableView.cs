@@ -205,9 +205,9 @@ namespace HeuristicLab.Analysis.Views {
           series.ChartType = SeriesChartType.FastPoint;
           break;
         case DataRowVisualProperties.DataRowChartType.Histogram:
-          bool stacked = row.VisualProperties.Aggregation == DataRowVisualProperties.DataRowHistogramAggregation.Stacked;
+          bool stacked = Content.VisualProperties.HistogramAggregation == DataTableVisualProperties.DataTableHistogramAggregation.Stacked;
           series.ChartType = stacked ? SeriesChartType.StackedColumn : SeriesChartType.Column;
-          bool sideBySide = row.VisualProperties.Aggregation == DataRowVisualProperties.DataRowHistogramAggregation.SideBySide;
+          bool sideBySide = Content.VisualProperties.HistogramAggregation == DataTableVisualProperties.DataTableHistogramAggregation.SideBySide;
           series.SetCustomProperty("DrawSideBySide", sideBySide ? "True" : "False");
           series.SetCustomProperty("PointWidth", "1");
           if (!series.Color.IsEmpty && series.Color.GetBrightness() < 0.25)
@@ -329,7 +329,7 @@ namespace HeuristicLab.Analysis.Views {
     }
     private bool RequiresTransparency(DataRow row) {
       return row.VisualProperties.ChartType == DataRowVisualProperties.DataRowChartType.Histogram
-             && row.VisualProperties.Aggregation == DataRowVisualProperties.DataRowHistogramAggregation.Overlapping;
+             && Content.VisualProperties.HistogramAggregation == DataTableVisualProperties.DataTableHistogramAggregation.Overlapping;
     }
 
     #region Event Handlers
@@ -348,6 +348,9 @@ namespace HeuristicLab.Analysis.Views {
       else {
         ConfigureChartArea(chart.ChartAreas[0]);
         RecalculateAxesScale(chart.ChartAreas[0]); // axes min/max could have changed
+        foreach (var row in Content.Rows.Where(r => r.VisualProperties.ChartType == DataRowVisualProperties.DataRowChartType.Histogram))
+          Row_VisualPropertiesChanged(row, EventArgs.Empty); // Histogram properties could have changed
+        chart.Update(); // side-by-side series are not always correctly displayed without an update
       }
     }
     #endregion
@@ -561,7 +564,7 @@ namespace HeuristicLab.Analysis.Views {
     private void FillSeriesWithRowValues(Series series, DataRow row) {
       switch (row.VisualProperties.ChartType) {
         case DataRowVisualProperties.DataRowChartType.Histogram:
-          // when a single histogram is updated, all histograms must be updated. otherwise the value ranges and bin sizes may not be equal.
+          // when a single histogram is updated, all histograms must be updated. otherwise the value ranges may not be equal.
           var histograms = Content.Rows
             .Where(r => r.VisualProperties.ChartType == DataRowVisualProperties.DataRowChartType.Histogram)
             .ToList();
@@ -605,7 +608,7 @@ namespace HeuristicLab.Analysis.Views {
       var validValues = histogramRows.SelectMany(r => r.Values).Where(x => !IsInvalidValue(x)).ToList();
       if (!validValues.Any()) return;
 
-      int bins = histogramRows.Max(r => r.VisualProperties.Bins);
+      int bins = Content.VisualProperties.HistogramBins;
       decimal minValue = (decimal)validValues.Min();
       decimal maxValue = (decimal)validValues.Max();
       decimal intervalWidth = (maxValue - minValue) / bins;
@@ -615,7 +618,7 @@ namespace HeuristicLab.Analysis.Views {
         return;
       }
 
-      if (!histogramRows.Any(r => r.VisualProperties.ExactBins)) {
+      if (!Content.VisualProperties.HistogramExactBins) {
         intervalWidth = (decimal)HumanRoundRange((double)intervalWidth);
         minValue = Math.Floor(minValue / intervalWidth) * intervalWidth;
         maxValue = Math.Ceiling(maxValue / intervalWidth) * intervalWidth;

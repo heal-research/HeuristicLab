@@ -48,10 +48,8 @@ namespace HeuristicLab.Analysis.Views {
       this.colorDialog = new System.Windows.Forms.ColorDialog();
       this.colorButton = new System.Windows.Forms.Button();
       this.startIndexZeroCheckBox = new System.Windows.Forms.CheckBox();
-      this.binsNumericUpDown = new System.Windows.Forms.NumericUpDown();
       this.label1 = new System.Windows.Forms.Label();
       this.label2 = new System.Windows.Forms.Label();
-      this.label3 = new System.Windows.Forms.Label();
       this.commonGroupBox = new System.Windows.Forms.GroupBox();
       this.clearColorButton = new System.Windows.Forms.Button();
       this.isVisibleInLegendCheckBox = new System.Windows.Forms.CheckBox();
@@ -67,30 +65,23 @@ namespace HeuristicLab.Analysis.Views {
       this.label5 = new System.Windows.Forms.Label();
       this.label6 = new System.Windows.Forms.Label();
       this.label9 = new System.Windows.Forms.Label();
-      this.histoGramGroupBox = new System.Windows.Forms.GroupBox();
-      this.binsExactRadioButton = new System.Windows.Forms.RadioButton();
-      this.binsApproximatelyRadioButton = new System.Windows.Forms.RadioButton();
-      this.label11 = new System.Windows.Forms.Label();
-      this.aggregationComboBox = new System.Windows.Forms.ComboBox();
       this.lineChartGroupBox = new System.Windows.Forms.GroupBox();
       this.lineWidthNumericUpDown = new System.Windows.Forms.NumericUpDown();
       this.label4 = new System.Windows.Forms.Label();
       this.label7 = new System.Windows.Forms.Label();
       this.lineStyleComboBox = new System.Windows.Forms.ComboBox();
       this.label8 = new System.Windows.Forms.Label();
-      ((System.ComponentModel.ISupportInitialize)(this.binsNumericUpDown)).BeginInit();
       this.commonGroupBox.SuspendLayout();
       this.axisGroupBox.SuspendLayout();
       this.panel2.SuspendLayout();
       this.panel1.SuspendLayout();
-      this.histoGramGroupBox.SuspendLayout();
       this.lineChartGroupBox.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.lineWidthNumericUpDown)).BeginInit();
       this.SuspendLayout();
       // 
       // chartTypeComboBox
       // 
-      this.chartTypeComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+      this.chartTypeComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.chartTypeComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.chartTypeComboBox.FormattingEnabled = true;
@@ -125,26 +116,6 @@ namespace HeuristicLab.Analysis.Views {
       this.startIndexZeroCheckBox.UseVisualStyleBackColor = true;
       this.startIndexZeroCheckBox.CheckedChanged += new System.EventHandler(this.startIndexZeroCheckBox_CheckedChanged);
       // 
-      // binsNumericUpDown
-      // 
-      this.binsNumericUpDown.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.binsNumericUpDown.Location = new System.Drawing.Point(82, 19);
-      this.binsNumericUpDown.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-      this.binsNumericUpDown.Name = "binsNumericUpDown";
-      this.binsNumericUpDown.Size = new System.Drawing.Size(72, 20);
-      this.binsNumericUpDown.TabIndex = 1;
-      this.binsNumericUpDown.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-      this.binsNumericUpDown.ValueChanged += new System.EventHandler(this.binsNumericUpDown_ValueChanged);
-      // 
       // label1
       // 
       this.label1.AutoSize = true;
@@ -163,18 +134,9 @@ namespace HeuristicLab.Analysis.Views {
       this.label2.TabIndex = 4;
       this.label2.Text = "&Color:";
       // 
-      // label3
-      // 
-      this.label3.AutoSize = true;
-      this.label3.Location = new System.Drawing.Point(6, 21);
-      this.label3.Name = "label3";
-      this.label3.Size = new System.Drawing.Size(30, 13);
-      this.label3.TabIndex = 0;
-      this.label3.Text = "&Bins:";
-      // 
       // commonGroupBox
       // 
-      this.commonGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+      this.commonGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.commonGroupBox.Controls.Add(this.clearColorButton);
       this.commonGroupBox.Controls.Add(this.isVisibleInLegendCheckBox);
@@ -231,7 +193,7 @@ namespace HeuristicLab.Analysis.Views {
       // 
       // displayNameTextBox
       // 
-      this.displayNameTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+      this.displayNameTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.displayNameTextBox.Location = new System.Drawing.Point(102, 19);
       this.displayNameTextBox.Name = "displayNameTextBox";
@@ -241,8 +203,8 @@ namespace HeuristicLab.Analysis.Views {
       // 
       // axisGroupBox
       // 
-      this.axisGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+      this.axisGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.axisGroupBox.Controls.Add(this.panel2);
       this.axisGroupBox.Controls.Add(this.panel1);
@@ -257,7 +219,7 @@ namespace HeuristicLab.Analysis.Views {
       // 
       // panel2
       // 
-      this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+      this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.panel2.Controls.Add(this.yAxisSecondaryRadioButton);
       this.panel2.Controls.Add(this.yAxisPrimaryRadioButton);
@@ -292,7 +254,7 @@ namespace HeuristicLab.Analysis.Views {
       // 
       // panel1
       // 
-      this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+      this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.panel1.Controls.Add(this.xAxisPrimaryRadioButton);
       this.panel1.Controls.Add(this.xAxisSecondaryRadioButton);
@@ -352,73 +314,9 @@ namespace HeuristicLab.Analysis.Views {
       this.label9.TabIndex = 0;
       this.label9.Text = "&Name:";
       // 
-      // histoGramGroupBox
-      // 
-      this.histoGramGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.histoGramGroupBox.Controls.Add(this.binsExactRadioButton);
-      this.histoGramGroupBox.Controls.Add(this.binsApproximatelyRadioButton);
-      this.histoGramGroupBox.Controls.Add(this.binsNumericUpDown);
-      this.histoGramGroupBox.Controls.Add(this.label11);
-      this.histoGramGroupBox.Controls.Add(this.label3);
-      this.histoGramGroupBox.Controls.Add(this.aggregationComboBox);
-      this.histoGramGroupBox.Location = new System.Drawing.Point(0, 305);
-      this.histoGramGroupBox.Name = "histoGramGroupBox";
-      this.histoGramGroupBox.Size = new System.Drawing.Size(327, 75);
-      this.histoGramGroupBox.TabIndex = 2;
-      this.histoGramGroupBox.TabStop = false;
-      this.histoGramGroupBox.Text = "Histogram Properties";
-      // 
-      // binsExactRadioButton
-      // 
-      this.binsExactRadioButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.binsExactRadioButton.AutoSize = true;
-      this.binsExactRadioButton.Location = new System.Drawing.Point(269, 19);
-      this.binsExactRadioButton.Name = "binsExactRadioButton";
-      this.binsExactRadioButton.Size = new System.Drawing.Size(52, 17);
-      this.binsExactRadioButton.TabIndex = 3;
-      this.binsExactRadioButton.TabStop = true;
-      this.binsExactRadioButton.Text = "&Exact";
-      this.binsExactRadioButton.UseVisualStyleBackColor = true;
-      this.binsExactRadioButton.CheckedChanged += new System.EventHandler(this.binNumberRadioButton_CheckedChanged);
-      // 
-      // binsApproximatelyRadioButton
-      // 
-      this.binsApproximatelyRadioButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.binsApproximatelyRadioButton.AutoSize = true;
-      this.binsApproximatelyRadioButton.Location = new System.Drawing.Point(173, 19);
-      this.binsApproximatelyRadioButton.Name = "binsApproximatelyRadioButton";
-      this.binsApproximatelyRadioButton.Size = new System.Drawing.Size(90, 17);
-      this.binsApproximatelyRadioButton.TabIndex = 2;
-      this.binsApproximatelyRadioButton.TabStop = true;
-      this.binsApproximatelyRadioButton.Text = "&Approximately";
-      this.binsApproximatelyRadioButton.UseVisualStyleBackColor = true;
-      this.binsApproximatelyRadioButton.CheckedChanged += new System.EventHandler(this.binNumberRadioButton_CheckedChanged);
-      // 
-      // label11
-      // 
-      this.label11.AutoSize = true;
-      this.label11.Location = new System.Drawing.Point(6, 49);
-      this.label11.Name = "label11";
-      this.label11.Size = new System.Drawing.Size(67, 13);
-      this.label11.TabIndex = 0;
-      this.label11.Text = "Aggregation:";
-      // 
-      // aggregationComboBox
-      // 
-      this.aggregationComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.aggregationComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-      this.aggregationComboBox.FormattingEnabled = true;
-      this.aggregationComboBox.Location = new System.Drawing.Point(82, 45);
-      this.aggregationComboBox.Name = "aggregationComboBox";
-      this.aggregationComboBox.Size = new System.Drawing.Size(239, 21);
-      this.aggregationComboBox.TabIndex = 3;
-      this.aggregationComboBox.SelectedValueChanged += new System.EventHandler(this.aggregationComboBox_SelectedValueChanged);
-      // 
       // lineChartGroupBox
       // 
-      this.lineChartGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+      this.lineChartGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.lineChartGroupBox.Controls.Add(this.lineWidthNumericUpDown);
       this.lineChartGroupBox.Controls.Add(this.label4);
@@ -435,7 +333,7 @@ namespace HeuristicLab.Analysis.Views {
       // 
       // lineWidthNumericUpDown
       // 
-      this.lineWidthNumericUpDown.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+      this.lineWidthNumericUpDown.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.lineWidthNumericUpDown.Location = new System.Drawing.Point(82, 66);
       this.lineWidthNumericUpDown.Minimum = new decimal(new int[] {
@@ -473,7 +371,7 @@ namespace HeuristicLab.Analysis.Views {
       // 
       // lineStyleComboBox
       // 
-      this.lineStyleComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+      this.lineStyleComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.lineStyleComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.lineStyleComboBox.FormattingEnabled = true;
@@ -496,11 +394,9 @@ namespace HeuristicLab.Analysis.Views {
       // 
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.Controls.Add(this.lineChartGroupBox);
-      this.Controls.Add(this.histoGramGroupBox);
       this.Controls.Add(this.commonGroupBox);
       this.Name = "DataRowVisualPropertiesControl";
-      this.Size = new System.Drawing.Size(327, 382);
-      ((System.ComponentModel.ISupportInitialize)(this.binsNumericUpDown)).EndInit();
+      this.Size = new System.Drawing.Size(327, 300);
       this.commonGroupBox.ResumeLayout(false);
       this.commonGroupBox.PerformLayout();
       this.axisGroupBox.ResumeLayout(false);
@@ -509,8 +405,6 @@ namespace HeuristicLab.Analysis.Views {
       this.panel2.PerformLayout();
       this.panel1.ResumeLayout(false);
       this.panel1.PerformLayout();
-      this.histoGramGroupBox.ResumeLayout(false);
-      this.histoGramGroupBox.PerformLayout();
       this.lineChartGroupBox.ResumeLayout(false);
       this.lineChartGroupBox.PerformLayout();
       ((System.ComponentModel.ISupportInitialize)(this.lineWidthNumericUpDown)).EndInit();
@@ -524,12 +418,9 @@ namespace HeuristicLab.Analysis.Views {
     private System.Windows.Forms.ColorDialog colorDialog;
     private System.Windows.Forms.Button colorButton;
     private System.Windows.Forms.CheckBox startIndexZeroCheckBox;
-    private System.Windows.Forms.NumericUpDown binsNumericUpDown;
     private System.Windows.Forms.Label label1;
     private System.Windows.Forms.Label label2;
-    private System.Windows.Forms.Label label3;
     private System.Windows.Forms.GroupBox commonGroupBox;
-    private System.Windows.Forms.GroupBox histoGramGroupBox;
     private System.Windows.Forms.RadioButton xAxisSecondaryRadioButton;
     private System.Windows.Forms.RadioButton yAxisSecondaryRadioButton;
     private System.Windows.Forms.RadioButton xAxisPrimaryRadioButton;
@@ -539,8 +430,6 @@ namespace HeuristicLab.Analysis.Views {
     private System.Windows.Forms.NumericUpDown lineWidthNumericUpDown;
     private System.Windows.Forms.Label label4;
     private System.Windows.Forms.Label label7;
-    private System.Windows.Forms.RadioButton binsExactRadioButton;
-    private System.Windows.Forms.RadioButton binsApproximatelyRadioButton;
     private System.Windows.Forms.ComboBox lineStyleComboBox;
     private System.Windows.Forms.Label label8;
     private System.Windows.Forms.Label label5;
@@ -551,8 +440,6 @@ namespace HeuristicLab.Analysis.Views {
     private System.Windows.Forms.Panel panel1;
     private System.Windows.Forms.Label label10;
     private System.Windows.Forms.CheckBox isVisibleInLegendCheckBox;
-    private System.Windows.Forms.Label label11;
-    private System.Windows.Forms.ComboBox aggregationComboBox;
     private System.Windows.Forms.Button clearColorButton;
   }
 }

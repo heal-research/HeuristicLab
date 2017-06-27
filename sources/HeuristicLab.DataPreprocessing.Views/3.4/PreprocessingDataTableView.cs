@@ -715,7 +715,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
 
     private void AddPointsToHistogramSeries(Series series, DataRow row, List<double> values) {
       if (!row.Values.Any()) return;
-      int bins = row.VisualProperties.Bins;
+      int bins = Content.VisualProperties.HistogramBins;
 
       double minValue = GetMinimum(row.Values);
       double maxValue = GetMaximum(row.Values);
@@ -727,7 +727,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
       }
 
 
-      if (!row.VisualProperties.ExactBins) {
+      if (!Content.VisualProperties.HistogramExactBins) {
         intervalWidth = HumanRoundRange(intervalWidth);
         minValue = Math.Floor(minValue / intervalWidth) * intervalWidth;
         maxValue = Math.Ceiling(maxValue / intervalWidth) * intervalWidth;
