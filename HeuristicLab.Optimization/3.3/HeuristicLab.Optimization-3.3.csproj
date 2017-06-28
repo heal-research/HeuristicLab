@@ -152,6 +152,7 @@
     <Compile Include="BasicProblems\Operators\SingleObjectiveMoveGenerator.cs" />
     <Compile Include="BasicProblems\Operators\SingleObjectiveMoveMaker.cs" />
     <Compile Include="BasicProblems\SingleObjectiveBasicProblem.cs" />
+    <Compile Include="Interfaces\ICharacteristicCalculator.cs" />
     <Compile Include="Interfaces\ILocalImprovementAlgorithmOperator.cs" />
     <Compile Include="Interfaces\IMultiObjectiveOperator.cs" />
     <Compile Include="Results\IResultParameter.cs" />

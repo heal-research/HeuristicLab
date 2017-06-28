@@ -48,8 +48,23 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       this.problemLabel = new System.Windows.Forms.Label();
       this.refreshButton = new System.Windows.Forms.Button();
       this.cloneProblemButton = new System.Windows.Forms.Button();
+      this.tabControl = new System.Windows.Forms.TabControl();
+      this.parametersTabPage = new System.Windows.Forms.TabPage();
       this.parameterCollectionView = new HeuristicLab.Core.Views.ParameterCollectionView();
+      this.flaAnalysisTabPage = new System.Windows.Forms.TabPage();
+      this.calculateButton = new System.Windows.Forms.Button();
+      this.flaSplitContainer = new System.Windows.Forms.SplitContainer();
+      this.characteristicsMatrixView = new HeuristicLab.Data.Views.StringConvertibleMatrixView();
+      this.uploadCharacteristicsButton = new System.Windows.Forms.Button();
+      this.downloadCharacteristicsButton = new System.Windows.Forms.Button();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
+      this.tabControl.SuspendLayout();
+      this.parametersTabPage.SuspendLayout();
+      this.flaAnalysisTabPage.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.flaSplitContainer)).BeginInit();
+      this.flaSplitContainer.Panel1.SuspendLayout();
+      this.flaSplitContainer.Panel2.SuspendLayout();
+      this.flaSplitContainer.SuspendLayout();
       this.SuspendLayout();
       // 
       // nameTextBox
@@ -57,7 +72,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       this.errorProvider.SetIconAlignment(this.nameTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
       this.errorProvider.SetIconPadding(this.nameTextBox, 2);
       this.nameTextBox.Location = new System.Drawing.Point(72, 27);
-      this.nameTextBox.Size = new System.Drawing.Size(604, 20);
+      this.nameTextBox.Size = new System.Drawing.Size(640, 20);
       this.nameTextBox.TabIndex = 5;
       // 
       // nameLabel
@@ -67,18 +82,18 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       // 
       // infoLabel
       // 
-      this.infoLabel.Location = new System.Drawing.Point(687, 30);
+      this.infoLabel.Location = new System.Drawing.Point(723, 30);
       this.infoLabel.TabIndex = 6;
       // 
       // problemComboBox
       // 
-      this.problemComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.problemComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.problemComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.problemComboBox.FormattingEnabled = true;
       this.problemComboBox.Location = new System.Drawing.Point(72, 0);
       this.problemComboBox.Name = "problemComboBox";
-      this.problemComboBox.Size = new System.Drawing.Size(574, 21);
+      this.problemComboBox.Size = new System.Drawing.Size(610, 21);
       this.problemComboBox.TabIndex = 1;
       this.problemComboBox.SelectedValueChanged += new System.EventHandler(this.problemComboBox_SelectedValueChanged);
       // 
@@ -94,8 +109,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       // refreshButton
       // 
       this.refreshButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.refreshButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Refresh;
-      this.refreshButton.Location = new System.Drawing.Point(682, -1);
+      this.refreshButton.Location = new System.Drawing.Point(718, -1);
       this.refreshButton.Name = "refreshButton";
       this.refreshButton.Size = new System.Drawing.Size(24, 24);
       this.refreshButton.TabIndex = 3;
@@ -106,8 +120,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       // cloneProblemButton
       // 
       this.cloneProblemButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.cloneProblemButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Clone;
-      this.cloneProblemButton.Location = new System.Drawing.Point(652, -1);
+      this.cloneProblemButton.Location = new System.Drawing.Point(688, -1);
       this.cloneProblemButton.Name = "cloneProblemButton";
       this.cloneProblemButton.Size = new System.Drawing.Size(24, 24);
       this.cloneProblemButton.TabIndex = 2;
@@ -115,40 +128,146 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       this.cloneProblemButton.UseVisualStyleBackColor = true;
       this.cloneProblemButton.Click += new System.EventHandler(this.cloneProblemButton_Click);
       // 
+      // tabControl
+      // 
+      this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.tabControl.Controls.Add(this.parametersTabPage);
+      this.tabControl.Controls.Add(this.flaAnalysisTabPage);
+      this.tabControl.Location = new System.Drawing.Point(6, 53);
+      this.tabControl.Name = "tabControl";
+      this.tabControl.SelectedIndex = 0;
+      this.tabControl.Size = new System.Drawing.Size(736, 473);
+      this.tabControl.TabIndex = 8;
+      // 
+      // parametersTabPage
+      // 
+      this.parametersTabPage.Controls.Add(this.parameterCollectionView);
+      this.parametersTabPage.Location = new System.Drawing.Point(4, 22);
+      this.parametersTabPage.Name = "parametersTabPage";
+      this.parametersTabPage.Padding = new System.Windows.Forms.Padding(3);
+      this.parametersTabPage.Size = new System.Drawing.Size(692, 314);
+      this.parametersTabPage.TabIndex = 0;
+      this.parametersTabPage.Text = "Parameters";
+      this.parametersTabPage.UseVisualStyleBackColor = true;
+      // 
       // parameterCollectionView
       // 
       this.parameterCollectionView.AllowEditingOfHiddenParameters = false;
-      this.parameterCollectionView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
       this.parameterCollectionView.Caption = "ParameterCollection View";
       this.parameterCollectionView.Content = null;
-      this.parameterCollectionView.Location = new System.Drawing.Point(0, 53);
+      this.parameterCollectionView.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.parameterCollectionView.Location = new System.Drawing.Point(3, 3);
       this.parameterCollectionView.Name = "parameterCollectionView";
-      this.parameterCollectionView.ReadOnly = false;
-      this.parameterCollectionView.Size = new System.Drawing.Size(706, 340);
-      this.parameterCollectionView.TabIndex = 7;
+      this.parameterCollectionView.ReadOnly = true;
+      this.parameterCollectionView.ShowDetails = true;
+      this.parameterCollectionView.Size = new System.Drawing.Size(686, 308);
+      this.parameterCollectionView.TabIndex = 8;
+      // 
+      // flaAnalysisTabPage
+      // 
+      this.flaAnalysisTabPage.Controls.Add(this.flaSplitContainer);
+      this.flaAnalysisTabPage.Location = new System.Drawing.Point(4, 22);
+      this.flaAnalysisTabPage.Name = "flaAnalysisTabPage";
+      this.flaAnalysisTabPage.Padding = new System.Windows.Forms.Padding(3);
+      this.flaAnalysisTabPage.Size = new System.Drawing.Size(728, 447);
+      this.flaAnalysisTabPage.TabIndex = 2;
+      this.flaAnalysisTabPage.Text = "Fitness Landscape Analysis";
+      this.flaAnalysisTabPage.UseVisualStyleBackColor = true;
+      // 
+      // calculateButton
+      // 
+      this.calculateButton.Location = new System.Drawing.Point(3, 3);
+      this.calculateButton.Name = "calculateButton";
+      this.calculateButton.Size = new System.Drawing.Size(26, 23);
+      this.calculateButton.TabIndex = 8;
+      this.calculateButton.Text = "Calculate";
+      this.calculateButton.UseVisualStyleBackColor = true;
+      this.calculateButton.Click += new System.EventHandler(this.calculateButton_Click);
+      // 
+      // flaSplitContainer
+      // 
+      this.flaSplitContainer.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.flaSplitContainer.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
+      this.flaSplitContainer.Location = new System.Drawing.Point(3, 3);
+      this.flaSplitContainer.Name = "flaSplitContainer";
+      // 
+      // flaSplitContainer.Panel1
+      // 
+      this.flaSplitContainer.Panel1.Controls.Add(this.calculateButton);
+      // 
+      // flaSplitContainer.Panel2
+      // 
+      this.flaSplitContainer.Panel2.Controls.Add(this.characteristicsMatrixView);
+      this.flaSplitContainer.Panel2.Controls.Add(this.uploadCharacteristicsButton);
+      this.flaSplitContainer.Panel2.Controls.Add(this.downloadCharacteristicsButton);
+      this.flaSplitContainer.Size = new System.Drawing.Size(722, 441);
+      this.flaSplitContainer.SplitterDistance = 363;
+      this.flaSplitContainer.TabIndex = 7;
+      // 
+      // characteristicsMatrixView
+      // 
+      this.characteristicsMatrixView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.characteristicsMatrixView.Caption = "StringConvertibleMatrix View";
+      this.characteristicsMatrixView.Content = null;
+      this.characteristicsMatrixView.Location = new System.Drawing.Point(3, 32);
+      this.characteristicsMatrixView.Name = "characteristicsMatrixView";
+      this.characteristicsMatrixView.ReadOnly = false;
+      this.characteristicsMatrixView.ShowRowsAndColumnsTextBox = false;
+      this.characteristicsMatrixView.ShowStatisticalInformation = false;
+      this.characteristicsMatrixView.Size = new System.Drawing.Size(349, 406);
+      this.characteristicsMatrixView.TabIndex = 4;
+      // 
+      // uploadCharacteristicsButton
+      // 
+      this.uploadCharacteristicsButton.Location = new System.Drawing.Point(35, 3);
+      this.uploadCharacteristicsButton.Name = "uploadCharacteristicsButton";
+      this.uploadCharacteristicsButton.Size = new System.Drawing.Size(26, 23);
+      this.uploadCharacteristicsButton.TabIndex = 5;
+      this.uploadCharacteristicsButton.Text = "Upload";
+      this.uploadCharacteristicsButton.UseVisualStyleBackColor = true;
+      this.uploadCharacteristicsButton.Click += new System.EventHandler(this.uploadCharacteristicsButton_Click);
+      // 
+      // downloadCharacteristicsButton
+      // 
+      this.downloadCharacteristicsButton.Location = new System.Drawing.Point(3, 3);
+      this.downloadCharacteristicsButton.Name = "downloadCharacteristicsButton";
+      this.downloadCharacteristicsButton.Size = new System.Drawing.Size(26, 23);
+      this.downloadCharacteristicsButton.TabIndex = 6;
+      this.downloadCharacteristicsButton.Text = "Download";
+      this.downloadCharacteristicsButton.UseVisualStyleBackColor = true;
+      this.downloadCharacteristicsButton.Click += new System.EventHandler(this.downloadCharacteristicsButton_Click);
       // 
       // OKBProblemView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.Controls.Add(this.tabControl);
       this.Controls.Add(this.problemComboBox);
-      this.Controls.Add(this.parameterCollectionView);
       this.Controls.Add(this.problemLabel);
       this.Controls.Add(this.cloneProblemButton);
       this.Controls.Add(this.refreshButton);
       this.Name = "OKBProblemView";
-      this.Size = new System.Drawing.Size(706, 393);
+      this.Size = new System.Drawing.Size(742, 526);
       this.Controls.SetChildIndex(this.refreshButton, 0);
       this.Controls.SetChildIndex(this.cloneProblemButton, 0);
       this.Controls.SetChildIndex(this.problemLabel, 0);
-      this.Controls.SetChildIndex(this.parameterCollectionView, 0);
+      this.Controls.SetChildIndex(this.problemComboBox, 0);
+      this.Controls.SetChildIndex(this.tabControl, 0);
       this.Controls.SetChildIndex(this.nameTextBox, 0);
       this.Controls.SetChildIndex(this.nameLabel, 0);
       this.Controls.SetChildIndex(this.infoLabel, 0);
-      this.Controls.SetChildIndex(this.problemComboBox, 0);
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
+      this.tabControl.ResumeLayout(false);
+      this.parametersTabPage.ResumeLayout(false);
+      this.flaAnalysisTabPage.ResumeLayout(false);
+      this.flaSplitContainer.Panel1.ResumeLayout(false);
+      this.flaSplitContainer.Panel2.ResumeLayout(false);
+      ((System.ComponentModel.ISupportInitialize)(this.flaSplitContainer)).EndInit();
+      this.flaSplitContainer.ResumeLayout(false);
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -160,7 +279,15 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
     private System.Windows.Forms.Label problemLabel;
     private System.Windows.Forms.Button refreshButton;
     private System.Windows.Forms.Button cloneProblemButton;
-    private HeuristicLab.Core.Views.ParameterCollectionView parameterCollectionView;
+    private System.Windows.Forms.TabControl tabControl;
+    private System.Windows.Forms.TabPage parametersTabPage;
+    private Core.Views.ParameterCollectionView parameterCollectionView;
+    private System.Windows.Forms.TabPage flaAnalysisTabPage;
+    private System.Windows.Forms.Button calculateButton;
+    private System.Windows.Forms.SplitContainer flaSplitContainer;
+    private Data.Views.StringConvertibleMatrixView characteristicsMatrixView;
+    private System.Windows.Forms.Button uploadCharacteristicsButton;
+    private System.Windows.Forms.Button downloadCharacteristicsButton;
 
 
   }

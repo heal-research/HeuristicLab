@@ -294,8 +294,10 @@
     <Compile Include="RunCreation\DataTransfer\Run.cs" />
     <Compile Include="RunCreation\DataTransfer\StringValue.cs" />
     <Compile Include="RunCreation\DataTransfer\Value.cs" />
+    <Compile Include="RunCreation\MissingProblem.cs" />
     <Compile Include="RunCreation\RunCreationService.cs" />
     <Compile Include="RunCreation\IRunCreationService.cs" />
+    <Compile Include="RunCreation\UnknownCharacteristicType.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config">

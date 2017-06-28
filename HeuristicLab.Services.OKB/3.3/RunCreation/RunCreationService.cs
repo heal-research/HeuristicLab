@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
 using System.Data.Linq;
 using System.Linq;
@@ -132,6 +133,91 @@ namespace HeuristicLab.Services.OKB.RunCreation {
         DataAccess.Run entity = Convert.ToEntity(run, okb);
         okb.Runs.InsertOnSubmit(entity);
         okb.SubmitChanges();
+      }
+    }
+
+    public IEnumerable<DataTransfer.Value> GetCharacteristicValues(long problemId) {
+      using (OKBDataContext okb = new OKBDataContext()) {
+        var prob = okb.Problems.SingleOrDefault(x => x.Id == problemId);
+        if (prob == null) return Enumerable.Empty<DataTransfer.Value>();
+        return prob.CharacteristicValues.Select(Convert.ToDto).ToArray();
+      }
+    }
+
+    public void SetCharacteristicValue(long problemId, DataTransfer.Value value) {
+      roleVerifier.AuthenticateForAnyRole(OKBRoles.OKBAdministrator, OKBRoles.OKBUser);
+
+      using (OKBDataContext okb = new OKBDataContext()) {
+        var problem = okb.Problems.SingleOrDefault(x => x.Id == problemId);
+        if (problem == null) throw new FaultException<MissingProblem>(new MissingProblem("Problem with id {0} cannot be found", problemId));
+
+        DoSetCharacteristicValue(okb, problem, value);
+        okb.SubmitChanges();
+      }
+    }
+
+    public void SetCharacteristicValues(long problemId, DataTransfer.Value[] values) {
+      roleVerifier.AuthenticateForAnyRole(OKBRoles.OKBAdministrator, OKBRoles.OKBUser);
+
+      using (OKBDataContext okb = new OKBDataContext()) {
+        var problem = okb.Problems.SingleOrDefault(x => x.Id == problemId);
+        if (problem == null) throw new FaultException<MissingProblem>(new MissingProblem("Problem with id {0} cannot be found", problemId));
+
+        foreach (var v in values) {
+          DoSetCharacteristicValue(okb, problem, v);
+        }
+        okb.SubmitChanges();
+      }
+    }
+
+    private void DoSetCharacteristicValue(OKBDataContext okb, Problem problem, DataTransfer.Value value) {
+      CharacteristicType characteristicType;
+      try {
+        characteristicType = GetCharacteristicType(value);
+      } catch (ArgumentException ex) {
+        throw new FaultException<UnknownCharacteristicType>(new UnknownCharacteristicType(ex.Message));
+      }
+
+      var entity = problem.CharacteristicValues.SingleOrDefault(x => x.Characteristic.Name == value.Name && x.Characteristic.Type == characteristicType);
+      if (entity != null) {
+        // Update
+        switch (characteristicType) {
+          case CharacteristicType.Bool: entity.BoolValue = ((DataTransfer.BoolValue)value).Value; break;
+          case CharacteristicType.Int: entity.IntValue = ((DataTransfer.IntValue)value).Value; break;
+          case CharacteristicType.Long: entity.LongValue = ((DataTransfer.LongValue)value).Value; break;
+          case CharacteristicType.Float: entity.FloatValue = ((DataTransfer.FloatValue)value).Value; break;
+          case CharacteristicType.Double: entity.DoubleValue = ((DataTransfer.DoubleValue)value).Value; break;
+          case CharacteristicType.Percent: entity.DoubleValue = ((DataTransfer.PercentValue)value).Value; break;
+          case CharacteristicType.String: entity.StringValue = ((DataTransfer.StringValue)value).Value; break;
+          case CharacteristicType.TimeSpan: entity.LongValue = ((DataTransfer.TimeSpanValue)value).Value; break;
+        }
+      } else {
+        // Insert
+        entity = Convert.ToEntity(value, okb, problem, characteristicType);
+        okb.CharacteristicValues.InsertOnSubmit(entity);
+      }
+
+    }
+
+    private CharacteristicType GetCharacteristicType(DataTransfer.Value source) {
+      if (source is DataTransfer.BoolValue) {
+        return CharacteristicType.Bool;
+      } else if (source is DataTransfer.IntValue) {
+        return CharacteristicType.Int;
+      } else if (source is DataTransfer.TimeSpanValue) {
+        return CharacteristicType.TimeSpan;
+      } else if (source is DataTransfer.LongValue) {
+        return CharacteristicType.Long;
+      } else if (source is DataTransfer.FloatValue) {
+        return CharacteristicType.Float;
+      } else if (source is DataTransfer.DoubleValue) {
+        return CharacteristicType.Double;
+      } else if (source is DataTransfer.PercentValue) {
+        return CharacteristicType.Percent;
+      } else if (source is DataTransfer.StringValue) {
+        return CharacteristicType.String;
+      } else {
+        throw new ArgumentException("Unknown characteristic type.", "source");
       }
     }
   }

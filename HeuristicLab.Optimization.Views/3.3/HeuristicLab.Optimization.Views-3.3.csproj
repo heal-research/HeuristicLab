@@ -147,6 +147,12 @@
     <Compile Include="CreateNewSingleEncodingDialog.Designer.cs">
       <DependentUpon>CreateNewSingleEncodingDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="ICharacteristicCalculatorView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ICharacteristicCalculatorView.Designer.cs">
+      <DependentUpon>ICharacteristicCalculatorView.cs</DependentUpon>
+    </Compile>
     <Compile Include="ISolutionSimilarityCalculatorView.cs">
       <SubType>UserControl</SubType>
     </Compile>
