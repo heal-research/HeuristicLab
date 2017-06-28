@@ -75,6 +75,12 @@ namespace HeuristicLab.Optimization {
     private void PruneSingleObjectiveOperators(IEncoding encoding) {
       if (encoding != null && encoding.Operators.Any(x => x is ISingleObjectiveOperator && !(x is IMultiObjectiveOperator)))
         encoding.Operators = encoding.Operators.Where(x => !(x is ISingleObjectiveOperator) || x is IMultiObjectiveOperator).ToList();
+
+      foreach (var multiOp in Encoding.Operators.OfType<IMultiOperator>()) {
+        foreach (var soOp in multiOp.Operators.Where(x => x is ISingleObjectiveOperator).ToList()) {
+          multiOp.RemoveOperator(soOp);
+        }
+      }
     }
 
     protected override void OnEvaluatorChanged() {

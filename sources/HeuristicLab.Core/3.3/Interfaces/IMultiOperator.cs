@@ -20,8 +20,15 @@
 #endregion
 
 
+using System.Collections.Generic;
+
 namespace HeuristicLab.Core {
-  public interface IMultiOperator<T> : IOperator where T : class,IOperator {
-    IItemList<T> Operators { get; }
+  public interface IMultiOperator : IOperator {
+    IEnumerable<IOperator> Operators { get; }
+    bool AddOperator(IOperator op);
+    bool RemoveOperator(IOperator op);
+  }
+  public interface IMultiOperator<T> : IMultiOperator where T : class,IOperator {
+    new IItemList<T> Operators { get; }
   }
 }
