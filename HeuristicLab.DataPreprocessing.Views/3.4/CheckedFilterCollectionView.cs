@@ -20,7 +20,6 @@
 #endregion
 
 using System;
-using System.Windows.Forms;
 using HeuristicLab.Core;
 using HeuristicLab.Core.Views;
 using HeuristicLab.DataPreprocessing.Filter;
@@ -36,10 +35,11 @@ namespace HeuristicLab.DataPreprocessing.Views {
     }
 
     protected override void addButton_Click(object sender, EventArgs e) {
-      IFilter filter = new ComparisonFilter();
-      Content.Add(filter);
-      Content.SetItemCheckedState(filter, false);
+      IFilter filter = CreateItem();
+      if (filter != null) {
+        Content.Add(filter);
+        Content.SetItemCheckedState(filter, false);
+      }
     }
-
   }
 }
