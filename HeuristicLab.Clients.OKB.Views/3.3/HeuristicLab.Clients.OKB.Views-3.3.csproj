@@ -285,6 +285,12 @@
     <Compile Include="RunCreation\Views\OKBRunView.Designer.cs">
       <DependentUpon>OKBRunView.cs</DependentUpon>
     </Compile>
+    <Compile Include="RunCreation\Views\SingleObjectiveOKBSolutionView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="RunCreation\Views\SingleObjectiveOKBSolutionView.Designer.cs">
+      <DependentUpon>SingleObjectiveOKBSolutionView.cs</DependentUpon>
+    </Compile>
     <None Include="Plugin.cs.frame" />
     <None Include="Properties\AssemblyInfo.cs.frame" />
   </ItemGroup>

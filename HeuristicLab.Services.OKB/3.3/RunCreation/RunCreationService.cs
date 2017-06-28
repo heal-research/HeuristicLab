@@ -19,13 +19,13 @@
  */
 #endregion
 
+using HeuristicLab.Services.Access;
+using HeuristicLab.Services.OKB.DataAccess;
 using System;
 using System.Collections.Generic;
 using System.Data.Linq;
 using System.Linq;
 using System.ServiceModel;
-using HeuristicLab.Services.Access;
-using HeuristicLab.Services.OKB.DataAccess;
 
 namespace HeuristicLab.Services.OKB.RunCreation {
   /// <summary>
@@ -126,6 +126,94 @@ namespace HeuristicLab.Services.OKB.RunCreation {
       }
     }
 
+    public IEnumerable<DataTransfer.Solution> GetSolutions(long problemId) {
+      roleVerifier.AuthenticateForAnyRole(OKBRoles.OKBAdministrator, OKBRoles.OKBUser);
+
+      using (OKBDataContext okb = new OKBDataContext()) {
+        var problem = okb.Problems.SingleOrDefault(x => x.Id == problemId);
+        if (problem == null) throw new FaultException<MissingProblem>(new MissingProblem(problemId));
+        // TODO: In case of multi-objective problems one has to check whether it contains single- or multi-objective problems
+        var result = problem.SingleObjectiveSolutions.Select(x => Convert.ToDto(x)).ToList();
+        if (roleVerifier.IsInRole(OKBRoles.OKBAdministrator)) {
+          return result;
+        } else {
+          var problemUsers = okb.ProblemUsers.Where(x => x.ProblemId == problemId).ToList();
+          if (problemUsers.Count == 0 || userManager.VerifyUser(userManager.CurrentUserId, problemUsers.Select(y => y.UserGroupId).ToList())) {
+            return result;
+          } else {
+            return null;
+          }
+        }
+      }
+    }
+
+    public DataTransfer.Solution GetSolution(long solutionId) {
+      roleVerifier.AuthenticateForAnyRole(OKBRoles.OKBAdministrator, OKBRoles.OKBUser);
+
+      using (OKBDataContext okb = new OKBDataContext()) {
+        // TODO: In case of multi-objective problems one has to check whether it contains single- or multi-objective problems
+        var result = Convert.ToDto(okb.SingleObjectiveSolutions.SingleOrDefault(x => x.Id == solutionId));
+        if (roleVerifier.IsInRole(OKBRoles.OKBAdministrator)) {
+          return result;
+        } else {
+          var problemUsers = okb.ProblemUsers.Where(x => x.ProblemId == result.ProblemId).ToList();
+          if (problemUsers.Count == 0 || userManager.VerifyUser(userManager.CurrentUserId, problemUsers.Select(y => y.UserGroupId).ToList())) {
+            return result;
+          } else {
+            return null;
+          }
+        }
+      }
+    }
+
+    public byte[] GetSolutionData(long solutionId) {
+      roleVerifier.AuthenticateForAnyRole(OKBRoles.OKBAdministrator, OKBRoles.OKBUser);
+
+      using (OKBDataContext okb = new OKBDataContext()) {
+        var solution = okb.SingleObjectiveSolutions.SingleOrDefault(x => x.Id == solutionId);
+        if (solution == null) throw new FaultException<MissingSolution>(new MissingSolution(solutionId));
+
+        var result = solution.BinaryData.Data.ToArray();
+        if (roleVerifier.IsInRole(OKBRoles.OKBAdministrator)) {
+          return result;
+        } else {
+          var problemUsers = okb.ProblemUsers.Where(x => x.ProblemId == solution.ProblemId).ToList();
+          if (problemUsers.Count == 0 || userManager.VerifyUser(userManager.CurrentUserId, problemUsers.Select(y => y.UserGroupId).ToList())) {
+            return result;
+          } else {
+            return null;
+          }
+        }
+      }
+    }
+
+    public long AddSolution(DataTransfer.Solution solution, byte[] data) {
+      roleVerifier.AuthenticateForAnyRole(OKBRoles.OKBAdministrator, OKBRoles.OKBUser);
+
+      using (OKBDataContext okb = new OKBDataContext()) {
+        var soSolution = solution as DataTransfer.SingleObjectiveSolution;
+        if (soSolution != null) {
+          DataAccess.SingleObjectiveSolution entity = Convert.ToEntity(soSolution, data, okb);
+          okb.SingleObjectiveSolutions.InsertOnSubmit(entity);
+          okb.SubmitChanges();
+          return entity.Id;
+        }
+      }
+      throw new FaultException(new FaultReason("The solution could not be added."));
+    }
+
+    public void DeleteSolution(DataTransfer.Solution solution) {
+      roleVerifier.AuthenticateForAnyRole(OKBRoles.OKBAdministrator, OKBRoles.OKBUser);
+
+      using (OKBDataContext okb = new OKBDataContext()) {
+        var soSolution = solution as DataTransfer.SingleObjectiveSolution;
+        if (soSolution != null) {
+          okb.SingleObjectiveSolutions.DeleteOnSubmit(okb.SingleObjectiveSolutions.Single(x => x.Id == soSolution.Id));
+          okb.SubmitChanges();
+        }
+      }
+    }
+
     public void AddRun(DataTransfer.Run run) {
       roleVerifier.AuthenticateForAnyRole(OKBRoles.OKBAdministrator, OKBRoles.OKBUser);
 
@@ -149,7 +237,7 @@ namespace HeuristicLab.Services.OKB.RunCreation {
 
       using (OKBDataContext okb = new OKBDataContext()) {
         var problem = okb.Problems.SingleOrDefault(x => x.Id == problemId);
-        if (problem == null) throw new FaultException<MissingProblem>(new MissingProblem("Problem with id {0} cannot be found", problemId));
+        if (problem == null) throw new FaultException<MissingProblem>(new MissingProblem(problemId));
 
         DoSetCharacteristicValue(okb, problem, value);
         okb.SubmitChanges();
@@ -161,7 +249,7 @@ namespace HeuristicLab.Services.OKB.RunCreation {
 
       using (OKBDataContext okb = new OKBDataContext()) {
         var problem = okb.Problems.SingleOrDefault(x => x.Id == problemId);
-        if (problem == null) throw new FaultException<MissingProblem>(new MissingProblem("Problem with id {0} cannot be found", problemId));
+        if (problem == null) throw new FaultException<MissingProblem>(new MissingProblem(problemId));
 
         foreach (var v in values) {
           DoSetCharacteristicValue(okb, problem, v);

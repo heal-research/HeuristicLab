@@ -39,6 +39,17 @@ namespace HeuristicLab.Services.OKB.RunCreation {
       return new DT.Problem { Id = source.Id, Name = source.Name, Description = source.Description, ProblemClass = Convert.ToDto(source.ProblemClass), DataType = Convert.ToDto(source.DataType) };
     }
 
+    public static DT.SingleObjectiveSolution ToDto(DA.SingleObjectiveSolution source) {
+      if (source == null) return null;
+      return new DT.SingleObjectiveSolution() {
+        Id = source.Id,
+        ProblemId = source.ProblemId.Value,
+        RunId = source.RunId,
+        Quality = source.Quality,
+        DataType = ToDto(source.DataType)
+      };
+    }
+
     private static DT.DataType ToDto(DA.DataType source) {
       if (source == null) return null;
       return new DT.DataType { Name = source.Name, TypeName = source.TypeName };
@@ -164,9 +175,9 @@ namespace HeuristicLab.Services.OKB.RunCreation {
       return entity;
     }
 
-    private static DA.DataType ToEntity(DT.DataType source, DA.OKBDataContext okb) {
+    public static DA.DataType ToEntity(DT.DataType source, DA.OKBDataContext okb) {
       if (source == null) return null;
-      var entity = okb.DataTypes.Where(x => (x.Name == source.Name) && (x.TypeName == source.TypeName)).FirstOrDefault();
+      var entity = okb.DataTypes.FirstOrDefault(x => (x.Name == source.Name) && (x.TypeName == source.TypeName));
       if (entity == null)
         entity = new DA.DataType() { Id = 0, Name = source.Name, TypeName = source.TypeName };
       return entity;
@@ -174,7 +185,7 @@ namespace HeuristicLab.Services.OKB.RunCreation {
 
     private static DA.ValueName ToEntity(string name, DA.ValueNameCategory category, DA.ValueNameType type, DA.OKBDataContext okb) {
       if (string.IsNullOrEmpty(name)) return null;
-      var entity = okb.ValueNames.Where(x => (x.Name == name) && (x.Category == category) && (x.Type == type)).FirstOrDefault();
+      var entity = okb.ValueNames.FirstOrDefault(x => (x.Name == name) && (x.Category == category) && (x.Type == type));
       if (entity == null)
         entity = new DA.ValueName() { Id = 0, Name = name, Category = category, Type = type };
       return entity;
@@ -187,17 +198,39 @@ namespace HeuristicLab.Services.OKB.RunCreation {
         hash = sha1.ComputeHash(data);
       }
 
-      var cachedBinaryData = binCache.Where(x => x.Hash.SequenceEqual(hash)).FirstOrDefault();
+      var cachedBinaryData = binCache.FirstOrDefault(x => x.Hash.SequenceEqual(hash));
       if (cachedBinaryData != null)
         return cachedBinaryData;
 
-      var entity = okb.BinaryDatas.Where(x => x.Hash.Equals(hash)).FirstOrDefault();
+      var entity = okb.BinaryDatas.FirstOrDefault(x => x.Hash.Equals(hash));
       if (entity == null) {
         entity = new DA.BinaryData() { Id = 0, Data = data, Hash = hash };
         binCache.Add(entity);
       }
 
       return entity;
+    }
+
+    public static DA.SingleObjectiveSolution ToEntity(DT.SingleObjectiveSolution source, byte[] data, DA.OKBDataContext okb) {
+      var sol = okb.SingleObjectiveSolutions.SingleOrDefault(x => x.Id == source.Id) ?? new DA.SingleObjectiveSolution() {
+        ProblemId = source.ProblemId,
+        RunId = source.RunId,
+        Quality = source.Quality
+      };
+      if (source.DataType != null) {
+        sol.DataType = ToEntity(source.DataType, okb);
+      }
+      if (data != null && data.Length > 0) {
+        byte[] hash;
+        using (var sha1 = SHA1.Create()) {
+          hash = sha1.ComputeHash(data);
+        }
+        sol.BinaryData = new DA.BinaryData() {
+          Data = data,
+          Hash = hash
+        };
+      }
+      return sol;
     }
     #endregion
   }

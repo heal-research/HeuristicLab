@@ -72,6 +72,10 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       downloadCharacteristicsButton.Image = VSImageLibrary.Refresh;
       uploadCharacteristicsButton.Text = string.Empty;
       uploadCharacteristicsButton.Image = VSImageLibrary.PublishToWeb;
+      refreshSolutionsButton.Text = string.Empty;
+      refreshSolutionsButton.Image = VSImageLibrary.Refresh;
+      uploadSolutionsButton.Text = string.Empty;
+      uploadSolutionsButton.Image = VSImageLibrary.PublishToWeb;
     }
 
     private void CalculatorListOnChanged(object sender, EventArgs e) {
@@ -92,6 +96,15 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
       Content.ProblemChanged += new EventHandler(Content_ProblemChanged);
+      Content.Solutions.ItemsAdded += SolutionsOnChanged;
+      Content.Solutions.ItemsReplaced += SolutionsOnChanged;
+      Content.Solutions.ItemsRemoved += SolutionsOnChanged;
+      Content.Solutions.CollectionReset += SolutionsOnChanged;
+    }
+
+    private void SolutionsOnChanged(object sender, EventArgs e) {
+      if (InvokeRequired) { Invoke((Action<object, EventArgs>)SolutionsOnChanged, sender, e); return; }
+      SetEnabledStateOfControls();
     }
 
     protected override void OnContentChanged() {
@@ -99,9 +112,11 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       if (Content == null) {
         problemComboBox.SelectedIndex = -1;
         parameterCollectionView.Content = null;
+        solutionsViewHost.Content = null;
       } else {
         problemComboBox.SelectedItem = RunCreationClient.Instance.Problems.FirstOrDefault(x => x.Id == Content.ProblemId);
         parameterCollectionView.Content = Content.Parameters;
+        solutionsViewHost.Content = Content.Solutions;
       }
       UpdateCharacteristicCalculators();
     }
@@ -117,6 +132,8 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       uploadCharacteristicsButton.Enabled = Content != null && Content.ProblemId != -1 && !Locked && !ReadOnly
         && characteristicsMatrixView.Content != null && characteristicsMatrixView.Content.Rows > 0;
       calculateButton.Enabled = Content != null && Content.ProblemId != -1 && !Locked && !ReadOnly && calculatorList.CheckedItems.Any();
+      refreshSolutionsButton.Enabled = Content != null && !ReadOnly && !Locked && Content.ProblemId != -1;
+      uploadSolutionsButton.Enabled = Content != null && !ReadOnly && !Locked && Content.ProblemId != -1 && Content.Solutions.Any(x => x.SolutionId == -1);
     }
 
     protected override void OnClosed(FormClosedEventArgs e) {
@@ -182,7 +199,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       }
     }
     private void downloadCharacteristicsButton_Click(object sender, EventArgs e) {
-      var values = RunCreationClient.GetCharacteristicValues(Content.ProblemId).ToList();
+      var values = RunCreationClient.Instance.GetCharacteristicValues(Content.ProblemId).ToList();
       var content = new StringMatrix(values.Count, 3);
       for (var i = 0; i < values.Count; i++) {
         content[i, 0] = values[i].Name;
@@ -203,7 +220,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
         values.Add(Value.Create(name, strValue, type));
       }
       try {
-        RunCreationClient.SetCharacteristicValues(Content.ProblemId, values);
+        RunCreationClient.Instance.SetCharacteristicValues(Content.ProblemId, values);
       } catch (Exception ex) { ErrorHandling.ShowErrorDialog(ex); }
     }
     private void calculateButton_Click(object sender, EventArgs e) {
@@ -216,39 +233,42 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
           results[result.Name] = RunCreationClient.Instance.ConvertToValue(result.Value, result.Name);
       }
       var matrix = (characteristicsMatrixView.Content as StringMatrix) ?? (new StringMatrix(results.Count, 3));
-      for (var i = 0; i < matrix.Rows; i++) {
-        Value r;
-        if (results.TryGetValue(matrix[i, 0], out r)) {
-          matrix[i, 1] = r.GetValue();
-          matrix[i, 2] = r.GetType().Name;
-          results.Remove(matrix[i, 0]);
+      try {
+        for (var i = 0; i < matrix.Rows; i++) {
+          Value r;
+          if (results.TryGetValue(matrix[i, 0], out r)) {
+            matrix[i, 1] = r.GetValue();
+            matrix[i, 2] = r.GetType().Name;
+            results.Remove(matrix[i, 0]);
+          }
         }
-      }
-      if (results.Count == 0) return;
-      var resultsList = results.ToList();
-      var counter = resultsList.Count - 1;
-      for (var i = 0; i < matrix.Rows; i++) {
-        if (string.IsNullOrEmpty(matrix[i, 0])) {
-          matrix[i, 0] = resultsList[counter].Key;
-          matrix[i, 1] = resultsList[counter].Value.GetValue();
-          matrix[i, 2] = resultsList[counter].Value.GetType().Name;
-          resultsList.RemoveAt(counter);
-          counter--;
-          if (counter < 0) return;
+        if (results.Count == 0) return;
+        var resultsList = results.ToList();
+        var counter = resultsList.Count - 1;
+        for (var i = 0; i < matrix.Rows; i++) {
+          if (string.IsNullOrEmpty(matrix[i, 0])) {
+            matrix[i, 0] = resultsList[counter].Key;
+            matrix[i, 1] = resultsList[counter].Value.GetValue();
+            matrix[i, 2] = resultsList[counter].Value.GetType().Name;
+            resultsList.RemoveAt(counter);
+            counter--;
+            if (counter < 0) return;
+          }
         }
-      }
-      if (counter >= 0) {
-        ((IStringConvertibleMatrix)matrix).Rows += counter + 1;
-        for (var i = matrix.Rows - 1; counter >= 0; i--) {
-          matrix[i, 0] = resultsList[0].Key;
-          matrix[i, 1] = resultsList[0].Value.GetValue();
-          matrix[i, 2] = resultsList[0].Value.GetType().Name;
-          resultsList.RemoveAt(0);
-          counter--;
+        if (counter >= 0) {
+          ((IStringConvertibleMatrix)matrix).Rows += counter + 1;
+          for (var i = matrix.Rows - 1; counter >= 0; i--) {
+            matrix[i, 0] = resultsList[0].Key;
+            matrix[i, 1] = resultsList[0].Value.GetValue();
+            matrix[i, 2] = resultsList[0].Value.GetType().Name;
+            resultsList.RemoveAt(0);
+            counter--;
+          }
         }
+      } finally {
+        characteristicsMatrixView.Content = matrix;
+        SetEnabledStateOfControls();
       }
-      characteristicsMatrixView.Content = matrix;
-      SetEnabledStateOfControls();
     }
     #endregion
 
@@ -259,6 +279,16 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       problemComboBox.DisplayMember = "Name";
     }
     #endregion
+
+    private void refreshSolutionsButton_Click(object sender, EventArgs e) {
+      Content.RefreshSolutions();
+    }
+
+    private void uploadSolutionsButton_Click(object sender, EventArgs e) {
+      foreach (var solution in Content.Solutions.Where(x => x.SolutionId == -1))
+        solution.Upload();
+      SetEnabledStateOfControls();
+    }
 
   }
 }

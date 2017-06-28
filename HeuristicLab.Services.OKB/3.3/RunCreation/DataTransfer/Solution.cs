@@ -21,14 +21,17 @@
 
 using System.Runtime.Serialization;
 
-namespace HeuristicLab.Services.OKB.RunCreation {
+namespace HeuristicLab.Services.OKB.RunCreation.DataTransfer {
   [DataContract]
-  public class MissingProblem {
+  [KnownType(typeof(SingleObjectiveSolution))]
+  public class Solution {
     [DataMember]
-    public string Message { get; set; }
-
-    public MissingProblem(long problemId) {
-      Message = string.Format("Problem with id {0} cannot be found", problemId);
-    }
+    public long Id { get; set; }
+    [DataMember]
+    public long ProblemId { get; set; }
+    [DataMember]
+    public long? RunId { get; set; }
+    [DataMember]
+    public DataType DataType { get; set; }
   }
 }

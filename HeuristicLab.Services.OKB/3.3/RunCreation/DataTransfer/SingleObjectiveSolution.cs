@@ -19,16 +19,17 @@
  */
 #endregion
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace HeuristicLab.Services.OKB.RunCreation {
+namespace HeuristicLab.Services.OKB.RunCreation.DataTransfer {
   [DataContract]
-  public class MissingProblem {
+  public class SingleObjectiveSolution : Solution {
     [DataMember]
-    public string Message { get; set; }
-
-    public MissingProblem(long problemId) {
-      Message = string.Format("Problem with id {0} cannot be found", problemId);
-    }
+    public double Quality { get; set; }
   }
 }

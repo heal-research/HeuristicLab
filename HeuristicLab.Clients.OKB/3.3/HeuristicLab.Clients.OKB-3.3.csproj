@@ -113,6 +113,7 @@
     <Compile Include="Administration\ServiceClient\Problem.cs" />
     <Compile Include="Administration\ServiceClient\ProblemClass.cs" />
     <Compile Include="OKBRoles.cs" />
+    <Compile Include="RunCreation\OKBSolution.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Query\QueryClient.cs" />
     <Compile Include="Query\ServiceClient\CombinedFilter.cs" />
@@ -155,6 +156,7 @@
     <Compile Include="RunCreation\OKBAlgorithm.cs" />
     <Compile Include="RunCreation\OKBProblem.cs" />
     <Compile Include="RunCreation\OKBRun.cs" />
+    <Compile Include="RunCreation\SingleObjectiveOKBSolution.cs" />
     <Compile Include="RunCreation\RunCreationClient.cs" />
     <Compile Include="RunCreation\ServiceClient\Algorithm.cs" />
     <Compile Include="RunCreation\ServiceClient\BoolValue.cs" />

@@ -282,6 +282,8 @@
     <Compile Include="RunCreation\DataTransfer\AlgorithmClass.cs" />
     <Compile Include="RunCreation\DataTransfer\BinaryValue.cs" />
     <Compile Include="RunCreation\DataTransfer\BoolValue.cs" />
+    <Compile Include="RunCreation\DataTransfer\SingleObjectiveSolution.cs" />
+    <Compile Include="RunCreation\DataTransfer\Solution.cs" />
     <Compile Include="RunCreation\DataTransfer\TimeSpanValue.cs" />
     <Compile Include="RunCreation\DataTransfer\PercentValue.cs" />
     <Compile Include="RunCreation\DataTransfer\DataType.cs" />
@@ -294,6 +296,7 @@
     <Compile Include="RunCreation\DataTransfer\Run.cs" />
     <Compile Include="RunCreation\DataTransfer\StringValue.cs" />
     <Compile Include="RunCreation\DataTransfer\Value.cs" />
+    <Compile Include="RunCreation\MissingSolution.cs" />
     <Compile Include="RunCreation\MissingProblem.cs" />
     <Compile Include="RunCreation\RunCreationService.cs" />
     <Compile Include="RunCreation\IRunCreationService.cs" />
