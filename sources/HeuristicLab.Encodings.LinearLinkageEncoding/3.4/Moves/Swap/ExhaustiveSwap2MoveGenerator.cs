@@ -28,7 +28,7 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.LinearLinkageEncoding {
-  [Item("ExhaustiveSwap2MoveGenerator", "Generates all possible swap-2 moves from a given permutation.")]
+  [Item("ExhaustiveSwap2MoveGenerator", "Generates all possible swap-2 moves from a given lle grouping.")]
   [StorableClass]
   public class ExhaustiveSwap2MoveGenerator : Swap2MoveGenerator, IExhaustiveMoveGenerator {
     [StorableConstructor]

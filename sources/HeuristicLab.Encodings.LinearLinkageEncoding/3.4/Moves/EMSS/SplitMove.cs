@@ -20,15 +20,30 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
+using HeuristicLab.Core;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.LinearLinkageEncoding {
-  public class SplitMove : Move {
+  [Item("Split Move", "Splits a group into two groups.")]
+  [StorableClass]
+  public sealed class SplitMove : EMSSMove {
+    [Storable]
+    private int nextItem; // is only used for undo -> no public property
 
-    private int nextItem;
-
-    public SplitMove(int item) {
-      Item = item;
+    [StorableConstructor]
+    private SplitMove(bool deserializing) : base(deserializing) { }
+    private SplitMove(SplitMove original, Cloner cloner)
+      : base(original, cloner) {
+      nextItem = original.nextItem;
+    }
+    public SplitMove(int item)
+      : base(item) {
       nextItem = -1;
+    }
+    
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new SplitMove(this, cloner);
     }
 
     public override void Apply(LinearLinkage lle) {

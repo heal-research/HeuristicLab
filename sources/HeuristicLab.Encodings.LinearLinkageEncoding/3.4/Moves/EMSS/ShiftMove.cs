@@ -20,24 +20,50 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
+using HeuristicLab.Core;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.LinearLinkageEncoding {
-  public class ShiftMove : Move {
-    public int PreviousItemOfOldGroup { get; private set; }
-    public int PreviousItemOfNewGroup { get; private set; }
-    public int NextItemOfOldGroup { get; private set; }
-    public int NextItemOfNewGroup { get; private set; }
+  [Item("Shift Move", "Shifts an item from one group to another.")]
+  [StorableClass]
+  public sealed class ShiftMove : EMSSMove {
+    [Storable]
+    private int previousItemOfOldGroup;
+    public int PreviousItemOfOldGroup { get { return previousItemOfOldGroup; } }
+    [Storable]
+    private int previousItemOfNewGroup;
+    public int PreviousItemOfNewGroup { get { return previousItemOfNewGroup; } }
+    [Storable]
+    private int nextItemOfOldGroup;
+    public int NextItemOfOldGroup { get { return nextItemOfOldGroup; } }
+    [Storable]
+    private int nextItemOfNewGroup;
+    public int NextItemOfNewGroup { get { return nextItemOfNewGroup; } }
 
     private bool IsFirst { get { return PreviousItemOfOldGroup == Item; } }
     private bool IsLast { get { return NextItemOfOldGroup == Item; } }
     private bool NewGroupClosed { get { return PreviousItemOfNewGroup == NextItemOfNewGroup; } }
 
-    public ShiftMove(int item, int prevOld, int prevNew, int nextOld, int nextNew) {
-      Item = item;
-      PreviousItemOfOldGroup = prevOld;
-      PreviousItemOfNewGroup = prevNew;
-      NextItemOfOldGroup = nextOld;
-      NextItemOfNewGroup = nextNew;
+    [StorableConstructor]
+    private ShiftMove(bool deserializing) : base(deserializing) { }
+    private ShiftMove(ShiftMove original, Cloner cloner)
+      : base(original, cloner) {
+      previousItemOfOldGroup = original.previousItemOfOldGroup;
+      previousItemOfNewGroup = original.previousItemOfNewGroup;
+      nextItemOfOldGroup = original.nextItemOfOldGroup;
+      nextItemOfNewGroup = original.nextItemOfNewGroup;
+    }
+    public ShiftMove(int item, int prevOld, int prevNew, int nextOld, int nextNew)
+      : base(item) {
+      previousItemOfOldGroup = prevOld;
+      previousItemOfNewGroup = prevNew;
+      nextItemOfOldGroup = nextOld;
+      nextItemOfNewGroup = nextNew;
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new ShiftMove(this, cloner);
     }
 
     public override void Apply(LinearLinkage lle) {

@@ -26,48 +26,34 @@ using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Random;
 
 namespace HeuristicLab.Encodings.LinearLinkageEncoding {
-  [Item("StochasticSwap2SingleMoveGenerator", "Randomly samples a single from all possible swap-2 moves from a given lle grouping.")]
+  [Item("StochasticEMSSSingleMoveGenerator", "Randomly samples a single from all possible EMSS moves (extract, merge, shift, and split) from a given lle grouping.")]
   [StorableClass]
-  public class StochasticSwap2SingleMoveGenerator : Swap2MoveGenerator, IStochasticOperator, ISingleMoveGenerator {
+  public class StochasticEMSSSingleMoveGenerator : EMSSMoveGenerator, IStochasticOperator, ISingleMoveGenerator {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
     }
 
     [StorableConstructor]
-    protected StochasticSwap2SingleMoveGenerator(bool deserializing) : base(deserializing) { }
-    protected StochasticSwap2SingleMoveGenerator(StochasticSwap2SingleMoveGenerator original, Cloner cloner) : base(original, cloner) { }
-    public StochasticSwap2SingleMoveGenerator()
+    protected StochasticEMSSSingleMoveGenerator(bool deserializing) : base(deserializing) { }
+    protected StochasticEMSSSingleMoveGenerator(StochasticEMSSSingleMoveGenerator original, Cloner cloner) : base(original, cloner) { }
+    public StochasticEMSSSingleMoveGenerator()
       : base() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator."));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new StochasticSwap2SingleMoveGenerator(this, cloner);
+      return new StochasticEMSSSingleMoveGenerator(this, cloner);
     }
 
-    public static Swap2Move Apply(LinearLinkage lle, IRandom random) {
+    protected override EMSSMove[] GenerateMoves(LinearLinkage lle) {
       int length = lle.Length;
-      if (length < 2) throw new ArgumentException("StochasticSwap2SingleMoveGenerator: There cannot be a swap-2 move given only one item.", "lle");
+      if (length == 1) throw new ArgumentException("StochasticEMSSSingleMoveGenerator: There cannot be a move given only one item.", "lle");
 
-      var groups = lle.GetGroups().ToList();
-      if (groups.Count == 1) throw new InvalidOperationException("StochasticSwap2SingleMoveGenerator: Swap moves cannot be applied when there is only one group.");
-
-      int index1 = random.Next(groups.Count), index2 = 0;
-      do {
-        index2 = random.Next(length);
-      } while (index1 == index2);
-
-      var item1 = random.Next(groups[index1].Count);
-      var item2 = random.Next(groups[index2].Count);
-
-      return new Swap2Move(groups[index1][item1], groups[index2][item2]);
-    }
-
-    protected override Swap2Move[] GenerateMoves(LinearLinkage lle) {
-      IRandom random = RandomParameter.ActualValue;
-      return new[] { Apply(lle, random) };
+      var random = RandomParameter.ActualValue;
+      return new[] { ExhaustiveEMSSMoveGenerator.Generate(lle).Shuffle(random).First() };
     }
   }
 }

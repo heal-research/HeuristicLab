@@ -19,12 +19,35 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using HeuristicLab.Common;
+using HeuristicLab.Core;
+using HeuristicLab.Optimization;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.LinearLinkageEncoding {
-  public static class MoveGenerator {
-    public static IEnumerable<Move> GenerateForItem(int i, List<int> groupItems, LinearLinkage lle, int[] lleb) {
+  [Item("ExhaustiveEMSSMoveGenerator", "Generates all possible extract, merge, shift, and split (EMSS) moves from a given LLE solution.")]
+  [StorableClass]
+  public class ExhaustiveEMSSMoveGenerator : EMSSMoveGenerator, IExhaustiveMoveGenerator {
+    [StorableConstructor]
+    protected ExhaustiveEMSSMoveGenerator(bool deserializing) : base(deserializing) { }
+    protected ExhaustiveEMSSMoveGenerator(ExhaustiveEMSSMoveGenerator original, Cloner cloner) : base(original, cloner) { }
+    public ExhaustiveEMSSMoveGenerator() : base() { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new ExhaustiveEMSSMoveGenerator(this, cloner);
+    }
+
+    protected override EMSSMove[] GenerateMoves(LinearLinkage lle) {
+      int length = lle.Length;
+      if (length == 1) throw new ArgumentException("ExhaustiveEMSSMoveGenerator: There cannot be a move given only one item.", "lle");
+
+      return Generate(lle).ToArray();
+    }
+
+    public static IEnumerable<EMSSMove> GenerateForItem(int i, List<int> groupItems, LinearLinkage lle, int[] lleb) {
       var pred = lleb[i];
       var next = lle[i];
       var isFirst = pred == i;
@@ -49,11 +72,9 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
           yield return new ExtractMove(i, pred, next);
         }
       }
-        
-
     }
 
-    public static IEnumerable<Move> Generate(LinearLinkage lle) {
+    public static IEnumerable<EMSSMove> Generate(LinearLinkage lle) {
       var groupItems = new List<int>();
       var lleb = lle.ToBackLinks();
       for (var i = 0; i < lle.Length; i++) {

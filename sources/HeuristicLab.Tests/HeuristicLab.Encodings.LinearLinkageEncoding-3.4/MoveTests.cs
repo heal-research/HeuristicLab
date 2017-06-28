@@ -38,7 +38,7 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding.Tests {
         var before = (LinearLinkage)lle.Clone();
         var beforeb = before.ToBackLinks();
         var moves = 0;
-        foreach (var move in MoveGenerator.Generate(lle)) {
+        foreach (var move in ExhaustiveEMSSMoveGenerator.Generate(lle)) {
           var lleb = lle.ToBackLinks();
           move.Apply(lle);
           move.ApplyToLLEb(lleb);
@@ -65,7 +65,7 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding.Tests {
         var groupItems = new List<int>() { 0 };
         var moves = 0;
         for (var i = 1; i < lle.Length; i++) {
-          var move = MoveGenerator.GenerateForItem(i, groupItems, lle, lleb).SampleRandom(random);
+          var move = ExhaustiveEMSSMoveGenerator.GenerateForItem(i, groupItems, lle, lleb).SampleRandom(random);
           move.Apply(lle);
           move.ApplyToLLEb(lleb);
           Assert.IsTrue(lleb.SequenceEqual(lle.ToBackLinks()));

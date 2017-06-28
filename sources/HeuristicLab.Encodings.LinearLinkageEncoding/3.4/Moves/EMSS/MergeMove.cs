@@ -20,15 +20,31 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
+using HeuristicLab.Core;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.LinearLinkageEncoding {
-  public class MergeMove : Move {
-
-    public int LastItemOfOtherGroup { get; private set; }
-
-    public MergeMove(int item, int lastOfOther) {
-      Item = item;
-      LastItemOfOtherGroup = lastOfOther;
+  [Item("Merge Move", "Merges two groups together.")]
+  [StorableClass]
+  public sealed class MergeMove : EMSSMove {
+    [Storable]
+    private int lastItemOfOtherGroup;
+    public int LastItemOfOtherGroup { get { return lastItemOfOtherGroup; } }
+    
+    [StorableConstructor]
+    private MergeMove(bool deserializing) : base(deserializing) { }
+    private MergeMove(MergeMove original, Cloner cloner)
+      : base(original, cloner) {
+      lastItemOfOtherGroup = original.lastItemOfOtherGroup;
+    }
+    public MergeMove(int item, int lastOfOther)
+      : base(item) {
+      lastItemOfOtherGroup = lastOfOther;
+    }
+    
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new MergeMove(this, cloner);
     }
 
     public override void Apply(LinearLinkage lle) {

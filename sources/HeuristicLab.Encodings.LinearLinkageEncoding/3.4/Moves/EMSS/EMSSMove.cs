@@ -19,10 +19,28 @@
  */
 #endregion
 
-namespace HeuristicLab.Encodings.LinearLinkageEncoding {
-  public abstract class Move {
-    public int Item { get; protected set; }
+using HeuristicLab.Common;
+using HeuristicLab.Core;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
+namespace HeuristicLab.Encodings.LinearLinkageEncoding {
+  [Item("EMSSMove", "Base class for shift, split, merge, and extract moves.")]
+  [StorableClass]
+  public abstract class EMSSMove : Item {
+    [Storable]
+    private int item;
+    public int Item { get { return item; } }
+
+    [StorableConstructor]
+    protected EMSSMove(bool deserializing) : base(deserializing) { }
+    protected EMSSMove(EMSSMove original, Cloner cloner)
+      : base(original, cloner) {
+      item = original.item;
+    }
+    protected EMSSMove(int item) : base() {
+      this.item = item;
+    }
+    
     public abstract void Apply(LinearLinkage lle);
     public abstract void Undo(LinearLinkage lle);
 

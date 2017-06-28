@@ -20,19 +20,40 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
+using HeuristicLab.Core;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.LinearLinkageEncoding {
-  public class ExtractMove : Move {
-    public int PreviousItem { get; private set; }
-    public int NextItem { get; private set; }
+  [Item("Extract Move", "Extracts an item into a group of its own.")]
+  [StorableClass]
+  public sealed class ExtractMove : EMSSMove {
+    [Storable]
+    private int previousItem;
+    public int PreviousItem { get { return previousItem; } }
+    [Storable]
+    private int nextItem;
+    public int NextItem { get { return nextItem; } }
 
     private bool IsFirst { get { return PreviousItem == Item; } }
     private bool IsLast { get { return NextItem == Item; } }
 
-    public ExtractMove(int item, int prev, int next) {
-      Item = item;
-      PreviousItem = prev;
-      NextItem = next;
+
+    [StorableConstructor]
+    private ExtractMove(bool deserializing) : base(deserializing) { }
+    private ExtractMove(ExtractMove original, Cloner cloner)
+      : base(original, cloner) {
+      previousItem = original.previousItem;
+      nextItem = original.nextItem;
+    }
+    public ExtractMove(int item, int prev, int next)
+      : base(item) {
+      previousItem = prev;
+      nextItem = next;
+    }
+    
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new ExtractMove(this, cloner);
     }
 
     public override void Apply(LinearLinkage lle) {
