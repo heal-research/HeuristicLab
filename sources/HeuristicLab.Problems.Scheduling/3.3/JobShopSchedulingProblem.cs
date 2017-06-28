@@ -172,6 +172,7 @@ namespace HeuristicLab.Problems.Scheduling {
 
     #region Events
     protected override void OnSolutionCreatorChanged() {
+      base.OnSolutionCreatorChanged();
       SolutionCreator.ScheduleEncodingParameter.ActualNameChanged += SolutionCreator_SchedulingEncodingParameter_ActualNameChanged;
       InitializeOperators();
     }
@@ -279,7 +280,6 @@ namespace HeuristicLab.Problems.Scheduling {
         Operators.AddRange(ApplicationManager.Manager.GetInstances<IDirectScheduleOperator>());
         ScheduleDecoder = null;
       }
-      if (ScheduleDecoder != null) Operators.Add(ScheduleDecoder);
     }
 
     private void ParameterizeOperators() {
