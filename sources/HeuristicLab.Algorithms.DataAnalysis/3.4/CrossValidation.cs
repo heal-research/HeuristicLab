@@ -75,11 +75,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code, remove with 3.4
+      if (shuffleSamples == null) shuffleSamples = new BoolValue(false);
+      #endregion
+
       RegisterEvents();
       if (Algorithm != null) RegisterAlgorithmEvents();
-
-      if (shuffleSamples == null)
-        shuffleSamples = new BoolValue(false);
     }
 
     private CrossValidation(CrossValidation original, Cloner cloner)
