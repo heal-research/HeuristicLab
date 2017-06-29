@@ -22,7 +22,6 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using HeuristicLab.Common;
 using HeuristicLab.Data;
 using HeuristicLab.MainForm;
 using HeuristicLab.Optimization;
@@ -33,6 +32,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
   public sealed partial class RegressionSolutionResidualAnalysisView : DataAnalysisSolutionEvaluationView {
 
     // names should be relatively save to prevent collisions with variable names in the dataset
+    private const string TargetLabel = "> Target";
     private const string PredictionLabel = "> Prediction";
     private const string ResidualLabel = "> Residual";
     private const string AbsResidualLabel = "> Residual (abs.)";
@@ -125,6 +125,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     private void AddErrors(IRun run, double pred, double target) {
       var residual = target - pred;
       var relError = residual / target;
+      run.Results.Add(TargetLabel, new DoubleValue(target));
       run.Results.Add(PredictionLabel, new DoubleValue(pred));
       run.Results.Add(ResidualLabel, new DoubleValue(residual));
       run.Results.Add(AbsResidualLabel, new DoubleValue(Math.Abs(residual)));
