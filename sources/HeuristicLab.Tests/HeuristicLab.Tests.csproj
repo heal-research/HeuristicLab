@@ -569,6 +569,10 @@
     <Compile Include="HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4\SubtreeCrossoverTest.cs" />
     <Compile Include="HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4\GrammarsTest.cs" />
     <Compile Include="HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4\Util.cs" />
+    <Compile Include="HeuristicLab.IGraph\IGraphLayoutTest.cs" />
+    <Compile Include="HeuristicLab.IGraph\IGraphWrappersGraphTest.cs" />
+    <Compile Include="HeuristicLab.IGraph\IGraphWrappersMatrixTest.cs" />
+    <Compile Include="HeuristicLab.IGraph\IGraphWrappersVectorTest.cs" />
     <Compile Include="HeuristicLab.Persistence-3.3\StorableAttributeTests.cs" />
     <Compile Include="HeuristicLab.Persistence-3.3\UseCases.cs" />
     <Compile Include="HeuristicLab.PluginInfraStructure-3.3\InstallationManagerTest.cs" />
