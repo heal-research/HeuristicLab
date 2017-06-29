@@ -105,7 +105,7 @@ namespace HeuristicLab.Core.Views {
 
       var data = e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat) as ICheckedItemList<T>;
       if (data != null)
-        validDragOperation = Content.Select(x => x.ToString()).SequenceEqual(data.Select(x => x.ToString()));
+        validDragOperation = true;
       else
         base.itemsListView_DragEnter(sender, e);
     }
@@ -125,8 +125,11 @@ namespace HeuristicLab.Core.Views {
       if (e.Effect == DragDropEffects.None) return;
       var data = e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat) as ICheckedItemList<T>;
       if (data != null) {
-        for (int i = 0; i < Content.Count; i++) {
-          Content.SetItemCheckedState(Content[i], data.ItemChecked(data[i]));
+        for (int i = 0; i < data.Count; i++) {
+          var dataItem = data[i];
+          var contentItem = Content.FirstOrDefault(ci => ci.ToString() == dataItem.ToString());
+          if (contentItem == null) continue;
+          Content.SetItemCheckedState(contentItem, data.ItemChecked(dataItem));
         }
       } else
         base.itemsListView_DragDrop(sender, e);

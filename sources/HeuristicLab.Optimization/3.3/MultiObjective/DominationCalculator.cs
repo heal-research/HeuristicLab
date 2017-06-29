@@ -21,8 +21,6 @@
 
 using System;
 using System.Collections.Generic;
-using HeuristicLab.Core;
-using HeuristicLab.Data;
 
 namespace HeuristicLab.Optimization {
   public enum DominationResult { Dominates, IsDominated, IsNonDominated };
@@ -99,13 +97,13 @@ namespace HeuristicLab.Optimization {
       return fronts;
     }
 
-    private static List<Tuple<T, double[]>> CalculateBestFront(T[] individuals, double[][] qualities, bool[] maximization, bool dominateOnEqualQualities, int populationSize, out Dictionary<T, List<int>> dominatedIndividuals, out int[] dominationCounter, out int[] rank) {
+    private static List<Tuple<T, double[]>> CalculateBestFront(T[] solutions, double[][] qualities, bool[] maximization, bool dominateOnEqualQualities, int populationSize, out Dictionary<T, List<int>> dominatedIndividuals, out int[] dominationCounter, out int[] rank) {
       var front = new List<Tuple<T, double[]>>();
       dominatedIndividuals = new Dictionary<T, List<int>>();
       dominationCounter = new int[populationSize];
       rank = new int[populationSize];
       for (int pI = 0; pI < populationSize - 1; pI++) {
-        var p = individuals[pI];
+        var p = solutions[pI];
         List<int> dominatedIndividualsByp;
         if (!dominatedIndividuals.TryGetValue(p, out dominatedIndividualsByp))
           dominatedIndividuals[p] = dominatedIndividualsByp = new List<int>();
@@ -116,15 +114,15 @@ namespace HeuristicLab.Optimization {
             dominationCounter[qI] += 1;
           } else if (test == DominationResult.IsDominated) {
             dominationCounter[pI] += 1;
-            if (!dominatedIndividuals.ContainsKey(individuals[qI]))
-              dominatedIndividuals.Add(individuals[qI], new List<int>());
-            dominatedIndividuals[individuals[qI]].Add(pI);
+            if (!dominatedIndividuals.ContainsKey(solutions[qI]))
+              dominatedIndividuals.Add(solutions[qI], new List<int>());
+            dominatedIndividuals[solutions[qI]].Add(pI);
           }
           if (pI == populationSize - 2
             && qI == populationSize - 1
             && dominationCounter[qI] == 0) {
             rank[qI] = 0;
-            front.Add(Tuple.Create(individuals[qI], qualities[qI]));
+            front.Add(Tuple.Create(solutions[qI], qualities[qI]));
           }
         }
         if (dominationCounter[pI] == 0) {
