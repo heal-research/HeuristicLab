@@ -19,15 +19,19 @@
  */
 #endregion
 
+using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   [Item("Totally Connected Particle Updater", "Updates the particle's position using (among other things) the global best position. Use together with the empty topology initialzer. Point = Point + Velocity*Inertia + (PersonalBestPoint-Point)*Phi_P*r_p + (BestPoint-Point)*Phi_G*r_g")]
   [StorableClass]
-  public sealed class RealVectorTotallyConnectedParticleUpdater : RealVectorParticleUpdater, IGlobalParticleUpdater {
+  [NonDiscoverableType]
+  [Obsolete("Same as the RealVectorNeighborhoodParticleUpdate")]
+  internal sealed class RealVectorTotallyConnectedParticleUpdater : RealVectorParticleUpdater {
 
     #region Construction & Cloning
     [StorableConstructor]
@@ -40,23 +44,8 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     #endregion
 
     public override IOperation Apply() {
-      double inertia = Inertia.Value;
-      double personalBestAttraction = PersonalBestAttraction.Value;
-      double neighborBestAttraction = NeighborBestAttraction.Value;
-
-      RealVector velocity = new RealVector(Velocity.Length);
-      RealVector position = new RealVector(RealVector.Length);
-      double r_p = Random.NextDouble();
-      double r_g = Random.NextDouble();
-
-      for (int i = 0; i < velocity.Length; i++) {
-        velocity[i] =
-          Velocity[i] * inertia +
-          (PersonalBest[i] - RealVector[i]) * personalBestAttraction * r_p +
-          (BestPoint[i] - RealVector[i]) * neighborBestAttraction * r_g;
-      }
-
-      MoveParticle(velocity, position);
+      UpdateVelocity();
+      UpdatePosition();
 
       return base.Apply();
     }

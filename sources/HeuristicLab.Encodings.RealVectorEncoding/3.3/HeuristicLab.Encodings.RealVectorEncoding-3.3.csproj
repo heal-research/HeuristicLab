@@ -131,6 +131,7 @@
     <Compile Include="ParticleOperators\RealVectorParticleUpdater.cs" />
     <Compile Include="ParticleOperators\RealVectorSwarmUpdater.cs" />
     <Compile Include="ParticleOperators\RealVectorTotallyConnectedParticleUpdater.cs" />
+    <Compile Include="ParticleOperators\RealVectorVelocityInitializer.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="RealVectorCreator.cs" />
     <Compile Include="RealVectorCrossover.cs" />

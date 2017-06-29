@@ -43,16 +43,18 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
     #endregion
 
     public override IOperation Apply() {
-      ItemArray<IntArray> neighbors = new ItemArray<IntArray>(SwarmSize);
-      for (int i = 0; i < SwarmSize; i++) {
+      var swarmSize = SwarmSizeParameter.ActualValue.Value;
+
+      ItemArray<IntArray> neighbors = new ItemArray<IntArray>(swarmSize);
+      for (int i = 0; i < swarmSize; i++) {
         neighbors[i] = new IntArray(new[] {
-          (SwarmSize + i-2) % SwarmSize,
-          (SwarmSize + i-1) % SwarmSize,
-          (i+1) % SwarmSize,
-          (i+2) % SwarmSize
+          (swarmSize + i-2) % swarmSize,
+          (swarmSize + i-1) % swarmSize,
+          (i+1) % swarmSize,
+          (i+2) % swarmSize
         });
       }
-      Neighbors = neighbors;
+      NeighborsParameter.ActualValue = neighbors;
       return base.Apply();
     }
   }

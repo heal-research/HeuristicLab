@@ -24,13 +24,14 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
   [Item("Random Topology Initializer", "Randomly connectes every particle with k other particles.")]
   [StorableClass]
-  public sealed class RandomTopologyInitializer : TopologyInitializer {
+  public sealed class RandomTopologyInitializer : TopologyInitializer, IStochasticOperator {
     #region Parameters
     public ILookupParameter<IRandom> RandomParameter {
       get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
@@ -39,16 +40,7 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
       get { return (IValueLookupParameter<IntValue>)Parameters["NrOfConnections"]; }
     }
     #endregion
-
-    #region Parameter Values
-    private IRandom Random {
-      get { return RandomParameter.ActualValue; }
-    }
-    private int NrOfConnections {
-      get { return NrOfConnectionsParameter.ActualValue.Value; }
-    }
-    #endregion
-
+    
     #region Construction & Cloning
     [StorableConstructor]
     private RandomTopologyInitializer(bool deserializing) : base(deserializing) { }
@@ -64,19 +56,23 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
     #endregion
 
     public override IOperation Apply() {
-      ItemArray<IntArray> neighbors = new ItemArray<IntArray>(SwarmSize);
-      for (int i = 0; i < SwarmSize; i++) {
-        var numbers = Enumerable.Range(0, SwarmSize).ToList();
+      var random = RandomParameter.ActualValue;
+      var swarmSize = SwarmSizeParameter.ActualValue.Value;
+      var nrOfConnections = NrOfConnectionsParameter.ActualValue.Value;
+
+      ItemArray<IntArray> neighbors = new ItemArray<IntArray>(swarmSize);
+      for (int i = 0; i < swarmSize; i++) {
+        var numbers = Enumerable.Range(0, swarmSize).ToList();
         numbers.RemoveAt(i);
-        var selectedNumbers = new List<int>(NrOfConnections);
-        for (int j = 0; j < NrOfConnections && numbers.Count > 0; j++) {
-          int index = Random.Next(numbers.Count);
+        var selectedNumbers = new List<int>(nrOfConnections);
+        for (int j = 0; j < nrOfConnections && numbers.Count > 0; j++) {
+          int index = random.Next(numbers.Count);
           selectedNumbers.Add(numbers[index]);
           numbers.RemoveAt(index);
         }
         neighbors[i] = new IntArray(selectedNumbers.ToArray());
       }
-      Neighbors = neighbors;
+      NeighborsParameter.ActualValue = neighbors;
       return base.Apply();
     }
   }

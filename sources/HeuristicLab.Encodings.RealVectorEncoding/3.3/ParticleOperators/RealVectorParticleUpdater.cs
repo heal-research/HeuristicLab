@@ -50,17 +50,14 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     public ILookupParameter<RealVector> NeighborBestParameter {
       get { return (ILookupParameter<RealVector>)Parameters["NeighborBest"]; }
     }
-    public LookupParameter<RealVector> BestRealVectorParameter {
-      get { return (LookupParameter<RealVector>)Parameters["BestRealVector"]; }
-    }
     public ILookupParameter<RealVector> RealVectorParameter {
       get { return (ILookupParameter<RealVector>)Parameters["RealVector"]; }
     }
     public ILookupParameter<DoubleMatrix> BoundsParameter {
       get { return (ILookupParameter<DoubleMatrix>)Parameters["Bounds"]; }
     }
-    public ILookupParameter<DoubleMatrix> CurrentVelocityBoundsParameter {
-      get { return (ILookupParameter<DoubleMatrix>)Parameters["CurrentVelocityBounds"]; }
+    public ILookupParameter<DoubleValue> CurrentMaxVelocityParameter {
+      get { return (ILookupParameter<DoubleValue>)Parameters["CurrentMaxVelocity"]; }
     }
     public ILookupParameter<DoubleValue> InertiaParameter {
       get { return (ILookupParameter<DoubleValue>)Parameters["CurrentInertia"]; }
@@ -72,45 +69,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       get { return (ILookupParameter<DoubleValue>)Parameters["NeighborBestAttraction"]; }
     }
     #endregion
-
-    #region Parameter Values
-    protected IRandom Random {
-      get { return RandomParameter.ActualValue; }
-    }
-    protected RealVector Velocity {
-      get { return VelocityParameter.ActualValue; }
-      set { VelocityParameter.ActualValue = value; }
-    }
-    protected RealVector PersonalBest {
-      get { return PersonalBestParameter.ActualValue; }
-    }
-    protected RealVector BestPoint {
-      get { return BestRealVectorParameter.ActualValue; }
-    }
-    protected RealVector RealVector {
-      get { return RealVectorParameter.ActualValue; }
-      set { RealVectorParameter.ActualValue = value; }
-    }
-    protected RealVector NeighborBest {
-      get { return NeighborBestParameter.ActualValue; }
-    }
-    protected DoubleMatrix Bounds {
-      get { return BoundsParameter.ActualValue; }
-    }
-    protected DoubleMatrix CurrentVelocityBounds {
-      get { return CurrentVelocityBoundsParameter.ActualValue; }
-    }
-    protected DoubleValue Inertia {
-      get { return InertiaParameter.ActualValue; }
-    }
-    protected DoubleValue PersonalBestAttraction {
-      get { return PersonalBestAttractionParameter.ActualValue; }
-    }
-    protected DoubleValue NeighborBestAttraction {
-      get { return NeighborBestAttractionParameter.ActualValue; }
-    }
-    #endregion
-
+    
     #region Construction & Cloning
     [StorableConstructor]
     protected RealVectorParticleUpdater(bool deserializing) : base(deserializing) { }
@@ -121,53 +80,65 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       Parameters.Add(new LookupParameter<RealVector>("RealVector", "Particle's current solution"));
       Parameters.Add(new LookupParameter<RealVector>("Velocity", "Particle's current velocity."));
       Parameters.Add(new LookupParameter<RealVector>("PersonalBest", "Particle's personal best solution."));
-      Parameters.Add(new LookupParameter<RealVector>("BestRealVector", "Global best position."));
       Parameters.Add(new LookupParameter<RealVector>("NeighborBest", "Best neighboring solution."));
       Parameters.Add(new LookupParameter<DoubleMatrix>("Bounds", "The lower and upper bounds for each dimension of the position vector for the current problem."));
-      Parameters.Add(new LookupParameter<DoubleMatrix>("CurrentVelocityBounds", "Upper and lower bounds for the particle's velocity vector."));
+      Parameters.Add(new LookupParameter<DoubleValue>("CurrentMaxVelocity", "Maximum for the particle's velocity vector."));
       Parameters.Add(new LookupParameter<DoubleValue>("CurrentInertia", "The weight for the particle's velocity vector."));
       Parameters.Add(new LookupParameter<DoubleValue>("PersonalBestAttraction", "The weight for the particle's personal best position."));
       Parameters.Add(new LookupParameter<DoubleValue>("NeighborBestAttraction", "The weight for the global best position."));
     }
     #endregion
 
-    protected void MoveParticle(RealVector velocity, RealVector position) {
-      BoundsChecker.Apply(velocity, CurrentVelocityBounds);
+    protected void UpdateVelocity() {
+      var velocity = VelocityParameter.ActualValue;
+      var position = RealVectorParameter.ActualValue;
+      var inertia = InertiaParameter.ActualValue.Value;
+      var personalBest = PersonalBestParameter.ActualValue;
+      var personalBestAttraction = PersonalBestAttractionParameter.ActualValue.Value;
+      var neighborBest = NeighborBestParameter.ActualValue;
+      var neighborBestAttraction = NeighborBestAttractionParameter.ActualValue.Value;
+
+      var random = RandomParameter.ActualValue;
+
       for (int i = 0; i < velocity.Length; i++) {
-        position[i] = RealVector[i] + velocity[i];
-      }
-      for (int i = 0; i < position.Length; i++) {
-        double min = Bounds[i % Bounds.Rows, 0];
-        double max = Bounds[i % Bounds.Rows, 1];
-        if (position[i] < min) {
-          int reflectionCount = (int)Math.Truncate((min - position[i]) / (max - min)) + 1;
-          double reflection = (min - position[i]) % (max - min);
-          if (IsOdd(reflectionCount)) {
-            position[i] = min + reflection;
-            velocity[i] = -velocity[i];
-
-          } else {
-            position[i] = max - reflection;
-          }
-        }
-        if (position[i] > max) {
-          int reflectionCount = (int)Math.Truncate((position[i] - max) / (max - min)) + 1;
-          double reflection = (position[i] - max) % (max - min);
-          if (IsOdd(reflectionCount)) {
-            position[i] = max - reflection;
-            velocity[i] = -velocity[i];
-          } else {
-            position[i] = min + reflection;
-          }
-        }
+        double r_p = random.NextDouble();
+        double r_g = random.NextDouble();
+        velocity[i] =
+          velocity[i] * inertia +
+          (personalBest[i] - position[i]) * personalBestAttraction * r_p +
+          (neighborBest[i] - position[i]) * neighborBestAttraction * r_g;
       }
 
-      RealVector = position;
-      Velocity = velocity;
+      var maxVelocity = CurrentMaxVelocityParameter.ActualValue.Value;
+      var speed = Math.Sqrt(velocity.DotProduct(velocity));
+      if (speed > maxVelocity) {
+        for (var i = 0; i < velocity.Length; i++) {
+          velocity[i] *= maxVelocity / speed;
+        }
+      }
     }
 
-    private static bool IsOdd(int number) {
-      return number % 2 == 1;
+    protected void UpdatePosition() {
+      var velocity = VelocityParameter.ActualValue;
+      var position = RealVectorParameter.ActualValue;
+
+      for (int i = 0; i < velocity.Length; i++) {
+        position[i] += velocity[i];
+      }
+
+      var bounds = BoundsParameter.ActualValue;
+      for (int i = 0; i < position.Length; i++) {
+        double min = bounds[i % bounds.Rows, 0];
+        double max = bounds[i % bounds.Rows, 1];
+        if (position[i] < min) {
+          position[i] = min;
+          velocity[i] = -0.5 * velocity[i]; // SPSO 2011
+        }
+        if (position[i] > max) {
+          position[i] = max;
+          velocity[i] = -0.5 * velocity[i]; // SPSO 2011
+        }
+      }
     }
   }
 }

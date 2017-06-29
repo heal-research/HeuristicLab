@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2016 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2017 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,6 +19,11 @@
  */
 #endregion
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -28,10 +33,9 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
-  [Item("RealVectorParticleCreator", "Creates a particle with position, zero velocity vector and personal best.")]
+  [Item("RealVectorVelocityInitializer", "Initializes the velocity vector.")]
   [StorableClass]
-  public class RealVectorParticleCreator : AlgorithmOperator, IRealVectorParticleCreator, IStochasticOperator {
-
+  public class RealVectorVelocityInitializer : SingleSuccessorOperator, IStochasticOperator {
     #region Parameters
     public ILookupParameter<IRandom> RandomParameter {
       get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
@@ -42,52 +46,39 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     public ILookupParameter<RealVector> RealVectorParameter {
       get { return (ILookupParameter<RealVector>)Parameters["RealVector"]; }
     }
-    public ILookupParameter<RealVector> PersonalBestParameter {
-      get { return (ILookupParameter<RealVector>)Parameters["PersonalBest"]; }
-    }
     public ILookupParameter<RealVector> VelocityParameter {
       get { return (ILookupParameter<RealVector>)Parameters["Velocity"]; }
-    }
-    public ILookupParameter<ISolutionCreator> SolutionCreatorParameter {
-      get { return (ILookupParameter<ISolutionCreator>)Parameters["SolutionCreator"]; }
     }
     #endregion
     
     #region Construction & Cloning
     [StorableConstructor]
-    protected RealVectorParticleCreator(bool deserializing) : base(deserializing) { }
-    protected RealVectorParticleCreator(RealVectorParticleCreator original, Cloner cloner) : base(original, cloner) { }
-    public RealVectorParticleCreator()
+    protected RealVectorVelocityInitializer(bool deserializing) : base(deserializing) { }
+    protected RealVectorVelocityInitializer(RealVectorVelocityInitializer original, Cloner cloner) : base(original, cloner) { }
+    public RealVectorVelocityInitializer()
       : base() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator to use."));
       Parameters.Add(new ValueLookupParameter<DoubleMatrix>("Bounds", "The lower and upper bounds in each dimension."));
       Parameters.Add(new LookupParameter<RealVector>("RealVector", "Particle's current solution"));
-      Parameters.Add(new LookupParameter<RealVector>("PersonalBest", "Particle's personal best solution."));
       Parameters.Add(new LookupParameter<RealVector>("Velocity", "Particle's current velocity."));
-      Parameters.Add(new LookupParameter<ISolutionCreator>("SolutionCreator", "The operator that creates the initial position."));
-
-      Placeholder realVectorCreater = new Placeholder();
-      Assigner personalBestPositionAssigner = new Assigner();
-      RealVectorVelocityInitializer velocityInitializer = new RealVectorVelocityInitializer();
-
-      OperatorGraph.InitialOperator = realVectorCreater;
-
-      realVectorCreater.OperatorParameter.ActualName = SolutionCreatorParameter.Name;
-      realVectorCreater.Successor = personalBestPositionAssigner;
-
-      personalBestPositionAssigner.LeftSideParameter.ActualName = PersonalBestParameter.Name;
-      personalBestPositionAssigner.RightSideParameter.ActualName = RealVectorParameter.Name;
-      personalBestPositionAssigner.Successor = velocityInitializer;
-
-      velocityInitializer.BoundsParameter.ActualName = BoundsParameter.Name;
-      velocityInitializer.RandomParameter.ActualName = RandomParameter.Name;
-      velocityInitializer.RealVectorParameter.ActualName = RealVectorParameter.Name;
-      velocityInitializer.VelocityParameter.ActualName = VelocityParameter.Name;
-      velocityInitializer.Successor = null;
     }
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new RealVectorParticleCreator(this, cloner);
+      return new RealVectorVelocityInitializer(this, cloner);
     }
     #endregion
+
+    public override IOperation Apply() {
+      var random = RandomParameter.ActualValue;
+      var bounds = BoundsParameter.ActualValue;
+      var position = RealVectorParameter.ActualValue;
+      var velocity = new RealVector(position.Length);
+      for (var i = 0; i < velocity.Length; i++) {
+        var lower = (bounds[i % bounds.Rows, 0] - position[i]);
+        var upper = (bounds[i % bounds.Rows, 1] - position[i]);
+        velocity[i] = lower + random.NextDouble() * (upper - lower); // SPSO 2011
+      }
+      VelocityParameter.ActualValue = velocity;
+      return base.Apply();
+    }
   }
 }

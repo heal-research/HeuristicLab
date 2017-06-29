@@ -26,5 +26,6 @@ namespace HeuristicLab.Optimization {
   /// Interface to represent an operator that generates a particle. 
   /// </summary>
   public interface IParticleCreator : ISolutionCreator {
+    ILookupParameter<ISolutionCreator> SolutionCreatorParameter { get; }
   }
 }

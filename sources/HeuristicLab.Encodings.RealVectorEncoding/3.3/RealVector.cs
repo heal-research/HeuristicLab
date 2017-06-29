@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -76,5 +77,12 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       Randomize(random, 0, Length, bounds);
     }
 
+    public double DotProduct(RealVector other) {
+      if (other.Length != Length) throw new ArgumentException("Vectors are of unequal length.");
+      var dotProd = 0.0;
+      for (var i = 0; i < Length; i++)
+        dotProd += this[i] * other[i];
+      return dotProd;
+    }
   }
 }

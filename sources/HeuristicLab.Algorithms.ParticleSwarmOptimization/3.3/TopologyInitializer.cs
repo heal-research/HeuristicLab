@@ -39,20 +39,8 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
     public IScopeTreeLookupParameter<IntArray> NeighborsParameter {
       get { return (IScopeTreeLookupParameter<IntArray>)Parameters["Neighbors"]; }
     }
-
     public ILookupParameter<IntValue> SwarmSizeParameter {
       get { return (ILookupParameter<IntValue>)Parameters["SwarmSize"]; }
-    }
-
-    #endregion
-
-    #region Parameter Values
-    protected ItemArray<IntArray> Neighbors {
-      get { return NeighborsParameter.ActualValue; }
-      set { NeighborsParameter.ActualValue = value; }
-    }
-    protected int SwarmSize {
-      get { return SwarmSizeParameter.ActualValue.Value; }
     }
     #endregion
 

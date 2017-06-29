@@ -358,8 +358,6 @@ namespace HeuristicLab.Problems.TestFunctions {
         op.RealVectorParameter.Hidden = true;
         op.BoundsParameter.ActualName = BoundsParameter.Name;
         op.BoundsParameter.Hidden = true;
-        op.ProblemSizeParameter.ActualName = ProblemSizeParameter.Name;
-        op.ProblemSizeParameter.Hidden = true;
       }
       foreach (var op in Operators.OfType<IRealVectorParticleUpdater>()) {
         op.RealVectorParameter.ActualName = SolutionCreator.RealVectorParameter.ActualName;

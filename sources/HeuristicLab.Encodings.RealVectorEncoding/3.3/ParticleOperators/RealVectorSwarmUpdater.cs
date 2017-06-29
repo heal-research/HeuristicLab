@@ -75,37 +75,31 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     public IScopeTreeLookupParameter<IntArray> NeighborsParameter {
       get { return (IScopeTreeLookupParameter<IntArray>)Parameters["Neighbors"]; }
     }
-    public IValueLookupParameter<DoubleMatrix> VelocityBoundsParameter {
-      get { return (ValueLookupParameter<DoubleMatrix>)Parameters["VelocityBounds"]; }
+    public IValueLookupParameter<DoubleValue> MaxVelocityParameter {
+      get { return (ValueLookupParameter<DoubleValue>)Parameters["MaxVelocity"]; }
     }
-    public ILookupParameter<DoubleMatrix> CurrentVelocityBoundsParameter {
-      get { return (ILookupParameter<DoubleMatrix>)Parameters["CurrentVelocityBounds"]; }
+    public ILookupParameter<DoubleValue> CurrentMaxVelocityParameter {
+      get { return (ILookupParameter<DoubleValue>)Parameters["CurrentMaxVelocity"]; }
     }
     public LookupParameter<ResultCollection> ResultsParameter {
       get { return (LookupParameter<ResultCollection>)Parameters["Results"]; }
     }
 
-    #region Velocity Bounds Updating
-    public ILookupParameter<DoubleValue> VelocityBoundsScaleParameter {
-      get { return (ILookupParameter<DoubleValue>)Parameters["VelocityBoundsScale"]; }
+    #region Max Velocity Updating
+    public IConstrainedValueParameter<IDiscreteDoubleValueModifier> MaxVelocityScalingOperatorParameter {
+      get { return (IConstrainedValueParameter<IDiscreteDoubleValueModifier>)Parameters["MaxVelocityScalingOperator"]; }
     }
-    public IConstrainedValueParameter<IDiscreteDoubleValueModifier> VelocityBoundsScalingOperatorParameter {
-      get { return (IConstrainedValueParameter<IDiscreteDoubleValueModifier>)Parameters["VelocityBoundsScalingOperator"]; }
+    public IValueLookupParameter<DoubleValue> FinalMaxVelocityParameter {
+      get { return (IValueLookupParameter<DoubleValue>)Parameters["FinalMaxVelocity"]; }
     }
-    public IValueLookupParameter<DoubleValue> VelocityBoundsStartValueParameter {
-      get { return (IValueLookupParameter<DoubleValue>)Parameters["VelocityBoundsStartValue"]; }
+    public ILookupParameter<IntValue> MaxVelocityIndexParameter {
+      get { return (ILookupParameter<IntValue>)Parameters["MaxVelocityIndex"]; }
     }
-    public IValueLookupParameter<DoubleValue> VelocityBoundsEndValueParameter {
-      get { return (IValueLookupParameter<DoubleValue>)Parameters["VelocityBoundsEndValue"]; }
+    public IValueLookupParameter<IntValue> MaxVelocityStartIndexParameter {
+      get { return (IValueLookupParameter<IntValue>)Parameters["MaxVelocityStartIndex"]; }
     }
-    public ILookupParameter<IntValue> VelocityBoundsIndexParameter {
-      get { return (ILookupParameter<IntValue>)Parameters["VelocityBoundsIndex"]; }
-    }
-    public IValueLookupParameter<IntValue> VelocityBoundsStartIndexParameter {
-      get { return (IValueLookupParameter<IntValue>)Parameters["VelocityBoundsStartIndex"]; }
-    }
-    public IValueLookupParameter<IntValue> VelocityBoundsEndIndexParameter {
-      get { return (IValueLookupParameter<IntValue>)Parameters["VelocityBoundsEndIndex"]; }
+    public IValueLookupParameter<IntValue> MaxVelocityEndIndexParameter {
+      get { return (IValueLookupParameter<IntValue>)Parameters["MaxVelocityEndIndex"]; }
     }
     #endregion
 
@@ -131,24 +125,21 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       Parameters.Add(new ScopeTreeLookupParameter<RealVector>("NeighborBest", "Neighborhood (or global in case of totally connected neighborhood) best particle positions."));
       Parameters.Add(new ScopeTreeLookupParameter<IntArray>("Neighbors", "The list of neighbors for each particle."));
       Parameters.Add(new LookupParameter<BoolValue>("Maximization", "True if the problem is a maximization problem, otherwise false."));
-      Parameters.Add(new ValueLookupParameter<DoubleMatrix>("VelocityBounds", "Maximum velocity for each dimension.", new DoubleMatrix(new double[,] { { -1, 1 } })));
-      Parameters.Add(new LookupParameter<DoubleMatrix>("CurrentVelocityBounds", "Current value of velocity bounds."));
+      Parameters.Add(new ValueLookupParameter<DoubleValue>("MaxVelocity", "Speed limit for each particle.", new DoubleValue(1)));
+      Parameters.Add(new LookupParameter<DoubleValue>("CurrentMaxVelocity", "Current value of the speed limit."));
       Parameters.Add(new LookupParameter<ResultCollection>("Results", "Results"));
 
       #region Velocity Bounds Updating
-      Parameters.Add(new LookupParameter<DoubleValue>("VelocityBoundsScale", "Scale parameter."));
-      Parameters.Add(new OptionalConstrainedValueParameter<IDiscreteDoubleValueModifier>("VelocityBoundsScalingOperator", "Modifies the value"));
-      Parameters.Add(new ValueLookupParameter<DoubleValue>("VelocityBoundsStartValue", "The start value of 'Value'.", new DoubleValue(1)));
-      Parameters.Add(new ValueLookupParameter<DoubleValue>("VelocityBoundsEndValue", "The end value of 'Value'.", new DoubleValue(1E-10)));
-      Parameters.Add(new LookupParameter<IntValue>("VelocityBoundsIndex", "The current index.", "Iterations"));
-      Parameters.Add(new ValueLookupParameter<IntValue>("VelocityBoundsStartIndex", "The start index at which to start modifying 'Value'.", new IntValue(0)));
-      Parameters.Add(new ValueLookupParameter<IntValue>("VelocityBoundsEndIndex", "The end index by which 'Value' should have reached 'EndValue'.", "MaxIterations"));
-      VelocityBoundsStartIndexParameter.Hidden = true;
-      VelocityBoundsEndIndexParameter.Hidden = true;
+      Parameters.Add(new OptionalConstrainedValueParameter<IDiscreteDoubleValueModifier>("MaxVelocityScalingOperator", "Modifies the value"));
+      Parameters.Add(new ValueLookupParameter<DoubleValue>("FinalMaxVelocity", "The value of maximum velocity if PSO has reached maximum iterations.", new DoubleValue(1E-10)));
+      Parameters.Add(new LookupParameter<IntValue>("MaxVelocityIndex", "The current index.", "Iterations"));
+      Parameters.Add(new ValueLookupParameter<IntValue>("MaxVelocityStartIndex", "The start index at which to start modifying 'Value'.", new IntValue(0)));
+      Parameters.Add(new ValueLookupParameter<IntValue>("MaxVelocityEndIndex", "The end index by which 'Value' should have reached 'EndValue'.", "MaxIterations"));
+      MaxVelocityStartIndexParameter.Hidden = true;
+      MaxVelocityEndIndexParameter.Hidden = true;
       #endregion
 
       Initialize();
-      RegisterEvents();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -166,76 +157,46 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
           SwarmBestQualityParameter.ActualName = oldBestQualityParameter.ActualName;
         Parameters.Remove("BestQuality");
       }
-      RegisterEvents();
     }
-
-    private void RegisterEvents() {
-      VelocityBoundsStartValueParameter.ValueChanged += new EventHandler(VelocityBoundsStartValueParameter_ValueChanged);
-      VelocityBoundsStartValueParameter.Value.ValueChanged += new EventHandler(VelocityBoundsStartValueParameter_Value_ValueChanged);
-    }
-
-    void VelocityBoundsStartValueParameter_Value_ValueChanged(object sender, EventArgs e) {
-      UpdateVelocityBoundsParamater();
-    }
-
-    void UpdateVelocityBoundsParamater() {
-      if (VelocityBoundsParameter.Value == null) {
-        VelocityBoundsParameter.Value = new DoubleMatrix(1, 2);
-      } else if (VelocityBoundsParameter.Value.Columns != 2) {
-        VelocityBoundsParameter.Value = new DoubleMatrix(VelocityBoundsParameter.Value.Rows, 2);
-      }
-      if (VelocityBoundsStartValueParameter.Value != null) {
-        DoubleMatrix matrix = VelocityBoundsParameter.Value;
-        for (int i = 0; i < matrix.Rows; i++) {
-          matrix[i, 0] = (-1) * VelocityBoundsStartValueParameter.Value.Value;
-          matrix[i, 1] = VelocityBoundsStartValueParameter.Value.Value;
-        }
-      }
-    }
-
-    void VelocityBoundsStartValueParameter_ValueChanged(object sender, EventArgs e) {
-      if (VelocityBoundsStartValueParameter.Value != null) {
-        VelocityBoundsStartValueParameter.Value.ValueChanged += new EventHandler(VelocityBoundsStartValueParameter_Value_ValueChanged);
-      }
-      UpdateVelocityBoundsParamater();
-    }
-
     private void Initialize() {
       ResultsCollector = new ResultsCollector();
-      ResultsCollector.CollectedValues.Add(CurrentVelocityBoundsParameter);
-      ResultsCollector.CollectedValues.Add(VelocityBoundsParameter);
+      ResultsCollector.CollectedValues.Add(CurrentMaxVelocityParameter);
+      ResultsCollector.CollectedValues.Add(MaxVelocityParameter);
 
       foreach (IDiscreteDoubleValueModifier op in ApplicationManager.Manager.GetInstances<IDiscreteDoubleValueModifier>()) {
-        VelocityBoundsScalingOperatorParameter.ValidValues.Add(op);
-        op.ValueParameter.ActualName = VelocityBoundsScaleParameter.Name;
-        op.StartValueParameter.ActualName = VelocityBoundsStartValueParameter.Name;
-        op.EndValueParameter.ActualName = VelocityBoundsEndValueParameter.Name;
-        op.IndexParameter.ActualName = VelocityBoundsIndexParameter.Name;
-        op.StartIndexParameter.ActualName = VelocityBoundsStartIndexParameter.Name;
-        op.EndIndexParameter.ActualName = VelocityBoundsEndIndexParameter.Name;
+        MaxVelocityScalingOperatorParameter.ValidValues.Add(op);
+        op.ValueParameter.ActualName = CurrentMaxVelocityParameter.Name;
+        op.StartValueParameter.ActualName = MaxVelocityParameter.Name;
+        op.EndValueParameter.ActualName = FinalMaxVelocityParameter.Name;
+        op.IndexParameter.ActualName = MaxVelocityIndexParameter.Name;
+        op.StartIndexParameter.ActualName = MaxVelocityStartIndexParameter.Name;
+        op.EndIndexParameter.ActualName = MaxVelocityEndIndexParameter.Name;
       }
-      VelocityBoundsScalingOperatorParameter.Value = null;
+      MaxVelocityScalingOperatorParameter.Value = null;
     }
 
     public override IOperation Apply() {
       var max = MaximizationParameter.ActualValue.Value;
+      // Update of the personal bests
       var points = RealVectorParameter.ActualValue;
       var qualities = QualityParameter.ActualValue;
       var particles = points.Select((p, i) => new { Particle = p, Index = i })
         .Zip(qualities, (p, q) => Tuple.Create(p.Index, p.Particle, q.Value)).ToList();
-      UpdateGlobalBest(max, particles);
-      UpdateNeighborBest(max, particles);
       UpdatePersonalBest(max, particles);
-      return UpdateVelocityBounds();
-    }
 
-    private void UpdateGlobalBest(bool maximization, IList<Tuple<int, RealVector, double>> particles) {
-      var best = maximization ? particles.MaxItems(x => x.Item3).First() : particles.MinItems(x => x.Item3).First();
-      var bestQuality = SwarmBestQualityParameter.ActualValue;
-      if (bestQuality == null) {
-        SwarmBestQualityParameter.ActualValue = new DoubleValue(best.Item3);
-      } else bestQuality.Value = best.Item3;
-      BestRealVectorParameter.ActualValue = (RealVector)best.Item2.Clone();
+      // SPSO: update of the neighbor bests from the personal bests
+      var personalBestPoints = PersonalBestParameter.ActualValue;
+      var personalBestQualities = PersonalBestQualityParameter.ActualValue;
+      particles = personalBestPoints.Select((p, i) => new { Particle = p, Index = i })
+        .Zip(personalBestQualities, (p, q) => Tuple.Create(p.Index, p.Particle, q.Value)).ToList();
+      UpdateNeighborBest(max, particles);
+
+      var next = new OperationCollection() { base.Apply() };
+      next.Insert(0, ExecutionContext.CreateChildOperation(ResultsCollector));
+      if (MaxVelocityScalingOperatorParameter.Value != null) {
+        next.Insert(0, ExecutionContext.CreateChildOperation(MaxVelocityScalingOperatorParameter.Value));
+      } else CurrentMaxVelocityParameter.ActualValue = new DoubleValue(MaxVelocityParameter.ActualValue.Value);
+      return next;
     }
 
     private void UpdateNeighborBest(bool maximization, IList<Tuple<int, RealVector, double>> particles) {
@@ -252,6 +213,11 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
         }
         NeighborBestParameter.ActualValue = neighborBest;
         NeighborBestQualityParameter.ActualValue = neighborBestQuality;
+      } else {
+        // Neighbor best = Global best
+        var best = maximization ? particles.MaxItems(x => x.Item3).First() : particles.MinItems(x => x.Item3).First();
+        NeighborBestParameter.ActualValue = new ItemArray<RealVector>(particles.Select(x => best.Item2));
+        NeighborBestQualityParameter.ActualValue = new ItemArray<DoubleValue>(particles.Select(x => new DoubleValue(best.Item3)));
       }
     }
 
@@ -267,47 +233,10 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
         if (maximization && p.Item3 > personalBestQuality[p.Item1].Value ||
           !maximization && p.Item3 < personalBestQuality[p.Item1].Value) {
           personalBestQuality[p.Item1].Value = p.Item3;
-          personalBest[p.Item1] = p.Item2;
+          personalBest[p.Item1] = (RealVector)p.Item2.Clone();
         }
       }
       PersonalBestParameter.ActualValue = personalBest;
-    }
-
-    private IOperation UpdateVelocityBounds() {
-      var currentVelocityBounds = CurrentVelocityBoundsParameter.ActualValue;
-
-      if (currentVelocityBounds == null) {
-        currentVelocityBounds = (DoubleMatrix)VelocityBoundsParameter.ActualValue.Clone();
-        CurrentVelocityBoundsParameter.ActualValue = currentVelocityBounds;
-      }
-      if (VelocityBoundsScalingOperatorParameter.Value == null)
-        return new OperationCollection() {
-          ExecutionContext.CreateChildOperation(ResultsCollector),        
-          base.Apply()
-        };
-
-      var velocityBoundsScale = VelocityBoundsScaleParameter.ActualValue;
-      var velocityBoundsStartValue = VelocityBoundsStartValueParameter.ActualValue;
-
-      if (velocityBoundsScale == null && velocityBoundsStartValue != null) {
-        velocityBoundsScale = new DoubleValue(velocityBoundsStartValue.Value);
-        VelocityBoundsScaleParameter.ActualValue = velocityBoundsScale;
-      }
-      for (int i = 0; i < currentVelocityBounds.Rows; i++) {
-        for (int j = 0; j < currentVelocityBounds.Columns; j++) {
-          if (currentVelocityBounds[i, j] >= 0) {
-            currentVelocityBounds[i, j] = velocityBoundsScale.Value;
-          } else {
-            currentVelocityBounds[i, j] = (-1) * velocityBoundsScale.Value;
-          }
-        }
-      }
-
-      return new OperationCollection() {
-        ExecutionContext.CreateChildOperation(ResultsCollector),
-        ExecutionContext.CreateChildOperation(VelocityBoundsScalingOperatorParameter.Value),
-        base.Apply()
-      };
     }
   }
 }

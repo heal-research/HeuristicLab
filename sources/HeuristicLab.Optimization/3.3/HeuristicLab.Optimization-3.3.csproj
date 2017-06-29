@@ -190,9 +190,7 @@
     <Compile Include="RunCollectionModification\Calculator.cs" />
     <Compile Include="Interfaces\IDiscreteDoubleMatrixModifier.cs" />
     <Compile Include="Algorithms\HeuristicOptimizationEngineAlgorithm.cs" />
-    <Compile Include="Interfaces\IGlobalParticleUpdater.cs" />
     <Compile Include="Interfaces\ILocalImprovementOperator.cs" />
-    <Compile Include="Interfaces\ILocalParticleUpdater.cs" />
     <Compile Include="Algorithms\HeuristicOptimizationAlgorithm.cs" />
     <Compile Include="Interfaces\IMultiNeighborhoodShakingOperator.cs" />
     <Compile Include="MoveHelper.cs" />

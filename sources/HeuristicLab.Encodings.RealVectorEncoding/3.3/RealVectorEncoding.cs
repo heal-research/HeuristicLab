@@ -279,7 +279,6 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       foreach (var particleCreator in particleCreators) {
         particleCreator.RealVectorParameter.ActualName = Name;
         particleCreator.BoundsParameter.ActualName = BoundsParameter.Name;
-        particleCreator.ProblemSizeParameter.ActualName = LengthParameter.Name;
       }
     }
     private void ConfigureParticleUpdaters(IEnumerable<IRealVectorParticleUpdater> particleUpdaters) {
