@@ -30,6 +30,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     IEnumerable<string> VariableNames { get; }
     IEnumerable<string> DoubleVariables { get; }
     IEnumerable<string> StringVariables { get; }
+    IEnumerable<string> DateTimeVariables { get; }
 
     bool VariableHasType<T>(string variableName);
 
@@ -43,6 +44,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
     IEnumerable<string> GetStringValues(string variableName, IEnumerable<int> rows);
     ReadOnlyCollection<string> GetReadOnlyStringValues(string VariableName);
 
+    System.DateTime GetDateTimeValue(string variableName, int row);
     IEnumerable<DateTime> GetDateTimeValues(string variableName);
+    IEnumerable<DateTime> GetDateTimeValues(string variableName, IEnumerable<int> rows);
+    ReadOnlyCollection<DateTime> GetReadOnlyDateTimeValues(string variableName);
   }
 }

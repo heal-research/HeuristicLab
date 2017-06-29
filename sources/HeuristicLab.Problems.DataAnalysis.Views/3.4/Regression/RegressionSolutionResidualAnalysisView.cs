@@ -90,12 +90,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       // determine relevant variables (at least two different values)
       var doubleVars = ds.DoubleVariables.Where(vn => ds.GetDoubleValues(vn).Max() > ds.GetDoubleValues(vn).Min()).ToArray();
       var stringVars = ds.StringVariables.Where(vn => ds.GetStringValues(vn).Distinct().Skip(1).Any()).ToArray();
+      var dateTimeVars = ds.DateTimeVariables.Where(vn => ds.GetDateTimeValues(vn).Distinct().Skip(1).Any()).ToArray();
 
       // produce training and test values separately as they might overlap (e.g. for ensembles)
       var predictedValuesTrain = Content.EstimatedTrainingValues.ToArray();
       int j = 0; // idx for predictedValues array
       foreach (var i in problemData.TrainingIndices) {
-        var run = CreateRunForIdx(i, problemData, doubleVars, stringVars);
+        var run = CreateRunForIdx(i, problemData, doubleVars, stringVars, dateTimeVars);
         var targetValue = ds.GetDoubleValue(problemData.TargetVariable, i);
         AddErrors(run, predictedValuesTrain[j++], targetValue);
         run.Results.Add(PartitionLabel, new StringValue("Training"));
@@ -105,7 +106,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       var predictedValuesTest = Content.EstimatedTestValues.ToArray();
       j = 0;
       foreach (var i in problemData.TestIndices) {
-        var run = CreateRunForIdx(i, problemData, doubleVars, stringVars);
+        var run = CreateRunForIdx(i, problemData, doubleVars, stringVars, dateTimeVars);
         var targetValue = ds.GetDoubleValue(problemData.TargetVariable, i);
         AddErrors(run, predictedValuesTest[j++], targetValue);
         run.Results.Add(PartitionLabel, new StringValue("Test"));
@@ -133,7 +134,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       run.Results.Add(AbsRelativeErrorLabel, new DoubleValue(Math.Abs(relError)));
     }
 
-    private IRun CreateRunForIdx(int i, IRegressionProblemData problemData, IEnumerable<string> doubleVars, IEnumerable<string> stringVars) {
+    private IRun CreateRunForIdx(int i, IRegressionProblemData problemData, IEnumerable<string> doubleVars, IEnumerable<string> stringVars, IEnumerable<string> dateTimeVars) {
       var ds = problemData.Dataset;
       var run = new Run();
       foreach (var variableName in doubleVars) {
@@ -141,6 +142,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       }
       foreach (var variableName in stringVars) {
         run.Results.Add(variableName, new StringValue(ds.GetStringValue(variableName, i)));
+      }
+      foreach (var variableName in dateTimeVars) {
+        run.Results.Add(variableName, new DateTimeValue(ds.GetDateTimeValue(variableName, i)));
       }
       return run;
     }
