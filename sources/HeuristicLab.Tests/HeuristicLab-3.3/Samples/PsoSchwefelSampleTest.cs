@@ -51,15 +51,15 @@ namespace HeuristicLab.Tests {
       pso.SetSeedRandomly.Value = false;
       SamplesUtils.RunAlgorithm(pso);
       if (Environment.Is64BitProcess) {
-        Assert.AreEqual(118.43833503632464, SamplesUtils.GetDoubleResult(pso, "BestQuality"));
-        Assert.AreEqual(118.43935663125784, SamplesUtils.GetDoubleResult(pso, "CurrentAverageQuality"));
-        Assert.AreEqual(118.44721627137812, SamplesUtils.GetDoubleResult(pso, "CurrentWorstQuality"));
-        Assert.AreEqual(1000, SamplesUtils.GetIntResult(pso, "Iterations"));
+        Assert.AreEqual(2.8334909529803554E-08, SamplesUtils.GetDoubleResult(pso, "BestQuality"));
+        Assert.AreEqual(128.08680460446624, SamplesUtils.GetDoubleResult(pso, "CurrentAverageQuality"));
+        Assert.AreEqual(713.67728101375587, SamplesUtils.GetDoubleResult(pso, "CurrentWorstQuality"));
+        Assert.AreEqual(200, SamplesUtils.GetIntResult(pso, "Iterations"));
       } else {
-        Assert.AreEqual(118.4383350363247, SamplesUtils.GetDoubleResult(pso, "BestQuality"));
-        Assert.AreEqual(118.43935663125787, SamplesUtils.GetDoubleResult(pso, "CurrentAverageQuality"));
-        Assert.AreEqual(118.44721627137824, SamplesUtils.GetDoubleResult(pso, "CurrentWorstQuality"));
-        Assert.AreEqual(1000, SamplesUtils.GetIntResult(pso, "Iterations"));
+        Assert.AreEqual(2.8334909529803554E-08, SamplesUtils.GetDoubleResult(pso, "BestQuality"));
+        Assert.AreEqual(128.08680460446624, SamplesUtils.GetDoubleResult(pso, "CurrentAverageQuality"));
+        Assert.AreEqual(713.67728101375587, SamplesUtils.GetDoubleResult(pso, "CurrentWorstQuality"));
+        Assert.AreEqual(200, SamplesUtils.GetIntResult(pso, "Iterations"));
       }
     }
 
@@ -79,34 +79,20 @@ namespace HeuristicLab.Tests {
       pso.Name = "Particle Swarm Optimization - Schwefel";
       pso.Description = "A particle swarm optimization algorithm which solves the 2-dimensional Schwefel test function (based on the description in Pedersen, M.E.H. (2010). PhD thesis. University of Southampton)";
       pso.Problem = problem;
-      pso.Inertia.Value = 10;
-      pso.MaxIterations.Value = 1000;
-      pso.NeighborBestAttraction.Value = 0.5;
-      pso.PersonalBestAttraction.Value = -0.01;
-      pso.SwarmSize.Value = 50;
+      pso.Inertia.Value = 1.1;
+      pso.MaxIterations.Value = 200;
+      pso.NeighborBestAttraction.Value = 1;
+      pso.PersonalBestAttraction.Value = 1;
+      pso.SwarmSize.Value = 40;
 
       var inertiaUpdater = pso.InertiaUpdaterParameter.ValidValues
         .OfType<ExponentialDiscreteDoubleValueModifier>()
         .Single();
-      inertiaUpdater.StartValueParameter.Value = new DoubleValue(10);
-      inertiaUpdater.EndValueParameter.Value = new DoubleValue(0.8);
+      inertiaUpdater.EndValueParameter.Value = new DoubleValue(0.721);
       pso.InertiaUpdater = inertiaUpdater;
-
-      pso.ParticleCreator = pso.ParticleCreatorParameter.ValidValues
-        .OfType<RealVectorParticleCreator>()
-        .Single();
-      var swarmUpdater = pso.SwarmUpdaterParameter.ValidValues
-        .OfType<RealVectorSwarmUpdater>()
-        .Single();
-      swarmUpdater.MaxVelocityParameter.Value = new DoubleValue(20.0);
-      swarmUpdater.FinalMaxVelocityParameter.Value = new DoubleValue(1.0);
-      swarmUpdater.MaxVelocityScalingOperatorParameter.Value = swarmUpdater.MaxVelocityScalingOperatorParameter.ValidValues
-        .OfType<ExponentialDiscreteDoubleValueModifier>()
-        .Single();
-
+      
       pso.TopologyInitializer = null;
       pso.TopologyUpdater = null;
-      pso.SwarmUpdater = swarmUpdater;
       pso.Seed.Value = 0;
       pso.SetSeedRandomly.Value = true;
       #endregion

@@ -115,6 +115,8 @@
   <ItemGroup>
     <Compile Include="Creators\NormalDistributedRealVectorCreator.cs" />
     <Compile Include="Interfaces\IRealVectorMultiNeighborhoodShakingOperator.cs" />
+    <Compile Include="ParticleOperators\SPSO2011ParticleUpdater.cs" />
+    <Compile Include="ParticleOperators\SPSO2007ParticleUpdater.cs" />
     <Compile Include="ParticleOperators\RealVectorParticleCreator.cs" />
     <Compile Include="Crossovers\BlendAlphaBetaCrossover.cs" />
     <Compile Include="Interfaces\IRealVectorManipulator.cs" />

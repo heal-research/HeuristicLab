@@ -125,7 +125,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       Parameters.Add(new ScopeTreeLookupParameter<RealVector>("NeighborBest", "Neighborhood (or global in case of totally connected neighborhood) best particle positions."));
       Parameters.Add(new ScopeTreeLookupParameter<IntArray>("Neighbors", "The list of neighbors for each particle."));
       Parameters.Add(new LookupParameter<BoolValue>("Maximization", "True if the problem is a maximization problem, otherwise false."));
-      Parameters.Add(new ValueLookupParameter<DoubleValue>("MaxVelocity", "Speed limit for each particle.", new DoubleValue(1)));
+      Parameters.Add(new ValueLookupParameter<DoubleValue>("MaxVelocity", "Speed limit for each particle.", new DoubleValue(1000000)));
       Parameters.Add(new LookupParameter<DoubleValue>("CurrentMaxVelocity", "Current value of the speed limit."));
       Parameters.Add(new LookupParameter<ResultCollection>("Results", "Results"));
 

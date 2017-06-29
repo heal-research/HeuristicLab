@@ -22,7 +22,6 @@
 using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
 
@@ -30,7 +29,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
   [Item("Totally Connected Particle Updater", "Updates the particle's position using (among other things) the global best position. Use together with the empty topology initialzer. Point = Point + Velocity*Inertia + (PersonalBestPoint-Point)*Phi_P*r_p + (BestPoint-Point)*Phi_G*r_g")]
   [StorableClass]
   [NonDiscoverableType]
-  [Obsolete("Same as the RealVectorNeighborhoodParticleUpdate")]
+  [Obsolete("Replaced by SPSO2007ParticleUpdater")]
   internal sealed class RealVectorTotallyConnectedParticleUpdater : RealVectorParticleUpdater {
 
     #region Construction & Cloning
@@ -42,6 +41,58 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       return new RealVectorTotallyConnectedParticleUpdater(this, cloner);
     }
     #endregion
+
+    private void UpdateVelocity() {
+      var velocity = VelocityParameter.ActualValue;
+      var position = RealVectorParameter.ActualValue;
+      var inertia = CurrentInertiaParameter.ActualValue.Value;
+      var personalBest = PersonalBestParameter.ActualValue;
+      var personalBestAttraction = PersonalBestAttractionParameter.ActualValue.Value;
+      var neighborBest = NeighborBestParameter.ActualValue;
+      var neighborBestAttraction = NeighborBestAttractionParameter.ActualValue.Value;
+
+      var random = RandomParameter.ActualValue;
+
+      for (int i = 0; i < velocity.Length; i++) {
+        double r_p = random.NextDouble();
+        double r_g = random.NextDouble();
+        velocity[i] =
+          velocity[i] * inertia +
+          (personalBest[i] - position[i]) * personalBestAttraction * r_p +
+          (neighborBest[i] - position[i]) * neighborBestAttraction * r_g;
+      }
+
+      var maxVelocity = CurrentMaxVelocityParameter.ActualValue.Value;
+      var speed = Math.Sqrt(velocity.DotProduct(velocity));
+      if (speed > maxVelocity) {
+        for (var i = 0; i < velocity.Length; i++) {
+          velocity[i] *= maxVelocity / speed;
+        }
+      }
+    }
+
+    private void UpdatePosition() {
+      var velocity = VelocityParameter.ActualValue;
+      var position = RealVectorParameter.ActualValue;
+
+      for (int i = 0; i < velocity.Length; i++) {
+        position[i] += velocity[i];
+      }
+
+      var bounds = BoundsParameter.ActualValue;
+      for (int i = 0; i < position.Length; i++) {
+        double min = bounds[i % bounds.Rows, 0];
+        double max = bounds[i % bounds.Rows, 1];
+        if (position[i] < min) {
+          position[i] = min;
+          velocity[i] = -0.5 * velocity[i]; // SPSO 2011
+        }
+        if (position[i] > max) {
+          position[i] = max;
+          velocity[i] = -0.5 * velocity[i]; // SPSO 2011
+        }
+      }
+    }
 
     public override IOperation Apply() {
       UpdateVelocity();
