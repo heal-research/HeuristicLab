@@ -50,15 +50,15 @@ namespace HeuristicLab.Tests {
       var pso = CreatePsoSchwefelSample();
       pso.SetSeedRandomly.Value = false;
       SamplesUtils.RunAlgorithm(pso);
-      if (!Environment.Is64BitProcess) {
-        Assert.AreEqual(118.43840301792932, SamplesUtils.GetDoubleResult(pso, "BestQuality"));
-        Assert.AreEqual(118.86062846097485, SamplesUtils.GetDoubleResult(pso, "CurrentAverageQuality"));
-        Assert.AreEqual(120.41419835105029, SamplesUtils.GetDoubleResult(pso, "CurrentWorstQuality"));
+      if (Environment.Is64BitProcess) {
+        Assert.AreEqual(118.43833503632464, SamplesUtils.GetDoubleResult(pso, "BestQuality"));
+        Assert.AreEqual(118.43935663125784, SamplesUtils.GetDoubleResult(pso, "CurrentAverageQuality"));
+        Assert.AreEqual(118.44721627137812, SamplesUtils.GetDoubleResult(pso, "CurrentWorstQuality"));
         Assert.AreEqual(1000, SamplesUtils.GetIntResult(pso, "Iterations"));
       } else {
-        Assert.AreEqual(118.43840301792932, SamplesUtils.GetDoubleResult(pso, "BestQuality"));
-        Assert.AreEqual(118.86062846097485, SamplesUtils.GetDoubleResult(pso, "CurrentAverageQuality"));
-        Assert.AreEqual(120.41419835105029, SamplesUtils.GetDoubleResult(pso, "CurrentWorstQuality"));
+        Assert.AreEqual(118.4383350363247, SamplesUtils.GetDoubleResult(pso, "BestQuality"));
+        Assert.AreEqual(118.43935663125787, SamplesUtils.GetDoubleResult(pso, "CurrentAverageQuality"));
+        Assert.AreEqual(118.44721627137824, SamplesUtils.GetDoubleResult(pso, "CurrentWorstQuality"));
         Assert.AreEqual(1000, SamplesUtils.GetIntResult(pso, "Iterations"));
       }
     }
@@ -89,7 +89,7 @@ namespace HeuristicLab.Tests {
         .OfType<ExponentialDiscreteDoubleValueModifier>()
         .Single();
       inertiaUpdater.StartValueParameter.Value = new DoubleValue(10);
-      inertiaUpdater.EndValueParameter.Value = new DoubleValue(1);
+      inertiaUpdater.EndValueParameter.Value = new DoubleValue(0.8);
       pso.InertiaUpdater = inertiaUpdater;
 
       pso.ParticleCreator = pso.ParticleCreatorParameter.ValidValues
@@ -98,11 +98,9 @@ namespace HeuristicLab.Tests {
       var swarmUpdater = pso.SwarmUpdaterParameter.ValidValues
         .OfType<RealVectorSwarmUpdater>()
         .Single();
-      swarmUpdater.VelocityBoundsIndexParameter.ActualName = "Iterations";
-      swarmUpdater.VelocityBoundsParameter.Value = new DoubleMatrix(new double[,] { { -10, 10 } });
-      swarmUpdater.VelocityBoundsStartValueParameter.Value = new DoubleValue(10.0);
-      swarmUpdater.VelocityBoundsEndValueParameter.Value = new DoubleValue(1.0);
-      swarmUpdater.VelocityBoundsScalingOperatorParameter.Value = swarmUpdater.VelocityBoundsScalingOperatorParameter.ValidValues
+      swarmUpdater.MaxVelocityParameter.Value = new DoubleValue(20.0);
+      swarmUpdater.FinalMaxVelocityParameter.Value = new DoubleValue(1.0);
+      swarmUpdater.MaxVelocityScalingOperatorParameter.Value = swarmUpdater.MaxVelocityScalingOperatorParameter.ValidValues
         .OfType<ExponentialDiscreteDoubleValueModifier>()
         .Single();
 
