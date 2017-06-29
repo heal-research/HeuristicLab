@@ -348,9 +348,11 @@ namespace HeuristicLab.Analysis.Views {
       else {
         ConfigureChartArea(chart.ChartAreas[0]);
         RecalculateAxesScale(chart.ChartAreas[0]); // axes min/max could have changed
+
+        chart.Update(); // side-by-side and stacked histograms are not always correctly displayed without an update
+        // (chart update is required before the series are updated, otherwise the widths of the bars are updated incorrectly)
         foreach (var row in Content.Rows.Where(r => r.VisualProperties.ChartType == DataRowVisualProperties.DataRowChartType.Histogram))
           Row_VisualPropertiesChanged(row, EventArgs.Empty); // Histogram properties could have changed
-        chart.Update(); // side-by-side series are not always correctly displayed without an update
       }
     }
     #endregion
