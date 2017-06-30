@@ -19,10 +19,11 @@
  */
 #endregion
 
-using HeuristicLab.MainForm;
-using HeuristicLab.MainForm.WindowsForms;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
+using HeuristicLab.MainForm;
+using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Analysis.Views {
   [View("DataTable Visual Properties")]
@@ -57,6 +58,7 @@ namespace HeuristicLab.Analysis.Views {
       errorProvider.SetIconPadding(yAxisPrimaryMaximumFixedTextBox, 2);
       errorProvider.SetIconPadding(yAxisSecondaryMinimumFixedTextBox, 2);
       errorProvider.SetIconPadding(yAxisSecondaryMaximumFixedTextBox, 2);
+      histogramAggregationComboBox.DataSource = Enum.GetValues(typeof(DataTableVisualProperties.DataTableHistogramAggregation));
     }
 
     protected virtual void OnContentChanged() {
@@ -100,6 +102,11 @@ namespace HeuristicLab.Analysis.Views {
           yAxisSecondaryMaximumFixedRadioButton.Checked = false;
           yAxisSecondaryMaximumFixedTextBox.Text = string.Empty;
           yAxisSecondaryLogScaleCheckBox.Checked = false;
+
+          histogramBinsNumericUpDown.Value = 1;
+          histogramBinsApproximatelyRadioButton.Checked = false;
+          histogramBinsExactRadioButton.Checked = false;
+          histogramAggregationComboBox.SelectedIndex = -1;
         } else {
           titleFontLabel.Text = "( " + FormatFont(Content.TitleFont) + " )";
           axisFontLabel.Text = "( " + FormatFont(Content.AxisTitleFont) + " )";
@@ -138,6 +145,15 @@ namespace HeuristicLab.Analysis.Views {
           yAxisSecondaryMaximumFixedRadioButton.Checked = !Content.SecondYAxisMaximumAuto;
           yAxisSecondaryMaximumFixedTextBox.Text = Content.SecondYAxisMaximumFixedValue.ToString();
           yAxisSecondaryLogScaleCheckBox.Checked = Content.SecondYAxisLogScale;
+
+          if (Content.HistogramBins < histogramBinsNumericUpDown.Minimum)
+            histogramBinsNumericUpDown.Value = histogramBinsNumericUpDown.Minimum;
+          else if (Content.HistogramBins > histogramBinsNumericUpDown.Maximum)
+            histogramBinsNumericUpDown.Value = histogramBinsNumericUpDown.Maximum;
+          else histogramBinsNumericUpDown.Value = Content.HistogramBins;
+          histogramBinsApproximatelyRadioButton.Checked = !Content.HistogramExactBins;
+          histogramBinsExactRadioButton.Checked = Content.HistogramExactBins;
+          histogramAggregationComboBox.SelectedItem = Content.HistogramAggregation;
         }
       } finally { SuppressEvents = false; }
       SetEnabledStateOfControls();
@@ -480,6 +496,30 @@ namespace HeuristicLab.Analysis.Views {
     private void titleTextBox_Validated(object sender, System.EventArgs e) {
       if (!SuppressEvents && Content != null) {
         Content.Title = titleTextBox.Text;
+      }
+    }
+
+    private void histogramBinsNumericUpDown_ValueChanged(object sender, System.EventArgs e) {
+      if (!SuppressEvents && Content != null) {
+        Content.HistogramBins = (int)histogramBinsNumericUpDown.Value;
+      }
+    }
+
+    private void histogramBinsExactRadioButton_CheckedChanged(object sender, System.EventArgs e) {
+      if (!SuppressEvents && Content != null) {
+        SuppressEvents = true;
+        try {
+          Content.HistogramExactBins = histogramBinsExactRadioButton.Checked;
+        } finally { SuppressEvents = false; }
+      }
+    }
+
+    private void histogramAggregationComboBox_SelectedValueChanged(object sender, System.EventArgs e) {
+      if (!SuppressEvents && Content != null) {
+        SuppressEvents = true;
+        try {
+          Content.HistogramAggregation = (DataTableVisualProperties.DataTableHistogramAggregation)histogramAggregationComboBox.SelectedValue;
+        } finally { SuppressEvents = false; }
       }
     }
     #endregion

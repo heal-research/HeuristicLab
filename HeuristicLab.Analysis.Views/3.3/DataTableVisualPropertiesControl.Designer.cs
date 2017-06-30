@@ -104,6 +104,14 @@ namespace HeuristicLab.Analysis.Views {
       this.yAxisPrimaryMaximumFixedTextBox = new System.Windows.Forms.TextBox();
       this.label7 = new System.Windows.Forms.Label();
       this.label8 = new System.Windows.Forms.Label();
+      this.histogramTabPage = new System.Windows.Forms.TabPage();
+      this.histogramGroupBox = new System.Windows.Forms.GroupBox();
+      this.histogramBinsExactRadioButton = new System.Windows.Forms.RadioButton();
+      this.histogramBinsApproximatelyRadioButton = new System.Windows.Forms.RadioButton();
+      this.histogramBinsNumericUpDown = new System.Windows.Forms.NumericUpDown();
+      this.label16 = new System.Windows.Forms.Label();
+      this.label17 = new System.Windows.Forms.Label();
+      this.histogramAggregationComboBox = new System.Windows.Forms.ComboBox();
       this.titleTextBox = new System.Windows.Forms.TextBox();
       this.label15 = new System.Windows.Forms.Label();
       this.axisFontLabel = new System.Windows.Forms.Label();
@@ -130,6 +138,9 @@ namespace HeuristicLab.Analysis.Views {
       this.yAxisPrimaryGroupBox.SuspendLayout();
       this.panel6.SuspendLayout();
       this.panel5.SuspendLayout();
+      this.histogramTabPage.SuspendLayout();
+      this.histogramGroupBox.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.histogramBinsNumericUpDown)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.SuspendLayout();
       // 
@@ -488,6 +499,7 @@ namespace HeuristicLab.Analysis.Views {
             | System.Windows.Forms.AnchorStyles.Right)));
       this.axisTabControl.Controls.Add(this.xAxisTabPage);
       this.axisTabControl.Controls.Add(this.yAxisTabPage);
+      this.axisTabControl.Controls.Add(this.histogramTabPage);
       this.axisTabControl.Location = new System.Drawing.Point(0, 84);
       this.axisTabControl.Name = "axisTabControl";
       this.axisTabControl.SelectedIndex = 0;
@@ -791,6 +803,109 @@ namespace HeuristicLab.Analysis.Views {
       this.label8.TabIndex = 2;
       this.label8.Text = "&Minimum:";
       // 
+      // histogramTabPage
+      // 
+      this.histogramTabPage.Controls.Add(this.histogramGroupBox);
+      this.histogramTabPage.Location = new System.Drawing.Point(4, 22);
+      this.histogramTabPage.Name = "histogramTabPage";
+      this.histogramTabPage.Padding = new System.Windows.Forms.Padding(3);
+      this.histogramTabPage.Size = new System.Drawing.Size(447, 263);
+      this.histogramTabPage.TabIndex = 2;
+      this.histogramTabPage.Text = "Histogram";
+      this.histogramTabPage.UseVisualStyleBackColor = true;
+      // 
+      // histogramGroupBox
+      // 
+      this.histogramGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.histogramGroupBox.Controls.Add(this.histogramBinsExactRadioButton);
+      this.histogramGroupBox.Controls.Add(this.histogramBinsApproximatelyRadioButton);
+      this.histogramGroupBox.Controls.Add(this.histogramBinsNumericUpDown);
+      this.histogramGroupBox.Controls.Add(this.label16);
+      this.histogramGroupBox.Controls.Add(this.label17);
+      this.histogramGroupBox.Controls.Add(this.histogramAggregationComboBox);
+      this.histogramGroupBox.Location = new System.Drawing.Point(3, 3);
+      this.histogramGroupBox.Name = "histogramGroupBox";
+      this.histogramGroupBox.Size = new System.Drawing.Size(441, 75);
+      this.histogramGroupBox.TabIndex = 2;
+      this.histogramGroupBox.TabStop = false;
+      this.histogramGroupBox.Text = "Histogram Properties";
+      // 
+      // histogramBinsExactRadioButton
+      // 
+      this.histogramBinsExactRadioButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.histogramBinsExactRadioButton.AutoSize = true;
+      this.histogramBinsExactRadioButton.Location = new System.Drawing.Point(383, 19);
+      this.histogramBinsExactRadioButton.Name = "histogramBinsExactRadioButton";
+      this.histogramBinsExactRadioButton.Size = new System.Drawing.Size(52, 17);
+      this.histogramBinsExactRadioButton.TabIndex = 3;
+      this.histogramBinsExactRadioButton.TabStop = true;
+      this.histogramBinsExactRadioButton.Text = "&Exact";
+      this.histogramBinsExactRadioButton.UseVisualStyleBackColor = true;
+      this.histogramBinsExactRadioButton.CheckedChanged += new System.EventHandler(this.histogramBinsExactRadioButton_CheckedChanged);
+      // 
+      // histogramBinsApproximatelyRadioButton
+      // 
+      this.histogramBinsApproximatelyRadioButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.histogramBinsApproximatelyRadioButton.AutoSize = true;
+      this.histogramBinsApproximatelyRadioButton.Location = new System.Drawing.Point(287, 19);
+      this.histogramBinsApproximatelyRadioButton.Name = "histogramBinsApproximatelyRadioButton";
+      this.histogramBinsApproximatelyRadioButton.Size = new System.Drawing.Size(90, 17);
+      this.histogramBinsApproximatelyRadioButton.TabIndex = 2;
+      this.histogramBinsApproximatelyRadioButton.TabStop = true;
+      this.histogramBinsApproximatelyRadioButton.Text = "&Approximately";
+      this.histogramBinsApproximatelyRadioButton.UseVisualStyleBackColor = true;
+      // 
+      // histogramBinsNumericUpDown
+      // 
+      this.histogramBinsNumericUpDown.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.histogramBinsNumericUpDown.Location = new System.Drawing.Point(82, 19);
+      this.histogramBinsNumericUpDown.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+      this.histogramBinsNumericUpDown.Name = "histogramBinsNumericUpDown";
+      this.histogramBinsNumericUpDown.Size = new System.Drawing.Size(186, 20);
+      this.histogramBinsNumericUpDown.TabIndex = 1;
+      this.histogramBinsNumericUpDown.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+      this.histogramBinsNumericUpDown.ValueChanged += new System.EventHandler(this.histogramBinsNumericUpDown_ValueChanged);
+      // 
+      // label16
+      // 
+      this.label16.AutoSize = true;
+      this.label16.Location = new System.Drawing.Point(6, 49);
+      this.label16.Name = "label16";
+      this.label16.Size = new System.Drawing.Size(67, 13);
+      this.label16.TabIndex = 0;
+      this.label16.Text = "Aggregation:";
+      // 
+      // label17
+      // 
+      this.label17.AutoSize = true;
+      this.label17.Location = new System.Drawing.Point(6, 21);
+      this.label17.Name = "label17";
+      this.label17.Size = new System.Drawing.Size(30, 13);
+      this.label17.TabIndex = 0;
+      this.label17.Text = "&Bins:";
+      // 
+      // histogramAggregationComboBox
+      // 
+      this.histogramAggregationComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.histogramAggregationComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.histogramAggregationComboBox.FormattingEnabled = true;
+      this.histogramAggregationComboBox.Location = new System.Drawing.Point(82, 45);
+      this.histogramAggregationComboBox.Name = "histogramAggregationComboBox";
+      this.histogramAggregationComboBox.Size = new System.Drawing.Size(353, 21);
+      this.histogramAggregationComboBox.TabIndex = 3;
+      this.histogramAggregationComboBox.SelectedValueChanged += new System.EventHandler(this.histogramAggregationComboBox_SelectedValueChanged);
+      // 
       // titleTextBox
       // 
       this.titleTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -926,6 +1041,10 @@ namespace HeuristicLab.Analysis.Views {
       this.panel6.PerformLayout();
       this.panel5.ResumeLayout(false);
       this.panel5.PerformLayout();
+      this.histogramTabPage.ResumeLayout(false);
+      this.histogramGroupBox.ResumeLayout(false);
+      this.histogramGroupBox.PerformLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.histogramBinsNumericUpDown)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
       this.ResumeLayout(false);
       this.PerformLayout();
@@ -1004,5 +1123,13 @@ namespace HeuristicLab.Analysis.Views {
     private System.Windows.Forms.CheckBox xAxisSecondaryLogScaleCheckBox;
     private System.Windows.Forms.CheckBox yAxisSecondaryLogScaleCheckBox;
     private System.Windows.Forms.CheckBox yAxisPrimaryLogScaleCheckBox;
+    private System.Windows.Forms.TabPage histogramTabPage;
+    private System.Windows.Forms.GroupBox histogramGroupBox;
+    private System.Windows.Forms.RadioButton histogramBinsExactRadioButton;
+    private System.Windows.Forms.RadioButton histogramBinsApproximatelyRadioButton;
+    private System.Windows.Forms.NumericUpDown histogramBinsNumericUpDown;
+    private System.Windows.Forms.Label label16;
+    private System.Windows.Forms.Label label17;
+    private System.Windows.Forms.ComboBox histogramAggregationComboBox;
   }
 }

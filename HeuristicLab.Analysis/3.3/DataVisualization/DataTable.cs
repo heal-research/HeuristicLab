@@ -111,6 +111,21 @@ namespace HeuristicLab.Analysis {
     private void AfterDeserialization() {
       if (VisualProperties == null) VisualProperties = new DataTableVisualProperties(name);
       if (VisualProperties.Title == null) VisualProperties.Title = name;
+
+      #region Backwards Compatability Histogram Visual Properties 
+      var rowProperties = Rows.Select(r => r.VisualProperties).ToList();
+      if (rowProperties.Any(r => r.Bins.HasValue))
+        VisualProperties.HistogramBins = rowProperties.Where(r => r.Bins.HasValue).Max(r => r.Bins.Value);
+      if (rowProperties.Any(r => r.ExactBins.HasValue))
+        VisualProperties.HistogramExactBins = rowProperties.Where(r => r.ExactBins.HasValue).Any(r => r.ExactBins.Value);
+      if (rowProperties.Any(r => r.Aggregation.HasValue)) {
+        var maxOccurrence = rowProperties
+          .Where(r => r.Aggregation.HasValue).Select(r => r.Aggregation.Value)
+          .GroupBy(x => x).OrderByDescending(x => x.Count())
+          .First().Key;
+        VisualProperties.HistogramAggregation = (DataTableVisualProperties.DataTableHistogramAggregation)maxOccurrence;
+      }
+      #endregion
     }
     #endregion
 

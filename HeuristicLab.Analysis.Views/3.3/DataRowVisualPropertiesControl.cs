@@ -22,6 +22,7 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using HeuristicLab.Common.Resources;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 
@@ -44,6 +45,8 @@ namespace HeuristicLab.Analysis.Views {
       InitializeComponent();
       chartTypeComboBox.DataSource = Enum.GetValues(typeof(DataRowVisualProperties.DataRowChartType));
       lineStyleComboBox.DataSource = Enum.GetValues(typeof(DataRowVisualProperties.DataRowLineStyle));
+      clearColorButton.BackColor = Color.Transparent;
+      clearColorButton.BackgroundImage = VSImageLibrary.Delete;
       SetEnabledStateOfControls();
     }
 
@@ -61,9 +64,6 @@ namespace HeuristicLab.Analysis.Views {
           lineStyleComboBox.SelectedIndex = -1;
           startIndexZeroCheckBox.Checked = false;
           lineWidthNumericUpDown.Value = 1;
-          binsNumericUpDown.Value = 1;
-          binsApproximatelyRadioButton.Checked = false;
-          binsExactRadioButton.Checked = false;
           displayNameTextBox.Text = String.Empty;
         } else {
           chartTypeComboBox.SelectedItem = Content.ChartType;
@@ -85,14 +85,8 @@ namespace HeuristicLab.Analysis.Views {
           else if (Content.LineWidth > lineWidthNumericUpDown.Maximum)
             lineWidthNumericUpDown.Value = lineWidthNumericUpDown.Maximum;
           else lineWidthNumericUpDown.Value = Content.LineWidth;
-          if (Content.Bins < binsNumericUpDown.Minimum)
-            binsNumericUpDown.Value = binsNumericUpDown.Minimum;
-          else if (Content.Bins > binsNumericUpDown.Maximum)
-            binsNumericUpDown.Value = binsNumericUpDown.Maximum;
-          else binsNumericUpDown.Value = Content.Bins;
-          binsApproximatelyRadioButton.Checked = !Content.ExactBins;
-          binsExactRadioButton.Checked = Content.ExactBins;
           displayNameTextBox.Text = Content.DisplayName;
+          isVisibleInLegendCheckBox.Checked = Content.IsVisibleInLegend;
         }
       } finally { SuppressEvents = false; }
       SetEnabledStateOfControls();
@@ -100,8 +94,9 @@ namespace HeuristicLab.Analysis.Views {
 
     protected virtual void SetEnabledStateOfControls() {
       commonGroupBox.Enabled = Content != null;
+      clearColorButton.Visible = Content != null && !Content.Color.IsEmpty;
       lineChartGroupBox.Enabled = Content != null && Content.ChartType == DataRowVisualProperties.DataRowChartType.Line;
-      histoGramGroupBox.Enabled = Content != null && Content.ChartType == DataRowVisualProperties.DataRowChartType.Histogram;
+      isVisibleInLegendCheckBox.Enabled = Content != null;
     }
 
     #region Event Handlers
@@ -125,6 +120,19 @@ namespace HeuristicLab.Analysis.Views {
         Content.Color = colorDialog.Color;
         colorButton.BackColor = Content.Color;
         colorButton.Text = String.Empty;
+        clearColorButton.Visible = true;
+      }
+    }
+
+    private void clearColorButton_Click(object sender, EventArgs e) {
+      if (!SuppressEvents && Content != null) {
+        SuppressEvents = true;
+        try {
+          Content.Color = Color.Empty;
+          colorButton.BackColor = SystemColors.Control;
+          colorButton.Text = "?";
+          clearColorButton.Visible = false;
+        } finally { SuppressEvents = false; }
       }
     }
 
@@ -164,27 +172,18 @@ namespace HeuristicLab.Analysis.Views {
       }
     }
 
-    private void binsNumericUpDown_ValueChanged(object sender, EventArgs e) {
-      if (!SuppressEvents && Content != null) {
-        Content.Bins = (int)binsNumericUpDown.Value;
-      }
-    }
-
-    private void binNumberRadioButton_CheckedChanged(object sender, EventArgs e) {
-      if (!SuppressEvents && Content != null) {
-        SuppressEvents = true;
-        try {
-          Content.ExactBins = binsExactRadioButton.Checked;
-        } finally { SuppressEvents = false; }
-      }
-    }
-
     private void displayNameTextBox_Validated(object sender, EventArgs e) {
       if (!SuppressEvents && Content != null) {
         SuppressEvents = true;
         try {
           Content.DisplayName = displayNameTextBox.Text;
         } finally { SuppressEvents = false; }
+      }
+    }
+
+    private void isVisibleInLegendCheckBox_CheckedChanged(object sender, EventArgs e) {
+      if (!SuppressEvents && Content != null) {
+        Content.IsVisibleInLegend = isVisibleInLegendCheckBox.Checked;
       }
     }
     #endregion
