@@ -70,8 +70,10 @@ namespace HeuristicLab.Analysis.Views {
       Content.Rows.ItemsRemoved -= new CollectionItemsChangedEventHandler<DataRow>(Rows_ItemsRemoved);
       Content.Rows.ItemsReplaced -= new CollectionItemsChangedEventHandler<DataRow>(Rows_ItemsReplaced);
       Content.Rows.CollectionReset -= new CollectionItemsChangedEventHandler<DataRow>(Rows_CollectionReset);
+      base.DeregisterContentEvents();
     }
     protected override void RegisterContentEvents() {
+      base.RegisterContentEvents();
       Content.VisualPropertiesChanged += new EventHandler(Content_VisualPropertiesChanged);
       Content.Rows.ItemsAdded += new CollectionItemsChangedEventHandler<DataRow>(Rows_ItemsAdded);
       Content.Rows.ItemsRemoved += new CollectionItemsChangedEventHandler<DataRow>(Rows_ItemsRemoved);
