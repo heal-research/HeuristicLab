@@ -23,12 +23,13 @@ using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   [Item("SPSO 2007 Particle Updater", "Updates the particle's position according to the formulae described in SPSO 2007.")]
   [StorableClass]
-  public sealed class SPSO2007ParticleUpdater : RealVectorParticleUpdater {
+  public sealed class SPSO2007ParticleUpdater : SPSOParticleUpdater {
 
     #region Construction & Cloning
     [StorableConstructor]
@@ -40,10 +41,10 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     }
     #endregion
     
-    public static void UpdateVelocity(IRandom random, RealVector velocity, double maxVelocity, RealVector position, double inertia, RealVector personalBest, double personalBestAttraction, RealVector neighborBest, double neighborBestAttraction) {
+    public static void UpdateVelocity(IRandom random, RealVector velocity, double maxVelocity, RealVector position, double inertia, RealVector personalBest, double personalBestAttraction, RealVector neighborBest, double neighborBestAttraction, double c = 1.193) {
       for (int i = 0; i < velocity.Length; i++) {
-        double r_p = random.NextDouble() * 1.193;
-        double r_g = random.NextDouble() * 1.193;
+        double r_p = random.NextDouble() * c;
+        double r_g = random.NextDouble() * c;
         velocity[i] =
           velocity[i] * inertia +
           (personalBest[i] - position[i]) * personalBestAttraction * r_p +
@@ -68,11 +69,11 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
         double max = bounds[i % bounds.Rows, 1];
         if (position[i] < min) {
           position[i] = min;
-          velocity[i] = 0;
+          velocity[i] = 0; // SPSO 2007
         }
         if (position[i] > max) {
           position[i] = max;
-          velocity[i] = 0;
+          velocity[i] = 0; // SPSO 2007
         }
       }
     }
@@ -89,8 +90,9 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       var personalBestAttraction = PersonalBestAttractionParameter.ActualValue.Value;
       var neighborBest = NeighborBestParameter.ActualValue;
       var neighborBestAttraction = NeighborBestAttractionParameter.ActualValue.Value;
-      
-      UpdateVelocity(random, velocity, maxVelocity, position, inertia, personalBest, personalBestAttraction, neighborBest, neighborBestAttraction);
+      var maxBeyond = MaxBeyondBestParameter.ActualValue.Value;
+
+      UpdateVelocity(random, velocity, maxVelocity, position, inertia, personalBest, personalBestAttraction, neighborBest, neighborBestAttraction, maxBeyond);
       UpdatePosition(bounds, velocity, position);
 
       return base.Apply();

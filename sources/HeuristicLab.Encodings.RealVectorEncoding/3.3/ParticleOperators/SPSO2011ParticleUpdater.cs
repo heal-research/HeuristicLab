@@ -28,8 +28,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   [Item("SPSO 2011 Particle Updater", "Updates the particle's position according to the formulae described in SPSO 2011.")]
   [StorableClass]
-  public sealed class SPSO2011ParticleUpdater : RealVectorParticleUpdater {
-
+  public sealed class SPSO2011ParticleUpdater : SPSOParticleUpdater {
     #region Construction & Cloning
     [StorableConstructor]
     private SPSO2011ParticleUpdater(bool deserializing) : base(deserializing) { }
@@ -40,13 +39,13 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     }
     #endregion
     
-    public static void UpdateVelocity(IRandom random, RealVector velocity, double maxVelocity, RealVector position, double inertia, RealVector personalBest, double personalBestAttraction, RealVector neighborBest, double neighborBestAttraction) {
+    public static void UpdateVelocity(IRandom random, RealVector velocity, double maxVelocity, RealVector position, double inertia, RealVector personalBest, double personalBestAttraction, RealVector neighborBest, double neighborBestAttraction, double c = 1.193) {
       var gravity = new double[velocity.Length];
       var direct = new RealVector(velocity.Length);
       var radius = 0.0;
 
       for (int i = 0; i < velocity.Length; i++) {
-        var g_id = 1.193 * ((personalBest[i] + neighborBest[i] - 2 * position[i]) / 3.0);
+        var g_id = c * ((personalBest[i] + neighborBest[i] - 2 * position[i]) / 3.0);
         gravity[i] = g_id + position[i];
         direct[i] = (random.NextDouble() - 0.5) * 2;
         radius += g_id * g_id;
@@ -100,8 +99,9 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       var personalBestAttraction = PersonalBestAttractionParameter.ActualValue.Value;
       var neighborBest = NeighborBestParameter.ActualValue;
       var neighborBestAttraction = NeighborBestAttractionParameter.ActualValue.Value;
-      
-      UpdateVelocity(random, velocity, maxVelocity, position, inertia, personalBest, personalBestAttraction, neighborBest, neighborBestAttraction);
+      var maxBeyond = MaxBeyondBestParameter.ActualValue.Value;
+
+      UpdateVelocity(random, velocity, maxVelocity, position, inertia, personalBest, personalBestAttraction, neighborBest, neighborBestAttraction, maxBeyond);
       UpdatePosition(bounds, velocity, position);
 
       return base.Apply();

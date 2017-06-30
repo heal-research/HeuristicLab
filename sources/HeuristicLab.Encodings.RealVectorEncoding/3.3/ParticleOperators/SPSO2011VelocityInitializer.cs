@@ -19,51 +19,22 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
-using HeuristicLab.Operators;
-using HeuristicLab.Optimization;
-using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
-  [Item("RealVectorVelocityInitializer", "Initializes the velocity vector.")]
+  [Item("Velocity Initializer (SPSO 2011)", "Initializes the velocity vector.")]
   [StorableClass]
-  public class RealVectorVelocityInitializer : SingleSuccessorOperator, IStochasticOperator {
-    #region Parameters
-    public ILookupParameter<IRandom> RandomParameter {
-      get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
-    }
-    public IValueLookupParameter<DoubleMatrix> BoundsParameter {
-      get { return (IValueLookupParameter<DoubleMatrix>)Parameters["Bounds"]; }
-    }
-    public ILookupParameter<RealVector> RealVectorParameter {
-      get { return (ILookupParameter<RealVector>)Parameters["RealVector"]; }
-    }
-    public ILookupParameter<RealVector> VelocityParameter {
-      get { return (ILookupParameter<RealVector>)Parameters["Velocity"]; }
-    }
-    #endregion
+  public class SPSO2011VelocityInitializer : SPSOVelocityInitializer {
     
     #region Construction & Cloning
     [StorableConstructor]
-    protected RealVectorVelocityInitializer(bool deserializing) : base(deserializing) { }
-    protected RealVectorVelocityInitializer(RealVectorVelocityInitializer original, Cloner cloner) : base(original, cloner) { }
-    public RealVectorVelocityInitializer()
-      : base() {
-      Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator to use."));
-      Parameters.Add(new ValueLookupParameter<DoubleMatrix>("Bounds", "The lower and upper bounds in each dimension."));
-      Parameters.Add(new LookupParameter<RealVector>("RealVector", "Particle's current solution"));
-      Parameters.Add(new LookupParameter<RealVector>("Velocity", "Particle's current velocity."));
-    }
+    protected SPSO2011VelocityInitializer(bool deserializing) : base(deserializing) { }
+    protected SPSO2011VelocityInitializer(SPSO2011VelocityInitializer original, Cloner cloner) : base(original, cloner) { }
+    public SPSO2011VelocityInitializer() : base() { }
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new RealVectorVelocityInitializer(this, cloner);
+      return new SPSO2011VelocityInitializer(this, cloner);
     }
     #endregion
 
