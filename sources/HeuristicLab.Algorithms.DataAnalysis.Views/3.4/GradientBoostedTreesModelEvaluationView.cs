@@ -27,13 +27,9 @@ using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Problems.DataAnalysis.Views;
 
 namespace HeuristicLab.Algorithms.DataAnalysis.Views {
-  [View("Gradient boosted tree model")]
+  [View("GBT Model Evaluation")]
   [Content(typeof(GradientBoostedTreesSolution), false)]
-  public partial class GradientBoostedTreesModelView : DataAnalysisSolutionEvaluationView {
-    public override Image ViewImage {
-      get { return HeuristicLab.Common.Resources.VSImageLibrary.Function; }
-    }
-
+  public partial class GradientBoostedTreesModelEvaluationView : DataAnalysisSolutionEvaluationView {
     public new GradientBoostedTreesSolution Content {
       get { return (GradientBoostedTreesSolution)base.Content; }
       set { base.Content = value; }
@@ -45,7 +41,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       viewHost.Enabled = Content != null;
     }
 
-    public GradientBoostedTreesModelView()
+    public GradientBoostedTreesModelEvaluationView()
       : base() {
       InitializeComponent();
     }

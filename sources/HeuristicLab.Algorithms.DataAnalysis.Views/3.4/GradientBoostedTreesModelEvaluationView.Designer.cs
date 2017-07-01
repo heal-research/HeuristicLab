@@ -20,7 +20,7 @@
 #endregion
 
 namespace HeuristicLab.Algorithms.DataAnalysis.Views {
-  partial class GradientBoostedTreesModelView {
+  partial class GradientBoostedTreesModelEvaluationView {
     /// <summary> 
     /// Required designer variable.
     /// </summary>
@@ -75,13 +75,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       this.listBox.SelectedIndexChanged += new System.EventHandler(this.listBox_SelectedIndexChanged);
       this.listBox.DoubleClick += new System.EventHandler(this.listBox_DoubleClick);
       // 
-      // GradientBoostedTreesModelView
+      // GradientBoostedTreesModelEvaluationView
       // 
       this.AllowDrop = true;
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.Controls.Add(this.viewHost);
       this.Controls.Add(this.listBox);
-      this.Name = "GradientBoostedTreesModelView";
+      this.Name = "GradientBoostedTreesModelEvaluationView";
       this.Size = new System.Drawing.Size(349, 289);
       this.ResumeLayout(false);
 
