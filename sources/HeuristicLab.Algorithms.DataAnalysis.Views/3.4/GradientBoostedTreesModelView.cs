@@ -20,6 +20,8 @@
 #endregion
 
 using System.Drawing;
+using HeuristicLab.Common;
+using HeuristicLab.Core;
 using HeuristicLab.MainForm;
 using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Problems.DataAnalysis.Views;
@@ -66,13 +68,23 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       var model = listBox.SelectedItem;
       if (model == null) viewHost.Content = null;
       else {
-        var treeModel = model as RegressionTreeModel;
-        if (treeModel != null)
-          viewHost.Content = treeModel.CreateSymbolicRegressionSolution(Content.ProblemData);
-        else {
-          var regModel = model as IRegressionModel;
-          viewHost.Content = regModel;
-        }
+        viewHost.Content = ConvertModel(model);
+      }
+    }
+
+    private void listBox_DoubleClick(object sender, System.EventArgs e) {
+      var selectedItem = listBox.SelectedItem;
+      if (selectedItem == null) return;
+      MainFormManager.MainForm.ShowContent(ConvertModel(selectedItem));
+    }
+
+    private IContent ConvertModel(object model) {
+      var treeModel = model as RegressionTreeModel;
+      if (treeModel != null)
+        return treeModel.CreateSymbolicRegressionSolution(Content.ProblemData);
+      else {
+        var regModel = model as IRegressionModel;
+        return regModel;
       }
     }
   }

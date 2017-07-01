@@ -18,8 +18,9 @@
  * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
  */
 #endregion
-
+using System;
 using System.Drawing;
+using HeuristicLab.Common;
 using HeuristicLab.MainForm;
 using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
@@ -68,24 +69,35 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       if (listBox.SelectedItem == null) viewHost.Content = null;
       else {
         var idx = (int)listBox.SelectedItem;
-        idx -= 1;
-        var rfModel = Content.Model as RandomForestModel;
-        var regProblemData = Content.ProblemData as IRegressionProblemData;
-        var classProblemData = Content.ProblemData as IClassificationProblemData;
-        if (rfModel != null) {
-          if (idx < 0 || idx >= rfModel.NumberOfTrees) return;
-          if (regProblemData != null) {
-            var syModel = new SymbolicRegressionModel(regProblemData.TargetVariable, rfModel.ExtractTree(idx),
-              new SymbolicDataAnalysisExpressionTreeLinearInterpreter());
-            viewHost.Content = syModel.CreateRegressionSolution(regProblemData);
-          } else if (classProblemData != null) {
-            var syModel = new SymbolicDiscriminantFunctionClassificationModel(classProblemData.TargetVariable, rfModel.ExtractTree(idx),
-              new SymbolicDataAnalysisExpressionTreeLinearInterpreter(), new NormalDistributionCutPointsThresholdCalculator());
-            syModel.RecalculateModelParameters(classProblemData, classProblemData.TrainingIndices);
-            viewHost.Content = syModel.CreateClassificationSolution(classProblemData);
-          }
-        }
+        viewHost.Content = CreateModel(idx);
       }
+    }
+
+    private void listBox_DoubleClick(object sender, System.EventArgs e) {
+      var selectedItem = listBox.SelectedItem;
+      if (selectedItem == null) return;
+      var idx = (int)listBox.SelectedItem;
+      MainFormManager.MainForm.ShowContent(CreateModel(idx));
+    }
+
+    private IContent CreateModel(int idx) {
+      idx -= 1;
+      var rfModel = Content.Model as RandomForestModel;
+      if (rfModel == null) return null;
+      var regProblemData = Content.ProblemData as IRegressionProblemData;
+      var classProblemData = Content.ProblemData as IClassificationProblemData;
+      if (idx < 0 || idx >= rfModel.NumberOfTrees)
+        return null;
+      if (regProblemData != null) {
+        var syModel = new SymbolicRegressionModel(regProblemData.TargetVariable, rfModel.ExtractTree(idx),
+          new SymbolicDataAnalysisExpressionTreeLinearInterpreter());
+        return syModel.CreateRegressionSolution(regProblemData);
+      } else if (classProblemData != null) {
+        var syModel = new SymbolicDiscriminantFunctionClassificationModel(classProblemData.TargetVariable, rfModel.ExtractTree(idx),
+          new SymbolicDataAnalysisExpressionTreeLinearInterpreter(), new NormalDistributionCutPointsThresholdCalculator());
+        syModel.RecalculateModelParameters(classProblemData, classProblemData.TrainingIndices);
+        return syModel.CreateClassificationSolution(classProblemData);
+      } else throw new InvalidProgramException();
     }
   }
 }

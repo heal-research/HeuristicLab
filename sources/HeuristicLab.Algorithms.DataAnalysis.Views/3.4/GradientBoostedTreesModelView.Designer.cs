@@ -73,6 +73,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       this.listBox.Size = new System.Drawing.Size(117, 277);
       this.listBox.TabIndex = 1;
       this.listBox.SelectedIndexChanged += new System.EventHandler(this.listBox_SelectedIndexChanged);
+      this.listBox.DoubleClick += new System.EventHandler(this.listBox_DoubleClick);
       // 
       // GradientBoostedTreesModelView
       // 
