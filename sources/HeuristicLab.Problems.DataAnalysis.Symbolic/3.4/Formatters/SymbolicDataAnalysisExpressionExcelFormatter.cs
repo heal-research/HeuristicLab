@@ -77,11 +77,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       else return FormatWithMapping(symbolicExpressionTree, new Dictionary<string, string>());
     }
 
-    public string FormatWithMapping(ISymbolicExpressionTree symbolicExpressionTree, Dictionary<string,string> variableNameMapping)
-    {
-      foreach(var kvp in variableNameMapping) this.variableNameMapping.Add(kvp.Key,kvp.Value);
+    public string FormatWithMapping(ISymbolicExpressionTree symbolicExpressionTree, Dictionary<string, string> variableNameMapping) {
+      foreach (var kvp in variableNameMapping) this.variableNameMapping.Add(kvp.Key, kvp.Value);
       var stringBuilder = new StringBuilder();
-      
+
       stringBuilder.Append("=");
       stringBuilder.Append(FormatRecursively(symbolicExpressionTree.Root));
 
@@ -92,8 +91,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       return stringBuilder.ToString();
     }
 
-    private Dictionary<string,string> CalculateVariableMapping(ISymbolicExpressionTree tree, IDataset dataset) {
-      var mapping = new Dictionary<string,string>();
+    private Dictionary<string, string> CalculateVariableMapping(ISymbolicExpressionTree tree, IDataset dataset) {
+      var mapping = new Dictionary<string, string>();
       int inputIndex = 0;
       var usedVariables = tree.IterateNodesPrefix().OfType<IVariableTreeNode>().Select(v => v.VariableName).Distinct().ToArray();
       foreach (var variable in dataset.VariableNames) {
@@ -240,18 +239,29 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         stringBuilder.Append(")");
       } else if (symbol is VariableCondition) {
         VariableConditionTreeNode variableConditionTreeNode = node as VariableConditionTreeNode;
-        double threshold = variableConditionTreeNode.Threshold;
-        double slope = variableConditionTreeNode.Slope;
-        string p = "(1 / (1 + EXP(-" + slope.ToString(CultureInfo.InvariantCulture) + " * (" + GetColumnToVariableName(variableConditionTreeNode.VariableName) + "-" + threshold.ToString(CultureInfo.InvariantCulture) + "))))";
-        stringBuilder.Append("((");
-        stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
-        stringBuilder.Append("*");
-        stringBuilder.Append(p);
-        stringBuilder.Append(") + (");
-        stringBuilder.Append(FormatRecursively(node.GetSubtree(1)));
-        stringBuilder.Append("*(");
-        stringBuilder.Append("1 - " + p + ")");
-        stringBuilder.Append("))");
+        if (!variableConditionTreeNode.Symbol.IgnoreSlope) {
+          double threshold = variableConditionTreeNode.Threshold;
+          double slope = variableConditionTreeNode.Slope;
+          string p = "(1 / (1 + EXP(-" + slope.ToString(CultureInfo.InvariantCulture) + " * (" +
+                     GetColumnToVariableName(variableConditionTreeNode.VariableName) + "-" +
+                     threshold.ToString(CultureInfo.InvariantCulture) + "))))";
+          stringBuilder.Append("((");
+          stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
+          stringBuilder.Append("*");
+          stringBuilder.Append(p);
+          stringBuilder.Append(") + (");
+          stringBuilder.Append(FormatRecursively(node.GetSubtree(1)));
+          stringBuilder.Append("*(");
+          stringBuilder.Append("1 - " + p + ")");
+          stringBuilder.Append("))");
+        } else {
+          stringBuilder.AppendFormat(CultureInfo.InvariantCulture, "(IF({0} <= {1}, {2}, {3}))",
+            GetColumnToVariableName(variableConditionTreeNode.VariableName),
+            variableConditionTreeNode.Threshold,
+            FormatRecursively(node.GetSubtree(0)),
+            FormatRecursively(node.GetSubtree(1))
+            );
+        }
       } else if (symbol is Xor) {
         stringBuilder.Append("IF(");
         stringBuilder.Append("XOR(");
