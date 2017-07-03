@@ -58,10 +58,6 @@ namespace HeuristicLab.IGraph.Wrappers {
       DllImporter.igraph_rng_seed(seed);
     }
 
-    public int RandomInteger(int inclLower, int inclUpper) {
-      return DllImporter.igraph_rng_get_integer(inclLower, inclUpper);
-    }
-
     public double Density() {
       double density;
       DllImporter.igraph_density(graph, out density, false);
