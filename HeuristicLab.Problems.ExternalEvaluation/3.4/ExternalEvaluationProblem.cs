@@ -157,7 +157,8 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       }
       try {
         return client.Evaluate(message, GetQualityMessageExtensions());
-      } finally {
+      }
+      finally {
         lock (clientLock) {
           activeClients.Remove(client);
           Monitor.PulseAll(clientLock);
@@ -169,12 +170,11 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       lock (clientLock) {
         SolutionMessage.Builder protobufBuilder = SolutionMessage.CreateBuilder();
         protobufBuilder.SolutionId = solutionId;
-        var scope = new Scope();
-        individual.CopyToScope(scope);
-        foreach (var variable in scope.Variables) {
+        foreach (var variable in individual.Values) {
           try {
-            MessageBuilder.AddToMessage(variable.Value, variable.Name, protobufBuilder);
-          } catch (ArgumentException ex) {
+            MessageBuilder.AddToMessage(variable.Value, variable.Key, protobufBuilder);
+          }
+          catch (ArgumentException ex) {
             throw new InvalidOperationException(string.Format("ERROR while building solution message: Parameter {0} cannot be added to the message", Name), ex);
           }
         }
