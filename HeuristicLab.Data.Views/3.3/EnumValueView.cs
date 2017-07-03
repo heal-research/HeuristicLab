@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Windows.Forms;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 
@@ -41,10 +42,24 @@ namespace HeuristicLab.Data.Views {
       set { base.ReadOnly = value; }
     }
 
+    static EnumValueView() {
+      if (!typeof(T).IsEnum)
+        throw new InvalidOperationException("Generic type " + typeof(T).Name + " is not an enum.");
+    }
+
     public EnumValueView() {
       InitializeComponent();
+      this.Caption = typeof(T).Name + " View";
+
       valueComboBox.DataSource = Enum.GetValues(typeof(T));
-      this.Name = typeof(T).Name + "EnumView";
+      foreach (T flag in Enum.GetValues(typeof(T)))
+        flagsListView.Items.Add(new ListViewItem(flag.ToString()) { Tag = flag });
+      columnHeader.Width = -1;
+
+      bool isFlags = Attribute.IsDefined(typeof(T), typeof(FlagsAttribute));
+      if (isFlags) valueLabel.Text = "Flags:";
+      valueComboBox.Visible = !isFlags;
+      flagsListView.Visible = isFlags;
     }
     public EnumValueView(EnumValue<T> content)
       : this() {
@@ -63,28 +78,65 @@ namespace HeuristicLab.Data.Views {
 
     protected override void OnContentChanged() {
       base.OnContentChanged();
-      if (Content == null)
-        valueComboBox.Enabled = false;
-      else
+      if (Content == null) {
+        valueComboBox.SelectedIndex = -1;
+        foreach (ListViewItem item in flagsListView.Items)
+          item.Checked = false;
+      } else {
         valueComboBox.SelectedItem = Content.Value;
+        foreach (ListViewItem item in flagsListView.Items) {
+          var flag = (Enum)item.Tag;
+          item.Checked = ((Enum)(object)Content.Value).HasFlag(flag);
+        }
+      }
     }
 
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
-      if (Content == null) valueComboBox.Enabled = false;
-      else valueComboBox.Enabled = !ReadOnly;
+      if (Content == null) {
+        valueComboBox.Enabled = false;
+        flagsListView.Enabled = false;
+      } else {
+        valueComboBox.Enabled = !ReadOnly;
+        flagsListView.Enabled = !ReadOnly;
+      }
     }
 
     private void Content_ValueChanged(object sender, EventArgs e) {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_ValueChanged), sender, e);
-      else
+      else {
         valueComboBox.SelectedItem = Content.Value;
+        foreach (ListViewItem item in flagsListView.Items) {
+          var flag = (Enum)item.Tag;
+          item.Checked = ((Enum)(object)Content.Value).HasFlag(flag);
+        }
+      }
     }
 
     private void valueComboBox_SelectedIndexChanged(object sender, EventArgs e) {
       if ((Content != null) && !Content.ReadOnly)
         Content.Value = (T)valueComboBox.SelectedItem;
+    }
+
+    private void flagsListView_ItemChecked(object sender, ItemCheckedEventArgs e) {
+      var flag = (T)e.Item.Tag;
+      if ((Content != null) && !Content.ReadOnly)
+        Content.Value = ((Enum)(object)Content.Value).SetFlag(flag, e.Item.Checked);
+    }
+  }
+
+  internal static class EnumHelper {
+    //https://stackoverflow.com/a/21581418
+    public static T SetFlag<T>(this Enum value, T flag, bool set) {
+      var baseType = Enum.GetUnderlyingType(value.GetType());
+      dynamic valueAsBase = Convert.ChangeType(value, baseType);
+      dynamic flagAsBase = Convert.ChangeType(flag, baseType);
+      if (set)
+        valueAsBase |= flagAsBase;
+      else
+        valueAsBase &= ~flagAsBase;
+      return (T)valueAsBase;
     }
   }
 }

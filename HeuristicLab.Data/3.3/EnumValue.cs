@@ -51,8 +51,6 @@ namespace HeuristicLab.Data {
     private EnumValue(bool deserializing) : base(deserializing) { }
     private EnumValue(EnumValue<T> original, Cloner cloner)
       : base(original, cloner) {
-      this.value = original.value;
-      this.readOnly = original.readOnly;
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
