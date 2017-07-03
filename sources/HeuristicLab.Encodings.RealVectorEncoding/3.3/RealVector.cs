@@ -77,18 +77,6 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       Randomize(random, 0, Length, bounds);
     }
 
-    public void Add(RealVector other) {
-      if (other.Length != Length) throw new ArgumentException("Vectors are of unequal length.");
-      for (var i = 0; i < Length; i++)
-        this[i] += other[i];
-    }
-
-    public void Subtract(RealVector other) {
-      if (other.Length != Length) throw new ArgumentException("Vectors are of unequal length.");
-      for (var i = 0; i < Length; i++)
-        this[i] -= other[i];
-    }
-
     public double DotProduct(RealVector other) {
       if (other.Length != Length) throw new ArgumentException("Vectors are of unequal length.");
       var dotProd = 0.0;
