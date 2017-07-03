@@ -155,6 +155,7 @@
     <Compile Include="Interfaces\ICharacteristicCalculator.cs" />
     <Compile Include="Interfaces\ILocalImprovementAlgorithmOperator.cs" />
     <Compile Include="Interfaces\IMultiObjectiveOperator.cs" />
+    <Compile Include="MultiObjective\DominationCalculator.cs" />
     <Compile Include="Results\IResultParameter.cs" />
     <Compile Include="Interfaces\ISingleObjectiveOperator.cs" />
     <Compile Include="Interfaces\ISingleObjectivePathRelinker.cs" />

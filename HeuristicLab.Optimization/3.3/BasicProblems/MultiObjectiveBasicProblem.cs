@@ -19,6 +19,8 @@
  */
 #endregion
 
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -56,7 +58,7 @@ namespace HeuristicLab.Optimization {
     public abstract bool[] Maximization { get; }
     public abstract double[] Evaluate(Individual individual, IRandom random);
     public virtual void Analyze(Individual[] individuals, double[][] qualities, ResultCollection results, IRandom random) { }
-
+    
     protected override void OnOperatorsChanged() {
       base.OnOperatorsChanged();
       if (Encoding != null) {
