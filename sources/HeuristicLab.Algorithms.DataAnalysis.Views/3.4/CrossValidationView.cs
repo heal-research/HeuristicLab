@@ -60,6 +60,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
         resultCollectionView.Content = null;
         runCollectionView.Content = null;
         storeAlgorithmInEachRunCheckBox.Checked = true;
+        shuffleSamplesCheckBox.Checked = false;
       } else {
         Locked = ReadOnly = Content.ExecutionState == ExecutionState.Started;
         workersNumericUpDown.Value = Content.NumberOfWorkers.Value;
@@ -73,6 +74,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
         resultCollectionView.Content = Content.Results;
         executionTimeTextBox.Text = Content.ExecutionTime.ToString();
         storeAlgorithmInEachRunCheckBox.Checked = Content.StoreAlgorithmInEachRun;
+        shuffleSamplesCheckBox.Checked = Content.ShuffleSamples.Value;
       }
     }
 
@@ -136,10 +138,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
           pauseButton.Enabled = Content.ExecutionState == ExecutionState.Started;
           stopButton.Enabled = (Content.ExecutionState == ExecutionState.Started) || (Content.ExecutionState == ExecutionState.Paused);
           resetButton.Enabled = Content.ExecutionState != ExecutionState.Started;
-          shuffleSamplesCheckBox.Checked = Content.ShuffleSamples.Value;
           // prevent changing the shuffle if the algorithm is not finished
-          shuffleSamplesCheckBox.Enabled = Content.ExecutionState == ExecutionState.Prepared ||
-                                           Content.ExecutionState == ExecutionState.Stopped;
+          shuffleSamplesCheckBox.Enabled = Content.ExecutionState == ExecutionState.Prepared;
         }
       }
     }
