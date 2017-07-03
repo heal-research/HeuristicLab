@@ -186,7 +186,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.treeChart.ModifyTree = null;
       this.treeChart.Name = "treeChart";
       this.treeChart.Size = new System.Drawing.Size(201, 348);
-      this.treeChart.Spacing = 5;
       this.treeChart.SuspendRepaint = false;
       this.treeChart.TabIndex = 0;
       this.treeChart.TextFont = new System.Drawing.Font("Times New Roman", 8F);

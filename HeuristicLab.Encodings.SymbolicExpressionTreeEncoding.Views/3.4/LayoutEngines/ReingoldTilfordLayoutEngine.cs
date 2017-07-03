@@ -39,7 +39,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       FirstWalk(layoutRoot);
       SecondWalk(layoutRoot, -layoutRoot.Prelim);
       NormalizeCoordinates(layoutNodeMap.Values);
-      if (height != 0 && width != 0) {
+      if (width > 0 && height > 0) {
         FitToBounds(width, height, layoutNodeMap.Values);
         Center(width, height, layoutNodeMap.Values);
       }
@@ -157,7 +157,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
         if (ymin > y) ymin = y;
         if (ymax < y) ymax = y;
       }
-      return new RectangleF(xmin, ymin, xmax + minHorizontalSpacing + NodeWidth, ymax + minVerticalSpacing + NodeHeight);
+      return new RectangleF(xmin, ymin, xmax + NodeWidth, ymax + NodeHeight);
     }
 
     #region methods specific to the reingold-tilford layout algorithm

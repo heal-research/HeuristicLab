@@ -58,7 +58,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       this.symbolicExpressionTreeChart.Location = new System.Drawing.Point(0, 0);
       this.symbolicExpressionTreeChart.Name = "functionTreeChart";
       this.symbolicExpressionTreeChart.Size = new System.Drawing.Size(407, 367);
-      this.symbolicExpressionTreeChart.Spacing = 5;
       this.symbolicExpressionTreeChart.TabIndex = 0;
       this.symbolicExpressionTreeChart.TextFont = new System.Drawing.Font(FontFamily.GenericSerif, 8F);
       // 
