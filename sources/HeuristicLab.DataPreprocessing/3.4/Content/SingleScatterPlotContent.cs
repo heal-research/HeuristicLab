@@ -25,26 +25,28 @@ using HeuristicLab.Core;
 
 namespace HeuristicLab.DataPreprocessing {
 
-  [Item("Manipulation", "Represents the available manipulations on a data set.")]
-  public class ManipulationContent : Item, IViewShortcut {
+  [Item("Scatter Plot", "Represents a scatter plot.")]
+  public class SingleScatterPlotContent : ScatterPlotContent {
     public static new Image StaticItemImage {
-      get { return HeuristicLab.Common.Resources.VSImageLibrary.Method; }
+      get { return HeuristicLab.Common.Resources.VSImageLibrary.Performance; }
     }
 
-    public ManipulationLogic ManipulationLogic { get; private set; }
-    public SearchLogic SearchLogic { get; private set; }
-    public FilterLogic FilterLogic { get; private set; }
+    public string SelectedXVariable { get; set; }
+    public string SelectedYVariable { get; set; }
 
-    public ManipulationContent(ManipulationLogic manipulationLogic, SearchLogic searchLogic, FilterLogic filterLogic) {
-      ManipulationLogic = manipulationLogic;
-      SearchLogic = searchLogic;
-      FilterLogic = filterLogic;
+    public SingleScatterPlotContent(IFilteredPreprocessingData preprocessingData)
+      : base(preprocessingData) {
     }
 
-    public ManipulationContent(ManipulationContent content, Cloner cloner) : base(content, cloner) { }
+    public SingleScatterPlotContent(SingleScatterPlotContent content, Cloner cloner)
+      : base(content, cloner) {
+      this.SelectedXVariable = content.SelectedXVariable;
+      this.SelectedYVariable = content.SelectedYVariable;
+      this.GroupingVariable = content.GroupingVariable;
+    }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new ManipulationContent(this, cloner);
+      return new SingleScatterPlotContent(this, cloner);
     }
   }
 }

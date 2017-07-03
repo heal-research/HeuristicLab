@@ -20,19 +20,35 @@
 #endregion
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.Core.Views;
+using HeuristicLab.Data;
 using HeuristicLab.MainForm;
+using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.DataPreprocessing.Views {
-
   [View("Statistics View")]
   [Content(typeof(StatisticsContent), true)]
   public partial class StatisticsView : ItemView {
-
-    private List<List<string>> columnsRowsMatrix;
-    private readonly int COLUMNS = 12;
+    private bool horizontal = true;
+    private StringMatrix statisticsMatrix;
+    private static readonly string[] StatisticsNames = new[] {
+      "Type",
+      "Missing Values",
+      "Min",
+      "Max",
+      "Median",
+      "Average",
+      "Std. Deviation",
+      "Variance",
+      "25th Percentile",
+      "75th Percentile",
+      "Most Common Value",
+      "Num. diff. Values"
+    };
 
     public new StatisticsContent Content {
       get { return (StatisticsContent)base.Content; }
@@ -46,123 +62,122 @@ namespace HeuristicLab.DataPreprocessing.Views {
     protected override void OnContentChanged() {
       base.OnContentChanged();
       if (Content == null) {
-        txtRows.Text = "";
-        txtColumns.Text = "";
-        txtNumericColumns.Text = "";
-        txtNominalColumns.Text = "";
-        txtMissingValuesTotal.Text = "";
-        dataGridView.Columns.Clear();
+        rowsTextBox.Text = string.Empty;
+        columnsTextBox.Text = string.Empty;
+        numericColumnsTextBox.Text = string.Empty;
+        nominalColumnsTextBox5.Text = string.Empty;
+        missingValuesTextBox.Text = string.Empty;
+        totalValuesTextBox.Text = string.Empty;
+        stringMatrixView.Content = null;
+        statisticsMatrix = null;
       } else {
         UpdateData();
       }
     }
 
-    /// <summary>
-    /// Adds eventhandlers to the current instance.
-    /// </summary>
     protected override void RegisterContentEvents() {
+      base.RegisterContentEvents();
       Content.Changed += Content_Changed;
     }
 
-
-    /// <summary>
-    /// Removes the eventhandlers from the current instance.
-    /// </summary>
     protected override void DeregisterContentEvents() {
       Content.Changed -= Content_Changed;
+      base.DeregisterContentEvents();
     }
 
-    private void UpdateData() {
+    private void UpdateData(Dictionary<string, bool> oldVisibility = null) {
       var logic = Content.StatisticsLogic;
-      var rowCount = logic.GetRowCount();
-      txtRows.Text = rowCount.ToString();
-      txtColumns.Text = logic.GetColumnCount().ToString();
-      txtNumericColumns.Text = logic.GetNumericColumnCount().ToString();
-      txtNominalColumns.Text = logic.GetNominalColumnCount().ToString();
-      txtMissingValuesTotal.Text = logic.GetMissingValueCount().ToString();
+      rowsTextBox.Text = logic.GetRowCount().ToString();
+      columnsTextBox.Text = logic.GetColumnCount().ToString();
+      numericColumnsTextBox.Text = logic.GetNumericColumnCount().ToString();
+      nominalColumnsTextBox5.Text = logic.GetNominalColumnCount().ToString();
+      missingValuesTextBox.Text = logic.GetMissingValueCount().ToString();
+      totalValuesTextBox.Text = (logic.GetColumnCount() * logic.GetRowCount() - logic.GetMissingValueCount()).ToString();
 
-      columnsRowsMatrix = new List<List<string>>();
-      DataGridViewColumn[] columns = new DataGridViewColumn[COLUMNS];
-      for (int i = 0; i < COLUMNS; ++i) {
-        var column = new DataGridViewTextBoxColumn();
-        column.SortMode = DataGridViewColumnSortMode.Automatic;
-        column.FillWeight = 1;
-        columns[i] = column;
-      }
+      var variableNames = Content.PreprocessingData.VariableNames.ToList();
+      if (horizontal)
+        statisticsMatrix = new StringMatrix(StatisticsNames.Length, Content.PreprocessingData.Columns) {
+          RowNames = StatisticsView.StatisticsNames,
+          ColumnNames = variableNames
+        };
+      else
+        statisticsMatrix = new StringMatrix(Content.PreprocessingData.Columns, StatisticsNames.Length) {
+          RowNames = variableNames,
+          ColumnNames = StatisticsView.StatisticsNames
+        };
 
-      columns[0].HeaderCell.Value = "Type";
-      columns[1].HeaderCell.Value = "Missing Values";
-      columns[2].HeaderCell.Value = "Min";
-      columns[3].HeaderCell.Value = "Max";
-      columns[4].HeaderCell.Value = "Median";
-      columns[5].HeaderCell.Value = "Average";
-      columns[6].HeaderCell.Value = "std. Deviation";
-      columns[7].HeaderCell.Value = "Variance";
-      columns[8].HeaderCell.Value = "25th Percentile";
-      columns[9].HeaderCell.Value = "75th Percentile";
-      columns[10].HeaderCell.Value = "Most Common Value";
-      columns[11].HeaderCell.Value = "Num. diff. Values";
-
-      if (rowCount > 0) {
-        for (int i = 0; i < logic.GetColumnCount(); ++i) {
-          columnsRowsMatrix.Add(GetList(i));
+      for (int i = 0; i < logic.GetColumnCount(); i++) {
+        var data = GetStatistics(i);
+        for (int j = 0; j < data.Count; j++) {
+          if (horizontal)
+            statisticsMatrix[j, i] = data[j];
+          else
+            statisticsMatrix[i, j] = data[j];
         }
       }
 
-      dataGridView.Columns.Clear();
-      dataGridView.Columns.AddRange(columns);
-      dataGridView.RowCount = columnsRowsMatrix.Count;
+      stringMatrixView.Parent.SuspendRepaint();
+      stringMatrixView.Content = statisticsMatrix;
 
-      for (int i = 0; i < columnsRowsMatrix.Count; ++i) {
-        dataGridView.Rows[i].HeaderCell.Value = logic.GetVariableName(i);
+      var grid = stringMatrixView.DataGridView;
+      int idx = 0;
+      var list = horizontal ? grid.Columns : grid.Rows as IList;
+      foreach (DataGridViewBand band in list) {
+        var variable = variableNames[idx++];
+        if (oldVisibility != null) {
+          band.Visible = !oldVisibility.ContainsKey(variable) || oldVisibility[variable];
+        }
       }
+      if (horizontal)
+        stringMatrixView.UpdateColumnHeaders();
+      else
+        stringMatrixView.UpdateRowHeaders();
 
-      dataGridView.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.DisplayedCells);
-      dataGridView.AutoResizeRowHeadersWidth(DataGridViewRowHeadersWidthSizeMode.AutoSizeToDisplayedHeaders);
-      dataGridView.AllowUserToResizeColumns = true;
+      stringMatrixView.DataGridView.AutoResizeColumns();
+      stringMatrixView.Parent.ResumeRepaint(true);
     }
 
-    private List<string> GetList(int i) {
+    private List<string> GetStatistics(int varIdx) {
       List<string> list;
       var logic = Content.StatisticsLogic;
-      if (logic.VariableHasType<double>(i)) {
-        list = GetDoubleColumns(i);
-      } else if (logic.VariableHasType<string>(i)) {
-        list = GetStringColumns(i);
-      } else if (logic.VariableHasType<DateTime>(i)) {
-        list = GetDateTimeColumns(i);
+      if (logic.VariableHasType<double>(varIdx)) {
+        list = GetDoubleColumns(varIdx);
+      } else if (logic.VariableHasType<string>(varIdx)) {
+        list = GetStringColumns(varIdx);
+      } else if (logic.VariableHasType<DateTime>(varIdx)) {
+        list = GetDateTimeColumns(varIdx);
       } else {
         list = new List<string>();
-        for (int j = 0; j < COLUMNS; ++j) {
+        for (int j = 0; j < StatisticsNames.Length; ++j) {
           list.Add("unknown column type");
         }
       }
       return list;
     }
 
-    private List<string> GetDoubleColumns(int columnIndex) {
+    private List<string> GetDoubleColumns(int statIdx) {
       var logic = Content.StatisticsLogic;
       return new List<string> {
-        logic.GetColumnTypeAsString(columnIndex),
-        logic.GetMissingValueCount(columnIndex).ToString(),
-        logic.GetMin<double>(columnIndex,double.NaN).ToString(),
-        logic.GetMax<double>(columnIndex,double.NaN).ToString(),
-        logic.GetMedian(columnIndex).ToString(),
-        logic.GetAverage(columnIndex).ToString(),
-        logic.GetStandardDeviation(columnIndex).ToString(),
-        logic.GetVariance(columnIndex).ToString(),
-        logic.GetOneQuarterPercentile(columnIndex).ToString(),
-        logic.GetThreeQuarterPercentile(columnIndex).ToString(),
-        logic.GetMostCommonValue<double>(columnIndex,double.NaN).ToString(),
-        logic.GetDifferentValuesCount<double>(columnIndex).ToString()
+        logic.GetColumnTypeAsString(statIdx),
+        logic.GetMissingValueCount(statIdx).ToString(),
+        logic.GetMin<double>(statIdx, double.NaN).ToString(),
+        logic.GetMax<double>(statIdx, double.NaN).ToString(),
+        logic.GetMedian(statIdx).ToString(),
+        logic.GetAverage(statIdx).ToString(),
+        logic.GetStandardDeviation(statIdx).ToString(),
+        logic.GetVariance(statIdx).ToString(),
+        logic.GetOneQuarterPercentile(statIdx).ToString(),
+        logic.GetThreeQuarterPercentile(statIdx).ToString(),
+        logic.GetMostCommonValue<double>(statIdx, double.NaN).ToString(),
+        logic.GetDifferentValuesCount<double>(statIdx).ToString()
       };
     }
 
-    private List<string> GetStringColumns(int columnIndex) {
+    private List<string> GetStringColumns(int statIdx) {
       var logic = Content.StatisticsLogic;
       return new List<string> {
-        logic.GetColumnTypeAsString(columnIndex),
-        logic.GetMissingValueCount(columnIndex).ToString(),
+        logic.GetColumnTypeAsString(statIdx),
+        logic.GetMissingValueCount(statIdx).ToString(),
         "", //min
         "", //max
         "", //median
@@ -171,56 +186,90 @@ namespace HeuristicLab.DataPreprocessing.Views {
         "", //variance
         "", //quarter percentile
         "", //three quarter percentile
-        logic.GetMostCommonValue<string>(columnIndex,string.Empty) ?? "",
-        logic.GetDifferentValuesCount<string>(columnIndex).ToString()
+        logic.GetMostCommonValue<string>(statIdx,string.Empty) ?? "",
+        logic.GetDifferentValuesCount<string>(statIdx).ToString()
       };
     }
 
-    private List<string> GetDateTimeColumns(int columnIndex) {
+    private List<string> GetDateTimeColumns(int statIdx) {
       var logic = Content.StatisticsLogic;
       return new List<string> {
-        logic.GetColumnTypeAsString(columnIndex),
-        logic.GetMissingValueCount(columnIndex).ToString(),
-        logic.GetMin<DateTime>(columnIndex,DateTime.MinValue).ToString(),
-        logic.GetMax<DateTime>(columnIndex,DateTime.MinValue).ToString(),
-        logic.GetMedianDateTime(columnIndex).ToString(),
-        logic.GetAverageDateTime(columnIndex).ToString(),
-        logic.GetStandardDeviation(columnIndex).ToString(),
-        logic.GetVariance(columnIndex).ToString(), //variance
-        logic.GetOneQuarterPercentile(columnIndex).ToString(),
-        logic.GetThreeQuarterPercentile(columnIndex).ToString(),
-        logic.GetMostCommonValue<DateTime>(columnIndex,DateTime.MinValue).ToString(),
-        logic.GetDifferentValuesCount<DateTime>(columnIndex).ToString()
+        logic.GetColumnTypeAsString(statIdx),
+        logic.GetMissingValueCount(statIdx).ToString(),
+        logic.GetMin<DateTime>(statIdx, DateTime.MinValue).ToString(),
+        logic.GetMax<DateTime>(statIdx, DateTime.MinValue).ToString(),
+        logic.GetMedianDateTime(statIdx).ToString(),
+        logic.GetAverageDateTime(statIdx).ToString(),
+        logic.GetStandardDeviation(statIdx).ToString(),
+        logic.GetVariance(statIdx).ToString(),
+        logic.GetOneQuarterPercentile(statIdx).ToString(),
+        logic.GetThreeQuarterPercentile(statIdx).ToString(),
+        logic.GetMostCommonValue<DateTime>(statIdx, DateTime.MinValue).ToString(),
+        logic.GetDifferentValuesCount<DateTime>(statIdx).ToString()
       };
-    }
-
-    private void dataGridView_CellValueNeeded(object sender, DataGridViewCellValueEventArgs e) {
-      if (Content != null && e.RowIndex < columnsRowsMatrix.Count && e.ColumnIndex < columnsRowsMatrix[0].Count) {
-        e.Value = columnsRowsMatrix[e.RowIndex][e.ColumnIndex];
-      }
     }
 
     private void Content_Changed(object sender, DataPreprocessingChangedEventArgs e) {
-      switch (e.Type) {
-        case DataPreprocessingChangedEventType.DeleteColumn:
-          columnsRowsMatrix.RemoveAt(e.Column);
-          break;
-        case DataPreprocessingChangedEventType.AddColumn:
-          columnsRowsMatrix.Insert(e.Row, GetList(e.Column));
-          dataGridView.RowCount++;
-          break;
-        case DataPreprocessingChangedEventType.ChangeItem:
-          columnsRowsMatrix[e.Column] = GetList(e.Column);
-          break;
-        case DataPreprocessingChangedEventType.DeleteRow:
-        case DataPreprocessingChangedEventType.AddRow:
-        default:
-          for (int i = 0; i < columnsRowsMatrix.Count; ++i) {
-            columnsRowsMatrix[i] = GetList(e.Column);
-          }
-          break;
-      }
-      dataGridView.Refresh();
+      UpdateData();
     }
+
+    #region Show/Hide Variables
+    private void checkInputsTargetButton_Click(object sender, EventArgs e) {
+      var grid = stringMatrixView.DataGridView;
+      var list = horizontal ? grid.Columns : grid.Rows as IList;
+      var variableNames = Content.PreprocessingData.VariableNames.ToList();
+      int idx = 0;
+      foreach (DataGridViewBand band in list) {
+        var variable = variableNames[idx++];
+        bool isInputTarget = Content.PreprocessingData.InputVariables.Contains(variable)
+                             || Content.PreprocessingData.TargetVariable == variable;
+        band.Visible = isInputTarget;
+        if (horizontal)
+          stringMatrixView.UpdateColumnHeaders();
+        else
+          stringMatrixView.UpdateRowHeaders();
+      }
+
+    }
+    private void checkAllButton_Click(object sender, EventArgs e) {
+      var grid = stringMatrixView.DataGridView;
+      var list = horizontal ? grid.Columns : grid.Rows as IList;
+      foreach (DataGridViewBand band in list) {
+        band.Visible = true;
+      }
+      if (horizontal)
+        stringMatrixView.UpdateColumnHeaders();
+      else
+        stringMatrixView.UpdateRowHeaders();
+    }
+    private void uncheckAllButton_Click(object sender, EventArgs e) {
+      var grid = stringMatrixView.DataGridView;
+      var list = horizontal ? grid.Columns : grid.Rows as IList;
+      foreach (DataGridViewBand band in list) {
+        band.Visible = false;
+      }
+    }
+    #endregion
+
+    #region Orientation
+    private void horizontalRadioButton_CheckedChanged(object sender, EventArgs e) {
+      var grid = stringMatrixView.DataGridView;
+      var oldVisibility = new Dictionary<string, bool>();
+      var variableNames = Content.PreprocessingData.VariableNames.ToList();
+      if (stringMatrixView.Content != null) {
+        var list = horizontal ? grid.Columns : grid.Rows as IList;
+        int idx = 0;
+        foreach (DataGridViewBand band in list) {
+          var variable = variableNames[idx++];
+          oldVisibility.Add(variable, band.Visible);
+        }
+      }
+      horizontal = horizontalRadioButton.Checked;
+      UpdateData(oldVisibility);
+    }
+    private void verticalRadioButton_CheckedChanged(object sender, EventArgs e) {
+      // everything is handled in horizontalRadioButton_CheckedChanged 
+    }
+    #endregion
   }
 }

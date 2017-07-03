@@ -31,20 +31,19 @@ namespace HeuristicLab.DataPreprocessing.Views {
   [View("Comparison Filter View")]
   [Content(typeof(ComparisonFilter), false)]
   public partial class ComparisonFilterView : ItemView {
-    public ComparisonFilterView() {
-      InitializeComponent();
-    }
-
     public new ComparisonFilter Content {
       get { return (ComparisonFilter)base.Content; }
       set { base.Content = value; }
     }
 
+    public ComparisonFilterView() {
+      InitializeComponent();
+    }
 
     protected override void OnContentChanged() {
       base.OnContentChanged();
-      cbAttr.Items.Clear(); //cmbConstraintColumn.Items.Clear();
-      cbFilterOperation.Items.Clear(); //cmbConstraintOperation.Items.Clear();
+      cbAttr.Items.Clear();
+      cbFilterOperation.Items.Clear();
       tbFilterData.Text = string.Empty;
       if (Content != null) {
         cbFilterOperation.Items.AddRange(Content.AllowedConstraintOperations.ToArray());
@@ -120,7 +119,6 @@ namespace HeuristicLab.DataPreprocessing.Views {
       }
     }
 
-
     protected virtual void Content_ComparisonOperationChanged(object sender, EventArgs e) {
       if (Content.ConstraintOperation != (ConstraintOperation)this.cbFilterOperation.SelectedItem)
         this.cbFilterOperation.SelectedItem = Content.ConstraintOperation;
@@ -177,6 +175,5 @@ namespace HeuristicLab.DataPreprocessing.Views {
       } else
         errorProvider.Clear();
     }
-
   }
 }

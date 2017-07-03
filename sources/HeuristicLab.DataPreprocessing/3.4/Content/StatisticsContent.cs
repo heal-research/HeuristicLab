@@ -26,23 +26,20 @@ using HeuristicLab.Core;
 namespace HeuristicLab.DataPreprocessing {
   [Item("Statistics", "Represents the statistics grid.")]
   public class StatisticsContent : Item, IViewShortcut {
+    public static new Image StaticItemImage {
+      get { return HeuristicLab.Common.Resources.VSImageLibrary.Object; }
+    }
 
-    private readonly StatisticsLogic statisticsLogic;
-    public StatisticsContent(StatisticsLogic theStatisticsLogic) {
-      statisticsLogic = theStatisticsLogic;
+    public ITransactionalPreprocessingData PreprocessingData { get; private set; }
+    public StatisticsLogic StatisticsLogic { get; private set; }
+
+    public StatisticsContent(ITransactionalPreprocessingData preProcessingData, StatisticsLogic statisticsLogic) {
+      PreprocessingData = preProcessingData;
+      StatisticsLogic = statisticsLogic;
     }
 
     public StatisticsContent(StatisticsContent content, Cloner cloner)
       : base(content, cloner) {
-
-    }
-
-    public StatisticsLogic StatisticsLogic {
-      get { return statisticsLogic; }
-    }
-
-    public static new Image StaticItemImage {
-      get { return HeuristicLab.Common.Resources.VSImageLibrary.Object; }
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -50,9 +47,8 @@ namespace HeuristicLab.DataPreprocessing {
     }
 
     public event DataPreprocessingChangedEventHandler Changed {
-      add { statisticsLogic.Changed += value; }
-      remove { statisticsLogic.Changed -= value; }
+      add { StatisticsLogic.Changed += value; }
+      remove { StatisticsLogic.Changed -= value; }
     }
-
   }
 }

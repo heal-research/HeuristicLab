@@ -32,7 +32,6 @@ using HeuristicLab.Problems.DataAnalysis;
 namespace HeuristicLab.DataPreprocessing {
   [Item("PreprocessingData", "Represents data used for preprocessing.")]
   public class TransactionalPreprocessingData : PreprocessingData, ITransactionalPreprocessingData {
-
     private class Snapshot {
       public IList<IList> VariableValues { get; set; }
       public IList<string> VariableNames { get; set; }
@@ -69,7 +68,7 @@ namespace HeuristicLab.DataPreprocessing {
         VariableNames = new List<string>(variableNames),
         TrainingPartition = new IntRange(TrainingPartition.Start, TrainingPartition.End),
         TestPartition = new IntRange(TestPartition.Start, TestPartition.End),
-        Transformations = new List<ITransformation>(transformations),
+        Transformations = new List<ITransformation>(Transformations),
         ChangedType = changedType,
         ChangedColumn = column,
         ChangedRow = row
@@ -82,15 +81,12 @@ namespace HeuristicLab.DataPreprocessing {
     }
 
     #region NamedItem abstract Member Implementations
-
     public override IDeepCloneable Clone(Cloner cloner) {
       return new TransactionalPreprocessingData(this, cloner);
     }
-
     #endregion
 
     #region Overridden IPreprocessingData Members
-
     public override T GetCell<T>(int columnIndex, int rowIndex) {
       return (T)variableValues[columnIndex][rowIndex];
     }
@@ -214,7 +210,6 @@ namespace HeuristicLab.DataPreprocessing {
     public override bool AreAllStringColumns(IEnumerable<int> columnIndices) {
       return columnIndices.All(x => VariableHasType<string>(x));
     }
-
 
     public override void InsertRow(int rowIndex) {
       SaveSnapshot(DataPreprocessingChangedEventType.DeleteRow, -1, rowIndex);
@@ -345,7 +340,6 @@ namespace HeuristicLab.DataPreprocessing {
     #endregion
 
     #region TransactionalPreprocessingData members
-
     public bool IsUndoAvailable {
       get { return undoHistory.Count > 0; }
     }
@@ -357,7 +351,7 @@ namespace HeuristicLab.DataPreprocessing {
         variableNames = previousSnapshot.VariableNames;
         TrainingPartition = previousSnapshot.TrainingPartition;
         TestPartition = previousSnapshot.TestPartition;
-        transformations = previousSnapshot.Transformations;
+        Transformations = previousSnapshot.Transformations;
         undoHistory.Remove(previousSnapshot);
         OnChanged(previousSnapshot.ChangedType,
           previousSnapshot.ChangedColumn,
@@ -383,7 +377,6 @@ namespace HeuristicLab.DataPreprocessing {
       var @event = eventStack.Pop();
       OnChanged(@event, -1, -1);
     }
-
     #endregion
   }
 }

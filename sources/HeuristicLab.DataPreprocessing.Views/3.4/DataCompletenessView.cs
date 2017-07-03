@@ -23,13 +23,11 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 
 namespace HeuristicLab.DataPreprocessing.Views {
-
   [View("Histogram View")]
   [Content(typeof(DataCompletenessChartContent), true)]
   public partial class DataCompletenessView : ItemView {
@@ -68,7 +66,6 @@ namespace HeuristicLab.DataPreprocessing.Views {
     }
 
     private void PrepareChart() {
-      chart.Titles.Add("DataCompletenessChart");
       chart.EnableDoubleClickResetsZoom = true;
       chart.ChartAreas[0].AxisX.MajorGrid.LineWidth = 0;
       chart.ChartAreas[0].AxisY.MajorGrid.LineWidth = 0;

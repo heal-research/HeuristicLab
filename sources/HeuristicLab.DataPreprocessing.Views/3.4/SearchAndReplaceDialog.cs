@@ -42,14 +42,14 @@ namespace HeuristicLab.DataPreprocessing.Views {
   }
 
   public partial class SearchAndReplaceDialog : Form {
-    private string[] cmbItemsText = { "Value", "Average", "Median", "Random", "Most Common", "Interpolation" };
-    private string[] cmbComparisonOperatorText = { "==", "<", "<=", ">", ">=", "!=" };
+    private static readonly string[] ItemsText = { "Value", "Average", "Median", "Random", "Most Common", "Interpolation" };
+    private static readonly string[] ComparisonOperatorText = { "==", "<", "<=", ">", ">=", "!=" };
 
     public SearchAndReplaceDialog() {
       InitializeComponent();
-      cmbReplaceWith.Items.AddRange(cmbItemsText);
+      cmbReplaceWith.Items.AddRange(ItemsText);
       cmbReplaceWith.SelectedIndex = (int)ReplaceAction.Value;
-      cmbComparisonOperator.Items.AddRange(cmbComparisonOperatorText);
+      cmbComparisonOperator.Items.AddRange(ComparisonOperatorText);
       cmbComparisonOperator.SelectedIndex = (int)ComparisonOperation.Equal;
     }
 

@@ -27,15 +27,14 @@ using HeuristicLab.Problems.DataAnalysis;
 namespace HeuristicLab.DataPreprocessing {
   [Item("Transformation", "Represents the transformation grid.")]
   public class TransformationContent : Item, IViewShortcut {
+    public static new Image StaticItemImage {
+      get { return HeuristicLab.Common.Resources.VSImageLibrary.Method; }
+    }
 
     public IPreprocessingData Data { get; private set; }
     public FilterLogic FilterLogic { get; private set; }
 
     public ICheckedItemList<ITransformation> CheckedTransformationList { get; private set; }
-
-    public static new Image StaticItemImage {
-      get { return HeuristicLab.Common.Resources.VSImageLibrary.Method; }
-    }
 
     public TransformationContent(IPreprocessingData data, FilterLogic filterLogic) {
       Data = data;

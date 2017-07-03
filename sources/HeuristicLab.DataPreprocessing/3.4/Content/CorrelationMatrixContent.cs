@@ -26,13 +26,13 @@ using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.DataPreprocessing {
   [Item("Feature Correlation Matrix", "Represents the feature correlation matrix.")]
-  public class CorrelationMatrixContent : Item, IViewChartShortcut {
+  public class CorrelationMatrixContent : Item, IViewShortcut {
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Gradient; }
     }
 
-    private PreprocessingContext Context { get; set; }
-    private ITransactionalPreprocessingData PreprocessingData {
+    public PreprocessingContext Context { get; private set; }
+    public ITransactionalPreprocessingData PreprocessingData {
       get { return Context.Data; }
     }
 

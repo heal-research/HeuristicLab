@@ -31,10 +31,8 @@ using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.DataPreprocessing.Views {
   [View("CheckedTransformationList View")]
-  //[Content(typeof(RunCollectionConstraintCollection), true)]
   [Content(typeof(ICheckedItemList<ITransformation>), false)]
   public partial class CheckedTransformationListView : CheckedItemListView<ITransformation> {
-
     public CheckedTransformationListView() {
       InitializeComponent();
       itemsGroupBox.Text = "Transformations";
@@ -55,8 +53,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
           var columnNames = transformationView.Content.Data.VariableNames;
 
           return (ITransformation)typeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType(new[] { columnNames });
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
           ErrorHandling.ShowErrorDialog(this, ex);
         }
       }

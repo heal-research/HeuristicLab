@@ -270,7 +270,6 @@ namespace HeuristicLab.DataPreprocessing {
     }
 
     #region IPreprocessingData Members
-
     public bool Validate(string value, out string errorMessage, int columnIndex) {
       return originalData.Validate(value, out errorMessage, columnIndex);
     }

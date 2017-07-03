@@ -19,73 +19,88 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
-using HeuristicLab.Core;
+using HeuristicLab.Visualization.ChartControlsExtensions;
 
 namespace HeuristicLab.DataPreprocessing {
 
-  [Item("ScatterPlot", "Represents a scatter plot.")]
-  public class ScatterPlotContent : PreprocessingChartContent {
+  public abstract class ScatterPlotContent : PreprocessingChartContent {
+    public string GroupingVariable { get; set; }
 
-    public string SelectedXVariable { get; set; }
-    public string SelectedYVariable { get; set; }
-    public string SelectedColorVariable { get; set; }
-
-    public ScatterPlotContent(IFilteredPreprocessingData preprocessingData)
+    protected ScatterPlotContent(IFilteredPreprocessingData preprocessingData)
       : base(preprocessingData) {
     }
 
-    public ScatterPlotContent(ScatterPlotContent content, Cloner cloner)
+    protected ScatterPlotContent(ScatterPlotContent content, Cloner cloner)
       : base(content, cloner) {
-      this.SelectedXVariable = content.SelectedXVariable;
-      this.SelectedYVariable = content.SelectedYVariable;
-      this.SelectedColorVariable = content.SelectedColorVariable;
     }
 
-    public static new Image StaticItemImage {
-      get { return HeuristicLab.Common.Resources.VSImageLibrary.Performance; }
-    }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new ScatterPlotContent(this, cloner);
-    }
-
-    public ScatterPlot CreateScatterPlot(string variableNameX, string variableNameY, string variableNameColor = "-") {
+    public static ScatterPlot CreateScatterPlot(IFilteredPreprocessingData preprocessingData, string variableNameX, string variableNameY, string variableNameGroup = "-", LegendOrder legendOrder = LegendOrder.Appearance) {
       ScatterPlot scatterPlot = new ScatterPlot();
 
-      IList<double> xValues = PreprocessingData.GetValues<double>(PreprocessingData.GetColumnIndex(variableNameX));
-      IList<double> yValues = PreprocessingData.GetValues<double>(PreprocessingData.GetColumnIndex(variableNameY));
-      if (variableNameColor == null || variableNameColor == "-") {
-        List<Point2D<double>> points = new List<Point2D<double>>();
+      IList<double> xValues = preprocessingData.GetValues<double>(preprocessingData.GetColumnIndex(variableNameX));
+      IList<double> yValues = preprocessingData.GetValues<double>(preprocessingData.GetColumnIndex(variableNameY));
 
-        for (int i = 0; i < xValues.Count; i++) {
-          Point2D<double> point = new Point2D<double>(xValues[i], yValues[i]);
-          points.Add(point);
-        }
+      var points = xValues.Zip(yValues, (x, y) => new Point2D<double>(x, y)).ToList();
+      var validPoints = points.Where(p => !double.IsNaN(p.X) && !double.IsNaN(p.Y) && !double.IsInfinity(p.X) && !double.IsInfinity(p.Y)).ToList();
+      if (validPoints.Any()) {
+        try {
+          double axisMin, axisMax, axisInterval;
+          ChartUtil.CalculateOptimalAxisInterval(validPoints.Min(p => p.X), validPoints.Max(p => p.X), out axisMin, out axisMax, out axisInterval);
+          scatterPlot.VisualProperties.XAxisMinimumAuto = false;
+          scatterPlot.VisualProperties.XAxisMaximumAuto = false;
+          scatterPlot.VisualProperties.XAxisMinimumFixedValue = axisMin;
+          scatterPlot.VisualProperties.XAxisMaximumFixedValue = axisMax;
+        } catch (ArgumentOutOfRangeException) { } // error during CalculateOptimalAxisInterval 
+        try {
+          double axisMin, axisMax, axisInterval;
+          ChartUtil.CalculateOptimalAxisInterval(validPoints.Min(p => p.Y), validPoints.Max(p => p.Y), out axisMin, out axisMax, out axisInterval);
+          scatterPlot.VisualProperties.YAxisMinimumAuto = false;
+          scatterPlot.VisualProperties.YAxisMaximumAuto = false;
+          scatterPlot.VisualProperties.YAxisMinimumFixedValue = axisMin;
+          scatterPlot.VisualProperties.YAxisMaximumFixedValue = axisMax;
+        } catch (ArgumentOutOfRangeException) { } // error during CalculateOptimalAxisInterval 
+      }
 
-        ScatterPlotDataRow scdr = new ScatterPlotDataRow(variableNameX + " - " + variableNameY, "", points);
+
+      //No Grouping
+      if (string.IsNullOrEmpty(variableNameGroup) || variableNameGroup == "-") {
+        ScatterPlotDataRow scdr = new ScatterPlotDataRow(variableNameX + " - " + variableNameY, "", validPoints);
+        scdr.VisualProperties.IsVisibleInLegend = false;
         scatterPlot.Rows.Add(scdr);
+        return scatterPlot;
+      }
 
-      } else {
-        var colorValues = PreprocessingData.GetValues<double>(PreprocessingData.GetColumnIndex(variableNameColor));
-        var data = xValues.Zip(yValues, (x, y) => new { x, y }).Zip(colorValues, (v, c) => new { v.x, v.y, c }).ToList();
-        var gradients = ColorGradient.Colors;
-        int curGradient = 0;
-        int numColors = colorValues.Distinct().Count();
-        foreach (var colorValue in colorValues.Distinct()) {
-          var values = data.Where(x => x.c == colorValue);
-          var row = new ScatterPlotDataRow(
-            variableNameX + " - " + variableNameY + " (" + colorValue + ")",
-            "",
-            values.Select(v => new Point2D<double>(v.x, v.y)),
-            new ScatterPlotDataRowVisualProperties() { Color = gradients[curGradient] });
-          curGradient += gradients.Count / numColors;
-          scatterPlot.Rows.Add(row);
-        }
+      //Grouping
+      int groupVariableIndex = preprocessingData.GetColumnIndex(variableNameGroup);
+      var groupingValues = Enumerable.Empty<string>();
+
+      if (preprocessingData.VariableHasType<double>(groupVariableIndex)) {
+        groupingValues = preprocessingData.GetValues<double>(groupVariableIndex).Select(x => x.ToString());
+      } else if (preprocessingData.VariableHasType<string>(groupVariableIndex)) {
+        groupingValues = preprocessingData.GetValues<string>(groupVariableIndex);
+      } else if (preprocessingData.VariableHasType<DateTime>(groupVariableIndex)) {
+        groupingValues = preprocessingData.GetValues<DateTime>(groupVariableIndex).Select(x => x.ToString());
+      }
+      var groups = groupingValues.Zip(validPoints, Tuple.Create).GroupBy(t => t.Item1, t => t.Item2);
+
+      if (legendOrder == LegendOrder.Alphabetically)
+        groups = groups.OrderBy(x => x.Key, new NaturalStringComparer());
+
+      foreach (var group in groups) {
+        var scdr = new ScatterPlotDataRow {
+          Name = group.Key,
+          VisualProperties = {
+            IsVisibleInLegend = true,
+            PointSize = 6
+          }
+        };
+        scdr.Points.AddRange(group);
+        scatterPlot.Rows.Add(scdr);
       }
       return scatterPlot;
     }

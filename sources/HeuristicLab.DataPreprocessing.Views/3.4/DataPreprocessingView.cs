@@ -35,14 +35,13 @@ namespace HeuristicLab.DataPreprocessing.Views {
   [View("DataPreprocessing View")]
   [Content(typeof(PreprocessingContext), true)]
   public partial class DataPreprocessingView : NamedItemView {
-
-    public DataPreprocessingView() {
-      InitializeComponent();
-    }
-
     public new PreprocessingContext Content {
       get { return (PreprocessingContext)base.Content; }
       set { base.Content = value; }
+    }
+
+    public DataPreprocessingView() {
+      InitializeComponent();
     }
 
     protected override void OnContentChanged() {
@@ -56,11 +55,12 @@ namespace HeuristicLab.DataPreprocessing.Views {
 
         var viewShortcuts = new ItemList<IViewShortcut> {
           new DataGridContent(data, manipulationLogic, filterLogic),
-          new StatisticsContent(statisticsLogic),
+          new StatisticsContent(data, statisticsLogic),
 
           new LineChartContent(data),
           new HistogramContent(data),
-          new ScatterPlotContent(data),
+          new SingleScatterPlotContent(data),
+          new MultiScatterPlotContent(data),
           new CorrelationMatrixContent(Content),
           new DataCompletenessChartContent(searchLogic),
 
@@ -124,13 +124,24 @@ namespace HeuristicLab.DataPreprocessing.Views {
       newProblemDataTypeContextMenuStrip.Show(Cursor.Position);
     }
     private void newRegressionToolStripMenuItem_Click(object sender, EventArgs e) {
-      Content.Import(new RegressionProblemData());
+      if (CheckNew("Regression"))
+        Content.Import(new RegressionProblemData());
     }
     private void newClassificationToolStripMenuItem_Click(object sender, EventArgs e) {
-      Content.Import(new ClassificationProblemData());
+      if (CheckNew("Classification"))
+        Content.Import(new ClassificationProblemData());
     }
     private void newTimeSeriesToolStripMenuItem_Click(object sender, EventArgs e) {
-      Content.Import(new TimeSeriesPrognosisProblemData());
+      if (CheckNew("Time Series Prognosis"))
+        Content.Import(new TimeSeriesPrognosisProblemData());
+    }
+
+    private bool CheckNew(string type) {
+      return DialogResult.OK == MessageBox.Show(
+               this,
+               string.Format("When creating a new {0}, all previous information will be lost.", type),
+               "Continue?",
+               MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
     }
     #endregion
 

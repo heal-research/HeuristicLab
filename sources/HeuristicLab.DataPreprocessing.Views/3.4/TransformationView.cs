@@ -27,11 +27,9 @@ using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.DataPreprocessing.Views {
-
   [View("Transformation View")]
   [Content(typeof(TransformationContent), true)]
   public partial class TransformationView : AsynchronousContentView {
-
     public new TransformationContent Content {
       get { return (TransformationContent)base.Content; }
       set { base.Content = value; }
@@ -51,16 +49,10 @@ namespace HeuristicLab.DataPreprocessing.Views {
       }
     }
 
-    /// <summary>
-    /// Adds eventhandlers to the current instance.
-    /// </summary>
     protected override void RegisterContentEvents() {
       Content.FilterLogic.FilterChanged += FilterLogic_FilterChanged;
     }
 
-    /// <summary>
-    /// Removes the eventhandlers from the current instance.
-    /// </summary>
     protected override void DeregisterContentEvents() {
       Content.FilterLogic.FilterChanged -= FilterLogic_FilterChanged;
     }

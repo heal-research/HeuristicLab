@@ -26,7 +26,6 @@ using HeuristicLab.Common;
 
 namespace HeuristicLab.DataPreprocessing {
   public class StatisticsLogic {
-
     private readonly ITransactionalPreprocessingData preprocessingData;
     private readonly SearchLogic searchLogic;
 

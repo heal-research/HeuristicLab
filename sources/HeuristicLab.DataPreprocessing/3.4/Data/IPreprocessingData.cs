@@ -26,7 +26,6 @@ using HeuristicLab.Data;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.DataPreprocessing {
-
   public interface IPreprocessingData : INamedItem {
     T GetCell<T>(int columnIndex, int rowIndex);
 

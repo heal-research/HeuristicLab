@@ -20,7 +20,6 @@
 #endregion
 
 using System;
-using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
@@ -29,10 +28,14 @@ namespace HeuristicLab.DataPreprocessing.Views {
   [View("ViewShortcutCollection View")]
   [Content(typeof(IItemList<IViewShortcut>), true)]
   public partial class ViewShortcutListView : ItemListView<IViewShortcut> {
-
     public ViewShortcutListView() {
       InitializeComponent();
-      itemsGroupBox.Text = "View Shortcuts";
+      Controls.Clear();
+      Controls.Add(splitContainer);
+      splitContainer.Panel1.Controls.Clear();
+      splitContainer.Panel1.Controls.Add(itemsListView);
+      splitContainer.Panel2.Controls.Clear();
+      splitContainer.Panel2.Controls.Add(viewHost);
     }
 
     //Open item in new tab on double click
@@ -41,14 +44,15 @@ namespace HeuristicLab.DataPreprocessing.Views {
       if (itemsListView.SelectedItems.Count == 1) {
         IViewShortcut item = itemsListView.SelectedItems[0].Tag as IViewShortcut;
         if (item != null) {
-
-          if (item is IViewChartShortcut)
-            item = (IViewChartShortcut)item.Clone(new Cloner());
-
-          IContentView view = MainFormManager.MainForm.ShowContent(item);
-          if (view != null) {
-            view.ReadOnly = ReadOnly;
-            view.Locked = Locked;
+          try {
+            item = (IViewShortcut)item.Clone();
+            var view = MainFormManager.MainForm.ShowContent(item);
+            if (view != null) {
+              view.ReadOnly = ReadOnly;
+              view.Locked = Locked;
+            }
+          } catch (NullReferenceException) {
+            // cloning for preprocessing not done properly yet
           }
         }
       }

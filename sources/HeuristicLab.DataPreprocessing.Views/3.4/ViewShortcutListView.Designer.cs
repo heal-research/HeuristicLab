@@ -52,51 +52,14 @@ namespace HeuristicLab.DataPreprocessing.Views {
       this.detailsGroupBox.SuspendLayout();
       this.SuspendLayout();
       // 
-      // splitContainer
-      // 
-      this.splitContainer.Size = new System.Drawing.Size(526, 364);
-      // 
-      // itemsGroupBox
-      // 
-      this.itemsGroupBox.Size = new System.Drawing.Size(532, 383);
-      // 
       // itemsListView
       // 
-      this.itemsListView.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)));
       this.itemsListView.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.itemsListView.Location = new System.Drawing.Point(0, 0);
-      this.itemsListView.Size = new System.Drawing.Size(200, 364);
-      // 
-      // detailsGroupBox
-      // 
-      this.detailsGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)));
-      this.detailsGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.detailsGroupBox.Location = new System.Drawing.Point(0, 0);
-      this.detailsGroupBox.Size = new System.Drawing.Size(322, 364);
-      // 
-      // addButton
-      // 
-      this.toolTip.SetToolTip(this.addButton, "Add");
-      this.addButton.Visible = false;
-      // 
-      // removeButton
-      // 
-      this.toolTip.SetToolTip(this.removeButton, "Remove");
-      this.removeButton.Visible = false;
-      // 
-      // moveUpButton
-      // 
-      this.toolTip.SetToolTip(this.moveUpButton, "Move Up");
-      this.moveUpButton.Visible = false;
-      // 
-      // moveDownButton
-      // 
-      this.toolTip.SetToolTip(this.moveDownButton, "Move Down");
-      this.moveDownButton.Visible = false;
       // 
       // viewHost
       // 
-      this.viewHost.Size = new System.Drawing.Size(310, 339);
+      this.viewHost.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.viewHost.ViewsLabelVisible = false;
       // 
       // showDetailsCheckBox
       // 

@@ -19,7 +19,6 @@
  */
 #endregion
 
-using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -32,7 +31,8 @@ using HeuristicLab.MainForm;
 namespace HeuristicLab.DataPreprocessing.Views {
   [View("Preprocessing Checked Variables View")]
   [Content(typeof(PreprocessingChartContent), false)]
-  public abstract partial class PreprocessingCheckedVariablesView : ItemView {
+  public partial class PreprocessingCheckedVariablesView : ItemView {
+    protected bool SuppressCheckedChangedUpdate = false;
 
     public new PreprocessingChartContent Content {
       get { return (PreprocessingChartContent)base.Content; }
@@ -47,44 +47,47 @@ namespace HeuristicLab.DataPreprocessing.Views {
       return Content.VariableItemList.CheckedItems.Any(x => x.Value.Value == name);
     }
     protected IList<string> GetCheckedVariables() {
-      return checkedItemList.Content.CheckedItems.Select(i => i.Value.Value).ToList();
+      return Content.VariableItemList.CheckedItems.Select(i => i.Value.Value).ToList();
     }
 
     protected override void OnContentChanged() {
       base.OnContentChanged();
       if (Content == null) return;
 
-      if (Content.VariableItemList == null) {
-        IList<string> inputs = Content.PreprocessingData.InputVariables;
-        if (Content.PreprocessingData.TargetVariable != null)
-          inputs = inputs.Union(new[] { Content.PreprocessingData.TargetVariable }).ToList();
-        Content.VariableItemList = Content.CreateVariableItemList(inputs);
-      } else {
-        var checkedNames = Content.VariableItemList.CheckedItems.Select(x => x.Value.Value);
-        Content.VariableItemList = Content.CreateVariableItemList(checkedNames.ToList());
+      variablesListView.ItemChecked -= variablesListView_ItemChecked;
+      variablesListView.Items.Clear();
+      foreach (var variable in Content.VariableItemList) {
+        bool isInputTarget = Content.PreprocessingData.InputVariables.Contains(variable.Value)
+          || Content.PreprocessingData.TargetVariable == variable.Value;
+        variablesListView.Items.Add(new ListViewItem(variable.Value) {
+          Tag = variable,
+          Checked = IsVariableChecked(variable.Value),
+          ForeColor = isInputTarget ? Color.Black : Color.Gray
+        });
       }
-      Content.VariableItemList.CheckedItemsChanged += CheckedItemsChanged;
-
-      checkedItemList.Content = Content.VariableItemList;
-      var target = Content.PreprocessingData.TargetVariable;
-      var inputAndTarget = Content.PreprocessingData.InputVariables.Union(target != null ? new[] { target } : new string[] { });
-      foreach (var col in Content.PreprocessingData.GetDoubleVariableNames().Except(inputAndTarget)) {
-        var listViewItem = checkedItemList.ItemsListView.FindItemWithText(col, false, 0, false);
-        listViewItem.ForeColor = Color.LightGray;
-      }
+      variablesListView.ItemChecked += variablesListView_ItemChecked;
     }
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
       Content.PreprocessingData.Changed += PreprocessingData_Changed;
-      Content.PreprocessingData.SelectionChanged += PreprocessingData_SelctionChanged;
+      Content.VariableItemList.CheckedItemsChanged += CheckedItemsChanged;
     }
+
     protected override void DeregisterContentEvents() {
       Content.PreprocessingData.Changed -= PreprocessingData_Changed;
-      Content.PreprocessingData.SelectionChanged -= PreprocessingData_SelctionChanged;
+      Content.VariableItemList.CheckedItemsChanged -= CheckedItemsChanged;
       base.DeregisterContentEvents();
     }
 
     protected virtual void CheckedItemsChanged(object sender, CollectionItemsChangedEventArgs<IndexedItem<StringValue>> checkedItems) {
+      // sync listview
+      foreach (var item in checkedItems.Items)
+        variablesListView.Items[item.Index].Checked = Content.VariableItemList.ItemChecked(item.Value);
+    }
+    private void variablesListView_ItemChecked(object sender, ItemCheckedEventArgs e) {
+      // sync checked item list
+      var variable = (StringValue)e.Item.Tag;
+      Content.VariableItemList.SetItemCheckedState(variable, e.Item.Checked);
     }
 
     private void PreprocessingData_Changed(object sender, DataPreprocessingChangedEventArgs e) {
@@ -108,7 +111,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
     protected virtual void AddVariable(string name) {
       Content.VariableItemList.Add(new StringValue(name));
       if (!Content.PreprocessingData.InputVariables.Contains(name) && Content.PreprocessingData.TargetVariable != name) {
-        var listViewItem = checkedItemList.ItemsListView.FindItemWithText(name, false, 0, false);
+        var listViewItem = variablesListView.FindItemWithText(name, false, 0, false);
         listViewItem.ForeColor = Color.LightGray;
       }
     }
@@ -117,45 +120,37 @@ namespace HeuristicLab.DataPreprocessing.Views {
       if (stringValue != null)
         Content.VariableItemList.Remove(stringValue);
     }
-    protected virtual void UpdateVariable(string name) {
-    }
-    protected virtual void ResetAllVariables() {
+    protected virtual void UpdateVariable(string name) { }
+    protected virtual void ResetAllVariables() { }
+    protected virtual void CheckedChangedUpdate() { }
+
+    private void checkInputsTargetButton_Click(object sender, System.EventArgs e) {
+      SuppressCheckedChangedUpdate = true;
+      foreach (var name in Content.VariableItemList) {
+        var isInputTarget = Content.PreprocessingData.InputVariables.Contains(name.Value) || Content.PreprocessingData.TargetVariable == name.Value;
+        Content.VariableItemList.SetItemCheckedState(name, isInputTarget);
+      }
+      SuppressCheckedChangedUpdate = false;
+      CheckedChangedUpdate();
     }
 
-    protected virtual void PreprocessingData_SelctionChanged(object sender, EventArgs e) {
+    private void checkAllButton_Click(object sender, System.EventArgs e) {
+      SuppressCheckedChangedUpdate = true;
+      foreach (var name in Content.VariableItemList) {
+        Content.VariableItemList.SetItemCheckedState(name, true);
+      }
+      SuppressCheckedChangedUpdate = false;
+      CheckedChangedUpdate();
     }
 
-    #region ContextMenu Events
-    private void variablesListcontextMenuStrip_Opening(object sender, System.ComponentModel.CancelEventArgs e) {
-      var data = Content.PreprocessingData;
-      checkInputsTargetToolStripMenuItem.Text = "Check Inputs" + (data.TargetVariable != null ? "+Target" : "");
-      checkOnlyInputsTargetToolStripMenuItem.Text = "Check only Inputs" + (data.TargetVariable != null ? "+Target" : "");
-    }
-    private void checkInputsTargetToolStripMenuItem_Click(object sender, EventArgs e) {
-      foreach (var name in checkedItemList.Content) {
-        var isInputTarget = Content.PreprocessingData.InputVariables.Contains(name.Value) || Content.PreprocessingData.TargetVariable == name.Value;
-        if (isInputTarget) {
-          checkedItemList.Content.SetItemCheckedState(name, true);
-        }
+    private void uncheckAllButton_Click(object sender, System.EventArgs e) {
+      SuppressCheckedChangedUpdate = true;
+      foreach (var name in Content.VariableItemList) {
+        Content.VariableItemList.SetItemCheckedState(name, false);
       }
+      SuppressCheckedChangedUpdate = false;
+      CheckedChangedUpdate();
     }
-    private void checkOnlyInputsTargetToolStripMenuItem_Click(object sender, EventArgs e) {
-      foreach (var name in checkedItemList.Content) {
-        var isInputTarget = Content.PreprocessingData.InputVariables.Contains(name.Value) || Content.PreprocessingData.TargetVariable == name.Value;
-        checkedItemList.Content.SetItemCheckedState(name, isInputTarget);
-      }
-    }
-    private void checkAllToolStripMenuItem_Click(object sender, EventArgs e) {
-      foreach (var name in checkedItemList.Content) {
-        checkedItemList.Content.SetItemCheckedState(name, true);
-      }
-    }
-    private void uncheckAllToolStripMenuItem_Click(object sender, EventArgs e) {
-      foreach (var name in checkedItemList.Content) {
-        checkedItemList.Content.SetItemCheckedState(name, false);
-      }
-    }
-    #endregion
   }
 }
 

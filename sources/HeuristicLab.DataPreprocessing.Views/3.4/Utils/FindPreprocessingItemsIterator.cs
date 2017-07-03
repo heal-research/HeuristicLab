@@ -25,13 +25,12 @@ using System.Linq;
 
 namespace HeuristicLab.DataPreprocessing.Views {
   class FindPreprocessingItemsIterator : IFindPreprocessingItemsIterator {
-
     private IDictionary<int, IList<int>> items;
     private Tuple<int, int> currentCell;
 
     public FindPreprocessingItemsIterator(IDictionary<int, IList<int>> items) {
       this.items = items;
-      Reset(); 
+      Reset();
     }
 
     public void SetStartCell(int columnIndex, int rowIndex) {

@@ -19,33 +19,31 @@
  */
 #endregion
 
-using System.Collections.Generic;
+using System;
 using System.Drawing;
 using System.Linq;
+using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.DataPreprocessing {
   [Item("Histogram", "Represents the histogram grid.")]
   public class HistogramContent : PreprocessingChartContent {
-
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Statistics; }
     }
-    private const int MAX_DISTINCT_VALUES_FOR_CLASSIFCATION = 20;
 
-    private int classifierVariableIndex = 0;
+    public string GroupingVariableName { get; set; }
 
-    public int ClassifierVariableIndex {
-      get { return this.classifierVariableIndex; }
-      set { this.classifierVariableIndex = value; }
-    }
-    public bool IsDetailedChartViewEnabled { get; set; }
+    public int Bins { get; set; }
+    public bool ExactBins { get; set; }
 
+    public LegendOrder Order { get; set; }
 
     public HistogramContent(IFilteredPreprocessingData preprocessingData)
       : base(preprocessingData) {
-      AllInOneMode = false;
+      Bins = 10;
+      ExactBins = false;
     }
 
     public HistogramContent(HistogramContent content, Cloner cloner)
@@ -55,20 +53,48 @@ namespace HeuristicLab.DataPreprocessing {
       return new HistogramContent(this, cloner);
     }
 
-    public IEnumerable<string> GetVariableNamesForHistogramClassification() {
-      List<string> doubleVariableNames = new List<string>();
+    public static DataTable CreateHistogram(IFilteredPreprocessingData preprocessingData, string variableName, string groupingVariableName, DataTableVisualProperties.DataTableHistogramAggregation aggregation, LegendOrder legendOrder = LegendOrder.Appearance) {
+      var dataTable = new DataTable {
+        VisualProperties = { Title = variableName, HistogramAggregation = aggregation },
+      };
 
-      //only return variable names from type double
-      for (int i = 0; i < PreprocessingData.Columns; ++i) {
-        if (PreprocessingData.VariableHasType<double>(i)) {
-          double distinctValueCount = PreprocessingData.GetValues<double>(i).GroupBy(x => x).Count();
-          bool distinctValuesOk = distinctValueCount <= MAX_DISTINCT_VALUES_FOR_CLASSIFCATION;
-          if (distinctValuesOk)
-            doubleVariableNames.Add(PreprocessingData.GetVariableName(i));
-        }
+      if (string.IsNullOrEmpty(groupingVariableName)) {
+        var row = PreprocessingChartContent.CreateDataRow(preprocessingData, variableName, DataRowVisualProperties.DataRowChartType.Histogram);
+        row.VisualProperties.IsVisibleInLegend = false;
+        dataTable.Rows.Add(row);
+        return dataTable;
       }
-      return doubleVariableNames;
-    }
 
+      int variableIndex = preprocessingData.GetColumnIndex(variableName);
+      var variableValues = preprocessingData.GetValues<double>(variableIndex);
+      int groupVariableIndex = preprocessingData.GetColumnIndex(groupingVariableName);
+      var groupingValues = Enumerable.Empty<string>();
+
+      if (preprocessingData.VariableHasType<double>(groupVariableIndex)) {
+        groupingValues = preprocessingData.GetValues<double>(groupVariableIndex).Select(x => x.ToString());
+      } else if (preprocessingData.VariableHasType<string>(groupVariableIndex)) {
+        groupingValues = preprocessingData.GetValues<string>(groupVariableIndex);
+      } else if (preprocessingData.VariableHasType<DateTime>(groupVariableIndex)) {
+        groupingValues = preprocessingData.GetValues<DateTime>(groupVariableIndex).Select(x => x.ToString());
+      }
+
+      var groups = groupingValues.Zip(variableValues, Tuple.Create).GroupBy(t => t.Item1, t => t.Item2);
+
+      if (legendOrder == LegendOrder.Alphabetically)
+        groups = groups.OrderBy(x => x.Key, new NaturalStringComparer());
+
+      foreach (var group in groups) {
+        var classRow = new DataRow {
+          Name = group.Key,
+          VisualProperties = {
+              ChartType = DataRowVisualProperties.DataRowChartType.Histogram,
+              IsVisibleInLegend = !string.IsNullOrEmpty(groupingVariableName)
+            }
+        };
+        classRow.Values.AddRange(group);
+        dataTable.Rows.Add(classRow);
+      }
+      return dataTable;
+    }
   }
 }

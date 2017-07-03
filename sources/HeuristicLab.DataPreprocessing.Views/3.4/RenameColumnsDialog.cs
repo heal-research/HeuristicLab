@@ -25,7 +25,6 @@ using System.Windows.Forms;
 
 namespace HeuristicLab.DataPreprocessing.Views {
   public partial class RenameColumnsDialog : Form {
-
     public IList<string> ColumnNames {
       get {
         var names = new List<string>(dataGridView.RowCount);

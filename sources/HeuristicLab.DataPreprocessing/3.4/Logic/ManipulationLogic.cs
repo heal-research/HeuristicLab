@@ -39,8 +39,8 @@ namespace HeuristicLab.DataPreprocessing {
       get { return preprocessingData; }
     }
 
-    public ManipulationLogic(ITransactionalPreprocessingData _prepocessingData, SearchLogic theSearchLogic, StatisticsLogic theStatisticsLogic) {
-      preprocessingData = _prepocessingData;
+    public ManipulationLogic(ITransactionalPreprocessingData preprocessingData, SearchLogic theSearchLogic, StatisticsLogic theStatisticsLogic) {
+      this.preprocessingData = preprocessingData;
       searchLogic = theSearchLogic;
       statisticsLogic = theStatisticsLogic;
     }
@@ -108,13 +108,6 @@ namespace HeuristicLab.DataPreprocessing {
     public void ReplaceIndicesByLinearInterpolationOfNeighbours(IDictionary<int, IList<int>> cells) {
       preprocessingData.InTransaction(() => {
         foreach (var column in cells) {
-          int countValues = 0;
-          if (preprocessingData.VariableHasType<double>(column.Key)) {
-            countValues = preprocessingData.GetValues<double>(column.Key).Count();
-          } else if (preprocessingData.VariableHasType<DateTime>(column.Key)) {
-            countValues = preprocessingData.GetValues<DateTime>(column.Key).Count();
-          }
-
           IList<Tuple<int, int>> startEndings = GetStartAndEndingsForInterpolation(column);
           foreach (var tuple in startEndings) {
             Interpolate(column, tuple.Item1, tuple.Item2);
@@ -290,7 +283,6 @@ namespace HeuristicLab.DataPreprocessing {
 
 
     public List<int> RowsWithMissingValuesGreater(double percent) {
-
       List<int> rows = new List<int>();
 
       for (int i = 0; i < preprocessingData.Rows; ++i) {
@@ -304,7 +296,6 @@ namespace HeuristicLab.DataPreprocessing {
     }
 
     public List<int> ColumnsWithMissingValuesGreater(double percent) {
-
       List<int> columns = new List<int>();
       for (int i = 0; i < preprocessingData.Columns; ++i) {
         int missingCount = statisticsLogic.GetMissingValueCount(i);
@@ -317,7 +308,6 @@ namespace HeuristicLab.DataPreprocessing {
     }
 
     public List<int> ColumnsWithVarianceSmaller(double variance) {
-
       List<int> columns = new List<int>();
       for (int i = 0; i < preprocessingData.Columns; ++i) {
         if (preprocessingData.VariableHasType<double>(i) || preprocessingData.VariableHasType<DateTime>(i)) {
@@ -361,6 +351,5 @@ namespace HeuristicLab.DataPreprocessing {
         }
       });
     }
-
   }
 }

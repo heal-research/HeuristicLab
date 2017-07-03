@@ -20,68 +20,70 @@
 #endregion
 
 using System;
+using System.Drawing;
 using HeuristicLab.Analysis;
 using HeuristicLab.MainForm;
 
 namespace HeuristicLab.DataPreprocessing.Views {
-
   [View("Histogram View")]
   [Content(typeof(HistogramContent), true)]
   public partial class HistogramView : PreprocessingChartView {
-    private const string HISTOGRAM_CHART_TITLE = "Histogram";
-
-    public HistogramView() {
-      InitializeComponent();
-      chartType = DataRowVisualProperties.DataRowChartType.Histogram;
-      chartTitle = HISTOGRAM_CHART_TITLE;
-    }
-
-    protected override void OnContentChanged() {
-      base.OnContentChanged();
-      if (Content != null) {
-        classifierComboBox.Items.Clear();
-        classifierComboBox.Items.Add("None");
-
-        foreach (string var in Content.GetVariableNamesForHistogramClassification()) {
-          classifierComboBox.Items.Add(var);
-        }
-
-        if (classifierComboBox.SelectedItem == null && Content.ClassifierVariableIndex < classifierComboBox.Items.Count) {
-          classifierComboBox.SelectedIndex = Content.ClassifierVariableIndex;
-        }
-      }
-    }
-
     public new HistogramContent Content {
       get { return (HistogramContent)base.Content; }
       set { base.Content = value; }
     }
 
-    private void classifierComboBox_SelectedIndexChanged(object sender, EventArgs e) {
-      if (classifierComboBox.SelectedItem == null)
-        return;
+    public HistogramView() {
+      InitializeComponent();
+      aggregationComboBox.DataSource = Enum.GetValues(typeof(DataTableVisualProperties.DataTableHistogramAggregation));
+      aggregationComboBox.SelectedItem = DataTableVisualProperties.DataTableHistogramAggregation.Overlapping;
+      orderComboBox.DataSource = Enum.GetValues(typeof(PreprocessingChartContent.LegendOrder));
+      orderComboBox.SelectedItem = PreprocessingChartContent.LegendOrder.Appearance;
+    }
 
-      if (classifierComboBox.SelectedIndex != 0) {
-        int columndIndex = Content.PreprocessingData.GetColumnIndex(classifierComboBox.SelectedItem.ToString());
-        Classification = Content.PreprocessingData.GetValues<double>(columndIndex);
-      } else {
-        Classification = null;
-      }
+    protected override void OnContentChanged() {
+      base.OnContentChanged();
+      groupingComboBox.Items.Clear();
+      groupingComboBox.Items.Add(string.Empty);
 
-      Content.ClassifierVariableIndex = classifierComboBox.SelectedIndex;
-      if (Content.IsDetailedChartViewEnabled != IsDetailedChartViewEnabled) {
-        displayDetailsCheckBox.Checked = Content.IsDetailedChartViewEnabled;
-      } else {
-        GenerateChart();
+      if (Content != null) {
+        foreach (string var in PreprocessingChartContent.GetVariableNamesForGrouping(Content.PreprocessingData)) {
+          groupingComboBox.Items.Add(var);
+        }
+
+        groupingComboBox.SelectedItem = Content.GroupingVariableName ?? string.Empty;
       }
     }
-    private void displayDetailsCheckBox_CheckedChanged(object sender, EventArgs e) {
-      bool isChecked = displayDetailsCheckBox.Checked;
-      if (IsDetailedChartViewEnabled != isChecked) {
-        IsDetailedChartViewEnabled = isChecked;
-        Content.IsDetailedChartViewEnabled = isChecked;
-        GenerateChart();
+
+    protected override DataTable CreateDataTable(string variableName) {
+      var aggregation = (DataTableVisualProperties.DataTableHistogramAggregation)aggregationComboBox.SelectedItem;
+      var hist = HistogramContent.CreateHistogram(Content.PreprocessingData, variableName, Content.GroupingVariableName, aggregation, Content.Order);
+      hist.VisualProperties.TitleFont = new Font(DefaultFont.FontFamily, 10, FontStyle.Bold);
+      return hist;
+    }
+
+    private void classifierComboBox_SelectedIndexChanged(object sender, EventArgs e) {
+      Content.GroupingVariableName = groupingComboBox.SelectedItem.ToString();
+
+      // rebuild datatables
+      InitData();
+      GenerateLayout();
+    }
+
+    private void aggregationComboBox_SelectedIndexChanged(object sender, EventArgs e) {
+      foreach (var dt in dataTables.Values) {
+        dt.VisualProperties.HistogramAggregation = (DataTableVisualProperties.DataTableHistogramAggregation)aggregationComboBox.SelectedItem;
       }
+    }
+
+    private void orderComboBox_SelectedIndexChanged(object sender, EventArgs e) {
+      if (Content == null) return;
+
+      Content.Order = (PreprocessingChartContent.LegendOrder)orderComboBox.SelectedItem;
+
+      // rebuild datatables
+      InitData();
+      GenerateLayout();
     }
   }
 }

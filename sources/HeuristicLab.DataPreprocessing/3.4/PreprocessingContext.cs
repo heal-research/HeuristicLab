@@ -31,7 +31,6 @@ namespace HeuristicLab.DataPreprocessing {
   [Item("PreprocessingContext", "PreprocessingContext")]
   [StorableClass]
   public class PreprocessingContext : NamedItem, IStorableContent {
-
     public string Filename { get; set; }
 
     [Storable]
