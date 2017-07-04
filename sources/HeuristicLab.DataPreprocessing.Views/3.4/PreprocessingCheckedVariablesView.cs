@@ -31,7 +31,7 @@ using HeuristicLab.MainForm;
 namespace HeuristicLab.DataPreprocessing.Views {
   [View("Preprocessing Checked Variables View")]
   [Content(typeof(PreprocessingChartContent), false)]
-  public partial class PreprocessingCheckedVariablesView : ItemView {
+  public abstract partial class PreprocessingCheckedVariablesView : ItemView {
     protected bool SuppressCheckedChangedUpdate = false;
 
     public new PreprocessingChartContent Content {

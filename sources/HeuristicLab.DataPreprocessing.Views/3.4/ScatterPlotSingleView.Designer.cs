@@ -170,8 +170,6 @@ namespace HeuristicLab.DataPreprocessing.Views {
       // 
       this.comboBoxGroup.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.comboBoxGroup.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
-      this.comboBoxGroup.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
       this.comboBoxGroup.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.comboBoxGroup.FormattingEnabled = true;
       this.comboBoxGroup.Location = new System.Drawing.Point(51, 94);
@@ -185,8 +183,6 @@ namespace HeuristicLab.DataPreprocessing.Views {
       // 
       this.comboBoxYVariable.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.comboBoxYVariable.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
-      this.comboBoxYVariable.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
       this.comboBoxYVariable.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.comboBoxYVariable.FormattingEnabled = true;
       this.comboBoxYVariable.Location = new System.Drawing.Point(51, 60);
@@ -200,8 +196,6 @@ namespace HeuristicLab.DataPreprocessing.Views {
       // 
       this.comboBoxXVariable.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.comboBoxXVariable.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
-      this.comboBoxXVariable.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
       this.comboBoxXVariable.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.comboBoxXVariable.FormattingEnabled = true;
       this.comboBoxXVariable.Location = new System.Drawing.Point(51, 26);
