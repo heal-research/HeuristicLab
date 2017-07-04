@@ -69,6 +69,9 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       }
       private set { compiledInstance = value; }
     }
+    public dynamic Instance {
+      get { return compiledInstance; }
+    }
 
     public override Assembly Compile() {
       var assembly = base.Compile();

@@ -79,6 +79,9 @@ namespace HeuristicLab.Problems.Programmable {
         return compiledProblemDefinition;
       }
     }
+    public dynamic Instance {
+      get { return compiledProblemDefinition; }
+    }
 
     public sealed override Assembly Compile() {
       return Compile(true);
