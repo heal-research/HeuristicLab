@@ -745,25 +745,25 @@ namespace HeuristicLab.Optimization.Views {
       if (Content.Constraints.Contains(visibilityConstraint)) Content.Constraints.Remove(visibilityConstraint);
     }
     private void hideRunsToolStripMenuItem_Click(object sender, EventArgs e) {
-      //ToList is necessary to prevent lazy evaluation
-      HideRuns(selectedRuns.ToList());
+      HideRuns(selectedRuns);
       //could not use ClearSelectedRuns as the runs are not visible anymore
       selectedRuns.Clear();
     }
     private void hideRunsButton_Click(object sender, EventArgs e) {
-      //ToList is necessary to prevent lazy evaluation
-      HideRuns(selectedRuns.ToList());
+      HideRuns(selectedRuns);
       //could not use ClearSelectedRuns as the runs are not visible anymore
       selectedRuns.Clear();
     }
 
     private void HideRuns(IEnumerable<IRun> runs) {
+      Content.UpdateOfRunsInProgress = true;
       visibilityConstraint.Active = false;
       if (!Content.Constraints.Contains(visibilityConstraint)) Content.Constraints.Add(visibilityConstraint);
       foreach (var run in runs) {
         visibilityConstraint.ConstraintData.Add(run);
       }
       visibilityConstraint.Active = true;
+      Content.UpdateOfRunsInProgress = false;
     }
 
     private void ClearSelectedRuns() {
