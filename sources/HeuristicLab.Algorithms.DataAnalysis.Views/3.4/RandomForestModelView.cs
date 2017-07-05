@@ -17,21 +17,22 @@
  * You should have received a copy of the GNU General Public License
  * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
  */
-#endregion
+#endregion            
 
 using HeuristicLab.Common;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
-using HeuristicLab.MainForm.WindowsForms;
-using HeuristicLab.Problems.DataAnalysis;                  
+using HeuristicLab.Problems.DataAnalysis;
+using HeuristicLab.Problems.DataAnalysis.Symbolic;                       
+using HeuristicLab.Problems.DataAnalysis.Symbolic.Regression;
 
 namespace HeuristicLab.Algorithms.DataAnalysis.Views {
-  [View("Gradient boosted trees model")]
-  [Content(typeof(IGradientBoostedTreesModel), true)]
-  public partial class GradientBoostedTreesModelView : ItemView {
+  [View("Random forest model")]
+  [Content(typeof(IRandomForestModel), true)]
+  public partial class RandomForestModelView : ItemView {
 
-    public new IGradientBoostedTreesModel Content {
-      get { return (IGradientBoostedTreesModel)base.Content; }
+    public new IRandomForestModel Content {
+      get { return (IRandomForestModel)base.Content; }
       set { base.Content = value; }
     }
 
@@ -41,7 +42,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       viewHost.Enabled = Content != null;
     }
 
-    public GradientBoostedTreesModelView()
+    public RandomForestModelView()
       : base() {
       InitializeComponent();
     }
@@ -54,34 +55,40 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       } else {
         viewHost.Content = null;
         listBox.Items.Clear();
-        foreach (var e in Content.Models) {
-          listBox.Items.Add(e);
+        var rfModel = Content;
+        var numTrees = rfModel.NumberOfTrees;
+        for (int i = 0; i < numTrees; i++) {
+          listBox.Items.Add(i + 1);
         }
       }
     }
 
     private void listBox_SelectedIndexChanged(object sender, System.EventArgs e) {
-      var model = listBox.SelectedItem;
-      if (model == null) viewHost.Content = null;
+      if (listBox.SelectedItem == null) viewHost.Content = null;
       else {
-        viewHost.Content = ConvertModel(model);
+        var idx = (int)listBox.SelectedItem;
+        viewHost.Content = CreateModel(idx);
       }
     }
 
     private void listBox_DoubleClick(object sender, System.EventArgs e) {
       var selectedItem = listBox.SelectedItem;
       if (selectedItem == null) return;
-      MainFormManager.MainForm.ShowContent(ConvertModel(selectedItem));
+      var idx = (int)listBox.SelectedItem;
+      MainFormManager.MainForm.ShowContent(CreateModel(idx));
     }
 
-    private IContent ConvertModel(object model) {
-      var treeModel = model as RegressionTreeModel;
-      if (treeModel != null)
-        return treeModel.CreateSymbolicRegressionModel();
-      else {
-        var regModel = model as IRegressionModel;
-        return regModel;
-      }
+    private IContent CreateModel(int idx) {
+      idx -= 1;
+      var rfModel = Content;
+      var rfClassModel = rfModel as IClassificationModel; // rfModel is always a IRegressionModel and a IClassificationModel
+      var targetVariable = rfClassModel.TargetVariable;
+      if (rfModel == null) return null;
+      if (idx < 0 || idx >= rfModel.NumberOfTrees)
+        return null;
+      var syModel = new SymbolicRegressionModel(targetVariable, rfModel.ExtractTree(idx),
+          new SymbolicDataAnalysisExpressionTreeLinearInterpreter());
+      return syModel;
     }
   }
 }

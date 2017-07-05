@@ -142,11 +142,11 @@
     <Compile Include="OneFactorClassificationModelView.Designer.cs">
       <DependentUpon>OneFactorClassificationModelView.cs</DependentUpon>
     </Compile>
-    <Compile Include="RandomForestClassificationSolutionView.cs">
+    <Compile Include="RandomForestModelView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="RandomForestClassificationSolutionView.Designer.cs">
-      <DependentUpon>RandomForestClassificationSolutionView.cs</DependentUpon>
+    <Compile Include="RandomForestModelView.Designer.cs">
+      <DependentUpon>RandomForestModelView.cs</DependentUpon>
     </Compile>
     <Compile Include="RandomForestModelEvaluationView.cs">
       <SubType>UserControl</SubType>
