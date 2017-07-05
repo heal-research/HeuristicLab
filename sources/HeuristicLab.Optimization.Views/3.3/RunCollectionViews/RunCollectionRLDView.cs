@@ -1392,7 +1392,7 @@ namespace HeuristicLab.Optimization.Views {
     }
 
     private class TargetComparer : Comparer<Tuple<double, double>> {
-      public bool Maximization { get; }
+      public bool Maximization { get; private set; }
       public TargetComparer(bool maximization) {
         Maximization = maximization;
       }
