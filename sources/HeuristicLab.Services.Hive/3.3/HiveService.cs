@@ -262,7 +262,8 @@ namespace HeuristicLab.Services.Hive {
           var task = taskDao.GetById(taskId);
           if (task.State == DA.TaskState.Calculating || task.State == DA.TaskState.Transferring) {
             task.Command = DA.Command.Pause;
-          } else if (task.State != DA.TaskState.Aborted
+          } else if (task.State != DA.TaskState.Paused
+                     && task.State != DA.TaskState.Aborted
                      && task.State != DA.TaskState.Finished
                      && task.State != DA.TaskState.Failed) {
             UpdateTaskState(pm, task, DT.TaskState.Paused, null, null, string.Empty);
@@ -965,7 +966,7 @@ namespace HeuristicLab.Services.Hive {
       var stateLogDao = pm.StateLogDao;
       var taskStateEntity = taskState.ToEntity();
 
-      if (taskStateEntity == DA.TaskState.Paused && task.Command == null) {
+      if (task.State == DA.TaskState.Calculating && taskStateEntity == DA.TaskState.Paused && task.Command == null) {
         // slave paused and uploaded the task (no user-command) -> set waiting.
         taskStateEntity = DA.TaskState.Waiting;
       }

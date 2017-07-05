@@ -315,26 +315,22 @@ namespace HeuristicLab.Clients.Hive {
 
     public override void AddChildHiveTask(HiveTask hiveTask) {
       base.AddChildHiveTask(hiveTask);
-      var optimizerHiveJob = (OptimizerHiveTask)hiveTask;
+      var optimizerHiveTask = (OptimizerHiveTask)hiveTask;
       syncTasksWithOptimizers = false;
-      if (this.ItemTask != null && optimizerHiveJob.ItemTask != null) {
-        // if task is in state Paused, it has to preserve its ResultCollection, which is cleared when a optimizer is added to an experiment
-        OptimizerTask optimizerJobClone = null;
-        if (optimizerHiveJob.Task.State == TaskState.Paused) {
-          optimizerJobClone = (OptimizerTask)optimizerHiveJob.ItemTask.Clone();
-        }
+      if (this.ItemTask != null && optimizerHiveTask.ItemTask != null) {
+        OptimizerTask optimizerTaskClone = (OptimizerTask)optimizerHiveTask.ItemTask.Clone();
 
         if (this.ItemTask.Item is Optimization.Experiment) {
-          if (!this.ItemTask.OptimizerAsExperiment.Optimizers.Contains(optimizerHiveJob.ItemTask.Item)) {
-            UpdateOptimizerInExperiment(this.ItemTask.OptimizerAsExperiment, optimizerHiveJob.ItemTask);
+          if (!this.ItemTask.OptimizerAsExperiment.Optimizers.Contains(optimizerHiveTask.ItemTask.Item)) {
+            UpdateOptimizerInExperiment(this.ItemTask.OptimizerAsExperiment, optimizerHiveTask.ItemTask);
           }
         } else if (this.ItemTask.Item is Optimization.BatchRun) {
-          UpdateOptimizerInBatchRun(this.ItemTask.OptimizerAsBatchRun, optimizerHiveJob.ItemTask);
+          UpdateOptimizerInBatchRun(this.ItemTask.OptimizerAsBatchRun, optimizerHiveTask.ItemTask);
         }
 
-        if (optimizerHiveJob.Task.State == TaskState.Paused) {
-          optimizerHiveJob.ItemTask = optimizerJobClone;
-        }
+        optimizerHiveTask.syncTasksWithOptimizers = false;
+        optimizerHiveTask.ItemTask = optimizerTaskClone;
+        optimizerHiveTask.syncTasksWithOptimizers = true;
       }
       syncTasksWithOptimizers = true;
     }
