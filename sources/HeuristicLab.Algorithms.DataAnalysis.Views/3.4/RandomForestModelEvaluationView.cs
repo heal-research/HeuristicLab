@@ -29,13 +29,10 @@ using HeuristicLab.Problems.DataAnalysis.Symbolic.Regression;
 using HeuristicLab.Problems.DataAnalysis.Views;
 
 namespace HeuristicLab.Algorithms.DataAnalysis.Views {
-  [View("Random forest model")]
+  [View("RF Model Evaluation")]
   [Content(typeof(IRandomForestRegressionSolution), false)]
   [Content(typeof(IRandomForestClassificationSolution), false)]
-  public partial class RandomForestModelView : DataAnalysisSolutionEvaluationView {
-    public override Image ViewImage {
-      get { return HeuristicLab.Common.Resources.VSImageLibrary.Function; }
-    }
+  public partial class RandomForestModelEvaluationView : DataAnalysisSolutionEvaluationView {
 
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
@@ -43,7 +40,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       viewHost.Enabled = Content != null;
     }
 
-    public RandomForestModelView()
+    public RandomForestModelEvaluationView()
       : base() {
       InitializeComponent();
     }

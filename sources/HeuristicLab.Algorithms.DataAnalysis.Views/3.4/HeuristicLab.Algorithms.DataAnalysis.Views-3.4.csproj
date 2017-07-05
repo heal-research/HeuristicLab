@@ -148,17 +148,11 @@
     <Compile Include="RandomForestClassificationSolutionView.Designer.cs">
       <DependentUpon>RandomForestClassificationSolutionView.cs</DependentUpon>
     </Compile>
-    <Compile Include="RandomForestModelView.cs">
+    <Compile Include="RandomForestModelEvaluationView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="RandomForestModelView.Designer.cs">
-      <DependentUpon>RandomForestModelView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="RandomForestRegressionSolutionView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="RandomForestRegressionSolutionView.Designer.cs">
-      <DependentUpon>RandomForestRegressionSolutionView.cs</DependentUpon>
+    <Compile Include="RandomForestModelEvaluationView.Designer.cs">
+      <DependentUpon>RandomForestModelEvaluationView.cs</DependentUpon>
     </Compile>
     <Compile Include="MeanProdView.cs">
       <SubType>UserControl</SubType>
