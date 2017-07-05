@@ -53,6 +53,10 @@ namespace HeuristicLab.Common {
       this.tag = tag;
     }
 
+    public static Point2D<T> Create(T x, T y, object tag = null) {
+      return new Point2D<T>(x, y, tag);
+    }
+
     public static bool operator ==(Point2D<T> left, Point2D<T> right) {
       return left.x.Equals(right.x) && left.y.Equals(right.y) && left.tag == right.tag;
     }

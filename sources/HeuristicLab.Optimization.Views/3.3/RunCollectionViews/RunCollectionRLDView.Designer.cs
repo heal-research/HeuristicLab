@@ -44,8 +44,8 @@ namespace HeuristicLab.Optimization.Views {
     /// </summary>
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
-      System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-      System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+      System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+      System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
       this.dataTableComboBox = new System.Windows.Forms.ComboBox();
       this.dataTableLabel = new System.Windows.Forms.Label();
       this.groupLabel = new System.Windows.Forms.Label();
@@ -65,12 +65,12 @@ namespace HeuristicLab.Optimization.Views {
       this.byTargetTabPage = new System.Windows.Forms.TabPage();
       this.relativeOrAbsoluteComboBox = new System.Windows.Forms.ComboBox();
       this.targetChart = new HeuristicLab.Visualization.ChartControlsExtensions.EnhancedChart();
+      this.showLabelsCheckBox = new System.Windows.Forms.CheckBox();
       this.markerCheckBox = new System.Windows.Forms.CheckBox();
       this.boundShadingCheckBox = new System.Windows.Forms.CheckBox();
       this.byCostTabPage = new System.Windows.Forms.TabPage();
       this.byCostViewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
       this.budgetLogScalingCheckBox = new System.Windows.Forms.CheckBox();
-      this.aggregateBudgetsCheckBox = new System.Windows.Forms.CheckBox();
       this.generateBudgetsButton = new System.Windows.Forms.Button();
       this.byTableTabPage = new System.Windows.Forms.TabPage();
       this.ertTableView = new HeuristicLab.Data.Views.StringConvertibleMatrixView();
@@ -201,7 +201,7 @@ namespace HeuristicLab.Optimization.Views {
             | System.Windows.Forms.AnchorStyles.Right)));
       this.budgetsTextBox.Location = new System.Drawing.Point(59, 8);
       this.budgetsTextBox.Name = "budgetsTextBox";
-      this.budgetsTextBox.Size = new System.Drawing.Size(309, 20);
+      this.budgetsTextBox.Size = new System.Drawing.Size(391, 20);
       this.budgetsTextBox.TabIndex = 6;
       this.budgetsTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.budgetsTextBox_Validating);
       // 
@@ -248,6 +248,7 @@ namespace HeuristicLab.Optimization.Views {
       // 
       this.byTargetTabPage.Controls.Add(this.relativeOrAbsoluteComboBox);
       this.byTargetTabPage.Controls.Add(this.targetChart);
+      this.byTargetTabPage.Controls.Add(this.showLabelsCheckBox);
       this.byTargetTabPage.Controls.Add(this.markerCheckBox);
       this.byTargetTabPage.Controls.Add(this.boundShadingCheckBox);
       this.byTargetTabPage.Controls.Add(this.targetLogScalingCheckBox);
@@ -283,21 +284,21 @@ namespace HeuristicLab.Optimization.Views {
       this.targetChart.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      chartArea1.AxisX.IsStartedFromZero = false;
-      chartArea1.AxisX.MinorGrid.Enabled = true;
-      chartArea1.AxisX.MinorGrid.LineColor = System.Drawing.Color.WhiteSmoke;
-      chartArea1.AxisX.MinorGrid.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dash;
-      chartArea1.AxisY.Maximum = 1D;
-      chartArea1.AxisY.Minimum = 0D;
-      chartArea1.AxisY.MinorGrid.Enabled = true;
-      chartArea1.AxisY.MinorGrid.LineColor = System.Drawing.Color.WhiteSmoke;
-      chartArea1.AxisY.MinorGrid.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dash;
-      chartArea1.Name = "ChartArea1";
-      this.targetChart.ChartAreas.Add(chartArea1);
-      legend1.Alignment = System.Drawing.StringAlignment.Center;
-      legend1.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Top;
-      legend1.Name = "Legend1";
-      this.targetChart.Legends.Add(legend1);
+      chartArea2.AxisX.IsStartedFromZero = false;
+      chartArea2.AxisX.MinorGrid.Enabled = true;
+      chartArea2.AxisX.MinorGrid.LineColor = System.Drawing.Color.WhiteSmoke;
+      chartArea2.AxisX.MinorGrid.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dash;
+      chartArea2.AxisY.Maximum = 1D;
+      chartArea2.AxisY.Minimum = 0D;
+      chartArea2.AxisY.MinorGrid.Enabled = true;
+      chartArea2.AxisY.MinorGrid.LineColor = System.Drawing.Color.WhiteSmoke;
+      chartArea2.AxisY.MinorGrid.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dash;
+      chartArea2.Name = "ChartArea1";
+      this.targetChart.ChartAreas.Add(chartArea2);
+      legend2.Alignment = System.Drawing.StringAlignment.Center;
+      legend2.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Top;
+      legend2.Name = "Legend1";
+      this.targetChart.Legends.Add(legend2);
       this.targetChart.Location = new System.Drawing.Point(6, 34);
       this.targetChart.Name = "targetChart";
       this.targetChart.Size = new System.Drawing.Size(634, 324);
@@ -307,6 +308,20 @@ namespace HeuristicLab.Optimization.Views {
       this.targetChart.CustomizeLegend += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.CustomizeLegendEventArgs>(this.chart_CustomizeLegend);
       this.targetChart.MouseDown += new System.Windows.Forms.MouseEventHandler(this.chart_MouseDown);
       this.targetChart.MouseMove += new System.Windows.Forms.MouseEventHandler(this.chart_MouseMove);
+      // 
+      // showLabelsCheckBox
+      // 
+      this.showLabelsCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.showLabelsCheckBox.AutoSize = true;
+      this.showLabelsCheckBox.Checked = true;
+      this.showLabelsCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+      this.showLabelsCheckBox.Location = new System.Drawing.Point(329, 364);
+      this.showLabelsCheckBox.Name = "showLabelsCheckBox";
+      this.showLabelsCheckBox.Size = new System.Drawing.Size(81, 17);
+      this.showLabelsCheckBox.TabIndex = 6;
+      this.showLabelsCheckBox.Text = "show labels";
+      this.showLabelsCheckBox.UseVisualStyleBackColor = true;
+      this.showLabelsCheckBox.CheckedChanged += new System.EventHandler(this.showLabelsCheckBox_CheckedChanged);
       // 
       // markerCheckBox
       // 
@@ -338,7 +353,6 @@ namespace HeuristicLab.Optimization.Views {
       // 
       this.byCostTabPage.Controls.Add(this.byCostViewHost);
       this.byCostTabPage.Controls.Add(this.budgetLogScalingCheckBox);
-      this.byCostTabPage.Controls.Add(this.aggregateBudgetsCheckBox);
       this.byCostTabPage.Controls.Add(this.generateBudgetsButton);
       this.byCostTabPage.Controls.Add(this.budgetsLabel);
       this.byCostTabPage.Controls.Add(this.addBudgetsAsResultButton);
@@ -378,20 +392,6 @@ namespace HeuristicLab.Optimization.Views {
       this.budgetLogScalingCheckBox.Text = "logarithmic scaling";
       this.budgetLogScalingCheckBox.UseVisualStyleBackColor = true;
       this.budgetLogScalingCheckBox.CheckedChanged += new System.EventHandler(this.logScalingCheckBox_CheckedChanged);
-      // 
-      // aggregateBudgetsCheckBox
-      // 
-      this.aggregateBudgetsCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.aggregateBudgetsCheckBox.AutoSize = true;
-      this.aggregateBudgetsCheckBox.Checked = true;
-      this.aggregateBudgetsCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-      this.aggregateBudgetsCheckBox.Location = new System.Drawing.Point(374, 10);
-      this.aggregateBudgetsCheckBox.Name = "aggregateBudgetsCheckBox";
-      this.aggregateBudgetsCheckBox.Size = new System.Drawing.Size(74, 17);
-      this.aggregateBudgetsCheckBox.TabIndex = 10;
-      this.aggregateBudgetsCheckBox.Text = "aggregate";
-      this.aggregateBudgetsCheckBox.UseVisualStyleBackColor = true;
-      this.aggregateBudgetsCheckBox.CheckedChanged += new System.EventHandler(this.aggregateBudgetsCheckBox_CheckedChanged);
       // 
       // generateBudgetsButton
       // 
@@ -495,7 +495,6 @@ namespace HeuristicLab.Optimization.Views {
     private System.Windows.Forms.TabPage byTargetTabPage;
     private System.Windows.Forms.TabPage byCostTabPage;
     private System.Windows.Forms.TabPage byTableTabPage;
-    private System.Windows.Forms.CheckBox aggregateBudgetsCheckBox;
     private System.Windows.Forms.Button generateBudgetsButton;
     private System.Windows.Forms.CheckBox budgetLogScalingCheckBox;
     private System.Windows.Forms.Label problemLabel;
@@ -506,5 +505,6 @@ namespace HeuristicLab.Optimization.Views {
     private System.Windows.Forms.CheckBox boundShadingCheckBox;
     private System.Windows.Forms.CheckBox markerCheckBox;
     private System.Windows.Forms.ComboBox relativeOrAbsoluteComboBox;
+    private System.Windows.Forms.CheckBox showLabelsCheckBox;
   }
 }

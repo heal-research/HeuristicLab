@@ -80,6 +80,7 @@ namespace HeuristicLab.Optimization.Views {
     private double[] targets;
     private double[] budgets;
     private bool targetsAreRelative = true;
+    private bool showLabelsInTargetChart = true;
     private readonly BindingList<ProblemInstance> problems;
 
     private bool suppressUpdates;
@@ -95,9 +96,9 @@ namespace HeuristicLab.Optimization.Views {
       targetChart.CustomizeAllChartAreas();
       targetChart.ChartAreas[0].CursorX.Interval = 1;
       targetChart.SuppressExceptions = true;
-      byCostDataTable = new IndexedDataTable<double>("ECDF by Cost", "A data table containing the ECDF of each of a number of groups.") {
+      byCostDataTable = new IndexedDataTable<double>("ECDF by Cost", "A data table containing the ECDF of function values (relative to best-known).") {
         VisualProperties = {
-          YAxisTitle = "Proportion of unused budgets",
+          YAxisTitle = "Proportion of runs",
           YAxisMinimumFixedValue = 0,
           YAxisMinimumAuto = false,
           YAxisMaximumFixedValue = 1,
@@ -283,6 +284,7 @@ namespace HeuristicLab.Optimization.Views {
       dataTableComboBox.Enabled = Content != null && dataTableComboBox.Items.Count > 1;
       addTargetsAsResultButton.Enabled = Content != null && targets != null && dataTableComboBox.SelectedIndex >= 0;
       addBudgetsAsResultButton.Enabled = Content != null && budgets != null && dataTableComboBox.SelectedIndex >= 0;
+      generateTargetsButton.Enabled = targets != null;
     }
 
     private IEnumerable<AlgorithmInstance> GroupRuns() {
@@ -313,7 +315,7 @@ namespace HeuristicLab.Optimization.Views {
       targetChart.ChartAreas[0].AxisX.IsLogarithmic = false;
       targetChart.Series.Clear();
       invisibleTargetSeries.Clear();
-
+      
       var table = (string)dataTableComboBox.SelectedItem;
       if (string.IsNullOrEmpty(table)) return;
 
@@ -423,7 +425,8 @@ namespace HeuristicLab.Optimization.Views {
           while (moreMisses && iter.Current.Key <= h.Key) {
             if (!labelPrinted && row.Points.Count > 0) {
               var point = row.Points.Last();
-              point.Label = row.Name;
+              if (showLabelsInTargetChart)
+                point.Label = row.Name;
               point.MarkerStyle = MarkerStyle.Cross;
               point.MarkerBorderWidth = 1;
               point.MarkerSize = 10;
@@ -455,7 +458,8 @@ namespace HeuristicLab.Optimization.Views {
             moreMisses = iter.MoveNext();
             if (!labelPrinted) {
               var point = row.Points.Last();
-              point.Label = row.Name;
+              if (showLabelsInTargetChart)
+                point.Label = row.Name;
               point.MarkerStyle = MarkerStyle.Cross;
               point.MarkerBorderWidth = 1;
               point.MarkerSize = 10;
@@ -503,7 +507,8 @@ namespace HeuristicLab.Optimization.Views {
 
           if (!labelPrinted && row.Points.Count > 0) {
             var point = row.Points.Last();
-            point.Label = row.Name;
+            if (showLabelsInTargetChart)
+              point.Label = row.Name;
             point.MarkerStyle = MarkerStyle.Cross;
             point.MarkerBorderWidth = 1;
             point.MarkerSize = 10;
@@ -513,7 +518,8 @@ namespace HeuristicLab.Optimization.Views {
 
         if (!labelPrinted) {
           var point = row.Points.Last();
-          point.Label = row.Name;
+          if (showLabelsInTargetChart)
+            point.Label = row.Name;
           point.MarkerStyle = MarkerStyle.Cross;
           point.MarkerBorderWidth = 1;
           point.MarkerSize = 10;
@@ -571,29 +577,34 @@ namespace HeuristicLab.Optimization.Views {
 
     private void GenerateDefaultTargets() {
       targets = new[] { 0.1, 0.095, 0.09, 0.085, 0.08, 0.075, 0.07, 0.065, 0.06, 0.055, 0.05, 0.045, 0.04, 0.035, 0.03, 0.025, 0.02, 0.015, 0.01, 0.005, 0 };
-      suppressTargetsEvents = true;
-      targetsTextBox.Text = string.Join("% ; ", targets.Select(x => x * 100)) + "%";
-      suppressTargetsEvents = false;
+      SynchronizeTargetTextBox();
     }
 
     private Tuple<bool, double> GetEffortToHitTarget(
-        IEnumerable<Tuple<double, double>> convergenceGraph,
+        ObservableList<Tuple<double, double>> convergenceGraph,
         double absTarget, bool maximization) {
-      var hit = false;
-      var effort = double.NaN;
-      foreach (var dent in convergenceGraph) {
-        effort = dent.Item1;
-        hit = maximization && dent.Item2 >= absTarget || !maximization && dent.Item2 <= absTarget;
-        if (hit) break;
+      if (convergenceGraph.Count == 0)
+        throw new ArgumentException("Convergence graph is empty.", "convergenceGraph");
+      
+      var index = convergenceGraph.BinarySearch(Tuple.Create(0.0, absTarget), new TargetComparer(maximization));
+      if (index >= 0) {
+        return Tuple.Create(true, convergenceGraph[index].Item1);
+      } else {
+        index = ~index;
+        if (index >= convergenceGraph.Count)
+          return Tuple.Create(false, convergenceGraph.Last().Item1);
+        return Tuple.Create(true, convergenceGraph[index].Item1);
       }
-      if (double.IsNaN(effort)) throw new ArgumentException("Convergence graph is empty.", "convergenceGraph");
-      return Tuple.Create(hit, effort);
     }
 
     private void UpdateErtTables(List<AlgorithmInstance> algorithmInstances) {
       ertTableView.Content = null;
-      var columns = 1 + targets.Length + 1;
-      var matrix = new string[algorithmInstances.Count * algorithmInstances.Max(x => x.GetNumberOfProblemInstances()) + algorithmInstances.Max(x => x.GetNumberOfProblemInstances()), columns];
+      var columns = targets.Length + 1;
+      var totalRows = algorithmInstances.Count * algorithmInstances.Max(x => x.GetNumberOfProblemInstances()) + algorithmInstances.Max(x => x.GetNumberOfProblemInstances());
+      var matrix = new StringMatrix(totalRows, columns);
+      var rowNames = new List<string>();
+      matrix.ColumnNames = targets.Select(x => targetsAreRelative ? (100 * x).ToString() + "%" : x.ToString())
+        .Concat(new[] { "#succ" }).ToList();
       var rowCount = 0;
 
       var tableName = (string)dataTableComboBox.SelectedItem;
@@ -603,16 +614,18 @@ namespace HeuristicLab.Optimization.Views {
 
       foreach (var problem in problems) {
         var max = problem.IsMaximization();
-        matrix[rowCount, 0] = problem.ToString();
+        rowNames.Add(problem.ToString());
         var absTargets = GetAbsoluteTargetsWorstToBest(problem);
-        for (var i = 0; i < absTargets.Length; i++) {
-          matrix[rowCount, i + 1] = absTargets[i].ToString(CultureInfo.CurrentCulture.NumberFormat);
+        if (targetsAreRelative) {
+          // print out the absolute target values
+          for (var i = 0; i < absTargets.Length; i++) {
+            matrix[rowCount, i] = absTargets[i].ToString("##,0.0", CultureInfo.CurrentCulture.NumberFormat);
+          }
         }
-        matrix[rowCount, columns - 1] = "#succ";
         rowCount++;
 
         foreach (var alg in algorithmInstances) {
-          matrix[rowCount, 0] = alg.Name;
+          rowNames.Add(alg.Name);
           var runs = alg.GetRuns(problem).ToList();
           if (runs.Count == 0) {
             matrix[rowCount, columns - 1] = "N/A";
@@ -622,13 +635,14 @@ namespace HeuristicLab.Optimization.Views {
           var result = default(ErtCalculationResult);
           for (var i = 0; i < absTargets.Length; i++) {
             result = ExpectedRuntimeHelper.CalculateErt(runs, tableName, absTargets[i], max);
-            matrix[rowCount, i + 1] = result.ToString();
+            matrix[rowCount, i] = result.ToString();
           }
           matrix[rowCount, columns - 1] = targets.Length > 0 ? result.SuccessfulRuns + "/" + result.TotalRuns : "-";
           rowCount++;
         }
       }
-      ertTableView.Content = new StringMatrix(matrix);
+      matrix.RowNames = rowNames;
+      ertTableView.Content = matrix;
       ertTableView.DataGridView.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);
     }
     #endregion
@@ -657,11 +671,7 @@ namespace HeuristicLab.Optimization.Views {
           foreach (var run in alg.GetRuns(problem)) {
             var resultsTable = (IndexedDataTable<double>)run.Results[table];
 
-            if (aggregateBudgetsCheckBox.Checked) {
-              CalculateHitsForAllBudgets(hits, resultsTable.Rows.First(), alg.GetNumberOfProblemInstances(), problem, alg.Name, alg.GetNumberOfRuns(problem));
-            } else {
-              CalculateHitsForEachBudget(hits, resultsTable.Rows.First(), alg.GetNumberOfProblemInstances(), problem, alg.Name, alg.GetNumberOfRuns(problem));
-            }
+            CalculateHitsForEachBudget(hits, resultsTable.Rows.First(), problem, alg.Name);
           }
         }
 
@@ -677,9 +687,10 @@ namespace HeuristicLab.Optimization.Views {
           };
 
           var total = 0.0;
+          var count = list.Value.Count;
           foreach (var h in list.Value) {
             total += h.Value;
-            row.Values.Add(Tuple.Create(h.Key, total));
+            row.Values.Add(Tuple.Create(h.Key, total / (double)count));
           }
 
           byCostDataTable.Rows.Add(row);
@@ -696,71 +707,48 @@ namespace HeuristicLab.Optimization.Views {
       var runs = Content;
       var min = runs.Select(x => ((IndexedDataTable<double>)x.Results[table]).Rows.First().Values.Select(y => y.Item1).Min()).Min();
       var max = runs.Select(x => ((IndexedDataTable<double>)x.Results[table]).Rows.First().Values.Select(y => y.Item1).Max()).Max();
-      var points = 20;
+      var points = 3;
       budgets = Enumerable.Range(1, points).Select(x => min + (x / (double)points) * (max - min)).ToArray();
       suppressBudgetsEvents = true;
       budgetsTextBox.Text = string.Join(" ; ", budgets);
       suppressBudgetsEvents = false;
     }
 
-    private void CalculateHitsForEachBudget(Dictionary<string, SortedList<double, double>> hits, IndexedDataRow<double> row, int groupCount, ProblemInstance problem, string groupName, int problemCount) {
+    private void CalculateHitsForEachBudget(Dictionary<string, SortedList<double, double>> hits, IndexedDataRow<double> row, ProblemInstance problem, string groupName) {
       var max = problem.IsMaximization();
+      var prevIndex = 0;
       foreach (var b in budgets) {
         var key = groupName + "-" + b;
+        var index = row.Values.BinarySearch(prevIndex, row.Values.Count - prevIndex, Tuple.Create(b, 0.0), new CostComparer());
+        if (index < 0) {
+          index = ~index;
+          if (index >= row.Values.Count) break; // the run wasn't long enough to use up budget b (or any subsequent larger one)
+        }
         if (!hits.ContainsKey(key)) hits.Add(key, new SortedList<double, double>());
-        Tuple<double, double> prev = null;
-        foreach (var v in row.Values) {
-          if (v.Item1 >= b) {
-            // the budget may be too low to achieve any target
-            if (prev == null && v.Item1 != b) break;
-            var tgt = ((prev == null || v.Item1 == b) ? v.Item2 : prev.Item2);
-            var relTgt = CalculateRelativeDifference(max, problem.BestKnownQuality, tgt) + 1;
-            if (hits[key].ContainsKey(relTgt))
-              hits[key][relTgt] += 1.0 / (groupCount * problemCount);
-            else hits[key][relTgt] = 1.0 / (groupCount * problemCount);
-            break;
-          }
-          prev = v;
-        }
-        if (hits[key].Count == 0) hits.Remove(key);
-      }
-    }
-
-    private void CalculateHitsForAllBudgets(Dictionary<string, SortedList<double, double>> hits, IndexedDataRow<double> row, int groupCount, ProblemInstance problem, string groupName, int problemCount) {
-      var values = row.Values;
-      if (!hits.ContainsKey(groupName)) hits.Add(groupName, new SortedList<double, double>());
-
-      var i = 0;
-      var j = 0;
-      Tuple<double, double> prev = null;
-      var max = problem.IsMaximization();
-      while (i < budgets.Length && j < values.Count) {
-        var current = values[j];
-        if (current.Item1 >= budgets[i]) {
-          if (prev != null || current.Item1 == budgets[i]) {
-            var tgt = (prev == null || current.Item1 == budgets[i]) ? current.Item2 : prev.Item2;
-            var relTgt = CalculateRelativeDifference(max, problem.BestKnownQuality, tgt) + 1;
-            if (!hits[groupName].ContainsKey(relTgt)) hits[groupName][relTgt] = 0;
-            hits[groupName][relTgt] += 1.0 / (groupCount * problemCount * budgets.Length);
-          }
-          i++;
-        } else {
-          j++;
-          prev = current;
-        }
-      }
-      var lastTgt = values.Last().Item2;
-      var lastRelTgt = CalculateRelativeDifference(max, problem.BestKnownQuality, lastTgt) + 1;
-      if (i < budgets.Length && !hits[groupName].ContainsKey(lastRelTgt)) hits[groupName][lastRelTgt] = 0;
-      while (i < budgets.Length) {
-        hits[groupName][lastRelTgt] += 1.0 / (groupCount * problemCount * budgets.Length);
-        i++;
+        var v = row.Values[index];
+        var relTgt = CalculateRelativeDifference(max, problem.BestKnownQuality, v.Item2) + 1;
+        if (hits[key].ContainsKey(relTgt))
+          hits[key][relTgt]++;
+        else hits[key][relTgt] = 1.0;
+        prevIndex = index;
       }
     }
     #endregion
 
     private void UpdateCaption() {
       Caption = Content != null ? Content.OptimizerName + " RLD View" : ViewAttribute.GetViewName(GetType());
+    }
+
+    private void SynchronizeTargetTextBox() {
+      if (InvokeRequired) Invoke((Action)SynchronizeTargetTextBox);
+      else {
+        suppressTargetsEvents = true;
+        try {
+          if (targetsAreRelative)
+            targetsTextBox.Text = string.Join("% ; ", targets.Select(x => x * 100)) + "%";
+          else targetsTextBox.Text = string.Join(" ; ", targets);
+        } finally { suppressTargetsEvents = false; }
+      }
     }
 
     private void groupComboBox_SelectedIndexChanged(object sender, EventArgs e) {
@@ -813,13 +801,8 @@ namespace HeuristicLab.Optimization.Views {
       e.Cancel = false;
       errorProvider.SetError(targetsTextBox, null);
       targets = targetsAreRelative ? targetList.Select(x => (double)x).OrderByDescending(x => x).ToArray() : targetList.Select(x => (double)x).ToArray();
-      suppressTargetsEvents = true;
-      try {
-        if (targetsAreRelative)
-          targetsTextBox.Text = string.Join("% ; ", targets.Select(x => x * 100)) + "%";
-        else targetsTextBox.Text = string.Join(" ; ", targets);
-      } finally { suppressTargetsEvents = false; }
 
+      SynchronizeTargetTextBox();
       UpdateResultsByTarget();
       SetEnabledStateOfControls();
     }
@@ -847,39 +830,32 @@ namespace HeuristicLab.Optimization.Views {
         }
       }
       targetsAreRelative = (string)relativeOrAbsoluteComboBox.SelectedItem == "relative";
-      SuspendRepaint();
-      suppressTargetsEvents = true;
-      try {
-        if (targetsAreRelative)
-          targetsTextBox.Text = string.Join("% ; ", targets.Select(x => x * 100)) + "%";
-        else targetsTextBox.Text = string.Join(" ; ", targets);
+      SynchronizeTargetTextBox();
 
+      try {
+        SuspendRepaint();
         UpdateResultsByTarget();
-      } finally { suppressTargetsEvents = false; ResumeRepaint(true); }
+      } finally { ResumeRepaint(true); }
     }
 
     private void generateTargetsButton_Click(object sender, EventArgs e) {
-      decimal max = 1, min = 0, count = 10;
-      if (targets != null) {
-        max = (decimal)targets.Max();
-        min = (decimal)targets.Min();
-        count = targets.Length;
-      } else if (Content.Count > 0 && dataTableComboBox.SelectedIndex >= 0) {
-        var table = (string)dataTableComboBox.SelectedItem;
-        max = (decimal)Content.Where(x => x.Results.ContainsKey(table)).Select(x => ((IndexedDataTable<double>)x.Results[table]).Rows.First().Values.Max(y => y.Item2)).Max();
-        min = (decimal)Content.Where(x => x.Results.ContainsKey(table)).Select(x => ((IndexedDataTable<double>)x.Results[table]).Rows.First().Values.Min(y => y.Item2)).Min();
-        count = 6;
+      if (targets == null) return;
+      decimal max = 10, min = 0, count = 10;
+      max = (decimal)targets.Max();
+      min = (decimal)targets.Min();
+      count = targets.Length - 1;
+      if (targetsAreRelative) {
+        max *= 100;
+        min *= 100;
       }
       using (var dialog = new DefineArithmeticProgressionDialog(false, min, max, (max - min) / count)) {
         if (dialog.ShowDialog() == DialogResult.OK) {
           if (dialog.Values.Any()) {
-            targets = dialog.Values.Select(x => (double)x).ToArray();
-            suppressTargetsEvents = true;
-            if (targetsAreRelative)
-              targetsTextBox.Text = string.Join("% ; ", targets);
-            else targetsTextBox.Text = string.Join(" ; ", targets);
-            suppressTargetsEvents = false;
+            targets = targetsAreRelative
+              ? dialog.Values.OrderByDescending(x => x).Select(x => (double)x / 100.0).ToArray()
+              : dialog.Values.Select(x => (double)x).ToArray();
 
+            SynchronizeTargetTextBox();
             UpdateResultsByTarget();
             SetEnabledStateOfControls();
           }
@@ -895,25 +871,35 @@ namespace HeuristicLab.Optimization.Views {
         if (!run.Results.ContainsKey(table)) continue;
         var resultsTable = (IndexedDataTable<double>)run.Results[table];
         var values = resultsTable.Rows.First().Values;
-        var i = 0;
-        var j = 0;
         var pd = new ProblemInstance(run);
+        pd = problems.Single(x => x.Equals(pd));
         var max = pd.IsMaximization();
-        var absTargets = GetAbsoluteTargetsWorstToBest(problems.Single(x => x.Equals(pd)));
-        while (i < absTargets.Length && j < values.Count) {
-          var target = absTargets[i];
-          var current = values[j];
-          if (max && current.Item2 >= target || !max && current.Item2 <= target) {
-            run.Results[table + ".Target" + target] = new DoubleValue(current.Item1);
-            i++;
-          } else {
-            j++;
+        var absTargets = GetAbsoluteTargetsWorstToBest(pd);
+
+        var prevIndex = 0;
+        for (var i = 0; i < absTargets.Length; i++) {
+          var absTarget = absTargets[i];
+          var index = values.BinarySearch(prevIndex, values.Count - prevIndex, Tuple.Create(0.0, absTarget), new TargetComparer(max));
+          if (index < 0) {
+            index = ~index;
+            if (index >= values.Count) break; // the target (and subsequent ones) wasn't achieved
           }
+          var target = targetsAreRelative ? (targets[i] * 100) : absTarget;
+          run.Results[table + (targetsAreRelative ? ".RelTarget " : ".AbsTarget ") + target + (targetsAreRelative ? "%" : string.Empty)] = new DoubleValue(values[index].Item1);
+          prevIndex = index;
         }
       }
     }
 
     private void markerCheckBox_CheckedChanged(object sender, EventArgs e) {
+      SuspendRepaint();
+      try {
+        UpdateResultsByTarget();
+      } finally { ResumeRepaint(true); }
+    }
+
+    private void showLabelsCheckBox_CheckedChanged(object sender, EventArgs e) {
+      showLabelsInTargetChart = showLabelsCheckBox.Checked;
       SuspendRepaint();
       try {
         UpdateResultsByTarget();
@@ -930,29 +916,26 @@ namespace HeuristicLab.Optimization.Views {
       foreach (var ts in budgetStrings) {
         double b;
         if (!double.TryParse(ts, out b)) {
-          errorProvider.SetError(budgetsTextBox, "Not all targets can be parsed: " + ts);
+          errorProvider.SetError(budgetsTextBox, "Not all budgets can be parsed: " + ts);
           e.Cancel = true;
           return;
         }
         budgetList.Add(b);
       }
       if (budgetList.Count == 0) {
-        errorProvider.SetError(budgetsTextBox, "Give at least one target value!");
+        errorProvider.SetError(budgetsTextBox, "Give at least one budget value!");
         e.Cancel = true;
         return;
       }
       e.Cancel = false;
       errorProvider.SetError(budgetsTextBox, null);
-      budgets = budgetList.ToArray();
+      budgets = budgetList.OrderBy(x => x).ToArray();
+      try {
+        suppressBudgetsEvents = true;
+        budgetsTextBox.Text = string.Join(" ; ", budgets);
+      } finally { suppressBudgetsEvents = false; }
       UpdateResultsByCost();
       SetEnabledStateOfControls();
-    }
-
-    private void aggregateBudgetsCheckBox_CheckedChanged(object sender, EventArgs e) {
-      SuspendRepaint();
-      try {
-        UpdateResultsByCost();
-      } finally { ResumeRepaint(true); }
     }
 
     private void generateBudgetsButton_Click(object sender, EventArgs e) {
@@ -965,16 +948,17 @@ namespace HeuristicLab.Optimization.Views {
         var table = (string)dataTableComboBox.SelectedItem;
         min = (decimal)Content.Where(x => x.Results.ContainsKey(table)).Select(x => ((IndexedDataTable<double>)x.Results[table]).Rows.First().Values.Min(y => y.Item1)).Min();
         max = (decimal)Content.Where(x => x.Results.ContainsKey(table)).Select(x => ((IndexedDataTable<double>)x.Results[table]).Rows.First().Values.Max(y => y.Item1)).Max();
-        count = 6;
+        count = 3;
       }
       using (var dialog = new DefineArithmeticProgressionDialog(false, min, max, (max - min) / count)) {
         if (dialog.ShowDialog() == DialogResult.OK) {
           if (dialog.Values.Any()) {
             budgets = dialog.Values.OrderBy(x => x).Select(x => (double)x).ToArray();
 
-            suppressBudgetsEvents = true;
-            budgetsTextBox.Text = string.Join(" ; ", budgets);
-            suppressBudgetsEvents = false;
+            try {
+              suppressBudgetsEvents = true;
+              budgetsTextBox.Text = string.Join(" ; ", budgets);
+            } finally { suppressBudgetsEvents = false; }
 
             UpdateResultsByCost();
             SetEnabledStateOfControls();
@@ -985,41 +969,25 @@ namespace HeuristicLab.Optimization.Views {
 
     private void addBudgetsAsResultButton_Click(object sender, EventArgs e) {
       var table = (string)dataTableComboBox.SelectedItem;
-      var budgetStrings = budgetsTextBox.Text.Split(new[] { ';', '\t', ' ' }, StringSplitOptions.RemoveEmptyEntries);
-      if (budgetStrings.Length == 0) {
-        MessageBox.Show("Define a number of budgets.");
-        return;
-      }
-      var budgetList = new List<double>();
-      foreach (var bs in budgetStrings) {
-        double v;
-        if (!double.TryParse(bs, out v)) {
-          MessageBox.Show("Budgets must be a valid number: " + bs);
-          return;
-        }
-        budgetList.Add(v);
-      }
-      budgetList.Sort();
 
       foreach (var run in Content) {
         if (!run.Results.ContainsKey(table)) continue;
         var resultsTable = (IndexedDataTable<double>)run.Results[table];
         var values = resultsTable.Rows.First().Values;
-        var i = 0;
-        var j = 0;
-        Tuple<double, double> prev = null;
-        while (i < budgetList.Count && j < values.Count) {
-          var current = values[j];
-          if (current.Item1 >= budgetList[i]) {
-            if (prev != null || current.Item1 == budgetList[i]) {
-              var tgt = (prev == null || current.Item1 == budgetList[i]) ? current.Item2 : prev.Item2;
-              run.Results[table + ".Cost" + budgetList[i]] = new DoubleValue(tgt);
-            }
-            i++;
-          } else {
-            j++;
-            prev = current;
+        var pd = new ProblemInstance(run);
+        pd = problems.Single(x => x.Equals(pd));
+
+        var prevIndex = 0;
+        foreach (var b in budgets) {
+          var index = values.BinarySearch(prevIndex, values.Count - prevIndex, Tuple.Create(b, 0.0), new CostComparer());
+          if (index < 0) {
+            index = ~index;
+            if (index >= values.Count) break; // the run wasn't long enough to use up budget b (or any subsequent larger one)
           }
+          var v = values[index];
+          var tgt = targetsAreRelative ? CalculateRelativeDifference(pd.IsMaximization(), pd.BestKnownQuality, v.Item2) : v.Item2;
+          run.Results[table + (targetsAreRelative ? ".CostForRelTarget " : ".CostForAbsTarget ") + b] = new DoubleValue(tgt);
+          prevIndex = index;
         }
       }
     }
@@ -1079,12 +1047,11 @@ namespace HeuristicLab.Optimization.Views {
           pd.BestKnownQuality = bkq;
         else pd.BestKnownQuality = double.NaN;
       }
-      //problemComboBox.ResetBindings();
     }
     #endregion
 
     private void ConfigureSeries(Series series) {
-      series.SmartLabelStyle.Enabled = true;
+      series.SmartLabelStyle.Enabled = showLabelsInTargetChart;
       series.SmartLabelStyle.AllowOutsidePlotArea = LabelOutsidePlotAreaStyle.No;
       series.SmartLabelStyle.CalloutLineAnchorCapStyle = LineAnchorCapStyle.None;
       series.SmartLabelStyle.CalloutLineColor = series.Color;
@@ -1415,6 +1382,23 @@ namespace HeuristicLab.Optimization.Views {
       protected virtual void OnPropertyChanged(string propertyName = null) {
         var handler = PropertyChanged;
         if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
+      }
+    }
+
+    private class CostComparer : Comparer<Tuple<double, double>> {
+      public override int Compare(Tuple<double, double> x, Tuple<double, double> y) {
+        return x.Item1.CompareTo(y.Item1);
+      }
+    }
+
+    private class TargetComparer : Comparer<Tuple<double, double>> {
+      public bool Maximization { get; }
+      public TargetComparer(bool maximization) {
+        Maximization = maximization;
+      }
+
+      public override int Compare(Tuple<double, double> x, Tuple<double, double> y) {
+        return Maximization ? x.Item2.CompareTo(y.Item2) : y.Item2.CompareTo(x.Item2);
       }
     }
   }
