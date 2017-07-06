@@ -29,6 +29,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
   }
 
   public interface ITransformation<T> : ITransformation {
+    void ConfigureParameters(IEnumerable<T> data);
+    IEnumerable<T> ConfigureAndApply(IEnumerable<T> data);
     IEnumerable<T> Apply(IEnumerable<T> data);
   }
 }

@@ -96,8 +96,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     public override IEnumerable<double> GetEstimatedClassValues(IDataset dataset, IEnumerable<int> rows) {
 
-      double[,] inputData = AlglibUtil.PrepareInputMatrix(dataset, allowedInputVariables, rows);
-      double[,] factorData = AlglibUtil.PrepareInputMatrix(dataset, factorVariables, rows);
+      double[,] inputData = dataset.ToArray(allowedInputVariables, rows);
+      double[,] factorData = dataset.ToArray(factorVariables, rows);
 
       inputData = factorData.HorzCat(inputData);
 

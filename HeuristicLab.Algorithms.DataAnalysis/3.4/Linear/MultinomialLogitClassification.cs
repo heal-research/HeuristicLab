@@ -71,10 +71,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       var doubleVariableNames = problemData.AllowedInputVariables.Where(dataset.VariableHasType<double>);
       var factorVariableNames = problemData.AllowedInputVariables.Where(dataset.VariableHasType<string>);
       IEnumerable<int> rows = problemData.TrainingIndices;
-      double[,] inputMatrix = AlglibUtil.PrepareInputMatrix(dataset, doubleVariableNames.Concat(new string[] { targetVariable }), rows);
+      double[,] inputMatrix = dataset.ToArray(doubleVariableNames.Concat(new string[] { targetVariable }), rows);
 
-      var factorVariableValues = AlglibUtil.GetFactorVariableValues(dataset, factorVariableNames, rows);
-      var factorMatrix = AlglibUtil.PrepareInputMatrix(dataset, factorVariableValues, rows);
+      var factorVariableValues = dataset.GetFactorVariableValues(factorVariableNames, rows);
+      var factorMatrix = dataset.ToArray(factorVariableValues, rows);
       inputMatrix = factorMatrix.HorzCat(inputMatrix);
 
       if (inputMatrix.Cast<double>().Any(x => double.IsNaN(x) || double.IsInfinity(x)))

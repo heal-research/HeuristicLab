@@ -163,18 +163,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       // variable name, variable value (for factor vars) and lag as a DataForVariable object.
       // A dictionary is used to find parameters
       double[] initialConstants;
-      var parameters = new List<TreeToAutoDiffTermTransformator.DataForVariable>();
+      var parameters = new List<TreeToAutoDiffTermConverter.DataForVariable>();
 
-      TreeToAutoDiffTermTransformator.ParametricFunction func;
-      TreeToAutoDiffTermTransformator.ParametricFunctionGradient func_grad;
-      if (!TreeToAutoDiffTermTransformator.TryTransformToAutoDiff(tree, updateVariableWeights, out parameters, out initialConstants, out func, out func_grad))
+      TreeToAutoDiffTermConverter.ParametricFunction func;
+      TreeToAutoDiffTermConverter.ParametricFunctionGradient func_grad;
+      if (!TreeToAutoDiffTermConverter.TryConvertToAutoDiff(tree, updateVariableWeights, out parameters, out initialConstants, out func, out func_grad))
         throw new NotSupportedException("Could not optimize constants of symbolic expression tree due to not supported symbols used in the tree.");
       if (parameters.Count == 0) return 0.0; // gkronber: constant expressions always have a R² of 0.0 
 
       var parameterEntries = parameters.ToArray(); // order of entries must be the same for x
 
       //extract inital constants
-      double[] c = new double[initialConstants.Length];
+      double[] c = new double[initialConstants.Length + 2];
       {
         c[0] = 0.0;
         c[1] = 1.0;
@@ -253,13 +253,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       }
     }
 
-    private static alglib.ndimensional_pfunc CreatePFunc(TreeToAutoDiffTermTransformator.ParametricFunction func) {
+    private static alglib.ndimensional_pfunc CreatePFunc(TreeToAutoDiffTermConverter.ParametricFunction func) {
       return (double[] c, double[] x, ref double fx, object o) => {
         fx = func(c, x);
       };
     }
 
-    private static alglib.ndimensional_pgrad CreatePGrad(TreeToAutoDiffTermTransformator.ParametricFunctionGradient func_grad) {
+    private static alglib.ndimensional_pgrad CreatePGrad(TreeToAutoDiffTermConverter.ParametricFunctionGradient func_grad) {
       return (double[] c, double[] x, ref double fx, double[] grad, object o) => {
         var tupel = func_grad(c, x);
         fx = tupel.Item2;
@@ -267,7 +267,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       };
     }
     public static bool CanOptimizeConstants(ISymbolicExpressionTree tree) {
-      return TreeToAutoDiffTermTransformator.IsCompatible(tree);
+      return TreeToAutoDiffTermConverter.IsCompatible(tree);
     }
   }
 }

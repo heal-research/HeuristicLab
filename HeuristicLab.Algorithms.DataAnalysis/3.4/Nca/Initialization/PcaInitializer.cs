@@ -43,7 +43,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       var instances = data.TrainingIndices.Count();
       var attributes = data.AllowedInputVariables.Count();
 
-      var pcaDs = AlglibUtil.PrepareInputMatrix(data.Dataset, data.AllowedInputVariables, data.TrainingIndices);
+      var pcaDs = data.Dataset.ToArray(data.AllowedInputVariables, data.TrainingIndices);
 
       int info;
       double[] varianceValues;

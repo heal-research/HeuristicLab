@@ -50,7 +50,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
       while (dividend > 0) {
         int modulo = (dividend - 1) % 26;
-        columnName = Convert.ToChar(65 + modulo) + columnName;
+        columnName = System.Convert.ToChar(65 + modulo) + columnName;
         dividend = (int)((dividend - modulo) / 26);
       }
 
