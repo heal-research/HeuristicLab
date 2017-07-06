@@ -613,6 +613,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           }
         case OpCodes.VariableCondition: {
             var variableConditionTreeNode = (VariableConditionTreeNode)node;
+            if (variableConditionTreeNode.Symbol.IgnoreSlope) throw new NotSupportedException("Strict variable conditionals are not supported");
             var variableName = variableConditionTreeNode.VariableName;
             var indexExpr = Expression.Constant(variableIndices[variableName]);
             var valuesExpr = Expression.ArrayIndex(columns, indexExpr);

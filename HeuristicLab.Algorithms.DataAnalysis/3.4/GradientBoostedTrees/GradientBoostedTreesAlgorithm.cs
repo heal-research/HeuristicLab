@@ -269,7 +269,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
           Results.Add(new Result("Solution", classificationSolution));
         } else {
           // otherwise we produce a regression solution
-          Results.Add(new Result("Solution", new RegressionSolution(model, problemData)));
+          Results.Add(new Result("Solution", new GradientBoostedTreesSolution(model, problemData)));
         }
       }
     }

@@ -27,8 +27,11 @@ using System.Globalization;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.DataAnalysis;
+using HeuristicLab.Problems.DataAnalysis.Symbolic;
+using HeuristicLab.Problems.DataAnalysis.Symbolic.Regression;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
@@ -208,6 +211,45 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public override string ToString() {
       return TreeToString(0, "");
     }
+
+    /// <summary>
+    /// Transforms the tree model to a symbolic regression solution
+    /// </summary>
+    /// <param name="problemData"></param>
+    /// <returns>A new symbolic regression solution which matches the tree model</returns>
+    public ISymbolicRegressionSolution CreateSymbolicRegressionSolution(IRegressionProblemData problemData) {
+      var rootSy = new ProgramRootSymbol();
+      var startSy = new StartSymbol();
+      var varCondSy = new VariableCondition() { IgnoreSlope = true };
+      var constSy = new Constant();
+
+      var startNode = startSy.CreateTreeNode();
+      startNode.AddSubtree(CreateSymbolicRegressionTreeRecursive(tree, 0, varCondSy, constSy));
+      var rootNode = rootSy.CreateTreeNode();
+      rootNode.AddSubtree(startNode);
+      var model = new SymbolicRegressionModel(TargetVariable, new SymbolicExpressionTree(rootNode), new SymbolicDataAnalysisExpressionTreeLinearInterpreter());
+      return model.CreateRegressionSolution(problemData);
+    }
+
+    private ISymbolicExpressionTreeNode CreateSymbolicRegressionTreeRecursive(TreeNode[] treeNodes, int nodeIdx, VariableCondition varCondSy, Constant constSy) {
+      var curNode = treeNodes[nodeIdx];
+      if (curNode.VarName == TreeNode.NO_VARIABLE) {
+        var node = (ConstantTreeNode)constSy.CreateTreeNode();
+        node.Value = curNode.Val;
+        return node;
+      } else {
+        var node = (VariableConditionTreeNode)varCondSy.CreateTreeNode();
+        node.VariableName = curNode.VarName;
+        node.Threshold = curNode.Val;
+
+        var left = CreateSymbolicRegressionTreeRecursive(treeNodes, curNode.LeftIdx, varCondSy, constSy);
+        var right = CreateSymbolicRegressionTreeRecursive(treeNodes, curNode.RightIdx, varCondSy, constSy);
+        node.AddSubtree(left);
+        node.AddSubtree(right);
+        return node;
+      }
+    }
+
 
     private string TreeToString(int idx, string part) {
       var n = tree[idx];

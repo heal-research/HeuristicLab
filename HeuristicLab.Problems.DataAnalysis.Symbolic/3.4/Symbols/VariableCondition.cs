@@ -150,6 +150,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
     }
 
+    /// <summary>
+    /// Flag to indicate if the interpreter should ignore the slope parameter (introduced for representation of expression trees)
+    /// </summary>
+    [Storable]
+    private bool ignoreSlope;
+    public bool IgnoreSlope {
+      get { return ignoreSlope; }
+      set { ignoreSlope = value; }
+    }
+
     public override bool Enabled {
       get {
         if (variableNames.Count == 0) return false;

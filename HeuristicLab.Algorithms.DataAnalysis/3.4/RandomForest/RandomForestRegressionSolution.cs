@@ -19,10 +19,12 @@
  */
 #endregion
 
+using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.DataAnalysis;
+using HeuristicLab.Problems.DataAnalysis.Symbolic.Regression;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>
@@ -35,6 +37,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public new IRandomForestModel Model {
       get { return (IRandomForestModel)base.Model; }
       set { base.Model = value; }
+    }
+
+    public int NumberOfTrees {
+      get { return Model.NumberOfTrees; }
     }
 
     [StorableConstructor]

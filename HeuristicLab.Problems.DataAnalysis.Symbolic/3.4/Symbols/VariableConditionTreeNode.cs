@@ -95,11 +95,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     public override string ToString() {
-      if (slope.IsAlmost(0.0))
+      if (slope.IsAlmost(0.0) || Symbol.IgnoreSlope) {
+        return variableName + " < " + threshold.ToString("E4");
+      } else {
         return variableName + " > " + threshold.ToString("E4") + Environment.NewLine +
-          "slope: " + slope.ToString("E4");
-      else
-        return variableName + " > " + threshold.ToString("E4");
+               "slope: " + slope.ToString("E4");
+      }
     }
   }
 }

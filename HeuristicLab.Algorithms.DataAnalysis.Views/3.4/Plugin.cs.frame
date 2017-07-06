@@ -36,6 +36,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
   [PluginDependency("HeuristicLab.Core.Views", "3.3")]
   [PluginDependency("HeuristicLab.Data", "3.3")]
   [PluginDependency("HeuristicLab.Data.Views", "3.3")]
+  [PluginDependency("HeuristicLab.Encodings.SymbolicExpressionTreeEncoding", "3.4")]
   [PluginDependency("HeuristicLab.LibSVM", "3.12")]
   [PluginDependency("HeuristicLab.MainForm", "3.3")]
   [PluginDependency("HeuristicLab.MainForm.WindowsForms", "3.3")] 
@@ -43,6 +44,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
   [PluginDependency("HeuristicLab.Optimization.Views", "3.3")]
   [PluginDependency("HeuristicLab.Problems.DataAnalysis", "3.4")]
   [PluginDependency("HeuristicLab.Problems.DataAnalysis.Views", "3.4")]
+  [PluginDependency("HeuristicLab.Problems.DataAnalysis.Symbolic", "3.4")]
+  [PluginDependency("HeuristicLab.Problems.DataAnalysis.Symbolic.Regression", "3.4")]
+  [PluginDependency("HeuristicLab.Problems.DataAnalysis.Symbolic.Classification", "3.4")]
   public class HeuristicLabAlgorithmsDataAnalysisViewsPlugin : PluginBase {
   }
 }
