@@ -32,12 +32,16 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
+using HeuristicLab.Random;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [Item("Cross Validation (CV)", "Cross-validation wrapper for data analysis algorithms.")]
   [Creatable(CreatableAttribute.Categories.DataAnalysis, Priority = 100)]
   [StorableClass]
   public sealed class CrossValidation : ParameterizedNamedItem, IAlgorithm, IStorableContent {
+    [Storable]
+    private int seed;
+
     public CrossValidation()
       : base() {
       name = ItemName;
@@ -55,6 +59,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       numberOfWorkers = new IntValue(1);
       samplesStart = new IntValue(0);
       samplesEnd = new IntValue(0);
+      shuffleSamples = new BoolValue(false);
       storeAlgorithmInEachRun = false;
 
       RegisterEvents();
@@ -70,6 +75,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code, remove with 3.4
+      if (shuffleSamples == null) shuffleSamples = new BoolValue(false);
+      #endregion
+
       RegisterEvents();
       if (Algorithm != null) RegisterAlgorithmEvents();
     }
@@ -88,6 +98,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       numberOfWorkers = cloner.Clone(original.numberOfWorkers);
       samplesStart = cloner.Clone(original.samplesStart);
       samplesEnd = cloner.Clone(original.samplesEnd);
+      shuffleSamples = cloner.Clone(original.shuffleSamples);
+      seed = original.seed;
+
       RegisterEvents();
       if (Algorithm != null) RegisterAlgorithmEvents();
     }
@@ -169,7 +182,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public ResultCollection Results {
       get { return results; }
     }
-
+    [Storable]
+    private BoolValue shuffleSamples;
+    public BoolValue ShuffleSamples {
+      get { return shuffleSamples; }
+    }
     [Storable]
     private IntValue folds;
     public IntValue Folds {
@@ -269,13 +286,23 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       if ((ExecutionState != ExecutionState.Prepared) && (ExecutionState != ExecutionState.Paused))
         throw new InvalidOperationException(string.Format("Start not allowed in execution state \"{0}\".", ExecutionState));
 
+      seed = new FastRandom().NextInt();
+
       if (Algorithm != null) {
         //create cloned algorithms
         if (clonedAlgorithms.Count == 0) {
           int testSamplesCount = (SamplesEnd.Value - SamplesStart.Value) / Folds.Value;
-
+          IDataset shuffledDataset = null;
           for (int i = 0; i < Folds.Value; i++) {
-            IAlgorithm clonedAlgorithm = (IAlgorithm)algorithm.Clone();
+            var cloner = new Cloner();
+            if (ShuffleSamples.Value) {
+              var random = new FastRandom(seed);
+              var dataAnalysisProblem = (IDataAnalysisProblem)algorithm.Problem;
+              var dataset = (Dataset)dataAnalysisProblem.ProblemData.Dataset;
+              shuffledDataset = shuffledDataset ?? dataset.Shuffle(random);
+              cloner.RegisterClonedObject(dataset, shuffledDataset);
+            }
+            IAlgorithm clonedAlgorithm = cloner.Clone(Algorithm);
             clonedAlgorithm.Name = algorithm.Name + " Fold " + i;
             IDataAnalysisProblem problem = clonedAlgorithm.Problem as IDataAnalysisProblem;
             ISymbolicDataAnalysisProblem symbolicProblem = problem as ISymbolicDataAnalysisProblem;
@@ -421,6 +448,12 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       foreach (KeyValuePair<string, List<IRegressionSolution>> solutions in resultSolutions) {
         // clone manually to correctly clone references between cloned root objects 
         Cloner cloner = new Cloner();
+        if (ShuffleSamples.Value) {
+          var dataset = (Dataset)Problem.ProblemData.Dataset;
+          var random = new FastRandom(seed);
+          var shuffledDataset = dataset.Shuffle(random);
+          cloner.RegisterClonedObject(dataset, shuffledDataset);
+        }
         var problemDataClone = (IRegressionProblemData)cloner.Clone(Problem.ProblemData);
         // set partitions of problem data clone correctly
         problemDataClone.TrainingPartition.Start = SamplesStart.Value; problemDataClone.TrainingPartition.End = SamplesEnd.Value;
@@ -452,8 +485,12 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       foreach (KeyValuePair<string, List<IClassificationSolution>> solutions in resultSolutions) {
         // at least one algorithm (GBT with logistic regression loss) produces a classification solution even though the original problem is a regression problem.
         var targetVariable = solutions.Value.First().ProblemData.TargetVariable;
-        var problemDataClone = new ClassificationProblemData(Problem.ProblemData.Dataset,
-          Problem.ProblemData.AllowedInputVariables, targetVariable);
+        var dataset = (Dataset)Problem.ProblemData.Dataset;
+        if (ShuffleSamples.Value) {
+          var random = new FastRandom(seed);
+          dataset = dataset.Shuffle(random);
+        }
+        var problemDataClone = new ClassificationProblemData(dataset, Problem.ProblemData.AllowedInputVariables, targetVariable);
         // set partitions of problem data clone correctly
         problemDataClone.TrainingPartition.Start = SamplesStart.Value; problemDataClone.TrainingPartition.End = SamplesEnd.Value;
         problemDataClone.TestPartition.Start = SamplesStart.Value; problemDataClone.TestPartition.End = SamplesEnd.Value;
@@ -536,12 +573,16 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private void RegisterAlgorithmEvents() {
       algorithm.ProblemChanged += new EventHandler(Algorithm_ProblemChanged);
       algorithm.ExecutionStateChanged += new EventHandler(Algorithm_ExecutionStateChanged);
-      if (Problem != null) Problem.Reset += new EventHandler(Problem_Reset);
+      if (Problem != null) {
+        Problem.Reset += new EventHandler(Problem_Reset);
+      }
     }
     private void DeregisterAlgorithmEvents() {
       algorithm.ProblemChanged -= new EventHandler(Algorithm_ProblemChanged);
       algorithm.ExecutionStateChanged -= new EventHandler(Algorithm_ExecutionStateChanged);
-      if (Problem != null) Problem.Reset -= new EventHandler(Problem_Reset);
+      if (Problem != null) {
+        Problem.Reset -= new EventHandler(Problem_Reset);
+      }
     }
     private void Algorithm_ProblemChanged(object sender, EventArgs e) {
       if (algorithm.Problem != null && !(algorithm.Problem is IDataAnalysisProblem)) {
@@ -559,11 +600,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       if (handler != null) handler(this, EventArgs.Empty);
       ConfigureProblem();
     }
-
     private void Problem_Reset(object sender, EventArgs e) {
       ConfigureProblem();
     }
-
     private void ConfigureProblem() {
       SamplesStart.Value = 0;
       if (Problem != null) {
@@ -589,11 +628,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     private void Algorithm_ExecutionStateChanged(object sender, EventArgs e) {
       switch (Algorithm.ExecutionState) {
-        case ExecutionState.Prepared: OnPrepared();
+        case ExecutionState.Prepared:
+          OnPrepared();
           break;
         case ExecutionState.Started: throw new InvalidOperationException("Algorithm template can not be started.");
         case ExecutionState.Paused: throw new InvalidOperationException("Algorithm template can not be paused.");
-        case ExecutionState.Stopped: OnStopped();
+        case ExecutionState.Stopped:
+          OnStopped();
           break;
       }
     }
@@ -723,6 +764,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       Dictionary<string, IItem> collectedResults = new Dictionary<string, IItem>();
       AggregateResultValues(collectedResults);
       results.AddRange(collectedResults.Select(x => new Result(x.Key, x.Value)).Cast<IResult>().ToArray());
+      clonedAlgorithms.Clear();
       runsCounter++;
       runs.Add(new Run(string.Format("{0} Run {1}", Name, runsCounter), this));
       ExecutionState = ExecutionState.Stopped;

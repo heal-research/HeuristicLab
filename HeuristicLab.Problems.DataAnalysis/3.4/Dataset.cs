@@ -125,6 +125,15 @@ namespace HeuristicLab.Problems.DataAnalysis {
       }
       return new ModifiableDataset(variableNames, values);
     }
+    /// <summary>
+    /// Shuffle a dataset's rows
+    /// </summary>
+    /// <param name="random">Random number generator used for shuffling.</param>
+    /// <returns>A shuffled copy of the current dataset.</returns>
+    public Dataset Shuffle(IRandom random) {
+      var values = variableNames.Select(x => variableValues[x]).ToList();
+      return new Dataset(variableNames, values.ShuffleLists(random));
+    }
 
     protected Dataset(Dataset dataset) : this(dataset.variableNames, dataset.variableValues.Values) { }
 
