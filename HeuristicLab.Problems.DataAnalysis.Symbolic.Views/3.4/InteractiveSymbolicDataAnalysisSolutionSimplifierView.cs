@@ -265,8 +265,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
     }
 
     private void btnSimplify_Click(object sender, EventArgs e) {
-      var simplifier = new TreeSimplifier();
-      var simplifiedExpressionTree = simplifier.Simplify(Content.Model.SymbolicExpressionTree);
+      var simplifiedExpressionTree = TreeSimplifier.Simplify(Content.Model.SymbolicExpressionTree);
       UpdateModel(simplifiedExpressionTree);
     }
 
