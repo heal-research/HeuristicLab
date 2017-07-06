@@ -229,15 +229,16 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       var ki = new double[n];
       for (int i = 0; i < n; i++) {
         for (int j = 0; j < n; j++) ki[j] = cov.Covariance(x, i, j);
+        ki[i] += sqrSigmaNoise;
+
         var yi = Util.ScalarProd(ki, alpha);
         var yi_loo = yi - alpha[i] / (lCopy[i, i] / sqrSigmaNoise);
-        var s2_loo = sqrSigmaNoise / lCopy[i, i];
+        var s2_loo = 1.0 / (lCopy[i, i] / sqrSigmaNoise);
         var err = ym[i] - yi_loo;
-        var nll_loo = Math.Log(s2_loo) + err * err / s2_loo;
+        var nll_loo = 0.5 * Math.Log(2 * Math.PI * s2_loo) + 0.5 * err * err / s2_loo;
         sumLoo += nll_loo;
       }
-      sumLoo += n * Math.Log(2 * Math.PI);
-      loocvNegLogPseudoLikelihood = 0.5 * sumLoo;
+      loocvNegLogPseudoLikelihood = sumLoo;
 
       for (int i = 0; i < n; i++) {
         for (int j = 0; j <= i; j++)
