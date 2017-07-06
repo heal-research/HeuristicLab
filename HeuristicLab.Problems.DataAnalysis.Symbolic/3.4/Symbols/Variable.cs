@@ -19,8 +19,6 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
@@ -28,13 +26,13 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableClass]
   [Item("Variable", "Represents a variable value.")]
-  public class Variable : VariableBase {
+  public sealed class Variable : VariableBase {
 
     [StorableConstructor]
-    protected Variable(bool deserializing)
+    private Variable(bool deserializing)
       : base(deserializing) {
     }
-    protected Variable(Variable original, Cloner cloner)
+    private Variable(Variable original, Cloner cloner)
       : base(original, cloner) {
     }
     public Variable() : base("Variable", "Represents a variable value.") { }

@@ -29,7 +29,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableClass]
   [Item("BinaryFactorVariable", "Represents a categorical variable (comparable to factors as in R) and it's value.")]
-  public class BinaryFactorVariable : VariableBase {
+  public sealed class BinaryFactorVariable : VariableBase {
 
     private readonly Dictionary<string, List<string>> variableValues;
 
@@ -46,11 +46,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     [StorableConstructor]
-    protected BinaryFactorVariable(bool deserializing)
+    private BinaryFactorVariable(bool deserializing)
       : base(deserializing) {
       variableValues = new Dictionary<string, List<string>>();
     }
-    protected BinaryFactorVariable(BinaryFactorVariable original, Cloner cloner)
+    private BinaryFactorVariable(BinaryFactorVariable original, Cloner cloner)
       : base(original, cloner) {
       variableValues =
         original.variableValues.ToDictionary(kvp => kvp.Key, kvp => new List<string>(kvp.Value));

@@ -33,7 +33,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public double WeightMu {
       get { return weightMu; }
       set {
-        if(value != weightMu) {
+        if (value != weightMu) {
           weightMu = value;
           OnChanged(EventArgs.Empty);
         }
@@ -44,8 +44,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public double WeightSigma {
       get { return weightSigma; }
       set {
-        if(weightSigma < 0.0) throw new ArgumentException("Negative sigma is not allowed.");
-        if(value != weightSigma) {
+        if (weightSigma < 0.0) throw new ArgumentException("Negative sigma is not allowed.");
+        if (value != weightSigma) {
           weightSigma = value;
           OnChanged(EventArgs.Empty);
         }
@@ -56,7 +56,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public double WeightManipulatorMu {
       get { return weightManipulatorMu; }
       set {
-        if(value != weightManipulatorMu) {
+        if (value != weightManipulatorMu) {
           weightManipulatorMu = value;
           OnChanged(EventArgs.Empty);
         }
@@ -67,8 +67,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public double WeightManipulatorSigma {
       get { return weightManipulatorSigma; }
       set {
-        if(weightManipulatorSigma < 0.0) throw new ArgumentException("Negative sigma is not allowed.");
-        if(value != weightManipulatorSigma) {
+        if (weightManipulatorSigma < 0.0) throw new ArgumentException("Negative sigma is not allowed.");
+        if (value != weightManipulatorSigma) {
           weightManipulatorSigma = value;
           OnChanged(EventArgs.Empty);
         }
@@ -79,8 +79,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public double MultiplicativeWeightManipulatorSigma {
       get { return multiplicativeWeightManipulatorSigma; }
       set {
-        if(multiplicativeWeightManipulatorSigma < 0.0) throw new ArgumentException("Negative sigma is not allowed.");
-        if(value != multiplicativeWeightManipulatorSigma) {
+        if (multiplicativeWeightManipulatorSigma < 0.0) throw new ArgumentException("Negative sigma is not allowed.");
+        if (value != multiplicativeWeightManipulatorSigma) {
           multiplicativeWeightManipulatorSigma = value;
           OnChanged(EventArgs.Empty);
         }
@@ -93,7 +93,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public double VariableChangeProbability {
       get { return variableChangeProbability; }
       set {
-        if(value < 0 || value > 1.0) throw new ArgumentException("Variable change probability must lie in the interval [0..1]");
+        if (value < 0 || value > 1.0) throw new ArgumentException("Variable change probability must lie in the interval [0..1]");
         variableChangeProbability = value;
       }
     }
@@ -103,7 +103,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public IEnumerable<string> VariableNames {
       get { return variableNames; }
       set {
-        if(value == null) throw new ArgumentNullException();
+        if (value == null) throw new ArgumentNullException();
         variableNames.Clear();
         variableNames.AddRange(value);
         OnChanged(EventArgs.Empty);
@@ -115,7 +115,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public IEnumerable<string> AllVariableNames {
       get { return allVariableNames; }
       set {
-        if(value == null) throw new ArgumentNullException();
+        if (value == null) throw new ArgumentNullException();
         allVariableNames.Clear();
         allVariableNames.AddRange(value);
       }
@@ -123,11 +123,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     public override bool Enabled {
       get {
-        if(variableNames.Count == 0) return false;
+        if (variableNames.Count == 0) return false;
         return base.Enabled;
       }
       set {
-        if(variableNames.Count == 0) base.Enabled = false;
+        if (variableNames.Count == 0) base.Enabled = false;
         else base.Enabled = value;
       }
     }
@@ -145,7 +145,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
-      if(allVariableNames == null || (allVariableNames.Count == 0 && variableNames.Count > 0)) {
+      if (allVariableNames == null || (allVariableNames.Count == 0 && variableNames.Count > 0)) {
         allVariableNames = variableNames;
       }
     }
@@ -166,7 +166,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       weightManipulatorSigma = original.weightManipulatorSigma;
       multiplicativeWeightManipulatorSigma = original.multiplicativeWeightManipulatorSigma;
       variableChangeProbability = original.variableChangeProbability;
-      }
+    }
     protected VariableBase(string name, string description)
       : base(name, description) {
       weightMu = 1.0;

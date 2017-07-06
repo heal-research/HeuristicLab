@@ -100,7 +100,8 @@ namespace HeuristicLab.Tests {
       var grammar = new TypeCoherentExpressionGrammar();
       grammar.ConfigureAsDefaultRegressionGrammar();
       grammar.Symbols.OfType<VariableCondition>().Single().InitialFrequency = 0.0;
-      var varSymbol = grammar.Symbols.OfType<Variable>().Where(x => !(x is LaggedVariable)).Single();
+      foreach (var varSy in grammar.Symbols.OfType<VariableBase>()) varSy.VariableChangeProbability = 1.0; // for backwards compatibilty
+      var varSymbol = grammar.Symbols.OfType<Variable>().Single();
       varSymbol.WeightMu = 1.0;
       varSymbol.WeightSigma = 1.0;
       varSymbol.WeightManipulatorMu = 0.0;
