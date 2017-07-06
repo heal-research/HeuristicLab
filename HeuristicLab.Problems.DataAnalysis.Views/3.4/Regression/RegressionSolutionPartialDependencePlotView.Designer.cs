@@ -1,5 +1,5 @@
 ﻿namespace HeuristicLab.Problems.DataAnalysis.Views {
-  partial class RegressionSolutionTargetResponseGradientView {
+  partial class RegressionSolutionPartialDependencePlotView {
     /// <summary> 
     /// Required designer variable.
     /// </summary>
@@ -25,7 +25,7 @@
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
       this.variableListView = new System.Windows.Forms.ListView();
-      this.gradientChartTableLayout = new System.Windows.Forms.TableLayoutPanel();
+      this.partialDependencePlotTableLayout = new System.Windows.Forms.TableLayoutPanel();
       this.yAxisConfigGroupBox = new System.Windows.Forms.GroupBox();
       this.limitView = new HeuristicLab.Problems.DataAnalysis.Views.DoubleLimitView();
       this.automaticYAxisCheckBox = new System.Windows.Forms.CheckBox();
@@ -62,20 +62,20 @@
       this.variableListView.View = System.Windows.Forms.View.List;
       this.variableListView.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.variableListView_ItemChecked);
       // 
-      // gradientChartTableLayout
+      // partialDependencePlotTableLayout
       // 
-      this.gradientChartTableLayout.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.partialDependencePlotTableLayout.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.gradientChartTableLayout.AutoSize = true;
-      this.gradientChartTableLayout.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-      this.gradientChartTableLayout.ColumnCount = 1;
-      this.gradientChartTableLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-      this.gradientChartTableLayout.Location = new System.Drawing.Point(0, 0);
-      this.gradientChartTableLayout.Name = "gradientChartTableLayout";
-      this.gradientChartTableLayout.RowCount = 1;
-      this.gradientChartTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle());
-      this.gradientChartTableLayout.Size = new System.Drawing.Size(542, 0);
-      this.gradientChartTableLayout.TabIndex = 2;
+      this.partialDependencePlotTableLayout.AutoSize = true;
+      this.partialDependencePlotTableLayout.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+      this.partialDependencePlotTableLayout.ColumnCount = 1;
+      this.partialDependencePlotTableLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+      this.partialDependencePlotTableLayout.Location = new System.Drawing.Point(0, 0);
+      this.partialDependencePlotTableLayout.Name = "partialDependencePlotTableLayout";
+      this.partialDependencePlotTableLayout.RowCount = 1;
+      this.partialDependencePlotTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle());
+      this.partialDependencePlotTableLayout.Size = new System.Drawing.Size(542, 0);
+      this.partialDependencePlotTableLayout.TabIndex = 2;
       // 
       // yAxisConfigGroupBox
       // 
@@ -195,7 +195,7 @@
       // 
       // scrollPanel
       // 
-      this.scrollPanel.Controls.Add(this.gradientChartTableLayout);
+      this.scrollPanel.Controls.Add(this.partialDependencePlotTableLayout);
       this.scrollPanel.Dock = System.Windows.Forms.DockStyle.Fill;
       this.scrollPanel.Location = new System.Drawing.Point(0, 0);
       this.scrollPanel.Name = "scrollPanel";
@@ -227,12 +227,12 @@
             0});
       this.columnsNumericUpDown.ValueChanged += new System.EventHandler(this.columnsNumericUpDown_ValueChanged);
       // 
-      // RegressionSolutionTargetResponseGradientView
+      // RegressionSolutionPartialDependencePlotView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.Controls.Add(this.configSplitContainer);
-      this.Name = "RegressionSolutionTargetResponseGradientView";
+      this.Name = "RegressionSolutionPartialDependencePlotView";
       this.Size = new System.Drawing.Size(715, 648);
       this.yAxisConfigGroupBox.ResumeLayout(false);
       this.yAxisConfigGroupBox.PerformLayout();
@@ -254,7 +254,7 @@
     #endregion
 
     private System.Windows.Forms.ListView variableListView;
-    private System.Windows.Forms.TableLayoutPanel gradientChartTableLayout;
+    private System.Windows.Forms.TableLayoutPanel partialDependencePlotTableLayout;
     private System.Windows.Forms.GroupBox yAxisConfigGroupBox;
     private System.Windows.Forms.CheckBox automaticYAxisCheckBox;
     private DoubleLimitView limitView;

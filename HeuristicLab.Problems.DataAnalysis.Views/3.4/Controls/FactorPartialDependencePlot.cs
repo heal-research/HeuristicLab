@@ -33,8 +33,8 @@ using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.Visualization.ChartControlsExtensions;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
-  public partial class FactorGradientChart : UserControl, IGradientChart {
-    private ModifiableDataset sharedFixedVariables; // used for syncronising variable values between charts
+  public partial class FactorPartialDependencePlot : UserControl, IPartialDependencePlot {
+    private ModifiableDataset sharedFixedVariables; // used for synchronising variable values between charts
     private ModifiableDataset internalDataset; // holds the x values for each point drawn
 
     private CancellationTokenSource cancelCurrentRecalculateSource;
@@ -133,7 +133,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
     public event EventHandler ChartPostPaint;
 
-    public FactorGradientChart() {
+    public FactorPartialDependencePlot() {
       InitializeComponent();
 
       solutions = new List<IRegressionSolution>();
@@ -150,10 +150,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       chart.ChartAreas[0].AxisY.ScaleView.Zoomable = true;
       chart.ChartAreas[0].CursorY.Interval = 0;
 
-      Disposed += GradientChart_Disposed;
+      Disposed += Control_Disposed;
     }
 
-    private void GradientChart_Disposed(object sender, EventArgs e) {
+    private void Control_Disposed(object sender, EventArgs e) {
       if (cancelCurrentRecalculateSource != null)
         cancelCurrentRecalculateSource.Cancel();
     }

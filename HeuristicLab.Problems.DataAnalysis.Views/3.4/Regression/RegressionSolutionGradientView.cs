@@ -93,8 +93,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       var newTrackbars = CreateConfiguration();
 
       sharedFixedVariables = new ModifiableDataset(variableNames, newTrackbars.Select(tb => new List<double>(1) { (double)tb.Value }));
-      gradientChart.Configure(new[] { Content }, sharedFixedVariables, variableNames.First(), DrawingSteps);
-      await gradientChart.RecalculateAsync();
+      _partialDependencePlot.Configure(new[] { Content }, sharedFixedVariables, variableNames.First(), DrawingSteps);
+      await _partialDependencePlot.RecalculateAsync();
 
       // Add to table and observable lists
       tableLayoutPanel.RowCount = variableNames.Count;
@@ -121,8 +121,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       const double scale = 1.0 / 3.0;
       double axisMin, axisMax, axisInterval;
       ChartUtil.CalculateAxisInterval(min - scale * range, max + scale * range, 5, out axisMin, out axisMax, out axisInterval);
-      gradientChart.FixedYAxisMin = axisMin;
-      gradientChart.FixedYAxisMax = axisMax;
+      _partialDependencePlot.FixedYAxisMin = axisMin;
+      _partialDependencePlot.FixedYAxisMax = axisMax;
 
       trackbars.First().Checked = true;
     }
@@ -167,23 +167,23 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       // Uncheck all others
       foreach (var tb in trackbars.Except(new[] { trackBar }))
         tb.Checked = false;
-      gradientChart.FreeVariable = variableNames[trackbars.IndexOf(trackBar)];
-      await gradientChart.RecalculateAsync();
+      _partialDependencePlot.FreeVariable = variableNames[trackbars.IndexOf(trackBar)];
+      await _partialDependencePlot.RecalculateAsync();
     }
 
     private async void trackbar_LimitsChanged(object sender, EventArgs e) {
       var trackBar = sender as DensityTrackbar;
       if (trackBar == null || !trackBar.Checked) return;
-      gradientChart.FixedXAxisMin = trackBar.Limits.Lower;
-      gradientChart.FixedXAxisMax = trackBar.Limits.Upper;
-      await gradientChart.RecalculateAsync();
+      _partialDependencePlot.FixedXAxisMin = trackBar.Limits.Lower;
+      _partialDependencePlot.FixedXAxisMax = trackBar.Limits.Upper;
+      await _partialDependencePlot.RecalculateAsync();
     }
 
     private async void trackbar_ValueChanged(object sender, EventArgs e) {
       var trackBar = sender as DensityTrackbar;
       if (trackBar == null) return;
       sharedFixedVariables.SetVariableValue((double)trackBar.Value, variableNames[trackbars.IndexOf(trackBar)], 0);
-      await gradientChart.RecalculateAsync();
+      await _partialDependencePlot.RecalculateAsync();
     }
 
     #region Events

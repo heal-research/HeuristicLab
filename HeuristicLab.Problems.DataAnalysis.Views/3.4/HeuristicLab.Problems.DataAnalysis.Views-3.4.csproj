@@ -131,11 +131,23 @@
     <Compile Include="Controls\DensityTrackbar.Designer.cs">
       <DependentUpon>DensityTrackbar.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\FactorGradientChart.cs">
+    <Compile Include="Controls\FactorPartialDependencePlot.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\FactorGradientChart.Designer.cs">
-      <DependentUpon>FactorGradientChart.cs</DependentUpon>
+    <Compile Include="Controls\FactorPartialDependencePlot.Designer.cs">
+      <DependentUpon>FactorPartialDependencePlot.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\PartialDependencePlot.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\PartialDependencePlot.Designer.cs">
+      <DependentUpon>PartialDependencePlot.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\PartialDependencePlotConfigurationDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\PartialDependencePlotConfigurationDialog.Designer.cs">
+      <DependentUpon>PartialDependencePlotConfigurationDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="FeatureCorrelation\TimeframeFeatureCorrelationCalculator.cs" />
     <Compile Include="FeatureCorrelation\AbstractFeatureCorrelationCalculator.cs" />
@@ -200,20 +212,8 @@
     <Compile Include="FeatureCorrelation\FeatureCorrelationView.Designer.cs">
       <DependentUpon>FeatureCorrelationView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\GradientChart.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\GradientChart.Designer.cs">
-      <DependentUpon>GradientChart.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\GradientChartConfigurationDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Controls\GradientChartConfigurationDialog.Designer.cs">
-      <DependentUpon>GradientChartConfigurationDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Interfaces\IGradientChart.cs" />
     <Compile Include="Interfaces\IDataPreprocessorStarter.cs" />
+    <Compile Include="Interfaces\IPartialDependencePlot.cs" />
     <Compile Include="MenuItems\ChangeDataOfOptimizersMenuItem.cs" />
     <Compile Include="MenuItems\ShrinkDataAnalysisRunsMenuItem.cs" />
     <Compile Include="ModifiableDatasetView.cs">
@@ -259,6 +259,12 @@
     <Compile Include="Regression\RegressionSolutionLineChartViewBase.Designer.cs">
       <DependentUpon>RegressionSolutionLineChartViewBase.cs</DependentUpon>
     </Compile>
+    <Compile Include="Regression\RegressionSolutionPartialDependencePlotView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Regression\RegressionSolutionPartialDependencePlotView.Designer.cs">
+      <DependentUpon>RegressionSolutionPartialDependencePlotView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Regression\RegressionSolutionResidualsLineChartView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -276,12 +282,6 @@
     </Compile>
     <Compile Include="Regression\RegressionSolutionGradientView.Designer.cs">
       <DependentUpon>RegressionSolutionGradientView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Regression\RegressionSolutionTargetResponseGradientView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Regression\RegressionSolutionTargetResponseGradientView.Designer.cs">
-      <DependentUpon>RegressionSolutionTargetResponseGradientView.cs</DependentUpon>
     </Compile>
     <Compile Include="Regression\RegressionTimeframeFeatureCorrelationView.cs">
       <SubType>UserControl</SubType>

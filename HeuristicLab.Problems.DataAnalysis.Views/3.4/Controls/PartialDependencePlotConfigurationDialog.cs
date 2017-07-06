@@ -26,15 +26,15 @@ using System.Windows.Forms;
 using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
-  public partial class GradientChartConfigurationDialog : Form {
-    private readonly GradientChart chart;
+  public partial class PartialDependencePlotConfigurationDialog : Form {
+    private readonly PartialDependencePlot chart;
 
-    public GradientChartConfigurationDialog(GradientChart chart) {
+    public PartialDependencePlotConfigurationDialog(PartialDependencePlot chart) {
       this.chart = chart;
       InitializeComponent();
     }
 
-    private void GradientChartConfigurationDialog_Shown(object sender, EventArgs e) {
+    private void PartialDependencePlotConfigurationDialog_Shown(object sender, EventArgs e) {
       if (chart.FixedXAxisMin.HasValue && chart.FixedXAxisMax.HasValue) {
         xAutomaticCheckBox.Checked = false;
         minXTextBox.Text = chart.FixedXAxisMin.Value.ToString(CultureInfo.CurrentUICulture);

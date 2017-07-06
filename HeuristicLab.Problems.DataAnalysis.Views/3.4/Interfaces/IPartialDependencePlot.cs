@@ -22,7 +22,7 @@
 using System.Threading.Tasks;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
-  public interface IGradientChart {
+  public interface IPartialDependencePlot {
     Task RecalculateAsync(bool updateOnFinish, bool resetYAxis);
     double YMin { get;  }
     double YMax { get; }
