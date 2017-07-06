@@ -27,6 +27,7 @@ namespace HeuristicLab.IGraph {
   [PluginFile("igraph-0.8.0-pre-x86.dll", PluginFileType.NativeDll)]
   [PluginFile("igraph-0.8.0-pre-x64.dll", PluginFileType.NativeDll)]
   [PluginFile("igraph-0.8.0-pre-license.txt", PluginFileType.License)]
+  [PluginFile("igraph_version.txt", PluginFileType.Data)]
   public class HeuristicLabIGraphPlugin : PluginBase {
   }
 }
