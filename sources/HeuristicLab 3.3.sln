@@ -452,7 +452,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.BinPa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.BinPacking-3.3", "HeuristicLab.Problems.BinPacking\3.3\HeuristicLab.Problems.BinPacking-3.3.csproj", "{F8A55094-3CD5-4034-B0CA-5BD7FFB016D4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Algorithms.DataAnalysis.Glmnet", "HeuristicLab.Algorithms.DataAnalysis.Glmnet\3.4\HeuristicLab.Algorithms.DataAnalysis.Glmnet.csproj", "{4C7F6D8A-B279-4898-ACD6-7BE39111DEF9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Algorithms.DataAnalysis.Glmnet-3.4", "HeuristicLab.Algorithms.DataAnalysis.Glmnet\3.4\HeuristicLab.Algorithms.DataAnalysis.Glmnet-3.4.csproj", "{4C7F6D8A-B279-4898-ACD6-7BE39111DEF9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.Instances.DIMACS-3.3", "HeuristicLab.Problems.Instances.DIMACS\3.3\HeuristicLab.Problems.Instances.DIMACS-3.3.csproj", "{9943FF23-8619-459C-B84A-E7FBDCBA04E6}"
 EndProject
