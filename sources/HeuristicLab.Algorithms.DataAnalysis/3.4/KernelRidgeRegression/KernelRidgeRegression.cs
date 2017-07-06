@@ -122,7 +122,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     public static IRegressionSolution CreateRadialBasisRegressionSolution(IRegressionProblemData problemData, ICovarianceFunction kernel, double lambda, bool scaleInputs, out double rmsError, out double looCvRMSE) {
-      var model = new KernelRidgeRegressionModel(problemData.Dataset, problemData.TargetVariable, problemData.AllowedInputVariables, problemData.TrainingIndices, scaleInputs, kernel, lambda);
+      var model = KernelRidgeRegressionModel.Create(problemData.Dataset, problemData.TargetVariable, problemData.AllowedInputVariables, problemData.TrainingIndices, scaleInputs, kernel, lambda);
       rmsError = double.NaN;
       if (problemData.TestIndices.Any()) {
         rmsError = Math.Sqrt(model.GetEstimatedValues(problemData.Dataset, problemData.TestIndices)
