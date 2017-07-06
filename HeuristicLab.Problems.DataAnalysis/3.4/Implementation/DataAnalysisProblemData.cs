@@ -40,18 +40,39 @@ namespace HeuristicLab.Problems.DataAnalysis {
     protected const string TransformationsParameterName = "Transformations";
 
     #region parameter properites
+    //mkommend: inserted parameter caching due to performance reasons
+    private IFixedValueParameter<Dataset> datasetParameter;
     public IFixedValueParameter<Dataset> DatasetParameter {
-      get { return (IFixedValueParameter<Dataset>)Parameters[DatasetParameterName]; }
+      get {
+        if (datasetParameter == null) datasetParameter = (IFixedValueParameter<Dataset>)Parameters[DatasetParameterName];
+        return datasetParameter;
+      }
     }
+
+    private IFixedValueParameter<ReadOnlyCheckedItemList<StringValue>> inputVariablesParameter;
     public IFixedValueParameter<ReadOnlyCheckedItemList<StringValue>> InputVariablesParameter {
-      get { return (IFixedValueParameter<ReadOnlyCheckedItemList<StringValue>>)Parameters[InputVariablesParameterName]; }
+      get {
+        if (inputVariablesParameter == null) inputVariablesParameter = (IFixedValueParameter<ReadOnlyCheckedItemList<StringValue>>)Parameters[InputVariablesParameterName];
+        return inputVariablesParameter;
+      }
     }
+
+    private IFixedValueParameter<IntRange> trainingPartitionParameter;
     public IFixedValueParameter<IntRange> TrainingPartitionParameter {
-      get { return (IFixedValueParameter<IntRange>)Parameters[TrainingPartitionParameterName]; }
+      get {
+        if (trainingPartitionParameter == null) trainingPartitionParameter = (IFixedValueParameter<IntRange>)Parameters[TrainingPartitionParameterName];
+        return trainingPartitionParameter;
+      }
     }
+
+    private IFixedValueParameter<IntRange> testPartitionParameter;
     public IFixedValueParameter<IntRange> TestPartitionParameter {
-      get { return (IFixedValueParameter<IntRange>)Parameters[TestPartitionParameterName]; }
+      get {
+        if (testPartitionParameter == null) testPartitionParameter = (IFixedValueParameter<IntRange>)Parameters[TestPartitionParameterName];
+        return testPartitionParameter;
+      }
     }
+
     public IFixedValueParameter<ReadOnlyItemList<ITransformation>> TransformationsParameter {
       get { return (IFixedValueParameter<ReadOnlyItemList<ITransformation>>)Parameters[TransformationsParameterName]; }
     }
@@ -101,8 +122,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public virtual bool IsTrainingSample(int index) {
       return index >= 0 && index < Dataset.Rows &&
-        TrainingPartition.Start <= index && index < TrainingPartition.End &&
-        (index < TestPartition.Start || TestPartition.End <= index);
+             TrainingPartition.Start <= index && index < TrainingPartition.End &&
+             (index < TestPartition.Start || TestPartition.End <= index);
     }
 
     public virtual bool IsTestSample(int index) {
@@ -214,10 +235,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
         var variable = data.InputVariables.FirstOrDefault(i => i.Value == inputVariable.Value);
         InputVariables.SetItemCheckedState(inputVariable, variable != null && data.InputVariables.ItemChecked(variable));
       }
-
-      TrainingPartition.Start = TrainingPartition.End = 0;
-      TestPartition.Start = 0;
-      TestPartition.End = Dataset.Rows;
     }
   }
 }
