@@ -32,33 +32,27 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   [Item("ThinPlatePolysplineKernel", "A kernel function that uses the ThinPlatePolyspline function (||x-c||/Beta)^(Degree)*log(||x-c||/Beta) as described in \"Thin-Plate Spline Radial Basis Function Scheme for Advection-Diffusion Problems\" with beta as a scaling parameter.")]
   public class ThinPlatePolysplineKernel : KernelBase {
 
-    #region Parameternames
     private const string DegreeParameterName = "Degree";
-    #endregion
-    #region Parameterproperties
+
     public IFixedValueParameter<DoubleValue> DegreeParameter {
       get { return Parameters[DegreeParameterName] as IFixedValueParameter<DoubleValue>; }
     }
-    #endregion
-    #region Properties
     public DoubleValue Degree {
       get { return DegreeParameter.Value; }
     }
-    #endregion
 
-    #region HLConstructors & Boilerplate
     [StorableConstructor]
     protected ThinPlatePolysplineKernel(bool deserializing) : base(deserializing) { }
-    [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserialization() { }
+
     protected ThinPlatePolysplineKernel(ThinPlatePolysplineKernel original, Cloner cloner) : base(original, cloner) { }
+
     public ThinPlatePolysplineKernel() {
       Parameters.Add(new FixedValueParameter<DoubleValue>(DegreeParameterName, "The degree of the kernel. Needs to be greater than zero.", new DoubleValue(2.0)));
     }
+
     public override IDeepCloneable Clone(Cloner cloner) {
       return new ThinPlatePolysplineKernel(this, cloner);
     }
-    #endregion
 
     protected override double Get(double norm) {
       var beta = Beta.Value;

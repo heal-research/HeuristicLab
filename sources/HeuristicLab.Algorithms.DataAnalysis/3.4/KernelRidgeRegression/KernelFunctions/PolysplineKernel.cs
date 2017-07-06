@@ -32,33 +32,28 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   [Item("PolysplineKernel", "A kernel function that uses the polyharmonic function (||x-c||/Beta)^Degree as given in http://num.math.uni-goettingen.de/schaback/teaching/sc.pdf with beta as a scaling parameters.")]
   public class PolysplineKernel : KernelBase {
 
-    #region Parameternames
     private const string DegreeParameterName = "Degree";
-    #endregion
-    #region Parameterproperties
+
     public IFixedValueParameter<DoubleValue> DegreeParameter {
       get { return Parameters[DegreeParameterName] as IFixedValueParameter<DoubleValue>; }
     }
-    #endregion
-    #region Properties
+
     public DoubleValue Degree {
       get { return DegreeParameter.Value; }
     }
-    #endregion
 
-    #region HLConstructors & Boilerplate
     [StorableConstructor]
     protected PolysplineKernel(bool deserializing) : base(deserializing) { }
-    [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserialization() { }
+
     protected PolysplineKernel(PolysplineKernel original, Cloner cloner) : base(original, cloner) { }
+
     public PolysplineKernel() {
       Parameters.Add(new FixedValueParameter<DoubleValue>(DegreeParameterName, "The degree of the kernel. Needs to be greater than zero.", new DoubleValue(1.0)));
     }
+
     public override IDeepCloneable Clone(Cloner cloner) {
       return new PolysplineKernel(this, cloner);
     }
-    #endregion
 
     protected override double Get(double norm) {
       var beta = Beta.Value;

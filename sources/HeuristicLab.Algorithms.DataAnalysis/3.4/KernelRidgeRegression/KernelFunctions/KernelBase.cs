@@ -31,29 +31,22 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
   public abstract class KernelBase : ParameterizedNamedItem, IKernel {
 
-    #region Parameternames
     private const string DistanceParameterName = "Distance";
-    #endregion
-    #region Parameterproperties
+
     public ValueParameter<IDistance> DistanceParameter {
       get { return Parameters[DistanceParameterName] as ValueParameter<IDistance>; }
     }
 
     [Storable]
     public double? Beta { get; set; }
-    #endregion
-    #region Properties
+
     public IDistance Distance {
       get { return DistanceParameter.Value; }
       set { DistanceParameter.Value = value; }
     }
 
-    #endregion
-
     [StorableConstructor]
     protected KernelBase(bool deserializing) : base(deserializing) { }
-    [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserialization() { }
 
     protected KernelBase(KernelBase original, Cloner cloner)
       : base(original, cloner) {
@@ -81,7 +74,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     public ParameterizedCovarianceFunction GetParameterizedCovarianceFunction(double[] p, int[] columnIndices) {
       if (p.Length != GetNumberOfParameters(columnIndices.Length)) throw new ArgumentException("Illegal parametrization");
-      var myClone = (KernelBase)Clone(new Cloner());
+      var myClone = (KernelBase)Clone();
       myClone.SetParameter(p);
       var cov = new ParameterizedCovarianceFunction {
         Covariance = (x, i, j) => myClone.Get(GetNorm(x, x, i, j, columnIndices)),

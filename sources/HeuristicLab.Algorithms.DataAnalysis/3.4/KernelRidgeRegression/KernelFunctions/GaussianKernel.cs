@@ -30,19 +30,17 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
   [Item("GaussianKernel", "A kernel function that uses Gaussian function exp(-n²/beta²). As described in http://crsouza.com/2010/03/17/kernel-functions-for-machine-learning-applications/")]
   public class GaussianKernel : KernelBase {
-
-    #region HLConstructors & Boilerplate
     [StorableConstructor]
     protected GaussianKernel(bool deserializing) : base(deserializing) { }
-    [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserialization() { }
+
     protected GaussianKernel(GaussianKernel original, Cloner cloner) : base(original, cloner) { }
+
     public GaussianKernel() {
     }
+
     public override IDeepCloneable Clone(Cloner cloner) {
       return new GaussianKernel(this, cloner);
     }
-    #endregion
 
     protected override double Get(double norm) {
       var beta = Beta.Value;

@@ -106,8 +106,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       Parameters.Add(new FixedValueParameter<DoubleValue>(LambdaParameterName, "The log10-transformed weight for the regularization term lambda [-inf..+inf]. Small values produce more complex models, large values produce models with larger errors. Set to very small value (e.g. -1.0e15) for almost exact approximation", new DoubleValue(-2)));
       Parameters.Add(new FixedValueParameter<DoubleValue>(BetaParameterName, "The beta parameter for the kernel", new DoubleValue(2)));
     }
-    [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserialization() { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new KernelRidgeRegression(this, cloner);

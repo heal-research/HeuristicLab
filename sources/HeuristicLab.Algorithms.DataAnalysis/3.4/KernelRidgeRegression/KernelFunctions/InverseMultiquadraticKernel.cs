@@ -28,19 +28,18 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
   [Item("InverseMultiquadraticKernel", "A kernel function that uses the inverse multi-quadratic function  1 / sqrt(1+||x-c||²/beta²). Similar to http://crsouza.com/2010/03/17/kernel-functions-for-machine-learning-applications/ with beta as a scaling factor.")]
   public class InverseMultiquadraticKernel : KernelBase {
-
     private const double C = 1.0;
-    #region HLConstructors & Boilerplate
+
     [StorableConstructor]
     protected InverseMultiquadraticKernel(bool deserializing) : base(deserializing) { }
-    [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserialization() { }
+
     protected InverseMultiquadraticKernel(InverseMultiquadraticKernel original, Cloner cloner) : base(original, cloner) { }
+
     public InverseMultiquadraticKernel() { }
+
     public override IDeepCloneable Clone(Cloner cloner) {
       return new InverseMultiquadraticKernel(this, cloner);
     }
-    #endregion
 
     protected override double Get(double norm) {
       var beta = Beta.Value;

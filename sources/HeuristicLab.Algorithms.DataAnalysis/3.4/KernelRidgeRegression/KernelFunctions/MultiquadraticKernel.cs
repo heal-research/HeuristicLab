@@ -31,20 +31,19 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   public class MultiquadraticKernel : KernelBase {
 
     private const double C = 1.0;
-    #region HLConstructors & Boilerplate
+
     [StorableConstructor]
     protected MultiquadraticKernel(bool deserializing) : base(deserializing) { }
-    [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserialization() { }
+
     protected MultiquadraticKernel(MultiquadraticKernel original, Cloner cloner)
                 : base(original, cloner) { }
 
-    public MultiquadraticKernel() {
-    }
+    public MultiquadraticKernel() { }
+
     public override IDeepCloneable Clone(Cloner cloner) {
       return new MultiquadraticKernel(this, cloner);
     }
-    #endregion
+
     protected override double Get(double norm) {
       var beta = Beta.Value;
       if (Math.Abs(beta) < double.Epsilon) return double.NaN;
