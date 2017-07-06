@@ -230,7 +230,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       for (int i = 0; i < n; i++) {
         for (int j = 0; j < n; j++) ki[j] = cov.Covariance(x, i, j);
         var yi = Util.ScalarProd(ki, alpha);
-        var yi_loo = yi - alpha[i] / lCopy[i, i] / sqrSigmaNoise;
+        var yi_loo = yi - alpha[i] / (lCopy[i, i] / sqrSigmaNoise);
         var s2_loo = sqrSigmaNoise / lCopy[i, i];
         var err = ym[i] - yi_loo;
         var nll_loo = Math.Log(s2_loo) + err * err / s2_loo;
