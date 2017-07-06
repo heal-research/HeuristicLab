@@ -37,18 +37,16 @@ namespace HeuristicLab.Problems.DataAnalysis {
     /// <param name="random">The random number generator</param>
     /// <returns>A new list containing shuffled copies of the original value lists.</returns>
     public static List<IList> ShuffleLists(this List<IList> values, IRandom random) {
-      ValidateInputData(values);
-
       int count = values.First().Count;
       int[] indices = Enumerable.Range(0, count).Shuffle(random).ToArray();
       List<IList> shuffled = new List<IList>(values.Count);
       for (int col = 0; col < values.Count; col++) {
 
-        if (values[col] is List<double>)
+        if (values[col] is IList<double>)
           shuffled.Add(new List<double>());
-        else if (values[col] is List<DateTime>)
+        else if (values[col] is IList<DateTime>)
           shuffled.Add(new List<DateTime>());
-        else if (values[col] is List<string>)
+        else if (values[col] is IList<string>)
           shuffled.Add(new List<string>());
         else
           throw new InvalidOperationException();
@@ -58,40 +56,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
         }
       }
       return shuffled;
-    }
 
-    /// <summary>
-    /// This method checks if the provided lists of values are actually of the type List<T>, where T is a double, string or DateTime
-    /// </summary>
-    /// <param name="values">The values lists</param>
-    internal static void ValidateInputData(IEnumerable<IList> values) {
-      if (!values.Any())
-        throw new InvalidEnumArgumentException("The provided list of values is empty.");
-
-      var errorIndices = new List<int>();
-      int col = 0;
-      foreach (var v in values) {
-        var doubleList = v as List<double>;
-        var stringList = v as List<string>;
-        var dateTimeList = v as List<DateTime>;
-
-        var typedCollections = new IList[] { doubleList, stringList, dateTimeList };
-
-        if (typedCollections.All(x => x == null)) {
-          errorIndices.Add(col); // the values are not a) a list and b) of any of the supported types
-        }
-        ++col;
-      }
-
-      if (errorIndices.Any()) {
-        var sb = new StringBuilder();
-        for (int i = 0; i < errorIndices.Count; ++i) {
-          sb.Append(i);
-          sb.Append(i < errorIndices.Count - 1 ? ", " : " ");
-        }
-        var error = string.Format("Invalid input values. The following columns are not lists of double, string or DateTime values: {0}", sb);
-        throw new ArgumentException(error);
-      }
     }
   }
 }
