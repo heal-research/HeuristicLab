@@ -105,8 +105,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     // state for recursive transformation of trees 
-    private readonly List<string> variableNames;
-    private readonly List<int> lags;
     private readonly List<double> initialConstants;
     private readonly Dictionary<DataForVariable, AutoDiff.Variable> parameters;
     private readonly List<AutoDiff.Variable> variables;
@@ -114,8 +112,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     private TreeToAutoDiffTermConverter(bool makeVariableWeightsVariable) {
       this.makeVariableWeightsVariable = makeVariableWeightsVariable;
-      this.variableNames = new List<string>();
-      this.lags = new List<int>();
       this.initialConstants = new List<double>();
       this.parameters = new Dictionary<DataForVariable, AutoDiff.Variable>();
       this.variables = new List<AutoDiff.Variable>();

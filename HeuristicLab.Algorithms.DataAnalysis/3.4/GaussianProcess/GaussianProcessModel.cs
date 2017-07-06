@@ -258,18 +258,26 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     private static double[,] GetData(IDataset ds, IEnumerable<string> allowedInputs, IEnumerable<int> rows, Scaling scaling) {
       if (scaling != null) {
+        // BackwardsCompatibility3.3
+        #region Backwards compatible code, remove with 3.4
         // TODO: completely remove Scaling class
-        List<ITransformation<double>> transformations = new List<ITransformation<double>>();
+        List<string> variablesList = allowedInputs.ToList();
+        List<int> rowsList = rows.ToList();
 
-        foreach (var varName in allowedInputs) {
-          double min;
-          double max;
-          scaling.GetScalingParameters(varName, out min, out max);
-          var add = -min / (max - min);
-          var mult = 1.0 / (max - min);
-          transformations.Add(new LinearTransformation(allowedInputs) { Addend = add, Multiplier = mult });
+        double[,] matrix = new double[rowsList.Count, variablesList.Count];
+
+        int col = 0;
+        foreach (string column in variablesList) {
+          var values = scaling.GetScaledValues(ds, column, rowsList);
+          int row = 0;
+          foreach (var value in values) {
+            matrix[row, col] = value;
+            row++;
+          }
+          col++;
         }
-        return ds.ToArray(allowedInputs, transformations, rows);
+        return matrix;
+        #endregion
       } else {
         return ds.ToArray(allowedInputs, rows);
       }
