@@ -136,7 +136,6 @@
     <Compile Include="Analyzers\SymbolicDataAnalysisSingleObjectiveTrainingBestSolutionAnalyzer.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Converters\Convert.cs" />
     <Compile Include="Converters\LinearModelToTreeConverter.cs" />
     <Compile Include="Converters\TreeSimplifier.cs" />
     <Compile Include="Converters\TreeToAutoDiffTermConverter.cs" />
