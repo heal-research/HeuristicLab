@@ -102,6 +102,10 @@
       <HintPath>..\..\bin\ALGLIB-3.7.0.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="AutoDiff-1.0, Version=1.0.0.14388, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+      <HintPath>..\..\bin\AutoDiff-1.0.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -144,7 +148,6 @@
     <Compile Include="Interpreter\SymbolicDataAnalysisExpressionCompiledTreeInterpreter.cs" />
     <Compile Include="SymbolicDataAnalysisExpressionTreeSimplificationOperator.cs" />
     <Compile Include="SymbolicDataAnalysisModelComplexityCalculator.cs" />
-    <Compile Include="SymbolicExpressionTreeBacktransformator.cs" />
     <Compile Include="SymbolicDataAnalysisExpressionPruningOperator.cs" />
     <Compile Include="Analyzers\SymbolicDataAnalysisVariableFrequencyAnalyzer.cs" />
     <Compile Include="Analyzers\SymbolicDataAnalysisAlleleFrequencyAnalyzer.cs" />
@@ -187,7 +190,6 @@
     <Compile Include="Interfaces\ISymbolicDataAnalysisSingleObjectiveAnalyzer.cs" />
     <Compile Include="Interfaces\ISymbolicDataAnalysisAnalyzer.cs" />
     <Compile Include="SymbolicDataAnalysisSingleObjectiveProblem.cs" />
-    <Compile Include="SymbolicDataAnalysisExpressionTreeSimplifier.cs" />
     <Compile Include="SymbolicDataAnalysisProblem.cs" />
     <Compile Include="SymbolicDataAnalysisSolutionImpactValuesCalculator.cs" />
     <Compile Include="Symbols\Addition.cs" />
@@ -247,7 +249,10 @@
     <Compile Include="Symbols\VariableCondition.cs" />
     <Compile Include="Symbols\VariableConditionTreeNode.cs" />
     <Compile Include="Symbols\VariableTreeNode.cs" />
-    <Compile Include="TransformationToSymbolicTreeMapper.cs" />
+    <Compile Include="Transformation\SymbolicDataAnalysisExpressionTreeSimplifier.cs" />
+    <Compile Include="Transformation\SymbolicExpressionTreeBacktransformator.cs" />
+    <Compile Include="Transformation\TreeToAutoDiffTermTransformator.cs" />
+    <Compile Include="Transformation\TransformationToSymbolicTreeMapper.cs" />
     <Compile Include="TreeMatching\SymbolicExpressionTreeBottomUpSimilarityCalculator.cs" />
     <Compile Include="TreeMatching\SymbolicExpressionTreeCanonicalSorter.cs" />
     <Compile Include="TreeMatching\SymbolicExpressionTreeEqualityComparer.cs" />
