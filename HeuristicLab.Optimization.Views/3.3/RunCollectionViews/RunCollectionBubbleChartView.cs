@@ -92,6 +92,23 @@ namespace HeuristicLab.Optimization.Views {
       get { return selectedRuns; }
     }
 
+    public string SelectedXAxis {
+      get { return xAxisValue; }
+      set {
+        if (xAxisComboBox.Items.Contains(value)) {
+          xAxisComboBox.SelectedItem = value;
+        }
+      }
+    }
+    public string SelectedYAxis {
+      get { return yAxisValue; }
+      set {
+        if (yAxisComboBox.Items.Contains(value)) {
+          yAxisComboBox.SelectedItem = value;
+        }
+      }
+    }
+
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
       Content.Reset += new EventHandler(Content_Reset);
@@ -226,12 +243,15 @@ namespace HeuristicLab.Optimization.Views {
       if (Content != null) {
         string[] additionalAxisDimension = Enum.GetNames(typeof(AxisDimension));
         this.xAxisComboBox.Items.AddRange(additionalAxisDimension);
-        this.xAxisComboBox.Items.AddRange(Matrix.ColumnNames.ToArray());
+        var comparer = new HeuristicLab.Common.NaturalStringComparer();
+        var sortedColumnNames = Matrix.ColumnNames.ToArray();
+        sortedColumnNames.StableSort(comparer);
+        this.xAxisComboBox.Items.AddRange(sortedColumnNames);
         this.yAxisComboBox.Items.AddRange(additionalAxisDimension);
-        this.yAxisComboBox.Items.AddRange(Matrix.ColumnNames.ToArray());
+        this.yAxisComboBox.Items.AddRange(sortedColumnNames);
         string[] additionalSizeDimension = Enum.GetNames(typeof(SizeDimension));
         this.sizeComboBox.Items.AddRange(additionalSizeDimension);
-        this.sizeComboBox.Items.AddRange(Matrix.ColumnNames.ToArray());
+        this.sizeComboBox.Items.AddRange(sortedColumnNames);
         this.sizeComboBox.SelectedItem = SizeDimension.Constant.ToString();
 
         bool changed = false;

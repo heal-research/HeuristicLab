@@ -180,6 +180,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
       get { return variableValues.Where(p => p.Value is IList<string>).Select(p => p.Key); }
     }
 
+    public IEnumerable<string> DateTimeVariables {
+      get { return variableValues.Where(p => p.Value is IList<DateTime>).Select(p => p.Key); }
+    }
+
     public IEnumerable<double> GetDoubleValues(string variableName) {
       return GetValues<double>(variableName);
     }
@@ -214,6 +218,19 @@ namespace HeuristicLab.Problems.DataAnalysis {
       var values = GetValues<string>(variableName);
       return new ReadOnlyCollection<string>(values);
     }
+
+    public DateTime GetDateTimeValue(string variableName, int row) {
+      var values = GetValues<DateTime>(variableName);
+      return values[row];
+    }
+    public IEnumerable<DateTime> GetDateTimeValues(string variableName, IEnumerable<int> rows) {
+      return GetValues<DateTime>(variableName, rows);
+    }
+    public ReadOnlyCollection<DateTime> GetReadOnlyDateTimeValues(string variableName) {
+      var values = GetValues<DateTime>(variableName);
+      return new ReadOnlyCollection<DateTime>(values);
+    }
+
 
     private IEnumerable<T> GetValues<T>(string variableName, IEnumerable<int> rows) {
       var values = GetValues<T>(variableName);
