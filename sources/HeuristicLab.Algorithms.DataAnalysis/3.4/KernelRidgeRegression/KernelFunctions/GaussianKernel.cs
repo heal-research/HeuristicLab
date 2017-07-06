@@ -43,6 +43,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     protected override double Get(double norm) {
+      if (Beta == null) throw new InvalidOperationException("Can not calculate kernel distance while Beta is null");
       var beta = Beta.Value;
       if (Math.Abs(beta) < double.Epsilon) return double.NaN;
       var d = norm / beta;
@@ -51,6 +52,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     //2 * n²/b²* 1/b * exp(-n²/b²)
     protected override double GetGradient(double norm) {
+      if (Beta == null) throw new InvalidOperationException("Can not calculate kernel distance gradient while Beta is null");
       var beta = Beta.Value;
       if (Math.Abs(beta) < double.Epsilon) return double.NaN;
       var d = norm / beta;

@@ -35,8 +35,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     [StorableConstructor]
     protected MultiquadraticKernel(bool deserializing) : base(deserializing) { }
 
-    protected MultiquadraticKernel(MultiquadraticKernel original, Cloner cloner)
-                : base(original, cloner) { }
+    protected MultiquadraticKernel(MultiquadraticKernel original, Cloner cloner) : base(original, cloner) { }
 
     public MultiquadraticKernel() { }
 
@@ -45,6 +44,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     protected override double Get(double norm) {
+      if (Beta == null) throw new InvalidOperationException("Can not calculate kernel distance while Beta is null");
       var beta = Beta.Value;
       if (Math.Abs(beta) < double.Epsilon) return double.NaN;
       var d = norm / beta;
@@ -53,6 +53,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     //-n²/(d³*sqrt(C+n²/d²))
     protected override double GetGradient(double norm) {
+      if (Beta == null) throw new InvalidOperationException("Can not calculate kernel distance gradient while Beta is null");
       var beta = Beta.Value;
       if (Math.Abs(beta) < double.Epsilon) return double.NaN;
       var d = norm / beta;
