@@ -1054,9 +1054,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
               representative.Weights[j] += node.Weights[j];
             }
           }
-          for (int j = 0; j < representative.Weights.Length; j++) {
-            representative.Weights[j] += constant;
-          }
           sum.AddSubtree(representative);
         }
       }
