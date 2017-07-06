@@ -118,6 +118,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DatasetExtensions.cs" />
+    <Compile Include="DatasetUtil.cs" />
     <Compile Include="DoubleLimit.cs" />
     <Compile Include="Implementation\Classification\ClassificationEnsembleModel.cs">
       <SubType>Code</SubType>
