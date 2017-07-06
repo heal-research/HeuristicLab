@@ -87,20 +87,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis.Views 
       Content.Model = model;
     }
 
-    protected override Dictionary<ISymbolicExpressionTreeNode, double> CalculateReplacementValues(ISymbolicExpressionTree tree) {
-      var replacementValues = new Dictionary<ISymbolicExpressionTreeNode, double>();
-      foreach (var componentBranch in tree.Root.GetSubtree(0).Subtrees)
-        foreach (ISymbolicExpressionTreeNode node in componentBranch.IterateNodesPrefix()) {
-          replacementValues[node] = CalculateReplacementValue(node, tree);
-        }
-      return replacementValues;
-    }
-
-    protected override Dictionary<ISymbolicExpressionTreeNode, double> CalculateImpactValues(ISymbolicExpressionTree tree) {
-      var impactAndReplacementValues = CalculateImpactAndReplacementValues(tree);
-      return impactAndReplacementValues.ToDictionary(x => x.Key, x => x.Value.Item1); // item1 of the tuple is the impact value
-    }
-
     private double CalculateReplacementValue(ISymbolicExpressionTreeNode node, ISymbolicExpressionTree sourceTree) {
       // remove old ADFs
       while (tempTree.Root.SubtreeCount > 1) tempTree.Root.RemoveSubtree(1);

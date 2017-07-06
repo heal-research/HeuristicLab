@@ -76,7 +76,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public void ReplaceVariable(string variableName, IList values) {
       if (!variableValues.ContainsKey(variableName))
-        throw new ArgumentException(string.Format("Variable {0} is not present in the dataset."), variableName);
+        throw new ArgumentException(string.Format("Variable {0} is not present in the dataset.", variableName));
       if (values.Count != variableValues[variableName].Count)
         throw new ArgumentException("The number of values must coincide with the number of dataset rows.");
       if (GetVariableType(variableName) != values[0].GetType())

@@ -20,7 +20,9 @@
 #endregion
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using HeuristicLab.Algorithms.DataAnalysis;
 using HeuristicLab.MainForm;
@@ -45,21 +47,49 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
       var problemData = (IRegressionProblemData)ProblemData.Clone();
       if (!problemData.TrainingIndices.Any()) return null; // don't create an LR model if the problem does not have a training set (e.g. loaded into an existing model)
 
-      //clear checked inputVariables
-      foreach (var inputVariable in problemData.InputVariables.CheckedItems) {
-        problemData.InputVariables.SetItemCheckedState(inputVariable.Value, false);
-      }
+      var usedVariables = Content.Model.SymbolicExpressionTree.IterateNodesPostfix()
+        .OfType<IVariableTreeNode>()
+        .Select(node => node.VariableName).ToArray();
 
-      //check inputVariables used in the symbolic regression model
-      var usedVariables =
-        Content.Model.SymbolicExpressionTree.IterateNodesPostfix().OfType<VariableTreeNode>().Select(
-          node => node.VariableName).Distinct();
-      foreach (var variable in usedVariables) {
-        problemData.InputVariables.SetItemCheckedState(
-          problemData.InputVariables.First(x => x.Value == variable), true);
-      }
+      var usedDoubleVariables = usedVariables
+        .Where(name => problemData.Dataset.VariableHasType<double>(name))
+      .Distinct();
 
-      var solution = LinearRegression.CreateLinearRegressionSolution(problemData, out rmse, out cvRmsError);
+      var usedFactorVariables = usedVariables
+        .Where(name => problemData.Dataset.VariableHasType<string>(name))
+        .Distinct();
+
+      // gkronber: for binary factors we actually produce a binary variable in the new dataset
+      // but only if the variable is not used as a full factor anyway (LR creates binary columns anyway)
+      var usedBinaryFactors =
+        Content.Model.SymbolicExpressionTree.IterateNodesPostfix().OfType<BinaryFactorVariableTreeNode>()
+        .Where(node => !usedFactorVariables.Contains(node.VariableName))
+        .Select(node => Tuple.Create(node.VariableValue, node.VariableValue));
+
+      // create a new problem and dataset
+      var variableNames =
+        usedDoubleVariables
+        .Concat(usedFactorVariables)
+        .Concat(usedBinaryFactors.Select(t => t.Item1 + "=" + t.Item2))
+        .Concat(new string[] { problemData.TargetVariable })
+        .ToArray();
+      var variableValues =
+        usedDoubleVariables.Select(name => (IList)problemData.Dataset.GetDoubleValues(name).ToList())
+        .Concat(usedFactorVariables.Select(name => problemData.Dataset.GetStringValues(name).ToList()))
+        .Concat(
+          // create binary variable
+          usedBinaryFactors.Select(t => problemData.Dataset.GetReadOnlyStringValues(t.Item1).Select(val => val == t.Item2 ? 1.0 : 0.0).ToList())
+        )
+        .Concat(new[] { problemData.Dataset.GetDoubleValues(problemData.TargetVariable).ToList() });
+
+      var newDs = new Dataset(variableNames, variableValues);
+      var newProblemData = new RegressionProblemData(newDs, variableNames.Take(variableNames.Length - 1), variableNames.Last());
+      newProblemData.TrainingPartition.Start = problemData.TrainingPartition.Start;
+      newProblemData.TrainingPartition.End = problemData.TrainingPartition.End;
+      newProblemData.TestPartition.Start = problemData.TestPartition.Start;
+      newProblemData.TestPartition.End = problemData.TestPartition.End;
+
+      var solution = LinearRegression.CreateLinearRegressionSolution(newProblemData, out rmse, out cvRmsError);
       solution.Name = "Baseline (linear subset)";
       return solution;
     }
@@ -67,6 +97,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
 
     protected override IEnumerable<IRegressionSolution> CreateBaselineSolutions() {
       foreach (var sol in base.CreateBaselineSolutions()) yield return sol;
+
+      // does not support lagged variables
+      if (Content.Model.SymbolicExpressionTree.IterateNodesPrefix().OfType<LaggedVariableTreeNode>().Any()) yield break;
+
       yield return CreateLinearRegressionSolution();
     }
   }

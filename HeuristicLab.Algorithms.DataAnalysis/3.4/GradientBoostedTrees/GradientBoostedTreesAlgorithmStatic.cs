@@ -147,6 +147,12 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     // for custom stepping & termination
     public static IGbmState CreateGbmState(IRegressionProblemData problemData, ILossFunction lossFunction, uint randSeed, int maxSize = 3, double r = 0.66, double m = 0.5, double nu = 0.01) {
+      // check input variables. Only double variables are allowed.
+      var invalidInputs =
+        problemData.AllowedInputVariables.Where(name => !problemData.Dataset.VariableHasType<double>(name));
+      if (invalidInputs.Any())
+        throw new NotSupportedException("Gradient tree boosting only supports real-valued variables. Unsupported inputs: " + string.Join(", ", invalidInputs));
+
       return new GbmState(problemData, lossFunction, randSeed, maxSize, r, m, nu);
     }
 

@@ -149,6 +149,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             var variableTreeNode = (VariableTreeNode)instr.dynamicNode;
             instr.value = ((IList<double>)instr.data)[row] * variableTreeNode.Weight;
           }
+        } else if (instr.opCode == OpCodes.BinaryFactorVariable) {
+          if (row < 0 || row >= dataset.Rows) instr.value = double.NaN;
+          else {
+            var factorTreeNode = instr.dynamicNode as BinaryFactorVariableTreeNode;
+            instr.value = ((IList<string>)instr.data)[row] == factorTreeNode.VariableValue ? factorTreeNode.Weight : 0;
+          }
+        } else if (instr.opCode == OpCodes.FactorVariable) {
+          if (row < 0 || row >= dataset.Rows) instr.value = double.NaN;
+          else {
+            var factorTreeNode = instr.dynamicNode as FactorVariableTreeNode;
+            instr.value = factorTreeNode.GetValue(((IList<string>)instr.data)[row]);
+          }
         } else if (instr.opCode == OpCodes.LagVariable) {
           var laggedVariableTreeNode = (LaggedVariableTreeNode)instr.dynamicNode;
           int actualRow = row + laggedVariableTreeNode.Lag;
@@ -400,6 +412,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           case OpCodes.Variable: {
               var variableTreeNode = (VariableTreeNode)instr.dynamicNode;
               instr.data = dataset.GetReadOnlyDoubleValues(variableTreeNode.VariableName);
+            }
+            break;
+          case OpCodes.BinaryFactorVariable: {
+              var factorVariableTreeNode = instr.dynamicNode as BinaryFactorVariableTreeNode;
+              instr.data = dataset.GetReadOnlyStringValues(factorVariableTreeNode.VariableName);
+            }
+            break;
+          case OpCodes.FactorVariable: {
+              var factorVariableTreeNode = instr.dynamicNode as FactorVariableTreeNode;
+              instr.data = dataset.GetReadOnlyStringValues(factorVariableTreeNode.VariableName);
             }
             break;
           case OpCodes.LagVariable: {

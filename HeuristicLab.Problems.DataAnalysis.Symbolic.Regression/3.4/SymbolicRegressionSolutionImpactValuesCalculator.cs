@@ -40,34 +40,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
     [StorableConstructor]
     protected SymbolicRegressionSolutionImpactValuesCalculator(bool deserializing) : base(deserializing) { }
-    public override double CalculateReplacementValue(ISymbolicDataAnalysisModel model, ISymbolicExpressionTreeNode node, IDataAnalysisProblemData problemData, IEnumerable<int> rows) {
-      var regressionModel = (ISymbolicRegressionModel)model;
-      var regressionProblemData = (IRegressionProblemData)problemData;
-
-      return CalculateReplacementValue(node, regressionModel.SymbolicExpressionTree, regressionModel.Interpreter, regressionProblemData.Dataset, rows);
-    }
-
-    public override double CalculateImpactValue(ISymbolicDataAnalysisModel model, ISymbolicExpressionTreeNode node, IDataAnalysisProblemData problemData, IEnumerable<int> rows, double qualityForImpactsCalculation = double.NaN) {
-      double impactValue, replacementValue, newQualityForImpactsCalculation;
-      CalculateImpactAndReplacementValues(model, node, problemData, rows, out impactValue, out replacementValue, out newQualityForImpactsCalculation, qualityForImpactsCalculation);
-      return impactValue;
-    }
 
     public override void CalculateImpactAndReplacementValues(ISymbolicDataAnalysisModel model, ISymbolicExpressionTreeNode node,
       IDataAnalysisProblemData problemData, IEnumerable<int> rows, out double impactValue, out double replacementValue, out double newQualityForImpactsCalculation,
-      double qualityForImpactsCalculation = Double.NaN) {
+      double qualityForImpactsCalculation = double.NaN) {
       var regressionModel = (ISymbolicRegressionModel)model;
       var regressionProblemData = (IRegressionProblemData)problemData;
 
       var dataset = regressionProblemData.Dataset;
       var targetValues = dataset.GetDoubleValues(regressionProblemData.TargetVariable, rows);
 
-      OnlineCalculatorError errorState;
       if (double.IsNaN(qualityForImpactsCalculation))
         qualityForImpactsCalculation = CalculateQualityForImpacts(regressionModel, regressionProblemData, rows);
-
-      replacementValue = CalculateReplacementValue(regressionModel, node, regressionProblemData, rows);
-      var constantNode = new ConstantTreeNode(new Constant()) { Value = replacementValue };
 
       var cloner = new Cloner();
       var tempModel = cloner.Clone(regressionModel);
@@ -75,15 +59,33 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
       var tempModelParentNode = tempModelNode.Parent;
       int i = tempModelParentNode.IndexOfSubtree(tempModelNode);
-      tempModelParentNode.RemoveSubtree(i);
-      tempModelParentNode.InsertSubtree(i, constantNode);
 
-      var estimatedValues = tempModel.GetEstimatedValues(dataset, rows);
-      double r = OnlinePearsonsRCalculator.Calculate(targetValues, estimatedValues, out errorState);
-      if (errorState != OnlineCalculatorError.None) r = 0.0;
-      newQualityForImpactsCalculation = r * r;
+      double bestReplacementValue = 0.0;
+      double bestImpactValue = double.PositiveInfinity;
+      newQualityForImpactsCalculation = qualityForImpactsCalculation; // initialize
+      // try the potentially reasonable replacement values and use the best one
+      foreach (var repValue in CalculateReplacementValues(node, regressionModel.SymbolicExpressionTree, regressionModel.Interpreter, regressionProblemData.Dataset, regressionProblemData.TrainingIndices)) {
 
-      impactValue = qualityForImpactsCalculation - newQualityForImpactsCalculation;
+        tempModelParentNode.RemoveSubtree(i);
+
+        var constantNode = new ConstantTreeNode(new Constant()) { Value = repValue };
+
+        tempModelParentNode.InsertSubtree(i, constantNode);
+
+        var estimatedValues = tempModel.GetEstimatedValues(dataset, rows);
+        OnlineCalculatorError errorState;
+        double r = OnlinePearsonsRCalculator.Calculate(targetValues, estimatedValues, out errorState);
+        if (errorState != OnlineCalculatorError.None) r = 0.0;
+        newQualityForImpactsCalculation = r * r;
+
+        impactValue = qualityForImpactsCalculation - newQualityForImpactsCalculation;
+        if (impactValue < bestImpactValue) {
+          bestImpactValue = impactValue;
+          bestReplacementValue = repValue;
+        }
+      }
+      replacementValue = bestReplacementValue;
+      impactValue = bestImpactValue;
     }
 
     public static double CalculateQualityForImpacts(ISymbolicRegressionModel model, IRegressionProblemData problemData, IEnumerable<int> rows) {

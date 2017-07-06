@@ -36,7 +36,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       Console.WriteLine(formatter.Format(parser.Parse("3")));
       Console.WriteLine(formatter.Format(parser.Parse("3*3")));
       Console.WriteLine(formatter.Format(parser.Parse("3 * 4")));
-      Console.WriteLine(formatter.Format(parser.Parse("123E-03")  ));
+      Console.WriteLine(formatter.Format(parser.Parse("123E-03")));
       Console.WriteLine(formatter.Format(parser.Parse("123e-03")));
       Console.WriteLine(formatter.Format(parser.Parse("123e+03")));
       Console.WriteLine(formatter.Format(parser.Parse("123E+03")));
@@ -105,6 +105,21 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       Console.WriteLine(formatter.Format(parser.Parse("LAG(x, +1)")));
       Console.WriteLine(formatter.Format(parser.Parse("x * LAG('x', +1)")));
 
+      Console.WriteLine(formatter.Format(parser.Parse("x [1.0] * y")));
+      Console.WriteLine(formatter.Format(parser.Parse("x [1.0, 2.0] * y [1.0, 2.0]")));
+      Console.WriteLine(formatter.Format(parser.Parse("x[1] * y")));
+      Console.WriteLine(formatter.Format(parser.Parse("x[1, 2] * y [1, 2]")));
+
+      Console.WriteLine(formatter.Format(parser.Parse("x [+1.0] * y")));
+      Console.WriteLine(formatter.Format(parser.Parse("x [-1.0] * y")));
+      Console.WriteLine(formatter.Format(parser.Parse("x [-1.0, -2.0] * y [+1.0, +2.0]")));
+
+      Console.WriteLine(formatter.Format(parser.Parse("x='bla' * y")));
+      Console.WriteLine(formatter.Format(parser.Parse("x = 'bla'")));
+      Console.WriteLine(formatter.Format(parser.Parse("x = \"bla\"")));
+      Console.WriteLine(formatter.Format(parser.Parse("1.0 * x = bla")));
+      Console.WriteLine(formatter.Format(parser.Parse("-1.0 * x = bla")));
+      Console.WriteLine(formatter.Format(parser.Parse("+1.0 * \"x\" = bla + y = \"bla2\"")));
     }
   }
 }

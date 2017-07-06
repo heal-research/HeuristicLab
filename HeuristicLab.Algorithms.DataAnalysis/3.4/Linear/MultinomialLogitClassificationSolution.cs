@@ -42,7 +42,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private MultinomialLogitClassificationSolution(MultinomialLogitClassificationSolution original, Cloner cloner)
       : base(original, cloner) {
     }
-    public MultinomialLogitClassificationSolution( MultinomialLogitModel logitModel,IClassificationProblemData problemData)
+    public MultinomialLogitClassificationSolution(MultinomialLogitModel logitModel, IClassificationProblemData problemData)
       : base(logitModel, problemData) {
     }
 

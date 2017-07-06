@@ -131,6 +131,12 @@
     <Compile Include="Controls\DensityTrackbar.Designer.cs">
       <DependentUpon>DensityTrackbar.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\FactorGradientChart.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\FactorGradientChart.Designer.cs">
+      <DependentUpon>FactorGradientChart.cs</DependentUpon>
+    </Compile>
     <Compile Include="FeatureCorrelation\TimeframeFeatureCorrelationCalculator.cs" />
     <Compile Include="FeatureCorrelation\AbstractFeatureCorrelationCalculator.cs" />
     <Compile Include="Classification\ClassificationEnsembleSolutionEstimatedClassValuesView.cs">
@@ -206,6 +212,7 @@
     <Compile Include="Controls\GradientChartConfigurationDialog.Designer.cs">
       <DependentUpon>GradientChartConfigurationDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="Interfaces\IGradientChart.cs" />
     <Compile Include="Interfaces\IDataPreprocessorStarter.cs" />
     <Compile Include="MenuItems\ChangeDataOfOptimizersMenuItem.cs" />
     <Compile Include="MenuItems\ShrinkDataAnalysisRunsMenuItem.cs" />

@@ -139,6 +139,8 @@
     <Compile Include="Importer\SymbolicExpressionImporter.cs" />
     <Compile Include="Importer\Token.cs" />
     <Compile Include="Interfaces\IModelBacktransformator.cs" />
+    <Compile Include="Interfaces\IVariableTreeNode.cs" />
+    <Compile Include="Interfaces\IVariableSymbol.cs" />
     <Compile Include="Interpreter\SymbolicDataAnalysisExpressionCompiledTreeInterpreter.cs" />
     <Compile Include="SymbolicDataAnalysisExpressionTreeSimplificationOperator.cs" />
     <Compile Include="SymbolicDataAnalysisModelComplexityCalculator.cs" />
@@ -197,6 +199,12 @@
     <Compile Include="Symbols\AiryA.cs" />
     <Compile Include="Symbols\AiryB.cs" />
     <Compile Include="Symbols\Bessel.cs" />
+    <Compile Include="Symbols\BinaryFactorVariable.cs" />
+    <Compile Include="Symbols\BinaryFactorVariableTreeNode.cs" />
+    <Compile Include="Symbols\FactorVariableTreeNode.cs" />
+    <Compile Include="Symbols\FactorVariable.cs" />
+    <Compile Include="Symbols\VariableBase.cs" />
+    <Compile Include="Symbols\VariableTreeNodeBase.cs" />
     <Compile Include="Symbols\Xor.cs" />
     <Compile Include="Symbols\Erf.cs" />
     <Compile Include="Symbols\Norm.cs" />

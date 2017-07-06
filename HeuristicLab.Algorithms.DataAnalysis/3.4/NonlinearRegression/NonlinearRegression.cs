@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using HeuristicLab.Analysis;
@@ -207,6 +208,45 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public static ISymbolicRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData, string modelStructure, int maxIterations, IRandom rand = null) {
       var parser = new InfixExpressionParser();
       var tree = parser.Parse(modelStructure);
+      // parser handles double and string variables equally by creating a VariableTreeNode
+      // post-process to replace VariableTreeNodes by FactorVariableTreeNodes for all string variables
+      var factorSymbol = new FactorVariable();
+      factorSymbol.VariableNames =
+        problemData.AllowedInputVariables.Where(name => problemData.Dataset.VariableHasType<string>(name));
+      factorSymbol.AllVariableNames = factorSymbol.VariableNames;
+      factorSymbol.VariableValues =
+        factorSymbol.VariableNames.Select(name =>
+        new KeyValuePair<string, Dictionary<string, int>>(name,
+        problemData.Dataset.GetReadOnlyStringValues(name).Distinct()
+        .Select((n, i) => Tuple.Create(n, i))
+        .ToDictionary(tup => tup.Item1, tup => tup.Item2)));
+
+      foreach (var parent in tree.IterateNodesPrefix().ToArray()) {
+        for (int i = 0; i < parent.SubtreeCount; i++) {
+          var varChild = parent.GetSubtree(i) as VariableTreeNode;
+          var factorVarChild = parent.GetSubtree(i) as FactorVariableTreeNode;
+          if (varChild != null && factorSymbol.VariableNames.Contains(varChild.VariableName)) {
+            parent.RemoveSubtree(i);
+            var factorTreeNode = (FactorVariableTreeNode)factorSymbol.CreateTreeNode();
+            factorTreeNode.VariableName = varChild.VariableName;
+            factorTreeNode.Weights =
+              factorTreeNode.Symbol.GetVariableValues(factorTreeNode.VariableName).Select(_ => 1.0).ToArray();
+            // weight = 1.0 for each value
+            parent.InsertSubtree(i, factorTreeNode);
+          } else if (factorVarChild != null && factorSymbol.VariableNames.Contains(factorVarChild.VariableName)) {
+            if (factorSymbol.GetVariableValues(factorVarChild.VariableName).Count() != factorVarChild.Weights.Length)
+              throw new ArgumentException(
+                string.Format("Factor variable {0} needs exactly {1} weights",
+                factorVarChild.VariableName,
+                factorSymbol.GetVariableValues(factorVarChild.VariableName).Count()));
+            parent.RemoveSubtree(i);
+            var factorTreeNode = (FactorVariableTreeNode)factorSymbol.CreateTreeNode();
+            factorTreeNode.VariableName = factorVarChild.VariableName;
+            factorTreeNode.Weights = factorVarChild.Weights;
+            parent.InsertSubtree(i, factorTreeNode);
+          }
+        }
+      }
 
       if (!SymbolicRegressionConstantOptimizationEvaluator.CanOptimizeConstants(tree)) throw new ArgumentException("The optimizer does not support the specified model structure.");
 

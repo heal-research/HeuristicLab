@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
@@ -52,6 +53,44 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       FormatRecursively(symbolicExpressionTree.Root.GetSubtree(0).GetSubtree(0), strBuilder);
       GenerateFooter(strBuilder);
       return strBuilder.ToString();
+    }
+
+    private string VariableName2Identifier(string name) {     
+      /*
+       * identifier-start-character:
+       *    letter-character
+       *    _ (the underscore character U+005F)
+       *  identifier-part-characters:
+       *    identifier-part-character
+       *    identifier-part-characters   identifier-part-character
+       *  identifier-part-character:
+       *    letter-character
+       *    decimal-digit-character
+       *    connecting-character
+       *    combining-character
+       *    formatting-character
+       *  letter-character:
+       *    A Unicode character of classes Lu, Ll, Lt, Lm, Lo, or Nl 
+       *    A unicode-escape-sequence representing a character of classes Lu, Ll, Lt, Lm, Lo, or Nl
+       *  combining-character:
+       *    A Unicode character of classes Mn or Mc 
+       *    A unicode-escape-sequence representing a character of classes Mn or Mc
+       *  decimal-digit-character:
+       *    A Unicode character of the class Nd 
+       *    A unicode-escape-sequence representing a character of the class Nd
+       *  connecting-character:
+       *    A Unicode character of the class Pc 
+       *    A unicode-escape-sequence representing a character of the class Pc
+       *  formatting-character:
+       *    A Unicode character of the class Cf 
+       *    A unicode-escape-sequence representing a character of the class Cf
+       */
+
+      var invalidIdentifierStarts = new Regex(@"[^_\p{Lu}\p{Ll}\p{Lt}\p{Lm}\p{Lo}\p{Nl}]");
+      var invalidIdentifierParts = new Regex(@"[^\p{Lu}\p{Ll}\p{Lt}\p{Lm}\p{Lo}\p{Nl}\p{Mn}\p{Mc}\p{Nd}\p{Pc}\p{Cf}]");
+      return "@" +
+        (invalidIdentifierStarts.IsMatch(name.Substring(0, 1)) ? "_" : "") + // prepend '_' if necessary
+        invalidIdentifierParts.Replace(name, "_");
     }
 
     private void FormatRecursively(ISymbolicExpressionTreeNode node, StringBuilder strBuilder) {
@@ -105,14 +144,29 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       } else {
         if (node is VariableTreeNode) {
           var varNode = node as VariableTreeNode;
-          strBuilder.AppendFormat("{0} * {1}", varNode.VariableName, varNode.Weight.ToString("g17", CultureInfo.InvariantCulture));
+          strBuilder.AppendFormat("{0} * {1}", VariableName2Identifier(varNode.VariableName), varNode.Weight.ToString("g17", CultureInfo.InvariantCulture));
         } else if (node is ConstantTreeNode) {
           var constNode = node as ConstantTreeNode;
           strBuilder.Append(constNode.Value.ToString("g17", CultureInfo.InvariantCulture));
+        } else if (node.Symbol is FactorVariable) {
+          var factorNode = node as FactorVariableTreeNode;
+          FormatFactor(factorNode, strBuilder);
+        } else if (node.Symbol is BinaryFactorVariable) {
+          var binFactorNode = node as BinaryFactorVariableTreeNode;
+          FormatBinaryFactor(binFactorNode, strBuilder);
         } else {
           throw new NotSupportedException("Formatting of symbol: " + node.Symbol + " not supported for C# symbolic expression tree formatter.");
         }
       }
+    }
+
+    private void FormatFactor(FactorVariableTreeNode node, StringBuilder strBuilder) {
+      strBuilder.AppendFormat("EvaluateFactor({0}, new [] {{ {1} }}, new [] {{ {2} }})", VariableName2Identifier(node.VariableName),
+        string.Join(",", node.Symbol.GetVariableValues(node.VariableName).Select(name => "\"" + name + "\"")), string.Join(",", node.Weights.Select(v => v.ToString(CultureInfo.InvariantCulture))));
+    }
+
+    private void FormatBinaryFactor(BinaryFactorVariableTreeNode node, StringBuilder strBuilder) {
+      strBuilder.AppendFormat(CultureInfo.InvariantCulture, "EvaluateBinaryFactor({0}, \"{1}\", {2})", VariableName2Identifier(node.VariableName), node.VariableValue, node.Weight);
     }
 
     private void FormatSquare(ISymbolicExpressionTreeNode node, StringBuilder strBuilder) {
@@ -181,15 +235,29 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       strBuilder.AppendLine("public static class Model {");
       GenerateAverageSource(strBuilder);
       GenerateIfThenElseSource(strBuilder);
+      GenerateFactorSource(strBuilder);
+      GenerateBinaryFactorSource(strBuilder);
       strBuilder.Append(Environment.NewLine + "public static double Evaluate (");
 
-      HashSet<string> varNames = new HashSet<string>();
-      foreach (var node in symbolicExpressionTree.IterateNodesPostfix().Where(x => x is VariableTreeNode)) {
-        varNames.Add(((VariableTreeNode)node).VariableName);
+      // here we don't have access to problemData to determine the type for each variable (double/string) therefore we must distinguish based on the symbol type
+      HashSet<string> doubleVarNames = new HashSet<string>();
+      foreach (var node in symbolicExpressionTree.IterateNodesPostfix().Where(x => x is VariableTreeNode || x is VariableConditionTreeNode)) {
+        doubleVarNames.Add(((IVariableTreeNode)node).VariableName);
       }
 
-      var orderedNames = varNames.OrderBy(n => n, new NaturalStringComparer()).Select(n => "double " + n);
+      HashSet<string> stringVarNames = new HashSet<string>();
+      foreach (var node in symbolicExpressionTree.IterateNodesPostfix().Where(x => x is BinaryFactorVariableTreeNode || x is FactorVariableTreeNode)) {
+        stringVarNames.Add(((IVariableTreeNode)node).VariableName);
+      }
+
+      var orderedNames = stringVarNames.OrderBy(n => n, new NaturalStringComparer()).Select(n => "string " + VariableName2Identifier(n) + " /* " + n + " */");
       strBuilder.Append(string.Join(", ", orderedNames));
+
+      if (stringVarNames.Any() && doubleVarNames.Any())
+        strBuilder.AppendLine(",");
+      orderedNames = doubleVarNames.OrderBy(n => n, new NaturalStringComparer()).Select(n => "double " + VariableName2Identifier(n) + " /* " + n + " */");
+      strBuilder.Append(string.Join(", ", orderedNames));
+
 
       strBuilder.AppendLine(") {");
       strBuilder.Append("double result = ");
@@ -197,6 +265,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     private void GenerateFooter(StringBuilder strBuilder) {
       strBuilder.AppendLine(";");
+
       strBuilder.AppendLine("return result;");
       strBuilder.AppendLine("}");
       strBuilder.AppendLine("}");
@@ -214,5 +283,20 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       strBuilder.AppendLine("   return condition ? then : @else;");
       strBuilder.AppendLine("}");
     }
+
+    private void GenerateFactorSource(StringBuilder strBuilder) {
+      strBuilder.AppendLine("private static double EvaluateFactor(string factorValue, string[] factorValues, double[] constants) {");
+      strBuilder.AppendLine("   for(int i=0;i<factorValues.Length;i++) " +
+                            "      if(factorValues[i] == factorValue) return constants[i];" +
+                            "   throw new ArgumentException();");
+      strBuilder.AppendLine("}");
+    }
+
+    private void GenerateBinaryFactorSource(StringBuilder strBuilder) {
+      strBuilder.AppendLine("private static double EvaluateBinaryFactor(string factorValue, string targetValue, double weight) {");
+      strBuilder.AppendLine("  return factorValue == targetValue ? weight : 0.0;");
+      strBuilder.AppendLine("}");
+    }
+
   }
 }

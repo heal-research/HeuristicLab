@@ -73,7 +73,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       string targetVariable = problemData.TargetVariable;
       IEnumerable<string> allowedInputVariables = problemData.AllowedInputVariables;
       IEnumerable<int> rows = problemData.TrainingIndices;
-      double[,] inputMatrix = AlglibUtil.PrepareInputMatrix(dataset, allowedInputVariables.Concat(new string[] { targetVariable }), rows);
+      var doubleVariables = allowedInputVariables.Where(dataset.VariableHasType<double>);
+      var factorVariableNames = allowedInputVariables.Where(dataset.VariableHasType<string>);
+      var factorVariables = AlglibUtil.GetFactorVariableValues(dataset, factorVariableNames, rows);
+      double[,] binaryMatrix = AlglibUtil.PrepareInputMatrix(dataset, factorVariables, rows);
+      double[,] doubleVarMatrix = AlglibUtil.PrepareInputMatrix(dataset, doubleVariables.Concat(new string[] { targetVariable }), rows);
+      var inputMatrix = binaryMatrix.HorzCat(doubleVarMatrix);
+
       if (inputMatrix.Cast<double>().Any(x => double.IsNaN(x) || double.IsInfinity(x)))
         throw new NotSupportedException("Linear regression does not support NaN or infinity values in the input dataset.");
 
@@ -98,7 +104,19 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       startNode.AddSubtree(addition);
 
       int col = 0;
-      foreach (string column in allowedInputVariables) {
+      foreach (var kvp in factorVariables) {
+        var varName = kvp.Key;
+        foreach (var cat in kvp.Value) {
+          BinaryFactorVariableTreeNode vNode =
+            (BinaryFactorVariableTreeNode)new HeuristicLab.Problems.DataAnalysis.Symbolic.BinaryFactorVariable().CreateTreeNode();
+          vNode.VariableName = varName;
+          vNode.VariableValue = cat;
+          vNode.Weight = coefficients[col];
+          addition.AddSubtree(vNode);
+          col++;
+        }
+      }
+      foreach (string column in doubleVariables) {
         VariableTreeNode vNode = (VariableTreeNode)new HeuristicLab.Problems.DataAnalysis.Symbolic.Variable().CreateTreeNode();
         vNode.VariableName = column;
         vNode.Weight = coefficients[col];

@@ -36,7 +36,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>
   /// Linear discriminant analysis classification algorithm.
   /// </summary>
-  [Item("Linear Discriminant Analysis", "Linear discriminant analysis classification algorithm (wrapper for ALGLIB).")]
+  [Item("Linear Discriminant Analysis (LDA)", "Linear discriminant analysis classification algorithm (wrapper for ALGLIB).")]
   [Creatable(CreatableAttribute.Categories.DataAnalysisClassification, Priority = 100)]
   [StorableClass]
   public sealed class LinearDiscriminantAnalysis : FixedDataAnalysisAlgorithm<IClassificationProblem> {
@@ -70,7 +70,15 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       IEnumerable<string> allowedInputVariables = problemData.AllowedInputVariables;
       IEnumerable<int> rows = problemData.TrainingIndices;
       int nClasses = problemData.ClassNames.Count();
-      double[,] inputMatrix = AlglibUtil.PrepareInputMatrix(dataset, allowedInputVariables.Concat(new string[] { targetVariable }), rows);
+      var doubleVariableNames = allowedInputVariables.Where(dataset.VariableHasType<double>).ToArray();
+      var factorVariableNames = allowedInputVariables.Where(dataset.VariableHasType<string>).ToArray();
+      double[,] inputMatrix = AlglibUtil.PrepareInputMatrix(dataset, doubleVariableNames.Concat(new string[] { targetVariable }), rows);
+
+      var factorVariables = AlglibUtil.GetFactorVariableValues(dataset, factorVariableNames, rows);
+      double[,] factorMatrix = AlglibUtil.PrepareInputMatrix(dataset, factorVariables, rows);
+
+      inputMatrix = factorMatrix.HorzCat(inputMatrix);
+
       if (inputMatrix.Cast<double>().Any(x => double.IsNaN(x) || double.IsInfinity(x)))
         throw new NotSupportedException("Linear discriminant analysis does not support NaN or infinity values in the input dataset.");
 
@@ -82,7 +90,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
       int info;
       double[] w;
-      alglib.fisherlda(inputMatrix, inputMatrix.GetLength(0), allowedInputVariables.Count(), nClasses, out info, out w);
+      alglib.fisherlda(inputMatrix, inputMatrix.GetLength(0), inputMatrix.GetLength(1) - 1, nClasses, out info, out w);
       if (info < 1) throw new ArgumentException("Error in calculation of linear discriminant analysis solution");
 
       ISymbolicExpressionTree tree = new SymbolicExpressionTree(new ProgramRootSymbol().CreateTreeNode());
@@ -92,7 +100,19 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       startNode.AddSubtree(addition);
 
       int col = 0;
-      foreach (string column in allowedInputVariables) {
+      foreach (var kvp in factorVariables) {
+        var varName = kvp.Key;
+        foreach (var cat in kvp.Value) {
+          BinaryFactorVariableTreeNode vNode =
+            (BinaryFactorVariableTreeNode)new HeuristicLab.Problems.DataAnalysis.Symbolic.BinaryFactorVariable().CreateTreeNode();
+          vNode.VariableName = varName;
+          vNode.VariableValue = cat;
+          vNode.Weight = w[col];
+          addition.AddSubtree(vNode);
+          col++;
+        }
+      }
+      foreach (string column in doubleVariableNames) {
         VariableTreeNode vNode = (VariableTreeNode)new HeuristicLab.Problems.DataAnalysis.Symbolic.Variable().CreateTreeNode();
         vNode.VariableName = column;
         vNode.Weight = w[col];

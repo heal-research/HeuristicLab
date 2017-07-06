@@ -29,13 +29,20 @@ namespace HeuristicLab.Problems.DataAnalysis {
   public interface IDataset : IItem, IStringConvertibleMatrix {
     IEnumerable<string> VariableNames { get; }
     IEnumerable<string> DoubleVariables { get; }
+    IEnumerable<string> StringVariables { get; }
+
+    bool VariableHasType<T>(string variableName);
 
     double GetDoubleValue(string variableName, int row);
     IEnumerable<double> GetDoubleValues(string variableName);
     IEnumerable<double> GetDoubleValues(string variableName, IEnumerable<int> rows);
     ReadOnlyCollection<double> GetReadOnlyDoubleValues(string variableName);
 
+    string GetStringValue(string variableName, int row);
     IEnumerable<string> GetStringValues(string variableName);
+    IEnumerable<string> GetStringValues(string variableName, IEnumerable<int> rows);
+    ReadOnlyCollection<string> GetReadOnlyStringValues(string VariableName);
+
     IEnumerable<DateTime> GetDateTimeValues(string variableName);
   }
 }

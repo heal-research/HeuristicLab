@@ -32,7 +32,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [Item("LaTeX String Formatter", "Formatter for symbolic expression trees for import into LaTeX documents.")]
   [StorableClass]
   public sealed class SymbolicDataAnalysisExpressionLatexFormatter : NamedItem, ISymbolicExpressionTreeStringFormatter {
-    private readonly List<double> constants;
+    private readonly List<KeyValuePair<string, double>> constants;
+    private int constIndex;
     private int targetCount;
     private int currentLag;
     private string targetVariable;
@@ -42,13 +43,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private SymbolicDataAnalysisExpressionLatexFormatter(bool deserializing) : base(deserializing) { }
     private SymbolicDataAnalysisExpressionLatexFormatter(SymbolicDataAnalysisExpressionLatexFormatter original, Cloner cloner)
       : base(original, cloner) {
-      constants = new List<double>(original.constants);
+      constants = new List<KeyValuePair<string, double>>(original.constants);
+      constIndex = original.constIndex;
+      currentLag = original.currentLag;
+      targetCount = original.targetCount;
     }
     public SymbolicDataAnalysisExpressionLatexFormatter()
       : base() {
       Name = ItemName;
       Description = ItemDescription;
-      constants = new List<double>();
+      constants = new List<KeyValuePair<string, double>>();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -62,6 +66,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       try {
         StringBuilder strBuilder = new StringBuilder();
         constants.Clear();
+        constIndex = 0;
         this.targetVariable = targetVariable;
         containsTimeSeriesSymbol = symbolicExpressionTree.IterateNodesBreadth().Any(n => IsTimeSeriesSymbol(n.Symbol));
         strBuilder.AppendLine(FormatRecursively(symbolicExpressionTree.Root));
@@ -83,7 +88,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         strBuilder.Append(FormatRecursively(node.GetSubtree(0)));
       }
       int i = 1;
-      foreach (SymbolicExpressionTreeNode subTree in node.Subtrees.Skip(1)) {
+      foreach (var subTree in node.Subtrees.Skip(1)) {
         FormatSep(node, strBuilder, i);
         // format the whole subtree
         strBuilder.Append(FormatRecursively(subTree));
@@ -174,18 +179,43 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       } else if (node.Symbol is IfThenElse) {
         strBuilder.Append(@" \operatorname{if}  \left( ");
       } else if (node.Symbol is Constant) {
+        var constName = "c_{" + constIndex + "}";
+        constIndex++;
         var constNode = node as ConstantTreeNode;
         if (constNode.Value.IsAlmost(1.0)) {
           strBuilder.Append("1 ");
         } else {
-          strBuilder.Append("c_{" + constants.Count + "} ");
-          constants.Add(constNode.Value);
+          strBuilder.Append(constName);
+          constants.Add(new KeyValuePair<string, double>(constName, constNode.Value));
         }
+
+      } else if (node.Symbol is FactorVariable) {
+        var factorNode = node as FactorVariableTreeNode;
+        var constName = "c_{" + constIndex + "}";
+        strBuilder.Append(constName + " ");
+        foreach (var e in factorNode.Symbol.GetVariableValues(factorNode.VariableName)
+          .Zip(factorNode.Weights, Tuple.Create)) {
+          constants.Add(new KeyValuePair<string, double>("c_{" + constIndex + ", " + EscapeLatexString(factorNode.VariableName) + "=" + EscapeLatexString(e.Item1) + "}", e.Item2));
+        }
+        constIndex++;
+      } else if (node.Symbol is BinaryFactorVariable) {
+        var binFactorNode = node as BinaryFactorVariableTreeNode;
+        if (!binFactorNode.Weight.IsAlmost((1.0))) {
+          var constName = "c_{" + constIndex + "}";
+          strBuilder.Append(constName + "  \\cdot");
+          constants.Add(new KeyValuePair<string, double>(constName, binFactorNode.Weight));
+          constIndex++;
+        }
+        strBuilder.Append("(" + EscapeLatexString(binFactorNode.VariableName));
+        strBuilder.Append(LagToString(currentLag));
+        strBuilder.Append(" = " + EscapeLatexString(binFactorNode.VariableValue) + " )");
       } else if (node.Symbol is LaggedVariable) {
         var laggedVarNode = node as LaggedVariableTreeNode;
         if (!laggedVarNode.Weight.IsAlmost(1.0)) {
-          strBuilder.Append("c_{" + constants.Count + "} \\cdot ");
-          constants.Add(laggedVarNode.Weight);
+          var constName = "c_{" + constIndex + "}";
+          strBuilder.Append(constName + "  \\cdot");
+          constants.Add(new KeyValuePair<string, double>(constName, laggedVarNode.Weight));
+          constIndex++;
         }
         strBuilder.Append(EscapeLatexString(laggedVarNode.VariableName));
         strBuilder.Append(LagToString(currentLag + laggedVarNode.Lag));
@@ -193,8 +223,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       } else if (node.Symbol is Variable) {
         var varNode = node as VariableTreeNode;
         if (!varNode.Weight.IsAlmost((1.0))) {
-          strBuilder.Append("c_{" + constants.Count + "} \\cdot ");
-          constants.Add(varNode.Weight);
+          var constName = "c_{" + constIndex + "}";
+          strBuilder.Append(constName + "  \\cdot");
+          constants.Add(new KeyValuePair<string, double>(constName, varNode.Weight));
+          constIndex++;
         }
         strBuilder.Append(EscapeLatexString(varNode.VariableName));
         strBuilder.Append(LagToString(currentLag));
@@ -228,10 +260,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         strBuilder.Append(@"\sum_{t=" + (laggedTreeNode.Lag + currentLag) + @"}^0 \left( ");
       } else if (node.Symbol is VariableCondition) {
         var conditionTreeNode = node as VariableConditionTreeNode;
-        string p = @"1 /  1 + \exp  - c_{" + constants.Count + "} ";
-        constants.Add(conditionTreeNode.Slope);
-        p += @" \cdot " + EscapeLatexString(conditionTreeNode.VariableName) + LagToString(currentLag) + " - c_{" + constants.Count + @"}   ";
-        constants.Add(conditionTreeNode.Threshold);
+        var constName = "c_{" + constants.Count + "}";
+        string p = @"1 /  1 + \exp  - " + constName + " ";
+        constants.Add(new KeyValuePair<string, double>(constName, conditionTreeNode.Slope));
+        constIndex++;
+        var const2Name = "c_{" + constants.Count + @"}";
+        p += @" \cdot " + EscapeLatexString(conditionTreeNode.VariableName) + LagToString(currentLag) + " - " + const2Name + "   ";
+        constants.Add(new KeyValuePair<string, double>(const2Name, conditionTreeNode.Threshold));
+        constIndex++;
         strBuilder.Append(@" \left( " + p + @"\cdot ");
       } else {
         throw new NotImplementedException("Export of " + node.Symbol + " is not implemented.");
@@ -322,10 +358,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         strBuilder.Append(@"\right) ^ {  \cfrac{1}{ \operatorname{round} \left(");
       } else if (node.Symbol is VariableCondition) {
         var conditionTreeNode = node as VariableConditionTreeNode;
-        string p = @"1 / \left( 1 + \exp \left( - c_{" + constants.Count + "} ";
-        constants.Add(conditionTreeNode.Slope);
-        p += @" \cdot " + EscapeLatexString(conditionTreeNode.VariableName) + LagToString(currentLag) + " - c_{" + constants.Count + @"} \right) \right) \right)   ";
-        constants.Add(conditionTreeNode.Threshold);
+        var const1Name = "c_{" + constants.Count + "}";
+        string p = @"1 / \left( 1 + \exp \left( - " + const1Name + " ";
+        constants.Add(new KeyValuePair<string, double>(const1Name, conditionTreeNode.Slope));
+        constIndex++;
+        var const2Name = "c_{" + constants.Count + "}";
+        p += @" \cdot " + EscapeLatexString(conditionTreeNode.VariableName) + LagToString(currentLag) + " - " + const2Name + " \right) \right) \right)   ";
+        constants.Add(new KeyValuePair<string, double>(const2Name, conditionTreeNode.Threshold));
+        constIndex++;
         strBuilder.Append(@" +  \left( 1 - " + p + @" \right) \cdot ");
       } else {
         throw new NotImplementedException("Export of " + node.Symbol + " is not implemented.");
@@ -403,6 +443,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       } else if (node.Symbol is Constant) {
       } else if (node.Symbol is LaggedVariable) {
       } else if (node.Symbol is Variable) {
+      } else if (node.Symbol is FactorVariable) {
+      } else if (node.Symbol is BinaryFactorVariable) {
       } else if (node.Symbol is ProgramRootSymbol) {
         strBuilder
           .AppendLine("\\end{align*}")
@@ -410,15 +452,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           .AppendLine("\\nonumber");
         // output all constant values
         if (constants.Count > 0) {
-          int i = 0;
           foreach (var constant in constants) {
             // replace "." with ".&" to align decimal points
-            var constStr = string.Format(System.Globalization.NumberFormatInfo.InvariantInfo, "{0:G5}", constant);
+            var constStr = string.Format(System.Globalization.NumberFormatInfo.InvariantInfo, "{0:G5}", constant.Value);
             if (!constStr.Contains(".")) constStr = constStr + ".0";
             constStr = constStr.Replace(".", "&.");  // fix problem in rendering of aligned expressions
-            strBuilder.Append("c_{" + i + "}& = & " + constStr);
+            strBuilder.Append(constant.Key + "& = & " + constStr);
             strBuilder.Append(@"\\");
-            i++;
           }
         }
         strBuilder.AppendLine("\\end{align*}");

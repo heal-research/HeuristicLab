@@ -39,22 +39,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     [StorableConstructor]
     protected SymbolicClassificationSolutionImpactValuesCalculator(bool deserializing) : base(deserializing) { }
 
-    public override double CalculateReplacementValue(ISymbolicDataAnalysisModel model, ISymbolicExpressionTreeNode node, IDataAnalysisProblemData problemData, IEnumerable<int> rows) {
-      var classificationModel = (ISymbolicClassificationModel)model;
-      var classificationProblemData = (IClassificationProblemData)problemData;
-
-      return CalculateReplacementValue(node, classificationModel.SymbolicExpressionTree, classificationModel.Interpreter, classificationProblemData.Dataset, rows);
-    }
-
-    public override double CalculateImpactValue(ISymbolicDataAnalysisModel model, ISymbolicExpressionTreeNode node, IDataAnalysisProblemData problemData, IEnumerable<int> rows, double qualityForImpactsCalculation = double.NaN) {
-      double impactValue, replacementValue;
-      double newQualityForImpactsCalculation;
-      CalculateImpactAndReplacementValues(model, node, problemData, rows, out impactValue, out replacementValue, out newQualityForImpactsCalculation, qualityForImpactsCalculation);
-      return impactValue;
-    }
-
-    public override void CalculateImpactAndReplacementValues(ISymbolicDataAnalysisModel model, ISymbolicExpressionTreeNode node,
-      IDataAnalysisProblemData problemData, IEnumerable<int> rows, out double impactValue, out double replacementValue, out double newQualityForImpactsCalculation,
+    public override void CalculateImpactAndReplacementValues(ISymbolicDataAnalysisModel model,
+      ISymbolicExpressionTreeNode node,
+      IDataAnalysisProblemData problemData, IEnumerable<int> rows, out double impactValue, out double replacementValue,
+      out double newQualityForImpactsCalculation,
       double qualityForImpactsCalculation = Double.NaN) {
       var classificationModel = (ISymbolicClassificationModel)model;
       var classificationProblemData = (IClassificationProblemData)problemData;
@@ -62,8 +50,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
       if (double.IsNaN(qualityForImpactsCalculation))
         qualityForImpactsCalculation = CalculateQualityForImpacts(classificationModel, classificationProblemData, rows);
 
-      replacementValue = CalculateReplacementValue(classificationModel, node, classificationProblemData, rows);
-      var constantNode = new ConstantTreeNode(new Constant()) { Value = replacementValue };
 
       var cloner = new Cloner();
       var tempModel = cloner.Clone(classificationModel);
@@ -71,17 +57,33 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
 
       var tempModelParentNode = tempModelNode.Parent;
       int i = tempModelParentNode.IndexOfSubtree(tempModelNode);
-      tempModelParentNode.RemoveSubtree(i);
-      tempModelParentNode.InsertSubtree(i, constantNode);
+      double bestReplacementValue = 0.0;
+      double bestImpactValue = double.PositiveInfinity;
+      newQualityForImpactsCalculation = qualityForImpactsCalculation; // initialize
+      // try the potentially reasonable replacement values and use the best one
+      foreach (var repValue in CalculateReplacementValues(node, classificationModel.SymbolicExpressionTree, classificationModel.Interpreter, classificationProblemData.Dataset, classificationProblemData.TrainingIndices)) {
+        tempModelParentNode.RemoveSubtree(i);
 
-      OnlineCalculatorError errorState;
-      var dataset = classificationProblemData.Dataset;
-      var targetClassValues = dataset.GetDoubleValues(classificationProblemData.TargetVariable, rows);
-      var estimatedClassValues = tempModel.GetEstimatedClassValues(dataset, rows);
-      newQualityForImpactsCalculation = OnlineAccuracyCalculator.Calculate(targetClassValues, estimatedClassValues, out errorState);
-      if (errorState != OnlineCalculatorError.None) newQualityForImpactsCalculation = 0.0;
+        var constantNode = new ConstantTreeNode(new Constant()) { Value = repValue };
+        tempModelParentNode.InsertSubtree(i, constantNode);
 
-      impactValue = qualityForImpactsCalculation - newQualityForImpactsCalculation;
+        var dataset = classificationProblemData.Dataset;
+        var targetClassValues = dataset.GetDoubleValues(classificationProblemData.TargetVariable, rows);
+        var estimatedClassValues = tempModel.GetEstimatedClassValues(dataset, rows);
+        OnlineCalculatorError errorState;
+        newQualityForImpactsCalculation = OnlineAccuracyCalculator.Calculate(targetClassValues, estimatedClassValues,
+          out errorState);
+        if (errorState != OnlineCalculatorError.None) newQualityForImpactsCalculation = 0.0;
+
+        impactValue = qualityForImpactsCalculation - newQualityForImpactsCalculation;
+
+        if (impactValue < bestImpactValue) {
+          bestImpactValue = impactValue;
+          bestReplacementValue = repValue;
+        }
+      }
+      replacementValue = bestReplacementValue;
+      impactValue = bestImpactValue;
     }
 
     public static double CalculateQualityForImpacts(ISymbolicClassificationModel model, IClassificationProblemData problemData, IEnumerable<int> rows) {

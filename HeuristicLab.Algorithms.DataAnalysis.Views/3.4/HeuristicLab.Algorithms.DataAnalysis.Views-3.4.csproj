@@ -124,6 +124,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="OneFactorClassificationModelView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="OneFactorClassificationModelView.Designer.cs">
+      <DependentUpon>OneFactorClassificationModelView.cs</DependentUpon>
+    </Compile>
     <Compile Include="RandomForestClassificationSolutionView.cs">
       <SubType>UserControl</SubType>
     </Compile>

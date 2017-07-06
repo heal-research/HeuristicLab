@@ -20,6 +20,7 @@
 #endregion
 
 using System.Globalization;
+using System.Linq;
 using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -76,6 +77,28 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       stringBuilder.AppendLine("function y = fivePoint(f0, f1, f3, f4)");
       stringBuilder.AppendLine("  y = (f0 + 2*f1 - 2*f3 - f4) / 8;");
       stringBuilder.AppendLine("end");
+
+      var factorVariableNames =
+        symbolicExpressionTree.IterateNodesPostfix()
+          .OfType<FactorVariableTreeNode>()
+          .Select(n => n.VariableName)
+          .Distinct();
+
+      foreach (var factorVarName in factorVariableNames) {
+        var factorSymb = symbolicExpressionTree.IterateNodesPostfix()
+          .OfType<FactorVariableTreeNode>()
+          .First(n => n.VariableName == factorVarName)
+          .Symbol;
+        stringBuilder.AppendFormat("function y = switch_{0}(val, v)", factorVarName).AppendLine();
+        var values = factorSymb.GetVariableValues(factorVarName).ToArray();
+        stringBuilder.AppendLine("switch val");
+        for (int i = 0; i < values.Length; i++) {
+          stringBuilder.AppendFormat(CultureInfo.InvariantCulture, "  case \"{0}\" y = v({1})", values[i], i).AppendLine();
+        }
+        stringBuilder.AppendLine("end");
+        stringBuilder.AppendLine();
+      }
+
       return stringBuilder.ToString();
     }
 
@@ -295,6 +318,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         stringBuilder.Append(variableTreeNode.Weight.ToString(CultureInfo.InvariantCulture));
         stringBuilder.Append("*");
         stringBuilder.Append(variableTreeNode.VariableName + LagToString(currentLag));
+      } else if (symbol is HeuristicLab.Problems.DataAnalysis.Symbolic.FactorVariable) {
+        var factorNode = node as FactorVariableTreeNode;
+        var weights = string.Join(" ", factorNode.Weights.Select(w => w.ToString("G17", CultureInfo.InvariantCulture)));
+        stringBuilder.AppendFormat("switch_{0}(\"{1}\",[{2}])",
+          factorNode.VariableName, factorNode.VariableName, weights)
+          .AppendLine();
+      } else if (symbol is HeuristicLab.Problems.DataAnalysis.Symbolic.BinaryFactorVariable) {
+        var factorNode = node as BinaryFactorVariableTreeNode;
+        stringBuilder.AppendFormat(CultureInfo.InvariantCulture,
+          "((strcmp({0},\"{1}\")==1) * {2:G17})", factorNode.VariableName, factorNode.VariableValue, factorNode.Weight);
       } else if (symbol is Power) {
         stringBuilder.Append("(");
         stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));

@@ -121,6 +121,8 @@
     <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BaselineClassifiers\OneFactorClassificationModel.cs" />
+    <Compile Include="BaselineClassifiers\OneFactorClassificationSolution.cs" />
     <Compile Include="BaselineClassifiers\OneR.cs" />
     <Compile Include="BaselineClassifiers\OneRClassificationModel.cs" />
     <Compile Include="BaselineClassifiers\OneRClassificationSolution.cs" />

@@ -55,6 +55,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private string[] allowedInputVariables;
     [Storable]
     private double[] classValues;
+    [Storable]
+    private List<KeyValuePair<string, IEnumerable<string>>> factorVariables;
+
     [StorableConstructor]
     private MultinomialLogitModel(bool deserializing)
       : base(deserializing) {
@@ -67,14 +70,24 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       logitModel.innerobj.w = (double[])original.logitModel.innerobj.w.Clone();
       allowedInputVariables = (string[])original.allowedInputVariables.Clone();
       classValues = (double[])original.classValues.Clone();
+      this.factorVariables = original.factorVariables.Select(kvp => new KeyValuePair<string, IEnumerable<string>>(kvp.Key, new List<string>(kvp.Value))).ToList();
     }
-    public MultinomialLogitModel(alglib.logitmodel logitModel, string targetVariable, IEnumerable<string> allowedInputVariables, double[] classValues)
+    public MultinomialLogitModel(alglib.logitmodel logitModel, string targetVariable, IEnumerable<string> doubleInputVariables, IEnumerable<KeyValuePair<string, IEnumerable<string>>> factorVariables, double[] classValues)
       : base(targetVariable) {
       this.name = ItemName;
       this.description = ItemDescription;
       this.logitModel = logitModel;
-      this.allowedInputVariables = allowedInputVariables.ToArray();
+      this.allowedInputVariables = doubleInputVariables.ToArray();
+      this.factorVariables = factorVariables.Select(kvp => new KeyValuePair<string, IEnumerable<string>>(kvp.Key, new List<string>(kvp.Value))).ToList();
       this.classValues = (double[])classValues.Clone();
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code, remove with 3.4
+      factorVariables = new List<KeyValuePair<string, IEnumerable<string>>>();
+      #endregion
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -82,7 +95,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     public override IEnumerable<double> GetEstimatedClassValues(IDataset dataset, IEnumerable<int> rows) {
+
       double[,] inputData = AlglibUtil.PrepareInputMatrix(dataset, allowedInputVariables, rows);
+      double[,] factorData = AlglibUtil.PrepareInputMatrix(dataset, factorVariables, rows);
+
+      inputData = factorData.HorzCat(inputData);
 
       int n = inputData.GetLength(0);
       int columns = inputData.GetLength(1);

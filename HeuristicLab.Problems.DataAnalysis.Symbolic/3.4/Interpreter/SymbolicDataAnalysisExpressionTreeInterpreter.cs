@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -142,6 +143,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         if (instr.opCode == OpCodes.Variable) {
           var variableTreeNode = (VariableTreeNode)instr.dynamicNode;
           instr.data = dataset.GetReadOnlyDoubleValues(variableTreeNode.VariableName);
+        } else if (instr.opCode == OpCodes.FactorVariable) {
+          var factorTreeNode = instr.dynamicNode as FactorVariableTreeNode;
+          instr.data = dataset.GetReadOnlyStringValues(factorTreeNode.VariableName);
+        } else if (instr.opCode == OpCodes.BinaryFactorVariable) {
+          var factorTreeNode = instr.dynamicNode as BinaryFactorVariableTreeNode;
+          instr.data = dataset.GetReadOnlyStringValues(factorTreeNode.VariableName);
         } else if (instr.opCode == OpCodes.LagVariable) {
           var laggedVariableTreeNode = (LaggedVariableTreeNode)instr.dynamicNode;
           instr.data = dataset.GetReadOnlyDoubleValues(laggedVariableTreeNode.VariableName);
@@ -453,6 +460,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             if (row < 0 || row >= dataset.Rows) return double.NaN;
             var variableTreeNode = (VariableTreeNode)currentInstr.dynamicNode;
             return ((IList<double>)currentInstr.data)[row] * variableTreeNode.Weight;
+          }
+        case OpCodes.BinaryFactorVariable: {
+            if (row < 0 || row >= dataset.Rows) return double.NaN;
+            var factorVarTreeNode = currentInstr.dynamicNode as BinaryFactorVariableTreeNode;
+            return ((IList<string>)currentInstr.data)[row] == factorVarTreeNode.VariableValue ? factorVarTreeNode.Weight : 0;
+          }
+        case OpCodes.FactorVariable: {
+            if (row < 0 || row >= dataset.Rows) return double.NaN;
+            var factorVarTreeNode = currentInstr.dynamicNode as FactorVariableTreeNode;
+            return factorVarTreeNode.GetValue(((IList<string>)currentInstr.data)[row]);
           }
         case OpCodes.LagVariable: {
             var laggedVariableTreeNode = (LaggedVariableTreeNode)currentInstr.dynamicNode;

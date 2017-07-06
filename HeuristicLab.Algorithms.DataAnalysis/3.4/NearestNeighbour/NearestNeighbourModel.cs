@@ -143,7 +143,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
       if (inputMatrix.Cast<double>().Any(x => double.IsNaN(x) || double.IsInfinity(x)))
         throw new NotSupportedException(
-          "Nearest neighbour classification does not support NaN or infinity values in the input dataset.");
+          "Nearest neighbour model does not support NaN or infinity values in the input dataset.");
 
       this.kdTree = new alglib.nearestneighbor.kdtree();
 

@@ -176,6 +176,7 @@ namespace HeuristicLab.Problems.GrammaticalEvolution {
       SymbolicExpressionTreeInterpreterParameter.Hidden = true;
       ApplyLinearScalingParameter.Hidden = true;
 
+      if (problemData.AllowedInputVariables.Any(name => !problemData.Dataset.VariableHasType<double>(name))) throw new NotSupportedException("Categorical variables are not supported");
       SymbolicExpressionTreeGrammar = new GESymbolicExpressionGrammar(problemData.AllowedInputVariables, problemData.AllowedInputVariables.Count() * 3);
       SymbolicExpressionTreeInterpreter = new SymbolicDataAnalysisExpressionTreeLinearInterpreter();
 

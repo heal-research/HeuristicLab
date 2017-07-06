@@ -114,7 +114,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         stringBuilder.Append(FormatRecursively(node.GetSubtree(2)));
         stringBuilder.Append("]");
       } else if (symbol is LaggedVariable) {
-        stringBuilder.Append("lagged variable not implemented");
+        stringBuilder.Append("lagged variables are not supported");
       } else if (symbol is LessThan) {
         stringBuilder.Append("(");
         stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
@@ -164,6 +164,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         stringBuilder.Append(variableTreeNode.Weight.ToString(CultureInfo.InvariantCulture));
         stringBuilder.Append("*");
         stringBuilder.Append(variableTreeNode.VariableName);
+      } else if (symbol is BinaryFactorVariable || symbol is FactorVariable) {
+        stringBuilder.Append("factor variables are not supported");
       } else {
         stringBuilder.Append("(");
         for (int i = 0; i < node.SubtreeCount; i++) {

@@ -103,6 +103,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       constant.MinValue = -20;
       constant.MaxValue = 20;
       var variableSymbol = new Variable();
+      var binFactorVariable = new BinaryFactorVariable();
+      var factorVariable = new FactorVariable();
       var laggedVariable = new LaggedVariable();
       var autoregressiveVariable = new AutoregressiveTargetVariable();
       #endregion
@@ -111,9 +113,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var arithmeticSymbols = new GroupSymbol(ArithmeticFunctionsName, new List<ISymbol>() { add, sub, mul, div, mean });
       var trigonometricSymbols = new GroupSymbol(TrigonometricFunctionsName, new List<ISymbol>() { sin, cos, tan });
       var exponentialAndLogarithmicSymbols = new GroupSymbol(ExponentialFunctionsName, new List<ISymbol> { exp, log });
-      var specialFunctions = new GroupSymbol(SpecialFunctionsName, new List<ISymbol> { airyA, airyB, bessel, cosineIntegral, dawson, erf, expIntegralEi, 
+      var specialFunctions = new GroupSymbol(SpecialFunctionsName, new List<ISymbol> { airyA, airyB, bessel, cosineIntegral, dawson, erf, expIntegralEi,
         fresnelCosineIntegral,fresnelSineIntegral,gamma,hypCosineIntegral,hypSineIntegral,norm, psi, sineIntegral});
-      var terminalSymbols = new GroupSymbol(TerminalsName, new List<ISymbol> { constant, variableSymbol });
+      var terminalSymbols = new GroupSymbol(TerminalsName, new List<ISymbol> { constant, variableSymbol, binFactorVariable, factorVariable });
       var realValuedSymbols = new GroupSymbol(RealValuedSymbolsName, new List<ISymbol>() { arithmeticSymbols, trigonometricSymbols, exponentialAndLogarithmicSymbols, specialFunctions, terminalSymbols });
 
       var powerSymbols = new GroupSymbol(PowerFunctionsName, new List<ISymbol> { square, pow, sqrt, root });
