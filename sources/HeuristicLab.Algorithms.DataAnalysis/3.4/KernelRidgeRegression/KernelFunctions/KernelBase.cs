@@ -33,16 +33,29 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     private const string DistanceParameterName = "Distance";
 
-    public ValueParameter<IDistance> DistanceParameter {
-      get { return Parameters[DistanceParameterName] as ValueParameter<IDistance>; }
+    public IValueParameter<IDistance> DistanceParameter {
+      get { return (IValueParameter<IDistance>)Parameters[DistanceParameterName]; }
     }
 
     [Storable]
-    public double? Beta { get; set; }
+    private double? beta;
+    public double? Beta {
+      get { return beta; }
+      set {
+        if (value != beta) {
+          beta = value;
+          RaiseBetaChanged();
+        }
+      }
+    }
 
     public IDistance Distance {
       get { return DistanceParameter.Value; }
-      set { DistanceParameter.Value = value; }
+      set {
+        if (DistanceParameter.Value != value) {
+          DistanceParameter.Value = value;
+        }
+      }
     }
 
     [StorableConstructor]
@@ -50,12 +63,23 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     protected KernelBase(KernelBase original, Cloner cloner)
       : base(original, cloner) {
-      Beta = original.Beta;
+      beta = original.beta;
+      RegisterEvents();
     }
 
     protected KernelBase() {
       Parameters.Add(new ValueParameter<IDistance>(DistanceParameterName, "The distance function used for kernel calculation"));
       DistanceParameter.Value = new EuclideanDistance();
+      RegisterEvents();
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      RegisterEvents();
+    }
+
+    private void RegisterEvents() {
+      DistanceParameter.ValueChanged += (sender, args) => RaiseDistanceChanged();
     }
 
     public double Get(object a, object b) {
@@ -93,5 +117,20 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       var r2 = columnIndices.Select(c => xt[j, c]);
       return dist.Get(r1, r2);
     }
+
+    #region events
+    public event EventHandler BetaChanged;
+    public event EventHandler DistanceChanged;
+
+    protected void RaiseBetaChanged() {
+      var handler = BetaChanged;
+      if (handler != null) handler(this, EventArgs.Empty);
+    }
+
+    protected void RaiseDistanceChanged() {
+      var handler = DistanceChanged;
+      if (handler != null) handler(this, EventArgs.Empty);
+    }
+    #endregion
   }
 }

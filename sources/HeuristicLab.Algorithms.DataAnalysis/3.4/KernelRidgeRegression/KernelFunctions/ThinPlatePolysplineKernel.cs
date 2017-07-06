@@ -35,7 +35,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private const string DegreeParameterName = "Degree";
 
     public IFixedValueParameter<DoubleValue> DegreeParameter {
-      get { return Parameters[DegreeParameterName] as IFixedValueParameter<DoubleValue>; }
+      get { return (IFixedValueParameter<DoubleValue>)Parameters[DegreeParameterName]; }
     }
     public DoubleValue Degree {
       get { return DegreeParameter.Value; }

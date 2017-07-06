@@ -20,9 +20,14 @@
 #endregion
 
 
+using System;
+
 namespace HeuristicLab.Algorithms.DataAnalysis {
   public interface IKernel : ICovarianceFunction {
     double? Beta { get; set; } // a kernel parameter
     IDistance Distance { get; set; } // the distance function to use
+
+    event EventHandler BetaChanged;
+    event EventHandler DistanceChanged;
   }
 }
