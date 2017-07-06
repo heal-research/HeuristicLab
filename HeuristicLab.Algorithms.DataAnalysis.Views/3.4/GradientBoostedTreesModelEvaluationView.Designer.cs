@@ -20,7 +20,7 @@
 #endregion
 
 namespace HeuristicLab.Algorithms.DataAnalysis.Views {
-  partial class RandomForestModelView {
+  partial class GradientBoostedTreesModelEvaluationView {
     /// <summary> 
     /// Required designer variable.
     /// </summary>
@@ -68,11 +68,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       // 
       this.listBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
-      this.listBox.FormatString = "Tree {0}";
-      this.listBox.Items.AddRange(new object[] {
-            "1",
-            "2",
-            "3"});
       this.listBox.Location = new System.Drawing.Point(3, 3);
       this.listBox.Name = "listBox";
       this.listBox.Size = new System.Drawing.Size(117, 277);
@@ -80,13 +75,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       this.listBox.SelectedIndexChanged += new System.EventHandler(this.listBox_SelectedIndexChanged);
       this.listBox.DoubleClick += new System.EventHandler(this.listBox_DoubleClick);
       // 
-      // RandomForestModelView
+      // GradientBoostedTreesModelEvaluationView
       // 
       this.AllowDrop = true;
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.Controls.Add(this.viewHost);
       this.Controls.Add(this.listBox);
-      this.Name = "RandomForestModelView";
+      this.Name = "GradientBoostedTreesModelEvaluationView";
       this.Size = new System.Drawing.Size(349, 289);
       this.ResumeLayout(false);
 

@@ -17,24 +17,22 @@
  * You should have received a copy of the GNU General Public License
  * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
  */
-#endregion            
-
+#endregion
+using System;
+using System.Drawing;
 using HeuristicLab.Common;
-using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 using HeuristicLab.Problems.DataAnalysis;
-using HeuristicLab.Problems.DataAnalysis.Symbolic;                       
+using HeuristicLab.Problems.DataAnalysis.Symbolic;
+using HeuristicLab.Problems.DataAnalysis.Symbolic.Classification;
 using HeuristicLab.Problems.DataAnalysis.Symbolic.Regression;
+using HeuristicLab.Problems.DataAnalysis.Views;
 
 namespace HeuristicLab.Algorithms.DataAnalysis.Views {
-  [View("Random forest model")]
-  [Content(typeof(IRandomForestModel), true)]
-  public partial class RandomForestModelView : ItemView {
-
-    public new IRandomForestModel Content {
-      get { return (IRandomForestModel)base.Content; }
-      set { base.Content = value; }
-    }
+  [View("RF Model Evaluation")]
+  [Content(typeof(IRandomForestRegressionSolution), false)]
+  [Content(typeof(IRandomForestClassificationSolution), false)]
+  public partial class RandomForestModelEvaluationView : DataAnalysisSolutionEvaluationView {
 
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
@@ -42,7 +40,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       viewHost.Enabled = Content != null;
     }
 
-    public RandomForestModelView()
+    public RandomForestModelEvaluationView()
       : base() {
       InitializeComponent();
     }
@@ -55,8 +53,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       } else {
         viewHost.Content = null;
         listBox.Items.Clear();
-        var rfModel = Content;
-        var numTrees = rfModel.NumberOfTrees;
+        var classSol = Content as IRandomForestClassificationSolution;
+        var regSol = Content as IRandomForestRegressionSolution;
+        var numTrees = classSol != null ? classSol.NumberOfTrees : regSol != null ? regSol.NumberOfTrees : 0;
         for (int i = 0; i < numTrees; i++) {
           listBox.Items.Add(i + 1);
         }
@@ -80,15 +79,22 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
 
     private IContent CreateModel(int idx) {
       idx -= 1;
-      var rfModel = Content;
-      var rfClassModel = rfModel as IClassificationModel; // rfModel is always a IRegressionModel and a IClassificationModel
-      var targetVariable = rfClassModel.TargetVariable;
+      var rfModel = Content.Model as RandomForestModel;
       if (rfModel == null) return null;
+      var regProblemData = Content.ProblemData as IRegressionProblemData;
+      var classProblemData = Content.ProblemData as IClassificationProblemData;
       if (idx < 0 || idx >= rfModel.NumberOfTrees)
         return null;
-      var syModel = new SymbolicRegressionModel(targetVariable, rfModel.ExtractTree(idx),
+      if (regProblemData != null) {
+        var syModel = new SymbolicRegressionModel(regProblemData.TargetVariable, rfModel.ExtractTree(idx),
           new SymbolicDataAnalysisExpressionTreeLinearInterpreter());
-      return syModel;
+        return syModel.CreateRegressionSolution(regProblemData);
+      } else if (classProblemData != null) {
+        var syModel = new SymbolicDiscriminantFunctionClassificationModel(classProblemData.TargetVariable, rfModel.ExtractTree(idx),
+          new SymbolicDataAnalysisExpressionTreeLinearInterpreter(), new NormalDistributionCutPointsThresholdCalculator());
+        syModel.RecalculateModelParameters(classProblemData, classProblemData.TrainingIndices);
+        return syModel.CreateClassificationSolution(classProblemData);
+      } else throw new InvalidProgramException();
     }
   }
 }

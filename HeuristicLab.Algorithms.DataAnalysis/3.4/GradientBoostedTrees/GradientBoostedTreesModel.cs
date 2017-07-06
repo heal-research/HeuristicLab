@@ -30,7 +30,7 @@ using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
-  [Item("Gradient boosted tree model", "")]
+  [Item("Gradient boosted trees model", "")]
   // this is essentially a collection of weighted regression models
   public sealed class GradientBoostedTreesModel : RegressionModel, IGradientBoostedTreesModel {
     // BackwardsCompatibility3.4 for allowing deserialization & serialization of old models

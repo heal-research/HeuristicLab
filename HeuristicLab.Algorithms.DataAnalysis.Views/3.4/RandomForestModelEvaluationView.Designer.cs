@@ -20,7 +20,7 @@
 #endregion
 
 namespace HeuristicLab.Algorithms.DataAnalysis.Views {
-  partial class RandomForestModelView {
+  partial class RandomForestModelEvaluationView {
     /// <summary> 
     /// Required designer variable.
     /// </summary>
@@ -80,7 +80,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       this.listBox.SelectedIndexChanged += new System.EventHandler(this.listBox_SelectedIndexChanged);
       this.listBox.DoubleClick += new System.EventHandler(this.listBox_DoubleClick);
       // 
-      // RandomForestModelView
+      // RandomForestModelEvaluationView
       // 
       this.AllowDrop = true;
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;

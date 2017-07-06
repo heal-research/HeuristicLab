@@ -124,17 +124,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GradientBoostedTreesModelEvaluationView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GradientBoostedTreesModelEvaluationView.Designer.cs">
+      <DependentUpon>GradientBoostedTreesModelEvaluationView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GradientBoostedTreesModelView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GradientBoostedTreesModelView.Designer.cs">
+      <DependentUpon>GradientBoostedTreesModelView.cs</DependentUpon>
+    </Compile>
     <Compile Include="OneFactorClassificationModelView.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="OneFactorClassificationModelView.Designer.cs">
       <DependentUpon>OneFactorClassificationModelView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="RandomForestClassificationSolutionView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="RandomForestClassificationSolutionView.Designer.cs">
-      <DependentUpon>RandomForestClassificationSolutionView.cs</DependentUpon>
     </Compile>
     <Compile Include="RandomForestModelView.cs">
       <SubType>UserControl</SubType>
@@ -142,17 +148,11 @@
     <Compile Include="RandomForestModelView.Designer.cs">
       <DependentUpon>RandomForestModelView.cs</DependentUpon>
     </Compile>
-    <Compile Include="RandomForestRegressionSolutionView.cs">
+    <Compile Include="RandomForestModelEvaluationView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="RandomForestRegressionSolutionView.Designer.cs">
-      <DependentUpon>RandomForestRegressionSolutionView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="GradientBoostedTreesModelView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="GradientBoostedTreesModelView.Designer.cs">
-      <DependentUpon>GradientBoostedTreesModelView.cs</DependentUpon>
+    <Compile Include="RandomForestModelEvaluationView.Designer.cs">
+      <DependentUpon>RandomForestModelEvaluationView.cs</DependentUpon>
     </Compile>
     <Compile Include="MeanProdView.cs">
       <SubType>UserControl</SubType>
@@ -221,12 +221,6 @@
     </Compile>
     <Compile Include="SupportVectorMachineModelView.Designer.cs">
       <DependentUpon>SupportVectorMachineModelView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="GradientBoostedTreesSolutionView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="GradientBoostedTreesSolutionView.Designer.cs">
-      <DependentUpon>GradientBoostedTreesSolutionView.cs</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>

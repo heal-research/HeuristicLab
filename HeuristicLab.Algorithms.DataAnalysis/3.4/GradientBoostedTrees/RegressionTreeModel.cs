@@ -218,6 +218,14 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     /// <param name="problemData"></param>
     /// <returns>A new symbolic regression solution which matches the tree model</returns>
     public ISymbolicRegressionSolution CreateSymbolicRegressionSolution(IRegressionProblemData problemData) {
+      return CreateSymbolicRegressionModel().CreateRegressionSolution(problemData);
+    }
+
+    /// <summary>
+    /// Transforms the tree model to a symbolic regression model
+    /// </summary>
+    /// <returns>A new symbolic regression model which matches the tree model</returns>
+    public SymbolicRegressionModel CreateSymbolicRegressionModel() {
       var rootSy = new ProgramRootSymbol();
       var startSy = new StartSymbol();
       var varCondSy = new VariableCondition() { IgnoreSlope = true };
@@ -227,8 +235,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       startNode.AddSubtree(CreateSymbolicRegressionTreeRecursive(tree, 0, varCondSy, constSy));
       var rootNode = rootSy.CreateTreeNode();
       rootNode.AddSubtree(startNode);
-      var model = new SymbolicRegressionModel(TargetVariable, new SymbolicExpressionTree(rootNode), new SymbolicDataAnalysisExpressionTreeLinearInterpreter());
-      return model.CreateRegressionSolution(problemData);
+      return new SymbolicRegressionModel(TargetVariable, new SymbolicExpressionTree(rootNode), new SymbolicDataAnalysisExpressionTreeLinearInterpreter());
     }
 
     private ISymbolicExpressionTreeNode CreateSymbolicRegressionTreeRecursive(TreeNode[] treeNodes, int nodeIdx, VariableCondition varCondSy, Constant constSy) {

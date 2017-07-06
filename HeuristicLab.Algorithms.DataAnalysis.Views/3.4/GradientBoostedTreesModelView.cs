@@ -19,21 +19,19 @@
  */
 #endregion
 
-using System.Drawing;
+using HeuristicLab.Common;
+using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
-using HeuristicLab.Problems.DataAnalysis;
-using HeuristicLab.Problems.DataAnalysis.Views;
+using HeuristicLab.MainForm.WindowsForms;
+using HeuristicLab.Problems.DataAnalysis;                  
 
 namespace HeuristicLab.Algorithms.DataAnalysis.Views {
-  [View("Gradient boosted tree model")]
-  [Content(typeof(GradientBoostedTreesSolution), false)]
-  public partial class GradientBoostedTreesModelView : DataAnalysisSolutionEvaluationView {
-    public override Image ViewImage {
-      get { return HeuristicLab.Common.Resources.VSImageLibrary.Function; }
-    }
+  [View("Gradient boosted trees model")]
+  [Content(typeof(IGradientBoostedTreesModel), true)]
+  public partial class GradientBoostedTreesModelView : ItemView {
 
-    public new GradientBoostedTreesSolution Content {
-      get { return (GradientBoostedTreesSolution)base.Content; }
+    public new IGradientBoostedTreesModel Content {
+      get { return (IGradientBoostedTreesModel)base.Content; }
       set { base.Content = value; }
     }
 
@@ -56,7 +54,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       } else {
         viewHost.Content = null;
         listBox.Items.Clear();
-        foreach (var e in Content.Model.Models) {
+        foreach (var e in Content.Models) {
           listBox.Items.Add(e);
         }
       }
@@ -66,13 +64,23 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       var model = listBox.SelectedItem;
       if (model == null) viewHost.Content = null;
       else {
-        var treeModel = model as RegressionTreeModel;
-        if (treeModel != null)
-          viewHost.Content = treeModel.CreateSymbolicRegressionSolution(Content.ProblemData);
-        else {
-          var regModel = model as IRegressionModel;
-          viewHost.Content = regModel;
-        }
+        viewHost.Content = ConvertModel(model);
+      }
+    }
+
+    private void listBox_DoubleClick(object sender, System.EventArgs e) {
+      var selectedItem = listBox.SelectedItem;
+      if (selectedItem == null) return;
+      MainFormManager.MainForm.ShowContent(ConvertModel(selectedItem));
+    }
+
+    private IContent ConvertModel(object model) {
+      var treeModel = model as RegressionTreeModel;
+      if (treeModel != null)
+        return treeModel.CreateSymbolicRegressionModel();
+      else {
+        var regModel = model as IRegressionModel;
+        return regModel;
       }
     }
   }
