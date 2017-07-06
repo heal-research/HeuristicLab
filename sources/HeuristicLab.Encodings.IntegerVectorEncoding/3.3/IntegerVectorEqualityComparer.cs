@@ -27,9 +27,8 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   [NonDiscoverableType]
   public class IntegerVectorEqualityComparer : EqualityComparer<IntegerVector> {
     public override bool Equals(IntegerVector x, IntegerVector y) {
-      if (x == null && y == null) return true;
-      if (x == null || y == null) return false;
       if (ReferenceEquals(x, y)) return true;
+      if (x == null || y == null) return false;
       if (x.Length != y.Length) return false;
       for (var i = 0; i < x.Length; i++)
         if (x[i] != y[i]) return false;

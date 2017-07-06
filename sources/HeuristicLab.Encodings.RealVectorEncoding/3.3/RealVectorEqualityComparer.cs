@@ -27,12 +27,11 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
   [NonDiscoverableType]
   public class RealVectorEqualityComparer : EqualityComparer<RealVector> {
     public override bool Equals(RealVector x, RealVector y) {
-      if (x == null && y == null) return true;
-      if (x == null || y == null) return false;
       if (ReferenceEquals(x, y)) return true;
+      if (x == null || y == null) return false;
       if (x.Length != y.Length) return false;
       for (var i = 0; i < x.Length; i++)
-        if (x[i] == y[i]) return false;
+        if (x[i] != y[i]) return false;
       return true;
     }
 
