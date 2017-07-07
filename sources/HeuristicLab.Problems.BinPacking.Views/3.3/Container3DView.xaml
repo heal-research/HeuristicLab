@@ -29,7 +29,6 @@
              MouseMove="Container3DView_MouseMove" MouseDown="Container3DView_MouseDown" MouseUp="Container3DView_MouseUp"
              MouseWheel="Container3DView_OnMouseWheel" 
              MouseEnter="Container3DView_OnMouseEnter"
-             KeyDown="Container3DView_OnKeyDown"
              Focusable="true"
              >
     <Grid>

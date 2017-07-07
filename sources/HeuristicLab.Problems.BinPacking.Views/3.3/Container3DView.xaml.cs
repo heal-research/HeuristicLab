@@ -45,13 +45,12 @@ namespace HeuristicLab.Problems.BinPacking.Views {
       Color.FromRgb(0xED, 0xD4, 0x30),
       Color.FromRgb(0x63, 0xC2, 0x16),
     };
-    
+
     private static readonly Color hiddenColor = Color.FromArgb(0x1A, 0xAA, 0xAA, 0xAA);
     private static readonly Color containerColor = Color.FromArgb(0x7F, 0xAA, 0xAA, 0xAA);
 
     private Point startPos;
     private bool mouseDown = false;
-    private bool ctrlDown = false;
     private double startAngleX;
     private double startAngleY;
     private int selectedItemKey;
@@ -105,15 +104,14 @@ namespace HeuristicLab.Problems.BinPacking.Views {
       if (selectedItemKey >= 0) {
         var selectedItem = packing.Items.Single(x => selectedItemKey == x.Key);
         var selectedPos = packing.Positions[selectedItem.Key];
-        DiffuseMaterial material;
-        if (!materials.TryGetValue(selectedItem.Value.Material, out material)) {
-          var colorIdx = selectedItem.Value.Material;
-          while (colorIdx < 0) colorIdx += colors.Length;
-          colorIdx = colorIdx % colors.Length;
-          var color = colors[colorIdx];
-          material = new DiffuseMaterial { Brush = new SolidColorBrush(color) };
-          materials[selectedItem.Value.Material] = material;
-        }
+
+        var colorIdx = selectedItem.Value.Material;
+        while (colorIdx < 0) colorIdx += colors.Length;
+        colorIdx = colorIdx % colors.Length;
+        var color = colors[colorIdx];
+        var material = new DiffuseMaterial { Brush = new SolidColorBrush(color) };
+        materials[selectedItem.Value.Material] = material;
+
         var selectedModel = new GeometryModel3D { Geometry = new MeshGeometry3D(), Material = material };
         AddSolidCube((MeshGeometry3D)selectedModel.Geometry, selectedPos.X, selectedPos.Y, selectedPos.Z,
           selectedPos.Rotated ? selectedItem.Value.Depth : selectedItem.Value.Width,
@@ -184,7 +182,7 @@ namespace HeuristicLab.Problems.BinPacking.Views {
     private void Clear() {
       ((Model3DGroup)MyModel.Content).Children.Clear();
       materials.Clear();
-      
+
       mouseDown = false;
       startAngleX = 0;
       startAngleY = 0;
@@ -193,7 +191,7 @@ namespace HeuristicLab.Problems.BinPacking.Views {
     private void Container3DView_MouseMove(object sender, MouseEventArgs e) {
       if (!mouseDown) return;
       var pos = e.GetPosition((IInputElement)this);
-      
+
       ((AxisAngleRotation3D)rotateX.Rotation).Angle = startAngleX + (pos.X - startPos.X) / 4;
       ((AxisAngleRotation3D)rotateY.Rotation).Angle = startAngleY + (pos.Y - startPos.Y) / 4;
     }
@@ -224,11 +222,6 @@ namespace HeuristicLab.Problems.BinPacking.Views {
     private void Container3DView_OnMouseEnter(object sender, MouseEventArgs e) {
       Focus(); // for mouse wheel events
     }
-
-    private void Container3DView_OnKeyDown(object sender, KeyEventArgs e) {
-      ctrlDown = e.Key.HasFlag(Key.LeftCtrl) || e.Key.HasFlag(Key.RightCtrl);
-    }
-
 
     #region helper for cubes
     /// <summary>
