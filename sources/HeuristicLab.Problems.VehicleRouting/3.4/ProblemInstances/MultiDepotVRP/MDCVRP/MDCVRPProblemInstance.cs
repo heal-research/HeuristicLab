@@ -109,9 +109,11 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
     }
 
     private void AttachEventHandlers() {
-      CapacityParameter.ValueChanged += new EventHandler(CapacityParameter_ValueChanged);
-      OverloadPenaltyParameter.ValueChanged += new EventHandler(OverloadPenaltyParameter_ValueChanged);
-      OverloadPenaltyParameter.Value.ValueChanged += new EventHandler(OverloadPenalty_ValueChanged);
+      CapacityParameter.ValueChanged += CapacityParameter_ValueChanged;
+      Capacity.Reset += Capacity_Changed;
+      Capacity.ItemChanged += Capacity_Changed;
+      OverloadPenaltyParameter.ValueChanged += OverloadPenaltyParameter_ValueChanged;
+      OverloadPenalty.ValueChanged += OverloadPenalty_ValueChanged;
     }
 
     public override void InitializeState() {
@@ -122,10 +124,15 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
 
     #region Event handlers
     void CapacityParameter_ValueChanged(object sender, EventArgs e) {
+      Capacity.Reset += Capacity_Changed;
+      Capacity.ItemChanged += Capacity_Changed;
+      EvalBestKnownSolution();
+    }
+    private void Capacity_Changed(object sender, EventArgs e) {
       EvalBestKnownSolution();
     }
     void OverloadPenaltyParameter_ValueChanged(object sender, EventArgs e) {
-      OverloadPenaltyParameter.Value.ValueChanged += new EventHandler(OverloadPenalty_ValueChanged);
+      OverloadPenalty.ValueChanged += OverloadPenalty_ValueChanged;
       EvalBestKnownSolution();
     }
     void OverloadPenalty_ValueChanged(object sender, EventArgs e) {
