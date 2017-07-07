@@ -51,19 +51,24 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
           IContentView activeView = (IContentView)MainFormManager.MainForm.ActiveView;
 
           try {
-            var progress = mainForm.AddOperationProgressToContent(activeView.Content, "Loading problem instance.");
+            var progress = mainForm.AddOperationProgressToContent(activeView.Content,
+              "Loading problem instance.");
 
-            Content.ProgressChanged += (o, args) => { progress.ProgressValue = args.ProgressPercentage / 100.0; };
+            Content.ProgressChanged +=
+              (o, args) => { progress.ProgressValue = args.ProgressPercentage / 100.0; };
 
-            instance = Content.ImportData(importTypeDialog.Path, importTypeDialog.ImportType, importTypeDialog.CSVFormat);
-          } catch (IOException ex) {
+            instance = Content.ImportData(importTypeDialog.Path, importTypeDialog.ImportType,
+              importTypeDialog.CSVFormat);
+          } catch (Exception ex) {
             ErrorWhileParsing(ex);
-            mainForm.RemoveOperationProgressFromContent(activeView.Content);
             return;
+          } finally {
+            mainForm.RemoveOperationProgressFromContent(activeView.Content);
           }
+
           try {
             GenericConsumer.Load(instance);
-          } catch (IOException ex) {
+          } catch (Exception ex) {
             ErrorWhileLoading(ex, importTypeDialog.Path);
           } finally {
             Invoke((Action)(() => instancesComboBox.SelectedIndex = -1));

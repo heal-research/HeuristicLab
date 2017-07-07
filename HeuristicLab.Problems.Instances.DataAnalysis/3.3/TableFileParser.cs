@@ -27,7 +27,6 @@ using System.Diagnostics.Contracts;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.Text;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
@@ -197,35 +196,27 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     /// <param name="separator">defines the separator</param>
     /// <param name="columnNamesInFirstLine"></param>
     public void Parse(Stream stream, NumberFormatInfo numberFormat, DateTimeFormatInfo dateTimeFormatInfo, char separator, bool columnNamesInFirstLine, int lineLimit = -1) {
-      using (StreamReader reader = new StreamReader(stream, Encoding)) {
+      if (lineLimit > 0) estimatedNumberOfLines = lineLimit;
+
+      using (var reader = new StreamReader(stream)) {
         tokenizer = new Tokenizer(reader, numberFormat, dateTimeFormatInfo, separator);
+        var strValues = new List<List<string>>();
         values = new List<IList>();
-        if (lineLimit > 0) estimatedNumberOfLines = lineLimit;
+        Prepare(columnNamesInFirstLine, strValues);
 
-        if (columnNamesInFirstLine) {
-          ParseVariableNames();
-          if (!tokenizer.HasNext())
-            Error(
-              "Couldn't parse data values. Probably because of incorrect number format (the parser expects english number format with a '.' as decimal separator).",
-              "", tokenizer.CurrentLineNumber);
-        }
-
-
-        // read values... start in first row 
         int nLinesParsed = 0;
         int colIdx = 0;
-        int numValuesInFirstRow = columnNamesInFirstLine ? variableNames.Count : -1; // number of variables or inizialize based on first row of values (-1)
         while (tokenizer.HasNext() && (lineLimit < 0 || nLinesParsed < lineLimit)) {
           if (tokenizer.PeekType() == TokenTypeEnum.NewLine) {
             tokenizer.Skip();
 
             // all rows have to have the same number of values
-            // the first row defines how many samples are needed
-            if (numValuesInFirstRow < 0) numValuesInFirstRow = values.Count; // set to number of colums in the first row
-            else if (colIdx > 0 && numValuesInFirstRow != colIdx) { // read at least one value in the row (support for skipping empty lines)
-              Error("The first row of the dataset has " + numValuesInFirstRow + " columns." + Environment.NewLine +
+            // the first row defines how many elements are needed
+            if (colIdx > 0 && values.Count != colIdx) {
+              // read at least one value in the row (support for skipping empty lines)
+              Error("The first row of the dataset has " + values.Count + " columns." + Environment.NewLine +
                     "Line " + tokenizer.CurrentLineNumber + " has " + colIdx + " columns.", "",
-                    tokenizer.CurrentLineNumber);
+                tokenizer.CurrentLineNumber);
             }
             OnReport(tokenizer.BytesRead);
 
@@ -233,29 +224,34 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
             colIdx = 0;
           } else {
             // read one value
-            TokenTypeEnum type; string strVal; double dblVal; DateTime dateTimeVal;
+            TokenTypeEnum type;
+            string strVal;
+            double dblVal;
+            DateTime dateTimeVal;
             tokenizer.Next(out type, out strVal, out dblVal, out dateTimeVal);
 
-            // initialize columns on the first row (fixing data types as presented in the first row...)
-            if (nLinesParsed == 0) {
-              values.Add(CreateList(type, estimatedNumberOfLines));
-            } else if (colIdx == values.Count) {
-              Error("The first row of the dataset has " + numValuesInFirstRow + " columns." + Environment.NewLine +
+            if (colIdx == values.Count) {
+              Error("The first row of the dataset has " + values.Count + " columns." + Environment.NewLine +
                     "Line " + tokenizer.CurrentLineNumber + " has more columns.", "",
                 tokenizer.CurrentLineNumber);
             }
             if (!IsColumnTypeCompatible(values[colIdx], type)) {
-              values[colIdx] = ConvertToStringColumn(values[colIdx]);
+              values[colIdx] = strValues[colIdx];
             }
+
             // add the value to the column
-            AddValue(type, values[colIdx++], strVal, dblVal, dateTimeVal);
+            AddValue(type, values[colIdx], strVal, dblVal, dateTimeVal);
+            if (!(values[colIdx] is List<string>)) { // optimization: don't store the string values in another list if the column is list<string>
+              strValues[colIdx].Add(strVal);
+            }
+            colIdx++;
           }
         }
-
-        if (!values.Any() || values.First().Count == 0)
-          Error("Couldn't parse data values. Probably because of incorrect number format " +
-                "(the parser expects english number format with a '.' as decimal separator).", "", tokenizer.CurrentLineNumber);
       }
+
+      if (!values.Any() || values.First().Count == 0)
+        Error("Couldn't parse data values. Probably because of incorrect number format " +
+              "(the parser expects english number format with a '.' as decimal separator).", "", tokenizer.CurrentLineNumber);
 
       this.rows = values.First().Count;
       this.columns = values.Count;
@@ -276,6 +272,37 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
 
       // for large files we created a lot of memory pressure, cannot hurt to run GC.Collect here (TableFileParser is called seldomly on user interaction)
       GC.Collect(2, GCCollectionMode.Forced);
+    }
+
+    private void Prepare(bool columnNamesInFirstLine, List<List<string>> strValues) {
+      if (columnNamesInFirstLine) {
+        ParseVariableNames();
+        if (!tokenizer.HasNext())
+          Error(
+            "Couldn't parse data values. Probably because of incorrect number format (the parser expects english number format with a '.' as decimal separator).",
+            "", tokenizer.CurrentLineNumber);
+      }
+      // read first line to determine types and allocate specific lists
+      // read values... start in first row 
+      int colIdx = 0;
+      while (tokenizer.PeekType() != TokenTypeEnum.NewLine) {
+        // read one value
+        TokenTypeEnum type; string strVal; double dblVal; DateTime dateTimeVal;
+        tokenizer.Next(out type, out strVal, out dblVal, out dateTimeVal);
+
+        // initialize column
+        values.Add(CreateList(type, estimatedNumberOfLines));
+        if (type == TokenTypeEnum.String)
+          strValues.Add(new List<string>(0)); // optimization: don't store the string values in another list if the column is list<string>
+        else
+          strValues.Add(new List<string>(estimatedNumberOfLines));
+
+        AddValue(type, values[colIdx], strVal, dblVal, dateTimeVal);
+        if (type != TokenTypeEnum.String)
+          strValues[colIdx].Add(strVal);
+        colIdx++;
+      }
+      tokenizer.Skip(); // skip newline
     }
 
     #region type-dependent dispatch
@@ -529,7 +556,9 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
               if (double.TryParse(tok, NumberStyles.Float, numberFormatInfo, out doubleVal)) {
                 type = TokenTypeEnum.Double;
                 doubleVals[i] = doubleVal;
-              } else if (DateTime.TryParse(tok, dateTimeFormatInfo, DateTimeStyles.None, out dateTimeValue)) {
+              } else if (DateTime.TryParse(tok, dateTimeFormatInfo, DateTimeStyles.NoCurrentDateDefault, out dateTimeValue)
+                && (dateTimeValue.Year > 1 || dateTimeValue.Month > 1 || dateTimeValue.Day > 1)// if no date is given it is returned as 1.1.0001 -> don't allow this
+                ) {
                 type = TokenTypeEnum.DateTime;
                 dateTimeVals[i] = dateTimeValue;
               } else if (string.IsNullOrWhiteSpace(tok)) {
@@ -605,27 +634,8 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     }
 
     private void Error(string message, string token, int lineNumber) {
-      throw new DataFormatException("Error while parsing.\n" + message, token, lineNumber);
+      throw new IOException(string.Format("Error while parsing. {0} (token: {1} lineNumber: {2}).", message, token, lineNumber));
     }
     #endregion
-
-    [Serializable]
-    public class DataFormatException : Exception {
-      private int line;
-      public int Line {
-        get { return line; }
-      }
-      private string token;
-      public string Token {
-        get { return token; }
-      }
-      public DataFormatException(string message, string token, int line)
-        : base(message + "\nToken: " + token + " (line: " + line + ")") {
-        this.token = token;
-        this.line = line;
-      }
-
-      public DataFormatException(SerializationInfo info, StreamingContext context) : base(info, context) { }
-    }
   }
 }
