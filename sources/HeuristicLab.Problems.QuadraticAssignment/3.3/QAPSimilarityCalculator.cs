@@ -61,7 +61,9 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
         throw new ArgumentException("Cannot calculate similarity because one of the provided solutions or both are null.");
       if (left.Length != right.Length)
         throw new ArgumentException("Cannot calculate similarity because the provided solutions have different lengths.");
-      if (object.ReferenceEquals(left, right)) return 1.0;
+      if (left.Length == 0)
+        throw new ArgumentException("Cannot calculate similarity because solutions are of length 0.");
+      if (ReferenceEquals(left, right)) return 1.0;
 
       return QAPPermutationProximityCalculator.CalculatePhenotypeSimilarity(left, right, weights, distances);
     }
