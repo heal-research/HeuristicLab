@@ -28,6 +28,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
@@ -56,8 +57,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     #endregion
 
     #region parameter properties
-    public ValueParameter<IKernel> KernelParameter {
-      get { return (ValueParameter<IKernel>)Parameters[KernelParameterName]; }
+    public IConstrainedValueParameter<IKernel> KernelParameter {
+      get { return (IConstrainedValueParameter<IKernel>)Parameters[KernelParameterName]; }
     }
 
     public IFixedValueParameter<BoolValue> ScaleInputVariablesParameter {
@@ -101,10 +102,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
     public KernelRidgeRegression() {
       Problem = new RegressionProblem();
-      Parameters.Add(new ValueParameter<IKernel>(KernelParameterName, "The kernel", new GaussianKernel()));
+      var values = new ItemSet<IKernel>(ApplicationManager.Manager.GetInstances<IKernel>());
+      Parameters.Add(new ConstrainedValueParameter<IKernel>(KernelParameterName, "The kernel", values, values.OfType<GaussianKernel>().FirstOrDefault()));
       Parameters.Add(new FixedValueParameter<BoolValue>(ScaleInputVariablesParameterName, "Set to true if the input variables should be scaled to the interval [0..1]", new BoolValue(true)));
       Parameters.Add(new FixedValueParameter<DoubleValue>(LambdaParameterName, "The log10-transformed weight for the regularization term lambda [-inf..+inf]. Small values produce more complex models, large values produce models with larger errors. Set to very small value (e.g. -1.0e15) for almost exact approximation", new DoubleValue(-2)));
-      Parameters.Add(new FixedValueParameter<DoubleValue>(BetaParameterName, "The beta parameter for the kernel", new DoubleValue(2)));
+      Parameters.Add(new FixedValueParameter<DoubleValue>(BetaParameterName, "The inverse width of the kernel ]0..+inf]. The distance between points is divided by this value before beeing plugged into the kernel.", new DoubleValue(2)));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
