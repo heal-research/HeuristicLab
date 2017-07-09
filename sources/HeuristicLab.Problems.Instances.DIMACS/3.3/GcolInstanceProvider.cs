@@ -68,11 +68,11 @@ namespace HeuristicLab.Problems.Instances.DIMACS {
         var entry = instancesZipFile.GetEntry(descriptor.InstanceIdentifier);
 
         using (var stream = entry.Open()) {
-          var parser = new Parser();
+          var parser = new GcolParser();
           parser.Parse(stream);
           var instance = Load(parser);
           instance.Name = id.Name;
-          instance.Description = id.Description;
+          instance.Description += Environment.NewLine + id.Description;
           int bestknown;
           if (bkq.TryGetValue(instance.Name, out bestknown))
             instance.BestKnownColors = bestknown;
@@ -85,26 +85,44 @@ namespace HeuristicLab.Problems.Instances.DIMACS {
       get { return true; }
     }
     public override GCPData ImportData(string path) {
-      var parser = new Parser();
+      var parser = new GcolParser();
       parser.Parse(path);
       var instance = Load(parser);
       instance.Name = Path.GetFileName(path);
-      instance.Description = "Loaded from file \"" + path + "\" on " + DateTime.Now.ToString();
+      instance.Description += Environment.NewLine + "Loaded from file \"" + path + "\" on " + DateTime.Now.ToString();
       return instance;
     }
 
-    private GCPData Load(Parser parser) {
+    private GCPData Load(GcolParser parser) {
       var instance = new GCPData();
+      instance.Description = parser.Comments;
       instance.Nodes = parser.Nodes;
       var adjacencies = new int[parser.Edges, 2];
       var i = 0;
       foreach (var a in parser.AdjacencyList) {
-        adjacencies[i, 0] = a.Item1 - 1;
-        adjacencies[i, 1] = a.Item2 - 1;
+        adjacencies[i, 0] = a.Item1;
+        adjacencies[i, 1] = a.Item2;
         i++;
       }
       instance.Adjacencies = adjacencies;
       return instance;
+    }
+    
+    public override bool CanExportData { get { return true; } }
+    public override void ExportData(GCPData instance, string path) {
+      using (var stream = new StreamWriter(File.Create(path)) { AutoFlush = true }) {
+        stream.WriteLine("c " + instance.Name);
+        foreach (var comment in instance.Description.Split(new[] { Environment.NewLine }, StringSplitOptions.None)) {
+          var c = comment;
+          if (!c.StartsWith("c ")) c = "c " + comment;
+          stream.WriteLine(c);
+        }
+        var edges = instance.Adjacencies.GetLength(0);
+        stream.WriteLine("p edge " + instance.Nodes + " " + edges);
+        for (var i = 0; i < edges; i++) {
+          stream.WriteLine("e " + (instance.Adjacencies[i, 0]+1) + " " + (instance.Adjacencies[i, 1]+1));
+        }
+      }
     }
 
     private string GetDescription() {

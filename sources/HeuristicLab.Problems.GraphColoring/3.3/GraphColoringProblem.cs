@@ -37,7 +37,7 @@ namespace HeuristicLab.Problems.GraphColoring {
   [Item("Graph Coloring Problem (GCP)", "Attempts to find a coloring using a minimal number of colors that doesn't produce a conflict.")]
   [Creatable(CreatableAttribute.Categories.CombinatorialProblems, Priority = 135)]
   [StorableClass]
-  public sealed class GraphColoringProblem : SingleObjectiveBasicProblem<LinearLinkageEncoding>, IProblemInstanceConsumer<GCPData> {
+  public sealed class GraphColoringProblem : SingleObjectiveBasicProblem<LinearLinkageEncoding>, IProblemInstanceConsumer<GCPData>, IProblemInstanceExporter<GCPData> {
 
     public override bool Maximization {
       get { return false; }
@@ -114,11 +114,18 @@ namespace HeuristicLab.Problems.GraphColoring {
 
     private void FitnessFunctionParameterOnValueChanged(object sender, EventArgs eventArgs) {
       fitnessFunctionParameter.Value.ValueChanged += FitnessFunctionOnValueChanged;
-      OnReset();
+      FitnessFunctionOnValueChanged(sender, eventArgs);
     }
 
     private void FitnessFunctionOnValueChanged(object sender, EventArgs eventArgs) {
       BestKnownQualityParameter.Value = null;
+      if (FitnessFunction == FitnessFunction.Prioritized
+        && BestKnownColorsParameter.Value != null
+        && Encoding.Length > 0) {
+        var mag = Math.Pow(10, -(int)Math.Ceiling(Math.Log10(Encoding.Length)));
+        // the value is e.g. 0.051 for 0 conflicts with 51 colors (and less than 1000 nodes)
+        BestKnownQuality = BestKnownColorsParameter.Value.Value * mag;
+      } else BestKnownQualityParameter.Value = null;
       OnReset();
     }
 
@@ -241,6 +248,22 @@ namespace HeuristicLab.Problems.GraphColoring {
       Name = data.Name;
       Description = data.Description;
       OnReset();
+    }
+
+    public GCPData Export() {
+      var instance = new GCPData();
+      instance.Name = Name;
+      instance.Description = Description;
+      instance.Nodes = Encoding.Length;
+      var adjList = AdjacencyListParameter.Value;
+      instance.Adjacencies = new int[adjList.Rows, 2];
+      for (var r = 0; r < adjList.Rows; r++) {
+        instance.Adjacencies[r, 0] = adjList[r, 0];
+        instance.Adjacencies[r, 1] = adjList[r, 1];
+      }
+      if (BestKnownColorsParameter.Value != null)
+        instance.BestKnownColors = BestKnownColorsParameter.Value.Value;
+      return instance;
     }
 
     private void InitializeOperators() {

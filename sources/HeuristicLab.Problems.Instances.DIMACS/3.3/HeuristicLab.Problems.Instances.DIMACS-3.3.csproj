@@ -86,7 +86,7 @@
   <ItemGroup>
     <Compile Include="GcolDataDescriptor.cs" />
     <Compile Include="GcolInstanceProvider.cs" />
-    <Compile Include="Parser.cs" />
+    <Compile Include="GcolParser.cs" />
     <EmbeddedResource Include="Data\col.zip" />
     <None Include="Plugin.cs.frame" />
     <Compile Include="Plugin.cs" />

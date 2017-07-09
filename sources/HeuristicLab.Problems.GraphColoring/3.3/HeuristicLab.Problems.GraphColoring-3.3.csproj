@@ -124,7 +124,7 @@
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Encodings.LinearLinkageEncoding\3.4\HeuristicLab.Encodings.LinearLinkageEncoding-3.4.csproj">
-      <Project>{166507c9-ef26-4370-bb80-699742a29d4f}</Project>
+      <Project>{be698769-975a-429e-828c-72bb2b6182c8}</Project>
       <Name>HeuristicLab.Encodings.LinearLinkageEncoding-3.4</Name>
       <Private>False</Private>
     </ProjectReference>
