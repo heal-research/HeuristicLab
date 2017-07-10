@@ -50,7 +50,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       this.TrainingTestTrackBar = new System.Windows.Forms.TrackBar();
       this.TestLabel = new System.Windows.Forms.Label();
       this.TrainingLabel = new System.Windows.Forms.Label();
-      this.CancelationButton = new System.Windows.Forms.Button();
+      this.CancellationButton = new System.Windows.Forms.Button();
       this.OpenFileButton = new System.Windows.Forms.Button();
       this.ProblemFileLabel = new System.Windows.Forms.Label();
       this.ProblemTextBox = new System.Windows.Forms.TextBox();
@@ -136,16 +136,16 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       this.TrainingLabel.TabIndex = 5;
       this.TrainingLabel.Text = "Training: 66 %";
       // 
-      // CancelationButton
+      // CancellationButton
       // 
-      this.CancelationButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.CancelationButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-      this.CancelationButton.Location = new System.Drawing.Point(384, 422);
-      this.CancelationButton.Name = "CancelationButton";
-      this.CancelationButton.Size = new System.Drawing.Size(75, 23);
-      this.CancelationButton.TabIndex = 3;
-      this.CancelationButton.Text = "&Cancel";
-      this.CancelationButton.UseVisualStyleBackColor = true;
+      this.CancellationButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this.CancellationButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+      this.CancellationButton.Location = new System.Drawing.Point(384, 422);
+      this.CancellationButton.Name = "CancellationButton";
+      this.CancellationButton.Size = new System.Drawing.Size(75, 23);
+      this.CancellationButton.TabIndex = 3;
+      this.CancellationButton.Text = "&Cancel";
+      this.CancellationButton.UseVisualStyleBackColor = true;
       // 
       // OpenFileButton
       // 
@@ -391,7 +391,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       this.ShuffelInfoLabel.Size = new System.Drawing.Size(16, 16);
       this.ShuffelInfoLabel.TabIndex = 8;
       this.ShuffelInfoLabel.Tag = "Check, if the imported data should be shuffled";
-      this.ToolTip.SetToolTip(this.ShuffelInfoLabel, "Check, if the importat data should be shuffled");
+      this.ToolTip.SetToolTip(this.ShuffelInfoLabel, "Check, if the imported data should be shuffled");
       this.ShuffelInfoLabel.DoubleClick += new System.EventHandler(this.ControlToolTip_DoubleClick);
       // 
       // PreviewLabel
@@ -429,7 +429,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       this.Controls.Add(this.ProblemTextBox);
       this.Controls.Add(this.OpenFileButton);
       this.Controls.Add(this.ProblemFileLabel);
-      this.Controls.Add(this.CancelationButton);
+      this.Controls.Add(this.CancellationButton);
       this.Controls.Add(this.OkButton);
       this.MaximizeBox = false;
       this.MinimizeBox = false;
@@ -454,7 +454,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
     protected System.Windows.Forms.TrackBar TrainingTestTrackBar;
     protected System.Windows.Forms.Label TestLabel;
     protected System.Windows.Forms.Label TrainingLabel;
-    protected System.Windows.Forms.Button CancelationButton;
+    protected System.Windows.Forms.Button CancellationButton;
     protected System.Windows.Forms.OpenFileDialog openFileDialog;
     protected System.Windows.Forms.Label ProblemFileLabel;
     protected System.Windows.Forms.Button OpenFileButton;

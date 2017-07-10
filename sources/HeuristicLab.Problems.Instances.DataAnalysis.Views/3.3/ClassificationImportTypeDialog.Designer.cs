@@ -75,9 +75,9 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       // 
       this.TrainingLabel.Location = new System.Drawing.Point(76, 95);
       // 
-      // CancelationButton
+      // CancellationButton
       // 
-      this.CancelationButton.Location = new System.Drawing.Point(384, 482);
+      this.CancellationButton.Location = new System.Drawing.Point(384, 482);
       // 
       // ProblemDataSettingsGroupBox
       // 
