@@ -20,6 +20,7 @@
 #endregion
 
 using System.Globalization;
+using System.Text;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
   public class DataAnalysisCSVFormat {
@@ -27,5 +28,6 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     public NumberFormatInfo NumberFormatInfo { get; set; }
     public DateTimeFormatInfo DateTimeFormatInfo { get; set; }
     public bool VariableNamesAvailable { get; set; }
+    public Encoding Encoding { get; set; }
   }
 }

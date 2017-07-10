@@ -39,6 +39,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
 
     public TData ImportData(string path, ImportType type, DataAnalysisCSVFormat csvFormat) {
       TableFileParser csvFileParser = new TableFileParser();
+      csvFileParser.Encoding = csvFormat.Encoding;
       long fileSize = new FileInfo(path).Length;
       csvFileParser.ProgressChanged += (sender, e) => {
         OnProgressChanged(e / (double)fileSize);
