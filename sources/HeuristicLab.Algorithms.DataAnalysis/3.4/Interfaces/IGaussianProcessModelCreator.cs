@@ -34,6 +34,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     ILookupParameter<IGaussianProcessModel> ModelParameter { get; }
     ILookupParameter<RealVector> HyperparameterGradientsParameter { get; }
     ILookupParameter<DoubleValue> NegativeLogLikelihoodParameter { get; }
-    ILookupParameter<DoubleValue> NegativeLogPredictiveProbabilityParameter { get; }
+    ILookupParameter<DoubleValue> NegativeLogPseudoLikelihoodParameter { get; }
   }
 }

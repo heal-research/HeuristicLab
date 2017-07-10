@@ -36,7 +36,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private const string CovarianceFunctionParameterName = "CovarianceFunction";
     private const string ModelParameterName = "Model";
     private const string NegativeLogLikelihoodParameterName = "NegativeLogLikelihood";
-    private const string NegativeLogPredictiveProbabilityParameterName = "NegativeLogPredictiveProbability (LOOCV)";
+    private const string NegativeLogPseudoLikelihoodParameterName = "NegativeLogPseudoLikelihood (LOOCV)";
     private const string HyperparameterGradientsParameterName = "HyperparameterGradients";
     protected const string ScaleInputValuesParameterName = "ScaleInputValues";
 
@@ -61,8 +61,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public ILookupParameter<DoubleValue> NegativeLogLikelihoodParameter {
       get { return (ILookupParameter<DoubleValue>)Parameters[NegativeLogLikelihoodParameterName]; }
     }
-    public ILookupParameter<DoubleValue> NegativeLogPredictiveProbabilityParameter {
-      get { return (ILookupParameter<DoubleValue>)Parameters[NegativeLogPredictiveProbabilityParameterName]; }
+    public ILookupParameter<DoubleValue> NegativeLogPseudoLikelihoodParameter {
+      get { return (ILookupParameter<DoubleValue>)Parameters[NegativeLogPseudoLikelihoodParameterName]; }
     }
     public ILookupParameter<BoolValue> ScaleInputValuesParameter {
       get { return (ILookupParameter<BoolValue>)Parameters[ScaleInputValuesParameterName]; }
@@ -89,7 +89,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       Parameters.Add(new LookupParameter<IGaussianProcessModel>(ModelParameterName, "The resulting Gaussian process model"));
       Parameters.Add(new LookupParameter<RealVector>(HyperparameterGradientsParameterName, "The gradients of the hyperparameters for the produced Gaussian process model (necessary for hyperparameter optimization)"));
       Parameters.Add(new LookupParameter<DoubleValue>(NegativeLogLikelihoodParameterName, "The negative log-likelihood of the produced Gaussian process model given the data."));
-      Parameters.Add(new LookupParameter<DoubleValue>(NegativeLogPredictiveProbabilityParameterName, "The leave-one-out-cross-validation negative log predictive probability of the produced Gaussian process model given the data."));
+      Parameters.Add(new LookupParameter<DoubleValue>(NegativeLogPseudoLikelihoodParameterName, "The leave-one-out-cross-validation negative log pseudo-likelihood of the produced Gaussian process model given the data."));
 
 
       Parameters.Add(new LookupParameter<BoolValue>(ScaleInputValuesParameterName,
@@ -104,9 +104,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
           "Determines if the input variable values are scaled to the range [0..1] for training."));
         Parameters[ScaleInputValuesParameterName].Hidden = true;
       }
-      if (!Parameters.ContainsKey(NegativeLogPredictiveProbabilityParameterName)) {
-        Parameters.Add(new LookupParameter<DoubleValue>(NegativeLogPredictiveProbabilityParameterName,
-          "The leave-one-out-cross-validation negative log predictive probability of the produced Gaussian process model given the data."));
+      if (!Parameters.ContainsKey(NegativeLogPseudoLikelihoodParameterName)) {
+        Parameters.Add(new LookupParameter<DoubleValue>(NegativeLogPseudoLikelihoodParameterName,
+          "The leave-one-out-cross-validation negative log pseudo-likelihood of the produced Gaussian process model given the data."));
       }
     }
   }
