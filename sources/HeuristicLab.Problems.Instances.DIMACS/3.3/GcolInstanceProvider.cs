@@ -107,7 +107,7 @@ namespace HeuristicLab.Problems.Instances.DIMACS {
       instance.Adjacencies = adjacencies;
       return instance;
     }
-    
+
     public override bool CanExportData { get { return true; } }
     public override void ExportData(GCPData instance, string path) {
       using (var stream = new StreamWriter(File.Create(path)) { AutoFlush = true }) {
@@ -120,7 +120,7 @@ namespace HeuristicLab.Problems.Instances.DIMACS {
         var edges = instance.Adjacencies.GetLength(0);
         stream.WriteLine("p edge " + instance.Nodes + " " + edges);
         for (var i = 0; i < edges; i++) {
-          stream.WriteLine("e " + (instance.Adjacencies[i, 0]+1) + " " + (instance.Adjacencies[i, 1]+1));
+          stream.WriteLine("e " + (instance.Adjacencies[i, 0] + 1) + " " + (instance.Adjacencies[i, 1] + 1));
         }
       }
     }
