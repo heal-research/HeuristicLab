@@ -45,6 +45,12 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     [Storable]
+    private double loocvNegLogPseudoLikelihood;
+    public double LooCvNegativeLogPseudoLikelihood {
+      get { return loocvNegLogPseudoLikelihood; }
+    }
+
+    [Storable]
     private double[] hyperparameterGradients;
     public double[] HyperparameterGradients {
       get {
@@ -127,6 +133,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         this.inputScaling = cloner.Clone(original.inputScaling);
       this.trainingDataset = cloner.Clone(original.trainingDataset);
       this.negativeLogLikelihood = original.negativeLogLikelihood;
+      this.loocvNegLogPseudoLikelihood = original.loocvNegLogPseudoLikelihood;
       this.sqrSigmaNoise = original.sqrSigmaNoise;
       if (original.meanParameter != null) {
         this.meanParameter = (double[])original.meanParameter.Clone();
@@ -216,6 +223,23 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
       alglib.spdmatrixcholeskyinverse(ref lCopy, n, false, out info, out matInvRep);
       if (info != 1) throw new ArgumentException("Can't invert matrix to calculate gradients.");
+
+      // LOOCV log pseudo-likelihood (or log predictive probability) (GPML page 116 and 117)
+      var sumLoo = 0.0;
+      var ki = new double[n];
+      for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) ki[j] = cov.Covariance(x, i, j);
+        ki[i] += sqrSigmaNoise;
+
+        var yi = Util.ScalarProd(ki, alpha);
+        var yi_loo = yi - alpha[i] / (lCopy[i, i] / sqrSigmaNoise);
+        var s2_loo = 1.0 / (lCopy[i, i] / sqrSigmaNoise);
+        var err = ym[i] - yi_loo;
+        var nll_loo = 0.5 * Math.Log(2 * Math.PI * s2_loo) + 0.5 * err * err / s2_loo;
+        sumLoo += nll_loo;
+      }
+      loocvNegLogPseudoLikelihood = sumLoo;
+
       for (int i = 0; i < n; i++) {
         for (int j = 0; j <= i; j++)
           lCopy[i, j] = lCopy[i, j] / sqrSigmaNoise - alpha[i] * alpha[j];

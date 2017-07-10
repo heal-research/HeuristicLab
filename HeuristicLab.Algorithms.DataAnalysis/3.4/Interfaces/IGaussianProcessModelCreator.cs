@@ -22,7 +22,6 @@
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
-using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>
@@ -35,5 +34,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     ILookupParameter<IGaussianProcessModel> ModelParameter { get; }
     ILookupParameter<RealVector> HyperparameterGradientsParameter { get; }
     ILookupParameter<DoubleValue> NegativeLogLikelihoodParameter { get; }
+    ILookupParameter<DoubleValue> NegativeLogPseudoLikelihoodParameter { get; }
   }
 }
