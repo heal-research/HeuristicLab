@@ -44,6 +44,10 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       for (int i = 0; i < array.Length; i++)
         array[i] = elements[i];
     }
+    public RealVector(RealVector other)
+      : this(other.Length) {
+      Array.Copy(other.array, array, other.Length);
+    }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new RealVector(this, cloner);

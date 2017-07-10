@@ -33,7 +33,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
-  [Item("Swarm Updater (SPSO)", "Updates personal best point and quality as well as global best point and quality.")]
+  [Item("Swarm Updater (SPSO)", "Updates personal best point and quality as well as neighbor best point and quality.")]
   [StorableClass]
   public sealed class SPSOSwarmUpdater : SingleSuccessorOperator, IRealVectorSwarmUpdater, ISingleObjectiveOperator {
 
@@ -125,13 +125,13 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       Parameters.Add(new ScopeTreeLookupParameter<RealVector>("NeighborBest", "Neighborhood (or global in case of totally connected neighborhood) best particle positions."));
       Parameters.Add(new ScopeTreeLookupParameter<IntArray>("Neighbors", "The list of neighbors for each particle."));
       Parameters.Add(new LookupParameter<BoolValue>("Maximization", "True if the problem is a maximization problem, otherwise false."));
-      Parameters.Add(new ValueLookupParameter<DoubleValue>("MaxVelocity", "Speed limit for each particle.", new DoubleValue(1000000)));
+      Parameters.Add(new ValueLookupParameter<DoubleValue>("MaxVelocity", "The maximum velocity for each particle and initial velocity if scaling is used.", new DoubleValue(double.MaxValue)));
       Parameters.Add(new LookupParameter<DoubleValue>("CurrentMaxVelocity", "Current value of the speed limit."));
       Parameters.Add(new LookupParameter<ResultCollection>("Results", "Results"));
 
       #region Max Velocity Updating
       Parameters.Add(new OptionalConstrainedValueParameter<IDiscreteDoubleValueModifier>("MaxVelocityScalingOperator", "Modifies the value"));
-      Parameters.Add(new ValueLookupParameter<DoubleValue>("FinalMaxVelocity", "The value of maximum velocity if PSO has reached maximum iterations.", new DoubleValue(1E-10)));
+      Parameters.Add(new ValueLookupParameter<DoubleValue>("FinalMaxVelocity", "The value of maximum velocity if scaling is used and PSO has reached maximum iterations.", new DoubleValue(1E-10)));
       Parameters.Add(new LookupParameter<IntValue>("MaxVelocityIndex", "The current index.", "Iterations"));
       Parameters.Add(new ValueLookupParameter<IntValue>("MaxVelocityStartIndex", "The start index at which to start modifying 'Value'.", new IntValue(0)));
       Parameters.Add(new ValueLookupParameter<IntValue>("MaxVelocityEndIndex", "The end index by which 'Value' should have reached 'EndValue'.", "MaxIterations"));
@@ -194,20 +194,31 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       if (neighbors.Length > 0) {
         var neighborBest = new ItemArray<RealVector>(neighbors.Length);
         var neighborBestQuality = new ItemArray<DoubleValue>(neighbors.Length);
+        double overallBest = double.NaN;
+        RealVector overallBestVector = null;
         for (int n = 0; n < neighbors.Length; n++) {
-          var pairs = particles.Where(x => x.Item1 == n || neighbors[n].Contains(x.Item1));
-          var bestNeighbor = (maximization ? pairs.MaxItems(p => p.Item3)
-                                           : pairs.MinItems(p => p.Item3)).First();
+          var neighborhood = particles.Where(x => neighbors[n].Contains(x.Item1));
+          var bestNeighbor = (maximization ? neighborhood.MaxItems(p => p.Item3)
+                                           : neighborhood.MinItems(p => p.Item3)).First();
           neighborBest[n] = bestNeighbor.Item2;
           neighborBestQuality[n] = new DoubleValue(bestNeighbor.Item3);
+          if (double.IsNaN(overallBest) || maximization && bestNeighbor.Item3 > overallBest
+            || !maximization && bestNeighbor.Item3 < overallBest) {
+            overallBest = bestNeighbor.Item3;
+            overallBestVector = bestNeighbor.Item2;
+          }
         }
         NeighborBestParameter.ActualValue = neighborBest;
         NeighborBestQualityParameter.ActualValue = neighborBestQuality;
+        SwarmBestQualityParameter.ActualValue = new DoubleValue(overallBest);
+        BestRealVectorParameter.ActualValue = overallBestVector;
       } else {
         // Neighbor best = Global best
         var best = maximization ? particles.MaxItems(x => x.Item3).First() : particles.MinItems(x => x.Item3).First();
-        NeighborBestParameter.ActualValue = new ItemArray<RealVector>(particles.Select(x => best.Item2));
-        NeighborBestQualityParameter.ActualValue = new ItemArray<DoubleValue>(particles.Select(x => new DoubleValue(best.Item3)));
+        NeighborBestParameter.ActualValue = new ItemArray<RealVector>(Enumerable.Repeat(best.Item2, particles.Count));
+        NeighborBestQualityParameter.ActualValue = new ItemArray<DoubleValue>(Enumerable.Repeat(new DoubleValue(best.Item3), particles.Count));
+        SwarmBestQualityParameter.ActualValue = new DoubleValue(best.Item3);
+        BestRealVectorParameter.ActualValue = best.Item2;
       }
     }
 
@@ -223,7 +234,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
         if (maximization && p.Item3 > personalBestQuality[p.Item1].Value ||
           !maximization && p.Item3 < personalBestQuality[p.Item1].Value) {
           personalBestQuality[p.Item1].Value = p.Item3;
-          personalBest[p.Item1] = (RealVector)p.Item2.Clone();
+          personalBest[p.Item1] = new RealVector(p.Item2);
         }
       }
       PersonalBestParameter.ActualValue = personalBest;

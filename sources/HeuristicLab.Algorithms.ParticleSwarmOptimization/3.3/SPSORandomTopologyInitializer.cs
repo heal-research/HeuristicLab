@@ -29,49 +29,46 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
-  [Item("Random Topology Initializer", "Each particle is informed by exactly k+1 distinct other particles (including itself).")]
+  [Item("SPSO Random Topology Initializer", "Each particle informs k+1 other particles (including itself). The same particle (including itself) can be informed multiple times.")]
   [StorableClass]
-  public sealed class RandomTopologyInitializer : TopologyInitializer, IStochasticOperator {
+  public sealed class SPSORandomTopologyInitializer : TopologyInitializer, IStochasticOperator {
     #region Parameters
     public ILookupParameter<IRandom> RandomParameter {
       get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
     }
-    public IValueLookupParameter<IntValue> NrOfConnectionsParameter {
-      get { return (IValueLookupParameter<IntValue>)Parameters["NrOfConnections"]; }
+    public IValueLookupParameter<IntValue> KParameter {
+      get { return (IValueLookupParameter<IntValue>)Parameters["K"]; }
     }
     #endregion
     
     #region Construction & Cloning
     [StorableConstructor]
-    private RandomTopologyInitializer(bool deserializing) : base(deserializing) { }
-    private RandomTopologyInitializer(RandomTopologyInitializer original, Cloner cloner) : base(original, cloner) { }
-    public RandomTopologyInitializer() {
+    private SPSORandomTopologyInitializer(bool deserializing) : base(deserializing) { }
+    private SPSORandomTopologyInitializer(SPSORandomTopologyInitializer original, Cloner cloner) : base(original, cloner) { }
+    public SPSORandomTopologyInitializer() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "A random number generation."));
-      Parameters.Add(new ValueLookupParameter<IntValue>("NrOfConnections", "Nr of connected neighbors.", new IntValue(3)));
+      Parameters.Add(new ValueLookupParameter<IntValue>("K", "The number of informed particles (excluding itself).", new IntValue(3)));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new RandomTopologyInitializer(this, cloner);
+      return new SPSORandomTopologyInitializer(this, cloner);
     }
     #endregion
 
     public override IOperation Apply() {
       var random = RandomParameter.ActualValue;
       var swarmSize = SwarmSizeParameter.ActualValue.Value;
-      var nrOfConnections = NrOfConnectionsParameter.ActualValue.Value;
+      var k = KParameter.ActualValue.Value;
 
-      ItemArray<IntArray> neighbors = new ItemArray<IntArray>(swarmSize);
+      // SPSO: Each particle informs at most K+1 particles (at least itself and K others)
+      var particlesInform = Enumerable.Repeat(k + 1, swarmSize)
+        .Select((v, i) => new HashSet<int>(Enumerable.Range(0, v).Select(x => x == 0 ? i : random.Next(swarmSize)))).ToList();
+
+      var neighbors = new ItemArray<IntArray>(swarmSize);
       for (int i = 0; i < swarmSize; i++) {
-        var numbers = Enumerable.Range(0, swarmSize).ToList();
-        numbers.RemoveAt(i);
-        var selectedNumbers = new List<int>(nrOfConnections + 1);
-        selectedNumbers.Add(i);
-        for (int j = 0; j < nrOfConnections && numbers.Count > 0; j++) {
-          int index = random.Next(numbers.Count);
-          selectedNumbers.Add(numbers[index]);
-          numbers.RemoveAt(index);
-        }
-        neighbors[i] = new IntArray(selectedNumbers.ToArray());
+        // calculate the informants for each particle
+        var informants = particlesInform.Select((val, idx) => val.Contains(i) ? idx : -1).Where(x => x >= 0).ToArray();
+        neighbors[i] = new IntArray(informants);
       }
       NeighborsParameter.ActualValue = neighbors;
       return base.Apply();

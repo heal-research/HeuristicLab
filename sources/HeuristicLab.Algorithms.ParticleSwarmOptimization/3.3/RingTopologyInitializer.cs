@@ -25,7 +25,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
-  [Item("Ring Topology Initializer", "Connected every particle with its preceeding and its following particle.")]
+  [Item("Ring Topology Initializer", "Each particle is informed by its preceeding and its succeeding particle wrapping around at the beginning and the end of the swarm (in addition each particle also informs itself).")]
   [StorableClass]
   public sealed class RingTopologyInitializer : TopologyInitializer {
     #region Construction & Cloning
@@ -46,7 +46,7 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
 
       ItemArray<IntArray> neighbors = new ItemArray<IntArray>(swarmSize);
       for (int i = 0; i < swarmSize; i++) {
-        neighbors[i] = new IntArray(new[] { (swarmSize + i - 1) % swarmSize, (i + 1) % swarmSize });
+        neighbors[i] = new IntArray(new[] { (swarmSize + i - 1) % swarmSize, i, (i + 1) % swarmSize });
       }
       NeighborsParameter.ActualValue = neighbors;
       return base.Apply();

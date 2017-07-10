@@ -24,6 +24,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Random;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   [Item("SPSO 2011 Particle Updater", "Updates the particle's position according to the formulae described in SPSO 2011.")]
@@ -41,22 +42,29 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     
     public static void UpdateVelocity(IRandom random, RealVector velocity, double maxVelocity, RealVector position, double inertia, RealVector personalBest, double personalBestAttraction, RealVector neighborBest, double neighborBestAttraction, double c = 1.193) {
       var gravity = new double[velocity.Length];
-      var direct = new RealVector(velocity.Length);
+      var direction = new RealVector(velocity.Length);
       var radius = 0.0;
+
+      var nd = new NormalDistributedRandom(random, 0, 1);
 
       for (int i = 0; i < velocity.Length; i++) {
         var g_id = c * ((personalBest[i] + neighborBest[i] - 2 * position[i]) / 3.0);
+        // center of the hyper-sphere
         gravity[i] = g_id + position[i];
-        direct[i] = (random.NextDouble() - 0.5) * 2;
+        // a random direction vector uniform over the surface of hyper-sphere, see http://mathworld.wolfram.com/HyperspherePointPicking.html
+        direction[i] = nd.NextDouble();
         radius += g_id * g_id;
       }
 
+      // randomly choose a radius within the hyper-sphere
       radius = random.NextDouble() * Math.Sqrt(radius);
 
-      var unitscale = Math.Sqrt(direct.DotProduct(direct));
+      // unitscale is used to rescale the random direction vector to unit length, resp. length of the radius
+      var unitscale = Math.Sqrt(direction.DotProduct(direction));
       if (unitscale > 0) {
         for (var i = 0; i < velocity.Length; i++) {
-          velocity[i] = velocity[i] * inertia + gravity[i] + direct[i] * radius / unitscale - position[i];
+          var sampledPos = gravity[i] + direction[i] * radius / unitscale;
+          velocity[i] = velocity[i] * inertia + sampledPos - position[i];
         }
       }
 

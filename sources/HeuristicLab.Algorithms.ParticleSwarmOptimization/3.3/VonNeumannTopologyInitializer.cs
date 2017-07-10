@@ -25,7 +25,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
-  [Item("Von Neumann Topology Initializer", "Every particle is connected with the two following and the two previous particles wrapping around at the beginning and the end of the population.")]
+  [Item("Von Neumann Topology Initializer", "Every particle is informed by the two following and the two previous particles wrapping around at the beginning and the end of the swarm (in addition each particle also informs itself).")]
   [StorableClass]
   public sealed class VonNeumannTopologyInitializer : TopologyInitializer {
 
@@ -50,6 +50,7 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
         neighbors[i] = new IntArray(new[] {
           (swarmSize + i-2) % swarmSize,
           (swarmSize + i-1) % swarmSize,
+          i,
           (i+1) % swarmSize,
           (i+2) % swarmSize
         });
