@@ -92,11 +92,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ClassificationImportTypeDialog.cs">
+    <Compile Include="ClassificationImportDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ClassificationImportTypeDialog.Designer.cs">
-      <DependentUpon>ClassificationImportTypeDialog.cs</DependentUpon>
+    <Compile Include="ClassificationImportDialog.Designer.cs">
+      <DependentUpon>ClassificationImportDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="ClassificationInstanceProviderView.cs">
       <SubType>UserControl</SubType>
@@ -110,23 +110,29 @@
     <Compile Include="ClusteringInstanceProviderView.Designer.cs">
       <DependentUpon>ClusteringInstanceProviderView.cs</DependentUpon>
     </Compile>
-    <Compile Include="TimeSeriesPrognosisImportTypeDialog.cs">
+    <Compile Include="DataAnalysisImportDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="TimeSeriesPrognosisImportTypeDialog.Designer.cs">
-      <DependentUpon>TimeSeriesPrognosisImportTypeDialog.cs</DependentUpon>
+    <Compile Include="DataAnalysisImportDialog.Designer.cs">
+      <DependentUpon>DataAnalysisImportDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="RegressionImportDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="RegressionImportDialog.Designer.cs">
+      <DependentUpon>RegressionImportDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TimeSeriesPrognosisImportDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TimeSeriesPrognosisImportDialog.Designer.cs">
+      <DependentUpon>TimeSeriesPrognosisImportDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="TimeSeriesPrognosisInstanceProviderView.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="TimeSeriesPrognosisInstanceProviderView.Designer.cs">
       <DependentUpon>TimeSeriesPrognosisInstanceProviderView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="DataAnalysisImportTypeDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="DataAnalysisImportTypeDialog.Designer.cs">
-      <DependentUpon>DataAnalysisImportTypeDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="DataAnalysisInstanceProviderView.cs">
       <SubType>UserControl</SubType>
@@ -135,12 +141,6 @@
       <DependentUpon>DataAnalysisInstanceProviderView.cs</DependentUpon>
     </Compile>
     <Compile Include="Plugin.cs" />
-    <Compile Include="RegressionImportTypeDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="RegressionImportTypeDialog.Designer.cs">
-      <DependentUpon>RegressionImportTypeDialog.cs</DependentUpon>
-    </Compile>
     <Compile Include="RegressionInstanceProviderView.cs">
       <SubType>UserControl</SubType>
     </Compile>

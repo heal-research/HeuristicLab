@@ -41,7 +41,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
     }
 
     protected override void importButton_Click(object sender, EventArgs e) {
-      var importTypeDialog = new RegressionImportTypeDialog();
+      var importTypeDialog = new RegressionImportDialog();
       if (importTypeDialog.ShowDialog() == DialogResult.OK) {
         IRegressionProblemData instance = null;
 

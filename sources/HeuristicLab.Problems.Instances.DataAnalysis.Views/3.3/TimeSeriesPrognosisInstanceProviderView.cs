@@ -40,7 +40,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
     }
 
     protected override void importButton_Click(object sender, EventArgs e) {
-      var importTypeDialog = new TimeSeriesPrognosisImportTypeDialog();
+      var importTypeDialog = new TimeSeriesPrognosisImportDialog();
       if (importTypeDialog.ShowDialog() == DialogResult.OK) {
         ITimeSeriesPrognosisProblemData instance = null;
         try {

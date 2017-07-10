@@ -40,7 +40,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
     }
 
     protected override void importButton_Click(object sender, EventArgs e) {
-      var importTypeDialog = new ClassificationImportTypeDialog();
+      var importTypeDialog = new ClassificationImportDialog();
       if (importTypeDialog.ShowDialog() == DialogResult.OK) {
         IClassificationProblemData instance = null;
         try {

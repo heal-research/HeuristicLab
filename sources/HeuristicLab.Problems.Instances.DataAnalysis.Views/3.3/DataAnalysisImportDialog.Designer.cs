@@ -20,7 +20,7 @@
 #endregion
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
-  partial class DataAnalysisImportTypeDialog {
+  partial class DataAnalysisImportDialog {
     /// <summary>
     /// Required designer variable.
     /// </summary>
@@ -418,7 +418,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       this.PreviewDatasetMatrix.Size = new System.Drawing.Size(435, 111);
       this.PreviewDatasetMatrix.TabIndex = 0;
       // 
-      // DataAnalysisImportTypeDialog
+      // DataAnalysisImportDialog
       // 
       this.AcceptButton = this.OkButton;
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -433,7 +433,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       this.Controls.Add(this.OkButton);
       this.MaximizeBox = false;
       this.MinimizeBox = false;
-      this.Name = "DataAnalysisImportTypeDialog";
+      this.Name = "DataAnalysisImportDialog";
       this.ShowIcon = false;
       this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
       this.Text = "CSV Import";

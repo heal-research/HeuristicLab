@@ -20,25 +20,23 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
-
-  public partial class ClassificationImportTypeDialog : DataAnalysisImportTypeDialog {
-    public new ClassificationImportType ImportType {
+  public partial class TimeSeriesPrognosisImportDialog : DataAnalysisImportDialog {
+    public new TimeSeriesPrognosisImportType ImportType {
       get {
-        return new ClassificationImportType() {
-          Shuffle = ShuffleDataCheckbox.Checked,
+        return new TimeSeriesPrognosisImportType() {
+          //time series prognosis problems shall not be shuffled
+          Shuffle = false,
           TrainingPercentage = TrainingTestTrackBar.Value,
-          TargetVariable = (String)TargetVariableComboBox.SelectedValue,
-          UniformlyDistributeClasses = UniformDistributionOfClassesCheckbox.Checked
+          TargetVariable = (String)TargetVariableComboBox.SelectedValue
         };
       }
     }
 
-    public ClassificationImportTypeDialog() {
+    public TimeSeriesPrognosisImportDialog() {
       InitializeComponent();
     }
 
@@ -50,15 +48,9 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
     protected void SetPossibleTargetVariables() {
       var dataset = PreviewDatasetMatrix.Content as Dataset;
       if (dataset != null) {
-        IEnumerable<string> possibleTargetVariables = ClassificationProblemData.CheckVariablesForPossibleTargetVariables(dataset);
-
         // Remove " (Double)" at the end of the variable name (last 9 chars)
-        TargetVariableComboBox.DataSource = possibleTargetVariables.Select(x => x.Substring(0, x.Length - 9)).ToList();
+        TargetVariableComboBox.DataSource = dataset.DoubleVariables.Select(x => x.Substring(0, x.Length - 9)).ToList();
       }
-    }
-
-    private void ShuffleDataCheckbox_CheckedChanged(object sender, System.EventArgs e) {
-      UniformDistributionOfClassesCheckbox.Enabled = ShuffleDataCheckbox.Checked;
     }
   }
 }

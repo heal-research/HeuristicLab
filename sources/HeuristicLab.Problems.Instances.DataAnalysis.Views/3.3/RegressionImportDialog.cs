@@ -24,19 +24,18 @@ using System.Linq;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
-  public partial class TimeSeriesPrognosisImportTypeDialog : DataAnalysisImportTypeDialog {
-    public new TimeSeriesPrognosisImportType ImportType {
+  public partial class RegressionImportDialog : DataAnalysisImportDialog {
+    public new RegressionImportType ImportType {
       get {
-        return new TimeSeriesPrognosisImportType() {
-          //time series prognosis problems shall not be shuffled
-          Shuffle = false,
+        return new RegressionImportType() {
+          Shuffle = ShuffleDataCheckbox.Checked,
           TrainingPercentage = TrainingTestTrackBar.Value,
           TargetVariable = (String)TargetVariableComboBox.SelectedValue
         };
       }
     }
 
-    public TimeSeriesPrognosisImportTypeDialog() {
+    public RegressionImportDialog() {
       InitializeComponent();
     }
 
