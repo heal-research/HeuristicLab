@@ -77,8 +77,10 @@ namespace HeuristicLab.Analysis.Views {
       Content.Rows.ItemsRemoved -= new CollectionItemsChangedEventHandler<ScatterPlotDataRow>(Rows_ItemsRemoved);
       Content.Rows.ItemsReplaced -= new CollectionItemsChangedEventHandler<ScatterPlotDataRow>(Rows_ItemsReplaced);
       Content.Rows.CollectionReset -= new CollectionItemsChangedEventHandler<ScatterPlotDataRow>(Rows_CollectionReset);
+      base.DeregisterContentEvents();
     }
     protected override void RegisterContentEvents() {
+      base.RegisterContentEvents();
       Content.VisualPropertiesChanged += new EventHandler(Content_VisualPropertiesChanged);
       Content.Rows.ItemsAdded += new CollectionItemsChangedEventHandler<ScatterPlotDataRow>(Rows_ItemsAdded);
       Content.Rows.ItemsRemoved += new CollectionItemsChangedEventHandler<ScatterPlotDataRow>(Rows_ItemsRemoved);
