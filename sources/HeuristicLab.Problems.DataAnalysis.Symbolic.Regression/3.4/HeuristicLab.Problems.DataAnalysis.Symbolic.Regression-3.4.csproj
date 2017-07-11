@@ -124,7 +124,6 @@
     <Compile Include="MultiObjective\SymbolicRegressionMultiObjectiveValidationBestSolutionAnalyzer.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="SingleObjective\ConstantOptimizationAnalyzer.cs" />
-    <Compile Include="SingleObjective\Evaluators\SymbolicRegressionVarianceModelEvaluator.cs" />
     <Compile Include="SingleObjective\Evaluators\SymbolicRegressionMeanRelativeErrorEvaluator.cs" />
     <Compile Include="SingleObjective\SymbolicRegressionSolutionsAnalyzer.cs" />
     <Compile Include="SymbolicRegressionPhenotypicDiversityAnalyzer.cs" />
