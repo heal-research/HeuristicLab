@@ -31,13 +31,13 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       get { return "Variable Network Instances"; }
     }
     public override string Description {
-      get { return "A set of regression benchmark instances for variable network analysis"; }
+      get { return "A set of regression benchmark instances for variable network analysis. The data for these instances are randomly generated as described in the reference publication."; }
     }
     public override Uri WebLink {
       get { return new Uri("http://dev.heuristiclab.com"); }
     }
     public override string ReferencePublication {
-      get { return ""; }
+      get { return "G. Kronberger, B. Burlacu, M. Kommenda, S. Winkler, M. Affenzeller. Measures for the Evaluation and Comparison of Graphical Model Structures. to appear in Computer Aided Systems Theory - EUROCAST 2017, Springer 2018"; }
     }
     public int Seed { get; private set; }
 
