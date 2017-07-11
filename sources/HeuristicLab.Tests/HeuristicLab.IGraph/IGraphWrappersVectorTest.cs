@@ -19,7 +19,10 @@
  */
 #endregion
 
+using System;
+using System.Collections.Generic;
 using System.Linq;
+using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.IGraph.Wrappers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -103,7 +106,7 @@ namespace HeuristicLab.Tests {
     [TestCategory("ExtLibs.igraph")]
     [TestProperty("Time", "short")]
     public void IGraphWrappersVectorShuffleTest() {
-      var different = 0;
+      var different = new HashSet<RealVector>(new RealVectorEqualityComparer());
       for (var i = 0; i < 100; i++) {
         using (var vector = new Vector(5)) {
           vector[0] = vector[1] = 4;
@@ -112,8 +115,7 @@ namespace HeuristicLab.Tests {
           vector[4] = -0.5;
           vector.Shuffle();
           var result = vector.ToArray();
-          if (!result.SequenceEqual(new double[] { 4, 4, 3, 1.5, -0.5 }))
-            different++;
+          different.Add(new RealVector(result));
           Assert.AreEqual(2, result.Count(x => x == 4));
           Assert.AreEqual(1, result.Count(x => x == 3));
           Assert.AreEqual(1, result.Count(x => x == 1.5));
@@ -121,7 +123,9 @@ namespace HeuristicLab.Tests {
         }
       }
       // There should be reasonable low probability that all 100 shuffles result in exactly the same vector
-      Assert.IsTrue(different > 0);
+      Assert.IsTrue(different.Count > 1);
+      Assert.IsTrue(different.Count <= 60); // there are a total of 60 different shuffles 5! / 2!
+      Console.WriteLine("Shuffle produced " + different.Count + " unique vectors");
     }
 
     [TestMethod]
