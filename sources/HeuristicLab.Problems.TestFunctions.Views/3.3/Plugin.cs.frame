@@ -27,6 +27,8 @@ namespace HeuristicLab.Problems.TestFunctions.Views {
   /// </summary>
   [Plugin("HeuristicLab.Problems.TestFunctions.Views", "3.3.14.$WCREV$")]
   [PluginFile("HeuristicLab.Problems.TestFunctions.Views-3.3.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.Analysis", "3.3")]
+  [PluginDependency("HeuristicLab.Analysis.Views", "3.3")]
   [PluginDependency("HeuristicLab.Collections", "3.3")]
   [PluginDependency("HeuristicLab.Common", "3.3")]
   [PluginDependency("HeuristicLab.Core", "3.3")]
@@ -39,7 +41,6 @@ namespace HeuristicLab.Problems.TestFunctions.Views {
   [PluginDependency("HeuristicLab.Optimization.Views", "3.3")]
   [PluginDependency("HeuristicLab.Problems.TestFunctions", "3.3")]
   [PluginDependency("HeuristicLab.Problems.TestFunctions.MultiObjective", "3.3")]
-  [PluginDependency("HeuristicLab.Visualization.ChartControlsExtensions", "3.3")]
   public class HeuristicLabProblemsTestFunctionsViewsPlugin : PluginBase {
   }
 }

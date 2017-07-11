@@ -110,7 +110,7 @@
     <Compile Include="Calculators\HyperVolume.cs" />
     <Compile Include="Calculators\InvertedGenerationalDistance.cs" />
     <Compile Include="Calculators\GenerationalDistance.cs" />
-    <Compile Include="ScatterPlotContent.cs" />
+    <Compile Include="ParetoFrontScatterPlot.cs" />
     <Compile Include="Utilities.cs" />
     <Compile Include="Instances\MISCInstanceProvider.cs" />
     <Compile Include="Instances\ZDTInstanceProvider.cs" />

@@ -244,8 +244,8 @@ namespace HeuristicLab.Algorithms.MOCMAEvolutionStrategy {
       get { return (DoubleMatrix)Results[CurrentFrontResultName].Value; }
       set { Results[CurrentFrontResultName].Value = value; }
     }
-    private ScatterPlotContent ResultsScatterPlot {
-      get { return (ScatterPlotContent)Results[ScatterPlotResultName].Value; }
+    private ParetoFrontScatterPlot ResultsScatterPlot {
+      get { return (ParetoFrontScatterPlot)Results[ScatterPlotResultName].Value; }
       set { Results[ScatterPlotResultName].Value = value; }
     }
     #endregion
@@ -352,7 +352,7 @@ namespace HeuristicLab.Algorithms.MOCMAEvolutionStrategy {
       table.Rows.Add(new DataRow(SpacingResultName));
       Results.Add(new Result(TimetableResultName, "Different quality meassures in a timeseries", table));
       Results.Add(new Result(CurrentFrontResultName, "The current front", new DoubleMatrix()));
-      Results.Add(new Result(ScatterPlotResultName, "A scatterplot displaying the evaluated solutions and (if available) the analytically optimal front", new ScatterPlotContent(null, null, null, 2)));
+      Results.Add(new Result(ScatterPlotResultName, "A scatterplot displaying the evaluated solutions and (if available) the analytically optimal front", new ParetoFrontScatterPlot()));
 
       var problem = Problem as MultiObjectiveTestFunctionProblem;
       if (problem == null) return;
@@ -360,7 +360,7 @@ namespace HeuristicLab.Algorithms.MOCMAEvolutionStrategy {
         ResultsBestKnownHypervolume = Hypervolume.Calculate(problem.BestKnownFront.ToJaggedArray(), problem.TestFunction.ReferencePoint(problem.Objectives), Problem.Maximization);
         ResultsDifferenceBestKnownHypervolume = ResultsBestKnownHypervolume;
       }
-      ResultsScatterPlot = new ScatterPlotContent(new double[0][], new double[0][], problem.BestKnownFront.ToJaggedArray(), problem.Objectives);
+      ResultsScatterPlot = new ParetoFrontScatterPlot(new double[0][], new double[0][], problem.BestKnownFront.ToJaggedArray(), problem.Objectives, problem.ProblemSize);
     }
     #endregion
 
@@ -469,7 +469,7 @@ namespace HeuristicLab.Algorithms.MOCMAEvolutionStrategy {
     }
 
     private void Analyze() {
-      ResultsScatterPlot = new ScatterPlotContent(solutions.Select(x => x.Fitness).ToArray(), solutions.Select(x => x.Mean.ToArray()).ToArray(), ResultsScatterPlot.ParetoFront, ResultsScatterPlot.Objectives);
+      ResultsScatterPlot = new ParetoFrontScatterPlot(solutions.Select(x => x.Fitness).ToArray(), solutions.Select(x => x.Mean.ToArray()).ToArray(), ResultsScatterPlot.ParetoFront, ResultsScatterPlot.Objectives, ResultsScatterPlot.ProblemSize);
       ResultsSolutions = solutions.Select(x => x.Mean.ToArray()).ToMatrix();
 
       var problem = Problem as MultiObjectiveTestFunctionProblem;

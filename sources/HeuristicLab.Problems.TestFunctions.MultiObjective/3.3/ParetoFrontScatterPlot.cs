@@ -18,6 +18,7 @@
  * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
  */
 #endregion
+
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -25,77 +26,64 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
   [StorableClass]
-  [Item("ScatterPlot", "The optimal front, current front and its associated Points in the searchspace")]
-  public class ScatterPlotContent : Item {
-
-    [Storable]
-    private double[][] qualities;
-    public double[][] Qualities {
-      get {
-        return qualities;
-      }
-
-      private set {
-        qualities = value;
-      }
-    }
+  [Item("Pareto Front Scatter Plot", "The optimal front, current front and its associated Points in the searchspace")]
+  public class ParetoFrontScatterPlot : Item {
 
     [Storable]
     private int objectives;
     public int Objectives {
-      get {
-        return objectives;
-      }
+      get { return objectives; }
+    }
 
-      private set {
-        objectives = value;
-      }
+    [Storable]
+    private int problemSize;
+    public int ProblemSize {
+      get { return problemSize; }
+    }
+
+    [Storable]
+    private double[][] qualities;
+    public double[][] Qualities {
+      get { return qualities; }
     }
 
     [Storable]
     private double[][] solutions;
     public double[][] Solutions {
-      get {
-        return solutions;
-      }
-
-      private set {
-        solutions = value;
-      }
+      get { return solutions; }
     }
 
     [Storable]
     private double[][] paretoFront;
     public double[][] ParetoFront {
-      get {
-        return paretoFront;
-      }
-
-      private set {
-        paretoFront = value;
-      }
+      get { return paretoFront; }
     }
 
-    [StorableConstructor]
-    protected ScatterPlotContent(bool deserializing) : base() { }
-
-    protected ScatterPlotContent(ScatterPlotContent original, Cloner cloner)
-      : this() {
-      this.qualities = original.qualities.Select(s => s.ToArray()).ToArray();
-      this.solutions = original.solutions.Select(s => s.ToArray()).ToArray();
-      this.paretoFront = original.paretoFront.Select(s => s.ToArray()).ToArray();
-      this.objectives = original.objectives;
-    }
-    protected ScatterPlotContent() : base() { }
-    public ScatterPlotContent(double[][] qualities, double[][] solutions, double[][] paretoFront, int objectives) {
+    #region Constructor, Cloning & Persistance
+    public ParetoFrontScatterPlot(double[][] qualities, double[][] solutions, double[][] paretoFront, int objectives, int problemSize) {
       this.qualities = qualities;
       this.solutions = solutions;
       this.paretoFront = paretoFront;
       this.objectives = objectives;
+      this.problemSize = problemSize;
+    }
+    public ParetoFrontScatterPlot() { }
+
+    protected ParetoFrontScatterPlot(ParetoFrontScatterPlot original, Cloner cloner)
+      : base(original, cloner) {
+      if (original.qualities != null) qualities = original.qualities.Select(s => s.ToArray()).ToArray();
+      if (original.solutions != null) solutions = original.solutions.Select(s => s.ToArray()).ToArray();
+      if (original.paretoFront != null) paretoFront = original.paretoFront.Select(s => s.ToArray()).ToArray();
+      objectives = original.objectives;
+      problemSize = original.problemSize;
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new ParetoFrontScatterPlot(this, cloner);
     }
 
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new ScatterPlotContent(this, cloner);
-    }
+    [StorableConstructor]
+    protected ParetoFrontScatterPlot(bool deserializing)
+      : base(deserializing) { }
+    #endregion
   }
 }
