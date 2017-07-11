@@ -38,7 +38,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
     protected override void importButton_Click(object sender, EventArgs e) {
       var provider = Content as DataAnalysisInstanceProvider<T, DataAnalysisImportType>;
       if (provider != null) {
-        var importTypeDialog = new DataAnalysisImportTypeDialog();
+        var importTypeDialog = new DataAnalysisImportDialog();
         if (importTypeDialog.ShowDialog() == DialogResult.OK) {
           T instance = default(T);
           try {

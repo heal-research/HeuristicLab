@@ -20,22 +20,25 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
-  public partial class RegressionImportTypeDialog : DataAnalysisImportTypeDialog {
-    public new RegressionImportType ImportType {
+
+  public partial class ClassificationImportDialog : DataAnalysisImportDialog {
+    public new ClassificationImportType ImportType {
       get {
-        return new RegressionImportType() {
+        return new ClassificationImportType() {
           Shuffle = ShuffleDataCheckbox.Checked,
           TrainingPercentage = TrainingTestTrackBar.Value,
-          TargetVariable = (String)TargetVariableComboBox.SelectedValue
+          TargetVariable = (String)TargetVariableComboBox.SelectedValue,
+          UniformlyDistributeClasses = UniformDistributionOfClassesCheckbox.Checked
         };
       }
     }
 
-    public RegressionImportTypeDialog() {
+    public ClassificationImportDialog() {
       InitializeComponent();
     }
 
@@ -47,9 +50,15 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
     protected void SetPossibleTargetVariables() {
       var dataset = PreviewDatasetMatrix.Content as Dataset;
       if (dataset != null) {
+        IEnumerable<string> possibleTargetVariables = ClassificationProblemData.CheckVariablesForPossibleTargetVariables(dataset);
+
         // Remove " (Double)" at the end of the variable name (last 9 chars)
-        TargetVariableComboBox.DataSource = dataset.DoubleVariables.Select(x => x.Substring(0, x.Length - 9)).ToList();
+        TargetVariableComboBox.DataSource = possibleTargetVariables.Select(x => x.Substring(0, x.Length - 9)).ToList();
       }
+    }
+
+    private void ShuffleDataCheckbox_CheckedChanged(object sender, System.EventArgs e) {
+      UniformDistributionOfClassesCheckbox.Enabled = ShuffleDataCheckbox.Checked;
     }
   }
 }

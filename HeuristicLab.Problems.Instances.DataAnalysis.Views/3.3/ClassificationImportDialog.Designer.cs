@@ -20,7 +20,7 @@
 #endregion
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
-  partial class ClassificationImportTypeDialog {
+  partial class ClassificationImportDialog {
     /// <summary>
     /// Required designer variable.
     /// </summary>
@@ -44,7 +44,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ClassificationImportTypeDialog));
+      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ClassificationImportDialog));
       this.TargetVariableComboBox = new System.Windows.Forms.ComboBox();
       this.TargetVariableLabel = new System.Windows.Forms.Label();
       this.TargetVariableInfoLabel = new System.Windows.Forms.Label();
@@ -75,9 +75,9 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       // 
       this.TrainingLabel.Location = new System.Drawing.Point(76, 95);
       // 
-      // CancelationButton
+      // CancellationButton
       // 
-      this.CancelationButton.Location = new System.Drawing.Point(384, 482);
+      this.CancellationButton.Location = new System.Drawing.Point(384, 482);
       // 
       // ProblemDataSettingsGroupBox
       // 
@@ -173,12 +173,12 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       this.ToolTip.SetToolTip(this.UniformDistributClassValuesInfoLabel, (string)this.UniformDistributClassValuesInfoLabel.Tag);
       this.UniformDistributClassValuesInfoLabel.DoubleClick += new System.EventHandler(this.ControlToolTip_DoubleClick);
       // 
-      // ClassificationImportTypeDialog
+      // ClassificationImportDialog
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.ClientSize = new System.Drawing.Size(471, 517);
-      this.Name = "ClassificationImportTypeDialog";
+      this.Name = "ClassificationImportDialog";
       this.Text = "Classification CSV Import";
       ((System.ComponentModel.ISupportInitialize)(this.TrainingTestTrackBar)).EndInit();
       this.CSVSettingsGroupBox.ResumeLayout(false);

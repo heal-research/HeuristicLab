@@ -40,7 +40,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
     }
 
     protected override void importButton_Click(object sender, EventArgs e) {
-      var importTypeDialog = new DataAnalysisImportTypeDialog();
+      var importTypeDialog = new DataAnalysisImportDialog();
       if (importTypeDialog.ShowDialog() == DialogResult.OK) {
         IClusteringProblemData instance = null;
         try {

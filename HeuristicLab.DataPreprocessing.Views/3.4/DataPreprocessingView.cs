@@ -139,22 +139,22 @@ namespace HeuristicLab.DataPreprocessing.Views {
       importProblemDataTypeContextMenuStrip.Show(Cursor.Position);
     }
     private void importRegressionToolStripMenuItem_Click(object sender, EventArgs e) {
-      Import(new RegressionCSVInstanceProvider(), new RegressionImportTypeDialog(),
-        (dialog => ((RegressionImportTypeDialog)dialog).ImportType));
+      Import(new RegressionCSVInstanceProvider(), new RegressionImportDialog(),
+        (dialog => ((RegressionImportDialog)dialog).ImportType));
     }
     private void importClassificationToolStripMenuItem_Click(object sender, EventArgs e) {
-      Import(new ClassificationCSVInstanceProvider(), new ClassificationImportTypeDialog(),
-        (dialog => ((ClassificationImportTypeDialog)dialog).ImportType));
+      Import(new ClassificationCSVInstanceProvider(), new ClassificationImportDialog(),
+        (dialog => ((ClassificationImportDialog)dialog).ImportType));
     }
     private void importTimeSeriesToolStripMenuItem_Click(object sender, EventArgs e) {
-      Import(new TimeSeriesPrognosisCSVInstanceProvider(), new TimeSeriesPrognosisImportTypeDialog(),
-        (dialog => ((TimeSeriesPrognosisImportTypeDialog)dialog).ImportType));
+      Import(new TimeSeriesPrognosisCSVInstanceProvider(), new TimeSeriesPrognosisImportDialog(),
+        (dialog => ((TimeSeriesPrognosisImportDialog)dialog).ImportType));
     }
-    private void Import<TProblemData, TImportType>(DataAnalysisInstanceProvider<TProblemData, TImportType> instanceProvider, DataAnalysisImportTypeDialog importTypeDialog,
-      Func<DataAnalysisImportTypeDialog, TImportType> getImportType)
+    private void Import<TProblemData, TImportType>(DataAnalysisInstanceProvider<TProblemData, TImportType> instanceProvider, DataAnalysisImportDialog importDialog,
+      Func<DataAnalysisImportDialog, TImportType> getImportType)
       where TProblemData : class, IDataAnalysisProblemData
       where TImportType : DataAnalysisImportType {
-      if (importTypeDialog.ShowDialog() == DialogResult.OK) {
+      if (importDialog.ShowDialog() == DialogResult.OK) {
         Task.Run(() => {
           TProblemData instance;
           var mainForm = (MainForm.WindowsForms.MainForm)MainFormManager.MainForm;
@@ -166,7 +166,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
 
             instanceProvider.ProgressChanged += (o, args) => { progress.ProgressValue = args.ProgressPercentage / 100.0; };
 
-            instance = instanceProvider.ImportData(importTypeDialog.Path, getImportType(importTypeDialog), importTypeDialog.CSVFormat);
+            instance = instanceProvider.ImportData(importDialog.Path, getImportType(importDialog), importDialog.CSVFormat);
           } catch (IOException ex) {
             MessageBox.Show(string.Format("There was an error parsing the file: {0}", Environment.NewLine + ex.Message), "Error while parsing", MessageBoxButtons.OK, MessageBoxIcon.Error);
             mainForm.RemoveOperationProgressFromContent(activeView.Content);
@@ -175,7 +175,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
           try {
             Content.Import(instance);
           } catch (IOException ex) {
-            MessageBox.Show(string.Format("This problem does not support loading the instance {0}: {1}", Path.GetFileName(importTypeDialog.Path), Environment.NewLine + ex.Message), "Cannot load instance");
+            MessageBox.Show(string.Format("This problem does not support loading the instance {0}: {1}", Path.GetFileName(importDialog.Path), Environment.NewLine + ex.Message), "Cannot load instance");
           } finally {
             mainForm.RemoveOperationProgressFromContent(activeView.Content);
           }

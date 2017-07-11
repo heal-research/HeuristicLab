@@ -30,7 +30,7 @@ using HeuristicLab.Core.Views;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
-  public partial class DataAnalysisImportTypeDialog : Form {
+  public partial class DataAnalysisImportDialog : Form {
 
     private static readonly List<KeyValuePair<DateTimeFormatInfo, string>> dateTimeFormats =
       new List<KeyValuePair<DateTimeFormatInfo, string>>{
@@ -87,7 +87,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       }
     }
 
-    public DataAnalysisImportTypeDialog() {
+    public DataAnalysisImportDialog() {
       InitializeComponent();
 
       SeparatorComboBox.DataSource = POSSIBLE_SEPARATORS;
