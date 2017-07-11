@@ -93,7 +93,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       return data;
     }
 
-    // as described in Greedy Function Approxination paper
+    // as described in Greedy Function Approximation paper
     private IEnumerable<double> GenerateRandomFunction(IRandom rand, List<List<double>> xs, int nTerms = 20) {
       int nRows = xs.First().Count;
 

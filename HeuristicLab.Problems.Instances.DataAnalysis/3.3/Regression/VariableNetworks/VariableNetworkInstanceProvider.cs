@@ -31,13 +31,13 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       get { return "Variable Network Instances"; }
     }
     public override string Description {
-      get { return "A set of regression benchmark instances for variable network analysis"; }
+      get { return "A set of regression benchmark instances for variable network analysis. The data for these instances are randomly generated as described in the reference publication."; }
     }
     public override Uri WebLink {
       get { return new Uri("http://dev.heuristiclab.com"); }
     }
     public override string ReferencePublication {
-      get { return ""; }
+      get { return "G. Kronberger, B. Burlacu, M. Kommenda, S. Winkler, M. Affenzeller. Measures for the Evaluation and Comparison of Graphical Model Structures. to appear in Computer Aided Systems Theory - EUROCAST 2017, Springer 2018"; }
     }
     public int Seed { get; private set; }
 
@@ -48,13 +48,19 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
 
     public override IEnumerable<IDataDescriptor> GetDataDescriptors() {
       var numVariables = new int[] { 10, 20, 50, 100 };
-      var noiseRatios = new double[] { 0.01, 0.05, 0.1 };
+      var noiseRatios = new double[] { 0, 0.01, 0.05, 0.1, 0.2 };
       var rand = new MersenneTwister((uint)Seed); // use fixed seed for deterministic problem generation
-      return (from size in numVariables
-              from noiseRatio in noiseRatios
-              select new VariableNetwork(size, noiseRatio, new MersenneTwister((uint)rand.Next())))
-              .Cast<IDataDescriptor>()
-              .ToList();
+      var lr = (from size in numVariables
+                from noiseRatio in noiseRatios
+                select new LinearVariableNetwork(size, noiseRatio, new MersenneTwister((uint)rand.Next())))
+                .Cast<IDataDescriptor>()
+                .ToList();
+      var gp = (from size in numVariables
+                from noiseRatio in noiseRatios
+                select new GaussianProcessVariableNetwork(size, noiseRatio, new MersenneTwister((uint)rand.Next())))
+                .Cast<IDataDescriptor>()
+                .ToList();
+      return lr.Concat(gp);
     }
 
     public override IRegressionProblemData LoadData(IDataDescriptor descriptor) {

@@ -156,6 +156,8 @@
     <Compile Include="Regression\FeatureSelection\FeatureSelectionRegressionProblemData.cs" />
     <Compile Include="Regression\FeatureSelection\FeatureSelection.cs" />
     <Compile Include="Regression\FeatureSelection\FeatureSelectionInstanceProvider.cs" />
+    <Compile Include="Regression\VariableNetworks\LinearVariableNetwork.cs" />
+    <Compile Include="Regression\VariableNetworks\GaussianProcessVariableNetwork.cs" />
     <Compile Include="Regression\VariableNetworks\VariableNetwork.cs" />
     <Compile Include="Regression\VariableNetworks\VariableNetworkInstanceProvider.cs" />
     <Compile Include="Regression\Keijzer\KeijzerFunctionFourteen.cs" />
