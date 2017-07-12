@@ -153,8 +153,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       }
     }
 
-    private double trainingMin = 1;
-    private double trainingMax = -1;
+    private double trainingMin = -1;
+    private double trainingMax = 1;
 
     private int drawingSteps = 1000;
     public int DrawingSteps {
