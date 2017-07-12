@@ -316,12 +316,10 @@
     <Compile Include="TimeSeries\AutoregressiveModeling.cs" />
     <Compile Include="TSNE\Distances\DistanceBase.cs" />
     <Compile Include="TSNE\Distances\EuclideanDistance.cs" />
-    <Compile Include="TSNE\Distances\IndexedItemDistance.cs" />
+    <Compile Include="TSNE\IndexedItemDistance.cs" />
     <Compile Include="TSNE\Distances\InnerProductDistance.cs" />
     <Compile Include="TSNE\Distances\ManhattanDistance.cs" />
-    <Compile Include="TSNE\Interfaces\IDistance.cs" />
-    <Compile Include="TSNE\Interfaces\ISpacePartitioningTree.cs" />
-    <Compile Include="TSNE\Interfaces\IVantagePointTree.cs" />
+    <Compile Include="TSNE\Distances\IDistance.cs" />
     <Compile Include="TSNE\PriorityQueue.cs" />
     <Compile Include="TSNE\SpacePartitioningTree.cs" />
     <Compile Include="TSNE\TSNEAlgorithm.cs" />
