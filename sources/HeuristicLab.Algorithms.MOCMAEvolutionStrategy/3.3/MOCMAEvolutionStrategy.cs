@@ -294,7 +294,6 @@ namespace HeuristicLab.Algorithms.MOCMAEvolutionStrategy {
       Analyze();
 
       ResultsIterations = 1;
-      cancellationToken.ThrowIfCancellationRequested();
     }
     private Individual InitializeIndividual(RealVector x) {
       var zeros = new RealVector(x.Length);
