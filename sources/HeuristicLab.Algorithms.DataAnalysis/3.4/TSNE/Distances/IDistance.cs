@@ -19,11 +19,32 @@
  */
 #endregion
 
+using System.Collections;
 using System.Collections.Generic;
-using HeuristicLab.Common;
+using HeuristicLab.Core;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
-  public interface IVantagePointTree<T> {
-    void Search(T target, int k, out IList<T> results, out IList<double> distances);
+  public interface IDistance<in T> : IDistance {
+    /// <summary>
+    /// Calculates a distance measure between two objects.
+    /// 1.) non-negative d(x,y) >= 0
+    /// 2.) symmetric d(x,y) = d(y,x)
+    /// 3.) zero-reflexive d(x,x) = 0;
+    /// </summary>
+    /// <returns>d(x,y)</returns>
+    double Get(T x, T y);
+
+    /// <summary>
+    /// Returns a comparator wich compares the distances to item. (allows for sorting nearest/farthest neighbours)
+    /// </summary>
+    /// <param name="item"></param>
+    /// <returns></returns>
+    IComparer<T> GetDistanceComparer(T item);
+  }
+
+
+  public interface IDistance : IItem {
+    double Get(object x, object y);
+    IComparer GetDistanceComparer(object item);
   }
 }

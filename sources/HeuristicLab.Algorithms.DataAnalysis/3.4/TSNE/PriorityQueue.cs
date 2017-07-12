@@ -24,7 +24,6 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
-  // TODO: move to HeuristicLab.Collections
 
   // Code Taken from branch: RoutePlanning, Heap4
   // implementation based on C++ version from Peter Sanders
@@ -62,9 +61,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     public KeyValuePair<TK, TV> PeekMin() {
-      if(size == 0) {
-        throw new InvalidOperationException("Heap is empty");
-      }
+      if (size == 0) throw new InvalidOperationException("Heap is empty");
       return new KeyValuePair<TK, TV>(data[1].Key, data[1].Value);
     }
 
@@ -85,30 +82,22 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       var sz = size;
       size = sz - 1;
       finalLayerDist++;
-      if(finalLayerDist == finalLayerSize) {
+      if (finalLayerDist == finalLayerSize) {
         finalLayerSize >>= 2;
         finalLayerDist = 0;
       }
 
-      while(succ < sz) {
+      while (succ < sz) {
         var minKey = data[succ].Key;
         var delta = 0;
 
-        var otherKey = data[succ + 1].Key;
-        if(otherKey.CompareTo(minKey) < 0) {
+        for (var i = 1; i <= 3; i++) {
+          var otherKey = data[succ + i].Key;
+          if (otherKey.CompareTo(minKey) >= 0) continue;
           minKey = otherKey;
-          delta = 1;
+          delta = i;
         }
-        otherKey = data[succ + 2].Key;
-        if(otherKey.CompareTo(minKey) < 0) {
-          minKey = otherKey;
-          delta = 2;
-        }
-        otherKey = data[succ + 3].Key;
-        if(otherKey.CompareTo(minKey) < 0) {
-          minKey = otherKey;
-          delta = 3;
-        }
+        
         succ += delta;
         layerPos += delta;
 
@@ -135,7 +124,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       layerDist >>= 2; // now pred's pos in layer
       pred = pred - layerDist; // finally preds index
 
-      while(data[pred].Key.CompareTo(bubble) > 0) {  // must terminate since inf at root
+      while (data[pred].Key.CompareTo(bubble) > 0) {  // must terminate since inf at root
         data[hole].Key = data[pred].Key;
         data[hole].Value = data[pred].Value;
         hole = pred;
@@ -148,7 +137,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       // finally move data to hole
       data[hole].Key = bubble;
       data[hole].Value = data[sz].Value;
-
       data[sz].Key = Supremum; // mark as deleted
     }
 
@@ -157,8 +145,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       var layerDist = finalLayerDist;
       finalLayerDist--;
 
-      if(finalLayerDist == -1) { // layer full
-                                 // start next layer
+      if (finalLayerDist == -1) { // layer full
+                                  // start next layer
         finalLayerSize <<= 2;
         finalLayerDist = finalLayerSize - 1;
       }
@@ -171,7 +159,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       layerDist >>= 2;
       pred = pred - layerDist; // finally preds index
       var predKey = data[pred].Key;
-      while(predKey.CompareTo(key) > 0) {
+      while (predKey.CompareTo(key) > 0) {
         data[hole].Key = predKey;
         data[hole].Value = data[pred].Value;
         hole = pred;
@@ -194,7 +182,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       finalLayerDist = 0;
       var sup = Supremum;
       var cap = capacity;
-      for(var i = 1; i <= cap; i++) {
+      for (var i = 1; i <= cap; i++) {
         data[i].Key = sup;
       }
     }

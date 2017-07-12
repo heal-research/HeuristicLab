@@ -40,7 +40,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// space to allow visual cluster identification.
   /// </summary>
   [Item("tSNE", "t-distributed stochastic neighbourhood embedding projects the data in a low " +
-                "dimensional space to allow visual cluster identification.")]
+                "dimensional space to allow visual cluster identification. Implemented similar to: https://lvdmaaten.github.io/tsne/#implementations (Barnes-Hut t-SNE). Described in : https://lvdmaaten.github.io/publications/papers/JMLR_2014.pdf")]
   [Creatable(CreatableAttribute.Categories.DataAnalysis, Priority = 100)]
   [StorableClass]
   public sealed class TSNEAlgorithm : BasicAlgorithm {
@@ -197,8 +197,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private TSNEAlgorithm(bool deserializing) : base(deserializing) { }
 
     private TSNEAlgorithm(TSNEAlgorithm original, Cloner cloner) : base(original, cloner) {
-      if(original.dataRowNames!=null)
-      this.dataRowNames = new Dictionary<string, List<int>>(original.dataRowNames);
+      if (original.dataRowNames != null)
+        this.dataRowNames = new Dictionary<string, List<int>>(original.dataRowNames);
       if (original.dataRows != null)
         this.dataRows = original.dataRows.ToDictionary(kvp => kvp.Key, kvp => cloner.Clone(kvp.Value));
       if (original.state != null)
@@ -225,7 +225,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       Parameters.Add(new FixedValueParameter<DoubleValue>(EtaParameterName, "Gradient descent learning rate.", new DoubleValue(10)));
       Parameters.Add(new FixedValueParameter<BoolValue>(SetSeedRandomlyParameterName, "If the seed should be random.", new BoolValue(true)));
       Parameters.Add(new FixedValueParameter<IntValue>(SeedParameterName, "The seed used if it should not be random.", new IntValue(0)));
-      Parameters.Add(new FixedValueParameter<StringValue>(ClassesParameterName, "name of the column specifying the class lables of each data point. If the label column can not be found training/test is used as labels.", new StringValue("none")));
+      Parameters.Add(new FixedValueParameter<StringValue>(ClassesParameterName, "Name of the column specifying the class lables of each data point. If the label column can not be found training/test is used as labels.", new StringValue("none")));
       Parameters.Add(new FixedValueParameter<BoolValue>(NormalizationParameterName, "Whether the data should be zero centered and have variance of 1 for each variable, so different scalings are ignored.", new BoolValue(true)));
       Parameters.Add(new FixedValueParameter<IntValue>(UpdateIntervalParameterName, "", new IntValue(50)));
       Parameters[UpdateIntervalParameterName].Hidden = true;

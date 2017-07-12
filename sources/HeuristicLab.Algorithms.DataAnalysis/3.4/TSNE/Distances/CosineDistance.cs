@@ -33,35 +33,40 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// It is designed for vectors with all positive coordinates.
   /// </summary>
   [StorableClass]
-  [Item("InnerProductDistance", "The angluar distance as defined as a normalized distance measure dependent on the angle between two vectors.\nIt is designed for vectors with all positive coordinates")]
-  public class InnerProductDistance : DistanceBase<IEnumerable<double>> {
+  [Item("CosineDistance", "The angluar distance as defined as a normalized distance measure dependent on the angle between two vectors.\nIt is designed for vectors with all positive coordinates")]
+  public class CosineDistance : DistanceBase<IEnumerable<double>> {
 
-    #region HLConstructors
+    #region HLConstructors & Cloning
     [StorableConstructor]
-    protected InnerProductDistance(bool deserializing) : base(deserializing) { }
-    protected InnerProductDistance(InnerProductDistance original, Cloner cloner)
+    protected CosineDistance(bool deserializing) : base(deserializing) { }
+    protected CosineDistance(CosineDistance original, Cloner cloner)
       : base(original, cloner) { }
-    public InnerProductDistance() { }
+    public CosineDistance() { }
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new InnerProductDistance(this, cloner);
+      return new CosineDistance(this, cloner);
     }
     #endregion
 
     #region statics
-    public static double GetDistance(IEnumerable<double> point1, IEnumerable<double> point2) {
-      var xs = point1.GetEnumerator();
-      var ys = point2.GetEnumerator();
-      var sum = 0.0;
-      while(xs.MoveNext() & ys.MoveNext()) {
-        if(xs.Current < 0 || ys.Current < 0) throw new ArgumentException("Inner product distance is only defined for vectors with non-negative elements");
-        sum += xs.Current * ys.Current;
+    public static double GetDistance(IReadOnlyList<double> point1, IReadOnlyList<double> point2) {
+      if (point1.Count != point2.Count) throw new ArgumentException("Cosine distance not defined on vectors of different length");
+      var innerprod = 0.0;
+      var length1 = 0.0;
+      var length2 = 0.0;
+
+      for (var i = 0; i < point1.Count; i++) {
+        double d1 = point1[i], d2 = point2[i];
+        innerprod += d1 * d2;
+        length1 += d1 * d1;
+        length2 += d2 * d2;
       }
-      if(xs.MoveNext() || ys.MoveNext()) throw new ArgumentException("Enumerables contain a different number of elements");
-      return sum;
+      var l = Math.Sqrt(length1 * length2);
+      if (l.IsAlmost(0)) throw new ArgumentException("Cosine distance is not defined on vectors of length 0");
+      return 1 - innerprod / l;
     }
     #endregion
     public override double Get(IEnumerable<double> a, IEnumerable<double> b) {
-      return GetDistance(a, b);
+      return GetDistance(a.ToArray(), b.ToArray());
     }
   }
 }

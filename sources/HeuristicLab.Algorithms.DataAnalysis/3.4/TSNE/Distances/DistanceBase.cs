@@ -29,7 +29,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
   public abstract class DistanceBase<T> : Item, IDistance<T> {
 
-    #region HLConstructors & Boilerplate
+    #region HLConstructors & Cloning
     [StorableConstructor]
     protected DistanceBase(bool deserializing) : base(deserializing) { }
     protected DistanceBase(DistanceBase<T> original, Cloner cloner) : base(original, cloner) { }
@@ -41,7 +41,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public IComparer<T> GetDistanceComparer(T item) {
       return new DistanceComparer(item, this);
     }
-
 
     public double Get(object x, object y) {
       return Get((T)x, (T)y);

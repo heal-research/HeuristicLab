@@ -67,12 +67,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// data structure is created where neighbors in the tree are likely to be neighbors in the space.
   /// </summary>
   /// <typeparam name="T"></typeparam>
-  public class VantagePointTree<T> : IVantagePointTree<T> {
-    #region properties
+  public class VantagePointTree<T> {
     private readonly List<T> items;
     private readonly Node root;
     private readonly IDistance<T> distance;
-    #endregion
 
     public VantagePointTree(IDistance<T> distance, IEnumerable<T> items) : base() {
       root = null;
@@ -81,18 +79,25 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       root = BuildFromPoints(0, this.items.Count);
     }
 
+    /// <summary>
+    /// provides the k-nearest neighbours to a certain target element
+    /// </summary>
+    /// <param name="target">The target element</param>
+    /// <param name="k">How many neighbours</param>
+    /// <param name="results">The nearest neighbouring elements</param>
+    /// <param name="distances">The distances form the target corresponding to the neighbouring elements</param>
     public void Search(T target, int k, out IList<T> results, out IList<double> distances) {
       var heap = new PriorityQueue<double, IndexedItem<double>>(double.MaxValue, double.MinValue, k);
-      double tau = double.MaxValue;
+      var tau = double.MaxValue;
       Search(root, target, k, heap, ref tau);
       var res = new List<T>();
       var dist = new List<double>();
       while (heap.Size > 0) {
-        res.Add(items[heap.PeekMinValue().Index]);          // actually max distance
+        res.Add(items[heap.PeekMinValue().Index]);// actually max distance
         dist.Add(heap.PeekMinValue().Value);
         heap.RemoveMin();
       }
-      res.Reverse();  
+      res.Reverse();
       dist.Reverse();
       results = res;
       distances = dist;
@@ -103,7 +108,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       var dist = distance.Get(items[node.index], target);
       if (dist < tau) {
         if (heap.Size == k) heap.RemoveMin();   // remove furthest node from result list (if we already have k results) 
-        heap.Insert(-dist, new IndexedItem<double>(node.index, dist));      
+        heap.Insert(-dist, new IndexedItem<double>(node.index, dist));
         if (heap.Size == k) tau = heap.PeekMinValue().Value;
       }
       if (node.left == null && node.right == null) return;

@@ -55,18 +55,15 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using HeuristicLab.Common;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>
   /// Space partitioning tree (SPTree)
   /// </summary>
-  public class SpacePartitioningTree : ISpacePartitioningTree {
-    private const uint QT_NODE_CAPACITY = 1;
+  internal class SpacePartitioningTree {
+    private const uint QtNodeCapacity = 1;
 
-    private double[] buff;
-    private SpacePartitioningTree parent;
+    #region Fields
     private int dimension;
     private bool isLeaf;
     private uint size;
@@ -79,11 +76,12 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     // Indices in this space-partitioning tree node, corresponding center-of-mass, and list of all children
     private double[] centerOfMass;
-    private readonly int[] index = new int[QT_NODE_CAPACITY];
+    private readonly int[] index = new int[QtNodeCapacity];
 
     // Children
     private SpacePartitioningTree[] children;
     private uint noChildren;
+    #endregion
 
     public SpacePartitioningTree(double[,] inpData) {
       var d = inpData.GetLength(1);
@@ -103,19 +101,12 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       for (var i = 0; i < d; i++) meanY[i] /= n;
       var width = new double[d];
       for (var i = 0; i < d; i++) width[i] = Math.Max(maxY[i] - meanY[i], meanY[i] - minY[i]) + 1e-5;
-      Init(null, inpData, meanY, width);
+      Init(inpData, meanY, width);
       Fill(n);
     }
 
-    public SpacePartitioningTree(double[,] inpData, IEnumerable<double> impCorner, IEnumerable<double> impWith) {
-      Init(null, inpData, impCorner, impWith);
-    }
-    public SpacePartitioningTree(SpacePartitioningTree parent, double[,] inpData, IEnumerable<double> impCorner, IEnumerable<double> impWith) {
-      Init(parent, inpData, impCorner, impWith);
-    }
-
-    public ISpacePartitioningTree GetParent() {
-      return parent;
+    private SpacePartitioningTree(double[,] inpData, IEnumerable<double> impCorner, IEnumerable<double> impWith) {
+      Init(inpData, impCorner, impWith);
     }
 
     public bool Insert(int newIndex) {
@@ -131,13 +122,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       for (var i = 0; i < dimension; i++) centerOfMass[i] += mult2 * point[i];
 
       // If there is space in this quad tree and it is a leaf, add the object here
-      if (isLeaf && size < QT_NODE_CAPACITY) {
+      if (isLeaf && size < QtNodeCapacity) {
         index[size] = newIndex;
         size++;
         return true;
       }
 
-      // Don't add duplicates for now (this is not very nice)
+      // Don't add duplicates
       var anyDuplicate = false;
       for (uint n = 0; n < size; n++) {
         var duplicate = true;
@@ -160,71 +151,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return false;
     }
 
-    public void Subdivide() {
-      // Create new children
-      var newCorner = new double[dimension];
-      var newWidth = new double[dimension];
-      for (var i = 0; i < noChildren; i++) {
-        var div = 1;
-        for (var d = 0; d < dimension; d++) {
-          newWidth[d] = .5 * boundary.GetWidth(d);
-          if ((i / div) % 2 == 1) newCorner[d] = boundary.GetCorner(d) - .5 * boundary.GetWidth(d);
-          else newCorner[d] = boundary.GetCorner(d) + .5 * boundary.GetWidth(d);
-          div *= 2;
-        }
-        children[i] = new SpacePartitioningTree(this, data, newCorner, newWidth);
-      }
-
-      // Move existing points to correct children
-      for (var i = 0; i < size; i++) {
-        var success = false;
-        for (var j = 0; j < noChildren; j++) {
-          if (!success) success = children[j].Insert(index[i]);
-        }
-        index[i] = -1; // as in tSNE implementation by van der Maaten
-      }
-
-      // Empty parent node
-      size = 0;
-      isLeaf = false;
-    }
-
-    public bool IsCorrect() {
-      var row = new double[dimension];
-      for (var n = 0; n < size; n++) {
-        Buffer.BlockCopy(data, sizeof(double) * dimension * index[n], row, 0, sizeof(double) * dimension);
-        if (!boundary.ContainsPoint(row)) return false;
-      }
-      if (isLeaf) return true;
-      var correct = true;
-      for (var i = 0; i < noChildren; i++) correct = correct && children[i].IsCorrect();
-      return correct;
-    }
-
-    public void GetAllIndices(int[] indices) {
-      GetAllIndices(indices, 0);
-    }
-
-    public int GetAllIndices(int[] indices, int loc) {
-      // Gather indices in current quadrant
-      for (var i = 0; i < size; i++) indices[loc + i] = index[i];
-      loc += (int)size;
-      // Gather indices in children
-      if (isLeaf) return loc;
-      for (var i = 0; i < noChildren; i++) loc = children[i].GetAllIndices(indices, loc);
-      return loc;
-    }
-
-    public int GetDepth() {
-      return isLeaf ? 1 : 1 + children.Max(x => x.GetDepth());
-    }
-
     public void ComputeNonEdgeForces(int pointIndex, double theta, double[] negF, ref double sumQ) {
       // Make sure that we spend no time on empty nodes or self-interactions
       if (cumulativeSize == 0 || (isLeaf && size == 1 && index[0] == pointIndex)) return;
 
       // Compute distance between point and center-of-mass
       var D = .0;
+      var buff = new double[dimension];
       for (var d = 0; d < dimension; d++) buff[d] = data[pointIndex, d] - centerOfMass[d];
       for (var d = 0; d < dimension; d++) D += buff[d] * buff[d];
 
@@ -232,7 +165,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       var maxWidth = 0.0;
       for (var d = 0; d < dimension; d++) {
         var curWidth = boundary.GetWidth(d);
-        maxWidth = (maxWidth > curWidth) ? maxWidth : curWidth;
+        maxWidth = maxWidth > curWidth ? maxWidth : curWidth;
       }
       if (isLeaf || maxWidth / Math.Sqrt(D) < theta) {
 
@@ -249,8 +182,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
     }
 
-    // does not use the tree
-    public void ComputeEdgeForces(int[] rowP, int[] colP, double[] valP, int n, double[,] posF) {
+    public static void ComputeEdgeForces(int[] rowP, int[] colP, double[] valP, int n, double[,] posF, double[,] data, int dimension) {
       // Loop over all edges in the graph
       for (var k = 0; k < n; k++) {
         for (var i = rowP[k]; i < rowP[k + 1]; i++) {
@@ -258,6 +190,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
           // Compute pairwise distance and Q-value
           // uses squared distance
           var d = 1.0;
+          var buff = new double[dimension];
           for (var j = 0; j < dimension; j++) buff[j] = data[k, j] - data[colP[i], j];
           for (var j = 0; j < dimension; j++) d += buff[j] * buff[j];
           d = valP[i] / d;
@@ -272,8 +205,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private void Fill(int n) {
       for (var i = 0; i < n; i++) Insert(i);
     }
-    private void Init(SpacePartitioningTree p, double[,] inpData, IEnumerable<double> inpCorner, IEnumerable<double> inpWidth) {
-      parent = p;
+
+    private void Init(double[,] inpData, IEnumerable<double> inpCorner, IEnumerable<double> inpWidth) {
       dimension = inpData.GetLength(1);
       noChildren = 2;
       for (uint i = 1; i < dimension; i++) noChildren *= 2;
@@ -282,16 +215,42 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       size = 0;
       cumulativeSize = 0;
       boundary = new Cell((uint)dimension);
+
       inpCorner.ForEach((i, x) => boundary.SetCorner(i, x));
       inpWidth.ForEach((i, x) => boundary.SetWidth(i, x));
 
       children = new SpacePartitioningTree[noChildren];
       centerOfMass = new double[dimension];
-      buff = new double[dimension];
+    }
 
+    private void Subdivide() {
+      // Create new children
+      var newCorner = new double[dimension];
+      var newWidth = new double[dimension];
+      for (var i = 0; i < noChildren; i++) {
+        var div = 1;
+        for (var d = 0; d < dimension; d++) {
+          newWidth[d] = .5 * boundary.GetWidth(d);
+          if (i / div % 2 == 1) newCorner[d] = boundary.GetCorner(d) - .5 * boundary.GetWidth(d);
+          else newCorner[d] = boundary.GetCorner(d) + .5 * boundary.GetWidth(d);
+          div *= 2;
+        }
+        children[i] = new SpacePartitioningTree(data, newCorner, newWidth);
+      }
+
+      // Move existing points to correct children
+      for (var i = 0; i < size; i++) {
+        var success = false;
+        for (var j = 0; j < noChildren; j++) {
+          if (!success) success = children[j].Insert(index[i]);
+        }
+        index[i] = -1; // as in tSNE implementation by van der Maaten
+      }
+      // Empty parent node
+      size = 0;
+      isLeaf = false;
     }
     #endregion
-
 
     private class Cell {
       private readonly uint dimension;

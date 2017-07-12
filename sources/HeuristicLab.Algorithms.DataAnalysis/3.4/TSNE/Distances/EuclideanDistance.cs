@@ -31,7 +31,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   [Item("EuclideanDistance", "A norm function that uses Euclidean distance")]
   public class EuclideanDistance : DistanceBase<IEnumerable<double>> {
 
-    #region HLConstructors & Boilerplate
+    #region HLConstructors & Cloning
     [StorableConstructor]
     protected EuclideanDistance(bool deserializing) : base(deserializing) { }
     protected EuclideanDistance(EuclideanDistance original, Cloner cloner) : base(original, cloner) { }
@@ -39,9 +39,15 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public EuclideanDistance() { }
     #endregion
 
-    public static double GetDistance(double[] point1, double[] point2) {
-      if (point1.Length != point2.Length) throw new ArgumentException("Euclidean distance not defined on vectors of different length");
-      return Math.Sqrt(point1.Zip(point2, (a1, b1) => (a1 - b1) * (a1 - b1)).Sum());
+    public static double GetDistance(IReadOnlyList<double> point1, IReadOnlyList<double> point2) {
+      if (point1.Count != point2.Count) throw new ArgumentException("Euclidean distance not defined on vectors of different length");
+      var sum = 0.0;
+      for (var i = 0; i < point1.Count; i++) {
+        var d = point1[i] - point2[i];
+        sum += d * d;
+      }
+
+      return Math.Sqrt(sum);
     }
 
     public override double Get(IEnumerable<double> a, IEnumerable<double> b) {
