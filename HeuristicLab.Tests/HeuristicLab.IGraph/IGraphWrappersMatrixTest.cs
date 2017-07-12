@@ -30,29 +30,30 @@ namespace HeuristicLab.Tests {
     [TestCategory("ExtLibs.igraph")]
     [TestProperty("Time", "short")]
     public void IGraphWrappersMatrixConstructionAndFinalizationTest() {
-      var matrix = new Matrix(3, 2);
-      Assert.AreEqual(3, matrix.Rows);
-      Assert.AreEqual(2, matrix.Columns);
-      Assert.AreEqual(0, matrix[0, 0]);
-      matrix[0, 0] = 4;
-      var other = new Matrix(matrix);
-      Assert.AreEqual(3, other.Rows);
-      Assert.AreEqual(2, other.Columns);
-      Assert.AreEqual(4, other[0, 0]);
-
+      using (var matrix = new Matrix(3, 2)) {
+        Assert.AreEqual(3, matrix.Rows);
+        Assert.AreEqual(2, matrix.Columns);
+        Assert.AreEqual(0, matrix[0, 0]);
+        matrix[0, 0] = 4;
+        var other = new Matrix(matrix);
+        Assert.AreEqual(3, other.Rows);
+        Assert.AreEqual(2, other.Columns);
+        Assert.AreEqual(4, other[0, 0]);
+      }
       var mat = new double[,] {
         { 1, 2, 3 },
         { 4, 5, 6}
       };
-      matrix = new Matrix(mat);
-      Assert.AreEqual(2, matrix.Rows);
-      Assert.AreEqual(3, matrix.Columns);
-      var test = matrix.ToMatrix();
-      for (var i = 0; i < matrix.Rows; i++)
-        for (var j = 0; j < matrix.Columns; j++) {
-          Assert.AreEqual(mat[i, j], matrix[i, j]);
-          Assert.AreEqual(mat[i, j], test[i, j]);
-        }
+      using (var matrix = new Matrix(mat)) {
+        Assert.AreEqual(2, matrix.Rows);
+        Assert.AreEqual(3, matrix.Columns);
+        var test = matrix.ToMatrix();
+        for (var i = 0; i < matrix.Rows; i++)
+          for (var j = 0; j < matrix.Columns; j++) {
+            Assert.AreEqual(mat[i, j], matrix[i, j]);
+            Assert.AreEqual(mat[i, j], test[i, j]);
+          }
+      }
     }
 
     [TestMethod]
@@ -60,25 +61,26 @@ namespace HeuristicLab.Tests {
     [TestCategory("ExtLibs.igraph")]
     [TestProperty("Time", "short")]
     public void IGraphWrappersMatrixGetSetTest() {
-      var matrix = new Matrix(3, 2);
-      matrix[0, 0] = matrix[0, 1] = 4;
-      matrix[1, 0] = 3;
-      matrix[1, 1] = 2;
-      matrix[2, 0] = 1.5;
-      matrix[2, 1] = -0.5;
-      Assert.AreEqual(4, matrix[0, 0]);
-      Assert.AreEqual(4, matrix[0, 1]);
-      Assert.AreEqual(3, matrix[1, 0]);
-      Assert.AreEqual(2, matrix[1, 1]);
-      Assert.AreEqual(1.5, matrix[2, 0]);
-      Assert.AreEqual(-0.5, matrix[2, 1]);
+      using (var matrix = new Matrix(3, 2)) {
+        matrix[0, 0] = matrix[0, 1] = 4;
+        matrix[1, 0] = 3;
+        matrix[1, 1] = 2;
+        matrix[2, 0] = 1.5;
+        matrix[2, 1] = -0.5;
+        Assert.AreEqual(4, matrix[0, 0]);
+        Assert.AreEqual(4, matrix[0, 1]);
+        Assert.AreEqual(3, matrix[1, 0]);
+        Assert.AreEqual(2, matrix[1, 1]);
+        Assert.AreEqual(1.5, matrix[2, 0]);
+        Assert.AreEqual(-0.5, matrix[2, 1]);
 
-      var netmat = matrix.ToMatrix();
-      Assert.AreEqual(3, netmat.GetLength(0));
-      Assert.AreEqual(2, netmat.GetLength(1));
-      for (var i = 0; i < netmat.GetLength(0); i++)
-        for (var j = 0; j < netmat.GetLength(1); j++)
-          Assert.AreEqual(matrix[i, j], netmat[i, j]);
+        var netmat = matrix.ToMatrix();
+        Assert.AreEqual(3, netmat.GetLength(0));
+        Assert.AreEqual(2, netmat.GetLength(1));
+        for (var i = 0; i < netmat.GetLength(0); i++)
+          for (var j = 0; j < netmat.GetLength(1); j++)
+            Assert.AreEqual(matrix[i, j], netmat[i, j]);
+      }
     }
 
     [TestMethod]
@@ -86,14 +88,15 @@ namespace HeuristicLab.Tests {
     [TestCategory("ExtLibs.igraph")]
     [TestProperty("Time", "short")]
     public void IGraphWrappersMatrixFillTest() {
-      var matrix = new Matrix(3, 2);
-      matrix.Fill(2.6);
-      Assert.AreEqual(2.6, matrix[0, 0]);
-      Assert.AreEqual(2.6, matrix[0, 1]);
-      Assert.AreEqual(2.6, matrix[1, 0]);
-      Assert.AreEqual(2.6, matrix[1, 1]);
-      Assert.AreEqual(2.6, matrix[2, 0]);
-      Assert.AreEqual(2.6, matrix[2, 1]);
+      using (var matrix = new Matrix(3, 2)) {
+        matrix.Fill(2.6);
+        Assert.AreEqual(2.6, matrix[0, 0]);
+        Assert.AreEqual(2.6, matrix[0, 1]);
+        Assert.AreEqual(2.6, matrix[1, 0]);
+        Assert.AreEqual(2.6, matrix[1, 1]);
+        Assert.AreEqual(2.6, matrix[2, 0]);
+        Assert.AreEqual(2.6, matrix[2, 1]);
+      }
     }
 
     [TestMethod]
@@ -101,10 +104,11 @@ namespace HeuristicLab.Tests {
     [TestCategory("ExtLibs.igraph")]
     [TestProperty("Time", "short")]
     public void IGraphWrappersMatrixTransposeTest() {
-      var matrix = new Matrix(3, 2);
-      matrix.Transpose();
-      Assert.AreEqual(2, matrix.Rows);
-      Assert.AreEqual(3, matrix.Columns);
+      using (var matrix = new Matrix(3, 2)) {
+        matrix.Transpose();
+        Assert.AreEqual(2, matrix.Rows);
+        Assert.AreEqual(3, matrix.Columns);
+      }
     }
 
     [TestMethod]
@@ -112,19 +116,20 @@ namespace HeuristicLab.Tests {
     [TestCategory("ExtLibs.igraph")]
     [TestProperty("Time", "short")]
     public void IGraphWrappersMatrixScaleTest() {
-      var matrix = new Matrix(3, 2);
-      matrix[0, 0] = matrix[0, 1] = 4;
-      matrix[1, 0] = 3;
-      matrix[1, 1] = 2;
-      matrix[2, 0] = 1.5;
-      matrix[2, 1] = -0.5;
-      matrix.Scale(2);
-      Assert.AreEqual(8, matrix[0, 0]);
-      Assert.AreEqual(8, matrix[0, 1]);
-      Assert.AreEqual(6, matrix[1, 0]);
-      Assert.AreEqual(4, matrix[1, 1]);
-      Assert.AreEqual(3, matrix[2, 0]);
-      Assert.AreEqual(-1, matrix[2, 1]);
+      using (var matrix = new Matrix(3, 2)) {
+        matrix[0, 0] = matrix[0, 1] = 4;
+        matrix[1, 0] = 3;
+        matrix[1, 1] = 2;
+        matrix[2, 0] = 1.5;
+        matrix[2, 1] = -0.5;
+        matrix.Scale(2);
+        Assert.AreEqual(8, matrix[0, 0]);
+        Assert.AreEqual(8, matrix[0, 1]);
+        Assert.AreEqual(6, matrix[1, 0]);
+        Assert.AreEqual(4, matrix[1, 1]);
+        Assert.AreEqual(3, matrix[2, 0]);
+        Assert.AreEqual(-1, matrix[2, 1]);
+      }
     }
   }
 }
