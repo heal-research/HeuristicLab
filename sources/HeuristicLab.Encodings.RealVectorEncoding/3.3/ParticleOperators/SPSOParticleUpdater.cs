@@ -70,10 +70,6 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     public ILookupParameter<DoubleValue> NeighborBestAttractionParameter {
       get { return (ILookupParameter<DoubleValue>)Parameters["NeighborBestAttraction"]; }
     }
-
-    public IValueLookupParameter<DoubleValue> MaxBeyondBestParameter {
-      get { return (IValueLookupParameter<DoubleValue>)Parameters["MaxBeyondBest"]; }
-    }
     #endregion
 
     #region Construction & Cloning
@@ -92,7 +88,6 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       Parameters.Add(new LookupParameter<DoubleValue>("CurrentInertia", "The weight for the particle's velocity vector."));
       Parameters.Add(new LookupParameter<DoubleValue>("PersonalBestAttraction", "The weight for the particle's personal best position."));
       Parameters.Add(new LookupParameter<DoubleValue>("NeighborBestAttraction", "The weight for the global best position."));
-      Parameters.Add(new ValueLookupParameter<DoubleValue>("MaxBeyondBest", "A factor of how much the velocity update may maximally aim beyond the personal and neighbor best.", new DoubleValue(1.193)));
     }
     #endregion
   }

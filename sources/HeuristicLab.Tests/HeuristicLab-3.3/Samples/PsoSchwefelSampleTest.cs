@@ -25,7 +25,6 @@ using System.Linq;
 using HeuristicLab.Algorithms.ParticleSwarmOptimization;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
-using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.Problems.TestFunctions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -51,14 +50,14 @@ namespace HeuristicLab.Tests {
       pso.SetSeedRandomly.Value = false;
       SamplesUtils.RunAlgorithm(pso);
       if (Environment.Is64BitProcess) {
-        Assert.AreEqual(2.6641411068339949E-05, SamplesUtils.GetDoubleResult(pso, "BestQuality"));
-        Assert.AreEqual(94.28800902426002, SamplesUtils.GetDoubleResult(pso, "CurrentAverageQuality"));
-        Assert.AreEqual(992.93251114761892, SamplesUtils.GetDoubleResult(pso, "CurrentWorstQuality"));
+        Assert.AreEqual(-1.4779288903810084E-12, SamplesUtils.GetDoubleResult(pso, "BestQuality"));
+        Assert.AreEqual(189.28837949705971, SamplesUtils.GetDoubleResult(pso, "CurrentAverageQuality"));
+        Assert.AreEqual(1195.4166822158872, SamplesUtils.GetDoubleResult(pso, "CurrentWorstQuality"));
         Assert.AreEqual(200, SamplesUtils.GetIntResult(pso, "Iterations"));
       } else {
-        Assert.AreEqual(2.6641411068339949E-05, SamplesUtils.GetDoubleResult(pso, "BestQuality"));
-        Assert.AreEqual(94.28800902426002, SamplesUtils.GetDoubleResult(pso, "CurrentAverageQuality"));
-        Assert.AreEqual(992.93251114761892, SamplesUtils.GetDoubleResult(pso, "CurrentWorstQuality"));
+        Assert.AreEqual(-1.4779288903810084E-12, SamplesUtils.GetDoubleResult(pso, "BestQuality"));
+        Assert.AreEqual(189.28837949705971, SamplesUtils.GetDoubleResult(pso, "CurrentAverageQuality"));
+        Assert.AreEqual(1195.4166822158873, SamplesUtils.GetDoubleResult(pso, "CurrentWorstQuality"));
         Assert.AreEqual(200, SamplesUtils.GetIntResult(pso, "Iterations"));
       }
     }
@@ -79,20 +78,14 @@ namespace HeuristicLab.Tests {
       pso.Name = "Particle Swarm Optimization - Schwefel";
       pso.Description = "A particle swarm optimization algorithm which solves the 2-dimensional Schwefel test function (based on the description in Pedersen, M.E.H. (2010). PhD thesis. University of Southampton)";
       pso.Problem = problem;
-      pso.Inertia.Value = 1.1;
+      pso.Inertia.Value = 0.721;
       pso.MaxIterations.Value = 200;
-      pso.NeighborBestAttraction.Value = 1;
-      pso.PersonalBestAttraction.Value = 1;
+      pso.NeighborBestAttraction.Value = 1.193;
+      pso.PersonalBestAttraction.Value = 1.193;
       pso.SwarmSize.Value = 40;
-
-      var inertiaUpdater = pso.InertiaUpdaterParameter.ValidValues
-        .OfType<ExponentialDiscreteDoubleValueModifier>()
-        .Single();
-      inertiaUpdater.EndValueParameter.Value = new DoubleValue(0.721);
-      pso.InertiaUpdater = inertiaUpdater;
-      
-      pso.TopologyInitializer = null;
-      pso.TopologyUpdater = null;
+            
+      pso.TopologyInitializer = pso.TopologyInitializerParameter.ValidValues.OfType<SPSORandomTopologyInitializer>().First();
+      pso.TopologyUpdater = pso.TopologyUpdaterParameter.ValidValues.OfType<SPSOAdaptiveRandomTopologyUpdater>().First();
       pso.Seed.Value = 0;
       pso.SetSeedRandomly.Value = true;
       #endregion

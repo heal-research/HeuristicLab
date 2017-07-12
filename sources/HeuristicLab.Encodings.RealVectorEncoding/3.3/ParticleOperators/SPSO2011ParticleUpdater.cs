@@ -40,7 +40,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     }
     #endregion
     
-    public static void UpdateVelocity(IRandom random, RealVector velocity, double maxVelocity, RealVector position, double inertia, RealVector personalBest, double personalBestAttraction, RealVector neighborBest, double neighborBestAttraction, double c = 1.193) {
+    public static void UpdateVelocity(IRandom random, RealVector velocity, RealVector position, RealVector personalBest, RealVector neighborBest, double inertia = 0.721, double personalBestAttraction = 1.193, double neighborBestAttraction = 1.193, double maxVelocity = double.MaxValue) {
       var gravity = new double[velocity.Length];
       var direction = new RealVector(velocity.Length);
       var radius = 0.0;
@@ -48,7 +48,9 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       var nd = new NormalDistributedRandom(random, 0, 1);
 
       for (int i = 0; i < velocity.Length; i++) {
-        var g_id = c * ((personalBest[i] + neighborBest[i] - 2 * position[i]) / 3.0);
+        var g_id = (personalBestAttraction * personalBest[i]
+          + neighborBestAttraction * neighborBest[i]
+          - position[i] * (neighborBestAttraction + personalBestAttraction)) / 3.0;
         // center of the hyper-sphere
         gravity[i] = g_id + position[i];
         // a random direction vector uniform over the surface of hyper-sphere, see http://mathworld.wolfram.com/HyperspherePointPicking.html
@@ -107,9 +109,8 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       var personalBestAttraction = PersonalBestAttractionParameter.ActualValue.Value;
       var neighborBest = NeighborBestParameter.ActualValue;
       var neighborBestAttraction = NeighborBestAttractionParameter.ActualValue.Value;
-      var maxBeyond = MaxBeyondBestParameter.ActualValue.Value;
 
-      UpdateVelocity(random, velocity, maxVelocity, position, inertia, personalBest, personalBestAttraction, neighborBest, neighborBestAttraction, maxBeyond);
+      UpdateVelocity(random, velocity, position, personalBest, neighborBest, inertia, personalBestAttraction, neighborBestAttraction, maxVelocity);
       UpdatePosition(bounds, velocity, position);
 
       return base.Apply();

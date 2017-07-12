@@ -41,10 +41,10 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     }
     #endregion
     
-    public static void UpdateVelocity(IRandom random, RealVector velocity, double maxVelocity, RealVector position, double inertia, RealVector personalBest, double personalBestAttraction, RealVector neighborBest, double neighborBestAttraction, double c = 1.193) {
+    public static void UpdateVelocity(IRandom random, RealVector velocity, RealVector position, RealVector personalBest, RealVector neighborBest, double inertia = 0.721, double personalBestAttraction = 1.193, double neighborBestAttraction = 1.193, double maxVelocity = double.MaxValue) {
       for (int i = 0; i < velocity.Length; i++) {
-        double r_p = random.NextDouble() * c;
-        double r_g = random.NextDouble() * c;
+        double r_p = random.NextDouble();
+        double r_g = random.NextDouble();
         velocity[i] =
           velocity[i] * inertia +
           (personalBest[i] - position[i]) * personalBestAttraction * r_p +
@@ -90,9 +90,8 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       var personalBestAttraction = PersonalBestAttractionParameter.ActualValue.Value;
       var neighborBest = NeighborBestParameter.ActualValue;
       var neighborBestAttraction = NeighborBestAttractionParameter.ActualValue.Value;
-      var maxBeyond = MaxBeyondBestParameter.ActualValue.Value;
 
-      UpdateVelocity(random, velocity, maxVelocity, position, inertia, personalBest, personalBestAttraction, neighborBest, neighborBestAttraction, maxBeyond);
+      UpdateVelocity(random, velocity, position, personalBest, neighborBest, inertia, personalBestAttraction, neighborBestAttraction, maxVelocity);
       UpdatePosition(bounds, velocity, position);
 
       return base.Apply();

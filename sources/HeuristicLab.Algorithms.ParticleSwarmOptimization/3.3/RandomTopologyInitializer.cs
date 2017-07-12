@@ -29,7 +29,7 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
-  [Item("Random Topology Initializer", "Each particle is informed by exactly k+1 distinct other particles (including itself).")]
+  [Item("Random Distinct Topology Initializer", "Each particle is informed by exactly k+1 distinct other particles (including itself).")]
   [StorableClass]
   public sealed class RandomTopologyInitializer : TopologyInitializer, IStochasticOperator {
     #region Parameters

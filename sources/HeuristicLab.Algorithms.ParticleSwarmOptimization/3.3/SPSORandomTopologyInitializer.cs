@@ -61,8 +61,15 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
       var k = KParameter.ActualValue.Value;
 
       // SPSO: Each particle informs at most K+1 particles (at least itself and K others)
-      var particlesInform = Enumerable.Repeat(k + 1, swarmSize)
-        .Select((v, i) => new HashSet<int>(Enumerable.Range(0, v).Select(x => x == 0 ? i : random.Next(swarmSize)))).ToList();
+      //       it is by design that we draw from the particles with repetition
+      var particlesInform = new List<HashSet<int>>(swarmSize);
+      for (var i = 0; i < swarmSize; i++) {
+        var informs = new HashSet<int>() { i };
+        for (var j = 0; j < k; j++) {
+          informs.Add(random.Next(swarmSize));
+        }
+        particlesInform.Add(informs);
+      }
 
       var neighbors = new ItemArray<IntArray>(swarmSize);
       for (int i = 0; i < swarmSize; i++) {

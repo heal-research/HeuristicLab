@@ -85,8 +85,8 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
 
       var successor = new OperationCollection(new[] { base.Apply() });
       var max = MaximizationParameter.ActualValue.Value;
-      if (max && swarmBest.Value >= previousBest.Value
-        || !max && swarmBest.Value <= previousBest.Value)
+      if (max && swarmBest.Value <= previousBest.Value
+        || !max && swarmBest.Value >= previousBest.Value)
         successor.Insert(0, ExecutionContext.CreateOperation(TopologyInitializerParameter.ActualValue));
 
       previousBest.Value = swarmBest.Value;
