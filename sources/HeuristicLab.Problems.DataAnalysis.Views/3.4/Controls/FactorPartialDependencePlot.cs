@@ -250,12 +250,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       axis.Maximum = fixedAxisMax ?? axisMax;
       axis.Interval = (axis.Maximum - axis.Minimum) / ticks;
 
-      try {
-        chart.ChartAreas[0].RecalculateAxesScale();
-      }
-      catch (InvalidOperationException) {
-        // Can occur if eg. axis min == axis max
-      }
+      chart.ChartAreas[0].RecalculateAxesScale();
     }
 
 
