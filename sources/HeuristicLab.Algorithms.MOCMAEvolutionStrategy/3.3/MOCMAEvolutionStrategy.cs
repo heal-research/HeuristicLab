@@ -318,6 +318,7 @@ namespace HeuristicLab.Algorithms.MOCMAEvolutionStrategy {
         solutions[i] = InitializeIndividual(x);
         PenalizeEvaluate(solutions[i]);
       }
+      ResultsEvaluations += solutions.Length;
     }
     private void InitStrategy() {
       const int lambda = 1;
@@ -383,6 +384,7 @@ namespace HeuristicLab.Algorithms.MOCMAEvolutionStrategy {
         PenalizeEvaluate(o);
         return o;
       });
+      ResultsEvaluations += solutions.Length;
       var parents = solutions.Concat(offspring).ToArray();
       SelectParents(parents, solutions.Length);
       UpdatePopulation(parents);
@@ -408,7 +410,6 @@ namespace HeuristicLab.Algorithms.MOCMAEvolutionStrategy {
     }
     private double[] Evaluate(RealVector x) {
       var res = Problem.Evaluate(new SingleEncodingIndividual(Problem.Encoding, new Scope { Variables = { new Variable(Problem.Encoding.Name, x) } }), random);
-      ResultsEvaluations++;
       return res;
     }
     private double[] Penalize(RealVector x, RealVector t, IEnumerable<double> fitness) {
