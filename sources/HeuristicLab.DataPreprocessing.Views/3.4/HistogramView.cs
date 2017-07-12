@@ -38,7 +38,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
       aggregationComboBox.DataSource = Enum.GetValues(typeof(DataTableVisualProperties.DataTableHistogramAggregation));
       aggregationComboBox.SelectedItem = DataTableVisualProperties.DataTableHistogramAggregation.Overlapping;
       orderComboBox.DataSource = Enum.GetValues(typeof(PreprocessingChartContent.LegendOrder));
-      orderComboBox.SelectedItem = PreprocessingChartContent.LegendOrder.Appearance;
+      orderComboBox.SelectedItem = PreprocessingChartContent.LegendOrder.Alphabetically;
     }
 
     protected override void OnContentChanged() {

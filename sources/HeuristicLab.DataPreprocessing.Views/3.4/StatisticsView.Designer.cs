@@ -52,9 +52,6 @@ namespace HeuristicLab.DataPreprocessing.Views {
       this.lblNominalColumns = new System.Windows.Forms.Label();
       this.stringMatrixView = new HeuristicLab.Data.Views.StringConvertibleMatrixView();
       this.showVariablesGroupBox = new System.Windows.Forms.GroupBox();
-      this.checkInputsTargetButton = new System.Windows.Forms.Button();
-      this.uncheckAllButton = new System.Windows.Forms.Button();
-      this.checkAllButton = new System.Windows.Forms.Button();
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
       this.lblTNumValues = new System.Windows.Forms.Label();
       this.orientationGroupBox = new System.Windows.Forms.GroupBox();
@@ -68,6 +65,9 @@ namespace HeuristicLab.DataPreprocessing.Views {
       this.nominalColumnsTextBox5 = new System.Windows.Forms.TextBox();
       this.missingValuesTextBox = new System.Windows.Forms.TextBox();
       this.overviewGroupBox = new System.Windows.Forms.GroupBox();
+      this.checkInputsTargetButton = new System.Windows.Forms.Button();
+      this.uncheckAllButton = new System.Windows.Forms.Button();
+      this.checkAllButton = new System.Windows.Forms.Button();
       this.showVariablesGroupBox.SuspendLayout();
       this.orientationGroupBox.SuspendLayout();
       this.overviewTableLayoutPanel.SuspendLayout();
@@ -100,7 +100,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
       // 
       this.lblMissingValuesTotal.AutoSize = true;
       this.lblMissingValuesTotal.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.lblMissingValuesTotal.Location = new System.Drawing.Point(237, 26);
+      this.lblMissingValuesTotal.Location = new System.Drawing.Point(275, 26);
       this.lblMissingValuesTotal.Name = "lblMissingValuesTotal";
       this.lblMissingValuesTotal.Size = new System.Drawing.Size(77, 26);
       this.lblMissingValuesTotal.TabIndex = 3;
@@ -111,7 +111,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
       // 
       this.lblNumericColumns.AutoSize = true;
       this.lblNumericColumns.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.lblNumericColumns.Location = new System.Drawing.Point(100, 0);
+      this.lblNumericColumns.Location = new System.Drawing.Point(119, 0);
       this.lblNumericColumns.Name = "lblNumericColumns";
       this.lblNumericColumns.Size = new System.Drawing.Size(92, 26);
       this.lblNumericColumns.TabIndex = 3;
@@ -122,7 +122,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
       // 
       this.lblNominalColumns.AutoSize = true;
       this.lblNominalColumns.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.lblNominalColumns.Location = new System.Drawing.Point(100, 26);
+      this.lblNominalColumns.Location = new System.Drawing.Point(119, 26);
       this.lblNominalColumns.Name = "lblNominalColumns";
       this.lblNominalColumns.Size = new System.Drawing.Size(92, 26);
       this.lblNominalColumns.TabIndex = 3;
@@ -141,7 +141,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
       this.stringMatrixView.ReadOnly = true;
       this.stringMatrixView.ShowRowsAndColumnsTextBox = false;
       this.stringMatrixView.ShowStatisticalInformation = true;
-      this.stringMatrixView.Size = new System.Drawing.Size(592, 331);
+      this.stringMatrixView.Size = new System.Drawing.Size(655, 374);
       this.stringMatrixView.TabIndex = 4;
       // 
       // showVariablesGroupBox
@@ -149,12 +149,160 @@ namespace HeuristicLab.DataPreprocessing.Views {
       this.showVariablesGroupBox.Controls.Add(this.checkInputsTargetButton);
       this.showVariablesGroupBox.Controls.Add(this.uncheckAllButton);
       this.showVariablesGroupBox.Controls.Add(this.checkAllButton);
-      this.showVariablesGroupBox.Location = new System.Drawing.Point(393, 0);
+      this.showVariablesGroupBox.Location = new System.Drawing.Point(458, 0);
       this.showVariablesGroupBox.Name = "showVariablesGroupBox";
       this.showVariablesGroupBox.Size = new System.Drawing.Size(97, 71);
       this.showVariablesGroupBox.TabIndex = 16;
       this.showVariablesGroupBox.TabStop = false;
       this.showVariablesGroupBox.Text = "Show Variables";
+      // 
+      // lblTNumValues
+      // 
+      this.lblTNumValues.AutoSize = true;
+      this.lblTNumValues.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.lblTNumValues.Location = new System.Drawing.Point(275, 0);
+      this.lblTNumValues.Name = "lblTNumValues";
+      this.lblTNumValues.Size = new System.Drawing.Size(77, 26);
+      this.lblTNumValues.TabIndex = 2;
+      this.lblTNumValues.Text = "Total Values";
+      this.lblTNumValues.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+      this.toolTip.SetToolTip(this.lblTNumValues, "Valid Values (excl. missing Values)");
+      // 
+      // orientationGroupBox
+      // 
+      this.orientationGroupBox.Controls.Add(this.verticalRadioButton);
+      this.orientationGroupBox.Controls.Add(this.horizontalRadioButton);
+      this.orientationGroupBox.Location = new System.Drawing.Point(561, 0);
+      this.orientationGroupBox.Name = "orientationGroupBox";
+      this.orientationGroupBox.Size = new System.Drawing.Size(94, 71);
+      this.orientationGroupBox.TabIndex = 17;
+      this.orientationGroupBox.TabStop = false;
+      this.orientationGroupBox.Text = "Orientation";
+      // 
+      // verticalRadioButton
+      // 
+      this.verticalRadioButton.AutoSize = true;
+      this.verticalRadioButton.Checked = true;
+      this.verticalRadioButton.Location = new System.Drawing.Point(6, 32);
+      this.verticalRadioButton.Name = "verticalRadioButton";
+      this.verticalRadioButton.Size = new System.Drawing.Size(60, 17);
+      this.verticalRadioButton.TabIndex = 1;
+      this.verticalRadioButton.TabStop = true;
+      this.verticalRadioButton.Text = "Vertical";
+      this.verticalRadioButton.UseVisualStyleBackColor = true;
+      this.verticalRadioButton.CheckedChanged += new System.EventHandler(this.verticalRadioButton_CheckedChanged);
+      // 
+      // horizontalRadioButton
+      // 
+      this.horizontalRadioButton.AutoSize = true;
+      this.horizontalRadioButton.Location = new System.Drawing.Point(6, 14);
+      this.horizontalRadioButton.Name = "horizontalRadioButton";
+      this.horizontalRadioButton.Size = new System.Drawing.Size(72, 17);
+      this.horizontalRadioButton.TabIndex = 0;
+      this.horizontalRadioButton.Text = "Horizontal";
+      this.horizontalRadioButton.UseVisualStyleBackColor = true;
+      this.horizontalRadioButton.CheckedChanged += new System.EventHandler(this.horizontalRadioButton_CheckedChanged);
+      // 
+      // rowsTextBox
+      // 
+      this.rowsTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.rowsTextBox.Location = new System.Drawing.Point(61, 3);
+      this.rowsTextBox.Name = "rowsTextBox";
+      this.rowsTextBox.ReadOnly = true;
+      this.rowsTextBox.Size = new System.Drawing.Size(52, 20);
+      this.rowsTextBox.TabIndex = 18;
+      this.rowsTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+      // 
+      // columnsTextBox
+      // 
+      this.columnsTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.columnsTextBox.Location = new System.Drawing.Point(61, 29);
+      this.columnsTextBox.Name = "columnsTextBox";
+      this.columnsTextBox.ReadOnly = true;
+      this.columnsTextBox.Size = new System.Drawing.Size(52, 20);
+      this.columnsTextBox.TabIndex = 18;
+      this.columnsTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+      // 
+      // totalValuesTextBox
+      // 
+      this.totalValuesTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.totalValuesTextBox.Location = new System.Drawing.Point(358, 3);
+      this.totalValuesTextBox.Name = "totalValuesTextBox";
+      this.totalValuesTextBox.ReadOnly = true;
+      this.totalValuesTextBox.Size = new System.Drawing.Size(82, 20);
+      this.totalValuesTextBox.TabIndex = 18;
+      this.totalValuesTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+      // 
+      // overviewTableLayoutPanel
+      // 
+      this.overviewTableLayoutPanel.ColumnCount = 6;
+      this.overviewTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+      this.overviewTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 28.57143F));
+      this.overviewTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+      this.overviewTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 28.57143F));
+      this.overviewTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+      this.overviewTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 42.85715F));
+      this.overviewTableLayoutPanel.Controls.Add(this.lblRows, 0, 0);
+      this.overviewTableLayoutPanel.Controls.Add(this.lblColumns, 0, 1);
+      this.overviewTableLayoutPanel.Controls.Add(this.columnsTextBox, 1, 1);
+      this.overviewTableLayoutPanel.Controls.Add(this.lblNominalColumns, 2, 1);
+      this.overviewTableLayoutPanel.Controls.Add(this.lblNumericColumns, 2, 0);
+      this.overviewTableLayoutPanel.Controls.Add(this.rowsTextBox, 1, 0);
+      this.overviewTableLayoutPanel.Controls.Add(this.numericColumnsTextBox, 3, 0);
+      this.overviewTableLayoutPanel.Controls.Add(this.nominalColumnsTextBox5, 3, 1);
+      this.overviewTableLayoutPanel.Controls.Add(this.missingValuesTextBox, 5, 1);
+      this.overviewTableLayoutPanel.Controls.Add(this.lblTNumValues, 4, 0);
+      this.overviewTableLayoutPanel.Controls.Add(this.totalValuesTextBox, 5, 0);
+      this.overviewTableLayoutPanel.Controls.Add(this.lblMissingValuesTotal, 4, 1);
+      this.overviewTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.overviewTableLayoutPanel.Location = new System.Drawing.Point(3, 16);
+      this.overviewTableLayoutPanel.Name = "overviewTableLayoutPanel";
+      this.overviewTableLayoutPanel.RowCount = 3;
+      this.overviewTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
+      this.overviewTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
+      this.overviewTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+      this.overviewTableLayoutPanel.Size = new System.Drawing.Size(443, 52);
+      this.overviewTableLayoutPanel.TabIndex = 19;
+      // 
+      // numericColumnsTextBox
+      // 
+      this.numericColumnsTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.numericColumnsTextBox.Location = new System.Drawing.Point(217, 3);
+      this.numericColumnsTextBox.Name = "numericColumnsTextBox";
+      this.numericColumnsTextBox.ReadOnly = true;
+      this.numericColumnsTextBox.Size = new System.Drawing.Size(52, 20);
+      this.numericColumnsTextBox.TabIndex = 18;
+      this.numericColumnsTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+      // 
+      // nominalColumnsTextBox5
+      // 
+      this.nominalColumnsTextBox5.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.nominalColumnsTextBox5.Location = new System.Drawing.Point(217, 29);
+      this.nominalColumnsTextBox5.Name = "nominalColumnsTextBox5";
+      this.nominalColumnsTextBox5.ReadOnly = true;
+      this.nominalColumnsTextBox5.Size = new System.Drawing.Size(52, 20);
+      this.nominalColumnsTextBox5.TabIndex = 18;
+      this.nominalColumnsTextBox5.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+      // 
+      // missingValuesTextBox
+      // 
+      this.missingValuesTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.missingValuesTextBox.Location = new System.Drawing.Point(358, 29);
+      this.missingValuesTextBox.Name = "missingValuesTextBox";
+      this.missingValuesTextBox.ReadOnly = true;
+      this.missingValuesTextBox.Size = new System.Drawing.Size(82, 20);
+      this.missingValuesTextBox.TabIndex = 18;
+      this.missingValuesTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+      // 
+      // overviewGroupBox
+      // 
+      this.overviewGroupBox.Controls.Add(this.overviewTableLayoutPanel);
+      this.overviewGroupBox.Location = new System.Drawing.Point(3, 0);
+      this.overviewGroupBox.Name = "overviewGroupBox";
+      this.overviewGroupBox.Size = new System.Drawing.Size(449, 71);
+      this.overviewGroupBox.TabIndex = 20;
+      this.overviewGroupBox.TabStop = false;
+      this.overviewGroupBox.Text = "Overview";
       // 
       // checkInputsTargetButton
       // 
@@ -189,149 +337,6 @@ namespace HeuristicLab.DataPreprocessing.Views {
       this.checkAllButton.UseVisualStyleBackColor = true;
       this.checkAllButton.Click += new System.EventHandler(this.checkAllButton_Click);
       // 
-      // lblTNumValues
-      // 
-      this.lblTNumValues.AutoSize = true;
-      this.lblTNumValues.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.lblTNumValues.Location = new System.Drawing.Point(237, 0);
-      this.lblTNumValues.Name = "lblTNumValues";
-      this.lblTNumValues.Size = new System.Drawing.Size(77, 26);
-      this.lblTNumValues.TabIndex = 2;
-      this.lblTNumValues.Text = "Total Values";
-      this.lblTNumValues.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-      this.toolTip.SetToolTip(this.lblTNumValues, "Valid Values (excl. missing Values)");
-      // 
-      // orientationGroupBox
-      // 
-      this.orientationGroupBox.Controls.Add(this.verticalRadioButton);
-      this.orientationGroupBox.Controls.Add(this.horizontalRadioButton);
-      this.orientationGroupBox.Location = new System.Drawing.Point(496, 0);
-      this.orientationGroupBox.Name = "orientationGroupBox";
-      this.orientationGroupBox.Size = new System.Drawing.Size(94, 71);
-      this.orientationGroupBox.TabIndex = 17;
-      this.orientationGroupBox.TabStop = false;
-      this.orientationGroupBox.Text = "Orientation";
-      // 
-      // verticalRadioButton
-      // 
-      this.verticalRadioButton.AutoSize = true;
-      this.verticalRadioButton.Location = new System.Drawing.Point(6, 32);
-      this.verticalRadioButton.Name = "verticalRadioButton";
-      this.verticalRadioButton.Size = new System.Drawing.Size(60, 17);
-      this.verticalRadioButton.TabIndex = 1;
-      this.verticalRadioButton.TabStop = true;
-      this.verticalRadioButton.Text = "Vertical";
-      this.verticalRadioButton.UseVisualStyleBackColor = true;
-      this.verticalRadioButton.CheckedChanged += new System.EventHandler(this.verticalRadioButton_CheckedChanged);
-      // 
-      // horizontalRadioButton
-      // 
-      this.horizontalRadioButton.AutoSize = true;
-      this.horizontalRadioButton.Checked = true;
-      this.horizontalRadioButton.Location = new System.Drawing.Point(6, 14);
-      this.horizontalRadioButton.Name = "horizontalRadioButton";
-      this.horizontalRadioButton.Size = new System.Drawing.Size(72, 17);
-      this.horizontalRadioButton.TabIndex = 0;
-      this.horizontalRadioButton.TabStop = true;
-      this.horizontalRadioButton.Text = "Horizontal";
-      this.horizontalRadioButton.UseVisualStyleBackColor = true;
-      this.horizontalRadioButton.CheckedChanged += new System.EventHandler(this.horizontalRadioButton_CheckedChanged);
-      // 
-      // rowsTextBox
-      // 
-      this.rowsTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.rowsTextBox.Location = new System.Drawing.Point(61, 3);
-      this.rowsTextBox.Name = "rowsTextBox";
-      this.rowsTextBox.ReadOnly = true;
-      this.rowsTextBox.Size = new System.Drawing.Size(33, 20);
-      this.rowsTextBox.TabIndex = 18;
-      // 
-      // columnsTextBox
-      // 
-      this.columnsTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.columnsTextBox.Location = new System.Drawing.Point(61, 29);
-      this.columnsTextBox.Name = "columnsTextBox";
-      this.columnsTextBox.ReadOnly = true;
-      this.columnsTextBox.Size = new System.Drawing.Size(33, 20);
-      this.columnsTextBox.TabIndex = 18;
-      // 
-      // totalValuesTextBox
-      // 
-      this.totalValuesTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.totalValuesTextBox.Location = new System.Drawing.Point(320, 3);
-      this.totalValuesTextBox.Name = "totalValuesTextBox";
-      this.totalValuesTextBox.ReadOnly = true;
-      this.totalValuesTextBox.Size = new System.Drawing.Size(55, 20);
-      this.totalValuesTextBox.TabIndex = 18;
-      // 
-      // overviewTableLayoutPanel
-      // 
-      this.overviewTableLayoutPanel.ColumnCount = 6;
-      this.overviewTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-      this.overviewTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 28.57143F));
-      this.overviewTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-      this.overviewTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 28.57143F));
-      this.overviewTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-      this.overviewTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 42.85715F));
-      this.overviewTableLayoutPanel.Controls.Add(this.lblRows, 0, 0);
-      this.overviewTableLayoutPanel.Controls.Add(this.lblColumns, 0, 1);
-      this.overviewTableLayoutPanel.Controls.Add(this.columnsTextBox, 1, 1);
-      this.overviewTableLayoutPanel.Controls.Add(this.lblNominalColumns, 2, 1);
-      this.overviewTableLayoutPanel.Controls.Add(this.lblNumericColumns, 2, 0);
-      this.overviewTableLayoutPanel.Controls.Add(this.rowsTextBox, 1, 0);
-      this.overviewTableLayoutPanel.Controls.Add(this.numericColumnsTextBox, 3, 0);
-      this.overviewTableLayoutPanel.Controls.Add(this.nominalColumnsTextBox5, 3, 1);
-      this.overviewTableLayoutPanel.Controls.Add(this.missingValuesTextBox, 5, 1);
-      this.overviewTableLayoutPanel.Controls.Add(this.lblTNumValues, 4, 0);
-      this.overviewTableLayoutPanel.Controls.Add(this.totalValuesTextBox, 5, 0);
-      this.overviewTableLayoutPanel.Controls.Add(this.lblMissingValuesTotal, 4, 1);
-      this.overviewTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.overviewTableLayoutPanel.Location = new System.Drawing.Point(3, 16);
-      this.overviewTableLayoutPanel.Name = "overviewTableLayoutPanel";
-      this.overviewTableLayoutPanel.RowCount = 3;
-      this.overviewTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
-      this.overviewTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
-      this.overviewTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-      this.overviewTableLayoutPanel.Size = new System.Drawing.Size(378, 52);
-      this.overviewTableLayoutPanel.TabIndex = 19;
-      // 
-      // numericColumnsTextBox
-      // 
-      this.numericColumnsTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.numericColumnsTextBox.Location = new System.Drawing.Point(198, 3);
-      this.numericColumnsTextBox.Name = "numericColumnsTextBox";
-      this.numericColumnsTextBox.ReadOnly = true;
-      this.numericColumnsTextBox.Size = new System.Drawing.Size(33, 20);
-      this.numericColumnsTextBox.TabIndex = 18;
-      // 
-      // nominalColumnsTextBox5
-      // 
-      this.nominalColumnsTextBox5.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.nominalColumnsTextBox5.Location = new System.Drawing.Point(198, 29);
-      this.nominalColumnsTextBox5.Name = "nominalColumnsTextBox5";
-      this.nominalColumnsTextBox5.ReadOnly = true;
-      this.nominalColumnsTextBox5.Size = new System.Drawing.Size(33, 20);
-      this.nominalColumnsTextBox5.TabIndex = 18;
-      // 
-      // missingValuesTextBox
-      // 
-      this.missingValuesTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.missingValuesTextBox.Location = new System.Drawing.Point(320, 29);
-      this.missingValuesTextBox.Name = "missingValuesTextBox";
-      this.missingValuesTextBox.ReadOnly = true;
-      this.missingValuesTextBox.Size = new System.Drawing.Size(55, 20);
-      this.missingValuesTextBox.TabIndex = 18;
-      // 
-      // overviewGroupBox
-      // 
-      this.overviewGroupBox.Controls.Add(this.overviewTableLayoutPanel);
-      this.overviewGroupBox.Location = new System.Drawing.Point(3, 0);
-      this.overviewGroupBox.Name = "overviewGroupBox";
-      this.overviewGroupBox.Size = new System.Drawing.Size(384, 71);
-      this.overviewGroupBox.TabIndex = 20;
-      this.overviewGroupBox.TabStop = false;
-      this.overviewGroupBox.Text = "Overview";
-      // 
       // StatisticsView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -341,7 +346,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
       this.Controls.Add(this.showVariablesGroupBox);
       this.Controls.Add(this.stringMatrixView);
       this.Name = "StatisticsView";
-      this.Size = new System.Drawing.Size(598, 408);
+      this.Size = new System.Drawing.Size(661, 451);
       this.showVariablesGroupBox.ResumeLayout(false);
       this.orientationGroupBox.ResumeLayout(false);
       this.orientationGroupBox.PerformLayout();

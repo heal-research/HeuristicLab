@@ -33,8 +33,8 @@ namespace HeuristicLab.DataPreprocessing {
   [Item("PreprocessingChart", "Represents a preprocessing chart.")]
   public class PreprocessingChartContent : Item, IViewShortcut {
     public enum LegendOrder {
-      Appearance,
-      Alphabetically
+      Alphabetically,
+      Appearance
     }
 
     public static new Image StaticItemImage {
@@ -90,8 +90,7 @@ namespace HeuristicLab.DataPreprocessing {
       return new ReadOnlyCheckedItemList<StringValue>(itemList);
     }
 
-    private const int MAX_DISTINCT_VALUES_FOR_GROUPING = 20;
-    public static IEnumerable<string> GetVariableNamesForGrouping(IPreprocessingData preprocessingData) {
+    public static IEnumerable<string> GetVariableNamesForGrouping(IPreprocessingData preprocessingData, int maxDistinctValues = 20) {
       var variableNames = new List<string>();
 
       for (int i = 0; i < preprocessingData.Columns; ++i) {
@@ -103,7 +102,7 @@ namespace HeuristicLab.DataPreprocessing {
         else if (preprocessingData.VariableHasType<DateTime>(i))
           distinctValues = preprocessingData.GetValues<DateTime>(i).GroupBy(x => x).Count();
 
-        if (distinctValues <= MAX_DISTINCT_VALUES_FOR_GROUPING)
+        if (distinctValues <= maxDistinctValues)
           variableNames.Add(preprocessingData.GetVariableName(i));
       }
       return variableNames;

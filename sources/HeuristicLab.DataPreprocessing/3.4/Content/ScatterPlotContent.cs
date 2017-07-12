@@ -39,7 +39,7 @@ namespace HeuristicLab.DataPreprocessing {
       : base(content, cloner) {
     }
 
-    public static ScatterPlot CreateScatterPlot(IFilteredPreprocessingData preprocessingData, string variableNameX, string variableNameY, string variableNameGroup = "-", LegendOrder legendOrder = LegendOrder.Appearance) {
+    public static ScatterPlot CreateScatterPlot(IFilteredPreprocessingData preprocessingData, string variableNameX, string variableNameY, string variableNameGroup = "-", LegendOrder legendOrder = LegendOrder.Alphabetically) {
       ScatterPlot scatterPlot = new ScatterPlot();
 
       IList<double> xValues = preprocessingData.GetValues<double>(preprocessingData.GetColumnIndex(variableNameX));

@@ -59,7 +59,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
       aggregationComboBox.SelectedItem = AggregationType.Overlapping;
 
       legendOrderComboBox.DataSource = Enum.GetValues(typeof(PreprocessingChartContent.LegendOrder));
-      legendOrderComboBox.SelectedItem = PreprocessingChartContent.LegendOrder.Appearance;
+      legendOrderComboBox.SelectedItem = PreprocessingChartContent.LegendOrder.Alphabetically;
 
       #region Initialize Scrollbars
       columnHeaderScrollPanel.HorizontalScroll.Enabled = true;

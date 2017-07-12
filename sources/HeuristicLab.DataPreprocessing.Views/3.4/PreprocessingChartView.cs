@@ -50,6 +50,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
       InitializeComponent();
       dataTables = new Dictionary<string, DataTable>();
       dataTableViews = new Dictionary<string, DataTableView>();
+      scrollPanel.HorizontalScroll.Visible = false;
     }
 
     protected override void OnContentChanged() {
@@ -201,6 +202,27 @@ namespace HeuristicLab.DataPreprocessing.Views {
 
     private void columnsNumericUpDown_ValueChanged(object sender, System.EventArgs e) {
       GenerateLayout();
+    }
+
+    private void splitContainer_Panel2_Resize(object sender, EventArgs e) {
+      if (SuppressCheckedChangedUpdate)
+        return;
+
+      scrollPanel.SuspendRepaint();
+
+      if (tableLayoutPanel.ColumnCount > 0 && tableLayoutPanel.RowCount > 0) {
+        var width = (splitContainer.Panel2.Width - SystemInformation.VerticalScrollBarWidth) / tableLayoutPanel.ColumnCount;
+        var height = width * 0.75f;
+
+        for (int i = 0; i < tableLayoutPanel.RowStyles.Count - 1; i++) {
+          tableLayoutPanel.RowStyles[i].Height = height;
+        }
+        for (int i = 0; i < tableLayoutPanel.ColumnStyles.Count; i++) {
+          tableLayoutPanel.ColumnStyles[i].Width = width;
+        }
+      }
+
+      scrollPanel.ResumeRepaint(true);
     }
   }
 }

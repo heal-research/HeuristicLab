@@ -68,6 +68,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
       // splitContainer.Panel2
       // 
       this.splitContainer.Panel2.Controls.Add(this.scrollPanel);
+      this.splitContainer.Panel2.Resize += new System.EventHandler(this.splitContainer_Panel2_Resize);
       // 
       // tableLayoutPanel
       // 

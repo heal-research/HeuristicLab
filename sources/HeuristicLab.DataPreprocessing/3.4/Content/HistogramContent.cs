@@ -53,7 +53,7 @@ namespace HeuristicLab.DataPreprocessing {
       return new HistogramContent(this, cloner);
     }
 
-    public static DataTable CreateHistogram(IFilteredPreprocessingData preprocessingData, string variableName, string groupingVariableName, DataTableVisualProperties.DataTableHistogramAggregation aggregation, LegendOrder legendOrder = LegendOrder.Appearance) {
+    public static DataTable CreateHistogram(IFilteredPreprocessingData preprocessingData, string variableName, string groupingVariableName, DataTableVisualProperties.DataTableHistogramAggregation aggregation, LegendOrder legendOrder = LegendOrder.Alphabetically) {
       var dataTable = new DataTable {
         VisualProperties = { Title = variableName, HistogramAggregation = aggregation },
       };

@@ -47,7 +47,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
       regressionTypeComboBox.DataSource = Enum.GetValues(typeof(RegressionType));
       regressionTypeComboBox.SelectedItem = RegressionType.None;
       orderComboBox.DataSource = Enum.GetValues(typeof(PreprocessingChartContent.LegendOrder));
-      orderComboBox.SelectedItem = PreprocessingChartContent.LegendOrder.Appearance;
+      orderComboBox.SelectedItem = PreprocessingChartContent.LegendOrder.Alphabetically;
     }
 
     protected override void SetEnabledStateOfControls() {
@@ -73,7 +73,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
       comboBoxXVariable.Items.AddRange(variables.ToArray());
       comboBoxYVariable.Items.AddRange(variables.ToArray());
       comboBoxGroup.Items.Add(NoGroupItem);
-      foreach (string var in Content.PreprocessingData.VariableNames) {
+      foreach (string var in PreprocessingChartContent.GetVariableNamesForGrouping(Content.PreprocessingData, 50)) {
         comboBoxGroup.Items.Add(var);
       }
       comboBoxGroup.SelectedItem = Content.GroupingVariable ?? NoGroupItem;
@@ -147,6 +147,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
     }
 
     private void comboBoxYVariable_SelectedIndexChanged(object sender, EventArgs e) {
+      SuspendRepaint();
       var oldPlot = scatterPlotView.Content;
       UpdateScatterPlot();
       var newPlot = scatterPlotView.Content;
@@ -162,6 +163,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
         newVisuapProperties.DisplayName = x.nr.VisualProperties.DisplayName;
         x.nr.VisualProperties = newVisuapProperties;
       }
+      ResumeRepaint(true);
     }
 
     private void comboBoxGroup_SelectedIndexChanged(object sender, EventArgs e) {

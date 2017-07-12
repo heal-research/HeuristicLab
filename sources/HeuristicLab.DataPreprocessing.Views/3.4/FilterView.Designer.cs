@@ -61,14 +61,16 @@ namespace HeuristicLab.DataPreprocessing.Views {
       this.label1 = new System.Windows.Forms.Label();
       this.label2 = new System.Windows.Forms.Label();
       this.label3 = new System.Windows.Forms.Label();
+      this.bottomPanel = new System.Windows.Forms.Panel();
       this.groupBoxFilter.SuspendLayout();
       this.groupBoxFilterInfo.SuspendLayout();
       this.groupBox1.SuspendLayout();
+      this.bottomPanel.SuspendLayout();
       this.SuspendLayout();
       // 
       // groupBoxFilter
       // 
-      this.groupBoxFilter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+      this.groupBoxFilter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.groupBoxFilter.Controls.Add(this.checkedFilterView);
       this.groupBoxFilter.Location = new System.Drawing.Point(4, 4);
@@ -92,7 +94,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
       // 
       // groupBoxFilterInfo
       // 
-      this.groupBoxFilterInfo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+      this.groupBoxFilterInfo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.groupBoxFilterInfo.Controls.Add(this.lblPercentage);
       this.groupBoxFilterInfo.Controls.Add(this.tbPercentage);
@@ -102,7 +104,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
       this.groupBoxFilterInfo.Controls.Add(this.lblTotal);
       this.groupBoxFilterInfo.Location = new System.Drawing.Point(4, 337);
       this.groupBoxFilterInfo.Name = "groupBoxFilterInfo";
-      this.groupBoxFilterInfo.Size = new System.Drawing.Size(659, 102);
+      this.groupBoxFilterInfo.Size = new System.Drawing.Size(658, 102);
       this.groupBoxFilterInfo.TabIndex = 1;
       this.groupBoxFilterInfo.TabStop = false;
       this.groupBoxFilterInfo.Text = "Filter Preview";
@@ -118,25 +120,25 @@ namespace HeuristicLab.DataPreprocessing.Views {
       // 
       // tbPercentage
       // 
-      this.tbPercentage.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+      this.tbPercentage.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.tbPercentage.Enabled = false;
       this.tbPercentage.Location = new System.Drawing.Point(104, 71);
       this.tbPercentage.Name = "tbPercentage";
-      this.tbPercentage.Size = new System.Drawing.Size(549, 20);
+      this.tbPercentage.Size = new System.Drawing.Size(548, 20);
       this.tbPercentage.TabIndex = 10;
       // 
-      // tbFiltered
+      // tbRemaining
       // 
-      this.tbRemaining.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+      this.tbRemaining.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.tbRemaining.Enabled = false;
       this.tbRemaining.Location = new System.Drawing.Point(104, 45);
       this.tbRemaining.Name = "tbRemaining";
-      this.tbRemaining.Size = new System.Drawing.Size(549, 20);
+      this.tbRemaining.Size = new System.Drawing.Size(548, 20);
       this.tbRemaining.TabIndex = 9;
       // 
-      // lblFiltered
+      // lblRemaining
       // 
       this.lblRemaining.AutoSize = true;
       this.lblRemaining.Location = new System.Drawing.Point(15, 47);
@@ -147,12 +149,12 @@ namespace HeuristicLab.DataPreprocessing.Views {
       // 
       // tbTotal
       // 
-      this.tbTotal.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+      this.tbTotal.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.tbTotal.Enabled = false;
       this.tbTotal.Location = new System.Drawing.Point(104, 19);
       this.tbTotal.Name = "tbTotal";
-      this.tbTotal.Size = new System.Drawing.Size(549, 20);
+      this.tbTotal.Size = new System.Drawing.Size(548, 20);
       this.tbTotal.TabIndex = 7;
       // 
       // lblTotal
@@ -166,10 +168,10 @@ namespace HeuristicLab.DataPreprocessing.Views {
       // 
       // applyFilterButton
       // 
-      this.applyFilterButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this.applyFilterButton.Anchor = System.Windows.Forms.AnchorStyles.Right;
       this.applyFilterButton.Cursor = System.Windows.Forms.Cursors.Default;
       this.applyFilterButton.Enabled = false;
-      this.applyFilterButton.Location = new System.Drawing.Point(554, 628);
+      this.applyFilterButton.Location = new System.Drawing.Point(559, 3);
       this.applyFilterButton.Name = "applyFilterButton";
       this.applyFilterButton.Size = new System.Drawing.Size(107, 23);
       this.applyFilterButton.TabIndex = 2;
@@ -179,11 +181,11 @@ namespace HeuristicLab.DataPreprocessing.Views {
       // 
       // rBtnOr
       // 
-      this.rBtnOr.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.rBtnOr.Anchor = System.Windows.Forms.AnchorStyles.Left;
       this.rBtnOr.AutoSize = true;
       this.rBtnOr.Cursor = System.Windows.Forms.Cursors.Default;
       this.rBtnOr.Enabled = false;
-      this.rBtnOr.Location = new System.Drawing.Point(60, 634);
+      this.rBtnOr.Location = new System.Drawing.Point(53, 6);
       this.rBtnOr.Name = "rBtnOr";
       this.rBtnOr.Size = new System.Drawing.Size(36, 17);
       this.rBtnOr.TabIndex = 3;
@@ -192,12 +194,12 @@ namespace HeuristicLab.DataPreprocessing.Views {
       // 
       // rBtnAnd
       // 
-      this.rBtnAnd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.rBtnAnd.Anchor = System.Windows.Forms.AnchorStyles.Left;
       this.rBtnAnd.AutoSize = true;
       this.rBtnAnd.Checked = true;
       this.rBtnAnd.Cursor = System.Windows.Forms.Cursors.Default;
       this.rBtnAnd.Enabled = false;
-      this.rBtnAnd.Location = new System.Drawing.Point(10, 634);
+      this.rBtnAnd.Location = new System.Drawing.Point(3, 6);
       this.rBtnAnd.Name = "rBtnAnd";
       this.rBtnAnd.Size = new System.Drawing.Size(44, 17);
       this.rBtnAnd.TabIndex = 4;
@@ -208,15 +210,15 @@ namespace HeuristicLab.DataPreprocessing.Views {
       // 
       // groupBox1
       // 
-      this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+      this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.groupBox1.Controls.Add(this.label4);
       this.groupBox1.Controls.Add(this.label1);
       this.groupBox1.Controls.Add(this.label2);
       this.groupBox1.Controls.Add(this.label3);
-      this.groupBox1.Location = new System.Drawing.Point(7, 445);
+      this.groupBox1.Location = new System.Drawing.Point(4, 445);
       this.groupBox1.Name = "groupBox1";
-      this.groupBox1.Size = new System.Drawing.Size(659, 130);
+      this.groupBox1.Size = new System.Drawing.Size(658, 130);
       this.groupBox1.TabIndex = 12;
       this.groupBox1.TabStop = false;
       this.groupBox1.Text = "Filter Info";
@@ -260,25 +262,35 @@ namespace HeuristicLab.DataPreprocessing.Views {
       this.label3.TabIndex = 6;
       this.label3.Text = "A filter specifies the data rows which should remain.";
       // 
+      // bottomPanel
+      // 
+      this.bottomPanel.Controls.Add(this.applyFilterButton);
+      this.bottomPanel.Controls.Add(this.rBtnAnd);
+      this.bottomPanel.Controls.Add(this.rBtnOr);
+      this.bottomPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
+      this.bottomPanel.Location = new System.Drawing.Point(0, 580);
+      this.bottomPanel.Name = "bottomPanel";
+      this.bottomPanel.Size = new System.Drawing.Size(670, 30);
+      this.bottomPanel.TabIndex = 13;
+      // 
       // FilterView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.Controls.Add(this.bottomPanel);
       this.Controls.Add(this.groupBox1);
-      this.Controls.Add(this.rBtnAnd);
-      this.Controls.Add(this.rBtnOr);
-      this.Controls.Add(this.applyFilterButton);
       this.Controls.Add(this.groupBoxFilterInfo);
       this.Controls.Add(this.groupBoxFilter);
       this.Name = "FilterView";
-      this.Size = new System.Drawing.Size(670, 660);
+      this.Size = new System.Drawing.Size(670, 610);
       this.groupBoxFilter.ResumeLayout(false);
       this.groupBoxFilterInfo.ResumeLayout(false);
       this.groupBoxFilterInfo.PerformLayout();
       this.groupBox1.ResumeLayout(false);
       this.groupBox1.PerformLayout();
+      this.bottomPanel.ResumeLayout(false);
+      this.bottomPanel.PerformLayout();
       this.ResumeLayout(false);
-      this.PerformLayout();
 
     }
 
@@ -301,7 +313,6 @@ namespace HeuristicLab.DataPreprocessing.Views {
     private System.Windows.Forms.Label label1;
     private System.Windows.Forms.Label label2;
     private System.Windows.Forms.Label label3;
-
-
+    private System.Windows.Forms.Panel bottomPanel;
   }
 }

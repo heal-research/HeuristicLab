@@ -33,7 +33,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
   [View("Statistics View")]
   [Content(typeof(StatisticsContent), true)]
   public partial class StatisticsView : ItemView {
-    private bool horizontal = true;
+    private bool horizontal = false;
     private StringMatrix statisticsMatrix;
     private static readonly string[] StatisticsNames = new[] {
       "Type",

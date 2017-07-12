@@ -98,7 +98,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
       // 
       // statisticsTextBox
       // 
-      this.statisticsTextBox.Size = new System.Drawing.Size(1133, 13);
+      this.statisticsTextBox.Size = new System.Drawing.Size(421, 13);
       // 
       // btnApplySort
       // 
