@@ -279,17 +279,25 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
     }
 
     private void AttachEventHandlers() {
-      DistanceFactorParameter.ValueChanged += new EventHandler(DistanceFactorParameter_ValueChanged);
-      DistanceFactorParameter.Value.ValueChanged += new EventHandler(DistanceFactor_ValueChanged);
-      FleetUsageFactorParameter.ValueChanged += new EventHandler(FleetUsageFactorParameter_ValueChanged);
-      FleetUsageFactorParameter.Value.ValueChanged += new EventHandler(FleetUsageFactor_ValueChanged);
-      DistanceMatrixParameter.ValueChanged += new EventHandler(DistanceMatrixParameter_ValueChanged);
+      CoordinatesParameter.ValueChanged += CoordinatesParameter_ValueChanged;
+      Coordinates.Reset += Coordinates_Changed;
+      Coordinates.ItemChanged += Coordinates_Changed;
+      DemandParameter.ValueChanged += DemandParameter_ValueChanged;
+      Demand.Reset += Demand_Changed;
+      Demand.ItemChanged += Demand_Changed;
+      VehiclesParameter.ValueChanged += VehiclesParameter_ValueChanged;
+      VehiclesParameter.Value.ValueChanged += Vehicles_Changed;
+      DistanceFactorParameter.ValueChanged += DistanceFactorParameter_ValueChanged;
+      DistanceFactorParameter.Value.ValueChanged += DistanceFactor_ValueChanged;
+      FleetUsageFactorParameter.ValueChanged += FleetUsageFactorParameter_ValueChanged;
+      FleetUsageFactorParameter.Value.ValueChanged += FleetUsageFactor_ValueChanged;
+      DistanceMatrixParameter.ValueChanged += DistanceMatrixParameter_ValueChanged;
       if (DistanceMatrix != null) {
-        DistanceMatrix.ItemChanged += new EventHandler<EventArgs<int, int>>(DistanceMatrix_ItemChanged);
-        DistanceMatrix.Reset += new EventHandler(DistanceMatrix_Reset);
+        DistanceMatrix.ItemChanged += DistanceMatrix_ItemChanged;
+        DistanceMatrix.Reset += DistanceMatrix_Reset;
       }
-      UseDistanceMatrixParameter.ValueChanged += new EventHandler(UseDistanceMatrixParameter_ValueChanged);
-      UseDistanceMatrix.ValueChanged += new EventHandler(UseDistanceMatrix_ValueChanged);
+      UseDistanceMatrixParameter.ValueChanged += UseDistanceMatrixParameter_ValueChanged;
+      UseDistanceMatrix.ValueChanged += UseDistanceMatrix_ValueChanged;
     }
 
     public virtual void InitializeState() {
@@ -299,15 +307,42 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
     }
 
     #region Event handlers
+    private void CoordinatesParameter_ValueChanged(object sender, EventArgs e) {
+      if (distanceMatrix != null) distanceMatrix = null;
+      if (DistanceMatrix != null && DistanceMatrix.Rows != Coordinates.Rows) DistanceMatrix = null;
+      Coordinates.Reset += Coordinates_Changed;
+      Coordinates.ItemChanged += Coordinates_Changed;
+      EvalBestKnownSolution();
+    }
+    private void Coordinates_Changed(object sender, EventArgs e) {
+      if (distanceMatrix != null) distanceMatrix = null;
+      if (DistanceMatrix != null && DistanceMatrix.Rows != Coordinates.Rows) DistanceMatrix = null;
+      EvalBestKnownSolution();
+    }
+    private void DemandParameter_ValueChanged(object sender, EventArgs e) {
+      Demand.Reset += Demand_Changed;
+      Demand.ItemChanged += Demand_Changed;
+      EvalBestKnownSolution();
+    }
+    private void Demand_Changed(object sender, EventArgs e) {
+      EvalBestKnownSolution();
+    }
+    private void VehiclesParameter_ValueChanged(object sender, EventArgs e) {
+      Vehicles.ValueChanged += Vehicles_Changed;
+      EvalBestKnownSolution();
+    }
+    private void Vehicles_Changed(object sender, EventArgs e) {
+      EvalBestKnownSolution();
+    }
     void DistanceFactorParameter_ValueChanged(object sender, EventArgs e) {
-      DistanceFactorParameter.Value.ValueChanged += new EventHandler(DistanceFactor_ValueChanged);
+      DistanceFactorParameter.Value.ValueChanged += DistanceFactor_ValueChanged;
       EvalBestKnownSolution();
     }
     void DistanceFactor_ValueChanged(object sender, EventArgs e) {
       EvalBestKnownSolution();
     }
     void FleetUsageFactorParameter_ValueChanged(object sender, EventArgs e) {
-      FleetUsageFactorParameter.Value.ValueChanged += new EventHandler(FleetUsageFactor_ValueChanged);
+      FleetUsageFactorParameter.Value.ValueChanged += FleetUsageFactor_ValueChanged;
       EvalBestKnownSolution();
     }
     void FleetUsageFactor_ValueChanged(object sender, EventArgs e) {
@@ -315,8 +350,8 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
     }
     void DistanceMatrixParameter_ValueChanged(object sender, EventArgs e) {
       if (DistanceMatrix != null) {
-        DistanceMatrix.ItemChanged += new EventHandler<EventArgs<int, int>>(DistanceMatrix_ItemChanged);
-        DistanceMatrix.Reset += new EventHandler(DistanceMatrix_Reset);
+        DistanceMatrix.ItemChanged += DistanceMatrix_ItemChanged;
+        DistanceMatrix.Reset += DistanceMatrix_Reset;
       }
       distanceMatrix = DistanceMatrix;
       EvalBestKnownSolution();
@@ -329,7 +364,7 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
       EvalBestKnownSolution();
     }
     void UseDistanceMatrixParameter_ValueChanged(object sender, EventArgs e) {
-      UseDistanceMatrix.ValueChanged += new EventHandler(UseDistanceMatrix_ValueChanged);
+      UseDistanceMatrix.ValueChanged += UseDistanceMatrix_ValueChanged;
       if (!UseDistanceMatrix.Value)
         distanceMatrix = null;
       EvalBestKnownSolution();

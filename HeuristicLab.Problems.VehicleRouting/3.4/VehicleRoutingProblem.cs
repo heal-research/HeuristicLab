@@ -193,10 +193,14 @@ namespace HeuristicLab.Problems.VehicleRouting {
     }
 
     private void EvalBestKnownSolution() {
-      if (BestKnownSolution != null) {
+      if (BestKnownSolution == null) return;
+      try {
         //call evaluator
         BestKnownQuality = new DoubleValue(ProblemInstance.Evaluate(BestKnownSolution.Solution).Quality);
         BestKnownSolution.Quality = BestKnownQuality;
+      } catch {
+        BestKnownQuality = null;
+        BestKnownSolution = null;
       }
     }
 
@@ -206,7 +210,12 @@ namespace HeuristicLab.Problems.VehicleRouting {
 
     void ProblemInstance_EvaluationChanged(object sender, EventArgs e) {
       BestKnownQuality = null;
-      EvalBestKnownSolution();
+      if (BestKnownSolution != null) {
+        // the tour is not valid if there are more vehicles in it than allowed
+        if (ProblemInstance.Vehicles.Value < BestKnownSolution.Solution.GetTours().Count) {
+          BestKnownSolution = null;
+        } else EvalBestKnownSolution();
+      }
     }
 
     void ProblemInstanceParameter_ValueChanged(object sender, EventArgs e) {

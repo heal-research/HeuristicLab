@@ -135,10 +135,19 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
     }
 
     private void AttachEventHandlers() {
-      TardinessPenaltyParameter.ValueChanged += new EventHandler(TardinessPenaltyParameter_ValueChanged);
-      TardinessPenaltyParameter.Value.ValueChanged += new EventHandler(TardinessPenalty_ValueChanged);
-      TimeFactorParameter.ValueChanged += new EventHandler(TimeFactorParameter_ValueChanged);
-      TimeFactorParameter.Value.ValueChanged += new EventHandler(TimeFactor_ValueChanged);
+      ReadyTimeParameter.ValueChanged += ReadyTimeParameter_ValueChanged;
+      ReadyTime.Reset += ReadyTime_Changed;
+      ReadyTime.ItemChanged += ReadyTime_Changed;
+      DueTimeParameter.ValueChanged += DueTimeParameter_ValueChanged;
+      DueTime.Reset += DueTime_Changed;
+      DueTime.ItemChanged += DueTime_Changed;
+      ServiceTimeParameter.ValueChanged += ServiceTimeParameter_ValueChanged;
+      ServiceTime.Reset += ServiceTime_Changed;
+      ServiceTime.ItemChanged += ServiceTime_Changed;
+      TardinessPenaltyParameter.ValueChanged += TardinessPenaltyParameter_ValueChanged;
+      TardinessPenalty.ValueChanged += TardinessPenalty_ValueChanged;
+      TimeFactorParameter.ValueChanged += TimeFactorParameter_ValueChanged;
+      TimeFactor.ValueChanged += TimeFactor_ValueChanged;
     }
 
     public override void InitializeState() {
@@ -148,18 +157,42 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
     }
 
     #region Event handlers
-    void TardinessPenaltyParameter_ValueChanged(object sender, EventArgs e) {
-      TardinessPenaltyParameter.Value.ValueChanged += new EventHandler(TardinessPenalty_ValueChanged);
+    private void ReadyTimeParameter_ValueChanged(object sender, EventArgs e) {
+      ReadyTime.Reset += ReadyTime_Changed;
+      ReadyTime.ItemChanged += ReadyTime_Changed;
       EvalBestKnownSolution();
     }
-    void TardinessPenalty_ValueChanged(object sender, EventArgs e) {
+    private void ReadyTime_Changed(object sender, EventArgs e) {
       EvalBestKnownSolution();
     }
-    void TimeFactorParameter_ValueChanged(object sender, EventArgs e) {
-      TimeFactorParameter.Value.ValueChanged += new EventHandler(TimeFactor_ValueChanged);
+    private void DueTimeParameter_ValueChanged(object sender, EventArgs e) {
+      DueTime.Reset += DueTime_Changed;
+      DueTime.ItemChanged += DueTime_Changed;
       EvalBestKnownSolution();
     }
-    void TimeFactor_ValueChanged(object sender, EventArgs e) {
+    private void DueTime_Changed(object sender, EventArgs e) {
+      EvalBestKnownSolution();
+    }
+    private void ServiceTimeParameter_ValueChanged(object sender, EventArgs e) {
+      ServiceTime.Reset += ServiceTime_Changed;
+      ServiceTime.ItemChanged += ServiceTime_Changed;
+      EvalBestKnownSolution();
+    }
+    private void ServiceTime_Changed(object sender, EventArgs e) {
+      EvalBestKnownSolution();
+    }
+    private void TardinessPenaltyParameter_ValueChanged(object sender, EventArgs e) {
+      TardinessPenaltyParameter.Value.ValueChanged += TardinessPenalty_ValueChanged;
+      EvalBestKnownSolution();
+    }
+    private void TardinessPenalty_ValueChanged(object sender, EventArgs e) {
+      EvalBestKnownSolution();
+    }
+    private void TimeFactorParameter_ValueChanged(object sender, EventArgs e) {
+      TimeFactorParameter.Value.ValueChanged += TimeFactor_ValueChanged;
+      EvalBestKnownSolution();
+    }
+    private void TimeFactor_ValueChanged(object sender, EventArgs e) {
       EvalBestKnownSolution();
     }
     #endregion
