@@ -27,6 +27,7 @@ namespace HeuristicLab.Problems.ParameterOptimization {
   /// </summary>
   [Plugin("HeuristicLab.Problems.ParameterOptimization", "3.3.14.$WCREV$")]
   [PluginFile("HeuristicLab.Problems.ParameterOptimization-3.3.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.Analysis", "3.3")]
   [PluginDependency("HeuristicLab.Collections", "3.3")]
   [PluginDependency("HeuristicLab.Common", "3.3")]
   [PluginDependency("HeuristicLab.Core", "3.3")]
@@ -34,6 +35,7 @@ namespace HeuristicLab.Problems.ParameterOptimization {
   [PluginDependency("HeuristicLab.Encodings.RealVectorEncoding", "3.3")]
   [PluginDependency("HeuristicLab.Operators", "3.3")]
   [PluginDependency("HeuristicLab.Optimization", "3.3")]
+  [PluginDependency("HeuristicLab.Optimization.Operators", "3.3")]
   [PluginDependency("HeuristicLab.Parameters", "3.3")]
   [PluginDependency("HeuristicLab.Persistence", "3.3")]
   public class HeuristicLabProblemsParameterOptimizationPlugin : PluginBase {    }

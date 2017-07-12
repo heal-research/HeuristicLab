@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.26430.6
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{96396439-A764-4022-A8D2-BE021449B8D1}"
 	ProjectSection(SolutionItems) = preProject
@@ -33,6 +33,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab-3.3", "Heurist
 		{D34A7620-3E23-40D9-8647-637BE901F271} = {D34A7620-3E23-40D9-8647-637BE901F271}
 		{E0B45023-CB84-48A1-A1B7-8295B64B7BAD} = {E0B45023-CB84-48A1-A1B7-8295B64B7BAD}
 		{C633FB23-BAE6-448E-BF5D-E1F9A839B5ED} = {C633FB23-BAE6-448E-BF5D-E1F9A839B5ED}
+		{9943FF23-8619-459C-B84A-E7FBDCBA04E6} = {9943FF23-8619-459C-B84A-E7FBDCBA04E6}
 		{CDA28124-ACD0-4231-8EB0-C510B361F84E} = {CDA28124-ACD0-4231-8EB0-C510B361F84E}
 		{14AB8D24-25BC-400C-A846-4627AA945192} = {14AB8D24-25BC-400C-A846-4627AA945192}
 		{C36BD924-A541-4A00-AFA8-41701378DDC5} = {C36BD924-A541-4A00-AFA8-41701378DDC5}
@@ -130,6 +131,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab-3.3", "Heurist
 		{79271BC8-4446-40E2-BB89-9BE4E17174FE} = {79271BC8-4446-40E2-BB89-9BE4E17174FE}
 		{BBF2CCC8-4D87-4297-8E18-8241FF93F966} = {BBF2CCC8-4D87-4297-8E18-8241FF93F966}
 		{59F354CB-FE13-4253-AED2-AD86372BEC27} = {59F354CB-FE13-4253-AED2-AD86372BEC27}
+		{4B76E2CB-A990-4959-B080-1D81D418D325} = {4B76E2CB-A990-4959-B080-1D81D418D325}
 		{D1EFA4CC-909F-41D5-9C1F-C3AF1957A372} = {D1EFA4CC-909F-41D5-9C1F-C3AF1957A372}
 		{7A2531CE-3F7C-4F13-BCCA-ED6DC27A7086} = {7A2531CE-3F7C-4F13-BCCA-ED6DC27A7086}
 		{102BC7D3-0EF9-439C-8F6D-96FF0FDB8E1B} = {102BC7D3-0EF9-439C-8F6D-96FF0FDB8E1B}
@@ -416,7 +418,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OutdatedPlugins", "Outdated
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Algorithms.CMAEvolutionStrategy-3.4", "HeuristicLab.Algorithms.CMAEvolutionStrategy\3.4\HeuristicLab.Algorithms.CMAEvolutionStrategy-3.4.csproj", "{291010E4-2F4E-4D29-A795-753CFF293FDB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Encodings.LinearLinkageEncoding-3.3", "HeuristicLab.Encodings.LinearLinkageEncoding\3.3\HeuristicLab.Encodings.LinearLinkageEncoding-3.3.csproj", "{BE698769-975A-429E-828C-72BB2B6182C8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Encodings.LinearLinkageEncoding-3.4", "HeuristicLab.Encodings.LinearLinkageEncoding\3.4\HeuristicLab.Encodings.LinearLinkageEncoding-3.4.csproj", "{BE698769-975A-429E-828C-72BB2B6182C8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.Orienteering-3.3", "HeuristicLab.Problems.Orienteering\3.3\HeuristicLab.Problems.Orienteering-3.3.csproj", "{D1EFA4CC-909F-41D5-9C1F-C3AF1957A372}"
 EndProject
@@ -445,6 +447,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.BinPacking.Views-3.3", "HeuristicLab.Problems.BinPacking.Views\3.3\HeuristicLab.Problems.BinPacking.Views-3.3.csproj", "{8CFC7A61-E214-44DC-96B3-4CEA9B8E958E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.BinPacking-3.3", "HeuristicLab.Problems.BinPacking\3.3\HeuristicLab.Problems.BinPacking-3.3.csproj", "{F8A55094-3CD5-4034-B0CA-5BD7FFB016D4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.Instances.DIMACS-3.3", "HeuristicLab.Problems.Instances.DIMACS\3.3\HeuristicLab.Problems.Instances.DIMACS-3.3.csproj", "{9943FF23-8619-459C-B84A-E7FBDCBA04E6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.GraphColoring-3.3", "HeuristicLab.Problems.GraphColoring\3.3\HeuristicLab.Problems.GraphColoring-3.3.csproj", "{4B76E2CB-A990-4959-B080-1D81D418D325}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -2172,6 +2178,30 @@ Global
 		{F8A55094-3CD5-4034-B0CA-5BD7FFB016D4}.Release|x64.Build.0 = Release|x64
 		{F8A55094-3CD5-4034-B0CA-5BD7FFB016D4}.Release|x86.ActiveCfg = Release|x86
 		{F8A55094-3CD5-4034-B0CA-5BD7FFB016D4}.Release|x86.Build.0 = Release|x86
+		{9943FF23-8619-459C-B84A-E7FBDCBA04E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9943FF23-8619-459C-B84A-E7FBDCBA04E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9943FF23-8619-459C-B84A-E7FBDCBA04E6}.Debug|x64.ActiveCfg = Debug|x64
+		{9943FF23-8619-459C-B84A-E7FBDCBA04E6}.Debug|x64.Build.0 = Debug|x64
+		{9943FF23-8619-459C-B84A-E7FBDCBA04E6}.Debug|x86.ActiveCfg = Debug|x86
+		{9943FF23-8619-459C-B84A-E7FBDCBA04E6}.Debug|x86.Build.0 = Debug|x86
+		{9943FF23-8619-459C-B84A-E7FBDCBA04E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9943FF23-8619-459C-B84A-E7FBDCBA04E6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9943FF23-8619-459C-B84A-E7FBDCBA04E6}.Release|x64.ActiveCfg = Release|x64
+		{9943FF23-8619-459C-B84A-E7FBDCBA04E6}.Release|x64.Build.0 = Release|x64
+		{9943FF23-8619-459C-B84A-E7FBDCBA04E6}.Release|x86.ActiveCfg = Release|x86
+		{9943FF23-8619-459C-B84A-E7FBDCBA04E6}.Release|x86.Build.0 = Release|x86
+		{4B76E2CB-A990-4959-B080-1D81D418D325}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B76E2CB-A990-4959-B080-1D81D418D325}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B76E2CB-A990-4959-B080-1D81D418D325}.Debug|x64.ActiveCfg = Debug|x64
+		{4B76E2CB-A990-4959-B080-1D81D418D325}.Debug|x64.Build.0 = Debug|x64
+		{4B76E2CB-A990-4959-B080-1D81D418D325}.Debug|x86.ActiveCfg = Debug|x86
+		{4B76E2CB-A990-4959-B080-1D81D418D325}.Debug|x86.Build.0 = Debug|x86
+		{4B76E2CB-A990-4959-B080-1D81D418D325}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B76E2CB-A990-4959-B080-1D81D418D325}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4B76E2CB-A990-4959-B080-1D81D418D325}.Release|x64.ActiveCfg = Release|x64
+		{4B76E2CB-A990-4959-B080-1D81D418D325}.Release|x64.Build.0 = Release|x64
+		{4B76E2CB-A990-4959-B080-1D81D418D325}.Release|x86.ActiveCfg = Release|x86
+		{4B76E2CB-A990-4959-B080-1D81D418D325}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

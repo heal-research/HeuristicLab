@@ -26,18 +26,6 @@ using HeuristicLab.Encodings.PermutationEncoding;
 namespace HeuristicLab.Problems.QuadraticAssignment {
   public static class QAPPermutationProximityCalculator {
 
-    public static double CalculateGenotypeSimilarity(Permutation a, Permutation b) {
-      int similar = 0;
-      for (int i = 0; i < a.Length; i++) {
-        if (a[i] == b[i]) similar++;
-      }
-      return similar / (double)a.Length;
-    }
-
-    public static double CalculateGenotypeDistance(Permutation a, Permutation b) {
-      return 1.0 - CalculateGenotypeSimilarity(a, b);
-    }
-
     public static double CalculatePhenotypeSimilarity(Permutation a, Permutation b, DoubleMatrix weights, DoubleMatrix distances) {
       return 1.0 - CalculatePhenotypeDistance(a, b, weights, distances);
     }

@@ -23,11 +23,13 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Optimization;
+using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
@@ -300,14 +302,17 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
       Operators.AddRange(ApplicationManager.Manager.GetInstances<IQAPMoveEvaluator>());
       Operators.Add(new BestQAPSolutionAnalyzer());
       Operators.Add(new QAPAlleleFrequencyAnalyzer());
-      Operators.Add(new QAPPopulationDiversityAnalyzer());
 
       Operators.Add(new QAPExhaustiveInsertionLocalImprovement());
       Operators.Add(new QAPExhaustiveInversionLocalImprovement());
       Operators.Add(new QAPStochasticScrambleLocalImprovement());
       Operators.Add(new QAPExhaustiveSwap2LocalImprovement());
 
+      Operators.Add(new HammingSimilarityCalculator());
       Operators.Add(new QAPSimilarityCalculator());
+      Operators.Add(new QualitySimilarityCalculator());
+      Operators.Add(new PopulationSimilarityAnalyzer(Operators.OfType<ISolutionSimilarityCalculator>()));
+
       ParameterizeAnalyzers();
       ParameterizeOperators();
     }
@@ -392,10 +397,14 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
         localOpt.WeightsParameter.ActualName = WeightsParameter.Name;
       }
 
-      QAPSimilarityCalculator similarityCalculator = Operators.OfType<QAPSimilarityCalculator>().SingleOrDefault();
-      if (similarityCalculator != null) {
+      foreach (var similarityCalculator in Operators.OfType<ISolutionSimilarityCalculator>()) {
         similarityCalculator.SolutionVariableName = SolutionCreator.PermutationParameter.ActualName;
         similarityCalculator.QualityVariableName = Evaluator.QualityParameter.ActualName;
+        var qapsimcalc = similarityCalculator as QAPSimilarityCalculator;
+        if (qapsimcalc != null) {
+          qapsimcalc.Weights = Weights;
+          qapsimcalc.Distances = Distances;
+        }
       }
     }
 

@@ -253,7 +253,6 @@ namespace HeuristicLab.Problems.VehicleRouting {
           ApplicationManager.Manager.GetInstances<IGeneralVRPOperator>().Cast<IOperator>()).OrderBy(op => op.Name));
         Operators.Add(new VRPSimilarityCalculator());
         Operators.Add(new QualitySimilarityCalculator());
-        Operators.Add(new NoSimilarityCalculator());
         Operators.Add(new PopulationSimilarityAnalyzer(Operators.OfType<ISolutionSimilarityCalculator>()));
 
         IVRPCreator defaultCreator = null;

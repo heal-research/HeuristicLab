@@ -120,6 +120,7 @@
     <None Include="Plugin.cs.frame" />
     <Compile Include="ProblemInstanceManager.cs" />
     <Compile Include="IProblemInstanceExporter.cs" />
+    <Compile Include="Types\GCPData.cs" />
     <Compile Include="Types\PTSPData.cs" />
     <Compile Include="Types\ATSPData.cs" />
     <Compile Include="Types\JSSPData.cs" />

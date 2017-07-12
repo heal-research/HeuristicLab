@@ -24,6 +24,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Optimization.Operators;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.TravelingSalesman {
   /// <summary>
@@ -33,7 +34,9 @@ namespace HeuristicLab.Problems.TravelingSalesman {
   /// The operator calculates the similarity based on the number of edges the two solutions have in common.
   /// </remarks>
   [Item("TSPSimilarityCalculator", "An operator that performs similarity calculation between two traveling salesman solutions. The operator calculates the similarity based on the number of edges the two solutions have in common.")]
-  public sealed class TSPSimilarityCalculator : SingleObjectiveSolutionSimilarityCalculator {
+  [Obsolete("This operator is similar to the Hamming similarity calculator in the Encodings.PermutationEncoding namespace")]
+  [NonDiscoverableType]
+  internal sealed class TSPSimilarityCalculator : SingleObjectiveSolutionSimilarityCalculator {
     protected override bool IsCommutative { get { return true; } }
 
     private TSPSimilarityCalculator(bool deserializing) : base(deserializing) { }
