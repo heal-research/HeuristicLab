@@ -178,6 +178,11 @@
       <Name>HeuristicLab.Collections-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Common.Resources\3.3\HeuristicLab.Common.Resources-3.3.csproj">
+      <Project>{0e27a536-1c4a-4624-a65e-dc4f4f23e3e1}</Project>
+      <Name>HeuristicLab.Common.Resources-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Common\3.3\HeuristicLab.Common-3.3.csproj">
       <Project>{a9ad58b9-3ef9-4cc1-97e5-8d909039ff5c}</Project>
       <Name>HeuristicLab.Common-3.3</Name>

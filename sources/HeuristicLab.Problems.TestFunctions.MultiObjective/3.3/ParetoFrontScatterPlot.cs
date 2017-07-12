@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System.Drawing;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -28,6 +29,9 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
   [StorableClass]
   [Item("Pareto Front Scatter Plot", "The optimal front, current front and its associated Points in the searchspace")]
   public class ParetoFrontScatterPlot : Item {
+    public static new Image StaticItemImage {
+      get { return HeuristicLab.Common.Resources.VSImageLibrary.Performance; }
+    }
 
     [Storable]
     private int objectives;
