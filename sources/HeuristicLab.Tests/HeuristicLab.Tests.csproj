@@ -459,6 +459,7 @@
     <Compile Include="HeuristicLab-3.3\Samples\AlpsSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\GABppSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\GPRobocodeSampleTest.cs" />
+    <Compile Include="HeuristicLab-3.3\Samples\GPSymbolicRegressionSampleWithOSTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\OSESGriewankSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\GAGroupingProblemSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\VnsOpSampleTest.cs" />
