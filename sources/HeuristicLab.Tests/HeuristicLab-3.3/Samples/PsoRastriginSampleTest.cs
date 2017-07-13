@@ -30,7 +30,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HeuristicLab.Tests {
   [TestClass]
-  public class PsoSchwefelSampleTest {
+  public class PsoRastriginSampleTest {
     private const string SampleFileName = "PSO_Rastrigin";
 
     [TestMethod]
@@ -50,13 +50,13 @@ namespace HeuristicLab.Tests {
       SamplesUtils.RunAlgorithm(pso);
       if (Environment.Is64BitProcess) {
         Assert.AreEqual(0, SamplesUtils.GetDoubleResult(pso, "BestQuality"));
-        Assert.AreEqual(3.9649516110677525, SamplesUtils.GetDoubleResult(pso, "CurrentAverageQuality"));
-        Assert.AreEqual(25.566430359483757, SamplesUtils.GetDoubleResult(pso, "CurrentWorstQuality"));
+        Assert.AreEqual(3.9649516110677525, SamplesUtils.GetDoubleResult(pso, "CurrentAverageQuality"), 1e-08);
+        Assert.AreEqual(25.566430359483757, SamplesUtils.GetDoubleResult(pso, "CurrentWorstQuality"), 1e-08);
         Assert.AreEqual(200, SamplesUtils.GetIntResult(pso, "Iterations"));
       } else {
         Assert.AreEqual(0, SamplesUtils.GetDoubleResult(pso, "BestQuality"));
-        Assert.AreEqual(3.3957460831564048, SamplesUtils.GetDoubleResult(pso, "CurrentAverageQuality"));
-        Assert.AreEqual(34.412788077766145, SamplesUtils.GetDoubleResult(pso, "CurrentWorstQuality"));
+        Assert.AreEqual(3.3957460831564048, SamplesUtils.GetDoubleResult(pso, "CurrentAverageQuality"), 1e-08);
+        Assert.AreEqual(34.412788077766145, SamplesUtils.GetDoubleResult(pso, "CurrentWorstQuality"), 1e-08);
         Assert.AreEqual(200, SamplesUtils.GetIntResult(pso, "Iterations"));
       }
     }
