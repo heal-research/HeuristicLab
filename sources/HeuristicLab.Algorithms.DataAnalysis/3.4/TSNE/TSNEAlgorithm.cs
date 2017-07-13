@@ -226,11 +226,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       Parameters.Add(new FixedValueParameter<DoubleValue>(EtaParameterName, "Gradient descent learning rate.", new DoubleValue(10)));
       Parameters.Add(new FixedValueParameter<BoolValue>(SetSeedRandomlyParameterName, "If the seed should be random.", new BoolValue(true)));
       Parameters.Add(new FixedValueParameter<IntValue>(SeedParameterName, "The seed used if it should not be random.", new IntValue(0)));
-
-      //Name of the column specifying the class lables of each data point.If the label column can not be found training/test is used as labels."
-      Parameters.Add(new OptionalConstrainedValueParameter<StringValue>(ClassesNameParameterName, "Name of the column specifying the class lables of each data point."));
+      Parameters.Add(new OptionalConstrainedValueParameter<StringValue>(ClassesNameParameterName, "Name of the column specifying the class lables of each data point. If this is not set training/test is used as labels."));
       Parameters.Add(new FixedValueParameter<BoolValue>(NormalizationParameterName, "Whether the data should be zero centered and have variance of 1 for each variable, so different scalings are ignored.", new BoolValue(true)));
-      Parameters.Add(new FixedValueParameter<IntValue>(UpdateIntervalParameterName, "", new IntValue(50)));
+      Parameters.Add(new FixedValueParameter<IntValue>(UpdateIntervalParameterName, "The interval after which the results will be updated.", new IntValue(50)));
       Parameters[UpdateIntervalParameterName].Hidden = true;
 
       MomentumSwitchIterationParameter.Hidden = true;

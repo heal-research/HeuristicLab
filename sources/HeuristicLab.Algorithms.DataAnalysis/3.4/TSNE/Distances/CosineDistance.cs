@@ -29,11 +29,10 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Algorithms.DataAnalysis {
 
   /// <summary>
-  /// The angluar distance as defined as a normalized distance measure dependent on the angle between two vectors.
-  /// It is designed for vectors with all positive coordinates.
+  /// The angular distance as defined as a normalized distance measure dependent on the angle between two vectors.
   /// </summary>
   [StorableClass]
-  [Item("CosineDistance", "The angluar distance as defined as a normalized distance measure dependent on the angle between two vectors.\nIt is designed for vectors with all positive coordinates")]
+  [Item("CosineDistance", "The angular distance as defined as a normalized distance measure dependent on the angle between two vectors.")]
   public class CosineDistance : DistanceBase<IEnumerable<double>> {
 
     #region HLConstructors & Cloning
