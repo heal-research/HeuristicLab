@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using HeuristicLab.Common;
@@ -240,14 +241,23 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     private void InitializeOperators() {
-      Operators.AddRange(ApplicationManager.Manager.GetInstances<ISymbolicExpressionTreeOperator>());
-      Operators.AddRange(ApplicationManager.Manager.GetInstances<ISymbolicDataAnalysisExpressionCrossover<T>>());
-      Operators.Add(new SymbolicExpressionSymbolFrequencyAnalyzer());
-      Operators.Add(new SymbolicDataAnalysisVariableFrequencyAnalyzer());
-      Operators.Add(new MinAverageMaxSymbolicExpressionTreeLengthAnalyzer());
-      Operators.Add(new SymbolicExpressionTreeLengthAnalyzer());
-      Operators.Add(new SymbolicExpressionTreeBottomUpSimilarityCalculator());
-      Operators.Add(new SymbolicDataAnalysisBottomUpDiversityAnalyzer(Operators.OfType<SymbolicExpressionTreeBottomUpSimilarityCalculator>().First()));
+      var operators = new HashSet<IItem>(new TypeEqualityComparer<IItem>());
+      operators.Add(new SubtreeCrossover());
+      operators.Add(new MultiSymbolicExpressionTreeManipulator());
+
+      foreach (var op in ApplicationManager.Manager.GetInstances<ISymbolicExpressionTreeOperator>())
+        operators.Add(op);
+      foreach (var op in ApplicationManager.Manager.GetInstances<ISymbolicDataAnalysisExpressionCrossover<T>>())
+        operators.Add(op);
+
+      operators.Add(new SymbolicExpressionSymbolFrequencyAnalyzer());
+      operators.Add(new SymbolicDataAnalysisVariableFrequencyAnalyzer());
+      operators.Add(new MinAverageMaxSymbolicExpressionTreeLengthAnalyzer());
+      operators.Add(new SymbolicExpressionTreeLengthAnalyzer());
+      operators.Add(new SymbolicExpressionTreeBottomUpSimilarityCalculator());
+      operators.Add(new SymbolicDataAnalysisBottomUpDiversityAnalyzer(operators.OfType<SymbolicExpressionTreeBottomUpSimilarityCalculator>().First()));
+
+      Operators.AddRange(operators);
       ParameterizeOperators();
     }
 

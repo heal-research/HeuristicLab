@@ -250,6 +250,19 @@ namespace HeuristicLab.Algorithms.ALPS {
       : base(deserializing) { }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code, remove with 3.4
+      var optionalMutatorParameter = MutatorParameter as OptionalConstrainedValueParameter<IManipulator>;
+      if (optionalMutatorParameter != null) {
+        Parameters.Remove(optionalMutatorParameter);
+        Parameters.Add(new ConstrainedValueParameter<IManipulator>("Mutator", "The operator used to mutate solutions."));
+        foreach (var m in optionalMutatorParameter.ValidValues)
+          MutatorParameter.ValidValues.Add(m);
+        if (optionalMutatorParameter.Value == null) MutationProbability.Value = 0; // to guarantee that the old configuration results in the same behavior
+        else Mutator = optionalMutatorParameter.Value;
+        optionalMutatorParameter.ValidValues.Clear(); // to avoid dangling references to the old parameter its valid values are cleared
+      }
+      #endregion
       Initialize();
     }
     private AlpsGeneticAlgorithm(AlpsGeneticAlgorithm original, Cloner cloner)
@@ -283,7 +296,7 @@ namespace HeuristicLab.Algorithms.ALPS {
 
       Parameters.Add(new ConstrainedValueParameter<ISelector>("Selector", "The operator used to select solutions for reproduction."));
       Parameters.Add(new ConstrainedValueParameter<ICrossover>("Crossover", "The operator used to cross solutions."));
-      Parameters.Add(new OptionalConstrainedValueParameter<IManipulator>("Mutator", "The operator used to mutate solutions."));
+      Parameters.Add(new ConstrainedValueParameter<IManipulator>("Mutator", "The operator used to mutate solutions."));
       Parameters.Add(new ValueParameter<PercentValue>("MutationProbability", "The probability that the mutation operator is applied on a solution.", new PercentValue(0.05)));
       Parameters.Add(new ValueParameter<IntValue>("Elites", "The numer of elite solutions which are kept in each generation.", new IntValue(1)));
       Parameters.Add(new FixedValueParameter<BoolValue>("ReevaluateElites", "Flag to determine if elite individuals should be reevaluated (i.e., if stochastic fitness functions are used.)", new BoolValue(false)) { Hidden = true });
@@ -689,17 +702,23 @@ namespace HeuristicLab.Algorithms.ALPS {
         CrossoverParameter.Value = defaultCrossover;
     }
     private void UpdateMutators() {
-      var oldMutator = MutatorParameter.Value;
+      IManipulator oldMutator = MutatorParameter.Value;
       MutatorParameter.ValidValues.Clear();
-      foreach (var mutator in Problem.Operators.OfType<IManipulator>().OrderBy(m => m.Name)) {
+      IManipulator defaultMutator = Problem.Operators.OfType<IManipulator>().FirstOrDefault();
+
+      foreach (IManipulator mutator in Problem.Operators.OfType<IManipulator>().OrderBy(x => x.Name)) {
         ParameterizeStochasticOperatorForLayer(mutator);
         MutatorParameter.ValidValues.Add(mutator);
       }
+
       if (oldMutator != null) {
-        var mutator = MutatorParameter.ValidValues.FirstOrDefault(m => m.GetType() == oldMutator.GetType());
-        if (mutator != null)
-          MutatorParameter.Value = mutator;
+        IManipulator mutator = MutatorParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldMutator.GetType());
+        if (mutator != null) MutatorParameter.Value = mutator;
+        else oldMutator = null;
       }
+
+      if (oldMutator == null && defaultMutator != null)
+        MutatorParameter.Value = defaultMutator;
     }
     private void UpdateTerminators() {
       var newTerminators = new Dictionary<ITerminator, bool> {
