@@ -86,6 +86,15 @@ namespace HeuristicLab.Problems.BinPacking {
       }
     }
 
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code, remove with 3.4
+      if (ResidualSpace == null)
+        ResidualSpace = new Dictionary<TPos, Tuple<int, int, int>>();
+      #endregion
+    }
+
     protected abstract void GenerateNewExtremePointsForNewItem(TItem item, TPos position);
 
     public abstract TPos FindExtremePointForItem(TItem item, bool rotated, bool stackingConstraints);
