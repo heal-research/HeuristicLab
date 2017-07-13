@@ -31,6 +31,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Random;
 
@@ -85,14 +86,14 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public IFixedValueParameter<DoubleValue> PerplexityParameter {
       get { return Parameters[PerplexityParameterName] as IFixedValueParameter<DoubleValue>; }
     }
-    public IFixedValueParameter<DoubleValue> ThetaParameter {
-      get { return Parameters[ThetaParameterName] as IFixedValueParameter<DoubleValue>; }
+    public IFixedValueParameter<PercentValue> ThetaParameter {
+      get { return Parameters[ThetaParameterName] as IFixedValueParameter<PercentValue>; }
     }
     public IFixedValueParameter<IntValue> NewDimensionsParameter {
       get { return Parameters[NewDimensionsParameterName] as IFixedValueParameter<IntValue>; }
     }
-    public IValueParameter<IDistance<double[]>> DistanceParameter {
-      get { return Parameters[DistanceParameterName] as IValueParameter<IDistance<double[]>>; }
+    public IConstrainedValueParameter<IDistance<double[]>> DistanceParameter {
+      get { return Parameters[DistanceParameterName] as IConstrainedValueParameter<IDistance<double[]>>; }
     }
     public IFixedValueParameter<IntValue> MaxIterationsParameter {
       get { return Parameters[MaxIterationsParameterName] as IFixedValueParameter<IntValue>; }
@@ -118,8 +119,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public IFixedValueParameter<IntValue> SeedParameter {
       get { return Parameters[SeedParameterName] as IFixedValueParameter<IntValue>; }
     }
-    public IFixedValueParameter<StringValue> ClassesParameter {
-      get { return Parameters[ClassesParameterName] as IFixedValueParameter<StringValue>; }
+    public IConstrainedValueParameter<StringValue> ClassesParameter {
+      get { return Parameters[ClassesParameterName] as IConstrainedValueParameter<StringValue>; }
     }
     public IFixedValueParameter<BoolValue> NormalizationParameter {
       get { return Parameters[NormalizationParameterName] as IFixedValueParameter<BoolValue>; }
@@ -178,7 +179,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       set { SeedParameter.Value.Value = value; }
     }
     public string Classes {
-      get { return ClassesParameter.Value.Value; }
+      get { return ClassesParameter.Value != null ? ClassesParameter.Value.Value : null; }
       set { ClassesParameter.Value.Value = value; }
     }
     public bool Normalization {
@@ -207,15 +208,15 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
     public override IDeepCloneable Clone(Cloner cloner) { return new TSNEAlgorithm(this, cloner); }
     public TSNEAlgorithm() {
-      Problem = new RegressionProblem();
-      Parameters.Add(new ValueParameter<IDistance<double[]>>(DistanceParameterName, "The distance function used to differentiate similar from non-similar points", new EuclideanDistance()));
+      var distances = new ItemSet<IDistance<double[]>>(ApplicationManager.Manager.GetInstances<IDistance<double[]>>());
+      Parameters.Add(new ConstrainedValueParameter<IDistance<double[]>>(DistanceParameterName, "The distance function used to differentiate similar from non-similar points", distances, distances.OfType<EuclideanDistance>().FirstOrDefault()));
       Parameters.Add(new FixedValueParameter<DoubleValue>(PerplexityParameterName, "Perplexity-parameter of tSNE. Comparable to k in a k-nearest neighbour algorithm. Recommended value is floor(number of points /3) or lower", new DoubleValue(25)));
-      Parameters.Add(new FixedValueParameter<DoubleValue>(ThetaParameterName, "Value describing how much appoximated " +
+      Parameters.Add(new FixedValueParameter<PercentValue>(ThetaParameterName, "Value describing how much appoximated " +
                                                                               "gradients my differ from exact gradients. Set to 0 for exact calculation and in [0,1] otherwise. " +
                                                                               "Appropriate values for theta are between 0.1 and 0.7 (default = 0.5). CAUTION: exact calculation of " +
                                                                               "forces requires building a non-sparse N*N matrix where N is the number of data points. This may " +
                                                                               "exceed memory limitations. The function is designed to run on large (N > 5000) data sets. It may give" +
-                                                                              " poor performance on very small data sets(it is better to use a standard t - SNE implementation on such data).", new DoubleValue(0)));
+                                                                              " poor performance on very small data sets(it is better to use a standard t - SNE implementation on such data).", new PercentValue(0)));
       Parameters.Add(new FixedValueParameter<IntValue>(NewDimensionsParameterName, "Dimensionality of projected space (usually 2 for easy visual analysis)", new IntValue(2)));
       Parameters.Add(new FixedValueParameter<IntValue>(MaxIterationsParameterName, "Maximum number of iterations for gradient descent.", new IntValue(1000)));
       Parameters.Add(new FixedValueParameter<IntValue>(StopLyingIterationParameterName, "Number of iterations after which p is no longer approximated.", new IntValue(0)));
@@ -225,7 +226,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       Parameters.Add(new FixedValueParameter<DoubleValue>(EtaParameterName, "Gradient descent learning rate.", new DoubleValue(10)));
       Parameters.Add(new FixedValueParameter<BoolValue>(SetSeedRandomlyParameterName, "If the seed should be random.", new BoolValue(true)));
       Parameters.Add(new FixedValueParameter<IntValue>(SeedParameterName, "The seed used if it should not be random.", new IntValue(0)));
-      Parameters.Add(new FixedValueParameter<StringValue>(ClassesParameterName, "Name of the column specifying the class lables of each data point. If the label column can not be found training/test is used as labels.", new StringValue("none")));
+
+      //Name of the column specifying the class lables of each data point.If the label column can not be found training/test is used as labels."
+      Parameters.Add(new OptionalConstrainedValueParameter<StringValue>(ClassesParameterName, "Name of the column specifying the class lables of each data point."));
       Parameters.Add(new FixedValueParameter<BoolValue>(NormalizationParameterName, "Whether the data should be zero centered and have variance of 1 for each variable, so different scalings are ignored.", new BoolValue(true)));
       Parameters.Add(new FixedValueParameter<IntValue>(UpdateIntervalParameterName, "", new IntValue(50)));
       Parameters[UpdateIntervalParameterName].Hidden = true;
@@ -235,6 +238,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       FinalMomentumParameter.Hidden = true;
       StopLyingIterationParameter.Hidden = true;
       EtaParameter.Hidden = false;
+      Problem = new RegressionProblem();
     }
     #endregion
 
@@ -282,6 +286,32 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       Analyze(state);
     }
 
+    #region Events
+    protected override void OnProblemChanged() {
+      base.OnProblemChanged();
+      if (Problem == null) return;
+      OnProblemDataChanged(this, null);
+    }
+
+    protected override void RegisterProblemEvents() {
+      base.RegisterProblemEvents();
+      Problem.ProblemDataChanged += OnProblemDataChanged;
+    }
+    protected override void DeregisterProblemEvents() {
+      base.DeregisterProblemEvents();
+      Problem.ProblemDataChanged -= OnProblemDataChanged;
+    }
+
+    private void OnProblemDataChanged(object sender, EventArgs args) {
+      if (Problem == null || Problem.ProblemData == null) return;
+      if (!Parameters.ContainsKey(ClassesParameterName)) return;
+      ClassesParameter.ValidValues.Clear();
+      foreach (var input in Problem.ProblemData.InputVariables) ClassesParameter.ValidValues.Add(input);
+    }
+
+    #endregion
+
+    #region Helpers
     private void SetUpResults(IReadOnlyCollection<double[]> data) {
       if (Results == null) return;
       var results = Results;
@@ -376,7 +406,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         }
       for (var i = 0; i < data.GetLength(0); i++) {
         for (var j = 0; j < data.GetLength(1); j++) {
-          res[i, j] = (data[i, j] - (max[j] + min[j]) / 2) / (max[j] - min[j]);
+          var d = max[j] - min[j];
+          var s = data[i, j] - (max[j] + min[j]) / 2;  //shift data
+          if (d.IsAlmost(0)) res[i, j] = data[i, j];   //no scaling possible
+          else res[i, j] = s / d;  //scale data
         }
       }
       return res;
@@ -394,7 +427,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
       for (var i = 0; i < data.Count; i++) {
         nData[i] = new double[n];
-        for (var j = 0; j < n; j++) nData[i][j] = (data[i][j] - mean[j]) / max[j];
+        for (var j = 0; j < n; j++) nData[i][j] = max[j].IsAlmost(0) ? data[i][j] - mean[j] : (data[i][j] - mean[j]) / max[j];
       }
       return nData;
     }
@@ -415,5 +448,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       var size = (max - min) / noContours;
       return "[" + (min + i * size) + ";" + (min + (i + 1) * size) + ")";
     }
+    #endregion
   }
 }
