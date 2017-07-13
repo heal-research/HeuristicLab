@@ -33,17 +33,13 @@ namespace HeuristicLab.Problems.BinPacking2D {
 
     public BinPacking2D(PackingShape binShape)
       : base(binShape) {
-      ExtremePoints = new SortedSet<PackingPosition>();
       ExtremePoints.Add(binShape.Origin);
       InitializeOccupationLayers();
     }
 
     [StorableConstructor]
     protected BinPacking2D(bool deserializing) : base(deserializing) { }
-    protected BinPacking2D(BinPacking2D original, Cloner cloner)
-      : base(original, cloner) {
-      this.ExtremePoints = new SortedSet<PackingPosition>(original.ExtremePoints.Select(p => cloner.Clone(p)));
-    }
+    protected BinPacking2D(BinPacking2D original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new BinPacking2D(this, cloner);
     }

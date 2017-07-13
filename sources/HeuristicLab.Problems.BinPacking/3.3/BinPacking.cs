@@ -49,10 +49,7 @@ namespace HeuristicLab.Problems.BinPacking {
 
     [Storable]
     protected Dictionary<int, List<int>> OccupationLayers { get; set; }
-
-    [Storable]
-    public Dictionary<TPos, Tuple<int,int,int>> ResidualSpace { get; protected set; }
-
+    
     #endregion Properties
 
     public int FreeVolume {
@@ -64,6 +61,7 @@ namespace HeuristicLab.Problems.BinPacking {
       Positions = new ObservableDictionary<int, TPos>();
       Items = new ObservableDictionary<int, TItem>();
       BinShape = (TBin)binShape.Clone();
+      ExtremePoints = new SortedSet<TPos>();
       OccupationLayers = new Dictionary<int, List<int>>();
     }
 
@@ -80,19 +78,11 @@ namespace HeuristicLab.Problems.BinPacking {
         Items.Add(kvp.Key, cloner.Clone(kvp.Value));
       }
       this.BinShape = (TBin)original.BinShape.Clone(cloner);
+      this.ExtremePoints = new SortedSet<TPos>(original.ExtremePoints.Select(p => cloner.Clone(p)));
       this.OccupationLayers = new Dictionary<int, List<int>>();
       foreach (var kvp in original.OccupationLayers) {
         OccupationLayers.Add(kvp.Key, new List<int>(kvp.Value));
       }
-    }
-
-    [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserialization() {
-      // BackwardsCompatibility3.3
-      #region Backwards compatible code, remove with 3.4
-      if (ResidualSpace == null)
-        ResidualSpace = new Dictionary<TPos, Tuple<int, int, int>>();
-      #endregion
     }
 
     protected abstract void GenerateNewExtremePointsForNewItem(TItem item, TPos position);
@@ -109,7 +99,6 @@ namespace HeuristicLab.Problems.BinPacking {
       Items[itemID] = item;
       Positions[itemID] = position;
       ExtremePoints.Remove(position);
-      if (ResidualSpace != null) ResidualSpace.Remove(position);
       foreach (int id in Items.Select(x => x.Key))
         GenerateNewExtremePointsForNewItem(Items[id], Positions[id]);
       

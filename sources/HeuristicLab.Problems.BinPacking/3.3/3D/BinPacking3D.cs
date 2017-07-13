@@ -32,9 +32,11 @@ namespace HeuristicLab.Problems.BinPacking3D {
   [StorableClass]
   public class BinPacking3D : BinPacking<PackingPosition, PackingShape, PackingItem> {
 
+    [Storable]
+    public Dictionary<PackingPosition, Tuple<int, int, int>> ResidualSpace { get; protected set; }
+
     public BinPacking3D(PackingShape binShape)
       : base(binShape) {
-      ExtremePoints = new SortedSet<PackingPosition>();
       ResidualSpace = new Dictionary<PackingPosition, Tuple<int,int,int>>();
       AddExtremePoint(binShape.Origin);
       InitializeOccupationLayers();
@@ -43,13 +45,27 @@ namespace HeuristicLab.Problems.BinPacking3D {
     protected BinPacking3D(bool deserializing) : base(deserializing) { }
     protected BinPacking3D(BinPacking3D original, Cloner cloner)
       : base(original, cloner) {
-      this.ExtremePoints = new SortedSet<PackingPosition>(original.ExtremePoints.Select(p => cloner.Clone(p)));
       this.ResidualSpace = new Dictionary<PackingPosition, Tuple<int, int, int>>();
       foreach (var o in original.ResidualSpace)
         this.ResidualSpace.Add(cloner.Clone(o.Key), Tuple.Create(o.Value.Item1, o.Value.Item2, o.Value.Item3));
     }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new BinPacking3D(this, cloner);
+    }
+
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code, remove with 3.4
+      if (ResidualSpace == null)
+        ResidualSpace = new Dictionary<PackingPosition, Tuple<int, int, int>>();
+      #endregion
+    }
+
+    public override void PackItem(int itemID, PackingItem item, PackingPosition position) {
+      ResidualSpace.Remove(position);
+      base.PackItem(itemID, item, position);
     }
 
     protected override void GenerateNewExtremePointsForNewItem(PackingItem newItem, PackingPosition position) {
