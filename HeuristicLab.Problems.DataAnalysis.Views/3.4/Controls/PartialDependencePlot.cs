@@ -81,7 +81,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       set {
         if (value != xAxisTicks) {
           xAxisTicks = value;
-          SetupAxis(chart.ChartAreas[0].AxisX, trainingMin, trainingMax, XAxisTicks, FixedXAxisMin, FixedXAxisMax);
+          SetupAxis(chart, chart.ChartAreas[0].AxisX, trainingMin, trainingMax, XAxisTicks, FixedXAxisMin, FixedXAxisMax);
           RecalculateInternalDataset();
         }
       }
@@ -92,15 +92,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       set {
         if ((value.HasValue && fixedXAxisMin.HasValue && !value.Value.IsAlmost(fixedXAxisMin.Value)) || (value.HasValue != fixedXAxisMin.HasValue)) {
           fixedXAxisMin = value;
-          if (trainingMin < trainingMax) {
-            SetupAxis(chart.ChartAreas[0].AxisX, trainingMin, trainingMax, XAxisTicks, FixedXAxisMin, FixedXAxisMax);
-            RecalculateInternalDataset();
-            // set the vertical line position 
-            if (VerticalLineAnnotation.X <= fixedXAxisMin) {
-              var axisX = chart.ChartAreas[0].AxisX;
-              var step = (axisX.Maximum - axisX.Minimum) / drawingSteps;
-              VerticalLineAnnotation.X = axisX.Minimum + step;
-            }
+          SetupAxis(chart, chart.ChartAreas[0].AxisX, trainingMin, trainingMax, XAxisTicks, FixedXAxisMin, FixedXAxisMax);
+          RecalculateInternalDataset();
+          // set the vertical line position 
+          if (VerticalLineAnnotation.X <= fixedXAxisMin) {
+            var axisX = chart.ChartAreas[0].AxisX;
+            var step = (axisX.Maximum - axisX.Minimum) / drawingSteps;
+            VerticalLineAnnotation.X = axisX.Minimum + step;
           }
         }
       }
@@ -111,15 +109,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       set {
         if ((value.HasValue && fixedXAxisMax.HasValue && !value.Value.IsAlmost(fixedXAxisMax.Value)) || (value.HasValue != fixedXAxisMax.HasValue)) {
           fixedXAxisMax = value;
-          if (trainingMin < trainingMax) {
-            SetupAxis(chart.ChartAreas[0].AxisX, trainingMin, trainingMax, XAxisTicks, FixedXAxisMin, FixedXAxisMax);
-            RecalculateInternalDataset();
-            // set the vertical line position 
-            if (VerticalLineAnnotation.X >= fixedXAxisMax) {
-              var axisX = chart.ChartAreas[0].AxisX;
-              var step = (axisX.Maximum - axisX.Minimum) / drawingSteps;
-              VerticalLineAnnotation.X = axisX.Maximum - step;
-            }
+          SetupAxis(chart, chart.ChartAreas[0].AxisX, trainingMin, trainingMax, XAxisTicks, FixedXAxisMin, FixedXAxisMax);
+          RecalculateInternalDataset();
+          // set the vertical line position 
+          if (VerticalLineAnnotation.X >= fixedXAxisMax) {
+            var axisX = chart.ChartAreas[0].AxisX;
+            var step = (axisX.Maximum - axisX.Minimum) / drawingSteps;
+            VerticalLineAnnotation.X = axisX.Maximum - step;
           }
         }
       }
@@ -131,7 +127,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       set {
         if (value != yAxisTicks) {
           yAxisTicks = value;
-          SetupAxis(chart.ChartAreas[0].AxisY, yMin, yMax, YAxisTicks, FixedYAxisMin, FixedYAxisMax);
+          SetupAxis(chart, chart.ChartAreas[0].AxisY, yMin, yMax, YAxisTicks, FixedYAxisMin, FixedYAxisMax);
           RecalculateInternalDataset();
         }
       }
@@ -142,7 +138,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       set {
         if ((value.HasValue && fixedYAxisMin.HasValue && !value.Value.IsAlmost(fixedYAxisMin.Value)) || (value.HasValue != fixedYAxisMin.HasValue)) {
           fixedYAxisMin = value;
-          SetupAxis(chart.ChartAreas[0].AxisY, yMin, yMax, YAxisTicks, FixedYAxisMin, FixedYAxisMax);
+          SetupAxis(chart, chart.ChartAreas[0].AxisY, yMin, yMax, YAxisTicks, FixedYAxisMin, FixedYAxisMax);
         }
       }
     }
@@ -152,13 +148,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       set {
         if ((value.HasValue && fixedYAxisMax.HasValue && !value.Value.IsAlmost(fixedYAxisMax.Value)) || (value.HasValue != fixedYAxisMax.HasValue)) {
           fixedYAxisMax = value;
-          SetupAxis(chart.ChartAreas[0].AxisY, yMin, yMax, YAxisTicks, FixedYAxisMin, FixedYAxisMax);
+          SetupAxis(chart, chart.ChartAreas[0].AxisY, yMin, yMax, YAxisTicks, FixedYAxisMin, FixedYAxisMax);
         }
       }
     }
 
-    private double trainingMin = 1;
-    private double trainingMax = -1;
+    private double trainingMin = -1;
+    private double trainingMax = 1;
 
     private int drawingSteps = 1000;
     public int DrawingSteps {
@@ -292,7 +288,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     public async Task RecalculateAsync(bool updateOnFinish = true, bool resetYAxis = true) {
       if (IsDisposed
         || sharedFixedVariables == null || !solutions.Any() || string.IsNullOrEmpty(freeVariable)
-        || trainingMin.IsAlmost(trainingMax) || trainingMin > trainingMax || drawingSteps == 0)
+        || trainingMin > trainingMax || drawingSteps == 0)
         return;
 
       calculationPendingTimer.Start();
@@ -306,12 +302,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       // Update series
       try {
         var limits = await UpdateAllSeriesDataAsync(cancellationToken);
+        chart.Invalidate();
 
         yMin = limits.Lower;
         yMax = limits.Upper;
         // Set y-axis
         if (resetYAxis)
-          SetupAxis(chart.ChartAreas[0].AxisY, yMin, yMax, YAxisTicks, FixedYAxisMin, FixedYAxisMax);
+          SetupAxis(chart, chart.ChartAreas[0].AxisY, yMin, yMax, YAxisTicks, FixedYAxisMin, FixedYAxisMax);
 
         UpdateOutOfTrainingRangeStripLines();
 
@@ -319,7 +316,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         calculationPendingLabel.Visible = false;
         if (updateOnFinish)
           Update();
-      } catch (OperationCanceledException) { } catch (AggregateException ae) {
+      }
+      catch (OperationCanceledException) { }
+      catch (AggregateException ae) {
         if (!ae.InnerExceptions.Any(e => e is OperationCanceledException))
           throw;
       }
@@ -334,20 +333,20 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       title.Position.X = plotArea.X + (plotArea.Width / 2);
     }
 
-    private void SetupAxis(Axis axis, double minValue, double maxValue, int ticks, double? fixedAxisMin, double? fixedAxisMax) {
-      if (minValue < maxValue) {
-        double axisMin, axisMax, axisInterval;
-        ChartUtil.CalculateAxisInterval(minValue, maxValue, ticks, out axisMin, out axisMax, out axisInterval);
-        axis.Minimum = fixedAxisMin ?? axisMin;
-        axis.Maximum = fixedAxisMax ?? axisMax;
-        axis.Interval = (axis.Maximum - axis.Minimum) / ticks;
+    private static void SetupAxis(EnhancedChart chart, Axis axis, double minValue, double maxValue, int ticks, double? fixedAxisMin, double? fixedAxisMax) {
+      //guard if only one distinct value is present
+      if (minValue.IsAlmost(maxValue)) {
+        minValue = minValue - 0.5;
+        maxValue = minValue + 0.5;
       }
 
-      try {
-        chart.ChartAreas[0].RecalculateAxesScale();
-      } catch (InvalidOperationException) {
-        // Can occur if eg. axis min == axis max
-      }
+      double axisMin, axisMax, axisInterval;
+      ChartUtil.CalculateAxisInterval(minValue, maxValue, ticks, out axisMin, out axisMax, out axisInterval);
+      axis.Minimum = fixedAxisMin ?? axisMin;
+      axis.Maximum = fixedAxisMax ?? axisMax;
+      axis.Interval = (axis.Maximum - axis.Minimum) / ticks;
+
+      chart.ChartAreas[0].RecalculateAxesScale();
     }
 
     private void RecalculateTrainingLimits(bool initializeAxisRanges) {
@@ -356,7 +355,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
       if (initializeAxisRanges) {
         double xmin, xmax, xinterval;
-        ChartUtil.CalculateAxisInterval(trainingMin, trainingMax, XAxisTicks, out xmin, out xmax, out xinterval);
+        //guard if only one distinct value is present
+        if (trainingMin.IsAlmost(trainingMax))
+          ChartUtil.CalculateAxisInterval(trainingMin - 0.5, trainingMax + 0.5, XAxisTicks, out xmin, out xmax, out xinterval);
+        else
+          ChartUtil.CalculateAxisInterval(trainingMin, trainingMax, XAxisTicks, out xmin, out xmax, out xinterval);
+
         FixedXAxisMin = xmin;
         FixedXAxisMax = xmax;
       }
@@ -368,7 +372,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
       // we expand the range in order to get nice tick intervals on the x axis
       double xmin, xmax, xinterval;
-      ChartUtil.CalculateAxisInterval(trainingMin, trainingMax, XAxisTicks, out xmin, out xmax, out xinterval);
+      //guard if only one distinct value is present
+      if (trainingMin.IsAlmost(trainingMax))
+        ChartUtil.CalculateAxisInterval(trainingMin - 0.5, trainingMin + 0.5, XAxisTicks, out xmin, out xmax, out xinterval);
+      else
+        ChartUtil.CalculateAxisInterval(trainingMin, trainingMax, XAxisTicks, out xmin, out xmax, out xinterval);
 
       if (FixedXAxisMin.HasValue) xmin = FixedXAxisMin.Value;
       if (FixedXAxisMax.HasValue) xmax = FixedXAxisMax.Value;
@@ -469,7 +477,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
           if (yvalues[i] < min) min = yvalues[i];
           if (yvalues[i] > max) max = yvalues[i];
         }
-        chart.Invalidate();
 
         cancellationToken.ThrowIfCancellationRequested();
 
@@ -484,7 +491,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
             if (lower < min) min = lower;
             if (upper > max) max = upper;
           }
-          chart.Invalidate();
         }
 
         cancellationToken.ThrowIfCancellationRequested();

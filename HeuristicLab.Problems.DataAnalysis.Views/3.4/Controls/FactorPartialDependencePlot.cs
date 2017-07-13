@@ -72,7 +72,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       set {
         if (value != yAxisTicks) {
           yAxisTicks = value;
-          SetupAxis(chart.ChartAreas[0].AxisY, yMin, yMax, YAxisTicks, FixedYAxisMin, FixedYAxisMax);
+          SetupAxis(chart, chart.ChartAreas[0].AxisY, yMin, yMax, YAxisTicks, FixedYAxisMin, FixedYAxisMax);
           RecalculateInternalDataset();
         }
       }
@@ -83,7 +83,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       set {
         if ((value.HasValue && fixedYAxisMin.HasValue && !value.Value.IsAlmost(fixedYAxisMin.Value)) || (value.HasValue != fixedYAxisMin.HasValue)) {
           fixedYAxisMin = value;
-          SetupAxis(chart.ChartAreas[0].AxisY, yMin, yMax, YAxisTicks, FixedYAxisMin, FixedYAxisMax);
+          SetupAxis(chart, chart.ChartAreas[0].AxisY, yMin, yMax, YAxisTicks, FixedYAxisMin, FixedYAxisMax);
         }
       }
     }
@@ -93,7 +93,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       set {
         if ((value.HasValue && fixedYAxisMax.HasValue && !value.Value.IsAlmost(fixedYAxisMax.Value)) || (value.HasValue != fixedYAxisMax.HasValue)) {
           fixedYAxisMax = value;
-          SetupAxis(chart.ChartAreas[0].AxisY, yMin, yMax, YAxisTicks, FixedYAxisMin, FixedYAxisMax);
+          SetupAxis(chart, chart.ChartAreas[0].AxisY, yMin, yMax, YAxisTicks, FixedYAxisMin, FixedYAxisMax);
         }
       }
     }
@@ -208,18 +208,21 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       // Update series
       try {
         var limits = await UpdateAllSeriesDataAsync(cancellationToken);
+        chart.Invalidate();
 
         yMin = limits.Lower;
         yMax = limits.Upper;
         // Set y-axis
         if (resetYAxis)
-          SetupAxis(chart.ChartAreas[0].AxisY, yMin, yMax, YAxisTicks, FixedYAxisMin, FixedYAxisMax);
+          SetupAxis(chart, chart.ChartAreas[0].AxisY, yMin, yMax, YAxisTicks, FixedYAxisMin, FixedYAxisMax);
 
         calculationPendingTimer.Stop();
         calculationPendingLabel.Visible = false;
         if (updateOnFinish)
           Update();
-      } catch (OperationCanceledException) { } catch (AggregateException ae) {
+      }
+      catch (OperationCanceledException) { }
+      catch (AggregateException ae) {
         if (!ae.InnerExceptions.Any(e => e is OperationCanceledException))
           throw;
       }
@@ -234,20 +237,20 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       title.Position.X = plotArea.X + (plotArea.Width / 2);
     }
 
-    private void SetupAxis(Axis axis, double minValue, double maxValue, int ticks, double? fixedAxisMin, double? fixedAxisMax) {
-      if (minValue < maxValue) {
-        double axisMin, axisMax, axisInterval;
-        ChartUtil.CalculateAxisInterval(minValue, maxValue, ticks, out axisMin, out axisMax, out axisInterval);
-        axis.Minimum = fixedAxisMin ?? axisMin;
-        axis.Maximum = fixedAxisMax ?? axisMax;
-        axis.Interval = (axis.Maximum - axis.Minimum) / ticks;
+    private static void SetupAxis(EnhancedChart chart, Axis axis, double minValue, double maxValue, int ticks, double? fixedAxisMin, double? fixedAxisMax) {
+      //guard if only one distinct value is present
+      if (minValue.IsAlmost(maxValue)) {
+        minValue = minValue - 0.5;
+        maxValue = minValue + 0.5;
       }
 
-      try {
-        chart.ChartAreas[0].RecalculateAxesScale();
-      } catch (InvalidOperationException) {
-        // Can occur if eg. axis min == axis max
-      }
+      double axisMin, axisMax, axisInterval;
+      ChartUtil.CalculateAxisInterval(minValue, maxValue, ticks, out axisMin, out axisMax, out axisInterval);
+      axis.Minimum = fixedAxisMin ?? axisMin;
+      axis.Maximum = fixedAxisMax ?? axisMax;
+      axis.Interval = (axis.Maximum - axis.Minimum) / ticks;
+
+      chart.ChartAreas[0].RecalculateAxesScale();
     }
 
 
@@ -342,7 +345,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
           if (yvalues[i] < min) min = yvalues[i];
           if (yvalues[i] > max) max = yvalues[i];
         }
-        chart.Invalidate();
 
         cancellationToken.ThrowIfCancellationRequested();
 
@@ -357,7 +359,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
             if (lower < min) min = lower;
             if (upper > max) max = upper;
           }
-          chart.Invalidate();
         }
 
         cancellationToken.ThrowIfCancellationRequested();
