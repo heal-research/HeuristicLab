@@ -23,7 +23,6 @@ using System;
 using System.IO;
 using System.Linq;
 using HeuristicLab.Algorithms.ParticleSwarmOptimization;
-using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.Problems.TestFunctions;
@@ -32,51 +31,47 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace HeuristicLab.Tests {
   [TestClass]
   public class PsoSchwefelSampleTest {
-    private const string SampleFileName = "PSO_Schwefel";
+    private const string SampleFileName = "PSO_Rastrigin";
 
     [TestMethod]
     [TestCategory("Samples.Create")]
     [TestProperty("Time", "medium")]
-    public void CreatePsoSchwefelSampleTest() {
-      var pso = CreatePsoSchwefelSample();
+    public void CreatePsoRastriginSampleTest() {
+      var pso = CreatePsoRastriginSample();
       string path = Path.Combine(SamplesUtils.SamplesDirectory, SampleFileName + SamplesUtils.SampleFileExtension);
       XmlGenerator.Serialize(pso, path);
     }
     [TestMethod]
     [TestCategory("Samples.Execute")]
     [TestProperty("Time", "medium")]
-    public void RunPsoSchwefelSampleTest() {
-      var pso = CreatePsoSchwefelSample();
+    public void RunPsoRastriginSampleTest() {
+      var pso = CreatePsoRastriginSample();
       pso.SetSeedRandomly.Value = false;
       SamplesUtils.RunAlgorithm(pso);
       if (Environment.Is64BitProcess) {
-        Assert.AreEqual(-1.4779288903810084E-12, SamplesUtils.GetDoubleResult(pso, "BestQuality"));
-        Assert.AreEqual(189.28837949705971, SamplesUtils.GetDoubleResult(pso, "CurrentAverageQuality"));
-        Assert.AreEqual(1195.4166822158872, SamplesUtils.GetDoubleResult(pso, "CurrentWorstQuality"));
+        Assert.AreEqual(0, SamplesUtils.GetDoubleResult(pso, "BestQuality"));
+        Assert.AreEqual(3.9649516110677525, SamplesUtils.GetDoubleResult(pso, "CurrentAverageQuality"));
+        Assert.AreEqual(25.566430359483757, SamplesUtils.GetDoubleResult(pso, "CurrentWorstQuality"));
         Assert.AreEqual(200, SamplesUtils.GetIntResult(pso, "Iterations"));
       } else {
-        Assert.AreEqual(-1.4779288903810084E-12, SamplesUtils.GetDoubleResult(pso, "BestQuality"));
-        Assert.AreEqual(189.28837949705971, SamplesUtils.GetDoubleResult(pso, "CurrentAverageQuality"));
-        Assert.AreEqual(1195.4166822158873, SamplesUtils.GetDoubleResult(pso, "CurrentWorstQuality"));
+        Assert.AreEqual(0, SamplesUtils.GetDoubleResult(pso, "BestQuality"));
+        Assert.AreEqual(3.3957460831564048, SamplesUtils.GetDoubleResult(pso, "CurrentAverageQuality"));
+        Assert.AreEqual(34.412788077766145, SamplesUtils.GetDoubleResult(pso, "CurrentWorstQuality"));
         Assert.AreEqual(200, SamplesUtils.GetIntResult(pso, "Iterations"));
       }
     }
 
-    private ParticleSwarmOptimization CreatePsoSchwefelSample() {
+    private ParticleSwarmOptimization CreatePsoRastriginSample() {
       ParticleSwarmOptimization pso = new ParticleSwarmOptimization();
       #region Problem Configuration
       var problem = new SingleObjectiveTestFunctionProblem();
-      problem.BestKnownQuality.Value = 0.0;
-      problem.BestKnownSolutionParameter.Value = new RealVector(new double[] { 420.968746, 420.968746 });
-      problem.Bounds = new DoubleMatrix(new double[,] { { -500, 500 } });
-      problem.EvaluatorParameter.Value = new SchwefelEvaluator();
-      problem.Maximization.Value = false;
-      problem.ProblemSize.Value = 2;
+      var provider = new SOTFInstanceProvider();
+      problem.Load(provider.LoadData(provider.GetDataDescriptors().Single(x => x.Name == "Rastrigin Function")));
       problem.SolutionCreatorParameter.Value = new UniformRandomRealVectorCreator();
       #endregion
       #region Algorithm Configuration
-      pso.Name = "Particle Swarm Optimization - Schwefel";
-      pso.Description = "A particle swarm optimization algorithm which solves the 2-dimensional Schwefel test function (based on the description in Pedersen, M.E.H. (2010). PhD thesis. University of Southampton)";
+      pso.Name = "Particle Swarm Optimization - Rastrigin";
+      pso.Description = "A particle swarm optimization algorithm which solves the 2-dimensional Rastrigin test function.";
       pso.Problem = problem;
       pso.Inertia.Value = 0.721;
       pso.MaxIterations.Value = 200;
