@@ -57,7 +57,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     #region parameter names
-    private const string DistanceParameterName = "DistanceFunction";
+    private const string DistanceFunctionParameterName = "DistanceFunction";
     private const string PerplexityParameterName = "Perplexity";
     private const string ThetaParameterName = "Theta";
     private const string NewDimensionsParameterName = "Dimensions";
@@ -69,7 +69,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private const string EtaParameterName = "Eta";
     private const string SetSeedRandomlyParameterName = "SetSeedRandomly";
     private const string SeedParameterName = "Seed";
-    private const string ClassesParameterName = "ClassNames";
+    private const string ClassesNameParameterName = "ClassesName";
     private const string NormalizationParameterName = "Normalization";
     private const string UpdateIntervalParameterName = "UpdateInterval";
     #endregion
@@ -92,8 +92,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public IFixedValueParameter<IntValue> NewDimensionsParameter {
       get { return Parameters[NewDimensionsParameterName] as IFixedValueParameter<IntValue>; }
     }
-    public IConstrainedValueParameter<IDistance<double[]>> DistanceParameter {
-      get { return Parameters[DistanceParameterName] as IConstrainedValueParameter<IDistance<double[]>>; }
+    public IConstrainedValueParameter<IDistance<double[]>> DistanceFunctionParameter {
+      get { return Parameters[DistanceFunctionParameterName] as IConstrainedValueParameter<IDistance<double[]>>; }
     }
     public IFixedValueParameter<IntValue> MaxIterationsParameter {
       get { return Parameters[MaxIterationsParameterName] as IFixedValueParameter<IntValue>; }
@@ -119,8 +119,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public IFixedValueParameter<IntValue> SeedParameter {
       get { return Parameters[SeedParameterName] as IFixedValueParameter<IntValue>; }
     }
-    public IConstrainedValueParameter<StringValue> ClassesParameter {
-      get { return Parameters[ClassesParameterName] as IConstrainedValueParameter<StringValue>; }
+    public IConstrainedValueParameter<StringValue> ClassesNameParameter {
+      get { return Parameters[ClassesNameParameterName] as IConstrainedValueParameter<StringValue>; }
     }
     public IFixedValueParameter<BoolValue> NormalizationParameter {
       get { return Parameters[NormalizationParameterName] as IFixedValueParameter<BoolValue>; }
@@ -131,8 +131,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     #endregion
 
     #region  Properties
-    public IDistance<double[]> Distance {
-      get { return DistanceParameter.Value; }
+    public IDistance<double[]> DistanceFunction {
+      get { return DistanceFunctionParameter.Value; }
     }
     public double Perplexity {
       get { return PerplexityParameter.Value.Value; }
@@ -178,9 +178,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       get { return SeedParameter.Value.Value; }
       set { SeedParameter.Value.Value = value; }
     }
-    public string Classes {
-      get { return ClassesParameter.Value != null ? ClassesParameter.Value.Value : null; }
-      set { ClassesParameter.Value.Value = value; }
+    public string ClassesName {
+      get { return ClassesNameParameter.Value != null ? ClassesNameParameter.Value.Value : null; }
+      set { ClassesNameParameter.Value.Value = value; }
     }
     public bool Normalization {
       get { return NormalizationParameter.Value.Value; }
@@ -209,7 +209,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public override IDeepCloneable Clone(Cloner cloner) { return new TSNEAlgorithm(this, cloner); }
     public TSNEAlgorithm() {
       var distances = new ItemSet<IDistance<double[]>>(ApplicationManager.Manager.GetInstances<IDistance<double[]>>());
-      Parameters.Add(new ConstrainedValueParameter<IDistance<double[]>>(DistanceParameterName, "The distance function used to differentiate similar from non-similar points", distances, distances.OfType<EuclideanDistance>().FirstOrDefault()));
+      Parameters.Add(new ConstrainedValueParameter<IDistance<double[]>>(DistanceFunctionParameterName, "The distance function used to differentiate similar from non-similar points", distances, distances.OfType<EuclideanDistance>().FirstOrDefault()));
       Parameters.Add(new FixedValueParameter<DoubleValue>(PerplexityParameterName, "Perplexity-parameter of tSNE. Comparable to k in a k-nearest neighbour algorithm. Recommended value is floor(number of points /3) or lower", new DoubleValue(25)));
       Parameters.Add(new FixedValueParameter<PercentValue>(ThetaParameterName, "Value describing how much appoximated " +
                                                                               "gradients my differ from exact gradients. Set to 0 for exact calculation and in [0,1] otherwise. " +
@@ -228,7 +228,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       Parameters.Add(new FixedValueParameter<IntValue>(SeedParameterName, "The seed used if it should not be random.", new IntValue(0)));
 
       //Name of the column specifying the class lables of each data point.If the label column can not be found training/test is used as labels."
-      Parameters.Add(new OptionalConstrainedValueParameter<StringValue>(ClassesParameterName, "Name of the column specifying the class lables of each data point."));
+      Parameters.Add(new OptionalConstrainedValueParameter<StringValue>(ClassesNameParameterName, "Name of the column specifying the class lables of each data point."));
       Parameters.Add(new FixedValueParameter<BoolValue>(NormalizationParameterName, "Whether the data should be zero centered and have variance of 1 for each variable, so different scalings are ignored.", new BoolValue(true)));
       Parameters.Add(new FixedValueParameter<IntValue>(UpdateIntervalParameterName, "", new IntValue(50)));
       Parameters[UpdateIntervalParameterName].Hidden = true;
@@ -272,7 +272,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
         if (Normalization) data = NormalizeData(data);
 
-        state = TSNEStatic<double[]>.CreateState(data, Distance, random, NewDimensions, Perplexity, Theta,
+        state = TSNEStatic<double[]>.CreateState(data, DistanceFunction, random, NewDimensions, Perplexity, Theta,
           StopLyingIteration, MomentumSwitchIteration, InitialMomentum, FinalMomentum, Eta);
 
         SetUpResults(data);
@@ -304,9 +304,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     private void OnProblemDataChanged(object sender, EventArgs args) {
       if (Problem == null || Problem.ProblemData == null) return;
-      if (!Parameters.ContainsKey(ClassesParameterName)) return;
-      ClassesParameter.ValidValues.Clear();
-      foreach (var input in Problem.ProblemData.InputVariables) ClassesParameter.ValidValues.Add(input);
+      if (!Parameters.ContainsKey(ClassesNameParameterName)) return;
+      ClassesNameParameter.ValidValues.Clear();
+      foreach (var input in Problem.ProblemData.InputVariables) ClassesNameParameter.ValidValues.Add(input);
     }
 
     #endregion
@@ -320,15 +320,15 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       var problemData = Problem.ProblemData;
 
       //color datapoints acording to classes variable (be it double or string)
-      if (problemData.Dataset.VariableNames.Contains(Classes)) {
-        if ((problemData.Dataset as Dataset).VariableHasType<string>(Classes)) {
-          var classes = problemData.Dataset.GetStringValues(Classes).ToArray();
+      if (problemData.Dataset.VariableNames.Contains(ClassesName)) {
+        if ((problemData.Dataset as Dataset).VariableHasType<string>(ClassesName)) {
+          var classes = problemData.Dataset.GetStringValues(ClassesName).ToArray();
           for (var i = 0; i < classes.Length; i++) {
             if (!dataRowNames.ContainsKey(classes[i])) dataRowNames.Add(classes[i], new List<int>());
             dataRowNames[classes[i]].Add(i);
           }
-        } else if ((problemData.Dataset as Dataset).VariableHasType<double>(Classes)) {
-          var classValues = problemData.Dataset.GetDoubleValues(Classes).ToArray();
+        } else if ((problemData.Dataset as Dataset).VariableHasType<double>(ClassesName)) {
+          var classValues = problemData.Dataset.GetDoubleValues(ClassesName).ToArray();
           var max = classValues.Max() + 0.1;
           var min = classValues.Min() - 0.1;
           const int contours = 8;
