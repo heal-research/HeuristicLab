@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -34,7 +35,8 @@ namespace HeuristicLab.Problems.BinPacking3D {
     public BinPacking3D(PackingShape binShape)
       : base(binShape) {
       ExtremePoints = new SortedSet<PackingPosition>();
-      ExtremePoints.Add(binShape.Origin);
+      ResidualSpace = new Dictionary<PackingPosition, Tuple<int,int,int>>();
+      AddExtremePoint(binShape.Origin);
       InitializeOccupationLayers();
     }
     [StorableConstructor]
@@ -42,6 +44,9 @@ namespace HeuristicLab.Problems.BinPacking3D {
     protected BinPacking3D(BinPacking3D original, Cloner cloner)
       : base(original, cloner) {
       this.ExtremePoints = new SortedSet<PackingPosition>(original.ExtremePoints.Select(p => cloner.Clone(p)));
+      this.ResidualSpace = new Dictionary<PackingPosition, Tuple<int, int, int>>();
+      foreach (var o in original.ResidualSpace)
+        this.ResidualSpace.Add(cloner.Clone(o.Key), Tuple.Create(o.Value.Item1, o.Value.Item2, o.Value.Item3));
     }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new BinPacking3D(this, cloner);
@@ -59,22 +64,22 @@ namespace HeuristicLab.Problems.BinPacking3D {
         while (current.Y > 0 && !IsPointOccupied(PackingPosition.MoveDown(current))) {
           current = PackingPosition.MoveDown(current);
         }
-        ExtremePoints.Add((PackingPosition)current.Clone());
+        AddExtremePoint((PackingPosition)current.Clone());
         while (current.X > 0 && !IsPointOccupied(PackingPosition.MoveLeft(current))) {
           current = PackingPosition.MoveLeft(current);
         }
-        ExtremePoints.Add(current);
+        AddExtremePoint(current);
 
         //Traversing down the z-axis
         current = new PackingPosition(0, sourcePointX.X, sourcePointX.Y, sourcePointX.Z);
         while (current.Z > 0 && !IsPointOccupied(PackingPosition.MoveBack(current))) {
           current = PackingPosition.MoveBack(current);
         }
-        ExtremePoints.Add((PackingPosition)current.Clone());
+        AddExtremePoint((PackingPosition)current.Clone());
         while (current.Y > 0 && !IsPointOccupied(PackingPosition.MoveDown(current))) {
           current = PackingPosition.MoveDown(current);
         }
-        ExtremePoints.Add(current);
+        AddExtremePoint(current);
       }
 
       //Find ExtremePoints beginning from sourcepointY
@@ -85,22 +90,22 @@ namespace HeuristicLab.Problems.BinPacking3D {
         while (current.X > 0 && !IsPointOccupied(PackingPosition.MoveLeft(current))) {
           current = PackingPosition.MoveLeft(current);
         }
-        ExtremePoints.Add((PackingPosition)current.Clone());
+        AddExtremePoint((PackingPosition)current.Clone());
         while (current.Y > 0 && !IsPointOccupied(PackingPosition.MoveDown(current))) {
           current = PackingPosition.MoveDown(current);
         }
-        ExtremePoints.Add(current);
+        AddExtremePoint(current);
 
         //Traversing down the z-axis
         current = new PackingPosition(0, sourcePointY.X, sourcePointY.Y, sourcePointY.Z);
         while (current.Z > 0 && !IsPointOccupied(PackingPosition.MoveBack(current))) {
           current = PackingPosition.MoveBack(current);
         }
-        ExtremePoints.Add((PackingPosition)current.Clone());
+        AddExtremePoint((PackingPosition)current.Clone());
         while (current.Y > 0 && !IsPointOccupied(PackingPosition.MoveDown(current))) {
           current = PackingPosition.MoveDown(current);
         }
-        ExtremePoints.Add(current);
+        AddExtremePoint(current);
       }
 
       //Find ExtremePoints beginning from sourcepointZ
@@ -111,93 +116,97 @@ namespace HeuristicLab.Problems.BinPacking3D {
         while (current.X > 0 && !IsPointOccupied(PackingPosition.MoveLeft(current))) {
           current = PackingPosition.MoveLeft(current);
         }
-        ExtremePoints.Add((PackingPosition)current.Clone());
+        AddExtremePoint((PackingPosition)current.Clone());
         while (current.Y > 0 && !IsPointOccupied(PackingPosition.MoveDown(current))) {
           current = PackingPosition.MoveDown(current);
         }
-        ExtremePoints.Add(current);
+        AddExtremePoint(current);
 
         //Traversing down the y-axis
         current = new PackingPosition(0, sourcePointZ.X, sourcePointZ.Y, sourcePointZ.Z);
         while (current.Y > 0 && !IsPointOccupied(PackingPosition.MoveDown(current))) {
           current = PackingPosition.MoveDown(current);
         }
-        ExtremePoints.Add((PackingPosition)current.Clone());
+        AddExtremePoint((PackingPosition)current.Clone());
         while (current.X > 0 && !IsPointOccupied(PackingPosition.MoveLeft(current))) {
           current = PackingPosition.MoveLeft(current);
         }
-        ExtremePoints.Add(current);
+        AddExtremePoint(current);
+      }
+    }
+
+    private void AddExtremePoint(PackingPosition current) {
+      if (ExtremePoints.Add(current)) {
+        var tuple = Tuple.Create(BinShape.Width - current.X, BinShape.Height - current.Y, BinShape.Depth - current.Z);
+        ResidualSpace.Add(current, tuple);
       }
     }
 
     public override PackingPosition FindExtremePointForItem(PackingItem item, bool rotated, bool stackingConstraints) {
-
       PackingItem newItem = new PackingItem(
         rotated ? item.Depth : item.Width,
         item.Height,
         rotated ? item.Width : item.Depth,
         item.TargetBin, item.Weight, item.Material);
 
-      int epIndex = 0;
-      while (epIndex < ExtremePoints.Count && (
-        !IsPositionFeasible(newItem, ExtremePoints.ElementAt(epIndex))
-        || !IsSupportedByAtLeastOnePoint(newItem, ExtremePoints.ElementAt(epIndex))
-        || (stackingConstraints && !IsStaticStable(newItem, ExtremePoints.ElementAt(epIndex)))
-        || (stackingConstraints && !IsWeightSupported(newItem, ExtremePoints.ElementAt(epIndex)))
-      )) { epIndex++; }
-
-      if (epIndex < ExtremePoints.Count) {
-        var origPoint = ExtremePoints.ElementAt(epIndex);
-        var result = new PackingPosition(origPoint.AssignedBin, origPoint.X, origPoint.Y, origPoint.Z, rotated);
+      var ep = ExtremePoints.Where(x => IsPositionFeasible(newItem, x, stackingConstraints)).FirstOrDefault();
+      if (ep != null) {
+        var result = new PackingPosition(ep.AssignedBin, ep.X, ep.Y, ep.Z, rotated);
         return result;
       }
       return null;
     }
 
-    public override PackingPosition FindPositionBySliding(PackingItem item, bool rotated) {
-      //TODO: does not support stacking constraints yet
+    public override bool IsPositionFeasible(PackingItem item, PackingPosition position, bool stackingConstraints) {
+      var feasible = base.IsPositionFeasible(item, position, stackingConstraints);
+      return feasible
+        && IsSupportedByAtLeastOnePoint(item, position)
+        && (!stackingConstraints || (IsStaticStable(item, position) && IsWeightSupported(item, position)));
+    }
+
+    public override PackingPosition FindPositionBySliding(PackingItem item, bool rotated, bool stackingConstraints) {
       //Starting-position at upper right corner (=left bottom point of item-rectangle is at position item.width,item.height)
       PackingPosition currentPosition = new PackingPosition(0,
         BinShape.Width - (rotated ? item.Depth : item.Width),
         BinShape.Height - item.Height,
         BinShape.Depth - (rotated ? item.Width : item.Depth), rotated);
       //Slide the item as far as possible to the bottom
-      while (IsPositionFeasible(item, PackingPosition.MoveDown(currentPosition))
-        || IsPositionFeasible(item, PackingPosition.MoveLeft(currentPosition))
-        || IsPositionFeasible(item, PackingPosition.MoveBack(currentPosition))) {
+      while (IsPositionFeasible(item, PackingPosition.MoveDown(currentPosition), stackingConstraints)
+        || IsPositionFeasible(item, PackingPosition.MoveLeft(currentPosition), stackingConstraints)
+        || IsPositionFeasible(item, PackingPosition.MoveBack(currentPosition), stackingConstraints)) {
         //Slide the item as far as possible to the left
-        while (IsPositionFeasible(item, PackingPosition.MoveLeft(currentPosition))
-      || IsPositionFeasible(item, PackingPosition.MoveBack(currentPosition))) {
+        while (IsPositionFeasible(item, PackingPosition.MoveLeft(currentPosition), stackingConstraints)
+      || IsPositionFeasible(item, PackingPosition.MoveBack(currentPosition), stackingConstraints)) {
           //Slide the item as far as possible to the back
-          while (IsPositionFeasible(item, PackingPosition.MoveBack(currentPosition))) {
+          while (IsPositionFeasible(item, PackingPosition.MoveBack(currentPosition), stackingConstraints)) {
             currentPosition = PackingPosition.MoveBack(currentPosition);
           }
-          if (IsPositionFeasible(item, PackingPosition.MoveLeft(currentPosition)))
+          if (IsPositionFeasible(item, PackingPosition.MoveLeft(currentPosition), stackingConstraints))
             currentPosition = PackingPosition.MoveLeft(currentPosition);
         }
-        if (IsPositionFeasible(item, PackingPosition.MoveDown(currentPosition)))
+        if (IsPositionFeasible(item, PackingPosition.MoveDown(currentPosition), stackingConstraints))
           currentPosition = PackingPosition.MoveDown(currentPosition);
       }
 
-      return IsPositionFeasible(item, currentPosition) ? currentPosition : null;
+      return IsPositionFeasible(item, currentPosition, stackingConstraints) ? currentPosition : null;
     }
 
-    public override void SlidingBasedPacking(ref IList<int> sequence, IList<PackingItem> items) {
+    public override void SlidingBasedPacking(ref IList<int> sequence, IList<PackingItem> items, bool stackingConstraints) {
       var temp = new List<int>(sequence);
       for (int i = 0; i < temp.Count; i++) {
         var item = items[temp[i]];
-        var position = FindPositionBySliding(item, false);
+        var position = FindPositionBySliding(item, false, stackingConstraints);
         if (position != null) {
           PackItem(temp[i], item, position);
           sequence.Remove(temp[i]);
         }
       }
     }
-    public override void SlidingBasedPacking(ref IList<int> sequence, IList<PackingItem> items, Dictionary<int, bool> rotationArray) {
+    public override void SlidingBasedPacking(ref IList<int> sequence, IList<PackingItem> items, Dictionary<int, bool> rotationArray, bool stackingConstraints) {
       var temp = new List<int>(sequence);
       for (int i = 0; i < temp.Count; i++) {
         var item = items[temp[i]];
-        var position = FindPositionBySliding(item, rotationArray[i]);
+        var position = FindPositionBySliding(item, rotationArray[i], stackingConstraints);
         if (position != null) {
           PackItem(temp[i], item, position);
           sequence.Remove(temp[i]);
@@ -211,6 +220,9 @@ namespace HeuristicLab.Problems.BinPacking3D {
         var positionFound = FindExtremePointForItem(item, false, stackingConstraints);
         if (positionFound != null) {
           PackItem(itemID, item, positionFound);
+          if (!(positionFound.X == 0 && positionFound.Y == 0 && positionFound.Z == 0)) {
+            UpdateResidualSpace(item, positionFound);
+          }
           sequence.Remove(itemID);
         }
       }
@@ -226,7 +238,6 @@ namespace HeuristicLab.Problems.BinPacking3D {
         }
       }
     }
-
     public override int ShortestPossibleSideFromPoint(PackingPosition position) {
 
       int shortestSide = int.MaxValue;
@@ -296,7 +307,6 @@ namespace HeuristicLab.Problems.BinPacking3D {
       return false;
     }
 
-
     protected override void InitializeOccupationLayers() {
       for (int i = 0; i * 10 <= BinShape.Depth; i += 1) {
         OccupationLayers[i] = new List<int>();
@@ -319,9 +329,32 @@ namespace HeuristicLab.Problems.BinPacking3D {
 
       for (int i = z1; i <= z2; i++)
         result.AddRange(OccupationLayers[i]);
-
       return result;
     }
+    
+    public void UpdateResidualSpace(PackingItem item, PackingPosition pos) {
+      foreach (var ep in ExtremePoints) {
+        if (ep.Z >= pos.Z && ep.Z <= pos.Z + item.Depth) {
+          if (ep.X <= pos.X && ep.Y > pos.Y && ep.Y < pos.Y + item.Height) {
+            var diff = pos.X - ep.X;
+            var newRSX = ResidualSpace[ep].Item1 < diff ? ResidualSpace[ep].Item1 : diff;
+            ResidualSpace[ep] = Tuple.Create(newRSX, ResidualSpace[ep].Item2, ResidualSpace[ep].Item3);
+          }
+          if (ep.Y <= pos.Y && ep.X > pos.X && ep.X < pos.X + item.Width) {
+            var diff = pos.Y - ep.Y;
+            var newRSY = ResidualSpace[ep].Item2 < diff ? ResidualSpace[ep].Item2 : diff;
+            ResidualSpace[ep] = Tuple.Create(ResidualSpace[ep].Item1, newRSY, ResidualSpace[ep].Item3);
+          }
+        }
+        if (ep.Z <= pos.Z && 
+          ep.Y > pos.Y && ep.Y < pos.Y + item.Height &&
+          ep.X > pos.X && ep.X < pos.X + item.Width) {
+            var diff = pos.Z - ep.Z;
+            var newRSZ = ResidualSpace[ep].Item3 < diff ? ResidualSpace[ep].Item3 : diff;
+            ResidualSpace[ep] = Tuple.Create(ResidualSpace[ep].Item1, ResidualSpace[ep].Item2, newRSZ);
+        }
+      }
+      return;
+    }
   }
-
 }

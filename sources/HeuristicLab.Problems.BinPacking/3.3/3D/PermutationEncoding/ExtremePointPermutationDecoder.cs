@@ -19,16 +19,19 @@
  */
 #endregion
 
+using System;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Common;
 using System.Collections.Generic;
 using HeuristicLab.Encodings.PermutationEncoding;
+using System.Linq;
+
 
 namespace HeuristicLab.Problems.BinPacking3D {
   [Item("Extreme-point Permutation Decoder (3d)", "Decodes the permutation and creates a packing solution candidate")]
   [StorableClass]
-  public class ExtremePointPermutationDecoder : Item, IDecoder<Permutation> {
+  public class ExtremePointPermutationDecoder : ExtremePointPermutationDecoderBase {
 
     [StorableConstructor]
     protected ExtremePointPermutationDecoder(bool deserializing) : base(deserializing) { }
@@ -40,7 +43,11 @@ namespace HeuristicLab.Problems.BinPacking3D {
       return new ExtremePointPermutationDecoder(this, cloner);
     }
 
-    public Solution Decode(Permutation permutation, PackingShape binShape, IList<PackingItem> items, bool useStackingConstraints) {
+    public override Solution Decode(Permutation permutation, PackingShape binShape, IList<PackingItem> items, bool useStackingConstraints) {
+      return Apply(permutation, binShape, items, useStackingConstraints);
+    }
+
+    public static Solution Apply(Permutation permutation, PackingShape binShape, IList<PackingItem> items, bool useStackingConstraints) {
       Solution result = new Solution(binShape, useExtremePoints: true, stackingConstraints: useStackingConstraints);
       IList<int> remainingIDs = new List<int>(permutation);
       while (remainingIDs.Count > 0) {
