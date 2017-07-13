@@ -36,7 +36,7 @@ using HeuristicLab.Problems.TestFunctions.MultiObjective;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Algorithms.MOCMAEvolutionStrategy {
-  [Item("MOCMA Evolution Strategy (MOCMAES)", "A multi objective evolution strategy based on covariance matrix adaptation. Code is based on 'Covariance Matrix Adaptation for Multi - objective Optimization' by Igel, Hansen and Roth")]
+  [Item("Multi-Objective CMA Evolution Strategy (MOCMAES)", "A multi objective evolution strategy based on covariance matrix adaptation. Code is based on 'Covariance Matrix Adaptation for Multi - objective Optimization' by Igel, Hansen and Roth")]
   [Creatable(CreatableAttribute.Categories.PopulationBasedAlgorithms, Priority = 210)]
   [StorableClass]
   public class MOCMAEvolutionStrategy : BasicAlgorithm {
