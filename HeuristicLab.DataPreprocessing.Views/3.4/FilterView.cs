@@ -31,6 +31,10 @@ namespace HeuristicLab.DataPreprocessing.Views {
   [View("CheckedFilterCollection View")]
   [Content(typeof(FilterContent), true)]
   public partial class FilterView : ItemView {
+    public new FilterContent Content {
+      get { return (FilterContent)base.Content; }
+      set { base.Content = value; }
+    }
 
     public FilterView() {
       InitializeComponent();
@@ -44,11 +48,6 @@ namespace HeuristicLab.DataPreprocessing.Views {
       checkedFilterView.Content.ItemsAdded += Content_ItemsAdded;
       checkedFilterView.Content.ItemsRemoved += Content_ItemsRemoved;
       checkedFilterView.Content.CheckedItemsChanged += Content_CheckedItemsChanged;
-    }
-
-    public new FilterContent Content {
-      get { return (FilterContent)base.Content; }
-      set { base.Content = value; }
     }
 
     protected override void OnContentChanged() {
@@ -121,6 +120,5 @@ namespace HeuristicLab.DataPreprocessing.Views {
         Content.IsAndCombination = rBtnAnd.Checked;
       }
     }
-
   }
 }

@@ -26,13 +26,10 @@ using HeuristicLab.DataPreprocessing.Filter;
 
 namespace HeuristicLab.DataPreprocessing {
   public class FilterLogic {
-
     public IFilteredPreprocessingData PreprocessingData { get; private set; }
 
     public bool IsFiltered {
-      get {
-        return PreprocessingData.IsFiltered;
-      }
+      get { return PreprocessingData.IsFiltered; }
     }
 
     public FilterLogic(IFilteredPreprocessingData preprocessingData) {

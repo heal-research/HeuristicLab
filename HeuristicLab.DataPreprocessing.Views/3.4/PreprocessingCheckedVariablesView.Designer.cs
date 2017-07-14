@@ -46,83 +46,101 @@ namespace HeuristicLab.DataPreprocessing.Views {
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
       this.splitContainer = new System.Windows.Forms.SplitContainer();
-      this.checkedItemList = new HeuristicLab.DataPreprocessing.Views.PreprocessingCheckedItemListView();
-      this.variablesListcontextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
-      this.checkInputsTargetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.checkOnlyInputsTargetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.checkAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.uncheckAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.variablesGroupBox = new System.Windows.Forms.GroupBox();
+      this.variablesListView = new System.Windows.Forms.ListView();
+      this.columnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+      this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+      this.uncheckAllButton = new System.Windows.Forms.Button();
+      this.checkAllButton = new System.Windows.Forms.Button();
+      this.checkInputsTargetButton = new System.Windows.Forms.Button();
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
       this.splitContainer.Panel1.SuspendLayout();
       this.splitContainer.SuspendLayout();
-      this.variablesListcontextMenuStrip.SuspendLayout();
+      this.variablesGroupBox.SuspendLayout();
       this.SuspendLayout();
       // 
       // splitContainer
       // 
       this.splitContainer.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.splitContainer.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
       this.splitContainer.Location = new System.Drawing.Point(0, 0);
       this.splitContainer.Name = "splitContainer";
       // 
       // splitContainer.Panel1
       // 
-      this.splitContainer.Panel1.Controls.Add(this.checkedItemList);
-      this.splitContainer.Size = new System.Drawing.Size(654, 403);
-      this.splitContainer.SplitterDistance = 91;
+      this.splitContainer.Panel1.Controls.Add(this.variablesGroupBox);
+      this.splitContainer.Size = new System.Drawing.Size(940, 698);
+      this.splitContainer.SplitterDistance = 180;
       this.splitContainer.TabIndex = 7;
       // 
-      // checkedItemList
+      // variablesGroupBox
       // 
-      this.checkedItemList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+      this.variablesGroupBox.Controls.Add(this.uncheckAllButton);
+      this.variablesGroupBox.Controls.Add(this.checkAllButton);
+      this.variablesGroupBox.Controls.Add(this.checkInputsTargetButton);
+      this.variablesGroupBox.Controls.Add(this.variablesListView);
+      this.variablesGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.variablesGroupBox.Location = new System.Drawing.Point(0, 0);
+      this.variablesGroupBox.Name = "variablesGroupBox";
+      this.variablesGroupBox.Size = new System.Drawing.Size(180, 698);
+      this.variablesGroupBox.TabIndex = 7;
+      this.variablesGroupBox.TabStop = false;
+      this.variablesGroupBox.Text = "Variables";
+      // 
+      // variablesListView
+      // 
+      this.variablesListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.checkedItemList.Caption = "View";
-      this.checkedItemList.Content = null;
-      this.checkedItemList.ContextMenuStrip = this.variablesListcontextMenuStrip;
-      this.checkedItemList.Location = new System.Drawing.Point(4, 4);
-      this.checkedItemList.Name = "checkedItemList";
-      this.checkedItemList.ReadOnly = false;
-      this.checkedItemList.Size = new System.Drawing.Size(84, 252);
-      this.checkedItemList.TabIndex = 4;
+      this.variablesListView.CheckBoxes = true;
+      this.variablesListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader});
+      this.variablesListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+      this.variablesListView.HideSelection = false;
+      this.variablesListView.Location = new System.Drawing.Point(6, 49);
+      this.variablesListView.Name = "variablesListView";
+      this.variablesListView.Size = new System.Drawing.Size(168, 643);
+      this.variablesListView.TabIndex = 12;
+      this.variablesListView.UseCompatibleStateImageBehavior = false;
+      this.variablesListView.View = System.Windows.Forms.View.Details;
       // 
-      // variablesListcontextMenuStrip
+      // columnHeader
       // 
-      this.variablesListcontextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.checkInputsTargetToolStripMenuItem,
-            this.checkOnlyInputsTargetToolStripMenuItem,
-            this.checkAllToolStripMenuItem,
-            this.uncheckAllToolStripMenuItem});
-      this.variablesListcontextMenuStrip.Name = "variablesListcontextMenuStrip";
-      this.variablesListcontextMenuStrip.Size = new System.Drawing.Size(211, 92);
-      this.variablesListcontextMenuStrip.Opening += new System.ComponentModel.CancelEventHandler(this.variablesListcontextMenuStrip_Opening);
+      this.columnHeader.Text = "";
+      this.columnHeader.Width = 164;
       // 
-      // checkInputsTargetToolStripMenuItem
+      // uncheckAllButton
       // 
-      this.checkInputsTargetToolStripMenuItem.Name = "checkInputsTargetToolStripMenuItem";
-      this.checkInputsTargetToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
-      this.checkInputsTargetToolStripMenuItem.Text = "Check Inputs+Target";
-      this.checkInputsTargetToolStripMenuItem.Click += new System.EventHandler(this.checkInputsTargetToolStripMenuItem_Click);
+      this.uncheckAllButton.Image = global::HeuristicLab.DataPreprocessing.Views.PreprocessingIcons.None;
+      this.uncheckAllButton.Location = new System.Drawing.Point(66, 19);
+      this.uncheckAllButton.Name = "uncheckAllButton";
+      this.uncheckAllButton.Size = new System.Drawing.Size(24, 24);
+      this.uncheckAllButton.TabIndex = 9;
+      this.toolTip.SetToolTip(this.uncheckAllButton, "Show None");
+      this.uncheckAllButton.UseVisualStyleBackColor = true;
+      this.uncheckAllButton.Click += new System.EventHandler(this.uncheckAllButton_Click);
       // 
-      // checkOnlyInputsTargetToolStripMenuItem
+      // checkAllButton
       // 
-      this.checkOnlyInputsTargetToolStripMenuItem.Name = "checkOnlyInputsTargetToolStripMenuItem";
-      this.checkOnlyInputsTargetToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
-      this.checkOnlyInputsTargetToolStripMenuItem.Text = "Check only Inputs+Target";
-      this.checkOnlyInputsTargetToolStripMenuItem.Click += new System.EventHandler(this.checkOnlyInputsTargetToolStripMenuItem_Click);
+      this.checkAllButton.Image = global::HeuristicLab.DataPreprocessing.Views.PreprocessingIcons.All;
+      this.checkAllButton.Location = new System.Drawing.Point(6, 19);
+      this.checkAllButton.Name = "checkAllButton";
+      this.checkAllButton.Size = new System.Drawing.Size(24, 24);
+      this.checkAllButton.TabIndex = 7;
+      this.toolTip.SetToolTip(this.checkAllButton, "Show All");
+      this.checkAllButton.UseVisualStyleBackColor = true;
+      this.checkAllButton.Click += new System.EventHandler(this.checkAllButton_Click);
       // 
-      // checkAllToolStripMenuItem
+      // checkInputsTargetButton
       // 
-      this.checkAllToolStripMenuItem.Name = "checkAllToolStripMenuItem";
-      this.checkAllToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
-      this.checkAllToolStripMenuItem.Text = "Check All";
-      this.checkAllToolStripMenuItem.Click += new System.EventHandler(this.checkAllToolStripMenuItem_Click);
-      // 
-      // uncheckAllToolStripMenuItem
-      // 
-      this.uncheckAllToolStripMenuItem.Name = "uncheckAllToolStripMenuItem";
-      this.uncheckAllToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
-      this.uncheckAllToolStripMenuItem.Text = "Uncheck All";
-      this.uncheckAllToolStripMenuItem.Click += new System.EventHandler(this.uncheckAllToolStripMenuItem_Click);
+      this.checkInputsTargetButton.Image = global::HeuristicLab.DataPreprocessing.Views.PreprocessingIcons.Inputs;
+      this.checkInputsTargetButton.Location = new System.Drawing.Point(36, 19);
+      this.checkInputsTargetButton.Name = "checkInputsTargetButton";
+      this.checkInputsTargetButton.Size = new System.Drawing.Size(24, 24);
+      this.checkInputsTargetButton.TabIndex = 8;
+      this.toolTip.SetToolTip(this.checkInputsTargetButton, "Show Inputs & Target");
+      this.checkInputsTargetButton.UseVisualStyleBackColor = true;
+      this.checkInputsTargetButton.Click += new System.EventHandler(this.checkInputsTargetButton_Click);
       // 
       // PreprocessingCheckedVariablesView
       // 
@@ -130,23 +148,23 @@ namespace HeuristicLab.DataPreprocessing.Views {
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.Controls.Add(this.splitContainer);
       this.Name = "PreprocessingCheckedVariablesView";
-      this.Size = new System.Drawing.Size(654, 403);
+      this.Size = new System.Drawing.Size(940, 698);
       this.splitContainer.Panel1.ResumeLayout(false);
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();
       this.splitContainer.ResumeLayout(false);
-      this.variablesListcontextMenuStrip.ResumeLayout(false);
+      this.variablesGroupBox.ResumeLayout(false);
       this.ResumeLayout(false);
 
     }
 
     #endregion
-
-    protected PreprocessingCheckedItemListView checkedItemList;
     protected System.Windows.Forms.SplitContainer splitContainer;
-    private System.Windows.Forms.ContextMenuStrip variablesListcontextMenuStrip;
-    private System.Windows.Forms.ToolStripMenuItem checkInputsTargetToolStripMenuItem;
-    private System.Windows.Forms.ToolStripMenuItem checkAllToolStripMenuItem;
-    private System.Windows.Forms.ToolStripMenuItem uncheckAllToolStripMenuItem;
-    private System.Windows.Forms.ToolStripMenuItem checkOnlyInputsTargetToolStripMenuItem;
+    private System.Windows.Forms.ToolTip toolTip;
+    private System.Windows.Forms.ColumnHeader columnHeader;
+    private System.Windows.Forms.ListView variablesListView;
+    private System.Windows.Forms.GroupBox variablesGroupBox;
+    private System.Windows.Forms.Button checkInputsTargetButton;
+    private System.Windows.Forms.Button uncheckAllButton;
+    private System.Windows.Forms.Button checkAllButton;
   }
 }

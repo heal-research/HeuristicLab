@@ -19,8 +19,21 @@
  */
 #endregion
 
+using System.Drawing;
+using System.Windows.Forms;
 
-namespace HeuristicLab.DataPreprocessing {
-  public interface IViewChartShortcut : IViewShortcut {
+namespace HeuristicLab.DataPreprocessing.Views {
+  public class VerticalLabel : Label {
+    protected override void OnPaint(PaintEventArgs e) {
+      Brush b = new SolidBrush(ForeColor);
+      var stringFormat = new StringFormat(StringFormatFlags.DirectionVertical);
+
+      var textSize = e.Graphics.MeasureString(Text, Font, PointF.Empty, stringFormat);
+      e.Graphics.TranslateTransform(Width / 2 + textSize.Width / 2, Height / 2 + textSize.Height / 2);
+      e.Graphics.RotateTransform(180);
+
+      e.Graphics.DrawString(Text, Font, b, PointF.Empty, stringFormat);
+    }
   }
 }
+

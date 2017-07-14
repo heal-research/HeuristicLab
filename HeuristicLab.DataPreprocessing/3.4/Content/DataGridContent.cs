@@ -29,73 +29,50 @@ using HeuristicLab.Data;
 
 namespace HeuristicLab.DataPreprocessing {
 
-  [Item("DataGrid", "Represents a data grid.")]
+  [Item("Data Grid", "Represents a data grid.")]
   public class DataGridContent : Item, IStringConvertibleMatrix, IViewShortcut {
-
-    public ITransactionalPreprocessingData PreProcessingData { get; private set; }
-
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Table; }
     }
+
+    public ITransactionalPreprocessingData PreProcessingData { get; private set; }
 
     public ManipulationLogic ManipulationLogic { get; private set; }
     public FilterLogic FilterLogic { get; private set; }
 
     public int Rows {
-      get {
-        return PreProcessingData.Rows;
-      }
-      set {
-        //does nothing
-      }
+      get { return PreProcessingData.Rows; }
+      set { }
     }
 
     public int Columns {
-      get {
-        return PreProcessingData.Columns;
-      }
-      set {
-        //does nothing
-      }
+      get { return PreProcessingData.Columns; }
+      set { }
     }
 
     public IEnumerable<string> ColumnNames {
-      get {
-        return PreProcessingData.VariableNames;
-      }
-      set {
-
-      }
+      get { return PreProcessingData.VariableNames; }
+      set { }
     }
 
     public IEnumerable<string> RowNames {
-      get {
-        return Enumerable.Range(1, Rows).Select(n => n.ToString());
-      }
-      set {
-        throw new NotSupportedException();
-      }
+      get { return Enumerable.Range(1, Rows).Select(n => n.ToString()); }
+      set { throw new NotSupportedException(); }
     }
 
     public bool SortableView {
-      get {
-        return true;
-      }
-      set {
-        throw new NotSupportedException();
-      }
+      get { return true; }
+      set { throw new NotSupportedException(); }
     }
 
     public bool ReadOnly {
       get { return false; }
     }
 
-
     public IDictionary<int, IList<int>> Selection {
       get { return PreProcessingData.Selection; }
       set { PreProcessingData.Selection = value; }
     }
-
 
     public DataGridContent(ITransactionalPreprocessingData preProcessingData, ManipulationLogic theManipulationLogic, FilterLogic theFilterLogic) {
       ManipulationLogic = theManipulationLogic;
@@ -136,7 +113,6 @@ namespace HeuristicLab.DataPreprocessing {
       remove { PreProcessingData.Changed -= value; }
     }
 
-
     #region unused stuff/not implemented but necessary due to IStringConvertibleMatrix
 #pragma warning disable 0067
     // Is not used since DataGridContentView overrides dataGridView_CellValidating and uses 
@@ -153,9 +129,7 @@ namespace HeuristicLab.DataPreprocessing {
     public event EventHandler SortableViewChanged;
     public event EventHandler<EventArgs<int, int>> ItemChanged;
     public event EventHandler Reset;
-
 #pragma warning restore 0067
     #endregion
-
   }
 }

@@ -25,8 +25,9 @@ using HeuristicLab.Core;
 
 namespace HeuristicLab.DataPreprocessing {
 
-  [Item("LineChart", "Represents the line chart grid.")]
+  [Item("Line Chart", "Represents the line chart grid.")]
   public class LineChartContent : PreprocessingChartContent {
+    public bool AllInOneMode { get; set; }
 
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Performance; }
@@ -34,10 +35,12 @@ namespace HeuristicLab.DataPreprocessing {
 
     public LineChartContent(IFilteredPreprocessingData preprocessingData)
       : base(preprocessingData) {
+      AllInOneMode = true;
     }
 
     public LineChartContent(LineChartContent content, Cloner cloner)
       : base(content, cloner) {
+      this.AllInOneMode = content.AllInOneMode;
     }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new LineChartContent(this, cloner);

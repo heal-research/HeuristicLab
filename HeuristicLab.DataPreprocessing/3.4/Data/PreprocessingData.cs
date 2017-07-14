@@ -32,14 +32,10 @@ namespace HeuristicLab.DataPreprocessing {
 
   [Item("PreprocessingData", "Represents data used for preprocessing.")]
   public abstract class PreprocessingData : NamedItem, IPreprocessingData {
-
     public IntRange TrainingPartition { get; set; }
     public IntRange TestPartition { get; set; }
 
-    protected IList<ITransformation> transformations;
-    public IList<ITransformation> Transformations {
-      get { return transformations; }
-    }
+    public IList<ITransformation> Transformations { get; protected set; }
 
     protected IList<IList> variableValues;
     protected IList<string> variableNames;
@@ -84,7 +80,7 @@ namespace HeuristicLab.DataPreprocessing {
       variableNames = new List<string>(original.variableNames);
       TrainingPartition = (IntRange)original.TrainingPartition.Clone(cloner);
       TestPartition = (IntRange)original.TestPartition.Clone(cloner);
-      transformations = new List<ITransformation>(original.transformations.Select(cloner.Clone));
+      Transformations = new List<ITransformation>(original.Transformations.Select(cloner.Clone));
 
       InputVariables = new List<string>(original.InputVariables);
       TargetVariable = original.TargetVariable;
@@ -96,7 +92,7 @@ namespace HeuristicLab.DataPreprocessing {
       : base() {
       Name = "Preprocessing Data";
 
-      transformations = new List<ITransformation>();
+      Transformations = new List<ITransformation>();
       selection = new Dictionary<int, IList<int>>();
 
       Import(problemData);
@@ -165,7 +161,6 @@ namespace HeuristicLab.DataPreprocessing {
 
 
     #region IPreprocessingData Members
-
     public abstract T GetCell<T>(int columnIndex, int rowIndex);
 
     public abstract void SetCell<T>(int columnIndex, int rowIndex, T value);

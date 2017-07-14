@@ -32,7 +32,6 @@ namespace HeuristicLab.DataPreprocessing.Views {
   [View("Data Grid Content View")]
   [Content(typeof(DataGridContent), true)]
   public partial class DataGridContentView : StringConvertibleMatrixView {
-
     private bool isSearching = false;
     private bool updateOnMouseUp = false;
     private SearchAndReplaceDialog findAndReplaceDialog;
@@ -80,7 +79,6 @@ namespace HeuristicLab.DataPreprocessing.Views {
         base.sortedColumnIndices = order;
         base.Sort();
       }
-
     }
 
     protected override void RegisterContentEvents() {
@@ -140,7 +138,6 @@ namespace HeuristicLab.DataPreprocessing.Views {
 
       }
     }
-
 
     protected override void PasteValuesToDataGridView() {
       string[,] values = SplitClipboardString(Clipboard.GetText());
@@ -689,6 +686,27 @@ namespace HeuristicLab.DataPreprocessing.Views {
 
       if (renameDialog.ShowDialog(this) == DialogResult.OK) {
         Content.PreProcessingData.RenameColumns(renameDialog.ColumnNames);
+      }
+    }
+
+    private void checkInputsTargetButton_Click(object sender, EventArgs e) {
+      foreach (DataGridViewColumn column in DataGridView.Columns) {
+        var variable = column.HeaderText;
+        bool isInputTarget = Content.PreProcessingData.InputVariables.Contains(variable)
+          || Content.PreProcessingData.TargetVariable == variable;
+        column.Visible = isInputTarget;
+      }
+    }
+
+    private void checkAllButton_Click(object sender, EventArgs e) {
+      foreach (DataGridViewColumn column in DataGridView.Columns) {
+        column.Visible = true;
+      }
+    }
+
+    private void uncheckAllButton_Click(object sender, EventArgs e) {
+      foreach (DataGridViewColumn column in DataGridView.Columns) {
+        column.Visible = false;
       }
     }
   }

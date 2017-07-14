@@ -61,12 +61,11 @@ namespace HeuristicLab.DataPreprocessing.Views {
       // 
       // optionsBox
       // 
-      this.optionsBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
       this.optionsBox.Controls.Add(this.allInOneCheckBox);
-      this.optionsBox.Location = new System.Drawing.Point(4, 262);
+      this.optionsBox.Dock = System.Windows.Forms.DockStyle.Bottom;
+      this.optionsBox.Location = new System.Drawing.Point(0, 357);
       this.optionsBox.Name = "optionsBox";
-      this.optionsBox.Size = new System.Drawing.Size(84, 138);
+      this.optionsBox.Size = new System.Drawing.Size(180, 46);
       this.optionsBox.TabIndex = 7;
       this.optionsBox.TabStop = false;
       this.optionsBox.Text = "Options";

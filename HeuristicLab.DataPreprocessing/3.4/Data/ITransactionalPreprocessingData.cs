@@ -23,7 +23,6 @@ using System;
 
 namespace HeuristicLab.DataPreprocessing {
   public interface ITransactionalPreprocessingData : IPreprocessingData {
-
     event DataPreprocessingChangedEventHandler Changed;
 
     bool IsUndoAvailable { get; }

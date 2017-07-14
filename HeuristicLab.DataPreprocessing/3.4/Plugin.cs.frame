@@ -33,10 +33,11 @@ namespace HeuristicLab.DataPreprocessing {
   [PluginDependency("HeuristicLab.Core", "3.3")]
   [PluginDependency("HeuristicLab.Collections", "3.3")]
   [PluginDependency("HeuristicLab.Data","3.3")]
-  [PluginDependency("HeuristicLab.Optimization", "3.3")]  
+  [PluginDependency("HeuristicLab.Optimization", "3.3")]
   [PluginDependency("HeuristicLab.Persistence", "3.3")]
   [PluginDependency("HeuristicLab.Problems.DataAnalysis","3.4")]
   [PluginDependency("HeuristicLab.Random", "3.3")]
+  [PluginDependency("HeuristicLab.Visualization.ChartControlsExtensions", "3.3")]
   public class HeuristicLabDataPreprocessingPlugin : PluginBase {
   }
 }

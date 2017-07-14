@@ -29,7 +29,6 @@ using HeuristicLab.Data;
 namespace HeuristicLab.DataPreprocessing.Filter {
   [Item("ComparisonFilter", "A filter which compares the member of the preprocessing data with the constraint data.")]
   public class ComparisonFilter : ComparisonConstraint, IFilter {
-
     public override string ItemName {
       get { return "ComparisonFilter"; }
     }

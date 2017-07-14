@@ -28,7 +28,6 @@ using HeuristicLab.Problems.DataAnalysis.Views;
 
 namespace HeuristicLab.DataPreprocessing.Views {
   public class DataPreprocessorStarter : IDataPreprocessorStarter {
-
     public void Start(IDataAnalysisProblemData problemData, IContentView currentView) {
       IAlgorithm algorithm;
       IDataAnalysisProblem problem;

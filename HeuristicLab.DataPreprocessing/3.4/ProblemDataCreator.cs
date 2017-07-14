@@ -27,16 +27,15 @@ using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.DataPreprocessing {
   public class ProblemDataCreator {
-
     private readonly PreprocessingContext context;
 
     private Dataset ExportedDataset {
-      get {
-        return context.Data.ExportToDataset();
-      }
+      get { return context.Data.ExportToDataset(); }
     }
 
-    private IList<ITransformation> Transformations { get { return context.Data.Transformations; } }
+    private IList<ITransformation> Transformations {
+      get { return context.Data.Transformations; }
+    }
 
     public ProblemDataCreator(PreprocessingContext context) {
       this.context = context;

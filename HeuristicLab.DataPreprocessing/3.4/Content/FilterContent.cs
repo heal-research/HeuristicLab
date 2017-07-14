@@ -27,35 +27,19 @@ using HeuristicLab.DataPreprocessing.Filter;
 namespace HeuristicLab.DataPreprocessing {
   [Item("Filter", "Represents the filter grid.")]
   public class FilterContent : Item, IViewShortcut {
-
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Filter; }
     }
 
-    private ICheckedItemCollection<IFilter> filters = new CheckedItemCollection<IFilter>();
-
     public FilterLogic FilterLogic { get; private set; }
 
-    public ICheckedItemCollection<IFilter> Filters {
-      get {
-        return this.filters;
-      }
-      set {
-        this.filters = value;
-      }
-    }
+    public ICheckedItemCollection<IFilter> Filters { get; private set; }
 
-    private bool isAndCombination = true;
-    public bool IsAndCombination {
-      get {
-        return this.isAndCombination;
-      }
-      set {
-        this.isAndCombination = value;
-      }
-    }
+    public bool IsAndCombination { get; set; }
 
     public FilterContent(FilterLogic filterLogic) {
+      Filters = new CheckedItemCollection<IFilter>();
+      IsAndCombination = true;
       FilterLogic = filterLogic;
     }
 

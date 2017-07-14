@@ -21,260 +21,162 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.Analysis;
+using HeuristicLab.Analysis.Views;
 using HeuristicLab.Collections;
 using HeuristicLab.Data;
 using HeuristicLab.MainForm;
+using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.DataPreprocessing.Views {
   [View("Preprocessing Chart View")]
   [Content(typeof(PreprocessingChartContent), false)]
   public partial class PreprocessingChartView : PreprocessingCheckedVariablesView {
+    protected Dictionary<string, DataTable> dataTables;
+    protected Dictionary<string, DataTableView> dataTableViews;
 
-    protected PreprocessingDataTable dataTable;
-    protected List<PreprocessingDataTable> dataTablePerVariable;
-    protected List<DataRow> dataRows;
-    protected List<DataRow> selectedDataRows;
-
-    protected DataRowVisualProperties.DataRowChartType chartType;
-    protected string chartTitle;
-
-    private const string DEFAULT_CHART_TITLE = "Chart";
-    private const int FIXED_CHART_SIZE = 300;
-    private const int MAX_TABLE_AUTO_SIZE_ROWS = 3;
-
-
-    public IEnumerable<double> Classification { get; set; }
-    public bool IsDetailedChartViewEnabled { get; set; }
+    public static readonly Color[] Colors = {
+      Color.FromArgb(59, 136, 239), Color.FromArgb(252, 177, 59), Color.FromArgb(226, 64, 10),
+      Color.FromArgb(5, 100, 146), Color.FromArgb(191, 191, 191), Color.FromArgb(26, 59, 105),
+      Color.FromArgb(255, 226, 126), Color.FromArgb(18, 156, 221), Color.FromArgb(202, 107, 75),
+      Color.FromArgb(0, 92, 219), Color.FromArgb(243, 210, 136), Color.FromArgb(80, 99, 129),
+      Color.FromArgb(241, 185, 168), Color.FromArgb(224, 131, 10), Color.FromArgb(120, 147, 190)
+    };
 
     public PreprocessingChartView() {
       InitializeComponent();
-      chartType = DataRowVisualProperties.DataRowChartType.Line;
-      chartTitle = DEFAULT_CHART_TITLE;
+      dataTables = new Dictionary<string, DataTable>();
+      dataTableViews = new Dictionary<string, DataTableView>();
+      scrollPanel.HorizontalScroll.Visible = false;
     }
 
     protected override void OnContentChanged() {
       base.OnContentChanged();
       if (Content != null) {
         InitData();
-        GenerateChart();
-
-        foreach (var row in dataRows) {
-          string variableName = row.Name;
-          if (!IsVariableChecked(variableName)) {
-            dataTableView.SetRowEnabled(variableName, false);
-            dataTable.SelectedRows.Remove(variableName);
-            dataTablePerVariable.Remove(dataTablePerVariable.Find(x => (x.Name == variableName)));
-          }
-        }
+        GenerateLayout();
       }
     }
 
-    private void InitData() {
-      //Create data tables and data rows
-      dataRows = Content.CreateAllDataRows(chartType);
-      dataTable = new PreprocessingDataTable(chartTitle);
-      dataTablePerVariable = new List<PreprocessingDataTable>();
+    protected virtual int GetNumberOfVisibleDataTables() {
+      return Content.VariableItemList.CheckedItems.Count();
+    }
 
-      //add data rows to data tables according to checked item list
-      foreach (var row in dataRows) {
-        string variableName = row.Name;
-
-        //add row to data table
-        dataTable.Rows.Add(row);
-
-        //add row to data table per variable
-        PreprocessingDataTable d = new PreprocessingDataTable(variableName);
-        d.Rows.Add(row);
-        dataTablePerVariable.Add(d);
+    protected virtual IEnumerable<DataTableView> GetVisibleDataTables() {
+      foreach (var name in Content.VariableItemList.CheckedItems) {
+        if (!dataTableViews.ContainsKey(name.Value.Value))
+          dataTableViews.Add(name.Value.Value, new DataTableView() { Content = dataTables[name.Value.Value], ShowChartOnly = true });
+        yield return dataTableViews[name.Value.Value];
       }
+    }
 
-      UpdateSelection();
+    protected virtual DataTable CreateDataTable(string variableName) {
+      return null;
+    }
+
+    protected virtual void InitData() {
+      dataTables.Clear();
+      dataTableViews.Clear();
+      foreach (var variable in Content.VariableItemList.Select(v => v.Value)) {
+        dataTables.Add(variable, CreateDataTable(variable));
+      }
     }
 
     protected override void CheckedItemsChanged(object sender, CollectionItemsChangedEventArgs<IndexedItem<StringValue>> checkedItems) {
       base.CheckedItemsChanged(sender, checkedItems);
 
-      foreach (IndexedItem<StringValue> item in checkedItems.Items) {
-        string variableName = item.Value.Value;
-
-
-        if (!IsVariableChecked(variableName)) {
-          // not checked -> remove
-          dataTableView.SetRowEnabled(variableName, false);
-          dataTable.SelectedRows.Remove(variableName);
-          dataTablePerVariable.Remove(dataTablePerVariable.Find(x => (x.Name == variableName)));
-        } else {
-          // checked -> add
-          DataRow row = GetDataRow(variableName);
-          DataRow selectedRow = GetSelectedDataRow(variableName);
-          dataTableView.SetRowEnabled(variableName, true);
-
-          PreprocessingDataTable pdt = new PreprocessingDataTable(variableName);
-          pdt.Rows.Add(row);
-          // dataTablePerVariable does not contain unchecked variables => reduce insert position by number of uncheckt variables to correct the index
-          int uncheckedUntilVariable = checkedItemList.Content.TakeWhile(x => x.Value != variableName).Count(x => !checkedItemList.Content.ItemChecked(x));
-          dataTablePerVariable.Insert(item.Index - uncheckedUntilVariable, pdt);
-
-          //update selection
-          if (selectedRow != null) {
-            dataTable.SelectedRows.Add(selectedRow);
-            pdt.SelectedRows.Add(selectedRow);
-          }
-        }
-      }
-
-      // update chart if not in all in one mode
-      if (Content != null && !Content.AllInOneMode)
-        GenerateChart();
+      GenerateLayout();
     }
 
-    private DataRow GetSelectedDataRow(string variableName) {
-      foreach (DataRow row in selectedDataRows) {
-        if (row.Name == variableName)
-          return row;
-      }
-      return null;
-    }
-    private DataRow GetDataRow(string variableName) {
-      foreach (DataRow row in dataRows) {
-        if (row.Name == variableName)
-          return row;
-      }
-      return null;
-    }
 
     #region Add/Remove/Update Variable, Reset
     protected override void AddVariable(string name) {
       base.AddVariable(name);
-      DataRow row = Content.CreateDataRow(name, chartType);
-      dataTable.Rows.Add(row);
-      PreprocessingDataTable d = new PreprocessingDataTable(name);
-      d.Rows.Add(row);
-      dataTablePerVariable.Add(d);
+      dataTables.Add(name, CreateDataTable(name));
 
-      if (!Content.AllInOneMode)
-        GenerateChart();
+      GenerateLayout();
     }
 
     // remove variable from data table and item list
     protected override void RemoveVariable(string name) {
       base.RemoveVariable(name);
-      dataTable.Rows.Remove(name);
-      dataTablePerVariable.Remove(dataTablePerVariable.Find(x => (x.Name == name)));
+      dataTables.Remove(name);
+      dataTableViews.Remove(name);
 
-      if (!Content.AllInOneMode)
-        GenerateChart();
+      GenerateLayout();
     }
 
     protected override void UpdateVariable(string name) {
       base.UpdateVariable(name);
-      DataRow newRow = Content.CreateDataRow(name, chartType);
-      dataTable.Rows.Remove(name);
-      dataTable.Rows.Add(newRow);
-      DataTable dt = dataTablePerVariable.Find(x => x.Rows.Find(y => y.Name == name) != null);
-      if (dt != null) {
-        dt.Rows.Remove(name);
-        dt.Rows.Add(newRow);
-      }
+      dataTables.Remove(name);
+      var newDataTable = CreateDataTable(name);
+      dataTables.Add(name, newDataTable);
+      dataTableViews[name].Content = newDataTable;
+      GenerateLayout();
     }
     protected override void ResetAllVariables() {
       InitData();
     }
     #endregion
 
-    #region Generate Charts
-    protected void GenerateChart() {
+    protected override void CheckedChangedUpdate() {
+      GenerateLayout();
+    }
+
+    #region Generate Layout
+    protected void GenerateLayout() {
+      if (SuppressCheckedChangedUpdate)
+        return;
+
+      scrollPanel.SuspendRepaint();
+
       ClearTableLayout();
-      if (Content.AllInOneMode) {
-        GenerateSingleChartLayout();
-      } else
-        GenerateMultiChartLayout();
-    }
 
-    private void GenerateSingleChartLayout() {
-      tableLayoutPanel.ColumnCount = 1;
-      tableLayoutPanel.RowCount = 1;
-      tableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
-      tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
-      tableLayoutPanel.Controls.Add(dataTableView, 0, 0);
-      dataTableView.Content = dataTable;
-    }
+      int nrCharts = GetNumberOfVisibleDataTables();
 
-    private void GenerateMultiChartLayout() {
-      int checkedItemsCnt = 0;
-      foreach (var item in Content.VariableItemList.CheckedItems)
-        checkedItemsCnt++;
+      // Set columns and rows based on number of items
+      int columns = Math.Min(nrCharts, (int)columnsNumericUpDown.Value);
+      int rows = (int)Math.Ceiling((float)nrCharts / columns);
 
-      // set columns and rows based on number of items
-      int columns = GetNrOfMultiChartColumns(checkedItemsCnt);
-      int rows = GetNrOfMultiChartRows(checkedItemsCnt, columns);
+      tableLayoutPanel.ColumnCount = Math.Max(columns, 0);
+      tableLayoutPanel.RowCount = Math.Max(rows, 0);
 
-      tableLayoutPanel.ColumnCount = columns;
-      tableLayoutPanel.RowCount = rows;
+      if (columns > 0 && rows > 0) {
+        var width = (splitContainer.Panel2.Width - SystemInformation.VerticalScrollBarWidth) / columns;
+        var height = width * 0.75f;
 
-      List<PreprocessingDataTable>.Enumerator enumerator = dataTablePerVariable.GetEnumerator();
-      for (int x = 0; x < columns; x++) {
+        using (var enumerator = GetVisibleDataTables().GetEnumerator()) {
+          for (int row = 0; row < rows; row++) {
+            tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, height));
+            for (int col = 0; col < columns; col++) {
+              if (row == 0) {
+                // Add a column-style only when creating the first row
+                tableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, width));
+              }
 
-        if (rows <= MAX_TABLE_AUTO_SIZE_ROWS)
-          tableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100 / columns));
-        else
-          //scrollbar is shown if there are more than 3 rows -> remove scroll bar width from total width
-          tableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, (tableLayoutPanel.Width - System.Windows.Forms.SystemInformation.VerticalScrollBarWidth) / columns));
-        for (int y = 0; y < rows; y++) {
-          //Add a row only when creating the first column
-          if (x == 0) {
-            // fixed chart size when there are more than 3 tables
-            if (rows > MAX_TABLE_AUTO_SIZE_ROWS)
-              tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, FIXED_CHART_SIZE));
-            else
-              tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 100 / rows));
+              if (enumerator.MoveNext())
+                AddDataTableToTableLayout(enumerator.Current, row, col);
+
+            }
           }
-
-          enumerator.MoveNext();
-          PreprocessingDataTable d = enumerator.Current;
-          AddDataTableToTableLayout(d, x, y);
-
         }
+        tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 0));
       }
-    }
-    private int GetNrOfMultiChartColumns(int itemCount) {
-      int columns = 0;
-      if (itemCount <= 2)
-        columns = 1;
-      else if (itemCount <= 6)
-        columns = 2;
-      else
-        columns = 3;
-      return columns;
-    }
-    private int GetNrOfMultiChartRows(int itemCount, int columns) {
-      int rows = 0;
-      if (columns == 3)
-        rows = (itemCount + 2) / columns;
-      else if (columns == 2)
-        rows = (itemCount + 1) / columns;
-      else
-        rows = itemCount / columns;
-      return rows;
+
+      scrollPanel.ResumeRepaint(true);
     }
 
-    private void AddDataTableToTableLayout(PreprocessingDataTable dataTable, int x, int y) {
-      PreprocessingDataTableView dataView = new PreprocessingDataTableView();
-      dataView.Classification = Classification;
-      dataView.IsDetailedChartViewEnabled = IsDetailedChartViewEnabled;
-
+    private void AddDataTableToTableLayout(DataTableView dataTable, int row, int col) {
       if (dataTable == null) {
         // dummy panel for empty field 
-        Panel p = new Panel();
-        p.Dock = DockStyle.Fill;
-        tableLayoutPanel.Controls.Add(p, y, x);
+        Panel p = new Panel { Dock = DockStyle.Fill };
+        tableLayoutPanel.Controls.Add(p, col, row);
       } else {
-        dataView.Content = dataTable;
-        dataView.Dock = DockStyle.Fill;
-        tableLayoutPanel.Controls.Add(dataView, y, x);
+        dataTable.Dock = DockStyle.Fill;
+        tableLayoutPanel.Controls.Add(dataTable, col, row);
       }
     }
 
@@ -285,15 +187,12 @@ namespace HeuristicLab.DataPreprocessing.Views {
       //Clear out the existing row and column styles
       tableLayoutPanel.ColumnStyles.Clear();
       tableLayoutPanel.RowStyles.Clear();
-      tableLayoutPanel.AutoScroll = false;
-      tableLayoutPanel.AutoScroll = true;
     }
     //Remove horizontal scroll bar if visible
     private void tableLayoutPanel_Layout(object sender, LayoutEventArgs e) {
       if (tableLayoutPanel.HorizontalScroll.Visible) {
         // Add padding on the right in order to accomodate the vertical scrollbar
-        int vWidth = SystemInformation.VerticalScrollBarWidth;
-        tableLayoutPanel.Padding = new Padding(0, 0, vWidth, 0);
+        tableLayoutPanel.Padding = new Padding(0, 0, SystemInformation.VerticalScrollBarWidth, 0);
       } else {
         // Reset padding
         tableLayoutPanel.Padding = new Padding(0);
@@ -301,29 +200,29 @@ namespace HeuristicLab.DataPreprocessing.Views {
     }
     #endregion
 
-    #region Update Selection
-    protected override void PreprocessingData_SelctionChanged(object sender, EventArgs e) {
-      base.PreprocessingData_SelctionChanged(sender, e);
-      UpdateSelection();
+    private void columnsNumericUpDown_ValueChanged(object sender, System.EventArgs e) {
+      GenerateLayout();
     }
 
-    private void UpdateSelection() {
-      //update data table selection
-      selectedDataRows = Content.CreateAllSelectedDataRows(chartType);
-      dataTable.SelectedRows.Clear();
-      foreach (var selectedRow in selectedDataRows) {
-        if (IsVariableChecked(selectedRow.Name))
-          dataTable.SelectedRows.Add(selectedRow);
+    private void splitContainer_Panel2_Resize(object sender, EventArgs e) {
+      if (SuppressCheckedChangedUpdate)
+        return;
+
+      scrollPanel.SuspendRepaint();
+
+      if (tableLayoutPanel.ColumnCount > 0 && tableLayoutPanel.RowCount > 0) {
+        var width = (splitContainer.Panel2.Width - SystemInformation.VerticalScrollBarWidth) / tableLayoutPanel.ColumnCount;
+        var height = width * 0.75f;
+
+        for (int i = 0; i < tableLayoutPanel.RowStyles.Count - 1; i++) {
+          tableLayoutPanel.RowStyles[i].Height = height;
+        }
+        for (int i = 0; i < tableLayoutPanel.ColumnStyles.Count; i++) {
+          tableLayoutPanel.ColumnStyles[i].Width = width;
+        }
       }
 
-      //update data table per variable selection
-      foreach (PreprocessingDataTable d in dataTablePerVariable) {
-        d.SelectedRows.Clear();
-        DataRow row = selectedDataRows.Find(x => x.Name == d.Name);
-        if (row != null)
-          d.SelectedRows.Add(row);
-      }
+      scrollPanel.ResumeRepaint(true);
     }
-    #endregion
   }
 }
