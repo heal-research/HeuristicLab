@@ -110,7 +110,7 @@
     <Compile Include="Calculators\HyperVolume.cs" />
     <Compile Include="Calculators\InvertedGenerationalDistance.cs" />
     <Compile Include="Calculators\GenerationalDistance.cs" />
-    <Compile Include="ScatterPlotContent.cs" />
+    <Compile Include="ParetoFrontScatterPlot.cs" />
     <Compile Include="Utilities.cs" />
     <Compile Include="Instances\MISCInstanceProvider.cs" />
     <Compile Include="Instances\ZDTInstanceProvider.cs" />
@@ -176,6 +176,11 @@
     <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">
       <Project>{958b43bc-cc5c-4fa2-8628-2b3b01d890b6}</Project>
       <Name>HeuristicLab.Collections-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Common.Resources\3.3\HeuristicLab.Common.Resources-3.3.csproj">
+      <Project>{0e27a536-1c4a-4624-a65e-dc4f4f23e3e1}</Project>
+      <Name>HeuristicLab.Common.Resources-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Common\3.3\HeuristicLab.Common-3.3.csproj">

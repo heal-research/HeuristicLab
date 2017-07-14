@@ -36,8 +36,8 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
       get { return (IScopeTreeLookupParameter<RealVector>)Parameters["Individuals"]; }
     }
 
-    public IResultParameter<ScatterPlotContent> ScatterPlotResultParameter {
-      get { return (IResultParameter<ScatterPlotContent>)Parameters["Scatterplot"]; }
+    public IResultParameter<ParetoFrontScatterPlot> ScatterPlotResultParameter {
+      get { return (IResultParameter<ParetoFrontScatterPlot>)Parameters["Scatterplot"]; }
     }
 
 
@@ -50,15 +50,16 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
 
     public ScatterPlotAnalyzer() {
       Parameters.Add(new ScopeTreeLookupParameter<RealVector>("Individuals", "The individual solutions to the problem"));
-      Parameters.Add(new ResultParameter<ScatterPlotContent>("Scatterplot", "The scatterplot for the current and optimal (if known front)"));
+      Parameters.Add(new ResultParameter<ParetoFrontScatterPlot>("Scatterplot", "The scatterplot for the current and optimal (if known front)"));
 
     }
 
     public override IOperation Apply() {
       var qualities = QualitiesParameter.ActualValue;
+      var individuals = IndividualsParameter.ActualValue;
       var testFunction = TestFunctionParameter.ActualValue;
       int objectives = qualities[0].Length;
-      var individuals = IndividualsParameter.ActualValue;
+      int problemSize = individuals[0].Length;
 
       double[][] optimalFront = new double[0][];
       var front = testFunction.OptimalParetoFront(objectives);
@@ -67,7 +68,7 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
       var qualityClones = qualities.Select(s => s.ToArray()).ToArray();
       var solutionClones = individuals.Select(s => s.ToArray()).ToArray();
 
-      ScatterPlotResultParameter.ActualValue = new ScatterPlotContent(qualityClones, solutionClones, optimalFront, objectives);
+      ScatterPlotResultParameter.ActualValue = new ParetoFrontScatterPlot(qualityClones, solutionClones, optimalFront, objectives, problemSize);
 
       return base.Apply();
     }
