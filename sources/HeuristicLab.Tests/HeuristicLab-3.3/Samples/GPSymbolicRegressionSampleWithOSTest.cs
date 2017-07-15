@@ -180,6 +180,8 @@ namespace HeuristicLab.Tests {
       var evaluator = new SymbolicRegressionConstantOptimizationEvaluator();
       evaluator.ConstantOptimizationIterations.Value = 5;
       problem.EvaluatorParameter.Value = evaluator;
+      problem.RelativeNumberOfEvaluatedSamplesParameter.Hidden = true;
+      problem.SolutionCreatorParameter.Hidden = true;
       #endregion
 
       #region Algorithm Configuration
@@ -206,6 +208,7 @@ namespace HeuristicLab.Tests {
       osga.OffspringSelectionBeforeMutationParameter.Hidden = true;
       osga.SuccessRatioParameter.Hidden = true;
       osga.SelectedParentsParameter.Hidden = true;
+      osga.ElitesParameter.Hidden = true;
 
       #endregion
       return osga;
