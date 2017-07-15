@@ -106,7 +106,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       Parameters.Add(new ConstrainedValueParameter<IKernel>(KernelParameterName, "The kernel", values, values.OfType<GaussianKernel>().FirstOrDefault()));
       Parameters.Add(new FixedValueParameter<BoolValue>(ScaleInputVariablesParameterName, "Set to true if the input variables should be scaled to the interval [0..1]", new BoolValue(true)));
       Parameters.Add(new FixedValueParameter<DoubleValue>(LambdaParameterName, "The log10-transformed weight for the regularization term lambda [-inf..+inf]. Small values produce more complex models, large values produce models with larger errors. Set to very small value (e.g. -1.0e15) for almost exact approximation", new DoubleValue(-2)));
-      Parameters.Add(new FixedValueParameter<DoubleValue>(BetaParameterName, "The inverse width of the kernel ]0..+inf]. The distance between points is divided by this value before beeing plugged into the kernel.", new DoubleValue(2)));
+      Parameters.Add(new FixedValueParameter<DoubleValue>(BetaParameterName, "The inverse width of the kernel ]0..+inf]. The distance between points is divided by this value before being plugged into the kernel.", new DoubleValue(2)));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
