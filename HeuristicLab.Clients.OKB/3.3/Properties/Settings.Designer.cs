@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace HeuristicLab.Services.Deployment.DataAccess.Properties {
+namespace HeuristicLab.Clients.OKB.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
@@ -25,12 +25,23 @@ namespace HeuristicLab.Services.Deployment.DataAccess.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
-        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=.\\SQLEXPRESS;Integrated Security=SSPI;Initial Catalog=HeuristicLab.De" +
-            "ployment")]
-        public string HeuristicLab_DeploymentConnectionString {
+        [global::System.Configuration.DefaultSettingValueAttribute("3")]
+        public int MaxEndpointRetries {
             get {
-                return ((string)(this["HeuristicLab_DeploymentConnectionString"]));
+                return ((int)(this["MaxEndpointRetries"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
+<ArrayOfString xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
+  <string>NetBinding_IQueryService</string>
+  <string>WSHttpBinding_IQueryService</string>
+</ArrayOfString>")]
+        public global::System.Collections.Specialized.StringCollection EndpointConfigurationPriorities {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["EndpointConfigurationPriorities"]));
             }
         }
     }

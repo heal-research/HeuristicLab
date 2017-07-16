@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?><Database Name="HeuristicLab.ClientManagement" Class="AccessServiceDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
-  <Connection Mode="AppSettings" ConnectionString="Data Source=.;Initial Catalog=HeuristicLab.AccessService;Integrated Security=True" SettingsObjectName="HeuristicLab.Services.Access.DataAccess.Properties.Settings" SettingsPropertyName="HeuristicLab_ClientManagementConnectionString" Provider="System.Data.SqlClient" />
+  <Connection Mode="AppSettings" ConnectionString="Data Source=.\SQLEXPRESS;Integrated Security=SSPI;Initial Catalog=HeuristicLab.AccessService" SettingsObjectName="HeuristicLab.Services.Access.DataAccess.Properties.Settings" SettingsPropertyName="HeuristicLab_ClientManagementConnectionString" Provider="System.Data.SqlClient" />
   <Table Name="dbo.Resource" Member="Resources">
     <Type Name="Resource" InheritanceCode="Resource" IsInheritanceDefault="true">
       <Column Name="Id" AutoSync="OnInsert" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />

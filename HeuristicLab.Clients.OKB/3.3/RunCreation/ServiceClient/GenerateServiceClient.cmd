@@ -1,24 +1,42 @@
-echo off
+@ECHO OFF
 
-echo.
-echo *******************************************************************************************
-echo Generating OKB run creation service client
-echo.
+SET HOST=
+SET GENERATECONFIG=
 
-REM If app.config should be generated, use option "/config:..\..\app.config" and optionally "/mergeConfig" instead of "/noConfig".
+ECHO.
+ECHO *******************************************************************************************
 
-svcutil.exe ^
-  http://localhost:8732/Design_Time_Addresses/OKB-3.3/RunCreationService/mex ^
-  /out:RunCreationServiceClient ^
-  /namespace:*,HeuristicLab.Clients.OKB.RunCreation ^
-  /collectionType:System.Collections.Generic.List`1 ^
-  /targetClientVersion:Version35 ^
-  /enableDataBinding ^
-  /noConfig
+SET /P HOST=Which host should be used? [services.heuristiclab.com]: 
+IF "%HOST%"=="" SET HOST=services.heuristiclab.com
 
-echo.
-echo Generation of OKB run creation service client finished.
-echo *******************************************************************************************
-echo.
+SET /P GENERATECONFIG=Would you like to generate the configuration file? [y]: 
+IF "%GENERATECONFIG%"=="" SET GENERATECONFIG=y
 
-pause
+SET ARGS=http://%HOST%/OKB-3.3/RunCreationService.svc?wsdl ^
+/out:RunCreationServiceClient ^
+/namespace:*,HeuristicLab.Clients.OKB.RunCreation ^
+/collectionType:System.Collections.Generic.List`1 ^
+/targetClientVersion:Version35 ^
+/enableDataBinding ^
+/syncOnly
+
+IF "%GENERATECONFIG%"=="y" (
+  SET ARGS=%ARGS% /config:..\..\app.config /mergeConfig
+) ELSE (
+  SET ARGS=%ARGS% /noConfig
+)
+
+ECHO.
+ECHO Generating RunCreationService client
+ECHO.
+
+SETLOCAL ENABLEDELAYEDEXPANSION
+svcutil.exe %ARGS%
+ENDLOCAL
+
+ECHO.
+ECHO Generation of RunCreationService client finished.
+ECHO *******************************************************************************************
+ECHO.
+
+PAUSE

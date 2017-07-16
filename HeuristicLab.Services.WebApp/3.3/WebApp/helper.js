@@ -30,7 +30,7 @@ var ConvertDate = function (date) {
     var day = date.getDate().zeropad(2);
     var month = (1 + date.getMonth()).zeropad(2);
     var year = date.getFullYear();
-    var hour = (date.getHours() - 2).zeropad(2);
+    var hour = (date.getHours() + date.getTimezoneOffset() / 60).zeropad(2);
     var minute = date.getMinutes().zeropad(2);
     var second = date.getSeconds().zeropad(2);
     return year + '-' + month + '-' + day + 'T' + hour + ':' + minute + ':' + second + '.000Z';

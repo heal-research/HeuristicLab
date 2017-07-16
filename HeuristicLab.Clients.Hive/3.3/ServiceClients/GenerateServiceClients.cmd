@@ -1,30 +1,52 @@
-echo off
+@ECHO OFF
 
-echo.
-echo *******************************************************************************************
-echo Generating HiveService client
-echo.
+SET HOST=
+SET GENERATECONFIG=
 
-svcutil.exe ^
-  http://localhost/Hive-3.3/HiveService.svc?wsdl ^
-  /out:HiveServiceClient ^
-  /namespace:*,HeuristicLab.Clients.Hive ^
-  /collectionType:System.Collections.Generic.List`1 ^
-  /targetClientVersion:Version35 ^
-  /serializable ^
-  /enableDataBinding ^
-  /config:..\app.config 
+ECHO.
+ECHO *******************************************************************************************
 
-echo.
-echo ---------------------------------------------------------------------------------------
-echo !!! ATTENTION !!! ATTENTION !!! ATTENTION !!! ATTENTION !!! ATTENTION !!! ATTENTION !!!
-echo.
-echo Following modifications have to be done manually in generated data contracts:
-echo  * Remove method "protected void RaisePropertyChanged(string propertyName)" in HiveItem
-echo.
-echo !!! ATTENTION !!! ATTENTION !!! ATTENTION !!! ATTENTION !!! ATTENTION !!! ATTENTION !!!
-echo ---------------------------------------------------------------------------------------
-echo.
-echo Generation of HiveService client finished.
-echo *******************************************************************************************
+SET /P HOST=Which host should be used? [services.heuristiclab.com]: 
+IF "%HOST%"=="" SET HOST=services.heuristiclab.com
 
+SET /P GENERATECONFIG=Would you like to generate the configuration file? [y]: 
+IF "%GENERATECONFIG%"=="" SET GENERATECONFIG=y
+
+SET ARGS=http://%HOST%/Hive-3.3/HiveService.svc?wsdl ^
+/out:HiveServiceClient ^
+/namespace:*,HeuristicLab.Clients.Hive ^
+/collectionType:System.Collections.Generic.List`1 ^
+/targetClientVersion:Version35 ^
+/serializable ^
+/enableDataBinding ^
+/syncOnly
+
+IF "%GENERATECONFIG%"=="y" (
+  SET ARGS=%ARGS% /config:..\app.config /mergeConfig
+) ELSE (
+  SET ARGS=%ARGS% /noConfig
+)
+
+ECHO.
+ECHO Generating HiveService client
+ECHO.
+
+SETLOCAL ENABLEDELAYEDEXPANSION
+svcutil.exe %ARGS%
+ENDLOCAL
+
+ECHO.
+ECHO ---------------------------------------------------------------------------------------
+ECHO !!! ATTENTION !!! ATTENTION !!! ATTENTION !!! ATTENTION !!! ATTENTION !!! ATTENTION !!!
+ECHO.
+ECHO Following modifications have to be done manually in generated data contracts:
+ECHO  * Remove method "protected void RaisePropertyChanged(string propertyName)" in generated HiveItem
+ECHO.
+ECHO !!! ATTENTION !!! ATTENTION !!! ATTENTION !!! ATTENTION !!! ATTENTION !!! ATTENTION !!!
+ECHO ---------------------------------------------------------------------------------------
+ECHO.
+ECHO Generation of HiveService client finished.
+ECHO *******************************************************************************************
+ECHO.
+
+PAUSE

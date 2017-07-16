@@ -113,6 +113,11 @@
     <Compile Include="Administration\ServiceClient\Problem.cs" />
     <Compile Include="Administration\ServiceClient\ProblemClass.cs" />
     <Compile Include="OKBRoles.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
     <Compile Include="RunCreation\OKBSolution.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Query\QueryClient.cs" />
@@ -176,6 +181,10 @@
     <None Include="Plugin.cs.frame" />
     <None Include="Properties\AssemblyInfo.cs.frame" />
     <None Include="Administration\ServiceClient\GenerateServiceClient.cmd" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
     <None Include="Query\ServiceClient\GenerateServiceClient.cmd" />
     <None Include="RunCreation\ServiceClient\GenerateServiceClient.cmd" />
   </ItemGroup>

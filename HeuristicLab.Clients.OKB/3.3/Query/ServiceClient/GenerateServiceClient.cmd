@@ -1,24 +1,42 @@
-echo off
+@ECHO OFF
 
-echo.
-echo *******************************************************************************************
-echo Generating OKB query service client
-echo.
+SET HOST=
+SET GENERATECONFIG=
 
-REM If app.config should be generated, use option "/config:..\..\app.config" and optionally "/mergeConfig" instead of "/noConfig".
+ECHO.
+ECHO *******************************************************************************************
 
-svcutil.exe ^
-  http://localhost:8732/Design_Time_Addresses/OKB-3.3/QueryService/mex ^
-  /out:QueryServiceClient ^
-  /namespace:*,HeuristicLab.Clients.OKB.Query ^
-  /collectionType:System.Collections.Generic.List`1 ^
-  /targetClientVersion:Version35 ^
-  /enableDataBinding ^
-  /noConfig
+SET /P HOST=Which host should be used? [services.heuristiclab.com]: 
+IF "%HOST%"=="" SET HOST=services.heuristiclab.com
 
-echo.
-echo Generation of OKB query service client finished.
-echo *******************************************************************************************
-echo.
+SET /P GENERATECONFIG=Would you like to generate the configuration file? [y]: 
+IF "%GENERATECONFIG%"=="" SET GENERATECONFIG=y
 
-pause
+SET ARGS=http://%HOST%/OKB-3.3/QueryService.svc ^
+/out:QueryServiceClient ^
+/namespace:*,HeuristicLab.Clients.OKB.Query ^
+/collectionType:System.Collections.Generic.List`1 ^
+/targetClientVersion:Version35 ^
+/enableDataBinding ^
+/syncOnly
+
+IF "%GENERATECONFIG%"=="y" (
+  SET ARGS=%ARGS% /config:..\..\app.config /mergeConfig
+) ELSE (
+  SET ARGS=%ARGS% /noConfig
+)
+
+ECHO.
+ECHO Generating QueryService client
+ECHO.
+
+SETLOCAL ENABLEDELAYEDEXPANSION
+svcutil.exe %ARGS%
+ENDLOCAL
+
+ECHO.
+ECHO Generation of QueryService client finished.
+ECHO *******************************************************************************************
+ECHO.
+
+PAUSE
