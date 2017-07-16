@@ -54,13 +54,13 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     #endregion
 
     #region Parameter Properties
-    private ValueParameter<IntValue> SeedParameter {
+    public IValueParameter<IntValue> SeedParameter {
       get { return (ValueParameter<IntValue>)Parameters["Seed"]; }
     }
-    private ValueParameter<BoolValue> SetSeedRandomlyParameter {
+    public IValueParameter<BoolValue> SetSeedRandomlyParameter {
       get { return (ValueParameter<BoolValue>)Parameters["SetSeedRandomly"]; }
     }
-    private ValueParameter<IntValue> PopulationSizeParameter {
+    public IValueParameter<IntValue> PopulationSizeParameter {
       get { return (ValueParameter<IntValue>)Parameters["PopulationSize"]; }
     }
     public IConstrainedValueParameter<ISelector> SelectorParameter {
@@ -69,49 +69,49 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     public IConstrainedValueParameter<ICrossover> CrossoverParameter {
       get { return (IConstrainedValueParameter<ICrossover>)Parameters["Crossover"]; }
     }
-    private ValueParameter<PercentValue> MutationProbabilityParameter {
+    public IValueParameter<PercentValue> MutationProbabilityParameter {
       get { return (ValueParameter<PercentValue>)Parameters["MutationProbability"]; }
     }
     public IConstrainedValueParameter<IManipulator> MutatorParameter {
       get { return (IConstrainedValueParameter<IManipulator>)Parameters["Mutator"]; }
     }
-    private ValueParameter<IntValue> ElitesParameter {
+    public IValueParameter<IntValue> ElitesParameter {
       get { return (ValueParameter<IntValue>)Parameters["Elites"]; }
     }
-    private IFixedValueParameter<BoolValue> ReevaluateElitesParameter {
+    public IFixedValueParameter<BoolValue> ReevaluateElitesParameter {
       get { return (IFixedValueParameter<BoolValue>)Parameters["ReevaluateElites"]; }
     }
-    private ValueParameter<IntValue> MaximumGenerationsParameter {
+    public IValueParameter<IntValue> MaximumGenerationsParameter {
       get { return (ValueParameter<IntValue>)Parameters["MaximumGenerations"]; }
     }
-    private ValueLookupParameter<DoubleValue> SuccessRatioParameter {
+    public IValueLookupParameter<DoubleValue> SuccessRatioParameter {
       get { return (ValueLookupParameter<DoubleValue>)Parameters["SuccessRatio"]; }
     }
-    private ValueLookupParameter<DoubleValue> ComparisonFactorLowerBoundParameter {
+    public IValueLookupParameter<DoubleValue> ComparisonFactorLowerBoundParameter {
       get { return (ValueLookupParameter<DoubleValue>)Parameters["ComparisonFactorLowerBound"]; }
     }
-    private ValueLookupParameter<DoubleValue> ComparisonFactorUpperBoundParameter {
+    public IValueLookupParameter<DoubleValue> ComparisonFactorUpperBoundParameter {
       get { return (ValueLookupParameter<DoubleValue>)Parameters["ComparisonFactorUpperBound"]; }
     }
     public IConstrainedValueParameter<IDiscreteDoubleValueModifier> ComparisonFactorModifierParameter {
       get { return (IConstrainedValueParameter<IDiscreteDoubleValueModifier>)Parameters["ComparisonFactorModifier"]; }
     }
-    private ValueLookupParameter<DoubleValue> MaximumSelectionPressureParameter {
+    public IValueLookupParameter<DoubleValue> MaximumSelectionPressureParameter {
       get { return (ValueLookupParameter<DoubleValue>)Parameters["MaximumSelectionPressure"]; }
     }
-    private ValueLookupParameter<BoolValue> OffspringSelectionBeforeMutationParameter {
+    public IValueLookupParameter<BoolValue> OffspringSelectionBeforeMutationParameter {
       get { return (ValueLookupParameter<BoolValue>)Parameters["OffspringSelectionBeforeMutation"]; }
     }
-    private ValueLookupParameter<IntValue> SelectedParentsParameter {
+    public IValueLookupParameter<IntValue> SelectedParentsParameter {
       get { return (ValueLookupParameter<IntValue>)Parameters["SelectedParents"]; }
     }
-    private ValueParameter<MultiAnalyzer> AnalyzerParameter {
+    public IValueParameter<MultiAnalyzer> AnalyzerParameter {
       get { return (ValueParameter<MultiAnalyzer>)Parameters["Analyzer"]; }
     }
-    private ValueParameter<IntValue> MaximumEvaluatedSolutionsParameter {
+    public IValueParameter<IntValue> MaximumEvaluatedSolutionsParameter {
       get { return (ValueParameter<IntValue>)Parameters["MaximumEvaluatedSolutions"]; }
     }
-    private IFixedValueParameter<BoolValue> FillPopulationWithParentsParameter {
+    public IFixedValueParameter<BoolValue> FillPopulationWithParentsParameter {
       get { return (IFixedValueParameter<BoolValue>)Parameters["FillPopulationWithParents"]; }
     }
     #endregion

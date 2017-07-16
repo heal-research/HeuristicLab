@@ -151,6 +151,7 @@
     <EmbeddedResource Include="Documents\GA_BPP.hl" />
     <EmbeddedResource Include="Documents\OSES_Griewank.hl" />
     <EmbeddedResource Include="Documents\SGP_Robocode.hl" />
+    <EmbeddedResource Include="Documents\OSGP_SymReg.hl" />
     <None Include="Plugin.cs.frame" />
     <Compile Include="ChangeNestingLevelDialog.cs">
       <SubType>Form</SubType>
