@@ -303,9 +303,14 @@ namespace HeuristicLab.Clients.Hive {
           }
         }
         GC.Collect(); // force GC, because .NET is too lazy here (deserialization takes a lot of memory)
-        if (AllJobsFinished()) {
-          this.ExecutionState = Core.ExecutionState.Stopped;
+        if (IsFinished()) {
+          ExecutionState = ExecutionState.Stopped;
           StopResultPolling();
+        } else if (IsPaused()) {
+          ExecutionState = ExecutionState.Paused;
+          StopResultPolling();
+        } else {
+          ExecutionState = ExecutionState.Started;
         }
         UpdateTotalExecutionTime();
         UpdateStatistics();
@@ -329,13 +334,6 @@ namespace HeuristicLab.Clients.Hive {
       job.CalculatingCount = jobs.Count(j => j.Task.State == TaskState.Calculating);
       job.FinishedCount = jobs.Count(j => j.Task.State == TaskState.Finished);
       OnJobStatisticsChanged();
-    }
-
-    public bool AllJobsFinished() {
-      return this.GetAllHiveTasks().All(j => (j.Task.State == TaskState.Finished
-                                                   || j.Task.State == TaskState.Aborted
-                                                   || j.Task.State == TaskState.Failed)
-                                                   && !j.IsDownloading);
     }
 
     private void jobResultPoller_ExceptionOccured(object sender, EventArgs<Exception> e) {
@@ -512,6 +510,10 @@ namespace HeuristicLab.Clients.Hive {
           this.ExecutionState = Core.ExecutionState.Stopped;
           this.RefreshAutomatically = false;
           StopResultPolling();
+        } else if (IsPaused()) {
+          this.executionState = Core.ExecutionState.Paused;
+          this.RefreshAutomatically = false;
+          StopResultPolling();
         } else {
           this.RefreshAutomatically = true;
         }
@@ -526,7 +528,7 @@ namespace HeuristicLab.Clients.Hive {
       this.UpdateTotalExecutionTime();
       this.OnStateLogListChanged();
 
-      if (this.ExecutionState != ExecutionState.Stopped) {
+      if (this.ExecutionState != ExecutionState.Stopped && this.ExecutionState != ExecutionState.Paused) {
         this.RefreshAutomatically = true;
       }
 
@@ -583,8 +585,18 @@ namespace HeuristicLab.Clients.Hive {
     }
 
     public bool IsFinished() {
-      return HiveTasks != null
-        && HiveTasks.All(x => x.Task.DateFinished.HasValue && x.Task.DateCreated.HasValue);
+      var tasks = GetAllHiveTasks();
+      return tasks.All(x => x.Task.State == TaskState.Finished
+                            || x.Task.State == TaskState.Aborted
+                            || x.Task.State == TaskState.Failed);
+    }
+
+    public bool IsPaused() {
+      var tasks = GetAllHiveTasks().Where(x => !x.Task.IsParentTask);
+      return tasks.All(x => x.Task.State != TaskState.Waiting
+                            && x.Task.State != TaskState.Transferring
+                            && x.Task.State != TaskState.Calculating)
+             && tasks.Any(x => x.Task.State == TaskState.Paused);
     }
 
     public IEnumerable<HiveTask> GetAllHiveTasks() {
