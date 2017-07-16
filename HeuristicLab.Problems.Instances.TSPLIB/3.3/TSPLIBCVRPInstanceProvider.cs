@@ -77,5 +77,9 @@ namespace HeuristicLab.Problems.Instances.TSPLIB {
       parser.Parse();
       instance.BestKnownTour = parser.Tour;
     }
+
+    protected override void LoadQuality(double? bestQuality, CVRPData instance) {
+      instance.BestKnownQuality = bestQuality;
+    }
   }
 }
