@@ -33,6 +33,9 @@ namespace HeuristicLab.Scripting {
   public class CSharpScript : ExecutableScript, IStorableContent {
     #region Fields & Properties
     private CSharpScriptBase compiledScript;
+    public dynamic Instance {
+      get { return compiledScript; }
+    }
 
     public string Filename { get; set; }
 
