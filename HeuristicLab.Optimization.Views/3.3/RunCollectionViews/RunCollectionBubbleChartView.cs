@@ -434,8 +434,8 @@ namespace HeuristicLab.Optimization.Views {
         SizeDimension sizeDimension = (SizeDimension)Enum.Parse(typeof(SizeDimension), columnName);
         return GetValue(run, sizeDimension);
       } else {
-        int columnIndex = Matrix.ColumnNames.ToList().IndexOf(columnName);
-        IItem value = Content.GetValue(run, columnIndex);
+
+        IItem value = Content.GetValue(run, columnName);
         if (value == null)
           return null;
 
@@ -450,8 +450,10 @@ namespace HeuristicLab.Optimization.Views {
           ret = intValue.Value;
         else if (timeSpanValue != null) {
           ret = timeSpanValue.Value.TotalSeconds;
-        } else
+        } else {
+          int columnIndex = Matrix.ColumnNames.ToList().IndexOf(columnName);
           ret = GetCategoricalValue(columnIndex, value.ToString());
+        }
 
         return ret;
       }
@@ -621,32 +623,40 @@ namespace HeuristicLab.Optimization.Views {
       string tooltip;
       tooltip = run.Name + System.Environment.NewLine;
 
-      double? xValue = this.GetValue(run, (string)xAxisComboBox.SelectedItem);
-      double? yValue = this.GetValue(run, (string)yAxisComboBox.SelectedItem);
-      double? sizeValue = this.GetValue(run, (string)sizeComboBox.SelectedItem);
-
-      string xString = xValue == null ? string.Empty : xValue.Value.ToString();
-      string yString = yValue == null ? string.Empty : yValue.Value.ToString();
-      string sizeString = sizeValue == null ? string.Empty : sizeValue.Value.ToString();
-
-      //code to handle TimeSpanValues correct
-      int axisDimensionCount = Enum.GetNames(typeof(AxisDimension)).Count();
-      int columnIndex = xAxisComboBox.SelectedIndex - axisDimensionCount;
-      if (xValue.HasValue && columnIndex > 0 && Content.GetValue(0, columnIndex) is TimeSpanValue) {
-        TimeSpan time = TimeSpan.FromSeconds(xValue.Value);
-        xString = string.Format("{0:00}:{1:00}:{2:00.00}", (int)time.TotalHours, time.Minutes, time.Seconds);
-      }
-      columnIndex = yAxisComboBox.SelectedIndex - axisDimensionCount;
-      if (yValue.HasValue && columnIndex > 0 && Content.GetValue(0, columnIndex) is TimeSpanValue) {
-        TimeSpan time = TimeSpan.FromSeconds(yValue.Value);
-        yString = string.Format("{0:00}:{1:00}:{2:00.00}", (int)time.TotalHours, time.Minutes, time.Seconds);
-      }
+      string xString = GetTooltipValue(run, (string)xAxisComboBox.SelectedItem);
+      string yString = GetTooltipValue(run, (string)yAxisComboBox.SelectedItem);
+      string sizeString = GetTooltipValue(run, (string)sizeComboBox.SelectedItem);
 
       tooltip += xAxisComboBox.SelectedItem + " : " + xString + Environment.NewLine;
       tooltip += yAxisComboBox.SelectedItem + " : " + yString + Environment.NewLine;
       tooltip += sizeComboBox.SelectedItem + " : " + sizeString + Environment.NewLine;
 
       return tooltip;
+    }
+
+    private string GetTooltipValue(IRun run, string columnName) {
+      if (columnName == SizeDimension.Constant.ToString())
+        return string.Empty;
+
+      int columnIndex = Matrix.ColumnNames.ToList().IndexOf(columnName);
+
+      //handle non-numeric values correctly
+      if (categoricalMapping.ContainsKey(columnIndex)) {
+        return Content.GetValue(run, columnName).ToString();
+      }
+
+      double? value = GetValue(run, columnName);
+      if (!value.HasValue) return string.Empty;
+
+      string valueString = value.Value.ToString();
+
+      //code to handle TimeSpanValues correctly
+      if (columnIndex > 0 && Content.GetValue(0, columnIndex) is TimeSpanValue) {
+        TimeSpan time = TimeSpan.FromSeconds(value.Value);
+        valueString = string.Format("{0:00}:{1:00}:{2:00.00}", (int)time.TotalHours, time.Minutes, time.Seconds);
+      }
+
+      return valueString;
     }
     #endregion
 
