@@ -642,6 +642,9 @@ namespace HeuristicLab.Optimization.Views {
         return Content.GetValue(run, columnName).ToString();
       }
 
+      if (columnName == SizeDimension.Constant.ToString())
+        return string.Empty;
+
       double? value = GetValue(run, columnName);
       if (!value.HasValue) return string.Empty;
 
