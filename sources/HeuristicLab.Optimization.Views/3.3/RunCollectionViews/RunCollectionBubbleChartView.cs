@@ -635,15 +635,15 @@ namespace HeuristicLab.Optimization.Views {
     }
 
     private string GetTooltipValue(IRun run, string columnName) {
+      if (columnName == SizeDimension.Constant.ToString())
+        return string.Empty;
+
       int columnIndex = Matrix.ColumnNames.ToList().IndexOf(columnName);
 
       //handle non-numeric values correctly
       if (categoricalMapping.ContainsKey(columnIndex)) {
         return Content.GetValue(run, columnName).ToString();
       }
-
-      if (columnName == SizeDimension.Constant.ToString())
-        return string.Empty;
 
       double? value = GetValue(run, columnName);
       if (!value.HasValue) return string.Empty;
