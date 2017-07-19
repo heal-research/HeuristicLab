@@ -66,7 +66,7 @@ namespace HeuristicLab.Tests {
         // We tracked down the ConstantOptimizationEvaluator as a possible cause but have not
         // been able to identify the real cause. Presumably, execution on a Xeon and a Core i7 processor 
         // leads to different results. 
-        Assert.AreEqual(0.90811178793448177, SamplesUtils.GetDoubleResult(osga, "BestQuality"), 1E-8, Environment.NewLine + "Best Qualitiy differs.");
+        Assert.AreEqual(0.90811178793448177, SamplesUtils.GetDoubleResult(osga, "BestQuality"), 1E-8, Environment.NewLine + "Best Quality differs.");
         Assert.AreEqual(0.87264498853305739, SamplesUtils.GetDoubleResult(osga, "CurrentAverageQuality"), 1E-8, Environment.NewLine + "Current Average Quality differs.");
         Assert.AreEqual(0.75425658608938817, SamplesUtils.GetDoubleResult(osga, "CurrentWorstQuality"), 1E-8, Environment.NewLine + "Current Worst Quality differs.");
         Assert.AreEqual(8900, SamplesUtils.GetIntResult(osga, "EvaluatedSolutions"), Environment.NewLine + "Evaluated Solutions differ.");
@@ -187,7 +187,7 @@ namespace HeuristicLab.Tests {
       #region Algorithm Configuration
       osga.Problem = problem;
       osga.Name = "Offspring Selection Genetic Programming - Symbolic Regression";
-      osga.Description = "Genetic programming with strict offsrping selection solving a benchmark regression problem.";
+      osga.Description = "Genetic programming with strict offspring selection for solving a benchmark regression problem.";
       SamplesUtils.ConfigureOsGeneticAlgorithmParameters<GenderSpecificSelector, SubtreeCrossover, MultiSymbolicExpressionTreeManipulator>(osga, 100, 1, 25, 0.2, 50);
       var mutator = (MultiSymbolicExpressionTreeManipulator)osga.Mutator;
       mutator.Operators.OfType<FullTreeShaker>().Single().ShakingFactor = 0.1;
