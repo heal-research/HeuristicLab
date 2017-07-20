@@ -236,9 +236,8 @@ namespace HeuristicLab.Problems.BinPacking3D {
         var positionFound = FindExtremePointForItem(item, false, stackingConstraints);
         if (positionFound != null) {
           PackItem(itemID, item, positionFound);
-          if (!(positionFound.X == 0 && positionFound.Y == 0 && positionFound.Z == 0)) {
+          if (Items.Count > 1)
             UpdateResidualSpace(item, positionFound);
-          }
           sequence.Remove(itemID);
         }
       }
