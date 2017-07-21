@@ -105,9 +105,13 @@
     <Compile Include="3D\BinPacking3D.cs" />
     <Compile Include="3D\Evaluators\BinUtilizationEvaluator.cs" />
     <Compile Include="3D\Evaluators\PackingRatioEvaluator.cs" />
+    <Compile Include="Algorithms\3D\ExtremePointAlgorithm.cs" />
+    <Compile Include="3D\Instances\ThreeDInstanceDescriptor.cs" />
     <Compile Include="3D\Instances\BPPData.cs" />
     <Compile Include="3D\Instances\RandomDataDescriptor.cs" />
+    <Compile Include="3D\Instances\RealWorldContainerPackingInstanceProvider.cs" />
     <Compile Include="3D\Instances\RandomInstanceProvider.cs" />
+    <Compile Include="3D\Instances\ThreeDInstanceParser.cs" />
     <Compile Include="3D\IntegerVectorEncoding\BottomLeftIntegerVectorDecoder.cs" />
     <Compile Include="3D\IntegerVectorEncoding\ExtremePointIntegerVectorDecoder.cs" />
     <Compile Include="3D\IntegerVectorEncoding\IntegerVectorDecoderBase.cs" />
@@ -120,6 +124,9 @@
     <Compile Include="3D\PackingPosition.cs" />
     <Compile Include="3D\PackingShape.cs" />
     <Compile Include="3D\PermutationEncoding\BottomLeftPermutationDecoder.cs" />
+    <Compile Include="3D\PermutationEncoding\ResidualSpaceBestFitExtremePointPermutationDecoder.cs" />
+    <Compile Include="3D\PermutationEncoding\FreeVolumeBestFitExtremePointPermutationDecoder.cs" />
+    <Compile Include="3D\PermutationEncoding\ExtremePointPermutationDecoderBase.cs" />
     <Compile Include="3D\PermutationEncoding\ExtremePointPermutationDecoder.cs" />
     <Compile Include="3D\PermutationEncoding\PermutationProblem.cs" />
     <Compile Include="3D\PermutationEncoding\Swap2MoveEvaluator.cs" />
@@ -143,6 +150,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="3D\Instances\ContainerPackingInstances.zip" />
     <None Include="HeuristicLab.snk" />
     <None Include="Properties\AssemblyInfo.cs.frame" />
     <None Include="Plugin.cs.frame" />

@@ -45,7 +45,7 @@ namespace HeuristicLab.Problems.BinPacking3D {
       IList<int> remainingIDs = new List<int>(permutation);
       while (remainingIDs.Count > 0) {
         var bp = new BinPacking3D(binShape);
-        bp.SlidingBasedPacking(ref remainingIDs, items);
+        bp.SlidingBasedPacking(ref remainingIDs, items, useStackingConstraints);
         result.Bins.Add(bp);
       }
       result.UpdateBinPackings();

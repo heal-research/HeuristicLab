@@ -33,17 +33,13 @@ namespace HeuristicLab.Problems.BinPacking2D {
 
     public BinPacking2D(PackingShape binShape)
       : base(binShape) {
-      ExtremePoints = new SortedSet<PackingPosition>();
       ExtremePoints.Add(binShape.Origin);
       InitializeOccupationLayers();
     }
 
     [StorableConstructor]
     protected BinPacking2D(bool deserializing) : base(deserializing) { }
-    protected BinPacking2D(BinPacking2D original, Cloner cloner)
-      : base(original, cloner) {
-      this.ExtremePoints = new SortedSet<PackingPosition>(original.ExtremePoints.Select(p => cloner.Clone(p)));
-    }
+    protected BinPacking2D(BinPacking2D original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new BinPacking2D(this, cloner);
     }
@@ -87,51 +83,47 @@ namespace HeuristicLab.Problems.BinPacking2D {
         Weight = item.Weight
       };
 
-      int epIndex = 0;
-      while (epIndex < ExtremePoints.Count && (!IsPositionFeasible(rotatedItem, ExtremePoints.ElementAt(epIndex)))) { epIndex++; }
-
-      if (epIndex < ExtremePoints.Count) {
-        var currentPoint = ExtremePoints.ElementAt(epIndex);
-
-        var result = new PackingPosition(currentPoint.AssignedBin, currentPoint.X, currentPoint.Y, rotated);
+      var ep = ExtremePoints.Where(x => IsPositionFeasible(rotatedItem, x, stackingConstraints)).FirstOrDefault();
+      if (ep != null) {
+        var result = new PackingPosition(ep.AssignedBin, ep.X, ep.Y, rotated);
         return result;
       }
       return null;
     }
-    public override PackingPosition FindPositionBySliding(PackingItem item, bool rotated) {
+    public override PackingPosition FindPositionBySliding(PackingItem item, bool rotated, bool stackingConstraints) {
       PackingPosition currentPosition = new PackingPosition(0,
         BinShape.Width - (rotated ? item.Height : item.Width),
         BinShape.Height - (rotated ? item.Width : item.Height), rotated);
       //Slide the item as far as possible to the left
-      while (IsPositionFeasible(item, PackingPosition.MoveLeft(currentPosition))
-        || IsPositionFeasible(item, PackingPosition.MoveDown(currentPosition))) {
+      while (IsPositionFeasible(item, PackingPosition.MoveLeft(currentPosition), stackingConstraints)
+        || IsPositionFeasible(item, PackingPosition.MoveDown(currentPosition), stackingConstraints)) {
         //Slide the item as far as possible to the bottom
-        while (IsPositionFeasible(item, PackingPosition.MoveDown(currentPosition))) {
+        while (IsPositionFeasible(item, PackingPosition.MoveDown(currentPosition), stackingConstraints)) {
           currentPosition = PackingPosition.MoveDown(currentPosition);
         }
-        if (IsPositionFeasible(item, PackingPosition.MoveLeft(currentPosition)))
+        if (IsPositionFeasible(item, PackingPosition.MoveLeft(currentPosition), stackingConstraints))
           currentPosition = PackingPosition.MoveLeft(currentPosition);
       }
 
-      return IsPositionFeasible(item, currentPosition) ? currentPosition : null;
+      return IsPositionFeasible(item, currentPosition, stackingConstraints) ? currentPosition : null;
     }
 
-    public override void SlidingBasedPacking(ref IList<int> sequence, IList<PackingItem> items) {
+    public override void SlidingBasedPacking(ref IList<int> sequence, IList<PackingItem> items, bool stackingConstraints) {
       var temp = new List<int>(sequence);
       for (int i = 0; i < temp.Count; i++) {
         var item = items[temp[i]];
-        var position = FindPositionBySliding(item, false);
+        var position = FindPositionBySliding(item, false, stackingConstraints);
         if (position != null) {
           PackItem(temp[i], item, position);
           sequence.Remove(temp[i]);
         }
       }
     }
-    public override void SlidingBasedPacking(ref IList<int> sequence, IList<PackingItem> items, Dictionary<int, bool> rotationArray) {
+    public override void SlidingBasedPacking(ref IList<int> sequence, IList<PackingItem> items, Dictionary<int, bool> rotationArray, bool stackingConstraints) {
       var temp = new List<int>(sequence);
       for (int i = 0; i < temp.Count; i++) {
         var item = items[temp[i]];
-        var position = FindPositionBySliding(item, rotationArray[temp[i]]);
+        var position = FindPositionBySliding(item, rotationArray[temp[i]], stackingConstraints);
         if (position != null) {
           PackItem(temp[i], item, position);
           sequence.Remove(temp[i]);
@@ -149,6 +141,7 @@ namespace HeuristicLab.Problems.BinPacking2D {
         }
       }
     }
+    
     public override void ExtremePointBasedPacking(ref IList<int> sequence, IList<PackingItem> items, bool stackingConstraints, Dictionary<int, bool> rotationArray) {
       var temp = new List<int>(sequence);
       foreach (int itemID in temp) {
@@ -185,7 +178,6 @@ namespace HeuristicLab.Problems.BinPacking2D {
     public override bool IsStaticStable(PackingItem item, PackingPosition position) {
       throw new NotSupportedException();
     }
-
     protected override void InitializeOccupationLayers() {
       for (int i = 0; i * 10 <= BinShape.Width; i += 1) {
         OccupationLayers[i] = new List<int>();

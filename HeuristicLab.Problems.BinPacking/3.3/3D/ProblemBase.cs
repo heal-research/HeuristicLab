@@ -174,7 +174,6 @@ namespace HeuristicLab.Problems.BinPacking3D {
 
     public override bool Maximization { get { return true; } }
 
-
     public override double Evaluate(Individual individual, IRandom random) {
       var encodedSolutionCand = (TSol)individual[EncodedSolutionName];
       var decoder = Decoder;
