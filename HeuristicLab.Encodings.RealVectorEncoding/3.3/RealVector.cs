@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -43,6 +44,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       for (int i = 0; i < array.Length; i++)
         array[i] = elements[i];
     }
+    public RealVector(RealVector other) : this(other.array) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new RealVector(this, cloner);
@@ -76,5 +78,12 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       Randomize(random, 0, Length, bounds);
     }
 
+    public double DotProduct(RealVector other) {
+      if (other.Length != Length) throw new ArgumentException("Vectors are of unequal length.");
+      var dotProd = 0.0;
+      for (var i = 0; i < Length; i++)
+        dotProd += this[i] * other[i];
+      return dotProd;
+    }
   }
 }

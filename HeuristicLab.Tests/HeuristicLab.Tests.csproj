@@ -474,7 +474,7 @@
     <Compile Include="HeuristicLab-3.3\Samples\GPTimeSeriesSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\GPMultiplexerSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\LocalSearchKnapsackSampleTest.cs" />
-    <Compile Include="HeuristicLab-3.3\Samples\PsoSchwefelSampleTest.cs" />
+    <Compile Include="HeuristicLab-3.3\Samples\PsoRastriginSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\RAPGASchedulingSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\SamplesUtils.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\GATspSampleTest.cs" />

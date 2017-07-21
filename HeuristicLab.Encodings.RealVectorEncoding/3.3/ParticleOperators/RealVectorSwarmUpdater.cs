@@ -34,7 +34,9 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   [Item("RealVectorSwarmUpdater", "Updates personal best point and quality as well as global best point and quality.")]
   [StorableClass]
-  public sealed class RealVectorSwarmUpdater : SingleSuccessorOperator, IRealVectorSwarmUpdater, ISingleObjectiveOperator {
+  [NonDiscoverableType]
+  [Obsolete("Use SPSOSwarmUpdater")]
+  internal sealed class RealVectorSwarmUpdater : SingleSuccessorOperator, IRealVectorSwarmUpdater, ISingleObjectiveOperator {
 
     [Storable]
     private ResultsCollector ResultsCollector;

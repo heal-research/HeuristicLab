@@ -133,7 +133,7 @@ namespace HeuristicLab.Optimizer {
 
     private void FillGroupLookup() {
       var standardProblems = new List<string> { "ALPSGA_TSP", "ES_Griewank", "OSES_Griewank", "GA_Grouping", "GA_TSP", "GA_VRP", "GE_ArtificialAnt",
-                "IslandGA_TSP", "LS_Knapsack", "PSO_Schwefel", "RAPGA_JSSP",
+                "IslandGA_TSP", "LS_Knapsack", "PSO_Rastrigin", "RAPGA_JSSP",
                 "SA_Rastrigin", "SGP_SantaFe", "GP_Multiplexer", "SGP_Robocode", "SS_VRP", "TS_TSP", "TS_VRP", "VNS_OP", "VNS_TSP", "GA_BPP"
         };
       groupLookup[standardProblemsGroup] = standardProblems;

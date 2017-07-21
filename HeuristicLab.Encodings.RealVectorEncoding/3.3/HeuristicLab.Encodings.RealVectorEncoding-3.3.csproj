@@ -115,7 +115,16 @@
   <ItemGroup>
     <Compile Include="Creators\NormalDistributedRealVectorCreator.cs" />
     <Compile Include="Interfaces\IRealVectorMultiNeighborhoodShakingOperator.cs" />
+    <Compile Include="ParticleOperators\RealVectorNeighborhoodParticleUpdater.cs" />
     <Compile Include="ParticleOperators\RealVectorParticleCreator.cs" />
+    <Compile Include="ParticleOperators\RealVectorParticleUpdater.cs" />
+    <Compile Include="ParticleOperators\RealVectorSwarmUpdater.cs" />
+    <Compile Include="ParticleOperators\RealVectorTotallyConnectedParticleUpdater.cs" />
+    <Compile Include="ParticleOperators\SPSO2007VelocityInitializer.cs" />
+    <Compile Include="ParticleOperators\SPSOVelocityInitializer.cs" />
+    <Compile Include="ParticleOperators\SPSO2011ParticleUpdater.cs" />
+    <Compile Include="ParticleOperators\SPSO2007ParticleUpdater.cs" />
+    <Compile Include="ParticleOperators\SPSOParticleCreator.cs" />
     <Compile Include="Crossovers\BlendAlphaBetaCrossover.cs" />
     <Compile Include="Interfaces\IRealVectorManipulator.cs" />
     <Compile Include="Interfaces\IRealVectorOperator.cs" />
@@ -127,10 +136,9 @@
     <Compile Include="Interfaces\IRealVectorParticleUpdater.cs" />
     <Compile Include="Interfaces\IRealVectorSwarmUpdater.cs" />
     <Compile Include="Manipulators\SelfAdaptiveNormalAllPositionsManipulator.cs" />
-    <Compile Include="ParticleOperators\RealVectorNeighborhoodParticleUpdater.cs" />
-    <Compile Include="ParticleOperators\RealVectorParticleUpdater.cs" />
-    <Compile Include="ParticleOperators\RealVectorSwarmUpdater.cs" />
-    <Compile Include="ParticleOperators\RealVectorTotallyConnectedParticleUpdater.cs" />
+    <Compile Include="ParticleOperators\SPSOParticleUpdater.cs" />
+    <Compile Include="ParticleOperators\SPSO2011VelocityInitializer.cs" />
+    <Compile Include="ParticleOperators\SPSOSwarmUpdater.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="RealVectorCreator.cs" />
     <Compile Include="RealVectorCrossover.cs" />

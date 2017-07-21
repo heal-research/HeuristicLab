@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2016 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2017 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,33 +22,33 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Data;
 
-namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
-  [Item("Ring Topology Initializer", "Each particle is informed by its preceeding and its succeeding particle wrapping around at the beginning and the end of the swarm (in addition each particle also informs itself).")]
+namespace HeuristicLab.Encodings.RealVectorEncoding {
+  [Item("Velocity Initializer (SPSO 2011)", "Initializes the velocity vector.")]
   [StorableClass]
-  public sealed class RingTopologyInitializer : TopologyInitializer {
+  public class SPSO2011VelocityInitializer : SPSOVelocityInitializer {
+    
     #region Construction & Cloning
-
     [StorableConstructor]
-    private RingTopologyInitializer(bool deserializing) : base(deserializing) { }
-    private RingTopologyInitializer(RingTopologyInitializer original, Cloner cloner) : base(original, cloner) { }
-    public RingTopologyInitializer() : base() { }
-
+    protected SPSO2011VelocityInitializer(bool deserializing) : base(deserializing) { }
+    protected SPSO2011VelocityInitializer(SPSO2011VelocityInitializer original, Cloner cloner) : base(original, cloner) { }
+    public SPSO2011VelocityInitializer() : base() { }
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new RingTopologyInitializer(this, cloner);
+      return new SPSO2011VelocityInitializer(this, cloner);
     }
-
     #endregion
 
     public override IOperation Apply() {
-      var swarmSize = SwarmSizeParameter.ActualValue.Value;
-
-      ItemArray<IntArray> neighbors = new ItemArray<IntArray>(swarmSize);
-      for (int i = 0; i < swarmSize; i++) {
-        neighbors[i] = new IntArray(new[] { (swarmSize + i - 1) % swarmSize, i, (i + 1) % swarmSize });
+      var random = RandomParameter.ActualValue;
+      var bounds = BoundsParameter.ActualValue;
+      var position = RealVectorParameter.ActualValue;
+      var velocity = new RealVector(position.Length);
+      for (var i = 0; i < velocity.Length; i++) {
+        var lower = (bounds[i % bounds.Rows, 0] - position[i]);
+        var upper = (bounds[i % bounds.Rows, 1] - position[i]);
+        velocity[i] = lower + random.NextDouble() * (upper - lower); // SPSO 2011
       }
-      NeighborsParameter.ActualValue = neighbors;
+      VelocityParameter.ActualValue = velocity;
       return base.Apply();
     }
   }
