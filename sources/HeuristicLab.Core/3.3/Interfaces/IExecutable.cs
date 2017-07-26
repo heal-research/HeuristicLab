@@ -20,6 +20,8 @@
 #endregion
 
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 using HeuristicLab.Common;
 
 namespace HeuristicLab.Core {
@@ -29,6 +31,9 @@ namespace HeuristicLab.Core {
 
     void Prepare();
     void Start();
+    void Start(CancellationToken cancellationToken);
+    Task StartAsync();
+    Task StartAsync(CancellationToken cancellationToken);
     void Pause();
     void Stop();
 

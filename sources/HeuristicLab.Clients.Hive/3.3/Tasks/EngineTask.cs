@@ -80,7 +80,7 @@ namespace HeuristicLab.Clients.Hive {
 
     public override void Start() {
       Item.Prepare(initialOperation);
-      Item.Start();
+      Item.StartAsync();
     }
 
     public override void Pause() {

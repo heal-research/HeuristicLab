@@ -20,6 +20,8 @@
 #endregion
 
 using System;
+using System.Linq;
+using System.Threading;
 using HeuristicLab.Common;
 using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;

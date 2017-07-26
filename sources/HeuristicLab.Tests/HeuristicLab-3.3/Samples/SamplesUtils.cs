@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using System.Threading;
 using HeuristicLab.Algorithms.ALPS;
 using HeuristicLab.Algorithms.EvolutionStrategy;
 using HeuristicLab.Algorithms.GeneticAlgorithm;
@@ -17,15 +16,11 @@ namespace HeuristicLab.Tests {
     public const string SampleFileExtension = ".hl";
 
     public static void RunAlgorithm(IAlgorithm a) {
-      var trigger = new EventWaitHandle(false, EventResetMode.ManualReset);
       Exception ex = null;
-      a.Stopped += (src, e) => { trigger.Set(); };
-      a.ExceptionOccurred += (src, e) => { ex = e.Value; trigger.Set(); };
+      a.ExceptionOccurred += (sender, e) => { ex = e.Value; };
       a.Prepare();
       a.Start();
-      trigger.WaitOne();
-
-      Assert.AreEqual(ex, null);
+      Assert.IsNull(ex);
     }
 
     public static double GetDoubleResult(IAlgorithm a, string resultName) {

@@ -2,9 +2,7 @@
 using System.Collections;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using HeuristicLab.Data;
-using HeuristicLab.Optimization;
 using HeuristicLab.Problems.DataAnalysis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -241,7 +239,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       gbt.CreateSolution = false;
       #endregion
 
-      RunAlgorithm(gbt);
+      gbt.Start();
 
       Console.WriteLine(gbt.ExecutionTime);
       Assert.AreEqual(267.68704241153921, ((DoubleValue)gbt.Results["Loss (train)"].Value).Value, 1E-6);
@@ -269,7 +267,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       gbt.CreateSolution = false;
       #endregion
 
-      RunAlgorithm(gbt);
+      gbt.Start();
 
       Console.WriteLine(gbt.ExecutionTime);
       Assert.AreEqual(10.551385044666661, ((DoubleValue)gbt.Results["Loss (train)"].Value).Value, 1E-6);
@@ -297,24 +295,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       gbt.CreateSolution = false;
       #endregion
 
-      RunAlgorithm(gbt);
+      gbt.Start();
 
       Console.WriteLine(gbt.ExecutionTime);
       Assert.AreEqual(0.061954221604374943, ((DoubleValue)gbt.Results["Loss (train)"].Value).Value, 1E-6);
       Assert.AreEqual(0.06316303473499961, ((DoubleValue)gbt.Results["Loss (test)"].Value).Value, 1E-6);
-    }
-
-    // same as in SamplesUtil
-    private void RunAlgorithm(IAlgorithm a) {
-      var trigger = new EventWaitHandle(false, EventResetMode.ManualReset);
-      Exception ex = null;
-      a.Stopped += (src, e) => { trigger.Set(); };
-      a.ExceptionOccurred += (src, e) => { ex = e.Value; trigger.Set(); };
-      a.Prepare();
-      a.Start();
-      trigger.WaitOne();
-
-      Assert.AreEqual(ex, null);
     }
 
     #region helper

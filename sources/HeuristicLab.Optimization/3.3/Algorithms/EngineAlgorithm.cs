@@ -167,9 +167,9 @@ namespace HeuristicLab.Optimization {
         engine.Prepare(context);
       }
     }
-    public override void Start() {
-      base.Start();
-      if (engine != null) engine.Start();
+    public override void Start(System.Threading.CancellationToken cancellationToken) {
+      base.Start(cancellationToken);
+      if (engine != null) engine.Start(cancellationToken);
     }
     public override void Pause() {
       base.Pause();
