@@ -15,7 +15,7 @@ if [[ "$unamestr" == 'Darwin' ]]; then
    awk '/ICSharpCode.AvalonEdit-5.0.1|HeuristicLab.AvalonEdit-5.0.1|HeuristicLab.SharpDX-2.6.3/ {while (/ICSharpCode.AvalonEdit-5.0.1|HeuristicLab.AvalonEdit-5.0.1|HeuristicLab.SharpDX-2.6.3/ && getline>0) ; next} 1' HeuristicLab.ExtLibs.sln > tmp
    mv tmp HeuristicLab.ExtLibs.sln
 
-   awk '/HeuristicLab.Problems.ExternalEvaluation-3.4|HeuristicLab.Problems.ExternalEvaluation.GP-3.5|HeuristicLab.Problems.ExternalEvaluation.Views-3.4|HeuristicLab.Problems.ExternalEvaluation.Matlab-3.3/ {while (/HeuristicLab.Problems.ExternalEvaluation-3.4|HeuristicLab.Problems.ExternalEvaluation.GP-3.5|HeuristicLab.Problems.ExternalEvaluation.Views-3.4|HeuristicLab.Problems.ExternalEvaluation.Matlab-3.3/ && getline>0) ; next} 1' "HeuristicLab 3.3.sln" > tmp
+   awk '/HeuristicLab.Problems.BinPacking.Views-3.3|HeuristicLab.Problems.ExternalEvaluation-3.4|HeuristicLab.Problems.ExternalEvaluation.GP-3.5|HeuristicLab.Problems.ExternalEvaluation.Views-3.4|HeuristicLab.Problems.ExternalEvaluation.Matlab-3.3/ {while (/HeuristicLab.Problems.BinPacking.Views-3.3|HeuristicLab.Problems.ExternalEvaluation-3.4|HeuristicLab.Problems.ExternalEvaluation.GP-3.5|HeuristicLab.Problems.ExternalEvaluation.Views-3.4|HeuristicLab.Problems.ExternalEvaluation.Matlab-3.3/ && getline>0) ; next} 1' "HeuristicLab 3.3.sln" > tmp
    mv tmp "HeuristicLab 3.3.sln"
 
    #remove code from HeuristicLab.CodeEditor that depends on WPF and therefore does not work with Mono
@@ -25,7 +25,7 @@ if [[ "$unamestr" == 'Darwin' ]]; then
 elif [[ "$unamestr" == 'Linux' ]]; then
    sed -e '/ICSharpCode.AvalonEdit-5.0.1/,+1d' -e '/HeuristicLab.SharpDX-2.6.3/,+1d' HeuristicLab.ExtLibs.sln > tmp
    mv tmp HeuristicLab.ExtLibs.sln
-   sed -e '/HeuristicLab.Problems.ExternalEvaluation-3.4/,+1d' -e '/HeuristicLab.Problems.ExternalEvaluation.GP-3.5/,+1d' -e '/HeuristicLab.Problems.ExternalEvaluation.Views-3.4/,+1d' -e '/HeuristicLab.Problems.ExternalEvaluation.Matlab-3.3/,+1d' "HeuristicLab 3.3.sln" > tmp
+   sed -e '/HeuristicLab.Problems.BinPacking.Views-3.3/,+1d' -e '/HeuristicLab.Problems.ExternalEvaluation-3.4/,+1d' -e '/HeuristicLab.Problems.ExternalEvaluation.GP-3.5/,+1d' -e '/HeuristicLab.Problems.ExternalEvaluation.Views-3.4/,+1d' -e '/HeuristicLab.Problems.ExternalEvaluation.Matlab-3.3/,+1d' "HeuristicLab 3.3.sln" > tmp
    mv tmp "HeuristicLab 3.3.sln"
 
    #remove code from HeuristicLab.CodeEditor that depends on WPF and therefore does not work with Mono
