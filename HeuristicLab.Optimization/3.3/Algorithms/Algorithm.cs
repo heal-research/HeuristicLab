@@ -23,6 +23,8 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -202,8 +204,15 @@ namespace HeuristicLab.Optimization {
       Prepare();
     }
     public virtual void Start() {
+      Start(CancellationToken.None);
+    }
+    public virtual void Start(CancellationToken cancellationToken) {
       if ((ExecutionState != ExecutionState.Prepared) && (ExecutionState != ExecutionState.Paused))
         throw new InvalidOperationException(string.Format("Start not allowed in execution state \"{0}\".", ExecutionState));
+    }
+    public virtual async Task StartAsync() { await StartAsync(CancellationToken.None); }
+    public virtual async Task StartAsync(CancellationToken cancellationToken) {
+      await AsyncHelper.DoAsync(Start, cancellationToken);
     }
     public virtual void Pause() {
       if (ExecutionState != ExecutionState.Started)

@@ -445,7 +445,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInitializer.cs" />
-    <Compile Include="HeuristicLab-3.3\AlgorithmExtensions.cs" />
     <Compile Include="HeuristicLab-3.3\CloningConstructorTest.cs" />
     <Compile Include="HeuristicLab-3.3\CollectObjectGraphTest.cs" />
     <Compile Include="HeuristicLab-3.3\ContentViewTests.cs" />

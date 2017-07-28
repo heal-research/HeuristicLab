@@ -23,7 +23,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using HeuristicLab.Algorithms.GeneticAlgorithm;
 using HeuristicLab.Common;
@@ -124,8 +123,7 @@ namespace HeuristicLab.Tests {
         sw.Start();
         algs.Add(ga);
 
-        var cancellationTokenSource = new CancellationTokenSource();
-        ga.StartSync(cancellationTokenSource.Token);
+        ga.Start();
         sw.Stop();
         TestContext.WriteLine("{0}: {1} ", i, sw.Elapsed);
         sw.Reset();
@@ -156,7 +154,7 @@ namespace HeuristicLab.Tests {
           Console.WriteLine("{0}; Objects before execution: {1}", ga.Name, ga.GetObjectGraphObjects().Count());
           var sw = new Stopwatch();
           sw.Start();
-          ga.StartSync(new CancellationToken());
+          ga.Start();
           sw.Stop();
           Console.WriteLine("{0}; Objects after execution: {1}", ga.Name, ga.GetObjectGraphObjects().Count());
           Console.WriteLine("{0}; ExecutionTime: {1} ", ga.Name, sw.Elapsed);

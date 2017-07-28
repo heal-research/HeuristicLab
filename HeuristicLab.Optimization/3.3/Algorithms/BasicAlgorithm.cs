@@ -20,8 +20,8 @@
 #endregion
 
 using System;
+using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -70,31 +70,25 @@ namespace HeuristicLab.Optimization {
       OnPrepared();
     }
 
-    public override void Start() {
-      base.Start();
-      CancellationTokenSource = new CancellationTokenSource();
+    public override void Start(CancellationToken cancellationToken) {
+      base.Start(cancellationToken);
+      CancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
       pausePending = false;
       OnStarted();
 
-      Task task = Task.Factory.StartNew(Run, CancellationTokenSource.Token, CancellationTokenSource.Token);
-      task.ContinueWith(t => {
-        try {
-          t.Wait();
-        }
-        catch (AggregateException ex) {
-          try {
-            ex.Flatten().Handle(x => x is OperationCanceledException);
-          }
-          catch (AggregateException remaining) {
-            if (remaining.InnerExceptions.Count == 1) OnExceptionOccurred(remaining.InnerExceptions[0]);
-            else OnExceptionOccurred(remaining);
-          }
-        }
-        CancellationTokenSource.Dispose();
-        CancellationTokenSource = null;
-        if (pausePending) OnPaused();
-        else OnStopped();
-      });
+      try {
+        Run((object)cancellationTokenSource.Token);
+      } catch (OperationCanceledException) {
+      } catch (AggregateException ae) {
+        OnExceptionOccurred(ae.InnerExceptions.SingleOrDefault() ?? ae);
+      } catch (Exception e) {
+        OnExceptionOccurred(e);
+      }
+
+      CancellationTokenSource.Dispose();
+      CancellationTokenSource = null;
+      if (pausePending) OnPaused();
+      else OnStopped();
     }
 
     public override void Pause() {

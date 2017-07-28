@@ -19,6 +19,8 @@
  */
 #endregion
 
+using System.Threading;
+using System.Threading.Tasks;
 using HeuristicLab.Clients.Access;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
@@ -66,8 +68,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
 
             try {
               algorithm.Problem = problem;
-            }
-            catch (ArgumentException) {
+            } catch (ArgumentException) {
               algorithm.Problem = null;
             }
             algorithm.Prepare(true);
@@ -249,11 +250,18 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       Algorithm.Prepare(clearRuns);
     }
     public void Start() {
+      Start(CancellationToken.None);
+    }
+    public void Start(CancellationToken cancellationToken) {
       CheckUserPermissions();
       if (!ClientInformation.Instance.ClientExists && storeRunsAutomatically) {
         throw new MissingClientRegistrationException();
       }
-      Algorithm.Start();
+      Algorithm.Start(cancellationToken);
+    }
+    public async Task StartAsync() { await StartAsync(CancellationToken.None); }
+    public async Task StartAsync(CancellationToken cancellationToken) {
+      await AsyncHelper.DoAsync(Start, cancellationToken);
     }
     public void Pause() {
       Algorithm.Pause();

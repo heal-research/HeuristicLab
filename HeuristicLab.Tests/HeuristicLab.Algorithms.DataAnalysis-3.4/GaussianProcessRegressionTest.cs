@@ -21,7 +21,6 @@
 
 using System;
 using System.Linq;
-using System.Threading;
 using HeuristicLab.Common;
 using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Problems.Instances.DataAnalysis;
@@ -38,7 +37,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Tests {
       set { testContextInstance = value; }
     }
 
-    private EventWaitHandle trigger = new AutoResetEvent(false);
     private Exception ex;
 
     [TestMethod]
@@ -65,11 +63,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Tests {
       alg.Problem.ProblemDataParameter.Value = problemData;
 
       alg.ExceptionOccurred += new EventHandler<EventArgs<Exception>>(cv_ExceptionOccurred);
-      alg.Stopped += new EventHandler(cv_Stopped);
 
       alg.Prepare();
       alg.Start();
-      trigger.WaitOne();
       if (ex != null) throw ex;
 
       TestContext.WriteLine("Runtime: {0}", alg.ExecutionTime.ToString());
@@ -77,10 +73,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Tests {
 
     private void cv_ExceptionOccurred(object sender, EventArgs<Exception> e) {
       ex = e.Value;
-    }
-
-    private void cv_Stopped(object sender, EventArgs e) {
-      trigger.Set();
     }
   }
 }

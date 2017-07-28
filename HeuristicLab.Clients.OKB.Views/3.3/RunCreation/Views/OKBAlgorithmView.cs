@@ -324,7 +324,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       if (Content != null) Content.StoreAlgorithmInEachRun = storeAlgorithmInEachRunCheckBox.Checked;
     }
     private void startButton_Click(object sender, EventArgs e) {
-      Content.Start();
+      Content.StartAsync();
     }
     private void pauseButton_Click(object sender, EventArgs e) {
       Content.Pause();

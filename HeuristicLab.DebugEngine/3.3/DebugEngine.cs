@@ -22,7 +22,6 @@
 using System;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -160,8 +159,7 @@ namespace HeuristicLab.DebugEngine {
         ProcessNextOperation(true, cancellationTokenSource.Token);
         while (skipStackOperations && !(CurrentOperation is IAtomicOperation) && CanContinue)
           ProcessNextOperation(true, cancellationTokenSource.Token);
-      }
-      catch (Exception ex) {
+      } catch (Exception ex) {
         OnExceptionOccurred(ex);
       }
       timer.Stop();
@@ -173,33 +171,26 @@ namespace HeuristicLab.DebugEngine {
       else OnPaused();
     }
 
-    public override void Start() {
-      base.Start();
-      cancellationTokenSource = new CancellationTokenSource();
+    public override void Start(CancellationToken cancellationToken) {
+      base.Start(cancellationToken);
+      cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
       stopPending = false;
-      Task task = Task.Factory.StartNew(Run, cancellationTokenSource.Token, cancellationTokenSource.Token);
-      task.ContinueWith(t => {
-        try {
-          t.Wait();
-        }
-        catch (AggregateException ex) {
-          try {
-            ex.Flatten().Handle(x => x is OperationCanceledException);
-          }
-          catch (AggregateException remaining) {
-            if (remaining.InnerExceptions.Count == 1) OnExceptionOccurred(remaining.InnerExceptions[0]);
-            else OnExceptionOccurred(remaining);
-          }
-        }
-        cancellationTokenSource.Dispose();
-        cancellationTokenSource = null;
 
-        if (stopPending) ExecutionStack.Clear();
-        if (stopPending || !CanContinue) OnStopped();
-        else OnPaused();
-      });
+      try {
+        Run(cancellationTokenSource.Token);
+      } catch (OperationCanceledException) {
+      } catch (AggregateException ae) {
+        OnExceptionOccurred(ae.InnerExceptions.SingleOrDefault() ?? ae);
+      } catch (Exception e) {
+        OnExceptionOccurred(e);
+      }
+
+      cancellationTokenSource.Dispose();
+      cancellationTokenSource = null;
+      if (stopPending) ExecutionStack.Clear();
+      if (stopPending || !CanContinue) OnStopped();
+      else OnPaused();
     }
-
     protected override void OnStarted() {
       Log.LogMessage("Engine started");
       base.OnStarted();
@@ -249,8 +240,7 @@ namespace HeuristicLab.DebugEngine {
         while (!cancellationToken.IsCancellationRequested && CanContinue && !IsAtBreakpoint)
           ProcessNextOperation(false, cancellationToken);
         cancellationToken.ThrowIfCancellationRequested();
-      }
-      finally {
+      } finally {
         timer.Stop();
         ExecutionTime += DateTime.UtcNow - lastUpdateTime;
 
@@ -316,8 +306,7 @@ namespace HeuristicLab.DebugEngine {
             ExecutionStack.Add(successor);
           }
           CurrentOperation = null;
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
           if (ex is OperationCanceledException) throw ex;
           else throw new OperatorExecutionException(operation.Operator, ex);
         }
