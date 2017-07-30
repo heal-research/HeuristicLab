@@ -376,7 +376,7 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
 
       VariableCreator variableCreator = new VariableCreator();
       variableCreator.CollectedValues.Add(new ValueParameter<IntValue>(loop.IterationsParameter.ActualName, new IntValue(0)));
-        
+
       variableCreator.Successor = loop;
 
       processor.Operators.Add(variableCreator);
