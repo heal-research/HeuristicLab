@@ -26,38 +26,46 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
 using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.Binary;
 
 namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
   // This code is based off the publication
   // B. W. Goldman and W. F. Punch, "Parameter-less Population Pyramid," GECCO, pp. 785–792, 2014
   // and the original source code in C++11 available from: https://github.com/brianwgoldman/Parameter-less_Population_Pyramid
+  [StorableClass]
   internal sealed class EvaluationTracker : BinaryProblem {
+    [Storable]
     private readonly BinaryProblem problem;
-
+    [Storable]
     private int maxEvaluations;
 
     #region Properties
+    [Storable]
     public double BestQuality {
       get;
       private set;
     }
-
+    [Storable]
     public int Evaluations {
       get;
       private set;
     }
-
+    [Storable]
     public int BestFoundOnEvaluation {
       get;
       private set;
     }
-
+    [Storable]
     public BinaryVector BestSolution {
       get;
       private set;
     }
     #endregion
+
+
+    [StorableConstructor]
+    private EvaluationTracker(bool deserializing) : base(deserializing) { }
 
     private EvaluationTracker(EvaluationTracker original, Cloner cloner)
       : base(original, cloner) {
@@ -66,11 +74,12 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
       BestQuality = original.BestQuality;
       Evaluations = original.Evaluations;
       BestFoundOnEvaluation = original.BestFoundOnEvaluation;
-      BestSolution = cloner.Clone(BestSolution);
+      BestSolution = cloner.Clone(original.BestSolution);
     }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new EvaluationTracker(this, cloner);
     }
+
     public EvaluationTracker(BinaryProblem problem, int maxEvaluations) {
       this.problem = problem;
       this.maxEvaluations = maxEvaluations;
