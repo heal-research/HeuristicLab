@@ -1,0 +1,259 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{F8A55094-3CD5-4034-B0CA-5BD7FFB016D4}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>HeuristicLab.Problems.BinPacking</RootNamespace>
+    <AssemblyName>HeuristicLab.Problems.BinPacking-3.3</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\..\bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>..\..\bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\..\bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>..\..\bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>HeuristicLab.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Windows.Forms" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="2D\BinPacking2D.cs" />
+    <Compile Include="2D\Evaluators\BinUtilizationEvaluator.cs" />
+    <Compile Include="2D\Evaluators\PackingRatioEvaluator.cs" />
+    <Compile Include="2D\Instances\BPPData.cs" />
+    <Compile Include="2D\Instances\RandomDataDescriptor.cs" />
+    <Compile Include="2D\Instances\RandomInstanceProvider.cs" />
+    <Compile Include="2D\IntegerVectorEncoding\BottomLeftIntegerVectorDecoder.cs" />
+    <Compile Include="2D\IntegerVectorEncoding\ExtremePointIntegerVectorDecoder.cs" />
+    <Compile Include="2D\IntegerVectorEncoding\IntegerVectorDecoderBase.cs" />
+    <Compile Include="2D\IntegerVectorEncoding\IntegerVectorProblem.cs" />
+    <Compile Include="2D\Interfaces\IDecoder.cs" />
+    <Compile Include="2D\Interfaces\IEvaluator.cs" />
+    <Compile Include="2D\Interfaces\IOperator.cs" />
+    <Compile Include="2D\MoveEvaluatorBase.cs" />
+    <Compile Include="2D\PackingItem.cs" />
+    <Compile Include="2D\PackingPosition.cs" />
+    <Compile Include="2D\PackingShape.cs" />
+    <Compile Include="2D\PermutationEncoding\BottomLeftPermutationDecoder.cs" />
+    <Compile Include="2D\PermutationEncoding\ExtremePointPermutationDecoder.cs" />
+    <Compile Include="2D\PermutationEncoding\PermutationProblem.cs" />
+    <Compile Include="2D\PermutationEncoding\Swap2MoveEvaluator.cs" />
+    <Compile Include="2D\PermutationEncoding\TranslocationMoveEvaluator.cs" />
+    <Compile Include="2D\ProblemBase.cs" />
+    <Compile Include="2D\Solution.cs" />
+    <Compile Include="3D\BinPacking3D.cs" />
+    <Compile Include="3D\Evaluators\BinUtilizationEvaluator.cs" />
+    <Compile Include="3D\Evaluators\PackingRatioEvaluator.cs" />
+    <Compile Include="Algorithms\3D\ExtremePointAlgorithm.cs" />
+    <Compile Include="3D\Instances\ThreeDInstanceDescriptor.cs" />
+    <Compile Include="3D\Instances\BPPData.cs" />
+    <Compile Include="3D\Instances\RandomDataDescriptor.cs" />
+    <Compile Include="3D\Instances\RealWorldContainerPackingInstanceProvider.cs" />
+    <Compile Include="3D\Instances\RandomInstanceProvider.cs" />
+    <Compile Include="3D\Instances\ThreeDInstanceParser.cs" />
+    <Compile Include="3D\IntegerVectorEncoding\BottomLeftIntegerVectorDecoder.cs" />
+    <Compile Include="3D\IntegerVectorEncoding\ExtremePointIntegerVectorDecoder.cs" />
+    <Compile Include="3D\IntegerVectorEncoding\IntegerVectorDecoderBase.cs" />
+    <Compile Include="3D\IntegerVectorEncoding\IntegerVectorProblem.cs" />
+    <Compile Include="3D\Interfaces\IDecoder.cs" />
+    <Compile Include="3D\Interfaces\IEvaluator.cs" />
+    <Compile Include="3D\Interfaces\IOperator.cs" />
+    <Compile Include="3D\MoveEvaluatorBase.cs" />
+    <Compile Include="3D\PackingItem.cs" />
+    <Compile Include="3D\PackingPosition.cs" />
+    <Compile Include="3D\PackingShape.cs" />
+    <Compile Include="3D\PermutationEncoding\BottomLeftPermutationDecoder.cs" />
+    <Compile Include="3D\PermutationEncoding\ResidualSpaceBestFitExtremePointPermutationDecoder.cs" />
+    <Compile Include="3D\PermutationEncoding\FreeVolumeBestFitExtremePointPermutationDecoder.cs" />
+    <Compile Include="3D\PermutationEncoding\ExtremePointPermutationDecoderBase.cs" />
+    <Compile Include="3D\PermutationEncoding\ExtremePointPermutationDecoder.cs" />
+    <Compile Include="3D\PermutationEncoding\PermutationProblem.cs" />
+    <Compile Include="3D\PermutationEncoding\Swap2MoveEvaluator.cs" />
+    <Compile Include="3D\PermutationEncoding\TranslocationMoveEvaluator.cs" />
+    <Compile Include="3D\ProblemBase.cs" />
+    <Compile Include="3D\Solution.cs" />
+    <Compile Include="BinPacking.cs" />
+    <Compile Include="Interfaces\IPackingItem.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Interfaces\IPackingPosition.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Interfaces\IPackingShape.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PackingPlan.cs" />
+    <Compile Include="PackingPosition.cs" />
+    <Compile Include="PackingShape.cs" />
+    <Compile Include="Plugin.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="3D\Instances\ContainerPackingInstances.zip" />
+    <None Include="HeuristicLab.snk" />
+    <None Include="Properties\AssemblyInfo.cs.frame" />
+    <None Include="Plugin.cs.frame" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\..\HeuristicLab.Analysis\3.3\HeuristicLab.Analysis-3.3.csproj">
+      <Project>{887425B4-4348-49ED-A457-B7D2C26DDBF9}</Project>
+      <Name>HeuristicLab.Analysis-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">
+      <Project>{958B43BC-CC5C-4FA2-8628-2B3B01D890B6}</Project>
+      <Name>HeuristicLab.Collections-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Common\3.3\HeuristicLab.Common-3.3.csproj">
+      <Project>{a9ad58b9-3ef9-4cc1-97e5-8d909039ff5c}</Project>
+      <Name>HeuristicLab.Common-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Core\3.3\HeuristicLab.Core-3.3.csproj">
+      <Project>{c36bd924-a541-4a00-afa8-41701378ddc5}</Project>
+      <Name>HeuristicLab.Core-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Data\3.3\HeuristicLab.Data-3.3.csproj">
+      <Project>{bbab9df5-5ef3-4ba8-ade9-b36e82114937}</Project>
+      <Name>HeuristicLab.Data-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Encodings.IntegerVectorEncoding\3.3\HeuristicLab.Encodings.IntegerVectorEncoding-3.3.csproj">
+      <Project>{ddfb14dd-2a85-493c-a52d-e69729bbaeb0}</Project>
+      <Name>HeuristicLab.Encodings.IntegerVectorEncoding-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Encodings.PermutationEncoding\3.3\HeuristicLab.Encodings.PermutationEncoding-3.3.csproj">
+      <Project>{dbecb8b0-b166-4133-baf1-ed67c3fd7fca}</Project>
+      <Name>HeuristicLab.Encodings.PermutationEncoding-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Operators\3.3\HeuristicLab.Operators-3.3.csproj">
+      <Project>{23DA7FF4-D5B8-41B6-AA96-F0561D24F3EE}</Project>
+      <Name>HeuristicLab.Operators-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Optimization.Operators\3.3\HeuristicLab.Optimization.Operators-3.3.csproj">
+      <Project>{25087811-F74C-4128-BC86-8324271DA13E}</Project>
+      <Name>HeuristicLab.Optimization.Operators-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Optimization\3.3\HeuristicLab.Optimization-3.3.csproj">
+      <Project>{14ab8d24-25bc-400c-a846-4627aa945192}</Project>
+      <Name>HeuristicLab.Optimization-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Parameters\3.3\HeuristicLab.Parameters-3.3.csproj">
+      <Project>{56F9106A-079F-4C61-92F6-86A84C2D84B7}</Project>
+      <Name>HeuristicLab.Parameters-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Persistence\3.3\HeuristicLab.Persistence-3.3.csproj">
+      <Project>{102bc7d3-0ef9-439c-8f6d-96ff0fdb8e1b}</Project>
+      <Name>HeuristicLab.Persistence-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\3.3\HeuristicLab.PluginInfrastructure-3.3.csproj">
+      <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
+      <Name>HeuristicLab.PluginInfrastructure-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Problems.Instances\3.3\HeuristicLab.Problems.Instances-3.3.csproj">
+      <Project>{3540E29E-4793-49E7-8EE2-FEA7F61C3994}</Project>
+      <Name>HeuristicLab.Problems.Instances-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Random\3.3\HeuristicLab.Random-3.3.csproj">
+      <Project>{F4539FB6-4708-40C9-BE64-0A1390AEA197}</Project>
+      <Name>HeuristicLab.Random-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <PropertyGroup>
+    <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
+set ProjectDir=$(ProjectDir)
+set SolutionDir=$(SolutionDir)
+set Outdir=$(Outdir)
+
+call PreBuildEvent.cmd
+</PreBuildEvent>
+    <PreBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">
+export ProjectDir=$(ProjectDir)
+export SolutionDir=$(SolutionDir)
+
+$SolutionDir/PreBuildEvent.sh
+</PreBuildEvent>
+  </PropertyGroup>
+</Project>
