@@ -56,6 +56,7 @@ namespace HeuristicLab.Optimization {
     protected BasicAlgorithm(BasicAlgorithm original, Cloner cloner)
       : base(original, cloner) {
       results = cloner.Clone(original.Results);
+      initialized = original.initialized;
     }
     protected BasicAlgorithm()
       : base() {
@@ -78,10 +79,13 @@ namespace HeuristicLab.Optimization {
 
       try {
         Run((object)cancellationTokenSource.Token);
-      } catch (OperationCanceledException) {
-      } catch (AggregateException ae) {
+      }
+      catch (OperationCanceledException) {
+      }
+      catch (AggregateException ae) {
         OnExceptionOccurred(ae.InnerExceptions.SingleOrDefault() ?? ae);
-      } catch (Exception e) {
+      }
+      catch (Exception e) {
         OnExceptionOccurred(e);
       }
 
