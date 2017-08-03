@@ -99,8 +99,7 @@ namespace HeuristicLab.Problems.BinPacking {
       Items[itemID] = item;
       Positions[itemID] = position;
       ExtremePoints.Remove(position);
-      foreach (int id in Items.Select(x => x.Key))
-        GenerateNewExtremePointsForNewItem(Items[id], Positions[id]);
+      GenerateNewExtremePointsForNewItem(item, position);
       
       AddNewItemToOccupationLayers(itemID, item, position);
     }

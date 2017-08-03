@@ -72,90 +72,119 @@ namespace HeuristicLab.Problems.BinPacking3D {
       int newWidth = position.Rotated ? newItem.Depth : newItem.Width;
       int newDepth = position.Rotated ? newItem.Width : newItem.Depth;
 
+      var itemPlacement = Items.Select(x => new { Item = x.Value, Position = Positions[x.Key] }).ToList();
       //Find ExtremePoints beginning from sourcepointX
-      var sourcePointX = new PackingPosition(0, position.X + newWidth, position.Y, position.Z);
-      if (sourcePointX.X < BinShape.Width && sourcePointX.Y < BinShape.Height && sourcePointX.Z < BinShape.Depth) {
+      var sourcePoint = new Vector3D() { X = position.X + newWidth, Y = position.Y, Z = position.Z };
+      if (sourcePoint.X < BinShape.Width && sourcePoint.Y < BinShape.Height && sourcePoint.Z < BinShape.Depth) {
         //Traversing down the y-axis  
-        PackingPosition current = new PackingPosition(0, sourcePointX.X, sourcePointX.Y, sourcePointX.Z);
-        while (current.Y > 0 && !IsPointOccupied(PackingPosition.MoveDown(current))) {
-          current = PackingPosition.MoveDown(current);
+        var below = itemPlacement.Where(x => IsBelow(x.Position, x.Item, sourcePoint))
+                                 .MaxItems(x => x.Position.Y + x.Item.Height).FirstOrDefault();
+        var projY = false;
+        if (below != null) {
+          var belowPoint = new PackingPosition(position.AssignedBin, sourcePoint.X, below.Position.Y + below.Item.Height, sourcePoint.Z);
+          projY = AddExtremePoint(belowPoint);
         }
-        AddExtremePoint((PackingPosition)current.Clone());
-        while (current.X > 0 && !IsPointOccupied(PackingPosition.MoveLeft(current))) {
-          current = PackingPosition.MoveLeft(current);
-        }
-        AddExtremePoint(current);
-
         //Traversing down the z-axis
-        current = new PackingPosition(0, sourcePointX.X, sourcePointX.Y, sourcePointX.Z);
-        while (current.Z > 0 && !IsPointOccupied(PackingPosition.MoveBack(current))) {
-          current = PackingPosition.MoveBack(current);
+        var back = itemPlacement.Where(x => IsBack(x.Position, x.Item, sourcePoint))
+                                .MaxItems(x => x.Position.Z + x.Item.Depth).FirstOrDefault();
+        var projZ = false;
+        if (back != null) {
+          var backPoint = new PackingPosition(position.AssignedBin, sourcePoint.X, sourcePoint.Y, back.Position.Z + back.Item.Depth);
+          projZ = AddExtremePoint(backPoint);
         }
-        AddExtremePoint((PackingPosition)current.Clone());
-        while (current.Y > 0 && !IsPointOccupied(PackingPosition.MoveDown(current))) {
-          current = PackingPosition.MoveDown(current);
-        }
-        AddExtremePoint(current);
+
+        // only add the source point if both projections added new points
+        // or if neither of the projections added a point
+        // if a projection tried to add a point that already exists, then this
+        // extreme point would be covered by the existing extreme point
+        if ((below == null && back == null) || (below == null || projY) && (back == null || projZ))
+          AddExtremePoint(new PackingPosition(position.AssignedBin, sourcePoint.X, sourcePoint.Y, sourcePoint.Z));
       }
 
       //Find ExtremePoints beginning from sourcepointY
-      var sourcePointY = new PackingPosition(0, position.X, position.Y + newItem.Height, position.Z);
-      if (sourcePointY.X < BinShape.Width && sourcePointY.Y < BinShape.Height && sourcePointY.Z < BinShape.Depth) {
-        //Traversing down the x-axis          
-        PackingPosition current = new PackingPosition(0, sourcePointY.X, sourcePointY.Y, sourcePointY.Z);
-        while (current.X > 0 && !IsPointOccupied(PackingPosition.MoveLeft(current))) {
-          current = PackingPosition.MoveLeft(current);
+      sourcePoint = new Vector3D(position.X, position.Y + newItem.Height, position.Z);
+      if (sourcePoint.X < BinShape.Width && sourcePoint.Y < BinShape.Height && sourcePoint.Z < BinShape.Depth) {
+        //Traversing down the x-axis   
+        var left = itemPlacement.Where(x => IsLeft(x.Position, x.Item, sourcePoint))
+                                .MaxItems(x => x.Position.X + x.Item.Width).FirstOrDefault();
+        var projX = false;
+        if (left != null) {
+          var leftPoint = new PackingPosition(position.AssignedBin, left.Position.X + left.Item.Width, sourcePoint.Y, sourcePoint.Z);
+          projX = AddExtremePoint(leftPoint);
         }
-        AddExtremePoint((PackingPosition)current.Clone());
-        while (current.Y > 0 && !IsPointOccupied(PackingPosition.MoveDown(current))) {
-          current = PackingPosition.MoveDown(current);
-        }
-        AddExtremePoint(current);
 
         //Traversing down the z-axis
-        current = new PackingPosition(0, sourcePointY.X, sourcePointY.Y, sourcePointY.Z);
-        while (current.Z > 0 && !IsPointOccupied(PackingPosition.MoveBack(current))) {
-          current = PackingPosition.MoveBack(current);
+        var back = itemPlacement.Where(x => IsBack(x.Position, x.Item, sourcePoint))
+                                .MaxItems(x => x.Position.Z + x.Item.Depth).FirstOrDefault();
+        var projZ = false;
+        if (back != null) {
+          var backPoint = new PackingPosition(position.AssignedBin, sourcePoint.X, sourcePoint.Y, back.Position.Z + back.Item.Depth);
+          projZ = AddExtremePoint(backPoint);
         }
-        AddExtremePoint((PackingPosition)current.Clone());
-        while (current.Y > 0 && !IsPointOccupied(PackingPosition.MoveDown(current))) {
-          current = PackingPosition.MoveDown(current);
-        }
-        AddExtremePoint(current);
+
+        // only add the source point if both projections added new points
+        // or if neither of the projections added a point
+        // if a projection tried to add a point that already exists, then this
+        // extreme point would be covered by the existing extreme point
+        if ((left == null || projX) && (back == null || projZ))
+          AddExtremePoint(new PackingPosition(position.AssignedBin, sourcePoint.X, sourcePoint.Y, sourcePoint.Z));
       }
 
       //Find ExtremePoints beginning from sourcepointZ
-      var sourcePointZ = new PackingPosition(0, position.X, position.Y, position.Z + newDepth);
-      if (sourcePointZ.X < BinShape.Width && sourcePointZ.Y < BinShape.Height && sourcePointZ.Z < BinShape.Depth) {
+      sourcePoint = new Vector3D(position.X, position.Y, position.Z + newDepth);
+      if (sourcePoint.X < BinShape.Width && sourcePoint.Y < BinShape.Height && sourcePoint.Z < BinShape.Depth) {
         //Traversing down the x-axis
-        PackingPosition current = new PackingPosition(0, sourcePointZ.X, sourcePointZ.Y, sourcePointZ.Z);
-        while (current.X > 0 && !IsPointOccupied(PackingPosition.MoveLeft(current))) {
-          current = PackingPosition.MoveLeft(current);
+        var left = itemPlacement.Where(x => IsLeft(x.Position, x.Item, sourcePoint))
+                                .MaxItems(x => x.Position.X + x.Item.Width).FirstOrDefault();
+        var projX = false;
+        if (left != null) {
+          var leftPoint = new PackingPosition(position.AssignedBin, left.Position.X + left.Item.Width, sourcePoint.Y, sourcePoint.Z);
+          projX = AddExtremePoint(leftPoint);
         }
-        AddExtremePoint((PackingPosition)current.Clone());
-        while (current.Y > 0 && !IsPointOccupied(PackingPosition.MoveDown(current))) {
-          current = PackingPosition.MoveDown(current);
-        }
-        AddExtremePoint(current);
 
         //Traversing down the y-axis
-        current = new PackingPosition(0, sourcePointZ.X, sourcePointZ.Y, sourcePointZ.Z);
-        while (current.Y > 0 && !IsPointOccupied(PackingPosition.MoveDown(current))) {
-          current = PackingPosition.MoveDown(current);
+        var below = itemPlacement.Where(x => IsBelow(x.Position, x.Item, sourcePoint))
+                                 .MaxItems(x => x.Position.Y + x.Item.Height).FirstOrDefault();
+        var projY = false;
+        if (below != null) {
+          var belowPoint = new PackingPosition(position.AssignedBin, sourcePoint.X, below.Position.Y + below.Item.Height, sourcePoint.Z);
+          projY = AddExtremePoint(belowPoint);
         }
-        AddExtremePoint((PackingPosition)current.Clone());
-        while (current.X > 0 && !IsPointOccupied(PackingPosition.MoveLeft(current))) {
-          current = PackingPosition.MoveLeft(current);
-        }
-        AddExtremePoint(current);
+
+        // only add the source point if both projections added new points
+        // or if neither of the projections added a point
+        // if a projection tried to add a point that already exists, then this
+        // extreme point would be covered by the existing extreme point
+        if ((left == null || projX) && (below == null || projY))
+          AddExtremePoint(new PackingPosition(position.AssignedBin, sourcePoint.X, sourcePoint.Y, sourcePoint.Z));
       }
     }
 
-    private void AddExtremePoint(PackingPosition current) {
+    private bool IsBelow(PackingPosition lowerPos, PackingItem lowerItem, Vector3D upper) {
+      return lowerPos.X <= upper.X && lowerPos.X + lowerItem.Width > upper.X
+        && lowerPos.Z <= upper.Z && lowerPos.Z + lowerItem.Depth > upper.Z
+        && lowerPos.Y + lowerItem.Height < upper.Y;
+    }
+
+    private bool IsLeft(PackingPosition leftPos, PackingItem leftItem, Vector3D right) {
+      return leftPos.Y <= right.Y && leftPos.Y + leftItem.Height > right.Y
+        && leftPos.Z <= right.Z && leftPos.Z + leftItem.Depth > right.Z
+        && leftPos.X + leftItem.Width < right.X;
+    }
+
+    private bool IsBack(PackingPosition backPos, PackingItem backItem, Vector3D front) {
+      return backPos.Y <= front.Y && backPos.Y + backItem.Height > front.Y
+        && backPos.X <= front.X && backPos.X + backItem.Width > front.X
+        && backPos.Z + backItem.Depth < front.Z;
+    }
+
+    private bool AddExtremePoint(PackingPosition current) {
       if (ExtremePoints.Add(current)) {
         var tuple = Tuple.Create(BinShape.Width - current.X, BinShape.Height - current.Y, BinShape.Depth - current.Z);
         ResidualSpace.Add(current, tuple);
+        return true;
       }
+      return false;
     }
 
     public override PackingPosition FindExtremePointForItem(PackingItem item, bool rotated, bool stackingConstraints) {
@@ -165,7 +194,9 @@ namespace HeuristicLab.Problems.BinPacking3D {
         rotated ? item.Width : item.Depth,
         item.TargetBin, item.Weight, item.Material);
 
-      var ep = ExtremePoints.Where(x => IsPositionFeasible(newItem, x, stackingConstraints)).FirstOrDefault();
+      var ep = ExtremePoints.Where(x => IsPositionFeasible(newItem, x, stackingConstraints))
+                            .OrderBy(x => x.X + x.Y + x.Z) // order by manhattan distance to try those closest to origin first
+                            .FirstOrDefault();
       if (ep != null) {
         var result = new PackingPosition(ep.AssignedBin, ep.X, ep.Y, ep.Z, rotated);
         return result;
@@ -370,6 +401,107 @@ namespace HeuristicLab.Problems.BinPacking3D {
         }
       }
       return;
+    }
+
+    private class Vector3D {
+      public int X;
+      public int Y;
+      public int Z;
+      public Vector3D() { }
+      public Vector3D(int x, int y, int z) {
+        X = x;
+        Y = y;
+        Z = z;
+      }
+      public Vector3D(PackingPosition pos) {
+        X = pos.X;
+        Y = pos.Y;
+        Z = pos.Z;
+      }
+      public static Vector3D AlongX(Vector3D pos, PackingItem item) {
+        return new Vector3D(
+          pos.X + item.Width,
+          pos.Y,
+          pos.Z
+        );
+      }
+      public static Vector3D AlongY(Vector3D pos, PackingItem item) {
+        return new Vector3D(
+          pos.X,
+          pos.Y + item.Height,
+          pos.Z
+        );
+      }
+      public static Vector3D AlongZ(Vector3D pos, PackingItem item) {
+        return new Vector3D(
+          pos.X,
+          pos.Y,
+          pos.Z + item.Depth
+        );
+      }
+      public static Vector3D AlongX(PackingPosition pos, PackingItem item) {
+        return new Vector3D(
+          pos.X + item.Width,
+          pos.Y,
+          pos.Z
+        );
+      }
+      public static Vector3D AlongY(PackingPosition pos, PackingItem item) {
+        return new Vector3D(
+          pos.X,
+          pos.Y + item.Height,
+          pos.Z
+        );
+      }
+      public static Vector3D AlongZ(PackingPosition pos, PackingItem item) {
+        return new Vector3D(
+          pos.X,
+          pos.Y,
+          pos.Z + item.Depth
+        );
+      }
+
+      public static bool Intersects(Vector3D p1, Vector3D dir, Vector3D p2, Vector3D dir2, Vector3D dir3) {
+        var normal = dir2.Cross(dir3);
+        var denom = normal * dir;
+        if (denom == 0) {
+          // dir is perpendicular to the normal vector of the plane
+          // this means they intersect if p1 is element of the plane
+          return p1.X * normal.X + p1.Y * normal.Y + p1.Z * normal.Z == p2.X * normal.X + p2.Y * normal.Y + p2.Z * normal.Z
+            && IsInPlane(p1, p2, dir2, dir3);
+        }
+        var intersect = p1 + ((normal * (p2 - p1)) / denom) * dir;
+        return IsInPlane(intersect, p2, dir2, dir3);
+      }
+
+      private static bool IsInPlane(Vector3D p1, Vector3D p2, Vector3D dir2, Vector3D dir3) {
+        return p1.X >= p2.X && (p1.X <= p2.X + dir2.X || p1.X <= p2.X + dir3.X)
+            && p1.Y >= p2.Y && (p1.Y <= p2.Y + dir2.Y || p1.Y <= p2.Y + dir3.Y)
+            && p1.Z >= p2.Z && (p1.Z <= p2.Z + dir2.Z || p1.Z <= p2.Z + dir3.Z);
+      }
+
+      public Vector3D Cross(Vector3D b) {
+        return new Vector3D(
+          Y * b.Z - Z * b.Y,
+          -X * b.Z + Z * b.X,
+          X * b.Y - Y * b.X
+        );
+      }
+      public static int operator *(Vector3D a, Vector3D b) {
+        return a.X * b.X + a.Y * b.Y + a.Z * b.Z;
+      }
+      public static Vector3D operator *(int a, Vector3D b) {
+        return new Vector3D(a * b.X, a * b.Y, a * b.Z);
+      }
+      public static Vector3D operator *(Vector3D a, int b) {
+        return new Vector3D(a.X * b, a.Y * b, a.Z * b);
+      }
+      public static Vector3D operator +(Vector3D a, Vector3D b) {
+        return new Vector3D(a.X + b.X, a.Y + b.Y, a.Z + b.Z);
+      }
+      public static Vector3D operator -(Vector3D a, Vector3D b) {
+        return new Vector3D(a.X - b.X, a.Y - b.Y, a.Z - b.Z);
+      }
     }
   }
 }
