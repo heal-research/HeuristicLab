@@ -31,9 +31,10 @@
              MouseEnter="Container3DView_OnMouseEnter"
              Focusable="true"
              >
-    <Grid>
-        <Border BorderThickness="1" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
-            <Viewport3D Name="viewport3D1" >
+    <Grid Margin="0,0,-64,-57">
+        <CheckBox Name="showExtremePointsCheckBox" Content="Show extreme points" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,6,0,0" Unchecked="showExtremePointsCheckBoxOnUnchecked" Checked="showExtremePointsCheckBoxOnChecked"/>
+        <Border BorderThickness="1" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Margin="0,30,0,0">
+            <Viewport3D Name="viewport3D1" Margin="0,-1,0,0" >
                 <Viewport3D.Camera>
                     <PerspectiveCamera x:Name="camMain" Position="0.5 8 8" LookDirection="0 -1 -1"> <!-- camera position for design time-->
                     </PerspectiveCamera>

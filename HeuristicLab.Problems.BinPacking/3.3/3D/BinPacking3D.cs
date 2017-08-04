@@ -124,37 +124,49 @@ namespace HeuristicLab.Problems.BinPacking3D {
       //Find ExtremePoints beginning from sourcepointZ
       sourcePoint = new Vector3D(position.X, position.Y, position.Z + newDepth);
       if (sourcePoint.X < BinShape.Width && sourcePoint.Y < BinShape.Height && sourcePoint.Z < BinShape.Depth) {
-        // Projecting onto the YZ-plane
-        var left = ProjectLeft(sourcePoint);
-        var residualSpace = CalculateResidualSpace(left);
-        if (!IsWithinResidualSpaceOfAnotherExtremePoint(left, residualSpace)) {
-          // add only if the projected point's residual space is not a sub-space
-          // of another extreme point's residual space
-          var leftPoint = new PackingPosition(position.AssignedBin, left.X, left.Y, left.Z);
-          AddExtremePoint(leftPoint);
-        }
         // Projecting onto the XZ-plane
         var below = ProjectDown(sourcePoint);
-        residualSpace = CalculateResidualSpace(below);
+        var residualSpace = CalculateResidualSpace(below);
         if (!IsWithinResidualSpaceOfAnotherExtremePoint(below, residualSpace)) {
           // add only if the projected point's residual space is not a sub-space
           // of another extreme point's residual space
           var belowPoint = new PackingPosition(position.AssignedBin, below.X, below.Y, below.Z);
           AddExtremePoint(belowPoint);
         }
+        // Projecting onto the YZ-plane
+        var left = ProjectLeft(sourcePoint);
+        residualSpace = CalculateResidualSpace(left);
+        if (!IsWithinResidualSpaceOfAnotherExtremePoint(left, residualSpace)) {
+          // add only if the projected point's residual space is not a sub-space
+          // of another extreme point's residual space
+          var leftPoint = new PackingPosition(position.AssignedBin, left.X, left.Y, left.Z);
+          AddExtremePoint(leftPoint);
+        }
       }
     }
 
     private bool IsWithinResidualSpaceOfAnotherExtremePoint(Vector3D pos, Tuple<int, int, int> residualSpace) {
       var eps = ExtremePoints.Where(x => pos.IsInside(x, ResidualSpace[x]));
-      return eps.Any(x => ResidualSpace[x].Item1 >= pos.X - x.X + residualSpace.Item1
-          && ResidualSpace[x].Item2 >= pos.Y - x.Y + residualSpace.Item2
-          && ResidualSpace[x].Item3 >= pos.Z - x.Z + residualSpace.Item3);
+      return eps.Any(x => IsWithinResidualSpaceOfAnotherExtremePoint(pos, residualSpace, x, ResidualSpace[x]));
+    }
+    private bool IsWithinResidualSpaceOfAnotherExtremePoint(Vector3D pos, Tuple<int, int, int> rsPos, PackingPosition ep, Tuple<int, int, int> rsEp) {
+      return rsEp.Item1 >= pos.X - ep.X + rsPos.Item1
+          && rsEp.Item2 >= pos.Y - ep.Y + rsPos.Item2
+          && rsEp.Item3 >= pos.Z - ep.Z + rsPos.Item3;
     }
 
     private bool AddExtremePoint(PackingPosition pos) {
       if (ExtremePoints.Add(pos)) {
-        ResidualSpace.Add(pos, Tuple.Create(BinShape.Width - pos.X, BinShape.Height - pos.Y, BinShape.Depth - pos.Z));
+        var rs = Tuple.Create(BinShape.Width - pos.X, BinShape.Height - pos.Y, BinShape.Depth - pos.Z);
+        ResidualSpace.Add(pos, rs);
+        // Check if existing extreme points are shadowed by the new point
+        // That is, their residual space fit entirely into the residual space of the new point
+        foreach (var ep in ExtremePoints.Where(x => x != pos && new Vector3D(x).IsInside(pos, rs)).ToList()) {
+          if (IsWithinResidualSpaceOfAnotherExtremePoint(new Vector3D(ep), ResidualSpace[ep], pos, rs)) {
+            ExtremePoints.Remove(ep);
+            ResidualSpace.Remove(ep);
+          }
+        }
         return true;
       }
       return false;

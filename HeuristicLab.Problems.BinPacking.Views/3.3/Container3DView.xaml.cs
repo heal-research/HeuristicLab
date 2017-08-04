@@ -54,6 +54,7 @@ namespace HeuristicLab.Problems.BinPacking.Views {
     private double startAngleX;
     private double startAngleY;
     private int selectedItemKey;
+    private bool showExtremePoints;
 
     private BinPacking<BinPacking3D.PackingPosition, PackingShape, PackingItem> packing;
     public BinPacking<BinPacking3D.PackingPosition, PackingShape, PackingItem> Packing {
@@ -154,11 +155,15 @@ namespace HeuristicLab.Problems.BinPacking.Views {
         }
       }
 
-      // draw extreme-points
-      foreach (var ep in packing.ExtremePoints) {
-        var epModel = new GeometryModel3D { Geometry = new MeshGeometry3D(), Material = new DiffuseMaterial() { Brush = new SolidColorBrush(Colors.Red) } };
-        AddSolidCube((MeshGeometry3D)epModel.Geometry, ep.X, ep.Y, ep.Z, 10, 10, 10);
-        modelGroup.Children.Add(epModel);
+      if (showExtremePoints) {
+        // draw extreme-points
+        var maxMag = (int)Math.Log10(Math.Max(packing.BinShape.Depth, Math.Max(packing.BinShape.Height, packing.BinShape.Width)));
+        var cubeSize = (int)Math.Max(Math.Pow(10, maxMag - 2), 1);
+        foreach (var ep in packing.ExtremePoints) {
+          var epModel = new GeometryModel3D { Geometry = new MeshGeometry3D(), Material = new DiffuseMaterial() { Brush = new SolidColorBrush(Colors.Red) } };
+          AddSolidCube((MeshGeometry3D)epModel.Geometry, ep.X, ep.Y, ep.Z, cubeSize, cubeSize, cubeSize);
+          modelGroup.Children.Add(epModel);
+        }
       }
 
       var container = packing.BinShape;
@@ -228,6 +233,14 @@ namespace HeuristicLab.Problems.BinPacking.Views {
 
     private void Container3DView_OnMouseEnter(object sender, MouseEventArgs e) {
       Focus(); // for mouse wheel events
+    }
+    private void showExtremePointsCheckBoxOnChecked(object sender, RoutedEventArgs e) {
+      showExtremePoints = true;
+      UpdateVisualization();
+    }
+    private void showExtremePointsCheckBoxOnUnchecked(object sender, RoutedEventArgs e) {
+      showExtremePoints = false;
+      UpdateVisualization();
     }
 
     #region helper for cubes
@@ -470,6 +483,5 @@ namespace HeuristicLab.Problems.BinPacking.Views {
       mesh.TriangleIndices.Add(b);
     }
     #endregion
-
   }
 }
