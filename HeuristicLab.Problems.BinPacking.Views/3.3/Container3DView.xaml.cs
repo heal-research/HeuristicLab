@@ -154,6 +154,13 @@ namespace HeuristicLab.Problems.BinPacking.Views {
         }
       }
 
+      // draw extreme-points
+      foreach (var ep in packing.ExtremePoints) {
+        var epModel = new GeometryModel3D { Geometry = new MeshGeometry3D(), Material = new DiffuseMaterial() { Brush = new SolidColorBrush(Colors.Red) } };
+        AddSolidCube((MeshGeometry3D)epModel.Geometry, ep.X, ep.Y, ep.Z, 10, 10, 10);
+        modelGroup.Children.Add(epModel);
+      }
+
       var container = packing.BinShape;
       var containerModel = new GeometryModel3D(new MeshGeometry3D(), new DiffuseMaterial(new SolidColorBrush(containerColor)));
       modelGroup.Children.Add(containerModel);

@@ -64,7 +64,9 @@ namespace HeuristicLab.Problems.BinPacking3D {
     }
 
     public override void PackItem(int itemID, PackingItem item, PackingPosition position) {
+      ExtremePoints.Remove(position);
       ResidualSpace.Remove(position);
+      UpdateResidualSpace(item, position);
       base.PackItem(itemID, item, position);
     }
 
@@ -77,34 +79,18 @@ namespace HeuristicLab.Problems.BinPacking3D {
       var sourcePoint = new Vector3D() { X = position.X + newWidth, Y = position.Y, Z = position.Z };
       if (sourcePoint.X < BinShape.Width && sourcePoint.Y < BinShape.Height && sourcePoint.Z < BinShape.Depth) {
         // Projecting onto the XZ-plane
-        var line = new Line3D(sourcePoint, new Vector3D(0, -1, 0));
-        var below = itemPlacement.Select(x => new Plane3D(x.Position, x.Item, Side.Top))
-                                 .Concat(new[] { new Plane3D(BinShape, Side.Bottom) })
-                                 .Select(x => x.Intersect(line))
-                                 .Where(x => x != null && x.Y <= sourcePoint.Y)
-                                 .MaxItems(x => x.Y).First();
+        var below = ProjectDown(sourcePoint);
         var residualSpace = CalculateResidualSpace(below);
-        var eps = ExtremePoints.Where(x => IsInside(below, x, ResidualSpace[x]));
-        if (!eps.Any(x => ResidualSpace[x].Item1 >= below.X - x.X + residualSpace.Item1
-          && ResidualSpace[x].Item2 >= below.Y - x.Y + residualSpace.Item2
-          && ResidualSpace[x].Item3 >= below.Z - x.Z + residualSpace.Item3)) {
+        if (!IsWithinResidualSpaceOfAnotherExtremePoint(below, residualSpace)) {
           // add only if the projected point's residual space is not a sub-space
           // of another extreme point's residual space
           var belowPoint = new PackingPosition(position.AssignedBin, below.X, below.Y, below.Z);
           AddExtremePoint(belowPoint);
         }
-        line = new Line3D(sourcePoint, new Vector3D(0, 0, -1));
         // Projecting onto the XY-plane
-        var back = itemPlacement.Select(x => new Plane3D(x.Position, x.Item, Side.Front))
-                                .Concat(new[] { new Plane3D(BinShape, Side.Back) })
-                                .Select(x => x.Intersect(line))
-                                .Where(x => x != null && x.Z <= sourcePoint.Z)
-                                .MaxItems(x => x.Y).First();
-        residualSpace = CalculateResidualSpace(below);
-        eps = ExtremePoints.Where(x => IsInside(below, x, ResidualSpace[x]));
-        if (!eps.Any(x => ResidualSpace[x].Item1 >= below.X - x.X + residualSpace.Item1
-          && ResidualSpace[x].Item2 >= below.Y - x.Y + residualSpace.Item2
-          && ResidualSpace[x].Item3 >= below.Z - x.Z + residualSpace.Item3)) {
+        var back = ProjectBackward(sourcePoint);
+        residualSpace = CalculateResidualSpace(back);
+        if (!IsWithinResidualSpaceOfAnotherExtremePoint(back, residualSpace)) {
           // add only if the projected point's residual space is not a sub-space
           // of another extreme point's residual space
           var backPoint = new PackingPosition(position.AssignedBin, back.X, back.Y, back.Z);
@@ -116,34 +102,18 @@ namespace HeuristicLab.Problems.BinPacking3D {
       sourcePoint = new Vector3D(position.X, position.Y + newItem.Height, position.Z);
       if (sourcePoint.X < BinShape.Width && sourcePoint.Y < BinShape.Height && sourcePoint.Z < BinShape.Depth) {
         // Projecting onto the YZ-plane
-        var line = new Line3D(sourcePoint, new Vector3D(-1, 0, 0));
-        var left = itemPlacement.Select(x => new Plane3D(x.Position, x.Item, Side.Right))
-                                 .Concat(new[] { new Plane3D(BinShape, Side.Left) })
-                                 .Select(x => x.Intersect(line))
-                                 .Where(x => x != null && x.X <= sourcePoint.X)
-                                 .MaxItems(x => x.Y).First();
+        var left = ProjectLeft(sourcePoint);
         var residualSpace = CalculateResidualSpace(left);
-        var eps = ExtremePoints.Where(x => IsInside(left, x, ResidualSpace[x]));
-        if (!eps.Any(x => ResidualSpace[x].Item1 >= left.X - x.X + residualSpace.Item1
-          && ResidualSpace[x].Item2 >= left.Y - x.Y + residualSpace.Item2
-          && ResidualSpace[x].Item3 >= left.Z - x.Z + residualSpace.Item3)) {
+        if (!IsWithinResidualSpaceOfAnotherExtremePoint(left, residualSpace)) {
           // add only if the projected point's residual space is not a sub-space
           // of another extreme point's residual space
           var leftPoint = new PackingPosition(position.AssignedBin, left.X, left.Y, left.Z);
           AddExtremePoint(leftPoint);
         }
-        line = new Line3D(sourcePoint, new Vector3D(0, 0, -1));
         // Projecting onto the XY-plane
-        var back = itemPlacement.Select(x => new Plane3D(x.Position, x.Item, Side.Front))
-                                .Concat(new[] { new Plane3D(BinShape, Side.Back) })
-                                .Select(x => x.Intersect(line))
-                                .Where(x => x != null && x.Z <= sourcePoint.Z)
-                                .MaxItems(x => x.Y).First();
-        residualSpace = CalculateResidualSpace(left);
-        eps = ExtremePoints.Where(x => IsInside(left, x, ResidualSpace[x]));
-        if (!eps.Any(x => ResidualSpace[x].Item1 >= left.X - x.X + residualSpace.Item1
-          && ResidualSpace[x].Item2 >= left.Y - x.Y + residualSpace.Item2
-          && ResidualSpace[x].Item3 >= left.Z - x.Z + residualSpace.Item3)) {
+        var back = ProjectBackward(sourcePoint);
+        residualSpace = CalculateResidualSpace(back);
+        if (!IsWithinResidualSpaceOfAnotherExtremePoint(back, residualSpace)) {
           // add only if the projected point's residual space is not a sub-space
           // of another extreme point's residual space
           var backPoint = new PackingPosition(position.AssignedBin, back.X, back.Y, back.Z);
@@ -155,34 +125,18 @@ namespace HeuristicLab.Problems.BinPacking3D {
       sourcePoint = new Vector3D(position.X, position.Y, position.Z + newDepth);
       if (sourcePoint.X < BinShape.Width && sourcePoint.Y < BinShape.Height && sourcePoint.Z < BinShape.Depth) {
         // Projecting onto the YZ-plane
-        var line = new Line3D(sourcePoint, new Vector3D(-1, 0, 0));
-        var left = itemPlacement.Select(x => new Plane3D(x.Position, x.Item, Side.Right))
-                                 .Concat(new[] { new Plane3D(BinShape, Side.Left) })
-                                 .Select(x => x.Intersect(line))
-                                 .Where(x => x != null && x.X <= sourcePoint.X)
-                                 .MaxItems(x => x.Y).First();
+        var left = ProjectLeft(sourcePoint);
         var residualSpace = CalculateResidualSpace(left);
-        var eps = ExtremePoints.Where(x => IsInside(left, x, ResidualSpace[x]));
-        if (!eps.Any(x => ResidualSpace[x].Item1 >= left.X - x.X + residualSpace.Item1
-          && ResidualSpace[x].Item2 >= left.Y - x.Y + residualSpace.Item2
-          && ResidualSpace[x].Item3 >= left.Z - x.Z + residualSpace.Item3)) {
+        if (!IsWithinResidualSpaceOfAnotherExtremePoint(left, residualSpace)) {
           // add only if the projected point's residual space is not a sub-space
           // of another extreme point's residual space
           var leftPoint = new PackingPosition(position.AssignedBin, left.X, left.Y, left.Z);
           AddExtremePoint(leftPoint);
         }
         // Projecting onto the XZ-plane
-        line = new Line3D(sourcePoint, new Vector3D(0, -1, 0));
-        var below = itemPlacement.Select(x => new Plane3D(x.Position, x.Item, Side.Top))
-                                 .Concat(new[] { new Plane3D(BinShape, Side.Bottom) })
-                                 .Select(x => x.Intersect(line))
-                                 .Where(x => x != null && x.Y <= sourcePoint.Y)
-                                 .MaxItems(x => x.Y).First();
+        var below = ProjectDown(sourcePoint);
         residualSpace = CalculateResidualSpace(below);
-        eps = ExtremePoints.Where(x => IsInside(below, x, ResidualSpace[x]));
-        if (!eps.Any(x => ResidualSpace[x].Item1 >= below.X - x.X + residualSpace.Item1
-          && ResidualSpace[x].Item2 >= below.Y - x.Y + residualSpace.Item2
-          && ResidualSpace[x].Item3 >= below.Z - x.Z + residualSpace.Item3)) {
+        if (!IsWithinResidualSpaceOfAnotherExtremePoint(below, residualSpace)) {
           // add only if the projected point's residual space is not a sub-space
           // of another extreme point's residual space
           var belowPoint = new PackingPosition(position.AssignedBin, below.X, below.Y, below.Z);
@@ -191,62 +145,87 @@ namespace HeuristicLab.Problems.BinPacking3D {
       }
     }
 
-    private bool IsBelow(PackingPosition lowerPos, PackingItem lowerItem, Vector3D upper) {
-      return lowerPos.X <= upper.X && lowerPos.X + lowerItem.Width > upper.X
-        && lowerPos.Z <= upper.Z && lowerPos.Z + lowerItem.Depth > upper.Z
-        && lowerPos.Y + lowerItem.Height < upper.Y;
+    private bool IsWithinResidualSpaceOfAnotherExtremePoint(Vector3D pos, Tuple<int, int, int> residualSpace) {
+      var eps = ExtremePoints.Where(x => pos.IsInside(x, ResidualSpace[x]));
+      return eps.Any(x => ResidualSpace[x].Item1 >= pos.X - x.X + residualSpace.Item1
+          && ResidualSpace[x].Item2 >= pos.Y - x.Y + residualSpace.Item2
+          && ResidualSpace[x].Item3 >= pos.Z - x.Z + residualSpace.Item3);
     }
 
-    private bool IsLeft(PackingPosition leftPos, PackingItem leftItem, Vector3D right) {
-      return leftPos.Y <= right.Y && leftPos.Y + leftItem.Height > right.Y
-        && leftPos.Z <= right.Z && leftPos.Z + leftItem.Depth > right.Z
-        && leftPos.X + leftItem.Width < right.X;
-    }
-
-    private bool IsBack(PackingPosition backPos, PackingItem backItem, Vector3D front) {
-      return backPos.Y <= front.Y && backPos.Y + backItem.Height > front.Y
-        && backPos.X <= front.X && backPos.X + backItem.Width > front.X
-        && backPos.Z + backItem.Depth < front.Z;
-    }
-
-    private bool AddExtremePoint(PackingPosition current) {
-      if (ExtremePoints.Add(current)) {
-        ResidualSpace.Add(current, CalculateResidualSpace(current));
+    private bool AddExtremePoint(PackingPosition pos) {
+      if (ExtremePoints.Add(pos)) {
+        ResidualSpace.Add(pos, Tuple.Create(BinShape.Width - pos.X, BinShape.Height - pos.Y, BinShape.Depth - pos.Z));
         return true;
       }
       return false;
     }
 
     private Tuple<int, int, int> CalculateResidualSpace(Vector3D pos) {
-      return Tuple.Create(BinShape.Width - pos.X, BinShape.Height - pos.Y, BinShape.Depth - pos.Z);
+      var itemPos = Items.Select(x => new { Item = x.Value, Position = Positions[x.Key] });
+      var rightLimit = ProjectRight(pos);
+      var upLimit = ProjectUp(pos);
+      var forwardLimit = ProjectForward(pos);
+      return Tuple.Create(rightLimit.X - pos.X, upLimit.Y - pos.Y, forwardLimit.Z - pos.Z);
     }
 
-    private Tuple<int, int, int> CalculateResidualSpace(PackingPosition pos) {
-      return Tuple.Create(BinShape.Width - pos.X, BinShape.Height - pos.Y, BinShape.Depth - pos.Z);
+    private Vector3D ProjectBackward(Vector3D pos) {
+      var line = new Line3D(pos, new Vector3D(0, 0, -1));
+      return Items.Select(x => new { Item = x.Value, Position = Positions[x.Key] })
+                  .Select(x => new Plane3D(x.Position, x.Item, Side.Front))
+                  .Concat(new[] { new Plane3D(BinShape, Side.Back) })
+                  .Select(x => x.Intersect(line))
+                  .Where(x => x != null && x.Z <= pos.Z)
+                  .MaxItems(x => x.Z).First();
     }
 
-    private bool IsInside(Vector3D point, PackingPosition pos, PackingItem item) {
-      return point.X >= pos.X && point.X < pos.X + (pos.Rotated ? item.Depth : item.Width)
-        && point.Y >= pos.Y && point.Y < pos.Y + item.Height
-        && point.Z >= pos.Z && point.Z < pos.Z + (pos.Rotated ? item.Width : item.Depth);
+    private Vector3D ProjectLeft(Vector3D pos) {
+      var line = new Line3D(pos, new Vector3D(-1, 0, 0));
+      return Items.Select(x => new { Item = x.Value, Position = Positions[x.Key] })
+                  .Select(x => new Plane3D(x.Position, x.Item, Side.Right))
+                  .Concat(new[] { new Plane3D(BinShape, Side.Left) })
+                  .Select(x => x.Intersect(line))
+                  .Where(x => x != null && x.X <= pos.X)
+                  .MaxItems(x => x.X).First();
     }
 
-    private bool IsInside(Vector3D point, Vector3D pos, PackingItem item) {
-      return point.X >= pos.X && point.X < pos.X + item.Width
-        && point.Y >= pos.Y && point.Y < pos.Y + item.Height
-        && point.Z >= pos.Z && point.Z < pos.Z + item.Depth;
+    private Vector3D ProjectDown(Vector3D pos) {
+      var line = new Line3D(pos, new Vector3D(0, -1, 0));
+      return Items.Select(x => new { Item = x.Value, Position = Positions[x.Key] })
+                  .Select(x => new Plane3D(x.Position, x.Item, Side.Top))
+                  .Concat(new[] { new Plane3D(BinShape, Side.Bottom) })
+                  .Select(x => x.Intersect(line))
+                  .Where(x => x != null && x.Y <= pos.Y)
+                  .MaxItems(x => x.Y).First();
     }
 
-    private bool IsInside(Vector3D point, PackingPosition pos, Tuple<int, int, int> rs) {
-      return point.X >= pos.X && point.X < pos.X + rs.Item1
-        && point.Y >= pos.Y && point.Y < pos.Y + rs.Item2
-        && point.Z >= pos.Z && point.Z < pos.Z + rs.Item3;
+    private Vector3D ProjectForward(Vector3D pos) {
+      var line = new Line3D(pos, new Vector3D(0, 0, 1));
+      return Items.Select(x => new { Item = x.Value, Position = Positions[x.Key] })
+                  .Select(x => new Plane3D(x.Position, x.Item, Side.Back))
+                  .Concat(new[] { new Plane3D(BinShape, Side.Front) })
+                  .Select(x => x.Intersect(line))
+                  .Where(x => x != null && x.Z >= pos.Z)
+                  .MinItems(x => x.Z).First();
     }
 
-    private bool IsInside(Vector3D point, Vector3D pos, Tuple<int, int, int> rs) {
-      return point.X >= pos.X && point.X < pos.X + rs.Item1
-        && point.Y >= pos.Y && point.Y < pos.Y + rs.Item2
-        && point.Z >= pos.Z && point.Z < pos.Z + rs.Item3;
+    private Vector3D ProjectRight(Vector3D pos) {
+      var line = new Line3D(pos, new Vector3D(1, 0, 0));
+      return Items.Select(x => new { Item = x.Value, Position = Positions[x.Key] })
+                  .Select(x => new Plane3D(x.Position, x.Item, Side.Left))
+                  .Concat(new[] { new Plane3D(BinShape, Side.Right) })
+                  .Select(x => x.Intersect(line))
+                  .Where(x => x != null && x.X >= pos.X)
+                  .MinItems(x => x.X).First();
+    }
+
+    private Vector3D ProjectUp(Vector3D pos) {
+      var line = new Line3D(pos, new Vector3D(0, 1, 0));
+      return Items.Select(x => new { Item = x.Value, Position = Positions[x.Key] })
+                  .Select(x => new Plane3D(x.Position, x.Item, Side.Bottom))
+                  .Concat(new[] { new Plane3D(BinShape, Side.Top) })
+                  .Select(x => x.Intersect(line))
+                  .Where(x => x != null && x.Y >= pos.Y)
+                  .MinItems(x => x.Y).First();
     }
 
     public override PackingPosition FindExtremePointForItem(PackingItem item, bool rotated, bool stackingConstraints) {
@@ -257,7 +236,6 @@ namespace HeuristicLab.Problems.BinPacking3D {
         item.TargetBin, item.Weight, item.Material);
 
       var ep = ExtremePoints.Where(x => IsPositionFeasible(newItem, x, stackingConstraints))
-                            .OrderBy(x => x.X + x.Y + x.Z) // order by manhattan distance to try those closest to origin first
                             .FirstOrDefault();
       if (ep != null) {
         var result = new PackingPosition(ep.AssignedBin, ep.X, ep.Y, ep.Z, rotated);
@@ -329,8 +307,6 @@ namespace HeuristicLab.Problems.BinPacking3D {
         var positionFound = FindExtremePointForItem(item, false, stackingConstraints);
         if (positionFound != null) {
           PackItem(itemID, item, positionFound);
-          if (Items.Count > 1)
-            UpdateResidualSpace(item, positionFound);
           sequence.Remove(itemID);
         }
       }
@@ -389,7 +365,6 @@ namespace HeuristicLab.Problems.BinPacking3D {
       return false;
     }
 
-
     public bool IsSupportedByAtLeastOnePoint(PackingItem item, PackingPosition position) {
       if (position.Y == 0)
         return true;
@@ -442,29 +417,33 @@ namespace HeuristicLab.Problems.BinPacking3D {
     
     public void UpdateResidualSpace(PackingItem item, PackingPosition pos) {
       foreach (var ep in ExtremePoints) {
-        if (ep.Z >= pos.Z && ep.Z <= pos.Z + item.Depth) {
-          if (ep.X <= pos.X && ep.Y > pos.Y && ep.Y < pos.Y + item.Height) {
+        var rs = ResidualSpace[ep];
+        var depth = pos.Rotated ? item.Width : item.Depth;
+        var width = pos.Rotated ? item.Depth : item.Width;
+        if (ep.Z >= pos.Z && ep.Z < pos.Z + depth) {
+          if (ep.X <= pos.X && ep.Y >= pos.Y && ep.Y < pos.Y + item.Height) {
             var diff = pos.X - ep.X;
-            var newRSX = ResidualSpace[ep].Item1 < diff ? ResidualSpace[ep].Item1 : diff;
-            ResidualSpace[ep] = Tuple.Create(newRSX, ResidualSpace[ep].Item2, ResidualSpace[ep].Item3);
+            var newRSX = Math.Min(rs.Item1, diff);
+            ResidualSpace[ep] = Tuple.Create(newRSX, rs.Item2, rs.Item3);
           }
-          if (ep.Y <= pos.Y && ep.X > pos.X && ep.X < pos.X + item.Width) {
+          if (ep.Y <= pos.Y && ep.X >= pos.X && ep.X < pos.X + width) {
             var diff = pos.Y - ep.Y;
-            var newRSY = ResidualSpace[ep].Item2 < diff ? ResidualSpace[ep].Item2 : diff;
-            ResidualSpace[ep] = Tuple.Create(ResidualSpace[ep].Item1, newRSY, ResidualSpace[ep].Item3);
+            var newRSY = Math.Min(rs.Item2, diff);
+            ResidualSpace[ep] = Tuple.Create(rs.Item1, newRSY, rs.Item3);
           }
         }
         if (ep.Z <= pos.Z && 
-          ep.Y > pos.Y && ep.Y < pos.Y + item.Height &&
-          ep.X > pos.X && ep.X < pos.X + item.Width) {
+          ep.Y >= pos.Y && ep.Y < pos.Y + item.Height &&
+          ep.X >= pos.X && ep.X < pos.X + width) {
             var diff = pos.Z - ep.Z;
-            var newRSZ = ResidualSpace[ep].Item3 < diff ? ResidualSpace[ep].Item3 : diff;
-            ResidualSpace[ep] = Tuple.Create(ResidualSpace[ep].Item1, ResidualSpace[ep].Item2, newRSZ);
+            var newRSZ = Math.Min(rs.Item3, diff);
+            ResidualSpace[ep] = Tuple.Create(rs.Item1, rs.Item2, newRSZ);
         }
       }
       return;
     }
 
+    #region Helper classes for vector math
     private class Vector3D {
       public int X;
       public int Y;
@@ -530,6 +509,13 @@ namespace HeuristicLab.Problems.BinPacking3D {
           X * b.Y - Y * b.X
         );
       }
+
+      public bool IsInside(PackingPosition pos, Tuple<int, int, int> rs) {
+        return X >= pos.X && X < pos.X + rs.Item1
+          && Y >= pos.Y && Y < pos.Y + rs.Item2
+          && Z >= pos.Z && Z < pos.Z + rs.Item3;
+      }
+
       public static int operator *(Vector3D a, Vector3D b) {
         return a.X * b.X + a.Y * b.Y + a.Z * b.Z;
       }
@@ -613,7 +599,7 @@ namespace HeuristicLab.Problems.BinPacking3D {
       }
 
       public Plane3D(PackingPosition pos, PackingItem item, Side side) {
-        // the directing vectors are chosen such that Normal always points outside the packing item
+        // the directing vectors are chosen such that normal always points outside the packing item
         switch (side) {
           case Side.Top: // ZX plane
             Point = new Vector3D(pos.X, pos.Y + item.Height, pos.Z);
@@ -650,8 +636,8 @@ namespace HeuristicLab.Problems.BinPacking3D {
         rhs = Normal.X * Point.X + Normal.Y * Point.Y + Normal.Z * Point.Z;
       }
 
-      public bool IsElementOf(Vector3D vector) {
-        return Normal.X * vector.X + Normal.Y * vector.Y + Normal.Z * vector.Z == rhs;
+      public bool IsElementOf(Vector3D point) {
+        return Normal.X * point.X + Normal.Y * point.Y + Normal.Z * point.Z == rhs;
       }
 
       public bool Intersects(Line3D line) {
@@ -676,10 +662,11 @@ namespace HeuristicLab.Problems.BinPacking3D {
       }
 
       public bool IsWithinDirectionalVectors(Vector3D point) {
-        return point.X >= Point.X && (point.X <= Point.X + Direction1.X || point.X <= Point.X + Direction2.X)
-            && point.Y >= Point.Y && (point.Y <= Point.Y + Direction1.Y || point.Y <= Point.Y + Direction2.Y)
-            && point.Z >= Point.Z && (point.Z <= Point.Z + Direction1.Z || point.Z <= Point.Z + Direction2.Z);
+        return point.X >= Point.X && (Direction1.X + Direction2.X == 0 || (point.X < Point.X + Direction1.X || point.X < Point.X + Direction2.X))
+            && point.Y >= Point.Y && (Direction1.Y + Direction2.Y == 0 || (point.Y < Point.Y + Direction1.Y || point.Y < Point.Y + Direction2.Y))
+            && point.Z >= Point.Z && (Direction1.Z + Direction2.Z == 0 || (point.Z < Point.Z + Direction1.Z || point.Z < Point.Z + Direction2.Z));
       }
     }
+    #endregion
   }
 }
