@@ -19,43 +19,12 @@
  */
 #endregion
 
-using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using HeuristicLab.MainForm;
-using Microsoft.Win32;
 
 namespace HeuristicLab.Optimizer.MenuItems {
   internal class ChangeNestingLevelMenuItem : HeuristicLab.MainForm.WindowsForms.MenuItem, IOptimizerUserInterfaceItemProvider {
-
-    #region Creators Update Nesting
-    const string VersionSubKey = @"SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full\";
-    private const int VersionWin10CreatorsUpdate = 460798;
-    private const int RecommendedMaxNestingLevel = 25;
-
-    static ChangeNestingLevelMenuItem() {
-      var settings = HeuristicLab.Core.Views.Properties.Settings.Default;
-      try {
-        // detect installed .net/OS version https://msdn.microsoft.com/en-us/library/hh925568(v=vs.110).aspx#net_d
-        using (var ndpKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32).OpenSubKey(VersionSubKey)) {
-          if (ndpKey == null || ndpKey.GetValue("Release") == null) return;
-          int version = (int)ndpKey.GetValue("Release");
-          if (version == VersionWin10CreatorsUpdate && settings.MaximumNestedControls > RecommendedMaxNestingLevel) {
-            var message = string.Format("A high nesting level of controls can cause Windows 10 Creators Update to crash with a blue screen. "
-                                          + "Do you want to set the maximum nesting level from {0} to {1} to minimize the risk of a crash?",
-                settings.MaximumNestedControls, RecommendedMaxNestingLevel);
-            if (MessageBox.Show(message, "Reduce Maximum Nesting Level?", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes) {
-              settings.MaximumNestedControls = 25;
-              settings.Save();
-            }
-          }
-        }
-      } catch (PlatformNotSupportedException) {
-        // thrown on mono
-      }
-    }
-    #endregion
-
     public override string Name {
       get { return "Change &Nesting Level..."; }
     }
