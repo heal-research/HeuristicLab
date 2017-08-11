@@ -21,22 +21,41 @@
 #endregion
 
 using System.Collections.Generic;
+using System.Linq;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
   // This code is based off the publication
   // B. W. Goldman and W. F. Punch, "Parameter-less Population Pyramid," GECCO, pp. 785–792, 2014
   // and the original source code in C++11 available from: https://github.com/brianwgoldman/Parameter-less_Population_Pyramid
-  public class Population {
+  [StorableClass]
+  public class Population : DeepCloneable {
+    [Storable]
     public List<BinaryVector> Solutions {
       get;
       private set;
     }
-
+    [Storable]
     public LinkageTree Tree {
       get;
       private set;
+    }
+
+
+    [StorableConstructor]
+    protected Population(bool deserializing) : base() { }
+
+
+    protected Population(Population original, Cloner cloner) : base(original, cloner) {
+      Solutions = original.Solutions.Select(cloner.Clone).ToList();
+      Tree = cloner.Clone(original.Tree);
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new Population(this, cloner);
     }
 
     public Population(int length, IRandom rand) {

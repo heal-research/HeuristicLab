@@ -22,6 +22,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
@@ -50,12 +51,21 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
       set { base.Problem = value; }
     }
 
+    [Storable]
     private readonly IRandom random = new MersenneTwister();
-    private List<Population> pyramid;
+    [Storable]
+    private List<Population> pyramid = new List<Population>();
+    [Storable]
     private EvaluationTracker tracker;
 
     // Tracks all solutions in Pyramid for quick membership checks
-    private readonly HashSet<BinaryVector> seen = new HashSet<BinaryVector>(new EnumerableBoolEqualityComparer());
+
+    private HashSet<BinaryVector> seen = new HashSet<BinaryVector>(new EnumerableBoolEqualityComparer());
+    [Storable]
+    private IEnumerable<BinaryVector> StorableSeen {
+      get { return seen; }
+      set { seen = new HashSet<BinaryVector>(value, new EnumerableBoolEqualityComparer()); }
+    }
 
     #region ParameterNames
     private const string MaximumIterationsParameterName = "Maximum Iterations";
@@ -159,13 +169,17 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
 
     protected ParameterlessPopulationPyramid(ParameterlessPopulationPyramid original, Cloner cloner)
       : base(original, cloner) {
+      random = cloner.Clone(original.random);
+      pyramid = original.pyramid.Select(cloner.Clone).ToList();
+      tracker = cloner.Clone(original.tracker);
+      seen = new HashSet<BinaryVector>(original.seen.Select(cloner.Clone), new EnumerableBoolEqualityComparer());
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new ParameterlessPopulationPyramid(this, cloner);
     }
 
-    public ParameterlessPopulationPyramid() {
+    public ParameterlessPopulationPyramid() : base() {
       Parameters.Add(new FixedValueParameter<IntValue>(MaximumIterationsParameterName, "", new IntValue(Int32.MaxValue)));
       Parameters.Add(new FixedValueParameter<IntValue>(MaximumEvaluationsParameterName, "", new IntValue(Int32.MaxValue)));
       Parameters.Add(new FixedValueParameter<IntValue>(MaximumRuntimeParameterName, "The maximum runtime in seconds after which the algorithm stops. Use -1 to specify no limit for the runtime", new IntValue(3600)));
@@ -255,7 +269,8 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
           fitness = iterate();
           ResultsIterations++;
           cancellationToken.ThrowIfCancellationRequested();
-        } finally {
+        }
+        finally {
           ResultsEvaluations = tracker.Evaluations;
           ResultsBestSolution = new BinaryVector(tracker.BestSolution);
           ResultsBestQuality = tracker.BestQuality;
