@@ -63,9 +63,17 @@ namespace HeuristicLab.Problems.BinPacking3D {
       #endregion
     }
 
-    public override void PackItem(int itemID, PackingItem item, PackingPosition position) {
+    public override void PackItem(int itemID, PackingItem item, PackingPosition position) {// base call is deliberately omitted, because UpdateResidualSpace needs to be fitted in before
+      // base call is deliberately omitted, because UpdateResidualSpace needs to be fitted in before
+      Items[itemID] = item;
+      Positions[itemID] = position;
+      ExtremePoints.Remove(position);
       ResidualSpace.Remove(position);
-      base.PackItem(itemID, item, position);
+      UpdateResidualSpace(item, position);
+      foreach (int id in Items.Select(x => x.Key))
+        GenerateNewExtremePointsForNewItem(Items[id], Positions[id]);
+
+      AddNewItemToOccupationLayers(itemID, item, position);
     }
 
     protected override void GenerateNewExtremePointsForNewItem(PackingItem newItem, PackingPosition position) {
@@ -236,8 +244,6 @@ namespace HeuristicLab.Problems.BinPacking3D {
         var positionFound = FindExtremePointForItem(item, false, stackingConstraints);
         if (positionFound != null) {
           PackItem(itemID, item, positionFound);
-          if (Items.Count > 1)
-            UpdateResidualSpace(item, positionFound);
           sequence.Remove(itemID);
         }
       }
@@ -349,24 +355,27 @@ namespace HeuristicLab.Problems.BinPacking3D {
     
     public void UpdateResidualSpace(PackingItem item, PackingPosition pos) {
       foreach (var ep in ExtremePoints) {
-        if (ep.Z >= pos.Z && ep.Z <= pos.Z + item.Depth) {
-          if (ep.X <= pos.X && ep.Y > pos.Y && ep.Y < pos.Y + item.Height) {
+        var rs = ResidualSpace[ep];
+        var depth = pos.Rotated ? item.Width : item.Depth;
+        var width = pos.Rotated ? item.Depth : item.Width;
+        if (ep.Z >= pos.Z && ep.Z < pos.Z + depth) {
+          if (ep.X <= pos.X && ep.Y >= pos.Y && ep.Y < pos.Y + item.Height) {
             var diff = pos.X - ep.X;
-            var newRSX = ResidualSpace[ep].Item1 < diff ? ResidualSpace[ep].Item1 : diff;
-            ResidualSpace[ep] = Tuple.Create(newRSX, ResidualSpace[ep].Item2, ResidualSpace[ep].Item3);
+            var newRSX = Math.Min(rs.Item1, diff);
+            ResidualSpace[ep] = Tuple.Create(newRSX, rs.Item2, rs.Item3);
           }
-          if (ep.Y <= pos.Y && ep.X > pos.X && ep.X < pos.X + item.Width) {
+          if (ep.Y <= pos.Y && ep.X >= pos.X && ep.X < pos.X + width) {
             var diff = pos.Y - ep.Y;
-            var newRSY = ResidualSpace[ep].Item2 < diff ? ResidualSpace[ep].Item2 : diff;
-            ResidualSpace[ep] = Tuple.Create(ResidualSpace[ep].Item1, newRSY, ResidualSpace[ep].Item3);
+            var newRSY = Math.Min(rs.Item2, diff);
+            ResidualSpace[ep] = Tuple.Create(rs.Item1, newRSY, rs.Item3);
           }
         }
-        if (ep.Z <= pos.Z && 
-          ep.Y > pos.Y && ep.Y < pos.Y + item.Height &&
-          ep.X > pos.X && ep.X < pos.X + item.Width) {
-            var diff = pos.Z - ep.Z;
-            var newRSZ = ResidualSpace[ep].Item3 < diff ? ResidualSpace[ep].Item3 : diff;
-            ResidualSpace[ep] = Tuple.Create(ResidualSpace[ep].Item1, ResidualSpace[ep].Item2, newRSZ);
+        if (ep.Z <= pos.Z &&
+          ep.Y >= pos.Y && ep.Y < pos.Y + item.Height &&
+          ep.X >= pos.X && ep.X < pos.X + width) {
+          var diff = pos.Z - ep.Z;
+          var newRSZ = Math.Min(rs.Item3, diff);
+          ResidualSpace[ep] = Tuple.Create(rs.Item1, rs.Item2, newRSZ);
         }
       }
       return;
