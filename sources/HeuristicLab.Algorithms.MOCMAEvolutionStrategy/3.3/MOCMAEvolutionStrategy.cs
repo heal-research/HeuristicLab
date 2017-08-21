@@ -366,7 +366,7 @@ namespace HeuristicLab.Algorithms.MOCMAEvolutionStrategy {
 
     #region Mainloop
     protected override void Run(CancellationToken cancellationToken) {
-      while (ResultsIterations < MaximumGenerations) {
+      while (ResultsIterations < MaximumGenerations && ResultsEvaluations < MaximumEvaluatedSolutions) {
         try {
           Iterate();
           ResultsIterations++;
