@@ -135,7 +135,7 @@ namespace HeuristicLab.Problems.TestFunctions.Views {
     }
 
     private void GenerateImage() {
-      if (pictureBox.Enabled && pictureBox.Width > 0 && pictureBox.Height > 0) {
+      if (pictureBox.Enabled && Content.BestRealVector.Length == 2 && pictureBox.Width > 0 && pictureBox.Height > 0) {
         if (Content == null) {
           pictureBox.Image = null;
         } else {
