@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using HeuristicLab.Clients.Hive;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 
@@ -9,9 +11,10 @@ namespace HeuristicLab.HiveDrain {
     public HiveDrainMainWindow() {
       InitializeComponent();
       ContentManager.Initialize(new PersistenceContentManager());
+      ListHiveJobs();
     }
 
-    private Task task;
+    private System.Threading.Tasks.Task task;
 
     public static ThreadSafeLog Log = new ThreadSafeLog();
 
@@ -29,7 +32,7 @@ namespace HeuristicLab.HiveDrain {
       downloadButton.Enabled = false;
 
       JobDownloader jobDownloader = new JobDownloader(Environment.CurrentDirectory, pattern, Log, oneFileCheckBox.Checked);
-      task = new Task(jobDownloader.Start);
+      task = new System.Threading.Tasks.Task(jobDownloader.Start);
       task.ContinueWith(x => { Log.LogMessage("All tasks written, quitting."); EnableButton(); }, TaskContinuationOptions.OnlyOnRanToCompletion);
       task.ContinueWith(x => { Log.LogMessage("Unexpected Exception while draining the Hive: " + x.Exception.ToString()); EnableButton(); }, TaskContinuationOptions.OnlyOnFaulted);
       task.Start();
@@ -37,6 +40,16 @@ namespace HeuristicLab.HiveDrain {
 
     private void HiveDrainMainWindow_FormClosing(object sender, FormClosingEventArgs e) {
       //TODO: implement task cancelation
+    }
+
+    private void ListHiveJobs() {
+      if (logView.Content == null)
+        logView.Content = Log;
+      Log.Clear();
+      var jobs = HiveServiceLocator.Instance.CallHiveService<IEnumerable<Job>>(s => s.GetJobs());
+      foreach (var job in jobs) {
+        Log.LogMessage(string.Format("{0}\t{1}", job.DateCreated, job.Name));
+      }
     }
   }
 }
