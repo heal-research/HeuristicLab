@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using HeuristicLab.Clients.Hive;
 using HeuristicLab.Clients.Hive.Jobs;
@@ -67,62 +68,62 @@ namespace HeuristicLab.HiveDrain {
     public void Start() {
       results = new RunCollection();
 
-      IEnumerable<LightweightTask> allTasks;
-      allTasks = HiveServiceLocator.Instance.CallHiveService(s =>
-          s.GetLightweightJobTasksWithoutStateLog(ParentJob.Id));
+      var allTasks = HiveServiceLocator.Instance.CallHiveService(s => s.GetLightweightJobTasksWithoutStateLog(ParentJob.Id));
+      var totalJobCount = allTasks.Count();
+      var optimizers = new List<IOptimizer>();
+      var finishedCount = -1;
+      using (var downloader = new TaskDownloader(allTasks.Select(x => x.Id))) {
+        downloader.StartAsync();
 
-      foreach (var lightTask in allTasks) {
-        if (lightTask.State == TaskState.Finished) {
-          AddDownloaderTask(lightTask.Id);
-          log.LogMessage(String.Format("   Getting Id {0}: {1}", lightTask.Id, DateTime.Now.ToShortTimeString()));
-        } else
-          log.LogMessage(String.Format("   {0} => ignored ({1})", lightTask.Id, lightTask.State.ToString()));
-      }
-      endReached = true;
-      if (jobCount == 0)
-        allJobsFinished.Set();
-
-      allJobsFinished.WaitOne();
-      log.LogMessage("Saving data to file...");
-      ContentManager.Save(results, RootLocation, true);
-
-      GC.Collect();
-      log.LogMessage(String.Format("All tasks for job {0} finished", ParentJob.Name));
-    }
-
-    /// <summary>
-    /// adds a task with state finished to the downloader
-    /// </summary>
-    /// <param name="taskId"></param>
-    /// <param name="taskPath"></param>
-    private void AddDownloaderTask(Guid taskId) {
-      //wait for free slot
-      limitSemaphore.WaitOne();
-
-      Interlocked.Increment(ref jobCount);
-      downloader.DownloadTaskDataAndTask(taskId, (task, itemTask) => {
-
-        log.LogMessage(String.Format("\"{0}\" - [{1}]: {2} finished", ParentJob.Name, task.Id, itemTask.Name));
-        if (itemTask is OptimizerTask) {
-          OptimizerTask optimizerTask = itemTask as OptimizerTask;
-          IOptimizer opt = (IOptimizer)optimizerTask.Item;
-
-          lock (results) {
-            results.AddRange(opt.Runs);
+        while (!downloader.IsFinished) {
+          if (finishedCount != downloader.FinishedCount) {
+            finishedCount = downloader.FinishedCount;
+            log.LogMessage(string.Format("Downloading/deserializing tasks... ({0}/{1} finished)", finishedCount, totalJobCount));
           }
-
-          log.LogMessage(String.Format("\"{0}\" - [{1}]: {2} added to result collection", ParentJob.Name, task.Id, itemTask.Name));
-        } else {
-          log.LogMessage(String.Format("Unsupported task type {0}", itemTask.GetType().Name));
         }
 
-        limitSemaphore.Release();
-        Interlocked.Decrement(ref jobCount);
+        IDictionary<Guid, HiveTask> allHiveTasks = downloader.Results;
+        log.LogMessage("Building hive job tree...");
+        var parentTasks = allHiveTasks.Values.Where(x => !x.Task.ParentTaskId.HasValue);
 
-        //if this was the last job
-        if (jobCount == 0 && endReached)
-          allJobsFinished.Set();
-      });
+        foreach (var parentTask in parentTasks) {
+          BuildHiveJobTree(parentTask, allTasks, allHiveTasks);
+
+          var optimizerTask = parentTask.ItemTask as OptimizerTask;
+
+          if (optimizerTask != null) {
+            optimizers.Add(optimizerTask.Item);
+          }
+        }
+      }
+      if (!optimizers.Any()) return;
+      IStorableContent storable;
+      if (optimizers.Count > 1) {
+        var experiment = new Experiment();
+        experiment.Optimizers.AddRange(optimizers);
+        storable = experiment;
+      } else {
+        var optimizer = optimizers.First();
+        storable = optimizer as IStorableContent;
+      }
+      if (storable != null) {
+        log.LogMessage(string.Format("Save job as {0}", RootLocation));
+        ContentManager.Save(storable, RootLocation, true);
+      } else {
+        log.LogMessage(string.Format("Could not save job, content is not storable."));
+      }
+    }
+
+    private static void BuildHiveJobTree(HiveTask parentHiveTask, IEnumerable<LightweightTask> allTasks, IDictionary<Guid, HiveTask> allHiveTasks) {
+      IEnumerable<LightweightTask> childTasks = from job in allTasks
+                                                where job.ParentTaskId.HasValue && job.ParentTaskId.Value == parentHiveTask.Task.Id
+                                                orderby job.DateCreated ascending
+                                                select job;
+      foreach (LightweightTask task in childTasks) {
+        HiveTask childHiveTask = allHiveTasks[task.Id];
+        BuildHiveJobTree(childHiveTask, allTasks, allHiveTasks);
+        parentHiveTask.AddChildHiveTask(childHiveTask);
+      }
     }
   }
 }

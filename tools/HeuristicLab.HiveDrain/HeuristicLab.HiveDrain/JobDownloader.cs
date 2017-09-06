@@ -51,8 +51,7 @@ namespace HeuristicLab.HiveDrain {
       Semaphore limitSemaphore = new Semaphore(HeuristicLabHiveDrainApplication.MaxParallelDownloads, HeuristicLabHiveDrainApplication.MaxParallelDownloads);
 
       foreach (Job j in jobsLoaded) {
-        if ((!String.IsNullOrEmpty(NamePattern) && j.Name.Contains(NamePattern)) ||
-            String.IsNullOrEmpty(NamePattern)) {
+        if (string.IsNullOrEmpty(NamePattern) || j.Name.Contains(NamePattern)) {
           string jobPath = Path.Combine(RootLocation, String.Format("{0} - {1}", j.Name, j.Id));
           log.LogMessage(String.Format("\"{0}\": {1}", j.Name, j.Id));
 
