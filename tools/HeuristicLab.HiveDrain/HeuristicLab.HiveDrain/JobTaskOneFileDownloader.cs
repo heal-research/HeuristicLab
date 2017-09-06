@@ -75,10 +75,16 @@ namespace HeuristicLab.HiveDrain {
       using (var downloader = new TaskDownloader(allTasks.Select(x => x.Id))) {
         downloader.StartAsync();
 
-        while (!downloader.IsFinished) {
+        while (!downloader.IsFinished || finishedCount < totalJobCount) {
           if (finishedCount != downloader.FinishedCount) {
             finishedCount = downloader.FinishedCount;
             log.LogMessage(string.Format("Downloading/deserializing tasks... ({0}/{1} finished)", finishedCount, totalJobCount));
+          }
+
+          Thread.Sleep(500);
+
+          if (downloader.IsFaulted) {
+            throw downloader.Exception;
           }
         }
 
