@@ -101,7 +101,7 @@ namespace HeuristicLab.ParallelEngine {
             try {
               Parallel.ForEach(stacks, parallelOptions, Run);
             }
-            catch (OperationCanceledException ex) {
+            catch (Exception ex) {
               OperationCollection remaining = new OperationCollection() { Parallel = true };
               for (int i = 0; i < stacks.Length; i++) {
                 if (stacks[i].Count == 1)
@@ -114,7 +114,7 @@ namespace HeuristicLab.ParallelEngine {
                 }
               }
               if (remaining.Count > 0) executionStack.Push(remaining);
-              throw ex;
+              throw;
             }
           } else {
             for (int i = coll.Count - 1; i >= 0; i--)
@@ -131,12 +131,6 @@ namespace HeuristicLab.ParallelEngine {
             else throw new OperatorExecutionException(operation.Operator, ex);
           }
           if (next != null) executionStack.Push(next);
-
-          if (operation.Operator.Breakpoint) {
-            string message = string.Format("Breakpoint: {0}", operation.Operator.Name != string.Empty ? operation.Operator.Name : operation.Operator.ItemName);
-            Log.LogMessage(message);
-            throw new OperationCanceledException(message);
-          }
         }
       }
     }

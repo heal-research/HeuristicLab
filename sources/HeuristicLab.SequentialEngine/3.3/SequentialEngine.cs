@@ -65,11 +65,6 @@ namespace HeuristicLab.SequentialEngine {
             else throw new OperatorExecutionException(operation.Operator, ex);
           }
           if (next != null) ExecutionStack.Push(next);
-
-          if (operation.Operator.Breakpoint) {
-            Log.LogMessage(string.Format("Breakpoint: {0}", operation.Operator.Name != string.Empty ? operation.Operator.Name : operation.Operator.ItemName));
-            Pause();
-          }
         }
       }
     }
