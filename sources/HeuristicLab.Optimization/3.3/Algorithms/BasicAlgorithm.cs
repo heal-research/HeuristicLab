@@ -83,7 +83,7 @@ namespace HeuristicLab.Optimization {
       catch (OperationCanceledException) {
       }
       catch (AggregateException ae) {
-        OnExceptionOccurred(ae.InnerExceptions.SingleOrDefault() ?? ae);
+        ae.FlattenAndHandle(new[] { typeof(OperationCanceledException) }, e => OnExceptionOccurred(e));
       }
       catch (Exception e) {
         OnExceptionOccurred(e);

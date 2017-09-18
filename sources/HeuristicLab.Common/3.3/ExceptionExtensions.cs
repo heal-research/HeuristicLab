@@ -20,23 +20,17 @@
 #endregion
 
 using System;
-using System.Runtime.ExceptionServices;
-using System.Threading;
-using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace HeuristicLab.Common {
-  public static class AsyncHelper {
-    public static async Task DoAsync(Action<CancellationToken> startAction, CancellationToken cancellationToken) {
+  public static class ExceptionExtensions {
+    public static void FlattenAndHandle(this AggregateException exception, IEnumerable<Type> exceptionsToHandle, Action<Exception> unhandledCallback) {
       try {
-        await Task.Factory.StartNew(
-          ct => startAction((CancellationToken)ct),
-          cancellationToken,
-          cancellationToken,
-          TaskCreationOptions.DenyChildAttach | TaskCreationOptions.LongRunning,
-          TaskScheduler.Default);
-      } catch (OperationCanceledException) {
-      } catch (AggregateException ae) {
-        ae.FlattenAndHandle(new[] { typeof(OperationCanceledException) }, e => ExceptionDispatchInfo.Capture(e).Throw());
+        var toHandle = new HashSet<Type>(exceptionsToHandle);
+        exception.Flatten().Handle(x => toHandle.Contains(x.GetType()));
+      } catch (AggregateException remaining) {
+        if (remaining.InnerExceptions.Count == 1) unhandledCallback(remaining.InnerExceptions[0]);
+        else unhandledCallback(remaining);
       }
     }
   }

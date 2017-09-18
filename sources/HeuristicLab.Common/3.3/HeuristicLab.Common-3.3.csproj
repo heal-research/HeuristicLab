@@ -131,6 +131,7 @@
     <Compile Include="Content\IStorableContent.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="ArrayExtensions.cs" />
+    <Compile Include="ExceptionExtensions.cs" />
     <Compile Include="Statistics\EmpiricalCumulativeDistributionFunction.cs" />
     <Compile Include="ListExtensions.cs" />
     <Compile Include="Point2D.cs" />
