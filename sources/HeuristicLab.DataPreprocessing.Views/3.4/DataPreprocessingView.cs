@@ -149,24 +149,24 @@ namespace HeuristicLab.DataPreprocessing.Views {
     private void importButton_Click(object sender, EventArgs e) {
       importProblemDataTypeContextMenuStrip.Show(Cursor.Position);
     }
-    private void importRegressionToolStripMenuItem_Click(object sender, EventArgs e) {
-      Import(new RegressionCSVInstanceProvider(), new RegressionImportDialog(),
-        (dialog => ((RegressionImportDialog)dialog).ImportType));
+    private async void importRegressionToolStripMenuItem_Click(object sender, EventArgs e) {
+      await ImportAsync(new RegressionCSVInstanceProvider(), new RegressionImportDialog(),
+        dialog => ((RegressionImportDialog)dialog).ImportType);
     }
-    private void importClassificationToolStripMenuItem_Click(object sender, EventArgs e) {
-      Import(new ClassificationCSVInstanceProvider(), new ClassificationImportDialog(),
-        (dialog => ((ClassificationImportDialog)dialog).ImportType));
+    private async void importClassificationToolStripMenuItem_Click(object sender, EventArgs e) {
+      await ImportAsync(new ClassificationCSVInstanceProvider(), new ClassificationImportDialog(),
+        dialog => ((ClassificationImportDialog)dialog).ImportType);
     }
-    private void importTimeSeriesToolStripMenuItem_Click(object sender, EventArgs e) {
-      Import(new TimeSeriesPrognosisCSVInstanceProvider(), new TimeSeriesPrognosisImportDialog(),
-        (dialog => ((TimeSeriesPrognosisImportDialog)dialog).ImportType));
+    private async void importTimeSeriesToolStripMenuItem_Click(object sender, EventArgs e) {
+      await ImportAsync(new TimeSeriesPrognosisCSVInstanceProvider(), new TimeSeriesPrognosisImportDialog(),
+        dialog => ((TimeSeriesPrognosisImportDialog)dialog).ImportType);
     }
-    private void Import<TProblemData, TImportType>(DataAnalysisInstanceProvider<TProblemData, TImportType> instanceProvider, DataAnalysisImportDialog importDialog,
+    private async Task ImportAsync<TProblemData, TImportType>(DataAnalysisInstanceProvider<TProblemData, TImportType> instanceProvider, DataAnalysisImportDialog importDialog,
       Func<DataAnalysisImportDialog, TImportType> getImportType)
       where TProblemData : class, IDataAnalysisProblemData
       where TImportType : DataAnalysisImportType {
       if (importDialog.ShowDialog() == DialogResult.OK) {
-        Task.Run(() => {
+        await Task.Run(() => {
           TProblemData instance;
           var mainForm = (MainForm.WindowsForms.MainForm)MainFormManager.MainForm;
           // lock active view and show progress bar
