@@ -468,6 +468,7 @@
     <ProjectReference Include="..\..\HeuristicLab.Algorithms.DataAnalysis\3.4\HeuristicLab.Algorithms.DataAnalysis-3.4.csproj">
       <Project>{2E782078-FA81-4B70-B56F-74CE38DAC6C8}</Project>
       <Name>HeuristicLab.Algorithms.DataAnalysis-3.4</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Analysis.Views\3.3\HeuristicLab.Analysis.Views-3.3.csproj">
       <Project>{76945D76-CA61-4147-9DC2-0ACDCDDF87F9}</Project>

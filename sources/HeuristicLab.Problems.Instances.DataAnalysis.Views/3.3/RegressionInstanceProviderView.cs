@@ -20,7 +20,6 @@
 #endregion
 
 using System;
-using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using HeuristicLab.MainForm;
@@ -72,7 +71,6 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
             ErrorWhileLoading(ex, importTypeDialog.Path);
           } finally {
             Invoke((Action)(() => instancesComboBox.SelectedIndex = -1));
-            mainForm.RemoveOperationProgressFromContent(activeView.Content);
           }
         });
       }
