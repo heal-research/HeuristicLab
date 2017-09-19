@@ -50,8 +50,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
 
     private void btn_SimplifyModel_Click(object sender, EventArgs e) {
       var view = new InteractiveSymbolicRegressionSolutionSimplifierView();
+      view.Show(); // open view first that a progress can be displayed when setting the content
       view.Content = (SymbolicRegressionSolution)this.Content.Clone();
-      view.Show();
     }
 
     private void exportButton_Click(object sender, EventArgs e) {

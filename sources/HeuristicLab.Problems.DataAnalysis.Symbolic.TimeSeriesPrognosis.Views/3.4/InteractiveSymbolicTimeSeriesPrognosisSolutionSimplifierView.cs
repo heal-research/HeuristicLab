@@ -19,104 +19,27 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using HeuristicLab.Common;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
+using HeuristicLab.Problems.DataAnalysis.Symbolic.Regression;
 using HeuristicLab.Problems.DataAnalysis.Symbolic.Views;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis.Views {
   public partial class InteractiveSymbolicTimeSeriesPrognosisSolutionSimplifierView : InteractiveSymbolicDataAnalysisSolutionSimplifierView {
-    private readonly ConstantTreeNode constantNode;
-    private readonly SymbolicExpressionTree tempTree;
-
     public new SymbolicTimeSeriesPrognosisSolution Content {
       get { return (SymbolicTimeSeriesPrognosisSolution)base.Content; }
       set { base.Content = value; }
     }
 
     public InteractiveSymbolicTimeSeriesPrognosisSolutionSimplifierView()
-      : base() {
+      : base(new SymbolicRegressionSolutionImpactValuesCalculator()) {
       InitializeComponent();
       this.Caption = "Interactive Time-Series Prognosis Solution Simplifier";
-
-      constantNode = ((ConstantTreeNode)new Constant().CreateTreeNode());
-      ISymbolicExpressionTreeNode root = new ProgramRootSymbol().CreateTreeNode();
-      ISymbolicExpressionTreeNode start = new StartSymbol().CreateTreeNode();
-      root.AddSubtree(start);
-      tempTree = new SymbolicExpressionTree(root);
-    }
-
-    protected override Dictionary<ISymbolicExpressionTreeNode, Tuple<double, double>> CalculateImpactAndReplacementValues(ISymbolicExpressionTree tree) {
-      var interpreter = Content.Model.Interpreter;
-      var rows = Content.ProblemData.TrainingIndices;
-      var dataset = Content.ProblemData.Dataset;
-      var targetVariable = Content.ProblemData.TargetVariable;
-      var targetValues = dataset.GetDoubleValues(targetVariable, rows);
-      var originalOutput = interpreter.GetSymbolicExpressionTreeValues(tree, dataset, rows).ToArray();
-
-      var impactAndReplacementValues = new Dictionary<ISymbolicExpressionTreeNode, Tuple<double, double>>();
-      List<ISymbolicExpressionTreeNode> nodes = tree.Root.GetSubtree(0).GetSubtree(0).IterateNodesPostfix().ToList();
-      OnlineCalculatorError errorState;
-      double originalR = OnlinePearsonsRCalculator.Calculate(targetValues, originalOutput, out errorState);
-      if (errorState != OnlineCalculatorError.None) originalR = 0.0;
-
-      foreach (ISymbolicExpressionTreeNode node in nodes) {
-        var parent = node.Parent;
-        constantNode.Value = CalculateReplacementValue(node, tree);
-        ISymbolicExpressionTreeNode replacementNode = constantNode;
-        SwitchNode(parent, node, replacementNode);
-        var newOutput = interpreter.GetSymbolicExpressionTreeValues(tree, dataset, rows);
-        double newR = OnlinePearsonsRCalculator.Calculate(targetValues, newOutput, out errorState);
-        if (errorState != OnlineCalculatorError.None) newR = 0.0;
-
-        // impact = 0 if no change
-        // impact < 0 if new solution is better
-        // impact > 0 if new solution is worse
-        double impact = (originalR * originalR) - (newR * newR);
-        impactAndReplacementValues[node] = new Tuple<double, double>(impact, constantNode.Value);
-        SwitchNode(parent, replacementNode, node);
-      }
-      return impactAndReplacementValues;
     }
 
     protected override void UpdateModel(ISymbolicExpressionTree tree) {
       var model = new SymbolicTimeSeriesPrognosisModel(Content.ProblemData.TargetVariable, tree, Content.Model.Interpreter);
       model.Scale(Content.ProblemData);
       Content.Model = model;
-    }
-
-    private double CalculateReplacementValue(ISymbolicExpressionTreeNode node, ISymbolicExpressionTree sourceTree) {
-      // remove old ADFs
-      while (tempTree.Root.SubtreeCount > 1) tempTree.Root.RemoveSubtree(1);
-      // clone ADFs of source tree
-      for (int i = 1; i < sourceTree.Root.SubtreeCount; i++) {
-        tempTree.Root.AddSubtree((ISymbolicExpressionTreeNode)sourceTree.Root.GetSubtree(i).Clone());
-      }
-      var start = tempTree.Root.GetSubtree(0);
-      while (start.SubtreeCount > 0) start.RemoveSubtree(0);
-      start.AddSubtree((ISymbolicExpressionTreeNode)node.Clone());
-      var interpreter = Content.Model.Interpreter;
-      var rows = Content.ProblemData.TrainingIndices;
-      var allPrognosedValues = interpreter.GetSymbolicExpressionTreeValues(tempTree, Content.ProblemData.Dataset, rows);
-
-      return allPrognosedValues.Median();
-    }
-
-
-    private void SwitchNode(ISymbolicExpressionTreeNode root, ISymbolicExpressionTreeNode oldBranch, ISymbolicExpressionTreeNode newBranch) {
-      for (int i = 0; i < root.SubtreeCount; i++) {
-        if (root.GetSubtree(i) == oldBranch) {
-          root.RemoveSubtree(i);
-          root.InsertSubtree(i, newBranch);
-          return;
-        }
-      }
-    }
-
-    protected override void btnOptimizeConstants_Click(object sender, EventArgs e) {
-      throw new NotImplementedException();
     }
   }
 }

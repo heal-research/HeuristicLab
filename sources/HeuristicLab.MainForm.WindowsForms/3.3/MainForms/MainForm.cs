@@ -229,7 +229,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       return null;
     }
 
-    public IContentView ShowContent<T>(T content, bool reuseExistingView, IEqualityComparer<T> comparer = null) where T : class,IContent {
+    public IContentView ShowContent<T>(T content, bool reuseExistingView, IEqualityComparer<T> comparer = null) where T : class, IContent {
       if (content == null) throw new ArgumentNullException("Content cannot be null.");
       if (!reuseExistingView) return ShowContent(content);
 
@@ -352,9 +352,9 @@ namespace HeuristicLab.MainForm.WindowsForms {
     /// <summary>
     /// Adds a <see cref="ProgressView"/> to the <see cref="ContentView"/>s showing the specified content.
     /// </summary>
-    public IProgress AddOperationProgressToContent(IContent content, string progressMessage, bool addToObjectGraphObjects = true) {
+    public IProgress AddOperationProgressToContent(IContent content, string progressMessage, double progressValue = -1, bool addToObjectGraphObjects = true) {
       if (InvokeRequired) {
-        IProgress result = (IProgress)Invoke((Func<IContent, string, bool, IProgress>)AddOperationProgressToContent, content, progressMessage, addToObjectGraphObjects);
+        IProgress result = (IProgress)Invoke((Func<IContent, string, double, bool, IProgress>)AddOperationProgressToContent, content, progressMessage, progressValue, addToObjectGraphObjects);
         return result;
       }
       if (contentProgressLookup.ContainsKey(content))
@@ -370,7 +370,8 @@ namespace HeuristicLab.MainForm.WindowsForms {
       } else
         contentViews = contentViews.Where(v => v.Content == content);
 
-      var progress = new Progress(progressMessage, ProgressState.Started);
+      var progress = new Progress();
+      progress.Start(progressMessage, progressValue);
       foreach (var contentView in contentViews) {
         progressViews.Add(new ProgressView(contentView, progress));
       }
@@ -383,7 +384,8 @@ namespace HeuristicLab.MainForm.WindowsForms {
     /// Adds a <see cref="ProgressView"/> to the specified view.
     /// </summary>
     public IProgress AddOperationProgressToView(Control control, string progressMessage) {
-      var progress = new Progress(progressMessage, ProgressState.Started);
+      var progress = new Progress();
+      progress.Start(progressMessage);
       AddOperationProgressToView(control, progress);
       return progress;
     }

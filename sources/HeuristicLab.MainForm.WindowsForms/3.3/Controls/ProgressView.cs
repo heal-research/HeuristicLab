@@ -153,7 +153,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       } else {
         if (content != null) {
           double progressValue = content.ProgressValue;
-          if (progressValue <= 0.0 || progressValue > 1.0) {
+          if (progressValue < 0.0 || progressValue > 1.0) {
             progressBar.Style = ProgressBarStyle.Marquee;
           } else {
             progressBar.Style = ProgressBarStyle.Blocks;
