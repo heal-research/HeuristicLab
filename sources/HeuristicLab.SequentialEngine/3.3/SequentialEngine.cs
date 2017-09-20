@@ -61,7 +61,7 @@ namespace HeuristicLab.SequentialEngine {
           }
           catch (Exception ex) {
             ExecutionStack.Push(operation);
-            if (ex is OperationCanceledException) throw ex;
+            if (ex is OperationCanceledException) throw;
             else throw new OperatorExecutionException(operation.Operator, ex);
           }
           if (next != null) ExecutionStack.Push(next);

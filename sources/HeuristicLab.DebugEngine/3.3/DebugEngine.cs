@@ -307,7 +307,7 @@ namespace HeuristicLab.DebugEngine {
           }
           CurrentOperation = null;
         } catch (Exception ex) {
-          if (ex is OperationCanceledException) throw ex;
+          if (ex is OperationCanceledException) throw;
           else throw new OperatorExecutionException(operation.Operator, ex);
         }
       }
