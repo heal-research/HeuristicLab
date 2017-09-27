@@ -110,6 +110,7 @@ namespace HeuristicLab.Optimization {
 
     private bool experimentStarted = false;
     private bool experimentStopped = false;
+    private readonly ManualResetEventSlim allOptimizerFinished = new ManualResetEventSlim(false); // this indicates that all started optimizers have been paused or stopped
 
     public Experiment()
       : base() {
@@ -190,16 +191,18 @@ namespace HeuristicLab.Optimization {
     public void Start(CancellationToken cancellationToken) {
       if ((ExecutionState != ExecutionState.Prepared) && (ExecutionState != ExecutionState.Paused))
         throw new InvalidOperationException(string.Format("Start not allowed in execution state \"{0}\".", ExecutionState));
-      if (Optimizers.Count == 0) return;
+      if (!Optimizers.Any(x => x.ExecutionState == ExecutionState.Prepared || x.ExecutionState == ExecutionState.Paused)) return;
 
       experimentStarted = true;
       experimentStopped = false;
+      allOptimizerFinished.Reset();
       IOptimizer optimizer;
-      while ((optimizer = Optimizers.FirstOrDefault(x => (x.ExecutionState == ExecutionState.Prepared) || (x.ExecutionState == ExecutionState.Paused))) != null) {
+      while ((optimizer = Optimizers.FirstOrDefault(x => x.ExecutionState == ExecutionState.Prepared || x.ExecutionState == ExecutionState.Paused)) != null) {
         // a race-condition may occur when the optimizer has changed the state by itself in the meantime
         try { optimizer.Start(cancellationToken); } catch (InvalidOperationException) { }
         if (ExecutionState == ExecutionState.Paused || ExecutionState == ExecutionState.Stopped) break;
       }
+      allOptimizerFinished.Wait();
     }
     public async Task StartAsync() { await StartAsync(CancellationToken.None); }
     public async Task StartAsync(CancellationToken cancellationToken) {
@@ -265,12 +268,14 @@ namespace HeuristicLab.Optimization {
     public event EventHandler Paused;
     private void OnPaused() {
       ExecutionState = ExecutionState.Paused;
+      allOptimizerFinished.Set();
       EventHandler handler = Paused;
       if (handler != null) handler(this, EventArgs.Empty);
     }
     public event EventHandler Stopped;
     private void OnStopped() {
       ExecutionState = ExecutionState.Stopped;
+      allOptimizerFinished.Set();
       EventHandler handler = Stopped;
       if (handler != null) handler(this, EventArgs.Empty);
     }
