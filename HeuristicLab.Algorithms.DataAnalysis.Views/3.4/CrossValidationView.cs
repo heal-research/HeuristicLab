@@ -221,8 +221,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
         Content.NumberOfWorkers.Value = (int)workersNumericUpDown.Value;
     }
 
-    private void startButton_Click(object sender, EventArgs e) {
-      Content.StartAsync();
+    private async void startButton_Click(object sender, EventArgs e) {
+      await Content.StartAsync();
     }
     private void pauseButton_Click(object sender, EventArgs e) {
       Content.Pause();

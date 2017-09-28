@@ -95,12 +95,12 @@ namespace HeuristicLab.Clients.Hive.Jobs {
       Item.Prepare();
     }
 
-    public override void Start() {
+    public override async void Start() {
       if ((Item is Experiment && OptimizerAsExperiment.Optimizers.Count == 0) || // experiment would not fire OnStopped if it has 0 optimizers
           (Item is BatchRun && OptimizerAsBatchRun.Optimizer == null)) { // batchrun would not fire OnStopped if algorithm == null
         OnTaskStopped();
       } else {
-        Item.StartAsync();
+        await Item.StartAsync();
       }
     }
 

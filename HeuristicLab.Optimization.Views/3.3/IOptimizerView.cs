@@ -135,8 +135,8 @@ namespace HeuristicLab.Optimization.Views {
     #endregion
 
     #region Control events
-    protected virtual void startButton_Click(object sender, EventArgs e) {
-      Content.StartAsync();
+    protected virtual async void startButton_Click(object sender, EventArgs e) {
+      await Content.StartAsync();
     }
     protected virtual void pauseButton_Click(object sender, EventArgs e) {
       Content.Pause();
