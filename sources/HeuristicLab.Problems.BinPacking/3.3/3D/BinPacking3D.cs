@@ -63,7 +63,7 @@ namespace HeuristicLab.Problems.BinPacking3D {
       #endregion
     }
 
-    public override void PackItem(int itemID, PackingItem item, PackingPosition position) {// base call is deliberately omitted, because UpdateResidualSpace needs to be fitted in before
+    public override void PackItem(int itemID, PackingItem item, PackingPosition position) {
       // base call is deliberately omitted, because UpdateResidualSpace needs to be fitted in before
       Items[itemID] = item;
       Positions[itemID] = position;
@@ -378,7 +378,6 @@ namespace HeuristicLab.Problems.BinPacking3D {
           ResidualSpace[ep] = Tuple.Create(rs.Item1, rs.Item2, newRSZ);
         }
       }
-      return;
     }
   }
 }
