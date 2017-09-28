@@ -966,7 +966,7 @@ namespace HeuristicLab.Services.Hive {
       var stateLogDao = pm.StateLogDao;
       var taskStateEntity = taskState.ToEntity();
 
-      if (task.State == DA.TaskState.Calculating && taskStateEntity == DA.TaskState.Paused && task.Command == null) {
+      if (task.State == DA.TaskState.Transferring && taskStateEntity == DA.TaskState.Paused && task.Command == null) {
         // slave paused and uploaded the task (no user-command) -> set waiting.
         taskStateEntity = DA.TaskState.Waiting;
       }
