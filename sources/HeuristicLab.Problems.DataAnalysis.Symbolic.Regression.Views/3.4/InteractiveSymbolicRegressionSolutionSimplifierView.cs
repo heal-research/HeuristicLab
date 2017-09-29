@@ -45,15 +45,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
 
     protected override ISymbolicExpressionTree OptimizeConstants(ISymbolicDataAnalysisModel model, IDataAnalysisProblemData problemData, IProgress progress) {
       const int constOptIterations = 50;
-      var regressionModelModel = (ISymbolicDataAnalysisModel)model.Clone();
+      var regressionModel = (ISymbolicDataAnalysisModel)model.Clone();
       var regressionProblemData = (IRegressionProblemData)problemData;
-      SymbolicRegressionConstantOptimizationEvaluator.OptimizeConstants(regressionModelModel.Interpreter, regressionModelModel.SymbolicExpressionTree, regressionProblemData, regressionProblemData.TrainingIndices,
-        applyLinearScaling: true, maxIterations: constOptIterations, updateVariableWeights: true, lowerEstimationLimit: regressionModelModel.LowerEstimationLimit, upperEstimationLimit: regressionModelModel.UpperEstimationLimit,
+      SymbolicRegressionConstantOptimizationEvaluator.OptimizeConstants(regressionModel.Interpreter, regressionModel.SymbolicExpressionTree, regressionProblemData, regressionProblemData.TrainingIndices,
+        applyLinearScaling: true, maxIterations: constOptIterations, updateVariableWeights: true, lowerEstimationLimit: regressionModel.LowerEstimationLimit, upperEstimationLimit: regressionModel.UpperEstimationLimit,
         iterationCallback: (args, func, obj) => {
           double newProgressValue = progress.ProgressValue + 1.0 / (constOptIterations + 2); // (maxIterations + 2) iterations are reported
           progress.ProgressValue = Math.Min(newProgressValue, 1.0);
         });
-      return model.SymbolicExpressionTree;
+      return regressionModel.SymbolicExpressionTree;
     }
   }
 }
