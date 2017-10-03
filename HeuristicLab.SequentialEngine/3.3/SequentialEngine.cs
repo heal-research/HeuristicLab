@@ -61,15 +61,10 @@ namespace HeuristicLab.SequentialEngine {
           }
           catch (Exception ex) {
             ExecutionStack.Push(operation);
-            if (ex is OperationCanceledException) throw ex;
+            if (ex is OperationCanceledException) throw;
             else throw new OperatorExecutionException(operation.Operator, ex);
           }
           if (next != null) ExecutionStack.Push(next);
-
-          if (operation.Operator.Breakpoint) {
-            Log.LogMessage(string.Format("Breakpoint: {0}", operation.Operator.Name != string.Empty ? operation.Operator.Name : operation.Operator.ItemName));
-            Pause();
-          }
         }
       }
     }
