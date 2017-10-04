@@ -71,6 +71,15 @@ namespace HeuristicLab.MainForm {
       progressState = ProgressState.Finished;
       canBeCanceled = false;
     }
+    public Progress(string status)
+      : this() {
+      this.status = status;
+    }
+    public Progress(string status, ProgressState state)
+      : this() {
+      this.status = status;
+      this.progressState = state;
+    }
 
     public void Cancel() {
       if (canBeCanceled)
@@ -83,15 +92,13 @@ namespace HeuristicLab.MainForm {
     }
 
     public void Start() {
-      Start(string.Empty);
-    }
-    public void Start(string status) {
-      Start(status, -1.0);
-    }
-    public void Start(string status, double progressValue) {
+      ProgressValue = 0.0;
       ProgressState = ProgressState.Started;
-      Status = status ?? string.Empty;
-      ProgressValue = progressValue;
+    }
+
+    public void Start(string status) {
+      Start();
+      Status = status;
     }
 
     #region Event Handler

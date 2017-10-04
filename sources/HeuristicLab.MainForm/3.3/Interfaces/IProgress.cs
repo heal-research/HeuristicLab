@@ -63,8 +63,8 @@ namespace HeuristicLab.MainForm {
     /// Starts or restarts a Progress. 
     /// </summary>
     void Start();
+
     void Start(string status);
-    void Start(string status, double progressValue);
 
     /// <summary>
     /// The status text changed.

@@ -182,7 +182,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       var tree = Content.Model.SymbolicExpressionTree;
       treeChart.Tree = tree.Root.SubtreeCount > 1 ? new SymbolicExpressionTree(tree.Root) : new SymbolicExpressionTree(tree.Root.GetSubtree(0).GetSubtree(0));
 
-      progress.Start("Calculate Impact and Replacement Values ...", 0);
+      progress.Start("Calculate Impact and Replacement Values ...");
       var impactAndReplacementValues = await Task.Run(() => CalculateImpactAndReplacementValues(tree));
       await Task.Delay(500); // wait for progressbar to finish animation
       var replacementValues = impactAndReplacementValues.ToDictionary(x => x.Key, x => x.Value.Item2);
@@ -208,8 +208,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
 
     protected abstract void UpdateModel(ISymbolicExpressionTree tree);
 
-    protected virtual ISymbolicExpressionTree OptimizeConstants(ISymbolicDataAnalysisModel model, IDataAnalysisProblemData problemData, IProgress progress) {
-      return model.SymbolicExpressionTree;
+    protected virtual ISymbolicExpressionTree OptimizeConstants(ISymbolicExpressionTree tree, IProgress progress) {
+      return tree;
     }
 
     private static ConstantTreeNode MakeConstantTreeNode(double value) {
@@ -297,8 +297,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
     }
 
     private async void btnOptimizeConstants_Click(object sender, EventArgs e) {
-      progress.Start("Optimizing Constants ...", 0);
-      var newTree = await Task.Run(() => OptimizeConstants(Content.Model, Content.ProblemData, progress));
+      progress.Start("Optimizing Constants ...");
+      var tree = (ISymbolicExpressionTree)Content.Model.SymbolicExpressionTree.Clone();
+      var newTree = await Task.Run(() => OptimizeConstants(tree, progress));
       await Task.Delay(500); // wait for progressbar to finish animation
       UpdateModel(newTree); // UpdateModel calls Progress.Finish (via Content_Changed)
     }
