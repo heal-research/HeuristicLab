@@ -3,6 +3,7 @@
 IF "%TargetDir%"=="" (
   SET TargetDir=.\bin\
   SET INTERACTIVE=1
+  SET SolutionDir=.\
 )
 
 echo Recreating HeuristicLab 3.3.exe.config...
