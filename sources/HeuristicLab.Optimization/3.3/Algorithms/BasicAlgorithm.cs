@@ -20,7 +20,6 @@
 #endregion
 
 using System;
-using System.Linq;
 using System.Threading;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -100,7 +99,7 @@ namespace HeuristicLab.Optimization {
 
       base.Pause();
       pausePending = true;
-      CancellationTokenSource?.Cancel();
+      if (CancellationTokenSource != null) CancellationTokenSource.Cancel();
     }
 
     public override void Stop() {
@@ -108,7 +107,7 @@ namespace HeuristicLab.Optimization {
       // alternatively check the IsCancellationRequested property of the cancellation token
       base.Stop();
       if (ExecutionState == ExecutionState.Paused) OnStopped();
-      else CancellationTokenSource?.Cancel();
+      else if (CancellationTokenSource != null) CancellationTokenSource.Cancel();
     }
 
     private void Run(object state) {

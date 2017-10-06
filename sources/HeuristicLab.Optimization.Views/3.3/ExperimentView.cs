@@ -55,6 +55,7 @@ namespace HeuristicLab.Optimization.Views {
       base.SetEnabledStateOfControls();
       experimentTreeView.Enabled = Content != null;
       runsViewHost.Enabled = Content != null;
+      workersNumericUpDown.Enabled = Content != null && Content.ExecutionState != ExecutionState.Started;
     }
 
     protected override void OnClosed(FormClosedEventArgs e) {
