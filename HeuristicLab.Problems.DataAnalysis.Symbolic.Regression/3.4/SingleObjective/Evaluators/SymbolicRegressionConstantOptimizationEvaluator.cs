@@ -155,7 +155,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       ISymbolicExpressionTree tree, IRegressionProblemData problemData, IEnumerable<int> rows, bool applyLinearScaling,
       int maxIterations, bool updateVariableWeights = true,
       double lowerEstimationLimit = double.MinValue, double upperEstimationLimit = double.MaxValue,
-      bool updateConstantsInTree = true) {
+      bool updateConstantsInTree = true, Action<double[], double, object> iterationCallback = null) {
 
       // numeric constants in the tree become variables for constant opt
       // variables in the tree become parameters (fixed values) for constant opt
@@ -209,12 +209,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
       alglib.ndimensional_pfunc function_cx_1_func = CreatePFunc(func);
       alglib.ndimensional_pgrad function_cx_1_grad = CreatePGrad(func_grad);
+      alglib.ndimensional_rep xrep = (p, f, obj) => iterationCallback(p, f, obj);
 
       try {
         alglib.lsfitcreatefg(x, y, c, n, m, k, false, out state);
         alglib.lsfitsetcond(state, 0.0, 0.0, maxIterations);
+        alglib.lsfitsetxrep(state, iterationCallback != null);
         //alglib.lsfitsetgradientcheck(state, 0.001);
-        alglib.lsfitfit(state, function_cx_1_func, function_cx_1_grad, null, null);
+        alglib.lsfitfit(state, function_cx_1_func, function_cx_1_grad, xrep, null);
         alglib.lsfitresults(state, out retVal, out c, out rep);
       }
       catch (ArithmeticException) {
