@@ -96,6 +96,16 @@ namespace HeuristicLab.Optimization {
       }
     }
 
+    [Storable]
+    private int numberOfWorkers = 1;
+    public int NumberOfWorkers {
+      get { return numberOfWorkers; }
+      set {
+        if (value < 1) throw new ArgumentException("Number of Workers must not be lower than one.");
+        numberOfWorkers = value;
+      }
+    }
+
     public IEnumerable<IOptimizer> NestedOptimizers {
       get {
         if (Optimizers == null) yield break;
@@ -110,6 +120,7 @@ namespace HeuristicLab.Optimization {
 
     private bool experimentStarted = false;
     private bool experimentStopped = false;
+
     private readonly ManualResetEventSlim allOptimizerFinished = new ManualResetEventSlim(false); // this indicates that all started optimizers have been paused or stopped
 
     public Experiment()
@@ -154,6 +165,7 @@ namespace HeuristicLab.Optimization {
 
       experimentStarted = original.experimentStarted;
       experimentStopped = original.experimentStopped;
+      numberOfWorkers = original.numberOfWorkers;
       Initialize();
     }
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -191,18 +203,34 @@ namespace HeuristicLab.Optimization {
     public void Start(CancellationToken cancellationToken) {
       if ((ExecutionState != ExecutionState.Prepared) && (ExecutionState != ExecutionState.Paused))
         throw new InvalidOperationException(string.Format("Start not allowed in execution state \"{0}\".", ExecutionState));
-      if (!Optimizers.Any(x => x.ExecutionState == ExecutionState.Prepared || x.ExecutionState == ExecutionState.Paused)) return;
+
+      // Multiple enumerations of runnableOptimizers is done on purpose to get the latest list of runnnable optimizers lazily
+      var runnableOptimizers = Optimizers.Where(x => x.ExecutionState == ExecutionState.Prepared || x.ExecutionState == ExecutionState.Paused);
+      if (!runnableOptimizers.Any()) return;
 
       experimentStarted = true;
       experimentStopped = false;
-      allOptimizerFinished.Reset();
-      IOptimizer optimizer;
-      while ((optimizer = Optimizers.FirstOrDefault(x => x.ExecutionState == ExecutionState.Prepared || x.ExecutionState == ExecutionState.Paused)) != null) {
-        // a race-condition may occur when the optimizer has changed the state by itself in the meantime
-        try { optimizer.Start(cancellationToken); } catch (InvalidOperationException) { }
-        if (ExecutionState == ExecutionState.Paused || ExecutionState == ExecutionState.Stopped) break;
+
+      var startedOptimizers = new Dictionary<IOptimizer, Task>(); // track already started optimizers (.StartAsync does not set the executionstate immediately)
+      using (var availableWorkers = new SemaphoreSlim(NumberOfWorkers, NumberOfWorkers)) {
+        while (runnableOptimizers.Any(o => !startedOptimizers.ContainsKey(o))) {
+          try {
+            availableWorkers.Wait(cancellationToken);
+            if (experimentStopped || !experimentStarted) break;
+            var optimizer = runnableOptimizers.FirstOrDefault(o => !startedOptimizers.ContainsKey(o));
+            if (optimizer != null) {
+              var startedTask = optimizer.StartAsync(cancellationToken).ContinueWith(async t => {
+                availableWorkers.Release(); // is guaranteed to be not disposed yet because Task.WaitAll blocks before the end of the using
+                await t; // trigger a potential exception on the optimizerTask
+              });
+              startedOptimizers.Add(optimizer, startedTask.Unwrap()); // unwrap task because lambda of .ContinueWith is async
+            }
+          } catch (InvalidOperationException) { } catch (OperationCanceledException) { }
+        }
+
+        Task.WaitAll(startedOptimizers.Values.ToArray()); // retreive exeptions of the asyncrounously started optimizer
+        allOptimizerFinished.Wait();
       }
-      allOptimizerFinished.Wait();
     }
     public async Task StartAsync() { await StartAsync(CancellationToken.None); }
     public async Task StartAsync(CancellationToken cancellationToken) {
@@ -217,7 +245,7 @@ namespace HeuristicLab.Optimization {
       experimentStopped = false;
       foreach (IOptimizer optimizer in Optimizers.Where(x => x.ExecutionState == ExecutionState.Started)) {
         // a race-condition may occur when the optimizer has changed the state by itself in the meantime
-        try { optimizer.Pause(); } catch (InvalidOperationException) { }
+        try { optimizer.Pause(); } catch (InvalidOperationException) { } catch (NotSupportedException) { }
       }
     }
     public void Stop() {
@@ -371,8 +399,12 @@ namespace HeuristicLab.Optimization {
       }
     }
     private void optimizer_Paused(object sender, EventArgs e) {
-      lock (locker)
-        if (Optimizers.All(x => x.ExecutionState != ExecutionState.Started)) OnPaused();
+      lock (locker) {
+        if (Optimizers.All(x => x.ExecutionState != ExecutionState.Started)) {
+          OnPaused();
+        }
+        experimentStarted = false;
+      }
     }
     private void optimizer_Prepared(object sender, EventArgs e) {
       lock (locker)
@@ -388,8 +420,11 @@ namespace HeuristicLab.Optimization {
           if (Optimizers.All(x => (x.ExecutionState == ExecutionState.Stopped) || (x.ExecutionState == ExecutionState.Prepared))) OnStopped();
         } else {
           if (experimentStarted && Optimizers.Any(x => (x.ExecutionState == ExecutionState.Prepared) || (x.ExecutionState == ExecutionState.Paused))) return;
-          else if (Optimizers.All(x => x.ExecutionState == ExecutionState.Stopped)) OnStopped();
-          else if (Optimizers.Any(x => (x.ExecutionState == ExecutionState.Prepared) || (x.ExecutionState == ExecutionState.Paused)) && Optimizers.All(o => o.ExecutionState != ExecutionState.Started)) OnPaused();
+          else if (Optimizers.All(x => x.ExecutionState == ExecutionState.Stopped)) {
+            OnStopped();
+          } else if (Optimizers.Any(x => (x.ExecutionState == ExecutionState.Prepared) || (x.ExecutionState == ExecutionState.Paused)) && Optimizers.All(o => o.ExecutionState != ExecutionState.Started)) {
+            OnPaused();
+          }
         }
       }
     }

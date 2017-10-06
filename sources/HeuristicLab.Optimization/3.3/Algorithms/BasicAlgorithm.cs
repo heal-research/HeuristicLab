@@ -79,13 +79,10 @@ namespace HeuristicLab.Optimization {
 
       try {
         Run((object)cancellationTokenSource.Token);
-      }
-      catch (OperationCanceledException) {
-      }
-      catch (AggregateException ae) {
+      } catch (OperationCanceledException) {
+      } catch (AggregateException ae) {
         ae.FlattenAndHandle(new[] { typeof(OperationCanceledException) }, e => OnExceptionOccurred(e));
-      }
-      catch (Exception e) {
+      } catch (Exception e) {
         OnExceptionOccurred(e);
       }
 
@@ -103,7 +100,7 @@ namespace HeuristicLab.Optimization {
 
       base.Pause();
       pausePending = true;
-      CancellationTokenSource.Cancel();
+      CancellationTokenSource?.Cancel();
     }
 
     public override void Stop() {
@@ -111,7 +108,7 @@ namespace HeuristicLab.Optimization {
       // alternatively check the IsCancellationRequested property of the cancellation token
       base.Stop();
       if (ExecutionState == ExecutionState.Paused) OnStopped();
-      else CancellationTokenSource.Cancel();
+      else CancellationTokenSource?.Cancel();
     }
 
     private void Run(object state) {
@@ -126,8 +123,7 @@ namespace HeuristicLab.Optimization {
           Initialize(cancellationToken);
         initialized = true;
         Run(cancellationToken);
-      }
-      finally {
+      } finally {
         timer.Elapsed -= new System.Timers.ElapsedEventHandler(timer_Elapsed);
         timer.Stop();
         ExecutionTime += DateTime.UtcNow - lastUpdateTime;
