@@ -32,24 +32,24 @@ using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.BinPacking3D {
   // make sure that for each class we have a separate entry in the problem instance providers
-  public class RandomInstanceClass1Provider : RandomInstanceProvider {
-    public RandomInstanceClass1Provider() : base() { @class = 1; binWidth = binHeight = binDepth = 100; }
+  public class RandomInstanceClass1ProviderWithSRand : RandomInstanceProviderWithSRand {
+    public RandomInstanceClass1ProviderWithSRand() : base() { @class = 1; binWidth = binHeight = binDepth = 100; }
   }
-  public class RandomInstanceClass2Provider : RandomInstanceProvider {
-    public RandomInstanceClass2Provider() : base() { @class = 2; binWidth = binHeight = binDepth = 100; }
+  public class RandomInstanceClass2ProviderWithSRand : RandomInstanceProviderWithSRand {
+    public RandomInstanceClass2ProviderWithSRand() : base() { @class = 2; binWidth = binHeight = binDepth = 100; }
   }
-  public class RandomInstanceClass3Provider : RandomInstanceProvider {
-    public RandomInstanceClass3Provider() : base() { @class = 3; binWidth = binHeight = binDepth = 100; }
+  public class RandomInstanceClass3ProviderWithSRand : RandomInstanceProviderWithSRand {
+    public RandomInstanceClass3ProviderWithSRand() : base() { @class = 3; binWidth = binHeight = binDepth = 100; }
   }
-  public class RandomInstanceClass4Provider : RandomInstanceProvider {
-    public RandomInstanceClass4Provider() : base() { @class = 4; binWidth = binHeight = binDepth = 100; }
+  public class RandomInstanceClass4ProviderWithSRand : RandomInstanceProviderWithSRand {
+    public RandomInstanceClass4ProviderWithSRand() : base() { @class = 4; binWidth = binHeight = binDepth = 100; }
   }
-  public class RandomInstanceClass5Provider : RandomInstanceProvider {
-    public RandomInstanceClass5Provider() : base() { @class = 5; binWidth = binHeight = binDepth = 100; }
+  public class RandomInstanceClass5ProviderWithSRand : RandomInstanceProviderWithSRand {
+    public RandomInstanceClass5ProviderWithSRand() : base() { @class = 5; binWidth = binHeight = binDepth = 100; }
   }
 
-  public class RandomInstanceClass6Provider : RandomInstanceProvider {
-    public RandomInstanceClass6Provider() : base() {
+  public class RandomInstanceClass6ProviderWithSRand : RandomInstanceProviderWithSRand {
+    public RandomInstanceClass6ProviderWithSRand() : base() {
       @class = 6;
       binWidth = binHeight = binDepth = 10;
     }
@@ -59,8 +59,8 @@ namespace HeuristicLab.Problems.BinPacking3D {
       d = rand.Next(1, 11);
     }
   }
-  public class RandomInstanceClass7Provider : RandomInstanceProvider {
-    public RandomInstanceClass7Provider() : base() {
+  public class RandomInstanceClass7ProviderWithSRand : RandomInstanceProviderWithSRand {
+    public RandomInstanceClass7ProviderWithSRand() : base() {
       @class = 7;
       binWidth = binHeight = binDepth = 40;
     }
@@ -70,8 +70,8 @@ namespace HeuristicLab.Problems.BinPacking3D {
       d = rand.Next(1, 36);
     }
   }
-  public class RandomInstanceClass8Provider : RandomInstanceProvider {
-    public RandomInstanceClass8Provider() : base() {
+  public class RandomInstanceClass8ProviderWithSRand : RandomInstanceProviderWithSRand {
+    public RandomInstanceClass8ProviderWithSRand() : base() {
       @class = 8;
       binWidth = binHeight = binDepth = 100;
     }
@@ -85,9 +85,89 @@ namespace HeuristicLab.Problems.BinPacking3D {
   // class 9 from the paper (all-fill) is not implemented 
 
 
-  public abstract class RandomInstanceProvider : ProblemInstanceProvider<BPPData>, IProblemInstanceProvider<BPPData> {
+  public abstract class RandomInstanceProviderWithSRand : ProblemInstanceProvider<BPPData>, IProblemInstanceProvider<BPPData> {
+    #region Random Generator srand48
+    protected class SRand48 : Item, IRandom {
+      private object locker = new object();
 
+      private bool init = false;
 
+      private uint _h48;
+      private uint _l48;
+
+      public SRand48() {
+        if (!init) {
+          Seed((uint)DateTime.Now.Ticks);
+          init = true;
+        }
+      }
+      public SRand48(uint seed) {
+        if (!init) {
+          Seed(seed);
+          init = true;
+        }
+      }
+
+      public override IDeepCloneable Clone(Cloner cloner) {
+        throw new NotImplementedException();
+      }
+
+      public int Next() {
+        lock (locker) {
+          return (int)LRand48x();
+        }
+      }
+
+      public int Next(int maxVal) {
+        lock (locker) {
+          if (maxVal <= 0)
+            throw new ArgumentException("The interval [0, " + maxVal + ") is empty");
+          return (int)(LRand48x() % maxVal);
+        }
+      }
+
+      public int Next(int minVal, int maxVal) {
+        lock (locker) {
+          if (maxVal <= minVal)
+            throw new ArgumentException("The interval [" + minVal + ", " + maxVal + ") is empty");
+          return Next(maxVal - minVal + 1) + minVal;
+        }
+      }
+
+      public double NextDouble() {
+        lock (locker) {
+          return ((double)Next()) * (1.0 / 4294967296.0);
+        }
+      }
+
+      public void Reset() {
+        lock (locker) {
+          Seed((uint)DateTime.Now.Ticks);
+        }
+      }
+
+      public void Reset(int seed) {
+        lock (locker) {
+          Seed((uint)seed);
+        }
+      }
+
+      private void Seed(uint seed) {
+        _h48 = seed;
+        _l48 = 0x330E;
+      }
+
+      private int LRand48x() {
+        _h48 = (_h48 * 0xDEECE66D) + (_l48 * 0x5DEEC);
+        _l48 = _l48 * 0xE66D + 0xB;
+        _h48 = _h48 + (_l48 >> 16);
+        _l48 = _l48 & 0xFFFF;
+        return (int)(_h48 >> 1);
+      }
+
+    }
+
+    #endregion
 
     protected int @class;
     protected int binWidth, binHeight, binDepth;
@@ -108,15 +188,16 @@ namespace HeuristicLab.Problems.BinPacking3D {
       get { return "Martello, Pisinger, Vigo: 'The Three-Dimensional Bin Packing Problem', Operations Research Vol 48, Issue 2, 2000, pp. 256-267."; }
     }
 
-    public RandomInstanceProvider() : base() { }
+    public RandomInstanceProviderWithSRand() : base() { }
 
     public override IEnumerable<IDataDescriptor> GetDataDescriptors() {
       // 10 classes
-      var rand = new MersenneTwister(1234); // fixed seed to makes sure that instances are always the same
-      foreach (int numItems in new int[] { 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90 }) {
+      //var rand = new MersenneTwister(1234); // fixed seed to makes sure that instances are always the same
+      foreach (int numItems in new int[] { 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100, 150, 200 }) {
         // get class parameters
         // generate 30 different instances for each class
         foreach (int instance in Enumerable.Range(1, 30)) {
+          var rand = new SRand48((uint)(numItems + instance));
           string name = string.Format("n={0}-id={1:00} (class={2})", numItems, instance, @class);
           var dd = new RandomDataDescriptor(name, name, numItems, @class, seed: rand.Next());
           yield return dd;
@@ -133,7 +214,7 @@ namespace HeuristicLab.Problems.BinPacking3D {
         BinShape = new PackingShape(binWidth, binHeight, binDepth),
         Items = new PackingItem[randDd.NumItems]
       };
-      var instanceRand = new MersenneTwister((uint)randDd.Seed);
+      var instanceRand = new SRand48((uint)randDd.Seed);
       for (int i = 0; i < randDd.NumItems; i++) {
         int w, h, d;
         SampleItemParameters(instanceRand, out w, out h, out d);

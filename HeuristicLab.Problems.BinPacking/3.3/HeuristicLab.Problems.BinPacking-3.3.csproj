@@ -105,6 +105,7 @@
     <Compile Include="3D\BinPacking3D.cs" />
     <Compile Include="3D\Evaluators\BinUtilizationEvaluator.cs" />
     <Compile Include="3D\Evaluators\PackingRatioEvaluator.cs" />
+    <Compile Include="3D\Instances\RandomInstanceProviderWithSRand.cs" />
     <Compile Include="Algorithms\3D\ExtremePointAlgorithm.cs" />
     <Compile Include="3D\Instances\ThreeDInstanceDescriptor.cs" />
     <Compile Include="3D\Instances\BPPData.cs" />
