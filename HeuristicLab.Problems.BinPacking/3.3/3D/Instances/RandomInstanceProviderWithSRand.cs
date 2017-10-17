@@ -25,6 +25,7 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Problems.Instances;
@@ -32,20 +33,27 @@ using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.BinPacking3D {
   // make sure that for each class we have a separate entry in the problem instance providers
+  
   public class RandomInstanceClass1ProviderWithSRand : RandomInstanceProviderWithSRand {
     public RandomInstanceClass1ProviderWithSRand() : base() { @class = 1; binWidth = binHeight = binDepth = 100; }
+    
   }
+
   public class RandomInstanceClass2ProviderWithSRand : RandomInstanceProviderWithSRand {
     public RandomInstanceClass2ProviderWithSRand() : base() { @class = 2; binWidth = binHeight = binDepth = 100; }
+    
   }
   public class RandomInstanceClass3ProviderWithSRand : RandomInstanceProviderWithSRand {
     public RandomInstanceClass3ProviderWithSRand() : base() { @class = 3; binWidth = binHeight = binDepth = 100; }
+    
   }
   public class RandomInstanceClass4ProviderWithSRand : RandomInstanceProviderWithSRand {
     public RandomInstanceClass4ProviderWithSRand() : base() { @class = 4; binWidth = binHeight = binDepth = 100; }
+    
   }
   public class RandomInstanceClass5ProviderWithSRand : RandomInstanceProviderWithSRand {
     public RandomInstanceClass5ProviderWithSRand() : base() { @class = 5; binWidth = binHeight = binDepth = 100; }
+    
   }
 
   public class RandomInstanceClass6ProviderWithSRand : RandomInstanceProviderWithSRand {
@@ -54,9 +62,9 @@ namespace HeuristicLab.Problems.BinPacking3D {
       binWidth = binHeight = binDepth = 10;
     }
     protected override void SampleItemParameters(IRandom rand, out int w, out int h, out int d) {
-      w = rand.Next(1, 11);
-      h = rand.Next(1, 11);
-      d = rand.Next(1, 11);
+      w = rand.Next(1, 10);
+      h = rand.Next(1, 10);
+      d = rand.Next(1, 10);
     }
   }
   public class RandomInstanceClass7ProviderWithSRand : RandomInstanceProviderWithSRand {
@@ -65,9 +73,9 @@ namespace HeuristicLab.Problems.BinPacking3D {
       binWidth = binHeight = binDepth = 40;
     }
     protected override void SampleItemParameters(IRandom rand, out int w, out int h, out int d) {
-      w = rand.Next(1, 36);
-      h = rand.Next(1, 36);
-      d = rand.Next(1, 36);
+      w = rand.Next(1, 35);
+      h = rand.Next(1, 35);
+      d = rand.Next(1, 35);
     }
   }
   public class RandomInstanceClass8ProviderWithSRand : RandomInstanceProviderWithSRand {
@@ -76,9 +84,9 @@ namespace HeuristicLab.Problems.BinPacking3D {
       binWidth = binHeight = binDepth = 100;
     }
     protected override void SampleItemParameters(IRandom rand, out int w, out int h, out int d) {
-      w = rand.Next(1, 101);
-      h = rand.Next(1, 101);
-      d = rand.Next(1, 101);
+      w = rand.Next(1, 100);
+      h = rand.Next(1, 100);
+      d = rand.Next(1, 100);
     }
   }
 
@@ -86,6 +94,17 @@ namespace HeuristicLab.Problems.BinPacking3D {
 
 
   public abstract class RandomInstanceProviderWithSRand : ProblemInstanceProvider<BPPData>, IProblemInstanceProvider<BPPData> {
+
+    /// <summary>
+    /// Number of created test items. This items are used for packing them into the bin
+    /// </summary>
+    private static readonly int[] numberOfGeneratedTestItems = new int[] { 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100, 150, 200 };    
+
+    /// <summary>
+    /// Number of instance for which should be created for each instance
+    /// </summary>
+    private static readonly int numberOfGeneratedInstances = 30;
+
     #region Random Generator srand48
     protected class SRand48 : Item, IRandom {
       private object locker = new object();
@@ -172,6 +191,8 @@ namespace HeuristicLab.Problems.BinPacking3D {
     protected int @class;
     protected int binWidth, binHeight, binDepth;
 
+    #region Common information for displaying it on the ui
+    
     public override string Name {
       get { return string.Format("Martello, Pisinger, Vigo (class={0})", @class); }
     }
@@ -188,23 +209,29 @@ namespace HeuristicLab.Problems.BinPacking3D {
       get { return "Martello, Pisinger, Vigo: 'The Three-Dimensional Bin Packing Problem', Operations Research Vol 48, Issue 2, 2000, pp. 256-267."; }
     }
 
+    #endregion
     public RandomInstanceProviderWithSRand() : base() { }
 
+    
+    /// <summary>
+    /// Returns a collection of data descriptors. Each descriptor contains the seed for the random generator.
+    /// </summary>
+    /// <returns></returns>
     public override IEnumerable<IDataDescriptor> GetDataDescriptors() {
       // 10 classes
-      //var rand = new MersenneTwister(1234); // fixed seed to makes sure that instances are always the same
-      foreach (int numItems in new int[] { 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100, 150, 200 }) {
-        // get class parameters
-        // generate 30 different instances for each class
-        foreach (int instance in Enumerable.Range(1, 30)) {
-          var rand = new SRand48((uint)(numItems + instance));
+      foreach (int numItems in numberOfGeneratedTestItems) {
+        for (int instance = 1; instance <= numberOfGeneratedInstances; instance++) {
           string name = string.Format("n={0}-id={1:00} (class={2})", numItems, instance, @class);
-          var dd = new RandomDataDescriptor(name, name, numItems, @class, seed: rand.Next());
-          yield return dd;
+          /* As in the test programm of Silvano Martello, David Pisinger, Daniele Vigo given, 
+           * the seed of the instance provider will be calculated by adding the number of generated items and teh instance number.
+           * This guarantees that the instances will always be the same
+           */
+          yield return new RandomDataDescriptor(name, name, numItems, @class, seed: numItems + instance);
         }
       }
     }
 
+    
     public override BPPData LoadData(IDataDescriptor dd) {
       var randDd = dd as RandomDataDescriptor;
       if (randDd == null)
@@ -223,79 +250,84 @@ namespace HeuristicLab.Problems.BinPacking3D {
       return data;
     }
 
-    // default implementation for class 1 .. 5
+    
+    /// <summary>
+    /// Generates the dimensions for a item by using the given random generator
+    /// </summary>
+    /// <param name="rand">Given random generator</param>
+    /// <param name="w">Calculated width of the item</param>
+    /// <param name="h">Calculated height of the item</param>
+    /// <param name="d">Calculated depth of the item</param>
     protected virtual void SampleItemParameters(IRandom rand, out int w, out int h, out int d) {
-      // for classes 1 - 5
       Contract.Assert(@class >= 1 && @class <= 5);
-      var weights = new double[] { 0.1, 0.1, 0.1, 0.1, 0.1 };
+      /*var weights = new double[] { 0.1, 0.1, 0.1, 0.1, 0.1 };
       weights[@class - 1] = 0.6;
       var type = Enumerable.Range(1, 5).SampleProportional(rand, 1, weights).First();
+      */
 
-      int minW, maxW;
-      int minH, maxH;
-      int minD, maxD;
-      GetItemParameters(type, rand, binWidth, binHeight, binDepth,
-        out minW, out maxW, out minH, out maxH, out minD, out maxD);
+      // as by Martello and Vigo
+      int type = @class;
+      if (type <= 5) {
+        var t = rand.Next(1, 10);
+        if (t <= 5) {
+          type = t;
+        }
+      }
 
-      w = rand.Next(minW, maxW + 1);
-      h = rand.Next(minH, maxH + 1);
-      d = rand.Next(minD, maxD + 1);
-    }
-
-    private void GetItemParameters(int type, IRandom rand,
-      int w, int h, int d,
-      out int minW, out int maxW, out int minH, out int maxH, out int minD, out int maxD) {
       switch (type) {
-        case 1: {
-            minW = 1;
-            maxW = w / 2; // integer division on purpose (see paper)
-            minH = h * 2 / 3;
-            maxH = h;
-            minD = d * 2 / 3;
-            maxD = d;
-            break;
-          }
-        case 2: {
-            minW = w * 2 / 3;
-            maxW = w;
-            minH = 1;
-            maxH = h / 2;
-            minD = d * 2 / 3;
-            maxD = d;
-            break;
-          }
-        case 3: {
-            minW = w * 2 / 3;
-            maxW = w;
-            minH = h * 2 / 3;
-            maxH = h;
-            minD = 1;
-            maxD = d / 2;
-            break;
-          }
-        case 4: {
-            minW = w / 2;
-            maxW = w;
-            minH = h / 2;
-            maxH = h;
-            minD = d / 2;
-            maxD = d;
-            break;
-          }
-        case 5: {
-            minW = 1;
-            maxW = w / 2;
-            minH = 1;
-            maxH = h / 2;
-            minD = 1;
-            maxD = d / 2;
-            break;
-          }
-        default: {
+        case 1:
+          CreateInstanceDimensionsType1(rand, out w, out h, out d);
+          break;
+        case 2:
+          CreateInstanceDimensionsType2(rand, out w, out h, out d);
+          break;
+        case 3:
+          CreateInstanceDimensionsType3(rand, out w, out h, out d);
+          break;
+        case 4:
+          CreateInstanceDimensionsType4(rand, out w, out h, out d);
+          break;
+        case 5:
+          CreateInstanceDimensionsType5(rand, out w, out h, out d);
+          break;
+        default: 
             throw new InvalidProgramException();
-          }
       }
     }
+
+    
+    #region Instance dimensions generators for type 1 - 5
+    private void CreateInstanceDimensionsType1(IRandom rand, out int w, out int h, out int d) {
+      w = rand.Next(1, binWidth / 2);
+      h = rand.Next((binHeight * 2) / 3, binHeight);
+      d = rand.Next((binDepth * 2) / 3, binDepth);
+    }
+
+    private void CreateInstanceDimensionsType2(IRandom rand, out int w, out int h, out int d) {
+      w = rand.Next(((binWidth * 2) / 3), binWidth);
+      h = rand.Next(1, binHeight / 2);
+      d = rand.Next(((binDepth * 2) / 3), binDepth);
+    }
+
+    private void CreateInstanceDimensionsType3(IRandom rand, out int w, out int h, out int d) {
+      w = rand.Next(((binWidth * 2) / 3), binWidth);
+      h = rand.Next(((binHeight * 2) / 3), binHeight);
+      d = rand.Next(1, binDepth / 2);
+    }
+    private void CreateInstanceDimensionsType4(IRandom rand, out int w, out int h, out int d) {
+      w = rand.Next(binWidth / 2, binWidth);
+      h = rand.Next(binHeight / 2, binHeight);
+      d = rand.Next(binDepth / 2, binDepth);
+    }
+    private void CreateInstanceDimensionsType5(IRandom rand, out int w, out int h, out int d) {
+      w = rand.Next(1, binWidth / 2);
+      h = rand.Next(1, binHeight / 2);
+      d = rand.Next(1, binDepth / 2);
+    }
+   
+    #endregion
+
+
 
     public override bool CanImportData {
       get { return false; }
@@ -322,11 +354,9 @@ namespace HeuristicLab.Problems.BinPacking3D {
             writer.WriteLine("{0,-5} {1,-5} {2,-5}   W(I),H(I),D(I),I=1,...,N", instance.Items[i].Width, instance.Items[i].Height, instance.Items[i].Depth);
           else
             writer.WriteLine("{0,-5} {1,-5} {2,-5}", instance.Items[i].Width, instance.Items[i].Height, instance.Items[i].Depth);
-
         }
         writer.Flush();
       }
     }
-
   }
 }
