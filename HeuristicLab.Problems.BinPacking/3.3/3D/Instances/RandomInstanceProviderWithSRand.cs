@@ -98,12 +98,13 @@ namespace HeuristicLab.Problems.BinPacking3D {
     /// <summary>
     /// Number of created test items. This items are used for packing them into the bin
     /// </summary>
-    private static readonly int[] numberOfGeneratedTestItems = new int[] { 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100, 150, 200 };    
+    //private static readonly int[] numberOfGeneratedTestItems = new int[] { 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100, 150, 200 };
+    private static readonly int[] numberOfGeneratedTestItems = new int[] { 50, 100, 150, 200 };
 
     /// <summary>
     /// Number of instance for which should be created for each instance
     /// </summary>
-    private static readonly int numberOfGeneratedInstances = 30;
+    private static readonly int numberOfGeneratedInstances = 10;
 
     #region Random Generator srand48
     protected class SRand48 : Item, IRandom {

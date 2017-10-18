@@ -202,6 +202,8 @@ namespace HeuristicLab.Problems.BinPacking3D {
       return Tuple.Create(rightLimit.X - pos.X, upLimit.Y - pos.Y, forwardLimit.Z - pos.Z);
     }
 
+    #region Projections
+        
     private Vector3D ProjectBackward(Vector3D pos) {
       var line = new Line3D(pos, new Vector3D(0, 0, -1));
       return Items.Select(x => new { Item = x.Value, Position = Positions[x.Key] })
@@ -261,7 +263,11 @@ namespace HeuristicLab.Problems.BinPacking3D {
                   .Where(x => x != null && x.Y >= pos.Y)
                   .MinItems(x => x.Y).First();
     }
+    #endregion
 
+    #region Get items
+
+    
     private IEnumerable<Tuple<PackingPosition, PackingItem>> GetItemsAbove(PackingPosition pos) {
       var line = new Line3D(pos, new Vector3D(0, 1, 0));
       return Items.Select(x => new {
@@ -291,6 +297,7 @@ namespace HeuristicLab.Problems.BinPacking3D {
       }).Where(x => x.Intersection != null && x.Intersection.Y >= pos.Y)
         .Select(x => Tuple.Create(x.Position, x.Item));
     }
+    #endregion
 
     public override PackingPosition FindExtremePointForItem(PackingItem item, bool rotated, bool stackingConstraints) {
       PackingItem newItem = new PackingItem(
@@ -315,6 +322,7 @@ namespace HeuristicLab.Problems.BinPacking3D {
         && (!stackingConstraints || (IsStaticStable(item, position) && IsWeightSupported(item, position)));
     }
 
+    #region Sliding based packing    
     public override PackingPosition FindPositionBySliding(PackingItem item, bool rotated, bool stackingConstraints) {
       //Starting-position at upper right corner (=left bottom point of item-rectangle is at position item.width,item.height)
       PackingPosition currentPosition = new PackingPosition(0,
@@ -364,6 +372,7 @@ namespace HeuristicLab.Problems.BinPacking3D {
         }
       }
     }
+    #endregion
     public override void ExtremePointBasedPacking(ref IList<int> sequence, IList<PackingItem> items, bool stackingConstraints) {
       var temp = new List<int>(sequence);
       foreach (int itemID in temp) {

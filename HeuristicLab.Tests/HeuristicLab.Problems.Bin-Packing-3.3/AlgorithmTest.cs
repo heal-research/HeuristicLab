@@ -27,7 +27,7 @@ namespace HeuristicLab.Problems.BinPacking.Tests {
     [TestMethod]
     [TestCategory("Problems.BinPacking")]
     public void TestRandomInstanceProvider() {
-      
+
       var referenceItemLists = ReadReferenceItemLists();
       TestRandomInstanceProviderByClass(new RandomInstanceClass1ProviderWithSRand(), referenceItemLists);
       TestRandomInstanceProviderByClass(new RandomInstanceClass2ProviderWithSRand(), referenceItemLists);
@@ -37,12 +37,12 @@ namespace HeuristicLab.Problems.BinPacking.Tests {
       TestRandomInstanceProviderByClass(new RandomInstanceClass6ProviderWithSRand(), referenceItemLists);
       TestRandomInstanceProviderByClass(new RandomInstanceClass7ProviderWithSRand(), referenceItemLists);
       TestRandomInstanceProviderByClass(new RandomInstanceClass8ProviderWithSRand(), referenceItemLists);
-      
+
     }
 
     private IDictionary<string, List<Dimension>> ReadReferenceItemLists() {
       var itemList = new Dictionary<string, List<Dimension>>();
-      string path = @"C:\HEAL\BinPacking\Algorithm\export";//todo which location can be used for storing the reference files? At the moment their location can be found on the local disc
+      string path = @".\..\HeuristicLab.Tests\HeuristicLab.Problems.Bin-Packing-3.3\ReferenceInstances";
 
       string[] files = Directory.GetFiles(path);
       foreach (string filePath in files) {
@@ -101,7 +101,7 @@ namespace HeuristicLab.Problems.BinPacking.Tests {
 
     /// <summary>
     /// Constants for testing the algorithm
-    /// The test parameter are defined in the paper 
+    /// The test parameters are defined in the paper 
     /// </summary>
     private const int NUMBER_OF_TEST_INSTANCES = 10;
     private static readonly int[] TEST_CLASSES = { 1, 2 };
@@ -109,11 +109,63 @@ namespace HeuristicLab.Problems.BinPacking.Tests {
 
     [TestMethod]
     [TestCategory("Problems.BinPacking")]
-    public void TestExtremePointAlgorithm() {
-      TestExtremePointAlgorithmByParameters(new RandomInstanceClass1ProviderWithSRand(), 1, SortingMethod.Given, FittingMethod.FirstFit);
-
-
+    public void TestExtremePointAlgorithmClass1() {
+      TestExtremePointAlgorithm(new RandomInstanceClass1ProviderWithSRand(), 1);
     }
+
+    [TestMethod]
+    [TestCategory("Problems.BinPacking")]
+    public void TestExtremePointAlgorithmClass2() {
+      TestExtremePointAlgorithm(new RandomInstanceClass2ProviderWithSRand(), 2);
+    }
+
+    [TestMethod]
+    [TestCategory("Problems.BinPacking")]
+    public void TestExtremePointAlgorithmClass3() {
+      TestExtremePointAlgorithm(new RandomInstanceClass3ProviderWithSRand(), 3);
+    }
+
+    [TestMethod]
+    [TestCategory("Problems.BinPacking")]
+    public void TestExtremePointAlgorithmClass4() {
+      TestExtremePointAlgorithm(new RandomInstanceClass4ProviderWithSRand(), 4);
+    }
+
+    [TestMethod]
+    [TestCategory("Problems.BinPacking")]
+    public void TestExtremePointAlgorithmClass5() {
+      TestExtremePointAlgorithm(new RandomInstanceClass5ProviderWithSRand(), 5);
+    }
+
+    [TestMethod]
+    [TestCategory("Problems.BinPacking")]
+    public void TestExtremePointAlgorithmClass6() {
+      TestExtremePointAlgorithm(new RandomInstanceClass6ProviderWithSRand(), 6);
+    }
+
+    [TestMethod]
+    [TestCategory("Problems.BinPacking")]
+    public void TestExtremePointAlgorithmClass7() {
+      TestExtremePointAlgorithm(new RandomInstanceClass7ProviderWithSRand(), 7);
+    }
+
+    [TestMethod]
+    [TestCategory("Problems.BinPacking")]
+    public void TestExtremePointAlgorithmClass8() {
+      TestExtremePointAlgorithm(new RandomInstanceClass8ProviderWithSRand(), 8);
+    }
+
+    private void TestExtremePointAlgorithm(RandomInstanceProviderWithSRand randomInstanceProvider, int @class) {
+      foreach (SortingMethod sortingMethod in Enum.GetValues(typeof(SortingMethod))) {
+        //foreach (FittingMethod fittingMethod in Enum.GetValues(typeof(FittingMethod))) {
+        FittingMethod fittingMethod = FittingMethod.FirstFit;
+        TestExtremePointAlgorithmByParameters(randomInstanceProvider, @class, sortingMethod, fittingMethod);
+        //}
+      }
+    }
+
+
+
 
     private void TestExtremePointAlgorithmByParameters(RandomInstanceProviderWithSRand randomInstanceProvider, int @class, SortingMethod sortingMethod, FittingMethod fittingMethod) {
       var dataDescriptors = randomInstanceProvider.GetDataDescriptors();
@@ -145,10 +197,10 @@ namespace HeuristicLab.Problems.BinPacking.Tests {
         }
 
         double referenceValue = 0.0;
-        
+
         if (referenceValues.TryGetValue(new Tuple<int, int, SortingMethod>(@class, numItems, sortingMethod), out referenceValue)) {
-          Console.WriteLine($"{numItems}: {referenceValue} {(double)sumNumberOfBins / (double)NUMBER_OF_TEST_INSTANCES}");
-          Assert.AreEqual(referenceValue, (double)sumNumberOfBins / (double)NUMBER_OF_TEST_INSTANCES, 1.0);
+          Console.WriteLine($"{numItems}-{@class}-{sortingMethod}: \t{referenceValue} \t {(double)sumNumberOfBins / (double)NUMBER_OF_TEST_INSTANCES} \t{(referenceValue - ((double)sumNumberOfBins / (double)NUMBER_OF_TEST_INSTANCES)):F2}");
+          Assert.AreEqual(referenceValue, (double)sumNumberOfBins / (double)NUMBER_OF_TEST_INSTANCES, 10.0);
         }
       }
     }
@@ -156,40 +208,55 @@ namespace HeuristicLab.Problems.BinPacking.Tests {
 
     /// <summary>
     /// Returns a dictionary which contains the reference values from table 2 given by the paper https://www.cirrelt.ca/DocumentsTravail/CIRRELT-2007-41.pdf 
+    /// Dictionary<Tuple<int, int, SortingMethod>, double> -> Dictionary<Tuple<@class, number of items, SortingMethod>, value>
     /// </summary>
     /// <returns></returns>
     private Dictionary<Tuple<int, int, SortingMethod>, double> GetReferenceAlgorithmValues() {
       Dictionary<Tuple<int, int, SortingMethod>, double> referenceValues = new Dictionary<Tuple<int, int, SortingMethod>, double>();
 
-      referenceValues.Add(new Tuple<int, int, SortingMethod>(1, 50, SortingMethod.Given), 14.6);
-      referenceValues.Add(new Tuple<int, int, SortingMethod>(1, 100, SortingMethod.Given), 29.2);
-      referenceValues.Add(new Tuple<int, int, SortingMethod>(1, 150, SortingMethod.Given), 40.1);
-      referenceValues.Add(new Tuple<int, int, SortingMethod>(1, 200, SortingMethod.Given), 55.9);
+      AddToReferenceAlgorithmValuesDict(referenceValues, 1, SortingMethod.Given, new double[] { 14.6, 29.2, 40.1, 55.9});
+      AddToReferenceAlgorithmValuesDict(referenceValues, 1, SortingMethod.HeightVolume, new double[] { 15, 29.2, 39.9, 55.6 });
+      AddToReferenceAlgorithmValuesDict(referenceValues, 1, SortingMethod.VolumeHeight, new double[] { 14.4, 29.5, 40.3, 55.7 });
+      AddToReferenceAlgorithmValuesDict(referenceValues, 1, SortingMethod.AreaHeight, new double[] { 14.4, 28.3, 39.2, 53.2 });
+      AddToReferenceAlgorithmValuesDict(referenceValues, 1, SortingMethod.HeightArea, new double[] { 15, 29, 39.8, 55.1});
 
-      referenceValues.Add(new Tuple<int, int, SortingMethod>(1, 50, SortingMethod.HeightVolume), 15);
-      referenceValues.Add(new Tuple<int, int, SortingMethod>(1, 100, SortingMethod.HeightVolume), 29.2);
-      referenceValues.Add(new Tuple<int, int, SortingMethod>(1, 150, SortingMethod.HeightVolume), 39.9);
-      referenceValues.Add(new Tuple<int, int, SortingMethod>(1, 200, SortingMethod.HeightVolume), 55.6);
+      AddToReferenceAlgorithmValuesDict(referenceValues, 4, SortingMethod.Given, new double[] { 29.7, 60.2, 88.5, 119.9 });
+      AddToReferenceAlgorithmValuesDict(referenceValues, 4, SortingMethod.HeightVolume, new double[] { 30.1, 59.6, 88.3, 120.1 });
+      AddToReferenceAlgorithmValuesDict(referenceValues, 4, SortingMethod.VolumeHeight, new double[] { 29.9, 60.4, 88.6, 119.6 });
+      AddToReferenceAlgorithmValuesDict(referenceValues, 4, SortingMethod.AreaHeight, new double[] { 30, 59.7, 88.4, 120.3 });
+      AddToReferenceAlgorithmValuesDict(referenceValues, 4, SortingMethod.HeightArea, new double[] { 30, 59.6, 88.3, 120 });
 
-      referenceValues.Add(new Tuple<int, int, SortingMethod>(1, 50, SortingMethod.VolumeHeight), 14.4);
-      referenceValues.Add(new Tuple<int, int, SortingMethod>(1, 100, SortingMethod.VolumeHeight), 29.5);
-      referenceValues.Add(new Tuple<int, int, SortingMethod>(1, 150, SortingMethod.VolumeHeight), 40.3);
-      referenceValues.Add(new Tuple<int, int, SortingMethod>(1, 200, SortingMethod.VolumeHeight), 55.7);
+      AddToReferenceAlgorithmValuesDict(referenceValues, 5, SortingMethod.Given, new double[] { 10.1, 18.1, 24.4, 32.5 });
+      AddToReferenceAlgorithmValuesDict(referenceValues, 5, SortingMethod.HeightVolume, new double[] { 9, 16.7, 22.9, 30.7});
+      AddToReferenceAlgorithmValuesDict(referenceValues, 5, SortingMethod.VolumeHeight, new double[] { 10, 17.8, 24.5, 32.6 });
+      AddToReferenceAlgorithmValuesDict(referenceValues, 5, SortingMethod.AreaHeight, new double[] { 9.2, 16.1, 21.9, 29.5 });
+      AddToReferenceAlgorithmValuesDict(referenceValues, 5, SortingMethod.HeightArea, new double[] { 9, 16.6, 22.6, 30.5 });
 
-      referenceValues.Add(new Tuple<int, int, SortingMethod>(1, 50, SortingMethod.AreaHeight), 14.4);
-      referenceValues.Add(new Tuple<int, int, SortingMethod>(1, 100, SortingMethod.AreaHeight), 28.3);
-      referenceValues.Add(new Tuple<int, int, SortingMethod>(1, 150, SortingMethod.AreaHeight), 39.2);
-      referenceValues.Add(new Tuple<int, int, SortingMethod>(1, 200, SortingMethod.AreaHeight), 53.2);
+      AddToReferenceAlgorithmValuesDict(referenceValues, 6, SortingMethod.Given, new double[] { 11.7, 21.7, 33, 44.4});
+      AddToReferenceAlgorithmValuesDict(referenceValues, 6, SortingMethod.HeightVolume, new double[] { 10.9, 21.2, 31.8, 41.5 });
+      AddToReferenceAlgorithmValuesDict(referenceValues, 6, SortingMethod.VolumeHeight, new double[] { 11.7, 22, 34.2, 44 });
+      AddToReferenceAlgorithmValuesDict(referenceValues, 6, SortingMethod.AreaHeight, new double[] { 10.6, 20.2, 30.8, 39.5});
+      AddToReferenceAlgorithmValuesDict(referenceValues, 6, SortingMethod.HeightArea, new double[] { 10.9, 20.5, 31, 39.8 });
 
-      referenceValues.Add(new Tuple<int, int, SortingMethod>(1, 50, SortingMethod.HeightArea), 15);
-      referenceValues.Add(new Tuple<int, int, SortingMethod>(1, 100, SortingMethod.HeightArea), 29);
-      referenceValues.Add(new Tuple<int, int, SortingMethod>(1, 150, SortingMethod.HeightArea), 39.8);
-      referenceValues.Add(new Tuple<int, int, SortingMethod>(1, 200, SortingMethod.HeightArea), 55.1);
+      AddToReferenceAlgorithmValuesDict(referenceValues, 7, SortingMethod.Given, new double[] { 9.4, 15.9, 19.3, 30 });
+      AddToReferenceAlgorithmValuesDict(referenceValues, 7, SortingMethod.HeightVolume, new double[] { 8.2, 14.6, 19.2, 28.1 });
+      AddToReferenceAlgorithmValuesDict(referenceValues, 7, SortingMethod.VolumeHeight, new double[] { 9.3, 15.6, 19.7, 30.2 });
+      AddToReferenceAlgorithmValuesDict(referenceValues, 7, SortingMethod.AreaHeight, new double[] { 8.1, 14.1, 18.2, 26.2 });
+      AddToReferenceAlgorithmValuesDict(referenceValues, 7, SortingMethod.HeightArea, new double[] { 8.1, 14.1, 18.9, 27,2 });
 
-
-      var s = referenceValues[new Tuple<int, int, SortingMethod>(1, 200, SortingMethod.HeightArea)];
-
+      AddToReferenceAlgorithmValuesDict(referenceValues, 8, SortingMethod.Given, new double[] { 11.6, 22, 28.5, 35.4 });
+      AddToReferenceAlgorithmValuesDict(referenceValues, 8, SortingMethod.HeightVolume, new double[] { 10.5, 20.9, 27.4, 33.9 });
+      AddToReferenceAlgorithmValuesDict(referenceValues, 8, SortingMethod.VolumeHeight, new double[] { 11.6, 22.1, 28.4, 35.4});
+      AddToReferenceAlgorithmValuesDict(referenceValues, 8, SortingMethod.AreaHeight, new double[] { 10.1, 20.3, 26.4, 32.2 });
+      AddToReferenceAlgorithmValuesDict(referenceValues, 8, SortingMethod.HeightArea, new double[] { 10.5, 20.8, 37.7, 33.9 });
       return referenceValues;
+    }
+
+    private void AddToReferenceAlgorithmValuesDict(Dictionary<Tuple<int, int, SortingMethod>, double> referenceValues, int @class, SortingMethod sortingMethod, double[] values) {
+      for (int i = 0; i < values.Length; i++) {
+        referenceValues.Add(new Tuple<int, int, SortingMethod>(@class, 50 + (50 * i), sortingMethod), values[i]);
+      }
+      
     }
 
 
