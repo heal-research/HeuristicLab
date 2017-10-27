@@ -37,31 +37,31 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     #region default data
     private static double[,] kozaF1 = new double[,] {
-          {2.017885919,	-1.449165046},
-          {1.30060506,	-1.344523885},
-          {1.147134798,	-1.317989331},
-          {0.877182504,	-1.266142284},
-          {0.852562452,	-1.261020794},
-          {0.431095788,	-1.158793317},
-          {0.112586002,	-1.050908405},
-          {0.04594507,	-1.021989402},
-          {0.042572879,	-1.020438113},
-          {-0.074027291,	-0.959859562},
-          {-0.109178553,	-0.938094706},
-          {-0.259721109,	-0.803635355},
-          {-0.272991057,	-0.387519561},
-          {-0.161978191,	-0.193611001},
-          {-0.102489983,	-0.114215349},
-          {-0.01469968,	-0.014918985},
-          {-0.008863365,	-0.008942626},
-          {0.026751057,	0.026054094},
-          {0.166922436,	0.14309643},
-          {0.176953808,	0.1504144},
-          {0.190233418,	0.159916534},
-          {0.199800708,	0.166635331},
-          {0.261502822,	0.207600348},
-          {0.30182879,	0.232370249},
-          {0.83763905,	0.468046718}
+          {2.017885919, -1.449165046},
+          {1.30060506,  -1.344523885},
+          {1.147134798, -1.317989331},
+          {0.877182504, -1.266142284},
+          {0.852562452, -1.261020794},
+          {0.431095788, -1.158793317},
+          {0.112586002, -1.050908405},
+          {0.04594507,  -1.021989402},
+          {0.042572879, -1.020438113},
+          {-0.074027291,  -0.959859562},
+          {-0.109178553,  -0.938094706},
+          {-0.259721109,  -0.803635355},
+          {-0.272991057,  -0.387519561},
+          {-0.161978191,  -0.193611001},
+          {-0.102489983,  -0.114215349},
+          {-0.01469968, -0.014918985},
+          {-0.008863365,  -0.008942626},
+          {0.026751057, 0.026054094},
+          {0.166922436, 0.14309643},
+          {0.176953808, 0.1504144},
+          {0.190233418, 0.159916534},
+          {0.199800708, 0.166635331},
+          {0.261502822, 0.207600348},
+          {0.30182879,  0.232370249},
+          {0.83763905,  0.468046718}
     };
     private static readonly Dataset defaultDataset;
     private static readonly IEnumerable<string> defaultAllowedInputVariables;
@@ -168,12 +168,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
         throw new ArgumentException("The problem data is not a regression problem data. Instead a " + problemData.GetType().GetPrettyName() + " was provided.", "problemData");
 
       var returnValue = base.IsProblemDataCompatible(problemData, out errorMessage);
-      //check targetVariable
-      if (problemData.InputVariables.All(var => var.Value != TargetVariable)) {
-        errorMessage = string.Format("The target variable {0} is not present in the new problem data.", TargetVariable)
-                       + Environment.NewLine + errorMessage;
-        return false;
-      }
       return returnValue;
     }
 
@@ -184,7 +178,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
         throw new ArgumentException("The problem data is not a regression problem data. Instead a " + problemData.GetType().GetPrettyName() + " was provided.", "problemData");
 
       base.AdjustProblemDataProperties(problemData);
-      TargetVariable = regressionProblemData.TargetVariable;
     }
   }
 }
