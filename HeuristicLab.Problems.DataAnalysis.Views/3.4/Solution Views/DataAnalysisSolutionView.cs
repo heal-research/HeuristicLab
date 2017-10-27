@@ -141,6 +141,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
         var solution = (IDataAnalysisSolution)Content.Clone();
         problemData.AdjustProblemDataProperties(solution.ProblemData);
+
         solution.ProblemData = problemData;
         if (!solution.Name.EndsWith(" with loaded problemData"))
           solution.Name += " with loaded problemData";
@@ -212,7 +213,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     }
 
     protected override void itemsListView_DragDrop(object sender, DragEventArgs e) {
-      if (e.Effect == DragDropEffects.None) return;
+      if (e.Effect != DragDropEffects.Copy) return;
 
       IDataAnalysisProblemData problemData = null;
       var dropData = e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat);
@@ -225,6 +226,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         problemData = param.Value as DataAnalysisProblemData;
       }
       if (problemData == null) return;
+
+      problemData = (IDataAnalysisProblemData)problemData.Clone();
 
       try {
         problemData.AdjustProblemDataProperties(Content.ProblemData);
