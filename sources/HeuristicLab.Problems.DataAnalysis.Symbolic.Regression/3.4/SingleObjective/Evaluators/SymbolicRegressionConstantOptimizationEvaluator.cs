@@ -167,20 +167,25 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
       TreeToAutoDiffTermConverter.ParametricFunction func;
       TreeToAutoDiffTermConverter.ParametricFunctionGradient func_grad;
-      if (!TreeToAutoDiffTermConverter.TryConvertToAutoDiff(tree, updateVariableWeights, out parameters, out initialConstants, out func, out func_grad))
+      if (!TreeToAutoDiffTermConverter.TryConvertToAutoDiff(tree, updateVariableWeights, applyLinearScaling, out parameters, out initialConstants, out func, out func_grad))
         throw new NotSupportedException("Could not optimize constants of symbolic expression tree due to not supported symbols used in the tree.");
       if (parameters.Count == 0) return 0.0; // gkronber: constant expressions always have a R² of 0.0 
 
       var parameterEntries = parameters.ToArray(); // order of entries must be the same for x
 
       //extract inital constants
-      double[] c = new double[initialConstants.Length + 2];
-      {
-        c[0] = 0.0;
-        c[1] = 1.0;
-        Array.Copy(initialConstants, 0, c, 2, initialConstants.Length);
+      double[] c;
+      if (applyLinearScaling) {
+        c = new double[initialConstants.Length + 2];
+        {
+          c[0] = 0.0;
+          c[1] = 1.0;
+          Array.Copy(initialConstants, 0, c, 2, initialConstants.Length);
+        }
+      } else {
+        c = (double[])initialConstants.Clone();
       }
-      double[] originalConstants = (double[])c.Clone();
+
       double originalQuality = SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.Calculate(interpreter, tree, lowerEstimationLimit, upperEstimationLimit, problemData, rows, applyLinearScaling);
 
       alglib.lsfitstate state;
@@ -218,21 +223,23 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         //alglib.lsfitsetgradientcheck(state, 0.001);
         alglib.lsfitfit(state, function_cx_1_func, function_cx_1_grad, xrep, null);
         alglib.lsfitresults(state, out retVal, out c, out rep);
-      }
-      catch (ArithmeticException) {
+      } catch (ArithmeticException) {
         return originalQuality;
-      }
-      catch (alglib.alglibexception) {
+      } catch (alglib.alglibexception) {
         return originalQuality;
       }
 
       //retVal == -7  => constant optimization failed due to wrong gradient
-      if (retVal != -7) UpdateConstants(tree, c.Skip(2).ToArray(), updateVariableWeights);
+      if (retVal != -7) {
+        if (applyLinearScaling) UpdateConstants(tree, c.Skip(2).ToArray(), updateVariableWeights);
+        else UpdateConstants(tree, c.ToArray(), updateVariableWeights);
+      }
       var quality = SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.Calculate(interpreter, tree, lowerEstimationLimit, upperEstimationLimit, problemData, rows, applyLinearScaling);
 
-      if (!updateConstantsInTree) UpdateConstants(tree, originalConstants.Skip(2).ToArray(), updateVariableWeights);
+      if (!updateConstantsInTree) UpdateConstants(tree, initialConstants.ToArray(), updateVariableWeights);
+
       if (originalQuality - quality > 0.001 || double.IsNaN(quality)) {
-        UpdateConstants(tree, originalConstants.Skip(2).ToArray(), updateVariableWeights);
+        UpdateConstants(tree, initialConstants.ToArray(), updateVariableWeights);
         return originalQuality;
       }
       return quality;
