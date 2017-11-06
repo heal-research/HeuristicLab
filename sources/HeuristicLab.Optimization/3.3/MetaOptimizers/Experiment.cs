@@ -121,7 +121,16 @@ namespace HeuristicLab.Optimization {
     private bool experimentStarted = false;
     private bool experimentStopped = false;
 
-    private readonly ManualResetEventSlim allOptimizerFinished = new ManualResetEventSlim(false); // this indicates that all started optimizers have been paused or stopped
+    // track already started optimizers (.StartAsync does not set the executionstate immediately)
+    // and to avoid restarting optimizers that were manually paused/stopped by the user
+    private readonly IDictionary<IOptimizer, Task> startedOptimizers = new Dictionary<IOptimizer, Task>();
+    private IEnumerable<IOptimizer> StartableOptimizers {
+      get {
+        return Optimizers
+          .Where(x => x.ExecutionState == ExecutionState.Prepared || x.ExecutionState == ExecutionState.Paused)
+          .Where(o => !startedOptimizers.ContainsKey(o));  // all startable optimizers that were not startet yet
+      }
+    }
 
     public Experiment()
       : base() {
@@ -204,32 +213,28 @@ namespace HeuristicLab.Optimization {
       if ((ExecutionState != ExecutionState.Prepared) && (ExecutionState != ExecutionState.Paused))
         throw new InvalidOperationException(string.Format("Start not allowed in execution state \"{0}\".", ExecutionState));
 
-      // Multiple enumerations of runnableOptimizers is done on purpose to get the latest list of runnnable optimizers lazily
-      var runnableOptimizers = Optimizers.Where(x => x.ExecutionState == ExecutionState.Prepared || x.ExecutionState == ExecutionState.Paused);
-      if (!runnableOptimizers.Any()) return;
+      startedOptimizers.Clear();
+      if (!StartableOptimizers.Any()) return;
 
       experimentStarted = true;
       experimentStopped = false;
 
-      var startedOptimizers = new Dictionary<IOptimizer, Task>(); // track already started optimizers (.StartAsync does not set the executionstate immediately)
       using (var availableWorkers = new SemaphoreSlim(NumberOfWorkers, NumberOfWorkers)) {
-        while (runnableOptimizers.Any(o => !startedOptimizers.ContainsKey(o))) {
+        while (StartableOptimizers.Any()) {
           try {
             availableWorkers.Wait(cancellationToken);
-            if (experimentStopped || !experimentStarted) break;
-            var optimizer = runnableOptimizers.FirstOrDefault(o => !startedOptimizers.ContainsKey(o));
-            if (optimizer != null) {
-              var startedTask = optimizer.StartAsync(cancellationToken).ContinueWith(async t => {
-                availableWorkers.Release(); // is guaranteed to be not disposed yet because Task.WaitAll blocks before the end of the using
-                await t; // trigger a potential exception on the optimizerTask
-              });
-              startedOptimizers.Add(optimizer, startedTask.Unwrap()); // unwrap task because lambda of .ContinueWith is async
-            }
+            var optimizer = StartableOptimizers.FirstOrDefault();
+            if (experimentStopped || !experimentStarted || optimizer == null) break;
+
+            var startedTask = optimizer.StartAsync(cancellationToken).ContinueWith(async t => {
+              availableWorkers.Release(); // is guaranteed to be not disposed yet because Task.WaitAll blocks before the end of the using
+              await t; // trigger a potential exception on the optimizerTask
+            });
+            startedOptimizers.Add(optimizer, startedTask.Unwrap()); // unwrap task because lambda of .ContinueWith is async
           } catch (InvalidOperationException) { } catch (OperationCanceledException) { }
         }
 
         Task.WaitAll(startedOptimizers.Values.ToArray()); // retreive exeptions of the asyncrounously started optimizer
-        allOptimizerFinished.Wait();
       }
     }
     public async Task StartAsync() { await StartAsync(CancellationToken.None); }
@@ -296,14 +301,12 @@ namespace HeuristicLab.Optimization {
     public event EventHandler Paused;
     private void OnPaused() {
       ExecutionState = ExecutionState.Paused;
-      allOptimizerFinished.Set();
       EventHandler handler = Paused;
       if (handler != null) handler(this, EventArgs.Empty);
     }
     public event EventHandler Stopped;
     private void OnStopped() {
       ExecutionState = ExecutionState.Stopped;
-      allOptimizerFinished.Set();
       EventHandler handler = Stopped;
       if (handler != null) handler(this, EventArgs.Empty);
     }
@@ -399,35 +402,54 @@ namespace HeuristicLab.Optimization {
       }
     }
     private void optimizer_Paused(object sender, EventArgs e) {
-      lock (locker) {
-        if (Optimizers.All(x => x.ExecutionState != ExecutionState.Started)) {
-          OnPaused();
-        }
-        experimentStarted = false;
-      }
+      UpdateExecutionState();
     }
     private void optimizer_Prepared(object sender, EventArgs e) {
-      lock (locker)
-        if (Optimizers.All(x => x.ExecutionState == ExecutionState.Prepared)) OnPrepared();
+      UpdateExecutionState();
     }
     private void optimizer_Started(object sender, EventArgs e) {
       lock (locker)
         if (ExecutionState != ExecutionState.Started) OnStarted();
     }
     private void optimizer_Stopped(object sender, EventArgs e) {
+      UpdateExecutionState();
+    }
+    private void UpdateExecutionState() {
+      // Execution states of the Experiment are determined using the following _basic_ rules:
+      //   if any Optimizer is Started      => Experiment is Started  (2. if)
+      //   if any Optimizer is Paused       => Experiment is Paused   (3. if)
+      //   if any Optimizer is Prepared     => Experiment is Prepared (5. if)
+      //   else (all Optimizer are Stopped) => Experiment is Stopped  (6. if)
+      // Additional there are two extra rules:
+      //   if the Experiment is running and there are still optimizers that can be started => keep the Experiment Running (1. if)
+      //   if experiment-stop is pending: Stop Experiment even if there are still Prepared Optimizer               (4. if)
+
       lock (locker) {
-        if (experimentStopped) {
-          if (Optimizers.All(x => (x.ExecutionState == ExecutionState.Stopped) || (x.ExecutionState == ExecutionState.Prepared))) OnStopped();
-        } else {
-          if (experimentStarted && Optimizers.Any(x => (x.ExecutionState == ExecutionState.Prepared) || (x.ExecutionState == ExecutionState.Paused))) return;
-          else if (Optimizers.All(x => x.ExecutionState == ExecutionState.Stopped)) {
-            OnStopped();
-          } else if (Optimizers.Any(x => (x.ExecutionState == ExecutionState.Prepared) || (x.ExecutionState == ExecutionState.Paused)) && Optimizers.All(o => o.ExecutionState != ExecutionState.Started)) {
-            OnPaused();
-          }
-        }
+        // 1. experiment is running & further startable optimizers are available => continue executing
+        if (experimentStarted && StartableOptimizers.Any()) return;
+
+        // 2. any optimizer is running => continue executing
+        else if (Optimizers.Any(x => x.ExecutionState == ExecutionState.Started))
+          return;
+
+        // 3. any optimizer is paused => experiment paused
+        else if (Optimizers.Any(x => x.ExecutionState == ExecutionState.Paused))
+          OnPaused();
+
+        // 4. stop pending & all optimizers either stopped or prepared => experiment stopped
+        else if (experimentStopped)
+          OnStopped();
+
+        // 5. any optimizer prepared => experiment prepared
+        else if (Optimizers.Any(x => x.ExecutionState == ExecutionState.Prepared))
+          OnPrepared();
+
+        // 6. (else) all optimizers stopped
+        else
+          OnStopped();
       }
     }
+
     private void optimizer_Runs_CollectionReset(object sender, CollectionItemsChangedEventArgs<IRun> e) {
       lock (runsLocker) {
         Runs.RemoveRange(e.OldItems);

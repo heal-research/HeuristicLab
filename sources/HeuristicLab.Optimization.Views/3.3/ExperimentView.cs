@@ -77,7 +77,8 @@ namespace HeuristicLab.Optimization.Views {
 
     #region Events
     private void workersNumericUpDown_ValueChanged(object sender, System.EventArgs e) {
-      Content.NumberOfWorkers = (int)workersNumericUpDown.Value;
+      if (Content != null)
+        Content.NumberOfWorkers = (int)workersNumericUpDown.Value;
     }
     #endregion
   }
