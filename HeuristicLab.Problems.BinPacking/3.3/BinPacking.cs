@@ -36,9 +36,12 @@ namespace HeuristicLab.Problems.BinPacking {
     where TItem : PackingShape<TPos> {
     #region Properties
     [Storable]
+
+    //key = item id
     public ObservableDictionary<int, TPos> Positions { get; private set; }
 
     [Storable]
+    //key = item id
     public ObservableDictionary<int, TItem> Items { get; private set; }
 
     [Storable]
@@ -137,8 +140,19 @@ namespace HeuristicLab.Problems.BinPacking {
       }
       return false;
     }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="item"></param>
+    /// <param name="position"></param>
+    /// <param name="stackingConstraints"></param>
+    /// <returns></returns>
     public virtual bool IsPositionFeasible(TItem item, TPos position, bool stackingConstraints) {
-      //In this case feasability is defined as following: 1. the item fits into the bin-borders; 2. the point is supported by something; 3. the item does not collide with another already packed item
+      //In this case feasability is defined as following: 
+      //1. the item fits into the bin-borders; 
+      //2. the point is supported by something; 
+      //3. the item does not collide with another already packed item
       if (!BinShape.Encloses(position, item))
         return false;
 

@@ -31,9 +31,10 @@ using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Problems.BinPacking3D.Packer;
 
 namespace HeuristicLab.Problems.BinPacking3D {
-  
+
   public enum SortingMethod { All, Given, VolumeHeight, HeightVolume, AreaHeight, HeightArea, ClusteredAreaHeight, ClusteredHeightArea }
   public enum FittingMethod { All, FirstFit, ResidualSpaceBestFit, FreeVolumeBestFit }
 
@@ -85,18 +86,22 @@ namespace HeuristicLab.Problems.BinPacking3D {
       Parameters.Add(sortingMethodParameter = new ValueParameter<EnumValue<SortingMethod>>("SortingMethod", "In which order the items should be packed.", new EnumValue<SortingMethod>(SortingMethod.All)));
       Parameters.Add(fittingMethodParameter = new ValueParameter<EnumValue<FittingMethod>>("FittingMethod", "Which method to fit should be used.", new EnumValue<FittingMethod>(FittingMethod.All)));
       Parameters.Add(deltaParameter = new ValueParameter<PercentValue>("Delta", "[1;100]% Clustered sorting methods use a delta parameter to determine the clusters.", new PercentValue(.1)));
-      
+
       Problem = new PermutationProblem();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new ExtremePointAlgorithm(this, cloner);
     }
-    
+
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
     }
 
+    /// <summary>
+    /// Runs the extreme point algorithm and adds the results to the property <see cref="Result"/>
+    /// </summary>
+    /// <param name="token"></param>
     protected override void Run(CancellationToken token) {
       var items = Problem.Items;
       var bin = Problem.BinShape;
@@ -108,15 +113,15 @@ namespace HeuristicLab.Problems.BinPacking3D {
       if (fitting[0] == FittingMethod.All) {
         fitting = Enum.GetValues(typeof(FittingMethod)).Cast<FittingMethod>().Where(x => x != FittingMethod.All).ToArray();
       }
-      var result = GetBest(bin, items, sorting, fitting, token);
-      if (result == null) throw new InvalidOperationException("No result obtained!");
 
-      Results.Add(new Result("Best Solution",
-        "The best found solution",
-        result.Item1));
-      Results.Add(new Result("Best Solution Quality",
-        "The quality of the best found solution according to the evaluator",
-        new DoubleValue(result.Item2)));
+      //
+      var result = GetBest(bin, items, sorting, fitting, token);
+      if (result == null) {
+        throw new InvalidOperationException("No result obtained!");
+      }
+
+      Results.Add(new Result("Best Solution", "The best found solution", result.Item1));
+      Results.Add(new Result("Best Solution Quality", "The quality of the best found solution according to the evaluator", new DoubleValue(result.Item2)));
 
       var binUtil = new BinUtilizationEvaluator();
       var packRatio = new PackingRatioEvaluator();
@@ -127,14 +132,17 @@ namespace HeuristicLab.Problems.BinPacking3D {
         "The utilization given in percentage as calculated by the BinUtilizationEvaluator (total used space / total available space)",
         new PercentValue(Math.Round(binUtil.Evaluate(result.Item1), 3))));
 
-      if (result.Item3.HasValue && sorting.Length > 1)
+      if (result.Item3.HasValue && sorting.Length > 1) {
         Results.Add(new Result("Best Sorting Method",
           "The sorting method that found the best solution",
           new EnumValue<SortingMethod>(result.Item3.Value)));
-      if (result.Item4.HasValue && fitting.Length > 1)
+      }
+
+      if (result.Item4.HasValue && fitting.Length > 1) {
         Results.Add(new Result("Best Fitting Method",
           "The fitting method that found the best solution",
           new EnumValue<FittingMethod>(result.Item4.Value)));
+      }
     }
 
     private Tuple<Solution, double, SortingMethod?, FittingMethod?> GetBest(PackingShape bin, IList<PackingItem> items, SortingMethod[] sortings, FittingMethod[] fittings, CancellationToken token) {
@@ -145,25 +153,80 @@ namespace HeuristicLab.Problems.BinPacking3D {
       foreach (var fit in fittings) {
         foreach (var sort in sortings) {
           var result = Optimize(bin, items, sort, fit, DeltaParameter.Value.Value, Problem.UseStackingConstraints, Problem.SolutionEvaluator, token);
-          if (double.IsNaN(result.Item2) || double.IsInfinity(result.Item2)) continue;
-          if (double.IsNaN(best)
-            || Problem.Maximization && result.Item2 > best
-            || !Problem.Maximization && result.Item2 < best) {
+          if (double.IsNaN(result.Item2) || double.IsInfinity(result.Item2)) {
+            continue;
+          }
+
+          if (double.IsNaN(best) || Problem.Maximization && result.Item2 > best || !Problem.Maximization && result.Item2 < best) {
             bestSolution = result.Item1;
             best = result.Item2;
             bestSorting = sort;
             bestFitting = fit;
           }
-          if (token.IsCancellationRequested) return Tuple.Create(bestSolution, best, bestSorting, bestFitting);
+          if (token.IsCancellationRequested) {
+            return Tuple.Create(bestSolution, best, bestSorting, bestFitting);
+          }
         }
       }
-      if (double.IsNaN(best)) return null;
+      if (double.IsNaN(best)) {
+        return null;
+      }
       return Tuple.Create(bestSolution, best, bestSorting, bestFitting);
     }
 
     private static Tuple<Solution, double> Optimize(PackingShape bin, IList<PackingItem> items, SortingMethod sorting, FittingMethod fitting, double delta, bool stackingConstraints, IEvaluator evaluator, CancellationToken token) {
+      Permutation sortedItems = SortItemsBySortingMethod(bin, items, sorting, delta);
+
+      if (false) {// alt
+        ExtremePointPermutationDecoderBase decoder = GetDecoderByFittingMethod(fitting);
+        var sol = decoder.Decode(sortedItems, bin, items, stackingConstraints);
+        var fit = evaluator.Evaluate(sol);
+
+        return Tuple.Create(sol, fit);
+      } else {
+        Decoder.ExtremePointPermutationDecoder decoder = new Decoder.ExtremePointPermutationDecoder(GetBinPackerByFittingMethod(fitting, sortedItems, bin, items, stackingConstraints));
+
+        var sol = decoder.Decode(sortedItems, bin, items, stackingConstraints);
+        var fit = evaluator.Evaluate(sol);
+
+        return Tuple.Create(sol, fit);
+      }
+      
+
+      
+    }
+
+
+
+    private static BinPacker GetBinPackerByFittingMethod(FittingMethod fittingMethod, Permutation sortedItems, PackingShape binShape, IList<PackingItem> items, bool useStackingConstraints) {
+      BinPacker binPacker = null;
+      switch (fittingMethod) {
+        case FittingMethod.FirstFit:
+          binPacker = new BinPackerFirstFit(sortedItems, binShape, items, useStackingConstraints);
+          break;
+        case FittingMethod.FreeVolumeBestFit:
+          binPacker = new BinPackerFreeVolumeBestFit(sortedItems, binShape, items, useStackingConstraints);
+          break;
+        case FittingMethod.ResidualSpaceBestFit:
+          binPacker = new BinPackerResidualSpaceBestFit(sortedItems, binShape, items, useStackingConstraints);
+          break;
+        default:
+          throw new ArgumentException("Unknown fitting method: " + fittingMethod);
+      }
+      return binPacker;
+    }
+
+    /// <summary>
+    /// Returns a new permutation of the given items depending on the sorting method
+    /// </summary>
+    /// <param name="bin"></param>
+    /// <param name="items"></param>
+    /// <param name="sortingMethod"></param>
+    /// <param name="delta"></param>
+    /// <returns></returns>
+    private static Permutation SortItemsBySortingMethod(PackingShape bin, IList<PackingItem> items, SortingMethod sortingMethod, double delta) {
       Permutation sorted = null;
-      switch (sorting) {
+      switch (sortingMethod) {
         case SortingMethod.Given:
           sorted = new Permutation(PermutationTypes.Absolute, Enumerable.Range(0, items.Count).ToArray());
           break;
@@ -215,11 +278,20 @@ namespace HeuristicLab.Problems.BinPacking3D {
                         .SelectMany(x => x.Items)
                         .Select(x => x.Index).ToArray());
           break;
-        default: throw new ArgumentException("Unknown sorting method: " + sorting);
+        default:
+          throw new ArgumentException("Unknown sorting method: " + sortingMethod);
       }
-      
+      return sorted;
+    }
+
+    /// <summary>
+    /// Returns a decoder depending on the given fitting method
+    /// </summary>
+    /// <param name="fittingMethod"></param>
+    /// <returns></returns>
+    private static ExtremePointPermutationDecoderBase GetDecoderByFittingMethod(FittingMethod fittingMethod) {
       ExtremePointPermutationDecoderBase decoder = null;
-      switch (fitting) {
+      switch (fittingMethod) {
         case FittingMethod.FirstFit:
           decoder = new ExtremePointPermutationDecoder();
           break;
@@ -229,13 +301,10 @@ namespace HeuristicLab.Problems.BinPacking3D {
         case FittingMethod.ResidualSpaceBestFit:
           decoder = new ResidualSpaceBestFitExtremePointPermutationDecoder();
           break;
-        default: throw new ArgumentException("Unknown fitting method: " + fitting);
+        default:
+          throw new ArgumentException("Unknown fitting method: " + fittingMethod);
       }
-
-      var sol = decoder.Decode(sorted, bin, items, stackingConstraints);
-      var fit = evaluator.Evaluate(sol);
-
-      return Tuple.Create(sol, fit);
+      return decoder;
     }
   }
 }

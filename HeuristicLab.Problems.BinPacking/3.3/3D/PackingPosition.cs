@@ -102,6 +102,12 @@ namespace HeuristicLab.Problems.BinPacking3D {
 
     #region IComparable<PackingPosition> Members
 
+    /// <summary>
+    /// Compares two packing positions by their coordinates. 
+    /// The order of comparing is z -> x -> y.
+    /// </summary>
+    /// <param name="other"></param>
+    /// <returns></returns>
     public int CompareTo(PackingPosition other) {
       int result = Z.CompareTo(other.Z);
       if (result == 0)

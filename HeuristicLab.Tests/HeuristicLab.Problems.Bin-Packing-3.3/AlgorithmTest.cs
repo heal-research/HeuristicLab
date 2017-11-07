@@ -2,6 +2,7 @@
 using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using HeuristicLab.Problems.BinPacking3D;
+using HeuristicLab.Problems.BinPacking3D.Instances;
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Core;
@@ -29,14 +30,14 @@ namespace HeuristicLab.Problems.BinPacking.Tests {
     public void TestRandomInstanceProvider() {
 
       var referenceItemLists = ReadReferenceItemLists();
-      TestRandomInstanceProviderByClass(new RandomInstanceClass1ProviderWithSRand(), referenceItemLists);
-      TestRandomInstanceProviderByClass(new RandomInstanceClass2ProviderWithSRand(), referenceItemLists);
-      TestRandomInstanceProviderByClass(new RandomInstanceClass3ProviderWithSRand(), referenceItemLists);
-      TestRandomInstanceProviderByClass(new RandomInstanceClass4ProviderWithSRand(), referenceItemLists);
-      TestRandomInstanceProviderByClass(new RandomInstanceClass5ProviderWithSRand(), referenceItemLists);
-      TestRandomInstanceProviderByClass(new RandomInstanceClass6ProviderWithSRand(), referenceItemLists);
-      TestRandomInstanceProviderByClass(new RandomInstanceClass7ProviderWithSRand(), referenceItemLists);
-      TestRandomInstanceProviderByClass(new RandomInstanceClass8ProviderWithSRand(), referenceItemLists);
+      TestRandomInstanceProviderByClass(new RandomInstanceClass1Provider(), referenceItemLists);
+      TestRandomInstanceProviderByClass(new RandomInstanceClass2Provider(), referenceItemLists);
+      TestRandomInstanceProviderByClass(new RandomInstanceClass3Provider(), referenceItemLists);
+      TestRandomInstanceProviderByClass(new RandomInstanceClass4Provider(), referenceItemLists);
+      TestRandomInstanceProviderByClass(new RandomInstanceClass5Provider(), referenceItemLists);
+      TestRandomInstanceProviderByClass(new RandomInstanceClass6Provider(), referenceItemLists);
+      TestRandomInstanceProviderByClass(new RandomInstanceClass7Provider(), referenceItemLists);
+      TestRandomInstanceProviderByClass(new RandomInstanceClass8Provider(), referenceItemLists);
 
     }
 
@@ -78,7 +79,7 @@ namespace HeuristicLab.Problems.BinPacking.Tests {
       return itemList;
     }
 
-    private void TestRandomInstanceProviderByClass(RandomInstanceProviderWithSRand randomInstanceProvider, IDictionary<string, List<Dimension>> referenceItems) {
+    private void TestRandomInstanceProviderByClass(RandomInstanceProvider randomInstanceProvider, IDictionary<string, List<Dimension>> referenceItems) {
 
       var dataDescriptors = randomInstanceProvider.GetDataDescriptors();
       foreach (var dataDescriptor in dataDescriptors) {
@@ -110,52 +111,52 @@ namespace HeuristicLab.Problems.BinPacking.Tests {
     [TestMethod]
     [TestCategory("Problems.BinPacking")]
     public void TestExtremePointAlgorithmClass1() {
-      TestExtremePointAlgorithm(new RandomInstanceClass1ProviderWithSRand(), 1);
+      TestExtremePointAlgorithm(new RandomInstanceClass1Provider(), 1);
     }
 
     [TestMethod]
     [TestCategory("Problems.BinPacking")]
     public void TestExtremePointAlgorithmClass2() {
-      TestExtremePointAlgorithm(new RandomInstanceClass2ProviderWithSRand(), 2);
+      TestExtremePointAlgorithm(new RandomInstanceClass2Provider(), 2);
     }
 
     [TestMethod]
     [TestCategory("Problems.BinPacking")]
     public void TestExtremePointAlgorithmClass3() {
-      TestExtremePointAlgorithm(new RandomInstanceClass3ProviderWithSRand(), 3);
+      TestExtremePointAlgorithm(new RandomInstanceClass3Provider(), 3);
     }
 
     [TestMethod]
     [TestCategory("Problems.BinPacking")]
     public void TestExtremePointAlgorithmClass4() {
-      TestExtremePointAlgorithm(new RandomInstanceClass4ProviderWithSRand(), 4);
+      TestExtremePointAlgorithm(new RandomInstanceClass4Provider(), 4);
     }
 
     [TestMethod]
     [TestCategory("Problems.BinPacking")]
     public void TestExtremePointAlgorithmClass5() {
-      TestExtremePointAlgorithm(new RandomInstanceClass5ProviderWithSRand(), 5);
+      TestExtremePointAlgorithm(new RandomInstanceClass5Provider(), 5);
     }
 
     [TestMethod]
     [TestCategory("Problems.BinPacking")]
     public void TestExtremePointAlgorithmClass6() {
-      TestExtremePointAlgorithm(new RandomInstanceClass6ProviderWithSRand(), 6);
+      TestExtremePointAlgorithm(new RandomInstanceClass6Provider(), 6);
     }
 
     [TestMethod]
     [TestCategory("Problems.BinPacking")]
     public void TestExtremePointAlgorithmClass7() {
-      TestExtremePointAlgorithm(new RandomInstanceClass7ProviderWithSRand(), 7);
+      TestExtremePointAlgorithm(new RandomInstanceClass7Provider(), 7);
     }
 
     [TestMethod]
     [TestCategory("Problems.BinPacking")]
     public void TestExtremePointAlgorithmClass8() {
-      TestExtremePointAlgorithm(new RandomInstanceClass8ProviderWithSRand(), 8);
+      TestExtremePointAlgorithm(new RandomInstanceClass8Provider(), 8);
     }
 
-    private void TestExtremePointAlgorithm(RandomInstanceProviderWithSRand randomInstanceProvider, int @class) {
+    private void TestExtremePointAlgorithm(RandomInstanceProvider randomInstanceProvider, int @class) {
       foreach (SortingMethod sortingMethod in Enum.GetValues(typeof(SortingMethod))) {
         //foreach (FittingMethod fittingMethod in Enum.GetValues(typeof(FittingMethod))) {
         FittingMethod fittingMethod = FittingMethod.FirstFit;
@@ -167,7 +168,7 @@ namespace HeuristicLab.Problems.BinPacking.Tests {
 
 
 
-    private void TestExtremePointAlgorithmByParameters(RandomInstanceProviderWithSRand randomInstanceProvider, int @class, SortingMethod sortingMethod, FittingMethod fittingMethod) {
+    private void TestExtremePointAlgorithmByParameters(RandomInstanceProvider randomInstanceProvider, int @class, SortingMethod sortingMethod, FittingMethod fittingMethod) {
       var dataDescriptors = randomInstanceProvider.GetDataDescriptors();
       var referenceValues = GetReferenceAlgorithmValues();
       foreach (var numItems in NUMBER_OF_TEST_ITEMS) {

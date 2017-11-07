@@ -26,6 +26,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Core;
 using HeuristicLab.Common;
 using HeuristicLab.Problems.BinPacking;
+using HeuristicLab.Problems.BinPacking3D.Geometry;
 
 namespace HeuristicLab.Problems.BinPacking3D {
   [Item("BinPacking3D", "Represents a single-bin packing for a 3D bin-packing problem.")]
@@ -37,7 +38,7 @@ namespace HeuristicLab.Problems.BinPacking3D {
 
     public BinPacking3D(PackingShape binShape)
       : base(binShape) {
-      ResidualSpace = new Dictionary<PackingPosition, Tuple<int,int,int>>();
+      ResidualSpace = new Dictionary<PackingPosition, Tuple<int, int, int>>();
       AddExtremePoint(binShape.Origin);
       InitializeOccupationLayers();
     }
@@ -63,6 +64,239 @@ namespace HeuristicLab.Problems.BinPacking3D {
       #endregion
     }
 
+    #region New methods for bin packer class
+
+    public void AddItem(int itemID, PackingItem item, PackingPosition position) {
+      Items[itemID] = item;
+      Positions[itemID] = position;
+      ExtremePoints.Remove(position);
+      ResidualSpace.Remove(position);
+    }
+
+    public void UpdateExtremePoints(PackingItem item, PackingPosition position, bool stackingConstraints) {
+      /*if (stackingConstraints) {
+        AddExtremePoint(new PackingPosition(position.AssignedBin, position.X + item.Width, position.Y, position.Z));
+        AddExtremePoint(new PackingPosition(position.AssignedBin, position.X, position.Y + item.Height, position.Z));
+        AddExtremePoint(new PackingPosition(position.AssignedBin, position.X, position.Y, position.Z + item.Depth));
+      } else {*/
+      GenerateNewExtremePointsForNewItem(item, position);
+
+      // if an item is fit in below, before, or left of another its extreme points have to be regenerated
+      foreach (var above in GetItemsAbove(position)) {
+        GenerateNewExtremePointsForNewItem(above.Item2, above.Item1);
+      }
+      foreach (var front in GetItemsInfront(position)) {
+        GenerateNewExtremePointsForNewItem(front.Item2, front.Item1);
+      }
+      foreach (var right in GetItemsOnRight(position)) {
+        GenerateNewExtremePointsForNewItem(right.Item2, right.Item1);
+      }
+      //}
+    }
+
+
+
+    /// <summary>
+    /// In this case feasability is defined as following: 
+    /// 1. the item fits into the bin-borders; 
+    /// 2. the point is supported by something; 
+    /// 3. the item does not collide with another already packed item
+    /// 
+    /// Unfortunatelly this method does not support item rotation
+    /// </summary>
+    /// <param name="item"></param>
+    /// <param name="position"></param>
+    /// <param name="stackingConstraints"></param>
+    /// <returns></returns>
+    public override bool IsPositionFeasible(PackingItem item, PackingPosition position, bool stackingConstraints) {
+      var b1 = CheckItemDimensions(item);
+      var b2 = ItemCanBePlaced(item, position);
+      var b3 = CheckStackingConstraints(item, position, stackingConstraints);
+
+      return b1 && b2 && b3;
+    }
+
+    /// <summary>
+    /// Compares the dimensions of a given item and the current bin. 
+    /// </summary>
+    /// <param name="item"></param>
+    /// <returns>Returns true if the dimensions of an given item are less or equal to the bin.</returns>
+    private bool CheckItemDimensions(PackingItem item) {
+      return BinShape.Width >= item.Width && BinShape.Height >= item.Height && BinShape.Depth >= item.Depth;
+    }
+
+    /// <summary>
+    /// Returns true if a given item can be placed in the current bin
+    /// </summary>
+    /// <param name="givenItem"></param>
+    /// <param name="givenItemPosition"></param>
+    /// <returns></returns>
+    private bool ItemCanBePlaced(PackingItem givenItem, PackingPosition givenItemPosition) {
+      // Check if the boundings of the bin would injured
+      if (givenItemPosition.X + givenItem.Width > BinShape.Width ||
+          givenItemPosition.Y + givenItem.Height > BinShape.Height ||
+          givenItemPosition.Z + givenItem.Depth > BinShape.Depth) {
+        return false;
+      }
+
+      //if the given item collides with any other item, it can not be placed
+      foreach (var item in Items) {
+        if (ItemsCollides(new Tuple<PackingPosition, PackingItem>(Positions[item.Key], item.Value),
+                          new Tuple<PackingPosition, PackingItem>(givenItemPosition, givenItem))) {
+          return false;
+        }
+      }
+      return true;     
+    }
+
+    /// <summary>
+    /// Checks if two given items in a space collides
+    /// </summary>
+    /// <param name="t1"></param>
+    /// <param name="t2"></param>
+    /// <returns></returns>
+    bool ItemsCollides(Tuple<PackingPosition, PackingItem> t1, Tuple<PackingPosition, PackingItem> t2) {
+      var position1 = t1.Item1;
+      var item1 = t1.Item2;
+      var position2 = t2.Item1;
+      var item2 = t2.Item2;
+      var cx = (position2.X == position1.X) || (position2.X < position1.X && position2.X + item2.Width > position1.X) || (position2.X > position1.X && position1.X + item1.Width > position2.X);
+      var cy = (position2.Y == position1.Y) || (position2.Y < position1.Y && position2.Y + item2.Height > position1.Y) || (position2.Y > position1.Y && position1.Y + item1.Height > position2.Y);
+      var cz = (position2.Z == position1.Z) || (position2.Z < position1.Z && position2.Z + item2.Depth > position1.Z) || (position2.Z > position1.Z && position1.Z + item1.Depth > position2.Z);
+      return cx && cy && cz;
+    }
+
+    /// <summary>
+    /// Checks the stacking constraints. This method depends that the given item can be placed at this position
+    /// </summary>
+    /// <param name="item"></param>
+    /// <param name="position"></param>
+    /// <param name="stackingConstraints"></param>
+    /// <returns></returns>
+    private bool CheckStackingConstraints(PackingItem item, PackingPosition position, bool stackingConstraints) {
+      if (position.Y == 0 || !stackingConstraints && HasOnePointWithAnItemBelow(item, position)) {
+        return true;
+      }
+
+      return IsStaticStable(item, position) && IsWeightSupported(item, position);
+    }
+
+
+    /// <summary>
+    /// Checks if a given item has any point lieing on another item.
+    /// </summary>
+    /// <param name="item"></param>
+    /// <param name="position"></param>
+    /// <returns></returns>
+    public bool HasOnePointWithAnItemBelow(PackingItem item, PackingPosition position) {
+      bool p1, p2, p3, p4;
+      PointsLiesOnAnItems(item, position, out p1, out p2, out p3, out p4);
+
+      return p1 || p2 || p3 || p4;
+    }
+
+    /// <summary>
+    /// Checks if a given item is static stable.
+    /// A item is static stable if all edges have an object below.
+    /// </summary>
+    /// <param name="item"></param>
+    /// <param name="position"></param>
+    /// <returns></returns>
+    public override bool IsStaticStable(PackingItem item, PackingPosition position) {
+      bool p1, p2, p3, p4;
+      PointsLiesOnAnItems(item, position, out p1, out p2, out p3, out p4);
+      return p1 && p2 && p3 && p4;
+    }
+
+    /// <summary>
+    /// This method sets the out parameters p1 ... p3 if the point lies on another item.
+    /// p1 ... p3 represents one point on the bottom side of an given item.
+    /// +---------+
+    /// |p1     p2|
+    /// |         |
+    /// |p4     p3|
+    /// +---------+
+    /// </summary>
+    /// <param name="item">Given item</param>
+    /// <param name="position">Given item position</param>
+    /// <param name="p1"></param>
+    /// <param name="p2"></param>
+    /// <param name="p3"></param>
+    /// <param name="p4"></param>
+    public void PointsLiesOnAnItems(PackingItem item, PackingPosition position, out bool p1, out bool p2, out bool p3, out bool p4) {
+      IEnumerable<Tuple<PackingPosition, PackingItem>> itemsP1;
+      IEnumerable<Tuple<PackingPosition, PackingItem>> itemsP2;
+      IEnumerable<Tuple<PackingPosition, PackingItem>> itemsP3;
+      IEnumerable<Tuple<PackingPosition, PackingItem>> itemsP4;
+
+      GetItemsUnderItemWithContact(item, position, out itemsP1, out itemsP2, out itemsP3, out itemsP4);
+
+      p1 = itemsP1.Where(x => position.X < x.Item1.X + x.Item2.Width && position.Z < x.Item1.Z + x.Item2.Depth).Any();
+      p2 = itemsP2.Where(x => position.X + item.Width > x.Item1.X && position.Z < x.Item1.Z + x.Item2.Depth).Any();
+      p3 = itemsP3.Where(x => position.X + item.Width > x.Item1.X && position.Z + item.Depth > x.Item1.Z).Any();
+      p4 = itemsP4.Where(x => position.X < x.Item1.X + x.Item2.Width && position.Z + item.Depth > x.Item1.Z).Any();
+    }
+
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="item"></param>
+    /// <param name="position"></param>
+    /// <param name="itemsP1"></param>
+    /// <param name="itemsP2"></param>
+    /// <param name="itemsP3"></param>
+    /// <param name="itemsP4"></param>
+    private void GetItemsUnderItemWithContact(PackingItem item, PackingPosition position,
+                                   out IEnumerable<Tuple<PackingPosition, PackingItem>> itemsP1,
+                                   out IEnumerable<Tuple<PackingPosition, PackingItem>> itemsP2,
+                                   out IEnumerable<Tuple<PackingPosition, PackingItem>> itemsP3,
+                                   out IEnumerable<Tuple<PackingPosition, PackingItem>> itemsP4) {
+      itemsP1 = GetItemsBelowForPosition(new PackingPosition(0, position.X, position.Y, position.Z, false));
+      itemsP2 = GetItemsBelowForPosition(new PackingPosition(0, position.X + item.Width - 1, position.Y, position.Z, false));
+      itemsP3 = GetItemsBelowForPosition(new PackingPosition(0, position.X, position.Y, position.Z + item.Depth - 1, false));
+      itemsP4 = GetItemsBelowForPosition(new PackingPosition(0, position.X + item.Width - 1, position.Y, position.Z + item.Depth - 1, false));
+
+    }
+
+    /// <summary>
+    /// Returns a collection of items which are below a given point. 
+    /// The top side of every item is at the same level as the Y-coordinate of the given position.
+    /// </summary>
+    /// <param name="position"></param>
+    /// <returns></returns>
+    private IEnumerable<Tuple<PackingPosition, PackingItem>> GetItemsBelowForPosition(PackingPosition position) {
+      return GetItemsBelow(position).Where(x => (x.Item1.Y + x.Item2.Height) == position.Y);
+    }
+
+
+    /// <summary>
+    /// Checks if a given the weight of an given item is supportet by the items below.
+    /// </summary>
+    /// <param name="item"></param>
+    /// <param name="position"></param>
+    /// <returns></returns>
+    public bool IsWeightSupported(PackingItem item, PackingPosition position) {
+      if (position.Y == 0) {
+        return true;
+      }
+      IEnumerable<Tuple<PackingPosition, PackingItem>> itemsP1;
+      IEnumerable<Tuple<PackingPosition, PackingItem>> itemsP2;
+      IEnumerable<Tuple<PackingPosition, PackingItem>> itemsP3;
+      IEnumerable<Tuple<PackingPosition, PackingItem>> itemsP4;
+
+      GetItemsUnderItemWithContact(item, position, out itemsP1, out itemsP2, out itemsP3, out itemsP4);
+
+      return itemsP1.Where(x => x.Item2.SupportsStacking(item)).Any() &&
+        itemsP2.Where(x => x.Item2.SupportsStacking(item)).Any() &&
+        itemsP3.Where(x => x.Item2.SupportsStacking(item)).Any() &&
+        itemsP4.Where(x => x.Item2.SupportsStacking(item)).Any();
+    }
+
+
+
+    #endregion
+
     public override void PackItem(int itemID, PackingItem item, PackingPosition position) {
       // base call is deliberately omitted, because UpdateResidualSpace needs to be fitted in before
       // generating new extreme points
@@ -81,6 +315,8 @@ namespace HeuristicLab.Problems.BinPacking3D {
         GenerateNewExtremePointsForNewItem(right.Item2, right.Item1);
       AddNewItemToOccupationLayers(itemID, item, position);
     }
+
+
 
     protected override void GenerateNewExtremePointsForNewItem(PackingItem newItem, PackingPosition position) {
       int newWidth = position.Rotated ? newItem.Depth : newItem.Width;
@@ -167,6 +403,7 @@ namespace HeuristicLab.Problems.BinPacking3D {
       return rs.Item1 > 0 && rs.Item2 > 0 && rs.Item3 > 0;
     }
 
+
     private bool IsWithinResidualSpaceOfAnotherExtremePoint(Vector3D pos, Tuple<int, int, int> residualSpace) {
       var eps = ExtremePoints.Where(x => !pos.Equals(x) && pos.IsInside(x, ResidualSpace[x]));
       return eps.Any(x => IsWithinResidualSpaceOfAnotherExtremePoint(pos, residualSpace, x, ResidualSpace[x]));
@@ -203,7 +440,7 @@ namespace HeuristicLab.Problems.BinPacking3D {
     }
 
     #region Projections
-        
+
     private Vector3D ProjectBackward(Vector3D pos) {
       var line = new Line3D(pos, new Vector3D(0, 0, -1));
       return Items.Select(x => new { Item = x.Value, Position = Positions[x.Key] })
@@ -267,7 +504,11 @@ namespace HeuristicLab.Problems.BinPacking3D {
 
     #region Get items
 
-    
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="pos"></param>
+    /// <returns></returns>
     private IEnumerable<Tuple<PackingPosition, PackingItem>> GetItemsAbove(PackingPosition pos) {
       var line = new Line3D(pos, new Vector3D(0, 1, 0));
       return Items.Select(x => new {
@@ -297,7 +538,40 @@ namespace HeuristicLab.Problems.BinPacking3D {
       }).Where(x => x.Intersection != null && x.Intersection.Y >= pos.Y)
         .Select(x => Tuple.Create(x.Position, x.Item));
     }
+
+    private IEnumerable<Tuple<PackingPosition, PackingItem>> GetItemsBelow(PackingPosition pos) {
+      var line = new Line3D(pos, new Vector3D(0, 1, 0));
+      return Items.Select(x => new {
+        Item = x.Value,
+        Position = Positions[x.Key],
+        Intersection = line.Intersect(new Plane3D(Positions[x.Key], x.Value, Side.Top))
+      }).Where(x => x.Intersection != null && x.Intersection.Y <= pos.Y)
+        .Select(x => Tuple.Create(x.Position, x.Item));
+    }
+
+    private IEnumerable<Tuple<PackingPosition, PackingItem>> GetItemsBehind(PackingPosition pos) {
+      var line = new Line3D(pos, new Vector3D(0, 0, 1));
+      return Items.Select(x => new {
+        Item = x.Value,
+        Position = Positions[x.Key],
+        Intersection = line.Intersect(new Plane3D(Positions[x.Key], x.Value, Side.Front))
+      }).Where(x => x.Intersection != null && x.Intersection.Y >= pos.Y)
+        .Select(x => Tuple.Create(x.Position, x.Item));
+    }
+
+    private IEnumerable<Tuple<PackingPosition, PackingItem>> GetItemsOnLeft(PackingPosition pos) {
+      var line = new Line3D(pos, new Vector3D(1, 0, 0));
+      return Items.Select(x => new {
+        Item = x.Value,
+        Position = Positions[x.Key],
+        Intersection = line.Intersect(new Plane3D(Positions[x.Key], x.Value, Side.Right))
+      }).Where(x => x.Intersection != null && x.Intersection.Y >= pos.Y)
+        .Select(x => Tuple.Create(x.Position, x.Item));
+    }
+
     #endregion
+
+
 
     public override PackingPosition FindExtremePointForItem(PackingItem item, bool rotated, bool stackingConstraints) {
       PackingItem newItem = new PackingItem(
@@ -315,12 +589,7 @@ namespace HeuristicLab.Problems.BinPacking3D {
       return null;
     }
 
-    public override bool IsPositionFeasible(PackingItem item, PackingPosition position, bool stackingConstraints) {
-      var feasible = base.IsPositionFeasible(item, position, stackingConstraints);
-      return feasible
-        && IsSupportedByAtLeastOnePoint(item, position)
-        && (!stackingConstraints || (IsStaticStable(item, position) && IsWeightSupported(item, position)));
-    }
+  
 
     #region Sliding based packing    
     public override PackingPosition FindPositionBySliding(PackingItem item, bool rotated, bool stackingConstraints) {
@@ -424,44 +693,7 @@ namespace HeuristicLab.Problems.BinPacking3D {
 
       return shortestSide;
     }
-    public override bool IsStaticStable(PackingItem item, PackingPosition position) {
-      //Static stability is given, if item is placed on the ground
-      if (position.Y == 0)
-        return true;
-
-      if (IsPointOccupied(new PackingPosition(0, position.X, position.Y - 1, position.Z))
-        && IsPointOccupied(new PackingPosition(0, position.X + item.Width - 1, position.Y - 1, position.Z))
-        && IsPointOccupied(new PackingPosition(0, position.X, position.Y - 1, position.Z + item.Depth - 1))
-        && IsPointOccupied(new PackingPosition(0, position.X + item.Width - 1, position.Y - 1, position.Z + item.Depth - 1)))
-        return true;
-
-      return false;
-    }
-
-    public bool IsSupportedByAtLeastOnePoint(PackingItem item, PackingPosition position) {
-      if (position.Y == 0)
-        return true;
-
-      int y = position.Y - 1;
-      for (int x = position.X; x < position.X + item.Width; x++)
-        for (int z = position.Z; z < position.Z + item.Depth; z++)
-          if (IsPointOccupied(new PackingPosition(0, x, y, z)))
-            return true;
-
-      return false;
-    }
-    public bool IsWeightSupported(PackingItem item, PackingPosition ep) {
-      if (ep.Y == 0)
-        return true;
-
-      if (Items[PointOccupation(new PackingPosition(0, ep.X, ep.Y - 1, ep.Z))].SupportsStacking(item)
-        && Items[PointOccupation(new PackingPosition(0, ep.X + item.Width - 1, ep.Y - 1, ep.Z))].SupportsStacking(item)
-        && Items[PointOccupation(new PackingPosition(0, ep.X, ep.Y - 1, ep.Z + item.Depth - 1))].SupportsStacking(item)
-        && Items[PointOccupation(new PackingPosition(0, ep.X + item.Width - 1, ep.Y - 1, ep.Z + item.Depth - 1))].SupportsStacking(item))
-        return true;
-
-      return false;
-    }
+    
 
     protected override void InitializeOccupationLayers() {
       for (int i = 0; i * 10 <= BinShape.Depth; i += 1) {
@@ -487,7 +719,7 @@ namespace HeuristicLab.Problems.BinPacking3D {
         result.AddRange(OccupationLayers[i]);
       return result;
     }
-    
+
     public void UpdateResidualSpace(PackingItem item, PackingPosition pos) {
       foreach (var ep in ExtremePoints.ToList()) {
         var rs = ResidualSpace[ep];
@@ -508,7 +740,8 @@ namespace HeuristicLab.Problems.BinPacking3D {
             changed = true;
           }
         }
-        if (ep.Z <= pos.Z && 
+
+        if (ep.Z <= pos.Z &&
             ep.Y >= pos.Y && ep.Y < pos.Y + item.Height &&
             ep.X >= pos.X && ep.X < pos.X + width) {
           var diff = pos.Z - ep.Z;
@@ -516,6 +749,7 @@ namespace HeuristicLab.Problems.BinPacking3D {
           rs = Tuple.Create(rs.Item1, rs.Item2, newRSZ);
           changed = true;
         }
+
         if (changed) {
           if (IsNonZero(rs) && !IsWithinResidualSpaceOfAnotherExtremePoint(new Vector3D(ep), rs)) {
             ResidualSpace[ep] = rs;
@@ -528,246 +762,6 @@ namespace HeuristicLab.Problems.BinPacking3D {
       return;
     }
 
-    #region Helper classes for vector math
-    private class Vector3D {
-      public int X;
-      public int Y;
-      public int Z;
-      public Vector3D() { }
-      public Vector3D(int x, int y, int z) {
-        X = x;
-        Y = y;
-        Z = z;
-      }
-      public Vector3D(PackingPosition pos) {
-        X = pos.X;
-        Y = pos.Y;
-        Z = pos.Z;
-      }
-      public static Vector3D AlongX(Vector3D pos, PackingItem item) {
-        return new Vector3D(
-          pos.X + item.Width,
-          pos.Y,
-          pos.Z
-        );
-      }
-      public static Vector3D AlongY(Vector3D pos, PackingItem item) {
-        return new Vector3D(
-          pos.X,
-          pos.Y + item.Height,
-          pos.Z
-        );
-      }
-      public static Vector3D AlongZ(Vector3D pos, PackingItem item) {
-        return new Vector3D(
-          pos.X,
-          pos.Y,
-          pos.Z + item.Depth
-        );
-      }
-      public static Vector3D AlongX(PackingPosition pos, PackingItem item) {
-        return new Vector3D(
-          pos.X + item.Width,
-          pos.Y,
-          pos.Z
-        );
-      }
-      public static Vector3D AlongY(PackingPosition pos, PackingItem item) {
-        return new Vector3D(
-          pos.X,
-          pos.Y + item.Height,
-          pos.Z
-        );
-      }
-      public static Vector3D AlongZ(PackingPosition pos, PackingItem item) {
-        return new Vector3D(
-          pos.X,
-          pos.Y,
-          pos.Z + item.Depth
-        );
-      }
 
-      public Vector3D Cross(Vector3D b) {
-        return new Vector3D(
-          Y * b.Z - Z * b.Y,
-          -X * b.Z + Z * b.X,
-          X * b.Y - Y * b.X
-        );
-      }
-
-      public bool IsInside(PackingPosition pos, Tuple<int, int, int> rs) {
-        return X >= pos.X && X < pos.X + rs.Item1
-          && Y >= pos.Y && Y < pos.Y + rs.Item2
-          && Z >= pos.Z && Z < pos.Z + rs.Item3;
-      }
-
-      public static int operator *(Vector3D a, Vector3D b) {
-        return a.X * b.X + a.Y * b.Y + a.Z * b.Z;
-      }
-      public static Vector3D operator *(int a, Vector3D b) {
-        return new Vector3D(a * b.X, a * b.Y, a * b.Z);
-      }
-      public static Vector3D operator *(Vector3D a, int b) {
-        return new Vector3D(a.X * b, a.Y * b, a.Z * b);
-      }
-      public static Vector3D operator +(Vector3D a, Vector3D b) {
-        return new Vector3D(a.X + b.X, a.Y + b.Y, a.Z + b.Z);
-      }
-      public static Vector3D operator -(Vector3D a, Vector3D b) {
-        return new Vector3D(a.X - b.X, a.Y - b.Y, a.Z - b.Z);
-      }
-
-      public override bool Equals(object obj) {
-        var packPos = obj as PackingPosition;
-        if (packPos != null) {
-          return X == packPos.X && Y == packPos.Y && Z == packPos.Z;
-        }
-        var vec = obj as Vector3D;
-        if (vec != null) {
-          return X == vec.X && Y == vec.Y && Z == vec.Z;
-        }
-        return false;
-      }
-    }
-
-    // A line is given as a point and a directing vector
-    private class Line3D {
-      public Vector3D Point;
-      public Vector3D Direction;
-
-      public Line3D(Vector3D point, Vector3D direction) {
-        Point = point;
-        Direction = direction;
-      }
-      public Line3D(PackingPosition position, Vector3D direction) {
-        Point = new Vector3D(position);
-        Direction = direction;
-      }
-
-      public bool Intersects(Plane3D plane) {
-        return plane.Intersects(this);
-      }
-
-      public Vector3D Intersect(Plane3D plane) {
-        return plane.Intersect(this);
-      }
-    }
-
-    private enum Side { Top, Left, Bottom, Right, Front, Back }
-    // A plane is given as a point and two directing vectors
-    private class Plane3D {
-      public Vector3D Point { get; private set; }
-      public Vector3D Direction1 { get; private set; }
-      public Vector3D Direction2 { get; private set; }
-      public Vector3D Normal { get; private set; }
-      private int rhs;
-
-      public Plane3D(PackingShape bin, Side side) {
-        switch (side) {
-          case Side.Top: // ZX plane
-            Point = new Vector3D(0, bin.Height, 0);
-            Direction1 = new Vector3D(0, 0, bin.Depth);
-            Direction2 = new Vector3D(bin.Width, 0, 0);
-            break;
-          case Side.Left: // ZY plane
-            Point = new Vector3D(0, 0, 0);
-            Direction1 = new Vector3D(0, 0, bin.Depth);
-            Direction2 = new Vector3D(0, bin.Height, 0);
-            break;
-          case Side.Bottom: // XZ plane
-            Point = new Vector3D(0, 0, 0);
-            Direction1 = new Vector3D(bin.Width, 0, 0);
-            Direction2 = new Vector3D(0, 0, bin.Depth);
-            break;
-          case Side.Right: // YZ plane
-            Point = new Vector3D(bin.Width, 0, 0);
-            Direction1 = new Vector3D(0, bin.Height, 0);
-            Direction2 = new Vector3D(0, 0, bin.Depth);
-            break;
-          case Side.Front: // XY plane
-            Point = new Vector3D(0, 0, bin.Depth);
-            Direction1 = new Vector3D(bin.Width, 0, 0);
-            Direction2 = new Vector3D(0, bin.Height, 0);
-            break;
-          case Side.Back: // YX plane
-            Point = new Vector3D(0, 0, 0);
-            Direction1 = new Vector3D(0, bin.Height, 0);
-            Direction2 = new Vector3D(bin.Width, 0, 0);
-            break;
-        }
-        Normal = Direction1.Cross(Direction2);
-        rhs = 0;
-      }
-
-      public Plane3D(PackingPosition pos, PackingItem item, Side side) {
-        // the directing vectors are chosen such that normal always points outside the packing item
-        switch (side) {
-          case Side.Top: // ZX plane
-            Point = new Vector3D(pos.X, pos.Y + item.Height, pos.Z);
-            Direction1 = new Vector3D(0, 0, pos.Rotated ? item.Width : item.Depth);
-            Direction2 = new Vector3D(pos.Rotated ? item.Depth : item.Width, 0, 0);
-            break;
-          case Side.Left: // ZY plane
-            Point = new Vector3D(pos.X, pos.Y, pos.Z);
-            Direction1 = new Vector3D(0, 0, pos.Rotated ? item.Width : item.Depth);
-            Direction2 = new Vector3D(0, item.Height, 0);
-            break;
-          case Side.Bottom: // XZ plane
-            Point = new Vector3D(pos.X, pos.Y, pos.Z);
-            Direction1 = new Vector3D(pos.Rotated ? item.Depth : item.Width, 0, 0);
-            Direction2 = new Vector3D(0, 0, pos.Rotated ? item.Width : item.Depth);
-            break;
-          case Side.Right: // YZ plane
-            Point = new Vector3D(pos.X + (pos.Rotated ? item.Depth : item.Width), pos.Y, pos.Z);
-            Direction1 = new Vector3D(0, item.Height, 0);
-            Direction2 = new Vector3D(0, 0, pos.Rotated ? item.Width : item.Depth);
-            break;
-          case Side.Front: // XY plane
-            Point = new Vector3D(pos.X, pos.Y, pos.Z + (pos.Rotated ? item.Width : item.Depth));
-            Direction1 = new Vector3D(pos.Rotated ? item.Depth : item.Width, 0, 0);
-            Direction2 = new Vector3D(0, item.Height, 0);
-            break;
-          case Side.Back: // YX plane
-            Point = new Vector3D(pos.X, pos.Y, pos.Z);
-            Direction1 = new Vector3D(0, item.Height, 0);
-            Direction2 = new Vector3D(pos.Rotated ? item.Depth : item.Width, 0, 0);
-            break;
-        }
-        Normal = Direction1.Cross(Direction2);
-        rhs = Normal.X * Point.X + Normal.Y * Point.Y + Normal.Z * Point.Z;
-      }
-
-      public bool IsElementOf(Vector3D point) {
-        return Normal.X * point.X + Normal.Y * point.Y + Normal.Z * point.Z == rhs;
-      }
-
-      public bool Intersects(Line3D line) {
-        return Intersect(line) != null;
-      }
-
-      public Vector3D Intersect(Line3D line) {
-        var denom = Normal * line.Direction;
-        if (denom == 0) {
-          // dir is perpendicular to the normal vector of the plane
-          // this means they intersect if p1 is element of the plane
-          // also the plane does not stretch infinitely, but is bound
-          // to the parallelogram spanned by the point and the two
-          // directing vectors
-          if (IsElementOf(line.Point) && IsWithinDirectionalVectors(line.Point))
-            return line.Point;
-          else return null;
-        }
-        var intersect = line.Point + ((Normal * (Point - line.Point)) / denom) * line.Direction;
-        if (IsWithinDirectionalVectors(intersect)) return intersect;
-        return null;
-      }
-
-      public bool IsWithinDirectionalVectors(Vector3D point) {
-        return point.X >= Point.X && (Direction1.X + Direction2.X == 0 || (point.X < Point.X + Direction1.X || point.X < Point.X + Direction2.X))
-            && point.Y >= Point.Y && (Direction1.Y + Direction2.Y == 0 || (point.Y < Point.Y + Direction1.Y || point.Y < Point.Y + Direction2.Y))
-            && point.Z >= Point.Z && (Direction1.Z + Direction2.Z == 0 || (point.Z < Point.Z + Direction1.Z || point.Z < Point.Z + Direction2.Z));
-      }
-    }
-    #endregion
   }
 }
