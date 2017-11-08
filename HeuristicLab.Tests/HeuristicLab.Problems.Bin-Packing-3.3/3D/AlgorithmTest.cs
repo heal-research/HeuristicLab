@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Core;
 
-namespace HeuristicLab.Problems.BinPacking.Tests {
+namespace HeuristicLab.Problems.BinPacking._3D.Tests {
   [TestClass]
   public class AlgorithmTest {
 
@@ -26,7 +26,7 @@ namespace HeuristicLab.Problems.BinPacking.Tests {
     /// http://www.diku.dk/~pisinger/new3dbpp/test3dbpp.c
     /// </summary>
     [TestMethod]
-    [TestCategory("Problems.BinPacking")]
+    [TestCategory("Problems.BinPacking.3D")]
     public void TestRandomInstanceProvider() {
 
       var referenceItemLists = ReadReferenceItemLists();
@@ -109,49 +109,49 @@ namespace HeuristicLab.Problems.BinPacking.Tests {
     private static readonly int[] NUMBER_OF_TEST_ITEMS = { 50, 100, 150, 200 };
 
     [TestMethod]
-    [TestCategory("Problems.BinPacking")]
+    [TestCategory("Problems.BinPacking.3D")]
     public void TestExtremePointAlgorithmClass1() {
       TestExtremePointAlgorithm(new RandomInstanceClass1Provider(), 1);
     }
 
     [TestMethod]
-    [TestCategory("Problems.BinPacking")]
+    [TestCategory("Problems.BinPacking.3D")]
     public void TestExtremePointAlgorithmClass2() {
       TestExtremePointAlgorithm(new RandomInstanceClass2Provider(), 2);
     }
 
     [TestMethod]
-    [TestCategory("Problems.BinPacking")]
+    [TestCategory("Problems.BinPacking.3D")]
     public void TestExtremePointAlgorithmClass3() {
       TestExtremePointAlgorithm(new RandomInstanceClass3Provider(), 3);
     }
 
     [TestMethod]
-    [TestCategory("Problems.BinPacking")]
+    [TestCategory("Problems.BinPacking.3D")]
     public void TestExtremePointAlgorithmClass4() {
       TestExtremePointAlgorithm(new RandomInstanceClass4Provider(), 4);
     }
 
     [TestMethod]
-    [TestCategory("Problems.BinPacking")]
+    [TestCategory("Problems.BinPacking.3D")]
     public void TestExtremePointAlgorithmClass5() {
       TestExtremePointAlgorithm(new RandomInstanceClass5Provider(), 5);
     }
 
     [TestMethod]
-    [TestCategory("Problems.BinPacking")]
+    [TestCategory("Problems.BinPacking.3D")]
     public void TestExtremePointAlgorithmClass6() {
       TestExtremePointAlgorithm(new RandomInstanceClass6Provider(), 6);
     }
 
     [TestMethod]
-    [TestCategory("Problems.BinPacking")]
+    [TestCategory("Problems.BinPacking.3D")]
     public void TestExtremePointAlgorithmClass7() {
       TestExtremePointAlgorithm(new RandomInstanceClass7Provider(), 7);
     }
 
     [TestMethod]
-    [TestCategory("Problems.BinPacking")]
+    [TestCategory("Problems.BinPacking.3D")]
     public void TestExtremePointAlgorithmClass8() {
       TestExtremePointAlgorithm(new RandomInstanceClass8Provider(), 8);
     }
@@ -201,7 +201,7 @@ namespace HeuristicLab.Problems.BinPacking.Tests {
 
         if (referenceValues.TryGetValue(new Tuple<int, int, SortingMethod>(@class, numItems, sortingMethod), out referenceValue)) {
           Console.WriteLine($"{numItems}-{@class}-{sortingMethod}: \t{referenceValue} \t {(double)sumNumberOfBins / (double)NUMBER_OF_TEST_INSTANCES} \t{(referenceValue - ((double)sumNumberOfBins / (double)NUMBER_OF_TEST_INSTANCES)):F2}");
-          Assert.AreEqual(referenceValue, (double)sumNumberOfBins / (double)NUMBER_OF_TEST_INSTANCES, 10.0);
+          Assert.AreEqual(referenceValue, (double)sumNumberOfBins / (double)NUMBER_OF_TEST_INSTANCES, 20.0);
         }
       }
     }
