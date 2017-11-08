@@ -46,15 +46,16 @@ namespace HeuristicLab.Problems.BinPacking3D {
       return CalculatePackingRatio(solution);
     }
 
-    /* 
-        Falkenauer:1996 - A Hybrid Grouping Genetic Algorithm for Bin Packing
-        
-        fBPP = (SUM[i=1..N](Fi / C)^k)/N
-        N.......the number of bins used in the solution,
-        Fi......the sum of sizes of the items in the bin i (the fill of the bin),
-        C.......the bin capacity and
-        k.......a constant, k>1.
-     */
+    /// <summary>
+    /// Falkenauer:1996 - A Hybrid Grouping Genetic Algorithm for Bin Packing
+    /// fBPP = (SUM[i=1..N](Fi / C)^k)/N
+    /// N.......the number of bins used in the solution,
+    /// Fi......the sum of sizes of the items in the bin i (the fill of the bin),
+    /// C.......the bin capacity and
+    /// k.......a constant, k>1.
+    /// </summary>
+    /// <param name="solution"></param>
+    /// <returns></returns>
     public static double CalculatePackingRatio(Solution solution) {
       int nrOfBins = solution.NrOfBins;
       double result = 0;

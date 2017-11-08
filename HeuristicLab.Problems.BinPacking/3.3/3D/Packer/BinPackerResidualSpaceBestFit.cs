@@ -1,4 +1,25 @@
-﻿using HeuristicLab.Core;
+﻿#region License Information
+/* HeuristicLab
+ * Copyright (C) 2002-2016 Joseph Helm and Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ *
+ * This file is part of HeuristicLab.
+ *
+ * HeuristicLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * HeuristicLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
+ */
+#endregion
+
+using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using System;
@@ -11,44 +32,42 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
   [Item("BinPackerResidualSpaceBestFit", "A class for packing bins for the 3D bin-packer problem. It uses a best fit algortihm depending on the residual space.")]
   [StorableClass]
   public class BinPackerResidualSpaceBestFit : BinPacker {
-    public BinPackerResidualSpaceBestFit(Permutation permutation, PackingShape binShape, IList<PackingItem> items, bool useStackingConstraints) {
-      _permutation = permutation;
-      _binShape = binShape;
-      _items = items;
-      _useStackingConstraints = useStackingConstraints;
-    }
 
+    public BinPackerResidualSpaceBestFit() : base() { }/*
+    public BinPackerResidualSpaceBestFit(Permutation permutation, PackingShape binShape, IList<PackingItem> items, bool useStackingConstraints)
+      : base(permutation, binShape, items, useStackingConstraints) { }
+      */
     /// <summary>
     /// Packs the items into the bins by using a best fit residual space algorithm.
     /// The order of the chosen items depends on the merit function. 
     /// Each residual space belongs to an extreme point.
     /// </summary>
     /// <returns></returns>
-    public override IList<BinPacking3D> PackItems() {
+    public override IList<BinPacking3D> PackItems(Permutation sortedItems, PackingShape binShape, IList<PackingItem> items, bool useStackingConstraints) {
       IList<BinPacking3D> packingList = new List<BinPacking3D>();
-      IList<int> remainingIds = new List<int>(_permutation);
+      IList<int> remainingIds = new List<int>(sortedItems);
       bool rotated = false;
 
       foreach (var remainingId in remainingIds) {
-        PackingItem item = _items[remainingId];
+        PackingItem item = items[remainingId];
         var residualSpacePoints = GetResidualSpaceForAllPoints(packingList, item);
         var sortedPoints = residualSpacePoints.OrderBy(x => x.Item3);
         var packed = false;
 
         foreach (var point in sortedPoints) {
-          if (point.Item1.IsPositionFeasible(item, point.Item2, _useStackingConstraints)) {
+          if (point.Item1.IsPositionFeasible(item, point.Item2, useStackingConstraints)) {
             var binPacking = point.Item1;
-            PackItem(ref binPacking, remainingId, item, point.Item2, _useStackingConstraints);
+            PackItem(ref binPacking, remainingId, item, point.Item2, useStackingConstraints);
             packed = true;
             break;
           }
         }
 
         if (!packed) {
-          BinPacking3D binPacking = new BinPacking3D(_binShape);
-          var position = FindPackingPositionForItem(binPacking, item, _useStackingConstraints, rotated);
+          BinPacking3D binPacking = new BinPacking3D(binShape);
+          var position = FindPackingPositionForItem(binPacking, item, useStackingConstraints, rotated);
           if (position != null) {
-            PackItem(ref binPacking, remainingId, item, position, _useStackingConstraints);
+            PackItem(ref binPacking, remainingId, item, position, useStackingConstraints);
           } else {
             throw new InvalidOperationException("Item " + remainingId + " cannot be packed in an empty bin.");
           }

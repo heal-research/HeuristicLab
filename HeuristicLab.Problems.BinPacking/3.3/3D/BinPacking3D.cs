@@ -66,19 +66,120 @@ namespace HeuristicLab.Problems.BinPacking3D {
 
     #region New methods for bin packer class
 
-    public void AddItem(int itemID, PackingItem item, PackingPosition position) {
+    public override void PackItem(int itemID, PackingItem item, PackingPosition position) {
       Items[itemID] = item;
       Positions[itemID] = position;
       ExtremePoints.Remove(position);
       ResidualSpace.Remove(position);
     }
 
+    /// <summary>
+    /// Updates the extreme points of the bin
+    /// </summary>
+    /// <param name="item"></param>
+    /// <param name="position"></param>
+    /// <param name="stackingConstraints"></param>
     public void UpdateExtremePoints(PackingItem item, PackingPosition position, bool stackingConstraints) {
-      /*if (stackingConstraints) {
-        AddExtremePoint(new PackingPosition(position.AssignedBin, position.X + item.Width, position.Y, position.Z));
-        AddExtremePoint(new PackingPosition(position.AssignedBin, position.X, position.Y + item.Height, position.Z));
-        AddExtremePoint(new PackingPosition(position.AssignedBin, position.X, position.Y, position.Z + item.Depth));
-      } else {*/
+      if (stackingConstraints) {
+        UpdateExtremePointsWithStackingConstriants(item, position);
+      } else {
+        UpdateExtremePointsWithoutStackingConstriants(item, position);
+      }
+    }
+
+    /// <summary>
+    /// Updates the extreme points of the bin. 
+    /// As there is no need to project the extreme points to the next side of an item, the extreme points are only generated for the current item.
+    /// </summary>
+    /// <param name="item"></param>
+    /// <param name="position"></param>
+    private void UpdateExtremePointsWithStackingConstriants(PackingItem newItem, PackingPosition position) {
+
+      //UpdateExtremePointsWithoutStackingConstriants(newItem, position);
+      //return;
+
+      int newWidth = position.Rotated ? newItem.Depth : newItem.Width;
+      int newDepth = position.Rotated ? newItem.Width : newItem.Depth;
+      var ep1 = new PackingPosition(position.AssignedBin, position.X + newWidth, position.Y, position.Z);
+      var ep2 = new PackingPosition(position.AssignedBin, position.X, position.Y + newItem.Height, position.Z);
+      var ep3 = new PackingPosition(position.AssignedBin, position.X, position.Y, position.Z + newDepth);
+      AddExtremePoint(ep1);
+      AddExtremePoint(ep2);
+      AddExtremePoint(ep3);
+
+      /*
+      ExtremePoints.Add(ep1);
+      ExtremePoints.Add(ep2);
+      ExtremePoints.Add(ep3);
+
+      var rs1 = CalculateResidualSpace(CreateRs(ep1));
+      var rs2 = CalculateResidualSpace(CreateRs(ep2));
+      var rs3 = CalculateResidualSpace(CreateRs(ep3));
+      ResidualSpace.Add(ep1, rs1);
+      ResidualSpace.Add(ep2, rs2);
+      ResidualSpace.Add(ep3, rs3);*/
+    }
+
+
+    /*private bool AddExtremePoint(PackingPosition position) {
+      if ()
+
+      return true;
+    }
+
+    
+    private bool AddExtremePoint(PackingPosition pos) {
+      if (ExtremePoints.Add(pos)) {
+        var rs = CalculateResidualSpace(new Vector3D(pos));
+        ResidualSpace.Add(pos, rs);
+        // Check if existing extreme points are shadowed by the new point
+        // That is, their residual space fit entirely into the residual space of the new point
+        foreach (var ep in ExtremePoints.Where(x => x != pos && new Vector3D(x).IsInside(pos, rs)).ToList()) {
+          if (IsWithinResidualSpaceOfAnotherExtremePoint(new Vector3D(ep), ResidualSpace[ep], pos, rs)) {
+            ExtremePoints.Remove(ep);
+            ResidualSpace.Remove(ep);
+          }
+        }
+        return true;
+      }
+      return false;
+    }*/
+
+
+    private Tuple<int, int, int> CalculateResidualSpace(Vector3D pos) {
+      var itemPos = Items.Select(x => new { Item = x.Value, Position = Positions[x.Key] });
+      Vector3D limit = new Vector3D() { X = BinShape.Width, Y = BinShape.Height, Z = BinShape.Depth };
+      if (pos.X < limit.X && pos.Y < limit.Y && pos.Z < limit.Z) {
+        var rightLimit = ProjectRight(pos);
+        var upLimit = ProjectUp(pos);
+        var forwardLimit = ProjectForward(pos);
+        if (rightLimit.X > 0) {
+          limit.X = rightLimit.X;
+        }
+        if (upLimit.Y > 0) {
+          limit.Y = upLimit.Y;
+        }
+        if (forwardLimit.Z > 0) {
+          limit.Z = forwardLimit.Z;
+        }
+      }
+
+      
+      
+      if (limit.X - pos.X <= 0 || limit.Y - pos.Y <= 0  || limit.Z - pos.Z <= 0) {
+        return Tuple.Create(0, 0, 0);
+      }
+
+
+      return Tuple.Create(limit.X - pos.X, limit.Y - pos.Y, limit.Z - pos.Z);
+    }
+
+
+    private Vector3D CreateRs(PackingPosition position) {
+      return new Vector3D() { X = position.X, Y = position.Y, Z = position.Z };
+    }
+
+    private void UpdateExtremePointsWithoutStackingConstriants(PackingItem item, PackingPosition position) {
       GenerateNewExtremePointsForNewItem(item, position);
 
       // if an item is fit in below, before, or left of another its extreme points have to be regenerated
@@ -91,7 +192,6 @@ namespace HeuristicLab.Problems.BinPacking3D {
       foreach (var right in GetItemsOnRight(position)) {
         GenerateNewExtremePointsForNewItem(right.Item2, right.Item1);
       }
-      //}
     }
 
 
@@ -146,7 +246,7 @@ namespace HeuristicLab.Problems.BinPacking3D {
           return false;
         }
       }
-      return true;     
+      return true;
     }
 
     /// <summary>
@@ -155,7 +255,7 @@ namespace HeuristicLab.Problems.BinPacking3D {
     /// <param name="t1"></param>
     /// <param name="t2"></param>
     /// <returns></returns>
-    bool ItemsCollides(Tuple<PackingPosition, PackingItem> t1, Tuple<PackingPosition, PackingItem> t2) {
+    private bool ItemsCollides(Tuple<PackingPosition, PackingItem> t1, Tuple<PackingPosition, PackingItem> t2) {
       var position1 = t1.Item1;
       var item1 = t1.Item2;
       var position2 = t2.Item1;
@@ -188,9 +288,9 @@ namespace HeuristicLab.Problems.BinPacking3D {
     /// <param name="item"></param>
     /// <param name="position"></param>
     /// <returns></returns>
-    public bool HasOnePointWithAnItemBelow(PackingItem item, PackingPosition position) {
+    private bool HasOnePointWithAnItemBelow(PackingItem item, PackingPosition position) {
       bool p1, p2, p3, p4;
-      PointsLiesOnAnItems(item, position, out p1, out p2, out p3, out p4);
+      PointsLiesOnAnItem(item, position, out p1, out p2, out p3, out p4);
 
       return p1 || p2 || p3 || p4;
     }
@@ -204,12 +304,12 @@ namespace HeuristicLab.Problems.BinPacking3D {
     /// <returns></returns>
     public override bool IsStaticStable(PackingItem item, PackingPosition position) {
       bool p1, p2, p3, p4;
-      PointsLiesOnAnItems(item, position, out p1, out p2, out p3, out p4);
+      PointsLiesOnAnItem(item, position, out p1, out p2, out p3, out p4);
       return p1 && p2 && p3 && p4;
     }
 
     /// <summary>
-    /// This method sets the out parameters p1 ... p3 if the point lies on another item.
+    /// This method sets the out parameters p1 ... p4 if the point lies on another item.
     /// p1 ... p3 represents one point on the bottom side of an given item.
     /// +---------+
     /// |p1     p2|
@@ -223,7 +323,7 @@ namespace HeuristicLab.Problems.BinPacking3D {
     /// <param name="p2"></param>
     /// <param name="p3"></param>
     /// <param name="p4"></param>
-    public void PointsLiesOnAnItems(PackingItem item, PackingPosition position, out bool p1, out bool p2, out bool p3, out bool p4) {
+    private void PointsLiesOnAnItem(PackingItem item, PackingPosition position, out bool p1, out bool p2, out bool p3, out bool p4) {
       IEnumerable<Tuple<PackingPosition, PackingItem>> itemsP1;
       IEnumerable<Tuple<PackingPosition, PackingItem>> itemsP2;
       IEnumerable<Tuple<PackingPosition, PackingItem>> itemsP3;
@@ -239,7 +339,13 @@ namespace HeuristicLab.Problems.BinPacking3D {
 
 
     /// <summary>
-    /// 
+    /// This method returns a collection for the out parameters itemsP1 ... itemsP4 with the items below
+    /// itemsP1 ... itemsP4 represents one point on the bottom side of an given item.
+    /// +---------+
+    /// |p1     p2|
+    /// |         |
+    /// |p4     p3|
+    /// +---------+
     /// </summary>
     /// <param name="item"></param>
     /// <param name="position"></param>
@@ -276,7 +382,7 @@ namespace HeuristicLab.Problems.BinPacking3D {
     /// <param name="item"></param>
     /// <param name="position"></param>
     /// <returns></returns>
-    public bool IsWeightSupported(PackingItem item, PackingPosition position) {
+    private bool IsWeightSupported(PackingItem item, PackingPosition position) {
       if (position.Y == 0) {
         return true;
       }
@@ -297,27 +403,12 @@ namespace HeuristicLab.Problems.BinPacking3D {
 
     #endregion
 
-    public override void PackItem(int itemID, PackingItem item, PackingPosition position) {
-      // base call is deliberately omitted, because UpdateResidualSpace needs to be fitted in before
-      // generating new extreme points
-      Items[itemID] = item;
-      Positions[itemID] = position;
-      ExtremePoints.Remove(position);
-      ResidualSpace.Remove(position);
-      UpdateResidualSpace(item, position);
-      GenerateNewExtremePointsForNewItem(item, position);
-      // if an item is fit in below, before, or left of another its extreme points have to be regenerated
-      foreach (var above in GetItemsAbove(position))
-        GenerateNewExtremePointsForNewItem(above.Item2, above.Item1);
-      foreach (var front in GetItemsInfront(position))
-        GenerateNewExtremePointsForNewItem(front.Item2, front.Item1);
-      foreach (var right in GetItemsOnRight(position))
-        GenerateNewExtremePointsForNewItem(right.Item2, right.Item1);
-      AddNewItemToOccupationLayers(itemID, item, position);
-    }
-
-
-
+    /// <summary>
+    /// Generates new extreme points for a given item and its position.
+    /// It also recalcualtes the residual space and removes the extreme points which are not needed any more.
+    /// </summary>
+    /// <param name="newItem"></param>
+    /// <param name="position"></param>
     protected override void GenerateNewExtremePointsForNewItem(PackingItem newItem, PackingPosition position) {
       int newWidth = position.Rotated ? newItem.Depth : newItem.Width;
       int newDepth = position.Rotated ? newItem.Width : newItem.Depth;
@@ -403,7 +494,6 @@ namespace HeuristicLab.Problems.BinPacking3D {
       return rs.Item1 > 0 && rs.Item2 > 0 && rs.Item3 > 0;
     }
 
-
     private bool IsWithinResidualSpaceOfAnotherExtremePoint(Vector3D pos, Tuple<int, int, int> residualSpace) {
       var eps = ExtremePoints.Where(x => !pos.Equals(x) && pos.IsInside(x, ResidualSpace[x]));
       return eps.Any(x => IsWithinResidualSpaceOfAnotherExtremePoint(pos, residualSpace, x, ResidualSpace[x]));
@@ -431,7 +521,7 @@ namespace HeuristicLab.Problems.BinPacking3D {
       return false;
     }
 
-    private Tuple<int, int, int> CalculateResidualSpace(Vector3D pos) {
+    private Tuple<int, int, int> CalculateResidualSpace1(Vector3D pos) {
       var itemPos = Items.Select(x => new { Item = x.Value, Position = Positions[x.Key] });
       var rightLimit = ProjectRight(pos);
       var upLimit = ProjectUp(pos);
@@ -504,11 +594,6 @@ namespace HeuristicLab.Problems.BinPacking3D {
 
     #region Get items
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="pos"></param>
-    /// <returns></returns>
     private IEnumerable<Tuple<PackingPosition, PackingItem>> GetItemsAbove(PackingPosition pos) {
       var line = new Line3D(pos, new Vector3D(0, 1, 0));
       return Items.Select(x => new {
@@ -572,8 +657,9 @@ namespace HeuristicLab.Problems.BinPacking3D {
     #endregion
 
 
-
+    #region Sliding based packing  and obsolet methods 
     public override PackingPosition FindExtremePointForItem(PackingItem item, bool rotated, bool stackingConstraints) {
+      throw new NotSupportedException();
       PackingItem newItem = new PackingItem(
         rotated ? item.Depth : item.Width,
         item.Height,
@@ -589,136 +675,48 @@ namespace HeuristicLab.Problems.BinPacking3D {
       return null;
     }
 
-  
 
-    #region Sliding based packing    
+
+
     public override PackingPosition FindPositionBySliding(PackingItem item, bool rotated, bool stackingConstraints) {
-      //Starting-position at upper right corner (=left bottom point of item-rectangle is at position item.width,item.height)
-      PackingPosition currentPosition = new PackingPosition(0,
-        BinShape.Width - (rotated ? item.Depth : item.Width),
-        BinShape.Height - item.Height,
-        BinShape.Depth - (rotated ? item.Width : item.Depth), rotated);
-      //Slide the item as far as possible to the bottom
-      while (IsPositionFeasible(item, PackingPosition.MoveDown(currentPosition), stackingConstraints)
-        || IsPositionFeasible(item, PackingPosition.MoveLeft(currentPosition), stackingConstraints)
-        || IsPositionFeasible(item, PackingPosition.MoveBack(currentPosition), stackingConstraints)) {
-        //Slide the item as far as possible to the left
-        while (IsPositionFeasible(item, PackingPosition.MoveLeft(currentPosition), stackingConstraints)
-      || IsPositionFeasible(item, PackingPosition.MoveBack(currentPosition), stackingConstraints)) {
-          //Slide the item as far as possible to the back
-          while (IsPositionFeasible(item, PackingPosition.MoveBack(currentPosition), stackingConstraints)) {
-            currentPosition = PackingPosition.MoveBack(currentPosition);
-          }
-          if (IsPositionFeasible(item, PackingPosition.MoveLeft(currentPosition), stackingConstraints))
-            currentPosition = PackingPosition.MoveLeft(currentPosition);
-        }
-        if (IsPositionFeasible(item, PackingPosition.MoveDown(currentPosition), stackingConstraints))
-          currentPosition = PackingPosition.MoveDown(currentPosition);
-      }
-
-      return IsPositionFeasible(item, currentPosition, stackingConstraints) ? currentPosition : null;
+      throw new NotSupportedException();
     }
 
     public override void SlidingBasedPacking(ref IList<int> sequence, IList<PackingItem> items, bool stackingConstraints) {
-      var temp = new List<int>(sequence);
-      for (int i = 0; i < temp.Count; i++) {
-        var item = items[temp[i]];
-        var position = FindPositionBySliding(item, false, stackingConstraints);
-        if (position != null) {
-          PackItem(temp[i], item, position);
-          sequence.Remove(temp[i]);
-        }
-      }
+      throw new NotSupportedException();
     }
     public override void SlidingBasedPacking(ref IList<int> sequence, IList<PackingItem> items, Dictionary<int, bool> rotationArray, bool stackingConstraints) {
-      var temp = new List<int>(sequence);
-      for (int i = 0; i < temp.Count; i++) {
-        var item = items[temp[i]];
-        var position = FindPositionBySliding(item, rotationArray[i], stackingConstraints);
-        if (position != null) {
-          PackItem(temp[i], item, position);
-          sequence.Remove(temp[i]);
-        }
-      }
+      throw new NotSupportedException();
     }
-    #endregion
+
+
     public override void ExtremePointBasedPacking(ref IList<int> sequence, IList<PackingItem> items, bool stackingConstraints) {
-      var temp = new List<int>(sequence);
-      foreach (int itemID in temp) {
-        var item = items[itemID];
-        var positionFound = FindExtremePointForItem(item, false, stackingConstraints);
-        if (positionFound != null) {
-          PackItem(itemID, item, positionFound);
-          sequence.Remove(itemID);
-        }
-      }
+      throw new NotSupportedException();
     }
+
     public override void ExtremePointBasedPacking(ref IList<int> sequence, IList<PackingItem> items, bool stackingConstraints, Dictionary<int, bool> rotationArray) {
-      var temp = new List<int>(sequence);
-      foreach (int itemID in temp) {
-        var item = items[itemID];
-        var positionFound = FindExtremePointForItem(item, rotationArray[itemID], stackingConstraints);
-        if (positionFound != null) {
-          PackItem(itemID, item, positionFound);
-          sequence.Remove(itemID);
-        }
-      }
+      throw new NotSupportedException();
     }
+
     public override int ShortestPossibleSideFromPoint(PackingPosition position) {
-
-      int shortestSide = int.MaxValue;
-      int width = BinShape.Width;
-      int height = BinShape.Height;
-      int depth = BinShape.Depth;
-
-      if (position.X >= width || position.Y >= height || position.Z >= depth)
-        return shortestSide;
-
-      PackingPosition current = new PackingPosition(0, position.X, position.Y, position.Z);
-      while (current.X < width && IsPointOccupied(current)) { current = PackingPosition.MoveRight(current); }
-      if (current.X - position.X < shortestSide)
-        shortestSide = current.X - position.X;
-
-
-      current = new PackingPosition(0, position.X, position.Y, position.Z);
-      while (current.Y < height && IsPointOccupied(current)) { current = PackingPosition.MoveUp(current); }
-      if (current.Y - position.Y < shortestSide)
-        shortestSide = current.Y - position.Y;
-
-
-      current = new PackingPosition(0, position.X, position.Y, position.Z);
-      while (current.Z < depth && IsPointOccupied(current)) { current = PackingPosition.MoveFront(current); }
-      if (current.Z - position.Z < shortestSide)
-        shortestSide = current.Z - position.Z;
-
-      return shortestSide;
+      throw new NotSupportedException();
     }
-    
+
 
     protected override void InitializeOccupationLayers() {
-      for (int i = 0; i * 10 <= BinShape.Depth; i += 1) {
-        OccupationLayers[i] = new List<int>();
-      }
     }
     protected override void AddNewItemToOccupationLayers(int itemID, PackingItem item, PackingPosition position) {
-      int z1 = position.Z / 10;
-      int z2 = (position.Z + (position.Rotated ? item.Width : item.Depth)) / 10;
-
-      for (int i = z1; i <= z2; i++)
-        OccupationLayers[i].Add(itemID);
     }
+
+
     protected override List<int> GetLayerItemIDs(PackingPosition position) {
-      return OccupationLayers[position.Z / 10];
+      return null;
     }
     protected override List<int> GetLayerItemIDs(PackingItem item, PackingPosition position) {
-      List<int> result = new List<int>();
-      int z1 = position.Z / 10;
-      int z2 = (position.Z + (position.Rotated ? item.Width : item.Depth)) / 10;
-
-      for (int i = z1; i <= z2; i++)
-        result.AddRange(OccupationLayers[i]);
-      return result;
+      return null;
     }
+    #endregion
+
 
     public void UpdateResidualSpace(PackingItem item, PackingPosition pos) {
       foreach (var ep in ExtremePoints.ToList()) {
@@ -761,7 +759,5 @@ namespace HeuristicLab.Problems.BinPacking3D {
       }
       return;
     }
-
-
   }
 }

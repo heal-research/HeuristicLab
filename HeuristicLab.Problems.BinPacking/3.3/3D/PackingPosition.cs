@@ -114,7 +114,7 @@ namespace HeuristicLab.Problems.BinPacking3D {
         result = X.CompareTo(other.X);
       if (result == 0)
         result = Y.CompareTo(other.Y);
-
+      
       return result;
 
     }

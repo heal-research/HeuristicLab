@@ -32,6 +32,9 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.BinPacking3D.Packer;
+using HeuristicLab.Problems.BinPacking3D.Decoder;
+
+using HeuristicLab.Problems.BinPacking3D.Sorting;
 
 namespace HeuristicLab.Problems.BinPacking3D {
 
@@ -74,6 +77,13 @@ namespace HeuristicLab.Problems.BinPacking3D {
       get { return deltaParameter; }
     }
 
+    [Storable]
+    private readonly IValueParameter<BoolValue> sortByMaterialParameter;
+
+    public IValueParameter<BoolValue> SortByMaterialParameter {
+      get { return sortByMaterialParameter; }
+    }    
+
     [StorableConstructor]
     private ExtremePointAlgorithm(bool deserializing) : base(deserializing) { }
     private ExtremePointAlgorithm(ExtremePointAlgorithm original, Cloner cloner)
@@ -83,9 +93,17 @@ namespace HeuristicLab.Problems.BinPacking3D {
       deltaParameter = cloner.Clone(original.deltaParameter);
     }
     public ExtremePointAlgorithm() {
-      Parameters.Add(sortingMethodParameter = new ValueParameter<EnumValue<SortingMethod>>("SortingMethod", "In which order the items should be packed.", new EnumValue<SortingMethod>(SortingMethod.All)));
-      Parameters.Add(fittingMethodParameter = new ValueParameter<EnumValue<FittingMethod>>("FittingMethod", "Which method to fit should be used.", new EnumValue<FittingMethod>(FittingMethod.All)));
-      Parameters.Add(deltaParameter = new ValueParameter<PercentValue>("Delta", "[1;100]% Clustered sorting methods use a delta parameter to determine the clusters.", new PercentValue(.1)));
+      Parameters.Add(sortingMethodParameter = new ValueParameter<EnumValue<SortingMethod>>(
+        "SortingMethod", "In which order the items should be packed.", new EnumValue<SortingMethod>(SortingMethod.All)));
+
+      Parameters.Add(fittingMethodParameter = new ValueParameter<EnumValue<FittingMethod>>(
+        "FittingMethod", "Which method to fit should be used.", new EnumValue<FittingMethod>(FittingMethod.All)));
+
+      Parameters.Add(deltaParameter = new ValueParameter<PercentValue>(
+        "Delta", "[1;100]% Clustered sorting methods use a delta parameter to determine the clusters.", new PercentValue(.1)));
+
+      Parameters.Add(sortByMaterialParameter = new ValueParameter<BoolValue>(
+        "SortByMaterial", "If this parameter is set, the items will be sorted by their material first", new BoolValue(true)));
 
       Problem = new PermutationProblem();
     }
@@ -145,6 +163,15 @@ namespace HeuristicLab.Problems.BinPacking3D {
       }
     }
 
+    /// <summary>
+    /// Retunrs the best solution for the given parameters
+    /// </summary>
+    /// <param name="bin"></param>
+    /// <param name="items"></param>
+    /// <param name="sortings"></param>
+    /// <param name="fittings"></param>
+    /// <param name="token"></param>
+    /// <returns></returns>
     private Tuple<Solution, double, SortingMethod?, FittingMethod?> GetBest(PackingShape bin, IList<PackingItem> items, SortingMethod[] sortings, FittingMethod[] fittings, CancellationToken token) {
       SortingMethod? bestSorting = null;
       FittingMethod? bestFitting = null;
@@ -152,7 +179,16 @@ namespace HeuristicLab.Problems.BinPacking3D {
       Solution bestSolution = null;
       foreach (var fit in fittings) {
         foreach (var sort in sortings) {
-          var result = Optimize(bin, items, sort, fit, DeltaParameter.Value.Value, Problem.UseStackingConstraints, Problem.SolutionEvaluator, token);
+          IDecoder<Permutation> decoder = new ExtremePointPermutationDecoder(BinPackerFactory.CreateBinPacker(fit));
+          Permutation sortedItems;
+          if (SortByMaterialParameter.Value.Value) {
+            sortedItems = SortItemsByMaterialAndSortingMethod(bin, items, sort, DeltaParameter.Value.Value);
+          } else {
+            sortedItems = SortItemsBySortingMethod(bin, items, sort, DeltaParameter.Value.Value);
+          }
+                    
+          var result = Optimize(sortedItems, bin, items, Problem.UseStackingConstraints, decoder, Problem.SolutionEvaluator);
+
           if (double.IsNaN(result.Item2) || double.IsInfinity(result.Item2)) {
             continue;
           }
@@ -174,47 +210,24 @@ namespace HeuristicLab.Problems.BinPacking3D {
       return Tuple.Create(bestSolution, best, bestSorting, bestFitting);
     }
 
-    private static Tuple<Solution, double> Optimize(PackingShape bin, IList<PackingItem> items, SortingMethod sorting, FittingMethod fitting, double delta, bool stackingConstraints, IEvaluator evaluator, CancellationToken token) {
-      Permutation sortedItems = SortItemsBySortingMethod(bin, items, sorting, delta);
-
-      if (false) {// alt
-        ExtremePointPermutationDecoderBase decoder = GetDecoderByFittingMethod(fitting);
-        var sol = decoder.Decode(sortedItems, bin, items, stackingConstraints);
-        var fit = evaluator.Evaluate(sol);
-
-        return Tuple.Create(sol, fit);
-      } else {
-        Decoder.ExtremePointPermutationDecoder decoder = new Decoder.ExtremePointPermutationDecoder(GetBinPackerByFittingMethod(fitting, sortedItems, bin, items, stackingConstraints));
-
-        var sol = decoder.Decode(sortedItems, bin, items, stackingConstraints);
-        var fit = evaluator.Evaluate(sol);
-
-        return Tuple.Create(sol, fit);
-      }
+    /// <summary>
+    /// Returns a tuple with the solution and the packing ratio depending on the given parameters
+    /// </summary>
+    /// <param name="sortedItems"></param>
+    /// <param name="bin"></param>
+    /// <param name="items"></param>
+    /// <param name="stackingConstraints"></param>
+    /// <param name="decoder"></param>
+    /// <param name="evaluator"></param>
+    /// <returns></returns>
+    private static Tuple<Solution, double> Optimize(Permutation sortedItems, PackingShape bin, IList<PackingItem> items, bool stackingConstraints, IDecoder<Permutation> decoder, IEvaluator evaluator) { 
       
+      var sol = decoder.Decode(sortedItems, bin, items, stackingConstraints);
+      var fit = evaluator.Evaluate(sol);
 
-      
+      return Tuple.Create(sol, fit);
     }
-
-
-
-    private static BinPacker GetBinPackerByFittingMethod(FittingMethod fittingMethod, Permutation sortedItems, PackingShape binShape, IList<PackingItem> items, bool useStackingConstraints) {
-      BinPacker binPacker = null;
-      switch (fittingMethod) {
-        case FittingMethod.FirstFit:
-          binPacker = new BinPackerFirstFit(sortedItems, binShape, items, useStackingConstraints);
-          break;
-        case FittingMethod.FreeVolumeBestFit:
-          binPacker = new BinPackerFreeVolumeBestFit(sortedItems, binShape, items, useStackingConstraints);
-          break;
-        case FittingMethod.ResidualSpaceBestFit:
-          binPacker = new BinPackerResidualSpaceBestFit(sortedItems, binShape, items, useStackingConstraints);
-          break;
-        default:
-          throw new ArgumentException("Unknown fitting method: " + fittingMethod);
-      }
-      return binPacker;
-    }
+    
 
     /// <summary>
     /// Returns a new permutation of the given items depending on the sorting method
@@ -224,59 +237,30 @@ namespace HeuristicLab.Problems.BinPacking3D {
     /// <param name="sortingMethod"></param>
     /// <param name="delta"></param>
     /// <returns></returns>
-    private static Permutation SortItemsBySortingMethod(PackingShape bin, IList<PackingItem> items, SortingMethod sortingMethod, double delta) {
+    private Permutation SortItemsBySortingMethod(PackingShape bin, IList<PackingItem> items, SortingMethod sortingMethod, double delta) {
       Permutation sorted = null;
+      
       switch (sortingMethod) {
         case SortingMethod.Given:
           sorted = new Permutation(PermutationTypes.Absolute, Enumerable.Range(0, items.Count).ToArray());
           break;
         case SortingMethod.VolumeHeight:
-          sorted = new Permutation(PermutationTypes.Absolute,
-                    items.Select((v, i) => new { Index = i, Item = v })
-                         .OrderByDescending(x => x.Item.Depth * x.Item.Width * x.Item.Height)
-                         .ThenByDescending(x => x.Item.Height)
-                         .Select(x => x.Index).ToArray());
+          sorted = items.SortByVolumeHeight();
           break;
         case SortingMethod.HeightVolume:
-          sorted = new Permutation(PermutationTypes.Absolute,
-                    items.Select((v, i) => new { Index = i, Item = v })
-                         .OrderByDescending(x => x.Item.Height)
-                         .ThenByDescending(x => x.Item.Depth * x.Item.Width * x.Item.Height)
-                         .Select(x => x.Index).ToArray());
+          sorted = items.SortByMaterialHeightVolume();
           break;
         case SortingMethod.AreaHeight:
-          sorted = new Permutation(PermutationTypes.Absolute,
-                    items.Select((v, i) => new { Index = i, Item = v })
-                         .OrderByDescending(x => x.Item.Depth * x.Item.Width)
-                         .ThenByDescending(x => x.Item.Height)
-                         .Select(x => x.Index).ToArray());
+          sorted = items.SortByMaterialAreaHeight();
           break;
         case SortingMethod.HeightArea:
-          sorted = new Permutation(PermutationTypes.Absolute,
-                    items.Select((v, i) => new { Index = i, Item = v })
-                         .OrderByDescending(x => x.Item.Height)
-                         .ThenByDescending(x => x.Item.Depth * x.Item.Width)
-                         .Select(x => x.Index).ToArray());
+          sorted = items.SortByMaterialHeightArea();
           break;
         case SortingMethod.ClusteredAreaHeight:
-          double clusterRange = bin.Width * bin.Depth * delta;
-          sorted = new Permutation(PermutationTypes.Absolute,
-                    items.Select((v, i) => new { Index = i, Item = v, ClusterId = (int)(Math.Ceiling(v.Width * v.Depth / clusterRange)) })
-                        .GroupBy(x => x.ClusterId)
-                        .Select(x => new { Cluster = x.Key, Items = x.OrderByDescending(y => y.Item.Height).ToList() })
-                        .OrderByDescending(x => x.Cluster)
-                        .SelectMany(x => x.Items)
-                        .Select(x => x.Index).ToArray());
+          sorted = items.SortByMaterialClusteredAreaHeight(bin, delta);
           break;
         case SortingMethod.ClusteredHeightArea:
-          double clusterRange2 = bin.Height * delta;
-          sorted = new Permutation(PermutationTypes.Absolute,
-                    items.Select((v, i) => new { Index = i, Item = v, ClusterId = (int)(Math.Ceiling(v.Height / clusterRange2)) })
-                        .GroupBy(x => x.ClusterId)
-                        .Select(x => new { Cluster = x.Key, Items = x.OrderByDescending(y => y.Item.Depth * y.Item.Width).ToList() })
-                        .OrderByDescending(x => x.Cluster)
-                        .SelectMany(x => x.Items)
-                        .Select(x => x.Index).ToArray());
+          sorted = items.SortByMaterialClusteredHeightArea(bin, delta);
           break;
         default:
           throw new ArgumentException("Unknown sorting method: " + sortingMethod);
@@ -285,26 +269,48 @@ namespace HeuristicLab.Problems.BinPacking3D {
     }
 
     /// <summary>
-    /// Returns a decoder depending on the given fitting method
+    /// Returns a new permutation of the given items depending on the material and sorting method
     /// </summary>
-    /// <param name="fittingMethod"></param>
+    /// <param name="bin"></param>
+    /// <param name="items"></param>
+    /// <param name="sortingMethod"></param>
+    /// <param name="delta"></param>
     /// <returns></returns>
-    private static ExtremePointPermutationDecoderBase GetDecoderByFittingMethod(FittingMethod fittingMethod) {
-      ExtremePointPermutationDecoderBase decoder = null;
-      switch (fittingMethod) {
-        case FittingMethod.FirstFit:
-          decoder = new ExtremePointPermutationDecoder();
+    private Permutation SortItemsByMaterialAndSortingMethod(PackingShape bin, IList<PackingItem> items, SortingMethod sortingMethod, double delta) {
+      Permutation sorted = null;
+
+      switch (sortingMethod) {
+        case SortingMethod.Given:
+          sorted = new Permutation(PermutationTypes.Absolute, Enumerable.Range(0, items.Count).ToArray());
           break;
-        case FittingMethod.FreeVolumeBestFit:
-          decoder = new FreeVolumeBestFitExtremePointPermutationDecoder();
+        case SortingMethod.VolumeHeight:
+          sorted = items.SortByVolumeHeight();
           break;
-        case FittingMethod.ResidualSpaceBestFit:
-          decoder = new ResidualSpaceBestFitExtremePointPermutationDecoder();
+        case SortingMethod.HeightVolume:
+          sorted = items.SortByHeightVolume();
+          break;
+        case SortingMethod.AreaHeight:
+          sorted = items.SortByAreaHeight();
+          break;
+        case SortingMethod.HeightArea:
+          sorted = items.SortByHeightArea();
+          break;
+        case SortingMethod.ClusteredAreaHeight:
+          sorted = items.SortByClusteredAreaHeight(bin, delta);
+          break;
+        case SortingMethod.ClusteredHeightArea:
+          sorted = items.SortByClusteredHeightArea(bin, delta);
           break;
         default:
-          throw new ArgumentException("Unknown fitting method: " + fittingMethod);
+          throw new ArgumentException("Unknown sorting method: " + sortingMethod);
       }
-      return decoder;
+      return sorted;
     }
+
+
+
+    #region Sorting methods    
+
+    #endregion
   }
 }

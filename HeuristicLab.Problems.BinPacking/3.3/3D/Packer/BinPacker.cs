@@ -1,4 +1,25 @@
-﻿using HeuristicLab.Core;
+﻿#region License Information
+/* HeuristicLab
+ * Copyright (C) 2002-2016 Joseph Helm and Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ *
+ * This file is part of HeuristicLab.
+ *
+ * HeuristicLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * HeuristicLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
+ */
+#endregion
+
+using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.BinPacking3D;
@@ -12,35 +33,20 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
   [Item("BinPacker", "A class for packing bins for the 3D bin-packer problem.")]
   [StorableClass]
   public abstract class BinPacker {
-    protected Permutation _permutation;
-    protected PackingShape _binShape;
-    protected IList<PackingItem> _items;
-    protected bool _useStackingConstraints;
+    
+    public BinPacker() { }
 
     /// <summary>
     /// Packs all items of the bin packer and returns a collection of BinPacking3D objects
     /// </summary>
+    /// <param name="sortedItems">Permutation of items sorted by a sorting method. The value of each permutation index references to the index of the items list</param>
+    /// <param name="binShape">Bin for storing the items</param>
+    /// <param name="items">A list of packing items which should be assigned to a bin</param>
+    /// <param name="useStackingConstraints">Flag for using stacking constraints</param>
     /// <returns></returns>
-    public abstract IList<BinPacking3D> PackItems();
+    public abstract IList<BinPacking3D> PackItems(Permutation sortedItems, PackingShape binShape, IList<PackingItem> items, bool useStackingConstraints);
 
-    /// <summary>
-    /// Tries to pack the remainig items into a given BinPacking3D object. Each item could be packed into the BinPacking3D object will be removed from the list of remaining ids
-    /// </summary>
-    /// <param name="remainingIds">List of remaining ids. After the method has been executed the list has to have less items</param>
-    /// <param name="items">List of packing items. Some of the items will be assigned to the BinPacking3D object</param>
-    /// <param name="packingBin">This object will be filled with some of the given items</param>
-    protected void PackRemainingItems(ref IList<int> remainingIds, ref BinPacking3D packingBin, IList<PackingItem> items, bool useStackingConstraints, Dictionary<int, bool> rotationArray) {
-
-      foreach (var itemId in new List<int>(remainingIds)) {
-        bool rotated = rotationArray == null ? false : rotationArray[itemId];
-        PackingPosition position = FindPackingPositionForItem(packingBin, items[itemId], useStackingConstraints, rotated);
-        // if a valid packing position could be found, the current item can be added to the given bin
-        if (position != null) {
-          PackItem(ref packingBin, itemId, items[itemId], position, useStackingConstraints);
-          remainingIds.Remove(itemId);
-        }
-      }
-    }
+    
 
     /// <summary>
     /// Pack a given item into a given bin and updates the residual space and the extreme points
@@ -51,7 +57,7 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
     /// <param name="position"></param>
     protected void PackItem(ref BinPacking3D packingBin, int itemId, PackingItem packingItem, PackingPosition position, bool useStackingConstraints) {
 
-      packingBin.AddItem(itemId, packingItem, position);
+      packingBin.PackItem(itemId, packingItem, position);
       packingBin.UpdateResidualSpace(packingItem, position);
       packingBin.UpdateExtremePoints(packingItem, position, useStackingConstraints);
     }

@@ -29,6 +29,8 @@ using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Problems.BinPacking3D.Decoder;
+using HeuristicLab.Problems.BinPacking3D.Packer;
 
 namespace HeuristicLab.Problems.BinPacking3D {
   [Item("Bin Packing Problem (3D, permutation encoding) (BPP)", "Represents a three-dimensional bin-packing problem using only bins with identical measures and bins/items with rectangular shapes.")]
@@ -46,7 +48,7 @@ namespace HeuristicLab.Problems.BinPacking3D {
 
     public PermutationProblem()
       : base() {
-      Decoder = new ExtremePointPermutationDecoder(); // default decoder
+      Decoder = new ExtremePointPermutationDecoder(new BinPackerFirstFit()); // default decoder
 
       Encoding = new PermutationEncoding(EncodedSolutionName, Items.Count, PermutationTypes.Absolute);
       AddOperators();

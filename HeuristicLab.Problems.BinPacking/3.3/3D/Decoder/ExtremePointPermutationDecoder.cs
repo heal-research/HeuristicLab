@@ -1,4 +1,25 @@
-﻿using HeuristicLab.Core;
+﻿#region License Information
+/* HeuristicLab
+ * Copyright (C) 2002-2016 Joseph Helm and Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ *
+ * This file is part of HeuristicLab.
+ *
+ * HeuristicLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * HeuristicLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
+ */
+#endregion
+
+using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using System;
@@ -16,11 +37,13 @@ namespace HeuristicLab.Problems.BinPacking3D.Decoder {
   /// </summary>
   [Item("Extreme-point Permutation Decoder (3d) Base", "Base class for 3d decoders")]
   [StorableClass]
-  public class ExtremePointPermutationDecoder : Item, IDecoder<Permutation> {
+  public class ExtremePointPermutationDecoder : Item, IDecoder<Permutation>
+    //where TBinPacker : BinPacker, new ()
+    {
 
     [StorableConstructor]
     protected ExtremePointPermutationDecoder(bool deserializing) : base(deserializing) { }
-    protected ExtremePointPermutationDecoder(ExtremePointPermutationDecoderBase original, Cloner cloner)
+    protected ExtremePointPermutationDecoder(ExtremePointPermutationDecoder original, Cloner cloner)
       : base(original, cloner) {
     }
 
@@ -33,7 +56,7 @@ namespace HeuristicLab.Problems.BinPacking3D.Decoder {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      throw new NotImplementedException();
+      return new ExtremePointPermutationDecoder(this, cloner);
     }
 
     BinPacker _binPacker;
@@ -48,8 +71,7 @@ namespace HeuristicLab.Problems.BinPacking3D.Decoder {
     /// <returns></returns>
     public Solution Decode(Permutation permutation, PackingShape binShape, IList<PackingItem> items, bool useStackingConstraints) {
       Solution solution = new Solution(binShape, useExtremePoints: true, stackingConstraints: useStackingConstraints);
-      
-      foreach (var packedBin in _binPacker.PackItems()) {
+      foreach (var packedBin in _binPacker.PackItems(permutation, binShape, items, useStackingConstraints)) {
         solution.Bins.Add(packedBin);
       }
       return solution;
