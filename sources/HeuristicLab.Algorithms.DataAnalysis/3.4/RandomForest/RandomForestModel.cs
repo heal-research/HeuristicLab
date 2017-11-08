@@ -287,7 +287,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     public static RandomForestModel CreateRegressionModel(IRegressionProblemData problemData, int nTrees, double r, double m, int seed,
       out double rmsError, out double outOfBagRmsError, out double avgRelError, out double outOfBagAvgRelError) {
-      return CreateRegressionModel(problemData, problemData.TrainingIndices, nTrees, r, m, seed, out rmsError, out avgRelError, out outOfBagAvgRelError, out outOfBagRmsError);
+      return CreateRegressionModel(problemData, problemData.TrainingIndices, nTrees, r, m, seed,
+       rmsError: out rmsError, outOfBagRmsError: out outOfBagRmsError, avgRelError: out avgRelError, outOfBagAvgRelError: out outOfBagAvgRelError);
     }
 
     public static RandomForestModel CreateRegressionModel(IRegressionProblemData problemData, IEnumerable<int> trainingIndices, int nTrees, double r, double m, int seed,
@@ -299,16 +300,17 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       var dForest = CreateRandomForestModel(seed, inputMatrix, nTrees, r, m, 1, out rep);
 
       rmsError = rep.rmserror;
+      outOfBagRmsError = rep.oobrmserror;
       avgRelError = rep.avgrelerror;
       outOfBagAvgRelError = rep.oobavgrelerror;
-      outOfBagRmsError = rep.oobrmserror;
 
       return new RandomForestModel(problemData.TargetVariable, dForest, seed, problemData, nTrees, r, m);
     }
 
     public static RandomForestModel CreateClassificationModel(IClassificationProblemData problemData, int nTrees, double r, double m, int seed,
       out double rmsError, out double outOfBagRmsError, out double relClassificationError, out double outOfBagRelClassificationError) {
-      return CreateClassificationModel(problemData, problemData.TrainingIndices, nTrees, r, m, seed, out rmsError, out outOfBagRmsError, out relClassificationError, out outOfBagRelClassificationError);
+      return CreateClassificationModel(problemData, problemData.TrainingIndices, nTrees, r, m, seed, 
+        out rmsError, out outOfBagRmsError, out relClassificationError, out outOfBagRelClassificationError);
     }
 
     public static RandomForestModel CreateClassificationModel(IClassificationProblemData problemData, IEnumerable<int> trainingIndices, int nTrees, double r, double m, int seed,

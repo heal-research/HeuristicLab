@@ -159,7 +159,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public static RandomForestModel CreateRandomForestRegressionModel(IRegressionProblemData problemData, int nTrees,
       double r, double m, int seed,
       out double rmsError, out double avgRelError, out double outOfBagRmsError, out double outOfBagAvgRelError) {
-      return RandomForestModel.CreateRegressionModel(problemData, nTrees, r, m, seed, out rmsError, out avgRelError, out outOfBagRmsError, out outOfBagAvgRelError);
+      return RandomForestModel.CreateRegressionModel(problemData, nTrees, r, m, seed,
+        rmsError: out rmsError, avgRelError: out avgRelError, outOfBagRmsError: out outOfBagRmsError, outOfBagAvgRelError: out outOfBagAvgRelError);
     }
 
     #endregion
