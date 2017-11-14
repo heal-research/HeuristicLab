@@ -9,7 +9,7 @@ using HeuristicLab.Core;
 
 namespace HeuristicLab.Problems.BinPacking._3D.Tests {
   [TestClass]
-  public class AlgorithmTest {
+  public class RandomInstanceProviderTest {
 
     private struct Dimension {
       public int Id { get; set; }
@@ -165,9 +165,6 @@ namespace HeuristicLab.Problems.BinPacking._3D.Tests {
       }
     }
 
-
-
-
     private void TestExtremePointAlgorithmByParameters(RandomInstanceProvider randomInstanceProvider, int @class, SortingMethod sortingMethod, FittingMethod fittingMethod) {
       var dataDescriptors = randomInstanceProvider.GetDataDescriptors();
       var referenceValues = GetReferenceAlgorithmValues();
@@ -200,7 +197,7 @@ namespace HeuristicLab.Problems.BinPacking._3D.Tests {
         double referenceValue = 0.0;
 
         if (referenceValues.TryGetValue(new Tuple<int, int, SortingMethod>(@class, numItems, sortingMethod), out referenceValue)) {
-          Console.WriteLine($"{numItems}-{@class}-{sortingMethod}: \t{referenceValue} \t {(double)sumNumberOfBins / (double)NUMBER_OF_TEST_INSTANCES} \t{(referenceValue - ((double)sumNumberOfBins / (double)NUMBER_OF_TEST_INSTANCES)):F2}");
+          Console.WriteLine($"{numItems}-{@class}-{sortingMethod}: \tReference: {referenceValue} \tImplementation: {(double)sumNumberOfBins / (double)NUMBER_OF_TEST_INSTANCES} \t{(referenceValue - ((double)sumNumberOfBins / (double)NUMBER_OF_TEST_INSTANCES)):F2}");
           Assert.AreEqual(referenceValue, (double)sumNumberOfBins / (double)NUMBER_OF_TEST_INSTANCES, 20.0);
         }
       }
@@ -220,36 +217,49 @@ namespace HeuristicLab.Problems.BinPacking._3D.Tests {
       AddToReferenceAlgorithmValuesDict(referenceValues, 1, SortingMethod.VolumeHeight, new double[] { 14.4, 29.5, 40.3, 55.7 });
       AddToReferenceAlgorithmValuesDict(referenceValues, 1, SortingMethod.AreaHeight, new double[] { 14.4, 28.3, 39.2, 53.2 });
       AddToReferenceAlgorithmValuesDict(referenceValues, 1, SortingMethod.HeightArea, new double[] { 15, 29, 39.8, 55.1});
+      AddToReferenceAlgorithmValuesDict(referenceValues, 1, SortingMethod.ClusteredAreaHeight, new double[] { 14, 27.9, 38.1, 53 });
+      AddToReferenceAlgorithmValuesDict(referenceValues, 1, SortingMethod.ClusteredHeightArea, new double[] { 13.8, 27.4, 37.7, 52.3 });
 
       AddToReferenceAlgorithmValuesDict(referenceValues, 4, SortingMethod.Given, new double[] { 29.7, 60.2, 88.5, 119.9 });
       AddToReferenceAlgorithmValuesDict(referenceValues, 4, SortingMethod.HeightVolume, new double[] { 30.1, 59.6, 88.3, 120.1 });
       AddToReferenceAlgorithmValuesDict(referenceValues, 4, SortingMethod.VolumeHeight, new double[] { 29.9, 60.4, 88.6, 119.6 });
       AddToReferenceAlgorithmValuesDict(referenceValues, 4, SortingMethod.AreaHeight, new double[] { 30, 59.7, 88.4, 120.3 });
       AddToReferenceAlgorithmValuesDict(referenceValues, 4, SortingMethod.HeightArea, new double[] { 30, 59.6, 88.3, 120 });
+      AddToReferenceAlgorithmValuesDict(referenceValues, 4, SortingMethod.ClusteredAreaHeight, new double[] { 29.5, 59, 86.9, 119 });
+      AddToReferenceAlgorithmValuesDict(referenceValues, 4, SortingMethod.ClusteredHeightArea, new double[] { 29.5, 59, 86.9, 118.9 });
 
       AddToReferenceAlgorithmValuesDict(referenceValues, 5, SortingMethod.Given, new double[] { 10.1, 18.1, 24.4, 32.5 });
       AddToReferenceAlgorithmValuesDict(referenceValues, 5, SortingMethod.HeightVolume, new double[] { 9, 16.7, 22.9, 30.7});
       AddToReferenceAlgorithmValuesDict(referenceValues, 5, SortingMethod.VolumeHeight, new double[] { 10, 17.8, 24.5, 32.6 });
       AddToReferenceAlgorithmValuesDict(referenceValues, 5, SortingMethod.AreaHeight, new double[] { 9.2, 16.1, 21.9, 29.5 });
       AddToReferenceAlgorithmValuesDict(referenceValues, 5, SortingMethod.HeightArea, new double[] { 9, 16.6, 22.6, 30.5 });
+      AddToReferenceAlgorithmValuesDict(referenceValues, 5, SortingMethod.ClusteredAreaHeight, new double[] { 8.5, 15.7, 21, 28.5 });
+      AddToReferenceAlgorithmValuesDict(referenceValues, 5, SortingMethod.ClusteredHeightArea, new double[] { 8.4, 15.4, 21.1, 28.2});
 
       AddToReferenceAlgorithmValuesDict(referenceValues, 6, SortingMethod.Given, new double[] { 11.7, 21.7, 33, 44.4});
       AddToReferenceAlgorithmValuesDict(referenceValues, 6, SortingMethod.HeightVolume, new double[] { 10.9, 21.2, 31.8, 41.5 });
       AddToReferenceAlgorithmValuesDict(referenceValues, 6, SortingMethod.VolumeHeight, new double[] { 11.7, 22, 34.2, 44 });
       AddToReferenceAlgorithmValuesDict(referenceValues, 6, SortingMethod.AreaHeight, new double[] { 10.6, 20.2, 30.8, 39.5});
       AddToReferenceAlgorithmValuesDict(referenceValues, 6, SortingMethod.HeightArea, new double[] { 10.9, 20.5, 31, 39.8 });
+      AddToReferenceAlgorithmValuesDict(referenceValues, 6, SortingMethod.ClusteredAreaHeight, new double[] { 10.2, 19.6, 29.9, 38.6 });
+      AddToReferenceAlgorithmValuesDict(referenceValues, 6, SortingMethod.ClusteredHeightArea, new double[] { 10.1, 19.8, 30.2, 38.8 });
 
       AddToReferenceAlgorithmValuesDict(referenceValues, 7, SortingMethod.Given, new double[] { 9.4, 15.9, 19.3, 30 });
       AddToReferenceAlgorithmValuesDict(referenceValues, 7, SortingMethod.HeightVolume, new double[] { 8.2, 14.6, 19.2, 28.1 });
       AddToReferenceAlgorithmValuesDict(referenceValues, 7, SortingMethod.VolumeHeight, new double[] { 9.3, 15.6, 19.7, 30.2 });
       AddToReferenceAlgorithmValuesDict(referenceValues, 7, SortingMethod.AreaHeight, new double[] { 8.1, 14.1, 18.2, 26.2 });
       AddToReferenceAlgorithmValuesDict(referenceValues, 7, SortingMethod.HeightArea, new double[] { 8.1, 14.1, 18.9, 27,2 });
+      AddToReferenceAlgorithmValuesDict(referenceValues, 7, SortingMethod.ClusteredAreaHeight, new double[] { 7.6, 13.4, 16.9, 25 });
+      AddToReferenceAlgorithmValuesDict(referenceValues, 7, SortingMethod.ClusteredHeightArea, new double[] { 7.7, 13.3, 16.9, 24.9 });
 
       AddToReferenceAlgorithmValuesDict(referenceValues, 8, SortingMethod.Given, new double[] { 11.6, 22, 28.5, 35.4 });
       AddToReferenceAlgorithmValuesDict(referenceValues, 8, SortingMethod.HeightVolume, new double[] { 10.5, 20.9, 27.4, 33.9 });
       AddToReferenceAlgorithmValuesDict(referenceValues, 8, SortingMethod.VolumeHeight, new double[] { 11.6, 22.1, 28.4, 35.4});
       AddToReferenceAlgorithmValuesDict(referenceValues, 8, SortingMethod.AreaHeight, new double[] { 10.1, 20.3, 26.4, 32.2 });
       AddToReferenceAlgorithmValuesDict(referenceValues, 8, SortingMethod.HeightArea, new double[] { 10.5, 20.8, 37.7, 33.9 });
+      AddToReferenceAlgorithmValuesDict(referenceValues, 8, SortingMethod.ClusteredAreaHeight, new double[] { 9.6, 19.4, 25.4, 31.4 });
+      AddToReferenceAlgorithmValuesDict(referenceValues, 8, SortingMethod.ClusteredHeightArea, new double[] { 9.5, 19.7, 25.5, 31.5 });
+
       return referenceValues;
     }
 

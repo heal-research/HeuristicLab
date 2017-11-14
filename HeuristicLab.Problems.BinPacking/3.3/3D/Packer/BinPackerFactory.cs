@@ -15,7 +15,7 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
     /// Returns the bin packer depending on the given fitting method
     /// </summary>
     /// <param name="fittingMethod"></param>
-    /// <returns></returns>
+    /// <returns>Returns a new BinPacker depending on the given fitting method</returns>
     public static BinPacker CreateBinPacker(FittingMethod fittingMethod) {
       BinPacker binPacker = null;
       switch (fittingMethod) {

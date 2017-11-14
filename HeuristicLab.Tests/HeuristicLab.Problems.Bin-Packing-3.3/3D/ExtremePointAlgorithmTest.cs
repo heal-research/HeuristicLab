@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 using HeuristicLab.Problems.BinPacking._3D.Utils.Tests;
 using System.Threading;
+using System.Linq;
 
 namespace HeuristicLab.Problems.BinPacking._3D.Tests {
   [TestClass]
@@ -12,6 +13,7 @@ namespace HeuristicLab.Problems.BinPacking._3D.Tests {
 
     private PackingShape _packingShape1;
     private PackingShape _packingShape2;
+    private PackingShape _packingShape3;
     private IList<PackingItem> _items;
     private ExtremePointAlgorithm _extremPointAlgorithm;
 
@@ -19,6 +21,7 @@ namespace HeuristicLab.Problems.BinPacking._3D.Tests {
     public void Initializes() {
       _packingShape1 = new PackingShape(19, 19, 19);
       _packingShape2 = new PackingShape(18, 18, 18);
+      _packingShape3 = new PackingShape(20, 20, 20);
       _items = new List<PackingItem>();
 
       _items.Add(new PackingItem(8, 10, 10, _packingShape1, 1000, 1)); // 0,  V = 800,  A =  80, h = 10
@@ -46,18 +49,50 @@ namespace HeuristicLab.Problems.BinPacking._3D.Tests {
 
     [TestMethod]
     [TestCategory("Problems.BinPacking.3D")]
-    public void TestMethod1() {
-      object[] parameters = new object[] { _packingShape1, _items, new SortingMethod[] { SortingMethod.Given }, new FittingMethod[] { FittingMethod.FirstFit }, new CancellationToken()};
+    public void TestExtremePointAlgorithm() {
+       
+      IList<BinPacking3D.PackingPosition> positionsBin0 = new List<BinPacking3D.PackingPosition>() {
+        new BinPacking3D.PackingPosition(0, 0,0,0),
+        new BinPacking3D.PackingPosition(0, 8,0,0),
+        new BinPacking3D.PackingPosition(0, 0,0,10),
+        new BinPacking3D.PackingPosition(0, 10,0,10),
+        new BinPacking3D.PackingPosition(0, 8,8,0),
+        new BinPacking3D.PackingPosition(0, 0,10,0),
+        new BinPacking3D.PackingPosition(0, 0,10,8),
+        new BinPacking3D.PackingPosition(0, 8,10,8),
+      };
+
+      IList<BinPacking3D.PackingPosition> positionsBin1 = new List<BinPacking3D.PackingPosition>() {
+        new BinPacking3D.PackingPosition(1, 0,0,0),
+        new BinPacking3D.PackingPosition(1, 9,0,0),
+        new BinPacking3D.PackingPosition(1, 0,0,10),
+        new BinPacking3D.PackingPosition(1, 10,0,10),
+        new BinPacking3D.PackingPosition(1, 9,9,0),
+        new BinPacking3D.PackingPosition(1, 0,10,0),
+        new BinPacking3D.PackingPosition(1, 0,10,9)
+      };
+
+      object[] parameters = new object[] { _packingShape3, _items, new SortingMethod[] { SortingMethod.Given }, new FittingMethod[] { FittingMethod.FirstFit }, new CancellationToken() };
+      _extremPointAlgorithm.SortingMethodParameter.Value.Value = SortingMethod.Given;
+      _extremPointAlgorithm.FittingMethodParameter.Value.Value = FittingMethod.FirstFit;
+      _extremPointAlgorithm.SortByMaterialParameter.Value.Value = false;
       var result = TestUtils.InvokeMethod(typeof(ExtremePointAlgorithm), _extremPointAlgorithm, "GetBest", parameters) as Tuple<Solution, double, SortingMethod?, FittingMethod?>;
-      //InvokeMethod();
 
-      var bins = result.Item1.Bins;
-      var items0 = bins[0].Items;
-      var positions0 = bins[0].Positions;
-      var items1 = bins[1].Items;
-      var positions1 = bins[1].Positions;
+      int i = 0;
+      foreach (var item in result.Item1.Bins[0].Positions.Values) {
+        Assert.AreEqual(positionsBin0[i].X, item.X);
+        Assert.AreEqual(positionsBin0[i].Y, item.Y);
+        Assert.AreEqual(positionsBin0[i].Z, item.Z);
+        i++;
+      }
 
-      var s = 1;
+      i = 0;
+      foreach (var item in result.Item1.Bins[1].Positions.Values) {
+        Assert.AreEqual(positionsBin1[i].X, item.X);
+        Assert.AreEqual(positionsBin1[i].Y, item.Y);
+        Assert.AreEqual(positionsBin1[i].Z, item.Z);
+        i++;
+      }
     }
   }
 }

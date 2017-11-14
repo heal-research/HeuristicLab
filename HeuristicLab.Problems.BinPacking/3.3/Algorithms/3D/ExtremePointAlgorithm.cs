@@ -181,14 +181,15 @@ namespace HeuristicLab.Problems.BinPacking3D {
         foreach (var sort in sortings) {
           IDecoder<Permutation> decoder = new ExtremePointPermutationDecoder(BinPackerFactory.CreateBinPacker(fit));
           Permutation sortedItems;
+                    
           if (SortByMaterialParameter.Value.Value) {
             sortedItems = SortItemsByMaterialAndSortingMethod(bin, items, sort, DeltaParameter.Value.Value);
           } else {
             sortedItems = SortItemsBySortingMethod(bin, items, sort, DeltaParameter.Value.Value);
           }
-                    
+          
           var result = Optimize(sortedItems, bin, items, Problem.UseStackingConstraints, decoder, Problem.SolutionEvaluator);
-
+          
           if (double.IsNaN(result.Item2) || double.IsInfinity(result.Item2)) {
             continue;
           }

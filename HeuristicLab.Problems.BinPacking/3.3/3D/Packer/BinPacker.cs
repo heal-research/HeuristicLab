@@ -43,11 +43,9 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
     /// <param name="binShape">Bin for storing the items</param>
     /// <param name="items">A list of packing items which should be assigned to a bin</param>
     /// <param name="useStackingConstraints">Flag for using stacking constraints</param>
-    /// <returns></returns>
+    /// <returns>Returns a collection of bin packing 3d objects. Each object represents a bin and the packed items</returns>
     public abstract IList<BinPacking3D> PackItems(Permutation sortedItems, PackingShape binShape, IList<PackingItem> items, bool useStackingConstraints);
-
     
-
     /// <summary>
     /// Pack a given item into a given bin and updates the residual space and the extreme points
     /// </summary>
@@ -77,8 +75,7 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
         rotated ? packingItem.Width : packingItem.Depth,
         packingItem.TargetBin, packingItem.Weight, packingItem.Material);
 
-      // The extremepoints are sortet by Z, X, Y
-
+      // The extremepoints are sortet by Y / Z / X
       return packingBin.ExtremePoints.Where(x => packingBin.IsPositionFeasible(newItem, x, useStackingConstraints)).FirstOrDefault();
     }
   }

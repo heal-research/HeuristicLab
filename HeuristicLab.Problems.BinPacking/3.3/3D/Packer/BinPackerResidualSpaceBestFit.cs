@@ -33,16 +33,14 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
   [StorableClass]
   public class BinPackerResidualSpaceBestFit : BinPacker {
 
-    public BinPackerResidualSpaceBestFit() : base() { }/*
-    public BinPackerResidualSpaceBestFit(Permutation permutation, PackingShape binShape, IList<PackingItem> items, bool useStackingConstraints)
-      : base(permutation, binShape, items, useStackingConstraints) { }
-      */
+    public BinPackerResidualSpaceBestFit() : base() { }
+
     /// <summary>
     /// Packs the items into the bins by using a best fit residual space algorithm.
     /// The order of the chosen items depends on the merit function. 
     /// Each residual space belongs to an extreme point.
     /// </summary>
-    /// <returns></returns>
+    /// <returns>Returns a collection of bin packing 3d objects. Each object represents a bin and the packed items</returns>
     public override IList<BinPacking3D> PackItems(Permutation sortedItems, PackingShape binShape, IList<PackingItem> items, bool useStackingConstraints) {
       IList<BinPacking3D> packingList = new List<BinPacking3D>();
       IList<int> remainingIds = new List<int>(sortedItems);

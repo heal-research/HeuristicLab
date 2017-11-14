@@ -104,17 +104,23 @@ namespace HeuristicLab.Problems.BinPacking3D {
 
     /// <summary>
     /// Compares two packing positions by their coordinates. 
-    /// The order of comparing is z -> x -> y.
+    /// The order of comparing is y (height) -> z (depth) -> x (width).
     /// </summary>
     /// <param name="other"></param>
     /// <returns></returns>
     public int CompareTo(PackingPosition other) {
+      int result = Y.CompareTo(other.Y);
+      if (result == 0)
+        result = Z.CompareTo(other.Z);
+      if (result == 0)
+        result = X.CompareTo(other.X);
+      /*
       int result = Z.CompareTo(other.Z);
       if (result == 0)
         result = X.CompareTo(other.X);
       if (result == 0)
         result = Y.CompareTo(other.Y);
-      
+      */
       return result;
 
     }

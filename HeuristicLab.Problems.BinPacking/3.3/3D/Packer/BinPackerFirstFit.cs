@@ -37,7 +37,7 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
     public BinPackerFirstFit() : base() { }    
 
     /// <summary>
-    /// Packs the items of the object by using a first fit algorithm into an amount of bins and returns them
+    /// Packs the items of the object by using a first fit algorithm into an amount of bins and returns them.
     /// </summary>
     /// <returns>Returns a collection of bin packing 3d objects. Each object represents a bin and the packed items</returns>
     public override IList<BinPacking3D> PackItems(Permutation sortedItems, PackingShape binShape, IList<PackingItem> items, bool useStackingConstraints) {

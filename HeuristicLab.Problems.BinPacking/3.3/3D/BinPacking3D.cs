@@ -66,6 +66,12 @@ namespace HeuristicLab.Problems.BinPacking3D {
 
     #region New methods for bin packer class
 
+    /// <summary>
+    /// Puts a given item into the bin packing at the given position.
+    /// </summary>
+    /// <param name="itemID">Offset in the internal item array</param>
+    /// <param name="item">Item</param>
+    /// <param name="position">Position of the item in the bin packing</param>
     public override void PackItem(int itemID, PackingItem item, PackingPosition position) {
       Items[itemID] = item;
       Positions[itemID] = position;
@@ -106,46 +112,8 @@ namespace HeuristicLab.Problems.BinPacking3D {
       AddExtremePoint(ep1);
       AddExtremePoint(ep2);
       AddExtremePoint(ep3);
-
-      /*
-      ExtremePoints.Add(ep1);
-      ExtremePoints.Add(ep2);
-      ExtremePoints.Add(ep3);
-
-      var rs1 = CalculateResidualSpace(CreateRs(ep1));
-      var rs2 = CalculateResidualSpace(CreateRs(ep2));
-      var rs3 = CalculateResidualSpace(CreateRs(ep3));
-      ResidualSpace.Add(ep1, rs1);
-      ResidualSpace.Add(ep2, rs2);
-      ResidualSpace.Add(ep3, rs3);*/
     }
-
-
-    /*private bool AddExtremePoint(PackingPosition position) {
-      if ()
-
-      return true;
-    }
-
-    
-    private bool AddExtremePoint(PackingPosition pos) {
-      if (ExtremePoints.Add(pos)) {
-        var rs = CalculateResidualSpace(new Vector3D(pos));
-        ResidualSpace.Add(pos, rs);
-        // Check if existing extreme points are shadowed by the new point
-        // That is, their residual space fit entirely into the residual space of the new point
-        foreach (var ep in ExtremePoints.Where(x => x != pos && new Vector3D(x).IsInside(pos, rs)).ToList()) {
-          if (IsWithinResidualSpaceOfAnotherExtremePoint(new Vector3D(ep), ResidualSpace[ep], pos, rs)) {
-            ExtremePoints.Remove(ep);
-            ResidualSpace.Remove(ep);
-          }
-        }
-        return true;
-      }
-      return false;
-    }*/
-
-
+        
     private Tuple<int, int, int> CalculateResidualSpace(Vector3D pos) {
       var itemPos = Items.Select(x => new { Item = x.Value, Position = Positions[x.Key] });
       Vector3D limit = new Vector3D() { X = BinShape.Width, Y = BinShape.Height, Z = BinShape.Depth };
@@ -163,14 +131,10 @@ namespace HeuristicLab.Problems.BinPacking3D {
           limit.Z = forwardLimit.Z;
         }
       }
-
-      
       
       if (limit.X - pos.X <= 0 || limit.Y - pos.Y <= 0  || limit.Z - pos.Z <= 0) {
         return Tuple.Create(0, 0, 0);
-      }
-
-
+      }      
       return Tuple.Create(limit.X - pos.X, limit.Y - pos.Y, limit.Z - pos.Z);
     }
 
@@ -490,10 +454,21 @@ namespace HeuristicLab.Problems.BinPacking3D {
       }
     }
 
+    /// <summary>
+    /// Returns true if all values of a given tuple are not zero
+    /// </summary>
+    /// <param name="rs">Tuple with three integer values which represents a residual space</param>
+    /// <returns></returns>
     private bool IsNonZero(Tuple<int, int, int> rs) {
       return rs.Item1 > 0 && rs.Item2 > 0 && rs.Item3 > 0;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="pos"></param>
+    /// <param name="residualSpace"></param>
+    /// <returns></returns>
     private bool IsWithinResidualSpaceOfAnotherExtremePoint(Vector3D pos, Tuple<int, int, int> residualSpace) {
       var eps = ExtremePoints.Where(x => !pos.Equals(x) && pos.IsInside(x, ResidualSpace[x]));
       return eps.Any(x => IsWithinResidualSpaceOfAnotherExtremePoint(pos, residualSpace, x, ResidualSpace[x]));
@@ -504,12 +479,17 @@ namespace HeuristicLab.Problems.BinPacking3D {
           && rsEp.Item3 >= pos.Z - ep.Z + rsPos.Item3;
     }
 
+    /// <summary>
+    /// Adds an extrem point to the extreme point collection of the bin packing.
+    /// </summary>
+    /// <param name="pos">Position of the new extreme point</param>
+    /// <returns>Retruns true if the extreme point could be added</returns>
     private bool AddExtremePoint(PackingPosition pos) {
       if (ExtremePoints.Add(pos)) {
         var rs = CalculateResidualSpace(new Vector3D(pos));
         ResidualSpace.Add(pos, rs);
-        // Check if existing extreme points are shadowed by the new point
-        // That is, their residual space fit entirely into the residual space of the new point
+        // Check if the existing extreme points are shadowed by the new point
+        // This is, their residual space fit entirely into the residual space of the new point
         foreach (var ep in ExtremePoints.Where(x => x != pos && new Vector3D(x).IsInside(pos, rs)).ToList()) {
           if (IsWithinResidualSpaceOfAnotherExtremePoint(new Vector3D(ep), ResidualSpace[ep], pos, rs)) {
             ExtremePoints.Remove(ep);
@@ -520,15 +500,7 @@ namespace HeuristicLab.Problems.BinPacking3D {
       }
       return false;
     }
-
-    private Tuple<int, int, int> CalculateResidualSpace1(Vector3D pos) {
-      var itemPos = Items.Select(x => new { Item = x.Value, Position = Positions[x.Key] });
-      var rightLimit = ProjectRight(pos);
-      var upLimit = ProjectUp(pos);
-      var forwardLimit = ProjectForward(pos);
-      return Tuple.Create(rightLimit.X - pos.X, upLimit.Y - pos.Y, forwardLimit.Z - pos.Z);
-    }
-
+        
     #region Projections
 
     private Vector3D ProjectBackward(Vector3D pos) {
@@ -718,6 +690,11 @@ namespace HeuristicLab.Problems.BinPacking3D {
     #endregion
 
 
+    /// <summary>
+    /// Updates the resiual space for a packing item.
+    /// </summary>
+    /// <param name="item"></param>
+    /// <param name="pos"></param>
     public void UpdateResidualSpace(PackingItem item, PackingPosition pos) {
       foreach (var ep in ExtremePoints.ToList()) {
         var rs = ResidualSpace[ep];

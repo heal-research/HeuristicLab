@@ -235,7 +235,6 @@ namespace HeuristicLab.Problems.BinPacking3D {
 
       BinShape = data.BinShape;
       var items = new ItemList<PackingItem>(data.Items);
-      items.Sort((x, y) => y.CompareTo(x));
       Items = items.AsReadOnly();
 
       ApplyHorizontalOrientation();

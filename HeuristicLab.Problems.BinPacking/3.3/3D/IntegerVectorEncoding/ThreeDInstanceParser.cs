@@ -63,12 +63,15 @@ namespace HeuristicLab.Problems.BinPacking3D {
     private int GetNextInteger(StreamReader reader) {
       var next = reader.Read();
       var builder = new StringBuilder();
-      while (next >= 0 && !char.IsDigit((char)next)) next = reader.Read();
-      if (next == -1) throw new InvalidOperationException("No further integer available");
+      while (next >= 0 && !char.IsDigit((char)next))
+        next = reader.Read();
+      if (next == -1)
+        throw new InvalidOperationException("No further integer available");
       while (char.IsDigit((char)next)) {
         builder.Append((char)next);
         next = reader.Read();
-        if (next == -1) break;
+        if (next == -1)
+          break;
       }
       return int.Parse(builder.ToString());
     }

@@ -35,10 +35,21 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
 
     public BinPackerFreeVolumeBestFit() : base() { }
 
+    /// <summary>
+    /// Packs all items by using a free volume best fit strategy.
+    /// If there is no bin packing item, a new one will be created an the current item will be packed into it.
+    /// If there exists at least on bin packing item in the packing list they are being sortet by their free volume ascending. 
+    /// The current item will be packed into the bin packing with the fewest free volume and enought space for placing it.
+    /// If an item could not be placed in any bin packing, a new one will be created for the item.
+    /// </summary>
+    /// <param name="sortedItems"></param>
+    /// <param name="binShape"></param>
+    /// <param name="items"></param>
+    /// <param name="useStackingConstraints"></param>
+    /// <returns>Returns a collection of bin packing 3d objects. Each object represents a bin and the packed items</returns>
     public override IList<BinPacking3D> PackItems(Permutation sortedItems, PackingShape binShape, IList<PackingItem> items, bool useStackingConstraints) {
       IList<BinPacking3D> packingList = new List<BinPacking3D>();
       IList<int> remainingIds = new List<int>(sortedItems);
-
 
       foreach (int remainingId in remainingIds) {
         var sortedBins = packingList.OrderBy(x => x.FreeVolume);

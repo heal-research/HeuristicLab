@@ -101,7 +101,6 @@ namespace HeuristicLab.Problems.BinPacking3D {
       using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)) {
         var parser = new ThreeDInstanceParser();
         parser.Parse(stream);
-
         return new BPPData() {
           Name = Path.GetFileNameWithoutExtension(path),
           Description = "Imported instance from " + path,
