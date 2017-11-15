@@ -22,13 +22,15 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Text;
+using System.Linq.Expressions;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.DataAnalysis {
+  using ValuesType = Dictionary<string, IList>;
+
   public static class DatasetUtil {
     /// <summary>
     /// Shuffle all the lists with the same shuffling.
@@ -56,7 +58,67 @@ namespace HeuristicLab.Problems.DataAnalysis {
         }
       }
       return shuffled;
+    }
 
+    private static readonly Action<Dataset, ValuesType> setValues;
+    private static readonly Func<Dataset, ValuesType> getValues;
+    static DatasetUtil() {
+      var dataset = Expression.Parameter(typeof(Dataset));
+      var variableValues = Expression.Parameter(typeof(ValuesType));
+      var valuesExpression = Expression.Field(dataset, "variableValues");
+      var assignExpression = Expression.Assign(valuesExpression, variableValues);
+
+      var variableValuesSetExpression = Expression.Lambda<Action<Dataset, ValuesType>>(assignExpression, dataset, variableValues);
+      setValues = variableValuesSetExpression.Compile();
+
+      var variableValuesGetExpression = Expression.Lambda<Func<Dataset, ValuesType>>(valuesExpression, dataset);
+      getValues = variableValuesGetExpression.Compile();
+    }
+
+    public static void RemoveDuplicateDatasets(IContent content) {
+      var variableValuesMapping = new Dictionary<ValuesType, ValuesType>();
+
+      foreach (var problemData in content.GetObjectGraphObjects(excludeStaticMembers: true).OfType<IDataAnalysisProblemData>()) {
+        var dataset = problemData.Dataset as Dataset;
+        if (dataset == null) continue;
+
+        var originalValues = getValues(dataset);
+
+        ValuesType matchingValues;
+
+        variableValuesMapping.GetEqualValues(originalValues, out matchingValues);
+
+        setValues(dataset, matchingValues);
+      }
+    }
+
+    private static bool GetEqualValues(this Dictionary<ValuesType, ValuesType> variableValuesMapping, ValuesType originalValues, out ValuesType matchingValues) {
+      if (variableValuesMapping.ContainsKey(originalValues)) {
+        matchingValues = variableValuesMapping[originalValues];
+        return true;
+      }
+      matchingValues = variableValuesMapping.FirstOrDefault(kv => kv.Key == kv.Value && EqualVariableValues(originalValues, kv.Key)).Key;
+      bool result = true;
+      if (matchingValues == null) {
+        matchingValues = originalValues;
+        result = false;
+      }
+      variableValuesMapping[originalValues] = matchingValues;
+      return result;
+    }
+
+    private static bool EqualVariableValues(ValuesType values1, ValuesType values2) {
+      //compare variable names for equality
+      if (!values1.Keys.SequenceEqual(values2.Keys)) return false;
+      foreach (var key in values1.Keys) {
+        var v1 = values1[key];
+        var v2 = values2[key];
+        if (v1.Count != v2.Count) return false;
+        for (int i = 0; i < v1.Count; i++) {
+          if (!v1[i].Equals(v2[i])) return false;
+        }
+      }
+      return true;
     }
   }
 }
