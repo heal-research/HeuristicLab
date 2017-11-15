@@ -24,7 +24,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Problems.BinPacking3D {
+namespace HeuristicLab.Problems.BinPacking3D.Evaluators {
   [Item("Swap2MoveEvaluator", "Move evaluator for 2-opt moves.")]
   [StorableClass]
   public sealed class Swap2MoveEvaluator : MoveEvaluatorBase<Permutation, Swap2Move>, IPermutationSwap2MoveOperator {

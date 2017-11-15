@@ -585,6 +585,7 @@
     <Compile Include="HeuristicLab.Problems.Bin-Packing-3.3\3D\RandomInstanceProviderTest.cs" />
     <Compile Include="HeuristicLab.Problems.Bin-Packing-3.3\3D\PermutationSortingTest.cs" />
     <Compile Include="HeuristicLab.Problems.Bin-Packing-3.3\3D\ExtremePointAlgorithmTest.cs" />
+    <Compile Include="HeuristicLab.Problems.Bin-Packing-3.3\3D\ThreeDInstanceParserTest.cs" />
     <Compile Include="HeuristicLab.Problems.Bin-Packing-3.3\Utils\TestUtils.cs" />
     <Compile Include="HeuristicLab.Problems.DataAnalysis-3.4\ThresholdCalculatorsTest.cs" />
     <Compile Include="HeuristicLab.Problems.DataAnalysis-3.4\OnlineCalculatorPerformanceTest.cs" />

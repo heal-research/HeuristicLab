@@ -27,6 +27,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using HeuristicLab.Problems.Instances;
+using HeuristicLab.Problems.BinPacking3D.Instances;
 
 namespace HeuristicLab.Problems.BinPacking3D {
   public sealed class RealWorldContainerPackingInstanceProvider : ProblemInstanceProvider<BPPData> {

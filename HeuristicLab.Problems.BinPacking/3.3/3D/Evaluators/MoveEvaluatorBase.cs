@@ -26,8 +26,9 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Problems.BinPacking3D.Encoding;
 
-namespace HeuristicLab.Problems.BinPacking3D {
+namespace HeuristicLab.Problems.BinPacking3D.Evaluators {
   [StorableClass]
   public abstract class MoveEvaluatorBase<TSol, TMove> : SingleSuccessorOperator,
     ISingleObjectiveMoveEvaluator, ISingleObjectiveMoveOperator, IOperator<TSol>

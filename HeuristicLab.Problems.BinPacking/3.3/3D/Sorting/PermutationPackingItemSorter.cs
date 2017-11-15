@@ -10,8 +10,9 @@ namespace HeuristicLab.Problems.BinPacking3D.Sorting {
 
   /// <summary>
   /// This is a extension class for sorting a permutation.
+  /// They are extension methods for the class Permutation.
   /// </summary>
-  public static class PackingItemSorter {
+  public static class PermutationPackingItemSorter {
 
     /// <summary>
     /// Sorts a given permutation first by the volume and secoundly by the height.

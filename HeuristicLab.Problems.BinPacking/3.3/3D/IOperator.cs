@@ -19,11 +19,17 @@
  */
 #endregion
 
-using System.Collections.Generic;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
+using HeuristicLab.Problems.BinPacking3D.Encoding;
+using HeuristicLab.Problems.BinPacking3D.Evaluators;
 
 namespace HeuristicLab.Problems.BinPacking3D {
-  public interface IDecoder<in T> : IItem {
-    Solution Decode(T encodedSolution, PackingShape binShape, IList<PackingItem> items, bool useStackingConstraints);
+  public interface IOperator<TSol> : IItem {
+    ILookupParameter<ReadOnlyItemList<PackingItem>> ItemsParameter { get; }
+    ILookupParameter<PackingShape> BinShapeParameter { get; }
+    ILookupParameter<IDecoder<TSol>> DecoderParameter { get; }
+    ILookupParameter<IEvaluator> SolutionEvaluatorParameter { get; }
+    ILookupParameter<BoolValue> UseStackingConstraintsParameter { get; }
   }
 }

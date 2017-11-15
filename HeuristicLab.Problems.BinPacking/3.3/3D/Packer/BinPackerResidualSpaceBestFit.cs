@@ -55,7 +55,7 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
         foreach (var point in sortedPoints) {
           if (point.Item1.IsPositionFeasible(item, point.Item2, useStackingConstraints)) {
             var binPacking = point.Item1;
-            PackItem(ref binPacking, remainingId, item, point.Item2, useStackingConstraints);
+            PackItem(binPacking, remainingId, item, point.Item2, useStackingConstraints);
             packed = true;
             break;
           }
@@ -65,7 +65,7 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
           BinPacking3D binPacking = new BinPacking3D(binShape);
           var position = FindPackingPositionForItem(binPacking, item, useStackingConstraints, rotated);
           if (position != null) {
-            PackItem(ref binPacking, remainingId, item, position, useStackingConstraints);
+            PackItem(binPacking, remainingId, item, position, useStackingConstraints);
           } else {
             throw new InvalidOperationException("Item " + remainingId + " cannot be packed in an empty bin.");
           }

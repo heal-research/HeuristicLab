@@ -63,7 +63,7 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
           positionFound = position != null;
           var bin = packingBin;
           if (positionFound) {
-            PackItem(ref bin, remainingId, item, position, useStackingConstraints);
+            PackItem(bin, remainingId, item, position, useStackingConstraints);
             break;
           }
         }
@@ -76,7 +76,7 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
             throw new InvalidOperationException("Item " + remainingId + " cannot be packed in empty bin.");
           }
 
-          PackItem(ref packingBin, remainingId, item, position, useStackingConstraints);
+          PackItem(packingBin, remainingId, item, position, useStackingConstraints);
           packingList.Add(packingBin);
         }
       }

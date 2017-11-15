@@ -66,7 +66,7 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
         PackingPosition position = FindPackingPositionForItem(packingBin, items[itemId], useStackingConstraints, rotated);
         // if a valid packing position could be found, the current item can be added to the given bin
         if (position != null) {
-          PackItem(ref packingBin, itemId, items[itemId], position, useStackingConstraints);
+          PackItem(packingBin, itemId, items[itemId], position, useStackingConstraints);
           remainingIds.Remove(itemId);
         }
       }

@@ -20,14 +20,18 @@
 #endregion
 
 using HeuristicLab.Core;
-using HeuristicLab.Data;
 
 namespace HeuristicLab.Problems.BinPacking3D {
-  public interface IOperator<TSol> : IItem {
-    ILookupParameter<ReadOnlyItemList<PackingItem>> ItemsParameter { get; }
-    ILookupParameter<PackingShape> BinShapeParameter { get; }
-    ILookupParameter<IDecoder<TSol>> DecoderParameter { get; }
-    ILookupParameter<IEvaluator> SolutionEvaluatorParameter { get; }
-    ILookupParameter<BoolValue> UseStackingConstraintsParameter { get; }
+  /// <summary>
+  /// Evaluator for evaluating a Solution
+  /// </summary>
+  public interface IEvaluator : IItem {
+
+    /// <summary>
+    /// Evaluates a given solution and returns the calculated value.
+    /// </summary>
+    /// <param name="solution">Solution which sould be evaluated</param>
+    /// <returns>Returns the value of the evaluated solution depending on the implementation</returns>
+    double Evaluate(Solution solution);
   }
 }

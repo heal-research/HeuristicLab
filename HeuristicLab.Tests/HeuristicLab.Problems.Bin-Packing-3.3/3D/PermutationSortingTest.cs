@@ -144,7 +144,7 @@ namespace HeuristicLab.Problems.BinPacking._3D.Tests {
     [TestCategory("Problems.BinPacking.3D")]
     public void TestSortByMaterialClusteredAreaHeightExtension() {
       Permutation actual = _items.SortByMaterialClusteredAreaHeight(_packingShape, 1.0);
-      Permutation expected = new Permutation(PermutationTypes.Absolute, new int[] { 0, 2, 5, 7, 8, 10, 13, 9, 11, 12, 14, 1, 3, 4, 6 });
+      Permutation expected = new Permutation(PermutationTypes.Absolute, new int[] { 8, 13, 3, 2, 7, 12, 11, 1, 6, 0, 5, 10, 9, 14, 4 });
       for (int i = 0; i < expected.Length; i++) {
         Assert.AreEqual(expected[i], actual[i]);
       }

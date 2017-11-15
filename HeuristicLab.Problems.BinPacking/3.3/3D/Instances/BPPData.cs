@@ -21,13 +21,17 @@
 
 
 
-namespace HeuristicLab.Problems.BinPacking3D {
+namespace HeuristicLab.Problems.BinPacking3D.Instances {
 
+  /// <summary>
+  /// Represents an instance which contains bin packing problem data.
+  /// </summary>
   public class BPPData {
     /// <summary>
     /// The name of the instance
     /// </summary>
     public string Name { get; set; }
+
     /// <summary>
     /// Optional! The description of the instance
     /// </summary>
@@ -37,8 +41,17 @@ namespace HeuristicLab.Problems.BinPacking3D {
     /// The number of items.
     /// </summary>
     public int NumItems { get { return Items == null ? 0 : Items.Length; } }
+
+    /// <summary>
+    /// Assigned packing shape
+    /// </summary>
     public PackingShape BinShape { get; set; }
+
+    /// <summary>
+    /// Array with assigned packing items
+    /// </summary>
     public PackingItem[] Items { get; set; }
+    
     /// <summary>
     /// Optional! The quality of the best-known solution.
     /// </summary>

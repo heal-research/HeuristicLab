@@ -24,7 +24,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Problems.BinPacking3D {
+namespace HeuristicLab.Problems.BinPacking3D.Evaluators {
   [Item("TranslocationMoveEvaluator", "Move evaluator for insertion or translocation moves.")]
   [StorableClass]
   public sealed class TranslocationMoveEvaluator : MoveEvaluatorBase<Permutation, TranslocationMove>, IPermutationTranslocationMoveOperator {

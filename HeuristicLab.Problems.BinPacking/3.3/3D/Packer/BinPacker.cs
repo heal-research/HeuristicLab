@@ -53,7 +53,7 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
     /// <param name="itemId"></param>
     /// <param name="packingItem"></param>
     /// <param name="position"></param>
-    protected void PackItem(ref BinPacking3D packingBin, int itemId, PackingItem packingItem, PackingPosition position, bool useStackingConstraints) {
+    protected virtual void PackItem(BinPacking3D packingBin, int itemId, PackingItem packingItem, PackingPosition position, bool useStackingConstraints) {
 
       packingBin.PackItem(itemId, packingItem, position);
       packingBin.UpdateResidualSpace(packingItem, position);

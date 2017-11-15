@@ -25,7 +25,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Common;
 
-namespace HeuristicLab.Problems.BinPacking3D {
+namespace HeuristicLab.Problems.BinPacking3D.Evaluators {
   // NOTE: same implementation as for 2d problem
   [Item("Bin-Utilization Evaluator (3d)", "Calculates the overall utilization of bin space.")]
   [StorableClass]
@@ -42,6 +42,12 @@ namespace HeuristicLab.Problems.BinPacking3D {
     }
 
     #region IEvaluator Members
+
+    /// <summary>
+    /// Calculates the bin utilization in percent.
+    /// </summary>
+    /// <param name="solution"></param>
+    /// <returns>Returns the calculated bin utilization of all bins in percent.</returns>
     public double Evaluate(Solution solution) {
       return CalculateBinUtilization(solution);
     }

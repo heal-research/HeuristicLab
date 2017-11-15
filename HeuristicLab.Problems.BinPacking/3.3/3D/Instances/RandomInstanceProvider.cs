@@ -163,7 +163,12 @@ namespace HeuristicLab.Problems.BinPacking3D.Instances {
       }
     }
 
-
+    /// <summary>
+    /// Loads the data from the given data descriptor. 
+    /// It retuns a bin packing problem data instance with the data of the random instance provider.
+    /// </summary>
+    /// <param name="dd"></param>
+    /// <returns></returns>
     public override BPPData LoadData(IDataDescriptor dd) {
       var randDd = dd as RandomDataDescriptor;
       if (randDd == null) {

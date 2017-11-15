@@ -50,26 +50,32 @@ namespace HeuristicLab.Problems.BinPacking {
     [Storable]
     public SortedSet<TPos> ExtremePoints { get; protected set; }
 
-    [Storable]
-    protected Dictionary<int, List<int>> OccupationLayers { get; set; }
-    
-    #endregion Properties
+    public double PackingDensity {
+      get {
+        double result = 0;
+        foreach (var entry in Items)
+          result += entry.Value.Volume;
+        result /= BinShape.Volume;
+        return result;
+      }
+    }
 
     public int FreeVolume {
       get { return BinShape.Volume - Items.Sum(x => x.Value.Volume); }
     }
-
+    #endregion Properties
+    
     protected BinPacking(TBin binShape)
       : base() {
       Positions = new ObservableDictionary<int, TPos>();
       Items = new ObservableDictionary<int, TItem>();
       BinShape = (TBin)binShape.Clone();
       ExtremePoints = new SortedSet<TPos>();
-      OccupationLayers = new Dictionary<int, List<int>>();
     }
 
     [StorableConstructor]
     protected BinPacking(bool deserializing) : base(deserializing) { }
+
     protected BinPacking(BinPacking<TPos, TBin, TItem> original, Cloner cloner)
       : base(original, cloner) {
       this.Positions = new ObservableDictionary<int, TPos>();
@@ -82,94 +88,40 @@ namespace HeuristicLab.Problems.BinPacking {
       }
       this.BinShape = (TBin)original.BinShape.Clone(cloner);
       this.ExtremePoints = new SortedSet<TPos>(original.ExtremePoints.Select(p => cloner.Clone(p)));
-      this.OccupationLayers = new Dictionary<int, List<int>>();
-      foreach (var kvp in original.OccupationLayers) {
-        OccupationLayers.Add(kvp.Key, new List<int>(kvp.Value));
-      }
     }
-
-    protected abstract void GenerateNewExtremePointsForNewItem(TItem item, TPos position);
-
-    public abstract TPos FindExtremePointForItem(TItem item, bool rotated, bool stackingConstraints);
-    public abstract TPos FindPositionBySliding(TItem item, bool rotated, bool stackingConstraints);
-
-    public abstract void SlidingBasedPacking(ref IList<int> sequence, IList<TItem> items, bool stackingConstraints);
-    public abstract void SlidingBasedPacking(ref IList<int> sequence, IList<TItem> items, Dictionary<int, bool> rotationArray, bool stackingConstraints);
-    public abstract void ExtremePointBasedPacking(ref IList<int> sequence, IList<TItem> items, bool stackingConstraints);
-    public abstract void ExtremePointBasedPacking(ref IList<int> sequence, IList<TItem> items, bool stackingConstraints, Dictionary<int, bool> rotationArray);
-
-    public virtual void PackItem(int itemID, TItem item, TPos position) {
-      Items[itemID] = item;
-      Positions[itemID] = position;
-      ExtremePoints.Remove(position);
-      GenerateNewExtremePointsForNewItem(item, position);
-      
-      AddNewItemToOccupationLayers(itemID, item, position);
-    }
-    public virtual bool PackItemIfFeasible(int itemID, TItem item, TPos position, bool stackingConstraints) {
-      if (IsPositionFeasible(item, position, stackingConstraints)) {
-        PackItem(itemID, item, position);
-        return true;
-      }
-      return false;
-    }
-
-    public double PackingDensity {
-      get {
-        double result = 0;
-        foreach (var entry in Items)
-          result += entry.Value.Volume;
-        result /= BinShape.Volume;
-        return result;
-      }
-    }
-
-
-    public int PointOccupation(TPos position) {
-      foreach (var id in GetLayerItemIDs(position)) {
-        if (Items[id].EnclosesPoint(Positions[id], position))
-          return id;
-      }
-      return -1;
-    }
-
-    public bool IsPointOccupied(TPos position) {
-      foreach (var id in GetLayerItemIDs(position)) {
-        if (Items[id].EnclosesPoint(Positions[id], position))
-          return true;
-      }
-      return false;
-    }
-
+    
     /// <summary>
-    /// 
+    /// Generate new extreme points for a given item
+    /// </summary>
+    /// <param name="item"></param>
+    /// <param name="position"></param>
+    protected abstract void GenerateNewExtremePointsForNewItem(TItem item, TPos position);
+    
+    /// <summary>
+    /// Packs an item into the bin packing
+    /// </summary>
+    /// <param name="itemID"></param>
+    /// <param name="item"></param>
+    /// <param name="position"></param>
+    public abstract void PackItem(int itemID, TItem item, TPos position);
+    
+    /// <summary>
+    /// Checks if the given position is feasible for the given item
     /// </summary>
     /// <param name="item"></param>
     /// <param name="position"></param>
     /// <param name="stackingConstraints"></param>
-    /// <returns></returns>
-    public virtual bool IsPositionFeasible(TItem item, TPos position, bool stackingConstraints) {
-      //In this case feasability is defined as following: 
-      //1. the item fits into the bin-borders; 
-      //2. the point is supported by something; 
-      //3. the item does not collide with another already packed item
-      if (!BinShape.Encloses(position, item))
-        return false;
+    /// <returns>Returns true if the given position is feasible for the given item</returns>
+    public abstract bool IsPositionFeasible(TItem item, TPos position, bool stackingConstraints);
 
-      foreach (var id in GetLayerItemIDs(item, position)) {
-        if (Items[id].Overlaps(Positions[id], position, item))
-          return false;
-      }
-
-      return true;
-    }
-    
-    public abstract int ShortestPossibleSideFromPoint(TPos position);
+    /// <summary>
+    /// Checks if the given item is static stable on the given position
+    /// </summary>
+    /// <param name="measures">Item</param>
+    /// <param name="position">Position of the item</param>
+    /// <returns>Returns true if the given item is static stable on the given position</returns>
     public abstract bool IsStaticStable(TItem measures, TPos position);
-
-    protected abstract void InitializeOccupationLayers();
-    protected abstract void AddNewItemToOccupationLayers(int itemID, TItem item, TPos position);
-    protected abstract List<int> GetLayerItemIDs(TPos position);
-    protected abstract List<int> GetLayerItemIDs(TItem item, TPos position);
+    
+    
   }
 }

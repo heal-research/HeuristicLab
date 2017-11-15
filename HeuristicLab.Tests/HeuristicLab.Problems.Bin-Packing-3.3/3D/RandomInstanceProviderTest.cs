@@ -43,7 +43,7 @@ namespace HeuristicLab.Problems.BinPacking._3D.Tests {
 
     private IDictionary<string, List<Dimension>> ReadReferenceItemLists() {
       var itemList = new Dictionary<string, List<Dimension>>();
-      string path = @".\..\HeuristicLab.Tests\HeuristicLab.Problems.Bin-Packing-3.3\ReferenceInstances";
+      string path = @".\..\HeuristicLab.Tests\HeuristicLab.Problems.Bin-Packing-3.3\TestInstances\ReferenceInstances";
 
       string[] files = Directory.GetFiles(path);
       foreach (string filePath in files) {

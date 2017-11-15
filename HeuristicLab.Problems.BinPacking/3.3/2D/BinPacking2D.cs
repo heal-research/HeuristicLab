@@ -33,16 +33,25 @@ namespace HeuristicLab.Problems.BinPacking2D {
 
     public BinPacking2D(PackingShape binShape)
       : base(binShape) {
+      OccupationLayers = new Dictionary<int, List<int>>();
       ExtremePoints.Add(binShape.Origin);
       InitializeOccupationLayers();
     }
 
     [StorableConstructor]
     protected BinPacking2D(bool deserializing) : base(deserializing) { }
-    protected BinPacking2D(BinPacking2D original, Cloner cloner) : base(original, cloner) { }
+    protected BinPacking2D(BinPacking2D original, Cloner cloner) : base(original, cloner) {
+      this.OccupationLayers = new Dictionary<int, List<int>>();
+      foreach (var kvp in original.OccupationLayers) {
+        OccupationLayers.Add(kvp.Key, new List<int>(kvp.Value));
+      }
+    }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new BinPacking2D(this, cloner);
     }
+
+    [Storable]
+    protected Dictionary<int, List<int>> OccupationLayers { get; set; }
 
     protected override void GenerateNewExtremePointsForNewItem(PackingItem newItem, PackingPosition position) {
 
@@ -74,7 +83,7 @@ namespace HeuristicLab.Problems.BinPacking2D {
       }
     }
 
-    public override PackingPosition FindExtremePointForItem(PackingItem item, bool rotated, bool stackingConstraints) {
+    public PackingPosition FindExtremePointForItem(PackingItem item, bool rotated, bool stackingConstraints) {
       PackingItem rotatedItem = new PackingItem(
         rotated ? item.Height : item.Width,
         rotated ? item.Width : item.Height,
@@ -90,7 +99,49 @@ namespace HeuristicLab.Problems.BinPacking2D {
       }
       return null;
     }
-    public override PackingPosition FindPositionBySliding(PackingItem item, bool rotated, bool stackingConstraints) {
+
+    public override void PackItem(int itemID, PackingItem item, PackingPosition position) {
+      Items[itemID] = item;
+      Positions[itemID] = position;
+      ExtremePoints.Remove(position);
+      GenerateNewExtremePointsForNewItem(item, position);
+
+      AddNewItemToOccupationLayers(itemID, item, position);
+    }
+
+    public bool PackItemIfFeasible(int itemID, PackingItem item, PackingPosition position, bool stackingConstraints) {
+      if (IsPositionFeasible(item, position, stackingConstraints)) {
+        PackItem(itemID, item, position);
+        return true;
+      }
+      return false;
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="item"></param>
+    /// <param name="position"></param>
+    /// <param name="stackingConstraints"></param>
+    /// <returns></returns>
+    public override bool IsPositionFeasible(PackingItem item, PackingPosition position, bool stackingConstraints) {
+      //In this case feasability is defined as following: 
+      //1. the item fits into the bin-borders; 
+      //2. the point is supported by something; 
+      //3. the item does not collide with another already packed item
+      if (!BinShape.Encloses(position, item))
+        return false;
+
+      foreach (var id in GetLayerItemIDs(item, position)) {
+        if (Items[id].Overlaps(Positions[id], position, item))
+          return false;
+      }
+
+      return true;
+    }
+
+
+    public PackingPosition FindPositionBySliding(PackingItem item, bool rotated, bool stackingConstraints) {
       PackingPosition currentPosition = new PackingPosition(0,
         BinShape.Width - (rotated ? item.Height : item.Width),
         BinShape.Height - (rotated ? item.Width : item.Height), rotated);
@@ -108,7 +159,7 @@ namespace HeuristicLab.Problems.BinPacking2D {
       return IsPositionFeasible(item, currentPosition, stackingConstraints) ? currentPosition : null;
     }
 
-    public override void SlidingBasedPacking(ref IList<int> sequence, IList<PackingItem> items, bool stackingConstraints) {
+    public void SlidingBasedPacking(ref IList<int> sequence, IList<PackingItem> items, bool stackingConstraints) {
       var temp = new List<int>(sequence);
       for (int i = 0; i < temp.Count; i++) {
         var item = items[temp[i]];
@@ -119,7 +170,7 @@ namespace HeuristicLab.Problems.BinPacking2D {
         }
       }
     }
-    public override void SlidingBasedPacking(ref IList<int> sequence, IList<PackingItem> items, Dictionary<int, bool> rotationArray, bool stackingConstraints) {
+    public void SlidingBasedPacking(ref IList<int> sequence, IList<PackingItem> items, Dictionary<int, bool> rotationArray, bool stackingConstraints) {
       var temp = new List<int>(sequence);
       for (int i = 0; i < temp.Count; i++) {
         var item = items[temp[i]];
@@ -130,7 +181,7 @@ namespace HeuristicLab.Problems.BinPacking2D {
         }
       }
     }
-    public override void ExtremePointBasedPacking(ref IList<int> sequence, IList<PackingItem> items, bool stackingConstraints) {
+    public void ExtremePointBasedPacking(ref IList<int> sequence, IList<PackingItem> items, bool stackingConstraints) {
       var temp = new List<int>(sequence);
       foreach (int itemID in temp) {
         var item = items[itemID];
@@ -142,7 +193,7 @@ namespace HeuristicLab.Problems.BinPacking2D {
       }
     }
     
-    public override void ExtremePointBasedPacking(ref IList<int> sequence, IList<PackingItem> items, bool stackingConstraints, Dictionary<int, bool> rotationArray) {
+    public void ExtremePointBasedPacking(ref IList<int> sequence, IList<PackingItem> items, bool stackingConstraints, Dictionary<int, bool> rotationArray) {
       var temp = new List<int>(sequence);
       foreach (int itemID in temp) {
         var item = items[itemID];
@@ -154,7 +205,7 @@ namespace HeuristicLab.Problems.BinPacking2D {
       }
     }
 
-    public override int ShortestPossibleSideFromPoint(PackingPosition position) {
+    public int ShortestPossibleSideFromPoint(PackingPosition position) {
       int shortestSide = int.MaxValue;
       int width = BinShape.Width;
       int height = BinShape.Height;
@@ -178,23 +229,23 @@ namespace HeuristicLab.Problems.BinPacking2D {
     public override bool IsStaticStable(PackingItem item, PackingPosition position) {
       throw new NotSupportedException();
     }
-    protected override void InitializeOccupationLayers() {
+    protected void InitializeOccupationLayers() {
       for (int i = 0; i * 10 <= BinShape.Width; i += 1) {
         OccupationLayers[i] = new List<int>();
       }
     }
 
-    protected override void AddNewItemToOccupationLayers(int itemID, PackingItem item, PackingPosition position) {
+    protected void AddNewItemToOccupationLayers(int itemID, PackingItem item, PackingPosition position) {
       int x1 = position.X / 10;
       int x2 = (position.X + (position.Rotated ? item.Height : item.Width)) / 10;
 
       for (int i = x1; i <= x2; i++)
         OccupationLayers[i].Add(itemID);
     }
-    protected override List<int> GetLayerItemIDs(PackingPosition position) {
+    protected List<int> GetLayerItemIDs(PackingPosition position) {
       return OccupationLayers[position.X / 10];
     }
-    protected override List<int> GetLayerItemIDs(PackingItem item, PackingPosition position) {
+    protected List<int> GetLayerItemIDs(PackingItem item, PackingPosition position) {
       List<int> result = new List<int>();
       int x1 = position.X / 10;
       int x2 = (position.X + (position.Rotated ? item.Height : item.Width)) / 10;
@@ -203,6 +254,23 @@ namespace HeuristicLab.Problems.BinPacking2D {
         result.AddRange(OccupationLayers[i]);
 
       return result;
+    }
+    
+
+    public int PointOccupation(PackingPosition position) {
+      foreach (var id in GetLayerItemIDs(position)) {
+        if (Items[id].EnclosesPoint(Positions[id], position))
+          return id;
+      }
+      return -1;
+    }
+
+    public bool IsPointOccupied(PackingPosition position) {
+      foreach (var id in GetLayerItemIDs(position)) {
+        if (Items[id].EnclosesPoint(Positions[id], position))
+          return true;
+      }
+      return false;
     }
   }
 }

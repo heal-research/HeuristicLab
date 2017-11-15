@@ -40,7 +40,6 @@ namespace HeuristicLab.Problems.BinPacking3D {
       : base(binShape) {
       ResidualSpace = new Dictionary<PackingPosition, Tuple<int, int, int>>();
       AddExtremePoint(binShape.Origin);
-      InitializeOccupationLayers();
     }
     [StorableConstructor]
     protected BinPacking3D(bool deserializing) : base(deserializing) { }
@@ -63,8 +62,6 @@ namespace HeuristicLab.Problems.BinPacking3D {
         ResidualSpace = new Dictionary<PackingPosition, Tuple<int, int, int>>();
       #endregion
     }
-
-    #region New methods for bin packer class
 
     /// <summary>
     /// Puts a given item into the bin packing at the given position.
@@ -113,7 +110,7 @@ namespace HeuristicLab.Problems.BinPacking3D {
       AddExtremePoint(ep2);
       AddExtremePoint(ep3);
     }
-        
+
     private Tuple<int, int, int> CalculateResidualSpace(Vector3D pos) {
       var itemPos = Items.Select(x => new { Item = x.Value, Position = Positions[x.Key] });
       Vector3D limit = new Vector3D() { X = BinShape.Width, Y = BinShape.Height, Z = BinShape.Depth };
@@ -131,10 +128,10 @@ namespace HeuristicLab.Problems.BinPacking3D {
           limit.Z = forwardLimit.Z;
         }
       }
-      
-      if (limit.X - pos.X <= 0 || limit.Y - pos.Y <= 0  || limit.Z - pos.Z <= 0) {
+
+      if (limit.X - pos.X <= 0 || limit.Y - pos.Y <= 0 || limit.Z - pos.Z <= 0) {
         return Tuple.Create(0, 0, 0);
-      }      
+      }
       return Tuple.Create(limit.X - pos.X, limit.Y - pos.Y, limit.Z - pos.Z);
     }
 
@@ -362,10 +359,7 @@ namespace HeuristicLab.Problems.BinPacking3D {
         itemsP3.Where(x => x.Item2.SupportsStacking(item)).Any() &&
         itemsP4.Where(x => x.Item2.SupportsStacking(item)).Any();
     }
-
-
-
-    #endregion
+    
 
     /// <summary>
     /// Generates new extreme points for a given item and its position.
@@ -500,7 +494,7 @@ namespace HeuristicLab.Problems.BinPacking3D {
       }
       return false;
     }
-        
+
     #region Projections
 
     private Vector3D ProjectBackward(Vector3D pos) {
@@ -628,66 +622,6 @@ namespace HeuristicLab.Problems.BinPacking3D {
 
     #endregion
 
-
-    #region Sliding based packing  and obsolet methods 
-    public override PackingPosition FindExtremePointForItem(PackingItem item, bool rotated, bool stackingConstraints) {
-      throw new NotSupportedException();
-      PackingItem newItem = new PackingItem(
-        rotated ? item.Depth : item.Width,
-        item.Height,
-        rotated ? item.Width : item.Depth,
-        item.TargetBin, item.Weight, item.Material);
-
-      var ep = ExtremePoints.Where(x => IsPositionFeasible(newItem, x, stackingConstraints))
-                            .FirstOrDefault();
-      if (ep != null) {
-        var result = new PackingPosition(ep.AssignedBin, ep.X, ep.Y, ep.Z, rotated);
-        return result;
-      }
-      return null;
-    }
-
-
-
-
-    public override PackingPosition FindPositionBySliding(PackingItem item, bool rotated, bool stackingConstraints) {
-      throw new NotSupportedException();
-    }
-
-    public override void SlidingBasedPacking(ref IList<int> sequence, IList<PackingItem> items, bool stackingConstraints) {
-      throw new NotSupportedException();
-    }
-    public override void SlidingBasedPacking(ref IList<int> sequence, IList<PackingItem> items, Dictionary<int, bool> rotationArray, bool stackingConstraints) {
-      throw new NotSupportedException();
-    }
-
-
-    public override void ExtremePointBasedPacking(ref IList<int> sequence, IList<PackingItem> items, bool stackingConstraints) {
-      throw new NotSupportedException();
-    }
-
-    public override void ExtremePointBasedPacking(ref IList<int> sequence, IList<PackingItem> items, bool stackingConstraints, Dictionary<int, bool> rotationArray) {
-      throw new NotSupportedException();
-    }
-
-    public override int ShortestPossibleSideFromPoint(PackingPosition position) {
-      throw new NotSupportedException();
-    }
-
-
-    protected override void InitializeOccupationLayers() {
-    }
-    protected override void AddNewItemToOccupationLayers(int itemID, PackingItem item, PackingPosition position) {
-    }
-
-
-    protected override List<int> GetLayerItemIDs(PackingPosition position) {
-      return null;
-    }
-    protected override List<int> GetLayerItemIDs(PackingItem item, PackingPosition position) {
-      return null;
-    }
-    #endregion
 
 
     /// <summary>

@@ -30,7 +30,7 @@ using System.Threading.Tasks;
 using HeuristicLab.Common;
 using HeuristicLab.Problems.BinPacking3D.Packer;
 
-namespace HeuristicLab.Problems.BinPacking3D.Decoder {
+namespace HeuristicLab.Problems.BinPacking3D.Encoding {
 
   /// <summary>
   /// This class creates a solution

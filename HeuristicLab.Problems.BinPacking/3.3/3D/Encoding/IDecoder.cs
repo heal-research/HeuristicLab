@@ -19,10 +19,23 @@
  */
 #endregion
 
+using System.Collections.Generic;
 using HeuristicLab.Core;
 
-namespace HeuristicLab.Problems.BinPacking3D {
-  public interface IEvaluator : IItem {
-    double Evaluate(Solution solution);
+namespace HeuristicLab.Problems.BinPacking3D.Encoding {
+  /// <summary>
+  /// 
+  /// </summary>
+  /// <typeparam name="T"></typeparam>
+  public interface IDecoder<in T> : IItem {
+    /// <summary>
+    /// Generates a solution by using the input parameters.
+    /// </summary>
+    /// <param name="encodedSolution"></param>
+    /// <param name="binShape">Bin for storing the items</param>
+    /// <param name="items">A list of packing items which should be assigned to a bin</param>
+    /// <param name="useStackingConstraints">If true, the items will be placed if the position is static stable.</param>
+    /// <returns>Returns an decoded solution for displaying it on the HEAL gui.</returns>
+    Solution Decode(T encodedSolution, PackingShape binShape, IList<PackingItem> items, bool useStackingConstraints);
   }
 }

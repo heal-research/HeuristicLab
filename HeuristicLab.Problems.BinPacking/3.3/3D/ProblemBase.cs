@@ -29,6 +29,9 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.Instances;
+using HeuristicLab.Problems.BinPacking3D.Encoding;
+using HeuristicLab.Problems.BinPacking3D.Evaluators;
+using HeuristicLab.Problems.BinPacking3D.Instances;
 
 namespace HeuristicLab.Problems.BinPacking3D {
   // in comparison to the 2d problem the 3d problem implementation also supports checking stacking constraints

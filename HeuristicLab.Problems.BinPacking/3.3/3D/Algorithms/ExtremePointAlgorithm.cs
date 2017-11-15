@@ -32,9 +32,9 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.BinPacking3D.Packer;
-using HeuristicLab.Problems.BinPacking3D.Decoder;
-
+using HeuristicLab.Problems.BinPacking3D.Encoding;
 using HeuristicLab.Problems.BinPacking3D.Sorting;
+using HeuristicLab.Problems.BinPacking3D.Evaluators;
 
 namespace HeuristicLab.Problems.BinPacking3D {
 
@@ -307,11 +307,5 @@ namespace HeuristicLab.Problems.BinPacking3D {
       }
       return sorted;
     }
-
-
-
-    #region Sorting methods    
-
-    #endregion
   }
 }

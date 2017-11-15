@@ -29,14 +29,15 @@ using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Problems.BinPacking3D.Decoder;
+using HeuristicLab.Problems.BinPacking3D.Encoding;
 using HeuristicLab.Problems.BinPacking3D.Packer;
+using HeuristicLab.Problems.BinPacking3D.Evaluators;
 
 namespace HeuristicLab.Problems.BinPacking3D {
   [Item("Bin Packing Problem (3D, permutation encoding) (BPP)", "Represents a three-dimensional bin-packing problem using only bins with identical measures and bins/items with rectangular shapes.")]
   [StorableClass]
   [Creatable(Category = CreatableAttribute.Categories.CombinatorialProblems, Priority = 320)]
-  public sealed class PermutationProblem : ProblemBase<PermutationEncoding, Permutation> {
+  public sealed class PermutationProblem : ProblemBase<Encodings.PermutationEncoding.PermutationEncoding, Permutation> {
     [StorableConstructor]
     private PermutationProblem(bool deserializing) : base(deserializing) { }
 
@@ -50,7 +51,7 @@ namespace HeuristicLab.Problems.BinPacking3D {
       : base() {
       Decoder = new ExtremePointPermutationDecoder(new BinPackerFirstFit()); // default decoder
 
-      Encoding = new PermutationEncoding(EncodedSolutionName, Items.Count, PermutationTypes.Absolute);
+      Encoding = new Encodings.PermutationEncoding.PermutationEncoding(EncodedSolutionName, Items.Count, PermutationTypes.Absolute);
       AddOperators();
       Parameterize();
       RegisterEventHandlers();
@@ -92,7 +93,7 @@ namespace HeuristicLab.Problems.BinPacking3D {
     }
 
     private void RegisterEventHandlers() {
-      // update encoding length when number of items is changed
+      // update encoding length when number of items were changed
       ItemsParameter.ValueChanged += (sender, args) => Parameterize();
     }
 

@@ -25,7 +25,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Common;
 
-namespace HeuristicLab.Problems.BinPacking3D {
+namespace HeuristicLab.Problems.BinPacking3D.Evaluators {
   // NOTE: same implementation as for 2d problem
   [Item("Packing-Ratio Evaluator (3d)", "Calculates the ratio between packed and unpacked space.")]
   [StorableClass]
@@ -42,6 +42,19 @@ namespace HeuristicLab.Problems.BinPacking3D {
     }
 
     #region IEvaluator Members
+
+    /// <summary>
+    /// Calculates the packing ratio for the solution.
+    /// The packing ration is calculated as followed:
+    /// Falkenauer:1996 - A Hybrid Grouping Genetic Algorithm for Bin Packing
+    /// fBPP = (SUM[i=1..N](Fi / C)^k)/N
+    /// N.......the number of bins used in the solution,
+    /// Fi......the sum of sizes of the items in the bin i (the fill of the bin),
+    /// C.......the bin capacity and
+    /// k.......a constant, k>1.
+    /// </summary>
+    /// <param name="solution"></param>
+    /// <returns>Returns the calculated packing ratio of the bins in the given solution.</returns>
     public double Evaluate(Solution solution) {
       return CalculatePackingRatio(solution);
     }
