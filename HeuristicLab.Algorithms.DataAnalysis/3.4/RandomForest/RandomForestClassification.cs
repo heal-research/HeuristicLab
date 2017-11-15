@@ -151,13 +151,15 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     // keep for compatibility with old API
     public static RandomForestClassificationSolution CreateRandomForestClassificationSolution(IClassificationProblemData problemData, int nTrees, double r, double m, int seed,
       out double rmsError, out double relClassificationError, out double outOfBagRmsError, out double outOfBagRelClassificationError) {
-      var model = CreateRandomForestClassificationModel(problemData, nTrees, r, m, seed, out rmsError, out relClassificationError, out outOfBagRmsError, out outOfBagRelClassificationError);
+      var model = CreateRandomForestClassificationModel(problemData, nTrees, r, m, seed,
+        out rmsError, out relClassificationError, out outOfBagRmsError, out outOfBagRelClassificationError);
       return new RandomForestClassificationSolution(model, (IClassificationProblemData)problemData.Clone());
     }
 
     public static RandomForestModel CreateRandomForestClassificationModel(IClassificationProblemData problemData, int nTrees, double r, double m, int seed,
       out double rmsError, out double relClassificationError, out double outOfBagRmsError, out double outOfBagRelClassificationError) {
-      return RandomForestModel.CreateClassificationModel(problemData, nTrees, r, m, seed, out rmsError, out relClassificationError, out outOfBagRmsError, out outOfBagRelClassificationError);
+      return RandomForestModel.CreateClassificationModel(problemData, nTrees, r, m, seed,
+       rmsError: out rmsError, relClassificationError: out relClassificationError, outOfBagRmsError: out outOfBagRmsError, outOfBagRelClassificationError: out outOfBagRelClassificationError);
     }
     #endregion
   }
