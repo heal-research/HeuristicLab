@@ -95,11 +95,13 @@ namespace HeuristicLab.Clients.Hive {
         jobs = new HiveItemCollection<RefreshableJob>();
         var jobsLoaded = HiveServiceLocator.Instance.CallHiveService<IEnumerable<Job>>(s => s.GetJobs());
 
-        foreach (var j in jobsLoaded) {
-          jobs.Add(new RefreshableJob(j));
+        try {
+          foreach (var j in jobsLoaded) {
+            jobs.Add(new RefreshableJob(j));
+          }
+        } catch (NullReferenceException) {
+          // jobs was set to null during ClearHiveClient
         }
-      } catch (NullReferenceException) {
-        // jobs was set to null during ClearHiveClient
       } catch {
         jobs = null;
         throw;

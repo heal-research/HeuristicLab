@@ -66,12 +66,10 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
         hiveExperimentListView.Content = null;
       } else {
         hiveExperimentListView.Content = Content.Jobs;
-        if (Content != null) {
-          try {
-            await System.Threading.Tasks.Task.Run(() => Content.Refresh());
-          } catch (Exception ex) {
-            HandleServiceException(ex);
-          }
+        try {
+          await System.Threading.Tasks.Task.Run(() => Content.Refresh());
+        } catch (Exception ex) {
+          HandleServiceException(ex);
         }
       }
     }
