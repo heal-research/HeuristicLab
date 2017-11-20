@@ -250,11 +250,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
       if (node.Symbol is StartSymbol) {
         if (addLinearScalingTerms) {
+          var t = ConvertToAutoDiff(node.GetSubtree(0));
+          // scaling variables α, β are given at the end of the parameter vector
           var alpha = new AutoDiff.Variable();
           var beta = new AutoDiff.Variable();
           variables.Add(beta);
           variables.Add(alpha);
-          return ConvertToAutoDiff(node.GetSubtree(0)) * alpha + beta;
+          return t * alpha + beta;
         } else return ConvertToAutoDiff(node.GetSubtree(0));
       }
       throw new ConversionException();

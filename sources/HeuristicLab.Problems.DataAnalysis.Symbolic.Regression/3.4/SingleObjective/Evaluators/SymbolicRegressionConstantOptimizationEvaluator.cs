@@ -213,9 +213,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       if (applyLinearScaling) {
         c = new double[initialConstants.Length + 2];
         {
-          c[0] = 0.0;
-          c[1] = 1.0;
-          Array.Copy(initialConstants, 0, c, 2, initialConstants.Length);
+          Array.Copy(initialConstants, 0, c, 0, initialConstants.Length);
+          c[c.Length - 2] = 0.0;
+          c[c.Length - 1] = 1.0;
         }
       } else {
         c = (double[])initialConstants.Clone();
@@ -272,15 +272,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
       //retVal == -7  => constant optimization failed due to wrong gradient
       if (retVal != -7) {
-        if (applyLinearScaling) UpdateConstants(tree, c.Skip(2).ToArray(), updateVariableWeights);
-        else UpdateConstants(tree, c.ToArray(), updateVariableWeights);
+        if (applyLinearScaling) UpdateConstants(tree, c, updateVariableWeights);
+        else UpdateConstants(tree, c, updateVariableWeights);
       }
       var quality = SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.Calculate(interpreter, tree, lowerEstimationLimit, upperEstimationLimit, problemData, rows, applyLinearScaling);
 
-      if (!updateConstantsInTree) UpdateConstants(tree, initialConstants.ToArray(), updateVariableWeights);
+      if (!updateConstantsInTree) UpdateConstants(tree, initialConstants, updateVariableWeights);
 
       if (originalQuality - quality > 0.001 || double.IsNaN(quality)) {
-        UpdateConstants(tree, initialConstants.ToArray(), updateVariableWeights);
+        UpdateConstants(tree, initialConstants, updateVariableWeights);
         return originalQuality;
       }
       return quality;
@@ -313,9 +313,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
     private static alglib.ndimensional_pgrad CreatePGrad(TreeToAutoDiffTermConverter.ParametricFunctionGradient func_grad) {
       return (double[] c, double[] x, ref double fx, double[] grad, object o) => {
-        var tupel = func_grad(c, x);
-        fx = tupel.Item2;
-        Array.Copy(tupel.Item1, grad, grad.Length);
+        var tuple = func_grad(c, x);
+        fx = tuple.Item2;
+        Array.Copy(tuple.Item1, grad, grad.Length);
         var counter = (EvaluationsCounter)o;
         counter.GradientEvaluations++;
       };
