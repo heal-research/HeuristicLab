@@ -43,6 +43,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
     private const string FunctionEvaluationsResultParameterName = "Constants Optimization Function Evaluations";
     private const string GradientEvaluationsResultParameterName = "Constants Optimization Gradient Evaluations";
+    private const string CountEvaluationsParameterName = "Count Function and Gradient Evaluations";
 
     public IFixedValueParameter<IntValue> ConstantOptimizationIterationsParameter {
       get { return (IFixedValueParameter<IntValue>)Parameters[ConstantOptimizationIterationsParameterName]; }
@@ -69,6 +70,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     public IResultParameter<IntValue> GradientEvaluationsResultParameter {
       get { return (IResultParameter<IntValue>)Parameters[GradientEvaluationsResultParameterName]; }
     }
+    public IFixedValueParameter<BoolValue> CountEvaluationsParameter {
+      get { return (IFixedValueParameter<BoolValue>)Parameters[CountEvaluationsParameterName]; }
+    }
 
 
     public IntValue ConstantOptimizationIterations {
@@ -93,6 +97,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       set { UpdateVariableWeightsParameter.Value.Value = value; }
     }
 
+    public bool CountEvaluations {
+      get { return CountEvaluationsParameter.Value.Value; }
+      set { CountEvaluationsParameter.Value.Value = value; }
+    }
+
     public override bool Maximization {
       get { return true; }
     }
@@ -111,6 +120,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       Parameters.Add(new FixedValueParameter<BoolValue>(UpdateConstantsInTreeParameterName, "Determines if the constants in the tree should be overwritten by the optimized constants.", new BoolValue(true)) { Hidden = true });
       Parameters.Add(new FixedValueParameter<BoolValue>(UpdateVariableWeightsParameterName, "Determines if the variable weights in the tree should be  optimized.", new BoolValue(true)) { Hidden = true });
 
+      Parameters.Add(new FixedValueParameter<BoolValue>(CountEvaluationsParameterName, "Determines if function and gradient evaluation should be counted.", new BoolValue(false)));
       Parameters.Add(new ResultParameter<IntValue>(FunctionEvaluationsResultParameterName, "The number of function evaluations performed by the constants optimization evaluator", "Results", new IntValue()));
       Parameters.Add(new ResultParameter<IntValue>(GradientEvaluationsResultParameterName, "The number of gradient evaluations performed by the constants optimization evaluator", "Results", new IntValue()));
     }
@@ -125,6 +135,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         Parameters.Add(new FixedValueParameter<BoolValue>(UpdateConstantsInTreeParameterName, "Determines if the constants in the tree should be overwritten by the optimized constants.", new BoolValue(true)));
       if (!Parameters.ContainsKey(UpdateVariableWeightsParameterName))
         Parameters.Add(new FixedValueParameter<BoolValue>(UpdateVariableWeightsParameterName, "Determines if the variable weights in the tree should be  optimized.", new BoolValue(true)));
+
+      if (!Parameters.ContainsKey(CountEvaluationsParameterName))
+        Parameters.Add(new FixedValueParameter<BoolValue>(CountEvaluationsParameterName, "Determines if function and gradient evaluation should be counted.", new BoolValue(false)));
+      if (Parameters.ContainsKey(FunctionEvaluationsResultParameterName) && Parameters.ContainsKey(GradientEvaluationsResultParameterName))
+        CountEvaluations = true;
 
       if (!Parameters.ContainsKey(FunctionEvaluationsResultParameterName))
         Parameters.Add(new ResultParameter<IntValue>(FunctionEvaluationsResultParameterName, "The number of function evaluations performed by the constants optimization evaluator", "Results", new IntValue()));
@@ -147,9 +162,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
           quality = SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, solution, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper, ProblemDataParameter.ActualValue, evaluationRows, ApplyLinearScalingParameter.ActualValue.Value);
         }
 
-        lock (locker) {
-          FunctionEvaluationsResultParameter.ActualValue.Value += counter.FunctionEvaluations;
-          GradientEvaluationsResultParameter.ActualValue.Value += counter.GradientEvaluations;
+        if (CountEvaluations) {
+          lock (locker) {
+            FunctionEvaluationsResultParameter.ActualValue.Value += counter.FunctionEvaluations;
+            GradientEvaluationsResultParameter.ActualValue.Value += counter.GradientEvaluations;
+          }
         }
 
       } else {
