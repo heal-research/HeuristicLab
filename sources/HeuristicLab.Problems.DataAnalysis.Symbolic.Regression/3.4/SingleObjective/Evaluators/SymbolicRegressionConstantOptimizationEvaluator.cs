@@ -212,11 +212,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       double[] c;
       if (applyLinearScaling) {
         c = new double[initialConstants.Length + 2];
-        {
-          Array.Copy(initialConstants, 0, c, 0, initialConstants.Length);
-          c[c.Length - 2] = 0.0;
-          c[c.Length - 1] = 1.0;
-        }
+        c[0] = 0.0;
+        c[1] = 1.0;
+        Array.Copy(initialConstants, 0, c, 2, initialConstants.Length);
       } else {
         c = (double[])initialConstants.Clone();
       }
@@ -272,8 +270,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
       //retVal == -7  => constant optimization failed due to wrong gradient
       if (retVal != -7) {
-        if (applyLinearScaling) UpdateConstants(tree, c, updateVariableWeights);
-        else UpdateConstants(tree, c, updateVariableWeights);
+        if (applyLinearScaling) {
+          var tmp = new double[c.Length - 2];
+          Array.Copy(c, 2, tmp, 0, tmp.Length);
+          UpdateConstants(tree, tmp, updateVariableWeights);
+        } else UpdateConstants(tree, c, updateVariableWeights);
       }
       var quality = SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.Calculate(interpreter, tree, lowerEstimationLimit, upperEstimationLimit, problemData, rows, applyLinearScaling);
 
