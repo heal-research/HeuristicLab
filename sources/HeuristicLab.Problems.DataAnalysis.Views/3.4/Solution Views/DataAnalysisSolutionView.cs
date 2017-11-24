@@ -235,6 +235,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
         if (!Content.Name.EndsWith(" with changed problemData"))
           Content.Name += " with changed problemData";
+        Content.Filename = string.Empty;
+        MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().UpdateTitle();
       }
       catch (InvalidOperationException invalidOperationException) {
         ErrorHandling.ShowErrorDialog(this, invalidOperationException);
