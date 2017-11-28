@@ -19,10 +19,12 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.BinPacking3D;
+using HeuristicLab.Problems.BinPacking3D.ExtremePointCreation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,10 +32,27 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace HeuristicLab.Problems.BinPacking3D.Packer {
-  [Item("BinPacker", "A class for packing bins for the 3D bin-packer problem.")]
-  [StorableClass]
-  public abstract class BinPacker {
+  public abstract class BinPacker : Item {
+
+    /*
+    [Storable]
+    IPositionFinder PositionFinder
     
+    */
+
+    #region Constructors for HEAL
+
+    
+    [StorableConstructor]
+    protected BinPacker(bool deserializing) : base(deserializing) { }
+
+    protected BinPacker(BinPacker original, Cloner cloner) 
+      : base(original, cloner) {
+      //this.PositionFinder = original.PositionFinder;
+    }
+
+    #endregion
+
     public BinPacker() { }
 
     /// <summary>
@@ -44,7 +63,7 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
     /// <param name="items">A list of packing items which should be assigned to a bin</param>
     /// <param name="useStackingConstraints">Flag for using stacking constraints</param>
     /// <returns>Returns a collection of bin packing 3d objects. Each object represents a bin and the packed items</returns>
-    public abstract IList<BinPacking3D> PackItems(Permutation sortedItems, PackingShape binShape, IList<PackingItem> items, bool useStackingConstraints);
+    public abstract IList<BinPacking3D> PackItems(Permutation sortedItems, PackingShape binShape, IList<PackingItem> items, ExtremePointCreationMethod epCreationMethod, bool useStackingConstraints);
     
     /// <summary>
     /// Pack a given item into a given bin and updates the residual space and the extreme points
@@ -53,11 +72,15 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
     /// <param name="itemId"></param>
     /// <param name="packingItem"></param>
     /// <param name="position"></param>
-    protected virtual void PackItem(BinPacking3D packingBin, int itemId, PackingItem packingItem, PackingPosition position, bool useStackingConstraints) {
-
+    protected virtual void PackItem(BinPacking3D packingBin, int itemId, PackingItem packingItem, PackingPosition position, IExtremePointCreator extremePointCreator, bool useStackingConstraints) {
+      if (!CheckItemDimensions(packingBin, packingItem, position)) {
+        throw new BinPacking3DException($"The dimensions of the given item exceeds the bin dimensions. " +
+          $"Bin: ({packingBin.BinShape.Width} {packingBin.BinShape.Depth} {packingBin.BinShape.Height})" +
+          $"Item: ({packingItem.Width} {packingItem.Depth} {packingItem.Height})");
+      }
       packingBin.PackItem(itemId, packingItem, position);
-      packingBin.UpdateResidualSpace(packingItem, position);
-      packingBin.UpdateExtremePoints(packingItem, position, useStackingConstraints);
+      extremePointCreator.UpdateExtremePoints(packingBin, packingItem, position);
+      extremePointCreator.UpdateResidualSpace(packingBin, packingItem, position);
     }
 
     /// <summary>
@@ -77,6 +100,17 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
 
       // The extremepoints are sortet by Y / Z / X
       return packingBin.ExtremePoints.Where(x => packingBin.IsPositionFeasible(newItem, x, useStackingConstraints)).FirstOrDefault();
+    }
+
+    /// <summary>
+    /// Compares the dimensions of a given item and the current bin. 
+    /// </summary>
+    /// <param name="item"></param>
+    /// <returns>Returns true if the dimensions of an given item are less or equal to the bin.</returns>
+    private bool CheckItemDimensions(BinPacking3D packingBin, PackingItem item, PackingPosition itemPosition) {
+      var width = itemPosition.Rotated ? item.Depth : item.Width;
+      var depth = itemPosition.Rotated ? item.Width : item.Depth;
+      return packingBin.BinShape.Width >= width && packingBin.BinShape.Height >= item.Height && packingBin.BinShape.Depth >= depth;
     }
   }
 }

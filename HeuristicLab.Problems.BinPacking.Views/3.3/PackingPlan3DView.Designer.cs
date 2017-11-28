@@ -48,6 +48,7 @@ namespace HeuristicLab.Problems.BinPacking.Views {
       this.itemSelection = new System.Windows.Forms.ListBox();
       this.elementHost = new System.Windows.Forms.Integration.ElementHost();
       this.packingPlan3D = new HeuristicLab.Problems.BinPacking.Views.Container3DView();
+      this.extremePointsSelection = new System.Windows.Forms.ListBox();
       this.SuspendLayout();
       // 
       // binSelection
@@ -57,7 +58,7 @@ namespace HeuristicLab.Problems.BinPacking.Views {
       this.binSelection.FormattingEnabled = true;
       this.binSelection.Location = new System.Drawing.Point(3, 3);
       this.binSelection.Name = "binSelection";
-      this.binSelection.Size = new System.Drawing.Size(54, 290);
+      this.binSelection.Size = new System.Drawing.Size(54, 264);
       this.binSelection.TabIndex = 4;
       this.binSelection.SelectedIndexChanged += new System.EventHandler(this.binSelection_SelectedIndexChanged);
       // 
@@ -68,7 +69,7 @@ namespace HeuristicLab.Problems.BinPacking.Views {
       this.itemSelection.FormattingEnabled = true;
       this.itemSelection.Location = new System.Drawing.Point(58, 3);
       this.itemSelection.Name = "itemSelection";
-      this.itemSelection.Size = new System.Drawing.Size(55, 290);
+      this.itemSelection.Size = new System.Drawing.Size(55, 264);
       this.itemSelection.TabIndex = 5;
       this.itemSelection.SelectedIndexChanged += new System.EventHandler(this.itemSelection_SelectedIndexChanged);
       // 
@@ -77,22 +78,34 @@ namespace HeuristicLab.Problems.BinPacking.Views {
       this.elementHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.elementHost.Location = new System.Drawing.Point(119, 3);
+      this.elementHost.Location = new System.Drawing.Point(198, 3);
       this.elementHost.Name = "elementHost";
-      this.elementHost.Size = new System.Drawing.Size(229, 290);
+      this.elementHost.Size = new System.Drawing.Size(273, 264);
       this.elementHost.TabIndex = 6;
       this.elementHost.Text = "elementHost";
       this.elementHost.Child = this.packingPlan3D;
+      // 
+      // extremePointsSelection
+      // 
+      this.extremePointsSelection.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+      this.extremePointsSelection.FormattingEnabled = true;
+      this.extremePointsSelection.Location = new System.Drawing.Point(115, 3);
+      this.extremePointsSelection.Name = "extremePointsSelection";
+      this.extremePointsSelection.Size = new System.Drawing.Size(77, 264);
+      this.extremePointsSelection.TabIndex = 7;
+      this.extremePointsSelection.SelectedIndexChanged += new System.EventHandler(this.extremePointsSelection_SelectedIndexChanged);
       // 
       // PackingPlan3DView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.Controls.Add(this.extremePointsSelection);
       this.Controls.Add(this.elementHost);
       this.Controls.Add(this.itemSelection);
       this.Controls.Add(this.binSelection);
       this.Name = "PackingPlan3DView";
-      this.Size = new System.Drawing.Size(351, 299);
+      this.Size = new System.Drawing.Size(489, 278);
       this.ResumeLayout(false);
 
     }
@@ -103,5 +116,6 @@ namespace HeuristicLab.Problems.BinPacking.Views {
     private System.Windows.Forms.ListBox itemSelection;
     private System.Windows.Forms.Integration.ElementHost elementHost;
     private Container3DView packingPlan3D;
+    private System.Windows.Forms.ListBox extremePointsSelection;
   }
 }

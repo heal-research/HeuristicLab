@@ -26,6 +26,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using HeuristicLab.Problems.BinPacking3D;
+using HeuristicLab.Collections;
 
 namespace HeuristicLab.Problems.BinPacking.Views {
   public partial class Container3DView : UserControl {
@@ -48,13 +49,16 @@ namespace HeuristicLab.Problems.BinPacking.Views {
 
     private static readonly Color hiddenColor = Color.FromArgb(0x1A, 0xAA, 0xAA, 0xAA);
     private static readonly Color containerColor = Color.FromArgb(0x7F, 0xAA, 0xAA, 0xAA);
+    private static readonly Color residualSpaceColor = Color.FromArgb(0x7F, 0xAA, 0xAA, 0x00);
 
     private Point startPos;
     private bool mouseDown = false;
     private double startAngleX;
     private double startAngleY;
     private int selectedItemKey;
+    private int selectedExtremePointIndex;
     private bool showExtremePoints;
+    private bool showResidualSpaces;
 
     private BinPacking<BinPacking3D.PackingPosition, PackingShape, PackingItem> packing;
     public BinPacking<BinPacking3D.PackingPosition, PackingShape, PackingItem> Packing {
@@ -69,10 +73,16 @@ namespace HeuristicLab.Problems.BinPacking.Views {
 
     private Dictionary<int, DiffuseMaterial> materials;
 
+    public ObservableDictionary<BinPacking3D.PackingPosition, Tuple<int, int, int>> ResidualSpaces { get; set; }
+    public ObservableCollection<BinPacking3D.PackingPosition> ExtremePoints { get; set; }
+
     public Container3DView() {
       InitializeComponent();
       camMain.Position = new Point3D(0.5, 3, 3); // for design time we use a different camera position 
       materials = new Dictionary<int, DiffuseMaterial>();
+      ResidualSpaces = new ObservableDictionary<BinPacking3D.PackingPosition, Tuple<int, int, int>>();
+      ExtremePoints = new ObservableCollection<BinPacking3D.PackingPosition>();
+      selectedExtremePointIndex = -1;
       Clear();
     }
 
@@ -84,20 +94,32 @@ namespace HeuristicLab.Problems.BinPacking.Views {
       viewport3D1.RenderSize = mySize;
     }
 
+    /// <summary>
+    /// Selects another extreme point
+    /// </summary>
+    /// <param name="index"></param>
+    public void SelectExtremePoint(int index) {
+      selectedExtremePointIndex = index;
+      UpdateVisualization();
+    }
+
     public void SelectItem(int itemKey) {
       // selection of an item should make all other items semi-transparent
       selectedItemKey = itemKey;
       UpdateVisualization();
     }
+
     public void ClearSelection() {
       // remove all transparency
       selectedItemKey = -1;
+      selectedExtremePointIndex = -1;
       UpdateVisualization();
     }
 
     private void UpdateVisualization() {
       Clear();
-      if (packing == null) return; // nothing to display
+      if (packing == null)
+        return; // nothing to display
 
       var modelGroup = (Model3DGroup)MyModel.Content;
       var hiddenMaterial = new DiffuseMaterial(new SolidColorBrush(hiddenColor));
@@ -107,7 +129,8 @@ namespace HeuristicLab.Problems.BinPacking.Views {
         var selectedPos = packing.Positions[selectedItem.Key];
 
         var colorIdx = selectedItem.Value.Material;
-        while (colorIdx < 0) colorIdx += colors.Length;
+        while (colorIdx < 0)
+          colorIdx += colors.Length;
         colorIdx = colorIdx % colors.Length;
         var color = colors[colorIdx];
         var material = new DiffuseMaterial { Brush = new SolidColorBrush(color) };
@@ -131,6 +154,8 @@ namespace HeuristicLab.Problems.BinPacking.Views {
           AddWireframeCube((MeshGeometry3D)model.Geometry, position.X, position.Y, position.Z, w, h, d, 1);
           modelGroup.Children.Add(model);
         }
+
+
       } else {
         foreach (var item in packing.Items) {
           var position = packing.Positions[item.Key];
@@ -143,7 +168,8 @@ namespace HeuristicLab.Problems.BinPacking.Views {
           DiffuseMaterial material;
           if (!materials.TryGetValue(item.Value.Material, out material)) {
             var colorIdx = item.Value.Material;
-            while (colorIdx < 0) colorIdx += colors.Length;
+            while (colorIdx < 0)
+              colorIdx += colors.Length;
             colorIdx = colorIdx % colors.Length;
             var color = colors[colorIdx];
             material = new DiffuseMaterial { Brush = new SolidColorBrush(color) };
@@ -155,16 +181,8 @@ namespace HeuristicLab.Problems.BinPacking.Views {
         }
       }
 
-      if (showExtremePoints) {
-        // draw extreme-points
-        var maxMag = (int)Math.Log10(Math.Max(packing.BinShape.Depth, Math.Max(packing.BinShape.Height, packing.BinShape.Width)));
-        var cubeSize = (int)Math.Max(Math.Pow(10, maxMag - 2), 1);
-        foreach (var ep in packing.ExtremePoints) {
-          var epModel = new GeometryModel3D { Geometry = new MeshGeometry3D(), Material = new DiffuseMaterial() { Brush = new SolidColorBrush(Colors.Red) } };
-          AddSolidCube((MeshGeometry3D)epModel.Geometry, ep.X, ep.Y, ep.Z, cubeSize, cubeSize, cubeSize);
-          modelGroup.Children.Add(epModel);
-        }
-      }
+
+      AddExtremePoints(modelGroup);
 
       var container = packing.BinShape;
       var containerModel = new GeometryModel3D(new MeshGeometry3D(), new DiffuseMaterial(new SolidColorBrush(containerColor)));
@@ -190,6 +208,52 @@ namespace HeuristicLab.Problems.BinPacking.Views {
         scaleZoom.CenterZ - camMain.Position.Z);
     }
 
+    private void AddExtremePoints(Model3DGroup modelGroup) {
+      if (showExtremePoints) {
+        // draw extreme-points
+        var maxMag = (int)Math.Log10(Math.Max(packing.BinShape.Depth, Math.Max(packing.BinShape.Height, packing.BinShape.Width)));
+        var cubeSize = (int)Math.Max(Math.Pow(10, maxMag - 2), 1);
+        BinPacking3D.PackingPosition selectedExtremePoint = null;
+        if (selectedExtremePointIndex < 0) {
+          foreach (var ep in ExtremePoints) {
+            AddResidualSpacesForExtremePoint(modelGroup, ep);
+          }
+        } else {
+          selectedExtremePoint = ExtremePoints.ToList()[selectedExtremePointIndex];
+          AddResidualSpacesForExtremePoint(modelGroup, selectedExtremePoint);
+        }
+
+        foreach (var ep in ExtremePoints) {
+          Color color;
+          if (ep.Equals(selectedExtremePoint)) {
+            color = Colors.Yellow;
+          } else {
+            color = Colors.Red;
+          }
+          var epModel = new GeometryModel3D { Geometry = new MeshGeometry3D(), Material = new DiffuseMaterial() { Brush = new SolidColorBrush(color) } };
+          AddSolidCube((MeshGeometry3D)epModel.Geometry, ep.X, ep.Y, ep.Z, cubeSize, cubeSize, cubeSize);
+          modelGroup.Children.Add(epModel);
+        }
+      }
+    }
+
+    private void AddResidualSpacesForExtremePoint(Model3DGroup modelGroup, BinPacking3D.PackingPosition extremePoint) {
+      if (showResidualSpaces) {
+        var rs = ResidualSpaces[extremePoint];
+        var containerModel1 = new GeometryModel3D(new MeshGeometry3D(), new DiffuseMaterial(new SolidColorBrush(residualSpaceColor)));
+
+        modelGroup.Children.Add(containerModel1);
+        AddWireframeCube((MeshGeometry3D)containerModel1.Geometry,
+          extremePoint.X,
+          extremePoint.Y,
+          extremePoint.Z,
+          rs.Item1,
+          rs.Item2,
+          rs.Item3);
+
+      }
+    }
+
 
     private void Clear() {
       ((Model3DGroup)MyModel.Content).Children.Clear();
@@ -201,7 +265,8 @@ namespace HeuristicLab.Problems.BinPacking.Views {
     }
 
     private void Container3DView_MouseMove(object sender, MouseEventArgs e) {
-      if (!mouseDown) return;
+      if (!mouseDown)
+        return;
       var pos = e.GetPosition((IInputElement)this);
 
       ((AxisAngleRotation3D)rotateX.Rotation).Angle = startAngleX + (pos.X - startPos.X) / 4;
@@ -234,12 +299,21 @@ namespace HeuristicLab.Problems.BinPacking.Views {
     private void Container3DView_OnMouseEnter(object sender, MouseEventArgs e) {
       Focus(); // for mouse wheel events
     }
-    private void showExtremePointsCheckBoxOnChecked(object sender, RoutedEventArgs e) {
+    private void ShowExtremePointsCheckBoxOnChecked(object sender, RoutedEventArgs e) {
       showExtremePoints = true;
       UpdateVisualization();
     }
-    private void showExtremePointsCheckBoxOnUnchecked(object sender, RoutedEventArgs e) {
+    private void ShowExtremePointsCheckBoxOnUnchecked(object sender, RoutedEventArgs e) {
       showExtremePoints = false;
+      UpdateVisualization();
+    }
+
+    private void ShowResidualSpacesCheckBoxOnChecked(object sender, RoutedEventArgs e) {
+      showResidualSpaces = true;
+      UpdateVisualization();
+    }
+    private void ShowResidualSpacesCheckBoxOnUnchecked(object sender, RoutedEventArgs e) {
+      showResidualSpaces = false;
       UpdateVisualization();
     }
 

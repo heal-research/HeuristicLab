@@ -19,9 +19,11 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Problems.BinPacking3D.ExtremePointCreation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,9 +31,20 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace HeuristicLab.Problems.BinPacking3D.Packer {
-  [Item("BinPackerResidualSpaceBestFit", "A class for packing bins for the 3D bin-packer problem. It uses a best fit algortihm depending on the residual space.")]
-  [StorableClass]
   public class BinPackerResidualSpaceBestFit : BinPacker {
+
+    #region Constructors for HEAL
+    [StorableConstructor]
+    protected BinPackerResidualSpaceBestFit(bool deserializing) : base(deserializing) { }
+
+    protected BinPackerResidualSpaceBestFit(BinPackerResidualSpaceBestFit original, Cloner cloner) 
+      : base(original, cloner) {
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new BinPackerResidualSpaceBestFit(this, cloner);
+    }
+    #endregion
 
     public BinPackerResidualSpaceBestFit() : base() { }
 
@@ -41,9 +54,10 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
     /// Each residual space belongs to an extreme point.
     /// </summary>
     /// <returns>Returns a collection of bin packing 3d objects. Each object represents a bin and the packed items</returns>
-    public override IList<BinPacking3D> PackItems(Permutation sortedItems, PackingShape binShape, IList<PackingItem> items, bool useStackingConstraints) {
+    public override IList<BinPacking3D> PackItems(Permutation sortedItems, PackingShape binShape, IList<PackingItem> items, ExtremePointCreationMethod epGenerationMethod, bool useStackingConstraints) {
       IList<BinPacking3D> packingList = new List<BinPacking3D>();
       IList<int> remainingIds = new List<int>(sortedItems);
+      IExtremePointCreator extremePointCreator = ExtremePointCreatorFactory.CreateExtremePointCreator(epGenerationMethod, useStackingConstraints);
       bool rotated = false;
 
       foreach (var remainingId in remainingIds) {
@@ -55,7 +69,7 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
         foreach (var point in sortedPoints) {
           if (point.Item1.IsPositionFeasible(item, point.Item2, useStackingConstraints)) {
             var binPacking = point.Item1;
-            PackItem(binPacking, remainingId, item, point.Item2, useStackingConstraints);
+            PackItem(binPacking, remainingId, item, point.Item2, extremePointCreator, useStackingConstraints);
             packed = true;
             break;
           }
@@ -65,14 +79,13 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
           BinPacking3D binPacking = new BinPacking3D(binShape);
           var position = FindPackingPositionForItem(binPacking, item, useStackingConstraints, rotated);
           if (position != null) {
-            PackItem(binPacking, remainingId, item, position, useStackingConstraints);
+            PackItem(binPacking, remainingId, item, position, extremePointCreator, useStackingConstraints);
           } else {
-            throw new InvalidOperationException("Item " + remainingId + " cannot be packed in an empty bin.");
+            throw new InvalidOperationException("Item " + remainingId + " cannot be packed into an empty bin.");
           }
           packingList.Add(binPacking);
         }
       }
-
       return packingList;
     }
 
@@ -109,6 +122,5 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
           (rs.Item2 - item.Height) +
           (rs.Item3 - item.Depth));
     }
-
   }
 }

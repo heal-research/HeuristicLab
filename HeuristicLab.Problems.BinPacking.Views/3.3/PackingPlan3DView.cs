@@ -46,8 +46,10 @@ namespace HeuristicLab.Problems.BinPacking.Views {
         packingPlan3D.Packing = null;
       } else {
         int i = 0;
-        foreach (var bp in Content.Bins)
+        foreach (var bp in Content.Bins) {
           binSelection.Items.Add(i++ + " (" + Math.Round(bp.PackingDensity * 100, 2) + "%)");
+        }
+
 
         binSelection.SelectedIndex = 0;
         ShowSelectedPacking();
@@ -62,12 +64,21 @@ namespace HeuristicLab.Problems.BinPacking.Views {
     private void binSelection_SelectedIndexChanged(object sender, EventArgs e) {
       itemSelection.SelectedIndex = -1;
       itemSelection.Items.Clear();
+      extremePointsSelection.Items.Clear();
+      packingPlan3D.ResidualSpaces.Clear();
+      packingPlan3D.ExtremePoints.Clear();
 
       // add items of this container
       int currentBin = (binSelection != null) ? (int)(binSelection.SelectedIndex) : 0;
       var packing = Content.Bins[currentBin];
       foreach (var item in packing.Items) {
         itemSelection.Items.Add(item.Key);
+      }
+      foreach (var ep in packing.ExtremePoints) {
+        var rs = ((BinPacking3D.BinPacking3D)packing).ResidualSpace[ep];
+        extremePointsSelection.Items.Add($"({ep.X}, {ep.Y}, {ep.Z})");
+        packingPlan3D.ExtremePoints.Add(ep);
+        packingPlan3D.ResidualSpaces.Add(ep, rs);
       }
 
       ShowSelectedPacking();
@@ -79,6 +90,14 @@ namespace HeuristicLab.Problems.BinPacking.Views {
         packingPlan3D.SelectItem(selectedItem);
       } else
         packingPlan3D.ClearSelection();
+    }
+
+    private void extremePointsSelection_SelectedIndexChanged(object sender, EventArgs e) {
+      if (extremePointsSelection != null && extremePointsSelection.SelectedIndex >= 0) {
+        packingPlan3D.SelectExtremePoint(extremePointsSelection.SelectedIndex);
+      } else {
+        packingPlan3D.ClearSelection();
+      }
     }
   }
 }

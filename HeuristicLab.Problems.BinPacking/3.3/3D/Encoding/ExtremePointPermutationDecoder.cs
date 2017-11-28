@@ -29,6 +29,8 @@ using System.Text;
 using System.Threading.Tasks;
 using HeuristicLab.Common;
 using HeuristicLab.Problems.BinPacking3D.Packer;
+using HeuristicLab.Parameters;
+using HeuristicLab.Data;
 
 namespace HeuristicLab.Problems.BinPacking3D.Encoding {
 
@@ -37,30 +39,56 @@ namespace HeuristicLab.Problems.BinPacking3D.Encoding {
   /// </summary>
   [Item("Extreme-point Permutation Decoder (3d) Base", "Base class for 3d decoders")]
   [StorableClass]
-  public class ExtremePointPermutationDecoder : Item, IDecoder<Permutation>
-    //where TBinPacker : BinPacker, new ()
-    {
+  public class ExtremePointPermutationDecoder : ParameterizedNamedItem, IDecoder<Permutation> {
+
+    [Storable]
+    private IValueParameter<EnumValue<FittingMethod>> fittingMethodParameter;
+    public IValueParameter<EnumValue<FittingMethod>> FittingMethodParameter {
+      get { return fittingMethodParameter; }
+    }
+
+    public FittingMethod FittingMethod {
+      get { return fittingMethodParameter.Value.Value; }
+      set { fittingMethodParameter.Value.Value = value; }
+    }
+
+    [Storable]
+    private readonly IValueParameter<EnumValue<ExtremePointCreationMethod>> extremePointCreationMethodParameter;
+    public IValueParameter<EnumValue<ExtremePointCreationMethod>> ExtremePointCreationMethodParameter {
+      get { return extremePointCreationMethodParameter; }
+    }
+
+    public ExtremePointCreationMethod ExtremePointCreationMethod {
+      get { return extremePointCreationMethodParameter.Value.Value; }
+      set { extremePointCreationMethodParameter.Value.Value = value; }
+    }
 
     [StorableConstructor]
     protected ExtremePointPermutationDecoder(bool deserializing) : base(deserializing) { }
     protected ExtremePointPermutationDecoder(ExtremePointPermutationDecoder original, Cloner cloner)
       : base(original, cloner) {
+      fittingMethodParameter = cloner.Clone(original.fittingMethodParameter);
+      //_binPacker = cloner.Clone(original._binPacker);
     }
+    public ExtremePointPermutationDecoder() {
+      Parameters.Add(fittingMethodParameter = 
+            new ValueParameter<EnumValue<FittingMethod>>("Fitting Method", 
+                                                         "The fitting method that the decoder uses.", 
+                                                         new EnumValue<FittingMethod>(FittingMethod.FirstFit)));
 
-    /// <summary>
-    /// Creates an extrem point based permutation decoder
-    /// </summary>
-    /// <param name="binPacker">Contains the packing algorithm for packing the items</param>
-    public ExtremePointPermutationDecoder(BinPacker binPacker) : base() {
-      _binPacker = binPacker;
+      Parameters.Add(extremePointCreationMethodParameter =
+            new ValueParameter<EnumValue<ExtremePointCreationMethod>>("Extreme Point Generation Method",
+                                                         "The Extreme point generation method that the decoder uses.",
+                                                         new EnumValue<ExtremePointCreationMethod>(ExtremePointCreationMethod.PointProjection)));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new ExtremePointPermutationDecoder(this, cloner);
     }
 
+    /*[Storable]
     BinPacker _binPacker;
-
+    */
     /// <summary>
     /// Creates a solution for displaying it on the HEAL gui
     /// </summary>
@@ -69,9 +97,10 @@ namespace HeuristicLab.Problems.BinPacking3D.Encoding {
     /// <param name="items">A list of packing items which should be assigned to a bin</param>
     /// <param name="useStackingConstraints"></param>
     /// <returns></returns>
-    public Solution Decode(Permutation permutation, PackingShape binShape, IList<PackingItem> items, bool useStackingConstraints) {
+    public Solution Decode(Permutation permutation, PackingShape binShape, IList<PackingItem> items,bool useStackingConstraints) {
+      var binPacker = BinPackerFactory.CreateBinPacker(FittingMethod);
       Solution solution = new Solution(binShape, useExtremePoints: true, stackingConstraints: useStackingConstraints);
-      foreach (var packedBin in _binPacker.PackItems(permutation, binShape, items, useStackingConstraints)) {
+      foreach (var packedBin in binPacker.PackItems(permutation, binShape, items, ExtremePointCreationMethod, useStackingConstraints)) {
         solution.Bins.Add(packedBin);
       }
       return solution;

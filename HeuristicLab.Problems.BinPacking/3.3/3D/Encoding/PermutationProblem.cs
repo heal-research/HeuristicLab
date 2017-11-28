@@ -49,7 +49,7 @@ namespace HeuristicLab.Problems.BinPacking3D {
 
     public PermutationProblem()
       : base() {
-      Decoder = new ExtremePointPermutationDecoder(new BinPackerFirstFit()); // default decoder
+      Decoder = new ExtremePointPermutationDecoder(); // default decoder
 
       Encoding = new Encodings.PermutationEncoding.PermutationEncoding(EncodedSolutionName, Items.Count, PermutationTypes.Absolute);
       AddOperators();

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace HeuristicLab.Problems.BinPacking3D.Geometry {
-  internal class Vector3D {
+  public class Vector3D {
 
     public int X { get; set; }
     public int Y { get; set; }
@@ -22,6 +22,11 @@ namespace HeuristicLab.Problems.BinPacking3D.Geometry {
       Y = pos.Y;
       Z = pos.Z;
     }
+
+    public PackingPosition ToPackingPosition(int assignedBin) {
+      return new PackingPosition(assignedBin, X, Y, Z);
+    }
+
     public static Vector3D AlongX(Vector3D pos, PackingItem item) {
       return new Vector3D(
         pos.X + item.Width,
@@ -85,9 +90,19 @@ namespace HeuristicLab.Problems.BinPacking3D.Geometry {
     public static Vector3D operator *(int a, Vector3D b) {
       return new Vector3D(a * b.X, a * b.Y, a * b.Z);
     }
+
+    public static Vector3D operator *(double a, Vector3D b) {
+      return new Vector3D((int)(a * b.X), (int)(a * b.Y), (int)(a * b.Z));
+    }
+
     public static Vector3D operator *(Vector3D a, int b) {
       return new Vector3D(a.X * b, a.Y * b, a.Z * b);
     }
+
+    public static Vector3D operator *(Vector3D a, double b) {
+      return new Vector3D((int)(b * a.X), (int)(b * a.Y), (int)(b * a.Z));
+    }
+
     public static Vector3D operator +(Vector3D a, Vector3D b) {
       return new Vector3D(a.X + b.X, a.Y + b.Y, a.Z + b.Z);
     }

@@ -19,9 +19,11 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Problems.BinPacking3D.ExtremePointCreation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,10 +31,19 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace HeuristicLab.Problems.BinPacking3D.Packer {
-
-  [Item("BinPackerFirstFit", "A class for packing bins for the 3D bin-packer problem. It uses a first fit algorithm")]
-  [StorableClass]
   public class BinPackerFirstFit : BinPacker {
+    #region Constructors for HEAL
+    [StorableConstructor]
+    protected BinPackerFirstFit(bool deserializing) : base(deserializing) { }
+
+    protected BinPackerFirstFit(BinPackerFirstFit original, Cloner cloner) 
+      : base(original, cloner) {
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new BinPackerFirstFit(this, cloner);
+    }
+    #endregion
 
     public BinPackerFirstFit() : base() { }    
 
@@ -40,13 +51,13 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
     /// Packs the items of the object by using a first fit algorithm into an amount of bins and returns them.
     /// </summary>
     /// <returns>Returns a collection of bin packing 3d objects. Each object represents a bin and the packed items</returns>
-    public override IList<BinPacking3D> PackItems(Permutation sortedItems, PackingShape binShape, IList<PackingItem> items, bool useStackingConstraints) {
+    public override IList<BinPacking3D> PackItems(Permutation sortedItems, PackingShape binShape, IList<PackingItem> items, ExtremePointCreationMethod epGenerationMethod, bool useStackingConstraints) {
       IList<BinPacking3D> packingList = new List<BinPacking3D>();
       IList<int> remainingIds = new List<int>(sortedItems);
 
       while (remainingIds.Count > 0) {
         BinPacking3D packingBin = new BinPacking3D(binShape);
-        PackRemainingItems(ref remainingIds, ref packingBin, items, useStackingConstraints, null);
+        PackRemainingItems(ref remainingIds, ref packingBin, items, epGenerationMethod, useStackingConstraints, null);
         packingList.Add(packingBin);
       }
 
@@ -59,14 +70,14 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
     /// <param name="remainingIds">List of remaining ids. After the method has been executed the list has to have less items</param>
     /// <param name="items">List of packing items. Some of the items will be assigned to the BinPacking3D object</param>
     /// <param name="packingBin">This object will be filled with some of the given items</param>
-    protected void PackRemainingItems(ref IList<int> remainingIds, ref BinPacking3D packingBin, IList<PackingItem> items, bool useStackingConstraints, Dictionary<int, bool> rotationArray) {
-
+    protected void PackRemainingItems(ref IList<int> remainingIds, ref BinPacking3D packingBin, IList<PackingItem> items, ExtremePointCreationMethod epCreationMethod, bool useStackingConstraints, Dictionary<int, bool> rotationArray) {
+      IExtremePointCreator extremePointCreator = ExtremePointCreatorFactory.CreateExtremePointCreator(epCreationMethod, useStackingConstraints);
       foreach (var itemId in new List<int>(remainingIds)) {
         bool rotated = rotationArray == null ? false : rotationArray[itemId];
         PackingPosition position = FindPackingPositionForItem(packingBin, items[itemId], useStackingConstraints, rotated);
         // if a valid packing position could be found, the current item can be added to the given bin
         if (position != null) {
-          PackItem(packingBin, itemId, items[itemId], position, useStackingConstraints);
+          PackItem(packingBin, itemId, items[itemId], position, extremePointCreator, useStackingConstraints);
           remainingIds.Remove(itemId);
         }
       }

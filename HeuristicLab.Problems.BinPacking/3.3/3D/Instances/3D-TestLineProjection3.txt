@@ -1,0 +1,11 @@
+BIN DIMENSION
+Length	Width	Height	MaxWeight
+20	20	20	5832
+ITEMS
+ID	Pcs	Length	Width	Height	Weight	Stack	Layer	Rotate	Tilt
+0	1	8	8	4	800	1	0	0	0
+1	1	4	4	10	800	2	0	0	0
+2	1	8	8	8	800	3	0	0	0
+3	1	20	2	2	800	3	0	0	0
+4	1	16	16	12	800	3	0	0	0
+

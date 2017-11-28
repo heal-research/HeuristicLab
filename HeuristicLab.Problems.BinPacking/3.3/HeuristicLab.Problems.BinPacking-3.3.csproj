@@ -102,6 +102,13 @@
     <Compile Include="2D\PermutationEncoding\TranslocationMoveEvaluator.cs" />
     <Compile Include="2D\ProblemBase.cs" />
     <Compile Include="2D\Solution.cs" />
+    <Compile Include="3D\BinPacking3DException.cs" />
+    <Compile Include="3D\ExtremePointCreation\ExtremePointCreatorFactory.cs" />
+    <Compile Include="3D\ExtremePointCreation\ExtremePointCreator.cs" />
+    <Compile Include="3D\ExtremePointCreation\IExtremePointCreator.cs" />
+    <Compile Include="3D\ExtremePointCreation\LineProjectionBasedEPCreator.cs" />
+    <Compile Include="3D\ExtremePointCreation\PointProjectionBasedEPCreator.cs" />
+    <Compile Include="3D\Geometry\Edge3D.cs" />
     <Compile Include="3D\Packer\BinPacker.cs" />
     <Compile Include="3D\Packer\BinPackerFactory.cs" />
     <Compile Include="3D\Packer\BinPackerFirstFit.cs" />
@@ -122,7 +129,7 @@
     <Compile Include="3D\Instances\ThreeDInstanceParser.cs" />
     <Compile Include="3D\Encoding\IDecoder.cs" />
     <Compile Include="3D\Evaluators\IEvaluator.cs" />
-    <Compile Include="3D\IOperator.cs" />
+    <Compile Include="3D\Sorting\IOperator.cs" />
     <Compile Include="3D\Evaluators\MoveEvaluatorBase.cs" />
     <Compile Include="3D\PackingItem.cs" />
     <Compile Include="3D\PackingPosition.cs" />

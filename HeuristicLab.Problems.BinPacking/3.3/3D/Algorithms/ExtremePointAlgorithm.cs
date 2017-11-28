@@ -41,6 +41,8 @@ namespace HeuristicLab.Problems.BinPacking3D {
   public enum SortingMethod { All, Given, VolumeHeight, HeightVolume, AreaHeight, HeightArea, ClusteredAreaHeight, ClusteredHeightArea }
   public enum FittingMethod { All, FirstFit, ResidualSpaceBestFit, FreeVolumeBestFit }
 
+  public enum ExtremePointCreationMethod { All, PointProjection, LineProjection }
+
   [Item("Extreme-point-based Bin Packing (3d)", "An implementation of the extreme-point based packing described in Crainic, T. G., Perboli, G., & Tadei, R. (2008). Extreme point-based heuristics for three-dimensional bin packing. Informs Journal on computing, 20(3), 368-384.")]
   [StorableClass]
   [Creatable(CreatableAttribute.Categories.SingleSolutionAlgorithms, Priority = 180)]
@@ -82,7 +84,13 @@ namespace HeuristicLab.Problems.BinPacking3D {
 
     public IValueParameter<BoolValue> SortByMaterialParameter {
       get { return sortByMaterialParameter; }
-    }    
+    }
+
+    [Storable]
+    private readonly IValueParameter<EnumValue<ExtremePointCreationMethod>> extremePointCreationMethodParameter;
+    public IValueParameter<EnumValue<ExtremePointCreationMethod>> ExtremePointCreationMethodParameter {
+      get { return extremePointCreationMethodParameter; }
+    }
 
     [StorableConstructor]
     private ExtremePointAlgorithm(bool deserializing) : base(deserializing) { }
@@ -98,6 +106,9 @@ namespace HeuristicLab.Problems.BinPacking3D {
 
       Parameters.Add(fittingMethodParameter = new ValueParameter<EnumValue<FittingMethod>>(
         "FittingMethod", "Which method to fit should be used.", new EnumValue<FittingMethod>(FittingMethod.All)));
+
+      Parameters.Add(extremePointCreationMethodParameter = new ValueParameter<EnumValue<ExtremePointCreationMethod>>(
+        "ExtremePointCreationMethod", "Which method should be used for creatomg extreme points.", new EnumValue<ExtremePointCreationMethod>(ExtremePointCreationMethod.All)));
 
       Parameters.Add(deltaParameter = new ValueParameter<PercentValue>(
         "Delta", "[1;100]% Clustered sorting methods use a delta parameter to determine the clusters.", new PercentValue(.1)));
@@ -123,17 +134,27 @@ namespace HeuristicLab.Problems.BinPacking3D {
     protected override void Run(CancellationToken token) {
       var items = Problem.Items;
       var bin = Problem.BinShape;
+
       var sorting = new[] { SortingMethodParameter.Value.Value };
       if (sorting[0] == SortingMethod.All) {
         sorting = Enum.GetValues(typeof(SortingMethod)).Cast<SortingMethod>().Where(x => x != SortingMethod.All).ToArray();
       }
+
       var fitting = new[] { fittingMethodParameter.Value.Value };
       if (fitting[0] == FittingMethod.All) {
         fitting = Enum.GetValues(typeof(FittingMethod)).Cast<FittingMethod>().Where(x => x != FittingMethod.All).ToArray();
       }
 
+      var extremePointCreation = new[] { ExtremePointCreationMethodParameter.Value.Value };
+      if (extremePointCreation[0] == ExtremePointCreationMethod.All) {
+        extremePointCreation = Enum.GetValues(typeof(ExtremePointCreationMethod))
+                                     .Cast<ExtremePointCreationMethod>()
+                                     .Where(x => x != ExtremePointCreationMethod.All)
+                                     .ToArray();
+      }
+
       //
-      var result = GetBest(bin, items, sorting, fitting, token);
+      var result = GetBest(bin, items, sorting, fitting, extremePointCreation, token);
       if (result == null) {
         throw new InvalidOperationException("No result obtained!");
       }
@@ -161,6 +182,12 @@ namespace HeuristicLab.Problems.BinPacking3D {
           "The fitting method that found the best solution",
           new EnumValue<FittingMethod>(result.Item4.Value)));
       }
+
+      if (result.Item5.HasValue && extremePointCreation.Length > 1) {
+        Results.Add(new Result("Best extreme point creation method",
+          "The extreme point creation method that found the best solution",
+          new EnumValue<ExtremePointCreationMethod>(result.Item5.Value)));
+      }
     }
 
     /// <summary>
@@ -172,61 +199,87 @@ namespace HeuristicLab.Problems.BinPacking3D {
     /// <param name="fittings"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    private Tuple<Solution, double, SortingMethod?, FittingMethod?> GetBest(PackingShape bin, IList<PackingItem> items, SortingMethod[] sortings, FittingMethod[] fittings, CancellationToken token) {
+    private Tuple<Solution, double, SortingMethod?, FittingMethod?, ExtremePointCreationMethod?> 
+          GetBest(PackingShape bin, 
+                  IList<PackingItem> items, 
+                  SortingMethod[] sortings, 
+                  FittingMethod[] fittings,
+                  ExtremePointCreationMethod[] ePGeneration,
+                  CancellationToken token) {
       SortingMethod? bestSorting = null;
       FittingMethod? bestFitting = null;
+      ExtremePointCreationMethod? bestEPCreation = null;
       var best = double.NaN;
       Solution bestSolution = null;
       foreach (var fit in fittings) {
         foreach (var sort in sortings) {
-          IDecoder<Permutation> decoder = new ExtremePointPermutationDecoder(BinPackerFactory.CreateBinPacker(fit));
-          Permutation sortedItems;
+          foreach (var epCreation in ePGeneration) {
+            IDecoder<Permutation> decoder = new ExtremePointPermutationDecoder() {
+              FittingMethod = fit,
+              ExtremePointCreationMethod = epCreation
+            };
+            Permutation sortedItems;
                     
-          if (SortByMaterialParameter.Value.Value) {
-            sortedItems = SortItemsByMaterialAndSortingMethod(bin, items, sort, DeltaParameter.Value.Value);
-          } else {
-            sortedItems = SortItemsBySortingMethod(bin, items, sort, DeltaParameter.Value.Value);
-          }
-          
-          var result = Optimize(sortedItems, bin, items, Problem.UseStackingConstraints, decoder, Problem.SolutionEvaluator);
-          
-          if (double.IsNaN(result.Item2) || double.IsInfinity(result.Item2)) {
-            continue;
-          }
+            if (SortByMaterialParameter.Value.Value) {
+              sortedItems = SortItemsByMaterialAndSortingMethod(bin, items, sort, DeltaParameter.Value.Value);
+            } else {
+              sortedItems = SortItemsBySortingMethod(bin, items, sort, DeltaParameter.Value.Value);
+            }
 
-          if (double.IsNaN(best) || Problem.Maximization && result.Item2 > best || !Problem.Maximization && result.Item2 < best) {
-            bestSolution = result.Item1;
-            best = result.Item2;
-            bestSorting = sort;
-            bestFitting = fit;
-          }
-          if (token.IsCancellationRequested) {
-            return Tuple.Create(bestSolution, best, bestSorting, bestFitting);
+            var result = Optimize(new OptimaizationParamters() {
+              SortedItems = sortedItems,
+              Bin = bin,
+              Items = items,
+              StackingConstraints = Problem.UseStackingConstraints,
+              Decoder = decoder,
+              Evaluator = Problem.SolutionEvaluator,
+              ExtremePointGeneration = epCreation
+            });
+          
+            if (double.IsNaN(result.Item2) || double.IsInfinity(result.Item2)) {
+              continue;
+            }
+
+            if (double.IsNaN(best) || Problem.Maximization && result.Item2 > best || !Problem.Maximization && result.Item2 < best) {
+              bestSolution = result.Item1;
+              best = result.Item2;
+              bestSorting = sort;
+              bestFitting = fit;
+              bestEPCreation = epCreation;
+            }
+            if (token.IsCancellationRequested) {
+              return Tuple.Create(bestSolution, best, bestSorting, bestFitting, bestEPCreation);
+            }
           }
         }
       }
       if (double.IsNaN(best)) {
         return null;
       }
-      return Tuple.Create(bestSolution, best, bestSorting, bestFitting);
+      return Tuple.Create(bestSolution, best, bestSorting, bestFitting, bestEPCreation);
     }
 
     /// <summary>
     /// Returns a tuple with the solution and the packing ratio depending on the given parameters
     /// </summary>
-    /// <param name="sortedItems"></param>
-    /// <param name="bin"></param>
-    /// <param name="items"></param>
-    /// <param name="stackingConstraints"></param>
-    /// <param name="decoder"></param>
-    /// <param name="evaluator"></param>
+    /// <param name="parameters"></param>
     /// <returns></returns>
-    private static Tuple<Solution, double> Optimize(Permutation sortedItems, PackingShape bin, IList<PackingItem> items, bool stackingConstraints, IDecoder<Permutation> decoder, IEvaluator evaluator) { 
+    private static Tuple<Solution, double> Optimize(OptimaizationParamters parameters) { 
       
-      var sol = decoder.Decode(sortedItems, bin, items, stackingConstraints);
-      var fit = evaluator.Evaluate(sol);
+      var sol = parameters.Decoder.Decode(parameters.SortedItems, parameters.Bin, parameters.Items, parameters.StackingConstraints);
+      var fit = parameters.Evaluator.Evaluate(sol);
 
       return Tuple.Create(sol, fit);
+    }
+
+    private class OptimaizationParamters {
+      public Permutation SortedItems { get; set; }
+      public PackingShape Bin { get; set; }
+      public IList<PackingItem> Items { get; set; }
+      public bool StackingConstraints { get; set; }
+      public IDecoder<Permutation> Decoder { get; set; }
+      public IEvaluator Evaluator { get; set; }
+      public ExtremePointCreationMethod ExtremePointGeneration { get; set; }
     }
     
 
