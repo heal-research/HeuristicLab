@@ -29,6 +29,10 @@
       this.downloadButton = new System.Windows.Forms.Button();
       this.logView = new HeuristicLab.Core.Views.LogView();
       this.oneFileCheckBox = new System.Windows.Forms.CheckBox();
+      this.label2 = new System.Windows.Forms.Label();
+      this.outputDirectoryTextBox = new System.Windows.Forms.TextBox();
+      this.browseOutputPathButton = new System.Windows.Forms.Button();
+      this.listJobsButton = new System.Windows.Forms.Button();
       this.SuspendLayout();
       // 
       // label1
@@ -52,9 +56,9 @@
       // downloadButton
       // 
       this.downloadButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.downloadButton.Location = new System.Drawing.Point(698, 38);
+      this.downloadButton.Location = new System.Drawing.Point(753, 82);
       this.downloadButton.Name = "downloadButton";
-      this.downloadButton.Size = new System.Drawing.Size(132, 23);
+      this.downloadButton.Size = new System.Drawing.Size(77, 23);
       this.downloadButton.TabIndex = 3;
       this.downloadButton.Text = "Download";
       this.downloadButton.UseVisualStyleBackColor = true;
@@ -67,10 +71,10 @@
             | System.Windows.Forms.AnchorStyles.Right)));
       this.logView.Caption = "Log View";
       this.logView.Content = null;
-      this.logView.Location = new System.Drawing.Point(15, 67);
+      this.logView.Location = new System.Drawing.Point(15, 110);
       this.logView.Name = "logView";
       this.logView.ReadOnly = false;
-      this.logView.Size = new System.Drawing.Size(815, 368);
+      this.logView.Size = new System.Drawing.Size(815, 325);
       this.logView.TabIndex = 4;
       // 
       // oneFileCheckBox
@@ -78,18 +82,62 @@
       this.oneFileCheckBox.AutoSize = true;
       this.oneFileCheckBox.Checked = true;
       this.oneFileCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-      this.oneFileCheckBox.Location = new System.Drawing.Point(15, 44);
+      this.oneFileCheckBox.Location = new System.Drawing.Point(15, 88);
       this.oneFileCheckBox.Name = "oneFileCheckBox";
       this.oneFileCheckBox.Size = new System.Drawing.Size(102, 17);
       this.oneFileCheckBox.TabIndex = 5;
       this.oneFileCheckBox.Text = "Save as one file";
       this.oneFileCheckBox.UseVisualStyleBackColor = true;
       // 
+      // label2
+      // 
+      this.label2.AutoSize = true;
+      this.label2.Location = new System.Drawing.Point(15, 44);
+      this.label2.Name = "label2";
+      this.label2.Size = new System.Drawing.Size(85, 13);
+      this.label2.TabIndex = 6;
+      this.label2.Text = "Output directory:";
+      // 
+      // outputDirectoryTextBox
+      // 
+      this.outputDirectoryTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.outputDirectoryTextBox.Location = new System.Drawing.Point(152, 38);
+      this.outputDirectoryTextBox.Name = "outputDirectoryTextBox";
+      this.outputDirectoryTextBox.Size = new System.Drawing.Size(595, 20);
+      this.outputDirectoryTextBox.TabIndex = 7;
+      // 
+      // browseOutputPathButton
+      // 
+      this.browseOutputPathButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.browseOutputPathButton.Location = new System.Drawing.Point(753, 37);
+      this.browseOutputPathButton.Name = "browseOutputPathButton";
+      this.browseOutputPathButton.Size = new System.Drawing.Size(75, 22);
+      this.browseOutputPathButton.TabIndex = 8;
+      this.browseOutputPathButton.Text = "Browse";
+      this.browseOutputPathButton.UseVisualStyleBackColor = true;
+      this.browseOutputPathButton.Click += new System.EventHandler(this.browseOutputPathButton_Click);
+      // 
+      // listJobsButton
+      // 
+      this.listJobsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.listJobsButton.Location = new System.Drawing.Point(670, 82);
+      this.listJobsButton.Name = "listJobsButton";
+      this.listJobsButton.Size = new System.Drawing.Size(77, 23);
+      this.listJobsButton.TabIndex = 9;
+      this.listJobsButton.Text = "List Jobs";
+      this.listJobsButton.UseVisualStyleBackColor = true;
+      this.listJobsButton.Click += new System.EventHandler(this.listJobsButton_Click);
+      // 
       // HiveDrainMainWindow
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.ClientSize = new System.Drawing.Size(842, 447);
+      this.Controls.Add(this.listJobsButton);
+      this.Controls.Add(this.browseOutputPathButton);
+      this.Controls.Add(this.outputDirectoryTextBox);
+      this.Controls.Add(this.label2);
       this.Controls.Add(this.oneFileCheckBox);
       this.Controls.Add(this.logView);
       this.Controls.Add(this.downloadButton);
@@ -111,5 +159,9 @@
     private System.Windows.Forms.Button downloadButton;
     private HeuristicLab.Core.Views.LogView logView;
     private System.Windows.Forms.CheckBox oneFileCheckBox;
+    private System.Windows.Forms.Label label2;
+    private System.Windows.Forms.TextBox outputDirectoryTextBox;
+    private System.Windows.Forms.Button browseOutputPathButton;
+    private System.Windows.Forms.Button listJobsButton;
   }
 }

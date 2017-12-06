@@ -31,7 +31,12 @@ namespace HeuristicLab.HiveDrain {
       logView.Content = Log;
       downloadButton.Enabled = false;
 
-      JobDownloader jobDownloader = new JobDownloader(Environment.CurrentDirectory, pattern, Log, oneFileCheckBox.Checked);
+      var directory = outputDirectoryTextBox.Text;
+
+      if (string.IsNullOrEmpty(directory))
+        directory = Environment.CurrentDirectory;
+
+      JobDownloader jobDownloader = new JobDownloader(directory, pattern, Log, oneFileCheckBox.Checked);
       task = new System.Threading.Tasks.Task(jobDownloader.Start);
       task.ContinueWith(x => { Log.LogMessage("All tasks written, quitting."); EnableButton(); }, TaskContinuationOptions.OnlyOnRanToCompletion);
       task.ContinueWith(x => { Log.LogMessage("Unexpected Exception while draining the Hive: " + x.Exception.ToString()); EnableButton(); }, TaskContinuationOptions.OnlyOnFaulted);
@@ -50,6 +55,25 @@ namespace HeuristicLab.HiveDrain {
       foreach (var job in jobs) {
         Log.LogMessage(string.Format("{0}\t{1}", job.DateCreated, job.Name));
       }
+    }
+
+    private void browseOutputPathButton_Click(object sender, EventArgs e) {
+      var path = string.Empty;
+
+      var dialog = new FolderBrowserDialog {
+        RootFolder = Environment.SpecialFolder.MyComputer
+      };
+
+      if (dialog.ShowDialog() == DialogResult.OK) {
+        path = dialog.SelectedPath;
+      }
+
+      if (!string.IsNullOrEmpty(path))
+        outputDirectoryTextBox.Text = path;
+    }
+
+    private void listJobsButton_Click(object sender, EventArgs e) {
+      ListHiveJobs();
     }
   }
 }

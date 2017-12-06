@@ -28,6 +28,7 @@ using HeuristicLab.Clients.Hive.Jobs;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
+using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.HiveDrain {
   public class JobTaskOneFileDownloader {
@@ -69,7 +70,7 @@ namespace HeuristicLab.HiveDrain {
       results = new RunCollection();
 
       var allTasks = HiveServiceLocator.Instance.CallHiveService(s => s.GetLightweightJobTasksWithoutStateLog(ParentJob.Id));
-      var totalJobCount = allTasks.Count();
+      var totalJobCount = allTasks.Count;
       var optimizers = new List<IOptimizer>();
       var finishedCount = -1;
       using (var downloader = new TaskDownloader(allTasks.Select(x => x.Id))) {
@@ -113,6 +114,10 @@ namespace HeuristicLab.HiveDrain {
         storable = optimizer as IStorableContent;
       }
       if (storable != null) {
+        // remove duplicate datasets
+        log.LogMessage("Removing duplicate datasets...");
+        DatasetUtil.RemoveDuplicateDatasets(storable);
+
         log.LogMessage(string.Format("Save job as {0}", RootLocation));
         ContentManager.Save(storable, RootLocation, true);
       } else {
