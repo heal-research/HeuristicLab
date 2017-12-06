@@ -261,7 +261,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       var interpreter = new SymbolicDataAnalysisExpressionTreeLinearInterpreter();
 
       SymbolicRegressionConstantOptimizationEvaluator.OptimizeConstants(interpreter, tree, problemData, problemData.TrainingIndices,
-        applyLinearScaling: false, maxIterations: maxIterations,
+        applyLinearScaling: true, maxIterations: maxIterations,
         updateVariableWeights: false, updateConstantsInTree: true);
 
       var scaledModel = new SymbolicRegressionModel(problemData.TargetVariable, tree, (ISymbolicDataAnalysisExpressionTreeInterpreter)interpreter.Clone());
