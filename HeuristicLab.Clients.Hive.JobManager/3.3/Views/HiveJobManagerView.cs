@@ -60,14 +60,17 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       base.DeregisterContentEvents();
     }
 
-    protected override void OnContentChanged() {
+    protected async override void OnContentChanged() {
       base.OnContentChanged();
       if (Content == null) {
         hiveExperimentListView.Content = null;
       } else {
         hiveExperimentListView.Content = Content.Jobs;
-        if (Content != null)
-          Content.RefreshAsync(new Action<Exception>((Exception ex) => HandleServiceException(ex)));
+        try {
+          await System.Threading.Tasks.Task.Run(() => Content.Refresh());
+        } catch (Exception ex) {
+          HandleServiceException(ex);
+        }
       }
     }
 
@@ -97,8 +100,12 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       }
     }
 
-    private void refreshButton_Click(object sender, EventArgs e) {
-      Content.RefreshAsync(new Action<Exception>((Exception ex) => HandleServiceException(ex)));
+    private async void refreshButton_Click(object sender, EventArgs e) {
+      try {
+        await System.Threading.Tasks.Task.Run(() => Content.Refresh());
+      } catch (Exception ex) {
+        HandleServiceException(ex);
+      }
     }
 
     private void HandleServiceException(Exception ex) {
