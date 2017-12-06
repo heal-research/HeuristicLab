@@ -319,10 +319,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
       TestPartition.Start = classificationProblemData.TestPartition.Start;
       TestPartition.End = classificationProblemData.TestPartition.End;
 
-      PositiveClass = classificationProblemData.PositiveClass;
-
       for (int i = 0; i < classificationProblemData.ClassNames.Count(); i++)
         ClassNamesParameter.Value[i, 0] = classificationProblemData.ClassNames.ElementAt(i);
+
+      PositiveClass = classificationProblemData.PositiveClass;
 
       for (int i = 0; i < Classes; i++) {
         for (int j = 0; j < Classes; j++) {
