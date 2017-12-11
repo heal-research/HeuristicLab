@@ -128,7 +128,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       Parameters.Add(new FixedValueParameter<IntValue>(SeedParameterName, "The PRNG seed value.", new IntValue()));
       Parameters.Add(new FixedValueParameter<BoolValue>(SetSeedRandomlyParameterName, "Switch to determine if the random number seed should be initialized randomly.", new BoolValue(true)));
       Parameters.Add(new FixedValueParameter<BoolValue>(InitParamsRandomlyParameterName, "Switch to determine if the real-valued model parameters should be initialized randomly in each restart.", new BoolValue(false)));
-      Parameters.Add(new FixedValueParameter<BoolValue>(ApplyLinearScalingParameterName, " Switch to determine if linear scaling terms should be added to the model", new BoolValue(true)));
+      Parameters.Add(new FixedValueParameter<BoolValue>(ApplyLinearScalingParameterName, "Switch to determine if linear scaling terms should be added to the model", new BoolValue(true)));
 
       SetParameterHiddenState();
 
@@ -157,7 +157,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       if (!Parameters.ContainsKey(InitParamsRandomlyParameterName))
         Parameters.Add(new FixedValueParameter<BoolValue>(InitParamsRandomlyParameterName, "Switch to determine if the numeric parameters of the model should be initialized randomly.", new BoolValue(false)));
       if (!Parameters.ContainsKey(ApplyLinearScalingParameterName))
-        Parameters.Add(new FixedValueParameter<BoolValue>(ApplyLinearScalingParameterName, " Switch to determine if linear scaling terms should be added to the model", new BoolValue(true)));
+        Parameters.Add(new FixedValueParameter<BoolValue>(ApplyLinearScalingParameterName, "Switch to determine if linear scaling terms should be added to the model", new BoolValue(true)));
 
 
       SetParameterHiddenState();
