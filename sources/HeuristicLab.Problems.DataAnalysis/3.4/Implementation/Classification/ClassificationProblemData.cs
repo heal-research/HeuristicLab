@@ -322,6 +322,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       for (int i = 0; i < classificationProblemData.ClassNames.Count(); i++)
         ClassNamesParameter.Value[i, 0] = classificationProblemData.ClassNames.ElementAt(i);
 
+      //mkommend: The positive class depends on the class names and as a result must only be set after the classe names parameter.
       PositiveClass = classificationProblemData.PositiveClass;
 
       for (int i = 0; i < Classes; i++) {
