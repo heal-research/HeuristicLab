@@ -1,0 +1,34 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="HeuristicLab.Clients.Hive" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="MaxParallelUploads" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">2</Value>
+    </Setting>
+    <Setting Name="HLBinaryName" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">HeuristicLab 3.3.exe</Value>
+    </Setting>
+    <Setting Name="ResultPollingInterval" Type="System.TimeSpan" Scope="Application">
+      <Value Profile="(Default)">00:00:20</Value>
+    </Setting>
+    <Setting Name="MaxParallelDownloads" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">2</Value>
+    </Setting>
+    <Setting Name="MaxRepeatServiceCalls" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">5</Value>
+    </Setting>
+    <Setting Name="AnonymousUserName" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">anonymous</Value>
+    </Setting>
+    <Setting Name="MaxEndpointRetries" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">3</Value>
+    </Setting>
+    <Setting Name="EndpointConfigurationPriorities" Type="System.Collections.Specialized.StringCollection" Scope="Application">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;string&gt;NetBinding_IHiveService&lt;/string&gt;
+  &lt;string&gt;WSHttpBinding_IHiveService&lt;/string&gt;
+&lt;/ArrayOfString&gt;</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

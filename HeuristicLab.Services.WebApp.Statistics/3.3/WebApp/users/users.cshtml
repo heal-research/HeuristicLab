@@ -1,0 +1,56 @@
+﻿@using HeuristicLab.Services.Access.DataTransfer
+@using HeuristicLab.Services.Hive
+@if (Request.IsAuthenticated && User.IsInRole(HiveRoles.Administrator)) {
+<header class="view-header">
+    <ul class="nav nav-list nav-list-topbar pull-left">
+        <li>
+            <a ng-href="#/statistics/jobs">Jobs</a>
+        </li>
+        <li class="active">
+            <a ng-href="#/statistics/users">Users</a>
+        </li>
+        <li>
+            <a ng-href="#/statistics/clients">Clients</a>
+        </li>
+        <li>
+            <a ng-href="#/statistics/groups">Groups</a>
+        </li>
+        <li>
+            <a ng-href="#/statistics/exceptions">Exceptions</a>
+        </li>
+    </ul>
+</header>
+
+<div class="default-view-container">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Users</h3>
+                </div>
+                <div class="panel-body">
+                    <table class="table table-hover table-condensed" ts-wrapper>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th ts-criteria="Name">Username</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tr ng-repeat="user in users" ts-repeat>
+                            <td>{{$index + 1}}</td>
+                            <td>{{user.Name}}</td>
+                            <td>
+                                <a ng-href="#/statistics/users/{{user.Id}}">Details</a>
+                            </td>
+                        </tr>
+                        <tr ng-hide="users.length">
+                            <td colspan="4" class="text-center">No users found!</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+}

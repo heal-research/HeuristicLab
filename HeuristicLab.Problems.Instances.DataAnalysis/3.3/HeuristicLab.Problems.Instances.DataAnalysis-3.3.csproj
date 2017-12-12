@@ -1,0 +1,332 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{94C7714E-29D4-4D6D-B213-2C18D627AB75}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>HeuristicLab.Problems.Instances.DataAnalysis</RootNamespace>
+    <AssemblyName>HeuristicLab.Problems.Instances.DataAnalysis-3.3</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+    <LangVersion>5</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+    <LangVersion>5</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>HeuristicLab.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\..\bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <CodeAnalysisLogFile>..\..\bin\HeuristicLab.Problems.Instances.DataAnalysis-3.3.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <Prefer32Bit>false</Prefer32Bit>
+    <LangVersion>5</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>..\..\bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <CodeAnalysisLogFile>..\..\bin\HeuristicLab.Problems.Instances.DataAnalysis-3.3.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <Prefer32Bit>false</Prefer32Bit>
+    <LangVersion>5</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\..\bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <CodeAnalysisLogFile>..\..\bin\HeuristicLab.Problems.Instances.DataAnalysis-3.3.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <Prefer32Bit>false</Prefer32Bit>
+    <LangVersion>5</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>..\..\bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <CodeAnalysisLogFile>..\..\bin\HeuristicLab.Problems.Instances.DataAnalysis-3.3.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <Prefer32Bit>false</Prefer32Bit>
+    <LangVersion>5</LangVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="ALGLIB-3.7.0, Version=3.7.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\ALGLIB-3.7.0.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Classification\ArtificialClassificationDataDescriptor.cs" />
+    <Compile Include="Classification\ArtificialClassificationInstanceProvider.cs" />
+    <Compile Include="Classification\ClassificationImportType.cs" />
+    <Compile Include="Classification\ClassificationInstanceProvider.cs" />
+    <Compile Include="Classification\CSV\ClassifiactionCSVInstanceProvider.cs" />
+    <Compile Include="Classification\ResourceClassificationDataDescriptor.cs" />
+    <Compile Include="Classification\ResourceClassificationInstanceProvider.cs" />
+    <Compile Include="Classification\UCI\WisconsinDiagnosticBreastCancer.cs" />
+    <Compile Include="Classification\UCI\Vertebral_3C.cs" />
+    <Compile Include="Classification\UCI\Parkinsons.cs" />
+    <Compile Include="Classification\UCI\Iris.cs" />
+    <Compile Include="Classification\UCI\UCIDataDescriptor.cs" />
+    <Compile Include="Classification\UCI\Mammography.cs" />
+    <Compile Include="Classification\UCI\Thyroid.cs" />
+    <Compile Include="Classification\UCI\UCIInstanceProvider.cs" />
+    <Compile Include="Classification\UCI\Wine.cs" />
+    <Compile Include="Clustering\ClusteringInstanceProvider.cs" />
+    <Compile Include="Clustering\CSV\ClusteringCSVInstanceProvider.cs" />
+    <Compile Include="DataAnalysisCSVFormat.cs" />
+    <Compile Include="DataAnalysisImportType.cs" />
+    <Compile Include="DataAnalysisInstanceProvider.cs" />
+    <Compile Include="Plugin.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Classification\ClassificationDataDescriptor.cs" />
+    <Compile Include="Regression\ArtificialRegressionDataDescriptor.cs" />
+    <Compile Include="Regression\ArtificialRegressionInstanceProvider.cs" />
+    <Compile Include="Regression\CSV\RegressionCSVInstanceProvider.cs" />
+    <Compile Include="Regression\FeatureSelection\FeatureSelectionRegressionProblemData.cs" />
+    <Compile Include="Regression\FeatureSelection\FeatureSelection.cs" />
+    <Compile Include="Regression\FeatureSelection\FeatureSelectionInstanceProvider.cs" />
+    <Compile Include="Regression\MibaFriction\CF3.cs" />
+    <Compile Include="Regression\MibaFriction\Wear1.cs" />
+    <Compile Include="Regression\MibaFriction\Wear2.cs" />
+    <Compile Include="Regression\MibaFriction\Temp2.cs" />
+    <Compile Include="Regression\MibaFriction\Temp1.cs" />
+    <Compile Include="Regression\MibaFriction\NvhRating.cs" />
+    <Compile Include="Regression\MibaFriction\CF4.cs" />
+    <Compile Include="Regression\MibaFriction\CF2.cs" />
+    <Compile Include="Regression\MibaFriction\CF1.cs" />
+    <Compile Include="Regression\MibaFriction\MibaFrictionRegressionInstanceProvider.cs" />
+    <Compile Include="Regression\VariableNetworks\LinearVariableNetwork.cs" />
+    <Compile Include="Regression\VariableNetworks\GaussianProcessVariableNetwork.cs" />
+    <Compile Include="Regression\VariableNetworks\VariableNetwork.cs" />
+    <Compile Include="Regression\VariableNetworks\VariableNetworkInstanceProvider.cs" />
+    <Compile Include="Regression\Keijzer\KeijzerFunctionFourteen.cs" />
+    <Compile Include="Regression\Keijzer\KeijzerFunctionEleven.cs" />
+    <Compile Include="Regression\Keijzer\KeijzerFunctionFive.cs" />
+    <Compile Include="Regression\Keijzer\KeijzerFunctionEight.cs" />
+    <Compile Include="Regression\Keijzer\KeijzerFunctionFifteen.cs" />
+    <Compile Include="Regression\Keijzer\KeijzerFunctionFour.cs" />
+    <Compile Include="Regression\Keijzer\KeijzerFunctionNine.cs" />
+    <Compile Include="Regression\Keijzer\KeijzerFunctionOne.cs" />
+    <Compile Include="Regression\Keijzer\KeijzerFunctionSeven.cs" />
+    <Compile Include="Regression\Keijzer\KeijzerFunctionSix.cs" />
+    <Compile Include="Regression\Keijzer\KeijzerFunctionTen.cs" />
+    <Compile Include="Regression\Keijzer\KeijzerFunctionThirteen.cs" />
+    <Compile Include="Regression\Keijzer\KeijzerFunctionThree.cs" />
+    <Compile Include="Regression\Keijzer\KeijzerFunctionTwelve.cs" />
+    <Compile Include="Regression\Keijzer\KeijzerFunctionTwo.cs" />
+    <Compile Include="Regression\Keijzer\KeijzerInstanceProvider.cs" />
+    <Compile Include="Regression\Korns\KornsFunctionEight.cs" />
+    <Compile Include="Regression\Korns\KornsFunctionEleven.cs" />
+    <Compile Include="Regression\Korns\KornsFunctionFive.cs" />
+    <Compile Include="Regression\Korns\KornsFunctionFifteen.cs" />
+    <Compile Include="Regression\Korns\KornsFunctionFour.cs" />
+    <Compile Include="Regression\Korns\KornsFunctionFourteen.cs" />
+    <Compile Include="Regression\Korns\KornsFunctionNine.cs" />
+    <Compile Include="Regression\Korns\KornsFunctionOne.cs" />
+    <Compile Include="Regression\Korns\KornsFunctionSeven.cs" />
+    <Compile Include="Regression\Korns\KornsFunctionSix.cs" />
+    <Compile Include="Regression\Korns\KornsFunctionTen.cs" />
+    <Compile Include="Regression\Korns\KornsFunctionThirteen.cs" />
+    <Compile Include="Regression\Korns\KornsFunctionThree.cs" />
+    <Compile Include="Regression\Korns\KornsFunctionTwelve.cs" />
+    <Compile Include="Regression\Korns\KornsFunctionTwo.cs" />
+    <Compile Include="Regression\Korns\KornsInstanceProvider.cs" />
+    <Compile Include="Regression\Friedman\FriedmanRandomFunction.cs" />
+    <Compile Include="Regression\Friedman\FriedmanRandomFunctionInstanceProvider.cs" />
+    <Compile Include="Regression\Nguyen\NguyenFunctionEight.cs" />
+    <Compile Include="Regression\Nguyen\NguyenFunctionEleven.cs" />
+    <Compile Include="Regression\Nguyen\NguyenFunctionFive.cs" />
+    <Compile Include="Regression\Nguyen\NguyenFunctionFour.cs" />
+    <Compile Include="Regression\Nguyen\NguyenFunctionNine.cs" />
+    <Compile Include="Regression\Nguyen\NguyenFunctionOne.cs" />
+    <Compile Include="Regression\Nguyen\NguyenFunctionSeven.cs" />
+    <Compile Include="Regression\Nguyen\NguyenFunctionSix.cs" />
+    <Compile Include="Regression\Nguyen\NguyenFunctionTen.cs" />
+    <Compile Include="Regression\Nguyen\NguyenFunctionThree.cs" />
+    <Compile Include="Regression\Nguyen\NguyenFunctionTwelve.cs" />
+    <Compile Include="Regression\Nguyen\NguyenFunctionTwo.cs" />
+    <Compile Include="Regression\Nguyen\NguyenInstanceProvider.cs" />
+    <Compile Include="Regression\RealWorld\ChemicalOne.cs" />
+    <Compile Include="Regression\RealWorld\Powermeter.cs" />
+    <Compile Include="Regression\RealWorld\Housing.cs" />
+    <Compile Include="Regression\RealWorld\RealWorldRegressionInstanceProvider.cs" />
+    <Compile Include="Regression\RealWorld\SARCOS.cs" />
+    <Compile Include="Regression\RealWorld\Tower.cs" />
+    <Compile Include="Regression\RegressionDataDescriptor.cs" />
+    <Compile Include="Regression\RegressionImportType.cs" />
+    <Compile Include="Regression\RegressionInstanceProvider.cs" />
+    <Compile Include="Regression\ResourceRegressionDataDescriptor.cs" />
+    <Compile Include="Regression\ResourceRegressionInstanceProvider.cs" />
+    <Compile Include="Regression\ValueGenerator.cs" />
+    <Compile Include="Regression\Various\BreimanOne.cs" />
+    <Compile Include="Regression\Various\FriedmanTwo.cs" />
+    <Compile Include="Regression\Various\FriedmanOne.cs" />
+    <Compile Include="Regression\Various\PolyTen.cs" />
+    <Compile Include="Regression\Various\SpatialCoevolution.cs" />
+    <Compile Include="Regression\Various\VariousInstanceProvider.cs" />
+    <Compile Include="Regression\Vladislavleva\KotanchekFunction.cs" />
+    <Compile Include="Regression\Vladislavleva\RationalPolynomialThreeDimensional.cs" />
+    <Compile Include="Regression\Vladislavleva\RationalPolynomialTwoDimensional.cs" />
+    <Compile Include="Regression\Vladislavleva\RippleFunction.cs" />
+    <Compile Include="Regression\Vladislavleva\SalutowiczFunctionOneDimensional.cs" />
+    <Compile Include="Regression\Vladislavleva\SalutowiczFunctionTwoDimensional.cs" />
+    <Compile Include="Regression\Vladislavleva\SineCosineFunction.cs" />
+    <Compile Include="Regression\Vladislavleva\UnwrappedBallFunctionFiveDimensional.cs" />
+    <Compile Include="Regression\Vladislavleva\VladislavlevaInstanceProvider.cs" />
+    <Compile Include="TableFileParser.cs" />
+    <Compile Include="TimeSeries\CSV\TimeSeriesPrognosisCSVInstanceProvider.cs" />
+    <Compile Include="TimeSeries\TimeSeriesPrognosisImportType.cs" />
+    <Compile Include="TimeSeries\TimeSeriesPrognosisInstanceProvider.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Classification\Data\UCI.zip" />
+    <None Include="HeuristicLab.snk" />
+    <None Include="Plugin.cs.frame" />
+    <None Include="Properties\AssemblyInfo.cs.frame" />
+    <EmbeddedResource Include="Regression\Data\RegressionRealWorld.zip" />
+    <EmbeddedResource Include="Regression\Data\MibaFriction.zip" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">
+      <Project>{958B43BC-CC5C-4FA2-8628-2B3B01D890B6}</Project>
+      <Name>HeuristicLab.Collections-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Common\3.3\HeuristicLab.Common-3.3.csproj">
+      <Project>{A9AD58B9-3EF9-4CC1-97E5-8D909039FF5C}</Project>
+      <Name>HeuristicLab.Common-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Core\3.3\HeuristicLab.Core-3.3.csproj">
+      <Project>{C36BD924-A541-4A00-AFA8-41701378DDC5}</Project>
+      <Name>HeuristicLab.Core-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Data\3.3\HeuristicLab.Data-3.3.csproj">
+      <Project>{BBAB9DF5-5EF3-4BA8-ADE9-B36E82114937}</Project>
+      <Name>HeuristicLab.Data-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Parameters\3.3\HeuristicLab.Parameters-3.3.csproj">
+      <Project>{56F9106A-079F-4C61-92F6-86A84C2D84B7}</Project>
+      <Name>HeuristicLab.Parameters-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Persistence\3.3\HeuristicLab.Persistence-3.3.csproj">
+      <Project>{102BC7D3-0EF9-439C-8F6D-96FF0FDB8E1B}</Project>
+      <Name>HeuristicLab.Persistence-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\3.3\HeuristicLab.PluginInfrastructure-3.3.csproj">
+      <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
+      <Name>HeuristicLab.PluginInfrastructure-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Problems.DataAnalysis\3.4\HeuristicLab.Problems.DataAnalysis-3.4.csproj">
+      <Project>{DF87C13E-A889-46FF-8153-66DCAA8C5674}</Project>
+      <Name>HeuristicLab.Problems.DataAnalysis-3.4</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Problems.Instances\3.3\HeuristicLab.Problems.Instances-3.3.csproj">
+      <Project>{3540E29E-4793-49E7-8EE2-FEA7F61C3994}</Project>
+      <Name>HeuristicLab.Problems.Instances-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Random\3.3\HeuristicLab.Random-3.3.csproj">
+      <Project>{F4539FB6-4708-40C9-BE64-0A1390AEA197}</Project>
+      <Name>HeuristicLab.Random-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
+set ProjectDir=$(ProjectDir)
+set SolutionDir=$(SolutionDir)
+set Outdir=$(Outdir)
+
+call PreBuildEvent.cmd</PreBuildEvent>
+    <PreBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">
+export ProjectDir=$(ProjectDir)
+export SolutionDir=$(SolutionDir)
+
+$SolutionDir/PreBuildEvent.sh
+</PreBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

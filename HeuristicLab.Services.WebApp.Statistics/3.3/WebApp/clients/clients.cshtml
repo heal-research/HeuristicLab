@@ -1,0 +1,123 @@
+﻿@using HeuristicLab.Services.Access.DataTransfer
+@using HeuristicLab.Services.Hive
+<header class="view-header">
+    <ul class="nav nav-list nav-list-topbar pull-left">
+        <li>
+            <a ng-href="#/statistics/jobs">Jobs</a>
+        </li>
+        @if (Request.IsAuthenticated && User.IsInRole(HiveRoles.Administrator)) {
+            <li>
+                <a ng-href="#/statistics/users">Users</a>
+            </li>
+        }
+        <li class="active">
+            <a ng-href="#/statistics/clients">Clients</a>
+        </li>
+        <li>
+            <a ng-href="#/statistics/groups">Groups</a>
+        </li>
+        @if (Request.IsAuthenticated && User.IsInRole(HiveRoles.Administrator)) {
+            <li>
+                <a ng-href="#/statistics/exceptions">Exceptions</a>
+            </li>
+        }
+    </ul>
+</header>
+
+<div class="default-view-container">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Current Clients</h3>
+                </div>
+                <div class="panel-body">
+                    <table class="table table-hover table-condensed" ts-wrapper>
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th ts-criteria="Name">Client Name</th>
+                            <th ts-criteria="GroupName">Group Name</th>
+                            <th ts-criteria="UsedCores">Cores</th>
+                            <th ts-criteria="CpuUtilization">Cpu Utilization</th>
+                            <th ts-criteria="UsedMemory">Memory</th>
+                            <th ts-criteria="State">State</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tr ng-repeat="client in clientPage.Clients" ts-repeat>
+                            <td>{{($index + 1)+((curClientsPage-1)*(clientsPageSize))}}</td>
+                            <td>{{client.Name}}</td>
+                            <td>
+                                <a ng-show="client.GroupName" ng-href="#/statistics/groups/{{client.GroupId}}">{{client.GroupName}}</a>
+                                <span ng-hide="client.GroupName">No Group</span>
+                            </td>
+                            <td>{{client.UsedCores}} / {{client.TotalCores}}</td>
+                            <td>{{client.CpuUtilization | number: 2}} %</td>
+                            <td>{{client.UsedMemory | kbToGB}} / {{client.TotalMemory | kbToGB}} GB</td>
+                            <td>{{client.State}}</td>
+                            <td>
+                                <a ng-href="#/statistics/clients/{{client.Id}}">Details</a>
+                            </td>
+                        </tr>
+                        <tr ng-hide="clientPage.Clients.length">
+                            <td colspan="7" class="text-center">No clients found!</td>
+                        </tr>
+                    </table>
+                    <div class="row text-center" ng-show="clientPage.TotalClients > clientPage.Clients.length">
+                        <pagination max-size="10" total-items="clientPage.TotalClients" ng-model="curClientsPage" ng-change="changeClientsPage()" items-per-page="clientsPageSize"
+                                    boundary-links="true" rotate="false" num-pages="numPages"></pagination>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Expired Clients</h3>
+                </div>
+                <div class="panel-body">
+                    <table class="table table-hover table-condensed" ts-wrapper>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th ts-criteria="Name">Client Name</th>
+                                <th ts-criteria="GroupName">Group Name</th>
+                                <th ts-criteria="UsedCores">Cores</th>
+                                <th ts-criteria="CpuUtilization">Cpu Utilization</th>
+                                <th ts-criteria="UsedMemory">Memory</th>
+                                <th ts-criteria="State">State</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tr ng-repeat="client in expiredClientPage.Clients" ts-repeat>
+                            <td>{{($index + 1)+((curExpiredClientsPage-1)*(expiredClientsPageSize))}}</td>
+                            <td>{{client.Name}}</td>
+                            <td>
+                                <span ng-show="client.GroupName">{{client.GroupName}}</span>
+                                <span ng-hide="client.GroupName">No Group</span>
+                            </td>
+                            <td>{{client.UsedCores}} / {{client.TotalCores}}</td>
+                            <td>{{client.CpuUtilization | number: 2}} %</td>
+                            <td>{{client.UsedMemory | kbToGB}} / {{client.TotalMemory | kbToGB}} GB</td>
+                            <td>{{client.State}}</td>
+                            <td>
+                                <a ng-href="#/statistics/clients/{{client.Id}}">Details</a>
+                            </td>
+                        </tr>
+                        <tr ng-hide="expiredClientPage.Clients.length">
+                            <td colspan="7" class="text-center">No expired clients found!</td>
+                        </tr>
+                    </table>
+                    <div class="row text-center" ng-show="expiredClientPage.TotalClients > expiredClientPage.Clients.length">
+                        <pagination max-size="10" total-items="expiredClientPage.TotalClients" ng-model="curExpiredClientsPage" ng-change="changeExpiredClientsPage()" items-per-page="expiredClientsPageSize"
+                                    boundary-links="true" rotate="false" num-pages="numPages"></pagination>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

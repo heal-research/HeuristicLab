@@ -1,0 +1,70 @@
+﻿@using HeuristicLab.Services.Access.DataTransfer
+@using HeuristicLab.Services.Hive
+<header class="view-header">
+    <ul class="nav nav-list nav-list-topbar pull-left">
+        <li>
+            <a ng-href="#/statistics/jobs">Jobs</a>
+        </li>
+        @if (Request.IsAuthenticated && User.IsInRole(HiveRoles.Administrator)) {
+            <li>
+                <a ng-href="#/statistics/users">Users</a>
+            </li>
+        }
+        <li>
+            <a ng-href="#/statistics/clients">Clients</a>
+        </li>
+        <li class="active">
+            <a ng-href="#/statistics/groups">Groups</a>
+        </li> 
+        @if (Request.IsAuthenticated && User.IsInRole(HiveRoles.Administrator)) {
+            <li>
+                <a ng-href="#/statistics/exceptions">Exceptions</a>
+            </li>
+        }
+    </ul>
+</header>
+
+<div class="default-view-container">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Groups</h3>
+                </div>
+                <div class="panel-body">
+                    <table class="table table-hover table-condensed" ts-wrapper>
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th ts-criteria="Name">Group Name</th>
+                            <th ts-criteria="UsedCores">Cores</th>
+                            <th ts-criteria="CpuUtilization">Cpu Utilization</th>
+                            <th ts-criteria="UsedMemory">Memory</th>
+                            <th ts-criteria="OnlineClients">Clients</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tr ng-repeat="group in groupPage.Groups" ts-repeat>
+                            <td>{{($index + 1)+((curGroupsPage-1)*(groupsPageSize))}}</td>
+                            <td>{{group.Name}}</td>
+                            <td>{{group.UsedCores}} / {{group.TotalCores}}</td>
+                            <td>{{group.CpuUtilization | number: 2}} %</td>
+                            <td>{{group.UsedMemory | kbToGB}} / {{group.TotalMemory | kbToGB}} GB</td>
+                            <td>{{group.OnlineClients}} / {{group.TotalClients}}</td>
+                            <td>
+                                <a ng-href="#/statistics/groups/{{group.Id}}">Details</a>
+                            </td>
+                        </tr>
+                        <tr ng-hide="groupPage.Groups.length">
+                            <td colspan="7" class="text-center">No groups found!</td>
+                        </tr>
+                    </table>
+                    <div class="row text-center" ng-show="groupPage.TotalGroups > groupPage.Groups.length">
+                        <pagination max-size="10" total-items="groupPage.TotalGroups" ng-model="curGroupsPage" ng-change="changeGroupsPage()" items-per-page="groupsPageSize"
+                                    boundary-links="true" rotate="false" num-pages="numPages"></pagination>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
