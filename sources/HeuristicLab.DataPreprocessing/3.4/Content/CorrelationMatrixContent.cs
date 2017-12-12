@@ -22,19 +22,20 @@
 using System.Drawing;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.DataPreprocessing {
   [Item("Feature Correlation Matrix", "Represents the feature correlation matrix.")]
-  public class CorrelationMatrixContent : Item, IViewShortcut {
+  [StorableClass]
+  public class CorrelationMatrixContent : PreprocessingContent, IViewShortcut {
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Gradient; }
     }
 
+    [Storable]
     public PreprocessingContext Context { get; private set; }
-    public ITransactionalPreprocessingData PreprocessingData {
-      get { return Context.Data; }
-    }
+
 
     public DataAnalysisProblemData ProblemData {
       get {
@@ -46,7 +47,9 @@ namespace HeuristicLab.DataPreprocessing {
       }
     }
 
-    public CorrelationMatrixContent(PreprocessingContext context) {
+    #region Constructor, Cloning & Persistence
+    public CorrelationMatrixContent(PreprocessingContext context)
+      : base(context.Data) {
       Context = context;
     }
 
@@ -54,10 +57,14 @@ namespace HeuristicLab.DataPreprocessing {
       : base(original, cloner) {
       Context = original.Context;
     }
-
     public override IDeepCloneable Clone(Cloner cloner) {
       return new CorrelationMatrixContent(this, cloner);
     }
+
+    [StorableConstructor]
+    protected CorrelationMatrixContent(bool deserializing)
+      : base(deserializing) { }
+    #endregion
 
     public event DataPreprocessingChangedEventHandler Changed {
       add { PreprocessingData.Changed += value; }

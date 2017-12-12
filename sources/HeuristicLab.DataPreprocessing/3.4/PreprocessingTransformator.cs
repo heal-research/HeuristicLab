@@ -28,14 +28,14 @@ using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.DataPreprocessing {
   public class PreprocessingTransformator {
-    private readonly ITransactionalPreprocessingData preprocessingData;
+    private readonly IPreprocessingData preprocessingData;
 
     private readonly IDictionary<string, IList<double>> originalColumns;
 
     private readonly IDictionary<string, string> renamedColumns;
 
     public PreprocessingTransformator(IPreprocessingData preprocessingData) {
-      this.preprocessingData = (ITransactionalPreprocessingData)preprocessingData;
+      this.preprocessingData = preprocessingData;
       originalColumns = new Dictionary<string, IList<double>>();
       renamedColumns = new Dictionary<string, string>();
     }
@@ -67,12 +67,10 @@ namespace HeuristicLab.DataPreprocessing {
         if (!success) {
           preprocessingData.Undo();
         }
-      }
-      catch (Exception e) {
+      } catch (Exception e) {
         preprocessingData.Undo();
         if (string.IsNullOrEmpty(errorMsg)) errorMsg = e.Message;
-      }
-      finally {
+      } finally {
         preprocessingData.EndTransaction();
       }
 

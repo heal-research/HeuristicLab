@@ -50,7 +50,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
         try {
           // TODO: Avoid accessing parent view
           var transformationView = (TransformationView)Parent;
-          var columnNames = transformationView.Content.Data.VariableNames;
+          var columnNames = transformationView.Content.PreprocessingData.VariableNames;
 
           return (ITransformation)typeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType(new[] { columnNames });
         } catch (Exception ex) {

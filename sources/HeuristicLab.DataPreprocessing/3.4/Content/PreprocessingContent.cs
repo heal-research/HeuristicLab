@@ -19,16 +19,31 @@
  */
 #endregion
 
-using System;
+
+using HeuristicLab.Common;
+using HeuristicLab.Core;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.DataPreprocessing {
-  public interface ITransactionalPreprocessingData : IPreprocessingData {
-    event DataPreprocessingChangedEventHandler Changed;
+  [Item("PreprocessingContent", "")]
+  [StorableClass]
+  public abstract class PreprocessingContent : Item {
 
-    bool IsUndoAvailable { get; }
-    void Undo();
-    void InTransaction(Action action, DataPreprocessingChangedEventType type = DataPreprocessingChangedEventType.Any);
-    void BeginTransaction(DataPreprocessingChangedEventType type);
-    void EndTransaction();
+    public IFilteredPreprocessingData PreprocessingData { get; private set; }
+
+    #region Constructor, Cloning & Persistence
+    protected PreprocessingContent(IFilteredPreprocessingData preprocessingData) {
+      PreprocessingData = preprocessingData;
+    }
+
+    protected PreprocessingContent(PreprocessingContent original, Cloner cloner)
+      : base(original, cloner) {
+      PreprocessingData = cloner.Clone(original.PreprocessingData);
+    }
+
+    [StorableConstructor]
+    protected PreprocessingContent(bool deserializing)
+      : base(deserializing) { }
+    #endregion
   }
 }

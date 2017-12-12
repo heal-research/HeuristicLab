@@ -19,36 +19,71 @@
  */
 #endregion
 
+using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.DataPreprocessing.Filter;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.DataPreprocessing {
   [Item("Filter", "Represents the filter grid.")]
-  public class FilterContent : Item, IViewShortcut {
+  [StorableClass]
+  public class FilterContent : PreprocessingContent, IViewShortcut {
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Filter; }
     }
-
-    public FilterLogic FilterLogic { get; private set; }
-
+    [Storable]
     public ICheckedItemCollection<IFilter> Filters { get; private set; }
 
+    [Storable]
     public bool IsAndCombination { get; set; }
 
-    public FilterContent(FilterLogic filterLogic) {
+    public IEnumerable<IFilter> ActiveFilters {
+      get { return Filters.Where(f => f.Active && f.ConstraintData != null); }
+    }
+
+    public bool[] GetRemainingRows() {
+      var remainingRows = new bool[PreprocessingData.Rows];
+      if (ActiveFilters.Any()) {
+        var filterResults = ActiveFilters.Select(f => f.Check()).ToList();
+        var rowFilterResults = new bool[filterResults.Count];
+        for (int row = 0; row < remainingRows.Length; row++) {
+          for (int i = 0; i < filterResults.Count; i++)
+            rowFilterResults[i] = filterResults[i][row];
+
+          remainingRows[row] = IsAndCombination
+            ? rowFilterResults.All(x => x)
+            : rowFilterResults.Any(x => x);
+        }
+      } else {
+        // if not filters active => all rows are remaining
+        for (int i = 0; i < remainingRows.Length; i++)
+          remainingRows[i] = true;
+      }
+      return remainingRows;
+    }
+
+    #region Constructor, Cloning & Persistence
+    public FilterContent(IFilteredPreprocessingData preprocessingData)
+      : base(preprocessingData) {
       Filters = new CheckedItemCollection<IFilter>();
       IsAndCombination = true;
-      FilterLogic = filterLogic;
     }
 
-    protected FilterContent(FilterContent content, Cloner cloner)
-      : base(content, cloner) {
+    protected FilterContent(FilterContent original, Cloner cloner)
+      : base(original, cloner) {
+      Filters = cloner.Clone(original.Filters);
+      IsAndCombination = original.IsAndCombination;
     }
-
     public override IDeepCloneable Clone(Cloner cloner) {
       return new FilterContent(this, cloner);
     }
+
+    [StorableConstructor]
+    protected FilterContent(bool deserializing)
+      : base(deserializing) { }
+    #endregion
   }
 }
