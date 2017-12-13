@@ -78,10 +78,10 @@ namespace HeuristicLab.Problems.BinPacking3D.Geometry {
       );
     }
 
-    public bool IsInside(PackingPosition pos, Tuple<int, int, int> rs) {
-      return X >= pos.X && X < pos.X + rs.Item1
-        && Y >= pos.Y && Y < pos.Y + rs.Item2
-        && Z >= pos.Z && Z < pos.Z + rs.Item3;
+    public bool IsInside(PackingPosition pos, ResidualSpace rs) {
+      return X >= pos.X && X < pos.X + rs.Width
+        && Y >= pos.Y && Y < pos.Y + rs.Height
+        && Z >= pos.Z && Z < pos.Z + rs.Depth;
     }
 
     public static int operator *(Vector3D a, Vector3D b) {

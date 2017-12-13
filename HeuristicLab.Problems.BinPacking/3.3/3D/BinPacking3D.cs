@@ -35,28 +35,33 @@ namespace HeuristicLab.Problems.BinPacking3D {
   public class BinPacking3D : BinPacking<PackingPosition, PackingShape, PackingItem> {
 
     [Storable]
-    public Dictionary<PackingPosition, Tuple<int, int, int>> ResidualSpace { get; set; }
+    public Dictionary<PackingPosition, ResidualSpace> ResidualSpaces { get; set; }
 
-
+    [Storable]
+    public SortedSet<PackingPosition> ExtremePoints { get; protected set; }
 
 
     public BinPacking3D(PackingShape binShape)
       : base(binShape) {
-      ResidualSpace = new Dictionary<PackingPosition, Tuple<int, int, int>>();
+      ExtremePoints = new SortedSet<PackingPosition>();
+      ResidualSpaces = new Dictionary<PackingPosition, ResidualSpace>();
       
       ExtremePoints.Add(binShape.Origin);
-      ResidualSpace.Add(binShape.Origin, new Tuple<int, int, int>(BinShape.Width, BinShape.Height, BinShape.Depth));
-
-//      AddExtremePoint(binShape.Origin);
+      ResidualSpaces.Add(binShape.Origin, new ResidualSpace(BinShape.Width, BinShape.Height, BinShape.Depth));
     }
+
     [StorableConstructor]
     protected BinPacking3D(bool deserializing) : base(deserializing) { }
+
     protected BinPacking3D(BinPacking3D original, Cloner cloner)
       : base(original, cloner) {
-      this.ResidualSpace = new Dictionary<PackingPosition, Tuple<int, int, int>>();
-      foreach (var o in original.ResidualSpace)
-        this.ResidualSpace.Add(cloner.Clone(o.Key), Tuple.Create(o.Value.Item1, o.Value.Item2, o.Value.Item3));
+      this.ResidualSpaces = new Dictionary<PackingPosition, ResidualSpace>();
+      foreach (var o in original.ResidualSpaces)
+        this.ResidualSpaces.Add(cloner.Clone(o.Key), ResidualSpace.Create(o.Value));
+
+      this.ExtremePoints = new SortedSet<PackingPosition>(original.ExtremePoints.Select(p => cloner.Clone(p)));
     }
+
     public override IDeepCloneable Clone(Cloner cloner) {
       return new BinPacking3D(this, cloner);
     }
@@ -66,8 +71,8 @@ namespace HeuristicLab.Problems.BinPacking3D {
     private void AfterDeserialization() {
       // BackwardsCompatibility3.3
       #region Backwards compatible code, remove with 3.4
-      if (ResidualSpace == null)
-        ResidualSpace = new Dictionary<PackingPosition, Tuple<int, int, int>>();
+      if (ResidualSpaces == null)
+        ResidualSpaces = new Dictionary<PackingPosition, ResidualSpace>();
       #endregion
     }
 
@@ -84,7 +89,7 @@ namespace HeuristicLab.Problems.BinPacking3D {
       Items[itemID] = item;
       Positions[itemID] = position;
       ExtremePoints.Remove(position);
-      ResidualSpace.Remove(position);
+      ResidualSpaces.Remove(position);
     }
 
     /*

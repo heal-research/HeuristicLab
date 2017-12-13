@@ -30,9 +30,12 @@ namespace HeuristicLab.Problems.BinPacking2D {
   [Item("BinPacking2D", "Represents a single-bin packing for a 2D bin-packing problem.")]
   [StorableClass]
   public class BinPacking2D : BinPacking.BinPacking<PackingPosition, PackingShape, PackingItem> {
+    [Storable]
+    public SortedSet<PackingPosition> ExtremePoints { get; protected set; }
 
     public BinPacking2D(PackingShape binShape)
       : base(binShape) {
+      ExtremePoints = new SortedSet<PackingPosition>();
       OccupationLayers = new Dictionary<int, List<int>>();
       ExtremePoints.Add(binShape.Origin);
       InitializeOccupationLayers();
@@ -45,6 +48,8 @@ namespace HeuristicLab.Problems.BinPacking2D {
       foreach (var kvp in original.OccupationLayers) {
         OccupationLayers.Add(kvp.Key, new List<int>(kvp.Value));
       }
+
+      this.ExtremePoints = new SortedSet<PackingPosition>(original.ExtremePoints.Select(p => cloner.Clone(p)));
     }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new BinPacking2D(this, cloner);

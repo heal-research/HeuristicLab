@@ -100,8 +100,8 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
       var residualSpacePoints = new List<Tuple<BinPacking3D, PackingPosition, int>>();
       foreach (BinPacking3D bp in packingList) {
         foreach (var ep in bp.ExtremePoints) {
-          var rs = bp.ResidualSpace[ep];
-          if (rs.Item1 < item.Width || rs.Item2 < item.Height || rs.Item3 < item.Depth) {
+          var rs = bp.ResidualSpaces[ep];
+          if (rs.Width < item.Width || rs.Height < item.Height || rs.Depth < item.Depth) {
             continue;
           }
           residualSpacePoints.Add(Tuple.Create(bp, ep, CalculateResidualMerit(rs, item, ep)));
@@ -117,10 +117,10 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
     /// <param name="item"></param>
     /// <param name="ep"></param>
     /// <returns></returns>
-    private static int CalculateResidualMerit(Tuple<int, int, int> rs, PackingItem item, PackingPosition ep) {
-      return ((rs.Item1 - item.Width) +
-          (rs.Item2 - item.Height) +
-          (rs.Item3 - item.Depth));
+    private static int CalculateResidualMerit(ResidualSpace rs, PackingItem item, PackingPosition ep) {
+      return ((rs.Width - item.Width) +
+          (rs.Height - item.Height) +
+          (rs.Depth - item.Depth));
     }
   }
 }

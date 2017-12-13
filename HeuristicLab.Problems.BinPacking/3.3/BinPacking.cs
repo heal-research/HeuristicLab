@@ -47,8 +47,7 @@ namespace HeuristicLab.Problems.BinPacking {
     [Storable]
     public TBin BinShape { get; private set; }
 
-    [Storable]
-    public SortedSet<TPos> ExtremePoints { get; protected set; }
+    
 
     public double PackingDensity {
       get {
@@ -70,7 +69,6 @@ namespace HeuristicLab.Problems.BinPacking {
       Positions = new ObservableDictionary<int, TPos>();
       Items = new ObservableDictionary<int, TItem>();
       BinShape = (TBin)binShape.Clone();
-      ExtremePoints = new SortedSet<TPos>();
     }
 
     [StorableConstructor]
@@ -87,7 +85,6 @@ namespace HeuristicLab.Problems.BinPacking {
         Items.Add(kvp.Key, cloner.Clone(kvp.Value));
       }
       this.BinShape = (TBin)original.BinShape.Clone(cloner);
-      this.ExtremePoints = new SortedSet<TPos>(original.ExtremePoints.Select(p => cloner.Clone(p)));
     }
     
     /// <summary>

@@ -79,10 +79,9 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
           $"Item: ({packingItem.Width} {packingItem.Depth} {packingItem.Height})");
       }
       packingBin.PackItem(itemId, packingItem, position);
-      extremePointCreator.UpdateExtremePoints(packingBin, packingItem, position);
-      extremePointCreator.UpdateResidualSpace(packingBin, packingItem, position);
+      extremePointCreator.UpdateBinPacking(packingBin, packingItem, position);
     }
-
+        
     /// <summary>
     /// This method tries to find a valid packing position for an given item in a given packing bin
     /// </summary>

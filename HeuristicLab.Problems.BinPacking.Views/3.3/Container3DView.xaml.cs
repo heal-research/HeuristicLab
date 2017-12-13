@@ -73,14 +73,14 @@ namespace HeuristicLab.Problems.BinPacking.Views {
 
     private Dictionary<int, DiffuseMaterial> materials;
 
-    public ObservableDictionary<BinPacking3D.PackingPosition, Tuple<int, int, int>> ResidualSpaces { get; set; }
+    public ObservableDictionary<BinPacking3D.PackingPosition, ResidualSpace> ResidualSpaces { get; set; }
     public ObservableCollection<BinPacking3D.PackingPosition> ExtremePoints { get; set; }
 
     public Container3DView() {
       InitializeComponent();
       camMain.Position = new Point3D(0.5, 3, 3); // for design time we use a different camera position 
       materials = new Dictionary<int, DiffuseMaterial>();
-      ResidualSpaces = new ObservableDictionary<BinPacking3D.PackingPosition, Tuple<int, int, int>>();
+      ResidualSpaces = new ObservableDictionary<BinPacking3D.PackingPosition, ResidualSpace>();
       ExtremePoints = new ObservableCollection<BinPacking3D.PackingPosition>();
       selectedExtremePointIndex = -1;
       Clear();
@@ -247,9 +247,9 @@ namespace HeuristicLab.Problems.BinPacking.Views {
           extremePoint.X,
           extremePoint.Y,
           extremePoint.Z,
-          rs.Item1,
-          rs.Item2,
-          rs.Item3);
+          rs.Width,
+          rs.Height,
+          rs.Depth);
 
       }
     }

@@ -74,8 +74,8 @@ namespace HeuristicLab.Problems.BinPacking.Views {
       foreach (var item in packing.Items) {
         itemSelection.Items.Add(item.Key);
       }
-      foreach (var ep in packing.ExtremePoints) {
-        var rs = ((BinPacking3D.BinPacking3D)packing).ResidualSpace[ep];
+      foreach (var ep in ((BinPacking3D.BinPacking3D)packing).ExtremePoints) {
+        var rs = ((BinPacking3D.BinPacking3D)packing).ResidualSpaces[ep];
         extremePointsSelection.Items.Add($"({ep.X}, {ep.Y}, {ep.Z})");
         packingPlan3D.ExtremePoints.Add(ep);
         packingPlan3D.ResidualSpaces.Add(ep, rs);

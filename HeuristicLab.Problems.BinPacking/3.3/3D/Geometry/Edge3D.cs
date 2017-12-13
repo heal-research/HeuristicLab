@@ -51,7 +51,7 @@ namespace HeuristicLab.Problems.BinPacking3D.Geometry {
     }
 
     /// <summary>
-    /// Returns a point where the two edges intersects.
+    /// Returns a point where two edges are intersecting.
     /// It returns null if they don't intersect.
     /// </summary>
     /// <param name="e1"></param>

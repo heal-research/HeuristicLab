@@ -129,6 +129,10 @@
     <Compile Include="3D\Instances\ThreeDInstanceParser.cs" />
     <Compile Include="3D\Encoding\IDecoder.cs" />
     <Compile Include="3D\Evaluators\IEvaluator.cs" />
+    <Compile Include="3D\ResidualSpace.cs" />
+    <Compile Include="3D\ResidualSpaceCalculation\IResidualSpaceCalculator.cs" />
+    <Compile Include="3D\ResidualSpaceCalculation\ResidualSpaceCalculator.cs" />
+    <Compile Include="3D\ResidualSpaceCalculation\ResidualSpaceCalculatorFactory.cs" />
     <Compile Include="3D\Sorting\IOperator.cs" />
     <Compile Include="3D\Evaluators\MoveEvaluatorBase.cs" />
     <Compile Include="3D\PackingItem.cs" />
