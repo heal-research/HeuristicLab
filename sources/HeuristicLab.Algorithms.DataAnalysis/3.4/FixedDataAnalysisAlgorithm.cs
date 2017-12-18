@@ -29,7 +29,7 @@ using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
-  public abstract class FixedDataAnalysisAlgorithm<T> : BasicAlgorithm where T : class, IDataAnalysisProblem {
+  public abstract class FixedDataAnalysisAlgorithm<T> : BasicAlgorithm, IDataAnalysisAlgorithm<T> where T : class, IDataAnalysisProblem {
     #region Properties
     public override Type ProblemType {
       get { return typeof(T); }

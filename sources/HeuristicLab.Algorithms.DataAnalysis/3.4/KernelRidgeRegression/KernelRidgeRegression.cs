@@ -35,7 +35,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   [Item("Kernel Ridge Regression", "Kernelized ridge regression e.g. for radial basis function (RBF) regression.")]
   [Creatable(CreatableAttribute.Categories.DataAnalysisRegression, Priority = 100)]
   [StorableClass]
-  public sealed class KernelRidgeRegression : BasicAlgorithm {
+  public sealed class KernelRidgeRegression : BasicAlgorithm, IDataAnalysisAlgorithm<IRegressionProblem> {
     private const string SolutionResultName = "Kernel ridge regression solution";
 
     public override bool SupportsPause {

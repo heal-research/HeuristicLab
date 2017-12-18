@@ -34,14 +34,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
     }
 
-    internal static IList<T> Swap<T>(this IList<T> list, int indexA, int indexB) {
+    internal static void Swap<T>(this IList<T> list, int indexA, int indexB) {
       var tmp = list[indexA];
       list[indexA] = list[indexB];
       list[indexB] = tmp;
-      return list;
     }
 
-    internal static int Partition<T>(this IList<T> list, int left, int right, int pivotindex, IComparer<T> comparer) {
+    private static int Partition<T>(this IList<T> list, int left, int right, int pivotindex, IComparer<T> comparer) {
       var pivotValue = list[pivotindex];
       list.Swap(pivotindex, right);
       var storeIndex = left;
@@ -66,12 +65,12 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     /// <param name="n">index around which the partial sorting occures</param>
     /// <param name="comparer">comparer for list elemnts </param>
     /// <returns></returns>
-    internal static T NthElement<T>(this IList<T> list, int left, int right, int n, IComparer<T> comparer) {
+    internal static void PartialSort<T>(this IList<T> list, int left, int right, int n, IComparer<T> comparer) {
       while (true) {
-        if (left == right) return list[left];
-        var pivotindex = left + (int)Math.Floor(new System.Random().Next() % (right - (double)left + 1));
+        if (left == right) return;
+        var pivotindex = left + (int) Math.Floor(new System.Random().Next() % (right - (double) left + 1));
         pivotindex = list.Partition(left, right, pivotindex, comparer);
-        if (n == pivotindex) return list[n];
+        if (n == pivotindex) return;
         if (n < pivotindex) right = pivotindex - 1;
         else left = pivotindex + 1;
       }
