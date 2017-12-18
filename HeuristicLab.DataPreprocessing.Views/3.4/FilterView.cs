@@ -20,7 +20,6 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Collections;
 using HeuristicLab.Core.Views;
@@ -43,82 +42,99 @@ namespace HeuristicLab.DataPreprocessing.Views {
       tbPercentage.Text = "0%";
     }
 
-    private void InitData() {
-      checkedFilterView.Content = Content.Filters;
-      checkedFilterView.Content.ItemsAdded += Content_ItemsAdded;
-      checkedFilterView.Content.ItemsRemoved += Content_ItemsRemoved;
-      checkedFilterView.Content.CheckedItemsChanged += Content_CheckedItemsChanged;
-    }
-
     protected override void OnContentChanged() {
       base.OnContentChanged();
       if (Content != null) {
-        InitData();
-        UpdateFilterInfo();
+        checkedFilterView.Content = Content.Filters;
+        rBtnAnd.Checked = Content.IsAndCombination;
+        rBtnOr.Checked = !Content.IsAndCombination;
+        UpdateFilter();
+      } else {
+        checkedFilterView.Content = null;
       }
     }
+    protected override void RegisterContentEvents() {
+      base.RegisterContentEvents();
+      Content.Filters.ItemsAdded += Content_ItemsAdded;
+      Content.Filters.ItemsRemoved += Content_ItemsRemoved;
+      Content.Filters.CheckedItemsChanged += Content_CheckedItemsChanged;
+    }
+    protected override void DeregisterContentEvents() {
+      Content.Filters.ItemsAdded -= Content_ItemsAdded;
+      Content.Filters.ItemsRemoved -= Content_ItemsRemoved;
+      Content.Filters.CheckedItemsChanged -= Content_CheckedItemsChanged;
+      base.DeregisterContentEvents();
+    }
 
+    private void UpdateFilter() {
+      bool activeFilters = Content.ActiveFilters.Any();
+      applyFilterButton.Enabled = activeFilters;
+
+      Content.PreprocessingData.ResetFilter();
+
+      int numTotal = Content.PreprocessingData.Rows;
+      int numRemaining = numTotal;
+
+      if (activeFilters) {
+        var remainingRows = Content.GetRemainingRows();
+        numRemaining = remainingRows.Count(x => x);
+
+        if (numRemaining < numTotal) {
+          Content.PreprocessingData.SetFilter(remainingRows);
+        }
+      }
+
+      tbRemaining.Text = numRemaining.ToString();
+      double ratio = numTotal > 0 ? numRemaining / (double)numTotal : 0.0;
+      tbPercentage.Text = ratio.ToString("P4");
+      tbTotal.Text = numTotal.ToString();
+    }
+
+
+    #region Content Events
+    //whenever a new filter is added the preprocessing data is set to the filter
+    private void Content_ItemsAdded(object sender, Collections.CollectionItemsChangedEventArgs<IFilter> e) {
+      if (Content != null) {
+        foreach (IFilter filter in e.Items) {
+          filter.ConstrainedValue = Content.PreprocessingData;
+        }
+      }
+    }
+    private void Content_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<IFilter> e) {
+      if (Content != null) {
+        UpdateFilter();
+      }
+    }
     private void Content_CheckedItemsChanged(object sender, Collections.CollectionItemsChangedEventArgs<IFilter> e) {
       if (Content != null) {
         foreach (IFilter filter in e.Items) {
           filter.Active = checkedFilterView.Content.ItemChecked(filter);
         }
-        UpdateFilterInfo();
+        UpdateFilter();
       }
     }
+    #endregion
 
-    private void UpdateFilterInfo() {
-      List<IFilter> filters = Content.Filters.ToList();
-      int activeFilters = filters.Count(c => c.Active);
-      applyFilterButton.Enabled = (activeFilters > 0);
-      rBtnAnd.Enabled = (activeFilters > 0);
-      rBtnOr.Enabled = (activeFilters > 0);
-      Content.FilterLogic.Reset();
-      bool[] result = Content.FilterLogic.Preview(filters, rBtnAnd.Checked);
-
-      int filteredCnt = result.Count(c => !c);
-
-      tbRemaining.Text = filteredCnt.ToString();
-      double percentage = result.Length == 0 ? 0.0 : filteredCnt * 100 / (double)result.Length;
-      tbPercentage.Text = String.Format("{0:0.0000}%", percentage);
-      tbTotal.Text = result.Length.ToString();
+    #region Controls Events
+    private void rBtnAnd_CheckedChanged(object sender, EventArgs e) {
+      if (Content != null) {
+        Content.IsAndCombination = rBtnAnd.Checked;
+        UpdateFilter();
+      }
     }
-
     private void applyFilterButton_Click(object sender, EventArgs e) {
       if (Content != null) {
-        List<IFilter> filters = Content.Filters.ToList();
         //apply filters
-        Content.FilterLogic.Apply(filters, rBtnAnd.Checked);
+        Content.PreprocessingData.PersistFilter();
+        Content.PreprocessingData.ResetFilter();
         //deactivate checked filters
-        filters = checkedFilterView.Content.CheckedItems.ToList();
-        foreach (IFilter filter in filters) {
+        foreach (var filter in Content.Filters.CheckedItems.ToList()) {
           checkedFilterView.Content.SetItemCheckedState(filter, false);
           filter.Active = false;
         }
-        UpdateFilterInfo();
+        UpdateFilter();
       }
     }
-
-    //whenever a new filter is added the preprocessing data is set to the filter
-    private void Content_ItemsAdded(object sender, Collections.CollectionItemsChangedEventArgs<IFilter> e) {
-      if (Content != null) {
-        foreach (IFilter filter in e.Items) {
-          filter.ConstrainedValue = Content.FilterLogic.PreprocessingData;
-        }
-      }
-    }
-
-    private void Content_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<IFilter> e) {
-      if (Content != null) {
-        UpdateFilterInfo();
-      }
-    }
-
-    private void rBtnAnd_CheckedChanged(object sender, EventArgs e) {
-      if (Content != null) {
-        UpdateFilterInfo();
-        Content.IsAndCombination = rBtnAnd.Checked;
-      }
-    }
+    #endregion
   }
 }

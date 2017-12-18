@@ -22,28 +22,31 @@
 using System.Drawing;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.DataPreprocessing {
   [Item("Data Completeness Chart", "Represents a datacompleteness chart.")]
-
-  public class DataCompletenessChartContent : Item, IViewShortcut {
+  [StorableClass]
+  public class DataCompletenessChartContent : PreprocessingContent, IViewShortcut {
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.EditBrightnessContrast; }
     }
 
-    public SearchLogic SearchLogic { get; private set; }
-
-    public DataCompletenessChartContent(SearchLogic searchLogic) {
-      SearchLogic = searchLogic;
+    #region Constructor, Cloning & Persistence
+    public DataCompletenessChartContent(IFilteredPreprocessingData preprocessingData)
+      : base(preprocessingData) {
     }
 
     public DataCompletenessChartContent(DataCompletenessChartContent content, Cloner cloner)
       : base(content, cloner) {
-      SearchLogic = content.SearchLogic;
     }
-
     public override IDeepCloneable Clone(Cloner cloner) {
       return new DataCompletenessChartContent(this, cloner);
     }
+
+    [StorableConstructor]
+    protected DataCompletenessChartContent(bool deserializing)
+      : base(deserializing) { }
+    #endregion
   }
 }

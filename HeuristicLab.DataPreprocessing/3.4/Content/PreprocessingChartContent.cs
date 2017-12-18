@@ -28,10 +28,12 @@ using HeuristicLab.Common;
 using HeuristicLab.Common.Resources;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.DataPreprocessing {
   [Item("PreprocessingChart", "Represents a preprocessing chart.")]
-  public class PreprocessingChartContent : Item, IViewShortcut {
+  [StorableClass]
+  public class PreprocessingChartContent : PreprocessingContent, IViewShortcut {
     public enum LegendOrder {
       Alphabetically,
       Appearance
@@ -41,42 +43,51 @@ namespace HeuristicLab.DataPreprocessing {
       get { return VSImageLibrary.PieChart; }
     }
 
-    private ICheckedItemList<StringValue> variableItemList = null;
+    [Storable]
+    private ICheckedItemList<StringValue> variableItemList;
     public ICheckedItemList<StringValue> VariableItemList {
       get {
         if (variableItemList == null)
           variableItemList = CreateVariableItemList(PreprocessingData);
-        return this.variableItemList;
+        return variableItemList;
       }
     }
 
-    public IFilteredPreprocessingData PreprocessingData { get; private set; }
     public event DataPreprocessingChangedEventHandler Changed {
       add { PreprocessingData.Changed += value; }
       remove { PreprocessingData.Changed -= value; }
     }
 
-    public PreprocessingChartContent(IFilteredPreprocessingData preprocessingData) {
-      PreprocessingData = preprocessingData;
+    #region Constructor, Cloning & Persistence
+    public PreprocessingChartContent(IFilteredPreprocessingData preprocessingData)
+       : base(preprocessingData) {
     }
 
-    public PreprocessingChartContent(PreprocessingChartContent content, Cloner cloner)
-      : base(content, cloner) {
-      this.PreprocessingData = content.PreprocessingData;
-      this.variableItemList = cloner.Clone<ICheckedItemList<StringValue>>(variableItemList);
+    public PreprocessingChartContent(PreprocessingChartContent original, Cloner cloner)
+      : base(original, cloner) {
+      variableItemList = cloner.Clone(original.variableItemList);
     }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new PreprocessingChartContent(this, cloner);
     }
+
+    [StorableConstructor]
+    protected PreprocessingChartContent(bool deserializing)
+      : base(deserializing) { }
+    #endregion
 
     public DataRow CreateDataRow(string variableName, DataRowVisualProperties.DataRowChartType chartType) {
       return CreateDataRow(PreprocessingData, variableName, chartType);
     }
 
     public static DataRow CreateDataRow(IFilteredPreprocessingData preprocessingData, string variableName, DataRowVisualProperties.DataRowChartType chartType) {
-      IList<double> values = preprocessingData.GetValues<double>(preprocessingData.GetColumnIndex(variableName));
-      DataRow row = new DataRow(variableName, "", values);
-      row.VisualProperties.ChartType = chartType;
+      var values = preprocessingData.GetValues<double>(preprocessingData.GetColumnIndex(variableName));
+      var row = new DataRow(variableName, "", values) {
+        VisualProperties = {
+          ChartType = chartType,
+          StartIndexZero = true
+        }
+      };
       return row;
     }
 

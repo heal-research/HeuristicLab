@@ -22,12 +22,14 @@
 using System;
 
 namespace HeuristicLab.DataPreprocessing {
-  public interface IFilteredPreprocessingData : ITransactionalPreprocessingData {
-    void SetFilter(bool[] rowFilters);
+  public interface IFilteredPreprocessingData : IPreprocessingData {
+    #region Filters
+    void SetFilter(bool[] remainingRows);
     void PersistFilter();
     void ResetFilter();
     bool IsFiltered { get; }
 
     event EventHandler FilterChanged;
+    #endregion
   }
 }

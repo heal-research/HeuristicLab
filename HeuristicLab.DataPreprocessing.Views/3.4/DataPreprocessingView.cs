@@ -48,25 +48,21 @@ namespace HeuristicLab.DataPreprocessing.Views {
       base.OnContentChanged();
       if (Content != null) {
         var data = Content.Data;
-        var filterLogic = new FilterLogic(data);
-        var searchLogic = new SearchLogic(data, filterLogic);
-        var statisticsLogic = new StatisticsLogic(data, searchLogic);
-        var manipulationLogic = new ManipulationLogic(data, searchLogic, statisticsLogic);
 
         var viewShortcuts = new ItemList<IViewShortcut> {
-          new DataGridContent(data, manipulationLogic, filterLogic),
-          new StatisticsContent(data, statisticsLogic),
+          new DataGridContent(data),
+          new StatisticsContent(data),
 
           new LineChartContent(data),
           new HistogramContent(data),
           new SingleScatterPlotContent(data),
           new MultiScatterPlotContent(data),
           new CorrelationMatrixContent(Content),
-          new DataCompletenessChartContent(searchLogic),
+          new DataCompletenessChartContent(data),
 
-          new FilterContent(filterLogic),
-          new ManipulationContent(manipulationLogic, searchLogic, filterLogic),
-          new TransformationContent(data, filterLogic)
+          new FilterContent(data),
+          new ManipulationContent(data),
+          new TransformationContent(data)
         };
 
         viewShortcutListView.Content = viewShortcuts.AsReadOnly();

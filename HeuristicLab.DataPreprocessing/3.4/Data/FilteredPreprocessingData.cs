@@ -21,74 +21,51 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.DataPreprocessing {
-  public class FilteredPreprocessingData : NamedItem, IFilteredPreprocessingData {
-    private readonly ITransactionalPreprocessingData originalData;
-    private ITransactionalPreprocessingData filteredData;
+  [Item("FilteredPreprocessingData", "Represents filtered data used for preprocessing.")]
+  [StorableClass]
+  public sealed class FilteredPreprocessingData : NamedItem, IFilteredPreprocessingData {
 
-    public IntRange TrainingPartition {
-      get { return originalData.TrainingPartition; }
-    }
+    [Storable]
+    private readonly IPreprocessingData originalData;
+    [Storable]
+    private IPreprocessingData filteredData;
 
-    public IntRange TestPartition {
-      get { return originalData.TestPartition; }
-    }
-
-    public IList<ITransformation> Transformations {
-      get { return originalData.Transformations; }
-    }
-
-    public IEnumerable<string> VariableNames {
-      get { return ActiveData.VariableNames; }
-    }
-
-    public IList<string> InputVariables { get { return ActiveData.InputVariables; } }
-    public string TargetVariable { get { return ActiveData.TargetVariable; } } // optional
-
-    public IDictionary<int, IList<int>> Selection {
-      get { return originalData.Selection; }
-      set { originalData.Selection = value; }
-    }
-
-    public int Columns {
-      get { return ActiveData.Columns; }
-    }
-
-    public int Rows {
-      get { return ActiveData.Rows; }
-    }
-
-    public ITransactionalPreprocessingData ActiveData {
+    public IPreprocessingData ActiveData {
       get { return IsFiltered ? filteredData : originalData; }
     }
 
-    public bool IsUndoAvailable {
-      get { return IsFiltered ? false : originalData.IsUndoAvailable; }
-    }
-
-    public bool IsFiltered {
-      get { return filteredData != null; }
-    }
-
-
-    public FilteredPreprocessingData(ITransactionalPreprocessingData preporcessingData)
+    #region Constructor, Cloning & Persistence
+    public FilteredPreprocessingData(IPreprocessingData preprocessingData)
       : base() {
-      originalData = preporcessingData;
+      originalData = preprocessingData;
       filteredData = null;
     }
 
-    protected FilteredPreprocessingData(FilteredPreprocessingData original, Cloner cloner)
+    private FilteredPreprocessingData(FilteredPreprocessingData original, Cloner cloner)
       : base(original, cloner) {
       originalData = original.originalData;
       filteredData = original.filteredData;
     }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new FilteredPreprocessingData(this, cloner);
+    }
+
+    [StorableConstructor]
+    private FilteredPreprocessingData(bool deserializing)
+      : base(deserializing) { }
+    #endregion
+
+    #region Cells
+    public bool IsCellEmpty(int columnIndex, int rowIndex) {
+      return ActiveData.IsCellEmpty(columnIndex, rowIndex);
     }
 
     public T GetCell<T>(int columnIndex, int rowIndex) {
@@ -116,6 +93,22 @@ namespace HeuristicLab.DataPreprocessing {
       originalData.SetValues<T>(columnIndex, values);
     }
 
+    public bool SetValue(string value, int columnIndex, int rowIndex) {
+      if (IsFiltered)
+        throw new InvalidOperationException("SetValue not possible while data is filtered");
+      return originalData.SetValue(value, columnIndex, rowIndex);
+    }
+
+    public int Columns {
+      get { return ActiveData.Columns; }
+    }
+
+    public int Rows {
+      get { return ActiveData.Rows; }
+    }
+    #endregion
+
+    #region Rows
     public void InsertRow(int rowIndex) {
       if (IsFiltered)
         throw new InvalidOperationException("InsertRow not possible while data is filtered");
@@ -128,6 +121,13 @@ namespace HeuristicLab.DataPreprocessing {
         throw new InvalidOperationException("DeleteRow not possible while data is filtered");
 
       originalData.DeleteRow(rowIndex);
+    }
+
+    public void DeleteRowsWithIndices(IEnumerable<int> rows) {
+      if (IsFiltered)
+        throw new InvalidOperationException("DeleteRowsWithIndices not possible while data is filtered");
+
+      originalData.DeleteRowsWithIndices(rows);
     }
 
     public void InsertColumn<T>(string variableName, int columnIndex) {
@@ -155,6 +155,18 @@ namespace HeuristicLab.DataPreprocessing {
       originalData.RenameColumns(names);
     }
 
+    public bool AreAllStringColumns(IEnumerable<int> columnIndices) {
+      return originalData.AreAllStringColumns(columnIndices);
+    }
+    #endregion
+
+    #region Variables
+    public IEnumerable<string> VariableNames {
+      get { return ActiveData.VariableNames; }
+    }
+    public IEnumerable<string> GetDoubleVariableNames() {
+      return originalData.GetDoubleVariableNames();
+    }
     public string GetVariableName(int columnIndex) {
       return ActiveData.GetVariableName(columnIndex);
     }
@@ -167,16 +179,163 @@ namespace HeuristicLab.DataPreprocessing {
       return originalData.VariableHasType<T>(columnIndex);
     }
 
+    public Type GetVariableType(int columnIndex) {
+      return ActiveData.GetVariableType(columnIndex);
+    }
+
+    public IList<string> InputVariables {
+      get { return ActiveData.InputVariables; }
+    }
+
+    public string TargetVariable {
+      get { return ActiveData.TargetVariable; }
+    } // optional
+    #endregion
+
+    #region Partitions
+    public IntRange TrainingPartition {
+      get { return originalData.TrainingPartition; }
+    }
+
+    public IntRange TestPartition {
+      get { return originalData.TestPartition; }
+    }
+    #endregion
+
+    #region Transformations
+    public IList<ITransformation> Transformations {
+      get { return originalData.Transformations; }
+    }
+    #endregion
+
+    #region Validation
+    public bool Validate(string value, out string errorMessage, int columnIndex) {
+      return originalData.Validate(value, out errorMessage, columnIndex);
+    }
+    #endregion
+
+    #region Import & Export
+    public void Import(IDataAnalysisProblemData problemData) {
+      if (IsFiltered)
+        throw new InvalidOperationException("Import not possible while data is filtered");
+      originalData.Import(problemData);
+    }
+
     public Dataset ExportToDataset() {
       return originalData.ExportToDataset();
     }
+    #endregion
 
-    public void SetFilter(bool[] rowFilters) {
-      filteredData = (ITransactionalPreprocessingData)originalData.Clone();
+    #region Selection
+    public IDictionary<int, IList<int>> Selection {
+      get { return originalData.Selection; }
+      set { originalData.Selection = value; }
+    }
+
+    public void ClearSelection() {
+      originalData.ClearSelection();
+    }
+
+    public event EventHandler SelectionChanged {
+      add { originalData.SelectionChanged += value; }
+      remove { originalData.SelectionChanged -= value; }
+    }
+    #endregion
+
+    #region Transactions
+    public event DataPreprocessingChangedEventHandler Changed {
+      add { originalData.Changed += value; }
+      remove { originalData.Changed -= value; }
+    }
+
+    public bool IsUndoAvailable {
+      get { return IsFiltered ? false : originalData.IsUndoAvailable; }
+    }
+
+    public void Undo() {
+      if (IsFiltered)
+        throw new InvalidOperationException("Undo not possible while data is filtered");
+
+      originalData.Undo();
+    }
+
+    public void InTransaction(Action action, DataPreprocessingChangedEventType type = DataPreprocessingChangedEventType.Any) {
+      if (IsFiltered)
+        throw new InvalidOperationException("Transaction not possible while data is filtered");
+      originalData.InTransaction(action, type);
+    }
+
+    public void BeginTransaction(DataPreprocessingChangedEventType type) {
+      if (IsFiltered)
+        throw new InvalidOperationException("Transaction not possible while data is filtered");
+      originalData.BeginTransaction(type);
+    }
+
+    public void EndTransaction() {
+      originalData.EndTransaction();
+    }
+    #endregion
+
+    #region Statistics
+    public T GetMin<T>(int columnIndex, bool considerSelection = false, T emptyValue = default(T)) {
+      return ActiveData.GetMin<T>(columnIndex, considerSelection, emptyValue);
+    }
+    public T GetMax<T>(int columnIndex, bool considerSelection = false, T emptyValue = default(T)) {
+      return ActiveData.GetMax<T>(columnIndex, considerSelection, emptyValue);
+    }
+    public T GetMean<T>(int columnIndex, bool considerSelection = false, T emptyValue = default(T)) {
+      return ActiveData.GetMean<T>(columnIndex, considerSelection, emptyValue);
+    }
+    public T GetMedian<T>(int columnIndex, bool considerSelection = false, T emptyValue = default(T)) where T : IComparable<T> {
+      return ActiveData.GetMean<T>(columnIndex, considerSelection, emptyValue);
+    }
+    public T GetMode<T>(int columnIndex, bool considerSelection = false, T emptyValue = default(T)) where T : IEquatable<T> {
+      return ActiveData.GetMode<T>(columnIndex, considerSelection, emptyValue);
+    }
+    public T GetStandardDeviation<T>(int columnIndex, bool considerSelection = false, T emptyValue = default(T)) {
+      return ActiveData.GetStandardDeviation<T>(columnIndex, considerSelection, emptyValue);
+    }
+    public T GetVariance<T>(int columnIndex, bool considerSelection = false, T emptyValue = default(T)) {
+      return ActiveData.GetVariance<T>(columnIndex, considerSelection, emptyValue);
+    }
+    public T GetQuantile<T>(double alpha, int columnIndex, bool considerSelection = false, T emptyValue = default(T)) where T : IComparable<T> {
+      return ActiveData.GetQuantile<T>(alpha, columnIndex, considerSelection, emptyValue);
+    }
+    public int GetDistinctValues<T>(int columnIndex, bool considerSelection = false) {
+      return ActiveData.GetDistinctValues<T>(columnIndex, considerSelection);
+    }
+
+    public int GetMissingValueCount() {
+      return ActiveData.GetMissingValueCount();
+    }
+    public int GetMissingValueCount(int columnIndex) {
+      return ActiveData.GetMissingValueCount(columnIndex);
+    }
+    public int GetRowMissingValueCount(int rowIndex) {
+      return ActiveData.GetRowMissingValueCount(rowIndex);
+    }
+    #endregion
+
+    #region Filters
+    public void SetFilter(bool[] remainingRows) {
+      filteredData = (IPreprocessingData)originalData.Clone();
       filteredData.InTransaction(() => {
-        for (int row = (rowFilters.Length - 1); row >= 0; --row) {
-          if (rowFilters[row]) {
-            filteredData.DeleteRow(row);
+        var remainingIndices = Enumerable.Range(0, remainingRows.Length).Where(x => remainingRows[x]);
+
+        foreach (var v in filteredData.VariableNames) {
+          var ci = filteredData.GetColumnIndex(v);
+          if (filteredData.VariableHasType<double>(ci)) {
+            var values = filteredData.GetValues<double>(ci);
+            var filteredValues = remainingIndices.Select(x => values[x]).ToList();
+            filteredData.SetValues(ci, filteredValues);
+          } else if (filteredData.VariableHasType<DateTime>(ci)) {
+            var values = filteredData.GetValues<DateTime>(ci);
+            var filteredValues = remainingIndices.Select(x => values[x]).ToList();
+            filteredData.SetValues(ci, filteredValues);
+          } else if (filteredData.VariableHasType<string>(ci)) {
+            var values = filteredData.GetValues<string>(ci);
+            var filteredValues = remainingIndices.Select(x => values[x]).ToList();
+            filteredData.SetValues(ci, filteredValues);
           }
         }
       });
@@ -205,76 +364,17 @@ namespace HeuristicLab.DataPreprocessing {
       OnFilterChanged();
     }
 
+    public bool IsFiltered {
+      get { return filteredData != null; }
+    }
+
+    public event EventHandler FilterChanged;
+
     private void OnFilterChanged() {
       if (FilterChanged != null) {
         FilterChanged(this, new EventArgs());
       }
     }
-
-    public event DataPreprocessingChangedEventHandler Changed {
-      add { originalData.Changed += value; }
-      remove { originalData.Changed -= value; }
-    }
-
-    public bool SetValue(string value, int columnIndex, int rowIndex) {
-      if (IsFiltered)
-        throw new InvalidOperationException("SetValue not possible while data is filtered");
-      return originalData.SetValue(value, columnIndex, rowIndex);
-    }
-
-    public bool AreAllStringColumns(IEnumerable<int> columnIndices) {
-      return originalData.AreAllStringColumns(columnIndices);
-    }
-
-    public void DeleteRowsWithIndices(IEnumerable<int> rows) {
-      if (IsFiltered)
-        throw new InvalidOperationException("DeleteRowsWithIndices not possible while data is filtered");
-
-      originalData.DeleteRowsWithIndices(rows);
-    }
-
-    public void Undo() {
-      if (IsFiltered)
-        throw new InvalidOperationException("Undo not possible while data is filtered");
-
-      originalData.Undo();
-    }
-
-    public void InTransaction(Action action, DataPreprocessingChangedEventType type = DataPreprocessingChangedEventType.Any) {
-      if (IsFiltered)
-        throw new InvalidOperationException("Transaction not possible while data is filtered");
-      originalData.InTransaction(action, type);
-    }
-
-    public void BeginTransaction(DataPreprocessingChangedEventType type) {
-      if (IsFiltered)
-        throw new InvalidOperationException("Transaction not possible while data is filtered");
-      originalData.BeginTransaction(type);
-    }
-
-    public void EndTransaction() {
-      originalData.EndTransaction();
-    }
-
-    public IEnumerable<string> GetDoubleVariableNames() {
-      return originalData.GetDoubleVariableNames();
-    }
-
-    public void ClearSelection() {
-      originalData.ClearSelection();
-    }
-
-    public event EventHandler SelectionChanged {
-      add { originalData.SelectionChanged += value; }
-      remove { originalData.SelectionChanged -= value; }
-    }
-
-    #region IPreprocessingData Members
-    public bool Validate(string value, out string errorMessage, int columnIndex) {
-      return originalData.Validate(value, out errorMessage, columnIndex);
-    }
-
-    public event EventHandler FilterChanged;
     #endregion
   }
 }

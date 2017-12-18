@@ -70,7 +70,7 @@ namespace HeuristicLab.DataPreprocessing {
       var namedSource = Source as INamedItem;
       if (namedSource != null)
         Name = "Preprocessing " + namedSource.Name;
-      Data = new FilteredPreprocessingData(new TransactionalPreprocessingData(problemData));
+      Data = new FilteredPreprocessingData(new PreprocessingData(problemData));
       OnReset();
       // Reset GUI:
       // - OnContentChanged for PreprocessingView!

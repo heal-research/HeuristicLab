@@ -25,33 +25,49 @@ using System.Linq;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.DataPreprocessing {
   [Item("Histogram", "Represents the histogram grid.")]
+  [StorableClass]
   public class HistogramContent : PreprocessingChartContent {
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Statistics; }
     }
 
+    [Storable]
     public string GroupingVariableName { get; set; }
 
+    [Storable]
     public int Bins { get; set; }
+    [Storable]
     public bool ExactBins { get; set; }
 
+    [Storable]
     public LegendOrder Order { get; set; }
 
+    #region Constructor, Cloning & Persistence
     public HistogramContent(IFilteredPreprocessingData preprocessingData)
       : base(preprocessingData) {
       Bins = 10;
       ExactBins = false;
     }
 
-    public HistogramContent(HistogramContent content, Cloner cloner)
-      : base(content, cloner) {
+    public HistogramContent(HistogramContent original, Cloner cloner)
+      : base(original, cloner) {
+      GroupingVariableName = original.GroupingVariableName;
+      Bins = original.Bins;
+      ExactBins = original.ExactBins;
+      Order = original.Order;
     }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new HistogramContent(this, cloner);
     }
+
+    [StorableConstructor]
+    protected HistogramContent(bool deserializing)
+      : base(deserializing) { }
+    #endregion
 
     public static DataTable CreateHistogram(IFilteredPreprocessingData preprocessingData, string variableName, string groupingVariableName, DataTableVisualProperties.DataTableHistogramAggregation aggregation, LegendOrder legendOrder = LegendOrder.Alphabetically) {
       var dataTable = new DataTable {

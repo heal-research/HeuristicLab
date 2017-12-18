@@ -85,6 +85,7 @@ namespace HeuristicLab.DataPreprocessing.Filter {
       }
     }
 
+    // return remaining rows
     public new bool[] Check() {
       bool[] result = new bool[ConstrainedValue.Rows];
 
@@ -101,7 +102,7 @@ namespace HeuristicLab.DataPreprocessing.Filter {
           item = new StringValue(ConstrainedValue.GetCell<string>(ConstraintColumn, row));
         }
 
-        result[row] = !base.Check(item);
+        result[row] = base.Check(item);
       }
 
       return result;

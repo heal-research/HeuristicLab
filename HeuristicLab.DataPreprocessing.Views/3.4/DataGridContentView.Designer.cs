@@ -53,7 +53,6 @@ namespace HeuristicLab.DataPreprocessing.Views {
       this.randomToolStripMenuItem_Column = new System.Windows.Forms.ToolStripMenuItem();
       this.mostCommonToolStripMenuItem_Column = new System.Windows.Forms.ToolStripMenuItem();
       this.interpolationToolStripMenuItem_Column = new System.Windows.Forms.ToolStripMenuItem();
-      this.smoothingToolStripMenuItem_Column = new System.Windows.Forms.ToolStripMenuItem();
       this.replaceValueOverSelectionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.averageToolStripMenuItem_Selection = new System.Windows.Forms.ToolStripMenuItem();
       this.medianToolStripMenuItem_Selection = new System.Windows.Forms.ToolStripMenuItem();
@@ -62,13 +61,15 @@ namespace HeuristicLab.DataPreprocessing.Views {
       this.btnSearch = new System.Windows.Forms.Button();
       this.btnReplace = new System.Windows.Forms.Button();
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
-      this.checkInputsTargetButton = new System.Windows.Forms.Button();
-      this.uncheckAllButton = new System.Windows.Forms.Button();
-      this.checkAllButton = new System.Windows.Forms.Button();
+      this.shuffleWithinPartitionsCheckBox = new System.Windows.Forms.CheckBox();
       this.addRowButton = new System.Windows.Forms.Button();
       this.addColumnButton = new System.Windows.Forms.Button();
       this.renameColumnsButton = new System.Windows.Forms.Button();
       this.showVariablesGroupBox = new System.Windows.Forms.GroupBox();
+      this.shuffleAllButton = new System.Windows.Forms.Button();
+      this.checkInputsTargetButton = new System.Windows.Forms.Button();
+      this.uncheckAllButton = new System.Windows.Forms.Button();
+      this.checkAllButton = new System.Windows.Forms.Button();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.contextMenuCell.SuspendLayout();
       this.showVariablesGroupBox.SuspendLayout();
@@ -126,8 +127,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
             this.medianToolStripMenuItem_Column,
             this.randomToolStripMenuItem_Column,
             this.mostCommonToolStripMenuItem_Column,
-            this.interpolationToolStripMenuItem_Column,
-            this.smoothingToolStripMenuItem_Column});
+            this.interpolationToolStripMenuItem_Column});
       this.replaceValueOverColumnToolStripMenuItem.Name = "replaceValueOverColumnToolStripMenuItem";
       this.replaceValueOverColumnToolStripMenuItem.Size = new System.Drawing.Size(223, 22);
       this.replaceValueOverColumnToolStripMenuItem.Text = "Replace Value over Variable";
@@ -166,13 +166,6 @@ namespace HeuristicLab.DataPreprocessing.Views {
       this.interpolationToolStripMenuItem_Column.Size = new System.Drawing.Size(155, 22);
       this.interpolationToolStripMenuItem_Column.Text = "Interpolation";
       this.interpolationToolStripMenuItem_Column.Click += new System.EventHandler(this.ReplaceWithInterpolation_Column_Click);
-      // 
-      // smoothingToolStripMenuItem_Column
-      // 
-      this.smoothingToolStripMenuItem_Column.Name = "smoothingToolStripMenuItem_Column";
-      this.smoothingToolStripMenuItem_Column.Size = new System.Drawing.Size(155, 22);
-      this.smoothingToolStripMenuItem_Column.Text = "Smoothing";
-      this.smoothingToolStripMenuItem_Column.Click += new System.EventHandler(this.ReplaceWithSmoothing_Selection_Click);
       // 
       // replaceValueOverSelectionToolStripMenuItem
       // 
@@ -235,38 +228,17 @@ namespace HeuristicLab.DataPreprocessing.Views {
       this.btnReplace.UseVisualStyleBackColor = true;
       this.btnReplace.Click += new System.EventHandler(this.btnReplace_Click);
       // 
-      // checkInputsTargetButton
+      // shuffleWithinPartitionsCheckBox
       // 
-      this.checkInputsTargetButton.Image = global::HeuristicLab.DataPreprocessing.Views.PreprocessingIcons.Inputs;
-      this.checkInputsTargetButton.Location = new System.Drawing.Point(36, 19);
-      this.checkInputsTargetButton.Name = "checkInputsTargetButton";
-      this.checkInputsTargetButton.Size = new System.Drawing.Size(24, 24);
-      this.checkInputsTargetButton.TabIndex = 14;
-      this.toolTip.SetToolTip(this.checkInputsTargetButton, "Select Inputs & Target");
-      this.checkInputsTargetButton.UseVisualStyleBackColor = true;
-      this.checkInputsTargetButton.Click += new System.EventHandler(this.checkInputsTargetButton_Click);
-      // 
-      // uncheckAllButton
-      // 
-      this.uncheckAllButton.Image = global::HeuristicLab.DataPreprocessing.Views.PreprocessingIcons.None;
-      this.uncheckAllButton.Location = new System.Drawing.Point(66, 19);
-      this.uncheckAllButton.Name = "uncheckAllButton";
-      this.uncheckAllButton.Size = new System.Drawing.Size(24, 24);
-      this.uncheckAllButton.TabIndex = 12;
-      this.toolTip.SetToolTip(this.uncheckAllButton, "Select None");
-      this.uncheckAllButton.UseVisualStyleBackColor = true;
-      this.uncheckAllButton.Click += new System.EventHandler(this.uncheckAllButton_Click);
-      // 
-      // checkAllButton
-      // 
-      this.checkAllButton.Image = global::HeuristicLab.DataPreprocessing.Views.PreprocessingIcons.All;
-      this.checkAllButton.Location = new System.Drawing.Point(6, 19);
-      this.checkAllButton.Name = "checkAllButton";
-      this.checkAllButton.Size = new System.Drawing.Size(24, 24);
-      this.checkAllButton.TabIndex = 13;
-      this.toolTip.SetToolTip(this.checkAllButton, "Select All");
-      this.checkAllButton.UseVisualStyleBackColor = true;
-      this.checkAllButton.Click += new System.EventHandler(this.checkAllButton_Click);
+      this.shuffleWithinPartitionsCheckBox.AutoSize = true;
+      this.shuffleWithinPartitionsCheckBox.Location = new System.Drawing.Point(444, 30);
+      this.shuffleWithinPartitionsCheckBox.Name = "shuffleWithinPartitionsCheckBox";
+      this.shuffleWithinPartitionsCheckBox.Size = new System.Drawing.Size(102, 17);
+      this.shuffleWithinPartitionsCheckBox.TabIndex = 20;
+      this.shuffleWithinPartitionsCheckBox.Text = "Within Partitions";
+      this.toolTip.SetToolTip(this.shuffleWithinPartitionsCheckBox, "If checked, the Training and Test partitions are shuffled separately. Otherwise a" +
+        "ll data is shuffled.");
+      this.shuffleWithinPartitionsCheckBox.UseVisualStyleBackColor = true;
       // 
       // addRowButton
       // 
@@ -303,17 +275,62 @@ namespace HeuristicLab.DataPreprocessing.Views {
       this.showVariablesGroupBox.Controls.Add(this.checkInputsTargetButton);
       this.showVariablesGroupBox.Controls.Add(this.uncheckAllButton);
       this.showVariablesGroupBox.Controls.Add(this.checkAllButton);
-      this.showVariablesGroupBox.Location = new System.Drawing.Point(448, 0);
+      this.showVariablesGroupBox.Location = new System.Drawing.Point(564, 0);
       this.showVariablesGroupBox.Name = "showVariablesGroupBox";
       this.showVariablesGroupBox.Size = new System.Drawing.Size(97, 49);
       this.showVariablesGroupBox.TabIndex = 17;
       this.showVariablesGroupBox.TabStop = false;
       this.showVariablesGroupBox.Text = "Show Variables";
       // 
+      // shuffleAllButton
+      // 
+      this.shuffleAllButton.Location = new System.Drawing.Point(444, 0);
+      this.shuffleAllButton.Name = "shuffleAllButton";
+      this.shuffleAllButton.Size = new System.Drawing.Size(102, 23);
+      this.shuffleAllButton.TabIndex = 19;
+      this.shuffleAllButton.Text = "Shuffle";
+      this.shuffleAllButton.UseVisualStyleBackColor = true;
+      this.shuffleAllButton.Click += new System.EventHandler(this.shuffleAllButton_Click);
+      // 
+      // checkInputsTargetButton
+      // 
+      this.checkInputsTargetButton.Image = global::HeuristicLab.DataPreprocessing.Views.PreprocessingIcons.Inputs;
+      this.checkInputsTargetButton.Location = new System.Drawing.Point(36, 19);
+      this.checkInputsTargetButton.Name = "checkInputsTargetButton";
+      this.checkInputsTargetButton.Size = new System.Drawing.Size(24, 24);
+      this.checkInputsTargetButton.TabIndex = 14;
+      this.toolTip.SetToolTip(this.checkInputsTargetButton, "Select Inputs & Target");
+      this.checkInputsTargetButton.UseVisualStyleBackColor = true;
+      this.checkInputsTargetButton.Click += new System.EventHandler(this.checkInputsTargetButton_Click);
+      // 
+      // uncheckAllButton
+      // 
+      this.uncheckAllButton.Image = global::HeuristicLab.DataPreprocessing.Views.PreprocessingIcons.None;
+      this.uncheckAllButton.Location = new System.Drawing.Point(66, 19);
+      this.uncheckAllButton.Name = "uncheckAllButton";
+      this.uncheckAllButton.Size = new System.Drawing.Size(24, 24);
+      this.uncheckAllButton.TabIndex = 12;
+      this.toolTip.SetToolTip(this.uncheckAllButton, "Select None");
+      this.uncheckAllButton.UseVisualStyleBackColor = true;
+      this.uncheckAllButton.Click += new System.EventHandler(this.uncheckAllButton_Click);
+      // 
+      // checkAllButton
+      // 
+      this.checkAllButton.Image = global::HeuristicLab.DataPreprocessing.Views.PreprocessingIcons.All;
+      this.checkAllButton.Location = new System.Drawing.Point(6, 19);
+      this.checkAllButton.Name = "checkAllButton";
+      this.checkAllButton.Size = new System.Drawing.Size(24, 24);
+      this.checkAllButton.TabIndex = 13;
+      this.toolTip.SetToolTip(this.checkAllButton, "Select All");
+      this.checkAllButton.UseVisualStyleBackColor = true;
+      this.checkAllButton.Click += new System.EventHandler(this.checkAllButton_Click);
+      // 
       // DataGridContentView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.Controls.Add(this.shuffleWithinPartitionsCheckBox);
+      this.Controls.Add(this.shuffleAllButton);
       this.Controls.Add(this.showVariablesGroupBox);
       this.Controls.Add(this.renameColumnsButton);
       this.Controls.Add(this.addColumnButton);
@@ -334,6 +351,8 @@ namespace HeuristicLab.DataPreprocessing.Views {
       this.Controls.SetChildIndex(this.rowsTextBox, 0);
       this.Controls.SetChildIndex(this.columnsTextBox, 0);
       this.Controls.SetChildIndex(this.showVariablesGroupBox, 0);
+      this.Controls.SetChildIndex(this.shuffleAllButton, 0);
+      this.Controls.SetChildIndex(this.shuffleWithinPartitionsCheckBox, 0);
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
       this.contextMenuCell.ResumeLayout(false);
       this.showVariablesGroupBox.ResumeLayout(false);
@@ -360,7 +379,6 @@ namespace HeuristicLab.DataPreprocessing.Views {
     private System.Windows.Forms.Button btnSearch;
     private System.Windows.Forms.Button btnReplace;
     private System.Windows.Forms.ToolTip toolTip;
-    private System.Windows.Forms.ToolStripMenuItem smoothingToolStripMenuItem_Column;
     private System.Windows.Forms.Button addRowButton;
     private System.Windows.Forms.Button addColumnButton;
     private System.Windows.Forms.Button renameColumnsButton;
@@ -368,5 +386,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
     private System.Windows.Forms.Button checkInputsTargetButton;
     private System.Windows.Forms.Button uncheckAllButton;
     private System.Windows.Forms.Button checkAllButton;
+    private System.Windows.Forms.Button shuffleAllButton;
+    private System.Windows.Forms.CheckBox shuffleWithinPartitionsCheckBox;
   }
 }
