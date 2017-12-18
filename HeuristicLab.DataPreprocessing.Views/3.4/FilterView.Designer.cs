@@ -45,7 +45,6 @@ namespace HeuristicLab.DataPreprocessing.Views {
     /// </summary>
     private void InitializeComponent() {
       this.groupBoxFilter = new System.Windows.Forms.GroupBox();
-      this.checkedFilterView = new HeuristicLab.DataPreprocessing.Views.CheckedFilterCollectionView();
       this.groupBoxFilterInfo = new System.Windows.Forms.GroupBox();
       this.lblPercentage = new System.Windows.Forms.Label();
       this.tbPercentage = new System.Windows.Forms.TextBox();
@@ -62,6 +61,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
       this.label2 = new System.Windows.Forms.Label();
       this.label3 = new System.Windows.Forms.Label();
       this.bottomPanel = new System.Windows.Forms.Panel();
+      this.checkedFilterView = new HeuristicLab.DataPreprocessing.Views.CheckedFilterCollectionView();
       this.groupBoxFilter.SuspendLayout();
       this.groupBoxFilterInfo.SuspendLayout();
       this.groupBox1.SuspendLayout();
@@ -79,18 +79,6 @@ namespace HeuristicLab.DataPreprocessing.Views {
       this.groupBoxFilter.TabIndex = 0;
       this.groupBoxFilter.TabStop = false;
       this.groupBoxFilter.Text = "Filter";
-      // 
-      // checkedFilterView
-      // 
-      this.checkedFilterView.Caption = "filterView";
-      this.checkedFilterView.Content = null;
-      this.checkedFilterView.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.checkedFilterView.Location = new System.Drawing.Point(3, 16);
-      this.checkedFilterView.Name = "checkedFilterView";
-      this.checkedFilterView.ReadOnly = false;
-      this.checkedFilterView.ShowDetails = true;
-      this.checkedFilterView.Size = new System.Drawing.Size(652, 308);
-      this.checkedFilterView.TabIndex = 0;
       // 
       // groupBoxFilterInfo
       // 
@@ -184,7 +172,6 @@ namespace HeuristicLab.DataPreprocessing.Views {
       this.rBtnOr.Anchor = System.Windows.Forms.AnchorStyles.Left;
       this.rBtnOr.AutoSize = true;
       this.rBtnOr.Cursor = System.Windows.Forms.Cursors.Default;
-      this.rBtnOr.Enabled = false;
       this.rBtnOr.Location = new System.Drawing.Point(53, 6);
       this.rBtnOr.Name = "rBtnOr";
       this.rBtnOr.Size = new System.Drawing.Size(36, 17);
@@ -198,7 +185,6 @@ namespace HeuristicLab.DataPreprocessing.Views {
       this.rBtnAnd.AutoSize = true;
       this.rBtnAnd.Checked = true;
       this.rBtnAnd.Cursor = System.Windows.Forms.Cursors.Default;
-      this.rBtnAnd.Enabled = false;
       this.rBtnAnd.Location = new System.Drawing.Point(3, 6);
       this.rBtnAnd.Name = "rBtnAnd";
       this.rBtnAnd.Size = new System.Drawing.Size(44, 17);
@@ -272,6 +258,18 @@ namespace HeuristicLab.DataPreprocessing.Views {
       this.bottomPanel.Name = "bottomPanel";
       this.bottomPanel.Size = new System.Drawing.Size(670, 30);
       this.bottomPanel.TabIndex = 13;
+      // 
+      // checkedFilterView
+      // 
+      this.checkedFilterView.Caption = "filterView";
+      this.checkedFilterView.Content = null;
+      this.checkedFilterView.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.checkedFilterView.Location = new System.Drawing.Point(3, 16);
+      this.checkedFilterView.Name = "checkedFilterView";
+      this.checkedFilterView.ReadOnly = false;
+      this.checkedFilterView.ShowDetails = true;
+      this.checkedFilterView.Size = new System.Drawing.Size(652, 308);
+      this.checkedFilterView.TabIndex = 0;
       // 
       // FilterView
       // 

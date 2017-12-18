@@ -78,6 +78,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Content\MultiScatterPlotContent.cs" />
+    <Compile Include="Content\PreprocessingContent.cs" />
     <Compile Include="Content\SingleScatterPlotContent.cs" />
     <Compile Include="Content\ScatterPlotContent.cs" />
     <Compile Include="Content\DataCompletenessChartContent.cs" />
@@ -89,12 +90,10 @@
     <Compile Include="Content\CorrelationMatrixContent.cs" />
     <Compile Include="PreprocessingTransformator.cs" />
     <Compile Include="Data\DataPreprocessingChangedEvent.cs" />
-    <Compile Include="Logic\Filter\ComparisonFilter.cs" />
-    <Compile Include="Logic\Filter\IFilter.cs" />
-    <Compile Include="Logic\ManipulationLogic.cs" />
+    <Compile Include="Filter\ComparisonFilter.cs" />
+    <Compile Include="Filter\IFilter.cs" />
     <Compile Include="Data\IPreprocessingData.cs" />
     <Compile Include="Content\FilterContent.cs" />
-    <Compile Include="Logic\FilterLogic.cs" />
     <Compile Include="Content\HistogramContent.cs" />
     <Compile Include="Content\LineChartContent.cs" />
     <Compile Include="Content\StatisticsContent.cs" />
@@ -104,10 +103,6 @@
     <None Include="Plugin.cs.frame" />
     <Compile Include="Content\DataGridContent.cs" />
     <Compile Include="PreprocessingContext.cs" />
-    <Compile Include="Data\TransactionalPreprocessingData.cs" />
-    <Compile Include="Logic\SearchLogic.cs" />
-    <Compile Include="Logic\StatisticsLogic.cs" />
-    <Compile Include="Data\ITransactionalPreprocessingData.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="Properties\AssemblyInfo.cs.frame" />

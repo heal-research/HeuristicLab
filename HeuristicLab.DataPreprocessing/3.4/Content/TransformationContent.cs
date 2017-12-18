@@ -22,34 +22,37 @@
 using System.Drawing;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.DataPreprocessing {
   [Item("Transformation", "Represents the transformation grid.")]
-  public class TransformationContent : Item, IViewShortcut {
+  [StorableClass]
+  public class TransformationContent : PreprocessingContent, IViewShortcut {
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Method; }
     }
 
-    public IPreprocessingData Data { get; private set; }
-    public FilterLogic FilterLogic { get; private set; }
-
+    [Storable]
     public ICheckedItemList<ITransformation> CheckedTransformationList { get; private set; }
 
-    public TransformationContent(IPreprocessingData data, FilterLogic filterLogic) {
-      Data = data;
+    #region Constructor, Cloning & Persistence
+    public TransformationContent(IFilteredPreprocessingData preprocessingData)
+      : base(preprocessingData) {
       CheckedTransformationList = new CheckedItemList<ITransformation>();
-      FilterLogic = filterLogic;
     }
 
     public TransformationContent(TransformationContent original, Cloner cloner)
       : base(original, cloner) {
-      Data = original.Data;
-      CheckedTransformationList = new CheckedItemList<ITransformation>(original.CheckedTransformationList);
+      CheckedTransformationList = cloner.Clone(original.CheckedTransformationList);
     }
-
     public override IDeepCloneable Clone(Cloner cloner) {
       return new TransformationContent(this, cloner);
     }
+
+    [StorableConstructor]
+    protected TransformationContent(bool deserializing)
+      : base(deserializing) { }
+    #endregion
   }
 }

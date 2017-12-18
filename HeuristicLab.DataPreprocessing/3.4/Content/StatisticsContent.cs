@@ -22,33 +22,36 @@
 using System.Drawing;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.DataPreprocessing {
   [Item("Statistics", "Represents the statistics grid.")]
-  public class StatisticsContent : Item, IViewShortcut {
+  [StorableClass]
+  public class StatisticsContent : PreprocessingContent, IViewShortcut {
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Object; }
     }
 
-    public ITransactionalPreprocessingData PreprocessingData { get; private set; }
-    public StatisticsLogic StatisticsLogic { get; private set; }
-
-    public StatisticsContent(ITransactionalPreprocessingData preProcessingData, StatisticsLogic statisticsLogic) {
-      PreprocessingData = preProcessingData;
-      StatisticsLogic = statisticsLogic;
+    #region Constructor, Cloning & Persistence
+    public StatisticsContent(IFilteredPreprocessingData preprocessingData)
+      : base(preprocessingData) {
     }
 
-    public StatisticsContent(StatisticsContent content, Cloner cloner)
-      : base(content, cloner) {
+    public StatisticsContent(StatisticsContent original, Cloner cloner)
+      : base(original, cloner) {
     }
-
     public override IDeepCloneable Clone(Cloner cloner) {
       return new StatisticsContent(this, cloner);
     }
 
+    [StorableConstructor]
+    protected StatisticsContent(bool deserializing)
+      : base(deserializing) { }
+    #endregion
+
     public event DataPreprocessingChangedEventHandler Changed {
-      add { StatisticsLogic.Changed += value; }
-      remove { StatisticsLogic.Changed -= value; }
+      add { PreprocessingData.Changed += value; }
+      remove { PreprocessingData.Changed -= value; }
     }
   }
 }
