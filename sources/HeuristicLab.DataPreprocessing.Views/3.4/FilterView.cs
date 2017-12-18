@@ -128,7 +128,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
         Content.PreprocessingData.PersistFilter();
         Content.PreprocessingData.ResetFilter();
         //deactivate checked filters
-        foreach (var filter in Content.Filters.CheckedItems) {
+        foreach (var filter in Content.Filters.CheckedItems.ToList()) {
           checkedFilterView.Content.SetItemCheckedState(filter, false);
           filter.Active = false;
         }
