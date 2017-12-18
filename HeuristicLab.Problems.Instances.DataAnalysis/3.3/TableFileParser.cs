@@ -256,6 +256,13 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       this.rows = values.First().Count;
       this.columns = values.Count;
 
+      // replace lists with undefined type (object) with double-lists
+      for (int i = 0; i < values.Count; i++) {
+        if (values[i] is List<object>) {
+          values[i] = Enumerable.Repeat(double.NaN, rows).ToList();
+        }
+      }
+
       // after everything has been parsed make sure the lists are as compact as possible
       foreach (var l in values) {
         var dblList = l as List<double>;
@@ -307,7 +314,8 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
 
     #region type-dependent dispatch
     private bool IsColumnTypeCompatible(IList list, TokenTypeEnum tokenType) {
-      return (list is List<string>) || // all tokens can be added to a string list
+      return (list is List<object>) || // unknown lists are compatible to everything (potential conversion)
+             (list is List<string>) || // all tokens can be added to a string list
              (tokenType == TokenTypeEnum.Missing) || // empty entries are allowed in all columns
              (tokenType == TokenTypeEnum.Double && list is List<double>) ||
              (tokenType == TokenTypeEnum.DateTime && list is List<DateTime>);
@@ -335,12 +343,12 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     }
 
     private void AddValue(TokenTypeEnum type, IList list, string strVal, double dblVal, DateTime dateTimeVal) {
+      // Add value if list has a defined type
       var dblList = list as List<double>;
       if (dblList != null) {
         AddValue(type, dblList, dblVal);
         return;
       }
-
       var strList = list as List<string>;
       if (strList != null) {
         AddValue(type, strList, strVal);
@@ -352,35 +360,63 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
         return;
       }
 
-      list.Add(strVal); // assumes List<object>
+      // Undefined list-type 
+      if (type == TokenTypeEnum.Missing) {
+        // add null to track number of missing values
+        list.Add(null);
+      } else { // first non-missing value for undefined list-type
+        var newList = ConvertList(type, list, estimatedNumberOfLines);
+        // replace list
+        var idx = values.IndexOf(list);
+        values[idx] = newList;
+        // recursively call AddValue
+        AddValue(type, newList, strVal, dblVal, dateTimeVal);
+      }
     }
 
-    private void AddValue(TokenTypeEnum type, List<double> list, double dblVal) {
+    private static void AddValue(TokenTypeEnum type, List<double> list, double dblVal) {
       Contract.Assert(type == TokenTypeEnum.Missing || type == TokenTypeEnum.Double);
       list.Add(type == TokenTypeEnum.Missing ? double.NaN : dblVal);
     }
 
-    private void AddValue(TokenTypeEnum type, List<string> list, string strVal) {
+    private static void AddValue(TokenTypeEnum type, List<string> list, string strVal) {
       // assumes that strVal is always set to the original token read from the input file
       list.Add(type == TokenTypeEnum.Missing ? string.Empty : strVal);
     }
 
-    private void AddValue(TokenTypeEnum type, List<DateTime> list, DateTime dtVal) {
+    private static void AddValue(TokenTypeEnum type, List<DateTime> list, DateTime dtVal) {
       Contract.Assert(type == TokenTypeEnum.Missing || type == TokenTypeEnum.DateTime);
       list.Add(type == TokenTypeEnum.Missing ? DateTime.MinValue : dtVal);
     }
 
-    private IList CreateList(TokenTypeEnum type, int estimatedNumberOfLines) {
+    private static IList CreateList(TokenTypeEnum type, int estimatedNumberOfLines) {
       switch (type) {
         case TokenTypeEnum.String:
           return new List<string>(estimatedNumberOfLines);
         case TokenTypeEnum.Double:
-        case TokenTypeEnum.Missing: // assume double columns
           return new List<double>(estimatedNumberOfLines);
         case TokenTypeEnum.DateTime:
           return new List<DateTime>(estimatedNumberOfLines);
+        case TokenTypeEnum.Missing: // List<object> represent list of unknown type
+          return new List<object>(estimatedNumberOfLines);
         default:
           throw new InvalidOperationException();
+      }
+    }
+
+    private static IList ConvertList(TokenTypeEnum type, IList list, int estimatedNumberOfLines) {
+      var newList = CreateList(type, estimatedNumberOfLines);
+      object missingValue = GetMissingValue(type);
+      for (int i = 0; i < list.Count; i++)
+        newList.Add(missingValue);
+      return newList;
+    }
+    private static object GetMissingValue(TokenTypeEnum type) {
+      switch (type) {
+        case TokenTypeEnum.String: return string.Empty;
+        case TokenTypeEnum.Double: return double.NaN;
+        case TokenTypeEnum.DateTime: return DateTime.MinValue;
+        default: throw new ArgumentOutOfRangeException("type", type, "No missing value defined");
       }
     }
     #endregion
