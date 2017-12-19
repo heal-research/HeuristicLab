@@ -52,7 +52,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       get { return typeof(IDataAnalysisProblem); }
     }
     public new IDataAnalysisProblem Problem {
-      get { return (IDataAnalysisProblem) base.Problem; }
+      get { return (IDataAnalysisProblem)base.Problem; }
       set { base.Problem = value; }
     }
 
@@ -85,52 +85,52 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     #region Parameter properties
     public IFixedValueParameter<DoubleValue> PerplexityParameter {
-      get { return (IFixedValueParameter<DoubleValue>) Parameters[PerplexityParameterName]; }
+      get { return (IFixedValueParameter<DoubleValue>)Parameters[PerplexityParameterName]; }
     }
     public IFixedValueParameter<PercentValue> ThetaParameter {
-      get { return (IFixedValueParameter<PercentValue>) Parameters[ThetaParameterName]; }
+      get { return (IFixedValueParameter<PercentValue>)Parameters[ThetaParameterName]; }
     }
     public IFixedValueParameter<IntValue> NewDimensionsParameter {
-      get { return (IFixedValueParameter<IntValue>) Parameters[NewDimensionsParameterName]; }
+      get { return (IFixedValueParameter<IntValue>)Parameters[NewDimensionsParameterName]; }
     }
     public IConstrainedValueParameter<IDistance<double[]>> DistanceFunctionParameter {
-      get { return (IConstrainedValueParameter<IDistance<double[]>>) Parameters[DistanceFunctionParameterName]; }
+      get { return (IConstrainedValueParameter<IDistance<double[]>>)Parameters[DistanceFunctionParameterName]; }
     }
     public IFixedValueParameter<IntValue> MaxIterationsParameter {
-      get { return (IFixedValueParameter<IntValue>) Parameters[MaxIterationsParameterName]; }
+      get { return (IFixedValueParameter<IntValue>)Parameters[MaxIterationsParameterName]; }
     }
     public IFixedValueParameter<IntValue> StopLyingIterationParameter {
-      get { return (IFixedValueParameter<IntValue>) Parameters[StopLyingIterationParameterName]; }
+      get { return (IFixedValueParameter<IntValue>)Parameters[StopLyingIterationParameterName]; }
     }
     public IFixedValueParameter<IntValue> MomentumSwitchIterationParameter {
-      get { return (IFixedValueParameter<IntValue>) Parameters[MomentumSwitchIterationParameterName]; }
+      get { return (IFixedValueParameter<IntValue>)Parameters[MomentumSwitchIterationParameterName]; }
     }
     public IFixedValueParameter<DoubleValue> InitialMomentumParameter {
-      get { return (IFixedValueParameter<DoubleValue>) Parameters[InitialMomentumParameterName]; }
+      get { return (IFixedValueParameter<DoubleValue>)Parameters[InitialMomentumParameterName]; }
     }
     public IFixedValueParameter<DoubleValue> FinalMomentumParameter {
-      get { return (IFixedValueParameter<DoubleValue>) Parameters[FinalMomentumParameterName]; }
+      get { return (IFixedValueParameter<DoubleValue>)Parameters[FinalMomentumParameterName]; }
     }
     public IFixedValueParameter<DoubleValue> EtaParameter {
-      get { return (IFixedValueParameter<DoubleValue>) Parameters[EtaParameterName]; }
+      get { return (IFixedValueParameter<DoubleValue>)Parameters[EtaParameterName]; }
     }
     public IFixedValueParameter<BoolValue> SetSeedRandomlyParameter {
-      get { return (IFixedValueParameter<BoolValue>) Parameters[SetSeedRandomlyParameterName]; }
+      get { return (IFixedValueParameter<BoolValue>)Parameters[SetSeedRandomlyParameterName]; }
     }
     public IFixedValueParameter<IntValue> SeedParameter {
-      get { return (IFixedValueParameter<IntValue>) Parameters[SeedParameterName]; }
+      get { return (IFixedValueParameter<IntValue>)Parameters[SeedParameterName]; }
     }
     public IConstrainedValueParameter<StringValue> ClassesNameParameter {
-      get { return (IConstrainedValueParameter<StringValue>) Parameters[ClassesNameParameterName]; }
+      get { return (IConstrainedValueParameter<StringValue>)Parameters[ClassesNameParameterName]; }
     }
     public IFixedValueParameter<BoolValue> NormalizationParameter {
-      get { return (IFixedValueParameter<BoolValue>) Parameters[NormalizationParameterName]; }
+      get { return (IFixedValueParameter<BoolValue>)Parameters[NormalizationParameterName]; }
     }
     public IFixedValueParameter<BoolValue> RandomInitializationParameter {
-      get { return (IFixedValueParameter<BoolValue>) Parameters[RandomInitializationParameterName]; }
+      get { return (IFixedValueParameter<BoolValue>)Parameters[RandomInitializationParameterName]; }
     }
     public IFixedValueParameter<IntValue> UpdateIntervalParameter {
-      get { return (IFixedValueParameter<IntValue>) Parameters[UpdateIntervalParameterName]; }
+      get { return (IFixedValueParameter<IntValue>)Parameters[UpdateIntervalParameterName]; }
     }
     #endregion
 
@@ -217,7 +217,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
-      if (Parameters.ContainsKey(RandomInitializationParameterName))
+      if (!Parameters.ContainsKey(RandomInitializationParameterName))
         Parameters.Add(new FixedValueParameter<BoolValue>(RandomInitializationParameterName, "Wether data points should be randomly initialized or according to the first 2 dimensions", new BoolValue(true)));
       RegisterParameterEvents();
     }
@@ -283,7 +283,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       if (wdist != null) wdist.Initialize(problemData);
       if (state == null) {
         if (SetSeedRandomly) Seed = new System.Random().Next();
-        var random = new MersenneTwister((uint) Seed);
+        var random = new MersenneTwister((uint)Seed);
         var dataset = problemData.Dataset;
         var allowedInputVariables = problemData.AllowedInputVariables.ToArray();
         var allindices = Problem.ProblemData.AllIndices.ToArray();
@@ -400,28 +400,26 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
       var classificationData = problemData as ClassificationProblemData;
       if (classificationData != null && classificationData.TargetVariable.Equals(ClassesName)) {
-        var classNames = classificationData.ClassValues.Zip(classificationData.ClassNames, (v, n) => new {v, n}).ToDictionary(x => x.v, x => x.n);
+        var classNames = classificationData.ClassValues.Zip(classificationData.ClassNames, (v, n) => new { v, n }).ToDictionary(x => x.v, x => x.n);
         var classes = classificationData.Dataset.GetDoubleValues(classificationData.TargetVariable, allIndices).Select(v => classNames[v]).ToArray();
         for (var i = 0; i < classes.Length; i++) {
           if (!dataRowNames.ContainsKey(classes[i])) dataRowNames.Add(classes[i], new List<int>());
           dataRowNames[classes[i]].Add(i);
         }
-      }
-      else if (((Dataset) problemData.Dataset).VariableHasType<string>(ClassesName)) {
+      } else if (((Dataset)problemData.Dataset).VariableHasType<string>(ClassesName)) {
         var classes = problemData.Dataset.GetStringValues(ClassesName, allIndices).ToArray();
         for (var i = 0; i < classes.Length; i++) {
           if (!dataRowNames.ContainsKey(classes[i])) dataRowNames.Add(classes[i], new List<int>());
           dataRowNames[classes[i]].Add(i);
         }
-      }
-      else if (((Dataset) problemData.Dataset).VariableHasType<double>(ClassesName)) {
+      } else if (((Dataset)problemData.Dataset).VariableHasType<double>(ClassesName)) {
         var clusterdata = new Dataset(problemData.Dataset.DoubleVariables, problemData.Dataset.DoubleVariables.Select(v => problemData.Dataset.GetDoubleValues(v, allIndices).ToList()));
         const int contours = 8;
         Dictionary<int, string> contourMap;
         IClusteringModel clusterModel;
         double[][] borders;
         CreateClusters(clusterdata, ClassesName, contours, out clusterModel, out contourMap, out borders);
-        var contourorder = borders.Select((x, i) => new {x, i}).OrderBy(x => x.x[0]).Select(x => x.i).ToArray();
+        var contourorder = borders.Select((x, i) => new { x, i }).OrderBy(x => x.x[0]).Select(x => x.i).ToArray();
         for (var i = 0; i < contours; i++) {
           var c = contourorder[i];
           var contourname = contourMap[c];
@@ -431,15 +429,14 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         }
         var allClusters = clusterModel.GetClusterValues(clusterdata, Enumerable.Range(0, clusterdata.Rows)).ToArray();
         for (var i = 0; i < clusterdata.Rows; i++) dataRowNames[contourMap[allClusters[i] - 1]].Add(i);
-      }
-      else if (((Dataset) problemData.Dataset).VariableHasType<DateTime>(ClassesName)) {
+      } else if (((Dataset)problemData.Dataset).VariableHasType<DateTime>(ClassesName)) {
         var clusterdata = new Dataset(problemData.Dataset.DateTimeVariables, problemData.Dataset.DateTimeVariables.Select(v => problemData.Dataset.GetDoubleValues(v, allIndices).ToList()));
         const int contours = 8;
         Dictionary<int, string> contourMap;
         IClusteringModel clusterModel;
         double[][] borders;
         CreateClusters(clusterdata, ClassesName, contours, out clusterModel, out contourMap, out borders);
-        var contourorder = borders.Select((x, i) => new {x, i}).OrderBy(x => x.x[0]).Select(x => x.i).ToArray();
+        var contourorder = borders.Select((x, i) => new { x, i }).OrderBy(x => x.x[0]).Select(x => x.i).ToArray();
         for (var i = 0; i < contours; i++) {
           var c = contourorder[i];
           var contourname = contourMap[c];
@@ -449,8 +446,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         }
         var allClusters = clusterModel.GetClusterValues(clusterdata, Enumerable.Range(0, clusterdata.Rows)).ToArray();
         for (var i = 0; i < clusterdata.Rows; i++) dataRowNames[contourMap[allClusters[i] - 1]].Add(i);
-      }
-      else {
+      } else {
         dataRowNames.Add("Training", problemData.TrainingIndices.ToList());
         dataRowNames.Add("Test", problemData.TestIndices.ToList());
       }
@@ -464,8 +460,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       var errors = plot.Rows["Errors"].Values;
       var c = tsneState.EvaluateError();
       errors.Add(c);
-      ((IntValue) results[IterationResultName].Value).Value = tsneState.iter;
-      ((DoubleValue) results[ErrorResultName].Value).Value = errors.Last();
+      ((IntValue)results[IterationResultName].Value).Value = tsneState.iter;
+      ((DoubleValue)results[ErrorResultName].Value).Value = errors.Last();
 
       var ndata = NormalizeProjectedData(tsneState.newData);
       results[DataResultName].Value = new DoubleMatrix(ndata);
@@ -489,11 +485,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       var res = new double[data.GetLength(0), data.GetLength(1)];
       for (var i = 0; i < max.Length; i++) max[i] = min[i] = data[0, i];
       for (var i = 0; i < data.GetLength(0); i++)
-      for (var j = 0; j < data.GetLength(1); j++) {
-        var v = data[i, j];
-        max[j] = Math.Max(max[j], v);
-        min[j] = Math.Min(min[j], v);
-      }
+        for (var j = 0; j < data.GetLength(1); j++) {
+          var v = data[i, j];
+          max[j] = Math.Max(max[j], v);
+          min[j] = Math.Min(min[j], v);
+        }
       for (var i = 0; i < data.GetLength(0); i++) {
         for (var j = 0; j < data.GetLength(1); j++) {
           var d = max[j] - min[j];
@@ -527,10 +523,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     private static void CreateClusters(IDataset data, string target, int contours, out IClusteringModel contourCluster, out Dictionary<int, string> contourNames, out double[][] borders) {
-      var cpd = new ClusteringProblemData((Dataset) data, new[] {target});
+      var cpd = new ClusteringProblemData((Dataset)data, new[] { target });
       contourCluster = KMeansClustering.CreateKMeansSolution(cpd, contours, 3).Model;
 
-      borders = Enumerable.Range(0, contours).Select(x => new[] {double.MaxValue, double.MinValue}).ToArray();
+      borders = Enumerable.Range(0, contours).Select(x => new[] { double.MaxValue, double.MinValue }).ToArray();
       var clusters = contourCluster.GetClusterValues(cpd.Dataset, cpd.AllIndices).ToArray();
       var targetvalues = cpd.Dataset.GetDoubleValues(target).ToArray();
       foreach (var i in cpd.AllIndices) {
@@ -549,7 +545,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       var colorGradient = ColorGradient.Colors;
       var range = high - low;
       var h = Math.Min(cell / range * colorGradient.Count, colorGradient.Count - 1);
-      return colorGradient[(int) h];
+      return colorGradient[(int)h];
     }
     #endregion
   }
