@@ -37,10 +37,10 @@ using HeuristicLab.Random;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>
-  /// t-distributed stochastic neighbourhood embedding (tSNE) projects the data in a low dimensional 
+  /// t-Distributed Stochastic Neighbor Embedding (tSNE) projects the data in a low dimensional 
   /// space to allow visual cluster identification.
   /// </summary>
-  [Item("tSNE", "t-distributed stochastic neighbourhood embedding projects the data in a low " +
+  [Item("t-Distributed Stochastic Neighbor Embedding (tSNE)", "t-Distributed Stochastic Neighbor Embedding projects the data in a low " +
                 "dimensional space to allow visual cluster identification. Implemented similar to: https://lvdmaaten.github.io/tsne/#implementations (Barnes-Hut t-SNE). Described in : https://lvdmaaten.github.io/publications/papers/JMLR_2014.pdf")]
   [Creatable(CreatableAttribute.Categories.DataAnalysis, Priority = 100)]
   [StorableClass]
