@@ -31,7 +31,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace HeuristicLab.Problems.BinPacking3D.Packer {
-  public class BinPackerFirstFit : BinPacker {
+  internal class BinPackerFirstFit : BinPacker {
     #region Constructors for HEAL
     [StorableConstructor]
     protected BinPackerFirstFit(bool deserializing) : base(deserializing) { }

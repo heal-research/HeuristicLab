@@ -74,32 +74,7 @@ namespace HeuristicLab.Problems.BinPacking3D {
     public override int GetHashCode() {
       return base.GetHashCode() + 13 * X + 17 * Y + 23 * Z;
     }
-
-    [Obsolete]
-    public static PackingPosition MoveLeft(PackingPosition original) {
-      return new PackingPosition(original.AssignedBin, original.X - 1, original.Y, original.Z, original.Rotated);
-    }
-    [Obsolete]
-    public static PackingPosition MoveDown(PackingPosition original) {
-      return new PackingPosition(original.AssignedBin, original.X, original.Y - 1, original.Z, original.Rotated);
-    }
-    [Obsolete]
-    public static PackingPosition MoveBack(PackingPosition original) {
-      return new PackingPosition(original.AssignedBin, original.X, original.Y, original.Z - 1, original.Rotated);
-    }
-    [Obsolete]
-    public static PackingPosition MoveRight(PackingPosition original) {
-      return new PackingPosition(original.AssignedBin, original.X + 1, original.Y, original.Z, original.Rotated);
-    }
-    [Obsolete]
-    public static PackingPosition MoveUp(PackingPosition original) {
-      return new PackingPosition(original.AssignedBin, original.X, original.Y + 1, original.Z, original.Rotated);
-    }
-    [Obsolete]
-    public static PackingPosition MoveFront(PackingPosition original) {
-      return new PackingPosition(original.AssignedBin, original.X, original.Y, original.Z + 1, original.Rotated);
-    }
-
+    
     #region IComparable<PackingPosition> Members
 
     /// <summary>
@@ -114,15 +89,7 @@ namespace HeuristicLab.Problems.BinPacking3D {
         result = Z.CompareTo(other.Z);
       if (result == 0)
         result = X.CompareTo(other.X);
-      /*
-      int result = Z.CompareTo(other.Z);
-      if (result == 0)
-        result = X.CompareTo(other.X);
-      if (result == 0)
-        result = Y.CompareTo(other.Y);
-      */
       return result;
-
     }
 
     #endregion

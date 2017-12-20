@@ -10,6 +10,7 @@ namespace HeuristicLab.Problems.BinPacking3D.ResidualSpaceCalculation {
 
     /// <summary>
     /// Calculates all available residual spaces for a given point and returns them packed in a collection.
+    /// The returned collection has zero elements if the residual space is zero
     /// </summary>
     /// <param name="binPacking"></param>
     /// <param name="point"></param>

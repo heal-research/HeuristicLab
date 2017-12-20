@@ -8,7 +8,7 @@ namespace HeuristicLab.Problems.BinPacking3D.Geometry {
   /// <summary>
   /// A line is given as a point and a directing vector
   /// </summary>
-  internal class Line3D {
+  public class Line3D {
     public Vector3D Point;
     public Vector3D Direction;
 
@@ -29,9 +29,20 @@ namespace HeuristicLab.Problems.BinPacking3D.Geometry {
       return plane.Intersect(this);
     }
 
+    /// <summary>
+    /// Returns the intersection point of two lines.
+    /// It the lines doesn't intersect it returns null.
+    /// </summary>
+    /// <param name="line"></param>
+    /// <returns></returns>
     public Vector3D Intersect(Line3D line) {
       double r = 0;
       double s = 0;
+
+      // if they have the same source point, this point can be returned.
+      if (this.Point.Equals(line.Point)) {
+        return this.Point;
+      }
 
       if (Direction.X != 0) {
         r = (line.Point.X - this.Point.X) / (double)Direction.X;
@@ -48,13 +59,11 @@ namespace HeuristicLab.Problems.BinPacking3D.Geometry {
       } else if (line.Direction.Z != 0) {
         s = (this.Point.Z - line.Point.Z) / (double)line.Direction.Z;
       }
-
-      var a = r * this.Direction + this.Point;
-      var b = s * line.Direction + line.Point;
-      var c = a.Equals(b);
-      if (s!=0 && r!=0 && a.Equals(b)) {
-        
-        return a;
+      var p1 = r * this.Direction + this.Point;
+      var p2 = s * line.Direction + line.Point;
+      var c = p1.Equals(p2);
+      if (s!=0 && r!=0 && p1.Equals(p2)) {        
+        return p1;
       }
 
       return null;

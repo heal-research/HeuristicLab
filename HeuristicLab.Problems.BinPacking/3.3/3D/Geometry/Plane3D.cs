@@ -5,16 +5,17 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace HeuristicLab.Problems.BinPacking3D.Geometry {
-  internal enum Side { Top, Left, Bottom, Right, Front, Back }
+  public enum Side { Top, Left, Bottom, Right, Front, Back }
 
   /// <summary>
   /// A plane is given as a point and two directing vectors
   /// </summary>
-  internal class Plane3D {
+  public class Plane3D {
     public Vector3D Point { get; private set; }
     public Vector3D Direction1 { get; private set; }
     public Vector3D Direction2 { get; private set; }
     public Vector3D Normal { get; private set; }
+
     private int rhs;
 
     public Plane3D(PackingShape bin, Side side) {
@@ -92,14 +93,30 @@ namespace HeuristicLab.Problems.BinPacking3D.Geometry {
       rhs = Normal.X * Point.X + Normal.Y * Point.Y + Normal.Z * Point.Z;
     }
 
+    /// <summary>
+    /// Returns true if the given point is an element of the current plane
+    /// </summary>
+    /// <param name="point"></param>
+    /// <returns></returns>
     public bool IsElementOf(Vector3D point) {
       return Normal.X * point.X + Normal.Y * point.Y + Normal.Z * point.Z == rhs;
     }
 
+    /// <summary>
+    /// Returns true, if the given line intersects with the current plane
+    /// </summary>
+    /// <param name="line"></param>
+    /// <returns></returns>
     public bool Intersects(Line3D line) {
       return Intersect(line) != null;
     }
 
+    /// <summary>
+    /// Returns the point of intersection of a given line and the current plane.
+    /// It returns null if there is no intersection.
+    /// </summary>
+    /// <param name="line"></param>
+    /// <returns></returns>
     public Vector3D Intersect(Line3D line) {
       var denom = Normal * line.Direction;
       if (denom == 0) {

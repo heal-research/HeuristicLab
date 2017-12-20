@@ -31,7 +31,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace HeuristicLab.Problems.BinPacking3D.Packer {
-  public class BinPackerResidualSpaceBestFit : BinPacker {
+  internal class BinPackerResidualSpaceBestFit : BinPacker {
 
     #region Constructors for HEAL
     [StorableConstructor]
@@ -54,10 +54,10 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
     /// Each residual space belongs to an extreme point.
     /// </summary>
     /// <returns>Returns a collection of bin packing 3d objects. Each object represents a bin and the packed items</returns>
-    public override IList<BinPacking3D> PackItems(Permutation sortedItems, PackingShape binShape, IList<PackingItem> items, ExtremePointCreationMethod epGenerationMethod, bool useStackingConstraints) {
+    public override IList<BinPacking3D> PackItems(Permutation sortedItems, PackingShape binShape, IList<PackingItem> items, ExtremePointCreationMethod epCreationMethod, bool useStackingConstraints) {
       IList<BinPacking3D> packingList = new List<BinPacking3D>();
       IList<int> remainingIds = new List<int>(sortedItems);
-      IExtremePointCreator extremePointCreator = ExtremePointCreatorFactory.CreateExtremePointCreator(epGenerationMethod, useStackingConstraints);
+      IExtremePointCreator extremePointCreator = ExtremePointCreatorFactory.CreateExtremePointCreator(epCreationMethod, useStackingConstraints);
       bool rotated = false;
 
       foreach (var remainingId in remainingIds) {
@@ -99,12 +99,14 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
     public static IList<Tuple<BinPacking3D, PackingPosition, int>> GetResidualSpaceForAllPoints(IList<BinPacking3D> packingList, PackingItem item) {
       var residualSpacePoints = new List<Tuple<BinPacking3D, PackingPosition, int>>();
       foreach (BinPacking3D bp in packingList) {
-        foreach (var ep in bp.ExtremePoints) {
-          var rs = bp.ResidualSpaces[ep];
-          if (rs.Width < item.Width || rs.Height < item.Height || rs.Depth < item.Depth) {
+        foreach (var extremPoints in bp.ExtremePoints) {
+          var ep = extremPoints.Key;
+          var residualSpaces = extremPoints.Value.Where(rs => rs.Width < item.Width || rs.Height < item.Height || rs.Depth < item.Depth);
+          if (residualSpaces.Count() <= 0) {
             continue;
           }
-          residualSpacePoints.Add(Tuple.Create(bp, ep, CalculateResidualMerit(rs, item, ep)));
+          int merit = residualSpaces.Max(rs => CalculateResidualMerit(rs, item, ep));
+          residualSpacePoints.Add(Tuple.Create(bp, ep, merit));
         }
       }
       return residualSpacePoints;

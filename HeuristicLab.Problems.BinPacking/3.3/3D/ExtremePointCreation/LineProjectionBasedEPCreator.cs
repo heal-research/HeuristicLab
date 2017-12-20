@@ -14,55 +14,76 @@ namespace HeuristicLab.Problems.BinPacking3D.ExtremePointCreation {
   /// </summary>
   public class LineProjectionBasedEPCreator : ExtremePointCreator {
 
-
-
-
     protected override void UpdateExtremePoints(BinPacking3D binPacking, PackingItem item, PackingPosition position) {
-      // After a item has been placed, the residual space has to be recalculated.
-      //RecalculateResidualSpaces(binPacking);
-
-      //GenerateNewExtremePointsForItem(binPacking, item, position);
-
       binPacking.ExtremePoints.Clear();
-      binPacking.ResidualSpaces.Clear();
 
       foreach (var i in binPacking.Items) {
         PackingItem it = i.Value;
         PackingPosition p = binPacking.Positions[i.Key];
         GenerateNewExtremePointsForItem(binPacking, it, p);
       }
-      //RecalculateResidualSpaces(binPacking);
     }
 
     /// <summary>
-    /// Adds an new extreme point an the related residual space to a given bin packing.
-    /// - The given position has to be valid
-    /// - The residual space must not be zero
+    /// Adds a new extreme point an the related residual spaces to a given bin packing.
+    /// - The given position has to be valid.
+    /// - The extreme point does not exist in the bin packing.
+    /// - There must be at minimum one valid residual space. A residual space is invalid if the space is zero.
     /// </summary>
     /// <param name="binPacking"></param>
     /// <param name="position"></param>
-    /// <returns></returns>
+    /// <returns>True = the given point and its related residual spaces were successfully added to the bin packing</returns>
     protected override bool AddExtremePoint(BinPacking3D binPacking, PackingPosition position) {
       if (position == null) {
         return false;
       }
 
-      if (PointIsInItem(binPacking, new Vector3D(position))) {
+      if (PointIsInAnyItem(binPacking, new Vector3D(position))) {
+        return false;
+      }
+
+      if (binPacking.ExtremePoints.ContainsKey(position)) {
         return false;
       }
 
       var rs = CalculateResidualSpace(binPacking, new Vector3D(position));
 
-      if (rs.IsZero()) {
+      if (rs.Count() <= 0) {
         return false;
       }
 
-      if (!binPacking.ExtremePoints.Add(position)) {
+      // todo 
+      /*
+       ist der extrempunkt im residual space eines anderen muss ueberprueft werden:
+          - ist der andere ep in der luft, kann auch dieser hinzugefuegt werden.
+          - hat der andere ep ein item unterhalb, darf dieser nicht hinzugefuegt werden.
+       -> neu methode basierend auf IsWithinResidualSpaceOfAnotherExtremePoint, die den ep oder rs zurueck gibt, der einen anderen rs einschließt.
+          eventuell gehoert diese logik in den ResidualSpaceCreator.
+      if (LiesOnAnyItem(binPacking, position)) {
         return false;
-      }
+      }*/
 
-      binPacking.ResidualSpaces.Add(position, rs);
+      binPacking.ExtremePoints.Add(position, rs);
       return true;
+    }
+
+    private bool LiesOnAnyItem(BinPacking3D binPacking, PackingPosition position) {
+      if (position.Y == 0) {
+        return true;
+      }
+
+      var items = binPacking.Items.Where(x => {
+        var itemPosition = binPacking.Positions[x.Key];
+        var item = x.Value;
+        int width = itemPosition.Rotated ? item.Depth : item.Width;
+        int depth = itemPosition.Rotated ? item.Width : item.Depth;
+
+        return itemPosition.Y + item.Height == position.Y &&
+               itemPosition.X <= position.X && position.X < itemPosition.X + width &&
+               itemPosition.Z <= position.Z && position.Z < itemPosition.Z + depth;
+      });
+
+      return items.Count() > 0;
     }
 
     /// <summary>
@@ -82,7 +103,7 @@ namespace HeuristicLab.Problems.BinPacking3D.ExtremePointCreation {
 
     /// <summary>
     /// This method creates extreme points by using a point projection based method.
-    /// For each item there will be three points created and each of the point will be projected twice.
+    /// For each item there will be created three points and each of the points will be projected twice.
     /// The direction of the projection depends on position of the point.
     /// </summary>
     /// <param name="binPacking"></param>
@@ -117,7 +138,9 @@ namespace HeuristicLab.Problems.BinPacking3D.ExtremePointCreation {
       Vector3D sourcePoint = new Vector3D(position);
       if (sourcePoint.X < binPacking.BinShape.Width && sourcePoint.Y < binPacking.BinShape.Height && sourcePoint.Z < binPacking.BinShape.Depth) {
         Vector3D point = projectionMethod?.Invoke(binPacking, sourcePoint);
-        AddExtremePoint(binPacking, new PackingPosition(position.AssignedBin, point.X, point.Y, point.Z));
+        if (point != null) {
+          AddExtremePoint(binPacking, new PackingPosition(position.AssignedBin, point.X, point.Y, point.Z));
+        }
       }
     }
     #endregion
@@ -140,25 +163,38 @@ namespace HeuristicLab.Problems.BinPacking3D.ExtremePointCreation {
       var binShape = binPacking.BinShape;
 
       foreach (var ep in GetEpsOnLeft(binPacking, newItem, position)) {
-        AddExtremePoint(binPacking, ep);
+        AddExtremePoint(binPacking, ep.Key);
       }
 
       foreach (var ep in GetEpsBelow(binPacking, newItem, position)) {
-        AddExtremePoint(binPacking, ep);
+        AddExtremePoint(binPacking, ep.Key);
       }
 
       foreach (var ep in GetEpsBehind(binPacking, newItem, position)) {
-        AddExtremePoint(binPacking, ep);
+        AddExtremePoint(binPacking, ep.Key);
       }
     }
     #endregion
 
-
+    /// <summary>
+    /// Updates the residual spaces.
+    /// It removes not needed ones.
+    /// A residual space will be removed if the space is a subspace of another one and 
+    /// the current one has no item below or both have an item below. 
+    /// </summary>
+    /// <param name="binPacking"></param>
+    /// <param name="item"></param>
+    /// <param name="position"></param>
     protected override void UpdateResidualSpace(BinPacking3D binPacking, PackingItem item, PackingPosition position) {
-      return;
     }
 
-    private bool PointIsInItem(BinPacking3D binPacking, Vector3D point) {
+    /// <summary>
+    /// Returns true if any item in the bin packing encapsulates the given point
+    /// </summary>
+    /// <param name="binPacking"></param>
+    /// <param name="point"></param>
+    /// <returns></returns>
+    private bool PointIsInAnyItem(BinPacking3D binPacking, Vector3D point) {
       foreach (var item in binPacking.Items) {
         PackingPosition position = binPacking.Positions[item.Key];
         var depth = position.Rotated ? item.Value.Width : item.Value.Depth;
@@ -181,25 +217,6 @@ namespace HeuristicLab.Problems.BinPacking3D.ExtremePointCreation {
     /// <returns></returns>
     private bool ItemIsInRs(KeyValuePair<PackingPosition, ResidualSpace> rs, PackingItem item, PackingPosition position) {
       return GetVertices(item, position).Where(pos => pos.IsInside(rs.Key, rs.Value)).Any();
-    }
-
-    /// <summary>
-    /// Recalculates the residual spaces if needed.
-    /// It checks if an item is in an residual space and if so the residual space will be recalculated.
-    /// If the residual space has gone to zero, this residual space and its related extreme point will be removed.
-    /// </summary>
-    /// <param name="binPacking"></param>
-    private void RecalculateResidualSpaces(BinPacking3D binPacking) {
-      var recalculatedSpaces = new Dictionary<PackingPosition, ResidualSpace>();
-      foreach (var ep in binPacking.ExtremePoints.ToList()) {
-        var newRs = CalculateResidualSpace(binPacking, new Vector3D(ep));
-        if (!newRs.IsZero() && !PointIsInItem(binPacking, new Vector3D(ep))) {
-          recalculatedSpaces.Add(ep, newRs);
-        } else {
-          binPacking.ExtremePoints.Remove(ep);
-        }
-      }
-      binPacking.ResidualSpaces = recalculatedSpaces;
     }
 
     protected IEnumerable<Tuple<PackingPosition, PackingItem>> GetItemsBelow(BinPacking3D binPacking, PackingItem item, PackingPosition position) {
@@ -227,33 +244,46 @@ namespace HeuristicLab.Problems.BinPacking3D.ExtremePointCreation {
     }
 
     /// <summary>
-    /// Returns the extremepoints on the left side of an given item
+    /// Returns the extreme points and its related residual spaces on the left side of an given item.
+    /// This extreme points are being created by intersecting two edges on the left side of the given item 
+    /// (left - in front, left - on top) with all edges on the right side of all other items int the bin packing.
     /// </summary>
     /// <param name="item"></param>
     /// <param name="position"></param>
     /// <returns></returns>
-    private IList<PackingPosition> GetEpsOnLeft(BinPacking3D binPacking, PackingItem item, PackingPosition position) {
-      IList<PackingPosition> eps = new List<PackingPosition>();
+    private IDictionary<PackingPosition, IEnumerable<ResidualSpace>> GetEpsOnLeft(BinPacking3D binPacking, PackingItem item, PackingPosition position) {
+      var eps = new SortedList<PackingPosition, IEnumerable<ResidualSpace>>();
       IEnumerable<Tuple<PackingPosition, PackingItem>> items = GetItemsOnLeft(binPacking, item, position);
       var edges = GetProjectionEdgesOnLeft(item, position);
 
       foreach (var otherItem in items) {
+        if (position.Equals(otherItem.Item1)) {
+          continue;
+        }
+
         var otherItemEdges = GetEdgesOnRight(otherItem.Item2, otherItem.Item1);
+        // left - in front
         foreach (var ep in IntersectionsForItem(edges[0], otherItemEdges, new Vector3D(1, 0, 0))) {
           if (ep.X < binPacking.BinShape.Width && ep.Y < binPacking.BinShape.Height && ep.Z < binPacking.BinShape.Depth) {
+            // As this edge has a vertical direction, every point of intersection won't have an item below.
+            // So finally it is being projected down.
             var point = ProjectDown(binPacking, ProjectLeft(binPacking, ep));
-            var residualSpace = CalculateResidualSpace(binPacking, point);
-            if (!residualSpace.IsZero()) {
-              eps.Add(point.ToPackingPosition(position.AssignedBin));
+            var residualSpaces = CalculateResidualSpace(binPacking, point);
+            var newExtremePoint = point.ToPackingPosition(position.AssignedBin);
+            if (residualSpaces.Count() > 0 && !eps.ContainsKey(newExtremePoint)) {
+              eps.Add(newExtremePoint, residualSpaces);
             }
           }
         }
+
+        // left - on top
         foreach (var ep in IntersectionsForItem(edges[1], otherItemEdges, new Vector3D(1, 0, 0))) {
           if (ep.X < binPacking.BinShape.Width && ep.Y < binPacking.BinShape.Height && ep.Z < binPacking.BinShape.Depth) {
             var point = ProjectLeft(binPacking, ep);
-            var residualSpace = CalculateResidualSpace(binPacking, point);
-            if (!residualSpace.IsZero()) {
-              eps.Add(point.ToPackingPosition(position.AssignedBin));
+            var residualSpaces = CalculateResidualSpace(binPacking, point);
+            var newExtremePoint = point.ToPackingPosition(position.AssignedBin);
+            if (residualSpaces.Count() > 0 && !eps.ContainsKey(newExtremePoint)) {
+              eps.Add(newExtremePoint, residualSpaces);
             }
           }
         }
@@ -263,33 +293,44 @@ namespace HeuristicLab.Problems.BinPacking3D.ExtremePointCreation {
 
 
     /// <summary>
-    /// Returns the extremepoints below of an given item
+    /// Returns the extreme points and its related residual spaces below of an given item.
+    /// This extreme points are being created by intersecting two edges below of the given item 
+    /// (below - in front, below - right) with all edges on top side of all other items int the bin packing.
     /// </summary>
     /// <param name="item"></param>
     /// <param name="position"></param>
     /// <returns></returns>
-    private IList<PackingPosition> GetEpsBelow(BinPacking3D binPacking, PackingItem item, PackingPosition position) {
-      IList<PackingPosition> eps = new List<PackingPosition>();
+    private IDictionary<PackingPosition, IEnumerable<ResidualSpace>> GetEpsBelow(BinPacking3D binPacking, PackingItem item, PackingPosition position) {
+      var eps = new SortedList<PackingPosition, IEnumerable<ResidualSpace>>();
       IEnumerable<Tuple<PackingPosition, PackingItem>> items = GetItemsBelow(binPacking, position);
       var edges = GetProjectionEdgesBelow(item, position);
 
       foreach (var otherItem in items) {
+        if (position.Equals(otherItem.Item1)) {
+          continue;
+        }
+
         var otherItemEdges = GetEdgesOnTop(otherItem.Item2, otherItem.Item1);
+        // below - in front
         foreach (var ep in IntersectionsForItem(edges[0], otherItemEdges, new Vector3D(0, 1, 0))) {
           if (ep.X < binPacking.BinShape.Width && ep.Y < binPacking.BinShape.Height && ep.Z < binPacking.BinShape.Depth) {
             var point = ProjectDown(binPacking, ep);
-            var residualSpace = CalculateResidualSpace(binPacking, point);
-            if (!residualSpace.IsZero()) {
-              eps.Add(point.ToPackingPosition(position.AssignedBin));
+            var residualSpaces = CalculateResidualSpace(binPacking, point);
+            var newExtremePoint = point.ToPackingPosition(position.AssignedBin);
+            if (residualSpaces.Count() > 0 && !eps.ContainsKey(newExtremePoint)) {
+              eps.Add(newExtremePoint, residualSpaces);
             }
           }
         }
+
+        // below - right
         foreach (var ep in IntersectionsForItem(edges[1], otherItemEdges, new Vector3D(0, 1, 0))) {
           if (ep.X < binPacking.BinShape.Width && ep.Y < binPacking.BinShape.Height && ep.Z < binPacking.BinShape.Depth) {
             var point = ProjectDown(binPacking, ep);
-            var residualSpace = CalculateResidualSpace(binPacking, point);
-            if (!residualSpace.IsZero()) {
-              eps.Add(point.ToPackingPosition(position.AssignedBin));
+            var residualSpaces = CalculateResidualSpace(binPacking, point);
+            var newExtremePoint = point.ToPackingPosition(position.AssignedBin);
+            if (residualSpaces.Count() > 0 && !eps.ContainsKey(newExtremePoint)) {
+              eps.Add(newExtremePoint, residualSpaces);
             }
           }
         }
@@ -298,33 +339,46 @@ namespace HeuristicLab.Problems.BinPacking3D.ExtremePointCreation {
     }
 
     /// <summary>
-    /// Returns 
+    /// Returns the extreme points and its related residual spaces below of an given item.
+    /// This extreme points are being created by intersecting two edges below of the given item 
+    /// (right - behind, on top - behind) with all edges on top side of all other items int the bin packing.
     /// </summary>
     /// <param name="item"></param>
     /// <param name="position"></param>
     /// <returns></returns>
-    private IList<PackingPosition> GetEpsBehind(BinPacking3D binPacking, PackingItem item, PackingPosition position) {
-      IList<PackingPosition> eps = new List<PackingPosition>();
+    private IDictionary<PackingPosition, IEnumerable<ResidualSpace>> GetEpsBehind(BinPacking3D binPacking, PackingItem item, PackingPosition position) {
+      var eps = new SortedList<PackingPosition, IEnumerable<ResidualSpace>>();
       IEnumerable<Tuple<PackingPosition, PackingItem>> items = GetItemsBehind(binPacking, position);
       var edges = GetProjectionEdgesBehind(item, position);
 
       foreach (var otherItem in items) {
+        if (position.Equals(otherItem.Item1)) {
+          continue;
+        }
+
         var otherItemEdges = GetEdgesInFront(otherItem.Item2, otherItem.Item1);
+        // right - behind
         foreach (var ep in IntersectionsForItem(edges[0], otherItemEdges, new Vector3D(0, 0, 1))) {
           if (ep.X < binPacking.BinShape.Width && ep.Y < binPacking.BinShape.Height && ep.Z < binPacking.BinShape.Depth) {
+            // As this edge has a vertical direction, every point of intersection won't have an item below.
+            // So finally it is being projected down.
             var point = ProjectDown(binPacking, ProjectBackward(binPacking, ep));
-            var residualSpace = CalculateResidualSpace(binPacking, point);
-            if (!residualSpace.IsZero()) {
-              eps.Add(point.ToPackingPosition(position.AssignedBin));
+            var residualSpaces = CalculateResidualSpace(binPacking, point);
+            var newExtremePoint = point.ToPackingPosition(position.AssignedBin);
+            if (residualSpaces.Count() > 0 && !eps.ContainsKey(newExtremePoint)) {
+              eps.Add(newExtremePoint, residualSpaces);
             }
           }
         }
+
+        // on top - behind
         foreach (var ep in IntersectionsForItem(edges[1], otherItemEdges, new Vector3D(0, 0, 1))) {
           if (ep.X < binPacking.BinShape.Width && ep.Y < binPacking.BinShape.Height && ep.Z < binPacking.BinShape.Depth) {
             var point = ProjectBackward(binPacking, ep);
-            var residualSpace = CalculateResidualSpace(binPacking, point);
-            if (!residualSpace.IsZero()) {
-              eps.Add(point.ToPackingPosition(position.AssignedBin));
+            var residualSpaces = CalculateResidualSpace(binPacking, point);
+            var newExtremePoint = point.ToPackingPosition(position.AssignedBin);
+            if (residualSpaces.Count() > 0 && !eps.ContainsKey(newExtremePoint)) {
+              eps.Add(newExtremePoint, residualSpaces);
             }
           }
         }
@@ -451,10 +505,14 @@ namespace HeuristicLab.Problems.BinPacking3D.ExtremePointCreation {
     #region Intersections
 
     /// <summary>
-    /// 
+    /// Returns a collection of points where a given edge (projectedEdge) intersects with other edges.
+    /// The given edge (projectedEdge) will be projected by using the given vector direction
+    /// and a edge of the given edge collection.
+    /// The returned collecten can be empty.
     /// </summary>
     /// <param name="projectedEdge"></param>
     /// <param name="edges"></param>
+    /// <param name="direction"></param>
     /// <returns></returns>
     private IEnumerable<Vector3D> IntersectionsForItem(Edge3D projectedEdge, Edge3D[] edges, Vector3D direction = null) {
       IList<Vector3D> eps = new List<Vector3D>();
@@ -485,11 +543,16 @@ namespace HeuristicLab.Problems.BinPacking3D.ExtremePointCreation {
 
     #endregion
 
-    
-    protected override ResidualSpace CalculateResidualSpace(BinPacking3D binPacking, Vector3D pos) {
-      return ResidualSpaceCalculatorFactory.CreateCalculator().CalculateResidualSpaces(binPacking, pos).First();
+    /// <summary>
+    /// Calculates the residual spaces for an extreme point.
+    /// </summary>
+    /// <param name="binPacking"></param>
+    /// <param name="pos"></param>
+    /// <returns></returns>
+    protected override IEnumerable<ResidualSpace> CalculateResidualSpace(BinPacking3D binPacking, Vector3D pos) {
+      return ResidualSpaceCalculatorFactory.CreateCalculator().CalculateResidualSpaces(binPacking, pos);
     }
   }
 
-  
+
 }

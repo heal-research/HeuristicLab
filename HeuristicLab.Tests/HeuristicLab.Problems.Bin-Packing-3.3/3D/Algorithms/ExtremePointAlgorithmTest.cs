@@ -7,7 +7,7 @@ using HeuristicLab.Problems.BinPacking._3D.Utils.Tests;
 using System.Threading;
 using System.Linq;
 
-namespace HeuristicLab.Problems.BinPacking._3D.Tests {
+namespace HeuristicLab.Problems.BinPacking._3D.Algorithms.Tests {
   [TestClass]
   public class ExtremePointAlgorithmTest {
 
@@ -49,6 +49,7 @@ namespace HeuristicLab.Problems.BinPacking._3D.Tests {
 
     [TestMethod]
     [TestCategory("Problems.BinPacking.3D")]
+    [TestProperty("Time", "long")]
     public void TestExtremePointAlgorithm() {
        
       IList<BinPacking3D.PackingPosition> positionsBin0 = new List<BinPacking3D.PackingPosition>() {
@@ -75,6 +76,7 @@ namespace HeuristicLab.Problems.BinPacking._3D.Tests {
       object[] parameters = new object[] { _packingShape3, _items, new SortingMethod[] { SortingMethod.Given }, new FittingMethod[] { FittingMethod.FirstFit }, new CancellationToken() };
       _extremPointAlgorithm.SortingMethodParameter.Value.Value = SortingMethod.Given;
       _extremPointAlgorithm.FittingMethodParameter.Value.Value = FittingMethod.FirstFit;
+      _extremPointAlgorithm.ExtremePointCreationMethodParameter.Value.Value = ExtremePointCreationMethod.PointProjection;
       _extremPointAlgorithm.SortByMaterialParameter.Value.Value = false;
       var result = TestUtils.InvokeMethod(typeof(ExtremePointAlgorithm), _extremPointAlgorithm, "GetBest", parameters) as Tuple<Solution, double, SortingMethod?, FittingMethod?>;
 

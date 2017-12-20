@@ -23,6 +23,7 @@ using System;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 using HeuristicLab.Problems.BinPacking3D;
+using System.Collections.Generic;
 
 namespace HeuristicLab.Problems.BinPacking.Views {
   [View("3-dimensional packing plan View")]
@@ -74,11 +75,11 @@ namespace HeuristicLab.Problems.BinPacking.Views {
       foreach (var item in packing.Items) {
         itemSelection.Items.Add(item.Key);
       }
-      foreach (var ep in ((BinPacking3D.BinPacking3D)packing).ExtremePoints) {
-        var rs = ((BinPacking3D.BinPacking3D)packing).ResidualSpaces[ep];
+      foreach (var extremPoint in ((BinPacking3D.BinPacking3D)packing).ExtremePoints) {
+        var ep = extremPoint.Key;
         extremePointsSelection.Items.Add($"({ep.X}, {ep.Y}, {ep.Z})");
         packingPlan3D.ExtremePoints.Add(ep);
-        packingPlan3D.ResidualSpaces.Add(ep, rs);
+        packingPlan3D.ResidualSpaces.Add(ep, extremPoint.Value as IList<ResidualSpace>);
       }
 
       ShowSelectedPacking();

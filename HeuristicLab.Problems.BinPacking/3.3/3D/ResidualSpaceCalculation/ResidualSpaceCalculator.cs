@@ -9,20 +9,22 @@ namespace HeuristicLab.Problems.BinPacking3D.ResidualSpaceCalculation {
   internal class ResidualSpaceCalculator : IResidualSpaceCalculator {
 
     internal ResidualSpaceCalculator() {}
-
+    
     public IEnumerable<ResidualSpace> CalculateResidualSpaces(BinPacking3D binPacking, Vector3D point) {
       IList<ResidualSpace> residualSpaces = new List<ResidualSpace>();
       var rs1 = CalculateXZY(binPacking, point);
       var rs2 = CalculateZYX(binPacking, point);
       var rs3 = CalculateYXZ(binPacking, point);
 
-      residualSpaces.Add(rs1);
+      if (!rs1.IsZero()) {
+        residualSpaces.Add(rs1);
+      }     
 
 
-      if (!residualSpaces.Any(rs => rs.Equals(rs2))) {
+      if (!rs2.IsZero() && !residualSpaces.Any(rs => rs.Equals(rs2))) {
         residualSpaces.Add(rs2);
       }
-      if (!residualSpaces.Any(rs => rs.Equals(rs3))) {
+      if (!rs3.IsZero() && !residualSpaces.Any(rs => rs.Equals(rs3))) {
         residualSpaces.Add(rs3);
       }
       return residualSpaces;
@@ -55,6 +57,14 @@ namespace HeuristicLab.Problems.BinPacking3D.ResidualSpaceCalculation {
       return rs;
     }
     
+    /// <summary>
+    /// Returnst true if a given residual space and item overlaps at the x-axis
+    /// </summary>
+    /// <param name="point"></param>
+    /// <param name="residualSpace"></param>
+    /// <param name="position"></param>
+    /// <param name="item"></param>
+    /// <returns></returns>
     private bool OverlapsX(Vector3D point, ResidualSpace residualSpace, PackingPosition position, PackingItem item) {
       if (point.X > position.X && point.X >= position.X + item.Width) {
         return false;
@@ -65,7 +75,14 @@ namespace HeuristicLab.Problems.BinPacking3D.ResidualSpaceCalculation {
       }
       return true;
     }
-    
+
+    /// <summary>
+    /// Returnst true if a given residual space and item overlaps at the y-axis
+    /// </summary>
+    /// <param name="point"></param>
+    /// <param name="residualSpace"></param>
+    /// <param name="position"></param>
+    /// <param name="item"></param>
     private bool OverlapsY(Vector3D point, ResidualSpace residualSpace, PackingPosition position, PackingItem item) {
       if (point.Y > position.Y && point.Y >= position.Y + item.Height) {
         return false;
@@ -77,6 +94,13 @@ namespace HeuristicLab.Problems.BinPacking3D.ResidualSpaceCalculation {
       return true;
     }
 
+    /// <summary>
+    /// Returnst true if a given residual space and item overlaps at the z-axis
+    /// </summary>
+    /// <param name="point"></param>
+    /// <param name="residualSpace"></param>
+    /// <param name="position"></param>
+    /// <param name="item"></param>
     private bool OverlapsZ(Vector3D point, ResidualSpace residualSpace, PackingPosition position, PackingItem item) {
       if (point.Z > position.Z && point.Z >= position.Z + item.Depth) {
         return false;
@@ -89,6 +113,7 @@ namespace HeuristicLab.Problems.BinPacking3D.ResidualSpaceCalculation {
     }
 
     private bool OverlapsOnRight(Vector3D point, ResidualSpace residualSpace, PackingPosition position, PackingItem item) {
+      // if point.x >= position.x, the residual space would be located on the left side!
       if (point.X >= position.X) {
         return false;
       }

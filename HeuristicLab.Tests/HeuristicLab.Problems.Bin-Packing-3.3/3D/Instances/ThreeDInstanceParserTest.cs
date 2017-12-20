@@ -5,7 +5,7 @@ using HeuristicLab.Problems.BinPacking3D.Instances;
 using System.Collections.Generic;
 using HeuristicLab.Problems.BinPacking3D;
 
-namespace HeuristicLab.Problems.BinPacking._3D.Tests {
+namespace HeuristicLab.Problems.BinPacking._3D.Instances.Tests {
   [TestClass]
   public class ThreeDInstanceParserTest {
     private PackingShape _packingShape;
@@ -46,6 +46,7 @@ namespace HeuristicLab.Problems.BinPacking._3D.Tests {
 
     [TestMethod]
     [TestCategory("Problems.BinPacking.3D")]
+    [TestProperty("Time", "short")]
     public void TestParse() {
       string path = @".\..\HeuristicLab.Tests\HeuristicLab.Problems.Bin-Packing-3.3\TestInstances\Parser\3D-UnitTestParser1.txt";
       ThreeDInstanceParser parser = new ThreeDInstanceParser();
@@ -72,6 +73,7 @@ namespace HeuristicLab.Problems.BinPacking._3D.Tests {
 
     [TestMethod]
     [TestCategory("Problems.BinPacking.3D")]
+    [TestProperty("Time", "short")]
     public void TestParseUncompleteFile() {
       string path = @".\..\HeuristicLab.Tests\HeuristicLab.Problems.Bin-Packing-3.3\TestInstances\Parser\3D-UnitTestParser2.txt";
       ThreeDInstanceParser parser = new ThreeDInstanceParser();

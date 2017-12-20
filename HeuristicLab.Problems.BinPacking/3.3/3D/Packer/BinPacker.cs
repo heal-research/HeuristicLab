@@ -32,14 +32,8 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace HeuristicLab.Problems.BinPacking3D.Packer {
-  public abstract class BinPacker : Item {
-
-    /*
-    [Storable]
-    IPositionFinder PositionFinder
+  internal abstract class BinPacker : Item, IBinPacker {
     
-    */
-
     #region Constructors for HEAL
 
     
@@ -48,7 +42,6 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
 
     protected BinPacker(BinPacker original, Cloner cloner) 
       : base(original, cloner) {
-      //this.PositionFinder = original.PositionFinder;
     }
 
     #endregion
@@ -98,7 +91,9 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
         packingItem.TargetBin, packingItem.Weight, packingItem.Material);
 
       // The extremepoints are sortet by Y / Z / X
-      return packingBin.ExtremePoints.Where(x => packingBin.IsPositionFeasible(newItem, x, useStackingConstraints)).FirstOrDefault();
+      var newPosition = packingBin.ExtremePoints.Where(x => packingBin.IsPositionFeasible(newItem, x.Key, useStackingConstraints)).FirstOrDefault();
+     
+      return newPosition.Key;
     }
 
     /// <summary>

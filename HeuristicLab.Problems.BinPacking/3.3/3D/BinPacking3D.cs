@@ -33,21 +33,16 @@ namespace HeuristicLab.Problems.BinPacking3D {
   [Item("BinPacking3D", "Represents a single-bin packing for a 3D bin-packing problem.")]
   [StorableClass]
   public class BinPacking3D : BinPacking<PackingPosition, PackingShape, PackingItem> {
-
+    
     [Storable]
-    public Dictionary<PackingPosition, ResidualSpace> ResidualSpaces { get; set; }
-
-    [Storable]
-    public SortedSet<PackingPosition> ExtremePoints { get; protected set; }
+    public IDictionary<PackingPosition, IEnumerable<ResidualSpace>> ExtremePoints { get; protected set; }
 
 
     public BinPacking3D(PackingShape binShape)
       : base(binShape) {
-      ExtremePoints = new SortedSet<PackingPosition>();
-      ResidualSpaces = new Dictionary<PackingPosition, ResidualSpace>();
+      ExtremePoints = new SortedList<PackingPosition, IEnumerable<ResidualSpace>>();
       
-      ExtremePoints.Add(binShape.Origin);
-      ResidualSpaces.Add(binShape.Origin, new ResidualSpace(BinShape.Width, BinShape.Height, BinShape.Depth));
+      ExtremePoints.Add(binShape.Origin, new List<ResidualSpace>() {ResidualSpace.Create(binShape.Width, binShape.Height, binShape.Depth)});
     }
 
     [StorableConstructor]
@@ -55,29 +50,22 @@ namespace HeuristicLab.Problems.BinPacking3D {
 
     protected BinPacking3D(BinPacking3D original, Cloner cloner)
       : base(original, cloner) {
-      this.ResidualSpaces = new Dictionary<PackingPosition, ResidualSpace>();
-      foreach (var o in original.ResidualSpaces)
-        this.ResidualSpaces.Add(cloner.Clone(o.Key), ResidualSpace.Create(o.Value));
 
-      this.ExtremePoints = new SortedSet<PackingPosition>(original.ExtremePoints.Select(p => cloner.Clone(p)));
+      this.ExtremePoints = new SortedList<PackingPosition, IEnumerable<ResidualSpace>>();
+      foreach (var extremePoint in original.ExtremePoints) {
+        var residualSpaces = new List<ResidualSpace>();
+        foreach (var residualSpace in extremePoint.Value) {
+          residualSpaces.Add(cloner.Clone(residualSpace));
+        }
+        ExtremePoints.Add(cloner.Clone(extremePoint.Key), residualSpaces);
+      }
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new BinPacking3D(this, cloner);
     }
 
-
-    [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserialization() {
-      // BackwardsCompatibility3.3
-      #region Backwards compatible code, remove with 3.4
-      if (ResidualSpaces == null)
-        ResidualSpaces = new Dictionary<PackingPosition, ResidualSpace>();
-      #endregion
-    }
-
-
-
+    
 
     /// <summary>
     /// Puts a given item into the bin packing at the given position.
@@ -89,7 +77,6 @@ namespace HeuristicLab.Problems.BinPacking3D {
       Items[itemID] = item;
       Positions[itemID] = position;
       ExtremePoints.Remove(position);
-      ResidualSpaces.Remove(position);
     }
 
     /*

@@ -73,14 +73,14 @@ namespace HeuristicLab.Problems.BinPacking.Views {
 
     private Dictionary<int, DiffuseMaterial> materials;
 
-    public ObservableDictionary<BinPacking3D.PackingPosition, ResidualSpace> ResidualSpaces { get; set; }
+    public ObservableDictionary<BinPacking3D.PackingPosition, IList<ResidualSpace>> ResidualSpaces { get; set; }
     public ObservableCollection<BinPacking3D.PackingPosition> ExtremePoints { get; set; }
 
     public Container3DView() {
       InitializeComponent();
       camMain.Position = new Point3D(0.5, 3, 3); // for design time we use a different camera position 
       materials = new Dictionary<int, DiffuseMaterial>();
-      ResidualSpaces = new ObservableDictionary<BinPacking3D.PackingPosition, ResidualSpace>();
+      ResidualSpaces = new ObservableDictionary<BinPacking3D.PackingPosition, IList<ResidualSpace>>();
       ExtremePoints = new ObservableCollection<BinPacking3D.PackingPosition>();
       selectedExtremePointIndex = -1;
       Clear();
@@ -239,19 +239,21 @@ namespace HeuristicLab.Problems.BinPacking.Views {
 
     private void AddResidualSpacesForExtremePoint(Model3DGroup modelGroup, BinPacking3D.PackingPosition extremePoint) {
       if (showResidualSpaces) {
-        var rs = ResidualSpaces[extremePoint];
-        var containerModel1 = new GeometryModel3D(new MeshGeometry3D(), new DiffuseMaterial(new SolidColorBrush(residualSpaceColor)));
+        foreach (var rs in ResidualSpaces[extremePoint]) {
+          var containerModel1 = new GeometryModel3D(new MeshGeometry3D(), new DiffuseMaterial(new SolidColorBrush(residualSpaceColor)));
 
-        modelGroup.Children.Add(containerModel1);
-        AddWireframeCube((MeshGeometry3D)containerModel1.Geometry,
-          extremePoint.X,
-          extremePoint.Y,
-          extremePoint.Z,
-          rs.Width,
-          rs.Height,
-          rs.Depth);
+          modelGroup.Children.Add(containerModel1);
 
+          AddWireframeCube((MeshGeometry3D)containerModel1.Geometry,
+            extremePoint.X,
+            extremePoint.Y,
+            extremePoint.Z,
+            rs.Width,
+            rs.Height,
+            rs.Depth);
+        }
       }
+       
     }
 
 

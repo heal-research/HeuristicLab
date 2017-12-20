@@ -11,7 +11,11 @@ namespace HeuristicLab.Problems.BinPacking3D.Geometry {
     public int Y { get; set; }
     public int Z { get; set; }
 
-    public Vector3D() { }
+    public Vector3D() {
+      X = 0;
+      Y = 0;
+      Z = 0;
+    }
     public Vector3D(int x, int y, int z) {
       X = x;
       Y = y;
@@ -82,6 +86,10 @@ namespace HeuristicLab.Problems.BinPacking3D.Geometry {
       return X >= pos.X && X < pos.X + rs.Width
         && Y >= pos.Y && Y < pos.Y + rs.Height
         && Z >= pos.Z && Z < pos.Z + rs.Depth;
+    }
+
+    public bool IsInside(PackingPosition pos, IEnumerable<ResidualSpace> rs) {
+      return rs.Any(x => IsInside(pos, x));
     }
 
     public static int operator *(Vector3D a, Vector3D b) {

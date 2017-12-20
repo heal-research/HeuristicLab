@@ -45,9 +45,9 @@ namespace HeuristicLab.Problems.BinPacking3D.ExtremePointCreation {
       if (sourcePoint.X < binShape.Width && sourcePoint.Y < binShape.Height && sourcePoint.Z < binShape.Depth) {
         // Projecting onto the XZ-plane
         var below = ProjectDown(binPacking, sourcePoint);
-        var residualSpace = CalculateResidualSpace(binPacking, below);
-        if (!residualSpace.IsZero()
-          && !IsWithinResidualSpaceOfAnotherExtremePoint(binPacking, below, residualSpace)) {
+        var residualSpaces = CalculateResidualSpace(binPacking, below);
+        if (residualSpaces.Count() > 0
+          && !IsWithinResidualSpaceOfAnotherExtremePoint(binPacking, below, residualSpaces)) {
           // add only if the projected point's residual space is not a sub-space
           // of another extreme point's residual space
           var belowPoint = new PackingPosition(position.AssignedBin, below.X, below.Y, below.Z);
@@ -55,9 +55,9 @@ namespace HeuristicLab.Problems.BinPacking3D.ExtremePointCreation {
         }
         // Projecting onto the XY-plane
         var back = ProjectBackward(binPacking, sourcePoint);
-        residualSpace = CalculateResidualSpace(binPacking, back);
-        if (!residualSpace.IsZero()
-          && !IsWithinResidualSpaceOfAnotherExtremePoint(binPacking, back, residualSpace)) {
+        residualSpaces = CalculateResidualSpace(binPacking, back);
+        if (residualSpaces.Count() > 0
+          && !IsWithinResidualSpaceOfAnotherExtremePoint(binPacking, back, residualSpaces)) {
           // add only if the projected point's residual space is not a sub-space
           // of another extreme point's residual space
           var backPoint = new PackingPosition(position.AssignedBin, back.X, back.Y, back.Z);
@@ -70,9 +70,9 @@ namespace HeuristicLab.Problems.BinPacking3D.ExtremePointCreation {
       if (sourcePoint.X < binShape.Width && sourcePoint.Y < binShape.Height && sourcePoint.Z < binShape.Depth) {
         // Projecting onto the YZ-plane
         var left = ProjectLeft(binPacking, sourcePoint);
-        var residualSpace = CalculateResidualSpace(binPacking, left);
-        if (!residualSpace.IsZero()
-          && !IsWithinResidualSpaceOfAnotherExtremePoint(binPacking, left, residualSpace)) {
+        var residualSpaces = CalculateResidualSpace(binPacking, left);
+        if (residualSpaces.Count() > 0
+          && !IsWithinResidualSpaceOfAnotherExtremePoint(binPacking, left, residualSpaces)) {
           // add only if the projected point's residual space is not a sub-space
           // of another extreme point's residual space
           var leftPoint = new PackingPosition(position.AssignedBin, left.X, left.Y, left.Z);
@@ -80,9 +80,9 @@ namespace HeuristicLab.Problems.BinPacking3D.ExtremePointCreation {
         }
         // Projecting onto the XY-plane
         var back = ProjectBackward(binPacking, sourcePoint);
-        residualSpace = CalculateResidualSpace(binPacking, back);
-        if (!residualSpace.IsZero()
-          && !IsWithinResidualSpaceOfAnotherExtremePoint(binPacking, back, residualSpace)) {
+        residualSpaces = CalculateResidualSpace(binPacking, back);
+        if (residualSpaces.Count() > 0
+          && !IsWithinResidualSpaceOfAnotherExtremePoint(binPacking, back, residualSpaces)) {
           // add only if the projected point's residual space is not a sub-space
           // of another extreme point's residual space
           var backPoint = new PackingPosition(position.AssignedBin, back.X, back.Y, back.Z);
@@ -95,9 +95,9 @@ namespace HeuristicLab.Problems.BinPacking3D.ExtremePointCreation {
       if (sourcePoint.X < binShape.Width && sourcePoint.Y < binShape.Height && sourcePoint.Z < binShape.Depth) {
         // Projecting onto the XZ-plane
         var below = ProjectDown(binPacking, sourcePoint);
-        var residualSpace = CalculateResidualSpace(binPacking, below);
-        if (!residualSpace.IsZero()
-          && !IsWithinResidualSpaceOfAnotherExtremePoint(binPacking, below, residualSpace)) {
+        var residualSpaces = CalculateResidualSpace(binPacking, below);
+        if (residualSpaces.Count() > 0
+          && !IsWithinResidualSpaceOfAnotherExtremePoint(binPacking, below, residualSpaces)) {
           // add only if the projected point's residual space is not a sub-space
           // of another extreme point's residual space
           var belowPoint = new PackingPosition(position.AssignedBin, below.X, below.Y, below.Z);
@@ -105,9 +105,9 @@ namespace HeuristicLab.Problems.BinPacking3D.ExtremePointCreation {
         }
         // Projecting onto the YZ-plane
         var left = ProjectLeft(binPacking, sourcePoint);
-        residualSpace = CalculateResidualSpace(binPacking, left);
-        if (!residualSpace.IsZero()
-          && !IsWithinResidualSpaceOfAnotherExtremePoint(binPacking, left, residualSpace)) {
+        residualSpaces = CalculateResidualSpace(binPacking, left);
+        if (residualSpaces.Count() > 0
+          && !IsWithinResidualSpaceOfAnotherExtremePoint(binPacking, left, residualSpaces)) {
           // add only if the projected point's residual space is not a sub-space
           // of another extreme point's residual space
           var leftPoint = new PackingPosition(position.AssignedBin, left.X, left.Y, left.Z);
@@ -190,9 +190,38 @@ namespace HeuristicLab.Problems.BinPacking3D.ExtremePointCreation {
     /// <param name="pos"></param>
     /// <param name="residualSpace"></param>
     /// <returns></returns>
-    protected virtual bool IsWithinResidualSpaceOfAnotherExtremePoint(BinPacking3D binPacking, Vector3D pos, ResidualSpace residualSpace) {
-      var eps = binPacking.ExtremePoints.Where(x => !pos.Equals(x) && pos.IsInside(x, binPacking.ResidualSpaces[x]));
-      return eps.Any(x => IsWithinResidualSpaceOfAnotherExtremePoint(pos, residualSpace, x, binPacking.ResidualSpaces[x]));
+    protected bool IsWithinResidualSpaceOfAnotherExtremePoint(BinPacking3D binPacking, Vector3D pos, ResidualSpace residualSpace) {
+      var eps = binPacking.ExtremePoints.Where(x => !pos.Equals(x.Key) && pos.IsInside(x.Key, x.Value));
+      return eps.Any(x => IsWithinResidualSpaceOfAnotherExtremePoint(pos, residualSpace, x.Key, x.Value));
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="binPacking"></param>
+    /// <param name="pos"></param>
+    /// <param name="residualSpaces"></param>
+    /// <returns></returns>
+    protected bool IsWithinResidualSpaceOfAnotherExtremePoint(BinPacking3D binPacking, Vector3D pos, IEnumerable<ResidualSpace> residualSpaces) {
+      foreach (var residualSpace in residualSpaces) {
+        if (IsWithinResidualSpaceOfAnotherExtremePoint(binPacking, pos, residualSpace)) {
+          return true;
+        }
+      }
+      return false;
+    }
+
+
+    /// <summary>
+    /// Returns true, if the given poisition and the related residual space is within the residual space of the given extreme point
+    /// </summary>
+    /// <param name="pos"></param>
+    /// <param name="rsPos"></param>
+    /// <param name="ep"></param>
+    /// <param name="rsEp"></param>
+    /// <returns></returns>
+    protected bool IsWithinResidualSpaceOfAnotherExtremePoint(Vector3D pos, ResidualSpace rsPos, PackingPosition ep, IEnumerable<ResidualSpace> rsEp) {
+      return rsEp.Any(x => IsWithinResidualSpaceOfAnotherExtremePoint(pos, rsPos, ep, x));
     }
 
     /// <summary>
@@ -210,53 +239,14 @@ namespace HeuristicLab.Problems.BinPacking3D.ExtremePointCreation {
     }
 
     /// <summary>
-    /// Calculates the residual space for a given bin packing and position.
-    /// It returns the residual space as a tuple which contains the dimensions
+    /// Calculates the residual spaces for a given bin packing and position.
+    /// It returns a collection of residual spaces
     /// </summary>
     /// <param name="binPacking"></param>
     /// <param name="pos"></param>
-    /// <returns>A Tuple(width, Height, Depth)</width></returns>
-    protected virtual ResidualSpace CalculateResidualSpace(BinPacking3D binPacking, Vector3D pos) {
-      //return ResidualSpaceCalculator.Create().CalculateResidualSpace(binPacking, pos).First();
-      return new ResidualSpace(CalculateResidualSpaceOld(binPacking, pos));
-    }
-
-    protected virtual Tuple<int, int, int> CalculateResidualSpaceOld(BinPacking3D binPacking, Vector3D pos) {
-
-      if (pos == null) {
-        return Tuple.Create(0, 0, 0);
-      }
-      var itemPos = binPacking.Items.Select(x => new {
-        Item = x.Value,
-        Position = binPacking.Positions[x.Key]
-      });
-      Vector3D limit = new Vector3D() {
-        X = binPacking.BinShape.Width,
-        Y = binPacking.BinShape.Height,
-        Z = binPacking.BinShape.Depth
-      };
-
-      if (pos.X < limit.X && pos.Y < limit.Y && pos.Z < limit.Z) {
-        var rightLimit = ProjectRight(binPacking, pos);
-        var upLimit = ProjectUp(binPacking, pos);
-        var forwardLimit = ProjectForward(binPacking, pos);
-        if (rightLimit.X > 0) {
-          limit.X = rightLimit.X;
-        }
-        if (upLimit.Y > 0) {
-          limit.Y = upLimit.Y;
-        }
-        if (forwardLimit.Z > 0) {
-          limit.Z = forwardLimit.Z;
-        }
-      }
-
-      if (limit.X - pos.X <= 0 || limit.Y - pos.Y <= 0 || limit.Z - pos.Z <= 0) {
-        return Tuple.Create(0, 0, 0);
-      }
-      return Tuple.Create(limit.X - pos.X, limit.Y - pos.Y, limit.Z - pos.Z);
-    }
-
+    /// <returns></returns>
+    protected abstract IEnumerable<ResidualSpace> CalculateResidualSpace(BinPacking3D binPacking, Vector3D pos);
+    
     #endregion
 
     #region Projections

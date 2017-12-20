@@ -31,7 +31,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace HeuristicLab.Problems.BinPacking3D.Packer {
-  public class BinPackerFreeVolumeBestFit : BinPacker {
+  internal class BinPackerFreeVolumeBestFit : BinPacker {
     
     #region Constructors for HEAL
     [StorableConstructor]

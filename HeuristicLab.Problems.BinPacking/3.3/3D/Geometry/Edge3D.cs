@@ -69,7 +69,7 @@ namespace HeuristicLab.Problems.BinPacking3D.Geometry {
         Z = e2.Start.Z - e2.End.Z
       });
       Vector3D point = l1.Intersect(l2);
-      if (e1.LiesOn(point) && e2.LiesOn(point)) {
+      if (point != null && e1.LiesOn(point) && e2.LiesOn(point)) {
         return point;
       }
       return null;

@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Core;
 
-namespace HeuristicLab.Problems.BinPacking._3D.Tests {
+namespace HeuristicLab.Problems.BinPacking._3D.Instances.Tests {
   [TestClass]
   public class RandomInstanceProviderTest {
 
@@ -27,6 +27,7 @@ namespace HeuristicLab.Problems.BinPacking._3D.Tests {
     /// </summary>
     [TestMethod]
     [TestCategory("Problems.BinPacking.3D")]
+    [TestProperty("Time", "long")]
     public void TestRandomInstanceProvider() {
 
       var referenceItemLists = ReadReferenceItemLists();
@@ -110,48 +111,56 @@ namespace HeuristicLab.Problems.BinPacking._3D.Tests {
 
     [TestMethod]
     [TestCategory("Problems.BinPacking.3D")]
+    [TestProperty("Time", "long")]
     public void TestExtremePointAlgorithmClass1() {
       TestExtremePointAlgorithm(new RandomInstanceClass1Provider(), 1);
     }
 
     [TestMethod]
     [TestCategory("Problems.BinPacking.3D")]
+    [TestProperty("Time", "long")]
     public void TestExtremePointAlgorithmClass2() {
       TestExtremePointAlgorithm(new RandomInstanceClass2Provider(), 2);
     }
 
     [TestMethod]
     [TestCategory("Problems.BinPacking.3D")]
+    [TestProperty("Time", "long")]
     public void TestExtremePointAlgorithmClass3() {
       TestExtremePointAlgorithm(new RandomInstanceClass3Provider(), 3);
     }
 
     [TestMethod]
     [TestCategory("Problems.BinPacking.3D")]
+    [TestProperty("Time", "long")]
     public void TestExtremePointAlgorithmClass4() {
       TestExtremePointAlgorithm(new RandomInstanceClass4Provider(), 4);
     }
 
     [TestMethod]
     [TestCategory("Problems.BinPacking.3D")]
+    [TestProperty("Time", "long")]
     public void TestExtremePointAlgorithmClass5() {
       TestExtremePointAlgorithm(new RandomInstanceClass5Provider(), 5);
     }
 
     [TestMethod]
     [TestCategory("Problems.BinPacking.3D")]
+    [TestProperty("Time", "long")]
     public void TestExtremePointAlgorithmClass6() {
       TestExtremePointAlgorithm(new RandomInstanceClass6Provider(), 6);
     }
 
     [TestMethod]
     [TestCategory("Problems.BinPacking.3D")]
+    [TestProperty("Time", "long")]
     public void TestExtremePointAlgorithmClass7() {
       TestExtremePointAlgorithm(new RandomInstanceClass7Provider(), 7);
     }
 
     [TestMethod]
     [TestCategory("Problems.BinPacking.3D")]
+    [TestProperty("Time", "long")]
     public void TestExtremePointAlgorithmClass8() {
       TestExtremePointAlgorithm(new RandomInstanceClass8Provider(), 8);
     }
