@@ -49,6 +49,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     #region HLConstructors & Cloning
     [StorableConstructor]
     protected WeightedEuclideanDistance(bool deserializing) : base(deserializing) { }
+    [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       RegisterParameterEvents();
     }

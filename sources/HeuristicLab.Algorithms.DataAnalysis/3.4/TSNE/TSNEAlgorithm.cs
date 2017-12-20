@@ -229,6 +229,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       if (original.state != null)
         state = cloner.Clone(original.state);
       iter = original.iter;
+      RegisterParameterEvents();
     }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new TSNEAlgorithm(this, cloner);
@@ -321,7 +322,19 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     protected override void RegisterProblemEvents() {
       base.RegisterProblemEvents();
+      if (Problem == null) return;
+      Problem.ProblemDataChanged -= OnProblemDataChanged;
       Problem.ProblemDataChanged += OnProblemDataChanged;
+      if (Problem.ProblemData == null) return;
+      Problem.ProblemData.Changed -= OnPerplexityChanged;
+      Problem.ProblemData.Changed -= OnColumnsChanged;
+      Problem.ProblemData.Changed += OnPerplexityChanged;
+      Problem.ProblemData.Changed += OnColumnsChanged;
+      if (Problem.ProblemData.Dataset == null) return;
+      Problem.ProblemData.Dataset.RowsChanged -= OnPerplexityChanged;
+      Problem.ProblemData.Dataset.ColumnsChanged -= OnColumnsChanged;
+      Problem.ProblemData.Dataset.RowsChanged += OnPerplexityChanged;
+      Problem.ProblemData.Dataset.ColumnsChanged += OnColumnsChanged;
     }
 
     protected override void DeregisterProblemEvents() {
@@ -340,8 +353,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       if (Problem == null || Problem.ProblemData == null) return;
       OnPerplexityChanged(this, null);
       OnColumnsChanged(this, null);
+      Problem.ProblemData.Changed -= OnPerplexityChanged;
       Problem.ProblemData.Changed += OnPerplexityChanged;
+      Problem.ProblemData.Changed -= OnColumnsChanged;
       Problem.ProblemData.Changed += OnColumnsChanged;
+      if (Problem.ProblemData.Dataset == null) return;
+      Problem.ProblemData.Dataset.RowsChanged -= OnPerplexityChanged;
+      Problem.ProblemData.Dataset.ColumnsChanged -= OnColumnsChanged;
       Problem.ProblemData.Dataset.RowsChanged += OnPerplexityChanged;
       Problem.ProblemData.Dataset.ColumnsChanged += OnColumnsChanged;
       if (!Parameters.ContainsKey(ClassesNameParameterName)) return;
@@ -400,7 +418,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
       var classificationData = problemData as ClassificationProblemData;
       if (classificationData != null && classificationData.TargetVariable.Equals(ClassesName)) {
-        var classNames = classificationData.ClassValues.Zip(classificationData.ClassNames, (v, n) => new { v, n }).ToDictionary(x => x.v, x => x.n);
+        var classNames = classificationData.ClassValues.Zip(classificationData.ClassNames, (v, n) => new {v, n}).ToDictionary(x => x.v, x => x.n);
         var classes = classificationData.Dataset.GetDoubleValues(classificationData.TargetVariable, allIndices).Select(v => classNames[v]).ToArray();
         for (var i = 0; i < classes.Length; i++) {
           if (!dataRowNames.ContainsKey(classes[i])) dataRowNames.Add(classes[i], new List<int>());
@@ -419,7 +437,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         IClusteringModel clusterModel;
         double[][] borders;
         CreateClusters(clusterdata, ClassesName, contours, out clusterModel, out contourMap, out borders);
-        var contourorder = borders.Select((x, i) => new { x, i }).OrderBy(x => x.x[0]).Select(x => x.i).ToArray();
+        var contourorder = borders.Select((x, i) => new {x, i}).OrderBy(x => x.x[0]).Select(x => x.i).ToArray();
         for (var i = 0; i < contours; i++) {
           var c = contourorder[i];
           var contourname = contourMap[c];
@@ -436,7 +454,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         IClusteringModel clusterModel;
         double[][] borders;
         CreateClusters(clusterdata, ClassesName, contours, out clusterModel, out contourMap, out borders);
-        var contourorder = borders.Select((x, i) => new { x, i }).OrderBy(x => x.x[0]).Select(x => x.i).ToArray();
+        var contourorder = borders.Select((x, i) => new {x, i}).OrderBy(x => x.x[0]).Select(x => x.i).ToArray();
         for (var i = 0; i < contours; i++) {
           var c = contourorder[i];
           var contourname = contourMap[c];
