@@ -41,7 +41,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// space to allow visual cluster identification.
   /// </summary>
   [Item("t-Distributed Stochastic Neighbor Embedding (tSNE)", "t-Distributed Stochastic Neighbor Embedding projects the data in a low " +
-                "dimensional space to allow visual cluster identification. Implemented similar to: https://lvdmaaten.github.io/tsne/#implementations (Barnes-Hut t-SNE). Described in : https://lvdmaaten.github.io/publications/papers/JMLR_2014.pdf")]
+                                                              "dimensional space to allow visual cluster identification. Implemented similar to: https://lvdmaaten.github.io/tsne/#implementations (Barnes-Hut t-SNE). Described in : https://lvdmaaten.github.io/publications/papers/JMLR_2014.pdf")]
   [Creatable(CreatableAttribute.Categories.DataAnalysis, Priority = 100)]
   [StorableClass]
   public sealed class TSNEAlgorithm : BasicAlgorithm {
@@ -202,13 +202,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     #region Storable poperties
     [Storable]
-    private Dictionary<string, List<int>> dataRowNames;
-    [Storable]
-    private Dictionary<string, ScatterPlotDataRow> dataRows;
+    private Dictionary<string, IList<int>> dataRowIndices;
     [Storable]
     private TSNEStatic<double[]>.TSNEState state;
-    [Storable]
-    private int iter;
     #endregion
 
     #region Constructors & Cloning
@@ -222,13 +218,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       RegisterParameterEvents();
     }
     private TSNEAlgorithm(TSNEAlgorithm original, Cloner cloner) : base(original, cloner) {
-      if (original.dataRowNames != null)
-        dataRowNames = new Dictionary<string, List<int>>(original.dataRowNames);
-      if (original.dataRows != null)
-        dataRows = original.dataRows.ToDictionary(kvp => kvp.Key, kvp => cloner.Clone(kvp.Value));
+      if (original.dataRowIndices != null)
+        dataRowIndices = new Dictionary<string, IList<int>>(original.dataRowIndices);
       if (original.state != null)
         state = cloner.Clone(original.state);
-      iter = original.iter;
       RegisterParameterEvents();
     }
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -258,8 +251,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       Parameters.Add(new FixedValueParameter<IntValue>(UpdateIntervalParameterName, "The interval after which the results will be updated.", new IntValue(50)));
       Parameters.Add(new FixedValueParameter<BoolValue>(RandomInitializationParameterName, "Wether data points should be randomly initialized or according to the first 2 dimensions", new BoolValue(true)));
 
-      Parameters[UpdateIntervalParameterName].Hidden = true;
-
+      UpdateIntervalParameter.Hidden = true;
       MomentumSwitchIterationParameter.Hidden = true;
       InitialMomentumParameter.Hidden = true;
       FinalMomentumParameter.Hidden = true;
@@ -272,8 +264,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     public override void Prepare() {
       base.Prepare();
-      dataRowNames = null;
-      dataRows = null;
+      dataRowIndices = null;
       state = null;
     }
 
@@ -300,14 +291,12 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
           }
           col++;
         }
-
         if (Normalization) data = NormalizeInputData(data);
         state = TSNEStatic<double[]>.CreateState(data, DistanceFunction, random, NewDimensions, Perplexity, Theta, StopLyingIteration, MomentumSwitchIteration, InitialMomentum, FinalMomentum, Eta, RandomInitialization);
         SetUpResults(allindices);
-        iter = 0;
       }
-      for (; iter < MaxIterations && !cancellationToken.IsCancellationRequested; iter++) {
-        if (iter % UpdateInterval == 0) Analyze(state);
+      while (state.iter < MaxIterations && !cancellationToken.IsCancellationRequested) {
+        if (state.iter % UpdateInterval == 0) Analyze(state);
         TSNEStatic<double[]>.Iterate(state);
       }
       Analyze(state);
@@ -323,43 +312,41 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     protected override void RegisterProblemEvents() {
       base.RegisterProblemEvents();
       if (Problem == null) return;
-      Problem.ProblemDataChanged -= OnProblemDataChanged;
       Problem.ProblemDataChanged += OnProblemDataChanged;
       if (Problem.ProblemData == null) return;
-      Problem.ProblemData.Changed -= OnPerplexityChanged;
-      Problem.ProblemData.Changed -= OnColumnsChanged;
       Problem.ProblemData.Changed += OnPerplexityChanged;
       Problem.ProblemData.Changed += OnColumnsChanged;
       if (Problem.ProblemData.Dataset == null) return;
-      Problem.ProblemData.Dataset.RowsChanged -= OnPerplexityChanged;
-      Problem.ProblemData.Dataset.ColumnsChanged -= OnColumnsChanged;
       Problem.ProblemData.Dataset.RowsChanged += OnPerplexityChanged;
       Problem.ProblemData.Dataset.ColumnsChanged += OnColumnsChanged;
     }
 
     protected override void DeregisterProblemEvents() {
       base.DeregisterProblemEvents();
+      if (Problem == null) return;
       Problem.ProblemDataChanged -= OnProblemDataChanged;
+      if (Problem.ProblemData == null) return;
+      Problem.ProblemData.Changed -= OnPerplexityChanged;
+      Problem.ProblemData.Changed -= OnColumnsChanged;
+      if (Problem.ProblemData.Dataset == null) return;
+      Problem.ProblemData.Dataset.RowsChanged -= OnPerplexityChanged;
+      Problem.ProblemData.Dataset.ColumnsChanged -= OnColumnsChanged;
     }
 
     protected override void OnStopped() {
       base.OnStopped();
+      //bwerth: state objects can be very large; avoid state serialization 
       state = null;
-      dataRowNames = null;
-      dataRows = null;
+      dataRowIndices = null;
     }
 
     private void OnProblemDataChanged(object sender, EventArgs args) {
       if (Problem == null || Problem.ProblemData == null) return;
       OnPerplexityChanged(this, null);
       OnColumnsChanged(this, null);
-      Problem.ProblemData.Changed -= OnPerplexityChanged;
       Problem.ProblemData.Changed += OnPerplexityChanged;
-      Problem.ProblemData.Changed -= OnColumnsChanged;
       Problem.ProblemData.Changed += OnColumnsChanged;
       if (Problem.ProblemData.Dataset == null) return;
-      Problem.ProblemData.Dataset.RowsChanged -= OnPerplexityChanged;
-      Problem.ProblemData.Dataset.ColumnsChanged -= OnColumnsChanged;
       Problem.ProblemData.Dataset.RowsChanged += OnPerplexityChanged;
       Problem.ProblemData.Dataset.ColumnsChanged += OnColumnsChanged;
       if (!Parameters.ContainsKey(ClassesNameParameterName)) return;
@@ -373,15 +360,12 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     private void RegisterParameterEvents() {
-      PerplexityParameter.Value.ValueChanged -= OnPerplexityChanged;
       PerplexityParameter.Value.ValueChanged += OnPerplexityChanged;
     }
 
     private void OnPerplexityChanged(object sender, EventArgs e) {
       if (Problem == null || Problem.ProblemData == null || Problem.ProblemData.Dataset == null || !Parameters.ContainsKey(PerplexityParameterName)) return;
-      PerplexityParameter.Value.ValueChanged -= OnPerplexityChanged;
       PerplexityParameter.Value.Value = Math.Max(1, Math.Min((Problem.ProblemData.Dataset.Rows - 1) / 3.0, Perplexity));
-      PerplexityParameter.Value.ValueChanged += OnPerplexityChanged;
     }
     #endregion
 
@@ -389,8 +373,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private void SetUpResults(IReadOnlyList<int> allIndices) {
       if (Results == null) return;
       var results = Results;
-      dataRowNames = new Dictionary<string, List<int>>();
-      dataRows = new Dictionary<string, ScatterPlotDataRow>();
+      dataRowIndices = new Dictionary<string, IList<int>>();
       var problemData = Problem.ProblemData;
 
       if (!results.ContainsKey(IterationResultName)) results.Add(new Result(IterationResultName, new IntValue(0)));
@@ -410,25 +393,26 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         results.Add(new Result(ErrorPlotResultName, errortable));
       }
 
-      //color datapoints acording to classes variable (be it double or string)
+      //color datapoints acording to classes variable (be it double, datetime or string)
       if (!problemData.Dataset.VariableNames.Contains(ClassesName)) {
-        dataRowNames.Add("Training", problemData.TrainingIndices.ToList());
-        dataRowNames.Add("Test", problemData.TestIndices.ToList());
+        dataRowIndices.Add("Training", problemData.TrainingIndices.ToList());
+        dataRowIndices.Add("Test", problemData.TestIndices.ToList());
         return;
       }
+
       var classificationData = problemData as ClassificationProblemData;
       if (classificationData != null && classificationData.TargetVariable.Equals(ClassesName)) {
         var classNames = classificationData.ClassValues.Zip(classificationData.ClassNames, (v, n) => new {v, n}).ToDictionary(x => x.v, x => x.n);
         var classes = classificationData.Dataset.GetDoubleValues(classificationData.TargetVariable, allIndices).Select(v => classNames[v]).ToArray();
         for (var i = 0; i < classes.Length; i++) {
-          if (!dataRowNames.ContainsKey(classes[i])) dataRowNames.Add(classes[i], new List<int>());
-          dataRowNames[classes[i]].Add(i);
+          if (!dataRowIndices.ContainsKey(classes[i])) dataRowIndices.Add(classes[i], new List<int>());
+          dataRowIndices[classes[i]].Add(i);
         }
       } else if (((Dataset)problemData.Dataset).VariableHasType<string>(ClassesName)) {
         var classes = problemData.Dataset.GetStringValues(ClassesName, allIndices).ToArray();
         for (var i = 0; i < classes.Length; i++) {
-          if (!dataRowNames.ContainsKey(classes[i])) dataRowNames.Add(classes[i], new List<int>());
-          dataRowNames[classes[i]].Add(i);
+          if (!dataRowIndices.ContainsKey(classes[i])) dataRowIndices.Add(classes[i], new List<int>());
+          dataRowIndices[classes[i]].Add(i);
         }
       } else if (((Dataset)problemData.Dataset).VariableHasType<double>(ClassesName)) {
         var clusterdata = new Dataset(problemData.Dataset.DoubleVariables, problemData.Dataset.DoubleVariables.Select(v => problemData.Dataset.GetDoubleValues(v, allIndices).ToList()));
@@ -441,12 +425,12 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         for (var i = 0; i < contours; i++) {
           var c = contourorder[i];
           var contourname = contourMap[c];
-          dataRowNames.Add(contourname, new List<int>());
-          dataRows.Add(contourname, new ScatterPlotDataRow(contourname, "", new List<Point2D<double>>()));
-          dataRows[contourname].VisualProperties.Color = GetHeatMapColor(i, contours);
+          dataRowIndices.Add(contourname, new List<int>());
+          var row = new ScatterPlotDataRow(contourname, "", new List<Point2D<double>>()) {VisualProperties = {Color = GetHeatMapColor(i, contours), PointSize = 8}};
+          ((ScatterPlot)results[ScatterPlotResultName].Value).Rows.Add(row);
         }
         var allClusters = clusterModel.GetClusterValues(clusterdata, Enumerable.Range(0, clusterdata.Rows)).ToArray();
-        for (var i = 0; i < clusterdata.Rows; i++) dataRowNames[contourMap[allClusters[i] - 1]].Add(i);
+        for (var i = 0; i < clusterdata.Rows; i++) dataRowIndices[contourMap[allClusters[i] - 1]].Add(i);
       } else if (((Dataset)problemData.Dataset).VariableHasType<DateTime>(ClassesName)) {
         var clusterdata = new Dataset(problemData.Dataset.DateTimeVariables, problemData.Dataset.DateTimeVariables.Select(v => problemData.Dataset.GetDoubleValues(v, allIndices).ToList()));
         const int contours = 8;
@@ -458,15 +442,16 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         for (var i = 0; i < contours; i++) {
           var c = contourorder[i];
           var contourname = contourMap[c];
-          dataRowNames.Add(contourname, new List<int>());
-          dataRows.Add(contourname, new ScatterPlotDataRow(contourname, "", new List<Point2D<double>>()));
-          dataRows[contourname].VisualProperties.Color = GetHeatMapColor(i, contours);
+          dataRowIndices.Add(contourname, new List<int>());
+          var row = new ScatterPlotDataRow(contourname, "", new List<Point2D<double>>()) {VisualProperties = {Color = GetHeatMapColor(i, contours), PointSize = 8}};
+          row.VisualProperties.PointSize = 8;
+          ((ScatterPlot)results[ScatterPlotResultName].Value).Rows.Add(row);
         }
         var allClusters = clusterModel.GetClusterValues(clusterdata, Enumerable.Range(0, clusterdata.Rows)).ToArray();
-        for (var i = 0; i < clusterdata.Rows; i++) dataRowNames[contourMap[allClusters[i] - 1]].Add(i);
+        for (var i = 0; i < clusterdata.Rows; i++) dataRowIndices[contourMap[allClusters[i] - 1]].Add(i);
       } else {
-        dataRowNames.Add("Training", problemData.TrainingIndices.ToList());
-        dataRowNames.Add("Test", problemData.TestIndices.ToList());
+        dataRowIndices.Add("Training", problemData.TrainingIndices.ToList());
+        dataRowIndices.Add("Test", problemData.TestIndices.ToList());
       }
     }
 
@@ -484,16 +469,16 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       var ndata = NormalizeProjectedData(tsneState.newData);
       results[DataResultName].Value = new DoubleMatrix(ndata);
       var splot = results[ScatterPlotResultName].Value as ScatterPlot;
-      FillScatterPlot(ndata, splot);
+      FillScatterPlot(ndata, splot, dataRowIndices);
     }
 
-    private void FillScatterPlot(double[,] lowDimData, ScatterPlot plot) {
-      foreach (var rowName in dataRowNames.Keys) {
+    private static void FillScatterPlot(double[,] lowDimData, ScatterPlot plot, Dictionary<string, IList<int>> dataRowIndices) {
+      foreach (var rowName in dataRowIndices.Keys) {
         if (!plot.Rows.ContainsKey(rowName)) {
-          plot.Rows.Add(dataRows.ContainsKey(rowName) ? dataRows[rowName] : new ScatterPlotDataRow(rowName, "", new List<Point2D<double>>()));
+          plot.Rows.Add(new ScatterPlotDataRow(rowName, "", new List<Point2D<double>>()));
           plot.Rows[rowName].VisualProperties.PointSize = 8;
         }
-        plot.Rows[rowName].Points.Replace(dataRowNames[rowName].Select(i => new Point2D<double>(lowDimData[i, 0], lowDimData[i, 1])));
+        plot.Rows[rowName].Points.Replace(dataRowIndices[rowName].Select(i => new Point2D<double>(lowDimData[i, 0], lowDimData[i, 1])));
       }
     }
 
@@ -503,11 +488,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       var res = new double[data.GetLength(0), data.GetLength(1)];
       for (var i = 0; i < max.Length; i++) max[i] = min[i] = data[0, i];
       for (var i = 0; i < data.GetLength(0); i++)
-        for (var j = 0; j < data.GetLength(1); j++) {
-          var v = data[i, j];
-          max[j] = Math.Max(max[j], v);
-          min[j] = Math.Min(min[j], v);
-        }
+      for (var j = 0; j < data.GetLength(1); j++) {
+        var v = data[i, j];
+        max[j] = Math.Max(max[j], v);
+        min[j] = Math.Min(min[j], v);
+      }
       for (var i = 0; i < data.GetLength(0); i++) {
         for (var j = 0; j < data.GetLength(1); j++) {
           var d = max[j] - min[j];
@@ -531,7 +516,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
       for (var i = 0; i < data.Count; i++) {
         nData[i] = new double[n];
-        for (var j = 0; j < n; j++) nData[i][j] = max[j].IsAlmost(0) ? data[i][j] - mean[j] : (data[i][j] - mean[j]) / max[j];
+        for (var j = 0; j < n; j++)
+          nData[i][j] = max[j].IsAlmost(0) ? data[i][j] - mean[j] : (data[i][j] - mean[j]) / max[j];
       }
       return nData;
     }
@@ -541,10 +527,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     private static void CreateClusters(IDataset data, string target, int contours, out IClusteringModel contourCluster, out Dictionary<int, string> contourNames, out double[][] borders) {
-      var cpd = new ClusteringProblemData((Dataset)data, new[] { target });
+      var cpd = new ClusteringProblemData((Dataset)data, new[] {target});
       contourCluster = KMeansClustering.CreateKMeansSolution(cpd, contours, 3).Model;
 
-      borders = Enumerable.Range(0, contours).Select(x => new[] { double.MaxValue, double.MinValue }).ToArray();
+      borders = Enumerable.Range(0, contours).Select(x => new[] {double.MaxValue, double.MinValue}).ToArray();
       var clusters = contourCluster.GetClusterValues(cpd.Dataset, cpd.AllIndices).ToArray();
       var targetvalues = cpd.Dataset.GetDoubleValues(target).ToArray();
       foreach (var i in cpd.AllIndices) {
