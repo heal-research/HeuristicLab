@@ -234,7 +234,7 @@ namespace HeuristicLab.Optimization {
           } catch (InvalidOperationException) { } catch (OperationCanceledException) { }
         }
 
-        Task.WaitAll(startedOptimizers.Values.ToArray()); // retreive exeptions of the asyncrounously started optimizer
+        Task.WaitAll(startedOptimizers.Values.ToArray()); // retrieve exeptions of the asyncrounously started optimizer
       }
     }
     public async Task StartAsync() { await StartAsync(CancellationToken.None); }
@@ -288,24 +288,28 @@ namespace HeuristicLab.Optimization {
     }
     public event EventHandler Prepared;
     private void OnPrepared() {
+      if (ExecutionState == ExecutionState.Prepared) return;
       ExecutionState = ExecutionState.Prepared;
       EventHandler handler = Prepared;
       if (handler != null) handler(this, EventArgs.Empty);
     }
     public event EventHandler Started;
     private void OnStarted() {
+      if (ExecutionState == ExecutionState.Started) return;
       ExecutionState = ExecutionState.Started;
       EventHandler handler = Started;
       if (handler != null) handler(this, EventArgs.Empty);
     }
     public event EventHandler Paused;
     private void OnPaused() {
+      if (ExecutionState == ExecutionState.Paused) return;
       ExecutionState = ExecutionState.Paused;
       EventHandler handler = Paused;
       if (handler != null) handler(this, EventArgs.Empty);
     }
     public event EventHandler Stopped;
     private void OnStopped() {
+      if (ExecutionState == ExecutionState.Stopped) return;
       ExecutionState = ExecutionState.Stopped;
       EventHandler handler = Stopped;
       if (handler != null) handler(this, EventArgs.Empty);
@@ -426,14 +430,16 @@ namespace HeuristicLab.Optimization {
 
       lock (locker) {
         // 1. experiment is running & further startable optimizers are available => continue executing
-        if (experimentStarted && StartableOptimizers.Any()) return;
-
-        // 2. any optimizer is running => continue executing
-        else if (Optimizers.Any(x => x.ExecutionState == ExecutionState.Started))
+        if (experimentStarted && StartableOptimizers.Any())
           return;
 
+        // 2. any optimizer is running => continue executing
+        if (Optimizers.Any(x => x.ExecutionState == ExecutionState.Started))
+          return;
+
+        experimentStarted = false;
         // 3. any optimizer is paused => experiment paused
-        else if (Optimizers.Any(x => x.ExecutionState == ExecutionState.Paused))
+        if (Optimizers.Any(x => x.ExecutionState == ExecutionState.Paused))
           OnPaused();
 
         // 4. stop pending & all optimizers either stopped or prepared => experiment stopped
