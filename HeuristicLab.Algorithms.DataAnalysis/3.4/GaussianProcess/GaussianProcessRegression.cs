@@ -38,7 +38,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   [Item("Gaussian Process Regression", "Gaussian process regression data analysis algorithm.")]
   [Creatable(CreatableAttribute.Categories.DataAnalysisRegression, Priority = 160)]
   [StorableClass]
-  public sealed class GaussianProcessRegression : GaussianProcessBase, IStorableContent {
+  public sealed class GaussianProcessRegression : GaussianProcessBase, IStorableContent, IDataAnalysisAlgorithm<IRegressionProblem> {
     public string Filename { get; set; }
 
     public override Type ProblemType { get { return typeof(IRegressionProblem); } }
