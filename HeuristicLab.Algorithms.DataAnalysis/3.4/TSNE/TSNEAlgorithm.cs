@@ -37,11 +37,11 @@ using HeuristicLab.Random;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>
-  /// t-distributed stochastic neighbourhood embedding (tSNE) projects the data in a low dimensional 
+  /// t-Distributed Stochastic Neighbor Embedding (tSNE) projects the data in a low dimensional 
   /// space to allow visual cluster identification.
   /// </summary>
-  [Item("tSNE", "t-distributed stochastic neighbourhood embedding projects the data in a low " +
-                "dimensional space to allow visual cluster identification. Implemented similar to: https://lvdmaaten.github.io/tsne/#implementations (Barnes-Hut t-SNE). Described in : https://lvdmaaten.github.io/publications/papers/JMLR_2014.pdf")]
+  [Item("t-Distributed Stochastic Neighbor Embedding (tSNE)", "t-Distributed Stochastic Neighbor Embedding projects the data in a low " +
+                                                              "dimensional space to allow visual cluster identification. Implemented similar to: https://lvdmaaten.github.io/tsne/#implementations (Barnes-Hut t-SNE). Described in : https://lvdmaaten.github.io/publications/papers/JMLR_2014.pdf")]
   [Creatable(CreatableAttribute.Categories.DataAnalysis, Priority = 100)]
   [StorableClass]
   public sealed class TSNEAlgorithm : BasicAlgorithm {
@@ -56,7 +56,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       set { base.Problem = value; }
     }
 
-    #region parameter names
+    #region Parameter names
     private const string DistanceFunctionParameterName = "DistanceFunction";
     private const string PerplexityParameterName = "Perplexity";
     private const string ThetaParameterName = "Theta";
@@ -71,10 +71,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private const string SeedParameterName = "Seed";
     private const string ClassesNameParameterName = "ClassesName";
     private const string NormalizationParameterName = "Normalization";
+    private const string RandomInitializationParameterName = "RandomInitialization";
     private const string UpdateIntervalParameterName = "UpdateInterval";
     #endregion
 
-    #region result names
+    #region Result names
     private const string IterationResultName = "Iteration";
     private const string ErrorResultName = "Error";
     private const string ErrorPlotResultName = "Error plot";
@@ -82,51 +83,54 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private const string DataResultName = "Projected data";
     #endregion
 
-    #region parameter properties
+    #region Parameter properties
     public IFixedValueParameter<DoubleValue> PerplexityParameter {
-      get { return Parameters[PerplexityParameterName] as IFixedValueParameter<DoubleValue>; }
+      get { return (IFixedValueParameter<DoubleValue>)Parameters[PerplexityParameterName]; }
     }
     public IFixedValueParameter<PercentValue> ThetaParameter {
-      get { return Parameters[ThetaParameterName] as IFixedValueParameter<PercentValue>; }
+      get { return (IFixedValueParameter<PercentValue>)Parameters[ThetaParameterName]; }
     }
     public IFixedValueParameter<IntValue> NewDimensionsParameter {
-      get { return Parameters[NewDimensionsParameterName] as IFixedValueParameter<IntValue>; }
+      get { return (IFixedValueParameter<IntValue>)Parameters[NewDimensionsParameterName]; }
     }
     public IConstrainedValueParameter<IDistance<double[]>> DistanceFunctionParameter {
-      get { return Parameters[DistanceFunctionParameterName] as IConstrainedValueParameter<IDistance<double[]>>; }
+      get { return (IConstrainedValueParameter<IDistance<double[]>>)Parameters[DistanceFunctionParameterName]; }
     }
     public IFixedValueParameter<IntValue> MaxIterationsParameter {
-      get { return Parameters[MaxIterationsParameterName] as IFixedValueParameter<IntValue>; }
+      get { return (IFixedValueParameter<IntValue>)Parameters[MaxIterationsParameterName]; }
     }
     public IFixedValueParameter<IntValue> StopLyingIterationParameter {
-      get { return Parameters[StopLyingIterationParameterName] as IFixedValueParameter<IntValue>; }
+      get { return (IFixedValueParameter<IntValue>)Parameters[StopLyingIterationParameterName]; }
     }
     public IFixedValueParameter<IntValue> MomentumSwitchIterationParameter {
-      get { return Parameters[MomentumSwitchIterationParameterName] as IFixedValueParameter<IntValue>; }
+      get { return (IFixedValueParameter<IntValue>)Parameters[MomentumSwitchIterationParameterName]; }
     }
     public IFixedValueParameter<DoubleValue> InitialMomentumParameter {
-      get { return Parameters[InitialMomentumParameterName] as IFixedValueParameter<DoubleValue>; }
+      get { return (IFixedValueParameter<DoubleValue>)Parameters[InitialMomentumParameterName]; }
     }
     public IFixedValueParameter<DoubleValue> FinalMomentumParameter {
-      get { return Parameters[FinalMomentumParameterName] as IFixedValueParameter<DoubleValue>; }
+      get { return (IFixedValueParameter<DoubleValue>)Parameters[FinalMomentumParameterName]; }
     }
     public IFixedValueParameter<DoubleValue> EtaParameter {
-      get { return Parameters[EtaParameterName] as IFixedValueParameter<DoubleValue>; }
+      get { return (IFixedValueParameter<DoubleValue>)Parameters[EtaParameterName]; }
     }
     public IFixedValueParameter<BoolValue> SetSeedRandomlyParameter {
-      get { return Parameters[SetSeedRandomlyParameterName] as IFixedValueParameter<BoolValue>; }
+      get { return (IFixedValueParameter<BoolValue>)Parameters[SetSeedRandomlyParameterName]; }
     }
     public IFixedValueParameter<IntValue> SeedParameter {
-      get { return Parameters[SeedParameterName] as IFixedValueParameter<IntValue>; }
+      get { return (IFixedValueParameter<IntValue>)Parameters[SeedParameterName]; }
     }
     public IConstrainedValueParameter<StringValue> ClassesNameParameter {
-      get { return Parameters[ClassesNameParameterName] as IConstrainedValueParameter<StringValue>; }
+      get { return (IConstrainedValueParameter<StringValue>)Parameters[ClassesNameParameterName]; }
     }
     public IFixedValueParameter<BoolValue> NormalizationParameter {
-      get { return Parameters[NormalizationParameterName] as IFixedValueParameter<BoolValue>; }
+      get { return (IFixedValueParameter<BoolValue>)Parameters[NormalizationParameterName]; }
+    }
+    public IFixedValueParameter<BoolValue> RandomInitializationParameter {
+      get { return (IFixedValueParameter<BoolValue>)Parameters[RandomInitializationParameterName]; }
     }
     public IFixedValueParameter<IntValue> UpdateIntervalParameter {
-      get { return Parameters[UpdateIntervalParameterName] as IFixedValueParameter<IntValue>; }
+      get { return (IFixedValueParameter<IntValue>)Parameters[UpdateIntervalParameterName]; }
     }
     #endregion
 
@@ -186,37 +190,53 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       get { return NormalizationParameter.Value.Value; }
       set { NormalizationParameter.Value.Value = value; }
     }
-
+    public bool RandomInitialization {
+      get { return RandomInitializationParameter.Value.Value; }
+      set { RandomInitializationParameter.Value.Value = value; }
+    }
     public int UpdateInterval {
       get { return UpdateIntervalParameter.Value.Value; }
       set { UpdateIntervalParameter.Value.Value = value; }
     }
     #endregion
 
+    #region Storable poperties
+    [Storable]
+    private Dictionary<string, IList<int>> dataRowIndices;
+    [Storable]
+    private TSNEStatic<double[]>.TSNEState state;
+    #endregion
+
     #region Constructors & Cloning
     [StorableConstructor]
     private TSNEAlgorithm(bool deserializing) : base(deserializing) { }
 
-    private TSNEAlgorithm(TSNEAlgorithm original, Cloner cloner) : base(original, cloner) {
-      if (original.dataRowNames != null)
-        this.dataRowNames = new Dictionary<string, List<int>>(original.dataRowNames);
-      if (original.dataRows != null)
-        this.dataRows = original.dataRows.ToDictionary(kvp => kvp.Key, kvp => cloner.Clone(kvp.Value));
-      if (original.state != null)
-        this.state = cloner.Clone(original.state);
-      this.iter = original.iter;
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      if (!Parameters.ContainsKey(RandomInitializationParameterName))
+        Parameters.Add(new FixedValueParameter<BoolValue>(RandomInitializationParameterName, "Wether data points should be randomly initialized or according to the first 2 dimensions", new BoolValue(true)));
+      RegisterParameterEvents();
     }
-    public override IDeepCloneable Clone(Cloner cloner) { return new TSNEAlgorithm(this, cloner); }
+    private TSNEAlgorithm(TSNEAlgorithm original, Cloner cloner) : base(original, cloner) {
+      if (original.dataRowIndices != null)
+        dataRowIndices = new Dictionary<string, IList<int>>(original.dataRowIndices);
+      if (original.state != null)
+        state = cloner.Clone(original.state);
+      RegisterParameterEvents();
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new TSNEAlgorithm(this, cloner);
+    }
     public TSNEAlgorithm() {
       var distances = new ItemSet<IDistance<double[]>>(ApplicationManager.Manager.GetInstances<IDistance<double[]>>());
       Parameters.Add(new ConstrainedValueParameter<IDistance<double[]>>(DistanceFunctionParameterName, "The distance function used to differentiate similar from non-similar points", distances, distances.OfType<EuclideanDistance>().FirstOrDefault()));
       Parameters.Add(new FixedValueParameter<DoubleValue>(PerplexityParameterName, "Perplexity-parameter of tSNE. Comparable to k in a k-nearest neighbour algorithm. Recommended value is floor(number of points /3) or lower", new DoubleValue(25)));
       Parameters.Add(new FixedValueParameter<PercentValue>(ThetaParameterName, "Value describing how much appoximated " +
-                                                                              "gradients my differ from exact gradients. Set to 0 for exact calculation and in [0,1] otherwise. " +
-                                                                              "Appropriate values for theta are between 0.1 and 0.7 (default = 0.5). CAUTION: exact calculation of " +
-                                                                              "forces requires building a non-sparse N*N matrix where N is the number of data points. This may " +
-                                                                              "exceed memory limitations. The function is designed to run on large (N > 5000) data sets. It may give" +
-                                                                              " poor performance on very small data sets(it is better to use a standard t - SNE implementation on such data).", new PercentValue(0)));
+                                                                               "gradients my differ from exact gradients. Set to 0 for exact calculation and in [0,1] otherwise. " +
+                                                                               "Appropriate values for theta are between 0.1 and 0.7 (default = 0.5). CAUTION: exact calculation of " +
+                                                                               "forces requires building a non-sparse N*N matrix where N is the number of data points. This may " +
+                                                                               "exceed memory limitations. The function is designed to run on large (N > 5000) data sets. It may give" +
+                                                                               " poor performance on very small data sets(it is better to use a standard t - SNE implementation on such data).", new PercentValue(0)));
       Parameters.Add(new FixedValueParameter<IntValue>(NewDimensionsParameterName, "Dimensionality of projected space (usually 2 for easy visual analysis)", new IntValue(2)));
       Parameters.Add(new FixedValueParameter<IntValue>(MaxIterationsParameterName, "Maximum number of iterations for gradient descent.", new IntValue(1000)));
       Parameters.Add(new FixedValueParameter<IntValue>(StopLyingIterationParameterName, "Number of iterations after which p is no longer approximated.", new IntValue(0)));
@@ -229,56 +249,54 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       Parameters.Add(new OptionalConstrainedValueParameter<StringValue>(ClassesNameParameterName, "Name of the column specifying the class lables of each data point. If this is not set training/test is used as labels."));
       Parameters.Add(new FixedValueParameter<BoolValue>(NormalizationParameterName, "Whether the data should be zero centered and have variance of 1 for each variable, so different scalings are ignored.", new BoolValue(true)));
       Parameters.Add(new FixedValueParameter<IntValue>(UpdateIntervalParameterName, "The interval after which the results will be updated.", new IntValue(50)));
-      Parameters[UpdateIntervalParameterName].Hidden = true;
+      Parameters.Add(new FixedValueParameter<BoolValue>(RandomInitializationParameterName, "Wether data points should be randomly initialized or according to the first 2 dimensions", new BoolValue(true)));
 
+      UpdateIntervalParameter.Hidden = true;
       MomentumSwitchIterationParameter.Hidden = true;
       InitialMomentumParameter.Hidden = true;
       FinalMomentumParameter.Hidden = true;
       StopLyingIterationParameter.Hidden = true;
       EtaParameter.Hidden = false;
       Problem = new RegressionProblem();
+      RegisterParameterEvents();
     }
     #endregion
 
-    [Storable]
-    private Dictionary<string, List<int>> dataRowNames;
-    [Storable]
-    private Dictionary<string, ScatterPlotDataRow> dataRows;
-    [Storable]
-    private TSNEStatic<double[]>.TSNEState state;
-    [Storable]
-    private int iter;
-
     public override void Prepare() {
       base.Prepare();
-      dataRowNames = null;
-      dataRows = null;
+      dataRowIndices = null;
       state = null;
     }
 
     protected override void Run(CancellationToken cancellationToken) {
       var problemData = Problem.ProblemData;
-      // set up and initialized everything if necessary
+      // set up and initialize everything if necessary
+      var wdist = DistanceFunction as WeightedEuclideanDistance;
+      if (wdist != null) wdist.Initialize(problemData);
       if (state == null) {
         if (SetSeedRandomly) Seed = new System.Random().Next();
         var random = new MersenneTwister((uint)Seed);
         var dataset = problemData.Dataset;
         var allowedInputVariables = problemData.AllowedInputVariables.ToArray();
-        var data = new double[dataset.Rows][];
-        for (var row = 0; row < dataset.Rows; row++)
-          data[row] = allowedInputVariables.Select(col => dataset.GetDoubleValue(col, row)).ToArray();
+        var allindices = Problem.ProblemData.AllIndices.ToArray();
 
-        if (Normalization) data = NormalizeData(data);
-
-        state = TSNEStatic<double[]>.CreateState(data, DistanceFunction, random, NewDimensions, Perplexity, Theta,
-          StopLyingIteration, MomentumSwitchIteration, InitialMomentum, FinalMomentum, Eta);
-
-        SetUpResults(data);
-        iter = 0;
+        // jagged array is required to meet the static method declarations of TSNEStatic<T> 
+        var data = Enumerable.Range(0, dataset.Rows).Select(x => new double[allowedInputVariables.Length]).ToArray();
+        var col = 0;
+        foreach (var s in allowedInputVariables) {
+          var row = 0;
+          foreach (var d in dataset.GetDoubleValues(s)) {
+            data[row][col] = d;
+            row++;
+          }
+          col++;
+        }
+        if (Normalization) data = NormalizeInputData(data);
+        state = TSNEStatic<double[]>.CreateState(data, DistanceFunction, random, NewDimensions, Perplexity, Theta, StopLyingIteration, MomentumSwitchIteration, InitialMomentum, FinalMomentum, Eta, RandomInitialization);
+        SetUpResults(allindices);
       }
-      for (; iter < MaxIterations && !cancellationToken.IsCancellationRequested; iter++) {
-        if (iter % UpdateInterval == 0)
-          Analyze(state);
+      while (state.iter < MaxIterations && !cancellationToken.IsCancellationRequested) {
+        if (state.iter % UpdateInterval == 0) Analyze(state);
         TSNEStatic<double[]>.Iterate(state);
       }
       Analyze(state);
@@ -293,77 +311,148 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     protected override void RegisterProblemEvents() {
       base.RegisterProblemEvents();
+      if (Problem == null) return;
       Problem.ProblemDataChanged += OnProblemDataChanged;
+      if (Problem.ProblemData == null) return;
+      Problem.ProblemData.Changed += OnPerplexityChanged;
+      Problem.ProblemData.Changed += OnColumnsChanged;
+      if (Problem.ProblemData.Dataset == null) return;
+      Problem.ProblemData.Dataset.RowsChanged += OnPerplexityChanged;
+      Problem.ProblemData.Dataset.ColumnsChanged += OnColumnsChanged;
     }
+
     protected override void DeregisterProblemEvents() {
       base.DeregisterProblemEvents();
+      if (Problem == null) return;
       Problem.ProblemDataChanged -= OnProblemDataChanged;
+      if (Problem.ProblemData == null) return;
+      Problem.ProblemData.Changed -= OnPerplexityChanged;
+      Problem.ProblemData.Changed -= OnColumnsChanged;
+      if (Problem.ProblemData.Dataset == null) return;
+      Problem.ProblemData.Dataset.RowsChanged -= OnPerplexityChanged;
+      Problem.ProblemData.Dataset.ColumnsChanged -= OnColumnsChanged;
+    }
+
+    protected override void OnStopped() {
+      base.OnStopped();
+      //bwerth: state objects can be very large; avoid state serialization 
+      state = null;
+      dataRowIndices = null;
     }
 
     private void OnProblemDataChanged(object sender, EventArgs args) {
       if (Problem == null || Problem.ProblemData == null) return;
+      OnPerplexityChanged(this, null);
+      OnColumnsChanged(this, null);
+      Problem.ProblemData.Changed += OnPerplexityChanged;
+      Problem.ProblemData.Changed += OnColumnsChanged;
+      if (Problem.ProblemData.Dataset == null) return;
+      Problem.ProblemData.Dataset.RowsChanged += OnPerplexityChanged;
+      Problem.ProblemData.Dataset.ColumnsChanged += OnColumnsChanged;
       if (!Parameters.ContainsKey(ClassesNameParameterName)) return;
       ClassesNameParameter.ValidValues.Clear();
       foreach (var input in Problem.ProblemData.InputVariables) ClassesNameParameter.ValidValues.Add(input);
     }
 
+    private void OnColumnsChanged(object sender, EventArgs e) {
+      if (Problem == null || Problem.ProblemData == null || Problem.ProblemData.Dataset == null || !Parameters.ContainsKey(DistanceFunctionParameterName)) return;
+      DistanceFunctionParameter.ValidValues.OfType<WeightedEuclideanDistance>().Single().AdaptToProblemData(Problem.ProblemData);
+    }
+
+    private void RegisterParameterEvents() {
+      PerplexityParameter.Value.ValueChanged += OnPerplexityChanged;
+    }
+
+    private void OnPerplexityChanged(object sender, EventArgs e) {
+      if (Problem == null || Problem.ProblemData == null || Problem.ProblemData.Dataset == null || !Parameters.ContainsKey(PerplexityParameterName)) return;
+      PerplexityParameter.Value.Value = Math.Max(1, Math.Min((Problem.ProblemData.Dataset.Rows - 1) / 3.0, Perplexity));
+    }
     #endregion
 
     #region Helpers
-    private void SetUpResults(IReadOnlyCollection<double[]> data) {
+    private void SetUpResults(IReadOnlyList<int> allIndices) {
       if (Results == null) return;
       var results = Results;
-      dataRowNames = new Dictionary<string, List<int>>();
-      dataRows = new Dictionary<string, ScatterPlotDataRow>();
+      dataRowIndices = new Dictionary<string, IList<int>>();
       var problemData = Problem.ProblemData;
 
-      //color datapoints acording to classes variable (be it double or string)
-      if (problemData.Dataset.VariableNames.Contains(ClassesName)) {
-        if ((problemData.Dataset as Dataset).VariableHasType<string>(ClassesName)) {
-          var classes = problemData.Dataset.GetStringValues(ClassesName).ToArray();
-          for (var i = 0; i < classes.Length; i++) {
-            if (!dataRowNames.ContainsKey(classes[i])) dataRowNames.Add(classes[i], new List<int>());
-            dataRowNames[classes[i]].Add(i);
+      if (!results.ContainsKey(IterationResultName)) results.Add(new Result(IterationResultName, new IntValue(0)));
+      if (!results.ContainsKey(ErrorResultName)) results.Add(new Result(ErrorResultName, new DoubleValue(0)));
+      if (!results.ContainsKey(ScatterPlotResultName)) results.Add(new Result(ScatterPlotResultName, "Plot of the projected data", new ScatterPlot(DataResultName, "")));
+      if (!results.ContainsKey(DataResultName)) results.Add(new Result(DataResultName, "Projected Data", new DoubleMatrix()));
+      if (!results.ContainsKey(ErrorPlotResultName)) {
+        var errortable = new DataTable(ErrorPlotResultName, "Development of errors during gradient descent") {
+          VisualProperties = {
+            XAxisTitle = "UpdateIntervall",
+            YAxisTitle = "Error",
+            YAxisLogScale = true
           }
-        } else if ((problemData.Dataset as Dataset).VariableHasType<double>(ClassesName)) {
-          var classValues = problemData.Dataset.GetDoubleValues(ClassesName).ToArray();
-          var max = classValues.Max() + 0.1;
-          var min = classValues.Min() - 0.1;
-          const int contours = 8;
-          for (var i = 0; i < contours; i++) {
-            var contourname = GetContourName(i, min, max, contours);
-            dataRowNames.Add(contourname, new List<int>());
-            dataRows.Add(contourname, new ScatterPlotDataRow(contourname, "", new List<Point2D<double>>()));
-            dataRows[contourname].VisualProperties.Color = GetHeatMapColor(i, contours);
-            dataRows[contourname].VisualProperties.PointSize = i + 3;
-          }
-          for (var i = 0; i < classValues.Length; i++) {
-            dataRowNames[GetContourName(classValues[i], min, max, contours)].Add(i);
-          }
-        }
-      } else {
-        dataRowNames.Add("Training", problemData.TrainingIndices.ToList());
-        dataRowNames.Add("Test", problemData.TestIndices.ToList());
+        };
+        errortable.Rows.Add(new DataRow("Errors"));
+        errortable.Rows["Errors"].VisualProperties.StartIndexZero = true;
+        results.Add(new Result(ErrorPlotResultName, errortable));
       }
 
-      if (!results.ContainsKey(IterationResultName)) results.Add(new Result(IterationResultName, new IntValue(0)));
-      else ((IntValue)results[IterationResultName].Value).Value = 0;
+      //color datapoints acording to classes variable (be it double, datetime or string)
+      if (!problemData.Dataset.VariableNames.Contains(ClassesName)) {
+        dataRowIndices.Add("Training", problemData.TrainingIndices.ToList());
+        dataRowIndices.Add("Test", problemData.TestIndices.ToList());
+        return;
+      }
 
-      if (!results.ContainsKey(ErrorResultName)) results.Add(new Result(ErrorResultName, new DoubleValue(0)));
-      else ((DoubleValue)results[ErrorResultName].Value).Value = 0;
-
-      if (!results.ContainsKey(ErrorPlotResultName)) results.Add(new Result(ErrorPlotResultName, new DataTable(ErrorPlotResultName, "Development of errors during gradient descent")));
-      else results[ErrorPlotResultName].Value = new DataTable(ErrorPlotResultName, "Development of errors during gradient descent");
-
-      var plot = results[ErrorPlotResultName].Value as DataTable;
-      if (plot == null) throw new ArgumentException("could not create/access error data table in results collection");
-
-      if (!plot.Rows.ContainsKey("errors")) plot.Rows.Add(new DataRow("errors"));
-      plot.Rows["errors"].Values.Clear();
-      plot.Rows["errors"].VisualProperties.StartIndexZero = true;
-
-      results.Add(new Result(ScatterPlotResultName, "Plot of the projected data", new ScatterPlot(DataResultName, "")));
-      results.Add(new Result(DataResultName, "Projected Data", new DoubleMatrix()));
+      var classificationData = problemData as ClassificationProblemData;
+      if (classificationData != null && classificationData.TargetVariable.Equals(ClassesName)) {
+        var classNames = classificationData.ClassValues.Zip(classificationData.ClassNames, (v, n) => new {v, n}).ToDictionary(x => x.v, x => x.n);
+        var classes = classificationData.Dataset.GetDoubleValues(classificationData.TargetVariable, allIndices).Select(v => classNames[v]).ToArray();
+        for (var i = 0; i < classes.Length; i++) {
+          if (!dataRowIndices.ContainsKey(classes[i])) dataRowIndices.Add(classes[i], new List<int>());
+          dataRowIndices[classes[i]].Add(i);
+        }
+      } else if (((Dataset)problemData.Dataset).VariableHasType<string>(ClassesName)) {
+        var classes = problemData.Dataset.GetStringValues(ClassesName, allIndices).ToArray();
+        for (var i = 0; i < classes.Length; i++) {
+          if (!dataRowIndices.ContainsKey(classes[i])) dataRowIndices.Add(classes[i], new List<int>());
+          dataRowIndices[classes[i]].Add(i);
+        }
+      } else if (((Dataset)problemData.Dataset).VariableHasType<double>(ClassesName)) {
+        var clusterdata = new Dataset(problemData.Dataset.DoubleVariables, problemData.Dataset.DoubleVariables.Select(v => problemData.Dataset.GetDoubleValues(v, allIndices).ToList()));
+        const int contours = 8;
+        Dictionary<int, string> contourMap;
+        IClusteringModel clusterModel;
+        double[][] borders;
+        CreateClusters(clusterdata, ClassesName, contours, out clusterModel, out contourMap, out borders);
+        var contourorder = borders.Select((x, i) => new {x, i}).OrderBy(x => x.x[0]).Select(x => x.i).ToArray();
+        for (var i = 0; i < contours; i++) {
+          var c = contourorder[i];
+          var contourname = contourMap[c];
+          dataRowIndices.Add(contourname, new List<int>());
+          var row = new ScatterPlotDataRow(contourname, "", new List<Point2D<double>>()) {VisualProperties = {Color = GetHeatMapColor(i, contours), PointSize = 8}};
+          ((ScatterPlot)results[ScatterPlotResultName].Value).Rows.Add(row);
+        }
+        var allClusters = clusterModel.GetClusterValues(clusterdata, Enumerable.Range(0, clusterdata.Rows)).ToArray();
+        for (var i = 0; i < clusterdata.Rows; i++) dataRowIndices[contourMap[allClusters[i] - 1]].Add(i);
+      } else if (((Dataset)problemData.Dataset).VariableHasType<DateTime>(ClassesName)) {
+        var clusterdata = new Dataset(problemData.Dataset.DateTimeVariables, problemData.Dataset.DateTimeVariables.Select(v => problemData.Dataset.GetDoubleValues(v, allIndices).ToList()));
+        const int contours = 8;
+        Dictionary<int, string> contourMap;
+        IClusteringModel clusterModel;
+        double[][] borders;
+        CreateClusters(clusterdata, ClassesName, contours, out clusterModel, out contourMap, out borders);
+        var contourorder = borders.Select((x, i) => new {x, i}).OrderBy(x => x.x[0]).Select(x => x.i).ToArray();
+        for (var i = 0; i < contours; i++) {
+          var c = contourorder[i];
+          var contourname = contourMap[c];
+          dataRowIndices.Add(contourname, new List<int>());
+          var row = new ScatterPlotDataRow(contourname, "", new List<Point2D<double>>()) {VisualProperties = {Color = GetHeatMapColor(i, contours), PointSize = 8}};
+          row.VisualProperties.PointSize = 8;
+          ((ScatterPlot)results[ScatterPlotResultName].Value).Rows.Add(row);
+        }
+        var allClusters = clusterModel.GetClusterValues(clusterdata, Enumerable.Range(0, clusterdata.Rows)).ToArray();
+        for (var i = 0; i < clusterdata.Rows; i++) dataRowIndices[contourMap[allClusters[i] - 1]].Add(i);
+      } else {
+        dataRowIndices.Add("Training", problemData.TrainingIndices.ToList());
+        dataRowIndices.Add("Test", problemData.TestIndices.ToList());
+      }
     }
 
     private void Analyze(TSNEStatic<double[]>.TSNEState tsneState) {
@@ -371,51 +460,53 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       var results = Results;
       var plot = results[ErrorPlotResultName].Value as DataTable;
       if (plot == null) throw new ArgumentException("Could not create/access error data table in results collection.");
-      var errors = plot.Rows["errors"].Values;
+      var errors = plot.Rows["Errors"].Values;
       var c = tsneState.EvaluateError();
       errors.Add(c);
       ((IntValue)results[IterationResultName].Value).Value = tsneState.iter;
       ((DoubleValue)results[ErrorResultName].Value).Value = errors.Last();
 
-      var ndata = Normalize(tsneState.newData);
+      var ndata = NormalizeProjectedData(tsneState.newData);
       results[DataResultName].Value = new DoubleMatrix(ndata);
       var splot = results[ScatterPlotResultName].Value as ScatterPlot;
-      FillScatterPlot(ndata, splot);
+      FillScatterPlot(ndata, splot, dataRowIndices);
     }
 
-    private void FillScatterPlot(double[,] lowDimData, ScatterPlot plot) {
-      foreach (var rowName in dataRowNames.Keys) {
-        if (!plot.Rows.ContainsKey(rowName))
-          plot.Rows.Add(dataRows.ContainsKey(rowName) ? dataRows[rowName] : new ScatterPlotDataRow(rowName, "", new List<Point2D<double>>()));
-        plot.Rows[rowName].Points.Replace(dataRowNames[rowName].Select(i => new Point2D<double>(lowDimData[i, 0], lowDimData[i, 1])));
+    private static void FillScatterPlot(double[,] lowDimData, ScatterPlot plot, Dictionary<string, IList<int>> dataRowIndices) {
+      foreach (var rowName in dataRowIndices.Keys) {
+        if (!plot.Rows.ContainsKey(rowName)) {
+          plot.Rows.Add(new ScatterPlotDataRow(rowName, "", new List<Point2D<double>>()));
+          plot.Rows[rowName].VisualProperties.PointSize = 8;
+        }
+        plot.Rows[rowName].Points.Replace(dataRowIndices[rowName].Select(i => new Point2D<double>(lowDimData[i, 0], lowDimData[i, 1])));
       }
     }
 
-    private static double[,] Normalize(double[,] data) {
+    private static double[,] NormalizeProjectedData(double[,] data) {
       var max = new double[data.GetLength(1)];
       var min = new double[data.GetLength(1)];
       var res = new double[data.GetLength(0), data.GetLength(1)];
       for (var i = 0; i < max.Length; i++) max[i] = min[i] = data[0, i];
       for (var i = 0; i < data.GetLength(0); i++)
-        for (var j = 0; j < data.GetLength(1); j++) {
-          var v = data[i, j];
-          max[j] = Math.Max(max[j], v);
-          min[j] = Math.Min(min[j], v);
-        }
+      for (var j = 0; j < data.GetLength(1); j++) {
+        var v = data[i, j];
+        max[j] = Math.Max(max[j], v);
+        min[j] = Math.Min(min[j], v);
+      }
       for (var i = 0; i < data.GetLength(0); i++) {
         for (var j = 0; j < data.GetLength(1); j++) {
           var d = max[j] - min[j];
-          var s = data[i, j] - (max[j] + min[j]) / 2;  //shift data
-          if (d.IsAlmost(0)) res[i, j] = data[i, j];   //no scaling possible
-          else res[i, j] = s / d;  //scale data
+          var s = data[i, j] - (max[j] + min[j]) / 2; //shift data
+          if (d.IsAlmost(0)) res[i, j] = data[i, j]; //no scaling possible
+          else res[i, j] = s / d; //scale data
         }
       }
       return res;
     }
 
-    private static double[][] NormalizeData(IReadOnlyList<double[]> data) {
+    private static double[][] NormalizeInputData(IReadOnlyList<IReadOnlyList<double>> data) {
       // as in tSNE implementation by van der Maaten
-      var n = data[0].Length;
+      var n = data[0].Count;
       var mean = new double[n];
       var max = new double[n];
       var nData = new double[data.Count][];
@@ -425,26 +516,40 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
       for (var i = 0; i < data.Count; i++) {
         nData[i] = new double[n];
-        for (var j = 0; j < n; j++) nData[i][j] = max[j].IsAlmost(0) ? data[i][j] - mean[j] : (data[i][j] - mean[j]) / max[j];
+        for (var j = 0; j < n; j++)
+          nData[i][j] = max[j].IsAlmost(0) ? data[i][j] - mean[j] : (data[i][j] - mean[j]) / max[j];
       }
       return nData;
     }
 
     private static Color GetHeatMapColor(int contourNr, int noContours) {
-      var q = (double)contourNr / noContours;  // q in [0,1]
-      var c = q < 0.5 ? Color.FromArgb((int)(q * 2 * 255), 255, 0) : Color.FromArgb(255, (int)((1 - q) * 2 * 255), 0);
-      return c;
+      return ConvertTotalToRgb(0, noContours, contourNr);
     }
 
-    private static string GetContourName(double value, double min, double max, int noContours) {
-      var size = (max - min) / noContours;
-      var contourNr = (int)((value - min) / size);
-      return GetContourName(contourNr, min, max, noContours);
+    private static void CreateClusters(IDataset data, string target, int contours, out IClusteringModel contourCluster, out Dictionary<int, string> contourNames, out double[][] borders) {
+      var cpd = new ClusteringProblemData((Dataset)data, new[] {target});
+      contourCluster = KMeansClustering.CreateKMeansSolution(cpd, contours, 3).Model;
+
+      borders = Enumerable.Range(0, contours).Select(x => new[] {double.MaxValue, double.MinValue}).ToArray();
+      var clusters = contourCluster.GetClusterValues(cpd.Dataset, cpd.AllIndices).ToArray();
+      var targetvalues = cpd.Dataset.GetDoubleValues(target).ToArray();
+      foreach (var i in cpd.AllIndices) {
+        var cl = clusters[i] - 1;
+        var clv = targetvalues[i];
+        if (borders[cl][0] > clv) borders[cl][0] = clv;
+        if (borders[cl][1] < clv) borders[cl][1] = clv;
+      }
+
+      contourNames = new Dictionary<int, string>();
+      for (var i = 0; i < contours; i++)
+        contourNames.Add(i, "[" + borders[i][0] + ";" + borders[i][1] + "]");
     }
 
-    private static string GetContourName(int i, double min, double max, int noContours) {
-      var size = (max - min) / noContours;
-      return "[" + (min + i * size) + ";" + (min + (i + 1) * size) + ")";
+    private static Color ConvertTotalToRgb(double low, double high, double cell) {
+      var colorGradient = ColorGradient.Colors;
+      var range = high - low;
+      var h = Math.Min(cell / range * colorGradient.Count, colorGradient.Count - 1);
+      return colorGradient[(int)h];
     }
     #endregion
   }

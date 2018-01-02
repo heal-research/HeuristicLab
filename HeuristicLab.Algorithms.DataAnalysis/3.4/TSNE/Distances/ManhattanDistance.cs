@@ -30,7 +30,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
   [Item("ManhattanDistance", "A distance function that uses block distance")]
   public class ManhattanDistance : DistanceBase<IEnumerable<double>> {
-
     #region HLConstructors & Cloning
     [StorableConstructor]
     protected ManhattanDistance(bool deserializing) : base(deserializing) { }
@@ -44,16 +43,18 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
     #endregion
 
-    public static double GetDistance(double[] point1, double[] point2) {
-      if (point1.Length != point2.Length) throw new ArgumentException("Manhattan distance not defined on vectors of different length");
-      var sum = 0.0;
-      for (var i = 0; i < point1.Length; i++)
-        sum += Math.Abs(point1[i] + point2[i]);
-      return sum;
+    public static double GetDistance(IEnumerable<double> point1, IEnumerable<double> point2) {
+      using (IEnumerator<double> p1Enum = point1.GetEnumerator(), p2Enum = point2.GetEnumerator()) {
+        var sum = 0.0;
+        while (p1Enum.MoveNext() & p2Enum.MoveNext())
+          sum += Math.Abs(p1Enum.Current - p2Enum.Current);
+        if (p1Enum.MoveNext() || p2Enum.MoveNext()) throw new ArgumentException("Manhattan distance not defined on vectors of different length");
+        return sum;
+      }
     }
 
     public override double Get(IEnumerable<double> a, IEnumerable<double> b) {
-      return GetDistance(a.ToArray(), b.ToArray());
+      return GetDistance(a, b);
     }
   }
 }
