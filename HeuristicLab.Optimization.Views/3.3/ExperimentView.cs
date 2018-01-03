@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.Core;
@@ -42,9 +43,11 @@ namespace HeuristicLab.Optimization.Views {
       if (Content == null) {
         experimentTreeView.Content = null;
         runsViewHost.Content = null;
+        workersNumericUpDown.Value = 1;
       } else {
         experimentTreeView.Content = Content;
         runsViewHost.Content = Content.Runs;
+        workersNumericUpDown.Value = Content.NumberOfWorkers;
       }
     }
 
@@ -52,6 +55,7 @@ namespace HeuristicLab.Optimization.Views {
       base.SetEnabledStateOfControls();
       experimentTreeView.Enabled = Content != null;
       runsViewHost.Enabled = Content != null;
+      workersNumericUpDown.Enabled = Content != null && Content.ExecutionState != ExecutionState.Started;
     }
 
     protected override void OnClosed(FormClosedEventArgs e) {
@@ -65,5 +69,17 @@ namespace HeuristicLab.Optimization.Views {
       }
       base.OnClosed(e);
     }
+
+    protected override void Content_ExecutionStateChanged(object sender, EventArgs e) {
+      base.Content_ExecutionStateChanged(sender, e);
+      workersNumericUpDown.Enabled = Content.ExecutionState != ExecutionState.Started;
+    }
+
+    #region Events
+    private void workersNumericUpDown_ValueChanged(object sender, System.EventArgs e) {
+      if (Content != null)
+        Content.NumberOfWorkers = (int)workersNumericUpDown.Value;
+    }
+    #endregion
   }
 }
