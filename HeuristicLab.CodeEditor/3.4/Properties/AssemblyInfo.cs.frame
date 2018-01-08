@@ -30,7 +30,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("HeuristicLab")]
-[assembly: AssemblyCopyright("(c) 2002-2016 HEAL & ic#code")]
+[assembly: AssemblyCopyright("(c) 2002-2018 HEAL & ic#code")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
