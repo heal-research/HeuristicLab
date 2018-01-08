@@ -32,7 +32,7 @@ using HeuristicLab.PluginInfrastructure;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("HeuristicLab")]
-[assembly: AssemblyCopyright("(c) 2002-2016 HEAL, glmnet implementation by Jerome Friedman, Trevor Hastie, Noah Simon, Rob Tibshirani")]
+[assembly: AssemblyCopyright("(c) 2002-2018 HEAL, glmnet implementation by Jerome Friedman, Trevor Hastie, Noah Simon, Rob Tibshirani")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

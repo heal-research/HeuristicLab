@@ -31,7 +31,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("HeuristicLab")]
-[assembly: AssemblyCopyright("(c) 2002-2016 HEAL and Joseph Helm")]
+[assembly: AssemblyCopyright("(c) 2002-2018 HEAL and Joseph Helm")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
