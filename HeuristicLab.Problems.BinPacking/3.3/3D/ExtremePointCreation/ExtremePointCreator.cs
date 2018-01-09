@@ -19,12 +19,19 @@ namespace HeuristicLab.Problems.BinPacking3D.ExtremePointCreation {
     protected abstract void UpdateExtremePoints(BinPacking3D binPacking, PackingItem item, PackingPosition position);
 
     /// <summary>
-    /// Updates the residual space for a given bin packing
+    /// Updates the residual space for a given bin packing.
     /// </summary>
     /// <param name="binPacking"></param>
     /// <param name="item"></param>
     /// <param name="position"></param>
     protected abstract void UpdateResidualSpace(BinPacking3D binPacking, PackingItem item, PackingPosition position);
+
+    /// <summary>
+    /// Adds an extreme point to the bin packing.
+    /// </summary>
+    /// <param name="binPacking"></param>
+    /// <param name="position"></param>
+    /// <returns></returns>
     protected abstract bool AddExtremePoint(BinPacking3D binPacking, PackingPosition position);
 
     /// <summary>
@@ -213,11 +220,11 @@ namespace HeuristicLab.Problems.BinPacking3D.ExtremePointCreation {
 
 
     /// <summary>
-    /// Returns true, if the given poisition and the related residual space is within the residual space of the given extreme point
+    /// Returns true, if the given poisition (pos) and the related residual space is within any residual space of the given extreme point (ep).
     /// </summary>
-    /// <param name="pos"></param>
+    /// <param name="pos">Given poisition</param>
     /// <param name="rsPos"></param>
-    /// <param name="ep"></param>
+    /// <param name="ep">Given extreme point</param>
     /// <param name="rsEp"></param>
     /// <returns></returns>
     protected bool IsWithinResidualSpaceOfAnotherExtremePoint(Vector3D pos, ResidualSpace rsPos, PackingPosition ep, IEnumerable<ResidualSpace> rsEp) {
@@ -225,17 +232,24 @@ namespace HeuristicLab.Problems.BinPacking3D.ExtremePointCreation {
     }
 
     /// <summary>
-    /// Returns true, if the given poisition and the related residual space is within the residual space of the given extreme point
+    /// Returns true, if the given poisition (pos) and the related residual space is within the residual space of the given extreme point (ep).
     /// </summary>
-    /// <param name="pos"></param>
+    /// <param name="pos">Given poisition</param>
     /// <param name="rsPos"></param>
-    /// <param name="ep"></param>
+    /// <param name="ep">Given extreme point</param>
     /// <param name="rsEp"></param>
     /// <returns></returns>
     protected virtual bool IsWithinResidualSpaceOfAnotherExtremePoint(Vector3D pos, ResidualSpace rsPos, PackingPosition ep, ResidualSpace rsEp) {
+      /*old implementation
       return rsEp.Width >= pos.X - ep.X + rsPos.Width
           && rsEp.Height >= pos.Y - ep.Y + rsPos.Height
-          && rsEp.Depth >= pos.Z - ep.Z + rsPos.Depth;
+          && rsEp.Depth >= pos.Z - ep.Z + rsPos.Depth;*/
+
+      var x = pos.X >= ep.X && pos.X + rsPos.Width <= ep.X + rsEp.Width;
+      var y = pos.Y >= ep.Y && pos.Y + rsPos.Height <= ep.Y + rsEp.Height;
+      var z = pos.Z >= ep.Z && pos.Z + rsPos.Depth <= ep.Z + rsEp.Depth;
+
+      return x && y && z;
     }
 
     /// <summary>

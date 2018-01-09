@@ -18,8 +18,7 @@ namespace HeuristicLab.Problems.BinPacking3D.ResidualSpaceCalculation {
 
       if (!rs1.IsZero()) {
         residualSpaces.Add(rs1);
-      }     
-
+      }
 
       if (!rs2.IsZero() && !residualSpaces.Any(rs => rs.Equals(rs2))) {
         residualSpaces.Add(rs2);
@@ -30,6 +29,15 @@ namespace HeuristicLab.Problems.BinPacking3D.ResidualSpaceCalculation {
       return residualSpaces;
     }
 
+    /// <summary>
+    /// Calculates a resiual space by expanding to the limits of the axis in the following order:
+    /// 1. x
+    /// 2. z
+    /// 3. y
+    /// </summary>
+    /// <param name="binPacking"></param>
+    /// <param name="point"></param>
+    /// <returns></returns>
     private ResidualSpace CalculateXZY(BinPacking3D binPacking, Vector3D point) {
       ResidualSpace rs = new ResidualSpace(binPacking, point);
 
@@ -39,6 +47,15 @@ namespace HeuristicLab.Problems.BinPacking3D.ResidualSpaceCalculation {
       return rs;
     }
 
+    /// <summary>
+    /// Calculates a resiual space by expanding to the limits of the axis in the following order:
+    /// 1. z
+    /// 2. y
+    /// 3. x
+    /// </summary>
+    /// <param name="binPacking"></param>
+    /// <param name="point"></param>
+    /// <returns></returns>
     private ResidualSpace CalculateZYX(BinPacking3D binPacking, Vector3D point) {
       ResidualSpace rs = new ResidualSpace(binPacking, point);
 
@@ -48,6 +65,15 @@ namespace HeuristicLab.Problems.BinPacking3D.ResidualSpaceCalculation {
       return rs;
     }
 
+    /// <summary>
+    /// Calculates a resiual space by expanding to the limits of the axis in the following order:
+    /// 1. y
+    /// 2. x
+    /// 3. z
+    /// </summary>
+    /// <param name="binPacking"></param>
+    /// <param name="point"></param>
+    /// <returns></returns>
     private ResidualSpace CalculateYXZ(BinPacking3D binPacking, Vector3D point) {
       ResidualSpace rs = new ResidualSpace(binPacking, point);
 
@@ -113,7 +139,7 @@ namespace HeuristicLab.Problems.BinPacking3D.ResidualSpaceCalculation {
     }
 
     private bool OverlapsOnRight(Vector3D point, ResidualSpace residualSpace, PackingPosition position, PackingItem item) {
-      // if point.x >= position.x, the residual space would be located on the left side!
+      // if point.x >= position.x => the residual space is being located on the left side!
       if (point.X >= position.X) {
         return false;
       }
@@ -132,6 +158,7 @@ namespace HeuristicLab.Problems.BinPacking3D.ResidualSpaceCalculation {
       return x && y;
     }
 
+
     private bool OverlapsAbove(Vector3D point, ResidualSpace residualSpace, PackingPosition position, PackingItem item ) {
       if (point.Y >= position.Y) {
         return false;
@@ -141,7 +168,15 @@ namespace HeuristicLab.Problems.BinPacking3D.ResidualSpaceCalculation {
 
       return x && z;
     }
-    
+
+    /// <summary>
+    /// Recalculates the width of a given residual space.
+    /// The new width is being limited by any item right of the residual space or the dimension of the bin shape.
+    /// If the new width is zero, the whole residual space is being set to zero.
+    /// </summary>
+    /// <param name="binPacking"></param>
+    /// <param name="point"></param>
+    /// <param name="residualSpace"></param>
     private void LimitResidualSpaceOnRight(BinPacking3D binPacking, Vector3D point, ResidualSpace residualSpace) {
       if (residualSpace.IsZero()) {
         return;
@@ -162,6 +197,14 @@ namespace HeuristicLab.Problems.BinPacking3D.ResidualSpaceCalculation {
       }      
     }
 
+    /// <summary>
+    /// Recalculates the depth of a given residual space.
+    /// The new depth is being limited by any item in front of the residual space or the dimension of the bin shape.
+    /// If the new depth is zero, the whole residual space is being set to zero.
+    /// </summary>
+    /// <param name="binPacking"></param>
+    /// <param name="point"></param>
+    /// <param name="residualSpace"></param>
     private void LimitResidualSpaceInFront(BinPacking3D binPacking, Vector3D point, ResidualSpace residualSpace) {
       if (residualSpace.IsZero()) {
         return;
@@ -182,6 +225,14 @@ namespace HeuristicLab.Problems.BinPacking3D.ResidualSpaceCalculation {
       }
     }
 
+    /// <summary>
+    /// Recalculates the height of a given residual space.
+    /// The new height is being limited by any item above the residual space or the dimension of the bin shape.
+    /// If the new height is zero, the whole residual space is being set to zero.
+    /// </summary>
+    /// <param name="binPacking"></param>
+    /// <param name="point"></param>
+    /// <param name="residualSpace"></param>
     private void LimitResidualSpaceAbove(BinPacking3D binPacking, Vector3D point, ResidualSpace residualSpace) {
       if (residualSpace.IsZero()) {
         return;

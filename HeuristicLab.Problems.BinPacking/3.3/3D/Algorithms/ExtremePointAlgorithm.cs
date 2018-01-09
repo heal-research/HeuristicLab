@@ -204,7 +204,7 @@ namespace HeuristicLab.Problems.BinPacking3D {
                   IList<PackingItem> items, 
                   SortingMethod[] sortings, 
                   FittingMethod[] fittings,
-                  ExtremePointCreationMethod[] ePGeneration,
+                  ExtremePointCreationMethod[] epCreationMethods,
                   CancellationToken token) {
       SortingMethod? bestSorting = null;
       FittingMethod? bestFitting = null;
@@ -213,7 +213,7 @@ namespace HeuristicLab.Problems.BinPacking3D {
       Solution bestSolution = null;
       foreach (var fit in fittings) {
         foreach (var sort in sortings) {
-          foreach (var epCreation in ePGeneration) {
+          foreach (var epCreation in epCreationMethods) {
             IDecoder<Permutation> decoder = new ExtremePointPermutationDecoder() {
               FittingMethod = fit,
               ExtremePointCreationMethod = epCreation

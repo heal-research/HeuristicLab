@@ -169,12 +169,15 @@ namespace HeuristicLab.Problems.BinPacking._3D.Instances.Tests {
       foreach (SortingMethod sortingMethod in Enum.GetValues(typeof(SortingMethod))) {
         //foreach (FittingMethod fittingMethod in Enum.GetValues(typeof(FittingMethod))) {
         FittingMethod fittingMethod = FittingMethod.FirstFit;
-        TestExtremePointAlgorithmByParameters(randomInstanceProvider, @class, sortingMethod, fittingMethod);
+        foreach (ExtremePointCreationMethod epCreationMethod in Enum.GetValues(typeof(ExtremePointCreationMethod))) {
+          TestExtremePointAlgorithmByParameters(randomInstanceProvider, @class, sortingMethod, fittingMethod, epCreationMethod);
+        }
+        
         //}
       }
     }
 
-    private void TestExtremePointAlgorithmByParameters(RandomInstanceProvider randomInstanceProvider, int @class, SortingMethod sortingMethod, FittingMethod fittingMethod) {
+    private void TestExtremePointAlgorithmByParameters(RandomInstanceProvider randomInstanceProvider, int @class, SortingMethod sortingMethod, FittingMethod fittingMethod, ExtremePointCreationMethod epCreationMethod) {
       var dataDescriptors = randomInstanceProvider.GetDataDescriptors();
       var referenceValues = GetReferenceAlgorithmValues();
       foreach (var numItems in NUMBER_OF_TEST_ITEMS) {
@@ -188,6 +191,7 @@ namespace HeuristicLab.Problems.BinPacking._3D.Instances.Tests {
           ExtremePointAlgorithm algorithm = new ExtremePointAlgorithm();
           algorithm.SortingMethodParameter.Value.Value = sortingMethod;
           algorithm.FittingMethodParameter.Value.Value = fittingMethod;
+          algorithm.ExtremePointCreationMethodParameter.Value.Value = epCreationMethod;
           algorithm.Problem.Load(packingData);
 
           algorithm.Start();
@@ -206,7 +210,7 @@ namespace HeuristicLab.Problems.BinPacking._3D.Instances.Tests {
         double referenceValue = 0.0;
 
         if (referenceValues.TryGetValue(new Tuple<int, int, SortingMethod>(@class, numItems, sortingMethod), out referenceValue)) {
-          Console.WriteLine($"{numItems}-{@class}-{sortingMethod}: \tReference: {referenceValue} \tImplementation: {(double)sumNumberOfBins / (double)NUMBER_OF_TEST_INSTANCES} \t{(referenceValue - ((double)sumNumberOfBins / (double)NUMBER_OF_TEST_INSTANCES)):F2}");
+          Console.WriteLine($"{numItems}-{@class}-{sortingMethod}-{epCreationMethod}: \tReference: {referenceValue} \tImplementation: {(double)sumNumberOfBins / (double)NUMBER_OF_TEST_INSTANCES} \t{(referenceValue - ((double)sumNumberOfBins / (double)NUMBER_OF_TEST_INSTANCES)):F2}");
           Assert.AreEqual(referenceValue, (double)sumNumberOfBins / (double)NUMBER_OF_TEST_INSTANCES, 20.0);
         }
       }

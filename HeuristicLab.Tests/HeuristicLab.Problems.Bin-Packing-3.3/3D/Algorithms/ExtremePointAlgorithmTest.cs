@@ -73,12 +73,17 @@ namespace HeuristicLab.Problems.BinPacking._3D.Algorithms.Tests {
         new BinPacking3D.PackingPosition(1, 0,10,9)
       };
 
-      object[] parameters = new object[] { _packingShape3, _items, new SortingMethod[] { SortingMethod.Given }, new FittingMethod[] { FittingMethod.FirstFit }, new CancellationToken() };
+      object[] parameters = new object[] { _packingShape3,
+                                           _items,
+                                           new SortingMethod[] { SortingMethod.Given },
+                                           new FittingMethod[] { FittingMethod.FirstFit },
+                                           new ExtremePointCreationMethod[] { ExtremePointCreationMethod.PointProjection},
+                                           new CancellationToken() };
       _extremPointAlgorithm.SortingMethodParameter.Value.Value = SortingMethod.Given;
       _extremPointAlgorithm.FittingMethodParameter.Value.Value = FittingMethod.FirstFit;
       _extremPointAlgorithm.ExtremePointCreationMethodParameter.Value.Value = ExtremePointCreationMethod.PointProjection;
       _extremPointAlgorithm.SortByMaterialParameter.Value.Value = false;
-      var result = TestUtils.InvokeMethod(typeof(ExtremePointAlgorithm), _extremPointAlgorithm, "GetBest", parameters) as Tuple<Solution, double, SortingMethod?, FittingMethod?>;
+      var result = TestUtils.InvokeMethod(typeof(ExtremePointAlgorithm), _extremPointAlgorithm, "GetBest", parameters) as Tuple<Solution, double, SortingMethod?, FittingMethod?, ExtremePointCreationMethod?>;
 
       int i = 0;
       foreach (var item in result.Item1.Bins[0].Positions.Values) {

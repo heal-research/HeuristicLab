@@ -22,7 +22,74 @@ namespace HeuristicLab.Problems.BinPacking3D.ExtremePointCreation {
         PackingPosition p = binPacking.Positions[i.Key];
         GenerateNewExtremePointsForItem(binPacking, it, p);
       }
+     
+      // remove not needed extreme points.
+      foreach (var extremePoint in binPacking.ExtremePoints.ToList()) {
+        // check if a residual space can be removed
+        foreach (var rs in extremePoint.Value.ToList()) {
+          if (ResidualSpaceCanBeRemoved(binPacking, extremePoint.Key, rs)) {
+            ((IList<ResidualSpace>)extremePoint.Value).Remove(rs);
+          }
+        }
+        // if the current extreme point has no more residual spaces, it can be removed.
+        if (((IList<ResidualSpace>)extremePoint.Value).Count <= 0) {
+          binPacking.ExtremePoints.Remove(extremePoint);
+        }
+      }
     }
+    
+    /// <summary>
+    /// Returns true if a given residual space can be removed.
+    /// The given residual space can be removed if it is within another residual space and
+    /// - neither the position of the other residual space and the current extreme point have an item below or
+    /// - the current extreme point has an item below.
+    /// </summary>
+    /// <param name="binPacking"></param>
+    /// <param name="position"></param>
+    /// <param name="rs"></param>
+    /// <returns></returns>
+    private bool ResidualSpaceCanBeRemoved(BinPacking3D binPacking, PackingPosition position, ResidualSpace rs) {
+      foreach (var extremePoint in binPacking.ExtremePoints) {
+        if (position.Equals(extremePoint.Key)) {
+          continue;
+        }
+        if (IsWithinResidualSpaceOfAnotherExtremePoint(new Vector3D(position), rs, extremePoint.Key, extremePoint.Value)) {
+          var itemBelowEp = LiesOnAnyItem(binPacking, extremePoint.Key);
+          var itemBelowPos = LiesOnAnyItem(binPacking, position);
+
+          if (itemBelowEp || !itemBelowEp && !itemBelowPos) {
+            return true;
+          }          
+        }
+      }
+      return false;
+    }
+    
+    /// <summary>
+    /// Returns true if the given position lies on an item or an the ground.
+    /// </summary>
+    /// <param name="binPacking"></param>
+    /// <param name="position"></param>
+    /// <returns></returns>
+    private bool LiesOnAnyItem(BinPacking3D binPacking, PackingPosition position) {
+      if (position.Y == 0) {
+        return true;
+      }
+
+      var items = binPacking.Items.Where(x => {
+        var itemPosition = binPacking.Positions[x.Key];
+        var item = x.Value;
+        int width = itemPosition.Rotated ? item.Depth : item.Width;
+        int depth = itemPosition.Rotated ? item.Width : item.Depth;
+
+        return itemPosition.Y + item.Height == position.Y &&
+               itemPosition.X <= position.X && position.X < itemPosition.X + width &&
+               itemPosition.Z <= position.Z && position.Z < itemPosition.Z + depth;
+      });
+
+      return items.Count() > 0;
+    }
+
 
     /// <summary>
     /// Adds a new extreme point an the related residual spaces to a given bin packing.
@@ -52,38 +119,8 @@ namespace HeuristicLab.Problems.BinPacking3D.ExtremePointCreation {
         return false;
       }
 
-      // todo 
-      /*
-       ist der extrempunkt im residual space eines anderen muss ueberprueft werden:
-          - ist der andere ep in der luft, kann auch dieser hinzugefuegt werden.
-          - hat der andere ep ein item unterhalb, darf dieser nicht hinzugefuegt werden.
-       -> neu methode basierend auf IsWithinResidualSpaceOfAnotherExtremePoint, die den ep oder rs zurueck gibt, der einen anderen rs einschließt.
-          eventuell gehoert diese logik in den ResidualSpaceCreator.
-      if (LiesOnAnyItem(binPacking, position)) {
-        return false;
-      }*/
-
       binPacking.ExtremePoints.Add(position, rs);
       return true;
-    }
-
-    private bool LiesOnAnyItem(BinPacking3D binPacking, PackingPosition position) {
-      if (position.Y == 0) {
-        return true;
-      }
-
-      var items = binPacking.Items.Where(x => {
-        var itemPosition = binPacking.Positions[x.Key];
-        var item = x.Value;
-        int width = itemPosition.Rotated ? item.Depth : item.Width;
-        int depth = itemPosition.Rotated ? item.Width : item.Depth;
-
-        return itemPosition.Y + item.Height == position.Y &&
-               itemPosition.X <= position.X && position.X < itemPosition.X + width &&
-               itemPosition.Z <= position.Z && position.Z < itemPosition.Z + depth;
-      });
-
-      return items.Count() > 0;
     }
 
     /// <summary>
