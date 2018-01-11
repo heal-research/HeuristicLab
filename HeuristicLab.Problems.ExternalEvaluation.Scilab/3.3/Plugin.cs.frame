@@ -27,7 +27,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation.Scilab {
   /// <summary>
   /// Plugin class for HeuristicLab.Problems.ExternalEvaluation.Scilab plugin.
   /// </summary>
-  [Plugin("HeuristicLab.Problems.ExternalEvaluation.Scilab", "3.3.14.$WCREV$")]
+  [Plugin("HeuristicLab.Problems.ExternalEvaluation.Scilab", "3.3.15.$WCREV$")]
   [PluginFile("HeuristicLab.Problems.ExternalEvaluation.Scilab-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.DotNetScilab", "1.0")]
   [PluginDependency("HeuristicLab.Collections", "3.3")]
