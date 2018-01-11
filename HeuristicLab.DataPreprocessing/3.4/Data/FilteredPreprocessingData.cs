@@ -287,7 +287,7 @@ namespace HeuristicLab.DataPreprocessing {
       return ActiveData.GetMean<T>(columnIndex, considerSelection, emptyValue);
     }
     public T GetMedian<T>(int columnIndex, bool considerSelection = false, T emptyValue = default(T)) where T : IComparable<T> {
-      return ActiveData.GetMean<T>(columnIndex, considerSelection, emptyValue);
+      return ActiveData.GetMedian<T>(columnIndex, considerSelection, emptyValue);
     }
     public T GetMode<T>(int columnIndex, bool considerSelection = false, T emptyValue = default(T)) where T : IEquatable<T> {
       return ActiveData.GetMode<T>(columnIndex, considerSelection, emptyValue);
