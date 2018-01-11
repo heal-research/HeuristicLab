@@ -25,7 +25,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>
   /// Plugin class for HeuristicLab.Algorithms.DataAnalysis plugin.
   /// </summary>
-  [Plugin("HeuristicLab.Algorithms.DataAnalysis", "Provides wrappers for data analysis algorithms implemented in external libraries (linear regression, linear discriminant analysis, k-means clustering, support vector classification and regression)", "3.4.10.$WCREV$")]
+  [Plugin("HeuristicLab.Algorithms.DataAnalysis", "Provides wrappers for data analysis algorithms implemented in external libraries (linear regression, linear discriminant analysis, k-means clustering, support vector classification and regression)", "3.4.11.$WCREV$")]
   [PluginFile("HeuristicLab.Algorithms.DataAnalysis-3.4.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.ALGLIB", "3.7.0")]
   [PluginDependency("HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm", "3.3")] // for GBM

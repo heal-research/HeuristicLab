@@ -22,7 +22,7 @@
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.PTSP.Views {
-  [Plugin("HeuristicLab.Problems.PTSP.Views", "3.3.14.$WCREV$")]
+  [Plugin("HeuristicLab.Problems.PTSP.Views", "3.3.15.$WCREV$")]
   [PluginFile("HeuristicLab.Problems.PTSP.Views-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Common", "3.3")]
   [PluginDependency("HeuristicLab.Core", "3.3")]

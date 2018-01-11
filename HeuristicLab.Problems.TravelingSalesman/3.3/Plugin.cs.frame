@@ -25,7 +25,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
   /// <summary>
   /// Plugin class for HeuristicLab.Problems.TravelingSalesman plugin
   /// </summary>
-  [Plugin("HeuristicLab.Problems.TravelingSalesman", "3.3.14.$WCREV$")]
+  [Plugin("HeuristicLab.Problems.TravelingSalesman", "3.3.15.$WCREV$")]
   [PluginFile("HeuristicLab.Problems.TravelingSalesman-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Analysis", "3.3")]
   [PluginDependency("HeuristicLab.Collections", "3.3")]

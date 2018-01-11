@@ -22,7 +22,7 @@
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.DataAnalysis.Trading.Views {
-  [Plugin("HeuristicLab.Problems.DataAnalysis.Trading.Views","Provides views for trading rules.", "3.4.6.$WCREV$")]
+  [Plugin("HeuristicLab.Problems.DataAnalysis.Trading.Views","Provides views for trading rules.", "3.4.7.$WCREV$")]
   [PluginFile("HeuristicLab.Problems.DataAnalysis.Trading.Views-3.4.dll", PluginFileType.Assembly)]
 
   [PluginDependency("HeuristicLab.Common.Resources", "3.3")]
