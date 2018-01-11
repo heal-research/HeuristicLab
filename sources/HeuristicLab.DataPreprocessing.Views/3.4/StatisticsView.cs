@@ -88,7 +88,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
     private void UpdateData(Dictionary<string, bool> oldVisibility = null) {
       var data = Content.PreprocessingData;
       rowsTextBox.Text = data.Rows.ToString();
-      columnsTextBox.Text = data.Rows.ToString();
+      columnsTextBox.Text = data.Columns.ToString();
       numericColumnsTextBox.Text = GetColumnCount<double>().ToString();
       nominalColumnsTextBox5.Text = GetColumnCount<string>().ToString();
       missingValuesTextBox.Text = data.GetMissingValueCount().ToString();
