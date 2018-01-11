@@ -22,7 +22,7 @@
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.Instances.Scheduling {
-  [Plugin("HeuristicLab.Problems.Instances.Scheduling", "3.3.14.$WCREV$")]
+  [Plugin("HeuristicLab.Problems.Instances.Scheduling", "3.3.15.$WCREV$")]
   [PluginFile("HeuristicLab.Problems.Instances.Scheduling-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Problems.Instances", "3.3")]
   public class HeuristicLabProblemsInstancesSchedulingPlugin : PluginBase {
