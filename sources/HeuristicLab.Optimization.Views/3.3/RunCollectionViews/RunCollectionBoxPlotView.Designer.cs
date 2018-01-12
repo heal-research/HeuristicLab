@@ -53,6 +53,7 @@ namespace HeuristicLab.Optimization.Views {
       this.yAxisLabel = new System.Windows.Forms.Label();
       this.yAxisComboBox = new System.Windows.Forms.ComboBox();
       this.chart = new HeuristicLab.Visualization.ChartControlsExtensions.EnhancedChart();
+      this.openBubbleChartViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.noRunsLabel = new System.Windows.Forms.Label();
       this.splitContainer = new System.Windows.Forms.SplitContainer();
       this.showStatisticsCheckBox = new System.Windows.Forms.CheckBox();
@@ -111,8 +112,8 @@ namespace HeuristicLab.Optimization.Views {
       // 
       // chart
       // 
-      this.chart.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+      this.chart.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       chartArea1.Name = "ChartArea1";
       this.chart.ChartAreas.Add(chartArea1);
@@ -130,6 +131,13 @@ namespace HeuristicLab.Optimization.Views {
       this.chart.Text = "chart";
       this.chart.AxisViewChanged += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.ViewEventArgs>(this.chart_AxisViewChanged);
       this.chart.MouseMove += new System.Windows.Forms.MouseEventHandler(this.chart_MouseMove);
+      // 
+      // openBubbleChartViewToolStripMenuItem
+      // 
+      this.openBubbleChartViewToolStripMenuItem.Name = "openBubbleChartViewToolStripMenuItem";
+      this.openBubbleChartViewToolStripMenuItem.Size = new System.Drawing.Size(256, 22);
+      this.openBubbleChartViewToolStripMenuItem.Text = "Open BubbleChart View";
+      this.openBubbleChartViewToolStripMenuItem.Click += new System.EventHandler(this.openBubbleChartViewToolStripMenuItem_Click);
       // 
       // noRunsLabel
       // 
@@ -182,8 +190,8 @@ namespace HeuristicLab.Optimization.Views {
       // 
       // statisticsGroupBox
       // 
-      this.statisticsGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+      this.statisticsGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.statisticsGroupBox.Controls.Add(this.statisticsMatrixView);
       this.statisticsGroupBox.Location = new System.Drawing.Point(3, 3);
@@ -238,5 +246,6 @@ namespace HeuristicLab.Optimization.Views {
     private System.Windows.Forms.GroupBox statisticsGroupBox;
     private System.Windows.Forms.ToolTip tooltip;
     protected System.Windows.Forms.CheckBox showStatisticsCheckBox;
+    private System.Windows.Forms.ToolStripMenuItem openBubbleChartViewToolStripMenuItem;
   }
 }
