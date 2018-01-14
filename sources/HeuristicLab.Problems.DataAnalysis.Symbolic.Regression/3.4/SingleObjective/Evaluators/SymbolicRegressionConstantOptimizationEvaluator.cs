@@ -138,8 +138,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
       if (!Parameters.ContainsKey(CountEvaluationsParameterName))
         Parameters.Add(new FixedValueParameter<BoolValue>(CountEvaluationsParameterName, "Determines if function and gradient evaluation should be counted.", new BoolValue(false)));
-      if (Parameters.ContainsKey(FunctionEvaluationsResultParameterName) && Parameters.ContainsKey(GradientEvaluationsResultParameterName))
-        CountEvaluations = true;
 
       if (!Parameters.ContainsKey(FunctionEvaluationsResultParameterName))
         Parameters.Add(new ResultParameter<IntValue>(FunctionEvaluationsResultParameterName, "The number of function evaluations performed by the constants optimization evaluator", "Results", new IntValue()));
