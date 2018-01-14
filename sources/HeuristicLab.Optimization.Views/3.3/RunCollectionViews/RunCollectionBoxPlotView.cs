@@ -212,7 +212,7 @@ namespace HeuristicLab.Optimization.Views {
     }
 
     private void UpdateStatistics() {
-      DoubleMatrix matrix = new DoubleMatrix(9, seriesCache.Count);
+      DoubleMatrix matrix = new DoubleMatrix(10, seriesCache.Count);
       matrix.SortableView = false;
       List<string> columnNames = new List<string>();
       foreach (Series series in seriesCache.Values) {
@@ -238,7 +238,7 @@ namespace HeuristicLab.Optimization.Views {
         }
       }
       matrix.ColumnNames = columnNames;
-      matrix.RowNames = new string[] { "Count", "Minimum", "Maximum", "Median", "Average", "Standard Deviation", "Variance", "25th Percentile", "75th Percentile" };
+      matrix.RowNames = new string[] { "Count", "Minimum", "Maximum", "Median", "Average", "Standard Deviation", "Variance", "25th Percentile", "75th Percentile", "Interquartile Range" };
 
       for (int i = 0; i < seriesCache.Count; i++) {
         Series series = seriesCache.ElementAt(i).Value;
@@ -252,6 +252,7 @@ namespace HeuristicLab.Optimization.Views {
         matrix[6, i] = seriesValues.Variance();
         matrix[7, i] = seriesValues.Quantile(0.25);
         matrix[8, i] = seriesValues.Quantile(0.75);
+        matrix[9, i] = matrix[8, i] - matrix[7, i];
       }
       statisticsMatrixView.Content = matrix;
     }
