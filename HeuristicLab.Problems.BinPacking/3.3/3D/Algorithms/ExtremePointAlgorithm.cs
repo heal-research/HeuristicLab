@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2016 Joseph Helm and Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -39,9 +39,11 @@ using HeuristicLab.Problems.BinPacking3D.Evaluators;
 namespace HeuristicLab.Problems.BinPacking3D {
 
   public enum SortingMethod { All, Given, VolumeHeight, HeightVolume, AreaHeight, HeightArea, ClusteredAreaHeight, ClusteredHeightArea }
-  public enum FittingMethod { All, FirstFit, ResidualSpaceBestFit, FreeVolumeBestFit }
+  public enum FittingMethod { All, FirstFit, ResidualSpaceBestFit, FreeVolumeBestFit, MinimumResidualSpaceLeft }
 
   public enum ExtremePointCreationMethod { All, PointProjection, LineProjection }
+
+  public enum ExtremePointPruningMethod { None, All, PruneBehind }
 
   [Item("Extreme-point-based Bin Packing (3d)", "An implementation of the extreme-point based packing described in Crainic, T. G., Perboli, G., & Tadei, R. (2008). Extreme point-based heuristics for three-dimensional bin packing. Informs Journal on computing, 20(3), 368-384.")]
   [StorableClass]

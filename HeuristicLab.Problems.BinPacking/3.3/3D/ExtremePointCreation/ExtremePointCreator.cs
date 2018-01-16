@@ -1,4 +1,25 @@
-﻿using HeuristicLab.Common;
+﻿#region License Information
+/* HeuristicLab
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ *
+ * This file is part of HeuristicLab.
+ *
+ * HeuristicLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * HeuristicLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
+ */
+#endregion
+
+using HeuristicLab.Common;
 using HeuristicLab.Problems.BinPacking3D.Geometry;
 using HeuristicLab.Problems.BinPacking3D.ResidualSpaceCalculation;
 using System;
@@ -42,8 +63,8 @@ namespace HeuristicLab.Problems.BinPacking3D.ExtremePointCreation {
     /// <param name="newItem"></param>
     /// <param name="position"></param>
     protected virtual void GenerateNewExtremePointsForItem(BinPacking3D binPacking, PackingItem newItem, PackingPosition position) {
-      int newWidth = position.Rotated ? newItem.Depth : newItem.Width;
-      int newDepth = position.Rotated ? newItem.Width : newItem.Depth;
+      int newWidth = newItem.Width;
+      int newDepth = newItem.Depth;
       var binShape = binPacking.BinShape;
 
       var itemPlacement = binPacking.Items.Select(x => new { Item = x.Value, Position = binPacking.Positions[x.Key] }).ToList();

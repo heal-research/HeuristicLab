@@ -1,7 +1,6 @@
 ﻿#region License Information
-
 /* HeuristicLab
- * Copyright (C) 2002-2017 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -18,7 +17,6 @@
  * You should have received a copy of the GNU General Public License
  * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
  */
-
 #endregion
 
 using HeuristicLab.Problems.Instances;

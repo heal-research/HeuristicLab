@@ -1,5 +1,6 @@
-﻿/* HeuristicLab
- * Copyright (C) 2002-2016 Joseph Helm and Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+﻿#region License Information
+/* HeuristicLab
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -14,8 +15,9 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with HeuristicLab. If not, see<http://www.gnu.org/licenses/> .
+ * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
  */
+#endregion
 
 using System;
 using System.Collections.Generic;
@@ -138,17 +140,17 @@ namespace HeuristicLab.Problems.BinPacking.Views {
 
         var selectedModel = new GeometryModel3D { Geometry = new MeshGeometry3D(), Material = material };
         AddSolidCube((MeshGeometry3D)selectedModel.Geometry, selectedPos.X, selectedPos.Y, selectedPos.Z,
-          selectedPos.Rotated ? selectedItem.Value.Depth : selectedItem.Value.Width,
-          selectedItem.Value.Height,
-          selectedPos.Rotated ? selectedItem.Value.Width : selectedItem.Value.Depth);
+          selectedItem.Value.DepthInView,
+          selectedItem.Value.HeightInView,
+          selectedItem.Value.DepthInView);
         modelGroup.Children.Add(selectedModel);
 
         foreach (var item in packing.Items.Where(x => selectedItemKey != x.Key)) {
           var position = packing.Positions[item.Key];
 
-          var w = position.Rotated ? item.Value.Depth : item.Value.Width;
-          var h = item.Value.Height;
-          var d = position.Rotated ? item.Value.Width : item.Value.Depth;
+          var w = item.Value.WidthInView;
+          var h = item.Value.HeightInView;
+          var d = item.Value.DepthInView;
 
           var model = new GeometryModel3D { Geometry = new MeshGeometry3D(), Material = hiddenMaterial };
           AddWireframeCube((MeshGeometry3D)model.Geometry, position.X, position.Y, position.Z, w, h, d, 1);
@@ -160,9 +162,9 @@ namespace HeuristicLab.Problems.BinPacking.Views {
         foreach (var item in packing.Items) {
           var position = packing.Positions[item.Key];
 
-          var w = position.Rotated ? item.Value.Depth : item.Value.Width;
-          var h = item.Value.Height;
-          var d = position.Rotated ? item.Value.Width : item.Value.Depth;
+          var w = item.Value.WidthInView;
+          var h = item.Value.HeightInView;
+          var d = item.Value.DepthInView;
 
           var model = new GeometryModel3D { Geometry = new MeshGeometry3D() };
           DiffuseMaterial material;

@@ -1,4 +1,25 @@
-﻿using HeuristicLab.Common;
+﻿#region License Information
+/* HeuristicLab
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ *
+ * This file is part of HeuristicLab.
+ *
+ * HeuristicLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * HeuristicLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
+ */
+#endregion
+
+using HeuristicLab.Common;
 using HeuristicLab.Problems.BinPacking3D.Geometry;
 using HeuristicLab.Problems.BinPacking3D.ResidualSpaceCalculation;
 using System;
@@ -6,6 +27,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Collections.Concurrent;
 
 namespace HeuristicLab.Problems.BinPacking3D.ExtremePointCreation {
   /// <summary>
@@ -14,15 +36,21 @@ namespace HeuristicLab.Problems.BinPacking3D.ExtremePointCreation {
   /// </summary>
   public class LineProjectionBasedEPCreator : ExtremePointCreator {
 
+    /// <summary>
+    /// This lock object is needed because of creating the extreme points in an parallel for loop.
+    /// </summary>
+    object _lockAddExtremePoint = new object();
+
     protected override void UpdateExtremePoints(BinPacking3D binPacking, PackingItem item, PackingPosition position) {
       binPacking.ExtremePoints.Clear();
 
-      foreach (var i in binPacking.Items) {
+      // generate all new extreme points parallel. This speeds up the creator.
+      Parallel.ForEach(binPacking.Items, i => {
         PackingItem it = i.Value;
         PackingPosition p = binPacking.Positions[i.Key];
         GenerateNewExtremePointsForItem(binPacking, it, p);
-      }
-     
+      });
+
       // remove not needed extreme points.
       foreach (var extremePoint in binPacking.ExtremePoints.ToList()) {
         // check if a residual space can be removed
@@ -36,8 +64,9 @@ namespace HeuristicLab.Problems.BinPacking3D.ExtremePointCreation {
           binPacking.ExtremePoints.Remove(extremePoint);
         }
       }
+      
     }
-    
+
     /// <summary>
     /// Returns true if a given residual space can be removed.
     /// The given residual space can be removed if it is within another residual space and
@@ -59,12 +88,12 @@ namespace HeuristicLab.Problems.BinPacking3D.ExtremePointCreation {
 
           if (itemBelowEp || !itemBelowEp && !itemBelowPos) {
             return true;
-          }          
+          }
         }
       }
       return false;
     }
-    
+
     /// <summary>
     /// Returns true if the given position lies on an item or an the ground.
     /// </summary>
@@ -79,8 +108,8 @@ namespace HeuristicLab.Problems.BinPacking3D.ExtremePointCreation {
       var items = binPacking.Items.Where(x => {
         var itemPosition = binPacking.Positions[x.Key];
         var item = x.Value;
-        int width = itemPosition.Rotated ? item.Depth : item.Width;
-        int depth = itemPosition.Rotated ? item.Width : item.Depth;
+        int width = item.Width;
+        int depth = item.Depth;
 
         return itemPosition.Y + item.Height == position.Y &&
                itemPosition.X <= position.X && position.X < itemPosition.X + width &&
@@ -109,18 +138,21 @@ namespace HeuristicLab.Problems.BinPacking3D.ExtremePointCreation {
         return false;
       }
 
-      if (binPacking.ExtremePoints.ContainsKey(position)) {
-        return false;
+      // this is necessary if the extreme points are being created in a parallel loop.
+      lock (_lockAddExtremePoint) {
+        if (binPacking.ExtremePoints.ContainsKey(position)) {
+          return false;
+        }
+
+        var rs = CalculateResidualSpace(binPacking, new Vector3D(position));
+
+        if (rs.Count() <= 0) {
+          return false;
+        }
+
+        binPacking.ExtremePoints.Add(position, rs);
+        return true;
       }
-
-      var rs = CalculateResidualSpace(binPacking, new Vector3D(position));
-
-      if (rs.Count() <= 0) {
-        return false;
-      }
-
-      binPacking.ExtremePoints.Add(position, rs);
-      return true;
     }
 
     /// <summary>
@@ -147,8 +179,8 @@ namespace HeuristicLab.Problems.BinPacking3D.ExtremePointCreation {
     /// <param name="newItem"></param>
     /// <param name="position"></param>
     private void PointProjectionForNewItem(BinPacking3D binPacking, PackingItem newItem, PackingPosition position) {
-      int newWidth = position.Rotated ? newItem.Depth : newItem.Width;
-      int newDepth = position.Rotated ? newItem.Width : newItem.Depth;
+      int newWidth = newItem.Width;
+      int newDepth = newItem.Depth;
       var binShape = binPacking.BinShape;
       var sourcePoint = new PackingPosition(position.AssignedBin, position.X + newWidth, position.Y, position.Z);
       PointProjection(binPacking, sourcePoint, ProjectDown);
@@ -195,8 +227,8 @@ namespace HeuristicLab.Problems.BinPacking3D.ExtremePointCreation {
     /// <param name="newItem"></param>
     /// <param name="position"></param>
     private void EdgeProjectionForNewItem(BinPacking3D binPacking, PackingItem newItem, PackingPosition position) {
-      int newWidth = position.Rotated ? newItem.Depth : newItem.Width;
-      int newDepth = position.Rotated ? newItem.Width : newItem.Depth;
+      int newWidth = newItem.Width;
+      int newDepth = newItem.Depth;
       var binShape = binPacking.BinShape;
 
       foreach (var ep in GetEpsOnLeft(binPacking, newItem, position)) {
@@ -234,8 +266,8 @@ namespace HeuristicLab.Problems.BinPacking3D.ExtremePointCreation {
     private bool PointIsInAnyItem(BinPacking3D binPacking, Vector3D point) {
       foreach (var item in binPacking.Items) {
         PackingPosition position = binPacking.Positions[item.Key];
-        var depth = position.Rotated ? item.Value.Width : item.Value.Depth;
-        var width = position.Rotated ? item.Value.Depth : item.Value.Width;
+        var depth = item.Value.Depth;
+        var width = item.Value.Width;
         if (position.X <= point.X && point.X < position.X + width &&
             position.Y <= point.Y && point.Y < position.Y + item.Value.Height &&
             position.Z <= point.Z && point.Z < position.Z + depth) {
@@ -443,8 +475,8 @@ namespace HeuristicLab.Problems.BinPacking3D.ExtremePointCreation {
     /// <param name="position"></param>
     /// <returns></returns>
     private Vector3D[] GetVertices(PackingItem item, PackingPosition position) {
-      int width = position.Rotated ? item.Depth : item.Width;
-      int depth = position.Rotated ? item.Width : item.Depth;
+      int width = item.Width;
+      int depth = item.Depth;
       return new Vector3D[] {
         new Vector3D(position.X + 0,     position.Y + 0,           position.Z + 0), // (0,0,0)
         new Vector3D(position.X + width, position.Y + 0,           position.Z + 0), // (x,0,0)
@@ -573,6 +605,7 @@ namespace HeuristicLab.Problems.BinPacking3D.ExtremePointCreation {
           eps.Add(ep);
         }
       }
+
       return eps as IEnumerable<Vector3D>;
     }
 

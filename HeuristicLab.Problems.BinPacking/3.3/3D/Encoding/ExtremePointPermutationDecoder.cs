@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2016 Joseph Helm and Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -97,10 +97,11 @@ namespace HeuristicLab.Problems.BinPacking3D.Encoding {
     /// <param name="items">A list of packing items which should be assigned to a bin</param>
     /// <param name="useStackingConstraints"></param>
     /// <returns></returns>
-    public Solution Decode(Permutation permutation, PackingShape binShape, IList<PackingItem> items,bool useStackingConstraints) {
+    public Solution Decode(Permutation permutation, PackingShape binShape, IList<PackingItem> items, bool useStackingConstraints) {
       var binPacker = BinPackerFactory.CreateBinPacker(FittingMethod);
+      var pruningMethod = ExtremePointPruningMethod.None;
       Solution solution = new Solution(binShape, useExtremePoints: true, stackingConstraints: useStackingConstraints);
-      foreach (var packedBin in binPacker.PackItems(permutation, binShape, items, ExtremePointCreationMethod, useStackingConstraints)) {
+      foreach (var packedBin in binPacker.PackItems(permutation, binShape, items, ExtremePointCreationMethod, pruningMethod, useStackingConstraints)) {
         solution.Bins.Add(packedBin);
       }
       return solution;

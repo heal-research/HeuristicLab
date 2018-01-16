@@ -1,7 +1,6 @@
 ﻿#region License Information
-
 /* HeuristicLab
- * Copyright (C) 2002-2017 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -18,7 +17,6 @@
  * You should have received a copy of the GNU General Public License
  * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
  */
-
 #endregion
 
 using System;
@@ -57,7 +55,10 @@ namespace HeuristicLab.Problems.BinPacking3D.Instances {
             var rotate = GetNextInteger(reader);
             var tilt = GetNextInteger(reader);
             for (var i = 0; i < pieces; i++) {
-              PackingItem item = new PackingItem(width, height, length, Bin, weight, material);
+              PackingItem item = new PackingItem(width, height, length, Bin, weight, material) {
+                RotateEnabled = rotate == 0 ? false : true,
+                TiltEnabled = tilt == 0 ? false : true
+              };
               Items.Add(item);
             }
           }

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2016 Joseph Helm and Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,6 +24,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.BinPacking3D.ExtremePointCreation;
+using HeuristicLab.Problems.BinPacking3D.ExtremePointPruning;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -54,11 +55,10 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
     /// Each residual space belongs to an extreme point.
     /// </summary>
     /// <returns>Returns a collection of bin packing 3d objects. Each object represents a bin and the packed items</returns>
-    public override IList<BinPacking3D> PackItems(Permutation sortedItems, PackingShape binShape, IList<PackingItem> items, ExtremePointCreationMethod epCreationMethod, bool useStackingConstraints) {
+    public override IList<BinPacking3D> PackItems(Permutation sortedItems, PackingShape binShape, IList<PackingItem> items, ExtremePointCreationMethod epCreationMethod, ExtremePointPruningMethod epPruningMethod, bool useStackingConstraints) {
       IList<BinPacking3D> packingList = new List<BinPacking3D>();
       IList<int> remainingIds = new List<int>(sortedItems);
       IExtremePointCreator extremePointCreator = ExtremePointCreatorFactory.CreateExtremePointCreator(epCreationMethod, useStackingConstraints);
-      bool rotated = false;
 
       foreach (var remainingId in remainingIds) {
         PackingItem item = items[remainingId];
@@ -77,7 +77,7 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
 
         if (!packed) {
           BinPacking3D binPacking = new BinPacking3D(binShape);
-          var position = FindPackingPositionForItem(binPacking, item, useStackingConstraints, rotated);
+          var position = FindPackingPositionForItem(binPacking, item, useStackingConstraints);
           if (position != null) {
             PackItem(binPacking, remainingId, item, position, extremePointCreator, useStackingConstraints);
           } else {
@@ -86,6 +86,8 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
           packingList.Add(binPacking);
         }
       }
+
+      ExtremePointPruningFactory.CreatePruning().PruneExtremePoints(epPruningMethod, packingList);
       return packingList;
     }
 

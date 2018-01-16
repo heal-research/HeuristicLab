@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2016 Joseph Helm and Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,6 +24,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.BinPacking3D.ExtremePointCreation;
+using HeuristicLab.Problems.BinPacking3D.ExtremePointPruning;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -60,7 +61,7 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
     /// <param name="items"></param>
     /// <param name="useStackingConstraints"></param>
     /// <returns>Returns a collection of bin packing 3d objects. Each object represents a bin and the packed items</returns>
-    public override IList<BinPacking3D> PackItems(Permutation sortedItems, PackingShape binShape, IList<PackingItem> items, ExtremePointCreationMethod epGenerationMethod, bool useStackingConstraints) {
+    public override IList<BinPacking3D> PackItems(Permutation sortedItems, PackingShape binShape, IList<PackingItem> items, ExtremePointCreationMethod epGenerationMethod, ExtremePointPruningMethod epPruningMethod, bool useStackingConstraints) {
       IList<BinPacking3D> packingList = new List<BinPacking3D>();
       IList<int> remainingIds = new List<int>(sortedItems);
       IExtremePointCreator extremePointCreator = ExtremePointCreatorFactory.CreateExtremePointCreator(epGenerationMethod, useStackingConstraints);
@@ -72,7 +73,7 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
         bool positionFound = false;
 
         foreach (var packingBin in sortedBins) {
-          PackingPosition position = FindPackingPositionForItem(packingBin, item, useStackingConstraints, false);
+          PackingPosition position = FindPackingPositionForItem(packingBin, item, useStackingConstraints);
           positionFound = position != null;
           var bin = packingBin;
           if (positionFound) {
@@ -83,7 +84,7 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
 
         if (!positionFound) {
           BinPacking3D packingBin = new BinPacking3D(binShape);
-          PackingPosition position = FindPackingPositionForItem(packingBin, item, useStackingConstraints, false);
+          PackingPosition position = FindPackingPositionForItem(packingBin, item, useStackingConstraints);
 
           if (position == null) {
             throw new InvalidOperationException("Item " + remainingId + " cannot be packed into an empty bin.");
@@ -93,6 +94,7 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
           packingList.Add(packingBin);
         }
       }
+      ExtremePointPruningFactory.CreatePruning().PruneExtremePoints(epPruningMethod, packingList);
       return packingList.ToList();
     }
   }

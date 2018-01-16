@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2016 Joseph Helm and Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -30,6 +30,9 @@ namespace HeuristicLab.Problems.BinPacking3D {
   [Item("PackingItem (3d)", "Represents a cuboidic packing-item for bin-packing problems.")]
   [StorableClass]
   public class PackingItem : PackingShape, IPackingItem {
+    #region Properties
+
+
     public IValueParameter<PackingShape> TargetBinParameter {
       get { return (IValueParameter<PackingShape>)Parameters["TargetBin"]; }
     }
@@ -39,7 +42,7 @@ namespace HeuristicLab.Problems.BinPacking3D {
     public IFixedValueParameter<IntValue> MaterialParameter {
       get { return (IFixedValueParameter<IntValue>)Parameters["Material"]; }
     }
-
+    
     public PackingShape TargetBin {
       get { return TargetBinParameter.Value; }
       set { TargetBinParameter.Value = value; }
@@ -55,9 +58,208 @@ namespace HeuristicLab.Problems.BinPacking3D {
       set { MaterialParameter.Value.Value = value; }
     }
 
+
+    public IValueParameter<BoolValue> RotateEnabledParameter {
+      get { return (IValueParameter<BoolValue>)Parameters["RotateEnabled"]; }
+    }
+
+    public IValueParameter<BoolValue> RotatedParameter {
+      get { return (IValueParameter<BoolValue>)Parameters["Rotated"]; }
+    }
+
+    public IValueParameter<BoolValue> TiltEnabledParameter {
+      get { return (IValueParameter<BoolValue>)Parameters["TiltEnabled"]; }
+    }
+
+    public IValueParameter<BoolValue> TiltedParameter {
+      get { return (IValueParameter<BoolValue>)Parameters["Tilted"]; }
+    }
+    
+    /// <summary>
+    /// Enables that the current item can be rotated.
+    /// </summary>
+    public bool RotateEnabled {
+      get { return RotateEnabledParameter.Value.Value; }
+      set { RotateEnabledParameter.Value.Value = value; }
+    }
+
+    /// <summary>
+    /// Indicates that the current item is rotated.
+    /// If the item is also tilted it will be tilted first.
+    /// </summary>
+    public bool Rotated {
+      get { return RotatedParameter.Value.Value; }
+      set { RotatedParameter.Value.Value = value; }
+    }
+
+    /// <summary>
+    /// Enables that the current item can be tilted.
+    /// </summary>
+    public bool TiltEnabled {
+      get { return TiltEnabledParameter.Value.Value; }
+      set { TiltEnabledParameter.Value.Value = value; }
+    }
+
+    /// <summary>
+    /// Indicates that the current item is tilted.
+    /// Tilted means that the item is tilted sidewards.
+    /// If the item is also rotated it will be tilted first.
+    /// </summary>
+    public bool Tilted {
+      get { return TiltedParameter.Value.Value; }
+      set { TiltedParameter.Value.Value = value; }
+    }
+    
+    public IFixedValueParameter<IntValue> LoadSecuringHeightParameter {
+      get { return (IFixedValueParameter<IntValue>)Parameters["LoadSecuringHeight"]; }
+    }
+    
+    public IFixedValueParameter<IntValue> LoadSecuringWidthParameter {
+      get { return (IFixedValueParameter<IntValue>)Parameters["LoadSecuringWidth"]; }
+    }
+
+    public IFixedValueParameter<IntValue> LoadSecuringDepthParameter {
+      get { return (IFixedValueParameter<IntValue>)Parameters["LoadSecuringDepth"]; }
+    }
+
+    public int LoadSecuringHeight {
+      get { return LoadSecuringHeightParameter.Value.Value; }
+      set { LoadSecuringHeightParameter.Value.Value = value; }
+    }
+
+    public int LoadSecuringWidth {
+      get { return LoadSecuringWidthParameter.Value.Value; }
+      set { LoadSecuringWidthParameter.Value.Value = value; }
+    }
+
+    public int LoadSecuringDepth {
+      get { return LoadSecuringDepthParameter.Value.Value; }
+      set { LoadSecuringDepthParameter.Value.Value = value; }
+    }
+
+    /// <summary>
+    /// This property represents the height as needed in the bin packing.
+    /// </summary>
+    public new int Height {
+      get {
+        if (!Tilted) {
+          return HeightParameter.Value.Value + LoadSecuringHeightParameter.Value.Value;
+        } else {
+          return WidthParameter.Value.Value + LoadSecuringHeightParameter.Value.Value;
+        }
+      }
+    }
+
+    /// <summary>
+    /// This property represents the width as needed in the bin packing.
+    /// </summary>
+    public new int Width {
+      get {
+        if (Rotated) {
+          return DepthParameter.Value.Value + LoadSecuringWidthParameter.Value.Value;
+        } else {
+          if (!Tilted) {
+            return WidthParameter.Value.Value + LoadSecuringWidthParameter.Value.Value;
+          } else {
+            return HeightParameter.Value.Value + LoadSecuringWidthParameter.Value.Value;
+          }
+        }
+      }
+    }
+
+    /// <summary>
+    /// This property represents the depth as needed in the bin packing.
+    /// </summary>
+    public new int Depth {
+      get {
+        if (!Rotated) {
+          return DepthParameter.Value.Value + LoadSecuringDepthParameter.Value.Value;
+        } else {
+          if (!Tilted) {
+            return WidthParameter.Value.Value + LoadSecuringDepthParameter.Value.Value;
+          } else {
+            return HeightParameter.Value.Value + LoadSecuringDepthParameter.Value.Value;
+          }
+        }
+      }
+    }
+
+    /// <summary>
+    /// This property represents the height as it is seen in the view of the bin packing.
+    /// </summary>
+    public int HeightInView {
+      get {
+        if (!Tilted) {
+          return HeightParameter.Value.Value;
+        } else {
+          return WidthParameter.Value.Value;
+        }
+      } 
+    }
+
+    /// <summary>
+    /// This property represents the width as it is seen in the view of the bin packing.
+    /// </summary>
+    public int WidthInView {
+      get {
+        if (Rotated) {
+          return DepthParameter.Value.Value;
+        } else {
+          if (!Tilted) {
+            return WidthParameter.Value.Value;
+          } else {
+            return HeightParameter.Value.Value;
+          }
+        }
+      }
+    }
+
+    /// <summary>
+    /// This property represents the depth as it is seen in the view of the bin packing.
+    /// </summary>
+    public int DepthInView {
+      get {
+        if (!Rotated) {
+          return DepthParameter.Value.Value;
+        } else {
+          if (!Tilted) {
+            return WidthParameter.Value.Value;
+          } else {
+            return HeightParameter.Value.Value;
+          }
+        }
+      }
+    }
+
+    /// <summary>
+    /// This property represents the original height.
+    /// </summary>
+    public int OriginalHeight {
+      get { return HeightParameter.Value.Value; }
+      set { HeightParameter.Value.Value = value; }
+    }
+
+    /// <summary>
+    /// This property represents the original width.
+    /// </summary>
+    public int OriginalWidth {
+      get { return WidthParameter.Value.Value; }
+      set { WidthParameter.Value.Value = value; }
+    }
+
+    /// <summary>
+    /// This property represents the original depth.
+    /// </summary>
+    public int OriginalDepth {
+      get { return DepthParameter.Value.Value; }
+      set { DepthParameter.Value.Value = value; }
+    }
+    
     public bool SupportsStacking(IPackingItem other) {
       return ((other.Material < this.Material) || (other.Material.Equals(this.Material) && other.Weight <= this.Weight));
     }
+    #endregion
+
 
     [StorableConstructor]
     protected PackingItem(bool deserializing) : base(deserializing) { }
@@ -70,26 +272,48 @@ namespace HeuristicLab.Problems.BinPacking3D {
       Parameters.Add(new ValueParameter<PackingShape>("TargetBin"));
       Parameters.Add(new FixedValueParameter<DoubleValue>("Weight"));
       Parameters.Add(new FixedValueParameter<IntValue>("Material"));
+      Parameters.Add(new FixedValueParameter<BoolValue>("RotateEnabled"));
+      Parameters.Add(new FixedValueParameter<BoolValue>("Rotated"));
+      Parameters.Add(new FixedValueParameter<BoolValue>("TiltEnabled"));
+      Parameters.Add(new FixedValueParameter<BoolValue>("Tilted"));
+      
+      Parameters.Add(new FixedValueParameter<IntValue>("LoadSecuringHeight"));
+      Parameters.Add(new FixedValueParameter<IntValue>("LoadSecuringWidth"));
+      Parameters.Add(new FixedValueParameter<IntValue>("LoadSecuringDepth"));
 
       RegisterEvents();
     }
 
-    public PackingItem(int width, int height, int depth, PackingShape targetBin, double weight, int material)
+    public PackingItem(int width, int height, int depth, PackingShape targetBin)
       : this() {
-      this.Width = width;
-      this.Height = height;
-      this.Depth = depth;
-      this.Weight = weight;
-      this.Material = material;
+      this.OriginalWidth = width;
+      this.OriginalHeight = height;
+      this.OriginalDepth = depth;
       this.TargetBin = (PackingShape)targetBin.Clone();
     }
 
-    public PackingItem(int width, int height, int depth, PackingShape targetBin)
+    public PackingItem(int width, int height, int depth, PackingShape targetBin, double weight, int material)
+      : this(width, height, depth, targetBin) {    
+      this.Weight = weight;
+      this.Material = material;
+    }
+
+    
+
+    public PackingItem(PackingItem packingItem) 
       : this() {
-      this.Width = width;
-      this.Height = height;
-      this.Depth = depth;
-      this.TargetBin = (PackingShape)targetBin.Clone();
+      OriginalWidth = packingItem.OriginalWidth;
+      OriginalHeight = packingItem.OriginalHeight;
+      OriginalDepth =  packingItem.OriginalDepth;
+      TargetBin = (PackingShape)packingItem.TargetBin.Clone();
+      Weight = packingItem.Weight;
+      Material = packingItem.Material;
+      Rotated = packingItem.Rotated;
+      Tilted = packingItem.Tilted;
+
+      LoadSecuringDepth = packingItem.LoadSecuringDepth;
+      LoadSecuringHeight = packingItem.LoadSecuringHeight;
+      LoadSecuringWidth = packingItem.LoadSecuringWidth;
     }
 
     [StorableHook(HookType.AfterDeserialization)]
@@ -109,9 +333,9 @@ namespace HeuristicLab.Problems.BinPacking3D {
       // target bin does not occur in ToString()
     }
 
-
     public override string ToString() {
       return string.Format("CuboidPackingItem ({0}, {1}, {2}; weight={3}, mat={4})", this.Width, this.Height, this.Depth, this.Weight, this.Material);
     }
+    
   }
 }

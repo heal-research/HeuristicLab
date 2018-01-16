@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2016 Joseph Helm and Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -48,6 +48,7 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
 
     public BinPacker() { }
 
+   
     /// <summary>
     /// Packs all items of the bin packer and returns a collection of BinPacking3D objects
     /// </summary>
@@ -56,7 +57,7 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
     /// <param name="items">A list of packing items which should be assigned to a bin</param>
     /// <param name="useStackingConstraints">Flag for using stacking constraints</param>
     /// <returns>Returns a collection of bin packing 3d objects. Each object represents a bin and the packed items</returns>
-    public abstract IList<BinPacking3D> PackItems(Permutation sortedItems, PackingShape binShape, IList<PackingItem> items, ExtremePointCreationMethod epCreationMethod, bool useStackingConstraints);
+    public abstract IList<BinPacking3D> PackItems(Permutation sortedItems, PackingShape binShape, IList<PackingItem> items, ExtremePointCreationMethod epCreationMethod, ExtremePointPruningMethod epPruningMethod, bool useStackingConstraints);
     
     /// <summary>
     /// Pack a given item into a given bin and updates the residual space and the extreme points
@@ -65,12 +66,7 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
     /// <param name="itemId"></param>
     /// <param name="packingItem"></param>
     /// <param name="position"></param>
-    protected virtual void PackItem(BinPacking3D packingBin, int itemId, PackingItem packingItem, PackingPosition position, IExtremePointCreator extremePointCreator, bool useStackingConstraints) {
-      if (!CheckItemDimensions(packingBin, packingItem, position)) {
-        throw new BinPacking3DException($"The dimensions of the given item exceeds the bin dimensions. " +
-          $"Bin: ({packingBin.BinShape.Width} {packingBin.BinShape.Depth} {packingBin.BinShape.Height})" +
-          $"Item: ({packingItem.Width} {packingItem.Depth} {packingItem.Height})");
-      }
+    protected virtual void PackItem(BinPacking3D packingBin, int itemId, PackingItem packingItem, PackingPosition position, IExtremePointCreator extremePointCreator, bool useStackingConstraints) {      
       packingBin.PackItem(itemId, packingItem, position);
       extremePointCreator.UpdateBinPacking(packingBin, packingItem, position);
     }
@@ -81,13 +77,18 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
     /// <param name="packingBin"></param>
     /// <param name="packingItem"></param>
     /// <param name="useStackingConstraints"></param>
-    /// <param name="rotated"></param>
     /// <returns>Returns the packing position for an given item. If there could not be found a valid position it returns null</returns>
-    protected PackingPosition FindPackingPositionForItem(BinPacking3D packingBin, PackingItem packingItem, bool useStackingConstraints, bool rotated) {
+    protected virtual PackingPosition FindPackingPositionForItem(BinPacking3D packingBin, PackingItem packingItem, bool useStackingConstraints) {
+      if (!CheckItemDimensions(packingBin, packingItem)) {
+        throw new BinPacking3DException($"The dimensions of the given item exceeds the bin dimensions. " +
+          $"Bin: ({packingBin.BinShape.Width} {packingBin.BinShape.Depth} {packingBin.BinShape.Height})" +
+          $"Item: ({packingItem.Width} {packingItem.Depth} {packingItem.Height})");
+      }
+
       PackingItem newItem = new PackingItem(
-        rotated ? packingItem.Depth : packingItem.Width,
+        packingItem.Width,
         packingItem.Height,
-        rotated ? packingItem.Width : packingItem.Depth,
+        packingItem.Depth,
         packingItem.TargetBin, packingItem.Weight, packingItem.Material);
 
       // The extremepoints are sortet by Y / Z / X
@@ -101,10 +102,24 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
     /// </summary>
     /// <param name="item"></param>
     /// <returns>Returns true if the dimensions of an given item are less or equal to the bin.</returns>
-    private bool CheckItemDimensions(BinPacking3D packingBin, PackingItem item, PackingPosition itemPosition) {
-      var width = itemPosition.Rotated ? item.Depth : item.Width;
-      var depth = itemPosition.Rotated ? item.Width : item.Depth;
+    protected virtual bool CheckItemDimensions(BinPacking3D packingBin, PackingItem item) {
+      var width = item.Width;
+      var depth = item.Depth;
       return packingBin.BinShape.Width >= width && packingBin.BinShape.Height >= item.Height && packingBin.BinShape.Depth >= depth;
     }
+
+    /// <summary>
+    /// Clones a given list of packing items.
+    /// </summary>
+    /// <param name="items"></param>
+    /// <returns></returns>
+    protected static IList<PackingItem> CloneItems(IList<PackingItem> items) {
+      var clonedItems = new List<PackingItem>();
+      foreach (var item in items) {
+        clonedItems.Add(item.Clone() as PackingItem);
+      }
+      return clonedItems;
+    }
+
   }
 }

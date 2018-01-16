@@ -108,6 +108,9 @@
     <Compile Include="3D\ExtremePointCreation\IExtremePointCreator.cs" />
     <Compile Include="3D\ExtremePointCreation\LineProjectionBasedEPCreator.cs" />
     <Compile Include="3D\ExtremePointCreation\PointProjectionBasedEPCreator.cs" />
+    <Compile Include="3D\ExtremePointPruning\ExtremePointPruning.cs" />
+    <Compile Include="3D\ExtremePointPruning\ExtremePointPruningFactory.cs" />
+    <Compile Include="3D\ExtremePointPruning\IExtremePointPruning.cs" />
     <Compile Include="3D\Geometry\Edge3D.cs" />
     <Compile Include="3D\Packer\BinPacker.cs" />
     <Compile Include="3D\Packer\BinPackerFactory.cs" />
@@ -121,6 +124,7 @@
     <Compile Include="3D\Geometry\Plane3D.cs" />
     <Compile Include="3D\Geometry\Vector3D.cs" />
     <Compile Include="3D\Packer\BinPackerFreeVolumeBestFit.cs" />
+    <Compile Include="3D\Packer\BinPackerMinRSLeft.cs" />
     <Compile Include="3D\Packer\BinPackerResidualSpaceBestFit.cs" />
     <Compile Include="3D\Instances\ThreeDInstanceDescriptor.cs" />
     <Compile Include="3D\Instances\BPPData.cs" />
@@ -144,6 +148,16 @@
     <Compile Include="3D\Evaluators\TranslocationMoveEvaluator.cs" />
     <Compile Include="3D\ProblemBase.cs" />
     <Compile Include="3D\Solution.cs" />
+    <Compile Include="3D\Sorting\IPackingItemClusteredSorter.cs" />
+    <Compile Include="3D\Sorting\PackingItemAreaHeightSorter.cs" />
+    <Compile Include="3D\Sorting\IPackingItemSorter.cs" />
+    <Compile Include="3D\Sorting\PackingItemClusterdHeightAreaSorter.cs" />
+    <Compile Include="3D\Sorting\PackingItemClusteredAreaHeightSorter.cs" />
+    <Compile Include="3D\Sorting\PackingItemGivenSorter.cs" />
+    <Compile Include="3D\Sorting\PackingItemHeightAreaSorter.cs" />
+    <Compile Include="3D\Sorting\PackingItemHeightVolumeSorter.cs" />
+    <Compile Include="3D\Sorting\PackingItemSorterFactory.cs" />
+    <Compile Include="3D\Sorting\PackingItemVolumeHeightSorter.cs" />
     <Compile Include="3D\Sorting\PermutationPackingItemSorter.cs" />
     <Compile Include="3D\Algorithms\ExtremePointAlgorithm.cs" />
     <Compile Include="BinPacking.cs" />
