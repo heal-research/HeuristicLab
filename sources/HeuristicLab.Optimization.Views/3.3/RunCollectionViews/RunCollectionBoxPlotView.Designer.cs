@@ -88,7 +88,7 @@ namespace HeuristicLab.Optimization.Views {
       this.xAxisComboBox.Name = "xAxisComboBox";
       this.xAxisComboBox.Size = new System.Drawing.Size(600, 21);
       this.xAxisComboBox.TabIndex = 11;
-      this.xAxisComboBox.SelectedIndexChanged += new System.EventHandler(this.AxisComboBox_SelectedIndexChanged);
+      this.xAxisComboBox.SelectionChangeCommitted += new System.EventHandler(this.AxisComboBox_SelectionChangeCommitted);
       // 
       // yAxisLabel
       // 
@@ -108,7 +108,7 @@ namespace HeuristicLab.Optimization.Views {
       this.yAxisComboBox.Name = "yAxisComboBox";
       this.yAxisComboBox.Size = new System.Drawing.Size(600, 21);
       this.yAxisComboBox.TabIndex = 9;
-      this.yAxisComboBox.SelectedIndexChanged += new System.EventHandler(this.AxisComboBox_SelectedIndexChanged);
+      this.yAxisComboBox.SelectionChangeCommitted += new System.EventHandler(this.AxisComboBox_SelectionChangeCommitted);
       // 
       // chart
       // 
