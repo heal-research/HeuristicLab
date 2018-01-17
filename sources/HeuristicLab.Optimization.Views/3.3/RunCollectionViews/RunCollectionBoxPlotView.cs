@@ -279,10 +279,8 @@ namespace HeuristicLab.Optimization.Views {
       double? xValue;
       double? yValue;
 
-      if (!xAxisComboBox.DroppedDown)
-        this.xAxisValue = (string)xAxisComboBox.SelectedItem;
-      if (!yAxisComboBox.DroppedDown)
-        this.yAxisValue = (string)yAxisComboBox.SelectedItem;
+      this.xAxisValue = (string)xAxisComboBox.SelectedItem;
+      this.yAxisValue = (string)yAxisComboBox.SelectedItem;
 
       xValue = GetValue(run, this.xAxisValue);
       yValue = GetValue(run, this.yAxisValue);
@@ -389,15 +387,12 @@ namespace HeuristicLab.Optimization.Views {
       Axis xAxis = this.chart.ChartAreas[BoxPlotChartAreaName].AxisX;
       Axis yAxis = this.chart.ChartAreas[BoxPlotChartAreaName].AxisY;
       int axisDimensionCount = Enum.GetNames(typeof(AxisDimension)).Count();
-      //mkommend: combobox.SelectedIndex could not be used as this changes during hovering over possible values
-      var xSAxisSelectedIndex = xAxisValue == null ? 0 : xAxisComboBox.Items.IndexOf(xAxisValue);
-      var ySAxisSelectedIndex = yAxisValue == null ? 0 : xAxisComboBox.Items.IndexOf(yAxisValue);
-      SetCustomAxisLabels(xAxis, xSAxisSelectedIndex - axisDimensionCount);
-      SetCustomAxisLabels(yAxis, ySAxisSelectedIndex - axisDimensionCount);
-      if (xAxisValue != null)
-        xAxis.Title = xAxisValue;
-      if (yAxisValue != null)
-        yAxis.Title = yAxisValue;
+
+      SetCustomAxisLabels(xAxis, xAxisComboBox.SelectedIndex - axisDimensionCount);
+      SetCustomAxisLabels(yAxis, yAxisComboBox.SelectedIndex - axisDimensionCount);
+
+      xAxis.Title = (string)xAxisComboBox.SelectedItem;
+      yAxis.Title = (string)yAxisComboBox.SelectedItem;
     }
 
     private void chart_AxisViewChanged(object sender, System.Windows.Forms.DataVisualization.Charting.ViewEventArgs e) {
