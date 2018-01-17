@@ -50,19 +50,22 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       this.replacementComboBox = new System.Windows.Forms.ComboBox();
       this.factorVarReplacementLabel = new System.Windows.Forms.Label();
       this.factorVarReplComboBox = new System.Windows.Forms.ComboBox();
+      this.sortByLabel = new System.Windows.Forms.Label();
+      this.sortByComboBox = new System.Windows.Forms.ComboBox();
+      this.ascendingCheckBox = new System.Windows.Forms.CheckBox();
       this.SuspendLayout();
       // 
       // variableImactsArrayView
       // 
-      this.variableImactsArrayView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+      this.variableImactsArrayView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.variableImactsArrayView.Caption = "StringConvertibleArray View";
       this.variableImactsArrayView.Content = null;
       this.variableImactsArrayView.Location = new System.Drawing.Point(3, 84);
       this.variableImactsArrayView.Name = "variableImactsArrayView";
       this.variableImactsArrayView.ReadOnly = true;
-      this.variableImactsArrayView.Size = new System.Drawing.Size(363, 278);
+      this.variableImactsArrayView.Size = new System.Drawing.Size(706, 278);
       this.variableImactsArrayView.TabIndex = 2;
       // 
       // dataPartitionComboBox
@@ -132,10 +135,47 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       this.factorVarReplComboBox.TabIndex = 1;
       this.factorVarReplComboBox.SelectedIndexChanged += new System.EventHandler(this.replacementComboBox_SelectedIndexChanged);
       // 
+      // sortByLabel
+      // 
+      this.sortByLabel.AutoSize = true;
+      this.sortByLabel.Location = new System.Drawing.Point(324, 6);
+      this.sortByLabel.Name = "sortByLabel";
+      this.sortByLabel.Size = new System.Drawing.Size(43, 13);
+      this.sortByLabel.TabIndex = 4;
+      this.sortByLabel.Text = "Sort by:";
+      // 
+      // sortByComboBox
+      // 
+      this.sortByComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.sortByComboBox.FormattingEnabled = true;
+      this.sortByComboBox.Items.AddRange(new object[] {
+            "Variable",
+            "Impact"});
+      this.sortByComboBox.Location = new System.Drawing.Point(373, 3);
+      this.sortByComboBox.Name = "sortByComboBox";
+      this.sortByComboBox.Size = new System.Drawing.Size(121, 21);
+      this.sortByComboBox.TabIndex = 5;
+      this.sortByComboBox.SelectedIndexChanged += new System.EventHandler(this.sortByComboBox_SelectedIndexChanged);
+      this.sortByComboBox.SelectedIndex = 1;
+      // 
+      // ascendingCheckBox
+      // 
+      this.ascendingCheckBox.AutoSize = true;
+      this.ascendingCheckBox.Location = new System.Drawing.Point(500, 6);
+      this.ascendingCheckBox.Name = "ascendingCheckBox";
+      this.ascendingCheckBox.Size = new System.Drawing.Size(76, 17);
+      this.ascendingCheckBox.TabIndex = 7;
+      this.ascendingCheckBox.Text = "Ascending";
+      this.ascendingCheckBox.UseVisualStyleBackColor = true;
+      this.ascendingCheckBox.CheckedChanged += new System.EventHandler(this.ascendingCheckBox_CheckedChanged);
+      // 
       // RegressionSolutionVariableImpactsView
       // 
       this.AllowDrop = true;
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
+      this.Controls.Add(this.ascendingCheckBox);
+      this.Controls.Add(this.sortByLabel);
+      this.Controls.Add(this.sortByComboBox);
       this.Controls.Add(this.factorVarReplComboBox);
       this.Controls.Add(this.factorVarReplacementLabel);
       this.Controls.Add(this.replacementComboBox);
@@ -144,7 +184,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       this.Controls.Add(this.dataPartitionComboBox);
       this.Controls.Add(this.variableImactsArrayView);
       this.Name = "RegressionSolutionVariableImpactsView";
-      this.Size = new System.Drawing.Size(369, 365);
+      this.Size = new System.Drawing.Size(712, 365);
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -159,5 +199,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     private System.Windows.Forms.ComboBox replacementComboBox;
     private System.Windows.Forms.Label factorVarReplacementLabel;
     private System.Windows.Forms.ComboBox factorVarReplComboBox;
+    private System.Windows.Forms.Label sortByLabel;
+    private System.Windows.Forms.ComboBox sortByComboBox;
+    private System.Windows.Forms.CheckBox ascendingCheckBox;
   }
 }

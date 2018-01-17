@@ -19,6 +19,7 @@
  */
 #endregion
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using HeuristicLab.Data;
@@ -29,6 +30,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
   [View("Variable Impacts")]
   [Content(typeof(IRegressionSolution))]
   public partial class RegressionSolutionVariableImpactsView : DataAnalysisSolutionEvaluationView {
+
+    private const int ORDER_BY_VARIABLE = 0;
+    private const int ORDER_BY_IMPACT = 1;
+
+    private Dictionary<string, double> rawVariableImpacts = new Dictionary<string, double>();
 
     public new IRegressionSolution Content {
       get { return (IRegressionSolution)base.Content; }
@@ -98,20 +104,81 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
           var impactArray = new DoubleArray(impacts.Select(i => i.Item2).ToArray());
           impactArray.ElementNames = impacts.Select(i => i.Item1);
           variableImactsArrayView.Content = (DoubleArray)impactArray.AsReadOnly();
+
+          //Remember the original ordering of the variables
+          var problemData = Content.ProblemData;
+          var inputvariables = new HashSet<string>(problemData.AllowedInputVariables.Union(Content.Model.VariablesUsedForPrediction));
+          var originalVariableOrdering = problemData.Dataset.VariableNames.Where(v => inputvariables.Contains(v)).Where(problemData.Dataset.VariableHasType<double>).ToList();
+          rawVariableImpacts.Clear();
+          originalVariableOrdering.ForEach(v => rawVariableImpacts.Add(v, impacts.First(vv => vv.Item1 == v).Item2));
+
         } finally {
           mainForm.RemoveOperationProgressFromView(this);
         }
       });
     }
 
-    #endregion
-
     private void dataPartitionComboBox_SelectedIndexChanged(object sender, EventArgs e) {
+      ResetOrdering();
       UpdateVariableImpacts();
     }
 
     private void replacementComboBox_SelectedIndexChanged(object sender, EventArgs e) {
+      ResetOrdering();
       UpdateVariableImpacts();
     }
+
+    private void sortByComboBox_SelectedIndexChanged(object sender, EventArgs e) {
+      UpdateDataOrdering();
+    }
+
+    private void ascendingCheckBox_CheckedChanged(object sender, EventArgs e) {
+      UpdateDataOrdering();
+    }
+    #endregion
+
+    #region Helper Methods
+    /// <summary>
+    /// Updates the <see cref="variableImactsArrayView"/> according to the selected ordering <see cref="ascendingCheckBox"/> of the selected Column <see cref="sortByComboBox"/>
+    /// The default is "Descending" by "VariableImpact" (as in previous versions)
+    /// </summary>
+    private void UpdateDataOrdering() {
+      int orderIdx = sortByComboBox.SelectedIndex;
+      bool ascending = ascendingCheckBox.Checked;
+
+      //Check if valid ordering is selected AND at if any VariableImpact exists
+      if (orderIdx > -1 && rawVariableImpacts != null && rawVariableImpacts.Any()) {
+        IEnumerable<KeyValuePair<string, double>> orderedEntries = null;
+
+        //Sort accordingly
+        if (orderIdx == ORDER_BY_VARIABLE) {
+          orderedEntries = ascending ? rawVariableImpacts : rawVariableImpacts.Reverse();
+        } else if (orderIdx == ORDER_BY_IMPACT) {
+          orderedEntries = ascending ? rawVariableImpacts.OrderBy(v => v.Value) : rawVariableImpacts.OrderByDescending(v => v.Value);
+        }
+
+        //Write the data back
+        var impactArray = new DoubleArray(orderedEntries.Select(i => i.Value).ToArray());
+        impactArray.ElementNames = orderedEntries.Select(i => i.Key);
+        variableImactsArrayView.Content = (DoubleArray)impactArray.AsReadOnly();
+      }
+    }
+
+    /// <summary>
+    /// Resets the ordering to the default behaviour (descending by variableImpact), meaning <see cref="ascendingCheckBox"/> and <see cref="sortByComboBox"/> will be updated
+    /// Note: this will NOT update the UI
+    /// </summary>
+    private void ResetOrdering() {
+      //The events shouldn't fire everytime we reset the data
+      ascendingCheckBox.CheckedChanged -= ascendingCheckBox_CheckedChanged;
+      sortByComboBox.SelectedIndexChanged -= sortByComboBox_SelectedIndexChanged;
+
+      ascendingCheckBox.Checked = false;
+      sortByComboBox.SelectedIndex = ORDER_BY_IMPACT;
+
+      ascendingCheckBox.CheckedChanged += ascendingCheckBox_CheckedChanged;
+      sortByComboBox.SelectedIndexChanged += sortByComboBox_SelectedIndexChanged;
+    }
+    #endregion
   }
 }
