@@ -416,7 +416,7 @@ namespace HeuristicLab.Optimization.Views {
           axis.CustomLabels.Add(label);
           position++;
         }
-      } else if (dimension > 0 && Content.GetValue(0, dimension) is TimeSpanValue) {
+      } else if (dimension > 0 && Content != null && Content.Count > 0 && Content.GetValue(0, dimension) is TimeSpanValue) {
         this.chart.ChartAreas[0].RecalculateAxesScale();
         Axis correspondingAxis = this.chart.ChartAreas[0].Axes.Where(x => x.Name == axis.Name).SingleOrDefault();
         if (correspondingAxis == null)
