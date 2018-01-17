@@ -155,6 +155,14 @@
     <Compile Include="Interfaces\ICharacteristicCalculator.cs" />
     <Compile Include="Interfaces\ILocalImprovementAlgorithmOperator.cs" />
     <Compile Include="Interfaces\IMultiObjectiveOperator.cs" />
+    <Compile Include="Model2\Algorithms\ContextAlgorithm.cs" />
+    <Compile Include="Model2\Algorithms\StochasticAlgorithm.cs" />
+    <Compile Include="Model2\Contexts\BasicContext.cs" />
+    <Compile Include="Model2\Contexts\PopulationContext.cs" />
+    <Compile Include="Model2\Contexts\SingleSolutionContext.cs" />
+    <Compile Include="Model2\Contexts\StochasticContext.cs" />
+    <Compile Include="Model2\Interfaces.cs" />
+    <Compile Include="Model2\SingleObjectiveSolutionScope.cs" />
     <Compile Include="MultiObjective\DominationCalculator.cs" />
     <Compile Include="Results\IResultParameter.cs" />
     <Compile Include="Interfaces\ISingleObjectiveOperator.cs" />
@@ -309,6 +317,11 @@
     <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\3.3\HeuristicLab.PluginInfrastructure-3.3.csproj">
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
       <Name>HeuristicLab.PluginInfrastructure-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Random\3.3\HeuristicLab.Random-3.3.csproj">
+      <Project>{F4539FB6-4708-40C9-BE64-0A1390AEA197}</Project>
+      <Name>HeuristicLab.Random-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>

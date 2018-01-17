@@ -114,6 +114,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model2\SolutionScope.cs" />
+    <Compile Include="Model2\GeneticAlgorithm.cs" />
     <Compile Include="GeneticAlgorithm.cs" />
     <Compile Include="GeneticAlgorithmMainLoop.cs" />
     <Compile Include="IslandGeneticAlgorithm.cs" />

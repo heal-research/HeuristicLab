@@ -30,7 +30,7 @@ namespace HeuristicLab.Core {
   /// </summary>
   [Item("Scope", "A scope which contains variables and sub-scopes.")]
   [StorableClass]
-  public sealed class Scope : NamedItem, IScope {
+  public class Scope : NamedItem, IScope {
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.OrgChart; }
     }
@@ -59,8 +59,8 @@ namespace HeuristicLab.Core {
     }
 
     [StorableConstructor]
-    private Scope(bool deserializing) : base(deserializing) { }
-    private Scope(Scope original, Cloner cloner)
+    protected Scope(bool deserializing) : base(deserializing) { }
+    protected Scope(Scope original, Cloner cloner)
       : base(original, cloner) {
       if (original.variables.Count > 0) variables = cloner.Clone(original.variables);
       else variables = new VariableCollection();
@@ -117,7 +117,7 @@ namespace HeuristicLab.Core {
     }
 
     #region SubScopes Events
-    private void RegisterSubScopesEvents() {
+    protected virtual void RegisterSubScopesEvents() {
       if (subScopes != null) {
         subScopes.ItemsAdded += new CollectionItemsChangedEventHandler<IndexedItem<IScope>>(SubScopes_ItemsAdded);
         subScopes.ItemsRemoved += new CollectionItemsChangedEventHandler<IndexedItem<IScope>>(SubScopes_ItemsRemoved);
@@ -125,21 +125,21 @@ namespace HeuristicLab.Core {
         subScopes.CollectionReset += new CollectionItemsChangedEventHandler<IndexedItem<IScope>>(SubScopes_CollectionReset);
       }
     }
-    private void SubScopes_ItemsAdded(object sender, CollectionItemsChangedEventArgs<IndexedItem<IScope>> e) {
+    protected virtual void SubScopes_ItemsAdded(object sender, CollectionItemsChangedEventArgs<IndexedItem<IScope>> e) {
       foreach (IndexedItem<IScope> item in e.Items)
         item.Value.Parent = this;
     }
-    private void SubScopes_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<IndexedItem<IScope>> e) {
+    protected virtual void SubScopes_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<IndexedItem<IScope>> e) {
       foreach (IndexedItem<IScope> item in e.Items)
         item.Value.Parent = null;
     }
-    private void SubScopes_ItemsReplaced(object sender, CollectionItemsChangedEventArgs<IndexedItem<IScope>> e) {
+    protected virtual void SubScopes_ItemsReplaced(object sender, CollectionItemsChangedEventArgs<IndexedItem<IScope>> e) {
       foreach (IndexedItem<IScope> oldItem in e.OldItems)
         oldItem.Value.Parent = null;
       foreach (IndexedItem<IScope> item in e.Items)
         item.Value.Parent = this;
     }
-    private void SubScopes_CollectionReset(object sender, CollectionItemsChangedEventArgs<IndexedItem<IScope>> e) {
+    protected virtual void SubScopes_CollectionReset(object sender, CollectionItemsChangedEventArgs<IndexedItem<IScope>> e) {
       foreach (IndexedItem<IScope> oldItem in e.OldItems)
         oldItem.Value.Parent = null;
       foreach (IndexedItem<IScope> item in e.Items)
