@@ -1,0 +1,292 @@
+﻿@using HeuristicLab.Services.Access.DataTransfer
+@using HeuristicLab.Services.Hive
+<header class="view-header">
+    <ul class="nav nav-list nav-list-topbar pull-left">
+        <li>
+            <a ng-href="#/statistics/jobs">Jobs</a>
+        </li>
+        @if (Request.IsAuthenticated && User.IsInRole(HiveRoles.Administrator)) {
+            <li>
+                <a ng-href="#/statistics/users">Users</a>
+            </li>
+        }
+        <li>
+            <a ng-href="#/statistics/clients">Clients</a>
+        </li>
+        <li class="active">
+            <a ng-href="#/statistics/groups">Groups</a>
+        </li> 
+        @if (Request.IsAuthenticated && User.IsInRole(HiveRoles.Administrator)) {
+            <li>
+                <a ng-href="#/statistics/exceptions">Exceptions</a>
+            </li>
+        }
+    </ul>
+</header>
+
+<div class="default-view-container">
+    <div class="row">
+        <div class="col-lg-9">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Group Details</h3>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <table class="table table-no-border table-condensed table-auto-width table-content">
+                                <tr>
+                                    <td class="text-left">Name:</td>
+                                    <td class="text-right">{{group.Name}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-left">Clients:</td>
+                                    <td class="text-right">{{group.OnlineClients}} / {{group.TotalClients}}</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <table class="table table-no-border table-condensed table-auto-width table-content">
+                                <tr>
+                                    <td class="text-left">Total Unavailable Time:</td>
+                                    <td class="text-right">{{group.TotalUnavailableTime | toTimespan}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-left">Total Calculating Time:</td>
+                                    <td class="text-right">{{group.TotalCalculatingTime | toTimespan}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-left">Total Idle Time:</td>
+                                    <td class="text-right">{{group.TotalIdleTime | toTimespan}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-left">Total Transferring Time:</td>
+                                    <td class="text-right">{{group.TotalTransferringTime | toTimespan}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-left">Total Offline Time:</td>
+                                    <td class="text-right">{{group.TotalOfflineTime | toTimespan}}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Tasks Overview</h3>
+                </div>
+                <div class="panel-body">
+                    <table class="table table-no-border table-condensed table-auto-width table-content">
+                        <tr>
+                            <td class="text-left">Total:</td>
+                            <td class="text-right">{{totalGroupTasks}}</td>
+                        </tr>
+                        <tr ng-repeat="state in group.TasksStates">
+                            <td class="text-left">{{state.State}}:</td>
+                            <td class="text-right">{{state.Count}}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-3 col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Cores</h3>
+                </div>
+                <div class="panel-body">
+                    <div class="text-center">
+                        <knob knob-data="knobData.cores" knob-options="knobOptions"></knob>
+                    </div>
+                    <table class="table table-no-border table-condensed table-auto-width table-content">
+                        <tr>
+                            <td class="text-left">Total:</td>
+                            <td class="text-right">{{group.TotalCores | number}}</td>
+                        </tr>
+                        <tr>
+                            <td class="text-left">Used:</td>
+                            <td class="text-right">{{group.UsedCores | number}}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">CPU Utilization</h3>
+                </div>
+                <div class="panel-body">
+                    <div class="text-center">
+                        <knob knob-data="knobData.cpu" knob-options="knobOptions"></knob>
+                    </div>
+                    <table class="table table-no-border table-condensed table-auto-width table-content">
+                        <tr>
+                            <td class="text-left">Total:</td>
+                            <td class="text-right">{{group.TotalCpuUtilization | number: 2}} %</td>
+                        </tr>
+                        <tr>
+                            <td class="text-left">Active:</td>
+                            <td class="text-right">{{group.ActiveCpuUtilization | number: 2}} %</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Memory</h3>
+                </div>
+                <div class="panel-body">
+                    <div class="text-center">
+                        <knob knob-data="knobData.memory" knob-options="knobOptions"></knob>
+                    </div>
+                    <table class="table table-no-border table-condensed table-auto-width table-content">
+                        <tr>
+                            <td class="text-left">Total:</td>
+                            <td class="text-right">{{group.TotalMemory | kbToGB}} GB</td>
+                        </tr>
+                        <tr>
+                            <td class="text-left">Used:</td>
+                            <td class="text-right">{{group.UsedMemory | kbToGB}} GB</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Clients</h3>
+                </div>
+                <div class="panel-body">
+                    <table class="table table-hover table-condensed" ts-wrapper>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th ts-criteria="Name">Client Name</th>
+                                <th ts-criteria="UsedCores">Cores</th>
+                                <th ts-criteria="CpuUtilization">Cpu Utilization</th>
+                                <th ts-criteria="UsedMemory">Memory</th>
+                                <th ts-criteria="State">State</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tr ng-repeat="client in clientPage.Clients" ts-repeat>
+                            <td>{{($index + 1)+((curClientsPage-1)*(clientsPageSize))}}</td>
+                            <td>{{client.Name}}</td>
+                            <td>{{client.UsedCores}} / {{client.TotalCores}}</td>
+                            <td>{{client.CpuUtilization | number: 2}} %</td>
+                            <td>{{client.UsedMemory | kbToGB}} / {{client.TotalMemory | kbToGB}}</td>
+                            <td>{{client.State}}</td>
+                            <td>
+                                <a ng-href="#/statistics/clients/{{client.Id}}">Details</a>
+                            </td>
+                        </tr>
+                        <tr ng-hide="clientPage.Clients.length">
+                            <td colspan="7" class="text-center">No clients found!</td>
+                        </tr>
+                    </table>
+                    <div class="row text-center" ng-show="clientPage.TotalClients > clientPage.Clients.length">
+                        <pagination max-size="10" total-items="clientPage.TotalClients" ng-model="curClientsPage" ng-change="changeClientsPage()" items-per-page="clientsPageSize"
+                                    boundary-links="true" rotate="false" num-pages="numPages"></pagination>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+ </div>
+
+ <div class="default-filter-header text-center">
+     <form class="form-inline">
+         <div class="form-group" style="margin-left: 5px; margin-right: 5px;">
+             <label for="fromDate">From:&nbsp;</label>
+             <div class="input-group">
+                 <input id="fromDate" type="text" class="form-control" datepicker-popup="dd.MM.yyyy" ng-model="fromDate" is-open="fromIsOpen" datepicker-options="dateOptions" ng-required="true" close-text="Close" />
+                 <span class="input-group-btn">
+                     <button type="button" class="btn btn-default" ng-click="openFromDateSelection($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                 </span>
+             </div>
+         </div>
+         <div class="form-group" style="margin-left: 5px; margin-right: 5px;">
+             <label for="fromDate">To:&nbsp;</label>
+             <div class="input-group">
+                 <input id="fromDate" type="text" class="form-control" datepicker-popup="dd.MM.yyyy" ng-model="toDate" is-open="toIsOpen" datepicker-options="dateOptions" ng-required="true" close-text="Close"/>
+                 <span class="input-group-btn">
+                     <button type="button" class="btn btn-default" ng-click="openToDateSelection($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                 </span>
+             </div>
+         </div>
+         <div class="form-group" style="margin-left: 5px; margin-right: 5px;">
+             <div class="btn-group" dropdown dropdown-append-to-body>
+                 <button type="button" class="btn btn-default dropdown-toggle" dropdown-toggle style="width: 145px; text-align: left;">
+                     <span class="text-left" style="display: inline-block; width: 100px;">{{curQuickSelection.name}}</span>
+                     <span class="glyphicon glyphicon-chevron-down" style="margin-top: 3px;"></span>
+                 </button>
+                 <ul class="dropdown-menu" role="menu">
+                     <li ng-repeat="quickSelection in quickSelectionList">
+                         <a class="cursor-pointer" ng-click="changeQuickSelection(quickSelection)">{{quickSelection.name}}</a>
+                     </li>
+                 </ul>
+             </div>
+         </div>
+         <div class="form-group" style="margin-left: 5px; margin-right: 5px;">
+             <button type="button" class="btn btn-default" ng-click="updateCharts()">
+                 Apply
+             </button>
+         </div>
+     </form>
+ </div>
+
+ <div class="default-view-container">
+     <div class="row">
+         <div class="col-lg-12">
+             <div class="panel panel-default">
+                 <div class="panel-heading">
+                     <h3 class="panel-title">CPU Utilization Chart</h3>
+                 </div>
+                 <div class="panel-body">
+                     <flot dataset="cpuSeries" options="chartOptions"></flot>
+                 </div>
+             </div>
+         </div>
+     </div>
+
+     <div class="row">
+         <div class="col-lg-12">
+             <div class="panel panel-default">
+                 <div class="panel-heading">
+                     <h3 class="panel-title">Core Chart</h3>
+                 </div>
+                 <div class="panel-body">
+                     <flot dataset="coreSeries" options="fillChartOptions"></flot>
+                 </div>
+             </div>
+         </div>
+     </div>
+
+     <div class="row">
+         <div class="col-lg-12">
+             <div class="panel panel-default">
+                 <div class="panel-heading">
+                     <h3 class="panel-title">Memory Chart</h3>
+                 </div>
+                 <div class="panel-body">
+                     <flot dataset="memorySeries" options="fillChartOptions"></flot>
+                 </div>
+             </div>
+         </div>
+     </div>
+ </div>

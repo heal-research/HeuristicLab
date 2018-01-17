@@ -1,0 +1,33 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="HeuristicLab.Services.Hive.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="SlaveHeartbeatTimeout" Type="System.TimeSpan" Scope="Application">
+      <Value Profile="(Default)">00:03:00</Value>
+    </Setting>
+    <Setting Name="CalculatingJobHeartbeatTimeout" Type="System.TimeSpan" Scope="Application">
+      <Value Profile="(Default)">00:05:30</Value>
+    </Setting>
+    <Setting Name="TransferringJobHeartbeatTimeout" Type="System.TimeSpan" Scope="Application">
+      <Value Profile="(Default)">00:15:00</Value>
+    </Setting>
+    <Setting Name="TriggerEventManagerInHeartbeat" Type="System.Boolean" Scope="Application">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="CleanupInterval" Type="System.TimeSpan" Scope="Application">
+      <Value Profile="(Default)">00:03:00</Value>
+    </Setting>
+    <Setting Name="SweepInterval" Type="System.TimeSpan" Scope="Application">
+      <Value Profile="(Default)">3.00:00:00</Value>
+    </Setting>
+    <Setting Name="SchedulingPatience" Type="System.TimeSpan" Scope="Application">
+      <Value Profile="(Default)">00:00:20</Value>
+    </Setting>
+    <Setting Name="ProfileServicePerformance" Type="System.Boolean" Scope="Application">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="GenerateStatisticsInterval" Type="System.TimeSpan" Scope="Application">
+      <Value Profile="(Default)">00:03:00</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

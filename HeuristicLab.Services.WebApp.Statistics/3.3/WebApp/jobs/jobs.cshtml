@@ -1,0 +1,128 @@
+﻿@using HeuristicLab.Services.Access.DataTransfer
+@using HeuristicLab.Services.Hive
+<header class="view-header">
+    <ul class="nav nav-list nav-list-topbar pull-left">
+        <li class="active">
+            <a ng-href="#/statistics/jobs">Jobs</a>
+        </li>
+        @if (Request.IsAuthenticated && User.IsInRole(HiveRoles.Administrator)) {
+            <li>
+                <a ng-href="#/statistics/users">Users</a>
+            </li>
+        }
+        <li>
+            <a ng-href="#/statistics/clients">Clients</a>
+        </li>
+        <li>
+            <a ng-href="#/statistics/groups">Groups</a>
+        </li>
+        @if (Request.IsAuthenticated && User.IsInRole(HiveRoles.Administrator)) {
+            <li>
+                <a ng-href="#/statistics/exceptions">Exceptions</a>
+            </li>
+        }
+    </ul>
+</header>
+
+<div class="default-view-container">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Current Jobs</h3>
+                </div>
+                <div class="panel-body">
+                    <table class="table table-hover table-condensed" ts-wrapper>
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th ts-criteria="Name">Job Name</th>
+                            @if (Request.IsAuthenticated && User.IsInRole(HiveRoles.Administrator)) {
+                                <th ts-criteria="UserName">Username</th>
+                            }
+                            <th ts-criteria="DateCreated">Date Created</th>
+                            <th ts-criteria="CompletedTasks / TotalTasks">Progress</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        @if (Request.IsAuthenticated && User.IsInRole(HiveRoles.Administrator)) {
+                            <tr ng-repeat="job in allUsersJobs" ts-repeat>
+                                <td>{{$index + 1}}</td>
+                                <td>{{job.Name}}</td>
+                                <td>
+                                    <a ng-href="#/statistics/users/{{job.UserId}}" ng-show="job.UserName">{{job.UserName}}</a>
+                                </td>
+                                <td>{{job.DateCreated | toDate}}</td>
+                                <td>
+                                    <progressbar class="progress active" max="job.TotalTasks" value="job.CompletedTasks" type="success"><i style="color:black; white-space:nowrap;">{{job.CompletedTasks}} / {{job.TotalTasks}}</i></progressbar>
+                                </td>
+                                <td>
+                                    <a ng-href="#/statistics/jobs/{{job.Id}}">Details</a>
+                                </td>
+                            </tr>
+                            <tr ng-hide="allUsersJobs.length">
+                                <td colspan="6" class="text-center">No active jobs found!</td>
+                            </tr>
+                        } else {
+                            <tr ng-repeat="job in jobs" ts-repeat>
+                                <td>{{$index + 1}}</td>
+                                <td>{{job.Name}}</td>
+                                <td>{{job.DateCreated | toDate}}</td>
+                                <td>
+                                    <progressbar class="progress active" max="job.TotalTasks" value="job.CompletedTasks" type="success"><i style="color: black; white-space: nowrap;">{{job.CompletedTasks}} / {{job.TotalTasks}}</i></progressbar>
+                                </td>
+                                <td>
+                                    <a ng-href="#/statistics/jobs/{{job.Id}}">Details</a>
+                                </td>
+                            </tr>
+                            <tr ng-hide="jobs.length">
+                                <td colspan="5" class="text-center">No active jobs found!</td>
+                            </tr>
+                        }
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Completed Jobs</h3>
+                </div>
+                <div class="panel-body">
+                    <table class="table table-hover table-condensed" ts-wrapper>
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th ts-criteria="Name">Job Name</th>
+                            <th ts-criteria="DateCreated">Date Created</th>
+                            <th ts-criteria="DateCompleted">Date Completed</th>
+                            <th ts-criteria="TotalTasks|parseInt">Tasks</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tr ng-repeat="job in completedJobPage.Jobs" ts-repeat>
+                            <td>{{($index + 1)+((completedJobCurPage-1)*(completedJobPageSize))}}</td>
+                            <td>{{job.Name}}</td>
+                            <td>{{job.DateCreated | toDate}}</td>
+                            <td>{{job.DateCompleted | toDate}}</td>
+                            <td>{{job.TotalTasks}}</td>
+                            <td><a ng-href="#/statistics/jobs/{{job.Id}}">Details</a></td>
+                        </tr>
+                        <tr ng-hide="completedJobPage.Jobs.length">
+                            <td colspan="6" class="text-center">No completed jobs found!</td>
+                        </tr>
+                    </table>
+                    <div class="row text-center" ng-show="completedJobPage.TotalJobs > completedJobPage.Jobs.length">
+                        <pagination max-size="10" total-items="completedJobPage.TotalJobs"
+                                    ng-model="completedJobCurPage" items-per-page="completedJobPageSize"
+                                    ng-change="changeCompletedJobPage()"
+                                    boundary-links="true" rotate="false" num-pages="numPages"></pagination>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,125 @@
+﻿@using HeuristicLab.Services.Hive
+@if (Request.IsAuthenticated && User.IsInRole(HiveRoles.Administrator)) {
+<div class="modal-header">
+    <button type="button" ng-click="close()" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <h4 class="modal-title">Task #{{taskNo}} - {{task.Id}}</h4>
+</div>
+<div class="modal-body" style="height: 440px">
+    <tabset>
+        <tab heading="Details">
+            <div style="height: 340px" class="center-block">
+                <div class="row" style="padding-top: 30px">
+                    <div class="col-md-6">
+                        <table class="table table-condensed table-no-border table-auto-width table-content">
+                            <tr>
+                                <td>Start Time:</td>
+                                <td ng-show="task.StartTime" class="text-left">{{task.StartTime | toDate}}</td>
+                                <td ng-hide="task.StartTime" class="text-left">Not started</td>
+                            </tr>
+                            <tr>
+                                <td>End Time:</td>
+                                <td ng-show="task.EndTime" class="text-left">{{task.EndTime | toDate}}</td>
+                                <td ng-hide="task.EndTime" class="text-left">Not finished</td>
+                            </tr>
+                            <tr>
+                                <td>State:</td>
+                                <td>{{task.State}}</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="col-md-6">
+                        <table class="table table-condensed table-no-border table-auto-width table-content">
+                            <tr>
+                                <td>Slave:</td>
+                                <td>
+                                    <a ng-click="close()" ng-href="#/statistics/clients/{{task.LastClientId}}" ng-show="task.LastClientName">{{task.LastClientName}}</a>
+                                    <span ng-hide="task.LastClientName">None</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>User:</td>
+                                <td>
+                                    <a ng-click="close()" ng-href="#/statistics/users/{{task.UserId}}" ng-show="task.UserName">{{task.UserName}}</a>
+                                    <span ng-hide="task.UserName">Unknown</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Job:</td>
+                                <td>
+                                    <a ng-click="close()" ng-href="#/statistics/jobs/{{task.JobId}}" ng-show="task.JobName">{{task.JobName}}</a>
+                                    <span ng-hide="task.JobName">Unknown</span>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="row" style="padding-top: 30px">
+                    <div class="col-md-6">
+                        <table class="table table-condensed table-no-border table-auto-width table-content">
+                            <tr>
+                                <td>Total Time:</td>
+                                <td>{{task.TotalTime | toTimespan}}</td>
+                            </tr>
+                            <tr>
+                                <td>Initial Waiting Time:</td>
+                                <td>{{task.InitialWaitingTime | toTimespan}}</td>
+                            </tr>
+                            <tr>
+                                <td>Waiting Time:</td>
+                                <td>{{task.WaitingTime | toTimespan}}</td>
+                            </tr>
+                            <tr>
+                                <td>Calculating Time:</td>
+                                <td>{{task.CalculatingTime | toTimespan}}</td>
+                            </tr>
+                            <tr>
+                                <td>Transfer Time:</td>
+                                <td>{{task.TransferTime | toTimespan}}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <table class="table table-condensed table-no-border table-auto-width table-content">
+                            <tr>
+                                <td>Calculation Runs:</td>
+                                <td class="text-right">{{task.NumCalculationRuns}}</td>
+                            </tr>
+                            <tr>
+                                <td>Retries Runs:</td>
+                                <td class="text-right">{{task.NumRetries}}</td>
+                            </tr>
+                            <tr>
+                                <td>Cores Required:</td>
+                                <td class="text-right">{{task.CoresRequired}}</td>
+                            </tr>
+                            <tr>
+                                <td>Memory Required:</td>
+                                <td class="text-right">{{task.MemoryRequired}} MB</td>
+                            </tr>
+                            <tr>
+                                <td>Priority:</td>
+                                <td class="text-right">{{task.Priority}}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <table class="table table-condensed table-no-border table-auto-width table-content">
+                            <tr>
+                                <td><a href="api/Statistics/Task/GetTaskDataById?id={{task.Id}}">Download</a></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </tab>
+        <tab heading="Exception" ng-show="task.Exception">
+            <div style="overflow: auto;">
+                <p style="word-wrap: break-word;">{{task.Exception}}</p>
+            </div>
+        </tab>
+    </tabset>
+</div>
+}

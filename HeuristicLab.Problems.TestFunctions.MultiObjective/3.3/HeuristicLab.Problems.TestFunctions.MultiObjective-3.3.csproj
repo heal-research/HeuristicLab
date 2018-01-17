@@ -1,0 +1,260 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{D53E8E48-CFAA-4F57-AC35-63BEF4476159}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>HeuristicLab.Problems.TestFunctions.MultiObjective</RootNamespace>
+    <AssemblyName>HeuristicLab.Problems.TestFunctions.MultiObjective-3.3</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>HeuristicLab.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\..\bin\</OutputPath>
+    <DefineConstants>CODE_ANALYSIS;DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>..\..\bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\..\bin\</OutputPath>
+    <DefineConstants>CODE_ANALYSIS;DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>..\..\bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="ALGLIB-3.7.0, Version=3.7.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\ALGLIB-3.7.0.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Forms.DataVisualization" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Analyzers\ScatterPlotAnalyzer.cs" />
+    <Compile Include="Analyzers\CrowdingAnalyzer.cs" />
+    <Compile Include="Analyzers\InvertedGenerationalDistanceAnalyzer.cs" />
+    <Compile Include="Analyzers\HypervolumeAnalyzer.cs" />
+    <Compile Include="Analyzers\MOTFAnalyzer.cs" />
+    <Compile Include="Analyzers\GenerationalDistanceAnalyzer.cs" />
+    <Compile Include="Analyzers\SpacingAnalyzer.cs" />
+    <Compile Include="Instances\IHRInstanceProvider.cs" />
+    <Compile Include="Interfaces\IConstrainedTestFunction.cs" />
+    <Compile Include="Interfaces\IMultiObjectiveTestFunctionAnalyzer.cs" />
+    <Compile Include="Calculators\Crowding.cs" />
+    <Compile Include="Calculators\Spacing.cs" />
+    <Compile Include="Calculators\HyperVolume.cs" />
+    <Compile Include="Calculators\InvertedGenerationalDistance.cs" />
+    <Compile Include="Calculators\GenerationalDistance.cs" />
+    <Compile Include="ParetoFrontScatterPlot.cs" />
+    <Compile Include="Utilities.cs" />
+    <Compile Include="Instances\MISCInstanceProvider.cs" />
+    <Compile Include="Instances\ZDTInstanceProvider.cs" />
+    <Compile Include="Instances\MOTFData.cs" />
+    <Compile Include="Instances\MOTFDataDescriptor.cs" />
+    <Compile Include="Instances\DTLZInstanceProvider.cs" />
+    <Compile Include="TestFunctions\Misc\CIGTAB.cs" />
+    <Compile Include="TestFunctions\IHR\IHR.cs" />
+    <Compile Include="TestFunctions\IHR\IHR1.cs" />
+    <Compile Include="TestFunctions\IHR\IHR6.cs" />
+    <Compile Include="TestFunctions\IHR\IHR4.cs" />
+    <Compile Include="TestFunctions\IHR\IHR3.cs" />
+    <Compile Include="TestFunctions\IHR\IHR2.cs" />
+    <Compile Include="TestFunctions\Misc\ELLI1.cs" />
+    <Compile Include="NonDominatedSelect.cs" />
+    <Compile Include="Interfaces\IMultiObjectiveTestFunction.cs" />
+    <Compile Include="MultiObjectiveTestFunctionProblem.cs" />
+    <Compile Include="TestFunctions\ParetoFrontStore.cs" />
+    <Compile Include="Plugin.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestFunctions\DTLZ\DTLZ.cs" />
+    <Compile Include="TestFunctions\DTLZ\DTLZ5.cs" />
+    <Compile Include="TestFunctions\DTLZ\DTLZ8.cs" />
+    <Compile Include="TestFunctions\DTLZ\DTLZ7.cs" />
+    <Compile Include="TestFunctions\DTLZ\DTLZ6.cs" />
+    <Compile Include="TestFunctions\DTLZ\DTLZ4.cs" />
+    <Compile Include="TestFunctions\DTLZ\DTLZ3.cs" />
+    <Compile Include="TestFunctions\DTLZ\DTLZ2.cs" />
+    <Compile Include="TestFunctions\Misc\Kursawe.cs" />
+    <Compile Include="TestFunctions\DTLZ\DTLZ1.cs" />
+    <Compile Include="TestFunctions\ZDT\ZDT.cs" />
+    <Compile Include="TestFunctions\ZDT\ZDT6.cs" />
+    <Compile Include="TestFunctions\ZDT\ZDT4.cs" />
+    <Compile Include="TestFunctions\ZDT\ZDT3.cs" />
+    <Compile Include="TestFunctions\ZDT\ZDT2.cs" />
+    <Compile Include="TestFunctions\ZDT\ZDT1.cs" />
+    <Compile Include="TestFunctions\Misc\SchafferN2.cs" />
+    <Compile Include="TestFunctions\Misc\SchafferN1.cs" />
+    <Compile Include="TestFunctions\Misc\Fonseca.cs" />
+    <Compile Include="TestFunctions\MultiObjectiveTestFunction.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="TestFunctions\ZDT\ParetoFronts\ZDT1.pf" />
+    <EmbeddedResource Include="TestFunctions\DTLZ\ParetoFronts\DTLZ1.2D.pf" />
+    <EmbeddedResource Include="TestFunctions\DTLZ\ParetoFronts\DTLZ2.2D.pf" />
+    <EmbeddedResource Include="TestFunctions\DTLZ\ParetoFronts\DTLZ3.2D.pf" />
+    <EmbeddedResource Include="TestFunctions\DTLZ\ParetoFronts\DTLZ4.2D.pf" />
+    <EmbeddedResource Include="TestFunctions\DTLZ\ParetoFronts\DTLZ5.2D.pf" />
+    <EmbeddedResource Include="TestFunctions\DTLZ\ParetoFronts\DTLZ6.2D.pf" />
+    <EmbeddedResource Include="TestFunctions\DTLZ\ParetoFronts\DTLZ7.2D.pf" />
+    <EmbeddedResource Include="TestFunctions\Misc\ParetoFronts\Fonseca.pf" />
+    <EmbeddedResource Include="TestFunctions\Misc\ParetoFronts\Kursawe.pf" />
+    <EmbeddedResource Include="TestFunctions\Misc\ParetoFronts\SchafferN1.pf" />
+    <EmbeddedResource Include="TestFunctions\ZDT\ParetoFronts\ZDT2.pf" />
+    <EmbeddedResource Include="TestFunctions\ZDT\ParetoFronts\ZDT3.pf" />
+    <EmbeddedResource Include="TestFunctions\ZDT\ParetoFronts\ZDT4.pf" />
+    <EmbeddedResource Include="TestFunctions\ZDT\ParetoFronts\ZDT6.pf" />
+    <None Include="HeuristicLab.snk" />
+    <None Include="Plugin.cs.frame" />
+    <None Include="Properties\AssemblyInfo.cs.frame" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">
+      <Project>{958b43bc-cc5c-4fa2-8628-2b3b01d890b6}</Project>
+      <Name>HeuristicLab.Collections-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Common.Resources\3.3\HeuristicLab.Common.Resources-3.3.csproj">
+      <Project>{0e27a536-1c4a-4624-a65e-dc4f4f23e3e1}</Project>
+      <Name>HeuristicLab.Common.Resources-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Common\3.3\HeuristicLab.Common-3.3.csproj">
+      <Project>{a9ad58b9-3ef9-4cc1-97e5-8d909039ff5c}</Project>
+      <Name>HeuristicLab.Common-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Core\3.3\HeuristicLab.Core-3.3.csproj">
+      <Project>{c36bd924-a541-4a00-afa8-41701378ddc5}</Project>
+      <Name>HeuristicLab.Core-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Data\3.3\HeuristicLab.Data-3.3.csproj">
+      <Project>{bbab9df5-5ef3-4ba8-ade9-b36e82114937}</Project>
+      <Name>HeuristicLab.Data-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Encodings.RealVectorEncoding\3.3\HeuristicLab.Encodings.RealVectorEncoding-3.3.csproj">
+      <Project>{bb6d334a-4bb6-4674-9883-31a6ebb32cab}</Project>
+      <Name>HeuristicLab.Encodings.RealVectorEncoding-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Operators\3.3\HeuristicLab.Operators-3.3.csproj">
+      <Project>{23da7ff4-d5b8-41b6-aa96-f0561d24f3ee}</Project>
+      <Name>HeuristicLab.Operators-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Optimization\3.3\HeuristicLab.Optimization-3.3.csproj">
+      <Project>{14ab8d24-25bc-400c-a846-4627aa945192}</Project>
+      <Name>HeuristicLab.Optimization-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Parameters\3.3\HeuristicLab.Parameters-3.3.csproj">
+      <Project>{56f9106a-079f-4c61-92f6-86a84c2d84b7}</Project>
+      <Name>HeuristicLab.Parameters-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Persistence\3.3\HeuristicLab.Persistence-3.3.csproj">
+      <Project>{102bc7d3-0ef9-439c-8f6d-96ff0fdb8e1b}</Project>
+      <Name>HeuristicLab.Persistence-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\3.3\HeuristicLab.PluginInfrastructure-3.3.csproj">
+      <Project>{94186a6a-5176-4402-ae83-886557b53cca}</Project>
+      <Name>HeuristicLab.PluginInfrastructure-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Problems.Instances\3.3\HeuristicLab.Problems.Instances-3.3.csproj">
+      <Project>{3540e29e-4793-49e7-8ee2-fea7f61c3994}</Project>
+      <Name>HeuristicLab.Problems.Instances-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
+set ProjectDir=$(ProjectDir)
+set SolutionDir=$(SolutionDir)
+set Outdir=$(Outdir)
+
+call PreBuildEvent.cmd
+</PreBuildEvent>
+    <PreBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">
+	export ProjectDir=$(ProjectDir)
+export SolutionDir=$(SolutionDir)
+
+$SolutionDir/PreBuildEvent.sh
+</PreBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
