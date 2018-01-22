@@ -43,61 +43,73 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      this.variableImactsArrayView = new HeuristicLab.Data.Views.StringConvertibleArrayView();
-      this.dataPartitionComboBox = new System.Windows.Forms.ComboBox();
-      this.dataPartitionLabel = new System.Windows.Forms.Label();
-      this.numericVarReplacementLabel = new System.Windows.Forms.Label();
-      this.replacementComboBox = new System.Windows.Forms.ComboBox();
-      this.factorVarReplacementLabel = new System.Windows.Forms.Label();
-      this.factorVarReplComboBox = new System.Windows.Forms.ComboBox();
+      this.ascendingCheckBox = new System.Windows.Forms.CheckBox();
       this.sortByLabel = new System.Windows.Forms.Label();
       this.sortByComboBox = new System.Windows.Forms.ComboBox();
-      this.ascendingCheckBox = new System.Windows.Forms.CheckBox();
+      this.factorVarReplComboBox = new System.Windows.Forms.ComboBox();
+      this.factorVarReplacementLabel = new System.Windows.Forms.Label();
+      this.replacementComboBox = new System.Windows.Forms.ComboBox();
+      this.numericVarReplacementLabel = new System.Windows.Forms.Label();
+      this.dataPartitionLabel = new System.Windows.Forms.Label();
+      this.dataPartitionComboBox = new System.Windows.Forms.ComboBox();
+      this.variableImactsArrayView = new HeuristicLab.Data.Views.StringConvertibleArrayView();
       this.SuspendLayout();
       // 
-      // variableImactsArrayView
+      // ascendingCheckBox
       // 
-      this.variableImactsArrayView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.variableImactsArrayView.Caption = "StringConvertibleArray View";
-      this.variableImactsArrayView.Content = null;
-      this.variableImactsArrayView.Location = new System.Drawing.Point(3, 84);
-      this.variableImactsArrayView.Name = "variableImactsArrayView";
-      this.variableImactsArrayView.ReadOnly = true;
-      this.variableImactsArrayView.Size = new System.Drawing.Size(706, 278);
-      this.variableImactsArrayView.TabIndex = 2;
+      this.ascendingCheckBox.AutoSize = true;
+      this.ascendingCheckBox.Location = new System.Drawing.Point(534, 6);
+      this.ascendingCheckBox.Name = "ascendingCheckBox";
+      this.ascendingCheckBox.Size = new System.Drawing.Size(76, 17);
+      this.ascendingCheckBox.TabIndex = 7;
+      this.ascendingCheckBox.Text = "Ascending";
+      this.ascendingCheckBox.UseVisualStyleBackColor = true;
+      this.ascendingCheckBox.CheckedChanged += new System.EventHandler(this.ascendingCheckBox_CheckedChanged);
       // 
-      // dataPartitionComboBox
+      // sortByLabel
       // 
-      this.dataPartitionComboBox.FormattingEnabled = true;
-      this.dataPartitionComboBox.Items.AddRange(new object[] {
-            HeuristicLab.Problems.DataAnalysis.RegressionSolutionVariableImpactsCalculator.DataPartitionEnum.Training,
-            HeuristicLab.Problems.DataAnalysis.RegressionSolutionVariableImpactsCalculator.DataPartitionEnum.Test,
-            HeuristicLab.Problems.DataAnalysis.RegressionSolutionVariableImpactsCalculator.DataPartitionEnum.All});
-      this.dataPartitionComboBox.Location = new System.Drawing.Point(197, 3);
-      this.dataPartitionComboBox.Name = "dataPartitionComboBox";
-      this.dataPartitionComboBox.Size = new System.Drawing.Size(121, 21);
-      this.dataPartitionComboBox.TabIndex = 1;
-      this.dataPartitionComboBox.SelectedIndexChanged += new System.EventHandler(this.dataPartitionComboBox_SelectedIndexChanged);
+      this.sortByLabel.AutoSize = true;
+      this.sortByLabel.Location = new System.Drawing.Point(324, 6);
+      this.sortByLabel.Name = "sortByLabel";
+      this.sortByLabel.Size = new System.Drawing.Size(77, 13);
+      this.sortByLabel.TabIndex = 4;
+      this.sortByLabel.Text = "Sorting criteria:";
       // 
-      // dataPartitionLabel
+      // sortByComboBox
       // 
-      this.dataPartitionLabel.AutoSize = true;
-      this.dataPartitionLabel.Location = new System.Drawing.Point(3, 6);
-      this.dataPartitionLabel.Name = "dataPartitionLabel";
-      this.dataPartitionLabel.Size = new System.Drawing.Size(73, 13);
-      this.dataPartitionLabel.TabIndex = 0;
-      this.dataPartitionLabel.Text = "Data partition:";
+      this.sortByComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.sortByComboBox.FormattingEnabled = true;
+      this.sortByComboBox.Items.AddRange(new object[] {
+            "Impact Value",
+            "Occurrence",
+            "Variable Name"});
+      this.sortByComboBox.Location = new System.Drawing.Point(407, 3);
+      this.sortByComboBox.Name = "sortByComboBox";
+      this.sortByComboBox.Size = new System.Drawing.Size(121, 21);
+      this.sortByComboBox.TabIndex = 5;
+      this.sortByComboBox.SelectedIndexChanged += new System.EventHandler(this.sortByComboBox_SelectedIndexChanged);
       // 
-      // numericVarReplacementLabel
+      // factorVarReplComboBox
       // 
-      this.numericVarReplacementLabel.AutoSize = true;
-      this.numericVarReplacementLabel.Location = new System.Drawing.Point(3, 33);
-      this.numericVarReplacementLabel.Name = "numericVarReplacementLabel";
-      this.numericVarReplacementLabel.Size = new System.Drawing.Size(173, 13);
-      this.numericVarReplacementLabel.TabIndex = 2;
-      this.numericVarReplacementLabel.Text = "Replacement for numeric variables:";
+      this.factorVarReplComboBox.FormattingEnabled = true;
+      this.factorVarReplComboBox.Items.AddRange(new object[] {
+            HeuristicLab.Problems.DataAnalysis.RegressionSolutionVariableImpactsCalculator.FactorReplacementMethodEnum.Best,
+            HeuristicLab.Problems.DataAnalysis.RegressionSolutionVariableImpactsCalculator.FactorReplacementMethodEnum.Mode,
+            HeuristicLab.Problems.DataAnalysis.RegressionSolutionVariableImpactsCalculator.FactorReplacementMethodEnum.Shuffle});
+      this.factorVarReplComboBox.Location = new System.Drawing.Point(197, 57);
+      this.factorVarReplComboBox.Name = "factorVarReplComboBox";
+      this.factorVarReplComboBox.Size = new System.Drawing.Size(121, 21);
+      this.factorVarReplComboBox.TabIndex = 1;
+      this.factorVarReplComboBox.SelectedIndexChanged += new System.EventHandler(this.replacementComboBox_SelectedIndexChanged);
+      // 
+      // factorVarReplacementLabel
+      // 
+      this.factorVarReplacementLabel.AutoSize = true;
+      this.factorVarReplacementLabel.Location = new System.Drawing.Point(3, 60);
+      this.factorVarReplacementLabel.Name = "factorVarReplacementLabel";
+      this.factorVarReplacementLabel.Size = new System.Drawing.Size(188, 13);
+      this.factorVarReplacementLabel.TabIndex = 0;
+      this.factorVarReplacementLabel.Text = "Replacement for categorical variables:";
       // 
       // replacementComboBox
       // 
@@ -113,61 +125,49 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       this.replacementComboBox.TabIndex = 3;
       this.replacementComboBox.SelectedIndexChanged += new System.EventHandler(this.replacementComboBox_SelectedIndexChanged);
       // 
-      // factorVarReplacementLabel
+      // numericVarReplacementLabel
       // 
-      this.factorVarReplacementLabel.AutoSize = true;
-      this.factorVarReplacementLabel.Location = new System.Drawing.Point(3, 60);
-      this.factorVarReplacementLabel.Name = "factorVarReplacementLabel";
-      this.factorVarReplacementLabel.Size = new System.Drawing.Size(188, 13);
-      this.factorVarReplacementLabel.TabIndex = 0;
-      this.factorVarReplacementLabel.Text = "Replacement for categorical variables:";
+      this.numericVarReplacementLabel.AutoSize = true;
+      this.numericVarReplacementLabel.Location = new System.Drawing.Point(3, 33);
+      this.numericVarReplacementLabel.Name = "numericVarReplacementLabel";
+      this.numericVarReplacementLabel.Size = new System.Drawing.Size(173, 13);
+      this.numericVarReplacementLabel.TabIndex = 2;
+      this.numericVarReplacementLabel.Text = "Replacement for numeric variables:";
       // 
-      // factorVarReplComboBox
+      // dataPartitionLabel
       // 
-      this.factorVarReplComboBox.FormattingEnabled = true;
-      this.factorVarReplComboBox.Items.AddRange(new object[] {
-            HeuristicLab.Problems.DataAnalysis.RegressionSolutionVariableImpactsCalculator.FactorReplacementMethodEnum.Best,
-            HeuristicLab.Problems.DataAnalysis.RegressionSolutionVariableImpactsCalculator.FactorReplacementMethodEnum.Mode,
-            HeuristicLab.Problems.DataAnalysis.RegressionSolutionVariableImpactsCalculator.FactorReplacementMethodEnum.Shuffle});
-      this.factorVarReplComboBox.Location = new System.Drawing.Point(197, 57);
-      this.factorVarReplComboBox.Name = "factorVarReplComboBox";
-      this.factorVarReplComboBox.Size = new System.Drawing.Size(121, 21);
-      this.factorVarReplComboBox.TabIndex = 1;
-      this.factorVarReplComboBox.SelectedIndexChanged += new System.EventHandler(this.replacementComboBox_SelectedIndexChanged);
+      this.dataPartitionLabel.AutoSize = true;
+      this.dataPartitionLabel.Location = new System.Drawing.Point(3, 6);
+      this.dataPartitionLabel.Name = "dataPartitionLabel";
+      this.dataPartitionLabel.Size = new System.Drawing.Size(73, 13);
+      this.dataPartitionLabel.TabIndex = 0;
+      this.dataPartitionLabel.Text = "Data partition:";
       // 
-      // sortByLabel
+      // dataPartitionComboBox
       // 
-      this.sortByLabel.AutoSize = true;
-      this.sortByLabel.Location = new System.Drawing.Point(324, 6);
-      this.sortByLabel.Name = "sortByLabel";
-      this.sortByLabel.Size = new System.Drawing.Size(43, 13);
-      this.sortByLabel.TabIndex = 4;
-      this.sortByLabel.Text = "Sort by:";
+      this.dataPartitionComboBox.FormattingEnabled = true;
+      this.dataPartitionComboBox.Items.AddRange(new object[] {
+            HeuristicLab.Problems.DataAnalysis.RegressionSolutionVariableImpactsCalculator.DataPartitionEnum.Training,
+            HeuristicLab.Problems.DataAnalysis.RegressionSolutionVariableImpactsCalculator.DataPartitionEnum.Test,
+            HeuristicLab.Problems.DataAnalysis.RegressionSolutionVariableImpactsCalculator.DataPartitionEnum.All});
+      this.dataPartitionComboBox.Location = new System.Drawing.Point(197, 3);
+      this.dataPartitionComboBox.Name = "dataPartitionComboBox";
+      this.dataPartitionComboBox.Size = new System.Drawing.Size(121, 21);
+      this.dataPartitionComboBox.TabIndex = 1;
+      this.dataPartitionComboBox.SelectedIndexChanged += new System.EventHandler(this.dataPartitionComboBox_SelectedIndexChanged);
       // 
-      // sortByComboBox
+      // variableImactsArrayView
       // 
-      this.sortByComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-      this.sortByComboBox.FormattingEnabled = true;
-      this.sortByComboBox.Items.AddRange(new object[] {
-            "Variable",
-            "Impact"});
-      this.sortByComboBox.Location = new System.Drawing.Point(373, 3);
-      this.sortByComboBox.Name = "sortByComboBox";
-      this.sortByComboBox.Size = new System.Drawing.Size(121, 21);
-      this.sortByComboBox.TabIndex = 5;
-      this.sortByComboBox.SelectedIndexChanged += new System.EventHandler(this.sortByComboBox_SelectedIndexChanged);
-      this.sortByComboBox.SelectedIndex = 1;
-      // 
-      // ascendingCheckBox
-      // 
-      this.ascendingCheckBox.AutoSize = true;
-      this.ascendingCheckBox.Location = new System.Drawing.Point(500, 6);
-      this.ascendingCheckBox.Name = "ascendingCheckBox";
-      this.ascendingCheckBox.Size = new System.Drawing.Size(76, 17);
-      this.ascendingCheckBox.TabIndex = 7;
-      this.ascendingCheckBox.Text = "Ascending";
-      this.ascendingCheckBox.UseVisualStyleBackColor = true;
-      this.ascendingCheckBox.CheckedChanged += new System.EventHandler(this.ascendingCheckBox_CheckedChanged);
+      this.variableImactsArrayView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.variableImactsArrayView.Caption = "StringConvertibleArray View";
+      this.variableImactsArrayView.Content = null;
+      this.variableImactsArrayView.Location = new System.Drawing.Point(3, 84);
+      this.variableImactsArrayView.Name = "variableImactsArrayView";
+      this.variableImactsArrayView.ReadOnly = true;
+      this.variableImactsArrayView.Size = new System.Drawing.Size(706, 278);
+      this.variableImactsArrayView.TabIndex = 2;
       // 
       // RegressionSolutionVariableImpactsView
       // 

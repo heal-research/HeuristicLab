@@ -22,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using HeuristicLab.Common;
 using HeuristicLab.Data;
 using HeuristicLab.MainForm;
 using HeuristicLab.Problems.DataAnalysis.Symbolic.Regression;
@@ -31,8 +32,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
   [Content(typeof(IRegressionSolution))]
   public partial class RegressionSolutionVariableImpactsView : DataAnalysisSolutionEvaluationView {
 
-    private const int ORDER_BY_VARIABLE = 0;
-    private const int ORDER_BY_IMPACT = 1;
+    private const int ORDER_BY_IMPACT = 0;
+    private const int ORDER_BY_OCCURRENCE = 1;
+    private const int ORDER_BY_NAME = 2;
 
     private Dictionary<string, double> rawVariableImpacts = new Dictionary<string, double>();
 
@@ -129,6 +131,24 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     }
 
     private void sortByComboBox_SelectedIndexChanged(object sender, EventArgs e) {
+      //Update the default ordering (asc,desc), but remove the eventHandler beforehand (otherwise the data would be ordered twice)
+      ascendingCheckBox.CheckedChanged -= ascendingCheckBox_CheckedChanged;
+      switch (sortByComboBox.SelectedIndex) {
+        case ORDER_BY_IMPACT: {
+            ascendingCheckBox.Checked = false;
+            break;
+          }
+        case ORDER_BY_OCCURRENCE: {
+            ascendingCheckBox.Checked = true;
+            break;
+          }
+        case ORDER_BY_NAME: {
+            ascendingCheckBox.Checked = true;
+            break;
+          }
+      }
+      ascendingCheckBox.CheckedChanged += ascendingCheckBox_CheckedChanged;
+
       UpdateDataOrdering();
     }
 
@@ -151,15 +171,25 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         IEnumerable<KeyValuePair<string, double>> orderedEntries = null;
 
         //Sort accordingly
-        if (orderIdx == ORDER_BY_VARIABLE) {
-          orderedEntries = ascending ? rawVariableImpacts : rawVariableImpacts.Reverse();
-        } else if (orderIdx == ORDER_BY_IMPACT) {
-          orderedEntries = ascending ? rawVariableImpacts.OrderBy(v => v.Value) : rawVariableImpacts.OrderByDescending(v => v.Value);
+        switch (orderIdx) {
+          case ORDER_BY_IMPACT: {
+              orderedEntries = ascending ? rawVariableImpacts.OrderBy(v => v.Value) : rawVariableImpacts.OrderByDescending(v => v.Value);
+              break;
+            }
+          case ORDER_BY_OCCURRENCE: {
+              orderedEntries = ascending ? rawVariableImpacts : rawVariableImpacts.Reverse();
+              break;
+            }
+          case ORDER_BY_NAME: {
+              orderedEntries = ascending ? rawVariableImpacts.OrderBy(v => v.Key, new NaturalStringComparer()) : rawVariableImpacts.OrderByDescending(v => v.Key, new NaturalStringComparer());
+              break;
+            }
         }
 
         //Write the data back
-        var impactArray = new DoubleArray(orderedEntries.Select(i => i.Value).ToArray());
-        impactArray.ElementNames = orderedEntries.Select(i => i.Key);
+        var impactArray = new DoubleArray(orderedEntries.Select(i => i.Value).ToArray()) {
+          ElementNames = orderedEntries.Select(i => i.Key)
+        };
         variableImactsArrayView.Content = (DoubleArray)impactArray.AsReadOnly();
       }
     }
