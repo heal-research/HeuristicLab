@@ -130,6 +130,7 @@
     <Compile Include="Implementation\Classification\ClassificationSolution.cs" />
     <Compile Include="Implementation\Classification\ClassificationEnsembleProblemData.cs" />
     <Compile Include="Implementation\Classification\ClassificationSolutionBase.cs" />
+    <Compile Include="Implementation\Classification\ClassificationSolutionVariableImpactsCalculator.cs" />
     <Compile Include="Implementation\Classification\ConstantClassificationSolution.cs" />
     <Compile Include="Implementation\Classification\DiscriminantFunctionClassificationSolutionBase.cs" />
     <Compile Include="Implementation\Classification\ClassificationModel.cs" />
