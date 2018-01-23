@@ -270,6 +270,12 @@ namespace HeuristicLab.Optimization.Views {
               Content.Remove((IRun)item.Tag);
           }
         }
+      } else if (e.KeyData == (Keys.A | Keys.Control)) {
+        try {
+          itemsListView.BeginUpdate();
+          foreach (ListViewItem item in itemsListView.Items)
+            item.Selected = true;
+        } finally { itemsListView.EndUpdate(); }
       }
     }
     private void itemsListView_DoubleClick(object sender, EventArgs e) {
