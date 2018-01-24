@@ -135,7 +135,8 @@ namespace HeuristicLab.Problems.BinPacking3D.Sorting {
     public static Permutation SortByMaterialVolumeHeight(this IList<PackingItem> items) {
       return new Permutation(PermutationTypes.Absolute,
                     items.Select((v, i) => new { Index = i, Item = v })
-                         .OrderByDescending(x => x.Item.Material)
+                         ./*OrderByDescending(x => x.Item.IsStackabel ? 1 : 0)
+                         .*/OrderByDescending(x => x.Item.Material)
                          .ThenByDescending(x => x.Item.Depth * x.Item.Width * x.Item.Height)
                          .ThenByDescending(x => x.Item.Height)
                          .Select(x => x.Index).ToArray());
@@ -149,7 +150,8 @@ namespace HeuristicLab.Problems.BinPacking3D.Sorting {
     public static Permutation SortByMaterialHeightVolume(this IList<PackingItem> items) {
       return new Permutation(PermutationTypes.Absolute,
                     items.Select((v, i) => new { Index = i, Item = v })
-                         .OrderByDescending(x => x.Item.Material)
+                         ./*OrderByDescending(x => x.Item.IsStackabel ? 1 : 0)
+                         .*/OrderByDescending(x => x.Item.Material)
                          .ThenByDescending(x => x.Item.Height)
                          .ThenByDescending(x => x.Item.Depth * x.Item.Width * x.Item.Height)
                          .Select(x => x.Index).ToArray());
@@ -163,7 +165,8 @@ namespace HeuristicLab.Problems.BinPacking3D.Sorting {
     public static Permutation SortByMaterialAreaHeight(this IList<PackingItem> items) {
       return new Permutation(PermutationTypes.Absolute,
                     items.Select((v, i) => new { Index = i, Item = v })
-                         .OrderByDescending(x => x.Item.Material)
+                         ./*OrderByDescending(x => x.Item.IsStackabel ? 1 : 0)
+                         .*/OrderByDescending(x => x.Item.Material)
                          .ThenByDescending(x => x.Item.Depth * x.Item.Width)
                          .ThenByDescending(x => x.Item.Height)
                          .Select(x => x.Index).ToArray());
@@ -177,7 +180,8 @@ namespace HeuristicLab.Problems.BinPacking3D.Sorting {
     public static Permutation SortByMaterialHeightArea(this IList<PackingItem> items) {
       return new Permutation(PermutationTypes.Absolute,
                     items.Select((v, i) => new { Index = i, Item = v })
-                         .OrderByDescending(x => x.Item.Material)
+                         ./*OrderByDescending(x => x.Item.IsStackabel ? 1 : 0)
+                         .*/OrderByDescending(x => x.Item.Material)
                          .ThenByDescending(x => x.Item.Height)
                          .ThenByDescending(x => x.Item.Depth * x.Item.Width)
                          .Select(x => x.Index).ToArray());

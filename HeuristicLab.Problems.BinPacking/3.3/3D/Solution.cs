@@ -23,6 +23,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.BinPacking;
+using System;
 
 namespace HeuristicLab.Problems.BinPacking3D {
   [Item("Bin Packing Solution (3d)", "Represents a solution for a 3D bin packing problem.")]
@@ -37,6 +38,38 @@ namespace HeuristicLab.Problems.BinPacking3D {
     }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new Solution(this, cloner);
+    }
+
+    public bool IsBetterThan(Solution other, IEvaluator evaluator, bool problemMaximization = true) {
+      var evaluatedThis = evaluator.Evaluate1(this);
+
+      if (double.IsInfinity(evaluatedThis.Item2) || double.IsNaN(evaluatedThis.Item2)) {
+        return false;
+      }
+
+      if (other == null) {
+        return true;
+      }
+
+      var evaluatedOther = evaluator.Evaluate1(other);
+      if (evaluatedThis.Item1 < evaluatedOther.Item1) {
+        return true;
+      } else if (evaluatedThis.Item1 > evaluatedOther.Item1) {
+        return false;
+      }
+      
+      if (evaluatedThis.Item2 > evaluatedOther.Item2) {
+        return true;
+      }
+      if (evaluatedThis.Item2 < evaluatedOther.Item2) {
+        return false;
+      }
+
+      if (evaluatedThis.Item3 > evaluatedOther.Item3) {
+        return false;
+      }
+      return true;
+
     }
   }
 }

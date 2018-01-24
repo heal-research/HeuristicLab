@@ -83,6 +83,46 @@ namespace HeuristicLab.Problems.BinPacking3D.Evaluators {
       return result;
     }
 
+    private static int GetBinCount(Solution solution) {
+      return solution.NrOfBins;
+    }
+
+    private static int GetNumberOfResidualSpaces(Solution solution) {
+      var cnt = 0;
+      foreach (var binPacking in solution.Bins) {
+        foreach (var item in ((BinPacking3D)binPacking).ExtremePoints) {
+          cnt += item.Value.Count();
+        }
+      }
+      return cnt;
+    }
+
+    public Tuple<int, double, int> Evaluate1(Solution solution) {
+
+
+      var res = Tuple.Create<int, double, int>(
+        GetBinCount(solution),
+        CalculateBinUtilizationFirstBin(solution),
+        GetNumberOfResidualSpaces(solution)
+        );
+
+      return res;
+    }
+
+    private static double CalculateBinUtilizationFirstBin(Solution solution) {
+      if (solution.NrOfBins <= 0) {
+        return 0.0;
+      }
+
+      double totalUsedSpace = 0;
+      double totalUsableSpace = 0;
+
+      totalUsableSpace += solution.Bins[0].BinShape.Volume;
+      totalUsedSpace += solution.Bins[0].Items.Sum(kvp => kvp.Value.Volume);
+
+      return totalUsedSpace / totalUsableSpace;
+    }
+
     #endregion
   }
 }

@@ -140,7 +140,7 @@ namespace HeuristicLab.Problems.BinPacking.Views {
 
         var selectedModel = new GeometryModel3D { Geometry = new MeshGeometry3D(), Material = material };
         AddSolidCube((MeshGeometry3D)selectedModel.Geometry, selectedPos.X, selectedPos.Y, selectedPos.Z,
-          selectedItem.Value.DepthInView,
+          selectedItem.Value.WidthInView,
           selectedItem.Value.HeightInView,
           selectedItem.Value.DepthInView);
         modelGroup.Children.Add(selectedModel);

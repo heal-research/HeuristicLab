@@ -20,6 +20,7 @@
 #endregion
 
 using HeuristicLab.Core;
+using System;
 
 namespace HeuristicLab.Problems.BinPacking3D {
   /// <summary>
@@ -33,5 +34,12 @@ namespace HeuristicLab.Problems.BinPacking3D {
     /// <param name="solution">Solution which sould be evaluated</param>
     /// <returns>Returns the value of the evaluated solution depending on the implementation</returns>
     double Evaluate(Solution solution);
+
+    /// <summary>
+    /// Returns a tuple of (number of bins, bin utilization, number of residual spaces)
+    /// </summary>
+    /// <param name="solution"></param>
+    /// <returns></returns>
+    Tuple<int, double, int> Evaluate1(Solution solution);
   }
 }

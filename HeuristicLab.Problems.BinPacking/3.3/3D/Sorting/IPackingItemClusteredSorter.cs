@@ -31,5 +31,6 @@ namespace HeuristicLab.Problems.BinPacking3D.Sorting {
     Permutation SortPackingItems(IList<PackingItem> items, PackingShape bin, double delta);
 
     Permutation SortPackingItemsByMaterial(IList<PackingItem> items, PackingShape bin, double delta);
+    
   }
 }

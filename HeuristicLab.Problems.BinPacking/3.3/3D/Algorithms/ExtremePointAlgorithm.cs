@@ -201,10 +201,10 @@ namespace HeuristicLab.Problems.BinPacking3D {
     /// <param name="fittings"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    private Tuple<Solution, double, SortingMethod?, FittingMethod?, ExtremePointCreationMethod?> 
-          GetBest(PackingShape bin, 
-                  IList<PackingItem> items, 
-                  SortingMethod[] sortings, 
+    private Tuple<Solution, double, SortingMethod?, FittingMethod?, ExtremePointCreationMethod?>
+          GetBest(PackingShape bin,
+                  IList<PackingItem> items,
+                  SortingMethod[] sortings,
                   FittingMethod[] fittings,
                   ExtremePointCreationMethod[] epCreationMethods,
                   CancellationToken token) {
@@ -221,14 +221,14 @@ namespace HeuristicLab.Problems.BinPacking3D {
               ExtremePointCreationMethod = epCreation
             };
             Permutation sortedItems;
-                    
+
             if (SortByMaterialParameter.Value.Value) {
               sortedItems = SortItemsByMaterialAndSortingMethod(bin, items, sort, DeltaParameter.Value.Value);
             } else {
               sortedItems = SortItemsBySortingMethod(bin, items, sort, DeltaParameter.Value.Value);
             }
 
-            var result = Optimize(new OptimaizationParamters() {
+            var solution = Optimize(new OptimaizationParamters() {
               SortedItems = sortedItems,
               Bin = bin,
               Items = items,
@@ -237,7 +237,19 @@ namespace HeuristicLab.Problems.BinPacking3D {
               Evaluator = Problem.SolutionEvaluator,
               ExtremePointGeneration = epCreation
             });
-          
+
+            if (solution.IsBetterThan(bestSolution, Problem.SolutionEvaluator, Problem.Maximization)) {
+              bestSolution = solution;
+              best = Problem.SolutionEvaluator.Evaluate(solution);
+              bestSorting = sort;
+              bestFitting = fit;
+              bestEPCreation = epCreation;
+            }
+
+
+            var x = Problem.SolutionEvaluator.Evaluate1(solution);
+
+            /*
             if (double.IsNaN(result.Item2) || double.IsInfinity(result.Item2)) {
               continue;
             }
@@ -249,6 +261,8 @@ namespace HeuristicLab.Problems.BinPacking3D {
               bestFitting = fit;
               bestEPCreation = epCreation;
             }
+            return true;*/
+
             if (token.IsCancellationRequested) {
               return Tuple.Create(bestSolution, best, bestSorting, bestFitting, bestEPCreation);
             }
@@ -266,12 +280,12 @@ namespace HeuristicLab.Problems.BinPacking3D {
     /// </summary>
     /// <param name="parameters"></param>
     /// <returns></returns>
-    private static Tuple<Solution, double> Optimize(OptimaizationParamters parameters) { 
-      
-      var sol = parameters.Decoder.Decode(parameters.SortedItems, parameters.Bin, parameters.Items, parameters.StackingConstraints);
-      var fit = parameters.Evaluator.Evaluate(sol);
+    private static Solution Optimize(OptimaizationParamters parameters) {
 
-      return Tuple.Create(sol, fit);
+      var sol = parameters.Decoder.Decode(parameters.SortedItems, parameters.Bin, parameters.Items, parameters.StackingConstraints);
+      //var fit = parameters.Evaluator.Evaluate(sol);
+
+      return sol; //Tuple.Create(sol, fit);
     }
 
     private class OptimaizationParamters {
@@ -283,7 +297,7 @@ namespace HeuristicLab.Problems.BinPacking3D {
       public IEvaluator Evaluator { get; set; }
       public ExtremePointCreationMethod ExtremePointGeneration { get; set; }
     }
-    
+
 
     /// <summary>
     /// Returns a new permutation of the given items depending on the sorting method
@@ -293,9 +307,9 @@ namespace HeuristicLab.Problems.BinPacking3D {
     /// <param name="sortingMethod"></param>
     /// <param name="delta"></param>
     /// <returns></returns>
-    private Permutation SortItemsBySortingMethod(PackingShape bin, IList<PackingItem> items, SortingMethod sortingMethod, double delta) {
+    private Permutation SortItemsByMaterialAndSortingMethod(PackingShape bin, IList<PackingItem> items, SortingMethod sortingMethod, double delta) {
       Permutation sorted = null;
-      
+
       switch (sortingMethod) {
         case SortingMethod.Given:
           sorted = new Permutation(PermutationTypes.Absolute, Enumerable.Range(0, items.Count).ToArray());
@@ -332,7 +346,7 @@ namespace HeuristicLab.Problems.BinPacking3D {
     /// <param name="sortingMethod"></param>
     /// <param name="delta"></param>
     /// <returns></returns>
-    private Permutation SortItemsByMaterialAndSortingMethod(PackingShape bin, IList<PackingItem> items, SortingMethod sortingMethod, double delta) {
+    private Permutation SortItemsBySortingMethod(PackingShape bin, IList<PackingItem> items, SortingMethod sortingMethod, double delta) {
       Permutation sorted = null;
 
       switch (sortingMethod) {

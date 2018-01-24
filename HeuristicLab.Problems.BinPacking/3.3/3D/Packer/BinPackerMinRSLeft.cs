@@ -44,8 +44,14 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
     }
     #endregion
 
+
+
     public BinPackerMinRSLeft() : base() { }
 
+    /// <summary>
+    /// This proportion of the residual space left to the item height is used for deciding if a not stackable item should be placed.
+    /// </summary>
+    private const double NOT_STACKABLE_RS_LEFT_TO_ITEM_HEIGHT_PROPORTION = 1.1;
 
     public override IList<BinPacking3D> PackItems(Permutation sortedItems, PackingShape binShape, IList<PackingItem> items, ExtremePointCreationMethod epCreationMethod, ExtremePointPruningMethod epPruningMethod, bool useStackingConstraints) {
       var workingItems = CloneItems(items);
@@ -56,12 +62,13 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
         while (remainingIds.Count > 0) {
           BinPacking3D packingBin = new BinPacking3D(binShape);
           PackRemainingItems(ref remainingIds, ref packingBin, workingItems, epCreationMethod, useStackingConstraints);
-          packingList.Add(packingBin);
+          packingList.Add(packingBin);          
         }
-      } catch(BinPacking3DException e) {
+      } catch (BinPacking3DException e) {
       }
-      
+
       ExtremePointPruningFactory.CreatePruning().PruneExtremePoints(epPruningMethod, packingList);
+
       return packingList;
     }
 
@@ -75,18 +82,72 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
     /// <param name="useStackingConstraints"></param>
     protected void PackRemainingItems(ref IList<int> remainingIds, ref BinPacking3D packingBin, IList<PackingItem> items, ExtremePointCreationMethod epCreationMethod, bool useStackingConstraints) {
       IExtremePointCreator extremePointCreator = ExtremePointCreatorFactory.CreateExtremePointCreator(epCreationMethod, useStackingConstraints);
+      var remainingNotStackableItems = new List<int>();
       foreach (var itemId in new List<int>(remainingIds)) {
         var item = items[itemId];
-        PackingPosition position = FindPackingPositionForItem(packingBin, item, useStackingConstraints);
-        // if a valid packing position could be found, the current item can be added to the given bin
-        if (position != null) {
-          PackItem(packingBin, itemId, item, position, extremePointCreator, useStackingConstraints);
-          remainingIds.Remove(itemId);
+
+        // If an item is not stackable it should have a minimum waste of the residual space.
+        // As long as there are stackable items left, put the non stackable items into a collection 
+        // and try to find positions where they don't waste too much space.
+        // If there are no stackable items left the non stackable have to be treated as a stackable one.
+        if (!item.IsStackabel && useStackingConstraints && remainingIds.Where(x => items[x].IsStackabel).Any()) {
+          remainingNotStackableItems.Add(itemId);          
+        } else {
+          PackingPosition position = FindPackingPositionForItem(packingBin, item, useStackingConstraints);
+          // if a valid packing position could be found, the current item can be added to the given bin
+          if (position != null) {            
+            PackItem(packingBin, itemId, item, position, extremePointCreator, useStackingConstraints);
+            remainingIds.Remove(itemId);
+          }
         }
+
+        // try to find a valid position for a non stackable item
+        var stackableLeft = remainingIds.Where(x => items[x].IsStackabel).Any();
+        foreach (var saId in new List<int>(remainingNotStackableItems)) {
+          item = items[saId];
+          PackingPosition position = null;
+          if (stackableLeft) {
+            position  = FindPackingPositionForNotStackableItem(packingBin, item, useStackingConstraints);
+          } else {
+            position = FindPackingPositionForItem(packingBin, item, useStackingConstraints);
+          }
+          
+          if (position != null) {            
+            PackItem(packingBin, saId, item, position, extremePointCreator, useStackingConstraints);
+            remainingIds.Remove(saId);
+            remainingNotStackableItems.Remove(saId);
+          }
+        }
+        
       }
     }
 
-    
+    /// <summary>
+    /// Tries to find a valid position for a non stackable item.
+    /// Positions will only be valid if the height difference of its residual space is smaller then the hight of the item.
+    /// </summary>
+    /// <param name="packingBin"></param>
+    /// <param name="packingItem"></param>
+    /// <param name="useStackingConstraints"></param>
+    /// <returns></returns>
+    private PackingPosition FindPackingPositionForNotStackableItem(BinPacking3D packingBin, PackingItem packingItem, bool useStackingConstraints) {
+      if (!CheckItemDimensions(packingBin, packingItem)) {
+        throw new BinPacking3DException($"The dimensions of the given item exceeds the bin dimensions. " +
+          $"Bin: ({packingBin.BinShape.Width} {packingBin.BinShape.Depth} {packingBin.BinShape.Height})" +
+          $"Item: ({packingItem.Width} {packingItem.Depth} {packingItem.Height})");
+      }
+      var rsds = CalculateResidalSpaceDifferences(packingBin, packingItem, useStackingConstraints).ToList();
+      var rsd = rsds.Where(x => x != null && (x.Y / (double)x.Item.Height) < NOT_STACKABLE_RS_LEFT_TO_ITEM_HEIGHT_PROPORTION).OrderByDescending(x => x.Y % x.Item.Height).FirstOrDefault();
+
+      if (rsd == null) {
+        return null;
+      }
+
+      packingItem.Rotated = rsd.Item.Rotated;
+      packingItem.Tilted = rsd.Item.Tilted;
+      return rsd.Position;
+    }
+
     protected override PackingPosition FindPackingPositionForItem(BinPacking3D packingBin, PackingItem packingItem, bool useStackingConstraints) {
       if (!CheckItemDimensions(packingBin, packingItem)) {
         throw new BinPacking3DException($"The dimensions of the given item exceeds the bin dimensions. " +
@@ -94,6 +155,25 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
           $"Item: ({packingItem.Width} {packingItem.Depth} {packingItem.Height})");
       }
 
+      var rsd = CalculateResidalSpaceDifferences(packingBin, packingItem, useStackingConstraints).Where(x => x != null).FirstOrDefault();
+
+      if (rsd == null) {
+        return null;
+      }
+
+      packingItem.Rotated = rsd.Item.Rotated;
+      packingItem.Tilted = rsd.Item.Tilted;
+      return rsd.Position;
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="packingBin"></param>
+    /// <param name="packingItem"></param>
+    /// <param name="useStackingConstraints"></param>
+    /// <returns></returns>
+    private SortedSet<ResidualSpaceDifference> CalculateResidalSpaceDifferences(BinPacking3D packingBin, PackingItem packingItem, bool useStackingConstraints) {
       var rsds = new SortedSet<ResidualSpaceDifference>();
 
       rsds.Add(FindResidualSpaceDifferenceForItem(packingBin, packingItem, useStackingConstraints, rotated: false, tilted: false));
@@ -107,40 +187,37 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
       if (packingItem.RotateEnabled && packingItem.TiltEnabled) {
         rsds.Add(FindResidualSpaceDifferenceForItem(packingBin, packingItem, useStackingConstraints, rotated: true, tilted: true));
       }
-
-      var rsd = rsds.Where(x => x != null).FirstOrDefault();
-      
-      if (rsd == null) {
-        return null;
-      }
-
-      packingItem.Rotated = rsd.Item.Rotated;
-      packingItem.Tilted = rsd.Item.Tilted;
-      return rsd.Position;
+      return rsds;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="packingBin"></param>
+    /// <param name="packingItem"></param>
+    /// <param name="useStackingConstraints"></param>
+    /// <param name="rotated"></param>
+    /// <param name="tilted"></param>
+    /// <returns></returns>
     protected ResidualSpaceDifference FindResidualSpaceDifferenceForItem(BinPacking3D packingBin, PackingItem packingItem, bool useStackingConstraints, bool rotated, bool tilted) {
       PackingItem newItem = new PackingItem(packingItem) {
         Rotated = rotated,
         Tilted = tilted
       };
-
+      
       var rsds = new SortedSet<ResidualSpaceDifference>();
-
       foreach (var ep in packingBin.ExtremePoints) {
         var position = ep.Key;
-        if (packingBin.IsPositionFeasible(newItem, position, useStackingConstraints)) {
-          foreach (var rs in ep.Value) {
-            var rsd = ResidualSpaceDifference.Create(position, newItem, rs);
-            if (rsd != null) {
-              rsds.Add(rsd);
-            }
+        foreach (var rs in ep.Value) {
+          var rsd = ResidualSpaceDifference.Create(position, newItem, rs);
+          if (rsd != null) {
+            rsds.Add(rsd);
           }
         }
       }
-      return rsds.FirstOrDefault();
+      return rsds.Where(rsd => packingBin.IsPositionFeasible(rsd.Item, rsd.Position, useStackingConstraints)).FirstOrDefault();
     }
-
+        
     protected override bool CheckItemDimensions(BinPacking3D packingBin, PackingItem item) {
       bool ok = false;
       int width = item.OriginalWidth;
@@ -166,7 +243,7 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
       return base.CheckItemDimensions(packingBin, new PackingItem() {
         OriginalWidth = width,
         OriginalHeight = height,
-        OriginalDepth =  depth
+        OriginalDepth = depth
       });
     }
 
@@ -211,7 +288,7 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
 
         if (x != 0) {
           return x;
-        } else if (y != 0 ) {
+        } else if (y != 0) {
           return y;
         } else if (z != 0) {
           return z;

@@ -42,7 +42,7 @@ namespace HeuristicLab.Problems.BinPacking3D {
     public IFixedValueParameter<IntValue> MaterialParameter {
       get { return (IFixedValueParameter<IntValue>)Parameters["Material"]; }
     }
-    
+
     public PackingShape TargetBin {
       get { return TargetBinParameter.Value; }
       set { TargetBinParameter.Value = value; }
@@ -59,6 +59,26 @@ namespace HeuristicLab.Problems.BinPacking3D {
     }
 
 
+    public IFixedValueParameter<DoubleValue> SupportedWeightParameter {
+      get { return (IFixedValueParameter<DoubleValue>)Parameters["SupportedWeight"]; }
+    }
+    public double SupportedWeight {
+      get { return SupportedWeightParameter.Value.Value; }
+      set { SupportedWeightParameter.Value.Value = value; }
+    }
+
+    public IValueParameter<BoolValue> IsStackableParameter {
+      get { return (IValueParameter<BoolValue>)Parameters["IsStackable"]; }
+    }
+
+    /// <summary>
+    /// Indicates that another item can be stacked on the current one.
+    /// </summary>
+    public bool IsStackabel {
+      get { return IsStackableParameter.Value.Value; }
+      set { IsStackableParameter.Value.Value = value; }
+    }
+
     public IValueParameter<BoolValue> RotateEnabledParameter {
       get { return (IValueParameter<BoolValue>)Parameters["RotateEnabled"]; }
     }
@@ -74,7 +94,7 @@ namespace HeuristicLab.Problems.BinPacking3D {
     public IValueParameter<BoolValue> TiltedParameter {
       get { return (IValueParameter<BoolValue>)Parameters["Tilted"]; }
     }
-    
+
     /// <summary>
     /// Enables that the current item can be rotated.
     /// </summary>
@@ -109,11 +129,11 @@ namespace HeuristicLab.Problems.BinPacking3D {
       get { return TiltedParameter.Value.Value; }
       set { TiltedParameter.Value.Value = value; }
     }
-    
+
     public IFixedValueParameter<IntValue> LoadSecuringHeightParameter {
       get { return (IFixedValueParameter<IntValue>)Parameters["LoadSecuringHeight"]; }
     }
-    
+
     public IFixedValueParameter<IntValue> LoadSecuringWidthParameter {
       get { return (IFixedValueParameter<IntValue>)Parameters["LoadSecuringWidth"]; }
     }
@@ -194,7 +214,7 @@ namespace HeuristicLab.Problems.BinPacking3D {
         } else {
           return WidthParameter.Value.Value;
         }
-      } 
+      }
     }
 
     /// <summary>
@@ -254,7 +274,7 @@ namespace HeuristicLab.Problems.BinPacking3D {
       get { return DepthParameter.Value.Value; }
       set { DepthParameter.Value.Value = value; }
     }
-    
+
     public bool SupportsStacking(IPackingItem other) {
       return ((other.Material < this.Material) || (other.Material.Equals(this.Material) && other.Weight <= this.Weight));
     }
@@ -272,14 +292,20 @@ namespace HeuristicLab.Problems.BinPacking3D {
       Parameters.Add(new ValueParameter<PackingShape>("TargetBin"));
       Parameters.Add(new FixedValueParameter<DoubleValue>("Weight"));
       Parameters.Add(new FixedValueParameter<IntValue>("Material"));
+
+      Parameters.Add(new FixedValueParameter<DoubleValue>("SupportedWeight"));      
+
       Parameters.Add(new FixedValueParameter<BoolValue>("RotateEnabled"));
       Parameters.Add(new FixedValueParameter<BoolValue>("Rotated"));
       Parameters.Add(new FixedValueParameter<BoolValue>("TiltEnabled"));
       Parameters.Add(new FixedValueParameter<BoolValue>("Tilted"));
-      
+      Parameters.Add(new FixedValueParameter<BoolValue>("IsStackable"));
+
       Parameters.Add(new FixedValueParameter<IntValue>("LoadSecuringHeight"));
       Parameters.Add(new FixedValueParameter<IntValue>("LoadSecuringWidth"));
       Parameters.Add(new FixedValueParameter<IntValue>("LoadSecuringDepth"));
+
+      IsStackabel = true;
 
       RegisterEvents();
     }
@@ -293,23 +319,23 @@ namespace HeuristicLab.Problems.BinPacking3D {
     }
 
     public PackingItem(int width, int height, int depth, PackingShape targetBin, double weight, int material)
-      : this(width, height, depth, targetBin) {    
+      : this(width, height, depth, targetBin) {
       this.Weight = weight;
       this.Material = material;
     }
 
-    
 
-    public PackingItem(PackingItem packingItem) 
-      : this() {
+
+    public PackingItem(PackingItem packingItem) : this() {
       OriginalWidth = packingItem.OriginalWidth;
       OriginalHeight = packingItem.OriginalHeight;
-      OriginalDepth =  packingItem.OriginalDepth;
+      OriginalDepth = packingItem.OriginalDepth;
       TargetBin = (PackingShape)packingItem.TargetBin.Clone();
       Weight = packingItem.Weight;
       Material = packingItem.Material;
       Rotated = packingItem.Rotated;
       Tilted = packingItem.Tilted;
+      IsStackabel = packingItem.IsStackabel;
 
       LoadSecuringDepth = packingItem.LoadSecuringDepth;
       LoadSecuringHeight = packingItem.LoadSecuringHeight;
@@ -336,6 +362,6 @@ namespace HeuristicLab.Problems.BinPacking3D {
     public override string ToString() {
       return string.Format("CuboidPackingItem ({0}, {1}, {2}; weight={3}, mat={4})", this.Width, this.Height, this.Depth, this.Weight, this.Material);
     }
-    
+
   }
 }

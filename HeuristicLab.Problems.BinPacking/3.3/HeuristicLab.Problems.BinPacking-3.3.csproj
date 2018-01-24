@@ -112,6 +112,8 @@
     <Compile Include="3D\ExtremePointPruning\ExtremePointPruningFactory.cs" />
     <Compile Include="3D\ExtremePointPruning\IExtremePointPruning.cs" />
     <Compile Include="3D\Geometry\Edge3D.cs" />
+    <Compile Include="3D\Material\FrictionalCoefficientTable.cs" />
+    <Compile Include="3D\Material\MaterialType.cs" />
     <Compile Include="3D\Packer\BinPacker.cs" />
     <Compile Include="3D\Packer\BinPackerFactory.cs" />
     <Compile Include="3D\Packer\BinPackerFirstFit.cs" />
