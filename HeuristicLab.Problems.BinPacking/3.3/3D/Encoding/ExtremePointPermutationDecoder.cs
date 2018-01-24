@@ -101,10 +101,21 @@ namespace HeuristicLab.Problems.BinPacking3D.Encoding {
       var binPacker = BinPackerFactory.CreateBinPacker(FittingMethod);
       var pruningMethod = ExtremePointPruningMethod.None;
       Solution solution = new Solution(binShape, useExtremePoints: true, stackingConstraints: useStackingConstraints);
-      foreach (var packedBin in binPacker.PackItems(permutation, binShape, items, ExtremePointCreationMethod, pruningMethod, useStackingConstraints)) {
+      
+      IList<BinPacking3D> packingList = binPacker.PackItems(permutation, binShape, items, ExtremePointCreationMethod, pruningMethod, useStackingConstraints);
+      foreach (var packedBin in packingList) {
         solution.Bins.Add(packedBin);
       }
       return solution;
+    }
+
+    Permutation AddOffset(Permutation p, int offset) {
+      var s = p.ToArray();
+      for (int i = 0; i < s.Length; i++) {
+        s[i] += offset;
+      }
+      
+      return new Permutation(PermutationTypes.Absolute, s);
     }
   }
 }

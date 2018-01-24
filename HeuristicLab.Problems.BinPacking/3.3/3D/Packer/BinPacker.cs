@@ -58,7 +58,11 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
     /// <param name="useStackingConstraints">Flag for using stacking constraints</param>
     /// <returns>Returns a collection of bin packing 3d objects. Each object represents a bin and the packed items</returns>
     public abstract IList<BinPacking3D> PackItems(Permutation sortedItems, PackingShape binShape, IList<PackingItem> items, ExtremePointCreationMethod epCreationMethod, ExtremePointPruningMethod epPruningMethod, bool useStackingConstraints);
-    
+
+
+
+    public abstract void PackItemsToPackingList(IList<BinPacking3D> packingList, Permutation sortedItems, PackingShape binShape, IList<PackingItem> items, ExtremePointCreationMethod epCreationMethod, ExtremePointPruningMethod epPruningMethod, bool useStackingConstraints);
+
     /// <summary>
     /// Pack a given item into a given bin and updates the residual space and the extreme points
     /// </summary>

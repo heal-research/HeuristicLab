@@ -72,6 +72,28 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
       return packingList;
     }
 
+
+    public override void PackItemsToPackingList(IList<BinPacking3D> packingList, Permutation sortedItems, PackingShape binShape, IList<PackingItem> items, ExtremePointCreationMethod epCreationMethod, ExtremePointPruningMethod epPruningMethod, bool useStackingConstraints) {
+      var workingItems = CloneItems(items);
+      IList<int> remainingIds = new List<int>(sortedItems);
+
+      try {
+        if (packingList.Count > 0) {
+          BinPacking3D packingBin = packingList.Last();
+          PackRemainingItems(ref remainingIds, ref packingBin, workingItems, epCreationMethod, useStackingConstraints);
+        }
+
+        while (remainingIds.Count > 0) {
+          BinPacking3D packingBin = new BinPacking3D(binShape);
+          PackRemainingItems(ref remainingIds, ref packingBin, workingItems, epCreationMethod, useStackingConstraints);
+          packingList.Add(packingBin);
+        }
+      } catch (BinPacking3DException e) {
+      }
+
+      ExtremePointPruningFactory.CreatePruning().PruneExtremePoints(epPruningMethod, packingList);
+    }
+
     /// <summary>
     /// Tries to pack the remainig items into a given BinPacking3D object. Each item could be packed into the BinPacking3D object will be removed from the list of remaining ids
     /// </summary>
@@ -247,6 +269,7 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
       });
     }
 
+    
     protected class ResidualSpaceDifference : IComparable {
       public static ResidualSpaceDifference Create(PackingPosition position, PackingItem item, ResidualSpace rs) {
         var x = rs.Width - item.Width;

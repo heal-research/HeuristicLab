@@ -38,5 +38,19 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
     /// <returns>Returns a collection of bin packing 3d objects. Each object represents a bin and the packed items</returns>
     IList<BinPacking3D> PackItems(Permutation sortedItems, PackingShape binShape, IList<PackingItem> items, ExtremePointCreationMethod epCreationMethod, ExtremePointPruningMethod epPruningMethod, bool useStackingConstraints);
 
+
+    /// <summary>
+    /// Packs all items of the bin packer into a collection of BinPacking3D objects
+    /// </summary>
+    /// <param name="packingList">Packing list which will be filled by the packer.</param>
+    /// <param name="sortedItems">Permutation of items sorted by a sorting method. The value of each permutation index references to the index of the items list</param>
+    /// <param name="binShape">Bin for storing the items</param>
+    /// <param name="items">A list of packing items which should be assigned to a bin</param>
+    /// <param name="useStackingConstraints">Flag for using stacking constraints</param>
+    /// <param name="epPruningMethod"></param>
+    void PackItemsToPackingList(IList<BinPacking3D> packingList ,Permutation sortedItems, PackingShape binShape, IList<PackingItem> items, ExtremePointCreationMethod epCreationMethod, ExtremePointPruningMethod epPruningMethod, bool useStackingConstraints);
+
+
+
   }
 }

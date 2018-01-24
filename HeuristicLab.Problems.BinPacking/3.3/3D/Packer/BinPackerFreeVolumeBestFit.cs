@@ -97,5 +97,9 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
       ExtremePointPruningFactory.CreatePruning().PruneExtremePoints(epPruningMethod, packingList);
       return packingList.ToList();
     }
+
+    public override void PackItemsToPackingList(IList<BinPacking3D> packingList, Permutation sortedItems, PackingShape binShape, IList<PackingItem> items, ExtremePointCreationMethod epCreationMethod, ExtremePointPruningMethod epPruningMethod, bool useStackingConstraints) {
+      throw new NotImplementedException();
+    }
   }
 }
