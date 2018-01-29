@@ -18,6 +18,9 @@
  * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
  */
 #endregion
+using System;
+using System.Linq;
+
 namespace HeuristicLab.Problems.DataAnalysis.Views {
   partial class RegressionSolutionVariableImpactsView {
     /// <summary> 
@@ -79,10 +82,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       // 
       this.sortByComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.sortByComboBox.FormattingEnabled = true;
-      this.sortByComboBox.Items.AddRange(new object[] {
-            "Impact Value",
-            "Occurrence",
-            "Variable Name"});
       this.sortByComboBox.Location = new System.Drawing.Point(407, 3);
       this.sortByComboBox.Name = "sortByComboBox";
       this.sortByComboBox.Size = new System.Drawing.Size(121, 21);
@@ -91,6 +90,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       // 
       // factorVarReplComboBox
       // 
+      this.factorVarReplComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.factorVarReplComboBox.FormattingEnabled = true;
       this.factorVarReplComboBox.Items.AddRange(new object[] {
             HeuristicLab.Problems.DataAnalysis.RegressionSolutionVariableImpactsCalculator.FactorReplacementMethodEnum.Best,
@@ -113,6 +113,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       // 
       // replacementComboBox
       // 
+      this.replacementComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.replacementComboBox.FormattingEnabled = true;
       this.replacementComboBox.Items.AddRange(new object[] {
             HeuristicLab.Problems.DataAnalysis.RegressionSolutionVariableImpactsCalculator.ReplacementMethodEnum.Median,
@@ -145,6 +146,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       // 
       // dataPartitionComboBox
       // 
+      this.dataPartitionComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.dataPartitionComboBox.FormattingEnabled = true;
       this.dataPartitionComboBox.Items.AddRange(new object[] {
             HeuristicLab.Problems.DataAnalysis.RegressionSolutionVariableImpactsCalculator.DataPartitionEnum.Training,

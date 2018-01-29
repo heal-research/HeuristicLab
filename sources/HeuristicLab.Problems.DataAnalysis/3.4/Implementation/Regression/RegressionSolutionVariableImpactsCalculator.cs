@@ -51,6 +51,11 @@ namespace HeuristicLab.Problems.DataAnalysis {
       Test,
       All
     }
+    public enum SortingCriteria {
+      ImpactValue,
+      Occurrence,
+      VariableName
+    }
 
     private const string ReplacementParameterName = "Replacement Method";
     private const string DataPartitionParameterName = "DataPartition";
