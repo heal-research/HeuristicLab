@@ -18,8 +18,6 @@
  * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
  */
 #endregion
-using System;
-using System.Linq;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
   partial class RegressionSolutionVariableImpactsView {

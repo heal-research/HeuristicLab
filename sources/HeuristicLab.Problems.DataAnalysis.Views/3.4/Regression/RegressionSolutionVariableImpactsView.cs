@@ -31,6 +31,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
   [View("Variable Impacts")]
   [Content(typeof(IRegressionSolution))]
   public partial class RegressionSolutionVariableImpactsView : DataAnalysisSolutionEvaluationView {
+    private enum SortingCriteria {
+      ImpactValue,
+      Occurrence,
+      VariableName
+    }
+
     private Dictionary<string, double> rawVariableImpacts = new Dictionary<string, double>();
 
     public new IRegressionSolution Content {
@@ -45,8 +51,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       InitializeComponent();
 
       //Little workaround. If you fill the ComboBox-Items in the other partial class, the UI-Designer will moan.
-      this.sortByComboBox.Items.AddRange(Enum.GetValues(typeof(RegressionSolutionVariableImpactsCalculator.SortingCriteria)).Cast<object>().ToArray());
-      this.sortByComboBox.SelectedItem = RegressionSolutionVariableImpactsCalculator.SortingCriteria.ImpactValue;
+      this.sortByComboBox.Items.AddRange(Enum.GetValues(typeof(SortingCriteria)).Cast<object>().ToArray());
+      this.sortByComboBox.SelectedItem = SortingCriteria.ImpactValue;
 
       this.dataPartitionComboBox.SelectedIndex = 0;
       this.replacementComboBox.SelectedIndex = 0;
@@ -95,18 +101,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     private void sortByComboBox_SelectedIndexChanged(object sender, EventArgs e) {
       //Update the default ordering (asc,desc), but remove the eventHandler beforehand (otherwise the data would be ordered twice)
       ascendingCheckBox.CheckedChanged -= ascendingCheckBox_CheckedChanged;
-      switch ((RegressionSolutionVariableImpactsCalculator.SortingCriteria)sortByComboBox.SelectedItem) {
-        case RegressionSolutionVariableImpactsCalculator.SortingCriteria.ImpactValue:
+      switch ((SortingCriteria)sortByComboBox.SelectedItem) {
+        case SortingCriteria.ImpactValue:
           ascendingCheckBox.Checked = false;
           break;
-        case RegressionSolutionVariableImpactsCalculator.SortingCriteria.Occurrence:
+        case SortingCriteria.Occurrence:
           ascendingCheckBox.Checked = true;
           break;
-        case RegressionSolutionVariableImpactsCalculator.SortingCriteria.VariableName:
+        case SortingCriteria.VariableName:
           ascendingCheckBox.Checked = true;
           break;
         default:
-          throw new Exception("Cannot interpret SortingCriteria");
+          throw new NotImplementedException("Ordering for selected SortingCriteria not implemented");
       }
       ascendingCheckBox.CheckedChanged += ascendingCheckBox_CheckedChanged;
 
@@ -120,19 +126,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
     #region Helper Methods         
     private void UpdateVariableImpacts() {
-      if (Content == null || replacementComboBox.SelectedIndex < 0
-        || factorVarReplComboBox.SelectedIndex < 0
-        || dataPartitionComboBox.SelectedIndex < 0) return;
-      var mainForm = (MainForm.WindowsForms.MainForm)MainFormManager.MainForm;
+      if (Content == null) { return; }
+      if (replacementComboBox.SelectedIndex < 0) { return; }
+      if (dataPartitionComboBox.SelectedIndex < 0) { return; }
+      if (factorVarReplComboBox.SelectedIndex < 0) { return; }
+
       variableImactsArrayView.Caption = Content.Name + " Variable Impacts";
-      var replMethod =
-         (RegressionSolutionVariableImpactsCalculator.ReplacementMethodEnum)
-           replacementComboBox.Items[replacementComboBox.SelectedIndex];
-      var factorReplMethod =
-        (RegressionSolutionVariableImpactsCalculator.FactorReplacementMethodEnum)
-          factorVarReplComboBox.Items[factorVarReplComboBox.SelectedIndex];
-      var dataPartition =
-        (RegressionSolutionVariableImpactsCalculator.DataPartitionEnum)dataPartitionComboBox.SelectedItem;
+
+      var mainForm = (MainForm.WindowsForms.MainForm)MainFormManager.MainForm;
+      var replMethod = (RegressionSolutionVariableImpactsCalculator.ReplacementMethodEnum)replacementComboBox.Items[replacementComboBox.SelectedIndex];
+      var factorReplMethod = (RegressionSolutionVariableImpactsCalculator.FactorReplacementMethodEnum)factorVarReplComboBox.Items[factorVarReplComboBox.SelectedIndex];
+      var dataPartition = (RegressionSolutionVariableImpactsCalculator.DataPartitionEnum)dataPartitionComboBox.SelectedItem;
 
       Task.Factory.StartNew(() => {
         try {
@@ -145,9 +149,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
           var originalVariableOrdering = problemData.Dataset.VariableNames.Where(v => inputvariables.Contains(v)).Where(problemData.Dataset.VariableHasType<double>).ToList();
           rawVariableImpacts.Clear();
           originalVariableOrdering.ForEach(v => rawVariableImpacts.Add(v, impacts.First(vv => vv.Item1 == v).Item2));
+          UpdateDataOrdering();
         } finally {
           mainForm.RemoveOperationProgressFromView(this);
-          UpdateDataOrdering();
         }
       });
     }
@@ -158,27 +162,31 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     /// </summary>
     private void UpdateDataOrdering() {
       //Check if valid sortingCriteria is selected and data exists
-      if (sortByComboBox.SelectedIndex == -1 || rawVariableImpacts == null || !rawVariableImpacts.Any()) { return; }
+      if (sortByComboBox.SelectedIndex == -1) { return; }
+      if (rawVariableImpacts == null) { return; }
+      if (!rawVariableImpacts.Any()) { return; }
 
-      var selectedItem = (RegressionSolutionVariableImpactsCalculator.SortingCriteria)sortByComboBox.SelectedItem;
+      var selectedItem = (SortingCriteria)sortByComboBox.SelectedItem;
       bool ascending = ascendingCheckBox.Checked;
 
       IEnumerable<KeyValuePair<string, double>> orderedEntries = null;
 
       //Sort accordingly
       switch (selectedItem) {
-        case RegressionSolutionVariableImpactsCalculator.SortingCriteria.ImpactValue:
-          orderedEntries = ascending ? rawVariableImpacts.OrderBy(v => v.Value) : rawVariableImpacts.OrderByDescending(v => v.Value);
+        case SortingCriteria.ImpactValue:
+          orderedEntries = rawVariableImpacts.OrderBy(v => v.Value);
           break;
-        case RegressionSolutionVariableImpactsCalculator.SortingCriteria.Occurrence:
-          orderedEntries = ascending ? rawVariableImpacts : rawVariableImpacts.Reverse();
+        case SortingCriteria.Occurrence:
+          orderedEntries = rawVariableImpacts;
           break;
-        case RegressionSolutionVariableImpactsCalculator.SortingCriteria.VariableName:
-          orderedEntries = ascending ? rawVariableImpacts.OrderBy(v => v.Key, new NaturalStringComparer()) : rawVariableImpacts.OrderByDescending(v => v.Key, new NaturalStringComparer());
+        case SortingCriteria.VariableName:
+          orderedEntries = rawVariableImpacts.OrderBy(v => v.Key, new NaturalStringComparer());
           break;
         default:
-          throw new Exception("Cannot interpret SortingCriteria");
+          throw new NotImplementedException("Ordering for selected SortingCriteria not implemented");
       }
+
+      if (!ascending) { orderedEntries = orderedEntries.Reverse(); }
 
       //Write the data back
       var impactArray = new DoubleArray(orderedEntries.Select(i => i.Value).ToArray()) {
