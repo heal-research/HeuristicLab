@@ -1,1 +1,0 @@
-SubWCRev "%ProjectDir%\" "%ProjectDir%\Properties\AssemblyInfo.frame" "%ProjectDir%\Properties\AssemblyInfo.cs"

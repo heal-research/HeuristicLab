@@ -1,2 +1,0 @@
-"%ProgramFiles%\7-Zip\7z" a HeuristicLabItemTemplate.zip __TemplateIcon.ico DefaultItem.cs MyTemplate.vstemplate
-copy HeuristicLabItemTemplate.zip "%UserProfile%\Documents\Visual Studio 2010\Templates\ItemTemplates\Visual C#\"
