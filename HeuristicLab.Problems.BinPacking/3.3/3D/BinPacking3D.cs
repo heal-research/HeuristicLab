@@ -36,7 +36,7 @@ namespace HeuristicLab.Problems.BinPacking3D {
 
     [Storable]
     public IDictionary<PackingPosition, IEnumerable<ResidualSpace>> ExtremePoints { get; protected set; }
-
+    
 
     public BinPacking3D(PackingShape binShape)
       : base(binShape) {
@@ -50,7 +50,6 @@ namespace HeuristicLab.Problems.BinPacking3D {
 
     protected BinPacking3D(BinPacking3D original, Cloner cloner)
       : base(original, cloner) {
-
       this.ExtremePoints = new SortedList<PackingPosition, IEnumerable<ResidualSpace>>();
       foreach (var extremePoint in original.ExtremePoints) {
         var residualSpaces = new List<ResidualSpace>();
@@ -58,7 +57,7 @@ namespace HeuristicLab.Problems.BinPacking3D {
           residualSpaces.Add(cloner.Clone(residualSpace));
         }
         ExtremePoints.Add(cloner.Clone(extremePoint.Key), residualSpaces);
-      }
+      }      
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -78,41 +77,6 @@ namespace HeuristicLab.Problems.BinPacking3D {
       Positions[itemID] = position;
       ExtremePoints.Remove(position);
     }
-
-    /*
-    /// <summary>
-    /// Updates the extreme points of the bin
-    /// </summary>
-    /// <param name="item"></param>
-    /// <param name="position"></param>
-    /// <param name="stackingConstraints"></param>
-    public void UpdateExtremePoints(PackingItem item, PackingPosition position, bool stackingConstraints) {
-      if (stackingConstraints) {
-        UpdateExtremePointsWithStackingConstriants(item, position);
-      } else {
-        UpdateExtremePointsWithoutStackingConstriants(item, position);
-      }
-    }*/
-
-
-    /*
-  /// <summary>
-  /// Updates the extreme points of the bin. 
-  /// As there is no need to project the extreme points to the next side of an item, the extreme points are only generated for the current item.
-  /// </summary>
-  /// <param name="item"></param>
-  /// <param name="position"></param>
-  private void UpdateExtremePointsWithStackingConstriants(PackingItem newItem, PackingPosition position) {
-    int newWidth = position.Rotated ? newItem.Depth : newItem.Width;
-    int newDepth = position.Rotated ? newItem.Width : newItem.Depth;
-    var ep1 = new PackingPosition(position.AssignedBin, position.X + newWidth, position.Y, position.Z);
-    var ep2 = new PackingPosition(position.AssignedBin, position.X, position.Y + newItem.Height, position.Z);
-    var ep3 = new PackingPosition(position.AssignedBin, position.X, position.Y, position.Z + newDepth);
-    AddExtremePoint(ep1);
-    AddExtremePoint(ep2);
-    AddExtremePoint(ep3);
-  }*/
-
 
     #region MassPoint
 
@@ -145,7 +109,7 @@ namespace HeuristicLab.Problems.BinPacking3D {
           totalWeight = newTotalWeight;
         }
       }
-      
+
       return Tuple.Create<double, double, double>(packingMassPoint.X, packingMassPoint.Y, packingMassPoint.Z);
     }
     #endregion
@@ -315,8 +279,10 @@ namespace HeuristicLab.Problems.BinPacking3D {
       return GetItemsBelow(position).Where(x => (x.Item1.Y + x.Item2.Height) == position.Y);
     }
 
+    #region Weight supported
+    //old implementation
     /// <summary>
-    /// Checks if a given the weight of an given item is supportet by the items below.
+    /// Checks if a given the weight of an given item is supported by the items below.
     /// </summary>
     /// <param name="item"></param>
     /// <param name="position"></param>
@@ -337,6 +303,54 @@ namespace HeuristicLab.Problems.BinPacking3D {
         itemsP3.Where(x => x.Item2.SupportsStacking(item)).Any() &&
         itemsP4.Where(x => x.Item2.SupportsStacking(item)).Any();
     }
+
+    private double CalculateOverlay(Tuple<PackingPosition, PackingItem> item1, Tuple<PackingPosition, PackingItem> item2) {
+      var left = item1.Item1.X <= item2.Item1.X ? item1 : item2;
+      var right = item1.Item1.X <= item2.Item1.X ? item2 : item1;
+      var behind = item1.Item1.Z <= item2.Item1.Z ? item1 : item2;
+      var inFront = item1.Item1.Z <= item2.Item1.Z ? item2 : item1;
+
+      var overlayX = right.Item2.Width;
+      if (left.Item1.X + left.Item2.Width < right.Item1.X + right.Item2.Width) {
+        overlayX = left.Item1.X + left.Item2.Width - right.Item1.X;
+      }
+
+      var overlayZ = inFront.Item2.Width;
+      if (behind.Item1.X + behind.Item2.Width < inFront.Item1.X + inFront.Item2.Width) {
+        overlayZ = behind.Item1.X + behind.Item2.Width - inFront.Item1.X;
+      }
+
+      return overlayX * overlayZ;
+    }
+
+    private IEnumerable<Tuple<PackingPosition, PackingItem>> GetItemsAboveAnItem(PackingPosition position, PackingItem item) {
+      var selected = Items.Select(x => new {
+        Item = x.Value,
+        Position = Positions[x.Key]
+      }).Where(x => x.Position.Y == position.Y + item.Height)
+        .Where(x => x.Position.X <= position.X && x.Position.X + x.Item.Width > position.X ||
+                    x.Position.X > position.X && x.Position.X < position.X + item.Width)
+        .Where(x => x.Position.Z <= position.Z && x.Position.Z + x.Item.Height > position.Z ||
+                    x.Position.Z > position.Z && x.Position.Z < position.Z + item.Height);
+
+      return selected.Select(x => Tuple.Create(x.Position, x.Item));
+    }
+
+    private IEnumerable<Tuple<PackingPosition, PackingItem>> GetItemsUnderAnItem(PackingPosition position, PackingItem item) {
+      var selected = Items.Select(x => new {
+        Item = x.Value,
+        Position = Positions[x.Key]
+      }).Where(x => x.Position.Y + x.Item.Height == position.Y)
+        .Where(x => x.Position.X <= position.X && x.Position.X + x.Item.Width > position.X ||
+                    x.Position.X > position.X && x.Position.X < position.X + item.Width)
+        .Where(x => x.Position.Z <= position.Z && x.Position.Z + x.Item.Height > position.Z ||
+                    x.Position.Z > position.Z && x.Position.Z < position.Z + item.Height);
+
+      return selected.Select(x => Tuple.Create(x.Position, x.Item));
+    }
+
+    #endregion
+
 
     #endregion
 

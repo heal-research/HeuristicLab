@@ -135,8 +135,7 @@ namespace HeuristicLab.Problems.BinPacking3D.Sorting {
     public static Permutation SortByMaterialVolumeHeight(this IList<PackingItem> items) {
       return new Permutation(PermutationTypes.Absolute,
                     items.Select((v, i) => new { Index = i, Item = v })
-                         ./*OrderByDescending(x => x.Item.IsStackabel ? 1 : 0)
-                         .*/OrderByDescending(x => x.Item.Material)
+                         .OrderByDescending(x => x.Item.Layer)
                          .ThenByDescending(x => x.Item.Depth * x.Item.Width * x.Item.Height)
                          .ThenByDescending(x => x.Item.Height)
                          .Select(x => x.Index).ToArray());
@@ -150,8 +149,7 @@ namespace HeuristicLab.Problems.BinPacking3D.Sorting {
     public static Permutation SortByMaterialHeightVolume(this IList<PackingItem> items) {
       return new Permutation(PermutationTypes.Absolute,
                     items.Select((v, i) => new { Index = i, Item = v })
-                         ./*OrderByDescending(x => x.Item.IsStackabel ? 1 : 0)
-                         .*/OrderByDescending(x => x.Item.Material)
+                         .OrderByDescending(x => x.Item.Layer)
                          .ThenByDescending(x => x.Item.Height)
                          .ThenByDescending(x => x.Item.Depth * x.Item.Width * x.Item.Height)
                          .Select(x => x.Index).ToArray());
@@ -165,8 +163,7 @@ namespace HeuristicLab.Problems.BinPacking3D.Sorting {
     public static Permutation SortByMaterialAreaHeight(this IList<PackingItem> items) {
       return new Permutation(PermutationTypes.Absolute,
                     items.Select((v, i) => new { Index = i, Item = v })
-                         ./*OrderByDescending(x => x.Item.IsStackabel ? 1 : 0)
-                         .*/OrderByDescending(x => x.Item.Material)
+                         .OrderByDescending(x => x.Item.Layer)
                          .ThenByDescending(x => x.Item.Depth * x.Item.Width)
                          .ThenByDescending(x => x.Item.Height)
                          .Select(x => x.Index).ToArray());
@@ -180,8 +177,7 @@ namespace HeuristicLab.Problems.BinPacking3D.Sorting {
     public static Permutation SortByMaterialHeightArea(this IList<PackingItem> items) {
       return new Permutation(PermutationTypes.Absolute,
                     items.Select((v, i) => new { Index = i, Item = v })
-                         ./*OrderByDescending(x => x.Item.IsStackabel ? 1 : 0)
-                         .*/OrderByDescending(x => x.Item.Material)
+                         .OrderByDescending(x => x.Item.Layer)
                          .ThenByDescending(x => x.Item.Height)
                          .ThenByDescending(x => x.Item.Depth * x.Item.Width)
                          .Select(x => x.Index).ToArray());
@@ -201,7 +197,7 @@ namespace HeuristicLab.Problems.BinPacking3D.Sorting {
       return new Permutation(PermutationTypes.Absolute,
                 items.Select((v, i) => new { Index = i, Item = v, ClusterId = (int)(Math.Ceiling(v.Width * v.Depth / clusterRange)) })
                     .GroupBy(x => x.ClusterId)
-                    .Select(x => new { Cluster = x.Key, Items = x.OrderByDescending(z => z.Item.Material).ThenByDescending(y => y.Item.Height).ToList() })
+                    .Select(x => new { Cluster = x.Key, Items = x.OrderByDescending(z => z.Item.Layer).ThenByDescending(y => y.Item.Height).ToList() })
                     .OrderByDescending(x => x.Cluster)
                     .SelectMany(x => x.Items)
                     .Select(x => x.Index).ToArray());
@@ -221,7 +217,7 @@ namespace HeuristicLab.Problems.BinPacking3D.Sorting {
       return new Permutation(PermutationTypes.Absolute,
                 items.Select((v, i) => new { Index = i, Item = v, ClusterId = (int)(Math.Ceiling(v.Height / clusterRange2)) })
                     .GroupBy(x => x.ClusterId)
-                    .Select(x => new { Cluster = x.Key, Items = x.OrderByDescending(z => z.Item.Material).ThenByDescending(y => y.Item.Depth * y.Item.Width).ToList() })
+                    .Select(x => new { Cluster = x.Key, Items = x.OrderByDescending(z => z.Item.Layer).ThenByDescending(y => y.Item.Depth * y.Item.Width).ToList() })
                     .OrderByDescending(x => x.Cluster)
                     .SelectMany(x => x.Items)
                     .Select(x => x.Index).ToArray());

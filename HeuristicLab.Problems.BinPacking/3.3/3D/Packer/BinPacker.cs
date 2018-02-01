@@ -93,7 +93,7 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
         packingItem.Width,
         packingItem.Height,
         packingItem.Depth,
-        packingItem.TargetBin, packingItem.Weight, packingItem.Material);
+        packingItem.TargetBin, packingItem.Weight, packingItem.Layer);
 
       // The extremepoints are sortet by Y / Z / X
       var newPosition = packingBin.ExtremePoints.Where(x => packingBin.IsPositionFeasible(newItem, x.Key, useStackingConstraints)).FirstOrDefault();

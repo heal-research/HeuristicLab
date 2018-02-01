@@ -42,9 +42,9 @@ namespace HeuristicLab.Problems.BinPacking2D {
       set { ((IFixedValueParameter<DoubleValue>)Parameters["Weight"]).Value.Value = value; }
     }
 
-    public int Material {
-      get { return ((IFixedValueParameter<IntValue>)Parameters["Material"]).Value.Value; }
-      set { ((IFixedValueParameter<IntValue>)Parameters["Material"]).Value.Value = value; }
+    public int Layer {
+      get { return ((IFixedValueParameter<IntValue>)Parameters["Layer"]).Value.Value; }
+      set { ((IFixedValueParameter<IntValue>)Parameters["Layer"]).Value.Value = value; }
     }
 
     [StorableConstructor]
@@ -61,7 +61,7 @@ namespace HeuristicLab.Problems.BinPacking2D {
       : base() {
       Parameters.Add(new ValueParameter<PackingShape>("TargetBin"));
       Parameters.Add(new FixedValueParameter<DoubleValue>("Weight"));
-      Parameters.Add(new FixedValueParameter<IntValue>("Material"));
+      Parameters.Add(new FixedValueParameter<IntValue>("Layer"));
     }
 
     public PackingItem(int width, int height, PackingShape targetBin)
@@ -72,7 +72,7 @@ namespace HeuristicLab.Problems.BinPacking2D {
     }
 
     public bool SupportsStacking(IPackingItem other) {
-      return ((other.Material < this.Material) || (other.Material.Equals(this.Material) && other.Weight <= this.Weight));
+      return ((other.Layer < this.Layer) || (other.Layer.Equals(this.Layer) && other.Weight <= this.Weight));
     }
   }
 }

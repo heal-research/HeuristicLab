@@ -25,6 +25,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 using HeuristicLab.Problems.BinPacking;
+using HeuristicLab.Problems.BinPacking3D.Material;
 
 namespace HeuristicLab.Problems.BinPacking3D {
   [Item("PackingItem (3d)", "Represents a cuboidic packing-item for bin-packing problems.")]
@@ -39,8 +40,8 @@ namespace HeuristicLab.Problems.BinPacking3D {
     public IFixedValueParameter<DoubleValue> WeightParameter {
       get { return (IFixedValueParameter<DoubleValue>)Parameters["Weight"]; }
     }
-    public IFixedValueParameter<IntValue> MaterialParameter {
-      get { return (IFixedValueParameter<IntValue>)Parameters["Material"]; }
+    public IFixedValueParameter<IntValue> LayerParameter {
+      get { return (IFixedValueParameter<IntValue>)Parameters["Layer"]; }
     }
 
     public PackingShape TargetBin {
@@ -53,11 +54,28 @@ namespace HeuristicLab.Problems.BinPacking3D {
       set { WeightParameter.Value.Value = value; }
     }
 
-    public int Material {
-      get { return MaterialParameter.Value.Value; }
-      set { MaterialParameter.Value.Value = value; }
+    public int Layer {
+      get { return LayerParameter.Value.Value; }
+      set { LayerParameter.Value.Value = value; }
     }
 
+    #region Material
+    public IFixedValueParameter<EnumValue<MaterialType>> MaterialBottomParameter {
+      get { return (IFixedValueParameter<EnumValue<MaterialType>>)Parameters["MaterialBottom"]; }
+    }
+    public MaterialType MaterialBottom {
+      get { return MaterialBottomParameter.Value.Value; }
+      set { MaterialBottomParameter.Value.Value = value; }
+    }
+
+    public IFixedValueParameter<EnumValue<MaterialType>> MaterialTopParameter {
+      get { return (IFixedValueParameter<EnumValue<MaterialType>>)Parameters["MaterialTop"]; }
+    }
+    public MaterialType MaterialTop {
+      get { return MaterialTopParameter.Value.Value; }
+      set { MaterialTopParameter.Value.Value = value; }
+    }
+    #endregion
 
     public IFixedValueParameter<DoubleValue> SupportedWeightParameter {
       get { return (IFixedValueParameter<DoubleValue>)Parameters["SupportedWeight"]; }
@@ -276,7 +294,7 @@ namespace HeuristicLab.Problems.BinPacking3D {
     }
 
     public bool SupportsStacking(IPackingItem other) {
-      return ((other.Material < this.Material) || (other.Material.Equals(this.Material) && other.Weight <= this.Weight));
+      return ((other.Layer < this.Layer) || (other.Layer.Equals(this.Layer) && other.Weight <= this.Weight));
     }
     #endregion
 
@@ -291,9 +309,13 @@ namespace HeuristicLab.Problems.BinPacking3D {
       : base() {
       Parameters.Add(new ValueParameter<PackingShape>("TargetBin"));
       Parameters.Add(new FixedValueParameter<DoubleValue>("Weight"));
-      Parameters.Add(new FixedValueParameter<IntValue>("Material"));
+      Parameters.Add(new FixedValueParameter<IntValue>("Layer"));
 
-      Parameters.Add(new FixedValueParameter<DoubleValue>("SupportedWeight"));      
+
+      Parameters.Add(new FixedValueParameter<EnumValue<MaterialType>>("MaterialTop"));
+      Parameters.Add(new FixedValueParameter<EnumValue<MaterialType>>("MaterialBottom"));
+
+      Parameters.Add(new FixedValueParameter<DoubleValue>("SupportedWeight"));
 
       Parameters.Add(new FixedValueParameter<BoolValue>("RotateEnabled"));
       Parameters.Add(new FixedValueParameter<BoolValue>("Rotated"));
@@ -318,10 +340,10 @@ namespace HeuristicLab.Problems.BinPacking3D {
       this.TargetBin = (PackingShape)targetBin.Clone();
     }
 
-    public PackingItem(int width, int height, int depth, PackingShape targetBin, double weight, int material)
+    public PackingItem(int width, int height, int depth, PackingShape targetBin, double weight, int layer)
       : this(width, height, depth, targetBin) {
       this.Weight = weight;
-      this.Material = material;
+      this.Layer = layer;
     }
 
 
@@ -332,10 +354,12 @@ namespace HeuristicLab.Problems.BinPacking3D {
       OriginalDepth = packingItem.OriginalDepth;
       TargetBin = (PackingShape)packingItem.TargetBin.Clone();
       Weight = packingItem.Weight;
-      Material = packingItem.Material;
+      Layer = packingItem.Layer;
       Rotated = packingItem.Rotated;
       Tilted = packingItem.Tilted;
       IsStackabel = packingItem.IsStackabel;
+      MaterialTop = packingItem.MaterialTop;
+      MaterialBottom = packingItem.MaterialBottom;
 
       LoadSecuringDepth = packingItem.LoadSecuringDepth;
       LoadSecuringHeight = packingItem.LoadSecuringHeight;
@@ -354,13 +378,13 @@ namespace HeuristicLab.Problems.BinPacking3D {
     private void RegisterEvents() {
       // NOTE: only because of ToString override
       WeightParameter.Value.ValueChanged += (sender, args) => OnToStringChanged();
-      MaterialParameter.Value.ValueChanged += (sender, args) => OnToStringChanged();
+      LayerParameter.Value.ValueChanged += (sender, args) => OnToStringChanged();
 
       // target bin does not occur in ToString()
     }
 
     public override string ToString() {
-      return string.Format("CuboidPackingItem ({0}, {1}, {2}; weight={3}, mat={4})", this.Width, this.Height, this.Depth, this.Weight, this.Material);
+      return string.Format("CuboidPackingItem ({0}, {1}, {2}; weight={3}, layer={4})", this.Width, this.Height, this.Depth, this.Weight, this.Layer);
     }
 
   }

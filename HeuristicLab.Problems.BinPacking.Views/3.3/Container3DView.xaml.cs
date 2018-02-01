@@ -130,13 +130,13 @@ namespace HeuristicLab.Problems.BinPacking.Views {
         var selectedItem = packing.Items.Single(x => selectedItemKey == x.Key);
         var selectedPos = packing.Positions[selectedItem.Key];
 
-        var colorIdx = selectedItem.Value.Material;
+        var colorIdx = selectedItem.Value.Layer;
         while (colorIdx < 0)
           colorIdx += colors.Length;
         colorIdx = colorIdx % colors.Length;
         var color = colors[colorIdx];
         var material = new DiffuseMaterial { Brush = new SolidColorBrush(color) };
-        materials[selectedItem.Value.Material] = material;
+        materials[selectedItem.Value.Layer] = material;
 
         var selectedModel = new GeometryModel3D { Geometry = new MeshGeometry3D(), Material = material };
         AddSolidCube((MeshGeometry3D)selectedModel.Geometry, selectedPos.X, selectedPos.Y, selectedPos.Z,
@@ -168,14 +168,14 @@ namespace HeuristicLab.Problems.BinPacking.Views {
 
           var model = new GeometryModel3D { Geometry = new MeshGeometry3D() };
           DiffuseMaterial material;
-          if (!materials.TryGetValue(item.Value.Material, out material)) {
-            var colorIdx = item.Value.Material;
+          if (!materials.TryGetValue(item.Value.Layer, out material)) {
+            var colorIdx = item.Value.Layer;
             while (colorIdx < 0)
               colorIdx += colors.Length;
             colorIdx = colorIdx % colors.Length;
             var color = colors[colorIdx];
             material = new DiffuseMaterial { Brush = new SolidColorBrush(color) };
-            materials[item.Value.Material] = material;
+            materials[item.Value.Layer] = material;
           }
           var selectedModel = new GeometryModel3D { Geometry = new MeshGeometry3D(), Material = material };
           AddSolidCube((MeshGeometry3D)selectedModel.Geometry, position.X, position.Y, position.Z, w, h, d);

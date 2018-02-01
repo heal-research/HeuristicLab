@@ -93,7 +93,7 @@ namespace HeuristicLab.Problems.BinPacking2D {
         rotated ? item.Height : item.Width,
         rotated ? item.Width : item.Height,
         item.TargetBin) {
-        Material = item.Material,
+        Layer = item.Layer,
         Weight = item.Weight
       };
 

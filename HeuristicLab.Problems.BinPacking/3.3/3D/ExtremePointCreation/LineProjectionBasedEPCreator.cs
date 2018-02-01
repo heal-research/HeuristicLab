@@ -165,7 +165,7 @@ namespace HeuristicLab.Problems.BinPacking3D.ExtremePointCreation {
     /// <param name="position"></param>
     protected override void GenerateNewExtremePointsForItem(BinPacking3D binPacking, PackingItem newItem, PackingPosition position) {
       PointProjectionForNewItem(binPacking, newItem, position);
-      //EdgeProjectionForNewItem(binPacking, newItem, position);
+      EdgeProjectionForNewItem(binPacking, newItem, position);
     }
 
     #region Extreme point creation by using a point projection based method

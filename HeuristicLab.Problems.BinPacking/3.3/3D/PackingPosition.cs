@@ -39,6 +39,7 @@ namespace HeuristicLab.Problems.BinPacking3D {
     public int X { get { return x; } }
     public int Y { get { return y; } }
     public int Z { get { return z; } }
+        
 
     [StorableConstructor]
     protected PackingPosition(bool deserializing) : base(deserializing) { }
@@ -68,13 +69,14 @@ namespace HeuristicLab.Problems.BinPacking3D {
       var tdp = obj as PackingPosition;
       if (tdp != null)
         return (tdp.X == this.X && tdp.Y == this.Y && tdp.Z == this.Z);
-      else return false;
+      else
+        return false;
     }
 
     public override int GetHashCode() {
       return base.GetHashCode() + 13 * X + 17 * Y + 23 * Z;
     }
-    
+
     #region IComparable<PackingPosition> Members
 
     /// <summary>

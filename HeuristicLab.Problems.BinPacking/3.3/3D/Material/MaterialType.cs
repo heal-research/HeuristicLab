@@ -5,8 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace HeuristicLab.Problems.BinPacking3D.Material {
+  
   public enum MaterialType {
-    Wooden,
+    EuroPallet,
+    Wood,
     Steel,
     Paperboard
   }

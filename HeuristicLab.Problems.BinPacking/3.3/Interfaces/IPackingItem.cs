@@ -23,7 +23,7 @@ namespace HeuristicLab.Problems.BinPacking {
   // a packing item is one of the items that needs to be located in one of the packing bins (containers)
   public interface IPackingItem : IPackingShape {
     double Weight { get; set; }
-    int Material { get; set; }
+    int Layer { get; set; }
     /// <summary>
     /// Returns true if the "other" item can be stacked on this item.
     /// </summary>
