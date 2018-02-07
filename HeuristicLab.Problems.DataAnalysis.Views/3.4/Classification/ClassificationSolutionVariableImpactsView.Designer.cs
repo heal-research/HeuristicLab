@@ -53,6 +53,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       this.ascendingCheckBox = new System.Windows.Forms.CheckBox();
       this.sortByLabel = new System.Windows.Forms.Label();
       this.sortByComboBox = new System.Windows.Forms.ComboBox();
+      this.backgroundWorker = new System.ComponentModel.BackgroundWorker();
       this.SuspendLayout();
       // 
       // variableImactsArrayView
@@ -168,6 +169,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       this.sortByComboBox.TabIndex = 9;
       this.sortByComboBox.SelectedIndexChanged += new System.EventHandler(this.sortByComboBox_SelectedIndexChanged);
       // 
+      // backgroundWorker
+      // 
+      this.backgroundWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker_DoWork);
+      this.backgroundWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker_RunWorkerCompleted);
+      // 
       // ClassificationSolutionVariableImpactsView
       // 
       this.AllowDrop = true;
@@ -201,5 +207,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     private System.Windows.Forms.CheckBox ascendingCheckBox;
     private System.Windows.Forms.Label sortByLabel;
     private System.Windows.Forms.ComboBox sortByComboBox;
+    private System.ComponentModel.BackgroundWorker backgroundWorker;
   }
 }
