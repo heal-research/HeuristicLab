@@ -7,9 +7,13 @@ using System.Threading.Tasks;
 namespace HeuristicLab.Problems.BinPacking3D.Material {
   
   public enum MaterialType {
-    EuroPallet,
+    EuroPallet = 0,
+    IncaPallet,
     Wood,
+    Paperboard,
     Steel,
-    Paperboard
+    ScreenPrintingPlate,
+    NonSlipMat,
+    Carriage
   }
 }

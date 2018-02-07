@@ -66,7 +66,7 @@ namespace HeuristicLab.Problems.BinPacking._3D.Instances.Tests {
         Assert.AreEqual(expected.Width, actual.Width);
         Assert.AreEqual(expected.Height, actual.Height);
         Assert.AreEqual(expected.Depth, actual.Depth);
-        Assert.AreEqual(expected.Material, actual.Material);
+        Assert.AreEqual(expected.Layer, actual.Layer);
         Assert.AreEqual(expected.Weight, actual.Weight);
       }
     }
@@ -93,7 +93,7 @@ namespace HeuristicLab.Problems.BinPacking._3D.Instances.Tests {
         Assert.AreEqual(expected.Width, actual.Width);
         Assert.AreEqual(expected.Height, actual.Height);
         Assert.AreEqual(expected.Depth, actual.Depth);
-        Assert.AreEqual(expected.Material, actual.Material);
+        Assert.AreEqual(expected.Layer, actual.Layer);
         Assert.AreEqual(expected.Weight, actual.Weight);
       }
     }

@@ -58,7 +58,8 @@ namespace HeuristicLab.Problems.BinPacking3D.Instances {
               PackingItem item = new PackingItem(width, height, length, Bin, weight, material) {
                 RotateEnabled = rotate == 0 ? false : true,
                 TiltEnabled = tilt == 0 ? false : true,
-                IsStackabel = stack == 0 ? false : true
+                IsStackabel = stack == 0 ? false : true,
+                SupportedWeight = weight
               };
               Items.Add(item);
             }

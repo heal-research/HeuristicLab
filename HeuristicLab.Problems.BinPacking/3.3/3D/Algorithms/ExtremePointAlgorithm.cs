@@ -39,7 +39,7 @@ using HeuristicLab.Problems.BinPacking3D.Evaluators;
 namespace HeuristicLab.Problems.BinPacking3D {
 
   public enum SortingMethod { All, Given, VolumeHeight, HeightVolume, AreaHeight, HeightArea, ClusteredAreaHeight, ClusteredHeightArea }
-  public enum FittingMethod { All, FirstFit, ResidualSpaceBestFit, FreeVolumeBestFit, MinimumResidualSpaceLeft }
+  public enum FittingMethod { All, FirstFit, ResidualSpaceBestFit, FreeVolumeBestFit, MinimumResidualSpaceLeft, FormClosure }
 
   public enum ExtremePointCreationMethod { All, PointProjection, LineProjection }
 

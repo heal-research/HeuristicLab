@@ -47,11 +47,17 @@
                       Margin="10,6,0,0" 
                       Unchecked="ShowResidualSpacesCheckBoxOnUnchecked" 
                       Checked="ShowResidualSpacesCheckBoxOnChecked"/>
+            <TextBlock Name="selectedItemTextBlock" 
+                       Margin="10,6,0,0"
+                       VerticalAlignment="Top" 
+                       HorizontalAlignment="Left" 
+                       Text="Gegenstand:"/>
         </StackPanel>
-        <Border BorderThickness="1" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Margin="0,52,0,0">
+        <Border BorderThickness="1" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Margin="0,70,0,0">
             <Viewport3D Name="viewport3D1" Margin="0,-1,0,0" >
                 <Viewport3D.Camera>
-                    <PerspectiveCamera x:Name="camMain" Position="0.5 8 8" LookDirection="0 -1 -1"> <!-- camera position for design time-->
+                    <PerspectiveCamera x:Name="camMain" Position="0.5 8 8" LookDirection="0 -1 -1">
+                        <!-- camera position for design time-->
                     </PerspectiveCamera>
                 </Viewport3D.Camera>
                 <ModelVisual3D>

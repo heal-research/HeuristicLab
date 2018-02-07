@@ -40,6 +40,6 @@ namespace HeuristicLab.Problems.BinPacking3D {
     /// </summary>
     /// <param name="solution"></param>
     /// <returns></returns>
-    Tuple<int, double, int> Evaluate1(Solution solution);
+    Tuple<int, double, int, int> Evaluate1(Solution solution);
   }
 }

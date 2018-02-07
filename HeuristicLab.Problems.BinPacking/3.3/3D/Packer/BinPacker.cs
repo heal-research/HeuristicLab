@@ -124,6 +124,6 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
       }
       return clonedItems;
     }
-
+    
   }
 }

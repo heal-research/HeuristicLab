@@ -28,6 +28,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Problems.BinPacking;
 using HeuristicLab.Problems.BinPacking3D.Geometry;
 using HeuristicLab.Collections;
+using HeuristicLab.Problems.BinPacking3D.Graph;
 
 namespace HeuristicLab.Problems.BinPacking3D {
   [Item("BinPacking3D", "Represents a single-bin packing for a 3D bin-packing problem.")]
@@ -36,13 +37,16 @@ namespace HeuristicLab.Problems.BinPacking3D {
 
     [Storable]
     public IDictionary<PackingPosition, IEnumerable<ResidualSpace>> ExtremePoints { get; protected set; }
-    
+
+    [Storable]
+    public IDirectedGraph WeightDistirbution { get; protected set; }
 
     public BinPacking3D(PackingShape binShape)
       : base(binShape) {
       ExtremePoints = new SortedList<PackingPosition, IEnumerable<ResidualSpace>>();
-
       ExtremePoints.Add(binShape.Origin, new List<ResidualSpace>() { ResidualSpace.Create(binShape.Width, binShape.Height, binShape.Depth) });
+
+      WeightDistirbution = new DirectedGraph();
     }
 
     [StorableConstructor]
@@ -57,7 +61,9 @@ namespace HeuristicLab.Problems.BinPacking3D {
           residualSpaces.Add(cloner.Clone(residualSpace));
         }
         ExtremePoints.Add(cloner.Clone(extremePoint.Key), residualSpaces);
-      }      
+      }
+
+      // todo clone WeightDistirbution graph
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -76,7 +82,76 @@ namespace HeuristicLab.Problems.BinPacking3D {
       Items[itemID] = item;
       Positions[itemID] = position;
       ExtremePoints.Remove(position);
+
+      AddToGraph(itemID, item, position);
     }
+
+
+    #region Graph for the calculating the weight distirbution        
+    private void AddToGraph(int itemId, PackingItem item, PackingPosition position) {
+      var sourceVertex = new VertexWithItemId(itemId);
+      WeightDistirbution.AddVertex(sourceVertex);
+
+      var itemsBelow = GetItemsUnderAnItem(position, item);
+      foreach (var itemBelow in itemsBelow) {
+        var targetVertex = GetVertexForItemBelow(itemBelow);
+        if (targetVertex == null) {
+          continue;
+        }
+
+        double overlay = CalculateOverlay(itemBelow, Tuple.Create<PackingPosition, PackingItem>(position, item));
+        double area = (item.Width * item.Depth);
+        var arc = new Arc(sourceVertex, targetVertex) {
+          Weight = overlay / area
+        };
+        WeightDistirbution.AddArc(arc);
+      }
+    }
+
+    /// <summary>
+    /// Returns a vertex related to the given tuple of an item and packing position.
+    /// If there is no related vertex the method returns null.
+    /// </summary>
+    /// <param name="itemBelow"></param>
+    /// <returns></returns>
+    private IVertex GetVertexForItemBelow(Tuple<PackingPosition, PackingItem> itemBelow) {
+      var filteredItems = Items.Where(x => x.Value == itemBelow.Item2);
+      if (filteredItems.Count() <= 0) {
+        return null;
+      }
+      var itemIdBelow = filteredItems.First().Key;
+
+      var targetVertex = WeightDistirbution.Vertices.Where(x => {
+        if (x is VertexWithItemId) {
+          return ((VertexWithItemId)x).ItemId == itemIdBelow;
+        }
+        return false;
+      }).FirstOrDefault();
+
+      return targetVertex;
+    }
+
+
+    #endregion
+
+    #region Calculation of the stacked weight
+    public double GetStackedWeightForItemId(int itemId) {
+      return GetStackedWeightForItemIdRec(itemId);
+    }
+
+    private double GetStackedWeightForItemIdRec(int itemId) {
+      var arcs = WeightDistirbution.Arcs.Where(x => ((VertexWithItemId)x.Target).ItemId == itemId);
+      var stackedWeight = 0.0;
+      foreach (var arc in arcs) {
+        var sourceItemId = ((VertexWithItemId)arc.Source).ItemId;
+        var sourceItem = Items[sourceItemId];
+        stackedWeight += (GetStackedWeightForItemIdRec(sourceItemId) + sourceItem.Weight) * arc.Weight;
+      }
+
+      return stackedWeight;
+    }
+
+    #endregion
 
     #region MassPoint
 
@@ -315,9 +390,9 @@ namespace HeuristicLab.Problems.BinPacking3D {
         overlayX = left.Item1.X + left.Item2.Width - right.Item1.X;
       }
 
-      var overlayZ = inFront.Item2.Width;
-      if (behind.Item1.X + behind.Item2.Width < inFront.Item1.X + inFront.Item2.Width) {
-        overlayZ = behind.Item1.X + behind.Item2.Width - inFront.Item1.X;
+      var overlayZ = inFront.Item2.Depth;
+      if (behind.Item1.Z + behind.Item2.Depth < inFront.Item1.Z + inFront.Item2.Depth) {
+        overlayZ = behind.Item1.Z + behind.Item2.Depth - inFront.Item1.Z;
       }
 
       return overlayX * overlayZ;
@@ -336,6 +411,12 @@ namespace HeuristicLab.Problems.BinPacking3D {
       return selected.Select(x => Tuple.Create(x.Position, x.Item));
     }
 
+    /// <summary>
+    /// Returns a collection of items and its position which have contact to an given item below
+    /// </summary>
+    /// <param name="position"></param>
+    /// <param name="item"></param>
+    /// <returns></returns>
     private IEnumerable<Tuple<PackingPosition, PackingItem>> GetItemsUnderAnItem(PackingPosition position, PackingItem item) {
       var selected = Items.Select(x => new {
         Item = x.Value,
@@ -343,8 +424,8 @@ namespace HeuristicLab.Problems.BinPacking3D {
       }).Where(x => x.Position.Y + x.Item.Height == position.Y)
         .Where(x => x.Position.X <= position.X && x.Position.X + x.Item.Width > position.X ||
                     x.Position.X > position.X && x.Position.X < position.X + item.Width)
-        .Where(x => x.Position.Z <= position.Z && x.Position.Z + x.Item.Height > position.Z ||
-                    x.Position.Z > position.Z && x.Position.Z < position.Z + item.Height);
+        .Where(x => x.Position.Z <= position.Z && x.Position.Z + x.Item.Depth > position.Z ||
+                    x.Position.Z > position.Z && x.Position.Z < position.Z + item.Depth);
 
       return selected.Select(x => Tuple.Create(x.Position, x.Item));
     }

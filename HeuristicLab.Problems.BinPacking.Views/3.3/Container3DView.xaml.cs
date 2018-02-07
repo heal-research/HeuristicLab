@@ -118,6 +118,22 @@ namespace HeuristicLab.Problems.BinPacking.Views {
       UpdateVisualization();
     }
 
+    private void DisplaySelectedItemText() {
+      string text = "";
+      if (selectedItemKey < 0) {
+        text = $"{packing.BinShape.ToString()}";
+      } else {
+        var packingItem = packing.Items.Single(x => selectedItemKey == x.Key);
+        var position = packing.Positions.Single(x => x.Key == packingItem.Key);
+        text = $"{packingItem.Value.ToString()}, {position.ToString()}";
+        if (packing is BinPacking3D.BinPacking3D) {
+          var stackedWeight = ((BinPacking3D.BinPacking3D)packing).GetStackedWeightForItemId(packingItem.Key);
+          text += $", stacked weight: {stackedWeight}";
+        }
+      }
+      selectedItemTextBlock.Text = text;
+    }
+
     private void UpdateVisualization() {
       Clear();
       if (packing == null)
@@ -125,6 +141,8 @@ namespace HeuristicLab.Problems.BinPacking.Views {
 
       var modelGroup = (Model3DGroup)MyModel.Content;
       var hiddenMaterial = new DiffuseMaterial(new SolidColorBrush(hiddenColor));
+
+      DisplaySelectedItemText();
 
       if (selectedItemKey >= 0) {
         var selectedItem = packing.Items.Single(x => selectedItemKey == x.Key);

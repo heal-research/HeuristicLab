@@ -65,6 +65,10 @@ namespace HeuristicLab.Problems.BinPacking3D {
         return false;
       }
 
+      if (evaluatedThis.Item4 > evaluatedOther.Item4) {
+        return false;
+      }
+
       if (evaluatedThis.Item3 > evaluatedOther.Item3) {
         return false;
       }

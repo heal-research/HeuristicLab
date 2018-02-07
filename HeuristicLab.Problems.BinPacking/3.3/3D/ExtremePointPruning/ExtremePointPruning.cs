@@ -72,6 +72,5 @@ namespace HeuristicLab.Problems.BinPacking3D.ExtremePointPruning {
         }
       }
     }
-    
   }
 }

@@ -80,13 +80,14 @@ namespace HeuristicLab.Problems.BinPacking3D.Evaluators {
       return cnt;
     }
 
-    public Tuple<int, double, int> Evaluate1(Solution solution) {
+    public Tuple<int, double, int, int> Evaluate1(Solution solution) {
 
 
-      var res = Tuple.Create<int, double, int>(
+      var res = Tuple.Create<int, double, int, int>(
         GetBinCount(solution),
         CalculateBinUtilizationFirstBin(solution),
-        GetNumberOfResidualSpaces(solution)
+        GetNumberOfResidualSpaces(solution),
+        CalculateMaxDepth(solution)
         );
 
       return res;
@@ -104,6 +105,15 @@ namespace HeuristicLab.Problems.BinPacking3D.Evaluators {
       totalUsedSpace += solution.Bins[0].Items.Sum(kvp => kvp.Value.Volume);
 
       return totalUsedSpace / totalUsableSpace;
+    }
+
+    private static int CalculateMaxDepth(Solution solution) {
+      var packing = solution.Bins.Last();
+      if (packing == null) {
+        return Int32.MaxValue;
+      }
+
+      return packing.Positions.Select(x => x.Value.Z + packing.Items[x.Key].Depth).Max();
     }
 
 

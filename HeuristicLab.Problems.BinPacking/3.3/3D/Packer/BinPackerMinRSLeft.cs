@@ -93,6 +93,7 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
 
       ExtremePointPruningFactory.CreatePruning().PruneExtremePoints(epPruningMethod, packingList);
     }
+    
 
     /// <summary>
     /// Tries to pack the remainig items into a given BinPacking3D object. Each item could be packed into the BinPacking3D object will be removed from the list of remaining ids
@@ -106,7 +107,7 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
       IExtremePointCreator extremePointCreator = ExtremePointCreatorFactory.CreateExtremePointCreator(epCreationMethod, useStackingConstraints);
       var remainingNotWeightSupportedItems = new List<int>();
       foreach (var itemId in new List<int>(remainingIds)) {
-        var item = items[itemId];
+        var item = items[itemId];        
 
         // If an item doesn't support any weight it should have a minimum waste of the residual space.
         // As long as there are weight supporting items left, put the non supporting items into a collection 

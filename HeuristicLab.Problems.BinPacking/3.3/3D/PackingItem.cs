@@ -294,7 +294,7 @@ namespace HeuristicLab.Problems.BinPacking3D {
     }
 
     public bool SupportsStacking(IPackingItem other) {
-      return ((other.Layer < this.Layer) || (other.Layer.Equals(this.Layer) && other.Weight <= this.Weight));
+      return other.Layer <= this.Layer && SupportedWeight > 0;
     }
     #endregion
 
