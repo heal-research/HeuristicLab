@@ -54,6 +54,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       this.dataPartitionLabel = new System.Windows.Forms.Label();
       this.dataPartitionComboBox = new System.Windows.Forms.ComboBox();
       this.variableImactsArrayView = new HeuristicLab.Data.Views.StringConvertibleArrayView();
+      this.backgroundWorker = new System.ComponentModel.BackgroundWorker();
       this.SuspendLayout();
       // 
       // ascendingCheckBox
@@ -169,6 +170,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       this.variableImactsArrayView.Size = new System.Drawing.Size(706, 278);
       this.variableImactsArrayView.TabIndex = 2;
       // 
+      // backgroundWorker
+      // 
+      this.backgroundWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.BackgroundWorker_DoWork);
+      this.backgroundWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.BackgroundWorker_RunWorkerCompleted);
+      // 
       // RegressionSolutionVariableImpactsView
       // 
       this.AllowDrop = true;
@@ -202,5 +208,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     private System.Windows.Forms.Label sortByLabel;
     private System.Windows.Forms.ComboBox sortByComboBox;
     private System.Windows.Forms.CheckBox ascendingCheckBox;
+    private System.ComponentModel.BackgroundWorker backgroundWorker;
   }
 }
