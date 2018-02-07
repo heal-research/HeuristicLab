@@ -139,7 +139,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     }
 
 
-    private void BackgroundWorker_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e) {
+    private void backgroundWorker_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e) {
       variableImactsArrayView.Caption = Content.Name + " Variable Impacts";
 
       var argument = e.Argument as BackgroundWorkerArguments;
@@ -162,7 +162,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       }
     }
 
-    private void BackgroundWorker_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e) {
+    private void backgroundWorker_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e) {
       UpdateDataOrdering();
     }
     #endregion
