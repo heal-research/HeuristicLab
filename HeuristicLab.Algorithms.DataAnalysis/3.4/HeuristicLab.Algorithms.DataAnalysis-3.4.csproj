@@ -261,6 +261,7 @@
     </Compile>
     <Compile Include="Linear\MultinomialLogitClassification.cs" />
     <Compile Include="Linear\MultinomialLogitClassificationSolution.cs" />
+    <Compile Include="Linear\LinearRegressionModel.cs" />
     <Compile Include="Linear\MultinomialLogitModel.cs" />
     <Compile Include="Linear\Scaling.cs" />
     <Compile Include="Nca\Initialization\INcaInitializer.cs" />
@@ -319,7 +320,7 @@
     <Compile Include="TSNE\Distances\EuclideanDistance.cs" />
     <Compile Include="TSNE\Distances\IndexedItemDistance.cs" />
     <Compile Include="TSNE\Distances\ManhattanDistance.cs" />
-	<Compile Include="TSNE\Distances\WeightedEuclideanDistance.cs" />
+    <Compile Include="TSNE\Distances\WeightedEuclideanDistance.cs" />
     <Compile Include="TSNE\Distances\IDistance.cs" />
     <Compile Include="TSNE\PriorityQueue.cs" />
     <Compile Include="TSNE\SpacePartitioningTree.cs" />
