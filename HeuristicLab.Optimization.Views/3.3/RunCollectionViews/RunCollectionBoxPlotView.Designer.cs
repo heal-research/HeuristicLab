@@ -179,7 +179,7 @@ namespace HeuristicLab.Optimization.Views {
       this.showStatisticsCheckBox.Appearance = System.Windows.Forms.Appearance.Button;
       this.showStatisticsCheckBox.Checked = true;
       this.showStatisticsCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-      this.showStatisticsCheckBox.Image = ((System.Drawing.Image)(resources.GetObject("showStatisticsCheckBox.Image")));
+      this.showStatisticsCheckBox.Image = HeuristicLab.Common.Resources.VSImageLibrary.Properties;
       this.showStatisticsCheckBox.Location = new System.Drawing.Point(3, 339);
       this.showStatisticsCheckBox.Name = "showStatisticsCheckBox";
       this.showStatisticsCheckBox.Size = new System.Drawing.Size(24, 24);
