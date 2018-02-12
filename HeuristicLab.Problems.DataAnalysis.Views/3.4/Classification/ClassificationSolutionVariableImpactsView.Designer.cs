@@ -169,11 +169,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       this.sortByComboBox.TabIndex = 9;
       this.sortByComboBox.SelectedIndexChanged += new System.EventHandler(this.sortByComboBox_SelectedIndexChanged);
       // 
-      // backgroundWorker
-      // 
-      this.backgroundWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker_DoWork);
-      this.backgroundWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker_RunWorkerCompleted);
-      // 
       // ClassificationSolutionVariableImpactsView
       // 
       this.AllowDrop = true;
@@ -190,6 +185,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       this.Controls.Add(this.variableImactsArrayView);
       this.Name = "ClassificationSolutionVariableImpactsView";
       this.Size = new System.Drawing.Size(668, 365);
+      this.VisibleChanged += new System.EventHandler(this.ClassificationSolutionVariableImpactsView_VisibleChanged);
       this.ResumeLayout(false);
       this.PerformLayout();
 

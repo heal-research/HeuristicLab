@@ -22,6 +22,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using HeuristicLab.Common;
 using HeuristicLab.Data;
 using HeuristicLab.MainForm;
@@ -31,13 +33,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
   [Content(typeof(IClassificationSolution))]
   public partial class ClassificationSolutionVariableImpactsView : DataAnalysisSolutionEvaluationView {
     #region Nested Types
-    private class BackgroundWorkerArguments {
-      internal MainForm.WindowsForms.MainForm mainForm;
-      internal ClassificationSolutionVariableImpactsCalculator.ReplacementMethodEnum replMethod;
-      internal ClassificationSolutionVariableImpactsCalculator.FactorReplacementMethodEnum factorReplMethod;
-      internal ClassificationSolutionVariableImpactsCalculator.DataPartitionEnum dataPartition;
-    }
-
     private enum SortingCriteria {
       ImpactValue,
       Occurrence,
@@ -47,6 +42,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
     #region Fields
     private Dictionary<string, double> rawVariableImpacts = new Dictionary<string, double>();
+    private Thread thread;
     #endregion
 
     #region Getter/Setter
@@ -100,17 +96,24 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       if (Content == null) {
         variableImactsArrayView.Content = null;
       } else {
-        StartBackgroundWorker();
+        UpdateVariableImpact();
       }
+    }
+
+    private void ClassificationSolutionVariableImpactsView_VisibleChanged(object sender, EventArgs e) {
+      if (thread == null) { return; }
+
+      if (thread.IsAlive) { thread.Abort(); }
+      thread = null;
     }
 
 
     private void dataPartitionComboBox_SelectedIndexChanged(object sender, EventArgs e) {
-      StartBackgroundWorker();
+      UpdateVariableImpact();
     }
 
     private void replacementComboBox_SelectedIndexChanged(object sender, EventArgs e) {
-      StartBackgroundWorker();
+      UpdateVariableImpact();
     }
 
     private void sortByComboBox_SelectedIndexChanged(object sender, EventArgs e) {
@@ -138,37 +141,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       UpdateDataOrdering();
     }
 
-
-    private void backgroundWorker_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e) {
-      variableImactsArrayView.Caption = Content.Name + " Variable Impacts";
-
-      var argument = e.Argument as BackgroundWorkerArguments;
-      if (!(argument is BackgroundWorkerArguments)) {
-        throw new ArgumentException("Argument for Backgroundworker must be of type BackgroundworkerArguments");
-      }
-
-      argument.mainForm.AddOperationProgressToView(this, "Calculating variable impacts for " + Content.Name);
-      try {
-        //Remember the original ordering of the variables
-        var impacts = ClassificationSolutionVariableImpactsCalculator.CalculateImpacts(Content, argument.dataPartition, argument.replMethod, argument.factorReplMethod);
-        var problemData = Content.ProblemData;
-        var inputvariables = new HashSet<string>(problemData.AllowedInputVariables.Union(Content.Model.VariablesUsedForPrediction));
-        var originalVariableOrdering = problemData.Dataset.VariableNames.Where(v => inputvariables.Contains(v)).Where(problemData.Dataset.VariableHasType<double>).ToList();
-
-        rawVariableImpacts.Clear();
-        originalVariableOrdering.ForEach(v => rawVariableImpacts.Add(v, impacts.First(vv => vv.Item1 == v).Item2));
-      } finally {
-        argument.mainForm.RemoveOperationProgressFromView(this);
-      }
-    }
-
-    private void backgroundWorker_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e) {
-      UpdateDataOrdering();
-    }
     #endregion
 
-    #region Helper Methods
-    private void StartBackgroundWorker() {
+    #region Helper Methods   
+    private void UpdateVariableImpact() {
       //Check if the selection is valid
       if (Content == null) { return; }
       if (replacementComboBox.SelectedIndex < 0) { return; }
@@ -180,16 +156,26 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       var replMethod = (ClassificationSolutionVariableImpactsCalculator.ReplacementMethodEnum)replacementComboBox.Items[replacementComboBox.SelectedIndex];
       var factorReplMethod = (ClassificationSolutionVariableImpactsCalculator.FactorReplacementMethodEnum)factorVarReplComboBox.Items[factorVarReplComboBox.SelectedIndex];
       var dataPartition = (ClassificationSolutionVariableImpactsCalculator.DataPartitionEnum)dataPartitionComboBox.SelectedItem;
-      var args = new BackgroundWorkerArguments() {
-        mainForm = mainForm,
-        replMethod = replMethod,
-        factorReplMethod = factorReplMethod,
-        dataPartition = dataPartition
-      };
 
-      //Let the backgroundWorker do his job (unless he's already running)
-      //fholzing: Possible bug -> A ContentChanged won't update the data if the backgroundworker is already running
-      if (!backgroundWorker.IsBusy) { backgroundWorker.RunWorkerAsync(args); }
+      variableImactsArrayView.Caption = Content.Name + " Variable Impacts";
+
+      mainForm.AddOperationProgressToView(this, "Calculating variable impacts for " + Content.Name);
+
+      Task.Factory.StartNew(() => {
+        thread = Thread.CurrentThread;
+        //Remember the original ordering of the variables
+        var impacts = ClassificationSolutionVariableImpactsCalculator.CalculateImpacts(Content, dataPartition, replMethod, factorReplMethod);
+        var problemData = Content.ProblemData;
+        var inputvariables = new HashSet<string>(problemData.AllowedInputVariables.Union(Content.Model.VariablesUsedForPrediction));
+        var originalVariableOrdering = problemData.Dataset.VariableNames.Where(v => inputvariables.Contains(v)).Where(problemData.Dataset.VariableHasType<double>).ToList();
+
+        rawVariableImpacts.Clear();
+        originalVariableOrdering.ForEach(v => rawVariableImpacts.Add(v, impacts.First(vv => vv.Item1 == v).Item2));
+      }).ContinueWith((o) => {
+        UpdateDataOrdering();
+        mainForm.RemoveOperationProgressFromView(this);
+        thread = null;
+      }, TaskScheduler.FromCurrentSynchronizationContext());
     }
 
     /// <summary>
@@ -229,11 +215,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         ElementNames = orderedEntries.Select(i => i.Key)
       };
 
-      //Could be, if the View was closed during the BackgroundWorker-run
+      //Could be, if the View was closed
       if (!variableImactsArrayView.IsDisposed) {
         variableImactsArrayView.Content = (DoubleArray)impactArray.AsReadOnly();
       }
     }
-    #endregion 
+    #endregion  
   }
 }
