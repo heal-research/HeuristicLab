@@ -26,6 +26,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 using HeuristicLab.Problems.BinPacking;
+using HeuristicLab.Problems.BinPacking3D.Material;
 
 namespace HeuristicLab.Problems.BinPacking3D {
   [Item("PackingShape (3d)", "Represents the cuboid measures (width, height, depth) of a three-dimensional cuboidic bin-packing object.")]
@@ -56,6 +57,14 @@ namespace HeuristicLab.Problems.BinPacking3D {
       set { DepthParameter.Value.Value = value; }
     }
 
+    public IFixedValueParameter<EnumValue<MaterialType>> MaterialBottomParameter {
+      get { return (IFixedValueParameter<EnumValue<MaterialType>>)Parameters["MaterialBottom"]; }
+    }
+    public MaterialType MaterialBottom {
+      get { return MaterialBottomParameter.Value.Value; }
+      set { MaterialBottomParameter.Value.Value = value; }
+    }
+
     [StorableConstructor]
     protected PackingShape(bool deserializing) : base(deserializing) { }
     protected PackingShape(PackingShape original, Cloner cloner)
@@ -67,6 +76,9 @@ namespace HeuristicLab.Problems.BinPacking3D {
       Parameters.Add(new FixedValueParameter<IntValue>("Width"));
       Parameters.Add(new FixedValueParameter<IntValue>("Height"));
       Parameters.Add(new FixedValueParameter<IntValue>("Depth"));
+      Parameters.Add(new FixedValueParameter<EnumValue<MaterialType>>("MaterialBottom"));
+
+      MaterialBottom = MaterialType.ScreenPrintingPlate;
 
       RegisterEvents();
     }

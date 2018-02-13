@@ -19,18 +19,32 @@
  */
 #endregion
 
+using HeuristicLab.Core;
 using HeuristicLab.Problems.BinPacking3D.Geometry;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using HeuristicLab.Common;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.BinPacking3D.ResidualSpaceCalculation {
-  internal class ResidualSpaceCalculator : IResidualSpaceCalculator {
+  internal class ResidualSpaceCalculator : Item, IResidualSpaceCalculator {
 
     internal ResidualSpaceCalculator() {}
-    
+
+    [StorableConstructor]
+    protected ResidualSpaceCalculator(bool deserializing) : base(deserializing) { }
+
+    protected ResidualSpaceCalculator(ResidualSpaceCalculator original, Cloner cloner) 
+      : base(original, cloner) {
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new ResidualSpaceCalculator(this, cloner);
+    }
+
     public IEnumerable<ResidualSpace> CalculateResidualSpaces(BinPacking3D binPacking, Vector3D point) {
       IList<ResidualSpace> residualSpaces = new List<ResidualSpace>();
       var rs1 = CalculateXZY(binPacking, point);

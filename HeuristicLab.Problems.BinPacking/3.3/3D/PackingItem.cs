@@ -59,14 +59,7 @@ namespace HeuristicLab.Problems.BinPacking3D {
       set { LayerParameter.Value.Value = value; }
     }
 
-    #region Material
-    public IFixedValueParameter<EnumValue<MaterialType>> MaterialBottomParameter {
-      get { return (IFixedValueParameter<EnumValue<MaterialType>>)Parameters["MaterialBottom"]; }
-    }
-    public MaterialType MaterialBottom {
-      get { return MaterialBottomParameter.Value.Value; }
-      set { MaterialBottomParameter.Value.Value = value; }
-    }
+    #region Material    
 
     public IFixedValueParameter<EnumValue<MaterialType>> MaterialTopParameter {
       get { return (IFixedValueParameter<EnumValue<MaterialType>>)Parameters["MaterialTop"]; }
@@ -83,6 +76,12 @@ namespace HeuristicLab.Problems.BinPacking3D {
     public double SupportedWeight {
       get { return SupportedWeightParameter.Value.Value; }
       set { SupportedWeightParameter.Value.Value = value; }
+    }
+
+    public double SupportedWeightPerSquareMeter {
+      get {
+        return SupportedWeight / (Width * Depth);
+      }
     }
 
     public IValueParameter<BoolValue> IsStackableParameter {
@@ -296,6 +295,10 @@ namespace HeuristicLab.Problems.BinPacking3D {
     public bool SupportsStacking(IPackingItem other) {
       return other.Layer <= this.Layer && SupportedWeight > 0;
     }
+        
+    public bool SupportWeight(double weigth) {
+      return SupportedWeight >= weigth;
+    }
     #endregion
 
 
@@ -313,7 +316,6 @@ namespace HeuristicLab.Problems.BinPacking3D {
 
 
       Parameters.Add(new FixedValueParameter<EnumValue<MaterialType>>("MaterialTop"));
-      Parameters.Add(new FixedValueParameter<EnumValue<MaterialType>>("MaterialBottom"));
 
       Parameters.Add(new FixedValueParameter<DoubleValue>("SupportedWeight"));
 
