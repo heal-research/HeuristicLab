@@ -257,7 +257,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
           cancellationToken.ThrowIfCancellationRequested();
 
           modifiableDataset.RemoveVariable(targetVarName);
-          modifiableDataset.AddVariable(targetVarName, curY.Concat(curYTest));
+          modifiableDataset.AddVariable(targetVarName, curY.Concat(curYTest).ToList());
 
           SampleTrainingData(rand, modifiableDataset, rRows, problemData.Dataset, curY, problemData.TargetVariable, problemData.TrainingIndices); // all training indices from the original problem data are allowed 
           var modifiableProblemData = new RegressionProblemData(modifiableDataset,

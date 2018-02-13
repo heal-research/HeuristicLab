@@ -104,14 +104,19 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     // adds a new variable to the dataset
-    public void AddVariable<T>(string variableName, IEnumerable<T> values) {
+    public void AddVariable(string variableName, IList values) {
       if (variableValues.ContainsKey(variableName))
-        throw new ArgumentException("Variable " + variableName + " is already present in the dataset.");
-      int count = values.Count();
-      if (count != rows)
-        throw new ArgumentException("The number of values must exactly match the number of rows in the dataset.");
-      variableValues[variableName] = new List<T>(values);
+        throw new ArgumentException(string.Format("Variable {0} is already present in the dataset.", variableName));
+
+      if (values == null || values.Count == 0)
+        throw new ArgumentException("Cannot add variable with no values.");
+
+      if (!IsAllowedType(values))
+        throw new ArgumentException(string.Format("Unsupported type {0} for variable {1}.", GetElementType(values), variableName));
+
+      variableValues[variableName] = values;
       variableNames.Add(variableName);
+
       OnColumnsChanged();
       OnColumnNamesChanged();
       OnReset();
@@ -119,7 +124,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public void RemoveVariable(string variableName) {
       if (!variableValues.ContainsKey(variableName))
-        throw new ArgumentException("The variable " + variableName + " does not exist in the dataset.");
+        throw new ArgumentException(string.Format("The variable {0} does not exist in the dataset.", variableName));
       variableValues.Remove(variableName);
       variableNames.Remove(variableName);
       OnColumnsChanged();
@@ -127,7 +132,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       OnReset();
     }
 
-    // slow, avoid to use this
+    // slow, avoid using this
     public void RemoveRow(int row) {
       foreach (var list in variableValues.Values)
         list.RemoveAt(row);
@@ -148,14 +153,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
       list[row] = value;
       OnItemChanged(row, variableNames.IndexOf(variableName));
-    }
-
-    private Type GetVariableType(string variableName) {
-      IList list;
-      variableValues.TryGetValue(variableName, out list);
-      if (list == null)
-        throw new ArgumentException("The variable " + variableName + " does not exist in the dataset.");
-      return list.GetType().GetGenericArguments()[0];
     }
 
     bool IStringConvertibleMatrix.SetValue(string value, int rowIndex, int columnIndex) {

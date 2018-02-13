@@ -77,8 +77,14 @@ namespace HeuristicLab.Problems.DataAnalysis {
       this.variableNames = new List<string>(variableNames);
       this.variableValues = new Dictionary<string, IList>(this.variableNames.Count);
       for (int i = 0; i < this.variableNames.Count; i++) {
+        var variableName = this.variableNames[i];
         var values = variableValues.ElementAt(i);
-        this.variableValues.Add(this.variableNames[i], values);
+
+        if (!IsAllowedType(values)) {
+          throw new ArgumentException(string.Format("Unsupported type {0} for variable {1}.", GetElementType(values), variableName));
+        }
+
+        this.variableValues.Add(variableName, values);
       }
     }
 
@@ -124,6 +130,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       }
       return new ModifiableDataset(variableNames, values);
     }
+
     /// <summary>
     /// Shuffle a dataset's rows
     /// </summary>
@@ -246,6 +253,28 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
     public bool VariableHasType<T>(string variableName) {
       return variableValues[variableName] is IList<T>;
+    }
+
+    protected Type GetVariableType(string variableName) {
+      IList list;
+      variableValues.TryGetValue(variableName, out list);
+      if (list == null)
+        throw new ArgumentException("The variable " + variableName + " does not exist in the dataset.");
+      return GetElementType(list);
+    }
+
+    protected Type GetElementType(IList list) {
+      var type = list.GetType();
+      return type.IsGenericType ? type.GetGenericArguments()[0] : type.GetElementType();
+    }
+
+    protected bool IsAllowedType(IList list) {
+      var type = GetElementType(list);
+      return IsAllowedType(type);
+    }
+
+    protected bool IsAllowedType(Type type) {
+      return type == typeof(double) || type == typeof(string) || type == typeof(DateTime);
     }
 
     #region IStringConvertibleMatrix Members
