@@ -62,7 +62,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       this.groupBoxVisualisation.Size = new System.Drawing.Size(177, 277);
       this.groupBoxVisualisation.TabIndex = 2;
       this.groupBoxVisualisation.TabStop = false;
-      this.groupBoxVisualisation.Text = "Visualization";
+      this.groupBoxVisualisation.Text = "Representation";
       // 
       // viewHost
       // 
@@ -87,11 +87,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       this.listView.FullRowSelect = true;
       this.listView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
       this.listView.LabelWrap = false;
-      this.listView.Location = new System.Drawing.Point(3, 3);
+      this.listView.Location = new System.Drawing.Point(3, 9);
       this.listView.MultiSelect = false;
       this.listView.Name = "listView";
       this.listView.ShowGroups = false;
-      this.listView.Size = new System.Drawing.Size(160, 283);
+      this.listView.Size = new System.Drawing.Size(160, 271);
       this.listView.TabIndex = 1;
       this.listView.UseCompatibleStateImageBehavior = false;
       this.listView.View = System.Windows.Forms.View.Details;
