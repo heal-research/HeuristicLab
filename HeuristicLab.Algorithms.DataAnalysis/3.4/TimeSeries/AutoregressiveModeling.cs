@@ -25,7 +25,6 @@ using System.Threading;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -96,7 +95,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.TimeSeries {
       for (int i = 0; i < inputMatrix.GetLength(0); i++)
         inputMatrix[i, timeOffset] = targetValues[i + problemData.TrainingPartition.Start];
 
-      if (inputMatrix.Cast<double>().Any(x => double.IsNaN(x) || double.IsInfinity(x)))
+      if (inputMatrix.ContainsNanInf())
         throw new NotSupportedException("Linear regression does not support NaN or infinity values in the input dataset.");
 
 

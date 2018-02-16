@@ -141,7 +141,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         inputMatrix = CreateScaledData(dataset, this.allowedInputVariables.Concat(new string[] { targetVariable }), rows, this.offsets, this.weights);
       }
 
-      if (inputMatrix.Cast<double>().Any(x => double.IsNaN(x) || double.IsInfinity(x)))
+      if (inputMatrix.ContainsNanInf())
         throw new NotSupportedException(
           "Nearest neighbour model does not support NaN or infinity values in the input dataset.");
 

@@ -114,9 +114,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
     public NeuralNetworkRegression()
       : base() {
-      var validHiddenLayerValues = new ItemSet<IntValue>(new IntValue[] { 
-        (IntValue)new IntValue(0).AsReadOnly(), 
-        (IntValue)new IntValue(1).AsReadOnly(), 
+      var validHiddenLayerValues = new ItemSet<IntValue>(new IntValue[] {
+        (IntValue)new IntValue(0).AsReadOnly(),
+        (IntValue)new IntValue(1).AsReadOnly(),
         (IntValue)new IntValue(2).AsReadOnly() });
       var selectedHiddenLayerValue = (from v in validHiddenLayerValues
                                       where v.Value == 1
@@ -185,7 +185,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       IEnumerable<string> allowedInputVariables = problemData.AllowedInputVariables;
       IEnumerable<int> rows = problemData.TrainingIndices;
       double[,] inputMatrix = dataset.ToArray(allowedInputVariables.Concat(new string[] { targetVariable }), rows);
-      if (inputMatrix.Cast<double>().Any(x => double.IsNaN(x) || double.IsInfinity(x)))
+      if (inputMatrix.ContainsNanInf())
         throw new NotSupportedException("Neural network regression does not support NaN or infinity values in the input dataset.");
 
       alglib.multilayerperceptron multiLayerPerceptron = null;

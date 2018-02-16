@@ -309,7 +309,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     public static RandomForestModel CreateClassificationModel(IClassificationProblemData problemData, int nTrees, double r, double m, int seed,
       out double rmsError, out double outOfBagRmsError, out double relClassificationError, out double outOfBagRelClassificationError) {
-      return CreateClassificationModel(problemData, problemData.TrainingIndices, nTrees, r, m, seed, 
+      return CreateClassificationModel(problemData, problemData.TrainingIndices, nTrees, r, m, seed,
         out rmsError, out outOfBagRmsError, out relClassificationError, out outOfBagRelClassificationError);
     }
 
@@ -369,7 +369,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     private static void AssertInputMatrix(double[,] inputMatrix) {
-      if (inputMatrix.Cast<double>().Any(x => Double.IsNaN(x) || Double.IsInfinity(x)))
+      if (inputMatrix.ContainsNanInf())
         throw new NotSupportedException("Random forest modeling does not support NaN or infinity values in the input dataset.");
     }
 
