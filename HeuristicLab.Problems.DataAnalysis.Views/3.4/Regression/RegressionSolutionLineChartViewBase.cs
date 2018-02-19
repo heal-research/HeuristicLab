@@ -71,8 +71,20 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         this.chart.Series.Add(TARGETVARIABLE_SERIES_NAME);
         this.chart.Series[TARGETVARIABLE_SERIES_NAME].LegendText = TARGETVARIABLE_SERIES_NAME;
         this.chart.Series[TARGETVARIABLE_SERIES_NAME].ChartType = SeriesChartType.FastLine;
-        this.chart.Series[TARGETVARIABLE_SERIES_NAME].Points.DataBindXY(Enumerable.Range(0, Content.ProblemData.Dataset.Rows).ToArray(),
-          Content.ProblemData.Dataset.GetDoubleValues(Content.ProblemData.TargetVariable).ToArray());
+
+        var rows = Enumerable.Range(0, Content.ProblemData.Dataset.Rows).ToArray();
+        var targetVariables = Content.ProblemData.Dataset.GetDoubleValues(Content.ProblemData.TargetVariable).ToArray();
+        List<int> xVals = new List<int>();
+        List<double> yVals = new List<double>();
+
+        for (int i = 0; i < rows.Length; i++) {
+          if (!double.IsInfinity(targetVariables[i])) {
+            xVals.Add(rows[i]);
+            yVals.Add(targetVariables[i]);
+          }
+        }
+
+        this.chart.Series[TARGETVARIABLE_SERIES_NAME].Points.DataBindXY(xVals.ToArray(), yVals.ToArray());
         // training series
         this.chart.Series.Add(ESTIMATEDVALUES_TRAINING_SERIES_NAME);
         this.chart.Series[ESTIMATEDVALUES_TRAINING_SERIES_NAME].LegendText = ESTIMATEDVALUES_TRAINING_SERIES_NAME;
@@ -160,7 +172,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       var estimatedValues = this.chart.Series[ESTIMATEDVALUES_TRAINING_SERIES_NAME].Points.Select(x => x.YValues[0]).DefaultIfEmpty(1.0);
       var targetValues = this.chart.Series[TARGETVARIABLE_SERIES_NAME].Points.Select(x => x.YValues[0]).DefaultIfEmpty(1.0);
       double estimatedValuesRange = estimatedValues.Max() - estimatedValues.Min();
-      double targetValuesRange = targetValues.Max() - targetValues.Min();
+      double targetValuesRange = targetValues.Where(v => !double.IsInfinity(v)).Max() - targetValues.Where(v => !double.IsNaN(v) && !double.IsNegativeInfinity(v)).Min();
       double interestingValuesRange = Math.Min(Math.Max(targetValuesRange, 1.0), Math.Max(estimatedValuesRange, 1.0));
       double digits = (int)Math.Log10(interestingValuesRange) - 3;
       double yZoomInterval = Math.Max(Math.Pow(10, digits), 10E-5);

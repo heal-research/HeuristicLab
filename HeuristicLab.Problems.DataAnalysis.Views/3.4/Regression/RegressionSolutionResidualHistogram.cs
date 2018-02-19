@@ -80,6 +80,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       }
       if (Content != null) {
         List<double> residuals = CalculateResiduals(Content);
+        residuals.Remove(double.NaN);
+        residuals.Remove(double.PositiveInfinity);
+        residuals.Remove(double.NegativeInfinity);
 
         double max = 0.0;
         foreach (Series series in chart.Series) {

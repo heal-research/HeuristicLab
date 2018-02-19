@@ -37,7 +37,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       var problemData = Content.ProblemData;
       var target = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, idx).ToArray();
       for (int i = 0; i < idx.Length; i++) {
-        x[i] = target[i] - x[i];
+        if (!double.IsInfinity(target[i])) {
+          x[i] = target[i] - x[i];
+        }
       }
     }
 
