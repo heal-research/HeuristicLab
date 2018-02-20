@@ -78,7 +78,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         List<double> yVals = new List<double>();
 
         for (int i = 0; i < rows.Length; i++) {
-          if (!double.IsInfinity(targetVariables[i])) {
+          if (!double.IsInfinity(targetVariables[i]) && !double.IsNaN(targetVariables[i])) {
             xVals.Add(rows[i]);
             yVals.Add(targetVariables[i]);
           }
