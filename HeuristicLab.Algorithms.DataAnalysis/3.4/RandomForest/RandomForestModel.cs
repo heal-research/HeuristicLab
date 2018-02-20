@@ -369,7 +369,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     private static void AssertInputMatrix(double[,] inputMatrix) {
-      if (inputMatrix.ContainsNanInf())
+      if (inputMatrix.ContainsNanOrInfinity())
         throw new NotSupportedException("Random forest modeling does not support NaN or infinity values in the input dataset.");
     }
 

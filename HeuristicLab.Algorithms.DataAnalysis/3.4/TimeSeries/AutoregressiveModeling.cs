@@ -95,7 +95,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.TimeSeries {
       for (int i = 0; i < inputMatrix.GetLength(0); i++)
         inputMatrix[i, timeOffset] = targetValues[i + problemData.TrainingPartition.Start];
 
-      if (inputMatrix.ContainsNanInf())
+      if (inputMatrix.ContainsNanOrInfinity())
         throw new NotSupportedException("Linear regression does not support NaN or infinity values in the input dataset.");
 
 

@@ -79,7 +79,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       double[,] doubleVarMatrix = dataset.ToArray(doubleVariables.Concat(new string[] { targetVariable }), rows);
       var inputMatrix = binaryMatrix.HorzCat(doubleVarMatrix);
 
-      if (inputMatrix.ContainsNanInf())
+      if (inputMatrix.ContainsNanOrInfinity())
         throw new NotSupportedException("Linear regression does not support NaN or infinity values in the input dataset.");
 
       alglib.linearmodel lm = new alglib.linearmodel();

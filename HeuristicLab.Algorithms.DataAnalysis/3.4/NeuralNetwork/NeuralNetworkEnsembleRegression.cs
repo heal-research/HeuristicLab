@@ -169,7 +169,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       IEnumerable<string> allowedInputVariables = problemData.AllowedInputVariables;
       IEnumerable<int> rows = problemData.TrainingIndices;
       double[,] inputMatrix = dataset.ToArray(allowedInputVariables.Concat(new string[] { targetVariable }), rows);
-      if (inputMatrix.ContainsNanInf())
+      if (inputMatrix.ContainsNanOrInfinity())
         throw new NotSupportedException("Neural network ensemble regression does not support NaN or infinity values in the input dataset.");
 
       alglib.mlpensemble mlpEnsemble = null;
