@@ -172,7 +172,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       var estimatedValues = this.chart.Series[ESTIMATEDVALUES_TRAINING_SERIES_NAME].Points.Select(x => x.YValues[0]).DefaultIfEmpty(1.0);
       var targetValues = this.chart.Series[TARGETVARIABLE_SERIES_NAME].Points.Select(x => x.YValues[0]).DefaultIfEmpty(1.0);
       double estimatedValuesRange = estimatedValues.Max() - estimatedValues.Min();
-      double targetValuesRange = targetValues.Where(v => !double.IsInfinity(v)).Max() - targetValues.Where(v => !double.IsNaN(v) && !double.IsNegativeInfinity(v)).Min();
+      double targetValuesRange = targetValues.Where(v => !double.IsInfinity(v) && !double.IsNaN(v)).Max() - targetValues.Where(v => !double.IsNaN(v) && !double.IsInfinity(v)).Min();
       double interestingValuesRange = Math.Min(Math.Max(targetValuesRange, 1.0), Math.Max(estimatedValuesRange, 1.0));
       double digits = (int)Math.Log10(interestingValuesRange) - 3;
       double yZoomInterval = Math.Max(Math.Pow(10, digits), 10E-5);
