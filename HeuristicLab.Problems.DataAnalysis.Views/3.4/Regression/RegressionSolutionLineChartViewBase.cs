@@ -19,7 +19,6 @@
  */
 #endregion
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -74,17 +73,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
         var rows = Enumerable.Range(0, Content.ProblemData.Dataset.Rows).ToArray();
         var targetVariables = Content.ProblemData.Dataset.GetDoubleValues(Content.ProblemData.TargetVariable).ToArray();
-        List<int> xVals = new List<int>();
-        List<double> yVals = new List<double>();
 
-        for (int i = 0; i < rows.Length; i++) {
-          if (!double.IsInfinity(targetVariables[i]) && !double.IsNaN(targetVariables[i])) {
-            xVals.Add(rows[i]);
-            yVals.Add(targetVariables[i]);
-          }
-        }
 
-        this.chart.Series[TARGETVARIABLE_SERIES_NAME].Points.DataBindXY(xVals.ToArray(), yVals.ToArray());
+        this.chart.Series[TARGETVARIABLE_SERIES_NAME].Points.DataBindXY(rows.ToArray(), targetVariables.Select(v => double.IsInfinity(v) ? double.NaN : v).ToArray());
         // training series
         this.chart.Series.Add(ESTIMATEDVALUES_TRAINING_SERIES_NAME);
         this.chart.Series[ESTIMATEDVALUES_TRAINING_SERIES_NAME].LegendText = ESTIMATEDVALUES_TRAINING_SERIES_NAME;
