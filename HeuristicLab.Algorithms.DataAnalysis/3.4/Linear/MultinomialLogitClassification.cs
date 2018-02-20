@@ -77,7 +77,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       var factorMatrix = dataset.ToArray(factorVariableValues, rows);
       inputMatrix = factorMatrix.HorzCat(inputMatrix);
 
-      if (inputMatrix.Cast<double>().Any(x => double.IsNaN(x) || double.IsInfinity(x)))
+      if (inputMatrix.ContainsNanOrInfinity())
         throw new NotSupportedException("Multinomial logit classification does not support NaN or infinity values in the input dataset.");
 
       alglib.logitmodel lm = new alglib.logitmodel();

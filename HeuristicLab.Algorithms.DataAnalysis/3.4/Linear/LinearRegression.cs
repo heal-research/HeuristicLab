@@ -79,7 +79,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       double[,] doubleVarMatrix = dataset.ToArray(doubleVariables.Concat(new string[] { targetVariable }), rows);
       var inputMatrix = binaryMatrix.HorzCat(doubleVarMatrix);
 
-      if (inputMatrix.Cast<double>().Any(x => double.IsNaN(x) || double.IsInfinity(x)))
+      if (inputMatrix.ContainsNanOrInfinity())
         throw new NotSupportedException("Linear regression does not support NaN or infinity values in the input dataset.");
 
       alglib.linearmodel lm = new alglib.linearmodel();
@@ -99,9 +99,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       int nFactorCoeff = binaryMatrix.GetLength(1);
       int nVarCoeff = doubleVariables.Count();
       var tree = LinearModelToTreeConverter.CreateTree(factorVariables, coefficients.Take(nFactorCoeff).ToArray(),
-        doubleVariables.ToArray(), coefficients.Skip(nFactorCoeff).Take(nVarCoeff).ToArray(), 
+        doubleVariables.ToArray(), coefficients.Skip(nFactorCoeff).Take(nVarCoeff).ToArray(),
         @const: coefficients[nFeatures]);
-      
+
       SymbolicRegressionSolution solution = new SymbolicRegressionSolution(new SymbolicRegressionModel(problemData.TargetVariable, tree, new SymbolicDataAnalysisExpressionTreeLinearInterpreter()), (IRegressionProblemData)problemData.Clone());
       solution.Model.Name = "Linear Regression Model";
       solution.Name = "Linear Regression Solution";

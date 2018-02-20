@@ -130,6 +130,7 @@
     <Compile Include="CrossValidation.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DoubleArrayExtensions.cs" />
     <Compile Include="FixedDataAnalysisAlgorithm.cs" />
     <Compile Include="GaussianProcess\CovarianceFunctions\CovarianceSpectralMixture.cs" />
     <Compile Include="GaussianProcess\CovarianceFunctions\CovariancePiecewisePolynomial.cs" />
@@ -319,7 +320,7 @@
     <Compile Include="TSNE\Distances\EuclideanDistance.cs" />
     <Compile Include="TSNE\Distances\IndexedItemDistance.cs" />
     <Compile Include="TSNE\Distances\ManhattanDistance.cs" />
-	<Compile Include="TSNE\Distances\WeightedEuclideanDistance.cs" />
+    <Compile Include="TSNE\Distances\WeightedEuclideanDistance.cs" />
     <Compile Include="TSNE\Distances\IDistance.cs" />
     <Compile Include="TSNE\PriorityQueue.cs" />
     <Compile Include="TSNE\SpacePartitioningTree.cs" />
