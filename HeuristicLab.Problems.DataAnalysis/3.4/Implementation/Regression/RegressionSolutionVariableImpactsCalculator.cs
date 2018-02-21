@@ -96,7 +96,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       DataPartitionEnum data = DataPartitionEnum.Training,
       ReplacementMethodEnum replacementMethod = ReplacementMethodEnum.Median,
       FactorReplacementMethodEnum factorReplacementMethod = FactorReplacementMethodEnum.Best,
-      Func<double, bool> progressCallback = null) {
+      Func<double, string, bool> progressCallback = null) {
 
       var problemData = solution.ProblemData;
       var dataset = problemData.Dataset;
@@ -134,13 +134,14 @@ namespace HeuristicLab.Problems.DataAnalysis {
       var inputvariables = new HashSet<string>(problemData.AllowedInputVariables.Union(solution.Model.VariablesUsedForPrediction));
       var allowedInputVariables = dataset.VariableNames.Where(v => inputvariables.Contains(v)).ToList();
 
-      int curIdx = 1;
+      int curIdx = 0;
       int count = allowedInputVariables.Where(problemData.Dataset.VariableHasType<double>).Count();
       // calculate impacts for double variables
       foreach (var inputVariable in allowedInputVariables.Where(problemData.Dataset.VariableHasType<double>)) {
         //Report the current progress in percent. If the callback returns true, it means the execution shall be stopped
         if (progressCallback != null) {
-          if (progressCallback((double)curIdx++ / count)) { return null; }
+          curIdx++;
+          if (progressCallback((double)curIdx / count, $"Calculating impact for variable {inputVariable} ({curIdx} of {count})")) { return null; }
         }
         var newEstimates = EvaluateModelWithReplacedVariable(solution.Model, inputVariable, modifiableDataset, rows, replacementMethod);
         var newR2 = OnlinePearsonsRCalculator.Calculate(targetValues, newEstimates, out error);

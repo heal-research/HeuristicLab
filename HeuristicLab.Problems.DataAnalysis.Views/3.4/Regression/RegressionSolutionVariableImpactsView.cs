@@ -153,8 +153,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       //Remember the original ordering of the variables
       try {
         var impacts = await Task.Run(() => RegressionSolutionVariableImpactsCalculator.CalculateImpacts(Content, dataPartition, replMethod, factorReplMethod,
-          (i) => {
+          (i, s) => {
             progress.ProgressValue = i;
+            progress.Status = s;
             return cancellationToken.Token.IsCancellationRequested;
           }), cancellationToken.Token);
 
