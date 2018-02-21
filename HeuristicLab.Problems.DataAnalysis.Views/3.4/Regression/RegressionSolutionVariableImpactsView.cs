@@ -21,9 +21,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using HeuristicLab.Common;
 using HeuristicLab.Data;
 using HeuristicLab.MainForm;
@@ -32,29 +31,28 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
   [View("Variable Impacts")]
   [Content(typeof(IRegressionSolution))]
   public partial class RegressionSolutionVariableImpactsView : DataAnalysisSolutionEvaluationView {
-    #region Nested Types
+    private class BackgroundworkerArguments {
+      internal MainForm.WindowsForms.MainForm mainForm;
+      internal RegressionSolutionVariableImpactsCalculator.ReplacementMethodEnum replMethod;
+      internal RegressionSolutionVariableImpactsCalculator.FactorReplacementMethodEnum factorReplMethod;
+      internal RegressionSolutionVariableImpactsCalculator.DataPartitionEnum dataPartition;
+    }
     private enum SortingCriteria {
       ImpactValue,
       Occurrence,
       VariableName
     }
-    #endregion
-
-    #region Fields
+    private IProgress progress;
     private Dictionary<string, double> rawVariableImpacts = new Dictionary<string, double>();
-    private Thread thread;
-    #endregion
+    private BackgroundWorker worker = new BackgroundWorker();
 
-    #region Getter/Setter
     public new IRegressionSolution Content {
       get { return (IRegressionSolution)base.Content; }
       set {
         base.Content = value;
       }
     }
-    #endregion
 
-    #region Ctor
     public RegressionSolutionVariableImpactsView()
       : base() {
       InitializeComponent();
@@ -67,10 +65,44 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       this.dataPartitionComboBox.SelectedIndex = 0;
       this.replacementComboBox.SelectedIndex = 0;
       this.factorVarReplComboBox.SelectedIndex = 0;
-    }
-    #endregion
 
-    #region Events
+      //Worker magic
+      worker.WorkerSupportsCancellation = true;
+      worker.WorkerReportsProgress = true;
+      worker.DoWork += Worker_DoWork;
+      worker.RunWorkerCompleted += Worker_RunWorkerCompleted;
+      worker.ProgressChanged += Worker_ProgressChanged;
+    }
+
+
+    private void Worker_DoWork(object sender, DoWorkEventArgs e) {
+      var args = e.Argument as BackgroundworkerArguments;
+
+      //Remember the original ordering of the variables
+      var impacts = RegressionSolutionVariableImpactsCalculator.CalculateImpacts(Content, args.dataPartition, args.replMethod, args.factorReplMethod,
+        (i) => {
+          var worker = (sender as BackgroundWorker);
+          worker.ReportProgress(0, i);
+          return worker.CancellationPending;
+        });
+
+      if ((sender as BackgroundWorker).CancellationPending) { return; }
+      var problemData = Content.ProblemData;
+      var inputvariables = new HashSet<string>(problemData.AllowedInputVariables.Union(Content.Model.VariablesUsedForPrediction));
+      var originalVariableOrdering = problemData.Dataset.VariableNames.Where(v => inputvariables.Contains(v)).Where(problemData.Dataset.VariableHasType<double>).ToList();
+
+      rawVariableImpacts.Clear();
+      originalVariableOrdering.ForEach(v => rawVariableImpacts.Add(v, impacts.First(vv => vv.Item1 == v).Item2));
+    }
+    private void Worker_ProgressChanged(object sender, ProgressChangedEventArgs e) {
+      progress.ProgressValue = (double)e.UserState;
+    }
+    private void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
+      if (e.Error != null) { throw e.Error; }
+      if (e.Error == null && !e.Cancelled) { UpdateDataOrdering(); }
+      ((MainForm.WindowsForms.MainForm)MainFormManager.MainForm).RemoveOperationProgressFromView(this);
+    }
+
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
       Content.ModelChanged += new EventHandler(Content_ModelChanged);
@@ -101,10 +133,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     }
 
     private void RegressionSolutionVariableImpactsView_VisibleChanged(object sender, EventArgs e) {
-      if (thread == null) { return; }
-
-      if (thread.IsAlive) { thread.Abort(); }
-      thread = null;
+      if (!worker.IsBusy) { return; }
+      worker.CancelAsync();
     }
 
 
@@ -141,9 +171,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       UpdateDataOrdering();
     }
 
-    #endregion
 
-    #region Helper Methods   
     private void UpdateVariableImpact() {
       //Check if the selection is valid
       if (Content == null) { return; }
@@ -158,24 +186,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       var dataPartition = (RegressionSolutionVariableImpactsCalculator.DataPartitionEnum)dataPartitionComboBox.SelectedItem;
 
       variableImactsArrayView.Caption = Content.Name + " Variable Impacts";
+      progress = mainForm.AddOperationProgressToView(this, "Calculating variable impacts for " + Content.Name);
+      progress.ProgressValue = 0;
 
-      mainForm.AddOperationProgressToView(this, "Calculating variable impacts for " + Content.Name);
-
-      Task.Factory.StartNew(() => {
-        thread = Thread.CurrentThread;
-        //Remember the original ordering of the variables
-        var impacts = RegressionSolutionVariableImpactsCalculator.CalculateImpacts(Content, dataPartition, replMethod, factorReplMethod);
-        var problemData = Content.ProblemData;
-        var inputvariables = new HashSet<string>(problemData.AllowedInputVariables.Union(Content.Model.VariablesUsedForPrediction));
-        var originalVariableOrdering = problemData.Dataset.VariableNames.Where(v => inputvariables.Contains(v)).Where(problemData.Dataset.VariableHasType<double>).ToList();
-
-        rawVariableImpacts.Clear();
-        originalVariableOrdering.ForEach(v => rawVariableImpacts.Add(v, impacts.First(vv => vv.Item1 == v).Item2));
-      }).ContinueWith((o) => {
-        UpdateDataOrdering();
-        mainForm.RemoveOperationProgressFromView(this);
-        thread = null;
-      }, TaskScheduler.FromCurrentSynchronizationContext());
+      if (!worker.IsBusy) {
+        worker.RunWorkerAsync(new BackgroundworkerArguments() {
+          mainForm = mainForm,
+          dataPartition = dataPartition,
+          factorReplMethod = factorReplMethod,
+          replMethod = replMethod
+        });
+      }
     }
 
     /// <summary>
@@ -220,6 +241,5 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         variableImactsArrayView.Content = (DoubleArray)impactArray.AsReadOnly();
       }
     }
-    #endregion
   }
 }
