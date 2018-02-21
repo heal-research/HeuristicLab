@@ -95,7 +95,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
       IRegressionSolution solution,
       DataPartitionEnum data = DataPartitionEnum.Training,
       ReplacementMethodEnum replacementMethod = ReplacementMethodEnum.Median,
-      FactorReplacementMethodEnum factorReplacementMethod = FactorReplacementMethodEnum.Best, Func<double, bool> progressCallback = null) {
+      FactorReplacementMethodEnum factorReplacementMethod = FactorReplacementMethodEnum.Best,
+      Func<double, bool> progressCallback = null) {
 
       var problemData = solution.ProblemData;
       var dataset = problemData.Dataset;
