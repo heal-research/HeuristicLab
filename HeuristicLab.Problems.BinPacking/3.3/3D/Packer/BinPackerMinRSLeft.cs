@@ -93,6 +93,7 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
 
       ExtremePointPruningFactory.CreatePruning().PruneExtremePoints(epPruningMethod, packingList);
     }
+
     
 
     /// <summary>
@@ -103,8 +104,9 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
     /// <param name="items">List of packing items. Some of the items will be assigned to the BinPacking3D object</param>
     /// <param name="epCreationMethod"></param>
     /// <param name="useStackingConstraints"></param>
-    protected void PackRemainingItems(ref IList<int> remainingIds, ref BinPacking3D packingBin, IList<PackingItem> items, ExtremePointCreationMethod epCreationMethod, bool useStackingConstraints) {
+    protected virtual void PackRemainingItems(ref IList<int> remainingIds, ref BinPacking3D packingBin, IList<PackingItem> items, ExtremePointCreationMethod epCreationMethod, bool useStackingConstraints) {
       IExtremePointCreator extremePointCreator = ExtremePointCreatorFactory.CreateExtremePointCreator(epCreationMethod, useStackingConstraints);
+
       var remainingNotWeightSupportedItems = new List<int>();
       foreach (var itemId in new List<int>(remainingIds)) {
         var item = items[itemId];        
@@ -148,7 +150,6 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
             remainingNotWeightSupportedItems.Remove(saId);
           }
         }
-
       }
     }
 
