@@ -141,7 +141,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
         //Report the current progress in percent. If the callback returns true, it means the execution shall be stopped
         if (progressCallback != null) {
           curIdx++;
-          if (progressCallback((double)curIdx / count, $"Calculating impact for variable {inputVariable} ({curIdx} of {count})")) { return null; }
+          if (progressCallback((double)curIdx / count, string.Format("Calculating impact for variable {0} ({1} of {2})", inputVariable, curIdx, count))) { return null; }
         }
         var newEstimates = EvaluateModelWithReplacedVariable(solution.Model, inputVariable, modifiableDataset, rows, replacementMethod);
         var newR2 = OnlinePearsonsRCalculator.Calculate(targetValues, newEstimates, out error);
