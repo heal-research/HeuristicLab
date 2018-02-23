@@ -163,9 +163,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       solutionSeries.Tag = solution;
       solutionSeries.ChartType = SeriesChartType.FastLine;
       var residuals = GetResiduals(GetOriginalValues(), GetEstimatedValues(solution));
-      residuals.Remove(double.NaN);
-      residuals.Remove(double.NegativeInfinity);
-      residuals.Remove(double.PositiveInfinity);
 
       var maxValue = residuals.Max();
       if (maxValue >= chart.ChartAreas[0].AxisX.Maximum) {
@@ -251,12 +248,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
     protected virtual List<double> GetResiduals(IEnumerable<double> originalValues, IEnumerable<double> estimatedValues) {
       switch (residualComboBox.SelectedItem.ToString()) {
-        case "Absolute error": return originalValues.Zip(estimatedValues, (x, y) => Math.Abs(x - y)).ToList();
-        case "Squared error": return originalValues.Zip(estimatedValues, (x, y) => (x - y) * (x - y)).ToList();
+        case "Absolute error": return originalValues.Zip(estimatedValues, (x, y) => Math.Abs(x - y))
+            .Where(r => !double.IsNaN(r) && !double.IsInfinity(r)).ToList();
+        case "Squared error": return originalValues.Zip(estimatedValues, (x, y) => (x - y) * (x - y))
+            .Where(r => !double.IsNaN(r) && !double.IsInfinity(r)).ToList();
         case "Relative error":
           return originalValues.Zip(estimatedValues, (x, y) => x.IsAlmost(0.0) ? -1 : Math.Abs((x - y) / x))
-.Where(x => x > 0) // remove entries where the original value is 0
-.ToList();
+            .Where(r => r > 0 && !double.IsNaN(r) && !double.IsInfinity(r)) // remove entries where the original value is 0
+            .ToList();
         default: throw new NotSupportedException();
       }
     }
