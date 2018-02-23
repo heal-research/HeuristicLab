@@ -125,6 +125,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       List<double> estimatedValues = solution.EstimatedValues.ToList();
 
       for (int i = 0; i < solution.ProblemData.Dataset.Rows; i++) {
+        if (double.IsNaN(estimatedValues[i]) || double.IsInfinity(estimatedValues[i])) continue;
+        if (double.IsNaN(targetValues[i]) || double.IsInfinity(targetValues[i])) continue;
         double residual = estimatedValues[i] - targetValues[i];
         residuals.Add(residual);
       }

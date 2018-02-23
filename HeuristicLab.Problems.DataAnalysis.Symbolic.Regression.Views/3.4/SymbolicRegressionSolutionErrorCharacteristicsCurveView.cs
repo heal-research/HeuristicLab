@@ -22,7 +22,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics.Contracts;
 using System.Linq;
 using HeuristicLab.Algorithms.DataAnalysis;
 using HeuristicLab.MainForm;
