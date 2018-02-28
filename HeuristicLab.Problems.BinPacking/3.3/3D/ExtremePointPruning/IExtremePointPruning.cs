@@ -34,13 +34,21 @@ namespace HeuristicLab.Problems.BinPacking3D.ExtremePointPruning {
     /// <param name="pruningMethod"></param>
     /// <param name="bin"></param>
     /// <param name="positions"></param>
-    void PruneExtremePoints(ExtremePointPruningMethod pruningMethod, PackingShape bin, Dictionary<BinPacking3D, List<KeyValuePair<int, PackingPosition>>> positions);
+    void PruneExtremePoints(PackingShape bin, Dictionary<BinPacking3D, List<KeyValuePair<int, PackingPosition>>> positions);
 
     /// <summary>
     /// Prunes the extreme points of the given bins depending on the given pruning method.
     /// </summary>
     /// <param name="pruningMethod"></param>
     /// <param name="bins"></param>
-    void PruneExtremePoints(ExtremePointPruningMethod pruningMethod, IList<BinPacking3D> binPackings);
+    void PruneExtremePoints(IList<BinPacking3D> binPackings);
+
+    /// <summary>
+    /// Prunes the extreme points of the given bins depending on the given pruning method.
+    /// </summary>
+    /// <param name="pruningMethod"></param>
+    /// <param name="binPacking"></param>
+    /// <param name="layer"
+    void PruneExtremePoints(BinPacking3D binPacking, int layer);
   }
 }

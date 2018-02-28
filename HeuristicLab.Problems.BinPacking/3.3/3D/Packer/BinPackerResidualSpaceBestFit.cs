@@ -87,7 +87,7 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
         }
       }
 
-      ExtremePointPruningFactory.CreatePruning().PruneExtremePoints(epPruningMethod, packingList);
+      ExtremePointPruningFactory.CreatePruning(epPruningMethod).PruneExtremePoints(packingList);
       return packingList;
     }
 

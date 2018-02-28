@@ -27,7 +27,7 @@ using System.Threading.Tasks;
 
 namespace HeuristicLab.Problems.BinPacking3D.ExtremePointPruning {
   public static class ExtremePointPruningFactory {
-    public static IExtremePointPruning CreatePruning() {
+    public static IExtremePointPruning CreatePruning(ExtremePointPruningMethod pruningMethod) {
       return new ExtremePointPruning();
     }
   }

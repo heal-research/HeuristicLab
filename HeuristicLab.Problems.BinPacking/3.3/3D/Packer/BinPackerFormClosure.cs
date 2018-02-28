@@ -43,7 +43,7 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
     }
 
 
-      private bool ItemFitsBinShapeWidth(int itemId, PackingItem item, PackingShape binShape) {
+    private bool ItemFitsBinShapeWidth(int itemId, PackingItem item, PackingShape binShape) {
       item.Rotated = false;
       item.Tilted = false;
       if (binShape.Width % item.Width == 0) {

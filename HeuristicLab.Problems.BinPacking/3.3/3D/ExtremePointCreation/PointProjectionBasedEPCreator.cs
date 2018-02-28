@@ -48,7 +48,7 @@ namespace HeuristicLab.Problems.BinPacking3D.ExtremePointCreation {
       if (binPacking.Items.Count <= 0) {
         return;
       }
-
+      
       // generate all new extreme points parallel. This speeds up the creator.
       var items = binPacking.Items.OrderBy(x => x.Value.Layer);
       Parallel.ForEach(items.Where(x => x.Value.Layer < item.Layer), i => {
@@ -56,14 +56,13 @@ namespace HeuristicLab.Problems.BinPacking3D.ExtremePointCreation {
         PackingPosition pos = binPacking.Positions[i.Key];
         GenerateNewExtremePointsForItem(binPacking, it, pos);
       });
-      ExtremePointPruningFactory.CreatePruning().PruneExtremePoints(ExtremePointPruningMethod.PruneBehind, new List<BinPacking3D>() { binPacking });
-
+      
       Parallel.ForEach(items.Where(x => x.Value.Layer >= item.Layer), i => {
         PackingItem it = i.Value;
         PackingPosition pos = binPacking.Positions[i.Key];
         GenerateNewExtremePointsForItem(binPacking, it, pos);
       });
-      
+
       // remove not needed extreme points.
       foreach (var extremePoint in binPacking.ExtremePoints.ToList()) {
         // check if a residual space can be removed

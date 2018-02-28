@@ -44,6 +44,10 @@ namespace HeuristicLab.Problems.BinPacking3D {
       get { return (IFixedValueParameter<IntValue>)Parameters["Layer"]; }
     }
 
+    public IFixedValueParameter<IntValue> IdParameter {
+      get { return (IFixedValueParameter<IntValue>)Parameters["Id"]; }
+    }
+
     public PackingShape TargetBin {
       get { return TargetBinParameter.Value; }
       set { TargetBinParameter.Value = value; }
@@ -57,6 +61,11 @@ namespace HeuristicLab.Problems.BinPacking3D {
     public int Layer {
       get { return LayerParameter.Value.Value; }
       set { LayerParameter.Value.Value = value; }
+    }
+
+    public int Id {
+      get { return IdParameter.Value.Value; }
+      set { IdParameter.Value.Value = value; }
     }
 
     #region Material    
@@ -299,6 +308,9 @@ namespace HeuristicLab.Problems.BinPacking3D {
     public bool SupportWeight(double weigth) {
       return SupportedWeight >= weigth;
     }
+
+
+
     #endregion
 
 
@@ -313,6 +325,7 @@ namespace HeuristicLab.Problems.BinPacking3D {
       Parameters.Add(new ValueParameter<PackingShape>("TargetBin"));
       Parameters.Add(new FixedValueParameter<DoubleValue>("Weight"));
       Parameters.Add(new FixedValueParameter<IntValue>("Layer"));
+      Parameters.Add(new FixedValueParameter<IntValue>("Id"));
 
 
       Parameters.Add(new FixedValueParameter<EnumValue<MaterialType>>("MaterialTop"));
@@ -357,6 +370,7 @@ namespace HeuristicLab.Problems.BinPacking3D {
       TargetBin = (PackingShape)packingItem.TargetBin.Clone();
       Weight = packingItem.Weight;
       Layer = packingItem.Layer;
+      Id = packingItem.Id;
       Rotated = packingItem.Rotated;
       Tilted = packingItem.Tilted;
       IsStackabel = packingItem.IsStackabel;

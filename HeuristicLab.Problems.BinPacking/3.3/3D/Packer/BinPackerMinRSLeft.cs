@@ -67,7 +67,7 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
       } catch (BinPacking3DException e) {
       }
 
-      ExtremePointPruningFactory.CreatePruning().PruneExtremePoints(epPruningMethod, packingList);
+      ExtremePointPruningFactory.CreatePruning(epPruningMethod).PruneExtremePoints(packingList);
 
       return packingList;
     }
@@ -91,7 +91,7 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
       } catch (BinPacking3DException e) {
       }
 
-      ExtremePointPruningFactory.CreatePruning().PruneExtremePoints(epPruningMethod, packingList);
+      ExtremePointPruningFactory.CreatePruning(epPruningMethod).PruneExtremePoints(packingList);
     }
 
     
@@ -106,10 +106,12 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
     /// <param name="useStackingConstraints"></param>
     protected virtual void PackRemainingItems(ref IList<int> remainingIds, ref BinPacking3D packingBin, IList<PackingItem> items, ExtremePointCreationMethod epCreationMethod, bool useStackingConstraints) {
       IExtremePointCreator extremePointCreator = ExtremePointCreatorFactory.CreateExtremePointCreator(epCreationMethod, useStackingConstraints);
-
+      
       var remainingNotWeightSupportedItems = new List<int>();
       foreach (var itemId in new List<int>(remainingIds)) {
-        var item = items[itemId];        
+        var item = items[itemId];
+        var clonedPackingBin = packingBin.Clone() as BinPacking3D;
+        ExtremePointPruningFactory.CreatePruning(ExtremePointPruningMethod.PruneBehind).PruneExtremePoints(clonedPackingBin, item.Layer - 1);
 
         // If an item doesn't support any weight it should have a minimum waste of the residual space.
         // As long as there are weight supporting items left, put the non supporting items into a collection 
@@ -118,14 +120,14 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
         if (item.SupportedWeight <= 0 && useStackingConstraints && remainingIds.Any(x => items[x].SupportedWeight > 0)) {
           remainingNotWeightSupportedItems.Add(itemId);
         } else if (!item.IsStackabel) {
-          PackingPosition position = FindPackingPositionForNotStackableItem(packingBin, item, useStackingConstraints);
+          PackingPosition position = FindPackingPositionForNotStackableItem(clonedPackingBin, item, useStackingConstraints);
           // if a valid packing position could be found, the current item can be added to the given bin
           if (position != null) {
             PackItem(packingBin, itemId, item, position, extremePointCreator, useStackingConstraints);
             remainingIds.Remove(itemId);
           }
         } else  {
-          PackingPosition position = FindPackingPositionForItem(packingBin, item, useStackingConstraints);
+          PackingPosition position = FindPackingPositionForItem(clonedPackingBin, item, useStackingConstraints);
           // if a valid packing position could be found, the current item can be added to the given bin
           if (position != null) {
             PackItem(packingBin, itemId, item, position, extremePointCreator, useStackingConstraints);
@@ -139,9 +141,9 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
           item = items[saId];
           PackingPosition position = null;
           if (weightSupportedLeft) {
-            position = FindPackingPositionForWeightUnsupportedItem(packingBin, item, useStackingConstraints);
+            position = FindPackingPositionForWeightUnsupportedItem(clonedPackingBin, item, useStackingConstraints);
           } else {
-            position = FindPackingPositionForItem(packingBin, item, useStackingConstraints);
+            position = FindPackingPositionForItem(clonedPackingBin, item, useStackingConstraints);
           }
 
           if (position != null) {

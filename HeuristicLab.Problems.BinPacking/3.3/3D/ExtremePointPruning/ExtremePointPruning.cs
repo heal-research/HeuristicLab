@@ -27,13 +27,11 @@ using System.Threading.Tasks;
 
 namespace HeuristicLab.Problems.BinPacking3D.ExtremePointPruning {
   internal class ExtremePointPruning : IExtremePointPruning {
-    public void PruneExtremePoints(ExtremePointPruningMethod pruningMethod, PackingShape bin, Dictionary<BinPacking3D, List<KeyValuePair<int, PackingPosition>>> positions) {
-      if (pruningMethod == ExtremePointPruningMethod.PruneBehind) {
-        PruneExtremePointsBehind(bin, positions);
-      }
+    public void PruneExtremePoints(PackingShape bin, Dictionary<BinPacking3D, List<KeyValuePair<int, PackingPosition>>> positions) {
+      PruneExtremePointsBehind(bin, positions);
     }
 
-    public void PruneExtremePoints(ExtremePointPruningMethod pruningMethod, IList<BinPacking3D> binPackings) {
+    public void PruneExtremePoints(IList<BinPacking3D> binPackings) {
       if (binPackings.Count <= 0) {
         return;
       }
@@ -46,6 +44,17 @@ namespace HeuristicLab.Problems.BinPacking3D.ExtremePointPruning {
         }
       }
       PruneExtremePointsBehind(binPackings[0].BinShape, fixedPositions);
+    }
+
+    public void PruneExtremePoints(BinPacking3D binPacking, int layer) {
+      var pruningPositions = new List<KeyValuePair<int, PackingPosition>>();
+      var pruning = new Dictionary<BinPacking3D, List<KeyValuePair<int, PackingPosition>>>();
+      pruning.Add(binPacking, pruningPositions);
+      foreach (var item in binPacking.Items.Where(x => x.Value.Layer <= layer)) {
+        pruningPositions.Add(new KeyValuePair<int, PackingPosition>(item.Key, binPacking.Positions[item.Key]));
+      }
+
+      PruneExtremePointsBehind(binPacking.BinShape, pruning);
     }
 
 
