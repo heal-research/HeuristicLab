@@ -46,11 +46,11 @@ namespace HeuristicLab.Problems.BinPacking3D.ExtremePointPruning {
       PruneExtremePointsBehind(binPackings[0].BinShape, fixedPositions);
     }
 
-    public void PruneExtremePoints(BinPacking3D binPacking, int layer) {
+    public void PruneExtremePoints(BinPacking3D binPacking, int sequenceNumber) {
       var pruningPositions = new List<KeyValuePair<int, PackingPosition>>();
       var pruning = new Dictionary<BinPacking3D, List<KeyValuePair<int, PackingPosition>>>();
       pruning.Add(binPacking, pruningPositions);
-      foreach (var item in binPacking.Items.Where(x => x.Value.Layer <= layer)) {
+      foreach (var item in binPacking.Items.Where(x => x.Value.SequenceGroup <= sequenceNumber)) {
         pruningPositions.Add(new KeyValuePair<int, PackingPosition>(item.Key, binPacking.Positions[item.Key]));
       }
 

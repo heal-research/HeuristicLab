@@ -49,6 +49,6 @@ namespace HeuristicLab.Problems.BinPacking3D.ExtremePointPruning {
     /// <param name="pruningMethod"></param>
     /// <param name="binPacking"></param>
     /// <param name="layer"
-    void PruneExtremePoints(BinPacking3D binPacking, int layer);
+    void PruneExtremePoints(BinPacking3D binPacking, int sequenceNumber);
   }
 }

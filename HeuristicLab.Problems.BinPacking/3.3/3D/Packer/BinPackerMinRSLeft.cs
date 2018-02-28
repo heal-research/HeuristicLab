@@ -111,7 +111,7 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
       foreach (var itemId in new List<int>(remainingIds)) {
         var item = items[itemId];
         var clonedPackingBin = packingBin.Clone() as BinPacking3D;
-        ExtremePointPruningFactory.CreatePruning(ExtremePointPruningMethod.PruneBehind).PruneExtremePoints(clonedPackingBin, item.Layer - 1);
+        ExtremePointPruningFactory.CreatePruning(ExtremePointPruningMethod.PruneBehind).PruneExtremePoints(clonedPackingBin, item.SequenceGroup - 1);
 
         // If an item doesn't support any weight it should have a minimum waste of the residual space.
         // As long as there are weight supporting items left, put the non supporting items into a collection 

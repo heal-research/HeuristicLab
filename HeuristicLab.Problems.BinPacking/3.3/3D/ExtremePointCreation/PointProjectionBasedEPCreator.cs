@@ -49,15 +49,8 @@ namespace HeuristicLab.Problems.BinPacking3D.ExtremePointCreation {
         return;
       }
       
-      // generate all new extreme points parallel. This speeds up the creator.
-      var items = binPacking.Items.OrderBy(x => x.Value.Layer);
-      Parallel.ForEach(items.Where(x => x.Value.Layer < item.Layer), i => {
-        PackingItem it = i.Value;
-        PackingPosition pos = binPacking.Positions[i.Key];
-        GenerateNewExtremePointsForItem(binPacking, it, pos);
-      });
-      
-      Parallel.ForEach(items.Where(x => x.Value.Layer >= item.Layer), i => {
+      // generate all new extreme points parallel. This speeds up the creator.      
+      Parallel.ForEach(binPacking.Items, i => {
         PackingItem it = i.Value;
         PackingPosition pos = binPacking.Positions[i.Key];
         GenerateNewExtremePointsForItem(binPacking, it, pos);

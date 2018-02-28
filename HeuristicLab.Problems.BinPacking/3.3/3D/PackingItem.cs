@@ -44,6 +44,10 @@ namespace HeuristicLab.Problems.BinPacking3D {
       get { return (IFixedValueParameter<IntValue>)Parameters["Layer"]; }
     }
 
+    public IFixedValueParameter<IntValue> SequenceGroupParameter {
+      get { return (IFixedValueParameter<IntValue>)Parameters["SequenceGroup"]; }
+    }
+
     public IFixedValueParameter<IntValue> IdParameter {
       get { return (IFixedValueParameter<IntValue>)Parameters["Id"]; }
     }
@@ -63,6 +67,11 @@ namespace HeuristicLab.Problems.BinPacking3D {
       set { LayerParameter.Value.Value = value; }
     }
 
+    public int SequenceGroup {
+      get { return SequenceGroupParameter.Value.Value; }
+      set { SequenceGroupParameter.Value.Value = value; }
+    }
+    
     public int Id {
       get { return IdParameter.Value.Value; }
       set { IdParameter.Value.Value = value; }
@@ -323,8 +332,9 @@ namespace HeuristicLab.Problems.BinPacking3D {
     public PackingItem()
       : base() {
       Parameters.Add(new ValueParameter<PackingShape>("TargetBin"));
-      Parameters.Add(new FixedValueParameter<DoubleValue>("Weight"));
+      Parameters.Add(new FixedValueParameter<DoubleValue>("Weight"));      
       Parameters.Add(new FixedValueParameter<IntValue>("Layer"));
+      Parameters.Add(new FixedValueParameter<IntValue>("SequenceGroup"));
       Parameters.Add(new FixedValueParameter<IntValue>("Id"));
 
 
@@ -355,13 +365,12 @@ namespace HeuristicLab.Problems.BinPacking3D {
       this.TargetBin = (PackingShape)targetBin.Clone();
     }
 
-    public PackingItem(int width, int height, int depth, PackingShape targetBin, double weight, int layer)
+    public PackingItem(int width, int height, int depth, PackingShape targetBin, double weight, int sequenceNumber, int layer)
       : this(width, height, depth, targetBin) {
       this.Weight = weight;
       this.Layer = layer;
+      this.SequenceGroup = sequenceNumber;
     }
-
-
 
     public PackingItem(PackingItem packingItem) : this() {
       OriginalWidth = packingItem.OriginalWidth;
@@ -370,6 +379,7 @@ namespace HeuristicLab.Problems.BinPacking3D {
       TargetBin = (PackingShape)packingItem.TargetBin.Clone();
       Weight = packingItem.Weight;
       Layer = packingItem.Layer;
+      SequenceGroup = packingItem.SequenceGroup;
       Id = packingItem.Id;
       Rotated = packingItem.Rotated;
       Tilted = packingItem.Tilted;

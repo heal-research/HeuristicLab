@@ -55,7 +55,7 @@ namespace HeuristicLab.Problems.BinPacking3D.Instances {
             var rotate = GetNextInteger(reader);
             var tilt = GetNextInteger(reader);
             for (var i = 0; i < pieces; i++) {
-              PackingItem item = new PackingItem(width, height, length, Bin, weight, material) {
+              PackingItem item = new PackingItem(width, height, length, Bin, weight, 0, material) {
                 RotateEnabled = rotate == 0 ? false : true,
                 TiltEnabled = tilt == 0 ? false : true,
                 IsStackabel = stack == 0 ? false : true,
