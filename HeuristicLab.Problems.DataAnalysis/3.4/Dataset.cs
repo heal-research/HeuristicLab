@@ -37,10 +37,12 @@ namespace HeuristicLab.Problems.DataAnalysis {
     protected Dataset(bool deserializing) : base(deserializing) { }
     protected Dataset(Dataset original, Cloner cloner)
       : base(original, cloner) {
+      // no need to clone the variable values because these can't be modified
       variableValues = new Dictionary<string, IList>(original.variableValues);
       variableNames = new List<string>(original.variableNames);
       rows = original.rows;
     }
+
     public override IDeepCloneable Clone(Cloner cloner) { return new Dataset(this, cloner); }
 
     public Dataset()
@@ -57,34 +59,31 @@ namespace HeuristicLab.Problems.DataAnalysis {
     /// <param name="variableNames">The names of the variables in the dataset</param>
     /// <param name="variableValues">The values for the variables (column-oriented storage). Values are not cloned!</param>
     public Dataset(IEnumerable<string> variableNames, IEnumerable<IList> variableValues)
-      : base() {
+      : this(variableNames, variableValues, cloneValues: true) {
+    }
+
+    protected Dataset(IEnumerable<string> variableNames, IEnumerable<IList> variableValues, bool cloneValues = false) {
       Name = "-";
-      if (!variableNames.Any()) {
+
+      if (variableNames.Any()) {
+        this.variableNames = new List<string>(variableNames);
+      } else {
         this.variableNames = Enumerable.Range(0, variableValues.Count()).Select(x => "Column " + x).ToList();
-      } else if (variableNames.Count() != variableValues.Count()) {
-        throw new ArgumentException("Number of variable names doesn't match the number of columns of variableValues");
-      } else if (!variableValues.All(list => list.Count == variableValues.First().Count)) {
-        throw new ArgumentException("The number of values must be equal for every variable");
-      } else if (variableNames.Distinct().Count() != variableNames.Count()) {
-        var duplicateVariableNames =
-          variableNames.GroupBy(v => v).Where(g => g.Count() > 1).Select(g => g.Key).ToList();
-        string message = "The dataset cannot contain duplicate variables names: " + Environment.NewLine;
-        foreach (var duplicateVariableName in duplicateVariableNames)
-          message += duplicateVariableName + Environment.NewLine;
-        throw new ArgumentException(message);
       }
+      // check if the arguments are consistent (no duplicate variables, same number of rows, correct data types, ...)
+      CheckArguments(this.variableNames, variableValues);
+
       rows = variableValues.First().Count;
-      this.variableNames = new List<string>(variableNames);
-      this.variableValues = new Dictionary<string, IList>(this.variableNames.Count);
-      for (int i = 0; i < this.variableNames.Count; i++) {
-        var variableName = this.variableNames[i];
-        var values = variableValues.ElementAt(i);
 
-        if (!IsAllowedType(values)) {
-          throw new ArgumentException(string.Format("Unsupported type {0} for variable {1}.", GetElementType(values), variableName));
+      if (cloneValues) {
+        this.variableValues = CloneValues(this.variableNames, variableValues);
+      } else {
+        this.variableValues = new Dictionary<string, IList>(this.variableNames.Count);
+        for (int i = 0; i < this.variableNames.Count; i++) {
+          var variableName = this.variableNames[i];
+          var values = variableValues.ElementAt(i);
+          this.variableValues.Add(variableName, values);
         }
-
-        this.variableValues.Add(variableName, values);
       }
     }
 
@@ -237,8 +236,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
       var values = GetValues<DateTime>(variableName);
       return new ReadOnlyCollection<DateTime>(values);
     }
-
-
     private IEnumerable<T> GetValues<T>(string variableName, IEnumerable<int> rows) {
       var values = GetValues<T>(variableName);
       return rows.Select(x => values[x]);
@@ -254,7 +251,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public bool VariableHasType<T>(string variableName) {
       return variableValues[variableName] is IList<T>;
     }
-
     protected Type GetVariableType(string variableName) {
       IList list;
       variableValues.TryGetValue(variableName, out list);
@@ -262,19 +258,61 @@ namespace HeuristicLab.Problems.DataAnalysis {
         throw new ArgumentException("The variable " + variableName + " does not exist in the dataset.");
       return GetElementType(list);
     }
-
-    protected Type GetElementType(IList list) {
+    protected static Type GetElementType(IList list) {
       var type = list.GetType();
       return type.IsGenericType ? type.GetGenericArguments()[0] : type.GetElementType();
     }
-
-    protected bool IsAllowedType(IList list) {
+    protected static bool IsAllowedType(IList list) {
       var type = GetElementType(list);
       return IsAllowedType(type);
     }
-
-    protected bool IsAllowedType(Type type) {
+    protected static bool IsAllowedType(Type type) {
       return type == typeof(double) || type == typeof(string) || type == typeof(DateTime);
+    }
+
+    protected static void CheckArguments(IEnumerable<string> variableNames, IEnumerable<IList> variableValues) {
+      if (variableNames.Count() != variableValues.Count()) {
+        throw new ArgumentException("Number of variable names doesn't match the number of columns of variableValues");
+      } else if (!variableValues.All(list => list.Count == variableValues.First().Count)) {
+        throw new ArgumentException("The number of values must be equal for every variable");
+      } else if (variableNames.Distinct().Count() != variableNames.Count()) {
+        var duplicateVariableNames =
+          variableNames.GroupBy(v => v).Where(g => g.Count() > 1).Select(g => g.Key).ToList();
+        string message = "The dataset cannot contain duplicate variables names: " + Environment.NewLine;
+        foreach (var duplicateVariableName in duplicateVariableNames)
+          message += duplicateVariableName + Environment.NewLine;
+        throw new ArgumentException(message);
+      }
+      // check if all the variables are supported
+      foreach (var t in variableNames.Zip(variableValues, Tuple.Create)) {
+        var variableName = t.Item1;
+        var values = t.Item2;
+
+        if (!IsAllowedType(values)) {
+          throw new ArgumentException(string.Format("Unsupported type {0} for variable {1}.", GetElementType(values), variableName));
+        }
+      }
+    }
+
+    protected static Dictionary<string, IList> CloneValues(Dictionary<string, IList> variableValues) {
+      return variableValues.ToDictionary(x => x.Key, x => CloneValues(x.Value));
+    }
+
+    protected static Dictionary<string, IList> CloneValues(IEnumerable<string> variableNames, IEnumerable<IList> variableValues) {
+      return variableNames.Zip(variableValues, Tuple.Create).ToDictionary(x => x.Item1, x => CloneValues(x.Item2));
+    }
+
+    protected static IList CloneValues(IList values) {
+      var doubleValues = values as IList<double>;
+      if (doubleValues != null) return new List<double>(doubleValues);
+
+      var stringValues = values as IList<string>;
+      if (stringValues != null) return new List<string>(stringValues);
+
+      var dateTimeValues = values as IList<DateTime>;
+      if (dateTimeValues != null) return new List<DateTime>(dateTimeValues);
+
+      throw new ArgumentException(string.Format("Unsupported variable type {0}.", GetElementType(values)));
     }
 
     #region IStringConvertibleMatrix Members

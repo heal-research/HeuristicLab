@@ -38,24 +38,16 @@ namespace HeuristicLab.Problems.DataAnalysis {
     private ModifiableDataset(bool deserializing) : base(deserializing) { }
 
     private ModifiableDataset(ModifiableDataset original, Cloner cloner) : base(original, cloner) {
-      var variables = variableValues.Keys.ToList();
-      foreach (var v in variables) {
-        var type = GetVariableType(v);
-        if (type == typeof(DateTime)) {
-          variableValues[v] = GetDateTimeValues(v).ToList();
-        } else if (type == typeof(double)) {
-          variableValues[v] = GetDoubleValues(v).ToList();
-        } else if (type == typeof(string)) {
-          variableValues[v] = GetStringValues(v).ToList();
-        } else {
-          throw new ArgumentException("Unsupported type " + type + " for variable " + v);
-        }
-      }
+      variableNames = new List<string>(original.variableNames);
+      variableValues = CloneValues(original.variableValues);
     }
-    public override IDeepCloneable Clone(Cloner cloner) { return new ModifiableDataset(this, cloner); }
-    public ModifiableDataset() : base() { }
 
-    public ModifiableDataset(IEnumerable<string> variableNames, IEnumerable<IList> variableValues) : base(variableNames, variableValues) { }
+    public override IDeepCloneable Clone(Cloner cloner) { return new ModifiableDataset(this, cloner); }
+
+    public ModifiableDataset() { }
+
+    public ModifiableDataset(IEnumerable<string> variableNames, IEnumerable<IList> variableValues) :
+      base(variableNames, variableValues, cloneValues: false) { }
 
     public void ReplaceRow(int row, IEnumerable<object> values) {
       var list = values.ToList();
