@@ -244,6 +244,7 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
 
       packingItem.Rotated = rsd.Item.Rotated;
       packingItem.Tilted = rsd.Item.Tilted;
+
       return rsd.Position;
     }
 
@@ -253,8 +254,10 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
           $"Bin: ({packingBin.BinShape.Width} {packingBin.BinShape.Depth} {packingBin.BinShape.Height})" +
           $"Item: ({packingItem.Width} {packingItem.Depth} {packingItem.Height})");
       }
+            
+      var rsds = CalculateResidalSpaceDifferences(packingBin, packingItem, useStackingConstraints).Where(x => x != null);
+      var rsd = rsds.FirstOrDefault();
 
-      var rsd = CalculateResidalSpaceDifferences(packingBin, packingItem, useStackingConstraints).Where(x => x != null).FirstOrDefault();
 
       if (rsd == null) {
         return null;
@@ -262,6 +265,7 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
 
       packingItem.Rotated = rsd.Item.Rotated;
       packingItem.Tilted = rsd.Item.Tilted;
+      
       return rsd.Position;
     }
 

@@ -246,23 +246,6 @@ namespace HeuristicLab.Problems.BinPacking3D {
               bestEPCreation = epCreation;
             }
 
-
-            var x = Problem.SolutionEvaluator.Evaluate1(solution);
-
-            /*
-            if (double.IsNaN(result.Item2) || double.IsInfinity(result.Item2)) {
-              continue;
-            }
-
-            if (double.IsNaN(best) || Problem.Maximization && result.Item2 > best || !Problem.Maximization && result.Item2 < best) {
-              bestSolution = result.Item1;
-              best = result.Item2;
-              bestSorting = sort;
-              bestFitting = fit;
-              bestEPCreation = epCreation;
-            }
-            return true;*/
-
             if (token.IsCancellationRequested) {
               return Tuple.Create(bestSolution, best, bestSorting, bestFitting, bestEPCreation);
             }
@@ -276,16 +259,15 @@ namespace HeuristicLab.Problems.BinPacking3D {
     }
 
     /// <summary>
-    /// Returns a tuple with the solution and the packing ratio depending on the given parameters
+    /// Returns a solution depending on the given parameters
     /// </summary>
     /// <param name="parameters"></param>
     /// <returns></returns>
     private static Solution Optimize(OptimaizationParamters parameters) {
 
       var sol = parameters.Decoder.Decode(parameters.SortedItems, parameters.Bin, parameters.Items, parameters.StackingConstraints);
-      //var fit = parameters.Evaluator.Evaluate(sol);
 
-      return sol; //Tuple.Create(sol, fit);
+      return sol; 
     }
 
     private class OptimaizationParamters {
@@ -297,8 +279,7 @@ namespace HeuristicLab.Problems.BinPacking3D {
       public IEvaluator Evaluator { get; set; }
       public ExtremePointCreationMethod ExtremePointGeneration { get; set; }
     }
-
-
+    
     /// <summary>
     /// Returns a new permutation of the given items depending on the sorting method
     /// </summary>

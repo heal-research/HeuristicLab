@@ -55,7 +55,7 @@ namespace HeuristicLab.Problems.BinPacking3D.ExtremePointCreation {
         PackingPosition pos = binPacking.Positions[i.Key];
         GenerateNewExtremePointsForItem(binPacking, it, pos);
       });
-
+      
       // remove not needed extreme points.
       foreach (var extremePoint in binPacking.ExtremePoints.ToList()) {
         // check if a residual space can be removed

@@ -68,7 +68,6 @@ namespace HeuristicLab.Problems.BinPacking3D.Encoding {
     protected ExtremePointPermutationDecoder(ExtremePointPermutationDecoder original, Cloner cloner)
       : base(original, cloner) {
       fittingMethodParameter = cloner.Clone(original.fittingMethodParameter);
-      //_binPacker = cloner.Clone(original._binPacker);
     }
     public ExtremePointPermutationDecoder() {
       Parameters.Add(fittingMethodParameter = 
@@ -85,10 +84,7 @@ namespace HeuristicLab.Problems.BinPacking3D.Encoding {
     public override IDeepCloneable Clone(Cloner cloner) {
       return new ExtremePointPermutationDecoder(this, cloner);
     }
-
-    /*[Storable]
-    BinPacker _binPacker;
-    */
+    
     /// <summary>
     /// Creates a solution for displaying it on the HEAL gui
     /// </summary>
@@ -107,16 +103,7 @@ namespace HeuristicLab.Problems.BinPacking3D.Encoding {
         solution.Bins.Add(packedBin);
       }
       return solution;
-    }
-
-    Permutation AddOffset(Permutation p, int offset) {
-      var s = p.ToArray();
-      for (int i = 0; i < s.Length; i++) {
-        s[i] += offset;
-      }
-      
-      return new Permutation(PermutationTypes.Absolute, s);
-    }
+    }    
   }
 }
 

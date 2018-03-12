@@ -80,7 +80,7 @@ namespace HeuristicLab.Problems.BinPacking3D.Evaluators {
       return cnt;
     }
 
-    public Tuple<int, double, int, int> Evaluate1(Solution solution) {
+    public Tuple<int, double, int, int> EvaluateBinPacking(Solution solution) {
 
 
       var res = Tuple.Create<int, double, int, int>(

@@ -231,12 +231,7 @@ namespace HeuristicLab.Problems.BinPacking3D.ExtremePointCreation {
     /// <param name="residualSpaces"></param>
     /// <returns></returns>
     protected bool IsWithinResidualSpaceOfAnotherExtremePoint(BinPacking3D binPacking, Vector3D pos, IEnumerable<ResidualSpace> residualSpaces) {
-      foreach (var residualSpace in residualSpaces) {
-        if (IsWithinResidualSpaceOfAnotherExtremePoint(binPacking, pos, residualSpace)) {
-          return true;
-        }
-      }
-      return false;
+      return residualSpaces.Any(x => IsWithinResidualSpaceOfAnotherExtremePoint(binPacking, pos, x));
     }
 
 
@@ -261,11 +256,6 @@ namespace HeuristicLab.Problems.BinPacking3D.ExtremePointCreation {
     /// <param name="rsEp"></param>
     /// <returns></returns>
     protected virtual bool IsWithinResidualSpaceOfAnotherExtremePoint(Vector3D pos, ResidualSpace rsPos, PackingPosition ep, ResidualSpace rsEp) {
-      /*old implementation
-      return rsEp.Width >= pos.X - ep.X + rsPos.Width
-          && rsEp.Height >= pos.Y - ep.Y + rsPos.Height
-          && rsEp.Depth >= pos.Z - ep.Z + rsPos.Depth;*/
-
       var x = pos.X >= ep.X && pos.X + rsPos.Width <= ep.X + rsEp.Width;
       var y = pos.Y >= ep.Y && pos.Y + rsPos.Height <= ep.Y + rsEp.Height;
       var z = pos.Z >= ep.Z && pos.Z + rsPos.Depth <= ep.Z + rsEp.Depth;
@@ -293,8 +283,8 @@ namespace HeuristicLab.Problems.BinPacking3D.ExtremePointCreation {
                              .Concat(new[] { new Plane3D(binPacking.BinShape, Side.Back) })
                              .Select(x => x.Intersect(line))
                              .Where(x => x != null && x.Z <= pos.Z);
-      if (m.Where(x => x != null).Any()) {
-        return m.MaxItems(x => x.Y).First();
+      if (m.Any(x => x != null)) {
+        return m.MaxItems(x => x.Z).FirstOrDefault();
       }
       return null;
     }
@@ -306,8 +296,8 @@ namespace HeuristicLab.Problems.BinPacking3D.ExtremePointCreation {
                   .Concat(new[] { new Plane3D(binPacking.BinShape, Side.Left) })
                   .Select(x => x.Intersect(line))
                   .Where(x => x != null && x.X <= pos.X);
-      if (m.Where(x => x != null).Any()) {
-        return m.MaxItems(x => x.Y).First();
+      if (m.Any(x => x != null)) {
+        return m.MaxItems(x => x.X).FirstOrDefault();
       }
       return null;
     }
@@ -319,8 +309,8 @@ namespace HeuristicLab.Problems.BinPacking3D.ExtremePointCreation {
                   .Concat(new[] { new Plane3D(binPacking.BinShape, Side.Bottom) })
                   .Select(x => x.Intersect(line))
                   .Where(x => x != null && x.Y <= pos.Y);
-      if (m.Where(x => x != null).Any()) {
-        return m.MaxItems(x => x.Y).First();
+      if (m.Any(x => x != null)) {
+        return m.MaxItems(x => x.Y).FirstOrDefault();
       }
       return null;
     }
@@ -332,8 +322,8 @@ namespace HeuristicLab.Problems.BinPacking3D.ExtremePointCreation {
                   .Concat(new[] { new Plane3D(binPacking.BinShape, Side.Front) })
                   .Select(x => x.Intersect(line))
                   .Where(x => x != null && x.Z >= pos.Z);
-      if (m.Where(x => x != null).Any()) {
-        return m.MaxItems(x => x.Y).First();
+      if (m.Any(x => x != null)) {
+        return m.MinItems(x => x.Z).FirstOrDefault();
       }
       return null;
     }
@@ -345,8 +335,8 @@ namespace HeuristicLab.Problems.BinPacking3D.ExtremePointCreation {
                   .Concat(new[] { new Plane3D(binPacking.BinShape, Side.Right) })
                   .Select(x => x.Intersect(line))
                   .Where(x => x != null && x.X >= pos.X);
-      if (m.Where(x => x != null).Any()) {
-        return m.MaxItems(x => x.Y).First();
+      if (m.Any(x => x != null)) {
+        return m.MinItems(x => x.X).FirstOrDefault();
       }
       return null;
     }
@@ -358,8 +348,8 @@ namespace HeuristicLab.Problems.BinPacking3D.ExtremePointCreation {
                   .Concat(new[] { new Plane3D(binPacking.BinShape, Side.Top) })
                   .Select(x => x.Intersect(line))
                   .Where(x => x != null && x.Y >= pos.Y);
-      if (m.Where(x => x != null).Any()) {
-        return m.MaxItems(x => x.Y).First();
+      if (m.Any(x => x != null)) {
+        return m.MinItems(x => x.Y).FirstOrDefault();
       }
       return null;
     }

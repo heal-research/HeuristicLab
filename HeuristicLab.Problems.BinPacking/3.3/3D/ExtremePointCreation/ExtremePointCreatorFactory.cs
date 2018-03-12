@@ -27,10 +27,17 @@ using System.Threading.Tasks;
 
 namespace HeuristicLab.Problems.BinPacking3D.ExtremePointCreation {
   public static class ExtremePointCreatorFactory {
-    public static IExtremePointCreator CreateExtremePointCreator(ExtremePointCreationMethod epGenerationMethod, bool useStackingConstraints) {
-      if (epGenerationMethod == ExtremePointCreationMethod.PointProjection) {
+    
+    /// <summary>
+    /// Returns an extreme point creator depending on the given creation method.
+    /// </summary>
+    /// <param name="epCreationMethod"></param>
+    /// <param name="useStackingConstraints"></param>
+    /// <returns></returns>
+    public static IExtremePointCreator CreateExtremePointCreator(ExtremePointCreationMethod epCreationMethod, bool useStackingConstraints) {
+      if (epCreationMethod == ExtremePointCreationMethod.PointProjection) {
         return new PointProjectionBasedEPCreator();
-      } else if (epGenerationMethod == ExtremePointCreationMethod.LineProjection) {
+      } else if (epCreationMethod == ExtremePointCreationMethod.LineProjection) {
         return new LineProjectionBasedEPCreator();
       }
       return new PointProjectionBasedEPCreator();

@@ -41,7 +41,7 @@ namespace HeuristicLab.Problems.BinPacking3D {
     }
 
     public bool IsBetterThan(Solution other, IEvaluator evaluator, bool problemMaximization = true) {
-      var evaluatedThis = evaluator.Evaluate1(this);
+      var evaluatedThis = evaluator.EvaluateBinPacking(this);
 
       if (double.IsInfinity(evaluatedThis.Item2) || double.IsNaN(evaluatedThis.Item2)) {
         return false;
@@ -51,7 +51,7 @@ namespace HeuristicLab.Problems.BinPacking3D {
         return true;
       }
 
-      var evaluatedOther = evaluator.Evaluate1(other);
+      var evaluatedOther = evaluator.EvaluateBinPacking(other);
       if (evaluatedThis.Item1 < evaluatedOther.Item1) {
         return true;
       } else if (evaluatedThis.Item1 > evaluatedOther.Item1) {
