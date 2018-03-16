@@ -94,7 +94,7 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
       ExtremePointPruningFactory.CreatePruning(epPruningMethod).PruneExtremePoints(packingList);
     }
 
-    
+
 
     /// <summary>
     /// Tries to pack the remainig items into a given BinPacking3D object. Each item could be packed into the BinPacking3D object will be removed from the list of remaining ids
@@ -106,7 +106,7 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
     /// <param name="useStackingConstraints"></param>
     protected virtual void PackRemainingItems(ref IList<int> remainingIds, ref BinPacking3D packingBin, IList<PackingItem> items, ExtremePointCreationMethod epCreationMethod, bool useStackingConstraints) {
       IExtremePointCreator extremePointCreator = ExtremePointCreatorFactory.CreateExtremePointCreator(epCreationMethod, useStackingConstraints);
-      
+
       var remainingNotWeightSupportedItems = new List<int>();
       foreach (var itemId in new List<int>(remainingIds)) {
         var item = items[itemId];
@@ -117,7 +117,7 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
         // As long as there are weight supporting items left, put the non supporting items into a collection 
         // and try to find positions where they don't waste too much space.
         // If there are no weight supporting items left the non supporting ones have to be treated as a supporting one.
-        if (item.SupportedWeight <= 0 && useStackingConstraints && remainingIds.Any(x => items[x].SupportedWeight > 0)) {
+        if (item.IsStackabel && item.SupportedWeight <= 0 && useStackingConstraints && remainingIds.Any(x => items[x].SupportedWeight > 0)) {
           remainingNotWeightSupportedItems.Add(itemId);
         } else if (!item.IsStackabel) {
           PackingPosition position = FindPackingPositionForNotStackableItem(clonedPackingBin, item, useStackingConstraints);
@@ -126,7 +126,7 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
             PackItem(packingBin, itemId, item, position, extremePointCreator, useStackingConstraints);
             remainingIds.Remove(itemId);
           }
-        } else  {
+        } else {
           PackingPosition position = FindPackingPositionForItem(clonedPackingBin, item, useStackingConstraints);
           // if a valid packing position could be found, the current item can be added to the given bin
           if (position != null) {
@@ -202,12 +202,12 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
           }
         }
       }
-      var d =  rsds.Where(x => packingBin.IsPositionFeasible(x.Item, x.Position, useStackingConstraints)).FirstOrDefault();
+      var d = rsds.FirstOrDefault(x => packingBin.IsPositionFeasible(x.Item, x.Position, useStackingConstraints));
 
       if (d == null) {
         return null;
       }
-
+      
       packingItem.Rotated = orientation.Item2;
       packingItem.Tilted = orientation.Item3;
       return d.Position;
@@ -254,7 +254,7 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
           $"Bin: ({packingBin.BinShape.Width} {packingBin.BinShape.Depth} {packingBin.BinShape.Height})" +
           $"Item: ({packingItem.Width} {packingItem.Depth} {packingItem.Height})");
       }
-            
+
       var rsds = CalculateResidalSpaceDifferences(packingBin, packingItem, useStackingConstraints).Where(x => x != null);
       var rsd = rsds.FirstOrDefault();
 
@@ -265,7 +265,7 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
 
       packingItem.Rotated = rsd.Item.Rotated;
       packingItem.Tilted = rsd.Item.Tilted;
-      
+
       return rsd.Position;
     }
 
@@ -318,7 +318,13 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
           }
         }
       }
-      return rsds.Where(rsd => packingBin.IsPositionFeasible(rsd.Item, rsd.Position, useStackingConstraints)).FirstOrDefault();
+
+      // If the packer uses line projection it migth happen, that an extreme point right of the disired on will be chosen.
+      // To avoid this, if there is an extreme point on the rigth side available this point will be returned.
+      var possible = rsds.Where(rsd => packingBin.IsPositionFeasible(rsd.Item, rsd.Position, useStackingConstraints));
+      var prevered = possible.FirstOrDefault();
+
+      return possible.Where(x => x.Position.Z == prevered.Position.Z && x.Position.Y == prevered.Position.Y).OrderBy(x => x.Position.X).FirstOrDefault();
     }
 
     protected override bool CheckItemDimensions(BinPacking3D packingBin, PackingItem item) {
@@ -399,6 +405,10 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
         }
 
         return 0;
+      }
+
+      public override string ToString() {
+        return string.Format("({1},{2},{3})", X, Y, Z);
       }
     }
 
