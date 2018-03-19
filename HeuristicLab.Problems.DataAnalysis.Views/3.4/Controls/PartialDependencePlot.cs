@@ -214,11 +214,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
       // Configure axis
       chart.CustomizeAllChartAreas();
-      chart.ChartAreas[0].CursorX.IsUserSelectionEnabled = true;
-      chart.ChartAreas[0].CursorX.Interval = 0;
-
-      chart.ChartAreas[0].CursorY.IsUserSelectionEnabled = true;
-      chart.ChartAreas[0].CursorY.Interval = 0;
+      chart.ChartAreas[0].CursorX.IsUserSelectionEnabled = false;
+      chart.ChartAreas[0].CursorY.IsUserSelectionEnabled = false;
 
       chart.ChartAreas[0].Axes.ToList().ForEach(x => { x.ScaleView.Zoomable = false; });
 
