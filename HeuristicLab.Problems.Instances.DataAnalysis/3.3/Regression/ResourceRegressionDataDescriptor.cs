@@ -24,7 +24,7 @@ using System.Linq;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
   public abstract class ResourceRegressionDataDescriptor : RegressionDataDescriptor {
-    internal string ResourceName { get; set; }
+    public string ResourceName { get; set; }
 
     public bool CheckVariableNames(IEnumerable<string> VariableNames) {
       return this.VariableNames.All(x => VariableNames.Contains(x));
