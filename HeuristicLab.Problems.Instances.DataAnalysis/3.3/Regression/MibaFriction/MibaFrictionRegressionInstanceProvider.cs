@@ -46,15 +46,15 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
 
     public override IEnumerable<IDataDescriptor> GetDataDescriptors() {
       List<ResourceRegressionDataDescriptor> descriptorList = new List<ResourceRegressionDataDescriptor>();
-      descriptorList.Add(new CF1() { ResourceName = "CF1.csv" });
-      descriptorList.Add(new CF2() { ResourceName = "CF2.csv" });
-      descriptorList.Add(new CF3() { ResourceName = "CF3.csv" });
-      descriptorList.Add(new CF4() { ResourceName = "CF4.csv" });
-      descriptorList.Add(new NvhRating() { ResourceName = "NvhRating.csv" });
-      descriptorList.Add(new Temp1() { ResourceName = "Temp1.csv" });
-      descriptorList.Add(new Temp2() { ResourceName = "Temp2.csv" });
-      descriptorList.Add(new Wear1() { ResourceName = "Wear1.csv" });
-      descriptorList.Add(new Wear2() { ResourceName = "Wear2.csv" });
+      descriptorList.Add(new CF1("CF1.csv"));
+      descriptorList.Add(new CF2("CF2.csv"));
+      descriptorList.Add(new CF3("CF3.csv"));
+      descriptorList.Add(new CF4("CF4.csv"));
+      descriptorList.Add(new NvhRating("NvhRating.csv"));
+      descriptorList.Add(new Temp1("Temp1.csv"));
+      descriptorList.Add(new Temp2("Temp2.csv"));
+      descriptorList.Add(new Wear1("Wear1.csv"));
+      descriptorList.Add(new Wear2("Wear2.csv"));
 
       return descriptorList;
     }

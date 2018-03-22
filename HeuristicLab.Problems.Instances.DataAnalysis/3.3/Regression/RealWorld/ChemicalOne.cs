@@ -21,6 +21,7 @@
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
   public class ChemicalOne : ResourceRegressionDataDescriptor {
+    public ChemicalOne(string resourceName) : base(resourceName) { }
     public override string Name { get { return "Chemical-I"; } }
     public override string Description { get { return ""; } }
     protected override string TargetVariable { get { return "y"; } }
