@@ -39,13 +39,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public virtual void CalculateImpactAndReplacementValues(ISymbolicDataAnalysisModel model, ISymbolicExpressionTreeNode node, IDataAnalysisProblemData problemData, IEnumerable<int> rows,
         out double impactValue, out double replacementValue, out double newQualityForImpactsCalculation,
         double qualityForImpactsCalculation = double.NaN) {
-      if (double.IsNaN(qualityForImpactsCalculation))
-        qualityForImpactsCalculation = CalculateQualityForImpacts(model, problemData, rows);
 
       var cloner = new Cloner();
       var tempModel = cloner.Clone(model);
-      var tempModelNode = (ISymbolicExpressionTreeNode)cloner.GetClone(node);
 
+      if (double.IsNaN(qualityForImpactsCalculation)) {
+        qualityForImpactsCalculation = CalculateQualityForImpacts(tempModel, problemData, rows);
+      }
+
+      var tempModelNode = (ISymbolicExpressionTreeNode)cloner.GetClone(node);
       var tempModelParentNode = tempModelNode.Parent;
       int i = tempModelParentNode.IndexOfSubtree(tempModelNode);
 
@@ -53,7 +55,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       double bestImpactValue = double.PositiveInfinity;
       newQualityForImpactsCalculation = qualityForImpactsCalculation; // initialize
       // try the potentially reasonable replacement values and use the best one
-      foreach (var repValue in CalculateReplacementValues(node, model.SymbolicExpressionTree, model.Interpreter, problemData.Dataset, problemData.TrainingIndices)) {
+      foreach (var repValue in CalculateReplacementValues(node, model.SymbolicExpressionTree, model.Interpreter, problemData.Dataset, rows)) {
         tempModelParentNode.RemoveSubtree(i);
 
         var constantNode = new ConstantTreeNode(new Constant()) { Value = repValue };
