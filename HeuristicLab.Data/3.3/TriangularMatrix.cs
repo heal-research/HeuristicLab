@@ -74,12 +74,13 @@ namespace HeuristicLab.Data {
     // the indexing rule for the (lower-)triangular matrix is that always i <= j, otherwise an IndexOutOfBounds exception will occur 
     public override T this[int rowIndex, int columnIndex] {
       get {
-        if (columnIndex > rowIndex) return default(T); // upper triangular half is zero (default value of T)
+        // provide symmetry of returned values 
+        if (columnIndex > rowIndex) return this[columnIndex, rowIndex];
         return storage[rowIndex * (rowIndex + 1) / 2 + columnIndex];
       }
       set {
-        if (columnIndex > rowIndex) throw new NotSupportedException();
-        storage[rowIndex * (rowIndex + 1) / 2 + columnIndex] = value;
+        if (columnIndex > rowIndex) this[columnIndex, rowIndex] = value;
+        else storage[rowIndex * (rowIndex + 1) / 2 + columnIndex] = value;
       }
     }
 
