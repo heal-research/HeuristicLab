@@ -202,6 +202,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             }
             return sum / currentInstr.nArguments;
           }
+        case OpCodes.Absolute: {
+            return Math.Abs(Evaluate(dataset, ref row, state));
+          }
         case OpCodes.Cos: {
             return Math.Cos(Evaluate(dataset, ref row, state));
           }

@@ -220,6 +220,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             s += code[instr.childIndex + j].value;
           }
           instr.value = s / instr.nArguments;
+        } else if (instr.opCode == OpCodes.Absolute) {
+          instr.value = Math.Abs(code[instr.childIndex].value);
         } else if (instr.opCode == OpCodes.Cos) {
           instr.value = Math.Cos(code[instr.childIndex].value);
         } else if (instr.opCode == OpCodes.Sin) {

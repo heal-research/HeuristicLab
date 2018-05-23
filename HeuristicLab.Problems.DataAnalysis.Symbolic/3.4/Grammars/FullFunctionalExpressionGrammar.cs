@@ -52,6 +52,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var cos = new Cosine();
       var tan = new Tangent();
       var log = new Logarithm();
+      var abs = new Absolute();
       var pow = new Power();
       pow.InitialFrequency = 0.0;
       var square = new Square();
@@ -122,10 +123,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       autoregressiveVariable.InitialFrequency = 0.0;
       autoregressiveVariable.Enabled = false;
 
-      var allSymbols = new List<Symbol>() { add, sub, mul, div, mean, sin, cos, tan, log, square, pow, sqrt, root, exp,
+      var allSymbols = new List<Symbol>() { add, sub, mul, div, mean, abs, sin, cos, tan, log, square, pow, sqrt, root, exp,
         airyA, airyB, bessel, cosineIntegral, dawson, erf, expIntegralEi, fresnelCosineIntegral, fresnelSineIntegral, gamma, hypCosineIntegral, hypSineIntegral, norm, psi, sineIntegral,
         @if, gt, lt, and, or, not,xor, timeLag, integral, derivative, constant, variableSymbol, binFactorVariable, factorVariable, laggedVariable,autoregressiveVariable, variableCondition };
-      var unaryFunctionSymbols = new List<Symbol>() { square, sqrt, sin, cos, tan, log, exp, not, timeLag, integral, derivative,
+      var unaryFunctionSymbols = new List<Symbol>() { abs, square, sqrt, sin, cos, tan, log, exp, not, timeLag, integral, derivative,
         airyA, airyB, bessel, cosineIntegral, dawson, erf, expIntegralEi, fresnelCosineIntegral, fresnelSineIntegral, gamma, hypCosineIntegral, hypSineIntegral, norm, psi, sineIntegral
       };
 

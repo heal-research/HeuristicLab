@@ -69,6 +69,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var root = new Root();
       var sqrt = new SquareRoot();
       var exp = new Exponential();
+      var abs = new Absolute();
 
       var airyA = new AiryA();
       var airyB = new AiryB();
@@ -110,7 +111,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       #endregion
 
       #region group symbol declaration
-      var arithmeticSymbols = new GroupSymbol(ArithmeticFunctionsName, new List<ISymbol>() { add, sub, mul, div, mean });
+      var arithmeticSymbols = new GroupSymbol(ArithmeticFunctionsName, new List<ISymbol>() { add, sub, mul, div, mean, abs });
       var trigonometricSymbols = new GroupSymbol(TrigonometricFunctionsName, new List<ISymbol>() { sin, cos, tan });
       var exponentialAndLogarithmicSymbols = new GroupSymbol(ExponentialFunctionsName, new List<ISymbol> { exp, log });
       var specialFunctions = new GroupSymbol(SpecialFunctionsName, new List<ISymbol> { airyA, airyB, bessel, cosineIntegral, dawson, erf, expIntegralEi,
@@ -230,6 +231,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     public void ConfigureAsDefaultRegressionGrammar() {
       Symbols.First(s => s is Average).Enabled = false;
+      Symbols.First(s => s is Absolute).Enabled = false;
       Symbols.First(s => s.Name == TrigonometricFunctionsName).Enabled = false;
       Symbols.First(s => s.Name == PowerFunctionsName).Enabled = false;
       Symbols.First(s => s.Name == SpecialFunctionsName).Enabled = false;
@@ -241,6 +243,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       Symbols.First(s => s is Average).Enabled = false;
       Symbols.First(s => s is VariableCondition).Enabled = false;
       Symbols.First(s => s is Xor).Enabled = false;
+      Symbols.First(s => s is Absolute).Enabled = false;
       Symbols.First(s => s.Name == TrigonometricFunctionsName).Enabled = false;
       Symbols.First(s => s.Name == ExponentialFunctionsName).Enabled = false;
       Symbols.First(s => s.Name == SpecialFunctionsName).Enabled = false;
@@ -250,6 +253,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     public void ConfigureAsDefaultTimeSeriesPrognosisGrammar() {
       Symbols.First(s => s is Average).Enabled = false;
+      Symbols.First(s => s is Absolute).Enabled = false;
       Symbols.First(s => s.Name == TrigonometricFunctionsName).Enabled = false;
       Symbols.First(s => s.Name == PowerFunctionsName).Enabled = false;
       Symbols.First(s => s.Name == ConditionalSymbolsName).Enabled = false;
