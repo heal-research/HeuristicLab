@@ -166,6 +166,8 @@
     <Compile Include="Regression\MibaFriction\CF2.cs" />
     <Compile Include="Regression\MibaFriction\CF1.cs" />
     <Compile Include="Regression\MibaFriction\MibaFrictionRegressionInstanceProvider.cs" />
+    <Compile Include="Regression\PennML\PennMLRegressionDataDescriptor.cs" />
+    <Compile Include="Regression\PennML\PennMLRegressionInstanceProvider.cs" />
     <Compile Include="Regression\VariableNetworks\LinearVariableNetwork.cs" />
     <Compile Include="Regression\VariableNetworks\GaussianProcessVariableNetwork.cs" />
     <Compile Include="Regression\VariableNetworks\VariableNetwork.cs" />
@@ -256,6 +258,7 @@
     <None Include="Properties\AssemblyInfo.cs.frame" />
     <EmbeddedResource Include="Regression\Data\RegressionRealWorld.zip" />
     <EmbeddedResource Include="Regression\Data\MibaFriction.zip" />
+    <EmbeddedResource Include="Regression\Data\PennML.zip" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">
@@ -307,6 +310,7 @@
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
