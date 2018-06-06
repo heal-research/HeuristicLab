@@ -23,7 +23,7 @@ using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Data;
 
-namespace HeuristicLab.Problems.Instances.DataAnalysis.Regression.PennML {
+namespace HeuristicLab.Problems.Instances.DataAnalysis {
   public class PennMLRegressionDataDescriptor : ResourceRegressionDataDescriptor {
     private readonly string[] variableNames;
     private readonly string[] allowedInputVariables;

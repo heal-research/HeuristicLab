@@ -27,7 +27,7 @@ using System.IO.Compression;
 using System.Linq;
 using HeuristicLab.Data;
 
-namespace HeuristicLab.Problems.Instances.DataAnalysis.Regression.PennML {
+namespace HeuristicLab.Problems.Instances.DataAnalysis {
   public class PennMLRegressionInstanceProvider : ResourceRegressionInstanceProvider {
     public override string Name {
       get { return "PennML Regression Problems"; }
