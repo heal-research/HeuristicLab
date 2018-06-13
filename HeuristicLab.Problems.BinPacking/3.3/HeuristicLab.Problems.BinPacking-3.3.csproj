@@ -127,7 +127,7 @@
     <Compile Include="3D\Geometry\Vector3D.cs" />
     <Compile Include="3D\Packer\BinPackerFreeVolumeBestFit.cs" />
     <Compile Include="3D\Packer\BinPackerMinRSLeft.cs" />
-    <Compile Include="3D\Packer\BinPackerFormClosure.cs" />
+    <Compile Include="3D\Packer\BinPackerWidthBestFit.cs" />
     <Compile Include="3D\Packer\BinPackerResidualSpaceBestFit.cs" />
     <Compile Include="3D\Instances\ThreeDInstanceDescriptor.cs" />
     <Compile Include="3D\Instances\BPPData.cs" />

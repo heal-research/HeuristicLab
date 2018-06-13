@@ -168,11 +168,13 @@ namespace HeuristicLab.Problems.BinPacking._3D.Instances.Tests {
     private void TestExtremePointAlgorithm(RandomInstanceProvider randomInstanceProvider, int @class) {
       foreach (SortingMethod sortingMethod in Enum.GetValues(typeof(SortingMethod))) {
         //foreach (FittingMethod fittingMethod in Enum.GetValues(typeof(FittingMethod))) {
-        FittingMethod fittingMethod = FittingMethod.FirstFit;
-        foreach (ExtremePointCreationMethod epCreationMethod in Enum.GetValues(typeof(ExtremePointCreationMethod))) {
+        FittingMethod fittingMethod = FittingMethod.FreeVolumeBestFit;
+        TestExtremePointAlgorithmByParameters(randomInstanceProvider, @class, sortingMethod, fittingMethod, ExtremePointCreationMethod.LineProjection);
+
+        /*foreach (ExtremePointCreationMethod epCreationMethod in Enum.GetValues(typeof(ExtremePointCreationMethod))) {
           TestExtremePointAlgorithmByParameters(randomInstanceProvider, @class, sortingMethod, fittingMethod, epCreationMethod);
-        }
-        
+        }*/
+
         //}
       }
     }
@@ -182,36 +184,43 @@ namespace HeuristicLab.Problems.BinPacking._3D.Instances.Tests {
       var referenceValues = GetReferenceAlgorithmValues();
       foreach (var numItems in NUMBER_OF_TEST_ITEMS) {
         int sumNumberOfBins = 0;
-        for (int instance = 1; instance <= NUMBER_OF_TEST_INSTANCES; instance++) {
-          string name = string.Format("n={0}-id={1:00} (class={2})", numItems, instance, @class);
-          var selectedDataDescriptor = dataDescriptors.Where(dataDescriptor => dataDescriptor.Name == name);
-          Assert.IsNotNull(selectedDataDescriptor?.First());
-          var packingData = randomInstanceProvider.LoadData(selectedDataDescriptor.First());
-
-          ExtremePointAlgorithm algorithm = new ExtremePointAlgorithm();
-          algorithm.SortingMethodParameter.Value.Value = sortingMethod;
-          algorithm.FittingMethodParameter.Value.Value = fittingMethod;
-          algorithm.ExtremePointCreationMethodParameter.Value.Value = epCreationMethod;
-          algorithm.Problem.Load(packingData);
-
-          algorithm.Start();
-
-          PackingPlan<BinPacking3D.PackingPosition, PackingShape, PackingItem> bestPackingPlan = null;
-          foreach (Optimization.IResult result in algorithm.Results) {
-            if (result.Name == "Best Solution") {
-              bestPackingPlan = (PackingPlan<BinPacking3D.PackingPosition, PackingShape, PackingItem>)result.Value;
-              break;
-            }
-          }
-
-          sumNumberOfBins += bestPackingPlan.NrOfBins;
-        }
 
         double referenceValue = 0.0;
-
         if (referenceValues.TryGetValue(new Tuple<int, int, SortingMethod>(@class, numItems, sortingMethod), out referenceValue)) {
-          Console.WriteLine($"{numItems}-{@class}-{sortingMethod}-{epCreationMethod}: \tReference: {referenceValue} \tImplementation: {(double)sumNumberOfBins / (double)NUMBER_OF_TEST_INSTANCES} \t{(referenceValue - ((double)sumNumberOfBins / (double)NUMBER_OF_TEST_INSTANCES)):F2}");
-          Assert.AreEqual(referenceValue, (double)sumNumberOfBins / (double)NUMBER_OF_TEST_INSTANCES, 20.0);
+          for (int instance = 1; instance <= NUMBER_OF_TEST_INSTANCES; instance++) {
+            string name = string.Format("n={0}-id={1:00} (class={2})", numItems, instance, @class);
+            var selectedDataDescriptor = dataDescriptors.Where(dataDescriptor => dataDescriptor.Name == name);
+            Assert.IsNotNull(selectedDataDescriptor?.First());
+            var packingData = randomInstanceProvider.LoadData(selectedDataDescriptor.First());
+
+            ExtremePointAlgorithm algorithm = new ExtremePointAlgorithm();
+            algorithm.SortingMethodParameter.Value.Value = sortingMethod;
+            algorithm.FittingMethodParameter.Value.Value = fittingMethod;
+            algorithm.ExtremePointCreationMethodParameter.Value.Value = epCreationMethod;
+            algorithm.SortByMaterialParameter.Value.Value = false;
+
+            algorithm.Problem.UseStackingConstraintsParameter.Value.Value = false;
+            algorithm.Problem.Load(packingData);
+
+            algorithm.Start();
+
+            PackingPlan<BinPacking3D.PackingPosition, PackingShape, PackingItem> bestPackingPlan = null;
+            foreach (Optimization.IResult result in algorithm.Results) {
+              if (result.Name == "Best Solution") {
+                bestPackingPlan = (PackingPlan<BinPacking3D.PackingPosition, PackingShape, PackingItem>)result.Value;
+                break;
+              }
+            }
+
+            sumNumberOfBins += bestPackingPlan.NrOfBins;
+          }
+        
+          //Console.WriteLine($"{numItems};{@class};{sortingMethod};{epCreationMethod};: \tReference: ;{referenceValue}; \tImplementation: ;{(double)sumNumberOfBins / (double)NUMBER_OF_TEST_INSTANCES}; \t;{(referenceValue - ((double)sumNumberOfBins / (double)NUMBER_OF_TEST_INSTANCES)):F2};");
+          var implementation = (double)sumNumberOfBins / (double)NUMBER_OF_TEST_INSTANCES;
+          var enhancement = (referenceValue * 100 / implementation) - 100;
+          Console.WriteLine($"{@class};{numItems};{sortingMethod};{enhancement:F2} %;{referenceValue};{implementation}");
+//          Console.WriteLine($"{numItems}-{@class}-{sortingMethod}-{epCreationMethod}: \tReference: {referenceValue} \tImplementation: {(double)sumNumberOfBins / (double)NUMBER_OF_TEST_INSTANCES} \t{(referenceValue - ((double)sumNumberOfBins / (double)NUMBER_OF_TEST_INSTANCES)):F2}");
+          //Assert.AreEqual(referenceValue, (double)sumNumberOfBins / (double)NUMBER_OF_TEST_INSTANCES, 20.0);
         }
       }
     }

@@ -52,8 +52,8 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
         case FittingMethod.MinimumResidualSpaceLeft:
           binPacker = new BinPackerMinRSLeft();
           break;
-        case FittingMethod.FormClosure:
-          binPacker = new BinPackerFormClosure();
+        case FittingMethod.WidthBestFit:
+          binPacker = new BinPackerWidthBestFit();
           break;
         default:
           throw new ArgumentException("Unknown fitting method: " + fittingMethod);

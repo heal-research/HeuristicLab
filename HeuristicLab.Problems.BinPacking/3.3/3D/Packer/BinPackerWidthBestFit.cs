@@ -9,20 +9,20 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.BinPacking3D.ExtremePointCreation;
 
 namespace HeuristicLab.Problems.BinPacking3D.Packer {
-  internal class BinPackerFormClosure : BinPackerMinRSLeft {
+  internal class BinPackerWidthBestFit : BinPackerMinRSLeft {
 
     #region Constructors for HEAL
     [StorableConstructor]
-    protected BinPackerFormClosure(bool deserializing) : base(deserializing) { }
+    protected BinPackerWidthBestFit(bool deserializing) : base(deserializing) { }
 
-    public BinPackerFormClosure(BinPackerMinRSLeft original, Cloner cloner) : base(original, cloner) {
+    public BinPackerWidthBestFit(BinPackerMinRSLeft original, Cloner cloner) : base(original, cloner) {
     }
     public override IDeepCloneable Clone(Cloner cloner) {
       throw new NotImplementedException();
     }
     #endregion
 
-    public BinPackerFormClosure() : base() { }
+    public BinPackerWidthBestFit() : base() { }
 
 
     protected override void PackRemainingItems(ref IList<int> remainingIds, ref BinPacking3D packingBin, IList<PackingItem> items, ExtremePointCreationMethod epCreationMethod, bool useStackingConstraints) {
