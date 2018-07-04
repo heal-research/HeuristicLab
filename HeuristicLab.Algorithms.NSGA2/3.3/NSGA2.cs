@@ -165,7 +165,7 @@ namespace HeuristicLab.Algorithms.NSGA2 {
     protected NSGA2(NSGA2 original, Cloner cloner)
       : base(original, cloner) {
       paretoFrontAnalyzer = (RankBasedParetoFrontAnalyzer)cloner.Clone(original.paretoFrontAnalyzer);
-      AfterDeserialization();
+      RegisterEventhandlers();
     }
     public NSGA2() {
       Parameters.Add(new ValueParameter<IntValue>("Seed", "The random seed used to initialize the new pseudo random number generator.", new IntValue(0)));
@@ -239,7 +239,7 @@ namespace HeuristicLab.Algorithms.NSGA2 {
       ParameterizeAnalyzers();
       UpdateAnalyzers();
 
-      AfterDeserialization();
+      RegisterEventhandlers();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -337,6 +337,10 @@ namespace HeuristicLab.Algorithms.NSGA2 {
       }
       #endregion
 
+      RegisterEventhandlers();
+    }
+
+    private void RegisterEventhandlers() {
       PopulationSizeParameter.ValueChanged += new EventHandler(PopulationSizeParameter_ValueChanged);
       PopulationSize.ValueChanged += new EventHandler(PopulationSize_ValueChanged);
       SelectedParentsParameter.ValueChanged += new EventHandler(SelectedParentsParameter_ValueChanged);
@@ -345,6 +349,7 @@ namespace HeuristicLab.Algorithms.NSGA2 {
         Problem.Evaluator.QualitiesParameter.ActualNameChanged += new EventHandler(Evaluator_QualitiesParameter_ActualNameChanged);
       }
     }
+
     private void ParameterizeSolutionsCreator() {
       SolutionsCreator.EvaluatorParameter.ActualName = Problem.EvaluatorParameter.Name;
       SolutionsCreator.SolutionCreatorParameter.ActualName = Problem.SolutionCreatorParameter.Name;
