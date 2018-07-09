@@ -37,12 +37,12 @@ namespace HeuristicLab.Problems.BinPacking3D.Sorting {
       return SortPackingItems(items, bin, 10.0);
     }
 
-    public Permutation SortPackingItemsByMaterial(IList<PackingItem> items, PackingShape bin, double delta) {
+    public Permutation SortPackingItemsBySequenceGroup(IList<PackingItem> items, PackingShape bin, double delta) {
       return items.SortByMaterialClusteredHeightArea(bin, delta);
     }
 
-    public Permutation SortPackingItemsByMaterial(IList<PackingItem> items, PackingShape bin) {
-      return SortPackingItemsByMaterial(items, bin, 10.0);
+    public Permutation SortPackingItemsBySequenceGroup(IList<PackingItem> items, PackingShape bin) {
+      return SortPackingItemsBySequenceGroup(items, bin, 10.0);
     }
   }
 }

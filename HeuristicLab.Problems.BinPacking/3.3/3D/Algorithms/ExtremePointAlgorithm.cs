@@ -82,10 +82,10 @@ namespace HeuristicLab.Problems.BinPacking3D {
     }
 
     [Storable]
-    private readonly IValueParameter<BoolValue> sortByMaterialParameter;
+    private readonly IValueParameter<BoolValue> sortBySequenceGroupParameter;
 
-    public IValueParameter<BoolValue> SortByMaterialParameter {
-      get { return sortByMaterialParameter; }
+    public IValueParameter<BoolValue> SortBySequenceGroupParameter {
+      get { return sortBySequenceGroupParameter; }
     }
 
     [Storable]
@@ -115,8 +115,8 @@ namespace HeuristicLab.Problems.BinPacking3D {
       Parameters.Add(deltaParameter = new ValueParameter<PercentValue>(
         "Delta", "[1;100]% Clustered sorting methods use a delta parameter to determine the clusters.", new PercentValue(.1)));
 
-      Parameters.Add(sortByMaterialParameter = new ValueParameter<BoolValue>(
-        "SortByMaterial", "If this parameter is set, the items will be sorted by their material first", new BoolValue(true)));
+      Parameters.Add(sortBySequenceGroupParameter = new ValueParameter<BoolValue>(
+        "SortBySequenceGroup", "If this parameter is set, the items will be sorted by their sequence group first", new BoolValue(true)));
 
       Problem = new PermutationProblem();
     }
@@ -208,6 +208,7 @@ namespace HeuristicLab.Problems.BinPacking3D {
                   FittingMethod[] fittings,
                   ExtremePointCreationMethod[] epCreationMethods,
                   CancellationToken token) {
+
       SortingMethod? bestSorting = null;
       FittingMethod? bestFitting = null;
       ExtremePointCreationMethod? bestEPCreation = null;
@@ -222,12 +223,8 @@ namespace HeuristicLab.Problems.BinPacking3D {
             };
             Permutation sortedItems;
 
-            if (SortByMaterialParameter.Value.Value) {
-              sortedItems = SortItemsByMaterialAndSortingMethod(bin, items, sort, DeltaParameter.Value.Value);
-            } else {
-              sortedItems = SortItemsBySortingMethod(bin, items, sort, DeltaParameter.Value.Value);
-            }
-
+            sortedItems = SortItems(bin, items, sort, DeltaParameter.Value.Value, SortBySequenceGroupParameter.Value.Value);
+            
             var solution = Optimize(new OptimaizationParamters() {
               SortedItems = sortedItems,
               Bin = bin,
@@ -264,7 +261,6 @@ namespace HeuristicLab.Problems.BinPacking3D {
     /// <param name="parameters"></param>
     /// <returns></returns>
     private static Solution Optimize(OptimaizationParamters parameters) {
-
       var sol = parameters.Decoder.Decode(parameters.SortedItems, parameters.Bin, parameters.Items, parameters.StackingConstraints);
 
       return sol; 
@@ -280,82 +276,25 @@ namespace HeuristicLab.Problems.BinPacking3D {
       public ExtremePointCreationMethod ExtremePointGeneration { get; set; }
     }
     
-    /// <summary>
-    /// Returns a new permutation of the given items depending on the sorting method
-    /// </summary>
-    /// <param name="bin"></param>
-    /// <param name="items"></param>
-    /// <param name="sortingMethod"></param>
-    /// <param name="delta"></param>
-    /// <returns></returns>
-    private Permutation SortItemsByMaterialAndSortingMethod(PackingShape bin, IList<PackingItem> items, SortingMethod sortingMethod, double delta) {
-      Permutation sorted = null;
 
-      switch (sortingMethod) {
-        case SortingMethod.Given:
-          sorted = new Permutation(PermutationTypes.Absolute, Enumerable.Range(0, items.Count).ToArray());
-          break;
-        case SortingMethod.VolumeHeight:
-          sorted = items.SortByVolumeHeight();
-          break;
-        case SortingMethod.HeightVolume:
-          sorted = items.SortByMaterialHeightVolume();
-          break;
-        case SortingMethod.AreaHeight:
-          sorted = items.SortByMaterialAreaHeight();
-          break;
-        case SortingMethod.HeightArea:
-          sorted = items.SortByMaterialHeightArea();
-          break;
-        case SortingMethod.ClusteredAreaHeight:
-          sorted = items.SortByMaterialClusteredAreaHeight(bin, delta);
-          break;
-        case SortingMethod.ClusteredHeightArea:
-          sorted = items.SortByMaterialClusteredHeightArea(bin, delta);
-          break;
-        default:
-          throw new ArgumentException("Unknown sorting method: " + sortingMethod);
+    private Permutation SortItems(PackingShape bin, IList<PackingItem> items, SortingMethod sortingMethod, double delta, bool sortBySequenceGroup) {
+      Permutation sortedItems;
+
+      var sorter = PackingItemSorterFactory.CreatePackingItemSorter(sortingMethod);
+      if (sorter is IPackingItemClusteredSorter) {
+        if (sortBySequenceGroup) {
+          sortedItems = (sorter as IPackingItemClusteredSorter).SortPackingItemsBySequenceGroup(items, bin, delta);
+        } else {
+          sortedItems = (sorter as IPackingItemClusteredSorter).SortPackingItems(items, bin, delta);
+        }
+      } else {
+        if (sortBySequenceGroup) {
+          sortedItems = sorter.SortPackingItemsBySequenceGroup(items, bin);
+        } else {
+          sortedItems = sorter.SortPackingItems(items, bin);
+        }
       }
-      return sorted;
-    }
-
-    /// <summary>
-    /// Returns a new permutation of the given items depending on the material and sorting method
-    /// </summary>
-    /// <param name="bin"></param>
-    /// <param name="items"></param>
-    /// <param name="sortingMethod"></param>
-    /// <param name="delta"></param>
-    /// <returns></returns>
-    private Permutation SortItemsBySortingMethod(PackingShape bin, IList<PackingItem> items, SortingMethod sortingMethod, double delta) {
-      Permutation sorted = null;
-
-      switch (sortingMethod) {
-        case SortingMethod.Given:
-          sorted = new Permutation(PermutationTypes.Absolute, Enumerable.Range(0, items.Count).ToArray());
-          break;
-        case SortingMethod.VolumeHeight:
-          sorted = items.SortByVolumeHeight();
-          break;
-        case SortingMethod.HeightVolume:
-          sorted = items.SortByHeightVolume();
-          break;
-        case SortingMethod.AreaHeight:
-          sorted = items.SortByAreaHeight();
-          break;
-        case SortingMethod.HeightArea:
-          sorted = items.SortByHeightArea();
-          break;
-        case SortingMethod.ClusteredAreaHeight:
-          sorted = items.SortByClusteredAreaHeight(bin, delta);
-          break;
-        case SortingMethod.ClusteredHeightArea:
-          sorted = items.SortByClusteredHeightArea(bin, delta);
-          break;
-        default:
-          throw new ArgumentException("Unknown sorting method: " + sortingMethod);
-      }
-      return sorted;
-    }
+      return sortedItems;
+    }    
   }
 }

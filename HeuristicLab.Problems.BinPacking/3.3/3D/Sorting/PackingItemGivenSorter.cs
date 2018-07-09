@@ -33,7 +33,7 @@ namespace HeuristicLab.Problems.BinPacking3D.Sorting {
       return new Permutation(PermutationTypes.Absolute, Enumerable.Range(0, items.Count).ToArray());
     }
 
-    public Permutation SortPackingItemsByMaterial(IList<PackingItem> items, PackingShape bin) {
+    public Permutation SortPackingItemsBySequenceGroup(IList<PackingItem> items, PackingShape bin) {
       return new Permutation(PermutationTypes.Absolute, Enumerable.Range(0, items.Count).ToArray());
     }
   }

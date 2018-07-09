@@ -103,7 +103,7 @@ namespace HeuristicLab.Problems.BinPacking3D.Packer {
       foreach (BinPacking3D bp in packingList) {
         foreach (var extremPoints in bp.ExtremePoints) {
           var ep = extremPoints.Key;
-          var residualSpaces = extremPoints.Value.Where(rs => rs.Width < item.Width || rs.Height < item.Height || rs.Depth < item.Depth);
+          var residualSpaces = extremPoints.Value.Where(rs => rs.Width >= item.Width && rs.Height >= item.Height && rs.Depth >= item.Depth);
           if (residualSpaces.Count() <= 0) {
             continue;
           }

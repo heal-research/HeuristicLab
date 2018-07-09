@@ -33,7 +33,7 @@ namespace HeuristicLab.Problems.BinPacking3D.Sorting {
       return items.SortByHeightVolume();
     }
 
-    public Permutation SortPackingItemsByMaterial(IList<PackingItem> items, PackingShape bin) {
+    public Permutation SortPackingItemsBySequenceGroup(IList<PackingItem> items, PackingShape bin) {
       return items.SortByMaterialHeightVolume();
     }    
   }

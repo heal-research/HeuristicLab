@@ -197,19 +197,9 @@ namespace HeuristicLab.Problems.BinPacking3D.Instances {
     /// <param name="d">Calculated depth of the item</param>
     protected virtual void SampleItemParameters(IRandom rand, out int w, out int h, out int d) {
       Contract.Assert(@class >= 1 && @class <= 5);
-      /*var weights = new double[] { 0.1, 0.1, 0.1, 0.1, 0.1 };
+      var weights = new double[] { 0.1, 0.1, 0.1, 0.1, 0.1 };
       weights[@class - 1] = 0.6;
       var type = Enumerable.Range(1, 5).SampleProportional(rand, 1, weights).First();
-      */
-
-      // as by Martello and Vigo
-      int type = @class;
-      if (type <= 5) {
-        var t = rand.Next(1, 10);
-        if (t <= 5) {
-          type = t;
-        }
-      }
 
       switch (type) {
         case 1:
