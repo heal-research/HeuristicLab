@@ -19,7 +19,6 @@
  */
 #endregion
 
-using System;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
   partial class RegressionSolutionVariableImpactsView {
@@ -82,12 +81,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       // 
       this.sortByComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.sortByComboBox.FormattingEnabled = true;
+      this.sortByComboBox.Items.AddRange(new object[] {
+            HeuristicLab.Problems.DataAnalysis.Views.RegressionSolutionVariableImpactsView.SortingCriteria.ImpactValue,
+            HeuristicLab.Problems.DataAnalysis.Views.RegressionSolutionVariableImpactsView.SortingCriteria.Occurrence,
+            HeuristicLab.Problems.DataAnalysis.Views.RegressionSolutionVariableImpactsView.SortingCriteria.VariableName});
       this.sortByComboBox.Location = new System.Drawing.Point(407, 3);
       this.sortByComboBox.Name = "sortByComboBox";
       this.sortByComboBox.Size = new System.Drawing.Size(121, 21);
       this.sortByComboBox.TabIndex = 5;
       this.sortByComboBox.SelectedIndexChanged += new System.EventHandler(this.sortByComboBox_SelectedIndexChanged);
-      this.sortByComboBox.DataSource = Enum.GetValues(typeof(SortingCriteria));
       // 
       // factorVarReplComboBox
       // 
