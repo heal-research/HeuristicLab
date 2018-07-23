@@ -19,6 +19,8 @@
  */
 #endregion
 
+using System;
+
 namespace HeuristicLab.Problems.DataAnalysis.Views {
   partial class RegressionSolutionVariableImpactsView {
     /// <summary> 
@@ -85,6 +87,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       this.sortByComboBox.Size = new System.Drawing.Size(121, 21);
       this.sortByComboBox.TabIndex = 5;
       this.sortByComboBox.SelectedIndexChanged += new System.EventHandler(this.sortByComboBox_SelectedIndexChanged);
+      this.sortByComboBox.DataSource = Enum.GetValues(typeof(SortingCriteria));
       // 
       // factorVarReplComboBox
       // 
@@ -158,8 +161,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       // 
       // variableImactsArrayView
       // 
-      this.variableImactsArrayView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+      this.variableImactsArrayView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.variableImactsArrayView.Caption = "StringConvertibleArray View";
       this.variableImactsArrayView.Content = null;
