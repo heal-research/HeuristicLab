@@ -146,7 +146,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         if (cancellationToken.Token.IsCancellationRequested) { return; }
         var problemData = Content.ProblemData;
         var inputvariables = new HashSet<string>(problemData.AllowedInputVariables.Union(Content.Model.VariablesUsedForPrediction));
-        var originalVariableOrdering = problemData.Dataset.VariableNames.Where(v => inputvariables.Contains(v)).Where(problemData.Dataset.VariableHasType<double>).ToList();
+        var originalVariableOrdering = problemData.Dataset.VariableNames
+          .Where(v => inputvariables.Contains(v))
+          .Where(v => problemData.Dataset.VariableHasType<double>(v) || problemData.Dataset.VariableHasType<string>(v))
+          .ToList();
 
         rawVariableImpacts.Clear();
         originalVariableOrdering.ForEach(v => rawVariableImpacts.Add(new Tuple<string, double>(v, impacts.First(vv => vv.Item1 == v).Item2)));
