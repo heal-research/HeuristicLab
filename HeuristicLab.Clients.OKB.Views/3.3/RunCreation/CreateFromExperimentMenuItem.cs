@@ -53,7 +53,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       if (activeView.Locked) { return; }
 
       //Check if the user has the required OKB permissions.
-      //In case of an server outage, a timeout may occur and the call takes a long time.
+      //In case of a server outage, a timeout may occur and the call takes a long time.
       //To prevent a possible UI-freeze, the permission-check is implemented as async.
       CheckPrivilege();
     }
@@ -61,7 +61,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
     private async void CheckPrivilege() {
       await Task.Run(() => {
         IContentView activeView = MainFormManager.MainForm.ActiveView as IContentView;
-        ToolStripItem.Enabled = true;//OKBRoles.CheckUserPermissions();
+        ToolStripItem.Enabled = OKBRoles.CheckUserPermissions();
       });
     }
 
