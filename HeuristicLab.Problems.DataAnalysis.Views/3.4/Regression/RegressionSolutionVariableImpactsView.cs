@@ -53,7 +53,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
       //Set the default values
       this.dataPartitionComboBox.SelectedIndex = 0;
-      this.replacementComboBox.SelectedIndex = 0;
+      this.replacementComboBox.SelectedIndex = 3;
       this.factorVarReplComboBox.SelectedIndex = 0;
       this.sortByComboBox.SelectedItem = SortingCriteria.ImpactValue;
     }
