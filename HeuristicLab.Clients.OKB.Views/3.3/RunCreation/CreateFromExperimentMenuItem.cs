@@ -41,15 +41,9 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
     protected override void OnActiveViewChanged(object sender, EventArgs e) {
       IContentView activeView = MainFormManager.MainForm.ActiveView as IContentView;
 
-      ToolStripItem.Enabled = false;
-      if (activeView == null) { return; }
-      if (activeView.Content == null) { return; }
-      if (!((activeView.Content is Experiment)
-        || (activeView.Content is RunCollection)
-        || (activeView.Content is IOptimizer))) { return; }
-      if (activeView.Locked) { return; }
-
-      ToolStripItem.Enabled = true;
+      ToolStripItem.Enabled = (activeView != null) && (activeView.Content != null)
+        && ((activeView.Content is Experiment) || (activeView.Content is RunCollection) || (activeView.Content is IOptimizer))
+        && !activeView.Locked;
     }
 
     public override void Execute() {
