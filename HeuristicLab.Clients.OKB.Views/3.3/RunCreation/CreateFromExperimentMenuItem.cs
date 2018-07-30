@@ -21,7 +21,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using HeuristicLab.Core;
 using HeuristicLab.MainForm;
 using HeuristicLab.Optimization;
@@ -42,8 +41,6 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
     protected override void OnActiveViewChanged(object sender, EventArgs e) {
       IContentView activeView = MainFormManager.MainForm.ActiveView as IContentView;
 
-      //The ToolStripItem is Disabled by default.
-      //If any of the following conditions apply, a Check for the user privilege can be omitted. 
       ToolStripItem.Enabled = false;
       if (activeView == null) { return; }
       if (activeView.Content == null) { return; }
@@ -52,17 +49,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
         || (activeView.Content is IOptimizer))) { return; }
       if (activeView.Locked) { return; }
 
-      //Check if the user has the required OKB permissions.
-      //In case of a server outage, a timeout may occur and the call takes a long time.
-      //To prevent a possible UI-freeze, the permission-check is implemented as async.
-      CheckPrivilege();
-    }
-
-    private async void CheckPrivilege() {
-      await Task.Run(() => {
-        IContentView activeView = MainFormManager.MainForm.ActiveView as IContentView;
-        ToolStripItem.Enabled = OKBRoles.CheckUserPermissions();
-      });
+      ToolStripItem.Enabled = true;
     }
 
     public override void Execute() {
