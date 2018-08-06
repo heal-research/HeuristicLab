@@ -47,6 +47,8 @@ namespace HeuristicLab.Optimization.Views {
 
     public RunCollectionBoxPlotView() {
       InitializeComponent();
+      chart.ContextMenuStrip.Items.Insert(0, openBubbleChartViewToolStripMenuItem);
+
       categoricalMapping = new Dictionary<int, Dictionary<object, double>>();
       seriesCache = new SortedDictionary<double, Series>();
       chart.ChartAreas[0].Visible = false;
@@ -210,7 +212,7 @@ namespace HeuristicLab.Optimization.Views {
     }
 
     private void UpdateStatistics() {
-      DoubleMatrix matrix = new DoubleMatrix(9, seriesCache.Count);
+      DoubleMatrix matrix = new DoubleMatrix(10, seriesCache.Count);
       matrix.SortableView = false;
       List<string> columnNames = new List<string>();
       foreach (Series series in seriesCache.Values) {
@@ -223,7 +225,8 @@ namespace HeuristicLab.Optimization.Views {
           if (Enum.IsDefined(typeof(AxisDimension), selectedAxis)) {
             AxisDimension axisDimension = (AxisDimension)Enum.Parse(typeof(AxisDimension), selectedAxis);
             switch (axisDimension) {
-              case AxisDimension.Color: value = new StringValue(run.Color.ToString());
+              case AxisDimension.Color:
+                value = new StringValue(run.Color.ToString());
                 break;
             }
           } else value = Content.GetValue(run, selectedAxis);
@@ -235,7 +238,7 @@ namespace HeuristicLab.Optimization.Views {
         }
       }
       matrix.ColumnNames = columnNames;
-      matrix.RowNames = new string[] { "Count", "Minimum", "Maximum", "Median", "Average", "Standard Deviation", "Variance", "25th Percentile", "75th Percentile" };
+      matrix.RowNames = new string[] { "Count", "Minimum", "Maximum", "Median", "Average", "Standard Deviation", "Variance", "25th Percentile", "75th Percentile", "Interquartile Range" };
 
       for (int i = 0; i < seriesCache.Count; i++) {
         Series series = seriesCache.ElementAt(i).Value;
@@ -249,6 +252,7 @@ namespace HeuristicLab.Optimization.Views {
         matrix[6, i] = seriesValues.Variance();
         matrix[7, i] = seriesValues.Quantile(0.25);
         matrix[8, i] = seriesValues.Quantile(0.75);
+        matrix[9, i] = matrix[8, i] - matrix[7, i];
       }
       statisticsMatrixView.Content = matrix;
     }
@@ -444,6 +448,14 @@ namespace HeuristicLab.Optimization.Views {
       }
     }
 
+    private void openBubbleChartViewToolStripMenuItem_Click(object sender, EventArgs e) {
+      RunCollectionBubbleChartView bubbleChartView = new RunCollectionBubbleChartView();
+      bubbleChartView.Content = this.Content;
+      bubbleChartView.xAxisComboBox.SelectedItem = xAxisComboBox.SelectedItem;
+      bubbleChartView.yAxisComboBox.SelectedItem = yAxisComboBox.SelectedItem;
+      bubbleChartView.Show();
+    }
+
     private void chart_MouseMove(object sender, MouseEventArgs e) {
       string newTooltipText = string.Empty;
       string oldTooltipText;
@@ -462,11 +474,11 @@ namespace HeuristicLab.Optimization.Views {
       splitContainer.Panel2Collapsed = !showStatisticsCheckBox.Checked;
     }
 
-	public bool StatisticsVisible {
-		get { return splitContainer.Panel2Collapsed; }
-		set { splitContainer.Panel2Collapsed = value; }
-	}
-	
+    public bool StatisticsVisible {
+      get { return splitContainer.Panel2Collapsed; }
+      set { splitContainer.Panel2Collapsed = value; }
+    }
+
     public void SetXAxis(string axisName) {
       xAxisComboBox.SelectedItem = axisName;
     }
