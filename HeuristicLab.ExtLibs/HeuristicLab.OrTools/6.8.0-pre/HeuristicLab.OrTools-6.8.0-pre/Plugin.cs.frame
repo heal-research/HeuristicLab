@@ -1,0 +1,43 @@
+﻿#region License Information
+/* HeuristicLab
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ *
+ * This file is part of HeuristicLab.
+ *
+ * HeuristicLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * HeuristicLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
+ */
+#endregion
+
+using System;
+using HeuristicLab.PluginInfrastructure;
+
+namespace HeuristicLab.OrTools {
+  [Plugin("HeuristicLab.OrTools", "Provides functionality of Google OR-Tools in HeuristicLab", "6.8.0.$WCREV$")]
+  [PluginFile("HeuristicLab.OrTools-6.8.0-pre.dll", PluginFileType.Assembly)]
+  [PluginFile("Google.OrTools.dll", PluginFileType.Assembly)]
+  [PluginFile("Google.OrTools-license.txt", PluginFileType.License)]
+  [PluginFile("Google.OrTools.import.dll", PluginFileType.NativeDll)]
+  [PluginFile("Google.OrTools_version.txt", PluginFileType.Data)]
+  [PluginFile("glpk_4_65.dll", PluginFileType.NativeDll)]
+  [PluginFile("GLPK-4.65-license.txt", PluginFileType.License)]
+  public class HeuristicLabOrToolsPlugin : PluginBase {
+      public override void OnLoad() {
+      if (!Environment.Is64BitProcess)
+        throw new InvalidPluginException("Google OR-Tools integration is availabe only on 64-bit platforms.");
+      if (Environment.OSVersion.Platform != PlatformID.Win32NT)
+        throw new InvalidPluginException("Google OR-Tools integration is currently availabe only on Windows.");
+      base.OnLoad();
+    }
+  }
+}
