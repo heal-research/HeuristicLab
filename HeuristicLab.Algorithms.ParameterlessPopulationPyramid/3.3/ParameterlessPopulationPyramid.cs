@@ -230,7 +230,7 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
 
     protected override void Initialize(CancellationToken cancellationToken) {
       // Set up the algorithm
-      if (SetSeedRandomly) Seed = new System.Random().Next();
+      if (SetSeedRandomly) Seed = RandomSeedGenerator.GetSeed();
       pyramid = new List<Population>();
       seen.Clear();
       random.Reset(Seed);
