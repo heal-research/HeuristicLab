@@ -212,6 +212,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         if (terms.Count == 1) return 1.0 / terms[0];
         else return terms.Aggregate((a, b) => new AutoDiff.Product(a, 1.0 / b));
       }
+      if(node.Symbol is AnalyticalQuotient) {
+        var x1 = ConvertToAutoDiff(node.GetSubtree(0));
+        var x2 = ConvertToAutoDiff(node.GetSubtree(1));
+        return x1 / (TermBuilder.Power(1 + x2 * x2, 0.5));
+      }
       if (node.Symbol is Logarithm) {
         return AutoDiff.TermBuilder.Log(
           ConvertToAutoDiff(node.GetSubtree(0)));
