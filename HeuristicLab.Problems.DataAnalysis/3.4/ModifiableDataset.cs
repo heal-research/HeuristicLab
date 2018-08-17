@@ -100,24 +100,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     // adds a new variable to the dataset
     public void AddVariable(string variableName, IList values) {
-      if (variableValues.ContainsKey(variableName))
-        throw new ArgumentException(string.Format("Variable {0} is already present in the dataset.", variableName));
-
-      if (values == null || values.Count == 0)
-        throw new ArgumentException("Cannot add variable with no values.");
-
-      if (values.Count != Rows)
-        throw new ArgumentException(string.Format("{0} values are provided, but {1} rows are present in the dataset.", values.Count, Rows));
-
-      if (!IsAllowedType(values))
-        throw new ArgumentException(string.Format("Unsupported type {0} for variable {1}.", GetElementType(values), variableName));
-
-      variableValues[variableName] = values;
-      variableNames.Add(variableName);
-
-      OnColumnsChanged();
-      OnColumnNamesChanged();
-      OnReset();
+      InsertVariable(variableName, Columns, values);
     }
 
 
@@ -128,8 +111,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
       if (position < 0 || position > Columns)
         throw new ArgumentException(string.Format("Incorrect position {0} specified. The position must be between 0 and {1}.", position, Columns));
 
-      if (values == null || values.Count == 0)
-        throw new ArgumentException("Cannot add variable with no values.");
+      if (values == null)
+        throw new ArgumentNullException("values", "Values must not be null. At least an empty list of values has to be provided.");
 
       if (values.Count != Rows)
         throw new ArgumentException(string.Format("{0} values are provided, but {1} rows are present in the dataset.", values.Count, Rows));
