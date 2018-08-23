@@ -129,7 +129,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         if (weights == null) {
           // automatic determination of weights (all features should have variance = 1)
           this.weights = this.allowedInputVariables
-            .Select(name => 1.0 / dataset.GetDoubleValues(name, rows).StandardDeviationPop())
+            .Select(name => {
+              var pop = dataset.GetDoubleValues(name, rows).StandardDeviationPop();
+              return  pop.IsAlmost(0) ? 1.0 : 1.0/pop;
+            })
             .Concat(new double[] { 1.0 }) // no scaling for target variable
             .ToArray();
         } else {
