@@ -23,7 +23,7 @@ using System.ComponentModel;
 using HeuristicLab.Common;
 
 namespace HeuristicLab.Clients.Hive {
-  public partial class ResourcePermission : IDeepCloneable, IContent {
+  public partial class ProjectPermission : IDeepCloneable, IContent {
 
     private string grantedUserName;
     public string GrantedUserName {
@@ -40,7 +40,7 @@ namespace HeuristicLab.Clients.Hive {
       grantedUserName = userName;
     }
 
-    public ResourcePermission() { }
+    public ProjectPermission() { }
 
     protected override void OnPropertyChanged(PropertyChangedEventArgs e) {
       base.OnPropertyChanged(e);
@@ -49,15 +49,15 @@ namespace HeuristicLab.Clients.Hive {
       }
     }
 
-    protected ResourcePermission(ResourcePermission original, Cloner cloner)
+    protected ProjectPermission(ProjectPermission original, Cloner cloner)
       : base(original, cloner) {
       this.GrantedByUserId = original.GrantedByUserId;
       this.GrantedUserId = original.GrantedUserId;
-      this.ResourceId = original.ResourceId;
+      this.ProjectId = original.ProjectId;
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new ResourcePermission(this, cloner);
+      return new ProjectPermission(this, cloner);
     }
 
     private void HiveExperimentPermission_PropertyChanged(object sender, PropertyChangedEventArgs e) {

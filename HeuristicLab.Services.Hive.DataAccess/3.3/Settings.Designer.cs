@@ -12,7 +12,7 @@ namespace HeuristicLab.Services.Hive.DataAccess {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "14.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.8.0.0")]
     public sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -20,17 +20,6 @@ namespace HeuristicLab.Services.Hive.DataAccess {
         public static Settings Default {
             get {
                 return defaultInstance;
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
-        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=.\\SQLEXPRESS;Integrated Security=SSPI;Initial Catalog=HeuristicLab.Hi" +
-            "ve-3.3")]
-        public string HeuristicLab_Hive_LinqConnectionString {
-            get {
-                return ((string)(this["HeuristicLab_Hive_LinqConnectionString"]));
             }
         }
         
@@ -49,6 +38,17 @@ namespace HeuristicLab.Services.Hive.DataAccess {
         public string EventLogName {
             get {
                 return ((string)(this["EventLogName"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
+        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=localhost;Integrated Security=SSPI;Initial Catalog=HeuristicLab.Hive-" +
+            "3.4")]
+        public string HeuristicLab_Hive_LinqConnectionString {
+            get {
+                return ((string)(this["HeuristicLab_Hive_LinqConnectionString"]));
             }
         }
     }

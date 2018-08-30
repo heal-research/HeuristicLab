@@ -71,11 +71,11 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       downloadCharacteristicsButton.Text = string.Empty;
       downloadCharacteristicsButton.Image = VSImageLibrary.Refresh;
       uploadCharacteristicsButton.Text = string.Empty;
-      uploadCharacteristicsButton.Image = VSImageLibrary.PublishToWeb;
+      uploadCharacteristicsButton.Image = VSImageLibrary.Save;
       refreshSolutionsButton.Text = string.Empty;
       refreshSolutionsButton.Image = VSImageLibrary.Refresh;
       uploadSolutionsButton.Text = string.Empty;
-      uploadSolutionsButton.Image = VSImageLibrary.PublishToWeb;
+      uploadSolutionsButton.Image = VSImageLibrary.Save;
     }
 
     private void CalculatorListOnChanged(object sender, EventArgs e) {

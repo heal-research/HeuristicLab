@@ -120,7 +120,8 @@ namespace HeuristicLab.Services.Hive {
         Name = source.Name,
         OwnerUserId = source.OwnerUserId,
         DateCreated = source.DateCreated,
-        ResourceNames = source.ResourceIds
+        ProjectId = source.ProjectId,
+        State = source.State.ToDto()
       };
     }
 
@@ -138,7 +139,29 @@ namespace HeuristicLab.Services.Hive {
       target.Name = source.Name;
       target.OwnerUserId = source.OwnerUserId;
       target.DateCreated = source.DateCreated;
-      target.ResourceIds = source.ResourceNames;
+      target.ProjectId = source.ProjectId;
+      target.State = source.State.ToEntity();
+    }
+    #endregion
+
+    #region AssignedJobResource
+    public static DT.AssignedJobResource ToDto(this DA.AssignedJobResource source) {
+      if (source == null) return null;
+      return new DT.AssignedJobResource {
+        JobId = source.JobId,
+        ResourceId = source.ResourceId
+      };
+    }
+    public static DA.AssignedJobResource ToEntity(this DT.AssignedJobResource source) {
+      if (source == null) return null;
+      var result = new DA.AssignedJobResource();
+      source.CopyToEntity(result);
+      return result;
+    }
+    public static void CopyToEntity(this DT.AssignedJobResource source, DA.AssignedJobResource target) {
+      if ((source == null) || (target == null)) return;
+      target.JobId = source.JobId;
+      target.ResourceId = source.ResourceId;
     }
     #endregion
 
@@ -220,7 +243,7 @@ namespace HeuristicLab.Services.Hive {
     }
     #endregion
 
-    #region State
+    #region TaskState
     public static DT.TaskState ToDto(this DA.TaskState source) {
       switch (source) {
         case DA.TaskState.Aborted: return DT.TaskState.Aborted;
@@ -246,6 +269,26 @@ namespace HeuristicLab.Services.Hive {
         case DT.TaskState.Transferring: return DA.TaskState.Transferring;
         case DT.TaskState.Waiting: return DA.TaskState.Waiting;
         default: return DA.TaskState.Failed;
+      }
+    }
+    #endregion
+
+    #region JobState
+    public static DT.JobState ToDto(this DA.JobState source) {
+      switch (source) {
+        case DA.JobState.Online: return DT.JobState.Online;
+        case DA.JobState.StatisticsPending: return DT.JobState.StatisticsPending;
+        case DA.JobState.DeletionPending: return DT.JobState.DeletionPending;
+        default: return DT.JobState.Online;
+      }
+    }
+
+    public static DA.JobState ToEntity(this DT.JobState source) {
+      switch (source) {
+        case DT.JobState.Online: return DA.JobState.Online;
+        case DT.JobState.StatisticsPending: return DA.JobState.StatisticsPending;
+        case DT.JobState.DeletionPending: return DA.JobState.DeletionPending;
+        default: return DA.JobState.Online;
       }
     }
     #endregion
@@ -332,26 +375,80 @@ namespace HeuristicLab.Services.Hive {
     }
     #endregion
 
-    #region ResourcePermission
-    public static DT.ResourcePermission ToDto(this DA.ResourcePermission source) {
+    #region Project
+    public static DT.Project ToDto(this DA.Project source) {
       if (source == null) return null;
-      return new DT.ResourcePermission {
-        ResourceId = source.ResourceId,
+      return new DT.Project {
+        Id = source.ProjectId,
+        ParentProjectId = source.ParentProjectId,
+        DateCreated = source.DateCreated,
+        Name = source.Name,
+        Description = source.Description,
+        OwnerUserId = source.OwnerUserId,
+        StartDate = source.StartDate,
+        EndDate = source.EndDate
+      };
+    }
+    public static DA.Project ToEntity(this DT.Project source) {
+      if (source == null) return null;
+      var result = new DA.Project();
+      source.CopyToEntity(result);
+      return result;
+    }
+    public static void CopyToEntity(this DT.Project source, DA.Project target) {
+      if ((source == null) || (target == null)) return;
+      target.ProjectId = source.Id;
+      target.ParentProjectId = source.ParentProjectId;
+      target.DateCreated = source.DateCreated;
+      target.Name = source.Name;
+      target.Description = source.Description;
+      target.OwnerUserId = source.OwnerUserId;
+      target.StartDate = source.StartDate;
+      target.EndDate = source.EndDate;
+    }
+    #endregion
+
+    #region ProjectPermission
+    public static DT.ProjectPermission ToDto(this DA.ProjectPermission source) {
+      if (source == null) return null;
+      return new DT.ProjectPermission {
+        ProjectId = source.ProjectId,
         GrantedUserId = source.GrantedUserId,
         GrantedByUserId = source.GrantedByUserId
       };
     }
-    public static DA.ResourcePermission ToEntity(this DT.ResourcePermission source) {
+    public static DA.ProjectPermission ToEntity(this DT.ProjectPermission source) {
       if (source == null) return null;
-      var result = new DA.ResourcePermission();
+      var result = new DA.ProjectPermission();
       source.CopyToEntity(result);
       return result;
     }
-    public static void CopyToEntity(this DT.ResourcePermission source, DA.ResourcePermission target) {
+    public static void CopyToEntity(this DT.ProjectPermission source, DA.ProjectPermission target) {
       if ((source == null) || (target == null)) return;
-      target.ResourceId = source.ResourceId;
+      target.ProjectId = source.ProjectId;
       target.GrantedUserId = source.GrantedUserId;
       target.GrantedByUserId = source.GrantedByUserId;
+    }
+    #endregion
+
+    #region AssignedProjectResource
+    public static DT.AssignedProjectResource ToDto(this DA.AssignedProjectResource source) {
+      if (source == null) return null;
+      return new DT.AssignedProjectResource {
+        ProjectId = source.ProjectId,
+        ResourceId = source.ResourceId
+      };
+    }
+    public static DA.AssignedProjectResource ToEntity(this DT.AssignedProjectResource source) {
+      if (source == null) return null;
+      var result = new DA.AssignedProjectResource();
+      source.CopyToEntity(result);
+      return result;
+    }
+    public static void CopyToEntity(this DT.AssignedProjectResource source, DA.AssignedProjectResource target) {
+      if ((source == null) || (target == null)) return;
+      target.ProjectId = source.ProjectId;
+      target.ResourceId = source.ResourceId;
     }
     #endregion
 

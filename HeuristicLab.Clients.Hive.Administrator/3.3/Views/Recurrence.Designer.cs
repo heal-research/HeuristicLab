@@ -47,10 +47,8 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       this.gbAppointment = new System.Windows.Forms.GroupBox();
       this.chbade = new System.Windows.Forms.CheckBox();
       this.dtpEnd = new System.Windows.Forms.DateTimePicker();
-      this.dtpToTime = new System.Windows.Forms.DateTimePicker();
       this.label5 = new System.Windows.Forms.Label();
       this.dtpStart = new System.Windows.Forms.DateTimePicker();
-      this.dtpFromTime = new System.Windows.Forms.DateTimePicker();
       this.label6 = new System.Windows.Forms.Label();
       this.btSaveRecurrence = new System.Windows.Forms.Button();
       this.btCancelRecurrence = new System.Windows.Forms.Button();
@@ -73,10 +71,8 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       // 
       this.gbAppointment.Controls.Add(this.chbade);
       this.gbAppointment.Controls.Add(this.dtpEnd);
-      this.gbAppointment.Controls.Add(this.dtpToTime);
       this.gbAppointment.Controls.Add(this.label5);
       this.gbAppointment.Controls.Add(this.dtpStart);
-      this.gbAppointment.Controls.Add(this.dtpFromTime);
       this.gbAppointment.Controls.Add(this.label6);
       this.gbAppointment.Location = new System.Drawing.Point(2, 2);
       this.gbAppointment.Name = "gbAppointment";
@@ -97,21 +93,12 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       // 
       // dtpEnd
       // 
-      this.dtpEnd.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+      this.dtpEnd.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+      this.dtpEnd.CustomFormat = "ddd, dd.MM.yyyy, HH:mm:ss";
       this.dtpEnd.Location = new System.Drawing.Point(113, 56);
       this.dtpEnd.Name = "dtpEnd";
-      this.dtpEnd.Size = new System.Drawing.Size(91, 20);
+      this.dtpEnd.Size = new System.Drawing.Size(175, 20);
       this.dtpEnd.TabIndex = 29;
-      // 
-      // dtpToTime
-      // 
-      this.dtpToTime.CustomFormat = "HH:mm";
-      this.dtpToTime.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-      this.dtpToTime.Location = new System.Drawing.Point(226, 56);
-      this.dtpToTime.Name = "dtpToTime";
-      this.dtpToTime.ShowUpDown = true;
-      this.dtpToTime.Size = new System.Drawing.Size(73, 20);
-      this.dtpToTime.TabIndex = 38;
       // 
       // label5
       // 
@@ -125,20 +112,11 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       // dtpStart
       // 
       this.dtpStart.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+      this.dtpStart.CustomFormat = "ddd, dd.MM.yyyy, HH:mm:ss";
       this.dtpStart.Location = new System.Drawing.Point(113, 19);
       this.dtpStart.Name = "dtpStart";
-      this.dtpStart.Size = new System.Drawing.Size(89, 20);
+      this.dtpStart.Size = new System.Drawing.Size(175, 20);
       this.dtpStart.TabIndex = 28;
-      // 
-      // dtpFromTime
-      // 
-      this.dtpFromTime.CustomFormat = "HH:mm";
-      this.dtpFromTime.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-      this.dtpFromTime.Location = new System.Drawing.Point(226, 19);
-      this.dtpFromTime.Name = "dtpFromTime";
-      this.dtpFromTime.ShowUpDown = true;
-      this.dtpFromTime.Size = new System.Drawing.Size(73, 20);
-      this.dtpFromTime.TabIndex = 30;
       // 
       // label6
       // 
@@ -306,8 +284,6 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     private System.Windows.Forms.Label label6;
     private System.Windows.Forms.Button btSaveRecurrence;
     private System.Windows.Forms.Button btCancelRecurrence;
-    private System.Windows.Forms.DateTimePicker dtpFromTime;
-    private System.Windows.Forms.DateTimePicker dtpToTime;
     private System.Windows.Forms.CheckBox chbade;
     private System.Windows.Forms.GroupBox gbWeekly;
     private System.Windows.Forms.CheckBox cbSunday;

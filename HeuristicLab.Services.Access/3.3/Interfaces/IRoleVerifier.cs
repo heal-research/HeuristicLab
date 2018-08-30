@@ -22,6 +22,7 @@
 namespace HeuristicLab.Services.Access {
   public interface IRoleVerifier {
     bool IsInRole(string role);
+    bool IsUserInRole(string username, string role);
     bool IsInAnyRole(params string[] roles);
     bool IsInAllRoles(params string[] roles);
     void AuthenticateForAnyRole(params string[] roles);
