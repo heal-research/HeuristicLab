@@ -54,6 +54,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
 
+    public IEnumerable<object> GetRow(int row) {
+      return variableValues.Select(x => x.Value[row]);
+    }
+
     public void AddRow(IEnumerable<object> values) {
       var list = values.ToList();
       if (list.Count != variableNames.Count)
@@ -146,6 +150,15 @@ namespace HeuristicLab.Problems.DataAnalysis {
       variableNames.Remove(variableName);
       OnColumnsChanged();
       OnColumnNamesChanged();
+      OnReset();
+    }
+
+    public void ClearValues() {
+      foreach (var list in variableValues.Values) {
+        list.Clear();
+      }
+      Rows = 0;
+      OnRowsChanged();
       OnReset();
     }
 
