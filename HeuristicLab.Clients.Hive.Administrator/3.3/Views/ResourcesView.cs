@@ -111,20 +111,36 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       } else {
         BuildResourceTree(Content);
       }
+      SetEnabledStateOfControls();
     }
 
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
 
-      bool locked = Content == null || selectedResource == null || Locked || ReadOnly;
-      bool adminLocked = locked || !IsAdmin();
-      bool addLocked = adminLocked || selectedResource.Id == Guid.Empty || selectedResource is Slave;
-      bool deleteLocked = adminLocked || HiveAdminClient.Instance.ResourceDescendants[selectedResource.Id].Any();
+      bool locked = Content == null || Locked || ReadOnly;
+      bool addLocked = locked
+                    || !IsAdmin()
+                    || (selectedResource is Slave && selectedResource.ParentResourceId != null)
+                    || (selectedResource != null && selectedResource.Id == Guid.Empty);
+
+      HashSet<Guid> descendantResources = null;
+
+      bool deleteLocked = locked
+                       || !IsAdmin()
+                       || !Content.Any()
+                       || selectedResource == null
+                       || (selectedResource.Id != Guid.Empty && (!HiveAdminClient.Instance.ResourceDescendants.TryGetValue(selectedResource.Id, out descendantResources) || descendantResources.Any()));
+
+      bool saveLocked = locked
+                       || !IsAdmin()
+                       || !Content.Any()
+                       || selectedResource == null;
 
       btnAddGroup.Enabled = !addLocked;
       btnRemoveGroup.Enabled = !deleteLocked;
-      btnSave.Enabled = !locked;
-      scheduleView.Locked = adminLocked;
+      btnSave.Enabled = !saveLocked;
+      viewHost.Locked = locked || !IsAdmin();
+      scheduleView.Locked = locked || !IsAdmin();
     }
     #endregion
 
@@ -206,33 +222,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     }
 
     private void btnAddGroup_Click(object sender, EventArgs e) {
-      Guid? parentResourceId = null;
-      if (!IsAdmin()) {
-        MessageBox.Show(
-          "You have no permission to add a resource group.",
-          "HeuristicLab Hive Administrator",
-          MessageBoxButtons.OK,
-          MessageBoxIcon.Information);
-        return;
-      } else if (selectedResource != null && selectedResource.Id == Guid.Empty) {
-        MessageBox.Show(
-          "You cannot add a resource group to a not yet stored group.",
-          "HeuristicLab Hive Administrator",
-          MessageBoxButtons.OK,
-          MessageBoxIcon.Information);
-        return;
-      }
-
-      if (selectedResource != null && selectedResource is SlaveGroup) {
-        parentResourceId = selectedResource.Id;
-      } else {
-        MessageBox.Show(
-          "You cannot add a resource group to a slave.",
-          "HeuristicLab Hive Administrator",
-          MessageBoxButtons.OK,
-          MessageBoxIcon.Information);
-        return;
-      }
+      var parentResourceId = selectedResource is SlaveGroup ? selectedResource.Id : (Guid?)null;
 
       var group = new SlaveGroup {
         Name = "New Group",
@@ -240,7 +230,6 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
         ParentResourceId = parentResourceId
       };
 
-      //HiveAdminClient.Instance.UpdateResourceGenealogy(Content);
       SelectedResource = group;
       Content.Add(group);
     }
@@ -253,24 +242,6 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
         btnRemoveGroup.Enabled = false;
       }
 
-      if (!IsAdmin()) {
-        MessageBox.Show(
-          "You have no permission to delete resource groups.",
-          "HeuristicLab Hive Administrator",
-          MessageBoxButtons.OK,
-          MessageBoxIcon.Information);
-        return;
-      }
-
-      if (Content.Any(x => x.ParentResourceId == selectedResource.Id)) {
-        MessageBox.Show(
-          "Only empty resource groups can be deleted.",
-          "HeuristicLab Hive Administrator",
-          MessageBoxButtons.OK,
-          MessageBoxIcon.Error);
-        return;
-      }
-
       var result = MessageBox.Show(
         "Do you really want to delete " + selectedResource.Name + "?",
         "HeuristicLab Hive Administrator",
@@ -280,12 +251,10 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
         await SecurityExceptionUtil.TryAsyncAndReportSecurityExceptions(
           action: () => {
             RemoveResource(selectedResource);
-          },
-          finallyCallback: () => {
-            btnRemoveGroup.Enabled = true;
           });
-      } else {
-        btnRemoveGroup.Enabled = true;
+
+        OnContentChanged();
+        SetEnabledStateOfControls();
       }
     }
 
@@ -301,10 +270,10 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
           foreach (var resource in resourcesToSave)
             resource.Store();
           UpdateResources();
-        },
-        finallyCallback: () => btnSave.Enabled = true);
+        });
 
       OnContentChanged();
+      SetEnabledStateOfControls();
     }
 
     private void treeSlaveGroup_MouseDown(object sender, MouseEventArgs e) {
@@ -482,6 +451,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
 
       ungroupedGroupNode = new TreeNode(UNGROUPED_GROUP_NAME) {
         ForeColor = SystemColors.GrayText,
+        ImageIndex = slaveGroupImageIndex,
         Tag = new SlaveGroup() {
           Name = UNGROUPED_GROUP_NAME,
           Description = UNGROUPED_GROUP_DESCRIPTION
@@ -507,8 +477,8 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       if (ungroupedGroupNode.Nodes.Count > 0) {
         ungroupedGroupNode.Text += " [" + ungroupedGroupNode.Nodes.Count.ToString() + "]";
         ungroupedGroupNode.Expand();
+        treeView.Nodes.Add(ungroupedGroupNode);
       }
-      treeView.Nodes.Add(ungroupedGroupNode);
     }
 
     private void CollapseSlaveOnlyNodes(TreeNode tn) {
@@ -563,15 +533,12 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
 
       try {
         if (resource.Id != Guid.Empty) {
-          var resourcesToSave = Content.Where(x => x.Id == Guid.Empty || x.Modified);
-          foreach (var r in resourcesToSave)
-            r.Store();
-
           SelectedResource = HiveAdminClient.Instance.GetAvailableResourceAncestors(resource.Id).LastOrDefault();
           HiveAdminClient.Delete(resource);
           UpdateResources();
         } else {
-          Content.Remove(selectedResource);
+          SelectedResource = null;
+          Content.Remove(resource);
         }
       } catch (AnonymousUserException) {
         ShowHiveInformationDialog();
