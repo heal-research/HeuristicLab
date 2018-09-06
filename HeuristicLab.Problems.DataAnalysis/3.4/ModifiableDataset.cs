@@ -46,9 +46,12 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public ModifiableDataset() { }
 
-    public ModifiableDataset(IEnumerable<string> variableNames, IEnumerable<IList> variableValues) :
-      base(variableNames, variableValues, cloneValues: false) { }
+    public ModifiableDataset(IEnumerable<string> variableNames, IEnumerable<IList> variableValues, bool cloneValues = false) :
+      base(variableNames, variableValues, cloneValues) { }
 
+    public Dataset ToDataset() {
+      return new Dataset(variableNames, variableNames.Select(v => variableValues[v]));
+    }
     public void ReplaceRow(int row, IEnumerable<object> values) {
       var list = values.ToList();
       if (list.Count != variableNames.Count)
@@ -90,7 +93,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       for (int i = 0; i < list.Count; ++i) {
         variableValues[variableNames[i]].Add(list[i]);
       }
-      rows++;
+      Rows++;
       OnRowsChanged();
       OnReset();
     }
@@ -103,11 +106,39 @@ namespace HeuristicLab.Problems.DataAnalysis {
       if (values == null || values.Count == 0)
         throw new ArgumentException("Cannot add variable with no values.");
 
+      if (values.Count != Rows)
+        throw new ArgumentException(string.Format("{0} values are provided, but {1} rows are present in the dataset.", values.Count, Rows));
+
       if (!IsAllowedType(values))
         throw new ArgumentException(string.Format("Unsupported type {0} for variable {1}.", GetElementType(values), variableName));
 
       variableValues[variableName] = values;
       variableNames.Add(variableName);
+
+      OnColumnsChanged();
+      OnColumnNamesChanged();
+      OnReset();
+    }
+
+
+    public void InsertVariable(string variableName, int position, IList values) {
+      if (variableValues.ContainsKey(variableName))
+        throw new ArgumentException(string.Format("Variable {0} is already present in the dataset.", variableName));
+
+      if (position < 0 || position > Columns)
+        throw new ArgumentException(string.Format("Incorrect position {0} specified. The position must be between 0 and {1}.", position, Columns));
+
+      if (values == null || values.Count == 0)
+        throw new ArgumentException("Cannot add variable with no values.");
+
+      if (values.Count != Rows)
+        throw new ArgumentException(string.Format("{0} values are provided, but {1} rows are present in the dataset.", values.Count, Rows));
+
+      if (!IsAllowedType(values))
+        throw new ArgumentException(string.Format("Unsupported type {0} for variable {1}.", GetElementType(values), variableName));
+
+      variableNames.Insert(position, variableName);
+      variableValues[variableName] = values;
 
       OnColumnsChanged();
       OnColumnNamesChanged();
@@ -128,7 +159,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public void RemoveRow(int row) {
       foreach (var list in variableValues.Values)
         list.RemoveAt(row);
-      rows--;
+      Rows--;
       OnRowsChanged();
       OnReset();
     }
