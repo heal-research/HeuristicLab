@@ -73,20 +73,16 @@ SET /P CLEANBEFOREBUILD=Would you like to clean before building [n]:
 IF "%CLEANBEFOREBUILD%"=="" SET CLEANBEFOREBUILD=n
 
 :main
-REM First find the path to the msbuild.exe by performing a registry query
-FOR /F "tokens=1,3 delims=	 " %%A IN ('REG QUERY "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\MSBuild\ToolsVersions\4.0"') DO (
-  IF "%%A"=="MSBuildToolsPath" SET MSBUILDPATH=%%B)
-
 REM Then execute msbuild to clean and build the solution
 REM Disable that msbuild creates a cache file of the solution
 SET MSBuildUseNoSolutionCache=1
 REM Run msbuild to clean and then build
 IF "%CLEANBEFOREBUILD%" NEQ "n" (
   ECHO Cleaning ...
-  %MSBUILDPATH%msbuild.exe %SELECTED% /target:Clean /p:Configuration="%CONFIGURATION%",Platform="%PLATFORM%" /m:2 /nologo /verbosity:q /clp:ErrorsOnly
+  msbuild.exe %SELECTED% /target:Clean /p:Configuration="%CONFIGURATION%",Platform="%PLATFORM%" /m:2 /nologo /verbosity:q /clp:ErrorsOnly
 )
 ECHO Building ...
-%MSBUILDPATH%msbuild.exe %SELECTED% /target:Build /p:Configuration="%CONFIGURATION%",Platform="%PLATFORM%" /m:2 /nologo /verbosity:q /clp:ErrorsOnly
+msbuild.exe %SELECTED% /target:Build /p:Configuration="%CONFIGURATION%",Platform="%PLATFORM%" /m:2 /nologo /verbosity:q /clp:ErrorsOnly
 
 ECHO.
 ECHO DONE.

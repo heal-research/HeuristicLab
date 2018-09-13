@@ -23,7 +23,7 @@ using System;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.OrTools {
-  [Plugin("HeuristicLab.OrTools", "Provides functionality of Google OR-Tools in HeuristicLab", "6.8.0.$WCREV$")]
+  [Plugin("HeuristicLab.OrTools", "Provides functionality of Google OR-Tools in HeuristicLab. Requires Windows 64-bit", "6.8.0.$WCREV$")]
   [PluginFile("HeuristicLab.OrTools-6.8.0-pre.dll", PluginFileType.Assembly)]
   [PluginFile("Google.OrTools.dll", PluginFileType.Assembly)]
   [PluginFile("Google.OrTools-license.txt", PluginFileType.License)]
@@ -32,12 +32,5 @@ namespace HeuristicLab.OrTools {
   [PluginFile("glpk_4_65.dll", PluginFileType.NativeDll)]
   [PluginFile("GLPK-4.65-license.txt", PluginFileType.License)]
   public class HeuristicLabOrToolsPlugin : PluginBase {
-      public override void OnLoad() {
-      if (!Environment.Is64BitProcess)
-        throw new InvalidPluginException("Google OR-Tools integration is availabe only on 64-bit platforms.");
-      if (Environment.OSVersion.Platform != PlatformID.Win32NT)
-        throw new InvalidPluginException("Google OR-Tools integration is currently availabe only on Windows.");
-      base.OnLoad();
-    }
   }
 }
