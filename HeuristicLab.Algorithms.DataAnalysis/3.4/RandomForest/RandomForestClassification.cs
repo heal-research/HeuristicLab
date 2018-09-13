@@ -134,7 +134,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     #region random forest
     protected override void Run(CancellationToken cancellationToken) {
       double rmsError, relClassificationError, outOfBagRmsError, outOfBagRelClassificationError;
-      if (SetSeedRandomly) Seed = new System.Random().Next();
+      if (SetSeedRandomly) Seed = Random.RandomSeedGenerator.GetSeed();
 
       var model = CreateRandomForestClassificationModel(Problem.ProblemData, NumberOfTrees, R, M, Seed, out rmsError, out relClassificationError, out outOfBagRmsError, out outOfBagRelClassificationError);
       Results.Add(new Result("Root mean square error", "The root of the mean of squared errors of the random forest regression solution on the training set.", new DoubleValue(rmsError)));

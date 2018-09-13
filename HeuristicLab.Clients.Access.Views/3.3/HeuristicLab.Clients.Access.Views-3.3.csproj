@@ -146,11 +146,11 @@
     <Compile Include="UserViews\LightweightUserInformationView.Designer.cs">
       <DependentUpon>LightweightUserInformationView.cs</DependentUpon>
     </Compile>
-    <Compile Include="UserViews\RefreshableLightweightUserInformationView.cs">
+    <Compile Include="UserViews\RefreshableLightweightAccessClientInformationView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UserViews\RefreshableLightweightUserInformationView.Designer.cs">
-      <DependentUpon>RefreshableLightweightUserInformationView.cs</DependentUpon>
+    <Compile Include="UserViews\RefreshableLightweightAccessClientInformationView.Designer.cs">
+      <DependentUpon>RefreshableLightweightAccessClientInformationView.cs</DependentUpon>
     </Compile>
     <Compile Include="UserViews\LightweightUserView.cs">
       <SubType>UserControl</SubType>
@@ -158,11 +158,17 @@
     <Compile Include="UserViews\LightweightUserView.Designer.cs">
       <DependentUpon>LightweightUserView.cs</DependentUpon>
     </Compile>
-    <Compile Include="UserViews\RefreshableLightweightUserView.cs">
+    <Compile Include="UserViews\RefreshableLightweightAccessClientView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UserViews\RefreshableLightweightUserView.Designer.cs">
-      <DependentUpon>RefreshableLightweightUserView.cs</DependentUpon>
+    <Compile Include="UserViews\RefreshableLightweightAccessClientView.Designer.cs">
+      <DependentUpon>RefreshableLightweightAccessClientView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserViews\RefreshableLightweightUserInformationView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserViews\RefreshableLightweightUserInformationView.Designer.cs">
+      <DependentUpon>RefreshableLightweightUserInformationView.cs</DependentUpon>
     </Compile>
     <Compile Include="UserViews\RefreshableView.cs">
       <SubType>UserControl</SubType>

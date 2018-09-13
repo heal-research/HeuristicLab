@@ -91,15 +91,12 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       DateTime from, to;
 
       if (!string.IsNullOrEmpty(dtpFrom.Text) && !string.IsNullOrEmpty(dtpTo.Text)) {
-        if (chbade.Checked) {
+        if (DateTime.TryParse(dtpFrom.Text, out from) && DateTime.TryParse(dtpTo.Text, out to) && from <= to) {
           //whole day appointment, only dates are visible
-          if (DateTime.TryParse(dtpFrom.Text, out from) && DateTime.TryParse(dtpTo.Text, out to) && from <= to)
-            offlineTimes.Add(CreateDowntime(from, to.AddDays(1), true, dtType));
-          else
-            MessageBox.Show("Incorrect date format", "Schedule Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        } else if (!string.IsNullOrEmpty(txttimeFrom.Text) && !string.IsNullOrEmpty(txttimeTo.Text)) {
-          //Timeframe appointment
-          if (DateTime.TryParse(dtpFrom.Text + " " + txttimeFrom.Text, out from) && DateTime.TryParse(dtpTo.Text + " " + txttimeTo.Text, out to) && from < to) {
+          if (chbade.Checked) {
+            offlineTimes.Add(CreateDowntime(new DateTime(from.Year, from.Month, from.Day), (new DateTime(to.Year, to.Month, to.Day)).AddDays(1), true, dtType));
+          } else {
+            //Timeframe appointment
             if (from.Date == to.Date)
               offlineTimes.Add(CreateDowntime(from, to, false, dtType));
             else {
@@ -110,9 +107,13 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
               }
               offlineTimes.Add(CreateDowntime(from, new DateTime(from.Year, from.Month, from.Day, to.Hour, to.Minute, 0, 0), false, dtType));
             }
-          } else
-            MessageBox.Show("Incorrect date format", "Schedule Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+          }
+
+        } else {
+          MessageBox.Show("Incorrect date format", "Schedule Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
+
+
         dvOnline.Invalidate();
         return true;
       } else {
@@ -155,11 +156,14 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     }
 
     private void ChangeRecurrenceDowntime(Guid recurringId) {
-      int hourfrom = int.Parse(txttimeFrom.Text.Substring(0, txttimeFrom.Text.IndexOf(':')));
-      int hourTo = int.Parse(txttimeTo.Text.Substring(0, txttimeTo.Text.IndexOf(':')));
-      List<HiveDowntime> recurringDowntimes = offlineTimes.Where(appointment => ((HiveDowntime)appointment).RecurringId == recurringId).ToList();
-      recurringDowntimes.ForEach(appointment => appointment.StartDate = new DateTime(appointment.StartDate.Year, appointment.StartDate.Month, appointment.StartDate.Day, hourfrom, 0, 0));
-      recurringDowntimes.ForEach(appointment => appointment.EndDate = new DateTime(appointment.EndDate.Year, appointment.EndDate.Month, appointment.EndDate.Day, hourTo, 0, 0));
+      DateTime from, to;
+      if (DateTime.TryParse(dtpFrom.Text, out from) && DateTime.TryParse(dtpTo.Text, out to) && from <= to) {
+        List<HiveDowntime> recurringDowntimes = offlineTimes.Where(appointment => ((HiveDowntime)appointment).RecurringId == recurringId).ToList();
+        recurringDowntimes.ForEach(appointment => appointment.StartDate = new DateTime(appointment.StartDate.Year, appointment.StartDate.Month, appointment.StartDate.Day, from.Hour, 0, 0));
+        recurringDowntimes.ForEach(appointment => appointment.EndDate = new DateTime(appointment.EndDate.Year, appointment.EndDate.Month, appointment.EndDate.Day, to.Hour, 0, 0));
+      } else {
+        MessageBox.Show("Incorrect date format", "Schedule Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+      }
     }
 
     public void DialogClosed(RecurrentEvent e) {
@@ -221,18 +225,24 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
 
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
+      bool enabled = Content != null && !Locked;
+      btCreate.Enabled = enabled;
+      btbDelete.Enabled = enabled;
+      btnClearCal.Enabled = enabled;
+      btnRecurrence.Enabled = enabled;
+      btnSaveCal.Enabled = enabled;
     }
 
-    public virtual void SetEnabledStateOfSchedule(bool state) {
-      if (InvokeRequired) {
-        Invoke(new Action(() => SetEnabledStateOfSchedule(state)));
-      } else {
-        if (Content == null) state = false;
-        groupBox1.Enabled = state;
-        btnClearCal.Enabled = state;
-        btnSaveCal.Enabled = state;
-      }
-    }
+    //public virtual void SetEnabledStateOfSchedule(bool state) {
+    //  if (InvokeRequired) {
+    //    Invoke(new Action(() => SetEnabledStateOfSchedule(state)));
+    //  } else {
+    //    if (Content == null || Locked || ReadOnly) state = false;
+    //    //groupBox1.Enabled = state;
+    //    btnClearCal.Enabled = state;
+    //    btnSaveCal.Enabled = state;
+    //  }
+    //}
 
     private void btnClearCal_Click(object sender, System.EventArgs e) {
       foreach (HiveDowntime app in offlineTimes) {
@@ -242,24 +252,22 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     }
 
     private void chbade_CheckedChanged(object sender, EventArgs e) {
-      txttimeFrom.Visible = !chbade.Checked;
-      txttimeTo.Visible = !chbade.Checked;
+      if(chbade.Checked) {
+        dtpFrom.Value = new DateTime(dtpFrom.Value.Year, dtpFrom.Value.Month, dtpFrom.Value.Day);
+        dtpTo.Value = new DateTime(dtpTo.Value.Year, dtpTo.Value.Month, dtpTo.Value.Day);
+      }
     }
 
     private void dvOnline_OnSelectionChanged(object sender, EventArgs e) {
       if (dvOnline.Selection == SelectionType.DateRange) {
-        dtpFrom.Text = dvOnline.SelectionStart.ToShortDateString();
-        dtpTo.Text = dvOnline.SelectionEnd.Date.ToShortDateString();
-        txttimeFrom.Text = dvOnline.SelectionStart.ToShortTimeString();
-        txttimeTo.Text = dvOnline.SelectionEnd.ToShortTimeString();
+        dtpFrom.Value = dvOnline.SelectionStart;
+        dtpTo.Value = dvOnline.SelectionEnd.Date;
         btCreate.Text = "Create Downtime";
       }
 
       if (dvOnline.Selection == SelectionType.Appointment) {
-        dtpFrom.Text = dvOnline.SelectedAppointment.StartDate.ToShortDateString();
-        dtpTo.Text = dvOnline.SelectedAppointment.EndDate.ToShortDateString();
-        txttimeFrom.Text = dvOnline.SelectedAppointment.StartDate.ToShortTimeString();
-        txttimeTo.Text = dvOnline.SelectedAppointment.EndDate.ToShortTimeString();
+        dtpFrom.Value = dvOnline.SelectedAppointment.StartDate;
+        dtpTo.Value = dvOnline.SelectedAppointment.EndDate;
 
         if (dvOnline.SelectedAppointment.Recurring)
           //also change the caption of the save button

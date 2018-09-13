@@ -133,7 +133,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     #region random forest
     protected override void Run(CancellationToken cancellationToken) {
       double rmsError, avgRelError, outOfBagRmsError, outOfBagAvgRelError;
-      if (SetSeedRandomly) Seed = new System.Random().Next();
+      if (SetSeedRandomly) Seed = Random.RandomSeedGenerator.GetSeed();
       var model = CreateRandomForestRegressionModel(Problem.ProblemData, NumberOfTrees, R, M, Seed,
         out rmsError, out avgRelError, out outOfBagRmsError, out outOfBagAvgRelError);
 

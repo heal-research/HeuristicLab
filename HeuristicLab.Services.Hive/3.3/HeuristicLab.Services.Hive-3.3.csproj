@@ -118,9 +118,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Converter.cs" />
+    <Compile Include="DataTransfer\AssignedJobResource.cs" />
+    <Compile Include="DataTransfer\AssignedProjectResource.cs" />
     <Compile Include="DataTransfer\Command.cs" />
+    <Compile Include="DataTransfer\JobState.cs" />
+    <Compile Include="DataTransfer\Project.cs" />
+    <Compile Include="DataTransfer\ProjectPermission.cs" />
     <Compile Include="DataTransfer\UserPriority.cs" />
-    <Compile Include="DataTransfer\ResourcePermission.cs" />
     <Compile Include="DataTransfer\Downtime.cs" />
     <Compile Include="DataTransfer\Heartbeat.cs" />
     <Compile Include="DataTransfer\Job.cs" />
@@ -148,7 +152,9 @@
     <Compile Include="Scheduler\TaskInfoForScheduler.cs" />
     <Compile Include="Scheduler\JobInfoForScheduler.cs" />
     <Compile Include="Scheduler\RoundRobinTaskScheduler.cs" />
-    <None Include="app.config" />
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Plugin.cs.frame" />
     <None Include="Properties\AssemblyInfo.cs.frame" />
     <Compile Include="Manager\HeartbeatManager.cs" />

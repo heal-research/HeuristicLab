@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2016 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -29,10 +29,10 @@ using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Clients.Access.Views {
-  [View("RefreshableLightweightUser View")]
+  [View("RefreshableLightweightAccessClient View")]
   [Content(typeof(AccessClient), false)]
-  public partial class RefreshableLightweightUserView : RefreshableView {
-    public RefreshableLightweightUserView() {
+  public partial class RefreshableLightweightAccessClientView : RefreshableView {
+    public RefreshableLightweightAccessClientView() {
       InitializeComponent();
     }
 
@@ -57,6 +57,12 @@ namespace HeuristicLab.Clients.Access.Views {
       lightweightUserView.Content = null;
     }
 
+    protected override void SetEnabledStateOfControls() {
+      base.SetEnabledStateOfControls();
+      refreshButton.Enabled = FetchSelectedUsers != null && Content != null;
+      lightweightUserView.Locked = Locked;
+    }
+
     protected override void RefreshData() {
       Action completeRefreshAction = new Action(delegate {
         selectedUsers = FetchSelectedUsers();
@@ -78,11 +84,6 @@ namespace HeuristicLab.Clients.Access.Views {
         lightweightUserView.Content = new ItemList<UserGroupBase>(Content.UsersAndGroups.Where(x => selectedUsers.Contains(x.Id)));
         if (lightweightUserView.Content != null) OnStorableStateChanged();
       }
-    }
-
-    protected override void SetEnabledStateOfControls() {
-      base.SetEnabledStateOfControls();
-      refreshButton.Enabled = FetchSelectedUsers != null && Content != null;
     }
 
     public IItemList<UserGroupBase> GetDeletedUsers() {

@@ -210,5 +210,13 @@ namespace HeuristicLab.Clients.Hive.Views {
         Content.Task.Priority = priorityComboBox.SelectedIndex;
       }
     }
+
+    private void coresNeededComboBox_SelectedIndexChanged(object sender, EventArgs e) {
+      if (Content != null && Content.Task != null) {
+        int cores;
+        if (int.TryParse(coresNeededComboBox.SelectedItem.ToString(), out cores) && Content.Task.CoresNeeded != cores)
+          Content.Task.CoresNeeded = cores;
+      }
+    }
   }
 }

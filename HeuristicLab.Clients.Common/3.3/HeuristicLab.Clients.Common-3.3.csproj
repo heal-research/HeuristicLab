@@ -138,6 +138,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="SecurityExceptionUtil.cs" />
     <None Include="app.config" />
     <None Include="Properties\AssemblyInfo.cs.frame" />
     <None Include="Properties\Settings.settings">
