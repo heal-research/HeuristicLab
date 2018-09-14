@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2016 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  * and the BEACON Center for the Study of Evolution in Action.
  * 
  * This file is part of HeuristicLab.
@@ -366,7 +366,7 @@ namespace HeuristicLab.Algorithms.MOCMAEvolutionStrategy {
 
     #region Mainloop
     protected override void Run(CancellationToken cancellationToken) {
-      while (ResultsIterations < MaximumGenerations) {
+      while (ResultsIterations < MaximumGenerations && ResultsEvaluations < MaximumEvaluatedSolutions) {
         try {
           Iterate();
           ResultsIterations++;

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2016 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -351,6 +351,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       availableWorkers = new SemaphoreSlim(NumberOfWorkers.Value, NumberOfWorkers.Value);
       allAlgorithmsFinished = new ManualResetEventSlim(false);
 
+      var startedTasks = new List<Task>(clonedAlgorithms.Count);
+
       //start prepared or paused cloned algorithms
       foreach (IAlgorithm clonedAlgorithm in clonedAlgorithms) {
         if (pausePending || stopPending || ExecutionState != ExecutionState.Started) break;
@@ -359,12 +361,15 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
           availableWorkers.Wait();
           lock (locker) {
             if (pausePending || stopPending || ExecutionState != ExecutionState.Started) break;
-            clonedAlgorithm.StartAsync(cancellationToken);
+            var task = clonedAlgorithm.StartAsync(cancellationToken);
+            startedTasks.Add(task);
           }
         }
       }
 
       allAlgorithmsFinished.Wait();
+
+      Task.WaitAll(startedTasks.ToArray()); // to get exceptions not handled within the tasks
     }
 
     public async Task StartAsync() { await StartAsync(CancellationToken.None); }

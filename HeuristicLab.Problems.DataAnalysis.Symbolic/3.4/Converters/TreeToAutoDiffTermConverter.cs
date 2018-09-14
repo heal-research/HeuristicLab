@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2016 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -86,13 +86,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     #endregion
 
-    public static bool TryConvertToAutoDiff(ISymbolicExpressionTree tree, bool makeVariableWeightsVariable,
+    public static bool TryConvertToAutoDiff(ISymbolicExpressionTree tree, bool makeVariableWeightsVariable, bool addLinearScalingTerms,
       out List<DataForVariable> parameters, out double[] initialConstants,
       out ParametricFunction func,
       out ParametricFunctionGradient func_grad) {
 
       // use a transformator object which holds the state (variable list, parameter list, ...) for recursive transformation of the tree
-      var transformator = new TreeToAutoDiffTermConverter(makeVariableWeightsVariable);
+      var transformator = new TreeToAutoDiffTermConverter(makeVariableWeightsVariable, addLinearScalingTerms);
       AutoDiff.Term term;
       try {
         term = transformator.ConvertToAutoDiff(tree.Root.GetSubtree(0));
@@ -119,9 +119,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private readonly Dictionary<DataForVariable, AutoDiff.Variable> parameters;
     private readonly List<AutoDiff.Variable> variables;
     private readonly bool makeVariableWeightsVariable;
+    private readonly bool addLinearScalingTerms;
 
-    private TreeToAutoDiffTermConverter(bool makeVariableWeightsVariable) {
+    private TreeToAutoDiffTermConverter(bool makeVariableWeightsVariable, bool addLinearScalingTerms) {
       this.makeVariableWeightsVariable = makeVariableWeightsVariable;
+      this.addLinearScalingTerms = addLinearScalingTerms;
       this.initialConstants = new List<double>();
       this.parameters = new Dictionary<DataForVariable, AutoDiff.Variable>();
       this.variables = new List<AutoDiff.Variable>();
@@ -247,11 +249,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           ConvertToAutoDiff(node.GetSubtree(0)));
       }
       if (node.Symbol is StartSymbol) {
-        var alpha = new AutoDiff.Variable();
-        var beta = new AutoDiff.Variable();
-        variables.Add(beta);
-        variables.Add(alpha);
-        return ConvertToAutoDiff(node.GetSubtree(0)) * alpha + beta;
+        if (addLinearScalingTerms) {
+          // scaling variables α, β are given at the beginning of the parameter vector
+          var alpha = new AutoDiff.Variable();
+          var beta = new AutoDiff.Variable();
+          variables.Add(beta);
+          variables.Add(alpha);
+          var t = ConvertToAutoDiff(node.GetSubtree(0));
+          return t * alpha + beta;
+        } else return ConvertToAutoDiff(node.GetSubtree(0));
       }
       throw new ConversionException();
     }

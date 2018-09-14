@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2016 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -41,20 +41,18 @@ namespace HeuristicLab.DataPreprocessing.Views {
     //Open item in new tab on double click
     //Clone chart items
     protected override void itemsListView_DoubleClick(object sender, EventArgs e) {
-      if (itemsListView.SelectedItems.Count == 1) {
-        IViewShortcut item = itemsListView.SelectedItems[0].Tag as IViewShortcut;
-        if (item != null) {
-          try {
-            item = (IViewShortcut)item.Clone();
-            var view = MainFormManager.MainForm.ShowContent(item);
-            if (view != null) {
-              view.ReadOnly = ReadOnly;
-              view.Locked = Locked;
-            }
-          } catch (NullReferenceException) {
-            // cloning for preprocessing not done properly yet
-          }
+      if (itemsListView.SelectedItems.Count != 1) return;
+      IViewShortcut item = itemsListView.SelectedItems[0].Tag as IViewShortcut;
+      if (item == null) return;
+      try {
+        item = (IViewShortcut)item.Clone();
+        var view = MainFormManager.MainForm.ShowContent(item);
+        if (view != null) {
+          view.ReadOnly = ReadOnly;
+          view.Locked = Locked;
         }
+      } catch (NullReferenceException) {
+        // cloning for preprocessing not done properly yet
       }
     }
   }

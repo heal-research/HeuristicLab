@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2016 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,7 +25,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
   /// <summary>
   /// Plugin class for HeuristicLab.Algorithms.DataAnalysis.Views plugin.
   /// </summary>
-  [Plugin("HeuristicLab.Algorithms.DataAnalysis.Views", "Provides views for data analysis algorithms implemented in external libraries (linear regression, linear discriminant analysis, k-means clustering, support vector classification and regression)", "3.4.10.$WCREV$")]
+  [Plugin("HeuristicLab.Algorithms.DataAnalysis.Views", "Provides views for data analysis algorithms implemented in external libraries (linear regression, linear discriminant analysis, k-means clustering, support vector classification and regression)", "3.4.11.$WCREV$")]
   [PluginFile("HeuristicLab.Algorithms.DataAnalysis.Views-3.4.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Algorithms.DataAnalysis", "3.4")]
   [PluginDependency("HeuristicLab.Analysis", "3.3")]

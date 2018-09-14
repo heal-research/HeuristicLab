@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2017 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,7 +20,6 @@
 #endregion
 
 using System;
-using System.Linq;
 using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -37,8 +36,7 @@ namespace HeuristicLab.Common {
           TaskScheduler.Default);
       } catch (OperationCanceledException) {
       } catch (AggregateException ae) {
-        var e = ae.InnerExceptions.SingleOrDefault() ?? ae;
-        ExceptionDispatchInfo.Capture(e).Throw();
+        ae.FlattenAndHandle(new[] { typeof(OperationCanceledException) }, e => ExceptionDispatchInfo.Capture(e).Throw());
       }
     }
   }

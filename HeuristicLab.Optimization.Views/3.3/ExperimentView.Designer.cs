@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2016 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -46,13 +46,16 @@ namespace HeuristicLab.Optimization.Views {
     private void InitializeComponent() {
       this.tabControl = new HeuristicLab.MainForm.WindowsForms.DragOverTabControl();
       this.optimizersTabPage = new System.Windows.Forms.TabPage();
+      this.experimentTreeView = new HeuristicLab.Optimization.Views.ExperimentTreeView();
       this.runsTabPage = new System.Windows.Forms.TabPage();
       this.runsViewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
-      this.experimentTreeView = new HeuristicLab.Optimization.Views.ExperimentTreeView();
+      this.workersNumericUpDown = new System.Windows.Forms.NumericUpDown();
+      this.workersLabel = new System.Windows.Forms.Label();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.tabControl.SuspendLayout();
       this.optimizersTabPage.SuspendLayout();
       this.runsTabPage.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.workersNumericUpDown)).BeginInit();
       this.SuspendLayout();
       // 
       // startButton
@@ -119,6 +122,17 @@ namespace HeuristicLab.Optimization.Views {
       this.optimizersTabPage.Text = "Optimizers";
       this.optimizersTabPage.UseVisualStyleBackColor = true;
       // 
+      // experimentTreeView
+      // 
+      this.experimentTreeView.Caption = "Experiment View";
+      this.experimentTreeView.Content = null;
+      this.experimentTreeView.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.experimentTreeView.Location = new System.Drawing.Point(3, 3);
+      this.experimentTreeView.Name = "experimentTreeView";
+      this.experimentTreeView.ReadOnly = false;
+      this.experimentTreeView.Size = new System.Drawing.Size(665, 395);
+      this.experimentTreeView.TabIndex = 0;
+      // 
       // runsTabPage
       // 
       this.runsTabPage.Controls.Add(this.runsViewHost);
@@ -146,21 +160,40 @@ namespace HeuristicLab.Optimization.Views {
       this.runsViewHost.ViewsLabelVisible = true;
       this.runsViewHost.ViewType = null;
       // 
-      // experimentTreeView
+      // workersNumericUpDown
       // 
-      this.experimentTreeView.Caption = "Experiment View";
-      this.experimentTreeView.Content = null;
-      this.experimentTreeView.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.experimentTreeView.Location = new System.Drawing.Point(3, 3);
-      this.experimentTreeView.Name = "experimentTreeView";
-      this.experimentTreeView.ReadOnly = false;
-      this.experimentTreeView.Size = new System.Drawing.Size(665, 395);
-      this.experimentTreeView.TabIndex = 0;
+      this.workersNumericUpDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.workersNumericUpDown.Location = new System.Drawing.Point(193, 461);
+      this.workersNumericUpDown.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+      this.workersNumericUpDown.Name = "workersNumericUpDown";
+      this.workersNumericUpDown.Size = new System.Drawing.Size(59, 20);
+      this.workersNumericUpDown.TabIndex = 16;
+      this.workersNumericUpDown.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+      this.workersNumericUpDown.ValueChanged += new System.EventHandler(this.workersNumericUpDown_ValueChanged);
+      // 
+      // workersLabel
+      // 
+      this.workersLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.workersLabel.AutoSize = true;
+      this.workersLabel.Location = new System.Drawing.Point(140, 464);
+      this.workersLabel.Name = "workersLabel";
+      this.workersLabel.Size = new System.Drawing.Size(53, 13);
+      this.workersLabel.TabIndex = 17;
+      this.workersLabel.Text = "Workers: ";
       // 
       // ExperimentView
       // 
-      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
+      this.Controls.Add(this.workersLabel);
+      this.Controls.Add(this.workersNumericUpDown);
       this.Controls.Add(this.tabControl);
       this.Name = "ExperimentView";
       this.Size = new System.Drawing.Size(679, 482);
@@ -174,10 +207,13 @@ namespace HeuristicLab.Optimization.Views {
       this.Controls.SetChildIndex(this.infoLabel, 0);
       this.Controls.SetChildIndex(this.nameLabel, 0);
       this.Controls.SetChildIndex(this.nameTextBox, 0);
+      this.Controls.SetChildIndex(this.workersNumericUpDown, 0);
+      this.Controls.SetChildIndex(this.workersLabel, 0);
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
       this.tabControl.ResumeLayout(false);
       this.optimizersTabPage.ResumeLayout(false);
       this.runsTabPage.ResumeLayout(false);
+      ((System.ComponentModel.ISupportInitialize)(this.workersNumericUpDown)).EndInit();
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -189,6 +225,7 @@ namespace HeuristicLab.Optimization.Views {
     private System.Windows.Forms.TabPage runsTabPage;
     private HeuristicLab.MainForm.WindowsForms.ViewHost runsViewHost;
     private ExperimentTreeView experimentTreeView;
-
+    private System.Windows.Forms.NumericUpDown workersNumericUpDown;
+    private System.Windows.Forms.Label workersLabel;
   }
 }

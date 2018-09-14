@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2016 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,7 +25,7 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
   /// <summary>
   /// Plugin class for HeuristicLab.Visualization.ChartControlsExtensions plugin
   /// </summary>  
-  [Plugin("HeuristicLab.Visualization.ChartControlsExtensions", "3.3.14.$WCREV$")]
+  [Plugin("HeuristicLab.Visualization.ChartControlsExtensions", "3.3.15.$WCREV$")]
   [PluginFile("HeuristicLab.Visualization.ChartControlsExtensions-3.3.dll", PluginFileType.Assembly)]
   public class HeuristicLabVisualizationChartControlsExtensionsPlugin : PluginBase { }
 }

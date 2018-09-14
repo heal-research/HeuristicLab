@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2016 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -319,10 +319,11 @@ namespace HeuristicLab.Problems.DataAnalysis {
       TestPartition.Start = classificationProblemData.TestPartition.Start;
       TestPartition.End = classificationProblemData.TestPartition.End;
 
-      PositiveClass = classificationProblemData.PositiveClass;
-
       for (int i = 0; i < classificationProblemData.ClassNames.Count(); i++)
         ClassNamesParameter.Value[i, 0] = classificationProblemData.ClassNames.ElementAt(i);
+
+      //mkommend: The positive class depends on the class names and as a result must only be set after the classe names parameter.
+      PositiveClass = classificationProblemData.PositiveClass;
 
       for (int i = 0; i < Classes; i++) {
         for (int j = 0; j < Classes; j++) {

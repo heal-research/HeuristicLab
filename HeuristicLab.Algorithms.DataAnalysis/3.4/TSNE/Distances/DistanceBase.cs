@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2016 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -28,7 +28,6 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
   public abstract class DistanceBase<T> : Item, IDistance<T> {
-
     #region HLConstructors & Cloning
     [StorableConstructor]
     protected DistanceBase(bool deserializing) : base(deserializing) { }
@@ -43,14 +42,14 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     public double Get(object x, object y) {
-      return Get((T)x, (T)y);
+      return Get((T) x, (T) y);
     }
 
     public IComparer GetDistanceComparer(object item) {
-      return new DistanceComparer((T)item, this);
+      return new DistanceComparer((T) item, this);
     }
 
-    private class DistanceComparer : IComparer<T>, IComparer {
+    internal class DistanceComparer : IComparer<T>, IComparer {
       private readonly T item;
       private readonly IDistance<T> dist;
 
@@ -64,7 +63,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
 
       public int Compare(object x, object y) {
-        return Compare((T)x, (T)y);
+        return Compare((T) x, (T) y);
       }
     }
   }

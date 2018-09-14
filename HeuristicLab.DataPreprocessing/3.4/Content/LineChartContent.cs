@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2016 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,28 +22,37 @@
 using System.Drawing;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.DataPreprocessing {
-
   [Item("Line Chart", "Represents the line chart grid.")]
+  [StorableClass]
   public class LineChartContent : PreprocessingChartContent {
-    public bool AllInOneMode { get; set; }
-
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Performance; }
     }
 
+    [Storable]
+    public bool AllInOneMode { get; set; }
+
+
+    #region Constructor, Cloning & Persistence
     public LineChartContent(IFilteredPreprocessingData preprocessingData)
       : base(preprocessingData) {
       AllInOneMode = true;
     }
 
-    public LineChartContent(LineChartContent content, Cloner cloner)
-      : base(content, cloner) {
-      this.AllInOneMode = content.AllInOneMode;
+    public LineChartContent(LineChartContent original, Cloner cloner)
+      : base(original, cloner) {
+      AllInOneMode = original.AllInOneMode;
     }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new LineChartContent(this, cloner);
     }
+
+    [StorableConstructor]
+    protected LineChartContent(bool deserializing)
+      : base(deserializing) { }
+    #endregion
   }
 }

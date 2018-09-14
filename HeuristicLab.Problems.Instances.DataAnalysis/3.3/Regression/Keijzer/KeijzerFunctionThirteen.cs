@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2016 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -35,8 +35,9 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
         + "Authors: Maarten Keijzer" + Environment.NewLine
         + "Function: f(x, y) = 6 * sin(x) * cos(y)" + Environment.NewLine
         + "range(train): 20 Train cases x,y = rnd(-3, 3)" + Environment.NewLine
-        + "range(test): x,y = [-3:0.01:3]" + Environment.NewLine
-        + "Function Set: x + y, x * y, 1/x, -x, sqrt(x)";
+        + "range(test): x,y = [-3:0.1:3]" + Environment.NewLine
+        + "Function Set: x + y, x * y, 1/x, -x, sqrt(x)" + Environment.NewLine
+        + "Comments: Reduced test set compared to original publication!";
       }
     }
     protected override string TargetVariable { get { return "F"; } }
@@ -45,7 +46,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     protected override int TrainingPartitionStart { get { return 0; } }
     protected override int TrainingPartitionEnd { get { return 20; } }
     protected override int TestPartitionStart { get { return 20; } }
-    protected override int TestPartitionEnd { get { return 20 + (601 * 601); } }
+    protected override int TestPartitionEnd { get { return 20 + (61 * 61); } }
     public int Seed { get; private set; }
 
     public KeijzerFunctionThirteen() : this((int)System.DateTime.Now.Ticks) {
@@ -55,7 +56,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     }
     protected override List<List<double>> GenerateValues() {
       List<List<double>> data = new List<List<double>>();
-      List<double> oneVariableTestData = SequenceGenerator.GenerateSteps(-3, 3, 0.01m).Select(v => (double)v).ToList();
+      List<double> oneVariableTestData = SequenceGenerator.GenerateSteps(-3, 3, 0.1m).Select(v => (double)v).ToList();
       List<List<double>> testData = new List<List<double>>() { oneVariableTestData, oneVariableTestData };
 
       var combinations = ValueGenerator.GenerateAllCombinationsOfValuesInLists(testData).ToList();

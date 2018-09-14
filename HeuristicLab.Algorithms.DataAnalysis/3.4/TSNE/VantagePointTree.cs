@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2016 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -138,7 +138,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
       // Partition around the median distance
       var median = (upper + lower) / 2;
-      items.NthElement(lower + 1, upper - 1, median, distance.GetDistanceComparer(items[lower]));
+      items.PartialSort(lower + 1, upper - 1, median, distance.GetDistanceComparer(items[lower]));
 
       // Threshold of the new node will be the distance to the median
       node.threshold = distance.Get(items[lower], items[median]);

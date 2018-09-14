@@ -1,7 +1,7 @@
 ﻿#region License Information
 
 /* HeuristicLab
- * Copyright (C) 2002-2016 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -51,7 +51,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       Test,
       All
     }
-
+   
     private const string ReplacementParameterName = "Replacement Method";
     private const string DataPartitionParameterName = "DataPartition";
 

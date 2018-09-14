@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2016 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,20 +24,31 @@ using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
+using HeuristicLab.Core;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Visualization.ChartControlsExtensions;
 
 namespace HeuristicLab.DataPreprocessing {
-
+  [Item("ScatterPlotContent", "")]
+  [StorableClass]
   public abstract class ScatterPlotContent : PreprocessingChartContent {
+    [Storable]
     public string GroupingVariable { get; set; }
 
+    #region Constructor, Cloning & Persistence
     protected ScatterPlotContent(IFilteredPreprocessingData preprocessingData)
       : base(preprocessingData) {
     }
 
-    protected ScatterPlotContent(ScatterPlotContent content, Cloner cloner)
-      : base(content, cloner) {
+    protected ScatterPlotContent(ScatterPlotContent original, Cloner cloner)
+      : base(original, cloner) {
+      GroupingVariable = original.GroupingVariable;
     }
+
+    [StorableConstructor]
+    protected ScatterPlotContent(bool deserializing)
+      : base(deserializing) { }
+    #endregion
 
     public static ScatterPlot CreateScatterPlot(IFilteredPreprocessingData preprocessingData, string variableNameX, string variableNameY, string variableNameGroup = "-", LegendOrder legendOrder = LegendOrder.Alphabetically) {
       ScatterPlot scatterPlot = new ScatterPlot();

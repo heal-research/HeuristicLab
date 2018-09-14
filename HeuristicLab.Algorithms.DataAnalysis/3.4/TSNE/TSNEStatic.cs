@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2016 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -64,7 +64,6 @@ using HeuristicLab.Random;
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
   public class TSNEStatic<T> {
-
     [StorableClass]
     public sealed class TSNEState : DeepCloneable {
       #region Storables
@@ -169,7 +168,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
       [StorableConstructor]
       public TSNEState(bool deserializing) { }
-      public TSNEState(T[] data, IDistance<T> distance, IRandom random, int newDimensions, double perplexity, double theta, int stopLyingIter, int momSwitchIter, double momentum, double finalMomentum, double eta) {
+
+      public TSNEState(IReadOnlyList<T> data, IDistance<T> distance, IRandom random, int newDimensions, double perplexity,
+        double theta, int stopLyingIter, int momSwitchIter, double momentum, double finalMomentum, double eta, bool randomInit) {
         this.distance = distance;
         this.random = random;
         this.newDimensions = newDimensions;
@@ -182,7 +183,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         this.eta = eta;
 
         // initialize
-        noDatapoints = data.Length;
+        noDatapoints = data.Count;
         if (noDatapoints - 1 < 3 * perplexity)
           throw new ArgumentException("Perplexity too large for the number of data points!");
 
@@ -192,8 +193,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         uY = new double[noDatapoints, newDimensions];
         gains = new double[noDatapoints, newDimensions];
         for (var i = 0; i < noDatapoints; i++)
-          for (var j = 0; j < newDimensions; j++)
-            gains[i, j] = 1.0;
+        for (var j = 0; j < newDimensions; j++)
+          gains[i, j] = 1.0;
 
         p = null;
         rowP = null;
@@ -211,21 +212,26 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         // Initialize solution (randomly)
         var rand = new NormalDistributedRandom(random, 0, 1);
         for (var i = 0; i < noDatapoints; i++)
-          for (var j = 0; j < newDimensions; j++)
-            newData[i, j] = rand.NextDouble() * .0001;
+        for (var j = 0; j < newDimensions; j++)
+          newData[i, j] = rand.NextDouble() * .0001;
+
+        if (!(data[0] is IReadOnlyList<double>) || randomInit) return;
+        for (var i = 0; i < noDatapoints; i++)
+        for (var j = 0; j < newDimensions; j++) {
+          var row = (IReadOnlyList<double>) data[i];
+          newData[i, j] = row[j % row.Count];
+        }
       }
       #endregion
 
       public double EvaluateError() {
-        return exact ?
-          EvaluateErrorExact(p, newData, noDatapoints, newDimensions) :
-          EvaluateErrorApproximate(rowP, colP, valP, newData, theta);
+        return exact ? EvaluateErrorExact(p, newData, noDatapoints, newDimensions) : EvaluateErrorApproximate(rowP, colP, valP, newData, theta);
       }
 
       #region Helpers
-      private static void CalculateApproximateSimilarities(T[] data, IDistance<T> distance, double perplexity, out int[] rowP, out int[] colP, out double[] valP) {
+      private static void CalculateApproximateSimilarities(IReadOnlyList<T> data, IDistance<T> distance, double perplexity, out int[] rowP, out int[] colP, out double[] valP) {
         // Compute asymmetric pairwise input similarities
-        ComputeGaussianPerplexity(data, distance, out rowP, out colP, out valP, perplexity, (int)(3 * perplexity));
+        ComputeGaussianPerplexity(data, distance, out rowP, out colP, out valP, perplexity, (int) (3 * perplexity));
         // Symmetrize input similarities
         int[] sRowP, symColP;
         double[] sValP;
@@ -234,27 +240,33 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         colP = symColP;
         valP = sValP;
         var sumP = .0;
-        for (var i = 0; i < rowP[data.Length]; i++) sumP += valP[i];
-        for (var i = 0; i < rowP[data.Length]; i++) valP[i] /= sumP;
+        for (var i = 0; i < rowP[data.Count]; i++) sumP += valP[i];
+        for (var i = 0; i < rowP[data.Count]; i++) valP[i] /= sumP;
       }
-
-      private static double[,] CalculateExactSimilarites(T[] data, IDistance<T> distance, double perplexity) {
+      private static double[,] CalculateExactSimilarites(IReadOnlyList<T> data, IDistance<T> distance, double perplexity) {
         // Compute similarities
-        var p = new double[data.Length, data.Length];
+        var p = new double[data.Count, data.Count];
         ComputeGaussianPerplexity(data, distance, p, perplexity);
         // Symmetrize input similarities
-        for (var n = 0; n < data.Length; n++) {
-          for (var m = n + 1; m < data.Length; m++) {
+        for (var n = 0; n < data.Count; n++) {
+          for (var m = n + 1; m < data.Count; m++) {
             p[n, m] += p[m, n];
             p[m, n] = p[n, m];
           }
         }
         var sumP = .0;
-        for (var i = 0; i < data.Length; i++) for (var j = 0; j < data.Length; j++) sumP += p[i, j];
-        for (var i = 0; i < data.Length; i++) for (var j = 0; j < data.Length; j++) p[i, j] /= sumP;
+        for (var i = 0; i < data.Count; i++) {
+          for (var j = 0; j < data.Count; j++) {
+            sumP += p[i, j];
+          }
+        }
+        for (var i = 0; i < data.Count; i++) {
+          for (var j = 0; j < data.Count; j++) {
+            p[i, j] /= sumP;
+          }
+        }
         return p;
       }
-
       private static void ComputeGaussianPerplexity(IReadOnlyList<T> x, IDistance<T> distance, out int[] rowP, out int[] colP, out double[] valP, double perplexity, int k) {
         if (perplexity > k) throw new ArgumentException("Perplexity should be lower than k!");
 
@@ -289,9 +301,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
           const double tol = 1e-5;
 
           // Iterate until we found a good perplexity
-          var iter = 0; double sumP = 0;
+          var iter = 0;
+          double sumP = 0;
           while (!found && iter < 200) {
-
             // Compute Gaussian kernel row
             for (var m = 0; m < k; m++) curP[m] = Math.Exp(-beta * distances[m + 1]);
 
@@ -306,14 +318,16 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
             var hdiff = h - Math.Log(perplexity);
             if (hdiff < tol && -hdiff < tol) {
               found = true;
-            } else {
+            }
+            else {
               if (hdiff > 0) {
                 minBeta = beta;
                 if (maxBeta.IsAlmost(double.MaxValue) || maxBeta.IsAlmost(double.MinValue))
                   beta *= 2.0;
                 else
                   beta = (beta + maxBeta) / 2.0;
-              } else {
+              }
+              else {
                 maxBeta = beta;
                 if (minBeta.IsAlmost(double.MinValue) || minBeta.IsAlmost(double.MaxValue))
                   beta /= 2.0;
@@ -334,11 +348,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
           }
         }
       }
-      private static void ComputeGaussianPerplexity(T[] x, IDistance<T> distance, double[,] p, double perplexity) {
+      private static void ComputeGaussianPerplexity(IReadOnlyList<T> x, IDistance<T> distance, double[,] p, double perplexity) {
         // Compute the distance matrix
         var dd = ComputeDistances(x, distance);
 
-        var n = x.Length;
+        var n = x.Count;
         // Compute the Gaussian kernel row by row
         for (var i = 0; i < n; i++) {
           // Initialize some variables
@@ -351,7 +365,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
           // Iterate until we found a good perplexity
           var iter = 0;
-          while (!found && iter < 200) {      // 200 iterations as in tSNE implementation by van der Maarten
+          while (!found && iter < 200) { // 200 iterations as in tSNE implementation by van der Maarten
 
             // Compute Gaussian kernel row
             for (var m = 0; m < n; m++) p[i, m] = Math.Exp(-beta * dd[i][m]);
@@ -368,14 +382,16 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
             var hdiff = h - Math.Log(perplexity);
             if (hdiff < tol && -hdiff < tol) {
               found = true;
-            } else {
+            }
+            else {
               if (hdiff > 0) {
                 minBeta = beta;
                 if (maxBeta.IsAlmost(double.MaxValue) || maxBeta.IsAlmost(double.MinValue))
                   beta *= 2.0;
                 else
                   beta = (beta + maxBeta) / 2.0;
-              } else {
+              }
+              else {
                 maxBeta = beta;
                 if (minBeta.IsAlmost(double.MinValue) || minBeta.IsAlmost(double.MaxValue))
                   beta /= 2.0;
@@ -392,17 +408,16 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
           for (var m = 0; m < n; m++) p[i, m] /= sumP;
         }
       }
-
-      private static double[][] ComputeDistances(T[] x, IDistance<T> distance) {
-        var res = new double[x.Length][];
-        for (var r = 0; r < x.Length; r++) {
-          var rowV = new double[x.Length];
+      private static double[][] ComputeDistances(IReadOnlyList<T> x, IDistance<T> distance) {
+        var res = new double[x.Count][];
+        for (var r = 0; r < x.Count; r++) {
+          var rowV = new double[x.Count];
           // all distances must be symmetric 
           for (var c = 0; c < r; c++) {
             rowV[c] = res[c][r];
           }
           rowV[r] = 0.0; // distance to self is zero for all distances
-          for (var c = r + 1; c < x.Length; c++) {
+          for (var c = r + 1; c < x.Count; c++) {
             rowV[c] = distance.Get(x[r], x[c]);
           }
           res[r] = rowV;
@@ -410,7 +425,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         return res;
         // return x.Select(m => x.Select(n => distance.Get(m, n)).ToArray()).ToArray();
       }
-
       private static double EvaluateErrorExact(double[,] p, double[,] y, int n, int d) {
         // Compute the squared Euclidean distance matrix
         var dd = new double[n, n];
@@ -424,7 +438,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
             if (n1 != m) {
               q[n1, m] = 1 / (1 + dd[n1, m]);
               sumQ += q[n1, m];
-            } else q[n1, m] = double.Epsilon;
+            }
+            else q[n1, m] = double.Epsilon;
           }
         }
         for (var i = 0; i < n; i++) for (var j = 0; j < n; j++) q[i, j] /= sumQ;
@@ -432,12 +447,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         // Sum t-SNE error
         var c = .0;
         for (var i = 0; i < n; i++)
-          for (var j = 0; j < n; j++) {
-            c += p[i, j] * Math.Log((p[i, j] + float.Epsilon) / (q[i, j] + float.Epsilon));
-          }
+        for (var j = 0; j < n; j++) {
+          c += p[i, j] * Math.Log((p[i, j] + float.Epsilon) / (q[i, j] + float.Epsilon));
+        }
         return c;
       }
-
       private static double EvaluateErrorApproximate(IReadOnlyList<int> rowP, IReadOnlyList<int> colP, IReadOnlyList<double> valP, double[,] y, double theta) {
         // Get estimate of normalization term
         var n = y.GetLength(0);
@@ -462,13 +476,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         return c;
       }
       private static void SymmetrizeMatrix(IReadOnlyList<int> rowP, IReadOnlyList<int> colP, IReadOnlyList<double> valP, out int[] symRowP, out int[] symColP, out double[] symValP) {
-
         // Count number of elements and row counts of symmetric matrix
         var n = rowP.Count - 1;
         var rowCounts = new int[n];
         for (var j = 0; j < n; j++) {
           for (var i = rowP[j]; i < rowP[j + 1]; i++) {
-
             // Check whether element (col_P[i], n) is present
             var present = false;
             for (var m = rowP[colP[i]]; m < rowP[colP[i] + 1]; m++) {
@@ -496,7 +508,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         // Fill the result matrix
         var offset = new int[n];
         for (var j = 0; j < n; j++) {
-          for (var i = rowP[j]; i < rowP[j + 1]; i++) {                                  // considering element(n, colP[i])
+          for (var i = rowP[j]; i < rowP[j + 1]; i++) { // considering element(n, colP[i])
 
             // Check whether element (col_P[i], n) is present
             var present = false;
@@ -548,10 +560,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     /// <returns></returns>
     public static double[,] Run(T[] data, IDistance<T> distance, IRandom random,
       int newDimensions = 2, double perplexity = 25, int iterations = 1000,
-      double theta = 0,
-      int stopLyingIter = 0, int momSwitchIter = 0, double momentum = .5,
+      double theta = 0, int stopLyingIter = 0, int momSwitchIter = 0, double momentum = .5,
       double finalMomentum = .8, double eta = 10.0
-      ) {
+    ) {
       var state = CreateState(data, distance, random, newDimensions, perplexity,
         theta, stopLyingIter, momSwitchIter, momentum, finalMomentum, eta);
 
@@ -564,9 +575,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public static TSNEState CreateState(T[] data, IDistance<T> distance, IRandom random,
       int newDimensions = 2, double perplexity = 25, double theta = 0,
       int stopLyingIter = 0, int momSwitchIter = 0, double momentum = .5,
-      double finalMomentum = .8, double eta = 10.0
-      ) {
-      return new TSNEState(data, distance, random, newDimensions, perplexity, theta, stopLyingIter, momSwitchIter, momentum, finalMomentum, eta);
+      double finalMomentum = .8, double eta = 10.0, bool randomInit = true
+    ) {
+      return new TSNEState(data, distance, random, newDimensions, perplexity, theta, stopLyingIter, momSwitchIter, momentum, finalMomentum, eta, randomInit);
     }
 
     public static double[,] Iterate(TSNEState state) {
@@ -579,22 +590,20 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       for (var i = 0; i < state.noDatapoints; i++) {
         for (var j = 0; j < state.newDimensions; j++) {
           state.gains[i, j] = Math.Sign(state.dY[i, j]) != Math.Sign(state.uY[i, j])
-            ? state.gains[i, j] + .2  // +0.2 nd *0.8 are used in two separate implementations of tSNE -> seems to be correct
+            ? state.gains[i, j] + .2 // +0.2 nd *0.8 are used in two separate implementations of tSNE -> seems to be correct
             : state.gains[i, j] * .8;
-
           if (state.gains[i, j] < .01) state.gains[i, j] = .01;
         }
       }
 
-
       // Perform gradient update (with momentum and gains)
       for (var i = 0; i < state.noDatapoints; i++)
-        for (var j = 0; j < state.newDimensions; j++)
-          state.uY[i, j] = state.currentMomentum * state.uY[i, j] - state.eta * state.gains[i, j] * state.dY[i, j];
+      for (var j = 0; j < state.newDimensions; j++)
+        state.uY[i, j] = state.currentMomentum * state.uY[i, j] - state.eta * state.gains[i, j] * state.dY[i, j];
 
       for (var i = 0; i < state.noDatapoints; i++)
-        for (var j = 0; j < state.newDimensions; j++)
-          state.newData[i, j] = state.newData[i, j] + state.uY[i, j];
+      for (var j = 0; j < state.newDimensions; j++)
+        state.newData[i, j] = state.newData[i, j] + state.uY[i, j];
 
       // Make solution zero-mean
       ZeroMean(state.newData);
@@ -603,8 +612,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       if (state.iter == state.stopLyingIter) {
         if (state.exact)
           for (var i = 0; i < state.noDatapoints; i++)
-            for (var j = 0; j < state.noDatapoints; j++)
-              state.p[i, j] /= 12.0;
+          for (var j = 0; j < state.noDatapoints; j++)
+            state.p[i, j] /= 12.0;
         else
           for (var i = 0; i < state.rowP[state.noDatapoints]; i++)
             state.valP[i] /= 12.0;
@@ -633,9 +642,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
       // Compute final t-SNE gradient
       for (var i = 0; i < n; i++)
-        for (var j = 0; j < d; j++) {
-          dC[i, j] = posF[i, j] - negF[i, j] / sumQ;
-        }
+      for (var j = 0; j < d; j++) {
+        dC[i, j] = posF[i, j] - negF[i, j] / sumQ;
+      }
     }
 
     private static void ComputeExactGradient(double[,] p, double[,] y, int n, int d, double[,] dC) {

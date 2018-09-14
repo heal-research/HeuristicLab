@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2016 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,7 +25,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// <summary>
   /// Plugin class for HeuristicLab.Encodings.RealVectorEncoding plugin.
   /// </summary>
-  [Plugin("HeuristicLab.Encodings.RealVectorEncoding", "3.3.14.$WCREV$")]
+  [Plugin("HeuristicLab.Encodings.RealVectorEncoding", "3.3.15.$WCREV$")]
   [PluginFile("HeuristicLab.Encodings.RealVectorEncoding-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Collections", "3.3")]
   [PluginDependency("HeuristicLab.Common", "3.3")]

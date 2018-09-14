@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* SimSharp - A .NET port of SimPy, discrete event simulation framework
-Copyright (C) 2002-2016 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("HEAL")]
 [assembly: AssemblyProduct("SimSharp")]
-[assembly: AssemblyCopyright("Copyright © HEAL 2016")]
+[assembly: AssemblyCopyright("(c) 2002-2018 HEAL")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

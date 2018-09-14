@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2016 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -200,8 +200,8 @@ namespace HeuristicLab.Optimization.Views {
       // 
       // chart
       // 
-      this.chart.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+      this.chart.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       chartArea1.Name = "ChartArea1";
       this.chart.ChartAreas.Add(chartArea1);
@@ -454,9 +454,9 @@ namespace HeuristicLab.Optimization.Views {
     #endregion
 
     private System.Windows.Forms.Label xAxisLabel;
-    private System.Windows.Forms.ComboBox xAxisComboBox;
+    internal System.Windows.Forms.ComboBox xAxisComboBox;
     private System.Windows.Forms.Label yAxisLabel;
-    private System.Windows.Forms.ComboBox yAxisComboBox;
+    internal System.Windows.Forms.ComboBox yAxisComboBox;
     private System.Windows.Forms.TrackBar yTrackBar;
     private System.Windows.Forms.TrackBar xTrackBar;
     private System.Windows.Forms.Label xJitterlabel;

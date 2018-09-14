@@ -580,7 +580,6 @@
     <Compile Include="HeuristicLab.IGraph\IGraphWrappersVectorTest.cs" />
     <Compile Include="HeuristicLab.Persistence-3.3\StorableAttributeTests.cs" />
     <Compile Include="HeuristicLab.Persistence-3.3\UseCases.cs" />
-    <Compile Include="HeuristicLab.PluginInfraStructure-3.3\InstallationManagerTest.cs" />
     <Compile Include="HeuristicLab.PluginInfraStructure-3.3\TypeExtensionsTest.cs" />
     <Compile Include="HeuristicLab.Problems.Bin-Packing-3.3\3D\ExtremePointCreation\TestLineProjectionBasedEPCreator.cs" />
     <Compile Include="HeuristicLab.Problems.Bin-Packing-3.3\3D\Geometry\Edge3DTest.cs" />

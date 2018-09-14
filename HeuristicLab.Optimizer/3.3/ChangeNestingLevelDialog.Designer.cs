@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2016 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -56,7 +56,7 @@ namespace HeuristicLab.Optimizer {
       // 
       this.okButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.okButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-      this.okButton.Location = new System.Drawing.Point(124, 130);
+      this.okButton.Location = new System.Drawing.Point(124, 92);
       this.okButton.Name = "okButton";
       this.okButton.Size = new System.Drawing.Size(75, 23);
       this.okButton.TabIndex = 0;
@@ -68,7 +68,7 @@ namespace HeuristicLab.Optimizer {
       // 
       this.cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-      this.cancelButton.Location = new System.Drawing.Point(205, 130);
+      this.cancelButton.Location = new System.Drawing.Point(205, 92);
       this.cancelButton.Name = "cancelButton";
       this.cancelButton.Size = new System.Drawing.Size(75, 23);
       this.cancelButton.TabIndex = 1;
@@ -100,11 +100,10 @@ namespace HeuristicLab.Optimizer {
             | System.Windows.Forms.AnchorStyles.Right)));
       this.infoLabel.Location = new System.Drawing.Point(12, 46);
       this.infoLabel.Name = "infoLabel";
-      this.infoLabel.Size = new System.Drawing.Size(268, 81);
+      this.infoLabel.Size = new System.Drawing.Size(268, 43);
       this.infoLabel.TabIndex = 4;
       this.infoLabel.Text = "A high nesting level of controls can cause problems. A maximum level of 35 is rec" +
-    "ommended. If you are using Windows 10 Creators Update, a maximum nesting level o" +
-    "f 25 is recommended.";
+    "ommended.";
       // 
       // ChangeNestingLevelDialog
       // 
@@ -112,7 +111,7 @@ namespace HeuristicLab.Optimizer {
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.CancelButton = this.cancelButton;
-      this.ClientSize = new System.Drawing.Size(292, 165);
+      this.ClientSize = new System.Drawing.Size(292, 127);
       this.Controls.Add(this.infoLabel);
       this.Controls.Add(this.nestingLevelLabel);
       this.Controls.Add(this.nestingLevelNumericUpDownn);

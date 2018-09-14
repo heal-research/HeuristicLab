@@ -35,6 +35,15 @@ svcutil.exe %ARGS%
 ENDLOCAL
 
 ECHO.
+ECHO ---------------------------------------------------------------------------------------
+ECHO !!! ATTENTION !!! ATTENTION !!! ATTENTION !!! ATTENTION !!! ATTENTION !!! ATTENTION !!!
+ECHO.
+ECHO Following modifications have to be done manually:
+ECHO  * Change endpoint identity in app.config from "<certificate encodedValue="..." />" to "<dns value="host" />", e.g. "<dns value="services.heuristiclab.com" />"
+ECHO.
+ECHO !!! ATTENTION !!! ATTENTION !!! ATTENTION !!! ATTENTION !!! ATTENTION !!! ATTENTION !!!
+ECHO ---------------------------------------------------------------------------------------
+ECHO.
 ECHO Generation of RunCreationService client finished.
 ECHO *******************************************************************************************
 ECHO.

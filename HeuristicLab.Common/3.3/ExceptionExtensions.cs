@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2016 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,11 +19,19 @@
  */
 #endregion
 
-using HeuristicLab.Core;
+using System;
+using System.Collections.Generic;
 
-namespace HeuristicLab.DataPreprocessing.Filter {
-  public interface IFilter : IConstraint {
-    new bool[] Check();
-    new bool[] Check(out string errorMessage);
+namespace HeuristicLab.Common {
+  public static class ExceptionExtensions {
+    public static void FlattenAndHandle(this AggregateException exception, IEnumerable<Type> exceptionsToHandle, Action<Exception> unhandledCallback) {
+      try {
+        var toHandle = new HashSet<Type>(exceptionsToHandle);
+        exception.Flatten().Handle(x => toHandle.Contains(x.GetType()));
+      } catch (AggregateException remaining) {
+        if (remaining.InnerExceptions.Count == 1) unhandledCallback(remaining.InnerExceptions[0]);
+        else unhandledCallback(remaining);
+      }
+    }
   }
 }

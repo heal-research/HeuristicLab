@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2016 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -85,6 +85,7 @@ namespace HeuristicLab.DataPreprocessing.Filter {
       }
     }
 
+    // return remaining rows
     public new bool[] Check() {
       bool[] result = new bool[ConstrainedValue.Rows];
 
@@ -101,7 +102,7 @@ namespace HeuristicLab.DataPreprocessing.Filter {
           item = new StringValue(ConstrainedValue.GetCell<string>(ConstraintColumn, row));
         }
 
-        result[row] = !base.Check(item);
+        result[row] = base.Check(item);
       }
 
       return result;

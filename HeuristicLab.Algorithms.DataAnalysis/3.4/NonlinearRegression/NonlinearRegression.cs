@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2016 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -50,6 +50,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private const string SetSeedRandomlyParameterName = "SetSeedRandomly";
     private const string SeedParameterName = "Seed";
     private const string InitParamsRandomlyParameterName = "InitializeParametersRandomly";
+    private const string ApplyLinearScalingParameterName = "Apply linear scaling";
 
     public IFixedValueParameter<StringValue> ModelStructureParameter {
       get { return (IFixedValueParameter<StringValue>)Parameters[ModelStructureParameterName]; }
@@ -72,6 +73,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     public IFixedValueParameter<BoolValue> InitParametersRandomlyParameter {
       get { return (IFixedValueParameter<BoolValue>)Parameters[InitParamsRandomlyParameterName]; }
+    }
+
+    public IFixedValueParameter<BoolValue> ApplyLinearScalingParameter {
+      get { return (IFixedValueParameter<BoolValue>)Parameters[ApplyLinearScalingParameterName]; }
     }
 
     public string ModelStructure {
@@ -104,6 +109,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       set { InitParametersRandomlyParameter.Value.Value = value; }
     }
 
+    public bool ApplyLinearScaling {
+      get { return ApplyLinearScalingParameter.Value.Value; }
+      set { ApplyLinearScalingParameter.Value.Value = value; }
+    }
+
     [StorableConstructor]
     private NonlinearRegression(bool deserializing) : base(deserializing) { }
     private NonlinearRegression(NonlinearRegression original, Cloner cloner)
@@ -118,6 +128,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       Parameters.Add(new FixedValueParameter<IntValue>(SeedParameterName, "The PRNG seed value.", new IntValue()));
       Parameters.Add(new FixedValueParameter<BoolValue>(SetSeedRandomlyParameterName, "Switch to determine if the random number seed should be initialized randomly.", new BoolValue(true)));
       Parameters.Add(new FixedValueParameter<BoolValue>(InitParamsRandomlyParameterName, "Switch to determine if the real-valued model parameters should be initialized randomly in each restart.", new BoolValue(false)));
+      Parameters.Add(new FixedValueParameter<BoolValue>(ApplyLinearScalingParameterName, "Switch to determine if linear scaling terms should be added to the model", new BoolValue(true)));
 
       SetParameterHiddenState();
 
@@ -145,6 +156,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         Parameters.Add(new FixedValueParameter<BoolValue>(SetSeedRandomlyParameterName, "Switch to determine if the random number seed should be initialized randomly.", new BoolValue(true)));
       if (!Parameters.ContainsKey(InitParamsRandomlyParameterName))
         Parameters.Add(new FixedValueParameter<BoolValue>(InitParamsRandomlyParameterName, "Switch to determine if the numeric parameters of the model should be initialized randomly.", new BoolValue(false)));
+      if (!Parameters.ContainsKey(ApplyLinearScalingParameterName))
+        Parameters.Add(new FixedValueParameter<BoolValue>(ApplyLinearScalingParameterName, "Switch to determine if linear scaling terms should be added to the model", new BoolValue(true)));
+
 
       SetParameterHiddenState();
       InitParametersRandomlyParameter.Value.ValueChanged += (sender, args) => {
@@ -173,11 +187,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         Results.Add(new Result(qualityTable.Name, qualityTable.Name + " for all restarts", qualityTable));
         if (SetSeedRandomly) Seed = (new System.Random()).Next();
         var rand = new MersenneTwister((uint)Seed);
-        bestSolution = CreateRegressionSolution(Problem.ProblemData, ModelStructure, Iterations, rand);
+        bestSolution = CreateRegressionSolution(Problem.ProblemData, ModelStructure, Iterations, ApplyLinearScaling, rand);
         trainRMSERow.Values.Add(bestSolution.TrainingRootMeanSquaredError);
         testRMSERow.Values.Add(bestSolution.TestRootMeanSquaredError);
         for (int r = 0; r < Restarts; r++) {
-          var solution = CreateRegressionSolution(Problem.ProblemData, ModelStructure, Iterations, rand);
+          var solution = CreateRegressionSolution(Problem.ProblemData, ModelStructure, Iterations, ApplyLinearScaling, rand);
           trainRMSERow.Values.Add(solution.TrainingRootMeanSquaredError);
           testRMSERow.Values.Add(solution.TestRootMeanSquaredError);
           if (solution.TrainingRootMeanSquaredError < bestSolution.TrainingRootMeanSquaredError) {
@@ -185,7 +199,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
           }
         }
       } else {
-        bestSolution = CreateRegressionSolution(Problem.ProblemData, ModelStructure, Iterations);
+        bestSolution = CreateRegressionSolution(Problem.ProblemData, ModelStructure, Iterations, ApplyLinearScaling);
       }
 
       Results.Add(new Result(RegressionSolutionResultName, "The nonlinear regression solution.", bestSolution));
@@ -205,7 +219,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     /// <param name="maxIterations">Number of constant optimization iterations (using Levenberg-Marquardt algorithm)</param>
     /// <param name="random">Optional random number generator for random initialization of numeric constants.</param>
     /// <returns></returns>
-    public static ISymbolicRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData, string modelStructure, int maxIterations, IRandom rand = null) {
+    public static ISymbolicRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData, string modelStructure, int maxIterations, bool applyLinearScaling, IRandom rand = null) {
       var parser = new InfixExpressionParser();
       var tree = parser.Parse(modelStructure);
       // parser handles double and string variables equally by creating a VariableTreeNode
@@ -261,12 +275,14 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       var interpreter = new SymbolicDataAnalysisExpressionTreeLinearInterpreter();
 
       SymbolicRegressionConstantOptimizationEvaluator.OptimizeConstants(interpreter, tree, problemData, problemData.TrainingIndices,
-        applyLinearScaling: false, maxIterations: maxIterations,
+        applyLinearScaling: applyLinearScaling, maxIterations: maxIterations,
         updateVariableWeights: false, updateConstantsInTree: true);
 
-      var scaledModel = new SymbolicRegressionModel(problemData.TargetVariable, tree, (ISymbolicDataAnalysisExpressionTreeInterpreter)interpreter.Clone());
-      scaledModel.Scale(problemData);
-      SymbolicRegressionSolution solution = new SymbolicRegressionSolution(scaledModel, (IRegressionProblemData)problemData.Clone());
+      var model = new SymbolicRegressionModel(problemData.TargetVariable, tree, (ISymbolicDataAnalysisExpressionTreeInterpreter)interpreter.Clone());
+      if (applyLinearScaling)
+        model.Scale(problemData);
+
+      SymbolicRegressionSolution solution = new SymbolicRegressionSolution(model, (IRegressionProblemData)problemData.Clone());
       solution.Model.Name = "Regression Model";
       solution.Name = "Regression Solution";
       return solution;

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2016 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -30,28 +30,30 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
   [Item("EuclideanDistance", "A norm function that uses Euclidean distance")]
   public class EuclideanDistance : DistanceBase<IEnumerable<double>> {
-
     #region HLConstructors & Cloning
     [StorableConstructor]
     protected EuclideanDistance(bool deserializing) : base(deserializing) { }
     protected EuclideanDistance(EuclideanDistance original, Cloner cloner) : base(original, cloner) { }
-    public override IDeepCloneable Clone(Cloner cloner) { return new EuclideanDistance(this, cloner); }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new EuclideanDistance(this, cloner);
+    }
     public EuclideanDistance() { }
     #endregion
 
-    public static double GetDistance(IReadOnlyList<double> point1, IReadOnlyList<double> point2) {
-      if (point1.Count != point2.Count) throw new ArgumentException("Euclidean distance not defined on vectors of different length");
-      var sum = 0.0;
-      for (var i = 0; i < point1.Count; i++) {
-        var d = point1[i] - point2[i];
-        sum += d * d;
+    public static double GetDistance(IEnumerable<double> point1, IEnumerable<double> point2) {
+      using (IEnumerator<double> p1Enum = point1.GetEnumerator(), p2Enum = point2.GetEnumerator()) {
+        var sum = 0.0;
+        while (p1Enum.MoveNext() & p2Enum.MoveNext()) {
+          var d = p1Enum.Current - p2Enum.Current;
+          sum += d * d;
+        }
+        if (p1Enum.MoveNext() || p2Enum.MoveNext()) throw new ArgumentException("Euclidean distance not defined on vectors of different length");
+        return Math.Sqrt(sum);
       }
-
-      return Math.Sqrt(sum);
     }
 
     public override double Get(IEnumerable<double> a, IEnumerable<double> b) {
-      return GetDistance(a.ToArray(), b.ToArray());
+      return GetDistance(a, b);
     }
   }
 }

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2016 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,20 +21,17 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
-
   /// <summary>
   /// The angular distance as defined as a normalized distance measure dependent on the angle between two vectors.
   /// </summary>
   [StorableClass]
   [Item("CosineDistance", "The angular distance as defined as a normalized distance measure dependent on the angle between two vectors.")]
   public class CosineDistance : DistanceBase<IEnumerable<double>> {
-
     #region HLConstructors & Cloning
     [StorableConstructor]
     protected CosineDistance(bool deserializing) : base(deserializing) { }
@@ -47,25 +44,26 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     #endregion
 
     #region statics
-    public static double GetDistance(IReadOnlyList<double> point1, IReadOnlyList<double> point2) {
-      if (point1.Count != point2.Count) throw new ArgumentException("Cosine distance not defined on vectors of different length");
-      var innerprod = 0.0;
-      var length1 = 0.0;
-      var length2 = 0.0;
-
-      for (var i = 0; i < point1.Count; i++) {
-        double d1 = point1[i], d2 = point2[i];
-        innerprod += d1 * d2;
-        length1 += d1 * d1;
-        length2 += d2 * d2;
+    public static double GetDistance(IEnumerable<double> point1, IEnumerable<double> point2) {
+      using (IEnumerator<double> p1Enum = point1.GetEnumerator(), p2Enum = point2.GetEnumerator()) {
+        var innerprod = 0.0;
+        var length1 = 0.0;
+        var length2 = 0.0;
+        while (p1Enum.MoveNext() & p2Enum.MoveNext()) {
+          double d1 = p1Enum.Current, d2 = p2Enum.Current;
+          innerprod += d1 * d2;
+          length1 += d1 * d1;
+          length2 += d2 * d2;
+        }
+        var divisor = Math.Sqrt(length1 * length2);
+        if (divisor.IsAlmost(0)) throw new ArgumentException("Cosine distance is not defined on vectors of length 0");
+        if (p1Enum.MoveNext() || p2Enum.MoveNext()) throw new ArgumentException("Cosine distance not defined on vectors of different length");
+        return 1 - innerprod / divisor;
       }
-      var l = Math.Sqrt(length1 * length2);
-      if (l.IsAlmost(0)) throw new ArgumentException("Cosine distance is not defined on vectors of length 0");
-      return 1 - innerprod / l;
     }
     #endregion
     public override double Get(IEnumerable<double> a, IEnumerable<double> b) {
-      return GetDistance(a.ToArray(), b.ToArray());
+      return GetDistance(a, b);
     }
   }
 }

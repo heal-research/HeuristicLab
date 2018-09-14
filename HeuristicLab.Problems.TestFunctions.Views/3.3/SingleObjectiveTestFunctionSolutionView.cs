@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2016 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,6 +21,7 @@
 
 using System;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.Core.Views;
 using HeuristicLab.Data;
@@ -135,35 +136,35 @@ namespace HeuristicLab.Problems.TestFunctions.Views {
     }
 
     private void GenerateImage() {
-      if (pictureBox.Enabled && pictureBox.Width > 0 && pictureBox.Height > 0) {
-        if (Content == null) {
-          pictureBox.Image = null;
-        } else {
-          if (backgroundImage == null) {
-            GenerateBackgroundImage();
-            pictureBox.Image = backgroundImage;
-          }
-          pictureBox.Refresh();
-          DoubleMatrix bounds = Content.Bounds;
-          if (bounds == null) bounds = Content.Evaluator.Bounds;
-          double xMin = bounds[0, 0], xMax = bounds[0, 1], yMin = bounds[1 % bounds.Rows, 0], yMax = bounds[1 % bounds.Rows, 1];
-          double xStep = backgroundImage.Width / (xMax - xMin), yStep = backgroundImage.Height / (yMax - yMin);
-          using (Graphics graphics = pictureBox.CreateGraphics()) {
-            if (Content.BestKnownRealVector != null) {
-              Pen cross = new Pen(Brushes.Red, 2.0f);
-              float a = (float)((Content.BestKnownRealVector[0] - xMin) * xStep);
-              float b = (float)((Content.BestKnownRealVector[1] - yMin) * yStep);
-              graphics.DrawLine(cross, a - 4, b - 4, a + 4, b + 4);
-              graphics.DrawLine(cross, a - 4, b + 4, a + 4, b - 4);
-            }
-            if (Content.Population != null) {
-              foreach (RealVector vector in Content.Population)
-                graphics.FillEllipse(Brushes.Blue, (float)((vector[0] - xMin) * xStep - 4), (float)((vector[1] - yMin) * yStep - 4), 8.0f, 8.0f);
-            }
-            if (Content.BestRealVector != null) {
-              graphics.FillEllipse(Brushes.Green, (float)((Content.BestRealVector[0] - xMin) * xStep - 5), (float)((Content.BestRealVector[1] - yMin) * yStep - 5), 10.0f, 10.0f);
-            }
-          }
+      if (!pictureBox.Enabled || pictureBox.Width <= 0 || pictureBox.Height <= 0) return;
+      if (Content == null) {
+        pictureBox.Image = null;
+        return;
+      }
+      if (backgroundImage == null) {
+        GenerateBackgroundImage();
+        pictureBox.Image = backgroundImage;
+      }
+      pictureBox.Refresh();
+      DoubleMatrix bounds = Content.Bounds;
+      if (bounds == null) bounds = Content.Evaluator.Bounds;
+      double xMin = bounds[0, 0], xMax = bounds[0, 1], yMin = bounds[1 % bounds.Rows, 0], yMax = bounds[1 % bounds.Rows, 1];
+      double xStep = backgroundImage.Width / (xMax - xMin), yStep = backgroundImage.Height / (yMax - yMin);
+
+      using (Graphics graphics = pictureBox.CreateGraphics()) {
+        if (Content.BestKnownRealVector != null && Content.BestKnownRealVector.Length == 2) {
+          Pen cross = new Pen(Brushes.Red, 2.0f);
+          float a = (float)((Content.BestKnownRealVector[0] - xMin) * xStep);
+          float b = (float)((Content.BestKnownRealVector[1] - yMin) * yStep);
+          graphics.DrawLine(cross, a - 4, b - 4, a + 4, b + 4);
+          graphics.DrawLine(cross, a - 4, b + 4, a + 4, b - 4);
+        }
+        if (Content.Population != null) {
+          foreach (RealVector vector in Content.Population.Where(x => x.Length == 2))
+            graphics.FillEllipse(Brushes.Blue, (float)((vector[0] - xMin) * xStep - 4), (float)((vector[1] - yMin) * yStep - 4), 8.0f, 8.0f);
+        }
+        if (Content.BestRealVector != null && Content.BestRealVector.Length == 2) {
+          graphics.FillEllipse(Brushes.Green, (float)((Content.BestRealVector[0] - xMin) * xStep - 5), (float)((Content.BestRealVector[1] - yMin) * yStep - 5), 10.0f, 10.0f);
         }
       }
     }

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2016 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,12 +22,14 @@
 using System;
 
 namespace HeuristicLab.DataPreprocessing {
-  public interface IFilteredPreprocessingData : ITransactionalPreprocessingData {
-    void SetFilter(bool[] rowFilters);
+  public interface IFilteredPreprocessingData : IPreprocessingData {
+    #region Filters
+    void SetFilter(bool[] remainingRows);
     void PersistFilter();
     void ResetFilter();
     bool IsFiltered { get; }
 
     event EventHandler FilterChanged;
+    #endregion
   }
 }

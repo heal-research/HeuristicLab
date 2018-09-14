@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2016 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,16 +19,11 @@
  */
 #endregion
 
-using System;
+using HeuristicLab.Core;
 
-namespace HeuristicLab.DataPreprocessing {
-  public interface ITransactionalPreprocessingData : IPreprocessingData {
-    event DataPreprocessingChangedEventHandler Changed;
-
-    bool IsUndoAvailable { get; }
-    void Undo();
-    void InTransaction(Action action, DataPreprocessingChangedEventType type = DataPreprocessingChangedEventType.Any);
-    void BeginTransaction(DataPreprocessingChangedEventType type);
-    void EndTransaction();
+namespace HeuristicLab.DataPreprocessing.Filter {
+  public interface IFilter : IConstraint {
+    new bool[] Check();
+    new bool[] Check(out string errorMessage);
   }
 }

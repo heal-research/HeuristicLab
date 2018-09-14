@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2016 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -257,6 +257,7 @@ namespace HeuristicLab.Optimization {
         try { Optimizer.Start(cancellationToken); } catch (InvalidOperationException) { }
         if (ExecutionState == ExecutionState.Paused || ExecutionState == ExecutionState.Stopped) break;
         Optimizer.Prepare();
+        if (ExecutionState == ExecutionState.Paused || ExecutionState == ExecutionState.Stopped) break;
       }
     }
     public async Task StartAsync() { await StartAsync(CancellationToken.None); }
@@ -270,7 +271,7 @@ namespace HeuristicLab.Optimization {
       batchRunAction = BatchRunAction.Pause;
       if (Optimizer.ExecutionState != ExecutionState.Started) return;
       // a race-condition may occur when the optimizer has changed the state by itself in the meantime
-      try { Optimizer.Pause(); } catch (InvalidOperationException) { }
+      try { Optimizer.Pause(); } catch (InvalidOperationException) { } catch (NotSupportedException) { }
     }
     public void Stop() {
       if ((ExecutionState != ExecutionState.Started) && (ExecutionState != ExecutionState.Paused))

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2016 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -221,8 +221,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
         Content.NumberOfWorkers.Value = (int)workersNumericUpDown.Value;
     }
 
-    private void startButton_Click(object sender, EventArgs e) {
-      Content.StartAsync();
+    private async void startButton_Click(object sender, EventArgs e) {
+      await Content.StartAsync();
     }
     private void pauseButton_Click(object sender, EventArgs e) {
       Content.Pause();

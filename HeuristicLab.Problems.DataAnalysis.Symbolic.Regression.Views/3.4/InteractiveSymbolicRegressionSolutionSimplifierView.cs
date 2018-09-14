@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2016 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,25 +20,21 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
+using HeuristicLab.MainForm;
 using HeuristicLab.Problems.DataAnalysis.Symbolic.Views;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
   public partial class InteractiveSymbolicRegressionSolutionSimplifierView : InteractiveSymbolicDataAnalysisSolutionSimplifierView {
-    private readonly SymbolicRegressionSolutionImpactValuesCalculator calculator;
-
     public new SymbolicRegressionSolution Content {
       get { return (SymbolicRegressionSolution)base.Content; }
       set { base.Content = value; }
     }
 
     public InteractiveSymbolicRegressionSolutionSimplifierView()
-      : base() {
+      : base(new SymbolicRegressionSolutionImpactValuesCalculator()) {
       InitializeComponent();
       this.Caption = "Interactive Regression Solution Simplifier";
-      calculator = new SymbolicRegressionSolutionImpactValuesCalculator();
     }
 
     protected override void UpdateModel(ISymbolicExpressionTree tree) {
@@ -47,22 +43,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
       Content.Model = model;
     }
 
-
-    protected override Dictionary<ISymbolicExpressionTreeNode, Tuple<double, double>> CalculateImpactAndReplacementValues(ISymbolicExpressionTree tree) {
-      var impactAndReplacementValues = new Dictionary<ISymbolicExpressionTreeNode, Tuple<double, double>>();
-      foreach (var node in tree.Root.GetSubtree(0).GetSubtree(0).IterateNodesPrefix()) {
-        double impactValue, replacementValue, newQualityForImpactsCalculation;
-        calculator.CalculateImpactAndReplacementValues(Content.Model, node, Content.ProblemData, Content.ProblemData.TrainingIndices, out impactValue, out replacementValue, out newQualityForImpactsCalculation);
-        impactAndReplacementValues.Add(node, new Tuple<double, double>(impactValue, replacementValue));
-      }
-      return impactAndReplacementValues;
-    }
-
-    protected override void btnOptimizeConstants_Click(object sender, EventArgs e) {
+    protected override ISymbolicExpressionTree OptimizeConstants(ISymbolicExpressionTree tree, IProgress progress) {
+      const int constOptIterations = 50;
+      var regressionProblemData = Content.ProblemData;
       var model = Content.Model;
-      SymbolicRegressionConstantOptimizationEvaluator.OptimizeConstants(model.Interpreter, model.SymbolicExpressionTree, Content.ProblemData, Content.ProblemData.TrainingIndices,
-        applyLinearScaling: true, maxIterations: 50, updateVariableWeights: true, lowerEstimationLimit: model.LowerEstimationLimit, upperEstimationLimit: model.UpperEstimationLimit);
-      UpdateModel(Content.Model.SymbolicExpressionTree);
+      SymbolicRegressionConstantOptimizationEvaluator.OptimizeConstants(model.Interpreter, tree, regressionProblemData, regressionProblemData.TrainingIndices,
+        applyLinearScaling: true, maxIterations: constOptIterations, updateVariableWeights: true, lowerEstimationLimit: model.LowerEstimationLimit, upperEstimationLimit: model.UpperEstimationLimit,
+        iterationCallback: (args, func, obj) => {
+          double newProgressValue = progress.ProgressValue + 1.0 / (constOptIterations + 2); // (maxIterations + 2) iterations are reported
+          progress.ProgressValue = Math.Min(newProgressValue, 1.0);
+        });
+      return tree;
     }
   }
 }

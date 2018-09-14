@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2016 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,8 +20,10 @@
 #endregion
 
 using System;
+using System.Security.Cryptography.X509Certificates;
 using System.ServiceModel;
 using System.ServiceModel.Description;
+using System.ServiceModel.Security;
 using HeuristicLab.Clients.Common.Properties;
 
 namespace HeuristicLab.Clients.Common {
@@ -58,7 +60,12 @@ namespace HeuristicLab.Clients.Common {
 
       client.ClientCredentials.UserName.UserName = userName;
       client.ClientCredentials.UserName.Password = password;
-      client.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
+      client.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = X509CertificateValidationMode.ChainTrust;
+
+      // we (jkarder + abeham) have disabled the revocation check for now
+      // the certificate requires OCSP instead of CRL for revocation checks, but the OCSP check fails
+      // we currently don't know why this is the case, because we observed a valid OCSP request/response using wireshark
+      client.ClientCredentials.ServiceCertificate.Authentication.RevocationMode = X509RevocationMode.NoCheck;
       return client;
     }
     #endregion
@@ -82,7 +89,12 @@ namespace HeuristicLab.Clients.Common {
 
       channelFactory.Credentials.UserName.UserName = userName;
       channelFactory.Credentials.UserName.Password = password;
-      channelFactory.Credentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
+      channelFactory.Credentials.ServiceCertificate.Authentication.CertificateValidationMode = X509CertificateValidationMode.ChainTrust;
+
+      // we (jkarder + abeham) have disabled the revocation check for now
+      // the certificate requires OCSP instead of CRL for revocation checks, but the OCSP check fails
+      // we currently don't know why this is the case, because we observed a valid OCSP request/response using wireshark
+      channelFactory.Credentials.ServiceCertificate.Authentication.RevocationMode = X509RevocationMode.NoCheck;
       return channelFactory;
     }
     #endregion

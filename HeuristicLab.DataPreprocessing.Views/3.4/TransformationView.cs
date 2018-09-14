@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2016 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -50,11 +50,11 @@ namespace HeuristicLab.DataPreprocessing.Views {
     }
 
     protected override void RegisterContentEvents() {
-      Content.FilterLogic.FilterChanged += FilterLogic_FilterChanged;
+      Content.PreprocessingData.FilterChanged += FilterLogic_FilterChanged;
     }
 
     protected override void DeregisterContentEvents() {
-      Content.FilterLogic.FilterChanged -= FilterLogic_FilterChanged;
+      Content.PreprocessingData.FilterChanged -= FilterLogic_FilterChanged;
     }
 
     void FilterLogic_FilterChanged(object sender, EventArgs e) {
@@ -64,7 +64,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
     }
 
     private void CheckFilters() {
-      if (Content.FilterLogic.IsFiltered) {
+      if (Content.PreprocessingData.IsFiltered) {
         applyButton.Enabled = false;
         lblFilterNotice.Visible = true;
       } else {
@@ -81,7 +81,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
         return;
       }
 
-      var transformator = new PreprocessingTransformator(Content.Data);
+      var transformator = new PreprocessingTransformator(Content.PreprocessingData);
       bool preserve = preserveColumnsCheckbox.CheckState == CheckState.Checked;
       string errorMsg;
       bool success = transformator.ApplyTransformations(transformations, preserve, out errorMsg);

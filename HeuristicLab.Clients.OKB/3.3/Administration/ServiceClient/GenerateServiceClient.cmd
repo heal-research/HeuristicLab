@@ -38,8 +38,9 @@ ECHO.
 ECHO ---------------------------------------------------------------------------------------
 ECHO !!! ATTENTION !!! ATTENTION !!! ATTENTION !!! ATTENTION !!! ATTENTION !!! ATTENTION !!!
 ECHO.
-ECHO Following modifications have to be done manually in generated data contracts:
+ECHO Following modifications have to be done manually:
 ECHO  * Remove method "protected void RaisePropertyChanged(string propertyName)" in generated OKBItem
+ECHO  * Change endpoint identity in app.config from "<certificate encodedValue="..." />" to "<dns value="host" />", e.g. "<dns value="services.heuristiclab.com" />"
 ECHO.
 ECHO !!! ATTENTION !!! ATTENTION !!! ATTENTION !!! ATTENTION !!! ATTENTION !!! ATTENTION !!!
 ECHO ---------------------------------------------------------------------------------------

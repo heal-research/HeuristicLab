@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2016 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -61,15 +61,10 @@ namespace HeuristicLab.SequentialEngine {
           }
           catch (Exception ex) {
             ExecutionStack.Push(operation);
-            if (ex is OperationCanceledException) throw ex;
+            if (ex is OperationCanceledException) throw;
             else throw new OperatorExecutionException(operation.Operator, ex);
           }
           if (next != null) ExecutionStack.Push(next);
-
-          if (operation.Operator.Breakpoint) {
-            Log.LogMessage(string.Format("Breakpoint: {0}", operation.Operator.Name != string.Empty ? operation.Operator.Name : operation.Operator.ItemName));
-            Pause();
-          }
         }
       }
     }

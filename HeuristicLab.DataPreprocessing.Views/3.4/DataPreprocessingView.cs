@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2016 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -48,25 +48,21 @@ namespace HeuristicLab.DataPreprocessing.Views {
       base.OnContentChanged();
       if (Content != null) {
         var data = Content.Data;
-        var filterLogic = new FilterLogic(data);
-        var searchLogic = new SearchLogic(data, filterLogic);
-        var statisticsLogic = new StatisticsLogic(data, searchLogic);
-        var manipulationLogic = new ManipulationLogic(data, searchLogic, statisticsLogic);
 
         var viewShortcuts = new ItemList<IViewShortcut> {
-          new DataGridContent(data, manipulationLogic, filterLogic),
-          new StatisticsContent(data, statisticsLogic),
+          new DataGridContent(data),
+          new StatisticsContent(data),
 
           new LineChartContent(data),
           new HistogramContent(data),
           new SingleScatterPlotContent(data),
           new MultiScatterPlotContent(data),
           new CorrelationMatrixContent(Content),
-          new DataCompletenessChartContent(searchLogic),
+          new DataCompletenessChartContent(data),
 
-          new FilterContent(filterLogic),
-          new ManipulationContent(manipulationLogic, searchLogic, filterLogic),
-          new TransformationContent(data, filterLogic)
+          new FilterContent(data),
+          new ManipulationContent(data),
+          new TransformationContent(data)
         };
 
         viewShortcutListView.Content = viewShortcuts.AsReadOnly();
@@ -149,24 +145,24 @@ namespace HeuristicLab.DataPreprocessing.Views {
     private void importButton_Click(object sender, EventArgs e) {
       importProblemDataTypeContextMenuStrip.Show(Cursor.Position);
     }
-    private void importRegressionToolStripMenuItem_Click(object sender, EventArgs e) {
-      Import(new RegressionCSVInstanceProvider(), new RegressionImportDialog(),
-        (dialog => ((RegressionImportDialog)dialog).ImportType));
+    private async void importRegressionToolStripMenuItem_Click(object sender, EventArgs e) {
+      await ImportAsync(new RegressionCSVInstanceProvider(), new RegressionImportDialog(),
+        dialog => ((RegressionImportDialog)dialog).ImportType);
     }
-    private void importClassificationToolStripMenuItem_Click(object sender, EventArgs e) {
-      Import(new ClassificationCSVInstanceProvider(), new ClassificationImportDialog(),
-        (dialog => ((ClassificationImportDialog)dialog).ImportType));
+    private async void importClassificationToolStripMenuItem_Click(object sender, EventArgs e) {
+      await ImportAsync(new ClassificationCSVInstanceProvider(), new ClassificationImportDialog(),
+        dialog => ((ClassificationImportDialog)dialog).ImportType);
     }
-    private void importTimeSeriesToolStripMenuItem_Click(object sender, EventArgs e) {
-      Import(new TimeSeriesPrognosisCSVInstanceProvider(), new TimeSeriesPrognosisImportDialog(),
-        (dialog => ((TimeSeriesPrognosisImportDialog)dialog).ImportType));
+    private async void importTimeSeriesToolStripMenuItem_Click(object sender, EventArgs e) {
+      await ImportAsync(new TimeSeriesPrognosisCSVInstanceProvider(), new TimeSeriesPrognosisImportDialog(),
+        dialog => ((TimeSeriesPrognosisImportDialog)dialog).ImportType);
     }
-    private void Import<TProblemData, TImportType>(DataAnalysisInstanceProvider<TProblemData, TImportType> instanceProvider, DataAnalysisImportDialog importDialog,
+    private async Task ImportAsync<TProblemData, TImportType>(DataAnalysisInstanceProvider<TProblemData, TImportType> instanceProvider, DataAnalysisImportDialog importDialog,
       Func<DataAnalysisImportDialog, TImportType> getImportType)
       where TProblemData : class, IDataAnalysisProblemData
       where TImportType : DataAnalysisImportType {
       if (importDialog.ShowDialog() == DialogResult.OK) {
-        Task.Run(() => {
+        await Task.Run(() => {
           TProblemData instance;
           var mainForm = (MainForm.WindowsForms.MainForm)MainFormManager.MainForm;
           // lock active view and show progress bar

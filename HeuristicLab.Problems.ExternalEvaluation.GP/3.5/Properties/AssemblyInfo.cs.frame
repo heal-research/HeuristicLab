@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("HEAL")]
 [assembly: AssemblyProduct("HeuristicLab.Problems.ExternalEvaluation.GP")]
-[assembly: AssemblyCopyright("(c) 2002-2016 HEAL")]
+[assembly: AssemblyCopyright("(c) 2002-2018 HEAL")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -33,4 +33,4 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("3.5.0.0")]
-[assembly: AssemblyFileVersion("3.5.9.$WCREV$")]
+[assembly: AssemblyFileVersion("3.5.10.$WCREV$")]

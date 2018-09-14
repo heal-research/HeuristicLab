@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2016 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -135,8 +135,8 @@ namespace HeuristicLab.Optimization.Views {
     #endregion
 
     #region Control events
-    protected virtual void startButton_Click(object sender, EventArgs e) {
-      Content.StartAsync();
+    protected virtual async void startButton_Click(object sender, EventArgs e) {
+      await Content.StartAsync();
     }
     protected virtual void pauseButton_Click(object sender, EventArgs e) {
       Content.Pause();

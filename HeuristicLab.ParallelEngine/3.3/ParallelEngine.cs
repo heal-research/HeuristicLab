@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2016 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -100,21 +100,12 @@ namespace HeuristicLab.ParallelEngine {
             }
             try {
               Parallel.ForEach(stacks, parallelOptions, Run);
-            }
-            catch (OperationCanceledException ex) {
-              OperationCollection remaining = new OperationCollection() { Parallel = true };
-              for (int i = 0; i < stacks.Length; i++) {
-                if (stacks[i].Count == 1)
-                  remaining.Add(stacks[i].Pop());
-                if (stacks[i].Count > 1) {
-                  OperationCollection ops = new OperationCollection();
-                  while (stacks[i].Count > 0)
-                    ops.Add(stacks[i].Pop());
-                  remaining.Add(ops);
-                }
-              }
-              if (remaining.Count > 0) executionStack.Push(remaining);
-              throw ex;
+            } catch (OperationCanceledException) {
+              RepairStack(executionStack, stacks);
+              throw;
+            } catch (AggregateException) {
+              RepairStack(executionStack, stacks);
+              throw;
             }
           } else {
             for (int i = coll.Count - 1; i >= 0; i--)
@@ -127,18 +118,27 @@ namespace HeuristicLab.ParallelEngine {
           }
           catch (Exception ex) {
             executionStack.Push(operation);
-            if (ex is OperationCanceledException) throw ex;
+            if (ex is OperationCanceledException) throw;
             else throw new OperatorExecutionException(operation.Operator, ex);
           }
           if (next != null) executionStack.Push(next);
-
-          if (operation.Operator.Breakpoint) {
-            string message = string.Format("Breakpoint: {0}", operation.Operator.Name != string.Empty ? operation.Operator.Name : operation.Operator.ItemName);
-            Log.LogMessage(message);
-            throw new OperationCanceledException(message);
-          }
         }
       }
+    }
+
+    private static void RepairStack(Stack<IOperation> executionStack, Stack<IOperation>[] parallelExecutionStacks) {
+      OperationCollection remaining = new OperationCollection() { Parallel = true };
+      for (int i = 0; i < parallelExecutionStacks.Length; i++) {
+        if (parallelExecutionStacks[i].Count == 1)
+          remaining.Add(parallelExecutionStacks[i].Pop());
+        if (parallelExecutionStacks[i].Count > 1) {
+          OperationCollection ops = new OperationCollection();
+          while (parallelExecutionStacks[i].Count > 0)
+            ops.Add(parallelExecutionStacks[i].Pop());
+          remaining.Add(ops);
+        }
+      }
+      if (remaining.Count > 0) executionStack.Push(remaining);
     }
   }
 }

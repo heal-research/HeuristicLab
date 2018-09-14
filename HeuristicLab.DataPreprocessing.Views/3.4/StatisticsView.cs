@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2016 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -86,13 +86,13 @@ namespace HeuristicLab.DataPreprocessing.Views {
     }
 
     private void UpdateData(Dictionary<string, bool> oldVisibility = null) {
-      var logic = Content.StatisticsLogic;
-      rowsTextBox.Text = logic.GetRowCount().ToString();
-      columnsTextBox.Text = logic.GetColumnCount().ToString();
-      numericColumnsTextBox.Text = logic.GetNumericColumnCount().ToString();
-      nominalColumnsTextBox5.Text = logic.GetNominalColumnCount().ToString();
-      missingValuesTextBox.Text = logic.GetMissingValueCount().ToString();
-      totalValuesTextBox.Text = (logic.GetColumnCount() * logic.GetRowCount() - logic.GetMissingValueCount()).ToString();
+      var data = Content.PreprocessingData;
+      rowsTextBox.Text = data.Rows.ToString();
+      columnsTextBox.Text = data.Columns.ToString();
+      numericColumnsTextBox.Text = GetColumnCount<double>().ToString();
+      nominalColumnsTextBox5.Text = GetColumnCount<string>().ToString();
+      missingValuesTextBox.Text = data.GetMissingValueCount().ToString();
+      totalValuesTextBox.Text = (data.Rows * data.Rows - data.GetMissingValueCount()).ToString();
 
       var variableNames = Content.PreprocessingData.VariableNames.ToList();
       if (horizontal)
@@ -106,13 +106,13 @@ namespace HeuristicLab.DataPreprocessing.Views {
           ColumnNames = StatisticsView.StatisticsNames
         };
 
-      for (int i = 0; i < logic.GetColumnCount(); i++) {
-        var data = GetStatistics(i);
-        for (int j = 0; j < data.Count; j++) {
+      for (int i = 0; i < data.Columns; i++) {
+        var statistics = GetStatistics(i);
+        for (int j = 0; j < statistics.Count; j++) {
           if (horizontal)
-            statisticsMatrix[j, i] = data[j];
+            statisticsMatrix[j, i] = statistics[j];
           else
-            statisticsMatrix[i, j] = data[j];
+            statisticsMatrix[i, j] = statistics[j];
         }
       }
 
@@ -137,14 +137,24 @@ namespace HeuristicLab.DataPreprocessing.Views {
       stringMatrixView.Parent.ResumeRepaint(true);
     }
 
+    public int GetColumnCount<T>() {
+      int count = 0;
+      for (int i = 0; i < Content.PreprocessingData.Columns; ++i) {
+        if (Content.PreprocessingData.VariableHasType<T>(i)) {
+          ++count;
+        }
+      }
+      return count;
+    }
+
     private List<string> GetStatistics(int varIdx) {
       List<string> list;
-      var logic = Content.StatisticsLogic;
-      if (logic.VariableHasType<double>(varIdx)) {
+      var data = Content.PreprocessingData;
+      if (data.VariableHasType<double>(varIdx)) {
         list = GetDoubleColumns(varIdx);
-      } else if (logic.VariableHasType<string>(varIdx)) {
+      } else if (data.VariableHasType<string>(varIdx)) {
         list = GetStringColumns(varIdx);
-      } else if (logic.VariableHasType<DateTime>(varIdx)) {
+      } else if (data.VariableHasType<DateTime>(varIdx)) {
         list = GetDateTimeColumns(varIdx);
       } else {
         list = new List<string>();
@@ -156,56 +166,56 @@ namespace HeuristicLab.DataPreprocessing.Views {
     }
 
     private List<string> GetDoubleColumns(int statIdx) {
-      var logic = Content.StatisticsLogic;
+      var data = Content.PreprocessingData;
       return new List<string> {
-        logic.GetColumnTypeAsString(statIdx),
-        logic.GetMissingValueCount(statIdx).ToString(),
-        logic.GetMin<double>(statIdx, double.NaN).ToString(),
-        logic.GetMax<double>(statIdx, double.NaN).ToString(),
-        logic.GetMedian(statIdx).ToString(),
-        logic.GetAverage(statIdx).ToString(),
-        logic.GetStandardDeviation(statIdx).ToString(),
-        logic.GetVariance(statIdx).ToString(),
-        logic.GetOneQuarterPercentile(statIdx).ToString(),
-        logic.GetThreeQuarterPercentile(statIdx).ToString(),
-        logic.GetMostCommonValue<double>(statIdx, double.NaN).ToString(),
-        logic.GetDifferentValuesCount<double>(statIdx).ToString()
+        data.GetVariableType(statIdx).Name,
+        data.GetMissingValueCount(statIdx).ToString(),
+        data.GetMin<double>(statIdx, emptyValue: double.NaN).ToString(),
+        data.GetMax<double>(statIdx, emptyValue: double.NaN).ToString(),
+        data.GetMedian<double>(statIdx, emptyValue: double.NaN).ToString(),
+        data.GetMean<double>(statIdx, emptyValue: double.NaN).ToString(),
+        data.GetStandardDeviation<double>(statIdx, emptyValue: double.NaN).ToString(),
+        data.GetVariance<double>(statIdx, emptyValue: double.NaN).ToString(),
+        data.GetQuantile<double>(0.25, statIdx, emptyValue: double.NaN).ToString(),
+        data.GetQuantile<double>(0.75, statIdx, emptyValue: double.NaN).ToString(),
+        data.GetMode<double>(statIdx, emptyValue: double.NaN).ToString(),
+        data.GetDistinctValues<double>(statIdx).ToString()
       };
     }
 
     private List<string> GetStringColumns(int statIdx) {
-      var logic = Content.StatisticsLogic;
+      var data = Content.PreprocessingData;
       return new List<string> {
-        logic.GetColumnTypeAsString(statIdx),
-        logic.GetMissingValueCount(statIdx).ToString(),
-        "", //min
-        "", //max
-        "", //median
+        data.GetVariableType(statIdx).Name,
+        data.GetMissingValueCount(statIdx).ToString(),
+        "", // data.GetMin<string>(statIdx, emptyValue: string.Empty), //min
+        "", // data.GetMax<string>(statIdx, emptyValue: string.Empty), //max
+        "", // data.GetMedian<string>(statIdx, emptyValue: string.Empty), //median
         "", //average
         "", //standard deviation
         "", //variance
-        "", //quarter percentile
-        "", //three quarter percentile
-        logic.GetMostCommonValue<string>(statIdx,string.Empty) ?? "",
-        logic.GetDifferentValuesCount<string>(statIdx).ToString()
+        "", // data.GetQuantile<string>(0.25, statIdx, emptyValue: string.Empty), //quarter percentile
+        "", // data.GetQuantile<string>(0.75, statIdx, emptyValue: string.Empty), //three quarter percentile
+        data.GetMode<string>(statIdx, emptyValue: string.Empty),
+        data.GetDistinctValues<string>(statIdx).ToString()
       };
     }
 
     private List<string> GetDateTimeColumns(int statIdx) {
-      var logic = Content.StatisticsLogic;
+      var data = Content.PreprocessingData;
       return new List<string> {
-        logic.GetColumnTypeAsString(statIdx),
-        logic.GetMissingValueCount(statIdx).ToString(),
-        logic.GetMin<DateTime>(statIdx, DateTime.MinValue).ToString(),
-        logic.GetMax<DateTime>(statIdx, DateTime.MinValue).ToString(),
-        logic.GetMedianDateTime(statIdx).ToString(),
-        logic.GetAverageDateTime(statIdx).ToString(),
-        logic.GetStandardDeviation(statIdx).ToString(),
-        logic.GetVariance(statIdx).ToString(),
-        logic.GetOneQuarterPercentile(statIdx).ToString(),
-        logic.GetThreeQuarterPercentile(statIdx).ToString(),
-        logic.GetMostCommonValue<DateTime>(statIdx, DateTime.MinValue).ToString(),
-        logic.GetDifferentValuesCount<DateTime>(statIdx).ToString()
+        data.GetVariableType(statIdx).Name,
+        data.GetMissingValueCount(statIdx).ToString(),
+        data.GetMin<DateTime>(statIdx).ToString(),
+        data.GetMax<DateTime>(statIdx).ToString(),
+        data.GetMedian<DateTime>(statIdx).ToString(),
+        data.GetMean<DateTime>(statIdx).ToString(),
+        "", // should be of type TimeSpan //data.GetStandardDeviation<DateTime>(statIdx).ToString(),
+        "", // should be of type TimeSpan //data.GetVariance<DateTime>(statIdx).ToString(),
+        data.GetQuantile<DateTime>(0.25, statIdx).ToString(),
+        data.GetQuantile<DateTime>(0.75, statIdx).ToString(),
+        data.GetMode<DateTime>(statIdx).ToString(),
+        data.GetDistinctValues<DateTime>(statIdx).ToString()
       };
     }
 

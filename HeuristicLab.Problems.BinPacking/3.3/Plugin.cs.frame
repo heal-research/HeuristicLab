@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2016 Joseph Helm and Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Joseph Helm and Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,7 +25,7 @@ namespace HeuristicLab.Problems.BinPacking {
   /// <summary>
   /// Plugin class for HeuristicLab.Problems.BinPacking plugin.
   /// </summary>
-  [Plugin("HeuristicLab.Problems.BinPacking", "3.3.14.$WCREV$")]
+  [Plugin("HeuristicLab.Problems.BinPacking", "3.3.15.$WCREV$")]
   [PluginFile("HeuristicLab.Problems.BinPacking-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Analysis", "3.3")]
   [PluginDependency("HeuristicLab.Collections", "3.3")]

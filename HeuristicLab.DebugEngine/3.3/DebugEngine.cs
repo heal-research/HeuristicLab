@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2016 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -180,7 +180,7 @@ namespace HeuristicLab.DebugEngine {
         Run(cancellationTokenSource.Token);
       } catch (OperationCanceledException) {
       } catch (AggregateException ae) {
-        OnExceptionOccurred(ae.InnerExceptions.SingleOrDefault() ?? ae);
+        ae.FlattenAndHandle(new[] { typeof(OperationCanceledException) }, e => OnExceptionOccurred(e));
       } catch (Exception e) {
         OnExceptionOccurred(e);
       }
@@ -307,7 +307,7 @@ namespace HeuristicLab.DebugEngine {
           }
           CurrentOperation = null;
         } catch (Exception ex) {
-          if (ex is OperationCanceledException) throw ex;
+          if (ex is OperationCanceledException) throw;
           else throw new OperatorExecutionException(operation.Operator, ex);
         }
       }

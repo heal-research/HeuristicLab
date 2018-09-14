@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2016 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,31 +22,38 @@
 using System.Drawing;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.DataPreprocessing {
-
   [Item("Scatter Plot", "Represents a scatter plot.")]
+  [StorableClass]
   public class SingleScatterPlotContent : ScatterPlotContent {
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Performance; }
     }
 
+    [Storable]
     public string SelectedXVariable { get; set; }
+    [Storable]
     public string SelectedYVariable { get; set; }
 
+    #region Constructor, Cloning & Persistence
     public SingleScatterPlotContent(IFilteredPreprocessingData preprocessingData)
       : base(preprocessingData) {
     }
 
-    public SingleScatterPlotContent(SingleScatterPlotContent content, Cloner cloner)
-      : base(content, cloner) {
-      this.SelectedXVariable = content.SelectedXVariable;
-      this.SelectedYVariable = content.SelectedYVariable;
-      this.GroupingVariable = content.GroupingVariable;
+    public SingleScatterPlotContent(SingleScatterPlotContent original, Cloner cloner)
+      : base(original, cloner) {
+      SelectedXVariable = original.SelectedXVariable;
+      SelectedYVariable = original.SelectedYVariable;
     }
-
     public override IDeepCloneable Clone(Cloner cloner) {
       return new SingleScatterPlotContent(this, cloner);
     }
+
+    [StorableConstructor]
+    protected SingleScatterPlotContent(bool deserializing)
+      : base(deserializing) { }
+    #endregion
   }
 }
