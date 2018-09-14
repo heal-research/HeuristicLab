@@ -21,6 +21,7 @@
 
 using System;
 using HeuristicLab.Services.Hive.DataTransfer;
+using System.Collections.Generic;
 
 namespace HeuristicLab.Services.Hive {
   public interface IAuthorizationManager {
@@ -34,5 +35,13 @@ namespace HeuristicLab.Services.Hive {
     void AuthorizeForJob(Guid jobId, Permission requiredPermission);
 
     void AuthorizeForResourceAdministration(Guid resourceId);
+
+    void AuthorizeForProjectAdministration(Guid projectId, bool parentalOwnership);
+
+    void AuthorizeForProjectResourceAdministration(Guid projectId, IEnumerable<Guid> resourceIds);
+
+    void AuthorizeProjectForResourcesUse(Guid projectId, IEnumerable<Guid> resourceIds);
+
+    void AuthorizeUserForProjectUse(Guid userId, Guid projectId);
   }
 }

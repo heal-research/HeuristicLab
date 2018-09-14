@@ -39,12 +39,12 @@ namespace HeuristicLab.Clients.Access.Administration {
 
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
-      Access.AccessClient.Instance.Refreshing += new EventHandler(Content_Refreshing);
+      AccessClient.Instance.Refreshing += new EventHandler(Content_Refreshing);
       refreshableLightweightUserView.StorableStateChanged += new EventHandler(refreshableLightweightUserView_StorableStateChanged);
     }
 
     protected override void DeregisterContentEvents() {
-      Access.AccessClient.Instance.Refreshing -= new EventHandler(Content_Refreshing);
+      AccessClient.Instance.Refreshing -= new EventHandler(Content_Refreshing);
       refreshableLightweightUserView.StorableStateChanged -= new EventHandler(refreshableLightweightUserView_StorableStateChanged);
       base.DeregisterContentEvents();
     }
@@ -62,14 +62,25 @@ namespace HeuristicLab.Clients.Access.Administration {
         groupNameTextBox.Text = Content.Name;
         idTextBox.Text = Content.Id.ToString();
 
-        refreshableLightweightUserView.Content = Content.Id != Guid.Empty ? Access.AccessClient.Instance : null;
-        refreshableLightweightUserView.FetchSelectedUsers = Content.Id != Guid.Empty ? new Func<List<Guid>>(delegate { return AccessAdministrationClient.CallAccessService<List<Guid>>(s => s.GetUserGroupIdsOfGroup(Content.Id)); }) : null;
+        refreshableLightweightUserView.Content = Content.Id != Guid.Empty ? AccessClient.Instance : null;
+        refreshableLightweightUserView.FetchSelectedUsers = Content.Id != Guid.Empty ? new Func<List<Guid>>(delegate { return AccessAdministrationClient.CallAccessService(s => s.GetUserGroupIdsOfGroup(Content.Id)); }) : null;
       }
     }
 
-    private void groupNameTextBox_TextChanged(object sender, System.EventArgs e) {
-      if (Content.Name != this.groupNameTextBox.Text)
-        Content.Name = this.groupNameTextBox.Text;
+    protected override void SetEnabledStateOfControls() {
+      base.SetEnabledStateOfControls();
+      bool enabled = Content != null && !Locked;
+      groupNameTextBox.ReadOnly = !enabled;
+      idTextBox.ReadOnly = !enabled;
+      storeButton.Enabled = enabled;
+      //refreshableLightweightUserView.Enabled = enabled;
+      refreshableLightweightUserView.Locked = !enabled;
+      //refreshableLightweightUserView.ReadOnly = !enabled;
+    }
+
+    private void groupNameTextBox_TextChanged(object sender, EventArgs e) {
+      if (Content != null && Content.Name != groupNameTextBox.Text)
+        Content.Name = groupNameTextBox.Text;
     }
 
     private void storeButton_Click(object sender, EventArgs e) {
@@ -90,11 +101,11 @@ namespace HeuristicLab.Clients.Access.Administration {
     }
 
     private void Content_Refreshing(object sender, EventArgs e) {
-      storeButton.Enabled = false;
+      if (!Locked) storeButton.Enabled = false;
     }
 
     private void refreshableLightweightUserView_StorableStateChanged(object sender, EventArgs e) {
-      storeButton.Enabled = true;
+      if (!Locked) storeButton.Enabled = true;
     }
   }
 }

@@ -152,6 +152,7 @@
     <Compile Include="StringMatrix.cs" />
     <Compile Include="StringValue.cs" />
     <Compile Include="TimeSpanValue.cs" />
+    <Compile Include="TriangularMatrix.cs" />
     <Compile Include="ValueTypeArray.cs" />
     <Compile Include="ValueTypeMatrix.cs" />
     <Compile Include="StringConvertibleValueTuple.cs" />

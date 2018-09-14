@@ -162,7 +162,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
         throw new ArgumentException("All allowed input variables must be present in the dataset and of type double or string.");
 
       var variables = dataset.VariableNames.Where(variable => dataset.VariableHasType<double>(variable) || dataset.VariableHasType<string>(variable));
-      var inputVariables = new CheckedItemList<StringValue>(variables.Select(x => new StringValue(x)));
+      var inputVariables = new CheckedItemList<StringValue>(variables.Select(x => new StringValue(x).AsReadOnly()));
       foreach (StringValue x in inputVariables)
         inputVariables.SetItemCheckedState(x, allowedInputVariables.Contains(x.Value));
 

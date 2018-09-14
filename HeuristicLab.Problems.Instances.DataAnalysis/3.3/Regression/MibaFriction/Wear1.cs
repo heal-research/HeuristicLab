@@ -21,6 +21,7 @@
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
   public class Wear1 : ResourceRegressionDataDescriptor {
+    public Wear1(string resourceName) : base(resourceName) { }
     public override string Name { get { return "Wear1"; } }
     public override string Description {
       get {

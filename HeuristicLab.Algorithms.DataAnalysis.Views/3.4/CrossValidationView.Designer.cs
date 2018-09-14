@@ -171,9 +171,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       // 
       // foldsNumericUpDown
       // 
-      this.foldsNumericUpDown.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+      this.foldsNumericUpDown.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.foldsNumericUpDown.Location = new System.Drawing.Point(55, 26);
+      this.foldsNumericUpDown.Location = new System.Drawing.Point(55, 27);
       this.foldsNumericUpDown.Maximum = new decimal(new int[] {
             50,
             0,
@@ -185,7 +185,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
             0,
             0});
       this.foldsNumericUpDown.Name = "foldsNumericUpDown";
-      this.foldsNumericUpDown.Size = new System.Drawing.Size(154, 20);
+      this.foldsNumericUpDown.Size = new System.Drawing.Size(248, 20);
       this.foldsNumericUpDown.TabIndex = 3;
       this.foldsNumericUpDown.ThousandsSeparator = true;
       this.foldsNumericUpDown.Value = new decimal(new int[] {
@@ -207,9 +207,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       // 
       // workersNumericUpDown
       // 
-      this.workersNumericUpDown.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+      this.workersNumericUpDown.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.workersNumericUpDown.Location = new System.Drawing.Point(55, 0);
+      this.workersNumericUpDown.Location = new System.Drawing.Point(55, 1);
       this.workersNumericUpDown.Maximum = new decimal(new int[] {
             50,
             0,
@@ -261,7 +261,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       // 
       // samplesEndStringConvertibleValueView
       // 
-      this.samplesEndStringConvertibleValueView.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+      this.samplesEndStringConvertibleValueView.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.samplesEndStringConvertibleValueView.Caption = "StringConvertibleValue View";
       this.samplesEndStringConvertibleValueView.Content = null;
@@ -274,7 +274,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       // 
       // samplesStartStringConvertibleValueView
       // 
-      this.samplesStartStringConvertibleValueView.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+      this.samplesStartStringConvertibleValueView.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.samplesStartStringConvertibleValueView.Caption = "StringConvertibleValue View";
       this.samplesStartStringConvertibleValueView.Content = null;
@@ -288,8 +288,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       // tabControl
       // 
       this.tabControl.AllowDrop = true;
-      this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+      this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.tabControl.Controls.Add(this.algorithmTabPage);
       this.tabControl.Controls.Add(this.resultsTabPage);
@@ -320,7 +320,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       // 
       // algorithmNamedItemView
       // 
-      this.algorithmNamedItemView.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+      this.algorithmNamedItemView.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.algorithmNamedItemView.Caption = "NamedItem View";
       this.algorithmNamedItemView.Content = null;
@@ -333,8 +333,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       // algorithmTabControl
       // 
       this.algorithmTabControl.AllowDrop = true;
-      this.algorithmTabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+      this.algorithmTabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.algorithmTabControl.Controls.Add(this.algorithmProblemTabPage);
       this.algorithmTabControl.Controls.Add(this.algorithmParametersTabPage);
@@ -374,8 +374,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       // 
       // algorithmProblemViewHost
       // 
-      this.algorithmProblemViewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+      this.algorithmProblemViewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.algorithmProblemViewHost.Caption = "View";
       this.algorithmProblemViewHost.Content = null;
@@ -516,7 +516,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       // 
       // splitContainer
       // 
-      this.splitContainer.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+      this.splitContainer.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.splitContainer.Location = new System.Drawing.Point(0, 26);
       this.splitContainer.Name = "splitContainer";

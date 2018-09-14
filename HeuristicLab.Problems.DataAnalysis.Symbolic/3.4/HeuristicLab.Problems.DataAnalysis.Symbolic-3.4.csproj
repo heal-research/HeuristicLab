@@ -140,6 +140,7 @@
     <Compile Include="Converters\TreeSimplifier.cs" />
     <Compile Include="Converters\TreeToAutoDiffTermConverter.cs" />
     <Compile Include="Formatters\InfixExpressionFormatter.cs" />
+    <Compile Include="Formatters\TSQLExpressionFormatter.cs" />
     <Compile Include="Formatters\SymbolicDataAnalysisExpressionMathematicaFormatter.cs" />
     <Compile Include="Formatters\SymbolicDataAnalysisExpressionCSharpFormatter.cs" />
     <Compile Include="Importer\InfixExpressionParser.cs" />

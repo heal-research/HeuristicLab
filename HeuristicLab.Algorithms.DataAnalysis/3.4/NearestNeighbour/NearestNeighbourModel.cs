@@ -129,7 +129,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         if (weights == null) {
           // automatic determination of weights (all features should have variance = 1)
           this.weights = this.allowedInputVariables
-            .Select(name => 1.0 / dataset.GetDoubleValues(name, rows).StandardDeviationPop())
+            .Select(name => {
+              var pop = dataset.GetDoubleValues(name, rows).StandardDeviationPop();
+              return  pop.IsAlmost(0) ? 1.0 : 1.0/pop;
+            })
             .Concat(new double[] { 1.0 }) // no scaling for target variable
             .ToArray();
         } else {
@@ -141,7 +144,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         inputMatrix = CreateScaledData(dataset, this.allowedInputVariables.Concat(new string[] { targetVariable }), rows, this.offsets, this.weights);
       }
 
-      if (inputMatrix.Cast<double>().Any(x => double.IsNaN(x) || double.IsInfinity(x)))
+      if (inputMatrix.ContainsNanOrInfinity())
         throw new NotSupportedException(
           "Nearest neighbour model does not support NaN or infinity values in the input dataset.");
 

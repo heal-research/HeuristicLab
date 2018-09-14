@@ -28,7 +28,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     // op code of the function that determines what operation should be executed
     public byte opCode;
     // number of arguments of the current instruction
-    public byte nArguments;
+    public ushort nArguments;
     // an optional object value (addresses for calls, argument index for arguments)
     public object data;
   }

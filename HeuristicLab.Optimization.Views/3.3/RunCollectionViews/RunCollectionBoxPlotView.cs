@@ -380,9 +380,10 @@ namespace HeuristicLab.Optimization.Views {
       }
     }
 
-    private void AxisComboBox_SelectionChangeCommitted(object sender, EventArgs e) {
+    private void AxisComboBox_SelectedIndexChanged(object sender, EventArgs e) {
       UpdateDataPoints();
     }
+
     private void UpdateAxisLabels() {
       Axis xAxis = this.chart.ChartAreas[BoxPlotChartAreaName].AxisX;
       Axis yAxis = this.chart.ChartAreas[BoxPlotChartAreaName].AxisY;

@@ -21,6 +21,7 @@
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
   public class CF1 : ResourceRegressionDataDescriptor {
+    public CF1(string resourceName) : base(resourceName) { }
     public override string Name { get { return "CF1"; } }
     public override string Description {
       get {

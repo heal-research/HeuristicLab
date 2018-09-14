@@ -45,8 +45,8 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
 
       //check if valid
       if (InputIsValid()) {
-        dateFrom = DateTime.Parse(dtpStart.Text + " " + dtpFromTime.Text);
-        dateTo = DateTime.Parse(dtpEnd.Text + " " + dtpToTime.Text);
+        dateFrom = DateTime.Parse(dtpStart.Text);
+        dateTo = DateTime.Parse(dtpEnd.Text);
 
         RecurrentEvent recurrentEvent = new RecurrentEvent() {
           DateFrom = dateFrom,
@@ -88,8 +88,8 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     private bool InputIsValid() {
       DateTime dateFrom, dateTo;
 
-      dateFrom = DateTime.Parse(dtpStart.Text + " " + dtpFromTime.Text);
-      dateTo = DateTime.Parse(dtpEnd.Text + " " + dtpToTime.Text);
+      dateFrom = DateTime.Parse(dtpStart.Text);
+      dateTo = DateTime.Parse(dtpEnd.Text);
 
       if (chbade.Checked && dateFrom < dateTo) {
         return true;

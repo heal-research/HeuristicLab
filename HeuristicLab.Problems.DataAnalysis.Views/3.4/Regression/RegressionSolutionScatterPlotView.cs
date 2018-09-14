@@ -165,8 +165,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         if (this.chart.Series[TEST_SERIES].Points.Count > 0)
           this.chart.Series[TEST_SERIES].Points.DataBindXY(dataset.GetDoubleValues(targetVariableName, Content.ProblemData.TestIndices).ToArray(), "",
             Content.EstimatedTestValues.ToArray(), "");
-        double max = Content.EstimatedTrainingValues.Concat(Content.EstimatedTestValues.Concat(Content.EstimatedValues.Concat(dataset.GetDoubleValues(targetVariableName)))).Max();
-        double min = Content.EstimatedTrainingValues.Concat(Content.EstimatedTestValues.Concat(Content.EstimatedValues.Concat(dataset.GetDoubleValues(targetVariableName)))).Min();
+        double max = Content.EstimatedTrainingValues
+          .Concat(Content.EstimatedTestValues
+          .Concat(Content.EstimatedValues
+          .Concat(dataset.GetDoubleValues(targetVariableName))))
+          .Where(v => !double.IsNaN(v) && !double.IsInfinity(v)).Max();
+        double min = Content.EstimatedTrainingValues
+          .Concat(Content.EstimatedTestValues
+          .Concat(Content.EstimatedValues
+          .Concat(dataset.GetDoubleValues(targetVariableName))))
+          .Where(v => !double.IsNaN(v) && !double.IsInfinity(v)).Min();
 
         double axisMin, axisMax, axisInterval;
         ChartUtil.CalculateOptimalAxisInterval(min, max, out axisMin, out axisMax, out axisInterval);

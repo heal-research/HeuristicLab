@@ -209,7 +209,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
 
     protected override void Run(CancellationToken cancellationToken) {
       // Set up the algorithm
-      if (SetSeedRandomly) Seed = new System.Random().Next();
+      if (SetSeedRandomly) Seed = RandomSeedGenerator.GetSeed();
       var rand = new MersenneTwister((uint)Seed);
 
       // Set up the results display
@@ -257,7 +257,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
           cancellationToken.ThrowIfCancellationRequested();
 
           modifiableDataset.RemoveVariable(targetVarName);
-          modifiableDataset.AddVariable(targetVarName, curY.Concat(curYTest));
+          modifiableDataset.AddVariable(targetVarName, curY.Concat(curYTest).ToList());
 
           SampleTrainingData(rand, modifiableDataset, rRows, problemData.Dataset, curY, problemData.TargetVariable, problemData.TrainingIndices); // all training indices from the original problem data are allowed 
           var modifiableProblemData = new RegressionProblemData(modifiableDataset,

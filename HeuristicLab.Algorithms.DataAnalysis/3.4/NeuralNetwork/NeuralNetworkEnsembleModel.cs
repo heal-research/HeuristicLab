@@ -101,7 +101,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         for (int column = 0; column < columns; column++) {
           x[column] = inputData[row, column];
         }
-        alglib.mlpeprocess(mlpEnsemble, x, ref y);
+        // mlpeprocess writes data in mlpEnsemble and is therefore not thread-safe
+        lock (mlpEnsemble) {
+          alglib.mlpeprocess(mlpEnsemble, x, ref y);
+        }
         yield return y[0];
       }
     }
@@ -118,7 +121,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         for (int column = 0; column < columns; column++) {
           x[column] = inputData[row, column];
         }
-        alglib.mlpeprocess(mlpEnsemble, x, ref y);
+        // mlpeprocess writes data in mlpEnsemble and is therefore not thread-safe
+        lock (mlpEnsemble) {
+          alglib.mlpeprocess(mlpEnsemble, x, ref y);
+        }
         // find class for with the largest probability value
         int maxProbClassIndex = 0;
         double maxProb = y[0];

@@ -154,7 +154,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     #endregion
     private IEnumerable<double> GetEstimatedValuesHelper(IDataset dataset, IEnumerable<int> rows) {
       // calculate predictions for the currently requested rows
-      svm_problem problem = SupportVectorMachineUtil.CreateSvmProblem(dataset, TargetVariable, allowedInputVariables, rows);
+      svm_problem problem = SupportVectorMachineUtil.CreateSvmProblem(dataset, allowedInputVariables, rows);
       svm_problem scaledProblem = rangeTransform.Scale(problem);
 
       for (int i = 0; i < problem.l; i++) {

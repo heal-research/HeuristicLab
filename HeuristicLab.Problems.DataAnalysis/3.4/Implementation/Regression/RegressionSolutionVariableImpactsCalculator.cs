@@ -51,7 +51,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       Test,
       All
     }
-   
+
     private const string ReplacementParameterName = "Replacement Method";
     private const string DataPartitionParameterName = "DataPartition";
 
@@ -95,7 +95,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
       IRegressionSolution solution,
       DataPartitionEnum data = DataPartitionEnum.Training,
       ReplacementMethodEnum replacementMethod = ReplacementMethodEnum.Median,
-      FactorReplacementMethodEnum factorReplacementMethod = FactorReplacementMethodEnum.Best) {
+      FactorReplacementMethodEnum factorReplacementMethod = FactorReplacementMethodEnum.Best,
+      Func<double, string, bool> progressCallback = null) {
 
       var problemData = solution.ProblemData;
       var dataset = problemData.Dataset;
@@ -133,8 +134,15 @@ namespace HeuristicLab.Problems.DataAnalysis {
       var inputvariables = new HashSet<string>(problemData.AllowedInputVariables.Union(solution.Model.VariablesUsedForPrediction));
       var allowedInputVariables = dataset.VariableNames.Where(v => inputvariables.Contains(v)).ToList();
 
+      int curIdx = 0;
+      int count = allowedInputVariables.Where(problemData.Dataset.VariableHasType<double>).Count();
       // calculate impacts for double variables
       foreach (var inputVariable in allowedInputVariables.Where(problemData.Dataset.VariableHasType<double>)) {
+        //Report the current progress in percent. If the callback returns true, it means the execution shall be stopped
+        if (progressCallback != null) {
+          curIdx++;
+          if (progressCallback((double)curIdx / count, string.Format("Calculating impact for variable {0} ({1} of {2})", inputVariable, curIdx, count))) { return null; }
+        }
         var newEstimates = EvaluateModelWithReplacedVariable(solution.Model, inputVariable, modifiableDataset, rows, replacementMethod);
         var newR2 = OnlinePearsonsRCalculator.Calculate(targetValues, newEstimates, out error);
         if (error != OnlineCalculatorError.None) throw new InvalidOperationException("Error during R² calculation with replaced inputs.");
@@ -178,6 +186,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       } // foreach
       return impacts.OrderByDescending(i => i.Value).Select(i => Tuple.Create(i.Key, i.Value));
     }
+
 
     private static IEnumerable<double> EvaluateModelWithReplacedVariable(IRegressionModel model, string variable, ModifiableDataset dataset, IEnumerable<int> rows, ReplacementMethodEnum replacement = ReplacementMethodEnum.Median) {
       var originalValues = dataset.GetReadOnlyDoubleValues(variable).ToList();

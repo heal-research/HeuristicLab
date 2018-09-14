@@ -93,7 +93,7 @@ namespace HeuristicLab.Random {
       if (SeedParameter.ActualValue == null) SeedParameter.ActualValue = new IntValue(0);
       IntValue seed = SeedParameter.ActualValue;
 
-      if (setSeedRandomly) seed.Value = new System.Random().Next();
+      if (setSeedRandomly) seed.Value = RandomSeedGenerator.GetSeed();
       IRandom random = (IRandom)RandomType.Clone();
       random.Reset(seed.Value);
       RandomParameter.ActualValue = random;

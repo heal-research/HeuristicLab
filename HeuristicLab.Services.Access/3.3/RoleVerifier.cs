@@ -28,6 +28,9 @@ namespace HeuristicLab.Services.Access {
     public bool IsInRole(string role) {
       return Roles.IsUserInRole(role);
     }
+    public bool IsUserInRole(string username, string role) {
+      return Roles.IsUserInRole(username, role);
+    }
     public bool IsInAnyRole(params string[] roles) {
       return roles.Any(x => Roles.IsUserInRole(x));
     }
