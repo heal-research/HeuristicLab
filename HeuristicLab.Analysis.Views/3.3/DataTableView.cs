@@ -127,7 +127,7 @@ namespace HeuristicLab.Analysis.Views {
 
     public void ShowConfiguration() {
       if (Content != null) {
-        using (var dialog = new DataTableVisualPropertiesDialog(Content)) {
+        using (var dialog = new DataTableVisualPropertiesDialog<DataRow>(Content)) {
           dialog.ShowDialog(this);
         }
       } else MessageBox.Show("Nothing to configure.");

@@ -33,7 +33,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Analysis {
   [Item("IndexedDataTable", "A data table where the points are also given with a certain index.")]
   [StorableClass]
-  public class IndexedDataTable<T> : NamedItem, IStringConvertibleMatrix {
+  public class IndexedDataTable<T> : NamedItem, IStringConvertibleMatrix, IDataTable<IndexedDataRow<T>> {
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Performance; }
     }

@@ -19,20 +19,20 @@
  */
 #endregion
 
-using HeuristicLab.Collections;
-using HeuristicLab.Core.Views;
-using HeuristicLab.MainForm;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
+using HeuristicLab.Collections;
+using HeuristicLab.Core.Views;
+using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Analysis.Views {
   [View("IndexedDataTable View")]
   [Content(typeof(IndexedDataTable<>), true)]
-  public partial class IndexedDataTableView<T> : NamedItemView {
+  public partial class IndexedDataTableView<T> : NamedItemView, IConfigureableView {
     protected List<Series> invisibleSeries;
     protected Dictionary<IObservableList<Tuple<T, double>>, IndexedDataRow<T>> valuesRowsTable;
 
@@ -132,6 +132,14 @@ namespace HeuristicLab.Analysis.Views {
       chart.Enabled = Content != null;
     }
 
+    public void ShowConfiguration() {
+      if (Content != null) {
+        using (var dialog = new DataTableVisualPropertiesDialog<IndexedDataRow<T>>(Content)) {
+          dialog.ShowDialog(this);
+        }
+      } else MessageBox.Show("Nothing to configure.");
+    }
+
     /// <summary>
     /// Add the DataRow as a series to the chart.
     /// </summary>
@@ -210,6 +218,8 @@ namespace HeuristicLab.Analysis.Views {
     private void ConfigureChartArea(ChartArea area) {
       if (Content.VisualProperties.TitleFont != null) chart.Titles[0].Font = Content.VisualProperties.TitleFont;
       if (!Content.VisualProperties.TitleColor.IsEmpty) chart.Titles[0].ForeColor = Content.VisualProperties.TitleColor;
+      chart.Titles[0].Text = Content.VisualProperties.Title;
+      chart.Titles[0].Visible = !string.IsNullOrEmpty(Content.VisualProperties.Title);
 
       if (Content.VisualProperties.AxisTitleFont != null) area.AxisX.TitleFont = Content.VisualProperties.AxisTitleFont;
       if (!Content.VisualProperties.AxisTitleColor.IsEmpty) area.AxisX.TitleForeColor = Content.VisualProperties.AxisTitleColor;

@@ -20,7 +20,7 @@
 #endregion
 
 namespace HeuristicLab.Analysis.Views {
-  partial class DataTableVisualPropertiesDialog {
+  partial class DataTableVisualPropertiesDialog<TDataRow> {
     /// <summary>
     /// Required designer variable.
     /// </summary>
