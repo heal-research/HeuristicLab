@@ -48,6 +48,7 @@ namespace HeuristicLab.Analysis.Views {
       chart.CustomizeAllChartAreas();
       chart.ChartAreas[0].CursorX.Interval = 1;
       chart.SuppressExceptions = true;
+      chart.ContextMenuStrip.Items.Add(configureToolStripMenuItem);
     }
 
     #region Event Handler Registration
@@ -517,6 +518,9 @@ namespace HeuristicLab.Analysis.Views {
       }
     }
     #endregion
+    private void configureToolStripMenuItem_Click(object sender, EventArgs e) {
+      ShowConfiguration();
+    }
     #endregion
 
     #region Chart Event Handlers

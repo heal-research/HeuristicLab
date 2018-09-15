@@ -456,7 +456,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
             Name = key.ToString(),
             Content = scatterPlot,
             Dock = DockStyle.Fill,
-            ShowName = false
+            ShowChartOnly = true
             //ShowLegend = false,
             //XAxisFormat = "G3"
           };

@@ -19,19 +19,19 @@
  */
 #endregion
 
-using HeuristicLab.Collections;
-using HeuristicLab.Common;
-using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using HeuristicLab.Collections;
+using HeuristicLab.Common;
+using HeuristicLab.Core;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Analysis {
   [Item("IndexedDataRow", "A data row that contains a series of points.")]
   [StorableClass]
-  public class IndexedDataRow<T> : NamedItem {
+  public class IndexedDataRow<T> : NamedItem, IDataRow {
 
     private DataRowVisualProperties visualProperties;
     public DataRowVisualProperties VisualProperties {

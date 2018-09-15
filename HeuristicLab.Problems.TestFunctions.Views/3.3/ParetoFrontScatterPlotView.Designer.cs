@@ -61,7 +61,7 @@ namespace HeuristicLab.Problems.TestFunctions.Views {
       this.scatterPlotView.Location = new System.Drawing.Point(3, 37);
       this.scatterPlotView.Name = "scatterPlotView";
       this.scatterPlotView.ReadOnly = false;
-      this.scatterPlotView.ShowName = false;
+      this.scatterPlotView.ShowChartOnly = false;
       this.scatterPlotView.Size = new System.Drawing.Size(615, 342);
       this.scatterPlotView.TabIndex = 3;
       // 
