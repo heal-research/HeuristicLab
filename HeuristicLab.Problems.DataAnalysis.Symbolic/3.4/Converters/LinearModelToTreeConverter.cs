@@ -36,23 +36,29 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       IEnumerable<KeyValuePair<string, IEnumerable<string>>> factors, double[] factorCoefficients,
       string[] variableNames, double[] coefficients,
       double @const = 0) {
-      if (factorCoefficients.Length == 0 && coefficients.Length == 0) throw new ArgumentException();
-      ISymbolicExpressionTree p1 = null;
-      if (coefficients.Length > 0) {
-        p1 = CreateTree(variableNames, new int[variableNames.Length], coefficients, @const);
-        if (factorCoefficients.Length == 0)
-          return p1;
-      }
-      if (factorCoefficients.Length > 0) {
-        var p2 = CreateTree(factors, factorCoefficients);
-        if (p1 == null) return p2;
 
-        // combine
-        ISymbolicExpressionTreeNode add = p1.Root.GetSubtree(0).GetSubtree(0);
-        foreach (var binFactorNode in p2.IterateNodesPrefix().OfType<BinaryFactorVariableTreeNode>())
-          add.AddSubtree(binFactorNode);
-        return p1;
+      if (factorCoefficients.Length == 0 && coefficients.Length == 0) throw new ArgumentException();
+
+      // Create tree for double variables
+      ISymbolicExpressionTree tree = null;      
+      if (coefficients.Length > 0) {
+        tree = CreateTree(variableNames, new int[variableNames.Length], coefficients, @const);
+        if (factorCoefficients.Length == 0) return tree;
       }
+
+      // Create tree for string variables
+      ISymbolicExpressionTree factorTree = null;      
+      if (factorCoefficients.Length > 0) {
+        factorTree = CreateTree(factors, factorCoefficients, @const);
+        if (tree == null) return factorTree;  
+      }
+
+      // Combine both trees
+      ISymbolicExpressionTreeNode add = tree.Root.GetSubtree(0).GetSubtree(0);
+      foreach (var binFactorNode in factorTree.IterateNodesPrefix().OfType<BinaryFactorVariableTreeNode>())
+        add.InsertSubtree(add.SubtreeCount - 1, binFactorNode);
+      return tree;
+
       throw new ArgumentException();
     }
 
