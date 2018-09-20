@@ -214,13 +214,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
       // Configure axis
       chart.CustomizeAllChartAreas();
-      chart.ChartAreas[0].CursorX.IsUserSelectionEnabled = true;
-      chart.ChartAreas[0].AxisX.ScaleView.Zoomable = true;
-      chart.ChartAreas[0].CursorX.Interval = 0;
+      chart.ChartAreas[0].CursorX.IsUserSelectionEnabled = false;
+      chart.ChartAreas[0].CursorY.IsUserSelectionEnabled = false;
 
-      chart.ChartAreas[0].CursorY.IsUserSelectionEnabled = true;
-      chart.ChartAreas[0].AxisY.ScaleView.Zoomable = true;
-      chart.ChartAreas[0].CursorY.Interval = 0;
+      chart.ChartAreas[0].Axes.ToList().ForEach(x => { x.ScaleView.Zoomable = false; });
 
       configToolStripMenuItem = new ToolStripMenuItem("Configuration");
       configToolStripMenuItem.Click += config_Click;
@@ -350,8 +347,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     }
 
     private void RecalculateTrainingLimits(bool initializeAxisRanges) {
-      trainingMin = solutions.Select(s => s.ProblemData.Dataset.GetDoubleValues(freeVariable, s.ProblemData.TrainingIndices).Min()).Max();
-      trainingMax = solutions.Select(s => s.ProblemData.Dataset.GetDoubleValues(freeVariable, s.ProblemData.TrainingIndices).Max()).Min();
+      trainingMin = solutions.Select(s => s.ProblemData.Dataset.GetDoubleValues(freeVariable, s.ProblemData.TrainingIndices).Where(x => !double.IsNaN(x)).Min()).Max();
+      trainingMax = solutions.Select(s => s.ProblemData.Dataset.GetDoubleValues(freeVariable, s.ProblemData.TrainingIndices).Where(x => !double.IsNaN(x)).Max()).Min();
 
       if (initializeAxisRanges) {
         double xmin, xmax, xinterval;
