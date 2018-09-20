@@ -61,7 +61,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     }
 
     protected virtual string GetResourceName(string fileName) {
-      return Assembly.GetExecutingAssembly().GetManifestResourceNames()
+      return GetType().Assembly.GetManifestResourceNames()
               .Where(x => Regex.Match(x, @".*\.Data\." + fileName).Success).SingleOrDefault();
     }
   }

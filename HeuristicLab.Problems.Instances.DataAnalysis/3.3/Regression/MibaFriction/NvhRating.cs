@@ -21,6 +21,7 @@
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
   public class NvhRating : ResourceRegressionDataDescriptor {
+    public NvhRating() : base("NvhRating.csv") { }
     public override string Name { get { return "NvhRating"; } }
     public override string Description {
       get {
