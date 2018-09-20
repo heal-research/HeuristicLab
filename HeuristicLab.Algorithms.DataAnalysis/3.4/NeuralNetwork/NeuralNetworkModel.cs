@@ -35,17 +35,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   [Item("NeuralNetworkModel", "Represents a neural network for regression and classification.")]
   public sealed class NeuralNetworkModel : ClassificationModel, INeuralNetworkModel {
 
+    private object mlpLocker = new object();
     private alglib.multilayerperceptron multiLayerPerceptron;
-    public alglib.multilayerperceptron MultiLayerPerceptron {
-      get { return multiLayerPerceptron; }
-      set {
-        if (value != multiLayerPerceptron) {
-          if (value == null) throw new ArgumentNullException();
-          multiLayerPerceptron = value;
-          OnChanged(EventArgs.Empty);
-        }
-      }
-    }
 
     public override IEnumerable<string> VariablesUsedForPrediction {
       get { return allowedInputVariables; }
@@ -106,7 +97,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
           x[column] = inputData[row, column];
         }
         // NOTE: mlpprocess changes data in multiLayerPerceptron and is therefore not thread-save!
-        lock (multiLayerPerceptron) {
+        lock (mlpLocker) {
           alglib.mlpprocess(multiLayerPerceptron, x, ref y);
         }
         yield return y[0];
@@ -126,7 +117,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
           x[column] = inputData[row, column];
         }
         // NOTE: mlpprocess changes data in multiLayerPerceptron and is therefore not thread-save!
-        lock (multiLayerPerceptron) {
+        lock (mlpLocker) {
           alglib.mlpprocess(multiLayerPerceptron, x, ref y);
         }
         // find class for with the largest probability value
@@ -148,15 +139,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public override IClassificationSolution CreateClassificationSolution(IClassificationProblemData problemData) {
       return new NeuralNetworkClassificationSolution(this, new ClassificationProblemData(problemData));
     }
-
-    #region events
-    public event EventHandler Changed;
-    private void OnChanged(EventArgs e) {
-      var handlers = Changed;
-      if (handlers != null)
-        handlers(this, e);
-    }
-    #endregion
 
     #region persistence
     [Storable]
