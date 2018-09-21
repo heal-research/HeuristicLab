@@ -24,7 +24,14 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.MathematicalOptimization {
   [Plugin("HeuristicLab.MathematicalOptimization", "Provides support for mathematical optimization based on Google OR-Tools", "3.3.15.$WCREV$")]
   [PluginFile("HeuristicLab.MathematicalOptimization-3.3.dll", PluginFileType.Assembly)]
-  [PluginDependency("HeuristicLab.OrTools", "6.8.0")]
+  [PluginDependency("HeuristicLab.Core", "3.3")]
+  [PluginDependency("HeuristicLab.Collections", "3.3")]
+  [PluginDependency("HeuristicLab.Data", "3.3")]
+  [PluginDependency("HeuristicLab.Optimization", "3.3")]
+  [PluginDependency("HeuristicLab.Optimization.Operators", "3.3")]
+  [PluginDependency("HeuristicLab.Problems.Programmable", "3.3")]
+  [PluginDependency("HeuristicLab.Scripting", "3.3")]
+  [PluginDependency("HeuristicLab.OrTools", "6.9")]
   public class HeuristicLabMathematicalOptimizationPlugin : PluginBase {
   }
 }

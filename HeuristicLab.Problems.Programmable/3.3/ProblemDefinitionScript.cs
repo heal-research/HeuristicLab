@@ -1,4 +1,5 @@
 ﻿#region License Information
+
 /* HeuristicLab
  * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -17,7 +18,8 @@
  * You should have received a copy of the GNU General Public License
  * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
  */
-#endregion
+
+#endregion License Information
 
 using System;
 using System.Linq;
@@ -29,6 +31,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Scripting;
 
 namespace HeuristicLab.Problems.Programmable {
+
   [Item("ProblemDefinitionScript", "Script that defines the parameter vector and evaluates the solution for a programmable problem.")]
   [StorableClass]
   public abstract class ProblemDefinitionScript : Script, IProblemDefinition {
@@ -36,6 +39,7 @@ namespace HeuristicLab.Problems.Programmable {
 
     [Storable]
     private VariableStore variableStore;
+
     public VariableStore VariableStore {
       get { return variableStore; }
     }
@@ -45,15 +49,18 @@ namespace HeuristicLab.Problems.Programmable {
 
     [StorableConstructor]
     protected ProblemDefinitionScript(bool deserializing) : base(deserializing) { }
+
     protected ProblemDefinitionScript(ProblemDefinitionScript original, Cloner cloner)
       : base(original, cloner) {
       variableStore = cloner.Clone(original.variableStore);
       codeChanged = original.codeChanged;
     }
+
     protected ProblemDefinitionScript()
       : base() {
       variableStore = new VariableStore();
     }
+
     protected ProblemDefinitionScript(string code)
       : base(code) {
       variableStore = new VariableStore();
@@ -65,6 +72,7 @@ namespace HeuristicLab.Problems.Programmable {
 
     private readonly object compileLock = new object();
     private volatile IProblemDefinition compiledProblemDefinition;
+
     protected IProblemDefinition CompiledProblemDefinition {
       get {
         // double checked locking pattern
@@ -79,6 +87,7 @@ namespace HeuristicLab.Problems.Programmable {
         return compiledProblemDefinition;
       }
     }
+
     public dynamic Instance {
       get { return compiledProblemDefinition; }
     }
@@ -130,6 +139,7 @@ namespace HeuristicLab.Problems.Programmable {
     }
 
     public event EventHandler ProblemDefinitionChanged;
+
     protected virtual void OnProblemDefinitionChanged() {
       var handler = ProblemDefinitionChanged;
       if (handler != null) handler(this, EventArgs.Empty);
