@@ -116,8 +116,6 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     private void treeView_AfterSelect(object sender, TreeViewEventArgs e) {
       var selectedPermission = (UserGroupBase)e.Node.Tag;
       detailsViewHost.Content = selectedPermission;
-      if (selectedPermission is LightweightUser)
-        detailsViewHost.ViewType = typeof(Access.Views.RefreshableLightweightUserInformationView);
     }
 
     private void treeView_BeforeCheck(object sender, TreeViewCancelEventArgs e) {
