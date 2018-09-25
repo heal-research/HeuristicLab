@@ -21,11 +21,75 @@
 
 using System;
 using System.Windows.Forms;
+using HeuristicLab.MainForm;
+using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Clients.Access.Views {
-  public partial class RefreshableLightweightUserInformationView : RefreshableView {
+  [View("RefreshableLightweightUserInformation View")]
+  [Content(typeof(LightweightUser), false)]
+  public partial class RefreshableLightweightUserInformationView : AsynchronousContentView {
+    public new LightweightUser Content {
+      get { return (LightweightUser)base.Content; }
+      set { base.Content = value; }
+    }
+
     public RefreshableLightweightUserInformationView() {
       InitializeComponent();
+    }
+
+    protected override void OnContentChanged() {
+      base.OnContentChanged();
+      lightweightUserInformationView.Content = Content;
+    }
+
+    protected override void SetEnabledStateOfControls() {
+      base.SetEnabledStateOfControls();
+      refreshButton.Enabled = Content != null;
+    }
+
+    protected override void DeregisterContentEvents() {
+      Refreshing -= new EventHandler(Content_Refreshing);
+      Refreshed -= new EventHandler(Content_Refreshed);
+      base.DeregisterContentEvents();
+    }
+
+    protected override void RegisterContentEvents() {
+      base.RegisterContentEvents();
+      Refreshing += new EventHandler(Content_Refreshing);
+      Refreshed += new EventHandler(Content_Refreshed);
+    }
+
+    protected void Content_Refreshing(object sender, EventArgs e) {
+      if (InvokeRequired) {
+        Invoke(new EventHandler(Content_Refreshing), sender, e);
+      } else {
+        Cursor = Cursors.AppStarting;
+        refreshButton.Enabled = false;
+
+        lightweightUserInformationView.Enabled = false;
+      }
+    }
+
+    protected void Content_Refreshed(object sender, EventArgs e) {
+      if (InvokeRequired) {
+        Invoke(new EventHandler(Content_Refreshed), sender, e);
+      } else {
+        Cursor = Cursors.Default;
+        refreshButton.Enabled = true;
+
+        lightweightUserInformationView.Enabled = true;
+        if (!UserInformation.Instance.UserExists) {
+          MessageBox.Show("Couldn't fetch user information from the server." + Environment.NewLine +
+            "Please verify that you have an existing user and that your user name and password is correct. ", "HeuristicLab Access Service", MessageBoxButtons.OK, MessageBoxIcon.Error);
+          lightweightUserInformationView.Content = null;
+        } else {
+          lightweightUserInformationView.Content = Content;
+        }
+      }
+    }
+
+    void lightweightUserInformationView_Changed(object sender, EventArgs e) {
+      // nothing to do
     }
 
     private void RefreshUserData() {
@@ -33,44 +97,47 @@ namespace HeuristicLab.Clients.Access.Views {
       lightweightUserInformationView.UserInformationChanged += new EventHandler(lightweightUserInformationView_Changed);
     }
 
-    void lightweightUserInformationView_Changed(object sender, EventArgs e) {
-      if (!storeButton.Enabled) storeButton.Enabled = true;
+    private void RefreshData() {
+      ExecuteActionAsync(RefreshUserData, PluginInfrastructure.ErrorHandling.ShowErrorDialog);
     }
 
-    protected override void RefreshData() {
-      Content.ExecuteActionAsync(RefreshUserData, PluginInfrastructure.ErrorHandling.ShowErrorDialog);
+    public void ManualRefresh() {
+      RefreshData();
     }
 
-    protected override void Content_Refreshing(object sender, EventArgs e) {
-      if (InvokeRequired) {
-        Invoke(new EventHandler(Content_Refreshing), sender, e);
-      } else {
-        base.Content_Refreshing(sender, e);
-        lightweightUserInformationView.Enabled = false;
-        storeButton.Enabled = false;
-      }
+    protected void refreshButton_Click(object sender, System.EventArgs e) {
+      RefreshData();
     }
 
-    protected override void Content_Refreshed(object sender, EventArgs e) {
-      if (InvokeRequired) {
-        Invoke(new EventHandler(Content_Refreshed), sender, e);
-      } else {
-        base.Content_Refreshed(sender, e);
-        lightweightUserInformationView.Enabled = true;
-        if (!UserInformation.Instance.UserExists) {
-          MessageBox.Show("Couldn't fetch user information from the server." + Environment.NewLine +
-            "Please verify that you have an existing user and that your user name and password is correct. ", "HeuristicLab Access Service", MessageBoxButtons.OK, MessageBoxIcon.Error);
-          lightweightUserInformationView.Content = null;
-        } else {
-          lightweightUserInformationView.Content = UserInformation.Instance.User;
+    public void ExecuteActionAsync(Action action, Action<Exception> exceptionCallback) {
+      var call = new Func<Exception>(delegate () {
+        try {
+          OnRefreshing();
+          action();
+        } catch (Exception ex) {
+          return ex;
+        } finally {
+          OnRefreshed();
         }
-      }
+        return null;
+      });
+      call.BeginInvoke(delegate (IAsyncResult result) {
+        Exception ex = call.EndInvoke(result);
+        if (ex != null) exceptionCallback(ex);
+      }, null);
     }
 
-    private void storeButton_Click(object sender, EventArgs e) {
-      AccessClient.Instance.ExecuteActionAsync(new Action(delegate {
-        AccessClient.CallAccessService(x => x.UpdateLightweightUser(UserInformation.Instance.User));
-      }), HeuristicLab.PluginInfrastructure.ErrorHandling.ShowErrorDialog);
+    #region Events
+    public event EventHandler Refreshing;
+    private void OnRefreshing() {
+      EventHandler handler = Refreshing;
+      if (handler != null) handler(this, EventArgs.Empty);
     }
+    public event EventHandler Refreshed;
+    private void OnRefreshed() {
+      EventHandler handler = Refreshed;
+      if (handler != null) handler(this, EventArgs.Empty);
+    }
+    #endregion
   }
 }
