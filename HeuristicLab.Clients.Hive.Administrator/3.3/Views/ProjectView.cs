@@ -133,8 +133,10 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       indefiniteCheckBox.Enabled = enabled;
 
       if (Content != null) {
-        var parentProject = HiveAdminClient.Instance.GetAvailableProjectAncestors(Content.Id).LastOrDefault();
-        if (parentProject == null || parentProject.EndDate.HasValue) {
+        //var parentProject = HiveAdminClient.Instance.GetAvailableProjectAncestors(Content.Id).LastOrDefault();
+        var parentProject = HiveAdminClient.Instance.Projects.FirstOrDefault(x => x.Id == Content.ParentProjectId);
+        if ((!IsAdmin() && (parentProject == null || parentProject.EndDate.HasValue))
+           || (IsAdmin() && parentProject != null && parentProject.EndDate.HasValue)) {
           indefiniteCheckBox.Enabled = false;
         }
 
