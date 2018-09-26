@@ -77,9 +77,9 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
         treeView.Nodes.Clear();
         detailsViewHost.Content = null;
       } else {
-        UpdatePermissionList();
-        detailsViewHost.ActiveView.Locked = true;
+        UpdatePermissionList();        
       }
+      SetEnabledStateOfControls();
     }
 
     protected override void SetEnabledStateOfControls() {
@@ -89,6 +89,11 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       inheritButton.Enabled = enabled;
       saveButton.Enabled = enabled;
       treeView.Enabled = enabled;
+
+      if (detailsViewHost != null) {
+        detailsViewHost.Locked = true;
+      }
+
     }
     #endregion
 

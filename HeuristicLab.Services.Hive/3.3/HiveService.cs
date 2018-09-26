@@ -1241,7 +1241,7 @@ namespace HeuristicLab.Services.Hive {
           bool isParent = parentProjects.Select(x => x.OwnerUserId == UserManager.CurrentUserId).Any();
 
           var assignedResources = project.AssignedProjectResources.Select(x => x.ResourceId).ToArray();
-          if (!isParent) resourceIds = assignedResources.ToList();
+          if (!isParent && !isAdmin) resourceIds = assignedResources.ToList();
           var removedAssignments = assignedResources.Except(resourceIds);
 
           // if user is admin or owner of parent project(s)

@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using HeuristicLab.Collections;
@@ -45,7 +46,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       this.itemsListView.HeaderStyle = ColumnHeaderStyle.Clickable;
       this.itemsListView.FullRowSelect = true;
 
-      this.itemsListView.ListViewItemSorter = new ListViewItemComparer(new int[] { 2, 0 }, new SortOrder[] { SortOrder.Ascending, SortOrder.Ascending });
+      this.itemsListView.ListViewItemSorter = new ListViewItemComparer(new int[] { 2, 0 }, new SortOrder[] { SortOrder.Ascending, SortOrder.Ascending });      
 
       foreach (ColumnHeader c in this.itemsListView.Columns) {
         c.AutoResize(ColumnHeaderAutoResizeStyle.HeaderSize);
@@ -62,7 +63,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       ((ListViewItemComparer)itemsListView.ListViewItemSorter).Orders[1] = sortOrder;
       itemsListView.Sorting = sortOrder;
       itemsListView.Sort();
-      //AdjustListViewColumnSizes();
+      AdjustListViewColumnSizes();
     }
 
     protected override RefreshableJob CreateItem() {

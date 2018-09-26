@@ -44,6 +44,7 @@ namespace HeuristicLab.Clients.Access.Views {
 
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
+      this.Locked = true;
       refreshButton.Enabled = Content != null;
     }
 
