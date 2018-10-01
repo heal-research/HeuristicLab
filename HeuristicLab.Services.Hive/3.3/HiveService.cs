@@ -354,9 +354,15 @@ namespace HeuristicLab.Services.Hive {
 
         return pm.UseTransaction(() => {
           // check if user is granted to administer the requested projectId
-          var administrationGrantedProjects = projectDao
-            .GetAdministrationGrantedProjectsForUser(currentUserId)
-            .ToList();
+          bool isAdmin = RoleVerifier.IsInRole(HiveRoles.Administrator);
+          List<DA.Project> administrationGrantedProjects;
+          if (isAdmin) {
+            administrationGrantedProjects = projectDao.GetAll().ToList();
+          } else {
+            administrationGrantedProjects = projectDao
+              .GetAdministrationGrantedProjectsForUser(currentUserId)              
+              .ToList();
+          }
 
           if (administrationGrantedProjects.Select(x => x.ProjectId).Contains(projectId)) {
             var jobs = jobDao.GetByProjectId(projectId)
@@ -381,10 +387,16 @@ namespace HeuristicLab.Services.Hive {
         var jobDao = pm.JobDao;
         return pm.UseTransaction(() => {
           // check for which of requested projectIds the user is granted to administer
-          var administrationGrantedProjectIds = projectDao
-            .GetAdministrationGrantedProjectsForUser(currentUserId)
-            .Select(x => x.ProjectId)
-            .ToList();
+          bool isAdmin = RoleVerifier.IsInRole(HiveRoles.Administrator);
+          List<Guid> administrationGrantedProjectIds;
+          if (isAdmin) {
+            administrationGrantedProjectIds = projectDao.GetAll().Select(x => x.ProjectId).ToList();
+          } else {
+            administrationGrantedProjectIds = projectDao
+              .GetAdministrationGrantedProjectsForUser(currentUserId)
+              .Select(x => x.ProjectId)
+              .ToList();
+          }
           var requestedAndGrantedProjectIds = projectIds.Intersect(administrationGrantedProjectIds);
 
           if (requestedAndGrantedProjectIds.Any()) {
