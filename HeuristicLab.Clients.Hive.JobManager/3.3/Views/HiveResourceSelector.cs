@@ -283,7 +283,6 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
           e.Cancel = true;
         }
       }
-
     }
 
     private void resourcesTreeView_BeforeCheck(object sender, TreeViewCancelEventArgs e) {

@@ -133,6 +133,18 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       } 
     }
 
+    private async void startButton_Click(object sender, EventArgs e) {
+      throw new NotImplementedException();
+    }
+
+    private async void pauseButton_Click(object sender, EventArgs e) {
+      throw new NotImplementedException();
+    }
+
+    private async void stopButton_Click(object sender, EventArgs e) {
+      throw new NotImplementedException();
+    }
+
     #endregion Event Handlers
 
     #region Helpers
@@ -197,6 +209,22 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
           removeButton.Enabled = false;
           matrixView.Content = null;
         }
+      }
+    }
+
+    private void PauseJobs(List<Guid> jobIds) {
+      try {
+        // TODO
+      } catch (AnonymousUserException) {
+        ShowHiveInformationDialog();
+      }
+    }
+
+    private void StopJobs(List<Guid> jobIds) {
+      try {
+        // TODO
+      } catch (AnonymousUserException) {
+        ShowHiveInformationDialog();
       }
     }
 

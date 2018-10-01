@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System.Windows.Forms;
 using HeuristicLab.Data.Views;
 
 namespace HeuristicLab.Clients.Hive.Administrator.Views {
@@ -49,6 +50,9 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       this.components = new System.ComponentModel.Container();
       this.refreshButton = new System.Windows.Forms.Button();
       this.removeButton = new System.Windows.Forms.Button();
+      this.startButton = new System.Windows.Forms.Button();
+      this.stopButton = new System.Windows.Forms.Button();
+      this.pauseButton = new System.Windows.Forms.Button();
       this.matrixView = new HeuristicLab.Data.Views.StringConvertibleMatrixView();
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
       this.SuspendLayout();
@@ -74,6 +78,43 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       this.toolTip.SetToolTip(this.removeButton, "Delete job(s)");
       this.removeButton.UseVisualStyleBackColor = true;
       this.removeButton.Click += new System.EventHandler(this.removeButton_Click);
+      // 
+      // startButton
+      // 
+      this.startButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.startButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Play;
+      this.startButton.Location = new System.Drawing.Point(0, 564);
+      this.startButton.Name = "startButton";
+      this.startButton.Size = new System.Drawing.Size(24, 24);
+      this.startButton.TabIndex = 4;
+      this.toolTip.SetToolTip(this.startButton, "Resume job(s)");
+      this.startButton.UseVisualStyleBackColor = true;
+      this.startButton.Click += new System.EventHandler(this.startButton_Click);
+      // 
+      // pauseButton
+      // 
+      this.pauseButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.pauseButton.Enabled = false;
+      this.pauseButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Pause;
+      this.pauseButton.Location = new System.Drawing.Point(30, 564);
+      this.pauseButton.Name = "pauseButton";
+      this.pauseButton.Size = new System.Drawing.Size(24, 24);
+      this.pauseButton.TabIndex = 5;
+      this.toolTip.SetToolTip(this.pauseButton, "Pause job(s)");
+      this.pauseButton.UseVisualStyleBackColor = true;
+      this.pauseButton.Click += new System.EventHandler(this.pauseButton_Click);
+      // 
+      // stopButton
+      // 
+      this.stopButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.stopButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Stop;
+      this.stopButton.Location = new System.Drawing.Point(60, 564);
+      this.stopButton.Name = "stopButton";
+      this.stopButton.Size = new System.Drawing.Size(24, 24);
+      this.stopButton.TabIndex = 6;
+      this.toolTip.SetToolTip(this.stopButton, "Stop job(s)");
+      this.stopButton.UseVisualStyleBackColor = true;
+      this.stopButton.Click += new System.EventHandler(this.stopButton_Click);
       // 
       // matrixView
       // 
@@ -109,6 +150,9 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     private System.Windows.Forms.ToolTip toolTip;
     private System.Windows.Forms.Button refreshButton;
     private System.Windows.Forms.Button removeButton;
+    private System.Windows.Forms.Button startButton;
+    private System.Windows.Forms.Button stopButton;
+    private System.Windows.Forms.Button pauseButton;
     private StringConvertibleMatrixView matrixView;
   }
 }
