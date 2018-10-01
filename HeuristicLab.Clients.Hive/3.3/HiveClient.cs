@@ -323,6 +323,15 @@ namespace HeuristicLab.Clients.Hive {
       var assignedProjectResources = HiveServiceLocator.Instance.CallHiveService(s => s.GetAssignedResourcesForProject(id));
       return resources.Where(x => assignedProjectResources.Select(y => y.ResourceId).Contains(x.Id));
     }
+
+    public IEnumerable<Resource> GetDisabledResourceAncestors(IEnumerable<Resource> availableResources) {
+      var missingParentIds = availableResources
+        .Where(x => x.ParentResourceId.HasValue)
+        .SelectMany(x => resourceAncestors[x.Id]).Distinct()
+        .Where(x => !availableResources.Select(y => y.Id).Contains(x));
+
+      return resources.OfType<SlaveGroup>().Union(disabledParentResources).Where(x => missingParentIds.Contains(x.Id));
+    }
     #endregion
 
     #region Store

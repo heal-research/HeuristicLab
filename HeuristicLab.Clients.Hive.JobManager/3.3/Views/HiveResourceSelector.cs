@@ -262,26 +262,24 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
     private void resourcesTreeView_MouseDown(object sender, MouseEventArgs e) {
       var node = resourcesTreeView.GetNodeAt(new Point(e.X, e.Y));
 
-      if (node == null || node == additionalNode) {
+      if (node == null && e.Button == MouseButtons.Left) {
         resourcesTreeView.SelectedNode = null;
         ExtractStatistics();
-      } else {
-        var r = (Resource)node.Tag;
-        if (!HiveClient.Instance.DisabledParentResources.Contains(r)) {
-          ExtractStatistics((Resource)node.Tag);
-        } else {
-          resourcesTreeView.SelectedNode = null;
-          ExtractStatistics();
-        } 
       }
     }
 
     private void resourcesTreeView_BeforeSelect(object sender, TreeViewCancelEventArgs e) {
-      if(e.Node == null || e.Node == additionalNode) {
+      if(e.Node == null) {
+        e.Cancel = true;
+        resourcesTreeView.SelectedNode = null;
+        ExtractStatistics();
+      } else if (e.Node == additionalNode) {
         e.Cancel = true;
       } else {
         var r = (Resource)e.Node.Tag;
-        if(r == null || HiveClient.Instance.DisabledParentResources.Contains(r)) {
+        if(r != null && !HiveClient.Instance.DisabledParentResources.Contains(r)) {
+          ExtractStatistics(r);
+        } else {
           e.Cancel = true;
         }
       }
@@ -298,11 +296,6 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
           || HiveClient.Instance.DisabledParentResources.Contains(checkedResource)
           || newIncludedResources.Contains(checkedResource)) {
           e.Cancel = true;
-
-          var selectedNode = resourcesTreeView.SelectedNode;
-          var selectedResource = (Resource)(selectedNode != null ? selectedNode.Tag : null);
-
-          ExtractStatistics(selectedResource);
         }
       }
     }
@@ -316,7 +309,8 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       }
 
       UpdateResourceTreeAfterCheck();
-      ExtractStatistics();
+      if(resourcesTreeView.SelectedNode == null)
+        ExtractStatistics();
       OnAssignedResourcesChanged();
     }
 
@@ -547,7 +541,8 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       resourcesTreeView.BeforeCheck -= resourcesTreeView_BeforeCheck;
       resourcesTreeView.AfterCheck -= resourcesTreeView_AfterCheck;
 
-      var disabledParentResources = HiveClient.Instance.DisabledParentResources;
+      //var disabledParentResources = HiveClient.Instance.DisabledParentResources;
+      var disabledParentResources = HiveClient.Instance.GetDisabledResourceAncestors(resources);
       var mainResources = new HashSet<Resource>(resources.OfType<SlaveGroup>().Where(x => x.ParentResourceId == null));
       //var parentedMainResources = new HashSet<Resource>(resources.OfType<SlaveGroup>()
       //  .Where(x => x.ParentResourceId.HasValue && !resources.Select(y => y.Id).Contains(x.ParentResourceId.Value)));

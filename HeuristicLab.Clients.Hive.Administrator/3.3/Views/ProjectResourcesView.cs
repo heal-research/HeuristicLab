@@ -85,10 +85,9 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       } else {
         UpdateAssignedResources();
         UpdateIncludedResources();
-        var top = BuildResourceTree();
-        detailsViewHost.Content = top;
-        detailsViewHost.Locked = true;
+        detailsViewHost.Content = BuildResourceTree();
       }
+      SetEnabledStateOfControls();
     }
 
     protected override void SetEnabledStateOfControls() {
@@ -98,6 +97,10 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       inheritButton.Enabled = enabled;
       saveButton.Enabled = enabled;
       treeView.Enabled = enabled;
+
+      if (detailsViewHost != null) {
+        detailsViewHost.Locked = true;
+      }
     }
     #endregion
 

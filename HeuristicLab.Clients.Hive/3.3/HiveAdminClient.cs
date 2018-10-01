@@ -25,6 +25,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using System.Collections.Generic;
 using System.Linq;
+using HeuristicLab.Clients.Access;
 
 namespace HeuristicLab.Clients.Hive {
   [Item("Hive Administrator", "Hive Administrator")]
@@ -437,6 +438,15 @@ namespace HeuristicLab.Clients.Hive {
       else return Enumerable.Empty<Resource>();
     }
 
+    public IEnumerable<Resource> GetDisabledResourceAncestors(IEnumerable<Resource> availableResources) {
+      var missingParentIds = availableResources
+        .Where(x => x.ParentResourceId.HasValue)
+        .SelectMany(x => resourceAncestors[x.Id]).Distinct()
+        .Where(x => !availableResources.Select(y => y.Id).Contains(x));
+
+      return resources.OfType<SlaveGroup>().Union(disabledParentResources).Where(x => missingParentIds.Contains(x.Id));
+    }
+
     public bool CheckAccessToAdminAreaGranted() {
       if(projects != null) {
         return projects.Count > 0;
@@ -477,7 +487,13 @@ namespace HeuristicLab.Clients.Hive {
       if (pro == null || userId == Guid.Empty) return false;
 
       if(projectAncestors.ContainsKey(pro.Id)) {
-        return GetAvailableProjectAncestors(pro.Id).Where(x => x.OwnerUserId == userId).Any();
+        return GetAvailableProjectAncestors(pro.Id).Any(x => x.OwnerUserId == userId);
+      }
+
+      if (pro.ParentProjectId != null && pro.ParentProjectId != Guid.Empty) {
+        var parent = projects.FirstOrDefault(x => x.Id == pro.ParentProjectId.Value);
+        if (parent != null)
+          return parent.OwnerUserId == userId || GetAvailableProjectAncestors(parent.Id).Any(x => x.OwnerUserId == userId);
       }
 
       return false;
@@ -490,9 +506,15 @@ namespace HeuristicLab.Clients.Hive {
       // ... if the moved project is null
       // ... or the new parent is not stored yet
       // ... or there is not parental change
-      if (child == null 
-        || (parent != null && parent.Id == Guid.Empty)
-        || (parent != null && parent.Id == child.ParentProjectId)) {
+      if (child == null
+          || (parent != null && parent.Id == Guid.Empty)
+          || (parent != null && parent.Id == child.ParentProjectId)) {
+        changePossible = false;
+      } else if (parent == null && !IsAdmin()) {
+        // ... if parent is null, but user is no admin (only admins are allowed to create root projects)
+        changePossible = false;
+      } else if (parent != null && (!IsAdmin() && parent.OwnerUserId != UserInformation.Instance.User.Id && !CheckOwnershipOfParentProject(parent, UserInformation.Instance.User.Id))) {
+        // ... if the user is no admin nor owner of the new parent or grand..grandparents
         changePossible = false;
       } else if(parent != null && projectDescendants.ContainsKey(child.Id)) {
         // ... if the new parent is among the moved project's descendants
@@ -523,6 +545,10 @@ namespace HeuristicLab.Clients.Hive {
       }
 
       return changePossible;
+    }
+
+    private bool IsAdmin() {
+      return HiveRoles.CheckAdminUserPermissions();
     }
     #endregion
   }

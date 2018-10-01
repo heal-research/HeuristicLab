@@ -42,6 +42,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     private const string SELECTED_TAG = ""; // " [selected]";
     private const string NOT_STORED_TAG = "*"; // " [not stored]";
     private const string CHANGES_NOT_STORED_TAG = "*"; // " [changes not stored]";
+    private const string INACTIVE_TAG = " [inactive]"; 
 
     private readonly Color selectedBackColor = Color.DodgerBlue;
     private readonly Color selectedForeColor = Color.White;
@@ -475,10 +476,17 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
 
       if (HiveAdminClient.Instance.DisabledParentProjects.Select(x => x.Id).Contains(p.Id)) {
         n.ForeColor = grayTextColor;
-      } else if (p.Id == Guid.Empty) {
-        n.Text += NOT_STORED_TAG;
-      } else if (p.Modified) {
-        n.Text += CHANGES_NOT_STORED_TAG;
+      } else {
+        if (p.Id == Guid.Empty) {
+          n.Text += NOT_STORED_TAG;
+        } else if (p.Modified) {
+          n.Text += CHANGES_NOT_STORED_TAG;
+        }
+
+        if (!IsActive(p)) {
+          n.ForeColor = grayTextColor;
+          n.Text += INACTIVE_TAG;
+        }
       }
     }
 
@@ -533,6 +541,12 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       } catch (AnonymousUserException) {
         ShowHiveInformationDialog();
       }
+    }
+
+    private bool IsActive(Project project) {
+      return DateTime.Now >= project.StartDate
+             && (project.EndDate == null
+                 || DateTime.Now < project.EndDate.Value);
     }
 
     private bool IsAuthorized(Project project) {

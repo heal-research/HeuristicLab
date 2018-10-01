@@ -28,14 +28,14 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
       this.tabAdmin = new System.Windows.Forms.TabControl();
-      this.tabSlaves = new System.Windows.Forms.TabPage();
+      this.tabResources = new System.Windows.Forms.TabPage();
       this.resourcesView = new HeuristicLab.Clients.Hive.Administrator.Views.ResourcesView();
-      this.tabPage1 = new System.Windows.Forms.TabPage();
+      this.tabProjects = new System.Windows.Forms.TabPage();
       this.imageListUsers = new System.Windows.Forms.ImageList(this.components);
       this.projectsView = new HeuristicLab.Clients.Hive.Administrator.Views.ProjectsView();
       this.tabAdmin.SuspendLayout();
-      this.tabSlaves.SuspendLayout();
-      this.tabPage1.SuspendLayout();
+      this.tabResources.SuspendLayout();
+      this.tabProjects.SuspendLayout();
       this.SuspendLayout();
       // 
       // tabAdmin
@@ -43,24 +43,24 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       this.tabAdmin.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.tabAdmin.Controls.Add(this.tabSlaves);
-      this.tabAdmin.Controls.Add(this.tabPage1);
+      this.tabAdmin.Controls.Add(this.tabResources);
+      this.tabAdmin.Controls.Add(this.tabProjects);
       this.tabAdmin.Location = new System.Drawing.Point(3, 0);
       this.tabAdmin.Name = "tabAdmin";
       this.tabAdmin.SelectedIndex = 0;
       this.tabAdmin.Size = new System.Drawing.Size(742, 546);
       this.tabAdmin.TabIndex = 0;
       // 
-      // tabSlaves
+      // tabResources
       // 
-      this.tabSlaves.Controls.Add(this.resourcesView);
-      this.tabSlaves.Location = new System.Drawing.Point(4, 22);
-      this.tabSlaves.Name = "tabSlaves";
-      this.tabSlaves.Padding = new System.Windows.Forms.Padding(3);
-      this.tabSlaves.Size = new System.Drawing.Size(734, 520);
-      this.tabSlaves.TabIndex = 3;
-      this.tabSlaves.Text = "Slaves";
-      this.tabSlaves.UseVisualStyleBackColor = true;
+      this.tabResources.Controls.Add(this.resourcesView);
+      this.tabResources.Location = new System.Drawing.Point(4, 22);
+      this.tabResources.Name = "tabResources";
+      this.tabResources.Padding = new System.Windows.Forms.Padding(3);
+      this.tabResources.Size = new System.Drawing.Size(734, 520);
+      this.tabResources.TabIndex = 3;
+      this.tabResources.Text = "Resources";
+      this.tabResources.UseVisualStyleBackColor = true;
       // 
       // resourcesView
       // 
@@ -75,15 +75,15 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       this.resourcesView.Size = new System.Drawing.Size(734, 520);
       this.resourcesView.TabIndex = 0;
       // 
-      // tabPage1
+      // tabProjects
       // 
-      this.tabPage1.Controls.Add(this.projectsView);
-      this.tabPage1.Location = new System.Drawing.Point(4, 22);
-      this.tabPage1.Name = "tabPage1";
-      this.tabPage1.Size = new System.Drawing.Size(734, 520);
-      this.tabPage1.TabIndex = 4;
-      this.tabPage1.Text = "Projects";
-      this.tabPage1.UseVisualStyleBackColor = true;
+      this.tabProjects.Controls.Add(this.projectsView);
+      this.tabProjects.Location = new System.Drawing.Point(4, 22);
+      this.tabProjects.Name = "tabProjects";
+      this.tabProjects.Size = new System.Drawing.Size(734, 520);
+      this.tabProjects.TabIndex = 4;
+      this.tabProjects.Text = "Projects";
+      this.tabProjects.UseVisualStyleBackColor = true;
       // 
       // imageListUsers
       // 
@@ -111,8 +111,8 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       this.Name = "HiveAdministratorView";
       this.Size = new System.Drawing.Size(745, 546);
       this.tabAdmin.ResumeLayout(false);
-      this.tabSlaves.ResumeLayout(false);
-      this.tabPage1.ResumeLayout(false);
+      this.tabResources.ResumeLayout(false);
+      this.tabProjects.ResumeLayout(false);
       this.ResumeLayout(false);
 
     }
@@ -121,8 +121,8 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
 
     private System.ComponentModel.IContainer components;
     private System.Windows.Forms.ImageList imageListUsers;
-    private System.Windows.Forms.TabPage tabSlaves;
-    private System.Windows.Forms.TabPage tabPage1;
+    private System.Windows.Forms.TabPage tabResources;
+    private System.Windows.Forms.TabPage tabProjects;
     private ProjectsView projectsView;
   }
 }
