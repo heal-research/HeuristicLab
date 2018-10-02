@@ -138,6 +138,7 @@
     </Compile>
     <Compile Include="Converters\LinearModelToTreeConverter.cs" />
     <Compile Include="Converters\TreeSimplifier.cs" />
+    <Compile Include="Converters\DerivativeCalculator.cs" />
     <Compile Include="Converters\TreeToAutoDiffTermConverter.cs" />
     <Compile Include="Formatters\InfixExpressionFormatter.cs" />
     <Compile Include="Formatters\TSQLExpressionFormatter.cs" />
