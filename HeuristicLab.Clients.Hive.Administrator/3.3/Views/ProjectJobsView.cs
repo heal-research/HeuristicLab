@@ -23,12 +23,14 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.Core.Views;
 using HeuristicLab.Data;
 using HeuristicLab.Clients.Hive.Views;
+using HeuristicLab.Core;
 
 namespace HeuristicLab.Clients.Hive.Administrator.Views {
   [View("ProjectView")]
@@ -40,17 +42,26 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     private const string JOB_OWNERID = "Owner Id";
     private const string JOB_DATECREATED = "Date Created";
     private const string JOB_STATE = "State";
+    private const string JOB_EXECUTIONSTATE = "Execution State";
     private const string JOB_DESCRIPTION = "Description";
     private const string JOB_TASKCOUNT = "Tasks";
     private const string JOB_CALCULATINGTASKCOUNT = "Calculating";
     private const string JOB_FINISHEDTASKCOUNT = "Finished";
-
 
     private readonly Color onlineStatusColor = Color.FromArgb(255, 189, 249, 143); // #bdf98f
     private readonly Color onlineStatusColor2 = Color.FromArgb(255, 157, 249, 143); // #9df98f
     private readonly Color statisticsPendingStatusColor = Color.FromArgb(255, 249, 210, 145); // #f9d291
     private readonly Color deletionPendingStatusColor = Color.FromArgb(255, 249, 172, 144); // #f9ac90
     private readonly Color deletionPendingStatusColor2 = Color.FromArgb(255, 249, 149, 143); // #f9958f
+
+    private IProgress progress;
+    public IProgress Progress {
+      get { return progress; }
+      set {
+        this.progress = value;
+        OnIsProgressingChanged();
+      }
+    }
 
     public new Project Content {
       get { return (Project)base.Content; }
@@ -59,20 +70,25 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
 
     public ProjectJobsView() {
       InitializeComponent();
+      progress = new Progress();
 
-      removeButton.Enabled = false;
+      removeButton.Enabled = false;      
+    }
+
+    protected override void RegisterContentEvents() {
+      base.RegisterContentEvents();
       matrixView.DataGridView.SelectionChanged += DataGridView_SelectionChanged;
+      MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().AddOperationProgressToView(this, progress);
+    }
+
+    protected override void DeregisterContentEvents() {
+      matrixView.DataGridView.SelectionChanged -= DataGridView_SelectionChanged;
+      MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().RemoveOperationProgressFromView(this, false);
+      base.DeregisterContentEvents();
     }
 
     private void DataGridView_SelectionChanged(object sender, EventArgs e) {
-      if (matrixView.DataGridView.SelectedRows == null || matrixView.DataGridView.SelectedRows.Count == 0) return;
-
-      bool anyDeletable = false;
-      foreach (DataGridViewRow r in matrixView.DataGridView.SelectedRows) {
-        if (((string)r.Cells[0].Value) == JobState.Online.ToString()) anyDeletable = true;
-      }
-
-      removeButton.Enabled = anyDeletable;
+      SetEnabledStateOfControls();
     }
 
     #region Overrides
@@ -80,15 +96,39 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       base.OnContentChanged();
       removeButton.Enabled = false;
       UpdateJobs();
+      SetEnabledStateOfControls();
     }
+
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
       bool enabled = Content != null && !Locked && !ReadOnly;
 
-      refreshButton.Enabled = enabled;
-      removeButton.Enabled = false;
       matrixView.Enabled = enabled;
+
+      // Buttons (start/resume, pause, stop, remove)
+      refreshButton.Enabled = startButton.Enabled = pauseButton.Enabled = stopButton.Enabled = removeButton.Enabled = false;
+
+      if (enabled && progress.ProgressState != ProgressState.Started) {
+        var jobs = GetSelectedJobs().ToList();
+        if (jobs.Any()) {
+
+          // TODO: include isControllable?!
+          startButton.Enabled = jobs.All(x =>
+            !x.IsProgressing && x.HiveTasks != null && x.HiveTasks.Count > 0
+            && x.Job.ProjectId != null && x.Job.ProjectId != Guid.Empty && x.Job.ResourceIds != null && x.Job.ResourceIds.Any()
+            && (x.ExecutionState == ExecutionState.Prepared || x.ExecutionState == ExecutionState.Paused));
+          pauseButton.Enabled = jobs.All(x => !x.IsProgressing && x.ExecutionState == ExecutionState.Started);
+          stopButton.Enabled = jobs.All(x => !x.IsProgressing && (x.ExecutionState == ExecutionState.Started || x.ExecutionState == ExecutionState.Paused));
+          removeButton.Enabled = jobs.All(x => !x.IsProgressing && x.Job.State == JobState.Online);
+        }
+      }
+
+      // refresh Button
+      if (Content != null && !Locked && progress.ProgressState != ProgressState.Started) {
+        refreshButton.Enabled = true;
+      }
     }
+
     #endregion Overrides
 
     #region Event Handlers
@@ -97,60 +137,166 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     }
 
     private void refreshButton_Click(object sender, EventArgs e) {
-      RefreshJobs();
+      var task = System.Threading.Tasks.Task.Factory.StartNew(RefreshJobsAsync);
+      progress.Start("Refreshing jobs...");
+      SetEnabledStateOfControls();
+
+      task.ContinueWith((t) => {
+        matrixView.DataGridView.ClearSelection();
+      });
     }
 
-    private async void removeButton_Click(object sender, EventArgs e) {
-      if (matrixView.DataGridView.SelectedRows == null || matrixView.DataGridView.SelectedRows.Count == 0) return;
+    private void removeButton_Click(object sender, EventArgs e) {
+      var jobs = GetSelectedJobs();
 
-      var jobNamesToDelete = new List<string>();
-      var jobIdsToDelete = new List<Guid>();
-      foreach (DataGridViewRow r in matrixView.DataGridView.SelectedRows) {
-        if(((string)r.Cells[0].Value) == JobState.Online.ToString()) {
-          jobNamesToDelete.Add(" - " + ((string)r.Cells[3].Value));
-          jobIdsToDelete.Add(Guid.Parse((string)r.Cells[8].Value));
+      if (jobs.Any()) {
+        var result = MessageBox.Show("Do you really want to remove following job(s):\n\n"
+                                     + String.Join("\n", jobs.Select(x => x.Job.Name)),
+          "HeuristicLab Hive Administrator",
+          MessageBoxButtons.YesNo,
+          MessageBoxIcon.Question);
+
+        if (result == DialogResult.Yes) {          
+          var task = System.Threading.Tasks.Task.Factory.StartNew(RemoveJobsAsync, jobs);
+          progress.Start();
+          SetEnabledStateOfControls();
+
+          task.ContinueWith((t) => {
+            matrixView.DataGridView.ClearSelection();
+            RefreshJobs();
+            progress.Finish();
+          }, TaskContinuationOptions.NotOnFaulted);
+
+          task.ContinueWith((t) => {
+            matrixView.DataGridView.ClearSelection();
+            RefreshJobs();
+            progress.Finish();
+            MessageBox.Show("An error occured removing the job(s). " + t.Exception.Message, "HeuristicLab Hive Administrator", MessageBoxButtons.OK, MessageBoxIcon.Error);
+          }, TaskContinuationOptions.OnlyOnFaulted);
         }
       }
+    }
 
-      if(jobIdsToDelete.Any()) {
-        var result = MessageBox.Show("Do you really want to remove following job(s):\n\n"
-          + String.Join("\n", jobNamesToDelete),
+    private void startButton_Click(object sender, EventArgs e) {
+      var jobs = GetSelectedJobs();
+
+      if (jobs.Any()) {
+        var result = MessageBox.Show("Do you really want to resume following job(s):\n\n"
+                                     + String.Join("\n", jobs.Select(x => x.Job.Name)),
           "HeuristicLab Hive Administrator",
           MessageBoxButtons.YesNo,
           MessageBoxIcon.Question);
 
         if (result == DialogResult.Yes) {
-          await SecurityExceptionUtil.TryAsyncAndReportSecurityExceptions(
-            action: () => {
-              DeleteJobs(jobIdsToDelete);
-            },
-            finallyCallback: () => {
-              matrixView.DataGridView.ClearSelection();
-              removeButton.Enabled = false;
-              RefreshJobs();
-            });
+          var task = System.Threading.Tasks.Task.Factory.StartNew(ResumeJobsAsync, jobs);
+          progress.Start();
+          SetEnabledStateOfControls();
+
+          task.ContinueWith((t) => {
+            matrixView.DataGridView.ClearSelection();
+            RefreshJobs();
+            progress.Finish();
+          });
+
+          task.ContinueWith((t) => {
+            matrixView.DataGridView.ClearSelection();
+            RefreshJobs();
+            progress.Finish();
+            MessageBox.Show("An error occured resuming the job(s).", "HeuristicLab Hive Administrator", MessageBoxButtons.OK, MessageBoxIcon.Error);
+          }, TaskContinuationOptions.OnlyOnFaulted);
         }
-      } 
+      }
     }
 
-    private async void startButton_Click(object sender, EventArgs e) {
-      throw new NotImplementedException();
+    private void pauseButton_Click(object sender, EventArgs e) {
+      var jobs = GetSelectedJobs();
+
+      if (jobs.Any()) {
+        var result = MessageBox.Show("Do you really want to pause following job(s):\n\n"
+                                     + String.Join("\n", jobs.Select(x => x.Job.Name)),
+          "HeuristicLab Hive Administrator",
+          MessageBoxButtons.YesNo,
+          MessageBoxIcon.Question);
+
+        if (result == DialogResult.Yes) {
+          var task = System.Threading.Tasks.Task.Factory.StartNew(PauseJobsAsync, jobs);
+          progress.Start();
+          SetEnabledStateOfControls();
+
+          task.ContinueWith((t) => {
+            matrixView.DataGridView.ClearSelection();
+            RefreshJobs();
+            progress.Finish();
+          });
+
+          task.ContinueWith((t) => {
+            matrixView.DataGridView.ClearSelection();
+            RefreshJobs();
+            progress.Finish();
+            MessageBox.Show("An error occured pausing the job(s).", "HeuristicLab Hive Administrator", MessageBoxButtons.OK, MessageBoxIcon.Error);
+          }, TaskContinuationOptions.OnlyOnFaulted);
+        }
+      }
     }
 
-    private async void pauseButton_Click(object sender, EventArgs e) {
-      throw new NotImplementedException();
+    private void stopButton_Click(object sender, EventArgs e) {
+      var jobs = GetSelectedJobs();
+
+      if (jobs.Any()) {
+        var result = MessageBox.Show("Do you really want to stop following job(s):\n\n"
+                                     + String.Join("\n", jobs.Select(x => x.Job.Name)),
+          "HeuristicLab Hive Administrator",
+          MessageBoxButtons.YesNo,
+          MessageBoxIcon.Question);
+
+        if (result == DialogResult.Yes) {
+          var task = System.Threading.Tasks.Task.Factory.StartNew(StopJobsAsync, jobs);
+          progress.Start();
+          SetEnabledStateOfControls();
+
+          task.ContinueWith((t) => {
+            matrixView.DataGridView.ClearSelection();
+            RefreshJobs();
+            progress.Finish();
+          });
+
+          task.ContinueWith((t) => {
+            matrixView.DataGridView.ClearSelection();
+            RefreshJobs();
+            progress.Finish();
+            MessageBox.Show("An error occured stopping the job(s).", "HeuristicLab Hive Administrator", MessageBoxButtons.OK, MessageBoxIcon.Error);            
+          }, TaskContinuationOptions.OnlyOnFaulted);
+        }
+      }
     }
 
-    private async void stopButton_Click(object sender, EventArgs e) {
-      throw new NotImplementedException();
+    public event EventHandler IsProgressingChanged;
+    private void OnIsProgressingChanged() {
+      var handler = IsProgressingChanged;
+      if (handler != null) handler(this, EventArgs.Empty);
     }
-
     #endregion Event Handlers
 
     #region Helpers
+
+    private IEnumerable<RefreshableJob> GetSelectedJobs() {
+      if (Content == null || matrixView.DataGridView.SelectedRows == null || matrixView.DataGridView.SelectedRows.Count == 0)
+        return Enumerable.Empty<RefreshableJob>() ;
+
+      var jobs = new List<RefreshableJob>();
+      foreach (DataGridViewRow r in matrixView.DataGridView.SelectedRows) {
+        if (((string)r.Cells[0].Value) == JobState.Online.ToString()) {
+          jobs.Add(HiveAdminClient.Instance.Jobs[Content.Id].FirstOrDefault(x => x.Id == Guid.Parse((string) r.Cells[9].Value)));
+        }
+      }
+
+      return jobs;
+    }
+
     private void RefreshJobs() {
       HiveAdminClient.Instance.RefreshJobs();
       UpdateJobs();
+      SetEnabledStateOfControls();
     }
 
     private StringMatrix CreateValueMatrix() {
@@ -159,25 +305,25 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
 
       var jobs = HiveAdminClient.Instance.Jobs[Content.Id];
       var resources = HiveAdminClient.Instance.Resources;
-      string[,] values = new string[jobs.Count, 10];
+      string[,] values = new string[jobs.Count, 11];
 
       for(int i = 0; i < jobs.Count; i++) {
-        var job = jobs.ElementAt(i);
-        
-        values[i, 0] = job.State.ToString();
-        values[i, 1] = job.DateCreated.ToString();
-        values[i, 2] = job.OwnerUsername;
-        values[i, 3] = job.Name;
-        values[i, 4] = job.JobCount.ToString();
-        values[i, 5] = job.CalculatingCount.ToString();
-        values[i, 6] = job.FinishedCount.ToString();
-        values[i, 7] = job.Description;        
-        values[i, 8] = job.Id.ToString();
-        values[i, 9] = job.OwnerUserId.ToString();
+        var job = jobs.ElementAt(i);        
+        values[i, 0] = job.Job.State.ToString();
+        values[i, 1] = job.ExecutionState.ToString();
+        values[i, 2] = job.Job.DateCreated.ToString();
+        values[i, 3] = job.Job.OwnerUsername;
+        values[i, 4] = job.Job.Name;
+        values[i, 5] = job.Job.JobCount.ToString();
+        values[i, 6] = job.Job.CalculatingCount.ToString();
+        values[i, 7] = job.Job.FinishedCount.ToString();
+        values[i, 8] = job.Job.Description;        
+        values[i, 9] = job.Job.Id.ToString();
+        values[i, 10] = job.Job.OwnerUserId.ToString();
       }
       
       var matrix = new StringMatrix(values);
-      matrix.ColumnNames = new string[] { JOB_STATE, JOB_DATECREATED, JOB_OWNER, JOB_NAME, JOB_TASKCOUNT, JOB_CALCULATINGTASKCOUNT, JOB_FINISHEDTASKCOUNT, JOB_DESCRIPTION, JOB_ID, JOB_OWNERID };
+      matrix.ColumnNames = new string[] { JOB_STATE, JOB_EXECUTIONSTATE, JOB_DATECREATED, JOB_OWNER, JOB_NAME, JOB_TASKCOUNT, JOB_CALCULATINGTASKCOUNT, JOB_FINISHEDTASKCOUNT, JOB_DESCRIPTION, JOB_ID, JOB_OWNERID };
       matrix.SortableView = true;
       return matrix;
     }
@@ -204,36 +350,46 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
             matrixView.DataGridView.Columns[0].MinimumWidth = 90;
             matrixView.DataGridView.Columns[1].MinimumWidth = 108;
           }
-        } else {
-          refreshButton.Enabled = false;
-          removeButton.Enabled = false;
-          matrixView.Content = null;
-        }
+        } 
       }
     }
 
-    private void PauseJobs(List<Guid> jobIds) {
-      try {
-        // TODO
-      } catch (AnonymousUserException) {
-        ShowHiveInformationDialog();
+    private void RefreshJobsAsync() {
+      RefreshJobs();
+    }
+
+    private void ResumeJobsAsync(object jobs) {
+      var jobList = (IEnumerable<RefreshableJob>)jobs;
+      foreach (var job in jobList) {
+        progress.Status = "Resuming job \"" + job.Job.Name + "\"...";
+        HiveAdminClient.ResumeJob(job);
       }
     }
 
-    private void StopJobs(List<Guid> jobIds) {
-      try {
-        // TODO
-      } catch (AnonymousUserException) {
-        ShowHiveInformationDialog();
+    private void PauseJobsAsync(object jobs) {
+      var jobList = (IEnumerable<RefreshableJob>)jobs;
+      foreach (var job in jobList) {
+        progress.Status = "Pausing job \"" + job.Job.Name + "\"...";
+        HiveAdminClient.PauseJob(job);
       }
     }
 
-    private void DeleteJobs(List<Guid> jobIds) {
-      try {
-        HiveAdminClient.DeleteJobs(jobIds);
-      } catch (AnonymousUserException) {
-        ShowHiveInformationDialog();
+    private void StopJobsAsync(object jobs) {
+      var jobList = (IEnumerable<RefreshableJob>) jobs;
+      foreach (var job in jobList) {        
+        progress.Status = "Stopping job \"" + job.Job.Name + "\"...";
+        HiveAdminClient.StopJob(job);
       }
+    }
+
+    private void RemoveJobsAsync(object jobs) {
+      var jobList = (IEnumerable<RefreshableJob>)jobs;
+      progress.Start();
+      foreach (var job in jobList) {
+        progress.Status = "Deleting job \"" + job.Job.Name + "\"...";
+        HiveAdminClient.RemoveJob(job);
+      }
+      progress.Finish();
     }
 
     private void ShowHiveInformationDialog() {

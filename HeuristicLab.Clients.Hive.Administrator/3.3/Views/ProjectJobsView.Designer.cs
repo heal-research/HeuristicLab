@@ -75,15 +75,15 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       this.removeButton.Name = "removeButton";
       this.removeButton.Size = new System.Drawing.Size(24, 24);
       this.removeButton.TabIndex = 2;
-      this.toolTip.SetToolTip(this.removeButton, "Delete job(s)");
+      this.toolTip.SetToolTip(this.removeButton, "Remove job(s)");
       this.removeButton.UseVisualStyleBackColor = true;
       this.removeButton.Click += new System.EventHandler(this.removeButton_Click);
       // 
       // startButton
       // 
-      this.startButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.startButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)));
       this.startButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Play;
-      this.startButton.Location = new System.Drawing.Point(0, 564);
+      this.startButton.Location = new System.Drawing.Point(63, 3);
       this.startButton.Name = "startButton";
       this.startButton.Size = new System.Drawing.Size(24, 24);
       this.startButton.TabIndex = 4;
@@ -93,10 +93,10 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       // 
       // pauseButton
       // 
-      this.pauseButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.pauseButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)));
       this.pauseButton.Enabled = false;
       this.pauseButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Pause;
-      this.pauseButton.Location = new System.Drawing.Point(30, 564);
+      this.pauseButton.Location = new System.Drawing.Point(93, 3);
       this.pauseButton.Name = "pauseButton";
       this.pauseButton.Size = new System.Drawing.Size(24, 24);
       this.pauseButton.TabIndex = 5;
@@ -106,9 +106,9 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       // 
       // stopButton
       // 
-      this.stopButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.stopButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)));
       this.stopButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Stop;
-      this.stopButton.Location = new System.Drawing.Point(60, 564);
+      this.stopButton.Location = new System.Drawing.Point(123, 3);
       this.stopButton.Name = "stopButton";
       this.stopButton.Size = new System.Drawing.Size(24, 24);
       this.stopButton.TabIndex = 6;
@@ -138,6 +138,9 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       this.Controls.Add(this.matrixView);
       this.Controls.Add(this.refreshButton);
       this.Controls.Add(this.removeButton);
+      this.Controls.Add(this.startButton);
+      this.Controls.Add(this.pauseButton);
+      this.Controls.Add(this.stopButton);
       this.Name = "ProjectJobsView";
       this.Size = new System.Drawing.Size(510, 385);
       this.Load += new System.EventHandler(this.ProjectJobsView_Load);

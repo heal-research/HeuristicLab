@@ -70,8 +70,8 @@ namespace HeuristicLab.Clients.Hive {
       get { return projectResourceAssignments; }
     }
 
-    private Dictionary<Guid, HiveItemCollection<Job>> jobs;
-    public Dictionary<Guid, HiveItemCollection<Job>> Jobs {
+    private Dictionary<Guid, HiveItemCollection<RefreshableJob>> jobs;
+    public Dictionary<Guid, HiveItemCollection<RefreshableJob>> Jobs {
       get { return jobs; }
       set {
         if (value != jobs)
@@ -143,7 +143,7 @@ namespace HeuristicLab.Clients.Hive {
         resources = new ItemList<Resource>();
         projects = new ItemList<Project>();
         projectResourceAssignments = new ItemList<AssignedProjectResource>();
-        jobs = new Dictionary<Guid, HiveItemCollection<Job>>();
+        jobs = new Dictionary<Guid, HiveItemCollection<RefreshableJob>>();
         projectNames = new Dictionary<Guid, string>();
         resourceNames = new Dictionary<Guid, string>();
 
@@ -160,13 +160,16 @@ namespace HeuristicLab.Clients.Hive {
           if (projectIds.Any()) {
             service.GetAssignedResourcesForProjectsAdministration(projectIds)
               .ForEach(a => projectResourceAssignments.Add(a));
-            projectIds.ForEach(p => jobs.Add(p, new HiveItemCollection<Job>()));
+            projectIds.ForEach(p => jobs.Add(p, new HiveItemCollection<RefreshableJob>()));
             var unsortedJobs = service.GetJobsByProjectIds(projectIds)
               .OrderBy(x => x.DateCreated).ToList();
 
-            unsortedJobs.Where(j => j.State == JobState.DeletionPending).ToList().ForEach(j => jobs[j.ProjectId].Add(j));
-            unsortedJobs.Where(j => j.State == JobState.StatisticsPending).ToList().ForEach(j => jobs[j.ProjectId].Add(j));
-            unsortedJobs.Where(j => j.State == JobState.Online).ToList().ForEach(j => jobs[j.ProjectId].Add(j));
+            unsortedJobs.Where(j => j.State == JobState.DeletionPending).ToList().ForEach(j => jobs[j.ProjectId].Add(new RefreshableJob(j)));
+            unsortedJobs.Where(j => j.State == JobState.StatisticsPending).ToList().ForEach(j => jobs[j.ProjectId].Add(new RefreshableJob(j)));
+            unsortedJobs.Where(j => j.State == JobState.Online).ToList().ForEach(j => jobs[j.ProjectId].Add(new RefreshableJob(j)));
+
+            foreach (var job in jobs.SelectMany(x => x.Value))
+              LoadLightweightJob(job);
 
             projectNames = service.GetProjectNames();
             resourceNames = service.GetResourceNames();
@@ -306,19 +309,53 @@ namespace HeuristicLab.Clients.Hive {
 
     public void RefreshJobs() {
       var projectIds = new List<Guid>();
-      jobs = new Dictionary<Guid, HiveItemCollection<Job>>();
+      jobs = new Dictionary<Guid, HiveItemCollection<RefreshableJob>>();
 
       HiveServiceLocator.Instance.CallHiveService(service => {
         service.GetProjectsForAdministration().ForEach(p => projectIds.Add(p.Id));
         if(projectIds.Any()) {
-          projectIds.ForEach(p => jobs.Add(p, new HiveItemCollection<Job>()));
+          projectIds.ForEach(p => jobs.Add(p, new HiveItemCollection<RefreshableJob>()));
           var unsortedJobs = service.GetJobsByProjectIds(projectIds)
             .OrderBy(x => x.DateCreated).ToList();
-          unsortedJobs.Where(j => j.State == JobState.DeletionPending).ToList().ForEach(j => jobs[j.ProjectId].Add(j));
-          unsortedJobs.Where(j => j.State == JobState.StatisticsPending).ToList().ForEach(j => jobs[j.ProjectId].Add(j));
-          unsortedJobs.Where(j => j.State == JobState.Online).ToList().ForEach(j => jobs[j.ProjectId].Add(j));
+          
+          unsortedJobs.Where(j => j.State == JobState.DeletionPending).ToList().ForEach(j => jobs[j.ProjectId].Add(new RefreshableJob(j)));
+          unsortedJobs.Where(j => j.State == JobState.StatisticsPending).ToList().ForEach(j => jobs[j.ProjectId].Add(new RefreshableJob(j)));
+          unsortedJobs.Where(j => j.State == JobState.Online).ToList().ForEach(j => jobs[j.ProjectId].Add(new RefreshableJob(j)));
+
+          foreach(var job in jobs.SelectMany(x => x.Value))
+            LoadLightweightJob(job);
         }
       });
+    }
+
+    public static void LoadLightweightJob(RefreshableJob refreshableJob) {
+      var job = refreshableJob.Job;
+      var tasks = HiveServiceLocator.Instance.CallHiveService(s => s.GetLightweightJobTasksWithoutStateLog(job.Id));
+      if (tasks != null && tasks.Count > 0 && tasks.All(x => x.Id != Guid.Empty)) {
+        if (tasks.All(x =>
+          x.State == TaskState.Finished 
+          || x.State == TaskState.Aborted 
+          || x.State == TaskState.Failed)) {
+          refreshableJob.ExecutionState = ExecutionState.Stopped;
+          refreshableJob.RefreshAutomatically = false;
+        } else if (
+          tasks
+            .Where(x => x.ParentTaskId != null)
+            .All(x =>
+              x.State != TaskState.Waiting
+              || x.State != TaskState.Transferring
+              || x.State != TaskState.Calculating)
+          && tasks
+             .Where(x => x.ParentTaskId != null)
+             .Any(x => x.State == TaskState.Paused)) {
+          refreshableJob.ExecutionState = ExecutionState.Paused;
+          refreshableJob.RefreshAutomatically = false;
+        } else if (tasks.Any(x => x.State == TaskState.Calculating 
+                                  || x.State == TaskState.Transferring 
+                                  || x.State == TaskState.Waiting)) {
+          refreshableJob.ExecutionState = ExecutionState.Started;
+        }
+      }
     }
 
     public void SortJobs() {
@@ -326,10 +363,10 @@ namespace HeuristicLab.Clients.Hive {
         var projectId = jobs.Keys.ElementAt(i);
         var unsortedJobs = jobs.Values.ElementAt(i);
 
-        var sortedJobs = new HiveItemCollection<Job>();
-        sortedJobs.AddRange(unsortedJobs.Where(j => j.State == JobState.DeletionPending));
-        sortedJobs.AddRange(unsortedJobs.Where(j => j.State == JobState.StatisticsPending));
-        sortedJobs.AddRange(unsortedJobs.Where(j => j.State == JobState.Online));
+        var sortedJobs = new HiveItemCollection<RefreshableJob>();
+        sortedJobs.AddRange(unsortedJobs.Where(j => j.Job.State == JobState.DeletionPending));
+        sortedJobs.AddRange(unsortedJobs.Where(j => j.Job.State == JobState.StatisticsPending));
+        sortedJobs.AddRange(unsortedJobs.Where(j => j.Job.State == JobState.Online));
 
         jobs[projectId] = sortedJobs;
       }
@@ -404,9 +441,48 @@ namespace HeuristicLab.Clients.Hive {
       }
     }
 
-    public static void DeleteJobs(List<Guid> jobIds) {
-
+    public static void RemoveJobs(List<Guid> jobIds) {
       HiveServiceLocator.Instance.CallHiveService((s) => s.UpdateJobStates(jobIds, JobState.StatisticsPending));
+    }
+    #endregion
+
+    #region Job Handling
+
+    public static void ResumeJob(RefreshableJob refreshableJob) {
+      HiveServiceLocator.Instance.CallHiveService(service => {
+        foreach (HiveTask task in refreshableJob.GetAllHiveTasks()) {
+          if (task.Task.State == TaskState.Paused) {
+            service.RestartTask(task.Task.Id);
+          }
+        }
+      });
+      refreshableJob.ExecutionState = ExecutionState.Started;
+    }
+
+    public static void PauseJob(RefreshableJob refreshableJob) {
+      HiveServiceLocator.Instance.CallHiveService(service => {
+        foreach (HiveTask task in refreshableJob.GetAllHiveTasks()) {
+          if (task.Task.State != TaskState.Finished && task.Task.State != TaskState.Aborted && task.Task.State != TaskState.Failed)
+            service.PauseTask(task.Task.Id);
+        }
+      });
+      refreshableJob.ExecutionState = ExecutionState.Paused;
+    }
+
+    public static void StopJob(RefreshableJob refreshableJob) {
+      HiveServiceLocator.Instance.CallHiveService(service => {
+        foreach (HiveTask task in refreshableJob.GetAllHiveTasks()) {
+          if (task.Task.State != TaskState.Finished && task.Task.State != TaskState.Aborted && task.Task.State != TaskState.Failed)
+            service.StopTask(task.Task.Id);
+        }
+      });
+      refreshableJob.ExecutionState = ExecutionState.Stopped;
+    }
+
+    public static void RemoveJob(RefreshableJob refreshableJob) {
+      HiveServiceLocator.Instance.CallHiveService((s) => {
+        s.UpdateJobState(refreshableJob.Id, JobState.StatisticsPending);
+      });
     }
     #endregion
 

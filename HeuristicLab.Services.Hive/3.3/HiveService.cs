@@ -519,17 +519,30 @@ namespace HeuristicLab.Services.Hive {
     }
 
     public void UpdateJobState(Guid jobId, DT.JobState jobState) {
+      if (jobState != JobState.StatisticsPending) return; // only process requests for "StatisticsPending"
+
       RoleVerifier.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
-      AuthorizationManager.AuthorizeForJob(jobId, DT.Permission.Full);
+      bool isAdministrator = RoleVerifier.IsInRole(HiveRoles.Administrator);
+      var currentUserId = UserManager.CurrentUserId;
+
       var pm = PersistenceManager;
       using (new PerformanceLogger("UpdateJobState")) {
         var jobDao = pm.JobDao;
+        var projectDao = pm.ProjectDao;
         pm.UseTransaction(() => {
           var job = jobDao.GetById(jobId);
           if (job != null) {
+
+            var administrationGrantedProjects = projectDao
+              .GetAdministrationGrantedProjectsForUser(currentUserId)
+              .ToList();
+
+            // check if user is an admin, or granted to administer a job-parenting project,...
+            if (!isAdministrator && !administrationGrantedProjects.Contains(job.Project))
+              AuthorizationManager.AuthorizeForJob(jobId, DT.Permission.Full); // ... or job owner
+
+            // note: allow solely state changes from "Online" to "StatisticsPending" = deletion request by user for HiveStatisticGenerator            
             var jobStateEntity = jobState.ToEntity();
-            // note: allow solely state changes from "Online" to "StatisticsPending" = deletion request by user for HiveStatisticGenerator
-            // and from "StatisticsPending" to "DeletionPending" = deletion request by HiveStatisticGenerator for EventManager
             if (job.State == DA.JobState.Online && jobStateEntity == DA.JobState.StatisticsPending) {
               job.State = jobStateEntity;
               foreach (var task in job.Tasks
@@ -538,9 +551,6 @@ namespace HeuristicLab.Services.Hive {
                 || x.State == DA.TaskState.Offline)) {
                 task.State = DA.TaskState.Aborted;
               }
-              pm.SubmitChanges();
-            } else if (job.State == DA.JobState.StatisticsPending && jobStateEntity == DA.JobState.DeletionPending) {
-              job.State = jobStateEntity;
               pm.SubmitChanges();
             }
           }
@@ -560,28 +570,30 @@ namespace HeuristicLab.Services.Hive {
         var jobDao = pm.JobDao;
         var projectDao = pm.ProjectDao;
         pm.UseTransaction(() => {
+          var administrationGrantedProjects = projectDao
+            .GetAdministrationGrantedProjectsForUser(currentUserId)
+            .ToList();
+
           foreach (var jobId in jobIds) {
             var job = jobDao.GetById(jobId);
             if (job != null) {
 
-              var administrationGrantedProjects = projectDao
-                .GetAdministrationGrantedProjectsForUser(currentUserId)
-                .ToList();
+              // check if user is an admin, or granted to administer a job-parenting project,...
+              if (!isAdministrator && !administrationGrantedProjects.Contains(job.Project))
+                AuthorizationManager.AuthorizeForJob(jobId, DT.Permission.Full); // ... or job owner
 
-              // check if user is granted to administer the job-parenting project
-              if (isAdministrator || administrationGrantedProjects.Contains(job.Project)) {
-                // note: allow solely state changes from "Online" to "StatisticsPending" = deletion request by user for HiveStatisticGenerator
-                if (job.State == DA.JobState.Online) {
-                  job.State = DA.JobState.StatisticsPending;
-                  foreach (var task in job.Tasks
-                  .Where(x => x.State == DA.TaskState.Waiting
-                    || x.State == DA.TaskState.Paused
-                    || x.State == DA.TaskState.Offline)) {
-                    task.State = DA.TaskState.Aborted;
-                  }
-                  pm.SubmitChanges();
+              // note: allow solely state changes from "Online" to "StatisticsPending" = deletion request by user for HiveStatisticGenerator
+              var jobStateEntity = jobState.ToEntity();
+              if (job.State == DA.JobState.Online && jobStateEntity == DA.JobState.StatisticsPending) {
+                job.State = jobStateEntity;
+                foreach (var task in job.Tasks
+                .Where(x => x.State == DA.TaskState.Waiting
+                  || x.State == DA.TaskState.Paused
+                  || x.State == DA.TaskState.Offline)) {
+                  task.State = DA.TaskState.Aborted;
                 }
-              }
+                pm.SubmitChanges();
+              }              
             }
           }
         });
