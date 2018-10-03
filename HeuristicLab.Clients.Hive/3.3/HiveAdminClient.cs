@@ -79,6 +79,11 @@ namespace HeuristicLab.Clients.Hive {
         }
     }
 
+    private Dictionary<Guid, List<LightweightTask>> tasks;
+    public Dictionary<Guid, List<LightweightTask>> Tasks {
+      get { return tasks; }
+    }
+
     private Dictionary<Guid, HashSet<Guid>> projectAncestors;
     public Dictionary<Guid, HashSet<Guid>> ProjectAncestors {
       get { return projectAncestors; }
@@ -144,6 +149,7 @@ namespace HeuristicLab.Clients.Hive {
         projects = new ItemList<Project>();
         projectResourceAssignments = new ItemList<AssignedProjectResource>();
         jobs = new Dictionary<Guid, HiveItemCollection<RefreshableJob>>();
+        tasks = new Dictionary<Guid, List<LightweightTask>>();
         projectNames = new Dictionary<Guid, string>();
         resourceNames = new Dictionary<Guid, string>();
 
@@ -310,6 +316,7 @@ namespace HeuristicLab.Clients.Hive {
     public void RefreshJobs() {
       var projectIds = new List<Guid>();
       jobs = new Dictionary<Guid, HiveItemCollection<RefreshableJob>>();
+      tasks = new Dictionary<Guid, List<LightweightTask>>();
 
       HiveServiceLocator.Instance.CallHiveService(service => {
         service.GetProjectsForAdministration().ForEach(p => projectIds.Add(p.Id));
@@ -328,33 +335,43 @@ namespace HeuristicLab.Clients.Hive {
       });
     }
 
-    public static void LoadLightweightJob(RefreshableJob refreshableJob) {
+    public void LoadLightweightJob(RefreshableJob refreshableJob) {
       var job = refreshableJob.Job;
-      var tasks = HiveServiceLocator.Instance.CallHiveService(s => s.GetLightweightJobTasksWithoutStateLog(job.Id));
-      if (tasks != null && tasks.Count > 0 && tasks.All(x => x.Id != Guid.Empty)) {
-        if (tasks.All(x =>
+      var lightweightTasks = HiveServiceLocator.Instance.CallHiveService(s => s.GetLightweightJobTasksWithoutStateLog(job.Id));
+
+      if (tasks.ContainsKey(job.Id)) {
+        tasks[job.Id].Clear();
+        tasks[job.Id].AddRange(lightweightTasks);
+      } else {
+        tasks.Add(job.Id, new List<LightweightTask>(lightweightTasks));        
+      }
+
+      if (lightweightTasks != null && lightweightTasks.Count > 0 && lightweightTasks.All(x => x.Id != Guid.Empty)) {
+        if (lightweightTasks.All(x =>
           x.State == TaskState.Finished 
           || x.State == TaskState.Aborted 
           || x.State == TaskState.Failed)) {
           refreshableJob.ExecutionState = ExecutionState.Stopped;
           refreshableJob.RefreshAutomatically = false;
         } else if (
-          tasks
+          lightweightTasks
             .Where(x => x.ParentTaskId != null)
             .All(x =>
               x.State != TaskState.Waiting
               || x.State != TaskState.Transferring
               || x.State != TaskState.Calculating)
-          && tasks
+          && lightweightTasks
              .Where(x => x.ParentTaskId != null)
              .Any(x => x.State == TaskState.Paused)) {
           refreshableJob.ExecutionState = ExecutionState.Paused;
           refreshableJob.RefreshAutomatically = false;
-        } else if (tasks.Any(x => x.State == TaskState.Calculating 
+        } else if (lightweightTasks.Any(x => x.State == TaskState.Calculating 
                                   || x.State == TaskState.Transferring 
                                   || x.State == TaskState.Waiting)) {
           refreshableJob.ExecutionState = ExecutionState.Started;
         }
+
+        refreshableJob.ExecutionTime = TimeSpan.FromMilliseconds(lightweightTasks.Sum(x => x.ExecutionTime.TotalMilliseconds));
       }
     }
 
@@ -450,9 +467,10 @@ namespace HeuristicLab.Clients.Hive {
 
     public static void ResumeJob(RefreshableJob refreshableJob) {
       HiveServiceLocator.Instance.CallHiveService(service => {
-        foreach (HiveTask task in refreshableJob.GetAllHiveTasks()) {
-          if (task.Task.State == TaskState.Paused) {
-            service.RestartTask(task.Task.Id);
+        var tasks = service.GetLightweightJobTasksWithoutStateLog(refreshableJob.Id);
+        foreach (var task in tasks) {
+          if (task.State == TaskState.Paused) {
+            service.RestartTask(task.Id);
           }
         }
       });
@@ -461,9 +479,10 @@ namespace HeuristicLab.Clients.Hive {
 
     public static void PauseJob(RefreshableJob refreshableJob) {
       HiveServiceLocator.Instance.CallHiveService(service => {
-        foreach (HiveTask task in refreshableJob.GetAllHiveTasks()) {
-          if (task.Task.State != TaskState.Finished && task.Task.State != TaskState.Aborted && task.Task.State != TaskState.Failed)
-            service.PauseTask(task.Task.Id);
+        var tasks = service.GetLightweightJobTasksWithoutStateLog(refreshableJob.Id);
+        foreach (var task in tasks) {
+          if (task.State != TaskState.Finished && task.State != TaskState.Aborted && task.State != TaskState.Failed)
+            service.PauseTask(task.Id);
         }
       });
       refreshableJob.ExecutionState = ExecutionState.Paused;
@@ -471,17 +490,18 @@ namespace HeuristicLab.Clients.Hive {
 
     public static void StopJob(RefreshableJob refreshableJob) {
       HiveServiceLocator.Instance.CallHiveService(service => {
-        foreach (HiveTask task in refreshableJob.GetAllHiveTasks()) {
-          if (task.Task.State != TaskState.Finished && task.Task.State != TaskState.Aborted && task.Task.State != TaskState.Failed)
-            service.StopTask(task.Task.Id);
+        var tasks = service.GetLightweightJobTasksWithoutStateLog(refreshableJob.Id);
+        foreach (var task in tasks) {
+          if (task.State != TaskState.Finished && task.State != TaskState.Aborted && task.State != TaskState.Failed)
+            service.StopTask(task.Id);
         }
       });
       refreshableJob.ExecutionState = ExecutionState.Stopped;
     }
 
     public static void RemoveJob(RefreshableJob refreshableJob) {
-      HiveServiceLocator.Instance.CallHiveService((s) => {
-        s.UpdateJobState(refreshableJob.Id, JobState.StatisticsPending);
+      HiveServiceLocator.Instance.CallHiveService((service) => {
+        service.UpdateJobState(refreshableJob.Id, JobState.StatisticsPending);
       });
     }
     #endregion
@@ -621,6 +641,11 @@ namespace HeuristicLab.Clients.Hive {
       }
 
       return changePossible;
+    }
+
+    public IEnumerable<Resource> GetAssignedResourcesForJob(Guid jobId) {
+      var assignedJobResource =  HiveServiceLocator.Instance.CallHiveService(service => service.GetAssignedResourcesForJob(jobId));
+      return Resources.Where(x => assignedJobResource.Select(y => y.ResourceId).Contains(x.Id));
     }
 
     private bool IsAdmin() {

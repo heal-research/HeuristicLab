@@ -317,7 +317,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     }
 
     private void treeSlaveGroup_BeforeCheck(object sender, TreeViewCancelEventArgs e) {
-      if (e.Node == ungroupedGroupNode) {
+      if (!IsAdmin() || e.Node == ungroupedGroupNode) {
         e.Cancel = true;
       } else {
         var r = (Resource)e.Node.Tag;

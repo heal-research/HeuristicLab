@@ -755,5 +755,10 @@ namespace HeuristicLab.Clients.Hive {
       projects.Add(projectId);
       return string.Join(" » ", projects.Select(x => ProjectNames[x]).ToArray());
     }
+
+    public IEnumerable<Resource> GetAssignedResourcesForJob(Guid jobId) {
+      var assignedJobResource = HiveServiceLocator.Instance.CallHiveService(service => service.GetAssignedResourcesForJob(jobId));
+      return Resources.Where(x => assignedJobResource.Select(y => y.ResourceId).Contains(x.Id));
+    }
   }
 }

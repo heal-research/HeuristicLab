@@ -482,7 +482,6 @@ namespace HeuristicLab.Services.Hive {
             throw new InvalidOperationException(NO_JOB_UPDATE_POSSIBLE);
           }
 
-
           jobDto.CopyToEntity(job);
 
           if (!exists) {
@@ -522,24 +521,15 @@ namespace HeuristicLab.Services.Hive {
       if (jobState != JobState.StatisticsPending) return; // only process requests for "StatisticsPending"
 
       RoleVerifier.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
-      bool isAdministrator = RoleVerifier.IsInRole(HiveRoles.Administrator);
-      var currentUserId = UserManager.CurrentUserId;
+      // check if user is an admin, or granted to administer a job-parenting project, or job owner
+      AuthorizationManager.AuthorizeForJob(jobId, DT.Permission.Full);
 
       var pm = PersistenceManager;
       using (new PerformanceLogger("UpdateJobState")) {
-        var jobDao = pm.JobDao;
-        var projectDao = pm.ProjectDao;
+        var jobDao = pm.JobDao;        
         pm.UseTransaction(() => {
           var job = jobDao.GetById(jobId);
-          if (job != null) {
-
-            var administrationGrantedProjects = projectDao
-              .GetAdministrationGrantedProjectsForUser(currentUserId)
-              .ToList();
-
-            // check if user is an admin, or granted to administer a job-parenting project,...
-            if (!isAdministrator && !administrationGrantedProjects.Contains(job.Project))
-              AuthorizationManager.AuthorizeForJob(jobId, DT.Permission.Full); // ... or job owner
+          if (job != null) {            
 
             // note: allow solely state changes from "Online" to "StatisticsPending" = deletion request by user for HiveStatisticGenerator            
             var jobStateEntity = jobState.ToEntity();
@@ -562,25 +552,18 @@ namespace HeuristicLab.Services.Hive {
       if (jobState != JobState.StatisticsPending) return; // only process requests for "StatisticsPending"
 
       RoleVerifier.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
-      bool isAdministrator = RoleVerifier.IsInRole(HiveRoles.Administrator);
-      var currentUserId = UserManager.CurrentUserId;
+      // check if user is an admin, or granted to administer a job-parenting project, or job owner
+      foreach (var jobId in jobIds)
+          AuthorizationManager.AuthorizeForJob(jobId, DT.Permission.Full);
 
       var pm = PersistenceManager;
       using (new PerformanceLogger("UpdateJobStates")) {
         var jobDao = pm.JobDao;
         var projectDao = pm.ProjectDao;
         pm.UseTransaction(() => {
-          var administrationGrantedProjects = projectDao
-            .GetAdministrationGrantedProjectsForUser(currentUserId)
-            .ToList();
-
           foreach (var jobId in jobIds) {
             var job = jobDao.GetById(jobId);
             if (job != null) {
-
-              // check if user is an admin, or granted to administer a job-parenting project,...
-              if (!isAdministrator && !administrationGrantedProjects.Contains(job.Project))
-                AuthorizationManager.AuthorizeForJob(jobId, DT.Permission.Full); // ... or job owner
 
               // note: allow solely state changes from "Online" to "StatisticsPending" = deletion request by user for HiveStatisticGenerator
               var jobStateEntity = jobState.ToEntity();
