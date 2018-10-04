@@ -226,10 +226,13 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
       bool enabled = Content != null && !Locked;
+      dtpFrom.Enabled = enabled;
+      dtpTo.Enabled = enabled;
+      chbade.Enabled = enabled;
       btCreate.Enabled = enabled;
-      btbDelete.Enabled = enabled;
-      btnClearCal.Enabled = enabled;
+      btbDelete.Enabled = enabled;      
       btnRecurrence.Enabled = enabled;
+      btnClearCal.Enabled = enabled;
       btnSaveCal.Enabled = enabled;
     }
 
