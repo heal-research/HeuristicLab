@@ -34,30 +34,33 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
     public void DeriveExpressions() {
       var formatter = new InfixExpressionFormatter();
       var parser = new InfixExpressionParser();
-      Console.WriteLine(Derive("3", "x"));
-      Console.WriteLine(Derive("x", "x"));
-      Console.WriteLine(Derive("10*x", "x"));
-      Console.WriteLine(Derive("x*10", "x"));
-      Console.WriteLine(Derive("x*x", "x"));
-      Console.WriteLine(Derive("x*x*x", "x"));
-      Console.WriteLine(Derive("10*x", "y"));
-      Console.WriteLine(Derive("10*x+20*y", "y"));
-      Console.WriteLine(Derive("2*3*x", "x"));
-      Console.WriteLine(Derive("10*x*y+20*y", "x"));
-      Console.WriteLine(Derive("1/x", "x"));
-      Console.WriteLine(Derive("y/x", "x"));
-      Console.WriteLine(Derive("(a+b)/(x+x*x)", "x"));
-      Console.WriteLine(Derive("(a+b)/(x+SQR(x))", "x"));
-      Console.WriteLine(Derive("exp(x)", "x"));
-      Console.WriteLine(Derive("exp(3*x)", "x"));
-      Console.WriteLine(Derive("log(x)", "x"));
-      Console.WriteLine(Derive("log(3*x)", "x"));
-      Console.WriteLine(Derive("log(3*x+y)", "x"));
-      Console.WriteLine(Derive("sqrt(3*x+y)", "x"));
-      Console.WriteLine(Derive("sin(3*x)", "x"));
-      Console.WriteLine(Derive("cos(3*x)", "x"));
+      Assert.AreEqual("0", Derive("3", "x"));
+      Assert.AreEqual("1", Derive("x", "x"));
+      Assert.AreEqual("10", Derive("10*x", "x"));
+      Assert.AreEqual("10", Derive("x*10", "x"));
+      Assert.AreEqual("(2*'x')", Derive("x*x", "x"));
+      Assert.AreEqual("((('x' * 'x') * 2) + ('x' * 'x'))", Derive("x*x*x", "x")); // simplifier does not merge (x*x)*2 + x*x  to 3*x*x
+      Assert.AreEqual("0", Derive("10*x", "y"));
+      Assert.AreEqual("20", Derive("10*x+20*y", "y"));
+      Assert.AreEqual("6", Derive("2*3*x", "x"));
+      Assert.AreEqual("(10*'y')", Derive("10*x*y+20*y", "x"));
+      Assert.AreEqual("(1 / (SQR('x') * (-1)))",  Derive("1/x", "x"));
+      Assert.AreEqual("('y' / (SQR('x') * (-1)))", Derive("y/x", "x"));
+      Assert.AreEqual("((((-2*'x') + (-1)) * ('a' + 'b')) / SQR(('x' + ('x' * 'x'))))",
+        Derive("(a+b)/(x+x*x)", "x"));
+      Assert.AreEqual("((((-2*'x') + (-1)) * ('a' + 'b')) / SQR(('x' + SQR('x'))))", Derive("(a+b)/(x+SQR(x))", "x"));
+      Assert.AreEqual("EXP('x')", Derive("exp(x)", "x"));
+      Assert.AreEqual("(EXP((3*'x')) * 3)", Derive("exp(3*x)", "x"));
+      Assert.AreEqual("(1 / 'x')", Derive("log(x)", "x"));
+      Assert.AreEqual("(1 / 'x')", Derive("log(3*x)", "x"));   // 3 * 1/(3*x)
+      Assert.AreEqual("(1 / ('x' + (0.333333333333333*'y')))", Derive("log(3*x+y)", "x"));  // simplifier does not try to keep fractions
+      Assert.AreEqual("(1 / (SQRT(((3*'x') + 'y')) * 0.666666666666667))", Derive("sqrt(3*x+y)", "x"));   // 3 / (2 * sqrt(3*x+y)) = 1 / ((2/3) * sqrt(3*x+y)) 
+      Assert.AreEqual("(COS((3*'x')) * 3)", Derive("sin(3*x)", "x"));
+      Assert.AreEqual("(SIN((3*'x')) * (-3))", Derive("cos(3*x)", "x"));
+
 
       // special case: Inv(x) using only one argument to the division symbol
+      // f(x) = 1/x
       var root = new ProgramRootSymbol().CreateTreeNode();
       var start = new StartSymbol().CreateTreeNode();
       var div = new Division().CreateTreeNode();
@@ -68,7 +71,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       start.AddSubtree(div);
       root.AddSubtree(start);
       var t = new SymbolicExpressionTree(root);
-      Console.WriteLine(formatter.Format(DerivativeCalculator.Derive(t, "x")));
+      Assert.AreEqual("(1 / (SQR('x') * (-1)))", 
+        formatter.Format(DerivativeCalculator.Derive(t, "x")));
     }
 
     private string Derive(string expr, string variable) {

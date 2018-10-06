@@ -119,7 +119,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       if(branch.Symbol is SquareRoot) {
         var f = (ISymbolicExpressionTreeNode)branch.Clone();
         var u = (ISymbolicExpressionTreeNode)branch.GetSubtree(0).Clone();
-        return Div(CreateConstant(1.0), Product(Product(CreateConstant(2.0), f), Derive(u, variableName)));
+        return Product(Div(CreateConstant(1.0), Product(CreateConstant(2.0), f)), Derive(u, variableName));
       }
       if (branch.Symbol is Sine) {
         var u = (ISymbolicExpressionTreeNode)branch.GetSubtree(0).Clone();
