@@ -25,6 +25,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.Collections;
+using HeuristicLab.Common;
 using HeuristicLab.Common.Resources;
 using HeuristicLab.Core;
 using HeuristicLab.Core.Views;
@@ -636,6 +637,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
 
         additionalNode = new TreeNode(additionalSlavesGroupName) {
           ForeColor = SystemColors.GrayText,
+          ImageIndex = slaveGroupImageIndex,
           Tag = new SlaveGroup() {
             Name = additionalSlavesGroupName,
             Description = additionalSlavesGroupDescription
@@ -644,6 +646,25 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
 
         foreach (var slave in singleSlaves.OrderBy(x => x.Name)) {
           var slaveNode = new TreeNode(slave.Name) { Tag = slave };
+
+          if (newAssignedResources.Select(x => x.Id).Contains(slave.Id)) {
+            slaveNode.Checked = true;
+            if (!addedAssignments.Select(x => x.Id).Contains(slave.Id) &&
+                !removedAssignments.Select(x => x.Id).Contains(slave.Id)) {
+              slaveNode.Text += SELECTED_TAG;
+            }
+          }
+
+          if (addedAssignments.Select(x => x.Id).Contains(slave.Id)) {
+            slaveNode.BackColor = addedAssignmentColor;
+            slaveNode.ForeColor = controlTextColor;
+            slaveNode.Text += ADDED_SELECTION_TAG;
+          } else if (removedAssignments.Select(x => x.Id).Contains(slave.Id)) {
+            slaveNode.BackColor = removedAssignmentColor;
+            slaveNode.ForeColor = controlTextColor;
+            slaveNode.Text += REMOVED_SELECTION_TAG;
+          }
+
           additionalNode.Nodes.Add(slaveNode);
         }
 
@@ -660,8 +681,9 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       foreach(TreeNode n in nodes) {
         Resource r = (Resource)n.Tag;
         if(n.Nodes.Count > 0) {
-          if(HiveClient.Instance.GetAvailableResourceDescendants(r.Id).OfType<SlaveGroup>().Any()
-            || HiveClient.Instance.GetAvailableResourceDescendants(r.Id).OfType<Slave>().Intersect(assignedResources.Union(newAssignedResources)).Any()) {
+          if(HiveClient.Instance.GetAvailableResourceDescendants(r.Id).OfType<SlaveGroup>().Any()            
+            || HiveClient.Instance.GetAvailableResourceDescendants(r.Id).OfType<Slave>().Intersect(assignedResources.Union(newAssignedResources)).Any()
+            || (n == additionalNode && additionalNode.Nodes.Count > 0 && additionalNode.Nodes.Cast<TreeNode>().Any(x => x.Checked))) {
             n.Expand();
             ExpandResourceNodesOfInterest(n.Nodes);
           } else {
