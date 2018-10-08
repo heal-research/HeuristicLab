@@ -133,7 +133,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         sin.AddSubtree(u);
         return Product(CreateConstant(-1.0), Product(sin, Derive(u, variableName)));
       }
-      throw new NotSupportedException($"Symbol {branch.Symbol} is not supported.");
+      throw new NotSupportedException(string.Format("Symbol {0} is not supported.", branch.Symbol));
     }
 
 
