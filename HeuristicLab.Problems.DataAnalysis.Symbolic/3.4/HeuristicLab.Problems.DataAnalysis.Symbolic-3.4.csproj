@@ -144,6 +144,9 @@
     <Compile Include="Formatters\TSQLExpressionFormatter.cs" />
     <Compile Include="Formatters\SymbolicDataAnalysisExpressionMathematicaFormatter.cs" />
     <Compile Include="Formatters\SymbolicDataAnalysisExpressionCSharpFormatter.cs" />
+    <Compile Include="Hashing\HashExtensions.cs" />
+    <Compile Include="Hashing\HashUtil.cs" />
+    <Compile Include="Hashing\SymbolicExpressionTreeHash.cs" />
     <Compile Include="Importer\InfixExpressionParser.cs" />
     <Compile Include="Importer\SymbolicExpressionImporter.cs" />
     <Compile Include="Importer\Token.cs" />
