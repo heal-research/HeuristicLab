@@ -1,11 +1,8 @@
 ﻿# find ms build
 $programFilesX86Dir = ($Env:ProgramFiles, ${Env:ProgramFiles(x86)})[[bool]${Env:ProgramFiles(x86)}]
 $locations = @(
-  [System.IO.Path]::Combine($programFilesX86Dir, "Microsoft Visual Studio", "2017", "Enterprise", "MSBuild", "15.0", "Bin", "amd64")
   [System.IO.Path]::Combine($programFilesX86Dir, "Microsoft Visual Studio", "2017", "Enterprise", "MSBuild", "15.0", "Bin")
-  [System.IO.Path]::Combine($programFilesX86Dir, "Microsoft Visual Studio", "2017", "Community", "MSBuild", "15.0", "Bin", "amd64")
   [System.IO.Path]::Combine($programFilesX86Dir, "Microsoft Visual Studio", "2017", "Community", "MSBuild", "15.0", "Bin")
-  [System.IO.Path]::Combine($programFilesX86Dir, "Microsoft Visual Studio", "2017", "BuildTools", "MSBuild", "15.0", "Bin", "amd64"),
   [System.IO.Path]::Combine($programFilesX86Dir, "Microsoft Visual Studio", "2017", "BuildTools", "MSBuild", "15.0", "Bin")
 )
 
@@ -86,7 +83,7 @@ if ($msBuildPath -eq $undefined) {
       $args = @(
         $solution.FullName,
         "/t:Clean",
-        "/p:Configuration=`"$config`",Platform=`"$([uri]::EscapeDataString($platform))`"",
+        "/p:Configuration=`"$config`",Platform=`"$platform`"",
         "/m", "/nologo", "/verbosity:q", "/clp:ErrorsOnly"
       )
       & $msBuildPath $args
@@ -96,11 +93,11 @@ if ($msBuildPath -eq $undefined) {
 
   Foreach ($slnIndex in $slnIndices) {
     $solution = $slnFiles[$slnIndex]
-    "Building `"$($solution.Name)`" ..."
+    "Building `"$($solution.Name)`" ($config|$platform) ..."
     $args = @(
       $solution.FullName,
       "/t:Build",
-      "/p:Configuration=`"$config`",Platform=`"$([uri]::EscapeDataString($platform))`"",
+      "/p:Configuration=`"$config`",Platform=`"$platform`"",
       "/m", "/nologo", "/verbosity:q", "/clp:ErrorsOnly"
     )
     & $msBuildPath $args
