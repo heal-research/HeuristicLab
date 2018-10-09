@@ -1,8 +1,11 @@
 ﻿# find ms build
 $programFilesX86Dir = ($Env:ProgramFiles, ${Env:ProgramFiles(x86)})[[bool]${Env:ProgramFiles(x86)}]
 $locations = @(
+  [System.IO.Path]::Combine($programFilesX86Dir, "Microsoft Visual Studio", "2017", "Enterprise", "MSBuild", "15.0", "Bin", "amd64")
   [System.IO.Path]::Combine($programFilesX86Dir, "Microsoft Visual Studio", "2017", "Enterprise", "MSBuild", "15.0", "Bin")
+  [System.IO.Path]::Combine($programFilesX86Dir, "Microsoft Visual Studio", "2017", "Community", "MSBuild", "15.0", "Bin", "amd64")
   [System.IO.Path]::Combine($programFilesX86Dir, "Microsoft Visual Studio", "2017", "Community", "MSBuild", "15.0", "Bin")
+  [System.IO.Path]::Combine($programFilesX86Dir, "Microsoft Visual Studio", "2017", "BuildTools", "MSBuild", "15.0", "Bin", "amd64"),
   [System.IO.Path]::Combine($programFilesX86Dir, "Microsoft Visual Studio", "2017", "BuildTools", "MSBuild", "15.0", "Bin")
 )
 
