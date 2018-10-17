@@ -5,8 +5,8 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Problems.Programmable;
 
 namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
-  public class CompiledLinearProgrammingProblemDefinition : CompiledProblemDefinition, ILinearProgrammingProblemDefinition {
 
+  public class CompiledLinearProgrammingProblemDefinition : CompiledProblemDefinition, ILinearProgrammingProblemDefinition {
     private Variable x;
     private Variable y;
 
@@ -17,7 +17,7 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
 
     public void BuildModel(Solver solver) {
       // Use vars.yourVariable to access variables in the variable store i.e. yourVariable
-      // Example model taken from https://developers.google.com/optimization/mip/integer_opt 
+      // Example model taken from https://developers.google.com/optimization/mip/integer_opt
       // Define the decision variables
       x = solver.MakeIntVar(0, 3.5, "x");
       y = solver.MakeIntVar(0, double.PositiveInfinity, "y");

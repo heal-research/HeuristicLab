@@ -112,7 +112,7 @@
     <None Include="HeuristicLab.snk" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="GLPK-4.65-license.txt">
+    <Content Include="glpk-license.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="glpk_4_65.dll">
@@ -127,13 +127,13 @@
     <Content Include="Google.OrTools.pdb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Google.OrTools.runtime.win-x64.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Google.OrTools_version.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Google.Protobuf.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="runtime.win-x64.Google.OrTools.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

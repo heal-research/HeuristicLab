@@ -1,4 +1,5 @@
 ﻿#region License Information
+
 /* HeuristicLab
  * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -17,17 +18,25 @@
  * You should have received a copy of the GNU General Public License
  * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
  */
-#endregion
+
+#endregion License Information
 
 using System;
 using System.Runtime.Serialization;
 
 namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Problems {
+
   [Serializable]
   public class ProblemDefinitionScriptException : Exception {
-    public ProblemDefinitionScriptException() { }
-    public ProblemDefinitionScriptException(string message) : base(message) { }
-    public ProblemDefinitionScriptException(string message, Exception inner) : base(message, inner) { }
+
+    public ProblemDefinitionScriptException() {
+    }
+
+    public ProblemDefinitionScriptException(string message) : base(message) {
+    }
+
+    public ProblemDefinitionScriptException(string message, Exception inner) : base(message, inner) {
+    }
 
     protected ProblemDefinitionScriptException(SerializationInfo info, StreamingContext context)
       : base(info, context) { }

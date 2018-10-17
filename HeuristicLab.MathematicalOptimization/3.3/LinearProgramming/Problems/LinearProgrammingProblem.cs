@@ -1,4 +1,5 @@
 ﻿#region License Information
+
 /* HeuristicLab
  * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -17,7 +18,8 @@
  * You should have received a copy of the GNU General Public License
  * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
  */
-#endregion
+
+#endregion License Information
 
 using System.Drawing;
 using Google.OrTools.LinearSolver;
@@ -29,31 +31,42 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Problems {
-  [Item("Linear Programming Programmable Problem (single-objective)", "Represents a single-objective problem that can be programmed with a script.")]
-  [Creatable(CreatableAttribute.Categories.Problems, Priority = 100)]
+
+  [Item("Linear/Mixed Integer Programming Problem (LP/MIP)", "")]
+  [Creatable(CreatableAttribute.Categories.CombinatorialProblems)]
   [StorableClass]
   public class LinearProgrammingProblem : Problem, IProgrammableItem {
 
-    public new static Image StaticItemImage => VSImageLibrary.Script;
-
-    private FixedValueParameter<LinearProgrammingProblemDefinitionScript> LinearProgrammingProblemScriptParameter => (FixedValueParameter<LinearProgrammingProblemDefinitionScript>)Parameters["ProblemScript"];
-
-    public LinearProgrammingProblemDefinitionScript ProblemScript => LinearProgrammingProblemScriptParameter.Value;
-
-    public ILinearProgrammingProblemDefinition ProblemDefinition => LinearProgrammingProblemScriptParameter.Value;
+    public LinearProgrammingProblem() {
+      Parameters.Add(new FixedValueParameter<LinearProgrammingProblemDefinitionScript>("ProblemScript",
+        "Defines the problem.", new LinearProgrammingProblemDefinitionScript { Name = Name }) { GetsCollected = false });
+      RegisterEvents();
+    }
 
     private LinearProgrammingProblem(LinearProgrammingProblem original, Cloner cloner)
       : base(original, cloner) {
       RegisterEvents();
     }
-    public override IDeepCloneable Clone(Cloner cloner) { return new LinearProgrammingProblem(this, cloner); }
 
     [StorableConstructor]
     private LinearProgrammingProblem(bool deserializing) : base(deserializing) { }
-    public LinearProgrammingProblem() {
-      Parameters.Add(new FixedValueParameter<LinearProgrammingProblemDefinitionScript>("ProblemScript", "Defines the problem.", new LinearProgrammingProblemDefinitionScript { Name = Name }) { GetsCollected = false });
-      //Operators.Add(new BestScopeSolutionAnalyzer());
-      RegisterEvents();
+
+    public new static Image StaticItemImage => VSImageLibrary.Script;
+    public ILinearProgrammingProblemDefinition ProblemDefinition => LinearProgrammingProblemScriptParameter.Value;
+    public LinearProgrammingProblemDefinitionScript ProblemScript => LinearProgrammingProblemScriptParameter.Value;
+
+    private FixedValueParameter<LinearProgrammingProblemDefinitionScript> LinearProgrammingProblemScriptParameter =>
+      (FixedValueParameter<LinearProgrammingProblemDefinitionScript>)Parameters["ProblemScript"];
+
+    public void BuildModel(Solver solver) => ProblemDefinition.BuildModel(solver);
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new LinearProgrammingProblem(this, cloner);
+    }
+
+    protected override void OnNameChanged() {
+      base.OnNameChanged();
+      ProblemScript.Name = Name;
     }
 
     [StorableHook(HookType.AfterDeserialization)]
@@ -61,43 +74,18 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Problems {
       RegisterEvents();
     }
 
-    private void RegisterEvents() {
-      ProblemScript.ProblemDefinitionChanged += (o, e) => OnProblemDefinitionChanged();
-      ProblemScript.NameChanged += (o, e) => OnProblemScriptNameChanged();
-    }
-
     private void OnProblemDefinitionChanged() {
-      //Parameters.Remove("Maximization");
-      //Parameters.Add(new FixedValueParameter<BoolValue>("Maximization", "Set to false if the problem should be minimized.", (BoolValue)new BoolValue(Maximization).AsReadOnly()) { Hidden = true });
-
-      //Encoding = ProblemDefinition.Encoding;
       OnOperatorsChanged();
       OnReset();
     }
-    protected override void OnNameChanged() {
-      base.OnNameChanged();
-      ProblemScript.Name = Name;
-    }
+
     private void OnProblemScriptNameChanged() {
       Name = ProblemScript.Name;
     }
 
-    public void BuildModel(Solver solver) => ProblemDefinition.BuildModel(solver);
-
-    //public override bool Maximization {
-    //  get { return Parameters.ContainsKey("ProblemScript") ? ProblemDefinition.Maximization : false; }
-    //}
-
-    //public override double Evaluate(Individual individual, IRandom random) {
-    //  return ProblemDefinition.Evaluate(individual, random);
-    //}
-
-    //public override void Analyze(Individual[] individuals, double[] qualities, ResultCollection results, IRandom random) {
-    //  ProblemDefinition.Analyze(individuals, qualities, results, random);
-    //}
-
-    //public override IEnumerable<Individual> GetNeighbors(Individual individual, IRandom random) {
-    //  return ProblemDefinition.GetNeighbors(individual, random);
-    //}
+    private void RegisterEvents() {
+      ProblemScript.ProblemDefinitionChanged += (o, e) => OnProblemDefinitionChanged();
+      ProblemScript.NameChanged += (o, e) => OnProblemScriptNameChanged();
+    }
   }
 }

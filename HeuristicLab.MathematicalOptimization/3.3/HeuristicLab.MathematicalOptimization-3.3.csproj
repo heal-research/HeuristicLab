@@ -130,16 +130,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="LinearProgramming\Algorithms\BopSolver.cs" />
-    <Compile Include="LinearProgramming\Algorithms\CoinOrSolver.cs" />
-    <Compile Include="LinearProgramming\Algorithms\GlopSolver.cs" />
-    <Compile Include="LinearProgramming\Algorithms\GlpkSolver.cs" />
+    <Compile Include="LinearProgramming\Algorithms\Solvers\BopSolver.cs" />
+    <Compile Include="LinearProgramming\Algorithms\Solvers\CoinOrSolver.cs" />
+    <Compile Include="LinearProgramming\Algorithms\Solvers\Base\ExternalSolver.cs" />
+    <Compile Include="LinearProgramming\Algorithms\Solvers\GlopSolver.cs" />
+    <Compile Include="LinearProgramming\Algorithms\Solvers\GlpkSolver.cs" />
+    <Compile Include="LinearProgramming\Algorithms\Solvers\Base\IExternalSolver.cs" />
+    <Compile Include="LinearProgramming\Algorithms\Solvers\Base\IIncrementalSolver.cs" />
+    <Compile Include="LinearProgramming\Algorithms\Solvers\Base\ExternalIncrementalSolver.cs" />
+    <Compile Include="LinearProgramming\Algorithms\Solvers\Base\IncrementalSolver.cs" />
     <Compile Include="LinearProgramming\Algorithms\LinearProgrammingType.cs" />
-    <Compile Include="LinearProgramming\Algorithms\ScipSolver.cs" />
+    <Compile Include="LinearProgramming\Algorithms\Solvers\ScipSolver.cs" />
     <Compile Include="LinearProgramming\BasisStatus.cs" />
-    <Compile Include="LinearProgramming\Algorithms\CplexSolver.cs" />
-    <Compile Include="LinearProgramming\Algorithms\GurobiSolver.cs" />
-    <Compile Include="LinearProgramming\Algorithms\ISolver.cs" />
+    <Compile Include="LinearProgramming\Algorithms\Solvers\CplexSolver.cs" />
+    <Compile Include="LinearProgramming\Algorithms\Solvers\GurobiSolver.cs" />
+    <Compile Include="LinearProgramming\Algorithms\Solvers\Base\ISolver.cs" />
+    <Compile Include="LinearProgramming\IncrementalityValues.cs" />
+    <Compile Include="LinearProgramming\IntegerParam.cs" />
+    <Compile Include="LinearProgramming\LpAlgorithmValues.cs" />
     <Compile Include="LinearProgramming\Problems\ILinearProgrammingProblemDefinition.cs" />
     <Compile Include="LinearProgramming\Algorithms\LinearProgrammingAlgorithm.cs" />
     <Compile Include="LinearProgramming\Problems\LinearProgrammingProblem.cs" />
@@ -148,7 +156,8 @@
     <Compile Include="LinearProgramming\Problems\LinearProgrammingProblemDefintion.cs" />
     <Compile Include="LinearProgramming\OptimizationProblemType.cs" />
     <Compile Include="LinearProgramming\Problems\ProblemDefinitionScriptException.cs" />
-    <Compile Include="LinearProgramming\Algorithms\Solver.cs" />
+    <Compile Include="LinearProgramming\Algorithms\Solvers\Base\Solver.cs" />
+    <Compile Include="LinearProgramming\DoubleParam.cs" />
     <Compile Include="LinearProgramming\Views\LinearProgrammingProblemDefinitionScriptView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -178,6 +187,10 @@
     <None Include="HeuristicLab.snk" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\HeuristicLab.Analysis\3.3\HeuristicLab.Analysis-3.3.csproj">
+      <Project>{887425B4-4348-49ED-A457-B7D2C26DDBF9}</Project>
+      <Name>HeuristicLab.Analysis-3.3</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Clients.OKB\3.3\HeuristicLab.Clients.OKB-3.3.csproj">
       <Project>{73857A9C-9706-4B72-8D9C-210B5B6A5691}</Project>
       <Name>HeuristicLab.Clients.OKB-3.3</Name>

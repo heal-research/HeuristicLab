@@ -1,4 +1,5 @@
 ﻿#region License Information
+
 /* HeuristicLab
  * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -17,7 +18,8 @@
  * You should have received a copy of the GNU General Public License
  * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
  */
-#endregion
+
+#endregion License Information
 
 using System;
 using System.Linq;
@@ -31,6 +33,7 @@ using HeuristicLab.Problems.Programmable;
 using HeuristicLab.Scripting;
 
 namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Problems {
+
   [Item("Single-objective Problem Definition Script", "Script that defines the parameter vector and evaluates the solution for a programmable problem.")]
   [StorableClass]
   public sealed class LinearProgrammingProblemDefinitionScript : Script, ILinearProgrammingProblemDefinition, IStorableContent {
@@ -38,6 +41,7 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Problems {
 
     [Storable]
     private VariableStore variableStore;
+
     public VariableStore VariableStore => variableStore;
 
     [Storable]
@@ -45,6 +49,7 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Problems {
 
     [StorableConstructor]
     protected LinearProgrammingProblemDefinitionScript(bool deserializing) : base(deserializing) { }
+
     protected LinearProgrammingProblemDefinitionScript(LinearProgrammingProblemDefinitionScript original, Cloner cloner)
       : base(original, cloner) {
       variableStore = cloner.Clone(original.variableStore);
@@ -58,13 +63,15 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Problems {
 
     private readonly object compileLock = new object();
     private volatile ILinearProgrammingProblemDefinition compiledProblemDefinition;
+
     protected ILinearProgrammingProblemDefinition CompiledProblemDefinition {
       get {
         // double checked locking pattern
         if (compiledProblemDefinition == null) {
           lock (compileLock) {
             if (compiledProblemDefinition == null) {
-              if (codeChanged) throw new ProblemDefinitionScriptException("The code has been changed, but was not recompiled.");
+              if (codeChanged)
+                throw new ProblemDefinitionScriptException("The code has been changed, but was not recompiled.");
               Compile(false);
             }
           }
@@ -72,26 +79,31 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Problems {
         return compiledProblemDefinition;
       }
     }
+
     public dynamic Instance => compiledProblemDefinition;
 
-    public override Assembly Compile() {
-      return Compile(true);
-    }
+    public override Assembly Compile() => Compile(true);
 
     private Assembly Compile(bool fireChanged) {
       var assembly = base.Compile();
       var types = assembly.GetTypes();
       if (!types.Any(x => typeof(CompiledProblemDefinition).IsAssignableFrom(x)))
-        throw new ProblemDefinitionScriptException("The compiled code doesn't contain a problem definition." + Environment.NewLine + "The problem definition must be a subclass of CompiledProblemDefinition.");
+        throw new ProblemDefinitionScriptException("The compiled code doesn't contain a problem definition." +
+                                                   Environment.NewLine +
+                                                   "The problem definition must be a subclass of CompiledProblemDefinition.");
       if (types.Count(x => typeof(CompiledProblemDefinition).IsAssignableFrom(x)) > 1)
-        throw new ProblemDefinitionScriptException("The compiled code contains multiple problem definitions." + Environment.NewLine + "Only one subclass of CompiledProblemDefinition is allowed.");
+        throw new ProblemDefinitionScriptException("The compiled code contains multiple problem definitions." +
+                                                   Environment.NewLine +
+                                                   "Only one subclass of CompiledProblemDefinition is allowed.");
 
       CompiledProblemDefinition inst;
       try {
-        inst = (CompiledProblemDefinition)Activator.CreateInstance(types.Single(x => typeof(CompiledProblemDefinition).IsAssignableFrom(x)));
+        inst = (CompiledProblemDefinition)Activator.CreateInstance(types.Single(x =>
+         typeof(CompiledProblemDefinition).IsAssignableFrom(x)));
       } catch (Exception e) {
         compiledProblemDefinition = null;
-        throw new ProblemDefinitionScriptException("Instantiating the problem definition failed." + Environment.NewLine + "Check your default constructor.", e);
+        throw new ProblemDefinitionScriptException(
+          "Instantiating the problem definition failed." + Environment.NewLine + "Check your default constructor.", e);
       }
 
       try {
@@ -99,7 +111,8 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Problems {
         inst.Initialize();
       } catch (Exception e) {
         compiledProblemDefinition = null;
-        throw new ProblemDefinitionScriptException("Initializing the problem definition failed." + Environment.NewLine + "Check your Initialize() method.", e);
+        throw new ProblemDefinitionScriptException(
+          "Initializing the problem definition failed." + Environment.NewLine + "Check your Initialize() method.", e);
       }
 
       try {
@@ -107,7 +120,9 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Problems {
         if (fireChanged) OnProblemDefinitionChanged();
       } catch (Exception e) {
         compiledProblemDefinition = null;
-        throw new ProblemDefinitionScriptException("Using the problem definition in the problem failed." + Environment.NewLine + "Examine this error message carefully (often there is an issue with the defined encoding).", e);
+        throw new ProblemDefinitionScriptException(
+          "Using the problem definition in the problem failed." + Environment.NewLine +
+          "Examine this error message carefully (often there is an issue with the defined encoding).", e);
       }
 
       codeChanged = false;
@@ -121,10 +136,8 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Problems {
     }
 
     public event EventHandler ProblemDefinitionChanged;
-    private void OnProblemDefinitionChanged() {
-      var handler = ProblemDefinitionChanged;
-      if (handler != null) handler(this, EventArgs.Empty);
-    }
+
+    private void OnProblemDefinitionChanged() => ProblemDefinitionChanged?.Invoke(this, EventArgs.Empty);
 
     public string Filename { get; set; }
 

@@ -8,14 +8,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using System.CodeDom.Compiler;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
-using System.Resources;
-using System.Runtime.CompilerServices;
-
 namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
   /// <summary>
   ///   A strongly-typed resource class, for looking up localized strings, etc.
@@ -24,27 +16,27 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
   // class via a tool like ResGen or Visual Studio.
   // To add or remove a member, edit your .ResX file then rerun ResGen
   // with the /str option, or rebuild your VS project.
-  [GeneratedCode("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
-  [DebuggerNonUserCode()]
-  [CompilerGenerated()]
+  [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+  [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
   internal class ScriptTemplates {
 
-    private static ResourceManager resourceMan;
+    private static global::System.Resources.ResourceManager resourceMan;
 
-    private static CultureInfo resourceCulture;
+    private static global::System.Globalization.CultureInfo resourceCulture;
 
-    [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+    [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
     internal ScriptTemplates() {
     }
 
     /// <summary>
     ///   Returns the cached ResourceManager instance used by this class.
     /// </summary>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    internal static ResourceManager ResourceManager {
+    [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
+    internal static global::System.Resources.ResourceManager ResourceManager {
       get {
-        if (ReferenceEquals(resourceMan, null)) {
-          ResourceManager temp = new ResourceManager("HeuristicLab.MathematicalOptimization.LinearProgramming.Templates.ScriptTemplates" +
+        if (object.ReferenceEquals(resourceMan, null)) {
+          global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("HeuristicLab.MathematicalOptimization.LinearProgramming.Templates.ScriptTemplates" +
                   "", typeof(ScriptTemplates).Assembly);
           resourceMan = temp;
         }
@@ -56,8 +48,8 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
     ///   Overrides the current thread's CurrentUICulture property for all
     ///   resource lookups using this strongly typed resource class.
     /// </summary>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    internal static CultureInfo Culture {
+    [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
+    internal static global::System.Globalization.CultureInfo Culture {
       get {
         return resourceCulture;
       }
@@ -67,20 +59,20 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
     }
 
     /// <summary>
-    ///   Looks up a localized string similar to using System;
-    ///using System.Linq;
-    ///using System.Collections.Generic;
-    ///using HeuristicLab.Common;
-    ///using HeuristicLab.Core;
+    ///   Looks up a localized string similar to using Google.OrTools.LinearSolver;
     ///using HeuristicLab.Data;
-    ///using HeuristicLab.Encodings.BinaryVectorEncoding;
-    ///using HeuristicLab.Encodings.IntegerVectorEncoding;
-    ///using HeuristicLab.Encodings.RealVectorEncoding;
-    ///using HeuristicLab.Encodings.PermutationEncoding;
-    ///using HeuristicLab.Encodings.LinearLinkageEncoding;
-    ///using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
+    ///using HeuristicLab.MathematicalOptimization.LinearProgramming.Problems;
     ///using HeuristicLab.Optimization;
-    ///using H [rest of string was truncated]&quot;;.
+    ///using HeuristicLab.Problems.Programmable;
+    ///
+    ///namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
+    ///  public class CompiledLinearProgrammingProblemDefinition : CompiledProblemDefinition, ILinearProgrammingProblemDefinition {
+    ///
+    ///    private Variable x;
+    ///    private Variable y;
+    ///
+    ///    public override void Initialize() {
+    ///      // [rest of string was truncated]&quot;;.
     /// </summary>
     internal static string CompiledLinearProgrammingProblemDefinition {
       get {

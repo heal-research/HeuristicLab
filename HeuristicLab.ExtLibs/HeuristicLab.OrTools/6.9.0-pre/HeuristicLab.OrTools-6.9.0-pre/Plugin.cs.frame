@@ -27,10 +27,10 @@ namespace HeuristicLab.OrTools {
   [PluginFile("HeuristicLab.OrTools-6.9.0-pre.dll", PluginFileType.Assembly)]
   [PluginFile("Google.OrTools.dll", PluginFileType.Assembly)]
   [PluginFile("Google.OrTools-license.txt", PluginFileType.License)]
-  [PluginFile("runtime.win-x64.Google.OrTools.dll", PluginFileType.NativeDll)]
+  [PluginFile("Google.OrTools.runtime.win-x64.dll", PluginFileType.NativeDll)]
   [PluginFile("Google.OrTools_version.txt", PluginFileType.Data)]
   [PluginFile("glpk_4_65.dll", PluginFileType.NativeDll)]
-  [PluginFile("GLPK-4.65-license.txt", PluginFileType.License)]
+  [PluginFile("glpk-license.txt", PluginFileType.License)]
   public class HeuristicLabOrToolsPlugin : PluginBase {
   }
 }

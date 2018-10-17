@@ -36,11 +36,13 @@ namespace HeuristicLab.Optimization.Views {
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
       pauseButton.Enabled &= Content != null && Content.SupportsPause;
+      stopButton.Enabled &= Content != null && Content.SupportsStop;
     }
 
     protected override void SetEnabledStateOfExecutableButtons() {
       base.SetEnabledStateOfExecutableButtons();
       pauseButton.Enabled &= Content != null && Content.SupportsPause;
+      stopButton.Enabled &= Content != null && Content.SupportsStop;
     }
   }
 }

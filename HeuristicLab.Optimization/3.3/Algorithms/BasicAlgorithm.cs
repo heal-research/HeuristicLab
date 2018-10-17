@@ -35,6 +35,9 @@ namespace HeuristicLab.Optimization {
     public string Filename { get; set; }
 
     public abstract bool SupportsPause { get; }
+    public virtual bool SupportsStop {
+      get { return true; }
+    }
 
     [Storable]
     private bool initialized;

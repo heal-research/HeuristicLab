@@ -2,14 +2,13 @@
 using HeuristicLab.Problems.Programmable;
 
 namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Problems {
+
   public class LinearProgrammingProblemDefintion : CompiledProblemDefinition {
 
-    public override void Initialize() {
-
+    public void BuildModel(Solver solver) {
     }
 
-    public void BuildModel(Solver solver) {
-
+    public override void Initialize() {
     }
   }
 }

@@ -1,4 +1,5 @@
 ﻿#region License Information
+
 /* HeuristicLab
  * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -17,14 +18,18 @@
  * You should have received a copy of the GNU General Public License
  * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
  */
-#endregion
+
+#endregion License Information
 
 using Google.OrTools.LinearSolver;
 using HeuristicLab.Optimization;
 
 namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Problems {
+
   public interface ILinearProgrammingProblemDefinition {
+
     void BuildModel(Solver solver);
+
     void Analyze(Solver solver, ResultCollection results);
   }
 }
