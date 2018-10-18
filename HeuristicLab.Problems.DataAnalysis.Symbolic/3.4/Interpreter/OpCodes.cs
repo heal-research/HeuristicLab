@@ -137,7 +137,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       { typeof(Bessel), OpCodes.Bessel},
       { typeof(FactorVariable), OpCodes.FactorVariable },
       { typeof(BinaryFactorVariable), OpCodes.BinaryFactorVariable },
-      { typeof(Absolute), OpCodes.Absolute }
+      { typeof(Absolute), OpCodes.Absolute }, 
       { typeof(AnalyticalQuotient), OpCodes.AnalyticalQuotient }
     };
 
