@@ -47,6 +47,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var sub = new Subtraction();
       var mul = new Multiplication();
       var div = new Division();
+      var aq = new AnalyticalQuotient();
       var mean = new Average();
       var sin = new Sine();
       var cos = new Cosine();
@@ -123,14 +124,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       autoregressiveVariable.InitialFrequency = 0.0;
       autoregressiveVariable.Enabled = false;
 
-      var allSymbols = new List<Symbol>() { add, sub, mul, div, mean, abs, sin, cos, tan, log, square, pow, sqrt, root, exp,
+      var allSymbols = new List<Symbol>() { add, sub, mul, div, aq, mean, abs, sin, cos, tan, log, square, pow, sqrt, root, exp,
         airyA, airyB, bessel, cosineIntegral, dawson, erf, expIntegralEi, fresnelCosineIntegral, fresnelSineIntegral, gamma, hypCosineIntegral, hypSineIntegral, norm, psi, sineIntegral,
         @if, gt, lt, and, or, not,xor, timeLag, integral, derivative, constant, variableSymbol, binFactorVariable, factorVariable, laggedVariable,autoregressiveVariable, variableCondition };
       var unaryFunctionSymbols = new List<Symbol>() { abs, square, sqrt, sin, cos, tan, log, exp, not, timeLag, integral, derivative,
         airyA, airyB, bessel, cosineIntegral, dawson, erf, expIntegralEi, fresnelCosineIntegral, fresnelSineIntegral, gamma, hypCosineIntegral, hypSineIntegral, norm, psi, sineIntegral
       };
 
-      var binaryFunctionSymbols = new List<Symbol>() { pow, root, gt, lt, variableCondition };
+      var binaryFunctionSymbols = new List<Symbol>() { pow, root, gt, lt, aq, variableCondition };
       var ternarySymbols = new List<Symbol>() { add, sub, mul, div, mean, and, or, xor };
       var terminalSymbols = new List<Symbol>() { variableSymbol, binFactorVariable, factorVariable, constant, laggedVariable, autoregressiveVariable };
 

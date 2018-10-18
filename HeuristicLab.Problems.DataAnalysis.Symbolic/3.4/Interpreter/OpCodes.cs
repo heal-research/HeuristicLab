@@ -85,6 +85,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public const byte FactorVariable = 46;
     public const byte BinaryFactorVariable = 47;
     public const byte Absolute = 48;
+    public const byte AnalyticalQuotient = 49;
 
 
     private static Dictionary<Type, byte> symbolToOpcode = new Dictionary<Type, byte>() {
@@ -136,7 +137,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       { typeof(Bessel), OpCodes.Bessel},
       { typeof(FactorVariable), OpCodes.FactorVariable },
       { typeof(BinaryFactorVariable), OpCodes.BinaryFactorVariable },
-      {typeof(Absolute), OpCodes.Absolute }
+      { typeof(Absolute), OpCodes.Absolute }
+      { typeof(AnalyticalQuotient), OpCodes.AnalyticalQuotient }
     };
 
     public static byte MapSymbolToOpCode(ISymbolicExpressionTreeNode treeNode) {

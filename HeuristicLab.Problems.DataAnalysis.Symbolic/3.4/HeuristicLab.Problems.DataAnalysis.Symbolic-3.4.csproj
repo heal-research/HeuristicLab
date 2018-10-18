@@ -207,6 +207,7 @@
     <Compile Include="Symbols\Bessel.cs" />
     <Compile Include="Symbols\BinaryFactorVariable.cs" />
     <Compile Include="Symbols\BinaryFactorVariableTreeNode.cs" />
+    <Compile Include="Symbols\AnalyticalQuotient.cs" />
     <Compile Include="Symbols\FactorVariableTreeNode.cs" />
     <Compile Include="Symbols\FactorVariable.cs" />
     <Compile Include="Symbols\Absolute.cs" />
