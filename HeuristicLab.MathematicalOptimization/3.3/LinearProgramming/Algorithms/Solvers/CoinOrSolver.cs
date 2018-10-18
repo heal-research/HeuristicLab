@@ -26,7 +26,7 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms.Sol
       };
     }
 
-    public override OptimizationProblemType OptimizationProblemType =>
+    protected override OptimizationProblemType OptimizationProblemType =>
       LinearProgrammingType == LinearProgrammingType.LinearProgramming
         ? OptimizationProblemType.CLP_LINEAR_PROGRAMMING
         : OptimizationProblemType.CBC_MIXED_INTEGER_PROGRAMMING;

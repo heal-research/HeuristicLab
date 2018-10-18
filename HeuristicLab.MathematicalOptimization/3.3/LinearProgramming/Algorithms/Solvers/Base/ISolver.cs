@@ -5,7 +5,6 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms.Sol
 
   public interface ISolver : IParameterizedNamedItem {
     LinearProgrammingType LinearProgrammingType { get; set; }
-    OptimizationProblemType OptimizationProblemType { get; }
     bool SupportsPause { get; }
     bool SupportsStop { get; }
 

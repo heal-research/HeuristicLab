@@ -13,8 +13,11 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms.Sol
       programmingTypeParam.Value = (EnumValue<LinearProgrammingType>)programmingTypeParam.Value.AsReadOnly();
     }
 
-    public override OptimizationProblemType OptimizationProblemType => OptimizationProblemType.GLOP_LINEAR_PROGRAMMING;
     public override bool SupportsPause => true;
+
     public override bool SupportsStop => true;
+
+    protected override OptimizationProblemType OptimizationProblemType =>
+              OptimizationProblemType.GLOP_LINEAR_PROGRAMMING;
   }
 }

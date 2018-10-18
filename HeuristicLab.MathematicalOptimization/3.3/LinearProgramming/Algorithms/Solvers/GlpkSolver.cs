@@ -12,7 +12,7 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms.Sol
 
     public GlpkSolver() {
       Parameters.Add(libraryNameParam = new FixedValueParameter<FileValue>(nameof(LibraryName),
-        new FileValue { FileDialogFilter = FileDialogFilter, Value = "glpk465.dll" }));
+        new FileValue { FileDialogFilter = FileDialogFilter, Value = Properties.Settings.Default.GlpkLibraryName }));
 
       programmingTypeParam.Value.ValueChanged += (sender, args) => {
         if (((EnumValue<LinearProgrammingType>)sender).Value == LinearProgrammingType.LinearProgramming) {
@@ -30,7 +30,7 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms.Sol
       };
     }
 
-    public override OptimizationProblemType OptimizationProblemType =>
+    protected override OptimizationProblemType OptimizationProblemType =>
       LinearProgrammingType == LinearProgrammingType.LinearProgramming
         ? OptimizationProblemType.GLPK_LINEAR_PROGRAMMING
         : OptimizationProblemType.GLPK_MIXED_INTEGER_PROGRAMMING;

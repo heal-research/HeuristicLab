@@ -110,17 +110,13 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Google.OrTools, Version=0.0.0.0, Culture=neutral, PublicKeyToken=e028b7d783ee8af0, processorArchitecture=AMD64">
+    <Reference Include="Google.OrTools, Version=6.9.5866.0, Culture=neutral, PublicKeyToken=5d849a56a8afc8c7, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\bin\Google.OrTools.dll</HintPath>
     </Reference>
     <Reference Include="HeuristicLab.OrTools-6.9.0-pre, Version=6.8.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\bin\HeuristicLab.OrTools-6.9.0-pre.dll</HintPath>
-    </Reference>
-    <Reference Include="HeuristicLab.PluginInfrastructure-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\bin\HeuristicLab.PluginInfrastructure-3.3.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -179,21 +175,36 @@
       <DependentUpon>ScriptTemplates.resx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <DependentUpon>Settings.settings</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <None Include="app.config" />
     <None Include="Plugin.cs.frame" />
     <Compile Include="Plugin.cs" />
     <None Include="Properties\AssemblyInfo.cs.frame" />
+    <None Include="Properties\Settings.settings">
+      <Generator>PublicSettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="LinearProgramming\Templates\ScriptTemplates.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ScriptTemplates.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LinearProgramming\Views\LinearProgrammingProblemView.resx">
+      <DependentUpon>LinearProgrammingProblemView.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\..\HeuristicLab.Analysis\3.3\HeuristicLab.Analysis-3.3.csproj">
       <Project>{887425B4-4348-49ED-A457-B7D2C26DDBF9}</Project>
       <Name>HeuristicLab.Analysis-3.3</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Clients.OKB\3.3\HeuristicLab.Clients.OKB-3.3.csproj">
-      <Project>{73857A9C-9706-4B72-8D9C-210B5B6A5691}</Project>
-      <Name>HeuristicLab.Clients.OKB-3.3</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.CodeEditor\3.4\HeuristicLab.CodeEditor-3.4.csproj">
       <Project>{C38691AE-ECB4-489A-A05D-B035554E0168}</Project>
@@ -231,10 +242,6 @@
       <Project>{3BD61258-31DA-4B09-89C0-4F71FEF5F05A}</Project>
       <Name>HeuristicLab.MainForm-3.3</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Optimization.Operators\3.3\HeuristicLab.Optimization.Operators-3.3.csproj">
-      <Project>{25087811-F74C-4128-BC86-8324271DA13E}</Project>
-      <Name>HeuristicLab.Optimization.Operators-3.3</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Optimization\3.3\HeuristicLab.Optimization-3.3.csproj">
       <Project>{14AB8D24-25BC-400C-A846-4627AA945192}</Project>
       <Name>HeuristicLab.Optimization-3.3</Name>
@@ -246,6 +253,10 @@
     <ProjectReference Include="..\..\HeuristicLab.Persistence\3.3\HeuristicLab.Persistence-3.3.csproj">
       <Project>{102BC7D3-0EF9-439C-8F6D-96FF0FDB8E1B}</Project>
       <Name>HeuristicLab.Persistence-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\3.3\HeuristicLab.PluginInfrastructure-3.3.csproj">
+      <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
+      <Name>HeuristicLab.PluginInfrastructure-3.3</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Problems.Programmable\3.3\HeuristicLab.Problems.Programmable-3.3.csproj">
       <Project>{EE07BFF8-B23D-41F5-8AD7-AC9598D7A2C9}</Project>
@@ -259,15 +270,6 @@
       <Project>{21977CC3-1757-4B3B-87BD-FF817AAA900F}</Project>
       <Name>HeuristicLab.Scripting-3.3</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="LinearProgramming\Templates\ScriptTemplates.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>ScriptTemplates.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="LinearProgramming\Views\LinearProgrammingProblemView.resx">
-      <DependentUpon>LinearProgrammingProblemView.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

@@ -12,10 +12,10 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms.Sol
 
     public CplexSolver() {
       Parameters.Add(libraryNameParam = new FixedValueParameter<FileValue>(nameof(LibraryName),
-        new FileValue { FileDialogFilter = FileDialogFilter, Value = "cplex1280.dll" }));
+        new FileValue { FileDialogFilter = FileDialogFilter, Value = Properties.Settings.Default.CplexLibraryName }));
     }
 
-    public override OptimizationProblemType OptimizationProblemType =>
+    protected override OptimizationProblemType OptimizationProblemType =>
       LinearProgrammingType == LinearProgrammingType.LinearProgramming
         ? OptimizationProblemType.CPLEX_LINEAR_PROGRAMMING
         : OptimizationProblemType.CPLEX_MIXED_INTEGER_PROGRAMMING;

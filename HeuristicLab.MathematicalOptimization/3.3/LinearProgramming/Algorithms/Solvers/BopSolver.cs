@@ -12,8 +12,11 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms.Sol
       Parameters.Remove(programmingTypeParam);
     }
 
-    public override OptimizationProblemType OptimizationProblemType => OptimizationProblemType.BOP_INTEGER_PROGRAMMING;
     public override bool SupportsPause => true;
+
     public override bool SupportsStop => true;
+
+    protected override OptimizationProblemType OptimizationProblemType =>
+              OptimizationProblemType.BOP_INTEGER_PROGRAMMING;
   }
 }

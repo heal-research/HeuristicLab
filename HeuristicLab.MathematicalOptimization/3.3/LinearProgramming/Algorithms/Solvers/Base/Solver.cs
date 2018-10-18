@@ -37,7 +37,7 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms.Sol
       set => programmingTypeParam.Value.Value = value;
     }
 
-    public virtual OptimizationProblemType OptimizationProblemType { get; }
+    protected virtual OptimizationProblemType OptimizationProblemType { get; }
     public virtual bool SupportsPause => false;
     public virtual bool SupportsStop => false;
 
@@ -52,14 +52,14 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms.Sol
     }
 
     public virtual void Solve(LinearProgrammingAlgorithm algorithm, CancellationToken cancellationToken) =>
-      Solve(algorithm, CancellationToken.None);
+      Solve(algorithm);
 
     public virtual void Solve(LinearProgrammingAlgorithm algorithm) =>
       Solve(algorithm, algorithm.TimeLimit, false);
 
     public virtual void Solve(LinearProgrammingAlgorithm algorithm, TimeSpan timeLimit, bool incrementality) {
-      var libraryName = string.Empty;
-      if (this is ExternalSolver externalSolver)
+      string libraryName = null;
+      if (this is IExternalSolver externalSolver)
         libraryName = externalSolver.LibraryName;
 
       if (solver == null) {

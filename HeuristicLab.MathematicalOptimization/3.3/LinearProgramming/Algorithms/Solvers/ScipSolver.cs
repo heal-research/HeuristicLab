@@ -12,16 +12,17 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms.Sol
 
     public ScipSolver() {
       Parameters.Add(libraryNameParam = new FixedValueParameter<FileValue>(nameof(LibraryName),
-        new FileValue { FileDialogFilter = FileDialogFilter, Value = "scip.dll" }));
+        new FileValue { FileDialogFilter = FileDialogFilter, Value = Properties.Settings.Default.ScipLibraryName }));
       programmingTypeParam.Value =
         (EnumValue<LinearProgrammingType>)new EnumValue<LinearProgrammingType>(LinearProgrammingType
           .MixedIntegerProgramming).AsReadOnly();
     }
 
-    public override OptimizationProblemType OptimizationProblemType =>
-      OptimizationProblemType.SCIP_MIXED_INTEGER_PROGRAMMING;
-
     public override bool SupportsPause => true;
+
     public override bool SupportsStop => true;
+
+    protected override OptimizationProblemType OptimizationProblemType =>
+              OptimizationProblemType.SCIP_MIXED_INTEGER_PROGRAMMING;
   }
 }

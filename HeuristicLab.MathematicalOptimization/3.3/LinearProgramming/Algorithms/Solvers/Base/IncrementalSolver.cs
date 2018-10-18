@@ -65,7 +65,7 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms.Sol
 
     public override void Solve(LinearProgrammingAlgorithm algorithm, CancellationToken cancellationToken) {
       if (!Incrementality) {
-        base.Solve(algorithm);
+        base.Solve(algorithm, cancellationToken);
         return;
       }
 
@@ -78,7 +78,7 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms.Sol
           timeLimit -= wallTime.Value;
         }
       }
-    
+
       var iterations = (long)timeLimit.TotalMilliseconds / (long)QualityUpdateInterval.TotalMilliseconds;
       var remaining = timeLimit - TimeSpan.FromMilliseconds(iterations * QualityUpdateInterval.TotalMilliseconds);
       var validResultStatuses = new[] { ResultStatus.NOT_SOLVED, ResultStatus.FEASIBLE };

@@ -13,7 +13,7 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms.Sol
 
     public GurobiSolver() {
       Parameters.Add(libraryNameParam = new FixedValueParameter<FileValue>(nameof(LibraryName),
-        new FileValue { FileDialogFilter = FileDialogFilter, Value = "gurobi80.dll" }));
+        new FileValue { FileDialogFilter = FileDialogFilter, Value = Properties.Settings.Default.GurobiLibraryName }));
     }
 
     protected GurobiSolver(GurobiSolver original, Cloner cloner)
@@ -21,12 +21,13 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms.Sol
       programmingTypeParam = cloner.Clone(original.programmingTypeParam);
     }
 
-    public override OptimizationProblemType OptimizationProblemType =>
-      LinearProgrammingType == LinearProgrammingType.LinearProgramming
+    public override bool SupportsPause => true;
+
+    public override bool SupportsStop => true;
+
+    protected override OptimizationProblemType OptimizationProblemType =>
+              LinearProgrammingType == LinearProgrammingType.LinearProgramming
         ? OptimizationProblemType.GUROBI_LINEAR_PROGRAMMING
         : OptimizationProblemType.GUROBI_MIXED_INTEGER_PROGRAMMING;
-
-    public override bool SupportsPause => true;
-    public override bool SupportsStop => true;
   }
 }
