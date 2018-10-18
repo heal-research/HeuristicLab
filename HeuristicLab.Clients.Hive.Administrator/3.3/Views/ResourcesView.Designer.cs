@@ -163,6 +163,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       this.treeView.DragEnter += new System.Windows.Forms.DragEventHandler(this.treeSlaveGroup_DragEnterOver);
       this.treeView.DragOver += new System.Windows.Forms.DragEventHandler(this.treeSlaveGroup_DragEnterOver);
       this.treeView.BeforeCheck += new System.Windows.Forms.TreeViewCancelEventHandler(this.treeSlaveGroup_BeforeCheck);
+      this.treeView.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.treeSlaveGroup_AfterCheck);
       // 
       // tabSlaveGroup
       // 

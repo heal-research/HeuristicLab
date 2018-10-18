@@ -25,6 +25,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.Collections;
+using HeuristicLab.Common;
 using HeuristicLab.Common.Resources;
 using HeuristicLab.Core;
 using HeuristicLab.Core.Views;
@@ -262,30 +263,27 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
     private void resourcesTreeView_MouseDown(object sender, MouseEventArgs e) {
       var node = resourcesTreeView.GetNodeAt(new Point(e.X, e.Y));
 
-      if (node == null || node == additionalNode) {
+      if (node == null && e.Button == MouseButtons.Left) {
         resourcesTreeView.SelectedNode = null;
         ExtractStatistics();
-      } else {
-        var r = (Resource)node.Tag;
-        if (!HiveClient.Instance.DisabledParentResources.Contains(r)) {
-          ExtractStatistics((Resource)node.Tag);
-        } else {
-          resourcesTreeView.SelectedNode = null;
-          ExtractStatistics();
-        } 
       }
     }
 
     private void resourcesTreeView_BeforeSelect(object sender, TreeViewCancelEventArgs e) {
-      if(e.Node == null || e.Node == additionalNode) {
+      if(e.Node == null) {
+        e.Cancel = true;
+        resourcesTreeView.SelectedNode = null;
+        ExtractStatistics();
+      } else if (e.Node == additionalNode) {
         e.Cancel = true;
       } else {
         var r = (Resource)e.Node.Tag;
-        if(r == null || HiveClient.Instance.DisabledParentResources.Contains(r)) {
+        if(r != null && !HiveClient.Instance.DisabledParentResources.Contains(r)) {
+          ExtractStatistics(r);
+        } else {
           e.Cancel = true;
         }
       }
-
     }
 
     private void resourcesTreeView_BeforeCheck(object sender, TreeViewCancelEventArgs e) {
@@ -298,11 +296,6 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
           || HiveClient.Instance.DisabledParentResources.Contains(checkedResource)
           || newIncludedResources.Contains(checkedResource)) {
           e.Cancel = true;
-
-          var selectedNode = resourcesTreeView.SelectedNode;
-          var selectedResource = (Resource)(selectedNode != null ? selectedNode.Tag : null);
-
-          ExtractStatistics(selectedResource);
         }
       }
     }
@@ -316,7 +309,8 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       }
 
       UpdateResourceTreeAfterCheck();
-      ExtractStatistics();
+      if(resourcesTreeView.SelectedNode == null)
+        ExtractStatistics();
       OnAssignedResourcesChanged();
     }
 
@@ -547,7 +541,8 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       resourcesTreeView.BeforeCheck -= resourcesTreeView_BeforeCheck;
       resourcesTreeView.AfterCheck -= resourcesTreeView_AfterCheck;
 
-      var disabledParentResources = HiveClient.Instance.DisabledParentResources;
+      //var disabledParentResources = HiveClient.Instance.DisabledParentResources;
+      var disabledParentResources = HiveClient.Instance.GetDisabledResourceAncestors(resources);
       var mainResources = new HashSet<Resource>(resources.OfType<SlaveGroup>().Where(x => x.ParentResourceId == null));
       //var parentedMainResources = new HashSet<Resource>(resources.OfType<SlaveGroup>()
       //  .Where(x => x.ParentResourceId.HasValue && !resources.Select(y => y.Id).Contains(x.ParentResourceId.Value)));
@@ -642,6 +637,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
 
         additionalNode = new TreeNode(additionalSlavesGroupName) {
           ForeColor = SystemColors.GrayText,
+          ImageIndex = slaveGroupImageIndex,
           Tag = new SlaveGroup() {
             Name = additionalSlavesGroupName,
             Description = additionalSlavesGroupDescription
@@ -650,6 +646,25 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
 
         foreach (var slave in singleSlaves.OrderBy(x => x.Name)) {
           var slaveNode = new TreeNode(slave.Name) { Tag = slave };
+
+          if (newAssignedResources.Select(x => x.Id).Contains(slave.Id)) {
+            slaveNode.Checked = true;
+            if (!addedAssignments.Select(x => x.Id).Contains(slave.Id) &&
+                !removedAssignments.Select(x => x.Id).Contains(slave.Id)) {
+              slaveNode.Text += SELECTED_TAG;
+            }
+          }
+
+          if (addedAssignments.Select(x => x.Id).Contains(slave.Id)) {
+            slaveNode.BackColor = addedAssignmentColor;
+            slaveNode.ForeColor = controlTextColor;
+            slaveNode.Text += ADDED_SELECTION_TAG;
+          } else if (removedAssignments.Select(x => x.Id).Contains(slave.Id)) {
+            slaveNode.BackColor = removedAssignmentColor;
+            slaveNode.ForeColor = controlTextColor;
+            slaveNode.Text += REMOVED_SELECTION_TAG;
+          }
+
           additionalNode.Nodes.Add(slaveNode);
         }
 
@@ -666,8 +681,9 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       foreach(TreeNode n in nodes) {
         Resource r = (Resource)n.Tag;
         if(n.Nodes.Count > 0) {
-          if(HiveClient.Instance.GetAvailableResourceDescendants(r.Id).OfType<SlaveGroup>().Any()
-            || HiveClient.Instance.GetAvailableResourceDescendants(r.Id).OfType<Slave>().Intersect(assignedResources.Union(newAssignedResources)).Any()) {
+          if(HiveClient.Instance.GetAvailableResourceDescendants(r.Id).OfType<SlaveGroup>().Any()            
+            || HiveClient.Instance.GetAvailableResourceDescendants(r.Id).OfType<Slave>().Intersect(assignedResources.Union(newAssignedResources)).Any()
+            || (n == additionalNode && additionalNode.Nodes.Count > 0 && additionalNode.Nodes.Cast<TreeNode>().Any(x => x.Checked))) {
             n.Expand();
             ExpandResourceNodesOfInterest(n.Nodes);
           } else {

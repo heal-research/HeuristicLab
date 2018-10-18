@@ -117,6 +117,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
         else endDateTimePicker.Value = Content.StartDate;
         endDateTimePicker.Enabled = !indefiniteCheckBox.Checked;
       }
+      SetEnabledStateOfControls();
       RegisterControlEvents();
     }
 
@@ -133,12 +134,14 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       indefiniteCheckBox.Enabled = enabled;
 
       if (Content != null) {
-        var parentProject = HiveAdminClient.Instance.GetAvailableProjectAncestors(Content.Id).LastOrDefault();
-        if (parentProject == null || parentProject.EndDate.HasValue) {
+        //var parentProject = HiveAdminClient.Instance.GetAvailableProjectAncestors(Content.Id).LastOrDefault();
+        var parentProject = HiveAdminClient.Instance.Projects.FirstOrDefault(x => x.Id == Content.ParentProjectId);
+        if ((!IsAdmin() && (parentProject == null || parentProject.EndDate.HasValue))
+           || (IsAdmin() && parentProject != null && parentProject.EndDate.HasValue)) {
           indefiniteCheckBox.Enabled = false;
         }
 
-        if (!IsAdmin() && !HiveAdminClient.Instance.CheckOwnershipOfParentProject(Content, UserInformation.Instance.User.Id)) {
+        if (Content.Id != Guid.Empty && !IsAdmin() && !HiveAdminClient.Instance.CheckOwnershipOfParentProject(Content, UserInformation.Instance.User.Id)) {
           ownerComboBox.Enabled = false;
           startDateTimePicker.Enabled = false;
           endDateTimePicker.Enabled = false;

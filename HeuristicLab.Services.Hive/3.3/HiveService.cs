@@ -354,9 +354,15 @@ namespace HeuristicLab.Services.Hive {
 
         return pm.UseTransaction(() => {
           // check if user is granted to administer the requested projectId
-          var administrationGrantedProjects = projectDao
-            .GetAdministrationGrantedProjectsForUser(currentUserId)
-            .ToList();
+          bool isAdmin = RoleVerifier.IsInRole(HiveRoles.Administrator);
+          List<DA.Project> administrationGrantedProjects;
+          if (isAdmin) {
+            administrationGrantedProjects = projectDao.GetAll().ToList();
+          } else {
+            administrationGrantedProjects = projectDao
+              .GetAdministrationGrantedProjectsForUser(currentUserId)              
+              .ToList();
+          }
 
           if (administrationGrantedProjects.Select(x => x.ProjectId).Contains(projectId)) {
             var jobs = jobDao.GetByProjectId(projectId)
@@ -381,10 +387,16 @@ namespace HeuristicLab.Services.Hive {
         var jobDao = pm.JobDao;
         return pm.UseTransaction(() => {
           // check for which of requested projectIds the user is granted to administer
-          var administrationGrantedProjectIds = projectDao
-            .GetAdministrationGrantedProjectsForUser(currentUserId)
-            .Select(x => x.ProjectId)
-            .ToList();
+          bool isAdmin = RoleVerifier.IsInRole(HiveRoles.Administrator);
+          List<Guid> administrationGrantedProjectIds;
+          if (isAdmin) {
+            administrationGrantedProjectIds = projectDao.GetAll().Select(x => x.ProjectId).ToList();
+          } else {
+            administrationGrantedProjectIds = projectDao
+              .GetAdministrationGrantedProjectsForUser(currentUserId)
+              .Select(x => x.ProjectId)
+              .ToList();
+          }
           var requestedAndGrantedProjectIds = projectIds.Intersect(administrationGrantedProjectIds);
 
           if (requestedAndGrantedProjectIds.Any()) {
@@ -470,7 +482,6 @@ namespace HeuristicLab.Services.Hive {
             throw new InvalidOperationException(NO_JOB_UPDATE_POSSIBLE);
           }
 
-
           jobDto.CopyToEntity(job);
 
           if (!exists) {
@@ -507,17 +518,21 @@ namespace HeuristicLab.Services.Hive {
     }
 
     public void UpdateJobState(Guid jobId, DT.JobState jobState) {
+      if (jobState != JobState.StatisticsPending) return; // only process requests for "StatisticsPending"
+
       RoleVerifier.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
+      // check if user is an admin, or granted to administer a job-parenting project, or job owner
       AuthorizationManager.AuthorizeForJob(jobId, DT.Permission.Full);
+
       var pm = PersistenceManager;
       using (new PerformanceLogger("UpdateJobState")) {
-        var jobDao = pm.JobDao;
+        var jobDao = pm.JobDao;        
         pm.UseTransaction(() => {
           var job = jobDao.GetById(jobId);
-          if (job != null) {
+          if (job != null) {            
+
+            // note: allow solely state changes from "Online" to "StatisticsPending" = deletion request by user for HiveStatisticGenerator            
             var jobStateEntity = jobState.ToEntity();
-            // note: allow solely state changes from "Online" to "StatisticsPending" = deletion request by user for HiveStatisticGenerator
-            // and from "StatisticsPending" to "DeletionPending" = deletion request by HiveStatisticGenerator for EventManager
             if (job.State == DA.JobState.Online && jobStateEntity == DA.JobState.StatisticsPending) {
               job.State = jobStateEntity;
               foreach (var task in job.Tasks
@@ -526,9 +541,6 @@ namespace HeuristicLab.Services.Hive {
                 || x.State == DA.TaskState.Offline)) {
                 task.State = DA.TaskState.Aborted;
               }
-              pm.SubmitChanges();
-            } else if (job.State == DA.JobState.StatisticsPending && jobStateEntity == DA.JobState.DeletionPending) {
-              job.State = jobStateEntity;
               pm.SubmitChanges();
             }
           }
@@ -540,8 +552,9 @@ namespace HeuristicLab.Services.Hive {
       if (jobState != JobState.StatisticsPending) return; // only process requests for "StatisticsPending"
 
       RoleVerifier.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
-      bool isAdministrator = RoleVerifier.IsInRole(HiveRoles.Administrator);
-      var currentUserId = UserManager.CurrentUserId;
+      // check if user is an admin, or granted to administer a job-parenting project, or job owner
+      foreach (var jobId in jobIds)
+          AuthorizationManager.AuthorizeForJob(jobId, DT.Permission.Full);
 
       var pm = PersistenceManager;
       using (new PerformanceLogger("UpdateJobStates")) {
@@ -552,24 +565,18 @@ namespace HeuristicLab.Services.Hive {
             var job = jobDao.GetById(jobId);
             if (job != null) {
 
-              var administrationGrantedProjects = projectDao
-                .GetAdministrationGrantedProjectsForUser(currentUserId)
-                .ToList();
-
-              // check if user is granted to administer the job-parenting project
-              if (isAdministrator || administrationGrantedProjects.Contains(job.Project)) {
-                // note: allow solely state changes from "Online" to "StatisticsPending" = deletion request by user for HiveStatisticGenerator
-                if (job.State == DA.JobState.Online) {
-                  job.State = DA.JobState.StatisticsPending;
-                  foreach (var task in job.Tasks
-                  .Where(x => x.State == DA.TaskState.Waiting
-                    || x.State == DA.TaskState.Paused
-                    || x.State == DA.TaskState.Offline)) {
-                    task.State = DA.TaskState.Aborted;
-                  }
-                  pm.SubmitChanges();
+              // note: allow solely state changes from "Online" to "StatisticsPending" = deletion request by user for HiveStatisticGenerator
+              var jobStateEntity = jobState.ToEntity();
+              if (job.State == DA.JobState.Online && jobStateEntity == DA.JobState.StatisticsPending) {
+                job.State = jobStateEntity;
+                foreach (var task in job.Tasks
+                .Where(x => x.State == DA.TaskState.Waiting
+                  || x.State == DA.TaskState.Paused
+                  || x.State == DA.TaskState.Offline)) {
+                  task.State = DA.TaskState.Aborted;
                 }
-              }
+                pm.SubmitChanges();
+              }              
             }
           }
         });
@@ -1241,7 +1248,7 @@ namespace HeuristicLab.Services.Hive {
           bool isParent = parentProjects.Select(x => x.OwnerUserId == UserManager.CurrentUserId).Any();
 
           var assignedResources = project.AssignedProjectResources.Select(x => x.ResourceId).ToArray();
-          if (!isParent) resourceIds = assignedResources.ToList();
+          if (!isParent && !isAdmin) resourceIds = assignedResources.ToList();
           var removedAssignments = assignedResources.Except(resourceIds);
 
           // if user is admin or owner of parent project(s)

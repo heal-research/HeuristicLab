@@ -42,6 +42,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     private const string SELECTED_TAG = ""; // " [selected]";
     private const string NOT_STORED_TAG = "*"; // " [not stored]";
     private const string CHANGES_NOT_STORED_TAG = "*"; // " [changes not stored]";
+    private const string INACTIVE_TAG = " [inactive]"; 
 
     private readonly Color selectedBackColor = Color.DodgerBlue;
     private readonly Color selectedForeColor = Color.White;
@@ -105,33 +106,54 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       } else {
         BuildProjectTree(Content);
       }
+      SetEnabledStateOfControls();
     }
 
     protected override void SetEnabledStateOfControls() {
-      base.SetEnabledStateOfControls();
-      bool selectedProjectExists = selectedProject != null && selectedProject.Id != Guid.Empty && Content.Contains(selectedProject);
-      bool projectIsNew = selectedProject != null && selectedProject.Id == Guid.Empty;
-      bool locked = Content == null || selectedProject == null || Locked || ReadOnly;
-      bool parentOwner = HiveAdminClient.Instance.CheckOwnershipOfParentProject(selectedProject, UserInformation.Instance.User.Id);
-      bool saveLocked = locked || (!IsAdmin() && selectedProject.OwnerUserId != UserInformation.Instance.User.Id && !parentOwner);
-      bool addLocked = saveLocked || projectIsNew || selectedProject.Id == Guid.Empty;
-      bool deleteLocked = locked || (!IsAdmin() && !parentOwner) || Content.Where(x => x.ParentProjectId == selectedProject.Id).Any();
+      base.SetEnabledStateOfControls();      
 
-      var now = DateTime.Now;
-      if (!addLocked && (now < selectedProject.StartDate || now > selectedProject.EndDate)) addLocked = true;
+      bool locked = Content == null || Locked || ReadOnly;      
+      bool parentOwner = selectedProject != null && HiveAdminClient.Instance.CheckOwnershipOfParentProject(selectedProject, UserInformation.Instance.User.Id);
+      bool selectedProjectDisabled = selectedProject == null 
+                                     || selectedProject != null && selectedProject.Id == Guid.Empty;
+
+      bool selectedProjectHasJobs =
+        !selectedProjectDisabled && HiveAdminClient.Instance.Jobs.ContainsKey(selectedProject.Id)
+                                 && HiveAdminClient.Instance.Jobs[selectedProject.Id] != null
+                                 && HiveAdminClient.Instance.Jobs[selectedProject.Id].Any();
+
+      bool addLocked = locked
+                       || (selectedProject == null && !IsAdmin())
+                       || (selectedProject != null && selectedProject.Id == Guid.Empty)
+                       || (selectedProject != null && !IsAdmin() && !parentOwner && selectedProject.OwnerUserId != UserInformation.Instance.User.Id)
+                       || (selectedProject != null && (DateTime.Now < selectedProject.StartDate || DateTime.Now > selectedProject.EndDate));
+
+      bool deleteLocked = locked
+                          || !Content.Any()
+                          || selectedProject == null
+                          || Content.Any(x => x.ParentProjectId == selectedProject.Id)
+                          || selectedProjectHasJobs
+                          || (!IsAdmin() && !parentOwner);
+
+      bool saveLocked = locked
+                        || !Content.Any()
+                        || selectedProject == null
+                        || (!IsAdmin() && !parentOwner && selectedProject.OwnerUserId != UserInformation.Instance.User.Id);
+
 
       addButton.Enabled = !addLocked;
       removeButton.Enabled = !deleteLocked;
       saveProjectButton.Enabled = !saveLocked;
+
       projectView.Enabled = !locked;
-      projectPermissionsView.Enabled = !locked;
-      projectResourcesView.Enabled = !locked;
-      projectJobsView.Enabled = !locked;
+      projectPermissionsView.Enabled = !locked && !selectedProjectDisabled;
+      projectResourcesView.Enabled = !locked && !selectedProjectDisabled;
+      projectJobsView.Enabled = !locked && !selectedProjectDisabled;
 
       projectView.Locked = locked;
-      projectPermissionsView.Locked = locked;
-      projectResourcesView.Locked = locked;
-      projectJobsView.Locked = locked;
+      projectPermissionsView.Locked = locked || selectedProjectDisabled;
+      projectResourcesView.Locked = locked || selectedProjectDisabled;
+      projectJobsView.Locked = locked || selectedProjectDisabled;
     }
     #endregion
 
@@ -253,39 +275,6 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
         removeButton.Enabled = false;
       }
 
-      // double check of ChangeSelectedProject(..):
-      // if the user is no admin nor owner of a parent project
-      if (!IsAdmin() && !HiveAdminClient.Instance.CheckOwnershipOfParentProject(selectedProject, UserInformation.Instance.User.Id)) {
-        MessageBox.Show(
-          "Only admins and owners of parent projects are allowed to delete this project.",
-          "HeuristicLab Hive Administrator",
-          MessageBoxButtons.OK,
-          MessageBoxIcon.Error);
-        return;
-      }            
-
-
-      if (Content.Any(x => x.ParentProjectId == selectedProject.Id) 
-          || HiveAdminClient.Instance.ProjectDescendants[selectedProject.Id].Any()) {
-        MessageBox.Show(
-          "Only empty projects can be deleted.",
-          "HeuristicLab Hive Administrator",
-          MessageBoxButtons.OK,
-          MessageBoxIcon.Error);
-        return;
-      }
-
-      if (HiveAdminClient.Instance.Jobs.ContainsKey(selectedProject.Id) 
-        && HiveAdminClient.Instance.Jobs[selectedProject.Id] != null 
-        && HiveAdminClient.Instance.Jobs[selectedProject.Id].Any()) {
-        MessageBox.Show(
-          "There are " + HiveAdminClient.Instance.Jobs[selectedProject.Id].Count + " job(s) using this project and/or child-projects. It is necessary to delete them before the project.",
-          "HeuristicLab Hive Administrator",
-          MessageBoxButtons.OK,
-          MessageBoxIcon.Error);
-        return;
-      }
-
       var result = MessageBox.Show(
         "Do you really want to delete " + selectedProject.Name + "?",
         "HeuristicLab Hive Administrator",
@@ -296,13 +285,9 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
         await SecurityExceptionUtil.TryAsyncAndReportSecurityExceptions(
           action: () => {
             RemoveProject(selectedProject);  
-          },
-          finallyCallback: () => {
-            removeButton.Enabled = true;
           });
-      } else {
-        removeButton.Enabled = true;
       }
+      SetEnabledStateOfControls();
     }
 
     private async void saveProjectButton_Click(object sender, EventArgs e) {
@@ -491,10 +476,17 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
 
       if (HiveAdminClient.Instance.DisabledParentProjects.Select(x => x.Id).Contains(p.Id)) {
         n.ForeColor = grayTextColor;
-      } else if (p.Id == Guid.Empty) {
-        n.Text += NOT_STORED_TAG;
-      } else if (p.Modified) {
-        n.Text += CHANGES_NOT_STORED_TAG;
+      } else {
+        if (p.Id == Guid.Empty) {
+          n.Text += NOT_STORED_TAG;
+        } else if (p.Modified) {
+          n.Text += CHANGES_NOT_STORED_TAG;
+        }
+
+        if (!IsActive(p)) {
+          n.ForeColor = grayTextColor;
+          n.Text += INACTIVE_TAG;
+        }
       }
     }
 
@@ -539,19 +531,22 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
 
       try {
         if (project.Id != Guid.Empty) {
-          var projectsToSave = Content.Where(x => x.Id == Guid.Empty || x.Modified);
-          foreach (var p in projectsToSave)
-            p.Store();
-
           SelectedProject = HiveAdminClient.Instance.GetAvailableProjectAncestors(project.Id).LastOrDefault();
           HiveAdminClient.Delete(project);          
           UpdateProjects();
-        } else {
+        } else {          
+          SelectedProject = Content.FirstOrDefault(x => x.Id == project.ParentProjectId);
           Content.Remove(project);
         }
       } catch (AnonymousUserException) {
         ShowHiveInformationDialog();
       }
+    }
+
+    private bool IsActive(Project project) {
+      return DateTime.Now >= project.StartDate
+             && (project.EndDate == null
+                 || DateTime.Now < project.EndDate.Value);
     }
 
     private bool IsAuthorized(Project project) {

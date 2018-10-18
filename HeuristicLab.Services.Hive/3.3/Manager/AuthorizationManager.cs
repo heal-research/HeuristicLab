@@ -37,6 +37,7 @@ namespace HeuristicLab.Services.Hive {
     private const string NOT_AUTHORIZED_USERJOB = "Current user is not authorized to access the requested job";
     private const string NOT_AUTHORIZED_PROJECTRESOURCE = "Selected project is not authorized to access the requested resource";
     private const string USER_NOT_IDENTIFIED = "User could not be identified";
+    private const string JOB_NOT_EXISTENT = "Queried job could not be found";
     private const string TASK_NOT_EXISTENT = "Queried task could not be found";
     private const string PROJECT_NOT_EXISTENT = "Queried project could not be found";
 
@@ -59,18 +60,41 @@ namespace HeuristicLab.Services.Hive {
 
     public void AuthorizeForTask(Guid taskId, DT.Permission requiredPermission) {
       if (ServiceLocator.Instance.RoleVerifier.IsInRole(HiveRoles.Slave)) return; // slave-users can access all tasks
+      if (ServiceLocator.Instance.RoleVerifier.IsInRole(HiveRoles.Administrator)) return; // administrator can access all tasks
+      var currentUserId = UserManager.CurrentUserId;
       var pm = PersistenceManager;
       var taskDao = pm.TaskDao;
+      var projectDao = pm.ProjectDao;
       pm.UseTransaction(() => {
         var task = taskDao.GetById(taskId);
         if (task == null) throw new SecurityException(TASK_NOT_EXISTENT);
+
+        // check if user is granted to administer a job-parenting project
+        var administrationGrantedProjects = projectDao
+          .GetAdministrationGrantedProjectsForUser(currentUserId)
+          .ToList();
+        if (administrationGrantedProjects.Contains(task.Job.Project)) return;
+
         AuthorizeJob(pm, task.JobId, requiredPermission);
       });
     }
 
     public void AuthorizeForJob(Guid jobId, DT.Permission requiredPermission) {
+      if (ServiceLocator.Instance.RoleVerifier.IsInRole(HiveRoles.Administrator)) return; // administrator can access all jobs
+      var currentUserId = UserManager.CurrentUserId;
       var pm = PersistenceManager;
+      var jobDao = pm.JobDao;
+      var projectDao = pm.ProjectDao;
       pm.UseTransaction(() => {
+        var job = jobDao.GetById(jobId);
+        if(job == null) throw new SecurityException(JOB_NOT_EXISTENT);
+
+        // check if user is granted to administer a job-parenting project
+        var administrationGrantedProjects = projectDao
+          .GetAdministrationGrantedProjectsForUser(currentUserId)
+          .ToList();
+        if (administrationGrantedProjects.Contains(job.Project)) return;
+
         AuthorizeJob(pm, jobId, requiredPermission);
       });
     }

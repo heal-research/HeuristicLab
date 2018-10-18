@@ -23,7 +23,7 @@ using System;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
   public class SARCOS : ResourceRegressionDataDescriptor {
-    public SARCOS(string resourceName) : base(resourceName) { }
+    public SARCOS() : base("SARCOS - Inverse Dynamics.txt") { }
     public override string Name { get { return "SARCOS - Inverse Dynamics"; } }
     public override string Description {
       get {

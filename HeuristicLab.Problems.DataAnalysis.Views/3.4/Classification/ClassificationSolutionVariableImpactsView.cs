@@ -59,7 +59,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       : base() {
       InitializeComponent();
 
-      //Little workaround. If you fill the ComboBox-Items in the other partial class, the UI-Designer will moan.
       this.sortByComboBox.Items.AddRange(Enum.GetValues(typeof(SortingCriteria)).Cast<object>().ToArray());
       this.sortByComboBox.SelectedItem = SortingCriteria.ImpactValue;
 

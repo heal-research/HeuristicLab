@@ -29,6 +29,7 @@ using HeuristicLab.Common.Resources;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 using System.Collections;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.Clients.Hive.Administrator.Views {
   [View("ProjectView")]
@@ -71,9 +72,18 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
 
       treeView.ImageList.Images.Add(VSImageLibrary.MonitorLarge);
       treeView.ImageList.Images.Add(VSImageLibrary.NetworkCenterLarge);
+
+      HiveAdminClient.Instance.Refreshing += HiveAdminClient_Instance_Refreshing;
+      HiveAdminClient.Instance.Refreshed += HiveAdminClient_Instance_Refreshed;
     }
 
     #region Overrides
+    protected override void OnClosing(FormClosingEventArgs e) {
+      HiveAdminClient.Instance.Refreshed -= HiveAdminClient_Instance_Refreshed;
+      HiveAdminClient.Instance.Refreshing -= HiveAdminClient_Instance_Refreshing;
+      base.OnClosing(e);
+    }
+
     protected override void OnContentChanged() {
       base.OnContentChanged();
       if (Content == null) {
@@ -85,10 +95,9 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       } else {
         UpdateAssignedResources();
         UpdateIncludedResources();
-        var top = BuildResourceTree();
-        detailsViewHost.Content = top;
-        detailsViewHost.Locked = true;
+        detailsViewHost.Content = BuildResourceTree();
       }
+      SetEnabledStateOfControls();
     }
 
     protected override void SetEnabledStateOfControls() {
@@ -98,10 +107,28 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       inheritButton.Enabled = enabled;
       saveButton.Enabled = enabled;
       treeView.Enabled = enabled;
+
+      if (detailsViewHost != null) {
+        detailsViewHost.Locked = true;
+      }
     }
     #endregion
 
     #region Event Handlers
+    private void HiveAdminClient_Instance_Refreshing(object sender, EventArgs e) {
+      if (InvokeRequired) Invoke((Action<object, EventArgs>)HiveAdminClient_Instance_Refreshing, sender, e);
+      else {
+        SetEnabledStateOfControls();
+      }
+    }
+
+    private void HiveAdminClient_Instance_Refreshed(object sender, EventArgs e) {
+      if (InvokeRequired) Invoke((Action<object, EventArgs>)HiveAdminClient_Instance_Refreshed, sender, e);
+      else {
+        OnContentChanged();
+      }
+    }
+
     private void ProjectResourcesView_Load(object sender, EventArgs e) {
 
     }
@@ -381,7 +408,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
           newNode.ForeColor = SystemColors.GrayText;
         }
 
-          if (includedResources.Contains(newResource) && newIncludedResources.Contains(newResource)) {
+        if (includedResources.Contains(newResource) && newIncludedResources.Contains(newResource)) {
           newNode.Text += INCLUDED_TAG;
         } else if (addedIncludes.Contains(newResource)) {
           newNode.BackColor = addedIncludeColor;
@@ -420,6 +447,9 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
         newNode.SelectedImageIndex = newNode.ImageIndex;
       }
 
+      ExpandResourceNodesOfInterest(treeView.Nodes);
+
+      bool expandUngroupedGroupNode = false;
       var ungroupedSlaves = subResources.OfType<Slave>().OrderBy(x => x.Name);
       if(ungroupedSlaves.Any()) {
         ungroupedGroupNode = new TreeNode(UNGROUPED_GROUP_NAME) {
@@ -432,17 +462,37 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
 
         foreach (var slave in ungroupedSlaves) {
           var slaveNode = new TreeNode(slave.Name) { Tag = slave };
+          if (newAssignedResources.Contains(slave)) {
+            slaveNode.Checked = true;
+            expandUngroupedGroupNode = true;
+          }
+
+          if (!HiveRoles.CheckAdminUserPermissions()) {
+            slaveNode.ForeColor = SystemColors.GrayText;
+            slaveNode.Text += IMMUTABLE_TAG;
+          } else {
+            if (addedAssignments.Contains(slave)) {
+              slaveNode.BackColor = addedAssignmentColor;
+              slaveNode.ForeColor = SystemColors.ControlText;
+              slaveNode.Text += ADDED_ASSIGNMENT_TAG;
+            } else if (removedAssignments.Contains(slave)) {
+              slaveNode.BackColor = removedAssignmentColor;
+              slaveNode.ForeColor = SystemColors.ControlText;
+              slaveNode.Text += REMOVED_ASSIGNMENT_TAG;
+              expandUngroupedGroupNode = true;
+            }
+          }
           ungroupedGroupNode.Nodes.Add(slaveNode);
         }
+
+        if(expandUngroupedGroupNode) ungroupedGroupNode.Expand();
         treeView.Nodes.Add(ungroupedGroupNode);
       } else if (ungroupedGroupNode != null) {
         ungroupedGroupNode.Nodes.Clear();
       }
 
       treeView.BeforeCheck += treeView_BeforeCheck;
-      treeView.AfterCheck += treeView_AfterCheck;
-      
-      ExpandResourceNodesOfInterest(treeView.Nodes);
+      treeView.AfterCheck += treeView_AfterCheck;          
 
       return top;
     }

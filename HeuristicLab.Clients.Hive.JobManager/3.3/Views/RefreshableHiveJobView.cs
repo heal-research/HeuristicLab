@@ -138,17 +138,63 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
             originalJobProjectAssignment.Add(Content.Job.Id, Content.Job.ProjectId);
           }
 
+          // project look up
           if (Content.Job != null && Content.Job.ProjectId == Guid.Empty) {
+            projectNameTextBox.Text = string.Empty;
             if (HiveClient.Instance != null && HiveClient.Instance.Projects != null && HiveClient.Instance.Projects.Count == 1) {
               var p = HiveClient.Instance.Projects.FirstOrDefault();
               if (p != null && p.Id != Guid.Empty) {
                 hiveResourceSelectorDialog = new HiveResourceSelectorDialog(Content.Job.Id, Content.Job.ProjectId);
                 Content.Job.ProjectId = p.Id;
-                Content.Job.ResourceIds = HiveClient.Instance.GetAvailableResourcesForProject(p.Id).Select(x => x.Id).ToList();
+                var resources = HiveClient.Instance.GetAvailableResourcesForProject(p.Id).ToList();
+                Content.Job.ResourceIds = resources.Select(x => x.Id).ToList();
                 hiveResourceSelectorDialog.SelectedProjectId = Content.Job.ProjectId;
                 hiveResourceSelectorDialog.SelectedResourceIds = Content.Job.ResourceIds;
+
+                var cores = resources.Union(resources.SelectMany(x => HiveClient.Instance.GetAvailableResourceDescendants(x.Id)))
+                  .OfType<Slave>()
+                  .Distinct()
+                  .Sum(x => x.Cores);
+
+                projectNameTextBox.Text = HiveClient.Instance.GetProjectAncestry(Content.Job.ProjectId);
+                projectNameTextBox.Text += "   (" + (cores.HasValue ? cores.Value.ToString() : "0") + " cores)";
               }                
             }
+          } else if (Content.Job != null && Content.Job.ProjectId != Guid.Empty) {
+            if (selectedProject == null || selectedProject.Id != Content.Job.ProjectId) {
+              selectedProject = GetProject(Content.Job.ProjectId);
+              hiveResourceSelectorDialog = null;
+            }
+
+            if(hiveResourceSelectorDialog == null)
+              hiveResourceSelectorDialog = new HiveResourceSelectorDialog(Content.Job.Id, Content.Job.ProjectId);
+
+            if (selectedProject != null) {
+              projectNameTextBox.Text = HiveClient.Instance.GetProjectAncestry(selectedProject.Id);
+            } else {
+              projectNameTextBox.Text = string.Empty;
+            }
+
+            List<Resource> resources = null;
+            if (Content.Job.ResourceIds == null)
+              resources = HiveClient.Instance.GetAssignedResourcesForJob(Content.Job.Id).ToList();
+            else
+              resources = HiveClient.Instance.Resources.Where(x => Content.Job.ResourceIds.Contains(x.Id)).ToList();
+
+            Content.Job.ResourceIds = resources.Select(x => x.Id).ToList();
+            hiveResourceSelectorDialog.SelectedResourceIds = Content.Job.ResourceIds;
+
+            var cores = resources.Union(resources.SelectMany(x => HiveClient.Instance.GetAvailableResourceDescendants(x.Id)))
+              .OfType<Slave>()
+              .Distinct()
+              .Sum(x => x.Cores);
+
+            projectNameTextBox.Text += "   (" + (cores.HasValue ? cores.Value.ToString() : "0") + " cores)";
+
+          } else {
+            selectedProject = null;
+            projectNameTextBox.Text = string.Empty;
+            Content.Job.ResourceIds = null;
           }
 
 
@@ -156,22 +202,6 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
           descriptionTextBox.Text = Content.Job.Description;
           executionTimeTextBox.Text = Content.ExecutionTime.ToString();
           refreshAutomaticallyCheckBox.Checked = Content.RefreshAutomatically;
-
-          // project look up
-          if(Content.Job.ProjectId != null && Content.Job.ProjectId != Guid.Empty) {
-            if(selectedProject == null || selectedProject.Id != Content.Job.ProjectId) {
-              selectedProject = GetProject(Content.Job.ProjectId);
-              if (selectedProject != null) {
-                projectNameTextBox.Text = selectedProject.Name;
-              } else {
-                projectNameTextBox.Text = string.Empty;
-              }
-            }
-          } else {
-            selectedProject = null;
-            projectNameTextBox.Text = string.Empty;
-            Content.Job.ResourceIds = null;
-          }
           
           logView.Content = Content.Log;
           lock (runCollectionViewLocker) {
@@ -181,7 +211,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       } finally {
         SuppressEvents = false;
       }
-      hiveExperimentPermissionListView.Content = null; // has to be filled by refresh button
+      hiveExperimentPermissionListView.Content = null; // has to be filled by refresh
       Content_JobStatisticsChanged(this, EventArgs.Empty);
       Content_HiveExperimentChanged(this, EventArgs.Empty);
       Content_HiveTasksChanged(this, EventArgs.Empty);
@@ -399,10 +429,20 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
 
       if (hiveResourceSelectorDialog.ShowDialog(this) == DialogResult.OK) {
         selectedProject = hiveResourceSelectorDialog.SelectedProject;
-        if(selectedProject != null) {
-          projectNameTextBox.Text = selectedProject.Name;
+        if(selectedProject != null) {       
           Content.Job.ProjectId = selectedProject.Id;
           Content.Job.ResourceIds = hiveResourceSelectorDialog.SelectedResources.Select(x => x.Id).ToList();
+
+          var cores = hiveResourceSelectorDialog.SelectedResources
+            .Union(hiveResourceSelectorDialog.SelectedResources
+              .SelectMany(x => HiveClient.Instance.GetAvailableResourceDescendants(x.Id)))
+            .OfType<Slave>()
+            .Distinct()
+            .Sum(x => x.Cores);
+
+          projectNameTextBox.Text = HiveClient.Instance.GetProjectAncestry(selectedProject.Id) + "";
+          projectNameTextBox.Text += "   (" + (cores.HasValue ? cores.Value.ToString() : "0") + " cores)";
+
         } else {
           selectedProject = null;
           projectNameTextBox.Text = string.Empty;
@@ -500,19 +540,6 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       UpdateSelectorDialog();
     }
 
-    private void updateButton_Click2(object sender, EventArgs e) {
-      if (Content.ExecutionState == ExecutionState.Stopped) {
-        MessageBox.Show("Job cannot be updated once it stopped.", "HeuristicLab Hive Job Manager", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        return;
-      }
-
-      HiveClient.UpdateJob(
-        (Exception ex) => ErrorHandling.ShowErrorDialog(this, "Update failed.", ex), 
-        Content, 
-        new CancellationToken());
-      UpdateSelectorDialog();
-    }
-
     private void updateButton_Click(object sender, EventArgs e) {
       if (Content.ExecutionState == ExecutionState.Stopped) {
         MessageBox.Show("Job cannot be updated once it stopped.", "HeuristicLab Hive Job Manager", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -555,7 +582,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
         startButton.Enabled = pauseButton.Enabled = stopButton.Enabled = false;
       } else {
         startButton.Enabled = Content.IsControllable && Content.HiveTasks != null && Content.HiveTasks.Count > 0 
-          && Content.Job.ProjectId != null && Content.Job.ProjectId != Guid.Empty && Content.Job.ResourceIds != null  && Content.Job.ResourceIds.Any() 
+          && Content.Job.ProjectId != Guid.Empty && Content.Job.ResourceIds != null  && Content.Job.ResourceIds.Any() 
           && (Content.ExecutionState == ExecutionState.Prepared || Content.ExecutionState == ExecutionState.Paused) && !Content.IsProgressing;
         pauseButton.Enabled = Content.IsControllable && Content.ExecutionState == ExecutionState.Started && !Content.IsProgressing;
         stopButton.Enabled = Content.IsControllable && (Content.ExecutionState == ExecutionState.Started || Content.ExecutionState == ExecutionState.Paused) && !Content.IsProgressing;

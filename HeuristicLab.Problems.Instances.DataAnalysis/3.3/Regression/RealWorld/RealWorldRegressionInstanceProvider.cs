@@ -46,11 +46,11 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
 
     public override IEnumerable<IDataDescriptor> GetDataDescriptors() {
       List<ResourceRegressionDataDescriptor> descriptorList = new List<ResourceRegressionDataDescriptor>();
-      descriptorList.Add(new ChemicalOne("Chemical-I.csv"));
-      descriptorList.Add(new Housing("Housing.csv"));
-      descriptorList.Add(new Tower("Tower.txt"));
-      descriptorList.Add(new Powermeter("Powermeter.txt"));
-      descriptorList.Add(new SARCOS("SARCOS - Inverse Dynamics.txt"));
+      descriptorList.Add(new ChemicalOne());
+      descriptorList.Add(new Housing());
+      descriptorList.Add(new Tower());
+      descriptorList.Add(new Powermeter());
+      descriptorList.Add(new SARCOS());
       return descriptorList;
     }
   }
