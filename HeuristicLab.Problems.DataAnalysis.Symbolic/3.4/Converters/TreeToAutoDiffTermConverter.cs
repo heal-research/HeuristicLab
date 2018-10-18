@@ -84,6 +84,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       eval: alglib.normaldistribution,
       diff: x => -(Math.Exp(-(x * x)) * Math.Sqrt(Math.Exp(x * x)) * x) / Math.Sqrt(2 * Math.PI));
 
+    private static readonly Func<Term, UnaryFunc> abs = UnaryFunc.Factory(
+      eval: Math.Abs,
+      diff: x => Math.Sign(x)
+      );
+
     #endregion
 
     public static bool TryConvertToAutoDiff(ISymbolicExpressionTree tree, bool makeVariableWeightsVariable, bool addLinearScalingTerms,
@@ -212,7 +217,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         if (terms.Count == 1) return 1.0 / terms[0];
         else return terms.Aggregate((a, b) => new AutoDiff.Product(a, 1.0 / b));
       }
-      if(node.Symbol is AnalyticalQuotient) {
+      if (node.Symbol is Absolute) {
+        var x1 = ConvertToAutoDiff(node.GetSubtree(0));
+        return abs(x1);
+      }
+      if (node.Symbol is AnalyticalQuotient) {
         var x1 = ConvertToAutoDiff(node.GetSubtree(0));
         var x2 = ConvertToAutoDiff(node.GetSubtree(1));
         return x1 / (TermBuilder.Power(1 + x2 * x2, 0.5));
@@ -232,6 +241,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       if (node.Symbol is SquareRoot) {
         return AutoDiff.TermBuilder.Power(
           ConvertToAutoDiff(node.GetSubtree(0)), 0.5);
+      }
+      if (node.Symbol is Cube) {
+        return AutoDiff.TermBuilder.Power(
+          ConvertToAutoDiff(node.GetSubtree(0)), 3.0);
+      }
+      if (node.Symbol is CubeRoot) {
+        return AutoDiff.TermBuilder.Power(
+          ConvertToAutoDiff(node.GetSubtree(0)), 1.0/3.0);
       }
       if (node.Symbol is Sine) {
         return sin(
@@ -305,7 +322,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           !(n.Symbol is Tangent) &&
           !(n.Symbol is Erf) &&
           !(n.Symbol is Norm) &&
-          !(n.Symbol is StartSymbol)
+          !(n.Symbol is StartSymbol) &&
+          !(n.Symbol is Absolute) &&
+          !(n.Symbol is AnalyticalQuotient) &&
+          !(n.Symbol is Cube) &&
+          !(n.Symbol is CubeRoot)
         select n).Any();
       return !containsUnknownSymbol;
     }
