@@ -58,10 +58,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       pow.InitialFrequency = 0.0;
       var square = new Square();
       square.InitialFrequency = 0.0;
+      var cube = new Cube();
+      cube.InitialFrequency = 0.0;
       var root = new Root();
       root.InitialFrequency = 0.0;
       var sqrt = new SquareRoot();
       sqrt.InitialFrequency = 0.0;
+      var cubeRoot = new CubeRoot();
+      cubeRoot.InitialFrequency = 0.0;
       var airyA = new AiryA();
       airyA.InitialFrequency = 0.0;
       var airyB = new AiryB();
@@ -124,10 +128,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       autoregressiveVariable.InitialFrequency = 0.0;
       autoregressiveVariable.Enabled = false;
 
-      var allSymbols = new List<Symbol>() { add, sub, mul, div, aq, mean, abs, sin, cos, tan, log, square, pow, sqrt, root, exp,
+      var allSymbols = new List<Symbol>() { add, sub, mul, div, aq, mean, abs, sin, cos, tan, log, square, cube, pow, sqrt, cubeRoot, root, exp,
         airyA, airyB, bessel, cosineIntegral, dawson, erf, expIntegralEi, fresnelCosineIntegral, fresnelSineIntegral, gamma, hypCosineIntegral, hypSineIntegral, norm, psi, sineIntegral,
         @if, gt, lt, and, or, not,xor, timeLag, integral, derivative, constant, variableSymbol, binFactorVariable, factorVariable, laggedVariable,autoregressiveVariable, variableCondition };
-      var unaryFunctionSymbols = new List<Symbol>() { abs, square, sqrt, sin, cos, tan, log, exp, not, timeLag, integral, derivative,
+      var unaryFunctionSymbols = new List<Symbol>() { abs, square, sqrt, cube, cubeRoot, sin, cos, tan, log, exp, not, timeLag, integral, derivative,
         airyA, airyB, bessel, cosineIntegral, dawson, erf, expIntegralEi, fresnelCosineIntegral, fresnelSineIntegral, gamma, hypCosineIntegral, hypSineIntegral, norm, psi, sineIntegral
       };
 

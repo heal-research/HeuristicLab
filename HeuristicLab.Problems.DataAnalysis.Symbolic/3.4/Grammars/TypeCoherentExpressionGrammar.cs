@@ -68,6 +68,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var square = new Square();
       var root = new Root();
       var sqrt = new SquareRoot();
+      var cube = new Cube();
+      var cubeRoot = new CubeRoot();
       var exp = new Exponential();
       var abs = new Absolute();
 
@@ -86,6 +88,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var norm = new Norm();
       var psi = new Psi();
       var sineIntegral = new SineIntegral();
+      var analyticalQuotient = new AnalyticalQuotient();
 
       var @if = new IfThenElse();
       var gt = new GreaterThan();
@@ -111,15 +114,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       #endregion
 
       #region group symbol declaration
-      var arithmeticSymbols = new GroupSymbol(ArithmeticFunctionsName, new List<ISymbol>() { add, sub, mul, div, mean, abs });
+      var arithmeticSymbols = new GroupSymbol(ArithmeticFunctionsName, new List<ISymbol>() { add, sub, mul, div, mean });
       var trigonometricSymbols = new GroupSymbol(TrigonometricFunctionsName, new List<ISymbol>() { sin, cos, tan });
       var exponentialAndLogarithmicSymbols = new GroupSymbol(ExponentialFunctionsName, new List<ISymbol> { exp, log });
-      var specialFunctions = new GroupSymbol(SpecialFunctionsName, new List<ISymbol> { airyA, airyB, bessel, cosineIntegral, dawson, erf, expIntegralEi,
-        fresnelCosineIntegral,fresnelSineIntegral,gamma,hypCosineIntegral,hypSineIntegral,norm, psi, sineIntegral});
+      var specialFunctions = new GroupSymbol(SpecialFunctionsName, new List<ISymbol> { abs, airyA, airyB, bessel, cosineIntegral, dawson, erf, expIntegralEi,
+        fresnelCosineIntegral,fresnelSineIntegral,gamma,hypCosineIntegral,hypSineIntegral,norm, psi, sineIntegral, analyticalQuotient});
       var terminalSymbols = new GroupSymbol(TerminalsName, new List<ISymbol> { constant, variableSymbol, binFactorVariable, factorVariable });
       var realValuedSymbols = new GroupSymbol(RealValuedSymbolsName, new List<ISymbol>() { arithmeticSymbols, trigonometricSymbols, exponentialAndLogarithmicSymbols, specialFunctions, terminalSymbols });
 
-      var powerSymbols = new GroupSymbol(PowerFunctionsName, new List<ISymbol> { square, pow, sqrt, root });
+      var powerSymbols = new GroupSymbol(PowerFunctionsName, new List<ISymbol> { square, pow, sqrt, root, cube, cubeRoot });
 
       var conditionSymbols = new GroupSymbol(ConditionsName, new List<ISymbol> { @if, variableCondition });
       var comparisonSymbols = new GroupSymbol(ComparisonsName, new List<ISymbol> { gt, lt });
@@ -140,9 +143,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       SetSubtreeCount(pow, 2, 2);
       SetSubtreeCount(root, 2, 2);
       SetSubtreeCount(square, 1, 1);
+      SetSubtreeCount(cube, 1, 1);
       SetSubtreeCount(sqrt, 1, 1);
+      SetSubtreeCount(cubeRoot, 1, 1);
       SetSubtreeCount(exponentialAndLogarithmicSymbols, 1, 1);
-      SetSubtreeCount(specialFunctions, 1, 1);
+      foreach(var sy in specialFunctions.Symbols.Except(new[] { analyticalQuotient})) {
+        SetSubtreeCount(sy, 1, 1);
+      }
+      SetSubtreeCount(analyticalQuotient, 2, 2);
+
       SetSubtreeCount(terminalSymbols, 0, 0);
 
       SetSubtreeCount(@if, 3, 3);
