@@ -105,6 +105,7 @@
     <Compile Include="AccessClient.cs" />
     <Compile Include="ClientInformation.cs" />
     <Compile Include="ClientInformationUtils.cs" />
+    <Compile Include="HiveRoles.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServiceClients\AccessServiceClient.cs" />

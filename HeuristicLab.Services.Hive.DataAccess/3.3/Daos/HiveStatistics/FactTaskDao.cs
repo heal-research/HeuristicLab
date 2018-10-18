@@ -65,7 +65,7 @@ namespace HeuristicLab.Services.Hive.DataAccess.Daos.HiveStatistics {
     public IQueryable<FactTask> GetByGroupId(Guid id) {
       return from factTask in Table
              join client in DimClientTable on factTask.LastClientId equals client.Id
-             where client.ResourceGroupId == id
+             where client.ParentResourceId == id
              select factTask;
     }
 

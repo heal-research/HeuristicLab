@@ -38,8 +38,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       Occurrence,
       VariableName
     }
-    private IProgress progress;
-    private Dictionary<string, double> rawVariableImpacts = new Dictionary<string, double>();
+    private List<Tuple<string, double>> rawVariableImpacts = new List<Tuple<string, double>>();
 
     public new IRegressionSolution Content {
       get { return (IRegressionSolution)base.Content; }
@@ -52,14 +51,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       : base() {
       InitializeComponent();
 
-      //Little workaround. If you fill the ComboBox-Items in the other partial class, the UI-Designer will moan.
-      this.sortByComboBox.Items.AddRange(Enum.GetValues(typeof(SortingCriteria)).Cast<object>().ToArray());
-      this.sortByComboBox.SelectedItem = SortingCriteria.ImpactValue;
-
       //Set the default values
       this.dataPartitionComboBox.SelectedIndex = 0;
-      this.replacementComboBox.SelectedIndex = 0;
+      this.replacementComboBox.SelectedIndex = 3;
       this.factorVarReplComboBox.SelectedIndex = 0;
+      this.sortByComboBox.SelectedItem = SortingCriteria.ImpactValue;
     }
 
     protected override void RegisterContentEvents() {
@@ -92,9 +88,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     }
 
     private void RegressionSolutionVariableImpactsView_VisibleChanged(object sender, EventArgs e) {
-      if (!cancellationToken.IsCancellationRequested) {
-        cancellationToken.Cancel();
-      }
+      cancellationToken.Cancel();
     }
 
 
@@ -109,30 +103,20 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     private void sortByComboBox_SelectedIndexChanged(object sender, EventArgs e) {
       //Update the default ordering (asc,desc), but remove the eventHandler beforehand (otherwise the data would be ordered twice)
       ascendingCheckBox.CheckedChanged -= ascendingCheckBox_CheckedChanged;
-      switch ((SortingCriteria)sortByComboBox.SelectedItem) {
-        case SortingCriteria.ImpactValue:
-          ascendingCheckBox.Checked = false;
-          break;
-        case SortingCriteria.Occurrence:
-          ascendingCheckBox.Checked = true;
-          break;
-        case SortingCriteria.VariableName:
-          ascendingCheckBox.Checked = true;
-          break;
-        default:
-          throw new NotImplementedException("Ordering for selected SortingCriteria not implemented");
-      }
+      ascendingCheckBox.Checked = (SortingCriteria)sortByComboBox.SelectedItem != SortingCriteria.ImpactValue;
       ascendingCheckBox.CheckedChanged += ascendingCheckBox_CheckedChanged;
 
-      UpdateDataOrdering();
+      UpdateOrdering();
     }
 
     private void ascendingCheckBox_CheckedChanged(object sender, EventArgs e) {
-      UpdateDataOrdering();
+      UpdateOrdering();
     }
 
 
     private async void UpdateVariableImpact() {
+      IProgress progress;
+
       //Check if the selection is valid
       if (Content == null) { return; }
       if (replacementComboBox.SelectedIndex < 0) { return; }
@@ -162,11 +146,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         if (cancellationToken.Token.IsCancellationRequested) { return; }
         var problemData = Content.ProblemData;
         var inputvariables = new HashSet<string>(problemData.AllowedInputVariables.Union(Content.Model.VariablesUsedForPrediction));
-        var originalVariableOrdering = problemData.Dataset.VariableNames.Where(v => inputvariables.Contains(v)).Where(problemData.Dataset.VariableHasType<double>).ToList();
+        var originalVariableOrdering = problemData.Dataset.VariableNames
+          .Where(v => inputvariables.Contains(v))
+          .Where(v => problemData.Dataset.VariableHasType<double>(v) || problemData.Dataset.VariableHasType<string>(v))
+          .ToList();
 
         rawVariableImpacts.Clear();
-        originalVariableOrdering.ForEach(v => rawVariableImpacts.Add(v, impacts.First(vv => vv.Item1 == v).Item2));
-        UpdateDataOrdering();
+        originalVariableOrdering.ForEach(v => rawVariableImpacts.Add(new Tuple<string, double>(v, impacts.First(vv => vv.Item1 == v).Item2)));
+        UpdateOrdering();
       } finally {
         ((MainForm.WindowsForms.MainForm)MainFormManager.MainForm).RemoveOperationProgressFromView(this);
       }
@@ -176,7 +163,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     /// Updates the <see cref="variableImactsArrayView"/> according to the selected ordering <see cref="ascendingCheckBox"/> of the selected Column <see cref="sortByComboBox"/>
     /// The default is "Descending" by "VariableImpact" (as in previous versions)
     /// </summary>
-    private void UpdateDataOrdering() {
+    private void UpdateOrdering() {
       //Check if valid sortingCriteria is selected and data exists
       if (sortByComboBox.SelectedIndex == -1) { return; }
       if (rawVariableImpacts == null) { return; }
@@ -185,18 +172,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       var selectedItem = (SortingCriteria)sortByComboBox.SelectedItem;
       bool ascending = ascendingCheckBox.Checked;
 
-      IEnumerable<KeyValuePair<string, double>> orderedEntries = null;
+      IEnumerable<Tuple<string, double>> orderedEntries = null;
 
       //Sort accordingly
       switch (selectedItem) {
         case SortingCriteria.ImpactValue:
-          orderedEntries = rawVariableImpacts.OrderBy(v => v.Value);
+          orderedEntries = rawVariableImpacts.OrderBy(v => v.Item2);
           break;
         case SortingCriteria.Occurrence:
           orderedEntries = rawVariableImpacts;
           break;
         case SortingCriteria.VariableName:
-          orderedEntries = rawVariableImpacts.OrderBy(v => v.Key, new NaturalStringComparer());
+          orderedEntries = rawVariableImpacts.OrderBy(v => v.Item1, new NaturalStringComparer());
           break;
         default:
           throw new NotImplementedException("Ordering for selected SortingCriteria not implemented");
@@ -205,8 +192,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       if (!ascending) { orderedEntries = orderedEntries.Reverse(); }
 
       //Write the data back
-      var impactArray = new DoubleArray(orderedEntries.Select(i => i.Value).ToArray()) {
-        ElementNames = orderedEntries.Select(i => i.Key)
+      var impactArray = new DoubleArray(orderedEntries.Select(i => i.Item2).ToArray()) {
+        ElementNames = orderedEntries.Select(i => i.Item1)
       };
 
       //Could be, if the View was closed

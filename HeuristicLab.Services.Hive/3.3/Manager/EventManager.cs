@@ -33,6 +33,12 @@ namespace HeuristicLab.Services.Hive.Manager {
 
     public void Cleanup() {
       var pm = PersistenceManager;
+
+      pm.UseTransaction(() => {
+        FinishJobDeletion(pm);
+        pm.SubmitChanges();
+      });
+
       pm.UseTransaction(() => {
         SetTimeoutSlavesOffline(pm);
         SetTimeoutTasksWaiting(pm);
@@ -44,6 +50,15 @@ namespace HeuristicLab.Services.Hive.Manager {
         FinishParentTasks(pm);
         pm.SubmitChanges();
       });
+    }
+
+    /// <summary>
+    /// Deletes all jobs which are in state "DeletionPending" (this will include all corresponding tasks).
+    /// The state "DeletionPending" is set by HiveJanitor > StatisticsGenerator
+    /// </summary>
+    private void FinishJobDeletion(IPersistenceManager pm) {
+      var jobDao = pm.JobDao;
+      jobDao.DeleteByState(JobState.DeletionPending);
     }
 
     /// <summary>

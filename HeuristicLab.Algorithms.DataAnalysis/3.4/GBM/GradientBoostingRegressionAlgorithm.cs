@@ -209,7 +209,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
 
     protected override void Run(CancellationToken cancellationToken) {
       // Set up the algorithm
-      if (SetSeedRandomly) Seed = new System.Random().Next();
+      if (SetSeedRandomly) Seed = RandomSeedGenerator.GetSeed();
       var rand = new MersenneTwister((uint)Seed);
 
       // Set up the results display

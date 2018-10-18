@@ -35,16 +35,18 @@ namespace HeuristicLab.Services.WebApp.Maintenance.WebApi {
 
     public IEnumerable<TableInformation> GetHiveTableInformation() {
       var tables = new List<string> {
-        "AssignedResources",
+        "AssignedJobResource",
+        "AssignedProjectResource",
         "Downtime",
         "Job",
         "JobPermission",
         "Lifecycle",
         "Plugin",
         "PluginData",
+        "Project",
+        "ProjectPermission",
         "RequiredPlugins",
         "Resource",
-        "ResourcePermission",
         "StateLog",
         "Task",
         "TaskData",
@@ -64,9 +66,11 @@ namespace HeuristicLab.Services.WebApp.Maintenance.WebApi {
       var tables = new List<string> {
         "statistics.DimClient",
         "statistics.DimJob",
+        "statistics.DimProject",
         "statistics.DimTime",
         "statistics.DimUser",
         "statistics.FactClientInfo",
+        "statistics.FactProjectInfo",
         "statistics.FactTask"
       };
       var pm = PersistenceManager;

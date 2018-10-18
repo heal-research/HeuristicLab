@@ -46,8 +46,36 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public ModifiableDataset() { }
 
-    public ModifiableDataset(IEnumerable<string> variableNames, IEnumerable<IList> variableValues) :
-      base(variableNames, variableValues, cloneValues: false) { }
+    public ModifiableDataset(IEnumerable<string> variableNames, IEnumerable<IList> variableValues, bool cloneValues = false) :
+      base(variableNames, variableValues, cloneValues) { }
+
+    public Dataset ToDataset() {
+      return new Dataset(variableNames, variableNames.Select(v => variableValues[v]));
+    }
+
+
+    public IEnumerable<object> GetRow(int row) {
+      return variableValues.Select(x => x.Value[row]);
+    }
+
+    public void AddRow(IEnumerable<object> values) {
+      var list = values.ToList();
+      if (list.Count != variableNames.Count)
+        throw new ArgumentException("The number of values must be equal to the number of variable names.");
+      // check if all the values are of the correct type
+      for (int i = 0; i < list.Count; ++i) {
+        if (list[i].GetType() != GetVariableType(variableNames[i])) {
+          throw new ArgumentException("The type of the provided value does not match the variable type.");
+        }
+      }
+      // add values
+      for (int i = 0; i < list.Count; ++i) {
+        variableValues[variableNames[i]].Add(list[i]);
+      }
+      Rows++;
+      OnRowsChanged();
+      OnReset();
+    }
 
     public void ReplaceRow(int row, IEnumerable<object> values) {
       var list = values.ToList();
@@ -66,6 +94,44 @@ namespace HeuristicLab.Problems.DataAnalysis {
       OnReset();
     }
 
+    // slow, avoid using this
+    public void RemoveRow(int row) {
+      foreach (var list in variableValues.Values)
+        list.RemoveAt(row);
+      Rows--;
+      OnRowsChanged();
+      OnReset();
+    }
+
+    // adds a new variable to the dataset
+    public void AddVariable(string variableName, IList values) {
+      InsertVariable(variableName, Columns, values);
+    }
+
+    public void InsertVariable(string variableName, int position, IList values) {
+      if (variableValues.ContainsKey(variableName))
+        throw new ArgumentException(string.Format("Variable {0} is already present in the dataset.", variableName));
+
+      if (position < 0 || position > Columns)
+        throw new ArgumentException(string.Format("Incorrect position {0} specified. The position must be between 0 and {1}.", position, Columns));
+
+      if (values == null)
+        throw new ArgumentNullException("values", "Values must not be null. At least an empty list of values has to be provided.");
+
+      if (values.Count != Rows)
+        throw new ArgumentException(string.Format("{0} values are provided, but {1} rows are present in the dataset.", values.Count, Rows));
+
+      if (!IsAllowedType(values))
+        throw new ArgumentException(string.Format("Unsupported type {0} for variable {1}.", GetElementType(values), variableName));
+
+      variableNames.Insert(position, variableName);
+      variableValues[variableName] = values;
+
+      OnColumnsChanged();
+      OnColumnNamesChanged();
+      OnReset();
+    }
+
     public void ReplaceVariable(string variableName, IList values) {
       if (!variableValues.ContainsKey(variableName))
         throw new ArgumentException(string.Format("Variable {0} is not present in the dataset.", variableName));
@@ -76,43 +142,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
       variableValues[variableName] = values;
     }
 
-    public void AddRow(IEnumerable<object> values) {
-      var list = values.ToList();
-      if (list.Count != variableNames.Count)
-        throw new ArgumentException("The number of values must be equal to the number of variable names.");
-      // check if all the values are of the correct type
-      for (int i = 0; i < list.Count; ++i) {
-        if (list[i].GetType() != GetVariableType(variableNames[i])) {
-          throw new ArgumentException("The type of the provided value does not match the variable type.");
-        }
-      }
-      // add values
-      for (int i = 0; i < list.Count; ++i) {
-        variableValues[variableNames[i]].Add(list[i]);
-      }
-      rows++;
-      OnRowsChanged();
-      OnReset();
-    }
-
-    // adds a new variable to the dataset
-    public void AddVariable(string variableName, IList values) {
-      if (variableValues.ContainsKey(variableName))
-        throw new ArgumentException(string.Format("Variable {0} is already present in the dataset.", variableName));
-
-      if (values == null || values.Count == 0)
-        throw new ArgumentException("Cannot add variable with no values.");
-
-      if (!IsAllowedType(values))
-        throw new ArgumentException(string.Format("Unsupported type {0} for variable {1}.", GetElementType(values), variableName));
-
-      variableValues[variableName] = values;
-      variableNames.Add(variableName);
-
-      OnColumnsChanged();
-      OnColumnNamesChanged();
-      OnReset();
-    }
 
     public void RemoveVariable(string variableName) {
       if (!variableValues.ContainsKey(variableName))
@@ -124,14 +153,15 @@ namespace HeuristicLab.Problems.DataAnalysis {
       OnReset();
     }
 
-    // slow, avoid using this
-    public void RemoveRow(int row) {
-      foreach (var list in variableValues.Values)
-        list.RemoveAt(row);
-      rows--;
+    public void ClearValues() {
+      foreach (var list in variableValues.Values) {
+        list.Clear();
+      }
+      Rows = 0;
       OnRowsChanged();
       OnReset();
     }
+
 
     public void SetVariableValue(object value, string variableName, int row) {
       IList list;

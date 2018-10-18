@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using HeuristicLab.Collections;
@@ -40,16 +41,26 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       this.itemsListView.Columns.Clear();
       this.itemsListView.Columns.Add(new ColumnHeader("Date") { Text = "Date" });
       this.itemsListView.Columns.Add(new ColumnHeader("Name") { Text = "Name" });
+      this.itemsListView.Columns.Add(new ColumnHeader("Project") { Text = "Project" });
 
       this.itemsListView.HeaderStyle = ColumnHeaderStyle.Clickable;
       this.itemsListView.FullRowSelect = true;
 
-      this.itemsListView.ListViewItemSorter = new ListViewItemDateComparer(0, SortOrder.Ascending);
+      this.itemsListView.ListViewItemSorter = new ListViewItemComparer(new int[] { 2, 0 }, new SortOrder[] { SortOrder.Ascending, SortOrder.Ascending });      
+
+      foreach (ColumnHeader c in this.itemsListView.Columns) {
+        c.AutoResize(ColumnHeaderAutoResizeStyle.HeaderSize);
+        int w = c.Width;
+        c.AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
+        if(w > c.Width) {
+          c.AutoResize(ColumnHeaderAutoResizeStyle.HeaderSize);
+        }
+      }
     }
 
     protected override void SortItemsListView(SortOrder sortOrder) {
       if (itemsListView.Sorting == sortOrder || sortOrder == SortOrder.None) return;
-      ((ListViewItemDateComparer)itemsListView.ListViewItemSorter).Order = sortOrder;
+      ((ListViewItemComparer)itemsListView.ListViewItemSorter).Orders[1] = sortOrder;
       itemsListView.Sorting = sortOrder;
       itemsListView.Sort();
       AdjustListViewColumnSizes();
@@ -132,7 +143,12 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       } else {
         base.Content_ItemsAdded(sender, e);
         foreach (ColumnHeader c in this.itemsListView.Columns) {
+          c.AutoResize(ColumnHeaderAutoResizeStyle.HeaderSize);
+          int w = c.Width;
           c.AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
+          if (w > c.Width) {
+            c.AutoResize(ColumnHeaderAutoResizeStyle.HeaderSize);
+          }
         }
         foreach (var item in e.Items) {
           item.ItemImageChanged += new EventHandler(item_ItemImageChanged);
@@ -179,6 +195,8 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       listViewItem.SubItems.Clear();
       listViewItem.SubItems.Insert(0, new ListViewItem.ListViewSubItem(listViewItem, item.Job.DateCreated.ToString()));
       listViewItem.SubItems.Insert(1, new ListViewItem.ListViewSubItem(listViewItem, item.Job.Name));
+      listViewItem.SubItems.Insert(2, new ListViewItem.ListViewSubItem(listViewItem, HiveClient.Instance.GetProjectAncestry(item.Job.ProjectId)));
+      
       listViewItem.Group = GetListViewGroup(item.Job.OwnerUsername);
       return listViewItem;
     }
@@ -188,6 +206,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       var item = listViewItem.Tag as RefreshableJob;
       listViewItem.SubItems[0].Text = item == null ? "null" : item.Job.DateCreated.ToString("dd.MM.yyyy HH:mm");
       listViewItem.SubItems[1].Text = item == null ? "null" : item.Job.Name;
+      listViewItem.SubItems[2].Text = item == null ? "null" : HiveClient.Instance.GetProjectAncestry(item.Job.ProjectId);
       listViewItem.Group = GetListViewGroup(item.Job.OwnerUsername);
       listViewItem.ToolTipText = item == null ? string.Empty : item.ItemName + ": " + item.ItemDescription;
     }

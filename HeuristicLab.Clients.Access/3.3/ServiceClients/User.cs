@@ -50,7 +50,7 @@ namespace HeuristicLab.Clients.Access {
     }
 
     public override string ToString() {
-      return UserName + "(" + FullName + ")";
+      return UserName + " (" + FullName + ")";
     }
   }
 }

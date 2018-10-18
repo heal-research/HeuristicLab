@@ -19,7 +19,6 @@
  */
 #endregion
 
-using System;
 namespace HeuristicLab.Clients.Access.Views {
   partial class RefreshableLightweightUserInformationView {
     /// <summary> 
@@ -33,7 +32,6 @@ namespace HeuristicLab.Clients.Access.Views {
     /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
     protected override void Dispose(bool disposing) {
       if (disposing && (components != null)) {
-        lightweightUserInformationView.UserInformationChanged -= new EventHandler(lightweightUserInformationView_Changed);
         components.Dispose();
       }
       base.Dispose(disposing);
@@ -46,14 +44,23 @@ namespace HeuristicLab.Clients.Access.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
+      components = new System.ComponentModel.Container();
       System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RefreshableLightweightUserInformationView));
       this.lightweightUserInformationView = new HeuristicLab.Clients.Access.Views.LightweightUserInformationView();
-      this.storeButton = new System.Windows.Forms.Button();
+      this.refreshButton = new System.Windows.Forms.Button();
+      this.toolTip = new System.Windows.Forms.ToolTip(this.components);
       this.SuspendLayout();
       // 
       // refreshButton
       // 
+      this.refreshButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Refresh;
       this.refreshButton.Location = new System.Drawing.Point(4, 3);
+      this.refreshButton.Name = "refreshButton";
+      this.refreshButton.Size = new System.Drawing.Size(24, 24);
+      this.refreshButton.TabIndex = 1;
+      this.toolTip.SetToolTip(this.refreshButton, "Refresh data");
+      this.refreshButton.UseVisualStyleBackColor = true;
+      this.refreshButton.Click += new System.EventHandler(this.refreshButton_Click);
       // 
       // lightweightUserInformationView
       // 
@@ -68,28 +75,16 @@ namespace HeuristicLab.Clients.Access.Views {
       this.lightweightUserInformationView.Size = new System.Drawing.Size(378, 245);
       this.lightweightUserInformationView.TabIndex = 2;
       // 
-      // storeButton
-      // 
-      this.storeButton.Enabled = false;
-      this.storeButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.PublishToWeb;
-      this.storeButton.Location = new System.Drawing.Point(34, 3);
-      this.storeButton.Name = "storeButton";
-      this.storeButton.Size = new System.Drawing.Size(24, 24);
-      this.storeButton.TabIndex = 3;
-      this.storeButton.UseVisualStyleBackColor = true;
-      this.storeButton.Click += new System.EventHandler(this.storeButton_Click);
-      // 
       // RefreshableLightweightUserInformationView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.Controls.Add(this.lightweightUserInformationView);
-      this.Controls.Add(this.storeButton);
+      this.Controls.Add(this.refreshButton);
       this.Name = "RefreshableLightweightUserInformationView";
       this.Size = new System.Drawing.Size(384, 281);
-      this.Controls.SetChildIndex(this.storeButton, 0);
       this.Controls.SetChildIndex(this.lightweightUserInformationView, 0);
-      this.Controls.SetChildIndex(this.refreshButton, 0);
+      this.Controls.SetChildIndex(this.refreshButton, 1);
       this.ResumeLayout(false);
 
     }
@@ -97,7 +92,7 @@ namespace HeuristicLab.Clients.Access.Views {
     #endregion
 
     private LightweightUserInformationView lightweightUserInformationView;
-    private System.Windows.Forms.Button storeButton;
-
+    private System.Windows.Forms.ToolTip toolTip;
+    private System.Windows.Forms.Button refreshButton;
   }
 }

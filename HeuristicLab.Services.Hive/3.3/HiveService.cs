@@ -40,6 +40,11 @@ namespace HeuristicLab.Services.Hive {
   [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerCall, IgnoreExtensionDataObject = true)]
   [HiveOperationContextBehavior]
   public class HiveService : IHiveService {
+    private const string NOT_AUTHORIZED_PROJECTRESOURCE = "Selected project is not authorized to access the requested resource";
+    private const string NOT_AUTHORIZED_USERPROJECT = "Current user is not authorized to access the requested project";
+    private const string NOT_AUTHORIZED_PROJECTOWNER = "The set user is not authorized to own the project";
+    private const string NO_JOB_UPDATE_POSSIBLE = "This job has already been flagged for deletion, thus, it can not be updated anymore.";
+
     private static readonly DA.TaskState[] CompletedStates = { DA.TaskState.Finished, DA.TaskState.Aborted, DA.TaskState.Failed };
 
     private IPersistenceManager PersistenceManager {
@@ -65,8 +70,10 @@ namespace HeuristicLab.Services.Hive {
     }
 
     #region Task Methods
-    public Guid AddTask(DT.Task task, DT.TaskData taskData, IEnumerable<Guid> resourceIds) {
+
+    public Guid AddTask(DT.Task task, DT.TaskData taskData) {
       RoleVerifier.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
+      AuthorizationManager.AuthorizeForJob(task.JobId, DT.Permission.Full);
       var pm = PersistenceManager;
       using (new PerformanceLogger("AddTask")) {
         var taskDao = pm.TaskDao;
@@ -74,10 +81,6 @@ namespace HeuristicLab.Services.Hive {
         var newTask = task.ToEntity();
         newTask.JobData = taskData.ToEntity();
         newTask.JobData.LastUpdate = DateTime.Now;
-        newTask.AssignedResources.AddRange(resourceIds.Select(
-          x => new DA.AssignedResource {
-            ResourceId = x
-          }));
         newTask.State = DA.TaskState.Waiting;
         return pm.UseTransaction(() => {
           taskDao.Save(newTask);
@@ -98,18 +101,8 @@ namespace HeuristicLab.Services.Hive {
 
     public Guid AddChildTask(Guid parentTaskId, DT.Task task, DT.TaskData taskData) {
       RoleVerifier.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
-      IEnumerable<Guid> resourceIds;
-      var pm = PersistenceManager;
-      using (new PerformanceLogger("AddChildTask")) {
-        var assignedResourceDao = pm.AssignedResourceDao;
-        resourceIds = pm.UseTransaction(() => {
-          return assignedResourceDao.GetByTaskId(parentTaskId)
-            .Select(x => x.ResourceId)
-            .ToList();
-        });
-      }
       task.ParentTaskId = parentTaskId;
-      return AddTask(task, taskData, resourceIds);
+      return AddTask(task, taskData);
     }
 
     public DT.Task GetTask(Guid taskId) {
@@ -337,54 +330,125 @@ namespace HeuristicLab.Services.Hive {
         var currentUserId = UserManager.CurrentUserId;
         return pm.UseTransaction(() => {
           var jobs = jobDao.GetAll()
-            .Where(x => x.OwnerUserId == currentUserId
-                     || x.JobPermissions.Count(y => y.Permission != DA.Permission.NotAllowed
-                                                 && y.GrantedUserId == currentUserId) > 0)
+            .Where(x => x.State == DA.JobState.Online
+                          && (x.OwnerUserId == currentUserId
+                            || x.JobPermissions.Count(y => y.Permission != DA.Permission.NotAllowed
+                              && y.GrantedUserId == currentUserId) > 0)
+                          )
             .Select(x => x.ToDto())
             .ToList();
-          var statistics = taskDao.GetAll()
-              .GroupBy(x => x.JobId)
-              .Select(x => new {
-                x.Key,
-                TotalCount = x.Count(),
-                CalculatingCount = x.Count(y => y.State == DA.TaskState.Calculating),
-                FinishedCount = x.Count(y => CompletedStates.Contains(y.State))
-              })
-              .ToList();
-          foreach (var job in jobs) {
-            var statistic = statistics.FirstOrDefault(x => x.Key == job.Id);
-            if (statistic != null) {
-              job.JobCount = statistic.TotalCount;
-              job.CalculatingCount = statistic.CalculatingCount;
-              job.FinishedCount = statistic.FinishedCount;
-            }
-            job.OwnerUsername = UserManager.GetUserNameById(job.OwnerUserId);
-            if (currentUserId == job.OwnerUserId) {
-              job.Permission = Permission.Full;
-            } else {
-              var jobPermission = jobPermissionDao.GetByJobAndUserId(job.Id, currentUserId);
-              job.Permission = jobPermission == null ? Permission.NotAllowed : jobPermission.Permission.ToDto();
-            }
-          }
+
+          EvaluateJobs(pm, jobs);
           return jobs;
         });
       }
     }
 
-    public Guid AddJob(DT.Job jobDto) {
+    public IEnumerable<DT.Job> GetJobsByProjectId(Guid projectId) {
       RoleVerifier.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
       var pm = PersistenceManager;
+      using (new PerformanceLogger("GetJobsByProjectId")) {
+        var currentUserId = UserManager.CurrentUserId;
+        var projectDao = pm.ProjectDao;
+        var jobDao = pm.JobDao;
+
+        return pm.UseTransaction(() => {
+          // check if user is granted to administer the requested projectId
+          bool isAdmin = RoleVerifier.IsInRole(HiveRoles.Administrator);
+          List<DA.Project> administrationGrantedProjects;
+          if (isAdmin) {
+            administrationGrantedProjects = projectDao.GetAll().ToList();
+          } else {
+            administrationGrantedProjects = projectDao
+              .GetAdministrationGrantedProjectsForUser(currentUserId)              
+              .ToList();
+          }
+
+          if (administrationGrantedProjects.Select(x => x.ProjectId).Contains(projectId)) {
+            var jobs = jobDao.GetByProjectId(projectId)
+            .Select(x => x.ToDto())
+            .ToList();
+
+            EvaluateJobs(pm, jobs);
+            return jobs;
+          } else {
+            return Enumerable.Empty<DT.Job>();
+          }
+        });
+      }
+    }
+
+    public IEnumerable<DT.Job> GetJobsByProjectIds(IEnumerable<Guid> projectIds) {
+      RoleVerifier.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
+      var pm = PersistenceManager;
+      using (new PerformanceLogger("GetJobsByProjectIds")) {
+        var currentUserId = UserManager.CurrentUserId;
+        var projectDao = pm.ProjectDao;
+        var jobDao = pm.JobDao;
+        return pm.UseTransaction(() => {
+          // check for which of requested projectIds the user is granted to administer
+          bool isAdmin = RoleVerifier.IsInRole(HiveRoles.Administrator);
+          List<Guid> administrationGrantedProjectIds;
+          if (isAdmin) {
+            administrationGrantedProjectIds = projectDao.GetAll().Select(x => x.ProjectId).ToList();
+          } else {
+            administrationGrantedProjectIds = projectDao
+              .GetAdministrationGrantedProjectsForUser(currentUserId)
+              .Select(x => x.ProjectId)
+              .ToList();
+          }
+          var requestedAndGrantedProjectIds = projectIds.Intersect(administrationGrantedProjectIds);
+
+          if (requestedAndGrantedProjectIds.Any()) {
+            var jobs = jobDao.GetByProjectIds(requestedAndGrantedProjectIds)
+              .Select(x => x.ToDto())
+              .ToList();
+
+            EvaluateJobs(pm, jobs);
+            return jobs;
+          } else {
+            return Enumerable.Empty<DT.Job>();
+          }
+        });
+      }
+    }
+
+    public Guid AddJob(DT.Job jobDto, IEnumerable<Guid> resourceIds) {
+      RoleVerifier.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
+      var dateCreated = DateTime.Now;
+      var pm = PersistenceManager;
+
+      // check project availability (cf. duration)
+      CheckProjectAvailability(pm, jobDto.ProjectId, dateCreated);
+
+      // check user - project
+      AuthorizationManager.AuthorizeUserForProjectUse(UserManager.CurrentUserId, jobDto.ProjectId);
+
+      // check project - resources
+      AuthorizationManager.AuthorizeProjectForResourcesUse(jobDto.ProjectId, resourceIds);
+
       using (new PerformanceLogger("AddJob")) {
         var jobDao = pm.JobDao;
         var userPriorityDao = pm.UserPriorityDao;
+
         return pm.UseTransaction(() => {
-          jobDto.OwnerUserId = UserManager.CurrentUserId;
-          jobDto.DateCreated = DateTime.Now;
-          var job = jobDao.Save(jobDto.ToEntity());
-          if (userPriorityDao.GetById(jobDto.OwnerUserId) == null) {
+          var newJob = jobDto.ToEntity();
+          newJob.OwnerUserId = UserManager.CurrentUserId;
+          newJob.DateCreated = dateCreated;
+
+          // add resource assignments
+          if (resourceIds != null && resourceIds.Any()) {
+            newJob.AssignedJobResources.AddRange(resourceIds.Select(
+              x => new DA.AssignedJobResource {
+                ResourceId = x
+              }));
+          }
+
+          var job = jobDao.Save(newJob);
+          if (userPriorityDao.GetById(newJob.OwnerUserId) == null) {
             userPriorityDao.Save(new DA.UserPriority {
-              UserId = jobDto.OwnerUserId,
-              DateEnqueued = jobDto.DateCreated
+              UserId = newJob.OwnerUserId,
+              DateEnqueued = newJob.DateCreated
             });
           }
           pm.SubmitChanges();
@@ -393,10 +457,19 @@ namespace HeuristicLab.Services.Hive {
       }
     }
 
-    public void UpdateJob(DT.Job jobDto) {
+    public void UpdateJob(DT.Job jobDto, IEnumerable<Guid> resourceIds) {
       RoleVerifier.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
       AuthorizationManager.AuthorizeForJob(jobDto.Id, DT.Permission.Full);
       var pm = PersistenceManager;
+      var dateUpdated = DateTime.Now;
+
+      // check project availability
+      CheckProjectAvailability(pm, jobDto.ProjectId, dateUpdated);
+      // check user - project permission
+      AuthorizationManager.AuthorizeUserForProjectUse(UserManager.CurrentUserId, jobDto.ProjectId);
+      // check project - resources permission
+      AuthorizationManager.AuthorizeProjectForResourcesUse(jobDto.ProjectId, resourceIds);
+
       using (new PerformanceLogger("UpdateJob")) {
         bool exists = true;
         var jobDao = pm.JobDao;
@@ -405,27 +478,122 @@ namespace HeuristicLab.Services.Hive {
           if (job == null) {
             exists = false;
             job = new DA.Job();
+          } else if (job.State != DA.JobState.Online) {
+            throw new InvalidOperationException(NO_JOB_UPDATE_POSSIBLE);
           }
+
           jobDto.CopyToEntity(job);
+
           if (!exists) {
+            // add resource assignments
+            if (resourceIds != null && resourceIds.Any()) {
+              job.AssignedJobResources.AddRange(resourceIds.Select(
+                x => new DA.AssignedJobResource {
+                  ResourceId = x
+                }));
+            }
             jobDao.Save(job);
+          } else if (resourceIds != null) {
+            var addedJobResourceIds = resourceIds.Except(job.AssignedJobResources.Select(x => x.ResourceId));
+            var removedJobResourceIds = job.AssignedJobResources
+              .Select(x => x.ResourceId)
+              .Except(resourceIds)
+              .ToArray();
+
+            // remove resource assignments
+            foreach (var rid in removedJobResourceIds) {
+              var ajr = job.AssignedJobResources.Where(x => x.ResourceId == rid).SingleOrDefault();
+              if (ajr != null) job.AssignedJobResources.Remove(ajr);
+            }
+
+            // add resource assignments
+            job.AssignedJobResources.AddRange(addedJobResourceIds.Select(
+              x => new DA.AssignedJobResource {
+                ResourceId = x
+              }));
           }
           pm.SubmitChanges();
         });
       }
     }
 
-    public void DeleteJob(Guid jobId) {
+    public void UpdateJobState(Guid jobId, DT.JobState jobState) {
+      if (jobState != JobState.StatisticsPending) return; // only process requests for "StatisticsPending"
+
+      RoleVerifier.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
+      // check if user is an admin, or granted to administer a job-parenting project, or job owner
+      AuthorizationManager.AuthorizeForJob(jobId, DT.Permission.Full);
+
+      var pm = PersistenceManager;
+      using (new PerformanceLogger("UpdateJobState")) {
+        var jobDao = pm.JobDao;        
+        pm.UseTransaction(() => {
+          var job = jobDao.GetById(jobId);
+          if (job != null) {            
+
+            // note: allow solely state changes from "Online" to "StatisticsPending" = deletion request by user for HiveStatisticGenerator            
+            var jobStateEntity = jobState.ToEntity();
+            if (job.State == DA.JobState.Online && jobStateEntity == DA.JobState.StatisticsPending) {
+              job.State = jobStateEntity;
+              foreach (var task in job.Tasks
+              .Where(x => x.State == DA.TaskState.Waiting
+                || x.State == DA.TaskState.Paused
+                || x.State == DA.TaskState.Offline)) {
+                task.State = DA.TaskState.Aborted;
+              }
+              pm.SubmitChanges();
+            }
+          }
+        });
+      }
+    }
+
+    public void UpdateJobStates(IEnumerable<Guid> jobIds, DT.JobState jobState) {
+      if (jobState != JobState.StatisticsPending) return; // only process requests for "StatisticsPending"
+
+      RoleVerifier.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
+      // check if user is an admin, or granted to administer a job-parenting project, or job owner
+      foreach (var jobId in jobIds)
+          AuthorizationManager.AuthorizeForJob(jobId, DT.Permission.Full);
+
+      var pm = PersistenceManager;
+      using (new PerformanceLogger("UpdateJobStates")) {
+        var jobDao = pm.JobDao;
+        var projectDao = pm.ProjectDao;
+        pm.UseTransaction(() => {
+          foreach (var jobId in jobIds) {
+            var job = jobDao.GetById(jobId);
+            if (job != null) {
+
+              // note: allow solely state changes from "Online" to "StatisticsPending" = deletion request by user for HiveStatisticGenerator
+              var jobStateEntity = jobState.ToEntity();
+              if (job.State == DA.JobState.Online && jobStateEntity == DA.JobState.StatisticsPending) {
+                job.State = jobStateEntity;
+                foreach (var task in job.Tasks
+                .Where(x => x.State == DA.TaskState.Waiting
+                  || x.State == DA.TaskState.Paused
+                  || x.State == DA.TaskState.Offline)) {
+                  task.State = DA.TaskState.Aborted;
+                }
+                pm.SubmitChanges();
+              }              
+            }
+          }
+        });
+      }
+    }
+
+    public IEnumerable<DT.AssignedJobResource> GetAssignedResourcesForJob(Guid jobId) {
       RoleVerifier.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
       AuthorizationManager.AuthorizeForJob(jobId, DT.Permission.Full);
       var pm = PersistenceManager;
-      using (new PerformanceLogger("DeleteJob")) {
-        var jobDao = pm.JobDao;
-        pm.UseTransaction(() => {
-          // child task will be deleted by db-trigger
-          jobDao.Delete(jobId);
-          pm.SubmitChanges();
-        });
+      var assignedJobResourceDao = pm.AssignedJobResourceDao;
+      using (new PerformanceLogger("GetAssignedResourcesForProject")) {
+        return pm.UseTransaction(() =>
+          assignedJobResourceDao.GetByJobId(jobId)
+          .Select(x => x.ToDto())
+          .ToList()
+        );
       }
     }
     #endregion
@@ -531,8 +699,7 @@ namespace HeuristicLab.Services.Hive {
         using (new PerformanceLogger("ProcessHeartbeat")) {
           result = HeartbeatManager.ProcessHeartbeat(heartbeat);
         }
-      }
-      catch (Exception ex) {
+      } catch (Exception ex) {
         DA.LogFactory.GetLogger(this.GetType().Namespace).Log(string.Format("Exception processing Heartbeat: {0}", ex));
       }
       if (HeuristicLab.Services.Hive.Properties.Settings.Default.TriggerEventManagerInHeartbeat) {
@@ -603,20 +770,415 @@ namespace HeuristicLab.Services.Hive {
     }
     #endregion
 
-    #region ResourcePermission Methods
-    public void GrantResourcePermissions(Guid resourceId, Guid[] grantedUserIds) {
+    #region Project Methods
+    public Guid AddProject(DT.Project projectDto) {
+      if (projectDto == null || projectDto.Id != Guid.Empty) return Guid.Empty;
+      RoleVerifier.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
+      // check if current (non-admin) user is owner of one of projectDto's-parents
+      // note: non-admin users are not allowed to administer root projects (i.e. projects without parental entry)
+      bool isAdmin = RoleVerifier.IsInRole(HiveRoles.Administrator);
+      if (!isAdmin) {
+        if (projectDto != null && projectDto.ParentProjectId.HasValue) {
+          AuthorizationManager.AuthorizeForProjectAdministration(projectDto.ParentProjectId.Value, false);
+        } else {
+          throw new SecurityException(NOT_AUTHORIZED_USERPROJECT);
+        }
+      }
+
+      // check that non-admins can not be set as owner of root projects
+      if (projectDto != null && !projectDto.ParentProjectId.HasValue) {
+        var owner = UserManager.GetUserById(projectDto.OwnerUserId);
+        if (owner == null || !RoleVerifier.IsUserInRole(owner.UserName, HiveRoles.Administrator)) {
+          throw new SecurityException(NOT_AUTHORIZED_PROJECTOWNER);
+        }
+      }
+
+      var pm = PersistenceManager;
+      using (new PerformanceLogger("AddProject")) {
+        var projectDao = pm.ProjectDao;
+
+        return pm.UseTransaction(() => {
+          var project = projectDao.Save(projectDto.ToEntity());
+
+          var parentProjects = projectDao.GetParentProjectsById(project.ProjectId).ToList();
+          bool isParent = parentProjects.Select(x => x.OwnerUserId == UserManager.CurrentUserId).Any();
+
+          // if user is no admin, but owner of a parent project
+          // check start/end date time boundaries of parent projects before updating child project
+          if (!isAdmin) {
+            var parentProject = parentProjects.Where(x => x.ProjectId == project.ParentProjectId).FirstOrDefault();
+            if (parentProject != null) {
+              if (project.StartDate < parentProject.StartDate) project.StartDate = parentProject.StartDate;
+              if ((parentProject.EndDate.HasValue && project.EndDate.HasValue && project.EndDate > parentProject.EndDate)
+              || (parentProject.EndDate.HasValue && !project.EndDate.HasValue))
+                project.EndDate = parentProject.EndDate;
+            }
+          }
+
+
+          project.ProjectPermissions.Clear();
+          project.ProjectPermissions.Add(new DA.ProjectPermission {
+            GrantedUserId = project.OwnerUserId,
+            GrantedByUserId = UserManager.CurrentUserId
+          });
+
+          pm.SubmitChanges();
+          return project.ProjectId;
+        });
+      }
+    }
+
+    public void UpdateProject(DT.Project projectDto) {
+      RoleVerifier.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
+      // check if current (non-admin) user is owner of the project or the projectDto's-parents
+      // note: non-admin users are not allowed to administer root projects (i.e. projects without parental entry)
+      bool isAdmin = RoleVerifier.IsInRole(HiveRoles.Administrator);
+      if (!isAdmin) {
+        if (projectDto != null && projectDto.ParentProjectId.HasValue) {
+          AuthorizationManager.AuthorizeForProjectAdministration(projectDto.Id, false);
+        } else {
+          throw new SecurityException(NOT_AUTHORIZED_USERPROJECT);
+        }
+      }
+
+      // check that non-admins can not be set as owner of root projects
+      if (projectDto != null && !projectDto.ParentProjectId.HasValue) {
+        var owner = UserManager.GetUserById(projectDto.OwnerUserId);
+        if (owner == null || !RoleVerifier.IsUserInRole(owner.UserName, HiveRoles.Administrator)) {
+          throw new SecurityException(NOT_AUTHORIZED_PROJECTOWNER);
+        }
+      }
+
+      var pm = PersistenceManager;
+      using (new PerformanceLogger("UpdateProject")) {
+        var projectDao = pm.ProjectDao;
+        var assignedJobResourceDao = pm.AssignedJobResourceDao;
+        pm.UseTransaction(() => {
+          var project = projectDao.GetById(projectDto.Id);
+          if (project != null) { // (1) update existent project
+            var parentProjects = projectDao.GetParentProjectsById(project.ProjectId).ToList();
+            bool isParent = parentProjects.Select(x => x.OwnerUserId == UserManager.CurrentUserId).Any();
+
+            var formerOwnerId = project.OwnerUserId;
+            var formerStartDate = project.StartDate;
+            var formerEndDate = project.EndDate;
+            projectDto.CopyToEntity(project);
+
+            // if user is no admin, but owner of parent project(s)
+            // check start/end date time boundaries of parent projects before updating child project
+            if (!isAdmin && isParent) {
+              var parentProject = parentProjects.Where(x => x.ProjectId == project.ParentProjectId).FirstOrDefault();
+              if (parentProject != null) {
+                if (project.StartDate < parentProject.StartDate) project.StartDate = formerStartDate;
+                if ((parentProject.EndDate.HasValue && project.EndDate.HasValue && project.EndDate > parentProject.EndDate)
+                || (parentProject.EndDate.HasValue && !project.EndDate.HasValue))
+                  project.EndDate = formerEndDate;
+              }
+            }
+
+            // if user is admin or owner of parent project(s)
+            if (isAdmin || isParent) {
+              // if owner has changed...
+              if (formerOwnerId != projectDto.OwnerUserId) {
+                // Add permission for new owner if not already done
+                if (!project.ProjectPermissions
+                  .Select(pp => pp.GrantedUserId)
+                  .Contains(projectDto.OwnerUserId)) {
+                  project.ProjectPermissions.Add(new DA.ProjectPermission {
+                    GrantedUserId = projectDto.OwnerUserId,
+                    GrantedByUserId = UserManager.CurrentUserId
+                  });
+                }
+              }
+            } else { // if user is only owner of current project, but no admin and no owner of parent project(s)
+              project.OwnerUserId = formerOwnerId;
+              project.StartDate = formerStartDate;
+              project.EndDate = formerEndDate;
+            }
+
+          } else { // (2) save new project
+            var newProject = projectDao.Save(projectDto.ToEntity());
+
+            var parentProjects = projectDao.GetParentProjectsById(project.ProjectId).ToList();
+            bool isParent = parentProjects.Select(x => x.OwnerUserId == UserManager.CurrentUserId).Any();
+
+            // if user is no admin, but owner of a parent project
+            // check start/end date time boundaries of parent projects before updating child project
+            if (!isAdmin) {
+              var parentProject = parentProjects.Where(x => x.ProjectId == project.ParentProjectId).FirstOrDefault();
+              if (parentProject != null) {
+                if (project.StartDate < parentProject.StartDate) project.StartDate = parentProject.StartDate;
+                if ((parentProject.EndDate.HasValue && project.EndDate.HasValue && project.EndDate > parentProject.EndDate)
+                || (parentProject.EndDate.HasValue && !project.EndDate.HasValue))
+                  project.EndDate = parentProject.EndDate;
+              }
+            }
+
+            newProject.ProjectPermissions.Clear();
+            newProject.ProjectPermissions.Add(new DA.ProjectPermission {
+              GrantedUserId = projectDto.OwnerUserId,
+              GrantedByUserId = UserManager.CurrentUserId
+            });
+          }
+
+          pm.SubmitChanges();
+        });
+      }
+    }
+
+    public void DeleteProject(Guid projectId) {
+      if (projectId == Guid.Empty) return;
+      RoleVerifier.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
+      // check if current (non-admin) user is owner of one of the projectDto's-parents
+      // note: non-admin users are not allowed to administer root projects (i.e. projects without parental entry)
+      if (!RoleVerifier.IsInRole(HiveRoles.Administrator)) {
+        AuthorizationManager.AuthorizeForProjectAdministration(projectId, true);
+      }
+
+      var pm = PersistenceManager;
+      using (new PerformanceLogger("DeleteProject")) {
+        var projectDao = pm.ProjectDao;
+        var jobDao = pm.JobDao;
+        var assignedJobResourceDao = pm.AssignedJobResourceDao;
+        pm.UseTransaction(() => {
+          var projectIds = new HashSet<Guid> { projectId };
+          projectIds.Union(projectDao.GetChildProjectIdsById(projectId));
+
+          var jobs = jobDao.GetByProjectIds(projectIds)
+            .Select(x => x.ToDto())
+            .ToList();
+
+          if (jobs.Count > 0) {
+            throw new InvalidOperationException("There are " + jobs.Count + " job(s) using this project and/or child-projects. It is necessary to delete them before the project.");
+          } else {
+            assignedJobResourceDao.DeleteByProjectIds(projectIds);
+            projectDao.DeleteByIds(projectIds);
+            pm.SubmitChanges();
+          }
+        });
+      }
+    }
+
+    // query granted project for use (i.e. to calculate on)
+    public DT.Project GetProject(Guid projectId) {
       RoleVerifier.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
       var pm = PersistenceManager;
-      using (new PerformanceLogger("GrantResourcePermissions")) {
+      using (new PerformanceLogger("GetProject")) {
+        var projectDao = pm.ProjectDao;
+        var currentUserId = UserManager.CurrentUserId;
+        var userAndGroupIds = new List<Guid> { currentUserId };
+        userAndGroupIds.AddRange(UserManager.GetUserGroupIdsOfUser(currentUserId));
+        return pm.UseTransaction(() => {
+          return projectDao.GetUsageGrantedProjectsForUser(userAndGroupIds)
+          .Where(x => x.ProjectId == projectId)
+          .Select(x => x.ToDto())
+          .SingleOrDefault();
+        });
+      }
+    }
+
+    // query granted projects for use (i.e. to calculate on)
+    public IEnumerable<DT.Project> GetProjects() {
+      RoleVerifier.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
+      var pm = PersistenceManager;
+      using (new PerformanceLogger("GetProjects")) {
+        var projectDao = pm.ProjectDao;
+        var currentUserId = UserManager.CurrentUserId;
+        var userAndGroupIds = new List<Guid> { currentUserId };
+        userAndGroupIds.AddRange(UserManager.GetUserGroupIdsOfUser(currentUserId));
+        return pm.UseTransaction(() => {
+          var projects = projectDao.GetUsageGrantedProjectsForUser(userAndGroupIds)
+            .Select(x => x.ToDto()).ToList();
+          var now = DateTime.Now;
+          return projects.Where(x => x.StartDate <= now && (x.EndDate == null || x.EndDate >= now)).ToList();
+        });
+      }
+    }
+
+    public IEnumerable<DT.Project> GetProjectsForAdministration() {
+      RoleVerifier.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
+      bool isAdministrator = RoleVerifier.IsInRole(HiveRoles.Administrator);
+      var pm = PersistenceManager;
+      using (new PerformanceLogger("GetProjectsForAdministration")) {
+        var projectDao = pm.ProjectDao;
+
+        return pm.UseTransaction(() => {
+          if (isAdministrator) {
+            return projectDao.GetAll().Select(x => x.ToDto()).ToList();
+          } else {
+            var currentUserId = UserManager.CurrentUserId;
+            return projectDao.GetAdministrationGrantedProjectsForUser(currentUserId)
+              .Select(x => x.ToDto()).ToList();
+
+          }
+        });
+      }
+    }
+
+    public IDictionary<Guid, HashSet<Guid>> GetProjectGenealogy() {
+      RoleVerifier.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
+      var pm = PersistenceManager;
+      using (new PerformanceLogger("GetProjectGenealogy")) {
+        var projectDao = pm.ProjectDao;
+        var projectAncestors = new Dictionary<Guid, HashSet<Guid>>();
+        return pm.UseTransaction(() => {
+          var projects = projectDao.GetAll().ToList();
+          projects.ForEach(p => projectAncestors.Add(p.ProjectId, new HashSet<Guid>()));
+          foreach (var p in projects) {
+            var parentProject = p.ParentProject;
+            while (parentProject != null) {
+              projectAncestors[p.ProjectId].Add(parentProject.ProjectId);
+              parentProject = parentProject.ParentProject;
+            }
+          }
+          return projectAncestors;
+        });
+      }
+    }
+
+    public IDictionary<Guid, string> GetProjectNames() {
+      RoleVerifier.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
+      var pm = PersistenceManager;
+      using (new PerformanceLogger("GetProjectNames")) {
+        var projectDao = pm.ProjectDao;
+        var projectNames = new Dictionary<Guid, string>();
+        return pm.UseTransaction(() => {
+          projectDao
+            .GetAll().ToList()
+            .ForEach(p => projectNames.Add(p.ProjectId, p.Name));
+          return projectNames;
+        });
+      }
+    }
+    #endregion
+
+    #region ProjectPermission Methods
+    public void SaveProjectPermissions(Guid projectId, List<Guid> grantedUserIds, bool reassign, bool cascading, bool reassignCascading) {
+      RoleVerifier.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
+      if (projectId == null || grantedUserIds == null) return;
+      AuthorizationManager.AuthorizeForProjectAdministration(projectId, false);
+      var pm = PersistenceManager;
+      using (new PerformanceLogger("SaveProjectPermissions")) {
+        var projectDao = pm.ProjectDao;
+        var projectPermissionDao = pm.ProjectPermissionDao;
+        var assignedJobResourceDao = pm.AssignedJobResourceDao;
+
         pm.UseTransaction(() => {
-          var resource = AuthorizeForResource(pm, resourceId);
-          var resourcePermissions = resource.ResourcePermissions.ToList();
+          var project = projectDao.GetById(projectId);
+          if (project == null) return;
+          var projectPermissions = project.ProjectPermissions.Select(x => x.GrantedUserId).ToArray();
+
+          // guarantee that project owner is always permitted
+          if (!grantedUserIds.Contains(project.OwnerUserId)) {
+            grantedUserIds.Add(project.OwnerUserId);
+          }
+
+          //var addedPermissions = grantedUserIds.Except(projectPermissions);
+          var removedPermissions = projectPermissions.Except(grantedUserIds);
+
+          // remove job assignments and project permissions
+          if (reassign) {
+            assignedJobResourceDao.DeleteByProjectId(project.ProjectId);
+            project.ProjectPermissions.Clear();
+          } else {
+
+            var ugt = GetUserGroupTree();
+            var permittedGuids = new HashSet<Guid>(); // User- and Group-Guids
+            var notpermittedGuids = new HashSet<Guid>();
+
+            // remove job assignments:
+            // (1) get all member-Guids of all still or fresh permitted user/groups
+            foreach (var item in grantedUserIds) {
+              permittedGuids.Add(item);
+              if (ugt.ContainsKey(item)) {
+                ugt[item].ToList().ForEach(x => permittedGuids.Add(x));
+              }
+            }
+
+            // (2) get all member-Guids of users and groups in removedPermissions
+            foreach (var item in removedPermissions) {
+              notpermittedGuids.Add(item);
+              if (ugt.ContainsKey(item)) {
+                ugt[item].ToList().ForEach(x => notpermittedGuids.Add(x));
+              }
+            }
+
+            // (3) get all Guids which are in removedPermissions but not in grantedUserIds
+            var definitelyNotPermittedGuids = notpermittedGuids.Except(permittedGuids);
+
+            // (4) delete jobs of those
+            assignedJobResourceDao.DeleteByProjectIdAndUserIds(project.ProjectId, definitelyNotPermittedGuids);
+
+
+            // remove project permissions
+            foreach (var item in project.ProjectPermissions
+              .Where(x => removedPermissions.Contains(x.GrantedUserId))
+              .ToList()) {
+              project.ProjectPermissions.Remove(item);
+            }
+          }
+          pm.SubmitChanges();
+
+          // add project permissions
           foreach (var id in grantedUserIds) {
-            if (resourcePermissions.All(x => x.GrantedUserId != id)) {
-              resource.ResourcePermissions.Add(new DA.ResourcePermission {
+            if (project.ProjectPermissions.All(x => x.GrantedUserId != id)) {
+              project.ProjectPermissions.Add(new DA.ProjectPermission {
                 GrantedUserId = id,
                 GrantedByUserId = UserManager.CurrentUserId
               });
+            }
+          }
+          pm.SubmitChanges();
+
+          if (cascading) {
+            var childProjects = projectDao.GetChildProjectsById(projectId).ToList();
+            var childProjectIds = childProjects.Select(x => x.ProjectId).ToList();
+
+            // remove job assignments
+            if (reassignCascading) {
+              assignedJobResourceDao.DeleteByProjectIds(childProjectIds);
+            } else {
+              assignedJobResourceDao.DeleteByProjectIdsAndUserIds(childProjectIds, removedPermissions);
+            }
+
+            foreach (var p in childProjects) {
+              var cpAssignedPermissions = p.ProjectPermissions.Select(x => x.GrantedUserId).ToList();
+              // guarantee that project owner is always permitted
+              if (!cpAssignedPermissions.Contains(p.OwnerUserId)) {
+                cpAssignedPermissions.Add(p.OwnerUserId);
+              }
+              var cpRemovedPermissions = cpAssignedPermissions.Where(x => x != p.OwnerUserId).Except(grantedUserIds);
+
+              // remove left-over job assignments (for non-reassignments)
+              if (!reassignCascading) {
+                assignedJobResourceDao.DeleteByProjectIdAndUserIds(p.ProjectId, cpRemovedPermissions);
+              }
+
+              // remove project permissions
+              if (reassignCascading) {
+                p.ProjectPermissions.Clear();
+              } else {
+                foreach (var item in p.ProjectPermissions
+                  .Where(x => x.GrantedUserId != p.OwnerUserId
+                    && (removedPermissions.Contains(x.GrantedUserId) || cpRemovedPermissions.Contains(x.GrantedUserId)))
+                  .ToList()) {
+                  p.ProjectPermissions.Remove(item);
+                }
+              }
+              pm.SubmitChanges();
+
+              // add project permissions
+              var cpGrantedUserIds = new HashSet<Guid>(grantedUserIds);
+              cpGrantedUserIds.Add(p.OwnerUserId);
+
+              foreach (var id in cpGrantedUserIds) {
+                if (p.ProjectPermissions.All(x => x.GrantedUserId != id)) {
+                  p.ProjectPermissions.Add(new DA.ProjectPermission {
+                    GrantedUserId = id,
+                    GrantedByUserId = UserManager.CurrentUserId
+                  });
+                }
+              }
             }
           }
           pm.SubmitChanges();
@@ -624,30 +1186,216 @@ namespace HeuristicLab.Services.Hive {
       }
     }
 
-    public void RevokeResourcePermissions(Guid resourceId, Guid[] grantedUserIds) {
-      RoleVerifier.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
-      var pm = PersistenceManager;
-      using (new PerformanceLogger("RevokeResourcePermissions")) {
-        var resourcePermissionDao = pm.ResourcePermissionDao;
-        pm.UseTransaction(() => {
-          AuthorizeForResource(pm, resourceId);
-          resourcePermissionDao.DeleteByResourceAndGrantedUserId(resourceId, grantedUserIds);
-          pm.SubmitChanges();
-        });
-      }
-    }
+    //private void GrantProjectPermissions(Guid projectId, List<Guid> grantedUserIds, bool cascading) {
+    //  throw new NotImplementedException();
+    //}
 
-    public IEnumerable<DT.ResourcePermission> GetResourcePermissions(Guid resourceId) {
+    //private void RevokeProjectPermissions(Guid projectId, List<Guid> grantedUserIds, bool cascading) {
+    //  RoleVerifier.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
+    //  if (projectId == null || grantedUserIds == null || !grantedUserIds.Any()) return;
+    //  AuthorizationManager.AuthorizeForProjectAdministration(projectId, false);
+    //  var pm = PersistenceManager;
+    //  using (new PerformanceLogger("RevokeProjectPermissions")) {
+    //    var projectPermissionDao = pm.ProjectPermissionDao;
+    //    var projectDao = pm.ProjectDao;
+    //    var assignedJobResourceDao = pm.AssignedJobResourceDao;
+    //    pm.UseTransaction(() => {
+    //      if (cascading) {
+    //        var childProjectIds = projectDao.GetChildProjectIdsById(projectId).ToList();
+    //        projectPermissionDao.DeleteByProjectIdsAndGrantedUserIds(childProjectIds, grantedUserIds);
+    //        assignedJobResourceDao.DeleteByProjectIdsAndUserIds(childProjectIds, grantedUserIds);
+    //      }
+    //      projectPermissionDao.DeleteByProjectIdAndGrantedUserIds(projectId, grantedUserIds);
+    //      assignedJobResourceDao.DeleteByProjectIdAndUserIds(projectId, grantedUserIds);
+    //      pm.SubmitChanges();
+    //    });
+    //  }
+    //}
+
+    public IEnumerable<DT.ProjectPermission> GetProjectPermissions(Guid projectId) {
       RoleVerifier.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
+      AuthorizationManager.AuthorizeForProjectAdministration(projectId, false);
       var pm = PersistenceManager;
-      using (new PerformanceLogger("GetResourcePermissions")) {
-        var resourcePermissionDao = pm.ResourcePermissionDao;
-        return pm.UseTransaction(() => resourcePermissionDao.GetByResourceId(resourceId)
+      using (new PerformanceLogger("GetProjectPermissions")) {
+        var projectPermissionDao = pm.ProjectPermissionDao;
+        return pm.UseTransaction(() => projectPermissionDao.GetByProjectId(projectId)
           .Select(x => x.ToDto())
           .ToList()
         );
       }
     }
+    #endregion
+
+    #region AssignedProjectResource Methods
+    // basic: remove and add assignments (resourceIds) to projectId and its depending jobs
+    // reassign: clear all assignments from project and its depending jobs, before adding new ones (resourceIds)
+    // cascading: "basic" mode for child-projects
+    // reassignCascading: "reassign" mode for child-projects
+    public void SaveProjectResourceAssignments(Guid projectId, List<Guid> resourceIds, bool reassign, bool cascading, bool reassignCascading) {
+      RoleVerifier.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
+      if (projectId == null || resourceIds == null) return;
+      AuthorizationManager.AuthorizeForProjectResourceAdministration(projectId, resourceIds);
+      bool isAdmin = RoleVerifier.IsInRole(HiveRoles.Administrator);
+      var pm = PersistenceManager;
+      using (new PerformanceLogger("SaveProjectResourceAssignments")) {
+        var projectDao = pm.ProjectDao;
+        var assignedProjectResourceDao = pm.AssignedProjectResourceDao;
+        var assignedJobResourceDao = pm.AssignedJobResourceDao;
+        pm.UseTransaction(() => {
+          var project = projectDao.GetById(projectId);
+
+          var parentProjects = projectDao.GetParentProjectsById(project.ProjectId).ToList();
+          bool isParent = parentProjects.Select(x => x.OwnerUserId == UserManager.CurrentUserId).Any();
+
+          var assignedResources = project.AssignedProjectResources.Select(x => x.ResourceId).ToArray();
+          if (!isParent && !isAdmin) resourceIds = assignedResources.ToList();
+          var removedAssignments = assignedResources.Except(resourceIds);
+
+          // if user is admin or owner of parent project(s)
+          if (isAdmin || isParent) {
+            // remove job and project assignments
+            if (reassign) {
+              assignedJobResourceDao.DeleteByProjectId(project.ProjectId);
+              project.AssignedProjectResources.Clear();
+            } else {
+              assignedJobResourceDao.DeleteByProjectIdAndResourceIds(projectId, removedAssignments);
+              foreach (var item in project.AssignedProjectResources
+                .Where(x => removedAssignments.Contains(x.ResourceId))
+                .ToList()) {
+                project.AssignedProjectResources.Remove(item);
+              }
+            }
+            pm.SubmitChanges();
+
+            // add project assignments
+            foreach (var id in resourceIds) {
+              if (project.AssignedProjectResources.All(x => x.ResourceId != id)) {
+                project.AssignedProjectResources.Add(new DA.AssignedProjectResource {
+                  ResourceId = id
+                });
+              }
+            }
+            pm.SubmitChanges();
+          }
+
+          // if user is admin, project owner or owner of parent projects
+          if (cascading) {
+            var childProjects = projectDao.GetChildProjectsById(projectId).ToList();
+            var childProjectIds = childProjects.Select(x => x.ProjectId).ToList();
+
+            // remove job assignments
+            if (reassignCascading) {
+              assignedJobResourceDao.DeleteByProjectIds(childProjectIds);
+            } else {
+              assignedJobResourceDao.DeleteByProjectIdsAndResourceIds(childProjectIds, removedAssignments);
+            }
+            foreach (var p in childProjects) {
+              var cpAssignedResources = p.AssignedProjectResources.Select(x => x.ResourceId).ToArray();
+              var cpRemovedAssignments = cpAssignedResources.Except(resourceIds);
+
+              // remove left-over job assignments (for non-reassignments)
+              if (!reassignCascading) {
+                assignedJobResourceDao.DeleteByProjectIdAndResourceIds(p.ProjectId, cpRemovedAssignments);
+              }
+
+              // remove project assignments
+              if (reassignCascading) {
+                p.AssignedProjectResources.Clear();
+              } else {
+                foreach (var item in p.AssignedProjectResources
+                  .Where(x => removedAssignments.Contains(x.ResourceId) || cpRemovedAssignments.Contains(x.ResourceId))
+                  .ToList()) {
+                  p.AssignedProjectResources.Remove(item);
+                }
+              }
+              pm.SubmitChanges();
+
+              // add project assignments
+              foreach (var id in resourceIds) {
+                if (p.AssignedProjectResources.All(x => x.ResourceId != id)) {
+                  p.AssignedProjectResources.Add(new DA.AssignedProjectResource {
+                    ResourceId = id
+                  });
+                }
+              }
+            }
+          }
+          pm.SubmitChanges();
+        });
+      }
+    }
+
+    //private void AssignProjectResources(Guid projectId, List<Guid> resourceIds, bool cascading) {
+    //  throw new NotImplementedException();
+    //}
+
+    //private void UnassignProjectResources(Guid projectId, List<Guid> resourceIds, bool cascading) {
+    //  RoleVerifier.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
+    //  if (projectId == null || resourceIds == null || !resourceIds.Any()) return;
+    //  AuthorizationManager.AuthorizeForProjectResourceAdministration(projectId, resourceIds);
+    //  var pm = PersistenceManager;
+    //  using (new PerformanceLogger("UnassignProjectResources")) {
+    //    var assignedProjectResourceDao = pm.AssignedProjectResourceDao;
+    //    var assignedJobResourceDao = pm.AssignedJobResourceDao;
+    //    var projectDao = pm.ProjectDao;
+    //    pm.UseTransaction(() => {
+    //      if (cascading) {
+    //        var childProjectIds = projectDao.GetChildProjectIdsById(projectId).ToList();
+    //        assignedProjectResourceDao.DeleteByProjectIdsAndResourceIds(childProjectIds, resourceIds);
+    //        assignedJobResourceDao.DeleteByProjectIdsAndResourceIds(childProjectIds, resourceIds);
+    //      }
+    //      assignedProjectResourceDao.DeleteByProjectIdAndResourceIds(projectId, resourceIds);
+    //      assignedJobResourceDao.DeleteByProjectIdAndResourceIds(projectId, resourceIds);
+    //      pm.SubmitChanges();
+    //    });
+    //  }
+    //}
+
+    public IEnumerable<DT.AssignedProjectResource> GetAssignedResourcesForProject(Guid projectId) {
+      RoleVerifier.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
+      AuthorizationManager.AuthorizeUserForProjectUse(UserManager.CurrentUserId, projectId);
+      var pm = PersistenceManager;
+      using (new PerformanceLogger("GetAssignedResourcesForProject")) {
+        var assignedProjectResourceDao = pm.AssignedProjectResourceDao;
+        return pm.UseTransaction(() => assignedProjectResourceDao.GetByProjectId(projectId)
+          .Select(x => x.ToDto())
+          .ToList()
+        );
+      }
+    }
+
+    public IEnumerable<DT.AssignedProjectResource> GetAssignedResourcesForProjectAdministration(Guid projectId) {
+      RoleVerifier.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
+      AuthorizationManager.AuthorizeForProjectAdministration(projectId, false);
+      var pm = PersistenceManager;
+      using (new PerformanceLogger("GetAssignedResourcesForProject")) {
+        var assignedProjectResourceDao = pm.AssignedProjectResourceDao;
+        return pm.UseTransaction(() => assignedProjectResourceDao.GetByProjectId(projectId)
+          .Select(x => x.ToDto())
+          .ToList()
+        );
+      }
+    }
+
+    public IEnumerable<DT.AssignedProjectResource> GetAssignedResourcesForProjectsAdministration(IEnumerable<Guid> projectIds) {
+      RoleVerifier.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
+      foreach (var id in projectIds)
+        AuthorizationManager.AuthorizeForProjectAdministration(id, false);
+
+      var pm = PersistenceManager;
+      using (new PerformanceLogger("GetAssignedResourcesForProject")) {
+        var assignedProjectResourceDao = pm.AssignedProjectResourceDao;
+        var assignments = new List<DT.AssignedProjectResource>();
+        pm.UseTransaction(() => {
+          foreach (var id in projectIds) {
+            assignments.AddRange(assignedProjectResourceDao.GetByProjectId(id)
+              .Select(x => x.ToDto()));
+          }
+        });
+        return assignments.Distinct();
+      }
+    }
+
     #endregion
 
     #region Slave Methods
@@ -665,7 +1413,7 @@ namespace HeuristicLab.Services.Hive {
     }
 
     public Guid AddSlaveGroup(DT.SlaveGroup slaveGroupDto) {
-      RoleVerifier.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
+      RoleVerifier.AuthenticateForAnyRole(HiveRoles.Administrator);
       var pm = PersistenceManager;
       using (new PerformanceLogger("AddSlaveGroup")) {
         var slaveGroupDao = pm.SlaveGroupDao;
@@ -689,58 +1437,179 @@ namespace HeuristicLab.Services.Hive {
       }
     }
 
+    // query granted slaves for use (i.e. to calculate on)
     public IEnumerable<DT.Slave> GetSlaves() {
       RoleVerifier.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
-      bool isAdministrator = RoleVerifier.IsInRole(HiveRoles.Administrator);
       var pm = PersistenceManager;
       using (new PerformanceLogger("GetSlaves")) {
         var slaveDao = pm.SlaveDao;
-        var resourcePermissionDao = pm.ResourcePermissionDao;
+        var projectDao = pm.ProjectDao;
+        var assignedProjectResourceDao = pm.AssignedProjectResourceDao;
+
+        // collect user information
         var currentUserId = UserManager.CurrentUserId;
+        var userAndGroupIds = new List<Guid> { currentUserId };
+        userAndGroupIds.AddRange(UserManager.GetUserGroupIdsOfUser(currentUserId));
+
         return pm.UseTransaction(() => {
-          var resourcePermissions = resourcePermissionDao.GetAll();
-          return slaveDao.GetAll().ToList()
-            .Where(x => isAdministrator
-              || x.OwnerUserId == null
-              || x.OwnerUserId == currentUserId
-              || UserManager.VerifyUser(currentUserId, resourcePermissions
-                  .Where(y => y.ResourceId == x.ResourceId)
-                  .Select(z => z.GrantedUserId)
-                  .ToList())
-              )
+          var slaves = slaveDao.GetAll()
             .Select(x => x.ToDto())
+            .ToList();
+          var grantedProjectIds = projectDao.GetUsageGrantedProjectsForUser(userAndGroupIds)
+            .Select(x => x.ProjectId)
+            .ToList();
+          var grantedResourceIds = assignedProjectResourceDao.GetAllGrantedResourcesByProjectIds(grantedProjectIds)
+            .Select(x => x.ResourceId)
+            .ToList();
+
+          return slaves
+            .Where(x => grantedResourceIds.Contains(x.Id))
             .ToList();
         });
       }
     }
 
+    // query granted slave groups for use (i.e. to calculate on)
     public IEnumerable<DT.SlaveGroup> GetSlaveGroups() {
       RoleVerifier.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
-      bool isAdministrator = RoleVerifier.IsInRole(HiveRoles.Administrator);
       var pm = PersistenceManager;
       using (new PerformanceLogger("GetSlaveGroups")) {
         var slaveGroupDao = pm.SlaveGroupDao;
-        var resourcePermissionDao = pm.ResourcePermissionDao;
+        var projectDao = pm.ProjectDao;
+        var assignedProjectResourceDao = pm.AssignedProjectResourceDao;
+
+        // collect user information
         var currentUserId = UserManager.CurrentUserId;
+        var userAndGroupIds = new List<Guid> { currentUserId };
+        userAndGroupIds.AddRange(UserManager.GetUserGroupIdsOfUser(currentUserId));
+
         return pm.UseTransaction(() => {
-          var resourcePermissions = resourcePermissionDao.GetAll();
-          return slaveGroupDao.GetAll().ToList()
-            .Where(x => isAdministrator
-              || x.OwnerUserId == null
-              || x.OwnerUserId == currentUserId
-              || UserManager.VerifyUser(currentUserId, resourcePermissions
-                  .Where(y => y.ResourceId == x.ResourceId)
-                  .Select(z => z.GrantedUserId)
-                  .ToList())
-              )
+          var slaveGroups = slaveGroupDao.GetAll()
             .Select(x => x.ToDto())
             .ToList();
+          var grantedProjectIds = projectDao.GetUsageGrantedProjectsForUser(userAndGroupIds)
+            .Select(x => x.ProjectId)
+            .ToList();
+          var grantedResourceIds = assignedProjectResourceDao.GetAllGrantedResourcesByProjectIds(grantedProjectIds)
+            .Select(x => x.ResourceId)
+            .ToList();
+
+          return slaveGroups
+            .Where(x => grantedResourceIds.Contains(x.Id))
+            .ToList();
+        });
+      }
+    }
+
+    // query granted slaves for resource administration
+    public IEnumerable<DT.Slave> GetSlavesForAdministration() {
+      RoleVerifier.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
+      bool isAdministrator = RoleVerifier.IsInRole(HiveRoles.Administrator);
+      var pm = PersistenceManager;
+      using (new PerformanceLogger("GetSlavesForAdministration")) {
+        var slaveDao = pm.SlaveDao;
+        var currentUserId = UserManager.CurrentUserId;
+
+        if (isAdministrator) {
+          return pm.UseTransaction(() => {
+            return slaveDao.GetAll()
+              .Select(x => x.ToDto())
+              .ToList();
+          });
+        } else {
+          var slaves = slaveDao.GetAll()
+            .Select(x => x.ToDto())
+            .ToList();
+          var projectDao = pm.ProjectDao;
+          var assignedProjectResourceDao = pm.AssignedProjectResourceDao;
+          var projects = projectDao.GetAdministrationGrantedProjectsForUser(currentUserId).ToList();
+          var resourceIds = assignedProjectResourceDao
+            .GetAllGrantedResourcesByProjectIds(projects.Select(x => x.ProjectId).ToList())
+            .Select(x => x.ResourceId)
+            .ToList();
+
+          return slaves
+            .Where(x => resourceIds.Contains(x.Id))
+            .ToList();
+        }
+      }
+    }
+
+    // query granted slave groups for resource administration
+    public IEnumerable<DT.SlaveGroup> GetSlaveGroupsForAdministration() {
+      RoleVerifier.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
+      bool isAdministrator = RoleVerifier.IsInRole(HiveRoles.Administrator);
+      var pm = PersistenceManager;
+      using (new PerformanceLogger("GetSlaveGroupsForAdministration")) {
+        var slaveGroupDao = pm.SlaveGroupDao;
+        var currentUserId = UserManager.CurrentUserId;
+
+        if (isAdministrator) {
+          return pm.UseTransaction(() => {
+            return slaveGroupDao.GetAll()
+              .Select(x => x.ToDto())
+              .ToList();
+          });
+        } else {
+          var slaveGroups = slaveGroupDao.GetAll()
+            .Select(x => x.ToDto())
+            .ToList();
+          var projectDao = pm.ProjectDao;
+          var assignedProjectResourceDao = pm.AssignedProjectResourceDao;
+          var projects = projectDao.GetAdministrationGrantedProjectsForUser(currentUserId).ToList();
+          var resourceIds = assignedProjectResourceDao
+            .GetAllGrantedResourcesByProjectIds(projects.Select(x => x.ProjectId).ToList())
+            .Select(x => x.ResourceId)
+            .ToList();
+
+          return slaveGroups
+            .Where(x => resourceIds.Contains(x.Id))
+            .ToList();
+        }
+      }
+    }
+
+    public IDictionary<Guid, HashSet<Guid>> GetResourceGenealogy() {
+      RoleVerifier.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
+      var pm = PersistenceManager;
+      using (new PerformanceLogger("GetResourceGenealogy")) {
+        var resourceDao = pm.ResourceDao;
+        var resourceAncestors = new Dictionary<Guid, HashSet<Guid>>();
+        return pm.UseTransaction(() => {
+          var resources = resourceDao.GetAll().ToList();
+          resources.ForEach(r => resourceAncestors.Add(r.ResourceId, new HashSet<Guid>()));
+
+          foreach (var r in resources) {
+            var parentResource = r.ParentResource;
+            while (parentResource != null) {
+              resourceAncestors[r.ResourceId].Add(parentResource.ResourceId);
+              parentResource = parentResource.ParentResource;
+            }
+          }
+          return resourceAncestors;
+        });
+      }
+    }
+
+    public IDictionary<Guid, string> GetResourceNames() {
+      RoleVerifier.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
+      var pm = PersistenceManager;
+      using (new PerformanceLogger("GetResourceNames")) {
+        var resourceDao = pm.ResourceDao;
+        var resourceNames = new Dictionary<Guid, string>();
+        return pm.UseTransaction(() => {
+          resourceDao
+            .GetAll().ToList()
+            .ForEach(p => resourceNames.Add(p.ResourceId, p.Name));
+          return resourceNames;
         });
       }
     }
 
     public void UpdateSlave(DT.Slave slaveDto) {
       RoleVerifier.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
+      if (slaveDto == null) return;
+      AuthorizationManager.AuthorizeForResourceAdministration(slaveDto.Id);
       var pm = PersistenceManager;
       using (new PerformanceLogger("UpdateSlave")) {
         var slaveDao = pm.SlaveDao;
@@ -758,6 +1627,8 @@ namespace HeuristicLab.Services.Hive {
 
     public void UpdateSlaveGroup(DT.SlaveGroup slaveGroupDto) {
       RoleVerifier.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
+      if (slaveGroupDto == null) return;
+      AuthorizationManager.AuthorizeForResourceAdministration(slaveGroupDto.Id);
       var pm = PersistenceManager;
       using (new PerformanceLogger("UpdateSlaveGroup")) {
         var slaveGroupDao = pm.SlaveGroupDao;
@@ -774,6 +1645,7 @@ namespace HeuristicLab.Services.Hive {
     }
 
     public void DeleteSlave(Guid slaveId) {
+      if (slaveId == Guid.Empty) return;
       RoleVerifier.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
       AuthorizationManager.AuthorizeForResourceAdministration(slaveId);
       var pm = PersistenceManager;
@@ -787,13 +1659,16 @@ namespace HeuristicLab.Services.Hive {
     }
 
     public void DeleteSlaveGroup(Guid slaveGroupId) {
+      if (slaveGroupId == Guid.Empty) return;
       RoleVerifier.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
       AuthorizationManager.AuthorizeForResourceAdministration(slaveGroupId);
       var pm = PersistenceManager;
       using (new PerformanceLogger("DeleteSlaveGroup")) {
-        var slaveGroupDao = pm.SlaveGroupDao;
+        var resourceDao = pm.ResourceDao;
         pm.UseTransaction(() => {
-          slaveGroupDao.Delete(slaveGroupId);
+          var resourceIds = new HashSet<Guid> { slaveGroupId };
+          resourceIds.Union(resourceDao.GetChildResourceIdsById(slaveGroupId));
+          resourceDao.DeleteByIds(resourceIds);
           pm.SubmitChanges();
         });
       }
@@ -946,6 +1821,37 @@ namespace HeuristicLab.Services.Hive {
       var user = ServiceLocator.Instance.UserManager.GetUserByName(username);
       return user != null ? (Guid?)user.ProviderUserKey ?? Guid.Empty : Guid.Empty;
     }
+
+    public Dictionary<Guid, HashSet<Guid>> GetUserGroupTree() {
+      var userGroupTree = new Dictionary<Guid, HashSet<Guid>>();
+      var userGroupMapping = UserManager.GetUserGroupMapping();
+
+      foreach (var ugm in userGroupMapping) {
+        if (ugm.Parent == null || ugm.Child == null) continue;
+
+        if (!userGroupTree.ContainsKey(ugm.Parent)) {
+          userGroupTree.Add(ugm.Parent, new HashSet<Guid>());
+        }
+        userGroupTree[ugm.Parent].Add(ugm.Child);
+      }
+
+      return userGroupTree;
+    }
+
+    public bool CheckAccessToAdminAreaGranted() {
+      RoleVerifier.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
+      bool isAdministrator = RoleVerifier.IsInRole(HiveRoles.Administrator);
+      var pm = PersistenceManager;
+      using (new PerformanceLogger("CheckAccessToAdminAreaGranted")) {
+        if (isAdministrator) {
+          return true;
+        } else {
+          var projectDao = pm.ProjectDao;
+          var currentUserId = UserManager.CurrentUserId;
+          return projectDao.GetAdministrationGrantedProjectsForUser(currentUserId).Any();
+        }
+      }
+    }
     #endregion
 
     #region UserPriorities Methods
@@ -989,15 +1895,56 @@ namespace HeuristicLab.Services.Hive {
       }
     }
 
-    private DA.Resource AuthorizeForResource(IPersistenceManager pm, Guid resourceId) {
-      var resourceDao = pm.ResourceDao;
-      var resource = resourceDao.GetById(resourceId);
-      if (resource == null) throw new SecurityException("Not authorized");
-      if (resource.OwnerUserId != UserManager.CurrentUserId
-          && !RoleVerifier.IsInRole(HiveRoles.Administrator)) {
-        throw new SecurityException("Not authorized");
+    private void CheckProjectAvailability(IPersistenceManager pm, Guid projectId, DateTime date) {
+      var projectDao = pm.ProjectDao;
+      using (new PerformanceLogger("UpdateJob")) {
+        var project = pm.UseTransaction(() => {
+          return projectDao.GetById(projectId);
+        });
+        if (project != null) {
+          if (project.StartDate > date) throw new ArgumentException("Cannot add job to specified project. The start date of the project is still in the future.");
+          else if (project.EndDate != null && project.EndDate < date) throw new ArgumentException("Cannot add job to specified project. The end date of the project is already reached.");
+        } else {
+          throw new ArgumentException("Cannot add job to specified project. The project seems not to be available anymore.");
+        }
       }
-      return resource;
+    }
+
+    private void EvaluateJobs(IPersistenceManager pm, IEnumerable<DT.Job> jobs) {
+      if (jobs == null || !jobs.Any()) return;
+
+      var currentUserId = UserManager.CurrentUserId;
+      var taskDao = pm.TaskDao;
+      var jobPermissionDao = pm.JobPermissionDao;
+
+      var statistics = taskDao.GetAll()
+        .Where(x => jobs.Select(y => y.Id).Contains(x.JobId))
+        .GroupBy(x => x.JobId)
+        .Select(x => new {
+          x.Key,
+          TotalCount = x.Count(),
+          CalculatingCount = x.Count(y => y.State == DA.TaskState.Calculating),
+          FinishedCount = x.Count(y => CompletedStates.Contains(y.State))
+        })
+        .ToList();
+
+      foreach (var job in jobs) {
+        var statistic = statistics.FirstOrDefault(x => x.Key == job.Id);
+        if (statistic != null) {
+          job.JobCount = statistic.TotalCount;
+          job.CalculatingCount = statistic.CalculatingCount;
+          job.FinishedCount = statistic.FinishedCount;
+        }
+
+        job.OwnerUsername = UserManager.GetUserNameById(job.OwnerUserId);
+
+        if (currentUserId == job.OwnerUserId) {
+          job.Permission = Permission.Full;
+        } else {
+          var jobPermission = jobPermissionDao.GetByJobAndUserId(job.Id, currentUserId);
+          job.Permission = jobPermission == null ? Permission.NotAllowed : jobPermission.Permission.ToDto();
+        }
+      }
     }
     #endregion
   }

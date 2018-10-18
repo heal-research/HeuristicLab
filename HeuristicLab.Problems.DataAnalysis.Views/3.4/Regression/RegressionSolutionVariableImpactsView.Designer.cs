@@ -19,6 +19,7 @@
  */
 #endregion
 
+
 namespace HeuristicLab.Problems.DataAnalysis.Views {
   partial class RegressionSolutionVariableImpactsView {
     /// <summary> 
@@ -80,6 +81,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       // 
       this.sortByComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.sortByComboBox.FormattingEnabled = true;
+      this.sortByComboBox.Items.AddRange(new object[] {
+            HeuristicLab.Problems.DataAnalysis.Views.RegressionSolutionVariableImpactsView.SortingCriteria.ImpactValue,
+            HeuristicLab.Problems.DataAnalysis.Views.RegressionSolutionVariableImpactsView.SortingCriteria.Occurrence,
+            HeuristicLab.Problems.DataAnalysis.Views.RegressionSolutionVariableImpactsView.SortingCriteria.VariableName});
       this.sortByComboBox.Location = new System.Drawing.Point(407, 3);
       this.sortByComboBox.Name = "sortByComboBox";
       this.sortByComboBox.Size = new System.Drawing.Size(121, 21);
@@ -158,8 +163,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       // 
       // variableImactsArrayView
       // 
-      this.variableImactsArrayView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+      this.variableImactsArrayView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.variableImactsArrayView.Caption = "StringConvertibleArray View";
       this.variableImactsArrayView.Content = null;

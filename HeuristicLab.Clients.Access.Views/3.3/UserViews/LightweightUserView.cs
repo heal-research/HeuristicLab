@@ -58,6 +58,11 @@ namespace HeuristicLab.Clients.Access.Views {
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
       this.showDetailsCheckBox.Enabled = false;
+      bool enabled = Content != null && !Locked;
+      addButton.Enabled = enabled;
+      removeButton.Enabled = enabled;
+      moveDownButton.Enabled = enabled;
+      moveUpButton.Enabled = enabled;
     }
 
     public event EventHandler SelectedUsersChanged;
