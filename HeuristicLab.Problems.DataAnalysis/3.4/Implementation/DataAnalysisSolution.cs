@@ -57,14 +57,15 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public IDataAnalysisProblemData ProblemData {
       get { return (IDataAnalysisProblemData)this[ProblemDataResultName].Value; }
       set {
-        if (this[ProblemDataResultName].Value != value) {
-          if (value != null) {
-            ProblemData.Changed -= new EventHandler(ProblemData_Changed);
-            this[ProblemDataResultName].Value = value;
-            ProblemData.Changed += new EventHandler(ProblemData_Changed);
-            OnProblemDataChanged();
-          }
-        }
+        if (value == null) throw new ArgumentNullException("The problemData must not be null.");
+        if (this[ProblemDataResultName].Value == value) return;
+        string errorMessage = string.Empty;
+        if (!Model.IsProblemDataCompatible(value, out errorMessage)) throw new ArgumentException(errorMessage);
+
+        ProblemData.Changed -= new EventHandler(ProblemData_Changed);
+        this[ProblemDataResultName].Value = value;
+        ProblemData.Changed += new EventHandler(ProblemData_Changed);
+        OnProblemDataChanged();
       }
     }
     #endregion
