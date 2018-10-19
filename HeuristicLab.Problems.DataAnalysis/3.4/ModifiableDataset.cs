@@ -55,6 +55,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
 
     public IEnumerable<object> GetRow(int row) {
+      if (row < 0 || row >= Rows)
+        throw new ArgumentException(string.Format("Invalid row {0} specified. The dataset contains {1} row(s).", row, Rows));
+
       return variableValues.Select(x => x.Value[row]);
     }
 
