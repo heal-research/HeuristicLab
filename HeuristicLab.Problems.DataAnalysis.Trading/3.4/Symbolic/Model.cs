@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
@@ -51,6 +52,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Trading.Symbolic {
       ISymbolicExpressionTree tree = SymbolicExpressionTree;
       return GetSignals(interpreter.GetSymbolicExpressionTreeValues(tree, dataset, rows));
     }
+
+    public override bool IsProblemDataCompatible(IDataAnalysisProblemData problemData, out string errorMessage) {
+      if (problemData == null) throw new ArgumentNullException("problemData", "The provided problemData is null.");
+      return IsDatasetCompatible(problemData.Dataset, out errorMessage);
+    }
+
 
     // Transforms an enumerable of real values to an enumerable of trading signals (buy(1) / hold(0) / sell(-1))
     public static IEnumerable<double> GetSignals(IEnumerable<double> xs) {

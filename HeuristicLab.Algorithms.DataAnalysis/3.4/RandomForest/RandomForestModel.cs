@@ -285,6 +285,24 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return new RandomForestClassificationSolution(this, new ClassificationProblemData(problemData));
     }
 
+    public bool IsProblemDataCompatible(IRegressionProblemData problemData, out string errorMessage) {
+      return RegressionModel.IsProblemDataCompatible(this, problemData, out errorMessage);
+    }
+
+    public override bool IsProblemDataCompatible(IDataAnalysisProblemData problemData, out string errorMessage) {
+      if (problemData == null) throw new ArgumentNullException("problemData", "The provided problemData is null.");
+
+      var regressionProblemData = problemData as IRegressionProblemData;
+      if (regressionProblemData != null)
+        return IsProblemDataCompatible(regressionProblemData, out errorMessage);
+
+      var classificationProblemData = problemData as IClassificationProblemData;
+      if (classificationProblemData != null)
+        return IsProblemDataCompatible(classificationProblemData, out errorMessage);
+
+      throw new ArgumentException("The problem data is not a regression nor a classification problem data. Instead a " + problemData.GetType().GetPrettyName() + " was provided.", "problemData");
+    }
+
     public static RandomForestModel CreateRegressionModel(IRegressionProblemData problemData, int nTrees, double r, double m, int seed,
       out double rmsError, out double outOfBagRmsError, out double avgRelError, out double outOfBagAvgRelError) {
       return CreateRegressionModel(problemData, problemData.TrainingIndices, nTrees, r, m, seed,

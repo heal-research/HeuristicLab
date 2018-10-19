@@ -33,7 +33,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   /// Abstract base class for symbolic data analysis models
   /// </summary>
   [StorableClass]
-  public abstract class SymbolicDataAnalysisModel : NamedItem, ISymbolicDataAnalysisModel {
+  public abstract class SymbolicDataAnalysisModel : DataAnalysisModel, ISymbolicDataAnalysisModel {
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Function; }
     }
@@ -58,7 +58,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       get { return interpreter; }
     }
 
-    public IEnumerable<string> VariablesUsedForPrediction {
+    public override IEnumerable<string> VariablesUsedForPrediction {
       get {
         var variables =
           SymbolicExpressionTree.IterateNodesPrefix()

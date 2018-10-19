@@ -82,6 +82,24 @@ namespace HeuristicLab.Problems.DataAnalysis {
       return string.Format("Constant: {0}", GetValue());
     }
 
+    public virtual bool IsProblemDataCompatible(IClassificationProblemData problemData, out string errorMessage) {
+      return ClassificationModel.IsProblemDataCompatible(this, problemData, out errorMessage);
+    }
+
+    public override bool IsProblemDataCompatible(IDataAnalysisProblemData problemData, out string errorMessage) {
+      if (problemData == null) throw new ArgumentNullException("problemData", "The provided problemData is null.");
+
+      var regressionProblemData = problemData as IRegressionProblemData;
+      if (regressionProblemData != null)
+        return IsProblemDataCompatible(regressionProblemData, out errorMessage);
+
+      var classificationProblemData = problemData as IClassificationProblemData;
+      if (classificationProblemData != null)
+        return IsProblemDataCompatible(classificationProblemData, out errorMessage);
+
+      throw new ArgumentException("The problem data is not a regression nor a classification problem data. Instead a " + problemData.GetType().GetPrettyName() + " was provided.", "problemData");
+    }
+
     #region IStringConvertibleValue
     public bool ReadOnly { get; private set; }
     public bool Validate(string value, out string errorMessage) {

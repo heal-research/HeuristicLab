@@ -30,6 +30,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
   public interface IClassificationModel : IDataAnalysisModel {
     IEnumerable<double> GetEstimatedClassValues(IDataset dataset, IEnumerable<int> rows);
     IClassificationSolution CreateClassificationSolution(IClassificationProblemData problemData);
+    bool IsProblemDataCompatible(IClassificationProblemData problemData, out string errorMessage);
     string TargetVariable { get; set; }
     event EventHandler TargetVariableChanged;
   }

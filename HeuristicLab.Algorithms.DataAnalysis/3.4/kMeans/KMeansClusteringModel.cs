@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -33,12 +34,12 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// </summary>
   [StorableClass]
   [Item("KMeansClusteringModel", "Represents a k-Means clustering model.")]
-  public sealed class KMeansClusteringModel : NamedItem, IClusteringModel {
+  public sealed class KMeansClusteringModel : DataAnalysisModel, IClusteringModel {
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Function; }
     }
 
-    public IEnumerable<string> VariablesUsedForPrediction {
+    public override IEnumerable<string> VariablesUsedForPrediction {
       get { return allowedInputVariables; }
     }
 
@@ -81,6 +82,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new KMeansClusteringModel(this, cloner);
+    }
+
+    public override bool IsProblemDataCompatible(IDataAnalysisProblemData problemData, out string errorMessage) {
+      if (problemData == null) throw new ArgumentNullException("problemData", "The provided problemData is null.");
+      return IsDatasetCompatible(problemData.Dataset, out errorMessage);
     }
 
 
