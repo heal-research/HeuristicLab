@@ -115,7 +115,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     public ModifiableDataset ToModifiable() {
-      return new ModifiableDataset(variableNames, variableNames.Select(v => variableValues[v]),true);
+      return new ModifiableDataset(variableNames, variableNames.Select(v => variableValues[v]), true);
     }
 
     /// <summary>
