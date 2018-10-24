@@ -21,6 +21,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       return ComputeHash(tree.Root.GetSubtree(0).GetSubtree(0));
     }
 
+    // compute node hashes without sorting the arguments
     public static Dictionary<ISymbolicExpressionTreeNode, int> ComputeNodeHashes(this ISymbolicExpressionTree tree) {
       var root = tree.Root.GetSubtree(0).GetSubtree(0);
       var nodes = root.MakeNodes();
@@ -79,7 +80,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     public static HashNode<ISymbolicExpressionTreeNode>[] MakeNodes(this ISymbolicExpressionTreeNode node) {
-      return node.IterateNodesPostfix().Select(ToHashNode).ToArray();
+      return node.IterateNodesPostfix().Select(ToHashNode).ToArray().UpdateNodeSizes();
     }
 
     #region parse a nodes array back into a tree

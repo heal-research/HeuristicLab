@@ -90,8 +90,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     public static HashNode<T>[] Simplify<T>(this HashNode<T>[] nodes) where T : class {
-      var reduced = nodes.Reduce();
-      reduced.Sort();
+      var reduced = nodes.UpdateNodeSizes().Reduce().Sort();
 
       for (int i = 0; i < reduced.Length; ++i) {
         var node = reduced[i];
@@ -116,12 +115,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           simplified[j++] = node;
         }
       }
-      simplified.UpdateNodeSizes();
-      simplified.Sort();
-      return simplified;
+      return simplified.UpdateNodeSizes().Sort();
     }
 
-    public static void Sort<T>(this HashNode<T>[] nodes) where T : class {
+    public static HashNode<T>[] Sort<T>(this HashNode<T>[] nodes) where T : class {
       for (int i = 0; i < nodes.Length; ++i) {
         var node = nodes[i];
 
@@ -154,14 +151,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         }
         node.CalculatedHashValue = nodes.ComputeHash(i);
       }
+      return nodes;
     }
 
     /// <summary>
     /// Get a function node's child indices from left to right
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="nodes"></param>
-    /// <param name="i"></param>
+    /// <typeparam name="T">The data type encapsulated by a hash node</typeparam>
+    /// <param name="nodes">An array of hash nodes with up-to-date node sizes</param>
+    /// <param name="i">The index in the array of hash nodes of the node whose children we want to iterate</param>
     /// <returns>An array containing child indices</returns>
     public static int[] IterateChildren<T>(this HashNode<T>[] nodes, int i) where T : class {
       var node = nodes[i];
@@ -176,7 +174,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       return children;
     }
 
-    public static void UpdateNodeSizes<T>(this HashNode<T>[] nodes) where T : class {
+    public static HashNode<T>[] UpdateNodeSizes<T>(this HashNode<T>[] nodes) where T : class {
       for (int i = 0; i < nodes.Length; ++i) {
         var node = nodes[i];
         if (node.IsChild) {
@@ -188,6 +186,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           node.Size += nodes[j].Size;
         }
       }
+      return nodes;
     }
 
     /// <summary>
@@ -218,7 +217,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     public static HashNode<T>[] Reduce<T>(this HashNode<T>[] nodes) where T : class {
-      nodes.UpdateNodeSizes();
       int i = nodes.Length - 1;
       foreach (int c in nodes.IterateChildren(i)) {
         if (nodes[c].IsChild) continue;
@@ -236,8 +234,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       foreach (var node in nodes) {
         if (node.Enabled) { reduced[i++] = node; }
       }
-      reduced.UpdateNodeSizes();
-      return reduced;
+      return reduced.UpdateNodeSizes();
     }
   }
 }
