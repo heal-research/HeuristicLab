@@ -1,4 +1,25 @@
-﻿using System.Collections.Generic;
+﻿#region License Information
+/* HeuristicLab
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ *
+ * This file is part of HeuristicLab.
+ *
+ * HeuristicLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * HeuristicLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
+ */
+#endregion
+
+using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using static HeuristicLab.Problems.DataAnalysis.Symbolic.SymbolicExpressionHashExtensions;
@@ -102,7 +123,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           if (node.Data is VariableTreeNode variable) {
             var variableTreeNode = (VariableTreeNode)treeNodes[i];
             variableTreeNode.VariableName = variable.VariableName;
-            variableTreeNode.Weight = 1;
+            variableTreeNode.Weight = variable.Weight;
           } else if (node.Data is ConstantTreeNode @const) {
             var constantTreeNode = (ConstantTreeNode)treeNodes[i];
             constantTreeNode.Value = @const.Value;
@@ -174,7 +195,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           for (int k = j + 1; k < children.Length; ++k) {
             var d = children[k];
             if (nodes[d].Data.Symbol is Constant) {
-              ((ConstantTreeNode)child.Data).Value *= ((ConstantTreeNode)nodes[d].Data).Value;
               nodes[d].Enabled = false;
               node.Arity--;
             } else {

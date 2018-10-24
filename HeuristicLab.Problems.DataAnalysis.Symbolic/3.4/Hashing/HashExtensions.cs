@@ -119,6 +119,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     public static HashNode<T>[] Sort<T>(this HashNode<T>[] nodes) where T : class {
+      int sort(int a, int b) => nodes[a].CompareTo(nodes[b]);
+
       for (int i = 0; i < nodes.Length; ++i) {
         var node = nodes[i];
 
@@ -135,7 +137,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           } else { // i have some non-terminal children
             var sorted = new HashNode<T>[size];
             var indices = nodes.IterateChildren(i);
-            Array.Sort(indices, (a, b) => nodes[a].CompareTo(nodes[b]));
+            Array.Sort(indices, sort);
 
             int idx = 0;
             foreach (var j in indices) {
