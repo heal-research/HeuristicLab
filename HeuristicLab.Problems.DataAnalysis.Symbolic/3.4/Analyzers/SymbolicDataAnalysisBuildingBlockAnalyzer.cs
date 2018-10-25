@@ -19,9 +19,9 @@
  */
 #endregion
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -40,9 +40,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Analyzers {
     private const string MinimumSubtreeLengthParameterName = "MinimumSubtreeLength";
     private const string SimplifyTreesParameterName = "SimplifyTrees";
 
-    private readonly InfixExpressionFormatter formatter = new InfixExpressionFormatter();
     private Dictionary<int, DataRow> hashToRow = new Dictionary<int, DataRow>();
 
+    #region parameters
     public IValueLookupParameter<IntValue> MinimumSubtreeLengthParameter {
       get { return (IValueLookupParameter<IntValue>)Parameters[MinimumSubtreeLengthParameterName]; }
     }
@@ -50,7 +50,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Analyzers {
     public IValueLookupParameter<BoolValue> SimplifyTreesParameter {
       get { return (IValueLookupParameter<BoolValue>)Parameters[SimplifyTreesParameterName]; }
     }
+    #endregion
 
+    #region parameter properties
     public IntValue MinimumSubtreeLength {
       get { return MinimumSubtreeLengthParameter.ActualValue; }
     }
@@ -58,13 +60,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Analyzers {
     public BoolValue SimplifyTrees {
       get { return SimplifyTreesParameter.ActualValue; }
     }
+    #endregion
 
     public override void InitializeState() {
       base.InitializeState();
 
       hashToRow = new Dictionary<int, DataRow>();
     }
-
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
@@ -101,7 +103,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Analyzers {
       var expressions = new Dictionary<int, string>();
       var expressionCounts = new Dictionary<int, int>();
 
-      int totalCount = 0; // total number of subtrees examined
+      int totalCount = 0; // total number of examined subtrees
+
+      // count hashes
       foreach (var tree in SymbolicExpressionTree) {
         var hashNodes = tree.Root.GetSubtree(0).GetSubtree(0).MakeNodes();
         var simplified = simplify ? hashNodes.Simplify() : hashNodes.Sort();
@@ -113,62 +117,73 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Analyzers {
           }
           ++totalCount;
           var hash = s.CalculatedHashValue;
-          if (expressions.TryGetValue(hash, out string str)) {
+          if (expressions.ContainsKey(hash)) {
             expressionCounts[hash]++;
-          } else {
-            // set constant and weight values so the tree is formatted nicely by the formatter
-            var nodes = new HashNode<ISymbolicExpressionTreeNode>[1 + s.Size];
-            Array.Copy(simplified, i - s.Size, nodes, 0, nodes.Length);
-            var subtree = nodes.ToSubtree();
-
-            foreach (var node in subtree.IterateNodesPostfix()) {
-              if (node is ConstantTreeNode constantTreeNode) {
-                constantTreeNode.Value = 0;
-              } else if (node is VariableTreeNode variableTreeNode) {
-                variableTreeNode.Weight = 1;
-              }
-            }
-
-            expressions[hash] = formatter.Format(subtree);
-            expressionCounts[hash] = 1;
+            continue;
           }
+
+          var sb = new StringBuilder();
+          for (int j = i - s.Size; j < i; ++j) {
+            sb.Append(GetLabel(simplified[j].Data)).Append(" ");
+          }
+          sb.Append(GetLabel(simplified[i].Data));
+          expressions[hash] = sb.ToString();
+          expressionCounts[hash] = 1;
         }
       }
 
-      var mostCommon = expressionCounts.OrderByDescending(x => x.Value).Take(10).ToList();
-      var mostCommonLabels = mostCommon.Select(x => expressions[x.Key]).ToList();
-
+      // fill in values for existing rows
       foreach (var t in hashToRow) {
         var hash = t.Key;
         var row = t.Value;
 
-        if (expressionCounts.TryGetValue(hash, out int count)) {
-          row.Values.Add((double)count / totalCount);
-        } else {
-          row.Values.Add(0);
-        }
+        expressionCounts.TryGetValue(hash, out int count);
+        row.Values.Add(count);
       }
 
       var nValues = dt.Rows.Any() ? dt.Rows.Max(x => x.Values.Count) : 0;
 
-      for (int i = 0; i < mostCommon.Count; ++i) {
-        var hash = mostCommon[i].Key;
-        var count = mostCommon[i].Value;
+      // check if we have new rows
+      foreach (var t in expressionCounts.OrderByDescending(x => x.Value).Take(10)) {
+        var hash = t.Key;
+        var count = t.Value;
+        var label = expressions[hash];
 
         if (hashToRow.ContainsKey(hash)) {
           continue;
         }
-        var label = mostCommonLabels[i];
         var row = new DataRow(label) { VisualProperties = { StartIndexZero = true } };
-        // pad with zeroes
-        for (int j = 0; j < nValues - 1; ++j) {
-          row.Values.Add(0);
+        if (nValues > 0) {
+          row.Values.AddRange(Enumerable.Repeat<double>(0, nValues - 1)); // pad with zeroes
         }
-        row.Values.Add((double)count / totalCount);
+        row.Values.Add(count);
         dt.Rows.Add(row);
         hashToRow[hash] = row;
       }
+
       return base.Apply();
+    }
+
+    private static string GetLabel(ISymbolicExpressionTreeNode node) {
+      if (node is ConstantTreeNode constant) {
+        return "C";
+      }
+      if (node is VariableTreeNode variable) {
+        return variable.VariableName;
+      }
+      if (node.Symbol is Addition) {
+        return "+";
+      }
+      if (node.Symbol is Subtraction) {
+        return "-";
+      }
+      if (node.Symbol is Multiplication) {
+        return "*";
+      }
+      if (node.Symbol is Division) {
+        return "/";
+      }
+      return node.Symbol.ToString();
     }
   }
 }
