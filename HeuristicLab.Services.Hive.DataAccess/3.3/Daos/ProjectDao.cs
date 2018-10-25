@@ -40,7 +40,7 @@ namespace HeuristicLab.Services.Hive.DataAccess.Daos {
 
     public void DeleteByIds(IEnumerable<Guid> ids) {
       string paramProjectIds = string.Join(",", ids.ToList().Select(x => string.Format("'{0}'", x)));
-      if(!string.IsNullOrWhiteSpace(paramProjectIds)) {
+      if (!string.IsNullOrWhiteSpace(paramProjectIds)) {
         string queryString = string.Format(DeleteByIdsQueryString, paramProjectIds);
         DataContext.ExecuteCommand(queryString);
       }
@@ -116,27 +116,30 @@ namespace HeuristicLab.Services.Hive.DataAccess.Daos {
     private const string GetAvailabilityStatsPerProjectQueryString = @"
       WITH rtree AS
       (
-	      SELECT ResourceId, ParentResourceId
-	      FROM [Resource]
-	      UNION ALL
-	      SELECT rt.ResourceId, r.ParentResourceId
-	      FROM [Resource] r
-	      JOIN rtree rt ON rt.ParentResourceId = r.ResourceId
+        SELECT ResourceId, ParentResourceId
+        FROM [Resource]
+        UNION ALL
+        SELECT rt.ResourceId, r.ParentResourceId
+        FROM [Resource] r
+        JOIN rtree rt ON rt.ParentResourceId = r.ResourceId
       )
-      SELECT apr.ProjectId, SUM(res.Cores) AS Cores, SUM(res.Memory) AS Memory
-      FROM rtree, [AssignedProjectResource] apr, [Resource] res
-      WHERE rtree.ResourceId = res.ResourceId
-      AND res.ResourceType = 'Slave'
-      AND (res.SlaveState = 'Idle' OR SlaveState = 'Calculating')
-      AND rtree.ParentResourceId = apr.ResourceId
-      GROUP BY apr.ProjectId
-      UNION
-      SELECT apr.ProjectId, SUM(res.Cores) AS Cores, SUM(res.Memory) AS Memory
-      FROM [AssignedProjectResource] apr, [Resource] res
-      WHERE apr.ResourceId = res.ResourceId
-      AND res.ResourceType = 'Slave'
-      AND (res.SlaveState = 'Idle' OR SlaveState = 'Calculating')
-      GROUP BY apr.ProjectId
+      SELECT [union].ProjectId, SUM([union].Cores), SUM([union].Memory)
+      FROM
+      (
+        SELECT apr.ProjectId, res.Cores, res.Memory
+        FROM rtree, [AssignedProjectResource] apr, [Resource] res
+        WHERE rtree.ResourceId = res.ResourceId
+        AND res.ResourceType = 'Slave'
+        AND (res.SlaveState = 'Idle' OR SlaveState = 'Calculating')
+        AND rtree.ParentResourceId = apr.ResourceId
+        UNION ALL
+        SELECT apr.ProjectId, res.Cores, res.Memory
+        FROM [AssignedProjectResource] apr, [Resource] res
+        WHERE apr.ResourceId = res.ResourceId
+        AND res.ResourceType = 'Slave'
+        AND (res.SlaveState = 'Idle' OR SlaveState = 'Calculating')
+      ) AS [union]
+      GROUP BY [union].ProjectId
     ";
 
     private const string GetUsageGrantedProjectsForUserQueryString = @"
