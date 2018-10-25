@@ -87,6 +87,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Analyzers {
       return new SymbolicDataAnalysisBuildingBlockAnalyzer(this, cloner);
     }
 
+    [StorableConstructor]
+    private SymbolicDataAnalysisBuildingBlockAnalyzer(bool deserializing) : base(deserializing) { }
+
     public override IOperation Apply() {
       DataTable dt;
 
