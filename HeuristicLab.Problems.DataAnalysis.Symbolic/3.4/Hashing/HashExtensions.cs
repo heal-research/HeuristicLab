@@ -115,7 +115,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           simplified[j++] = node;
         }
       }
-      return simplified.UpdateNodeSizes().Sort();
+      return simplified.UpdateNodeSizes().Reduce().Sort();
     }
 
     public static HashNode<T>[] Sort<T>(this HashNode<T>[] nodes) where T : class {
@@ -169,7 +169,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var children = new int[arity];
       var idx = i - 1;
       for (int j = 0; j < arity; ++j) {
-        while (!nodes[idx].Enabled) { --idx; } // skip nodes possibly disabled by simplification
         children[j] = idx;
         idx -= 1 + nodes[idx].Size;
       }
@@ -191,50 +190,29 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       return nodes;
     }
 
-    /// <summary>
-    /// Reduce nodes of the same type according to arithmetic rules
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="g">The given grammar (controls symbol arities)</param>
-    /// <param name="nodes">The node array</param>
-    /// <param name="i">Parent index</param>
-    /// <param name="j">Child index</param>
-    private static void Reduce<T>(this HashNode<T>[] nodes, int i, int j) where T : class {
-      var p = nodes[i]; // parent node
-      var c = nodes[j]; // child node
-
-      if (c.IsChild)
-        return;
-
-      foreach (int k in nodes.IterateChildren(j)) {
-        if (nodes[k].IsChild) continue;
-        nodes.Reduce(j, k);
-      }
-
-      // handle commutative symbols (add, mul) 
-      if (p.IsCommutative && p.HashValue == c.HashValue) {
-        c.Enabled = false;
-        p.Arity += c.Arity - 1;
-      }
-    }
-
-    public static HashNode<T>[] Reduce<T>(this HashNode<T>[] nodes) where T : class {
-      int i = nodes.Length - 1;
-      foreach (int c in nodes.IterateChildren(i)) {
-        if (nodes[c].IsChild) continue;
-        nodes.Reduce(i, c);
-      }
+    private static HashNode<T>[] Reduce<T>(this HashNode<T>[] nodes) where T : class {
       int count = 0;
-      foreach (var node in nodes) {
-        if (!node.Enabled) { ++count; }
+      for (int i = 0; i < nodes.Length; ++i) {
+        var node = nodes[i];
+        if (node.IsChild || !node.IsCommutative) {
+          continue;
+        }
+
+        foreach (var j in nodes.IterateChildren(i)) {
+          if (node.HashValue == nodes[j].HashValue) {
+            nodes[j].Enabled = false;
+            node.Arity += nodes[j].Arity - 1;
+            ++count;
+          }
+        }
       }
       if (count == 0)
         return nodes;
 
       var reduced = new HashNode<T>[nodes.Length - count];
-      i = 0;
+      var idx = 0;
       foreach (var node in nodes) {
-        if (node.Enabled) { reduced[i++] = node; }
+        if (node.Enabled) { reduced[idx++] = node; }
       }
       return reduced.UpdateNodeSizes();
     }
