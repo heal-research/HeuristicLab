@@ -89,10 +89,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     public static byte[] ToByteArray(this int[] input) {
-      const int size = sizeof(int);
       var bytes = new byte[input.Length * sizeof(int)];
-      for (int i = 0; i < input.Length; ++i) {
-        Array.Copy(BitConverter.GetBytes(bytes[i]), 0, bytes, i * size, size);
+      int pos = 0;
+      foreach (var v in input) {
+        var b0 = (byte)((v >> 24) & 0xFF);
+        var b1 = (byte)((v >> 16) & 0xFF);
+        var b2 = (byte)((v >> 8) & 0xFF);
+        var b3 = (byte)(v & 0xFF);
+        bytes[pos++] = b0;
+        bytes[pos++] = b1;
+        bytes[pos++] = b2;
+        bytes[pos++] = b3;
       }
       return bytes;
     }

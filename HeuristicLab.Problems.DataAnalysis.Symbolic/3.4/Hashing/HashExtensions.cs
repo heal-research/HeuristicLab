@@ -81,11 +81,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public static int ComputeHash<T>(this HashNode<T>[] nodes, int i) where T : class {
       var node = nodes[i];
       var hashes = new int[node.Arity + 1];
-      int idx = 0;
-      foreach (int c in nodes.IterateChildren(i)) {
-        hashes[idx++] = nodes[c].CalculatedHashValue;
+      for (int j = i - 1, k = 0; k < node.Arity; j -= 1 + nodes[j].Size, k++) {
+        hashes[k] = nodes[j].CalculatedHashValue;
       }
-      hashes[idx] = node.HashValue;
+      hashes[node.Arity] = node.HashValue;
       return HashUtil.JSHash(hashes);
     }
 
@@ -136,7 +135,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             Array.Sort(nodes, i - size, size);
           } else { // i have some non-terminal children
             var sorted = new HashNode<T>[size];
-            var indices = nodes.IterateChildren(i);
+            var indices = new int[node.Arity];
+            for (int j = i - 1, k = 0; k < node.Arity; j -= 1 + nodes[j].Size, ++k) {
+              indices[k] = j;
+            }
             Array.Sort(indices, sort);
 
             int idx = 0;
@@ -157,7 +159,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     /// <summary>
-    /// Get a function node's child indices from left to right
+    /// Get a function node's child indicest
     /// </summary>
     /// <typeparam name="T">The data type encapsulated by a hash node</typeparam>
     /// <param name="nodes">An array of hash nodes with up-to-date node sizes</param>
@@ -183,7 +185,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           continue;
         }
         node.Size = node.Arity;
-        foreach (int j in nodes.IterateChildren(i)) {
+
+        for (int j = i - 1, k = 0; k < node.Arity; j -= 1 + nodes[j].Size, ++k) {
           node.Size += nodes[j].Size;
         }
       }
@@ -198,7 +201,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           continue;
         }
 
-        foreach (var j in nodes.IterateChildren(i)) {
+        var arity = node.Arity;
+        for (int j = i - 1, k = 0; k < arity; j -= 1 + nodes[j].Size, ++k) {
           if (node.HashValue == nodes[j].HashValue) {
             nodes[j].Enabled = false;
             node.Arity += nodes[j].Arity - 1;
