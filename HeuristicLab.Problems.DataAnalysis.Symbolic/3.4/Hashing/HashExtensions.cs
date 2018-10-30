@@ -31,8 +31,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       public bool IsCommutative;
 
       public bool Enabled;
-      public int HashValue;           // the initial (fixed) hash value for this individual node/data
-      public int CalculatedHashValue; // the calculated hash value (taking into account the children hash values)
+      public ulong HashValue;           // the initial (fixed) hash value for this individual node/data
+      public ulong CalculatedHashValue; // the calculated hash value (taking into account the children hash values)
 
       public Action<HashNode<T>[], int> Simplify;
       public IComparer<T> Comparer;
@@ -66,7 +66,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
 
       public override int GetHashCode() {
-        return CalculatedHashValue;
+        //return CalculatedHashValue;
+        return Data.GetHashCode();
       }
 
       public static bool operator ==(HashNode<T> a, HashNode<T> b) {
@@ -78,9 +79,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
     }
 
-    public static int ComputeHash<T>(this HashNode<T>[] nodes, int i) where T : class {
+    public static ulong ComputeHash<T>(this HashNode<T>[] nodes, int i) where T : class {
       var node = nodes[i];
-      var hashes = new int[node.Arity + 1];
+      var hashes = new ulong[node.Arity + 1];
       for (int j = i - 1, k = 0; k < node.Arity; j -= 1 + nodes[j].Size, k++) {
         hashes[k] = nodes[j].CalculatedHashValue;
       }

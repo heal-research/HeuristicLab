@@ -40,7 +40,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Analyzers {
     private const string MinimumSubtreeLengthParameterName = "MinimumSubtreeLength";
     private const string SimplifyTreesParameterName = "SimplifyTrees";
 
-    private Dictionary<int, DataRow> hashToRow = new Dictionary<int, DataRow>();
+    private Dictionary<ulong, DataRow> hashToRow = new Dictionary<ulong, DataRow>();
 
     #region parameters
     public IValueLookupParameter<IntValue> MinimumSubtreeLengthParameter {
@@ -65,7 +65,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Analyzers {
     public override void InitializeState() {
       base.InitializeState();
 
-      hashToRow = new Dictionary<int, DataRow>();
+      hashToRow = new Dictionary<ulong, DataRow>();
     }
 
     [StorableHook(HookType.AfterDeserialization)]
@@ -103,8 +103,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Analyzers {
       var minLength = MinimumSubtreeLength.Value - 1; // -1 because the HashNode.Size property returns the size without current node (-1)
       var simplify = SimplifyTrees.Value;
 
-      var expressions = new Dictionary<int, string>();
-      var expressionCounts = new Dictionary<int, int>();
+      var expressions = new Dictionary<ulong, string>();
+      var expressionCounts = new Dictionary<ulong, int>();
 
       int totalCount = 0; // total number of examined subtrees
 

@@ -38,12 +38,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     private static readonly ISymbolicExpressionTreeNodeComparer comparer = new SymbolicExpressionTreeNodeComparer();
 
-    public static int ComputeHash(this ISymbolicExpressionTree tree) {
+    public static ulong ComputeHash(this ISymbolicExpressionTree tree) {
       return ComputeHash(tree.Root.GetSubtree(0).GetSubtree(0));
     }
 
     // compute node hashes without sorting the arguments
-    public static Dictionary<ISymbolicExpressionTreeNode, int> ComputeNodeHashes(this ISymbolicExpressionTree tree) {
+    public static Dictionary<ISymbolicExpressionTreeNode, ulong> ComputeNodeHashes(this ISymbolicExpressionTree tree) {
       var root = tree.Root.GetSubtree(0).GetSubtree(0);
       var nodes = root.MakeNodes();
       nodes.UpdateNodeSizes();
@@ -56,18 +56,19 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       return nodes.ToDictionary(x => x.Data, x => x.CalculatedHashValue);
     }
 
-    public static int ComputeHash(this ISymbolicExpressionTreeNode treeNode) {
+    public static ulong ComputeHash(this ISymbolicExpressionTreeNode treeNode) {
       var hashNodes = treeNode.MakeNodes();
       var simplified = hashNodes.Simplify();
-      return ComputeHash(simplified);
+      //return ComputeHash(simplified);
+      return simplified.Last().CalculatedHashValue;
     }
 
-    public static int ComputeHash(this HashNode<ISymbolicExpressionTreeNode>[] nodes) {
-      int hash = 1315423911;
-      foreach (var node in nodes)
-        hash ^= (hash << 5) + node.CalculatedHashValue + (hash >> 2);
-      return hash;
-    }
+    //public static int ComputeHash(this HashNode<ISymbolicExpressionTreeNode>[] nodes) {
+    //  int hash = 1315423911;
+    //  foreach (var node in nodes)
+    //    hash ^= (hash << 5) + node.CalculatedHashValue + (hash >> 2);
+    //  return hash;
+    //}
 
     public static HashNode<ISymbolicExpressionTreeNode> ToHashNode(this ISymbolicExpressionTreeNode node) {
       var symbol = node.Symbol;
@@ -76,7 +77,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         var variableTreeNode = (VariableTreeNode)node;
         name = variableTreeNode.VariableName;
       }
-      var hash = name.GetHashCode();
+      var hash = (ulong)name.GetHashCode();
       var hashNode = new HashNode<ISymbolicExpressionTreeNode>(comparer) {
         Data = node,
         Arity = node.SubtreeCount,
