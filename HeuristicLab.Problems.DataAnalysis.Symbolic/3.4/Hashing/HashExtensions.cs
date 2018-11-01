@@ -37,7 +37,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       public Action<HashNode<T>[], int> Simplify;
       public IComparer<T> Comparer;
 
-      public bool IsChild => Arity == 0;
+      public bool IsLeaf => Arity == 0;
 
       public HashNode(IComparer<T> comparer) {
         Comparer = comparer;
@@ -94,7 +94,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
       for (int i = 0; i < reduced.Length; ++i) {
         var node = reduced[i];
-        if (node.IsChild) {
+        if (node.IsLeaf) {
           continue;
         }
         node.Simplify?.Invoke(reduced, i);
@@ -124,7 +124,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       for (int i = 0; i < nodes.Length; ++i) {
         var node = nodes[i];
 
-        if (node.IsChild) {
+        if (node.IsLeaf) {
           continue;
         }
 
@@ -145,7 +145,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             int idx = 0;
             foreach (var j in indices) {
               var child = nodes[j];
-              if (!child.IsChild) { // must copy complete subtree
+              if (!child.IsLeaf) { // must copy complete subtree
                 Array.Copy(nodes, j - child.Size, sorted, idx, child.Size);
                 idx += child.Size;
               }
@@ -181,7 +181,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public static HashNode<T>[] UpdateNodeSizes<T>(this HashNode<T>[] nodes) where T : class {
       for (int i = 0; i < nodes.Length; ++i) {
         var node = nodes[i];
-        if (node.IsChild) {
+        if (node.IsLeaf) {
           node.Size = 0;
           continue;
         }
@@ -198,7 +198,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       int count = 0;
       for (int i = 0; i < nodes.Length; ++i) {
         var node = nodes[i];
-        if (node.IsChild || !node.IsCommutative) {
+        if (node.IsLeaf || !node.IsCommutative) {
           continue;
         }
 

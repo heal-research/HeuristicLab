@@ -49,7 +49,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       nodes.UpdateNodeSizes();
 
       for (int i = 0; i < nodes.Length; ++i) {
-        if (nodes[i].IsChild)
+        if (nodes[i].IsLeaf)
           continue;
         nodes[i].CalculatedHashValue = nodes.ComputeHash(i);
       }
@@ -120,7 +120,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       for (int i = nodes.Length - 1; i >= 0; --i) {
         var node = nodes[i];
 
-        if (node.IsChild) {
+        if (node.IsLeaf) {
           if (node.Data is VariableTreeNode variable) {
             var variableTreeNode = (VariableTreeNode)treeNodes[i];
             variableTreeNode.VariableName = variable.VariableName;
