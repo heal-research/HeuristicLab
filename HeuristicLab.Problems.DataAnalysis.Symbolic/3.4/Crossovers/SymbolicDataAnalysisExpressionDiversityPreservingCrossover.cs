@@ -80,10 +80,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
       if (proportionalSampling) {
         var p = internalCrossoverPointProbability;
-        var weights0 = nodes0.Select(x => x.IsChild ? 1 - p : p);
+        var weights0 = nodes0.Select(x => x.IsLeaf ? 1 - p : p);
         sampled0 = nodes0.SampleProportionalWithoutRepetition(random, nodes0.Length, weights0, windowing: windowing).ToArray();
 
-        var weights1 = nodes1.Select(x => x.IsChild ? 1 - p : p);
+        var weights1 = nodes1.Select(x => x.IsLeaf ? 1 - p : p);
         sampled1 = nodes1.SampleProportionalWithoutRepetition(random, nodes1.Length, weights1, windowing: windowing).ToArray();
       } else {
         sampled0 = ChooseNodes(random, nodes0, internalCrossoverPointProbability).ShuffleInPlace(random);
@@ -132,10 +132,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var chooseInternal = random.NextDouble() < internalCrossoverPointProbability;
 
       if (chooseInternal) {
-        list.AddRange(nodes.Where(x => !x.IsChild && x.Data.Parent != null));
+        list.AddRange(nodes.Where(x => !x.IsLeaf && x.Data.Parent != null));
       }
       if (!chooseInternal || list.Count == 0) {
-        list.AddRange(nodes.Where(x => x.IsChild && x.Data.Parent != null));
+        list.AddRange(nodes.Where(x => x.IsLeaf && x.Data.Parent != null));
       }
 
       return list;
