@@ -115,7 +115,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Analyzers {
 
         for (int i = 0; i < simplified.Length; i++) {
           HashNode<ISymbolicExpressionTreeNode> s = simplified[i];
-          if (s.IsChild || s.Size < minLength) {
+          if (s.IsLeaf || s.Size < minLength) {
             continue;
           }
           ++totalCount;
