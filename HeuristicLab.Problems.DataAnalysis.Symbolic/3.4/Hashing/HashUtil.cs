@@ -20,12 +20,15 @@
 #endregion
 
 
+using System;
+using System.Security.Cryptography;
+
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   public static class HashUtil {
     // This class contains some hash functions adapted from http://partow.net/programming/hashfunctions/index.html#AvailableHashFunctions
 
     // A simple hash function from Robert Sedgwicks Algorithms in C book.I've added some simple optimizations to the algorithm in order to speed up its hashing process. 
-    public static ulong RSHash(ulong[] input) {
+    public static ulong RSHash(byte[] input) {
       const int b = 378551;
       ulong a = 63689;
       ulong hash = 0;
@@ -38,7 +41,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     // A bitwise hash function written by Justin Sobel
-    public static ulong JSHash(ulong[] input) {
+    public static ulong JSHash(byte[] input) {
       ulong hash = 1315423911;
       for (int i = 0; i < input.Length; ++i)
         hash ^= (hash << 5) + input[i] + (hash >> 2);
@@ -46,7 +49,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     // This hash function comes from Brian Kernighan and Dennis Ritchie's book "The C Programming Language". It is a simple hash function using a strange set of possible seeds which all constitute a pattern of 31....31...31 etc, it seems to be very similar to the DJB hash function. 
-    public static ulong BKDRHash(ulong[] input) {
+    public static ulong BKDRHash(byte[] input) {
       ulong seed = 131;
       ulong hash = 0;
       foreach (var v in input) {
@@ -56,7 +59,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     // This is the algorithm of choice which is used in the open source SDBM project. The hash function seems to have a good over-all distribution for many different data sets. It seems to work well in situations where there is a high variance in the MSBs of the elements in a data set. 
-    public static ulong SDBMHash(ulong[] input) {
+    public static ulong SDBMHash(byte[] input) {
       ulong hash = 0;
       foreach (var v in input) {
         hash = v + (hash << 6) + (hash << 16) - hash;
@@ -65,7 +68,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     // An algorithm produced by Professor Daniel J. Bernstein and shown first to the world on the usenet newsgroup comp.lang.c. It is one of the most efficient hash functions ever published. 
-    public static ulong DJBHash(ulong[] input) {
+    public static ulong DJBHash(byte[] input) {
       ulong hash = 5381;
       foreach (var v in input) {
         hash = (hash << 5) + hash + v;
@@ -74,7 +77,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     // An algorithm proposed by Donald E.Knuth in The Art Of Computer Programming Volume 3, under the topic of sorting and search chapter 6.4. 
-    public static ulong DEKHash(ulong[] input) {
+    public static ulong DEKHash(byte[] input) {
       ulong hash = (ulong)input.Length;
       foreach (var v in input) {
         hash = (hash << 5) ^ (hash >> 27) ^ v;
@@ -82,24 +85,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       return hash;
     }
 
-    //public static ulong CryptoHash(HashAlgorithm ha, ulong[] input) {
-    //  return BitConverter.ToInt32(ha.ComputeHash(input.ToByteArray()), 0);
-    //}
-
-    //public static byte[] ToByteArray(this ulong[] input) {
-    //  var bytes = new byte[input.Length * sizeof(int)];
-    //  int pos = 0;
-    //  foreach (var v in input) {
-    //    var b0 = (byte)((v >> 24) & 0xFF);
-    //    var b1 = (byte)((v >> 16) & 0xFF);
-    //    var b2 = (byte)((v >> 8) & 0xFF);
-    //    var b3 = (byte)(v & 0xFF);
-    //    bytes[pos++] = b0;
-    //    bytes[pos++] = b1;
-    //    bytes[pos++] = b2;
-    //    bytes[pos++] = b3;
-    //  }
-    //  return bytes;
-    //}
+    public static ulong CryptoHash(HashAlgorithm ha, byte[] input) {
+      return BitConverter.ToUInt64(ha.ComputeHash(input), 0);
+    }
   }
 }

@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -37,6 +38,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Analyzers {
   [StorableClass]
   public sealed class SymbolicDataAnalysisBuildingBlockAnalyzer : SymbolicDataAnalysisAnalyzer {
     private const string BuildingBlocksResultName = "BuildingBlocks";
+    private const string SolutionUniquenessResultName = "SolutionUniqueness";
     private const string MinimumSubtreeLengthParameterName = "MinimumSubtreeLength";
     private const string SimplifyTreesParameterName = "SimplifyTrees";
 
@@ -90,6 +92,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Analyzers {
     [StorableConstructor]
     private SymbolicDataAnalysisBuildingBlockAnalyzer(bool deserializing) : base(deserializing) { }
 
+    private readonly Func<byte[], ulong> hashFunction = HashUtil.JSHash;
+
     public override IOperation Apply() {
       DataTable dt;
 
@@ -108,10 +112,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Analyzers {
 
       int totalCount = 0; // total number of examined subtrees
 
+      var hashes = new List<ulong>();
       // count hashes
       foreach (var tree in SymbolicExpressionTree) {
         var hashNodes = tree.Root.GetSubtree(0).GetSubtree(0).MakeNodes();
-        var simplified = simplify ? hashNodes.Simplify() : hashNodes.Sort();
+        var simplified = simplify ? hashNodes.Simplify(hashFunction) : hashNodes.Sort(hashFunction);
+        hashes.Add(simplified.Last().CalculatedHashValue); // maybe calculate aggregate hash instead
 
         for (int i = 0; i < simplified.Length; i++) {
           HashNode<ISymbolicExpressionTreeNode> s = simplified[i];
@@ -162,6 +168,30 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Analyzers {
         row.Values.Add(count);
         dt.Rows.Add(row);
         hashToRow[hash] = row;
+      }
+
+      // compute solution uniqueness
+      DataTableHistory dth;
+      var counts = hashes.GroupBy(x => x).ToDictionary(x => x.Key, x => x.Count());
+      if (!ResultCollection.ContainsKey(SolutionUniquenessResultName)) {
+        dth = new DataTableHistory();
+        ResultCollection.Add(new Result(SolutionUniquenessResultName, dth));
+      } else {
+        dth = (DataTableHistory)ResultCollection[SolutionUniquenessResultName].Value;
+      }
+
+      var ct = new DataTable("Unique Solutions");
+      var ctr = new DataRow { VisualProperties = { StartIndexZero = true, ChartType = DataRowVisualProperties.DataRowChartType.Columns } };
+      ctr.Values.AddRange(hashes.Select(x => (double)counts[x]).OrderByDescending(x => x));
+      ct.Rows.Add(ctr);
+      dth.Add(ct);
+
+      var max = dth.Max(x => x.Rows.First().Values.Max());
+      foreach (var table in dth) {
+        table.VisualProperties.YAxisMinimumAuto = false;
+        table.VisualProperties.YAxisMaximumAuto = false;
+        table.VisualProperties.YAxisMinimumFixedValue = 0;
+        table.VisualProperties.YAxisMaximumFixedValue = max;
       }
 
       return base.Apply();

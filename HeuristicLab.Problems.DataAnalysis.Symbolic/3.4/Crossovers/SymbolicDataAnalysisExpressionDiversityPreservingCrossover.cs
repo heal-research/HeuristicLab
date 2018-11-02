@@ -20,6 +20,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private const string WindowingParameterName = "Windowing";
     private const string ProportionalSamplingParameterName = "ProportionalSampling";
 
+    private static readonly Func<byte[], ulong> hashFunction = HashUtil.JSHash;
+
     #region Parameter Properties
     public IValueLookupParameter<PercentValue> InternalCrossoverPointProbabilityParameter {
       get { return (IValueLookupParameter<PercentValue>)Parameters[InternalCrossoverPointProbabilityParameterName]; }
@@ -72,8 +74,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public static ISymbolicExpressionTree Cross(IRandom random, ISymbolicExpressionTree parent0, ISymbolicExpressionTree parent1, double internalCrossoverPointProbability, int maxLength, int maxDepth, bool windowing, bool proportionalSampling = false) {
       var leafCrossoverPointProbability = 1 - internalCrossoverPointProbability;
 
-      var nodes0 = ActualRoot(parent0).MakeNodes().Sort();
-      var nodes1 = ActualRoot(parent1).MakeNodes().Sort();
+      var nodes0 = ActualRoot(parent0).MakeNodes().Sort(hashFunction);
+      var nodes1 = ActualRoot(parent1).MakeNodes().Sort(hashFunction);
 
       IList<HashNode<ISymbolicExpressionTreeNode>> sampled0;
       IList<HashNode<ISymbolicExpressionTreeNode>> sampled1;

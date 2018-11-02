@@ -19,7 +19,6 @@
  */
 #endregion
 
-using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using static HeuristicLab.Problems.DataAnalysis.Symbolic.SymbolicExpressionHashExtensions;
@@ -42,33 +41,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       return ComputeHash(tree.Root.GetSubtree(0).GetSubtree(0));
     }
 
-    // compute node hashes without sorting the arguments
-    public static Dictionary<ISymbolicExpressionTreeNode, ulong> ComputeNodeHashes(this ISymbolicExpressionTree tree) {
-      var root = tree.Root.GetSubtree(0).GetSubtree(0);
-      var nodes = root.MakeNodes();
-      nodes.UpdateNodeSizes();
-
-      for (int i = 0; i < nodes.Length; ++i) {
-        if (nodes[i].IsLeaf)
-          continue;
-        nodes[i].CalculatedHashValue = nodes.ComputeHash(i);
-      }
-      return nodes.ToDictionary(x => x.Data, x => x.CalculatedHashValue);
-    }
-
     public static ulong ComputeHash(this ISymbolicExpressionTreeNode treeNode) {
+      ulong hashFunction(byte[] input) => HashUtil.JSHash(input);
       var hashNodes = treeNode.MakeNodes();
-      var simplified = hashNodes.Simplify();
-      //return ComputeHash(simplified);
+      var simplified = hashNodes.Simplify(hashFunction);
       return simplified.Last().CalculatedHashValue;
     }
-
-    //public static int ComputeHash(this HashNode<ISymbolicExpressionTreeNode>[] nodes) {
-    //  int hash = 1315423911;
-    //  foreach (var node in nodes)
-    //    hash ^= (hash << 5) + node.CalculatedHashValue + (hash >> 2);
-    //  return hash;
-    //}
 
     public static HashNode<ISymbolicExpressionTreeNode> ToHashNode(this ISymbolicExpressionTreeNode node) {
       var symbol = node.Symbol;
@@ -151,9 +129,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     // these simplification methods rely on the assumption that child nodes of the current node have already been simplified
     // (in other words simplification should be applied in a bottom-up fashion) 
     public static ISymbolicExpressionTree Simplify(ISymbolicExpressionTree tree) {
+      ulong hashFunction(byte[] bytes) => HashUtil.JSHash(bytes);
       var root = tree.Root.GetSubtree(0).GetSubtree(0);
       var nodes = root.MakeNodes();
-      var simplified = nodes.Simplify();
+      var simplified = nodes.Simplify(hashFunction);
       return simplified.ToTree();
     }
 

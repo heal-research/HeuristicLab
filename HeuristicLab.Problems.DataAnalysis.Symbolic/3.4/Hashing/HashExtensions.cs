@@ -66,8 +66,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
 
       public override int GetHashCode() {
-        //return CalculatedHashValue;
-        return Data.GetHashCode();
+        return (int)CalculatedHashValue;
       }
 
       public static bool operator ==(HashNode<T> a, HashNode<T> b) {
@@ -79,18 +78,27 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
     }
 
-    public static ulong ComputeHash<T>(this HashNode<T>[] nodes, int i) where T : class {
+    public static ulong ComputeHash<T>(this HashNode<T>[] nodes, int i, Func<byte[], ulong> hashFunction) where T : class {
       var node = nodes[i];
-      var hashes = new ulong[node.Arity + 1];
-      for (int j = i - 1, k = 0; k < node.Arity; j -= 1 + nodes[j].Size, k++) {
-        hashes[k] = nodes[j].CalculatedHashValue;
+      const int size = sizeof(ulong);
+      var hashes = new byte[(node.Arity + 1) * size];
+
+      for (int j = i - 1, k = 0; k < node.Arity; ++k, j -= 1 + nodes[j].Size) {
+        Array.Copy(BitConverter.GetBytes(nodes[j].CalculatedHashValue), 0, hashes, k * size, size);
       }
-      hashes[node.Arity] = node.HashValue;
-      return HashUtil.JSHash(hashes);
+      Array.Copy(BitConverter.GetBytes(node.HashValue), 0, hashes, node.Arity * size, size);
+      return hashFunction(hashes);
     }
 
-    public static HashNode<T>[] Simplify<T>(this HashNode<T>[] nodes) where T : class {
-      var reduced = nodes.UpdateNodeSizes().Reduce().Sort();
+    // set the enabled state for the whole subtree rooted at this node 
+    public static void SetEnabled<T>(this HashNode<T>[] nodes, int i, bool enabled) where T : class {
+      nodes[i].Enabled = enabled;
+      for (int j = i - nodes[i].Size; j < i; ++j)
+        nodes[j].Enabled = enabled;
+    }
+
+    public static HashNode<T>[] Simplify<T>(this HashNode<T>[] nodes, Func<byte[], ulong> hashFunction) where T : class {
+      var reduced = nodes.UpdateNodeSizes().Reduce().Sort(hashFunction);
 
       for (int i = 0; i < reduced.Length; ++i) {
         var node = reduced[i];
@@ -115,10 +123,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           simplified[j++] = node;
         }
       }
-      return simplified.UpdateNodeSizes().Reduce().Sort();
+      return simplified.UpdateNodeSizes().Reduce().Sort(hashFunction);
     }
 
-    public static HashNode<T>[] Sort<T>(this HashNode<T>[] nodes) where T : class {
+    public static HashNode<T>[] Sort<T>(this HashNode<T>[] nodes, Func<byte[], ulong> hashFunction) where T : class {
       int sort(int a, int b) => nodes[a].CompareTo(nodes[b]);
 
       for (int i = 0; i < nodes.Length; ++i) {
@@ -154,7 +162,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             Array.Copy(sorted, 0, nodes, i - size, size);
           }
         }
-        node.CalculatedHashValue = nodes.ComputeHash(i);
+        node.CalculatedHashValue = nodes.ComputeHash(i, hashFunction);
       }
       return nodes;
     }
