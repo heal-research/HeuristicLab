@@ -42,6 +42,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         GetValuesVectorized32(code, len, rows, nRows, result);
     }
 
+    // x86
     [DllImport(x86dll, EntryPoint = "GetValue", CallingConvention = CallingConvention.Cdecl)]
     internal static extern double GetValue32(NativeInstruction[] code, int len, int row);
 
@@ -51,6 +52,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     [DllImport(x86dll, EntryPoint = "GetValuesVectorized", CallingConvention = CallingConvention.Cdecl)]
     internal static extern void GetValuesVectorized32(NativeInstruction[] code, int len, int[] rows, int nRows, double[] result);
 
+    // x64
     [DllImport(x64dll, EntryPoint = "GetValue", CallingConvention = CallingConvention.Cdecl)]
     internal static extern double GetValue64(NativeInstruction[] code, int len, int row);
 

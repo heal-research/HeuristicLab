@@ -1,12 +1,8 @@
 #ifndef NATIVE_TREE_INTERPRETER_CLANG_H
 #define NATIVE_TREE_INTERPRETER_CLANG_H
 
-#include <cstring>
-#include <vector>
-#include <algorithm>
-
-#include "instruction.h"
 #include "vector_operations.h"
+#include "instruction.h"
 
 inline double evaluate(instruction *code, int len, int row) noexcept
 {
@@ -145,14 +141,18 @@ inline void evaluate(instruction* code, int len, int* __restrict rows, int rowIn
                 }
             case OpCodes::Sub:
                 {
-                    load(in.buf, code[in.childIndex].buf);
-                    for (int j = 1; j < in.narg; ++j)
-                    {
-                        sub(in.buf, code[in.childIndex + j].buf);
-                    }
                     if (in.narg == 1)
                     {
-                        neg(in.buf);
+                        neg(in.buf, code[in.childIndex].buf);
+                        break;
+                    }
+                    else
+                    {
+                        load(in.buf, code[in.childIndex].buf);
+                        for (int j = 1; j < in.narg; ++j)
+                        {
+                            sub(in.buf, code[in.childIndex + j].buf);
+                        }
                     }
                     break;
                 }
@@ -167,14 +167,18 @@ inline void evaluate(instruction* code, int len, int* __restrict rows, int rowIn
                 }
             case OpCodes::Div:
                 {
-                    load(in.buf, code[in.childIndex].buf);
-                    for (int j = 1; j < in.narg; ++j)
-                    {
-                        div(in.buf, code[in.childIndex + j].buf);
-                    }
                     if (in.narg == 1)
                     {
-                        inv(in.buf);
+                        inv(in.buf, code[in.childIndex].buf);
+                        break;
+                    }
+                    else
+                    {
+                        load(in.buf, code[in.childIndex].buf);
+                        for (int j = 1; j < in.narg; ++j)
+                        {
+                            div(in.buf, code[in.childIndex + j].buf);
+                        }
                     }
                     break;
                 }

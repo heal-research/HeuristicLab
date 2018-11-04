@@ -152,11 +152,6 @@ inline float fast_expf(float initial_x) {
 
 //------------------------------------------------------------------------------
 
-void expv(const uint32_t size, double const * __restrict iarray, double* __restrict oarray);
-void fast_expv(const uint32_t size, double const * __restrict iarray, double* __restrict oarray);
-void expfv(const uint32_t size, float const * __restrict iarray, float* __restrict oarray);
-void fast_expfv(const uint32_t size, float const * __restrict iarray, float* __restrict oarray);
-
 } // end namespace vdt
 
 #endif

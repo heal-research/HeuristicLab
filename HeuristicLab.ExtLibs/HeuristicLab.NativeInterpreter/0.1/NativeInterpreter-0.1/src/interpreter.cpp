@@ -1,8 +1,10 @@
-#include <memory>
-
 #include "interpreter.h" 
 
+#ifdef __cplusplus
 extern "C" {
+#endif
+
+constexpr size_t BUFSIZE = BATCHSIZE * sizeof(double);
 
 // slow (ish?)
 __declspec(dllexport) 
@@ -21,14 +23,13 @@ void __cdecl GetValues(instruction* code, int codeLength, int* rows, int totalRo
 }
 
 __declspec(dllexport)
-void __cdecl GetValuesVectorized(instruction* code, int codeLength, int* rows, int totalRows, double* result) noexcept
+void __cdecl GetValuesVectorized(instruction* code, int codeLength, int* rows, int totalRows, double* __restrict result) noexcept
 {
-    std::vector<double[BUFSIZE]> buffers(codeLength);
-    // initialize instruction buffers
+    double* buffer = static_cast<double*>(_aligned_malloc(codeLength * BUFSIZE, 16));
     for (int i = 0; i < codeLength; ++i)
     {
         instruction& in = code[i];
-        in.buf = buffers[i];
+        in.buf = buffer + (i * BATCHSIZE);
 
         if (in.opcode == OpCodes::Const)
         {
@@ -36,23 +37,25 @@ void __cdecl GetValuesVectorized(instruction* code, int codeLength, int* rows, i
         }
     }
 
-    int remainingRows = totalRows % BUFSIZE;
+    int remainingRows = totalRows % BATCHSIZE;
     int total = totalRows - remainingRows;
 
-    for (int rowIndex = 0; rowIndex < total; rowIndex += BUFSIZE)
+    for (int rowIndex = 0; rowIndex < total; rowIndex += BATCHSIZE)
     {
-        evaluate(code, codeLength, rows, rowIndex, BUFSIZE);
-        std::memcpy(result + rowIndex, code[0].buf, BUFSIZE * sizeof(double));
+        evaluate(code, codeLength, rows, rowIndex, BATCHSIZE);
+        std::memcpy(result + rowIndex, code[0].buf, BUFSIZE);
     }
 
     // are there any rows left?
-    if (remainingRows > 0) {
+    if (remainingRows > 0) 
+    {
         for (int rowIndex = total; rowIndex < totalRows; rowIndex += remainingRows)
         {
             evaluate(code, codeLength, rows, rowIndex, remainingRows);
             std::memcpy(result + rowIndex, code[0].buf, remainingRows * sizeof(double));
         }
     }
+    _aligned_free(buffer);
 }
 
 #ifdef __cplusplus
