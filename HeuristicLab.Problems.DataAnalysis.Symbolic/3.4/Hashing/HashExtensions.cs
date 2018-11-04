@@ -81,13 +81,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public static ulong ComputeHash<T>(this HashNode<T>[] nodes, int i, Func<byte[], ulong> hashFunction) where T : class {
       var node = nodes[i];
       const int size = sizeof(ulong);
-      var hashes = new byte[(node.Arity + 1) * size];
+      var hashes = new ulong[node.Arity + 1];
+      var bytes = new byte[(node.Arity + 1) * size];
 
       for (int j = i - 1, k = 0; k < node.Arity; ++k, j -= 1 + nodes[j].Size) {
-        Array.Copy(BitConverter.GetBytes(nodes[j].CalculatedHashValue), 0, hashes, k * size, size);
+        hashes[k] = nodes[j].CalculatedHashValue;
       }
-      Array.Copy(BitConverter.GetBytes(node.HashValue), 0, hashes, node.Arity * size, size);
-      return hashFunction(hashes);
+      hashes[node.Arity] = node.HashValue;
+      Buffer.BlockCopy(hashes, 0, bytes, 0, bytes.Length);
+      return hashFunction(bytes);
     }
 
     // set the enabled state for the whole subtree rooted at this node 
