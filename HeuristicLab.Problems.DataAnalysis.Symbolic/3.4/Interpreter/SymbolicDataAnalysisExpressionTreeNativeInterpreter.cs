@@ -25,18 +25,35 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
+using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableClass]
   [Item("SymbolicDataAnalysisExpressionTreeNativeInterpreter", "An interpreter that wraps a native dll")]
   public class SymbolicDataAnalysisExpressionTreeNativeInterpreter : ParameterizedNamedItem, ISymbolicDataAnalysisExpressionTreeInterpreter {
-    public int EvaluatedSolutions { get; set; }
+    private const string EvaluatedSolutionsParameterName = "EvaluatedSolutions";
+
+    #region parameters
+    public IFixedValueParameter<IntValue> EvaluatedSolutionsParameter {
+      get { return (IFixedValueParameter<IntValue>)Parameters[EvaluatedSolutionsParameterName]; }
+    }
+    #endregion
+
+    #region properties
+    public int EvaluatedSolutions {
+      get { return EvaluatedSolutionsParameter.Value.Value; }
+      set { EvaluatedSolutionsParameter.Value.Value = value; }
+    }
+    #endregion
 
     public void ClearState() { }
 
-    public SymbolicDataAnalysisExpressionTreeNativeInterpreter() { }
+    public SymbolicDataAnalysisExpressionTreeNativeInterpreter() {
+      Parameters.Add(new FixedValueParameter<IntValue>(EvaluatedSolutionsParameterName, "A counter for the total number of solutions the interpreter has evaluated", new IntValue(0)));
+    }
 
     [StorableConstructor]
     protected SymbolicDataAnalysisExpressionTreeNativeInterpreter(bool deserializing) : base(deserializing) { }
