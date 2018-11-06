@@ -21,7 +21,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using HeuristicLab.Common;
@@ -38,6 +37,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     public SymbolicExpressionTreeBottomUpSimilarityCalculator() { }
     protected override bool IsCommutative { get { return true; } }
+
+    public bool MatchConstantValues { get; set; }
+    public bool MatchVariableWeights { get; set; }
 
     [StorableConstructor]
     protected SymbolicExpressionTreeBottomUpSimilarityCalculator(bool deserializing)
@@ -56,8 +58,23 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       if (t1 == t2)
         return 1;
 
-      var map = ComputeBottomUpMapping(t1.Root, t2.Root);
-      return 2.0 * map.Count / (t1.Length + t2.Length);
+      var actualRoot1 = t1.Root.GetSubtree(0).GetSubtree(0); // skip root and start symbols
+      var actualRoot2 = t2.Root.GetSubtree(0).GetSubtree(0); // skip root and start symbols
+      var map = ComputeBottomUpMapping(actualRoot1, actualRoot2);
+      return 2.0 * map.Count / (t1.Length + t2.Length - 4); // -4 for skipping root and start symbols in the two trees
+    }
+
+    public double CalculateSimilarity(ISymbolicExpressionTree t1, ISymbolicExpressionTree t2, out Dictionary<ISymbolicExpressionTreeNode, ISymbolicExpressionTreeNode> map) {
+      if (t1 == t2) {
+        map = null;
+        return 1;
+      }
+
+      var actualRoot1 = t1.Root.GetSubtree(0).GetSubtree(0); // skip root and start symbols
+      var actualRoot2 = t2.Root.GetSubtree(0).GetSubtree(0); // skip root and start symbols
+      map = ComputeBottomUpMapping(actualRoot1, actualRoot2);
+
+      return 2.0 * map.Count / (t1.Length + t2.Length - 4); // -4 for skipping root and start symbols in the two trees
     }
 
     public override double CalculateSolutionSimilarity(IScope leftSolution, IScope rightSolution) {
@@ -85,34 +102,48 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var reverseMap = new Dictionary<ISymbolicExpressionTreeNode, ISymbolicExpressionTreeNode>(); // nodes of t2 => nodes of t1
 
       // visit nodes in order of decreasing height to ensure correct mapping
-      var nodes1 = n1.IterateNodesPrefix().OrderByDescending(x => x.GetDepth()).ToList();
-      var nodes2 = n2.IterateNodesPrefix().ToList();
-      for (int i = 0; i < nodes1.Count; ++i) {
-        var v = nodes1[i];
-        if (forwardMap.ContainsKey(v))
+      var nodes1 = (List<ISymbolicExpressionTreeNode>)n1.IterateNodesPrefix();
+      var nodes2 = (List<ISymbolicExpressionTreeNode>)n2.IterateNodesPrefix();
+
+      foreach (var v in nodes1) {
+        if (forwardMap.ContainsKey(v)) {
           continue;
+        }
+
         var kv = compactedGraph[v];
-        ISymbolicExpressionTreeNode w = null;
+
+        var w = nodes2.Last();
+        int k = nodes2.Count - 1;
+
         for (int j = 0; j < nodes2.Count; ++j) {
           var t = nodes2[j];
-          if (reverseMap.ContainsKey(t) || compactedGraph[t] != kv)
+
+          if (reverseMap.ContainsKey(t) || kv != compactedGraph[t])
             continue;
-          w = t;
-          break;
+
+          if (j < k) {
+            w = t;
+            k = j;
+          }
         }
-        if (w == null) continue;
+
+        if (kv != compactedGraph[w]) {
+          continue;
+        }
 
         // at this point we know that v and w are isomorphic, however, the mapping cannot be done directly
         // (as in the paper) because the trees are unordered (subtree order might differ). the solution is 
         // to sort subtrees from under commutative labels (this will work because the subtrees are isomorphic!)
         // while iterating over the two subtrees
-        var vv = IterateBreadthOrdered(v, comparer).ToList();
-        var ww = IterateBreadthOrdered(w, comparer).ToList();
+        var vv = IterateBreadthOrdered(v, comparer);
+        var ww = IterateBreadthOrdered(w, comparer);
         int len = Math.Min(vv.Count, ww.Count);
         for (int j = 0; j < len; ++j) {
           var s = vv[j];
           var t = ww[j];
-          Debug.Assert(!reverseMap.ContainsKey(t));
+
+          if (reverseMap.ContainsKey(t))
+            continue;
 
           forwardMap[s] = t;
           reverseMap[t] = s;
@@ -122,86 +153,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       return forwardMap;
     }
 
-    /// <summary>
-    /// Creates a compact representation of the two trees as a directed acyclic graph
-    /// </summary>
-    /// <param name="n1">The root of the first tree</param>
-    /// <param name="n2">The root of the second tree</param>
-    /// <returns>The compacted DAG representing the two trees</returns>
-    private Dictionary<ISymbolicExpressionTreeNode, GraphNode> Compact(ISymbolicExpressionTreeNode n1, ISymbolicExpressionTreeNode n2) {
-      var nodeMap = new Dictionary<ISymbolicExpressionTreeNode, GraphNode>(); // K
-      var labelMap = new Dictionary<string, GraphNode>(); // L
-      var childrenCount = new Dictionary<ISymbolicExpressionTreeNode, int>(); // Children
-
-      var nodes = n1.IterateNodesPostfix().Concat(n2.IterateNodesPostfix()); // the disjoint union F
-      var list = new List<GraphNode>();
-      var queue = new Queue<ISymbolicExpressionTreeNode>();
-
-      foreach (var n in nodes) {
-        if (n.SubtreeCount == 0) {
-          var label = GetLabel(n);
-          if (!labelMap.ContainsKey(label)) {
-            var z = new GraphNode { SymbolicExpressionTreeNode = n, Label = label };
-            labelMap[z.Label] = z;
-          }
-          nodeMap[n] = labelMap[label];
-          queue.Enqueue(n);
-        } else {
-          childrenCount[n] = n.SubtreeCount;
-        }
-      }
-      while (queue.Any()) {
-        var n = queue.Dequeue();
-        if (n.SubtreeCount > 0) {
-          bool found = false;
-          var label = n.Symbol.Name;
-          var depth = n.GetDepth();
-
-          bool sort = n.SubtreeCount > 1 && commutativeSymbols.Contains(label);
-          var nSubtrees = n.Subtrees.Select(x => nodeMap[x]).ToList();
-          if (sort) nSubtrees.Sort((a, b) => string.CompareOrdinal(a.Label, b.Label));
-
-          for (int i = list.Count - 1; i >= 0; --i) {
-            var w = list[i];
-            if (!(n.SubtreeCount == w.SubtreeCount && label == w.Label && depth == w.Depth))
-              continue;
-
-            // sort V and W when the symbol is commutative because we are dealing with unordered trees
-            var m = w.SymbolicExpressionTreeNode;
-            var mSubtrees = m.Subtrees.Select(x => nodeMap[x]).ToList();
-            if (sort) mSubtrees.Sort((a, b) => string.CompareOrdinal(a.Label, b.Label));
-
-            found = nSubtrees.SequenceEqual(mSubtrees);
-            if (found) {
-              nodeMap[n] = w;
-              break;
-            }
-          }
-
-          if (!found) {
-            var w = new GraphNode { SymbolicExpressionTreeNode = n, Label = label, Depth = depth };
-            list.Add(w);
-            nodeMap[n] = w;
-          }
-        }
-
-        if (n == n1 || n == n2)
-          continue;
-
-        var p = n.Parent;
-        if (p == null)
-          continue;
-
-        childrenCount[p]--;
-
-        if (childrenCount[p] == 0)
-          queue.Enqueue(p);
-      }
-
-      return nodeMap;
-    }
-
-    private IEnumerable<ISymbolicExpressionTreeNode> IterateBreadthOrdered(ISymbolicExpressionTreeNode node, ISymbolicExpressionTreeNodeComparer comparer) {
+    private List<ISymbolicExpressionTreeNode> IterateBreadthOrdered(ISymbolicExpressionTreeNode node, ISymbolicExpressionTreeNodeComparer comparer) {
       var list = new List<ISymbolicExpressionTreeNode> { node };
       int i = 0;
       while (i < list.Count) {
@@ -215,26 +167,97 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       return list;
     }
 
-    private static string GetLabel(ISymbolicExpressionTreeNode node) {
+    /// <summary>
+    /// Creates a compact representation of the two trees as a directed acyclic graph
+    /// </summary>
+    /// <param name="n1">The root of the first tree</param>
+    /// <param name="n2">The root of the second tree</param>
+    /// <returns>The compacted DAG representing the two trees</returns>
+    private Dictionary<ISymbolicExpressionTreeNode, GraphNode> Compact(ISymbolicExpressionTreeNode n1, ISymbolicExpressionTreeNode n2) {
+      var nodeMap = new Dictionary<ISymbolicExpressionTreeNode, GraphNode>(); // K
+      var labelMap = new Dictionary<string, GraphNode>(); // L
+      var comparer = new SymbolicExpressionTreeNodeComparer();
+
+      var nodes = n1.IterateNodesPostfix().Concat(n2.IterateNodesPostfix()); // the disjoint union F
+      var graph = new List<GraphNode>();
+
+      foreach (var node in nodes) {
+        var label = GetLabel(node);
+
+        if (node.SubtreeCount == 0) {
+          if (!labelMap.ContainsKey(label)) {
+            var g = new GraphNode(node, label);
+            graph.Add(g);
+            labelMap[label] = g;
+          }
+          nodeMap[node] = labelMap[label];
+        } else {
+          var v = new GraphNode(node, label);
+          bool found = false;
+          var commutative = node.SubtreeCount > 1 && commutativeSymbols.Contains(label);
+
+          IEnumerable<GraphNode> vv, ww;
+
+          for (int i = graph.Count - 1; i >= 0; --i) {
+            var w = graph[i];
+
+            if (v.Depth != w.Depth || v.SubtreeCount != w.SubtreeCount || v.Length != w.Length || v.Label != w.Label) {
+              continue;
+            }
+
+            vv = commutative ? v.SymbolicExpressionTreeNode.Subtrees.Select(x => nodeMap[x]).OrderBy(x => x.Hash) : v.SymbolicExpressionTreeNode.Subtrees.Select(x => nodeMap[x]);
+            ww = commutative ? w.SymbolicExpressionTreeNode.Subtrees.Select(x => nodeMap[x]).OrderBy(x => x.Hash) : w.SymbolicExpressionTreeNode.Subtrees.Select(x => nodeMap[x]);
+            found = vv.SequenceEqual(ww);
+
+            if (found) {
+              nodeMap[node] = w;
+              break;
+            }
+          }
+          if (!found) {
+            nodeMap[node] = v;
+            graph.Add(v);
+          }
+        }
+      }
+      return nodeMap;
+    }
+
+    private string GetLabel(ISymbolicExpressionTreeNode node) {
       if (node.SubtreeCount > 0)
         return node.Symbol.Name;
 
-      var constant = node as ConstantTreeNode;
-      if (constant != null)
-        return constant.Value.ToString(CultureInfo.InvariantCulture);
+      if (node is ConstantTreeNode constant)
+        return MatchConstantValues ? constant.Value.ToString(CultureInfo.InvariantCulture) : constant.Symbol.Name;
 
-      var variable = node as VariableTreeNode;
-      if (variable != null)
-        return variable.Weight + variable.VariableName;
+      if (node is VariableTreeNode variable)
+        return MatchVariableWeights ? variable.Weight + variable.VariableName : variable.VariableName;
 
       return node.ToString();
     }
 
     private class GraphNode {
-      public ISymbolicExpressionTreeNode SymbolicExpressionTreeNode;
-      public string Label;
-      public int Depth;
+      private GraphNode() { }
+
+      public GraphNode(ISymbolicExpressionTreeNode node, string label) {
+        SymbolicExpressionTreeNode = node;
+        Label = label;
+        Hash = GetHashCode();
+        Depth = node.GetDepth();
+        Length = node.GetLength();
+      }
+
+      public int Hash { get; }
+
+      public ISymbolicExpressionTreeNode SymbolicExpressionTreeNode { get; }
+
+      public string Label { get; }
+
+      public int Depth { get; }
+
       public int SubtreeCount { get { return SymbolicExpressionTreeNode.SubtreeCount; } }
+
+      public int Length { get; }
     }
   }
 }
