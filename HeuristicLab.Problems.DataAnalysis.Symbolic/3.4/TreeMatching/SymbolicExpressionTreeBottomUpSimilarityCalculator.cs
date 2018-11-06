@@ -131,16 +131,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           continue;
         }
 
-        // at this point we know that v and w are isomorphic, however, the mapping cannot be done directly
-        // (as in the paper) because the trees are unordered (subtree order might differ). the solution is 
-        // to sort subtrees from under commutative labels (this will work because the subtrees are isomorphic!)
-        // while iterating over the two subtrees
-        var vv = IterateBreadthOrdered(v, comparer);
-        var ww = IterateBreadthOrdered(w, comparer);
-        int len = Math.Min(vv.Count, ww.Count);
-        for (int j = 0; j < len; ++j) {
-          var s = vv[j];
-          var t = ww[j];
+        // at this point we know that v and w are isomorphic (same length and depth) 
+        // however, the mapping cannot be done directly (as in the paper) 
+        // because the trees are unordered (subtree order might differ). 
+        // the solution is to sort once again (this will work because the subtrees are isomorphic!)
+        var vv = v.IterateNodesPrefix().OrderBy(x => compactedGraph[x].Hash);
+        var ww = w.IterateNodesPrefix().OrderBy(x => compactedGraph[x].Hash);
+
+        foreach (var pair in vv.Zip(ww, Tuple.Create)) {
+          var s = pair.Item1;
+          var t = pair.Item2;
 
           if (reverseMap.ContainsKey(t))
             continue;
@@ -153,20 +153,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       return forwardMap;
     }
 
-    private List<ISymbolicExpressionTreeNode> IterateBreadthOrdered(ISymbolicExpressionTreeNode node, ISymbolicExpressionTreeNodeComparer comparer) {
-      var list = new List<ISymbolicExpressionTreeNode> { node };
-      int i = 0;
-      while (i < list.Count) {
-        var n = list[i];
-        if (n.SubtreeCount > 0) {
-          var subtrees = commutativeSymbols.Contains(node.Symbol.Name) ? n.Subtrees.OrderBy(x => x, comparer) : n.Subtrees;
-          list.AddRange(subtrees);
-        }
-        i++;
-      }
-      return list;
-    }
-
     /// <summary>
     /// Creates a compact representation of the two trees as a directed acyclic graph
     /// </summary>
@@ -176,7 +162,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private Dictionary<ISymbolicExpressionTreeNode, GraphNode> Compact(ISymbolicExpressionTreeNode n1, ISymbolicExpressionTreeNode n2) {
       var nodeMap = new Dictionary<ISymbolicExpressionTreeNode, GraphNode>(); // K
       var labelMap = new Dictionary<string, GraphNode>(); // L
-      var comparer = new SymbolicExpressionTreeNodeComparer();
 
       var nodes = n1.IterateNodesPostfix().Concat(n2.IterateNodesPostfix()); // the disjoint union F
       var graph = new List<GraphNode>();
