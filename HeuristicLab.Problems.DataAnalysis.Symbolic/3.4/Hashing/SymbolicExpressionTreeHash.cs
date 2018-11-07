@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using System.Linq;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using static HeuristicLab.Problems.DataAnalysis.Symbolic.SymbolicExpressionHashExtensions;
@@ -39,6 +40,88 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     public static ulong ComputeHash(this ISymbolicExpressionTree tree) {
       return ComputeHash(tree.Root.GetSubtree(0).GetSubtree(0));
+    }
+
+    public static double ComputeSimilarity(ISymbolicExpressionTree t1, ISymbolicExpressionTree t2, bool simplify = false) {
+      return ComputeSimilarity(t1.Root.GetSubtree(0).GetSubtree(0), t2.Root.GetSubtree(0).GetSubtree(0), simplify);
+    }
+
+    public static double ComputeSimilarity(ISymbolicExpressionTreeNode t1, ISymbolicExpressionTreeNode t2, bool simplify = false) {
+      HashNode<ISymbolicExpressionTreeNode>[] lhs;
+      HashNode<ISymbolicExpressionTreeNode>[] rhs;
+
+      ulong hashFunction(byte[] input) => HashUtil.DJBHash(input);
+
+      if (simplify) {
+        lhs = t1.MakeNodes().Simplify(hashFunction);
+        rhs = t2.MakeNodes().Simplify(hashFunction);
+      } else {
+        lhs = t1.MakeNodes().Sort(hashFunction); // sort calculates hash values
+        rhs = t2.MakeNodes().Sort(hashFunction);
+      }
+
+      var lh = lhs.Select(x => x.CalculatedHashValue).ToArray();
+      var rh = rhs.Select(x => x.CalculatedHashValue).ToArray();
+
+      Array.Sort(lh);
+      Array.Sort(rh);
+
+      return ComputeSimilarity(lh, rh);
+    }
+
+    // this will only work if lh and rh are sorted 
+    private static double ComputeSimilarity(ulong[] lh, ulong[] rh) {
+      double count = 0;
+      for (int i = 0, j = 0; i < lh.Length && j < rh.Length;) {
+        var h1 = lh[i];
+        var h2 = rh[j];
+        if (h1 == h2) {
+          ++count;
+          ++i;
+          ++j;
+        } else if (h1 < h2) {
+          ++i;
+        } else if (h1 > h2) {
+          ++j;
+        }
+      }
+
+      return 2d * count / (lh.Length + rh.Length);
+    }
+
+    public static double ComputeAverageSimilarity(ISymbolicExpressionTree[] trees, bool simplify = false) {
+      var total = (double)trees.Length * (trees.Length - 1) / 2;
+      double avg = 0;
+      var hashes = new ulong[trees.Length][];
+      // build hash arrays
+      for (int i = 0; i < trees.Length; ++i) {
+        hashes[i] = (simplify ? trees[i].MakeNodes().Simplify(HashUtil.DJBHash) : trees[i].MakeNodes().Sort(HashUtil.DJBHash)).Select(x => x.CalculatedHashValue).ToArray();
+        Array.Sort(hashes[i]);
+      }
+      // compute similarity matrix
+      for (int i = 0; i < trees.Length - 1; ++i) {
+        for (int j = i + 1; j < trees.Length; ++j) {
+          avg = ComputeSimilarity(hashes[i], hashes[j]);
+        }
+      }
+      return avg / total;
+    }
+
+    public static double[,] ComputeSimilarityMatrix(ISymbolicExpressionTree[] trees, bool simplify = false) {
+      var sim = new double[trees.Length, trees.Length];
+      var hashes = new ulong[trees.Length][];
+      // build hash arrays
+      for (int i = 0; i < trees.Length; ++i) {
+        hashes[i] = (simplify ? trees[i].MakeNodes().Simplify(HashUtil.DJBHash) : trees[i].MakeNodes().Sort(HashUtil.DJBHash)).Select(x => x.CalculatedHashValue).ToArray();
+        Array.Sort(hashes[i]);
+      }
+      // compute similarity matrix
+      for (int i = 0; i < trees.Length - 1; ++i) {
+        for (int j = i + 1; j < trees.Length; ++j) {
+          sim[i, j] = sim[j, i] = ComputeSimilarity(hashes[i], hashes[j]);
+        }
+      }
+      return sim;
     }
 
     public static ulong ComputeHash(this ISymbolicExpressionTreeNode treeNode) {
@@ -77,6 +160,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         hashNode.Simplify = SimplifyBinaryNode;
       }
       return hashNode;
+    }
+
+    public static HashNode<ISymbolicExpressionTreeNode>[] MakeNodes(this ISymbolicExpressionTree tree) {
+      return MakeNodes(tree.Root.GetSubtree(0).GetSubtree(0));
     }
 
     public static HashNode<ISymbolicExpressionTreeNode>[] MakeNodes(this ISymbolicExpressionTreeNode node) {
