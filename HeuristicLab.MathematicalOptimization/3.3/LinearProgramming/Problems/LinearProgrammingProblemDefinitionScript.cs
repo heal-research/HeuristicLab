@@ -1,5 +1,4 @@
 ﻿#region License Information
-
 /* HeuristicLab
  * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -18,8 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
  */
-
-#endregion License Information
+#endregion
 
 using System;
 using System.Linq;
@@ -37,10 +35,10 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Problems {
   [Item("Single-objective Problem Definition Script", "Script that defines the parameter vector and evaluates the solution for a programmable problem.")]
   [StorableClass]
   public sealed class LinearProgrammingProblemDefinitionScript : Script, ILinearProgrammingProblemDefinition, IStorableContent {
-    protected bool SuppressEvents { get; set; }
+    private bool SuppressEvents { get; set; }
 
     [Storable]
-    private VariableStore variableStore;
+    private readonly VariableStore variableStore;
 
     public VariableStore VariableStore => variableStore;
 
@@ -48,9 +46,9 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Problems {
     private bool codeChanged;
 
     [StorableConstructor]
-    protected LinearProgrammingProblemDefinitionScript(bool deserializing) : base(deserializing) { }
+    private LinearProgrammingProblemDefinitionScript(bool deserializing) : base(deserializing) { }
 
-    protected LinearProgrammingProblemDefinitionScript(LinearProgrammingProblemDefinitionScript original, Cloner cloner)
+    private LinearProgrammingProblemDefinitionScript(LinearProgrammingProblemDefinitionScript original, Cloner cloner)
       : base(original, cloner) {
       variableStore = cloner.Clone(original.variableStore);
       codeChanged = original.codeChanged;
@@ -64,7 +62,7 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Problems {
     private readonly object compileLock = new object();
     private volatile ILinearProgrammingProblemDefinition compiledProblemDefinition;
 
-    protected ILinearProgrammingProblemDefinition CompiledProblemDefinition {
+    private ILinearProgrammingProblemDefinition CompiledProblemDefinition {
       get {
         // double checked locking pattern
         if (compiledProblemDefinition == null) {

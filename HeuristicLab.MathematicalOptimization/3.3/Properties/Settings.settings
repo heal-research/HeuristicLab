@@ -12,7 +12,7 @@
       <Value Profile="(Default)">cplex1280.dll</Value>
     </Setting>
     <Setting Name="GlpkLibraryName" Type="System.String" Scope="User">
-      <Value Profile="(Default)">glpk465.dll</Value>
+      <Value Profile="(Default)">glpk_4_65.dll</Value>
     </Setting>
   </Settings>
 </SettingsFile>

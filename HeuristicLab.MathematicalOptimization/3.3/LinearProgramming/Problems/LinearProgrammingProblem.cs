@@ -1,5 +1,4 @@
 ﻿#region License Information
-
 /* HeuristicLab
  * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -18,8 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
  */
-
-#endregion License Information
+#endregion
 
 using System.Drawing;
 using Google.OrTools.LinearSolver;
@@ -43,13 +41,13 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Problems {
       RegisterEvents();
     }
 
-    private LinearProgrammingProblem(LinearProgrammingProblem original, Cloner cloner)
+    protected LinearProgrammingProblem(LinearProgrammingProblem original, Cloner cloner)
       : base(original, cloner) {
       RegisterEvents();
     }
 
     [StorableConstructor]
-    private LinearProgrammingProblem(bool deserializing) : base(deserializing) { }
+    protected LinearProgrammingProblem(bool deserializing) : base(deserializing) { }
 
     public new static Image StaticItemImage => VSImageLibrary.Script;
     public ILinearProgrammingProblemDefinition ProblemDefinition => LinearProgrammingProblemScriptParameter.Value;

@@ -27,6 +27,7 @@ using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.MathematicalOptimization.LinearProgramming.Problems;
 
 namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Views {
+
   [View("Linear Programming Problem View")]
   [Content(typeof(LinearProgrammingProblem), true)]
   public partial class LinearProgrammingProblemView : ItemView {
@@ -74,7 +75,6 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Views {
     }
 
     private void LinearProgrammingProblemView_Load(object sender, EventArgs e) {
-
     }
   }
 }

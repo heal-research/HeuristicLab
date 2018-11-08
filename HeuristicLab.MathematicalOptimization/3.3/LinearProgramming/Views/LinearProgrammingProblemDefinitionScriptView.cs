@@ -27,6 +27,7 @@ using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Scripting.Views;
 
 namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Views {
+
   [View("LinearProgrammingProblemDefinitionScriptView")]
   [Content(typeof(LinearProgrammingProblemDefinitionScript), IsDefaultView = true)]
   public partial class LinearProgrammingProblemDefinitionScriptView : ScriptView {

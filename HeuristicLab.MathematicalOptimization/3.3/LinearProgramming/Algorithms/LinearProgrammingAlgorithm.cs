@@ -1,4 +1,25 @@
-﻿using System;
+﻿#region License Information
+/* HeuristicLab
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ *
+ * This file is part of HeuristicLab.
+ *
+ * HeuristicLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * HeuristicLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
+ */
+#endregion
+
+using System;
 using System.Threading;
 using Google.OrTools.LinearSolver;
 using HeuristicLab.Common;
@@ -37,10 +58,15 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms {
     private readonly IFixedValueParameter<BoolValue> scalingParam;
 
     [Storable]
-    private readonly IConstrainedValueParameter<ISolver> solverParam;
+    private IConstrainedValueParameter<ISolver> solverParam;
 
     [Storable]
     private readonly IFixedValueParameter<TimeSpanValue> timeLimitParam;
+
+    public IConstrainedValueParameter<ISolver> SolverParameter {
+      get { return solverParam; }
+      set { solverParam = value; }
+    }
 
     public LinearProgrammingAlgorithm() {
       Parameters.Add(solverParam =
@@ -76,11 +102,11 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms {
     }
 
     [StorableConstructor]
-    private LinearProgrammingAlgorithm(bool deserializing)
+    protected LinearProgrammingAlgorithm(bool deserializing)
       : base(deserializing) {
     }
 
-    private LinearProgrammingAlgorithm(LinearProgrammingAlgorithm original, Cloner cloner)
+    protected LinearProgrammingAlgorithm(LinearProgrammingAlgorithm original, Cloner cloner)
       : base(original, cloner) {
       solverParam = cloner.Clone(original.solverParam);
       relativeGapToleranceParam = cloner.Clone(original.relativeGapToleranceParam);
@@ -165,9 +191,11 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms {
       base.Stop();
       Solver.Interrupt();
     }
+
     protected override void Initialize(CancellationToken cancellationToken) {
       base.Initialize(cancellationToken);
     }
+
     protected override void Run(CancellationToken cancellationToken) => Solver.Solve(this, cancellationToken);
   }
 }

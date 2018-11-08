@@ -61,7 +61,7 @@ namespace HeuristicLab.MathematicalOptimization.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("glpk465.dll")]
+        [global::System.Configuration.DefaultSettingValueAttribute("glpk_4_65.dll")]
         public string GlpkLibraryName {
             get {
                 return ((string)(this["GlpkLibraryName"]));

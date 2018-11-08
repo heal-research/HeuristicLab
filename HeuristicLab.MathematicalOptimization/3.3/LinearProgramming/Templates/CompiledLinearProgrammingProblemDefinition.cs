@@ -1,20 +1,26 @@
-﻿using Google.OrTools.LinearSolver;
+﻿using System;
+using System.Linq;
+using System.Collections.Generic;
+using Google.OrTools.LinearSolver;
+using HeuristicLab.Common;
+using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.MathematicalOptimization.LinearProgramming.Problems;
 using HeuristicLab.Optimization;
 using HeuristicLab.Problems.Programmable;
+using Variable = Google.OrTools.LinearSolver.Variable;
 
 namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
 
   public class CompiledLinearProgrammingProblemDefinition : CompiledProblemDefinition, ILinearProgrammingProblemDefinition {
     private Variable x;
     private Variable y;
-
+    
     public override void Initialize() {
       // Use vars.yourVariable to access variables in the variable store i.e. yourVariable
       // Add additional initialization code e.g. private variables that you need for evaluating
     }
-
+    
     public void BuildModel(Solver solver) {
       // Use vars.yourVariable to access variables in the variable store i.e. yourVariable
       // Example model taken from https://developers.google.com/optimization/mip/integer_opt
@@ -26,7 +32,7 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
       // Define the objective
       solver.Maximize(x + 10 * y);
     }
-
+    
     public void Analyze(Solver solver, ResultCollection results) {
       // Use vars.yourVariable to access variables in the variable store i.e. yourVariable
       // Write or update results given the solution variables of the decision variables
@@ -36,7 +42,8 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
       //results.AddOrUpdateResult("x", new DoubleValue(solver.LookupVariableOrNull("x").SolutionValue()));
       //results.AddOrUpdateResult("y", new DoubleValue(solver.LookupVariableOrNull("y").SolutionValue()));
     }
-
+    
     // Implement further classes and methods
   }
 }
+

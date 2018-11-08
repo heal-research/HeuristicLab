@@ -1,5 +1,4 @@
 ﻿#region License Information
-
 /* HeuristicLab
  * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -18,8 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
  */
-
-#endregion License Information
+#endregion
 
 using System;
 using System.Runtime.Serialization;
