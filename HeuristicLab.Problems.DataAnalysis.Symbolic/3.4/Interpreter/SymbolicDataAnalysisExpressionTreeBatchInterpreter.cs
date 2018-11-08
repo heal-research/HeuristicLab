@@ -160,15 +160,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           code[c + j] = new BatchInstruction { narg = (ushort)s.SubtreeCount, opcode = opCodeMapper(s) };
         }
 
+        code[i].buf = new double[BATCHSIZE];
+
         if (node is VariableTreeNode variable) {
           code[i].weight = variable.Weight;
           code[i].data = dataset.GetReadOnlyDoubleValues(variable.VariableName).ToArray();
-          code[i].buf = new double[BATCHSIZE];
         } else if (node is ConstantTreeNode constant) {
           code[i].value = constant.Value;
-          code[i].buf = Enumerable.Repeat(code[i].value, BATCHSIZE).ToArray();
-        } else if (node.SubtreeCount > 0) {
-          code[i].buf = new double[BATCHSIZE];
+          for (int j = 0; j < BATCHSIZE; ++j)
+            code[i].buf[j] = code[i].value;
         }
 
         code[i].childIndex = c;

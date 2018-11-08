@@ -1,58 +1,46 @@
 ﻿using System;
-using System.Numerics;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   public static class BatchOperations {
     public const int BATCHSIZE = 64;
-    private static readonly int STRIDE = Vector<double>.Count;
 
     public static void Load(double[] a, double[] b) {
       Array.Copy(b, a, BATCHSIZE);
     }
 
     public static void Add(double[] a, double[] b) {
-      for (int i = 0; i < BATCHSIZE; i += STRIDE) {
-        var va = new Vector<double>(a, i);
-        var vb = new Vector<double>(b, i);
-        (va + vb).CopyTo(a, i);
+      for (int i = 0; i < BATCHSIZE; ++i) {
+        a[i] += b[i];
       }
     }
 
     public static void Sub(double[] a, double[] b) {
-      for (int i = 0; i < BATCHSIZE; i += STRIDE) {
-        var va = new Vector<double>(a, i);
-        var vb = new Vector<double>(b, i);
-        (va - vb).CopyTo(a, i);
+      for (int i = 0; i < BATCHSIZE; ++i) {
+        a[i] -= b[i];
       }
     }
 
     public static void Div(double[] a, double[] b) {
-      for (int i = 0; i < BATCHSIZE; i += STRIDE) {
-        var va = new Vector<double>(a, i);
-        var vb = new Vector<double>(b, i);
-        (va / vb).CopyTo(a, i);
+      for (int i = 0; i < BATCHSIZE; ++i) {
+        a[i] /= b[i];
       }
     }
 
     public static void Mul(double[] a, double[] b) {
-      for (int i = 0; i < BATCHSIZE; i += STRIDE) {
-        var va = new Vector<double>(a, i);
-        var vb = new Vector<double>(b, i);
-        (va * vb).CopyTo(a, i);
+      for (int i = 0; i < BATCHSIZE; ++i) {
+        a[i] *= b[i];
       }
     }
 
     public static void Neg(double[] a, double[] b) {
-      for (int i = 0; i < BATCHSIZE; i += STRIDE) {
-        var vb = new Vector<double>(b, i);
-        Vector.Negate(vb).CopyTo(a, i);
+      for (int i = 0; i < BATCHSIZE; ++i) {
+        a[i] = -b[i];
       }
     }
 
     public static void Inv(double[] a, double[] b) {
-      for (int i = 0; i < BATCHSIZE; i += STRIDE) {
-        var vb = new Vector<double>(b, i);
-        (Vector<double>.One / vb).CopyTo(a, i);
+      for (int i = 0; i < BATCHSIZE; ++i) {
+        a[i] = 1 / b[i];
       }
     }
 
