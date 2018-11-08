@@ -106,11 +106,19 @@
       <HintPath>..\..\bin\AutoDiff-1.0.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="HeuristicLab.Problems.DataAnalysis.Symbolic.NativeInterpreter-0.1, Version=0.0.0.1, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\HeuristicLab.Problems.DataAnalysis.Symbolic.NativeInterpreter-0.1.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Numerics.Vectors.4.5.0\lib\portable-net45+win8+wp8+wpa81\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -155,7 +163,11 @@
     <Compile Include="Interfaces\IModelBacktransformator.cs" />
     <Compile Include="Interfaces\IVariableTreeNode.cs" />
     <Compile Include="Interfaces\IVariableSymbol.cs" />
+    <Compile Include="Interpreter\BatchInstruction.cs" />
+    <Compile Include="Interpreter\SymbolicDataAnalysisExpressionTreeBatchInterpreter.cs" />
+    <Compile Include="Interpreter\BatchOperations.cs" />
     <Compile Include="Interpreter\SymbolicDataAnalysisExpressionCompiledTreeInterpreter.cs" />
+    <Compile Include="Interpreter\SymbolicDataAnalysisExpressionTreeNativeInterpreter.cs" />
     <Compile Include="SymbolicDataAnalysisExpressionTreeSimplificationOperator.cs" />
     <Compile Include="SymbolicDataAnalysisModelComplexityCalculator.cs" />
     <Compile Include="SymbolicDataAnalysisExpressionPruningOperator.cs" />
@@ -270,6 +282,7 @@
     <Compile Include="TreeMatching\SymbolicExpressionTreeNodeEqualityComparer.cs" />
     <Compile Include="TreeMatching\SymbolicExpressionTreePhenotypicSimilarityCalculator.cs" />
     <None Include="HeuristicLab.snk" />
+    <None Include="packages.config" />
     <None Include="Plugin.cs.frame" />
     <None Include="Properties\AssemblyInfo.cs.frame" />
     <Compile Include="Evaluators\SymbolicDataAnalysisMultiObjectiveEvaluator.cs" />
