@@ -101,7 +101,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       // compute similarity matrix
       for (int i = 0; i < trees.Length - 1; ++i) {
         for (int j = i + 1; j < trees.Length; ++j) {
-          avg = ComputeSimilarity(hashes[i], hashes[j]);
+          avg += ComputeSimilarity(hashes[i], hashes[j]);
         }
       }
       return avg / total;
