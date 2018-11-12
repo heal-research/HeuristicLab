@@ -64,6 +64,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
               LoadData(instr, rows, rowIndex, batchSize);
               break;
             }
+
           case OpCodes.Add: {
               Load(instr.buf, code[c].buf);
               for (int j = 1; j < n; ++j) {
@@ -75,14 +76,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           case OpCodes.Sub: {
               if (n == 1) {
                 Neg(instr.buf, code[c].buf);
-                break;
               } else {
                 Load(instr.buf, code[c].buf);
                 for (int j = 1; j < n; ++j) {
                   Sub(instr.buf, code[c + j].buf);
                 }
-                break;
               }
+              break;
             }
 
           case OpCodes.Mul: {
@@ -96,14 +96,33 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           case OpCodes.Div: {
               if (n == 1) {
                 Inv(instr.buf, code[c].buf);
-                break;
               } else {
                 Load(instr.buf, code[c].buf);
                 for (int j = 1; j < n; ++j) {
                   Div(instr.buf, code[c + j].buf);
                 }
-                break;
               }
+              break;
+            }
+
+          case OpCodes.Square: {
+              Square(instr.buf, code[c].buf);
+              break;
+            }
+
+          case OpCodes.Root: {
+              Root(instr.buf, code[c].buf);
+              break;
+            }
+
+          case OpCodes.SquareRoot: {
+              Sqrt(instr.buf, code[c].buf);
+              break;
+            }
+
+          case OpCodes.Power: {
+              Pow(instr.buf, code[c].buf);
+              break;
             }
 
           case OpCodes.Exp: {
@@ -113,6 +132,21 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
           case OpCodes.Log: {
               Log(instr.buf, code[c].buf);
+              break;
+            }
+
+          case OpCodes.Sin: {
+              Sin(instr.buf, code[c].buf);
+              break;
+            }
+
+          case OpCodes.Cos: {
+              Cos(instr.buf, code[c].buf);
+              break;
+            }
+
+          case OpCodes.Tan: {
+              Tan(instr.buf, code[c].buf);
               break;
             }
         }
@@ -138,6 +172,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
 
       return result;
+    }
+
+    public IEnumerable<double> GetSymbolicExpressionTreeValues(ISymbolicExpressionTree tree, IDataset dataset, int[] rows) {
+      return GetValues(tree, dataset, rows);
     }
 
     public IEnumerable<double> GetSymbolicExpressionTreeValues(ISymbolicExpressionTree tree, IDataset dataset, IEnumerable<int> rows) {

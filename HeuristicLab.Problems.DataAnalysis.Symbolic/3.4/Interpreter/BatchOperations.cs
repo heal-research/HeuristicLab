@@ -63,5 +63,30 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       for (int i = 0; i < BATCHSIZE; ++i)
         a[i] = Math.Cos(b[i]);
     }
+
+    public static void Tan(double[] a, double[] b) {
+      for (int i = 0; i < BATCHSIZE; ++i)
+        a[i] = Math.Tan(b[i]);
+    }
+
+    public static void Pow(double[] a, double[] b) {
+      for (int i = 0; i < BATCHSIZE; ++i)
+        a[i] = Math.Pow(a[i], Math.Round(b[i]));
+    }
+
+    public static void Root(double[] a, double[] b) {
+      for (int i = 0; i < BATCHSIZE; ++i)
+        a[i] = Math.Pow(a[i], 1 / Math.Round(b[i]));
+    }
+
+    public static void Square(double[] a, double[] b) {
+      for (int i = 0; i < BATCHSIZE; ++i)
+        a[i] = Math.Pow(b[i], 2d);
+    }
+
+    public static void Sqrt(double[] a, double[] b) {
+      for (int i = 0; i < BATCHSIZE; ++i)
+        a[i] = Math.Sqrt(b[i]);
+    }
   }
 }
