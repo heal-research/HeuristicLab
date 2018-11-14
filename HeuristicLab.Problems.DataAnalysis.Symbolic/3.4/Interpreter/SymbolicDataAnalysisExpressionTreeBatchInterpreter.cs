@@ -10,7 +10,6 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 using static HeuristicLab.Problems.DataAnalysis.Symbolic.BatchOperations;
-//using static HeuristicLab.Problems.DataAnalysis.Symbolic.BatchOperationsVector;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [Item("SymbolicDataAnalysisExpressionTreeBatchInterpreter", "An interpreter that uses batching and vectorization techniques to achieve faster performance.")]
@@ -203,7 +202,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var root = tree.Root.GetSubtree(0).GetSubtree(0);
       var code = new BatchInstruction[root.GetLength()];
       if (root.SubtreeCount > ushort.MaxValue) throw new ArgumentException("Number of subtrees is too big (>65.535)");
-      code[0] = new BatchInstruction { narg = (ushort)root.SubtreeCount, opcode = opCodeMapper(root) };
       int c = 1, i = 0;
       foreach (var node in root.IterateNodesBreadth()) {
         if (node.SubtreeCount > ushort.MaxValue) throw new ArgumentException("Number of subtrees is too big (>65.535)");
