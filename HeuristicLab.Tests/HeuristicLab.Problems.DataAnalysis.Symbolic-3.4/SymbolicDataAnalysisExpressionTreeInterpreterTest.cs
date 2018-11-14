@@ -120,6 +120,19 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       TestArithmeticGrammarPerformance(new SymbolicDataAnalysisExpressionTreeLinearInterpreter(), 12.5e6);
     }
 
+    [TestMethod]
+    [TestCategory("Problems.DataAnalysis.Symbolic")]
+    [TestProperty("Time", "long")]
+    public void BatchInterpreterTestTypeCoherentGrammarPerformance() {
+      TestTypeCoherentGrammarPerformance(new SymbolicDataAnalysisExpressionTreeBatchInterpreter(), 12.5e6);
+    }
+    [TestMethod]
+    [TestCategory("Problems.DataAnalysis.Symbolic")]
+    [TestProperty("Time", "long")]
+    public void BatchInterpreterTestArithmeticGrammarPerformance() {
+      TestArithmeticGrammarPerformance(new SymbolicDataAnalysisExpressionTreeBatchInterpreter(), 12.5e6);
+    }
+
     private void TestTypeCoherentGrammarPerformance(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, double nodesPerSecThreshold) {
       var twister = new MersenneTwister(31415);
       var dataset = Util.CreateRandomDataset(twister, Rows, Columns);
