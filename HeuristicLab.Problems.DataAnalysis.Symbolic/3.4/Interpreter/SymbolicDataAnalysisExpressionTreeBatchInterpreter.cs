@@ -153,9 +153,23 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
     }
 
+    [ThreadStatic]
+    private Dictionary<string, double[]> cachedData;
+
+    private void InitCache(IDataset dataset) {
+      cachedData = new Dictionary<string, double[]>();
+      foreach (var v in dataset.DoubleVariables) {
+        var values = dataset.GetDoubleValues(v).ToArray();
+      }
+    }
+
+    public void InitializeState() {
+      cachedData = null;
+      EvaluatedSolutions = 0;
+    }
+
     private double[] GetValues(ISymbolicExpressionTree tree, IDataset dataset, int[] rows) {
       var code = Compile(tree, dataset, OpCodes.MapSymbolToOpCode);
-
       var remainingRows = rows.Length % BATCHSIZE;
       var roundedTotal = rows.Length - remainingRows;
 
@@ -175,14 +189,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     public IEnumerable<double> GetSymbolicExpressionTreeValues(ISymbolicExpressionTree tree, IDataset dataset, int[] rows) {
+      if (cachedData == null) {
+        InitCache(dataset);
+      }
       return GetValues(tree, dataset, rows);
     }
 
     public IEnumerable<double> GetSymbolicExpressionTreeValues(ISymbolicExpressionTree tree, IDataset dataset, IEnumerable<int> rows) {
-      return GetValues(tree, dataset, rows.ToArray());
-    }
-
-    public void InitializeState() {
+      return GetSymbolicExpressionTreeValues(tree, dataset, rows.ToArray());
     }
 
     private BatchInstruction[] Compile(ISymbolicExpressionTree tree, IDataset dataset, Func<ISymbolicExpressionTreeNode, byte> opCodeMapper) {
@@ -192,24 +206,26 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       code[0] = new BatchInstruction { narg = (ushort)root.SubtreeCount, opcode = opCodeMapper(root) };
       int c = 1, i = 0;
       foreach (var node in root.IterateNodesBreadth()) {
-        for (int j = 0; j < node.SubtreeCount; ++j) {
-          var s = node.GetSubtree(j);
-          if (s.SubtreeCount > ushort.MaxValue) throw new ArgumentException("Number of subtrees is too big (>65.535)");
-          code[c + j] = new BatchInstruction { narg = (ushort)s.SubtreeCount, opcode = opCodeMapper(s) };
-        }
-
-        code[i].buf = new double[BATCHSIZE];
-
+        if (node.SubtreeCount > ushort.MaxValue) throw new ArgumentException("Number of subtrees is too big (>65.535)");
+        code[i] = new BatchInstruction {
+          opcode = opCodeMapper(node),
+          narg = (ushort)node.SubtreeCount,
+          buf = new double[BATCHSIZE],
+          childIndex = c
+        };
         if (node is VariableTreeNode variable) {
           code[i].weight = variable.Weight;
-          code[i].data = dataset.GetReadOnlyDoubleValues(variable.VariableName).ToArray();
+          if (cachedData.ContainsKey(variable.VariableName)) {
+            code[i].data = cachedData[variable.VariableName];
+          } else {
+            code[i].data = dataset.GetReadOnlyDoubleValues(variable.VariableName).ToArray();
+            cachedData[variable.VariableName] = code[i].data;
+          }
         } else if (node is ConstantTreeNode constant) {
           code[i].value = constant.Value;
           for (int j = 0; j < BATCHSIZE; ++j)
             code[i].buf[j] = code[i].value;
         }
-
-        code[i].childIndex = c;
         c += node.SubtreeCount;
         ++i;
       }
