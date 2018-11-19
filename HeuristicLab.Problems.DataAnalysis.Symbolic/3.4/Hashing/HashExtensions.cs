@@ -34,7 +34,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       public ulong HashValue;           // the initial (fixed) hash value for this individual node/data
       public ulong CalculatedHashValue; // the calculated hash value (taking into account the children hash values)
 
-      public Action<HashNode<T>[], int> Simplify;
+      public delegate void SimplifyAction(ref HashNode<T>[] nodes, int i);
+      public SimplifyAction Simplify;
+
       public IComparer<T> Comparer;
 
       public bool IsLeaf => Arity == 0;
@@ -107,7 +109,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         if (node.IsLeaf) {
           continue;
         }
-        node.Simplify?.Invoke(reduced, i);
+        node.Simplify?.Invoke(ref reduced, i);
       }
       // detect if anything was simplified
       var count = 0;
