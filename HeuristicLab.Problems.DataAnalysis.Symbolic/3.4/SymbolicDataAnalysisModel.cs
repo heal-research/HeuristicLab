@@ -33,7 +33,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   /// Abstract base class for symbolic data analysis models
   /// </summary>
   [StorableClass]
-  public abstract class SymbolicDataAnalysisModel : NamedItem, ISymbolicDataAnalysisModel {
+  public abstract class SymbolicDataAnalysisModel : DataAnalysisModel, ISymbolicDataAnalysisModel {
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Function; }
     }
@@ -58,7 +58,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       get { return interpreter; }
     }
 
-    public IEnumerable<string> VariablesUsedForPrediction {
+    public override IEnumerable<string> VariablesUsedForPrediction {
       get {
         var variables =
           SymbolicExpressionTree.IterateNodesPrefix()
@@ -117,16 +117,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
       ConstantTreeNode alphaTreeNode = null;
       ConstantTreeNode betaTreeNode = null;
-      // check if model has been scaled previously by analyzing the structure of the tree
+      // check if model has a structure that can be re-used for scaling
       var startNode = SymbolicExpressionTree.Root.GetSubtree(0);
-      if (startNode.GetSubtree(0).Symbol is Addition) {
-        var addNode = startNode.GetSubtree(0);
-        if (addNode.SubtreeCount == 2 && addNode.GetSubtree(0).Symbol is Multiplication && addNode.GetSubtree(1).Symbol is Constant) {
-          alphaTreeNode = addNode.GetSubtree(1) as ConstantTreeNode;
-          var mulNode = addNode.GetSubtree(0);
-          if (mulNode.SubtreeCount == 2 && mulNode.GetSubtree(1).Symbol is Constant) {
-            betaTreeNode = mulNode.GetSubtree(1) as ConstantTreeNode;
-          }
+      var addNode = startNode.GetSubtree(0);
+      if (addNode.Symbol is Addition && addNode.SubtreeCount == 2) {
+        alphaTreeNode = (ConstantTreeNode)addNode.Subtrees.LastOrDefault(n => n is ConstantTreeNode);
+        var mulNode = addNode.Subtrees.FirstOrDefault(n => n.Symbol is Multiplication);
+        if (mulNode != null) {
+          betaTreeNode = (ConstantTreeNode)mulNode.Subtrees.LastOrDefault(n => n is ConstantTreeNode);
         }
       }
       // if tree structure matches the structure necessary for linear scaling then reuse the existing tree nodes

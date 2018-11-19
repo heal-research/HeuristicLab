@@ -31,13 +31,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       public bool IsCommutative;
 
       public bool Enabled;
-      public int HashValue;           // the initial (fixed) hash value for this individual node/data
-      public int CalculatedHashValue; // the calculated hash value (taking into account the children hash values)
+      public ulong HashValue;           // the initial (fixed) hash value for this individual node/data
+      public ulong CalculatedHashValue; // the calculated hash value (taking into account the children hash values)
 
       public Action<HashNode<T>[], int> Simplify;
       public IComparer<T> Comparer;
 
-      public bool IsChild => Arity == 0;
+      public bool IsLeaf => Arity == 0;
 
       public HashNode(IComparer<T> comparer) {
         Comparer = comparer;
@@ -66,7 +66,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
 
       public override int GetHashCode() {
-        return CalculatedHashValue;
+        return (int)CalculatedHashValue;
       }
 
       public static bool operator ==(HashNode<T> a, HashNode<T> b) {
@@ -78,24 +78,33 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
     }
 
-    public static int ComputeHash<T>(this HashNode<T>[] nodes, int i) where T : class {
+    public static ulong ComputeHash<T>(this HashNode<T>[] nodes, int i, Func<byte[], ulong> hashFunction) where T : class {
       var node = nodes[i];
-      var hashes = new int[node.Arity + 1];
-      int idx = 0;
-      foreach (int c in nodes.IterateChildren(i)) {
-        hashes[idx++] = nodes[c].CalculatedHashValue;
+      const int size = sizeof(ulong);
+      var hashes = new ulong[node.Arity + 1];
+      var bytes = new byte[(node.Arity + 1) * size];
+
+      for (int j = i - 1, k = 0; k < node.Arity; ++k, j -= 1 + nodes[j].Size) {
+        hashes[k] = nodes[j].CalculatedHashValue;
       }
-      hashes[idx] = node.HashValue;
-      return HashUtil.JSHash(hashes);
+      hashes[node.Arity] = node.HashValue;
+      Buffer.BlockCopy(hashes, 0, bytes, 0, bytes.Length);
+      return hashFunction(bytes);
     }
 
-    public static HashNode<T>[] Simplify<T>(this HashNode<T>[] nodes) where T : class {
-      var reduced = nodes.Reduce();
-      reduced.Sort();
+    // set the enabled state for the whole subtree rooted at this node 
+    public static void SetEnabled<T>(this HashNode<T>[] nodes, int i, bool enabled) where T : class {
+      nodes[i].Enabled = enabled;
+      for (int j = i - nodes[i].Size; j < i; ++j)
+        nodes[j].Enabled = enabled;
+    }
+
+    public static HashNode<T>[] Simplify<T>(this HashNode<T>[] nodes, Func<byte[], ulong> hashFunction) where T : class {
+      var reduced = nodes.UpdateNodeSizes().Reduce().Sort(hashFunction);
 
       for (int i = 0; i < reduced.Length; ++i) {
         var node = reduced[i];
-        if (node.IsChild) {
+        if (node.IsLeaf) {
           continue;
         }
         node.Simplify?.Invoke(reduced, i);
@@ -116,16 +125,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           simplified[j++] = node;
         }
       }
-      simplified.UpdateNodeSizes();
-      simplified.Sort();
-      return simplified;
+      return simplified.UpdateNodeSizes().Reduce().Sort(hashFunction);
     }
 
-    public static void Sort<T>(this HashNode<T>[] nodes) where T : class {
+    public static HashNode<T>[] Sort<T>(this HashNode<T>[] nodes, Func<byte[], ulong> hashFunction) where T : class {
+      int sort(int a, int b) => nodes[a].CompareTo(nodes[b]);
+
       for (int i = 0; i < nodes.Length; ++i) {
         var node = nodes[i];
 
-        if (node.IsChild) {
+        if (node.IsLeaf) {
           continue;
         }
 
@@ -137,13 +146,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             Array.Sort(nodes, i - size, size);
           } else { // i have some non-terminal children
             var sorted = new HashNode<T>[size];
-            var indices = nodes.IterateChildren(i);
-            Array.Sort(indices, (a, b) => nodes[a].CompareTo(nodes[b]));
+            var indices = new int[node.Arity];
+            for (int j = i - 1, k = 0; k < node.Arity; j -= 1 + nodes[j].Size, ++k) {
+              indices[k] = j;
+            }
+            Array.Sort(indices, sort);
 
             int idx = 0;
             foreach (var j in indices) {
               var child = nodes[j];
-              if (!child.IsChild) { // must copy complete subtree
+              if (!child.IsLeaf) { // must copy complete subtree
                 Array.Copy(nodes, j - child.Size, sorted, idx, child.Size);
                 idx += child.Size;
               }
@@ -152,16 +164,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             Array.Copy(sorted, 0, nodes, i - size, size);
           }
         }
-        node.CalculatedHashValue = nodes.ComputeHash(i);
+        node.CalculatedHashValue = nodes.ComputeHash(i, hashFunction);
       }
+      return nodes;
     }
 
     /// <summary>
-    /// Get a function node's child indices from left to right
+    /// Get a function node's child indicest
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="nodes"></param>
-    /// <param name="i"></param>
+    /// <typeparam name="T">The data type encapsulated by a hash node</typeparam>
+    /// <param name="nodes">An array of hash nodes with up-to-date node sizes</param>
+    /// <param name="i">The index in the array of hash nodes of the node whose children we want to iterate</param>
     /// <returns>An array containing child indices</returns>
     public static int[] IterateChildren<T>(this HashNode<T>[] nodes, int i) where T : class {
       var node = nodes[i];
@@ -169,75 +182,54 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var children = new int[arity];
       var idx = i - 1;
       for (int j = 0; j < arity; ++j) {
-        while (!nodes[idx].Enabled) { --idx; } // skip nodes possibly disabled by simplification
         children[j] = idx;
         idx -= 1 + nodes[idx].Size;
       }
       return children;
     }
 
-    public static void UpdateNodeSizes<T>(this HashNode<T>[] nodes) where T : class {
+    public static HashNode<T>[] UpdateNodeSizes<T>(this HashNode<T>[] nodes) where T : class {
       for (int i = 0; i < nodes.Length; ++i) {
         var node = nodes[i];
-        if (node.IsChild) {
+        if (node.IsLeaf) {
           node.Size = 0;
           continue;
         }
         node.Size = node.Arity;
-        foreach (int j in nodes.IterateChildren(i)) {
+
+        for (int j = i - 1, k = 0; k < node.Arity; j -= 1 + nodes[j].Size, ++k) {
           node.Size += nodes[j].Size;
         }
       }
+      return nodes;
     }
 
-    /// <summary>
-    /// Reduce nodes of the same type according to arithmetic rules
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="g">The given grammar (controls symbol arities)</param>
-    /// <param name="nodes">The node array</param>
-    /// <param name="i">Parent index</param>
-    /// <param name="j">Child index</param>
-    private static void Reduce<T>(this HashNode<T>[] nodes, int i, int j) where T : class {
-      var p = nodes[i]; // parent node
-      var c = nodes[j]; // child node
-
-      if (c.IsChild)
-        return;
-
-      foreach (int k in nodes.IterateChildren(j)) {
-        if (nodes[k].IsChild) continue;
-        nodes.Reduce(j, k);
-      }
-
-      // handle commutative symbols (add, mul) 
-      if (p.IsCommutative && p.HashValue == c.HashValue) {
-        c.Enabled = false;
-        p.Arity += c.Arity - 1;
-      }
-    }
-
-    public static HashNode<T>[] Reduce<T>(this HashNode<T>[] nodes) where T : class {
-      nodes.UpdateNodeSizes();
-      int i = nodes.Length - 1;
-      foreach (int c in nodes.IterateChildren(i)) {
-        if (nodes[c].IsChild) continue;
-        nodes.Reduce(i, c);
-      }
+    private static HashNode<T>[] Reduce<T>(this HashNode<T>[] nodes) where T : class {
       int count = 0;
-      foreach (var node in nodes) {
-        if (!node.Enabled) { ++count; }
+      for (int i = 0; i < nodes.Length; ++i) {
+        var node = nodes[i];
+        if (node.IsLeaf || !node.IsCommutative) {
+          continue;
+        }
+
+        var arity = node.Arity;
+        for (int j = i - 1, k = 0; k < arity; j -= 1 + nodes[j].Size, ++k) {
+          if (node.HashValue == nodes[j].HashValue) {
+            nodes[j].Enabled = false;
+            node.Arity += nodes[j].Arity - 1;
+            ++count;
+          }
+        }
       }
       if (count == 0)
         return nodes;
 
       var reduced = new HashNode<T>[nodes.Length - count];
-      i = 0;
+      var idx = 0;
       foreach (var node in nodes) {
-        if (node.Enabled) { reduced[i++] = node; }
+        if (node.Enabled) { reduced[idx++] = node; }
       }
-      reduced.UpdateNodeSizes();
-      return reduced;
+      return reduced.UpdateNodeSizes();
     }
   }
 }

@@ -106,6 +106,11 @@
       <HintPath>..\..\bin\AutoDiff-1.0.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="HeuristicLab.Problems.DataAnalysis.Symbolic.NativeInterpreter-0.1, Version=0.0.0.1, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\HeuristicLab.Problems.DataAnalysis.Symbolic.NativeInterpreter-0.1.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -122,6 +127,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Analyzers\SymbolicDataAnalysisBottomUpDiversityAnalyzer.cs" />
+    <Compile Include="Analyzers\SymbolicDataAnalysisBuildingBlockAnalyzer.cs" />
     <Compile Include="Analyzers\SymbolicDataAnalysisSingleObjectivePruningAnalyzer.cs" />
     <Compile Include="Analyzers\SymbolicDataAnalysisSingleObjectiveValidationParetoBestSolutionAnalyzer.cs" />
     <Compile Include="Analyzers\SymbolicDataAnalysisSingleObjectiveTrainingParetoBestSolutionAnalyzer.cs" />
@@ -140,6 +146,7 @@
     <Compile Include="Converters\TreeSimplifier.cs" />
     <Compile Include="Converters\DerivativeCalculator.cs" />
     <Compile Include="Converters\TreeToAutoDiffTermConverter.cs" />
+    <Compile Include="Crossovers\SymbolicDataAnalysisExpressionDiversityPreservingCrossover.cs" />
     <Compile Include="Formatters\InfixExpressionFormatter.cs" />
     <Compile Include="Formatters\TSQLExpressionFormatter.cs" />
     <Compile Include="Formatters\SymbolicDataAnalysisExpressionMathematicaFormatter.cs" />
@@ -153,7 +160,11 @@
     <Compile Include="Interfaces\IModelBacktransformator.cs" />
     <Compile Include="Interfaces\IVariableTreeNode.cs" />
     <Compile Include="Interfaces\IVariableSymbol.cs" />
+    <Compile Include="Interpreter\BatchInstruction.cs" />
+    <Compile Include="Interpreter\BatchOperations.cs" />
     <Compile Include="Interpreter\SymbolicDataAnalysisExpressionCompiledTreeInterpreter.cs" />
+    <Compile Include="Interpreter\SymbolicDataAnalysisExpressionTreeBatchInterpreter.cs" />
+    <Compile Include="Interpreter\SymbolicDataAnalysisExpressionTreeNativeInterpreter.cs" />
     <Compile Include="SymbolicDataAnalysisExpressionTreeSimplificationOperator.cs" />
     <Compile Include="SymbolicDataAnalysisModelComplexityCalculator.cs" />
     <Compile Include="SymbolicDataAnalysisExpressionPruningOperator.cs" />

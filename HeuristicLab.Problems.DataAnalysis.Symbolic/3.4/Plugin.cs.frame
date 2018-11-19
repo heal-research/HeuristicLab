@@ -36,6 +36,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [PluginDependency("HeuristicLab.Core", "3.3")]
   [PluginDependency("HeuristicLab.Data", "3.3")]
   [PluginDependency("HeuristicLab.Encodings.SymbolicExpressionTreeEncoding", "3.4")]
+  [PluginDependency("HeuristicLab.NativeInterpreter", "0.1")]
   [PluginDependency("HeuristicLab.Operators", "3.3")]
   [PluginDependency("HeuristicLab.Optimization", "3.3")]
   [PluginDependency("HeuristicLab.Optimization.Operators", "3.3")]
