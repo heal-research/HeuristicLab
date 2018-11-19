@@ -226,18 +226,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       return simplified.ToTree();
     }
 
-    public static void SimplifyAddition(HashNode<ISymbolicExpressionTreeNode>[] nodes, int i) {
+    public static void SimplifyAddition(ref HashNode<ISymbolicExpressionTreeNode>[] nodes, int i) {
       // simplify additions of terms by eliminating terms with the same symbol and hash
       var children = nodes.IterateChildren(i);
 
+      // we always assume the child nodes are sorted
       var curr = children[0];
       var node = nodes[i];
 
       foreach (var j in children.Skip(1)) {
         if (nodes[j] == nodes[curr]) {
-          for (int k = j - nodes[j].Size; k <= j; ++k) {
-            nodes[k].Enabled = false;
-          }
+          nodes.SetEnabled(j, false);
           node.Arity--;
         } else {
           curr = j;
@@ -249,7 +248,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     // simplify multiplications by reducing constants and div terms  
-    public static void SimplifyMultiplication(HashNode<ISymbolicExpressionTreeNode>[] nodes, int i) {
+    public static void SimplifyMultiplication(ref HashNode<ISymbolicExpressionTreeNode>[] nodes, int i) {
       var node = nodes[i];
       var children = nodes.IterateChildren(i);
 
@@ -297,11 +296,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
     }
 
-    public static void SimplifyDivision(HashNode<ISymbolicExpressionTreeNode>[] nodes, int i) {
+    public static void SimplifyDivision(ref HashNode<ISymbolicExpressionTreeNode>[] nodes, int i) {
       var node = nodes[i];
       var children = nodes.IterateChildren(i);
 
-      if (children.All(x => nodes[x].Data.Symbol is Constant)) {
+      var tmp = nodes;
+
+      if (children.All(x => tmp[x].Data.Symbol is Constant)) {
         var v = ((ConstantTreeNode)nodes[children.First()].Data).Value;
         if (node.Arity == 1) {
           v = 1 / v;
@@ -332,7 +333,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
     }
 
-    public static void SimplifyUnaryNode(HashNode<ISymbolicExpressionTreeNode>[] nodes, int i) {
+    public static void SimplifyUnaryNode(ref HashNode<ISymbolicExpressionTreeNode>[] nodes, int i) {
       // check if the child of the unary node is a constant, then the whole node can be simplified
       var parent = nodes[i];
       var child = nodes[i - 1];
@@ -347,9 +348,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
     }
 
-    public static void SimplifyBinaryNode(HashNode<ISymbolicExpressionTreeNode>[] nodes, int i) {
+    public static void SimplifyBinaryNode(ref HashNode<ISymbolicExpressionTreeNode>[] nodes, int i) {
       var children = nodes.IterateChildren(i);
-      if (children.All(x => nodes[x].Data.Symbol is Constant)) {
+      var tmp = nodes;
+      if (children.All(x => tmp[x].Data.Symbol is Constant)) {
         foreach (var j in children) {
           nodes[j].Enabled = false;
         }
