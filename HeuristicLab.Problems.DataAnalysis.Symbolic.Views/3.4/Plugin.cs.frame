@@ -41,7 +41,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
   [PluginDependency("HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views", "3.4")]
   [PluginDependency("HeuristicLab.MainForm", "3.3")]
   [PluginDependency("HeuristicLab.MainForm.WindowsForms", "3.3")]
-  [PluginDependency("HeuristicLab.MathJax", "1.1")]
+  [PluginDependency("HeuristicLab.MathJax", "1.2")]
   [PluginDependency("HeuristicLab.Optimization","3.3")]
   [PluginDependency("HeuristicLab.Problems.DataAnalysis", "3.4")]
   [PluginDependency("HeuristicLab.Problems.DataAnalysis.Symbolic", "3.4")]
