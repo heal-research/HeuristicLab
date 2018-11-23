@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using System.Windows.Forms;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -77,11 +78,9 @@ namespace HeuristicLab.Optimizer {
         IView view = MainFormManager.MainForm.ShowContent(content);
         if (view == null)
           ErrorHandling.ShowErrorDialog("There is no view for the loaded item. It cannot be displayed.", new InvalidOperationException("No View Available"));
-      }
-      catch (Exception ex) {
+      } catch (Exception ex) {
         ErrorHandling.ShowErrorDialog((Control)MainFormManager.MainForm, "Cannot open file.", ex);
-      }
-      finally {
+      } finally {
         ((MainForm.WindowsForms.MainForm)MainFormManager.MainForm).ResetAppStartingCursor();
       }
     }
@@ -99,8 +98,9 @@ namespace HeuristicLab.Optimizer {
           SaveAs(view);
         else {
           MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().SetAppStartingCursor();
+          var cancellationTokenSource = new CancellationTokenSource();
           SetSaveOperationProgressInContentViews(content, true);
-          ContentManager.SaveAsync(content, content.Filename, true, SavingCompleted);
+          ContentManager.SaveAsync(content, content.Filename, true, SavingCompleted, cancellationTokenSource.Token);
         }
       }
     }
@@ -131,12 +131,11 @@ namespace HeuristicLab.Optimizer {
 
         if (saveFileDialog.ShowDialog() == DialogResult.OK) {
           MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().SetAppStartingCursor();
-          SetSaveOperationProgressInContentViews(content, true, saveFileDialog.FileName);
-          if (saveFileDialog.FilterIndex == 1) {
-            ContentManager.SaveAsync(content, saveFileDialog.FileName, false, SavingCompleted);
-          } else {
-            ContentManager.SaveAsync(content, saveFileDialog.FileName, true, SavingCompleted);
-          }
+          bool compressed = saveFileDialog.FilterIndex != 1;
+          var cancellationTokenSource = new CancellationTokenSource();
+          SetSaveOperationProgressInContentViews(content, compressed, saveFileDialog.FileName);
+
+          ContentManager.SaveAsync(content, saveFileDialog.FileName, compressed, SavingCompleted, cancellationTokenSource.Token);
         }
       }
     }
@@ -144,11 +143,9 @@ namespace HeuristicLab.Optimizer {
       try {
         if (error != null) throw error;
         MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().UpdateTitle();
-      }
-      catch (Exception ex) {
+      } catch (Exception ex) {
         ErrorHandling.ShowErrorDialog((Control)MainFormManager.MainForm, "Cannot save file.", ex);
-      }
-      finally {
+      } finally {
         SetSaveOperationProgressInContentViews(content, false);
         MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().ResetAppStartingCursor();
       }
@@ -166,5 +163,11 @@ namespace HeuristicLab.Optimizer {
       });
       #endregion
     }
+
+    /* For later merge with #2845
+    private static void AddProgressInContentViews(IStorableContent content, CancellationTokenSource cancellationTokenSource, string fileName = null) {
+      string message = string.Format("Saving to file \"{0}\"...", Path.GetFileName(fileName ?? content.Filename));
+      Progress.Show(content, message, ProgressMode.Indeterminate, cancelRequestHandler: () => cancellationTokenSource.Cancel());
+    }*/
   }
 }
