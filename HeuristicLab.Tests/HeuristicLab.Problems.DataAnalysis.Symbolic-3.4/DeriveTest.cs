@@ -44,7 +44,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       Assert.AreEqual("20", Derive("10*x+20*y", "y"));
       Assert.AreEqual("6", Derive("2*3*x", "x"));
       Assert.AreEqual("(10*'y')", Derive("10*x*y+20*y", "x"));
-      Assert.AreEqual("(1 / (SQR('x') * (-1)))",  Derive("1/x", "x"));
+      Assert.AreEqual("(1 / (SQR('x') * (-1)))", Derive("1/x", "x"));
       Assert.AreEqual("('y' / (SQR('x') * (-1)))", Derive("y/x", "x"));
       Assert.AreEqual("((((-2*'x') + (-1)) * ('a' + 'b')) / SQR(('x' + ('x' * 'x'))))",
         Derive("(a+b)/(x+x*x)", "x"));
@@ -57,22 +57,70 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       Assert.AreEqual("(1 / (SQRT(((3*'x') + 'y')) * 0.666666666666667))", Derive("sqrt(3*x+y)", "x"));   // 3 / (2 * sqrt(3*x+y)) = 1 / ((2/3) * sqrt(3*x+y)) 
       Assert.AreEqual("(COS((3*'x')) * 3)", Derive("sin(3*x)", "x"));
       Assert.AreEqual("(SIN((3*'x')) * (-3))", Derive("cos(3*x)", "x"));
+      Assert.AreEqual("(1 / (SQR(COS((3*'x'))) * 0.333333333333333))", Derive("tan(3*x)", "x")); // diff(tan(f(x)), x) = 1.0 / cos²(f(x)), simplifier puts constant factor into the denominator
 
+      {
+        // special case: Inv(x) using only one argument to the division symbol
+        // f(x) = 1/x
+        var root = new ProgramRootSymbol().CreateTreeNode();
+        var start = new StartSymbol().CreateTreeNode();
+        var div = new Division().CreateTreeNode();
+        var varNode = (VariableTreeNode)(new Variable().CreateTreeNode());
+        varNode.Weight = 1.0;
+        varNode.VariableName = "x";
+        div.AddSubtree(varNode);
+        start.AddSubtree(div);
+        root.AddSubtree(start);
+        var t = new SymbolicExpressionTree(root);
+        Assert.AreEqual("(1 / (SQR('x') * (-1)))",
+          formatter.Format(DerivativeCalculator.Derive(t, "x")));
+      }
 
-      // special case: Inv(x) using only one argument to the division symbol
-      // f(x) = 1/x
-      var root = new ProgramRootSymbol().CreateTreeNode();
-      var start = new StartSymbol().CreateTreeNode();
-      var div = new Division().CreateTreeNode();
-      var varNode = (VariableTreeNode)(new Variable().CreateTreeNode());
-      varNode.Weight = 1.0;
-      varNode.VariableName = "x";
-      div.AddSubtree(varNode);
-      start.AddSubtree(div);
-      root.AddSubtree(start);
-      var t = new SymbolicExpressionTree(root);
-      Assert.AreEqual("(1 / (SQR('x') * (-1)))", 
-        formatter.Format(DerivativeCalculator.Derive(t, "x")));
+      {
+        // special case: multiplication with only one argument
+        var root = new ProgramRootSymbol().CreateTreeNode();
+        var start = new StartSymbol().CreateTreeNode();
+        var mul = new Multiplication().CreateTreeNode();
+        var varNode = (VariableTreeNode)(new Variable().CreateTreeNode());
+        varNode.Weight = 3.0;
+        varNode.VariableName = "x";
+        mul.AddSubtree(varNode);
+        start.AddSubtree(mul);
+        root.AddSubtree(start);
+        var t = new SymbolicExpressionTree(root);
+        Assert.AreEqual("3",
+          formatter.Format(DerivativeCalculator.Derive(t, "x")));
+      }
+
+      {
+        // division with multiple arguments
+        // div(x, y, z) is interpreted as (x / y) / z
+        var root = new ProgramRootSymbol().CreateTreeNode();
+        var start = new StartSymbol().CreateTreeNode();
+        var div = new Division().CreateTreeNode();
+        var varNode1 = (VariableTreeNode)(new Variable().CreateTreeNode());
+        varNode1.Weight = 3.0;
+        varNode1.VariableName = "x";
+        var varNode2 = (VariableTreeNode)(new Variable().CreateTreeNode());
+        varNode2.Weight = 4.0;
+        varNode2.VariableName = "y";
+        var varNode3 = (VariableTreeNode)(new Variable().CreateTreeNode());
+        varNode3.Weight = 5.0;
+        varNode3.VariableName = "z";
+        div.AddSubtree(varNode1); div.AddSubtree(varNode2); div.AddSubtree(varNode3);
+        start.AddSubtree(div);
+        root.AddSubtree(start);
+        var t = new SymbolicExpressionTree(root);
+
+        Assert.AreEqual("(('y' * 'z' * 60) / SQR(('y' * 'z' * 20)))", // actually 3 / (4y  5z) but simplifier is not smart enough to cancel numerator and denominator
+                                                                      // 60 y z / y² z² 20² == 6 / y z 40 == 3 / y z 20
+          formatter.Format(DerivativeCalculator.Derive(t, "x")));
+        Assert.AreEqual("(('x' * 'z' * (-60)) / SQR(('y' * 'z' * 20)))", // actually 3x * -(4 5 z) / (4y 5z)² = -3x / (20 y² z)
+                                                                         // -3 4 5 x z / 4² y² 5² z² = -60 x z / 20² z² y² ==    -60 x z / y² z² 20² 
+          formatter.Format(DerivativeCalculator.Derive(t, "y")));
+        Assert.AreEqual("(('x' * 'y' * (-60)) / SQR(('y' * 'z' * 20)))",
+          formatter.Format(DerivativeCalculator.Derive(t, "z")));
+      }
     }
 
     private string Derive(string expr, string variable) {

@@ -208,6 +208,22 @@ namespace HeuristicLab.Data {
       return readOnlyStringMatrix;
     }
 
+    public string[,] CloneAsMatrix() {
+      return (string[,])matrix.Clone();
+    }
+
+    public virtual IEnumerable<string> GetRow(int row) {
+      for (var col = 0; col < Columns; col++) {
+        yield return matrix[row, col];
+      }
+    }
+
+    public virtual IEnumerable<string> GetColumn(int col) {
+      for (var row = 0; row < Rows; row++) {
+        yield return matrix[row, col];
+      }
+    }
+
     public override string ToString() {
       if (matrix.Length == 0) return "[]";
 
