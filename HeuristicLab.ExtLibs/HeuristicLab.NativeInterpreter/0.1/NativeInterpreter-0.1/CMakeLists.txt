@@ -16,8 +16,8 @@ target_include_directories(hl-native-interpreter-vdt PRIVATE ${PROJECT_SOURCE_DI
 target_compile_features(hl-native-interpreter-vdt PRIVATE cxx_std_17)
 
 if(MSVC)
-    target_compile_options(hl-native-interpreter PRIVATE "/W4" "/Qvec-report:2" "$<$<CONFIG:Release>:/O2>")
-    target_compile_options(hl-native-interpreter-vdt PRIVATE "/W4" "/Qvec-report:2" "$<$<CONFIG:Release>:/O2>")
+    target_compile_options(hl-native-interpreter PRIVATE "/W4" "/Qvec-report:2" "/MT" "$<$<CONFIG:Release>:/O2>")
+    target_compile_options(hl-native-interpreter-vdt PRIVATE "/W4" "/Qvec-report:2" "/MT" "$<$<CONFIG:Release>:/O2>")
     target_compile_definitions(hl-native-interpreter-vdt PRIVATE "USE_VDT")
 else()
     target_compile_options(hl-native-interpreter PRIVATE "-Wall" "-Wextra" "-Werror" "-fopt-info-vec-optimized" "$<$<CONFIG:Release>:-O3;-march=x86-64>")
