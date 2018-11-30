@@ -99,6 +99,11 @@ inline double evaluate(instruction *code, int len, int row) noexcept
                     in.value = std::pow(x, 1 / y);
                     break;
                 }
+            case OpCodes::Square:
+                {
+                    in.value = std::pow(code[in.childIndex].value, 2.);
+                    break;
+                }
             case OpCodes::Sqrt:
                 {
                     in.value = std::sqrt(code[in.childIndex].value);
@@ -222,6 +227,11 @@ inline void evaluate(instruction* code, int len, int* __restrict rows, int rowIn
             case OpCodes::Square:
                 {
                     square(in.buf, code[in.childIndex].buf);
+                    break;
+                }
+            case OpCodes::Sqrt:
+                {
+                    sqrt(in.buf, code[in.childIndex].buf);
                     break;
                 }
         }
