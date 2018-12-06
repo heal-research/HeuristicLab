@@ -23,6 +23,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.PluginInfrastructure;
+using System.Runtime.InteropServices;
+using System.IO;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
   [Plugin("HeuristicLab.Problems.DataAnalysis.Symbolic.Views","Provides views for symbolic data analysis problem classes.", "3.4.11.$WCREV$")]
@@ -46,5 +48,21 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
   [PluginDependency("HeuristicLab.Problems.DataAnalysis", "3.4")]
   [PluginDependency("HeuristicLab.Problems.DataAnalysis.Symbolic", "3.4")]
   public class HeuristicLabProblemsDataAnalysisSymbolicViewsPlugin : PluginBase {
+    // HeuristicLab is marked with zone identifier 'Internet' after download.
+    // This propagates to all extracted files and can be checked in the file properties.
+    // IE prevents execution of MathJax JavaScript inside of untrusted html
+    // Therefore we need to programmatically unblock the displayModelFrame.html file before extracting.
+    // see http://engram404.net/programmatically-unblocking-downloaded-files/
+
+    // for removing the Zone.Identifier alternative NTFS stream (effectively unblocking the file)
+    [DllImport("kernel32.dll", SetLastError = true)]
+    private static extern bool DeleteFile(string lpFileName);
+
+    public override void OnLoad() {
+      base.OnLoad();
+
+      // unblock mathjax.zip () 
+      DeleteFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "displayModelFrame.html:Zone.Identifier"));
+    }
   }
 }
