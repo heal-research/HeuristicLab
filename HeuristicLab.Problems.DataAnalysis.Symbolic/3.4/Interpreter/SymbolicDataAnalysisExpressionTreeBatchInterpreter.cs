@@ -110,6 +110,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             }
 
           case OpCodes.Root: {
+              Load(instr.buf, code[c].buf);
               Root(instr.buf, code[c].buf);
               break;
             }
