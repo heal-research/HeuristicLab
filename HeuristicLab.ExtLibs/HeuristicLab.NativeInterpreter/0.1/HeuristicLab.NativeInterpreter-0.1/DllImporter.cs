@@ -14,7 +14,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public IntPtr data;
   }
 
-  public class NativeWrapper {
+  public static class NativeWrapper {
     private const string x86dll = "hl-native-interpreter-msvc-x86.dll";
     private const string x64dll = "hl-native-interpreter-msvc-x64.dll";
 
