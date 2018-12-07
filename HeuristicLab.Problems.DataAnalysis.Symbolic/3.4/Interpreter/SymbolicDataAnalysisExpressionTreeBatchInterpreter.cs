@@ -119,8 +119,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
               break;
             }
 
+          case OpCodes.Cube: {
+              Cube(instr.buf, code[c].buf);
+              break;
+            }
+          case OpCodes.CubeRoot: {
+              CubeRoot(instr.buf, code[c].buf);
+              break;
+            }
+
           case OpCodes.Power: {
-              Pow(instr.buf, code[c].buf);
+              Load(instr.buf, code[c].buf);
+              Pow(instr.buf, code[c + 1].buf);
               break;
             }
 
@@ -146,6 +156,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
           case OpCodes.Tan: {
               Tan(instr.buf, code[c].buf);
+              break;
+            }
+          case OpCodes.Absolute: {
+              Absolute(instr.buf, code[c].buf);
+              break;
+            }
+          case OpCodes.AnalyticalQuotient: {
+              Load(instr.buf, code[c].buf);
+              AnalyticQuotient(instr.buf, code[c].buf);
               break;
             }
         }
