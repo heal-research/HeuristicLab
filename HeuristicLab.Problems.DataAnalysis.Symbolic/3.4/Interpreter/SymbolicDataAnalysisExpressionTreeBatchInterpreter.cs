@@ -111,7 +111,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
           case OpCodes.Root: {
               Load(instr.buf, code[c].buf);
-              Root(instr.buf, code[c].buf);
+              Root(instr.buf, code[c + 1].buf);
               break;
             }
 
@@ -193,6 +193,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var code = Compile(tree, dataset, OpCodes.MapSymbolToOpCode);
       var remainingRows = rows.Length % BATCHSIZE;
       var roundedTotal = rows.Length - remainingRows;
+
+      // TODO: evaluated solutions are not counted
 
       var result = new double[rows.Length];
 
