@@ -101,7 +101,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     public static void Absolute(double[] a, double[] b) {
       for (int i = 0; i < BATCHSIZE; ++i)
-        a[i] = Math.Abs(a[i]);
+        a[i] = Math.Abs(b[i]);
     }
 
     public static void AnalyticQuotient(double[] a, double[] b) {

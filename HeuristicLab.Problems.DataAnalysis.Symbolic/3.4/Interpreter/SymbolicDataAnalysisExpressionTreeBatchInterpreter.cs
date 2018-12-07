@@ -158,13 +158,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
               Tan(instr.buf, code[c].buf);
               break;
             }
+
           case OpCodes.Absolute: {
               Absolute(instr.buf, code[c].buf);
               break;
             }
+
           case OpCodes.AnalyticalQuotient: {
               Load(instr.buf, code[c].buf);
-              AnalyticQuotient(instr.buf, code[c].buf);
+              AnalyticQuotient(instr.buf, code[c + 1].buf);
               break;
             }
         }
