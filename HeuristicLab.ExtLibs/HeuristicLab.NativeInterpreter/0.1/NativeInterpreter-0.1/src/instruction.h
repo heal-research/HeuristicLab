@@ -22,7 +22,11 @@ enum OpCodes : uint8_t
     Power = 22,
     Root = 23,
     Square = 28,
-    Sqrt = 29
+    Sqrt = 29,
+    Absolute = 48,
+    AnalyticalQuotient = 49,
+    Cube = 50,
+    CubeRoot = 51
 };
 
 struct instruction
