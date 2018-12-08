@@ -100,14 +100,9 @@ inline double evaluate(instruction *code, int len, int row) noexcept
                     in.value = std::pow(x, 1 / y);
                     break;
                 }
-            case OpCodes::Square:
-                {
-                    in.value = std::pow(code[in.childIndex].value, 2.);
-                    break;
-                }
             case OpCodes::Sqrt:
                 {
-                    in.value = std::sqrt(code[in.childIndex].value);
+                    in.value = std::pow(code[in.childIndex].value, 1./2.);
                     break;
                 }
             case OpCodes::Square:
@@ -127,7 +122,7 @@ inline double evaluate(instruction *code, int len, int row) noexcept
                 }
             case OpCodes::Absolute:
                 {
-                    in.value = std::abs(code[in.childIndex].value);
+                    in.value = std::fabs(code[in.childIndex].value);
                     break;
                 }
             case OpCodes::AnalyticalQuotient:
@@ -261,7 +256,7 @@ inline void evaluate(instruction* code, int len, int* __restrict rows, int rowIn
                 }
             case OpCodes::Sqrt:
                 {
-                    sqrt(in.buf, code[in.childIndex].buf);
+                    pow(in.buf, code[in.childIndex].buf, 1./2.);
                     break;
                 }
             case OpCodes::CubeRoot:
