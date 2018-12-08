@@ -222,8 +222,12 @@
     <Compile Include="Symbols\Bessel.cs" />
     <Compile Include="Symbols\BinaryFactorVariable.cs" />
     <Compile Include="Symbols\BinaryFactorVariableTreeNode.cs" />
+    <Compile Include="Symbols\AnalyticalQuotient.cs" />
+    <Compile Include="Symbols\Cube.cs" />
     <Compile Include="Symbols\FactorVariableTreeNode.cs" />
     <Compile Include="Symbols\FactorVariable.cs" />
+    <Compile Include="Symbols\Absolute.cs" />
+    <Compile Include="Symbols\CubeRoot.cs" />
     <Compile Include="Symbols\VariableBase.cs" />
     <Compile Include="Symbols\VariableTreeNodeBase.cs" />
     <Compile Include="Symbols\Xor.cs" />

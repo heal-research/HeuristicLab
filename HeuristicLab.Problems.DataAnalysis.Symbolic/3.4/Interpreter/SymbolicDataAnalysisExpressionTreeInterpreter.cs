@@ -202,6 +202,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             }
             return sum / currentInstr.nArguments;
           }
+        case OpCodes.Absolute: {
+            return Math.Abs(Evaluate(dataset, ref row, state));
+          }
         case OpCodes.Cos: {
             return Math.Cos(Evaluate(dataset, ref row, state));
           }
@@ -214,6 +217,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         case OpCodes.Square: {
             return Math.Pow(Evaluate(dataset, ref row, state), 2);
           }
+        case OpCodes.Cube: {
+            return Math.Pow(Evaluate(dataset, ref row, state), 3);
+          }
         case OpCodes.Power: {
             double x = Evaluate(dataset, ref row, state);
             double y = Math.Round(Evaluate(dataset, ref row, state));
@@ -221,6 +227,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           }
         case OpCodes.SquareRoot: {
             return Math.Sqrt(Evaluate(dataset, ref row, state));
+          }
+        case OpCodes.CubeRoot: {
+            return Math.Pow(Evaluate(dataset, ref row, state), 1.0 / 3.0);
           }
         case OpCodes.Root: {
             double x = Evaluate(dataset, ref row, state);
@@ -339,6 +348,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             var x = Evaluate(dataset, ref row, state);
             if (double.IsNaN(x)) return double.NaN;
             else return alglib.besseli0(x);
+          }
+
+        case OpCodes.AnalyticalQuotient: {
+            var x1 = Evaluate(dataset, ref row, state);
+            var x2 = Evaluate(dataset, ref row, state);
+            return x1 / Math.Pow(1 + x2 * x2, 0.5);
           }
         case OpCodes.IfThenElse: {
             double condition = Evaluate(dataset, ref row, state);

@@ -41,10 +41,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   /// S             = Expr EOF
   /// Expr          = ['-' | '+'] Term { '+' Term | '-' Term }
   /// Term          = Fact { '*' Fact | '/' Fact }
-  /// Fact          = '(' Expr ')' 
-  ///                 | 'LAG' '(' varId ',' ['+' | '-' ] number ')' 
-  ///                 | funcId '(' ArgList ')' 
-  ///                 | VarExpr | number
+  /// Fact          = SimpleFact [ '^' SimpleFact ]
+  /// SimpleFact    = '(' Expr ')'
+  ///                 | '{' Expr '}'
+  ///                 | 'LAG' '(' varId ',' ['+' | '-' ] number ')
+  ///                 | funcId '(' ArgList ')'
+  ///                 | VarExpr
+  ///                 | number
   /// ArgList       = Expr { ',' Expr }
   /// VarExpr       = varId OptFactorPart
   /// OptFactorPart = [ ('=' varVal | '[' ['+' | '-' ] number {',' ['+' | '-' ] number } ']' ) ]
@@ -94,12 +97,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         { "/", new Division()},
         { "*", new Multiplication()},
         { "-", new Subtraction()},
+        { "^", new Power() },
+        { "ABS", new Absolute() },
         { "EXP", new Exponential()},
         { "LOG", new Logarithm()},
         { "POW", new Power()},
         { "ROOT", new Root()},
         { "SQR", new Square() },
         { "SQRT", new SquareRoot() },
+        { "CUBE", new Cube() },
+        { "CUBEROOT", new CubeRoot() },
         { "SIN",new Sine()},
         { "COS", new Cosine()},
         { "TAN", new Tangent()},
@@ -118,6 +125,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         { "PSI", new Psi()},
         { "DAWSON", new Dawson()},
         { "EXPINT", new ExponentialIntegralEi()},
+        { "AQ", new AnalyticalQuotient() },
         { "MEAN", new Average()},
         { "IF", new IfThenElse()},
         { "GT", new GreaterThan()},
@@ -166,8 +174,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             && (str[pos] != '-' || str[pos - 1] == 'e' || str[pos - 1] == 'E')
             && str[pos] != '*'
             && str[pos] != '/'
+            && str[pos] != '^'
             && str[pos] != ')'
             && str[pos] != ']'
+            && str[pos] != '}'
             && str[pos] != ',') {
             sb.Append(str[pos]);
             pos++;
@@ -226,6 +236,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         } else if (str[pos] == '*') {
           pos++;
           yield return new Token { TokenType = TokenType.Operator, strVal = "*" };
+        } else if (str[pos] == '^') {
+          pos++;
+          yield return new Token { TokenType = TokenType.Operator, strVal = "^" };
         } else if (str[pos] == '(') {
           pos++;
           yield return new Token { TokenType = TokenType.LeftPar, strVal = "(" };
@@ -238,6 +251,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         } else if (str[pos] == ']') {
           pos++;
           yield return new Token { TokenType = TokenType.RightBracket, strVal = "]" };
+        } else if (str[pos] == '{') {
+          pos++;
+          yield return new Token { TokenType = TokenType.LeftPar, strVal = "{" };
+        } else if (str[pos] == '}') {
+          pos++;
+          yield return new Token { TokenType = TokenType.RightPar, strVal = "}" };
         } else if (str[pos] == '=') {
           pos++;
           yield return new Token { TokenType = TokenType.Eq, strVal = "=" };
@@ -359,24 +378,46 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
     }
 
-    /// Fact          = '(' Expr ')' 
-    ///                 | 'LAG' '(' varId ',' ['+' | '-' ] number ')' 
-    ///                 | funcId '(' ArgList ')' 
-    ///                 | VarExpr | number
+    // Fact = SimpleFact ['^' SimpleFact]
+    private ISymbolicExpressionTreeNode ParseFact(Queue<Token> tokens) {
+      var expr = ParseSimpleFact(tokens);
+      var next = tokens.Peek();
+      if (next.TokenType == TokenType.Operator && next.strVal == "^") {
+        tokens.Dequeue(); // skip;
+
+        var p = GetSymbol("^").CreateTreeNode();
+        p.AddSubtree(expr);
+        p.AddSubtree(ParseSimpleFact(tokens));
+        expr = p;
+      }
+      return expr;
+    }
+
+
+    /// SimpleFact   = '(' Expr ')' 
+    ///                 | '{' Expr '}'
+    ///                 | 'LAG' '(' varId ',' ['+' | '-' ] number ')'
+    ///                 | funcId '(' ArgList ')
+    ///                 | VarExpr
+    ///                 | number
     /// ArgList       = Expr { ',' Expr }
     /// VarExpr       = varId OptFactorPart
     /// OptFactorPart = [ ('=' varVal | '[' ['+' | '-' ] number {',' ['+' | '-' ] number } ']' ) ]
     /// varId         =  ident | ' ident ' | " ident "
     /// varVal        =  ident | ' ident ' | " ident "
     /// ident         =  '_' | letter { '_' | letter | digit }
-    private ISymbolicExpressionTreeNode ParseFact(Queue<Token> tokens) {
+    private ISymbolicExpressionTreeNode ParseSimpleFact(Queue<Token> tokens) {
       var next = tokens.Peek();
       if (next.TokenType == TokenType.LeftPar) {
-        tokens.Dequeue();
+        var initPar = tokens.Dequeue(); // match par type
         var expr = ParseExpr(tokens);
         var rPar = tokens.Dequeue();
         if (rPar.TokenType != TokenType.RightPar)
-          throw new ArgumentException("expected )");
+          throw new ArgumentException("expected closing parenthesis");
+        if (initPar.strVal == "(" && rPar.strVal == "}")
+          throw new ArgumentException("expected closing )");
+        if (initPar.strVal == "{" && rPar.strVal == ")")
+          throw new ArgumentException("expected closing }");
         return expr;
       } else if (next.TokenType == TokenType.Identifier) {
         var idTok = tokens.Dequeue();
@@ -423,6 +464,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           var rPar = tokens.Dequeue();
           if (rPar.TokenType != TokenType.RightPar)
             throw new ArgumentException("expected )");
+
 
           return funcNode;
         } else {

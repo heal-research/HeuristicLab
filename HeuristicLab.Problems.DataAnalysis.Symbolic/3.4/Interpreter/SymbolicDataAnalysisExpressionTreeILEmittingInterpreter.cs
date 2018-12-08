@@ -49,6 +49,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private static MethodInfo power = typeof(Math).GetMethod("Pow", new Type[] { typeof(double), typeof(double) });
     private static MethodInfo round = typeof(Math).GetMethod("Round", new Type[] { typeof(double) });
     private static MethodInfo sqrt = typeof(Math).GetMethod("Sqrt", new Type[] { typeof(double) });
+    private static MethodInfo abs = typeof(Math).GetMethod("Abs", new Type[] { typeof(double) });
 
     private static MethodInfo airyA = thisType.GetMethod("AiryA", new Type[] { typeof(double) });
     private static MethodInfo airyB = thisType.GetMethod("AiryB", new Type[] { typeof(double) });
@@ -263,6 +264,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             il.Emit(System.Reflection.Emit.OpCodes.Div);
             return;
           }
+        case OpCodes.Absolute: {
+            CompileInstructions(il, state, ds);
+            il.Emit(System.Reflection.Emit.OpCodes.Call, abs);
+            return;
+          }
         case OpCodes.Cos: {
             CompileInstructions(il, state, ds);
             il.Emit(System.Reflection.Emit.OpCodes.Call, cos);
@@ -310,9 +316,21 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             il.Emit(System.Reflection.Emit.OpCodes.Call, power);
             return;
           }
+        case OpCodes.Cube: {
+            CompileInstructions(il, state, ds);
+            il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, 3.0);
+            il.Emit(System.Reflection.Emit.OpCodes.Call, power);
+            return;
+          }
         case OpCodes.SquareRoot: {
             CompileInstructions(il, state, ds);
             il.Emit(System.Reflection.Emit.OpCodes.Call, sqrt);
+            return;
+          }
+        case OpCodes.CubeRoot: {
+            CompileInstructions(il, state, ds);
+            il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, 1.0 / 3.0);
+            il.Emit(System.Reflection.Emit.OpCodes.Call, power);
             return;
           }
         case OpCodes.AiryA: {
@@ -388,6 +406,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         case OpCodes.SineIntegral: {
             CompileInstructions(il, state, ds);
             il.Emit(System.Reflection.Emit.OpCodes.Call, sinIntegral);
+            return;
+          }
+        case OpCodes.AnalyticalQuotient: {
+            CompileInstructions(il, state, ds); // x1
+            CompileInstructions(il, state, ds); // x2
+
+            il.Emit(System.Reflection.Emit.OpCodes.Dup);
+            il.Emit(System.Reflection.Emit.OpCodes.Mul); // x2*x2
+            il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, 1.0);
+            il.Emit(System.Reflection.Emit.OpCodes.Mul); // 1+x2*x2
+            il.Emit(System.Reflection.Emit.OpCodes.Call, sqrt);
+            il.Emit(System.Reflection.Emit.OpCodes.Div);
             return;
           }
         case OpCodes.IfThenElse: {

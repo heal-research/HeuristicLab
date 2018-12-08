@@ -11,6 +11,7 @@ inline double evaluate(instruction *code, int len, int row) noexcept
         instruction &in = code[i];
         switch (in.opcode)
         {
+            case OpCodes::Const: /* nothing to do */ break;
             case OpCodes::Var:
                 {
                     in.value = in.weight * in.data[row];
@@ -99,16 +100,39 @@ inline double evaluate(instruction *code, int len, int row) noexcept
                     in.value = std::pow(x, 1 / y);
                     break;
                 }
+            case OpCodes::Sqrt:
+                {
+                    in.value = std::pow(code[in.childIndex].value, 1./2.);
+                    break;
+                }
             case OpCodes::Square:
                 {
                     in.value = std::pow(code[in.childIndex].value, 2.);
                     break;
                 }
-            case OpCodes::Sqrt:
+            case OpCodes::CubeRoot:
                 {
-                    in.value = std::sqrt(code[in.childIndex].value);
+                    in.value = std::pow(code[in.childIndex].value, 1./3.);
                     break;
                 }
+            case OpCodes::Cube:
+                {
+                    in.value = std::pow(code[in.childIndex].value, 3.);
+                    break;
+                }
+            case OpCodes::Absolute:
+                {
+                    in.value = std::fabs(code[in.childIndex].value);
+                    break;
+                }
+            case OpCodes::AnalyticalQuotient:
+                {
+                    double x = code[in.childIndex].value;
+                    double y = code[in.childIndex + 1].value;
+                    in.value = x / std::sqrt(1 + y*y);
+                    break;
+                }
+            default: in.value = NAN;
         }
     }
     return code[0].value;
@@ -135,6 +159,7 @@ inline void evaluate(instruction* code, int len, int* __restrict rows, int rowIn
                     load_data(in, rows, rowIndex, batchSize); // buffer data
                     break;
                 }
+            case OpCodes::Const: /* nothing to do because buffers for constants are already set */ break;
             case OpCodes::Add:
                 {
                     load(in.buf, code[in.childIndex].buf);
@@ -226,15 +251,37 @@ inline void evaluate(instruction* code, int len, int* __restrict rows, int rowIn
                 }
             case OpCodes::Square:
                 {
-                    square(in.buf, code[in.childIndex].buf);
+                    pow(in.buf, code[in.childIndex].buf, 2.);
                     break;
                 }
             case OpCodes::Sqrt:
                 {
-                    sqrt(in.buf, code[in.childIndex].buf);
+                    pow(in.buf, code[in.childIndex].buf, 1./2.);
                     break;
                 }
-        }
+            case OpCodes::CubeRoot:
+                {
+                    pow(in.buf, code[in.childIndex].buf, 1./3.);
+                    break;
+                }
+            case OpCodes::Cube:
+                {
+                    pow(in.buf, code[in.childIndex].buf, 3.);
+                    break;
+                }
+            case OpCodes::Absolute:
+                {
+                    abs(in.buf, code[in.childIndex].buf);
+                    break;
+                }
+            case OpCodes::AnalyticalQuotient:
+                {
+                    load(in.buf, code[in.childIndex].buf);
+                    analytical_quotient(in.buf, code[in.childIndex + 1].buf);
+                    break;
+                }
+            default: load(in.buf, NAN);
+            }
     }
 }
 
