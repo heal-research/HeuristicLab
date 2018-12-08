@@ -45,7 +45,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public const byte AND = 13;
     public const byte OR = 14;
     public const byte NOT = 15;
-    public const byte XOR = 45;
 
 
     public const byte Average = 16;
@@ -82,6 +81,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public const byte Norm = 42;
     public const byte Erf = 43;
     public const byte Bessel = 44;
+    public const byte XOR = 45;
     public const byte FactorVariable = 46;
     public const byte BinaryFactorVariable = 47;
     public const byte Absolute = 48;
