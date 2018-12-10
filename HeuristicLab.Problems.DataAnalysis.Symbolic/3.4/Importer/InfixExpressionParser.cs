@@ -101,7 +101,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         { "ABS", new Absolute() },
         { "EXP", new Exponential()},
         { "LOG", new Logarithm()},
-        { "POW", new Power()},
+        { "POW", new Power() },
         { "ROOT", new Root()},
         { "SQR", new Square() },
         { "SQRT", new SquareRoot() },
