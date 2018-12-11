@@ -27,7 +27,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableClass]
   [Item("Analytic Quotient", "The analytic quotient function aq(a,b) = a / sqrt(b²+1) can be used as an " +
     "alternative to protected division. See H. Drieberg and P. Rocket, The Use of an Analytic Quotient Operator" +
-    " in Genetic Programming. IEEE Transactions on Evolutionary Computation, Vol. 17, No. 1, February 2013, pp 146 -- 152")]
+    " in Genetic Programming. IEEE Transactions on Evolutionary Computation, Vol. 17, No. 1, February 2013, pp. 146 -- 152")]
   public sealed class AnalyticQuotient : Symbol {
     private const int minimumArity = 2;
     private const int maximumArity = 2;
@@ -47,6 +47,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
     public AnalyticQuotient() : base("AnalyticQuotient", "The analytic quotient function aq(a,b) = a / sqrt(b²+1) can be used as an " +
     "alternative to protected division. See H. Drieberg and P. Rocket, The Use of an Analytic Quotient Operator" +
-    " in Genetic Programming. IEEE Transactions on Evolutionary Computation, Vol. 17, No. 1, February 2013, pp 146 -- 152") { }
+    " in Genetic Programming. IEEE Transactions on Evolutionary Computation, Vol. 17, No. 1, February 2013, pp. 146 -- 152") { }
   }
 }
