@@ -212,6 +212,7 @@
     <Compile Include="SymbolicDataAnalysisProblem.cs" />
     <Compile Include="SymbolicDataAnalysisSolutionImpactValuesCalculator.cs" />
     <Compile Include="Symbols\Addition.cs" />
+    <Compile Include="Symbols\AnalyticQuotient.cs" />
     <Compile Include="Symbols\And.cs" />
     <Compile Include="Symbols\AutoregressiveVariable.cs" />
     <Compile Include="Symbols\Average.cs" />
@@ -222,7 +223,6 @@
     <Compile Include="Symbols\Bessel.cs" />
     <Compile Include="Symbols\BinaryFactorVariable.cs" />
     <Compile Include="Symbols\BinaryFactorVariableTreeNode.cs" />
-    <Compile Include="Symbols\AnalyticalQuotient.cs" />
     <Compile Include="Symbols\Cube.cs" />
     <Compile Include="Symbols\FactorVariableTreeNode.cs" />
     <Compile Include="Symbols\FactorVariable.cs" />
