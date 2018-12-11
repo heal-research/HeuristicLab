@@ -506,7 +506,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
                 Expression.Assign(result, Expression.Call(Bessel, arg))),
               result);
           }
-        case OpCodes.AnalyticalQuotient: {
+        case OpCodes.AnalyticQuotient: {
             var x1 = MakeExpr(node.GetSubtree(0), variableIndices, row, columns);
             var x2 = MakeExpr(node.GetSubtree(1), variableIndices, row, columns);
             return Expression.Divide(x1, 

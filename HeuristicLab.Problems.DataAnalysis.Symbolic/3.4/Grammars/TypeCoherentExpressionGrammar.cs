@@ -88,7 +88,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var norm = new Norm();
       var psi = new Psi();
       var sineIntegral = new SineIntegral();
-      var analyticalQuotient = new AnalyticalQuotient();
+      var analyticalQuotient = new AnalyticQuotient();
 
       var @if = new IfThenElse();
       var gt = new GreaterThan();

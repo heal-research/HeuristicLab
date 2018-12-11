@@ -47,7 +47,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var sub = new Subtraction();
       var mul = new Multiplication();
       var div = new Division();
-      var aq = new AnalyticalQuotient();
+      var aq = new AnalyticQuotient();
       var mean = new Average();
       var sin = new Sine();
       var cos = new Cosine();

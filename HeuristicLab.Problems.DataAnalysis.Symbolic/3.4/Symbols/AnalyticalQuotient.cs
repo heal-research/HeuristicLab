@@ -25,8 +25,10 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableClass]
-  [Item("Analytical Quotient", "TODO")]
-  public sealed class AnalyticalQuotient : Symbol {
+  [Item("Analytic Quotient", "The analytic quotient function aq(a,b) = a / sqrt(b²+1) can be used as an " +
+    "alternative to protected division. See H. Drieberg and P. Rocket, The Use of an Analytic Quotient Operator" +
+    " in Genetic Programming. IEEE Transactions on Evolutionary Computation, Vol. 17, No. 1, February 2013, pp 146 -- 152")]
+  public sealed class AnalyticQuotient : Symbol {
     private const int minimumArity = 2;
     private const int maximumArity = 2;
 
@@ -38,11 +40,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     [StorableConstructor]
-    private AnalyticalQuotient(bool deserializing) : base(deserializing) { }
-    private AnalyticalQuotient(AnalyticalQuotient original, Cloner cloner) : base(original, cloner) { }
+    private AnalyticQuotient(bool deserializing) : base(deserializing) { }
+    private AnalyticQuotient(AnalyticQuotient original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new AnalyticalQuotient(this, cloner);
+      return new AnalyticQuotient(this, cloner);
     }
-    public AnalyticalQuotient() : base("AnalyticalQuotient", "TODO") { }
+    public AnalyticQuotient() : base("AnalyticalQuotient", "The analytic quotient function aq(a,b) = a / sqrt(b²+1) can be used as an " +
+    "alternative to protected division. See H. Drieberg and P. Rocket, The Use of an Analytic Quotient Operator" +
+    " in Genetic Programming. IEEE Transactions on Evolutionary Computation, Vol. 17, No. 1, February 2013, pp 146 -- 152") { }
   }
 }

@@ -42,7 +42,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private static readonly Root rootSymbol = new Root();
     private static readonly Square sqrSymbol = new Square();
     private static readonly SquareRoot sqrtSymbol = new SquareRoot();
-    private static readonly AnalyticalQuotient aqSymbol = new AnalyticalQuotient();
+    private static readonly AnalyticQuotient aqSymbol = new AnalyticQuotient();
     private static readonly Cube cubeSymbol = new Cube();
     private static readonly CubeRoot cubeRootSymbol = new CubeRoot();
     private static readonly Power powSymbol = new Power();
@@ -185,7 +185,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     private static bool IsAnalyticalQuotient(ISymbolicExpressionTreeNode node) {
-      return node.Symbol is AnalyticalQuotient;
+      return node.Symbol is AnalyticQuotient;
     }
 
     // boolean

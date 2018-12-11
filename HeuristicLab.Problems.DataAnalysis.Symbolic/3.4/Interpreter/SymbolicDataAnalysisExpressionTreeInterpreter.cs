@@ -350,7 +350,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             else return alglib.besseli0(x);
           }
 
-        case OpCodes.AnalyticalQuotient: {
+        case OpCodes.AnalyticQuotient: {
             var x1 = Evaluate(dataset, ref row, state);
             var x2 = Evaluate(dataset, ref row, state);
             return x1 / Math.Pow(1 + x2 * x2, 0.5);

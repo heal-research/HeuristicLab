@@ -408,7 +408,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             il.Emit(System.Reflection.Emit.OpCodes.Call, sinIntegral);
             return;
           }
-        case OpCodes.AnalyticalQuotient: {
+        case OpCodes.AnalyticQuotient: {
             CompileInstructions(il, state, ds); // x1
             CompileInstructions(il, state, ds); // x2
 

@@ -85,7 +85,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public const byte FactorVariable = 46;
     public const byte BinaryFactorVariable = 47;
     public const byte Absolute = 48;
-    public const byte AnalyticalQuotient = 49;
+    public const byte AnalyticQuotient = 49;
     public const byte Cube = 50;
     public const byte CubeRoot = 51;
 
@@ -140,7 +140,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       { typeof(FactorVariable), OpCodes.FactorVariable },
       { typeof(BinaryFactorVariable), OpCodes.BinaryFactorVariable },
       { typeof(Absolute), OpCodes.Absolute },
-      { typeof(AnalyticalQuotient), OpCodes.AnalyticalQuotient },
+      { typeof(AnalyticQuotient), OpCodes.AnalyticQuotient },
       { typeof(Cube), OpCodes.Cube },
       { typeof(CubeRoot), OpCodes.CubeRoot }
     };

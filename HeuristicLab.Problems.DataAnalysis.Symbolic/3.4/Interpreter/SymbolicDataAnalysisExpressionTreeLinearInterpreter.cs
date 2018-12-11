@@ -214,7 +214,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           }
           if (instr.nArguments == 1) p = 1.0 / p;
           instr.value = p;
-        } else if (instr.opCode == OpCodes.AnalyticalQuotient) {
+        } else if (instr.opCode == OpCodes.AnalyticQuotient) {
           var x1 = code[instr.childIndex].value;
           var x2 = code[instr.childIndex + 1].value;
           instr.value = x1 / Math.Sqrt(1 + x2 * x2);

@@ -221,7 +221,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         var x1 = ConvertToAutoDiff(node.GetSubtree(0));
         return abs(x1);
       }
-      if (node.Symbol is AnalyticalQuotient) {
+      if (node.Symbol is AnalyticQuotient) {
         var x1 = ConvertToAutoDiff(node.GetSubtree(0));
         var x2 = ConvertToAutoDiff(node.GetSubtree(1));
         return x1 / (TermBuilder.Power(1 + x2 * x2, 0.5));
@@ -324,7 +324,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           !(n.Symbol is Norm) &&
           !(n.Symbol is StartSymbol) &&
           !(n.Symbol is Absolute) &&
-          !(n.Symbol is AnalyticalQuotient) &&
+          !(n.Symbol is AnalyticQuotient) &&
           !(n.Symbol is Cube) &&
           !(n.Symbol is CubeRoot)
         select n).Any();

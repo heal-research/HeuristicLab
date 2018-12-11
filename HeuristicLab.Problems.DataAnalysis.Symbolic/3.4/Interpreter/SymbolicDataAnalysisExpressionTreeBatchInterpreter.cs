@@ -165,7 +165,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
               break;
             }
 
-          case OpCodes.AnalyticalQuotient: {
+          case OpCodes.AnalyticQuotient: {
               Load(instr.buf, code[c].buf);
               AnalyticQuotient(instr.buf, code[c + 1].buf);
               break;

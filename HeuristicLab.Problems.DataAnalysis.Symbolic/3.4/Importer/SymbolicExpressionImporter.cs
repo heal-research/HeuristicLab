@@ -67,7 +67,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         {"PSI", new Psi()},
         {"DAWSON", new Dawson()},
         {"EXPINT", new ExponentialIntegralEi()},
-        {"AQ", new AnalyticalQuotient() },
+        {"AQ", new AnalyticQuotient() },
         {"MEAN", new Average()},
         {"IF", new IfThenElse()},
         {">", new GreaterThan()},
