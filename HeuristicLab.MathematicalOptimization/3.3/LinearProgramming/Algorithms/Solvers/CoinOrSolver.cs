@@ -21,7 +21,6 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
 using HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms.Solvers.Base;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -32,20 +31,7 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms.Sol
   public class CoinOrSolver : IncrementalSolver {
 
     public CoinOrSolver() {
-      programmingTypeParam.Value.ValueChanged += (sender, args) => {
-        if (((EnumValue<LinearProgrammingType>)sender).Value == LinearProgrammingType.LinearProgramming) {
-          incrementalityParam.Value = new BoolValue(true);
-          incrementalityParam.Value.ValueChanged += (s, a) => {
-            if (((BoolValue)s).Value) {
-              qualityUpdateIntervalParam.Value = new TimeSpanValue(qualityUpdateIntervalParam.Value.Value);
-            } else {
-              qualityUpdateIntervalParam.Value = (TimeSpanValue)qualityUpdateIntervalParam.Value.AsReadOnly();
-            }
-          };
-        } else {
-          incrementalityParam.Value = (BoolValue)new BoolValue().AsReadOnly();
-        }
-      };
+      Parameters.Remove(solverSpecificParametersParam);
     }
 
     protected CoinOrSolver(CoinOrSolver original, Cloner cloner)
@@ -57,9 +43,15 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms.Sol
       : base(deserializing) {
     }
 
+    public override bool SupportsPause => false;
+
+    public override bool SupportsQualityUpdate => ProblemType == ProblemType.LinearProgramming;
+
+    public override bool SupportsStop => false;
+
     protected override OptimizationProblemType OptimizationProblemType =>
-      LinearProgrammingType == LinearProgrammingType.LinearProgramming
-        ? OptimizationProblemType.CLP_LINEAR_PROGRAMMING
-        : OptimizationProblemType.CBC_MIXED_INTEGER_PROGRAMMING;
+      ProblemType == ProblemType.LinearProgramming
+        ? OptimizationProblemType.ClpLinearProgramming
+        : OptimizationProblemType.CbcMixedIntegerProgramming;
   }
 }

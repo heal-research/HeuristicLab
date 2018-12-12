@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -32,7 +33,12 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms.Sol
   public class GlopSolver : IncrementalSolver {
 
     public GlopSolver() {
-      programmingTypeParam.Value = (EnumValue<LinearProgrammingType>)programmingTypeParam.Value.AsReadOnly();
+      problemTypeParam.Value = (EnumValue<ProblemType>)problemTypeParam.Value.AsReadOnly();
+      SolverSpecificParameters.Value =
+        "# for file format, see Protocol Buffers text format (https://developers.google.com/protocol-buffers/docs/overview#whynotxml)" + Environment.NewLine +
+        "# for parameters, see https://github.com/google/or-tools/blob/v6.10/ortools/glop/parameters.proto" + Environment.NewLine +
+        "# example:" + Environment.NewLine +
+        "# random_seed: 10" + Environment.NewLine;
     }
 
     [StorableConstructor]
@@ -44,11 +50,7 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms.Sol
       : base(original, cloner) {
     }
 
-    public override bool SupportsPause => true;
-
-    public override bool SupportsStop => true;
-
     protected override OptimizationProblemType OptimizationProblemType =>
-              OptimizationProblemType.GLOP_LINEAR_PROGRAMMING;
+      OptimizationProblemType.GlopLinearProgramming;
   }
 }

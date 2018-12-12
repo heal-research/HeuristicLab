@@ -19,6 +19,8 @@
  */
 #endregion
 
+using System;
+using System.Threading;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -30,14 +32,19 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms.Sol
 
   [Item("SCIP", "SCIP (http://scip.zib.de/) must be installed and licenced.")]
   [StorableClass]
-  public class ScipSolver : ExternalSolver {
+  public class ScipSolver : ExternalIncrementalSolver {
+
+    private TimeSpan timeLimit = TimeSpan.Zero;
 
     public ScipSolver() {
       Parameters.Add(libraryNameParam = new FixedValueParameter<FileValue>(nameof(LibraryName),
         new FileValue { FileDialogFilter = FileDialogFilter, Value = Properties.Settings.Default.ScipLibraryName }));
-      programmingTypeParam.Value =
-        (EnumValue<LinearProgrammingType>)new EnumValue<LinearProgrammingType>(LinearProgrammingType
-          .MixedIntegerProgramming).AsReadOnly();
+      problemTypeParam.Value =
+        (EnumValue<ProblemType>)new EnumValue<ProblemType>(ProblemType.MixedIntegerProgramming).AsReadOnly();
+      SolverSpecificParameters.Value =
+        "# for file format and parameters, see https://scip.zib.de/doc/html/PARAMETERS.php" + Environment.NewLine +
+        "# example:" + Environment.NewLine +
+        "# branching/random/seed = 10" + Environment.NewLine;
     }
 
     [StorableConstructor]
@@ -49,11 +56,13 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms.Sol
       : base(original, cloner) {
     }
 
-    public override bool SupportsPause => true;
-
-    public override bool SupportsStop => true;
-
     protected override OptimizationProblemType OptimizationProblemType =>
-      OptimizationProblemType.SCIP_MIXED_INTEGER_PROGRAMMING;
+      OptimizationProblemType.ScipMixedIntegerProgramming;
+    protected override TimeSpan TimeLimit => timeLimit += QualityUpdateInterval;
+
+    public override void Solve(LinearProgrammingAlgorithm algorithm, CancellationToken cancellationToken) {
+      timeLimit = TimeSpan.Zero;
+      base.Solve(algorithm, cancellationToken);
+    }
   }
 }

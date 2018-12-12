@@ -26,7 +26,7 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Problems {
 
   public interface ILinearProgrammingProblemDefinition {
 
-    void BuildModel(Solver solver);
+    bool BuildModel(Solver solver);
 
     void Analyze(Solver solver, ResultCollection results);
   }

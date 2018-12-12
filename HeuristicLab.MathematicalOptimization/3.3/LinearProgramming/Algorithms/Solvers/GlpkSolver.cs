@@ -33,23 +33,9 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms.Sol
   public class GlpkSolver : ExternalIncrementalSolver {
 
     public GlpkSolver() {
+      Parameters.Remove(solverSpecificParametersParam);
       Parameters.Add(libraryNameParam = new FixedValueParameter<FileValue>(nameof(LibraryName),
         new FileValue { FileDialogFilter = FileDialogFilter, Value = Properties.Settings.Default.GlpkLibraryName }));
-
-      programmingTypeParam.Value.ValueChanged += (sender, args) => {
-        if (((EnumValue<LinearProgrammingType>)sender).Value == LinearProgrammingType.LinearProgramming) {
-          incrementalityParam.Value = new BoolValue(true);
-          incrementalityParam.Value.ValueChanged += (s, a) => {
-            if (((BoolValue)s).Value) {
-              qualityUpdateIntervalParam.Value = new TimeSpanValue(qualityUpdateIntervalParam.Value.Value);
-            } else {
-              qualityUpdateIntervalParam.Value = (TimeSpanValue)qualityUpdateIntervalParam.Value.AsReadOnly();
-            }
-          };
-        } else {
-          incrementalityParam.Value = (BoolValue)new BoolValue().AsReadOnly();
-        }
-      };
     }
 
     protected GlpkSolver(GlpkSolver original, Cloner cloner)
@@ -61,9 +47,13 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms.Sol
       : base(deserializing) {
     }
 
+    public override bool SupportsPause => ProblemType == ProblemType.LinearProgramming; // TODO: pause working for linear programs?
+
+    public override bool SupportsQualityUpdate => ProblemType == ProblemType.LinearProgramming;
+
     protected override OptimizationProblemType OptimizationProblemType =>
-      LinearProgrammingType == LinearProgrammingType.LinearProgramming
-        ? OptimizationProblemType.GLPK_LINEAR_PROGRAMMING
-        : OptimizationProblemType.GLPK_MIXED_INTEGER_PROGRAMMING;
+      ProblemType == ProblemType.LinearProgramming
+        ? OptimizationProblemType.GlpkLinearProgramming
+        : OptimizationProblemType.GlpkMixedIntegerProgramming;
   }
 }

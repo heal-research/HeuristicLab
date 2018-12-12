@@ -22,7 +22,6 @@
 using System;
 using System.Linq;
 using System.Threading;
-using Google.OrTools.LinearSolver;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -34,9 +33,6 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms.Sol
 
   [StorableClass]
   public class IncrementalSolver : Solver, IIncrementalSolver {
-
-    [Storable]
-    protected readonly IValueParameter<BoolValue> incrementalityParam;
 
     [Storable]
     protected readonly IValueParameter<TimeSpanValue> qualityUpdateIntervalParam;
@@ -54,44 +50,40 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms.Sol
     }
 
     public IncrementalSolver() {
-      Parameters.Add(incrementalityParam = new ValueParameter<BoolValue>(nameof(Incrementality),
-        "Advanced usage: incrementality from one solve to the next.",
-        new BoolValue(MPSolverParameters.kDefaultIncrementality == MPSolverParameters.INCREMENTALITY_ON)));
       Parameters.Add(qualityUpdateIntervalParam =
         new ValueParameter<TimeSpanValue>(nameof(QualityUpdateInterval),
-          "Time interval before solver is paused, resuls are retrieved and solver is resumed.",
-          new TimeSpanValue(new TimeSpan(0, 0, 10))));
-
-      incrementalityParam.Value.ValueChanged += (sender, args) => {
-        if (((BoolValue)sender).Value) {
-          qualityUpdateIntervalParam.Value = new TimeSpanValue(qualityUpdateIntervalParam.Value.Value);
+          "Time interval before solver is paused, results are retrieved and solver is resumed. " +
+          "Set to zero for no intermediate results and faster solving.", new TimeSpanValue(new TimeSpan(0, 0, 10))));
+      problemTypeParam.Value.ValueChanged += (sender, args) => {
+        if (SupportsQualityUpdate) {
+          if (!Parameters.Contains(qualityUpdateIntervalParam)) {
+            Parameters.Add(qualityUpdateIntervalParam);
+          }
         } else {
-          qualityUpdateIntervalParam.Value = (TimeSpanValue)qualityUpdateIntervalParam.Value.AsReadOnly();
+          Parameters.Remove(qualityUpdateIntervalParam);
         }
       };
     }
 
     protected IncrementalSolver(IncrementalSolver original, Cloner cloner)
         : base(original, cloner) {
-      programmingTypeParam = cloner.Clone(original.programmingTypeParam);
+      problemTypeParam = cloner.Clone(original.problemTypeParam);
       qualityUpdateIntervalParam = cloner.Clone(original.qualityUpdateIntervalParam);
-      incrementalityParam = cloner.Clone(original.incrementalityParam);
       if (original.qualityPerClock != null)
         qualityPerClock = cloner.Clone(original.qualityPerClock);
     }
 
-    public bool Incrementality {
-      get => incrementalityParam.Value.Value;
-      set => incrementalityParam.Value.Value = value;
-    }
+    public virtual bool SupportsQualityUpdate => true;
 
     public TimeSpan QualityUpdateInterval {
       get => qualityUpdateIntervalParam.Value.Value;
       set => qualityUpdateIntervalParam.Value.Value = value;
     }
 
+    protected virtual TimeSpan TimeLimit => QualityUpdateInterval;
+
     public override void Solve(LinearProgrammingAlgorithm algorithm, CancellationToken cancellationToken) {
-      if (!Incrementality) {
+      if (!SupportsQualityUpdate || QualityUpdateInterval == TimeSpan.Zero) {
         base.Solve(algorithm, cancellationToken);
         return;
       }
@@ -100,22 +92,22 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms.Sol
       var unlimitedRuntime = timeLimit == TimeSpan.Zero;
 
       if (!unlimitedRuntime) {
-        var wallTime = ((TimeSpanValue)algorithm.Results.SingleOrDefault(r => r.Name == "Wall Time")?.Value)?.Value;
-        if (wallTime.HasValue) {
-          timeLimit -= wallTime.Value;
-        }
+        timeLimit -= algorithm.ExecutionTime;
       }
 
       var iterations = (long)timeLimit.TotalMilliseconds / (long)QualityUpdateInterval.TotalMilliseconds;
       var remaining = timeLimit - TimeSpan.FromMilliseconds(iterations * QualityUpdateInterval.TotalMilliseconds);
-      var validResultStatuses = new[] { ResultStatus.NOT_SOLVED, ResultStatus.FEASIBLE };
+      var validResultStatuses = new[] { ResultStatus.NotSolved, ResultStatus.Feasible };
 
       while (unlimitedRuntime || iterations > 0) {
-        base.Solve(algorithm, QualityUpdateInterval, true);
+        if (cancellationToken.IsCancellationRequested)
+          return;
+
+        base.Solve(algorithm, TimeLimit);
         UpdateQuality(algorithm);
 
-        var resultStatus = ((EnumValue<ResultStatus>)algorithm.Results["Result Status"].Value).Value;
-        if (!validResultStatuses.Contains(resultStatus) || cancellationToken.IsCancellationRequested)
+        var resultStatus = ((EnumValue<ResultStatus>)algorithm.Results[nameof(solver.ResultStatus)].Value).Value;
+        if (!validResultStatuses.Contains(resultStatus))
           return;
 
         if (!unlimitedRuntime)
@@ -123,7 +115,7 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms.Sol
       }
 
       if (remaining > TimeSpan.Zero) {
-        base.Solve(algorithm, remaining, true);
+        base.Solve(algorithm, remaining);
         UpdateQuality(algorithm);
       }
     }
@@ -131,18 +123,18 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms.Sol
     private void UpdateQuality(LinearProgrammingAlgorithm algorithm) {
       if (!algorithm.Results.Exists(r => r.Name == "QualityPerClock")) {
         qualityPerClock = new IndexedDataTable<double>("Quality per Clock");
-        qpcRow = new IndexedDataRow<double>("First-hit Graph Objective");
-        bpcRow = new IndexedDataRow<double>("First-hit Graph Bound");
+        qpcRow = new IndexedDataRow<double>("Objective Value");
+        bpcRow = new IndexedDataRow<double>("Bound");
         algorithm.Results.AddOrUpdateResult("QualityPerClock", qualityPerClock);
       }
 
-      var resultStatus = ((EnumValue<ResultStatus>)algorithm.Results["Result Status"].Value).Value;
+      var resultStatus = ((EnumValue<ResultStatus>)algorithm.Results[nameof(solver.ResultStatus)].Value).Value;
 
-      if (new[] { ResultStatus.ABNORMAL, ResultStatus.NOT_SOLVED, ResultStatus.UNBOUNDED }.Contains(resultStatus))
+      if (new[] { ResultStatus.Abnormal, ResultStatus.NotSolved, ResultStatus.Unbounded }.Contains(resultStatus))
         return;
 
-      var objective = ((DoubleValue)algorithm.Results["Best Objective Value"].Value).Value;
-      var bound = ((DoubleValue)algorithm.Results["Best Objective Bound"].Value).Value;
+      var objective = ((DoubleValue)algorithm.Results[$"Best{nameof(solver.ObjectiveValue)}"].Value).Value;
+      var bound = solver.IsMip ? ((DoubleValue)algorithm.Results[$"Best{nameof(solver.ObjectiveBound)}"].Value).Value : double.NaN;
       var time = algorithm.ExecutionTime.TotalSeconds;
 
       if (!qpcRow.Values.Any()) {
@@ -150,16 +142,19 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms.Sol
           qpcRow.Values.Add(Tuple.Create(time, objective));
           qpcRow.Values.Add(Tuple.Create(time, objective));
           qualityPerClock.Rows.Add(qpcRow);
-          algorithm.Results.AddOrUpdateResult("Best Solution Found At", new TimeSpanValue(TimeSpan.FromSeconds(time)));
+          algorithm.Results.AddOrUpdateResult($"Best{nameof(solver.ObjectiveValue)}FoundAt", new TimeSpanValue(TimeSpan.FromSeconds(time)));
         }
       } else {
         var previousBest = qpcRow.Values.Last().Item2;
         qpcRow.Values[qpcRow.Values.Count - 1] = Tuple.Create(time, objective);
         if (!objective.IsAlmost(previousBest)) {
           qpcRow.Values.Add(Tuple.Create(time, objective));
-          algorithm.Results.AddOrUpdateResult("Best Solution Found At", new TimeSpanValue(TimeSpan.FromSeconds(time)));
+          algorithm.Results.AddOrUpdateResult($"Best{nameof(solver.ObjectiveValue)}FoundAt", new TimeSpanValue(TimeSpan.FromSeconds(time)));
         }
       }
+
+      if (!solver.IsMip)
+        return;
 
       if (!bpcRow.Values.Any()) {
         if (!double.IsInfinity(bound) && !double.IsNaN(bound)) {

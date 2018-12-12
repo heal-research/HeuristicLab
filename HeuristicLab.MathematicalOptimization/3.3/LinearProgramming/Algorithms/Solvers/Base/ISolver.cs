@@ -25,11 +25,11 @@ using HeuristicLab.Core;
 namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms.Solvers.Base {
 
   public interface ISolver : IParameterizedNamedItem {
-    LinearProgrammingType LinearProgrammingType { get; set; }
+    ProblemType ProblemType { get; set; }
     bool SupportsPause { get; }
     bool SupportsStop { get; }
 
-    void Interrupt();
+    bool InterruptSolve();
 
     void Reset();
 

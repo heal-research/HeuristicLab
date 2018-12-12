@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -35,11 +36,16 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms.Sol
     public GurobiSolver() {
       Parameters.Add(libraryNameParam = new FixedValueParameter<FileValue>(nameof(LibraryName),
         new FileValue { FileDialogFilter = FileDialogFilter, Value = Properties.Settings.Default.GurobiLibraryName }));
+      SolverSpecificParameters.Value =
+        "# for file format, see http://www.gurobi.com/documentation/8.1/refman/prm_format.html" + Environment.NewLine +
+        "# for parameters, see http://www.gurobi.com/documentation/8.1/refman/parameters.html" + Environment.NewLine +
+        "# example:" + Environment.NewLine +
+        "# Seed 10" + Environment.NewLine;
     }
 
     protected GurobiSolver(GurobiSolver original, Cloner cloner)
           : base(original, cloner) {
-      programmingTypeParam = cloner.Clone(original.programmingTypeParam);
+      problemTypeParam = cloner.Clone(original.problemTypeParam);
     }
 
     [StorableConstructor]
@@ -47,13 +53,9 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms.Sol
       : base(deserializing) {
     }
 
-    public override bool SupportsPause => true;
-
-    public override bool SupportsStop => true;
-
     protected override OptimizationProblemType OptimizationProblemType =>
-              LinearProgrammingType == LinearProgrammingType.LinearProgramming
-        ? OptimizationProblemType.GUROBI_LINEAR_PROGRAMMING
-        : OptimizationProblemType.GUROBI_MIXED_INTEGER_PROGRAMMING;
+      ProblemType == ProblemType.LinearProgramming
+        ? OptimizationProblemType.GurobiLinearProgramming
+        : OptimizationProblemType.GurobiMixedIntegerProgramming;
   }
 }

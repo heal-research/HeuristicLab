@@ -220,6 +220,12 @@
     <Compile Include="StringConvertibleMatrixView.Designer.cs">
       <DependentUpon>StringConvertibleMatrixView.cs</DependentUpon>
     </Compile>
+    <Compile Include="TextValueView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TextValueView.Designer.cs">
+      <DependentUpon>TextValueView.cs</DependentUpon>
+    </Compile>
     <Compile Include="StringConvertibleValueView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -289,6 +295,11 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="TextValueView.resx">
+      <DependentUpon>TextValueView.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -32,7 +32,7 @@ using HeuristicLab.Scripting;
 
 namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Problems {
 
-  [Item("Single-objective Problem Definition Script", "Script that defines the parameter vector and evaluates the solution for a programmable problem.")]
+  [Item("Linear/Mixed Integer Programming Problem Definition Script", "Script that defines the model and evaluates the solution for a linear/mixed integer programming problem.")]
   [StorableClass]
   public sealed class LinearProgrammingProblemDefinitionScript : Script, ILinearProgrammingProblemDefinition, IStorableContent {
     private bool SuppressEvents { get; set; }
@@ -143,7 +143,7 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Problems {
       return new LinearProgrammingProblemDefinitionScript(this, cloner);
     }
 
-    public void BuildModel(Solver solver) => CompiledProblemDefinition.BuildModel(solver);
+    public bool BuildModel(Solver solver) => CompiledProblemDefinition.BuildModel(solver);
 
     public void Analyze(Solver solver, ResultCollection results) => CompiledProblemDefinition.Analyze(solver, results);
   }

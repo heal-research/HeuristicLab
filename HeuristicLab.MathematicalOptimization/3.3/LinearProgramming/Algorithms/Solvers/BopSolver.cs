@@ -19,9 +19,12 @@
  */
 #endregion
 
+using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms.Solvers.Base;
+using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms.Solvers {
@@ -31,7 +34,13 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms.Sol
   public class BopSolver : IncrementalSolver {
 
     public BopSolver() {
-      Parameters.Remove(programmingTypeParam);
+      Parameters.Remove(problemTypeParam);
+      Parameters.Add(new FixedValueParameter<StringValue>(nameof(ProblemType), new StringValue("ZeroOneProgramming").AsReadOnly()));
+      SolverSpecificParameters.Value =
+        "# for file format, see Protocol Buffers text format (https://developers.google.com/protocol-buffers/docs/overview#whynotxml)" + Environment.NewLine +
+        "# for parameters, see https://github.com/google/or-tools/blob/v6.10/ortools/bop/bop_parameters.proto" + Environment.NewLine +
+        "# example:" + Environment.NewLine +
+        "# random_seed: 10" + Environment.NewLine;
     }
 
     protected BopSolver(BopSolver original, Cloner cloner)
@@ -43,11 +52,7 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms.Sol
       : base(deserializing) {
     }
 
-    public override bool SupportsPause => true;
-
-    public override bool SupportsStop => true;
-
     protected override OptimizationProblemType OptimizationProblemType =>
-              OptimizationProblemType.BOP_INTEGER_PROGRAMMING;
+               OptimizationProblemType.BopIntegerProgramming;
   }
 }

@@ -34,8 +34,9 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms {
 
-  [Item("Linear/Mixed Integer Programming (LP/MIP)", "")]
-  [Creatable(CreatableAttribute.Categories.SingleSolutionAlgorithms)]
+  [Item("Linear/Mixed Integer Programming (LP/MIP)", "Linear/mixed integer programming implemented in several solvers. " +
+    "See also https://dev.heuristiclab.com/trac.fcgi/wiki/Documentation/Howto/LinearMixedIntegerProgramming")] // TODO: update link
+  [Creatable(CreatableAttribute.Categories.ExactAlgorithms)]
   [StorableClass]
   public class LinearProgrammingAlgorithm : BasicAlgorithm {
 
@@ -52,7 +53,7 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms {
     private readonly IFixedValueParameter<DoubleValue> primalToleranceParam;
 
     [Storable]
-    private readonly IFixedValueParameter<DoubleValue> relativeGapToleranceParam;
+    private readonly IFixedValueParameter<PercentValue> relativeGapToleranceParam;
 
     [Storable]
     private readonly IFixedValueParameter<BoolValue> scalingParam;
@@ -64,15 +65,26 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms {
     private readonly IFixedValueParameter<TimeSpanValue> timeLimitParam;
 
     public IConstrainedValueParameter<ISolver> SolverParameter {
-      get { return solverParam; }
-      set { solverParam = value; }
+      get => solverParam;
+      set => solverParam = value;
     }
 
     public LinearProgrammingAlgorithm() {
       Parameters.Add(solverParam =
         new ConstrainedValueParameter<ISolver>(nameof(Solver), "The solver used to solve the model."));
-      Parameters.Add(relativeGapToleranceParam = new FixedValueParameter<DoubleValue>(nameof(RelativeGapTolerance),
-        "Limit for relative MIP gap.", new DoubleValue(MPSolverParameters.kDefaultRelativeMipGap)));
+
+      ISolver defaultSolver;
+      solverParam.ValidValues.Add(new BopSolver());
+      solverParam.ValidValues.Add(defaultSolver = new CoinOrSolver());
+      solverParam.ValidValues.Add(new CplexSolver());
+      solverParam.ValidValues.Add(new GlopSolver());
+      solverParam.ValidValues.Add(new GlpkSolver());
+      solverParam.ValidValues.Add(new GurobiSolver());
+      solverParam.ValidValues.Add(new ScipSolver());
+      solverParam.Value = defaultSolver;
+
+      Parameters.Add(relativeGapToleranceParam = new FixedValueParameter<PercentValue>(nameof(RelativeGapTolerance),
+        "Limit for relative MIP gap.", new PercentValue(MPSolverParameters.kDefaultRelativeMipGap)));
       Parameters.Add(timeLimitParam = new FixedValueParameter<TimeSpanValue>(nameof(TimeLimit),
         "Limit for runtime. Set to zero for unlimited runtime.", new TimeSpanValue()));
       Parameters.Add(presolveParam =
@@ -91,14 +103,6 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms {
         "Advanced usage: enable or disable matrix scaling.", new BoolValue()));
 
       Problem = new LinearProgrammingProblem();
-
-      solverParam.ValidValues.Add(new CoinOrSolver());
-      solverParam.ValidValues.Add(new CplexSolver());
-      solverParam.ValidValues.Add(new GlpkSolver());
-      solverParam.ValidValues.Add(new GurobiSolver());
-      solverParam.ValidValues.Add(new ScipSolver());
-      solverParam.ValidValues.Add(new BopSolver());
-      solverParam.ValidValues.Add(new GlopSolver());
     }
 
     [StorableConstructor]
@@ -175,7 +179,7 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms {
 
     public override void Pause() {
       base.Pause();
-      Solver.Interrupt();
+      Solver.InterruptSolve();
     }
 
     public override void Prepare() {
@@ -189,11 +193,7 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms {
 
     public override void Stop() {
       base.Stop();
-      Solver.Interrupt();
-    }
-
-    protected override void Initialize(CancellationToken cancellationToken) {
-      base.Initialize(cancellationToken);
+      Solver.InterruptSolve();
     }
 
     protected override void Run(CancellationToken cancellationToken) => Solver.Solve(this, cancellationToken);

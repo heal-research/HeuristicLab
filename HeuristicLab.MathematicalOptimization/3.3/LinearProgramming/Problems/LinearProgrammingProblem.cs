@@ -20,7 +20,6 @@
 #endregion
 
 using System.Drawing;
-using Google.OrTools.LinearSolver;
 using HeuristicLab.Common;
 using HeuristicLab.Common.Resources;
 using HeuristicLab.Core;
@@ -30,7 +29,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Problems {
 
-  [Item("Linear/Mixed Integer Programming Problem (LP/MIP)", "")]
+  [Item("Linear/Mixed Integer Programming Problem (LP/MIP)", "Represents a linear/mixed integer problem.")]
   [Creatable(CreatableAttribute.Categories.CombinatorialProblems)]
   [StorableClass]
   public class LinearProgrammingProblem : Problem, IProgrammableItem {
@@ -55,8 +54,6 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Problems {
 
     private FixedValueParameter<LinearProgrammingProblemDefinitionScript> LinearProgrammingProblemScriptParameter =>
       (FixedValueParameter<LinearProgrammingProblemDefinitionScript>)Parameters["ProblemScript"];
-
-    public void BuildModel(Solver solver) => ProblemDefinition.BuildModel(solver);
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new LinearProgrammingProblem(this, cloner);

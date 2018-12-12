@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -35,6 +36,12 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms.Sol
     public CplexSolver() {
       Parameters.Add(libraryNameParam = new FixedValueParameter<FileValue>(nameof(LibraryName),
         new FileValue { FileDialogFilter = FileDialogFilter, Value = Properties.Settings.Default.CplexLibraryName }));
+      SolverSpecificParameters.Value =
+        "CPLEX Parameter File Version 12.8.0" + Environment.NewLine +
+        "# for file format, see https://www.ibm.com/support/knowledgecenter/SSSA5P_12.8.0/ilog.odms.cplex.help/CPLEX/FileFormats/topics/PRM.html" + Environment.NewLine +
+        "# for parameters, see https://www.ibm.com/support/knowledgecenter/SSSA5P_12.8.0/ilog.odms.cplex.help/CPLEX/Parameters/topics/introListTopical.html" + Environment.NewLine +
+        "# example:" + Environment.NewLine +
+        "# CPXPARAM_RandomSeed 10" + Environment.NewLine;
     }
 
     [StorableConstructor]
@@ -47,8 +54,8 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms.Sol
     }
 
     protected override OptimizationProblemType OptimizationProblemType =>
-      LinearProgrammingType == LinearProgrammingType.LinearProgramming
-        ? OptimizationProblemType.CPLEX_LINEAR_PROGRAMMING
-        : OptimizationProblemType.CPLEX_MIXED_INTEGER_PROGRAMMING;
+      ProblemType == ProblemType.LinearProgramming
+        ? OptimizationProblemType.CplexLinearProgramming
+        : OptimizationProblemType.CplexMixedIntegerProgramming;
   }
 }

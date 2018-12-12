@@ -114,9 +114,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\bin\Google.OrTools.dll</HintPath>
     </Reference>
-    <Reference Include="HeuristicLab.OrTools-6.9.0-pre, Version=6.8.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+    <Reference Include="HeuristicLab.OrTools-6.10.0, Version=6.10.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\bin\HeuristicLab.OrTools-6.9.0-pre.dll</HintPath>
+      <HintPath>..\..\bin\HeuristicLab.OrTools-6.10.0.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -135,32 +135,33 @@
     <Compile Include="LinearProgramming\Algorithms\Solvers\Base\IIncrementalSolver.cs" />
     <Compile Include="LinearProgramming\Algorithms\Solvers\Base\ExternalIncrementalSolver.cs" />
     <Compile Include="LinearProgramming\Algorithms\Solvers\Base\IncrementalSolver.cs" />
-    <Compile Include="LinearProgramming\Algorithms\LinearProgrammingType.cs" />
+    <Compile Include="LinearProgramming\Algorithms\ProblemType.cs" />
     <Compile Include="LinearProgramming\Algorithms\Solvers\ScipSolver.cs" />
-    <Compile Include="LinearProgramming\BasisStatus.cs" />
+    <Compile Include="LinearProgramming\Wrapper\BasisStatus.cs" />
     <Compile Include="LinearProgramming\Algorithms\Solvers\CplexSolver.cs" />
     <Compile Include="LinearProgramming\Algorithms\Solvers\GurobiSolver.cs" />
     <Compile Include="LinearProgramming\Algorithms\Solvers\Base\ISolver.cs" />
-    <Compile Include="LinearProgramming\IncrementalityValues.cs" />
-    <Compile Include="LinearProgramming\IntegerParam.cs" />
-    <Compile Include="LinearProgramming\LpAlgorithmValues.cs" />
+    <Compile Include="LinearProgramming\Wrapper\IncrementalityValues.cs" />
+    <Compile Include="LinearProgramming\Wrapper\IntegerParam.cs" />
+    <Compile Include="LinearProgramming\Wrapper\LpAlgorithmValues.cs" />
     <Compile Include="LinearProgramming\Problems\ILinearProgrammingProblemDefinition.cs" />
     <Compile Include="LinearProgramming\Algorithms\LinearProgrammingAlgorithm.cs" />
     <Compile Include="LinearProgramming\Problems\LinearProgrammingProblem.cs" />
-    <Compile Include="LinearProgramming\LinearSolverExtensions.cs" />
-    <Compile Include="LinearProgramming\LinearSolver.cs" />
+    <Compile Include="LinearProgramming\Wrapper\LinearSolverExtensions.cs" />
+    <Compile Include="LinearProgramming\Wrapper\LinearSolver.cs" />
     <Compile Include="LinearProgramming\Problems\LinearProgrammingProblemDefintion.cs" />
-    <Compile Include="LinearProgramming\OptimizationProblemType.cs" />
+    <Compile Include="LinearProgramming\Wrapper\OptimizationProblemType.cs" />
     <Compile Include="LinearProgramming\Problems\ProblemDefinitionScriptException.cs" />
     <Compile Include="LinearProgramming\Algorithms\Solvers\Base\Solver.cs" />
-    <Compile Include="LinearProgramming\DoubleParam.cs" />
+    <Compile Include="LinearProgramming\Wrapper\DoubleParam.cs" />
     <Compile Include="LinearProgramming\Views\LinearProgrammingProblemDefinitionScriptView.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="LinearProgramming\Views\LinearProgrammingProblemDefinitionScriptView.Designer.cs">
       <DependentUpon>LinearProgrammingProblemDefinitionScriptView.cs</DependentUpon>
     </Compile>
-    <Compile Include="LinearProgramming\ResultStatus.cs" />
+    <Compile Include="LinearProgramming\Wrapper\ProtoWriteFormat.cs" />
+    <Compile Include="LinearProgramming\Wrapper\ResultStatus.cs" />
     <Compile Include="LinearProgramming\Views\LinearProgrammingProblemView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -174,13 +175,16 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ScriptTemplates.resx</DependentUpon>
     </Compile>
+    <Compile Include="LinearProgramming\Wrapper\SolverResponseStatus.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <None Include="app.config" />
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Plugin.cs.frame" />
     <Compile Include="Plugin.cs" />
     <None Include="Properties\AssemblyInfo.cs.frame" />

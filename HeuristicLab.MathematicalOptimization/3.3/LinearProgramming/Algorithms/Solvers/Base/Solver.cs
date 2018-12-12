@@ -33,14 +33,18 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms.Sol
   public class Solver : ParameterizedNamedItem, ISolver, IDisposable {
 
     [Storable]
-    protected IValueParameter<EnumValue<LinearProgrammingType>> programmingTypeParam;
+    protected IValueParameter<EnumValue<ProblemType>> problemTypeParam;
 
     protected LinearSolver solver;
 
+    [Storable]
+    protected IFixedValueParameter<TextValue> solverSpecificParametersParam;
+
     public Solver() {
-      Parameters.Add(programmingTypeParam =
-        new ValueParameter<EnumValue<LinearProgrammingType>>(nameof(LinearProgrammingType),
-          new EnumValue<LinearProgrammingType>()));
+      Parameters.Add(problemTypeParam =
+        new ValueParameter<EnumValue<ProblemType>>(nameof(ProblemType), new EnumValue<ProblemType>()));
+      Parameters.Add(solverSpecificParametersParam =
+        new FixedValueParameter<TextValue>(nameof(SolverSpecificParameters), new TextValue()));
     }
 
     [StorableConstructor]
@@ -50,23 +54,26 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms.Sol
 
     protected Solver(Solver original, Cloner cloner)
       : base(original, cloner) {
-      programmingTypeParam = cloner.Clone(original.programmingTypeParam);
+      problemTypeParam = cloner.Clone(original.problemTypeParam);
+      solverSpecificParametersParam = cloner.Clone(original.solverSpecificParametersParam);
     }
 
-    public LinearProgrammingType LinearProgrammingType {
-      get => programmingTypeParam.Value.Value;
-      set => programmingTypeParam.Value.Value = value;
+    public ProblemType ProblemType {
+      get => problemTypeParam.Value.Value;
+      set => problemTypeParam.Value.Value = value;
     }
 
+    public TextValue SolverSpecificParameters => solverSpecificParametersParam.Value;
+
+    public virtual bool SupportsPause => true;
+    public virtual bool SupportsStop => true;
     protected virtual OptimizationProblemType OptimizationProblemType { get; }
-    public virtual bool SupportsPause => false;
-    public virtual bool SupportsStop => false;
 
     public override IDeepCloneable Clone(Cloner cloner) => new Solver(this, cloner);
 
     public void Dispose() => solver?.Dispose();
 
-    public void Interrupt() => solver.Stop();
+    public bool InterruptSolve() => solver?.InterruptSolve() ?? false;
 
     public virtual void Reset() {
       solver?.Dispose();
@@ -77,16 +84,16 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms.Sol
       Solve(algorithm);
 
     public virtual void Solve(LinearProgrammingAlgorithm algorithm) =>
-      Solve(algorithm, algorithm.TimeLimit, false);
+      Solve(algorithm, algorithm.TimeLimit);
 
-    public virtual void Solve(LinearProgrammingAlgorithm algorithm, TimeSpan timeLimit, bool incrementality) {
+    public virtual void Solve(LinearProgrammingAlgorithm algorithm, TimeSpan timeLimit) {
       string libraryName = null;
       if (this is IExternalSolver externalSolver)
         libraryName = externalSolver.LibraryName;
 
       if (solver == null) {
-        solver = LinearSolver.CreateSolver(OptimizationProblemType, Name,
-          libraryName, s => algorithm.Problem.ProblemDefinition.BuildModel(s));
+        solver = new LinearSolver(OptimizationProblemType, s => algorithm.Problem.ProblemDefinition.BuildModel(s), Name,
+          libraryName);
       }
 
       solver.TimeLimit = timeLimit;
@@ -96,24 +103,37 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms.Sol
       solver.Presolve = algorithm.Presolve;
       solver.Scaling = algorithm.Scaling;
       solver.LpAlgorithm = algorithm.LpAlgorithm;
-      solver.Incrementality = incrementality;
+      solver.Incrementality = true;
+
+      if (!solver.SetSolverSpecificParameters(SolverSpecificParameters.Value))
+        throw new ArgumentException("Solver specific parameters could not be set.");
 
       solver.Solve();
 
       algorithm.Problem.ProblemDefinition.Analyze(solver.Solver, algorithm.Results);
-      algorithm.Results.AddOrUpdateResult("Result Status", new EnumValue<ResultStatus>(solver.ResultStatus));
-      algorithm.Results.AddOrUpdateResult("Best Objective Value",
+      algorithm.Results.AddOrUpdateResult(nameof(solver.ResultStatus),
+        new EnumValue<ResultStatus>(solver.ResultStatus));
+      algorithm.Results.AddOrUpdateResult($"Best{nameof(solver.ObjectiveValue)}",
         new DoubleValue(solver.ObjectiveValue ?? double.NaN));
-      algorithm.Results.AddOrUpdateResult("Best Objective Bound",
-        new DoubleValue(solver.ObjectiveBound ?? double.NaN));
-      algorithm.Results.AddOrUpdateResult("Absolute Gap", new DoubleValue(solver.AbsoluteGap ?? double.NaN));
-      algorithm.Results.AddOrUpdateResult("Relative Gap", new DoubleValue(solver.RelativeGap ?? double.NaN));
-      algorithm.Results.AddOrUpdateResult("Number of Constraints", new IntValue(solver.NumberOfConstraints));
-      algorithm.Results.AddOrUpdateResult("Number of Variables", new IntValue(solver.NumberOfVariables));
-      algorithm.Results.AddOrUpdateResult("Number of Nodes", new DoubleValue(solver.NumberOfNodes));
-      algorithm.Results.AddOrUpdateResult("Iterations", new DoubleValue(solver.Iterations));
-      algorithm.Results.AddOrUpdateResult("Solver Version", new StringValue(solver.SolverVersion));
-      algorithm.Results.AddOrUpdateResult("Wall Time", new TimeSpanValue(solver.WallTime ?? TimeSpan.Zero));
+
+      if (solver.IsMip) {
+        algorithm.Results.AddOrUpdateResult($"Best{nameof(solver.ObjectiveBound)}",
+          new DoubleValue(solver.ObjectiveBound ?? double.NaN));
+        algorithm.Results.AddOrUpdateResult(nameof(solver.AbsoluteGap),
+          new DoubleValue(solver.AbsoluteGap ?? double.NaN));
+        algorithm.Results.AddOrUpdateResult(nameof(solver.RelativeGap),
+          new PercentValue(solver.RelativeGap ?? double.NaN));
+      }
+
+      algorithm.Results.AddOrUpdateResult(nameof(solver.NumberOfConstraints), new IntValue(solver.NumberOfConstraints));
+      algorithm.Results.AddOrUpdateResult(nameof(solver.NumberOfVariables), new IntValue(solver.NumberOfVariables));
+
+      if (solver.IsMip) {
+        algorithm.Results.AddOrUpdateResult(nameof(solver.NumberOfNodes), new DoubleValue(solver.NumberOfNodes));
+      }
+
+      algorithm.Results.AddOrUpdateResult(nameof(solver.Iterations), new DoubleValue(solver.Iterations));
+      algorithm.Results.AddOrUpdateResult(nameof(solver.SolverVersion), new StringValue(solver.SolverVersion));
     }
   }
 }
