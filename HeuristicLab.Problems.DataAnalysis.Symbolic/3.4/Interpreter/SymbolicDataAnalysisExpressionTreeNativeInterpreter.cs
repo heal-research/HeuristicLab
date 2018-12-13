@@ -58,7 +58,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     [StorableConstructor]
     protected SymbolicDataAnalysisExpressionTreeNativeInterpreter(bool deserializing) : base(deserializing) { }
 
-
     protected SymbolicDataAnalysisExpressionTreeNativeInterpreter(SymbolicDataAnalysisExpressionTreeNativeInterpreter original, Cloner cloner) : base(original, cloner) {
     }
 
@@ -98,14 +97,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     [ThreadStatic]
     private static Dictionary<string, GCHandle> cachedData;
 
+    [ThreadStatic]
+    private IDataset dataset;
+
     public IEnumerable<double> GetSymbolicExpressionTreeValues(ISymbolicExpressionTree tree, IDataset dataset, IEnumerable<int> rows) {
       if (!rows.Any()) return Enumerable.Empty<double>();
 
-      lock (syncRoot) {
-        EvaluatedSolutions++; // increment the evaluated solutions counter
-      }
-
-      if (cachedData == null) {
+      if (cachedData == null || this.dataset != dataset) {
         InitCache(dataset);
       }
 
@@ -115,10 +113,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var result = new double[rowsArray.Length];
 
       NativeWrapper.GetValuesVectorized(code, code.Length, rowsArray, rowsArray.Length, result);
+
+      // when evaluation took place without any error, we can increment the counter
+      lock (syncRoot) {
+        EvaluatedSolutions++;
+      }
+
       return result;
     }
 
     private void InitCache(IDataset dataset) {
+      this.dataset = dataset;
       cachedData = new Dictionary<string, GCHandle>();
       foreach (var v in dataset.DoubleVariables) {
         var values = dataset.GetDoubleValues(v).ToArray();
@@ -134,6 +139,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         }
         cachedData = null;
       }
+      dataset = null;
       EvaluatedSolutions = 0;
     }
   }
