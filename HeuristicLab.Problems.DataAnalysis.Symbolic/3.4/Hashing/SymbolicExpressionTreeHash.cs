@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using static HeuristicLab.Problems.DataAnalysis.Symbolic.SymbolicExpressionHashExtensions;
@@ -69,7 +70,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       return ComputeSimilarity(lh, rh);
     }
 
-    // this will only work if lh and rh are sorted 
+    // this will only work if lh and rh are sorted
     private static double ComputeSimilarity(ulong[] lh, ulong[] rh) {
       double count = 0;
       for (int i = 0, j = 0; i < lh.Length && j < rh.Length;) {
@@ -89,37 +90,37 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       return 2d * count / (lh.Length + rh.Length);
     }
 
-    public static double ComputeAverageSimilarity(ISymbolicExpressionTree[] trees, bool simplify = false, bool strict = false) {
-      var total = (double)trees.Length * (trees.Length - 1) / 2;
+    public static double ComputeAverageSimilarity(IList<ISymbolicExpressionTree> trees, bool simplify = false, bool strict = false) {
+      var total = (double)trees.Count * (trees.Count - 1) / 2;
       double avg = 0;
-      var hashes = new ulong[trees.Length][];
+      var hashes = new ulong[trees.Count][];
       // build hash arrays
-      for (int i = 0; i < trees.Length; ++i) {
+      for (int i = 0; i < trees.Count; ++i) {
         var nodes = trees[i].MakeNodes(strict);
         hashes[i] = (simplify ? nodes.Simplify(HashUtil.DJBHash) : nodes.Sort(HashUtil.DJBHash)).Select(x => x.CalculatedHashValue).ToArray();
         Array.Sort(hashes[i]);
       }
       // compute similarity matrix
-      for (int i = 0; i < trees.Length - 1; ++i) {
-        for (int j = i + 1; j < trees.Length; ++j) {
+      for (int i = 0; i < trees.Count - 1; ++i) {
+        for (int j = i + 1; j < trees.Count; ++j) {
           avg += ComputeSimilarity(hashes[i], hashes[j]);
         }
       }
       return avg / total;
     }
 
-    public static double[,] ComputeSimilarityMatrix(ISymbolicExpressionTree[] trees, bool simplify = false, bool strict = false) {
-      var sim = new double[trees.Length, trees.Length];
-      var hashes = new ulong[trees.Length][];
+    public static double[,] ComputeSimilarityMatrix(IList<ISymbolicExpressionTree> trees, bool simplify = false, bool strict = false) {
+      var sim = new double[trees.Count, trees.Count];
+      var hashes = new ulong[trees.Count][];
       // build hash arrays
-      for (int i = 0; i < trees.Length; ++i) {
+      for (int i = 0; i < trees.Count; ++i) {
         var nodes = trees[i].MakeNodes(strict);
         hashes[i] = (simplify ? nodes.Simplify(HashUtil.DJBHash) : nodes.Sort(HashUtil.DJBHash)).Select(x => x.CalculatedHashValue).ToArray();
         Array.Sort(hashes[i]);
       }
       // compute similarity matrix
-      for (int i = 0; i < trees.Length - 1; ++i) {
-        for (int j = i + 1; j < trees.Length; ++j) {
+      for (int i = 0; i < trees.Count - 1; ++i) {
+        for (int j = i + 1; j < trees.Count; ++j) {
           sim[i, j] = sim[j, i] = ComputeSimilarity(hashes[i], hashes[j]);
         }
       }
@@ -217,7 +218,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     #region tree simplification
     // these simplification methods rely on the assumption that child nodes of the current node have already been simplified
-    // (in other words simplification should be applied in a bottom-up fashion) 
+    // (in other words simplification should be applied in a bottom-up fashion)
     public static ISymbolicExpressionTree Simplify(ISymbolicExpressionTree tree) {
       ulong hashFunction(byte[] bytes) => HashUtil.JSHash(bytes);
       var root = tree.Root.GetSubtree(0).GetSubtree(0);
@@ -247,7 +248,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
     }
 
-    // simplify multiplications by reducing constants and div terms  
+    // simplify multiplications by reducing constants and div terms
     public static void SimplifyMultiplication(ref HashNode<ISymbolicExpressionTreeNode>[] nodes, int i) {
       var node = nodes[i];
       var children = nodes.IterateChildren(i);
