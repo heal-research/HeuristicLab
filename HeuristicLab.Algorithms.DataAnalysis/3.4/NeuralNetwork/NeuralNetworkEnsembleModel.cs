@@ -35,17 +35,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   [Item("NeuralNetworkEnsembleModel", "Represents a neural network ensemble for regression and classification.")]
   public sealed class NeuralNetworkEnsembleModel : ClassificationModel, INeuralNetworkEnsembleModel {
 
+    private object mlpEnsembleLocker = new object();
     private alglib.mlpensemble mlpEnsemble;
-    public alglib.mlpensemble MultiLayerPerceptronEnsemble {
-      get { return mlpEnsemble; }
-      set {
-        if (value != mlpEnsemble) {
-          if (value == null) throw new ArgumentNullException();
-          mlpEnsemble = value;
-          OnChanged(EventArgs.Empty);
-        }
-      }
-    }
 
     public override IEnumerable<string> VariablesUsedForPrediction {
       get { return allowedInputVariables; }
@@ -101,7 +92,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         for (int column = 0; column < columns; column++) {
           x[column] = inputData[row, column];
         }
-        alglib.mlpeprocess(mlpEnsemble, x, ref y);
+        // mlpeprocess writes data in mlpEnsemble and is therefore not thread-safe
+        lock (mlpEnsembleLocker) {
+          alglib.mlpeprocess(mlpEnsemble, x, ref y);
+        }
         yield return y[0];
       }
     }
@@ -118,7 +112,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         for (int column = 0; column < columns; column++) {
           x[column] = inputData[row, column];
         }
-        alglib.mlpeprocess(mlpEnsemble, x, ref y);
+        // mlpeprocess writes data in mlpEnsemble and is therefore not thread-safe
+        lock (mlpEnsembleLocker) {
+          alglib.mlpeprocess(mlpEnsemble, x, ref y);
+        }
         // find class for with the largest probability value
         int maxProbClassIndex = 0;
         double maxProb = y[0];
@@ -138,16 +135,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public override IClassificationSolution CreateClassificationSolution(IClassificationProblemData problemData) {
       return new NeuralNetworkEnsembleClassificationSolution(this, new ClassificationEnsembleProblemData(problemData));
     }
-
-    #region events
-    public event EventHandler Changed;
-    private void OnChanged(EventArgs e) {
-      var handlers = Changed;
-      if (handlers != null)
-        handlers(this, e);
-    }
-    #endregion
-
+   
     #region persistence
     [Storable]
     private string MultiLayerPerceptronEnsembleNetwork {

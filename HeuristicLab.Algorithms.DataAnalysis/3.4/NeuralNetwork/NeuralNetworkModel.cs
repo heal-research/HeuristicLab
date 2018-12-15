@@ -35,17 +35,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   [Item("NeuralNetworkModel", "Represents a neural network for regression and classification.")]
   public sealed class NeuralNetworkModel : ClassificationModel, INeuralNetworkModel {
 
+    private object mlpLocker = new object();
     private alglib.multilayerperceptron multiLayerPerceptron;
-    public alglib.multilayerperceptron MultiLayerPerceptron {
-      get { return multiLayerPerceptron; }
-      set {
-        if (value != multiLayerPerceptron) {
-          if (value == null) throw new ArgumentNullException();
-          multiLayerPerceptron = value;
-          OnChanged(EventArgs.Empty);
-        }
-      }
-    }
 
     public override IEnumerable<string> VariablesUsedForPrediction {
       get { return allowedInputVariables; }
@@ -105,13 +96,16 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         for (int column = 0; column < columns; column++) {
           x[column] = inputData[row, column];
         }
-        alglib.mlpprocess(multiLayerPerceptron, x, ref y);
+        // NOTE: mlpprocess changes data in multiLayerPerceptron and is therefore not thread-save!
+        lock (mlpLocker) {
+          alglib.mlpprocess(multiLayerPerceptron, x, ref y);
+        }
         yield return y[0];
       }
     }
 
     public override IEnumerable<double> GetEstimatedClassValues(IDataset dataset, IEnumerable<int> rows) {
-      double[,] inputData = dataset.ToArray( allowedInputVariables, rows);
+      double[,] inputData = dataset.ToArray(allowedInputVariables, rows);
 
       int n = inputData.GetLength(0);
       int columns = inputData.GetLength(1);
@@ -122,7 +116,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         for (int column = 0; column < columns; column++) {
           x[column] = inputData[row, column];
         }
-        alglib.mlpprocess(multiLayerPerceptron, x, ref y);
+        // NOTE: mlpprocess changes data in multiLayerPerceptron and is therefore not thread-save!
+        lock (mlpLocker) {
+          alglib.mlpprocess(multiLayerPerceptron, x, ref y);
+        }
         // find class for with the largest probability value
         int maxProbClassIndex = 0;
         double maxProb = y[0];
@@ -142,15 +139,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public override IClassificationSolution CreateClassificationSolution(IClassificationProblemData problemData) {
       return new NeuralNetworkClassificationSolution(this, new ClassificationProblemData(problemData));
     }
-
-    #region events
-    public event EventHandler Changed;
-    private void OnChanged(EventArgs e) {
-      var handlers = Changed;
-      if (handlers != null)
-        handlers(this, e);
-    }
-    #endregion
 
     #region persistence
     [Storable]
