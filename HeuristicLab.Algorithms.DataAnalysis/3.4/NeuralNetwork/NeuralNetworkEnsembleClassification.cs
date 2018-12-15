@@ -170,7 +170,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       IEnumerable<string> allowedInputVariables = problemData.AllowedInputVariables;
       IEnumerable<int> rows = problemData.TrainingIndices;
       double[,] inputMatrix = dataset.ToArray(allowedInputVariables.Concat(new string[] { targetVariable }), rows);
-      if (inputMatrix.Cast<double>().Any(x => double.IsNaN(x) || double.IsInfinity(x)))
+      if (inputMatrix.ContainsNanOrInfinity())
         throw new NotSupportedException("Neural network ensemble classification does not support NaN or infinity values in the input dataset.");
 
       int nRows = inputMatrix.GetLength(0);

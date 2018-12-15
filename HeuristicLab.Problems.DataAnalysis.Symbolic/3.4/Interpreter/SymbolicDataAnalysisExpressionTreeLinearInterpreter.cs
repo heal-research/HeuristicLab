@@ -214,12 +214,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           }
           if (instr.nArguments == 1) p = 1.0 / p;
           instr.value = p;
+        } else if (instr.opCode == OpCodes.AnalyticQuotient) {
+          var x1 = code[instr.childIndex].value;
+          var x2 = code[instr.childIndex + 1].value;
+          instr.value = x1 / Math.Sqrt(1 + x2 * x2);
         } else if (instr.opCode == OpCodes.Average) {
           double s = code[instr.childIndex].value;
           for (int j = 1; j != instr.nArguments; ++j) {
             s += code[instr.childIndex + j].value;
           }
           instr.value = s / instr.nArguments;
+        } else if (instr.opCode == OpCodes.Absolute) {
+          instr.value = Math.Abs(code[instr.childIndex].value);
         } else if (instr.opCode == OpCodes.Cos) {
           instr.value = Math.Cos(code[instr.childIndex].value);
         } else if (instr.opCode == OpCodes.Sin) {
@@ -228,12 +234,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           instr.value = Math.Tan(code[instr.childIndex].value);
         } else if (instr.opCode == OpCodes.Square) {
           instr.value = Math.Pow(code[instr.childIndex].value, 2);
+        } else if (instr.opCode == OpCodes.Cube) {
+          instr.value = Math.Pow(code[instr.childIndex].value, 3);
         } else if (instr.opCode == OpCodes.Power) {
           double x = code[instr.childIndex].value;
           double y = Math.Round(code[instr.childIndex + 1].value);
           instr.value = Math.Pow(x, y);
         } else if (instr.opCode == OpCodes.SquareRoot) {
           instr.value = Math.Sqrt(code[instr.childIndex].value);
+        } else if (instr.opCode == OpCodes.CubeRoot) {
+          instr.value = Math.Pow(code[instr.childIndex].value, 1.0 / 3.0);
         } else if (instr.opCode == OpCodes.Root) {
           double x = code[instr.childIndex].value;
           double y = Math.Round(code[instr.childIndex + 1].value);

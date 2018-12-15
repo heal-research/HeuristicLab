@@ -19,6 +19,7 @@
  */
 #endregion
 
+
 namespace HeuristicLab.Problems.DataAnalysis.Views {
   partial class RegressionSolutionVariableImpactsView {
     /// <summary> 
@@ -54,7 +55,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       this.dataPartitionLabel = new System.Windows.Forms.Label();
       this.dataPartitionComboBox = new System.Windows.Forms.ComboBox();
       this.variableImactsArrayView = new HeuristicLab.Data.Views.StringConvertibleArrayView();
-      this.backgroundWorker = new System.ComponentModel.BackgroundWorker();
       this.SuspendLayout();
       // 
       // ascendingCheckBox
@@ -81,6 +81,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       // 
       this.sortByComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.sortByComboBox.FormattingEnabled = true;
+      this.sortByComboBox.Items.AddRange(new object[] {
+            HeuristicLab.Problems.DataAnalysis.Views.RegressionSolutionVariableImpactsView.SortingCriteria.ImpactValue,
+            HeuristicLab.Problems.DataAnalysis.Views.RegressionSolutionVariableImpactsView.SortingCriteria.Occurrence,
+            HeuristicLab.Problems.DataAnalysis.Views.RegressionSolutionVariableImpactsView.SortingCriteria.VariableName});
       this.sortByComboBox.Location = new System.Drawing.Point(407, 3);
       this.sortByComboBox.Name = "sortByComboBox";
       this.sortByComboBox.Size = new System.Drawing.Size(121, 21);
@@ -159,8 +163,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       // 
       // variableImactsArrayView
       // 
-      this.variableImactsArrayView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+      this.variableImactsArrayView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.variableImactsArrayView.Caption = "StringConvertibleArray View";
       this.variableImactsArrayView.Content = null;
@@ -169,11 +173,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       this.variableImactsArrayView.ReadOnly = true;
       this.variableImactsArrayView.Size = new System.Drawing.Size(706, 278);
       this.variableImactsArrayView.TabIndex = 2;
-      // 
-      // backgroundWorker
-      // 
-      this.backgroundWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker_DoWork);
-      this.backgroundWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker_RunWorkerCompleted);
       // 
       // RegressionSolutionVariableImpactsView
       // 
@@ -191,6 +190,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       this.Controls.Add(this.variableImactsArrayView);
       this.Name = "RegressionSolutionVariableImpactsView";
       this.Size = new System.Drawing.Size(712, 365);
+      this.VisibleChanged += new System.EventHandler(this.RegressionSolutionVariableImpactsView_VisibleChanged);
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -208,6 +208,5 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     private System.Windows.Forms.Label sortByLabel;
     private System.Windows.Forms.ComboBox sortByComboBox;
     private System.Windows.Forms.CheckBox ascendingCheckBox;
-    private System.ComponentModel.BackgroundWorker backgroundWorker;
   }
 }

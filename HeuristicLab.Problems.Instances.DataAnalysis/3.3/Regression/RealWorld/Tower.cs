@@ -23,6 +23,7 @@ using System;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
   public class Tower : ResourceRegressionDataDescriptor {
+    public Tower() : base("Tower.txt") { }
     public override string Name { get { return "Tower"; } }
     public override string Description {
       get {

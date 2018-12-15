@@ -90,7 +90,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       double[,] centers;
       int[] xyc;
       double[,] inputMatrix = dataset.ToArray(allowedInputVariables, rows);
-      if (inputMatrix.Cast<double>().Any(x => double.IsNaN(x) || double.IsInfinity(x)))
+      if (inputMatrix.ContainsNanOrInfinity())
         throw new NotSupportedException("k-Means clustering does not support NaN or infinity values in the input dataset.");
 
       alglib.kmeansgenerate(inputMatrix, inputMatrix.GetLength(0), inputMatrix.GetLength(1), k, restarts + 1, out info, out centers, out xyc);

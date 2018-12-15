@@ -45,14 +45,17 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Tests {
         for (int j = random.Next(3); j < 3; j++)
           SubroutineCreater.CreateSubroutine(random, trees[i], 100, 10, 3, 3);
       }
+      var children = new List<ISymbolicExpressionTree>(trees);
+
       Stopwatch stopwatch = new Stopwatch();
       stopwatch.Start();
       for (int gCount = 0; gCount < generations; gCount++) {
         for (int i = 0; i < POPULATION_SIZE; i++) {
           var par0 = (ISymbolicExpressionTree)trees.SampleRandom(random).Clone();
           var par1 = (ISymbolicExpressionTree)trees.SampleRandom(random).Clone();
-          SubtreeCrossover.Cross(random, par0, par1, 0.9, 100, 10);
+          children[i] = SubtreeCrossover.Cross(random, par0, par1, 0.9, 100, 10);
         }
+        trees = children;
       }
       stopwatch.Stop();
       foreach (var tree in trees)

@@ -45,12 +45,26 @@ namespace HeuristicLab.Services.Access {
 
     public string GetUserNameById(Guid userId) {
       var user = GetUserById(userId);
-      if (user != null) {
+      if (user != null && !string.IsNullOrWhiteSpace(user.UserName)) {
         return user.UserName;
       } else {
         return userId.ToString();
       }
 
+    }
+
+    public IEnumerable<Guid> GetUserGroupIdsOfUser(Guid userId) {
+      using (DA.AccessServiceDataContext context = new DA.AccessServiceDataContext()) {
+        var groupIds = from g in context.UserGroupUserGroups
+                       where g.UserGroupId == userId
+                       select g.UserGroupUserGroupId;
+
+        var query = from g in context.UserGroupBases.OfType<DA.UserGroup>()
+                    where groupIds.Contains(g.Id)
+                    select g.Id;
+
+        return query.ToList();
+      }
     }
 
     public bool VerifyUser(Guid userId, List<Guid> allowedUserGroups) {
@@ -73,6 +87,14 @@ namespace HeuristicLab.Services.Access {
         if (CheckInGroupHierarchy(userId, guid, ugMapping, groups)) return true;
       }
       return false;
+    }
+
+    public IEnumerable<DataTransfer.UserGroupMapping> GetUserGroupMapping() {
+      using (DA.AccessServiceDataContext context = new DA.AccessServiceDataContext()) {
+        var query = from u in context.UserGroupUserGroups
+                    select Convert.ToDto(u);
+        return query.ToList();
+      }
     }
 
     private bool CheckInGroupHierarchy(Guid userId, Guid group, Dictionary<Guid, Guid> ugMapping, List<DA.UserGroup> groups) {

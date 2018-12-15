@@ -37,9 +37,14 @@ namespace HeuristicLab.Services.Hive.DataAccess.Manager {
 
     #region Hive daos
 
-    private AssignedResourceDao assignedResourceDao;
-    public AssignedResourceDao AssignedResourceDao {
-      get { return assignedResourceDao ?? (assignedResourceDao = new AssignedResourceDao(dataContext)); }
+    private AssignedJobResourceDao assignedJobResourceDao;
+    public AssignedJobResourceDao AssignedJobResourceDao {
+      get { return assignedJobResourceDao ?? (assignedJobResourceDao = new AssignedJobResourceDao(dataContext)); }
+    }
+
+    private AssignedProjectResourceDao assignedProjectResourceDao;
+    public AssignedProjectResourceDao AssignedProjectResourceDao {
+      get { return assignedProjectResourceDao ?? (assignedProjectResourceDao = new AssignedProjectResourceDao(dataContext)); }
     }
 
     private DowntimeDao downtimeDao;
@@ -72,6 +77,16 @@ namespace HeuristicLab.Services.Hive.DataAccess.Manager {
       get { return pluginDataDao ?? (pluginDataDao = new PluginDataDao(dataContext)); }
     }
 
+    private ProjectDao projectDao;
+    public ProjectDao ProjectDao {
+      get { return projectDao ?? (projectDao = new ProjectDao(dataContext)); }
+    }
+
+    private ProjectPermissionDao projectPermissionDao;
+    public ProjectPermissionDao ProjectPermissionDao {
+      get { return projectPermissionDao ?? (projectPermissionDao = new ProjectPermissionDao(dataContext)); }
+    }
+
     private RequiredPluginDao requiredPluginDao;
     public RequiredPluginDao RequiredPluginDao {
       get { return requiredPluginDao ?? (requiredPluginDao = new RequiredPluginDao(dataContext)); }
@@ -80,11 +95,6 @@ namespace HeuristicLab.Services.Hive.DataAccess.Manager {
     private ResourceDao resourceDao;
     public ResourceDao ResourceDao {
       get { return resourceDao ?? (resourceDao = new ResourceDao(dataContext)); }
-    }
-
-    private ResourcePermissionDao resourcePermissionDao;
-    public ResourcePermissionDao ResourcePermissionDao {
-      get { return resourcePermissionDao ?? (resourcePermissionDao = new ResourcePermissionDao(dataContext)); }
     }
 
     private SlaveDao slaveDao;
@@ -148,6 +158,16 @@ namespace HeuristicLab.Services.Hive.DataAccess.Manager {
     private FactTaskDao factTaskDao;
     public FactTaskDao FactTaskDao {
       get { return factTaskDao ?? (factTaskDao = new FactTaskDao(dataContext)); }
+    }
+
+    private DimProjectDao dimProjectDao;
+    public DimProjectDao DimProjectDao {
+      get { return dimProjectDao ?? (dimProjectDao = new DimProjectDao(dataContext)); }
+    }
+
+    private FactProjectInfoDao factProjectInfoDao;
+    public FactProjectInfoDao FactProjectInfoDao {
+      get { return factProjectInfoDao ?? (factProjectInfoDao = new FactProjectInfoDao(dataContext)); }
     }
     #endregion
 

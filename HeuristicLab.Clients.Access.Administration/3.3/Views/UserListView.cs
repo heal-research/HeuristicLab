@@ -28,7 +28,7 @@ using HeuristicLab.MainForm.WindowsForms;
 namespace HeuristicLab.Clients.Access.Administration {
   [View("UserList View")]
   [Content(typeof(IItemList<User>), true)]
-  public partial class UserListView : ItemListView<User> {
+  public partial class UserListView : ItemCollectionView<User> {
     public UserListView() {
       InitializeComponent();
       itemsGroupBox.Text = "Users";

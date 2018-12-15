@@ -64,6 +64,17 @@ namespace HeuristicLab.Clients.Access.Views {
       }
     }
 
+    protected override void SetEnabledStateOfControls() {
+      base.SetEnabledStateOfControls();
+      bool enabled = Content != null && !Locked;
+      //userNameTextBox.ReadOnly = !enabled;
+      fullNameTextBox.ReadOnly = !enabled;
+      emailTextBox.ReadOnly = !enabled;
+      //rolesListView.Enabled = enabled;
+      //groupsListView.Enabled = enabled;
+      changePasswordButton.Enabled = enabled;
+    }
+
     private void changePasswordButton_Click(object sender, System.EventArgs e) {
       using (ChangePasswordDialog dialog = new ChangePasswordDialog()) {
         dialog.ShowDialog(this);

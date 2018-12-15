@@ -130,6 +130,7 @@
     <Compile Include="CrossValidation.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DoubleArrayExtensions.cs" />
     <Compile Include="FixedDataAnalysisAlgorithm.cs" />
     <Compile Include="GaussianProcess\CovarianceFunctions\CovarianceSpectralMixture.cs" />
     <Compile Include="GaussianProcess\CovarianceFunctions\CovariancePiecewisePolynomial.cs" />

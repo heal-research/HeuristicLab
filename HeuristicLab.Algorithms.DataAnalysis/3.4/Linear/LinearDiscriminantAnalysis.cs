@@ -79,7 +79,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
       inputMatrix = factorMatrix.HorzCat(inputMatrix);
 
-      if (inputMatrix.Cast<double>().Any(x => double.IsNaN(x) || double.IsInfinity(x)))
+      if (inputMatrix.ContainsNanOrInfinity())
         throw new NotSupportedException("Linear discriminant analysis does not support NaN or infinity values in the input dataset.");
 
       // change class values into class index

@@ -69,7 +69,13 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public new IRegressionProblemData ProblemData {
       get { return (IRegressionProblemData)base.ProblemData; }
-      set { base.ProblemData = value; }
+      set {
+        if (value == null) throw new ArgumentNullException("The problemData must not be null.");
+        string errorMessage = string.Empty;
+        if (!Model.IsProblemDataCompatible(value, out errorMessage)) throw new ArgumentException(errorMessage);
+
+        base.ProblemData = value;
+      }
     }
 
     public abstract IEnumerable<double> EstimatedValues { get; }

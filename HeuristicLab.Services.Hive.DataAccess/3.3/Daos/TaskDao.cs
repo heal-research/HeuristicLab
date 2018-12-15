@@ -26,10 +26,6 @@ using System.Linq;
 
 namespace HeuristicLab.Services.Hive.DataAccess.Daos {
   public class TaskDao : GenericDao<Guid, Task> {
-    private Table<AssignedResource> AssignedResourceTable {
-      get { return DataContext.GetTable<AssignedResource>(); }
-    }
-
     public TaskDao(DataContext dataContext) : base(dataContext) { }
 
     public override Task GetById(Guid id) {
@@ -53,7 +49,11 @@ namespace HeuristicLab.Services.Hive.DataAccess.Daos {
       //Originally we checked here if there are parent tasks which should be calculated (with GetParentTasks(resourceIds, count, false);).
       //Because there is at the moment no case where this makes sense (there don't exist parent tasks which need to be calculated), 
       //we skip this step because it's wasted runtime
-      return DataContext.ExecuteQuery<TaskPriorityInfo>(GetWaitingTasksQueryString, slave.ResourceId, Enum.GetName(typeof(TaskState), TaskState.Waiting), slave.FreeCores, slave.FreeMemory).ToList();
+      return DataContext.ExecuteQuery<TaskPriorityInfo>(GetWaitingTasksQueryString, 
+        slave.ResourceId, 
+        Enum.GetName(typeof(TaskState), TaskState.Waiting), 
+        slave.FreeCores, 
+        slave.FreeMemory).ToList();
     }
 
     /// <summary>
@@ -61,24 +61,21 @@ namespace HeuristicLab.Services.Hive.DataAccess.Daos {
     /// </summary>
     /// <param name="resourceIds">list of resourceids which for which the task should be valid</param>
     /// <param name="count">maximum number of task to return</param>
-    /// <param name="finished">if true, all parent task which have FinishWhenChildJobsFinished=true are returned, otherwise only FinishWhenChildJobsFinished=false are returned</param>
+    /// <param name="finished">if true, all parent tasks which have FinishWhenChildJobsFinished=true are returned, otherwise only FinishWhenChildJobsFinished=false are returned</param>
     /// <returns></returns>
     public IEnumerable<Task> GetParentTasks(IEnumerable<Guid> resourceIds, int count, bool finished) {
-      var query = from ar in AssignedResourceTable
-                  where resourceIds.Contains(ar.ResourceId)
-                     && ar.Task.State == TaskState.Waiting
-                     && ar.Task.IsParentTask
-                     && (finished ? ar.Task.FinishWhenChildJobsFinished : !ar.Task.FinishWhenChildJobsFinished)
-                     && (from child in Table
-                         where child.ParentTaskId == ar.Task.TaskId
-                         select child.State == TaskState.Finished
-                             || child.State == TaskState.Aborted
-                             || child.State == TaskState.Failed).All(x => x)
-                     && (from child in Table // avoid returning WaitForChildTasks task where no child-task exist (yet)
-                         where child.ParentTaskId == ar.Task.TaskId
-                         select child).Any()
-                  orderby ar.Task.Priority descending
-                  select ar.Task;
+    var query = from t in Table
+                where t.State == TaskState.Waiting
+                    && t.IsParentTask
+                    && t.Job.AssignedJobResources.All(x => resourceIds.ToList().Contains(x.ResourceId))
+                    && t.FinishWhenChildJobsFinished == finished
+                    && t.ChildJobs.Any()
+                    && t.ChildJobs.All(x =>
+                      x.State == TaskState.Finished
+                      || x.State == TaskState.Aborted
+                      || x.State == TaskState.Failed)
+                  orderby t.Priority descending
+                  select t;
       return count == 0 ? query.ToArray() : query.Take(count).ToArray();
     }
 
@@ -95,22 +92,34 @@ namespace HeuristicLab.Services.Hive.DataAccess.Daos {
     #endregion
 
     #region String queries
+    private const string GetCalculatingChildTasksByProjectId = @"
+      SELECT t.* FROM [Task] t, [Job] j
+        WHERE t.IsParentTask = 0
+        AND t.TaskState = 'Calculating'
+        AND t.JobId = j.JobId
+        AND j.ProjectId = {0}
+        ORDER BY j.ProjectId
+    ";
     private const string GetWaitingTasksQueryString = @"
-      WITH pr AS (
+      WITH rbranch AS (
         SELECT ResourceId, ParentResourceId
         FROM [Resource]
         WHERE ResourceId = {0}
         UNION ALL
         SELECT r.ResourceId, r.ParentResourceId
-        FROM [Resource] r JOIN pr ON r.ResourceId = pr.ParentResourceId
+        FROM [Resource] r
+        JOIN rbranch rb ON rb.ParentResourceId = r.ResourceId
       )
       SELECT DISTINCT t.TaskId, t.JobId, t.Priority
-      FROM pr JOIN AssignedResources ar ON ar.ResourceId = pr.ResourceId
-          JOIN Task t ON t.TaskId = ar.TaskId
+      FROM [Task] t, [Job] j, [AssignedJobResource] ajr, rbranch
       WHERE NOT (t.IsParentTask = 1 AND t.FinishWhenChildJobsFinished = 1)
-          AND t.TaskState = {1}
-          AND t.CoresNeeded <= {2}
-          AND t.MemoryNeeded <= {3}
+      AND t.TaskState = {1}
+      AND t.CoresNeeded <= {2}
+      AND t.MemoryNeeded <= {3}
+      AND t.JobId = j.JobId
+      AND j.JobState = 'Online'
+      AND j.JobId = ajr.JobId
+      AND ajr.ResourceId = rbranch.ResourceId
     ";
 
     private const string UpdateExecutionTimeQuery = @"

@@ -21,6 +21,7 @@
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
   public class Housing : ResourceRegressionDataDescriptor {
+    public Housing() : base("Housing.csv") { }
     public override string Name { get { return "Housing"; } }
     public override string Description { get { return ""; } }
     protected override string TargetVariable { get { return "MEDV"; } }

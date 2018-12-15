@@ -42,6 +42,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
       var classificationProblemData = (IClassificationProblemData)problemData;
       OnlineCalculatorError errorState;
       var dataset = problemData.Dataset;
+      classificationModel.RecalculateModelParameters(classificationProblemData, rows);
       var targetClassValues = dataset.GetDoubleValues(classificationProblemData.TargetVariable, rows);
       var originalClassValues = classificationModel.GetEstimatedClassValues(dataset, rows);
       var qualityForImpactsCalculation = OnlineAccuracyCalculator.Calculate(targetClassValues, originalClassValues, out errorState);

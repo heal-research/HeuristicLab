@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?><Database Name="HeuristicLab.OKB" EntityNamespace="HeuristicLab.Services.OKB.DataAccess" ContextNamespace="HeuristicLab.Services.OKB.DataAccess" Class="OKBDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
-  <Connection Mode="AppSettings" ConnectionString="Data Source=.\SQLEXPRESS;Integrated Security=SSPI;Initial Catalog=HeuristicLab.OKB" SettingsObjectName="HeuristicLab.Services.OKB.DataAccess.Properties.Settings" SettingsPropertyName="OKBConnectionString" Provider="System.Data.SqlClient" />
+  <Connection Mode="AppSettings" ConnectionString="Data Source=localhost;Integrated Security=SSPI;Initial Catalog=HeuristicLab.OKB" SettingsObjectName="HeuristicLab.Services.OKB.DataAccess.Properties.Settings" SettingsPropertyName="OKBConnectionString" Provider="System.Data.SqlClient" />
   <Table Name="dbo.AlgorithmClass" Member="AlgorithmClasses">
     <Type Name="AlgorithmClass">
       <Column Name="Id" Type="System.Int64" DbType="BigInt NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />

@@ -63,6 +63,12 @@ namespace HeuristicLab.Clients.Access.Administration {
 
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
+      bool enabled = Content != null && !Locked;
+      
+      userNameTextBox.ReadOnly = !enabled;
+      fullNameTextBox.ReadOnly = !enabled;
+      emailTextBox.ReadOnly = !enabled;
+
       if (Content == null) {
         resetPasswordButton.Enabled = false;
       } else {

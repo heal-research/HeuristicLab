@@ -125,7 +125,25 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public IRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData) {
       return new SupportVectorRegressionSolution(this, new RegressionProblemData(problemData));
     }
+
+    public bool IsProblemDataCompatible(IRegressionProblemData problemData, out string errorMessage) {
+      return RegressionModel.IsProblemDataCompatible(this, problemData, out errorMessage);
+    }
     #endregion
+
+    public override bool IsProblemDataCompatible(IDataAnalysisProblemData problemData, out string errorMessage) {
+      if (problemData == null) throw new ArgumentNullException("problemData", "The provided problemData is null.");
+
+      var regressionProblemData = problemData as IRegressionProblemData;
+      if (regressionProblemData != null)
+        return IsProblemDataCompatible(regressionProblemData, out errorMessage);
+
+      var classificationProblemData = problemData as IClassificationProblemData;
+      if (classificationProblemData != null)
+        return IsProblemDataCompatible(classificationProblemData, out errorMessage);
+
+      throw new ArgumentException("The problem data is not a regression nor a classification problem data. Instead a " + problemData.GetType().GetPrettyName() + " was provided.", "problemData");
+    }
 
     #region IClassificationModel Members
     public override IEnumerable<double> GetEstimatedClassValues(IDataset dataset, IEnumerable<int> rows) {
@@ -152,9 +170,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return new SupportVectorClassificationSolution(this, new ClassificationProblemData(problemData));
     }
     #endregion
+
     private IEnumerable<double> GetEstimatedValuesHelper(IDataset dataset, IEnumerable<int> rows) {
       // calculate predictions for the currently requested rows
-      svm_problem problem = SupportVectorMachineUtil.CreateSvmProblem(dataset, TargetVariable, allowedInputVariables, rows);
+      svm_problem problem = SupportVectorMachineUtil.CreateSvmProblem(dataset, allowedInputVariables, rows);
       svm_problem scaledProblem = rangeTransform.Scale(problem);
 
       for (int i = 0; i < problem.l; i++) {

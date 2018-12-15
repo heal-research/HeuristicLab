@@ -185,7 +185,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         qualityTable.Rows.Add(trainRMSERow);
         qualityTable.Rows.Add(testRMSERow);
         Results.Add(new Result(qualityTable.Name, qualityTable.Name + " for all restarts", qualityTable));
-        if (SetSeedRandomly) Seed = (new System.Random()).Next();
+        if (SetSeedRandomly) Seed = RandomSeedGenerator.GetSeed();
         var rand = new MersenneTwister((uint)Seed);
         bestSolution = CreateRegressionSolution(Problem.ProblemData, ModelStructure, Iterations, ApplyLinearScaling, rand);
         trainRMSERow.Values.Add(bestSolution.TrainingRootMeanSquaredError);

@@ -32,7 +32,7 @@ using HeuristicLab.Problems.DataAnalysis;
 namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
   public partial class DataAnalysisImportDialog : Form {
 
-    private static readonly List<KeyValuePair<DateTimeFormatInfo, string>> dateTimeFormats =
+    private static readonly List<KeyValuePair<DateTimeFormatInfo, string>> POSSIBLE_DATETIME_FORMATS =
       new List<KeyValuePair<DateTimeFormatInfo, string>>{
         new KeyValuePair<DateTimeFormatInfo, string>(DateTimeFormatInfo.GetInstance(new CultureInfo("de-DE")), "dd/mm/yyyy hh:MM:ss" ),
         new KeyValuePair<DateTimeFormatInfo, string>(DateTimeFormatInfo.InvariantInfo, "mm/dd/yyyy hh:MM:ss" ),
@@ -41,9 +41,9 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
     };
 
     private static readonly List<KeyValuePair<char, string>> POSSIBLE_SEPARATORS =
-      new List<KeyValuePair<char, string>>{  
+      new List<KeyValuePair<char, string>>{
         new KeyValuePair<char, string>(';', "; (Semicolon)" ),
-        new KeyValuePair<char, string>(',', ", (Comma)" ),    
+        new KeyValuePair<char, string>(',', ", (Comma)" ),
         new KeyValuePair<char, string>('\t', "\\t (Tab)"),
         new KeyValuePair<char, string>((char)0, "all whitespaces (including tabs and spaces)")
     };
@@ -51,15 +51,15 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
     private static readonly List<KeyValuePair<NumberFormatInfo, string>> POSSIBLE_DECIMAL_SEPARATORS =
       new List<KeyValuePair<NumberFormatInfo, string>>{
         new KeyValuePair<NumberFormatInfo, string>(NumberFormatInfo.GetInstance(new CultureInfo("de-DE")), ", (Comma)"),
-        new KeyValuePair<NumberFormatInfo, string>(NumberFormatInfo.InvariantInfo, ". (Period)" )    
+        new KeyValuePair<NumberFormatInfo, string>(NumberFormatInfo.InvariantInfo, ". (Period)" )
     };
 
     private static readonly List<KeyValuePair<Encoding, string>> POSSIBLE_ENCODINGS =
       new List<KeyValuePair<Encoding, string>> {
         new KeyValuePair<Encoding, string>(Encoding.Default, "Default"),
         new KeyValuePair<Encoding, string>(Encoding.ASCII, "ASCII"),
-        new KeyValuePair<Encoding, string>(Encoding.Unicode, "Unicode"),    
-        new KeyValuePair<Encoding, string>(Encoding.UTF8, "UTF8")        
+        new KeyValuePair<Encoding, string>(Encoding.Unicode, "Unicode"),
+        new KeyValuePair<Encoding, string>(Encoding.UTF8, "UTF8")
       };
 
     public string Path {
@@ -96,13 +96,22 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       DecimalSeparatorComboBox.DataSource = POSSIBLE_DECIMAL_SEPARATORS;
       DecimalSeparatorComboBox.ValueMember = "Key";
       DecimalSeparatorComboBox.DisplayMember = "Value";
-      DateTimeFormatComboBox.DataSource = dateTimeFormats;
+      DateTimeFormatComboBox.DataSource = POSSIBLE_DATETIME_FORMATS;
       DateTimeFormatComboBox.ValueMember = "Key";
       DateTimeFormatComboBox.DisplayMember = "Value";
       EncodingComboBox.DataSource = POSSIBLE_ENCODINGS;
       EncodingComboBox.ValueMember = "Key";
       EncodingComboBox.DisplayMember = "Value";
 
+
+      // set default values based on the current culture
+      var separator = POSSIBLE_SEPARATORS.Where(n => n.Value.Substring(0, 1) == CultureInfo.CurrentCulture.TextInfo.ListSeparator);
+      if (separator.Any())
+        SeparatorComboBox.SelectedItem = separator.First();
+
+      var decimalSeparator = POSSIBLE_DECIMAL_SEPARATORS.Where(n => n.Value.Substring(0,1) == CultureInfo.CurrentCulture.NumberFormat.CurrencyDecimalSeparator);
+      if (decimalSeparator.Any())
+        DecimalSeparatorComboBox.SelectedItem = decimalSeparator.First();
     }
 
     private void TrainingTestTrackBar_ValueChanged(object sender, System.EventArgs e) {
@@ -157,7 +166,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
         ErrorTextBox.Visible = false;
         OkButton.Enabled = true;
       }
-      catch (Exception ex) {
+       catch (Exception ex) {
         if (ex is IOException || ex is InvalidOperationException || ex is ArgumentException) {
           OkButton.Enabled = false;
           ErrorTextBox.Text = ex.Message;

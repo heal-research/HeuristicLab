@@ -187,6 +187,7 @@ namespace HeuristicLab.Optimization {
           TimeSpan.FromSeconds(10),
           TimeSpan.FromSeconds(15) });
       snapshotTimesIndex = 0;
+      snapshots = new RunCollection();
       Runs = new RunCollection { OptimizerName = Name };
       Initialize();
     }
@@ -198,6 +199,7 @@ namespace HeuristicLab.Optimization {
           TimeSpan.FromSeconds(10),
           TimeSpan.FromSeconds(15) });
       snapshotTimesIndex = 0;
+      snapshots = new RunCollection();
       Runs = new RunCollection { OptimizerName = Name };
       Initialize();
     }

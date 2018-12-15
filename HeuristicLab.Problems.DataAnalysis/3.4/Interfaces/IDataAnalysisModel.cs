@@ -29,5 +29,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
   /// </summary>
   public interface IDataAnalysisModel : INamedItem {
     IEnumerable<string> VariablesUsedForPrediction { get; }
+    bool IsDatasetCompatible(IDataset dataset, out string errorMessage);
+    bool IsProblemDataCompatible(IDataAnalysisProblemData problemData, out string errorMessage);
   }
 }

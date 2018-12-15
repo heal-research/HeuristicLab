@@ -32,6 +32,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     IEnumerable<string> StringVariables { get; }
     IEnumerable<string> DateTimeVariables { get; }
 
+    bool ContainsVariable(string variablename);
     bool VariableHasType<T>(string variableName);
 
     double GetDoubleValue(string variableName, int row);
