@@ -108,7 +108,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
       lr.Problem = symbRegProblem;
       lr.Start();
 
-      var lrs = lr.Results.FirstOrDefault(v => v.Name == "Linear regression solution").Value as SymbolicRegressionSolution;
+      var lrs = lr.Results.FirstOrDefault(v => v.Name == "Linear regression solution").Value as IRegressionSolution;
       Assert.IsNotNull(lrs);
       var result = new RegressionSolutionVariableImpactsCalculator().Calculate(lrs);
 
