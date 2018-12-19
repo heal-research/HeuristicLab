@@ -23,20 +23,19 @@ using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms.Solvers.Base;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms.Solvers {
+namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
 
   [Item("Gurobi", "Gurobi (http://www.gurobi.com/) must be installed and licenced.")]
   [StorableClass]
-  public class GurobiSolver : ExternalIncrementalSolver {
+  public class GurobiSolver : ExternalIncrementalLinearSolver {
 
     public GurobiSolver() {
       Parameters.Add(libraryNameParam = new FixedValueParameter<FileValue>(nameof(LibraryName),
         new FileValue { FileDialogFilter = FileDialogFilter, Value = Properties.Settings.Default.GurobiLibraryName }));
-      SolverSpecificParameters.Value =
+      SolverSpecificParameters =
         "# for file format, see http://www.gurobi.com/documentation/8.1/refman/prm_format.html" + Environment.NewLine +
         "# for parameters, see http://www.gurobi.com/documentation/8.1/refman/parameters.html" + Environment.NewLine +
         "# example:" + Environment.NewLine +

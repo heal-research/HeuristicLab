@@ -19,68 +19,53 @@
  */
 #endregion
 
-using System.Drawing;
+using System;
 using HeuristicLab.Common;
-using HeuristicLab.Common.Resources;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
-using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Problems {
+namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
 
   [Item("Linear/Mixed Integer Programming Problem (LP/MIP)", "Represents a linear/mixed integer problem.")]
-  [Creatable(CreatableAttribute.Categories.CombinatorialProblems)]
   [StorableClass]
-  public class LinearProgrammingProblem : Problem, IProgrammableItem {
+  public sealed class LinearProgrammingProblem : Problem {
+    [Storable]
+    private ILinearProgrammingProblemDefinition problemDefinition;
 
     public LinearProgrammingProblem() {
-      Parameters.Add(new FixedValueParameter<LinearProgrammingProblemDefinitionScript>("ProblemScript",
-        "Defines the problem.", new LinearProgrammingProblemDefinitionScript { Name = Name }) { GetsCollected = false });
-      RegisterEvents();
+      Parameters.Remove(Parameters["Operators"]);
     }
 
-    protected LinearProgrammingProblem(LinearProgrammingProblem original, Cloner cloner)
+    private LinearProgrammingProblem(LinearProgrammingProblem original, Cloner cloner)
       : base(original, cloner) {
-      RegisterEvents();
     }
 
     [StorableConstructor]
-    protected LinearProgrammingProblem(bool deserializing) : base(deserializing) { }
-
-    public new static Image StaticItemImage => VSImageLibrary.Script;
-    public ILinearProgrammingProblemDefinition ProblemDefinition => LinearProgrammingProblemScriptParameter.Value;
-    public LinearProgrammingProblemDefinitionScript ProblemScript => LinearProgrammingProblemScriptParameter.Value;
-
-    private FixedValueParameter<LinearProgrammingProblemDefinitionScript> LinearProgrammingProblemScriptParameter =>
-      (FixedValueParameter<LinearProgrammingProblemDefinitionScript>)Parameters["ProblemScript"];
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new LinearProgrammingProblem(this, cloner);
+    private LinearProgrammingProblem(bool deserializing) : base(deserializing) {
     }
 
-    protected override void OnNameChanged() {
-      base.OnNameChanged();
-      ProblemScript.Name = Name;
+    public event EventHandler ProblemDefinitionChanged;
+
+    public ILinearProgrammingProblemDefinition ProblemDefinition {
+      get => problemDefinition;
+      set {
+        if (problemDefinition == value)
+          return;
+        problemDefinition = value;
+        ProblemDefinitionChanged?.Invoke(this, EventArgs.Empty);
+      }
     }
+
+    public override IDeepCloneable Clone(Cloner cloner) => new LinearProgrammingProblem(this, cloner);
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
-      RegisterEvents();
     }
 
     private void OnProblemDefinitionChanged() {
       OnOperatorsChanged();
       OnReset();
-    }
-
-    private void OnProblemScriptNameChanged() {
-      Name = ProblemScript.Name;
-    }
-
-    private void RegisterEvents() {
-      ProblemScript.ProblemDefinitionChanged += (o, e) => OnProblemDefinitionChanged();
-      ProblemScript.NameChanged += (o, e) => OnProblemScriptNameChanged();
     }
   }
 }

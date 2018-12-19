@@ -21,13 +21,7 @@
 
 namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
 
-  public enum IncrementalityValues {
-
-    // Start solve from scratch.
-    IncrementalityOff = 0,
-
-    // Reuse results from previous solve as much as the underlying
-    // solver allows.
-    IncrementalityOn = 1
+  public interface IExternalLinearSolver : ILinearSolver {
+    string LibraryName { get; set; }
   }
 }

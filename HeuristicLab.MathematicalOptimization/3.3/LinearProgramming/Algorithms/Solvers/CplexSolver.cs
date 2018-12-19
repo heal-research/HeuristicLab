@@ -23,20 +23,19 @@ using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms.Solvers.Base;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms.Solvers {
+namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
 
   [Item("CPLEX", "CPLEX (https://www.ibm.com/analytics/cplex-optimizer) must be installed and licenced.")]
   [StorableClass]
-  public class CplexSolver : ExternalIncrementalSolver {
+  public class CplexSolver : ExternalIncrementalLinearSolver {
 
     public CplexSolver() {
       Parameters.Add(libraryNameParam = new FixedValueParameter<FileValue>(nameof(LibraryName),
         new FileValue { FileDialogFilter = FileDialogFilter, Value = Properties.Settings.Default.CplexLibraryName }));
-      SolverSpecificParameters.Value =
+      SolverSpecificParameters =
         "CPLEX Parameter File Version 12.8.0" + Environment.NewLine +
         "# for file format, see https://www.ibm.com/support/knowledgecenter/SSSA5P_12.8.0/ilog.odms.cplex.help/CPLEX/FileFormats/topics/PRM.html" + Environment.NewLine +
         "# for parameters, see https://www.ibm.com/support/knowledgecenter/SSSA5P_12.8.0/ilog.odms.cplex.help/CPLEX/Parameters/topics/introListTopical.html" + Environment.NewLine +

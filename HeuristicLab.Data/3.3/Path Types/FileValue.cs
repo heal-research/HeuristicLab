@@ -39,11 +39,15 @@ namespace HeuristicLab.Data {
       }
     }
 
+    [Storable]
+    public bool SaveFile { get; set; }
+
     [StorableConstructor]
     protected FileValue(bool deserializing) : base(deserializing) { }
     protected FileValue(FileValue original, Cloner cloner)
       : base(original, cloner) {
       fileDialogFilter = original.FileDialogFilter;
+      SaveFile = original.SaveFile;
     }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new FileValue(this, cloner);

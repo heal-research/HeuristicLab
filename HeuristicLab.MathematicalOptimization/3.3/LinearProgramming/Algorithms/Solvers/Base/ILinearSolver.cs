@@ -19,22 +19,45 @@
  */
 #endregion
 
+using System;
 using System.Threading;
 using HeuristicLab.Core;
+using HeuristicLab.Optimization;
 
-namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms.Solvers.Base {
+namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
 
-  public interface ISolver : IParameterizedNamedItem {
-    ProblemType ProblemType { get; set; }
+  public interface ILinearSolver : IParameterizedNamedItem {
+    double DualTolerance { get; set; }
+
+    string ExportModel { get; set; }
+
+    bool Incrementality { get; set; }
+
+    LpAlgorithmValues LpAlgorithm { get; set; }
+
+    bool Presolve { get; set; }
+
+    double PrimalTolerance { get; set; }
+
+    ProblemType ProblemType { get; }
+
+    double RelativeGapTolerance { get; set; }
+
+    bool Scaling { get; set; }
+
     bool SupportsPause { get; }
+
     bool SupportsStop { get; }
+
+    TimeSpan TimeLimit { get; set; }
 
     bool InterruptSolve();
 
     void Reset();
 
-    void Solve(LinearProgrammingAlgorithm algorithm);
+    void Solve(ILinearProgrammingProblemDefinition problemDefintion, ref TimeSpan executionTime, ResultCollection results);
 
-    void Solve(LinearProgrammingAlgorithm algorithm, CancellationToken cancellationToken);
+    void Solve(ILinearProgrammingProblemDefinition problemDefintion, ref TimeSpan executionTime,
+      ResultCollection results, CancellationToken cancellationToken);
   }
 }

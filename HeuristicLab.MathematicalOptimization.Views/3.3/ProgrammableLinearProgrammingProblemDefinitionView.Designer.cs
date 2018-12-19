@@ -24,8 +24,8 @@ using System.ComponentModel;
 using System.Windows.Forms;
 using HeuristicLab.Scripting.Views;
 
-namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Views {
-  partial class LinearProgrammingProblemDefinitionScriptView {
+namespace HeuristicLab.MathematicalOptimization.Views {
+  partial class ProgrammableLinearProgrammingProblemDefinitionView {
     /// <summary> 
     /// Required designer variable.
     /// </summary>
@@ -49,7 +49,7 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LinearProgrammingProblemDefinitionScriptView));
+      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ProgrammableLinearProgrammingProblemDefinitionView));
       this.splitContainer2 = new System.Windows.Forms.SplitContainer();
       this.variableStoreView = new HeuristicLab.Scripting.Views.VariableStoreView();
       this.infoTabControl.SuspendLayout();
@@ -70,6 +70,12 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Views {
       // 
       this.toolTip.SetToolTip(this.compileButton, "Compile (F6)");
       // 
+      // imageList
+      // 
+      this.imageList.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList.ImageStream")));
+      this.imageList.Images.SetKeyName(0, "");
+      this.imageList.Images.SetKeyName(1, "");
+      // 
       // infoTabControl
       // 
       this.infoTabControl.Size = new System.Drawing.Size(593, 113);
@@ -84,11 +90,11 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Views {
       // 
       // errorListTabPage
       // 
-      this.errorListTabPage.Size = new System.Drawing.Size(621, 86);
+      this.errorListTabPage.Size = new System.Drawing.Size(585, 87);
       // 
       // errorListView
       // 
-      this.errorListView.Size = new System.Drawing.Size(615, 80);
+      this.errorListView.Size = new System.Drawing.Size(579, 81);
       // 
       // codeEditor
       // 
@@ -107,11 +113,17 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Views {
       // 
       this.errorProvider.SetIconAlignment(this.nameTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
       this.errorProvider.SetIconPadding(this.nameTextBox, 2);
+      this.nameTextBox.Location = new System.Drawing.Point(68, 0);
+      this.nameTextBox.Size = new System.Drawing.Size(742, 20);
+      // 
+      // infoLabel
+      // 
+      this.infoLabel.Location = new System.Drawing.Point(816, 3);
       // 
       // splitContainer2
       // 
-      this.splitContainer2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+      this.splitContainer2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.splitContainer2.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
       this.splitContainer2.Location = new System.Drawing.Point(6, 56);
@@ -139,12 +151,12 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Views {
       this.variableStoreView.Size = new System.Drawing.Size(229, 546);
       this.variableStoreView.TabIndex = 10;
       // 
-      // ProblemDefinitionScriptView
+      // LinearProgrammingProblemDefinitionScriptView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.Controls.Add(this.splitContainer2);
-      this.Name = "ProblemDefinitionScriptView";
+      this.Name = "LinearProgrammingProblemDefinitionScriptView";
       this.Controls.SetChildIndex(this.infoTextLabel, 0);
       this.Controls.SetChildIndex(this.compileButton, 0);
       this.Controls.SetChildIndex(this.splitContainer2, 0);

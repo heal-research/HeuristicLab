@@ -25,14 +25,11 @@ using Google.OrTools.LinearSolver;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms.Solvers;
-using HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms.Solvers.Base;
-using HeuristicLab.MathematicalOptimization.LinearProgramming.Problems;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms {
+namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
 
   [Item("Linear/Mixed Integer Programming (LP/MIP)", "Linear/mixed integer programming implemented in several solvers. " +
     "See also https://dev.heuristiclab.com/trac.fcgi/wiki/Documentation/Howto/LinearMixedIntegerProgramming")] // TODO: update link
@@ -42,6 +39,9 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms {
 
     [Storable]
     private readonly IFixedValueParameter<DoubleValue> dualToleranceParam;
+
+    [Storable]
+    private readonly IFixedValueParameter<FileValue> exportModelParam;
 
     [Storable]
     private readonly IFixedValueParameter<EnumValue<LpAlgorithmValues>> lpAlgorithmParam;
@@ -59,29 +59,24 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms {
     private readonly IFixedValueParameter<BoolValue> scalingParam;
 
     [Storable]
-    private IConstrainedValueParameter<ISolver> solverParam;
-
-    [Storable]
     private readonly IFixedValueParameter<TimeSpanValue> timeLimitParam;
 
-    public IConstrainedValueParameter<ISolver> SolverParameter {
-      get => solverParam;
-      set => solverParam = value;
-    }
+    [Storable]
+    private IConstrainedValueParameter<ILinearSolver> linearSolverParam;
 
     public LinearProgrammingAlgorithm() {
-      Parameters.Add(solverParam =
-        new ConstrainedValueParameter<ISolver>(nameof(Solver), "The solver used to solve the model."));
+      Parameters.Add(linearSolverParam =
+        new ConstrainedValueParameter<ILinearSolver>(nameof(LinearSolver), "The solver used to solve the model."));
 
-      ISolver defaultSolver;
-      solverParam.ValidValues.Add(new BopSolver());
-      solverParam.ValidValues.Add(defaultSolver = new CoinOrSolver());
-      solverParam.ValidValues.Add(new CplexSolver());
-      solverParam.ValidValues.Add(new GlopSolver());
-      solverParam.ValidValues.Add(new GlpkSolver());
-      solverParam.ValidValues.Add(new GurobiSolver());
-      solverParam.ValidValues.Add(new ScipSolver());
-      solverParam.Value = defaultSolver;
+      ILinearSolver defaultSolver;
+      linearSolverParam.ValidValues.Add(new BopSolver());
+      linearSolverParam.ValidValues.Add(defaultSolver = new CoinOrSolver());
+      linearSolverParam.ValidValues.Add(new CplexSolver());
+      linearSolverParam.ValidValues.Add(new GlopSolver());
+      linearSolverParam.ValidValues.Add(new GlpkSolver());
+      linearSolverParam.ValidValues.Add(new GurobiSolver());
+      linearSolverParam.ValidValues.Add(new ScipSolver());
+      linearSolverParam.Value = defaultSolver;
 
       Parameters.Add(relativeGapToleranceParam = new FixedValueParameter<PercentValue>(nameof(RelativeGapTolerance),
         "Limit for relative MIP gap.", new PercentValue(MPSolverParameters.kDefaultRelativeMipGap)));
@@ -101,6 +96,16 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms {
         new DoubleValue(MPSolverParameters.kDefaultPrimalTolerance)));
       Parameters.Add(scalingParam = new FixedValueParameter<BoolValue>(nameof(Scaling),
         "Advanced usage: enable or disable matrix scaling.", new BoolValue()));
+      Parameters.Add(exportModelParam =
+        new FixedValueParameter<FileValue>(nameof(ExportModel),
+          "Path of the file the model should be exported to. Run the algorithm to export the model.",
+          new FileValue {
+            SaveFile = true,
+            FileDialogFilter = "CPLEX LP File (*.lp)|*.lp|" +
+                               "Mathematical Programming System File (*.mps)|*.mps|" +
+                               "Google OR-Tools Protocol Buffers Text File (*.prototxt)|*.prototxt|" +
+                               "Google OR-Tools Protocol Buffers Binary File (*.bin)|*.bin"
+          }));
 
       Problem = new LinearProgrammingProblem();
     }
@@ -112,7 +117,7 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms {
 
     protected LinearProgrammingAlgorithm(LinearProgrammingAlgorithm original, Cloner cloner)
       : base(original, cloner) {
-      solverParam = cloner.Clone(original.solverParam);
+      linearSolverParam = cloner.Clone(original.linearSolverParam);
       relativeGapToleranceParam = cloner.Clone(original.relativeGapToleranceParam);
       timeLimitParam = cloner.Clone(original.timeLimitParam);
       presolveParam = cloner.Clone(original.presolveParam);
@@ -120,11 +125,27 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms {
       dualToleranceParam = cloner.Clone(original.dualToleranceParam);
       primalToleranceParam = cloner.Clone(original.primalToleranceParam);
       scalingParam = cloner.Clone(original.scalingParam);
+      exportModelParam = cloner.Clone(original.exportModelParam);
     }
 
     public double DualTolerance {
       get => dualToleranceParam.Value.Value;
       set => dualToleranceParam.Value.Value = value;
+    }
+
+    public string ExportModel {
+      get => exportModelParam.Value.Value;
+      set => exportModelParam.Value.Value = value;
+    }
+
+    public ILinearSolver LinearSolver {
+      get => linearSolverParam.Value;
+      set => linearSolverParam.Value = value;
+    }
+
+    public IConstrainedValueParameter<ILinearSolver> LinearSolverParameter {
+      get => linearSolverParam;
+      set => linearSolverParam = value;
     }
 
     public LpAlgorithmValues LpAlgorithm {
@@ -161,14 +182,9 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms {
       set => scalingParam.Value.Value = value;
     }
 
-    public ISolver Solver {
-      get => solverParam.Value;
-      set => solverParam.Value = value;
-    }
+    public override bool SupportsPause => LinearSolver.SupportsPause;
 
-    public override bool SupportsPause => Solver.SupportsPause;
-
-    public override bool SupportsStop => Solver.SupportsStop;
+    public override bool SupportsStop => LinearSolver.SupportsStop;
 
     public TimeSpan TimeLimit {
       get => timeLimitParam.Value.Value;
@@ -179,23 +195,35 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms {
 
     public override void Pause() {
       base.Pause();
-      Solver.InterruptSolve();
+      LinearSolver.InterruptSolve();
     }
 
     public override void Prepare() {
       base.Prepare();
       Results.Clear();
 
-      foreach (var solver in solverParam.ValidValues) {
+      foreach (var solver in linearSolverParam.ValidValues) {
         solver.Reset();
       }
     }
 
     public override void Stop() {
       base.Stop();
-      Solver.InterruptSolve();
+      LinearSolver.InterruptSolve();
     }
 
-    protected override void Run(CancellationToken cancellationToken) => Solver.Solve(this, cancellationToken);
+    protected override void Run(CancellationToken cancellationToken) {
+      LinearSolver.PrimalTolerance = PrimalTolerance;
+      LinearSolver.DualTolerance = DualTolerance;
+      LinearSolver.LpAlgorithm = LpAlgorithm;
+      LinearSolver.Presolve = Presolve;
+      LinearSolver.RelativeGapTolerance = RelativeGapTolerance;
+      LinearSolver.Scaling = Scaling;
+      LinearSolver.TimeLimit = TimeLimit;
+      LinearSolver.ExportModel = ExportModel;
+      var executionTime = ExecutionTime;
+      ExecutionTimeChanged += (sender, args) => executionTime = ExecutionTime;
+      LinearSolver.Solve(Problem.ProblemDefinition, ref executionTime, Results, cancellationToken);
+    }
   }
 }

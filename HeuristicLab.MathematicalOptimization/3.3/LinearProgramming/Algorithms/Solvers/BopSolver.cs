@@ -23,20 +23,19 @@ using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms.Solvers.Base;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms.Solvers {
+namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
 
   [Item("BOP", "BOP (https://developers.google.com/optimization/reference/bop/bop_solver/) can be used out of the box.")]
   [StorableClass]
-  public class BopSolver : IncrementalSolver {
+  public class BopSolver : IncrementalLinearSolver {
 
     public BopSolver() {
       Parameters.Remove(problemTypeParam);
       Parameters.Add(new FixedValueParameter<StringValue>(nameof(ProblemType), new StringValue("ZeroOneProgramming").AsReadOnly()));
-      SolverSpecificParameters.Value =
+      SolverSpecificParameters =
         "# for file format, see Protocol Buffers text format (https://developers.google.com/protocol-buffers/docs/overview#whynotxml)" + Environment.NewLine +
         "# for parameters, see https://github.com/google/or-tools/blob/v6.10/ortools/bop/bop_parameters.proto" + Environment.NewLine +
         "# example:" + Environment.NewLine +

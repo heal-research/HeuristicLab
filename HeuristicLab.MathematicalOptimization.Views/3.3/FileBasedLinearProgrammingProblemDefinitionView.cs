@@ -19,45 +19,36 @@
  */
 #endregion
 
-using System;
-using System.Windows.Forms;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
+using HeuristicLab.MathematicalOptimization.LinearProgramming;
 
-namespace HeuristicLab.Data.Views {
-  [View("FileValueView")]
-  [Content(typeof(FileValue), true)]
-  public partial class FileValueView : ItemView {
-    public new FileValue Content {
-      get { return (FileValue)base.Content; }
-      set { base.Content = value; }
-    }
+namespace HeuristicLab.MathematicalOptimization.Views {
 
-    public FileValueView() {
+  [View(nameof(FileBasedLinearProgrammingProblemDefinitionView))]
+  [Content(typeof(FileBasedLinearProgrammingProblemDefinition), IsDefaultView = true)]
+  public partial class FileBasedLinearProgrammingProblemDefinitionView : ItemView {
+
+    public FileBasedLinearProgrammingProblemDefinitionView() {
       InitializeComponent();
     }
 
-    protected override void SetEnabledStateOfControls() {
-      base.SetEnabledStateOfControls();
-      openButton.Enabled = !Locked && !ReadOnly && Content != null;
+    public new FileBasedLinearProgrammingProblemDefinition Content {
+      get => (FileBasedLinearProgrammingProblemDefinition)base.Content;
+      set {
+        base.Content = value;
+        OnContentChanged();
+      }
     }
 
     protected override void OnContentChanged() {
       base.OnContentChanged();
       if (Content == null) {
-        stringConvertibleValueView.Content = null;
-        return;
+        viewHost.Content = null;
+      } else {
+        viewHost.Content = Content.FileNameParam;
+        Caption = Content.Name;
       }
-
-      stringConvertibleValueView.Content = Content.StringValue;
-      openFileDialog.Filter = Content.FileDialogFilter;
-    }
-
-    protected virtual void openButton_Click(object sender, EventArgs e) {
-      var fileDialog = Content.SaveFile ? (FileDialog)saveFileDialog : openFileDialog;
-      fileDialog.Filter = Content.FileDialogFilter;
-      if (fileDialog.ShowDialog(this) != DialogResult.OK) return;
-      Content.Value = fileDialog.FileName;
     }
   }
 }

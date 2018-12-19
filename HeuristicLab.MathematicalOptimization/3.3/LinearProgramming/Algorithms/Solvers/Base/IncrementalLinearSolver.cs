@@ -26,30 +26,23 @@ using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms.Solvers.Base {
+namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
 
   [StorableClass]
-  public class IncrementalSolver : Solver, IIncrementalSolver {
-
-    [Storable]
-    protected readonly IValueParameter<TimeSpanValue> qualityUpdateIntervalParam;
+  public class IncrementalLinearSolver : LinearSolver, IIncrementalLinearSolver {
+    [Storable] protected readonly IValueParameter<TimeSpanValue> qualityUpdateIntervalParam;
 
     private IndexedDataRow<double> bpcRow;
 
     private IndexedDataRow<double> qpcRow;
 
-    [Storable]
-    private IndexedDataTable<double> qualityPerClock;
+    [Storable] private IndexedDataTable<double> qualityPerClock;
 
-    [StorableConstructor]
-    protected IncrementalSolver(bool deserializing)
-      : base(deserializing) {
-    }
-
-    public IncrementalSolver() {
+    public IncrementalLinearSolver() {
       Parameters.Add(qualityUpdateIntervalParam =
         new ValueParameter<TimeSpanValue>(nameof(QualityUpdateInterval),
           "Time interval before solver is paused, results are retrieved and solver is resumed. " +
@@ -65,34 +58,39 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms.Sol
       };
     }
 
-    protected IncrementalSolver(IncrementalSolver original, Cloner cloner)
-        : base(original, cloner) {
+    [StorableConstructor]
+    protected IncrementalLinearSolver(bool deserializing)
+      : base(deserializing) {
+    }
+
+    protected IncrementalLinearSolver(IncrementalLinearSolver original, Cloner cloner)
+      : base(original, cloner) {
       problemTypeParam = cloner.Clone(original.problemTypeParam);
       qualityUpdateIntervalParam = cloner.Clone(original.qualityUpdateIntervalParam);
       if (original.qualityPerClock != null)
         qualityPerClock = cloner.Clone(original.qualityPerClock);
     }
 
-    public virtual bool SupportsQualityUpdate => true;
-
     public TimeSpan QualityUpdateInterval {
       get => qualityUpdateIntervalParam.Value.Value;
       set => qualityUpdateIntervalParam.Value.Value = value;
     }
 
-    protected virtual TimeSpan TimeLimit => QualityUpdateInterval;
+    public virtual bool SupportsQualityUpdate => true;
+    protected virtual TimeSpan IntermediateTimeLimit => QualityUpdateInterval;
 
-    public override void Solve(LinearProgrammingAlgorithm algorithm, CancellationToken cancellationToken) {
+    public override void Solve(ILinearProgrammingProblemDefinition problemDefinition, ref TimeSpan executionTime,
+      ResultCollection results, CancellationToken cancellationToken) {
       if (!SupportsQualityUpdate || QualityUpdateInterval == TimeSpan.Zero) {
-        base.Solve(algorithm, cancellationToken);
+        base.Solve(problemDefinition, ref executionTime, results, cancellationToken);
         return;
       }
 
-      var timeLimit = algorithm.TimeLimit;
+      var timeLimit = TimeLimit;
       var unlimitedRuntime = timeLimit == TimeSpan.Zero;
 
       if (!unlimitedRuntime) {
-        timeLimit -= algorithm.ExecutionTime;
+        timeLimit -= executionTime;
       }
 
       var iterations = (long)timeLimit.TotalMilliseconds / (long)QualityUpdateInterval.TotalMilliseconds;
@@ -103,10 +101,10 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms.Sol
         if (cancellationToken.IsCancellationRequested)
           return;
 
-        base.Solve(algorithm, TimeLimit);
-        UpdateQuality(algorithm);
+        Solve(problemDefinition, results, IntermediateTimeLimit);
+        UpdateQuality(results, executionTime);
 
-        var resultStatus = ((EnumValue<ResultStatus>)algorithm.Results[nameof(solver.ResultStatus)].Value).Value;
+        var resultStatus = ((EnumValue<ResultStatus>)results["ResultStatus"].Value).Value;
         if (!validResultStatuses.Contains(resultStatus))
           return;
 
@@ -115,45 +113,45 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms.Sol
       }
 
       if (remaining > TimeSpan.Zero) {
-        base.Solve(algorithm, remaining);
-        UpdateQuality(algorithm);
+        Solve(problemDefinition, results, remaining);
+        UpdateQuality(results, executionTime);
       }
     }
 
-    private void UpdateQuality(LinearProgrammingAlgorithm algorithm) {
-      if (!algorithm.Results.Exists(r => r.Name == "QualityPerClock")) {
+    private void UpdateQuality(ResultCollection results, TimeSpan executionTime) {
+      if (!results.Exists(r => r.Name == "QualityPerClock")) {
         qualityPerClock = new IndexedDataTable<double>("Quality per Clock");
         qpcRow = new IndexedDataRow<double>("Objective Value");
         bpcRow = new IndexedDataRow<double>("Bound");
-        algorithm.Results.AddOrUpdateResult("QualityPerClock", qualityPerClock);
+        results.AddOrUpdateResult("QualityPerClock", qualityPerClock);
       }
 
-      var resultStatus = ((EnumValue<ResultStatus>)algorithm.Results[nameof(solver.ResultStatus)].Value).Value;
+      var resultStatus = ((EnumValue<ResultStatus>)results["ResultStatus"].Value).Value;
 
       if (new[] { ResultStatus.Abnormal, ResultStatus.NotSolved, ResultStatus.Unbounded }.Contains(resultStatus))
         return;
 
-      var objective = ((DoubleValue)algorithm.Results[$"Best{nameof(solver.ObjectiveValue)}"].Value).Value;
-      var bound = solver.IsMip ? ((DoubleValue)algorithm.Results[$"Best{nameof(solver.ObjectiveBound)}"].Value).Value : double.NaN;
-      var time = algorithm.ExecutionTime.TotalSeconds;
+      var objective = ((DoubleValue)results["BestObjectiveValue"].Value).Value;
+      var bound = solver.IsMIP() ? ((DoubleValue)results["BestObjectiveBound"].Value).Value : double.NaN;
+      var time = executionTime.TotalSeconds;
 
       if (!qpcRow.Values.Any()) {
         if (!double.IsInfinity(objective) && !double.IsNaN(objective)) {
           qpcRow.Values.Add(Tuple.Create(time, objective));
           qpcRow.Values.Add(Tuple.Create(time, objective));
           qualityPerClock.Rows.Add(qpcRow);
-          algorithm.Results.AddOrUpdateResult($"Best{nameof(solver.ObjectiveValue)}FoundAt", new TimeSpanValue(TimeSpan.FromSeconds(time)));
+          results.AddOrUpdateResult("BestObjectiveValueFoundAt", new TimeSpanValue(TimeSpan.FromSeconds(time)));
         }
       } else {
         var previousBest = qpcRow.Values.Last().Item2;
         qpcRow.Values[qpcRow.Values.Count - 1] = Tuple.Create(time, objective);
         if (!objective.IsAlmost(previousBest)) {
           qpcRow.Values.Add(Tuple.Create(time, objective));
-          algorithm.Results.AddOrUpdateResult($"Best{nameof(solver.ObjectiveValue)}FoundAt", new TimeSpanValue(TimeSpan.FromSeconds(time)));
+          results.AddOrUpdateResult("BestObjectiveValueFoundAt", new TimeSpanValue(TimeSpan.FromSeconds(time)));
         }
       }
 
-      if (!solver.IsMip)
+      if (!solver.IsMIP())
         return;
 
       if (!bpcRow.Values.Any()) {

@@ -44,9 +44,11 @@ namespace HeuristicLab.Data.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
+      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FileValueView));
       this.openButton = new System.Windows.Forms.Button();
       this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
       this.stringConvertibleValueView = new HeuristicLab.Data.Views.StringConvertibleValueView();
+      this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
       this.SuspendLayout();
       // 
       // openButton
@@ -89,5 +91,6 @@ namespace HeuristicLab.Data.Views {
     protected System.Windows.Forms.Button openButton;
     protected System.Windows.Forms.OpenFileDialog openFileDialog;
     protected StringConvertibleValueView stringConvertibleValueView;
+    private System.Windows.Forms.SaveFileDialog saveFileDialog;
   }
 }

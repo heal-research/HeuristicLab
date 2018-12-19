@@ -19,29 +19,30 @@
  */
 #endregion
 
+using Google.OrTools.LinearSolver;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms.Solvers.Base {
+namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
 
   [StorableClass]
-  public class ExternalIncrementalSolver : IncrementalSolver, IExternalSolver {
+  public class ExternalLinearSolver : LinearSolver, IExternalLinearSolver {
     protected const string FileDialogFilter = "Dynamic-Link Library (*.dll)|*.dll|All Files (*.*)|*.*";
 
     [Storable]
     protected IFixedValueParameter<FileValue> libraryNameParam;
 
-    public ExternalIncrementalSolver() {
+    public ExternalLinearSolver() {
     }
 
     [StorableConstructor]
-    protected ExternalIncrementalSolver(bool deserializing)
+    protected ExternalLinearSolver(bool deserializing)
       : base(deserializing) {
     }
 
-    protected ExternalIncrementalSolver(ExternalIncrementalSolver original, Cloner cloner)
+    protected ExternalLinearSolver(ExternalLinearSolver original, Cloner cloner)
       : base(original, cloner) {
       libraryNameParam = cloner.Clone(original.libraryNameParam);
     }
@@ -50,5 +51,8 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms.Sol
       get => libraryNameParam?.Value.Value;
       set => libraryNameParam.Value.Value = value;
     }
+
+    protected override Solver CreateSolver(OptimizationProblemType optimizationProblemType,
+      string libraryName = null) => base.CreateSolver(optimizationProblemType, LibraryName);
   }
 }

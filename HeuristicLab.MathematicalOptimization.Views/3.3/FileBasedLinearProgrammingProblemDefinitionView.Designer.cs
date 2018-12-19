@@ -17,16 +17,14 @@
  * You should have received a copy of the GNU General Public License
  * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
  */
-#endregion
+# endregion
 
-using System.ComponentModel;
-
-namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Views {
-  partial class LinearProgrammingProblemView {
+namespace HeuristicLab.MathematicalOptimization.Views {
+  partial class FileBasedLinearProgrammingProblemDefinitionView {
     /// <summary> 
     /// Required designer variable.
     /// </summary>
-    private IContainer components = null;
+    private System.ComponentModel.IContainer components = null;
 
     /// <summary> 
     /// Clean up any resources being used.
@@ -46,17 +44,35 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
+      this.viewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
       this.SuspendLayout();
       // 
-      // LinearProgrammingProblemView
+      // viewHost
       // 
-      this.Name = "LinearProgrammingProblemView";
-      this.Load += new System.EventHandler(this.LinearProgrammingProblemView_Load);
+      this.viewHost.Caption = "View";
+      this.viewHost.Content = null;
+      this.viewHost.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.viewHost.Enabled = false;
+      this.viewHost.Location = new System.Drawing.Point(0, 0);
+      this.viewHost.Name = "viewHost";
+      this.viewHost.ReadOnly = false;
+      this.viewHost.Size = new System.Drawing.Size(150, 150);
+      this.viewHost.TabIndex = 0;
+      this.viewHost.ViewsLabelVisible = true;
+      this.viewHost.ViewType = null;
+      // 
+      // LinearProgrammingProblemDefinitionFileView
+      // 
+      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.Controls.Add(this.viewHost);
+      this.Name = "LinearProgrammingProblemDefinitionFileView";
       this.ResumeLayout(false);
 
     }
 
     #endregion
 
+    private MainForm.WindowsForms.ViewHost viewHost;
   }
 }

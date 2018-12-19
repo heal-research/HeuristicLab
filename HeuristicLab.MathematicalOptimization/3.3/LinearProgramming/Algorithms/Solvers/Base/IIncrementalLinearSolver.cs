@@ -19,9 +19,12 @@
  */
 #endregion
 
-namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms.Solvers.Base {
+using System;
 
-  public interface IExternalSolver : ISolver {
-    string LibraryName { get; set; }
+namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
+
+  public interface IIncrementalLinearSolver : ILinearSolver {
+    TimeSpan QualityUpdateInterval { get; set; }
+    bool SupportsQualityUpdate { get; }
   }
 }

@@ -19,24 +19,14 @@
  */
 #endregion
 
-using System;
-using System.Runtime.Serialization;
+namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
 
-namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Problems {
+  public enum IncrementalityValues {
 
-  [Serializable]
-  public class ProblemDefinitionScriptException : Exception {
+    // Start solve from scratch.
+    IncrementalityOff = 0,
 
-    public ProblemDefinitionScriptException() {
-    }
-
-    public ProblemDefinitionScriptException(string message) : base(message) {
-    }
-
-    public ProblemDefinitionScriptException(string message, Exception inner) : base(message, inner) {
-    }
-
-    protected ProblemDefinitionScriptException(SerializationInfo info, StreamingContext context)
-      : base(info, context) { }
+    // Reuse results from previous solve as much as the underlying solver allows.
+    IncrementalityOn = 1
   }
 }

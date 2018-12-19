@@ -22,15 +22,14 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms.Solvers.Base;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms.Solvers {
+namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
 
   [Item("GLPK", "GLPK (https://www.gnu.org/software/glpk/) can be used out of the box.")]
   [StorableClass]
-  public class GlpkSolver : ExternalIncrementalSolver {
+  public class GlpkSolver : ExternalLinearSolver {
 
     public GlpkSolver() {
       Parameters.Remove(solverSpecificParametersParam);
@@ -47,9 +46,7 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms.Sol
       : base(deserializing) {
     }
 
-    public override bool SupportsPause => ProblemType == ProblemType.LinearProgramming; // TODO: pause working for linear programs?
-
-    public override bool SupportsQualityUpdate => ProblemType == ProblemType.LinearProgramming;
+    public override bool SupportsPause => false;
 
     protected override OptimizationProblemType OptimizationProblemType =>
       ProblemType == ProblemType.LinearProgramming

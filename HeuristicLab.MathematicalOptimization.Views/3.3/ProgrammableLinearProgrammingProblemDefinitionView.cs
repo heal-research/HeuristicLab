@@ -22,33 +22,24 @@
 using System;
 using System.Drawing;
 using HeuristicLab.MainForm;
-using HeuristicLab.MathematicalOptimization.LinearProgramming.Problems;
+using HeuristicLab.MathematicalOptimization.LinearProgramming;
 using HeuristicLab.PluginInfrastructure;
+using HeuristicLab.Problems.Programmable;
 using HeuristicLab.Scripting.Views;
 
-namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Views {
+namespace HeuristicLab.MathematicalOptimization.Views {
 
-  [View("LinearProgrammingProblemDefinitionScriptView")]
-  [Content(typeof(LinearProgrammingProblemDefinitionScript), IsDefaultView = true)]
-  public partial class LinearProgrammingProblemDefinitionScriptView : ScriptView {
+  [View(nameof(ProgrammableLinearProgrammingProblemDefinitionView))]
+  [Content(typeof(ProgrammableLinearProgrammingProblemDefinition), IsDefaultView = true)]
+  public partial class ProgrammableLinearProgrammingProblemDefinitionView : ScriptView {
 
-    public new LinearProgrammingProblemDefinitionScript Content {
-      get => (LinearProgrammingProblemDefinitionScript)base.Content;
-      set => base.Content = value;
-    }
-
-    public LinearProgrammingProblemDefinitionScriptView() {
+    public ProgrammableLinearProgrammingProblemDefinitionView() {
       InitializeComponent();
     }
 
-    protected override void OnContentChanged() {
-      base.OnContentChanged();
-      variableStoreView.Content = Content?.VariableStore;
-    }
-
-    protected override void SetEnabledStateOfControls() {
-      base.SetEnabledStateOfControls();
-      variableStoreView.Enabled = Content != null && !Locked && !ReadOnly;
+    public new ProgrammableLinearProgrammingProblemDefinition Content {
+      get => (ProgrammableLinearProgrammingProblemDefinition)base.Content;
+      set => base.Content = value;
     }
 
     public override bool Compile() {
@@ -64,6 +55,16 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Views {
     protected override void Content_CodeChanged(object sender, EventArgs e) {
       base.Content_CodeChanged(sender, e);
       UpdateInfoTextLabel("Code changed, compilation necessary!", Color.Red);
+    }
+
+    protected override void OnContentChanged() {
+      base.OnContentChanged();
+      variableStoreView.Content = Content?.VariableStore;
+    }
+
+    protected override void SetEnabledStateOfControls() {
+      base.SetEnabledStateOfControls();
+      variableStoreView.Enabled = Content != null && !Locked && !ReadOnly;
     }
   }
 }

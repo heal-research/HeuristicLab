@@ -59,20 +59,20 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
     }
 
     /// <summary>
-    ///   Looks up a localized string similar to using Google.OrTools.LinearSolver;
+    ///   Looks up a localized string similar to using System;
+    ///using System.Linq;
+    ///using System.Collections.Generic;
+    ///using Google.OrTools.LinearSolver;
+    ///using HeuristicLab.Common;
+    ///using HeuristicLab.Core;
     ///using HeuristicLab.Data;
     ///using HeuristicLab.MathematicalOptimization.LinearProgramming.Problems;
     ///using HeuristicLab.Optimization;
-    ///using HeuristicLab.Problems.Programmable;
+    ///using Variable = Google.OrTools.LinearSolver.Variable;
     ///
     ///namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
-    ///  public class CompiledLinearProgrammingProblemDefinition : CompiledProblemDefinition, ILinearProgrammingProblemDefinition {
     ///
-    ///    private Variable x;
-    ///    private Variable y;
-    ///
-    ///    public override void Initialize() {
-    ///      // [rest of string was truncated]&quot;;.
+    ///  public class CompiledLinearProgrammingProblemDefinition : CompiledProblemDefinition, ILi [rest of string was truncated]&quot;;.
     /// </summary>
     internal static string CompiledLinearProgrammingProblemDefinition {
       get {

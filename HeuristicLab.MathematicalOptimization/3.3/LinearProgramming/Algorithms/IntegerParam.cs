@@ -19,17 +19,21 @@
  */
 #endregion
 
-using Google.OrTools.LinearSolver;
-using HeuristicLab.Problems.Programmable;
+namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms {
 
-namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Problems {
+  // Enumeration of parameters that take integer or categorical values.
+  public enum IntegerParam {
 
-  public class LinearProgrammingProblemDefintion : CompiledProblemDefinition {
+    // Advanced usage: presolve mode.
+    Presolve = 1000,
 
-    public void BuildModel(Solver solver) {
-    }
+    // Algorithm to solve linear programs.
+    LpAlgorithm = 1001,
 
-    public override void Initialize() {
-    }
+    // Advanced usage: incrementality from one solve to the next.
+    Incrementality = 1002,
+
+    // Advanced usage: enable or disable matrix scaling.
+    Scaling = 1003
   }
 }

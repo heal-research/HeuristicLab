@@ -24,16 +24,15 @@ using System.Threading;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms.Solvers.Base;
+using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms.Solvers {
+namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
 
   [Item("SCIP", "SCIP (http://scip.zib.de/) must be installed and licenced.")]
   [StorableClass]
-  public class ScipSolver : ExternalIncrementalSolver {
-
+  public class ScipSolver : ExternalIncrementalLinearSolver {
     private TimeSpan timeLimit = TimeSpan.Zero;
 
     public ScipSolver() {
@@ -41,7 +40,7 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms.Sol
         new FileValue { FileDialogFilter = FileDialogFilter, Value = Properties.Settings.Default.ScipLibraryName }));
       problemTypeParam.Value =
         (EnumValue<ProblemType>)new EnumValue<ProblemType>(ProblemType.MixedIntegerProgramming).AsReadOnly();
-      SolverSpecificParameters.Value =
+      SolverSpecificParameters =
         "# for file format and parameters, see https://scip.zib.de/doc/html/PARAMETERS.php" + Environment.NewLine +
         "# example:" + Environment.NewLine +
         "# branching/random/seed = 10" + Environment.NewLine;
@@ -56,13 +55,14 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms.Sol
       : base(original, cloner) {
     }
 
-    protected override OptimizationProblemType OptimizationProblemType =>
-      OptimizationProblemType.ScipMixedIntegerProgramming;
-    protected override TimeSpan TimeLimit => timeLimit += QualityUpdateInterval;
+    protected override TimeSpan IntermediateTimeLimit => timeLimit += QualityUpdateInterval;
 
-    public override void Solve(LinearProgrammingAlgorithm algorithm, CancellationToken cancellationToken) {
+    protected override OptimizationProblemType OptimizationProblemType =>
+          OptimizationProblemType.ScipMixedIntegerProgramming;
+
+    public override void Solve(ILinearProgrammingProblemDefinition problemDefintion, ref TimeSpan executionTime, ResultCollection results, CancellationToken cancellationToken) {
       timeLimit = TimeSpan.Zero;
-      base.Solve(algorithm, cancellationToken);
+      base.Solve(problemDefintion, ref executionTime, results, cancellationToken);
     }
   }
 }

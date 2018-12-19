@@ -19,12 +19,11 @@
  */
 #endregion
 
-using System;
+namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
 
-namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms.Solvers.Base {
+  public abstract class CompiledProblemDefinition {
+    public dynamic vars { get; set; }
 
-  public interface IIncrementalSolver : ISolver {
-    TimeSpan QualityUpdateInterval { get; set; }
-    bool SupportsQualityUpdate { get; }
+    public abstract void Initialize();
   }
 }

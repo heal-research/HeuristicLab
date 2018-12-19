@@ -23,21 +23,20 @@ using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.MathematicalOptimization {
 
-  [Plugin("HeuristicLab.MathematicalOptimization", "Provides support for mathematical optimization based on Google OR-Tools. " +
-    "Requires the Microsoft Visual C++ 2017 Redistributable (x64) - 14.16.27012: https://aka.ms/vs/15/release/vc_redist.x64.exe", "3.3.15.$WCREV$")]
-  [PluginFile("HeuristicLab.MathematicalOptimization-3.3.dll", PluginFileType.Assembly)]
-  [PluginDependency("HeuristicLab.Analysis", "3.3")]
-  [PluginDependency("HeuristicLab.Collections", "3.3")]
+  [Plugin("HeuristicLab.MathematicalOptimization.Views", "Views for mathematical optimization", "3.3.15.0")]
+  [PluginFile("HeuristicLab.MathematicalOptimization.Views-3.3.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.CodeEditor", "3.4")]
   [PluginDependency("HeuristicLab.Common", "3.3")]
   [PluginDependency("HeuristicLab.Common.Resources", "3.3")]
   [PluginDependency("HeuristicLab.Core", "3.3")]
+  [PluginDependency("HeuristicLab.Core.Views", "3.3")]
   [PluginDependency("HeuristicLab.Data", "3.3")]
-  [PluginDependency("HeuristicLab.Optimization", "3.3")]
-  [PluginDependency("HeuristicLab.OrTools", "6.10")]
-  [PluginDependency("HeuristicLab.Parameters", "3.3")]
-  [PluginDependency("HeuristicLab.Persistence", "3.3")]
+  [PluginDependency("HeuristicLab.MainForm", "3.3")]
+  [PluginDependency("HeuristicLab.MainForm.WindowsForms", "3.3")]
+  [PluginDependency("HeuristicLab.MathematicalOptimization", "3.3")]
   [PluginDependency("HeuristicLab.Problems.Programmable", "3.3")]
   [PluginDependency("HeuristicLab.Scripting", "3.3")]
-  public class HeuristicLabMathematicalOptimizationPlugin : PluginBase {
+  [PluginDependency("HeuristicLab.Scripting.Views", "3.3")]
+  public class HeuristicLabMathematicalOptimizationViewsPlugin : PluginBase {
   }
 }

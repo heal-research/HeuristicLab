@@ -19,7 +19,7 @@
  */
 #endregion
 
-namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms {
+namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
 
   public enum ProblemType {
     LinearProgramming,

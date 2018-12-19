@@ -20,14 +20,15 @@
 #endregion
 
 using Google.OrTools.LinearSolver;
+using HeuristicLab.Common;
 using HeuristicLab.Optimization;
 
-namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Problems {
+namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
 
-  public interface ILinearProgrammingProblemDefinition {
-
-    bool BuildModel(Solver solver);
+  public interface ILinearProgrammingProblemDefinition : IContent {
 
     void Analyze(Solver solver, ResultCollection results);
+
+    void BuildModel(Solver solver);
   }
 }

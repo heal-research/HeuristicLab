@@ -30,37 +30,42 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.Programmable;
 using HeuristicLab.Scripting;
 
-namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Problems {
+namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
 
-  [Item("Linear/Mixed Integer Programming Problem Definition Script", "Script that defines the model and evaluates the solution for a linear/mixed integer programming problem.")]
+  [Item("Programmable Linear/Mixed Integer Programming Problem Definition",
+    "Script that defines the model and evaluates the solution for a linear/mixed integer programming problem.")]
   [StorableClass]
-  public sealed class LinearProgrammingProblemDefinitionScript : Script, ILinearProgrammingProblemDefinition, IStorableContent {
-    private bool SuppressEvents { get; set; }
+  public sealed class ProgrammableLinearProgrammingProblemDefinition : Script, ILinearProgrammingProblemDefinition,
+    IStorableContent {
+    private readonly object compileLock = new object();
 
-    [Storable]
-    private readonly VariableStore variableStore;
+    [Storable] private readonly VariableStore variableStore;
 
-    public VariableStore VariableStore => variableStore;
+    [Storable] private bool codeChanged;
 
-    [Storable]
-    private bool codeChanged;
+    private volatile ILinearProgrammingProblemDefinition compiledProblemDefinition;
+
+    public ProgrammableLinearProgrammingProblemDefinition()
+      : base(ScriptTemplates.CompiledLinearProgrammingProblemDefinition) {
+      Name = "Programmable Linear/Mixed Integer Programming Problem Definition";
+      variableStore = new VariableStore();
+    }
 
     [StorableConstructor]
-    private LinearProgrammingProblemDefinitionScript(bool deserializing) : base(deserializing) { }
+    private ProgrammableLinearProgrammingProblemDefinition(bool deserializing) : base(deserializing) {
+    }
 
-    private LinearProgrammingProblemDefinitionScript(LinearProgrammingProblemDefinitionScript original, Cloner cloner)
-      : base(original, cloner) {
+    private ProgrammableLinearProgrammingProblemDefinition(ProgrammableLinearProgrammingProblemDefinition original,
+      Cloner cloner) : base(original, cloner) {
       variableStore = cloner.Clone(original.variableStore);
       codeChanged = original.codeChanged;
     }
 
-    public LinearProgrammingProblemDefinitionScript()
-      : base(ScriptTemplates.CompiledLinearProgrammingProblemDefinition) {
-      variableStore = new VariableStore();
-    }
+    public event EventHandler ProblemDefinitionChanged;
 
-    private readonly object compileLock = new object();
-    private volatile ILinearProgrammingProblemDefinition compiledProblemDefinition;
+    public string Filename { get; set; }
+    public dynamic Instance => compiledProblemDefinition;
+    public VariableStore VariableStore => variableStore;
 
     private ILinearProgrammingProblemDefinition CompiledProblemDefinition {
       get {
@@ -74,24 +79,37 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Problems {
             }
           }
         }
+
         return compiledProblemDefinition;
       }
     }
 
-    public dynamic Instance => compiledProblemDefinition;
+    private bool SuppressEvents { get; set; }
+
+    public void Analyze(Solver solver, ResultCollection results) => CompiledProblemDefinition.Analyze(solver, results);
+
+    public void BuildModel(Solver solver) => CompiledProblemDefinition.BuildModel(solver);
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new ProgrammableLinearProgrammingProblemDefinition(this, cloner);
+    }
 
     public override Assembly Compile() => Compile(true);
+
+    protected override void OnCodeChanged() {
+      base.OnCodeChanged();
+      compiledProblemDefinition = null;
+      codeChanged = true;
+    }
 
     private Assembly Compile(bool fireChanged) {
       var assembly = base.Compile();
       var types = assembly.GetTypes();
       if (!types.Any(x => typeof(CompiledProblemDefinition).IsAssignableFrom(x)))
-        throw new ProblemDefinitionScriptException("The compiled code doesn't contain a problem definition." +
-                                                   Environment.NewLine +
+        throw new ProblemDefinitionScriptException("The compiled code doesn't contain a problem definition." + Environment.NewLine +
                                                    "The problem definition must be a subclass of CompiledProblemDefinition.");
       if (types.Count(x => typeof(CompiledProblemDefinition).IsAssignableFrom(x)) > 1)
-        throw new ProblemDefinitionScriptException("The compiled code contains multiple problem definitions." +
-                                                   Environment.NewLine +
+        throw new ProblemDefinitionScriptException("The compiled code contains multiple problem definitions." + Environment.NewLine +
                                                    "Only one subclass of CompiledProblemDefinition is allowed.");
 
       CompiledProblemDefinition inst;
@@ -127,24 +145,6 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Problems {
       return assembly;
     }
 
-    protected override void OnCodeChanged() {
-      base.OnCodeChanged();
-      compiledProblemDefinition = null;
-      codeChanged = true;
-    }
-
-    public event EventHandler ProblemDefinitionChanged;
-
     private void OnProblemDefinitionChanged() => ProblemDefinitionChanged?.Invoke(this, EventArgs.Empty);
-
-    public string Filename { get; set; }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new LinearProgrammingProblemDefinitionScript(this, cloner);
-    }
-
-    public bool BuildModel(Solver solver) => CompiledProblemDefinition.BuildModel(solver);
-
-    public void Analyze(Solver solver, ResultCollection results) => CompiledProblemDefinition.Analyze(solver, results);
   }
 }

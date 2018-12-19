@@ -19,16 +19,17 @@
  */
 #endregion
 
+using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms.Solvers.Base;
+using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms.Solvers {
+namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
 
   [Item("Clp/Cbc", "Clp (https://projects.coin-or.org/Clp) and Cbc (https://projects.coin-or.org/Cbc) can be used out of the box.")]
   [StorableClass]
-  public class CoinOrSolver : IncrementalSolver {
+  public class CoinOrSolver : IncrementalLinearSolver {
 
     public CoinOrSolver() {
       Parameters.Remove(solverSpecificParametersParam);
@@ -53,5 +54,10 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms.Sol
       ProblemType == ProblemType.LinearProgramming
         ? OptimizationProblemType.ClpLinearProgramming
         : OptimizationProblemType.CbcMixedIntegerProgramming;
+
+    public override void Solve(ILinearProgrammingProblemDefinition problemDefinition, ResultCollection results, TimeSpan timeLimit) {
+      // TODO: warning that solver cannot be stopped or paused
+      base.Solve(problemDefinition, results, timeLimit);
+    }
   }
 }

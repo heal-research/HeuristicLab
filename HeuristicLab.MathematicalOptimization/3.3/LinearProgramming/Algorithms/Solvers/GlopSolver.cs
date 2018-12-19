@@ -23,18 +23,17 @@ using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms.Solvers.Base;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.MathematicalOptimization.LinearProgramming.Algorithms.Solvers {
+namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
 
   [Item("Glop", "Glop (https://developers.google.com/optimization/lp/glop) can be used out of the box.")]
   [StorableClass]
-  public class GlopSolver : IncrementalSolver {
+  public class GlopSolver : IncrementalLinearSolver {
 
     public GlopSolver() {
       problemTypeParam.Value = (EnumValue<ProblemType>)problemTypeParam.Value.AsReadOnly();
-      SolverSpecificParameters.Value =
+      SolverSpecificParameters =
         "# for file format, see Protocol Buffers text format (https://developers.google.com/protocol-buffers/docs/overview#whynotxml)" + Environment.NewLine +
         "# for parameters, see https://github.com/google/or-tools/blob/v6.10/ortools/glop/parameters.proto" + Environment.NewLine +
         "# example:" + Environment.NewLine +
