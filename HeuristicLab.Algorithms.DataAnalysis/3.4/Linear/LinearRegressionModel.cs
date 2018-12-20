@@ -50,7 +50,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
     
     public override IEnumerable<string> VariablesUsedForPrediction {
-      get { return allowedInputVariables; }
+      get { return allowedInputVariables.Union(factorVariables.Select(f => f.Key)); }
     }
 
     [Storable]
@@ -80,6 +80,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       this.C = new double[covariance.GetLength(0),covariance.GetLength(1)];
       Array.Copy(covariance, C, covariance.Length);
       this.NoiseSigma = noiseSigma;
+      var stringInputVariables = factorVariables.Select(f => f.Key).Distinct();
       this.allowedInputVariables = doubleInputVariables.ToArray();
       this.factorVariables = factorVariables.Select(kvp => new KeyValuePair<string, IEnumerable<string>>(kvp.Key, new List<string>(kvp.Value))).ToList();
     }
