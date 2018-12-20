@@ -698,6 +698,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
     private void config_Click(object sender, EventArgs e) {
       configurationDialog.ShowDialog(this);
+      OnZoomChanged(this, EventArgs.Empty);
     }
 
     private void chart_SelectionRangeChanged(object sender, CursorEventArgs e) {
