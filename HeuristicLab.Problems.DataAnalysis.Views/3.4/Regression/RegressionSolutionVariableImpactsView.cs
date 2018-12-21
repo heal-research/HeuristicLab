@@ -32,12 +32,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
   [View("Variable Impacts")]
   [Content(typeof(IRegressionSolution))]
   public partial class RegressionSolutionVariableImpactsView : DataAnalysisSolutionEvaluationView {
-    private CancellationTokenSource cancellationToken = new CancellationTokenSource();
     private enum SortingCriteria {
       ImpactValue,
       Occurrence,
       VariableName
     }
+    private CancellationTokenSource cancellationToken = new CancellationTokenSource();
     private List<Tuple<string, double>> rawVariableImpacts = new List<Tuple<string, double>>();
 
     public new IRegressionSolution Content {
@@ -63,7 +63,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       Content.ModelChanged += new EventHandler(Content_ModelChanged);
       Content.ProblemDataChanged += new EventHandler(Content_ProblemDataChanged);
     }
-
     protected override void DeregisterContentEvents() {
       base.DeregisterContentEvents();
       Content.ModelChanged -= new EventHandler(Content_ModelChanged);
@@ -73,33 +72,31 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     protected virtual void Content_ProblemDataChanged(object sender, EventArgs e) {
       OnContentChanged();
     }
-
     protected virtual void Content_ModelChanged(object sender, EventArgs e) {
       OnContentChanged();
     }
-
     protected override void OnContentChanged() {
       base.OnContentChanged();
+      rawVariableImpacts.Clear();
+
       if (Content == null) {
-        variableImactsArrayView.Content = null;
+        variableImpactsArrayView.Content = null;
       } else {
         UpdateVariableImpact();
       }
     }
-
     private void RegressionSolutionVariableImpactsView_VisibleChanged(object sender, EventArgs e) {
       cancellationToken.Cancel();
     }
 
-
     private void dataPartitionComboBox_SelectedIndexChanged(object sender, EventArgs e) {
+      rawVariableImpacts.Clear();
       UpdateVariableImpact();
     }
-
     private void replacementComboBox_SelectedIndexChanged(object sender, EventArgs e) {
+      rawVariableImpacts.Clear();
       UpdateVariableImpact();
     }
-
     private void sortByComboBox_SelectedIndexChanged(object sender, EventArgs e) {
       //Update the default ordering (asc,desc), but remove the eventHandler beforehand (otherwise the data would be ordered twice)
       ascendingCheckBox.CheckedChanged -= ascendingCheckBox_CheckedChanged;
@@ -108,11 +105,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
       UpdateOrdering();
     }
-
     private void ascendingCheckBox_CheckedChanged(object sender, EventArgs e) {
       UpdateOrdering();
     }
-
 
     private async void UpdateVariableImpact() {
       IProgress progress;
@@ -129,38 +124,71 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       var factorReplMethod = (RegressionSolutionVariableImpactsCalculator.FactorReplacementMethodEnum)factorVarReplComboBox.Items[factorVarReplComboBox.SelectedIndex];
       var dataPartition = (RegressionSolutionVariableImpactsCalculator.DataPartitionEnum)dataPartitionComboBox.SelectedItem;
 
-      variableImactsArrayView.Caption = Content.Name + " Variable Impacts";
+      variableImpactsArrayView.Caption = Content.Name + " Variable Impacts";
       progress = mainForm.AddOperationProgressToView(this, "Calculating variable impacts for " + Content.Name);
       progress.ProgressValue = 0;
 
       cancellationToken = new CancellationTokenSource();
-      //Remember the original ordering of the variables
-      try {
-        var impacts = await Task.Run(() => RegressionSolutionVariableImpactsCalculator.CalculateImpacts(Content, dataPartition, replMethod, factorReplMethod,
-          (i, s) => {
-            progress.ProgressValue = i;
-            progress.Status = s;
-            return cancellationToken.Token.IsCancellationRequested;
-          }), cancellationToken.Token);
 
-        if (cancellationToken.Token.IsCancellationRequested) { return; }
+      try {
         var problemData = Content.ProblemData;
         var inputvariables = new HashSet<string>(problemData.AllowedInputVariables.Union(Content.Model.VariablesUsedForPrediction));
+        //Remember the original ordering of the variables
         var originalVariableOrdering = problemData.Dataset.VariableNames
           .Where(v => inputvariables.Contains(v))
           .Where(v => problemData.Dataset.VariableHasType<double>(v) || problemData.Dataset.VariableHasType<string>(v))
           .ToList();
 
-        rawVariableImpacts.Clear();
-        originalVariableOrdering.ForEach(v => rawVariableImpacts.Add(new Tuple<string, double>(v, impacts.First(vv => vv.Item1 == v).Item2)));
+        List<Tuple<string, double>> impacts = null;
+        await Task.Run(() => { impacts = CalculateVariableImpacts(originalVariableOrdering, Content.Model, problemData, Content.EstimatedValues, dataPartition, replMethod, factorReplMethod, cancellationToken.Token, progress); });
+        if (impacts == null) { return; }
+
+        rawVariableImpacts.AddRange(impacts);
         UpdateOrdering();
-      } finally {
+      }
+      finally {
         ((MainForm.WindowsForms.MainForm)MainFormManager.MainForm).RemoveOperationProgressFromView(this);
       }
     }
+    private List<Tuple<string, double>> CalculateVariableImpacts(List<string> originalVariableOrdering,
+      IRegressionModel model,
+      IRegressionProblemData problemData,
+      IEnumerable<double> estimatedValues,
+      RegressionSolutionVariableImpactsCalculator.DataPartitionEnum dataPartition,
+      RegressionSolutionVariableImpactsCalculator.ReplacementMethodEnum replMethod,
+      RegressionSolutionVariableImpactsCalculator.FactorReplacementMethodEnum factorReplMethod,
+      CancellationToken token,
+      IProgress progress) {
+      List<Tuple<string, double>> impacts = new List<Tuple<string, double>>();
+      int count = originalVariableOrdering.Count;
+      int i = 0;
+      var modifiableDataset = ((Dataset)(problemData.Dataset).Clone()).ToModifiable();
+      IEnumerable<int> rows = RegressionSolutionVariableImpactsCalculator.GetPartitionRows(dataPartition, problemData);
+
+      //Calculate original quality-values (via calculator, default is R²)
+      IEnumerable<double> targetValuesPartition = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, rows);
+      IEnumerable<double> estimatedValuesPartition = Content.GetEstimatedValues(rows);
+
+      var originalCalculatorValue = RegressionSolutionVariableImpactsCalculator.CalculateQuality(targetValuesPartition, estimatedValuesPartition);
+
+      foreach (var variableName in originalVariableOrdering) {
+        if (cancellationToken.Token.IsCancellationRequested) { return null; }
+        progress.ProgressValue = (double)++i / count;
+        progress.Status = string.Format("Calculating impact for variable {0} ({1} of {2})", variableName, i, count);
+
+        double impact = 0;
+        //If the variable isn't used for prediction, it has zero impact.
+        if (model.VariablesUsedForPrediction.Contains(variableName)) {
+          impact = RegressionSolutionVariableImpactsCalculator.CalculateImpact(variableName, model, problemData, modifiableDataset, rows, replMethod, factorReplMethod, targetValuesPartition, originalCalculatorValue);
+        }
+        impacts.Add(new Tuple<string, double>(variableName, impact));
+      }
+
+      return impacts;
+    }
 
     /// <summary>
-    /// Updates the <see cref="variableImactsArrayView"/> according to the selected ordering <see cref="ascendingCheckBox"/> of the selected Column <see cref="sortByComboBox"/>
+    /// Updates the <see cref="variableImpactsArrayView"/> according to the selected ordering <see cref="ascendingCheckBox"/> of the selected Column <see cref="sortByComboBox"/>
     /// The default is "Descending" by "VariableImpact" (as in previous versions)
     /// </summary>
     private void UpdateOrdering() {
@@ -197,8 +225,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       };
 
       //Could be, if the View was closed
-      if (!variableImactsArrayView.IsDisposed) {
-        variableImactsArrayView.Content = (DoubleArray)impactArray.AsReadOnly();
+      if (!variableImpactsArrayView.IsDisposed) {
+        variableImpactsArrayView.Content = (DoubleArray)impactArray.AsReadOnly();
       }
     }
   }

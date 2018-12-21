@@ -22,6 +22,7 @@
 #endregion
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
@@ -35,6 +36,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
   [StorableClass]
   [Item("RegressionSolution Impacts Calculator", "Calculation of the impacts of input variables for any regression solution")]
   public sealed class RegressionSolutionVariableImpactsCalculator : ParameterizedNamedItem {
+    #region Parameters/Properties
     public enum ReplacementMethodEnum {
       Median,
       Average,
@@ -53,10 +55,14 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     private const string ReplacementParameterName = "Replacement Method";
+    private const string FactorReplacementParameterName = "Factor Replacement Method";
     private const string DataPartitionParameterName = "DataPartition";
 
     public IFixedValueParameter<EnumValue<ReplacementMethodEnum>> ReplacementParameter {
       get { return (IFixedValueParameter<EnumValue<ReplacementMethodEnum>>)Parameters[ReplacementParameterName]; }
+    }
+    public IFixedValueParameter<EnumValue<FactorReplacementMethodEnum>> FactorReplacementParameter {
+      get { return (IFixedValueParameter<EnumValue<FactorReplacementMethodEnum>>)Parameters[FactorReplacementParameterName]; }
     }
     public IFixedValueParameter<EnumValue<DataPartitionEnum>> DataPartitionParameter {
       get { return (IFixedValueParameter<EnumValue<DataPartitionEnum>>)Parameters[DataPartitionParameterName]; }
@@ -66,150 +72,154 @@ namespace HeuristicLab.Problems.DataAnalysis {
       get { return ReplacementParameter.Value.Value; }
       set { ReplacementParameter.Value.Value = value; }
     }
+    public FactorReplacementMethodEnum FactorReplacementMethod {
+      get { return FactorReplacementParameter.Value.Value; }
+      set { FactorReplacementParameter.Value.Value = value; }
+    }
     public DataPartitionEnum DataPartition {
       get { return DataPartitionParameter.Value.Value; }
       set { DataPartitionParameter.Value.Value = value; }
     }
+    #endregion
 
-
+    #region Ctor/Cloner
     [StorableConstructor]
     private RegressionSolutionVariableImpactsCalculator(bool deserializing) : base(deserializing) { }
     private RegressionSolutionVariableImpactsCalculator(RegressionSolutionVariableImpactsCalculator original, Cloner cloner)
       : base(original, cloner) { }
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new RegressionSolutionVariableImpactsCalculator(this, cloner);
-    }
-
     public RegressionSolutionVariableImpactsCalculator()
       : base() {
-      Parameters.Add(new FixedValueParameter<EnumValue<ReplacementMethodEnum>>(ReplacementParameterName, "The replacement method for variables during impact calculation.", new EnumValue<ReplacementMethodEnum>(ReplacementMethodEnum.Median)));
+      Parameters.Add(new FixedValueParameter<EnumValue<ReplacementMethodEnum>>(ReplacementParameterName, "The replacement method for variables during impact calculation.", new EnumValue<ReplacementMethodEnum>(ReplacementMethodEnum.Shuffle)));
+      Parameters.Add(new FixedValueParameter<EnumValue<FactorReplacementMethodEnum>>(FactorReplacementParameterName, "The replacement method for factor variables during impact calculation.", new EnumValue<FactorReplacementMethodEnum>(FactorReplacementMethodEnum.Best)));
       Parameters.Add(new FixedValueParameter<EnumValue<DataPartitionEnum>>(DataPartitionParameterName, "The data partition on which the impacts are calculated.", new EnumValue<DataPartitionEnum>(DataPartitionEnum.Training)));
     }
 
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new RegressionSolutionVariableImpactsCalculator(this, cloner);
+    }
+    #endregion
+
     //mkommend: annoying name clash with static method, open to better naming suggestions
     public IEnumerable<Tuple<string, double>> Calculate(IRegressionSolution solution) {
-      return CalculateImpacts(solution, DataPartition, ReplacementMethod);
+      return CalculateImpacts(solution, ReplacementMethod, FactorReplacementMethod, DataPartition);
     }
 
     public static IEnumerable<Tuple<string, double>> CalculateImpacts(
       IRegressionSolution solution,
-      DataPartitionEnum data = DataPartitionEnum.Training,
-      ReplacementMethodEnum replacementMethod = ReplacementMethodEnum.Median,
+      ReplacementMethodEnum replacementMethod = ReplacementMethodEnum.Shuffle,
       FactorReplacementMethodEnum factorReplacementMethod = FactorReplacementMethodEnum.Best,
-      Func<double, string, bool> progressCallback = null) {
+      DataPartitionEnum dataPartition = DataPartitionEnum.Training) {
 
-      var problemData = solution.ProblemData;
-      var dataset = problemData.Dataset;
-
-      IEnumerable<int> rows;
-      IEnumerable<double> targetValues;
-      double originalR2 = -1;
-
-      OnlineCalculatorError error;
-
-      switch (data) {
-        case DataPartitionEnum.All:
-          rows = solution.ProblemData.AllIndices;
-          targetValues = problemData.TargetVariableValues.ToList();
-          originalR2 = OnlinePearsonsRCalculator.Calculate(problemData.TargetVariableValues, solution.EstimatedValues, out error);
-          if (error != OnlineCalculatorError.None) throw new InvalidOperationException("Error during R² calculation.");
-          originalR2 = originalR2 * originalR2;
-          break;
-        case DataPartitionEnum.Training:
-          rows = problemData.TrainingIndices;
-          targetValues = problemData.TargetVariableTrainingValues.ToList();
-          originalR2 = solution.TrainingRSquared;
-          break;
-        case DataPartitionEnum.Test:
-          rows = problemData.TestIndices;
-          targetValues = problemData.TargetVariableTestValues.ToList();
-          originalR2 = solution.TestRSquared;
-          break;
-        default: throw new ArgumentException(string.Format("DataPartition {0} cannot be handled.", data));
-      }
-
-      var impacts = new Dictionary<string, double>();
-      var modifiableDataset = ((Dataset)dataset).ToModifiable();
-
-      var inputvariables = new HashSet<string>(problemData.AllowedInputVariables.Union(solution.Model.VariablesUsedForPrediction));
-      var allowedInputVariables = dataset.VariableNames.Where(v => inputvariables.Contains(v)).ToList();
-
-      int curIdx = 0;
-      int count = allowedInputVariables.Where(problemData.Dataset.VariableHasType<double>).Count();
-      // calculate impacts for double variables
-      foreach (var inputVariable in allowedInputVariables.Where(problemData.Dataset.VariableHasType<double>)) {
-        //Report the current progress in percent. If the callback returns true, it means the execution shall be stopped
-        if (progressCallback != null) {
-          curIdx++;
-          if (progressCallback((double)curIdx / count, string.Format("Calculating impact for variable {0} ({1} of {2})", inputVariable, curIdx, count))) { return null; }
-        }
-        var newEstimates = EvaluateModelWithReplacedVariable(solution.Model, inputVariable, modifiableDataset, rows, replacementMethod);
-        var newR2 = OnlinePearsonsRCalculator.Calculate(targetValues, newEstimates, out error);
-        if (error != OnlineCalculatorError.None) throw new InvalidOperationException("Error during R² calculation with replaced inputs.");
-
-        newR2 = newR2 * newR2;
-        var impact = originalR2 - newR2;
-        impacts[inputVariable] = impact;
-      }
-
-      // calculate impacts for string variables
-      foreach (var inputVariable in allowedInputVariables.Where(problemData.Dataset.VariableHasType<string>)) {
-        if (factorReplacementMethod == FactorReplacementMethodEnum.Best) {
-          // try replacing with all possible values and find the best replacement value
-          var smallestImpact = double.PositiveInfinity;
-          foreach (var repl in problemData.Dataset.GetStringValues(inputVariable, rows).Distinct()) {
-            var newEstimates = EvaluateModelWithReplacedVariable(solution.Model, inputVariable, modifiableDataset, rows,
-              Enumerable.Repeat(repl, dataset.Rows));
-            var newR2 = OnlinePearsonsRCalculator.Calculate(targetValues, newEstimates, out error);
-            if (error != OnlineCalculatorError.None)
-              throw new InvalidOperationException("Error during R² calculation with replaced inputs.");
-
-            newR2 = newR2 * newR2;
-            var impact = originalR2 - newR2;
-            if (impact < smallestImpact) smallestImpact = impact;
-          }
-          impacts[inputVariable] = smallestImpact;
-        } else {
-          // for replacement methods shuffle and mode
-          // calculate impacts for factor variables
-
-          var newEstimates = EvaluateModelWithReplacedVariable(solution.Model, inputVariable, modifiableDataset, rows,
-            factorReplacementMethod);
-          var newR2 = OnlinePearsonsRCalculator.Calculate(targetValues, newEstimates, out error);
-          if (error != OnlineCalculatorError.None)
-            throw new InvalidOperationException("Error during R² calculation with replaced inputs.");
-
-          newR2 = newR2 * newR2;
-          var impact = originalR2 - newR2;
-          impacts[inputVariable] = impact;
-        }
-      } // foreach
-      return impacts.OrderByDescending(i => i.Value).Select(i => Tuple.Create(i.Key, i.Value));
+      IEnumerable<int> rows = GetPartitionRows(dataPartition, solution.ProblemData);
+      IEnumerable<double> estimatedValues = solution.GetEstimatedValues(rows);
+      return CalculateImpacts(solution.Model, solution.ProblemData, estimatedValues, rows, replacementMethod, factorReplacementMethod);
     }
 
+    public static IEnumerable<Tuple<string, double>> CalculateImpacts(
+     IRegressionModel model,
+     IRegressionProblemData problemData,
+     IEnumerable<double> estimatedValues,
+     IEnumerable<int> rows,
+     ReplacementMethodEnum replacementMethod = ReplacementMethodEnum.Shuffle,
+     FactorReplacementMethodEnum factorReplacementMethod = FactorReplacementMethodEnum.Best) {
 
-    private static IEnumerable<double> EvaluateModelWithReplacedVariable(IRegressionModel model, string variable, ModifiableDataset dataset, IEnumerable<int> rows, ReplacementMethodEnum replacement = ReplacementMethodEnum.Median) {
-      var originalValues = dataset.GetReadOnlyDoubleValues(variable).ToList();
-      double replacementValue;
+      //fholzing: try and catch in case a different dataset is loaded, otherwise statement is neglectable
+      var missingVariables = model.VariablesUsedForPrediction.Except(problemData.Dataset.VariableNames);
+      if (missingVariables.Any()) {
+        throw new InvalidOperationException(string.Format("Can not calculate variable impacts, because the model uses inputs missing in the dataset ({0})", string.Join(", ", missingVariables)));
+      }
+      IEnumerable<double> targetValues = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, rows);
+      var originalQuality = CalculateQuality(targetValues, estimatedValues);
+
+      var impacts = new Dictionary<string, double>();
+      var inputvariables = new HashSet<string>(problemData.AllowedInputVariables.Union(model.VariablesUsedForPrediction));
+      var modifiableDataset = ((Dataset)(problemData.Dataset).Clone()).ToModifiable();
+
+      foreach (var inputVariable in inputvariables) {
+        impacts[inputVariable] = CalculateImpact(inputVariable, model, problemData, modifiableDataset, rows, replacementMethod, factorReplacementMethod, targetValues, originalQuality);
+      }
+
+      return impacts.Select(i => Tuple.Create(i.Key, i.Value));
+    }
+
+    public static double CalculateImpact(string variableName,
+      IRegressionModel model,
+      IRegressionProblemData problemData,
+      ModifiableDataset modifiableDataset,
+      IEnumerable<int> rows,
+      ReplacementMethodEnum replacementMethod = ReplacementMethodEnum.Shuffle,
+      FactorReplacementMethodEnum factorReplacementMethod = FactorReplacementMethodEnum.Best,
+      IEnumerable<double> targetValues = null,
+      double quality = double.NaN) {
+
+      if (!model.VariablesUsedForPrediction.Contains(variableName)) { return 0.0; }
+      if (!problemData.Dataset.VariableNames.Contains(variableName)) {
+        throw new InvalidOperationException(string.Format("Can not calculate variable impact, because the model uses inputs missing in the dataset ({0})", variableName));
+      }
+
+      if (targetValues == null) {
+        targetValues = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, rows);
+      }
+      if (quality == double.NaN) {
+        quality = CalculateQuality(model.GetEstimatedValues(modifiableDataset, rows), targetValues);
+      }
+
+      IList originalValues = null;
+      IList replacementValues = GetReplacementValues(modifiableDataset, variableName, model, rows, targetValues, out originalValues, replacementMethod, factorReplacementMethod);
+
+      double newValue = CalculateQualityForReplacement(model, modifiableDataset, variableName, originalValues, rows, replacementValues, targetValues);
+      double impact = quality - newValue;
+
+      return impact;
+    }
+
+    private static IList GetReplacementValues(ModifiableDataset modifiableDataset,
+      string variableName,
+      IRegressionModel model,
+      IEnumerable<int> rows,
+      IEnumerable<double> targetValues,
+      out IList originalValues,
+      ReplacementMethodEnum replacementMethod = ReplacementMethodEnum.Shuffle,
+      FactorReplacementMethodEnum factorReplacementMethod = FactorReplacementMethodEnum.Best) {
+
+      IList replacementValues = null;
+      if (modifiableDataset.VariableHasType<double>(variableName)) {
+        originalValues = modifiableDataset.GetReadOnlyDoubleValues(variableName).ToList();
+        replacementValues = GetReplacementValuesForDouble(modifiableDataset, rows, (List<double>)originalValues, replacementMethod);
+      } else if (modifiableDataset.VariableHasType<string>(variableName)) {
+        originalValues = modifiableDataset.GetReadOnlyStringValues(variableName).ToList();
+        replacementValues = GetReplacementValuesForString(model, modifiableDataset, variableName, rows, (List<string>)originalValues, targetValues, factorReplacementMethod);
+      } else {
+        throw new NotSupportedException("Variable not supported");
+      }
+
+      return replacementValues;
+    }
+
+    private static IList GetReplacementValuesForDouble(ModifiableDataset modifiableDataset,
+      IEnumerable<int> rows,
+      List<double> originalValues,
+      ReplacementMethodEnum replacementMethod = ReplacementMethodEnum.Shuffle) {
+
+      IRandom random = new FastRandom(31415);
       List<double> replacementValues;
-      IRandom rand;
+      double replacementValue;
 
-      switch (replacement) {
+      switch (replacementMethod) {
         case ReplacementMethodEnum.Median:
           replacementValue = rows.Select(r => originalValues[r]).Median();
-          replacementValues = Enumerable.Repeat(replacementValue, dataset.Rows).ToList();
+          replacementValues = Enumerable.Repeat(replacementValue, modifiableDataset.Rows).ToList();
           break;
         case ReplacementMethodEnum.Average:
           replacementValue = rows.Select(r => originalValues[r]).Average();
-          replacementValues = Enumerable.Repeat(replacementValue, dataset.Rows).ToList();
+          replacementValues = Enumerable.Repeat(replacementValue, modifiableDataset.Rows).ToList();
           break;
         case ReplacementMethodEnum.Shuffle:
           // new var has same empirical distribution but the relation to y is broken
-          rand = new FastRandom(31415);
           // prepare a complete column for the dataset
-          replacementValues = Enumerable.Repeat(double.NaN, dataset.Rows).ToList();
+          replacementValues = Enumerable.Repeat(double.NaN, modifiableDataset.Rows).ToList();
           // shuffle only the selected rows
-          var shuffledValues = rows.Select(r => originalValues[r]).Shuffle(rand).ToList();
+          var shuffledValues = rows.Select(r => originalValues[r]).Shuffle(random).ToList();
           int i = 0;
           // update column values 
           foreach (var r in rows) {
@@ -219,45 +229,61 @@ namespace HeuristicLab.Problems.DataAnalysis {
         case ReplacementMethodEnum.Noise:
           var avg = rows.Select(r => originalValues[r]).Average();
           var stdDev = rows.Select(r => originalValues[r]).StandardDeviation();
-          rand = new FastRandom(31415);
           // prepare a complete column for the dataset
-          replacementValues = Enumerable.Repeat(double.NaN, dataset.Rows).ToList();
+          replacementValues = Enumerable.Repeat(double.NaN, modifiableDataset.Rows).ToList();
           // update column values 
           foreach (var r in rows) {
-            replacementValues[r] = NormalDistributedRandom.NextDouble(rand, avg, stdDev);
+            replacementValues[r] = NormalDistributedRandom.NextDouble(random, avg, stdDev);
           }
           break;
 
         default:
-          throw new ArgumentException(string.Format("ReplacementMethod {0} cannot be handled.", replacement));
+          throw new ArgumentException(string.Format("ReplacementMethod {0} cannot be handled.", replacementMethod));
       }
 
-      return EvaluateModelWithReplacedVariable(model, variable, dataset, rows, replacementValues);
+      return replacementValues;
     }
 
-    private static IEnumerable<double> EvaluateModelWithReplacedVariable(
-      IRegressionModel model, string variable, ModifiableDataset dataset,
+    private static IList GetReplacementValuesForString(IRegressionModel model,
+      ModifiableDataset modifiableDataset,
+      string variableName,
       IEnumerable<int> rows,
-      FactorReplacementMethodEnum replacement = FactorReplacementMethodEnum.Shuffle) {
-      var originalValues = dataset.GetReadOnlyStringValues(variable).ToList();
-      List<string> replacementValues;
-      IRandom rand;
+      List<string> originalValues,
+      IEnumerable<double> targetValues,
+      FactorReplacementMethodEnum factorReplacementMethod = FactorReplacementMethodEnum.Shuffle) {
 
-      switch (replacement) {
+      List<string> replacementValues = null;
+      IRandom random = new FastRandom(31415);
+
+      switch (factorReplacementMethod) {
+        case FactorReplacementMethodEnum.Best:
+          // try replacing with all possible values and find the best replacement value
+          var bestQuality = double.NegativeInfinity;
+          foreach (var repl in modifiableDataset.GetStringValues(variableName, rows).Distinct()) {
+            List<string> curReplacementValues = Enumerable.Repeat(repl, modifiableDataset.Rows).ToList();
+            //fholzing: this result could be used later on (theoretically), but is neglected for better readability/method consistency 
+            var newValue = CalculateQualityForReplacement(model, modifiableDataset, variableName, originalValues, rows, curReplacementValues, targetValues);
+            var curQuality = newValue;
+
+            if (curQuality > bestQuality) {
+              bestQuality = curQuality;
+              replacementValues = curReplacementValues;
+            }
+          }
+          break;
         case FactorReplacementMethodEnum.Mode:
           var mostCommonValue = rows.Select(r => originalValues[r])
             .GroupBy(v => v)
             .OrderByDescending(g => g.Count())
             .First().Key;
-          replacementValues = Enumerable.Repeat(mostCommonValue, dataset.Rows).ToList();
+          replacementValues = Enumerable.Repeat(mostCommonValue, modifiableDataset.Rows).ToList();
           break;
         case FactorReplacementMethodEnum.Shuffle:
           // new var has same empirical distribution but the relation to y is broken
-          rand = new FastRandom(31415);
           // prepare a complete column for the dataset
-          replacementValues = Enumerable.Repeat(string.Empty, dataset.Rows).ToList();
+          replacementValues = Enumerable.Repeat(string.Empty, modifiableDataset.Rows).ToList();
           // shuffle only the selected rows
-          var shuffledValues = rows.Select(r => originalValues[r]).Shuffle(rand).ToList();
+          var shuffledValues = rows.Select(r => originalValues[r]).Shuffle(random).ToList();
           int i = 0;
           // update column values 
           foreach (var r in rows) {
@@ -265,31 +291,55 @@ namespace HeuristicLab.Problems.DataAnalysis {
           }
           break;
         default:
-          throw new ArgumentException(string.Format("FactorReplacementMethod {0} cannot be handled.", replacement));
+          throw new ArgumentException(string.Format("FactorReplacementMethod {0} cannot be handled.", factorReplacementMethod));
       }
 
-      return EvaluateModelWithReplacedVariable(model, variable, dataset, rows, replacementValues);
+      return replacementValues;
     }
 
-    private static IEnumerable<double> EvaluateModelWithReplacedVariable(IRegressionModel model, string variable,
-      ModifiableDataset dataset, IEnumerable<int> rows, IEnumerable<double> replacementValues) {
-      var originalValues = dataset.GetReadOnlyDoubleValues(variable).ToList();
-      dataset.ReplaceVariable(variable, replacementValues.ToList());
-      //mkommend: ToList is used on purpose to avoid lazy evaluation that could result in wrong estimates due to variable replacements
-      var estimates = model.GetEstimatedValues(dataset, rows).ToList();
-      dataset.ReplaceVariable(variable, originalValues);
+    private static double CalculateQualityForReplacement(
+      IRegressionModel model,
+      ModifiableDataset modifiableDataset,
+      string variableName,
+      IList originalValues,
+      IEnumerable<int> rows,
+      IList replacementValues,
+      IEnumerable<double> targetValues) {
 
-      return estimates;
+      modifiableDataset.ReplaceVariable(variableName, replacementValues);
+      //mkommend: ToList is used on purpose to avoid lazy evaluation that could result in wrong estimates due to variable replacements
+      var estimates = model.GetEstimatedValues(modifiableDataset, rows).ToList();
+      var ret = CalculateQuality(targetValues, estimates);
+      modifiableDataset.ReplaceVariable(variableName, originalValues);
+
+      return ret;
     }
-    private static IEnumerable<double> EvaluateModelWithReplacedVariable(IRegressionModel model, string variable,
-      ModifiableDataset dataset, IEnumerable<int> rows, IEnumerable<string> replacementValues) {
-      var originalValues = dataset.GetReadOnlyStringValues(variable).ToList();
-      dataset.ReplaceVariable(variable, replacementValues.ToList());
-      //mkommend: ToList is used on purpose to avoid lazy evaluation that could result in wrong estimates due to variable replacements
-      var estimates = model.GetEstimatedValues(dataset, rows).ToList();
-      dataset.ReplaceVariable(variable, originalValues);
 
-      return estimates;
+    public static double CalculateQuality(IEnumerable<double> targetValues, IEnumerable<double> estimatedValues) {
+      OnlineCalculatorError errorState;
+      var ret = OnlinePearsonsRCalculator.Calculate(targetValues, estimatedValues, out errorState);
+      if (errorState != OnlineCalculatorError.None) { throw new InvalidOperationException("Error during calculation with replaced inputs."); }
+      return ret * ret;
+    }
+
+    public static IEnumerable<int> GetPartitionRows(DataPartitionEnum dataPartition, IRegressionProblemData problemData) {
+      IEnumerable<int> rows;
+
+      switch (dataPartition) {
+        case DataPartitionEnum.All:
+          rows = problemData.AllIndices;
+          break;
+        case DataPartitionEnum.Test:
+          rows = problemData.TestIndices;
+          break;
+        case DataPartitionEnum.Training:
+          rows = problemData.TrainingIndices;
+          break;
+        default:
+          throw new NotSupportedException("DataPartition not supported");
+      }
+
+      return rows;
     }
   }
 }
