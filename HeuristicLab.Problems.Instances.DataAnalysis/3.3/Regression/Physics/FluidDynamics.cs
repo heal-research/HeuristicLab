@@ -25,7 +25,7 @@ using System.Linq;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
-  class FluidDynamics : ArtificialRegressionDataDescriptor {
+  public class FluidDynamics : ArtificialRegressionDataDescriptor {
     public override string Name { get { return "Flow Psi = V_inf r sin(th) (1 - R²/r²) + G/(2 π) ln(r/R)"; } }
 
     public override string Description {

@@ -25,7 +25,7 @@ using System.Linq;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
-  class AircraftLift : ArtificialRegressionDataDescriptor {
+  public class AircraftLift : ArtificialRegressionDataDescriptor {
     public override string Name { get { return "Aircraft Lift Coefficient C_L = C_La (a - a0) + C_Ld_e d_e S_HT / S_ref"; } }
 
     public override string Description {

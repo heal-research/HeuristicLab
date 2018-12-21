@@ -25,7 +25,7 @@ using System.Linq;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
-  class RocketFuelFlow : ArtificialRegressionDataDescriptor {
+  public class RocketFuelFlow : ArtificialRegressionDataDescriptor {
     public override string Name { get { return "Rocket Fuel Flow m_dot = p0 A / sqrt(T0) * sqrt(γ/R (2/(γ+1))^((γ+1) / (γ-1)))"; } }
 
     public override string Description {
