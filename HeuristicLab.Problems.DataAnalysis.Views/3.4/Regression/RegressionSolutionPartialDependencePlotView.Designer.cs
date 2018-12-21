@@ -30,24 +30,30 @@
       this.limitView = new HeuristicLab.Problems.DataAnalysis.Views.DoubleLimitView();
       this.automaticYAxisCheckBox = new System.Windows.Forms.CheckBox();
       this.densityGroupBox = new System.Windows.Forms.GroupBox();
+      this.columnsNumericUpDown = new System.Windows.Forms.NumericUpDown();
       this.columnsLabel = new System.Windows.Forms.Label();
       this.densityComboBox = new System.Windows.Forms.ComboBox();
       this.label1 = new System.Windows.Forms.Label();
       this.configSplitContainer = new System.Windows.Forms.SplitContainer();
       this.variableGroupBox = new System.Windows.Forms.GroupBox();
+      this.rowSelectGroupBox = new System.Windows.Forms.GroupBox();
+      this.comboBox1 = new System.Windows.Forms.ComboBox();
+      this.label2 = new System.Windows.Forms.Label();
+      this.rowNrNumericUpDown = new System.Windows.Forms.NumericUpDown();
       this.scrollPanel = new System.Windows.Forms.Panel();
       this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
-      this.columnsNumericUpDown = new System.Windows.Forms.NumericUpDown();
       this.yAxisConfigGroupBox.SuspendLayout();
       this.densityGroupBox.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.columnsNumericUpDown)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.configSplitContainer)).BeginInit();
       this.configSplitContainer.Panel1.SuspendLayout();
       this.configSplitContainer.Panel2.SuspendLayout();
       this.configSplitContainer.SuspendLayout();
       this.variableGroupBox.SuspendLayout();
+      this.rowSelectGroupBox.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.rowNrNumericUpDown)).BeginInit();
       this.scrollPanel.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
-      ((System.ComponentModel.ISupportInitialize)(this.columnsNumericUpDown)).BeginInit();
       this.SuspendLayout();
       // 
       // variableListView
@@ -56,7 +62,7 @@
       this.variableListView.Dock = System.Windows.Forms.DockStyle.Fill;
       this.variableListView.Location = new System.Drawing.Point(3, 16);
       this.variableListView.Name = "variableListView";
-      this.variableListView.Size = new System.Drawing.Size(163, 478);
+      this.variableListView.Size = new System.Drawing.Size(163, 404);
       this.variableListView.TabIndex = 0;
       this.variableListView.UseCompatibleStateImageBehavior = false;
       this.variableListView.View = System.Windows.Forms.View.List;
@@ -126,6 +132,26 @@
       this.densityGroupBox.TabStop = false;
       this.densityGroupBox.Text = "Settings";
       // 
+      // columnsNumericUpDown
+      // 
+      this.columnsNumericUpDown.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.columnsNumericUpDown.Location = new System.Drawing.Point(66, 46);
+      this.columnsNumericUpDown.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+      this.columnsNumericUpDown.Name = "columnsNumericUpDown";
+      this.columnsNumericUpDown.Size = new System.Drawing.Size(94, 20);
+      this.columnsNumericUpDown.TabIndex = 1;
+      this.columnsNumericUpDown.Value = new decimal(new int[] {
+            4,
+            0,
+            0,
+            0});
+      this.columnsNumericUpDown.ValueChanged += new System.EventHandler(this.columnsNumericUpDown_ValueChanged);
+      // 
       // columnsLabel
       // 
       this.columnsLabel.AutoSize = true;
@@ -171,6 +197,7 @@
       // configSplitContainer.Panel1
       // 
       this.configSplitContainer.Panel1.Controls.Add(this.variableGroupBox);
+      this.configSplitContainer.Panel1.Controls.Add(this.rowSelectGroupBox);
       this.configSplitContainer.Panel1.Controls.Add(this.densityGroupBox);
       this.configSplitContainer.Panel1.Controls.Add(this.yAxisConfigGroupBox);
       // 
@@ -188,10 +215,53 @@
       this.variableGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
       this.variableGroupBox.Location = new System.Drawing.Point(0, 151);
       this.variableGroupBox.Name = "variableGroupBox";
-      this.variableGroupBox.Size = new System.Drawing.Size(169, 497);
+      this.variableGroupBox.Size = new System.Drawing.Size(169, 423);
       this.variableGroupBox.TabIndex = 1;
       this.variableGroupBox.TabStop = false;
       this.variableGroupBox.Text = "Variables";
+      // 
+      // rowSelectGroupBox
+      // 
+      this.rowSelectGroupBox.Controls.Add(this.comboBox1);
+      this.rowSelectGroupBox.Controls.Add(this.label2);
+      this.rowSelectGroupBox.Controls.Add(this.rowNrNumericUpDown);
+      this.rowSelectGroupBox.Dock = System.Windows.Forms.DockStyle.Bottom;
+      this.rowSelectGroupBox.Location = new System.Drawing.Point(0, 574);
+      this.rowSelectGroupBox.Name = "rowSelectGroupBox";
+      this.rowSelectGroupBox.Size = new System.Drawing.Size(169, 74);
+      this.rowSelectGroupBox.TabIndex = 1;
+      this.rowSelectGroupBox.TabStop = false;
+      this.rowSelectGroupBox.Text = "Set Fixed Variable Values";
+      // 
+      // comboBox1
+      // 
+      this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.comboBox1.FormattingEnabled = true;
+      this.comboBox1.Items.AddRange(new object[] {
+            "Mean",
+            "Median",
+            "Most Common"});
+      this.comboBox1.Location = new System.Drawing.Point(10, 45);
+      this.comboBox1.Name = "comboBox1";
+      this.comboBox1.Size = new System.Drawing.Size(150, 21);
+      this.comboBox1.TabIndex = 3;
+      // 
+      // label2
+      // 
+      this.label2.AutoSize = true;
+      this.label2.Location = new System.Drawing.Point(7, 21);
+      this.label2.Name = "label2";
+      this.label2.Size = new System.Drawing.Size(46, 13);
+      this.label2.TabIndex = 2;
+      this.label2.Text = "Row Nr.";
+      // 
+      // rowNrNumericUpDown
+      // 
+      this.rowNrNumericUpDown.Location = new System.Drawing.Point(66, 19);
+      this.rowNrNumericUpDown.Name = "rowNrNumericUpDown";
+      this.rowNrNumericUpDown.Size = new System.Drawing.Size(94, 20);
+      this.rowNrNumericUpDown.TabIndex = 1;
+      this.rowNrNumericUpDown.ValueChanged += new System.EventHandler(this.rowNrNumericUpDown_ValueChanged);
       // 
       // scrollPanel
       // 
@@ -207,26 +277,6 @@
       this.errorProvider.BlinkStyle = System.Windows.Forms.ErrorBlinkStyle.NeverBlink;
       this.errorProvider.ContainerControl = this;
       // 
-      // columnsNumericUpDown
-      // 
-      this.columnsNumericUpDown.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.columnsNumericUpDown.Location = new System.Drawing.Point(66, 46);
-      this.columnsNumericUpDown.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-      this.columnsNumericUpDown.Name = "columnsNumericUpDown";
-      this.columnsNumericUpDown.Size = new System.Drawing.Size(94, 20);
-      this.columnsNumericUpDown.TabIndex = 1;
-      this.columnsNumericUpDown.Value = new decimal(new int[] {
-            4,
-            0,
-            0,
-            0});
-      this.columnsNumericUpDown.ValueChanged += new System.EventHandler(this.columnsNumericUpDown_ValueChanged);
-      // 
       // RegressionSolutionPartialDependencePlotView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -238,15 +288,18 @@
       this.yAxisConfigGroupBox.PerformLayout();
       this.densityGroupBox.ResumeLayout(false);
       this.densityGroupBox.PerformLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.columnsNumericUpDown)).EndInit();
       this.configSplitContainer.Panel1.ResumeLayout(false);
       this.configSplitContainer.Panel2.ResumeLayout(false);
       ((System.ComponentModel.ISupportInitialize)(this.configSplitContainer)).EndInit();
       this.configSplitContainer.ResumeLayout(false);
       this.variableGroupBox.ResumeLayout(false);
+      this.rowSelectGroupBox.ResumeLayout(false);
+      this.rowSelectGroupBox.PerformLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.rowNrNumericUpDown)).EndInit();
       this.scrollPanel.ResumeLayout(false);
       this.scrollPanel.PerformLayout();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
-      ((System.ComponentModel.ISupportInitialize)(this.columnsNumericUpDown)).EndInit();
       this.ResumeLayout(false);
 
     }
@@ -267,5 +320,9 @@
     private System.Windows.Forms.ErrorProvider errorProvider;
     private System.Windows.Forms.Label label1;
     private System.Windows.Forms.NumericUpDown columnsNumericUpDown;
+    private System.Windows.Forms.GroupBox rowSelectGroupBox;
+    private System.Windows.Forms.ComboBox comboBox1;
+    private System.Windows.Forms.Label label2;
+    private System.Windows.Forms.NumericUpDown rowNrNumericUpDown;
   }
 }

@@ -230,6 +230,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
       sharedFixedVariables.ItemChanged += SharedFixedVariables_ItemChanged;
 
+      rowNrNumericUpDown.Maximum = Content.ProblemData.Dataset.Rows - 1;
+
       RecalculateAndRelayoutCharts();
     }
 
@@ -562,6 +564,24 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         pdp.Refresh();
         UpdateDensityChart(densityChart, variable);
       }
+    }
+
+    private void rowNrNumericUpDown_ValueChanged(object sender, EventArgs e) {
+      int rowNumber = (int)rowNrNumericUpDown.Value;
+      var dataset = Content.ProblemData.Dataset;
+
+      object[] newRow = sharedFixedVariables.VariableNames
+        .Select<string, object>(variableName => {
+          if (dataset.DoubleVariables.Contains(variableName)) {
+            return dataset.GetDoubleValue(variableName, rowNumber);
+          } else if (dataset.StringVariables.Contains(variableName)) {
+            return dataset.GetStringValue(variableName, rowNumber);
+          } else {
+            throw new NotSupportedException("Only double and string(factor) columns are currently supported.");
+          }
+        }).ToArray();
+
+      sharedFixedVariables.ReplaceRow(0, newRow);
     }
   }
 }
