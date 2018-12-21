@@ -125,8 +125,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       base.SetEnabledStateOfControls();
       bool enabled = Content != null && !Locked && !ReadOnly;
       nameTextBox.Enabled = enabled;
-      descriptionTextBox.Enabled = enabled;
-      refreshButton.Enabled = enabled;
+      descriptionTextBox.Enabled = enabled;      
       ownerComboBox.Enabled = enabled;
       createdTextBox.Enabled = enabled;
       startDateTimePicker.Enabled = enabled;
@@ -184,25 +183,6 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
           if (Content != null && !Content.ParentProjectId.HasValue) users = users.Where(x => x.Roles.Select(y => y.Name).Contains(HiveRoles.Administrator));
           ownerComboBox.DataSource = users.ToList();
           ownerComboBox.SelectedIndexChanged += ownerComboBox_SelectedIndexChanged;
-        });
-    }
-
-    private async void refreshButton_Click(object sender, EventArgs e) {
-      lock (locker) {
-        if (!refreshButton.Enabled) return;
-        refreshButton.Enabled = false;
-      }
-
-      await SecurityExceptionUtil.TryAsyncAndReportSecurityExceptions(
-        action: () => UpdateUsers(),
-        finallyCallback: () => {
-          ownerComboBox.SelectedIndexChanged -= ownerComboBox_SelectedIndexChanged;
-          var users = AccessClient.Instance.UsersAndGroups.OfType<LightweightUser>();
-          if (Content != null && !Content.ParentProjectId.HasValue) users = users.Where(x => x.Roles.Select(y => y.Name).Contains(HiveRoles.Administrator));
-          ownerComboBox.DataSource = users.ToList();
-          ownerComboBox.SelectedItem = users.FirstOrDefault(x => x.Id == persistedOwnerUserId);
-          ownerComboBox.SelectedIndexChanged += ownerComboBox_SelectedIndexChanged;
-          refreshButton.Enabled = true;
         });
     }
 
