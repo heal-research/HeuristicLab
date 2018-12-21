@@ -25,6 +25,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using HeuristicLab.Persistence.Core;
 using HeuristicLab.Persistence.Core.Tokens;
 using HeuristicLab.Persistence.Interfaces;
@@ -60,7 +61,7 @@ namespace HeuristicLab.Persistence.Default.Xml {
       Depth = 0;
     }
 
-    protected enum NodeType { Start, End, Inline } ;
+    protected enum NodeType { Start, End, Inline };
 
     protected static void AddXmlTagContent(StringBuilder sb, string name, Dictionary<string, string> attributes) {
       sb.Append(name);
@@ -255,8 +256,7 @@ namespace HeuristicLab.Persistence.Default.Xml {
           {"id", lastTypeToken.Id.ToString()},
           {"typeName", lastTypeToken.TypeName },
           {"serializer", lastTypeToken.Serializer }});
-      }
-      finally {
+      } finally {
         lastTypeToken = null;
       }
     }
@@ -283,8 +283,8 @@ namespace HeuristicLab.Persistence.Default.Xml {
     /// </summary>
     /// <param name="o">The object.</param>
     /// <param name="filename">The filename.</param>
-    public static void Serialize(object o, string filename) {
-      Serialize(o, filename, ConfigurationService.Instance.GetConfiguration(new XmlFormat()), false, CompressionLevel.Optimal);
+    public static void Serialize(object o, string filename, CancellationToken cancellationToken = default(CancellationToken)) {
+      Serialize(o, filename, ConfigurationService.Instance.GetConfiguration(new XmlFormat()), false, CompressionLevel.Optimal, cancellationToken);
     }
 
     /// <summary>
@@ -295,8 +295,8 @@ namespace HeuristicLab.Persistence.Default.Xml {
     /// <param name="o">The object.</param>
     /// <param name="filename">The filename.</param>
     /// <param name="compression">ZIP file compression level</param>
-    public static void Serialize(object o, string filename, CompressionLevel compression) {
-      Serialize(o, filename, ConfigurationService.Instance.GetConfiguration(new XmlFormat()), false, compression);
+    public static void Serialize(object o, string filename, CompressionLevel compression, CancellationToken cancellationToken = default(CancellationToken)) {
+      Serialize(o, filename, ConfigurationService.Instance.GetConfiguration(new XmlFormat()), false, compression, cancellationToken);
     }
 
     /// <summary>
@@ -306,18 +306,18 @@ namespace HeuristicLab.Persistence.Default.Xml {
     /// <param name="obj">The object.</param>
     /// <param name="filename">The filename.</param>
     /// <param name="config">The configuration.</param>
-    public static void Serialize(object obj, string filename, Configuration config) {
-      Serialize(obj, filename, config, false, CompressionLevel.Optimal);
+    public static void Serialize(object obj, string filename, Configuration config, CancellationToken cancellationToken = default(CancellationToken)) {
+      Serialize(obj, filename, config, false, CompressionLevel.Optimal, cancellationToken);
     }
 
-    private static void Serialize(object obj, Stream stream, Configuration config, bool includeAssemblies
-   , CompressionLevel compression) {
+    private static void Serialize(object obj, Stream stream, Configuration config, bool includeAssemblies, CompressionLevel compression, CancellationToken cancellationToken = default(CancellationToken)) {
       Serializer serializer = new Serializer(obj, config);
-      Serialize(stream, includeAssemblies, compression, serializer);
+      Serialize(stream, includeAssemblies, compression, serializer, cancellationToken);
     }
 
-    private static void Serialize(Stream stream, bool includeAssemblies, CompressionLevel compression, Serializer serializer) {
+    private static void Serialize(Stream stream, bool includeAssemblies, CompressionLevel compression, Serializer serializer, CancellationToken cancellationToken = default(CancellationToken)) {
       try {
+        cancellationToken.ThrowIfCancellationRequested();
         DateTime start = DateTime.Now;
         serializer.InterleaveTypeInformation = false;
         XmlGenerator generator = new XmlGenerator();
@@ -325,6 +325,7 @@ namespace HeuristicLab.Persistence.Default.Xml {
           ZipArchiveEntry entry = zipArchive.CreateEntry("data.xml", compression);
           using (StreamWriter writer = new StreamWriter(entry.Open())) {
             foreach (ISerializationToken token in serializer) {
+              cancellationToken.ThrowIfCancellationRequested();
               string line = generator.Format(token);
               writer.Write(line);
             }
@@ -337,6 +338,7 @@ namespace HeuristicLab.Persistence.Default.Xml {
           }
           if (includeAssemblies) {
             foreach (string name in serializer.RequiredFiles) {
+              cancellationToken.ThrowIfCancellationRequested();
               Uri uri = new Uri(name);
               if (!uri.IsFile) {
                 Logger.Warn("cannot read non-local files");
@@ -347,6 +349,7 @@ namespace HeuristicLab.Persistence.Default.Xml {
                 using (FileStream reader = File.OpenRead(uri.PathAndQuery)) {
                   byte[] buffer = new byte[1024 * 1024];
                   while (true) {
+                    cancellationToken.ThrowIfCancellationRequested();
                     int bytesRead = reader.Read(buffer, 0, 1024 * 1024);
                     if (bytesRead == 0)
                       break;
@@ -359,8 +362,7 @@ namespace HeuristicLab.Persistence.Default.Xml {
         }
         Logger.Info(String.Format("serialization took {0} seconds with compression level {1}",
           (DateTime.Now - start).TotalSeconds, compression));
-      }
-      catch (Exception) {
+      } catch (Exception) {
         Logger.Warn("Exception caught, no data has been serialized.");
         throw;
       }
@@ -374,20 +376,22 @@ namespace HeuristicLab.Persistence.Default.Xml {
     /// <param name="config">The configuration.</param>
     /// <param name="includeAssemblies">if set to <c>true</c> include needed assemblies.</param>
     /// <param name="compression">The ZIP compression level.</param>
-    public static void Serialize(object obj, string filename, Configuration config, bool includeAssemblies, CompressionLevel compression) {
+    public static void Serialize(object obj, string filename, Configuration config, bool includeAssemblies, CompressionLevel compression, CancellationToken cancellationToken = default(CancellationToken)) {
+      string tempfile = null;
       try {
-        string tempfile = Path.GetTempFileName();
+        tempfile = Path.GetTempFileName();
 
         using (FileStream stream = File.Create(tempfile)) {
-          Serialize(obj, stream, config, includeAssemblies, compression);
+          Serialize(obj, stream, config, includeAssemblies, compression, cancellationToken);
         }
-
+        // copy only if needed
         File.Copy(tempfile, filename, true);
-        File.Delete(tempfile);
-      }
-      catch (Exception) {
+      } catch (Exception) {
         Logger.Warn("Exception caught, no data has been written.");
         throw;
+      } finally {
+        if (tempfile != null && File.Exists(tempfile))
+          File.Delete(tempfile);
       }
     }
 
@@ -398,8 +402,8 @@ namespace HeuristicLab.Persistence.Default.Xml {
     /// <param name="obj">The object.</param>
     /// <param name="stream">The stream.</param>
     /// <param name="compressionType">Type of compression, default is GZip.</param>
-    public static void Serialize(object obj, Stream stream, CompressionType compressionType = CompressionType.GZip) {
-      Serialize(obj, stream, ConfigurationService.Instance.GetConfiguration(new XmlFormat()), compressionType);
+    public static void Serialize(object obj, Stream stream, CompressionType compressionType = CompressionType.GZip, CancellationToken cancellationToken = default(CancellationToken)) {
+      Serialize(obj, stream, ConfigurationService.Instance.GetConfiguration(new XmlFormat()), compressionType, cancellationToken);
     }
 
 
@@ -410,8 +414,8 @@ namespace HeuristicLab.Persistence.Default.Xml {
     /// <param name="stream">The stream.</param>
     /// <param name="config">The configuration.</param>
     /// <param name="compressionType">Type of compression, default is GZip.</param>
-    public static void Serialize(object obj, Stream stream, Configuration config, CompressionType compressionType = CompressionType.GZip) {
-      Serialize(obj, stream, config, false, compressionType);
+    public static void Serialize(object obj, Stream stream, Configuration config, CompressionType compressionType = CompressionType.GZip, CancellationToken cancellationToken = default(CancellationToken)) {
+      Serialize(obj, stream, config, false, compressionType, cancellationToken);
     }
 
     /// <summary>
@@ -422,20 +426,17 @@ namespace HeuristicLab.Persistence.Default.Xml {
     /// <param name="config">The configuration.</param>
     /// <param name="includeAssemblies">if set to <c>true</c> include need assemblies.</param>
     /// <param name="compressionType">Type of compression, default is GZip.</param>
-    public static void Serialize(object obj, Stream stream, Configuration config, bool includeAssemblies,
-                                 CompressionType compressionType = CompressionType.GZip) {
+    public static void Serialize(object obj, Stream stream, Configuration config, bool includeAssemblies, CompressionType compressionType = CompressionType.GZip, CancellationToken cancellationToken = default(CancellationToken)) {
       try {
         Serializer serializer = new Serializer(obj, config);
         if (compressionType == CompressionType.Zip) {
-          Serialize(obj, stream, config, includeAssemblies, CompressionLevel.Optimal);
+          Serialize(obj, stream, config, includeAssemblies, CompressionLevel.Optimal, cancellationToken);
         } else {
-          Serialize(stream, serializer);
+          Serialize(stream, serializer, cancellationToken);
         }
-      }
-      catch (PersistenceException) {
+      } catch (PersistenceException) {
         throw;
-      }
-      catch (Exception e) {
+      } catch (Exception e) {
         throw new PersistenceException("Unexpected exception during Serialization.", e);
       }
     }
@@ -450,29 +451,29 @@ namespace HeuristicLab.Persistence.Default.Xml {
     /// <param name="types">The list of all serialized types.</param>
     /// <param name="compressionType">Type of compression, default is GZip.</param>
     public static void Serialize(object obj, Stream stream, Configuration config, bool includeAssemblies, out IEnumerable<Type> types,
-                                 CompressionType compressionType = CompressionType.GZip) {
+                                 CompressionType compressionType = CompressionType.GZip, CancellationToken cancellationToken = default(CancellationToken)) {
       try {
         Serializer serializer = new Serializer(obj, config);
         if (compressionType == CompressionType.Zip) {
-          Serialize(stream, includeAssemblies, CompressionLevel.Optimal, serializer);
+          Serialize(stream, includeAssemblies, CompressionLevel.Optimal, serializer, cancellationToken);
         } else {
-          Serialize(stream, serializer);
+          Serialize(stream, serializer, cancellationToken);
         }
         types = serializer.SerializedTypes;
-      }
-      catch (PersistenceException) {
+      } catch (PersistenceException) {
         throw;
-      }
-      catch (Exception e) {
+      } catch (Exception e) {
         throw new PersistenceException("Unexpected exception during Serialization.", e);
       }
     }
 
-    private static void Serialize(Stream stream, Serializer serializer) {
+    private static void Serialize(Stream stream, Serializer serializer, CancellationToken cancellationToken = default(CancellationToken)) {
+      cancellationToken.ThrowIfCancellationRequested();
       using (StreamWriter writer = new StreamWriter(new GZipStream(stream, CompressionMode.Compress))) {
         serializer.InterleaveTypeInformation = true;
         XmlGenerator generator = new XmlGenerator();
         foreach (ISerializationToken token in serializer) {
+          cancellationToken.ThrowIfCancellationRequested();
           string line = generator.Format(token);
           writer.Write(line);
         }
