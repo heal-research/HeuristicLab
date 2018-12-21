@@ -25,7 +25,7 @@ using System.Linq;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
-  class AircraftMaximumLift : ArtificialRegressionDataDescriptor {
+  public class AircraftMaximumLift : ArtificialRegressionDataDescriptor {
     public override string Name { get { return "Aircraft Maximum Lift Coefficient f(X) = x1 - 1/4 x4 x5 x6 (4 + 0.1 x2/x3 - x2²/x3²) + x13 x14/x15 x18 x7 - x13 x14/x15 x8 + x13 x14/x15 x9 + x16 x17/x15 x18 x10 - x16 x17/x15 x11 + x16 x17/x15 x12"; } }
 
     public override string Description {

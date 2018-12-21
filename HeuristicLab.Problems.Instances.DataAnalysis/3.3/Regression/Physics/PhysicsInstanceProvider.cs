@@ -21,19 +21,10 @@
 
 using System;
 using System.Collections.Generic;
+using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
-  class PhysicsInstanceProvider : ArtificialRegressionInstanceProvider {
-    public override IEnumerable<IDataDescriptor> GetDataDescriptors() {
-      return new List<IDataDescriptor>()
-      {
-         new RocketFuelFlow(123),
-         new AircraftLift(456),
-         new FluidDynamics(789),
-         new AircraftMaximumLift(321)
-      };
-    }
-
+  public class PhysicsInstanceProvider : ArtificialRegressionInstanceProvider {
     public override string Name { get { return "Physics Benchmark Problems"; } }
     public override string Description { get { return ""; } }
     public override Uri WebLink { get { return new Uri(@"https://doi.org/10.1016/j.eswa.2018.05.021"); } }
@@ -41,6 +32,26 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       get {
         return "Chen Chen, Changtong Luo, Zonglin Jiang, \"A multilevel block building algorithm for fast modeling generalized separable systems\", Expert Systems with Applications, Volume 109, 2018, Pages 25-34 https://doi.org/10.1016/j.eswa.2018.05.021 as well as the (slightly different) pre-print on arXiv: https://arxiv.org/abs/1706.02281";
       }
+    }
+
+    public int Seed { get; private set; }
+
+    public PhysicsInstanceProvider() : this((int)DateTime.Now.Ticks) { }
+
+    public PhysicsInstanceProvider(int seed) : base() {
+      Seed = seed;
+    }
+
+    public override IEnumerable<IDataDescriptor> GetDataDescriptors() {
+      var rand = new FastRandom(Seed);
+
+      return new List<IDataDescriptor>()
+      {
+         new RocketFuelFlow(rand.Next()),
+         new AircraftLift(rand.Next()),
+         new FluidDynamics(rand.Next()),
+         new AircraftMaximumLift(rand.Next())
+      };
     }
   }
 }
