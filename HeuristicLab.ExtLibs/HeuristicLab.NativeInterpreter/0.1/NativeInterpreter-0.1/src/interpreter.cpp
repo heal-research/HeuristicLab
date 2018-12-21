@@ -49,11 +49,8 @@ void __cdecl GetValuesVectorized(instruction* code, int codeLength, int* rows, i
     // are there any rows left?
     if (remainingRows > 0) 
     {
-        for (int rowIndex = total; rowIndex < totalRows; rowIndex += remainingRows)
-        {
-            evaluate(code, codeLength, rows, rowIndex, remainingRows);
-            std::memcpy(result + rowIndex, code[0].buf, remainingRows * sizeof(double));
-        }
+        evaluate(code, codeLength, rows, total, remainingRows);
+        std::memcpy(result + total, code[0].buf, remainingRows * sizeof(double));
     }
     _aligned_free(buffer);
 }

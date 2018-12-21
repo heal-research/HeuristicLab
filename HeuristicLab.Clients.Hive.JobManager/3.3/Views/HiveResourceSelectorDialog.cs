@@ -95,8 +95,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
     private void HiveClient_Instance_Refreshing(object sender, EventArgs e) {
       if (InvokeRequired) Invoke((Action<object, EventArgs>)HiveClient_Instance_Refreshing, sender, e);
       else {
-        var mainForm = MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>();
-        mainForm.AddOperationProgressToView(this, "Refreshing ...");
+        Progress.ShowOnControl(this, "Refreshing", ProgressMode.Indeterminate);
         refreshButton.Enabled = false;
       }
     }
@@ -104,8 +103,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
     private void HiveClient_Instance_Refreshed(object sender, EventArgs e) {
       if (InvokeRequired) Invoke((Action<object, EventArgs>)HiveClient_Instance_Refreshed, sender, e);
       else {
-        var mainForm = MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>();
-        mainForm.RemoveOperationProgressFromView(this);
+        Progress.HideFromControl(this);
         refreshButton.Enabled = true;
       }
     }
@@ -139,9 +137,9 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
     private void hiveResourceSelector_SelectedResourcesChanged(object sender, EventArgs e) {
       okButton.Enabled = hiveResourceSelector.AssignedResources.Any();
 
-      if(!hiveResourceSelector.AssignedResources.Any()) {
+      if (!hiveResourceSelector.AssignedResources.Any()) {
         errorProvider.SetError(okButton, "Note: currently no resources are assigned");
-      } else if(hiveResourceSelector.AssignedCores == 0) {
+      } else if (hiveResourceSelector.AssignedCores == 0) {
         errorProvider.SetError(okButton, "Note: currently no resources with cores are assigned");
       } else {
         errorProvider.SetError(okButton, string.Empty);

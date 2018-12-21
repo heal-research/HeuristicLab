@@ -120,9 +120,9 @@ namespace HeuristicLab.Problems.Instances.Views {
         var descriptor = (IDataDescriptor)instancesComboBox.SelectedItem;
 
         IContentView activeView = (IContentView)MainFormManager.MainForm.ActiveView;
-        var mainForm = (MainForm.WindowsForms.MainForm)MainFormManager.MainForm;
+        var content = activeView.Content;
         // lock active view and show progress bar
-        mainForm.AddOperationProgressToContent(activeView.Content, "Loading problem instance.");
+        Progress.Show(content, "Loading problem instance.", ProgressMode.Indeterminate);
 
         Task.Factory.StartNew(() => {
           T data;
@@ -130,7 +130,7 @@ namespace HeuristicLab.Problems.Instances.Views {
             data = Content.LoadData(descriptor);
           } catch (Exception ex) {
             ErrorHandling.ShowErrorDialog(String.Format("Could not load the problem instance {0}", descriptor.Name), ex);
-            mainForm.RemoveOperationProgressFromContent(activeView.Content);
+            Progress.Hide(content);
             return;
           }
           try {
@@ -138,7 +138,7 @@ namespace HeuristicLab.Problems.Instances.Views {
           } catch (Exception ex) {
             ErrorHandling.ShowErrorDialog(String.Format("This problem does not support loading the instance {0}", descriptor.Name), ex);
           } finally {
-            mainForm.RemoveOperationProgressFromContent(activeView.Content);
+            Progress.Hide(content);
           }
         });
       }

@@ -88,5 +88,25 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       for (int i = 0; i < BATCHSIZE; ++i)
         a[i] = Math.Sqrt(b[i]);
     }
+
+    public static void Cube(double[] a, double[] b) {
+      for (int i = 0; i < BATCHSIZE; ++i)
+        a[i] = Math.Pow(b[i], 3d);
+    }
+
+    public static void CubeRoot(double[] a, double[] b) {
+      for (int i = 0; i < BATCHSIZE; ++i)
+        a[i] = Math.Pow(b[i], 1d / 3d);
+    }
+
+    public static void Absolute(double[] a, double[] b) {
+      for (int i = 0; i < BATCHSIZE; ++i)
+        a[i] = Math.Abs(b[i]);
+    }
+
+    public static void AnalyticQuotient(double[] a, double[] b) {
+      for (int i = 0; i < BATCHSIZE; ++i)
+        a[i] = a[i] / Math.Sqrt(1d + b[i] * b[i]);
+    }
   }
 }

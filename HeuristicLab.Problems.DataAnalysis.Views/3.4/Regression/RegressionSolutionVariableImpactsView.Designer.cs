@@ -54,13 +54,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       this.numericVarReplacementLabel = new System.Windows.Forms.Label();
       this.dataPartitionLabel = new System.Windows.Forms.Label();
       this.dataPartitionComboBox = new System.Windows.Forms.ComboBox();
-      this.variableImactsArrayView = new HeuristicLab.Data.Views.StringConvertibleArrayView();
+      this.variableImpactsArrayView = new HeuristicLab.Data.Views.StringConvertibleArrayView();
       this.SuspendLayout();
       // 
       // ascendingCheckBox
       // 
       this.ascendingCheckBox.AutoSize = true;
-      this.ascendingCheckBox.Location = new System.Drawing.Point(534, 6);
+      this.ascendingCheckBox.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+      this.ascendingCheckBox.Location = new System.Drawing.Point(452, 32);
       this.ascendingCheckBox.Name = "ascendingCheckBox";
       this.ascendingCheckBox.Size = new System.Drawing.Size(76, 17);
       this.ascendingCheckBox.TabIndex = 7;
@@ -161,18 +162,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       this.dataPartitionComboBox.TabIndex = 1;
       this.dataPartitionComboBox.SelectedIndexChanged += new System.EventHandler(this.dataPartitionComboBox_SelectedIndexChanged);
       // 
-      // variableImactsArrayView
+      // variableImpactsArrayView
       // 
-      this.variableImactsArrayView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+      this.variableImpactsArrayView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.variableImactsArrayView.Caption = "StringConvertibleArray View";
-      this.variableImactsArrayView.Content = null;
-      this.variableImactsArrayView.Location = new System.Drawing.Point(3, 84);
-      this.variableImactsArrayView.Name = "variableImactsArrayView";
-      this.variableImactsArrayView.ReadOnly = true;
-      this.variableImactsArrayView.Size = new System.Drawing.Size(706, 278);
-      this.variableImactsArrayView.TabIndex = 2;
+      this.variableImpactsArrayView.Caption = "StringConvertibleArray View";
+      this.variableImpactsArrayView.Content = null;
+      this.variableImpactsArrayView.Location = new System.Drawing.Point(3, 84);
+      this.variableImpactsArrayView.Name = "variableImpactsArrayView";
+      this.variableImpactsArrayView.ReadOnly = true;
+      this.variableImpactsArrayView.Size = new System.Drawing.Size(706, 278);
+      this.variableImpactsArrayView.TabIndex = 2;
       // 
       // RegressionSolutionVariableImpactsView
       // 
@@ -187,7 +188,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       this.Controls.Add(this.numericVarReplacementLabel);
       this.Controls.Add(this.dataPartitionLabel);
       this.Controls.Add(this.dataPartitionComboBox);
-      this.Controls.Add(this.variableImactsArrayView);
+      this.Controls.Add(this.variableImpactsArrayView);
       this.Name = "RegressionSolutionVariableImpactsView";
       this.Size = new System.Drawing.Size(712, 365);
       this.VisibleChanged += new System.EventHandler(this.RegressionSolutionVariableImpactsView_VisibleChanged);
@@ -198,7 +199,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
     #endregion
 
-    private Data.Views.StringConvertibleArrayView variableImactsArrayView;
+    private Data.Views.StringConvertibleArrayView variableImpactsArrayView;
     private System.Windows.Forms.ComboBox dataPartitionComboBox;
     private System.Windows.Forms.Label dataPartitionLabel;
     private System.Windows.Forms.Label numericVarReplacementLabel;

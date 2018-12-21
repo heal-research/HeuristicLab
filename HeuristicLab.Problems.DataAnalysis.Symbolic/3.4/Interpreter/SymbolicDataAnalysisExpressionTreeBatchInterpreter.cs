@@ -36,7 +36,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       Parameters.Add(new FixedValueParameter<IntValue>(EvaluatedSolutionsParameterName, "A counter for the total number of solutions the interpreter has evaluated", new IntValue(0)));
     }
 
-
     [StorableConstructor]
     protected SymbolicDataAnalysisExpressionTreeBatchInterpreter(bool deserializing) : base(deserializing) { }
     protected SymbolicDataAnalysisExpressionTreeBatchInterpreter(SymbolicDataAnalysisExpressionTreeBatchInterpreter original, Cloner cloner) : base(original, cloner) {
@@ -110,7 +109,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             }
 
           case OpCodes.Root: {
-              Root(instr.buf, code[c].buf);
+              Load(instr.buf, code[c].buf);
+              Root(instr.buf, code[c + 1].buf);
               break;
             }
 
@@ -119,8 +119,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
               break;
             }
 
+          case OpCodes.Cube: {
+              Cube(instr.buf, code[c].buf);
+              break;
+            }
+          case OpCodes.CubeRoot: {
+              CubeRoot(instr.buf, code[c].buf);
+              break;
+            }
+
           case OpCodes.Power: {
-              Pow(instr.buf, code[c].buf);
+              Load(instr.buf, code[c].buf);
+              Pow(instr.buf, code[c + 1].buf);
               break;
             }
 
@@ -148,14 +158,31 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
               Tan(instr.buf, code[c].buf);
               break;
             }
+
+          case OpCodes.Absolute: {
+              Absolute(instr.buf, code[c].buf);
+              break;
+            }
+
+          case OpCodes.AnalyticQuotient: {
+              Load(instr.buf, code[c].buf);
+              AnalyticQuotient(instr.buf, code[c + 1].buf);
+              break;
+            }
         }
       }
     }
 
+    private readonly object syncRoot = new object();
+
     [ThreadStatic]
     private Dictionary<string, double[]> cachedData;
 
+    [ThreadStatic]
+    private IDataset dataset;
+
     private void InitCache(IDataset dataset) {
+      this.dataset = dataset;
       cachedData = new Dictionary<string, double[]>();
       foreach (var v in dataset.DoubleVariables) {
         cachedData[v] = dataset.GetDoubleValues(v).ToArray();
@@ -164,10 +191,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     public void InitializeState() {
       cachedData = null;
+      dataset = null;
       EvaluatedSolutions = 0;
     }
 
     private double[] GetValues(ISymbolicExpressionTree tree, IDataset dataset, int[] rows) {
+      if (cachedData == null || this.dataset != dataset) {
+        InitCache(dataset);
+      }
+
       var code = Compile(tree, dataset, OpCodes.MapSymbolToOpCode);
       var remainingRows = rows.Length % BATCHSIZE;
       var roundedTotal = rows.Length - remainingRows;
@@ -184,13 +216,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         Array.Copy(code[0].buf, 0, result, roundedTotal, remainingRows);
       }
 
+      // when evaluation took place without any error, we can increment the counter
+      lock (syncRoot) {
+        EvaluatedSolutions++;
+      }
+
       return result;
     }
 
     public IEnumerable<double> GetSymbolicExpressionTreeValues(ISymbolicExpressionTree tree, IDataset dataset, int[] rows) {
-      if (cachedData == null) {
-        InitCache(dataset);
-      }
       return GetValues(tree, dataset, rows);
     }
 

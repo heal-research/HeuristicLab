@@ -36,11 +36,10 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
 
     public override string Name { get { return "Physics Benchmark Problems"; } }
     public override string Description { get { return ""; } }
-    public override Uri WebLink { get { return new Uri(@"https://arxiv.org/abs/1706.02281"); } }
+    public override Uri WebLink { get { return new Uri(@"https://doi.org/10.1016/j.eswa.2018.05.021"); } }
     public override string ReferencePublication {
       get {
-        return "Chen Chen, Changtong Luo, Zonglin Jiang, 2017 " +
-"\"A multilevel block search algorithm for fast modeling generalized separable systems.\" arXiv preprint arXiv:1706.02281, v3";
+        return "Chen Chen, Changtong Luo, Zonglin Jiang, \"A multilevel block building algorithm for fast modeling generalized separable systems\", Expert Systems with Applications, Volume 109, 2018, Pages 25-34 https://doi.org/10.1016/j.eswa.2018.05.021 as well as the (slightly different) pre-print on arXiv: https://arxiv.org/abs/1706.02281";
       }
     }
   }

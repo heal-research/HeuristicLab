@@ -99,7 +99,7 @@ namespace HeuristicLab.Optimizer {
         else {
           MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().SetAppStartingCursor();
           var cancellationTokenSource = new CancellationTokenSource();
-          SetSaveOperationProgressInContentViews(content, true);
+          AddProgressInContentViews(content, cancellationTokenSource);
           ContentManager.SaveAsync(content, content.Filename, true, SavingCompleted, cancellationTokenSource.Token);
         }
       }
@@ -133,7 +133,7 @@ namespace HeuristicLab.Optimizer {
           MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().SetAppStartingCursor();
           bool compressed = saveFileDialog.FilterIndex != 1;
           var cancellationTokenSource = new CancellationTokenSource();
-          SetSaveOperationProgressInContentViews(content, compressed, saveFileDialog.FileName);
+          AddProgressInContentViews(content, cancellationTokenSource, saveFileDialog.FileName);
 
           ContentManager.SaveAsync(content, saveFileDialog.FileName, compressed, SavingCompleted, cancellationTokenSource.Token);
         }
@@ -143,31 +143,18 @@ namespace HeuristicLab.Optimizer {
       try {
         if (error != null) throw error;
         MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().UpdateTitle();
+      } catch (OperationCanceledException) { // do nothing if canceled
       } catch (Exception ex) {
         ErrorHandling.ShowErrorDialog((Control)MainFormManager.MainForm, "Cannot save file.", ex);
       } finally {
-        SetSaveOperationProgressInContentViews(content, false);
+        Progress.Hide(content);
         MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().ResetAppStartingCursor();
       }
     }
 
-    private static void SetSaveOperationProgressInContentViews(IStorableContent content, bool showProgress, string fileName = null) {
-      HeuristicLab.MainForm.WindowsForms.MainForm mainForm = MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>();
-      #region Mono Compatibility
-      // removed the InvokeRequired check because of Mono
-      mainForm.Invoke((Action)delegate {
-        if (showProgress) {
-          mainForm.AddOperationProgressToContent(content, string.Format("Saving to file \"{0}\"...", Path.GetFileName(fileName ?? content.Filename)));
-        } else
-          mainForm.RemoveOperationProgressFromContent(content);
-      });
-      #endregion
-    }
-
-    /* For later merge with #2845
     private static void AddProgressInContentViews(IStorableContent content, CancellationTokenSource cancellationTokenSource, string fileName = null) {
       string message = string.Format("Saving to file \"{0}\"...", Path.GetFileName(fileName ?? content.Filename));
       Progress.Show(content, message, ProgressMode.Indeterminate, cancelRequestHandler: () => cancellationTokenSource.Cancel());
-    }*/
+    }
   }
 }

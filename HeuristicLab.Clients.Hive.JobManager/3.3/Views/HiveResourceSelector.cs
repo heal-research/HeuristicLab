@@ -144,7 +144,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
         lastSelectedProject = selectedProject;
         selectedProject = value;
 
-        UpdateResourceTree();
+        UpdateResourceTree();                
         ExtractStatistics();
         OnSelectedProjectChanged();
       }
@@ -222,6 +222,16 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       currentSearchString = searchTextBox.Text.ToLower();
       //UpdateFilteredTree();
       UpdateProjectTree();
+    }
+
+    private void searchTextBox_MouseDown(object sender, MouseEventArgs e) {
+      resourcesTreeView.SelectedNode = null;
+      ExtractStatistics();
+    }
+
+    private void projectsTreeView_MouseDown(object sender, MouseEventArgs e) {
+      resourcesTreeView.SelectedNode = null;
+      ExtractStatistics();
     }
 
     private void projectsTreeView_MouseDoubleClick(object sender, MouseEventArgs e) {

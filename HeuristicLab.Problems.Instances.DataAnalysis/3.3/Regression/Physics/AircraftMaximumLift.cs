@@ -26,23 +26,29 @@ using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
   class AircraftMaximumLift : ArtificialRegressionDataDescriptor {
-    public override string Name { get { return "Aircraft Maximum Lift Coefficient"; } }
+    public override string Name { get { return "Aircraft Maximum Lift Coefficient f(X) = x1 - 1/4 x4 x5 x6 (4 + 0.1 x2/x3 - x2²/x3²) + x13 x14/x15 x18 x7 - x13 x14/x15 x8 + x13 x14/x15 x9 + x16 x17/x15 x18 x10 - x16 x17/x15 x11 + x16 x17/x15 x12"; } }
 
     public override string Description {
       get {
-        return "A full description of this problem instance is given in the paper: A multilevel block building algorithm for fast modeling generalized separable systems. " + Environment.NewLine +
-               "Authors: Chen Chen, Changtong Luo, Zonglin Jiang" + Environment.NewLine +
-               "Function: f(X) = x1 - 0.25 x4 x5 x6 (4 + 0.1 x2/x3 - x2²/x3²) + x13 x14/x15 x18 x7 - x13 x14/x15 x8 + x13 x14/x15 x9 + x16 x17/x15 x18 x10 - x16 x17/x15 x11 + x16 x17/x15 x12" + Environment.NewLine +
-               "with x1 in [0.4, 0.8], " +
-               "x2 in [3, 4], " +
-               "x3 in [20, 30], " +
-               "x4, x13, x16 in [2, 5]," +
-               "x14, x17 in [1, 1.5], " +
-               "x15 in [5, 7]," +
-               "x18 in [10, 20]," +
-               "x8, x11 in [1, 1.5]," +
-               "x9, x12 in [1, 2]," +
-               "x7, x10 in [0.5, 1.5]";
+        return "Slightly changed version of the problem instance given in: " + Environment.NewLine +
+          "Chen Chen, Changtong Luo, Zonglin Jiang, \"A multilevel block building algorithm for fast " +
+          "modeling generalized separable systems\", " +
+          "pre-print on arXiv: https://arxiv.org/abs/1706.02281 ." + Environment.NewLine +
+          "Notably, this problem is missing from the peer-reviewed version of the article in Expert Systems with Applications, Volume 109" + Environment.NewLine +
+          "Function: f(X) = x1 - 0.25 x4 x5 x6 (4 + 0.1 x2/x3 - x2²/x3²) + x13 x14/x15 x18 x7 - x13 x14/x15 x8 + x13 x14/x15 x9 + x16 x17/x15 x18 x10 - x16 x17/x15 x11 + x16 x17/x15 x12" + Environment.NewLine +
+          "with x1 ∈ [0.4, 0.8]," + Environment.NewLine +
+          "x2 ∈ [3, 4]," + Environment.NewLine +
+          "x3 ∈ [20, 30]," + Environment.NewLine +
+          "x4, x13, x16 ∈ [2, 5]," + Environment.NewLine +
+          "x14, x17 ∈ [1, 1.5]," + Environment.NewLine +
+          "x15 ∈ [5, 7]," + Environment.NewLine +
+          "x18 ∈ [10, 20]," + Environment.NewLine +
+          "x8, x11 ∈ [1, 1.5]," + Environment.NewLine +
+          "x9, x12 ∈ [1, 2]," + Environment.NewLine +
+          "x7, x10 ∈ [0.5, 1.5]." + Environment.NewLine +
+          "Values for x5 and x6 have not been specified in the reference paper." +
+          " We therefore only use a single (x5) variable in place of ∆αW/c and set x6 to a constant value of 1.0." + Environment.NewLine +
+          "The range for x5 is [0..20].";
       }
     }
 
@@ -77,8 +83,9 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       var x16 = ValueGenerator.GenerateUniformDistributedValues(rand.Next(), TestPartitionEnd, 2.0, 5.0).ToList();
 
 
-      var x5 = ValueGenerator.GenerateUniformDistributedValues(rand.Next(), TestPartitionEnd, 1.0, 1.5).ToList(); // TODO: range for X5 is not specified in the paper
-      var x6 = ValueGenerator.GenerateUniformDistributedValues(rand.Next(), TestPartitionEnd, 5.0, 7.0).ToList(); // TODO: range for X6 is not specified in the paper
+      // in the reference paper \Delta alpha_w/c is replaced by two variables x5*x6. 
+      var x5 = ValueGenerator.GenerateUniformDistributedValues(rand.Next(), TestPartitionEnd, 0, 20).ToList(); // range for X5 is not specified in the paper, we use [0°..20°] for ∆αW/c
+      var x6 = Enumerable.Repeat(1.0, x5.Count).ToList(); // range for X6 is not specified in the paper. In the maximum lift formular there is only a single variable ∆αW/c in place of x5*x6.
 
       var x7 = ValueGenerator.GenerateUniformDistributedValues(rand.Next(), TestPartitionEnd, 0.5, 1.5).ToList();
       var x10 = ValueGenerator.GenerateUniformDistributedValues(rand.Next(), TestPartitionEnd, 0.5, 1.5).ToList();
@@ -95,6 +102,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       var x15 = ValueGenerator.GenerateUniformDistributedValues(rand.Next(), TestPartitionEnd, 5.0, 7.0).ToList();
 
       var x18 = ValueGenerator.GenerateUniformDistributedValues(rand.Next(), TestPartitionEnd, 10.0, 20.0).ToList();
+
 
       List<double> fx = new List<double>();
       data.Add(x1);

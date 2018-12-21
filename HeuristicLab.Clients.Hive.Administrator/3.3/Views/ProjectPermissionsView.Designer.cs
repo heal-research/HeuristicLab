@@ -111,7 +111,7 @@
       this.permissionsGroupBox.Size = new System.Drawing.Size(268, 452);
       this.permissionsGroupBox.TabIndex = 4;
       this.permissionsGroupBox.TabStop = false;
-      this.permissionsGroupBox.Text = "Permissions (Assigned + Included)";
+      this.permissionsGroupBox.Text = "Compute Permissions (Assigned + Included)";
       // 
       // treeView
       // 

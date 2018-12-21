@@ -60,9 +60,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
       if (exportFileDialog.ShowDialog(this) == DialogResult.OK) {
         var name = exportFileDialog.FileName;
         using (BackgroundWorker bg = new BackgroundWorker()) {
-          MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>().AddOperationProgressToView(this, "Exporting solution to " + name + ".");
+          Progress.Show(this, "Exporting solution to " + name + ".", ProgressMode.Indeterminate);
           bg.DoWork += (o, a) => exporter.Export(Content, name);
-          bg.RunWorkerCompleted += (o, a) => MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>().RemoveOperationProgressFromView(this);
+          bg.RunWorkerCompleted += (o, a) => Progress.Hide(this);
           bg.RunWorkerAsync();
         }
       }

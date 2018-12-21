@@ -112,13 +112,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
         root.AddSubtree(start);
         var t = new SymbolicExpressionTree(root);
 
-        Assert.AreEqual("(('y' * 'z' * 60) / SQR(('y' * 'z' * 20)))", // actually 3 / (4y  5z) but simplifier is not smart enough to cancel numerator and denominator
-                                                                      // 60 y z / y² z² 20² == 6 / y z 40 == 3 / y z 20
+        Assert.AreEqual("(('y' * 'z' * 60) / (SQR('y') * SQR('z') * 400))", // actually 3 / (4y  5z) but simplifier is not smart enough to cancel numerator and denominator
+                                                                             // 60 y z / y² z² 20² == 6 / y z 40 == 3 / y z 20
           formatter.Format(DerivativeCalculator.Derive(t, "x")));
-        Assert.AreEqual("(('x' * 'z' * (-60)) / SQR(('y' * 'z' * 20)))", // actually 3x * -(4 5 z) / (4y 5z)² = -3x / (20 y² z)
+        Assert.AreEqual("(('x' * 'z' * (-60)) / (SQR('y') * SQR('z') * 400))", // actually 3x * -(4 5 z) / (4y 5z)² = -3x / (20 y² z)
                                                                          // -3 4 5 x z / 4² y² 5² z² = -60 x z / 20² z² y² ==    -60 x z / y² z² 20² 
           formatter.Format(DerivativeCalculator.Derive(t, "y")));
-        Assert.AreEqual("(('x' * 'y' * (-60)) / SQR(('y' * 'z' * 20)))",
+        Assert.AreEqual("(('x' * 'y' * (-60)) / (SQR('y') * SQR('z') * 400))",
           formatter.Format(DerivativeCalculator.Derive(t, "z")));
       }
     }

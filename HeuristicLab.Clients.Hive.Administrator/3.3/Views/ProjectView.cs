@@ -126,7 +126,6 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       bool enabled = Content != null && !Locked && !ReadOnly;
       nameTextBox.Enabled = enabled;
       descriptionTextBox.Enabled = enabled;
-      refreshButton.Enabled = enabled;
       ownerComboBox.Enabled = enabled;
       createdTextBox.Enabled = enabled;
       startDateTimePicker.Enabled = enabled;
@@ -160,8 +159,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     private void AccessClient_Instance_Refreshing(object sender, EventArgs e) {
       if (InvokeRequired) Invoke((Action<object, EventArgs>)AccessClient_Instance_Refreshing, sender, e);
       else {
-        var mainForm = MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>();
-        mainForm.AddOperationProgressToView(this, "Refreshing ...");
+        Progress.Show(this, "Refreshing ...", ProgressMode.Indeterminate);
         SetEnabledStateOfControls();
       }
     }
@@ -169,8 +167,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     private void AccessClient_Instance_Refreshed(object sender, EventArgs e) {
       if (InvokeRequired) Invoke((Action<object, EventArgs>)AccessClient_Instance_Refreshed, sender, e);
       else {
-        var mainForm = MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>();
-        mainForm.RemoveOperationProgressFromView(this);
+        Progress.Hide(this);
         SetEnabledStateOfControls();
       }
     }
@@ -184,25 +181,6 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
           if (Content != null && !Content.ParentProjectId.HasValue) users = users.Where(x => x.Roles.Select(y => y.Name).Contains(HiveRoles.Administrator));
           ownerComboBox.DataSource = users.ToList();
           ownerComboBox.SelectedIndexChanged += ownerComboBox_SelectedIndexChanged;
-        });
-    }
-
-    private async void refreshButton_Click(object sender, EventArgs e) {
-      lock (locker) {
-        if (!refreshButton.Enabled) return;
-        refreshButton.Enabled = false;
-      }
-
-      await SecurityExceptionUtil.TryAsyncAndReportSecurityExceptions(
-        action: () => UpdateUsers(),
-        finallyCallback: () => {
-          ownerComboBox.SelectedIndexChanged -= ownerComboBox_SelectedIndexChanged;
-          var users = AccessClient.Instance.UsersAndGroups.OfType<LightweightUser>();
-          if (Content != null && !Content.ParentProjectId.HasValue) users = users.Where(x => x.Roles.Select(y => y.Name).Contains(HiveRoles.Administrator));
-          ownerComboBox.DataSource = users.ToList();
-          ownerComboBox.SelectedItem = users.FirstOrDefault(x => x.Id == persistedOwnerUserId);
-          ownerComboBox.SelectedIndexChanged += ownerComboBox_SelectedIndexChanged;
-          refreshButton.Enabled = true;
         });
     }
 

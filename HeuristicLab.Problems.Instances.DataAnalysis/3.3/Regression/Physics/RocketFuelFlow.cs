@@ -26,20 +26,26 @@ using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
   class RocketFuelFlow : ArtificialRegressionDataDescriptor {
-    public override string Name { get { return "Rocket Fuel Flow f(X) = 4000*x1*x2/sqrt(x3)"; } }
+    public override string Name { get { return "Rocket Fuel Flow m_dot = p0 A / sqrt(T0) * sqrt(γ/R (2/(γ+1))^((γ+1) / (γ-1)))"; } }
 
     public override string Description {
       get {
-        return "A full description of this problem instance is given in the paper: A multilevel block building algorithm for fast modeling generalized separable systems. " + Environment.NewLine +
-               "Authors: Chen Chen, Changtong Luo, Zonglin Jiang" + Environment.NewLine +
-               "Function: f(X) = 4000*x1*x2/sqrt(x3)" + Environment.NewLine +
-               "with x1 in [4,6], x2 in [0.5, 1.5], x3 in [250,260]";
+        return "A full description of this problem instance is given in: " + Environment.NewLine +
+          "Chen Chen, Changtong Luo, Zonglin Jiang, \"A multilevel block building algorithm for fast " +
+          "modeling generalized separable systems\", Expert Systems with Applications, Volume 109, 2018, " +
+          "Pages 25-34 https://doi.org/10.1016/j.eswa.2018.05.021. " + Environment.NewLine +
+          "Function: m_dot = p0 A / sqrt(T0) * sqrt(γ/R (2/(γ+1))^((γ+1) / (γ-1)))" + Environment.NewLine +
+          "with p0 ∈ [4e5 Pa, 6e5 Pa]," + Environment.NewLine +
+          "A ∈ [0.5m², 1.5m²]," + Environment.NewLine +
+          "T0 ∈ [250°K, 260°K]," + Environment.NewLine +
+          "γ=1.4 and R=287 J/(kg*K)" + Environment.NewLine +
+          "The factor sqrt(γ/R (2/(γ+1))^((γ+1) / (γ-1))) is constant as γ and R are constants.";
       }
     }
 
-    protected override string TargetVariable { get { return "f(X)"; } }
-    protected override string[] VariableNames { get { return new string[] { "x1", "x2", "x3", "f(X)" }; } }
-    protected override string[] AllowedInputVariables { get { return new string[] { "x1", "x2", "x3" }; } }
+    protected override string TargetVariable { get { return "m_dot"; } }
+    protected override string[] VariableNames { get { return new string[] { "p0", "A", "T0", "m_dot" }; } }
+    protected override string[] AllowedInputVariables { get { return new string[] { "p0", "A", "T0" }; } }
     protected override int TrainingPartitionStart { get { return 0; } }
     protected override int TrainingPartitionEnd { get { return 100; } }
     protected override int TestPartitionStart { get { return 100; } }
@@ -57,19 +63,21 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       var rand = new MersenneTwister((uint)Seed);
 
       List<List<double>> data = new List<List<double>>();
-      var x1 = ValueGenerator.GenerateUniformDistributedValues(rand.Next(), TestPartitionEnd, 4.0, 6.0).ToList();
-      var x2 = ValueGenerator.GenerateUniformDistributedValues(rand.Next(), TestPartitionEnd, 0.5, 1.5).ToList();
-      var x3 = ValueGenerator.GenerateUniformDistributedValues(rand.Next(), TestPartitionEnd, 250.0, 260.0).ToList();
+      var p0 = ValueGenerator.GenerateUniformDistributedValues(rand.Next(), TestPartitionEnd, 4.0e5, 6.0e5).ToList();
+      var A = ValueGenerator.GenerateUniformDistributedValues(rand.Next(), TestPartitionEnd, 0.5, 1.5).ToList();
+      var T0 = ValueGenerator.GenerateUniformDistributedValues(rand.Next(), TestPartitionEnd, 250.0, 260.0).ToList();
 
-      List<double> fx = new List<double>();
-      data.Add(x1);
-      data.Add(x2);
-      data.Add(x3);
-      data.Add(fx);
-
-      for (int i = 0; i < x1.Count; i++) {
-        double fxi = 4000 * x1[i] * x2[i] / Math.Sqrt(x3[i]);
-        fx.Add(fxi);
+      List<double> m_dot = new List<double>();
+      data.Add(p0);
+      data.Add(A);
+      data.Add(T0);
+      data.Add(m_dot);
+      double R = 287.0;
+      double γ = 1.4;
+      var c = Math.Sqrt(γ / R * Math.Pow(2 / (γ + 1), (γ + 1) / (γ - 1)));
+      for (int i = 0; i < p0.Count; i++) {
+        double m_dot_i = p0[i] * A[i] / Math.Sqrt(T0[i]) * c;
+        m_dot.Add(m_dot_i);
       }
 
       return data;
