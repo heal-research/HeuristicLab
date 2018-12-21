@@ -149,6 +149,7 @@
     <Compile Include="Interfaces\IModelBacktransformator.cs" />
     <Compile Include="Interfaces\IVariableTreeNode.cs" />
     <Compile Include="Interfaces\IVariableSymbol.cs" />
+    <Compile Include="Interpreter\IntervalInterpreter.cs" />
     <Compile Include="Interpreter\SymbolicDataAnalysisExpressionCompiledTreeInterpreter.cs" />
     <Compile Include="SymbolicDataAnalysisExpressionTreeSimplificationOperator.cs" />
     <Compile Include="SymbolicDataAnalysisModelComplexityCalculator.cs" />

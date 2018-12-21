@@ -92,6 +92,22 @@ namespace HeuristicLab.Problems.DataAnalysis {
       }
     }
 
+    public static Dictionary<string, Interval> GetVariableRanges(IDataset dataset, IEnumerable<int> rows = null) {
+      Dictionary<string, Interval> variableRanges = new Dictionary<string, Interval>();
+
+      foreach (var variable in dataset.VariableNames) {
+        IEnumerable<double> values = null;
+
+        if (rows == null) values = dataset.GetDoubleValues(variable);
+        else values = dataset.GetDoubleValues(variable, rows);
+
+        var range = Interval.GetInterval(values);
+        variableRanges.Add(variable, range);
+      }
+
+      return variableRanges;
+    }
+
     private static bool GetEqualValues(this Dictionary<ValuesType, ValuesType> variableValuesMapping, ValuesType originalValues, out ValuesType matchingValues) {
       if (variableValuesMapping.ContainsKey(originalValues)) {
         matchingValues = variableValuesMapping[originalValues];
