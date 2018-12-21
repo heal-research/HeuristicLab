@@ -119,6 +119,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classification\ClassificationSolutionVariableImpactsView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Classification\ClassificationSolutionVariableImpactsView.Designer.cs">
+      <DependentUpon>ClassificationSolutionVariableImpactsView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\DensityChart.cs">
       <SubType>UserControl</SubType>
     </Compile>
