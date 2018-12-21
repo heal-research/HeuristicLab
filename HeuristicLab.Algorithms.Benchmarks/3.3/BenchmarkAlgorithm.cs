@@ -38,8 +38,10 @@ namespace HeuristicLab.Algorithms.Benchmarks {
   [Item("Benchmark Algorithm", "An algorithm to execute performance benchmarks (Linpack, Dhrystone, Whetstone, etc.).")]
   [Creatable(CreatableAttribute.Categories.TestingAndAnalysis, Priority = 130)]
   [StorableClass]
-  public sealed class BenchmarkAlgorithm : IAlgorithm {
+  public sealed class BenchmarkAlgorithm : IAlgorithm, IStorableContent {
     private CancellationTokenSource cancellationTokenSource;
+
+    public string Filename { get; set; }
 
     public string ItemName {
       get { return ItemAttribute.GetName(this.GetType()); }

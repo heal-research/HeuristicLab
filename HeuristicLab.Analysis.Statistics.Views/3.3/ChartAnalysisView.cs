@@ -172,7 +172,7 @@ namespace HeuristicLab.Analysis.Statistics.Views {
     }
 
     private void addLineToChart_Click(object sender, EventArgs e) {
-      MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>().AddOperationProgressToView(this, "Adding fitted lines to charts...");
+      Progress.Show(this, "Adding fitted lines to charts...", ProgressMode.Indeterminate);
 
       string resultName = (string)dataTableComboBox.SelectedItem;
       string rowName = (string)dataRowComboBox.SelectedItem;
@@ -180,12 +180,12 @@ namespace HeuristicLab.Analysis.Statistics.Views {
       var task = Task.Factory.StartNew(() => AddLineToChart(resultName, rowName));
 
       task.ContinueWith((t) => {
-        MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>().RemoveOperationProgressFromView(this);
+        Progress.Hide(this);
         ErrorHandling.ShowErrorDialog("An error occured while adding lines to charts. ", t.Exception);
       }, TaskContinuationOptions.OnlyOnFaulted);
 
       task.ContinueWith((t) => {
-        MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>().RemoveOperationProgressFromView(this);
+        Progress.Hide(this);
       }, TaskContinuationOptions.OnlyOnRanToCompletion);
     }
 
@@ -272,18 +272,18 @@ namespace HeuristicLab.Analysis.Statistics.Views {
 
       var task = Task.Factory.StartNew(() => {
         sem.Wait();
-        progress = MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>().AddOperationProgressToView(this, "Calculating values...");
+        progress = Progress.Show(this, "Calculating values...");
         RebuildDataTable(resultName, rowName);
       });
 
       task.ContinueWith((t) => {
-        MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>().RemoveOperationProgressFromView(this);
+        Progress.Hide(this);
         ErrorHandling.ShowErrorDialog("An error occured while calculating values. ", t.Exception);
         sem.Release();
       }, TaskContinuationOptions.OnlyOnFaulted);
 
       task.ContinueWith((t) => {
-        MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>().RemoveOperationProgressFromView(this);
+        Progress.Hide(this);
         sem.Release();
       }, TaskContinuationOptions.OnlyOnRanToCompletion);
     }

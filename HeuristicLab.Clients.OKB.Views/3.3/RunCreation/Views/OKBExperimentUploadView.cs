@@ -187,14 +187,14 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
     private void RunCreationClient_Refreshing(object sender, EventArgs e) {
       if (InvokeRequired) { Invoke((Action<object, EventArgs>)RunCreationClient_Refreshing, sender, e); return; }
       var message = "Refreshing algorithms and problems...";
-      MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().AddOperationProgressToView(this, message);
+      Progress.Show(this, message, ProgressMode.Indeterminate);
       refreshing = true;
       SetEnabledStateOfControls();
     }
 
     private void RunCreationClient_Refreshed(object sender, EventArgs e) {
       if (InvokeRequired) { Invoke((Action<object, EventArgs>)RunCreationClient_Refreshed, sender, e); return; }
-      MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().RemoveOperationProgressFromView(this);
+      Progress.Hide(this);
       refreshing = false;
       SetEnabledStateOfControls();
     }
@@ -202,14 +202,14 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
     private void btnUpload_Click(object sender, EventArgs e) {
       var task = System.Threading.Tasks.Task.Factory.StartNew(UploadAsync);
       task.ContinueWith((t) => {
-        MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().RemoveOperationProgressFromView(this);
+        Progress.Hide(this);
         PluginInfrastructure.ErrorHandling.ShowErrorDialog("An exception occured while uploading the runs to the OKB.", t.Exception);
       }, TaskContinuationOptions.OnlyOnFaulted);
     }
 
     private void UploadAsync() {
       var message = "Uploading runs to OKB...";
-      IProgress progress = MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().AddOperationProgressToView(this, message);
+      IProgress progress = Progress.Show(this, message);
       double count = dataGridView.Rows.Count;
       int i = 0;
       foreach (DataGridViewRow row in dataGridView.Rows) {
@@ -225,7 +225,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
         run.Store();
         progress.ProgressValue = ((double)i) / count;
       }
-      MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().RemoveOperationProgressFromView(this);
+      Progress.Hide(this);
       ClearRuns();
     }
 

@@ -166,14 +166,12 @@ namespace HeuristicLab.Clients.Hive {
         RefreshProjectGenealogy();
         RefreshDisabledParentProjects();
         RefreshDisabledParentResources();
-      }
-      catch {
+      } catch {
         jobs = null;
         projects = null;
         resources = null;
         throw;
-      }
-      finally {
+      } finally {
         OnRefreshed();
       }
     }
@@ -214,16 +212,15 @@ namespace HeuristicLab.Clients.Hive {
     }
 
     public void RefreshAsync(Action<Exception> exceptionCallback) {
-      var call = new Func<Exception>(delegate() {
+      var call = new Func<Exception>(delegate () {
         try {
           Refresh();
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
           return ex;
         }
         return null;
       });
-      call.BeginInvoke(delegate(IAsyncResult result) {
+      call.BeginInvoke(delegate (IAsyncResult result) {
         Exception ex = call.EndInvoke(result);
         if (ex != null) exceptionCallback(ex);
       }, null);
@@ -243,7 +240,7 @@ namespace HeuristicLab.Clients.Hive {
       // build resource descendant set
       resourceAncestors.Keys.ToList().ForEach(k => resourceDescendants.Add(k, new HashSet<Guid>()));
       foreach (var ra in resourceAncestors) {
-        foreach(var ancestor in ra.Value) {
+        foreach (var ancestor in ra.Value) {
           resourceDescendants[ancestor].Add(ra.Key);
         }
       }
@@ -262,8 +259,8 @@ namespace HeuristicLab.Clients.Hive {
 
       // build project descendant list
       projectAncestors.Keys.ToList().ForEach(k => projectDescendants.Add(k, new HashSet<Guid>()));
-      foreach(var pa in projectAncestors) {
-        foreach(var ancestor in pa.Value) {
+      foreach (var pa in projectAncestors) {
+        foreach (var ancestor in pa.Value) {
           projectDescendants[ancestor].Add(pa.Key);
         }
       }
@@ -361,16 +358,15 @@ namespace HeuristicLab.Clients.Hive {
       }
     }
     public static void StoreAsync(Action<Exception> exceptionCallback, IHiveItem item, CancellationToken cancellationToken) {
-      var call = new Func<Exception>(delegate() {
+      var call = new Func<Exception>(delegate () {
         try {
           Store(item, cancellationToken);
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
           return ex;
         }
         return null;
       });
-      call.BeginInvoke(delegate(IAsyncResult result) {
+      call.BeginInvoke(delegate (IAsyncResult result) {
         Exception ex = call.EndInvoke(result);
         if (ex != null) exceptionCallback(ex);
       }, null);
@@ -459,7 +455,7 @@ namespace HeuristicLab.Clients.Hive {
 
     public static void UpdateJob(Action<Exception> exceptionCallback, RefreshableJob refreshableJob, CancellationToken cancellationToken) {
       refreshableJob.IsProgressing = true;
-      refreshableJob.Progress.Status = "Saving Job...";
+      refreshableJob.Progress.Message = "Saving Job...";
       HiveClient.StoreAsync(
         new Action<Exception>((Exception ex) => {
           exceptionCallback(ex);
@@ -472,7 +468,7 @@ namespace HeuristicLab.Clients.Hive {
       refreshableJob.IsProgressing = true;
 
       try {
-        refreshableJob.Progress.Start("Saving Job...");
+        refreshableJob.Progress.Start("Saving Job...", ProgressMode.Indeterminate);
         HiveClient.StoreAsync(new Action<Exception>((Exception ex) => {
           throw new Exception("Update failed.", ex);
         }), refreshableJob.Job, new CancellationToken());
@@ -491,14 +487,14 @@ namespace HeuristicLab.Clients.Hive {
     private Guid UploadJob(RefreshableJob refreshableJob, CancellationToken cancellationToken) {
       try {
         refreshableJob.IsProgressing = true;
-        refreshableJob.Progress.Start("Connecting to server...");
+        refreshableJob.Progress.Start("Connecting to server...", ProgressMode.Indeterminate);
 
         foreach (OptimizerHiveTask hiveJob in refreshableJob.HiveTasks.OfType<OptimizerHiveTask>()) {
           hiveJob.SetIndexInParentOptimizerList(null);
         }
 
         // upload Job
-        refreshableJob.Progress.Status = "Uploading Job...";
+        refreshableJob.Progress.Message = "Uploading Job...";
         refreshableJob.Job.Id = HiveServiceLocator.Instance.CallHiveService((s) => s.AddJob(refreshableJob.Job, refreshableJob.Job.ResourceIds));
         refreshableJob.Job = HiveServiceLocator.Instance.CallHiveService((s) => s.GetJob(refreshableJob.Job.Id)); // update owner and permissions
         cancellationToken.ThrowIfCancellationRequested();
@@ -508,7 +504,7 @@ namespace HeuristicLab.Clients.Hive {
         cancellationToken.ThrowIfCancellationRequested();
 
         // upload plugins
-        refreshableJob.Progress.Status = "Uploading plugins...";
+        refreshableJob.Progress.Message = "Uploading plugins...";
         this.OnlinePlugins = HiveServiceLocator.Instance.CallHiveService((s) => s.GetPlugins());
         this.AlreadyUploadedPlugins = new List<Plugin>();
         Plugin configFilePlugin = HiveServiceLocator.Instance.CallHiveService((s) => UploadConfigurationFile(s, onlinePlugins));
@@ -516,7 +512,9 @@ namespace HeuristicLab.Clients.Hive {
         cancellationToken.ThrowIfCancellationRequested();
 
         // upload tasks
-        refreshableJob.Progress.Status = "Uploading tasks...";
+        refreshableJob.Progress.Message = "Uploading tasks...";
+        refreshableJob.Progress.ProgressMode = ProgressMode.Determinate;
+        refreshableJob.Progress.ProgressValue = 0;
 
         var tasks = new List<TS.Task>();
         foreach (HiveTask hiveTask in refreshableJob.HiveTasks) {
@@ -527,8 +525,7 @@ namespace HeuristicLab.Clients.Hive {
           tasks.Add(task);
         }
         TS.Task.WaitAll(tasks.ToArray());
-      }
-      finally {
+      } finally {
         refreshableJob.Job.Modified = false;
         refreshableJob.IsProgressing = false;
         refreshableJob.Progress.Finish();
@@ -614,7 +611,7 @@ namespace HeuristicLab.Clients.Hive {
 
         lock (jobCountLocker) {
           progress.ProgressValue = (double)taskCount[0] / totalJobCount;
-          progress.Status = string.Format("Uploaded task ({0} of {1})", taskCount[0], totalJobCount);
+          progress.Message = string.Format("Uploaded task ({0} of {1})", taskCount[0], totalJobCount);
         }
 
         var tasks = new List<TS.Task>();
@@ -645,17 +642,19 @@ namespace HeuristicLab.Clients.Hive {
         IEnumerable<LightweightTask> allTasks;
 
         // fetch all task objects to create the full tree of tree of HiveTask objects
-        refreshableJob.Progress.Start("Downloading list of tasks...");
+        refreshableJob.Progress.Start("Downloading list of tasks...", ProgressMode.Indeterminate);
         allTasks = HiveServiceLocator.Instance.CallHiveService(s => s.GetLightweightJobTasksWithoutStateLog(hiveExperiment.Id));
         totalJobCount = allTasks.Count();
 
-        refreshableJob.Progress.Status = "Downloading tasks...";
+        refreshableJob.Progress.Message = "Downloading tasks...";
+        refreshableJob.Progress.ProgressMode = ProgressMode.Determinate;
+        refreshableJob.Progress.ProgressValue = 0.0;
         downloader = new TaskDownloader(allTasks.Select(x => x.Id));
         downloader.StartAsync();
 
         while (!downloader.IsFinished) {
           refreshableJob.Progress.ProgressValue = downloader.FinishedCount / (double)totalJobCount;
-          refreshableJob.Progress.Status = string.Format("Downloading/deserializing tasks... ({0}/{1} finished)", downloader.FinishedCount, totalJobCount);
+          refreshableJob.Progress.Message = string.Format("Downloading/deserializing tasks... ({0}/{1} finished)", downloader.FinishedCount, totalJobCount);
           Thread.Sleep(500);
 
           if (downloader.IsFaulted) {
@@ -665,7 +664,9 @@ namespace HeuristicLab.Clients.Hive {
         IDictionary<Guid, HiveTask> allHiveTasks = downloader.Results;
         var parents = allHiveTasks.Values.Where(x => !x.Task.ParentTaskId.HasValue);
 
-        refreshableJob.Progress.Status = "Downloading/deserializing complete. Displaying tasks...";
+        refreshableJob.Progress.Message = "Downloading/deserializing complete. Displaying tasks...";
+        refreshableJob.Progress.ProgressMode = ProgressMode.Indeterminate;
+
         // build child-task tree
         foreach (HiveTask hiveTask in parents) {
           BuildHiveJobTree(hiveTask, allTasks, allHiveTasks);
@@ -676,12 +677,11 @@ namespace HeuristicLab.Clients.Hive {
           refreshableJob.ExecutionState = Core.ExecutionState.Stopped;
         } else if (refreshableJob.IsPaused()) {
           refreshableJob.ExecutionState = Core.ExecutionState.Paused;
-        } else { 
+        } else {
           refreshableJob.ExecutionState = Core.ExecutionState.Started;
         }
         refreshableJob.OnLoaded();
-      }
-      finally {
+      } finally {
         refreshableJob.IsProgressing = false;
         refreshableJob.Progress.Finish();
         if (downloader != null) {
@@ -718,8 +718,7 @@ namespace HeuristicLab.Clients.Hive {
       TaskData taskData = HiveServiceLocator.Instance.CallHiveService(s => s.GetTaskData(jobId));
       try {
         return PersistenceUtil.Deserialize<ItemTask>(taskData.Data);
-      }
-      catch {
+      } catch {
         return null;
       }
     }
@@ -730,8 +729,7 @@ namespace HeuristicLab.Clients.Hive {
     /// </summary>
     public static void TryAndRepeat(Action action, int repetitions, string errorMessage, ILog log = null) {
       while (true) {
-        try { action(); return; }
-        catch (Exception e) {
+        try { action(); return; } catch (Exception e) {
           if (repetitions == 0) throw new HiveException(errorMessage, e);
           if (log != null) log.LogMessage(string.Format("{0}: {1} - will try again!", errorMessage, e.ToString()));
           repetitions--;

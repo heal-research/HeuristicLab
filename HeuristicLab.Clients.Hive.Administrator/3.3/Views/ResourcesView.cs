@@ -184,8 +184,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     private void HiveAdminClient_Instance_Refreshing(object sender, EventArgs e) {
       if (InvokeRequired) Invoke((Action<object, EventArgs>)HiveAdminClient_Instance_Refreshing, sender, e);
       else {
-        var mainForm = MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>();
-        mainForm.AddOperationProgressToView(this, "Refreshing ...");
+        Progress.Show(this, "Refreshing ...", ProgressMode.Indeterminate);
         SetEnabledStateOfControls();
       }
     }
@@ -193,8 +192,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     private void HiveAdminClient_Instance_Refreshed(object sender, EventArgs e) {
       if (InvokeRequired) Invoke((Action<object, EventArgs>)HiveAdminClient_Instance_Refreshed, sender, e);
       else {
-        var mainForm = MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>();
-        mainForm.RemoveOperationProgressFromView(this);
+        Progress.Hide(this);
         SetEnabledStateOfControls();
       }
     }
@@ -202,8 +200,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     private void AccessClient_Instance_Refreshing(object sender, EventArgs e) {
       if (InvokeRequired) Invoke((Action<object, EventArgs>)AccessClient_Instance_Refreshing, sender, e);
       else {
-        var mainForm = MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>();
-        mainForm.AddOperationProgressToView(this, "Refreshing ...");
+        Progress.Show(this, "Refreshing ...", ProgressMode.Indeterminate);
         SetEnabledStateOfControls();
       }
     }
@@ -211,8 +208,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     private void AccessClient_Instance_Refreshed(object sender, EventArgs e) {
       if (InvokeRequired) Invoke((Action<object, EventArgs>)AccessClient_Instance_Refreshed, sender, e);
       else {
-        var mainForm = MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>();
-        mainForm.RemoveOperationProgressFromView(this);
+        Progress.Hide(this);
         SetEnabledStateOfControls();
       }
     }
@@ -246,7 +242,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       Content.Add(group);
     }
 
-    private async void btnRemoveGroup_Click(object sender, EventArgs e) {      
+    private async void btnRemoveGroup_Click(object sender, EventArgs e) {
       var nodes = GetCheckedNodes(treeView.Nodes).ToList();
       var checkedResources = nodes.Select(x => x.Tag).OfType<Resource>().ToList();
       if (selectedResource == null && !checkedResources.Any()) return;
@@ -573,7 +569,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
           if (newResources.Any(x => x.Id != Guid.Empty)) return;
           foreach (var nr in newResources) Content.Remove(nr);
 
-          HiveAdminClient.Delete(resource);          
+          HiveAdminClient.Delete(resource);
           UpdateResources();
         } else {
           SelectedResource = Content.FirstOrDefault(x => x.Id == resource.ParentResourceId);
@@ -587,12 +583,12 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     private void RemoveResource(IEnumerable<Resource> resources) {
       if (resources == null || !resources.Any()) return;
 
-      var ids = resources.Select(x => x.Id).ToList();      
+      var ids = resources.Select(x => x.Id).ToList();
       try {
         bool update = false;
-        foreach (var r in resources) {          
-          if (r.Id != Guid.Empty)  {
-            if(r.Id == SelectedResource.Id)
+        foreach (var r in resources) {
+          if (r.Id != Guid.Empty) {
+            if (r.Id == SelectedResource.Id)
               SelectedResource = HiveAdminClient.Instance.GetAvailableResourceAncestors(r.Id).LastOrDefault();
 
             // deal with all new, but not yet saved resources
@@ -750,7 +746,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       var resources = Content.Union(HiveAdminClient.Instance.DisabledParentResources).ToList();
 
       foreach (var r in resources) {
-        if(!resourceDescendants.ContainsKey(r.Id))
+        if (!resourceDescendants.ContainsKey(r.Id))
           resourceDescendants.Add(r.Id, new HashSet<Resource>());
       }
       foreach (var r in resources) {

@@ -119,15 +119,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       if (factorVarReplComboBox.SelectedIndex < 0) { return; }
 
       //Prepare arguments
-      var mainForm = (MainForm.WindowsForms.MainForm)MainFormManager.MainForm;
       var replMethod = (ClassificationSolutionVariableImpactsCalculator.ReplacementMethodEnum)replacementComboBox.Items[replacementComboBox.SelectedIndex];
       var factorReplMethod = (ClassificationSolutionVariableImpactsCalculator.FactorReplacementMethodEnum)factorVarReplComboBox.Items[factorVarReplComboBox.SelectedIndex];
       var dataPartition = (ClassificationSolutionVariableImpactsCalculator.DataPartitionEnum)dataPartitionComboBox.SelectedItem;
 
       variableImpactsArrayView.Caption = Content.Name + " Variable Impacts";
-      progress = mainForm.AddOperationProgressToView(this, "Calculating variable impacts for " + Content.Name);
-      progress.ProgressValue = 0;
-
+      progress = Progress.Show(this, "Calculating variable impacts for " + Content.Name);
       cancellationToken = new CancellationTokenSource();
 
       try {
@@ -145,9 +142,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
         rawVariableImpacts.AddRange(impacts);
         UpdateOrdering();
-      }
-      finally {
-        ((MainForm.WindowsForms.MainForm)MainFormManager.MainForm).RemoveOperationProgressFromView(this);
+      } finally {
+        Progress.Hide(this);
       }
     }
     private List<Tuple<string, double>> CalculateVariableImpacts(List<string> originalVariableOrdering,
@@ -174,7 +170,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       foreach (var variableName in originalVariableOrdering) {
         if (cancellationToken.Token.IsCancellationRequested) { return null; }
         progress.ProgressValue = (double)++i / count;
-        progress.Status = string.Format("Calculating impact for variable {0} ({1} of {2})", variableName, i, count);
+        progress.Message = string.Format("Calculating impact for variable {0} ({1} of {2})", variableName, i, count);
 
         double impact = 0;
         //If the variable isn't used for prediction, it has zero impact.
