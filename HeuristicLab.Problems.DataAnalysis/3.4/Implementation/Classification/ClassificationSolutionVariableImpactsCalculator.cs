@@ -99,6 +99,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
       var problemData = solution.ProblemData;
       var dataset = problemData.Dataset;
+      var model = (IClassificationModel)solution.Model.Clone(); //mkommend: clone of model is necessary, because the thresholds for IDiscriminantClassificationModels are updated
 
       IEnumerable<int> rows;
       IEnumerable<double> targetValues;
@@ -136,7 +137,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
       // calculate impacts for double variables
       foreach (var inputVariable in allowedInputVariables.Where(problemData.Dataset.VariableHasType<double>)) {
-        var newEstimates = EvaluateModelWithReplacedVariable(solution.Model, inputVariable, modifiableDataset, rows, replacementMethod);
+        var newEstimates = EvaluateModelWithReplacedVariable(model, inputVariable, modifiableDataset, rows, replacementMethod);
         var newAccuracy = OnlineAccuracyCalculator.Calculate(targetValues, newEstimates, out error);
         if (error != OnlineCalculatorError.None) throw new InvalidOperationException("Error during R² calculation with replaced inputs.");
 
@@ -149,7 +150,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
           // try replacing with all possible values and find the best replacement value
           var smallestImpact = double.PositiveInfinity;
           foreach (var repl in problemData.Dataset.GetStringValues(inputVariable, rows).Distinct()) {
-            var newEstimates = EvaluateModelWithReplacedVariable(solution.Model, inputVariable, modifiableDataset, rows,
+            var newEstimates = EvaluateModelWithReplacedVariable(model, inputVariable, modifiableDataset, rows,
               Enumerable.Repeat(repl, dataset.Rows));
             var newAccuracy = OnlineAccuracyCalculator.Calculate(targetValues, newEstimates, out error);
             if (error != OnlineCalculatorError.None)
@@ -163,7 +164,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
           // for replacement methods shuffle and mode
           // calculate impacts for factor variables
 
-          var newEstimates = EvaluateModelWithReplacedVariable(solution.Model, inputVariable, modifiableDataset, rows,
+          var newEstimates = EvaluateModelWithReplacedVariable(model, inputVariable, modifiableDataset, rows,
             factorReplacementMethod);
           var newAccuracy = OnlineAccuracyCalculator.Calculate(targetValues, newEstimates, out error);
           if (error != OnlineCalculatorError.None)
@@ -262,6 +263,13 @@ namespace HeuristicLab.Problems.DataAnalysis {
       ModifiableDataset dataset, IEnumerable<int> rows, IEnumerable<double> replacementValues) {
       var originalValues = dataset.GetReadOnlyDoubleValues(variable).ToList();
       dataset.ReplaceVariable(variable, replacementValues.ToList());
+
+      var discModel = model as IDiscriminantFunctionClassificationModel;
+      if (discModel != null) {
+        var problemData = new ClassificationProblemData(dataset, dataset.VariableNames, model.TargetVariable);
+        discModel.RecalculateModelParameters(problemData, rows);
+      }
+
       //mkommend: ToList is used on purpose to avoid lazy evaluation that could result in wrong estimates due to variable replacements
       var estimates = model.GetEstimatedClassValues(dataset, rows).ToList();
       dataset.ReplaceVariable(variable, originalValues);
@@ -272,6 +280,14 @@ namespace HeuristicLab.Problems.DataAnalysis {
       ModifiableDataset dataset, IEnumerable<int> rows, IEnumerable<string> replacementValues) {
       var originalValues = dataset.GetReadOnlyStringValues(variable).ToList();
       dataset.ReplaceVariable(variable, replacementValues.ToList());
+
+
+      var discModel = model as IDiscriminantFunctionClassificationModel;
+      if (discModel != null) {
+        var problemData = new ClassificationProblemData(dataset, dataset.VariableNames, model.TargetVariable);
+        discModel.RecalculateModelParameters(problemData, rows);
+      }
+
       //mkommend: ToList is used on purpose to avoid lazy evaluation that could result in wrong estimates due to variable replacements
       var estimates = model.GetEstimatedClassValues(dataset, rows).ToList();
       dataset.ReplaceVariable(variable, originalValues);
