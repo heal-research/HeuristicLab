@@ -34,11 +34,9 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
   public partial class ProjectView : ItemView {
     private readonly object locker = new object();
 
-    private Guid persistedOwnerUserId;
-
     public new Project Content {
       get { return (Project)base.Content; }
-      set { base.Content = value; persistedOwnerUserId = Content != null ? Content.OwnerUserId : Guid.Empty; }
+      set { base.Content = value; }
     }
 
     public ProjectView() {
@@ -49,12 +47,6 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     }
 
     #region Overrides
-    protected override void OnClosing(FormClosingEventArgs e) {
-      AccessClient.Instance.Refreshed -= AccessClient_Instance_Refreshed;
-      AccessClient.Instance.Refreshing -= AccessClient_Instance_Refreshing;
-      base.OnClosing(e);
-    }
-
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
       Content.PropertyChanged += Content_PropertyChanged;
@@ -105,8 +97,9 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
         ownerComboBox.SelectedIndexChanged -= ownerComboBox_SelectedIndexChanged;
         var users = AccessClient.Instance.UsersAndGroups.OfType<LightweightUser>();
         if (!Content.ParentProjectId.HasValue) users = users.Where(x => x.Roles.Select(y => y.Name).Contains(HiveRoles.Administrator));
-        ownerComboBox.DataSource = users.ToList();
-        ownerComboBox.SelectedItem = users.FirstOrDefault(x => x.Id == Content.OwnerUserId);
+        var projectOwnerId = Content.OwnerUserId;
+        ownerComboBox.DataSource = users.OrderBy(x => x.UserName).ToList();
+        ownerComboBox.SelectedItem = users.FirstOrDefault(x => x.Id == projectOwnerId);
         ownerComboBox.SelectedIndexChanged += ownerComboBox_SelectedIndexChanged;
 
         createdTextBox.Text = Content.DateCreated.ToString("ddd, dd.MM.yyyy, HH:mm:ss");
@@ -179,9 +172,14 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
           ownerComboBox.SelectedIndexChanged -= ownerComboBox_SelectedIndexChanged;
           var users = AccessClient.Instance.UsersAndGroups.OfType<LightweightUser>();
           if (Content != null && !Content.ParentProjectId.HasValue) users = users.Where(x => x.Roles.Select(y => y.Name).Contains(HiveRoles.Administrator));
-          ownerComboBox.DataSource = users.ToList();
+          ownerComboBox.DataSource = users.OrderBy(x => x.UserName).ToList();
           ownerComboBox.SelectedIndexChanged += ownerComboBox_SelectedIndexChanged;
         });
+    }
+
+    private void ProjectView_Disposed(object sender, EventArgs e) {
+      AccessClient.Instance.Refreshed -= AccessClient_Instance_Refreshed;
+      AccessClient.Instance.Refreshing -= AccessClient_Instance_Refreshing;
     }
 
     private void nameTextBox_Validating(object sender, CancelEventArgs e) {

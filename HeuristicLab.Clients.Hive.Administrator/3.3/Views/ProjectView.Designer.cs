@@ -212,6 +212,7 @@
       this.Name = "ProjectView";
       this.Size = new System.Drawing.Size(539, 271);
       this.Load += new System.EventHandler(this.ProjectView_Load);
+      this.Disposed += new System.EventHandler(this.ProjectView_Disposed);
       this.ResumeLayout(false);
       this.PerformLayout();
 
