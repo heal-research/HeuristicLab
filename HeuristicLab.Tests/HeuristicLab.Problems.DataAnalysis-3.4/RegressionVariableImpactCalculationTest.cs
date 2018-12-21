@@ -45,7 +45,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
       IRegressionProblemData problemData = LoadDefaultTowerProblem();
       double rmsError;
       double cvRmsError;
-      var solution = LinearRegression.CreateSolution(problemData, out rmsError, out cvRmsError);
+      var solution = LinearRegression.CreateLinearRegressionSolution(problemData, out rmsError, out cvRmsError);
       Dictionary<string, double> expectedImpacts = GetExpectedValuesForLRTower();
 
       CheckDefaultAsserts(solution, expectedImpacts);
@@ -58,7 +58,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
       IRegressionProblemData problemData = LoadDefaultMibaProblem();
       double rmsError;
       double cvRmsError;
-      var solution = LinearRegression.CreateSolution(problemData, out rmsError, out cvRmsError);
+      var solution = LinearRegression.CreateLinearRegressionSolution(problemData, out rmsError, out cvRmsError);
       Dictionary<string, double> expectedImpacts = GetExpectedValuesForLRMiba();
 
       CheckDefaultAsserts(solution, expectedImpacts);
@@ -113,7 +113,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
       IRegressionProblemData problemData = LoadDefaultTowerProblem();
       double rmsError;
       double cvRmsError;
-      var solution = LinearRegression.CreateSolution(problemData, out rmsError, out cvRmsError);
+      var solution = LinearRegression.CreateLinearRegressionSolution(problemData, out rmsError, out cvRmsError);
       solution.ProblemData = LoadDefaultMibaProblem();
       RegressionSolutionVariableImpactsCalculator.CalculateImpacts(solution);
 
@@ -129,7 +129,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
       IRegressionProblemData problemData = new RegressionProblemData(dataSet, dataSet.VariableNames.Except("y".ToEnumerable()), "y");
       double rmsError;
       double cvRmsError;
-      var solution = LinearRegression.CreateSolution(problemData, out rmsError, out cvRmsError);
+      var solution = LinearRegression.CreateLinearRegressionSolution(problemData, out rmsError, out cvRmsError);
 
       Stopwatch watch = new Stopwatch();
       watch.Start();
