@@ -48,7 +48,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public double NoiseSigma {
       get; private set;
     }
-    
+
     public override IEnumerable<string> VariablesUsedForPrediction {
       get { return allowedInputVariables.Union(factorVariables.Select(f => f.Key)); }
     }
@@ -77,7 +77,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       this.description = ItemDescription;
       this.W = new double[w.Length];
       Array.Copy(w, W, w.Length);
-      this.C = new double[covariance.GetLength(0),covariance.GetLength(1)];
+      this.C = new double[covariance.GetLength(0), covariance.GetLength(1)];
       Array.Copy(covariance, C, covariance.Length);
       this.NoiseSigma = noiseSigma;
       var stringInputVariables = factorVariables.Select(f => f.Key).Distinct();
@@ -122,23 +122,22 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       int columns = inputData.GetLength(1);
 
       double[] d = new double[C.GetLength(0)];
-      
+
       for (int row = 0; row < n; row++) {
         for (int column = 0; column < columns; column++) {
-          d[column] = inputData[row,column];
+          d[column] = inputData[row, column];
         }
         d[columns] = 1;
 
         double var = 0.0;
-        for(int i=0;i<d.Length;i++) {
-          for(int j = 0;j<d.Length;j++) {
+        for (int i = 0; i < d.Length; i++) {
+          for (int j = 0; j < d.Length; j++) {
             var += d[i] * C[i, j] * d[j];
           }
         }
-        yield return var + NoiseSigma*NoiseSigma;
+        yield return var + NoiseSigma * NoiseSigma;
       }
     }
-
 
     public override IRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData) {
       return new ConfidenceRegressionSolution(this, new RegressionProblemData(problemData));
