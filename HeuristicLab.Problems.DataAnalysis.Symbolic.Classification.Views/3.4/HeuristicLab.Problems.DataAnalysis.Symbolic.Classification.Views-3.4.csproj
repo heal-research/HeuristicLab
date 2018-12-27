@@ -101,6 +101,12 @@
     <Reference Include="EPPlus-4.0.3, Version=4.0.3.0, Culture=neutral, PublicKeyToken=ea159fdaa78159a1, processorArchitecture=MSIL">
       <Private>False</Private>
     </Reference>
+    <Reference Include="Google.Protobuf, Version=3.6.1.0, Culture=neutral, PublicKeyToken=a7d26565bac4d604, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Google.Protobuf.3.6.1\lib\net45\Google.Protobuf.dll</HintPath>
+    </Reference>
+    <Reference Include="HEAL.Fossil, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\HEAL.Fossil.1.0.0\lib\netstandard2.0\HEAL.Fossil.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -157,6 +163,7 @@
       <DependentUpon>SymbolicClassificationModelMathView.cs</DependentUpon>
     </Compile>
     <None Include="HeuristicLab.snk" />
+    <None Include="packages.config" />
     <None Include="Plugin.cs.frame" />
     <None Include="Properties\AssemblyInfo.cs.frame" />
     <Compile Include="InteractiveSymbolicDiscriminantFunctionClassificationSolutionSimplifierView.cs">
