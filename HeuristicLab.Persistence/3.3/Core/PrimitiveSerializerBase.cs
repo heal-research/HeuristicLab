@@ -21,7 +21,7 @@
 
 using System;
 using System.Text;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Persistence.Interfaces {
 

@@ -25,12 +25,12 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.DataPreprocessing {
   [Item("FilteredPreprocessingData", "Represents filtered data used for preprocessing.")]
-  [StorableClass]
+  [StorableType("26BAE57C-A102-483D-8A09-AEC7132FD837")]
   public sealed class FilteredPreprocessingData : NamedItem, IFilteredPreprocessingData {
 
     [Storable]
@@ -59,8 +59,7 @@ namespace HeuristicLab.DataPreprocessing {
     }
 
     [StorableConstructor]
-    private FilteredPreprocessingData(bool deserializing)
-      : base(deserializing) { }
+    private FilteredPreprocessingData(StorableConstructorFlag _) : base(_) { }
     #endregion
 
     #region Cells

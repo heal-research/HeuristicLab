@@ -25,18 +25,18 @@ using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.PTSP {
   [Item("Stochastic 2.5-SingleMoveGenerator", "Randomly samples a single from all possible inversion and shift moves (2.5-opt) from a given permutation.")]
-  [StorableClass]
+  [StorableType("A3D496C5-3BB5-4263-8F33-0DAFFCAC1BAF")]
   public sealed class StochasticTwoPointFiveSingleMoveGenerator : TwoPointFiveMoveGenerator, IStochasticOperator, ISingleMoveGenerator {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
     }
 
     [StorableConstructor]
-    private StochasticTwoPointFiveSingleMoveGenerator(bool deserializing) : base(deserializing) { }
+    private StochasticTwoPointFiveSingleMoveGenerator(StorableConstructorFlag _) : base(_) { }
     private StochasticTwoPointFiveSingleMoveGenerator(StochasticTwoPointFiveSingleMoveGenerator original, Cloner cloner) : base(original, cloner) { }
     public StochasticTwoPointFiveSingleMoveGenerator()
       : base() {

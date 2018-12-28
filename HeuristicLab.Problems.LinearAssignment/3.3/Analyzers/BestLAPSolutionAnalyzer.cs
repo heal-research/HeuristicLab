@@ -27,11 +27,11 @@ using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.LinearAssignment {
   [Item("BestLAPSolutionAnalyzer", "Analyzes the best solution found.")]
-  [StorableClass]
+  [StorableType("7C4B1DB3-E351-4C6C-899B-801303DFCE61")]
   public class BestLAPSolutionAnalyzer : SingleSuccessorOperator, IAnalyzer, ISingleObjectiveOperator {
     public bool EnabledByDefault { get { return true; } }
 
@@ -70,7 +70,7 @@ namespace HeuristicLab.Problems.LinearAssignment {
     }
 
     [StorableConstructor]
-    protected BestLAPSolutionAnalyzer(bool deserializing) : base(deserializing) { }
+    protected BestLAPSolutionAnalyzer(StorableConstructorFlag _) : base(_) { }
     protected BestLAPSolutionAnalyzer(BestLAPSolutionAnalyzer original, Cloner cloner) : base(original, cloner) { }
     public BestLAPSolutionAnalyzer()
       : base() {

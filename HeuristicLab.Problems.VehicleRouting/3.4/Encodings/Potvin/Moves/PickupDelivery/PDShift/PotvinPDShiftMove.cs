@@ -23,13 +23,13 @@ using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.VehicleRouting.Encodings.General;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinPDShiftMove", "Item that describes a shift move on a PDP representation.")]
-  [StorableClass]
+  [StorableType("D71816CC-47C7-45C0-8474-8E4A94720B19")]
   public class PotvinPDShiftMove : Item, IVRPMove {
     [Storable]
     public IVRPEncoding Individual { get; protected set; }
@@ -73,7 +73,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
     }
 
     [StorableConstructor]
-    protected PotvinPDShiftMove(bool deserializing) : base(deserializing) { }
+    protected PotvinPDShiftMove(StorableConstructorFlag _) : base(_) { }
 
     #region IVRPMove Members
 

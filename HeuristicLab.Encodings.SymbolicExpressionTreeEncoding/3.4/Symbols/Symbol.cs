@@ -23,10 +23,10 @@ using System;
 using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
-  [StorableClass]
+  [StorableType("8ECC852D-3FE4-4AD8-9F70-582C7F874AE6")]
   [Item("Symbol", "Represents a symbol in a symbolic function tree.")]
   public abstract class Symbol : NamedItem, ISymbol {
     #region Properties
@@ -79,7 +79,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     #endregion
 
     [StorableConstructor]
-    protected Symbol(bool deserializing) : base(deserializing) { }
+    protected Symbol(StorableConstructorFlag _) : base(_) { }
     protected Symbol(Symbol original, Cloner cloner)
       : base(original, cloner) {
       initialFrequency = original.initialFrequency;

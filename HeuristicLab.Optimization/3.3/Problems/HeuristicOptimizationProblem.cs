@@ -23,11 +23,11 @@ using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Optimization {
   [Item("Heuristic Optimization Problem", "Represents the base class for a heuristic optimization problem.")]
-  [StorableClass]
+  [StorableType("DE0478BA-3797-4AC3-9A89-3734D2643823")]
   public abstract class HeuristicOptimizationProblem<T, U> : Problem, IHeuristicOptimizationProblem
     where T : class,IEvaluator
     where U : class,ISolutionCreator {
@@ -35,7 +35,7 @@ namespace HeuristicLab.Optimization {
     private const string SolutionCreateParameterName = "SolutionCreator";
 
     [StorableConstructor]
-    protected HeuristicOptimizationProblem(bool deserializing) : base(deserializing) { }
+    protected HeuristicOptimizationProblem(StorableConstructorFlag _) : base(_) { }
     protected HeuristicOptimizationProblem(HeuristicOptimizationProblem<T, U> original, Cloner cloner)
       : base(original, cloner) {
       RegisterEventHandlers();

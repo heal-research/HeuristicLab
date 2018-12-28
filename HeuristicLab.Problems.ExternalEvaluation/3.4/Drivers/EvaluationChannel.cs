@@ -22,17 +22,17 @@
 using Google.ProtocolBuffers;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.ExternalEvaluation {
   [Item("EvaluationChannel", "Abstract base class for channels to be used in an external evaluation problem.")]
-  [StorableClass]
+  [StorableType("2BE4FE9D-D5FE-45C3-9F85-3BF7200F0913")]
   public abstract class EvaluationChannel : NamedItem, IEvaluationChannel {
     public override bool CanChangeName { get { return false; } }
     public override bool CanChangeDescription { get { return false; } }
 
     [StorableConstructor]
-    protected EvaluationChannel(bool deserializing) : base(deserializing) { }
+    protected EvaluationChannel(StorableConstructorFlag _) : base(_) { }
     protected EvaluationChannel(EvaluationChannel original, Cloner cloner) : base(original, cloner) { }
     protected EvaluationChannel()
       : base() {

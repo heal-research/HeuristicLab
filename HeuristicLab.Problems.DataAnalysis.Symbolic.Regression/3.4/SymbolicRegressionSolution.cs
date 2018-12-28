@@ -25,13 +25,13 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   /// <summary>
   /// Represents a symbolic regression solution (model + data) and attributes of the solution like accuracy and complexity
   /// </summary>
-  [StorableClass]
+  [StorableType("88E56AF9-AD72-47E4-A613-8875703BD927")]
   [Item(Name = "SymbolicRegressionSolution", Description = "Represents a symbolic regression solution (model + data) and attributes of the solution like accuracy and complexity.")]
   public sealed class SymbolicRegressionSolution : RegressionSolution, ISymbolicRegressionSolution {
     private const string ModelLengthResultName = "Model Length";
@@ -96,7 +96,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     }
 
     [StorableConstructor]
-    private SymbolicRegressionSolution(bool deserializing) : base(deserializing) { }
+    private SymbolicRegressionSolution(StorableConstructorFlag _) : base(_) { }
     private SymbolicRegressionSolution(SymbolicRegressionSolution original, Cloner cloner)
       : base(original, cloner) {
     }

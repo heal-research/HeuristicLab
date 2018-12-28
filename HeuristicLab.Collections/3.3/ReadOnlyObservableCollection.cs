@@ -23,10 +23,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Collections {
-  [StorableClass]
+  [StorableType("ADC26E6D-9F2A-40AA-A959-224DA6A90638")]
   [Serializable]
   public class ReadOnlyObservableCollection<T> : IObservableCollection<T> {
     [Storable]
@@ -49,7 +49,7 @@ namespace HeuristicLab.Collections {
       RegisterEvents();
     }
     [StorableConstructor]
-    protected ReadOnlyObservableCollection(bool deserializing) { }
+    protected ReadOnlyObservableCollection(StorableConstructorFlag _) { }
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {

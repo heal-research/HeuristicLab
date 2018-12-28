@@ -23,19 +23,19 @@ using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinVehicleAssignmentExhaustiveMoveGenerator", "Generates vehicle assignment moves from a given VRP encoding.")]
-  [StorableClass]
+  [StorableType("F1CAD2AC-DBC9-463A-AAE7-2413F6CB96AF")]
   public sealed class PotvinVehicleAssignmentExhaustiveMoveGenerator : PotvinVehicleAssignmentMoveGenerator, IExhaustiveMoveGenerator {
     public override IDeepCloneable Clone(Cloner cloner) {
       return new PotvinVehicleAssignmentExhaustiveMoveGenerator(this, cloner);
     }
 
     [StorableConstructor]
-    private PotvinVehicleAssignmentExhaustiveMoveGenerator(bool deserializing) : base(deserializing) { }
+    private PotvinVehicleAssignmentExhaustiveMoveGenerator(StorableConstructorFlag _) : base(_) { }
 
     public PotvinVehicleAssignmentExhaustiveMoveGenerator()
       : base() {

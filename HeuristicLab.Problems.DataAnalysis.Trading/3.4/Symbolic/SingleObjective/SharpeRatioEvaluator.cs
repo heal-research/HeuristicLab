@@ -24,15 +24,15 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Trading.Symbolic {
   [Item("Sharpe Ratio Evaluator", "")]
-  [StorableClass]
+  [StorableType("5F0F5837-D659-4B77-BBCA-F4EFBAE554DB")]
   public class SharpeRatioEvaluator : SingleObjectiveEvaluator {
     [StorableConstructor]
-    protected SharpeRatioEvaluator(bool deserializing) : base(deserializing) { }
+    protected SharpeRatioEvaluator(StorableConstructorFlag _) : base(_) { }
     protected SharpeRatioEvaluator(SharpeRatioEvaluator original, Cloner cloner)
       : base(original, cloner) {
     }

@@ -25,11 +25,11 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.DataAnalysis.OnlineCalculators;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  [StorableClass]
+  [StorableType("60599497-EAF0-4DB0-B2E4-D58F34458D8F")]
   public abstract class ClassificationSolutionBase : DataAnalysisSolution, IClassificationSolution {
     private const string TrainingAccuracyResultName = "Accuracy (training)";
     private const string TestAccuracyResultName = "Accuracy (test)";
@@ -77,7 +77,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     #endregion
 
     [StorableConstructor]
-    protected ClassificationSolutionBase(bool deserializing) : base(deserializing) { }
+    protected ClassificationSolutionBase(StorableConstructorFlag _) : base(_) { }
     protected ClassificationSolutionBase(ClassificationSolutionBase original, Cloner cloner)
       : base(original, cloner) {
     }

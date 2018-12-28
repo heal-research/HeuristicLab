@@ -75,26 +75,12 @@ namespace HeuristicLab.Persistence.GUI {
           try {
             if (!IsSerializable(type, config))
               types.Add(type);
-            /* if (!IsCorrectlyStorable(type))
-              storableInconsistentcy.Add(type); */
-          }
-          catch {
+          } catch {
             types.Add(type);
           }
         }
       }
       return types;
     }
-
-    /* private static bool IsCorrectlyStorable(Type type) {
-      if (StorableAttribute.GetStorableMembers(type).Count() > 0) {
-        if (!StorableClassAttribute.IsStorableType(type, true))
-          return false;
-        if (type.GetConstructor(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public, null, Type.EmptyTypes, null) == null &&
-          StorableConstructorAttribute.GetStorableConstructor(type) == null)
-          return false;
-      }
-      return true;
-    }  */
   }
 }

@@ -26,16 +26,16 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.PTSP {
   [Item("Analytical Probabilistic Traveling Salesman Problem (PTSP)", "Represents a probabilistic traveling salesman problem where the expected tour length is calculated exactly.")]
   [Creatable(CreatableAttribute.Categories.CombinatorialProblems)]
-  [StorableClass]
+  [StorableType("509B6AB5-F4DE-4144-A031-43EEBAD02CA6")]
   public sealed class AnalyticalProbabilisticTravelingSalesmanProblem : ProbabilisticTravelingSalesmanProblem {
 
     [StorableConstructor]
-    private AnalyticalProbabilisticTravelingSalesmanProblem(bool deserializing) : base(deserializing) { }
+    private AnalyticalProbabilisticTravelingSalesmanProblem(StorableConstructorFlag _) : base(_) { }
     private AnalyticalProbabilisticTravelingSalesmanProblem(AnalyticalProbabilisticTravelingSalesmanProblem original, Cloner cloner) : base(original, cloner) { }
     public AnalyticalProbabilisticTravelingSalesmanProblem() {
       Operators.Add(new BestPTSPSolutionAnalyzer());

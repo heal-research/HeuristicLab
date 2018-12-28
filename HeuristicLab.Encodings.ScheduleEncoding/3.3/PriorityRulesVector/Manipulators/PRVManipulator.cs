@@ -22,14 +22,14 @@
 using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding.PriorityRulesVector {
   [Item("PRVManipulator", "An operator which manipulates a PRV representation.")]
-  [StorableClass]
+  [StorableType("724A2141-E592-447E-9F51-5C69BD3A7D46")]
   public abstract class PRVManipulator : ScheduleManipulator, IPRVOperator {
     [StorableConstructor]
-    protected PRVManipulator(bool deserializing) : base(deserializing) { }
+    protected PRVManipulator(StorableConstructorFlag _) : base(_) { }
     protected PRVManipulator(PRVManipulator original, Cloner cloner) : base(original, cloner) { }
     public PRVManipulator()
       : base() {

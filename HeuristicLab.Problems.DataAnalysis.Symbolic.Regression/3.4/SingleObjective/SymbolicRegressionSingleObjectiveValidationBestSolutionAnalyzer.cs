@@ -23,14 +23,14 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   /// <summary>
   /// An operator that analyzes the validation best symbolic regression solution for single objective symbolic regression problems.
   /// </summary>
   [Item("SymbolicRegressionSingleObjectiveValidationBestSolutionAnalyzer", "An operator that analyzes the validation best symbolic regression solution for single objective symbolic regression problems.")]
-  [StorableClass]
+  [StorableType("75E2AFFF-95B2-4FA4-8544-CF2025B65820")]
   public sealed class SymbolicRegressionSingleObjectiveValidationBestSolutionAnalyzer : SymbolicDataAnalysisSingleObjectiveValidationBestSolutionAnalyzer<ISymbolicRegressionSolution, ISymbolicRegressionSingleObjectiveEvaluator, IRegressionProblemData>,
     ISymbolicDataAnalysisBoundedOperator {
     private const string EstimationLimitsParameterName = "EstimationLimits";
@@ -42,7 +42,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     #endregion
 
     [StorableConstructor]
-    private SymbolicRegressionSingleObjectiveValidationBestSolutionAnalyzer(bool deserializing) : base(deserializing) { }
+    private SymbolicRegressionSingleObjectiveValidationBestSolutionAnalyzer(StorableConstructorFlag _) : base(_) { }
     private SymbolicRegressionSingleObjectiveValidationBestSolutionAnalyzer(SymbolicRegressionSingleObjectiveValidationBestSolutionAnalyzer original, Cloner cloner) : base(original, cloner) { }
     public SymbolicRegressionSingleObjectiveValidationBestSolutionAnalyzer()
       : base() {

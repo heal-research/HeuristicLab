@@ -26,11 +26,11 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.IntegerVectorEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.Orienteering {
   [Item("OrienteeringEvaluator", "Operator to evaluate a solution to the orienteering problem.")]
-  [StorableClass]
+  [StorableType("ACAC24FD-9FBC-4722-BFB0-21BFEF02C2D1")]
   public class OrienteeringEvaluator : InstrumentedOperator, IOrienteeringEvaluator {
 
     #region ParameterProperties
@@ -61,8 +61,7 @@ namespace HeuristicLab.Problems.Orienteering {
     #endregion
 
     [StorableConstructor]
-    protected OrienteeringEvaluator(bool deserializing)
-      : base(deserializing) {
+    protected OrienteeringEvaluator(StorableConstructorFlag _) : base(_) {
     }
     protected OrienteeringEvaluator(OrienteeringEvaluator original, Cloner cloner)
       : base(original, cloner) {

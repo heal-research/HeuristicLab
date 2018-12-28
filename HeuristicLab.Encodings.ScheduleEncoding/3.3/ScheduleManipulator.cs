@@ -24,11 +24,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("ScheduleManipulator", "A scheduling manipulation operation.")]
-  [StorableClass]
+  [StorableType("200713D0-348F-432E-BE67-C9B5016FC741")]
   public abstract class ScheduleManipulator : InstrumentedOperator, IScheduleManipulator, IStochasticOperator {
 
     public ILookupParameter<IScheduleEncoding> ScheduleEncodingParameter {
@@ -40,7 +40,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
     }
 
     [StorableConstructor]
-    protected ScheduleManipulator(bool deserializing) : base(deserializing) { }
+    protected ScheduleManipulator(StorableConstructorFlag _) : base(_) { }
     protected ScheduleManipulator(ScheduleManipulator original, Cloner cloner) : base(original, cloner) { }
     public ScheduleManipulator()
       : base() {

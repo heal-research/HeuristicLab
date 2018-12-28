@@ -26,7 +26,7 @@ using System.Linq;
 using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.DataAnalysis;
 using LibSVM;
 
@@ -34,7 +34,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>
   /// Represents a support vector machine model.
   /// </summary>
-  [StorableClass]
+  [StorableType("669B0522-A27B-4DA6-B655-27C374D88C95")]
   [Item("SupportVectorMachineModel", "Represents a support vector machine model.")]
   public sealed class SupportVectorMachineModel : ClassificationModel, ISupportVectorMachineModel {
     public override IEnumerable<string> VariablesUsedForPrediction {
@@ -91,7 +91,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private double[] classValues; // only for SVM classification models
 
     [StorableConstructor]
-    private SupportVectorMachineModel(bool deserializing) : base(deserializing) { }
+    private SupportVectorMachineModel(StorableConstructorFlag _) : base(_) { }
     private SupportVectorMachineModel(SupportVectorMachineModel original, Cloner cloner)
       : base(original, cloner) {
       // only using a shallow copy here! (gkronber)

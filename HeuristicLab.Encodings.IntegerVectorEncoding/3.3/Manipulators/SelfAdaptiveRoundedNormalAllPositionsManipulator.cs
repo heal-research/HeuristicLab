@@ -25,7 +25,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Encodings.IntegerVectorEncoding {
@@ -34,7 +34,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   /// in the strategy parameter vector.
   /// </summary>
   [Item("SelfAdaptiveRoundedNormalAllPositionsManipulator", "This manipulation operator adds a value sigma_i * N(0,1) to the current value in each position i. The resulting value is rounded to the next feasible value. The values for sigma_i are looked up dynamically. If there are less elements in the strategy vector than positions, then the strategy vector is cycled.")]
-  [StorableClass]
+  [StorableType("2CD4AE6E-3A73-4514-AB66-4D94C700F779")]
   public class SelfAdaptiveRoundedNormalAllPositionsManipulator : BoundedIntegerVectorManipulator, ISelfAdaptiveManipulator {
     public Type StrategyParameterType {
       get { return typeof(IIntegerVectorStdDevStrategyParameterOperator); }
@@ -51,7 +51,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
     }
 
     [StorableConstructor]
-    protected SelfAdaptiveRoundedNormalAllPositionsManipulator(bool deserializing) : base(deserializing) { }
+    protected SelfAdaptiveRoundedNormalAllPositionsManipulator(StorableConstructorFlag _) : base(_) { }
     protected SelfAdaptiveRoundedNormalAllPositionsManipulator(SelfAdaptiveRoundedNormalAllPositionsManipulator original, Cloner cloner) : base(original, cloner) { }
     /// <summary>
     /// Initializes a new instance of <see cref="SelfAdaptiveRoundedNormalAllPositionsManipulator"/> with one.

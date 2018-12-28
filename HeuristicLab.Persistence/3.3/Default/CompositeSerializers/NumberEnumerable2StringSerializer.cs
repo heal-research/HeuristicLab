@@ -25,7 +25,7 @@ using System.Reflection;
 using System.Text;
 using HeuristicLab.Persistence.Auxiliary;
 using HeuristicLab.Persistence.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Persistence.Interfaces;
 
 namespace HeuristicLab.Persistence.Default.CompositeSerializers {
@@ -34,7 +34,7 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers {
   internal sealed class NumberEnumerable2StringSerializer : ICompositeSerializer {
 
     [StorableConstructor]
-    private NumberEnumerable2StringSerializer(bool deserializing) { }
+    private NumberEnumerable2StringSerializer(StorableConstructorFlag _) { }
     public NumberEnumerable2StringSerializer() { }
 
     public int Priority {

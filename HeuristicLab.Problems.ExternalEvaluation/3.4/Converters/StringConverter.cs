@@ -23,16 +23,16 @@ using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.ExternalEvaluation {
   [Item("StringConverter", "Converts a StringValue, StringArray, StringMatrix, IStringConvertibleValue, IStringConvertibleArray, or IStringConvertibleMatrix and adds it to the SolutionMessage's StringVars or StringArrayVars. A matrix is encoded as array by concatenating all rows and setting length as the length of a row.")]
-  [StorableClass]
+  [StorableType("FD48F37D-DA07-442D-85B9-EC7D5D1A6740")]
   public class StringConverter : Item, IItemToSolutionMessageConverter {
     private static readonly Type[] itemTypes = new Type[] { typeof(StringValue), typeof(StringArray), typeof(StringMatrix), typeof(IStringConvertibleValue), typeof(IStringConvertibleArray), typeof(IStringConvertibleMatrix) };
 
     [StorableConstructor]
-    protected StringConverter(bool deserializing) : base(deserializing) { }
+    protected StringConverter(StorableConstructorFlag _) : base(_) { }
     protected StringConverter(StringConverter original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new StringConverter(this, cloner);

@@ -22,16 +22,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  [StorableClass]
+  [StorableType("85AE1542-D563-434F-A760-1D181EFC2101")]
   public abstract class DataAnalysisProblemData : ParameterizedNamedItem, IDataAnalysisProblemData {
     protected const string DatasetParameterName = "Dataset";
     protected const string InputVariablesParameterName = "InputVariables";
@@ -143,7 +142,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       RegisterEventHandlers();
     }
     [StorableConstructor]
-    protected DataAnalysisProblemData(bool deserializing) : base(deserializing) { }
+    protected DataAnalysisProblemData(StorableConstructorFlag _) : base(_) { }
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {

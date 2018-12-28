@@ -107,14 +107,20 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
   </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
   <ItemGroup>
+    <Reference Include="Google.Protobuf, Version=3.6.1.0, Culture=neutral, PublicKeyToken=a7d26565bac4d604, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Google.Protobuf.3.6.1\lib\net45\Google.Protobuf.dll</HintPath>
+    </Reference>
+    <Reference Include="HEAL.Fossil, Version=1.0.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\HEAL.Fossil.1.0.0\lib\netstandard2.0\HEAL.Fossil.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core">
@@ -131,9 +137,9 @@
     <Compile Include="Auxiliary\TypeLoader.cs" />
     <Compile Include="Auxiliary\TypeNameParser.cs" />
     <Compile Include="Auxiliary\ReflectionTools.cs" />
+    <None Include="packages.config" />
     <None Include="Plugin.cs.frame" />
     <Compile Include="Core\Configuration.cs" />
-    <Compile Include="Core\PersistenceException.cs" />
     <Compile Include="Core\PrimitiveSerializerBase.cs" />
     <Compile Include="Core\FormatBase.cs" />
     <Compile Include="Auxiliary\TypeExtensions.cs" />
@@ -156,12 +162,7 @@
     <Compile Include="Default\CompositeSerializers\StackSerializer.cs" />
     <Compile Include="Default\CompositeSerializers\Storable\StorableReflection.cs" />
     <Compile Include="Default\CompositeSerializers\Storable\StorableMemberInfo.cs" />
-    <Compile Include="Default\CompositeSerializers\Storable\StorableClassType.cs" />
     <Compile Include="Core\DataMemberAccessor.cs" />
-    <Compile Include="Default\CompositeSerializers\Storable\StorableClassAttribute.cs" />
-    <Compile Include="Default\CompositeSerializers\Storable\StorableAttribute.cs" />
-    <Compile Include="Default\CompositeSerializers\Storable\StorableConstructorAttribute.cs" />
-    <Compile Include="Default\CompositeSerializers\Storable\StorableHookAttribute.cs" />
     <Compile Include="Default\CompositeSerializers\Storable\StorableSerializer.cs" />
     <Compile Include="Default\CompositeSerializers\StructSerializer.cs" />
     <Compile Include="Default\CompositeSerializers\TypeSerializer.cs" />

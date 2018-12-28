@@ -25,13 +25,13 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using System;
 using System.Linq;
 
 namespace HeuristicLab.Algorithms.CMAEvolutionStrategy {
   [Item("Terminator", "Decides if the algorithm should terminate or not.")]
-  [StorableClass]
+  [StorableType("BE0F0791-4B19-4AC0-ACD6-C0FBEF829DBC")]
   public class Terminator : Operator, IIterationBasedOperator, ISingleObjectiveOperator {
 
     protected OperatorParameter ContinueParameter {
@@ -108,7 +108,7 @@ namespace HeuristicLab.Algorithms.CMAEvolutionStrategy {
     }
 
     [StorableConstructor]
-    protected Terminator(bool deserializing) : base(deserializing) { }
+    protected Terminator(StorableConstructorFlag _) : base(_) { }
     protected Terminator(Terminator original, Cloner cloner)
       : base(original, cloner) { }
     public Terminator() {

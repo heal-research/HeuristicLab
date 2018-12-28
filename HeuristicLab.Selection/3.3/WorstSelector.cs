@@ -26,17 +26,17 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Selection {
   /// <summary>
   /// A selection operator which considers a single double quality value and selects the worst.
   /// </summary>
   [Item("WorstSelector", "A selection operator which considers a single double quality value and selects the worst.")]
-  [StorableClass]
+  [StorableType("FD37F242-2CB7-4528-9047-4011A61CE24F")]
   public sealed class WorstSelector : SingleObjectiveSelector, ISingleObjectiveSelector {
     [StorableConstructor]
-    private WorstSelector(bool deserializing) : base(deserializing) { }
+    private WorstSelector(StorableConstructorFlag _) : base(_) { }
     private WorstSelector(WorstSelector original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new WorstSelector(this, cloner);

@@ -25,14 +25,14 @@ using System.Threading.Tasks;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Optimization.Operators {
   /// <summary>
   /// A base class for items that perform similarity calculation between two solutions.
   /// </summary>
   [Item("SimilarityCalculator", "A base class for items that perform similarity calculation between two solutions.")]
-  [StorableClass]
+  [StorableType("ACDF2895-0C4E-4C34-A091-F41EF5C78241")]
   public abstract class SolutionSimilarityCalculator : Item, ISolutionSimilarityCalculator {
     protected abstract bool IsCommutative { get; }
 
@@ -48,7 +48,7 @@ namespace HeuristicLab.Optimization.Operators {
     #endregion
 
     [StorableConstructor]
-    protected SolutionSimilarityCalculator(bool deserializing) : base(deserializing) { }
+    protected SolutionSimilarityCalculator(StorableConstructorFlag _) : base(_) { }
 
     protected SolutionSimilarityCalculator(SolutionSimilarityCalculator original, Cloner cloner)
       : base(original, cloner) {

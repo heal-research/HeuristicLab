@@ -22,12 +22,12 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Clients.OKB.RunCreation {
   [Item("Empty Multi-Objective Problem", "A dummy multi-objective problem which serves as a placeholder and cannot be solved.")]
-  [StorableClass]
+  [StorableType("1AD8A6B9-1B3E-40BA-BAE2-8EAD31793B7D")]
   [NonDiscoverableType]
   public sealed class EmptyMultiObjectiveProblem : MultiObjectiveHeuristicOptimizationProblem<EmptyMultiObjectiveEvaluator, EmptySolutionCreator> {
     public override bool CanChangeName {
@@ -38,7 +38,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
     }
 
     [StorableConstructor]
-    private EmptyMultiObjectiveProblem(bool deserializing) : base(deserializing) { }
+    private EmptyMultiObjectiveProblem(StorableConstructorFlag _) : base(_) { }
     private EmptyMultiObjectiveProblem(EmptyMultiObjectiveProblem original, Cloner cloner) : base(original, cloner) { }
     public EmptyMultiObjectiveProblem() : base(new EmptyMultiObjectiveEvaluator(), new EmptySolutionCreator()) { }
     public EmptyMultiObjectiveProblem(string exceptionMessage) : base(new EmptyMultiObjectiveEvaluator(exceptionMessage), new EmptySolutionCreator(exceptionMessage)) { }

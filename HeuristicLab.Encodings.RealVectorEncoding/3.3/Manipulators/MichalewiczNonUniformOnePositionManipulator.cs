@@ -25,7 +25,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// <summary>
@@ -36,7 +36,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// It is implemented as described in Michalewicz, Z. 1999. Genetic Algorithms + Data Structures = Evolution Programs. Third, Revised and Extended Edition, Spring-Verlag Berlin Heidelberg.
   /// </remarks>
   [Item("MichalewiczNonUniformOnePositionManipulator", "It is implemented as described in Michalewicz, Z. 1999. Genetic Algorithms + Data Structures = Evolution Programs. Third, Revised and Extended Edition, Spring-Verlag Berlin Heidelberg.")]
-  [StorableClass]
+  [StorableType("AD99F9B0-C820-416D-B57D-2287CE2E04D2")]
   public class MichalewiczNonUniformOnePositionManipulator : RealVectorManipulator, IIterationBasedOperator {
     /// <summary>
     /// The current iteration.
@@ -58,7 +58,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     }
 
     [StorableConstructor]
-    protected MichalewiczNonUniformOnePositionManipulator(bool deserializing) : base(deserializing) { }
+    protected MichalewiczNonUniformOnePositionManipulator(StorableConstructorFlag _) : base(_) { }
     protected MichalewiczNonUniformOnePositionManipulator(MichalewiczNonUniformOnePositionManipulator original, Cloner cloner) : base(original, cloner) { }
     /// <summary>
     /// Initializes a new instance of <see cref="MichalewiczNonUniformOnePositionManipulator"/> with three 

@@ -22,7 +22,7 @@
 using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   /// <summary>
@@ -35,10 +35,10 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
   /// The operator first determines all cycles in the permutation and then composes the offspring by alternating between the cycles of the two parents.
   /// </remarks>
   [Item("EdgeRecombinationCrossover", "An operator which performs the edge recombination crossover on two permutations. It is implemented as described in Whitley et.al. 1991, The Traveling Salesman and Sequence Scheduling, in Davis, L. (Ed.), Handbook of Genetic Algorithms, New York, pp. 350-372.")]
-  [StorableClass]
+  [StorableType("4A2E0B7A-F92A-4085-8F3A-149FA010FEB0")]
   public class EdgeRecombinationCrossover : PermutationCrossover {
     [StorableConstructor]
-    protected EdgeRecombinationCrossover(bool deserializing) : base(deserializing) { }
+    protected EdgeRecombinationCrossover(StorableConstructorFlag _) : base(_) { }
     protected EdgeRecombinationCrossover(EdgeRecombinationCrossover original, Cloner cloner) : base(original, cloner) { }
     public EdgeRecombinationCrossover() : base() { }
 

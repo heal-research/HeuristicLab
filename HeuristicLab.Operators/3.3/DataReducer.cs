@@ -26,11 +26,11 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Operators {
   [Item("DataReducer", "An operator to reduce values of sub scopes.")]
-  [StorableClass]
+  [StorableType("87DC7AB9-4C8D-4FF9-B0B0-70B7E7F32C3C")]
   public sealed class DataReducer : SingleSuccessorOperator {
     #region Parameter Properties
     public ScopeTreeLookupParameter<IItem> ParameterToReduce {
@@ -48,7 +48,7 @@ namespace HeuristicLab.Operators {
     #endregion
 
     [StorableConstructor]
-    private DataReducer(bool deserializing) : base(deserializing) { }
+    private DataReducer(StorableConstructorFlag _) : base(_) { }
     private DataReducer(DataReducer original, Cloner cloner)
       : base(original, cloner) {
     }

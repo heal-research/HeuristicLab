@@ -21,7 +21,7 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   /// <summary>
@@ -32,10 +32,10 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
   /// It is implemented as described in Fogel, D.B. 1993. Applying Evolutionary Programming to Selected TSP Problems, Cybernetics and Systems, 22, pp 27-36.
   /// </remarks>
   [Item("TranslocationInversionManipulator", "An operator which inverts a randomly chosen part of a permutation and inserts it at a random position. It is implemented as described in Fogel, D.B. 1993. Applying Evolutionary Programming to Selected TSP Problems, Cybernetics and Systems, 22, pp. 27-36.")]
-  [StorableClass]
+  [StorableType("00E282D0-60ED-4A6B-B409-9CAB380DA670")]
   public class TranslocationInversionManipulator : PermutationManipulator {
     [StorableConstructor]
-    protected TranslocationInversionManipulator(bool deserializing) : base(deserializing) { }
+    protected TranslocationInversionManipulator(StorableConstructorFlag _) : base(_) { }
     protected TranslocationInversionManipulator(TranslocationInversionManipulator original, Cloner cloner) : base(original, cloner) { }
     public TranslocationInversionManipulator() : base() { }
 

@@ -23,20 +23,20 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.VehicleRouting.Encodings.General;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.GVR {
   [Item("GVRManipulator", "A VRP manipulation operation.")]
-  [StorableClass]
+  [StorableType("D3459367-9919-4FB9-8E63-B7554154575C")]
   public abstract class GVRManipulator : VRPManipulator, IStochasticOperator, IGVROperator {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }
     }
 
     [StorableConstructor]
-    protected GVRManipulator(bool deserializing) : base(deserializing) { }
+    protected GVRManipulator(StorableConstructorFlag _) : base(_) { }
 
     public GVRManipulator() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The pseudo random number generator which should be used for stochastic manipulation operators."));

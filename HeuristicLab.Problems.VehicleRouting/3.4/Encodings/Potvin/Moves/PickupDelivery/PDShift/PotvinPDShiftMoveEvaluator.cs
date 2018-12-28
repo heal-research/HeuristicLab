@@ -23,11 +23,11 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinPDShiftMoveEvaluator", "Evaluates a shift move for a PDP representation. ")]
-  [StorableClass]
+  [StorableType("30977D1E-28BA-459A-98EA-D6BEEDB872A4")]
   public sealed class PotvinPDShiftMoveEvaluator : PotvinMoveEvaluator, IPotvinPDShiftMoveOperator {
     public ILookupParameter<PotvinPDShiftMove> PDShiftMoveParameter {
       get { return (ILookupParameter<PotvinPDShiftMove>)Parameters["PotvinPDShiftMove"]; }
@@ -50,7 +50,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
     }
 
     [StorableConstructor]
-    private PotvinPDShiftMoveEvaluator(bool deserializing) : base(deserializing) { }
+    private PotvinPDShiftMoveEvaluator(StorableConstructorFlag _) : base(_) { }
 
     public PotvinPDShiftMoveEvaluator()
       : base() {

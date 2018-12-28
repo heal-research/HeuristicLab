@@ -25,7 +25,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Problems.VehicleRouting.Variants;
 
@@ -34,7 +34,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
   /// An operator for adaptive constraint relaxation.
   /// </summary>
   [Item("PickupViolationsRelaxationVRPAnalyzer", "An operator for adaptively relaxing the pickup constraints.")]
-  [StorableClass]
+  [StorableType("86D541AB-5E65-432B-A8C4-F012A6B46275")]
   public class PickupViolationsRelaxationVRPAnalyzer : SingleSuccessorOperator, IAnalyzer, IPickupAndDeliveryOperator, ISingleObjectiveOperator {
     public ILookupParameter<IVRPProblemInstance> ProblemInstanceParameter {
       get { return (ILookupParameter<IVRPProblemInstance>)Parameters["ProblemInstance"]; }
@@ -72,7 +72,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
     }
 
     [StorableConstructor]
-    protected PickupViolationsRelaxationVRPAnalyzer(bool deserializing) : base(deserializing) { }
+    protected PickupViolationsRelaxationVRPAnalyzer(StorableConstructorFlag _) : base(_) { }
 
     public PickupViolationsRelaxationVRPAnalyzer()
       : base() {

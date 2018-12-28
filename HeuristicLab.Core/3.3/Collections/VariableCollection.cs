@@ -21,14 +21,14 @@
 
 using System.Collections.Generic;
 using HeuristicLab.Common;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Core {
-  [StorableClass]
+  [StorableType("72180610-BA37-4A51-9EFD-D9ADD1061824")]
   [Item("VariableCollection", "Represents a collection of variables.")]
   public sealed class VariableCollection : NamedItemCollection<IVariable> {
     [StorableConstructor]
-    private VariableCollection(bool deserializing) : base(deserializing) { }
+    private VariableCollection(StorableConstructorFlag _) : base(_) { }
     private VariableCollection(VariableCollection original, Cloner cloner) : base(original, cloner) { }
     public VariableCollection() : base() { }
     public VariableCollection(int capacity) : base(capacity) { }

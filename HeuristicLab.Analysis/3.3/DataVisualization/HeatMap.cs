@@ -24,11 +24,11 @@ using System.Drawing;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Analysis {
   [Item("HeatMap", "Represents a heat map of double values.")]
-  [StorableClass]
+  [StorableType("863005CD-A281-4A42-AF58-6F0BD0988C79")]
   public class HeatMap : DoubleMatrix {
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Gradient; }
@@ -87,7 +87,7 @@ namespace HeuristicLab.Analysis {
     #endregion
 
     [StorableConstructor]
-    protected HeatMap(bool deserializing) : base(deserializing) { }
+    protected HeatMap(StorableConstructorFlag _) : base(_) { }
     protected HeatMap(HeatMap original, Cloner cloner)
       : base(original, cloner) {
       this.title = original.title;

@@ -19,19 +19,13 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using HeuristicLab.Common;
-using HeuristicLab.Core;
-using HeuristicLab.Data;
-using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
-  [StorableClass]
+  [StorableType("7EB90F03-4385-474F-BDE7-3B133E8FEAAB")]
   public abstract class SymbolicRegressionSingleObjectiveEvaluator : SymbolicDataAnalysisSingleObjectiveEvaluator<IRegressionProblemData>, ISymbolicRegressionSingleObjectiveEvaluator {  
     [StorableConstructor]
-    protected SymbolicRegressionSingleObjectiveEvaluator(bool deserializing) : base(deserializing) { }
+    protected SymbolicRegressionSingleObjectiveEvaluator(StorableConstructorFlag _) : base(_) { }
     protected SymbolicRegressionSingleObjectiveEvaluator(SymbolicRegressionSingleObjectiveEvaluator original, Cloner cloner) : base(original, cloner) { }
     protected SymbolicRegressionSingleObjectiveEvaluator(): base() {}    
   }

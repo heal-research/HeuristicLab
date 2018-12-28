@@ -22,11 +22,11 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.DataPreprocessing {
   [Item("PreprocessingContent", "")]
-  [StorableClass]
+  [StorableType("16A5E913-08C6-4286-AD2F-4598ACB60F74")]
   public abstract class PreprocessingContent : Item {
 
     public IFilteredPreprocessingData PreprocessingData { get; private set; }
@@ -42,8 +42,7 @@ namespace HeuristicLab.DataPreprocessing {
     }
 
     [StorableConstructor]
-    protected PreprocessingContent(bool deserializing)
-      : base(deserializing) { }
+    protected PreprocessingContent(StorableConstructorFlag _) : base(_) { }
     #endregion
   }
 }

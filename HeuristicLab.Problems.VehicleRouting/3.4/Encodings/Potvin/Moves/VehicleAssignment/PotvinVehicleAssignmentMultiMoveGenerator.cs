@@ -25,13 +25,13 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.VehicleRouting.Encodings.General;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinVehicleAssignmentMultiMoveGenerator", "Generates vehicle assignment moves from a given VRP encoding.")]
-  [StorableClass]
+  [StorableType("C2CB1C17-5B79-4A40-9CA2-5F2D478B84A8")]
   public sealed class PotvinVehicleAssignmentMultiMoveGenerator : PotvinVehicleAssignmentMoveGenerator, IMultiMoveGenerator, IMultiVRPMoveGenerator {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
@@ -46,7 +46,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
     }
 
     [StorableConstructor]
-    private PotvinVehicleAssignmentMultiMoveGenerator(bool deserializing) : base(deserializing) { }
+    private PotvinVehicleAssignmentMultiMoveGenerator(StorableConstructorFlag _) : base(_) { }
 
     public PotvinVehicleAssignmentMultiMoveGenerator()
       : base() {

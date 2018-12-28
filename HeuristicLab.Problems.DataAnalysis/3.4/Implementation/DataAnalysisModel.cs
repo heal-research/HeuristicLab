@@ -23,14 +23,14 @@ using System;
 using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  [StorableClass]
+  [StorableType("EF0EF64F-392A-448A-B30F-1AE113C6CC88")]
   [Item("DataAnalysisModel", "Base class for data analysis models.")]
   public abstract class DataAnalysisModel : NamedItem, IDataAnalysisModel {
     [StorableConstructor]
-    protected DataAnalysisModel(bool deserializing) : base(deserializing) { }
+    protected DataAnalysisModel(StorableConstructorFlag _) : base(_) { }
     protected DataAnalysisModel(DataAnalysisModel original, Cloner cloner)
       : base(original, cloner) { }
     protected DataAnalysisModel() { }

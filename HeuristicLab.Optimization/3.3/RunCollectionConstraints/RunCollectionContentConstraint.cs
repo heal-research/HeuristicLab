@@ -24,10 +24,10 @@ using System.Linq;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Optimization {
-  [StorableClass]
+  [StorableType("E155F5BA-C93F-43F2-A513-A79AEF8F0043")]
   public class RunCollectionContentConstraint : Constraint, IRunCollectionConstraint {
     public new RunCollection ConstrainedValue {
       get { return (RunCollection)base.ConstrainedValue; }
@@ -44,7 +44,7 @@ namespace HeuristicLab.Optimization {
     }
 
     [StorableConstructor]
-    protected RunCollectionContentConstraint(bool deserializing) : base(deserializing) { }
+    protected RunCollectionContentConstraint(StorableConstructorFlag _) : base(_) { }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       RegisterConstraintDataEvents();

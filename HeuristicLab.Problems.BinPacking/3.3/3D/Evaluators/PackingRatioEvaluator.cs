@@ -22,17 +22,17 @@
 using System;
 using System.Linq;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.BinPacking3D {
   // NOTE: same implementation as for 2d problem
   [Item("Packing-Ratio Evaluator (3d)", "Calculates the ratio between packed and unpacked space.")]
-  [StorableClass]
+  [StorableType("1CD9C03B-3C29-4D3D-B3FA-A3C5234907CD")]
   public class PackingRatioEvaluator : Item, IEvaluator {
 
     [StorableConstructor]
-    protected PackingRatioEvaluator(bool deserializing) : base(deserializing) { }
+    protected PackingRatioEvaluator(StorableConstructorFlag _) : base(_) { }
     protected PackingRatioEvaluator(PackingRatioEvaluator original, Cloner cloner)
       : base(original, cloner) {
     }

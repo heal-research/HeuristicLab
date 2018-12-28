@@ -23,11 +23,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Core {
   [Item("Vertex", "An object representing a vertex in the graph. It can have a text label, a weight, and an additional data object.")]
-  [StorableClass]
+  [StorableType("3FA3AAFA-05FF-4BE9-BD72-05A822A5E8CC")]
   public class Vertex : Item, IVertex {
     [Storable]
     private string label;
@@ -66,7 +66,7 @@ namespace HeuristicLab.Core {
     public int Degree { get { return InDegree + OutDegree; } }
 
     [StorableConstructor]
-    public Vertex(bool deserializing) : base(deserializing) { }
+    public Vertex(StorableConstructorFlag _) : base(_) { }
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() { }
@@ -140,7 +140,7 @@ namespace HeuristicLab.Core {
     #endregion
   }
 
-  [StorableClass]
+  [StorableType("ED2FD106-6F97-415A-A6D0-7F6690426910")]
   public class Vertex<T> : Vertex, IVertex<T> where T : class,IDeepCloneable {
     [Storable]
     private T data;
@@ -154,7 +154,7 @@ namespace HeuristicLab.Core {
     }
 
     [StorableConstructor]
-    protected Vertex(bool deserializing) : base(deserializing) { }
+    protected Vertex(StorableConstructorFlag _) : base(_) { }
 
     protected Vertex(Vertex<T> original, Cloner cloner)
       : base(original, cloner) {

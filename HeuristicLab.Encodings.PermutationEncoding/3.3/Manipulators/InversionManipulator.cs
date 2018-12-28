@@ -21,7 +21,7 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   /// <summary>
@@ -31,10 +31,10 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
   /// It is implemented as described in Eiben, A.E. and Smith, J.E. 2003. Introduction to Evolutionary Computation. Natural Computing Series, Springer-Verlag Berlin Heidelberg.<br />
   /// </remarks>
   [Item("InversionManipulator", "An operator which inverts a randomly chosen part of a permutation. It is implemented as described in Eiben, A.E. and Smith, J.E. 2003. Introduction to Evolutionary Computation. Natural Computing Series, Springer-Verlag Berlin Heidelberg.")]
-  [StorableClass]
+  [StorableType("F43DF081-19FB-4082-B136-EC1A77E0468A")]
   public class InversionManipulator : PermutationManipulator {
     [StorableConstructor]
-    protected InversionManipulator(bool deserializing) : base(deserializing) { }
+    protected InversionManipulator(StorableConstructorFlag _) : base(_) { }
     protected InversionManipulator(InversionManipulator original, Cloner cloner) : base(original, cloner) { }
     public InversionManipulator() : base() { }
 

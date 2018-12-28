@@ -25,14 +25,14 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("TranslocationMoveHardTabuCriterion", @"For relative postion encoded permutations it prevents readding of previously deleted edges as well as deleting previously added edges.
   For absolute position encoded permutations it prevents moving a number if it was previously moved.
 
 If the aspiration condition is activated, a move will not be considered tabu against a move in the tabu list if it leads to a better solution than the quality recorded with the move in the tabu list.")]
-  [StorableClass]
+  [StorableType("FD8C3ED7-734F-4B90-9539-2367C62FA7EB")]
   public class TranslocationMoveHardTabuCriterion : SingleSuccessorOperator, IPermutationTranslocationMoveOperator, ITabuChecker {
     public override bool CanChangeName {
       get { return false; }
@@ -65,7 +65,7 @@ If the aspiration condition is activated, a move will not be considered tabu aga
     }
 
     [StorableConstructor]
-    protected TranslocationMoveHardTabuCriterion(bool deserializing) : base(deserializing) { }
+    protected TranslocationMoveHardTabuCriterion(StorableConstructorFlag _) : base(_) { }
     protected TranslocationMoveHardTabuCriterion(TranslocationMoveHardTabuCriterion original, Cloner cloner) : base(original, cloner) { }
     public TranslocationMoveHardTabuCriterion()
       : base() {

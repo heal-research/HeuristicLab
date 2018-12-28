@@ -24,11 +24,11 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   [Item("BoundedIntegerVectorCrossover", "Base class for bounded crossovers.")]
-  [StorableClass]
+  [StorableType("90834C8F-461F-4A94-A7CB-25C8D1063604")]
   public abstract class BoundedIntegerVectorCrossover : IntegerVectorCrossover, IBoundedIntegerVectorOperator {
 
     public IValueLookupParameter<IntMatrix> BoundsParameter {
@@ -36,7 +36,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
     }
 
     [StorableConstructor]
-    protected BoundedIntegerVectorCrossover(bool deserializing) : base(deserializing) { }
+    protected BoundedIntegerVectorCrossover(StorableConstructorFlag _) : base(_) { }
     protected BoundedIntegerVectorCrossover(BoundedIntegerVectorCrossover original, Cloner cloner) : base(original, cloner) { }
     public BoundedIntegerVectorCrossover()
       : base() {

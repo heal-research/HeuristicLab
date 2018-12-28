@@ -5,10 +5,10 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  [StorableClass]
+  [StorableType("AAB32034-FA4A-4D70-937F-EF026C1D508A")]
   [Item("Exponential Transformation", "f(x) = b ^ x | Represents a exponential transformation.")]
   public class ExponentialTransformation : Transformation<double> {
     protected const string BaseParameterName = "Base";
@@ -29,7 +29,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     #endregion
 
     [StorableConstructor]
-    protected ExponentialTransformation(bool deserializing) : base(deserializing) { }
+    protected ExponentialTransformation(StorableConstructorFlag _) : base(_) { }
 
     protected ExponentialTransformation(ExponentialTransformation original, Cloner cloner)
       : base(original, cloner) {

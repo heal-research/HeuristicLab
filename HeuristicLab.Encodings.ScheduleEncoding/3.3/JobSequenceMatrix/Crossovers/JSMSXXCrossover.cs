@@ -22,15 +22,15 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding.JobSequenceMatrix {
   [Item("JSMSubsequenceExchangeCrossover", "Represents a crossover operation identifiying and exchanging equal subsequences of the parents to generate offspring.")]
-  [StorableClass]
+  [StorableType("029A3890-FEB7-4D01-9092-E33CEBD8C0CC")]
   public class JSMSXXCrossover : JSMCrossover {
 
     [StorableConstructor]
-    protected JSMSXXCrossover(bool deserializing) : base(deserializing) { }
+    protected JSMSXXCrossover(StorableConstructorFlag _) : base(_) { }
     protected JSMSXXCrossover(JSMSXXCrossover original, Cloner cloner) : base(original, cloner) { }
     public JSMSXXCrossover() : base() { }
 

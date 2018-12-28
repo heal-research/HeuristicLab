@@ -24,11 +24,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.VehicleRouting {
   [Item("BestAverageWorstCapacitatedVRPToursCalculator", "An operator which calculates the current best, average and worst properties of VRP tours in the scope tree.")]
-  [StorableClass]
+  [StorableType("CAF65472-0C4E-4564-B750-61F6924AA284")]
   public sealed class BestAverageWorstCapacitatedVRPToursCalculator : SingleSuccessorOperator {
     public ScopeTreeLookupParameter<DoubleValue> OverloadParameter {
       get { return (ScopeTreeLookupParameter<DoubleValue>)Parameters["Overload"]; }
@@ -60,7 +60,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
     }
 
     [StorableConstructor]
-    private BestAverageWorstCapacitatedVRPToursCalculator(bool deserializing) : base(deserializing) { }
+    private BestAverageWorstCapacitatedVRPToursCalculator(StorableConstructorFlag _) : base(_) { }
 
     private void UpdateOverloads() {
       ItemArray<DoubleValue> overloads = OverloadParameter.ActualValue;

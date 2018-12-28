@@ -25,14 +25,14 @@ using System.Drawing;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>
   /// Represents a k-Means clustering model.
   /// </summary>
-  [StorableClass]
+  [StorableType("61D987AC-A142-433B-901C-B124E12A1C55")]
   [Item("KMeansClusteringModel", "Represents a k-Means clustering model.")]
   public sealed class KMeansClusteringModel : DataAnalysisModel, IClusteringModel {
     public static new Image StaticItemImage {
@@ -56,7 +56,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
     }
     [StorableConstructor]
-    private KMeansClusteringModel(bool deserializing) : base(deserializing) { }
+    private KMeansClusteringModel(StorableConstructorFlag _) : base(_) { }
     private KMeansClusteringModel(KMeansClusteringModel original, Cloner cloner)
       : base(original, cloner) {
       this.allowedInputVariables = (string[])original.allowedInputVariables.Clone();

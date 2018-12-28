@@ -21,17 +21,17 @@
 using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Optimization {
-  [StorableClass]
+  [StorableType("39066245-2B02-4B41-BEA3-158A4E21FCC1")]
   [Item("RunCollectionConstraintCollection", "Represents a collection of constraints.")]
   public class RunCollectionConstraintCollection : ItemCollection<IRunCollectionConstraint> {
     public RunCollectionConstraintCollection() : base() { }
     public RunCollectionConstraintCollection(int capacity) : base(capacity) { }
     public RunCollectionConstraintCollection(IEnumerable<IRunCollectionConstraint> collection) : base(collection) { }
     [StorableConstructor]
-    protected RunCollectionConstraintCollection(bool deserializing) : base(deserializing) { }
+    protected RunCollectionConstraintCollection(StorableConstructorFlag _) : base(_) { }
     protected RunCollectionConstraintCollection(RunCollectionConstraintCollection original, Cloner cloner)
       : base(original, cloner) {
     }

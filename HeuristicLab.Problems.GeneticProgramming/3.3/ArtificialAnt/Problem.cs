@@ -28,13 +28,13 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 
 namespace HeuristicLab.Problems.GeneticProgramming.ArtificialAnt {
   [Item("Artificial Ant Problem", "Represents the Artificial Ant problem.")]
   [Creatable(CreatableAttribute.Categories.GeneticProgrammingProblems, Priority = 170)]
-  [StorableClass]
+  [StorableType("D365171B-7077-4CC2-835C-1827EA67C843")]
   public sealed class Problem : SymbolicExpressionTreeProblem, IStorableContent {
 
     #region constant for default world (Santa Fe)
@@ -104,7 +104,7 @@ namespace HeuristicLab.Problems.GeneticProgramming.ArtificialAnt {
     #region item cloning and persistence
     // persistence
     [StorableConstructor]
-    private Problem(bool deserializing) : base(deserializing) { }
+    private Problem(StorableConstructorFlag _) : base(_) { }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() { }
 

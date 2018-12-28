@@ -22,10 +22,10 @@
 using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
-  [StorableClass]
+  [StorableType("54D82779-7A37-43E4-AFD6-0C3E8D24F6EE")]
   [Item("SymbolicClassificationSolutionImpactValuesCalculator", "Calculate symbolic expression tree node impact values for classification problems.")]
   public class SymbolicClassificationSolutionImpactValuesCalculator : SymbolicDataAnalysisSolutionImpactValuesCalculator {
     public SymbolicClassificationSolutionImpactValuesCalculator() { }
@@ -35,7 +35,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
       return new SymbolicClassificationSolutionImpactValuesCalculator(this, cloner);
     }
     [StorableConstructor]
-    protected SymbolicClassificationSolutionImpactValuesCalculator(bool deserializing) : base(deserializing) { }
+    protected SymbolicClassificationSolutionImpactValuesCalculator(StorableConstructorFlag _) : base(_) { }
 
     protected override double CalculateQualityForImpacts(ISymbolicDataAnalysisModel model, IDataAnalysisProblemData problemData, IEnumerable<int> rows) {
       var classificationModel = (ISymbolicClassificationModel)model;

@@ -28,14 +28,14 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Analysis {
   /// <summary>
   /// An operator that extracts (clones) the scope containing the best quality.
   /// </summary>
   [Item("BestScopeSolutionAnalyzer", "An operator that extracts the scope containing the best quality.")]
-  [StorableClass]
+  [StorableType("2E8C2770-B591-4F77-BF1D-E4DB218A2282")]
   public class BestScopeSolutionAnalyzer : SingleSuccessorOperator, IAnalyzer, ISingleObjectiveOperator {
 
     public virtual bool EnabledByDefault {
@@ -64,7 +64,7 @@ namespace HeuristicLab.Analysis {
 
     #region Storing & Cloning
     [StorableConstructor]
-    protected BestScopeSolutionAnalyzer(bool deserializing) : base(deserializing) { }
+    protected BestScopeSolutionAnalyzer(StorableConstructorFlag _) : base(_) { }
     protected BestScopeSolutionAnalyzer(BestScopeSolutionAnalyzer original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new BestScopeSolutionAnalyzer(this, cloner);

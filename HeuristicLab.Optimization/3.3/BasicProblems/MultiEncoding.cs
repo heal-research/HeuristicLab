@@ -24,12 +24,12 @@ using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Optimization {
   [Item("MultiEncoding", "Describes a combined encoding consisting of multiple simpler encodings.")]
-  [StorableClass]
+  [StorableType("359E2173-4D0C-40E5-A2F3-E42E59840345")]
   public sealed class MultiEncoding : Encoding<MultiEncodingCreator> {
 
     private readonly List<IEncoding> encodings;
@@ -40,8 +40,7 @@ namespace HeuristicLab.Optimization {
     }
 
     [StorableConstructor]
-    private MultiEncoding(bool deserializing)
-      : base(deserializing) {
+    private MultiEncoding(StorableConstructorFlag _) : base(_) {
       encodings = new List<IEncoding>();
     }
     public override IDeepCloneable Clone(Cloner cloner) { return new MultiEncoding(this, cloner); }

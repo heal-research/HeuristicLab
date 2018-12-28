@@ -27,11 +27,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.Instances;
 
 namespace HeuristicLab.Problems.BinPacking2D {
-  [StorableClass]
+  [StorableType("215B7963-4B3D-4197-B18F-16CC13EC5D68")]
   public abstract class ProblemBase<TEnc, TSol> :
     SingleObjectiveBasicProblem<TEnc>, IProblemInstanceConsumer<BPPData>, IProblemInstanceExporter<BPPData>
     where TEnc : class, IEncoding
@@ -137,7 +137,7 @@ namespace HeuristicLab.Problems.BinPacking2D {
 
     // persistence
     [StorableConstructor]
-    protected ProblemBase(bool deserializing) : base(deserializing) { }
+    protected ProblemBase(StorableConstructorFlag _) : base(_) { }
 
     // cloning
     protected ProblemBase(ProblemBase<TEnc, TSol> original, Cloner cloner)

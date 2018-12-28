@@ -24,12 +24,12 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinPDRearrangeMoveTabuMaker", "Declares a given rearrange move as tabu.")]
-  [StorableClass]
+  [StorableType("6E0FA87D-669A-4586-AD56-7DE38A2F54D1")]
   public class PotvinPDRearrangeMoveTabuMaker : TabuMaker, IPotvinPDRearrangeMoveOperator, IPotvinOperator, IVRPMoveOperator {
     public ILookupParameter<PotvinPDRearrangeMove> PDRearrangeMoveParameter {
       get { return (ILookupParameter<PotvinPDRearrangeMove>)Parameters["PotvinPDRearrangeMove"]; }
@@ -58,7 +58,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
     }
 
     [StorableConstructor]
-    protected PotvinPDRearrangeMoveTabuMaker(bool deserializing) : base(deserializing) { }
+    protected PotvinPDRearrangeMoveTabuMaker(StorableConstructorFlag _) : base(_) { }
     protected PotvinPDRearrangeMoveTabuMaker(PotvinPDRearrangeMoveTabuMaker original, Cloner cloner) : base(original, cloner) { }
     public PotvinPDRearrangeMoveTabuMaker()
       : base() {

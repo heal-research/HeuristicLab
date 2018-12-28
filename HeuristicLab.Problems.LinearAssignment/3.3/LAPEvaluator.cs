@@ -21,7 +21,7 @@
 #endregion
 
 using HeuristicLab.Operators;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Core;
 using HeuristicLab.Common;
 using HeuristicLab.Data;
@@ -30,7 +30,7 @@ using HeuristicLab.Encodings.PermutationEncoding;
 
 namespace HeuristicLab.Problems.LinearAssignment {
   [Item("LAPEvaluator", "Evaluates a solution to the linear assignment problem.")]
-  [StorableClass]
+  [StorableType("DB86EA88-EE30-4E57-8447-D24B7B6ACB8A")]
   public class LAPEvaluator : InstrumentedOperator, ILAPEvaluator {
 
     public ILookupParameter<DoubleMatrix> CostsParameter {
@@ -44,7 +44,7 @@ namespace HeuristicLab.Problems.LinearAssignment {
     }
 
     [StorableConstructor]
-    protected LAPEvaluator(bool deserializing) : base(deserializing) { }
+    protected LAPEvaluator(StorableConstructorFlag _) : base(_) { }
     protected LAPEvaluator(LAPEvaluator original, Cloner cloner) : base(original, cloner) { }
     public LAPEvaluator()
       : base() {

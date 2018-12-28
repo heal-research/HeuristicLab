@@ -22,15 +22,14 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
-  [StorableClass]
+  [StorableType("9072AE0E-FA62-48D2-A416-F678D6CC2CBC")]
   [Item("Variable", "Represents a variable value.")]
   public sealed class Variable : VariableBase {
 
     [StorableConstructor]
-    private Variable(bool deserializing)
-      : base(deserializing) {
+    private Variable(StorableConstructorFlag _) : base(_) {
     }
     private Variable(Variable original, Cloner cloner)
       : base(original, cloner) {

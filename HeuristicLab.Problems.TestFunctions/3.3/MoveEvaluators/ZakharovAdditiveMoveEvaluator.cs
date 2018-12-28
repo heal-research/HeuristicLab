@@ -22,18 +22,18 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.RealVectorEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.TestFunctions {
   [Item("ZakharovAdditiveMoveEvaluator", "Class for evaluating an additive move on the Zakharov function.")]
-  [StorableClass]
+  [StorableType("76A5302B-9A7F-4334-8180-3F2A0537F4E2")]
   public class ZakharovAdditiveMoveEvaluator : AdditiveMoveEvaluator {
     public override System.Type EvaluatorType {
       get { return typeof(ZakharovEvaluator); }
     }
 
     [StorableConstructor]
-    protected ZakharovAdditiveMoveEvaluator(bool deserializing) : base(deserializing) { }
+    protected ZakharovAdditiveMoveEvaluator(StorableConstructorFlag _) : base(_) { }
     protected ZakharovAdditiveMoveEvaluator(ZakharovAdditiveMoveEvaluator original, Cloner cloner) : base(original, cloner) { }
     public ZakharovAdditiveMoveEvaluator() : base() { }
 

@@ -24,11 +24,11 @@ using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
-  [StorableClass]
+  [StorableType("4148D88C-6081-4D84-B718-C949CA5AA766")]
   [Item("KernelRidgeRegressionModel", "A kernel ridge regression model")]
   public sealed class KernelRidgeRegressionModel : RegressionModel {
     public override IEnumerable<string> VariablesUsedForPrediction {
@@ -67,7 +67,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private readonly double yScale;
 
     [StorableConstructor]
-    private KernelRidgeRegressionModel(bool deserializing) : base(deserializing) { }
+    private KernelRidgeRegressionModel(StorableConstructorFlag _) : base(_) { }
     private KernelRidgeRegressionModel(KernelRidgeRegressionModel original, Cloner cloner)
       : base(original, cloner) {
       // shallow copies of arrays because they cannot be modified

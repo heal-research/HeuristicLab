@@ -27,7 +27,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Optimization.Operators;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.TravelingSalesman {
   /// <summary>
@@ -37,10 +37,10 @@ namespace HeuristicLab.Problems.TravelingSalesman {
   /// The operator incrementally assimilates the initiating solution into the guiding solution by correcting edges as needed.
   /// </remarks>
   [Item("TSPPathRelinker", "An operator that relinks paths between traveling salesman solutions. The operator incrementally assimilates the initiating solution into the guiding solution by correcting edges as needed.")]
-  [StorableClass]
+  [StorableType("0997A24C-0592-4CE4-A681-70C97890D3F7")]
   public sealed class TSPPathRelinker : SingleObjectivePathRelinker {
     [StorableConstructor]
-    private TSPPathRelinker(bool deserializing) : base(deserializing) { }
+    private TSPPathRelinker(StorableConstructorFlag _) : base(_) { }
     private TSPPathRelinker(TSPPathRelinker original, Cloner cloner) : base(original, cloner) { }
     public TSPPathRelinker() : base() { }
 

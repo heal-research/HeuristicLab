@@ -24,11 +24,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("StochasticTranslocationMultiMoveGenerator", "Randomly samples n from all possible translocation and insertion moves (3-opt) from a given permutation.")]
-  [StorableClass]
+  [StorableType("CEC3FF43-3DE6-4977-BCE7-4CEB20BA97EE")]
   public class StochasticTranslocationMultiMoveGenerator : TranslocationMoveGenerator, IStochasticOperator, IMultiMoveGenerator {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
@@ -43,7 +43,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     }
 
     [StorableConstructor]
-    protected StochasticTranslocationMultiMoveGenerator(bool deserializing) : base(deserializing) { }
+    protected StochasticTranslocationMultiMoveGenerator(StorableConstructorFlag _) : base(_) { }
     protected StochasticTranslocationMultiMoveGenerator(StochasticTranslocationMultiMoveGenerator original, Cloner cloner) : base(original, cloner) { }
     public StochasticTranslocationMultiMoveGenerator() : base() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator."));

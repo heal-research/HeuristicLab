@@ -21,7 +21,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
@@ -30,14 +29,14 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   /// <summary>
   /// Calculates the accumulated frequencies of variable-symbols over all trees in the population.
   /// </summary>
   [Item("SymbolicDataAnalysisVariableFrequencyAnalyzer", "Calculates the accumulated frequencies of variable-symbols over all trees in the population.")]
-  [StorableClass]
+  [StorableType("C7E9B375-6375-478F-8590-473BA567BA90")]
   public sealed class SymbolicDataAnalysisVariableFrequencyAnalyzer : SymbolicDataAnalysisAnalyzer {
     private const string VariableFrequenciesParameterName = "VariableFrequencies";
     private const string AggregateLaggedVariablesParameterName = "AggregateLaggedVariables";
@@ -69,7 +68,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
     #endregion
     [StorableConstructor]
-    private SymbolicDataAnalysisVariableFrequencyAnalyzer(bool deserializing) : base(deserializing) { }
+    private SymbolicDataAnalysisVariableFrequencyAnalyzer(StorableConstructorFlag _) : base(_) { }
     private SymbolicDataAnalysisVariableFrequencyAnalyzer(SymbolicDataAnalysisVariableFrequencyAnalyzer original, Cloner cloner)
       : base(original, cloner) {
     }

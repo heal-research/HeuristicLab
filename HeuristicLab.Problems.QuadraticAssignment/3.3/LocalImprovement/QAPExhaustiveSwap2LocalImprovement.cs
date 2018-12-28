@@ -28,11 +28,11 @@ using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.QuadraticAssignment {
   [Item("QAPExhaustiveSwap2LocalImprovement", "Takes a solution and finds the local optimum with respect to the swap2 neighborhood by decending along the steepest gradient.")]
-  [StorableClass]
+  [StorableType("AD82A71D-773A-4CD2-841F-755840656E92")]
   public class QAPExhaustiveSwap2LocalImprovement : SingleSuccessorOperator, ILocalImprovementOperator, ISingleObjectiveOperator {
 
     public ILookupParameter<IntValue> LocalIterationsParameter {
@@ -76,7 +76,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
     }
 
     [StorableConstructor]
-    protected QAPExhaustiveSwap2LocalImprovement(bool deserializing) : base(deserializing) { }
+    protected QAPExhaustiveSwap2LocalImprovement(StorableConstructorFlag _) : base(_) { }
     protected QAPExhaustiveSwap2LocalImprovement(QAPExhaustiveSwap2LocalImprovement original, Cloner cloner)
       : base(original, cloner) {
     }

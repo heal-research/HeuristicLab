@@ -26,12 +26,12 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Encodings.LinearLinkageEncoding {
   [Item("StochasticEMSSMultiMoveGenerator", "Randomly samples n from all possible EMSS moves (extract, merge, shift, and split) from a given lle grouping.")]
-  [StorableClass]
+  [StorableType("AE38F823-B840-4AFB-A780-259CB6C95D23")]
   public class StochasticEMSSMultiMoveGenerator : EMSSMoveGenerator, IMultiMoveGenerator, IStochasticOperator {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
@@ -46,7 +46,7 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
     }
 
     [StorableConstructor]
-    protected StochasticEMSSMultiMoveGenerator(bool deserializing) : base(deserializing) { }
+    protected StochasticEMSSMultiMoveGenerator(StorableConstructorFlag _) : base(_) { }
     protected StochasticEMSSMultiMoveGenerator(StochasticEMSSMultiMoveGenerator original, Cloner cloner) : base(original, cloner) { }
     public StochasticEMSSMultiMoveGenerator()
       : base() {

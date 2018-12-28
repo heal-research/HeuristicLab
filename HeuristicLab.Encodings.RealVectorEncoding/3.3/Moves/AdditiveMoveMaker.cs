@@ -25,11 +25,11 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   [Item("AdditiveMoveMaker", "Peforms an additive move on a given real vector and updates the quality.")]
-  [StorableClass]
+  [StorableType("DFEC364D-EFF9-456C-A85C-095F454719C8")]
   public class AdditiveMoveMaker : SingleSuccessorOperator, IAdditiveRealVectorMoveOperator, IMoveMaker, ISingleObjectiveOperator {
     public override bool CanChangeName {
       get { return false; }
@@ -48,7 +48,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     }
 
     [StorableConstructor]
-    protected AdditiveMoveMaker(bool deserializing) : base(deserializing) { }
+    protected AdditiveMoveMaker(StorableConstructorFlag _) : base(_) { }
     protected AdditiveMoveMaker(AdditiveMoveMaker original, Cloner cloner) : base(original, cloner) { }
     public AdditiveMoveMaker()
       : base() {

@@ -23,10 +23,10 @@ using System;
 using System.Collections.Generic;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Core {
-  [StorableClass]
+  [StorableType("BE738F46-3864-42BB-BD29-F3E933B0AC06")]
   [Item("ReadOnlyCheckedItemList", "Represents a read-only list of checked items.")]
   public class ReadOnlyCheckedItemList<T> : ReadOnlyItemList<T>, ICheckedItemList<T> where T : class, IItem {
     private CheckedItemList<T> CheckedItemList {
@@ -34,7 +34,7 @@ namespace HeuristicLab.Core {
     }
 
     [StorableConstructor]
-    protected ReadOnlyCheckedItemList(bool deserializing) : base(deserializing) { }
+    protected ReadOnlyCheckedItemList(StorableConstructorFlag _) : base(_) { }
     protected ReadOnlyCheckedItemList(ReadOnlyCheckedItemList<T> original, Cloner cloner)
       : base(original, cloner) {
       CheckedItemList.CheckedItemsChanged += new CollectionItemsChangedEventHandler<IndexedItem<T>>(list_CheckedItemsChanged);

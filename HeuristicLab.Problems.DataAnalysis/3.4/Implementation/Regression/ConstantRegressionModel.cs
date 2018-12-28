@@ -25,10 +25,10 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  [StorableClass]
+  [StorableType("E4C0D707-F668-428F-951C-F82A475177BE")]
   [Item("Constant Regression Model", "A model that always returns the same constant value regardless of the presented input data.")]
   [Obsolete]
   public class ConstantRegressionModel : RegressionModel, IStringConvertibleValue {
@@ -42,7 +42,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     [StorableConstructor]
-    protected ConstantRegressionModel(bool deserializing) : base(deserializing) { }
+    protected ConstantRegressionModel(StorableConstructorFlag _) : base(_) { }
     protected ConstantRegressionModel(ConstantRegressionModel original, Cloner cloner)
       : base(original, cloner) {
       this.constant = original.constant;

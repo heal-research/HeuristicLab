@@ -23,16 +23,16 @@ using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
-  [StorableClass]
+  [StorableType("92D37E9F-8726-4524-AF8F-F3787641F7B9")]
   [Item("ChangeNodeTypeManipulation", "Selects a random tree node and changes the symbol.")]
   public sealed class ChangeNodeTypeManipulation : SymbolicExpressionTreeManipulator {
     private const int MAX_TRIES = 100;
 
     [StorableConstructor]
-    private ChangeNodeTypeManipulation(bool deserializing) : base(deserializing) { }
+    private ChangeNodeTypeManipulation(StorableConstructorFlag _) : base(_) { }
     private ChangeNodeTypeManipulation(ChangeNodeTypeManipulation original, Cloner cloner) : base(original, cloner) { }
     public ChangeNodeTypeManipulation() : base() { }
 

@@ -24,13 +24,13 @@ using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   /// <summary>
   /// Represents a symbolic regression model
   /// </summary>
-  [StorableClass]
+  [StorableType("2739C33E-4DDB-4285-9DFB-C056D900B2F2")]
   [Item(Name = "Symbolic Regression Model", Description = "Represents a symbolic regression model.")]
   public class SymbolicRegressionModel : SymbolicDataAnalysisModel, ISymbolicRegressionModel {
     [Storable]
@@ -45,8 +45,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     }
 
     [StorableConstructor]
-    protected SymbolicRegressionModel(bool deserializing)
-      : base(deserializing) {
+    protected SymbolicRegressionModel(StorableConstructorFlag _) : base(_) {
       targetVariable = string.Empty;
     }
 

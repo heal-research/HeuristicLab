@@ -22,11 +22,11 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Operators {
   [Item("LocalRandomCreator", "Creates a local pseudo random number generator from a global random number generator.")]
-  [StorableClass]
+  [StorableType("C1E56840-D71E-46F0-A964-AB8E9340333C")]
   public sealed class LocalRandomCreator : SingleSuccessorOperator {
     #region Parameter Properties
     public LookupParameter<IRandom> GlobalRandomParameter {
@@ -38,7 +38,7 @@ namespace HeuristicLab.Operators {
     #endregion
 
     [StorableConstructor]
-    private LocalRandomCreator(bool deserializing) : base(deserializing) { }
+    private LocalRandomCreator(StorableConstructorFlag _) : base(_) { }
     private LocalRandomCreator(LocalRandomCreator original, Cloner cloner)
       : base(original, cloner) {
     }

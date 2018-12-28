@@ -21,10 +21,10 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  [StorableClass]
+  [StorableType("4DDDFDFA-3AF5-468F-971F-26B8AB014338")]
   [Item(Name = "Constant Regression Solution", Description = "Represents a constant regression solution (model + data).")]
   public class ConstantRegressionSolution : RegressionSolution {
     public new ConstantModel Model {
@@ -33,7 +33,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     [StorableConstructor]
-    protected ConstantRegressionSolution(bool deserializing) : base(deserializing) { }
+    protected ConstantRegressionSolution(StorableConstructorFlag _) : base(_) { }
     protected ConstantRegressionSolution(ConstantRegressionSolution original, Cloner cloner) : base(original, cloner) { }
     public ConstantRegressionSolution(ConstantModel model, IRegressionProblemData problemData)
       : base(model, problemData) {

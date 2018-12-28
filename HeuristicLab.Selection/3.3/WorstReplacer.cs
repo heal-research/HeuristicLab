@@ -24,11 +24,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Selection {
   [Item("WorstReplacer", "Replaces the worst sub-scopes of the remaining scope with all those (or the best if there are more) from the selected scope.")]
-  [StorableClass]
+  [StorableType("9B56E562-0E21-4FED-AB2F-553D49AEC47D")]
   public sealed class WorstReplacer : Replacer, ISingleObjectiveReplacer {
     public override bool CanChangeName {
       get { return false; }
@@ -45,7 +45,7 @@ namespace HeuristicLab.Selection {
     }
 
     [StorableConstructor]
-    private WorstReplacer(bool deserializing) : base(deserializing) { }
+    private WorstReplacer(StorableConstructorFlag _) : base(_) { }
     private WorstReplacer(WorstReplacer original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new WorstReplacer(this, cloner);

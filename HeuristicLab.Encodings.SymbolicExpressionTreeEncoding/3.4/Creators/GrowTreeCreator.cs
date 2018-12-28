@@ -23,16 +23,16 @@ using System;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   [NonDiscoverableType]
-  [StorableClass]
+  [StorableType("ECE25817-D6B8-45CA-9B03-F8B2940FF622")]
   [Item("GrowTreeCreator", "An operator that creates new symbolic expression trees using the 'Grow' method")]
   public class GrowTreeCreator : SymbolicExpressionTreeCreator {
     [StorableConstructor]
-    protected GrowTreeCreator(bool deserializing) : base(deserializing) { }
+    protected GrowTreeCreator(StorableConstructorFlag _) : base(_) { }
     protected GrowTreeCreator(GrowTreeCreator original, Cloner cloner) : base(original, cloner) { }
 
     public GrowTreeCreator() : base() { }

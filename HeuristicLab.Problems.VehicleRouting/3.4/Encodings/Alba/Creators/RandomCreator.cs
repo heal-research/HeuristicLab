@@ -24,11 +24,11 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("RandomCreator", "Creates a randomly initialized VRP solution.")]
-  [StorableClass]
+  [StorableType("3B0B288F-71C6-438B-96DF-C21243E7E66D")]
   public sealed class RandomCreator : AlbaCreator, IStochasticOperator {
     #region IStochasticOperator Members
     public ILookupParameter<IRandom> RandomParameter {
@@ -37,7 +37,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
     #endregion
 
     [StorableConstructor]
-    private RandomCreator(bool deserializing) : base(deserializing) { }
+    private RandomCreator(StorableConstructorFlag _) : base(_) { }
 
     public RandomCreator()
       : base() {

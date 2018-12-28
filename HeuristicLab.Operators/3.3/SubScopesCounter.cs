@@ -23,11 +23,11 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Operators {
   [Item("SubScopesCounter", "Counts the number of direct sub-scopes and increments or assigns it to the value given in the parameter.")]
-  [StorableClass]
+  [StorableType("8F19EB3E-EA93-44DA-98C3-D19017FBCA1F")]
   public class SubScopesCounter : SingleSuccessorOperator {
 
     public ILookupParameter<IntValue> ValueParameter {
@@ -38,7 +38,7 @@ namespace HeuristicLab.Operators {
     }
 
     [StorableConstructor]
-    protected SubScopesCounter(bool deserializing) : base(deserializing) { }
+    protected SubScopesCounter(StorableConstructorFlag _) : base(_) { }
     protected SubScopesCounter(SubScopesCounter original, Cloner cloner)
       : base(original, cloner) {
     }

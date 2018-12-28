@@ -19,9 +19,7 @@
  */
 #endregion
 
-using HeuristicLab.Optimization;
 using HeuristicLab.Problems.DataAnalysis;
-using HeuristicLab.Core;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>

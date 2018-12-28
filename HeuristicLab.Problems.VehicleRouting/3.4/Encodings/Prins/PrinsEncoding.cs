@@ -24,13 +24,13 @@ using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Problems.VehicleRouting.ProblemInstances;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
   [Item("PrinsEncoding", "Represents an Prins encoding of VRP solutions. It is implemented as described in Prins, C. (2004). A simple and effective evolutionary algorithm for the vehicle routing problem. Computers & Operations Research, 12:1985-2002.")]
-  [StorableClass]
+  [StorableType("A0E1EBC1-C0F5-4CD5-9279-1A669C6633CD")]
   public class PrinsEncoding : General.PermutationEncoding {
     #region IVRPEncoding Members
     public override int GetTourIndex(Tour tour) {
@@ -137,8 +137,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
     }
 
     [StorableConstructor]
-    protected PrinsEncoding(bool serializing)
-      : base(serializing) {
+    protected PrinsEncoding(StorableConstructorFlag _) : base(_) {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {

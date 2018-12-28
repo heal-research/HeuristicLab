@@ -24,7 +24,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Optimization.Operators {
   /// <summary>
@@ -34,7 +34,7 @@ namespace HeuristicLab.Optimization.Operators {
   /// Creates a copy of every sub-scope in the current scope and adds it as a child to the sub-scope.
   /// </remarks>
   [Item("ChildrenCopyCreator", "Creates a copy of every sub-scope in the current scope and adds it as a child to the sub-scope.")]
-  [StorableClass]
+  [StorableType("10AEEFF9-A713-41B5-8551-DD2331E069F2")]
   public sealed class ChildrenCopyCreator : SingleSuccessorOperator {
     private ScopeParameter CurrentScopeParameter {
       get { return (ScopeParameter)Parameters["CurrentScope"]; }
@@ -44,7 +44,7 @@ namespace HeuristicLab.Optimization.Operators {
     }
 
     [StorableConstructor]
-    private ChildrenCopyCreator(bool deserializing) : base(deserializing) { }
+    private ChildrenCopyCreator(StorableConstructorFlag _) : base(_) { }
     private ChildrenCopyCreator(ChildrenCopyCreator original, Cloner cloner) : base(original, cloner) { }
     public ChildrenCopyCreator()
       : base() {

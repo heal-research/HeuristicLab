@@ -24,14 +24,14 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
-  [StorableClass]
+  [StorableType("44B0829C-1CB5-4BE9-9514-BBA54FAB2912")]
   [Item("FullFunctionalExpressionGrammar", "Represents a grammar for functional expressions using all available functions.")]
   public class FullFunctionalExpressionGrammar : SymbolicExpressionGrammar, ISymbolicDataAnalysisGrammar {
     [StorableConstructor]
-    protected FullFunctionalExpressionGrammar(bool deserializing) : base(deserializing) { }
+    protected FullFunctionalExpressionGrammar(StorableConstructorFlag _) : base(_) { }
     protected FullFunctionalExpressionGrammar(FullFunctionalExpressionGrammar original, Cloner cloner) : base(original, cloner) { }
     public FullFunctionalExpressionGrammar()
       : base(ItemAttribute.GetName(typeof(FullFunctionalExpressionGrammar)), ItemAttribute.GetDescription(typeof(FullFunctionalExpressionGrammar))) {

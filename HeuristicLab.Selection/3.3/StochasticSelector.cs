@@ -23,21 +23,21 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Selection {
   /// <summary>
   /// A base class for stochastic selection operators.
   /// </summary>
   [Item("StochasticSelector", "A base class for stochastic selection operators.")]
-  [StorableClass]
+  [StorableType("311180FE-97EE-48FF-A4C0-40982D6B862A")]
   public abstract class StochasticSelector : Selector, IStochasticOperator {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }
     }
 
     [StorableConstructor]
-    protected StochasticSelector(bool deserializing) : base(deserializing) { }
+    protected StochasticSelector(StorableConstructorFlag _) : base(_) { }
     protected StochasticSelector(StochasticSelector original, Cloner cloner) : base(original, cloner) { }
     protected StochasticSelector()
       : base() {

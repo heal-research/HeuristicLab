@@ -26,19 +26,19 @@ using System.Drawing;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Optimization {
   /// <summary>
   /// Represents the parameters and results of an algorithm run.
   /// </summary>
   [Item("Run", "The parameters and results of an algorithm run.")]
-  [StorableClass]
+  [StorableType("C06974F6-2516-492F-9AE9-517AED845260")]
   public sealed class Run : NamedItem, IRun, IStorableContent {
     public string Filename { get; set; }
 
     [StorableConstructor]
-    private Run(bool deserializing) : base(deserializing) { }
+    private Run(StorableConstructorFlag _) : base(_) { }
     private Run(Run original, Cloner cloner)
       : base(original, cloner) {
       color = original.color;

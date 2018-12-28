@@ -24,15 +24,15 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.ExternalEvaluation {
   [Item("BoolConverter", "Converts a ValueTypeValue<bool>, ValueTypeArray<bool>, or ValueTypeMatrix<bool> and adds it to the SolutionMessage's BoolVars or BoolArrayVars. A matrix is encoded as array by concatenating all rows and setting length as the length of a row.")]
-  [StorableClass]
+  [StorableType("8341D6D1-33C1-4CB7-AC4F-9A5447948022")]
   public class BoolConverter : Item, IItemToSolutionMessageConverter {
     private static readonly Type[] itemTypes = new Type[] { typeof(ValueTypeValue<bool>), typeof(ValueTypeArray<bool>), typeof(ValueTypeMatrix<bool>) };
     [StorableConstructor]
-    protected BoolConverter(bool deserializing) : base(deserializing) { }
+    protected BoolConverter(StorableConstructorFlag _) : base(_) { }
     protected BoolConverter(BoolConverter original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new BoolConverter(this, cloner);

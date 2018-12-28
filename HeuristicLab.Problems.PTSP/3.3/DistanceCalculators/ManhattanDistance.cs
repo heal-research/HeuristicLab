@@ -22,16 +22,16 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.Instances;
 
 namespace HeuristicLab.Problems.PTSP {
   [Item("Manhattan Distance", "Calculates the Manhattan distance.")]
-  [StorableClass]
+  [StorableType("1395A5AC-9A55-40F0-B5C4-1EF15284938F")]
   public sealed class ManhattanDistance : DistanceCalculator {
 
     [StorableConstructor]
-    private ManhattanDistance(bool deserializing) : base(deserializing) { }
+    private ManhattanDistance(StorableConstructorFlag _) : base(_) { }
     private ManhattanDistance(ManhattanDistance original, Cloner cloner) : base(original, cloner) { }
     public ManhattanDistance() { }
 

@@ -23,20 +23,20 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.VehicleRouting.Encodings.General;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
   [Item("PrinsManipulator", "An operator which manipulates a VRP representation.")]
-  [StorableClass]
+  [StorableType("AF313602-8AFC-4722-AA47-FFDCF39CF3E4")]
   public abstract class PrinsManipulator : VRPManipulator, IStochasticOperator, IPrinsOperator {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }
     }
 
     [StorableConstructor]
-    protected PrinsManipulator(bool deserializing) : base(deserializing) { }
+    protected PrinsManipulator(StorableConstructorFlag _) : base(_) { }
 
     public PrinsManipulator()
       : base() {

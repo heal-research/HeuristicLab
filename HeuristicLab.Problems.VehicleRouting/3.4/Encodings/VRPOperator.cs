@@ -23,12 +23,12 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings {
   [Item("VRPOperator", "Represents a VRP operator.")]
-  [StorableClass]
+  [StorableType("A2F2C612-6A4E-4C61-9C17-2826A6BA6DC6")]
   public abstract class VRPOperator : InstrumentedOperator, IVRPOperator {
     public ILookupParameter<IVRPProblemInstance> ProblemInstanceParameter {
       get { return (LookupParameter<IVRPProblemInstance>)Parameters["ProblemInstance"]; }
@@ -39,7 +39,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings {
     }
 
     [StorableConstructor]
-    protected VRPOperator(bool deserializing) : base(deserializing) { }
+    protected VRPOperator(StorableConstructorFlag _) : base(_) { }
 
     public VRPOperator()
       : base() {

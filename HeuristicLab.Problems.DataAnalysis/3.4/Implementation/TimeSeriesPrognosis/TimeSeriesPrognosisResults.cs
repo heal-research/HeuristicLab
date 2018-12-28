@@ -26,10 +26,10 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  [StorableClass]
+  [StorableType("E3F334B4-9980-473C-B77F-128AFAFD1DD1")]
   [Item("Prognosis Results", "Represents a collection of time series prognosis results.")]
   public class TimeSeriesPrognosisResults : ResultCollection {
     #region result names
@@ -329,7 +329,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     [StorableConstructor]
-    public TimeSeriesPrognosisResults(bool deserializing) : base(deserializing) { }
+    public TimeSeriesPrognosisResults(StorableConstructorFlag _) : base(_) { }
     protected TimeSeriesPrognosisResults(TimeSeriesPrognosisResults original, Cloner cloner)
       : base(original, cloner) {
       this.trainingHorizon = original.trainingHorizon;

@@ -22,14 +22,14 @@
 using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Data {
   [Item("DoubleArray", "Represents an array of double values.")]
-  [StorableClass]
+  [StorableType("BFB2A7A4-A79B-462D-99FE-488484891361")]
   public class DoubleArray : StringConvertibleArray<double> {
     [StorableConstructor]
-    protected DoubleArray(bool deserializing) : base(deserializing) { }
+    protected DoubleArray(StorableConstructorFlag _) : base(_) { }
     protected DoubleArray(DoubleArray original, Cloner cloner)
       : base(original, cloner) {
     }

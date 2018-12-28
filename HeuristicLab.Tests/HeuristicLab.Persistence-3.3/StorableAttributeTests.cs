@@ -19,11 +19,11 @@
  */
 #endregion
 
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Persistence.Tests {
 
-  [StorableClass]
+  [StorableType("EF55A82D-7D9B-486E-B811-4DCC389FDB05")]
   class DemoClass {
 
     [Storable(Name = "TestProperty", DefaultValue = 12)]
@@ -33,9 +33,15 @@ namespace HeuristicLab.Persistence.Tests {
     public int x = 2;
 
     public int y = 0;
+
+    [StorableConstructor]
+    protected DemoClass(StorableConstructorFlag _) {
+    }
+    public DemoClass() {
+    }
   }
 
-  [StorableClass]
+  [StorableType("31F18F9A-C25D-449D-900A-FEBF95D7CE39")]
   class Base {
     public string baseName;
     [Storable]
@@ -43,28 +49,51 @@ namespace HeuristicLab.Persistence.Tests {
       get { return "Base"; }
       set { baseName = value; }
     }
+
+    [StorableConstructor]
+    protected Base(StorableConstructorFlag _) {
+    }
+    public Base() {
+    }
   }
 
-  [StorableClass]
+  [StorableType("DF26C284-08C4-4703-A1A4-AFE834079B85")]
   class Override : Base {
     [Storable]
     public override string Name {
       get { return "Override"; }
       set { base.Name = value; }
     }
+
+    [StorableConstructor]
+    protected Override(StorableConstructorFlag _) : base(_) {
+    }
+    public Override() {
+    }
   }
 
-  [StorableClass]
+  [StorableType("6BFB1984-6670-4D5E-AEAC-3E77C627AF98")]
   class Intermediate : Override {
+    [StorableConstructor]
+    protected Intermediate(StorableConstructorFlag _) : base(_) {
+    }
+    public Intermediate() {
+    }
   }
 
-  [StorableClass]
+  [StorableType("856F9BDB-A20C-4B80-981B-5B4F5188FBCD")]
   class New : Intermediate {
     public string newName;
     [Storable]
     public new string Name {
       get { return "New"; }
       set { newName = value; }
+    }
+
+    [StorableConstructor]
+    protected New(StorableConstructorFlag _) : base(_) {
+    }
+    public New() {
     }
   }
 }

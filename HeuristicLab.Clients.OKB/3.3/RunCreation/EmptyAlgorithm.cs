@@ -23,12 +23,12 @@ using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Clients.OKB.RunCreation {
   [Item("Empty Algorithm", "A dummy algorithm which serves as a placeholder and cannot be executed.")]
-  [StorableClass]
+  [StorableType("C98C8322-5A78-4518-A94D-FA20F12AB8D3")]
   [NonDiscoverableType]
   public sealed class EmptyAlgorithm : HeuristicLab.Optimization.Algorithm {
     private string exceptionMessage;
@@ -54,8 +54,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
     #endregion
 
     [StorableConstructor]
-    private EmptyAlgorithm(bool deserializing)
-      : base(deserializing) {
+    private EmptyAlgorithm(StorableConstructorFlag _) : base(_) {
       this.results = new ResultCollection();
     }
     private EmptyAlgorithm(EmptyAlgorithm original, Cloner cloner)

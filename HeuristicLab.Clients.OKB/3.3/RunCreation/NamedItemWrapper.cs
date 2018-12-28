@@ -22,12 +22,12 @@
 using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Clients.OKB.RunCreation {
   [Item("NamedItemWrapper", "A wrapper which wraps an INamedItem.")]
-  [StorableClass]
+  [StorableType("F6834425-A9E1-41B9-A354-66062DC4FBA9")]
   [NonDiscoverableType]
   public class NamedItemWrapper<T> : ItemWrapper<T>, INamedItem where T : class, INamedItem {
     protected override T WrappedItem {
@@ -58,7 +58,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
     }
 
     [StorableConstructor]
-    protected NamedItemWrapper(bool deserializing) : base(deserializing) { }
+    protected NamedItemWrapper(StorableConstructorFlag _) : base(_) { }
     protected NamedItemWrapper(NamedItemWrapper<T> original, Cloner cloner) : base(original, cloner) { }
     public NamedItemWrapper(T item) : base(item) { }
 

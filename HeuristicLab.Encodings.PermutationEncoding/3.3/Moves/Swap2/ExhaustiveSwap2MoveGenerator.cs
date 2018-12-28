@@ -24,14 +24,14 @@ using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("ExhaustiveSwap2MoveGenerator", "Generates all possible swap-2 moves from a given permutation.")]
-  [StorableClass]
+  [StorableType("D88EEC45-27D1-4E4F-9D3B-FD7ED3C4892C")]
   public class ExhaustiveSwap2MoveGenerator : Swap2MoveGenerator, IExhaustiveMoveGenerator {
     [StorableConstructor]
-    protected ExhaustiveSwap2MoveGenerator(bool deserializing) : base(deserializing) { }
+    protected ExhaustiveSwap2MoveGenerator(StorableConstructorFlag _) : base(_) { }
     protected ExhaustiveSwap2MoveGenerator(ExhaustiveSwap2MoveGenerator original, Cloner cloner) : base(original, cloner) { }
     public ExhaustiveSwap2MoveGenerator() : base() { }
 

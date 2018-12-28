@@ -24,11 +24,11 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis {
   [Item("Symbolic Time-Series Prognosis Problem (single-objective)", "Represents a single-objective symbolic time-series prognosis problem.")]
-  [StorableClass]
+  [StorableType("E62C12A5-A086-4BA6-9A4B-FB9AE8B655FB")]
   [Creatable(CreatableAttribute.Categories.GeneticProgrammingProblems, Priority = 140)]
   public class SymbolicTimeSeriesPrognosisSingleObjectiveProblem : SymbolicDataAnalysisSingleObjectiveProblem<ITimeSeriesPrognosisProblemData, ISymbolicTimeSeriesPrognosisSingleObjectiveEvaluator, ISymbolicDataAnalysisSolutionCreator>, ITimeSeriesPrognosisProblem {
     private const double PunishmentFactor = 10;
@@ -48,7 +48,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis {
     }
     #endregion
     [StorableConstructor]
-    protected SymbolicTimeSeriesPrognosisSingleObjectiveProblem(bool deserializing) : base(deserializing) { }
+    protected SymbolicTimeSeriesPrognosisSingleObjectiveProblem(StorableConstructorFlag _) : base(_) { }
     protected SymbolicTimeSeriesPrognosisSingleObjectiveProblem(SymbolicTimeSeriesPrognosisSingleObjectiveProblem original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) { return new SymbolicTimeSeriesPrognosisSingleObjectiveProblem(this, cloner); }
 

@@ -25,10 +25,10 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
-  [StorableClass]
+  [StorableType("F60E0A63-0107-44E3-920B-BB5B09E9DDDF")]
   [Item(Name = "CovarianceNeuralNetwork",
     Description = "Neural network covariance function for Gaussian processes.")]
   public sealed class CovarianceNeuralNetwork : ParameterizedNamedItem, ICovarianceFunction {
@@ -47,8 +47,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     [StorableConstructor]
-    private CovarianceNeuralNetwork(bool deserializing)
-      : base(deserializing) {
+    private CovarianceNeuralNetwork(StorableConstructorFlag _) : base(_) {
     }
 
     private CovarianceNeuralNetwork(CovarianceNeuralNetwork original, Cloner cloner)

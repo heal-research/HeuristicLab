@@ -23,14 +23,14 @@ using System;
 using System.Drawing;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Parameters {
   /// <summary>
   /// A base class for parameters.
   /// </summary>
   [Item("Parameter", "A base class for parameters.")]
-  [StorableClass]
+  [StorableType("EB8A33BD-466A-4035-8544-8F86E5FDA458")]
   public abstract class Parameter : NamedItem, IParameter {
     public override Image ItemImage {
       get {
@@ -71,8 +71,7 @@ namespace HeuristicLab.Parameters {
     }
 
     [StorableConstructor]
-    protected Parameter(bool deserializing)
-      : base(deserializing) {
+    protected Parameter(StorableConstructorFlag _) : base(_) {
     }
     protected Parameter(Parameter original, Cloner cloner)
       : base(original, cloner) {

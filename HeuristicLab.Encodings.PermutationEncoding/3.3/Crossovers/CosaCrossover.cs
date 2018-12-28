@@ -22,7 +22,7 @@
 using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   /// <summary>
@@ -35,10 +35,10 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
   /// The idea is that the child should not sit right inbetween the two parents, but rather go a little bit from one parent in direction to the other.
   /// </remarks>
   [Item("CosaCrossover", "An operator which performs the crossover described in the COSA optimization method. It is implemented as described in Wendt, O. 1994. COSA: COoperative Simulated Annealing - Integration von Genetischen Algorithmen und Simulated Annealing am Beispiel der Tourenplanung. Dissertation Thesis. IWI Frankfurt.")]
-  [StorableClass]
+  [StorableType("2C6B5F27-A921-4CDD-A484-35B8824CDDBE")]
   public class CosaCrossover : PermutationCrossover {
     [StorableConstructor]
-    protected CosaCrossover(bool deserializing) : base(deserializing) { }
+    protected CosaCrossover(StorableConstructorFlag _) : base(_) { }
     protected CosaCrossover(CosaCrossover original, Cloner cloner) : base(original, cloner) { }
     public CosaCrossover() : base() { }
 

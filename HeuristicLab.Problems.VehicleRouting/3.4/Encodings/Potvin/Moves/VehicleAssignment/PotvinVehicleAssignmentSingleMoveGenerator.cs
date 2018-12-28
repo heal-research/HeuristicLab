@@ -24,12 +24,12 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinVehicleAssignmentSingleMoveGenerator", "Generates a single vehicle assignment move from a given VRP encoding.")]
-  [StorableClass]
+  [StorableType("437E0361-CEEE-41E4-BD20-BA40D6BB8DA4")]
   public sealed class PotvinVehicleAssignmentSingleMoveGenerator : PotvinVehicleAssignmentMoveGenerator,
     ISingleMoveGenerator {
     #region IMultiVRPMoveOperator Members
@@ -49,7 +49,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
     }
 
     [StorableConstructor]
-    private PotvinVehicleAssignmentSingleMoveGenerator(bool deserializing) : base(deserializing) { }
+    private PotvinVehicleAssignmentSingleMoveGenerator(StorableConstructorFlag _) : base(_) { }
 
     public PotvinVehicleAssignmentSingleMoveGenerator()
       : base() {

@@ -26,14 +26,14 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Analysis {
   /// <summary>
   /// An analyzer which applies arbitrary many other analyzers.
   /// </summary>
   [Item("MultiAnalyzer", "An analyzer which applies arbitrary many other analyzers.")]
-  [StorableClass]
+  [StorableType("EE2A8255-3151-4F29-B5B0-D7842F9AC5C5")]
   public class MultiAnalyzer : CheckedMultiOperator<IAnalyzer>, IMultiAnalyzer {
     public override bool CanChangeName {
       get { return false; }
@@ -56,7 +56,7 @@ namespace HeuristicLab.Analysis {
 
     #region Storing & Cloning
     [StorableConstructor]
-    protected MultiAnalyzer(bool deserializing) : base(deserializing) { }
+    protected MultiAnalyzer(StorableConstructorFlag _) : base(_) { }
     protected MultiAnalyzer(MultiAnalyzer original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new MultiAnalyzer(this, cloner);

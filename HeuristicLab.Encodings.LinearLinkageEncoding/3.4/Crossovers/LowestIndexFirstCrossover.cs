@@ -23,15 +23,15 @@ using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.LinearLinkageEncoding {
   [Item("Lowest Index First Crossover", "The Lowest Index First Crossover (LIFX) is implemented as described in Ülker, Ö., Özcan, E., Korkmaz, E. E. 2007. Linear linkage encoding in grouping problems: applications on graph coloring and timetabling. In Practice and Theory of Automated Timetabling VI, pp. 347-363. Springer Berlin Heidelberg.")]
-  [StorableClass]
+  [StorableType("1DFB1827-AFE6-4210-A542-F9EA112FF039")]
   public sealed class LowestIndexFirstCrossover : LinearLinkageCrossover {
 
     [StorableConstructor]
-    private LowestIndexFirstCrossover(bool deserializing) : base(deserializing) { }
+    private LowestIndexFirstCrossover(StorableConstructorFlag _) : base(_) { }
     private LowestIndexFirstCrossover(LowestIndexFirstCrossover original, Cloner cloner) : base(original, cloner) { }
     public LowestIndexFirstCrossover() { }
 

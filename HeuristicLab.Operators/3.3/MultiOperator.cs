@@ -26,14 +26,14 @@ using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Operators {
   /// <summary>
   /// A base class for operators which apply arbitrary many other operators of a specific type.
   /// </summary>
   [Item("MultiOperator", "A base class for operators which apply arbitrary many other operators of a specific type.")]
-  [StorableClass]
+  [StorableType("B8991981-2A8E-4A84-914D-24EE977BFB8F")]
   public abstract class MultiOperator<T> : InstrumentedOperator, IMultiOperator<T> where T : class, IOperator {
     private List<IValueParameter<T>> operatorParameters;
     protected IEnumerable<IValueParameter<T>> OperatorParameters { get { return operatorParameters; } }
@@ -56,7 +56,7 @@ namespace HeuristicLab.Operators {
     IEnumerable<IOperator> IMultiOperator.Operators { get { return operators.AsEnumerable(); } }
 
     [StorableConstructor]
-    protected MultiOperator(bool deserializing) : base(deserializing) { }
+    protected MultiOperator(StorableConstructorFlag _) : base(_) { }
     protected MultiOperator(MultiOperator<T> original, Cloner cloner)
       : base(original, cloner) {
       this.operators = cloner.Clone<IItemList<T>>(original.operators);

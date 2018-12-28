@@ -21,14 +21,14 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Analysis {
   /// <summary>
   /// Represents an allele of a solution which is used for allele analysis.
   /// </summary>
   [Item("Allele", "Represents an allele of a solution which is used for allele analysis.")]
-  [StorableClass]
+  [StorableType("27AE2AD2-D4A3-4187-A773-CDA518B8B28A")]
   public class Allele : Item {
     private string id;
     public string Id {
@@ -54,7 +54,7 @@ namespace HeuristicLab.Analysis {
 
     #region Storing & Cloning
     [StorableConstructor]
-    protected Allele(bool deserializing) : base(deserializing) { }
+    protected Allele(StorableConstructorFlag _) : base(_) { }
     protected Allele(Allele original, Cloner cloner)
       : base(original, cloner) {
       this.id = original.id;

@@ -23,8 +23,10 @@ using System;
 using System.Threading;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Algorithms.Benchmarks {
+  [StorableType("FFCF9EC9-35CE-43C2-85CF-F90CEA6058BC")]
   public interface IBenchmark : IItem {
     byte[][] ChunkData { get; set; }
     TimeSpan TimeLimit { get; set; }

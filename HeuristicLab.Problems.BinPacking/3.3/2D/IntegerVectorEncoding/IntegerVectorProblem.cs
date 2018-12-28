@@ -29,16 +29,16 @@ using HeuristicLab.Core;
 using HeuristicLab.Encodings.IntegerVectorEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.BinPacking2D {
   [Item("Bin Packing Problem (2D, integer vector encoding) (BPP)", "Represents a two-dimensional bin-packing problem using only bins with identical measures and bins/items with rectangular shapes.")]
-  [StorableClass]
+  [StorableType("0928004F-FB4B-4516-9FAE-B44D2F39413B")]
   [Creatable(Category = CreatableAttribute.Categories.CombinatorialProblems, Priority = 310)]
   public sealed class IntegerVectorProblem : ProblemBase<IntegerVectorEncoding, IntegerVector> {
     // persistence
     [StorableConstructor]
-    private IntegerVectorProblem(bool deserializing) : base(deserializing) { }
+    private IntegerVectorProblem(StorableConstructorFlag _) : base(_) { }
 
     // cloning
     private IntegerVectorProblem(IntegerVectorProblem original, Cloner cloner)

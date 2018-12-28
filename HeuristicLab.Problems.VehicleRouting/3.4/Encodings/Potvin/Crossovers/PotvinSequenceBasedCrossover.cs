@@ -21,15 +21,15 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinSequenceBasedCrossover", "The SBX crossover for a VRP representations.  It is implemented as described in Potvin, J.-Y. and Bengio, S. (1996). The Vehicle Routing Problem with Time Windows - Part II: Genetic Search. INFORMS Journal of Computing, 8:165–172.")]
-  [StorableClass]
+  [StorableType("EFC16985-0308-462C-8D6C-0F1177F53CD2")]
   public sealed class PotvinSequenceBasedCrossover : PotvinCrossover {
     [StorableConstructor]
-    private PotvinSequenceBasedCrossover(bool deserializing) : base(deserializing) { }
+    private PotvinSequenceBasedCrossover(StorableConstructorFlag _) : base(_) { }
 
     public PotvinSequenceBasedCrossover()
       : base() { }

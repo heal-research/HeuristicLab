@@ -21,14 +21,14 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaCustomerSwapManipulator", "An operator which manipulates a VRP representation by swapping two customers.  It is implemented as described in Alba, E. and Dorronsoro, B. (2004). Solving the Vehicle Routing Problem by Using Cellular Genetic Algorithms.")]
-  [StorableClass]
+  [StorableType("9040B9C9-B7BB-4EC9-8049-4A488F8A6976")]
   public sealed class AlbaCustomerSwapManipulator : AlbaManipulator {
     [StorableConstructor]
-    private AlbaCustomerSwapManipulator(bool deserializing) : base(deserializing) { }
+    private AlbaCustomerSwapManipulator(StorableConstructorFlag _) : base(_) { }
 
     public AlbaCustomerSwapManipulator()
       : base() {

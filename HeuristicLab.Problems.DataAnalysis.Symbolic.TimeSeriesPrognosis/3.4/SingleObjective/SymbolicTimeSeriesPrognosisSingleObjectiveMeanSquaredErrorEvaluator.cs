@@ -26,14 +26,14 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis {
   [Item("Mean squared error Evaluator", "Calculates the mean squared error of a symbolic time-series prognosis solution.")]
-  [StorableClass]
+  [StorableType("B1B4F084-C978-4A90-B678-0C00D4CAED59")]
   public class SymbolicTimeSeriesPrognosisSingleObjectiveMeanSquaredErrorEvaluator : SymbolicTimeSeriesPrognosisSingleObjectiveEvaluator {
     [StorableConstructor]
-    protected SymbolicTimeSeriesPrognosisSingleObjectiveMeanSquaredErrorEvaluator(bool deserializing) : base(deserializing) { }
+    protected SymbolicTimeSeriesPrognosisSingleObjectiveMeanSquaredErrorEvaluator(StorableConstructorFlag _) : base(_) { }
     protected SymbolicTimeSeriesPrognosisSingleObjectiveMeanSquaredErrorEvaluator(SymbolicTimeSeriesPrognosisSingleObjectiveMeanSquaredErrorEvaluator original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new SymbolicTimeSeriesPrognosisSingleObjectiveMeanSquaredErrorEvaluator(this, cloner);

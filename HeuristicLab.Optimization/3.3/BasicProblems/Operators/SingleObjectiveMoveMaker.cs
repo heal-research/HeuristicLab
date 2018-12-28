@@ -25,11 +25,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Optimization {
   [Item("Single-objective MoveMaker", "Applies a move.")]
-  [StorableClass]
+  [StorableType("C0ABF392-C825-4B98-8FB9-5749A9091FD6")]
   public class SingleObjectiveMoveMaker : InstrumentedOperator, IMoveMaker, ISingleObjectiveMoveOperator {
     public ILookupParameter<IEncoding> EncodingParameter {
       get { return (ILookupParameter<IEncoding>)Parameters["Encoding"]; }
@@ -44,7 +44,7 @@ namespace HeuristicLab.Optimization {
     }
 
     [StorableConstructor]
-    protected SingleObjectiveMoveMaker(bool deserializing) : base(deserializing) { }
+    protected SingleObjectiveMoveMaker(StorableConstructorFlag _) : base(_) { }
     protected SingleObjectiveMoveMaker(SingleObjectiveMoveMaker original, Cloner cloner) : base(original, cloner) { }
     public SingleObjectiveMoveMaker() {
       Parameters.Add(new LookupParameter<IEncoding>("Encoding", "An item that holds the problem's encoding."));

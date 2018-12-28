@@ -24,11 +24,11 @@ using System;
 using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   // relative error loss is a special case of weighted absolute error loss with weights = (1/target)
-  [StorableClass]
+  [StorableType("1334143A-7F77-46C1-8080-0CC4F4DA8995")]
   [Item("Relative error loss", "")]
   public sealed class RelativeErrorLoss : Item, ILossFunction {
     public RelativeErrorLoss() { }
@@ -110,7 +110,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     #region item implementation
     [StorableConstructor]
-    private RelativeErrorLoss(bool deserializing) : base(deserializing) { }
+    private RelativeErrorLoss(StorableConstructorFlag _) : base(_) { }
 
     private RelativeErrorLoss(RelativeErrorLoss original, Cloner cloner) : base(original, cloner) { }
 

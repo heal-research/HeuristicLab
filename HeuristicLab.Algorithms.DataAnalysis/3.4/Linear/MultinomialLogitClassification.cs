@@ -27,7 +27,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
@@ -36,12 +36,12 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// </summary>
   [Item("Multinomial Logit Classification (MNL)", "Multinomial logit classification data analysis algorithm (wrapper for ALGLIB).")]
   [Creatable(CreatableAttribute.Categories.DataAnalysisClassification, Priority = 180)]
-  [StorableClass]
+  [StorableType("F2797341-670A-491E-8652-0F154CBE99DC")]
   public sealed class MultiNomialLogitClassification : FixedDataAnalysisAlgorithm<IClassificationProblem> {
     private const string LogitClassificationModelResultName = "Logit classification solution";
 
     [StorableConstructor]
-    private MultiNomialLogitClassification(bool deserializing) : base(deserializing) { }
+    private MultiNomialLogitClassification(StorableConstructorFlag _) : base(_) { }
     private MultiNomialLogitClassification(MultiNomialLogitClassification original, Cloner cloner)
       : base(original, cloner) {
     }

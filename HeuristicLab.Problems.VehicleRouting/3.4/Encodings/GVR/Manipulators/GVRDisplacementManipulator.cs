@@ -22,14 +22,14 @@
 using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.GVR {
   [Item("GVRDisplacementManipulator", "An operator which manipulates a GVR representation by applying a displacement operation. It is implemented as described in Pereira, F.B. et al (2002). GVR: a New Genetic Representation for the Vehicle Routing Problem. AICS 2002, LNAI 2464, pp. 95-102.")]
-  [StorableClass]
+  [StorableType("9772264B-5A1B-4BCE-A796-70A6EF9B834F")]
   public sealed class GVRDisplacementManipulator : GVRManipulator {
     [StorableConstructor]
-    private GVRDisplacementManipulator(bool deserializing) : base(deserializing) { }
+    private GVRDisplacementManipulator(StorableConstructorFlag _) : base(_) { }
 
     public GVRDisplacementManipulator()
       : base() {

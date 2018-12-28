@@ -26,11 +26,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
-  [StorableClass]
+  [StorableType("C8A3E25F-C9DF-4BBB-B824-27A564A90E39")]
   [Item(Name = "GaussianProcessClassificationModelCreator",
     Description = "Creates a Gaussian process model for least-squares classification given the data, the hyperparameters, a mean function, and a covariance function.")]
   public sealed class GaussianProcessClassificationModelCreator : GaussianProcessModelCreator, IGaussianProcessClassificationModelCreator {
@@ -48,7 +48,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
     #endregion
     [StorableConstructor]
-    private GaussianProcessClassificationModelCreator(bool deserializing) : base(deserializing) { }
+    private GaussianProcessClassificationModelCreator(StorableConstructorFlag _) : base(_) { }
     private GaussianProcessClassificationModelCreator(GaussianProcessClassificationModelCreator original, Cloner cloner) : base(original, cloner) { }
     public GaussianProcessClassificationModelCreator()
       : base() {

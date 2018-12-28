@@ -22,11 +22,11 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.Programmable {
   [Item("Multi-objective Problem Definition Script", "Script that defines the parameter vector and evaluates the solution for a programmable problem.")]
-  [StorableClass]
+  [StorableType("17741D64-CF9D-4CCF-9892-0590C325D4E6")]
   public sealed class MultiObjectiveProblemDefinitionScript : ProblemDefinitionScript, IMultiObjectiveProblemDefinition, IStorableContent {
     public string Filename { get; set; }
 
@@ -35,7 +35,7 @@ namespace HeuristicLab.Problems.Programmable {
     }
 
     [StorableConstructor]
-    private MultiObjectiveProblemDefinitionScript(bool deserializing) : base(deserializing) { }
+    private MultiObjectiveProblemDefinitionScript(StorableConstructorFlag _) : base(_) { }
     private MultiObjectiveProblemDefinitionScript(MultiObjectiveProblemDefinitionScript original, Cloner cloner) : base(original, cloner) { }
     public MultiObjectiveProblemDefinitionScript() : base(ScriptTemplates.CompiledMultiObjectiveProblemDefinition) { }
 

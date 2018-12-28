@@ -23,10 +23,10 @@ using System;
 using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  [StorableClass]
+  [StorableType("7E6091F9-86FD-4C47-8935-9C35CAB4261B")]
   [Item("Classification Model", "Base class for all classification models.")]
   public abstract class ClassificationModel : DataAnalysisModel, IClassificationModel {
     [Storable]
@@ -40,8 +40,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
       }
     }
 
-    protected ClassificationModel(bool deserializing)
-      : base(deserializing) {
+    [StorableConstructor]
+    protected ClassificationModel(StorableConstructorFlag _)
+      : base(_) {
       targetVariable = string.Empty;
     }
     protected ClassificationModel(ClassificationModel original, Cloner cloner)

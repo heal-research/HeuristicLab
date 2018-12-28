@@ -25,12 +25,12 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaTranslocationMoveGenerator", "An operator which generates translocation moves for a VRP representation.  It is implemented as described in Alba, E. and Dorronsoro, B. (2004). Solving the Vehicle Routing Problem by Using Cellular Genetic Algorithms.")]
-  [StorableClass]
+  [StorableType("695BBC5B-7A11-4AE5-83E6-9EEA9979E791")]
   public sealed class AlbaTranslocationMoveGenerator : AlbaMoveGenerator, IAlbaTranslocationMoveOperator, IMultiMoveGenerator {
     public IValueLookupParameter<TranslocationMoveGenerator> TranslocationMoveGeneratorParameter {
       get { return (IValueLookupParameter<TranslocationMoveGenerator>)Parameters["TranslocationMoveGenerator"]; }
@@ -73,7 +73,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
     }
 
     [StorableConstructor]
-    private AlbaTranslocationMoveGenerator(bool deserializing) : base(deserializing) { }
+    private AlbaTranslocationMoveGenerator(StorableConstructorFlag _) : base(_) { }
 
     public AlbaTranslocationMoveGenerator()
       : base() {

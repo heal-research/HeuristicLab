@@ -24,11 +24,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.TestFunctions {
   [Item("RastriginAdditiveMoveEvaluator", "Class for evaluating an additive move on the Rastrigin function.")]
-  [StorableClass]
+  [StorableType("F4D22E9B-6D46-4F7A-AABA-A77048F879DB")]
   public class RastriginAdditiveMoveEvaluator : AdditiveMoveEvaluator, IRastriginMoveEvaluator {
     public override System.Type EvaluatorType {
       get { return typeof(RastriginEvaluator); }
@@ -48,7 +48,7 @@ namespace HeuristicLab.Problems.TestFunctions {
     }
 
     [StorableConstructor]
-    protected RastriginAdditiveMoveEvaluator(bool deserializing) : base(deserializing) { }
+    protected RastriginAdditiveMoveEvaluator(StorableConstructorFlag _) : base(_) { }
     protected RastriginAdditiveMoveEvaluator(RastriginAdditiveMoveEvaluator original, Cloner cloner) : base(original, cloner) { }
     public RastriginAdditiveMoveEvaluator() {
       Parameters.Add(new ValueParameter<DoubleValue>("A", "The parameter A is a parameter of the objective function y = Sum((x_i)^2 + A * (1 - Cos(2pi*x_i))). Default is A = 10.", new DoubleValue(10)));

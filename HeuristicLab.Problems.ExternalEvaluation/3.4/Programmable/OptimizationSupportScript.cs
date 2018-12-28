@@ -23,11 +23,11 @@ using System;
 using System.Linq;
 using System.Reflection;
 using HeuristicLab.Common;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Scripting;
 
 namespace HeuristicLab.Problems.ExternalEvaluation {
-  [StorableClass]
+  [StorableType("F1BC4885-753B-4E47-9169-EFC2E744782C")]
   public abstract class OptimizationSupportScript<T> : Script
     where T : class {
 
@@ -38,7 +38,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     }
 
     [StorableConstructor]
-    protected OptimizationSupportScript(bool deserializing) : base(deserializing) { }
+    protected OptimizationSupportScript(StorableConstructorFlag _) : base(_) { }
     protected OptimizationSupportScript(OptimizationSupportScript<T> original, Cloner cloner)
       : base(original, cloner) {
       variableStore = cloner.Clone(original.variableStore);

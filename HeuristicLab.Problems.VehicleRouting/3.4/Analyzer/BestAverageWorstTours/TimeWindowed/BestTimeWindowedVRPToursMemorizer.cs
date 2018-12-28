@@ -25,11 +25,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.VehicleRouting {
   [Item("BestTimeWindowedVRPToursMemorizer", "An operator that updates the best VRP tour found so far in the scope three.")]
-  [StorableClass]
+  [StorableType("74E88AF0-67A4-41FC-8235-4B72253C95BE")]
   public class BestTimeWindowedVRPToursMemorizer : SingleSuccessorOperator {
     public ScopeTreeLookupParameter<DoubleValue> TardinessParameter {
       get { return (ScopeTreeLookupParameter<DoubleValue>)Parameters["Tardiness"]; }
@@ -71,7 +71,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
     }
 
     [StorableConstructor]
-    protected BestTimeWindowedVRPToursMemorizer(bool deserializing) : base(deserializing) { }
+    protected BestTimeWindowedVRPToursMemorizer(StorableConstructorFlag _) : base(_) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new BestTimeWindowedVRPToursMemorizer(this, cloner);

@@ -24,12 +24,12 @@ using HeuristicLab.Core;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using System;
 
 namespace HeuristicLab.Algorithms.CMAEvolutionStrategy {
   [Item("CMARecombinator", "Base class that calculates the weighted mean of a number of offspring.")]
-  [StorableClass]
+  [StorableType("C0798B4D-1685-4720-828A-17E40879000B")]
   public abstract class CMARecombinator : SingleSuccessorOperator, ICMARecombinator {
 
     public Type CMAType {
@@ -55,7 +55,7 @@ namespace HeuristicLab.Algorithms.CMAEvolutionStrategy {
     #endregion
 
     [StorableConstructor]
-    protected CMARecombinator(bool deserializing) : base(deserializing) { }
+    protected CMARecombinator(StorableConstructorFlag _) : base(_) { }
     protected CMARecombinator(CMARecombinator original, Cloner cloner) : base(original, cloner) { }
     protected CMARecombinator()
       : base() {

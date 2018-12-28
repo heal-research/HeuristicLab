@@ -23,14 +23,14 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.ScheduleEncoding;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.Scheduling {
   [Item("SchedulingProblem", "Abstract class that represents a Scheduling Problem")]
-  [StorableClass]
+  [StorableType("D3EFE88B-7725-40DF-861F-37B17314D3F5")]
   public abstract class SchedulingProblem : SingleObjectiveHeuristicOptimizationProblem<ISchedulingEvaluator, IScheduleCreator> {
     [StorableConstructor]
-    protected SchedulingProblem(bool deserializing) : base(deserializing) { }
+    protected SchedulingProblem(StorableConstructorFlag _) : base(_) { }
     protected SchedulingProblem(SchedulingProblem original, Cloner cloner) : base(original, cloner) { }
     protected SchedulingProblem(ISchedulingEvaluator evaluator, IScheduleCreator creator) : base(evaluator, creator) { }
   }

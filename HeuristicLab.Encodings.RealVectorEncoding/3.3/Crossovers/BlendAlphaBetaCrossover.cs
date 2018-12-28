@@ -25,7 +25,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// <summary>
@@ -39,7 +39,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// The default value for alpha is 0.75, the default value for beta is 0.25.
   /// </remarks>
   [Item("BlendAlphaBetaCrossover", "The blend alpha beta crossover (BLX-a-b) for real vectors is similar to the blend alpha crossover (BLX-a), but distinguishes between the better and worse of the parents. The interval from which to choose the new offspring can be extended beyond the better parent by specifying a higher alpha value, and beyond the worse parent by specifying a higher beta value. The new offspring is sampled uniformly in the extended range. It is implemented as described in Takahashi, M. and Kita, H. 2001. A crossover operator using independent component analysis for real-coded genetic algorithms Proceedings of the 2001 Congress on Evolutionary Computation, pp. 643-649.")]
-  [StorableClass]
+  [StorableType("08F92C45-995C-4A05-B86F-0885BCB3F04C")]
   public class BlendAlphaBetaCrossover : RealVectorCrossover, ISingleObjectiveOperator {
     /// <summary>
     /// Whether the problem is a maximization or minimization problem.
@@ -67,7 +67,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     }
 
     [StorableConstructor]
-    protected BlendAlphaBetaCrossover(bool deserializing) : base(deserializing) { }
+    protected BlendAlphaBetaCrossover(StorableConstructorFlag _) : base(_) { }
     protected BlendAlphaBetaCrossover(BlendAlphaBetaCrossover original, Cloner cloner) : base(original, cloner) { }
     /// <summary>
     /// Initializes a new instance of <see cref="BlendAlphaBetaCrossover"/> with four additional parameters

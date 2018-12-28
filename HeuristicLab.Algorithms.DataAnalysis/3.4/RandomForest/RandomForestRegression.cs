@@ -25,7 +25,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
@@ -34,7 +34,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// </summary>
   [Item("Random Forest Regression (RF)", "Random forest regression data analysis algorithm (wrapper for ALGLIB).")]
   [Creatable(CreatableAttribute.Categories.DataAnalysisRegression, Priority = 120)]
-  [StorableClass]
+  [StorableType("721CE0EB-82AF-4E49-9900-48E1C67B5E53")]
   public sealed class RandomForestRegression : FixedDataAnalysisAlgorithm<IRegressionProblem> {
     private const string RandomForestRegressionModelResultName = "Random forest regression solution";
     private const string NumberOfTreesParameterName = "Number of trees";
@@ -91,7 +91,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
     #endregion
     [StorableConstructor]
-    private RandomForestRegression(bool deserializing) : base(deserializing) { }
+    private RandomForestRegression(StorableConstructorFlag _) : base(_) { }
     private RandomForestRegression(RandomForestRegression original, Cloner cloner)
       : base(original, cloner) {
     }

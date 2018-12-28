@@ -23,11 +23,11 @@ using System;
 using System.Threading;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Scripting {
   [Item("Executable Script", "An executable script.")]
-  [StorableClass]
+  [StorableType("206BFDFE-A829-424E-BFAD-BB7993830325")]
   public abstract class ExecutableScript : Script {
     private Thread scriptThread;
     private DateTime lastUpdateTime;
@@ -46,7 +46,7 @@ namespace HeuristicLab.Scripting {
 
     #region Construction & Cloning
     [StorableConstructor]
-    protected ExecutableScript(bool deserializing) : base(deserializing) { }
+    protected ExecutableScript(StorableConstructorFlag _) : base(_) { }
     protected ExecutableScript(ExecutableScript original, Cloner cloner)
       : base(original, cloner) {
       executionTime = original.executionTime;

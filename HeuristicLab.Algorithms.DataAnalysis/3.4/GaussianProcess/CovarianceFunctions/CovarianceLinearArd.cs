@@ -26,10 +26,10 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
-  [StorableClass]
+  [StorableType("A704FDF2-0566-4AB5-B752-D713831B016C")]
   [Item(Name = "CovarianceLinearArd",
     Description = "Linear covariance function with automatic relevance determination for Gaussian processes.")]
   public sealed class CovarianceLinearArd : ParameterizedNamedItem, ICovarianceFunction {
@@ -41,7 +41,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     [StorableConstructor]
-    private CovarianceLinearArd(bool deserializing) : base(deserializing) { }
+    private CovarianceLinearArd(StorableConstructorFlag _) : base(_) { }
     private CovarianceLinearArd(CovarianceLinearArd original, Cloner cloner)
       : base(original, cloner) {
     }

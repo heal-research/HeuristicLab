@@ -24,13 +24,13 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Problems.VehicleRouting.Variants;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinPDRearrangeSingleMoveGenerator", "Generates a single rearrange move from a given PDP encoding.")]
-  [StorableClass]
+  [StorableType("A50A38DA-E9F9-4ED8-A84C-348B4420F858")]
   public sealed class PotvinPDRearrangeSingleMoveGenerator : PotvinPDRearrangeMoveGenerator,
     ISingleMoveGenerator {
     public ILookupParameter<IRandom> RandomParameter {
@@ -42,7 +42,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
     }
 
     [StorableConstructor]
-    private PotvinPDRearrangeSingleMoveGenerator(bool deserializing) : base(deserializing) { }
+    private PotvinPDRearrangeSingleMoveGenerator(StorableConstructorFlag _) : base(_) { }
 
     public PotvinPDRearrangeSingleMoveGenerator()
       : base() {

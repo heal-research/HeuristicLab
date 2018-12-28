@@ -22,17 +22,17 @@
 using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.TravelingSalesman {
   /// <summary>
   /// An operator which evaluates TSP solutions given in path representation using the rounded Euclidean distance metric.
   /// </summary>
   [Item("TSPRoundedEuclideanPathEvaluator", "An operator which evaluates TSP solutions given in path representation using the rounded Euclidean distance metric.")]
-  [StorableClass]
+  [StorableType("AD108E29-244A-42E1-AA46-23A09C9894B9")]
   public sealed class TSPRoundedEuclideanPathEvaluator : TSPCoordinatesPathEvaluator {
     [StorableConstructor]
-    private TSPRoundedEuclideanPathEvaluator(bool deserializing) : base(deserializing) { }
+    private TSPRoundedEuclideanPathEvaluator(StorableConstructorFlag _) : base(_) { }
     private TSPRoundedEuclideanPathEvaluator(TSPRoundedEuclideanPathEvaluator original, Cloner cloner) : base(original, cloner) { }
     public TSPRoundedEuclideanPathEvaluator() : base() { }
 

@@ -23,18 +23,18 @@ using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.IntegerVectorEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding.PermutationWithRepetition {
   [Item("PermutationWithRepetitionEncoding", "Represents a encoding for a standard JobShop Scheduling Problem.")]
-  [StorableClass]
+  [StorableType("31A66AC4-897D-4986-A6FC-DC301DC06278")]
   public class PWREncoding : Item, IScheduleEncoding {
 
     [Storable]
     public IntegerVector PermutationWithRepetition { get; set; }
 
     [StorableConstructor]
-    protected PWREncoding(bool deserializing) : base(deserializing) { }
+    protected PWREncoding(StorableConstructorFlag _) : base(_) { }
     protected PWREncoding(PWREncoding original, Cloner cloner)
       : base(original, cloner) {
       this.PermutationWithRepetition = cloner.Clone(original.PermutationWithRepetition);

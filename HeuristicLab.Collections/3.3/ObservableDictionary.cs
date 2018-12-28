@@ -24,10 +24,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Collections {
-  [StorableClass]
+  [StorableType("EFAF5129-39F0-4477-834E-E22B85D63BCF")]
   [Serializable]
   public class ObservableDictionary<TKey, TValue> : IObservableDictionary<TKey, TValue> {
     [Storable]
@@ -87,7 +87,7 @@ namespace HeuristicLab.Collections {
       dict = new Dictionary<TKey, TValue>(dictionary, comparer);
     }
     [StorableConstructor]
-    protected ObservableDictionary(bool deserializing) { }
+    protected ObservableDictionary(StorableConstructorFlag _) { }
     #endregion
 
     #region Access

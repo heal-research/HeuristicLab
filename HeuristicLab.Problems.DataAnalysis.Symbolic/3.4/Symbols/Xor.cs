@@ -22,9 +22,9 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
-  [StorableClass]
+  [StorableType("36A4BD81-EA93-4497-8421-D0C9A0DCB246")]
   [Item("Xor", "Symbol that represents the boolean XOR operator.")]
   public sealed class Xor : Symbol {
     private const int minimumArity = 1;
@@ -38,7 +38,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     [StorableConstructor]
-    private Xor(bool deserializing) : base(deserializing) { }
+    private Xor(StorableConstructorFlag _) : base(_) { }
     private Xor(Xor original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new Xor(this, cloner);

@@ -21,17 +21,16 @@
 
 using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Selection {
   [Item("EvolutionStrategyOffspringSelector", "Selects among the offspring population those that are designated successful and discards the unsuccessful offspring, except for some lucky losers. It expects the parent scopes to be below the first sub-scope, and offspring scopes to be below the second sub-scope separated again in two sub-scopes, the first with the failed offspring and the second with successful offspring.")]
-  [StorableClass]
+  [StorableType("CE585C3C-5139-44F0-9CB2-CC901A290831")]
   public class EvolutionStrategyOffspringSelector : SingleSuccessorOperator {
 
     private class FitnessComparer : IComparer<IScope> {
@@ -112,7 +111,7 @@ namespace HeuristicLab.Selection {
     }
 
     [StorableConstructor]
-    protected EvolutionStrategyOffspringSelector(bool deserializing) : base(deserializing) { }
+    protected EvolutionStrategyOffspringSelector(StorableConstructorFlag _) : base(_) { }
     protected EvolutionStrategyOffspringSelector(EvolutionStrategyOffspringSelector original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new EvolutionStrategyOffspringSelector(this, cloner);

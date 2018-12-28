@@ -23,14 +23,14 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
   /// <summary>
   /// An operator that analyzes the validation best symbolic classification solution for multi objective symbolic classification problems.
   /// </summary>
   [Item("SymbolicClassificationMultiObjectiveValidationBestSolutionAnalyzer", "An operator that analyzes the validation best symbolic classification solution for multi objective symbolic classification problems.")]
-  [StorableClass]
+  [StorableType("223AECFF-0EA7-4271-A342-9F2E5BF3EDC0")]
   public sealed class SymbolicClassificationMultiObjectiveValidationBestSolutionAnalyzer : SymbolicDataAnalysisMultiObjectiveValidationBestSolutionAnalyzer<ISymbolicClassificationSolution, ISymbolicClassificationMultiObjectiveEvaluator, IClassificationProblemData>,
   ISymbolicDataAnalysisBoundedOperator, ISymbolicClassificationModelCreatorOperator {
     private const string ModelCreatorParameterName = "ModelCreator";
@@ -49,7 +49,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     #endregion
 
     [StorableConstructor]
-    private SymbolicClassificationMultiObjectiveValidationBestSolutionAnalyzer(bool deserializing) : base(deserializing) { }
+    private SymbolicClassificationMultiObjectiveValidationBestSolutionAnalyzer(StorableConstructorFlag _) : base(_) { }
     private SymbolicClassificationMultiObjectiveValidationBestSolutionAnalyzer(SymbolicClassificationMultiObjectiveValidationBestSolutionAnalyzer original, Cloner cloner) : base(original, cloner) { }
     public SymbolicClassificationMultiObjectiveValidationBestSolutionAnalyzer()
       : base() {

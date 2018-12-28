@@ -30,13 +30,13 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.QuadraticAssignment.Algorithms {
   [Item("Robust Taboo Search (RTS)", "The algorithm is described in Taillard, E. 1991. Robust Taboo Search for the Quadratic Assignment Problem. Parallel Computing 17, pp. 443-455.")]
   [Creatable(CreatableAttribute.Categories.SingleSolutionAlgorithms, Priority = 130)]
-  [StorableClass]
+  [StorableType("8D1BB2DF-2093-46EB-AB9F-C5ABC1D749B6")]
   public sealed class RobustTabooSearch : HeuristicOptimizationEngineAlgorithm, IStorableContent {
     public string Filename { get; set; }
 
@@ -130,7 +130,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Algorithms {
     private BestAverageWorstQualityAnalyzer qualityAnalyzer;
 
     [StorableConstructor]
-    private RobustTabooSearch(bool deserializing) : base(deserializing) { }
+    private RobustTabooSearch(StorableConstructorFlag _) : base(_) { }
     private RobustTabooSearch(RobustTabooSearch original, Cloner cloner)
       : base(original, cloner) {
       solutionsCreator = cloner.Clone(original.solutionsCreator);

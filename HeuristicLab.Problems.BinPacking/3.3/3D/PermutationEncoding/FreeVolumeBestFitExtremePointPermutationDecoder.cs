@@ -25,15 +25,15 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.BinPacking3D {
   [Item("Free Volume Best Fit Extreme-point Permutation Decoder (3d)", "Decodes the permutation and creates a packing solution candidate")]
-  [StorableClass]
+  [StorableType("3CF690C8-EB29-40DC-ADE3-9B9A83928772")]
   public class FreeVolumeBestFitExtremePointPermutationDecoder : ExtremePointPermutationDecoderBase {
 
     [StorableConstructor]
-    protected FreeVolumeBestFitExtremePointPermutationDecoder(bool deserializing) : base(deserializing) { }
+    protected FreeVolumeBestFitExtremePointPermutationDecoder(StorableConstructorFlag _) : base(_) { }
     protected FreeVolumeBestFitExtremePointPermutationDecoder(FreeVolumeBestFitExtremePointPermutationDecoder original, Cloner cloner)
       : base(original, cloner) {
     }

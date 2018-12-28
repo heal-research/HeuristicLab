@@ -25,18 +25,18 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.QuadraticAssignment {
   [Item("QAPScrambleMoveEvaluator", "Evaluated a scramble move on a QAP solution.")]
-  [StorableClass]
+  [StorableType("E5D1B682-6ADA-4DEE-8546-6C5BCE1C91D0")]
   public class QAPScrambleMoveEvaluator : QAPMoveEvaluator, IPermutationScrambleMoveOperator {
     public ILookupParameter<ScrambleMove> ScrambleMoveParameter {
       get { return (ILookupParameter<ScrambleMove>)Parameters["ScrambleMove"]; }
     }
 
     [StorableConstructor]
-    protected QAPScrambleMoveEvaluator(bool deserializing) : base(deserializing) { }
+    protected QAPScrambleMoveEvaluator(StorableConstructorFlag _) : base(_) { }
     protected QAPScrambleMoveEvaluator(QAPScrambleMoveEvaluator original, Cloner cloner)
       : base(original, cloner) {
     }

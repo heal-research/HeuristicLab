@@ -23,20 +23,20 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Selection {
   /// <summary>
   /// A base class for stochastic selection operators which consider a single double quality value for selection.
   /// </summary>
   [Item("StochasticSingleObjectiveSelector", "A base class for stochastic selection operators which consider a single double quality value for selection.")]
-  [StorableClass]
+  [StorableType("566030A6-F1F8-4F45-A768-4D2BD236D39E")]
   public abstract class StochasticSingleObjectiveSelector : SingleObjectiveSelector, IStochasticOperator {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }
     }
     [StorableConstructor]
-    protected StochasticSingleObjectiveSelector(bool deserializing) : base(deserializing) { }
+    protected StochasticSingleObjectiveSelector(StorableConstructorFlag _) : base(_) { }
     protected StochasticSingleObjectiveSelector(StochasticSingleObjectiveSelector original, Cloner cloner) : base(original, cloner) { }
     protected StochasticSingleObjectiveSelector()
       : base() {

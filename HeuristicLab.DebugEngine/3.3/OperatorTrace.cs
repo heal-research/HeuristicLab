@@ -25,11 +25,11 @@ using System.Linq;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.DebugEngine {
 
-  [StorableClass]
+  [StorableType("F694C6E8-39EC-4705-AB77-D00147A4D542")]
   public class OperatorTrace : ObservableList<IOperator>, IContent, IDeepCloneable {
 
     #region fields
@@ -67,7 +67,7 @@ namespace HeuristicLab.DebugEngine {
     }
 
     [StorableConstructor]
-    protected OperatorTrace(bool deserializing) : base(deserializing) { }
+    protected OperatorTrace(StorableConstructorFlag _) : base(_) { }
 
     protected OperatorTrace(OperatorTrace original, Cloner cloner) {
       cloner.RegisterClonedObject(original, this);

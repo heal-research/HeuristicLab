@@ -22,14 +22,14 @@
 using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.TravelingSalesman {
   /// <summary>
   /// An operator to evaluate translocation or insertion moves (3-opt).
   /// </summary>
   [Item("TSPTranslocationMoveGeoPathEvaluator", "Operator for evaluating a translocation or insertion move (3-opt) based on geo (world) distances.")]
-  [StorableClass]
+  [StorableType("3CCF9099-547F-44A3-9279-99ED96F7ACCD")]
   public class TSPTranslocationMoveGeoPathEvaluator : TSPTranslocationMovePathEvaluator {
     public override Type EvaluatorType {
       get { return typeof(TSPGeoPathEvaluator); }
@@ -39,7 +39,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     private const double RADIUS = 6378.388;
 
     [StorableConstructor]
-    protected TSPTranslocationMoveGeoPathEvaluator(bool deserializing) : base(deserializing) { }
+    protected TSPTranslocationMoveGeoPathEvaluator(StorableConstructorFlag _) : base(_) { }
     protected TSPTranslocationMoveGeoPathEvaluator(TSPTranslocationMoveGeoPathEvaluator original, Cloner cloner) : base(original, cloner) { }
     public TSPTranslocationMoveGeoPathEvaluator() : base() { }
 

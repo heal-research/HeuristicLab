@@ -23,14 +23,14 @@ using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   /// <summary>
   /// A base class for operators that perform a crossover of symbolic expression trees.
   /// </summary>
   [Item("SymbolicExpressionTreeCrossover", "A base class for operators that perform a crossover of symbolic expression trees.")]
-  [StorableClass]
+  [StorableType("AB6004AE-B6ED-41D7-824E-87ECDA5B0AAF")]
   public abstract class SymbolicExpressionTreeCrossover : SymbolicExpressionTreeOperator, ISymbolicExpressionTreeCrossover {
     private const string ParentsParameterName = "Parents";
     #region Parameter Properties
@@ -48,7 +48,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
     #endregion
     [StorableConstructor]
-    protected SymbolicExpressionTreeCrossover(bool deserializing) : base(deserializing) { }
+    protected SymbolicExpressionTreeCrossover(StorableConstructorFlag _) : base(_) { }
     protected SymbolicExpressionTreeCrossover(SymbolicExpressionTreeCrossover original, Cloner cloner) : base(original, cloner) { }
     protected SymbolicExpressionTreeCrossover()
       : base() {

@@ -23,19 +23,19 @@ using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinTwoOptStarExhaustiveMoveGenerator", "Generates two opt star moves from a given VRP encoding.")]
-  [StorableClass]
+  [StorableType("1479DAA2-D7A9-4043-A485-F54F75C1A2DB")]
   public sealed class PotvinTwoOptStarExhaustiveMoveGenerator : PotvinTwoOptStarMoveGenerator, IExhaustiveMoveGenerator {
     public override IDeepCloneable Clone(Cloner cloner) {
       return new PotvinTwoOptStarExhaustiveMoveGenerator(this, cloner);
     }
 
     [StorableConstructor]
-    private PotvinTwoOptStarExhaustiveMoveGenerator(bool deserializing) : base(deserializing) { }
+    private PotvinTwoOptStarExhaustiveMoveGenerator(StorableConstructorFlag _) : base(_) { }
 
     public PotvinTwoOptStarExhaustiveMoveGenerator()
       : base() {

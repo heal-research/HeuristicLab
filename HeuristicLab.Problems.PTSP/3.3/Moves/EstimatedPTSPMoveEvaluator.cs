@@ -26,11 +26,11 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.PTSP {
   [Item("EstimatedPTSPMoveEvaluator", "A base class for operators which evaluate PTSP moves.")]
-  [StorableClass]
+  [StorableType("F2F7F857-F2CD-4AB2-8656-5158BD04EFDD")]
   public abstract class EstimatedPTSPMoveEvaluator : SingleSuccessorOperator, IEstimatedPTSPMoveEvaluator {
 
     public override bool CanChangeName {
@@ -63,7 +63,7 @@ namespace HeuristicLab.Problems.PTSP {
     }
 
     [StorableConstructor]
-    protected EstimatedPTSPMoveEvaluator(bool deserializing) : base(deserializing) { }
+    protected EstimatedPTSPMoveEvaluator(StorableConstructorFlag _) : base(_) { }
     protected EstimatedPTSPMoveEvaluator(EstimatedPTSPMoveEvaluator original, Cloner cloner) : base(original, cloner) { }
     protected EstimatedPTSPMoveEvaluator()
       : base() {

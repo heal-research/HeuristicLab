@@ -25,11 +25,11 @@ using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
-  [StorableClass]
+  [StorableType("4EC1B359-D145-434C-A373-3EDD764D2D63")]
   [Item("Gradient boosted trees model", "")]
   // this is essentially a collection of weighted regression models
   public sealed class GradientBoostedTreesModel : RegressionModel, IGradientBoostedTreesModel {
@@ -68,8 +68,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public IEnumerable<double> Weights { get { return weights; } }
 
     [StorableConstructor]
-    private GradientBoostedTreesModel(bool deserializing)
-      : base(deserializing) {
+    private GradientBoostedTreesModel(StorableConstructorFlag _) : base(_) {
       models = new List<IRegressionModel>();
       weights = new List<double>();
     }

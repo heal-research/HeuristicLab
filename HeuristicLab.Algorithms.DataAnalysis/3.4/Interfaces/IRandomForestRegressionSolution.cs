@@ -20,7 +20,6 @@
 #endregion
 
 using HeuristicLab.Problems.DataAnalysis;
-using HeuristicLab.Problems.DataAnalysis.Symbolic.Regression;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>

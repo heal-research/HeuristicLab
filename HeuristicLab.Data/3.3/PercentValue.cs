@@ -22,11 +22,11 @@
 using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Data {
   [Item("PercentValue", "Represents a double value in percent.")]
-  [StorableClass]
+  [StorableType("FC4406A2-54A1-4D9D-AE6A-AB98895ECE64")]
   public class PercentValue : DoubleValue {
     [Storable(DefaultValue = false)]
     private bool restrictToUnitInterval = false;
@@ -44,7 +44,7 @@ namespace HeuristicLab.Data {
     }
 
     [StorableConstructor]
-    protected PercentValue(bool deserializing) : base(deserializing) { }
+    protected PercentValue(StorableConstructorFlag _) : base(_) { }
     protected PercentValue(PercentValue original, Cloner cloner)
       : base(original, cloner) {
       restrictToUnitInterval = original.restrictToUnitInterval;

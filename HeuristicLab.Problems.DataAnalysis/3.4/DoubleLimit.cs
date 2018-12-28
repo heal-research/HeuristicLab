@@ -23,10 +23,10 @@ using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  [StorableClass]
+  [StorableType("EB663E63-5F5B-4BD9-9A18-1A164D6E3045")]
   [Item("DoubleLimit", "Represents a lower and a upper bound for double values.")]
   public class DoubleLimit : StringConvertibleValueTuple<DoubleValue, DoubleValue> {
 
@@ -40,7 +40,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     [StorableConstructor]
-    protected DoubleLimit(bool deserializing) : base(deserializing) { }
+    protected DoubleLimit(StorableConstructorFlag _) : base(_) { }
     protected DoubleLimit(DoubleLimit original, Cloner cloner)
       : base(original, cloner) {
     }

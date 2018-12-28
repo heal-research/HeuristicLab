@@ -22,15 +22,15 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.VehicleRouting.Variants;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Zhu {
   [Item("ZhuMergeCrossover1", "The Zhu Merge Crossover (Version 1). It is implemented as described in Zhu, K.Q. (2000). A New Genetic Algorithm For VRPTW. Proceedings of the International Conference on Artificial Intelligence.")]
-  [StorableClass]
+  [StorableType("3DF02AC1-B4F2-41C3-83E3-C587EBE70DEF")]
   public sealed class ZhuMergeCrossover1 : ZhuCrossover {
     [StorableConstructor]
-    private ZhuMergeCrossover1(bool deserializing) : base(deserializing) { }
+    private ZhuMergeCrossover1(StorableConstructorFlag _) : base(_) { }
 
     public ZhuMergeCrossover1()
       : base() {

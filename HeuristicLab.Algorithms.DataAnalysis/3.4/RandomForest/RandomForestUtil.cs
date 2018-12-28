@@ -30,13 +30,13 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [Item("RFParameter", "A random forest parameter collection")]
-  [StorableClass]
+  [StorableType("40E482DA-63C5-4D39-97C7-63701CF1D021")]
   public class RFParameter : ParameterCollection {
     public RFParameter() {
       base.Add(new FixedValueParameter<IntValue>("N", "The number of random forest trees", new IntValue(50)));
@@ -45,8 +45,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     [StorableConstructor]
-    protected RFParameter(bool deserializing)
-      : base(deserializing) {
+    protected RFParameter(StorableConstructorFlag _) : base(_) {
     }
 
     protected RFParameter(RFParameter original, Cloner cloner)

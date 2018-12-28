@@ -28,13 +28,13 @@ using HeuristicLab.Core;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Problems.VehicleRouting.Variants;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
   [Item("MultiVRPSolutionCreator", "Randomly selects and applies one of its creator every time it is called.")]
-  [StorableClass]
+  [StorableType("D462B6FB-7AAF-46D9-B3A8-2AC6806C1005")]
   public class MultiVRPSolutionCreator : StochasticMultiBranch<IVRPCreator>, IVRPCreator, IGeneralVRPOperator, IMultiVRPOperator, IStochasticOperator {
     public override bool CanChangeName {
       get { return false; }
@@ -52,7 +52,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
     }
 
     [StorableConstructor]
-    protected MultiVRPSolutionCreator(bool deserializing) : base(deserializing) { }
+    protected MultiVRPSolutionCreator(StorableConstructorFlag _) : base(_) { }
     public MultiVRPSolutionCreator()
       : base() {
       Parameters.Add(new LookupParameter<IVRPEncoding>("VRPTours", "The new VRP tours."));

@@ -28,12 +28,12 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   [Item("RealVectorSwarmUpdater", "Updates personal best point and quality as well as global best point and quality.")]
-  [StorableClass]
+  [StorableType("190172D5-090F-49DA-B2FB-AD2DF8064F77")]
   [NonDiscoverableType]
   [Obsolete("Use SPSOSwarmUpdater")]
   internal sealed class RealVectorSwarmUpdater : SingleSuccessorOperator, IRealVectorSwarmUpdater, ISingleObjectiveOperator {
@@ -175,7 +175,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     #region Construction & Cloning
 
     [StorableConstructor]
-    private RealVectorSwarmUpdater(bool deserializing) : base(deserializing) { }
+    private RealVectorSwarmUpdater(StorableConstructorFlag _) : base(_) { }
     private RealVectorSwarmUpdater(RealVectorSwarmUpdater original, Cloner cloner)
       : base(original, cloner) {
       ResultsCollector = cloner.Clone(original.ResultsCollector);

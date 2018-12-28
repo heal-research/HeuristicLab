@@ -25,12 +25,12 @@ using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 
 namespace HeuristicLab.Problems.PTSP {
   [Item("TwoPointFiveMoveGenerator", "Base class for all inversion and shift (2.5-opt) move generators.")]
-  [StorableClass]
+  [StorableType("955C469C-4D77-4168-A428-03C39BACF9AD")]
   public abstract class TwoPointFiveMoveGenerator : SingleSuccessorOperator, ITwoPointFiveMoveOperator, IMoveGenerator {
     public override bool CanChangeName {
       get { return false; }
@@ -44,7 +44,7 @@ namespace HeuristicLab.Problems.PTSP {
     }
 
     [StorableConstructor]
-    protected TwoPointFiveMoveGenerator(bool deserializing) : base(deserializing) { }
+    protected TwoPointFiveMoveGenerator(StorableConstructorFlag _) : base(_) { }
     protected TwoPointFiveMoveGenerator(TwoPointFiveMoveGenerator original, Cloner cloner) : base(original, cloner) { }
     protected TwoPointFiveMoveGenerator()
       : base() {

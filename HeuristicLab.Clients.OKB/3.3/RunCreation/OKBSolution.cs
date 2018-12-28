@@ -21,12 +21,12 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using System;
 
 namespace HeuristicLab.Clients.OKB.RunCreation {
   [Item("OKB Solution", "")]
-  [StorableClass]
+  [StorableType("5B06773F-20A4-41C3-AEE1-62084E2F5E71")]
   public abstract class OKBSolution : Item {
     [Storable]
     private long problemId;
@@ -54,7 +54,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
     }
 
     [StorableConstructor]
-    protected OKBSolution(bool deserializing) : base(deserializing) { }
+    protected OKBSolution(StorableConstructorFlag _) : base(_) { }
     protected OKBSolution(OKBSolution original, Cloner cloner)
       : base(original, cloner) {
       problemId = original.problemId;

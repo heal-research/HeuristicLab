@@ -20,12 +20,9 @@
 #endregion
 
 using System.IO;
-using HeuristicLab.Data;
 using HeuristicLab.Problems.Instances;
 using HeuristicLab.Problems.VehicleRouting.Encodings.Potvin;
-using HeuristicLab.Problems.VehicleRouting.ProblemInstances;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
-using System;
 
 namespace HeuristicLab.Problems.VehicleRouting.Interpreters {
   public abstract class VRPInterpreter : IVRPDataInterpreter<IVRPData> {

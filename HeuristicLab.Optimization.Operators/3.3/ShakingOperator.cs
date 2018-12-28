@@ -25,14 +25,14 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Optimization.Operators {
   /// <summary>
   /// A shaking operator for VNS.
   /// </summary>
   [Item("ShakingOperator", "A shaking operator for VNS that can be filled with arbitrary manipulation operators.")]
-  [StorableClass]
+  [StorableType("38CE1371-38BB-40F7-A4FC-0B8049D3BE2E")]
   public class ShakingOperator<T> : CheckedMultiOperator<T>, IMultiNeighborhoodShakingOperator where T : class, IManipulator {
 
     public IValueLookupParameter<IntValue> CurrentNeighborhoodIndexParameter {
@@ -44,7 +44,7 @@ namespace HeuristicLab.Optimization.Operators {
     }
 
     [StorableConstructor]
-    protected ShakingOperator(bool deserializing) : base(deserializing) { }
+    protected ShakingOperator(StorableConstructorFlag _) : base(_) { }
     protected ShakingOperator(ShakingOperator<T> original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new ShakingOperator<T>(this, cloner);

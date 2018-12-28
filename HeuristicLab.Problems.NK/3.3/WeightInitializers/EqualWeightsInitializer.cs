@@ -22,14 +22,14 @@
 using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.NK {
   [Item("EqualWeightsInitializer", "Initializes all weights to 1.0.")]
-  [StorableClass]
+  [StorableType("AFFF8CCF-FF3E-48F6-861D-2A5E595FA0C0")]
   public sealed class EqualWeightsInitializer : ParameterizedNamedItem, IWeightsInitializer {
     [StorableConstructor]
-    private EqualWeightsInitializer(bool deserializing) : base(deserializing) { }
+    private EqualWeightsInitializer(StorableConstructorFlag _) : base(_) { }
     private EqualWeightsInitializer(EqualWeightsInitializer original, Cloner cloner)
       : base(original, cloner) { }
     public EqualWeightsInitializer() { }

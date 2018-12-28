@@ -21,16 +21,16 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   [Item("Velocity Initializer (SPSO 2007)", "Initializes the velocity vector.")]
-  [StorableClass]
+  [StorableType("40B46512-D94E-45E5-ABE5-6D9AA5B7D13A")]
   public class SPSO2007VelocityInitializer : SPSOVelocityInitializer {
     
     #region Construction & Cloning
     [StorableConstructor]
-    protected SPSO2007VelocityInitializer(bool deserializing) : base(deserializing) { }
+    protected SPSO2007VelocityInitializer(StorableConstructorFlag _) : base(_) { }
     protected SPSO2007VelocityInitializer(SPSO2007VelocityInitializer original, Cloner cloner) : base(original, cloner) { }
     public SPSO2007VelocityInitializer() : base() { }
     public override IDeepCloneable Clone(Cloner cloner) {

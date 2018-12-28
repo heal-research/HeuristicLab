@@ -24,14 +24,14 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.TestFunctions {
   /// <summary>
   /// The Schwefel function (sine root) is implemented as described in Affenzeller, M. and Wagner, S. 2005. Offspring Selection: A New Self-Adaptive Selection Scheme for Genetic Algorithms.  Ribeiro, B., Albrecht, R. F., Dobnikar, A., Pearson, D. W., and Steele, N. C. (eds.). Adaptive and Natural Computing Algorithms, pp. 218-221, Springer.
   /// </summary>
   [Item("SchwefelEvaluator", "Evaluates the Schwefel function (sine root) on a given point. In the given bounds [-500;500] the optimum of this function is close to 0 at (420.968746453712,420.968746453712,...,420.968746453712). It is implemented as described in Affenzeller, M. and Wagner, S. 2005. Offspring Selection: A New Self-Adaptive Selection Scheme for Genetic Algorithms.  Ribeiro, B., Albrecht, R. F., Dobnikar, A., Pearson, D. W., and Steele, N. C. (eds.). Adaptive and Natural Computing Algorithms, pp. 218-221, Springer.")]
-  [StorableClass]
+  [StorableType("06AC1E53-E26F-4A41-9B4B-2EDC0B02B358")]
   public class SchwefelEvaluator : SingleObjectiveTestFunctionProblemEvaluator {
     public override string FunctionName { get { return "Schwefel"; } }
     /// <summary>
@@ -66,7 +66,7 @@ namespace HeuristicLab.Problems.TestFunctions {
     }
 
     [StorableConstructor]
-    protected SchwefelEvaluator(bool deserializing) : base(deserializing) { }
+    protected SchwefelEvaluator(StorableConstructorFlag _) : base(_) { }
     protected SchwefelEvaluator(SchwefelEvaluator original, Cloner cloner) : base(original, cloner) { }
     public SchwefelEvaluator() : base() { }
 

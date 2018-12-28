@@ -23,18 +23,18 @@ using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization.Operators;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   [Item("Hamming Similarity Calculator for IntegerVector", "Calculates the solution similarity based on the Hamming distance between two integer vectors.")]
-  [StorableClass]
+  [StorableType("3784C4BD-8834-4A90-900C-0340C7F7BB47")]
   public sealed class HammingSimilarityCalculator : SingleObjectiveSolutionSimilarityCalculator {
     protected override bool IsCommutative {
       get { return true; }
     }
 
     [StorableConstructor]
-    private HammingSimilarityCalculator(bool deserializing) : base(deserializing) { }
+    private HammingSimilarityCalculator(StorableConstructorFlag _) : base(_) { }
     private HammingSimilarityCalculator(HammingSimilarityCalculator original, Cloner cloner) : base(original, cloner) { }
     public HammingSimilarityCalculator() { }
 

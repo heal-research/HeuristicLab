@@ -28,14 +28,14 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   /// <summary>
   /// An operator that analyzes the validation best symbolic data analysis solution for multi objective symbolic data analysis problems.
   /// </summary>
   [Item("SymbolicDataAnalysisMultiObjectiveValidationBestSolutionAnalyzer", "An operator that analyzes the validation best symbolic data analysis solution for multi objective symbolic data analysis problems.")]
-  [StorableClass]
+  [StorableType("ABDCE5CB-E177-4382-B478-90372FE6D47F")]
   public abstract class SymbolicDataAnalysisMultiObjectiveValidationBestSolutionAnalyzer<S, T, U> : SymbolicDataAnalysisMultiObjectiveValidationAnalyzer<T, U>,
     ISymbolicDataAnalysisMultiObjectiveAnalyzer
     where S : class, ISymbolicDataAnalysisSolution
@@ -71,7 +71,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     #endregion
 
     [StorableConstructor]
-    protected SymbolicDataAnalysisMultiObjectiveValidationBestSolutionAnalyzer(bool deserializing) : base(deserializing) { }
+    protected SymbolicDataAnalysisMultiObjectiveValidationBestSolutionAnalyzer(StorableConstructorFlag _) : base(_) { }
     protected SymbolicDataAnalysisMultiObjectiveValidationBestSolutionAnalyzer(SymbolicDataAnalysisMultiObjectiveValidationBestSolutionAnalyzer<S, T, U> original, Cloner cloner) : base(original, cloner) { }
     public SymbolicDataAnalysisMultiObjectiveValidationBestSolutionAnalyzer()
       : base() {

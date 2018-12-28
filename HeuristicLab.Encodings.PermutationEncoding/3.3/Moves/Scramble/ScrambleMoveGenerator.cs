@@ -24,11 +24,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("ScrambleMoveGenerator", "Base class for all scramble move generators.")]
-  [StorableClass]
+  [StorableType("053A3BFC-F5F1-4893-B5E8-BCB452D18FC1")]
   public abstract class ScrambleMoveGenerator : SingleSuccessorOperator, IPermutationScrambleMoveOperator, IMoveGenerator {
     public override bool CanChangeName {
       get { return false; }
@@ -41,7 +41,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     }
 
     [StorableConstructor]
-    protected ScrambleMoveGenerator(bool deserializing) : base(deserializing) { }
+    protected ScrambleMoveGenerator(StorableConstructorFlag _) : base(_) { }
     protected ScrambleMoveGenerator(ScrambleMoveGenerator original, Cloner cloner) : base(original, cloner) { }
     public ScrambleMoveGenerator()
       : base() {

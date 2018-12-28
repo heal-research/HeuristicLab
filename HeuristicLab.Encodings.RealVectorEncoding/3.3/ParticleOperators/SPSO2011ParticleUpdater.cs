@@ -23,16 +23,16 @@ using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   [Item("SPSO 2011 Particle Updater", "Updates the particle's position according to the formulae described in SPSO 2011.")]
-  [StorableClass]
+  [StorableType("C680E305-159C-4A76-83E5-53982B583F9B")]
   public sealed class SPSO2011ParticleUpdater : SPSOParticleUpdater {
     #region Construction & Cloning
     [StorableConstructor]
-    private SPSO2011ParticleUpdater(bool deserializing) : base(deserializing) { }
+    private SPSO2011ParticleUpdater(StorableConstructorFlag _) : base(_) { }
     private SPSO2011ParticleUpdater(SPSO2011ParticleUpdater original, Cloner cloner) : base(original, cloner) { }
     public SPSO2011ParticleUpdater() : base() { }
     public override IDeepCloneable Clone(Cloner cloner) {

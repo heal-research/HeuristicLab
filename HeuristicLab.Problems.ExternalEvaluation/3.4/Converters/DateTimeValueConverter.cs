@@ -23,15 +23,15 @@ using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.ExternalEvaluation {
   [Item("DateTimeValueConverter", "Converts a DateTimeValue and adds it to the SolutionMessage's StringVars. The format is yyyy-MM-dd HH:mm:sszzz, e.g. 2010-05-31 19:15:33+01:00.")]
-  [StorableClass]
+  [StorableType("99D4CC9B-B4F3-4A79-9EC9-6C5BB40C8C87")]
   public class DateTimeValueConverter : Item, IItemToSolutionMessageConverter {
     private static readonly Type[] itemTypes = new Type[] { typeof(DateTimeValue) };
     [StorableConstructor]
-    protected DateTimeValueConverter(bool deserializing) : base(deserializing) { }
+    protected DateTimeValueConverter(StorableConstructorFlag _) : base(_) { }
     protected DateTimeValueConverter(DateTimeValueConverter original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new DateTimeValueConverter(this, cloner);

@@ -21,17 +21,17 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("PermutationMoveAttribute", "Base class for specifying a move attribute")]
-  [StorableClass]
+  [StorableType("46AD6CFC-3D7B-4C36-9925-09526723E990")]
   public class PermutationMoveAttribute : Item {
     [Storable]
     public double MoveQuality { get; protected set; }
 
     [StorableConstructor]
-    protected PermutationMoveAttribute(bool deserializing) : base(deserializing) { }
+    protected PermutationMoveAttribute(StorableConstructorFlag _) : base(_) { }
     protected PermutationMoveAttribute(PermutationMoveAttribute original, Cloner cloner)
       : base(original, cloner) {
       this.MoveQuality = original.MoveQuality;

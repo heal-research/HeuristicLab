@@ -24,14 +24,14 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
   [Item("Mean squared error & Tree size Evaluator", "Calculates the mean squared error and the tree size of a symbolic classification solution.")]
-  [StorableClass]
+  [StorableType("1D1693A0-6479-45D1-990F-125FFCEC430E")]
   public class SymbolicClassificationMultiObjectiveMeanSquaredErrorTreeSizeEvaluator : SymbolicClassificationMultiObjectiveEvaluator {
     [StorableConstructor]
-    protected SymbolicClassificationMultiObjectiveMeanSquaredErrorTreeSizeEvaluator(bool deserializing) : base(deserializing) { }
+    protected SymbolicClassificationMultiObjectiveMeanSquaredErrorTreeSizeEvaluator(StorableConstructorFlag _) : base(_) { }
     protected SymbolicClassificationMultiObjectiveMeanSquaredErrorTreeSizeEvaluator(SymbolicClassificationMultiObjectiveMeanSquaredErrorTreeSizeEvaluator original, Cloner cloner)
       : base(original, cloner) {
     }

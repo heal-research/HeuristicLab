@@ -21,6 +21,7 @@
 
 using System;
 using System.Drawing;
+using HEAL.Fossil;
 using HeuristicLab.Common;
 using HeuristicLab.Common.Resources;
 using HeuristicLab.Core;
@@ -52,7 +53,8 @@ namespace HeuristicLab.DataPreprocessing.Filter {
     }
 
     public ComparisonFilter() : base() { }
-    protected ComparisonFilter(bool deserializing) : base(deserializing) { }
+    [StorableConstructor]
+    protected ComparisonFilter(StorableConstructorFlag _) : base(_) { }
 
     public ComparisonFilter(IPreprocessingData constrainedValue, ConstraintOperation constraintOperation, object constraintData)
       : base(constrainedValue, constraintOperation, constraintData) {

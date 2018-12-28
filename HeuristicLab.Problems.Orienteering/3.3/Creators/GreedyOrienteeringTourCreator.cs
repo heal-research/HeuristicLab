@@ -26,7 +26,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.IntegerVectorEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.Orienteering {
   /// <summary>
@@ -38,7 +38,7 @@ namespace HeuristicLab.Problems.Orienteering {
   /// (Schilde et. al. 2009)
   /// </summary>
   [Item("GreedyOrienteeringTourCreator", @"Implements the solution creation procedure described in Schilde M., Doerner K.F., Hartl R.F., Kiechle G. 2009. Metaheuristics for the bi-objective orienteering problem. Swarm Intelligence, Volume 3, Issue 3, pp 179-201.")]
-  [StorableClass]
+  [StorableType("FB68525D-DD53-4BE7-A6B4-EC54E6FD0E64")]
   public sealed class GreedyOrienteeringTourCreator : IntegerVectorCreator, IOrienteeringSolutionCreator {
     public override bool CanChangeName { get { return false; } }
 
@@ -64,8 +64,7 @@ namespace HeuristicLab.Problems.Orienteering {
     #endregion
 
     [StorableConstructor]
-    private GreedyOrienteeringTourCreator(bool deserializing)
-      : base(deserializing) { }
+    private GreedyOrienteeringTourCreator(StorableConstructorFlag _) : base(_) { }
     private GreedyOrienteeringTourCreator(GreedyOrienteeringTourCreator original, Cloner cloner)
       : base(original, cloner) { }
 

@@ -25,11 +25,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   [Item("StochasticOneBitflipMultiMoveGenerator", "Randomly samples n from all possible one bitflip moves from a given BinaryVector.")]
-  [StorableClass]
+  [StorableType("11A9E43A-6291-4F9D-90AB-DC205923EE68")]
   public class StochasticOneBitflipMultiMoveGenerator : OneBitflipMoveGenerator, IStochasticOperator, IMultiMoveGenerator {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
@@ -44,7 +44,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
     }
 
     [StorableConstructor]
-    protected StochasticOneBitflipMultiMoveGenerator(bool deserializing) : base(deserializing) { }
+    protected StochasticOneBitflipMultiMoveGenerator(StorableConstructorFlag _) : base(_) { }
     protected StochasticOneBitflipMultiMoveGenerator(StochasticOneBitflipMultiMoveGenerator original, Cloner cloner) : base(original, cloner) { }
     public StochasticOneBitflipMultiMoveGenerator()
       : base() {

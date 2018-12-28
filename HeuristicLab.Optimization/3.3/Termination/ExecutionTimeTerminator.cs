@@ -23,18 +23,18 @@ using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Optimization {
   [Item("ExecutionTimeTerminator", "A termination criterion based on execution time of an algorithm.")]
-  [StorableClass]
+  [StorableType("7BBF7D6F-C41C-4826-963B-5ED9544F8391")]
   public class ExecutionTimeTerminator : ThresholdTerminator<TimeSpanValue> {
 
     [Storable]
     private readonly IExecutable executable;
 
     [StorableConstructor]
-    protected ExecutionTimeTerminator(bool deserializing) : base(deserializing) { }
+    protected ExecutionTimeTerminator(StorableConstructorFlag _) : base(_) { }
     protected ExecutionTimeTerminator(ExecutionTimeTerminator original, Cloner cloner)
       : base(original, cloner) {
       executable = cloner.Clone(original.executable);

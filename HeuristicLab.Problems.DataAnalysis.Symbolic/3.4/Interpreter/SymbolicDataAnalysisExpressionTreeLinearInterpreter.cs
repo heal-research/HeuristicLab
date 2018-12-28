@@ -27,10 +27,10 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
-  [StorableClass]
+  [StorableType("EF325166-E03A-44C4-83CE-7F07B836285E")]
   [Item("SymbolicDataAnalysisExpressionTreeLinearInterpreter", "Fast linear (non-recursive) interpreter for symbolic expression trees. Does not support ADFs.")]
   public sealed class SymbolicDataAnalysisExpressionTreeLinearInterpreter : ParameterizedNamedItem, ISymbolicDataAnalysisExpressionTreeInterpreter {
     private const string CheckExpressionsWithIntervalArithmeticParameterName = "CheckExpressionsWithIntervalArithmetic";
@@ -69,8 +69,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     #endregion
 
     [StorableConstructor]
-    private SymbolicDataAnalysisExpressionTreeLinearInterpreter(bool deserializing)
-      : base(deserializing) {
+    private SymbolicDataAnalysisExpressionTreeLinearInterpreter(StorableConstructorFlag _) : base(_) {
       interpreter = new SymbolicDataAnalysisExpressionTreeInterpreter();
     }
 

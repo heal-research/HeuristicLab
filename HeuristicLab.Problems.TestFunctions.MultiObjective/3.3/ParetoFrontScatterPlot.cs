@@ -23,10 +23,10 @@ using System.Drawing;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
-  [StorableClass]
+  [StorableType("3BF7AD0E-8D55-4033-974A-01DB16F9E41A")]
   [Item("Pareto Front Scatter Plot", "The optimal front, current front and its associated Points in the searchspace")]
   public class ParetoFrontScatterPlot : Item {
     public static new Image StaticItemImage {
@@ -86,8 +86,7 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
     }
 
     [StorableConstructor]
-    protected ParetoFrontScatterPlot(bool deserializing)
-      : base(deserializing) { }
+    protected ParetoFrontScatterPlot(StorableConstructorFlag _) : base(_) { }
     #endregion
   }
 }

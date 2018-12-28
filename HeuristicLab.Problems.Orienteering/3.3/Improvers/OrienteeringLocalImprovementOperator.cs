@@ -28,7 +28,7 @@ using HeuristicLab.Encodings.IntegerVectorEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.Orienteering {
   /// <summary>
@@ -37,7 +37,7 @@ namespace HeuristicLab.Problems.Orienteering {
   /// minimize the cost of the tour. As shortening operator a 2-opt is applied. (Schilde et. al. 2009)
   /// </summary>
   [Item("OrienteeringLocalImprovementOperator", @"Implements the iterative improvement procedure described in Schilde M., Doerner K.F., Hartl R.F., Kiechle G. 2009. Metaheuristics for the bi-objective orienteering problem. Swarm Intelligence, Volume 3, Issue 3, pp 179-201.")]
-  [StorableClass]
+  [StorableType("92FA69B3-F243-4D12-A67A-AA1D7EBCD302")]
   public sealed class OrienteeringLocalImprovementOperator : SingleSuccessorOperator, ILocalImprovementOperator {
 
     #region Parameter Properties
@@ -88,7 +88,7 @@ namespace HeuristicLab.Problems.Orienteering {
     #endregion
 
     [StorableConstructor]
-    private OrienteeringLocalImprovementOperator(bool deserializing) : base(deserializing) { }
+    private OrienteeringLocalImprovementOperator(StorableConstructorFlag _) : base(_) { }
     private OrienteeringLocalImprovementOperator(OrienteeringLocalImprovementOperator original, Cloner cloner)
       : base(original, cloner) {
     }

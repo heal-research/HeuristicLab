@@ -22,10 +22,10 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.GeneticProgramming.Robocode {
-  [StorableClass]
+  [StorableType("C2A2B6C5-3320-4231-A1B3-F8B8CF8B03A5")]
   public class NumberTreeNode : SymbolicExpressionTreeTerminalNode {
     private int value;
     [Storable]
@@ -35,7 +35,7 @@ namespace HeuristicLab.Problems.GeneticProgramming.Robocode {
     }
 
     [StorableConstructor]
-    protected NumberTreeNode(bool deserializing) : base(deserializing) { }
+    protected NumberTreeNode(StorableConstructorFlag _) : base(_) { }
     protected NumberTreeNode(NumberTreeNode original, Cloner cloner)
       : base(original, cloner) {
       this.value = original.value;

@@ -22,7 +22,7 @@
 using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   /// <summary>
@@ -32,11 +32,11 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   /// It is implemented as described in Eiben, A.E. and Smith, J.E. 2003. Introduction to Evolutionary Computation. Natural Computing Series, Springer-Verlag Berlin Heidelberg.
   /// </remarks>
   [Item("UniformCrossover", "Uniform crossover for binary vectors. It is implemented as described in Eiben, A.E. and Smith, J.E. 2003. Introduction to Evolutionary Computation. Natural Computing Series, Springer-Verlag Berlin Heidelberg.")]
-  [StorableClass]
+  [StorableType("6B0DDD76-EC81-4C5A-989E-239A82B78E66")]
   public sealed class UniformCrossover : BinaryVectorCrossover {
 
     [StorableConstructor]
-    private UniformCrossover(bool deserializing) : base(deserializing) { }
+    private UniformCrossover(StorableConstructorFlag _) : base(_) { }
     private UniformCrossover(UniformCrossover original, Cloner cloner) : base(original, cloner) { }
     public UniformCrossover() : base() { }
 

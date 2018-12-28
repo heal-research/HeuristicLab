@@ -24,14 +24,14 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Optimization {
-  [StorableClass]
+  [StorableType("3B3B486C-0552-4B0D-978D-813E71E21B79")]
   [Item("RunCollectionTypeCompatibilityConstraint", "A constraint which checks the members of the contained runs for type compabitiliby to the constraint data.")]
   public class RunCollectionTypeCompatibilityConstraint : TypeCompatibilityConstraint, IRunCollectionColumnConstraint {
     [StorableConstructor]
-    protected RunCollectionTypeCompatibilityConstraint(bool deserializing) {
+    protected RunCollectionTypeCompatibilityConstraint(StorableConstructorFlag _) : base(_) {
     }
     protected RunCollectionTypeCompatibilityConstraint(RunCollectionTypeCompatibilityConstraint original, Cloner cloner)
       : base(original, cloner) {

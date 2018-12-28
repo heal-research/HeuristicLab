@@ -27,14 +27,14 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   /// <summary>
   /// An operator that optimizes the constants for the best symbolic expression tress in the current generation.
   /// </summary>
   [Item("ConstantOptimizationAnalyzer", "An operator that performs a constant optimization on the best symbolic expression trees.")]
-  [StorableClass]
+  [StorableType("9FB87E7B-A9E2-49DD-A92A-78BD9FC17916")]
   public sealed class ConstantOptimizationAnalyzer : SymbolicDataAnalysisSingleObjectiveAnalyzer, IStatefulItem {
     private const string PercentageOfBestSolutionsParameterName = "PercentageOfBestSolutions";
     private const string ConstantOptimizationEvaluatorParameterName = "ConstantOptimizationOperator";
@@ -86,7 +86,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     #endregion
 
     [StorableConstructor]
-    private ConstantOptimizationAnalyzer(bool deserializing) : base(deserializing) { }
+    private ConstantOptimizationAnalyzer(StorableConstructorFlag _) : base(_) { }
     private ConstantOptimizationAnalyzer(ConstantOptimizationAnalyzer original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) { return new ConstantOptimizationAnalyzer(this, cloner); }
     public ConstantOptimizationAnalyzer()

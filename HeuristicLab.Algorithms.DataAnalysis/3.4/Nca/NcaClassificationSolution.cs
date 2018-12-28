@@ -21,12 +21,12 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [Item("NCA Classification Solution", "")]
-  [StorableClass]
+  [StorableType("3FE3A37F-2926-43EB-AC77-3C80654D93AA")]
   public class NcaClassificationSolution : ClassificationSolution, INcaClassificationSolution {
 
     public new INcaModel Model {
@@ -35,7 +35,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     [StorableConstructor]
-    protected NcaClassificationSolution(bool deserializing) : base(deserializing) { }
+    protected NcaClassificationSolution(StorableConstructorFlag _) : base(_) { }
     protected NcaClassificationSolution(NcaClassificationSolution original, Cloner cloner)
       : base(original, cloner) {
     }

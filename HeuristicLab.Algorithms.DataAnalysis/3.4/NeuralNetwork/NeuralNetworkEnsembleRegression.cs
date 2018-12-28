@@ -28,7 +28,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
@@ -37,7 +37,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// </summary>
   [Item("Neural Network Ensemble Regression (NN)", "Neural network ensemble regression data analysis algorithm (wrapper for ALGLIB). Further documentation: http://www.alglib.net/dataanalysis/mlpensembles.php")]
   [Creatable(CreatableAttribute.Categories.DataAnalysisRegression, Priority = 140)]
-  [StorableClass]
+  [StorableType("FD50BD78-3586-4C31-87AE-5490E717F4E7")]
   public sealed class NeuralNetworkEnsembleRegression : FixedDataAnalysisAlgorithm<IRegressionProblem> {
     private const string EnsembleSizeParameterName = "EnsembleSize";
     private const string DecayParameterName = "Decay";
@@ -118,7 +118,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
 
     [StorableConstructor]
-    private NeuralNetworkEnsembleRegression(bool deserializing) : base(deserializing) { }
+    private NeuralNetworkEnsembleRegression(StorableConstructorFlag _) : base(_) { }
     private NeuralNetworkEnsembleRegression(NeuralNetworkEnsembleRegression original, Cloner cloner)
       : base(original, cloner) {
     }

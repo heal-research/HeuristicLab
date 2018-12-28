@@ -25,10 +25,10 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
-  [StorableClass]
+  [StorableType("1335C8EF-73CA-40F4-9124-EC6D7E3C68E0")]
   [Item(Name = "CovarianceSquaredExponentialIso",
     Description = "Isotropic squared exponential covariance function for Gaussian processes.")]
   public sealed class CovarianceSquaredExponentialIso : ParameterizedNamedItem, ICovarianceFunction {
@@ -48,8 +48,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     [StorableConstructor]
-    private CovarianceSquaredExponentialIso(bool deserializing)
-      : base(deserializing) {
+    private CovarianceSquaredExponentialIso(StorableConstructorFlag _) : base(_) {
     }
 
     private CovarianceSquaredExponentialIso(CovarianceSquaredExponentialIso original, Cloner cloner)

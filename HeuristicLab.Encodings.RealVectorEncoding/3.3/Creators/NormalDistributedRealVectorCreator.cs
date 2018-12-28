@@ -25,7 +25,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
@@ -33,7 +33,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// An operator which creates a new random real vector with each element normally distributed in a specified range.
   /// </summary>
   [Item("NormalDistributedRealVectorCreator", "An operator which creates a new random real vector with each element normally distributed in a specified range.")]
-  [StorableClass]
+  [StorableType("790F7401-DD2A-4910-8632-F737E39CE6EE")]
   public class NormalDistributedRealVectorCreator : RealVectorCreator, IStrategyParameterCreator {
 
     public IValueLookupParameter<RealVector> MeanParameter {
@@ -49,7 +49,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     }
 
     [StorableConstructor]
-    protected NormalDistributedRealVectorCreator(bool deserializing) : base(deserializing) { }
+    protected NormalDistributedRealVectorCreator(StorableConstructorFlag _) : base(_) { }
     protected NormalDistributedRealVectorCreator(NormalDistributedRealVectorCreator original, Cloner cloner) : base(original, cloner) { }
     public NormalDistributedRealVectorCreator()
       : base() {

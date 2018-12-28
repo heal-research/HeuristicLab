@@ -22,16 +22,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis {
   /// <summary>
   /// Represents a time series prognosis data analysis solution
   /// </summary>
-  [StorableClass]
+  [StorableType("42CF9704-DCB2-4159-89B3-A30645399B86")]
   public class TimeSeriesPrognosisSolution : TimeSeriesPrognosisSolutionBase {
     [StorableConstructor]
-    protected TimeSeriesPrognosisSolution(bool deserializing) : base(deserializing) { }
+    protected TimeSeriesPrognosisSolution(StorableConstructorFlag _) : base(_) { }
     protected TimeSeriesPrognosisSolution(TimeSeriesPrognosisSolution original, Cloner cloner) : base(original, cloner) { }
     protected internal TimeSeriesPrognosisSolution(ITimeSeriesPrognosisModel model, ITimeSeriesPrognosisProblemData problemData)
       : base(model, problemData) {

@@ -24,10 +24,10 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  [StorableClass]
+  [StorableType("58768587-0920-4B52-95E4-66B54E8E837C")]
   [Item("ClassificationEnsembleProblemData", "Represents an item containing all data defining a classification problem.")]
   public class ClassificationEnsembleProblemData : ClassificationProblemData {
 
@@ -64,7 +64,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     [StorableConstructor]
-    protected ClassificationEnsembleProblemData(bool deserializing) : base(deserializing) { }
+    protected ClassificationEnsembleProblemData(StorableConstructorFlag _) : base(_) { }
     protected ClassificationEnsembleProblemData(ClassificationEnsembleProblemData original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       if (this == emptyProblemData) return emptyProblemData;

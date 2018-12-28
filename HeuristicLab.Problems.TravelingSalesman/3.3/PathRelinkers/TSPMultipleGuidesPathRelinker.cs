@@ -28,7 +28,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.TravelingSalesman {
   /// <summary>
@@ -38,7 +38,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
   /// The operator incrementally changes the initiating solution towards the guiding solution by correcting edges as needed. For each city it choses the best edge from all guiding solutions.
   /// </remarks>
   [Item("TSPMultipleGuidesPathRelinker", "An operator that relinks paths between traveling salesman solutions using a multiple guiding strategy. The operator incrementally changes the initiating solution towards the guiding solution by correcting edges as needed. For each city it choses the best edge from all guiding solutions.")]
-  [StorableClass]
+  [StorableType("6B5B2622-AB1D-47E6-8BBC-C6088D393149")]
   public sealed class TSPMultipleGuidesPathRelinker : SingleObjectivePathRelinker {
     #region Parameter properties
     public ILookupParameter<DistanceMatrix> DistanceMatrixParameter {
@@ -53,7 +53,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     #endregion
 
     [StorableConstructor]
-    private TSPMultipleGuidesPathRelinker(bool deserializing) : base(deserializing) { }
+    private TSPMultipleGuidesPathRelinker(StorableConstructorFlag _) : base(_) { }
     private TSPMultipleGuidesPathRelinker(TSPMultipleGuidesPathRelinker original, Cloner cloner) : base(original, cloner) { }
     public TSPMultipleGuidesPathRelinker()
       : base() {

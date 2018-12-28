@@ -27,7 +27,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
 using HeuristicLab.Problems.DataAnalysis.Symbolic.Classification;
@@ -38,12 +38,12 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// </summary>
   [Item("Linear Discriminant Analysis (LDA)", "Linear discriminant analysis classification algorithm (wrapper for ALGLIB).")]
   [Creatable(CreatableAttribute.Categories.DataAnalysisClassification, Priority = 100)]
-  [StorableClass]
+  [StorableType("032E1FDE-D140-47BF-8EB1-D63EC33B0629")]
   public sealed class LinearDiscriminantAnalysis : FixedDataAnalysisAlgorithm<IClassificationProblem> {
     private const string LinearDiscriminantAnalysisSolutionResultName = "Linear discriminant analysis solution";
 
     [StorableConstructor]
-    private LinearDiscriminantAnalysis(bool deserializing) : base(deserializing) { }
+    private LinearDiscriminantAnalysis(StorableConstructorFlag _) : base(_) { }
     private LinearDiscriminantAnalysis(LinearDiscriminantAnalysis original, Cloner cloner)
       : base(original, cloner) {
     }

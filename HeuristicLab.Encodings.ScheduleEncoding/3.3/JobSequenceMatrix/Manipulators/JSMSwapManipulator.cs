@@ -23,15 +23,15 @@ using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding.JobSequenceMatrix {
   [Item("JSMSwapManipulator", "Represents a manipulation operation swapping parts of the individual.")]
-  [StorableClass]
+  [StorableType("7BB1535F-C886-40A3-9F7C-4A54CED90A6E")]
   public class JSMSwapManipulator : JSMManipulator {
 
     [StorableConstructor]
-    protected JSMSwapManipulator(bool deserializing) : base(deserializing) { }
+    protected JSMSwapManipulator(StorableConstructorFlag _) : base(_) { }
     protected JSMSwapManipulator(JSMSwapManipulator original, Cloner cloner) : base(original, cloner) { }
     public JSMSwapManipulator() : base() { }
 

@@ -7,13 +7,13 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 using static HeuristicLab.Problems.DataAnalysis.Symbolic.BatchOperations;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [Item("SymbolicDataAnalysisExpressionTreeBatchInterpreter", "An interpreter that uses batching and vectorization techniques to achieve faster performance.")]
-  [StorableClass]
+  [StorableType("BEB15146-BB95-4838-83AC-6838543F017B")]
   public class SymbolicDataAnalysisExpressionTreeBatchInterpreter : ParameterizedNamedItem, ISymbolicDataAnalysisExpressionTreeInterpreter {
     private const string EvaluatedSolutionsParameterName = "EvaluatedSolutions";
 
@@ -37,7 +37,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     [StorableConstructor]
-    protected SymbolicDataAnalysisExpressionTreeBatchInterpreter(bool deserializing) : base(deserializing) { }
+    protected SymbolicDataAnalysisExpressionTreeBatchInterpreter(StorableConstructorFlag _) : base(_) { }
     protected SymbolicDataAnalysisExpressionTreeBatchInterpreter(SymbolicDataAnalysisExpressionTreeBatchInterpreter original, Cloner cloner) : base(original, cloner) {
     }
     public override IDeepCloneable Clone(Cloner cloner) {

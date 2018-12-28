@@ -24,14 +24,14 @@ using HeuristicLab.Core;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   /// <summary>
   /// A base class for operators that manipulate bool-valued vectors.
   /// </summary>
   [Item("BinaryVectorManipulator", "A base class for operators that manipulate bool-valued vectors.")]
-  [StorableClass]
+  [StorableType("B5A9B51F-33F3-4C0B-87CF-147C3BF03545")]
   public abstract class BinaryVectorManipulator : InstrumentedOperator, IBinaryVectorManipulator, IStochasticOperator {
     public override bool CanChangeName {
       get { return false; }
@@ -44,7 +44,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
     }
 
     [StorableConstructor]
-    protected BinaryVectorManipulator(bool deserializing) : base(deserializing) { }
+    protected BinaryVectorManipulator(StorableConstructorFlag _) : base(_) { }
     protected BinaryVectorManipulator(BinaryVectorManipulator original, Cloner cloner) : base(original, cloner) { }
     protected BinaryVectorManipulator()
       : base() {

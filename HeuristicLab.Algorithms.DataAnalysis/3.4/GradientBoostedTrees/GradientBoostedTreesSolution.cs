@@ -20,11 +20,11 @@
 #endregion
 
 using HeuristicLab.Common;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
-  [StorableClass]
+  [StorableType("B05C382A-A637-4CD6-8BCC-E1E92B60F330")]
   public sealed class GradientBoostedTreesSolution : RegressionSolution {
     public new IGradientBoostedTreesModel Model {
       get { return (IGradientBoostedTreesModel)base.Model; }
@@ -32,8 +32,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
 
     [StorableConstructor]
-    private GradientBoostedTreesSolution(bool deserializing)
-      : base(deserializing) {
+    private GradientBoostedTreesSolution(StorableConstructorFlag _) : base(_) {
     }
     private GradientBoostedTreesSolution(GradientBoostedTreesSolution original, Cloner cloner)
       : base(original, cloner) {

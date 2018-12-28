@@ -24,12 +24,12 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.Binary {
   [Item("One Max Problem", "Represents a problem whose objective is to maximize the number of true values.")]
   [Creatable(CreatableAttribute.Categories.CombinatorialProblems, Priority = 210)]
-  [StorableClass]
+  [StorableType("A290ADDE-33F5-4607-ABC0-19349CD0FBF1")]
   public class OneMaxProblem : BinaryProblem {
     public override bool Maximization {
       get { return true; }
@@ -42,7 +42,7 @@ namespace HeuristicLab.Problems.Binary {
     }
 
     [StorableConstructor]
-    protected OneMaxProblem(bool deserializing) : base(deserializing) { }
+    protected OneMaxProblem(StorableConstructorFlag _) : base(_) { }
 
     protected OneMaxProblem(OneMaxProblem original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {

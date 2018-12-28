@@ -22,11 +22,11 @@
 using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("ScheduledTask", "Represents a task that has been scheduled already.")]
-  [StorableClass]
+  [StorableType("8E947B77-37DF-4451-ACF4-03251516FC52")]
   public class ScheduledTask : Item {
 
     #region Properties
@@ -48,7 +48,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
     #endregion
 
     [StorableConstructor]
-    protected ScheduledTask(bool deserializing) : base(deserializing) { }
+    protected ScheduledTask(StorableConstructorFlag _) : base(_) { }
     protected ScheduledTask(ScheduledTask original, Cloner cloner)
       : base(original, cloner) {
       this.TaskNr = original.TaskNr;

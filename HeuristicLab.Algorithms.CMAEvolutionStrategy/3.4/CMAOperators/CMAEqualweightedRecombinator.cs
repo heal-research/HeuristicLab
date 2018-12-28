@@ -21,15 +21,15 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Algorithms.CMAEvolutionStrategy {
   [Item("CMA Equal-weighted Recombinator", "Calculates weighted mean using equal weights.")]
-  [StorableClass]
+  [StorableType("989FE031-C410-4435-B5F5-17A22C4A97BC")]
   public class CMAEqualweightedRecombinator : CMARecombinator {
 
     [StorableConstructor]
-    protected CMAEqualweightedRecombinator(bool deserializing) : base(deserializing) { }
+    protected CMAEqualweightedRecombinator(StorableConstructorFlag _) : base(_) { }
     protected CMAEqualweightedRecombinator(CMAEqualweightedRecombinator original, Cloner cloner) : base(original, cloner) { }
     public CMAEqualweightedRecombinator() : base() { }
 

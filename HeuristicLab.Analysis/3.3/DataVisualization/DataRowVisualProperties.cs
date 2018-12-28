@@ -23,13 +23,13 @@ using System;
 using System.ComponentModel;
 using System.Drawing;
 using HeuristicLab.Common;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Analysis {
   /// <summary>
   /// Visual properties of a DataRow.
   /// </summary>
-  [StorableClass]
+  [StorableType("3B28F24F-5CA7-40C2-A81C-65FCAF5B2C66")]
   public class DataRowVisualProperties : DeepCloneable, INotifyPropertyChanged {
     #region ChartType
     public enum DataRowChartType {
@@ -232,7 +232,7 @@ namespace HeuristicLab.Analysis {
     #endregion
 
     [StorableConstructor]
-    protected DataRowVisualProperties(bool deserializing) : base() { }
+    protected DataRowVisualProperties(StorableConstructorFlag _) { }
     protected DataRowVisualProperties(DataRowVisualProperties original, Cloner cloner)
       : base(original, cloner) {
       this.chartType = original.chartType;

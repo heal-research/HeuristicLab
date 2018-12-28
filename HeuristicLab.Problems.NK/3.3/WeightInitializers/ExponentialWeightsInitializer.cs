@@ -23,14 +23,14 @@ using System;
 using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.NK {
   [Item("ExponentialWeightsInitializer", "Assigns exponentially increasing weights.")]
-  [StorableClass]
+  [StorableType("6F927828-8292-49E6-95CB-F4CFA97018CA")]
   public sealed class ExponentialWeightsInitializer : ParameterizedNamedItem, IWeightsInitializer {
     [StorableConstructor]
-    private ExponentialWeightsInitializer(bool deserializing) : base(deserializing) { }
+    private ExponentialWeightsInitializer(StorableConstructorFlag _) : base(_) { }
     private ExponentialWeightsInitializer(ExponentialWeightsInitializer original, Cloner cloner)
       : base(original, cloner) {
     }

@@ -26,7 +26,6 @@ using System.Windows.Forms;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
-using HeuristicLab.Optimization.Views;
 
 namespace HeuristicLab.Problems.VehicleRouting.Views {
   [View("VRPProblemInstance View")]

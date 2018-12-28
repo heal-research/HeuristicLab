@@ -27,11 +27,11 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Analysis {
   [Item("QualityPerEvaluationsAnalyzer", @"Creates a plot of the solution quality with respect to the number of evaluated solutions.")]
-  [StorableClass]
+  [StorableType("51790BC2-9851-4234-93EF-DF1E092F4BF0")]
   public class QualityPerEvaluationsAnalyzer : SingleSuccessorOperator, IAnalyzer, ISingleObjectiveOperator {
     public virtual bool EnabledByDefault {
       get { return false; }
@@ -54,7 +54,7 @@ namespace HeuristicLab.Analysis {
     }
 
     [StorableConstructor]
-    protected QualityPerEvaluationsAnalyzer(bool deserializing) : base(deserializing) { }
+    protected QualityPerEvaluationsAnalyzer(StorableConstructorFlag _) : base(_) { }
     protected QualityPerEvaluationsAnalyzer(QualityPerEvaluationsAnalyzer original, Cloner cloner) : base(original, cloner) { }
     public QualityPerEvaluationsAnalyzer()
       : base() {

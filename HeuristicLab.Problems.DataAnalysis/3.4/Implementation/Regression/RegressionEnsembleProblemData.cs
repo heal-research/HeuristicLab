@@ -24,10 +24,10 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  [StorableClass]
+  [StorableType("CB105C71-FA47-4FFC-BF56-57B6BB2E0BC7")]
   [Item("RegressionEnsembleProblemData", "Represents an item containing all data defining a regression problem.")]
   public sealed class RegressionEnsembleProblemData : RegressionProblemData {
 
@@ -61,7 +61,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     [StorableConstructor]
-    private RegressionEnsembleProblemData(bool deserializing) : base(deserializing) { }
+    private RegressionEnsembleProblemData(StorableConstructorFlag _) : base(_) { }
     private RegressionEnsembleProblemData(RegressionEnsembleProblemData original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       if (this == emptyProblemData) return emptyProblemData;

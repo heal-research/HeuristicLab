@@ -19,7 +19,6 @@
  */
 #endregion
 
-using System;
 
 namespace HeuristicLab.Core {
   public interface IConstrainedValueParameter<T> : IValueParameter<T> where T : class, IItem {

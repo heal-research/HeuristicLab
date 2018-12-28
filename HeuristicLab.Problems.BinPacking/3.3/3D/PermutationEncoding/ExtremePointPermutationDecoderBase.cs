@@ -23,15 +23,15 @@ using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.BinPacking3D {
   [Item("Extreme-point Permutation Decoder (3d) Base", "Base class for decoders")]
-  [StorableClass]
+  [StorableType("CF1A3362-B650-419D-A5C0-ADB9AFFCCC56")]
   public abstract class ExtremePointPermutationDecoderBase : Item, IDecoder<Permutation> {
 
     [StorableConstructor]
-    protected ExtremePointPermutationDecoderBase(bool deserializing) : base(deserializing) { }
+    protected ExtremePointPermutationDecoderBase(StorableConstructorFlag _) : base(_) { }
     protected ExtremePointPermutationDecoderBase(ExtremePointPermutationDecoderBase original, Cloner cloner)
       : base(original, cloner) {
     }

@@ -24,10 +24,10 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
-  [StorableClass]
+  [StorableType("B359EC1D-0EAE-4800-9502-133A280CE8B0")]
   [Item(Name = "CovarianceConst",
     Description = "Constant covariance function for Gaussian processes.")]
   public sealed class CovarianceConst : ParameterizedNamedItem, ICovarianceFunction {
@@ -38,8 +38,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       get { return ScaleParameter.Value != null; }
     }
     [StorableConstructor]
-    private CovarianceConst(bool deserializing)
-      : base(deserializing) {
+    private CovarianceConst(StorableConstructorFlag _) : base(_) {
     }
 
     private CovarianceConst(CovarianceConst original, Cloner cloner)

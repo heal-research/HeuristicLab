@@ -24,14 +24,14 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Operators {
   /// <summary>
   /// An operator which compares two items.
   /// </summary>
   [Item("Comparator", "An operator which compares two items.")]
-  [StorableClass]
+  [StorableType("21C6129E-1D5C-43BB-8E6D-1F1DD5C2E995")]
   public sealed class Comparator : SingleSuccessorOperator {
     public LookupParameter<IItem> LeftSideParameter {
       get { return (LookupParameter<IItem>)Parameters["LeftSide"]; }
@@ -51,7 +51,7 @@ namespace HeuristicLab.Operators {
     }
 
     [StorableConstructor]
-    private Comparator(bool deserializing) : base(deserializing) { }
+    private Comparator(StorableConstructorFlag _) : base(_) { }
     private Comparator(Comparator original, Cloner cloner)
       : base(original, cloner) {
     }

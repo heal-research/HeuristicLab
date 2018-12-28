@@ -25,7 +25,7 @@ using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.Persistence.Auxiliary;
 using HeuristicLab.Persistence.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Persistence.Interfaces;
 
 namespace HeuristicLab.Persistence.Default.CompositeSerializers {
@@ -81,7 +81,7 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers {
     }
 
     [StorableConstructor]
-    private CompactNumberArray2StringSerializer(bool deserializing) { }
+    private CompactNumberArray2StringSerializer(StorableConstructorFlag _) { }
     public CompactNumberArray2StringSerializer() { }
 
     public const int SPLIT_THRESHOLD = 1024 * 1024;

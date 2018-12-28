@@ -25,7 +25,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Selection;
 
 namespace HeuristicLab.Algorithms.GeneticAlgorithm {
@@ -33,7 +33,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
   /// An operator which represents the main loop of a genetic algorithm.
   /// </summary>
   [Item("GeneticAlgorithmMainLoop", "An operator which represents the main loop of a genetic algorithm.")]
-  [StorableClass]
+  [StorableType("890C1856-16C9-45F0-A0DD-67A152A70D28")]
   public sealed class GeneticAlgorithmMainLoop : AlgorithmOperator {
     #region Parameter properties
     public ValueLookupParameter<IRandom> RandomParameter {
@@ -91,7 +91,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
     #endregion
 
     [StorableConstructor]
-    private GeneticAlgorithmMainLoop(bool deserializing) : base(deserializing) { }
+    private GeneticAlgorithmMainLoop(StorableConstructorFlag _) : base(_) { }
     private GeneticAlgorithmMainLoop(GeneticAlgorithmMainLoop original, Cloner cloner)
       : base(original, cloner) {
     }

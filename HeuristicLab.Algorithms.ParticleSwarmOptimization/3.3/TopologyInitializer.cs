@@ -25,11 +25,11 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization; 
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
   [Item("TopologyInitializer", "Groups the particles into neighborhoods according to a certain strategy.")]
-  [StorableClass]
+  [StorableType("B1D32055-D844-4163-9D89-1423CCE2B4C3")]
   public abstract class TopologyInitializer : SingleSuccessorOperator, ITopologyInitializer {
     public override bool CanChangeName {
       get { return false; }
@@ -46,7 +46,7 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
 
     #region Construction & Cloning
     [StorableConstructor]
-    protected TopologyInitializer(bool deserializing) : base(deserializing) { }
+    protected TopologyInitializer(StorableConstructorFlag _) : base(_) { }
     protected TopologyInitializer(TopologyInitializer original, Cloner cloner) : base(original, cloner) { }
     
     public TopologyInitializer() {

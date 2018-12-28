@@ -22,9 +22,9 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
-  [StorableClass]
+  [StorableType("640A38A9-CDEE-4928-BC4A-B69AD2328FB8")]
   [Item("Logarithm", "Symbol that represents the logarithm function.")]
   public sealed class Logarithm : Symbol {
     private const int minimumArity = 1;
@@ -38,7 +38,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     [StorableConstructor]
-    private Logarithm(bool deserializing) : base(deserializing) { }
+    private Logarithm(StorableConstructorFlag _) : base(_) { }
     private Logarithm(Logarithm original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new Logarithm(this, cloner);

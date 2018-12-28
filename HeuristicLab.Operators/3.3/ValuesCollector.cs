@@ -22,14 +22,14 @@
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Operators {
   /// <summary>
   /// An operator which collects the actual values of parameters.
   /// </summary>
   [Item("ValuesCollector", "An operator which collects the actual values of parameters.")]
-  [StorableClass]
+  [StorableType("83F958A5-AE91-44C9-B329-BC9A36DC4E40")]
   public abstract class ValuesCollector : SingleSuccessorOperator, IOperator {
     [Storable]
     private ParameterCollection collectedValues;
@@ -38,7 +38,7 @@ namespace HeuristicLab.Operators {
     }
 
     [StorableConstructor]
-    protected ValuesCollector(bool deserializing) : base(deserializing) { }
+    protected ValuesCollector(StorableConstructorFlag _) : base(_) { }
     protected ValuesCollector(ValuesCollector original, Cloner cloner)
       : base(original, cloner) {
       this.collectedValues = cloner.Clone<ParameterCollection>(original.collectedValues);

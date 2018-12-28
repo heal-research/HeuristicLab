@@ -24,13 +24,13 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.VehicleRouting.Encodings.General;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaStochasticIntraRouteInversionMultiMoveGenerator", "Generates multiple random intra route inversion moves from a given VRP encoding.  It is implemented as described in Alba, E. and Dorronsoro, B. (2004). Solving the Vehicle Routing Problem by Using Cellular Genetic Algorithms.")]
-  [StorableClass]
+  [StorableType("16DCDE21-1817-467B-B3E2-06BEF35541BD")]
   public sealed class AlbaStochasticIntraRouteInversionMultiMoveGenerator : AlbaIntraRouteInversionMoveGenerator, IStochasticOperator,
     IMultiMoveGenerator, IAlbaIntraRouteInversionMoveOperator, IMultiVRPMoveGenerator {
     public ILookupParameter<IRandom> RandomParameter {
@@ -42,7 +42,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
     }
 
     [StorableConstructor]
-    private AlbaStochasticIntraRouteInversionMultiMoveGenerator(bool deserializing) : base(deserializing) { }
+    private AlbaStochasticIntraRouteInversionMultiMoveGenerator(StorableConstructorFlag _) : base(_) { }
 
     public AlbaStochasticIntraRouteInversionMultiMoveGenerator()
       : base() {

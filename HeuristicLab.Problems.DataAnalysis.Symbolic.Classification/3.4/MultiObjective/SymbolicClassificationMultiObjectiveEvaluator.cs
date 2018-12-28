@@ -20,13 +20,13 @@
 #endregion
 
 using HeuristicLab.Common;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
-  [StorableClass]
+  [StorableType("5AC365B5-2F64-4F10-8BD3-E98790E8F3C4")]
   public abstract class SymbolicClassificationMultiObjectiveEvaluator : SymbolicDataAnalysisMultiObjectiveEvaluator<IClassificationProblemData>, ISymbolicClassificationMultiObjectiveEvaluator {
     [StorableConstructor]
-    protected SymbolicClassificationMultiObjectiveEvaluator(bool deserializing) : base(deserializing) { }
+    protected SymbolicClassificationMultiObjectiveEvaluator(StorableConstructorFlag _) : base(_) { }
     protected SymbolicClassificationMultiObjectiveEvaluator(SymbolicClassificationMultiObjectiveEvaluator original, Cloner cloner)
       : base(original, cloner) {
     }

@@ -27,11 +27,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
   [Item("SymbolicClassificationSingleObjectiveOverfittingAnalyzer", "Calculates and tracks correlation of training and validation fitness of symbolic classification models.")]
-  [StorableClass]
+  [StorableType("551DB3E3-56F8-4E92-B538-D453DBA23D77")]
   public sealed class SymbolicClassificationSingleObjectiveOverfittingAnalyzer : SymbolicDataAnalysisSingleObjectiveValidationAnalyzer<ISymbolicClassificationSingleObjectiveEvaluator, IClassificationProblemData> {
     private const string TrainingValidationCorrelationParameterName = "Training and validation fitness correlation";
     private const string TrainingValidationCorrelationTableParameterName = "Training and validation fitness correlation table";
@@ -58,7 +58,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     #endregion
 
     [StorableConstructor]
-    private SymbolicClassificationSingleObjectiveOverfittingAnalyzer(bool deserializing) : base(deserializing) { }
+    private SymbolicClassificationSingleObjectiveOverfittingAnalyzer(StorableConstructorFlag _) : base(_) { }
     private SymbolicClassificationSingleObjectiveOverfittingAnalyzer(SymbolicClassificationSingleObjectiveOverfittingAnalyzer original, Cloner cloner) : base(original, cloner) { }
     public SymbolicClassificationSingleObjectiveOverfittingAnalyzer()
       : base() {

@@ -19,9 +19,7 @@
  */
 #endregion
 
-using System;
 using System.Linq;
-using System.Windows.Forms.DataVisualization.Charting;
 using HeuristicLab.MainForm;
 
 

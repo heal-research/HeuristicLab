@@ -26,11 +26,11 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
   [Item("ParticleSwarmOptimizationMainLoop", "An operator which represents the main loop of a particle swarm optimization algorithm.")]
-  [StorableClass]
+  [StorableType("C9824DCA-F791-4540-8EC8-F27C8FBC6BF5")]
   public class ParticleSwarmOptimizationMainLoop : AlgorithmOperator {
 
     #region Parameter Properties
@@ -84,7 +84,7 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
     }
 
     [StorableConstructor]
-    protected ParticleSwarmOptimizationMainLoop(bool deserializing) : base(deserializing) { }
+    protected ParticleSwarmOptimizationMainLoop(StorableConstructorFlag _) : base(_) { }
     protected ParticleSwarmOptimizationMainLoop(ParticleSwarmOptimizationMainLoop original, Cloner cloner)
       : base(original, cloner) {
     }

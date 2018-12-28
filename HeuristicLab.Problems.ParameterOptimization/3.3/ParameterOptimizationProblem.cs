@@ -29,12 +29,12 @@ using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.ParameterOptimization {
   [Item("Parameter Optimization Problem", "A base class for other problems for the optimization of a parameter vector.")]
-  [StorableClass]
+  [StorableType("B1F529FE-483C-4EF2-9306-2F6A0833EEAC")]
   public abstract class ParameterOptimizationProblem : SingleObjectiveHeuristicOptimizationProblem<IParameterVectorEvaluator, IRealVectorCreator>, IStorableContent {
     public string Filename { get; set; }
     private const string ProblemSizeParameterName = "ProblemSize";
@@ -78,7 +78,7 @@ namespace HeuristicLab.Problems.ParameterOptimization {
     protected StdDevStrategyVectorManipulator strategyVectorManipulator;
 
     [StorableConstructor]
-    protected ParameterOptimizationProblem(bool deserializing) : base(deserializing) { }
+    protected ParameterOptimizationProblem(StorableConstructorFlag _) : base(_) { }
     protected ParameterOptimizationProblem(ParameterOptimizationProblem original, Cloner cloner)
       : base(original, cloner) {
       strategyVectorCreator = cloner.Clone(original.strategyVectorCreator);

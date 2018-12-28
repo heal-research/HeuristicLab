@@ -22,10 +22,10 @@
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
-  [StorableClass]
+  [StorableType("D6D34B11-7618-4F8E-AFC3-3E42DAA1E38C")]
   [Item("IndexedItemDistance", "A distance wrapper for indexed items")]
   internal class IndexedItemDistance<T> : DistanceBase<IndexedItem<T>> {
     [Storable]
@@ -33,7 +33,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     #region HLConstructors & Cloning
     [StorableConstructor]
-    protected IndexedItemDistance(bool deserializing) : base(deserializing) { }
+    protected IndexedItemDistance(StorableConstructorFlag _) : base(_) { }
     protected IndexedItemDistance(IndexedItemDistance<T> original, Cloner cloner) : base(original, cloner) {
       dist = cloner.Clone(original.dist);
     }

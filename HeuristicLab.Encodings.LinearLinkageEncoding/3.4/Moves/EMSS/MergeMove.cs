@@ -22,18 +22,18 @@
 using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.LinearLinkageEncoding {
   [Item("Merge Move", "Merges two groups together.")]
-  [StorableClass]
+  [StorableType("4AC9ADD2-3825-4CFE-8074-6F3CA7251700")]
   public sealed class MergeMove : EMSSMove {
     [Storable]
     private int lastItemOfOtherGroup;
     public int LastItemOfOtherGroup { get { return lastItemOfOtherGroup; } }
     
     [StorableConstructor]
-    private MergeMove(bool deserializing) : base(deserializing) { }
+    private MergeMove(StorableConstructorFlag _) : base(_) { }
     private MergeMove(MergeMove original, Cloner cloner)
       : base(original, cloner) {
       lastItemOfOtherGroup = original.lastItemOfOtherGroup;

@@ -24,11 +24,11 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Selection {
   [Item("ConditionalSelector", "Selects sub-scopes where a certain boolean variable is true.")]
-  [StorableClass]
+  [StorableType("ACF05DDC-50DC-41CF-BD5D-CF89AD309A38")]
   public class ConditionalSelector : Selector {
     public ScopeTreeLookupParameter<BoolValue> ConditionParameter {
       get { return (ScopeTreeLookupParameter<BoolValue>)Parameters["Condition"]; }
@@ -43,7 +43,7 @@ namespace HeuristicLab.Selection {
     }
 
     [StorableConstructor]
-    protected ConditionalSelector(bool deserializing) : base(deserializing) { }
+    protected ConditionalSelector(StorableConstructorFlag _) : base(_) { }
     protected ConditionalSelector(ConditionalSelector original, Cloner cloner)
       : base(original, cloner) {
     }

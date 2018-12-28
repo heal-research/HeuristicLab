@@ -26,10 +26,10 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
-  [StorableClass]
+  [StorableType("62C25AD5-F41F-4CC2-B589-A92CCEE7AC88")]
   [Item(Name = "CovariancePiecewisePolynomial",
     Description = "Piecewise polynomial covariance function with compact support for Gaussian processes.")]
   public sealed class CovariancePiecewisePolynomial : ParameterizedNamedItem, ICovarianceFunction {
@@ -52,8 +52,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     [StorableConstructor]
-    private CovariancePiecewisePolynomial(bool deserializing)
-      : base(deserializing) {
+    private CovariancePiecewisePolynomial(StorableConstructorFlag _) : base(_) {
     }
 
     private CovariancePiecewisePolynomial(CovariancePiecewisePolynomial original, Cloner cloner)

@@ -22,11 +22,11 @@
 using System.IO;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Data {
   [Item("PathValue", "Represents a path.")]
-  [StorableClass]
+  [StorableType("293B9A98-76C4-47E1-900D-67B8480BCBD6")]
   public abstract class PathValue : Item {
 
     [Storable]
@@ -45,7 +45,7 @@ namespace HeuristicLab.Data {
     }
 
     [StorableConstructor]
-    protected PathValue(bool deserializing) : base(deserializing) { }
+    protected PathValue(StorableConstructorFlag _) : base(_) { }
     protected PathValue(PathValue original, Cloner cloner)
       : base(original, cloner) {
       stringValue = cloner.Clone(original.stringValue);

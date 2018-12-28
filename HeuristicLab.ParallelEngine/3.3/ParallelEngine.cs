@@ -25,14 +25,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.ParallelEngine {
   /// <summary>
   /// Represents an engine that executes its steps in parallel (if possible) using multiple threads.
   /// This engine is suitable for parallel processing on shared memory systems which provide multiple cores.
   /// </summary>
-  [StorableClass]
+  [StorableType("3B3366ED-22C5-4E4F-B307-E08FACCF0E20")]
   [Item("Parallel Engine", "Engine for parallel execution of algorithms using multiple threads (suitable for shared memory systems with multiple cores).")]
   public class ParallelEngine : Engine {
     private CancellationToken cancellationToken;
@@ -51,7 +51,7 @@ namespace HeuristicLab.ParallelEngine {
     }
 
     [StorableConstructor]
-    protected ParallelEngine(bool deserializing) : base(deserializing) { }
+    protected ParallelEngine(StorableConstructorFlag _) : base(_) { }
     protected ParallelEngine(ParallelEngine original, Cloner cloner)
       : base(original, cloner) {
       this.DegreeOfParallelism = original.DegreeOfParallelism;

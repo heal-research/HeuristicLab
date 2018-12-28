@@ -24,11 +24,11 @@ using System.Drawing;
 using System.Threading;
 using System.Threading.Tasks;
 using HeuristicLab.Common;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Core {
   [Item("Executable", "A base class for executables.")]
-  [StorableClass]
+  [StorableType("17DFB815-4CF8-49EB-BC4A-98059064DB31")]
   public abstract class Executable : Item, IExecutable {
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Event; }
@@ -67,7 +67,7 @@ namespace HeuristicLab.Core {
     }
 
     [StorableConstructor]
-    protected Executable(bool deserializing) : base(deserializing) { }
+    protected Executable(StorableConstructorFlag _) : base(_) { }
     protected Executable(Executable original, Cloner cloner)
       : base(original, cloner) {
       executionState = original.executionState;

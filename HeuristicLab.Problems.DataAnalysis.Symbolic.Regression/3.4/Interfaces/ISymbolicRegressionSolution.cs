@@ -20,7 +20,6 @@
 #endregion
 
 
-using HeuristicLab.Problems.DataAnalysis.Symbolic;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   public interface ISymbolicRegressionSolution : IRegressionSolution, ISymbolicDataAnalysisSolution {
     new ISymbolicRegressionModel Model { get; }

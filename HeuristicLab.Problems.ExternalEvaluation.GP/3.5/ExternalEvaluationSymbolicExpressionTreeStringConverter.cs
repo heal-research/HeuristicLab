@@ -23,16 +23,16 @@ using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.ExternalEvaluation.GP {
   [Item("SymbolicExpressionTreeStringConverter", "Converts a symbolic expression tree into a string representation by iterating over all nodes in a prefix way. The string is added to the SolutionMessage's StringVars.")]
-  [StorableClass]
+  [StorableType("0C11DC1E-D6A3-4BDB-A236-132D855F3A45")]
   public class SymbolicExpressionTreeStringConverter : SymbolicExpressionTreeConverter {
     private ExternalEvaluationSymbolicExpressionTreeStringFormatter formatter;
 
     [StorableConstructor]
-    protected SymbolicExpressionTreeStringConverter(bool deserializing) : base(deserializing) { }
+    protected SymbolicExpressionTreeStringConverter(StorableConstructorFlag _) : base(_) { }
     protected SymbolicExpressionTreeStringConverter(SymbolicExpressionTreeStringConverter original, Cloner cloner)
       : base(original, cloner) {
       formatter = new ExternalEvaluationSymbolicExpressionTreeStringFormatter();

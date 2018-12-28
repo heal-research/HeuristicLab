@@ -19,7 +19,6 @@
  */
 #endregion
 
-using System;
 using System.Collections.Generic;
 namespace HeuristicLab.Problems.DataAnalysis {
   public interface IDiscriminantFunctionClassificationSolution : IClassificationSolution {

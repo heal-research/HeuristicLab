@@ -23,13 +23,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Core {
-  [StorableClass]
+  [StorableType("02F8AFE2-BF67-4378-9E38-B18FF4D63609")]
   public abstract class Constraint : Item, IConstraint {
     [StorableConstructor]
-    protected Constraint(bool deserializing) : base(deserializing) { }
+    protected Constraint(StorableConstructorFlag _) : base(_) { }
     protected Constraint(Constraint original, Cloner cloner)
       : base(original, cloner) {
       constrainedValue = null;  //mkommend: intentionally set to null;

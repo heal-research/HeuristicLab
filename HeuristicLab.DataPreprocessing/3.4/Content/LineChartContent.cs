@@ -22,11 +22,11 @@
 using System.Drawing;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.DataPreprocessing {
   [Item("Line Chart", "Represents the line chart grid.")]
-  [StorableClass]
+  [StorableType("F874E5FD-27A8-471F-91D5-598392655FA4")]
   public class LineChartContent : PreprocessingChartContent {
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Performance; }
@@ -51,8 +51,7 @@ namespace HeuristicLab.DataPreprocessing {
     }
 
     [StorableConstructor]
-    protected LineChartContent(bool deserializing)
-      : base(deserializing) { }
+    protected LineChartContent(StorableConstructorFlag _) : base(_) { }
     #endregion
   }
 }

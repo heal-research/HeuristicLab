@@ -33,7 +33,7 @@ using HeuristicLab.Encodings.IntegerVectorEncoding;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
@@ -41,7 +41,7 @@ using HeuristicLab.Problems.GrammaticalEvolution.Mappers;
 using HeuristicLab.Problems.Instances;
 
 namespace HeuristicLab.Problems.GrammaticalEvolution {
-  [StorableClass]
+  [StorableType("E31AC1E8-590D-4D65-883F-3113544B6C91")]
   public abstract class GESymbolicDataAnalysisProblem<T, U, V> : HeuristicOptimizationProblem<U, V>, IDataAnalysisProblem<T>,
                                                                  IGESymbolicDataAnalysisProblem, IStorableContent,
                                                                  IProblemInstanceConsumer<T>, IProblemInstanceExporter<T>
@@ -149,7 +149,7 @@ namespace HeuristicLab.Problems.GrammaticalEvolution {
     #endregion
 
     [StorableConstructor]
-    protected GESymbolicDataAnalysisProblem(bool deserializing) : base(deserializing) { }
+    protected GESymbolicDataAnalysisProblem(StorableConstructorFlag _) : base(_) { }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       RegisterEventHandlers();

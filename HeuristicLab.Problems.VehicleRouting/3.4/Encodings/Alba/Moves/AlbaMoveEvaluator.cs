@@ -21,15 +21,15 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.VehicleRouting.Encodings.General;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaMoveEvaluator", "Evaluates an Alba VRP move.")]
-  [StorableClass]
+  [StorableType("7658EE50-9E2E-4742-AE23-DC3C4609A807")]
   public abstract class AlbaMoveEvaluator : VRPMoveEvaluator, IAlbaOperator {
     [StorableConstructor]
-    protected AlbaMoveEvaluator(bool deserializing) : base(deserializing) { }
+    protected AlbaMoveEvaluator(StorableConstructorFlag _) : base(_) { }
 
     public AlbaMoveEvaluator()
       : base() {

@@ -24,14 +24,14 @@ using HeuristicLab.Core;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   /// <summary>
   /// A base class for permutation manipulation operators.
   /// </summary>
   [Item("PermutationManipulator", "A base class for permutation manipulation operators.")]
-  [StorableClass]
+  [StorableType("436622C7-1F84-4A07-B77A-019DA2A2DFC9")]
   public abstract class PermutationManipulator : InstrumentedOperator, IPermutationManipulator, IStochasticOperator {
     public override bool CanChangeName {
       get { return false; }
@@ -45,7 +45,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     }
 
     [StorableConstructor]
-    protected PermutationManipulator(bool deserializing) : base(deserializing) { }
+    protected PermutationManipulator(StorableConstructorFlag _) : base(_) { }
     protected PermutationManipulator(PermutationManipulator original, Cloner cloner) : base(original, cloner) { }
     protected PermutationManipulator()
       : base() {

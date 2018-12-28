@@ -27,11 +27,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis {
   [Item("SymbolicTimeSeriesPrognosisSingleObjectiveOverfittingAnalyzer", "Calculates and tracks correlation of training and validation fitness of symbolic time-series prognosis models.")]
-  [StorableClass]
+  [StorableType("8F5FCFEA-109F-4AE1-89C8-5A91064CB1A7")]
   public sealed class SymbolicTimeSeriesPrognosisSingleObjectiveOverfittingAnalyzer : SymbolicDataAnalysisSingleObjectiveValidationAnalyzer<ISymbolicTimeSeriesPrognosisSingleObjectiveEvaluator, ITimeSeriesPrognosisProblemData> {
     private const string TrainingValidationCorrelationParameterName = "Training and validation fitness correlation";
     private const string TrainingValidationCorrelationTableParameterName = "Training and validation fitness correlation table";
@@ -58,7 +58,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis {
     #endregion
 
     [StorableConstructor]
-    private SymbolicTimeSeriesPrognosisSingleObjectiveOverfittingAnalyzer(bool deserializing) : base(deserializing) { }
+    private SymbolicTimeSeriesPrognosisSingleObjectiveOverfittingAnalyzer(StorableConstructorFlag _) : base(_) { }
     private SymbolicTimeSeriesPrognosisSingleObjectiveOverfittingAnalyzer(SymbolicTimeSeriesPrognosisSingleObjectiveOverfittingAnalyzer original, Cloner cloner) : base(original, cloner) { }
     public SymbolicTimeSeriesPrognosisSingleObjectiveOverfittingAnalyzer()
       : base() {

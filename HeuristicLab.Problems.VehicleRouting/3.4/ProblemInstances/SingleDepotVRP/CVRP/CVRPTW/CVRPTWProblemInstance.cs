@@ -27,14 +27,14 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Problems.VehicleRouting.Variants;
 
 namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
   [Item("CVRPTWProblemInstance", "Represents a single depot CVRPTW instance.")]
-  [StorableClass]
+  [StorableType("2138BE6C-058E-4003-8578-55E8DE3706C7")]
   public class CVRPTWProblemInstance : CVRPProblemInstance, ITimeWindowedProblemInstance {
     protected IValueParameter<DoubleArray> ReadyTimeParameter {
       get { return (IValueParameter<DoubleArray>)Parameters["ReadyTime"]; }
@@ -106,7 +106,7 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
     }
 
     [StorableConstructor]
-    protected CVRPTWProblemInstance(bool deserializing) : base(deserializing) { }
+    protected CVRPTWProblemInstance(StorableConstructorFlag _) : base(_) { }
 
     public CVRPTWProblemInstance() {
       Parameters.Add(new ValueParameter<DoubleArray>("ReadyTime", "The ready time of each customer.", new DoubleArray()));

@@ -20,18 +20,18 @@
 #endregion
 
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Common;
 using System.Collections.Generic;
 using HeuristicLab.Encodings.PermutationEncoding;
 
 namespace HeuristicLab.Problems.BinPacking2D {
   [Item("Bottom-left Permutation Decoder (2d)", "Decodes the permutation and creates a packing solution candidate")]
-  [StorableClass]
+  [StorableType("BD0B1034-46EC-430A-B971-258FACC9A39B")]
   public class BottomLeftPermutationDecoder : Item, IDecoder<Permutation> {
 
     [StorableConstructor]
-    protected BottomLeftPermutationDecoder(bool deserializing) : base(deserializing) { }
+    protected BottomLeftPermutationDecoder(StorableConstructorFlag _) : base(_) { }
     protected BottomLeftPermutationDecoder(BottomLeftPermutationDecoder original, Cloner cloner)
       : base(original, cloner) {
     }

@@ -23,14 +23,14 @@ using System;
 using System.Drawing;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Parameters {
   /// <summary>
   /// A parameter whose value is defined in the parameter itself or is null.
   /// </summary>
   [Item("OptionalValueParameter", "A parameter whose value is defined in the parameter itself or is null.")]
-  [StorableClass]
+  [StorableType("1A825EE0-3A72-458C-B621-7CE989EE2F0D")]
   public class OptionalValueParameter<T> : Parameter, IValueParameter<T> where T : class, IItem {
     public override Image ItemImage {
       get {
@@ -103,7 +103,7 @@ namespace HeuristicLab.Parameters {
 
     #region Constructors
     [StorableConstructor]
-    protected OptionalValueParameter(bool deserializing) : base(deserializing) { }
+    protected OptionalValueParameter(StorableConstructorFlag _) : base(_) { }
     protected OptionalValueParameter(OptionalValueParameter<T> original, Cloner cloner)
       : base(original, cloner) {
       value = cloner.Clone(original.value);

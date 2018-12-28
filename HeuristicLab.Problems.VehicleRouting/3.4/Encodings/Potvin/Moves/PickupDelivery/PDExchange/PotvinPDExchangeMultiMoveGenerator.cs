@@ -25,13 +25,13 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.VehicleRouting.Encodings.General;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinPDExchangeMultiMoveGenerator", "Generates exchange moves from a given PDP encoding.")]
-  [StorableClass]
+  [StorableType("7D0F0E92-66D9-49F9-AFDC-B75A9A261E55")]
   public sealed class PotvinPDExchangeMultiMoveGenerator : PotvinPDExchangeMoveGenerator, IMultiMoveGenerator, IMultiVRPMoveGenerator {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
@@ -46,7 +46,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
     }
 
     [StorableConstructor]
-    private PotvinPDExchangeMultiMoveGenerator(bool deserializing) : base(deserializing) { }
+    private PotvinPDExchangeMultiMoveGenerator(StorableConstructorFlag _) : base(_) { }
 
     public PotvinPDExchangeMultiMoveGenerator()
       : base() {

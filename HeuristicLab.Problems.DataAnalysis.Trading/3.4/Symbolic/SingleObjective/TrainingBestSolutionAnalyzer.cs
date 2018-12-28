@@ -23,7 +23,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Trading.Symbolic {
@@ -31,7 +31,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Trading.Symbolic {
   /// An operator that analyzes the training best symbolic trading solution for single objective symbolic trading problems.
   /// </summary>
   [Item("Training-best Solution Analyzer (symbolic trading)", "An operator that analyzes the training best symbolic trading solution for single objective symbolic trading problems.")]
-  [StorableClass]
+  [StorableType("001D440F-F70F-4798-BEA9-53AAB8D33E94")]
   public sealed class TrainingBestSolutionAnalyzer : SymbolicDataAnalysisSingleObjectiveTrainingBestSolutionAnalyzer<ISolution>,
   ISymbolicDataAnalysisInterpreterOperator {
     private const string ProblemDataParameterName = "ProblemData";
@@ -46,7 +46,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Trading.Symbolic {
     #endregion
 
     [StorableConstructor]
-    private TrainingBestSolutionAnalyzer(bool deserializing) : base(deserializing) { }
+    private TrainingBestSolutionAnalyzer(StorableConstructorFlag _) : base(_) { }
     private TrainingBestSolutionAnalyzer(TrainingBestSolutionAnalyzer original, Cloner cloner) : base(original, cloner) { }
     public TrainingBestSolutionAnalyzer()
       : base() {

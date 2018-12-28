@@ -29,11 +29,11 @@ using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Algorithms.CMAEvolutionStrategy {
   [Item("CMAAnalyzer", "Analyzes the development of strategy parameters and visualizes the performance of CMA-ES.")]
-  [StorableClass]
+  [StorableType("7E36BAC4-D2A5-405D-B46F-FF91BC592D43")]
   public sealed class CMAAnalyzer : SingleSuccessorOperator, IAnalyzer, ISingleObjectiveOperator {
 
     public bool EnabledByDefault {
@@ -59,7 +59,7 @@ namespace HeuristicLab.Algorithms.CMAEvolutionStrategy {
     #endregion
 
     [StorableConstructor]
-    private CMAAnalyzer(bool deserializing) : base(deserializing) { }
+    private CMAAnalyzer(StorableConstructorFlag _) : base(_) { }
     private CMAAnalyzer(CMAAnalyzer original, Cloner cloner) : base(original, cloner) { }
     public CMAAnalyzer()
       : base() {

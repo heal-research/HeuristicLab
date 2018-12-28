@@ -24,11 +24,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Optimization.Operators {
   [Item("QualityComparator", "Compares two qualities and creates a boolean flag that indicates if the left side is better than the right side.")]
-  [StorableClass]
+  [StorableType("ACCB56BB-699C-493D-8832-2E3B1D6AEE97")]
   public class QualityComparator : SingleSuccessorOperator, IQualityComparator {
     public ILookupParameter<DoubleValue> LeftSideParameter {
       get { return (ILookupParameter<DoubleValue>)Parameters["LeftSide"]; }
@@ -44,7 +44,7 @@ namespace HeuristicLab.Optimization.Operators {
     }
 
     [StorableConstructor]
-    protected QualityComparator(bool deserializing) : base(deserializing) { }
+    protected QualityComparator(StorableConstructorFlag _) : base(_) { }
     protected QualityComparator(QualityComparator original, Cloner cloner) : base(original, cloner) { }
     public QualityComparator()
       : base() {

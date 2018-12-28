@@ -23,14 +23,14 @@ using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Data {
   [Item("IntMatrix", "Represents a matrix of integer values.")]
-  [StorableClass]
+  [StorableType("DF97EDF8-EF27-4FA2-988A-1C7FA05C4525")]
   public class IntMatrix : ValueTypeMatrix<int>, IStringConvertibleMatrix {
     [StorableConstructor]
-    protected IntMatrix(bool deserializing) : base(deserializing) { }
+    protected IntMatrix(StorableConstructorFlag _) : base(_) { }
     protected IntMatrix(IntMatrix original, Cloner cloner)
       : base(original, cloner) {
     }

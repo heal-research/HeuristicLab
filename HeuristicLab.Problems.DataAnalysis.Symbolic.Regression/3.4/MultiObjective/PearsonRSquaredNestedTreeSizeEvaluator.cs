@@ -26,14 +26,14 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   [Item("Pearson R² & Nested Tree size Evaluator", "Calculates the Pearson R² and the nested tree size of a symbolic regression solution.")]
-  [StorableClass]
+  [StorableType("37486F27-9BA0-4C89-BB2F-6823E4FB317A")]
   public class PearsonRSquaredNestedTreeSizeEvaluator : SymbolicRegressionMultiObjectiveEvaluator {
     [StorableConstructor]
-    protected PearsonRSquaredNestedTreeSizeEvaluator(bool deserializing) : base(deserializing) { }
+    protected PearsonRSquaredNestedTreeSizeEvaluator(StorableConstructorFlag _) : base(_) { }
     protected PearsonRSquaredNestedTreeSizeEvaluator(PearsonRSquaredNestedTreeSizeEvaluator original, Cloner cloner)
       : base(original, cloner) {
     }

@@ -22,13 +22,13 @@
 using System;
 using System.Collections.Generic;
 using HeuristicLab.Common;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
-  [StorableClass]
+  [StorableType("ADB1DF1C-BE39-49F7-BADD-978F495EEA4D")]
   internal sealed class SymbolicExpressionTreeGrammar : SymbolicExpressionGrammarBase, ISymbolicExpressionTreeGrammar {
     [StorableConstructor]
-    private SymbolicExpressionTreeGrammar(bool deserializing) : base(deserializing) { }
+    private SymbolicExpressionTreeGrammar(StorableConstructorFlag _) : base(_) { }
     private SymbolicExpressionTreeGrammar(SymbolicExpressionTreeGrammar original, Cloner cloner)
       : base(original, cloner) {
       this.grammar = original.grammar;

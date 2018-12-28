@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HEAL.Fossil;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
@@ -39,7 +40,8 @@ namespace HeuristicLab.Problems.Knapsack {
   internal sealed class KnapsackSimilarityCalculator : SingleObjectiveSolutionSimilarityCalculator {
     protected override bool IsCommutative { get { return true; } }
 
-    private KnapsackSimilarityCalculator(bool deserializing) : base(deserializing) { }
+    [StorableConstructor]
+    private KnapsackSimilarityCalculator(StorableConstructorFlag _) : base(_) { }
     private KnapsackSimilarityCalculator(KnapsackSimilarityCalculator original, Cloner cloner) : base(original, cloner) { }
     public KnapsackSimilarityCalculator() : base() { }
 

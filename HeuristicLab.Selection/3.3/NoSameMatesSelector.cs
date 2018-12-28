@@ -28,7 +28,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Selection {
   /// <summary>
@@ -37,7 +37,7 @@ namespace HeuristicLab.Selection {
   /// The 2005 IEEE Congress on Evolutionary Computation, pp. 912-919, 2005."
   /// </summary>
   [Item("NoSameMatesSelector", "A selector which tries to select two parents which differ in quality as described in: \"S. Gustafson, E. K. Burke, N. Krasnogor, On improving genetic programming for symbolic regression, The 2005 IEEE Congress on Evolutionary Computation, pp. 912-919, 2005.\"")]
-  [StorableClass]
+  [StorableType("51C70E5F-0CF4-4BE6-9454-AEAF9D13485A")]
   public class NoSameMatesSelector : StochasticSingleObjectiveSelector, ISingleObjectiveSelector {
     private const string SelectorParameterName = "Selector";
     private const string QualityDifferencePercentageParameterName = "QualityDifferencePercentage";
@@ -76,7 +76,7 @@ namespace HeuristicLab.Selection {
     #endregion
 
     [StorableConstructor]
-    protected NoSameMatesSelector(bool deserializing) : base(deserializing) { }
+    protected NoSameMatesSelector(StorableConstructorFlag _) : base(_) { }
     protected NoSameMatesSelector(NoSameMatesSelector original, Cloner cloner)
       : base(original, cloner) {
       RegisterParameterEventHandlers();

@@ -25,11 +25,11 @@ using System.Drawing;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.DataPreprocessing {
   [Item("Manipulation", "Represents the available manipulations on a data set.")]
-  [StorableClass]
+  [StorableType("42EE7A94-807F-482D-BE64-F98B05896B16")]
   public class ManipulationContent : PreprocessingContent, IViewShortcut {
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Method; }
@@ -48,8 +48,7 @@ namespace HeuristicLab.DataPreprocessing {
     }
 
     [StorableConstructor]
-    protected ManipulationContent(bool deserializing)
-      : base(deserializing) { }
+    protected ManipulationContent(StorableConstructorFlag _) : base(_) { }
     #endregion
 
     public List<int> RowsWithMissingValuesGreater(double percent) {

@@ -25,13 +25,13 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Analysis.QualityAnalysis {
   [Item("ScaledQualityDifferenceAnalyzer", @"Calculates the quality value relative to a certain range given with a minimum and a maximum value.
 The difference lies in the interval [0;1] if the range [min;max] is as large as the observed quality values, otherwise the difference will become < 0 or > 1.
 A value towards 0 always means that it's closer to the better fitness value, while a value towards 1 means that it's closer to the worse fitness value.")]
-  [StorableClass]
+  [StorableType("C0E9AE9C-06F8-4A5F-A726-6532F0E038CF")]
   public class ScaledQualityDifferenceAnalyzer : SingleSuccessorOperator, IAnalyzer, ISingleObjectiveOperator {
     public virtual bool EnabledByDefault {
       get { return true; }
@@ -57,7 +57,7 @@ A value towards 0 always means that it's closer to the better fitness value, whi
     }
 
     [StorableConstructor]
-    protected ScaledQualityDifferenceAnalyzer(bool deserializing) : base(deserializing) { }
+    protected ScaledQualityDifferenceAnalyzer(StorableConstructorFlag _) : base(_) { }
     protected ScaledQualityDifferenceAnalyzer(ScaledQualityDifferenceAnalyzer original, Cloner cloner) : base(original, cloner) { }
     public ScaledQualityDifferenceAnalyzer()
       : base() {

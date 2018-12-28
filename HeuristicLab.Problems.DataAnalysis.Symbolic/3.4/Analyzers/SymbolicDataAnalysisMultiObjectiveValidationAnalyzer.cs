@@ -26,14 +26,14 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   /// <summary>
   /// Abstract base class for symbolic data analysis analyzers that validate a solution on a separate data partition using the evaluator.
   /// </summary>
-  [StorableClass]
+  [StorableType("506B8D0E-891C-453B-842C-18CB33F5CE32")]
   public abstract class SymbolicDataAnalysisMultiObjectiveValidationAnalyzer<T, U> : SymbolicDataAnalysisMultiObjectiveAnalyzer,
     ISymbolicDataAnalysisValidationAnalyzer<T, U>
     where T : class, ISymbolicDataAnalysisMultiObjectiveEvaluator<U>
@@ -67,7 +67,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     #endregion
 
     [StorableConstructor]
-    protected SymbolicDataAnalysisMultiObjectiveValidationAnalyzer(bool deserializing) : base(deserializing) { }
+    protected SymbolicDataAnalysisMultiObjectiveValidationAnalyzer(StorableConstructorFlag _) : base(_) { }
     protected SymbolicDataAnalysisMultiObjectiveValidationAnalyzer(SymbolicDataAnalysisMultiObjectiveValidationAnalyzer<T, U> original, Cloner cloner)
       : base(original, cloner) {
     }

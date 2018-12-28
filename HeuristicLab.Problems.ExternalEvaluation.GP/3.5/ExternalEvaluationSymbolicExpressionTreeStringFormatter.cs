@@ -23,7 +23,7 @@ using System.Text;
 using System.Linq;
 using HeuristicLab.Core;
 using HeuristicLab.Common;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
 using System;
@@ -32,13 +32,13 @@ using System.Globalization;
 namespace HeuristicLab.Problems.ExternalEvaluation.GP {
 
   [Item("ExternalEvaluationSymbolicExpressionTreeStringFormatter", "A string formatter for symbolic expression trees for external evaluation.")]
-  [StorableClass]
+  [StorableType("6621B850-D3F2-4824-B6A8-19F4969AFB44")]
   public class ExternalEvaluationSymbolicExpressionTreeStringFormatter : NamedItem, ISymbolicExpressionTreeStringFormatter {
 
     public bool Indent { get; set; }
 
     [StorableConstructor]
-    protected ExternalEvaluationSymbolicExpressionTreeStringFormatter(bool deserializing) : base(deserializing) { }
+    protected ExternalEvaluationSymbolicExpressionTreeStringFormatter(StorableConstructorFlag _) : base(_) { }
     protected ExternalEvaluationSymbolicExpressionTreeStringFormatter(ExternalEvaluationSymbolicExpressionTreeStringFormatter original, Cloner cloner)
       : base(original, cloner) {
       Indent = original.Indent;

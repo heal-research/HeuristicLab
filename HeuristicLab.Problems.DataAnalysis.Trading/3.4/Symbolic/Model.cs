@@ -25,19 +25,19 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Trading.Symbolic {
   /// <summary>
   /// Represents a symbolic trading model
   /// </summary>
-  [StorableClass]
+  [StorableType("EDBE6BAD-B331-4301-AA8C-234196942DF4")]
   [Item(Name = "Model (symbolic trading)", Description = "Represents a symbolic trading model.")]
   public class Model : SymbolicDataAnalysisModel, IModel {
 
     [StorableConstructor]
-    protected Model(bool deserializing) : base(deserializing) { }
+    protected Model(StorableConstructorFlag _) : base(_) { }
     protected Model(Model original, Cloner cloner)
       : base(original, cloner) { }
     public Model(ISymbolicExpressionTree tree, ISymbolicDataAnalysisExpressionTreeInterpreter interpreter)

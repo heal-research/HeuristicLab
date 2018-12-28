@@ -21,7 +21,6 @@
 
 using HeuristicLab.Problems.Instances;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
-using System;
 
 namespace HeuristicLab.Problems.VehicleRouting.Interpreters {
   public struct VRPInstanceDescription {

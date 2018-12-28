@@ -25,11 +25,11 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.LinearLinkageEncoding {
   [Item("Maxgroups Linear Linkage Creator", "Creates a random linear linkage LLE encoded solution with a given maximum number of groups.")]
-  [StorableClass]
+  [StorableType("68BA2FF2-2493-404C-B044-D50AAC401CF1")]
   public sealed class MaxGroupsLinearLinkageCreator : LinearLinkageCreator {
 
     public IValueLookupParameter<IntValue> MaxGroupsParameter {
@@ -42,7 +42,7 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
     }
 
     [StorableConstructor]
-    private MaxGroupsLinearLinkageCreator(bool deserializing) : base(deserializing) { }
+    private MaxGroupsLinearLinkageCreator(StorableConstructorFlag _) : base(_) { }
     private MaxGroupsLinearLinkageCreator(MaxGroupsLinearLinkageCreator original, Cloner cloner) : base(original, cloner) { }
 
     public MaxGroupsLinearLinkageCreator() {

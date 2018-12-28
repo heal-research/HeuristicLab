@@ -27,14 +27,14 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Problems.VehicleRouting.Variants;
 
 namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
   [Item("MDCVRPPDTWProblemInstance", "Represents a multi depot CVRPPDTW instance.")]
-  [StorableClass]
+  [StorableType("A77F180E-8DE5-43E2-B9A4-313B5E2C5A06")]
   public class MDCVRPPDTWProblemInstance : MDCVRPTWProblemInstance, IPickupAndDeliveryProblemInstance {
     protected IValueParameter<IntArray> PickupDeliveryLocationParameter {
       get { return (IValueParameter<IntArray>)Parameters["PickupDeliveryLocation"]; }
@@ -90,7 +90,7 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
     }
 
     [StorableConstructor]
-    protected MDCVRPPDTWProblemInstance(bool deserializing) : base(deserializing) { }
+    protected MDCVRPPDTWProblemInstance(StorableConstructorFlag _) : base(_) { }
 
     public MDCVRPPDTWProblemInstance() {
       Parameters.Add(new ValueParameter<IntArray>("PickupDeliveryLocation", "The pickup and delivery location for each customer.", new IntArray()));

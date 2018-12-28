@@ -28,11 +28,11 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   [Item("MultiRealVectorManipulator", "Randomly selects and applies one of its manipulators every time it is called.")]
-  [StorableClass]
+  [StorableType("E52D11F1-D746-48F7-AFF2-0E029F651FC5")]
   public class MultiRealVectorManipulator : StochasticMultiBranch<IRealVectorManipulator>, IRealVectorManipulator, IStochasticOperator {
     public override bool CanChangeName {
       get { return false; }
@@ -49,7 +49,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     }
 
     [StorableConstructor]
-    protected MultiRealVectorManipulator(bool deserializing) : base(deserializing) { }
+    protected MultiRealVectorManipulator(StorableConstructorFlag _) : base(_) { }
     protected MultiRealVectorManipulator(MultiRealVectorManipulator original, Cloner cloner) : base(original, cloner) { }
     public MultiRealVectorManipulator()
       : base() {

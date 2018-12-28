@@ -22,7 +22,7 @@
 using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   /// <summary>
@@ -34,10 +34,10 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
   /// the positions. But then, instead of starting from the end of the copied interval, the missing values are copied from the start of the permutation in the order they occur.
   /// </remarks>
   [Item("OrderCrossover2", "An operator which performs an order crossover of two permutations. It is implemented as described in Affenzeller, M. et al. 2009. Genetic Algorithms and Genetic Programming - Modern Concepts and Practical Applications. CRC Press. p. 135.")]
-  [StorableClass]
+  [StorableType("9E9A828E-E853-43FD-A39B-F47D17BCE539")]
   public class OrderCrossover2 : PermutationCrossover {
     [StorableConstructor]
-    protected OrderCrossover2(bool deserializing) : base(deserializing) { }
+    protected OrderCrossover2(StorableConstructorFlag _) : base(_) { }
     protected OrderCrossover2(OrderCrossover2 original, Cloner cloner) : base(original, cloner) { }
     public OrderCrossover2() : base() { }
 

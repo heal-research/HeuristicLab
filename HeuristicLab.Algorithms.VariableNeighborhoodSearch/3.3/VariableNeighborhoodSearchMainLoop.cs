@@ -26,7 +26,7 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Selection;
 
 namespace HeuristicLab.Algorithms.VariableNeighborhoodSearch {
@@ -34,7 +34,7 @@ namespace HeuristicLab.Algorithms.VariableNeighborhoodSearch {
   /// An operator which represents a variable neighborhood search.
   /// </summary>
   [Item("VariableNeighborhoodSearchMainLoop", "An operator which represents the main loop of a variable neighborhood search.")]
-  [StorableClass]
+  [StorableType("AB64D449-016E-4D18-82C6-4250DC948E01")]
   public sealed class VariableNeighborhoodSearchMainLoop : AlgorithmOperator {
     #region Parameter properties
     public IValueLookupParameter<IRandom> RandomParameter {
@@ -82,7 +82,7 @@ namespace HeuristicLab.Algorithms.VariableNeighborhoodSearch {
     #endregion
 
     [StorableConstructor]
-    private VariableNeighborhoodSearchMainLoop(bool deserializing) : base(deserializing) { }
+    private VariableNeighborhoodSearchMainLoop(StorableConstructorFlag _) : base(_) { }
     public VariableNeighborhoodSearchMainLoop()
       : base() {
       Initialize();

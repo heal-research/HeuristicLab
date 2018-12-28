@@ -22,14 +22,14 @@
 using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Data {
   [Item("BoolArray", "Represents an array of boolean values.")]
-  [StorableClass]
+  [StorableType("CBDDC242-3F94-4CA0-B2A8-E3B10F07DFB8")]
   public class BoolArray : StringConvertibleArray<bool> {
     [StorableConstructor]
-    protected BoolArray(bool deserializing) : base(deserializing) { }
+    protected BoolArray(StorableConstructorFlag _) : base(_) { }
     protected BoolArray(BoolArray original, Cloner cloner)
       : base(original, cloner) {
     }

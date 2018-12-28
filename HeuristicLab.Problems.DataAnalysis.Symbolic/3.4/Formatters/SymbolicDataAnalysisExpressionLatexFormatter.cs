@@ -26,11 +26,11 @@ using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [Item("LaTeX String Formatter", "Formatter for symbolic expression trees for import into LaTeX documents.")]
-  [StorableClass]
+  [StorableType("D7186DFF-1596-4A58-B27D-974DF0D93E4F")]
   public sealed class SymbolicDataAnalysisExpressionLatexFormatter : NamedItem, ISymbolicExpressionTreeStringFormatter {
     private readonly List<KeyValuePair<string, double>> constants;
     private int constIndex;
@@ -40,7 +40,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private bool containsTimeSeriesSymbol;
 
     [StorableConstructor]
-    private SymbolicDataAnalysisExpressionLatexFormatter(bool deserializing) : base(deserializing) { }
+    private SymbolicDataAnalysisExpressionLatexFormatter(StorableConstructorFlag _) : base(_) { }
     private SymbolicDataAnalysisExpressionLatexFormatter(SymbolicDataAnalysisExpressionLatexFormatter original, Cloner cloner)
       : base(original, cloner) {
       constants = new List<KeyValuePair<string, double>>(original.constants);

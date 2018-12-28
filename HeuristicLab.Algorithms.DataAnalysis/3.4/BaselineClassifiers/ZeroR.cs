@@ -24,7 +24,7 @@ using System.Threading;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
@@ -32,11 +32,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// 0R classification algorithm.
   /// </summary>
   [Item("ZeroR Classification", "The simplest possible classifier, ZeroR always predicts the majority class.")]
-  [StorableClass]
+  [StorableType("A2C4BA0A-008B-44EB-B93A-3B53B867F0EA")]
   public sealed class ZeroR : FixedDataAnalysisAlgorithm<IClassificationProblem> {
 
     [StorableConstructor]
-    private ZeroR(bool deserializing) : base(deserializing) { }
+    private ZeroR(StorableConstructorFlag _) : base(_) { }
     private ZeroR(ZeroR original, Cloner cloner)
       : base(original, cloner) {
     }

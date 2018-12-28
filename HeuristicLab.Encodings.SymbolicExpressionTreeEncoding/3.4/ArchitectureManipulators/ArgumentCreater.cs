@@ -26,7 +26,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
@@ -35,7 +35,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   /// As described in Koza, Bennett, Andre, Keane, Genetic Programming III - Darwinian Invention and Problem Solving, 1999, pp. 106
   /// </summary>
   [Item("ArgumentCreater", "Manipulates a symbolic expression by creating a new argument within one function-defining branch. As described in Koza, Bennett, Andre, Keane, Genetic Programming III - Darwinian Invention and Problem Solving, 1999, pp. 106")]
-  [StorableClass]
+  [StorableType("2AC1EE1A-B2B4-47E7-97AF-BFC9FB2D7BA2")]
   public sealed class ArgumentCreater : SymbolicExpressionTreeArchitectureManipulator, ISymbolicExpressionTreeSizeConstraintOperator {
     private const string MaximumSymbolicExpressionTreeLengthParameterName = "MaximumSymbolicExpressionTreeLength";
     private const string MaximumSymbolicExpressionTreeDepthParameterName = "MaximumSymbolicExpressionTreeDepth";
@@ -56,7 +56,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
     #endregion
     [StorableConstructor]
-    private ArgumentCreater(bool deserializing) : base(deserializing) { }
+    private ArgumentCreater(StorableConstructorFlag _) : base(_) { }
     private ArgumentCreater(ArgumentCreater original, Cloner cloner) : base(original, cloner) { }
     public ArgumentCreater()
       : base() {

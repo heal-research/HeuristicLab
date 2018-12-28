@@ -29,12 +29,12 @@ using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [Item("NcaGradientCalculator", "Calculates the quality and gradient of a certain NCA matrix.")]
-  [StorableClass]
+  [StorableType("51A6EEB2-321D-460A-AF45-414144E06C85")]
   public class NcaGradientCalculator : SingleSuccessorOperator, ISingleObjectiveOperator {
 
     #region Parameter Properties
@@ -68,7 +68,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     #endregion
 
     [StorableConstructor]
-    protected NcaGradientCalculator(bool deserializing) : base(deserializing) { }
+    protected NcaGradientCalculator(StorableConstructorFlag _) : base(_) { }
     protected NcaGradientCalculator(NcaGradientCalculator original, Cloner cloner) : base(original, cloner) { }
     public NcaGradientCalculator()
       : base() {

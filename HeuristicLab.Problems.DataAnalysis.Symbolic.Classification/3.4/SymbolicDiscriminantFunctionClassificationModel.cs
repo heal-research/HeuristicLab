@@ -25,13 +25,13 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
   /// <summary>
   /// Represents a symbolic classification model
   /// </summary>
-  [StorableClass]
+  [StorableType("99332204-4097-496A-AB05-4DB9478DB159")]
   [Item(Name = "SymbolicDiscriminantFunctionClassificationModel", Description = "Represents a symbolic classification model unsing a discriminant function.")]
   public class SymbolicDiscriminantFunctionClassificationModel : SymbolicClassificationModel, ISymbolicDiscriminantFunctionClassificationModel {
 
@@ -57,7 +57,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
 
 
     [StorableConstructor]
-    protected SymbolicDiscriminantFunctionClassificationModel(bool deserializing) : base(deserializing) { }
+    protected SymbolicDiscriminantFunctionClassificationModel(StorableConstructorFlag _) : base(_) { }
     protected SymbolicDiscriminantFunctionClassificationModel(SymbolicDiscriminantFunctionClassificationModel original, Cloner cloner)
       : base(original, cloner) {
       classValues = (double[])original.classValues.Clone();

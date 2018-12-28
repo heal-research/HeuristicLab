@@ -25,12 +25,12 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinVehicleAssignmentMoveTabuMaker", "Declares a given vehicle assignment move as tabu.")]
-  [StorableClass]
+  [StorableType("7E620554-BA0A-49E1-ACD4-4BF4966F6EE5")]
   public class PotvinVehicleAssignmentMoveTabuMaker : SingleSuccessorOperator, ITabuMaker, IPotvinVehicleAssignmentMoveOperator, IPotvinOperator, ISingleObjectiveOperator {
     public LookupParameter<ItemList<IItem>> TabuListParameter {
       get { return (LookupParameter<ItemList<IItem>>)Parameters["TabuList"]; }
@@ -73,7 +73,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
     }
 
     [StorableConstructor]
-    protected PotvinVehicleAssignmentMoveTabuMaker(bool deserializing) : base(deserializing) { }
+    protected PotvinVehicleAssignmentMoveTabuMaker(StorableConstructorFlag _) : base(_) { }
     protected PotvinVehicleAssignmentMoveTabuMaker(PotvinVehicleAssignmentMoveTabuMaker original, Cloner cloner) : base(original, cloner) { }
     public PotvinVehicleAssignmentMoveTabuMaker()
       : base() {

@@ -24,11 +24,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.BinPacking {
-  [StorableClass]
+  [StorableType("FA24378B-4353-4CC9-AEFD-4B002EF5B139")]
   public abstract class PackingShape<T> : Item, IPackingShape, IParameterizedItem
     where T : class, IPackingPosition {
     public static Type PositionType {
@@ -47,7 +47,7 @@ namespace HeuristicLab.Problems.BinPacking {
     }
 
     [StorableConstructor]
-    protected PackingShape(bool deserializing) { }
+    protected PackingShape(StorableConstructorFlag _) : base(_) { }
     protected PackingShape(PackingShape<T> original, Cloner cloner) {
       this.Parameters = new ParameterCollection(original.Parameters.Select(p => cloner.Clone(p)));
     }

@@ -20,19 +20,17 @@
 #endregion
 
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Common;
 using System.Collections.Generic;
-using System.Linq;
-using HeuristicLab.Encodings.IntegerVectorEncoding;
 
 namespace HeuristicLab.Problems.BinPacking2D {
   [Item("Extreme-point IntegerVector Decoder (2d)", "Decodes the integer vector and creates a packing solution candidate")]
-  [StorableClass]
+  [StorableType("D40DEE7A-4AAC-47DA-9FA8-12D3C09177A7")]
   public class ExtremePointIntegerVectorDecoder : IntegerVectorDecoderBase {
 
     [StorableConstructor]
-    protected ExtremePointIntegerVectorDecoder(bool deserializing) : base(deserializing) { }
+    protected ExtremePointIntegerVectorDecoder(StorableConstructorFlag _) : base(_) { }
     protected ExtremePointIntegerVectorDecoder(ExtremePointIntegerVectorDecoder original, Cloner cloner)
       : base(original, cloner) {
     }

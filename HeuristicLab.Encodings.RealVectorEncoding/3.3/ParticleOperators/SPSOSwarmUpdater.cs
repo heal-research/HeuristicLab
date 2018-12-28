@@ -29,12 +29,12 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   [Item("Swarm Updater (SPSO)", "Updates personal best point and quality as well as neighbor best point and quality.")]
-  [StorableClass]
+  [StorableType("B8244196-9DB9-477C-A0A1-C1EB5BF4E1C1")]
   public sealed class SPSOSwarmUpdater : SingleSuccessorOperator, IRealVectorSwarmUpdater, ISingleObjectiveOperator {
 
     [Storable]
@@ -108,7 +108,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     #region Construction & Cloning
 
     [StorableConstructor]
-    private SPSOSwarmUpdater(bool deserializing) : base(deserializing) { }
+    private SPSOSwarmUpdater(StorableConstructorFlag _) : base(_) { }
     private SPSOSwarmUpdater(SPSOSwarmUpdater original, Cloner cloner)
       : base(original, cloner) {
       ResultsCollector = cloner.Clone(original.ResultsCollector);

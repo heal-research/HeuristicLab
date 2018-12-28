@@ -25,11 +25,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Optimization.Operators {
   [Item("TabuMaker", "Base class for all operators that set a move tabu.")]
-  [StorableClass]
+  [StorableType("1124A697-DDF1-442E-8CBB-FA0D51B4C736")]
   public abstract class TabuMaker : SingleSuccessorOperator, ITabuMaker, ISingleObjectiveOperator {
     public override bool CanChangeName {
       get { return false; }
@@ -51,7 +51,7 @@ namespace HeuristicLab.Optimization.Operators {
     }
 
     [StorableConstructor]
-    protected TabuMaker(bool deserializing) : base(deserializing) { }
+    protected TabuMaker(StorableConstructorFlag _) : base(_) { }
     protected TabuMaker(TabuMaker original, Cloner cloner) : base(original, cloner) { }
     protected TabuMaker()
       : base() {

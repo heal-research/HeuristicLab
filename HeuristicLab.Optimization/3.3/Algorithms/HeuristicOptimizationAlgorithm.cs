@@ -22,14 +22,14 @@
 using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Optimization {
   /// <summary>
   /// A base class for heuristic optimization algorithms.
   /// </summary>
   [Item("Heuristic Optimization Algorithm", "A base class for heuristic optimization algorithms.")]
-  [StorableClass]
+  [StorableType("13388EBE-E463-4A64-BCE4-77A631CB5DA0")]
   public abstract class HeuristicOptimizationAlgorithm : Algorithm {
     public new IHeuristicOptimizationProblem Problem {
       get { return (IHeuristicOptimizationProblem)base.Problem; }
@@ -43,7 +43,7 @@ namespace HeuristicLab.Optimization {
     protected HeuristicOptimizationAlgorithm(string name, string description, ParameterCollection parameters) : base(name, description, parameters) { }
 
     [StorableConstructor]
-    protected HeuristicOptimizationAlgorithm(bool deserializing) : base(deserializing) { }
+    protected HeuristicOptimizationAlgorithm(StorableConstructorFlag _) : base(_) { }
     protected HeuristicOptimizationAlgorithm(HeuristicOptimizationAlgorithm original, Cloner cloner) : base(original, cloner) { }
 
     #region Events

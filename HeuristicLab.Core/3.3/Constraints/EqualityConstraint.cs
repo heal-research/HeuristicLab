@@ -22,14 +22,14 @@
 using System;
 using System.Collections.Generic;
 using HeuristicLab.Common;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Core {
-  [StorableClass]
+  [StorableType("9E83A84E-39A1-4DEB-90EB-DEB5A457D77D")]
   [Item("EqualityConstraint", "A constraint which checks for equality.")]
   public class EqualityConstraint : Constraint {
     [StorableConstructor]
-    protected EqualityConstraint(bool deserializing) : base(deserializing) { }
+    protected EqualityConstraint(StorableConstructorFlag _) : base(_) { }
     protected EqualityConstraint(EqualityConstraint original, Cloner cloner) : base(original, cloner) { }
     public EqualityConstraint() : base() { }
     public EqualityConstraint(IItem constrainedValue, ConstraintOperation constraintOperation, object constraintData)

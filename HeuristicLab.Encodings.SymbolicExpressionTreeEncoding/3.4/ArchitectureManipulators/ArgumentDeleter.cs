@@ -23,7 +23,7 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
@@ -31,10 +31,10 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   /// As described in Koza, Bennett, Andre, Keane, Genetic Programming III - Darwinian Invention and Problem Solving, 1999, pp. 112
   /// </summary>
   [Item("ArgumentDeleter", "Manipulates a symbolic expression by deleting an argument from an existing function defining branch. As described in Koza, Bennett, Andre, Keane, Genetic Programming III - Darwinian Invention and Problem Solving, 1999, pp. 112")]
-  [StorableClass]
+  [StorableType("5A449735-B6B7-40AB-B1D6-A626FB768F71")]
   public sealed class ArgumentDeleter : SymbolicExpressionTreeArchitectureManipulator {
     [StorableConstructor]
-    private ArgumentDeleter(bool deserializing) : base(deserializing) { }
+    private ArgumentDeleter(StorableConstructorFlag _) : base(_) { }
     private ArgumentDeleter(ArgumentDeleter original, Cloner cloner) : base(original, cloner) { }
     public ArgumentDeleter() : base() { }
 

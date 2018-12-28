@@ -22,14 +22,14 @@
 using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.NK {
   [Item("ReverseLinearWeightsInitializer", "Assigns exponentially decreasing weights.")]
-  [StorableClass]
+  [StorableType("E63DE1AE-FBA4-4430-9C22-631ADDFD3976")]
   public sealed class ReverseLinearWeightsInitializer : ParameterizedNamedItem, IWeightsInitializer {
     [StorableConstructor]
-    private ReverseLinearWeightsInitializer(bool deserializing) : base(deserializing) { }
+    private ReverseLinearWeightsInitializer(StorableConstructorFlag _) : base(_) { }
     private ReverseLinearWeightsInitializer(ReverseLinearWeightsInitializer original, Cloner cloner)
       : base(original, cloner) {
     }

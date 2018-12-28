@@ -27,7 +27,7 @@ using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   internal static class StringBuilderExtensions {
@@ -42,10 +42,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   }
 
   [Item("TSQL String Formatter", "String formatter for string representations of symbolic data analysis expressions in TSQL syntax.")]
-  [StorableClass]
+  [StorableType("549808A5-A062-4972-9DDB-E4B5CD392470")]
   public sealed class TSQLExpressionFormatter : NamedItem, ISymbolicExpressionTreeStringFormatter {
     [StorableConstructor]
-    private TSQLExpressionFormatter(bool deserializing) : base(deserializing) { }
+    private TSQLExpressionFormatter(StorableConstructorFlag _) : base(_) { }
     private TSQLExpressionFormatter(TSQLExpressionFormatter original, Cloner cloner) : base(original, cloner) { }
     public TSQLExpressionFormatter()
       : base() {

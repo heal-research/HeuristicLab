@@ -25,11 +25,11 @@ using System.Text;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("Job", "Represents a composition of tasks that require processing in a scheduling problem.")]
-  [StorableClass]
+  [StorableType("77EC3F5A-5539-4090-8EB6-6599F17A32D8")]
   public class Job : Item, INotifyPropertyChanged {
 
     [Storable(Name = "DueDate")]
@@ -72,7 +72,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
     }
 
     [StorableConstructor]
-    protected Job(bool deserializing) : base(deserializing) { }
+    protected Job(StorableConstructorFlag _) : base(_) { }
     protected Job(Job original, Cloner cloner)
       : base(original, cloner) {
       this.dueDate = original.DueDate;

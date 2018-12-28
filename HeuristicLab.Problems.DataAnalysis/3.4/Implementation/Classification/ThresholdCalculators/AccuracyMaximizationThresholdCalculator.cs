@@ -24,18 +24,18 @@ using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis {
   /// <summary>
   /// Represents a threshold calculator that maximizes the weighted accuracy of the classifcation model.
   /// </summary>
-  [StorableClass]
+  [StorableType("30BB9513-542D-4CB8-931B-9767C9CB2EFB")]
   [Item("AccuracyMaximizationThresholdCalculator", "Represents a threshold calculator that maximizes the weighted accuracy of the classifcation model.")]
   public class AccuracyMaximizationThresholdCalculator : ThresholdCalculator {
 
     [StorableConstructor]
-    protected AccuracyMaximizationThresholdCalculator(bool deserializing) : base(deserializing) { }
+    protected AccuracyMaximizationThresholdCalculator(StorableConstructorFlag _) : base(_) { }
     protected AccuracyMaximizationThresholdCalculator(AccuracyMaximizationThresholdCalculator original, Cloner cloner)
       : base(original, cloner) {
     }

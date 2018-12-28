@@ -25,10 +25,10 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.QuadraticAssignment {
-  [StorableClass]
+  [StorableType("8B15F5F0-4C42-4143-B7F5-2462C78BC49C")]
   public class QAPEvaluator : InstrumentedOperator, IQAPEvaluator {
 
     public ILookupParameter<Permutation> PermutationParameter {
@@ -45,7 +45,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
     }
 
     [StorableConstructor]
-    protected QAPEvaluator(bool deserializing) : base(deserializing) { }
+    protected QAPEvaluator(StorableConstructorFlag _) : base(_) { }
     protected QAPEvaluator(QAPEvaluator original, Cloner cloner) : base(original, cloner) { }
     public QAPEvaluator() {
       Parameters.Add(new LookupParameter<Permutation>("Permutation", "The permutation that represents the current solution."));

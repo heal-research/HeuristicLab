@@ -24,14 +24,14 @@ using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Core {
   /// <summary>
   /// Represents a graph of operators.
   /// </summary>
   [Item("Operator Graph", "Represents a graph of operators.")]
-  [StorableClass]
+  [StorableType("4F3EDAFB-5363-489B-A2E2-67AAC589CDE7")]
   public class OperatorGraph : Item, IStorableContent {
     public string Filename { get; set; }
 
@@ -77,7 +77,7 @@ namespace HeuristicLab.Core {
     }
 
     [StorableConstructor]
-    protected OperatorGraph(bool deserializing) : base(deserializing) { }
+    protected OperatorGraph(StorableConstructorFlag _) : base(_) { }
     protected OperatorGraph(OperatorGraph original, Cloner cloner)
       : base(original, cloner) {
       operators = cloner.Clone(original.operators);

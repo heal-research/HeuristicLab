@@ -26,11 +26,11 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.TestFunctions {
   [Item("AdditiveMoveEvaluator", "Base class for evaluating an additive move.")]
-  [StorableClass]
+  [StorableType("3B4F3C57-78CE-4881-8E3B-6E784A495734")]
   public abstract class AdditiveMoveEvaluator : SingleSuccessorOperator, ISingleObjectiveTestFunctionAdditiveMoveEvaluator {
 
     public abstract Type EvaluatorType { get; }
@@ -52,7 +52,7 @@ namespace HeuristicLab.Problems.TestFunctions {
     }
 
     [StorableConstructor]
-    protected AdditiveMoveEvaluator(bool deserializing) : base(deserializing) { }
+    protected AdditiveMoveEvaluator(StorableConstructorFlag _) : base(_) { }
     protected AdditiveMoveEvaluator(AdditiveMoveEvaluator original, Cloner cloner) : base(original, cloner) { }
     protected AdditiveMoveEvaluator()
       : base() {

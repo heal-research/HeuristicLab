@@ -22,12 +22,12 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.VehicleRouting.Encodings.Alba;
 
 namespace HeuristicLab.Problems.VehicleRouting {
   [Item("AlbaIntraRouteInversionMoveEvaluator", "Evaluates a intra route inversion move for a VRP representation.  It is implemented as described in Alba, E. and Dorronsoro, B. (2004). Solving the Vehicle Routing Problem by Using Cellular Genetic Algorithms.")]
-  [StorableClass]
+  [StorableType("39ABD8F7-0745-4037-BA99-830DBE9ACA4E")]
   public sealed class AlbaIntraRouteInversionMoveEvaluator : AlbaMoveEvaluator, IAlbaIntraRouteInversionMoveOperator {
     public ILookupParameter<AlbaIntraRouteInversionMove> IntraRouteInversionMoveParameter {
       get { return (ILookupParameter<AlbaIntraRouteInversionMove>)Parameters["AlbaIntraRouteInversionMove"]; }
@@ -38,7 +38,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
     }
 
     [StorableConstructor]
-    private AlbaIntraRouteInversionMoveEvaluator(bool deserializing) : base(deserializing) { }
+    private AlbaIntraRouteInversionMoveEvaluator(StorableConstructorFlag _) : base(_) { }
 
     public AlbaIntraRouteInversionMoveEvaluator()
       : base() {

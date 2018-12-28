@@ -27,7 +27,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
 using HeuristicLab.Problems.DataAnalysis.Symbolic.Regression;
@@ -38,13 +38,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// </summary>
   [Item("Linear Regression (LR)", "Linear regression data analysis algorithm (wrapper for ALGLIB).")]
   [Creatable(CreatableAttribute.Categories.DataAnalysisRegression, Priority = 100)]
-  [StorableClass]
+  [StorableType("CF99D45E-F341-445E-9B9E-0587A8D9CBA7")]
   public sealed class LinearRegression : FixedDataAnalysisAlgorithm<IRegressionProblem> {
     private const string SolutionResultName = "Linear regression solution";
     private const string ConfidenceSolutionResultName = "Solution with prediction intervals";
 
     [StorableConstructor]
-    private LinearRegression(bool deserializing) : base(deserializing) { }
+    private LinearRegression(StorableConstructorFlag _) : base(_) { }
     private LinearRegression(LinearRegression original, Cloner cloner)
       : base(original, cloner) {
     }

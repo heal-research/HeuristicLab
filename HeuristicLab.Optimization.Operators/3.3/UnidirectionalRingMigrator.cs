@@ -25,21 +25,21 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Optimization.Operators {
   /// <summary>
   /// Operator that migrates the selected sub scopes in each subscope in an unidirectional ring.
   /// </summary>
   [Item("UnidirectionalRingMigrator", "Migrates the selected sub scopes in each subscope in an unidirectional ring.")]
-  [StorableClass]
+  [StorableType("A6642E0A-2FA1-49F3-9BA8-94EA370FE2CF")]
   public class UnidirectionalRingMigrator : SingleSuccessorOperator, IMigrator {
     public IValueLookupParameter<BoolValue> ClockwiseMigrationParameter {
       get { return (IValueLookupParameter<BoolValue>)Parameters["ClockwiseMigration"]; }
     }
 
     [StorableConstructor]
-    protected UnidirectionalRingMigrator(bool deserializing) : base(deserializing) { }
+    protected UnidirectionalRingMigrator(StorableConstructorFlag _) : base(_) { }
     protected UnidirectionalRingMigrator(UnidirectionalRingMigrator original, Cloner cloner) : base(original, cloner) { }
 
     public UnidirectionalRingMigrator()

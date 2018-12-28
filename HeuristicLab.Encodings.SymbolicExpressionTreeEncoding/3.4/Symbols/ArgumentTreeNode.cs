@@ -21,9 +21,9 @@
 
 using System;
 using HeuristicLab.Common;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
-  [StorableClass]
+  [StorableType("70BA57A9-F8AB-428B-BBB9-113FA5137774")]
   public sealed class ArgumentTreeNode : SymbolicExpressionTreeTerminalNode {
     internal new Argument Symbol {
       get { return (Argument)base.Symbol; }
@@ -35,7 +35,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
 
     [StorableConstructor]
-    private ArgumentTreeNode(bool deserializing) : base(deserializing) { }
+    private ArgumentTreeNode(StorableConstructorFlag _) : base(_) { }
     private ArgumentTreeNode(ArgumentTreeNode original, Cloner cloner) : base(original, cloner) { }
     public ArgumentTreeNode(Argument argSymbol) : base(argSymbol) { }
 

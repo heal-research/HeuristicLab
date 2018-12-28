@@ -24,13 +24,13 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Random {
   /// <summary>
   /// Uniformly distributed random number generator.
   /// </summary>
-  [StorableClass]
+  [StorableType("427A6E3A-EC49-4513-9773-768E78F583BF")]
   [Item("UniformRandomizer", "Initializes the value of variable 'Value' to a random value uniformly distributed between 'Min' and 'Max'")]
   public class UniformRandomizer : SingleSuccessorOperator {
     #region Parameter Properties
@@ -60,7 +60,7 @@ namespace HeuristicLab.Random {
     #endregion
 
     [StorableConstructor]
-    protected UniformRandomizer(bool deserializing) : base(deserializing) { }
+    protected UniformRandomizer(StorableConstructorFlag _) : base(_) { }
     protected UniformRandomizer(UniformRandomizer original, Cloner cloner) : base(original, cloner) { }
     /// <summary>
     /// Initializes a new instance of <see cref="UniformRandomizer"/> with four variable infos 

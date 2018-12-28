@@ -27,14 +27,14 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Problems.VehicleRouting.Variants;
 
 namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
   [Item("MDCVRPProblemInstance", "Represents a multi depot CVRP instance.")]
-  [StorableClass]
+  [StorableType("19F824AB-6C66-4FB6-88D5-3C163BF789E6")]
   public class MDCVRPProblemInstance : MultiDepotVRPProblemInstance, IHeterogenousCapacitatedProblemInstance {
     protected IValueParameter<DoubleArray> CapacityParameter {
       get { return (IValueParameter<DoubleArray>)Parameters["Capacity"]; }
@@ -84,7 +84,7 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
     }
 
     [StorableConstructor]
-    protected MDCVRPProblemInstance(bool deserializing) : base(deserializing) { }
+    protected MDCVRPProblemInstance(StorableConstructorFlag _) : base(_) { }
 
     public MDCVRPProblemInstance() {
       Parameters.Add(new ValueParameter<DoubleArray>("Capacity", "The capacity of each vehicle.", new DoubleArray()));

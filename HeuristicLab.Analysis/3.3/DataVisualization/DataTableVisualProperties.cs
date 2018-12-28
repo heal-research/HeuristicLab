@@ -19,17 +19,16 @@
  */
 #endregion
 
-using System;
 using System.ComponentModel;
 using System.Drawing;
 using HeuristicLab.Common;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Analysis {
   /// <summary>
   /// Visual properties of a DataTable.
   /// </summary>
-  [StorableClass]
+  [StorableType("CA654495-8671-499A-B990-0E67E589B906")]
   public class DataTableVisualProperties : DeepCloneable, INotifyPropertyChanged {
 
     #region Histogram Aggregation
@@ -561,7 +560,7 @@ namespace HeuristicLab.Analysis {
     #endregion
 
     [StorableConstructor]
-    protected DataTableVisualProperties(bool deserializing) : base() { }
+    protected DataTableVisualProperties(StorableConstructorFlag _) { }
     protected DataTableVisualProperties(DataTableVisualProperties original, Cloner cloner)
       : base(original, cloner) {
       if (original.titleFont != null)

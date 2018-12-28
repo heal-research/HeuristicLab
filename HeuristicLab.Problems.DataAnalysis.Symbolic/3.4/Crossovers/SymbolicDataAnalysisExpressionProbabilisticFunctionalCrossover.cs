@@ -25,7 +25,7 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
@@ -35,10 +35,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
                                             "- For each matching node M from P1, calculate the behavioral distance:\n" +
                                             "\t\tD(N,M) = 0.5 * ( abs(max(N) - max(M)) + abs(min(N) - min(M)) )\n" +
                                             "- Make a probabilistic weighted choice of node M from P1, based on the inversed and normalized behavioral distance")]
-  [StorableClass]
+  [StorableType("EC1901B8-689B-4FC9-A79E-2778B3D0609E")]
   public sealed class SymbolicDataAnalysisExpressionProbabilisticFunctionalCrossover<T> : SymbolicDataAnalysisExpressionCrossover<T> where T : class, IDataAnalysisProblemData {
     [StorableConstructor]
-    private SymbolicDataAnalysisExpressionProbabilisticFunctionalCrossover(bool deserializing) : base(deserializing) { }
+    private SymbolicDataAnalysisExpressionProbabilisticFunctionalCrossover(StorableConstructorFlag _) : base(_) { }
     private SymbolicDataAnalysisExpressionProbabilisticFunctionalCrossover(SymbolicDataAnalysisExpressionCrossover<T> original, Cloner cloner)
       : base(original, cloner) { }
     public SymbolicDataAnalysisExpressionProbabilisticFunctionalCrossover()

@@ -25,10 +25,10 @@ using System.Linq;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
-  [StorableClass]
+  [StorableType("925BDEE9-0D46-48DB-BA1B-DCE82C0480B3")]
   public abstract class SymbolicExpressionGrammar : SymbolicExpressionGrammarBase, ISymbolicExpressionGrammar {
     #region fields & properties
     [Storable(DefaultValue = false)]
@@ -120,8 +120,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
 
     [StorableConstructor]
-    protected SymbolicExpressionGrammar(bool deserializing)
-      : base(deserializing) {
+    protected SymbolicExpressionGrammar(StorableConstructorFlag _) : base(_) {
       emptyGrammar = new EmptySymbolicExpressionTreeGrammar(this);
     }
     protected SymbolicExpressionGrammar(SymbolicExpressionGrammar original, Cloner cloner)

@@ -31,14 +31,14 @@ using HeuristicLab.Encodings.ScheduleEncoding.JobSequenceMatrix;
 using HeuristicLab.Encodings.ScheduleEncoding.PermutationWithRepetition;
 using HeuristicLab.Encodings.ScheduleEncoding.PriorityRulesVector;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Problems.Instances;
 
 namespace HeuristicLab.Problems.Scheduling {
   [Item("Job Shop Scheduling Problem (JSSP)", "Represents a standard Job Shop Scheduling Problem")]
   [Creatable(CreatableAttribute.Categories.CombinatorialProblems, Priority = 120)]
-  [StorableClass]
+  [StorableType("BB12CCEC-A109-4A26-A1C7-5A0703AB7687")]
   public sealed class JobShopSchedulingProblem : SchedulingProblem, IProblemInstanceConsumer<JSSPData>, IProblemInstanceExporter<JSSPData>, IStorableContent {
     #region Default Instance
     private static readonly JSSPData DefaultInstance = new JSSPData() {
@@ -129,7 +129,7 @@ namespace HeuristicLab.Problems.Scheduling {
     #endregion
 
     [StorableConstructor]
-    private JobShopSchedulingProblem(bool deserializing) : base(deserializing) { }
+    private JobShopSchedulingProblem(StorableConstructorFlag _) : base(_) { }
     private JobShopSchedulingProblem(JobShopSchedulingProblem original, Cloner cloner)
       : base(original, cloner) {
       RegisterEventHandlers();

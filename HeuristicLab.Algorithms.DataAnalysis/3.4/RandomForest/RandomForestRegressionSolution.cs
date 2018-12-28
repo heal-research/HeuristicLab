@@ -19,19 +19,17 @@
  */
 #endregion
 
-using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.DataAnalysis;
-using HeuristicLab.Problems.DataAnalysis.Symbolic.Regression;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>
   /// Represents a random forest solution for a regression problem which can be visualized in the GUI.
   /// </summary>
   [Item("RandomForestRegressionSolution", "Represents a random forest solution for a regression problem which can be visualized in the GUI.")]
-  [StorableClass]
+  [StorableType("29F87380-B32D-4BF6-B7F8-653B8AFFAC34")]
   public sealed class RandomForestRegressionSolution : ConfidenceRegressionSolution, IRandomForestRegressionSolution {
 
     public new IRandomForestModel Model {
@@ -44,7 +42,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     [StorableConstructor]
-    private RandomForestRegressionSolution(bool deserializing) : base(deserializing) { }
+    private RandomForestRegressionSolution(StorableConstructorFlag _) : base(_) { }
     private RandomForestRegressionSolution(RandomForestRegressionSolution original, Cloner cloner)
       : base(original, cloner) {
     }

@@ -24,11 +24,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("TranslocationMoveGenerator", "Base class for move generators that produce translocation moves (3-opt).")]
-  [StorableClass]
+  [StorableType("1569B595-0381-44D9-932B-72769C55ABC5")]
   public abstract class TranslocationMoveGenerator : SingleSuccessorOperator, IPermutationTranslocationMoveOperator, IMoveGenerator {
     public override bool CanChangeName {
       get { return false; }
@@ -44,7 +44,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     }
 
     [StorableConstructor]
-    protected TranslocationMoveGenerator(bool deserializing) : base(deserializing) { }
+    protected TranslocationMoveGenerator(StorableConstructorFlag _) : base(_) { }
     protected TranslocationMoveGenerator(TranslocationMoveGenerator original, Cloner cloner) : base(original, cloner) { }
     public TranslocationMoveGenerator()
       : base() {

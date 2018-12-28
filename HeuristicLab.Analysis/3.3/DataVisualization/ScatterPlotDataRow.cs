@@ -25,14 +25,14 @@ using System.ComponentModel;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Analysis {
   /// <summary>
   /// A row of data values for a scatter plot.
   /// </summary>
   [Item("ScatterPlotDataRow", "A row of data values for a scatter plot.")]
-  [StorableClass]
+  [StorableType("29A84519-5AB7-400F-BDD2-6B497B459B4D")]
   public class ScatterPlotDataRow : NamedItem {
     private ScatterPlotDataRowVisualProperties visualProperties;
     public ScatterPlotDataRowVisualProperties VisualProperties {
@@ -69,7 +69,7 @@ namespace HeuristicLab.Analysis {
     #endregion
 
     [StorableConstructor]
-    protected ScatterPlotDataRow(bool deserializing) : base(deserializing) { }
+    protected ScatterPlotDataRow(StorableConstructorFlag _) : base(_) { }
     protected ScatterPlotDataRow(ScatterPlotDataRow original, Cloner cloner)
       : base(original, cloner) {
       VisualProperties = cloner.Clone(original.visualProperties);

@@ -22,13 +22,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis {
   /// <summary>
   /// Represents a regression data analysis solution that supports confidence estimates
   /// </summary>
-  [StorableClass]
+  [StorableType("C2D0DE07-E8F0-4850-AAF3-E2885EC1DDB6")]
   public class ConfidenceRegressionSolution : RegressionSolution, IConfidenceRegressionSolution {
     protected readonly Dictionary<int, double> varianceEvaluationCache;
 
@@ -38,8 +38,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     [StorableConstructor]
-    protected ConfidenceRegressionSolution(bool deserializing)
-      : base(deserializing) {
+    protected ConfidenceRegressionSolution(StorableConstructorFlag _) : base(_) {
       varianceEvaluationCache = new Dictionary<int, double>();
     }
     protected ConfidenceRegressionSolution(ConfidenceRegressionSolution original, Cloner cloner)

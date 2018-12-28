@@ -22,19 +22,19 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
   [Item("VRPCreator", "Creates a VRP solution.")]
-  [StorableClass]
+  [StorableType("E37923DB-8BA5-4FE3-956D-3D65AA18037C")]
   public abstract class VRPCreator : VRPOperator, IVRPCreator {
     public ILookupParameter<IVRPEncoding> VRPToursParameter {
       get { return (ILookupParameter<IVRPEncoding>)Parameters["VRPTours"]; }
     }
 
     [StorableConstructor]
-    protected VRPCreator(bool deserializing) : base(deserializing) { }
+    protected VRPCreator(StorableConstructorFlag _) : base(_) { }
 
     public VRPCreator()
       : base() {

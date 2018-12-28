@@ -21,14 +21,14 @@
 
 using System.Collections.Generic;
 using HeuristicLab.Common;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Core {
-  [StorableClass]
+  [StorableType("0477DDAD-41AA-41E7-AE2A-5C0288484119")]
   [Item("OperatorList", "Represents a list of operators.")]
   public class OperatorList : ItemList<IOperator> {
     [StorableConstructor]
-    protected OperatorList(bool deserializing) : base(deserializing) { }
+    protected OperatorList(StorableConstructorFlag _) : base(_) { }
     protected OperatorList(OperatorList original, Cloner cloner) : base(original, cloner) { }
     public OperatorList() : base() { }
     public OperatorList(int capacity) : base(capacity) { }

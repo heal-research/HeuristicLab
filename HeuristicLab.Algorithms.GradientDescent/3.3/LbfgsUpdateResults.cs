@@ -26,10 +26,10 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Algorithms.GradientDescent {
-  [StorableClass]
+  [StorableType("926B028B-4EAA-48DD-8920-BCED7274AC77")]
   [Item(Name = "LBFGS UpdateResults", Description = "Sets the results (function value and gradients) for the next optimization step in the LM-BFGS algorithm.")]
   public sealed class LbfgsUpdateResults : SingleSuccessorOperator {
     private const string QualityGradientsParameterName = "QualityGradients";
@@ -76,7 +76,7 @@ namespace HeuristicLab.Algorithms.GradientDescent {
     #endregion
 
     [StorableConstructor]
-    private LbfgsUpdateResults(bool deserializing) : base(deserializing) { }
+    private LbfgsUpdateResults(StorableConstructorFlag _) : base(_) { }
     private LbfgsUpdateResults(LbfgsUpdateResults original, Cloner cloner) : base(original, cloner) { }
     public LbfgsUpdateResults()
       : base() {

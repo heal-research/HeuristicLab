@@ -19,12 +19,8 @@
  */
 #endregion
 
-using System;
 using System.Windows.Forms;
-using HeuristicLab.Common;
-using HeuristicLab.Core;
 using HeuristicLab.MainForm;
-using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Optimization.Views {
   /// <summary>

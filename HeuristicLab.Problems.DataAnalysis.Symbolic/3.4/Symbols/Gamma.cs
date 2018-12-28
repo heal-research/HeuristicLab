@@ -22,9 +22,9 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
-  [StorableClass]
+  [StorableType("8CC57AD6-B24D-4DCE-BFA0-A799804448F7")]
   [Item("Gamma", "Symbol that represents the gamma function.")]
   public sealed class Gamma : Symbol {
     private const int minimumArity = 1;
@@ -38,7 +38,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     [StorableConstructor]
-    private Gamma(bool deserializing) : base(deserializing) { }
+    private Gamma(StorableConstructorFlag _) : base(_) { }
     private Gamma(Gamma original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new Gamma(this, cloner);

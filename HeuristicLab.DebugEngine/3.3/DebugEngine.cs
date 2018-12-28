@@ -24,19 +24,18 @@ using System.Linq;
 using System.Threading;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.DebugEngine {
 
-  [StorableClass]
+  [StorableType("BC1A9855-D280-4314-A272-CD2120679F12")]
   [Item("Debug Engine", "Engine for debugging algorithms.")]
   public class DebugEngine : Executable, IEngine {
 
     #region Construction and Cloning
 
     [StorableConstructor]
-    protected DebugEngine(bool deserializing)
-      : base(deserializing) {
+    protected DebugEngine(StorableConstructorFlag _) : base(_) {
       InitializeTimer();
     }
 

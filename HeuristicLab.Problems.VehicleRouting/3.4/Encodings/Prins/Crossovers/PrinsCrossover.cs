@@ -23,13 +23,13 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.VehicleRouting.Encodings.General;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
   [Item("PrinsCrossover", "An operator which crosses two VRP representations.")]
-  [StorableClass]
+  [StorableType("EAF32C5C-D67E-4EEB-8705-FAA577A40439")]
   public abstract class PrinsCrossover : VRPCrossover, IStochasticOperator, IPrinsOperator {
 
     public ILookupParameter<IRandom> RandomParameter {
@@ -37,7 +37,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
     }
 
     [StorableConstructor]
-    protected PrinsCrossover(bool deserializing) : base(deserializing) { }
+    protected PrinsCrossover(StorableConstructorFlag _) : base(_) { }
 
     public PrinsCrossover()
       : base() {

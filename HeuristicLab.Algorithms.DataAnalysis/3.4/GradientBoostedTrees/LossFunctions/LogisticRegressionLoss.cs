@@ -25,11 +25,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   // Greedy Function Approximation: A Gradient Boosting Machine (page 9) 
-  [StorableClass]
+  [StorableType("E91BD71E-9A1D-4352-BD68-062290F8BE9C")]
   [Item("Logistic regression loss", "")]
   public sealed class LogisticRegressionLoss : Item, ILossFunction {
     public LogisticRegressionLoss() { }
@@ -89,7 +89,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     #region item implementation
     [StorableConstructor]
-    private LogisticRegressionLoss(bool deserializing) : base(deserializing) { }
+    private LogisticRegressionLoss(StorableConstructorFlag _) : base(_) { }
 
     private LogisticRegressionLoss(LogisticRegressionLoss original, Cloner cloner) : base(original, cloner) { }
 

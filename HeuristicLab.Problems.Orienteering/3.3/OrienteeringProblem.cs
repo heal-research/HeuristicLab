@@ -30,14 +30,14 @@ using HeuristicLab.Encodings.IntegerVectorEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.Instances;
 using HeuristicLab.Problems.Instances.Types;
 
 namespace HeuristicLab.Problems.Orienteering {
   [Item("Orienteering Problem (OP)", "Represents a single-objective Orienteering Problem.")]
   [Creatable(CreatableAttribute.Categories.CombinatorialProblems, Priority = 115)]
-  [StorableClass]
+  [StorableType("0B8DB4A4-F183-4368-86C6-C51289B183D2")]
   public sealed class OrienteeringProblem
     : SingleObjectiveHeuristicOptimizationProblem<IOrienteeringEvaluator, IOrienteeringSolutionCreator>,
     IStorableContent, IProblemInstanceConsumer<OPData>, IProblemInstanceConsumer<TSPData>, IProblemInstanceConsumer<CVRPData> {
@@ -112,8 +112,7 @@ namespace HeuristicLab.Problems.Orienteering {
     #endregion
 
     [StorableConstructor]
-    private OrienteeringProblem(bool deserializing)
-      : base(deserializing) {
+    private OrienteeringProblem(StorableConstructorFlag _) : base(_) {
     }
     private OrienteeringProblem(OrienteeringProblem original, Cloner cloner)
       : base(original, cloner) {

@@ -22,9 +22,9 @@
 using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
-  [StorableClass]
+  [StorableType("0B35397B-5634-44DB-9350-9EC41E5D4A45")]
   public sealed class LaggedVariableTreeNode : VariableTreeNodeBase, ILaggedTreeNode {
     public new LaggedVariable Symbol {
       get { return (LaggedVariable)base.Symbol; }
@@ -41,7 +41,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     [StorableConstructor]
-    private LaggedVariableTreeNode(bool deserializing) : base(deserializing) { }
+    private LaggedVariableTreeNode(StorableConstructorFlag _) : base(_) { }
     private LaggedVariableTreeNode(LaggedVariableTreeNode original, Cloner cloner)
       : base(original, cloner) {
       lag = original.lag;

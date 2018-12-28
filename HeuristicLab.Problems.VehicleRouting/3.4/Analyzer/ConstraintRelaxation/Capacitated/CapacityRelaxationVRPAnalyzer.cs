@@ -25,7 +25,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Problems.VehicleRouting.Variants;
 
@@ -34,7 +34,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
   /// An operator for adaptive constraint relaxation.
   /// </summary>
   [Item("CapacityRelaxationVRPAnalyzer", "An operator for adaptively relaxing the capacity constraints.")]
-  [StorableClass]
+  [StorableType("02E519CA-7B71-4BBE-89A5-E630D1FEFC58")]
   public class CapacityRelaxationVRPAnalyzer : SingleSuccessorOperator, IAnalyzer, ICapacitatedOperator, ISingleObjectiveOperator {
     public ILookupParameter<IVRPProblemInstance> ProblemInstanceParameter {
       get { return (ILookupParameter<IVRPProblemInstance>)Parameters["ProblemInstance"]; }
@@ -72,7 +72,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
     }
 
     [StorableConstructor]
-    protected CapacityRelaxationVRPAnalyzer(bool deserializing) : base(deserializing) { }
+    protected CapacityRelaxationVRPAnalyzer(StorableConstructorFlag _) : base(_) { }
 
     public CapacityRelaxationVRPAnalyzer()
       : base() {

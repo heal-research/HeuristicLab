@@ -20,14 +20,10 @@
 #endregion            
 
 using System.Linq;
-using HeuristicLab.Analysis;
-using HeuristicLab.Common;
 using HeuristicLab.Core.Views;
 using HeuristicLab.Data;
 using HeuristicLab.MainForm;
 using HeuristicLab.Problems.DataAnalysis;
-using HeuristicLab.Problems.DataAnalysis.Symbolic;
-using HeuristicLab.Problems.DataAnalysis.Symbolic.Regression;
 
 namespace HeuristicLab.Algorithms.DataAnalysis.Views {
   [View("Linear regression model")]

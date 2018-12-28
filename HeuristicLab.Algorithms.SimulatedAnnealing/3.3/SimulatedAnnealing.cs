@@ -30,14 +30,14 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Algorithms.SimulatedAnnealing {
   [Item("Simulated Annealing (SA)", "A simulated annealing algorithm.")]
   [Creatable(CreatableAttribute.Categories.SingleSolutionAlgorithms, Priority = 140)]
-  [StorableClass]
+  [StorableType("CE2B6164-C541-4E87-ABF6-FDE6CA6401BF")]
   public sealed class SimulatedAnnealing : HeuristicOptimizationEngineAlgorithm, IStorableContent {
     public string Filename { get; set; }
 
@@ -148,7 +148,7 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
     #endregion
 
     [StorableConstructor]
-    private SimulatedAnnealing(bool deserializing) : base(deserializing) { }
+    private SimulatedAnnealing(StorableConstructorFlag _) : base(_) { }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       if (temperatureAnalyzer == null) {

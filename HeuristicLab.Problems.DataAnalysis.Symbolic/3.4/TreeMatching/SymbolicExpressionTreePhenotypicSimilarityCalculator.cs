@@ -25,11 +25,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Optimization.Operators;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [Item("SymbolicExpressionTreePhenotypicSimilarityCalculator", "An operator that calculates the similarity betweeon two trees based on the correlation of their outputs.")]
-  [StorableClass]
+  [StorableType("163CE915-506E-472B-B77F-156ECC9D9C05")]
   public class SymbolicExpressionTreePhenotypicSimilarityCalculator : SolutionSimilarityCalculator {
     [Storable]
     public IDataAnalysisProblemData ProblemData { get; set; }
@@ -39,7 +39,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     protected override bool IsCommutative { get { return true; } }
 
     [StorableConstructor]
-    protected SymbolicExpressionTreePhenotypicSimilarityCalculator(bool deserializing) : base(deserializing) { }
+    protected SymbolicExpressionTreePhenotypicSimilarityCalculator(StorableConstructorFlag _) : base(_) { }
 
     public SymbolicExpressionTreePhenotypicSimilarityCalculator(SymbolicExpressionTreePhenotypicSimilarityCalculator original, Cloner cloner)
       : base(original, cloner) {

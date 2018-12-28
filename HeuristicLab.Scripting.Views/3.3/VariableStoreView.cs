@@ -31,7 +31,7 @@ using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.Persistence.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.PluginInfrastructure;
 
@@ -481,7 +481,7 @@ namespace HeuristicLab.Scripting.Views {
         if (StorableClassAttribute.IsStorableClass(type)) return serializableLookup[type] = true;
       }
 
-      var ser = new Serializer(variable, ConfigurationService.Instance.GetDefaultConfig(new XmlFormat()), "ROOT", true);
+      var ser = new Persistence.Core.Serializer(variable, ConfigurationService.Instance.GetDefaultConfig(new XmlFormat()), "ROOT", true);
       try {
         serializable = ser.Count() > 0; // try to create all serialization tokens
       } catch (PersistenceException) {

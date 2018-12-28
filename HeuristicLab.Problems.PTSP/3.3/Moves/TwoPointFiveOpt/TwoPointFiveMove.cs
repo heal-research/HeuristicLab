@@ -22,11 +22,11 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.PTSP {
   [Item("2.5-Move", "Represents a 2.5-move.")]
-  [StorableClass]
+  [StorableType("CAC6762D-DFF1-4B66-BAC7-FBCED4A52305")]
   public sealed class TwoPointFiveMove : Item {
     [Storable]
     public int Index1 { get; private set; }
@@ -38,8 +38,7 @@ namespace HeuristicLab.Problems.PTSP {
     public bool IsInvert { get; private set; }
 
     [StorableConstructor]
-    public TwoPointFiveMove() : this(-1, -1, null, true) { }
-    private TwoPointFiveMove(bool deserializing) : base(deserializing) { }
+    private TwoPointFiveMove(StorableConstructorFlag _) : base(_) { }
     private TwoPointFiveMove(TwoPointFiveMove original, Cloner cloner)
       : base(original, cloner) {
       this.Index1 = original.Index1;

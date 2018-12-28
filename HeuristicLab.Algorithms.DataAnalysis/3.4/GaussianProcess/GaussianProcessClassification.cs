@@ -25,9 +25,8 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Problems.DataAnalysis;
 
@@ -37,7 +36,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// </summary>
   [Item("Gaussian Process Least-Squares Classification", "Gaussian process least-squares classification data analysis algorithm.")]
   [Creatable(CreatableAttribute.Categories.DataAnalysisClassification, Priority = 160)]
-  [StorableClass]
+  [StorableType("5D8711E4-1A3F-45E7-83A5-E9BBAC239793")]
   public sealed class GaussianProcessClassification : GaussianProcessBase, IStorableContent {
     public string Filename { get; set; }
 
@@ -69,7 +68,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     #endregion
 
     [StorableConstructor]
-    private GaussianProcessClassification(bool deserializing) : base(deserializing) { }
+    private GaussianProcessClassification(StorableConstructorFlag _) : base(_) { }
     private GaussianProcessClassification(GaussianProcessClassification original, Cloner cloner)
       : base(original, cloner) {
       RegisterEventHandlers();

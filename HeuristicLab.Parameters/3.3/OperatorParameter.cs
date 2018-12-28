@@ -21,17 +21,17 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Parameters {
   /// <summary>
   /// A parameter which represents an operator.
   /// </summary>
   [Item("OperatorParameter", "A parameter which represents an operator.")]
-  [StorableClass]
+  [StorableType("59C86C8F-CAE1-45FE-A17C-837925284D93")]
   public class OperatorParameter : OptionalValueParameter<IOperator> {
     [StorableConstructor]
-    protected OperatorParameter(bool deserializing) : base(deserializing) { }
+    protected OperatorParameter(StorableConstructorFlag _) : base(_) { }
     protected OperatorParameter(OperatorParameter original, Cloner cloner) : base(original, cloner) { }
     public OperatorParameter() : base("Anonymous") { }
     public OperatorParameter(string name) : base(name) { }

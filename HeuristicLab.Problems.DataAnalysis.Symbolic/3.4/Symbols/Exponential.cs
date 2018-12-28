@@ -22,9 +22,9 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
-  [StorableClass]
+  [StorableType("98360DAA-C01A-42B3-8AB1-B18E6C0835BB")]
   [Item("Exponential", "Symbol that represents the exponential function.")]
   public sealed class Exponential : Symbol {
     private const int minimumArity = 1;
@@ -38,7 +38,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     [StorableConstructor]
-    private Exponential(bool deserializing) : base(deserializing) { }
+    private Exponential(StorableConstructorFlag _) : base(_) { }
     private Exponential(Exponential original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new Exponential(this, cloner);

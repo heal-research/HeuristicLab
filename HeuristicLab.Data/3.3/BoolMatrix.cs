@@ -23,14 +23,14 @@ using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Data {
   [Item("BoolMatrix", "Represents a matrix of boolean values.")]
-  [StorableClass]
+  [StorableType("A6456658-0B85-4C63-A6DA-FA82EB861B70")]
   public class BoolMatrix : ValueTypeMatrix<bool>, IStringConvertibleMatrix {
     [StorableConstructor]
-    protected BoolMatrix(bool deserializing) : base(deserializing) { }
+    protected BoolMatrix(StorableConstructorFlag _) : base(_) { }
     protected BoolMatrix(BoolMatrix original, Cloner cloner)
       : base(original, cloner) {
     }

@@ -23,10 +23,10 @@ using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
-  [StorableClass]
+  [StorableType("27D33B4E-6100-419E-B4EA-6D5EFDBFF823")]
   [Item(Name = "MeanProduct", Description = "Product of mean functions for Gaussian processes.")]
   public sealed class MeanProduct : Item, IMeanFunction {
     [Storable]
@@ -40,8 +40,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     [StorableConstructor]
-    private MeanProduct(bool deserializing)
-      : base(deserializing) {
+    private MeanProduct(StorableConstructorFlag _) : base(_) {
     }
 
     private MeanProduct(MeanProduct original, Cloner cloner)

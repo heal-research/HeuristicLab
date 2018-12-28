@@ -19,17 +19,16 @@
  */
 #endregion
 
-using System;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
-  [StorableClass]
+  [StorableType("EBC72F16-E329-4D18-800C-8642EFD0F05C")]
   [Item("GenerationalDistanceAnalyzer", "The generational distance between the current and the best known front (see Multi-Objective Performance Metrics - Shodhganga for more information)")]
   public class GenerationalDistanceAnalyzer : MOTFAnalyzer {
 
@@ -48,7 +47,7 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
     }
 
     [StorableConstructor]
-    protected GenerationalDistanceAnalyzer(bool deserializing) : base(deserializing) { }
+    protected GenerationalDistanceAnalyzer(StorableConstructorFlag _) : base(_) { }
     protected GenerationalDistanceAnalyzer(GenerationalDistanceAnalyzer original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new GenerationalDistanceAnalyzer(this, cloner);

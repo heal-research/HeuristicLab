@@ -25,7 +25,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   /// <summary>
@@ -34,7 +34,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   /// The idea is that going further in direction from the worse to the better leads to even better solutions (naturally this depends on the fitness landscape).
   /// </summary>
   [Item("RoundedHeuristicCrossover", "The heuristic crossover produces offspring that extend the better parent in direction from the worse to the better parent.")]
-  [StorableClass]
+  [StorableType("94963FD3-4092-4B76-88E0-5FE5AC2DA9E2")]
   public class RoundedHeuristicCrossover : BoundedIntegerVectorCrossover, ISingleObjectiveOperator {
     /// <summary>
     /// Whether the problem is a maximization or minimization problem.
@@ -50,7 +50,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
     }
 
     [StorableConstructor]
-    protected RoundedHeuristicCrossover(bool deserializing) : base(deserializing) { }
+    protected RoundedHeuristicCrossover(StorableConstructorFlag _) : base(_) { }
     protected RoundedHeuristicCrossover(RoundedHeuristicCrossover original, Cloner cloner) : base(original, cloner) { }
     /// <summary>
     /// Initializes a new instance of <see cref="RoundedHeuristicCrossover"/> with two variable infos

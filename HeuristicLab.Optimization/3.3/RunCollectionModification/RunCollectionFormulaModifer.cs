@@ -21,18 +21,16 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Optimization {
 
   [Item("RunCollection Formula Modifier", "Modifies a RunCollection by adding results using the given formula.")]
-  [StorableClass]
+  [StorableType("EEE365F2-8BEB-41C6-9DE6-94CA8FAC5108")]
   public class RunCollectionFormulaModifer : ParameterizedNamedItem, IRunCollectionModifier {
 
     public override bool CanChangeName { get { return false; } }
@@ -51,7 +49,7 @@ namespace HeuristicLab.Optimization {
 
     #region Construction & Cloning
     [StorableConstructor]
-    protected RunCollectionFormulaModifer(bool deserializing) : base(deserializing) { }
+    protected RunCollectionFormulaModifer(StorableConstructorFlag _) : base(_) { }
     protected RunCollectionFormulaModifer(RunCollectionFormulaModifer original, Cloner cloner)
       : base(original, cloner) {
       RegisterEvents();

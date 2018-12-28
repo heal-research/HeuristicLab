@@ -22,16 +22,16 @@
 using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
-  [StorableClass]
+  [StorableType("891AC2D7-520C-4D34-9CBF-174DFA290C12")]
   [Item("InverseMultiquadraticKernel", "A kernel function that uses the inverse multi-quadratic function  1 / sqrt(1+||x-c||²/beta²). Similar to http://crsouza.com/2010/03/17/kernel-functions-for-machine-learning-applications/ with beta as a scaling factor.")]
   public class InverseMultiquadraticKernel : KernelBase {
     private const double C = 1.0;
 
     [StorableConstructor]
-    protected InverseMultiquadraticKernel(bool deserializing) : base(deserializing) { }
+    protected InverseMultiquadraticKernel(StorableConstructorFlag _) : base(_) { }
 
     protected InverseMultiquadraticKernel(InverseMultiquadraticKernel original, Cloner cloner) : base(original, cloner) { }
 

@@ -24,13 +24,12 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.ScheduleEncoding;
 using HeuristicLab.Operators;
-using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.Scheduling {
   [Item("Schedule Evaluator", "Represents a base class for schedule evaluators.")]
-  [StorableClass]
+  [StorableType("F006A09C-C92E-4523-84B0-CF763A652C56")]
   public abstract class ScheduleEvaluator : InstrumentedOperator, IScheduleEvaluator {
 
     public ILookupParameter<DoubleValue> QualityParameter {
@@ -41,7 +40,7 @@ namespace HeuristicLab.Problems.Scheduling {
     }
 
     [StorableConstructor]
-    protected ScheduleEvaluator(bool deserializing) : base(deserializing) { }
+    protected ScheduleEvaluator(StorableConstructorFlag _) : base(_) { }
     protected ScheduleEvaluator(ScheduleEvaluator original, Cloner cloner) : base(original, cloner) { }
     protected ScheduleEvaluator()
       : base() {

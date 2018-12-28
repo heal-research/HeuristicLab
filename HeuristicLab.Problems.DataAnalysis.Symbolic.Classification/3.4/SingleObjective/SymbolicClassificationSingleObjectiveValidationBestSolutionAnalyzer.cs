@@ -23,14 +23,14 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
   /// <summary>
   /// An operator that analyzes the validation best symbolic classification solution for single objective symbolic classification problems.
   /// </summary>
   [Item("SymbolicClassificationSingleObjectiveValidationBestSolutionAnalyzer", "An operator that analyzes the validation best symbolic classification solution for single objective symbolic classification problems.")]
-  [StorableClass]
+  [StorableType("4BEB7C5A-0B3A-4276-95C6-689F8BA8E0E6")]
   public sealed class SymbolicClassificationSingleObjectiveValidationBestSolutionAnalyzer : SymbolicDataAnalysisSingleObjectiveValidationBestSolutionAnalyzer<ISymbolicClassificationSolution, ISymbolicClassificationSingleObjectiveEvaluator, IClassificationProblemData>,
   ISymbolicDataAnalysisBoundedOperator, ISymbolicClassificationModelCreatorOperator {
     private const string EstimationLimitsParameterName = "EstimationLimits";
@@ -49,7 +49,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     #endregion
 
     [StorableConstructor]
-    private SymbolicClassificationSingleObjectiveValidationBestSolutionAnalyzer(bool deserializing) : base(deserializing) { }
+    private SymbolicClassificationSingleObjectiveValidationBestSolutionAnalyzer(StorableConstructorFlag _) : base(_) { }
     private SymbolicClassificationSingleObjectiveValidationBestSolutionAnalyzer(SymbolicClassificationSingleObjectiveValidationBestSolutionAnalyzer original, Cloner cloner) : base(original, cloner) { }
     public SymbolicClassificationSingleObjectiveValidationBestSolutionAnalyzer()
       : base() {

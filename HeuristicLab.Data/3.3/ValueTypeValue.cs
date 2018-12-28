@@ -23,11 +23,11 @@ using System;
 using System.Drawing;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Data {
   [Item("ValueTypeValue", "An abstract base class for representing values of value types.")]
-  [StorableClass]
+  [StorableType("A78FF29D-A796-463F-A93F-2528A382D99E")]
   public abstract class ValueTypeValue<T> : Item where T : struct {
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.ValueType; }
@@ -53,7 +53,7 @@ namespace HeuristicLab.Data {
     }
 
     [StorableConstructor]
-    protected ValueTypeValue(bool deserializing) : base(deserializing) { }
+    protected ValueTypeValue(StorableConstructorFlag _) : base(_) { }
     protected ValueTypeValue(ValueTypeValue<T> original, Cloner cloner)
       : base(original, cloner) {
       this.value = original.value;

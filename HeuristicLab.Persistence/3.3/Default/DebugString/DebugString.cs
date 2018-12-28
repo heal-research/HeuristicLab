@@ -19,7 +19,7 @@
  */
 #endregion
 
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Persistence.Interfaces;
 
 namespace HeuristicLab.Persistence.Default.DebugString {
@@ -38,7 +38,7 @@ namespace HeuristicLab.Persistence.Default.DebugString {
     public string Data { get; set; }
 
     [StorableConstructor]
-    protected DebugString(bool deserializing) { }
+    protected DebugString(StorableConstructorFlag _) { }
     private DebugString() { }
 
     /// <summary>

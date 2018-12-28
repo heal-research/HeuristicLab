@@ -22,21 +22,21 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Operators {
   /// <summary>
   /// An operator which acts as a placeholder for another operator retrieved from the scope or a parent execution context.
   /// </summary>
   [Item("Placeholder", "An operator which acts as a placeholder for another operator retrieved from the scope or a parent execution context.")]
-  [StorableClass]
+  [StorableType("B197A6BB-9C18-4E0B-8FE6-D4746C4892CD")]
   public sealed class Placeholder : SingleSuccessorOperator {
     public LookupParameter<IOperator> OperatorParameter {
       get { return (LookupParameter<IOperator>)Parameters["Operator"]; }
     }
 
     [StorableConstructor]
-    private Placeholder(bool deserializing) : base(deserializing) { }
+    private Placeholder(StorableConstructorFlag _) : base(_) { }
     private Placeholder(Placeholder original, Cloner cloner)
       : base(original, cloner) {
     }

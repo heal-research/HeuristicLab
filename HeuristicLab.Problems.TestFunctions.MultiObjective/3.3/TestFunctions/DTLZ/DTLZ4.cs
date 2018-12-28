@@ -22,11 +22,11 @@ using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.RealVectorEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
   [Item("DTLZ4", "Testfunction as defined as DTLZ4 in http://repository.ias.ac.in/81671/ [30.11.15]")]
-  [StorableClass]
+  [StorableType("2222AE43-E24A-4D30-93F3-496A1FE79B29")]
   public class DTLZ4 : DTLZ {
     protected override double GetBestKnownHypervolume(int objectives) {
       if (objectives == 2) return 121.0 - 1.0 / 4.0 * Math.PI;
@@ -34,7 +34,7 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
     }
 
     [StorableConstructor]
-    protected DTLZ4(bool deserializing) : base(deserializing) { }
+    protected DTLZ4(StorableConstructorFlag _) : base(_) { }
     protected DTLZ4(DTLZ4 original, Cloner cloner) : base(original, cloner) { }
     public DTLZ4() : base() { }
 

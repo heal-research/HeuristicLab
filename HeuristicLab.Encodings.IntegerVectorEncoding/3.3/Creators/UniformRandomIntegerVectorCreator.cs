@@ -22,17 +22,17 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   /// <summary>
   /// Generates a new random integer vector with each element uniformly distributed in a specified range.
   /// </summary>
   [Item("UniformRandomIntegerVectorCreator", "An operator which creates a new random int vector with each element uniformly distributed in a specified range.")]
-  [StorableClass]
+  [StorableType("23B6374A-EE3B-4487-B728-635395D5F1B7")]
   public class UniformRandomIntegerVectorCreator : IntegerVectorCreator {
     [StorableConstructor]
-    protected UniformRandomIntegerVectorCreator(bool deserializing) : base(deserializing) { }
+    protected UniformRandomIntegerVectorCreator(StorableConstructorFlag _) : base(_) { }
     protected UniformRandomIntegerVectorCreator(UniformRandomIntegerVectorCreator original, Cloner cloner) : base(original, cloner) { }
     public UniformRandomIntegerVectorCreator() : base() { }
 

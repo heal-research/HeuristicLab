@@ -28,18 +28,18 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.IntegerVectorEncoding;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.GrammaticalEvolution {
   /// <summary>
   /// BreathFirstMapper
   /// </summary>
   [Item("BreathFirstMapper", "Resolves the non-terminal symbols of the resulting phenotypic syntax tree in a breath-first manner.")]
-  [StorableClass]
+  [StorableType("7E8D7511-83C3-4F12-8883-BD20FCB58986")]
   public class BreathFirstMapper : GenotypeToPhenotypeMapper {
 
     [StorableConstructor]
-    protected BreathFirstMapper(bool deserializing) : base(deserializing) { }
+    protected BreathFirstMapper(StorableConstructorFlag _) : base(_) { }
     protected BreathFirstMapper(BreathFirstMapper original, Cloner cloner) : base(original, cloner) { }
     public BreathFirstMapper() : base() { }
 

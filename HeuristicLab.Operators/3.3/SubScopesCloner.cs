@@ -19,12 +19,8 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Common;
 using HeuristicLab.Parameters;
 using HeuristicLab.Data;
@@ -34,7 +30,7 @@ namespace HeuristicLab.Operators {
   /// An operator which creates multiple copies of the subscopes of the current scope.
   /// </summary>
   [Item("SubScopesCloner", "An operator which creates multiple copies of the subscopes of the current scope.")]
-  [StorableClass]
+  [StorableType("1F299CDC-13E0-4F12-9E2D-7D3CAC8C651C")]
   public class SubScopesCloner : SingleSuccessorOperator {
     private ScopeParameter CurrentScopeParameter {
       get { return (ScopeParameter)Parameters["CurrentScope"]; }
@@ -53,7 +49,7 @@ namespace HeuristicLab.Operators {
 
 
     [StorableConstructor]
-    protected SubScopesCloner(bool deserializing) : base(deserializing) { }
+    protected SubScopesCloner(StorableConstructorFlag _) : base(_) { }
     protected SubScopesCloner(SubScopesCloner original, Cloner cloner)
       : base(original, cloner) {
     }

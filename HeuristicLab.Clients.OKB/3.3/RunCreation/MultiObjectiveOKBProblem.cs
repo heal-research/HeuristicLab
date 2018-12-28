@@ -23,12 +23,12 @@ using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Clients.OKB.RunCreation {
   [Item("OKB Problem (multi-objective)", "Represents a multi-objective problem which is stored in the OKB.")]
   [Creatable(CreatableAttribute.Categories.TestingAndAnalysisOKB, Priority = 120)]
-  [StorableClass]
+  [StorableType("BB74E220-F721-4129-9A50-374647B16B97")]
   public sealed class MultiObjectiveOKBProblem : OKBProblem, IMultiObjectiveHeuristicOptimizationProblem, IStorableContent {
     public string Filename { get; set; }
 
@@ -46,7 +46,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
     }
 
     [StorableConstructor]
-    private MultiObjectiveOKBProblem(bool deserializing) : base(deserializing) { }
+    private MultiObjectiveOKBProblem(StorableConstructorFlag _) : base(_) { }
     private MultiObjectiveOKBProblem(MultiObjectiveOKBProblem original, Cloner cloner) : base(original, cloner) { }
     public MultiObjectiveOKBProblem() : base(new EmptyMultiObjectiveProblem("No problem selected. Please choose a multi-objective problem instance from the OKB.")) { }
 

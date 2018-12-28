@@ -24,27 +24,23 @@ using System.Drawing;
 using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Data {
   [Item("BoolValue", "Represents a boolean value.")]
-  [StorableClass]
+  [StorableType("EC318C04-84C2-4DDA-881D-B2890093162E")]
   public class BoolValue : ValueTypeValue<bool>, IComparable, IStringConvertibleValue {
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Field; }
     }
 
+    [StorableConstructor]
+    public BoolValue(StorableConstructorFlag _) : base(_) { }
     protected BoolValue(BoolValue original, Cloner cloner)
       : base(original, cloner) {
     }
     public BoolValue() : base() { }
-    [StorableConstructor]
-    public BoolValue(bool value)
-      : base(value) {
-      //mkommend: Be aware that the base call refers to the storable ctor => the value is set explicitly in the ctor body.
-      //          This should not affect the persistence, because first the ctor is called and afterwards the values are set by reflection.
-      this.value = value;
-    }
+    public BoolValue(bool value) : base(value) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new BoolValue(this, cloner);

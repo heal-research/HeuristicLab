@@ -24,14 +24,14 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Random {
   /// <summary>
   /// An operator which creates a new Mersenne Twister pseudo random number generator.
   /// </summary>
   [Item("RandomCreator", "An operator which creates a new Mersenne Twister pseudo random number generator.")]
-  [StorableClass]
+  [StorableType("78A995DA-CE6C-4693-A494-6ABBF1849CEB")]
   public sealed class RandomCreator : SingleSuccessorOperator {
     #region Parameter Properties
     public ValueLookupParameter<BoolValue> SetSeedRandomlyParameter {
@@ -64,7 +64,7 @@ namespace HeuristicLab.Random {
     #endregion
 
     [StorableConstructor]
-    private RandomCreator(bool deserializing) : base(deserializing) { }
+    private RandomCreator(StorableConstructorFlag _) : base(_) { }
     private RandomCreator(RandomCreator original, Cloner cloner) : base(original, cloner) { }
     public RandomCreator()
       : base() {

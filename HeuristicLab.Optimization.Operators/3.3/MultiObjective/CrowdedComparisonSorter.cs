@@ -27,7 +27,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Optimization.Operators {
   /// <summary>
@@ -36,7 +36,7 @@ namespace HeuristicLab.Optimization.Operators {
   /// </summary>
   [Item("CrowdedComparisonSorter", @"CrowdedComparisonSorter as described in: Deb, Pratap, Agrawal and Meyarivan, ""A Fast and Elitist Multiobjective
 Genetic Algorithm: NSGA-II"", IEEE Transactions On Evolutionary Computation, Vol. 6, No. 2, April 2002.")]
-  [StorableClass]
+  [StorableType("48F09742-454D-4BAB-A057-96BDF4ACDCE9")]
   public class CrowdedComparisonSorter : SingleSuccessorOperator {
 
     public IScopeTreeLookupParameter<IntValue> RankParameter {
@@ -48,7 +48,7 @@ Genetic Algorithm: NSGA-II"", IEEE Transactions On Evolutionary Computation, Vol
     }
 
     [StorableConstructor]
-    protected CrowdedComparisonSorter(bool deserializing) : base(deserializing) { }
+    protected CrowdedComparisonSorter(StorableConstructorFlag _) : base(_) { }
     protected CrowdedComparisonSorter(CrowdedComparisonSorter original, Cloner cloner) : base(original, cloner) { }
     public CrowdedComparisonSorter() {
       Parameters.Add(new ScopeTreeLookupParameter<IntValue>("Rank", "The rank of the solution."));

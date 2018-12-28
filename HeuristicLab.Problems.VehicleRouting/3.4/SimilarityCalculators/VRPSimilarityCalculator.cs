@@ -25,7 +25,7 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization.Operators;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.VehicleRouting.Encodings.Potvin;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
@@ -37,14 +37,15 @@ namespace HeuristicLab.Problems.VehicleRouting {
   /// The operator calculates the similarity based on the number of edges the two solutions have in common.
   /// </remarks>
   [Item("VRPSimilarityCalculator", "An operator which performs similarity calculation between two VRP solutions.")]
-  [StorableClass]
+  [StorableType("16011E6B-62F5-4165-9F8D-E4BA5191FB7E")]
   public sealed class VRPSimilarityCalculator : SingleObjectiveSolutionSimilarityCalculator {
     protected override bool IsCommutative { get { return true; } }
 
     [Storable]
     public IVRPProblemInstance ProblemInstance { get; set; }
 
-    private VRPSimilarityCalculator(bool deserializing) : base(deserializing) { }
+    [StorableConstructor]
+    private VRPSimilarityCalculator(StorableConstructorFlag _) : base(_) { }
     private VRPSimilarityCalculator(VRPSimilarityCalculator original, Cloner cloner)
       : base(original, cloner) {
       this.ProblemInstance = cloner.Clone(original.ProblemInstance);

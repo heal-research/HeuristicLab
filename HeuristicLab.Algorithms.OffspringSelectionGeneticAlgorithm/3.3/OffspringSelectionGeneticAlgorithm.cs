@@ -29,7 +29,7 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Random;
 
@@ -39,7 +39,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
   /// </summary>
   [Item("Offspring Selection Genetic Algorithm (OSGA)", "An offspring selection genetic algorithm (Affenzeller, M. et al. 2009. Genetic Algorithms and Genetic Programming - Modern Concepts and Practical Applications. CRC Press).")]
   [Creatable(CreatableAttribute.Categories.PopulationBasedAlgorithms, Priority = 120)]
-  [StorableClass]
+  [StorableType("7D0CF428-70B3-407F-A2AF-D544F115C998")]
   public sealed class OffspringSelectionGeneticAlgorithm : HeuristicOptimizationEngineAlgorithm, IStorableContent {
     public string Filename { get; set; }
 
@@ -215,7 +215,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     #endregion
 
     [StorableConstructor]
-    private OffspringSelectionGeneticAlgorithm(bool deserializing) : base(deserializing) { }
+    private OffspringSelectionGeneticAlgorithm(StorableConstructorFlag _) : base(_) { }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       // BackwardsCompatibility3.3

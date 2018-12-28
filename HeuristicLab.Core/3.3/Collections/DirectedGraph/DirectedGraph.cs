@@ -25,11 +25,11 @@ using System.Drawing;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Common.Resources;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Core {
   [Item("DirectedGraph", "Generic class representing a directed graph with custom vertices and content")]
-  [StorableClass]
+  [StorableType("C7DF8A65-95AE-4D73-950B-27A8086D7DA2")]
   public class DirectedGraph : Item, IDirectedGraph {
     public override Image ItemImage { get { return VSImageLibrary.Graph; } }
 
@@ -69,8 +69,7 @@ namespace HeuristicLab.Core {
     }
 
     [StorableConstructor]
-    protected DirectedGraph(bool serializing)
-      : base(serializing) {
+    protected DirectedGraph(StorableConstructorFlag _) : base(_) {
     }
 
     [StorableHook(HookType.AfterDeserialization)]

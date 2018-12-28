@@ -28,13 +28,13 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [Item("Gradient Boosted Trees (GBT)", "Gradient boosted trees algorithm. Specific implementation of gradient boosting for regression trees. Friedman, J. \"Greedy Function Approximation: A Gradient Boosting Machine\", IMS 1999 Reitz Lecture.")]
-  [StorableClass]
+  [StorableType("8CCB55BD-4935-4868-855F-D3E5D55127AA")]
   [Creatable(CreatableAttribute.Categories.DataAnalysisRegression, Priority = 125)]
   public class GradientBoostedTreesAlgorithm : FixedDataAnalysisAlgorithm<IRegressionProblem> {
     #region ParameterNames
@@ -129,7 +129,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     #endregion
 
     [StorableConstructor]
-    protected GradientBoostedTreesAlgorithm(bool deserializing) : base(deserializing) { }
+    protected GradientBoostedTreesAlgorithm(StorableConstructorFlag _) : base(_) { }
 
     protected GradientBoostedTreesAlgorithm(GradientBoostedTreesAlgorithm original, Cloner cloner)
       : base(original, cloner) {

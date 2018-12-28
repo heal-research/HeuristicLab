@@ -23,10 +23,10 @@ using System;
 using System.Drawing;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Core {
-  [StorableClass]
+  [StorableType("DCF34C1E-1F68-4AAB-9761-4036D58E7E75")]
   [Item("ReadOnlyItemDictionary", "Represents a read-only dictionary of items.")]
   public class ReadOnlyItemDictionary<TKey, TValue> : ReadOnlyObservableDictionary<TKey, TValue>, IItemDictionary<TKey, TValue>
     where TKey : class, IItem
@@ -49,7 +49,7 @@ namespace HeuristicLab.Core {
     }
 
     [StorableConstructor]
-    protected ReadOnlyItemDictionary(bool deserializing) : base(deserializing) { }
+    protected ReadOnlyItemDictionary(StorableConstructorFlag _) : base(_) { }
     protected ReadOnlyItemDictionary(ReadOnlyItemDictionary<TKey, TValue> original, Cloner cloner) {
       cloner.RegisterClonedObject(original, this);
       dict = cloner.Clone((IItemDictionary<TKey, TValue>)original.dict);

@@ -22,16 +22,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Optimization {
   [Item("RunCollection Sorter", "Sorts a run collection according the specified key variable.")]
-  [StorableClass]
+  [StorableType("0F64D1D2-8934-4697-B997-A8072ADB4CF3")]
   public class RunCollectionSorter : ParameterizedNamedItem, IRunCollectionModifier {
 
     public override bool CanChangeName { get { return false; } }
@@ -47,7 +46,7 @@ namespace HeuristicLab.Optimization {
 
     #region Construction & Cloning
     [StorableConstructor]
-    protected RunCollectionSorter(bool deserializing) : base(deserializing) { }
+    protected RunCollectionSorter(StorableConstructorFlag _) : base(_) { }
     protected RunCollectionSorter(RunCollectionSorter original, Cloner cloner)
       : base(original, cloner) {
       RegisterEvents();

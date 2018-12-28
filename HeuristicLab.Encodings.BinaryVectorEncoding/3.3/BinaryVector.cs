@@ -22,14 +22,14 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.BinaryVectorEncoding {
-  [StorableClass]
+  [StorableType("B349929A-675C-41F4-AEB9-EEA3121E73A9")]
   [Item("BinaryVector", "Represents a vector of binary values.")]
   public class BinaryVector : BoolArray {
     [StorableConstructor]
-    protected BinaryVector(bool deserializing) : base(deserializing) { }
+    protected BinaryVector(StorableConstructorFlag _) : base(_) { }
     protected BinaryVector(BinaryVector original, Cloner cloner) : base(original, cloner) { }
     public BinaryVector() : base() { }
     public BinaryVector(int length) : base(length) { }

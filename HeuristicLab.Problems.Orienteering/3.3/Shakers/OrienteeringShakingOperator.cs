@@ -28,7 +28,7 @@ using HeuristicLab.Encodings.IntegerVectorEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.Orienteering {
   /// <summary>
@@ -47,7 +47,7 @@ namespace HeuristicLab.Problems.Orienteering {
   /// (Schilde et. al. 2009)
   /// </summary>
   [Item("OrienteeringShakingOperator", @"Implements the shaking procedure described in Schilde M., Doerner K.F., Hartl R.F., Kiechle G. 2009. Metaheuristics for the bi-objective orienteering problem. Swarm Intelligence, Volume 3, Issue 3, pp 179-201.")]
-  [StorableClass]
+  [StorableType("D6654BD1-63CD-4057-89C8-36D1EE6EA7DF")]
   public sealed class OrienteeringShakingOperator : SingleSuccessorOperator, IMultiNeighborhoodShakingOperator, IStochasticOperator {
 
     #region Shaking Parameter Properties
@@ -88,7 +88,7 @@ namespace HeuristicLab.Problems.Orienteering {
     #endregion
 
     [StorableConstructor]
-    private OrienteeringShakingOperator(bool deserializing) : base(deserializing) { }
+    private OrienteeringShakingOperator(StorableConstructorFlag _) : base(_) { }
     private OrienteeringShakingOperator(OrienteeringShakingOperator original, Cloner cloner)
       : base(original, cloner) {
     }

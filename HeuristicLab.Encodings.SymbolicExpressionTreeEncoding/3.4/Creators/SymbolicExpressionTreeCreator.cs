@@ -23,14 +23,14 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   /// <summary>
   /// A base class for operators creating symbolic expression trees.
   /// </summary>
   [Item("SymbolicExpressionTreeCreator", "A base class for operators creating symbolic expression trees.")]
-  [StorableClass]
+  [StorableType("88CC0F00-5674-4598-A3C4-756B3B7E80CB")]
   public abstract class SymbolicExpressionTreeCreator : SymbolicExpressionTreeOperator, ISymbolicExpressionTreeCreator {
     private const string MaximumSymbolicExpressionTreeLengthParameterName = "MaximumSymbolicExpressionTreeLength";
     private const string MaximumSymbolicExpressionTreeDepthParameterName = "MaximumSymbolicExpressionTreeDepth";
@@ -55,7 +55,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     #endregion
 
     [StorableConstructor]
-    protected SymbolicExpressionTreeCreator(bool deserializing) : base(deserializing) { }
+    protected SymbolicExpressionTreeCreator(StorableConstructorFlag _) : base(_) { }
     protected SymbolicExpressionTreeCreator(SymbolicExpressionTreeCreator original, Cloner cloner) : base(original, cloner) { }
     protected SymbolicExpressionTreeCreator()
       : base() {

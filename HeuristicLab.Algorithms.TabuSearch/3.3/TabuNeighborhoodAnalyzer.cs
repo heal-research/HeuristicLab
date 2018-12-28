@@ -26,10 +26,10 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Algorithms.TabuSearch {
-  [StorableClass]
+  [StorableType("C5A3D76E-4E1F-472A-8727-D8506F3BEFEA")]
   [Item("TabuNeighborhoodAnalyzer", "Analyzes the tabu neighborhood")]
   public class TabuNeighborhoodAnalyzer : SingleSuccessorOperator, IAnalyzer {
     public virtual bool EnabledByDefault {
@@ -47,7 +47,7 @@ namespace HeuristicLab.Algorithms.TabuSearch {
     }
 
     [StorableConstructor]
-    protected TabuNeighborhoodAnalyzer(bool deserializing) : base(deserializing) { }
+    protected TabuNeighborhoodAnalyzer(StorableConstructorFlag _) : base(_) { }
     protected TabuNeighborhoodAnalyzer(TabuNeighborhoodAnalyzer original, Cloner cloner)
       : base(original, cloner) {
     }

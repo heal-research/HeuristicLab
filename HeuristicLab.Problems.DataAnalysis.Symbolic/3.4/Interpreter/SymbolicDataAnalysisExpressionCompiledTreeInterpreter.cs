@@ -29,10 +29,10 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
-  [StorableClass]
+  [StorableType("DFA06F28-E224-4D93-9907-69792D24D1F9")]
   [Item("SymbolicDataAnalysisExpressionCompiledTreeInterpreter", "Interpreter that converts the tree into a Linq.Expression then compiles it.")]
   public sealed class SymbolicDataAnalysisExpressionCompiledTreeInterpreter : ParameterizedNamedItem, ISymbolicDataAnalysisExpressionTreeInterpreter {
     private const string CheckExpressionsWithIntervalArithmeticParameterName = "CheckExpressionsWithIntervalArithmetic";
@@ -97,8 +97,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     [StorableConstructor]
-    private SymbolicDataAnalysisExpressionCompiledTreeInterpreter(bool deserializing)
-      : base(deserializing) {
+    private SymbolicDataAnalysisExpressionCompiledTreeInterpreter(StorableConstructorFlag _) : base(_) {
     }
 
     public SymbolicDataAnalysisExpressionCompiledTreeInterpreter() :

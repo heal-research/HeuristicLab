@@ -22,17 +22,17 @@
 using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.LinearLinkageEncoding {
   [Item("Split Move", "Splits a group into two groups.")]
-  [StorableClass]
+  [StorableType("98EB5FF6-A384-482B-B700-7EB012639E64")]
   public sealed class SplitMove : EMSSMove {
     [Storable]
     private int nextItem; // is only used for undo -> no public property
 
     [StorableConstructor]
-    private SplitMove(bool deserializing) : base(deserializing) { }
+    private SplitMove(StorableConstructorFlag _) : base(_) { }
     private SplitMove(SplitMove original, Cloner cloner)
       : base(original, cloner) {
       nextItem = original.nextItem;

@@ -25,7 +25,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
@@ -33,7 +33,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   /// An operator that tracks the best symbolic expression trees
   /// </summary>
   [Item("BestSymbolicExpressionTreeAnalyzer", "An operator that tracks the best symbolic expression trees")]
-  [StorableClass]
+  [StorableType("6C1884A9-F954-4E64-97DA-8831E2FF1561")]
   [NonDiscoverableType]
   public sealed class BestSymbolicExpressionTreeAnalyzer : SingleSuccessorOperator, ISymbolicExpressionTreeAnalyzer {
     private const string SymbolicExpressionTreeParameterName = "SymbolicExpressionTree";
@@ -67,7 +67,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     #endregion
 
     [StorableConstructor]
-    private BestSymbolicExpressionTreeAnalyzer(bool deserializing) : base(deserializing) { }
+    private BestSymbolicExpressionTreeAnalyzer(StorableConstructorFlag _) : base(_) { }
     private BestSymbolicExpressionTreeAnalyzer(BestSymbolicExpressionTreeAnalyzer original, Cloner cloner)
       : base(original, cloner) {
     }

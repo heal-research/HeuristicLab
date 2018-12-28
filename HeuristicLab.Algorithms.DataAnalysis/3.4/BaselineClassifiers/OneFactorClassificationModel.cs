@@ -24,11 +24,11 @@ using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
-  [StorableClass]
+  [StorableType("1FD28BA4-E30E-48E8-B868-24A5F2363DD0")]
   [Item("OneFactor Classification Model", "A model that uses only one categorical feature (factor) to determine the class.")]
   public sealed class OneFactorClassificationModel : ClassificationModel {
     public override IEnumerable<string> VariablesUsedForPrediction {
@@ -60,7 +60,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     [StorableConstructor]
-    private OneFactorClassificationModel(bool deserializing) : base(deserializing) { }
+    private OneFactorClassificationModel(StorableConstructorFlag _) : base(_) { }
     private OneFactorClassificationModel(OneFactorClassificationModel original, Cloner cloner)
       : base(original, cloner) {
       this.variable = (string)original.variable;

@@ -23,18 +23,18 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Optimization {
   [Item("Multi-Objective Heuristic Optimization Problem", "A base class for multi-objective heuristic optimization problems.")]
-  [StorableClass]
+  [StorableType("C46643E3-7144-4884-A30A-5329BD80DC4E")]
   public abstract class MultiObjectiveHeuristicOptimizationProblem<T, U> : HeuristicOptimizationProblem<T, U>, IMultiObjectiveHeuristicOptimizationProblem
     where T : class, IMultiObjectiveEvaluator
     where U : class, ISolutionCreator {
     private const string MaximizationParameterName = "Maximization";
 
     [StorableConstructor]
-    protected MultiObjectiveHeuristicOptimizationProblem(bool deserializing) : base(deserializing) { }
+    protected MultiObjectiveHeuristicOptimizationProblem(StorableConstructorFlag _) : base(_) { }
     protected MultiObjectiveHeuristicOptimizationProblem(MultiObjectiveHeuristicOptimizationProblem<T, U> original, Cloner cloner) : base(original, cloner) { }
     protected MultiObjectiveHeuristicOptimizationProblem()
       : base() {

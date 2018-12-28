@@ -25,14 +25,14 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.TestFunctions {
   /// <summary>
   /// A function that returns a random variable in [0;1) independent of the inputs.
   /// </summary
   [Item("RandomEvaluator", "Returns a random value in [0;1) that is independent of the inputs.")]
-  [StorableClass]
+  [StorableType("8D56248E-D85B-49C0-92C1-E1D53F729202")]
   public class RandomEvaluator : SingleObjectiveTestFunctionProblemEvaluator, IStochasticOperator {
     public override string FunctionName { get { return "Random"; } }
     /// <summary>
@@ -71,7 +71,7 @@ namespace HeuristicLab.Problems.TestFunctions {
     }
 
     [StorableConstructor]
-    protected RandomEvaluator(bool deserializing) : base(deserializing) { }
+    protected RandomEvaluator(StorableConstructorFlag _) : base(_) { }
     protected RandomEvaluator(RandomEvaluator original, Cloner cloner) : base(original, cloner) { }
     public RandomEvaluator()
       : base() {

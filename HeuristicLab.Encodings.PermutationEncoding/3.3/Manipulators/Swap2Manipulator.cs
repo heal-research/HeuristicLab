@@ -21,7 +21,7 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   /// <summary>
@@ -31,10 +31,10 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
   /// It is implemented as described in Eiben, A.E. and Smith, J.E. 2003. Introduction to Evolutionary Computation. Natural Computing Series, Springer-Verlag Berlin Heidelberg.
   /// </remarks>
   [Item("Swap2Manipulator", "An operator which manipulates a permutation array by swapping to randomly chosen elements. It is implemented as described in Eiben, A.E. and Smith, J.E. 2003. Introduction to Evolutionary Computation. Natural Computing Series, Springer-Verlag Berlin Heidelberg.")]
-  [StorableClass]
+  [StorableType("0909F09A-B27B-4962-8A7D-B4561A37D324")]
   public class Swap2Manipulator : PermutationManipulator {
     [StorableConstructor]
-    protected Swap2Manipulator(bool deserializing) : base(deserializing) { }
+    protected Swap2Manipulator(StorableConstructorFlag _) : base(_) { }
     protected Swap2Manipulator(Swap2Manipulator original, Cloner cloner) : base(original, cloner) { }
     public Swap2Manipulator() : base() { }
 

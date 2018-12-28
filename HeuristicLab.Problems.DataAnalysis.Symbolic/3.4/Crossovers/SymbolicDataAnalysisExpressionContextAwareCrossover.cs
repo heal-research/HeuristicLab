@@ -25,7 +25,7 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
@@ -33,10 +33,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
                                  "- Take two parent individuals P0 and P1\n" +
                                  "- Randomly choose a node N from P1\n" +
                                  "- Test all crossover points from P0 to determine the best location for N to be inserted")]
-  [StorableClass]
+  [StorableType("D4D1995A-6C51-4B41-AE08-43029AC9CF72")]
   public sealed class SymbolicDataAnalysisExpressionContextAwareCrossover<T> : SymbolicDataAnalysisExpressionCrossover<T> where T : class, IDataAnalysisProblemData {
     [StorableConstructor]
-    private SymbolicDataAnalysisExpressionContextAwareCrossover(bool deserializing) : base(deserializing) { }
+    private SymbolicDataAnalysisExpressionContextAwareCrossover(StorableConstructorFlag _) : base(_) { }
     private SymbolicDataAnalysisExpressionContextAwareCrossover(SymbolicDataAnalysisExpressionCrossover<T> original, Cloner cloner)
       : base(original, cloner) {
     }

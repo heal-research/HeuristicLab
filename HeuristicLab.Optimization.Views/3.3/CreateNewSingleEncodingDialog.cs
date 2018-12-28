@@ -22,7 +22,6 @@
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using HeuristicLab.Optimization;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Optimization.Views {

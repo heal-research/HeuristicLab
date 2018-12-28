@@ -25,14 +25,14 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Operators {
   /// <summary>
   /// An operator which applies a specified operator on all sub-scopes at the given depth of the current scope.
   /// </summary>
   [Item("UniformSubScopesProcessor", "An operator which applies a specified operator on all sub-scopes at the given depth of the current scope.")]
-  [StorableClass]
+  [StorableType("C224E539-75F9-468C-B04F-2C2EE75D2F73")]
   public sealed class UniformSubScopesProcessor : SingleSuccessorOperator {
     private OperatorParameter OperatorParameter {
       get { return (OperatorParameter)Parameters["Operator"]; }
@@ -58,7 +58,7 @@ namespace HeuristicLab.Operators {
     }
 
     [StorableConstructor]
-    private UniformSubScopesProcessor(bool deserializing) : base(deserializing) { }
+    private UniformSubScopesProcessor(StorableConstructorFlag _) : base(_) { }
     private UniformSubScopesProcessor(UniformSubScopesProcessor original, Cloner cloner)
       : base(original, cloner) {
     }

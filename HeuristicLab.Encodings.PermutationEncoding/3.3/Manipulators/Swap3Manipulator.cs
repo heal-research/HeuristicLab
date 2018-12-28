@@ -22,7 +22,7 @@
 using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   /// <summary>
@@ -33,10 +33,10 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
   /// Then position 1 is put in place of position 3, position 2 is put in place of position 1 and position 3 is put in place of position 2.
   /// </remarks>
   [Item("Swap3Manipulator", "An operator which manipulates a permutation array by swaping three randomly chosen elements. It is implemented such that first 3 positions are randomly chosen in the interval [0;N) with N = length of the permutation with all positions being distinct from each other. Then position 1 is put in place of position 3, position 2 is put in place of position 1 and position 3 is put in place of position 2.")]
-  [StorableClass]
+  [StorableType("3907489F-54DF-4774-85E6-E89CE055B56C")]
   public class Swap3Manipulator : PermutationManipulator {
     [StorableConstructor]
-    protected Swap3Manipulator(bool deserializing) : base(deserializing) { }
+    protected Swap3Manipulator(StorableConstructorFlag _) : base(_) { }
     protected Swap3Manipulator(Swap3Manipulator original, Cloner cloner) : base(original, cloner) { }
     public Swap3Manipulator() : base() { }
 

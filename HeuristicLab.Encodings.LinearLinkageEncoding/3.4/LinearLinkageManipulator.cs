@@ -24,11 +24,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.LinearLinkageEncoding {
   [Item("Linear Linkage Manipulator", "Base class for linear linkage manipulators.")]
-  [StorableClass]
+  [StorableType("88C99692-985F-4AB6-8E4F-1416E9166959")]
   public abstract class LinearLinkageManipulator : InstrumentedOperator, ILinearLinkageManipulator, IStochasticOperator {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
@@ -39,7 +39,7 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
     }
 
     [StorableConstructor]
-    protected LinearLinkageManipulator(bool deserializing) : base(deserializing) { }
+    protected LinearLinkageManipulator(StorableConstructorFlag _) : base(_) { }
     protected LinearLinkageManipulator(LinearLinkageManipulator original, Cloner cloner) : base(original, cloner) { }
     protected LinearLinkageManipulator() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator to use."));

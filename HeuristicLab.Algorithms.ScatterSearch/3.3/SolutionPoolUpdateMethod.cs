@@ -27,14 +27,14 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Algorithms.ScatterSearch {
   /// <summary>
   /// An operator that updates the solution pool.
   /// </summary>
   [Item("SolutionPoolUpdateMethod", "An operator that updates the solution pool.")]
-  [StorableClass]
+  [StorableType("F295B5C8-8551-4DFC-A38C-354E14CED2E3")]
   public sealed class SolutionPoolUpdateMethod : SingleSuccessorOperator, ISingleObjectiveOperator {
     #region Parameter properties
     public ScopeParameter CurrentScopeParameter {
@@ -78,7 +78,7 @@ namespace HeuristicLab.Algorithms.ScatterSearch {
     #endregion
 
     [StorableConstructor]
-    private SolutionPoolUpdateMethod(bool deserializing) : base(deserializing) { }
+    private SolutionPoolUpdateMethod(StorableConstructorFlag _) : base(_) { }
     private SolutionPoolUpdateMethod(SolutionPoolUpdateMethod original, Cloner cloner) : base(original, cloner) { }
     public SolutionPoolUpdateMethod()
       : base() {

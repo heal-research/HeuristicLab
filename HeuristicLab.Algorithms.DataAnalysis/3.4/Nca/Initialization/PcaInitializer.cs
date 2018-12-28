@@ -22,16 +22,16 @@
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [Item("PCA", "Initializes the matrix by performing a principal components analysis.")]
-  [StorableClass]
+  [StorableType("C08B748E-61BC-4297-9ED0-383A41A699B4")]
   public sealed class PcaInitializer : NcaInitializer {
 
     [StorableConstructor]
-    private PcaInitializer(bool deserializing) : base(deserializing) { }
+    private PcaInitializer(StorableConstructorFlag _) : base(_) { }
     private PcaInitializer(PcaInitializer original, Cloner cloner) : base(original, cloner) { }
     public PcaInitializer() : base() { }
 

@@ -19,8 +19,8 @@
  */
 #endregion
 
+using HEAL.Fossil;
 using HeuristicLab.Common;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -28,7 +28,7 @@ using System.ComponentModel;
 using System.Linq;
 
 namespace HeuristicLab.Collections {
-  [StorableClass]
+  [StorableType("EBD47A4A-848B-487C-B996-2CA2A509A488")]
   [Serializable]
   public class ObservableList<T> : IObservableList<T> {
     [Storable]
@@ -77,7 +77,7 @@ namespace HeuristicLab.Collections {
       list = new List<T>(collection);
     }
     [StorableConstructor]
-    protected ObservableList(bool deserializing) { }
+    protected ObservableList(StorableConstructorFlag _) { }
     #endregion
 
     #region Access

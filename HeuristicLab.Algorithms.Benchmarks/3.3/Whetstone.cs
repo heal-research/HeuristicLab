@@ -26,11 +26,11 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Algorithms.Benchmarks {
   [Item("Whetstone", "Whetstone performance benchmark.")]
-  [StorableClass]
+  [StorableType("95D2274E-EFC7-444C-B5CF-F087B0A3C027")]
   public sealed class Whetstone : Benchmark {
     private long begin_time;
     private long end_time;
@@ -44,7 +44,7 @@ namespace HeuristicLab.Algorithms.Benchmarks {
     private int i, j, k, l, n1, n2, n3, n4, n6, n7, n8, n9, n10, n11;
 
     [StorableConstructor]
-    private Whetstone(bool deserializing) : base(deserializing) { }
+    private Whetstone(StorableConstructorFlag _) : base(_) { }
     private Whetstone(Whetstone original, Cloner cloner) : base(original, cloner) { }
     public Whetstone() { }
 

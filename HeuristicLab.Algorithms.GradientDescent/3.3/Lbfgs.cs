@@ -30,7 +30,7 @@ using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Algorithms.GradientDescent {
@@ -39,7 +39,7 @@ namespace HeuristicLab.Algorithms.GradientDescent {
   /// </summary>
   [Item("LM-BFGS", "The limited-memory BFGS (Broyden–Fletcher–Goldfarb–Shanno) optimization algorithm.")]
   [Creatable(CreatableAttribute.Categories.SingleSolutionAlgorithms, Priority = 160)]
-  [StorableClass]
+  [StorableType("55E85596-0FC7-41B5-9B90-9A8BF33B7C55")]
   public sealed class LbfgsAlgorithm : HeuristicOptimizationEngineAlgorithm, IStorableContent {
     public override Type ProblemType {
       get { return typeof(ISingleObjectiveHeuristicOptimizationProblem); }
@@ -103,7 +103,7 @@ namespace HeuristicLab.Algorithms.GradientDescent {
     private Placeholder evaluator;
 
     [StorableConstructor]
-    private LbfgsAlgorithm(bool deserializing) : base(deserializing) { }
+    private LbfgsAlgorithm(StorableConstructorFlag _) : base(_) { }
     private LbfgsAlgorithm(LbfgsAlgorithm original, Cloner cloner)
       : base(original, cloner) {
       initializer = cloner.Clone(original.initializer);

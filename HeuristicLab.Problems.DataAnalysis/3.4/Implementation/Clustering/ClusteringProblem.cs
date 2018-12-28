@@ -21,14 +21,14 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  [StorableClass]
+  [StorableType("CB64B930-3C95-4663-B583-712B42E33712")]
   [Item("Clustering Problem", "A general clustering problem.")]
   public class ClusteringProblem : DataAnalysisProblem<IClusteringProblemData>, IClusteringProblem {
     [StorableConstructor]
-    protected ClusteringProblem(bool deserializing) : base(deserializing) { }
+    protected ClusteringProblem(StorableConstructorFlag _) : base(_) { }
     protected ClusteringProblem(ClusteringProblem original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) { return new ClusteringProblem(this, cloner); }
 

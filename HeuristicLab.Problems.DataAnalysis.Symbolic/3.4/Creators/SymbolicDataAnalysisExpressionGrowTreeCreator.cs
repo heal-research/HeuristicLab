@@ -22,16 +22,14 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.PluginInfrastructure;
-using System;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
-  [StorableClass]
+  [StorableType("161E4580-A31A-4DD5-926E-38B22E82D65F")]
   [Item("GrowTreeCreator", "An operator that creates new symbolic expression trees using the 'Grow' method")]
   public class SymbolicDataAnalysisExpressionGrowTreeCreator : GrowTreeCreator, ISymbolicDataAnalysisSolutionCreator {
     [StorableConstructor]
-    protected SymbolicDataAnalysisExpressionGrowTreeCreator(bool deserializing) : base(deserializing) { }
+    protected SymbolicDataAnalysisExpressionGrowTreeCreator(StorableConstructorFlag _) : base(_) { }
     protected SymbolicDataAnalysisExpressionGrowTreeCreator(SymbolicDataAnalysisExpressionGrowTreeCreator original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) { return new SymbolicDataAnalysisExpressionGrowTreeCreator(this, cloner); }
 

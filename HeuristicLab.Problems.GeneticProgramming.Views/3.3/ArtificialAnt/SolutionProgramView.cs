@@ -19,7 +19,6 @@
  */
 #endregion
 
-using System;
 using System.Windows.Forms;
 using HeuristicLab.Core.Views;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views;

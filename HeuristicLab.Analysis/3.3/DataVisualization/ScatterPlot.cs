@@ -28,11 +28,11 @@ using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Analysis {
   [Item("ScatterPlot", "A scatter plot of 2D data")]
-  [StorableClass]
+  [StorableType("9706C8CB-4118-400B-9AE2-A4F00D7580B5")]
   public class ScatterPlot : NamedItem, IStringConvertibleMatrix {
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Performance; }
@@ -79,7 +79,7 @@ namespace HeuristicLab.Analysis {
     #endregion
 
     [StorableConstructor]
-    protected ScatterPlot(bool deserializing) : base(deserializing) { }
+    protected ScatterPlot(StorableConstructorFlag _) : base(_) { }
     protected ScatterPlot(ScatterPlot original, Cloner cloner)
       : base(original, cloner) {
       VisualProperties = cloner.Clone(original.visualProperties);

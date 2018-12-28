@@ -27,11 +27,11 @@ using System.Linq;
 using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Data {
   [Item("StringArray", "Represents an array of strings.")]
-  [StorableClass]
+  [StorableType("E226B187-2D74-4112-A91E-830B0408D1BF")]
   public class StringArray : Item, IEnumerable<string>, IStringConvertibleArray {
     private const int maximumToStringLength = 100;
 
@@ -108,7 +108,7 @@ namespace HeuristicLab.Data {
     }
 
     [StorableConstructor]
-    protected StringArray(bool deserializing) : base(deserializing) { }
+    protected StringArray(StorableConstructorFlag _) : base(_) { }
     protected StringArray(StringArray original, Cloner cloner)
       : base(original, cloner) {
       this.array = (string[])original.array.Clone();

@@ -23,11 +23,11 @@ using System.Drawing;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.Scheduling {
   [Item("JSMForcingStrategy", "Represents a forcing strategy.")]
-  [StorableClass]
+  [StorableType("B5170DC3-AEDD-46D2-9173-E37E0EEFD456")]
   public sealed class JSMForcingStrategy : ValueTypeValue<JSMForcingStrategyTypes> {
 
     public static new Image StaticItemImage {
@@ -35,7 +35,7 @@ namespace HeuristicLab.Problems.Scheduling {
     }
 
     [StorableConstructor]
-    private JSMForcingStrategy(bool deserializing) : base(deserializing) { }
+    private JSMForcingStrategy(StorableConstructorFlag _) : base(_) { }
     private JSMForcingStrategy(JSMForcingStrategy original, Cloner cloner) : base(original, cloner) { }
     public JSMForcingStrategy() { }
     public JSMForcingStrategy(JSMForcingStrategyTypes types) : base(types) { }

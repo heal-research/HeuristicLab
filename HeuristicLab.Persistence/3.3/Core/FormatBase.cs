@@ -20,7 +20,7 @@
 #endregion
 
 using System;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Persistence.Interfaces {
 
@@ -43,7 +43,7 @@ namespace HeuristicLab.Persistence.Interfaces {
     public Type SerialDataType { get { return typeof(SerialDataFormat); } }
 
     [StorableConstructor]
-    protected FormatBase(bool deserializing) { }
+    protected FormatBase(StorableConstructorFlag _) { }
     protected FormatBase() { }
 
     /// <summary>

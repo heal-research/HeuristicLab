@@ -24,7 +24,7 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
@@ -33,10 +33,10 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   /// As described in Koza, Bennett, Andre, Keane, Genetic Programming III - Darwinian Invention and Problem Solving, 1999, pp. 108
   /// </summary>
   [Item("SubroutineDeleter", "Manipulates a symbolic expression by deleting a preexisting function-defining branch. As described in Koza, Bennett, Andre, Keane, Genetic Programming III - Darwinian Invention and Problem Solving, 1999, pp. 108")]
-  [StorableClass]
+  [StorableType("A4AB4A79-F013-4DF4-847D-5F2C171859A7")]
   public sealed class SubroutineDeleter : SymbolicExpressionTreeArchitectureManipulator {
     [StorableConstructor]
-    private SubroutineDeleter(bool deserializing) : base(deserializing) { }
+    private SubroutineDeleter(StorableConstructorFlag _) : base(_) { }
     private SubroutineDeleter(SubroutineDeleter original, Cloner cloner) : base(original, cloner) { }
     public SubroutineDeleter() : base() { }
 

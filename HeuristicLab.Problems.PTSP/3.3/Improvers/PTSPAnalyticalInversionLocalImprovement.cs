@@ -28,7 +28,7 @@ using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.PTSP {
   /// <summary>
@@ -38,7 +38,7 @@ namespace HeuristicLab.Problems.PTSP {
   /// The operator tries to improve the probabilistic traveling salesman solution by swapping two randomly chosen edges for a certain number of times.
   /// </remarks>
   [Item("PTSP Analytical Inversion Local Improvement", "An operator that improves probabilistic traveling salesman solutions. The operator tries to improve the probabilistic traveling salesman solution by swapping two randomly chosen edges for a certain number of times.")]
-  [StorableClass]
+  [StorableType("1594EB4E-A874-485A-B1D5-E622F9FF3FD8")]
   public sealed class PTSPAnalyticalInversionLocalImprovement : SingleSuccessorOperator, IAnalyticalPTSPOperator, ILocalImprovementOperator {
 
     public ILookupParameter<IntValue> LocalIterationsParameter {
@@ -78,7 +78,7 @@ namespace HeuristicLab.Problems.PTSP {
     }
 
     [StorableConstructor]
-    private PTSPAnalyticalInversionLocalImprovement(bool deserializing) : base(deserializing) { }
+    private PTSPAnalyticalInversionLocalImprovement(StorableConstructorFlag _) : base(_) { }
     private PTSPAnalyticalInversionLocalImprovement(PTSPAnalyticalInversionLocalImprovement original, Cloner cloner) : base(original, cloner) { }
     public PTSPAnalyticalInversionLocalImprovement()
       : base() {

@@ -23,12 +23,12 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.ParameterOptimization;
 
 namespace HeuristicLab.Problems.ExternalEvaluation.Matlab {
   [Item("MATLAB Parameter Optimization Problem", "Optimization of a parameter vector which is evaluated in MATLAB.")]
-  [StorableClass]
+  [StorableType("CC937102-7280-484C-BB85-88C357E31C6B")]
   [Creatable(CreatableAttribute.Categories.ExternalEvaluationProblems, Priority = 110)]
   public class MatlabParameterOptimizationProblem : ParameterOptimizationProblem {
     private const string QualityVariableParameterName = "QualityVariableName";
@@ -61,7 +61,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation.Matlab {
     #endregion
 
     [StorableConstructor]
-    protected MatlabParameterOptimizationProblem(bool deserializing) : base(deserializing) { }
+    protected MatlabParameterOptimizationProblem(StorableConstructorFlag _) : base(_) { }
     protected MatlabParameterOptimizationProblem(MatlabParameterOptimizationProblem original, Cloner cloner)
       : base(original, cloner) {
     }

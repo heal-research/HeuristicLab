@@ -25,12 +25,12 @@ using System.Reflection;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Scripting;
 
 namespace HeuristicLab.Problems.Programmable {
   [Item("ProblemDefinitionScript", "Script that defines the parameter vector and evaluates the solution for a programmable problem.")]
-  [StorableClass]
+  [StorableType("5573B778-C60C-44BF-98FB-A8E189818C00")]
   public abstract class ProblemDefinitionScript : Script, IProblemDefinition {
     protected bool SuppressEvents { get; set; }
 
@@ -44,7 +44,7 @@ namespace HeuristicLab.Problems.Programmable {
     private bool codeChanged;
 
     [StorableConstructor]
-    protected ProblemDefinitionScript(bool deserializing) : base(deserializing) { }
+    protected ProblemDefinitionScript(StorableConstructorFlag _) : base(_) { }
     protected ProblemDefinitionScript(ProblemDefinitionScript original, Cloner cloner)
       : base(original, cloner) {
       variableStore = cloner.Clone(original.variableStore);

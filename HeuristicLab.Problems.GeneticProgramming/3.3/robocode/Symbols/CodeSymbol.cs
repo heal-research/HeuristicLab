@@ -19,13 +19,12 @@
  */
 #endregion
 
-using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.GeneticProgramming.Robocode {
-  [StorableClass]
+  [StorableType("104E6124-7427-4639-A740-F68384CD8592")]
   // a symbol that can represent any user-defined fragment of code
   public sealed class CodeSymbol : Symbol {
     public override int MinimumArity { get { return 1; } }
@@ -38,7 +37,7 @@ namespace HeuristicLab.Problems.GeneticProgramming.Robocode {
     public override bool CanChangeDescription { get { return false; } }
 
     [StorableConstructor]
-    private CodeSymbol(bool deserializing) : base(deserializing) { }
+    private CodeSymbol(StorableConstructorFlag _) : base(_) { }
     private CodeSymbol(CodeSymbol original, Cloner cloner)
       : base(original, cloner) {
       Prefix = original.Prefix;

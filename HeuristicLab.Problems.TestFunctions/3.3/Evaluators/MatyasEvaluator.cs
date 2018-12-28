@@ -24,14 +24,14 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.TestFunctions {
   /// <summary>
   /// The Matyas function is implemented as described on http://www-optima.amp.i.kyoto-u.ac.jp/member/student/hedar/Hedar_files/TestGO_files/Page2213.htm, last accessed April 12th, 2010.
   /// </summary>
   [Item("MatyasEvaluator", "Evaluates the Matyas function on a given point. The optimum of this function is 0 at the origin. It is implemented as described on http://www-optima.amp.i.kyoto-u.ac.jp/member/student/hedar/Hedar_files/TestGO_files/Page2213.htm, last accessed April 12th, 2010.")]
-  [StorableClass]
+  [StorableType("5C665115-42A4-4E19-AA2F-59BEB973215C")]
   public class MatyasEvaluator : SingleObjectiveTestFunctionProblemEvaluator {
     public override string FunctionName { get { return "Matyas"; } }
     /// <summary>
@@ -66,7 +66,7 @@ namespace HeuristicLab.Problems.TestFunctions {
     }
 
     [StorableConstructor]
-    protected MatyasEvaluator(bool deserializing) : base(deserializing) { }
+    protected MatyasEvaluator(StorableConstructorFlag _) : base(_) { }
     protected MatyasEvaluator(MatyasEvaluator original, Cloner cloner) : base(original, cloner) { }
     public MatyasEvaluator() : base() { }
 

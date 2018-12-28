@@ -25,13 +25,13 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.VehicleRouting.Encodings.General;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinCustomerRelocationMultiMoveGenerator", "Generates customer relocation moves from a given VRP encoding.")]
-  [StorableClass]
+  [StorableType("F3C0FF63-0A55-49C7-A6A5-F2DEE3024B5F")]
   public sealed class PotvinCustomerRelocationMultiMoveGenerator : PotvinCustomerRelocationMoveGenerator, IMultiMoveGenerator, IMultiVRPMoveGenerator {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
@@ -46,7 +46,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
     }
 
     [StorableConstructor]
-    private PotvinCustomerRelocationMultiMoveGenerator(bool deserializing) : base(deserializing) { }
+    private PotvinCustomerRelocationMultiMoveGenerator(StorableConstructorFlag _) : base(_) { }
 
     public PotvinCustomerRelocationMultiMoveGenerator()
       : base() {

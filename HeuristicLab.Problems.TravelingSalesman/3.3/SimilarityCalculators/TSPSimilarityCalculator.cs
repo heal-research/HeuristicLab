@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HEAL.Fossil;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
@@ -39,7 +40,8 @@ namespace HeuristicLab.Problems.TravelingSalesman {
   internal sealed class TSPSimilarityCalculator : SingleObjectiveSolutionSimilarityCalculator {
     protected override bool IsCommutative { get { return true; } }
 
-    private TSPSimilarityCalculator(bool deserializing) : base(deserializing) { }
+    [StorableConstructor]
+    private TSPSimilarityCalculator(StorableConstructorFlag _) : base(_) { }
     private TSPSimilarityCalculator(TSPSimilarityCalculator original, Cloner cloner) : base(original, cloner) { }
     public TSPSimilarityCalculator() : base() { }
 

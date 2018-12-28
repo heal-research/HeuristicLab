@@ -25,10 +25,10 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
-  [StorableClass]
+  [StorableType("E9876DF8-ACFA-41C8-93B7-FA40C57CE459")]
   public abstract class SymbolicDataAnalysisMultiObjectiveProblem<T, U, V> : SymbolicDataAnalysisProblem<T, U, V>, ISymbolicDataAnalysisMultiObjectiveProblem
     where T : class,IDataAnalysisProblemData
     where U : class, ISymbolicDataAnalysisMultiObjectiveEvaluator<T>
@@ -56,7 +56,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     #endregion
 
     [StorableConstructor]
-    protected SymbolicDataAnalysisMultiObjectiveProblem(bool deserializing) : base(deserializing) { }
+    protected SymbolicDataAnalysisMultiObjectiveProblem(StorableConstructorFlag _) : base(_) { }
     protected SymbolicDataAnalysisMultiObjectiveProblem(SymbolicDataAnalysisMultiObjectiveProblem<T, U, V> original, Cloner cloner)
       : base(original, cloner) {
       RegisterEventHandler();

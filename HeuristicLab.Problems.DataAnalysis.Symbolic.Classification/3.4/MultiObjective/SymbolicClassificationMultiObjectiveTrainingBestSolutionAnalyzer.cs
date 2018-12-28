@@ -23,14 +23,14 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
   /// <summary>
   /// An operator that analyzes the training best symbolic classification solution for multi objective symbolic classification problems.
   /// </summary>
   [Item("SymbolicClassificationMultiObjectiveTrainingBestSolutionAnalyzer", "An operator that analyzes the training best symbolic classification solution for multi objective symbolic classification problems.")]
-  [StorableClass]
+  [StorableType("EC30DC99-A5A8-43B0-81C1-BA9016A0A74C")]
   public sealed class SymbolicClassificationMultiObjectiveTrainingBestSolutionAnalyzer : SymbolicDataAnalysisMultiObjectiveTrainingBestSolutionAnalyzer<ISymbolicClassificationSolution>,
     ISymbolicDataAnalysisInterpreterOperator, ISymbolicDataAnalysisBoundedOperator, ISymbolicClassificationModelCreatorOperator {
     private const string ProblemDataParameterName = "ProblemData";
@@ -57,7 +57,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     #endregion
 
     [StorableConstructor]
-    private SymbolicClassificationMultiObjectiveTrainingBestSolutionAnalyzer(bool deserializing) : base(deserializing) { }
+    private SymbolicClassificationMultiObjectiveTrainingBestSolutionAnalyzer(StorableConstructorFlag _) : base(_) { }
     private SymbolicClassificationMultiObjectiveTrainingBestSolutionAnalyzer(SymbolicClassificationMultiObjectiveTrainingBestSolutionAnalyzer original, Cloner cloner) : base(original, cloner) { }
     public SymbolicClassificationMultiObjectiveTrainingBestSolutionAnalyzer()
       : base() {

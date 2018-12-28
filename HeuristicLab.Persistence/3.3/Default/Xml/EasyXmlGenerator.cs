@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using HEAL.Fossil;
 using HeuristicLab.Persistence.Auxiliary;
 using HeuristicLab.Persistence.Core;
 using HeuristicLab.Persistence.Core.Tokens;
@@ -180,7 +181,7 @@ namespace HeuristicLab.Persistence.Default.Xml {
     public static void Serialize(object obj, Stream stream, Configuration config) {
       try {
         using (StreamWriter writer = new StreamWriter(stream)) {
-          Serializer serializer = new Serializer(obj, config);
+          Core.Serializer serializer = new Core.Serializer(obj, config);
           serializer.InterleaveTypeInformation = true;
           ReadableXmlGenerator generator = new ReadableXmlGenerator();
           foreach (ISerializationToken token in serializer) {

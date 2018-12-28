@@ -26,18 +26,18 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Analysis {
   [Item("RankBasedParetoFrontAnalyzer", "Uses the rank value that is computed by e.g. the NSGA2's fast non dominated sort operator to collect all solutions and their qualities of front 0 (the current Pareto front).")]
-  [StorableClass]
+  [StorableType("9F314FB6-6BA2-4CC8-843B-B68CF01F7BE7")]
   public class RankBasedParetoFrontAnalyzer : ParetoFrontAnalyzer {
     public IScopeTreeLookupParameter<IntValue> RankParameter {
       get { return (IScopeTreeLookupParameter<IntValue>)Parameters["Rank"]; }
     }
 
     [StorableConstructor]
-    protected RankBasedParetoFrontAnalyzer(bool deserializing) : base(deserializing) { }
+    protected RankBasedParetoFrontAnalyzer(StorableConstructorFlag _) : base(_) { }
     protected RankBasedParetoFrontAnalyzer(RankBasedParetoFrontAnalyzer original, Cloner cloner) : base(original, cloner) { }
     public RankBasedParetoFrontAnalyzer() {
       Parameters.Add(new ScopeTreeLookupParameter<IntValue>("Rank", "The rank of solution [0..N] describes to which front it belongs."));

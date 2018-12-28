@@ -23,13 +23,13 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   /// <summary>
   /// Abstract base class for multi objective symbolic data analysis analyzers.
   /// </summary>
-  [StorableClass]
+  [StorableType("C9896773-7A11-4D68-86EC-DB04AE075637")]
   public abstract class SymbolicDataAnalysisMultiObjectiveAnalyzer : SymbolicDataAnalysisAnalyzer, ISymbolicDataAnalysisMultiObjectiveAnalyzer {
     private const string QualitiesParameterName = "Qualities";
     private const string MaximizationParameterName = "Maximization";
@@ -54,7 +54,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
     #endregion
     [StorableConstructor]
-    protected SymbolicDataAnalysisMultiObjectiveAnalyzer(bool deserializing) : base(deserializing) { }
+    protected SymbolicDataAnalysisMultiObjectiveAnalyzer(StorableConstructorFlag _) : base(_) { }
     protected SymbolicDataAnalysisMultiObjectiveAnalyzer(SymbolicDataAnalysisMultiObjectiveAnalyzer original, Cloner cloner)
       : base(original, cloner) {
     }

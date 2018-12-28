@@ -22,7 +22,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using HeuristicLab.Data;
 using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Random;
 

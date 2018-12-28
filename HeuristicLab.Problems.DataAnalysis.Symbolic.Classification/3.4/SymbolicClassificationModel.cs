@@ -24,13 +24,13 @@ using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
   /// <summary>
   /// Represents a symbolic classification model
   /// </summary>
-  [StorableClass]
+  [StorableType("8AEAF4A5-839D-4070-A348-440E79110C74")]
   [Item(Name = "SymbolicClassificationModel", Description = "Represents a symbolic classification model.")]
   public abstract class SymbolicClassificationModel : SymbolicDataAnalysisModel, ISymbolicClassificationModel {
     [Storable]
@@ -45,8 +45,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     }
 
     [StorableConstructor]
-    protected SymbolicClassificationModel(bool deserializing)
-      : base(deserializing) {
+    protected SymbolicClassificationModel(StorableConstructorFlag _) : base(_) {
       targetVariable = string.Empty;
     }
 

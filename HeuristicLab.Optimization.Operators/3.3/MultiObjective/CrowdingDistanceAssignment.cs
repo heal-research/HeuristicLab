@@ -27,11 +27,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Optimization.Operators {
   [Item("CrowdingDistanceAssignment", "Calculates the crowding distances for each sub-scope as described in Deb et al. 2002. A Fast and Elitist Multiobjective Genetic Algorithm: NSGA-II. IEEE Transactions on Evolutionary Computation, 6(2), pp. 182-197.")]
-  [StorableClass]
+  [StorableType("F7DF8B74-F1E6-45D6-A1A8-5D381F20B382")]
   public class CrowdingDistanceAssignment : SingleSuccessorOperator, IMultiObjectiveOperator {
 
     public ScopeTreeLookupParameter<DoubleArray> QualitiesParameter {
@@ -47,7 +47,7 @@ namespace HeuristicLab.Optimization.Operators {
     }
 
     [StorableConstructor]
-    protected CrowdingDistanceAssignment(bool deserializing) : base(deserializing) { }
+    protected CrowdingDistanceAssignment(StorableConstructorFlag _) : base(_) { }
     protected CrowdingDistanceAssignment(CrowdingDistanceAssignment original, Cloner cloner) : base(original, cloner) { }
     public CrowdingDistanceAssignment() {
       Parameters.Add(new ScopeTreeLookupParameter<DoubleArray>("Qualities", "The vector of quality values."));

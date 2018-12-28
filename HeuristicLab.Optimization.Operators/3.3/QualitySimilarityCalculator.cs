@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HEAL.Fossil;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -35,7 +36,8 @@ namespace HeuristicLab.Optimization.Operators {
   public sealed class QualitySimilarityCalculator : SingleObjectiveSolutionSimilarityCalculator {
     protected override bool IsCommutative { get { return true; } }
 
-    private QualitySimilarityCalculator(bool deserializing) : base(deserializing) { }
+    [StorableConstructor]
+    private QualitySimilarityCalculator(StorableConstructorFlag _) : base(_) { }
     private QualitySimilarityCalculator(QualitySimilarityCalculator original, Cloner cloner) : base(original, cloner) { }
     public QualitySimilarityCalculator() : base() { }
 

@@ -24,9 +24,9 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis {
-  [StorableClass]
+  [StorableType("938BBDA4-0A01-4144-932D-AF1DA30E9747")]
   public abstract class SymbolicTimeSeriesPrognosisSingleObjectiveEvaluator : SymbolicDataAnalysisSingleObjectiveEvaluator<ITimeSeriesPrognosisProblemData>, ISymbolicTimeSeriesPrognosisSingleObjectiveEvaluator {
     private const string HorizonParameterName = "Horizon";
     public IValueLookupParameter<IntValue> HorizonParameter {
@@ -34,7 +34,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis {
     }
 
     [StorableConstructor]
-    protected SymbolicTimeSeriesPrognosisSingleObjectiveEvaluator(bool deserializing) : base(deserializing) { }
+    protected SymbolicTimeSeriesPrognosisSingleObjectiveEvaluator(StorableConstructorFlag _) : base(_) { }
     protected SymbolicTimeSeriesPrognosisSingleObjectiveEvaluator(SymbolicTimeSeriesPrognosisSingleObjectiveEvaluator original, Cloner cloner)
       : base(original, cloner) {
     }

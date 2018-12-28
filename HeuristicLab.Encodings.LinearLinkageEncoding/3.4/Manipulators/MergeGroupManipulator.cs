@@ -24,11 +24,11 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.LinearLinkageEncoding {
   [Item("Merge Group Manipulator", "Performs a maximum of N merge operations on the groups. An already merged group may be merged again.")]
-  [StorableClass]
+  [StorableType("FE35BB56-D2B9-4309-ABF4-8C366D8596BC")]
   public sealed class MergeGroupManipulator : LinearLinkageManipulator {
 
     public IValueLookupParameter<IntValue> NParameter {
@@ -36,7 +36,7 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
     }
 
     [StorableConstructor]
-    private MergeGroupManipulator(bool deserializing) : base(deserializing) { }
+    private MergeGroupManipulator(StorableConstructorFlag _) : base(_) { }
     private MergeGroupManipulator(MergeGroupManipulator original, Cloner cloner) : base(original, cloner) { }
     public MergeGroupManipulator() {
       Parameters.Add(new ValueLookupParameter<IntValue>("N", "The number of groups to merge.", new IntValue(1)));

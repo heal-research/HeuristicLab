@@ -27,12 +27,12 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   [Item("IntegerVectorEncoding", "Describes an integer vector encoding.")]
-  [StorableClass]
+  [StorableType("15D6E55E-C39F-4784-8350-14A0FD47CF0E")]
   public sealed class IntegerVectorEncoding : Encoding<IIntegerVectorCreator> {
     #region Encoding Parameters
     [Storable]
@@ -77,7 +77,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
     }
 
     [StorableConstructor]
-    private IntegerVectorEncoding(bool deserializing) : base(deserializing) { }
+    private IntegerVectorEncoding(StorableConstructorFlag _) : base(_) { }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       RegisterParameterEvents();

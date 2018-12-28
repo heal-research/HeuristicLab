@@ -29,14 +29,14 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Algorithms.LocalSearch {
   /// <summary>
   /// A local search improvement operator.
   /// </summary>
   [Item("LocalSearchImprovementOperator", "A local search improvement operator.")]
-  [StorableClass]
+  [StorableType("40424217-DBA8-4787-A38A-2AE7130CB69D")]
   public sealed class LocalSearchImprovementOperator : SingleSuccessorOperator, ILocalImprovementAlgorithmOperator, IStochasticOperator, ISingleObjectiveOperator {
     #region IGenericLocalImprovementOperator Properties
     public Type ProblemType { get { return typeof(ISingleObjectiveHeuristicOptimizationProblem); } }
@@ -117,7 +117,7 @@ namespace HeuristicLab.Algorithms.LocalSearch {
     #endregion
 
     [StorableConstructor]
-    private LocalSearchImprovementOperator(bool deserializing) : base(deserializing) { }
+    private LocalSearchImprovementOperator(StorableConstructorFlag _) : base(_) { }
     private LocalSearchImprovementOperator(LocalSearchImprovementOperator original, Cloner cloner)
       : base(original, cloner) {
       this.loop = cloner.Clone(original.loop);

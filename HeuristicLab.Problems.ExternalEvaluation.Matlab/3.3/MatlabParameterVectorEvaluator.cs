@@ -26,12 +26,12 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.ParameterOptimization;
 
 namespace HeuristicLab.Problems.ExternalEvaluation.Matlab {
   [Item("MATLABParameterVectorEvaluator", "An evaluator which takes a parameter vector and returns a quality value, calculated by a MATLAB script.")]
-  [StorableClass]
+  [StorableType("C1BE88E2-B48F-4EB6-9F9F-25082639DA5C")]
   public sealed class MatlabParameterVectorEvaluator : ParameterVectorEvaluator {
     private const string QualityVariableParameterName = "QualityVariableName";
     private const string MatlabEvaluationScriptParameterName = "MATLABEvaluationScript";
@@ -50,7 +50,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation.Matlab {
     #endregion
 
     [StorableConstructor]
-    private MatlabParameterVectorEvaluator(bool deserializing) : base(deserializing) { }
+    private MatlabParameterVectorEvaluator(StorableConstructorFlag _) : base(_) { }
     private MatlabParameterVectorEvaluator(MatlabParameterVectorEvaluator original, Cloner cloner)
       : base(original, cloner) {
     }

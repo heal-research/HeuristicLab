@@ -28,7 +28,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.DataAnalysis;
 using LibSVM;
 
@@ -38,7 +38,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// </summary>
   [Item("Support Vector Classification (SVM)", "Support vector machine classification data analysis algorithm (wrapper for libSVM).")]
   [Creatable(CreatableAttribute.Categories.DataAnalysisClassification, Priority = 110)]
-  [StorableClass]
+  [StorableType("F15289E4-B648-4A92-AB01-14D769A33967")]
   public sealed class SupportVectorClassification : FixedDataAnalysisAlgorithm<IClassificationProblem> {
     private const string SvmTypeParameterName = "SvmType";
     private const string KernelTypeParameterName = "KernelType";
@@ -98,7 +98,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
     #endregion
     [StorableConstructor]
-    private SupportVectorClassification(bool deserializing) : base(deserializing) { }
+    private SupportVectorClassification(StorableConstructorFlag _) : base(_) { }
     private SupportVectorClassification(SupportVectorClassification original, Cloner cloner)
       : base(original, cloner) {
     }

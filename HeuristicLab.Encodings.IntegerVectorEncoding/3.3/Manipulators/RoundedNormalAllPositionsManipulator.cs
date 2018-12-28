@@ -24,7 +24,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Encodings.IntegerVectorEncoding {
@@ -33,7 +33,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   /// in the sigma parameter vector and rounds the result to the next feasible value.
   /// </summary>
   [Item("RoundedNormalAllPositionsManipulator", "This manipulation operator adds a value sigma_i * N_i(0,1) to the current value in each position i given the values for sigma_i in the parameter. The result is rounded to the next feasible value. If there are less elements in Sigma than positions, then Sigma is cycled.")]
-  [StorableClass]
+  [StorableType("CDAE115B-1BAD-4CC2-B63E-E3C45955175D")]
   public class RoundedNormalAllPositionsManipulator : BoundedIntegerVectorManipulator {
 
     public IValueParameter<DoubleArray> SigmaParameter {
@@ -41,7 +41,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
     }
 
     [StorableConstructor]
-    protected RoundedNormalAllPositionsManipulator(bool deserializing) : base(deserializing) { }
+    protected RoundedNormalAllPositionsManipulator(StorableConstructorFlag _) : base(_) { }
     protected RoundedNormalAllPositionsManipulator(RoundedNormalAllPositionsManipulator original, Cloner cloner) : base(original, cloner) { }
     /// <summary>
     /// Initializes a new instance of <see cref="RoundedNormalAllPositionsManipulator"/> with one

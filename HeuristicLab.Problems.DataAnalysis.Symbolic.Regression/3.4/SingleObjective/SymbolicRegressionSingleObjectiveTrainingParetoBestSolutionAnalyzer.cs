@@ -22,18 +22,18 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   /// <summary>
   /// An operator that collects the training Pareto-best symbolic regression solutions for single objective symbolic regression problems.
   /// </summary>
   [Item("SymbolicRegressionSingleObjectiveTrainingParetoBestSolutionAnalyzer", "An operator that collects the training Pareto-best symbolic regression solutions for single objective symbolic regression problems.")]
-  [StorableClass]
+  [StorableType("8FDF5528-8E95-44D6-AFFD-433B4AA55559")]
   public sealed class SymbolicRegressionSingleObjectiveTrainingParetoBestSolutionAnalyzer : SymbolicDataAnalysisSingleObjectiveTrainingParetoBestSolutionAnalyzer<IRegressionProblemData, ISymbolicRegressionSolution> {
 
     [StorableConstructor]
-    private SymbolicRegressionSingleObjectiveTrainingParetoBestSolutionAnalyzer(bool deserializing) : base(deserializing) { }
+    private SymbolicRegressionSingleObjectiveTrainingParetoBestSolutionAnalyzer(StorableConstructorFlag _) : base(_) { }
     private SymbolicRegressionSingleObjectiveTrainingParetoBestSolutionAnalyzer(SymbolicRegressionSingleObjectiveTrainingParetoBestSolutionAnalyzer original, Cloner cloner) : base(original, cloner) { }
     public SymbolicRegressionSingleObjectiveTrainingParetoBestSolutionAnalyzer() : base() { }
     public override IDeepCloneable Clone(Cloner cloner) {

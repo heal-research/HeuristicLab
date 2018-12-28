@@ -24,11 +24,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.LinearLinkageEncoding {
   [Item("StochasticSwap2MultiMoveGenerator", "Randomly samples n from all possible swap-2 moves from a given lle grouping.")]
-  [StorableClass]
+  [StorableType("156E5EAE-D929-41CE-844E-7DECE09CB74B")]
   public class StochasticSwap2MultiMoveGenerator : Swap2MoveGenerator, IMultiMoveGenerator, IStochasticOperator {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
@@ -43,7 +43,7 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
     }
 
     [StorableConstructor]
-    protected StochasticSwap2MultiMoveGenerator(bool deserializing) : base(deserializing) { }
+    protected StochasticSwap2MultiMoveGenerator(StorableConstructorFlag _) : base(_) { }
     protected StochasticSwap2MultiMoveGenerator(StochasticSwap2MultiMoveGenerator original, Cloner cloner) : base(original, cloner) { }
     public StochasticSwap2MultiMoveGenerator()
       : base() {

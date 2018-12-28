@@ -21,14 +21,14 @@
 
 
 using HeuristicLab.Common;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Trading.Symbolic {
-  [StorableClass]
+  [StorableType("0EEE96AC-9D20-4154-BDA8-0A34C4D5658A")]
   public abstract class SingleObjectiveEvaluator : SymbolicDataAnalysisSingleObjectiveEvaluator<IProblemData>, ISingleObjectiveEvaluator {
     [StorableConstructor]
-    protected SingleObjectiveEvaluator(bool deserializing) : base(deserializing) { }
+    protected SingleObjectiveEvaluator(StorableConstructorFlag _) : base(_) { }
     protected SingleObjectiveEvaluator(SingleObjectiveEvaluator original, Cloner cloner)
       : base(original, cloner) {
     }

@@ -23,14 +23,14 @@ using System;
 using System.Reflection;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Parameters {
   /// <summary>
   /// A parameter whose value is defined in the parameter itself.
   /// </summary>
   [Item("ValueParameter", "A parameter whose value is defined in the parameter itself.")]
-  [StorableClass]
+  [StorableType("CB9B83B6-DE2B-45CC-AB0B-C551E1A6E0BD")]
   public class ValueParameter<T> : OptionalValueParameter<T> where T : class, IItem {
     public override T Value {
       get { return base.Value; }
@@ -41,7 +41,7 @@ namespace HeuristicLab.Parameters {
     }
 
     [StorableConstructor]
-    protected ValueParameter(bool deserializing) : base(deserializing) { }
+    protected ValueParameter(StorableConstructorFlag _) : base(_) { }
     protected ValueParameter(ValueParameter<T> original, Cloner cloner) : base(original, cloner) { }
 
     public ValueParameter() : base() { }

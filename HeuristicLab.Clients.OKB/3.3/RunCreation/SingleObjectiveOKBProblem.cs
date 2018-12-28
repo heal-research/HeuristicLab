@@ -23,12 +23,12 @@ using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Clients.OKB.RunCreation {
   [Item("OKB Problem (single-objective)", "Represents a single-objective problem which is stored in the OKB.")]
   [Creatable(CreatableAttribute.Categories.TestingAndAnalysisOKB, Priority = 110)]
-  [StorableClass]
+  [StorableType("1A1DF6E8-4A3F-4D91-9B1D-6FF6EC8D1055")]
   public sealed class SingleObjectiveOKBProblem : OKBProblem, ISingleObjectiveHeuristicOptimizationProblem, IStorableContent {
     public string Filename { get; set; }
 
@@ -49,7 +49,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
     }
 
     [StorableConstructor]
-    private SingleObjectiveOKBProblem(bool deserializing) : base(deserializing) { }
+    private SingleObjectiveOKBProblem(StorableConstructorFlag _) : base(_) { }
     private SingleObjectiveOKBProblem(SingleObjectiveOKBProblem original, Cloner cloner) : base(original, cloner) { }
     public SingleObjectiveOKBProblem() : base(new EmptySingleObjectiveProblem("No problem selected. Please choose a single-objective problem instance from the OKB.")) { }
 

@@ -25,13 +25,13 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.VehicleRouting.Encodings.General;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinTwoOptStarMultiMoveGenerator", "Generates two opt star moves from a given VRP encoding.")]
-  [StorableClass]
+  [StorableType("4CA15027-BFF3-4D23-9AAA-291BCC4C9BCC")]
   public sealed class PotvinTwoOptStarMultiMoveGenerator : PotvinTwoOptStarMoveGenerator, IMultiMoveGenerator, IMultiVRPMoveGenerator {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
@@ -46,7 +46,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
     }
 
     [StorableConstructor]
-    private PotvinTwoOptStarMultiMoveGenerator(bool deserializing) : base(deserializing) { }
+    private PotvinTwoOptStarMultiMoveGenerator(StorableConstructorFlag _) : base(_) { }
 
     public PotvinTwoOptStarMultiMoveGenerator()
       : base() {

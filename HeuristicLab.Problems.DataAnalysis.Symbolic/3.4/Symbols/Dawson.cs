@@ -22,9 +22,9 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
-  [StorableClass]
+  [StorableType("41CB51E4-CDD0-4082-8E4F-9F4D66376C92")]
   [Item("Dawson", "Symbol that represents dawsons integral.")]
   public sealed class Dawson : Symbol {
     private const int minimumArity = 1;
@@ -38,7 +38,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     [StorableConstructor]
-    private Dawson(bool deserializing) : base(deserializing) { }
+    private Dawson(StorableConstructorFlag _) : base(_) { }
     private Dawson(Dawson original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new Dawson(this, cloner);

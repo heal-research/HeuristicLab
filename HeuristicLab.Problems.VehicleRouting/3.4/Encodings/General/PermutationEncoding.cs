@@ -24,12 +24,12 @@ using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
   [Item("PermutationEncoding", "Represents a base class for permutation encodings of VRP solutions.")]
-  [StorableClass]
+  [StorableType("070CEB2B-0A37-4EE1-87DA-1D80F6D88B4A")]
   public abstract class PermutationEncoding : Permutation, IVRPEncoding {
     #region IVRPEncoding Members
     public abstract List<Tour> GetTours();
@@ -76,8 +76,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
     }
 
     [StorableConstructor]
-    protected PermutationEncoding(bool serializing)
-      : base() {
+    protected PermutationEncoding(StorableConstructorFlag _) : base(_) {
     }
 
     public int IndexOf(int city) {

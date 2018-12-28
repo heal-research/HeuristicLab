@@ -23,15 +23,15 @@ using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Operators;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   [Item("IntegerVectorOperator", "Base class for integer vectoro operators.")]
-  [StorableClass]
+  [StorableType("6B380738-453C-4E60-B4AB-B3907BB5D9E2")]
   public abstract class IntegerVectorOperator : InstrumentedOperator, IIntegerVectorOperator {
 
     [StorableConstructor]
-    protected IntegerVectorOperator(bool deserializing) : base(deserializing) { }
+    protected IntegerVectorOperator(StorableConstructorFlag _) : base(_) { }
     protected IntegerVectorOperator(IntegerVectorOperator original, Cloner cloner) : base(original, cloner) { }
     public IntegerVectorOperator() : base() { }
 

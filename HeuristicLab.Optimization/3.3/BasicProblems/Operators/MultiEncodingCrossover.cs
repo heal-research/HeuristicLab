@@ -21,14 +21,14 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Optimization {
   [Item("MultiEncoding Crossover", "Applies different crossovers to cross a multi-encoding.")]
-  [StorableClass]
+  [StorableType("BB0A04E2-899D-460C-82A2-5E4CEEDE8996")]
   public sealed class MultiEncodingCrossover : MultiEncodingOperator<ICrossover>, ICrossover {
     [StorableConstructor]
-    private MultiEncodingCrossover(bool deserializing) : base(deserializing) { }
+    private MultiEncodingCrossover(StorableConstructorFlag _) : base(_) { }
     private MultiEncodingCrossover(MultiEncodingCrossover original, Cloner cloner) : base(original, cloner) { }
     public MultiEncodingCrossover() { }
 

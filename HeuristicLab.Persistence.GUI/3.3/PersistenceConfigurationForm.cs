@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using HEAL.Fossil;
 using HeuristicLab.Persistence.Auxiliary;
 using HeuristicLab.Persistence.Core;
 using HeuristicLab.Persistence.Interfaces;

@@ -23,13 +23,13 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using HeuristicLab.Common;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Operators.Views.GraphVisualization {
-  [StorableClass]
+  [StorableType("330945A7-D7AF-42B9-91D2-06C1B00BC078")]
   public abstract class ShapeInfo : DeepCloneable, IShapeInfo {
     [StorableConstructor]
-    protected ShapeInfo(bool deserializing) : base() { }
+    protected ShapeInfo(StorableConstructorFlag _) { }
     protected ShapeInfo(ShapeInfo original, Cloner cloner)
       : base(original, cloner) {
       location = original.location;

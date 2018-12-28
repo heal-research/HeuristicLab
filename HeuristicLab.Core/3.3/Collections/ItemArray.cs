@@ -25,10 +25,10 @@ using System.Drawing;
 using System.Linq;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Core {
-  [StorableClass]
+  [StorableType("CB8A238C-B8E6-47A3-A7D8-AB1212DEC672")]
   [Item("ItemArray", "Represents an array of items.")]
   public class ItemArray<T> : ObservableArray<T>, IItemArray<T> where T : class, IItem {
     public virtual string ItemName {
@@ -48,7 +48,7 @@ namespace HeuristicLab.Core {
     }
 
     [StorableConstructor]
-    protected ItemArray(bool deserializing) : base(deserializing) { }
+    protected ItemArray(StorableConstructorFlag _) : base(_) { }
     protected ItemArray(ItemArray<T> original, Cloner cloner) {
       cloner.RegisterClonedObject(original, this);
       array = original.Select(x => cloner.Clone(x)).ToArray();

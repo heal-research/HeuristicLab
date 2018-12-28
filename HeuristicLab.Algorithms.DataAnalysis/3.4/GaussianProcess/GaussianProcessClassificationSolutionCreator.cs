@@ -25,11 +25,11 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
-  [StorableClass]
+  [StorableType("A2DE805A-046B-40C5-AB14-2AF633A2FB2F")]
   [Item(Name = "GaussianProcessClassificationSolutionCreator",
     Description = "Creates a Gaussian process solution from a trained model.")]
   public sealed class GaussianProcessClassificationSolutionCreator : SingleSuccessorOperator {
@@ -60,7 +60,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     #endregion
 
     [StorableConstructor]
-    private GaussianProcessClassificationSolutionCreator(bool deserializing) : base(deserializing) { }
+    private GaussianProcessClassificationSolutionCreator(StorableConstructorFlag _) : base(_) { }
     private GaussianProcessClassificationSolutionCreator(GaussianProcessClassificationSolutionCreator original, Cloner cloner) : base(original, cloner) { }
     public GaussianProcessClassificationSolutionCreator()
       : base() {

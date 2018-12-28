@@ -24,18 +24,18 @@ using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis {
   /// <summary>
   /// Represents a threshold calculator that calculates thresholds as the cutting points between the estimated class distributions (assuming normally distributed class values).
   /// </summary>
-  [StorableClass]
+  [StorableType("D01CB5DC-606B-4CE9-B293-2D4D80A70BB8")]
   [Item("NormalDistributionCutPointsThresholdCalculator", "Represents a threshold calculator that calculates thresholds as the cutting points between the estimated class distributions (assuming normally distributed class values).")]
   public class NormalDistributionCutPointsThresholdCalculator : ThresholdCalculator {
 
     [StorableConstructor]
-    protected NormalDistributionCutPointsThresholdCalculator(bool deserializing) : base(deserializing) { }
+    protected NormalDistributionCutPointsThresholdCalculator(StorableConstructorFlag _) : base(_) { }
     protected NormalDistributionCutPointsThresholdCalculator(NormalDistributionCutPointsThresholdCalculator original, Cloner cloner)
       : base(original, cloner) {
     }

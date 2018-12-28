@@ -23,14 +23,14 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.NK {
   [Item("Average Bit Binary Vector Comparer", "Compares two binary vectors by their average positive bit location")]
-  [StorableClass]
+  [StorableType("F782E957-3D46-40BC-B152-045F9E2BE330")]
   public sealed class AverageBitBinaryVectorComparer : Item, IBinaryVectorComparer {
     [StorableConstructor]
-    private AverageBitBinaryVectorComparer(bool deserializing) : base(deserializing) { }
+    private AverageBitBinaryVectorComparer(StorableConstructorFlag _) : base(_) { }
     private AverageBitBinaryVectorComparer(AverageBitBinaryVectorComparer original, Cloner cloner)
       : base(original, cloner) { }
     public AverageBitBinaryVectorComparer() { }

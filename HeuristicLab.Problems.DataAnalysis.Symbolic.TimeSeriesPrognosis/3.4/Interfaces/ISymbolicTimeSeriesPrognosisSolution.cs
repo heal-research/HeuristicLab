@@ -20,7 +20,6 @@
 #endregion
 
 
-using HeuristicLab.Problems.DataAnalysis.Symbolic;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis {
   public interface ISymbolicTimeSeriesPrognosisSolution : ITimeSeriesPrognosisSolution, ISymbolicDataAnalysisSolution {
     new ISymbolicTimeSeriesPrognosisModel Model { get; }

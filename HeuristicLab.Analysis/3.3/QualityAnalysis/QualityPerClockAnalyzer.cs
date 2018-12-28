@@ -27,11 +27,11 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Analysis {
   [Item("QualityPerClockAnalyzer", @"Creates a plot of the solution quality with respect to the elapsed wall-clock time.")]
-  [StorableClass]
+  [StorableType("23410F61-AEE0-44BD-B721-2C4B33A1F4FE")]
   public class QualityPerClockAnalyzer : SingleSuccessorOperator, IAnalyzer, ISingleObjectiveOperator {
     public virtual bool EnabledByDefault {
       get { return false; }
@@ -50,7 +50,7 @@ namespace HeuristicLab.Analysis {
     }
 
     [StorableConstructor]
-    protected QualityPerClockAnalyzer(bool deserializing) : base(deserializing) { }
+    protected QualityPerClockAnalyzer(StorableConstructorFlag _) : base(_) { }
     protected QualityPerClockAnalyzer(QualityPerClockAnalyzer original, Cloner cloner) : base(original, cloner) { }
     public QualityPerClockAnalyzer()
       : base() {

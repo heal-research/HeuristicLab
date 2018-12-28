@@ -26,10 +26,10 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  [StorableClass]
+  [StorableType("68E790CA-24B3-4127-B06B-24E5D3078E52")]
   [Item("TimeSeriesPrognosisProblemData", "Represents an item containing all data defining a time series prognosis problem.")]
   public class TimeSeriesPrognosisProblemData : RegressionProblemData, ITimeSeriesPrognosisProblemData {
     #region default data
@@ -1570,7 +1570,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     #endregion
 
     [StorableConstructor]
-    protected TimeSeriesPrognosisProblemData(bool deserializing) : base(deserializing) { }
+    protected TimeSeriesPrognosisProblemData(StorableConstructorFlag _) : base(_) { }
 
     protected TimeSeriesPrognosisProblemData(TimeSeriesPrognosisProblemData original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {

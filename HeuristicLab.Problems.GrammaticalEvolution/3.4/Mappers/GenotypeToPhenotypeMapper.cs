@@ -28,7 +28,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.IntegerVectorEncoding;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.GrammaticalEvolution.Mappers;
 using HeuristicLab.Random;
 
@@ -36,11 +36,11 @@ namespace HeuristicLab.Problems.GrammaticalEvolution {
   /// <summary>
   /// Abstract base class for GenotypeToPhenotypeMappers
   /// </summary>
-  [StorableClass]
+  [StorableType("427C4EB7-7888-4AB2-824A-E1F2EB1DE2FA")]
   public abstract class GenotypeToPhenotypeMapper : IntegerVectorOperator, IGenotypeToPhenotypeMapper {
 
     [StorableConstructor]
-    protected GenotypeToPhenotypeMapper(bool deserializing) : base(deserializing) { }
+    protected GenotypeToPhenotypeMapper(StorableConstructorFlag _) : base(_) { }
     protected GenotypeToPhenotypeMapper(GenotypeToPhenotypeMapper original, Cloner cloner) : base(original, cloner) { }
     protected GenotypeToPhenotypeMapper() : base() { }
 

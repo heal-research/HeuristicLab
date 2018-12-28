@@ -21,14 +21,14 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Zhu {
   [Item("ZhuHeuristicCrossover1", "The Zhu Heuristic Crossover (Version 1). It is implemented as described in Zhu, K.Q. (2000). A New Genetic Algorithm For VRPTW. Proceedings of the International Conference on Artificial Intelligence.")]
-  [StorableClass]
+  [StorableType("C3E48066-FD84-428E-89E7-DD0A8322535E")]
   public sealed class ZhuHeuristicCrossover1 : ZhuCrossover {
     [StorableConstructor]
-    private ZhuHeuristicCrossover1(bool deserializing) : base(deserializing) { }
+    private ZhuHeuristicCrossover1(StorableConstructorFlag _) : base(_) { }
 
     public ZhuHeuristicCrossover1()
       : base() {

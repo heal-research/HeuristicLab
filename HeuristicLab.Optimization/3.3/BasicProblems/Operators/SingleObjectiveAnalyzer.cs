@@ -27,11 +27,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Optimization {
   [Item("Single-objective Analyzer", "Calls the script's Analyze method to be able to write into the results collection.")]
-  [StorableClass]
+  [StorableType("3D20F8E2-CE11-4021-A05B-CFCB02C0FD6F")]
   public sealed class SingleObjectiveAnalyzer : SingleSuccessorOperator, ISingleObjectiveAnalysisOperator, IAnalyzer, IStochasticOperator {
     public bool EnabledByDefault { get { return true; } }
 
@@ -54,7 +54,7 @@ namespace HeuristicLab.Optimization {
     public Action<Individual[], double[], ResultCollection, IRandom> AnalyzeAction { get; set; }
 
     [StorableConstructor]
-    private SingleObjectiveAnalyzer(bool deserializing) : base(deserializing) { }
+    private SingleObjectiveAnalyzer(StorableConstructorFlag _) : base(_) { }
     private SingleObjectiveAnalyzer(SingleObjectiveAnalyzer original, Cloner cloner) : base(original, cloner) { }
     public SingleObjectiveAnalyzer() {
       Parameters.Add(new LookupParameter<IEncoding>("Encoding", "An item that holds the problem's encoding."));

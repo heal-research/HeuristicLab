@@ -30,10 +30,10 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
-  [StorableClass]
+  [StorableType("83603E95-3CBD-476C-B11F-B30C80ACD0D3")]
   [Item("SymbolicDataAnalysisSingleObjectivePruningAnalyzer", "An analyzer that prunes introns from trees in single objective symbolic data analysis problems.")]
   public abstract class SymbolicDataAnalysisSingleObjectivePruningAnalyzer : SymbolicDataAnalysisSingleObjectiveAnalyzer {
     #region parameter names
@@ -116,7 +116,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     #endregion
 
     [StorableConstructor]
-    protected SymbolicDataAnalysisSingleObjectivePruningAnalyzer(bool deserializing) : base(deserializing) { }
+    protected SymbolicDataAnalysisSingleObjectivePruningAnalyzer(StorableConstructorFlag _) : base(_) { }
 
     protected SymbolicDataAnalysisSingleObjectivePruningAnalyzer(SymbolicDataAnalysisSingleObjectivePruningAnalyzer original, Cloner cloner)
       : base(original, cloner) {

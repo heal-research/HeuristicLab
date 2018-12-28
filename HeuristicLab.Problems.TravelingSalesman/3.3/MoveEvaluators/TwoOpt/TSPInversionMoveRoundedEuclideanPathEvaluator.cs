@@ -22,17 +22,17 @@
 using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.TravelingSalesman {
   /// <summary>
   /// An operator to evaluate inversion moves (2-opt).
   /// </summary>
   [Item("TSPInversionMoveRoundedEuclideanPathEvaluator", "Operator for evaluating an inversion move (2-opt) based on rounded euclidean distances.")]
-  [StorableClass]
+  [StorableType("84BE355F-BC76-4765-885F-CFCAEDA93DFD")]
   public class TSPInversionMoveRoundedEuclideanPathEvaluator : TSPInversionMovePathEvaluator {
     [StorableConstructor]
-    protected TSPInversionMoveRoundedEuclideanPathEvaluator(bool deserializing) : base(deserializing) { }
+    protected TSPInversionMoveRoundedEuclideanPathEvaluator(StorableConstructorFlag _) : base(_) { }
     protected TSPInversionMoveRoundedEuclideanPathEvaluator(TSPInversionMoveRoundedEuclideanPathEvaluator original, Cloner cloner) : base(original, cloner) { }
     public TSPInversionMoveRoundedEuclideanPathEvaluator() : base() { }
 

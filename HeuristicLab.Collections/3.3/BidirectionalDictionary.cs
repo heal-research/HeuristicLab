@@ -20,13 +20,12 @@
 #endregion
 
 using System;
-using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Collections {
-  [StorableClass]
+  [StorableType("6D8354FC-521A-4D6B-A544-2C9892D0A36C")]
   [Serializable]
   public class BidirectionalDictionary<TFirst, TSecond> : IEnumerable<KeyValuePair<TFirst, TSecond>> {
     [Storable]
@@ -35,7 +34,7 @@ namespace HeuristicLab.Collections {
     private readonly Dictionary<TSecond, TFirst> secondToFirst;
 
     [StorableConstructor]
-    protected BidirectionalDictionary(bool deserializing) : base() { }
+    protected BidirectionalDictionary(StorableConstructorFlag _) : base() { }
     public BidirectionalDictionary() {
       firstToSecond = new Dictionary<TFirst, TSecond>();
       secondToFirst = new Dictionary<TSecond, TFirst>();

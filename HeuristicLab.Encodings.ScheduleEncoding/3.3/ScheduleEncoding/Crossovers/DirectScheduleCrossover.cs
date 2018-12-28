@@ -22,14 +22,14 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding.ScheduleEncoding {
   [Item("DirectScheduleCrossover", "An operator which crosses two schedule representations.")]
-  [StorableClass]
+  [StorableType("841CA966-FDB0-4C0D-BBE2-6A3422DF94CD")]
   public abstract class DirectScheduleCrossover : ScheduleCrossover, IDirectScheduleOperator {
     [StorableConstructor]
-    protected DirectScheduleCrossover(bool deserializing) : base(deserializing) { }
+    protected DirectScheduleCrossover(StorableConstructorFlag _) : base(_) { }
     protected DirectScheduleCrossover(DirectScheduleCrossover original, Cloner cloner) : base(original, cloner) { }
     public DirectScheduleCrossover()
       : base() {

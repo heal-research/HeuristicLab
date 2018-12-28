@@ -23,15 +23,15 @@ using System;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.LinearLinkageEncoding {
   [Item("Random Linear Linkage Creator", "Creates a random linear linkage LLE encoded solution (similar to MaxGroups set to N).")]
-  [StorableClass]
+  [StorableType("A2B2881B-BFB6-4902-BE59-DBF26E27B498")]
   public sealed class RandomLinearLinkageCreator : LinearLinkageCreator {
 
     [StorableConstructor]
-    private RandomLinearLinkageCreator(bool deserializing) : base(deserializing) { }
+    private RandomLinearLinkageCreator(StorableConstructorFlag _) : base(_) { }
     private RandomLinearLinkageCreator(RandomLinearLinkageCreator original, Cloner cloner) : base(original, cloner) { }
     public RandomLinearLinkageCreator() { }
 

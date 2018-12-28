@@ -1,16 +1,16 @@
 ﻿using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.BinPacking;
 
 namespace HeuristicLab.Problems.BinPacking3D {
   [Item("Bin Packing Solution (3d)", "Represents a solution for a 3D bin packing problem.")]
-  [StorableClass]
+  [StorableType("C0620C6F-3882-45CD-976F-4840ABD08BCD")]
   public class Solution : PackingPlan<PackingPosition, PackingShape, PackingItem> {
     public Solution(PackingShape binShape) : this(binShape, false, false) { }
     public Solution(PackingShape binShape, bool useExtremePoints, bool stackingConstraints) : base(binShape, useExtremePoints, stackingConstraints) { }
     [StorableConstructor]
-    protected Solution(bool deserializing) : base(deserializing) { }
+    protected Solution(StorableConstructorFlag _) : base(_) { }
     protected Solution(Solution original, Cloner cloner)
       : base(original, cloner) {
     }

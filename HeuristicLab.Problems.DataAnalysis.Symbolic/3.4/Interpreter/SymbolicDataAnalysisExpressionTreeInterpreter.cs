@@ -21,16 +21,15 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
-  [StorableClass]
+  [StorableType("FB94F333-B32A-44FB-A561-CBDE76693D20")]
   [Item("SymbolicDataAnalysisExpressionTreeInterpreter", "Interpreter for symbolic expression trees including automatically defined functions.")]
   public class SymbolicDataAnalysisExpressionTreeInterpreter : ParameterizedNamedItem,
     ISymbolicDataAnalysisExpressionTreeInterpreter {
@@ -69,7 +68,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     #endregion
 
     [StorableConstructor]
-    protected SymbolicDataAnalysisExpressionTreeInterpreter(bool deserializing) : base(deserializing) { }
+    protected SymbolicDataAnalysisExpressionTreeInterpreter(StorableConstructorFlag _) : base(_) { }
 
     protected SymbolicDataAnalysisExpressionTreeInterpreter(SymbolicDataAnalysisExpressionTreeInterpreter original,
       Cloner cloner)

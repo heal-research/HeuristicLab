@@ -26,17 +26,17 @@ using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
 
-  [StorableClass]
+  [StorableType("59B5B5B9-0F49-4994-B221-856AA43C28B4")]
   internal sealed class EmptySymbolicExpressionTreeGrammar : NamedItem, ISymbolicExpressionTreeGrammar {
     [Storable]
     private ISymbolicExpressionGrammar grammar;
 
     [StorableConstructor]
-    private EmptySymbolicExpressionTreeGrammar(bool deserializing) : base(deserializing) { }
+    private EmptySymbolicExpressionTreeGrammar(StorableConstructorFlag _) : base(_) { }
     internal EmptySymbolicExpressionTreeGrammar(ISymbolicExpressionGrammar grammar)
       : base() {
       if (grammar == null) throw new ArgumentNullException();

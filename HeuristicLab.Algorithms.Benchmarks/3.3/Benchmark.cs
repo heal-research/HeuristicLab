@@ -25,11 +25,11 @@ using System.Threading;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Algorithms.Benchmarks {
   [Item("Benchmark", "Base class for benchmarks.")]
-  [StorableClass]
+  [StorableType("0715912F-4F40-40F6-AC08-677CC4F76819")]
   public abstract class Benchmark : IBenchmark {
     public virtual string ItemName {
       get { return ItemAttribute.GetName(this.GetType()); }
@@ -62,7 +62,7 @@ namespace HeuristicLab.Algorithms.Benchmarks {
     }
 
     [StorableConstructor]
-    protected Benchmark(bool deserializing) { }
+    protected Benchmark(StorableConstructorFlag _) { }
     protected Benchmark(Benchmark original, Cloner cloner) {
       cloner.RegisterClonedObject(original, this);
     }

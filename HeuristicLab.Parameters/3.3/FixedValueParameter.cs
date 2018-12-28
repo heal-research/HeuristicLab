@@ -22,14 +22,14 @@
 using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Parameters {
   /// <summary>
   /// A parameter whose value is defined in the parameter itself.
   /// </summary>
   [Item("FixedValueParameter", "A parameter whose value is defined in the parameter itself and cannot be set.")]
-  [StorableClass]
+  [StorableType("7787B99D-5F32-4639-B47A-76CB4D204392")]
   public class FixedValueParameter<T> : ValueParameter<T>, IFixedValueParameter<T> where T : class,IItem, new() {
 
     public override T Value {
@@ -40,7 +40,7 @@ namespace HeuristicLab.Parameters {
     IItem IFixedValueParameter.Value { get { return Value; } }
 
     [StorableConstructor]
-    protected FixedValueParameter(bool deserializing) : base(deserializing) { }
+    protected FixedValueParameter(StorableConstructorFlag _) : base(_) { }
     protected FixedValueParameter(FixedValueParameter<T> original, Cloner cloner) : base(original, cloner) { }
 
     public FixedValueParameter() : base() { }

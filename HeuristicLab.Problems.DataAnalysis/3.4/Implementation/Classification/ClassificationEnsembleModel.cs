@@ -23,13 +23,13 @@ using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis {
   /// <summary>
   /// Represents classification solutions that contain an ensemble of multiple classification models
   /// </summary>
-  [StorableClass]
+  [StorableType("0F720A40-5CC2-4E2B-8D4E-CCAD8EB56E43")]
   [Item("ClassificationEnsembleModel", "A classification model that contains an ensemble of multiple classification models")]
   public class ClassificationEnsembleModel : ClassificationModel, IClassificationEnsembleModel {
     public override IEnumerable<string> VariablesUsedForPrediction {
@@ -43,7 +43,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     [StorableConstructor]
-    protected ClassificationEnsembleModel(bool deserializing) : base(deserializing) { }
+    protected ClassificationEnsembleModel(StorableConstructorFlag _) : base(_) { }
     protected ClassificationEnsembleModel(ClassificationEnsembleModel original, Cloner cloner)
       : base(original, cloner) {
       this.models = original.Models.Select(m => cloner.Clone(m)).ToList();

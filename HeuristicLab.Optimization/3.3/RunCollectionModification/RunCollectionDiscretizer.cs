@@ -22,18 +22,17 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Optimization {
   [Item("RunCollection Discretizer",
     "Creates several levels from the distribution of a certain result accross a run collection and " +
     "assigns a discretized value. Non-existing numbers as well as NaN and infinities are excluded from the caluclation.")]
-  [StorableClass]
+  [StorableType("6EFD185F-FE23-4E23-90F0-63CB9D38E57D")]
   public class RunCollectionDiscretizer : ParameterizedNamedItem, IRunCollectionModifier {
 
     public override bool CanChangeName { get { return false; } }
@@ -68,7 +67,7 @@ namespace HeuristicLab.Optimization {
 
       #region Construction & Cloning
     [StorableConstructor]
-    protected RunCollectionDiscretizer(bool deserializing) : base(deserializing) { }
+    protected RunCollectionDiscretizer(StorableConstructorFlag _) : base(_) { }
     protected RunCollectionDiscretizer(RunCollectionDiscretizer original, Cloner cloner)
       : base(original, cloner) {
       RegisterEvents();

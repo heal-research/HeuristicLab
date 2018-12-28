@@ -27,7 +27,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
@@ -35,7 +35,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
   /// A shaking operator for VNS.
   /// </summary>
   [Item("PermutationShakingOperator", "A shaking operator for VNS which uses available manipulation operators to perform the shaking.")]
-  [StorableClass]
+  [StorableType("632B3164-EEE1-4DAC-BB91-651A1CE2EED1")]
   public class PermutationShakingOperator : ShakingOperator<IPermutationManipulator>, IPermutationMultiNeighborhoodShakingOperator, IStochasticOperator {
 
     public ILookupParameter<Permutation> PermutationParameter {
@@ -47,7 +47,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     }
 
     [StorableConstructor]
-    protected PermutationShakingOperator(bool deserializing) : base(deserializing) { }
+    protected PermutationShakingOperator(StorableConstructorFlag _) : base(_) { }
     protected PermutationShakingOperator(PermutationShakingOperator original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new PermutationShakingOperator(this, cloner);

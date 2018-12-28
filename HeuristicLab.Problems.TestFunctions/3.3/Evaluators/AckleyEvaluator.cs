@@ -24,7 +24,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.TestFunctions {
   /// <summary>
@@ -32,7 +32,7 @@ namespace HeuristicLab.Problems.TestFunctions {
   /// is highly multimodal. It has a single global minimum at the origin with value 0.
   /// </summary
   [Item("AckleyEvaluator", "Evaluates the Ackley function on a given point. The optimum of this function is 0 at the origin. It is implemented as described in Eiben, A.E. and Smith, J.E. 2003. Introduction to Evolutionary Computation. Natural Computing Series, Springer-Verlag Berlin Heidelberg.")]
-  [StorableClass]
+  [StorableType("AB46422C-A915-4BC5-B2F7-F6F4794E87D2")]
   public class AckleyEvaluator : SingleObjectiveTestFunctionProblemEvaluator {
     public override string FunctionName { get { return "Ackley"; } }
     /// <summary>
@@ -67,7 +67,7 @@ namespace HeuristicLab.Problems.TestFunctions {
     }
 
     [StorableConstructor]
-    protected AckleyEvaluator(bool deserializing) : base(deserializing) { }
+    protected AckleyEvaluator(StorableConstructorFlag _) : base(_) { }
     protected AckleyEvaluator(AckleyEvaluator original, Cloner cloner) : base(original, cloner) { }
     public AckleyEvaluator() : base() { }
 

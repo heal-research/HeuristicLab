@@ -23,16 +23,16 @@ using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.ExternalEvaluation {
   [Item("TimeSpanValueConverter", "Converts a TimeSpanValue and adds it to the SolutionMessage's StringVars. The format is d.hh:mm:ss, e.g. 1113.10:55:00 (1113 days 10 hours, 55 minutes, 0 seconds).")]
-  [StorableClass]
+  [StorableType("4617C8B5-89CF-42B5-82B5-C57E9B924C0F")]
   public class TimeSpanValueConverter : Item, IItemToSolutionMessageConverter {
     private static readonly Type[] itemTypes = new Type[] { typeof(TimeSpanValue) };
 
     [StorableConstructor]
-    protected TimeSpanValueConverter(bool deserializing) : base(deserializing) { }
+    protected TimeSpanValueConverter(StorableConstructorFlag _) : base(_) { }
     protected TimeSpanValueConverter(TimeSpanValueConverter original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new TimeSpanValueConverter(this, cloner);

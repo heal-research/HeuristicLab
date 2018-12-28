@@ -24,10 +24,10 @@ using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
-  [StorableClass]
+  [StorableType("C65B207C-2E95-4764-8698-D0B1D1EECCF1")]
   [Item(Name = "CovarianceProduct",
     Description = "Product covariance function for Gaussian processes.")]
   public sealed class CovarianceProduct : Item, ICovarianceFunction {
@@ -41,8 +41,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     [StorableConstructor]
-    private CovarianceProduct(bool deserializing)
-      : base(deserializing) {
+    private CovarianceProduct(StorableConstructorFlag _) : base(_) {
     }
 
     private CovarianceProduct(CovarianceProduct original, Cloner cloner)

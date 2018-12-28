@@ -24,7 +24,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// <summary>
@@ -35,7 +35,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// Note that the implementation is a bit more general than the operator described by Dumitrescu et al. There the alpha parameter was defined to be fixed at 0.5 and thus calculating the average at some positions.
   /// </remarks>
   [Item("UniformSomePositionsArithmeticCrossover", "The uniform some positions arithmetic crossover (continuous recombination) constructs an offspring by calculating x = alpha * p1 + (1-alpha) * p2 for a position x in the vector with a given probability (otherwise p1 is taken at this position). It is implemented as described in Dumitrescu, D. et al. (2000), Evolutionary computation, CRC Press, Boca Raton, FL, p. 191. Note that Dumitrescu et al. specify the alpha to be 0.5.")]
-  [StorableClass]
+  [StorableType("54FF8CE9-72E4-4C39-AF00-F38A548EDDD6")]
   public class UniformSomePositionsArithmeticCrossover : RealVectorCrossover {
     /// <summary>
     /// The alpha parameter needs to be in the interval [0;1] and specifies how close the resulting offspring should be either to parent1 (alpha -> 0) or parent2 (alpha -> 1).
@@ -51,7 +51,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     }
 
     [StorableConstructor]
-    protected UniformSomePositionsArithmeticCrossover(bool deserializing) : base(deserializing) { }
+    protected UniformSomePositionsArithmeticCrossover(StorableConstructorFlag _) : base(_) { }
     protected UniformSomePositionsArithmeticCrossover(UniformSomePositionsArithmeticCrossover original, Cloner cloner) : base(original, cloner) { }
     /// <summary>
     /// Initializes a new instance with two parameters (<c>Alpha</c> and <c>Probability</c>).

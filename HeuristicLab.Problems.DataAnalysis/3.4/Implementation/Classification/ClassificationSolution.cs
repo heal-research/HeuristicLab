@@ -22,19 +22,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis {
   /// <summary>
   /// Represents a classification data analysis solution
   /// </summary>
-  [StorableClass]
+  [StorableType("A240D831-23D6-4432-A105-12D02D2EA75A")]
   public class ClassificationSolution : ClassificationSolutionBase {
     protected readonly Dictionary<int, double> evaluationCache;
 
     [StorableConstructor]
-    protected ClassificationSolution(bool deserializing)
-      : base(deserializing) {
+    protected ClassificationSolution(StorableConstructorFlag _) : base(_) {
       evaluationCache = new Dictionary<int, double>();
     }
     protected ClassificationSolution(ClassificationSolution original, Cloner cloner)

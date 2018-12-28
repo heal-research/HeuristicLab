@@ -24,18 +24,18 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("StochasticTranslocationSingleMoveGenerator", "Randomly samples one from all possible translocation and insertion moves (3-opt) from a given permutation.")]
-  [StorableClass]
+  [StorableType("E084E519-132B-4D01-ABDF-1B5B2976219E")]
   public class StochasticTranslocationSingleMoveGenerator : TranslocationMoveGenerator, IStochasticOperator, ISingleMoveGenerator {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
     }
 
     [StorableConstructor]
-    protected StochasticTranslocationSingleMoveGenerator(bool deserializing) : base(deserializing) { }
+    protected StochasticTranslocationSingleMoveGenerator(StorableConstructorFlag _) : base(_) { }
     protected StochasticTranslocationSingleMoveGenerator(StochasticTranslocationSingleMoveGenerator original, Cloner cloner) : base(original, cloner) { }
     public StochasticTranslocationSingleMoveGenerator()
       : base() {

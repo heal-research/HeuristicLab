@@ -25,14 +25,14 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.NK {
   [Item("IncreasingBlockSizeInteractionsInitializer", "Randomly assignes interactions across all bits but makes sure that different numbers of ineractions are applied to different bits.")]
-  [StorableClass]
+  [StorableType("E4AAEDCA-6A90-45AE-AFD5-B200A50ACAB8")]
   public sealed class IncreasingBlockSizeInteractionsInitializer : ParameterizedNamedItem, IInteractionInitializer {
     [StorableConstructor]
-    private IncreasingBlockSizeInteractionsInitializer(bool serializing) : base(serializing) { }
+    private IncreasingBlockSizeInteractionsInitializer(StorableConstructorFlag _) : base(_) { }
     private IncreasingBlockSizeInteractionsInitializer(IncreasingBlockSizeInteractionsInitializer original, Cloner cloner) : base(original, cloner) { }
     public IncreasingBlockSizeInteractionsInitializer() { }
     public override IDeepCloneable Clone(Cloner cloner) {

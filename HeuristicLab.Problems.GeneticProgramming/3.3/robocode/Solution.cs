@@ -22,10 +22,10 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.GeneticProgramming.Robocode {
-  [StorableClass]
+  [StorableType("09AA644E-2092-4108-BAAB-4C0B85C56C07")]
   [Item("Solution", "Robocode program and configuration.")]
   public sealed class Solution : Item {
     [Storable]
@@ -41,7 +41,7 @@ namespace HeuristicLab.Problems.GeneticProgramming.Robocode {
     public EnemyCollection Enemies { get; set; }
 
     [StorableConstructor]
-    private Solution(bool deserializing) : base(deserializing) { }
+    private Solution(StorableConstructorFlag _) : base(_) { }
     private Solution(Solution original, Cloner cloner)
       : base(original, cloner) {
       Tree = cloner.Clone(original.Tree);

@@ -22,9 +22,8 @@
 using System;
 using System.Collections;
 using System.Text;
+using HEAL.Fossil;
 using HeuristicLab.Persistence.Auxiliary;
-using HeuristicLab.Persistence.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Persistence.Default.Xml.Compact {
 

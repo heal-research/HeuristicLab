@@ -24,11 +24,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using HEAL.Fossil;
 using HeuristicLab.Common;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Collections {
-  [StorableClass]
+  [StorableType("8F8986E7-943C-4CD7-9710-F13F13B48097")]
   [Serializable]
   public class ObservableArray<T> : IObservableArray<T> {
     [Storable]
@@ -74,7 +74,7 @@ namespace HeuristicLab.Collections {
       array = collection.ToArray();
     }
     [StorableConstructor]
-    protected ObservableArray(bool deserializing) { }
+    protected ObservableArray(StorableConstructorFlag _) { }
     #endregion
 
     #region Access

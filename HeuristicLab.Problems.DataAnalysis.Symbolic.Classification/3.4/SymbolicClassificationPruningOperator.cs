@@ -27,10 +27,10 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
-  [StorableClass]
+  [StorableType("F213025F-ACE7-4E43-A149-70C3AD824D19")]
   [Item("SymbolicClassificationPruningOperator", "An operator which prunes symbolic classificaton trees.")]
   public class SymbolicClassificationPruningOperator : SymbolicDataAnalysisExpressionPruningOperator {
     private const string ModelCreatorParameterName = "ModelCreator";
@@ -52,7 +52,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     public override IDeepCloneable Clone(Cloner cloner) { return new SymbolicClassificationPruningOperator(this, cloner); }
 
     [StorableConstructor]
-    protected SymbolicClassificationPruningOperator(bool deserializing) : base(deserializing) { }
+    protected SymbolicClassificationPruningOperator(StorableConstructorFlag _) : base(_) { }
 
     public SymbolicClassificationPruningOperator(ISymbolicDataAnalysisSolutionImpactValuesCalculator impactValuesCalculator)
       : base(impactValuesCalculator) {

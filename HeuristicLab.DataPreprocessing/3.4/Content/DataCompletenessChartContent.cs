@@ -22,11 +22,11 @@
 using System.Drawing;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.DataPreprocessing {
   [Item("Data Completeness Chart", "Represents a datacompleteness chart.")]
-  [StorableClass]
+  [StorableType("C3709BBA-D024-482C-9D28-E15B1F2B2F54")]
   public class DataCompletenessChartContent : PreprocessingContent, IViewShortcut {
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.EditBrightnessContrast; }
@@ -45,8 +45,7 @@ namespace HeuristicLab.DataPreprocessing {
     }
 
     [StorableConstructor]
-    protected DataCompletenessChartContent(bool deserializing)
-      : base(deserializing) { }
+    protected DataCompletenessChartContent(StorableConstructorFlag _) : base(_) { }
     #endregion
   }
 }

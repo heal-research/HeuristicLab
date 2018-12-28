@@ -21,10 +21,10 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  [StorableClass]
+  [StorableType("D5A42FE7-D21B-48F7-A812-FE69724D0098")]
   [Item(Name = "Constant Classification Solution", Description = "Represents a constant classification solution (model + data).")]
   public class ConstantClassificationSolution : ClassificationSolution {
     public new ConstantModel Model {
@@ -33,7 +33,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     [StorableConstructor]
-    protected ConstantClassificationSolution(bool deserializing) : base(deserializing) { }
+    protected ConstantClassificationSolution(StorableConstructorFlag _) : base(_) { }
     protected ConstantClassificationSolution(ConstantClassificationSolution original, Cloner cloner) : base(original, cloner) { }
     public ConstantClassificationSolution(ConstantModel model, IClassificationProblemData problemData)
       : base(model, problemData) {

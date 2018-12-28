@@ -27,7 +27,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Analysis {
   // use HeuristicLab.Analysis.SingleObjectivePopulationDiversityAnalyzer instead
@@ -38,7 +38,7 @@ namespace HeuristicLab.Analysis {
   /// </summary>
   [Obsolete]
   [Item("PopulationDiversityAnalyzer", "An operator for analyzing the solution diversity in a population.")]
-  [StorableClass]
+  [StorableType("58DAB745-C7AB-464B-8894-705E45FE0C7A")]
   public abstract class PopulationDiversityAnalyzer<T> : SingleSuccessorOperator, IAnalyzer, ISingleObjectiveOperator where T : class, IItem {
     public virtual bool EnabledByDefault {
       get { return false; }
@@ -67,7 +67,7 @@ namespace HeuristicLab.Analysis {
     }
 
     [StorableConstructor]
-    protected PopulationDiversityAnalyzer(bool deserializing) : base(deserializing) { }
+    protected PopulationDiversityAnalyzer(StorableConstructorFlag _) : base(_) { }
     protected PopulationDiversityAnalyzer(PopulationDiversityAnalyzer<T> original, Cloner cloner) : base(original, cloner) { }
     public PopulationDiversityAnalyzer()
       : base() {

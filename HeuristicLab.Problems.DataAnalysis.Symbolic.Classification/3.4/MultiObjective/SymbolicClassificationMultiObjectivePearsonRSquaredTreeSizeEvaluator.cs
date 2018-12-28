@@ -24,14 +24,14 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
   [Item("Pearson R² & Tree size Evaluator", "Calculates the Pearson R² and the tree size of a symbolic classification solution.")]
-  [StorableClass]
+  [StorableType("3131A57B-5F87-4CAD-A0BE-E1E03D6D8276")]
   public class SymbolicClassificationMultiObjectivePearsonRSquaredTreeSizeEvaluator : SymbolicClassificationMultiObjectiveEvaluator {
     [StorableConstructor]
-    protected SymbolicClassificationMultiObjectivePearsonRSquaredTreeSizeEvaluator(bool deserializing) : base(deserializing) { }
+    protected SymbolicClassificationMultiObjectivePearsonRSquaredTreeSizeEvaluator(StorableConstructorFlag _) : base(_) { }
     protected SymbolicClassificationMultiObjectivePearsonRSquaredTreeSizeEvaluator(SymbolicClassificationMultiObjectivePearsonRSquaredTreeSizeEvaluator original, Cloner cloner)
       : base(original, cloner) {
     }

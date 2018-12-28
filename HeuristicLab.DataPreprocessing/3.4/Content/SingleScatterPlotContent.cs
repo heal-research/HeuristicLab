@@ -22,11 +22,11 @@
 using System.Drawing;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.DataPreprocessing {
   [Item("Scatter Plot", "Represents a scatter plot.")]
-  [StorableClass]
+  [StorableType("7DED0A9A-8999-483F-9F4E-130B7B8A0E76")]
   public class SingleScatterPlotContent : ScatterPlotContent {
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Performance; }
@@ -52,8 +52,7 @@ namespace HeuristicLab.DataPreprocessing {
     }
 
     [StorableConstructor]
-    protected SingleScatterPlotContent(bool deserializing)
-      : base(deserializing) { }
+    protected SingleScatterPlotContent(StorableConstructorFlag _) : base(_) { }
     #endregion
   }
 }

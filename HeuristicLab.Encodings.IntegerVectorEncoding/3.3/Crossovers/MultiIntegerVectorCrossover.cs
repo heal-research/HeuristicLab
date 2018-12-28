@@ -28,12 +28,12 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   [Item("MultiIntegerVectorCrossover", "Randomly selects and applies one of its crossovers every time it is called.")]
-  [StorableClass]
+  [StorableType("EC482D88-4258-48D3-BCD2-C6FC013C8FED")]
   public class MultiIntegerVectorCrossover : StochasticMultiBranch<IIntegerVectorCrossover>, IIntegerVectorCrossover, IStochasticOperator, IBoundedIntegerVectorOperator {
     public override bool CanChangeName {
       get { return false; }
@@ -55,7 +55,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
     }
 
     [StorableConstructor]
-    protected MultiIntegerVectorCrossover(bool deserializing) : base(deserializing) { }
+    protected MultiIntegerVectorCrossover(StorableConstructorFlag _) : base(_) { }
     protected MultiIntegerVectorCrossover(MultiIntegerVectorCrossover original, Cloner cloner) : base(original, cloner) { }
     public MultiIntegerVectorCrossover()
       : base() {

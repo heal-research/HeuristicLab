@@ -28,7 +28,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
@@ -36,7 +36,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// 1R classification algorithm.
   /// </summary>
   [Item("OneR Classification", "A simple classification algorithm the searches the best single-variable split (does not support categorical features correctly). See R.C. Holte (1993). Very simple classification rules perform well on most commonly used datasets. Machine Learning. 11:63-91.")]
-  [StorableClass]
+  [StorableType("22D1C518-CEDA-413C-8997-D34BC06B6267")]
   public sealed class OneR : FixedDataAnalysisAlgorithm<IClassificationProblem> {
 
     public IValueParameter<IntValue> MinBucketSizeParameter {
@@ -44,7 +44,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     [StorableConstructor]
-    private OneR(bool deserializing) : base(deserializing) { }
+    private OneR(StorableConstructorFlag _) : base(_) { }
 
     private OneR(OneR original, Cloner cloner)
       : base(original, cloner) { }

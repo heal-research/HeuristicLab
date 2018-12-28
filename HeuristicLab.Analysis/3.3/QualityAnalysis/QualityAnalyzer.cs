@@ -27,14 +27,14 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Analysis {
   /// <summary>
   /// An operator which analyzes the quality of solutions in the scope tree.
   /// </summary>
   [Item("QualityAnalyzer", "An operator which analyzes the quality of solutions in the scope tree.")]
-  [StorableClass]
+  [StorableType("E0CC9A68-7019-418D-88AE-46BDEFA616A7")]
   public sealed class QualityAnalyzer : AlgorithmOperator, IAnalyzer, ISingleObjectiveOperator {
     #region Parameter properties
     public ValueLookupParameter<BoolValue> MaximizationParameter {
@@ -83,7 +83,7 @@ namespace HeuristicLab.Analysis {
 
     #region Storing & Cloning
     [StorableConstructor]
-    private QualityAnalyzer(bool deserializing) : base(deserializing) { }
+    private QualityAnalyzer(StorableConstructorFlag _) : base(_) { }
     private QualityAnalyzer(QualityAnalyzer original, Cloner cloner)
       : base(original, cloner) {
       Initialize();

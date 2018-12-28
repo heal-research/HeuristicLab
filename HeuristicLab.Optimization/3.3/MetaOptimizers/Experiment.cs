@@ -28,7 +28,7 @@ using System.Threading.Tasks;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Optimization {
   /// <summary>
@@ -36,7 +36,7 @@ namespace HeuristicLab.Optimization {
   /// </summary>
   [Item("Experiment", "An experiment which contains multiple algorithms, batch runs or other experiments.")]
   [Creatable(CreatableAttribute.Categories.TestingAndAnalysis, Priority = 100)]
-  [StorableClass]
+  [StorableType("A8A4536B-54C1-4A17-AB58-A6006F7F394B")]
   public sealed class Experiment : NamedItem, IOptimizer, IStorableContent {
     public string Filename { get; set; }
 
@@ -160,7 +160,7 @@ namespace HeuristicLab.Optimization {
       Initialize();
     }
     [StorableConstructor]
-    private Experiment(bool deserializing) : base(deserializing) { }
+    private Experiment(StorableConstructorFlag _) : base(_) { }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       Initialize();

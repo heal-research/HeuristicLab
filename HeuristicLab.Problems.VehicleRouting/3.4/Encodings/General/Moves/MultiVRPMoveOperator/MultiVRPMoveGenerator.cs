@@ -29,7 +29,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.VehicleRouting.Encodings.Alba;
 using HeuristicLab.Problems.VehicleRouting.Encodings.Potvin;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
@@ -37,7 +37,7 @@ using HeuristicLab.Problems.VehicleRouting.Variants;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
   [Item("MultiVRPMoveGenerator", "Randomly selects and applies its move generators.")]
-  [StorableClass]
+  [StorableType("2BB3FF78-447F-4FCD-B866-D28D295ABF0E")]
   public class MultiVRPMoveGenerator : CheckedMultiOperator<IMultiVRPMoveGenerator>, IMultiVRPMoveOperator,
     IStochasticOperator, IMoveGenerator, IGeneralVRPOperator, IMultiVRPOperator {
     public override bool CanChangeName {
@@ -77,7 +77,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
     }
 
     [StorableConstructor]
-    protected MultiVRPMoveGenerator(bool deserializing) : base(deserializing) { }
+    protected MultiVRPMoveGenerator(StorableConstructorFlag _) : base(_) { }
     public MultiVRPMoveGenerator()
       : base() {
       Parameters.Add(new ValueLookupParameter<IntValue>("SelectedOperators", "The number of selected operators.", new IntValue(1)));

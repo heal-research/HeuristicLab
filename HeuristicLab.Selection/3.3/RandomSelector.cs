@@ -25,14 +25,14 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Selection {
   /// <summary>
   /// A random selection operator.
   /// </summary>
   [Item("RandomSelector", "A random selection operator.")]
-  [StorableClass]
+  [StorableType("4F442F5F-CCE7-4DC3-9C88-5B719A011C88")]
   public sealed class RandomSelector : StochasticSelector, ISelector {
     private IValueParameter<BoolValue> CopySelectedParameter {
       get { return (IValueParameter<BoolValue>)Parameters["CopySelected"]; }
@@ -47,7 +47,7 @@ namespace HeuristicLab.Selection {
     }
 
     [StorableConstructor]
-    private RandomSelector(bool deserializing) : base(deserializing) { }
+    private RandomSelector(StorableConstructorFlag _) : base(_) { }
     private RandomSelector(RandomSelector original, Cloner cloner)
       : base(original, cloner) {
     }

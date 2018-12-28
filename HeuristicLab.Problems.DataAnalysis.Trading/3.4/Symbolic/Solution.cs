@@ -23,14 +23,14 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Trading.Symbolic {
   /// <summary>
   /// Represents a symbolic trading solution (model + data) and attributes of the solution like accuracy and complexity
   /// </summary>
-  [StorableClass]
+  [StorableType("A4B82FA6-562B-477D-998C-996724EA1366")]
   [Item(Name = "Solution (symbolic trading)",
     Description =
       "Represents a symbolic trading solution (model + data) and attributes of the solution like accuracy and complexity."
@@ -59,8 +59,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Trading.Symbolic {
     }
 
     [StorableConstructor]
-    private SymbolicSolution(bool deserializing)
-      : base(deserializing) {
+    private SymbolicSolution(StorableConstructorFlag _) : base(_) {
     }
 
     private SymbolicSolution(SymbolicSolution original, Cloner cloner)

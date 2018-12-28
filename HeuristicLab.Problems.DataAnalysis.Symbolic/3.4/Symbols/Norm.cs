@@ -22,9 +22,9 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
-  [StorableClass]
+  [StorableType("343418E1-2BA5-45A6-B324-3F0B78EFD95B")]
   [Item("Norm", "Symbol that represents the normal distribution function.")]
   public sealed class Norm : Symbol {
     private const int minimumArity = 1;
@@ -38,7 +38,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     [StorableConstructor]
-    private Norm(bool deserializing) : base(deserializing) { }
+    private Norm(StorableConstructorFlag _) : base(_) { }
     private Norm(Norm original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new Norm(this, cloner);

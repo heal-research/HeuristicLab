@@ -23,14 +23,14 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.TestFunctions {
   /// <summary>
   /// The Zakharov function is implemented as described in Hedar, A. & Fukushima, M. 2004. Heuristic pattern search and its hybridization with simulated annealing for nonlinear global optimization. Optimization Methods and Software 19, pp. 291-308, Taylor & Francis.
   /// </summary>
   [Item("ZakharovEvaluator", "Evaluates the Zakharov function on a given point. The optimum of this function is 0 at the origin. It is implemented as described in Hedar, A. & Fukushima, M. 2004. Heuristic pattern search and its hybridization with simulated annealing for nonlinear global optimization. Optimization Methods and Software 19, pp. 291-308, Taylor & Francis.")]
-  [StorableClass]
+  [StorableType("AB90340D-E5D0-4397-A5C3-8C7590F1727A")]
   public class ZakharovEvaluator : SingleObjectiveTestFunctionProblemEvaluator {
     public override string FunctionName { get { return "Zakharov"; } }
     /// <summary>
@@ -69,7 +69,7 @@ namespace HeuristicLab.Problems.TestFunctions {
     }
 
     [StorableConstructor]
-    protected ZakharovEvaluator(bool deserializing) : base(deserializing) { }
+    protected ZakharovEvaluator(StorableConstructorFlag _) : base(_) { }
     protected ZakharovEvaluator(ZakharovEvaluator original, Cloner cloner) : base(original, cloner) { }
     public ZakharovEvaluator() : base() { }
 

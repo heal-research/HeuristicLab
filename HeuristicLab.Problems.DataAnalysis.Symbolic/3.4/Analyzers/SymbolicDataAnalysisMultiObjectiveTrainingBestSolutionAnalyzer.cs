@@ -27,14 +27,14 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   /// <summary>
   /// An operator that analyzes the training best symbolic data analysis solution for multi objective symbolic data analysis problems.
   /// </summary>
   [Item("SymbolicDataAnalysisMultiObjectiveTrainingBestSolutionAnalyzer", "An operator that analyzes the training best symbolic data analysis solution for multi objective symbolic data analysis problems.")]
-  [StorableClass]
+  [StorableType("D43D38D1-EEA8-4DEF-AA95-6E941194D708")]
   public abstract class SymbolicDataAnalysisMultiObjectiveTrainingBestSolutionAnalyzer<T> : SymbolicDataAnalysisMultiObjectiveAnalyzer
     where T : class, ISymbolicDataAnalysisSolution {
     private const string TrainingBestSolutionsParameterName = "Best training solutions";
@@ -69,7 +69,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     #endregion
 
     [StorableConstructor]
-    protected SymbolicDataAnalysisMultiObjectiveTrainingBestSolutionAnalyzer(bool deserializing) : base(deserializing) { }
+    protected SymbolicDataAnalysisMultiObjectiveTrainingBestSolutionAnalyzer(StorableConstructorFlag _) : base(_) { }
     protected SymbolicDataAnalysisMultiObjectiveTrainingBestSolutionAnalyzer(SymbolicDataAnalysisMultiObjectiveTrainingBestSolutionAnalyzer<T> original, Cloner cloner) : base(original, cloner) { }
     public SymbolicDataAnalysisMultiObjectiveTrainingBestSolutionAnalyzer()
       : base() {

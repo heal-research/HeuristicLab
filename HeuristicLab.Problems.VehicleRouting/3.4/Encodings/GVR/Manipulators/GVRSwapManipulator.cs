@@ -21,14 +21,14 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.GVR {
   [Item("GVRSwapManipulator", "An operator which manipulates a GVR representation by swapping two customers. It is implemented as described in Pereira, F.B. et al (2002). GVR: a New Genetic Representation for the Vehicle Routing Problem. AICS 2002, LNAI 2464, pp. 95-102.")]
-  [StorableClass]
+  [StorableType("3EEC2566-633D-4338-853D-AE9930E9F238")]
   public sealed class GVRSwapManipulator : GVRManipulator {
     [StorableConstructor]
-    private GVRSwapManipulator(bool deserializing) : base(deserializing) { }
+    private GVRSwapManipulator(StorableConstructorFlag _) : base(_) { }
 
     public GVRSwapManipulator()
       : base() {

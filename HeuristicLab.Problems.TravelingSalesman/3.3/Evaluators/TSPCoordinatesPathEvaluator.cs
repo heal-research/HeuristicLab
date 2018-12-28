@@ -25,14 +25,14 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.TravelingSalesman {
   /// <summary>
   /// A base class for operators which evaluate TSP solutions given in path representation using city coordinates.
   /// </summary>
   [Item("TSPCoordinatesPathEvaluator", "A base class for operators which evaluate TSP solutions given in path representation using city coordinates.")]
-  [StorableClass]
+  [StorableType("4A8D4CC9-C6A6-4611-A140-C21FAA93EDC0")]
   public abstract class TSPCoordinatesPathEvaluator : TSPEvaluator, ITSPCoordinatesPathEvaluator {
     private object locker = new object();
 
@@ -50,7 +50,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     }
 
     [StorableConstructor]
-    protected TSPCoordinatesPathEvaluator(bool deserializing) : base(deserializing) { }
+    protected TSPCoordinatesPathEvaluator(StorableConstructorFlag _) : base(_) { }
     protected TSPCoordinatesPathEvaluator(TSPCoordinatesPathEvaluator original, Cloner cloner) : base(original, cloner) { }
     protected TSPCoordinatesPathEvaluator()
       : base() {

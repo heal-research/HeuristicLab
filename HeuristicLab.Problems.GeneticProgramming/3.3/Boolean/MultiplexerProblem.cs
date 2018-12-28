@@ -28,14 +28,14 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 
 namespace HeuristicLab.Problems.GeneticProgramming.Boolean {
   [Item("Multiplexer Problem (MUX)",
     "The Boolean multiplexer genetic programming problem. See Koza 1992, page 171, section 7.4.1 11-multiplexer.")]
   [Creatable(CreatableAttribute.Categories.GeneticProgrammingProblems, Priority = 900)]
-  [StorableClass]
+  [StorableType("6DFE64E4-3968-446F-AE3D-FAF13C18930C")]
   public sealed class MultiplexerProblem : SymbolicExpressionTreeProblem {
 
     #region parameter names
@@ -62,7 +62,7 @@ namespace HeuristicLab.Problems.GeneticProgramming.Boolean {
     #region item cloning and persistence
     // persistence
     [StorableConstructor]
-    private MultiplexerProblem(bool deserializing) : base(deserializing) { }
+    private MultiplexerProblem(StorableConstructorFlag _) : base(_) { }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       RegisterEventHandlers();

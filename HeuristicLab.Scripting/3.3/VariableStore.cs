@@ -26,13 +26,12 @@ using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Common.Resources;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Persistence.Default.Xml;
 
 namespace HeuristicLab.Scripting {
   [Item("VariableStore", "Represents a variable store.")]
-  [StorableClass]
+  [StorableType("DDE415E7-99FD-4C10-9B5E-63334876FFDE")]
   public class VariableStore : ObservableDictionary<string, object>, IItem {
     #region Properties
     public virtual string ItemName {
@@ -54,7 +53,7 @@ namespace HeuristicLab.Scripting {
 
     #region Constructors & Cloning
     [StorableConstructor]
-    protected VariableStore(bool deserializing) : base(deserializing) { }
+    protected VariableStore(StorableConstructorFlag _) : base(_) { }
     protected VariableStore(VariableStore original, Cloner cloner) {
       cloner.RegisterClonedObject(original, this);
       foreach (var kvp in original.dict) {

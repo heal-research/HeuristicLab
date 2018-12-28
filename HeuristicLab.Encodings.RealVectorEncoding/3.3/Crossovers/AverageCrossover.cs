@@ -22,7 +22,7 @@
 using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// <summary>
@@ -32,10 +32,10 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// It is implemented as described by Beyer, H.-G. and Schwefel, H.-P. 2002. Evolution Strategies - A Comprehensive Introduction Natural Computing, 1, pp. 3-52.
   /// </remarks>
   [Item("AverageCrossover", "The average crossover (intermediate recombination) produces a new offspring by calculating in each position the average of a number of parents. It is implemented as described by Beyer, H.-G. and Schwefel, H.-P. 2002. Evolution Strategies - A Comprehensive Introduction Natural Computing, 1, pp. 3-52.")]
-  [StorableClass]
+  [StorableType("D182B4D8-DFB1-467C-B6C8-8A8BC7540304")]
   public class AverageCrossover : RealVectorCrossover {
     [StorableConstructor]
-    protected AverageCrossover(bool deserializing) : base(deserializing) { }
+    protected AverageCrossover(StorableConstructorFlag _) : base(_) { }
     protected AverageCrossover(AverageCrossover original, Cloner cloner) : base(original, cloner) { }
     public AverageCrossover() : base() { }
 

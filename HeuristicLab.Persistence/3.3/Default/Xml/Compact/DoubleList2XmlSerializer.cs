@@ -22,8 +22,8 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using HEAL.Fossil;
 using HeuristicLab.Persistence.Auxiliary;
-using HeuristicLab.Persistence.Core;
 using HeuristicLab.Persistence.Default.Xml.Primitive;
 
 namespace HeuristicLab.Persistence.Default.Xml.Compact {

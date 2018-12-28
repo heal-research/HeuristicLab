@@ -24,11 +24,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [Item("SymbolicExpressionTreeSimplificationOperator", "Simplifies symbolic expression trees encoding a mathematical formula.")]
-  [StorableClass]
+  [StorableType("EEAB0E73-1F2D-459E-812B-C98E66FF3C63")]
   public class SymbolicDataAnalysisExpressionTreeSimplificationOperator : SingleSuccessorOperator, ISymbolicExpressionTreeOperator {
     private const string SymbolicExpressionTreeParameterName = "SymbolicExpressionTree";
 
@@ -37,7 +37,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     [StorableConstructor]
-    protected SymbolicDataAnalysisExpressionTreeSimplificationOperator(bool deserializing) : base(deserializing) { }
+    protected SymbolicDataAnalysisExpressionTreeSimplificationOperator(StorableConstructorFlag _) : base(_) { }
     protected SymbolicDataAnalysisExpressionTreeSimplificationOperator(SymbolicDataAnalysisExpressionTreeSimplificationOperator original, Cloner cloner)
       : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {

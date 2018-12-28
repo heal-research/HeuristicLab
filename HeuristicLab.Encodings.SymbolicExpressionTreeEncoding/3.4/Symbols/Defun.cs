@@ -21,12 +21,12 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   /// <summary>
   /// Symbol for function defining branches
   /// </summary>
-  [StorableClass]
+  [StorableType("1854AECB-02AB-444F-959C-094548ED7932")]
   [Item(Defun.DefunName, Defun.DefunDescription)]
   public sealed class Defun : Symbol, IReadOnlySymbol {
     public const string DefunName = "Defun";
@@ -42,7 +42,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
 
     [StorableConstructor]
-    private Defun(bool deserializing) : base(deserializing) { }
+    private Defun(StorableConstructorFlag _) : base(_) { }
     private Defun(Defun original, Cloner cloner) : base(original, cloner) { }
     public Defun() : base(Defun.DefunName, Defun.DefunDescription) { }
 

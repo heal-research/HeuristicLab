@@ -25,14 +25,14 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Optimization.Operators {
   /// <summary>
   /// An operator that evaluates an expression.
   /// </summary>
   [Item("ExpressionCalculator", "An operator that evaluates an expression.")]
-  [StorableClass]
+  [StorableType("04FAB284-D11A-4EFF-86C2-B13C1D3D22CE")]
   public class ExpressionCalculator : ValuesCollector {
     [Storable]
     public Calculator Calculator { get; set; }
@@ -56,7 +56,7 @@ namespace HeuristicLab.Optimization.Operators {
     #endregion
 
     [StorableConstructor]
-    protected ExpressionCalculator(bool deserializing) : base(deserializing) { }
+    protected ExpressionCalculator(StorableConstructorFlag _) : base(_) { }
     protected ExpressionCalculator(ExpressionCalculator original, Cloner cloner)
       : base(original, cloner) {
       this.Calculator = cloner.Clone(original.Calculator);

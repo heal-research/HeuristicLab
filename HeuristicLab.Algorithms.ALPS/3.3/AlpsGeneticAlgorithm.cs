@@ -31,7 +31,7 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Random;
 using HeuristicLab.Selection;
@@ -39,7 +39,7 @@ using HeuristicLab.Selection;
 namespace HeuristicLab.Algorithms.ALPS {
   [Item("ALPS Genetic Algorithm", "A genetic algorithm within an age-layered population structure as described in Gregory S. Hornby. 2006. ALPS: the age-layered population structure for reducing the problem of premature convergence. In Proceedings of the 8th annual conference on Genetic and evolutionary computation (GECCO '06). 815-822.")]
   [Creatable(CreatableAttribute.Categories.PopulationBasedAlgorithms, Priority = 160)]
-  [StorableClass]
+  [StorableType("4A240A90-EB87-43D1-BD34-99A605B89C4D")]
   public sealed class AlpsGeneticAlgorithm : HeuristicOptimizationEngineAlgorithm, IStorableContent {
     public string Filename { get; set; }
 
@@ -246,8 +246,7 @@ namespace HeuristicLab.Algorithms.ALPS {
 
     #region Constructors
     [StorableConstructor]
-    private AlpsGeneticAlgorithm(bool deserializing)
-      : base(deserializing) { }
+    private AlpsGeneticAlgorithm(StorableConstructorFlag _) : base(_) { }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       // BackwardsCompatibility3.3

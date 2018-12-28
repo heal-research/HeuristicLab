@@ -23,21 +23,21 @@ using System.Collections.Generic;
 using System.Drawing;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Analysis {
   /// <summary>
   /// Represents history values of data tables.
   /// </summary>
   [Item("DataTableHistory", "Represents history values of data tables.")]
-  [StorableClass]
+  [StorableType("5ECB8C15-4724-4B9A-B667-055CC2FD713A")]
   public class DataTableHistory : ItemCollection<DataTable> {
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Cab; }
     }
 
     [StorableConstructor]
-    protected DataTableHistory(bool deserializing) : base(deserializing) { }
+    protected DataTableHistory(StorableConstructorFlag _) : base(_) { }
     protected DataTableHistory(DataTableHistory original, Cloner cloner) : base(original, cloner) { }
     public DataTableHistory() : base() { }
     public DataTableHistory(IEnumerable<DataTable> collection) : base(new ItemCollection<DataTable>(collection)) { }

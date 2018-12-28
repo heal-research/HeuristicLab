@@ -22,7 +22,7 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Persistence.Default.Xml;
 using System;
 using System.Collections.Generic;
@@ -32,7 +32,7 @@ using System.Linq;
 
 namespace HeuristicLab.Clients.OKB.RunCreation {
   [Item("OKB Problem", "A base class for problems which are stored in the OKB.")]
-  [StorableClass]
+  [StorableType("041DC8A8-2987-4045-B24A-CBA7EAD47316")]
   public abstract class OKBProblem : Item, IHeuristicOptimizationProblem {
     public virtual Type ProblemType {
       get { return typeof(IHeuristicOptimizationProblem); }
@@ -138,7 +138,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
     #endregion
 
     [StorableConstructor]
-    protected OKBProblem(bool deserializing) : base(deserializing) { }
+    protected OKBProblem(StorableConstructorFlag _) : base(_) { }
     protected OKBProblem(OKBProblem original, Cloner cloner)
       : base(original, cloner) {
       problemId = original.problemId;

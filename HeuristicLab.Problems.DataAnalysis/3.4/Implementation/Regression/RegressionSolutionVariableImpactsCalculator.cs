@@ -29,11 +29,11 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  [StorableClass]
+  [StorableType("414B25CD-6643-4E42-9EB2-B9A24F5E1528")]
   [Item("RegressionSolution Impacts Calculator", "Calculation of the impacts of input variables for any regression solution")]
   public sealed class RegressionSolutionVariableImpactsCalculator : ParameterizedNamedItem {
     #region Parameters/Properties
@@ -84,7 +84,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     #region Ctor/Cloner
     [StorableConstructor]
-    private RegressionSolutionVariableImpactsCalculator(bool deserializing) : base(deserializing) { }
+    private RegressionSolutionVariableImpactsCalculator(StorableConstructorFlag _) : base(_) { }
     private RegressionSolutionVariableImpactsCalculator(RegressionSolutionVariableImpactsCalculator original, Cloner cloner)
       : base(original, cloner) { }
     public RegressionSolutionVariableImpactsCalculator()

@@ -23,13 +23,13 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Problems.VehicleRouting.Variants;
 
 namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
   [Item("MDCVRPEvaluator", "Represents a multi depot CVRP evaluator.")]
-  [StorableClass]
+  [StorableType("E59F6449-7DA3-4842-A0D8-C5BECC965642")]
   public class MDCVRPEvaluator : VRPEvaluator {
     public ILookupParameter<DoubleValue> OverloadParameter {
       get { return (ILookupParameter<DoubleValue>)Parameters["Overload"]; }
@@ -134,7 +134,7 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
     }
 
     [StorableConstructor]
-    protected MDCVRPEvaluator(bool deserializing) : base(deserializing) { }
+    protected MDCVRPEvaluator(StorableConstructorFlag _) : base(_) { }
 
     public MDCVRPEvaluator() {
       Parameters.Add(new LookupParameter<DoubleValue>("Overload", "The overload."));

@@ -28,7 +28,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
@@ -37,7 +37,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// </summary>
   [Item("k-Means", "The k-Means clustering algorithm (wrapper for ALGLIB).")]
   [Creatable(CreatableAttribute.Categories.DataAnalysis, Priority = 10)]
-  [StorableClass]
+  [StorableType("84FAF4ED-0679-40BA-B3DD-83809095F8CF")]
   public sealed class KMeansClustering : FixedDataAnalysisAlgorithm<IClusteringProblem> {
     private const string KParameterName = "k";
     private const string RestartsParameterName = "Restarts";
@@ -59,7 +59,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
     #endregion
     [StorableConstructor]
-    private KMeansClustering(bool deserializing) : base(deserializing) { }
+    private KMeansClustering(StorableConstructorFlag _) : base(_) { }
     private KMeansClustering(KMeansClustering original, Cloner cloner)
       : base(original, cloner) {
     }

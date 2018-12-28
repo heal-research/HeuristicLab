@@ -25,14 +25,14 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("ExhaustiveInversionMoveGenerator", "Generates all possible inversion moves (2-opt) from a given permutation.")]
-  [StorableClass]
+  [StorableType("7356F98C-404C-47B5-B290-EF4EE995D51C")]
   public class ExhaustiveInversionMoveGenerator : InversionMoveGenerator, IExhaustiveMoveGenerator {
     [StorableConstructor]
-    protected ExhaustiveInversionMoveGenerator(bool deserializing) : base(deserializing) { }
+    protected ExhaustiveInversionMoveGenerator(StorableConstructorFlag _) : base(_) { }
     protected ExhaustiveInversionMoveGenerator(ExhaustiveInversionMoveGenerator original, Cloner cloner) : base(original, cloner) { }
     public ExhaustiveInversionMoveGenerator() : base() { }
 

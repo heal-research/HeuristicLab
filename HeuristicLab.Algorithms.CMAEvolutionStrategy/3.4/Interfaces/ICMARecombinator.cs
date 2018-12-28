@@ -24,8 +24,10 @@
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using System;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Algorithms.CMAEvolutionStrategy {
+  [StorableType("33524FCA-B31B-415E-BC53-87C126CAF124")]
   public interface ICMARecombinator : IOperator {
     Type CMAType { get; }
 

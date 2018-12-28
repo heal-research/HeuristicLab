@@ -22,7 +22,7 @@
 using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Optimization.Operators {
   /// <summary>
@@ -31,10 +31,10 @@ namespace HeuristicLab.Optimization.Operators {
   [Item("ExponentialDiscreteDoubleValueModifier",
 @"Modifies the value by exponential fall (steep fall initially, slow fall to the end) or rise (slow rise initially, fast rise to the end).
 This uses a standard exponential distribution and yields a base which is implicitly derived by start and end indices and values.")]
-  [StorableClass]
+  [StorableType("9DEDC020-F9A5-4067-AC23-7A29B656E818")]
   public class ExponentialDiscreteDoubleValueModifier : DiscreteDoubleValueModifier {
     [StorableConstructor]
-    protected ExponentialDiscreteDoubleValueModifier(bool deserializing) : base(deserializing) { }
+    protected ExponentialDiscreteDoubleValueModifier(StorableConstructorFlag _) : base(_) { }
     protected ExponentialDiscreteDoubleValueModifier(ExponentialDiscreteDoubleValueModifier original, Cloner cloner) : base(original, cloner) { }
     public ExponentialDiscreteDoubleValueModifier() : base() { }
 

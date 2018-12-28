@@ -27,18 +27,17 @@ using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Optimization {
   [Item("Run Collection", "Represents a collection of runs.")]
   [Creatable(CreatableAttribute.Categories.TestingAndAnalysis, Priority = 120)]
-  [StorableClass]
+  [StorableType("6A9E959B-62DB-4998-BFC6-BF3BAE66BED4")]
   public class RunCollection : ItemCollection<IRun>, IStringConvertibleMatrix, IStorableContent {
     public string Filename { get; set; }
 
     [StorableConstructor]
-    protected RunCollection(bool deserializing)
-      : base(deserializing) {
+    protected RunCollection(StorableConstructorFlag _) : base(_) {
       updateOfRunsInProgress = false;
     }
     protected RunCollection(RunCollection original, Cloner cloner)

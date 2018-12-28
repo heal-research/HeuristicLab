@@ -24,14 +24,14 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Selection {
   /// <summary>
   /// An operator which selects sub-scopes from right to left.
   /// </summary>
   [Item("RightSelector", "An operator which selects sub-scopes from right to left.")]
-  [StorableClass]
+  [StorableType("D34AB8F1-5F8E-4265-9607-D5EE26DA75D0")]
   public sealed class RightSelector : Selector {
     private IValueParameter<BoolValue> CopySelectedParameter {
       get { return (IValueParameter<BoolValue>)Parameters["CopySelected"]; }
@@ -45,7 +45,7 @@ namespace HeuristicLab.Selection {
       set { CopySelectedParameter.Value = value; }
     }
     [StorableConstructor]
-    private RightSelector(bool deserializing) : base(deserializing) { }
+    private RightSelector(StorableConstructorFlag _) : base(_) { }
     private RightSelector(RightSelector original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new RightSelector(this, cloner);

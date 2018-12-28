@@ -21,14 +21,14 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Operators {
   /// <summary>
   /// An operator which contains an operator graph.
   /// </summary>
   [Item("CombinedOperator", "An operator which contains an operator graph.")]
-  [StorableClass]
+  [StorableType("8A035E57-6D50-4797-96D2-BDDD2B1FACC4")]
   public sealed class CombinedOperator : AlgorithmOperator, IParameterizedItem, IStorableContent {
     public string Filename { get; set; }
 
@@ -43,7 +43,7 @@ namespace HeuristicLab.Operators {
     }
 
     [StorableConstructor]
-    private CombinedOperator(bool deserializing) : base(deserializing) { }
+    private CombinedOperator(StorableConstructorFlag _) : base(_) { }
     private CombinedOperator(CombinedOperator original, Cloner cloner)
       : base(original, cloner) {
     }

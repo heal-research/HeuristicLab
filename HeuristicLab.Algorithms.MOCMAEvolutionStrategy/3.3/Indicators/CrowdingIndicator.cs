@@ -26,15 +26,15 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Algorithms.MOCMAEvolutionStrategy {
   [Item("CrowdingIndicator", "Selection of Offspring based on CrowdingDistance")]
-  [StorableClass]
+  [StorableType("FEC5F17A-C720-4411-8AD6-42BA0F392AE9")]
   internal class CrowdingIndicator : Item, IIndicator {
     #region Constructors and Cloning
     [StorableConstructor]
-    protected CrowdingIndicator(bool deserializing) : base(deserializing) { }
+    protected CrowdingIndicator(StorableConstructorFlag _) : base(_) { }
     protected CrowdingIndicator(CrowdingIndicator original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) { return new CrowdingIndicator(this, cloner); }
     public CrowdingIndicator() { }

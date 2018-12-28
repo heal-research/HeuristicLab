@@ -23,18 +23,18 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Zhu {
   [Item("ZhuPermutationCrossover", "An operator which crosses two VRP representations using a standard permutation operator. It is implemented as described in Zhu, K.Q. (2000). A New Genetic Algorithm For VRPTW. Proceedings of the International Conference on Artificial Intelligence.")]
-  [StorableClass]
+  [StorableType("1D216531-C9D8-4A12-BCFD-7E97161EC383")]
   public sealed class PrinsPermutationCrossover : ZhuCrossover {
     public IValueLookupParameter<IPermutationCrossover> InnerCrossoverParameter {
       get { return (IValueLookupParameter<IPermutationCrossover>)Parameters["InnerCrossover"]; }
     }
 
     [StorableConstructor]
-    private PrinsPermutationCrossover(bool deserializing) : base(deserializing) { }
+    private PrinsPermutationCrossover(StorableConstructorFlag _) : base(_) { }
 
     public PrinsPermutationCrossover()
       : base() {

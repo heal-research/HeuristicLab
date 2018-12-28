@@ -21,7 +21,7 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
@@ -29,7 +29,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// Represents a neural network solution for a regression problem which can be visualized in the GUI.
   /// </summary>
   [Item("NeuralNetworkRegressionSolution", "Represents a neural network solution for a regression problem which can be visualized in the GUI.")]
-  [StorableClass]
+  [StorableType("E1E1B29A-B87A-4BCA-9A2C-83DA8AD7B9D9")]
   public sealed class NeuralNetworkRegressionSolution : RegressionSolution, INeuralNetworkRegressionSolution {
 
     public new INeuralNetworkModel Model {
@@ -38,7 +38,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     [StorableConstructor]
-    private NeuralNetworkRegressionSolution(bool deserializing) : base(deserializing) { }
+    private NeuralNetworkRegressionSolution(StorableConstructorFlag _) : base(_) { }
     private NeuralNetworkRegressionSolution(NeuralNetworkRegressionSolution original, Cloner cloner)
       : base(original, cloner) {
     }

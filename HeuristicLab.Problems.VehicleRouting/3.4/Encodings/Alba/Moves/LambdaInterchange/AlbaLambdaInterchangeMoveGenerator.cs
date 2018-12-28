@@ -24,12 +24,12 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaLambdaInterchangeMoveGenerator", "Generates lambda interchange moves from a given VRP encoding.  It is implemented as described in Alba, E. and Dorronsoro, B. (2004). Solving the Vehicle Routing Problem by Using Cellular Genetic Algorithms.")]
-  [StorableClass]
+  [StorableType("4BE6784E-663A-4B06-9E8A-52502A1967CC")]
   public abstract class AlbaLambdaInterchangeMoveGenerator : AlbaMoveGenerator, IExhaustiveMoveGenerator, IAlbaLambdaInterchangeMoveOperator {
     #region IAlbaLambdaInterchangeMoveOperator Members
 
@@ -52,7 +52,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
     #endregion
 
     [StorableConstructor]
-    protected AlbaLambdaInterchangeMoveGenerator(bool deserializing) : base(deserializing) { }
+    protected AlbaLambdaInterchangeMoveGenerator(StorableConstructorFlag _) : base(_) { }
 
     public AlbaLambdaInterchangeMoveGenerator()
       : base() {

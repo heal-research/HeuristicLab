@@ -24,8 +24,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using HeuristicLab.Collections;
-using HeuristicLab.Common;
 using HeuristicLab.Common.Resources;
 using HeuristicLab.Core;
 using HeuristicLab.Core.Views;

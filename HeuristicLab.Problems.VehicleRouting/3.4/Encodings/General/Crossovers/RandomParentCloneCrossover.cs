@@ -23,13 +23,13 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Problems.VehicleRouting.Variants;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.General.Crossovers {
   [Item("RandomParentCloneCrossover", "An operator which randomly chooses one parent and returns a clone.")]
-  [StorableClass]
+  [StorableType("418EA2DE-C098-4A88-82B9-CB68732DB2AC")]
   public sealed class RandomParentCloneCrossover : VRPOperator, IStochasticOperator, IGeneralVRPOperator, IVRPCrossover {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }
@@ -44,7 +44,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General.Crossovers {
     }
 
     [StorableConstructor]
-    private RandomParentCloneCrossover(bool deserializing) : base(deserializing) { }
+    private RandomParentCloneCrossover(StorableConstructorFlag _) : base(_) { }
 
     public RandomParentCloneCrossover()
       : base() {

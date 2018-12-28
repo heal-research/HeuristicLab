@@ -4,10 +4,10 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  [StorableClass]
+  [StorableType("4A91E704-927C-4278-AA11-79C16BD8E4F2")]
   [Item("Shift to Range Transformation", "f(x) = k * x + d, start <= f(x) <= end | Represents a linear Transformation using Parameters defining a target range")]
   public class ShiftToRangeTransformation : LinearTransformation {
     protected const string RangeParameterName = "Range";
@@ -28,7 +28,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     #endregion
 
     [StorableConstructor]
-    protected ShiftToRangeTransformation(bool deserializing) : base(deserializing) { }
+    protected ShiftToRangeTransformation(StorableConstructorFlag _) : base(_) { }
     protected ShiftToRangeTransformation(ShiftToRangeTransformation original, Cloner cloner)
       : base(original, cloner) {
     }

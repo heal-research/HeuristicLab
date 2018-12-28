@@ -22,12 +22,12 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Clients.OKB.RunCreation {
   [Item("Empty Single-Objective Problem", "A dummy single-objective problem which serves as a placeholder and cannot be solved.")]
-  [StorableClass]
+  [StorableType("12D022A4-6DC4-4840-9EE7-F1EEB7A408F6")]
   [NonDiscoverableType]
   public sealed class EmptySingleObjectiveProblem : SingleObjectiveHeuristicOptimizationProblem<EmptySingleObjectiveEvaluator, EmptySolutionCreator> {
     public override bool CanChangeName {
@@ -38,7 +38,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
     }
 
     [StorableConstructor]
-    private EmptySingleObjectiveProblem(bool deserializing) : base(deserializing) { }
+    private EmptySingleObjectiveProblem(StorableConstructorFlag _) : base(_) { }
     private EmptySingleObjectiveProblem(EmptySingleObjectiveProblem original, Cloner cloner) : base(original, cloner) { }
     public EmptySingleObjectiveProblem() : base(new EmptySingleObjectiveEvaluator(), new EmptySolutionCreator()) { }
     public EmptySingleObjectiveProblem(string exceptionMessage) : base(new EmptySingleObjectiveEvaluator(exceptionMessage), new EmptySolutionCreator(exceptionMessage)) { }

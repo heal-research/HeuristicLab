@@ -19,9 +19,7 @@
  */
 #endregion
 
-using System.Drawing;
 using HeuristicLab.Common;
-using HeuristicLab.Core;
 using HeuristicLab.MainForm;
 using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Problems.DataAnalysis.Views;

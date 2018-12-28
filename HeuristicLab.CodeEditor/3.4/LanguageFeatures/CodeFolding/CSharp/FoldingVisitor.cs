@@ -16,7 +16,6 @@
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -25,10 +24,9 @@ using ICSharpCode.NRefactory;
 using ICSharpCode.NRefactory.CSharp;
 using ICSharpCode.NRefactory.Editor;
 
-namespace CSharpBinding.Parser
-{
-	// TODO: move this class + NewFolding to NRefactory
-	class FoldingVisitor : DepthFirstAstVisitor
+namespace CSharpBinding.Parser {
+  // TODO: move this class + NewFolding to NRefactory
+  class FoldingVisitor : DepthFirstAstVisitor
 	{
 		internal List<NewFolding> foldings = new List<NewFolding> ();
 		internal IDocument document;

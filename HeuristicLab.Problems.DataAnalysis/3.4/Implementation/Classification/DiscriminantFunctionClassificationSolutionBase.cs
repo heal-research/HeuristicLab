@@ -26,13 +26,13 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis {
   /// <summary>
   /// Represents a classification solution that uses a discriminant function and classification thresholds.
   /// </summary>
-  [StorableClass]
+  [StorableType("3668EBE0-128C-4BC4-902C-161670F98FAD")]
   [Item("DiscriminantFunctionClassificationSolution", "Represents a classification solution that uses a discriminant function and classification thresholds.")]
   public abstract class DiscriminantFunctionClassificationSolutionBase : ClassificationSolutionBase, IDiscriminantFunctionClassificationSolution {
     private const string TrainingMeanSquaredErrorResultName = "Mean squared error (training)";
@@ -73,7 +73,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     #endregion
 
     [StorableConstructor]
-    protected DiscriminantFunctionClassificationSolutionBase(bool deserializing) : base(deserializing) { }
+    protected DiscriminantFunctionClassificationSolutionBase(StorableConstructorFlag _) : base(_) { }
     protected DiscriminantFunctionClassificationSolutionBase(DiscriminantFunctionClassificationSolutionBase original, Cloner cloner)
       : base(original, cloner) {
       RegisterEventHandler();

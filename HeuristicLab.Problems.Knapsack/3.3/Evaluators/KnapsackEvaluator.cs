@@ -26,14 +26,14 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.Knapsack {
   /// <summary>
   /// A base class for operators which evaluate Knapsack solutions given in BinaryVector encoding.
   /// </summary>
   [Item("KnapsackEvaluator", "Evaluates solutions for the Knapsack problem.")]
-  [StorableClass]
+  [StorableType("905F6A31-FDC1-48EA-9229-DA23956F1929")]
   public class KnapsackEvaluator : InstrumentedOperator, IKnapsackEvaluator {
     public ILookupParameter<DoubleValue> QualityParameter {
       get { return (ILookupParameter<DoubleValue>)Parameters["Quality"]; }
@@ -69,7 +69,7 @@ namespace HeuristicLab.Problems.Knapsack {
     }
 
     [StorableConstructor]
-    protected KnapsackEvaluator(bool deserializing) : base(deserializing) { }
+    protected KnapsackEvaluator(StorableConstructorFlag _) : base(_) { }
     protected KnapsackEvaluator(KnapsackEvaluator original, Cloner cloner) : base(original, cloner) { }
     public KnapsackEvaluator()
       : base() {

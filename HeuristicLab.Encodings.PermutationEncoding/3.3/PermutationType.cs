@@ -23,18 +23,18 @@ using System.Drawing;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("PermutationType", "Represents a certain type of permutation.")]
-  [StorableClass]
+  [StorableType("B37C1815-5F82-4E46-BAE3-D71F801EFF46")]
   public class PermutationType : ValueTypeValue<PermutationTypes> {
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Enum; }
     }
 
     [StorableConstructor]
-    protected PermutationType(bool deserializing) : base(deserializing) { }
+    protected PermutationType(StorableConstructorFlag _) : base(_) { }
     protected PermutationType(PermutationType original, Cloner cloner) : base(original, cloner) { }
     public PermutationType() : base() { }
     public PermutationType(PermutationTypes type) : base(type) { }

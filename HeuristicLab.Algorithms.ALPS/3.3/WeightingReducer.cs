@@ -26,11 +26,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Algorithms.ALPS {
   [Item("WeightingReducer", "An operator that combines two values based on the weight of the lower (0.0) and higher (1.0) value.")]
-  [StorableClass]
+  [StorableType("A2B65E34-61EC-414A-827C-AAA3F1A1E46C")]
   public sealed class WeightingReducer : SingleSuccessorOperator {
     public IScopeTreeLookupParameter<DoubleValue> ParameterToReduce {
       get { return (IScopeTreeLookupParameter<DoubleValue>)Parameters["ParameterToReduce"]; }
@@ -43,7 +43,7 @@ namespace HeuristicLab.Algorithms.ALPS {
     }
 
     [StorableConstructor]
-    private WeightingReducer(bool deserializing) : base(deserializing) { }
+    private WeightingReducer(StorableConstructorFlag _) : base(_) { }
     private WeightingReducer(WeightingReducer original, Cloner cloner)
       : base(original, cloner) {
     }

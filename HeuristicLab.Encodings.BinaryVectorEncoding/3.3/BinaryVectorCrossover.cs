@@ -24,14 +24,14 @@ using HeuristicLab.Core;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   /// <summary>
   /// A base class for operators that perform a crossover of bool-valued vectors.
   /// </summary>
   [Item("BinaryVectorCrossover", "A base class for operators that perform a crossover of bool-valued vectors.")]
-  [StorableClass]
+  [StorableType("1E97E70A-DBB0-49E4-B67B-41A581B95BAE")]
   public abstract class BinaryVectorCrossover : InstrumentedOperator, IBinaryVectorCrossover, IStochasticOperator {
     public override bool CanChangeName {
       get { return false; }
@@ -47,7 +47,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
     }
 
     [StorableConstructor]
-    protected BinaryVectorCrossover(bool deserializing) : base(deserializing) { }
+    protected BinaryVectorCrossover(StorableConstructorFlag _) : base(_) { }
     protected BinaryVectorCrossover(BinaryVectorCrossover original, Cloner cloner) : base(original, cloner) { }
     protected BinaryVectorCrossover()
       : base() {

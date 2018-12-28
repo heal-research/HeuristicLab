@@ -30,12 +30,12 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Problems.Instances;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
-  [StorableClass]
+  [StorableType("59935E69-C4A5-480E-8FFB-D9669DE9BFD4")]
   public abstract class SymbolicDataAnalysisProblem<T, U, V> : HeuristicOptimizationProblem<U, V>, IDataAnalysisProblem<T>, ISymbolicDataAnalysisProblem, IStorableContent,
     IProblemInstanceConsumer<T>, IProblemInstanceExporter<T>
     where T : class, IDataAnalysisProblemData
@@ -156,7 +156,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     #endregion
 
     [StorableConstructor]
-    protected SymbolicDataAnalysisProblem(bool deserializing) : base(deserializing) { }
+    protected SymbolicDataAnalysisProblem(StorableConstructorFlag _) : base(_) { }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       if (!Parameters.ContainsKey(ApplyLinearScalingParameterName)) {

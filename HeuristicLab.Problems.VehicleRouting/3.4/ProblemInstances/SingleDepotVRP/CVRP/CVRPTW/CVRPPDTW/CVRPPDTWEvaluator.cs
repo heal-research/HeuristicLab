@@ -25,13 +25,13 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Problems.VehicleRouting.Variants;
 
 namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
   [Item("CVRPPDTWEvaluator", "Represents a single depot CVRPPDTW evaluator.")]
-  [StorableClass]
+  [StorableType("6324F32C-727E-4593-BB21-4625755F844A")]
   public class CVRPPDTWEvaluator : CVRPTWEvaluator {
     public ILookupParameter<IntValue> PickupViolationsParameter {
       get { return (ILookupParameter<IntValue>)Parameters["PickupViolations"]; }
@@ -305,7 +305,7 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
     }
 
     [StorableConstructor]
-    protected CVRPPDTWEvaluator(bool deserializing) : base(deserializing) { }
+    protected CVRPPDTWEvaluator(StorableConstructorFlag _) : base(_) { }
 
     public CVRPPDTWEvaluator() {
       Parameters.Add(new LookupParameter<IntValue>("PickupViolations", "The number of pickup violations."));

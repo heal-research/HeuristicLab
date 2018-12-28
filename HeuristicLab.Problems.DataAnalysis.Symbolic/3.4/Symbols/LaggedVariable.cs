@@ -22,9 +22,9 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
-  [StorableClass]
+  [StorableType("82D1162C-A27E-460D-97D0-497361262446")]
   [Item("LaggedVariable", "Represents a variable value with a time offset.")]
   public class LaggedVariable : VariableBase {
     [Storable]
@@ -40,7 +40,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       set { maxLag = value; }
     }
     [StorableConstructor]
-    protected LaggedVariable(bool deserializing) : base(deserializing) { }
+    protected LaggedVariable(StorableConstructorFlag _) : base(_) { }
     protected LaggedVariable(LaggedVariable original, Cloner cloner)
       : base(original, cloner) {
       minLag = original.minLag;

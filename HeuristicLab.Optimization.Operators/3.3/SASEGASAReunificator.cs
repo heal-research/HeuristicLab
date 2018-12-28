@@ -26,7 +26,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Optimization.Operators {
   /// <summary>
@@ -34,7 +34,7 @@ namespace HeuristicLab.Optimization.Operators {
   /// scopes by 1 and uniformly partitions the sub sub scopes again, maintaining the order.
   /// </summary>
   [Item("SASEGASAReunificator", "This operator merges the villages (sub-scopes) and redistributes the individuals. It is implemented as described in Affenzeller, M. et al. 2009. Genetic Algorithms and Genetic Programming - Modern Concepts and Practical Applications, CRC Press.")]
-  [StorableClass]
+  [StorableType("09433AE4-A51B-40F5-967D-3A2A83EE8814")]
   public class SASEGASAReunificator : SingleSuccessorOperator {
 
     public LookupParameter<IntValue> VillageCountParameter {
@@ -42,7 +42,7 @@ namespace HeuristicLab.Optimization.Operators {
     }
 
     [StorableConstructor]
-    protected SASEGASAReunificator(bool deserializing) : base(deserializing) { }
+    protected SASEGASAReunificator(StorableConstructorFlag _) : base(_) { }
     protected SASEGASAReunificator(SASEGASAReunificator original, Cloner cloner) : base(original, cloner) { }
     public SASEGASAReunificator()
       : base() {

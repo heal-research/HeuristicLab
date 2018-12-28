@@ -5,10 +5,10 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  [StorableClass]
+  [StorableType("D5A6860A-AEE5-47BE-A4D2-0107AB0A90E3")]
   [Item("Power Transformation", "f(x) = x ^ exp | Represents a power transformation.")]
   public class PowerTransformation : Transformation<double> {
     protected const string ExponentParameterName = "Exponent";
@@ -29,7 +29,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     #endregion
 
     [StorableConstructor]
-    protected PowerTransformation(bool deserializing) : base(deserializing) { }
+    protected PowerTransformation(StorableConstructorFlag _) : base(_) { }
     protected PowerTransformation(PowerTransformation original, Cloner cloner)
       : base(original, cloner) {
     }

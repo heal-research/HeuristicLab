@@ -25,11 +25,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Optimization {
   [Item("Single-objective Evaluator", "Calls the script's Evaluate method to get the quality value of the parameter vector.")]
-  [StorableClass]
+  [StorableType("E8914B68-D0D7-407F-8D58-002FDF2F45CF")]
   public sealed class SingleObjectiveEvaluator : InstrumentedOperator, ISingleObjectiveEvaluationOperator, IStochasticOperator {
 
     public ILookupParameter<IRandom> RandomParameter {
@@ -47,7 +47,7 @@ namespace HeuristicLab.Optimization {
     public Func<Individual, IRandom, double> EvaluateFunc { get; set; }
 
     [StorableConstructor]
-    private SingleObjectiveEvaluator(bool deserializing) : base(deserializing) { }
+    private SingleObjectiveEvaluator(StorableConstructorFlag _) : base(_) { }
     private SingleObjectiveEvaluator(SingleObjectiveEvaluator original, Cloner cloner) : base(original, cloner) { }
     public SingleObjectiveEvaluator() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator to use."));

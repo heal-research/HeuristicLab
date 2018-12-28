@@ -24,15 +24,15 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Trading.Symbolic {
   [Item("Profit Evaluator", "")]
-  [StorableClass]
+  [StorableType("2BDA057D-5E6E-4F83-8DB0-DA12B16E9EF4")]
   public class ProfitEvaluator : SingleObjectiveEvaluator {
     [StorableConstructor]
-    protected ProfitEvaluator(bool deserializing) : base(deserializing) { }
+    protected ProfitEvaluator(StorableConstructorFlag _) : base(_) { }
     protected ProfitEvaluator(ProfitEvaluator original, Cloner cloner)
       : base(original, cloner) {
     }

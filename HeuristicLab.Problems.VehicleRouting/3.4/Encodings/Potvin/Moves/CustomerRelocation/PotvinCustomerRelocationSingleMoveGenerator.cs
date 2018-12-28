@@ -24,12 +24,12 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinCustomerRelocationSingleMoveGenerator", "Generates a single customer relocation move from a given VRP encoding.")]
-  [StorableClass]
+  [StorableType("DB14C7A7-182D-42DF-BDC8-2F50E84E2E12")]
   public sealed class PotvinCustomerRelocationSingleMoveGenerator : PotvinCustomerRelocationMoveGenerator,
     ISingleMoveGenerator {
     #region IMultiVRPMoveOperator Members
@@ -49,7 +49,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
     }
 
     [StorableConstructor]
-    private PotvinCustomerRelocationSingleMoveGenerator(bool deserializing) : base(deserializing) { }
+    private PotvinCustomerRelocationSingleMoveGenerator(StorableConstructorFlag _) : base(_) { }
 
     public PotvinCustomerRelocationSingleMoveGenerator()
       : base() {

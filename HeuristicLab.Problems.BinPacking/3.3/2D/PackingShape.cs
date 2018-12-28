@@ -22,7 +22,7 @@
 
 using System;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Common;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
@@ -30,7 +30,7 @@ using HeuristicLab.Problems.BinPacking;
 
 namespace HeuristicLab.Problems.BinPacking2D {
   [Item("PackingShape (2d)", "Represents the rectangular measures (width, height) of a two-dimensional bin-packing object.")]
-  [StorableClass]
+  [StorableType("11EF7917-826C-4154-A7E6-0869C1188B95")]
   public class PackingShape : PackingShape<PackingPosition>, IComparable<PackingShape> {
     public int Height {
       get { return ((IFixedValueParameter<IntValue>)Parameters["Height"]).Value.Value; }
@@ -43,7 +43,7 @@ namespace HeuristicLab.Problems.BinPacking2D {
     }
 
     [StorableConstructor]
-    protected PackingShape(bool deserializing) : base(deserializing) { }
+    protected PackingShape(StorableConstructorFlag _) : base(_) { }
     protected PackingShape(PackingShape original, Cloner cloner)
       : base(original, cloner) {
     }

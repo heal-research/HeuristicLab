@@ -22,14 +22,14 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Operators {
   /// <summary>
   /// An operator which clones and assigns the value of one parameter to another parameter.
   /// </summary>
   [Item("Assigner", "An operator which clones and assigns the value of one parameter to another parameter.")]
-  [StorableClass]
+  [StorableType("78FF1ACA-3D1E-4541-917F-B0431BAEC593")]
   public sealed class Assigner : SingleSuccessorOperator {
     public LookupParameter<IItem> LeftSideParameter {
       get { return (LookupParameter<IItem>)Parameters["LeftSide"]; }
@@ -39,7 +39,7 @@ namespace HeuristicLab.Operators {
     }
 
     [StorableConstructor]
-    private Assigner(bool deserializing) : base(deserializing) { }
+    private Assigner(StorableConstructorFlag _) : base(_) { }
     private Assigner(Assigner original, Cloner cloner)
       : base(original, cloner) {
     }

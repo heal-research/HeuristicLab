@@ -21,10 +21,10 @@
 
 using System;
 using System.Collections.Generic;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Operators.Views.GraphVisualization {
-  [StorableClass]
+  [StorableType("1416F47D-BEFC-4127-AC55-971099AAD93D")]
   internal class BidirectionalLookup<TFirst, TSecond> {
     [Storable]
     private Dictionary<TFirst, TSecond> firstToSecond;
@@ -32,7 +32,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
     private Dictionary<TSecond, TFirst> secondToFirst;
 
     [StorableConstructor]
-    protected BidirectionalLookup(bool deserializing) : base() { }
+    protected BidirectionalLookup(StorableConstructorFlag _) { }
 
     public BidirectionalLookup() {
       this.firstToSecond = new Dictionary<TFirst, TSecond>();

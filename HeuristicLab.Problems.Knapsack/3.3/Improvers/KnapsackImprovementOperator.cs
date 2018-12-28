@@ -28,7 +28,7 @@ using HeuristicLab.Encodings.BinaryVectorEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.Knapsack {
   /// <summary>
@@ -39,7 +39,7 @@ namespace HeuristicLab.Problems.Knapsack {
   /// The operator first orders the elements of the knapsack according to their value-to-weight ratio, then, if the solution is not feasible, removes the element with the lowest ratio until the solution is feasible and tries to add new elements with the best ratio that are not already included yet until the knapsack is full.
   /// </remarks>
   [Item("KnapsackImprovementOperator", "An operator that improves knapsack solutions. It is implemented as described in Laguna, M. and Martí, R. (2003). Scatter Search: Methodology and Implementations in C. Operations Research/Computer Science Interfaces Series, Vol. 24. Springer.")]
-  [StorableClass]
+  [StorableType("DD57DC5B-8874-49C8-B28F-89962FC11EB2")]
   public sealed class KnapsackImprovementOperator : SingleSuccessorOperator, ISingleObjectiveImprovementOperator {
     #region Parameter properties
     public ScopeParameter CurrentScopeParameter {
@@ -85,7 +85,7 @@ namespace HeuristicLab.Problems.Knapsack {
     #endregion
 
     [StorableConstructor]
-    private KnapsackImprovementOperator(bool deserializing) : base(deserializing) { }
+    private KnapsackImprovementOperator(StorableConstructorFlag _) : base(_) { }
     private KnapsackImprovementOperator(KnapsackImprovementOperator original, Cloner cloner) : base(original, cloner) { }
     public KnapsackImprovementOperator()
       : base() {

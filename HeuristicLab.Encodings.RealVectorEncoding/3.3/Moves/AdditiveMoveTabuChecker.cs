@@ -26,11 +26,11 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   [Item("AdditiveMoveTabuChecker", "Prevents falling back into ranges that have been moved over before.")]
-  [StorableClass]
+  [StorableType("CA7D09FF-C936-474C-A0F8-17D9DBF783C2")]
   public class AdditiveMoveTabuChecker : SingleSuccessorOperator, IAdditiveRealVectorMoveOperator, ITabuChecker {
     public override bool CanChangeName {
       get { return false; }
@@ -63,7 +63,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     }
 
     [StorableConstructor]
-    protected AdditiveMoveTabuChecker(bool deserializing) : base(deserializing) { }
+    protected AdditiveMoveTabuChecker(StorableConstructorFlag _) : base(_) { }
     protected AdditiveMoveTabuChecker(AdditiveMoveTabuChecker original, Cloner cloner) : base(original, cloner) { }
     public AdditiveMoveTabuChecker()
       : base() {

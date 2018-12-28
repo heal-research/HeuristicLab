@@ -22,18 +22,18 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.RealVectorEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.TestFunctions {
   [Item("LevyAdditiveMoveEvaluator", "Class for evaluating an additive move on the Levy function.")]
-  [StorableClass]
+  [StorableType("EF50460A-400C-47DE-96D0-51107E353467")]
   public class LevyAdditiveMoveEvaluator : AdditiveMoveEvaluator {
     public override System.Type EvaluatorType {
       get { return typeof(LevyEvaluator); }
     }
 
     [StorableConstructor]
-    protected LevyAdditiveMoveEvaluator(bool deserializing) : base(deserializing) { }
+    protected LevyAdditiveMoveEvaluator(StorableConstructorFlag _) : base(_) { }
     protected LevyAdditiveMoveEvaluator(LevyAdditiveMoveEvaluator original, Cloner cloner) : base(original, cloner) { }
     public LevyAdditiveMoveEvaluator() : base() { }
 

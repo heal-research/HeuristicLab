@@ -21,14 +21,14 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("TranslocationMove", "A move that changes three edges by performing a translocation.")]
-  [StorableClass]
+  [StorableType("D8C65083-9375-4665-8A90-1A9EAD3EDA97")]
   public class TranslocationMove : ThreeIndexMove {
     [StorableConstructor]
-    protected TranslocationMove(bool deserializing) : base(deserializing) { }
+    protected TranslocationMove(StorableConstructorFlag _) : base(_) { }
     protected TranslocationMove(TranslocationMove original, Cloner cloner) : base(original, cloner) { }
     public TranslocationMove() : base() { }
     public TranslocationMove(int index1, int index2, int index3) : base(index1, index2, index3, null) { }

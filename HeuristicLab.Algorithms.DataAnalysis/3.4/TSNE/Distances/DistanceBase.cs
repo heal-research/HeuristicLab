@@ -23,14 +23,14 @@ using System.Collections;
 using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
-  [StorableClass]
+  [StorableType("58D49402-2AB1-49CF-9AEF-1C599C4B71F7")]
   public abstract class DistanceBase<T> : Item, IDistance<T> {
     #region HLConstructors & Cloning
     [StorableConstructor]
-    protected DistanceBase(bool deserializing) : base(deserializing) { }
+    protected DistanceBase(StorableConstructorFlag _) : base(_) { }
     protected DistanceBase(DistanceBase<T> original, Cloner cloner) : base(original, cloner) { }
     protected DistanceBase() { }
     #endregion

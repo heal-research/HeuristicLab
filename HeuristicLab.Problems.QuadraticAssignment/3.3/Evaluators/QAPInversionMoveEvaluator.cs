@@ -25,18 +25,18 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.QuadraticAssignment {
   [Item("QAPInversionMoveEvaluator", "Evaluated an inversion move on a QAP solution.")]
-  [StorableClass]
+  [StorableType("56ED50D5-FF78-4F9D-82B5-89F594353ADD")]
   public class QAPInversionMoveEvaluator : QAPMoveEvaluator, IPermutationInversionMoveOperator {
     public ILookupParameter<InversionMove> InversionMoveParameter {
       get { return (ILookupParameter<InversionMove>)Parameters["InversionMove"]; }
     }
 
     [StorableConstructor]
-    protected QAPInversionMoveEvaluator(bool deserializing) : base(deserializing) { }
+    protected QAPInversionMoveEvaluator(StorableConstructorFlag _) : base(_) { }
     protected QAPInversionMoveEvaluator(QAPInversionMoveEvaluator original, Cloner cloner)
       : base(original, cloner) {
     }

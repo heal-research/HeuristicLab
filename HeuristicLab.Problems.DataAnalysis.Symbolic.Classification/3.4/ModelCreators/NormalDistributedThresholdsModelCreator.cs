@@ -25,10 +25,10 @@ using System.Drawing;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
-  [StorableClass]
+  [StorableType("87C4FF17-FC59-4D0F-80F5-2C84499E1222")]
   [Item("NormalDistributedThresholdsModelCreator", "")]
   public sealed class NormalDistributedThresholdsModelCreator : Item, ISymbolicDiscriminantFunctionClassificationModelCreator {
     public static new Image StaticItemImage {
@@ -38,7 +38,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Method; }
     }
     [StorableConstructor]
-    private NormalDistributedThresholdsModelCreator(bool deserializing) : base(deserializing) { }
+    private NormalDistributedThresholdsModelCreator(StorableConstructorFlag _) : base(_) { }
     private NormalDistributedThresholdsModelCreator(NormalDistributedThresholdsModelCreator original, Cloner cloner) : base(original, cloner) { }
     public NormalDistributedThresholdsModelCreator() : base() { }
 

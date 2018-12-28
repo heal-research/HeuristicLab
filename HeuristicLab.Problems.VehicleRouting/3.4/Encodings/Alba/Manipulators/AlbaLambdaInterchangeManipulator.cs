@@ -25,18 +25,18 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaLambdaInterchangeManipulator", "An operator which applies the lambda interchange operation to a VRP representation. It is implemented as described in Alba, E. and Dorronsoro, B. (2004). Solving the Vehicle Routing Problem by Using Cellular Genetic Algorithms.")]
-  [StorableClass]
+  [StorableType("7196378A-17BB-474E-ACCD-900683FD4030")]
   public sealed class AlbaLambdaInterchangeManipulator : AlbaManipulator {
     public IValueParameter<IntValue> LambdaParameter {
       get { return (IValueParameter<IntValue>)Parameters["Lambda"]; }
     }
 
     [StorableConstructor]
-    private AlbaLambdaInterchangeManipulator(bool deserializing) : base(deserializing) { }
+    private AlbaLambdaInterchangeManipulator(StorableConstructorFlag _) : base(_) { }
 
     public AlbaLambdaInterchangeManipulator()
       : base() {

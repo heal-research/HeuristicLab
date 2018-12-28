@@ -24,18 +24,18 @@ using System.Drawing;
 using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Data {
   [Item("IntValue", "Represents an integer value.")]
-  [StorableClass]
+  [StorableType("1C4F4173-5D67-44CA-8711-53437BB9F7C4")]
   public class IntValue : ValueTypeValue<int>, IComparable, IStringConvertibleValue {
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Field; }
     }
 
     [StorableConstructor]
-    protected IntValue(bool deserializing) : base(deserializing) { }
+    protected IntValue(StorableConstructorFlag _) : base(_) { }
     protected IntValue(IntValue original, Cloner cloner)
       : base(original, cloner) {
     }

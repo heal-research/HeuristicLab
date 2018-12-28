@@ -21,14 +21,14 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  [StorableClass]
+  [StorableType("F6680708-9368-4A96-AE2F-B4B7F4C3FE52")]
   [Item("Time-series Prognosis Problem", "A general time-series prognosis problem.")]
   public class TimeSeriesPrognosisProblem : DataAnalysisProblem<ITimeSeriesPrognosisProblemData>, ITimeSeriesPrognosisProblem {
     [StorableConstructor]
-    protected TimeSeriesPrognosisProblem(bool deserializing) : base(deserializing) { }
+    protected TimeSeriesPrognosisProblem(StorableConstructorFlag _) : base(_) { }
     protected TimeSeriesPrognosisProblem(TimeSeriesPrognosisProblem original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) { return new TimeSeriesPrognosisProblem(this, cloner); }
 

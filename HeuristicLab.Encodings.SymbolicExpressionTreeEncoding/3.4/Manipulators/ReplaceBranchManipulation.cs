@@ -25,10 +25,10 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
-  [StorableClass]
+  [StorableType("92286134-0520-4A1E-B8EE-01AFAD55C3AE")]
   [Item("ReplaceBranchManipulation", "Selects a branch of the tree randomly and replaces it with a newly initialized branch (using PTC2).")]
   public sealed class ReplaceBranchManipulation : SymbolicExpressionTreeManipulator, ISymbolicExpressionTreeSizeConstraintOperator {
     private const int MAX_TRIES = 100;
@@ -52,7 +52,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     #endregion
 
     [StorableConstructor]
-    private ReplaceBranchManipulation(bool deserializing) : base(deserializing) { }
+    private ReplaceBranchManipulation(StorableConstructorFlag _) : base(_) { }
     private ReplaceBranchManipulation(ReplaceBranchManipulation original, Cloner cloner) : base(original, cloner) { }
     public ReplaceBranchManipulation()
       : base() {

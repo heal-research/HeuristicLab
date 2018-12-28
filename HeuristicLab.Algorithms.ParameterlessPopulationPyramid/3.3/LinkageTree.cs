@@ -26,14 +26,14 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
   // This code is based off the publication
   // B. W. Goldman and W. F. Punch, "Parameter-less Population Pyramid," GECCO, pp. 785–792, 2014
   // and the original source code in C++11 available from: https://github.com/brianwgoldman/Parameter-less_Population_Pyramid
-  [StorableClass]
+  [StorableType("40E75AC2-ABD0-43A9-AC91-7478FDD6A399")]
   public class LinkageTree : DeepCloneable {
     [Storable]
     private readonly int[][][] occurances;
@@ -50,7 +50,7 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
 
 
     [StorableConstructor]
-    protected LinkageTree(bool deserializing) : base() { }
+    protected LinkageTree(StorableConstructorFlag _) { }
 
 
     protected LinkageTree(LinkageTree original, Cloner cloner) : base(original, cloner) {

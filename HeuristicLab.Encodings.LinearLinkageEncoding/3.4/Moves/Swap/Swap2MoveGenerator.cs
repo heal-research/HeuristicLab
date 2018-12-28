@@ -24,11 +24,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.LinearLinkageEncoding {
   [Item("Swap2MoveGenerator", "Base class for all swap-2 move generators.")]
-  [StorableClass]
+  [StorableType("E7319AAA-7D34-444A-9B63-8A5CF1F010B5")]
   public abstract class Swap2MoveGenerator : SingleSuccessorOperator, ILinearLinkageSwap2MoveOperator, IMoveGenerator {
     public override bool CanChangeName {
       get { return false; }
@@ -41,7 +41,7 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
     }
 
     [StorableConstructor]
-    protected Swap2MoveGenerator(bool deserializing) : base(deserializing) { }
+    protected Swap2MoveGenerator(StorableConstructorFlag _) : base(_) { }
     protected Swap2MoveGenerator(Swap2MoveGenerator original, Cloner cloner) : base(original, cloner) { }
     public Swap2MoveGenerator()
       : base() {

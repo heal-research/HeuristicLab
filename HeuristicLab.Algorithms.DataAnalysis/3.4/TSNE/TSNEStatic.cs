@@ -58,13 +58,17 @@ using System.Collections.Generic;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
-  [StorableClass]
+  [StorableType("23E56F69-7AA1-4853-BFEC-7B4DBC346B47")]
   public class TSNEStatic<T> {
-    [StorableClass]
+    [StorableConstructor]
+    protected TSNEStatic(StorableConstructorFlag _) {
+    }
+
+    [StorableType("1878DFC2-5DDF-4BBD-85BA-4A6E19AB59C2")]
     public sealed class TSNEState : DeepCloneable {
       #region Storables
       // initialized once
@@ -167,7 +171,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
 
       [StorableConstructor]
-      public TSNEState(bool deserializing) { }
+      private TSNEState(StorableConstructorFlag _) { }
 
       public TSNEState(IReadOnlyList<T> data, IDistance<T> distance, IRandom random, int newDimensions, double perplexity,
         double theta, int stopLyingIter, int momSwitchIter, double momentum, double finalMomentum, double eta, bool randomInit) {

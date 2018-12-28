@@ -26,14 +26,14 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.TravelingSalesman {
   /// <summary>
   /// A base class for operators which evaluate TSP solutions.
   /// </summary>
   [Item("TSPMoveEvaluator", "A base class for operators which evaluate TSP moves.")]
-  [StorableClass]
+  [StorableType("25573174-DE4B-4076-B439-CCB5F01CE652")]
   public abstract class TSPMoveEvaluator : SingleSuccessorOperator, ITSPMoveEvaluator, IMoveOperator {
 
     public abstract Type EvaluatorType { get; }
@@ -49,7 +49,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     }
 
     [StorableConstructor]
-    protected TSPMoveEvaluator(bool deserializing) : base(deserializing) { }
+    protected TSPMoveEvaluator(StorableConstructorFlag _) : base(_) { }
     protected TSPMoveEvaluator(TSPMoveEvaluator original, Cloner cloner) : base(original, cloner) { }
     protected TSPMoveEvaluator()
       : base() {

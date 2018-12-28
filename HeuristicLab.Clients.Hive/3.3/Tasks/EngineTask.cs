@@ -23,10 +23,10 @@ using System;
 using System.Drawing;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Clients.Hive {
-  [StorableClass]
+  [StorableType("FFDE8A4B-FDEC-47AA-B8E2-B16E5B513055")]
   public class EngineTask : ItemTask {
     public override HiveTask CreateHiveTask() {
       //only used when deserializing, so no problem with parentscope
@@ -62,7 +62,7 @@ namespace HeuristicLab.Clients.Hive {
     public EngineTask(IEngine engine) : base(engine) { }
 
     [StorableConstructor]
-    protected EngineTask(bool deserializing) : base(deserializing) { }
+    protected EngineTask(StorableConstructorFlag _) : base(_) { }
     protected EngineTask(EngineTask original, Cloner cloner)
       : base(original, cloner) {
       this.initialOperation = cloner.Clone(original.initialOperation);

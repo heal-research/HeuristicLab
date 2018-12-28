@@ -21,18 +21,17 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
-  [StorableClass]
+  [StorableType("65C04216-1441-41EE-91B7-A80B2AD5E332")]
   [Item("ManhattanDistance", "A distance function that uses block distance")]
   public class ManhattanDistance : DistanceBase<IEnumerable<double>> {
     #region HLConstructors & Cloning
     [StorableConstructor]
-    protected ManhattanDistance(bool deserializing) : base(deserializing) { }
+    protected ManhattanDistance(StorableConstructorFlag _) : base(_) { }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() { }
     protected ManhattanDistance(ManhattanDistance original, Cloner cloner)

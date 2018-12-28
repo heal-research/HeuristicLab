@@ -28,14 +28,14 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   /// <summary>
   /// An operator that collects the Pareto-best symbolic data analysis solutions for single objective symbolic data analysis problems.
   /// </summary>
   [Item("SymbolicDataAnalysisSingleObjectiveTrainingParetoBestSolutionAnalyzer", "An operator that analyzes the Pareto-best symbolic data analysis solution for single objective symbolic data analysis problems.")]
-  [StorableClass]
+  [StorableType("0C0557F2-DCBC-4699-9BA9-3E82C858605E")]
   public abstract class SymbolicDataAnalysisSingleObjectiveTrainingParetoBestSolutionAnalyzer<S, T> : SymbolicDataAnalysisSingleObjectiveAnalyzer, ISymbolicDataAnalysisInterpreterOperator, ISymbolicDataAnalysisBoundedOperator
     where T : class, ISymbolicDataAnalysisSolution
     where S : class, IDataAnalysisProblemData {
@@ -82,7 +82,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     #endregion
 
     [StorableConstructor]
-    protected SymbolicDataAnalysisSingleObjectiveTrainingParetoBestSolutionAnalyzer(bool deserializing) : base(deserializing) { }
+    protected SymbolicDataAnalysisSingleObjectiveTrainingParetoBestSolutionAnalyzer(StorableConstructorFlag _) : base(_) { }
     protected SymbolicDataAnalysisSingleObjectiveTrainingParetoBestSolutionAnalyzer(SymbolicDataAnalysisSingleObjectiveTrainingParetoBestSolutionAnalyzer<S, T> original, Cloner cloner) : base(original, cloner) { }
     public SymbolicDataAnalysisSingleObjectiveTrainingParetoBestSolutionAnalyzer()
       : base() {

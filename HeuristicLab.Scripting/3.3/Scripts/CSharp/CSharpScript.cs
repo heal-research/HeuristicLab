@@ -24,12 +24,12 @@ using System.Linq;
 using System.Reflection;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Scripting {
   [Item("C# Script", "An empty C# script.")]
   [Creatable(CreatableAttribute.Categories.Scripts, Priority = 100)]
-  [StorableClass]
+  [StorableType("1630933C-AB5B-44EC-A967-C299CC57E4E3")]
   public class CSharpScript : ExecutableScript, IStorableContent {
     #region Fields & Properties
     private CSharpScriptBase compiledScript;
@@ -48,7 +48,7 @@ namespace HeuristicLab.Scripting {
 
     #region Construction & Cloning
     [StorableConstructor]
-    protected CSharpScript(bool deserializing) : base(deserializing) { }
+    protected CSharpScript(StorableConstructorFlag _) : base(_) { }
     protected CSharpScript(CSharpScript original, Cloner cloner)
       : base(original, cloner) {
       variableStore = cloner.Clone(original.variableStore);

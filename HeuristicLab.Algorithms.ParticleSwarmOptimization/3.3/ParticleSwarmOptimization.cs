@@ -20,7 +20,6 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
@@ -30,14 +29,14 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
   [Item("Particle Swarm Optimization (PSO)", "A particle swarm optimization algorithm based on Standard PSO (SPSO) as described in Clerc, M. (2012). Standard particle swarm optimisation.")]
   [Creatable(CreatableAttribute.Categories.PopulationBasedAlgorithms, Priority = 300)]
-  [StorableClass]
+  [StorableType("068A0951-B08D-41D3-A142-BA345D0AD47E")]
   public sealed class ParticleSwarmOptimization : HeuristicOptimizationEngineAlgorithm, IStorableContent {
     #region Parameter Properties
     public IValueParameter<IntValue> SeedParameter {
@@ -164,7 +163,7 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
     #endregion
 
     [StorableConstructor]
-    private ParticleSwarmOptimization(bool deserializing) : base(deserializing) { }
+    private ParticleSwarmOptimization(StorableConstructorFlag _) : base(_) { }
     private ParticleSwarmOptimization(ParticleSwarmOptimization original, Cloner cloner)
       : base(original, cloner) {
       qualityAnalyzer = cloner.Clone(original.qualityAnalyzer);

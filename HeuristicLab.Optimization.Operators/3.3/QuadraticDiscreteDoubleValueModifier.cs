@@ -21,17 +21,17 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Optimization.Operators {
   /// <summary>
   /// Modifies the value by quadratic fall (slow fall initially, fast fall to the end) or rise (slow rise initally, fast rise to the end).
   /// </summary>
   [Item("QuadraticDiscreteDoubleValueModifier", "Modifies the value by quadratic fall (slow fall initially, fast fall to the end) or rise (slow rise initally, fast rise to the end).")]
-  [StorableClass]
+  [StorableType("49CADD22-7074-4ADB-AA7B-36D03115FB1A")]
   public class QuadraticDiscreteDoubleValueModifier : DiscreteDoubleValueModifier {
     [StorableConstructor]
-    protected QuadraticDiscreteDoubleValueModifier(bool deserializing) : base(deserializing) { }
+    protected QuadraticDiscreteDoubleValueModifier(StorableConstructorFlag _) : base(_) { }
     protected QuadraticDiscreteDoubleValueModifier(QuadraticDiscreteDoubleValueModifier original, Cloner cloner) : base(original, cloner) { }
     public QuadraticDiscreteDoubleValueModifier() : base() { }
 

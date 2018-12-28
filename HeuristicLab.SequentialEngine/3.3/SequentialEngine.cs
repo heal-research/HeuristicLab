@@ -23,17 +23,17 @@ using System;
 using System.Threading;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.SequentialEngine {
   /// <summary>
   /// Engine for sequential execution of algorithms.
   /// </summary>
-  [StorableClass]
+  [StorableType("2100B28B-18B3-41F5-B8A2-1DD009ADF4A9")]
   [Item("Sequential Engine", "Engine for sequential execution of algorithms.")]
   public class SequentialEngine : Engine {
     [StorableConstructor]
-    protected SequentialEngine(bool deserializing) : base(deserializing) { }
+    protected SequentialEngine(StorableConstructorFlag _) : base(_) { }
     protected SequentialEngine(SequentialEngine original, Cloner cloner) : base(original, cloner) { }
     public SequentialEngine() : base() { }
 

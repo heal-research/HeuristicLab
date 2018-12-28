@@ -22,18 +22,18 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.RealVectorEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.TestFunctions {
   [Item("GriewankAdditiveMoveEvaluator", "Class for evaluating an additive move on the Griewank function.")]
-  [StorableClass]
+  [StorableType("A3AC4364-7F3A-431E-8AE0-A1B46EC9FA4D")]
   public class GriewankAdditiveMoveEvaluator : AdditiveMoveEvaluator {
     public override System.Type EvaluatorType {
       get { return typeof(GriewankEvaluator); }
     }
 
     [StorableConstructor]
-    protected GriewankAdditiveMoveEvaluator(bool deserializing) : base(deserializing) { }
+    protected GriewankAdditiveMoveEvaluator(StorableConstructorFlag _) : base(_) { }
     protected GriewankAdditiveMoveEvaluator(GriewankAdditiveMoveEvaluator original, Cloner cloner) : base(original, cloner) { }
     public GriewankAdditiveMoveEvaluator() : base() { }
 

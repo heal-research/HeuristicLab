@@ -23,7 +23,7 @@ using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// <summary>
@@ -33,10 +33,10 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// It is implemented as described in Michalewicz, Z. 1999. Genetic Algorithms + Data Structures = Evolution Programs. Third, Revised and Extended Edition, Spring-Verlag Berlin Heidelberg.
   /// </remarks>
   [Item("UniformOnePositionManipulator", "Changes a single position in the vector by sampling uniformly from the interval [Minimum_i, Maximum_i) in dimension i. It is implemented as described in Michalewicz, Z. 1999. Genetic Algorithms + Data Structures = Evolution Programs. Third, Revised and Extended Edition, Spring-Verlag Berlin Heidelberg.")]
-  [StorableClass]
+  [StorableType("CABE72D6-5CBD-40F5-B541-77CB1A5346E1")]
   public class UniformOnePositionManipulator : RealVectorManipulator {
     [StorableConstructor]
-    protected UniformOnePositionManipulator(bool deserializing) : base(deserializing) { }
+    protected UniformOnePositionManipulator(StorableConstructorFlag _) : base(_) { }
     protected UniformOnePositionManipulator(UniformOnePositionManipulator original, Cloner cloner) : base(original, cloner) { }
     public UniformOnePositionManipulator() : base() { }
 

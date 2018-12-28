@@ -25,11 +25,11 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("TranslocationMoveMaker", "Peforms a translocation or insertion move (3-opt) on a given permutation and updates the quality.")]
-  [StorableClass]
+  [StorableType("B27DC2DD-4E4E-448A-B4BD-86EEABACBBC5")]
   public class TranslocationMoveMaker : SingleSuccessorOperator, IPermutationTranslocationMoveOperator, IMoveMaker, ISingleObjectiveOperator {
     public override bool CanChangeName {
       get { return false; }
@@ -48,7 +48,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     }
 
     [StorableConstructor]
-    protected TranslocationMoveMaker(bool deserializing) : base(deserializing) { }
+    protected TranslocationMoveMaker(StorableConstructorFlag _) : base(_) { }
     protected TranslocationMoveMaker(TranslocationMoveMaker original, Cloner cloner) : base(original, cloner) { }
     public TranslocationMoveMaker()
       : base() {

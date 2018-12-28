@@ -23,10 +23,10 @@ using System;
 using System.Drawing;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Data {
-  [StorableClass]
+  [StorableType("06A7697C-2C25-49AF-95A2-DDB14D2F7B81")]
   [Item("StringConvertibleValueTuple<,>", "A generic abstract base class for representing multiple values of a string convertible value.")]
   public abstract class StringConvertibleValueTuple<T, U> : Item, IStringConvertibleValueTuple
     where T : class, IDeepCloneable, IStringConvertibleValue
@@ -50,8 +50,7 @@ namespace HeuristicLab.Data {
     IStringConvertibleValue IStringConvertibleValueTuple.Item2 { get { return Item2; } }
 
     [StorableConstructor]
-    protected StringConvertibleValueTuple(bool deserializing)
-      : base(deserializing) {
+    protected StringConvertibleValueTuple(StorableConstructorFlag _) : base(_) {
     }
     protected StringConvertibleValueTuple(StringConvertibleValueTuple<T, U> original, Cloner cloner)
       : base(original, cloner) {

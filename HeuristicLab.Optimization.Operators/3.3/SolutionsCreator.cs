@@ -24,14 +24,14 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Optimization.Operators {
   /// <summary>
   /// An operator which creates new solutions. Evaluation of the new solutions is executed in parallel, if an engine is used which supports parallelization.
   /// </summary>
   [Item("SolutionsCreator", "An operator which creates new solutions. Evaluation of the new solutions is executed in parallel, if an engine is used which supports parallelization.")]
-  [StorableClass]
+  [StorableType("3EE12E32-F8AF-4C7E-A9C9-B5DC5561CFE2")]
   public sealed class SolutionsCreator : SingleSuccessorOperator {
     public ValueLookupParameter<IntValue> NumberOfSolutionsParameter {
       get { return (ValueLookupParameter<IntValue>)Parameters["NumberOfSolutions"]; }
@@ -57,7 +57,7 @@ namespace HeuristicLab.Optimization.Operators {
     }
 
     [StorableConstructor]
-    private SolutionsCreator(bool deserializing) : base(deserializing) { }
+    private SolutionsCreator(StorableConstructorFlag _) : base(_) { }
     private SolutionsCreator(SolutionsCreator original, Cloner cloner) : base(original, cloner) { }
     public SolutionsCreator()
       : base() {

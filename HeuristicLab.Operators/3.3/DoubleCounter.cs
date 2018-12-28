@@ -23,14 +23,14 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Operators {
   /// <summary>
   /// An operator which increments a double variable.
   /// </summary>
   [Item("DoubleCounter", "An operator which increments a double variable.")]
-  [StorableClass]
+  [StorableType("0DD61CAD-1FBB-4677-840C-3A1A85D77110")]
   public sealed class DoubleCounter : SingleSuccessorOperator {
     public LookupParameter<DoubleValue> ValueParameter {
       get { return (LookupParameter<DoubleValue>)Parameters["Value"]; }
@@ -44,7 +44,7 @@ namespace HeuristicLab.Operators {
     }
 
     [StorableConstructor]
-    private DoubleCounter(bool deserializing) : base(deserializing) { }
+    private DoubleCounter(StorableConstructorFlag _) : base(_) { }
     private DoubleCounter(DoubleCounter original, Cloner cloner)
       : base(original, cloner) {
     }

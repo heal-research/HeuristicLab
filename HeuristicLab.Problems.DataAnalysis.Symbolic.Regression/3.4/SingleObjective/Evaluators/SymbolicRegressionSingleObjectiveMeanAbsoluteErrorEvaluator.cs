@@ -24,15 +24,15 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   [Item("Mean absolute error Evaluator", "Calculates the mean absolute error of a symbolic regression solution.")]
-  [StorableClass]
+  [StorableType("8ABB1AC3-0ACE-43AB-8E6B-B0FC925429DC")]
   public class SymbolicRegressionSingleObjectiveMeanAbsoluteErrorEvaluator : SymbolicRegressionSingleObjectiveEvaluator {
     public override bool Maximization { get { return false; } }
     [StorableConstructor]
-    protected SymbolicRegressionSingleObjectiveMeanAbsoluteErrorEvaluator(bool deserializing) : base(deserializing) { }
+    protected SymbolicRegressionSingleObjectiveMeanAbsoluteErrorEvaluator(StorableConstructorFlag _) : base(_) { }
     protected SymbolicRegressionSingleObjectiveMeanAbsoluteErrorEvaluator(SymbolicRegressionSingleObjectiveMeanAbsoluteErrorEvaluator original, Cloner cloner)
       : base(original, cloner) {
     }

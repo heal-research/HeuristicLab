@@ -22,7 +22,7 @@
 using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Random {
 
@@ -32,7 +32,7 @@ namespace HeuristicLab.Random {
   /// See "The Ziggurat Method for Generating Random Variables" (G. Marsaglia and W.W. Tsang 2000).
   /// </summary>
   [Item("NormalDistributedRandom", "A pseudo random number generator which uses the Ziggurat method to create normally distributed random numbers.")]
-  [StorableClass]
+  [StorableType("240F7050-C05B-4E85-82C3-2871FE2138B1")]
   public sealed class NormalDistributedRandom : Item, IRandom {
     [Storable]
     private double mu;
@@ -453,7 +453,7 @@ namespace HeuristicLab.Random {
     /// </summary>
     /// <param name="deserializing">true, if the constructor is called during deserialization.</param>
     [StorableConstructor]
-    private NormalDistributedRandom(bool deserializing) : base(deserializing) { }
+    private NormalDistributedRandom(StorableConstructorFlag _) : base(_) { }
 
     /// <summary>
     /// Initializes a new instance from an existing one (copy constructor).

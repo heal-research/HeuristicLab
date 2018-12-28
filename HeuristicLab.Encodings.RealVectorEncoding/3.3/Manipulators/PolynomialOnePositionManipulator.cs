@@ -24,7 +24,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// <summary>
@@ -34,7 +34,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// It is implemented as described in Deb, K. & Goyal, M. A. 1996. Combined Genetic Adaptive Search (GeneAS) for Engineering Design Computer Science and Informatics, 26, pp. 30-45.
   /// </remarks>
   [Item("PolynomialOnePositionManipulator", "The polynomial manipulation is implemented as described in Deb, K. & Goyal, M. A. 1996. Combined Genetic Adaptive Search (GeneAS) for Engineering Design Computer Science and Informatics, 26, pp. 30-45. In this operator it is performed on a single randomly chosen position of the real vector.")]
-  [StorableClass]
+  [StorableType("19F0F379-FCE8-43DE-B5B8-D8F2924D0F92")]
   public class PolynomialOnePositionManipulator : RealVectorManipulator {
     /// <summary>
     /// The contiguity parameter specifies the shape of the probability density function that controls the mutation. Setting it to 0 is similar to a uniform distribution over the entire manipulation range (specified by <see cref="MaximumManipulationParameter"/>.
@@ -54,7 +54,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     }
 
     [StorableConstructor]
-    protected PolynomialOnePositionManipulator(bool deserializing) : base(deserializing) { }
+    protected PolynomialOnePositionManipulator(StorableConstructorFlag _) : base(_) { }
     protected PolynomialOnePositionManipulator(PolynomialOnePositionManipulator original, Cloner cloner) : base(original, cloner) { }
     /// <summary>
     /// Initializes a new instance of <see cref="PolynomialOnePositionManipulator"/> with two parameters

@@ -25,11 +25,11 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   [Item("OneBitflipMoveTabuChecker", "Prevents peforming a one bitflip move again.")]
-  [StorableClass]
+  [StorableType("27523531-D19E-47ED-9397-F7457D41B85B")]
   public class OneBitflipMoveTabuChecker : SingleSuccessorOperator, IOneBitflipMoveOperator, ITabuChecker {
     public override bool CanChangeName {
       get { return false; }
@@ -62,7 +62,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
     }
 
     [StorableConstructor]
-    protected OneBitflipMoveTabuChecker(bool deserializing) : base(deserializing) { }
+    protected OneBitflipMoveTabuChecker(StorableConstructorFlag _) : base(_) { }
     protected OneBitflipMoveTabuChecker(OneBitflipMoveTabuChecker original, Cloner cloner) : base(original, cloner) { }
     public OneBitflipMoveTabuChecker()
       : base() {

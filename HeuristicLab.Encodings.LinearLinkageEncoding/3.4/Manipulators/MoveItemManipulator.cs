@@ -25,11 +25,11 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.LinearLinkageEncoding {
   [Item("Move Item Manipulator", "Performs a maximum of N move operations between groups or to new groups. An already moved item may be moved again.")]
-  [StorableClass]
+  [StorableType("26B371F4-8E37-406A-AC5A-3E7734087890")]
   public sealed class MoveItemManipulator : LinearLinkageManipulator {
 
     public IValueLookupParameter<IntValue> NParameter {
@@ -37,7 +37,7 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
     }
 
     [StorableConstructor]
-    private MoveItemManipulator(bool deserializing) : base(deserializing) { }
+    private MoveItemManipulator(StorableConstructorFlag _) : base(_) { }
     private MoveItemManipulator(MoveItemManipulator original, Cloner cloner) : base(original, cloner) { }
     public MoveItemManipulator() {
       Parameters.Add(new ValueLookupParameter<IntValue>("N", "The number of items to move.", new IntValue(1)));

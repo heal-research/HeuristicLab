@@ -23,15 +23,15 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.IntegerVectorEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding.PriorityRulesVector {
   [Item("PRVUniformOnePositionManipulator", "Represents a manipulation operation inserting parts of the individual at another position.")]
-  [StorableClass]
+  [StorableType("5C6A1D79-88DD-42D7-94C1-57C16BA44148")]
   public class PRVUniformOnePositionManipulator : PRVManipulator {
 
     [StorableConstructor]
-    protected PRVUniformOnePositionManipulator(bool deserializing) : base(deserializing) { }
+    protected PRVUniformOnePositionManipulator(StorableConstructorFlag _) : base(_) { }
     protected PRVUniformOnePositionManipulator(PRVUniformOnePositionManipulator original, Cloner cloner) : base(original, cloner) { }
     public PRVUniformOnePositionManipulator() : base() { }
 

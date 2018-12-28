@@ -22,13 +22,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
-  [StorableClass]
+  [StorableType("5D02E552-B96E-4267-858B-22339D8CB6B2")]
   [Item("Squared error loss", "")]
   public sealed class SquaredErrorLoss : Item, ILossFunction {
     public SquaredErrorLoss() { }
@@ -78,7 +77,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     #region item implementation
     [StorableConstructor]
-    private SquaredErrorLoss(bool deserializing) : base(deserializing) { }
+    private SquaredErrorLoss(StorableConstructorFlag _) : base(_) { }
 
     private SquaredErrorLoss(SquaredErrorLoss original, Cloner cloner) : base(original, cloner) { }
 

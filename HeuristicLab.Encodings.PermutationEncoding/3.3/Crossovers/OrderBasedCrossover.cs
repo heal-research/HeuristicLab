@@ -22,7 +22,7 @@
 using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   /// <summary>
@@ -35,10 +35,10 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
   /// It is implemented as described in Syswerda, G. (1991). Schedule Optimization Using Genetic Algorithms. In Davis, L. (Ed.) Handbook of Genetic Algorithms, Van Nostrand Reinhold, New York, pp. 332-349.
   /// </remarks>
   [Item("OrderBasedCrossover", "An operator which performs an order based crossover of two permutations. It is implemented as described in Syswerda, G. (1991). Schedule Optimization Using Genetic Algorithms. In Davis, L. (Ed.) Handbook of Genetic Algorithms, Van Nostrand Reinhold, New York, pp. 332-349.")]
-  [StorableClass]
+  [StorableType("399EAAF3-ECDF-46AE-9DB6-1D99E45EBA66")]
   public class OrderBasedCrossover : PermutationCrossover {
     [StorableConstructor]
-    protected OrderBasedCrossover(bool deserializing) : base(deserializing) { }
+    protected OrderBasedCrossover(StorableConstructorFlag _) : base(_) { }
     protected OrderBasedCrossover(OrderBasedCrossover original, Cloner cloner) : base(original, cloner) { }
     public OrderBasedCrossover() : base() { }
 

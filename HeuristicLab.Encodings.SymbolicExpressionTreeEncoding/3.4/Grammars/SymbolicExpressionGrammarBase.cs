@@ -24,7 +24,7 @@ using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   /// <summary>
@@ -33,7 +33,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   /// Syntactic constraints limit the number of allowed sub trees for a node with a symbol and which symbols are allowed 
   /// in the sub-trees of a symbol (can be specified for each sub-tree index separately).
   /// </summary>
-  [StorableClass]
+  [StorableType("E76C087C-4E10-488A-86D0-295A4265DA53")]
   public abstract class SymbolicExpressionGrammarBase : NamedItem, ISymbolicExpressionGrammarBase {
 
     #region properties for separation between implementation and persistence
@@ -79,8 +79,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
 
     [StorableConstructor]
-    protected SymbolicExpressionGrammarBase(bool deserializing)
-      : base(deserializing) {
+    protected SymbolicExpressionGrammarBase(StorableConstructorFlag _) : base(_) {
 
       symbols = new Dictionary<string, ISymbol>();
       symbolSubtreeCount = new Dictionary<string, Tuple<int, int>>();

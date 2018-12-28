@@ -27,11 +27,11 @@ using System.Linq;
 using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Data {
   [Item("ValueTypeArray", "An abstract base class for representing arrays of value types.")]
-  [StorableClass]
+  [StorableType("6A05E421-E015-44A8-959F-5711CF9400A9")]
   public abstract class ValueTypeArray<T> : Item, IValueTypeArray<T> where T : struct {
     private const int maximumToStringLength = 100;
 
@@ -111,7 +111,7 @@ namespace HeuristicLab.Data {
     }
 
     [StorableConstructor]
-    protected ValueTypeArray(bool deserializing) : base(deserializing) { }
+    protected ValueTypeArray(StorableConstructorFlag _) : base(_) { }
     protected ValueTypeArray(ValueTypeArray<T> original, Cloner cloner)
       : base(original, cloner) {
       this.array = (T[])original.array.Clone();

@@ -20,18 +20,17 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.LinearLinkageEncoding {
   [Item("Group Crossover", "The Group Crossover is implemented as described in Korkmaz, E.E. 2010. Multi-objective Genetic Algorithms for grouping problems. Applied Intelligence 33(2), pp. 179-192.")]
-  [StorableClass]
+  [StorableType("E3B2FBDD-C923-4FE2-85C8-B2202EEF367F")]
   public sealed class GroupCrossover : LinearLinkageCrossover {
 
     [StorableConstructor]
-    private GroupCrossover(bool deserializing) : base(deserializing) { }
+    private GroupCrossover(StorableConstructorFlag _) : base(_) { }
     private GroupCrossover(GroupCrossover original, Cloner cloner) : base(original, cloner) { }
     public GroupCrossover() { }
 

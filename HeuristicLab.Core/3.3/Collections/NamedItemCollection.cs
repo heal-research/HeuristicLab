@@ -22,14 +22,14 @@
 using System;
 using System.Collections.Generic;
 using HeuristicLab.Common;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Core {
   [Item("NamedItemCollection", "Represents a collection of named items.")]
-  [StorableClass]
+  [StorableType("A7DC6650-2486-472C-8515-0D66C93C03F6")]
   public class NamedItemCollection<T> : KeyedItemCollection<string, T> where T : class, INamedItem {
     [StorableConstructor]
-    protected NamedItemCollection(bool deserializing) : base(deserializing) { }
+    protected NamedItemCollection(StorableConstructorFlag _) : base(_) { }
     protected NamedItemCollection(NamedItemCollection<T> original, Cloner cloner)
       : base(original, cloner) {
       RegisterItemEvents(this);

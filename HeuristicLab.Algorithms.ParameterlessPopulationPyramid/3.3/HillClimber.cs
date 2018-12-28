@@ -30,7 +30,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.Binary;
 using HeuristicLab.Random;
 
@@ -40,7 +40,7 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
   // B. W. Goldman and W. F. Punch, "Parameter-less Population Pyramid," GECCO, pp. 785–792, 2014
   // and the original source code in C++11 available from: https://github.com/brianwgoldman/Parameter-less_Population_Pyramid
   [Item("Hill Climber (HC)", "Binary Hill Climber.")]
-  [StorableClass]
+  [StorableType("BA349010-6295-406E-8989-B271FB96ED86")]
   [Creatable(CreatableAttribute.Categories.SingleSolutionAlgorithms, Priority = 150)]
   public class HillClimber : BasicAlgorithm {
     [Storable]
@@ -82,7 +82,7 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
     #endregion
 
     [StorableConstructor]
-    protected HillClimber(bool deserializing) : base(deserializing) { }
+    protected HillClimber(StorableConstructorFlag _) : base(_) { }
     protected HillClimber(HillClimber original, Cloner cloner)
       : base(original, cloner) {
     }

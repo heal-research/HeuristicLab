@@ -24,12 +24,12 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Clients.OKB.RunCreation {
   [Item("EmptyEvaluator", "A dummy evaluator which throws an exception when executed.")]
-  [StorableClass]
+  [StorableType("0AC24AEA-8CBF-4F93-AE7A-02113344FAD8")]
   [NonDiscoverableType]
   public sealed class EmptyEvaluator : Operator, IEvaluator {
     private string exceptionMessage;
@@ -50,7 +50,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
     #endregion
 
     [StorableConstructor]
-    private EmptyEvaluator(bool deserializing) : base(deserializing) { }
+    private EmptyEvaluator(StorableConstructorFlag _) : base(_) { }
     private EmptyEvaluator(EmptyEvaluator original, Cloner cloner)
       : base(original, cloner) {
       exceptionMessage = original.exceptionMessage;

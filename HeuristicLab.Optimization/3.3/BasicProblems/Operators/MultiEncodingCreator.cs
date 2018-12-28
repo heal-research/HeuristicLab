@@ -23,14 +23,14 @@ using System;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Optimization {
   [Item("MultiEncodingCreator", "Contains solution creators that together create a multi-encoding.")]
-  [StorableClass]
+  [StorableType("E261B506-6F74-4BC4-8164-5ACE20FBC319")]
   public sealed class MultiEncodingCreator : MultiEncodingOperator<ISolutionCreator>, ISolutionCreator {
     [StorableConstructor]
-    private MultiEncodingCreator(bool deserializing) : base(deserializing) { }
+    private MultiEncodingCreator(StorableConstructorFlag _) : base(_) { }
 
     private MultiEncodingCreator(MultiEncodingCreator original, Cloner cloner) : base(original, cloner) { }
     public MultiEncodingCreator() { }

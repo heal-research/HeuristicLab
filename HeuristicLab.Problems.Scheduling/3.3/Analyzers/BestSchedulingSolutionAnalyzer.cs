@@ -26,15 +26,15 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.ScheduleEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.Scheduling {
 
   [Item("BestSchedulingSolutionAnalyzer", "An operator for analyzing the best solution of Scheduling Problems given in schedule-representation.")]
-  [StorableClass]
+  [StorableType("FD6D4A80-1965-48FD-8D4C-E780BC2F8048")]
   public sealed class BestSchedulingSolutionAnalyzer : SchedulingAnalyzer, IStochasticOperator {
     [StorableConstructor]
-    private BestSchedulingSolutionAnalyzer(bool deserializing) : base(deserializing) { }
+    private BestSchedulingSolutionAnalyzer(StorableConstructorFlag _) : base(_) { }
     private BestSchedulingSolutionAnalyzer(BestSchedulingSolutionAnalyzer original, Cloner cloner)
       : base(original, cloner) {
     }

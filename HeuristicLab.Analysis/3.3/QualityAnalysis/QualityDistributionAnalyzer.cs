@@ -26,11 +26,11 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Analysis.QualityAnalysis {
   [Item("QualityDistributionAnalyzer", "Analyzes the distribution of the quality values in that it adds a Histogram of them into the result collection.")]
-  [StorableClass]
+  [StorableType("9B339DF1-A9D3-4C9C-B78C-84B764715EB8")]
   public class QualityDistributionAnalyzer : SingleSuccessorOperator, IAnalyzer, IIterationBasedOperator, ISingleObjectiveOperator {
 
     #region Parameter properties
@@ -69,7 +69,7 @@ namespace HeuristicLab.Analysis.QualityAnalysis {
     }
 
     [StorableConstructor]
-    protected QualityDistributionAnalyzer(bool deserializing) : base(deserializing) { }
+    protected QualityDistributionAnalyzer(StorableConstructorFlag _) : base(_) { }
     protected QualityDistributionAnalyzer(QualityDistributionAnalyzer original, Cloner cloner)
       : base(original, cloner) {
     }

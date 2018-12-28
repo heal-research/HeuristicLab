@@ -22,10 +22,10 @@
 using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Encodings.RealVectorEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
-  [StorableClass]
+  [StorableType("3ED6C22E-EA6E-4336-BC49-884CE151E514")]
   public abstract class DTLZ : MultiObjectiveTestFunction {
     protected override IEnumerable<double[]> GetOptimalParetoFront(int objectives) {
       if (objectives == 2) return ParetoFrontStore.GetParetoFront("DTLZ.ParetoFronts." + this.ItemName + ".2D");
@@ -49,7 +49,7 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
     }
 
     [StorableConstructor]
-    protected DTLZ(bool deserializing) : base(deserializing) { }
+    protected DTLZ(StorableConstructorFlag _) : base(_) { }
     protected DTLZ(DTLZ original, Cloner cloner) : base(original, cloner) { }
     public DTLZ() : base(minimumObjectives: 2, maximumObjectives: int.MaxValue, minimumSolutionLength: 2, maximumSolutionLength: int.MaxValue) { }
 

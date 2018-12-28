@@ -24,11 +24,11 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.Instances;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  [StorableClass]
+  [StorableType("67267E9F-8A34-4CB6-9776-DD1483131987")]
   public abstract class DataAnalysisProblem<T> : Problem, IDataAnalysisProblem<T>,
     IProblemInstanceConsumer<T>, IProblemInstanceExporter<T>
     where T : class, IDataAnalysisProblemData {
@@ -56,7 +56,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       RegisterEventHandlers();
     }
     [StorableConstructor]
-    protected DataAnalysisProblem(bool deserializing) : base(deserializing) { }
+    protected DataAnalysisProblem(StorableConstructorFlag _) : base(_) { }
 
     protected DataAnalysisProblem(T problemData)
       : base() {

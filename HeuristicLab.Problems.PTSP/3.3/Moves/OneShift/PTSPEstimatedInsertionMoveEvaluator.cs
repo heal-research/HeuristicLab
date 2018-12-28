@@ -25,11 +25,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.PTSP {
   [Item("PTSP Estimated Insertion Move Evaluator", "Evaluates an insertion move (1-shift)")]
-  [StorableClass]
+  [StorableType("DAC1CBD1-BF27-4BB4-B7C5-82EC58F7F5C9")]
   public class PTSPEstimatedInsertionMoveEvaluator : EstimatedPTSPMoveEvaluator, IPermutationTranslocationMoveOperator {
 
     public ILookupParameter<TranslocationMove> TranslocationMoveParameter {
@@ -37,7 +37,7 @@ namespace HeuristicLab.Problems.PTSP {
     }
 
     [StorableConstructor]
-    protected PTSPEstimatedInsertionMoveEvaluator(bool deserializing) : base(deserializing) { }
+    protected PTSPEstimatedInsertionMoveEvaluator(StorableConstructorFlag _) : base(_) { }
     protected PTSPEstimatedInsertionMoveEvaluator(PTSPEstimatedInsertionMoveEvaluator original, Cloner cloner) : base(original, cloner) { }
     public PTSPEstimatedInsertionMoveEvaluator()
       : base() {

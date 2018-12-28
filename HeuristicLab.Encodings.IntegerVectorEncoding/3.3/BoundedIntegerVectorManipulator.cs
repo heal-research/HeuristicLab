@@ -24,11 +24,11 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   [Item("BoundedIntegerVectorManipulator", "Base class for bounded integer vector manipulators.")]
-  [StorableClass]
+  [StorableType("A2B6079B-19AC-4518-91FB-8BEDFC8C776F")]
   public abstract class BoundedIntegerVectorManipulator : IntegerVectorManipulator, IBoundedIntegerVectorOperator {
 
     public IValueLookupParameter<IntMatrix> BoundsParameter {
@@ -36,7 +36,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
     }
 
     [StorableConstructor]
-    protected BoundedIntegerVectorManipulator(bool deserializing) : base(deserializing) { }
+    protected BoundedIntegerVectorManipulator(StorableConstructorFlag _) : base(_) { }
     protected BoundedIntegerVectorManipulator(BoundedIntegerVectorManipulator original, Cloner cloner) : base(original, cloner) { }
     public BoundedIntegerVectorManipulator()
       : base() {

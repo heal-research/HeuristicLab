@@ -22,17 +22,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis {
   /// <summary>
   /// Represents a clustering data analysis solution
   /// </summary>
-  [StorableClass]
+  [StorableType("51241A39-F5C6-4DC8-A27A-83875FFCB51B")]
   public class ClusteringSolution : DataAnalysisSolution, IClusteringSolution {
 
     [StorableConstructor]
-    protected ClusteringSolution(bool deserializing) : base(deserializing) { }
+    protected ClusteringSolution(StorableConstructorFlag _) : base(_) { }
     protected ClusteringSolution(ClusteringSolution original, Cloner cloner)
       : base(original, cloner) {
     }

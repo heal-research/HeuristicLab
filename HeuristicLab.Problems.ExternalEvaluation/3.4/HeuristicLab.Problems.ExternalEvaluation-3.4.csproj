@@ -107,7 +107,7 @@
       <HintPath>..\..\bin\Google.ProtocolBuffers-2.4.1.473.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="HEAL.Fossil, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="HEAL.Fossil, Version=1.0.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
       <HintPath>..\..\packages\HEAL.Fossil.1.0.0\lib\netstandard2.0\HEAL.Fossil.dll</HintPath>
     </Reference>
     <Reference Include="System" />

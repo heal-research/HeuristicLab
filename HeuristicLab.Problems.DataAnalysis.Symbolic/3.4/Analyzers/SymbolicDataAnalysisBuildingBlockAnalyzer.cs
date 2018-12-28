@@ -30,12 +30,12 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using static HeuristicLab.Problems.DataAnalysis.Symbolic.SymbolicExpressionHashExtensions;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Analyzers {
   [Item("SymbolicDataAnalysisBuildingBlockAnalyzer", "An analyzer that uses tree hashing to identify the most common subtrees (building blocks) in the population")]
-  [StorableClass]
+  [StorableType("286F2E77-3E98-42AA-B09D-7B2C8ECAC801")]
   public sealed class SymbolicDataAnalysisBuildingBlockAnalyzer : SymbolicDataAnalysisAnalyzer {
     private const string BuildingBlocksResultName = "BuildingBlocks";
     private const string SolutionUniquenessResultName = "SolutionUniqueness";
@@ -90,7 +90,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Analyzers {
     }
 
     [StorableConstructor]
-    private SymbolicDataAnalysisBuildingBlockAnalyzer(bool deserializing) : base(deserializing) { }
+    private SymbolicDataAnalysisBuildingBlockAnalyzer(StorableConstructorFlag _) : base(_) { }
 
     private readonly Func<byte[], ulong> hashFunction = HashUtil.JSHash;
 

@@ -28,11 +28,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.TestFunctions.Evaluators {
   [Item("MultinormalFunction", "Evaluates a random multinormal function on a given point.")]
-  [StorableClass]
+  [StorableType("55E0E22B-43BD-4408-8A78-8F918E66AFB1")]
   public class MultinormalEvaluator : SingleObjectiveTestFunctionProblemEvaluator {
     public override string FunctionName { get { return "Multinormal"; } }
 
@@ -86,7 +86,7 @@ namespace HeuristicLab.Problems.TestFunctions.Evaluators {
     }
 
     [StorableConstructor]
-    protected MultinormalEvaluator(bool deserializing) : base(deserializing) { }
+    protected MultinormalEvaluator(StorableConstructorFlag _) : base(_) { }
     protected MultinormalEvaluator(MultinormalEvaluator original, Cloner cloner) : base(original, cloner) { }
     public MultinormalEvaluator() {
       Parameters.Add(new ValueParameter<ItemList<RealVector>>("Centers", "Centers of normal distributions"));

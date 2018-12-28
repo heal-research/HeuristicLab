@@ -20,14 +20,13 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Optimization.Operators {
   /// <summary>
@@ -36,7 +35,7 @@ namespace HeuristicLab.Optimization.Operators {
   /// </summary>
   [Item("FastNonDominatedSort", @"FastNonDominatedSort as described in: Deb, Pratap, Agrawal and Meyarivan, ""A Fast and Elitist Multiobjective
 Genetic Algorithm: NSGA-II"", IEEE Transactions On Evolutionary Computation, Vol. 6, No. 2, April 2002")]
-  [StorableClass]
+  [StorableType("0D1919E6-FCDE-4216-831A-E6427C3D986E")]
   public class FastNonDominatedSort : SingleSuccessorOperator, IMultiObjectiveOperator {
 
     #region Parameter properties
@@ -55,7 +54,7 @@ Genetic Algorithm: NSGA-II"", IEEE Transactions On Evolutionary Computation, Vol
     #endregion
 
     [StorableConstructor]
-    protected FastNonDominatedSort(bool deserializing) : base(deserializing) { }
+    protected FastNonDominatedSort(StorableConstructorFlag _) : base(_) { }
     protected FastNonDominatedSort(FastNonDominatedSort original, Cloner cloner) : base(original, cloner) { }
     public FastNonDominatedSort() {
       Parameters.Add(new ValueLookupParameter<BoolArray>("Maximization", "Whether each objective is maximization or minimization."));

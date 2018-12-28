@@ -28,10 +28,10 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
-  [StorableClass]
+  [StorableType("DBE27385-2E8C-4314-88B4-F96A5240FC9D")]
   [Item("SymbolicExpressionTreePruningOperator", "An operator that replaces introns with constant values in a symbolic expression tree.")]
   public abstract class SymbolicDataAnalysisExpressionPruningOperator : SingleSuccessorOperator, ISymbolicExpressionTreeOperator {
     #region parameter names
@@ -109,7 +109,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     #endregion
 
     [StorableConstructor]
-    protected SymbolicDataAnalysisExpressionPruningOperator(bool deserializing) : base(deserializing) { }
+    protected SymbolicDataAnalysisExpressionPruningOperator(StorableConstructorFlag _) : base(_) { }
     protected SymbolicDataAnalysisExpressionPruningOperator(SymbolicDataAnalysisExpressionPruningOperator original, Cloner cloner)
       : base(original, cloner) { }
 

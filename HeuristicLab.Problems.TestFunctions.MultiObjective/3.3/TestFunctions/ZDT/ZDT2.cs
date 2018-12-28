@@ -21,18 +21,18 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.RealVectorEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
   [Item("ZDT2", "ZDT2 function as defined in http://www.tik.ee.ethz.ch/sop/download/supplementary/testproblems/ [30.11.2015]")]
-  [StorableClass]
+  [StorableType("82C93549-F1D6-4034-96B1-A3AC1E213127")]
   public class ZDT2 : ZDT {
     protected override double GetBestKnownHypervolume(int objectives) {
       return 120 + 1.0 / 3;
     }
 
     [StorableConstructor]
-    protected ZDT2(bool deserializing) : base(deserializing) { }
+    protected ZDT2(StorableConstructorFlag _) : base(_) { }
     protected ZDT2(ZDT2 original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new ZDT2(this, cloner);

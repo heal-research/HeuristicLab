@@ -25,14 +25,14 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.TestFunctions {
   /// <summary>
   /// Base class for a test function evaluator.
   /// </summary>
   [Item("Evaluator", "Base calls for single objective test function evaluators.")]
-  [StorableClass]
+  [StorableType("2775A51F-C97B-4D2E-9B25-9E2591A961CB")]
   public abstract class SingleObjectiveTestFunctionProblemEvaluator : InstrumentedOperator, ISingleObjectiveTestFunctionProblemEvaluator {
     /// <summary>
     /// The name of the function
@@ -73,7 +73,7 @@ namespace HeuristicLab.Problems.TestFunctions {
     }
 
     [StorableConstructor]
-    protected SingleObjectiveTestFunctionProblemEvaluator(bool deserializing) : base(deserializing) { }
+    protected SingleObjectiveTestFunctionProblemEvaluator(StorableConstructorFlag _) : base(_) { }
     protected SingleObjectiveTestFunctionProblemEvaluator(SingleObjectiveTestFunctionProblemEvaluator original, Cloner cloner) : base(original, cloner) { }
     /// <summary>
     /// Initializes a new instance of <see cref="SingleObjectiveTestFunctionEvaluator"/> with two parameters

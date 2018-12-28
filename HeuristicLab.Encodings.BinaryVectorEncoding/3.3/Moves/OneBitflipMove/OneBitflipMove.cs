@@ -21,14 +21,14 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   [Item("OneBitflipMove", "Item that describes a one bitflip move.")]
-  [StorableClass]
+  [StorableType("BFF3ABCF-9C7B-41F8-8861-B2164D92FD89")]
   public class OneBitflipMove : OneIndexMove {
     [StorableConstructor]
-    protected OneBitflipMove(bool deserializing) : base(deserializing) { }
+    protected OneBitflipMove(StorableConstructorFlag _) : base(_) { }
     protected OneBitflipMove(OneBitflipMove original, Cloner cloner) : base(original, cloner) { }
     public OneBitflipMove() : base() { }
     public OneBitflipMove(int index) : this(index, null) { }

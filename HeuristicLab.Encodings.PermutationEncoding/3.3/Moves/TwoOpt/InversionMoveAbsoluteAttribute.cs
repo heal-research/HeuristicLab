@@ -21,11 +21,11 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("InversionMoveAbsoluteAttribute", "Specifies the tabu attributes for an inversion move (2-opt) on an absolute position permutation.")]
-  [StorableClass]
+  [StorableType("3C1B448F-5D8F-462F-9F2A-42CCDF4D596D")]
   public class InversionMoveAbsoluteAttribute : PermutationMoveAttribute {
     [Storable]
     public int Index1 { get; private set; }
@@ -37,7 +37,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     public int Number2 { get; private set; }
 
     [StorableConstructor]
-    protected InversionMoveAbsoluteAttribute(bool deserializing) : base(deserializing) { }
+    protected InversionMoveAbsoluteAttribute(StorableConstructorFlag _) : base(_) { }
     protected InversionMoveAbsoluteAttribute(InversionMoveAbsoluteAttribute original, Cloner cloner)
       : base(original, cloner) {
       this.Index1 = original.Index1;

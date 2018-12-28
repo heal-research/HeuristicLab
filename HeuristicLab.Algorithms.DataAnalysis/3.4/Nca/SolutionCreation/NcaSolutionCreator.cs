@@ -25,12 +25,12 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [Item("NcaSolutionCreator", "Creates an NCA solution with a given model and some given data.")]
-  [StorableClass]
+  [StorableType("BAAD907C-B2A2-40C8-BBEE-F8EFF12A795D")]
   public class NcaSolutionCreator : SingleSuccessorOperator, INcaSolutionCreator {
 
     public ILookupParameter<IClassificationProblemData> ProblemDataParameter {
@@ -50,7 +50,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     [StorableConstructor]
-    protected NcaSolutionCreator(bool deserializing) : base(deserializing) { }
+    protected NcaSolutionCreator(StorableConstructorFlag _) : base(_) { }
     protected NcaSolutionCreator(NcaSolutionCreator original, Cloner cloner) : base(original, cloner) { }
     public NcaSolutionCreator()
       : base() {

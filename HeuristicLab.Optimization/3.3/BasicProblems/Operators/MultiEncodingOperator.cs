@@ -26,10 +26,10 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Optimization {
-  [StorableClass]
+  [StorableType("43619638-9D00-4951-8138-8CCD0786E784")]
   public abstract class MultiEncodingOperator<T> : Operator, IMultiEncodingOperator where T : class,IOperator {
     private List<IEncoding> encodings = new List<IEncoding>();
     [Storable(Name = "Encodings")]
@@ -39,8 +39,7 @@ namespace HeuristicLab.Optimization {
     }
 
     [StorableConstructor]
-    protected MultiEncodingOperator(bool deserializing)
-      : base(deserializing) {
+    protected MultiEncodingOperator(StorableConstructorFlag _) : base(_) {
     }
 
     protected MultiEncodingOperator(MultiEncodingOperator<T> original, Cloner cloner)

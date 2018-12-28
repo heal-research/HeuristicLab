@@ -22,17 +22,16 @@
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
 using HeuristicLab.Encodings.ScheduleEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.Scheduling {
   [Item("Makespan Evaluator", "Represents an evaluator using the maximum makespan of a schedule.")]
-  [StorableClass]
+  [StorableType("DCD90872-1FF9-482F-8FCF-AD34AC6DF051")]
   public class MakespanEvaluator : ScheduleEvaluator {
 
     [StorableConstructor]
-    protected MakespanEvaluator(bool deserializing) : base(deserializing) { }
+    protected MakespanEvaluator(StorableConstructorFlag _) : base(_) { }
     protected MakespanEvaluator(MakespanEvaluator original, Cloner cloner) : base(original, cloner) {}
     public MakespanEvaluator()
       : base() {

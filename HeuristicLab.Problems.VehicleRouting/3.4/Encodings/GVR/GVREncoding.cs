@@ -23,14 +23,14 @@ using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.VehicleRouting.Encodings.General;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Problems.VehicleRouting.Variants;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.GVR {
   [Item("GVREncoding", "Represents a potvin encoding of VRP solutions. It is implemented as described in Pereira, F.B. et al (2002). GVR: a New Genetic Representation for the Vehicle Routing Problem. AICS 2002, LNAI 2464, pp. 95-102.")]
-  [StorableClass]
+  [StorableType("27A8F267-9865-4AEA-9ECF-88D950D81D74")]
   public class GVREncoding : TourEncoding {
     public override List<Tour> GetTours() {
       List<Tour> tours = new List<Tour>();
@@ -80,8 +80,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.GVR {
     }
 
     [StorableConstructor]
-    protected GVREncoding(bool serializing)
-      : base(serializing) {
+    protected GVREncoding(StorableConstructorFlag _) : base(_) {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {

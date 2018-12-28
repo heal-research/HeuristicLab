@@ -22,9 +22,9 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
-  [StorableClass]
+  [StorableType("FF61B6CC-700F-44D3-9D1A-F3BF2F084FE4")]
   [Item("AiryB", "Symbol that represents the Airy B function.")]
   public sealed class AiryB : Symbol {
     private const int minimumArity = 1;
@@ -38,7 +38,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     [StorableConstructor]
-    private AiryB(bool deserializing) : base(deserializing) { }
+    private AiryB(StorableConstructorFlag _) : base(_) { }
     private AiryB(AiryB original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new AiryB(this, cloner);

@@ -21,11 +21,11 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   [Item("AdditiveMoveTabuAttribute", "Tabu attribute for additive moves.")]
-  [StorableClass]
+  [StorableType("F53207BE-01C0-4057-AACE-8DF031C8EBC5")]
   public class AdditiveMoveTabuAttribute : Item {
     [Storable]
     public int Dimension { get; protected set; }
@@ -37,7 +37,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     public double MoveQuality { get; protected set; }
 
     [StorableConstructor]
-    protected AdditiveMoveTabuAttribute(bool deserializing) : base(deserializing) { }
+    protected AdditiveMoveTabuAttribute(StorableConstructorFlag _) : base(_) { }
     protected AdditiveMoveTabuAttribute(AdditiveMoveTabuAttribute original, Cloner cloner)
       : base(original, cloner) {
       this.Dimension = original.Dimension;

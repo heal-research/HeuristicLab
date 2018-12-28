@@ -23,11 +23,11 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   [Item("AdditiveMoveTabuMaker", "Sets the move tabu.")]
-  [StorableClass]
+  [StorableType("D495C70E-BE42-4FFB-B0E2-8422B7C8A1E9")]
   public class AdditiveMoveTabuMaker : TabuMaker, IAdditiveRealVectorMoveOperator {
     public ILookupParameter<AdditiveMove> AdditiveMoveParameter {
       get { return (ILookupParameter<AdditiveMove>)Parameters["AdditiveMove"]; }
@@ -37,7 +37,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     }
 
     [StorableConstructor]
-    protected AdditiveMoveTabuMaker(bool deserializing) : base(deserializing) { }
+    protected AdditiveMoveTabuMaker(StorableConstructorFlag _) : base(_) { }
     protected AdditiveMoveTabuMaker(AdditiveMoveTabuMaker original, Cloner cloner) : base(original, cloner) { }
     public AdditiveMoveTabuMaker()
       : base() {

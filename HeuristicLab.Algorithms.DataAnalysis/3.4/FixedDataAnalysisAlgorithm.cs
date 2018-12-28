@@ -20,15 +20,13 @@
 #endregion
 
 using System;
-using System.Linq;
-using System.Threading;
 using HeuristicLab.Common;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
-  [StorableClass]
+  [StorableType("E7BEE142-B6F1-4293-AC2A-B19EB163AB2E")]
   public abstract class FixedDataAnalysisAlgorithm<T> : BasicAlgorithm, IDataAnalysisAlgorithm<T> where T : class, IDataAnalysisProblem {
     #region Properties
     public override Type ProblemType {
@@ -43,7 +41,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public override bool SupportsPause { get { return false; } }
 
     [StorableConstructor]
-    protected FixedDataAnalysisAlgorithm(bool deserializing) : base(deserializing) { }
+    protected FixedDataAnalysisAlgorithm(StorableConstructorFlag _) : base(_) { }
     protected FixedDataAnalysisAlgorithm(FixedDataAnalysisAlgorithm<T> original, Cloner cloner) : base(original, cloner) { }
     public FixedDataAnalysisAlgorithm() : base() { }
 

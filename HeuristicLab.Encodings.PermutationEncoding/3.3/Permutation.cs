@@ -23,11 +23,11 @@ using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("Permutation", "Represents a permutation of integer values.")]
-  [StorableClass]
+  [StorableType("FBBCFA53-C1AE-4069-907B-99C720F5AC51")]
   public class Permutation : IntArray {
     [Storable]
     private PermutationTypes permutationType;
@@ -44,7 +44,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     }
 
     [StorableConstructor]
-    protected Permutation(bool deserializing) : base(deserializing) { }
+    protected Permutation(StorableConstructorFlag _) : base(_) { }
     protected Permutation(Permutation original, Cloner cloner)
       : base(original, cloner) {
       this.permutationType = original.permutationType;

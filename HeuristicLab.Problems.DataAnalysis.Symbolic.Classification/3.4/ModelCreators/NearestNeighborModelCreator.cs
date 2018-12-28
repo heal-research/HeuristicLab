@@ -25,10 +25,10 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
-  [StorableClass]
+  [StorableType("B96EB322-8027-48F7-AB5B-4E22546B74DD")]
   [Item("NearestNeighborModelCreator", "")]
   public sealed class NearestNeighborModelCreator : ParameterizedNamedItem, ISymbolicClassificationModelCreator {
     public static new Image StaticItemImage {
@@ -43,7 +43,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     }
 
     [StorableConstructor]
-    private NearestNeighborModelCreator(bool deserializing) : base(deserializing) { }
+    private NearestNeighborModelCreator(StorableConstructorFlag _) : base(_) { }
     private NearestNeighborModelCreator(NearestNeighborModelCreator original, Cloner cloner) : base(original, cloner) { }
     public NearestNeighborModelCreator()
       : base() {

@@ -25,14 +25,14 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.PTSP {
   /// <summary>
   /// Represents a tour of a Probabilistic Traveling Salesman Problem given in path representation which can be visualized in the GUI.
   /// </summary>
   [Item("PathPTSPTour", "Represents a tour of a Probabilistic Traveling Salesman Problem given in path representation which can be visualized in the GUI.")]
-  [StorableClass]
+  [StorableType("8C9E50C9-4364-48F1-B681-9CFFD1147EF0")]
   public sealed class PathPTSPTour : Item {
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Image; }
@@ -92,7 +92,7 @@ namespace HeuristicLab.Problems.PTSP {
     }
 
     [StorableConstructor]
-    private PathPTSPTour(bool deserializing) : base(deserializing) { }
+    private PathPTSPTour(StorableConstructorFlag _) : base(_) { }
     private PathPTSPTour(PathPTSPTour original, Cloner cloner)
       : base(original, cloner) {
       this.coordinates = cloner.Clone(original.coordinates);

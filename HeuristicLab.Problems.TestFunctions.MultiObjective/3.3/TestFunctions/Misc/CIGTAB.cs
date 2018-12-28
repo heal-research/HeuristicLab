@@ -23,11 +23,11 @@ using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.RealVectorEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
   [Item("CIGTAB", "to be aded")]
-  [StorableClass]
+  [StorableType("1D78E29D-4697-44A1-8A53-3909E3B7D57D")]
   public class CIGTAB : MultiObjectiveTestFunction {
     protected override double[,] GetBounds(int objectives) {
       return new double[,] { { -10, 10 } };
@@ -57,7 +57,7 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
     }
 
     [StorableConstructor]
-    protected CIGTAB(bool deserializing) : base(deserializing) { }
+    protected CIGTAB(StorableConstructorFlag _) : base(_) { }
     protected CIGTAB(CIGTAB original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new CIGTAB(this, cloner);

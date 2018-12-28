@@ -28,7 +28,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Random;
@@ -43,7 +43,7 @@ Neighbourhood Component Analysis. Advances in Neural Information Processing Syst
 with additional regularizations described in Z. Yang, J. Laaksonen. 2007.
 Regularized Neighborhood Component Analysis. Lecture Notes in Computer Science, 4522. pp. 253-262.")]
   [Creatable(CreatableAttribute.Categories.DataAnalysisClassification, Priority = 170)]
-  [StorableClass]
+  [StorableType("3C489916-B35E-408D-B225-CAA41B156065")]
   public sealed class NcaAlgorithm : EngineAlgorithm {
     #region Parameter Names
     private const string SeedParameterName = "Seed";
@@ -144,7 +144,7 @@ Regularized Neighborhood Component Analysis. Lecture Notes in Computer Science, 
     #endregion
 
     [StorableConstructor]
-    private NcaAlgorithm(bool deserializing) : base(deserializing) { }
+    private NcaAlgorithm(StorableConstructorFlag _) : base(_) { }
     private NcaAlgorithm(NcaAlgorithm original, Cloner cloner) : base(original, cloner) { }
     public NcaAlgorithm()
       : base() {

@@ -29,12 +29,12 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   [Item("MultiSymbolicExpressionTreeArchitectureManipulator", "Randomly selects and applies one of its architecture manipulators every time it is called.")]
-  [StorableClass]
+  [StorableType("6D524953-37A3-4789-AB3A-6881E5289F49")]
   public sealed class MultiSymbolicExpressionTreeArchitectureManipulator : StochasticMultiBranch<ISymbolicExpressionTreeManipulator>,
     ISymbolicExpressionTreeArchitectureManipulator,
     ISymbolicExpressionTreeSizeConstraintOperator,
@@ -85,7 +85,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
 
 
     [StorableConstructor]
-    private MultiSymbolicExpressionTreeArchitectureManipulator(bool deserializing) : base(deserializing) { }
+    private MultiSymbolicExpressionTreeArchitectureManipulator(StorableConstructorFlag _) : base(_) { }
     private MultiSymbolicExpressionTreeArchitectureManipulator(MultiSymbolicExpressionTreeArchitectureManipulator original, Cloner cloner) : base(original, cloner) { }
     public MultiSymbolicExpressionTreeArchitectureManipulator()
       : base() {

@@ -23,21 +23,21 @@ using System.Collections.Generic;
 using System.Drawing;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Analysis {
   /// <summary>
   /// Represents a collection of allele frequencies.
   /// </summary>
   [Item("AlleleFrequencyCollection", "Represents a collection of allele frequencies.")]
-  [StorableClass]
+  [StorableType("7BDABB5B-1FA0-4592-8C06-399DBEABB1CB")]
   public class AlleleFrequencyCollection : ReadOnlyItemCollection<AlleleFrequency> {
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Statistics; }
     }
 
     [StorableConstructor]
-    protected AlleleFrequencyCollection(bool deserializing) : base(deserializing) { }
+    protected AlleleFrequencyCollection(StorableConstructorFlag _) : base(_) { }
     protected AlleleFrequencyCollection(AlleleFrequencyCollection original, Cloner cloner) : base(original, cloner) { }
     public AlleleFrequencyCollection() : base() { }
     public AlleleFrequencyCollection(IEnumerable<AlleleFrequency> frequencies) : base(new ItemCollection<AlleleFrequency>(frequencies)) { }

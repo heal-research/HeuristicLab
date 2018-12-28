@@ -24,13 +24,13 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.VehicleRouting.Encodings.General;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaTranslocationMoveTabuMaker", "An operator which makes translocation moves tabu for a VRP representation.  It is implemented as described in Alba, E. and Dorronsoro, B. (2004). Solving the Vehicle Routing Problem by Using Cellular Genetic Algorithms.")]
-  [StorableClass]
+  [StorableType("7C706677-1688-4D5F-8C86-D2F479CADA40")]
   public sealed class AlbaTranslocationMoveTabuMaker : VRPMoveOperator, IAlbaTranslocationMoveOperator, ITabuMaker, IAlbaOperator {
     [Storable]
     private TranslocationMoveTabuMaker moveTabuMaker;
@@ -64,7 +64,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
     }
 
     [StorableConstructor]
-    private AlbaTranslocationMoveTabuMaker(bool deserializing) : base(deserializing) { }
+    private AlbaTranslocationMoveTabuMaker(StorableConstructorFlag _) : base(_) { }
 
     public AlbaTranslocationMoveTabuMaker()
       : base() {

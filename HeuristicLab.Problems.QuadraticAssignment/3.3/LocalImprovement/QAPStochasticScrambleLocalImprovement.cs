@@ -28,11 +28,11 @@ using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.QuadraticAssignment {
   [Item("QAPStochasticScrambleLocalImprovement", "Takes a solution and finds the local optimum with respect to the scramble neighborhood by decending along the steepest gradient.")]
-  [StorableClass]
+  [StorableType("045B5151-E5DC-4AF3-8CAD-E160E0EE17FF")]
   public class QAPStochasticScrambleLocalImprovement : SingleSuccessorOperator, ILocalImprovementOperator, IStochasticOperator, ISingleObjectiveOperator {
 
     public ILookupParameter<IntValue> LocalIterationsParameter {
@@ -80,7 +80,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
     }
 
     [StorableConstructor]
-    protected QAPStochasticScrambleLocalImprovement(bool deserializing) : base(deserializing) { }
+    protected QAPStochasticScrambleLocalImprovement(StorableConstructorFlag _) : base(_) { }
     protected QAPStochasticScrambleLocalImprovement(QAPStochasticScrambleLocalImprovement original, Cloner cloner)
       : base(original, cloner) {
     }

@@ -19,10 +19,8 @@
  */
 #endregion
 using HeuristicLab.Core;
-using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Optimization;
-using HeuristicLab.Parameters;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   public interface ISymbolicDataAnalysisAnalyzer : IAnalyzer {
     IScopeTreeLookupParameter<ISymbolicExpressionTree> SymbolicExpressionTreeParameter { get; }

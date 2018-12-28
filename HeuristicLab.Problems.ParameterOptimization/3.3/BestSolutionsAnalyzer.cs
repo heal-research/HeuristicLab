@@ -28,11 +28,11 @@ using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.ParameterOptimization {
   [Item("BestSolutionsAnalyzer", "Tracks the best parameter vector solutions of the current algorithm run.")]
-  [StorableClass]
+  [StorableType("4882160E-6022-4AFC-AD84-9D7D7FF55562")]
   public class BestSolutionsAnalyzer : SingleSuccessorOperator, IAnalyzer {
     private const string MaximizationParameterName = "Maximization";
     private const string ParameterVectorParameterName = "RealVector";
@@ -75,7 +75,7 @@ namespace HeuristicLab.Problems.ParameterOptimization {
     }
 
     [StorableConstructor]
-    protected BestSolutionsAnalyzer(bool deserializing) : base(deserializing) { }
+    protected BestSolutionsAnalyzer(StorableConstructorFlag _) : base(_) { }
     protected BestSolutionsAnalyzer(BestSolutionsAnalyzer original, Cloner cloner)
       : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {

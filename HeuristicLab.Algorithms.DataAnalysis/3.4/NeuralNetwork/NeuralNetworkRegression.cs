@@ -28,7 +28,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
@@ -37,7 +37,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// </summary>
   [Item("Neural Network Regression (NN)", "Neural network regression data analysis algorithm (wrapper for ALGLIB). Further documentation: http://www.alglib.net/dataanalysis/neuralnetworks.php")]
   [Creatable(CreatableAttribute.Categories.DataAnalysisRegression, Priority = 130)]
-  [StorableClass]
+  [StorableType("F9EEA27B-43FF-4296-A4B9-CC024CD1778C")]
   public sealed class NeuralNetworkRegression : FixedDataAnalysisAlgorithm<IRegressionProblem> {
     private const string DecayParameterName = "Decay";
     private const string HiddenLayersParameterName = "HiddenLayers";
@@ -107,7 +107,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
 
     [StorableConstructor]
-    private NeuralNetworkRegression(bool deserializing) : base(deserializing) { }
+    private NeuralNetworkRegression(StorableConstructorFlag _) : base(_) { }
     private NeuralNetworkRegression(NeuralNetworkRegression original, Cloner cloner)
       : base(original, cloner) {
       RegisterEventHandlers();

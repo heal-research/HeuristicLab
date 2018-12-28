@@ -23,7 +23,7 @@ using System.Drawing;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Operators {
   public enum ReductionOperations {
@@ -39,14 +39,14 @@ namespace HeuristicLab.Operators {
   }
 
   [Item("ReductionOperation", "Represents a certain type of reduction operation.")]
-  [StorableClass]
+  [StorableType("32D733BA-9331-46D2-8BB3-95E23431F00B")]
   public class ReductionOperation : ValueTypeValue<ReductionOperations> {
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Enum; }
     }
 
     [StorableConstructor]
-    protected ReductionOperation(bool deserializing) : base(deserializing) { }
+    protected ReductionOperation(StorableConstructorFlag _) : base(_) { }
     protected ReductionOperation(ReductionOperation original, Cloner cloner) : base(original, cloner) { }
     public ReductionOperation() : base() { }
     public ReductionOperation(ReductionOperations type) : base(type) { }

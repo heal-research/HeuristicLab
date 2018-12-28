@@ -24,11 +24,11 @@ using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Data {
   [Item("TriangularMatrix", "Represents a lower triangular matrix.")]
-  [StorableClass]
+  [StorableType("5C09A4FC-887E-4C40-8926-81325C09FA67")]
   public class TriangularMatrix<T> : ValueTypeMatrix<T>, IStringConvertibleMatrix where T : struct {
     [Storable]
     private readonly T[] storage;
@@ -47,7 +47,7 @@ namespace HeuristicLab.Data {
     }
 
     [StorableConstructor]
-    protected TriangularMatrix(bool deserializing) : base(deserializing) { }
+    protected TriangularMatrix(StorableConstructorFlag _) : base(_) { }
 
     protected TriangularMatrix(TriangularMatrix<T> original, Cloner cloner) : base(original, cloner) {
       capacity = original.capacity;

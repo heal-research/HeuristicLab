@@ -25,7 +25,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Selection;
 
 namespace HeuristicLab.Algorithms.NSGA2 {
@@ -33,7 +33,7 @@ namespace HeuristicLab.Algorithms.NSGA2 {
   /// An operator that represents the mainloop of the NSGA-II
   /// </summary>
   [Item("NSGA2MainLoop", "An operator which represents the main loop of the NSGA-II algorithm.")]
-  [StorableClass]
+  [StorableType("F81EA9B1-0A1A-4597-BF2C-C830C32D3394")]
   public class NSGA2MainLoop : AlgorithmOperator {
     #region Parameter properties
     public ValueLookupParameter<IRandom> RandomParameter {
@@ -84,7 +84,7 @@ namespace HeuristicLab.Algorithms.NSGA2 {
     #endregion
 
     [StorableConstructor]
-    protected NSGA2MainLoop(bool deserializing) : base(deserializing) { }
+    protected NSGA2MainLoop(StorableConstructorFlag _) : base(_) { }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       // BackwardsCompatibility3.3

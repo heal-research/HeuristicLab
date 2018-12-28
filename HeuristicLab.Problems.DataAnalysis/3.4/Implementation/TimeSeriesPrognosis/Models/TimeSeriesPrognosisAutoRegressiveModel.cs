@@ -24,10 +24,10 @@ using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  [StorableClass]
+  [StorableType("9C44E097-50F8-4EC1-BE1B-6A0246EC020E")]
   [Item("Autoregressive TimeSeries Model", "A linear autoregressive time series model used to predict future values.")]
   public class TimeSeriesPrognosisAutoRegressiveModel : RegressionModel, ITimeSeriesPrognosisModel {
     public override IEnumerable<string> VariablesUsedForPrediction {
@@ -42,7 +42,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public int TimeOffset { get { return Phi.Length; } }
 
     [StorableConstructor]
-    protected TimeSeriesPrognosisAutoRegressiveModel(bool deserializing) : base(deserializing) { }
+    protected TimeSeriesPrognosisAutoRegressiveModel(StorableConstructorFlag _) : base(_) { }
     protected TimeSeriesPrognosisAutoRegressiveModel(TimeSeriesPrognosisAutoRegressiveModel original, Cloner cloner)
       : base(original, cloner) {
       this.Phi = (double[])original.Phi.Clone();

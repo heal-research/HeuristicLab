@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HEAL.Fossil;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 
@@ -33,7 +34,8 @@ namespace HeuristicLab.Optimization.Operators {
   public sealed class NoSimilarityCalculator : SingleObjectiveSolutionSimilarityCalculator {
     protected override bool IsCommutative { get { return true; } }
 
-    private NoSimilarityCalculator(bool deserializing) : base(deserializing) { }
+    [StorableConstructor]
+    private NoSimilarityCalculator(StorableConstructorFlag _) : base(_) { }
     private NoSimilarityCalculator(NoSimilarityCalculator original, Cloner cloner) : base(original, cloner) { }
     public NoSimilarityCalculator() : base() { }
 

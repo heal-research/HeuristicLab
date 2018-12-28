@@ -25,13 +25,13 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   /// <summary>
   /// Abstract base class for symbolic data analysis analyzers.
   /// </summary>
-  [StorableClass]
+  [StorableType("A88BA918-D933-449E-9816-8C2A509CC0C4")]
   public abstract class SymbolicDataAnalysisAnalyzer : SingleSuccessorOperator, ISymbolicDataAnalysisAnalyzer {
     private const string SymbolicExpressionTreeParameterName = "SymbolicExpressionTree";
     private const string ResultCollectionParameterName = "Results";
@@ -56,7 +56,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
     #endregion
     [StorableConstructor]
-    protected SymbolicDataAnalysisAnalyzer(bool deserializing) : base(deserializing) { }
+    protected SymbolicDataAnalysisAnalyzer(StorableConstructorFlag _) : base(_) { }
     protected SymbolicDataAnalysisAnalyzer(SymbolicDataAnalysisAnalyzer original, Cloner cloner)
       : base(original, cloner) {
     }

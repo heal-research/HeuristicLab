@@ -24,11 +24,11 @@ using System;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Encodings.RealVectorEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Algorithms.MOCMAEvolutionStrategy {
-  [StorableClass]
+  [StorableType("8D5AF328-84A0-4924-9909-A113CDCFC117")]
   public class Individual : IDeepCloneable {
 
     #region Properties
@@ -62,7 +62,7 @@ namespace HeuristicLab.Algorithms.MOCMAEvolutionStrategy {
 
     #region Constructors and Cloning
     [StorableConstructor]
-    protected Individual(bool deserializing) { }
+    protected Individual(StorableConstructorFlag _) { }
 
     public Individual(RealVector mean, double pSucc, double sigma, RealVector pc, double[,] c, MOCMAEvolutionStrategy strategy) {
       Mean = mean;

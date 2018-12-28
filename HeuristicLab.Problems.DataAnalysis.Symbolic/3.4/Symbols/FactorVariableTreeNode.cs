@@ -20,15 +20,14 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Random;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
-  [StorableClass]
+  [StorableType("A968620F-339E-4C96-B39A-8FC8E42D6509")]
   public sealed class FactorVariableTreeNode : SymbolicExpressionTreeTerminalNode, IVariableTreeNode {
     public new FactorVariable Symbol {
       get { return (FactorVariable)base.Symbol; }
@@ -47,7 +46,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     [StorableConstructor]
-    private FactorVariableTreeNode(bool deserializing) : base(deserializing) { }
+    private FactorVariableTreeNode(StorableConstructorFlag _) : base(_) { }
     private FactorVariableTreeNode(FactorVariableTreeNode original, Cloner cloner)
       : base(original, cloner) {
       variableName = original.variableName;

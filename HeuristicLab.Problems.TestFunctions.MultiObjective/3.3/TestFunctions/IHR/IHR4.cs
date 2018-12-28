@@ -23,11 +23,11 @@ using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.RealVectorEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
   [Item("IHR4", "Testfunction as defined as IHR4 in \"Igel, C., Hansen, N., & Roth, S. (2007). Covariance matrix adaptation for multi-objective optimization. Evolutionary computation, 15(1), 1-28.\" [24.06.16]")]
-  [StorableClass]
+  [StorableType("E83A9E6E-F7B3-4B27-B5CA-A323D89844F5")]
   public class IHR4 : IHR {
     protected override IEnumerable<double[]> GetOptimalParetoFront(int objectives) {
       List<double[]> res = new List<double[]>();
@@ -48,7 +48,7 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
     }
 
     [StorableConstructor]
-    protected IHR4(bool deserializing) : base(deserializing) { }
+    protected IHR4(StorableConstructorFlag _) : base(_) { }
     protected IHR4(IHR4 original, Cloner cloner) : base(original, cloner) { }
     public IHR4() : base() {
     }

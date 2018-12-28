@@ -24,10 +24,10 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
-  [StorableClass]
+  [StorableType("4D79FB1C-94CD-4450-8CD0-F9594A5F03FE")]
   // conditionally positive definite. (need to add polynomials) see http://num.math.uni-goettingen.de/schaback/teaching/sc.pdf 
   [Item("ThinPlatePolysplineKernel", "A kernel function that uses the ThinPlatePolyspline function (||x-c||/Beta)^(Degree)*log(||x-c||/Beta) as described in \"Thin-Plate Spline Radial Basis Function Scheme for Advection-Diffusion Problems\" with beta as a scaling parameter.")]
   public class ThinPlatePolysplineKernel : KernelBase {
@@ -42,7 +42,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     [StorableConstructor]
-    protected ThinPlatePolysplineKernel(bool deserializing) : base(deserializing) { }
+    protected ThinPlatePolysplineKernel(StorableConstructorFlag _) : base(_) { }
 
     protected ThinPlatePolysplineKernel(ThinPlatePolysplineKernel original, Cloner cloner) : base(original, cloner) { }
 

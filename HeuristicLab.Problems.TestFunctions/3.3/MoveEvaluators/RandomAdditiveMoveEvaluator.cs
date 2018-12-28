@@ -23,11 +23,11 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.TestFunctions {
   [Item("RandomAdditiveMoveEvaluator", "Class for evaluating an additive move on the Random function.")]
-  [StorableClass]
+  [StorableType("B8C621D3-6F11-417C-947B-F02484987313")]
   public class RandomAdditiveMoveEvaluator : AdditiveMoveEvaluator {
     public override System.Type EvaluatorType {
       get { return typeof(RandomEvaluator); }
@@ -38,7 +38,7 @@ namespace HeuristicLab.Problems.TestFunctions {
     }
 
     [StorableConstructor]
-    protected RandomAdditiveMoveEvaluator(bool deserializing) : base(deserializing) { }
+    protected RandomAdditiveMoveEvaluator(StorableConstructorFlag _) : base(_) { }
     protected RandomAdditiveMoveEvaluator(RandomAdditiveMoveEvaluator original, Cloner cloner) : base(original, cloner) { }
     public RandomAdditiveMoveEvaluator()
       : base() {

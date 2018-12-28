@@ -22,12 +22,12 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
   [Item("VRPMoveOperator", "A VRP move operator.")]
-  [StorableClass]
+  [StorableType("B2A37CCE-3EF6-4648-8A9B-2BCBD4EC93F1")]
   public abstract class VRPMoveOperator : VRPOperator, IVRPMoveOperator {
     public ILookupParameter<IVRPEncoding> VRPToursParameter {
       get { return (ILookupParameter<IVRPEncoding>)Parameters["VRPTours"]; }
@@ -36,7 +36,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
     public abstract ILookupParameter VRPMoveParameter { get; }
 
     [StorableConstructor]
-    protected VRPMoveOperator(bool deserializing) : base(deserializing) { }
+    protected VRPMoveOperator(StorableConstructorFlag _) : base(_) { }
 
     public VRPMoveOperator() {
       Parameters.Add(new LookupParameter<IVRPEncoding>("VRPTours", "The VRP tours considered in the move."));

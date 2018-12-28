@@ -22,14 +22,14 @@
 using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding.JobSequenceMatrix {
   [Item("JSMManipulator", "An operator which manipulates a JSM representation.")]
-  [StorableClass]
+  [StorableType("E190A576-B835-4343-9F0C-096E970B8DDD")]
   public abstract class JSMManipulator : ScheduleManipulator, IJSMOperator {
     [StorableConstructor]
-    protected JSMManipulator(bool deserializing) : base(deserializing) { }
+    protected JSMManipulator(StorableConstructorFlag _) : base(_) { }
     protected JSMManipulator(JSMManipulator original, Cloner cloner) : base(original, cloner) { }
     public JSMManipulator()
       : base() {

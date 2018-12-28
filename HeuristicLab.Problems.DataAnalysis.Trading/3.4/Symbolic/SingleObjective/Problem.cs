@@ -21,19 +21,19 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Trading.Symbolic {
   [Item("Symbolic Trading Problem (single-objective)", "Represents a single-objective symbolic trading problem.")]
-  [StorableClass]
+  [StorableType("4E1FFD34-5720-4578-8D9E-AF657E157109")]
   [Creatable(CreatableAttribute.Categories.GeneticProgrammingProblems, Priority = 150)]
   public class SingleObjectiveProblem : SymbolicDataAnalysisSingleObjectiveProblem<IProblemData, ISingleObjectiveEvaluator, ISymbolicDataAnalysisSolutionCreator>, IProblem {
     private const int InitialMaximumTreeDepth = 8;
     private const int InitialMaximumTreeLength = 25;
 
     [StorableConstructor]
-    protected SingleObjectiveProblem(bool deserializing) : base(deserializing) { }
+    protected SingleObjectiveProblem(StorableConstructorFlag _) : base(_) { }
     protected SingleObjectiveProblem(SingleObjectiveProblem original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) { return new SingleObjectiveProblem(this, cloner); }
 

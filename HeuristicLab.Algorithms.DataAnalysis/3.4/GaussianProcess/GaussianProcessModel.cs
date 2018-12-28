@@ -24,14 +24,14 @@ using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>
   /// Represents a Gaussian process model.
   /// </summary>
-  [StorableClass]
+  [StorableType("37B5DC24-D6BB-4DA9-9A08-ACBB0ED1A9E9")]
   [Item("GaussianProcessModel", "Represents a Gaussian process posterior.")]
   public sealed class GaussianProcessModel : RegressionModel, IGaussianProcessModel {
     public override IEnumerable<string> VariablesUsedForPrediction {
@@ -124,7 +124,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
 
     [StorableConstructor]
-    private GaussianProcessModel(bool deserializing) : base(deserializing) { }
+    private GaussianProcessModel(StorableConstructorFlag _) : base(_) { }
     private GaussianProcessModel(GaussianProcessModel original, Cloner cloner)
       : base(original, cloner) {
       this.meanFunction = cloner.Clone(original.meanFunction);

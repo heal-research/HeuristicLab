@@ -23,18 +23,18 @@ using System.Text;
 using System.Linq;
 using HeuristicLab.Core;
 using HeuristicLab.Common;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
 
   [Item("Default String Formatter", "The default string formatter for symbolic expression trees.")]
-  [StorableClass]
+  [StorableType("BF3EBDE5-D37A-4F55-AC43-C146AE8FFF24")]
   public class SymbolicExpressionTreeStringFormatter : NamedItem, ISymbolicExpressionTreeStringFormatter {
 
     public bool Indent { get; set; }
 
     [StorableConstructor]
-    protected SymbolicExpressionTreeStringFormatter(bool deserializing) : base(deserializing) { }
+    protected SymbolicExpressionTreeStringFormatter(StorableConstructorFlag _) : base(_) { }
     protected SymbolicExpressionTreeStringFormatter(SymbolicExpressionTreeStringFormatter original, Cloner cloner)
       : base(original, cloner) {
       Indent = original.Indent;

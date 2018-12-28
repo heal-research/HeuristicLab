@@ -25,14 +25,14 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
   [Item("Mean squared error Evaluator", "Calculates the mean squared error of a symbolic classification solution.")]
-  [StorableClass]
+  [StorableType("E738C902-4293-4B2C-BBAC-1EE79381657D")]
   public class SymbolicClassificationSingleObjectiveMeanSquaredErrorEvaluator : SymbolicClassificationSingleObjectiveEvaluator {
     [StorableConstructor]
-    protected SymbolicClassificationSingleObjectiveMeanSquaredErrorEvaluator(bool deserializing) : base(deserializing) { }
+    protected SymbolicClassificationSingleObjectiveMeanSquaredErrorEvaluator(StorableConstructorFlag _) : base(_) { }
     protected SymbolicClassificationSingleObjectiveMeanSquaredErrorEvaluator(SymbolicClassificationSingleObjectiveMeanSquaredErrorEvaluator original, Cloner cloner)
       : base(original, cloner) {
     }

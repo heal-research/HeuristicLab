@@ -25,12 +25,12 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Hive;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Clients.Hive {
   [Item("Item Task", "Represents a executable hive task which contains a HeuristicLab Item.")]
-  [StorableClass]
+  [StorableType("69EB65A5-9132-41B6-BE1D-60EDA46EF3C5")]
   public abstract class ItemTask : NamedItem, ITask {
     public virtual HiveTask CreateHiveTask() {
       return new HiveTask(this, true);
@@ -71,7 +71,7 @@ namespace HeuristicLab.Clients.Hive {
     public ItemTask() { }
 
     [StorableConstructor]
-    protected ItemTask(bool deserializing) { }
+    protected ItemTask(StorableConstructorFlag _) : base(_) { }
     protected ItemTask(ItemTask original, Cloner cloner)
       : base(original, cloner) {
       this.ComputeInParallel = original.ComputeInParallel;

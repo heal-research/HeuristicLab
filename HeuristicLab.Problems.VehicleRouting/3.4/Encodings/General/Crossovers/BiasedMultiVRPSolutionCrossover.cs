@@ -28,12 +28,12 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
   [Item("BiasedMultiVRPSolutionCrossover", "Randomly selects and applies one of its crossovers every time it is called based on the success progress.")]
-  [StorableClass]
+  [StorableType("9F319402-CF27-4355-9764-B7DDECBA2A15")]
   public class BiasedMultiVRPSolutionCrossover : MultiVRPSolutionCrossover {
     public ValueLookupParameter<DoubleArray> ActualProbabilitiesParameter {
       get { return (ValueLookupParameter<DoubleArray>)Parameters["ActualProbabilities"]; }
@@ -56,7 +56,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
     }
 
     [StorableConstructor]
-    protected BiasedMultiVRPSolutionCrossover(bool deserializing) : base(deserializing) { }
+    protected BiasedMultiVRPSolutionCrossover(StorableConstructorFlag _) : base(_) { }
     protected BiasedMultiVRPSolutionCrossover(BiasedMultiVRPSolutionCrossover original, Cloner cloner) : base(original, cloner) { }
     public BiasedMultiVRPSolutionCrossover()
       : base() {

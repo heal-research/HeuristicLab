@@ -23,14 +23,14 @@ using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
-  [StorableClass]
+  [StorableType("C4213FB3-77C3-4814-A7A3-0151B0FF5270")]
   [Item("RealVector", "Represents a vector of real values.")]
   public class RealVector : DoubleArray {
     [StorableConstructor]
-    protected RealVector(bool deserializing) : base(deserializing) { }
+    protected RealVector(StorableConstructorFlag _) : base(_) { }
     protected RealVector(RealVector original, Cloner cloner) : base(original, cloner) { }
     public RealVector() : base() { }
     public RealVector(int length) : base(length) { }

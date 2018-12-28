@@ -22,9 +22,9 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
-  [StorableClass]
+  [StorableType("E81D60C0-B816-458C-A200-FB7A6DD16B92")]
   [Item("CosineIntegral", "Symbol that represents the cosine integral.")]
   public sealed class CosineIntegral : Symbol {
     private const int minimumArity = 1;
@@ -38,7 +38,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     [StorableConstructor]
-    private CosineIntegral(bool deserializing) : base(deserializing) { }
+    private CosineIntegral(StorableConstructorFlag _) : base(_) { }
     private CosineIntegral(CosineIntegral original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new CosineIntegral(this, cloner);

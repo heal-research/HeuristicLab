@@ -23,11 +23,11 @@ using System;
 using System.Drawing;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Data {
   [Item("EnumValue", "An abstract base class for representing values of enum types.")]
-  [StorableClass]
+  [StorableType("1D2E4514-1B3B-4498-9A1F-3D90C69635CA")]
   public sealed class EnumValue<T> : ValueTypeValue<T>, IComparable<EnumValue<T>> where T : struct, IComparable {
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Enum; }
@@ -48,7 +48,7 @@ namespace HeuristicLab.Data {
     }
 
     [StorableConstructor]
-    private EnumValue(bool deserializing) : base(deserializing) { }
+    private EnumValue(StorableConstructorFlag _) : base(_) { }
     private EnumValue(EnumValue<T> original, Cloner cloner)
       : base(original, cloner) {
     }

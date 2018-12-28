@@ -24,7 +24,7 @@ using System.Drawing;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting {
@@ -32,7 +32,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
   /// Represents a VRP solution which can be visualized in the GUI.
   /// </summary>
   [Item("VRPSolution", "Represents a VRP solution which can be visualized in the GUI.")]
-  [StorableClass]
+  [StorableType("74CBBEDB-DE6E-4122-AC38-F49DC2B85730")]
   public sealed class VRPSolution : Item {
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Image; }
@@ -89,7 +89,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
       Initialize();
     }
     [StorableConstructor]
-    private VRPSolution(bool deserializing) : base(deserializing) { }
+    private VRPSolution(StorableConstructorFlag _) : base(_) { }
 
     [StorableHook(HookType.AfterDeserialization)]
     private void Initialize() {

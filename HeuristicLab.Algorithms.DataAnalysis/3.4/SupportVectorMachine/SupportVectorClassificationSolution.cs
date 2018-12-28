@@ -21,7 +21,7 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
@@ -29,7 +29,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// Represents a support vector solution for a classification problem which can be visualized in the GUI.
   /// </summary>
   [Item("SupportVectorClassificationSolution", "Represents a support vector solution for a classification problem which can be visualized in the GUI.")]
-  [StorableClass]
+  [StorableType("81EC96ED-A900-4517-B4C0-0B4EA3ABB94A")]
   public sealed class SupportVectorClassificationSolution : ClassificationSolution, ISupportVectorMachineSolution {
 
     public new ISupportVectorMachineModel Model {
@@ -38,7 +38,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     [StorableConstructor]
-    private SupportVectorClassificationSolution(bool deserializing) : base(deserializing) { }
+    private SupportVectorClassificationSolution(StorableConstructorFlag _) : base(_) { }
     private SupportVectorClassificationSolution(SupportVectorClassificationSolution original, Cloner cloner)
       : base(original, cloner) {
     }

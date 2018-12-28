@@ -23,7 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using HeuristicLab.Persistence.Core;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
 
@@ -42,26 +42,26 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
       if (type.BaseType != null)
         storableMembers.AddRange(GenerateStorableMembers(type.BaseType));
 
-      var storableClassAttribute = GetStorableClassAttribute(type);
-      if (storableClassAttribute != null) {
-        switch (storableClassAttribute.Type) {
-          case StorableClassType.MarkedOnly:
+      var storableTypeAttribute = GetStorableTypeAttribute(type);
+      if (storableTypeAttribute != null) {
+        switch (storableTypeAttribute.MemberSelection) {
+          case StorableMemberSelection.MarkedOnly:
             AddMarkedMembers(type, storableMembers); break;
-          case StorableClassType.AllFields:
+          case StorableMemberSelection.AllFields:
             AddAll(type, MemberTypes.Field, storableMembers); break;
-          case StorableClassType.AllProperties:
+          case StorableMemberSelection.AllProperties:
             AddAll(type, MemberTypes.Property, storableMembers); break;
-          case StorableClassType.AllFieldsAndAllProperties:
+          case StorableMemberSelection.AllFieldsAndAllProperties:
             AddAll(type, MemberTypes.Field | MemberTypes.Property, storableMembers); break;
           default:
-            throw new PersistenceException("unsupported [StorableClassType]: " + storableClassAttribute.Type);
+            throw new PersistenceException("unsupported [StorableMemberSelection]: " + storableTypeAttribute.MemberSelection);
         }
       }
       return DisentangleNameMapping(storableMembers);
     }
 
     public static bool IsEmptyOrStorableType(Type type, bool recursive) {
-      if (!HasStorableClassAttribute(type) && !IsEmptyType(type, false)) return false;
+      if (!HasStorableTypeAttribute(type) && !IsEmptyType(type, false)) return false;
       return !recursive || type.BaseType == null || IsEmptyOrStorableType(type.BaseType, true);
     }
 
@@ -71,7 +71,7 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
       if (type.BaseType != null)
         foreach (var hook in CollectHooks(hookType, type.BaseType))
           yield return hook;
-      if (HasStorableClassAttribute(type)) {
+      if (HasStorableTypeAttribute(type)) {
         foreach (MethodInfo methodInfo in type.GetMethods(DECLARED_INSTANCE_MEMBERS)) {
           if (methodInfo.ReturnType == typeof(void) && methodInfo.GetParameters().Length == 0) {
             foreach (StorableHookAttribute hook in methodInfo.GetCustomAttributes(typeof(StorableHookAttribute), false)) {
@@ -173,24 +173,24 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
 
     #region [StorableClass] helpers
 
-    private static StorableClassAttribute GetStorableClassAttribute(Type type) {
-      lock (storableClassCache) {
-        if (storableClassCache.ContainsKey(type))
-          return storableClassCache[type];
-        StorableClassAttribute attribute = type
-          .GetCustomAttributes(typeof(StorableClassAttribute), false)
-          .SingleOrDefault() as StorableClassAttribute;
-        storableClassCache.Add(type, attribute);
+    private static StorableTypeAttribute GetStorableTypeAttribute(Type type) {
+      lock (storableTypeCache) {
+        if (storableTypeCache.ContainsKey(type))
+          return storableTypeCache[type];
+        StorableTypeAttribute attribute = type
+          .GetCustomAttributes(typeof(StorableTypeAttribute), false)
+          .SingleOrDefault() as StorableTypeAttribute;
+        storableTypeCache.Add(type, attribute);
         return attribute;
       }
     }
 
-    public static bool HasStorableClassAttribute(Type type) {
-      return GetStorableClassAttribute(type) != null;
+    public static bool HasStorableTypeAttribute(Type type) {
+      return GetStorableTypeAttribute(type) != null;
     }
 
-    private static Dictionary<Type, StorableClassAttribute> storableClassCache =
-      new Dictionary<Type, StorableClassAttribute>();
+    private static Dictionary<Type, StorableTypeAttribute> storableTypeCache =
+      new Dictionary<Type, StorableTypeAttribute>();
 
     #endregion
 

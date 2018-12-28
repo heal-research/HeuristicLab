@@ -25,10 +25,10 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  [StorableClass]
+  [StorableType("DF78A485-8B71-46A4-8A2C-68642084D201")]
   [Item("CopyColumnTransformation", "Represents a transformation which represents a copied Column.")]
   public class CopyColumnTransformation : Transformation {
     protected const string CopiedColumnNameParameterName = "CopiedColumnName";
@@ -49,7 +49,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     #endregion
 
     [StorableConstructor]
-    protected CopyColumnTransformation(bool deserializing) : base(deserializing) { }
+    protected CopyColumnTransformation(StorableConstructorFlag _) : base(_) { }
     protected CopyColumnTransformation(CopyColumnTransformation original, Cloner cloner)
       : base(original, cloner) {
     }

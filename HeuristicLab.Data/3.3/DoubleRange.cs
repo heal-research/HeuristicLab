@@ -22,10 +22,10 @@
 using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Data {
-  [StorableClass]
+  [StorableType("884665C1-FE7A-4022-8A7A-8ECFF7358146")]
   [Item("DoubleRange", "Represents a range of values betweent start and end.")]
   public class DoubleRange : StringConvertibleValueTuple<DoubleValue, DoubleValue> {
 
@@ -42,7 +42,7 @@ namespace HeuristicLab.Data {
     }
 
     [StorableConstructor]
-    protected DoubleRange(bool deserializing) : base(deserializing) { }
+    protected DoubleRange(StorableConstructorFlag _) : base(_) { }
     protected DoubleRange(DoubleRange original, Cloner cloner)
       : base(original, cloner) {
     }

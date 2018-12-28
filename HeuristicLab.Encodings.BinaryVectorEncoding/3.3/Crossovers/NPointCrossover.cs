@@ -25,7 +25,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   /// <summary>
@@ -35,7 +35,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   /// It is implemented as described in Eiben, A.E. and Smith, J.E. 2003. Introduction to Evolutionary Computation. Natural Computing Series, Springer-Verlag Berlin Heidelberg..
   /// </remarks>
   [Item("NPointCrossover", "N point crossover for binary vectors. It is implemented as described in Eiben, A.E. and Smith, J.E. 2003. Introduction to Evolutionary Computation. Natural Computing Series, Springer-Verlag Berlin Heidelberg.")]
-  [StorableClass]
+  [StorableType("59683F25-9315-47D9-9E06-539559C9DEE1")]
   public sealed class NPointCrossover : BinaryVectorCrossover {
     /// <summary>
     /// Number of crossover points.
@@ -45,7 +45,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
     }
 
     [StorableConstructor]
-    private NPointCrossover(bool deserializing) : base(deserializing) { }
+    private NPointCrossover(StorableConstructorFlag _) : base(_) { }
     private NPointCrossover(NPointCrossover original, Cloner cloner) : base(original, cloner) { }
     /// <summary>
     /// Initializes a new instance of <see cref="NPointCrossover"/>

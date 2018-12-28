@@ -22,7 +22,7 @@
 using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   /// <summary>
@@ -34,10 +34,10 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
   /// as the original source of the operator.
   /// </remarks>
   [Item("PartiallyMatchedCrossover", "An operator which performs the partially matched crossover on two permutations. It is implemented as described in Fogel, D.B. 1988. An Evolutionary Approach to the Traveling Salesman Problem. Biological Cybernetics, 60, pp. 139-144, Springer-Verlag.")]
-  [StorableClass]
+  [StorableType("BE92E88C-0A05-4E56-884A-BAFFE6A86F4F")]
   public class PartiallyMatchedCrossover : PermutationCrossover {
     [StorableConstructor]
-    protected PartiallyMatchedCrossover(bool deserializing) : base(deserializing) { }
+    protected PartiallyMatchedCrossover(StorableConstructorFlag _) : base(_) { }
     protected PartiallyMatchedCrossover(PartiallyMatchedCrossover original, Cloner cloner) : base(original, cloner) { }
     public PartiallyMatchedCrossover() : base() { }
 

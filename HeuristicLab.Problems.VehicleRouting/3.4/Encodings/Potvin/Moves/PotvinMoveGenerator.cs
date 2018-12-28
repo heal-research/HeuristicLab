@@ -21,16 +21,16 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.VehicleRouting.Encodings.General;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinMoveGenerator", "Generates Potvin VRP moves.")]
-  [StorableClass]
+  [StorableType("A9832740-B65F-43CA-8B14-A0C19F4B977D")]
   public abstract class PotvinMoveGenerator : VRPMoveGenerator, IPotvinOperator {
     [StorableConstructor]
-    protected PotvinMoveGenerator(bool deserializing) : base(deserializing) { }
+    protected PotvinMoveGenerator(StorableConstructorFlag _) : base(_) { }
 
     public PotvinMoveGenerator()
       : base() {

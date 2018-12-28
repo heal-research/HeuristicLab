@@ -24,12 +24,12 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
   [Item("VRPMoveEvaluator", "Evaluates a VRP move.")]
-  [StorableClass]
+  [StorableType("2C1B7479-DCD7-41F7-BB65-D1D714313172")]
   public abstract class VRPMoveEvaluator : VRPMoveOperator, ISingleObjectiveMoveEvaluator {
     public const string MovePrefix = "Move";
 
@@ -44,7 +44,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
     }
 
     [StorableConstructor]
-    protected VRPMoveEvaluator(bool deserializing) : base(deserializing) { }
+    protected VRPMoveEvaluator(StorableConstructorFlag _) : base(_) { }
 
     public VRPMoveEvaluator()
       : base() {

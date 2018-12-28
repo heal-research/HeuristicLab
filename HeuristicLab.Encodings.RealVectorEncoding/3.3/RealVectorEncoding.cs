@@ -27,12 +27,12 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   [Item("RealVectorEncoding", "Describes a real vector encoding.")]
-  [StorableClass]
+  [StorableType("155FFE02-931F-457D-AC95-A0389B0BFECD")]
   public sealed class RealVectorEncoding : Encoding<IRealVectorCreator> {
     #region Encoding Parameters
     [Storable]
@@ -76,7 +76,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     }
 
     [StorableConstructor]
-    private RealVectorEncoding(bool deserializing) : base(deserializing) { }
+    private RealVectorEncoding(StorableConstructorFlag _) : base(_) { }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       RegisterParameterEvents();

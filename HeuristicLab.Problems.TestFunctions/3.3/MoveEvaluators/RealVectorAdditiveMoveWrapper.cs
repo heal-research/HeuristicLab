@@ -33,7 +33,6 @@ namespace HeuristicLab.Problems.TestFunctions {
     private double moveDistance;
     private RealVector vector;
 
-    private RealVectorAdditiveMoveWrapper(bool deserializing) : base(deserializing) { }
     private RealVectorAdditiveMoveWrapper(RealVectorAdditiveMoveWrapper original, Cloner cloner)
       : base(original, cloner) {
       this.dimension = original.dimension;

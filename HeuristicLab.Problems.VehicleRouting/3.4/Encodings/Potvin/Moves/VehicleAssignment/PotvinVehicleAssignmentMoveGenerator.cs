@@ -22,12 +22,12 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinVehicleAssignmentMoveGenerator", "Generates vehicle assignment moves from a given VRP encoding.")]
-  [StorableClass]
+  [StorableType("036C7D2D-50BA-415A-B5C0-8A643746F469")]
   public abstract class PotvinVehicleAssignmentMoveGenerator : PotvinMoveGenerator, IPotvinVehicleAssignmentMoveOperator {
     public ILookupParameter<PotvinVehicleAssignmentMove> VehicleAssignmentMoveParameter {
       get { return (ILookupParameter<PotvinVehicleAssignmentMove>)Parameters["PotvinVehicleAssignmentMove"]; }
@@ -42,7 +42,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
     }
 
     [StorableConstructor]
-    protected PotvinVehicleAssignmentMoveGenerator(bool deserializing) : base(deserializing) { }
+    protected PotvinVehicleAssignmentMoveGenerator(StorableConstructorFlag _) : base(_) { }
 
     public PotvinVehicleAssignmentMoveGenerator()
       : base() {

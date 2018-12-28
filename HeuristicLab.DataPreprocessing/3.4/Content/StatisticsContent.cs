@@ -22,11 +22,11 @@
 using System.Drawing;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.DataPreprocessing {
   [Item("Statistics", "Represents the statistics grid.")]
-  [StorableClass]
+  [StorableType("09B05895-BEE1-4D52-A6ED-504472D8A1FE")]
   public class StatisticsContent : PreprocessingContent, IViewShortcut {
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Object; }
@@ -45,8 +45,7 @@ namespace HeuristicLab.DataPreprocessing {
     }
 
     [StorableConstructor]
-    protected StatisticsContent(bool deserializing)
-      : base(deserializing) { }
+    protected StatisticsContent(StorableConstructorFlag _) : base(_) { }
     #endregion
 
     public event DataPreprocessingChangedEventHandler Changed {

@@ -21,7 +21,7 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
@@ -29,7 +29,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// Represents a neural network ensemble solution for a classification problem which can be visualized in the GUI.
   /// </summary>
   [Item("NeuralNetworkEnsembleClassificationSolution", "Represents a neural network ensemble solution for a classification problem which can be visualized in the GUI.")]
-  [StorableClass]
+  [StorableType("7D834C91-2790-44B6-97A4-BC7409D869FD")]
   public sealed class NeuralNetworkEnsembleClassificationSolution : ClassificationSolution, INeuralNetworkEnsembleClassificationSolution {
 
     public new INeuralNetworkEnsembleModel Model {
@@ -38,7 +38,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     [StorableConstructor]
-    private NeuralNetworkEnsembleClassificationSolution(bool deserializing) : base(deserializing) { }
+    private NeuralNetworkEnsembleClassificationSolution(StorableConstructorFlag _) : base(_) { }
     private NeuralNetworkEnsembleClassificationSolution(NeuralNetworkEnsembleClassificationSolution original, Cloner cloner)
       : base(original, cloner) {
     }

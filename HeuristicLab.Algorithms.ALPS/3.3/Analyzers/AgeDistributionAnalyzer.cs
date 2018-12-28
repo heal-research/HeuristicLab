@@ -27,12 +27,12 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Algorithms.ALPS {
   // Based on QualityDistributionAnalyzer
   [Item("AgeDistributionAnalyzer", "Analyzes the distribution of the ages in that it adds a Histogram of them into the result collection.")]
-  [StorableClass]
+  [StorableType("714CE0E4-A88F-44A1-A2D0-92F4D8252C0C")]
   public sealed class AgeDistributionAnalyzer : SingleSuccessorOperator, IAnalyzer, IIterationBasedOperator {
 
     #region Parameter Properties
@@ -68,8 +68,7 @@ namespace HeuristicLab.Algorithms.ALPS {
     }
 
     [StorableConstructor]
-    private AgeDistributionAnalyzer(bool deserializing)
-      : base(deserializing) { }
+    private AgeDistributionAnalyzer(StorableConstructorFlag _) : base(_) { }
     private AgeDistributionAnalyzer(AgeDistributionAnalyzer original, Cloner cloner)
       : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {

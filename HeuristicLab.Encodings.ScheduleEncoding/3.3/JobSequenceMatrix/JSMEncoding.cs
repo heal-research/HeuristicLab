@@ -19,23 +19,22 @@
  */
 #endregion
 
-using System;
 using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding.JobSequenceMatrix {
   [Item("JobSequenceMatrixEncoding", "Represents an encoding for a scheduling Problem using a list of job sequences to deliver scheduleinformation.")]
-  [StorableClass]
+  [StorableType("8F19A51A-45F1-4C1D-BCD4-A9F57E40DDC5")]
   public class JSMEncoding : Item, IScheduleEncoding {
 
     [Storable]
     public ItemList<Permutation> JobSequenceMatrix { get; set; }
 
     [StorableConstructor]
-    protected JSMEncoding(bool deserializing) : base(deserializing) { }
+    protected JSMEncoding(StorableConstructorFlag _) : base(_) { }
     protected JSMEncoding(JSMEncoding original, Cloner cloner)
       : base(original, cloner) {
       this.JobSequenceMatrix = cloner.Clone(original.JobSequenceMatrix);

@@ -22,11 +22,11 @@
 using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.LinearLinkageEncoding {
   [Item("Extract Move", "Extracts an item into a group of its own.")]
-  [StorableClass]
+  [StorableType("D42CB819-F307-4081-9227-7F6786E6853B")]
   public sealed class ExtractMove : EMSSMove {
     [Storable]
     private int previousItem;
@@ -40,7 +40,7 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
 
 
     [StorableConstructor]
-    private ExtractMove(bool deserializing) : base(deserializing) { }
+    private ExtractMove(StorableConstructorFlag _) : base(_) { }
     private ExtractMove(ExtractMove original, Cloner cloner)
       : base(original, cloner) {
       previousItem = original.previousItem;

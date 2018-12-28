@@ -21,15 +21,15 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding.PermutationWithRepetition {
   [Item("PWRCrossover", "An operator which crosses two JSM representations.")]
-  [StorableClass]
+  [StorableType("53331857-83AF-4966-940E-1137FBA7205C")]
   public abstract class PWRCrossover : ScheduleCrossover, IPWROperator {
 
     [StorableConstructor]
-    protected PWRCrossover(bool deserializing) : base(deserializing) { }
+    protected PWRCrossover(StorableConstructorFlag _) : base(_) { }
     protected PWRCrossover(PWRCrossover original, Cloner cloner) : base(original, cloner) { }
     public PWRCrossover()
       : base() {

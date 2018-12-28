@@ -22,18 +22,18 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.RealVectorEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.TestFunctions {
   [Item("MatyasAdditiveMoveEvaluator", "Class for evaluating an additive move on the Matyas function.")]
-  [StorableClass]
+  [StorableType("7B8A70DA-019D-4724-8AB8-6F42D60FB398")]
   public class MatyasAdditiveMoveEvaluator : AdditiveMoveEvaluator {
     public override System.Type EvaluatorType {
       get { return typeof(MatyasEvaluator); }
     }
 
     [StorableConstructor]
-    protected MatyasAdditiveMoveEvaluator(bool deserializing) : base(deserializing) { }
+    protected MatyasAdditiveMoveEvaluator(StorableConstructorFlag _) : base(_) { }
     protected MatyasAdditiveMoveEvaluator(MatyasAdditiveMoveEvaluator original, Cloner cloner) : base(original, cloner) { }
     public MatyasAdditiveMoveEvaluator() : base() { }
 

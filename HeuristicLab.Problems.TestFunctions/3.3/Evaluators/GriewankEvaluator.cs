@@ -24,7 +24,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.TestFunctions {
   /// <summary>
@@ -33,7 +33,7 @@ namespace HeuristicLab.Problems.TestFunctions {
   /// Here it is implemented as described (without the modifications) in Locatelli, M. 2003. A note on the Griewank test function. Journal of Global Optimization 25, pp. 169-174, Springer.
   /// </summary>
   [Item("GriewankEvaluator", "Evaluates the Griewank function on a given point. The optimum of this function is 0 at the origin. It is introduced by Griewank A.O. 1981 and implemented as described (without the modifications) in Locatelli, M. 2003. A note on the Griewank test function. Journal of Global Optimization 25, pp. 169-174, Springer.")]
-  [StorableClass]
+  [StorableType("9FA738E6-EB3C-4C64-92FE-3F7F0F823639")]
   public class GriewankEvaluator : SingleObjectiveTestFunctionProblemEvaluator {
     public override string FunctionName { get { return "Griewank"; } }
     /// <summary>
@@ -68,7 +68,7 @@ namespace HeuristicLab.Problems.TestFunctions {
     }
 
     [StorableConstructor]
-    protected GriewankEvaluator(bool deserializing) : base(deserializing) { }
+    protected GriewankEvaluator(StorableConstructorFlag _) : base(_) { }
     protected GriewankEvaluator(GriewankEvaluator original, Cloner cloner) : base(original, cloner) { }
     public GriewankEvaluator() : base() { }
 

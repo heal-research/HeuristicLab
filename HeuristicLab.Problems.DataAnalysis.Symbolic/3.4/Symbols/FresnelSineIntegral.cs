@@ -22,9 +22,9 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
-  [StorableClass]
+  [StorableType("CEB592FC-E402-4A7C-A207-E4048F87DB82")]
   [Item("FresnelSineIntegral", "Symbol that represents the Fresnel sine integral.")]
   public sealed class FresnelSineIntegral : Symbol {
     private const int minimumArity = 1;
@@ -38,7 +38,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     [StorableConstructor]
-    private FresnelSineIntegral(bool deserializing) : base(deserializing) { }
+    private FresnelSineIntegral(StorableConstructorFlag _) : base(_) { }
     private FresnelSineIntegral(FresnelSineIntegral original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new FresnelSineIntegral(this, cloner);

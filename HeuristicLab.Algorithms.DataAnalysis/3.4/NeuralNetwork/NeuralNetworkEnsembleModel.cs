@@ -24,14 +24,14 @@ using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>
   /// Represents a neural network ensembel model for regression and classification
   /// </summary>
-  [StorableClass]
+  [StorableType("51B29670-27BD-405C-A521-39814E4BD857")]
   [Item("NeuralNetworkEnsembleModel", "Represents a neural network ensemble for regression and classification.")]
   public sealed class NeuralNetworkEnsembleModel : ClassificationModel, INeuralNetworkEnsembleModel {
 
@@ -49,10 +49,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     [Storable]
     private double[] classValues;
     [StorableConstructor]
-    private NeuralNetworkEnsembleModel(bool deserializing)
-      : base(deserializing) {
-      if (deserializing)
-        mlpEnsemble = new alglib.mlpensemble();
+    private NeuralNetworkEnsembleModel(StorableConstructorFlag _) : base(_) {
+      mlpEnsemble = new alglib.mlpensemble();
     }
     private NeuralNetworkEnsembleModel(NeuralNetworkEnsembleModel original, Cloner cloner)
       : base(original, cloner) {

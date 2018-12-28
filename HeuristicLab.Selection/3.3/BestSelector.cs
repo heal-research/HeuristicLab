@@ -26,18 +26,18 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Selection {
   /// <summary>
   /// A selection operator which considers a single double quality value and selects the best.
   /// </summary>
   [Item("BestSelector", "A selection operator which considers a single double quality value and selects the best.")]
-  [StorableClass]
+  [StorableType("D0D03F30-C2A2-488B-81B0-856CA259AA03")]
   public sealed class BestSelector : SingleObjectiveSelector, ISingleObjectiveSelector {
     public BestSelector() : base() { }
     [StorableConstructor]
-    private BestSelector(bool deserializing) : base(deserializing) { }
+    private BestSelector(StorableConstructorFlag _) : base(_) { }
     private BestSelector(BestSelector original, Cloner cloner)
       : base(original, cloner) {
     }

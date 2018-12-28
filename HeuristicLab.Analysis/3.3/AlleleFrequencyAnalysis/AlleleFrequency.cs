@@ -21,14 +21,14 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Analysis {
   /// <summary>
   /// Represents the frequency of an allele.
   /// </summary>
   [Item("AlleleFrequency", "Represents the frequency of an allele.")]
-  [StorableClass]
+  [StorableType("9769F3D4-9207-4CDC-B473-8C18301EF418")]
   public class AlleleFrequency : Item {
     private string id;
     public string Id {
@@ -90,7 +90,7 @@ namespace HeuristicLab.Analysis {
 
     #region Storing & Cloning
     [StorableConstructor]
-    protected AlleleFrequency(bool deserializing) : base(deserializing) { }
+    protected AlleleFrequency(StorableConstructorFlag _) : base(_) { }
     protected AlleleFrequency(AlleleFrequency original, Cloner cloner)
       : base(original, cloner) {
       this.id = original.id;

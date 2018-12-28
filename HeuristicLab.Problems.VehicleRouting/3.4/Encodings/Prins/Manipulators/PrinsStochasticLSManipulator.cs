@@ -24,18 +24,18 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
   [Item("PrinsStochasticLSManipulator", "An operator which manipulates a VRP representation by using the stochastic version of the Prins local search.  It is implemented as described in Prins, C. (2004). A simple and effective evolutionary algorithm for the vehicle routing problem. Computers & Operations Research, 12:1985-2002.")]
-  [StorableClass]
+  [StorableType("0EA1C024-7FDA-4E52-8186-D2BAF9D5AB24")]
   public sealed class PrinsStochasticLSManipulator : PrinsLSManipulator {
     public IValueParameter<IntValue> SampleSize {
       get { return (IValueParameter<IntValue>)Parameters["SampleSize"]; }
     }
 
     [StorableConstructor]
-    private PrinsStochasticLSManipulator(bool deserializing) : base(deserializing) { }
+    private PrinsStochasticLSManipulator(StorableConstructorFlag _) : base(_) { }
 
     public PrinsStochasticLSManipulator()
       : base() {

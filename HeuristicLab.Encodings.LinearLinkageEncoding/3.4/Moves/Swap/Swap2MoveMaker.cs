@@ -27,11 +27,11 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.LinearLinkageEncoding {
   [Item("Swap2MoveMaker", "Peforms a swap-2 move on a given grouping and updates the quality.")]
-  [StorableClass]
+  [StorableType("2A1F7169-5DD5-4FB6-A25C-BBC4C06BB15A")]
   public class Swap2MoveMaker : SingleSuccessorOperator, ILinearLinkageSwap2MoveOperator, IMoveMaker, ISingleObjectiveOperator {
     public override bool CanChangeName {
       get { return false; }
@@ -50,7 +50,7 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
     }
 
     [StorableConstructor]
-    protected Swap2MoveMaker(bool deserializing) : base(deserializing) { }
+    protected Swap2MoveMaker(StorableConstructorFlag _) : base(_) { }
     protected Swap2MoveMaker(Swap2MoveMaker original, Cloner cloner) : base(original, cloner) { }
     public Swap2MoveMaker()
       : base() {

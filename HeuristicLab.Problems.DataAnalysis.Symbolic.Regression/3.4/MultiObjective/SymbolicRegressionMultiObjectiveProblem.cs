@@ -25,11 +25,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   [Item("Symbolic Regression Problem (multi-objective)", "Represents a multi objective symbolic regression problem.")]
-  [StorableClass]
+  [StorableType("4A8D3658-66B3-48B4-B983-D46409045DBE")]
   [Creatable(CreatableAttribute.Categories.GeneticProgrammingProblems, Priority = 110)]
   public class SymbolicRegressionMultiObjectiveProblem : SymbolicDataAnalysisMultiObjectiveProblem<IRegressionProblemData, ISymbolicRegressionMultiObjectiveEvaluator, ISymbolicDataAnalysisSolutionCreator>, IRegressionProblem {
     private const double PunishmentFactor = 10;
@@ -52,7 +52,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     #endregion
 
     [StorableConstructor]
-    protected SymbolicRegressionMultiObjectiveProblem(bool deserializing) : base(deserializing) { }
+    protected SymbolicRegressionMultiObjectiveProblem(StorableConstructorFlag _) : base(_) { }
     protected SymbolicRegressionMultiObjectiveProblem(SymbolicRegressionMultiObjectiveProblem original, Cloner cloner)
       : base(original, cloner) {
       RegisterEventHandlers();

@@ -24,11 +24,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.VehicleRouting {
   [Item("BestAverageWorstPickupAndDeliveryVRPToursCalculator", "An operator which calculates the current best, average and worst properties of VRP tours in the scope tree.")]
-  [StorableClass]
+  [StorableType("C6F8ED53-EF3E-49E5-9D29-227E870AF3D8")]
   public sealed class BestAverageWorstPickupAndDeliveryVRPToursCalculator : SingleSuccessorOperator {
     public ScopeTreeLookupParameter<IntValue> PickupViolationsParameter {
       get { return (ScopeTreeLookupParameter<IntValue>)Parameters["PickupViolations"]; }
@@ -60,7 +60,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
     }
 
     [StorableConstructor]
-    private BestAverageWorstPickupAndDeliveryVRPToursCalculator(bool deserializing) : base(deserializing) { }
+    private BestAverageWorstPickupAndDeliveryVRPToursCalculator(StorableConstructorFlag _) : base(_) { }
 
     private void UpdatePickupViolations() {
       ItemArray<IntValue> pickupViolations = PickupViolationsParameter.ActualValue;

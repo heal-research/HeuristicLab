@@ -20,7 +20,7 @@
 #endregion
 
 using System.Text;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Persistence.Interfaces;
 
 namespace HeuristicLab.Persistence.Default.Xml {
@@ -40,7 +40,7 @@ namespace HeuristicLab.Persistence.Default.Xml {
     public string Data { get; private set; }
 
     [StorableConstructor]
-    protected XmlString(bool deserializing) { }
+    protected XmlString(StorableConstructorFlag _) { }
     private XmlString() { }
 
     /// <summary>

@@ -23,10 +23,10 @@ using System;
 using System.Drawing;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Core {
-  [StorableClass]
+  [StorableType("BEAA9943-228E-4B99-9C07-CE77BA724C41")]
   [Item("ReadOnlyKeyedItemCollection", "Represents a read-only keyed collection of items.")]
   public class ReadOnlyKeyedItemCollection<TKey, TItem> : ReadOnlyObservableKeyedCollection<TKey, TItem>, IKeyedItemCollection<TKey, TItem> where TItem : class, IItem {
     public virtual string ItemName {
@@ -46,7 +46,7 @@ namespace HeuristicLab.Core {
     }
 
     [StorableConstructor]
-    protected ReadOnlyKeyedItemCollection(bool deserializing) : base(deserializing) { }
+    protected ReadOnlyKeyedItemCollection(StorableConstructorFlag _) : base(_) { }
     protected ReadOnlyKeyedItemCollection(ReadOnlyKeyedItemCollection<TKey, TItem> original, Cloner cloner) {
       cloner.RegisterClonedObject(original, this);
       collection = cloner.Clone((IKeyedItemCollection<TKey, TItem>)original.collection);

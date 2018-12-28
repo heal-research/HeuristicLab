@@ -30,7 +30,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.BinPacking3D {
   
@@ -38,7 +38,7 @@ namespace HeuristicLab.Problems.BinPacking3D {
   public enum FittingMethod { All, FirstFit, ResidualSpaceBestFit, FreeVolumeBestFit }
 
   [Item("Extreme-point-based Bin Packing (3d)", "An implementation of the extreme-point based packing described in Crainic, T. G., Perboli, G., & Tadei, R. (2008). Extreme point-based heuristics for three-dimensional bin packing. Informs Journal on computing, 20(3), 368-384.")]
-  [StorableClass]
+  [StorableType("33F16B60-E562-4609-A6BE-A21B83BDA575")]
   [Creatable(CreatableAttribute.Categories.SingleSolutionAlgorithms, Priority = 180)]
   public sealed class ExtremePointAlgorithm : BasicAlgorithm {
 
@@ -74,7 +74,7 @@ namespace HeuristicLab.Problems.BinPacking3D {
     }
 
     [StorableConstructor]
-    private ExtremePointAlgorithm(bool deserializing) : base(deserializing) { }
+    private ExtremePointAlgorithm(StorableConstructorFlag _) : base(_) { }
     private ExtremePointAlgorithm(ExtremePointAlgorithm original, Cloner cloner)
       : base(original, cloner) {
       sortingMethodParameter = cloner.Clone(original.sortingMethodParameter);

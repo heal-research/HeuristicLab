@@ -23,10 +23,10 @@ using System;
 using System.Drawing;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Core {
-  [StorableClass]
+  [StorableType("65208683-0ECE-4647-B8BA-FD80A9CA00F4")]
   [Item("ReadOnlyItemSet", "Represents a read-only set of items.")]
   public class ReadOnlyItemSet<T> : ReadOnlyObservableSet<T>, IItemSet<T> where T : class, IItem {
     public virtual string ItemName {
@@ -46,7 +46,7 @@ namespace HeuristicLab.Core {
     }
 
     [StorableConstructor]
-    protected ReadOnlyItemSet(bool deserializing) : base(deserializing) { }
+    protected ReadOnlyItemSet(StorableConstructorFlag _) : base(_) { }
     protected ReadOnlyItemSet(ReadOnlyItemSet<T> original, Cloner cloner) {
       cloner.RegisterClonedObject(original, this);
       set = cloner.Clone((IItemSet<T>)original.set);

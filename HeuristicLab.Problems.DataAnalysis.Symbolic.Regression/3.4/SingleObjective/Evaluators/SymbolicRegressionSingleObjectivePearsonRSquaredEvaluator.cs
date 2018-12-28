@@ -24,14 +24,14 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   [Item("Pearson R² Evaluator", "Calculates the square of the pearson correlation coefficient (also known as coefficient of determination) of a symbolic regression solution.")]
-  [StorableClass]
+  [StorableType("6FAEC6C2-C747-452A-A60D-29AE37898A90")]
   public class SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator : SymbolicRegressionSingleObjectiveEvaluator {
     [StorableConstructor]
-    protected SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator(bool deserializing) : base(deserializing) { }
+    protected SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator(StorableConstructorFlag _) : base(_) { }
     protected SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator(SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator original, Cloner cloner)
       : base(original, cloner) {
     }

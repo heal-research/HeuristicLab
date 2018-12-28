@@ -23,14 +23,14 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   /// <summary>
   /// A base class for operators that perform a crossover of int-valued vectors.
   /// </summary>
   [Item("IntegerVectorCrossover", "A base class for operators that perform a crossover of int-valued vectors.")]
-  [StorableClass]
+  [StorableType("BE778213-C140-4B1C-A4A4-1D92D0ADAB45")]
   public abstract class IntegerVectorCrossover : IntegerVectorOperator, IIntegerVectorCrossover, IStochasticOperator {
     public override bool CanChangeName {
       get { return false; }
@@ -46,7 +46,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
     }
 
     [StorableConstructor]
-    protected IntegerVectorCrossover(bool deserializing) : base(deserializing) { }
+    protected IntegerVectorCrossover(StorableConstructorFlag _) : base(_) { }
     protected IntegerVectorCrossover(IntegerVectorCrossover original, Cloner cloner) : base(original, cloner) { }
     protected IntegerVectorCrossover()
       : base() {

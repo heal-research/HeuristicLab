@@ -29,7 +29,7 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Random;
 using HeuristicLab.Selection;
 
@@ -39,7 +39,7 @@ namespace HeuristicLab.Algorithms.ScatterSearch {
   /// </summary>
   [Item("Scatter Search (SS)", "A scatter search algorithm.")]
   [Creatable(CreatableAttribute.Categories.PopulationBasedAlgorithms, Priority = 500)]
-  [StorableClass]
+  [StorableType("B0A218C1-8D92-4BDF-AAB7-C6396612C26B")]
   public sealed class ScatterSearch : HeuristicOptimizationEngineAlgorithm, IStorableContent {
     public string Filename { get; set; }
 
@@ -156,7 +156,7 @@ namespace HeuristicLab.Algorithms.ScatterSearch {
     #endregion
 
     [StorableConstructor]
-    private ScatterSearch(bool deserializing) : base(deserializing) { }
+    private ScatterSearch(StorableConstructorFlag _) : base(_) { }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       // BackwardsCompatibility3.3

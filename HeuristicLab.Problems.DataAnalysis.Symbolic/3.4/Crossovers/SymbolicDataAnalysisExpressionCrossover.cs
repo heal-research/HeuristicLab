@@ -27,11 +27,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
-  [StorableClass]
+  [StorableType("B53649DF-A760-4087-A496-BFD3F13DA31C")]
   public abstract class SymbolicDataAnalysisExpressionCrossover<T> : SymbolicExpressionTreeCrossover, ISymbolicDataAnalysisExpressionCrossover<T> where T : class, IDataAnalysisProblemData {
     private const string SymbolicDataAnalysisTreeInterpreterParameterName = "SymbolicExpressionTreeInterpreter";
     private const string ProblemDataParameterName = "ProblemData";
@@ -75,7 +75,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     #endregion
 
     [StorableConstructor]
-    protected SymbolicDataAnalysisExpressionCrossover(bool deserializing) : base(deserializing) { }
+    protected SymbolicDataAnalysisExpressionCrossover(StorableConstructorFlag _) : base(_) { }
     protected SymbolicDataAnalysisExpressionCrossover(SymbolicDataAnalysisExpressionCrossover<T> original, Cloner cloner)
       : base(original, cloner) {
     }

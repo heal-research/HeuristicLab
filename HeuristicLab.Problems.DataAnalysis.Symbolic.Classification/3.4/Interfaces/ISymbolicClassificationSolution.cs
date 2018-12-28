@@ -20,9 +20,6 @@
 #endregion
 
 
-using HeuristicLab.Problems.DataAnalysis.Symbolic;
-using System.Collections.Generic;
-using System;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
   public interface ISymbolicClassificationSolution : IClassificationSolution, ISymbolicDataAnalysisSolution {
     new ISymbolicClassificationModel Model { get; }

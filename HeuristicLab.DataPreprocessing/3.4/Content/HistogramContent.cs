@@ -25,11 +25,11 @@ using System.Linq;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.DataPreprocessing {
   [Item("Histogram", "Represents the histogram grid.")]
-  [StorableClass]
+  [StorableType("FD29EAB3-ABE6-49F4-A162-16E11790F7D5")]
   public class HistogramContent : PreprocessingChartContent {
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Statistics; }
@@ -65,8 +65,7 @@ namespace HeuristicLab.DataPreprocessing {
     }
 
     [StorableConstructor]
-    protected HistogramContent(bool deserializing)
-      : base(deserializing) { }
+    protected HistogramContent(StorableConstructorFlag _) : base(_) { }
     #endregion
 
     public static DataTable CreateHistogram(IFilteredPreprocessingData preprocessingData, string variableName, string groupingVariableName, DataTableVisualProperties.DataTableHistogramAggregation aggregation, LegendOrder legendOrder = LegendOrder.Alphabetically) {

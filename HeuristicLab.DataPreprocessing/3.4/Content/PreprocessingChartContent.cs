@@ -28,11 +28,11 @@ using HeuristicLab.Common;
 using HeuristicLab.Common.Resources;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.DataPreprocessing {
   [Item("PreprocessingChart", "Represents a preprocessing chart.")]
-  [StorableClass]
+  [StorableType("7EDAFA6E-E4B1-4150-BB57-280A9F9E61D8")]
   public class PreprocessingChartContent : PreprocessingContent, IViewShortcut {
     public enum LegendOrder {
       Alphabetically,
@@ -72,8 +72,7 @@ namespace HeuristicLab.DataPreprocessing {
     }
 
     [StorableConstructor]
-    protected PreprocessingChartContent(bool deserializing)
-      : base(deserializing) { }
+    protected PreprocessingChartContent(StorableConstructorFlag _) : base(_) { }
     #endregion
 
     public DataRow CreateDataRow(string variableName, DataRowVisualProperties.DataRowChartType chartType) {

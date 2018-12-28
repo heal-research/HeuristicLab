@@ -25,14 +25,14 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.TravelingSalesman {
   /// <summary>
   /// An operator to evaluate inversion moves (2-opt).
   /// </summary>
   [Item("TSPInversionMoveDistanceMatrixEvaluator", "Evaluates an inversion move (2-opt) by summing up the length of all added edges and subtracting the length of all deleted edges.")]
-  [StorableClass]
+  [StorableType("1EA2C5B2-96E0-4C64-9089-F08F6D2B1CAE")]
   public class TSPInversionMoveDistanceMatrixEvaluator : TSPMoveEvaluator, IPermutationInversionMoveOperator {
     public override Type EvaluatorType {
       get { return typeof(TSPDistanceMatrixEvaluator); }
@@ -49,7 +49,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     }
 
     [StorableConstructor]
-    protected TSPInversionMoveDistanceMatrixEvaluator(bool deserializing) : base(deserializing) { }
+    protected TSPInversionMoveDistanceMatrixEvaluator(StorableConstructorFlag _) : base(_) { }
     protected TSPInversionMoveDistanceMatrixEvaluator(TSPInversionMoveDistanceMatrixEvaluator original, Cloner cloner) : base(original, cloner) { }
     public TSPInversionMoveDistanceMatrixEvaluator()
       : base() {

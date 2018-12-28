@@ -35,12 +35,12 @@ using HeuristicLab.Common.Resources;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.ExternalEvaluation {
 
   [Item("EvaluationCache", "Cache for external evaluation values")]
-  [StorableClass]
+  [StorableType("FDB10541-FA1C-4CF9-8175-83A55700C052")]
   public class EvaluationCache : ParameterizedNamedItem {
 
     #region Types
@@ -198,7 +198,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
 
     #region Construction & Cloning
     [StorableConstructor]
-    protected EvaluationCache(bool deserializing) : base(deserializing) { }
+    protected EvaluationCache(StorableConstructorFlag _) : base(_) { }
     protected EvaluationCache(EvaluationCache original, Cloner cloner)
         : base(original, cloner) {
       SetCacheValues(original.GetCacheValues());

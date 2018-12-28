@@ -22,18 +22,18 @@
 using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 
 namespace HeuristicLab.Problems.ExternalEvaluation.GP {
-  [StorableClass]
+  [StorableType("747A7784-EF15-4CEF-A621-79A9071A69F5")]
   [Item("ExternalEvaluationExpressionGrammar", "Represents a grammar for functional expressions using all available functions.")]
   public class ExternalEvaluationExpressionGrammar : SymbolicExpressionGrammar, ISymbolicDataAnalysisGrammar {
     [Storable]
     private HeuristicLab.Problems.DataAnalysis.Symbolic.Variable variableSymbol;
     [StorableConstructor]
-    protected ExternalEvaluationExpressionGrammar(bool deserializing) : base(deserializing) { }
+    protected ExternalEvaluationExpressionGrammar(StorableConstructorFlag _) : base(_) { }
     protected ExternalEvaluationExpressionGrammar(ExternalEvaluationExpressionGrammar original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new ExternalEvaluationExpressionGrammar(this, cloner);

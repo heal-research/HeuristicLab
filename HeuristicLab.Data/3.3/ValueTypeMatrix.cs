@@ -27,11 +27,11 @@ using System.Linq;
 using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Data {
   [Item("ValueTypeMatrix", "An abstract base class for representing matrices of value types.")]
-  [StorableClass]
+  [StorableType("4EDE6858-4628-4F21-8F27-A45C59C2DE36")]
   public abstract class ValueTypeMatrix<T> : Item, IEnumerable<T> where T : struct {
     private const int maximumToStringLength = 100;
 
@@ -140,7 +140,7 @@ namespace HeuristicLab.Data {
     }
 
     [StorableConstructor]
-    protected ValueTypeMatrix(bool deserializing) : base(deserializing) { }
+    protected ValueTypeMatrix(StorableConstructorFlag _) : base(_) { }
     protected ValueTypeMatrix(ValueTypeMatrix<T> original, Cloner cloner)
       : base(original, cloner) {
       this.matrix = (T[,])original.matrix.Clone();

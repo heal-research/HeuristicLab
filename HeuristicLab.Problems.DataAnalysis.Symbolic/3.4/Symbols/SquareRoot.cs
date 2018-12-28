@@ -22,9 +22,9 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
-  [StorableClass]
+  [StorableType("E5D97AE5-0656-4FE5-B493-52A400ACE9AE")]
   [Item("SquareRoot", "Symbol that represents the square root function.")]
   public sealed class SquareRoot : Symbol {
     private const int minimumArity = 1;
@@ -38,7 +38,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     [StorableConstructor]
-    private SquareRoot(bool deserializing) : base(deserializing) { }
+    private SquareRoot(StorableConstructorFlag _) : base(_) { }
     private SquareRoot(SquareRoot original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new SquareRoot(this, cloner);

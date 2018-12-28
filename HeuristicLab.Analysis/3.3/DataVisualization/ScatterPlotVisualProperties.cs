@@ -22,13 +22,13 @@
 using System.ComponentModel;
 using System.Drawing;
 using HeuristicLab.Common;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Analysis {
   /// <summary>
   /// Visual properties of a ScatterPlot.
   /// </summary>
-  [StorableClass]
+  [StorableType("55E5B5E9-DCA7-4A1B-956D-457BEF0D02D8")]
   public class ScatterPlotVisualProperties : DeepCloneable, INotifyPropertyChanged {
     private Font titleFont;
     public Font TitleFont {
@@ -309,7 +309,7 @@ namespace HeuristicLab.Analysis {
     #endregion
 
     [StorableConstructor]
-    protected ScatterPlotVisualProperties(bool deserializing) : base() { }
+    protected ScatterPlotVisualProperties(StorableConstructorFlag _) { }
     protected ScatterPlotVisualProperties(ScatterPlotVisualProperties original, Cloner cloner)
       : base(original, cloner) {
       if (original.titleFont != null)

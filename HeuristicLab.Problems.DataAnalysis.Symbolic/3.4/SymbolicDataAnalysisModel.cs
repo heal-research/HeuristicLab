@@ -24,15 +24,14 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using HeuristicLab.Common;
-using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   /// <summary>
   /// Abstract base class for symbolic data analysis models
   /// </summary>
-  [StorableClass]
+  [StorableType("EE72299A-7F04-40DA-994E-F12EF9B12CE7")]
   public abstract class SymbolicDataAnalysisModel : DataAnalysisModel, ISymbolicDataAnalysisModel {
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Function; }
@@ -73,7 +72,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     #endregion
 
     [StorableConstructor]
-    protected SymbolicDataAnalysisModel(bool deserializing) : base(deserializing) { }
+    protected SymbolicDataAnalysisModel(StorableConstructorFlag _) : base(_) { }
     protected SymbolicDataAnalysisModel(SymbolicDataAnalysisModel original, Cloner cloner)
       : base(original, cloner) {
       this.symbolicExpressionTree = cloner.Clone(original.symbolicExpressionTree);

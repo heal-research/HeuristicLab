@@ -23,7 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using HeuristicLab.Persistence.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Persistence.Interfaces;
 
 namespace HeuristicLab.Persistence.Default.CompositeSerializers {
@@ -32,7 +32,7 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers {
   internal sealed class StructSerializer : ICompositeSerializer {
 
     [StorableConstructor]
-    private StructSerializer(bool deserializing) { }
+    private StructSerializer(StorableConstructorFlag _) { }
     public StructSerializer() { }
 
     public int Priority {

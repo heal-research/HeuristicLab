@@ -22,14 +22,14 @@
 using System.Drawing;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Operators {
   /// <summary>
   /// An operator which represents an algorithm represented as an operator graph.
   /// </summary>
   [Item("AlgorithmOperator", "An operator which represents an algorithm represented as an operator graph.")]
-  [StorableClass]
+  [StorableType("A0F318EF-7614-4208-99C0-56DF89D4C23D")]
   public abstract class AlgorithmOperator : SingleSuccessorOperator, IOperatorGraphOperator {
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Module; }
@@ -47,7 +47,7 @@ namespace HeuristicLab.Operators {
     }
 
     [StorableConstructor]
-    protected AlgorithmOperator(bool deserializing) : base(deserializing) { }
+    protected AlgorithmOperator(StorableConstructorFlag _) : base(_) { }
     protected AlgorithmOperator(AlgorithmOperator original, Cloner cloner)
       : base(original, cloner) {
       this.operatorGraph = cloner.Clone<OperatorGraph>(original.operatorGraph);

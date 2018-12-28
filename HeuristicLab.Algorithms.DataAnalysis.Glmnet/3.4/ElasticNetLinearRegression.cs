@@ -29,7 +29,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
 using HeuristicLab.Problems.DataAnalysis.Symbolic.Regression;
@@ -37,7 +37,7 @@ using HeuristicLab.Problems.DataAnalysis.Symbolic.Regression;
 namespace HeuristicLab.Algorithms.DataAnalysis.Glmnet {
   [Item("Elastic-net Linear Regression (LR)", "Linear regression with elastic-net regularization (wrapper for glmnet)")]
   [Creatable(CreatableAttribute.Categories.DataAnalysisRegression, Priority = 110)]
-  [StorableClass]
+  [StorableType("529EDD40-91F3-4F3E-929F-852A3EF9B02B")]
   public sealed class ElasticNetLinearRegression : FixedDataAnalysisAlgorithm<IRegressionProblem> {
     private const string PenalityParameterName = "Penality";
     private const string LambdaParameterName = "Lambda";
@@ -61,7 +61,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Glmnet {
     #endregion
 
     [StorableConstructor]
-    private ElasticNetLinearRegression(bool deserializing) : base(deserializing) { }
+    private ElasticNetLinearRegression(StorableConstructorFlag _) : base(_) { }
     private ElasticNetLinearRegression(ElasticNetLinearRegression original, Cloner cloner)
       : base(original, cloner) {
     }

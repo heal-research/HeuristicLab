@@ -24,14 +24,14 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.TestFunctions {
   /// <summary>
   /// The Levy function is implemented as described on http://www-optima.amp.i.kyoto-u.ac.jp/member/student/hedar/Hedar_files/TestGO_files/Page2056.htm, last accessed April 12th, 2010.
   /// </summary>
   [Item("LevyEvaluator", "Evaluates the Levy function on a given point. The optimum of this function is 0 at (1,1,...,1). It is implemented as described on http://www-optima.amp.i.kyoto-u.ac.jp/member/student/hedar/Hedar_files/TestGO_files/Page2056.htm, last accessed April 12th, 2010.")]
-  [StorableClass]
+  [StorableType("1DE79A28-70E5-45D8-817F-F1F51BCBC19D")]
   public class LevyEvaluator : SingleObjectiveTestFunctionProblemEvaluator {
     public override string FunctionName { get { return "Levy"; } }
     /// <summary>
@@ -66,7 +66,7 @@ namespace HeuristicLab.Problems.TestFunctions {
     }
 
     [StorableConstructor]
-    protected LevyEvaluator(bool deserializing) : base(deserializing) { }
+    protected LevyEvaluator(StorableConstructorFlag _) : base(_) { }
     protected LevyEvaluator(LevyEvaluator original, Cloner cloner) : base(original, cloner) { }
     public LevyEvaluator() : base() { }
 

@@ -23,11 +23,11 @@ using System.Drawing;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.Scheduling {
   [Item("JSMDecodingErrorPolicy", "Represents a policy for handling decoding errors.")]
-  [StorableClass]
+  [StorableType("835B8FE8-8BEA-4E05-BB68-2538341AC2D0")]
   public sealed class JSMDecodingErrorPolicy : ValueTypeValue<JSMDecodingErrorPolicyTypes> {
 
     public static new Image StaticItemImage {
@@ -35,7 +35,7 @@ namespace HeuristicLab.Problems.Scheduling {
     }
 
     [StorableConstructor]
-    private JSMDecodingErrorPolicy(bool deserializing) : base(deserializing) { }
+    private JSMDecodingErrorPolicy(StorableConstructorFlag _) : base(_) { }
     private JSMDecodingErrorPolicy(JSMDecodingErrorPolicy original, Cloner cloner) : base(original, cloner) { }
     public JSMDecodingErrorPolicy() : base() { }
     public JSMDecodingErrorPolicy(JSMDecodingErrorPolicyTypes types) : base(types) { }

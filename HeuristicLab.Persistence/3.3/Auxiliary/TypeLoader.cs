@@ -22,7 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using HeuristicLab.Persistence.Core;
+using HEAL.Fossil;
 using HeuristicLab.Tracing;
 
 namespace HeuristicLab.Persistence.Auxiliary {

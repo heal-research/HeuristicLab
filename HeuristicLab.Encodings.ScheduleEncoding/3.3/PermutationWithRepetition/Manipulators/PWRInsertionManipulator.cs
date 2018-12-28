@@ -24,14 +24,14 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.IntegerVectorEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding.PermutationWithRepetition {
   [Item("PWRInsertionManipulator", "Represents a manipulation operation inserting parts of the individual at another position.")]
-  [StorableClass]
+  [StorableType("D2813869-42F7-4609-B7E0-4725E7565572")]
   public class PWRInsertionManipulator : PWRManipulator {
     [StorableConstructor]
-    protected PWRInsertionManipulator(bool deserializing) : base(deserializing) { }
+    protected PWRInsertionManipulator(StorableConstructorFlag _) : base(_) { }
     protected PWRInsertionManipulator(PWRInsertionManipulator original, Cloner cloner) : base(original, cloner) { }
     public PWRInsertionManipulator() : base() { }
 

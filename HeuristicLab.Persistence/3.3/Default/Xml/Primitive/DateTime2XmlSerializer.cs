@@ -20,7 +20,7 @@
 #endregion
 
 using System;
-using HeuristicLab.Persistence.Core;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Persistence.Default.Xml.Primitive {
 

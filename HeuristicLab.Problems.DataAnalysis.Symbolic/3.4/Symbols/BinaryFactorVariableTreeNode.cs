@@ -21,10 +21,10 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Random;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
-  [StorableClass]
+  [StorableType("FC7010CD-639B-42E1-B1D0-7DE5CEFBC8B1")]
   public sealed class BinaryFactorVariableTreeNode : VariableTreeNodeBase {
     public new BinaryFactorVariable Symbol {
       get { return (BinaryFactorVariable)base.Symbol; }
@@ -38,7 +38,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     [StorableConstructor]
-    private BinaryFactorVariableTreeNode(bool deserializing) : base(deserializing) { }
+    private BinaryFactorVariableTreeNode(StorableConstructorFlag _) : base(_) { }
     private BinaryFactorVariableTreeNode(BinaryFactorVariableTreeNode original, Cloner cloner)
       : base(original, cloner) {
       variableValue = original.variableValue;

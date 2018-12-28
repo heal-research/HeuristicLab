@@ -23,14 +23,14 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Operators {
   /// <summary>
   /// An Operator which sorts the sub-scopes of the current scope.
   /// </summary>
   [Item("SubScopesSorter", "An operator which sorts the sub-scopes of the current scope.")]
-  [StorableClass]
+  [StorableType("39AAED75-CD24-43EF-86C4-0CC4CA03749C")]
   public sealed class SubScopesSorter : SingleSuccessorOperator {
     private bool descending;
     private string actualName;
@@ -49,7 +49,7 @@ namespace HeuristicLab.Operators {
     }
 
     [StorableConstructor]
-    private SubScopesSorter(bool deserializing) : base(deserializing) { }
+    private SubScopesSorter(StorableConstructorFlag _) : base(_) { }
     private SubScopesSorter(SubScopesSorter original, Cloner cloner)
       : base(original, cloner) {
     }

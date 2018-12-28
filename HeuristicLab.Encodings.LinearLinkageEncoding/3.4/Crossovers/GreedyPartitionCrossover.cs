@@ -24,16 +24,16 @@ using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Encodings.LinearLinkageEncoding {
   [Item("Greedy Partition Crossover", "The Greedy Partition Crossover (GPX) is implemented as described in Ülker, Ö., Özcan, E., Korkmaz, E. E. 2007. Linear linkage encoding in grouping problems: applications on graph coloring and timetabling. In Practice and Theory of Automated Timetabling VI, pp. 347-363. Springer Berlin Heidelberg.")]
-  [StorableClass]
+  [StorableType("C0CDC693-4513-404A-9CE9-598C6DC2E319")]
   public sealed class GreedyPartitionCrossover : LinearLinkageCrossover {
 
     [StorableConstructor]
-    private GreedyPartitionCrossover(bool deserializing) : base(deserializing) { }
+    private GreedyPartitionCrossover(StorableConstructorFlag _) : base(_) { }
     private GreedyPartitionCrossover(GreedyPartitionCrossover original, Cloner cloner) : base(original, cloner) { }
     public GreedyPartitionCrossover() { }
 

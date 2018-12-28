@@ -31,7 +31,7 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Random;
 using HeuristicLab.Selection;
@@ -39,7 +39,7 @@ using HeuristicLab.Selection;
 namespace HeuristicLab.Algorithms.ALPS {
   [Item("ALPS OffspringSelection Genetic Algorithm", "An offspring selection genetic algorithm within an age-layered population structure.")]
   [Creatable(CreatableAttribute.Categories.PopulationBasedAlgorithms, Priority = 162)]
-  [StorableClass]
+  [StorableType("4CA6AFE2-8EE9-4724-AA5C-624C734703FD")]
   public sealed class AlpsOffspringSelectionGeneticAlgorithm : HeuristicOptimizationEngineAlgorithm, IStorableContent {
     public string Filename { get; set; }
 
@@ -293,8 +293,7 @@ namespace HeuristicLab.Algorithms.ALPS {
 
     #region Constructors
     [StorableConstructor]
-    private AlpsOffspringSelectionGeneticAlgorithm(bool deserializing)
-      : base(deserializing) { }
+    private AlpsOffspringSelectionGeneticAlgorithm(StorableConstructorFlag _) : base(_) { }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       // BackwardsCompatibility3.3

@@ -25,7 +25,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Problems.VehicleRouting.Variants;
 
@@ -34,7 +34,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
   /// An operator for adaptive constraint relaxation.
   /// </summary>
   [Item("TimeWindowRelaxationVRPAnalyzer", "An operator for adaptively relaxing the time window constraints.")]
-  [StorableClass]
+  [StorableType("2CF57A00-547B-46E8-8B55-D626EB2D61DD")]
   public class TimeWindowRelaxationVRPAnalyzer : SingleSuccessorOperator, IAnalyzer, ITimeWindowedOperator, ISingleObjectiveOperator {
     public ILookupParameter<IVRPProblemInstance> ProblemInstanceParameter {
       get { return (ILookupParameter<IVRPProblemInstance>)Parameters["ProblemInstance"]; }
@@ -72,7 +72,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
     }
 
     [StorableConstructor]
-    protected TimeWindowRelaxationVRPAnalyzer(bool deserializing) : base(deserializing) { }
+    protected TimeWindowRelaxationVRPAnalyzer(StorableConstructorFlag _) : base(_) { }
 
     public TimeWindowRelaxationVRPAnalyzer()
       : base() {

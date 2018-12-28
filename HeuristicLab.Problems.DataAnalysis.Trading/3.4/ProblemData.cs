@@ -26,10 +26,10 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis.Trading {
-  [StorableClass]
+  [StorableType("0E535043-BE86-4AF8-8DA1-C82E459F67AB")]
   [Item("TradingProblemData", "Represents an item containing all data defining a trading problem.")]
   public sealed class ProblemData : DataAnalysisProblemData, IProblemData {
     private const string PriceChangeVariableParameterName = "PriceChangeVariable";
@@ -1610,7 +1610,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Trading {
     }
 
     [StorableConstructor]
-    private ProblemData(bool deserializing) : base(deserializing) { }
+    private ProblemData(StorableConstructorFlag _) : base(_) { }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       RegisterParameterEvents();

@@ -24,7 +24,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.TestFunctions {
   /// <summary>
@@ -32,7 +32,7 @@ namespace HeuristicLab.Problems.TestFunctions {
   /// It is implemented as described in Moré, J.J., Garbow, B., and Hillstrom, K. 1981. Testing unconstrained optimization software. ACM Transactions on Mathematical Software 7, pp. 136-140, ACM.
   /// </summary>
   [Item("BealeEvaluator", "Evaluates the Beale function on a given point. The optimum of this function is 0 at (3,0.5). It is implemented as described in Moré, J.J., Garbow, B., and Hillstrom, K. 1981. Testing unconstrained optimization software. ACM Transactions on Mathematical Software 7, pp. 136-140, ACM.")]
-  [StorableClass]
+  [StorableType("EC1E155C-65ED-4603-A442-357ECC1E8F3D")]
   public class BealeEvaluator : SingleObjectiveTestFunctionProblemEvaluator {
     public override string FunctionName { get { return "Beale"; } }
     /// <summary>
@@ -67,7 +67,7 @@ namespace HeuristicLab.Problems.TestFunctions {
     }
 
     [StorableConstructor]
-    protected BealeEvaluator(bool deserializing) : base(deserializing) { }
+    protected BealeEvaluator(StorableConstructorFlag _) : base(_) { }
     protected BealeEvaluator(BealeEvaluator original, Cloner cloner) : base(original, cloner) { }
     public BealeEvaluator() : base() { }
 

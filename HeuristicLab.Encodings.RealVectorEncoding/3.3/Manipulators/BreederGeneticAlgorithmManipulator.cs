@@ -24,7 +24,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// <summary>
@@ -35,7 +35,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// It is implemented as described by Mühlenbein, H. and Schlierkamp-Voosen, D. 1993. Predictive Models for the Breeder Genetic Algorithm - I. Continuous Parameter Optimization. Evolutionary Computation, 1(1), pp. 25-49.<br/>
   /// </remarks>
   [Item("BreederGeneticAlgorithmManipulator", "It is implemented as described by Mühlenbein, H. and Schlierkamp-Voosen, D. 1993. Predictive Models for the Breeder Genetic Algorithm - I. Continuous Parameter Optimization. Evolutionary Computation, 1(1), pp. 25-49.")]
-  [StorableClass]
+  [StorableType("A9D7E5D6-6326-4C62-9EA0-E50785FDD677")]
   public class BreederGeneticAlgorithmManipulator : RealVectorManipulator {
     private static readonly double[] powerOfTwo = new double[] { 1, 0.5, 0.25, 0.125, 0.0625, 0.03125, 0.015625, 0.0078125, 0.00390625, 0.001953125, 0.0009765625, 0.00048828125, 0.000244140625, 0.0001220703125, 0.00006103515625, 0.000030517578125 };
     public ValueLookupParameter<DoubleValue> SearchIntervalFactorParameter {
@@ -43,7 +43,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     }
 
     [StorableConstructor]
-    protected BreederGeneticAlgorithmManipulator(bool deserializing) : base(deserializing) { }
+    protected BreederGeneticAlgorithmManipulator(StorableConstructorFlag _) : base(_) { }
     protected BreederGeneticAlgorithmManipulator(BreederGeneticAlgorithmManipulator original, Cloner cloner) : base(original, cloner) { }
     /// <summary>
     /// Initializes a new instance of <see cref="BreederGeneticAlgorithmManipulator"/> with two

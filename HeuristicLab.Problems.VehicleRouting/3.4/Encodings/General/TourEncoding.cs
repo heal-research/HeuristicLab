@@ -23,12 +23,12 @@ using System.Collections.Generic;
 using System.Drawing;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
   [Item("TourEncoding", "Represents a base class for tour encodings of VRP solutions.")]
-  [StorableClass]
+  [StorableType("FC5DBAE6-05D9-4C55-AA85-6E3C2330700F")]
   public abstract class TourEncoding : Item, IVRPEncoding {
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Class; }
@@ -104,8 +104,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
     }
 
     [StorableConstructor]
-    protected TourEncoding(bool serializing)
-      : base(serializing) {
+    protected TourEncoding(StorableConstructorFlag _) : base(_) {
     }
 
     protected TourEncoding(TourEncoding original, Cloner cloner)

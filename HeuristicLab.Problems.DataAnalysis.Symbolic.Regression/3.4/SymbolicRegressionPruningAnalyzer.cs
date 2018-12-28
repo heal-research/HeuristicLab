@@ -25,11 +25,11 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   [Item("SymbolicRegressionPruningAnalyzer", "An analyzer that prunes introns from the population.")]
-  [StorableClass]
+  [StorableType("F1180389-1393-4102-9EEC-E4F183A017F2")]
   public sealed class SymbolicRegressionPruningAnalyzer : SymbolicDataAnalysisSingleObjectivePruningAnalyzer {
     private const string PruningOperatorParameterName = "PruningOperator";
     public IValueParameter<SymbolicRegressionPruningOperator> PruningOperatorParameter {
@@ -44,7 +44,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     public override IDeepCloneable Clone(Cloner cloner) { return new SymbolicRegressionPruningAnalyzer(this, cloner); }
 
     [StorableConstructor]
-    private SymbolicRegressionPruningAnalyzer(bool deserializing) : base(deserializing) { }
+    private SymbolicRegressionPruningAnalyzer(StorableConstructorFlag _) : base(_) { }
 
     public SymbolicRegressionPruningAnalyzer() {
       Parameters.Add(new ValueParameter<SymbolicRegressionPruningOperator>(PruningOperatorParameterName, "The operator used to prune trees", new SymbolicRegressionPruningOperator(new SymbolicRegressionSolutionImpactValuesCalculator())));

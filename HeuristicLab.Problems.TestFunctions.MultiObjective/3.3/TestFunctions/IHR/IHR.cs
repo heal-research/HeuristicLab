@@ -21,10 +21,10 @@
 using System;
 using HeuristicLab.Common;
 using HeuristicLab.Encodings.RealVectorEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
-  [StorableClass]
+  [StorableType("3DBC1750-FDEA-454C-AF65-EA4337CEE823")]
   public abstract class IHR : MultiObjectiveTestFunction {
     protected override double[,] GetBounds(int objectives) {
       return new double[,] { { -1, 1 } };
@@ -43,7 +43,7 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
     }
 
     [StorableConstructor]
-    protected IHR(bool deserializing) : base(deserializing) { }
+    protected IHR(StorableConstructorFlag _) : base(_) { }
     protected IHR(IHR original, Cloner cloner) : base(original, cloner) { }
     public IHR() : base(minimumObjectives: 2, maximumObjectives: 2, minimumSolutionLength: 2, maximumSolutionLength: int.MaxValue) { }
 

@@ -24,17 +24,17 @@ using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.TravelingSalesman {
   /// <summary>
   /// Represents a distance matrix of a Traveling Salesman Problem.
   /// </summary>
   [Item("DistanceMatrix", "Represents a distance matrix of a Traveling Salesman Problem.")]
-  [StorableClass]
+  [StorableType("37D937BA-443B-44BC-AC89-C74D79D96D56")]
   public sealed class DistanceMatrix : DoubleMatrix {
     [StorableConstructor]
-    private DistanceMatrix(bool deserializing) : base(deserializing) { }
+    private DistanceMatrix(StorableConstructorFlag _) : base(_) { }
     private DistanceMatrix(DistanceMatrix original, Cloner cloner) {
       throw new NotSupportedException("Distance matrices cannot be cloned.");
     }

@@ -25,10 +25,10 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
-  [StorableClass]
+  [StorableType("198B5472-6CAA-4C39-BB1F-6EC16CB7801B")]
   [Item(Name = "CovariancePeriodic", Description = "Periodic covariance function for Gaussian processes.")]
   public sealed class CovariancePeriodic : ParameterizedNamedItem, ICovarianceFunction {
 
@@ -56,7 +56,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
 
     [StorableConstructor]
-    private CovariancePeriodic(bool deserializing) : base(deserializing) { }
+    private CovariancePeriodic(StorableConstructorFlag _) : base(_) { }
     private CovariancePeriodic(CovariancePeriodic original, Cloner cloner)
       : base(original, cloner) {
     }

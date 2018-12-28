@@ -22,11 +22,11 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.BinPacking3D {
   [Item("Swap2MoveEvaluator", "Move evaluator for 2-opt moves.")]
-  [StorableClass]
+  [StorableType("CF5E678F-E420-4825-A3FE-AE48D9B9B7C0")]
   public sealed class Swap2MoveEvaluator : MoveEvaluatorBase<Permutation, Swap2Move>, IPermutationSwap2MoveOperator {
     public ILookupParameter<Swap2Move> Swap2MoveParameter {
       get { return MoveParameter; }
@@ -36,7 +36,7 @@ namespace HeuristicLab.Problems.BinPacking3D {
     }
 
     [StorableConstructor]
-    private Swap2MoveEvaluator(bool deserializing) : base(deserializing) { }
+    private Swap2MoveEvaluator(StorableConstructorFlag _) : base(_) { }
     private Swap2MoveEvaluator(Swap2MoveEvaluator original, Cloner cloner) : base(original, cloner) { }
     public Swap2MoveEvaluator()
       : base() {

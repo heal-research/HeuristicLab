@@ -1,17 +1,5 @@
-﻿using System;
-using System.Linq;
-using System.Collections.Generic;
-using HeuristicLab.Common;
-using HeuristicLab.Core;
-using HeuristicLab.Data;
-using HeuristicLab.Encodings.BinaryVectorEncoding;
-using HeuristicLab.Encodings.IntegerVectorEncoding;
-using HeuristicLab.Encodings.RealVectorEncoding;
-using HeuristicLab.Encodings.PermutationEncoding;
-using HeuristicLab.Encodings.LinearLinkageEncoding;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
+﻿using HeuristicLab.Core;
 using HeuristicLab.Optimization;
-using HeuristicLab.Problems.Programmable;
 
 namespace HeuristicLab.Problems.Programmable {
   public class CompiledMultiObjectiveProblemDefinition : CompiledProblemDefinition, IMultiObjectiveProblemDefinition {

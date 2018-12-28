@@ -23,18 +23,18 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
   [Item("PrinsPermutationManipulator", "An operator which manipulates a VRP representation by using a standard permutation manipulator. It is implemented as described in Prins, C. (2004). A simple and effective evolutionary algorithm for the vehicle routing problem. Computers & Operations Research, 12:1985-2002.")]
-  [StorableClass]
+  [StorableType("D5455C8E-B245-4706-AC26-86B4085B6339")]
   public sealed class PrinsPermutationManipulator : PrinsManipulator {
     public IValueLookupParameter<IPermutationManipulator> InnerManipulatorParameter {
       get { return (IValueLookupParameter<IPermutationManipulator>)Parameters["InnerManipulator"]; }
     }
 
     [StorableConstructor]
-    private PrinsPermutationManipulator(bool deserializing) : base(deserializing) { }
+    private PrinsPermutationManipulator(StorableConstructorFlag _) : base(_) { }
 
     public PrinsPermutationManipulator()
       : base() {

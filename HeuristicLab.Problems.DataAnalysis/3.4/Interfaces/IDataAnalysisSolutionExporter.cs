@@ -19,9 +19,6 @@
  */
 #endregion
 
-using System;
-using HeuristicLab.Common;
-using HeuristicLab.Core;
 
 namespace HeuristicLab.Problems.DataAnalysis {
   public interface IDataAnalysisSolutionExporter {

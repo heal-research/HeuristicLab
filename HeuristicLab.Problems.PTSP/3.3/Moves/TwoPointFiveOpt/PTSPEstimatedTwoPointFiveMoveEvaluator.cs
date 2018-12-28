@@ -25,11 +25,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.PTSP {
   [Item("PTSP Estimated 2.5-MoveEvaluator", "Operator that evaluates 2.5-p-opt moves of PTSP")]
-  [StorableClass]
+  [StorableType("3E67BDD5-5A80-46F7-A7D6-9A67595CFD8C")]
   public class PTSPEstimatedTwoPointFiveMoveEvaluator : EstimatedPTSPMoveEvaluator, ITwoPointFiveMoveOperator {
 
     public ILookupParameter<TwoPointFiveMove> TwoPointFiveMoveParameter {
@@ -37,7 +37,7 @@ namespace HeuristicLab.Problems.PTSP {
     }
 
     [StorableConstructor]
-    protected PTSPEstimatedTwoPointFiveMoveEvaluator(bool deserializing) : base(deserializing) { }
+    protected PTSPEstimatedTwoPointFiveMoveEvaluator(StorableConstructorFlag _) : base(_) { }
     protected PTSPEstimatedTwoPointFiveMoveEvaluator(PTSPEstimatedTwoPointFiveMoveEvaluator original, Cloner cloner) : base(original, cloner) { }
     public PTSPEstimatedTwoPointFiveMoveEvaluator()
       : base() {

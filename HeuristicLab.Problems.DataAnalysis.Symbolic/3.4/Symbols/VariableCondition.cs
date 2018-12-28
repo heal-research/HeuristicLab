@@ -24,10 +24,10 @@ using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
-  [StorableClass]
+  [StorableType("6DD62329-E3A5-4C3B-9B38-D57E62D61CCC")]
   [Item("Variable Condition", "Represents a condition that tests a given variable against a specified threshold.")]
   public sealed class VariableCondition : Symbol, IVariableSymbol {
     #region properties
@@ -191,8 +191,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     [StorableConstructor]
-    private VariableCondition(bool deserializing)
-      : base(deserializing) {
+    private VariableCondition(StorableConstructorFlag _) : base(_) {
       variableNames = new List<string>();
       allVariableNames = new List<string>();
     }

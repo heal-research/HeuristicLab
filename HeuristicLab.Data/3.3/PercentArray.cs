@@ -22,14 +22,14 @@
 using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Data {
   [Item("PercentArray", "Represents an array of double values in percent.")]
-  [StorableClass]
+  [StorableType("8ED7F07C-1DE7-4782-90C0-50395627F8A0")]
   public class PercentArray : DoubleArray {
     [StorableConstructor]
-    protected PercentArray(bool deserializing) : base(deserializing) { }
+    protected PercentArray(StorableConstructorFlag _) : base(_) { }
     protected PercentArray(PercentArray original, Cloner cloner)
       : base(original, cloner) {
     }

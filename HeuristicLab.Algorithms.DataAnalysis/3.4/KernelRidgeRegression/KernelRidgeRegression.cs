@@ -27,14 +27,14 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [Item("Kernel Ridge Regression", "Kernelized ridge regression e.g. for radial basis function (RBF) regression.")]
   [Creatable(CreatableAttribute.Categories.DataAnalysisRegression, Priority = 100)]
-  [StorableClass]
+  [StorableType("8AD45266-68CA-4710-A99C-59952132AA9D")]
   public sealed class KernelRidgeRegression : BasicAlgorithm, IDataAnalysisAlgorithm<IRegressionProblem> {
     private const string SolutionResultName = "Kernel ridge regression solution";
 
@@ -96,7 +96,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     #endregion
 
     [StorableConstructor]
-    private KernelRidgeRegression(bool deserializing) : base(deserializing) { }
+    private KernelRidgeRegression(StorableConstructorFlag _) : base(_) { }
     private KernelRidgeRegression(KernelRidgeRegression original, Cloner cloner)
       : base(original, cloner) {
     }

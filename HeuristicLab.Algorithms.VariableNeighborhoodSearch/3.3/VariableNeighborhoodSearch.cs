@@ -29,14 +29,14 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Algorithms.VariableNeighborhoodSearch {
   [Item("Variable Neighborhood Search (VNS)", "A variable neighborhood search algorithm based on the description in Mladenovic, N. and Hansen, P. (1997). Variable neighborhood search. Computers & Operations Research Volume 24, Issue 11, pp. 1097-1100.")]
   [Creatable(CreatableAttribute.Categories.SingleSolutionAlgorithms, Priority = 110)]
-  [StorableClass]
+  [StorableType("E5FA1D1E-2611-4059-A836-4E89BB24342A")]
   public sealed class VariableNeighborhoodSearch : HeuristicOptimizationEngineAlgorithm, IStorableContent {
     public string Filename { get; set; }
 
@@ -118,7 +118,7 @@ namespace HeuristicLab.Algorithms.VariableNeighborhoodSearch {
     private BestAverageWorstQualityAnalyzer qualityAnalyzer;
 
     [StorableConstructor]
-    private VariableNeighborhoodSearch(bool deserializing) : base(deserializing) { }
+    private VariableNeighborhoodSearch(StorableConstructorFlag _) : base(_) { }
     private VariableNeighborhoodSearch(VariableNeighborhoodSearch original, Cloner cloner)
       : base(original, cloner) {
       qualityAnalyzer = cloner.Clone(original.qualityAnalyzer);

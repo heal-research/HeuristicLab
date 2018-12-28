@@ -22,18 +22,18 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.RealVectorEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.TestFunctions {
   [Item("SumSquaresAdditiveMoveEvaluator", "Class for evaluating an additive move on the SumSquares function.")]
-  [StorableClass]
+  [StorableType("83294D8D-7286-4B95-87B8-CE55528B46E5")]
   public class SumSquaresAdditiveMoveEvaluator : AdditiveMoveEvaluator {
     public override System.Type EvaluatorType {
       get { return typeof(SumSquaresEvaluator); }
     }
 
     [StorableConstructor]
-    protected SumSquaresAdditiveMoveEvaluator(bool deserializing) : base(deserializing) { }
+    protected SumSquaresAdditiveMoveEvaluator(StorableConstructorFlag _) : base(_) { }
     protected SumSquaresAdditiveMoveEvaluator(SumSquaresAdditiveMoveEvaluator original, Cloner cloner) : base(original, cloner) { }
     public SumSquaresAdditiveMoveEvaluator() : base() { }
 

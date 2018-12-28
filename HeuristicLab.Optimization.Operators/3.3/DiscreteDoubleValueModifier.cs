@@ -24,14 +24,14 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Optimization.Operators {
   /// <summary>
   /// Base class for modifying a double value according to a certain function in discrete intervalls.
   /// </summary>
   [Item("DiscreteDoubleValueModifier", "Base class for modifying a double value according to a certain function in discrete intervalls.")]
-  [StorableClass]
+  [StorableType("C1FCC849-93B7-49FA-A5B4-D1F24031A795")]
   public abstract class DiscreteDoubleValueModifier : SingleSuccessorOperator, IDiscreteDoubleValueModifier {
     #region parameter properties
     /// <summary>
@@ -72,7 +72,7 @@ namespace HeuristicLab.Optimization.Operators {
     }
     #endregion
     [StorableConstructor]
-    protected DiscreteDoubleValueModifier(bool deserializing) : base(deserializing) { }
+    protected DiscreteDoubleValueModifier(StorableConstructorFlag _) : base(_) { }
     protected DiscreteDoubleValueModifier(DiscreteDoubleValueModifier original, Cloner cloner) : base(original, cloner) { }
     /// <summary>
     /// Initializes a new instance of <see cref="DiscreteDoubleValueModifier"/> with 6 parameters

@@ -26,12 +26,12 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   [Item("RealVectorParticleCreator", "Creates a particle with position, zero velocity vector and personal best.")]
-  [StorableClass]
+  [StorableType("C2C2600B-BB18-4A97-960C-74C9303D2A33")]
   [NonDiscoverableType]
   [Obsolete("Use SPSOParticleCreator")]
   internal class RealVectorParticleCreator : AlgorithmOperator, IRealVectorParticleCreator {
@@ -68,7 +68,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
 
     #region Construction & Cloning
     [StorableConstructor]
-    protected RealVectorParticleCreator(bool deserializing) : base(deserializing) { }
+    protected RealVectorParticleCreator(StorableConstructorFlag _) : base(_) { }
     protected RealVectorParticleCreator(RealVectorParticleCreator original, Cloner cloner) : base(original, cloner) { }
     public RealVectorParticleCreator()
       : base() {

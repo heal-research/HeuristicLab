@@ -25,13 +25,13 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
   /// <summary>
   /// Represents a nearest neighbour model for regression and classification
   /// </summary>
-  [StorableClass]
+  [StorableType("B9F8A753-B102-4356-8821-76E31634A0C6")]
   [Item("SymbolicNearestNeighbourClassificationModel", "Represents a nearest neighbour model for symbolic classification.")]
   public sealed class SymbolicNearestNeighbourClassificationModel : SymbolicClassificationModel {
 
@@ -46,7 +46,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     private ClassFrequencyComparer frequencyComparer;
 
     [StorableConstructor]
-    private SymbolicNearestNeighbourClassificationModel(bool deserializing) : base(deserializing) { }
+    private SymbolicNearestNeighbourClassificationModel(StorableConstructorFlag _) : base(_) { }
     private SymbolicNearestNeighbourClassificationModel(SymbolicNearestNeighbourClassificationModel original, Cloner cloner)
       : base(original, cloner) {
       k = original.k;
@@ -142,13 +142,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     }
   }
 
-  [StorableClass]
+  [StorableType("523AFB5D-3758-4547-BD6E-1181A01A02B4")]
   internal sealed class ClassFrequencyComparer : IComparer<double> {
     [Storable]
     private readonly Dictionary<double, int> classFrequencies;
 
     [StorableConstructor]
-    private ClassFrequencyComparer(bool deserializing) { }
+    private ClassFrequencyComparer(StorableConstructorFlag _) { }
     public ClassFrequencyComparer() {
       classFrequencies = new Dictionary<double, int>();
     }

@@ -26,11 +26,11 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Algorithms.Benchmarks {
   [Item("Dhrystone", "Dhrystone performance benchmark.")]
-  [StorableClass]
+  [StorableType("277F595A-4309-4FA6-9C9D-CD0A140D7BAB")]
   public sealed class Dhrystone : Benchmark {
     private const int Ident_1 = 0;
     private const int Ident_2 = 1;
@@ -56,7 +56,7 @@ namespace HeuristicLab.Algorithms.Benchmarks {
     private long Default_Number_Of_Runs = 10000000;
 
     [StorableConstructor]
-    private Dhrystone(bool deserializing) : base(deserializing) { }
+    private Dhrystone(StorableConstructorFlag _) : base(_) { }
     private Dhrystone(Dhrystone original, Cloner cloner) : base(original, cloner) { }
     public Dhrystone() { }
 

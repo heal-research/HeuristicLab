@@ -22,10 +22,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Collections {
-  [StorableClass]
+  [StorableType("30981E2A-09AD-49F4-964B-4C20B210116C")]
   [Serializable]
   public class BidirectionalLookup<TFirst, TSecond> {
     [Storable]
@@ -34,7 +34,7 @@ namespace HeuristicLab.Collections {
     private readonly Dictionary<TSecond, HashSet<TFirst>> secondToFirst;
 
     [StorableConstructor]
-    protected BidirectionalLookup(bool deserializing) : base() { }
+    protected BidirectionalLookup(StorableConstructorFlag _) : base() { }
     public BidirectionalLookup() {
       firstToSecond = new Dictionary<TFirst, HashSet<TSecond>>();
       secondToFirst = new Dictionary<TSecond, HashSet<TFirst>>();
@@ -188,13 +188,16 @@ namespace HeuristicLab.Collections {
     }
     #endregion
 
-    [StorableClass]
+    [StorableType("AF0C6143-9031-43CF-8952-49FE8089ACD2")]
     private class StorableGrouping<TKey, TValue> : IGrouping<TKey, TValue> {
 
       [Storable]
       private readonly TKey key;
       [Storable]
       private readonly HashSet<TValue> values;
+
+      [StorableConstructor]
+      protected StorableGrouping(StorableConstructorFlag _) : base() { }
 
       public StorableGrouping(TKey key, IEnumerable<TValue> values, IEqualityComparer<TValue> comparer) {
         this.key = key;

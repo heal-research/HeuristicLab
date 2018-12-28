@@ -23,11 +23,11 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
   [Item("Symbolic Classification Problem (single-objective)", "Represents a single objective symbolic classfication problem.")]
-  [StorableClass]
+  [StorableType("9C6166E7-9F34-403B-8654-22FFC77A2CAE")]
   [Creatable(CreatableAttribute.Categories.GeneticProgrammingProblems, Priority = 120)]
   public class SymbolicClassificationSingleObjectiveProblem : SymbolicDataAnalysisSingleObjectiveProblem<IClassificationProblemData, ISymbolicClassificationSingleObjectiveEvaluator, ISymbolicDataAnalysisSolutionCreator>, IClassificationProblem {
     private const double PunishmentFactor = 10;
@@ -54,7 +54,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     }
     #endregion
     [StorableConstructor]
-    protected SymbolicClassificationSingleObjectiveProblem(bool deserializing) : base(deserializing) { }
+    protected SymbolicClassificationSingleObjectiveProblem(StorableConstructorFlag _) : base(_) { }
     protected SymbolicClassificationSingleObjectiveProblem(SymbolicClassificationSingleObjectiveProblem original, Cloner cloner)
       : base(original, cloner) {
       RegisterEventHandlers();

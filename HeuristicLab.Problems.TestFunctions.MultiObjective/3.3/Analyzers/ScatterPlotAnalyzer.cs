@@ -25,10 +25,10 @@ using HeuristicLab.Core;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
-  [StorableClass]
+  [StorableType("720E2726-7F31-4425-B478-327D24BA2FF3")]
   [Item("ScatterPlotAnalyzer", "Creates a Scatterplot for the current and the best known front (see Multi-Objective Performance Metrics - Shodhganga for more information)")]
   public class ScatterPlotAnalyzer : MOTFAnalyzer {
 
@@ -42,7 +42,7 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
 
 
     [StorableConstructor]
-    protected ScatterPlotAnalyzer(bool deserializing) : base(deserializing) { }
+    protected ScatterPlotAnalyzer(StorableConstructorFlag _) : base(_) { }
     protected ScatterPlotAnalyzer(ScatterPlotAnalyzer original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new ScatterPlotAnalyzer(this, cloner);

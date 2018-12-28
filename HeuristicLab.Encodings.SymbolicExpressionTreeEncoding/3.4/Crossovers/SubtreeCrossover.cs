@@ -26,7 +26,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
@@ -37,7 +37,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   /// until a valid configuration is found.
   /// </summary>  
   [Item("SubtreeSwappingCrossover", "An operator which performs subtree swapping crossover.")]
-  [StorableClass]
+  [StorableType("2A2552C0-11C8-4F60-90B2-5FDDD3AB2444")]
   public class SubtreeCrossover : SymbolicExpressionTreeCrossover, ISymbolicExpressionTreeSizeConstraintOperator {
     private const string InternalCrossoverPointProbabilityParameterName = "InternalCrossoverPointProbability";
     private const string MaximumSymbolicExpressionTreeLengthParameterName = "MaximumSymbolicExpressionTreeLength";
@@ -66,7 +66,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
     #endregion
     [StorableConstructor]
-    protected SubtreeCrossover(bool deserializing) : base(deserializing) { }
+    protected SubtreeCrossover(StorableConstructorFlag _) : base(_) { }
     protected SubtreeCrossover(SubtreeCrossover original, Cloner cloner) : base(original, cloner) { }
     public SubtreeCrossover()
       : base() {

@@ -29,18 +29,18 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.IntegerVectorEncoding;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.GrammaticalEvolution {
   /// <summary>
   /// DepthFirstMapper
   /// </summary>
   [Item("DepthFirstMapper", "Resolves the non-terminal symbols of the resulting phenotypic syntax tree in a depth-first manner.")]
-  [StorableClass]
+  [StorableType("9FACB397-FB99-4858-8962-DBB1FE16C54B")]
   public class DepthFirstMapper : GenotypeToPhenotypeMapper {
 
     [StorableConstructor]
-    protected DepthFirstMapper(bool deserializing) : base(deserializing) { }
+    protected DepthFirstMapper(StorableConstructorFlag _) : base(_) { }
     protected DepthFirstMapper(DepthFirstMapper original, Cloner cloner) : base(original, cloner) { }
     public DepthFirstMapper() : base() { }
 

@@ -25,12 +25,12 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [Item("NcaInitializer", "Base class for initializers for NCA.")]
-  [StorableClass]
+  [StorableType("165FEA5C-173F-46E3-AA38-16E125367094")]
   public abstract class NcaInitializer : SingleSuccessorOperator, INcaInitializer {
 
     public ILookupParameter<IClassificationProblemData> ProblemDataParameter {
@@ -44,7 +44,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     [StorableConstructor]
-    protected NcaInitializer(bool deserializing) : base(deserializing) { }
+    protected NcaInitializer(StorableConstructorFlag _) : base(_) { }
     protected NcaInitializer(NcaInitializer original, Cloner cloner) : base(original, cloner) { }
     public NcaInitializer() {
       Parameters.Add(new LookupParameter<IClassificationProblemData>("ProblemData", "The classification problem data."));

@@ -24,14 +24,14 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Operators {
   /// <summary>
   /// Mixes the sub scopes of a specified scope according to a specified number of partitions.
   /// </summary>
   [Item("SubScopesMixer", "Changes the order of the sub-scopes by repartitioning the sub-scopes such that each new partition contains one scope from each old partition.")]
-  [StorableClass]
+  [StorableType("B69AE39A-B6E9-4ADB-94B4-77E172691D13")]
   public class SubScopesMixer : SingleSuccessorOperator {
     public ValueParameter<IntValue> PartitionsParameter {
       get { return (ValueParameter<IntValue>)Parameters["Partitions"]; }
@@ -43,7 +43,7 @@ namespace HeuristicLab.Operators {
     }
 
     [StorableConstructor]
-    protected SubScopesMixer(bool deserializing) : base(deserializing) { }
+    protected SubScopesMixer(StorableConstructorFlag _) : base(_) { }
     protected SubScopesMixer(SubScopesMixer original, Cloner cloner)
       : base(original, cloner) {
     }

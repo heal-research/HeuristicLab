@@ -28,11 +28,11 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   [Item("SymbolicRegressionPhenotypicDiversityAnalyzer", "An analyzer which calculates diversity based on the phenotypic distance between trees")]
-  [StorableClass]
+  [StorableType("A72624D2-6628-45E6-8EBF-4AAD88CC01F5")]
   public class SymbolicRegressionPhenotypicDiversityAnalyzer : PopulationSimilarityAnalyzer,
     ISymbolicDataAnalysisBoundedOperator, ISymbolicDataAnalysisInterpreterOperator, ISymbolicExpressionTreeAnalyzer {
     #region parameter names
@@ -76,8 +76,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     }
 
     [StorableConstructor]
-    protected SymbolicRegressionPhenotypicDiversityAnalyzer(bool deserializing)
-      : base(deserializing) {
+    protected SymbolicRegressionPhenotypicDiversityAnalyzer(StorableConstructorFlag _) : base(_) {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {

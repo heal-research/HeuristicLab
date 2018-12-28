@@ -26,14 +26,14 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Problems.VehicleRouting.ProblemInstances;
 using HeuristicLab.Problems.VehicleRouting.Variants;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("IterativeInsertionCreator", "Creates a randomly initialized VRP solution.")]
-  [StorableClass]
+  [StorableType("7504083B-79FC-441C-BE32-DAFCB9E81448")]
   public sealed class IterativeInsertionCreator : PotvinCreator, IStochasticOperator {
     #region IStochasticOperator Members
     public ILookupParameter<IRandom> RandomParameter {
@@ -46,7 +46,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
     }
 
     [StorableConstructor]
-    private IterativeInsertionCreator(bool deserializing) : base(deserializing) { }
+    private IterativeInsertionCreator(StorableConstructorFlag _) : base(_) { }
 
     public IterativeInsertionCreator()
       : base() {

@@ -24,11 +24,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Optimization {
   [Item("TerminationOperator", "An operator which either calls the terminate- or the continue branch.")]
-  [StorableClass]
+  [StorableType("FD4B77FF-4C9D-45D9-8CDF-F5F5EE2664F7")]
   public sealed class TerminationOperator : InstrumentedOperator, ITerminationBasedOperator {
     public ILookupParameter<ITerminator> TerminatorParameter {
       get { return (ILookupParameter<ITerminator>)Parameters["Terminator"]; }
@@ -53,7 +53,7 @@ namespace HeuristicLab.Optimization {
     }
 
     [StorableConstructor]
-    private TerminationOperator(bool deserializing) : base(deserializing) { }
+    private TerminationOperator(StorableConstructorFlag _) : base(_) { }
     private TerminationOperator(TerminationOperator original, Cloner cloner)
       : base(original, cloner) {
     }

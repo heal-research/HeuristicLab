@@ -22,19 +22,19 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.VehicleRouting.Variants;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
   [Item("MultiVRPMoveMaker", "Peforms a lambda interchange moves on a given VRP encoding and updates the quality.")]
-  [StorableClass]
+  [StorableType("E0D91D91-A8CC-459D-9D65-180D507A75AD")]
   public class MultiVRPMoveMaker : VRPMoveMaker, IMultiVRPMoveOperator, IGeneralVRPOperator {
     public override ILookupParameter VRPMoveParameter {
       get { return (ILookupParameter)Parameters["VRPMove"]; }
     }
 
     [StorableConstructor]
-    protected MultiVRPMoveMaker(bool deserializing) : base(deserializing) { }
+    protected MultiVRPMoveMaker(StorableConstructorFlag _) : base(_) { }
 
     public MultiVRPMoveMaker()
       : base() {

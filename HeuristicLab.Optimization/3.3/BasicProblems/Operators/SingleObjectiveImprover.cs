@@ -27,11 +27,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Optimization {
   [Item("Single-objective Improver", "Improves a solution by calling GetNeighbors and Evaluate of the corresponding problem definition.")]
-  [StorableClass]
+  [StorableType("7A917E09-920C-4B47-9599-67371101B35F")]
   public sealed class SingleObjectiveImprover : SingleSuccessorOperator, INeighborBasedOperator, IImprovementOperator, ISingleObjectiveEvaluationOperator, IStochasticOperator {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
@@ -65,7 +65,7 @@ namespace HeuristicLab.Optimization {
     public Func<Individual, IRandom, IEnumerable<Individual>> GetNeighborsFunc { get; set; }
 
     [StorableConstructor]
-    private SingleObjectiveImprover(bool deserializing) : base(deserializing) { }
+    private SingleObjectiveImprover(StorableConstructorFlag _) : base(_) { }
     private SingleObjectiveImprover(SingleObjectiveImprover original, Cloner cloner) : base(original, cloner) { }
     public SingleObjectiveImprover() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator to use."));

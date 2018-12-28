@@ -27,14 +27,14 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis {
   [Item("Dataset", "Represents a dataset containing data that should be analyzed.")]
-  [StorableClass]
+  [StorableType("49F4D145-50D7-4497-8D8A-D190CD556CC8")]
   public class Dataset : NamedItem, IDataset {
     [StorableConstructor]
-    protected Dataset(bool deserializing) : base(deserializing) { }
+    protected Dataset(StorableConstructorFlag _) : base(_) { }
     protected Dataset(Dataset original, Cloner cloner)
       : base(original, cloner) {
       // no need to clone the variable values because these can't be modified

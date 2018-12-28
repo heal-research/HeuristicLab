@@ -22,7 +22,7 @@
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   /// <summary>
@@ -32,10 +32,10 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
   /// It is implemented as described in Syswerda, G. (1991). Schedule Optimization Using Genetic Algorithms. In Davis, L. (Ed.) Handbook of Genetic Algorithms, Van Nostrand Reinhold, New York, pp 332-349.
   /// </remarks>
   [Item("ScrambleManipulator", "An operator which manipulates a permutation array by randomly scrambling the elements in a randomly chosen interval. It is implemented as described in Syswerda, G. (1991). Schedule Optimization Using Genetic Algorithms. In Davis, L. (Ed.) Handbook of Genetic Algorithms, Van Nostrand Reinhold, New York, pp 332-349.")]
-  [StorableClass]
+  [StorableType("C324E297-C54E-4A18-BF41-3F0EF9595762")]
   public class ScrambleManipulator : PermutationManipulator {
     [StorableConstructor]
-    protected ScrambleManipulator(bool deserializing) : base(deserializing) { }
+    protected ScrambleManipulator(StorableConstructorFlag _) : base(_) { }
     protected ScrambleManipulator(ScrambleManipulator original, Cloner cloner) : base(original, cloner) { }
     public ScrambleManipulator() : base() { }
 

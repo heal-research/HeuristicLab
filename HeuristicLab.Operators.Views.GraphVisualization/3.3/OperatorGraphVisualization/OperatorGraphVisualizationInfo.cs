@@ -26,10 +26,10 @@ using System.Linq;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Operators.Views.GraphVisualization {
-  [StorableClass]
+  [StorableType("24376FA2-D635-4E10-85CC-FFE57C0788F9")]
   public sealed class OperatorGraphVisualizationInfo : GraphVisualizationInfo {
     [Storable]
     private BidirectionalLookup<IOperator, IOperatorShapeInfo> operatorShapeInfoMapping;
@@ -44,8 +44,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
     }
 
     [StorableConstructor]
-    private OperatorGraphVisualizationInfo(bool deserializing)
-      : base(deserializing) {
+    private OperatorGraphVisualizationInfo(StorableConstructorFlag _) : base(_) {
       this.operatorParameterCollectionMapping = new BidirectionalLookup<IOperator, IKeyedItemCollection<string, IParameter>>();
       this.parameterOperatorMapping = new Dictionary<IParameter, IOperator>();
     }

@@ -27,15 +27,15 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.Binary {
   [Item("Deceptive Trap Problem", "Genome encodes completely separable blocks, where each block is fully deceptive.")]
-  [StorableClass]
+  [StorableType("399FFE01-2B76-4DBF-B363-8BB65FE95A5D")]
   [Creatable(CreatableAttribute.Categories.CombinatorialProblems, Priority = 230)]
   public class DeceptiveTrapProblem : BinaryProblem {
     [StorableConstructor]
-    protected DeceptiveTrapProblem(bool deserializing) : base(deserializing) { }
+    protected DeceptiveTrapProblem(StorableConstructorFlag _) : base(_) { }
     protected DeceptiveTrapProblem(DeceptiveTrapProblem original, Cloner cloner)
       : base(original, cloner) {
     }

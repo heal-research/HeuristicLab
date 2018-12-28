@@ -25,10 +25,10 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
-  [StorableClass]
+  [StorableType("709D0C3B-EFDC-4113-B009-E0CE95A835F6")]
   // base class for GaussianProcessModelCreators (specific for classification and regression)
   public abstract class GaussianProcessModelCreator : SingleSuccessorOperator {
     private const string HyperparameterParameterName = "Hyperparameter";
@@ -77,7 +77,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     #endregion
 
     [StorableConstructor]
-    protected GaussianProcessModelCreator(bool deserializing) : base(deserializing) { }
+    protected GaussianProcessModelCreator(StorableConstructorFlag _) : base(_) { }
     protected GaussianProcessModelCreator(GaussianProcessModelCreator original, Cloner cloner) : base(original, cloner) { }
     protected GaussianProcessModelCreator()
       : base() {

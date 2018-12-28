@@ -24,14 +24,14 @@ using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Core {
   /// <summary>
   /// Represents a collection of checked items.
   /// </summary>
   /// <typeparam name="T">The element type (base type IItem)</typeparam>
-  [StorableClass]
+  [StorableType("CAD59659-15B5-4CB0-A199-272E28F40832")]
   [Item("CheckedItemCollection", "Represents a collection of items that can be checked or unchecked.")]
   public class CheckedItemCollection<T> : ItemCollection<T>, ICheckedItemCollection<T> where T : class, IItem {
     [Storable]
@@ -49,7 +49,7 @@ namespace HeuristicLab.Core {
     /// </summary>
     /// <param name="deserializing"></param>
     [StorableConstructor]
-    protected CheckedItemCollection(bool deserializing) : base(deserializing) { }
+    protected CheckedItemCollection(StorableConstructorFlag _) : base(_) { }
     protected CheckedItemCollection(CheckedItemCollection<T> original, Cloner cloner)
       : base(original, cloner) {
       list = new List<T>(original.Select(x => cloner.Clone(x)));

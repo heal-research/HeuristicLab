@@ -25,13 +25,13 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Problems.VehicleRouting.Variants;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinPDShiftTabuCriterion", @"Checks if a certain shift move is tabu.")]
-  [StorableClass]
+  [StorableType("1A782EF0-0FC4-4C97-BEB7-5A6855785E5A")]
   public class PotvinPDShiftTabuCriterion : SingleSuccessorOperator, IPotvinPDShiftMoveOperator, ITabuChecker, IPotvinOperator, IVRPMoveOperator {
     public override bool CanChangeName {
       get { return false; }
@@ -82,7 +82,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
     }
 
     [StorableConstructor]
-    protected PotvinPDShiftTabuCriterion(bool deserializing) : base(deserializing) { }
+    protected PotvinPDShiftTabuCriterion(StorableConstructorFlag _) : base(_) { }
     protected PotvinPDShiftTabuCriterion(PotvinPDShiftTabuCriterion original, Cloner cloner) : base(original, cloner) { }
     public PotvinPDShiftTabuCriterion()
       : base() {

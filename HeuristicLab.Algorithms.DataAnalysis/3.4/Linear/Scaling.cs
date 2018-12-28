@@ -24,18 +24,18 @@ using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [Obsolete("Use transformation classes in Problems.DataAnalysis instead")]
-  [StorableClass]
+  [StorableType("52EABC0F-B8D2-4ADD-ACC2-C825D3F1D6F3")]
   [Item(Name = "Scaling", Description = "Contains information about scaling of variables for data-analysis algorithms.")]
   public class Scaling : Item {
     [Storable]
     private Dictionary<string, Tuple<double, double>> scalingParameters = new Dictionary<string, Tuple<double, double>>();
     [StorableConstructor]
-    protected Scaling(bool deserializing) : base(deserializing) { }
+    protected Scaling(StorableConstructorFlag _) : base(_) { }
     protected Scaling(Scaling original, Cloner cloner)
       : base(original, cloner) {
       foreach (var pair in original.scalingParameters)

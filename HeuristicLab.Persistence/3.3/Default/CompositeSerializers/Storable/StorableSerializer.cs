@@ -25,6 +25,7 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Text;
+using HEAL.Fossil;
 using HeuristicLab.Persistence.Core;
 using HeuristicLab.Persistence.Interfaces;
 
@@ -48,7 +49,7 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
     }
 
     [StorableConstructor]
-    private StorableSerializer(bool deserializing) : this() { }
+    private StorableSerializer(StorableConstructorFlag _) { }
 
     #region ICompositeSerializer implementation
 
@@ -68,7 +69,7 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
     /// 	<c>true</c> if this instance can serialize the specified type; otherwise, <c>false</c>.
     /// </returns>
     public bool CanSerialize(Type type) {
-      var markedStorable = StorableReflection.HasStorableClassAttribute(type);
+      var markedStorable = StorableReflection.HasStorableTypeAttribute(type);
       if (GetConstructor(type) == null)
         if (markedStorable)
           throw new Exception("[Storable] type has no default constructor and no [StorableConstructor]");
@@ -239,11 +240,12 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
         .GetConstructors(ALL_CONSTRUCTORS)
         .Where(ci => ci.GetCustomAttributes(typeof(StorableConstructorAttribute), false).Length > 0)) {
         if (ci.GetParameters().Length != 1 ||
-            ci.GetParameters()[0].ParameterType != typeof(bool))
-          throw new PersistenceException("StorableConstructor must have exactly one argument of type bool");
+            ci.GetParameters()[0].ParameterType != typeof(StorableConstructorFlag))
+          throw new PersistenceException("StorableConstructor must have exactly one argument of type StorableConstructorFlag");
         var dm = new DynamicMethod("", typeof(object), null, type, true);
         var ilgen = dm.GetILGenerator();
-        ilgen.Emit(OpCodes.Ldc_I4_1); // load true
+        var defaultFlagFieldInfo = typeof(StorableConstructorFlag).GetField("Default", BindingFlags.Static | BindingFlags.Public);
+        ilgen.Emit(OpCodes.Ldsfld, defaultFlagFieldInfo); // load the object
         ilgen.Emit(OpCodes.Newobj, ci);
         ilgen.Emit(OpCodes.Ret);
         return (Constructor)dm.CreateDelegate(typeof(Constructor));

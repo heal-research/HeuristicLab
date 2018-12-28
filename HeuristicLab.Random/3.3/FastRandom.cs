@@ -1,7 +1,7 @@
 ﻿using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Random {
   /// <summary>
@@ -42,7 +42,7 @@ namespace HeuristicLab.Random {
   ///   adapted for HeuristicLab by gkronber (cloning, persistence, IRandom interface)
   ///   
   /// </summary>
-  [StorableClass]
+  [StorableType("BC86BFF3-80B5-4C77-9D8C-B29576032634")]
   public sealed class FastRandom : Item, IRandom {
     // The +1 ensures NextDouble doesn't generate 1.0
     private const double REAL_UNIT_INT = 1.0 / ((double)int.MaxValue + 1.0);
@@ -58,7 +58,7 @@ namespace HeuristicLab.Random {
     /// </summary>
     /// <param name="deserializing">true, if the constructor is called during deserialization.</param>
     [StorableConstructor]
-    private FastRandom(bool deserializing) : base(deserializing) { }
+    private FastRandom(StorableConstructorFlag _) : base(_) { }
 
     /// <summary>
     /// Initializes a new instance from an existing one (copy constructor).

@@ -23,18 +23,18 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaPermutationCrossover", "An operator which crosses two VRP representations using a standard permutation operator.  It is implemented as described in Alba, E. and Dorronsoro, B. (2004). Solving the Vehicle Routing Problem by Using Cellular Genetic Algorithms.")]
-  [StorableClass]
+  [StorableType("E97C3448-E2DD-4BD6-B15B-F8AFF77FF03F")]
   public sealed class AlbaPermutationCrossover : AlbaCrossover {
     public IValueLookupParameter<IPermutationCrossover> InnerCrossoverParameter {
       get { return (IValueLookupParameter<IPermutationCrossover>)Parameters["InnerCrossover"]; }
     }
 
     [StorableConstructor]
-    private AlbaPermutationCrossover(bool deserializing) : base(deserializing) { }
+    private AlbaPermutationCrossover(StorableConstructorFlag _) : base(_) { }
 
     public AlbaPermutationCrossover()
       : base() {

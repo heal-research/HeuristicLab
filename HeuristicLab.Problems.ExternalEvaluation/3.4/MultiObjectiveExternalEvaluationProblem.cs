@@ -30,12 +30,12 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.ExternalEvaluation {
   [Item("External Evaluation Problem (multi-objective)", "A multi-objective problem that is evaluated in a different process.")]
   [Creatable(CreatableAttribute.Categories.ExternalEvaluationProblems, Priority = 200)]
-  [StorableClass]
+  [StorableType("CCA50199-A6AB-4C84-B4FA-0262CAF416EC")]
   public class MultiObjectiveExternalEvaluationProblem : MultiObjectiveBasicProblem<IEncoding>, IExternalEvaluationProblem {
 
     public static new Image StaticItemImage {
@@ -84,7 +84,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     #endregion
 
     [StorableConstructor]
-    protected MultiObjectiveExternalEvaluationProblem(bool deserializing) : base(deserializing) { }
+    protected MultiObjectiveExternalEvaluationProblem(StorableConstructorFlag _) : base(_) { }
     protected MultiObjectiveExternalEvaluationProblem(MultiObjectiveExternalEvaluationProblem original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new MultiObjectiveExternalEvaluationProblem(this, cloner);

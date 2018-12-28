@@ -21,11 +21,11 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("ThreeIndexMove", "A move on a permutation that is specified by 3 indices.")]
-  [StorableClass]
+  [StorableType("0F9A8E7D-0198-4FBF-B6BA-D1B537F4B4D9")]
   public class ThreeIndexMove : Item {
     [Storable]
     public int Index1 { get; protected set; }
@@ -37,7 +37,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     public Permutation Permutation { get; protected set; }
 
     [StorableConstructor]
-    protected ThreeIndexMove(bool deserializing) : base(deserializing) { }
+    protected ThreeIndexMove(StorableConstructorFlag _) : base(_) { }
     protected ThreeIndexMove(ThreeIndexMove original, Cloner cloner)
       : base(original, cloner) {
       this.Index1 = original.Index1;

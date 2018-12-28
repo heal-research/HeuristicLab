@@ -26,14 +26,14 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.TravelingSalesman {
   /// <summary>
   /// An operator for analyzing the frequency of alleles in solutions of Traveling Salesman Problems given in path representation.
   /// </summary>
   [Item("TSPAlleleFrequencyAnalyzer", "An operator for analyzing the frequency of alleles in solutions of Traveling Salesman Problems given in path representation.")]
-  [StorableClass]
+  [StorableType("C1BBEC5A-27EF-4882-AEC6-0919FC2EF1DB")]
   public sealed class TSPAlleleFrequencyAnalyzer : AlleleFrequencyAnalyzer<Permutation> {
     public LookupParameter<DoubleMatrix> CoordinatesParameter {
       get { return (LookupParameter<DoubleMatrix>)Parameters["Coordinates"]; }
@@ -43,7 +43,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     }
 
     [StorableConstructor]
-    private TSPAlleleFrequencyAnalyzer(bool deserializing) : base(deserializing) { }
+    private TSPAlleleFrequencyAnalyzer(StorableConstructorFlag _) : base(_) { }
     private TSPAlleleFrequencyAnalyzer(TSPAlleleFrequencyAnalyzer original, Cloner cloner) : base(original, cloner) { }
     public TSPAlleleFrequencyAnalyzer()
       : base() {

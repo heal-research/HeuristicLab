@@ -20,17 +20,16 @@
 #endregion
 
 using System;
-using System.Threading;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Parameters {
   /// <summary>
   /// A parameter which represents the current scope.
   /// </summary>
   [Item("ScopeParameter", "A parameter which represents the current scope.")]
-  [StorableClass]
+  [StorableType("6A25C2F9-B184-4870-88B4-C16BF8534BD4")]
   public class ScopeParameter : LookupParameter<IScope> {
     public new IScope ActualValue {
       get { return ExecutionContext.Scope; }
@@ -38,7 +37,7 @@ namespace HeuristicLab.Parameters {
 
 
     [StorableConstructor]
-    protected ScopeParameter(bool deserializing) : base(deserializing) { }
+    protected ScopeParameter(StorableConstructorFlag _) : base(_) { }
     protected ScopeParameter(ScopeParameter original, Cloner cloner) : base(original, cloner) { }
     public ScopeParameter()
       : base("Anonymous") {

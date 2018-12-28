@@ -25,10 +25,10 @@ using System.Drawing;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
-  [StorableClass]
+  [StorableType("E98BB36B-FBB5-4A6C-A2E5-D47E0BD0687B")]
   [Item("SymbolicExpressionTree", "Represents a symbolic expression tree.")]
   public class SymbolicExpressionTree : Item, ISymbolicExpressionTree {
     public static new Image StaticItemImage {
@@ -64,7 +64,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
 
     [StorableConstructor]
-    protected SymbolicExpressionTree(bool deserializing) : base(deserializing) { }
+    protected SymbolicExpressionTree(StorableConstructorFlag _) : base(_) { }
     protected SymbolicExpressionTree(SymbolicExpressionTree original, Cloner cloner)
       : base(original, cloner) {
       root = cloner.Clone(original.Root);

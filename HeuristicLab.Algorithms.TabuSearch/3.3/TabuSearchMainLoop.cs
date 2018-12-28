@@ -26,7 +26,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Selection;
 
 namespace HeuristicLab.Algorithms.TabuSearch {
@@ -34,7 +34,7 @@ namespace HeuristicLab.Algorithms.TabuSearch {
   /// An operator which represents a tabu search.
   /// </summary>
   [Item("TabuSearchMainLoop", "An operator which represents the main loop of a tabu search.")]
-  [StorableClass]
+  [StorableType("85033FBD-B9BA-4450-AA25-B1BEE1B0178D")]
   public sealed class TabuSearchMainLoop : AlgorithmOperator {
     #region Parameter properties
     public ValueLookupParameter<IRandom> RandomParameter {
@@ -88,7 +88,7 @@ namespace HeuristicLab.Algorithms.TabuSearch {
     #endregion
 
     [StorableConstructor]
-    private TabuSearchMainLoop(bool deserializing) : base(deserializing) { }
+    private TabuSearchMainLoop(StorableConstructorFlag _) : base(_) { }
     public TabuSearchMainLoop()
       : base() {
       Initialize();

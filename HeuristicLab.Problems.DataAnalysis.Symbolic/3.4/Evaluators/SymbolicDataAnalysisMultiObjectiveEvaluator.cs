@@ -25,10 +25,10 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
-  [StorableClass]
+  [StorableType("52726BA1-6041-4D61-9266-3EB128A04057")]
   public abstract class SymbolicDataAnalysisMultiObjectiveEvaluator<T> : SymbolicDataAnalysisEvaluator<T>, ISymbolicDataAnalysisMultiObjectiveEvaluator<T>
    where T : class, IDataAnalysisProblemData {
     private const string QualitiesParameterName = "Qualities";
@@ -39,7 +39,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public abstract IEnumerable<bool> Maximization { get; }
 
     [StorableConstructor]
-    protected SymbolicDataAnalysisMultiObjectiveEvaluator(bool deserializing) : base(deserializing) { }
+    protected SymbolicDataAnalysisMultiObjectiveEvaluator(StorableConstructorFlag _) : base(_) { }
     protected SymbolicDataAnalysisMultiObjectiveEvaluator(SymbolicDataAnalysisMultiObjectiveEvaluator<T> original, Cloner cloner)
       : base(original, cloner) {
     }

@@ -24,14 +24,14 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Selection {
   /// <summary>
   /// A base class for reduction operators.
   /// </summary>
   [Item("Reducer", "A base class for reduction operators.")]
-  [StorableClass]
+  [StorableType("ADEA7125-A5E1-4A26-AE05-9DE900B9BE5C")]
   public abstract class Reducer : SingleSuccessorOperator {
     protected ScopeParameter CurrentScopeParameter {
       get { return (ScopeParameter)Parameters["CurrentScope"]; }
@@ -42,7 +42,7 @@ namespace HeuristicLab.Selection {
     }
 
     [StorableConstructor]
-    protected Reducer(bool deserializing) : base(deserializing) { }
+    protected Reducer(StorableConstructorFlag _) : base(_) { }
     protected Reducer(Reducer original, Cloner cloner)
       : base(original, cloner) {
     }

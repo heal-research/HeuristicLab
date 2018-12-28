@@ -27,7 +27,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
 using HeuristicLab.Optimization.Operators;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.Knapsack {
   /// <summary>
@@ -37,10 +37,10 @@ namespace HeuristicLab.Problems.Knapsack {
   /// The operator incrementally assimilates the initiating solution into the guiding solution and vice versa by adding and removing elements as needed.
   /// </remarks>
   [Item("KnapsackSimultaneousPathRelinker", "An operator that relinks paths between knapsack solutions starting from both ends. The operator incrementally assimilates the initiating solution into the guiding solution and vice versa by adding and removing elements as needed.")]
-  [StorableClass]
+  [StorableType("8D046D17-BA0F-4974-AF76-95B3F90FB7A4")]
   public sealed class KnapsackSimultaneousPathRelinker : SingleObjectivePathRelinker {
     [StorableConstructor]
-    private KnapsackSimultaneousPathRelinker(bool deserializing) : base(deserializing) { }
+    private KnapsackSimultaneousPathRelinker(StorableConstructorFlag _) : base(_) { }
     private KnapsackSimultaneousPathRelinker(KnapsackSimultaneousPathRelinker original, Cloner cloner) : base(original, cloner) { }
     public KnapsackSimultaneousPathRelinker() : base() { }
 

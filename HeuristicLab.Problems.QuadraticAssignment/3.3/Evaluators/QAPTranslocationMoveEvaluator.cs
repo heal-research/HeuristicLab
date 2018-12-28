@@ -25,11 +25,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.QuadraticAssignment {
   [Item("QAPTranslocationMoveEvaluator", "Evaluates translocation moves on a QAP solution.")]
-  [StorableClass]
+  [StorableType("0B1B33E0-7F88-485C-8E00-79FBB266CE4E")]
   public class QAPTranslocationMoveEvaluator : QAPMoveEvaluator, IPermutationTranslocationMoveOperator {
 
     public ILookupParameter<TranslocationMove> TranslocationMoveParameter {
@@ -37,7 +37,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
     }
 
     [StorableConstructor]
-    protected QAPTranslocationMoveEvaluator(bool deserializing) : base(deserializing) { }
+    protected QAPTranslocationMoveEvaluator(StorableConstructorFlag _) : base(_) { }
     protected QAPTranslocationMoveEvaluator(QAPTranslocationMoveEvaluator original, Cloner cloner)
       : base(original, cloner) {
     }

@@ -21,11 +21,11 @@
 
 using System;
 using HeuristicLab.Common;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Core {
   [Item("NamedItem", "Base class for items which have a name and an optional description.")]
-  [StorableClass]
+  [StorableType("7492EDE5-CA7C-45D5-B5CE-8709BFAC9239")]
   public abstract class NamedItem : Item, INamedItem {
     [Storable]
     protected string name;
@@ -66,7 +66,7 @@ namespace HeuristicLab.Core {
     }
 
     [StorableConstructor]
-    protected NamedItem(bool deserializing) : base(deserializing) { }
+    protected NamedItem(StorableConstructorFlag _) : base(_) { }
     protected NamedItem(NamedItem original, Cloner cloner)
       : base(original, cloner) {
       name = original.name;

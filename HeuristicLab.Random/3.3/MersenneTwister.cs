@@ -34,14 +34,14 @@
 using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Random {
   /// <summary>
   /// A 623-Dimensionally Equidistributed Uniform Pseudo-Random Number Generator.
   /// </summary>
   [Item("MersenneTwister", "A high-quality pseudo random number generator which creates uniformly distributed random numbers.")]
-  [StorableClass]
+  [StorableType("107BE400-46D0-4CD6-BE80-46F40B6AB148")]
   public sealed class MersenneTwister : Item, IRandom {
     private const int n = 624, m = 397;
 
@@ -58,7 +58,7 @@ namespace HeuristicLab.Random {
     /// </summary>
     /// <param name="deserializing">true, if the constructor is called during deserialization.</param>
     [StorableConstructor]
-    private MersenneTwister(bool deserializing) : base(deserializing) { }
+    private MersenneTwister(StorableConstructorFlag _) : base(_) { }
     /// <summary>
     /// Initializes a new instance from an existing one (copy constructor).
     /// </summary>

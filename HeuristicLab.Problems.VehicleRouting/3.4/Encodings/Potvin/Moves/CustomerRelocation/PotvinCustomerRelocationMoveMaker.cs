@@ -24,13 +24,13 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Problems.VehicleRouting.ProblemInstances;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinCustomerRelocationMoveMaker", "Peforms the customer relocation move on a given VRP encoding and updates the quality.")]
-  [StorableClass]
+  [StorableType("B79B87F4-A39A-4618-BD0C-E1D40E821152")]
   public class PotvinCustomerRelocationMoveMaker : PotvinMoveMaker, IPotvinCustomerRelocationMoveOperator, IMoveMaker {
     public ILookupParameter<PotvinCustomerRelocationMove> CustomerRelocationMoveParameter {
       get { return (ILookupParameter<PotvinCustomerRelocationMove>)Parameters["PotvinCustomerRelocationMove"]; }
@@ -49,7 +49,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
     }
 
     [StorableConstructor]
-    protected PotvinCustomerRelocationMoveMaker(bool deserializing) : base(deserializing) { }
+    protected PotvinCustomerRelocationMoveMaker(StorableConstructorFlag _) : base(_) { }
 
     public PotvinCustomerRelocationMoveMaker()
       : base() {

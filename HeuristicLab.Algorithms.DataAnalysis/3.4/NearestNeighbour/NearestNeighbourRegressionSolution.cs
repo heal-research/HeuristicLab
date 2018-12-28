@@ -21,7 +21,7 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
@@ -29,7 +29,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// Represents a nearest neighbour solution for a regression problem which can be visualized in the GUI.
   /// </summary>
   [Item("NearestNeighbourRegressionSolution", "Represents a nearest neighbour solution for a regression problem which can be visualized in the GUI.")]
-  [StorableClass]
+  [StorableType("71C86C1A-C917-4CA4-A239-C167C1C793F8")]
   public sealed class NearestNeighbourRegressionSolution : RegressionSolution, INearestNeighbourRegressionSolution {
 
     public new INearestNeighbourModel Model {
@@ -38,7 +38,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     [StorableConstructor]
-    private NearestNeighbourRegressionSolution(bool deserializing) : base(deserializing) { }
+    private NearestNeighbourRegressionSolution(StorableConstructorFlag _) : base(_) { }
     private NearestNeighbourRegressionSolution(NearestNeighbourRegressionSolution original, Cloner cloner)
       : base(original, cloner) {
     }

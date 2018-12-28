@@ -25,10 +25,10 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
-  [StorableClass]
+  [StorableType("EC99F3C1-D8D2-4738-9523-0D07438647A5")]
   [Item("InvertedGenerationalDistanceAnalyzer", "The inverted generational distance between the current and the best known front (see Multi-Objective Performance Metrics - Shodhganga for more information)")]
   public class InvertedGenerationalDistanceAnalyzer : MOTFAnalyzer {
     public override bool EnabledByDefault { get { return false; } }
@@ -55,7 +55,7 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
 
 
     [StorableConstructor]
-    protected InvertedGenerationalDistanceAnalyzer(bool deserializing) : base(deserializing) { }
+    protected InvertedGenerationalDistanceAnalyzer(StorableConstructorFlag _) : base(_) { }
     protected InvertedGenerationalDistanceAnalyzer(InvertedGenerationalDistanceAnalyzer original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new InvertedGenerationalDistanceAnalyzer(this, cloner);

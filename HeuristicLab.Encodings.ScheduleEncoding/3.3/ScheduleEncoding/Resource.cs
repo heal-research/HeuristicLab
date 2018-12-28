@@ -22,11 +22,11 @@
 using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("ResourceClass", "Represents a resource used in scheduling problems.")]
-  [StorableClass]
+  [StorableType("32C052AF-8397-4908-8044-507509871A3F")]
   public class Resource : Item {
 
     [Storable]
@@ -41,7 +41,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
     }
 
     [StorableConstructor]
-    protected Resource(bool deserializing) : base(deserializing) { }
+    protected Resource(StorableConstructorFlag _) : base(_) { }
     protected Resource(Resource original, Cloner cloner)
       : base(original, cloner) {
       this.Index = original.Index;

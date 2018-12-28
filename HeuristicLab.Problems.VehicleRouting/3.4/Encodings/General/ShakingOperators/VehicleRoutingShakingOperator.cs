@@ -24,11 +24,10 @@ using System.Linq;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Problems.VehicleRouting.Encodings.General;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
@@ -36,7 +35,7 @@ using HeuristicLab.Problems.VehicleRouting.Variants;
 
 namespace HeuristicLab.Problems.VehicleRouting {
   [Item("VRPShakingOperator", "A shaking operator for VNS that applies available mutation operators.")]
-  [StorableClass]
+  [StorableType("1D7EAC11-693C-4CE0-A4BB-A2C67F364A95")]
   public class VehicleRoutingShakingOperator : ShakingOperator<IVRPManipulator>, IVRPMultiNeighborhoodShakingOperator, IGeneralVRPOperator, IStochasticOperator {
     #region Parameters
     public ILookupParameter<IVRPEncoding> VRPToursParameter {
@@ -58,7 +57,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
     #endregion
 
     [StorableConstructor]
-    protected VehicleRoutingShakingOperator(bool deserializing) : base(deserializing) { }
+    protected VehicleRoutingShakingOperator(StorableConstructorFlag _) : base(_) { }
     protected VehicleRoutingShakingOperator(VehicleRoutingShakingOperator original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new VehicleRoutingShakingOperator(this, cloner);

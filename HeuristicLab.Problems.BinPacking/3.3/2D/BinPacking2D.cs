@@ -22,13 +22,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Core;
 using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.BinPacking2D {
   [Item("BinPacking2D", "Represents a single-bin packing for a 2D bin-packing problem.")]
-  [StorableClass]
+  [StorableType("8B9C6AB0-ED65-4868-B1DF-09BD1F49309A")]
   public class BinPacking2D : BinPacking.BinPacking<PackingPosition, PackingShape, PackingItem> {
 
     public BinPacking2D(PackingShape binShape)
@@ -38,7 +38,7 @@ namespace HeuristicLab.Problems.BinPacking2D {
     }
 
     [StorableConstructor]
-    protected BinPacking2D(bool deserializing) : base(deserializing) { }
+    protected BinPacking2D(StorableConstructorFlag _) : base(_) { }
     protected BinPacking2D(BinPacking2D original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new BinPacking2D(this, cloner);

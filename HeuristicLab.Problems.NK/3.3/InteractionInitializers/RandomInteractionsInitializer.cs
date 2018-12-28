@@ -23,14 +23,14 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.NK {
   [Item("RandomInteractionsInitializer", "Randomly assignes interactions across all bits")]
-  [StorableClass]
+  [StorableType("ACB3BE45-DB9E-4200-95BF-D22C726B4DAE")]
   public sealed class RandomInteractionsInitializer : ParameterizedNamedItem, IInteractionInitializer {
     [StorableConstructor]
-    private RandomInteractionsInitializer(bool serializing) : base(serializing) { }
+    private RandomInteractionsInitializer(StorableConstructorFlag _) : base(_) { }
     private RandomInteractionsInitializer(RandomInteractionsInitializer original, Cloner cloner) : base(original, cloner) { }
     public RandomInteractionsInitializer() { }
     public override IDeepCloneable Clone(Cloner cloner) {

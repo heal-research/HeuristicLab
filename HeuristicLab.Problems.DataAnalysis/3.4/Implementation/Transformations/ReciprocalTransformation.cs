@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 namespace HeuristicLab.Problems.DataAnalysis {
-  [StorableClass]
+  [StorableType("8D242A5A-5EBB-4618-958E-A7EF34151508")]
   [Item("Reciprocal Transformation", "f(x) = 1 / x | Represents a reciprocal transformation.")]
   public class ReciprocalTransformation : Transformation<double> {
 
@@ -17,7 +17,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     #endregion
 
     [StorableConstructor]
-    protected ReciprocalTransformation(bool deserializing) : base(deserializing) { }
+    protected ReciprocalTransformation(StorableConstructorFlag _) : base(_) { }
     protected ReciprocalTransformation(ReciprocalTransformation original, Cloner cloner)
       : base(original, cloner) {
     }

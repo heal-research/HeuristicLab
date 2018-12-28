@@ -24,17 +24,17 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// <summary>
   /// An operator which creates a new random real vector with each element uniformly distributed in a specified range.
   /// </summary>
   [Item("UniformRandomRealVectorCreator", "An operator which creates a new random real vector with each element uniformly distributed in a specified range.")]
-  [StorableClass]
+  [StorableType("DF237BEA-D21B-4A2C-820B-47CCC998D0E1")]
   public class UniformRandomRealVectorCreator : RealVectorCreator, IStrategyParameterCreator {
     [StorableConstructor]
-    protected UniformRandomRealVectorCreator(bool deserializing) : base(deserializing) { }
+    protected UniformRandomRealVectorCreator(StorableConstructorFlag _) : base(_) { }
     protected UniformRandomRealVectorCreator(UniformRandomRealVectorCreator original, Cloner cloner) : base(original, cloner) { }
     public UniformRandomRealVectorCreator() : base() { }
 

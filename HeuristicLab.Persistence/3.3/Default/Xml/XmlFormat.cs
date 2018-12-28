@@ -19,7 +19,7 @@
  */
 #endregion
 
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Persistence.Interfaces;
 
 namespace HeuristicLab.Persistence.Default.Xml {
@@ -37,7 +37,7 @@ namespace HeuristicLab.Persistence.Default.Xml {
     public override string Name { get { return "XML"; } }
 
     [StorableConstructor]
-    protected XmlFormat(bool deserializing) : base(deserializing) { }
+    protected XmlFormat(StorableConstructorFlag _) : base(_) { }
     public XmlFormat() { }
   }
 

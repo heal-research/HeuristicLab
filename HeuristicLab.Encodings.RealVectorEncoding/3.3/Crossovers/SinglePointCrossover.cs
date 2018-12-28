@@ -22,7 +22,7 @@
 using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// <summary>
@@ -34,10 +34,10 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// It is implemented as described in Michalewicz, Z. 1999. Genetic Algorithms + Data Structures = Evolution Programs. Third, Revised and Extended Edition, Spring-Verlag Berlin Heidelberg.
   /// </remarks>
   [Item("SinglePointCrossover", "Breaks both parent chromosomes at a randomly chosen point and assembles a child by taking one part of the first parent and the other part of the second pard. It is implemented as described in Michalewicz, Z. 1999. Genetic Algorithms + Data Structures = Evolution Programs. Third, Revised and Extended Edition, Spring-Verlag Berlin Heidelberg.")]
-  [StorableClass]
+  [StorableType("008449CF-6CB0-481D-855A-80DA1F2DFC7E")]
   public class SinglePointCrossover : RealVectorCrossover {
     [StorableConstructor]
-    protected SinglePointCrossover(bool deserializing) : base(deserializing) { }
+    protected SinglePointCrossover(StorableConstructorFlag _) : base(_) { }
     protected SinglePointCrossover(SinglePointCrossover original, Cloner cloner) : base(original, cloner) { }
     public SinglePointCrossover() : base() { }
 

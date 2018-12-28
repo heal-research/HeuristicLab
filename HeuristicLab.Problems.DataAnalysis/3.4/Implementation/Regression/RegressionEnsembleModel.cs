@@ -24,13 +24,13 @@ using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis {
   /// <summary>
   /// Represents regression solutions that contain an ensemble of multiple regression models
   /// </summary>
-  [StorableClass]
+  [StorableType("202C33A2-2B7A-42E2-B3F3-BE1C9A9B5B84")]
   [Item("RegressionEnsembleModel", "A regression model that contains an ensemble of multiple regression models")]
   public sealed class RegressionEnsembleModel : RegressionModel, IRegressionEnsembleModel {
     public override IEnumerable<string> VariablesUsedForPrediction {
@@ -88,7 +88,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     [StorableConstructor]
-    private RegressionEnsembleModel(bool deserializing) : base(deserializing) { }
+    private RegressionEnsembleModel(StorableConstructorFlag _) : base(_) { }
     private RegressionEnsembleModel(RegressionEnsembleModel original, Cloner cloner)
       : base(original, cloner) {
       this.models = original.Models.Select(cloner.Clone).ToList();

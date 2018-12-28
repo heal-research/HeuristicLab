@@ -22,14 +22,14 @@
 using System;
 using System.Collections.Generic;
 using HeuristicLab.Common;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Core {
-  [StorableClass]
+  [StorableType("0BE7E71A-DA13-440F-83C3-0AD15C9E519D")]
   [Item("TypeCompatibilityConstraint", "A constraint that checks for compatible types.")]
   public class TypeCompatibilityConstraint : Constraint {
     [StorableConstructor]
-    protected TypeCompatibilityConstraint(bool deserializing) : base(deserializing) { }
+    protected TypeCompatibilityConstraint(StorableConstructorFlag _) : base(_) { }
     protected TypeCompatibilityConstraint(TypeCompatibilityConstraint original, Cloner cloner) : base(original, cloner) { }
     public TypeCompatibilityConstraint() : base() { }
     public TypeCompatibilityConstraint(IItem constrainedValue, ConstraintOperation constraintOperation, Type constraintData)

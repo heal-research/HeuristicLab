@@ -22,8 +22,10 @@
 using System;
 using System.Collections.Generic;
 using HeuristicLab.Common;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Clients.Hive {
+  [StorableType("2590428E-5F97-48EC-AE82-E2F614BEF34C")]
   public partial class Task : LightweightTask {
 
     public Task() {

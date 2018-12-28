@@ -22,14 +22,14 @@
 using System.IO;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Data {
   [Item("DirectoryValue", "Represents the path to a directory.")]
-  [StorableClass]
+  [StorableType("AFB5A3C6-7FC8-45C6-A3B9-F3B3414A4CAB")]
   public class DirectoryValue : PathValue {
     [StorableConstructor]
-    protected DirectoryValue(bool deserializing) : base(deserializing) { }
+    protected DirectoryValue(StorableConstructorFlag _) : base(_) { }
     protected DirectoryValue(DirectoryValue original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new DirectoryValue(this, cloner);

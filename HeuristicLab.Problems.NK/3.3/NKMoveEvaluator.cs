@@ -25,12 +25,12 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.NK {
 
   [Item("NKMoveEvaluator", "A base class for operators which evaluate moves on the NK Landscape.")]
-  [StorableClass]
+  [StorableType("54E33987-5AC1-4E3B-ABE7-769B009A6A76")]
   public abstract class NKMoveEvaluator : SingleSuccessorOperator, INKMoveEvaluator, IBinaryVectorMoveOperator {
 
     public ILookupParameter<DoubleValue> QualityParameter {
@@ -55,7 +55,7 @@ namespace HeuristicLab.Problems.NK {
     public ILookupParameter<DoubleValue> PParameter { get { return (ILookupParameter<DoubleValue>)Parameters["P"]; } }
 
     [StorableConstructor]
-    protected NKMoveEvaluator(bool deserializing) : base(deserializing) { }
+    protected NKMoveEvaluator(StorableConstructorFlag _) : base(_) { }
     protected NKMoveEvaluator(NKMoveEvaluator original, Cloner cloner) : base(original, cloner) { }
     protected NKMoveEvaluator()
       : base() {

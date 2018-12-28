@@ -25,14 +25,14 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.Knapsack {
   /// <summary>
   /// Represents a knapsack solution which can be visualized in the GUI.
   /// </summary>
   [Item("KnapsackSolution", "Represents a Knapsack solution which can be visualized in the GUI.")]
-  [StorableClass]
+  [StorableType("C959079D-3D92-4C88-8734-9DADEE851169")]
   public class KnapsackSolution : Item {
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Image; }
@@ -109,7 +109,7 @@ namespace HeuristicLab.Problems.Knapsack {
     }
 
     [StorableConstructor]
-    protected KnapsackSolution(bool deserializing) : base(deserializing) { }
+    protected KnapsackSolution(StorableConstructorFlag _) : base(_) { }
     protected KnapsackSolution(KnapsackSolution original, Cloner cloner)
       : base(original, cloner) {
       this.binaryVector = cloner.Clone(original.binaryVector);

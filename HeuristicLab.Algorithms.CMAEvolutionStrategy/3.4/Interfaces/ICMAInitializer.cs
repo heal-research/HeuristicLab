@@ -24,8 +24,10 @@
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using System;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Algorithms.CMAEvolutionStrategy {
+  [StorableType("EA9351D0-94F1-49D5-BE86-000CA0D4996E")]
   public interface ICMAInitializer : IOperator {
     Type CMAType { get; }
 

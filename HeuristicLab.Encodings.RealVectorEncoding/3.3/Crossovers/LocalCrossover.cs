@@ -22,7 +22,7 @@
 using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// <summary>
@@ -32,10 +32,10 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// It is implemented as described in Dumitrescu, D. et al. (2000), Evolutionary computation, CRC Press, Boca Raton, FL, p. 194.
   /// </remarks>
   [Item("LocalCrossover", @"The local crossover is similar to the arithmetic all positions crossover, but uses a random alpha for each position x = alpha * p1 + (1-alpha) * p2. It is implemented as described in Dumitrescu, D. et al. (2000), Evolutionary computation, CRC Press, Boca Raton, FL., p. 194.")]
-  [StorableClass]
+  [StorableType("FB601681-7738-4380-889F-44A7CFA1D38F")]
   public class LocalCrossover : RealVectorCrossover {
     [StorableConstructor]
-    protected LocalCrossover(bool deserializing) : base(deserializing) { }
+    protected LocalCrossover(StorableConstructorFlag _) : base(_) { }
     protected LocalCrossover(LocalCrossover original, Cloner cloner) : base(original, cloner) { }
     public LocalCrossover() : base() { }
 

@@ -22,15 +22,15 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
   [Item("VRPMoveGenerator", "Generates moves for a VRP solution.")]
-  [StorableClass]
+  [StorableType("B76BD2D8-2D37-4006-86AF-64A1D28DC26D")]
   public abstract class
     VRPMoveGenerator : VRPMoveOperator, IMoveGenerator {
     [StorableConstructor]
-    protected VRPMoveGenerator(bool deserializing) : base(deserializing) { }
+    protected VRPMoveGenerator(StorableConstructorFlag _) : base(_) { }
 
     public VRPMoveGenerator()
       : base() {

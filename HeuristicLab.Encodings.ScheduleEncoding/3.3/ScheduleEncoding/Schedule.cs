@@ -25,11 +25,11 @@ using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("Schedule", "Represents the general solution for scheduling problems.")]
-  [StorableClass]
+  [StorableType("EA6D14A3-7FA6-4B4B-B7F6-40B42657D398")]
   public sealed class Schedule : NamedItem, IScheduleEncoding {
 
     #region Properties
@@ -62,7 +62,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
     #endregion
 
     [StorableConstructor]
-    private Schedule(bool deserializing) : base(deserializing) { }
+    private Schedule(StorableConstructorFlag _) : base(_) { }
     private Schedule(Schedule original, Cloner cloner)
       : base(original, cloner) {
       this.Resources = cloner.Clone(original.Resources);

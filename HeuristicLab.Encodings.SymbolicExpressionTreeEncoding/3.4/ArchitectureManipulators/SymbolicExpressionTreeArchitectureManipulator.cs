@@ -23,13 +23,13 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   /// <summary>
   /// Base class for architecture altering operators for symbolic expression trees.
   /// </summary>
-  [StorableClass]
+  [StorableType("7D5ACE3E-DA4F-4E2D-9723-2596AB856B4D")]
   public abstract class SymbolicExpressionTreeArchitectureManipulator : SymbolicExpressionTreeManipulator, ISymbolicExpressionTreeArchitectureManipulator {
     private const string MaximumFunctionArgumentsParameterName = "MaximumFunctionArguments";
     private const string MaximumFunctionDefinitionsParameterName = "MaximumFunctionDefinitions";
@@ -53,7 +53,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
     #endregion
     [StorableConstructor]
-    protected SymbolicExpressionTreeArchitectureManipulator(bool deserializing) : base(deserializing) { }
+    protected SymbolicExpressionTreeArchitectureManipulator(StorableConstructorFlag _) : base(_) { }
     protected SymbolicExpressionTreeArchitectureManipulator(SymbolicExpressionTreeArchitectureManipulator original, Cloner cloner) : base(original, cloner) { }
     public SymbolicExpressionTreeArchitectureManipulator()
       : base() {

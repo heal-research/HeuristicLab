@@ -26,11 +26,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("StochasticInsertionMultiMoveGenerator", "Generates all possible insertion moves (3-opt) from a few numbers in a given permutation.")]
-  [StorableClass]
+  [StorableType("27AFEE18-D94C-467C-AB45-F81ABB879B16")]
   public class StochasticInsertionMultiMoveGenerator : TranslocationMoveGenerator, IMultiMoveGenerator, IStochasticOperator {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
@@ -45,7 +45,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     }
 
     [StorableConstructor]
-    protected StochasticInsertionMultiMoveGenerator(bool deserializing) : base(deserializing) { }
+    protected StochasticInsertionMultiMoveGenerator(StorableConstructorFlag _) : base(_) { }
     protected StochasticInsertionMultiMoveGenerator(StochasticInsertionMultiMoveGenerator original, Cloner cloner) : base(original, cloner) { }
     public StochasticInsertionMultiMoveGenerator() : base() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator to use."));

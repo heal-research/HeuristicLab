@@ -21,7 +21,6 @@
 
 #endregion
 
-using System;
 using System.Linq;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
@@ -30,10 +29,10 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
-  [StorableClass]
+  [StorableType("789E0217-6DDC-44E8-85CC-A51A976A8FB8")]
   public class SymbolicRegressionSolutionsAnalyzer : SingleSuccessorOperator, IAnalyzer {
     private const string ResultCollectionParameterName = "Results";
     private const string RegressionSolutionQualitiesResultName = "Regression Solution Qualities";
@@ -55,7 +54,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     }
 
     [StorableConstructor]
-    protected SymbolicRegressionSolutionsAnalyzer(bool deserializing) : base(deserializing) { }
+    protected SymbolicRegressionSolutionsAnalyzer(StorableConstructorFlag _) : base(_) { }
     protected SymbolicRegressionSolutionsAnalyzer(SymbolicRegressionSolutionsAnalyzer original, Cloner cloner)
       : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {

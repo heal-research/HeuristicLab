@@ -19,8 +19,6 @@
  */
 #endregion
 
-using HeuristicLab.Core;
-using HeuristicLab.Data;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   /// <summary>

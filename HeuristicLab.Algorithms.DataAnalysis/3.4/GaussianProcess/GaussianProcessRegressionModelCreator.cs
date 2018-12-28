@@ -26,11 +26,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
-  [StorableClass]
+  [StorableType("0C20B1D2-9A58-4E77-9300-F5D76650DC19")]
   [Item(Name = "GaussianProcessRegressionModelCreator",
     Description = "Creates a Gaussian process model for regression given the data, the hyperparameters, a mean function, and a covariance function.")]
   public sealed class GaussianProcessRegressionModelCreator : GaussianProcessModelCreator, IGaussianProcessRegressionModelCreator {
@@ -48,7 +48,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
     #endregion
     [StorableConstructor]
-    private GaussianProcessRegressionModelCreator(bool deserializing) : base(deserializing) { }
+    private GaussianProcessRegressionModelCreator(StorableConstructorFlag _) : base(_) { }
     private GaussianProcessRegressionModelCreator(GaussianProcessRegressionModelCreator original, Cloner cloner) : base(original, cloner) { }
     public GaussianProcessRegressionModelCreator()
       : base() {

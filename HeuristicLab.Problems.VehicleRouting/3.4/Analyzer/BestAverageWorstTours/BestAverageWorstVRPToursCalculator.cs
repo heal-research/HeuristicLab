@@ -24,11 +24,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.VehicleRouting {
   [Item("BestAverageWorstVRPToursCalculator", "An operator which calculates the current best, average and worst properties of VRP tours in the scope tree.")]
-  [StorableClass]
+  [StorableType("22DF27FC-17D0-4220-9B5D-C326DF47175C")]
   public sealed class BestAverageWorstVRPToursCalculator : SingleSuccessorOperator {
     public ScopeTreeLookupParameter<DoubleValue> DistanceParameter {
       get { return (ScopeTreeLookupParameter<DoubleValue>)Parameters["Distance"]; }
@@ -70,7 +70,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
     }
 
     [StorableConstructor]
-    private BestAverageWorstVRPToursCalculator(bool deserializing) : base(deserializing) { }
+    private BestAverageWorstVRPToursCalculator(StorableConstructorFlag _) : base(_) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new BestAverageWorstVRPToursCalculator(this, cloner);

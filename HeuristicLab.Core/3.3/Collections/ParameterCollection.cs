@@ -21,14 +21,14 @@
 
 using System.Collections.Generic;
 using HeuristicLab.Common;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Core {
-  [StorableClass]
+  [StorableType("D1F7CEF4-42C6-46E1-B2B9-AB49C1420D55")]
   [Item("ParameterCollection", "Represents a collection of parameters.")]
   public class ParameterCollection : NamedItemCollection<IParameter> {
     [StorableConstructor]
-    protected ParameterCollection(bool deserializing) : base(deserializing) { }
+    protected ParameterCollection(StorableConstructorFlag _) : base(_) { }
     protected ParameterCollection(ParameterCollection original, Cloner cloner) : base(original, cloner) { }
     public ParameterCollection() : base() { }
     public ParameterCollection(int capacity) : base(capacity) { }

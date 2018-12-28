@@ -25,11 +25,11 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
-  [StorableClass]
+  [StorableType("28701BDD-D6B7-40D4-881B-40AB253FDDD3")]
   public class FeatureSelectionRegressionProblemData : RegressionProblemData {
     private const string SelectedFeaturesParameterName = "SelectedFeatures";
     private const string WeightsParameterName = "Weights";
@@ -48,8 +48,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     }
 
     [StorableConstructor]
-    protected FeatureSelectionRegressionProblemData(bool deserializing)
-      : base(deserializing) {
+    protected FeatureSelectionRegressionProblemData(StorableConstructorFlag _) : base(_) {
     }
     protected FeatureSelectionRegressionProblemData(FeatureSelectionRegressionProblemData original, Cloner cloner)
       : base(original, cloner) {

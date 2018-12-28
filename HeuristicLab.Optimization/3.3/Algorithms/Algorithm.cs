@@ -29,14 +29,14 @@ using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Optimization {
   /// <summary>
   /// A base class for algorithms.
   /// </summary>
   [Item("Algorithm", "A base class for algorithms.")]
-  [StorableClass]
+  [StorableType("7879C550-E8C2-4121-84C3-DADB06BD5C96")]
   public abstract class Algorithm : ParameterizedNamedItem, IAlgorithm {
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Event; }
@@ -170,7 +170,7 @@ namespace HeuristicLab.Optimization {
       Runs = new RunCollection { OptimizerName = Name };
     }
     [StorableConstructor]
-    protected Algorithm(bool deserializing) : base(deserializing) { }
+    protected Algorithm(StorableConstructorFlag _) : base(_) { }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       Initialize();

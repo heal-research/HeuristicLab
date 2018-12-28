@@ -21,18 +21,18 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.LinearLinkageEncoding {
   [Item("EMSSMove", "Base class for shift, split, merge, and extract moves.")]
-  [StorableClass]
+  [StorableType("CE20CA9A-A191-4DA5-9F42-DAE9B79640E1")]
   public abstract class EMSSMove : Item {
     [Storable]
     private int item;
     public int Item { get { return item; } }
 
     [StorableConstructor]
-    protected EMSSMove(bool deserializing) : base(deserializing) { }
+    protected EMSSMove(StorableConstructorFlag _) : base(_) { }
     protected EMSSMove(EMSSMove original, Cloner cloner)
       : base(original, cloner) {
       item = original.item;

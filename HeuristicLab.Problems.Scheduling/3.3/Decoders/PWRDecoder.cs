@@ -26,11 +26,11 @@ using HeuristicLab.Encodings.ScheduleEncoding;
 using HeuristicLab.Encodings.ScheduleEncoding.PermutationWithRepetition;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.Scheduling {
   [Item("PWRDecoder", "An item used to convert a PWR-individual into a generalized schedule.")]
-  [StorableClass]
+  [StorableType("FE66781A-93CB-4312-8AC0-AA049220FEB8")]
   public class PWRDecoder : ScheduleDecoder, IStochasticOperator, IJSSPOperator {
 
     public ILookupParameter<IRandom> RandomParameter {
@@ -41,7 +41,7 @@ namespace HeuristicLab.Problems.Scheduling {
     }
 
     [StorableConstructor]
-    protected PWRDecoder(bool deserializing) : base(deserializing) { }
+    protected PWRDecoder(StorableConstructorFlag _) : base(_) { }
     protected PWRDecoder(PWRDecoder original, Cloner cloner) : base(original, cloner) { }
     public PWRDecoder()
       : base() {

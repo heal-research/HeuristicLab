@@ -23,11 +23,11 @@ using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
-  [StorableClass]
+  [StorableType("D3076BBC-7CF3-4768-8C4B-3FC4FEF041B3")]
   public sealed class VariableConditionTreeNode : SymbolicExpressionTreeNode, IVariableTreeNode {
     #region properties
     public new VariableCondition Symbol {
@@ -54,7 +54,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     #endregion
 
     [StorableConstructor]
-    private VariableConditionTreeNode(bool deserializing) : base(deserializing) { }
+    private VariableConditionTreeNode(StorableConstructorFlag _) : base(_) { }
     private VariableConditionTreeNode(VariableConditionTreeNode original, Cloner cloner)
       : base(original, cloner) {
       threshold = original.threshold;

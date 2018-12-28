@@ -22,7 +22,7 @@
 using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   /// <summary>
@@ -32,10 +32,10 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   /// It is implemented as described in Michalewicz, Z. 1999. Genetic Algorithms + Data Structures = Evolution Programs. Third, Revised and Extended Edition, Spring-Verlag Berlin Heidelberg.
   /// </remarks>
   [Item("SinglePointCrossover", "Single point crossover for integer vectors. It is implemented as described in Michalewicz, Z. 1999. Genetic Algorithms + Data Structures = Evolution Programs. Third, Revised and Extended Edition, Spring-Verlag Berlin Heidelberg.")]
-  [StorableClass]
+  [StorableType("0B985803-CC2D-466B-B5F2-9A1F7C415735")]
   public class SinglePointCrossover : IntegerVectorCrossover {
     [StorableConstructor]
-    protected SinglePointCrossover(bool deserializing) : base(deserializing) { }
+    protected SinglePointCrossover(StorableConstructorFlag _) : base(_) { }
     protected SinglePointCrossover(SinglePointCrossover original, Cloner cloner) : base(original, cloner) { }
     public SinglePointCrossover() : base() { }
 

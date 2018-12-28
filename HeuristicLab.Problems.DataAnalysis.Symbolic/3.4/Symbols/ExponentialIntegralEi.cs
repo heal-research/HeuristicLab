@@ -22,9 +22,9 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
-  [StorableClass]
+  [StorableType("189FCA77-9541-4F5B-9215-7AEA995C6203")]
   [Item("ExponentialIntegralEi", "Symbol that represents the exponential integral (e_i).")]
   public sealed class ExponentialIntegralEi : Symbol {
     private const int minimumArity = 1;
@@ -38,7 +38,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     [StorableConstructor]
-    private ExponentialIntegralEi(bool deserializing) : base(deserializing) { }
+    private ExponentialIntegralEi(StorableConstructorFlag _) : base(_) { }
     private ExponentialIntegralEi(ExponentialIntegralEi original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new ExponentialIntegralEi(this, cloner);

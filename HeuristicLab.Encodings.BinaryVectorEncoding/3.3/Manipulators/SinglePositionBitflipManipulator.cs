@@ -21,7 +21,7 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   /// <summary>
@@ -31,11 +31,11 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   /// It is implemented as described in Michalewicz, Z. 1999. Genetic Algorithms + Data Structures = Evolution Programs. Third, Revised and Extended Edition, Spring-Verlag Berlin Heidelberg.
   /// </remarks>
   [Item("SinglePositionBitflipManipulator", "Flips exactly one bit of a binary vector. It is implemented as described in Michalewicz, Z. 1999. Genetic Algorithms + Data Structures = Evolution Programs. Third, Revised and Extended Edition, Spring-Verlag Berlin Heidelberg.")]
-  [StorableClass]
+  [StorableType("72BE48BD-F47C-4C81-81F6-FA42D496AC34")]
   public sealed class SinglePositionBitflipManipulator : BinaryVectorManipulator {
 
     [StorableConstructor]
-    private SinglePositionBitflipManipulator(bool deserializing) : base(deserializing) { }
+    private SinglePositionBitflipManipulator(StorableConstructorFlag _) : base(_) { }
     private SinglePositionBitflipManipulator(SinglePositionBitflipManipulator original, Cloner cloner) : base(original, cloner) { }
     public SinglePositionBitflipManipulator() : base() { }
 

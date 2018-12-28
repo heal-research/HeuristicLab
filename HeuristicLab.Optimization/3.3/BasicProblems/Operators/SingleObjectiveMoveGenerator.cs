@@ -28,11 +28,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Optimization {
   [Item("Single-objective MoveGenerator", "Calls the GetNeighbors method of the problem definition to obtain the moves.")]
-  [StorableClass]
+  [StorableType("CB37E7D8-EAC3-4061-9D39-20538CD1064D")]
   public class SingleObjectiveMoveGenerator : SingleSuccessorOperator, INeighborBasedOperator, IMultiMoveGenerator, IStochasticOperator, ISingleObjectiveMoveOperator {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
@@ -49,7 +49,7 @@ namespace HeuristicLab.Optimization {
     public Func<Individual, IRandom, IEnumerable<Individual>> GetNeighborsFunc { get; set; }
 
     [StorableConstructor]
-    protected SingleObjectiveMoveGenerator(bool deserializing) : base(deserializing) { }
+    protected SingleObjectiveMoveGenerator(StorableConstructorFlag _) : base(_) { }
     protected SingleObjectiveMoveGenerator(SingleObjectiveMoveGenerator original, Cloner cloner)
       : base(original, cloner) { }
     public SingleObjectiveMoveGenerator() {

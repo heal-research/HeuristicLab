@@ -24,14 +24,14 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.DataAnalysis.Symbolic.Regression;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis {
   /// <summary>
   /// Represents a symbolic time-series prognosis model
   /// </summary>
-  [StorableClass]
+  [StorableType("88B9EB98-F156-4A36-A290-48BDB25C6E3C")]
   [Item(Name = "Symbolic Time-Series Prognosis Model", Description = "Represents a symbolic time series prognosis model.")]
   public class SymbolicTimeSeriesPrognosisModel : SymbolicRegressionModel, ISymbolicTimeSeriesPrognosisModel {
 
@@ -40,7 +40,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis {
     }
 
     [StorableConstructor]
-    protected SymbolicTimeSeriesPrognosisModel(bool deserializing) : base(deserializing) { }
+    protected SymbolicTimeSeriesPrognosisModel(StorableConstructorFlag _) : base(_) { }
     protected SymbolicTimeSeriesPrognosisModel(SymbolicTimeSeriesPrognosisModel original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new SymbolicTimeSeriesPrognosisModel(this, cloner);

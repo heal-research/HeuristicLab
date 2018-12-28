@@ -24,13 +24,13 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Random {
   /// <summary>
   /// Normally distributed random number generator.
   /// </summary>
-  [StorableClass]
+  [StorableType("0EAF4184-6C98-4C9D-80A1-09A42E03450E")]
   [Item("NormalRandomizer", "Initializes the value of variable 'Value' to a random value normally distributed with parameters 'Mu' and 'Sigma'")]
   public class NormalRandomizer : SingleSuccessorOperator {
     #region Parameter Properties
@@ -60,7 +60,7 @@ namespace HeuristicLab.Random {
     #endregion
 
     [StorableConstructor]
-    protected NormalRandomizer(bool deserializing) : base(deserializing) { }
+    protected NormalRandomizer(StorableConstructorFlag _) : base(_) { }
     protected NormalRandomizer(NormalRandomizer original, Cloner cloner) : base(original, cloner) { }
     /// <summary>
     /// Initializes a new instance of <see cref="NormalRandomizer"/> with four variable infos

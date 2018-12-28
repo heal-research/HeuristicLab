@@ -29,7 +29,7 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Random;
 
@@ -39,7 +39,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
   /// </summary>
   [Item("Island Genetic Algorithm (Island-GA)", "An island genetic algorithm.")]
   [Creatable(CreatableAttribute.Categories.PopulationBasedAlgorithms, Priority = 110)]
-  [StorableClass]
+  [StorableType("C36FD509-4EF2-4BA7-9483-8CFCEF7EDA91")]
   public sealed class IslandGeneticAlgorithm : HeuristicOptimizationEngineAlgorithm, IStorableContent {
     public string Filename { get; set; }
 
@@ -202,7 +202,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
     #endregion
 
     [StorableConstructor]
-    private IslandGeneticAlgorithm(bool deserializing) : base(deserializing) { }
+    private IslandGeneticAlgorithm(StorableConstructorFlag _) : base(_) { }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       // BackwardsCompatibility3.3

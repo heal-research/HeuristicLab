@@ -21,11 +21,11 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("Swap2MoveRelativeAttribute", "Specifies the tabu attributes for a swap-2 move on a relative position permutation.")]
-  [StorableClass]
+  [StorableType("826E9F84-344E-48F3-ADC8-E1AFF52AADBF")]
   public class Swap2MoveRelativeAttribute : PermutationMoveAttribute {
     [Storable]
     public ItemList<Edge> DeletedEdges { get; private set; }
@@ -33,7 +33,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     public ItemList<Edge> AddedEdges { get; private set; }
 
     [StorableConstructor]
-    protected Swap2MoveRelativeAttribute(bool deserializing) : base(deserializing) { }
+    protected Swap2MoveRelativeAttribute(StorableConstructorFlag _) : base(_) { }
     protected Swap2MoveRelativeAttribute(Swap2MoveRelativeAttribute original, Cloner cloner)
       : base(original, cloner) {
       this.DeletedEdges = cloner.Clone(original.DeletedEdges);

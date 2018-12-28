@@ -22,16 +22,16 @@
 using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Optimization {
   [Item("RunCollection Run Remover", "Removes all currently visible runs. Use the filtering tab to selectively remove runs.")]
-  [StorableClass]
+  [StorableType("F66D03A7-6BF8-4DB5-9341-B1BFAA8AA023")]
   public class RunCollectionRunRemover : ParameterizedNamedItem, IRunCollectionModifier {
 
     #region Construction & Cloning
     [StorableConstructor]
-    protected RunCollectionRunRemover(bool deserializing) : base(deserializing) { }
+    protected RunCollectionRunRemover(StorableConstructorFlag _) : base(_) { }
     protected RunCollectionRunRemover(RunCollectionRunRemover original, Cloner cloner) : base(original, cloner) {}
     public RunCollectionRunRemover() {}
     public override IDeepCloneable Clone(Cloner cloner) {

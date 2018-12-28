@@ -22,9 +22,9 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
-  [StorableClass]
+  [StorableType("A64DBD26-2DD7-4799-B413-AB05CDAAE749")]
   [Item("GreaterThan", "Symbol that represents a greater than relation.")]
   public sealed class GreaterThan : Symbol {
     private const int minimumArity = 2;
@@ -38,7 +38,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     [StorableConstructor]
-    private GreaterThan(bool deserializing) : base(deserializing) { }
+    private GreaterThan(StorableConstructorFlag _) : base(_) { }
     private GreaterThan(GreaterThan original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new GreaterThan(this, cloner);

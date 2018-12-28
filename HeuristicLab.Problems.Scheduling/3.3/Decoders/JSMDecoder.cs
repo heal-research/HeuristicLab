@@ -29,11 +29,11 @@ using HeuristicLab.Encodings.ScheduleEncoding;
 using HeuristicLab.Encodings.ScheduleEncoding.JobSequenceMatrix;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.Scheduling {
   [Item("JobSequenceMatrixDecoder", "Applies the GifflerThompson algorithm to create an active schedule from a JobSequence Matrix.")]
-  [StorableClass]
+  [StorableType("BEB71861-F5DE-4A00-87A8-97716C13895B")]
   public class JSMDecoder : ScheduleDecoder, IStochasticOperator, IJSSPOperator {
 
     public ILookupParameter<IRandom> RandomParameter {
@@ -58,7 +58,7 @@ namespace HeuristicLab.Problems.Scheduling {
     }
 
     [StorableConstructor]
-    protected JSMDecoder(bool deserializing) : base(deserializing) { }
+    protected JSMDecoder(StorableConstructorFlag _) : base(_) { }
     protected JSMDecoder(JSMDecoder original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new JSMDecoder(this, cloner);

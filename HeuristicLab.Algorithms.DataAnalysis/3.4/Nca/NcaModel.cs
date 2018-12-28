@@ -23,12 +23,12 @@ using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [Item("NCA Model", "")]
-  [StorableClass]
+  [StorableType("BB2F9ECA-CEAF-4983-A34C-9A42A132B7CD")]
   public class NcaModel : ClassificationModel, INcaModel {
     public override IEnumerable<string> VariablesUsedForPrediction {
       get { return allowedInputVariables; }
@@ -47,7 +47,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private double[] classValues;
 
     [StorableConstructor]
-    protected NcaModel(bool deserializing) : base(deserializing) { }
+    protected NcaModel(StorableConstructorFlag _) : base(_) { }
     protected NcaModel(NcaModel original, Cloner cloner)
       : base(original, cloner) {
       this.transformationMatrix = (double[,])original.transformationMatrix.Clone();
