@@ -22,7 +22,7 @@
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
-using HeuristicLab.Persistence;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableType("a83cbf4d-6e7c-4e30-904e-d0f0c89d2ed3")]

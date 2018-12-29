@@ -21,7 +21,7 @@
 
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Problems.DataAnalysis;
-using HeuristicLab.Persistence;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableType("627fb9cf-b3fe-4f9b-a76b-f0f1b7a31f0c")]

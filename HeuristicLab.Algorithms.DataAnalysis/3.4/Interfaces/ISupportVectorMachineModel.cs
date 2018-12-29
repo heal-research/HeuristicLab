@@ -21,7 +21,7 @@
 
 using HeuristicLab.Problems.DataAnalysis;
 using LibSVM;
-using HeuristicLab.Persistence;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableType("5284987f-4f3e-43dd-9bc8-a8b3c7d952ce")]

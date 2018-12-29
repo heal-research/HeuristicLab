@@ -20,8 +20,8 @@
 #endregion
 
 using System.Collections.Generic;
+using HEAL.Fossil;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
 

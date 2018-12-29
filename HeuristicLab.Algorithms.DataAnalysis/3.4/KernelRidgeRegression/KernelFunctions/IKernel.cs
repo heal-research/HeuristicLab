@@ -21,7 +21,7 @@
 
 
 using System;
-using HeuristicLab.Persistence;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableType("adb61694-6937-4c93-aa8d-902b54811e37")]

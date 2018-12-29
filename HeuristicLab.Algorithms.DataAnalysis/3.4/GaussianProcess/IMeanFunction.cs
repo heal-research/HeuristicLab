@@ -20,7 +20,7 @@
 #endregion
 
 using HeuristicLab.Core;
-using HeuristicLab.Persistence;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   public delegate double MeanFunctionDelegate(double[,] x, int row);
