@@ -21,6 +21,7 @@
 
 using System.Collections.Generic;
 using HeuristicLab.Core;
+using HeuristicLab.Persistence;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
 
@@ -34,6 +35,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public CovarianceGradientFunctionDelegate CovarianceGradient { get; set; }
   }
 
+  [StorableType("d175f852-bb94-4b19-9afa-a7f554845a26")]
   public interface ICovarianceFunction : IItem {
     int GetNumberOfParameters(int numberOfVariables);
     void SetParameter(double[] p);

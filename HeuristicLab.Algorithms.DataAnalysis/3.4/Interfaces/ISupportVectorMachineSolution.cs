@@ -20,8 +20,10 @@
 #endregion
 
 using HeuristicLab.Problems.DataAnalysis;
+using HeuristicLab.Persistence;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
+  [StorableType("598d2904-58e5-4a2f-8cd4-378ed3fa6132")]
   /// <summary>
   /// Interface to represent a support vector solution (either regression or classification)
   /// </summary>

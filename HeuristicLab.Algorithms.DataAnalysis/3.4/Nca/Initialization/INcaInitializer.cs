@@ -21,8 +21,10 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Problems.DataAnalysis;
+using HeuristicLab.Persistence;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
+  [StorableType("4e8ff5de-c353-47cb-baa7-1a9be8f89456")]
   public interface INcaInitializer : IOperator {
     /// <summary>
     /// Calculates an initial projection for the NCA to start from.

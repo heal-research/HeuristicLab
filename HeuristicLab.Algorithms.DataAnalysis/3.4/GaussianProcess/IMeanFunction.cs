@@ -20,6 +20,7 @@
 #endregion
 
 using HeuristicLab.Core;
+using HeuristicLab.Persistence;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   public delegate double MeanFunctionDelegate(double[,] x, int row);
@@ -30,6 +31,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public MeanGradientDelegate Gradient { get; set; }
   }
 
+  [StorableType("5a0e9004-0e77-42c2-90f9-744896c1224f")]
   public interface IMeanFunction : IItem {
     int GetNumberOfParameters(int numberOfVariables);
     void SetParameter(double[] p);

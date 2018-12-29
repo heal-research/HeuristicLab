@@ -20,8 +20,10 @@
 #endregion
 
 using HeuristicLab.Problems.DataAnalysis;
+using HeuristicLab.Persistence;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
+  [StorableType("f9bedb56-c034-4bb3-8125-d1146b03376c")]
   /// <summary>
   /// Interface to represent a Gaussian process solution (either regression or classification)
   /// </summary>

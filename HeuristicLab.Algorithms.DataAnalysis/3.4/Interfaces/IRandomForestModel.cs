@@ -21,9 +21,10 @@
 
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Problems.DataAnalysis;
-
+using HeuristicLab.Persistence;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
+  [StorableType("627fb9cf-b3fe-4f9b-a76b-f0f1b7a31f0c")]
   /// <summary>
   /// Interface to represent a random forest model for either regression or classification
   /// </summary>

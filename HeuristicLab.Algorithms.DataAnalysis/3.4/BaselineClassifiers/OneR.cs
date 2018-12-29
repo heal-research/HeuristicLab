@@ -30,6 +30,7 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HEAL.Fossil;
 using HeuristicLab.Problems.DataAnalysis;
+using HeuristicLab.Persistence;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>

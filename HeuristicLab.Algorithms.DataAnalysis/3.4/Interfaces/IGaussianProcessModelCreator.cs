@@ -22,8 +22,10 @@
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
+using HeuristicLab.Persistence;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
+  [StorableType("a83cbf4d-6e7c-4e30-904e-d0f0c89d2ed3")]
   /// <summary>
   /// Interface to represent a Gaussian process model creator (either regression or classification)
   /// </summary>

@@ -20,8 +20,10 @@
 #endregion
 
 using HeuristicLab.Problems.DataAnalysis;
+using HeuristicLab.Persistence;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
+  [StorableType("ce11dac3-5b79-4390-80cc-dddeb9d0250c")]
   /// <summary>
   /// Interface to represent a nearest neighbour regression solution
   /// </summary>

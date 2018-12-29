@@ -20,8 +20,10 @@
 #endregion
 
 using HeuristicLab.Problems.DataAnalysis;
+using HeuristicLab.Persistence;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
+  [StorableType("afb3d86e-f5a9-4bd5-a5a5-35337c1163e9")]
   public interface INcaClassificationSolution : IClassificationSolution {
     new INcaModel Model { get; }
   }

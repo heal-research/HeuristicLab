@@ -20,8 +20,10 @@
 #endregion
 
 using HeuristicLab.Problems.DataAnalysis;
+using HeuristicLab.Persistence;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
+  [StorableType("ff6d9203-3685-418b-b6cc-2312b50c4014")]
   /// <summary>
   /// Interface to represent a random forest classification solution
   /// </summary>

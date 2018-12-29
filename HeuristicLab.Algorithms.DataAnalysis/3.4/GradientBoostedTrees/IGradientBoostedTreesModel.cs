@@ -22,8 +22,10 @@
 
 using System.Collections.Generic;
 using HeuristicLab.Problems.DataAnalysis;
+using HeuristicLab.Persistence;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
+  [StorableType("e6c22779-7059-416d-8804-0022406b7136")]
   public interface IGradientBoostedTreesModel : IRegressionModel {
     IEnumerable<IRegressionModel> Models { get; }
     IEnumerable<double> Weights { get; }

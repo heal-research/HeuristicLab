@@ -20,8 +20,10 @@
 #endregion
 
 using HeuristicLab.Problems.DataAnalysis;
+using HeuristicLab.Persistence;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
+  [StorableType("8cc4503e-dec8-43d9-a966-3619ace0da41")]
   /// <summary>
   /// Interface to represent a neural network ensemble model for either regression or classification
   /// </summary>

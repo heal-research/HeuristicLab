@@ -20,8 +20,10 @@
 #endregion
 
 using HeuristicLab.Core;
+using HeuristicLab.Persistence;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
+  [StorableType("d93ecea5-379a-4569-8e0d-a80725d38d7f")]
   public interface INcaModelCreator : IOperator {
 
   }
