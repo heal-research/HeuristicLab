@@ -19,13 +19,18 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using HEAL.Fossil;
 using HeuristicLab.Algorithms.GeneticAlgorithm;
+using HeuristicLab.Common;
 using HeuristicLab.Persistence.Core;
+using HeuristicLab.Persistence.Default.Xml;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HeuristicLab.Persistence.Fossil.Tests {
@@ -121,6 +126,40 @@ namespace HeuristicLab.Persistence.Fossil.Tests {
         }, i);
       }
       Task.WaitAll(tasks);
+    }
+
+
+    [TestMethod]
+    [TestCategory("Persistence.Fossil")]
+    [TestProperty("Time", "short")]
+    public void TestLoadingSamples() {
+      var path = @"C:\reps\hl-core\branches\2520_PersistenceReintegration\HeuristicLab.Optimizer\3.3\Documents";
+      var serializer = new ProtoBufSerializer();
+      foreach (var fileName in Directory.EnumerateFiles(path, "*.hl")) {
+        var original = XmlParser.Deserialize(fileName);
+        var ok = true;
+        foreach (var t in original.GetObjectGraphObjects().Select(o => o.GetType())) {
+          if (
+            t.GetConstructors(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)
+              .Any(ctor => StorableConstructorAttribute.IsStorableConstructor(ctor))) {
+            try {
+              if (t.IsGenericType) {
+                var g = Mapper.StaticCache.GetGuid(t.GetGenericTypeDefinition());
+              } else {
+                var g = Mapper.StaticCache.GetGuid(t);
+              }
+            } catch (Exception e) {
+              Console.WriteLine(t.FullName);
+              ok = false;
+            }
+          }
+        }
+        if (ok) {
+          serializer.Serialize(original, fileName + ".proto");
+          var newVersion = serializer.Deserialize(fileName + ".proto");
+          Console.WriteLine("File: " + fileName);
+        }
+      }
     }
 
     [ClassInitialize]
