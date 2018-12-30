@@ -161,6 +161,10 @@ namespace HeuristicLab.Persistence.Fossil.Tests {
         }
       }
     }
+    
+    // TODO:
+    // - IndexedItem and IndexedDataTable
+    // - Point2D from HL.Common 
 
     [ClassInitialize]
     public static void Initialize(TestContext testContext) {

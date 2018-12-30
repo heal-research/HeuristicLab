@@ -22,21 +22,27 @@
 using System;
 using System.ComponentModel;
 using System.Globalization;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Common {
   [Serializable]
+  [StorableType("9c4b8927-6b8e-490f-a367-78091ccf1494")]
   public struct Point2D<T> where T : struct, IEquatable<T> {
     public static readonly Point2D<T> Empty = new Point2D<T>();
 
+    [Storable]
     private T x;
     public T X {
       get { return x; }
     }
+
+    [Storable]
     private T y;
     public T Y {
       get { return y; }
     }
 
+    [Storable]
     private object tag;
     public object Tag {
       get { return tag; }

@@ -19,7 +19,9 @@
  */
 #endregion
 
+using HEAL.Fossil;
 namespace HeuristicLab.Collections {
+  [StorableType("5be307b0-41d7-4d8d-a289-fba09fce33f4")]
   public interface IObservableKeyedCollection<TKey, TItem> : IObservableCollection<TItem>, INotifyObservableKeyedCollectionItemsChanged<TKey, TItem> {
     TItem this[TKey key] { get; }
 

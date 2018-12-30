@@ -19,8 +19,10 @@
  */
 #endregion
 
+using HEAL.Fossil;
 
 namespace HeuristicLab.Common {
+  [StorableType("25b6ffb1-8689-4ad7-81ed-bcc5065ee2a8")]
   public interface IStorableContent : IContent {
     string Filename { get; set; }
   }

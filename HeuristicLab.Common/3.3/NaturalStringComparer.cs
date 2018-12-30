@@ -21,9 +21,16 @@
 
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Common {
+  [StorableType("fa583e6f-b8cf-4046-b144-4c1938caa418")]
   public class NaturalStringComparer : IComparer<string> {
+
+    [StorableConstructor]
+    protected NaturalStringComparer(StorableConstructorFlag _) { }
+    public NaturalStringComparer() { }
+
     public int Compare(string x, string y) {
       if (x == y) return 0;
 
