@@ -20,8 +20,10 @@
 #endregion
 
 using System.Collections.Generic;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Collections {
+  [StorableType("2c42f57a-3bdb-45b9-a548-d4cb9cc71250")]
   public interface IObservableSet<T> : IObservableCollection<T> {
     bool IsProperSubsetOf(IEnumerable<T> other);
     bool IsProperSupersetOf(IEnumerable<T> other);

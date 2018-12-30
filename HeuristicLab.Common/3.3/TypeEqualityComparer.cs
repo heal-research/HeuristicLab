@@ -20,8 +20,10 @@
 #endregion
 
 using System.Collections.Generic;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Common {
+  [StorableType("b5330cc7-9b2c-4b84-9147-1dcc6c316403")]
   public class TypeEqualityComparer<T> : IEqualityComparer<T> {
 
     bool IEqualityComparer<T>.Equals(T x, T y) {

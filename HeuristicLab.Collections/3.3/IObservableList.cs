@@ -20,8 +20,10 @@
 #endregion
 
 using System.Collections.Generic;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Collections {
+  [StorableType("00be7255-b5c6-4b5d-82d3-6ed258d6a0c9")]
   public interface IObservableList<T> : IList<T>, IObservableCollection<T>, INotifyObservableListItemsChanged<T> {
     void Reverse();
     void Reverse(int index, int count);

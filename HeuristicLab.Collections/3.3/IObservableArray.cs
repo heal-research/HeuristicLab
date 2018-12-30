@@ -21,8 +21,10 @@
 
 using System.Collections.Generic;
 using System.ComponentModel;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Collections {
+  [StorableType("ebdc610c-2f22-42c7-a72e-8a4ec682712f")]
   public interface IObservableArray<T> : IList<T>, INotifyObservableArrayItemsChanged<T>, INotifyPropertyChanged {
     int Length { get; }
 

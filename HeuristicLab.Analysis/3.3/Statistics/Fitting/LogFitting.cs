@@ -40,7 +40,7 @@ namespace HeuristicLab.Analysis.Statistics {
 
     public void Calculate(double[] y, double[] x, out double p0, out double p1) {
       if (y.Count() != x.Count()) {
-        throw new ArgumentException("The lenght of x and y needs do be equal. ");
+        throw new ArgumentException("The length of x and y needs do be equal. ");
       }
 
       double[] c = new double[] { 0.3, 0.3 };

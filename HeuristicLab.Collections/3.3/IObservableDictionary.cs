@@ -20,7 +20,9 @@
 #endregion
 
 using System.Collections.Generic;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Collections {
+  [StorableType("70d9ec0d-7a88-424a-9f59-6cc659f57369")]
   public interface IObservableDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IObservableCollection<KeyValuePair<TKey, TValue>>, INotifyObservableDictionaryItemsChanged<TKey, TValue> { }
 }

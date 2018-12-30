@@ -21,8 +21,10 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
+  [StorableType("231ae77d-4352-4a70-8662-5f3d5d44f095")]
   public class EnumerableBoolEqualityComparer : IEqualityComparer<IEnumerable<bool>> {
     public bool Equals(IEnumerable<bool> first, IEnumerable<bool> second) {
       return first.SequenceEqual(second);

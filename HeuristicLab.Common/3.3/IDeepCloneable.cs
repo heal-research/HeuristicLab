@@ -20,8 +20,10 @@
 #endregion
 
 using System;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Common {
+  [StorableType("54fef53f-3ccc-4493-8973-a8bbdad32ba2")]
   public interface IDeepCloneable : ICloneable {
     /// <summary>
     /// Creates a deep clone of this instance.

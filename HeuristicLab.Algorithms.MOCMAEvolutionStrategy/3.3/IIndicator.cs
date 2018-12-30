@@ -22,8 +22,10 @@ using System.Collections.Generic;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Optimization;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Algorithms.MOCMAEvolutionStrategy {
+  [StorableType("5f3f2453-dbf0-46d8-be15-8b6bb9f88592")]
   public interface IIndicator : IItem {
     /// <summary>
     ///  Selects the least contributing Point of a front. Please keep in mind, that the contribution of a point depends on its value as well as on the other points of a front. 
