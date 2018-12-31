@@ -20,8 +20,10 @@
 #endregion
 
 using System;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Core {
+  [StorableType("3fea6f51-6bb0-4bb5-a113-d071e2fe3b8c")]
   public interface IParameter : INamedItem {
     Type DataType { get; }
     bool Hidden { get; set; }

@@ -20,8 +20,10 @@
 #endregion
 
 using HeuristicLab.Core;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
+  [StorableType("e32d9fae-2b90-40a1-9ea3-dc81853d0633")]
   public interface ISymbolicExpressionTreeStringFormatter : INamedItem {
     string Format(ISymbolicExpressionTree symbolicExpressionTree);
   }

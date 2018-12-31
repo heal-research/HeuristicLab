@@ -20,8 +20,10 @@
 #endregion
 
 using System;
+using HEAL.Fossil;
 
 namespace HeuristicLab.DataPreprocessing {
+  [StorableType("9f0c478b-6b6b-42a1-ad0a-6bc2769cd593")]
   public interface IFilteredPreprocessingData : IPreprocessingData {
     #region Filters
     void SetFilter(bool[] remainingRows);

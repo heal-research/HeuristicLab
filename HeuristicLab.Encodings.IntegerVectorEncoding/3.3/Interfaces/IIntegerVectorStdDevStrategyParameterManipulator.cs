@@ -22,8 +22,10 @@
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.IntegerVectorEncoding {
+  [StorableType("c2b76c64-9e5d-4ecb-b692-11cdf697ba02")]
   public interface IIntegerVectorStdDevStrategyParameterManipulator : IIntegerVectorStdDevStrategyParameterOperator, IStrategyParameterManipulator {
     ILookupParameter<DoubleArray> StrategyParameterParameter { get; }
     IValueLookupParameter<DoubleMatrix> BoundsParameter { get; }

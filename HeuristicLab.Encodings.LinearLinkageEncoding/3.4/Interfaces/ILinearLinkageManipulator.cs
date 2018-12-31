@@ -21,8 +21,10 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.LinearLinkageEncoding {
+  [StorableType("2d51279f-e88d-43a2-b743-3cceb48b6ced")]
   public interface ILinearLinkageManipulator : IManipulator, ILinearLinkageOperator {
     ILookupParameter<LinearLinkage> LLEParameter { get; }
   }

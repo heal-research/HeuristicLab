@@ -21,8 +21,10 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
+  [StorableType("2164b769-8244-4ed8-a2ca-7649e6b51617")]
   /// <summary>
   /// An interface which represents an operator for crossing permutations.
   /// </summary>

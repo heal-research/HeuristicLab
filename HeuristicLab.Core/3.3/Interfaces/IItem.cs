@@ -22,8 +22,10 @@
 using System;
 using System.Drawing;
 using HeuristicLab.Common;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Core {
+  [StorableType("fc5d4359-76da-406b-b445-72d4f9b2277d")]
   /// <summary>
   /// Interface to represent (almost) every HeuristicLab object (an object, an operator,...).
   /// </summary>

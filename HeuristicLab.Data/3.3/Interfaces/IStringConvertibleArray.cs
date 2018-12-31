@@ -20,8 +20,10 @@
 #endregion
 
 using HeuristicLab.Common;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Data {
+  [StorableType("27217641-0839-4757-b8f6-6422114b096d")]
   public interface IStringConvertibleArray : IContent, IValueTypeArray {
     bool Validate(string value, out string errorMessage);
     string GetValue(int index);

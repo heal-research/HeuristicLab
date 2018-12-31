@@ -21,8 +21,10 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
+  [StorableType("ebd6c0f9-6be5-4661-ba4c-0522d33aa5c4")]
   public interface IRealVectorMoveOperator : IRealVectorOperator, IMoveOperator {
     ILookupParameter<RealVector> RealVectorParameter { get; }
   }

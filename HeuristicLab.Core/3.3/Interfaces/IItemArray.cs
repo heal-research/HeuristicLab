@@ -20,7 +20,9 @@
 #endregion
 
 using HeuristicLab.Collections;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Core {
+  [StorableType("f736943c-5b43-4c98-9128-304c794b931e")]
   public interface IItemArray<T> : IObservableArray<T>, IItem where T : class, IItem { }
 }

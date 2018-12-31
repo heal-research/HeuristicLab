@@ -20,12 +20,15 @@
 #endregion
 
 using System;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Core {
+  [StorableType("5710751f-6af8-4bc8-b517-97218cb30d22")]
   public interface IScopeTreeLookupParameter : ILookupParameter {
     int Depth { get; set; }
     event EventHandler DepthChanged;
   }
 
+  [StorableType("4a2fead8-d21c-49a0-b1f3-aece5fd99407")]
   public interface IScopeTreeLookupParameter<T> : IScopeTreeLookupParameter, ILookupParameter<ItemArray<T>> where T : class, IItem { }
 }

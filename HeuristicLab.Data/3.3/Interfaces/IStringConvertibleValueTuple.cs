@@ -19,7 +19,10 @@
  */
 #endregion
 using HeuristicLab.Core;
+using HEAL.Fossil;
+
 namespace HeuristicLab.Data {
+  [StorableType("691961d0-d8ff-436d-a4df-01abeed6e5af")]
   public interface IStringConvertibleValueTuple : IItem {
     IStringConvertibleValue Item1 { get; }
     IStringConvertibleValue Item2 { get; }

@@ -21,8 +21,10 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
+  [StorableType("22c93d6a-6fe8-4737-b2d7-bfe3e6192c2b")]
   public interface IPermutationMoveOperator : IPermutationOperator, IMoveOperator {
     ILookupParameter<Permutation> PermutationParameter { get; }
   }

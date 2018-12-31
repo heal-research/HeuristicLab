@@ -21,8 +21,10 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding {
+  [StorableType("809a6136-3a7a-4389-9119-2bb48f6d650a")]
   public interface IScheduleCrossover : ICrossover, IScheduleOperator {
     ILookupParameter<IScheduleEncoding> ChildParameter { get; }
     IScopeTreeLookupParameter<IScheduleEncoding> ParentsParameter { get; }

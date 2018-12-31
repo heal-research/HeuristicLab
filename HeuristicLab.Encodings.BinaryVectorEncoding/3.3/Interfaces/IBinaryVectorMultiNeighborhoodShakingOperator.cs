@@ -20,8 +20,10 @@
 #endregion
 
 using HeuristicLab.Core;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.BinaryVectorEncoding {
+  [StorableType("90e29db0-b4bf-479d-a77b-f867fdda0fb4")]
   public interface IBinaryVectorMultiNeighborhoodShakingOperator : IBinaryVectorOperator {
     ILookupParameter<BinaryVector> BinaryVectorParameter { get; }
   }

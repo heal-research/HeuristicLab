@@ -20,8 +20,10 @@
 #endregion
 
 using HeuristicLab.Core;
+using HEAL.Fossil;
 
 namespace HeuristicLab.DataPreprocessing {
+  [StorableType("60755b48-d362-4957-94c5-cc770cc2a261")]
   public interface IViewShortcut : IItem {
   }
 }

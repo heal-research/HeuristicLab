@@ -22,9 +22,11 @@
 using System;
 using System.Collections.Generic;
 using HeuristicLab.PluginInfrastructure;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   [NonDiscoverableType]
+  [StorableType("b9277027-dd39-4977-a8de-1b9854290f5e")]
   public class BinaryVectorEqualityComparer : EqualityComparer<BinaryVector> {
     public override bool Equals(BinaryVector x, BinaryVector y) {
       if (ReferenceEquals(x, y)) return true;

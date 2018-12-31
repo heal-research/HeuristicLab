@@ -32,8 +32,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private readonly IDistance<T> dist;
 
     #region HLConstructors & Cloning
+
     [StorableConstructor]
-    protected IndexedItemDistance(StorableConstructorFlag _) : base(_) { }
+    protected IndexedItemDistance(StorableConstructorFlag _) : base(_) {
+    }
+
     protected IndexedItemDistance(IndexedItemDistance<T> original, Cloner cloner) : base(original, cloner) {
       dist = cloner.Clone(original.dist);
     }

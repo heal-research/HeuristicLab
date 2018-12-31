@@ -21,8 +21,10 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.LinearLinkageEncoding {
+  [StorableType("66ba6974-d27b-4c42-b9bd-b91a764d8f15")]
   public interface ILinearLinkageCrossover : ICrossover, ILinearLinkageOperator {
     ILookupParameter<LinearLinkage> ChildParameter { get; }
     IScopeTreeLookupParameter<LinearLinkage> ParentsParameter { get; }

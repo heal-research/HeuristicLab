@@ -20,8 +20,10 @@
 #endregion
 
 using HeuristicLab.Core;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding {
+  [StorableType("6b229ce1-5e07-4b41-858a-be475ca501b6")]
   public interface IPRVOperator : IOperator {
   }
 }

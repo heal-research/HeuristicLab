@@ -22,8 +22,10 @@
 using System;
 using System.Collections.Generic;
 using HeuristicLab.Common;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Core {
+  [StorableType("e79c962e-b662-4502-bc32-cac6a83e4e83")]
   public interface IDirectedGraph : IItem {
     IEnumerable<IVertex> Vertices { get; }
     IEnumerable<IArc> Arcs { get; }

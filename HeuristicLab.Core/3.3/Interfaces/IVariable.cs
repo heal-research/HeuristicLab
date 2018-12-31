@@ -20,8 +20,10 @@
 #endregion
 
 using System;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Core {
+  [StorableType("f2bc871d-5bc4-4584-8dc4-db0ea7fb5b15")]
   /// <summary>
   /// Represents a variable which has a name and holds an IItem.
   /// </summary>

@@ -21,8 +21,10 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
+  [StorableType("0dee2cb0-6279-4337-bbae-a0ba95d5bbb8")]
   public interface IRealVectorMultiNeighborhoodShakingOperator : IRealVectorOperator {
     ILookupParameter<RealVector> RealVectorParameter { get; }
     IValueLookupParameter<DoubleMatrix> BoundsParameter { get; }

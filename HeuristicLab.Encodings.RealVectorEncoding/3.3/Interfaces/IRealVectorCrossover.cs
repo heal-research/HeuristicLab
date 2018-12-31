@@ -22,8 +22,10 @@
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
+  [StorableType("b589675c-e174-4f35-8a37-0967ec119cda")]
   /// <summary>
   /// An interface which represents an operator for crossing vectors of real-valued data.
   /// </summary>

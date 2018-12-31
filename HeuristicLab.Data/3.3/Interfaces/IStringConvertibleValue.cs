@@ -21,8 +21,10 @@
 
 using System;
 using HeuristicLab.Common;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Data {
+  [StorableType("092ea088-1b35-4215-aebd-ee9731856d94")]
   public interface IStringConvertibleValue : IContent {
     bool ReadOnly { get; }
 

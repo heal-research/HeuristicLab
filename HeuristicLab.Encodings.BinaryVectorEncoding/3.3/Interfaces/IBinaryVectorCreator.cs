@@ -22,8 +22,10 @@
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.BinaryVectorEncoding {
+  [StorableType("60af1d5b-398c-4167-aa3f-08fce3d7d0a4")]
   /// <summary>
   /// An interface which represents an operator for creating vectors of bool-valued data.
   /// </summary>

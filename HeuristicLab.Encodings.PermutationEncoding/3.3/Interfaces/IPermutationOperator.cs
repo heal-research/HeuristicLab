@@ -20,8 +20,10 @@
 #endregion
 
 using HeuristicLab.Core;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
+  [StorableType("78db7fb9-a81d-4b48-9c24-1bdab9b6d3f9")]
   /// <summary>
   /// An interface which represents an operator dealing with permutations.
   /// </summary>

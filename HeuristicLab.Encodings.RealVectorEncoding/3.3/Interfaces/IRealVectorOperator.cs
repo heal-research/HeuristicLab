@@ -20,8 +20,10 @@
 #endregion
 
 using HeuristicLab.Core;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
+  [StorableType("af0ebc2c-280c-4dc4-8f53-e067994e7491")]
   /// <summary>
   /// An interface which represents an operator dealing with vectors of real-valued data.
   /// </summary>

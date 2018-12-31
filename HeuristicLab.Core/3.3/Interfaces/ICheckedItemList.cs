@@ -21,8 +21,10 @@
 
 using System.Collections.Generic;
 using HeuristicLab.Collections;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Core {
+  [StorableType("ba4a82ca-92eb-47a1-95a7-f41f6ef470f4")]
   public interface ICheckedItemList<T> : IItemList<T> where T : class, IItem {
     event CollectionItemsChangedEventHandler<IndexedItem<T>> CheckedItemsChanged;
     IEnumerable<IndexedItem<T>> CheckedItems { get; }

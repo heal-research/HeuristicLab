@@ -21,8 +21,10 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
+  [StorableType("b69a9830-2313-4a9d-9fa0-4650a3bdfdd2")]
   public interface ISymbolicExpressionTreeSizeConstraintOperator : ISymbolicExpressionTreeOperator {
     IValueLookupParameter<IntValue> MaximumSymbolicExpressionTreeDepthParameter { get; }
     IValueLookupParameter<IntValue> MaximumSymbolicExpressionTreeLengthParameter { get; }

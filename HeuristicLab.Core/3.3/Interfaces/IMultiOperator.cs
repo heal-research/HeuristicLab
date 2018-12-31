@@ -21,14 +21,18 @@
 
 
 using System.Collections.Generic;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Core {
+  [StorableType("31136bcb-7c35-404d-bae7-2f9c5f17b767")]
   public interface IMultiOperator : IOperator {
     IEnumerable<IOperator> Operators { get; }
     bool AddOperator(IOperator op);
     bool RemoveOperator(IOperator op);
   }
-  public interface IMultiOperator<T> : IMultiOperator where T : class,IOperator {
+
+  [StorableType("b2f95075-48df-43c8-b4a9-e404e357fabd")]
+  public interface IMultiOperator<T> : IMultiOperator where T : class, IOperator {
     new IItemList<T> Operators { get; }
   }
 }

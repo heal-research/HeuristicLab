@@ -1,4 +1,5 @@
-﻿#region License Information
+﻿using HEAL.Fossil;
+#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -19,6 +20,7 @@
  */
 #endregion
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
+  [StorableType("a5fbffbb-dd8d-4cdb-bb4a-d617370a59f3")]
   public interface IReadOnlySymbol : ISymbol {
   }
 }

@@ -20,8 +20,10 @@
 #endregion
 
 using System.Collections.Generic;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
+  [StorableType("09d35061-7098-4f29-957d-c2a2319fe954")]
   public class StandardEdgeEqualityComparer : EqualityComparer<Edge> {
     public override bool Equals(Edge x, Edge y) {
       bool inDirection = x.Source == y.Source && x.Target == y.Target;

@@ -20,8 +20,10 @@
 #endregion
 
 using System.Collections.Generic;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Core {
+  [StorableType("5d65ecdc-1659-488c-8a6f-0f630a2deeef")]
   /// <summary>
   /// An interface which represents an item which contains parameters.
   /// </summary>

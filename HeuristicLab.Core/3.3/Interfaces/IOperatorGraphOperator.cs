@@ -1,4 +1,5 @@
-﻿#region License Information
+﻿using HEAL.Fossil;
+#region License Information
 
 /* HeuristicLab
  * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
@@ -22,6 +23,7 @@
 #endregion
 
 namespace HeuristicLab.Core {
+  [StorableType("00fd73de-0a22-44f1-9f0b-c286a873dac8")]
   public interface IOperatorGraphOperator : IOperator {
     OperatorGraph OperatorGraph { get; }
   }

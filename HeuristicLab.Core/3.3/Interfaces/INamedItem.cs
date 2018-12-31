@@ -21,8 +21,10 @@
 
 using System;
 using HeuristicLab.Common;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Core {
+  [StorableType("4337aaa9-688c-43cb-b980-463cb1704e31")]
   public interface INamedItem : IItem {
     string Name { get; set; }
     bool CanChangeName { get; }

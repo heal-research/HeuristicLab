@@ -20,7 +20,10 @@
 #endregion
 
 using System.Collections.Generic;
+using HEAL.Fossil;
+
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
+  [StorableType("75a6319f-4bfb-4aa5-823b-f340f9a1e753")]
   public interface ISymbolicExpressionTreeGrammar : ISymbolicExpressionGrammarBase {
     IEnumerable<ISymbol> ModifyableSymbols { get; }
     bool IsModifyableSymbol(ISymbol symbol);

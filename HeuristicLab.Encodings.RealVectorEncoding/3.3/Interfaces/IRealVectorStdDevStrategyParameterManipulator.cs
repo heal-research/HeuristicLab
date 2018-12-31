@@ -22,8 +22,10 @@
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
+  [StorableType("a25675fb-a613-4b70-9572-d9d1793b5da3")]
   public interface IRealVectorStdDevStrategyParameterManipulator : IRealVectorStdDevStrategyParameterOperator, IStrategyParameterManipulator {
     ILookupParameter<RealVector> StrategyParameterParameter { get; }
     IValueLookupParameter<DoubleMatrix> BoundsParameter { get; }

@@ -22,8 +22,10 @@
 using System;
 using System.Collections.Generic;
 using HeuristicLab.Core;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
+  [StorableType("25137f88-66b9-48d7-a2bd-60190082e044")]
   public interface ISymbol : INamedItem {
     ISymbolicExpressionTreeNode CreateTreeNode();
     double InitialFrequency { get; set; }

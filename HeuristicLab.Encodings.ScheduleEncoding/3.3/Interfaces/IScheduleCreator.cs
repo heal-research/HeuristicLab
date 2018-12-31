@@ -21,8 +21,10 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding {
+  [StorableType("d6738639-c5fc-46af-8997-7527ea718759")]
   public interface IScheduleCreator : ISolutionCreator, IScheduleOperator {
     ILookupParameter<IScheduleEncoding> ScheduleEncodingParameter { get; }
   }

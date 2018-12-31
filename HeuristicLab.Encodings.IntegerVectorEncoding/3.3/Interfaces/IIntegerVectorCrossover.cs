@@ -21,8 +21,10 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.IntegerVectorEncoding {
+  [StorableType("b29109e0-1930-429e-bc50-56790b97a7a0")]
   /// <summary>
   /// An interface which represents an operator for crossing vectors of int-valued data.
   /// </summary>

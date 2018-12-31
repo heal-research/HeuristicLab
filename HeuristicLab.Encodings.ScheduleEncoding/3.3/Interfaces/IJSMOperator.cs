@@ -20,8 +20,10 @@
 #endregion
 
 using HeuristicLab.Core;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding {
+  [StorableType("64a91a33-6676-4452-af37-5ed8767fdd6a")]
   public interface IJSMOperator : IOperator {
   }
 }

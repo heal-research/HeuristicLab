@@ -22,8 +22,10 @@
 using HeuristicLab.Optimization;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
+  [StorableType("4e4287a4-1bd9-4056-b203-ad97e4c418fb")]
   public interface IRealVectorParticleCreator : IParticleCreator, IRealVectorOperator {
     ILookupParameter<RealVector> RealVectorParameter { get; }
     ILookupParameter<RealVector> PersonalBestParameter { get; }

@@ -20,8 +20,10 @@
 #endregion
 
 using HeuristicLab.Core;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.LinearLinkageEncoding {
+  [StorableType("80ff19b9-2de7-4d4f-ba99-db7d716b4ce7")]
   public interface ILinearLinkageOperator : IOperator {
   }
 }

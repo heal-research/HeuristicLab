@@ -23,8 +23,10 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using HeuristicLab.Common;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Core {
+  [StorableType("cd8822ef-1e2d-4aa1-ad33-7ec7546610f3")]
   public interface IExecutable : IItem {
     ExecutionState ExecutionState { get; }
     TimeSpan ExecutionTime { get; }

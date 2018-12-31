@@ -20,8 +20,10 @@
 #endregion
 
 using System;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Core {
+  [StorableType("78e29fa3-e603-4a2e-a3e0-2dee459891f1")]
   public interface ILookupParameter : IParameter {
     string ActualName { get; set; }
     string TranslatedName { get; }
@@ -29,6 +31,7 @@ namespace HeuristicLab.Core {
     event EventHandler ActualNameChanged;
   }
 
+  [StorableType("61868c33-20be-4577-94bf-7efff9e9cf73")]
   public interface ILookupParameter<T> : ILookupParameter where T : class, IItem {
     new T ActualValue { get; set; }
   }

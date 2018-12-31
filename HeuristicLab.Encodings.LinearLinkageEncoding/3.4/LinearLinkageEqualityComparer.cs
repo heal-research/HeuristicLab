@@ -22,9 +22,11 @@
 using System;
 using System.Collections.Generic;
 using HeuristicLab.PluginInfrastructure;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.LinearLinkageEncoding {
   [NonDiscoverableType]
+  [StorableType("8b1e0151-8882-4338-a98a-f3a03bcda6cf")]
   public class LinearLinkageEqualityComparer : EqualityComparer<LinearLinkage> {
     public override bool Equals(LinearLinkage x, LinearLinkage y) {
       if (ReferenceEquals(x, y)) return true;

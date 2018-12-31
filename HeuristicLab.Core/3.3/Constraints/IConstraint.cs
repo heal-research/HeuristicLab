@@ -21,8 +21,10 @@
 
 using System;
 using System.Collections.Generic;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Core {
+  [StorableType("070af09a-c6b5-4f2b-be2e-4c2c6732febd")]
   public interface IConstraint : IItem {
     bool Active { get; set; }
     IItem ConstrainedValue { get; set; }

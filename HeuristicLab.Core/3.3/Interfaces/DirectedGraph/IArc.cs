@@ -21,8 +21,10 @@
 
 using System;
 using HeuristicLab.Common;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Core {
+  [StorableType("6d358590-409c-4fbb-944a-01f8e99be025")]
   public interface IArc : IItem {
     IVertex Source { get; }
     IVertex Target { get; }
@@ -32,7 +34,8 @@ namespace HeuristicLab.Core {
     event EventHandler Changed; // generic event for when the label, weight or data were changed
   }
 
-  public interface IArc<T> : IArc where T : class,IDeepCloneable {
+  [StorableType("4acdc291-84ea-4da3-95b8-046f973db256")]
+  public interface IArc<T> : IArc where T : class, IDeepCloneable {
     T Data { get; set; }
   }
 }

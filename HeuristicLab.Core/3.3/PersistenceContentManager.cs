@@ -23,8 +23,10 @@ using System.IO.Compression;
 using System.Threading;
 using HeuristicLab.Common;
 using HeuristicLab.Persistence.Default.Xml;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Core {
+  [StorableType("72eb913e-a3cf-439e-a1ab-c5539a93fd48")]
   public class PersistenceContentManager : ContentManager {
     public PersistenceContentManager() : base() { }
 

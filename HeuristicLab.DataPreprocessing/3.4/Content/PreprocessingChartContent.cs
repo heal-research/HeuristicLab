@@ -34,6 +34,7 @@ namespace HeuristicLab.DataPreprocessing {
   [Item("PreprocessingChart", "Represents a preprocessing chart.")]
   [StorableType("7EDAFA6E-E4B1-4150-BB57-280A9F9E61D8")]
   public class PreprocessingChartContent : PreprocessingContent, IViewShortcut {
+    [StorableType("d4c1c81a-f0c5-496f-8264-76b75572c0fc")]
     public enum LegendOrder {
       Alphabetically,
       Appearance

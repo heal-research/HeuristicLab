@@ -22,8 +22,10 @@
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.IntegerVectorEncoding {
+  [StorableType("e8beb5ce-ec96-48b4-aac6-59e73249afef")]
   public interface IIntegerVectorStdDevStrategyParameterCrossover : IIntegerVectorStdDevStrategyParameterOperator, IStrategyParameterCrossover {
     ILookupParameter<DoubleArray> StrategyParameterParameter { get; }
     ILookupParameter<ItemArray<DoubleArray>> ParentsParameter { get; }

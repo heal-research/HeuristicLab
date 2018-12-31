@@ -1,3 +1,4 @@
+using HEAL.Fossil;
 #region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
@@ -20,6 +21,7 @@
 #endregion
 
 namespace HeuristicLab.Core {
+  [StorableType("ad36dbde-a72c-43ad-8bb4-67aaaef34b72")]
   public enum ExecutionState {
     Prepared,
     Started,

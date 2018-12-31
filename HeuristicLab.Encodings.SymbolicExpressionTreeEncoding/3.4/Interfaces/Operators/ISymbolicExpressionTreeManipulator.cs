@@ -20,8 +20,10 @@
 #endregion
 
 using HeuristicLab.Optimization;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
+  [StorableType("35d40821-ee75-4212-baf9-4138db862b77")]
   /// <summary>
   /// Interface for operators that manipulate symbolic expression trees.
   /// </summary>

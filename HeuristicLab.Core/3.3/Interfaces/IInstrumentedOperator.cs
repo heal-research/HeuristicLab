@@ -22,8 +22,10 @@
 #endregion
 
 using System.Collections.Generic;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Core {
+  [StorableType("cf88d332-a2bb-4a6b-89df-2a6b858e09c7")]
   public interface IInstrumentedOperator : IOperator {
     IEnumerable<IOperator> BeforeExecutionOperators { get; }
     IEnumerable<IOperator> AfterExecutionOperators { get; }

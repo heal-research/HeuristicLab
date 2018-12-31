@@ -21,8 +21,10 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.IntegerVectorEncoding {
+  [StorableType("8c58d54f-5454-4b55-8be8-820ef0ee8687")]
   /// <summary>
   /// An interface which represents an operator for manipulating vectors of int-valued data.
   /// </summary>

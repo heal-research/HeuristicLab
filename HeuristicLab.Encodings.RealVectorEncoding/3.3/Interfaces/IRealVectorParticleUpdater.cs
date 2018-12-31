@@ -22,8 +22,10 @@
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
+  [StorableType("34b1f071-c5a0-471c-9ee2-cdf0d27c82b3")]
   public interface IRealVectorParticleUpdater : IParticleUpdater, IRealVectorOperator {
     ILookupParameter<RealVector> VelocityParameter { get; }
     ILookupParameter<DoubleValue> CurrentMaxVelocityParameter { get; }

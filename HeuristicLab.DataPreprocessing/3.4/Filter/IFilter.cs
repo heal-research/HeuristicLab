@@ -20,8 +20,10 @@
 #endregion
 
 using HeuristicLab.Core;
+using HEAL.Fossil;
 
 namespace HeuristicLab.DataPreprocessing.Filter {
+  [StorableType("bf5dabf7-e795-493c-b2d0-23051dfb3d2f")]
   public interface IFilter : IConstraint {
     new bool[] Check();
     new bool[] Check(out string errorMessage);

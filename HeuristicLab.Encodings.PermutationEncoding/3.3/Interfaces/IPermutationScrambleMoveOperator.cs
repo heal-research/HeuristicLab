@@ -20,8 +20,10 @@
 #endregion
 
 using HeuristicLab.Core;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
+  [StorableType("ec27a153-2ad7-4bf6-81e2-b0586083fdd3")]
   public interface IPermutationScrambleMoveOperator : IPermutationMoveOperator {
     ILookupParameter<ScrambleMove> ScrambleMoveParameter { get; }
   }

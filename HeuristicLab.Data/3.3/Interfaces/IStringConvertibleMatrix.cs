@@ -22,8 +22,10 @@
 using System;
 using System.Collections.Generic;
 using HeuristicLab.Common;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Data {
+  [StorableType("5da53526-d2cd-4f2c-bbc9-de34b457892c")]
   public interface IStringConvertibleMatrix : IContent {
     int Rows { get; set; }
     int Columns { get; set; }

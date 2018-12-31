@@ -22,9 +22,11 @@
 using System;
 using System.Collections.Generic;
 using HeuristicLab.PluginInfrastructure;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   [NonDiscoverableType]
+  [StorableType("076cab74-4cf1-4624-b8fa-8a526345eca3")]
   public class RealVectorEqualityComparer : EqualityComparer<RealVector> {
     public override bool Equals(RealVector x, RealVector y) {
       if (ReferenceEquals(x, y)) return true;

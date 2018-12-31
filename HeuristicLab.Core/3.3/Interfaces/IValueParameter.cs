@@ -20,8 +20,10 @@
 #endregion
 
 using System;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Core {
+  [StorableType("e4920b59-6bf5-4c43-997c-7f5434cd98d2")]
   public interface IValueParameter : IParameter {
     IItem Value { get; set; }
     bool GetsCollected { get; set; }
@@ -29,6 +31,7 @@ namespace HeuristicLab.Core {
     event EventHandler GetsCollectedChanged;
   }
 
+  [StorableType("645945d2-9cd7-45cd-8507-575b2ed53de4")]
   public interface IValueParameter<T> : IValueParameter where T : class, IItem {
     new T Value { get; set; }
   }

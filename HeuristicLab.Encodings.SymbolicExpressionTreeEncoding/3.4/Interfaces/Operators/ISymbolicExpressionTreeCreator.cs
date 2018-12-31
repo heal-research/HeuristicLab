@@ -21,8 +21,10 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
+  [StorableType("acd473fc-5720-430e-b4dc-4350506ff14b")]
   /// <summary>
   /// Interface for operators that create symbolic expression trees.
   /// </summary>

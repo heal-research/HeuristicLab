@@ -20,8 +20,10 @@
 #endregion
 
 using HeuristicLab.Core;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.BinaryVectorEncoding {
+  [StorableType("24afee75-e15a-4076-aeae-101fe24d8e60")]
   /// <summary>
   /// An interface which represents an operator dealing with vectors of bool-valued data.
   /// </summary>
