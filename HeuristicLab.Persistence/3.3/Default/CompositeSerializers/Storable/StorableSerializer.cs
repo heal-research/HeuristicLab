@@ -69,14 +69,15 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
     /// 	<c>true</c> if this instance can serialize the specified type; otherwise, <c>false</c>.
     /// </returns>
     public bool CanSerialize(Type type) {
+      if (type.IsEnum || type.IsValueType) return false; // there are other more specific serializers for enums and structs
       var markedStorable = StorableReflection.HasStorableTypeAttribute(type);
       if (GetConstructor(type) == null)
-        if (markedStorable)
+        if (markedStorable && !type.IsInterface)
           throw new Exception("[Storable] type has no default constructor and no [StorableConstructor]");
         else
           return false;
       if (!StorableReflection.IsEmptyOrStorableType(type, true))
-        if (markedStorable)
+        if (markedStorable && !type.IsInterface)
           throw new Exception("[Storable] type has non emtpy, non [Storable] base classes");
         else
           return false;
