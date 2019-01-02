@@ -32,6 +32,7 @@ namespace HeuristicLab.Analysis {
   public class DataTableVisualProperties : DeepCloneable, INotifyPropertyChanged {
 
     #region Histogram Aggregation
+    [StorableType("323A07AD-207C-4D45-B7EC-4E3E48F1E5C6")]
     public enum DataTableHistogramAggregation {
       Overlapping,
       SideBySide,

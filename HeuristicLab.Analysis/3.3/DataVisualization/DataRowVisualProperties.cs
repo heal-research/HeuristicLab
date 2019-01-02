@@ -32,6 +32,7 @@ namespace HeuristicLab.Analysis {
   [StorableType("3B28F24F-5CA7-40C2-A81C-65FCAF5B2C66")]
   public class DataRowVisualProperties : DeepCloneable, INotifyPropertyChanged {
     #region ChartType
+    [StorableType("488A018F-AF79-4B60-989A-845EF24F4A01")]
     public enum DataRowChartType {
       Line,
       Columns,
@@ -40,8 +41,10 @@ namespace HeuristicLab.Analysis {
       Histogram,
       StepLine
     }
+
     #endregion
     #region LineStyle
+    [StorableType("A064C2CE-D2CC-4292-B5FC-8DDCFA55C896")]
     public enum DataRowLineStyle {
       Dash,
       DashDot,

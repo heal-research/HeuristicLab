@@ -30,19 +30,16 @@ namespace HeuristicLab.Common {
   public struct Point2D<T> where T : struct, IEquatable<T> {
     public static readonly Point2D<T> Empty = new Point2D<T>();
 
-    [Storable]
     private T x;
     public T X {
       get { return x; }
     }
 
-    [Storable]
     private T y;
     public T Y {
       get { return y; }
     }
 
-    [Storable]
     private object tag;
     public object Tag {
       get { return tag; }

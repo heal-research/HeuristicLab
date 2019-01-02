@@ -165,10 +165,39 @@ namespace HeuristicLab.Persistence.Fossil.Tests {
         }
       }
     }
-    
-    // TODO:
-    // - IndexedItem and IndexedDataTable
-    // - Point2D from HL.Common 
+
+    [TestMethod]
+    [TestCategory("Persistence.Fossil")]
+    [TestProperty("Time", "short")]
+    public void TestIndexedDataTable() {
+      var dt = new IndexedDataTable<int>("test", "test description");
+      var dr = new IndexedDataRow<int>("test row");
+      dr.Values.Add(Tuple.Create(1, 1.0));
+      dr.Values.Add(Tuple.Create(2, 2.0));
+      dr.Values.Add(Tuple.Create(3, 3.0));
+      dt.Rows.Add(dr);
+      var ser = new ProtoBufSerializer();
+      ser.Serialize(dt, tempFile);
+      var dt2 = (IndexedDataTable<int>)ser.Deserialize(tempFile);
+      Assert.AreEqual(dt.Rows["test row"].Values[0], dt2.Rows["test row"].Values[0]);
+      Assert.AreEqual(dt.Rows["test row"].Values[1], dt2.Rows["test row"].Values[1]);
+      Assert.AreEqual(dt.Rows["test row"].Values[2], dt2.Rows["test row"].Values[2]);
+    }
+
+    [TestMethod]
+    [TestCategory("Persistence.Fossil")]
+    [TestProperty("Time", "short")]
+    public void TestPoint2d() {
+      var tag = new IntValue(10);
+      var p = new Point2D<double>(1.0, 2.0, tag);
+      var ser = new ProtoBufSerializer();
+      ser.Serialize(p, tempFile);
+      var p2 = (Point2D<double>)ser.Deserialize(tempFile);
+      Assert.AreEqual(p.X, p2.X);
+      Assert.AreEqual(p.Y, p2.Y);
+      var tag2 = (IntValue)p2.Tag;
+      Assert.AreEqual(tag.Value, tag2.Value);
+    }
 
     [ClassInitialize]
     public static void Initialize(TestContext testContext) {
