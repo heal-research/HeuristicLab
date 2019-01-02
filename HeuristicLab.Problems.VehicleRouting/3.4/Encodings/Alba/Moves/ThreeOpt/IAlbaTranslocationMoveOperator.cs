@@ -22,8 +22,10 @@
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
+  [StorableType("781B6DDB-B55A-42C2-84E1-090E6F654089")]
   public interface IAlbaTranslocationMoveOperator : IVRPMoveOperator {
     ILookupParameter<TranslocationMove> TranslocationMoveParameter { get; }
   }

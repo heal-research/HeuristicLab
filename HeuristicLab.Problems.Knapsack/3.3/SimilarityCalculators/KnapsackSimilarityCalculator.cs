@@ -37,6 +37,7 @@ namespace HeuristicLab.Problems.Knapsack {
   [Item("KnapsackSimilarityCalculator", "An operator that performs similarity calculation between two knapsack solutions. The operator calculates the similarity based on the number of elements the two solutions have in common.")]
   [NonDiscoverableType]
   [Obsolete("Please use the HammingSimilarityCalculator in the HeuristicLab.Encodings.BinaryVector plugin.")]
+  [StorableType("27FD4466-6FDC-4420-A606-100FC0CDABF6")]
   internal sealed class KnapsackSimilarityCalculator : SingleObjectiveSolutionSimilarityCalculator {
     protected override bool IsCommutative { get { return true; } }
 

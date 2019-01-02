@@ -23,8 +23,10 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Optimization;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.QuadraticAssignment {
+  [StorableType("A1CCDFCE-3466-41E5-869A-33AB658608B3")]
   public interface IQAPMoveEvaluator : ISingleObjectiveMoveEvaluator, IMoveOperator {
     ILookupParameter<Permutation> PermutationParameter { get; }
     ILookupParameter<DoubleMatrix> DistancesParameter { get; }

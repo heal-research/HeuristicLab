@@ -21,8 +21,10 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
+  [StorableType("70080696-44A4-41C0-9FFF-B84C35303AEB")]
   public interface IAlbaIntraRouteInversionMoveOperator : IVRPMoveOperator {
     ILookupParameter<AlbaIntraRouteInversionMove> IntraRouteInversionMoveParameter { get; }
   }

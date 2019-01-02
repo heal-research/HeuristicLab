@@ -21,8 +21,10 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.PTSP {
+  [StorableType("1998604C-41FF-4388-B413-8BD658D073E5")]
   public interface IEstimatedPTSPOperator : IItem {
     ILookupParameter<ItemList<BoolArray>> RealizationsParameter { get; }
   }

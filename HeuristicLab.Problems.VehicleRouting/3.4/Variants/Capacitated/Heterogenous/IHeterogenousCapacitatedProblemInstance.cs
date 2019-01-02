@@ -20,8 +20,10 @@
 #endregion
 
 using HeuristicLab.Data;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.VehicleRouting.Variants {
+  [StorableType("94A5B1EF-6C46-402B-B31A-76BB19745A52")]
   public interface IHeterogenousCapacitatedProblemInstance : ICapacitatedProblemInstance {
     DoubleArray Capacity { get; }
   }

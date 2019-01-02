@@ -23,8 +23,10 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.IntegerVectorEncoding;
 using HeuristicLab.Optimization;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.Orienteering {
+  [StorableType("4F942163-D321-4935-BF2E-780193BE9FFE")]
   public interface IOrienteeringEvaluator : ISingleObjectiveEvaluator {
     ILookupParameter<IntegerVector> IntegerVectorParameter { get; }
     ILookupParameter<DoubleArray> ScoresParameter { get; }

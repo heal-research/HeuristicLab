@@ -21,8 +21,10 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.TravelingSalesman {
+  [StorableType("D500AB51-6750-44D3-B1CA-0DF2DCB43758")]
   /// <summary>
   /// An interface which represents an evaluation operator which evaluates TSP solutions given in path representation.
   /// </summary>

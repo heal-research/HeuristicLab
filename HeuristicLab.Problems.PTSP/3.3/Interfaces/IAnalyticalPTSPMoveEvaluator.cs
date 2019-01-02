@@ -23,8 +23,10 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Optimization;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.PTSP {
+  [StorableType("D503E92D-9A85-46AC-ADAA-8A454B9E9C79")]
   public interface IAnalyticalPTSPMoveEvaluator : IAnalyticalPTSPOperator, ISingleObjectiveMoveEvaluator, IPermutationMoveOperator {
     ILookupParameter<DoubleMatrix> CoordinatesParameter { get; }
     ILookupParameter<DistanceCalculator> DistanceCalculatorParameter { get; }

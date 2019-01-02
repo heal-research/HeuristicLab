@@ -20,8 +20,10 @@
 #endregion
 
 using HeuristicLab.Problems.VehicleRouting.Variants;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Zhu {
+  [StorableType("CD11FA3C-3B50-4710-AAFC-32C9C61B3321")]
   public interface IZhuOperator :
     ISingleDepotOperator, IHomogenousCapacitatedOperator, ITimeWindowedOperator {
   }

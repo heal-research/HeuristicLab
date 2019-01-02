@@ -20,8 +20,10 @@
 #endregion
 
 using HeuristicLab.Data;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.TestFunctions {
+  [StorableType("DD1BC33E-735A-4C6C-8E90-FEE43772DDCE")]
   public interface IRastriginMoveEvaluator : ISingleObjectiveTestFunctionAdditiveMoveEvaluator {
     DoubleValue A { get; set; }
   }

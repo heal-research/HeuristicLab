@@ -21,8 +21,10 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.ScheduleEncoding;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.Scheduling {
+  [StorableType("E4140EFF-9E57-4457-A495-3F00A9612E9B")]
   public interface IJSSPOperator : IOperator {
     ILookupParameter<ItemList<Job>> JobDataParameter { get; }
   }

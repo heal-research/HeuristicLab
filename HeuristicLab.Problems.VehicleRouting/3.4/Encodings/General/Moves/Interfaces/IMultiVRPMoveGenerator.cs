@@ -20,8 +20,10 @@
 #endregion
 
 using HeuristicLab.Optimization;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
+  [StorableType("27EF7230-78A6-48B5-88A7-AAC70C538FCA")]
   public interface IMultiVRPMoveGenerator : IMultiVRPMoveOperator, ISingleMoveGenerator {
   }
 }

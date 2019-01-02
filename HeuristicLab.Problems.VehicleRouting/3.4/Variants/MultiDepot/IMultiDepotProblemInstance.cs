@@ -21,8 +21,10 @@
 
 using HeuristicLab.Data;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.VehicleRouting.Variants {
+  [StorableType("C6DA8FFB-DBA2-431B-A8C2-B685EB76D3F3")]
   public interface IMultiDepotProblemInstance : IVRPProblemInstance {
     IntValue Depots { get; }
     IntArray VehicleDepotAssignment { get; }

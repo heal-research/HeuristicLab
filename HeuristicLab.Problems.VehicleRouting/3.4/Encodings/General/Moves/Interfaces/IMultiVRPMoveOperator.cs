@@ -20,8 +20,10 @@
 #endregion
 
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
+  [StorableType("C48B8EF1-F37C-4F0D-B4D7-B5A5B68CD9B7")]
   public interface IMultiVRPMoveOperator : IVRPMoveOperator {
   }
 }

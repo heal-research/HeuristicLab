@@ -1,4 +1,5 @@
-﻿#region License Information
+﻿using HEAL.Fossil;
+#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -20,6 +21,7 @@
 #endregion
 
 namespace HeuristicLab.Problems.Scheduling {
+  [StorableType("24F9DDB2-C881-4C8D-AED8-76683C53110C")]
   public enum JSMForcingStrategyTypes {
     ShiftForcing,
     SwapForcing

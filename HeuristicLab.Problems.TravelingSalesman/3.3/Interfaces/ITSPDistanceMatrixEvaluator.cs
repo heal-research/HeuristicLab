@@ -20,8 +20,10 @@
 #endregion
 
 using HeuristicLab.Core;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.TravelingSalesman {
+  [StorableType("ADEAB327-E563-42D6-845C-E9D412586A4C")]
   /// <summary>
   /// An interface which represents an evaluation operator which evaluates TSP solutions given in path representation using a distance matrix.
   /// </summary>

@@ -20,8 +20,10 @@
 #endregion
 
 using HeuristicLab.Optimization;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.TravelingSalesman {
+  [StorableType("913DCAEA-8E40-4ADA-AB77-0E99B7C1C340")]
   /// <summary>
   /// An interface which represents an evaluation operator for Traveling Salesman Problems.
   /// </summary>

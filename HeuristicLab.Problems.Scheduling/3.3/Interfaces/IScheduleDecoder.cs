@@ -20,8 +20,10 @@
 #endregion
 
 using HeuristicLab.Core;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding {
+  [StorableType("010C752F-0F5E-4B93-8695-8DD74903DBE7")]
   public interface IScheduleDecoder : IOperator {
     ILookupParameter<IScheduleEncoding> ScheduleEncodingParameter { get; }
     ILookupParameter<Schedule> ScheduleParameter { get; }

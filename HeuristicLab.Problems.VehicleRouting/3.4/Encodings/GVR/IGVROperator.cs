@@ -20,8 +20,10 @@
 #endregion
 
 using HeuristicLab.Problems.VehicleRouting.Variants;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.GVR {
+  [StorableType("8C6EFFE6-4270-497D-9351-13BEDA227E21")]
   public interface IGVROperator :
     ISingleDepotOperator, IHomogenousCapacitatedOperator, ITimeWindowedOperator {
   }

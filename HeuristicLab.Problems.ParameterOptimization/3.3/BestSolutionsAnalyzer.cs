@@ -149,6 +149,7 @@ namespace HeuristicLab.Problems.ParameterOptimization {
     }
   }
 
+  [StorableType("EB92A47A-F96B-4C42-9D31-EF4992320794")]
   public class DoubleArrayEqualityComparer : IEqualityComparer<DoubleArray> {
     public bool Equals(DoubleArray x, DoubleArray y) {
       if (x == null && y == null) return true;

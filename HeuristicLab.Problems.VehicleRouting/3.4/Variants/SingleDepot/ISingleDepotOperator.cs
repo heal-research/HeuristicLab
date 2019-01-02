@@ -20,8 +20,10 @@
 #endregion
 
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.VehicleRouting.Variants {
+  [StorableType("575729DA-15DA-4979-B8B5-F6878FE7FAE7")]
   public interface ISingleDepotOperator : IVRPOperator {
   }
 }

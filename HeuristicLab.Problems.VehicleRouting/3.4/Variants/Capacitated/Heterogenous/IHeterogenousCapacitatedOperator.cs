@@ -1,4 +1,5 @@
-﻿#region License Information
+﻿using HEAL.Fossil;
+#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -21,6 +22,7 @@
 
 
 namespace HeuristicLab.Problems.VehicleRouting.Variants {
+  [StorableType("D9F4AD37-6D17-4376-874C-5773BFDE9A77")]
   public interface IHeterogenousCapacitatedOperator : IHomogenousCapacitatedOperator {
   }
 }

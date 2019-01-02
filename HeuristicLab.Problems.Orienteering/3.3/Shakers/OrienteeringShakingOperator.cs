@@ -240,6 +240,7 @@ namespace HeuristicLab.Problems.Orienteering {
       }
     }
 
+    [StorableType("8E380F4E-D9C2-4671-ABF8-A28E14B22BA2")]
     private class SavingInfo {
       public int Index;
       public double Saving;

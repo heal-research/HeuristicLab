@@ -22,8 +22,10 @@
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.ScheduleEncoding;
 using HeuristicLab.Optimization;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.Scheduling {
+  [StorableType("9E6BC36E-D5A6-4C64-9512-391C382E3527")]
   /// <summary>
   /// An evaluator for a scheduling problem representation
   /// </summary>

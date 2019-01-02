@@ -21,8 +21,10 @@
 
 using System.Collections.Generic;
 using HeuristicLab.Core;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.VehicleRouting.Interfaces {
+  [StorableType("4ED07F1F-AC5F-4771-8916-AF7DD576C581")]
   interface IMultiVRPOperator : IVRPOperator {
     void SetOperators(IEnumerable<IOperator> operators);
   }

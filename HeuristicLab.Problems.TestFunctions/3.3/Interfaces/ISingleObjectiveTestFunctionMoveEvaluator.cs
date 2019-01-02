@@ -21,8 +21,10 @@
 
 using System;
 using HeuristicLab.Optimization;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.TestFunctions {
+  [StorableType("7EBD5AF9-7197-465F-A8C5-7B81882E9D05")]
   public interface ISingleObjectiveTestFunctionMoveEvaluator : ISingleObjectiveMoveEvaluator, IMoveOperator {
     Type EvaluatorType { get; }
   }

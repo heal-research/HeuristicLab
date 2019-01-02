@@ -102,12 +102,6 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Google.Protobuf, Version=3.6.1.0, Culture=neutral, PublicKeyToken=a7d26565bac4d604, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Google.Protobuf.3.6.1\lib\net45\Google.Protobuf.dll</HintPath>
-    </Reference>
-    <Reference Include="HEAL.Fossil, Version=1.0.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\HEAL.Fossil.1.0.0\lib\netstandard2.0\HEAL.Fossil.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -279,11 +273,6 @@
     <ProjectReference Include="..\..\HeuristicLab.Parameters\3.3\HeuristicLab.Parameters-3.3.csproj">
       <Project>{56F9106A-079F-4C61-92F6-86A84C2D84B7}</Project>
       <Name>HeuristicLab.Parameters-3.3</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Persistence\3.3\HeuristicLab.Persistence-3.3.csproj">
-      <Project>{102BC7D3-0EF9-439C-8F6D-96FF0FDB8E1B}</Project>
-      <Name>HeuristicLab.Persistence-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\3.3\HeuristicLab.PluginInfrastructure-3.3.csproj">

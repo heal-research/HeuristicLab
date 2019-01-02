@@ -24,8 +24,10 @@ using System.Collections.Generic;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Problems.VehicleRouting.ProblemInstances;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.VehicleRouting.Interfaces {
+  [StorableType("B8E231D0-6BA9-4DCF-9585-95E46B280B47")]
   public interface IVRPProblemInstance : IParameterizedNamedItem {
     IVRPEvaluator SolutionEvaluator { get; set; }
     IVRPEvaluator MoveEvaluator { get; }

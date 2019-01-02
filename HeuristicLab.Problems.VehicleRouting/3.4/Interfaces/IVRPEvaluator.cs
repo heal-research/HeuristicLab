@@ -22,8 +22,10 @@
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 using HeuristicLab.Problems.VehicleRouting.ProblemInstances;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.VehicleRouting.Interfaces {
+  [StorableType("C3423687-3CBE-41E4-9227-FF4F1D6912E1")]
   public interface IVRPEvaluator : IVRPOperator, ISingleObjectiveEvaluator {
     ILookupParameter<IVRPEncoding> VRPToursParameter { get; }
 

@@ -21,8 +21,10 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.NK {
+  [StorableType("78325D81-C6B0-49FF-B190-755B7D413E56")]
   public interface IInteractionInitializer : IParameterizedItem {
     BoolMatrix InitializeInterations(int length, int nComponents, int nInteractions, IRandom random);
   }

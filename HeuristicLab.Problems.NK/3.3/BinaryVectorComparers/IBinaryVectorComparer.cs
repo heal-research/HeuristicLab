@@ -22,7 +22,9 @@
 using System.Collections.Generic;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.NK {
+  [StorableType("056C41CB-BF99-418E-AAF5-85273EF0831A")]
   public interface IBinaryVectorComparer : IItem, IComparer<BinaryVector> { }
 }

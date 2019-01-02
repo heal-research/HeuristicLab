@@ -21,8 +21,10 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.VehicleRouting.Interfaces {
+  [StorableType("FFAE16E2-265C-464E-9903-24154F6B0628")]
   public interface IVRPCrossover : IVRPOperator, ICrossover {
     ILookupParameter<ItemArray<IVRPEncoding>> ParentsParameter { get; }
     ILookupParameter<IVRPEncoding> ChildParameter { get; }

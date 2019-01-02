@@ -1,4 +1,5 @@
-﻿#region License Information
+﻿using HEAL.Fossil;
+#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -20,6 +21,7 @@
 #endregion
 
 namespace HeuristicLab.Problems.Scheduling {
+  [StorableType("546CD984-4CBF-4AF8-8E92-C9EDC5426CB4")]
   public enum JSMDecodingErrorPolicyTypes {
     RandomPolicy,
     GuidedPolicy

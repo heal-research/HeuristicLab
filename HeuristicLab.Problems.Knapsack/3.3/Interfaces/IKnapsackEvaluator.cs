@@ -20,8 +20,10 @@
 #endregion
 
 using HeuristicLab.Optimization;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.Knapsack {
+  [StorableType("B7D22238-9840-4293-A12E-6EEF7D7298FD")]
   /// <summary>
   /// An interface which represents an evaluation operator for Knapsack Problems.
   /// </summary>

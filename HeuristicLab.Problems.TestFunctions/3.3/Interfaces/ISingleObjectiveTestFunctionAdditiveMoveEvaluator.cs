@@ -20,8 +20,10 @@
 #endregion
 
 using HeuristicLab.Encodings.RealVectorEncoding;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.TestFunctions {
+  [StorableType("9A3D6F31-3A84-40CE-8345-F702022CEFE6")]
   public interface ISingleObjectiveTestFunctionAdditiveMoveEvaluator : ISingleObjectiveTestFunctionMoveEvaluator, IAdditiveRealVectorMoveOperator {
   }
 }

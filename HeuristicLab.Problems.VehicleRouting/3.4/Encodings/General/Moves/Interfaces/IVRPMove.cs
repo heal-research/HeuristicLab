@@ -21,8 +21,10 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
+  [StorableType("2F7FBB88-86B4-4B13-91C7-6BFF0786291B")]
   public interface IVRPMove : IItem {
     VRPMoveEvaluator GetMoveEvaluator();
     VRPMoveMaker GetMoveMaker();

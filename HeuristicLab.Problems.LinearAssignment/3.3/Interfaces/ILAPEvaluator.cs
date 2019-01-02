@@ -23,8 +23,10 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Optimization;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.LinearAssignment {
+  [StorableType("4B73438E-511A-4AF0-B7F1-B357F6092604")]
   public interface ILAPEvaluator : ISingleObjectiveEvaluator {
     ILookupParameter<DoubleMatrix> CostsParameter { get; }
     ILookupParameter<Permutation> AssignmentParameter { get; }

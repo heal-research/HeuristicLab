@@ -20,7 +20,9 @@
 #endregion
 
 using HeuristicLab.Optimization;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.NK {
+  [StorableType("06B5D234-4D97-4D4A-8EE2-E61FB21A54F6")]
   public interface INKMoveEvaluator : ISingleObjectiveMoveEvaluator, IMoveOperator { }
 }

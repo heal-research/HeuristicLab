@@ -22,8 +22,10 @@
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.Knapsack {
+  [StorableType("68FE6DEB-F190-446B-9877-7BE56FB08585")]
   public interface IKnapsackMoveEvaluator : ISingleObjectiveMoveEvaluator, IMoveOperator {
     ILookupParameter<IntValue> KnapsackCapacityParameter { get; }
     ILookupParameter<DoubleValue> PenaltyParameter { get; }

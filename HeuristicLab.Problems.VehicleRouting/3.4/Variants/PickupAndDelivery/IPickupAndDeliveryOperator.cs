@@ -20,8 +20,10 @@
 #endregion
 
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.VehicleRouting.Variants {
+  [StorableType("D2F69F8C-357D-4EC7-AC78-EE04324A27C6")]
   public interface IPickupAndDeliveryOperator : IVRPOperator {
   }
 }

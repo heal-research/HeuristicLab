@@ -21,8 +21,10 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
+  [StorableType("D3D40EAC-F695-4069-9A3A-861CE2997E37")]
   public interface IPotvinPDExchangeMoveOperator : IVRPMoveOperator {
     ILookupParameter<PotvinPDExchangeMove> PDExchangeMoveParameter { get; }
   }

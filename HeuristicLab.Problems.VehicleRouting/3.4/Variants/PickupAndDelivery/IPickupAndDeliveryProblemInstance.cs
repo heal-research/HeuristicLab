@@ -21,8 +21,10 @@
 
 using HeuristicLab.Data;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.VehicleRouting.Variants {
+  [StorableType("A55869C3-00D4-481B-BBC8-201C510934AA")]
   public interface IPickupAndDeliveryProblemInstance : IVRPProblemInstance {
     IntArray PickupDeliveryLocation { get; }
     DoubleValue PickupViolationPenalty { get; }

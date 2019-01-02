@@ -22,8 +22,10 @@
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Optimization;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.TestFunctions {
+  [StorableType("A1DDF420-B389-40A4-B9BD-D071A557D24A")]
   /// <summary>
   /// An interface which represents an operator for visualizing solutions of single objective test functions.
   /// </summary>

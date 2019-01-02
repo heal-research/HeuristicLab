@@ -23,8 +23,10 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Optimization;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.TestFunctions {
+  [StorableType("8E430717-143E-462A-A8F5-8E8F4B4ADF54")]
   /// <summary>
   /// An interface which represents an evaluation operator for single objective test functions.
   /// </summary>

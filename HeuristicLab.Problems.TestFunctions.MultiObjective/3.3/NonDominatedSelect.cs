@@ -20,10 +20,12 @@
 #endregion
 
 using System.Collections.Generic;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
 
   public static class NonDominatedSelect {
+    [StorableType("5EDA6CC0-30C6-4B71-8713-F84BB61B1180")]
     public enum DominationResult { Dominates, IsDominated, IsNonDominated };
 
     public static IEnumerable<double[]> SelectNonDominatedVectors(IEnumerable<double[]> qualities, bool[] maximization, bool dominateOnEqualQualities) {

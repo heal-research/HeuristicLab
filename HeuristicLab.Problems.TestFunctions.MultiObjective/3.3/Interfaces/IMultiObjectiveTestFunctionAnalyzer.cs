@@ -21,9 +21,10 @@
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
-
+  [StorableType("868522CB-CA0A-4908-8108-86D2464F0FAE")]
   public interface IMultiObjectiveTestFunctionAnalyzer : IAnalyzer, IMultiObjectiveOperator {
     IScopeTreeLookupParameter<DoubleArray> QualitiesParameter { get; }
     ILookupParameter<ResultCollection> ResultsParameter { get; }

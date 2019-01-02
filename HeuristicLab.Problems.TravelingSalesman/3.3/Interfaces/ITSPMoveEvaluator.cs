@@ -21,8 +21,10 @@
 
 using System;
 using HeuristicLab.Optimization;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.TravelingSalesman {
+  [StorableType("2EFBA5C1-6503-4910-9EF8-F6A5D8FBAFEF")]
   public interface ITSPMoveEvaluator : ISingleObjectiveMoveEvaluator, IMoveOperator {
     Type EvaluatorType { get; }
   }

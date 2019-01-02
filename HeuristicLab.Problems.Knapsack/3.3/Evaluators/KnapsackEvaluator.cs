@@ -88,6 +88,7 @@ namespace HeuristicLab.Problems.Knapsack {
       return new KnapsackEvaluator(this, cloner);
     }
 
+    [StorableType(StorableMemberSelection.AllFields, "0968A5F3-5E3A-4357-A042-06E4BDEAFA6C")]
     public struct KnapsackEvaluation {
       public DoubleValue Quality;
       public DoubleValue SumWeights;
