@@ -22,32 +22,27 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using HeuristicLab.Persistence.Core;
-using HeuristicLab.Persistence.Default.Xml;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Clients.Hive {
   public static class PersistenceUtil {
     public static byte[] Serialize(object obj, out IEnumerable<Type> types) {
       using (MemoryStream memStream = new MemoryStream()) {
-        XmlGenerator.Serialize(obj, memStream, ConfigurationService.Instance.GetConfiguration(new XmlFormat()), false, out types);
-        byte[] jobByteArray = memStream.ToArray();
-        return jobByteArray;
+        throw new NotImplementedException("Not supported by HEAL.Fossil yet."); // TODO
+        // XmlGenerator.Serialize(obj, memStream, ConfigurationService.Instance.GetConfiguration(new XmlFormat()), false, out types);
+        // byte[] jobByteArray = memStream.ToArray();
+        // return jobByteArray;
       }
     }
 
     public static byte[] Serialize(object obj) {
-      using (MemoryStream memStream = new MemoryStream()) {
-        XmlGenerator.Serialize(obj, memStream);
-        byte[] jobByteArray = memStream.ToArray();
-        return jobByteArray;
-      }
+      var ser = new ProtoBufSerializer();
+      return ser.Serialize(obj);
     }
 
     public static T Deserialize<T>(byte[] sjob) {
-      using (MemoryStream memStream = new MemoryStream(sjob)) {
-        T job = XmlParser.Deserialize<T>(memStream);
-        return job;
-      }
+      var ser = new ProtoBufSerializer();
+      return (T)ser.Deserialize(sjob);
     }
   }
 }

@@ -31,11 +31,21 @@ namespace HeuristicLab.Core {
     public PersistenceContentManager() : base() { }
 
     protected override IStorableContent LoadContent(string filename) {
-      return XmlParser.Deserialize<IStorableContent>(filename);
+      // first try to load using the new persistence format
+      try {
+        var ser = new ProtoBufSerializer();
+        return (IStorableContent)ser.Deserialize(filename);
+      } catch (PersistenceException e) {
+        // try old format if new format fails
+        return XmlParser.Deserialize<IStorableContent>(filename);
+      }
     }
 
     protected override void SaveContent(IStorableContent content, string filename, bool compressed, CancellationToken cancellationToken) {
-      XmlGenerator.Serialize(content, filename, compressed ? CompressionLevel.Optimal : CompressionLevel.NoCompression, cancellationToken);
+      // XmlGenerator.Serialize(content, filename, compressed ? CompressionLevel.Optimal : CompressionLevel.NoCompression, cancellationToken);
+      // store files with the new persistence format
+      var ser = new ProtoBufSerializer();
+      ser.Serialize(content, filename); // TODO: support cancellation
     }
   }
 }

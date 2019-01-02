@@ -80,10 +80,11 @@ namespace HeuristicLab.Scripting {
 
     protected T CloneByPersistence<T>(T value) {
       using (var serializerStream = new MemoryStream()) {
-        XmlGenerator.Serialize(value, serializerStream);
+        var serializer = new ProtoBufSerializer();
+        serializer.Serialize(value, serializerStream, disposeStream: false);
         var bytes = serializerStream.GetBuffer();
         using (var deserializerStream = new MemoryStream(bytes)) {
-          return XmlParser.Deserialize<T>(deserializerStream);
+          return (T)serializer.Deserialize(deserializerStream);
         }
       }
     }
