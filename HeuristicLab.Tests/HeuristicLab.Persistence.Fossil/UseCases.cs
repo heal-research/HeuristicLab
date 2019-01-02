@@ -28,7 +28,9 @@ using System.Reflection;
 using System.Threading.Tasks;
 using HEAL.Fossil;
 using HeuristicLab.Algorithms.GeneticAlgorithm;
+using HeuristicLab.Analysis;
 using HeuristicLab.Common;
+using HeuristicLab.Data;
 using HeuristicLab.Persistence.Core;
 using HeuristicLab.Persistence.Default.Xml;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -42,6 +44,8 @@ namespace HeuristicLab.Persistence.Fossil.Tests {
     [TestInitialize()]
     public void CreateTempFile() {
       tempFile = Path.GetTempFileName();
+      // in HL this is not necessary because RegisterStorableTypes is called when the plugin is loaded
+      HeuristicLabPersistencePlugin.RegisterStorableTypes();
     }
 
     [TestCleanup()]
@@ -149,7 +153,7 @@ namespace HeuristicLab.Persistence.Fossil.Tests {
                 var g = Mapper.StaticCache.GetGuid(t);
               }
             } catch (Exception e) {
-              Console.WriteLine(t.FullName);
+              Console.WriteLine($"type {t.FullName} in {fileName} is not registered with a GUID in HEAL.Fossil");
               ok = false;
             }
           }

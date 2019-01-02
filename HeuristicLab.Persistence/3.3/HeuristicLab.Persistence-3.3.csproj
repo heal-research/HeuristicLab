@@ -137,6 +137,8 @@
     <Compile Include="Auxiliary\TypeLoader.cs" />
     <Compile Include="Auxiliary\TypeNameParser.cs" />
     <Compile Include="Auxiliary\ReflectionTools.cs" />
+    <Compile Include="Transformers\BitmapTransformer.cs" />
+    <Compile Include="Transformers\FontTransformer.cs" />
     <None Include="packages.config" />
     <None Include="Plugin.cs.frame" />
     <Compile Include="Core\Configuration.cs" />
@@ -304,4 +306,5 @@ $SolutionDir/PreBuildEvent.sh
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
 </Project>
