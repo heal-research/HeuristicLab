@@ -24,7 +24,6 @@ using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HEAL.Fossil;
-using HEAL.Fossil;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableType("58D49402-2AB1-49CF-9AEF-1C599C4B71F7")]
@@ -43,17 +42,23 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     public double Get(object x, object y) {
-      return Get((T) x, (T) y);
+      return Get((T)x, (T)y);
     }
 
     public IComparer GetDistanceComparer(object item) {
-      return new DistanceComparer((T) item, this);
+      return new DistanceComparer((T)item, this);
     }
 
     [StorableType("35fcecb5-9209-469b-9e4e-82efd8abfddf")]
     internal class DistanceComparer : IComparer<T>, IComparer {
+      [Storable]
       private readonly T item;
+      [Storable]
       private readonly IDistance<T> dist;
+
+      [StorableConstructor]
+      protected DistanceComparer(StorableConstructorFlag _) {
+      }
 
       public DistanceComparer(T item, IDistance<T> dist) {
         this.dist = dist;

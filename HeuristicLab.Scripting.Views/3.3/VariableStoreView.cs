@@ -34,6 +34,7 @@ using HeuristicLab.Persistence.Core;
 using HEAL.Fossil;
 using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.PluginInfrastructure;
+using System.IO;
 
 namespace HeuristicLab.Scripting.Views {
   [View("ItemCollection View")]
@@ -473,17 +474,20 @@ namespace HeuristicLab.Scripting.Views {
 
     private bool IsSerializable(KeyValuePair<string, object> variable) {
       Type type = null;
-      bool serializable;
+      bool serializable = false;
 
       if (variable.Value != null) {
         type = variable.Value.GetType();
         if (serializableLookup.TryGetValue(type, out serializable)) return serializable;
-        if (StorableClassAttribute.IsStorableClass(type)) return serializableLookup[type] = true;
+        if (StorableTypeAttribute.IsStorableType(type)) return serializableLookup[type] = true;
       }
 
-      var ser = new Persistence.Core.Serializer(variable, ConfigurationService.Instance.GetDefaultConfig(new XmlFormat()), "ROOT", true);
+      var ser = new ProtoBufSerializer();
       try {
-        serializable = ser.Count() > 0; // try to create all serialization tokens
+        using (var memStream = new MemoryStream()) {
+          ser.Serialize(variable.Value, memStream); // try to serialize to memory stream
+          serializable = true;
+        }
       } catch (PersistenceException) {
         serializable = false;
       }

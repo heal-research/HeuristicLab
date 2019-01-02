@@ -32,15 +32,19 @@ namespace HeuristicLab.Selection {
   [Item("EvolutionStrategyOffspringSelector", "Selects among the offspring population those that are designated successful and discards the unsuccessful offspring, except for some lucky losers. It expects the parent scopes to be below the first sub-scope, and offspring scopes to be below the second sub-scope separated again in two sub-scopes, the first with the failed offspring and the second with successful offspring.")]
   [StorableType("CE585C3C-5139-44F0-9CB2-CC901A290831")]
   public class EvolutionStrategyOffspringSelector : SingleSuccessorOperator {
-
+    [StorableType("F1CA99A7-E9C2-49F3-8030-5CEE407357AA")]
     private class FitnessComparer : IComparer<IScope> {
 
       #region IComparer<IScope> Member
-
-      private String qualityParameterName;
+      [Storable]
+      private string qualityParameterName;
+      [Storable]
       private bool maximization;
 
-      public FitnessComparer(String qualityParamName, bool maximization) {
+      [StorableConstructor]
+      protected FitnessComparer(StorableConstructorFlag _) { }
+
+      public FitnessComparer(string qualityParamName, bool maximization) {
         this.qualityParameterName = qualityParamName;
         this.maximization = maximization;
       }
