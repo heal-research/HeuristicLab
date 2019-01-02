@@ -21,9 +21,11 @@
 
 using System.Collections.Generic;
 using HeuristicLab.Core;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Optimization {
-  public interface IRunCollectionModifier : IItem {    
+  [StorableType("55f41cc9-c77f-462b-8745-229572436aea")]
+  public interface IRunCollectionModifier : IItem {
     void Modify(List<IRun> runs);
   }
 }

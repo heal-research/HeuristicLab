@@ -21,7 +21,10 @@
 
 using System.Collections.Generic;
 using HeuristicLab.Core;
+using HEAL.Fossil;
+
 namespace HeuristicLab.Problems.DataAnalysis {
+  [StorableType("287c5f55-cc5c-488a-a5e7-17a41a087981")]
   public interface IRegressionEnsembleSolution : IRegressionSolution {
     new IRegressionEnsembleModel Model { get; }
     new RegressionEnsembleProblemData ProblemData { get; set; }

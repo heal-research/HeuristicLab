@@ -22,14 +22,17 @@
 using System;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis {
+  [StorableType("74e4c570-3881-4bfa-a5bb-2bb71cdee2b3")]
   public interface IDataAnalysisProblem : IProblem {
     IParameter ProblemDataParameter { get; }
     IDataAnalysisProblemData ProblemData { get; }
     event EventHandler ProblemDataChanged;
   }
 
+  [StorableType("c2f6fcdd-ab62-4423-be75-01aa694df411")]
   public interface IDataAnalysisProblem<T> : IDataAnalysisProblem
   where T : class, IDataAnalysisProblemData {
     new IValueParameter<T> ProblemDataParameter { get; }

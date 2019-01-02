@@ -21,8 +21,10 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Optimization {
+  [StorableType("86e85d2f-7cfd-482b-8473-da3bef38f017")]
   public interface IMultiMoveGenerator : IMoveGenerator {
     IValueLookupParameter<IntValue> SampleSizeParameter { get; }
   }

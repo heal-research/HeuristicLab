@@ -22,8 +22,10 @@
 #endregion
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
+  [StorableType("a21179da-5417-4e8c-8f8a-6ddc83b16ab1")]
   public interface ISymbolicClassificationModelCreator : IItem {
     ISymbolicClassificationModel CreateSymbolicClassificationModel(string targetVariable, ISymbolicExpressionTree tree, ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, double lowerEstimationLimit, double upperEstimationLimit);
   }

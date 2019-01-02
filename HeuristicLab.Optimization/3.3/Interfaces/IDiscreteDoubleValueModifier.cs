@@ -21,8 +21,10 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Optimization {
+  [StorableType("32f2e082-9d02-4006-85d5-d2006cb47def")]
   public interface IDiscreteDoubleValueModifier : IOperator {
     ILookupParameter<DoubleValue> ValueParameter { get; }
     /// <summary>

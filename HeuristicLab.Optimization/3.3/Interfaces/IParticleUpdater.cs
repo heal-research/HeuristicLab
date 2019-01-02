@@ -21,8 +21,10 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Optimization {
+  [StorableType("c3880aca-187c-4a63-adf4-a6f46bd6e5e0")]
   /// <summary>
   /// Interface to represent an operator that updates a particle 
   /// </summary>

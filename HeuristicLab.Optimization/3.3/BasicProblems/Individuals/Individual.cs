@@ -23,12 +23,21 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Core;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Optimization {
+  [StorableType("b1388a9d-c85c-49f6-9916-ef4c93dffee0")]
   public abstract class Individual {
+    [Storable]
     protected IEncoding Encoding { get; private set; }
+    [Storable]
     protected IScope Scope { get; private set; }
     public string Name { get { return Encoding.Name; } }
+
+
+    [StorableConstructor]
+    protected Individual(StorableConstructorFlag _) {
+    }
 
     protected Individual(IEncoding encoding, IScope scope) {
       Encoding = encoding;

@@ -21,8 +21,10 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Optimization {
+  [StorableType("7632e886-d410-4b49-98a7-af6799afa15d")]
   public interface IIterationBasedOperator : IOperator {
     ILookupParameter<IntValue> IterationsParameter { get; }
     IValueLookupParameter<IntValue> MaximumIterationsParameter { get; }

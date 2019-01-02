@@ -21,8 +21,10 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Optimization {
+  [StorableType("8c220537-2993-4666-8b49-a4c87fd7f6a3")]
   public interface IMoveMaker : IOperator {
     ILookupParameter<DoubleValue> QualityParameter { get; }
     ILookupParameter<DoubleValue> MoveQualityParameter { get; }

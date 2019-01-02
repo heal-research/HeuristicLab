@@ -21,8 +21,10 @@
 
 using System;
 using HeuristicLab.Core;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.BinPacking {
+  [StorableType("612b4eb0-946e-4690-ba43-8dd0e5520e8b")]
   // a packing shape represents a physical object of correct dimension (2d or 3d) 
   // packing bins (containers) and packing items are both packing shapes
   public interface IPackingShape : IItem, IComparable {

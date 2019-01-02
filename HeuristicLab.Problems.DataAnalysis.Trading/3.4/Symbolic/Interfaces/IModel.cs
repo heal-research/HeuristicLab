@@ -20,8 +20,10 @@
 #endregion
 
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis.Trading.Symbolic {
+  [StorableType("3d34cc92-f473-4d18-952e-3aaf0c073f83")]
   public interface IModel : Trading.IModel, ISymbolicDataAnalysisModel {
   }
 }

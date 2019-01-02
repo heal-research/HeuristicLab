@@ -1,4 +1,5 @@
-﻿#region License Information
+﻿using HEAL.Fossil;
+#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -20,6 +21,7 @@
 #endregion
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis {
+  [StorableType("f341a9c0-4507-4186-973f-fb33bef61931")]
   public interface ISymbolicTimeSeriesPrognosisSingleObjectiveEvaluator : ISymbolicTimeSeriesPrognosisEvaluator, ISymbolicDataAnalysisSingleObjectiveEvaluator<ITimeSeriesPrognosisProblemData> {
   }
 }

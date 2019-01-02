@@ -21,8 +21,10 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Optimization {
+  [StorableType("7c3cd846-3768-4ebe-816a-2925a92234de")]
   /// <summary>
   /// An interface which represents an evaluation operator for single-objective optimization problems.
   /// </summary>

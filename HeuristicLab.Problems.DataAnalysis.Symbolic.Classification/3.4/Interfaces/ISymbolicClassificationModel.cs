@@ -20,7 +20,10 @@
 #endregion
 
 using System.Collections.Generic;
+using HEAL.Fossil;
+
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
+  [StorableType("64a5d560-0657-4022-87a0-9f3210062a84")]
   public interface ISymbolicClassificationModel : IClassificationModel, ISymbolicDataAnalysisModel {
     void RecalculateModelParameters(IClassificationProblemData problemData, IEnumerable<int> rows);
     new ISymbolicClassificationSolution CreateClassificationSolution(IClassificationProblemData problemData);

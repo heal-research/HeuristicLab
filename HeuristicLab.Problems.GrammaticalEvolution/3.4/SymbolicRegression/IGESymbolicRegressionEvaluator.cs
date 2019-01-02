@@ -23,8 +23,10 @@
 #endregion
 
 using HeuristicLab.Problems.DataAnalysis;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.GrammaticalEvolution {
+  [StorableType("d02447bf-6490-4497-8d46-18bfd65fdce9")]
   public interface IGESymbolicRegressionEvaluator : IGESymbolicDataAnalysisEvaluator<IRegressionProblemData> {
   }
 }

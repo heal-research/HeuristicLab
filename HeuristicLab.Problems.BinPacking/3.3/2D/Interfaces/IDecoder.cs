@@ -21,8 +21,10 @@
 
 using System.Collections.Generic;
 using HeuristicLab.Core;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.BinPacking2D {
+  [StorableType("bd8c18da-9f11-47b7-b654-6c63309f2864")]
   public interface IDecoder<in T> : IItem {
     Solution Decode(T encodedSolution, PackingShape binShape, IList<PackingItem> items);
   }

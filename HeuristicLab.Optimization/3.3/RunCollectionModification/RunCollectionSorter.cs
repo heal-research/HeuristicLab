@@ -78,6 +78,7 @@ namespace HeuristicLab.Optimization {
       OnNameChanged();
     }
 
+    [StorableType("824092f4-863b-4ba8-ac0a-98f871876a6e")]
     private class ValueComparer : IComparer<IComparable> {
 
       #region IComparer<IComparable> Members

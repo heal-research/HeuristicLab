@@ -20,7 +20,10 @@
 #endregion
 
 using System.Collections.Generic;
+using HEAL.Fossil;
+
 namespace HeuristicLab.Problems.DataAnalysis {
+  [StorableType("ecb5d2f6-8041-4d07-aeff-e7fc0b5c355e")]
   public interface IDiscriminantFunctionClassificationSolution : IClassificationSolution {
     new IDiscriminantFunctionClassificationModel Model { get; }
 

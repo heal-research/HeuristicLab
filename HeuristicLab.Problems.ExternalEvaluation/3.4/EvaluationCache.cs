@@ -45,9 +45,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
 
     #region Types
     private sealed class CacheEntry {
-
       public readonly string Key;
-
       private QualityMessage message;
       private byte[] rawMessage;
 

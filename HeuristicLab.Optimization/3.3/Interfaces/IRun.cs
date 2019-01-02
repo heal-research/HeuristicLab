@@ -23,8 +23,10 @@ using System.ComponentModel;
 using System.Drawing;
 using HeuristicLab.Collections;
 using HeuristicLab.Core;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Optimization {
+  [StorableType("bd021976-74c7-4e40-af7e-e10e316af64c")]
   /// <summary>
   /// Represents the parameters and results of an algorithm run.
   /// </summary>

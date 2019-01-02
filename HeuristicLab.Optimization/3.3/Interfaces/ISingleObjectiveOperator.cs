@@ -1,4 +1,5 @@
-﻿#region License Information
+﻿using HEAL.Fossil;
+#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -20,6 +21,7 @@
 #endregion
 
 namespace HeuristicLab.Optimization {
+  [StorableType("365f0117-1f29-4bc2-8a76-4ee5676306a4")]
   /// <summary>
   /// This is only a marker interface to prevent operators that expect to work with a single quality value
   /// and/or a single maximization flag to appear in multi-objective algorithms.

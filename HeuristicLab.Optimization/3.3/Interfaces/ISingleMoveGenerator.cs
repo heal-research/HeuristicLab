@@ -1,4 +1,5 @@
-﻿#region License Information
+﻿using HEAL.Fossil;
+#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -20,6 +21,7 @@
 #endregion
 
 namespace HeuristicLab.Optimization {
+  [StorableType("90055ffa-8821-41af-9dbb-3a56fa251f23")]
   public interface ISingleMoveGenerator : IMoveGenerator, ISingleObjectiveOperator {
   }
 }

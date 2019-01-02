@@ -21,8 +21,10 @@
 
 using System;
 using System.Collections.Generic;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis {
+  [StorableType("ff091491-c895-41cb-9c45-f3b1a11637d4")]
   /// <summary>
   /// Interface for all classification models.
   /// <remarks>All methods and properties in in this interface must be implemented thread safely</remarks>

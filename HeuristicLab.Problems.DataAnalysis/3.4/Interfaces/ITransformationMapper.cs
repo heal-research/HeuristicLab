@@ -1,4 +1,5 @@
-﻿#region License Information
+﻿using HEAL.Fossil;
+#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -21,6 +22,7 @@
 
 
 namespace HeuristicLab.Problems.DataAnalysis {
+  [StorableType("a5bda2a6-0f93-4f44-8992-af0cd3582527")]
   public interface ITransformationMapper<out T> {
     T GenerateModel(ITransformation transformation);
     T GenerateInverseModel(ITransformation transformation);

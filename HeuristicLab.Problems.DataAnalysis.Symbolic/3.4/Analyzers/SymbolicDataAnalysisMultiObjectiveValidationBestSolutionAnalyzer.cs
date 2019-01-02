@@ -176,6 +176,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       else return lhs < rhs;
     }
 
+    [StorableType("69cfeefe-8654-4d07-93f1-fdca6fe02338")]
     private class DoubleArrayComparer : IEqualityComparer<double[]> {
       public bool Equals(double[] x, double[] y) {
         if (y.Length != x.Length) throw new ArgumentException();

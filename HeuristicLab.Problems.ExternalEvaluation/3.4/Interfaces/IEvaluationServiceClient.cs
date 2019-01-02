@@ -22,8 +22,10 @@
 using System;
 using Google.ProtocolBuffers;
 using HeuristicLab.Core;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.ExternalEvaluation {
+  [StorableType("8203ac65-e551-486e-8386-e297ae575279")]
   public interface IEvaluationServiceClient : IItem {
     /// <summary>
     /// Evaluates a given solution in a blocking manner.

@@ -20,8 +20,10 @@
 #endregion
 
 using HeuristicLab.Core;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Optimization {
+  [StorableType("39eacdb5-80a0-425d-902a-00eb3e1d6610")]
   public interface IMultiObjectiveProblemDefinition : IProblemDefinition {
     bool[] Maximization { get; }
     double[] Evaluate(Individual individual, IRandom random);

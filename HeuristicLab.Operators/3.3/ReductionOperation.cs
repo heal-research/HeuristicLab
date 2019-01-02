@@ -26,6 +26,7 @@ using HeuristicLab.Data;
 using HEAL.Fossil;
 
 namespace HeuristicLab.Operators {
+  [StorableType("1080f82a-f4cd-41db-a474-6578a4b9ec82")]
   public enum ReductionOperations {
     Sum,
     Product,

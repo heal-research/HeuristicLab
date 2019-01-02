@@ -22,9 +22,15 @@
 using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Optimization {
+  [StorableType("13a86161-9e5c-442b-ab1c-18018b1d9708")]
   public sealed class SingleEncodingIndividual : Individual {
+    [StorableConstructor]
+    private SingleEncodingIndividual(StorableConstructorFlag _) : base(_) {
+    }
+
     public SingleEncodingIndividual(IEncoding encoding, IScope scope)
       : base(encoding, scope) {
       if (encoding is MultiEncoding) throw new ArgumentException("A MultiEncoding must not be used for the creation of a SingleEncodingIndividual");

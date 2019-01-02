@@ -20,7 +20,10 @@
 #endregion
 
 using System.Collections.Generic;
+using HEAL.Fossil;
+
 namespace HeuristicLab.Problems.DataAnalysis {
+  [StorableType("1aab7e19-317f-47e0-acc7-b0538e572d8e")]
   public interface IClusteringModel : IDataAnalysisModel {
     IEnumerable<int> GetClusterValues(IDataset dataset, IEnumerable<int> rows);
   }

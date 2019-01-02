@@ -20,8 +20,10 @@
 #endregion
 
 using HeuristicLab.Core;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Optimization {
+  [StorableType("49c24af5-5d38-4dd3-90c6-96bf61da596e")]
   /// <summary>
   /// An interface which represents an operator for improvement.
   /// </summary>

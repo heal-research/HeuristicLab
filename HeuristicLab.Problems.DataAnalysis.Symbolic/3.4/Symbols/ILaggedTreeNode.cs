@@ -21,7 +21,10 @@
 
 
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
+using HEAL.Fossil;
+
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
+  [StorableType("9396d5df-6a2e-4cd1-ac5a-36ca8d391927")]
   public interface ILaggedTreeNode : ISymbolicExpressionTreeNode {
     int Lag { get; set; }
   }

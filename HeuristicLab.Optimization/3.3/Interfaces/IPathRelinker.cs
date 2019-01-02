@@ -20,8 +20,10 @@
 #endregion
 
 using HeuristicLab.Core;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Optimization {
+  [StorableType("806e0460-65de-41ec-9131-cf16300f3f36")]
   /// <summary>
   /// An interface which represents an operator for path relinking.
   /// </summary>

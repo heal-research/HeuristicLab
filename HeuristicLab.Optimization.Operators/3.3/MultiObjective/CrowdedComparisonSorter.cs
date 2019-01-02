@@ -68,6 +68,7 @@ Genetic Algorithm: NSGA-II"", IEEE Transactions On Evolutionary Computation, Vol
       return base.Apply();
     }
 
+    [StorableType("c16dd393-bd08-4a81-abb5-1b7e918a1038")]
     private class CustomComparer : IComparer<int> {
       ItemArray<IntValue> ranks;
       ItemArray<DoubleValue> distances;

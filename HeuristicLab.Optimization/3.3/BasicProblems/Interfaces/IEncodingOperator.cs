@@ -20,8 +20,10 @@
 #endregion
 
 using HeuristicLab.Core;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Optimization {
+  [StorableType("20faaf8b-dd4f-4f0e-a772-4c4dec7fcccb")]
   public interface IEncodingOperator : IOperator {
     ILookupParameter<IEncoding> EncodingParameter { get; }
   }

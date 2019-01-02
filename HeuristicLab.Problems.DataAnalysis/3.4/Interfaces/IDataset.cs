@@ -24,8 +24,10 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis {
+  [StorableType("55cc9211-2136-41a0-a5bc-0d51e915d1b4")]
   public interface IDataset : IItem, IStringConvertibleMatrix {
     IEnumerable<string> VariableNames { get; }
     IEnumerable<string> DoubleVariables { get; }

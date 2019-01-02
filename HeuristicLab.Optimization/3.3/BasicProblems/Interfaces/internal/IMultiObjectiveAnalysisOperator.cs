@@ -21,8 +21,10 @@
 
 using System;
 using HeuristicLab.Core;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Optimization {
+  [StorableType("c9325602-3262-48a4-8985-03657fb0b34f")]
   internal interface IMultiObjectiveAnalysisOperator : IEncodingOperator, IAnalyzer, IMultiObjectiveOperator {
     Action<Individual[], double[][], ResultCollection, IRandom> AnalyzeAction { get; set; }
   }

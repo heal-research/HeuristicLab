@@ -21,8 +21,10 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Optimization {
+  [StorableType("79f22e3f-8a21-498a-9799-5e662af709fb")]
   public interface ITerminationBasedOperator : IOperator {
     ILookupParameter<BoolValue> TerminateParameter { get; }
   }

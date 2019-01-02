@@ -21,8 +21,10 @@
 
 using System;
 using HeuristicLab.Core;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Optimization {
+  [StorableType("e05050f3-5f92-4245-b733-7097d496e781")]
   /// <summary>
   /// Represents a result which has a name and a data type and holds an IItem.
   /// </summary>

@@ -20,8 +20,10 @@
 #endregion
 
 using HeuristicLab.Core;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Optimization {
+  [StorableType("2aaf9cd7-c5dc-48d0-b59d-5801e152b19e")]
   /// <summary>
   /// Interface to mark operators that can be used as replacers.
   /// Replacers are merging a remaining and a selected branch in several special ways.

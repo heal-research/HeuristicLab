@@ -20,7 +20,10 @@
 #endregion
 
 using System.Collections.Generic;
+using HEAL.Fossil;
+
 namespace HeuristicLab.Problems.DataAnalysis.Trading {
+  [StorableType("5eda7fa0-a735-4192-ac49-70232306c034")]
   public interface IModel : IDataAnalysisModel {
     IEnumerable<double> GetSignals(IDataset dataset, IEnumerable<int> rows);
   }

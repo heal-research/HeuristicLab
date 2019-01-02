@@ -22,8 +22,10 @@
 using System;
 using System.Collections.Generic;
 using HeuristicLab.Core;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Optimization {
+  [StorableType("d70b2675-246c-489c-a91b-b2e19a1616a3")]
   public interface IEncoding : IParameterizedNamedItem {
     ISolutionCreator SolutionCreator { get; set; }
     IEnumerable<IOperator> Operators { get; set; }

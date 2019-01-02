@@ -22,8 +22,10 @@
 using System.Collections.Generic;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
+  [StorableType("6877d63a-8e79-4fea-a2d2-73574ee274c6")]
   public interface ISymbolicDataAnalysisExpressionTreeInterpreter : INamedItem, IStatefulItem {
     IEnumerable<double> GetSymbolicExpressionTreeValues(ISymbolicExpressionTree tree, IDataset dataset, IEnumerable<int> rows);
     int EvaluatedSolutions { get; set; }

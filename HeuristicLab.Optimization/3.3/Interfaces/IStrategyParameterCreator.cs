@@ -20,8 +20,10 @@
 #endregion
 
 using HeuristicLab.Core;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Optimization {
+  [StorableType("a3bd30cc-c3a6-485c-b7d2-c38c284d48df")]
   public interface IStrategyParameterCreator : IOperator {
   }
 }

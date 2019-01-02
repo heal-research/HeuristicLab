@@ -21,8 +21,10 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Optimization {
+  [StorableType("740caa52-1f3c-4bfe-a2f9-f59e4c547992")]
   public interface IMultiNeighborhoodShakingOperator : IOperator {
     IValueLookupParameter<IntValue> CurrentNeighborhoodIndexParameter { get; }
     ILookupParameter<IntValue> NeighborhoodCountParameter { get; }

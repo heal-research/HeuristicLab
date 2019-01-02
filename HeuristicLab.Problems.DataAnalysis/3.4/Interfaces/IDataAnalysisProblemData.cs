@@ -23,8 +23,10 @@ using System;
 using System.Collections.Generic;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis {
+  [StorableType("3f50defe-1f79-4122-a96b-11ca90202210")]
   public interface IDataAnalysisProblemData : INamedItem {
     bool IsEmpty { get; }
 

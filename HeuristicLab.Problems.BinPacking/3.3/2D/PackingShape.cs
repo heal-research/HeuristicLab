@@ -127,9 +127,10 @@ namespace HeuristicLab.Problems.BinPacking2D {
         Height = aux;
       }
     }
+
     #endregion
 
-
+    [StorableType(StorableMemberSelection.AllFields, "e0d5a387-b617-474d-b1e2-682bd15ea78f")]
     private struct RectangleDiagonal {
       public int x1;
       public int y1;

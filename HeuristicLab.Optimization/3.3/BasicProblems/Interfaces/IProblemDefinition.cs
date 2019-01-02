@@ -1,4 +1,5 @@
-﻿#region License Information
+﻿using HEAL.Fossil;
+#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -20,6 +21,7 @@
 #endregion
 
 namespace HeuristicLab.Optimization {
+  [StorableType("747a3cea-b9ba-4322-a5c2-050cd7e16e2a")]
   public interface IProblemDefinition {
     IEncoding Encoding { get; }
   }

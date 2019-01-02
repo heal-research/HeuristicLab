@@ -21,8 +21,10 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Optimization {
+  [StorableType("cb751cac-1ba7-42c3-87a3-cb1bf0d13add")]
   public interface ISwarmUpdater : IOperator {
     IScopeTreeLookupParameter<DoubleValue> QualityParameter { get; }
     IScopeTreeLookupParameter<DoubleValue> NeighborBestQualityParameter { get; }

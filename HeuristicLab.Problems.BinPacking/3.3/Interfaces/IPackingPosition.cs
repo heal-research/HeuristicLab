@@ -20,9 +20,10 @@
 #endregion
 
 using HeuristicLab.Core;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.BinPacking {
-  
+  [StorableType("a8003c2d-a48d-41b3-9f83-1d00f49ea434")]
   public interface IPackingPosition : IItem {
     int AssignedBin { get; }
     bool Rotated { get; }

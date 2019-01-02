@@ -24,8 +24,10 @@
 
 using HeuristicLab.Optimization;
 using HeuristicLab.Problems.DataAnalysis;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.GrammaticalEvolution {
+  [StorableType("52190d05-dfdd-4ebb-9a95-5cd96eb3dc7e")]
   public interface IGESymbolicDataAnalysisSingleObjectiveEvaluator<T> : IGESymbolicDataAnalysisEvaluator<T>, ISingleObjectiveEvaluator
     where T : class,IDataAnalysisProblemData {
     bool Maximization { get; }

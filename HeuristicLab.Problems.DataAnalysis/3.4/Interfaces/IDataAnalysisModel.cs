@@ -21,8 +21,10 @@
 
 using System.Collections.Generic;
 using HeuristicLab.Core;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis {
+  [StorableType("f85ccf7a-7df5-431e-bc4d-be6f3c4c2338")]
   /// <summary>
   /// Interface for all data-analysis models (regression/classification/clustering).
   /// <remarks>All methods and properties in in this interface must be implemented thread safely</remarks>

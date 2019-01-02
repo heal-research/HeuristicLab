@@ -33,6 +33,7 @@ namespace HeuristicLab.Optimization.Operators {
   /// The item always considers two solutions to be equal if they have the same quality.
   /// </remarks>
   [Item("QualitySimilarityCalculator", "An item that performs similarity calculation between two solutions. The item only considers the qualities of the two solutions.")]
+  [StorableType("b5ef2b97-4a4a-43cd-aeae-7f951b49cdc1")]
   public sealed class QualitySimilarityCalculator : SingleObjectiveSolutionSimilarityCalculator {
     protected override bool IsCommutative { get { return true; } }
 

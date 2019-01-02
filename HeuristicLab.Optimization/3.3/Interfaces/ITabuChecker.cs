@@ -21,8 +21,10 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Optimization {
+  [StorableType("39ea082e-0295-47c1-b07d-d37d87f53677")]
   public interface ITabuChecker : IOperator {
     ILookupParameter<BoolValue> MoveTabuParameter { get; }
     ILookupParameter<DoubleValue> MoveQualityParameter { get; }

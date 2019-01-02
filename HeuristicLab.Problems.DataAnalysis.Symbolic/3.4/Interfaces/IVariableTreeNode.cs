@@ -20,7 +20,10 @@
 #endregion
 
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
+using HEAL.Fossil;
+
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
+  [StorableType("cc5c792d-09a8-4351-8438-bd8482d8aa03")]
   /// <summary>
   /// Any tree node that references a variable 
   /// </summary>

@@ -20,7 +20,10 @@
 #endregion
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HEAL.Fossil;
+
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
+  [StorableType("f2c0ca54-a2a9-49b8-9f5f-734368000f68")]
   public interface ISymbolicDataAnalysisSingleObjectiveAnalyzer : ISymbolicDataAnalysisAnalyzer {
     IScopeTreeLookupParameter<DoubleValue> QualityParameter { get; }
     ILookupParameter<BoolValue> MaximizationParameter { get; }

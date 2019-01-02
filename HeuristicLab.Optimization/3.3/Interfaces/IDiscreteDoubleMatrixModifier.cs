@@ -22,8 +22,10 @@
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Optimization {
+  [StorableType("75135b74-abed-4426-aacd-dd2eb4ea1188")]
   public interface IDiscreteDoubleMatrixModifier : IOperator {
     ILookupParameter<DoubleMatrix> ValueParameter { get; }
     ILookupParameter<DoubleValue> ScaleParameter { get; }

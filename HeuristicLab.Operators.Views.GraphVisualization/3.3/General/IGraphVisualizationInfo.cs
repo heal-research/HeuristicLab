@@ -23,8 +23,10 @@ using System;
 using System.Collections.Generic;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Operators.Views.GraphVisualization {
+  [StorableType("d6df3b9d-453c-4f85-ae4b-76c3cbcc304c")]
   public interface IGraphVisualizationInfo : IDeepCloneable, IContent {
     IShapeInfo InitialShape { get; set; }
     event EventHandler InitialShapeChanged;

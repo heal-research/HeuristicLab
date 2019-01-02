@@ -21,8 +21,10 @@
 
 using System.Collections.Generic;
 using HeuristicLab.Core;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Optimization {
+  [StorableType("03699efd-c957-4109-ad18-f98f6748bd91")]
   /// <summary>
   /// An interface which represents an operator for similarity calculation.
   /// </summary>

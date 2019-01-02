@@ -37,17 +37,22 @@ namespace HeuristicLab.Problems.DataAnalysis {
   [Item("RegressionSolution Impacts Calculator", "Calculation of the impacts of input variables for any regression solution")]
   public sealed class RegressionSolutionVariableImpactsCalculator : ParameterizedNamedItem {
     #region Parameters/Properties
+    [StorableType("45a48ef7-e1e6-44b7-95b1-ae9d01aa5de4")]
     public enum ReplacementMethodEnum {
       Median,
       Average,
       Shuffle,
       Noise
     }
+
+    [StorableType("78df33f8-4715-4d25-a69a-f2bc1277fa3b")]
     public enum FactorReplacementMethodEnum {
       Best,
       Mode,
       Shuffle
     }
+
+    [StorableType("946646da-1c0b-435e-88f9-38d649fc5194")]
     public enum DataPartitionEnum {
       Training,
       Test,

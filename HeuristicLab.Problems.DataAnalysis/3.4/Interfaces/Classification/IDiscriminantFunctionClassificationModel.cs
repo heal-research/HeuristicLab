@@ -21,7 +21,10 @@
 
 using System;
 using System.Collections.Generic;
+using HEAL.Fossil;
+
 namespace HeuristicLab.Problems.DataAnalysis {
+  [StorableType("ea474735-61d0-4ada-8970-ac1d78ce4d15")]
   public interface IDiscriminantFunctionClassificationModel : IClassificationModel {
     IEnumerable<double> Thresholds { get; }
     IEnumerable<double> ClassValues { get; }

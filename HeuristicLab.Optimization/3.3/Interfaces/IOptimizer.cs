@@ -21,8 +21,10 @@
 
 using System.Collections.Generic;
 using HeuristicLab.Core;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Optimization {
+  [StorableType("c5a27124-f02a-4695-a90c-d8162ee58642")]
   /// <summary>
   /// Interface to represent optimizers such as algorithms, batch runs, or experiments.
   /// </summary>

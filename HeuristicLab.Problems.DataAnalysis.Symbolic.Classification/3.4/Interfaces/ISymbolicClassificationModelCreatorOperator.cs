@@ -22,8 +22,10 @@
 #endregion
 
 using HeuristicLab.Core;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
+  [StorableType("7d19cbcd-dde9-449e-b6d6-ea3e752638d2")]
   public interface ISymbolicClassificationModelCreatorOperator : IOperator {
     ILookupParameter<ISymbolicClassificationModelCreator> ModelCreatorParameter { get; }
   }

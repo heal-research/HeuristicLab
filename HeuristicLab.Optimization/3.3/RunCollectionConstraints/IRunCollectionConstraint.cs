@@ -21,12 +21,15 @@
 
 using System;
 using HeuristicLab.Core;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Optimization {
+  [StorableType("c54d5084-fee2-4c94-be62-924b014d180d")]
   public interface IRunCollectionConstraint : IConstraint {
     new RunCollection ConstrainedValue { get; set; }
   }
 
+  [StorableType("9e35dfa2-f197-4212-841f-d52e91a297e0")]
   public interface IRunCollectionColumnConstraint : IRunCollectionConstraint {
     string ConstraintColumn { get; set; }
     event EventHandler ConstraintColumnChanged;

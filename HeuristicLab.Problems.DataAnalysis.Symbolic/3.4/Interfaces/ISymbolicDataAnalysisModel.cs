@@ -20,7 +20,10 @@
 #endregion
 
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
+using HEAL.Fossil;
+
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
+  [StorableType("62aff7f8-5ae1-4e58-966e-92e388cb067f")]
   public interface ISymbolicDataAnalysisModel : IDataAnalysisModel {
     ISymbolicExpressionTree SymbolicExpressionTree { get; }
     ISymbolicDataAnalysisExpressionTreeInterpreter Interpreter { get; }

@@ -21,8 +21,10 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Optimization {
+  [StorableType("8efcf623-6ea3-4010-a7b2-d3788b8648d1")]
   public interface ISubScopesQualityComparator {
     ILookupParameter<DoubleValue> LeftSideParameter { get; }
     ILookupParameter<ItemArray<DoubleValue>> RightSideParameter { get; }

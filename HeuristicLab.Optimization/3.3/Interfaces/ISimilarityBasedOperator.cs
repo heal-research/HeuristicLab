@@ -20,8 +20,10 @@
 #endregion
 
 using HeuristicLab.Core;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Optimization {
+  [StorableType("84f50ceb-5d6b-492e-a50b-b52ca5a34721")]
   public interface ISimilarityBasedOperator : IOperator {
     IConstrainedValueParameter<ISolutionSimilarityCalculator> SimilarityCalculatorParameter { get; }
   }

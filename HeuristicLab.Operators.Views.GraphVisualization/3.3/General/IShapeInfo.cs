@@ -23,8 +23,10 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using HeuristicLab.Common;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Operators.Views.GraphVisualization {
+  [StorableType("a4ab29fa-705b-4a49-8ca2-86a18b40de12")]
   public interface IShapeInfo : IDeepCloneable {
     Point Location { get; set; }
     IEnumerable<string> Connectors { get; }

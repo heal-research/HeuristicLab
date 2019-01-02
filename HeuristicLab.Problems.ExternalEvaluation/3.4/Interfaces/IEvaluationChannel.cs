@@ -21,8 +21,10 @@
 
 using Google.ProtocolBuffers;
 using HeuristicLab.Core;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.ExternalEvaluation {
+  [StorableType("8e62ba0d-03f5-4243-8411-3bd5f14c42be")]
   public interface IEvaluationChannel : INamedItem {
     /// <summary>
     /// A flag that describes whether the channel has been initialized or not.

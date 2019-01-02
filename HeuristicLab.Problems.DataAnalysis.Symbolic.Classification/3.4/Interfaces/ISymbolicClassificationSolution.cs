@@ -1,4 +1,5 @@
-﻿#region License Information
+﻿using HEAL.Fossil;
+#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -21,6 +22,7 @@
 
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
+  [StorableType("82ba1ea2-e8e9-4b77-b797-c752c1256840")]
   public interface ISymbolicClassificationSolution : IClassificationSolution, ISymbolicDataAnalysisSolution {
     new ISymbolicClassificationModel Model { get; }
   }

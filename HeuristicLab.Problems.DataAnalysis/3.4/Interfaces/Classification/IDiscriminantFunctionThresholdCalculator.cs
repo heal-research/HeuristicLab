@@ -21,7 +21,10 @@
 
 using System.Collections.Generic;
 using HeuristicLab.Core;
+using HEAL.Fossil;
+
 namespace HeuristicLab.Problems.DataAnalysis {
+  [StorableType("f12cfcbe-8473-49c3-8c43-bddce2d7b772")]
   public interface IDiscriminantFunctionThresholdCalculator : INamedItem {
     void Calculate(IClassificationProblemData problemData, IEnumerable<double> estimatedValues, IEnumerable<double> targetClassValues, out double[] classValues, out double[] thresholds);
   }

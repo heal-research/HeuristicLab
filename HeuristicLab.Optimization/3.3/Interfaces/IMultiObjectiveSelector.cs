@@ -21,8 +21,10 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Optimization {
+  [StorableType("df0370eb-6483-4bf9-a18f-dae937c32f4f")]
   /// <summary>
   /// An interface which represents a selection operator for selecting solutions of multi-objective optimization problems.
   /// </summary>

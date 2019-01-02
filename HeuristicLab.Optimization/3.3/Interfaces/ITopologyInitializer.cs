@@ -21,8 +21,10 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Optimization {
+  [StorableType("03f42588-038a-4898-9d70-a6bf9d5daeba")]
   public interface ITopologyInitializer : IOperator {
     IScopeTreeLookupParameter<IntArray> NeighborsParameter { get; }
     ILookupParameter<IntValue> SwarmSizeParameter { get; }

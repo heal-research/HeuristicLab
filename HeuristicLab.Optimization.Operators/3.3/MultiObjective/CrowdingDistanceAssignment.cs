@@ -102,6 +102,7 @@ namespace HeuristicLab.Optimization.Operators {
       }
     }
 
+    [StorableType("30fd1927-b268-4ce7-8960-b04bfa83f1e6")]
     private class QualitiesComparer : IComparer<DoubleArray> {
       private int index;
 

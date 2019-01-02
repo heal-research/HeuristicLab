@@ -23,10 +23,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis {
+  [StorableType("849e42d3-8934-419d-9aff-64ad81c06b67")]
   public class Interval : IEquatable<Interval> {
+    [Storable]
     public double LowerBound { get; private set; }
+    [Storable]
     public double UpperBound { get; private set; }
 
     public Interval(double lowerBound, double upperBound) {

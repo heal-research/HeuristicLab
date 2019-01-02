@@ -149,6 +149,8 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
         name = String.Format("{0} ServiceClient", ChannelParameter.Value.Name);
       OnNameChanged();
     }
+
+    [StorableType("9f1ab6e1-fe6e-4624-afbd-9bfdfdb75d44")]
     #endregion
 
     private class ReceiveAsyncInfo {

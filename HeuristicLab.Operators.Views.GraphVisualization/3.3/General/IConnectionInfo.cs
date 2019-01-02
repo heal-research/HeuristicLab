@@ -21,8 +21,10 @@
 
 using System;
 using HeuristicLab.Common;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Operators.Views.GraphVisualization {
+  [StorableType("3cdcae5a-9f9f-4b99-bcd7-cc9619a547d8")]
   public interface IConnectionInfo : IDeepCloneable {
     IShapeInfo From { get; }
     string ConnectorFrom { get; }

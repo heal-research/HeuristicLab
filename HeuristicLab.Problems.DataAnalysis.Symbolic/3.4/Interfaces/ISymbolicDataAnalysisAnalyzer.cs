@@ -21,7 +21,10 @@
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Optimization;
+using HEAL.Fossil;
+
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
+  [StorableType("fe8b44e0-da46-4b1e-bbb2-b0b9cd7eff1d")]
   public interface ISymbolicDataAnalysisAnalyzer : IAnalyzer {
     IScopeTreeLookupParameter<ISymbolicExpressionTree> SymbolicExpressionTreeParameter { get; }
     ILookupParameter<ResultCollection> ResultCollectionParameter { get; }

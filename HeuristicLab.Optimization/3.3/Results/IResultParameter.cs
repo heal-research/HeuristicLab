@@ -21,13 +21,16 @@
 
 using System;
 using HeuristicLab.Core;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Optimization {
+  [StorableType("af5d3f60-6f3a-4a44-a906-688ac8296fe3")]
   public interface IResultParameter : ILookupParameter {
     string ResultCollectionName { get; set; }
     event EventHandler ResultCollectionNameChanged;
   }
 
+  [StorableType("803e6ad6-dd9d-497a-ad1c-7cd3dc5b0d3c")]
   public interface IResultParameter<T> : ILookupParameter<T>, IResultParameter where T : class, IItem {
     T DefaultValue { get; set; }
     event EventHandler DefaultValueChanged;

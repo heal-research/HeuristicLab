@@ -22,8 +22,10 @@
 using System;
 using System.Collections.Generic;
 using HeuristicLab.Core;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Optimization {
+  [StorableType("fda56e0b-9392-4711-9af1-55211bfa24ac")]
   internal interface INeighborBasedOperator : IEncodingOperator {
     Func<Individual, IRandom, IEnumerable<Individual>> GetNeighborsFunc { get; set; }
   }

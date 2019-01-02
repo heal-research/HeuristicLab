@@ -21,8 +21,10 @@
 
 using System;
 using HeuristicLab.Core;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Optimization {
+  [StorableType("51d66e7a-e4bd-429a-b6e5-1cfe9ce4364f")]
   /// <summary>
   /// Interface to represent a heuristic optimization problem.
   /// </summary>

@@ -25,8 +25,10 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.IntegerVectorEncoding;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.GrammaticalEvolution.Mappers {
+  [StorableType("17ca7334-176c-4d80-89f9-ae918dcc65d2")]
   /// <summary>
   /// IGenotypeToPhenotypeMapper
   /// </summary>

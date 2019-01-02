@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
+  [StorableType("535830d4-551e-4b53-97e3-9605bd7e785f")]
   public class SymbolicExpressionTreeEqualityComparer : IEqualityComparer<ISymbolicExpressionTree> {
+    [Storable]
     public SymbolicExpressionTreeNodeEqualityComparer SimilarityComparer { get; set; }
 
     public bool Equals(ISymbolicExpressionTree a, ISymbolicExpressionTree b) {

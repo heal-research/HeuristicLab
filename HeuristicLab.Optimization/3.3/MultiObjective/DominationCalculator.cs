@@ -21,8 +21,10 @@
 
 using System;
 using System.Collections.Generic;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Optimization {
+  [StorableType("d76eb753-5088-4490-ad18-e78d3629c60b")]
   public enum DominationResult { Dominates, IsDominated, IsNonDominated };
 
   public static class DominationCalculator<T> {

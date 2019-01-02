@@ -20,7 +20,10 @@
 #endregion
 
 using System.Collections.Generic;
+using HEAL.Fossil;
+
 namespace HeuristicLab.Problems.DataAnalysis {
+  [StorableType("2793d8c7-6f34-4d9d-970c-a705f6c47b5c")]
   public interface ITimeSeriesPrognosisSolution : IRegressionSolution {
     new ITimeSeriesPrognosisModel Model { get; }
     new ITimeSeriesPrognosisProblemData ProblemData { get; set; }

@@ -20,8 +20,10 @@
 #endregion
 
 using HeuristicLab.Core;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
+  [StorableType("56f4827e-3ebf-4638-a79e-bf6814a58d60")]
   public interface ISymbolicDataAnalysisInterpreterOperator : IOperator {
     ILookupParameter<ISymbolicDataAnalysisExpressionTreeInterpreter> SymbolicDataAnalysisTreeInterpreterParameter { get; }
   }

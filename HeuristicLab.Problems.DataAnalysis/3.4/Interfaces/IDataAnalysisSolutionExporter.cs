@@ -1,4 +1,5 @@
-﻿#region License Information
+﻿using HEAL.Fossil;
+#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -21,6 +22,7 @@
 
 
 namespace HeuristicLab.Problems.DataAnalysis {
+  [StorableType("87fc237a-8478-429a-b276-6c7e09a86137")]
   public interface IDataAnalysisSolutionExporter {
     string FileTypeFilter { get; }
     bool Supports(IDataAnalysisSolution solution);

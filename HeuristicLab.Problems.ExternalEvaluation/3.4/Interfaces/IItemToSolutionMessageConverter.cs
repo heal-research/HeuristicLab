@@ -21,8 +21,10 @@
 
 using System;
 using HeuristicLab.Core;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.ExternalEvaluation {
+  [StorableType("581f5e17-68dc-42a0-8bc0-e0ac8992ed7b")]
   public interface IItemToSolutionMessageConverter : IItem {
     Type[] ItemTypes { get; }
     void AddItemToBuilder(IItem item, string name, SolutionMessage.Builder builder);

@@ -38,6 +38,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableType("E48D1FEB-8D3F-4394-9AD4-7C4A24116FD4")]
   public sealed class SymbolicDataAnalysisExpressionDepthConstrainedCrossover<T> :
     SymbolicDataAnalysisExpressionCrossover<T> where T : class, IDataAnalysisProblemData {
+    [StorableType("24941bf7-da85-44e9-9e01-44c285ac41c3")]
     private enum Ranges { HighLevel, Standard, LowLevel };
     private const string DepthRangeParameterName = "DepthRange";
 

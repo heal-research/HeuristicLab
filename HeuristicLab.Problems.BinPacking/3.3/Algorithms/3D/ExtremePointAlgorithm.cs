@@ -33,8 +33,10 @@ using HeuristicLab.Parameters;
 using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.BinPacking3D {
-  
+  [StorableType("32c0ea29-26aa-45f2-8e7f-a2d9beab75b9")]
   public enum SortingMethod { All, Given, VolumeHeight, HeightVolume, AreaHeight, HeightArea, ClusteredAreaHeight, ClusteredHeightArea }
+
+  [StorableType("bea57c08-7173-4cbb-915e-8c5954af3a50")]
   public enum FittingMethod { All, FirstFit, ResidualSpaceBestFit, FreeVolumeBestFit }
 
   [Item("Extreme-point-based Bin Packing (3d)", "An implementation of the extreme-point based packing described in Crainic, T. G., Perboli, G., & Tadei, R. (2008). Extreme point-based heuristics for three-dimensional bin packing. Informs Journal on computing, 20(3), 368-384.")]

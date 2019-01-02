@@ -117,9 +117,9 @@ namespace HeuristicLab.Problems.BinPacking3D {
       if (other != null) return CompareTo(other);
       else throw new ArgumentException(string.Format("Cannot compare with object {0}", obj), "obj");
     }
-
     #endregion
 
+    [StorableType(StorableMemberSelection.AllFields, "6dc0b0e2-e165-44e0-a342-71974f0494e3")]
     private struct CuboidDiagonal {
       public int x1;
       public int y1;

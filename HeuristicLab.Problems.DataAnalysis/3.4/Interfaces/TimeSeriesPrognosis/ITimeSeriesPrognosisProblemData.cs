@@ -1,4 +1,5 @@
-﻿#region License Information
+﻿using HEAL.Fossil;
+#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -20,6 +21,7 @@
 #endregion
 
 namespace HeuristicLab.Problems.DataAnalysis {
+  [StorableType("9f05ada5-f1b1-44fd-84ad-2f7b427e94c3")]
   public interface ITimeSeriesPrognosisProblemData : IRegressionProblemData {
     int TrainingHorizon { get; set; }
     int TestHorizon { get; set; }

@@ -22,8 +22,10 @@
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
+  [StorableType("0cf78789-b5e9-40b4-ba6a-461a16c802f1")]
   public interface ISymbolicDataAnalysisExpressionCrossover<T> : ISymbolicExpressionTreeCrossover,
     ISymbolicExpressionTreeSizeConstraintOperator, ISymbolicDataAnalysisInterpreterOperator
     where T : class, IDataAnalysisProblemData {

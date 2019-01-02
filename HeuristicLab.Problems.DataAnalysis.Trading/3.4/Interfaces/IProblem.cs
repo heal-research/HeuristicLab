@@ -1,4 +1,5 @@
-﻿#region License Information
+﻿using HEAL.Fossil;
+#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -20,6 +21,7 @@
 #endregion
 
 namespace HeuristicLab.Problems.DataAnalysis.Trading {
+  [StorableType("b29a45ce-9e38-4f3f-8b2f-5075f7ce81a4")]
   public interface IProblem : IDataAnalysisProblem<IProblemData> {
   }
 }

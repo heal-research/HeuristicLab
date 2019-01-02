@@ -20,8 +20,10 @@
 #endregion
 
 using HeuristicLab.Core;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Optimization {
+  [StorableType("65af3d33-528d-4554-a430-bd2daf42860a")]
   /// <summary>
   /// The basic interface that marks all move operators. Derived interfaces
   /// are used to group move operators together.

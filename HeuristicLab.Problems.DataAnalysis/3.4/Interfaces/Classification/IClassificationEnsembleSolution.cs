@@ -21,7 +21,10 @@
 
 using System.Collections.Generic;
 using HeuristicLab.Core;
+using HEAL.Fossil;
+
 namespace HeuristicLab.Problems.DataAnalysis {
+  [StorableType("b966443d-a221-46df-83d1-49adaae1adbe")]
   public interface IClassificationEnsembleSolution : IClassificationSolution {
     new IClassificationEnsembleModel Model { get; }
     IItemCollection<IClassificationSolution> ClassificationSolutions { get; }

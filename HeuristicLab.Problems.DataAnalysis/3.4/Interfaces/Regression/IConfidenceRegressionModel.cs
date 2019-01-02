@@ -20,8 +20,10 @@
 #endregion
 
 using System.Collections.Generic;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis {
+  [StorableType("35261615-3840-49ba-90a5-0e15806c1bc4")]
   public interface IConfidenceRegressionModel : IRegressionModel {
     IEnumerable<double> GetEstimatedVariances(IDataset dataset, IEnumerable<int> rows);
   }
