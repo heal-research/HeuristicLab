@@ -138,6 +138,7 @@
     <Compile Include="Auxiliary\TypeNameParser.cs" />
     <Compile Include="Auxiliary\ReflectionTools.cs" />
     <Compile Include="Transformers\BitmapTransformer.cs" />
+    <Compile Include="Transformers\KnownStorableTypesMap.cs" />
     <Compile Include="Transformers\FontTransformer.cs" />
     <None Include="packages.config" />
     <None Include="Plugin.cs.frame" />

@@ -44,8 +44,6 @@ namespace HeuristicLab.Persistence.Fossil.Tests {
     [TestInitialize()]
     public void CreateTempFile() {
       tempFile = Path.GetTempFileName();
-      // in HL this is not necessary because RegisterStorableTypes is called when the plugin is loaded
-      HeuristicLabPersistencePlugin.RegisterStorableTypes();
     }
 
     [TestCleanup()]
