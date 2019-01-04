@@ -120,6 +120,7 @@
   <ItemGroup>
     <Compile Include="MultiObjective\PearsonRSquaredNestedTreeSizeEvaluator.cs" />
     <Compile Include="MultiObjective\PearsonRSquaredNumberOfVariablesEvaluator.cs" />
+    <Compile Include="MultiObjective\PearsonRSquaredAverageSimilarityEvaluator.cs" />
     <Compile Include="MultiObjective\PearsonRSquaredTreeComplexityEvaluator.cs" />
     <Compile Include="MultiObjective\SymbolicRegressionMultiObjectiveValidationBestSolutionAnalyzer.cs" />
     <Compile Include="Plugin.cs" />
