@@ -455,14 +455,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="AlgorithmView.resx">
-      <DependentUpon>AlgorithmView.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="CreateNewSingleEncodingDialog.resx">
       <DependentUpon>CreateNewSingleEncodingDialog.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="EngineAlgorithmView.resx">
-      <DependentUpon>EngineAlgorithmView.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
