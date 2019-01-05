@@ -45,20 +45,5 @@ namespace HeuristicLab.MainForm.WindowsForms {
         if (refresh) control.Refresh();
       }
     }
-
-    public static IEnumerable<Control> GetNestedControls(this Control control, Func<Control, bool> condition = null) {
-      if (control == null) yield break;
-      if (condition == null) condition = (c) => true;
-
-      Queue<Control> unprocessed = new Queue<Control>();
-      unprocessed.Enqueue(control);
-
-      while (unprocessed.Count > 0) {
-        Control c = unprocessed.Dequeue();
-        if (condition(c)) yield return c;
-        foreach (Control child in c.Controls)
-          unprocessed.Enqueue(child);
-      }
-    }
   }
 }
