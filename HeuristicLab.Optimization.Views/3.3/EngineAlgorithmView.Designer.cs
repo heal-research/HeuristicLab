@@ -187,6 +187,7 @@ namespace HeuristicLab.Optimization.Views {
       // 
       // engineTabPage
       // 
+      this.engineTabPage.BackColor = System.Drawing.SystemColors.Window;
       this.engineTabPage.Controls.Add(this.engineViewHost);
       this.engineTabPage.Controls.Add(this.engineComboBox);
       this.engineTabPage.Controls.Add(this.engineLabel);
@@ -196,7 +197,6 @@ namespace HeuristicLab.Optimization.Views {
       this.engineTabPage.Size = new System.Drawing.Size(705, 467);
       this.engineTabPage.TabIndex = 5;
       this.engineTabPage.Text = "Engine";
-      this.engineTabPage.UseVisualStyleBackColor = true;
       // 
       // engineViewHost
       // 
