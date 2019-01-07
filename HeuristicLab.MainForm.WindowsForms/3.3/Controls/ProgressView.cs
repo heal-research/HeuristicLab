@@ -126,7 +126,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
         Control.Invoke((Action)HideProgress);
         return;
       }
-      if (Parent == null) return;
+      //if (Parent == null) return;
 
       Visible = false;
       Control.SuspendRepaint();
