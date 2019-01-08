@@ -35,17 +35,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   [Item("NeuralNetworkModel", "Represents a neural network for regression and classification.")]
   public sealed class NeuralNetworkModel : ClassificationModel, INeuralNetworkModel {
 
+    private object mlpLocker = new object();
     private alglib.multilayerperceptron multiLayerPerceptron;
-    public alglib.multilayerperceptron MultiLayerPerceptron {
-      get { return multiLayerPerceptron; }
-      set {
-        if (value != multiLayerPerceptron) {
-          if (value == null) throw new ArgumentNullException();
-          multiLayerPerceptron = value;
-          OnChanged(EventArgs.Empty);
-        }
-      }
-    }
 
     public override IEnumerable<string> VariablesUsedForPrediction {
       get { return allowedInputVariables; }
@@ -106,7 +97,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
           x[column] = inputData[row, column];
         }
         // NOTE: mlpprocess changes data in multiLayerPerceptron and is therefore not thread-save!
-        lock (multiLayerPerceptron) {
+        lock (mlpLocker) {
           alglib.mlpprocess(multiLayerPerceptron, x, ref y);
         }
         yield return y[0];
@@ -126,7 +117,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
           x[column] = inputData[row, column];
         }
         // NOTE: mlpprocess changes data in multiLayerPerceptron and is therefore not thread-save!
-        lock (multiLayerPerceptron) {
+        lock (mlpLocker) {
           alglib.mlpprocess(multiLayerPerceptron, x, ref y);
         }
         // find class for with the largest probability value
@@ -142,21 +133,30 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
     }
 
+    public bool IsProblemDataCompatible(IRegressionProblemData problemData, out string errorMessage) {
+      return RegressionModel.IsProblemDataCompatible(this, problemData, out errorMessage);
+    }
+
+    public override bool IsProblemDataCompatible(IDataAnalysisProblemData problemData, out string errorMessage) {
+      if (problemData == null) throw new ArgumentNullException("problemData", "The provided problemData is null.");
+
+      var regressionProblemData = problemData as IRegressionProblemData;
+      if (regressionProblemData != null)
+        return IsProblemDataCompatible(regressionProblemData, out errorMessage);
+
+      var classificationProblemData = problemData as IClassificationProblemData;
+      if (classificationProblemData != null)
+        return IsProblemDataCompatible(classificationProblemData, out errorMessage);
+
+      throw new ArgumentException("The problem data is not a regression nor a classification problem data. Instead a " + problemData.GetType().GetPrettyName() + " was provided.", "problemData");
+    }
+
     public IRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData) {
       return new NeuralNetworkRegressionSolution(this, new RegressionProblemData(problemData));
     }
     public override IClassificationSolution CreateClassificationSolution(IClassificationProblemData problemData) {
       return new NeuralNetworkClassificationSolution(this, new ClassificationProblemData(problemData));
     }
-
-    #region events
-    public event EventHandler Changed;
-    private void OnChanged(EventArgs e) {
-      var handlers = Changed;
-      if (handlers != null)
-        handlers(this, e);
-    }
-    #endregion
 
     #region persistence
     [Storable]

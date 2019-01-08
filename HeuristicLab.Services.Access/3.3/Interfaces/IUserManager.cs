@@ -30,6 +30,8 @@ namespace HeuristicLab.Services.Access {
     MembershipUser GetUserByName(string username);
     MembershipUser GetUserById(Guid userId);
     string GetUserNameById(Guid userId);
+    IEnumerable<Guid> GetUserGroupIdsOfUser(Guid userId);
     bool VerifyUser(Guid userId, List<Guid> allowedUserGroups);
+    IEnumerable<DataTransfer.UserGroupMapping> GetUserGroupMapping();
   }
 }

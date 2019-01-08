@@ -247,6 +247,7 @@ namespace HeuristicLab.Optimization.Views {
       // 
       // runPage
       // 
+      this.runPage.BackColor = System.Drawing.SystemColors.Window;
       this.runPage.Controls.Add(this.itemsGroupBox);
       this.runPage.Location = new System.Drawing.Point(4, 22);
       this.runPage.Name = "runPage";
@@ -254,10 +255,10 @@ namespace HeuristicLab.Optimization.Views {
       this.runPage.Size = new System.Drawing.Size(524, 357);
       this.runPage.TabIndex = 0;
       this.runPage.Text = "Runs";
-      this.runPage.UseVisualStyleBackColor = true;
       // 
       // constraintPage
       // 
+      this.constraintPage.BackColor = System.Drawing.SystemColors.Window;
       this.constraintPage.Controls.Add(this.runCollectionConstraintCollectionView);
       this.constraintPage.Location = new System.Drawing.Point(4, 22);
       this.constraintPage.Name = "constraintPage";
@@ -265,7 +266,6 @@ namespace HeuristicLab.Optimization.Views {
       this.constraintPage.Size = new System.Drawing.Size(524, 357);
       this.constraintPage.TabIndex = 1;
       this.constraintPage.Text = "Filtering";
-      this.constraintPage.UseVisualStyleBackColor = true;
       // 
       // runCollectionConstraintCollectionView
       // 
@@ -280,6 +280,7 @@ namespace HeuristicLab.Optimization.Views {
       // 
       // modifiersPage
       // 
+      this.modifiersPage.BackColor = System.Drawing.SystemColors.Window;
       this.modifiersPage.Controls.Add(this.runCollectionModifiersListView);
       this.modifiersPage.Location = new System.Drawing.Point(4, 22);
       this.modifiersPage.Name = "modifiersPage";
@@ -287,12 +288,11 @@ namespace HeuristicLab.Optimization.Views {
       this.modifiersPage.Size = new System.Drawing.Size(524, 357);
       this.modifiersPage.TabIndex = 2;
       this.modifiersPage.Text = "Modification";
-      this.modifiersPage.UseVisualStyleBackColor = true;
       // 
       // runCollectionModifiersListView
       // 
-      this.runCollectionModifiersListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+      this.runCollectionModifiersListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.runCollectionModifiersListView.Caption = "Modifier View";
       this.runCollectionModifiersListView.Content = null;

@@ -115,19 +115,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     public ModifiableDataset ToModifiable() {
-      var values = new List<IList>();
-      foreach (var v in variableNames) {
-        if (VariableHasType<double>(v)) {
-          values.Add(new List<double>((IList<double>)variableValues[v]));
-        } else if (VariableHasType<string>(v)) {
-          values.Add(new List<string>((IList<string>)variableValues[v]));
-        } else if (VariableHasType<DateTime>(v)) {
-          values.Add(new List<DateTime>((IList<DateTime>)variableValues[v]));
-        } else {
-          throw new ArgumentException("Unknown variable type.");
-        }
-      }
-      return new ModifiableDataset(variableNames, values);
+      return new ModifiableDataset(variableNames, variableNames.Select(v => variableValues[v]), true);
     }
 
     /// <summary>
@@ -140,7 +128,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       return new Dataset(variableNames, values.ShuffleLists(random));
     }
 
-    protected Dataset(Dataset dataset) : this(dataset.variableNames, dataset.variableValues.Values) { }
+
 
     #region Backwards compatible code, remove with 3.5
     private double[,] storableData;
@@ -177,6 +165,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
         if (variableNames != null) throw new InvalidOperationException();
         variableNames = new List<string>(value);
       }
+    }
+
+    public bool ContainsVariable(string variableName) {
+      return variableValues.ContainsKey(variableName);
     }
     public IEnumerable<string> DoubleVariables {
       get { return variableValues.Where(p => p.Value is IList<double>).Select(p => p.Key); }
@@ -317,9 +309,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     #region IStringConvertibleMatrix Members
     [Storable]
-    protected int rows;
+    private int rows;
     public int Rows {
       get { return rows; }
+      protected set { rows = value; }
     }
     int IStringConvertibleMatrix.Rows {
       get { return Rows; }

@@ -124,6 +124,9 @@
     <Compile Include="Exceptions\AnonymousUserException.cs" />
     <Compile Include="HiveAdminClient.cs" />
     <Compile Include="HiveClient.cs" />
+    <Compile Include="ServiceClients\AssignedJobResource.cs" />
+    <Compile Include="ServiceClients\AssignedProjectResource.cs" />
+    <Compile Include="ServiceClients\Project.cs" />
     <Compile Include="ServiceClients\UserPriority.cs" />
     <Compile Include="ServiceClients\ResourcePermission.cs" />
     <Compile Include="Settings.Designer.cs">
@@ -193,6 +196,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\HeuristicLab.Clients.Access\3.3\HeuristicLab.Clients.Access-3.3.csproj">
+      <Project>{494F87F4-0F25-4D33-A382-10CDB2174D48}</Project>
+      <Name>HeuristicLab.Clients.Access-3.3</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Clients.Common\3.3\HeuristicLab.Clients.Common-3.3.csproj">
       <Project>{730A9104-D4D1-4360-966B-E49B7571DDA3}</Project>
       <Name>HeuristicLab.Clients.Common-3.3</Name>
@@ -226,6 +233,11 @@
     <ProjectReference Include="..\..\HeuristicLab.Hive\3.3\HeuristicLab.Hive-3.3.csproj">
       <Project>{F98A1740-9AC9-4D36-A582-6A2D0D06978D}</Project>
       <Name>HeuristicLab.Hive-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.MainForm.WindowsForms\3.3\HeuristicLab.MainForm.WindowsForms-3.3.csproj">
+      <Project>{AB687BBE-1BFE-476B-906D-44237135431D}</Project>
+      <Name>HeuristicLab.MainForm.WindowsForms-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.MainForm\3.3\HeuristicLab.MainForm-3.3.csproj">

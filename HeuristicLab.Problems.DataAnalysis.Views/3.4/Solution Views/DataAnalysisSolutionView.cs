@@ -140,8 +140,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
           throw new InvalidOperationException("The chosen HeuristicLab file does not contain a ProblemData, Problem, or DataAnalysisSolution.");
 
         var solution = (IDataAnalysisSolution)Content.Clone();
-        problemData.AdjustProblemDataProperties(solution.ProblemData);
-
         solution.ProblemData = problemData;
         if (!solution.Name.EndsWith(" with loaded problemData"))
           solution.Name += " with loaded problemData";
@@ -230,7 +228,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       problemData = (IDataAnalysisProblemData)problemData.Clone();
 
       try {
-        problemData.AdjustProblemDataProperties(Content.ProblemData);
         Content.ProblemData = problemData;
 
         if (!Content.Name.EndsWith(" with changed problemData"))

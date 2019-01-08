@@ -40,7 +40,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation.Views {
       refreshButton.Text = string.Empty;
       refreshButton.Image = VSImageLibrary.Refresh;
       uploadButton.Text = string.Empty;
-      uploadButton.Image = VSImageLibrary.PublishToWeb;
+      uploadButton.Image = VSImageLibrary.Save;
     }
 
     protected override void RegisterContentEvents() {

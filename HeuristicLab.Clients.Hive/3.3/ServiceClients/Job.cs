@@ -20,15 +20,17 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using HeuristicLab.Common;
 
 namespace HeuristicLab.Clients.Hive {
   public partial class Job : IDeepCloneable, IContent {
+    public List<Guid> ResourceIds { get; set; }
 
     #region Constructors and Cloning
     public Job() {
-      ResourceNames = "HEAL";
+      ProjectId = Guid.Empty;
       DateCreated = DateTime.Now;
       Permission = Permission.Full;
     }
@@ -37,11 +39,12 @@ namespace HeuristicLab.Clients.Hive {
       cloner.RegisterClonedObject(original, this);
       this.OwnerUserId = original.OwnerUserId;
       this.DateCreated = original.DateCreated;
-      this.ResourceNames = original.ResourceNames;
+      this.ProjectId = original.ProjectId;
       this.Name = original.Name;
       this.Description = original.Description;
       this.Id = original.Id;
       this.Permission = original.Permission;
+      this.ResourceIds = original.ResourceIds;
     }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new Job(this, cloner);

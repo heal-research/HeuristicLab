@@ -236,16 +236,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // 
       // variableNamesTabPage
       // 
+      this.variableNamesTabPage.BackColor = System.Drawing.SystemColors.Window;
       this.variableNamesTabPage.Location = new System.Drawing.Point(4, 22);
       this.variableNamesTabPage.Name = "variableNamesTabPage";
       this.variableNamesTabPage.Padding = new System.Windows.Forms.Padding(3);
       this.variableNamesTabPage.Size = new System.Drawing.Size(512, 273);
       this.variableNamesTabPage.TabIndex = 0;
       this.variableNamesTabPage.Text = "Variable Names";
-      this.variableNamesTabPage.UseVisualStyleBackColor = true;
       // 
       // parametersTabPage
       // 
+      this.parametersTabPage.BackColor = System.Drawing.SystemColors.Window;
       this.parametersTabPage.Controls.Add(this.initializationGroupBox);
       this.parametersTabPage.Controls.Add(this.mutationGroupBox);
       this.parametersTabPage.Location = new System.Drawing.Point(4, 22);
@@ -254,7 +255,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.parametersTabPage.Size = new System.Drawing.Size(512, 273);
       this.parametersTabPage.TabIndex = 1;
       this.parametersTabPage.Text = "Parameters";
-      this.parametersTabPage.UseVisualStyleBackColor = true;
       // 
       // initializationGroupBox
       // 

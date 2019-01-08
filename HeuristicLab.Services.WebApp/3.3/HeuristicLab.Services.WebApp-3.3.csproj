@@ -22,6 +22,7 @@
     <IISExpressUseClassicPipelineMode />
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
+    <UseGlobalApplicationHostFile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -233,7 +234,6 @@
     <Content Include="WebApp\libs\bootstrap\fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="WebApp\libs\bootstrap\fonts\glyphicons-halflings-regular.woff" />
     <Content Include="WebApp\libs\bootstrap\fonts\glyphicons-halflings-regular.woff2" />
-    <Content Include="WebApp\shared\directives\scrollToTop.js" />
     <Content Include="WebApp\shared\filter\filters.js" />
     <Content Include="WebApp\shared\images\HeuristicLab-Logo.png" />
     <Content Include="WebApp\shared\layout\layout.cshtml" />

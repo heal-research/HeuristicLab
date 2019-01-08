@@ -73,6 +73,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
       Scale(problemData, problemData.TargetVariable);
     }
 
+    public virtual bool IsProblemDataCompatible(IClassificationProblemData problemData, out string errorMessage) {
+      return ClassificationModel.IsProblemDataCompatible(this, problemData, out errorMessage);
+    }
+
+    public override bool IsProblemDataCompatible(IDataAnalysisProblemData problemData, out string errorMessage) {
+      if (problemData == null) throw new ArgumentNullException("problemData", "The provided problemData is null.");
+      var classificationProblemData = problemData as IClassificationProblemData;
+      if (classificationProblemData == null)
+        throw new ArgumentException("The problem data is not a regression problem data. Instead a " + problemData.GetType().GetPrettyName() + " was provided.", "problemData");
+      return IsProblemDataCompatible(classificationProblemData, out errorMessage);
+    }
+
     #region events
     public event EventHandler TargetVariableChanged;
     private void OnTargetVariableChanged(object sender, EventArgs args) {

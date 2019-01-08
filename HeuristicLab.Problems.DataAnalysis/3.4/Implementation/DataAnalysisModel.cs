@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -37,5 +38,29 @@ namespace HeuristicLab.Problems.DataAnalysis {
     protected DataAnalysisModel(string name, string description) : base(name, description) { }
 
     public abstract IEnumerable<string> VariablesUsedForPrediction { get; }
+
+    public virtual bool IsDatasetCompatible(IDataset dataset, out string errorMessage) {
+      if (dataset == null) throw new ArgumentNullException("dataset", "The provided dataset is null.");
+      return IsDatasetCompatible(this, dataset, out errorMessage);
+    }
+
+    public abstract bool IsProblemDataCompatible(IDataAnalysisProblemData problemData, out string errorMessage);
+
+    public static bool IsDatasetCompatible(IDataAnalysisModel model, IDataset dataset, out string errorMessage) {
+      if(model == null) throw new ArgumentNullException("model", "The provided model is null.");
+      if (dataset == null) throw new ArgumentNullException("dataset", "The provided dataset is null.");
+      errorMessage = string.Empty;
+
+      foreach (var variable in model.VariablesUsedForPrediction) {
+        if (!dataset.ContainsVariable(variable)) {
+          if (string.IsNullOrEmpty(errorMessage)) {
+            errorMessage = "The following variables must be present in the dataset for model evaluation:";
+          }
+          errorMessage += System.Environment.NewLine + " " + variable;
+        }
+      }
+
+      return string.IsNullOrEmpty(errorMessage);
+    }
   }
 }

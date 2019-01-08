@@ -31,11 +31,13 @@ namespace HeuristicLab.Services.Hive.DataTransfer {
     [DataMember]
     public DateTime DateCreated { get; set; }
     [DataMember]
-    public string ResourceNames { get; set; }
+    public Guid ProjectId { get; set; }
     [DataMember]
     public Permission Permission { get; set; } // the permission for the currently logged in user
     [DataMember]
     public string OwnerUsername { get; set; }
+    [DataMember]
+    public JobState State { get; set; }
 
     /* ==== some computed statistics ==== */
     [DataMember]

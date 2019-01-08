@@ -160,24 +160,5 @@ namespace HeuristicLab.Problems.DataAnalysis {
     private void TargetVariableParameter_ValueChanged(object sender, EventArgs e) {
       OnChanged();
     }
-
-    protected override bool IsProblemDataCompatible(IDataAnalysisProblemData problemData, out string errorMessage) {
-      if (problemData == null) throw new ArgumentNullException("problemData", "The provided problemData is null.");
-      IRegressionProblemData regressionProblemData = problemData as IRegressionProblemData;
-      if (regressionProblemData == null)
-        throw new ArgumentException("The problem data is not a regression problem data. Instead a " + problemData.GetType().GetPrettyName() + " was provided.", "problemData");
-
-      var returnValue = base.IsProblemDataCompatible(problemData, out errorMessage);
-      return returnValue;
-    }
-
-    public override void AdjustProblemDataProperties(IDataAnalysisProblemData problemData) {
-      if (problemData == null) throw new ArgumentNullException("problemData", "The provided problemData is null.");
-      RegressionProblemData regressionProblemData = problemData as RegressionProblemData;
-      if (regressionProblemData == null)
-        throw new ArgumentException("The problem data is not a regression problem data. Instead a " + problemData.GetType().GetPrettyName() + " was provided.", "problemData");
-
-      base.AdjustProblemDataProperties(problemData);
-    }
   }
 }

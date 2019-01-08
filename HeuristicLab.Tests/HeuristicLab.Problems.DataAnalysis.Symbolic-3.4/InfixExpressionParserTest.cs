@@ -60,17 +60,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
 
 
       Console.WriteLine(formatter.Format(parser.Parse("log(3)")));
-      Console.WriteLine(formatter.Format(parser.Parse("log(-3)")));
+      Console.WriteLine(formatter.Format(parser.Parse("log(-3)")));   // should produce log(-3) as output
       Console.WriteLine(formatter.Format(parser.Parse("exp(3)")));
-      Console.WriteLine(formatter.Format(parser.Parse("exp(-3)")));
+      Console.WriteLine(formatter.Format(parser.Parse("exp(-3)")));  // should produce exp(-3) as output
       Console.WriteLine(formatter.Format(parser.Parse("sqrt(3)")));
 
-      Console.WriteLine(formatter.Format(parser.Parse("sqr((-3))")));
+      Console.WriteLine(formatter.Format(parser.Parse("sqr((-3))")));  // should produce sqr((-3)) as output
 
-      Console.WriteLine(formatter.Format(parser.Parse("3/3+2/2+1/1")));
-      Console.WriteLine(formatter.Format(parser.Parse("-3+30-2+20-1+10")));
+      Console.WriteLine(formatter.Format(parser.Parse("3/3+2/2+1/1"))); // ((3 * 1 / 3) + (2 * 1 / 2) + (1 * 1 / 1))
+      Console.WriteLine(formatter.Format(parser.Parse("-3+30-2+20-1+10")));   //  not (30 + 20 + 10 + ((-1) * (3 + 2 + 1)))
       // round trip
-      Console.WriteLine(formatter.Format(parser.Parse(formatter.Format(parser.Parse("-3+30-2+20-1+10")))));
+      Console.WriteLine(formatter.Format(parser.Parse(formatter.Format(parser.Parse("-3+30-2+20-1+10")))));   // not (30 + 20 + 10 + ((-(1)) * (3 + 2 + 1)))
 
       Console.WriteLine(formatter.Format(parser.Parse("\"x1\"")));
       Console.WriteLine(formatter.Format(parser.Parse("\'var name\'")));

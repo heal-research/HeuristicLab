@@ -61,17 +61,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private void FormatRecursively(ISymbolicExpressionTreeNode node, StringBuilder strBuilder) {
       if (node.SubtreeCount > 1) {
         var token = GetToken(node.Symbol);
-        if (token == "+" || token == "-" || token == "OR" || token == "XOR") {
-          strBuilder.Append("(");
-          FormatRecursively(node.Subtrees.First(), strBuilder);
-
-          foreach (var subtree in node.Subtrees.Skip(1)) {
-            strBuilder.Append(" ").Append(token).Append(" ");
-            FormatRecursively(subtree, strBuilder);
-          }
-          strBuilder.Append(")");
-
-        } else if (token == "*" || token == "/" || token == "AND") {
+        // operators
+        if (token == "+" || token == "-" || token == "OR" || token == "XOR" ||
+            token == "*" || token == "/" || token == "AND" ||
+            token == "^") {
           strBuilder.Append("(");
           FormatRecursively(node.Subtrees.First(), strBuilder);
 
@@ -183,7 +176,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     private string GetToken(ISymbol symbol) {
-      var tok = InfixExpressionParser.knownSymbols.GetBySecond(symbol).SingleOrDefault();
+      var tok = InfixExpressionParser.knownSymbols.GetBySecond(symbol).FirstOrDefault();
       if (tok == null)
         throw new ArgumentException(string.Format("Unknown symbol {0} found.", symbol.Name));
       return tok;

@@ -30,6 +30,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
   public interface IRegressionModel : IDataAnalysisModel {
     IEnumerable<double> GetEstimatedValues(IDataset dataset, IEnumerable<int> rows);
     IRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData);
+    bool IsProblemDataCompatible(IRegressionProblemData problemData, out string errorMessage);
     string TargetVariable { get; set; }
     event EventHandler TargetVariableChanged;
   }

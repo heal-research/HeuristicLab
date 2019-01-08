@@ -57,10 +57,25 @@ namespace HeuristicLab.Analysis {
       get { return visualProperties; }
       set { visualProperties = value; }
     }
-    [Storable(Name = "values")]
+    // BackwardsCompatibility3.3
+    #region Backwards compatible code, remove with 3.4
+    // tuples are stored inefficiently
+    [Storable(Name = "values", AllowOneWay = true)]
     private IEnumerable<Tuple<T, double>> StorableValues {
-      get { return values; }
       set { values = new ObservableList<Tuple<T, double>>(value); }
+    }
+    #endregion
+    private T[] storableX;
+    [Storable(Name = "x")]
+    private T[] StorableX {
+      get { return Values.Select(x => x.Item1).ToArray(); }
+      set { storableX = value; }
+    }
+    private double[] storableY;
+    [Storable(Name = "y")]
+    private double[] StorableY {
+      get { return Values.Select(x => x.Item2).ToArray(); }
+      set { storableY = value; }
     }
     #endregion
 
@@ -107,6 +122,15 @@ namespace HeuristicLab.Analysis {
     protected override void OnNameChanged() {
       base.OnNameChanged();
       VisualProperties.DisplayName = Name;
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      if (storableX != null && storableY != null) {
+        values = new ObservableList<Tuple<T, double>>(storableX.Zip(storableY, (x, y) => Tuple.Create(x, y)));
+        storableX = null;
+        storableY = null;
+      } else if (values == null) throw new InvalidOperationException("Deserialization problem with IndexedDataRow.");
     }
   }
 }

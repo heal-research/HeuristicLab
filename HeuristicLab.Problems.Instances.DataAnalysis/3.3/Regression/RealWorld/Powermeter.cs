@@ -23,7 +23,7 @@ using System;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
   public class Powermeter : ResourceRegressionDataDescriptor {
-    public Powermeter(string resourceName) : base(resourceName) { }
+    public Powermeter() : base("Powermeter.txt") { }
     public override string Name { get { return "Powermeter"; } }
     public override string Description {
       get {

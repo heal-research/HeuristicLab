@@ -274,7 +274,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       var wdist = DistanceFunction as WeightedEuclideanDistance;
       if (wdist != null) wdist.Initialize(problemData);
       if (state == null) {
-        if (SetSeedRandomly) Seed = new System.Random().Next();
+        if (SetSeedRandomly) Seed = RandomSeedGenerator.GetSeed();
         var random = new MersenneTwister((uint)Seed);
         var dataset = problemData.Dataset;
         var allowedInputVariables = problemData.AllowedInputVariables.ToArray();

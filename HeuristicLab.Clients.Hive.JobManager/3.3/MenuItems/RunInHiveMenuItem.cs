@@ -21,7 +21,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
+using System.Windows.Forms;
+using HeuristicLab.Clients.Hive.JobManager.Views;
 using HeuristicLab.Core;
 using HeuristicLab.MainForm;
 using HeuristicLab.Optimization;
@@ -81,22 +84,38 @@ namespace HeuristicLab.Clients.Hive.JobManager {
       rJob.HiveTasks.Add(task);
       task.ItemTask.ComputeInParallel = content is Experiment || content is BatchRun;
 
-      progress = MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>().AddOperationProgressToContent(this.content, "Uploading to Hive...");
-      rJob.Progress = progress;
-      progress.ProgressStateChanged += progress_ProgressStateChanged;
+      var hiveResourceSelectorDialog = new HiveResourceSelectorDialog(rJob.Job.Id, rJob.Job.ProjectId);
 
-      HiveClient.StartJob(new Action<Exception>(HandleEx), rJob, new CancellationToken());
+      if (HiveClient.Instance.Projects.Count == 1) {
+        var project = HiveClient.Instance.Projects.FirstOrDefault();
+        if (project != null && project.Id != Guid.Empty)
+          hiveResourceSelectorDialog.SelectedProjectId = project.Id;
+      }
+
+      if (hiveResourceSelectorDialog.ShowDialog((UserControl)activeView) == DialogResult.OK) {
+        var selectedProject = hiveResourceSelectorDialog.SelectedProject;
+        if (selectedProject != null) {
+          rJob.Job.ProjectId = selectedProject.Id;
+          rJob.Job.ResourceIds = hiveResourceSelectorDialog.SelectedResources.Select(x => x.Id).ToList();
+
+          progress = Progress.Show(this.content, "Uploading to Hive...", ProgressMode.Indeterminate);
+          rJob.Progress = progress;
+          progress.ProgressStateChanged += progress_ProgressStateChanged;
+
+          HiveClient.StartJob(new Action<Exception>(HandleEx), rJob, new CancellationToken());
+        }
+      }
     }
 
     private void progress_ProgressStateChanged(object sender, EventArgs e) {
       if (progress.ProgressState != ProgressState.Started) {
-        MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>().RemoveOperationProgressFromContent(content);
+        Progress.Hide(content);
         progress.ProgressStateChanged -= progress_ProgressStateChanged;
       }
     }
 
     private void HandleEx(Exception ex) {
-      MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>().RemoveOperationProgressFromContent(content);
+      Progress.Hide(content);
       progress.ProgressStateChanged -= progress_ProgressStateChanged;
       ErrorHandling.ShowErrorDialog("Error uploading tasks", ex);
     }

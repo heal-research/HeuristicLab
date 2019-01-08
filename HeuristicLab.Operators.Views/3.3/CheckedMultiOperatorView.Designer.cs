@@ -84,6 +84,7 @@ namespace HeuristicLab.Operators.Views {
       // 
       // operatorsTabPage
       // 
+      this.operatorsTabPage.BackColor = System.Drawing.SystemColors.Window;
       this.operatorsTabPage.Controls.Add(this.operatorListView);
       this.operatorsTabPage.Location = new System.Drawing.Point(4, 22);
       this.operatorsTabPage.Name = "operatorsTabPage";
@@ -91,7 +92,6 @@ namespace HeuristicLab.Operators.Views {
       this.operatorsTabPage.Size = new System.Drawing.Size(478, 410);
       this.operatorsTabPage.TabIndex = 0;
       this.operatorsTabPage.Text = "Operators";
-      this.operatorsTabPage.UseVisualStyleBackColor = true;
       // 
       // operatorListView
       // 
@@ -108,6 +108,7 @@ namespace HeuristicLab.Operators.Views {
       // 
       // parametersTabPage
       // 
+      this.parametersTabPage.BackColor = System.Drawing.SystemColors.Window;
       this.parametersTabPage.Controls.Add(this.parameterCollectionView);
       this.parametersTabPage.Location = new System.Drawing.Point(4, 22);
       this.parametersTabPage.Name = "parametersTabPage";
@@ -115,7 +116,6 @@ namespace HeuristicLab.Operators.Views {
       this.parametersTabPage.Size = new System.Drawing.Size(478, 410);
       this.parametersTabPage.TabIndex = 1;
       this.parametersTabPage.Text = "Parameters";
-      this.parametersTabPage.UseVisualStyleBackColor = true;
       // 
       // parameterCollectionView
       // 

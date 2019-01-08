@@ -64,7 +64,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       this.classValues = (double[])classValues.Clone();
 
       var ds = ReduceDataset(dataset, rows);
-      nnModel = new NearestNeighbourModel(ds, Enumerable.Range(0, ds.Rows), k, ds.VariableNames.Last(), ds.VariableNames.Take(transformationMatrix.GetLength(1)), classValues: classValues);
+      nnModel = new NearestNeighbourModel(ds, Enumerable.Range(0, ds.Rows), k, false, ds.VariableNames.Last(), ds.VariableNames.Take(transformationMatrix.GetLength(1)), classValues: classValues);
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
