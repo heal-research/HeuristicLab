@@ -96,6 +96,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       if (Content == null) return;
       var problemData = Content.ProblemData;
 
+      if (sharedFixedVariables != null) {
+        sharedFixedVariables.ItemChanged -= SharedFixedVariables_ItemChanged;
+        sharedFixedVariables.Reset -= SharedFixedVariables_Reset;
+      }
+
       // Init Y-axis range
       double min = double.MaxValue, max = double.MinValue;
       var trainingTarget = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, problemData.TrainingIndices);
@@ -119,24 +124,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       var allowedInputVariables =
         Content.ProblemData.Dataset.VariableNames.Where(v => inputvariables.Contains(v)).ToList();
 
-      // ToDo: set default values with the variableValuesMode
       var doubleVariables = allowedInputVariables.Where(problemData.Dataset.VariableHasType<double>);
       var doubleVariableValues = (IEnumerable<IList>)doubleVariables.Select(x => new List<double> {
-        problemData.Dataset.GetDoubleValues(x, problemData.TrainingIndices).Median()
+        problemData.Dataset.GetDoubleValue(x, 0)
       });
 
       var factorVariables = allowedInputVariables.Where(problemData.Dataset.VariableHasType<string>);
       var factorVariableValues = (IEnumerable<IList>)factorVariables.Select(x => new List<string> {
-        MostCommon(problemData.Dataset.GetStringValues(x, problemData.TrainingIndices))
+        problemData.Dataset.GetStringValue(x, 0)
       });
 
-      if (sharedFixedVariables != null) {
-        sharedFixedVariables.ItemChanged -= SharedFixedVariables_ItemChanged;
-        sharedFixedVariables.Reset -= SharedFixedVariables_Reset;
-      }
-
       sharedFixedVariables = new ModifiableDataset(doubleVariables.Concat(factorVariables), doubleVariableValues.Concat(factorVariableValues));
-
+      variableValuesModeComboBox.SelectedItem = "Median"; // triggers UpdateVariableValue and changes shardFixedVariables
 
       // create controls
       partialDependencePlots.Clear();
@@ -643,6 +642,23 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
     private static T MostCommon<T>(IEnumerable<T> values) {
       return values.GroupBy(x => x).OrderByDescending(g => g.Count()).Select(g => g.Key).First();
+    }
+
+    // ToolTips cannot be shown longer than 5000ms, only by using ToolTip.Show manually
+    // See: https://stackoverflow.com/questions/8225807/c-sharp-tooltip-doesnt-display-long-enough
+    private void variableValuesModeComboBox_MouseHover(object sender, EventArgs e) {
+      string tooltipText = @"Sets each variable to a specific value:
+    Row - Selects the value based on a specified row of the dataset.
+    Mean - Sets the value to the arithmetic mean of the variable.
+    Median - Sets the value to the median of the variable.
+    Most Common - Sets the value to the most common value of the variable (first if multiple).
+
+Note: For categorical values, the most common value is used when selecting Mean, Median or Most Common.";
+      toolTip.Show(tooltipText, variableValuesModeComboBox, 30000);
+      toolTip.Active = true;
+    }
+    private void variableValuesModeComboBox_MouseLeave(object sender, EventArgs e) {
+      toolTip.Active = false;
     }
   }
 }
