@@ -37,8 +37,8 @@
       this.configSplitContainer = new System.Windows.Forms.SplitContainer();
       this.variableGroupBox = new System.Windows.Forms.GroupBox();
       this.rowSelectGroupBox = new System.Windows.Forms.GroupBox();
-      this.comboBox1 = new System.Windows.Forms.ComboBox();
-      this.label2 = new System.Windows.Forms.Label();
+      this.variableValuesModeComboBox = new System.Windows.Forms.ComboBox();
+      this.rowLabel = new System.Windows.Forms.Label();
       this.rowNrNumericUpDown = new System.Windows.Forms.NumericUpDown();
       this.scrollPanel = new System.Windows.Forms.Panel();
       this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
@@ -70,7 +70,7 @@
       // 
       // partialDependencePlotTableLayout
       // 
-      this.partialDependencePlotTableLayout.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.partialDependencePlotTableLayout.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.partialDependencePlotTableLayout.AutoSize = true;
       this.partialDependencePlotTableLayout.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
@@ -97,7 +97,7 @@
       // 
       // limitView
       // 
-      this.limitView.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.limitView.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.limitView.Caption = "DoubleLimit View";
       this.limitView.Content = null;
@@ -134,7 +134,7 @@
       // 
       // columnsNumericUpDown
       // 
-      this.columnsNumericUpDown.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.columnsNumericUpDown.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.columnsNumericUpDown.Location = new System.Drawing.Point(66, 46);
       this.columnsNumericUpDown.Minimum = new decimal(new int[] {
@@ -163,7 +163,7 @@
       // 
       // densityComboBox
       // 
-      this.densityComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.densityComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.densityComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.densityComboBox.FormattingEnabled = true;
@@ -213,7 +213,7 @@
       // 
       this.variableGroupBox.Controls.Add(this.variableListView);
       this.variableGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.variableGroupBox.Location = new System.Drawing.Point(0, 151);
+      this.variableGroupBox.Location = new System.Drawing.Point(0, 225);
       this.variableGroupBox.Name = "variableGroupBox";
       this.variableGroupBox.Size = new System.Drawing.Size(169, 423);
       this.variableGroupBox.TabIndex = 1;
@@ -222,42 +222,44 @@
       // 
       // rowSelectGroupBox
       // 
-      this.rowSelectGroupBox.Controls.Add(this.comboBox1);
-      this.rowSelectGroupBox.Controls.Add(this.label2);
+      this.rowSelectGroupBox.Controls.Add(this.variableValuesModeComboBox);
+      this.rowSelectGroupBox.Controls.Add(this.rowLabel);
       this.rowSelectGroupBox.Controls.Add(this.rowNrNumericUpDown);
-      this.rowSelectGroupBox.Dock = System.Windows.Forms.DockStyle.Bottom;
-      this.rowSelectGroupBox.Location = new System.Drawing.Point(0, 574);
+      this.rowSelectGroupBox.Dock = System.Windows.Forms.DockStyle.Top;
+      this.rowSelectGroupBox.Location = new System.Drawing.Point(0, 151);
       this.rowSelectGroupBox.Name = "rowSelectGroupBox";
       this.rowSelectGroupBox.Size = new System.Drawing.Size(169, 74);
       this.rowSelectGroupBox.TabIndex = 1;
       this.rowSelectGroupBox.TabStop = false;
-      this.rowSelectGroupBox.Text = "Set Fixed Variable Values";
+      this.rowSelectGroupBox.Text = "Variable Values";
       // 
-      // comboBox1
+      // variableValuesModeComboBox
       // 
-      this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-      this.comboBox1.FormattingEnabled = true;
-      this.comboBox1.Items.AddRange(new object[] {
+      this.variableValuesModeComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.variableValuesModeComboBox.FormattingEnabled = true;
+      this.variableValuesModeComboBox.Items.AddRange(new object[] {
+            "Row",
             "Mean",
             "Median",
             "Most Common"});
-      this.comboBox1.Location = new System.Drawing.Point(10, 45);
-      this.comboBox1.Name = "comboBox1";
-      this.comboBox1.Size = new System.Drawing.Size(150, 21);
-      this.comboBox1.TabIndex = 3;
+      this.variableValuesModeComboBox.Location = new System.Drawing.Point(10, 19);
+      this.variableValuesModeComboBox.Name = "variableValuesModeComboBox";
+      this.variableValuesModeComboBox.Size = new System.Drawing.Size(150, 21);
+      this.variableValuesModeComboBox.TabIndex = 3;
+      this.variableValuesModeComboBox.SelectedValueChanged += new System.EventHandler(this.variableValuesComboBox_SelectedValueChanged);
       // 
-      // label2
+      // rowLabel
       // 
-      this.label2.AutoSize = true;
-      this.label2.Location = new System.Drawing.Point(7, 21);
-      this.label2.Name = "label2";
-      this.label2.Size = new System.Drawing.Size(46, 13);
-      this.label2.TabIndex = 2;
-      this.label2.Text = "Row Nr.";
+      this.rowLabel.AutoSize = true;
+      this.rowLabel.Location = new System.Drawing.Point(7, 48);
+      this.rowLabel.Name = "rowLabel";
+      this.rowLabel.Size = new System.Drawing.Size(44, 13);
+      this.rowLabel.TabIndex = 2;
+      this.rowLabel.Text = "Row nr.";
       // 
       // rowNrNumericUpDown
       // 
-      this.rowNrNumericUpDown.Location = new System.Drawing.Point(66, 19);
+      this.rowNrNumericUpDown.Location = new System.Drawing.Point(66, 46);
       this.rowNrNumericUpDown.Name = "rowNrNumericUpDown";
       this.rowNrNumericUpDown.Size = new System.Drawing.Size(94, 20);
       this.rowNrNumericUpDown.TabIndex = 1;
@@ -321,8 +323,8 @@
     private System.Windows.Forms.Label label1;
     private System.Windows.Forms.NumericUpDown columnsNumericUpDown;
     private System.Windows.Forms.GroupBox rowSelectGroupBox;
-    private System.Windows.Forms.ComboBox comboBox1;
-    private System.Windows.Forms.Label label2;
+    private System.Windows.Forms.ComboBox variableValuesModeComboBox;
+    private System.Windows.Forms.Label rowLabel;
     private System.Windows.Forms.NumericUpDown rowNrNumericUpDown;
   }
 }

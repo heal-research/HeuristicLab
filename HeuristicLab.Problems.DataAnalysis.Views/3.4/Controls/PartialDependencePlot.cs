@@ -667,7 +667,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     }
     private void UpdateCursor() {
       var x = VerticalLineAnnotation.X;
-      sharedFixedVariables.SetVariableValue(x, FreeVariable, 0);
+
+      if (!sharedFixedVariables.GetDoubleValue(FreeVariable, 0).IsAlmost(x))
+        sharedFixedVariables.SetVariableValue(x, FreeVariable, 0);
 
       if (ShowCursor) {
         chart.Titles[0].Text = FreeVariable + " : " + x.ToString("G5", CultureInfo.CurrentCulture);

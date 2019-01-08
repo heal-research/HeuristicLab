@@ -119,18 +119,21 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       var allowedInputVariables =
         Content.ProblemData.Dataset.VariableNames.Where(v => inputvariables.Contains(v)).ToList();
 
-
+      // ToDo: set default values with the variableValuesMode
       var doubleVariables = allowedInputVariables.Where(problemData.Dataset.VariableHasType<double>);
-      var doubleVariableValues = (IEnumerable<IList>)doubleVariables.Select(x => new List<double> { problemData.Dataset.GetDoubleValues(x, problemData.TrainingIndices).Median() });
+      var doubleVariableValues = (IEnumerable<IList>)doubleVariables.Select(x => new List<double> {
+        problemData.Dataset.GetDoubleValues(x, problemData.TrainingIndices).Median()
+      });
 
       var factorVariables = allowedInputVariables.Where(problemData.Dataset.VariableHasType<string>);
       var factorVariableValues = (IEnumerable<IList>)factorVariables.Select(x => new List<string> {
-        problemData.Dataset.GetStringValues(x, problemData.TrainingIndices)
-        .GroupBy(val => val).OrderByDescending(g => g.Count()).First().Key // most frequent value
+        MostCommon(problemData.Dataset.GetStringValues(x, problemData.TrainingIndices))
       });
 
-      if (sharedFixedVariables != null)
+      if (sharedFixedVariables != null) {
         sharedFixedVariables.ItemChanged -= SharedFixedVariables_ItemChanged;
+        sharedFixedVariables.Reset -= SharedFixedVariables_Reset;
+      }
 
       sharedFixedVariables = new ModifiableDataset(doubleVariables.Concat(factorVariables), doubleVariableValues.Concat(factorVariableValues));
 
@@ -229,6 +232,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       variableListView.ItemChecked += variableListView_ItemChecked;
 
       sharedFixedVariables.ItemChanged += SharedFixedVariables_ItemChanged;
+      sharedFixedVariables.Reset += SharedFixedVariables_Reset;
 
       rowNrNumericUpDown.Maximum = Content.ProblemData.Dataset.Rows - 1;
 
@@ -236,6 +240,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     }
 
     private void SharedFixedVariables_ItemChanged(object sender, EventArgs<int, int> e) {
+      SharedFixedVariablesChanged();
+    }
+    private void SharedFixedVariables_Reset(object sender, EventArgs e) {
+      SharedFixedVariablesChanged();
+    }
+    private void SharedFixedVariablesChanged() {
+      if (!setVariableValues) // set mode to "nothing" if change was not initiated from a "mode change"
+        variableValuesModeComboBox.SelectedIndex = -1;
+
       double yValue = Content.Model.GetEstimatedValues(sharedFixedVariables, new[] { 0 }).Single();
       string title = Content.ProblemData.TargetVariable + ": " + yValue.ToString("G5", CultureInfo.CurrentCulture);
       foreach (var chart in partialDependencePlots.Values) {
@@ -244,7 +257,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         }
       }
     }
-
 
     private void OnPartialDependencePlotPostPaint(object o, EventArgs e) {
       var plot = (PartialDependencePlot)o;
@@ -566,22 +578,71 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       }
     }
 
+    // flag that the current change is not triggered by a manual change from within a single plot
+    private bool setVariableValues = false;
+    private void variableValuesComboBox_SelectedValueChanged(object sender, EventArgs e) {
+      if (variableValuesModeComboBox.SelectedIndex == -1)
+        return; // changed to "manual" due to manual change of a variable
+      setVariableValues = true;
+      UpdateVariableValues();
+      setVariableValues = false;
+    }
     private void rowNrNumericUpDown_ValueChanged(object sender, EventArgs e) {
-      int rowNumber = (int)rowNrNumericUpDown.Value;
-      var dataset = Content.ProblemData.Dataset;
+      if ((string)variableValuesModeComboBox.SelectedItem != "Row") {
+        variableValuesModeComboBox.SelectedItem = "Row"; // triggers UpdateVariableValues
+      } else {
+        setVariableValues = true;
+        UpdateVariableValues();
+        setVariableValues = false;
+      }
+    }
+    private void UpdateVariableValues() {
+      string mode = (string)variableValuesModeComboBox.SelectedItem;
 
-      object[] newRow = sharedFixedVariables.VariableNames
-        .Select<string, object>(variableName => {
-          if (dataset.DoubleVariables.Contains(variableName)) {
-            return dataset.GetDoubleValue(variableName, rowNumber);
-          } else if (dataset.StringVariables.Contains(variableName)) {
-            return dataset.GetStringValue(variableName, rowNumber);
-          } else {
-            throw new NotSupportedException("Only double and string(factor) columns are currently supported.");
-          }
-        }).ToArray();
+      var dataset = Content.ProblemData.Dataset;
+      object[] newRow;
+
+      if (mode == "Row") {
+        int rowNumber = (int)rowNrNumericUpDown.Value;
+        newRow = sharedFixedVariables.VariableNames
+          .Select<string, object>(variableName => {
+            if (dataset.DoubleVariables.Contains(variableName)) {
+              return dataset.GetDoubleValue(variableName, rowNumber);
+            } else if (dataset.StringVariables.Contains(variableName)) {
+              return dataset.GetStringValue(variableName, rowNumber);
+            } else {
+              throw new NotSupportedException("Only double and string(factor) columns are currently supported.");
+            }
+          }).ToArray();
+      } else {
+        //int si = densityComboBox.SelectedIndex;
+        newRow = sharedFixedVariables.VariableNames
+          .Select<string, object>(variableName => {
+            if (dataset.DoubleVariables.Contains(variableName)) {
+              var values = dataset.GetDoubleValues(variableName/*, GetDensityIndices(si)*/);
+              return
+                mode == "Mean" ? values.Average() :
+                mode == "Median" ? values.Median() :
+                mode == "Most Common" ? MostCommon(values) :
+                throw new NotSupportedException();
+            } else if (dataset.StringVariables.Contains(variableName)) {
+              var values = dataset.GetStringValues(variableName/*, GetDensityIndices(si)*/);
+              return
+                mode == "Mean" ? MostCommon(values) :
+                mode == "Median" ? MostCommon(values) :
+                mode == "Most Common" ? MostCommon(values) :
+                throw new NotSupportedException();
+            } else {
+              throw new NotSupportedException("Only double and string(factor) columns are currently supported.");
+            }
+          }).ToArray();
+      }
 
       sharedFixedVariables.ReplaceRow(0, newRow);
+    }
+
+    private static T MostCommon<T>(IEnumerable<T> values) {
+      return values.GroupBy(x => x).OrderByDescending(g => g.Count()).Select(g => g.Key).First();
     }
   }
 }
