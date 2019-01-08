@@ -78,16 +78,17 @@ namespace HeuristicLab.DataPreprocessing.Views {
       // 
       // tabSearch
       // 
+      this.tabSearch.BackColor = System.Drawing.SystemColors.Window;
       this.tabSearch.Location = new System.Drawing.Point(4, 22);
       this.tabSearch.Name = "tabSearch";
       this.tabSearch.Padding = new System.Windows.Forms.Padding(3);
       this.tabSearch.Size = new System.Drawing.Size(556, 106);
       this.tabSearch.TabIndex = 0;
       this.tabSearch.Text = "Search";
-      this.tabSearch.UseVisualStyleBackColor = true;
       // 
       // tabReplace
       // 
+      this.tabReplace.BackColor = System.Drawing.SystemColors.Window;
       this.tabReplace.Controls.Add(this.cmbComparisonOperator);
       this.tabReplace.Controls.Add(this.txtSearchString);
       this.tabReplace.Controls.Add(this.lblSearch);
@@ -105,7 +106,6 @@ namespace HeuristicLab.DataPreprocessing.Views {
       this.tabReplace.Size = new System.Drawing.Size(556, 106);
       this.tabReplace.TabIndex = 1;
       this.tabReplace.Text = "Replace";
-      this.tabReplace.UseVisualStyleBackColor = true;
       // 
       // cmbComparisonOperator
       // 

@@ -35,22 +35,5 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     public HiveAdministratorView() {
       InitializeComponent();
     }
-
-    #region Register Content Events
-    protected override void DeregisterContentEvents() {
-      base.DeregisterContentEvents();
-    }
-    protected override void RegisterContentEvents() {
-      base.RegisterContentEvents();
-    }
-    #endregion
-
-    protected override void OnContentChanged() {
-      base.OnContentChanged();
-    }
-
-    protected override void SetEnabledStateOfControls() {
-      base.SetEnabledStateOfControls();
-    }
   }
 }

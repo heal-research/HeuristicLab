@@ -259,6 +259,7 @@
       this.Name = "ProjectsView";
       this.Size = new System.Drawing.Size(853, 553);
       this.Load += new System.EventHandler(this.ProjectsView_Load);
+      this.Disposed += new System.EventHandler(this.ProjectsView_Disposed);
       this.splitContainer.Panel1.ResumeLayout(false);
       this.splitContainer.Panel2.ResumeLayout(false);
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();

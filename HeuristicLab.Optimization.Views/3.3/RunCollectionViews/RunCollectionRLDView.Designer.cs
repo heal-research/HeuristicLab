@@ -86,7 +86,7 @@ namespace HeuristicLab.Optimization.Views {
       // 
       // dataTableComboBox
       // 
-      this.dataTableComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.dataTableComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.dataTableComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.dataTableComboBox.FormattingEnabled = true;
@@ -116,7 +116,7 @@ namespace HeuristicLab.Optimization.Views {
       // 
       // groupComboBox
       // 
-      this.groupComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.groupComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.groupComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.groupComboBox.FormattingEnabled = true;
@@ -140,7 +140,7 @@ namespace HeuristicLab.Optimization.Views {
       // 
       // targetsTextBox
       // 
-      this.targetsTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.targetsTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.targetsTextBox.Location = new System.Drawing.Point(59, 8);
       this.targetsTextBox.Name = "targetsTextBox";
@@ -197,7 +197,7 @@ namespace HeuristicLab.Optimization.Views {
       // 
       // budgetsTextBox
       // 
-      this.budgetsTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.budgetsTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.budgetsTextBox.Location = new System.Drawing.Point(59, 8);
       this.budgetsTextBox.Name = "budgetsTextBox";
@@ -232,8 +232,8 @@ namespace HeuristicLab.Optimization.Views {
       // 
       // tabControl
       // 
-      this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+      this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.tabControl.Controls.Add(this.byTargetTabPage);
       this.tabControl.Controls.Add(this.byCostTabPage);
@@ -246,6 +246,7 @@ namespace HeuristicLab.Optimization.Views {
       // 
       // byTargetTabPage
       // 
+      this.byTargetTabPage.BackColor = System.Drawing.SystemColors.Window;
       this.byTargetTabPage.Controls.Add(this.relativeOrAbsoluteComboBox);
       this.byTargetTabPage.Controls.Add(this.targetChart);
       this.byTargetTabPage.Controls.Add(this.showLabelsCheckBox);
@@ -263,7 +264,6 @@ namespace HeuristicLab.Optimization.Views {
       this.byTargetTabPage.Size = new System.Drawing.Size(646, 387);
       this.byTargetTabPage.TabIndex = 0;
       this.byTargetTabPage.Text = "Performance by Target";
-      this.byTargetTabPage.UseVisualStyleBackColor = true;
       // 
       // relativeOrAbsoluteComboBox
       // 
@@ -281,8 +281,8 @@ namespace HeuristicLab.Optimization.Views {
       // 
       // targetChart
       // 
-      this.targetChart.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+      this.targetChart.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       chartArea2.AxisX.IsStartedFromZero = false;
       chartArea2.AxisX.MinorGrid.Enabled = true;
@@ -351,6 +351,7 @@ namespace HeuristicLab.Optimization.Views {
       // 
       // byCostTabPage
       // 
+      this.byCostTabPage.BackColor = System.Drawing.SystemColors.Window;
       this.byCostTabPage.Controls.Add(this.byCostViewHost);
       this.byCostTabPage.Controls.Add(this.budgetLogScalingCheckBox);
       this.byCostTabPage.Controls.Add(this.generateBudgetsButton);
@@ -363,12 +364,11 @@ namespace HeuristicLab.Optimization.Views {
       this.byCostTabPage.Size = new System.Drawing.Size(646, 387);
       this.byCostTabPage.TabIndex = 1;
       this.byCostTabPage.Text = "Performance by Cost";
-      this.byCostTabPage.UseVisualStyleBackColor = true;
       // 
       // byCostViewHost
       // 
-      this.byCostViewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+      this.byCostViewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.byCostViewHost.Caption = "View";
       this.byCostViewHost.Content = null;
@@ -406,6 +406,7 @@ namespace HeuristicLab.Optimization.Views {
       // 
       // byTableTabPage
       // 
+      this.byTableTabPage.BackColor = System.Drawing.SystemColors.Window;
       this.byTableTabPage.Controls.Add(this.ertTableView);
       this.byTableTabPage.Location = new System.Drawing.Point(4, 22);
       this.byTableTabPage.Name = "byTableTabPage";
@@ -413,7 +414,6 @@ namespace HeuristicLab.Optimization.Views {
       this.byTableTabPage.Size = new System.Drawing.Size(646, 387);
       this.byTableTabPage.TabIndex = 2;
       this.byTableTabPage.Text = "Expected Runtime Tables";
-      this.byTableTabPage.UseVisualStyleBackColor = true;
       // 
       // ertTableView
       // 
@@ -430,7 +430,7 @@ namespace HeuristicLab.Optimization.Views {
       // 
       // problemComboBox
       // 
-      this.problemComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.problemComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.problemComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.problemComboBox.FormattingEnabled = true;

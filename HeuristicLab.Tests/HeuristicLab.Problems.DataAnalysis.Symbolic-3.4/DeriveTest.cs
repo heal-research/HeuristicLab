@@ -59,6 +59,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       Assert.AreEqual("(SIN((3*'x')) * (-3))", Derive("cos(3*x)", "x"));
       Assert.AreEqual("(1 / (SQR(COS((3*'x'))) * 0.333333333333333))", Derive("tan(3*x)", "x")); // diff(tan(f(x)), x) = 1.0 / cos²(f(x)), simplifier puts constant factor into the denominator
 
+      Assert.AreEqual("0", Derive("(a+b)/(x+SQR(x))", "y")); // df(a,b,x) / dy = 0
+
       {
         // special case: Inv(x) using only one argument to the division symbol
         // f(x) = 1/x
@@ -113,10 +115,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
         var t = new SymbolicExpressionTree(root);
 
         Assert.AreEqual("(('y' * 'z' * 60) / (SQR('y') * SQR('z') * 400))", // actually 3 / (4y  5z) but simplifier is not smart enough to cancel numerator and denominator
-                                                                             // 60 y z / y² z² 20² == 6 / y z 40 == 3 / y z 20
+                                                                            // 60 y z / y² z² 20² == 6 / y z 40 == 3 / y z 20
           formatter.Format(DerivativeCalculator.Derive(t, "x")));
         Assert.AreEqual("(('x' * 'z' * (-60)) / (SQR('y') * SQR('z') * 400))", // actually 3x * -(4 5 z) / (4y 5z)² = -3x / (20 y² z)
-                                                                         // -3 4 5 x z / 4² y² 5² z² = -60 x z / 20² z² y² ==    -60 x z / y² z² 20² 
+                                                                               // -3 4 5 x z / 4² y² 5² z² = -60 x z / 20² z² y² ==    -60 x z / y² z² 20² 
           formatter.Format(DerivativeCalculator.Derive(t, "y")));
         Assert.AreEqual("(('x' * 'y' * (-60)) / (SQR('y') * SQR('z') * 400))",
           formatter.Format(DerivativeCalculator.Derive(t, "z")));

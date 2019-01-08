@@ -112,7 +112,7 @@ namespace HeuristicLab.Optimization.Views {
       // 
       // timeLimitTextBox
       // 
-      this.timeLimitTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.timeLimitTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.timeLimitTextBox.Location = new System.Drawing.Point(69, 26);
       this.timeLimitTextBox.Name = "timeLimitTextBox";
@@ -131,7 +131,7 @@ namespace HeuristicLab.Optimization.Views {
       // 
       // snapshotsTextBox
       // 
-      this.snapshotsTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.snapshotsTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.snapshotsTextBox.Location = new System.Drawing.Point(69, 52);
       this.snapshotsTextBox.Name = "snapshotsTextBox";
@@ -154,8 +154,8 @@ namespace HeuristicLab.Optimization.Views {
       // tabControl
       // 
       this.tabControl.AllowDrop = true;
-      this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+      this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.tabControl.Controls.Add(this.algorithmTabPage);
       this.tabControl.Controls.Add(this.snapshotsTabPage);
@@ -169,6 +169,7 @@ namespace HeuristicLab.Optimization.Views {
       // algorithmTabPage
       // 
       this.algorithmTabPage.AllowDrop = true;
+      this.algorithmTabPage.BackColor = System.Drawing.SystemColors.Window;
       this.algorithmTabPage.Controls.Add(this.algorithmViewHost);
       this.algorithmTabPage.Controls.Add(this.openAlgorithmButton);
       this.algorithmTabPage.Controls.Add(this.newAlgorithmButton);
@@ -178,15 +179,14 @@ namespace HeuristicLab.Optimization.Views {
       this.algorithmTabPage.Size = new System.Drawing.Size(538, 330);
       this.algorithmTabPage.TabIndex = 1;
       this.algorithmTabPage.Text = "Algorithm";
-      this.algorithmTabPage.UseVisualStyleBackColor = true;
       this.algorithmTabPage.DragDrop += new System.Windows.Forms.DragEventHandler(this.algorithmTabPage_DragDrop);
       this.algorithmTabPage.DragEnter += new System.Windows.Forms.DragEventHandler(this.algorithmTabPage_DragEnterOver);
       this.algorithmTabPage.DragOver += new System.Windows.Forms.DragEventHandler(this.algorithmTabPage_DragEnterOver);
       // 
       // algorithmViewHost
       // 
-      this.algorithmViewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+      this.algorithmViewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.algorithmViewHost.Caption = "View";
       this.algorithmViewHost.Content = null;
@@ -223,6 +223,7 @@ namespace HeuristicLab.Optimization.Views {
       // 
       // snapshotsTabPage
       // 
+      this.snapshotsTabPage.BackColor = System.Drawing.SystemColors.Window;
       this.snapshotsTabPage.Controls.Add(this.snapshotsView);
       this.snapshotsTabPage.Location = new System.Drawing.Point(4, 22);
       this.snapshotsTabPage.Name = "snapshotsTabPage";
@@ -230,12 +231,11 @@ namespace HeuristicLab.Optimization.Views {
       this.snapshotsTabPage.Size = new System.Drawing.Size(538, 330);
       this.snapshotsTabPage.TabIndex = 2;
       this.snapshotsTabPage.Text = "Snapshots";
-      this.snapshotsTabPage.UseVisualStyleBackColor = true;
       // 
       // snapshotsView
       // 
-      this.snapshotsView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+      this.snapshotsView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.snapshotsView.Caption = "RunCollection View";
       this.snapshotsView.Content = null;
@@ -247,18 +247,18 @@ namespace HeuristicLab.Optimization.Views {
       // 
       // runsTabPage
       // 
+      this.runsTabPage.BackColor = System.Drawing.SystemColors.Window;
       this.runsTabPage.Controls.Add(this.runsView);
       this.runsTabPage.Location = new System.Drawing.Point(4, 22);
       this.runsTabPage.Name = "runsTabPage";
       this.runsTabPage.Size = new System.Drawing.Size(538, 330);
       this.runsTabPage.TabIndex = 3;
       this.runsTabPage.Text = "Runs";
-      this.runsTabPage.UseVisualStyleBackColor = true;
       // 
       // runsView
       // 
-      this.runsView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+      this.runsView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.runsView.Caption = "RunCollection View";
       this.runsView.Content = null;

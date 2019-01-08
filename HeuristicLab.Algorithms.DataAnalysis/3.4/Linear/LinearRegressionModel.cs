@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -34,6 +35,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
   [Item("Linear Regression Model", "Represents a linear regression model.")]
   public sealed class LinearRegressionModel : RegressionModel, IConfidenceRegressionModel {
+    public static new Image StaticItemImage {
+      get { return HeuristicLab.Common.Resources.VSImageLibrary.Function; }
+    }
 
     [Storable]
     public double[,] C {
@@ -48,15 +52,26 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public double NoiseSigma {
       get; private set;
     }
-    
+
     public override IEnumerable<string> VariablesUsedForPrediction {
-      get { return allowedInputVariables.Union(factorVariables.Select(f => f.Key)); }
+      get { return doubleVariables.Union(factorVariables.Select(f => f.Key)); }
     }
 
     [Storable]
-    private string[] allowedInputVariables;
+    private string[] doubleVariables;
     [Storable]
     private List<KeyValuePair<string, IEnumerable<string>>> factorVariables;
+
+    /// <summary>
+    /// Enumerable of variable names used by the model including one-hot-encoded of factor variables.
+    /// </summary>
+    public IEnumerable<string> ParameterNames {
+      get {
+        return factorVariables.SelectMany(kvp => kvp.Value.Select(factorVal => $"{kvp.Key}={factorVal}"))
+          .Concat(doubleVariables)
+          .Concat(new[] { "<const>" });
+      }
+    }
 
     [StorableConstructor]
     private LinearRegressionModel(bool deserializing)
@@ -68,7 +83,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       this.C = original.C;
       this.NoiseSigma = original.NoiseSigma;
 
-      allowedInputVariables = (string[])original.allowedInputVariables.Clone();
+      doubleVariables = (string[])original.doubleVariables.Clone();
       this.factorVariables = original.factorVariables.Select(kvp => new KeyValuePair<string, IEnumerable<string>>(kvp.Key, new List<string>(kvp.Value))).ToList();
     }
     public LinearRegressionModel(double[] w, double[,] covariance, double noiseSigma, string targetVariable, IEnumerable<string> doubleInputVariables, IEnumerable<KeyValuePair<string, IEnumerable<string>>> factorVariables)
@@ -77,11 +92,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       this.description = ItemDescription;
       this.W = new double[w.Length];
       Array.Copy(w, W, w.Length);
-      this.C = new double[covariance.GetLength(0),covariance.GetLength(1)];
+      this.C = new double[covariance.GetLength(0), covariance.GetLength(1)];
       Array.Copy(covariance, C, covariance.Length);
       this.NoiseSigma = noiseSigma;
-      var stringInputVariables = factorVariables.Select(f => f.Key).Distinct();
-      this.allowedInputVariables = doubleInputVariables.ToArray();
+      this.doubleVariables = doubleInputVariables.ToArray();
+      // clone
       this.factorVariables = factorVariables.Select(kvp => new KeyValuePair<string, IEnumerable<string>>(kvp.Key, new List<string>(kvp.Value))).ToList();
     }
 
@@ -94,7 +109,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     public override IEnumerable<double> GetEstimatedValues(IDataset dataset, IEnumerable<int> rows) {
-      double[,] inputData = dataset.ToArray(allowedInputVariables, rows);
+      double[,] inputData = dataset.ToArray(doubleVariables, rows);
       double[,] factorData = dataset.ToArray(factorVariables, rows);
 
       inputData = factorData.HorzCat(inputData);
@@ -113,7 +128,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     public IEnumerable<double> GetEstimatedVariances(IDataset dataset, IEnumerable<int> rows) {
-      double[,] inputData = dataset.ToArray(allowedInputVariables, rows);
+      double[,] inputData = dataset.ToArray(doubleVariables, rows);
       double[,] factorData = dataset.ToArray(factorVariables, rows);
 
       inputData = factorData.HorzCat(inputData);
@@ -122,23 +137,22 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       int columns = inputData.GetLength(1);
 
       double[] d = new double[C.GetLength(0)];
-      
+
       for (int row = 0; row < n; row++) {
         for (int column = 0; column < columns; column++) {
-          d[column] = inputData[row,column];
+          d[column] = inputData[row, column];
         }
         d[columns] = 1;
 
         double var = 0.0;
-        for(int i=0;i<d.Length;i++) {
-          for(int j = 0;j<d.Length;j++) {
+        for (int i = 0; i < d.Length; i++) {
+          for (int j = 0; j < d.Length; j++) {
             var += d[i] * C[i, j] * d[j];
           }
         }
-        yield return var + NoiseSigma*NoiseSigma;
+        yield return var + NoiseSigma * NoiseSigma;
       }
     }
-
 
     public override IRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData) {
       return new ConfidenceRegressionSolution(this, new RegressionProblemData(problemData));
