@@ -323,14 +323,6 @@ namespace HeuristicLab.Analysis.Views {
 
     #region Event Handlers
     #region Content Event Handlers
-    protected override void Content_NameChanged(object sender, EventArgs e) {
-      if (InvokeRequired)
-        Invoke(new EventHandler(Content_NameChanged), sender, e);
-      else {
-        chart.Titles[0].Text = Content.Name;
-        base.Content_NameChanged(sender, e);
-      }
-    }
     private void Content_VisualPropertiesChanged(object sender, EventArgs e) {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_VisualPropertiesChanged), sender, e);

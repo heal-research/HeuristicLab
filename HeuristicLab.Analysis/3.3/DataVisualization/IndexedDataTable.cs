@@ -104,6 +104,24 @@ namespace HeuristicLab.Analysis {
       return new IndexedDataTable<T>(this, cloner);
     }
 
+    #region BackwardsCompatibility3.3
+    // Using the name as title is the old style
+    [Storable(DefaultValue = true)]
+    private bool useNameAsTitle = false;
+    #endregion
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code, remove with 3.4
+      // Previously, the Name of the IndexedDataTable was used as Title
+      if (useNameAsTitle && string.IsNullOrEmpty(VisualProperties.Title)) {
+        VisualProperties.Title = Name;
+        useNameAsTitle = false;
+      }
+      #endregion
+    }
+
     public event EventHandler VisualPropertiesChanged;
     protected virtual void OnVisualPropertiesChanged() {
       var handler = VisualPropertiesChanged;
