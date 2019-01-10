@@ -28,11 +28,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   [Item("Pearson R² & Average Similarity Evaluator", "Calculates the Pearson R² and the average similarity of a symbolic regression solution candidate.")]
-  [StorableClass]
+  [StorableType("FE514989-E619-48B8-AC8E-9A2202708F65")]
   public class PearsonRSquaredAverageSimilarityEvaluator : SymbolicRegressionMultiObjectiveEvaluator {
     private const string StrictSimilarityParameterName = "StrictSimilarity";
 
@@ -47,7 +47,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     }
 
     [StorableConstructor]
-    protected PearsonRSquaredAverageSimilarityEvaluator(bool deserializing) : base(deserializing) { }
+    protected PearsonRSquaredAverageSimilarityEvaluator(StorableConstructorFlag _) : base(_) { }
     protected PearsonRSquaredAverageSimilarityEvaluator(PearsonRSquaredAverageSimilarityEvaluator original, Cloner cloner)
       : base(original, cloner) {
     }

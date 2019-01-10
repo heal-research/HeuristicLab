@@ -20,8 +20,10 @@
 #endregion
 
 using HeuristicLab.Core;
+using HEAL.Fossil;
 
 namespace HeuristicLab.Analysis {
+  [StorableType("9D660768-24A2-4C74-9434-42FDB3AA3ED2")]
   public interface IDataRow : INamedItem {
     DataRowVisualProperties VisualProperties { get; set; }
   }
