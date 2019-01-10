@@ -81,8 +81,10 @@ namespace HeuristicLab.Scripting.Views {
       base.OnContentChanged();
       if (Content == null) {
         codeEditor.UserCode = string.Empty;
+        codeEditor.ClearEditHistory();
       } else {
         codeEditor.UserCode = Content.Code;
+        codeEditor.ClearEditHistory();
         codeEditor.AddAssembliesAsync(Content.GetAssemblies());
         if (Content.CompileErrors == null) {
           UpdateInfoTextLabel(NotCompiledMessage, SystemColors.ControlText);
