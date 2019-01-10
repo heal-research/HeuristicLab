@@ -85,7 +85,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
       this.scatterPlotView.Location = new System.Drawing.Point(0, 0);
       this.scatterPlotView.Name = "scatterPlotView";
       this.scatterPlotView.ReadOnly = false;
-      this.scatterPlotView.ShowName = false;
+      this.scatterPlotView.ShowChartOnly = true;
       this.scatterPlotView.Size = new System.Drawing.Size(618, 517);
       this.scatterPlotView.TabIndex = 0;
       // 
