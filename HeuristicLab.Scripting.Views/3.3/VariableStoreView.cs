@@ -90,14 +90,26 @@ namespace HeuristicLab.Scripting.Views {
       Content.ItemsReplaced -= Content_ItemsReplaced;
       Content.ItemsRemoved -= Content_ItemsRemoved;
       Content.CollectionReset -= Content_CollectionReset;
+
+      foreach (var variable in Content) {
+        var item = variable.Value as IItem;
+        if (item != null) item.ToStringChanged -= item_ToStringChanged;
+      }
+
       base.DeregisterContentEvents();
     }
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
+
       Content.ItemsAdded += Content_ItemsAdded;
       Content.ItemsReplaced += Content_ItemsReplaced;
       Content.ItemsRemoved += Content_ItemsRemoved;
       Content.CollectionReset += Content_CollectionReset;
+
+      foreach (var variable in Content) {
+        var item = variable.Value as IItem;
+        if (item != null) item.ToStringChanged += item_ToStringChanged;
+      }
     }
 
     protected override void OnContentChanged() {

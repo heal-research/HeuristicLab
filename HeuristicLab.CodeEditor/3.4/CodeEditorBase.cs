@@ -56,6 +56,8 @@ namespace HeuristicLab.CodeEditor {
 
     public virtual void ScrollToPosition(int line, int column) { }
 
+    public virtual void ClearEditHistory() { }
+
     public virtual void ShowCompileErrors(CompilerErrorCollection compileErrors) { }
 
     #region Events

@@ -128,12 +128,10 @@ namespace HeuristicLab.Operators.Programmable {
 
     public void SelectNamespace(string ns) {
       namespaces.Add(ns);
-      OnSignatureChanged();
     }
 
     public void UnselectNamespace(string ns) {
       namespaces.Remove(ns);
-      OnSignatureChanged();
     }
 
     public IEnumerable<string> GetAllNamespaces(bool selectedAssembliesOnly) {

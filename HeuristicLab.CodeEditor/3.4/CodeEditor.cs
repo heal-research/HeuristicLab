@@ -108,8 +108,10 @@ namespace HeuristicLab.CodeEditor {
     public override string UserCode {
       get { return Doc.GetText(prefix.Length, Doc.TextLength - suffix.Length - prefix.Length); }
       set {
-        if (Doc.Text == value) return;
-        Doc.Replace(prefix.Length, Doc.TextLength - suffix.Length - prefix.Length, value);
+        var curLength = Doc.TextLength - suffix.Length - prefix.Length;
+        var curUserCode = Doc.GetText(prefix.Length, curLength);
+        if (curUserCode == value) return;
+        Doc.Replace(prefix.Length, curLength, value);
       }
     }
 
@@ -272,6 +274,10 @@ namespace HeuristicLab.CodeEditor {
       assemblyLoader.RemoveAssembly(a);
     }
     #endregion
+
+    public override void ClearEditHistory() {
+      Doc.UndoStack.ClearAll();
+    }
 
     public override void ScrollToPosition(int line, int column) {
       var segment = GetSegmentAtLocation(line, column);

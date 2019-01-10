@@ -100,8 +100,8 @@ namespace HeuristicLab.Optimization.Views {
       // tabControl
       // 
       this.tabControl.AllowDrop = true;
-      this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+      this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.tabControl.Controls.Add(this.optimizersTabPage);
       this.tabControl.Controls.Add(this.runsTabPage);
@@ -113,6 +113,7 @@ namespace HeuristicLab.Optimization.Views {
       // 
       // optimizersTabPage
       // 
+      this.optimizersTabPage.BackColor = System.Drawing.SystemColors.Window;
       this.optimizersTabPage.Controls.Add(this.experimentTreeView);
       this.optimizersTabPage.Location = new System.Drawing.Point(4, 22);
       this.optimizersTabPage.Name = "optimizersTabPage";
@@ -120,7 +121,6 @@ namespace HeuristicLab.Optimization.Views {
       this.optimizersTabPage.Size = new System.Drawing.Size(671, 401);
       this.optimizersTabPage.TabIndex = 1;
       this.optimizersTabPage.Text = "Optimizers";
-      this.optimizersTabPage.UseVisualStyleBackColor = true;
       // 
       // experimentTreeView
       // 
@@ -135,6 +135,7 @@ namespace HeuristicLab.Optimization.Views {
       // 
       // runsTabPage
       // 
+      this.runsTabPage.BackColor = System.Drawing.SystemColors.Window;
       this.runsTabPage.Controls.Add(this.runsViewHost);
       this.runsTabPage.Location = new System.Drawing.Point(4, 22);
       this.runsTabPage.Name = "runsTabPage";
@@ -142,12 +143,11 @@ namespace HeuristicLab.Optimization.Views {
       this.runsTabPage.Size = new System.Drawing.Size(671, 401);
       this.runsTabPage.TabIndex = 2;
       this.runsTabPage.Text = "Runs";
-      this.runsTabPage.UseVisualStyleBackColor = true;
       // 
       // runsViewHost
       // 
-      this.runsViewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+      this.runsViewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.runsViewHost.Caption = "View";
       this.runsViewHost.Content = null;

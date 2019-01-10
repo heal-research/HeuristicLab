@@ -93,7 +93,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
       // 
       // lstMethods
       // 
-      this.lstMethods.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.lstMethods.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.lstMethods.FormattingEnabled = true;
       this.lstMethods.Items.AddRange(new object[] {
@@ -121,7 +121,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
       // 
       // grpBoxData
       // 
-      this.grpBoxData.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.grpBoxData.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.grpBoxData.Controls.Add(this.tabsData);
       this.grpBoxData.Location = new System.Drawing.Point(4, 105);
@@ -133,7 +133,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
       // 
       // tabsData
       // 
-      this.tabsData.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.tabsData.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.tabsData.Controls.Add(this.tabPage1);
       this.tabsData.Controls.Add(this.tabDataDeleteColumnsInformation);
@@ -148,6 +148,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
       // 
       // tabPage1
       // 
+      this.tabPage1.BackColor = System.Drawing.SystemColors.Window;
       this.tabPage1.Controls.Add(this.label7);
       this.tabPage1.Location = new System.Drawing.Point(4, 22);
       this.tabPage1.Name = "tabPage1";
@@ -155,8 +156,6 @@ namespace HeuristicLab.DataPreprocessing.Views {
       this.tabPage1.Size = new System.Drawing.Size(711, 138);
       this.tabPage1.TabIndex = 5;
       this.tabPage1.Text = "tabDataInactive";
-      this.tabPage1.UseVisualStyleBackColor = true;
-      // 
       // label7
       // 
       this.label7.AutoSize = true;
@@ -169,6 +168,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
       // 
       // tabDataDeleteColumnsInformation
       // 
+      this.tabDataDeleteColumnsInformation.BackColor = System.Drawing.SystemColors.Window;
       this.tabDataDeleteColumnsInformation.Controls.Add(this.label2);
       this.tabDataDeleteColumnsInformation.Controls.Add(this.txtDeleteColumnsInfo);
       this.tabDataDeleteColumnsInformation.Controls.Add(this.label1);
@@ -178,7 +178,6 @@ namespace HeuristicLab.DataPreprocessing.Views {
       this.tabDataDeleteColumnsInformation.Size = new System.Drawing.Size(711, 138);
       this.tabDataDeleteColumnsInformation.TabIndex = 0;
       this.tabDataDeleteColumnsInformation.Text = "del columns info";
-      this.tabDataDeleteColumnsInformation.UseVisualStyleBackColor = true;
       // 
       // label2
       // 
@@ -208,6 +207,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
       // 
       // tabDataDeleteColumnsVariance
       // 
+      this.tabDataDeleteColumnsVariance.BackColor = System.Drawing.SystemColors.Window;
       this.tabDataDeleteColumnsVariance.Controls.Add(this.txtDeleteColumnsVariance);
       this.tabDataDeleteColumnsVariance.Controls.Add(this.label4);
       this.tabDataDeleteColumnsVariance.Location = new System.Drawing.Point(4, 22);
@@ -216,7 +216,6 @@ namespace HeuristicLab.DataPreprocessing.Views {
       this.tabDataDeleteColumnsVariance.Size = new System.Drawing.Size(711, 138);
       this.tabDataDeleteColumnsVariance.TabIndex = 1;
       this.tabDataDeleteColumnsVariance.Text = "del columns variance";
-      this.tabDataDeleteColumnsVariance.UseVisualStyleBackColor = true;
       // 
       // txtDeleteColumnsVariance
       // 
@@ -237,6 +236,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
       // 
       // tabDataDeleteRowsInfo
       // 
+      this.tabDataDeleteRowsInfo.BackColor = System.Drawing.SystemColors.Window;
       this.tabDataDeleteRowsInfo.Controls.Add(this.label3);
       this.tabDataDeleteRowsInfo.Controls.Add(this.txtDeleteRowsInfo);
       this.tabDataDeleteRowsInfo.Controls.Add(this.label5);
@@ -246,7 +246,6 @@ namespace HeuristicLab.DataPreprocessing.Views {
       this.tabDataDeleteRowsInfo.Size = new System.Drawing.Size(711, 138);
       this.tabDataDeleteRowsInfo.TabIndex = 2;
       this.tabDataDeleteRowsInfo.Text = "del rows info";
-      this.tabDataDeleteRowsInfo.UseVisualStyleBackColor = true;
       // 
       // label3
       // 
@@ -276,8 +275,8 @@ namespace HeuristicLab.DataPreprocessing.Views {
       // 
       // grpBoxPreview
       // 
-      this.grpBoxPreview.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+      this.grpBoxPreview.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.grpBoxPreview.Controls.Add(this.tabsPreview);
       this.grpBoxPreview.Location = new System.Drawing.Point(4, 301);
@@ -289,7 +288,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
       // 
       // tabsPreview
       // 
-      this.tabsPreview.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.tabsPreview.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.tabsPreview.Controls.Add(this.tabPreviewInactive);
       this.tabsPreview.Controls.Add(this.tabPreviewDeleteColumnsInfo);
@@ -304,6 +303,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
       // 
       // tabPreviewInactive
       // 
+      this.tabPreviewInactive.BackColor = System.Drawing.SystemColors.Window;
       this.tabPreviewInactive.Controls.Add(this.lblPreviewInActive);
       this.tabPreviewInactive.Location = new System.Drawing.Point(4, 22);
       this.tabPreviewInactive.Name = "tabPreviewInactive";
@@ -311,7 +311,6 @@ namespace HeuristicLab.DataPreprocessing.Views {
       this.tabPreviewInactive.Size = new System.Drawing.Size(711, 142);
       this.tabPreviewInactive.TabIndex = 5;
       this.tabPreviewInactive.Text = "inactive";
-      this.tabPreviewInactive.UseVisualStyleBackColor = true;
       // 
       // lblPreviewInActive
       // 
@@ -326,6 +325,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
       // 
       // tabPreviewDeleteColumnsInfo
       // 
+      this.tabPreviewDeleteColumnsInfo.BackColor = System.Drawing.SystemColors.Window;
       this.tabPreviewDeleteColumnsInfo.Controls.Add(this.panel1);
       this.tabPreviewDeleteColumnsInfo.Location = new System.Drawing.Point(4, 22);
       this.tabPreviewDeleteColumnsInfo.Name = "tabPreviewDeleteColumnsInfo";
@@ -333,7 +333,6 @@ namespace HeuristicLab.DataPreprocessing.Views {
       this.tabPreviewDeleteColumnsInfo.Size = new System.Drawing.Size(711, 142);
       this.tabPreviewDeleteColumnsInfo.TabIndex = 0;
       this.tabPreviewDeleteColumnsInfo.Text = "del columns info";
-      this.tabPreviewDeleteColumnsInfo.UseVisualStyleBackColor = true;
       // 
       // panel1
       // 
@@ -358,6 +357,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
       // 
       // tabPreviewDeleteColumnsVariance
       // 
+      this.tabPreviewDeleteColumnsVariance.BackColor = System.Drawing.SystemColors.Window;
       this.tabPreviewDeleteColumnsVariance.Controls.Add(this.panel2);
       this.tabPreviewDeleteColumnsVariance.Controls.Add(this.label12);
       this.tabPreviewDeleteColumnsVariance.Location = new System.Drawing.Point(4, 22);
@@ -366,7 +366,6 @@ namespace HeuristicLab.DataPreprocessing.Views {
       this.tabPreviewDeleteColumnsVariance.Size = new System.Drawing.Size(711, 142);
       this.tabPreviewDeleteColumnsVariance.TabIndex = 1;
       this.tabPreviewDeleteColumnsVariance.Text = "del columns variance";
-      this.tabPreviewDeleteColumnsVariance.UseVisualStyleBackColor = true;
       // 
       // panel2
       // 
@@ -399,6 +398,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
       // 
       // tabPreviewDeleteRowsInfo
       // 
+      this.tabPreviewDeleteRowsInfo.BackColor = System.Drawing.SystemColors.Window;
       this.tabPreviewDeleteRowsInfo.Controls.Add(this.lblPreviewRowsInfo);
       this.tabPreviewDeleteRowsInfo.Location = new System.Drawing.Point(4, 22);
       this.tabPreviewDeleteRowsInfo.Name = "tabPreviewDeleteRowsInfo";
@@ -406,7 +406,6 @@ namespace HeuristicLab.DataPreprocessing.Views {
       this.tabPreviewDeleteRowsInfo.Size = new System.Drawing.Size(711, 142);
       this.tabPreviewDeleteRowsInfo.TabIndex = 2;
       this.tabPreviewDeleteRowsInfo.Text = "del rows info";
-      this.tabPreviewDeleteRowsInfo.UseVisualStyleBackColor = true;
       // 
       // lblPreviewRowsInfo
       // 

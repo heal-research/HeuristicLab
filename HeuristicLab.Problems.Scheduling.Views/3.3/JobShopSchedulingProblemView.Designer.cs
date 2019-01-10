@@ -95,6 +95,7 @@ namespace HeuristicLab.Problems.Scheduling.Views {
       // 
       // problemTabPage
       // 
+      this.problemTabPage.BackColor = System.Drawing.SystemColors.Window;
       this.problemTabPage.Controls.Add(this.parameterCollectionView);
       this.problemTabPage.Location = new System.Drawing.Point(4, 22);
       this.problemTabPage.Name = "problemTabPage";
@@ -102,10 +103,10 @@ namespace HeuristicLab.Problems.Scheduling.Views {
       this.problemTabPage.Size = new System.Drawing.Size(497, 277);
       this.problemTabPage.TabIndex = 0;
       this.problemTabPage.Text = "Problem";
-      this.problemTabPage.UseVisualStyleBackColor = true;
       // 
       // visualizationTabPage
       // 
+      this.visualizationTabPage.BackColor = System.Drawing.SystemColors.Window;
       this.visualizationTabPage.Controls.Add(this.ganttChart);
       this.visualizationTabPage.Location = new System.Drawing.Point(4, 22);
       this.visualizationTabPage.Name = "visualizationTabPage";
@@ -113,7 +114,6 @@ namespace HeuristicLab.Problems.Scheduling.Views {
       this.visualizationTabPage.Size = new System.Drawing.Size(497, 277);
       this.visualizationTabPage.TabIndex = 1;
       this.visualizationTabPage.Text = "Visualization";
-      this.visualizationTabPage.UseVisualStyleBackColor = true;
       // 
       // ganttChart
       // 

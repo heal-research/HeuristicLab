@@ -117,8 +117,8 @@ namespace HeuristicLab.Scripting.Views {
       // 
       // infoTabControl
       // 
-      this.infoTabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+      this.infoTabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.infoTabControl.Controls.Add(this.outputTabPage);
       this.infoTabControl.Controls.Add(this.errorListTabPage);
@@ -130,6 +130,7 @@ namespace HeuristicLab.Scripting.Views {
       // 
       // outputTabPage
       // 
+      this.outputTabPage.BackColor = System.Drawing.SystemColors.Window;
       this.outputTabPage.Controls.Add(this.outputTextBox);
       this.outputTabPage.Location = new System.Drawing.Point(4, 22);
       this.outputTabPage.Name = "outputTabPage";
@@ -137,7 +138,6 @@ namespace HeuristicLab.Scripting.Views {
       this.outputTabPage.Size = new System.Drawing.Size(824, 84);
       this.outputTabPage.TabIndex = 1;
       this.outputTabPage.Text = "Output";
-      this.outputTabPage.UseVisualStyleBackColor = true;
       // 
       // outputTextBox
       // 
@@ -154,6 +154,7 @@ namespace HeuristicLab.Scripting.Views {
       // 
       // errorListTabPage
       // 
+      this.errorListTabPage.BackColor = System.Drawing.SystemColors.Window;
       this.errorListTabPage.Controls.Add(this.errorListView);
       this.errorListTabPage.Location = new System.Drawing.Point(4, 22);
       this.errorListTabPage.Name = "errorListTabPage";
@@ -161,7 +162,6 @@ namespace HeuristicLab.Scripting.Views {
       this.errorListTabPage.Size = new System.Drawing.Size(824, 86);
       this.errorListTabPage.TabIndex = 0;
       this.errorListTabPage.Text = "Error List";
-      this.errorListTabPage.UseVisualStyleBackColor = true;
       // 
       // errorListView
       // 

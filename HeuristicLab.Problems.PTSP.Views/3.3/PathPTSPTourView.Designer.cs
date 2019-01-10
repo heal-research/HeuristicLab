@@ -93,6 +93,7 @@ namespace HeuristicLab.Problems.PTSP.Views {
       // 
       // visualizationTabPage
       // 
+      this.visualizationTabPage.BackColor = System.Drawing.SystemColors.Window;
       this.visualizationTabPage.Controls.Add(this.pictureBox);
       this.visualizationTabPage.Location = new System.Drawing.Point(4, 22);
       this.visualizationTabPage.Name = "visualizationTabPage";
@@ -100,10 +101,10 @@ namespace HeuristicLab.Problems.PTSP.Views {
       this.visualizationTabPage.Size = new System.Drawing.Size(415, 300);
       this.visualizationTabPage.TabIndex = 0;
       this.visualizationTabPage.Text = "Visualization";
-      this.visualizationTabPage.UseVisualStyleBackColor = true;
       // 
       // valueTabPage
       // 
+      this.valueTabPage.BackColor = System.Drawing.SystemColors.Window;
       this.valueTabPage.Controls.Add(this.tourGroupBox);
       this.valueTabPage.Location = new System.Drawing.Point(4, 22);
       this.valueTabPage.Name = "valueTabPage";
@@ -111,7 +112,6 @@ namespace HeuristicLab.Problems.PTSP.Views {
       this.valueTabPage.Size = new System.Drawing.Size(415, 300);
       this.valueTabPage.TabIndex = 1;
       this.valueTabPage.Text = "Value";
-      this.valueTabPage.UseVisualStyleBackColor = true;
       // 
       // tourGroupBox
       // 

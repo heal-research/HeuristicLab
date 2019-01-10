@@ -152,6 +152,7 @@ namespace HeuristicLab.Problems.TestFunctions.Views {
       // 
       // textualTabPage
       // 
+      this.textualTabPage.BackColor = System.Drawing.SystemColors.Window;
       this.textualTabPage.Controls.Add(this.splitContainer1);
       this.textualTabPage.Location = new System.Drawing.Point(4, 22);
       this.textualTabPage.Name = "textualTabPage";
@@ -159,10 +160,10 @@ namespace HeuristicLab.Problems.TestFunctions.Views {
       this.textualTabPage.Size = new System.Drawing.Size(497, 310);
       this.textualTabPage.TabIndex = 0;
       this.textualTabPage.Text = "Textual";
-      this.textualTabPage.UseVisualStyleBackColor = true;
       // 
       // graphicalTabPage
       // 
+      this.graphicalTabPage.BackColor = System.Drawing.SystemColors.Window;
       this.graphicalTabPage.Controls.Add(this.pictureBox);
       this.graphicalTabPage.Controls.Add(this.label1);
       this.graphicalTabPage.Location = new System.Drawing.Point(4, 22);
@@ -171,7 +172,6 @@ namespace HeuristicLab.Problems.TestFunctions.Views {
       this.graphicalTabPage.Size = new System.Drawing.Size(497, 310);
       this.graphicalTabPage.TabIndex = 1;
       this.graphicalTabPage.Text = "Graphical";
-      this.graphicalTabPage.UseVisualStyleBackColor = true;
       // 
       // pictureBox
       // 

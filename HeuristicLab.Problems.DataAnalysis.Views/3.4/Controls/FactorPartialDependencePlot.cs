@@ -166,10 +166,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
       // add an event such that whenever a value is changed in the shared dataset, 
       // this change is reflected in the internal dataset (where the value becomes a whole column)
-      if (this.sharedFixedVariables != null)
+      if (this.sharedFixedVariables != null) {
         this.sharedFixedVariables.ItemChanged -= sharedFixedVariables_ItemChanged;
+        this.sharedFixedVariables.Reset -= sharedFixedVariables_Reset;
+      }
+
       this.sharedFixedVariables = sharedFixedVariables;
       this.sharedFixedVariables.ItemChanged += sharedFixedVariables_ItemChanged;
+      this.sharedFixedVariables.Reset += sharedFixedVariables_Reset;
 
       RecalculateInternalDataset();
 
@@ -217,9 +221,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         calculationPendingLabel.Visible = false;
         if (updateOnFinish)
           Update();
-      }
-      catch (OperationCanceledException) { }
-      catch (AggregateException ae) {
+      } catch (OperationCanceledException) { 
+      } catch (AggregateException ae) {
         if (!ae.InnerExceptions.Any(e => e is OperationCanceledException))
           throw;
       }
@@ -492,6 +495,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         // unsupported type 
         throw new NotSupportedException();
       }
+    }
+
+    private void sharedFixedVariables_Reset(object sender, EventArgs e) {
+      var newValue = sharedFixedVariables.GetStringValue(FreeVariable, 0);
+      UpdateSelectedValue(newValue);
+
+      int idx = variableValues.IndexOf(newValue);
+      UpdateAllSeriesStyles(idx);
     }
 
     private async void chart_DragDrop(object sender, DragEventArgs e) {

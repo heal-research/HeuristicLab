@@ -123,7 +123,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // 
       // weightInitializationMuTextBox
       // 
-      this.weightInitializationMuTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.weightInitializationMuTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.weightInitializationMuTextBox.Location = new System.Drawing.Point(92, 19);
       this.weightInitializationMuTextBox.Name = "weightInitializationMuTextBox";
@@ -135,7 +135,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // 
       // initializationGroupBox
       // 
-      this.initializationGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.initializationGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.initializationGroupBox.Controls.Add(this.weightSigmaLabel);
       this.initializationGroupBox.Controls.Add(this.weightInitializationSigmaTextBox);
@@ -160,7 +160,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // 
       // weightInitializationSigmaTextBox
       // 
-      this.weightInitializationSigmaTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.weightInitializationSigmaTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.weightInitializationSigmaTextBox.Location = new System.Drawing.Point(92, 45);
       this.weightInitializationSigmaTextBox.Name = "weightInitializationSigmaTextBox";
@@ -172,7 +172,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // 
       // mutationGroupBox
       // 
-      this.mutationGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.mutationGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.mutationGroupBox.Controls.Add(this.varChangeProbTextBox);
       this.mutationGroupBox.Controls.Add(this.varChangeProbLabel);
@@ -189,7 +189,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // 
       // varChangeProbTextBox
       // 
-      this.varChangeProbTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.varChangeProbTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.varChangeProbTextBox.Location = new System.Drawing.Point(201, 13);
       this.varChangeProbTextBox.Name = "varChangeProbTextBox";
@@ -223,7 +223,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // 
       // multiplicativeWeightChangeSigmaTextBox
       // 
-      this.multiplicativeWeightChangeSigmaTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.multiplicativeWeightChangeSigmaTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.multiplicativeWeightChangeSigmaTextBox.Location = new System.Drawing.Point(201, 65);
       this.multiplicativeWeightChangeSigmaTextBox.Name = "multiplicativeWeightChangeSigmaTextBox";
@@ -246,7 +246,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // 
       // additiveWeightChangeSigmaTextBox
       // 
-      this.additiveWeightChangeSigmaTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.additiveWeightChangeSigmaTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.additiveWeightChangeSigmaTextBox.Location = new System.Drawing.Point(201, 39);
       this.additiveWeightChangeSigmaTextBox.Name = "additiveWeightChangeSigmaTextBox";
@@ -258,8 +258,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // 
       // tabControl
       // 
-      this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+      this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.tabControl.Controls.Add(this.variableNamesTabPage);
       this.tabControl.Controls.Add(this.parametersTabPage);
@@ -271,16 +271,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // 
       // variableNamesTabPage
       // 
+      this.variableNamesTabPage.BackColor = System.Drawing.SystemColors.Window;
       this.variableNamesTabPage.Location = new System.Drawing.Point(4, 22);
       this.variableNamesTabPage.Name = "variableNamesTabPage";
       this.variableNamesTabPage.Padding = new System.Windows.Forms.Padding(3);
       this.variableNamesTabPage.Size = new System.Drawing.Size(400, 190);
       this.variableNamesTabPage.TabIndex = 0;
       this.variableNamesTabPage.Text = "Variable Names";
-      this.variableNamesTabPage.UseVisualStyleBackColor = true;
       // 
       // parametersTabPage
       // 
+      this.parametersTabPage.BackColor = System.Drawing.SystemColors.Window;
       this.parametersTabPage.Controls.Add(this.mutationGroupBox);
       this.parametersTabPage.Controls.Add(this.initializationGroupBox);
       this.parametersTabPage.Location = new System.Drawing.Point(4, 22);
@@ -289,7 +290,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.parametersTabPage.Size = new System.Drawing.Size(400, 190);
       this.parametersTabPage.TabIndex = 1;
       this.parametersTabPage.Text = "Parameters";
-      this.parametersTabPage.UseVisualStyleBackColor = true;
       // 
       // VariableView
       // 

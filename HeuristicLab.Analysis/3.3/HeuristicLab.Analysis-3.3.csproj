@@ -140,6 +140,8 @@
     <Compile Include="DataVisualization\GanttData.cs" />
     <Compile Include="DataVisualization\IndexedDataRow.cs" />
     <Compile Include="DataVisualization\IndexedDataTable.cs" />
+    <Compile Include="DataVisualization\Interfaces\IDataRow.cs" />
+    <Compile Include="DataVisualization\Interfaces\IDataTable.cs" />
     <Compile Include="DataVisualization\ScatterPlotDataRowVisualProperties.cs" />
     <Compile Include="DataVisualization\ScatterPlotDataRow.cs" />
     <Compile Include="DataVisualization\ScatterPlotVisualProperties.cs" />

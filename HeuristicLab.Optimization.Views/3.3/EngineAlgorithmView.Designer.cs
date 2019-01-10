@@ -187,6 +187,7 @@ namespace HeuristicLab.Optimization.Views {
       // 
       // engineTabPage
       // 
+      this.engineTabPage.BackColor = System.Drawing.SystemColors.Window;
       this.engineTabPage.Controls.Add(this.engineViewHost);
       this.engineTabPage.Controls.Add(this.engineComboBox);
       this.engineTabPage.Controls.Add(this.engineLabel);
@@ -196,7 +197,6 @@ namespace HeuristicLab.Optimization.Views {
       this.engineTabPage.Size = new System.Drawing.Size(705, 467);
       this.engineTabPage.TabIndex = 5;
       this.engineTabPage.Text = "Engine";
-      this.engineTabPage.UseVisualStyleBackColor = true;
       // 
       // engineViewHost
       // 
@@ -216,13 +216,13 @@ namespace HeuristicLab.Optimization.Views {
       // 
       // operatorGraphTabPage
       // 
+      this.operatorGraphTabPage.BackColor = System.Drawing.SystemColors.Window;
       this.operatorGraphTabPage.Controls.Add(this.operatorGraphViewHost);
       this.operatorGraphTabPage.Location = new System.Drawing.Point(4, 22);
       this.operatorGraphTabPage.Name = "operatorGraphTabPage";
       this.operatorGraphTabPage.Size = new System.Drawing.Size(705, 467);
       this.operatorGraphTabPage.TabIndex = 4;
       this.operatorGraphTabPage.Text = "Operator Graph";
-      this.operatorGraphTabPage.UseVisualStyleBackColor = true;
       // 
       // operatorGraphViewHost
       // 

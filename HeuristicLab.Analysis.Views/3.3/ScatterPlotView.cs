@@ -39,21 +39,19 @@ namespace HeuristicLab.Analysis.Views {
     protected Dictionary<IObservableList<Point2D<double>>, ScatterPlotDataRow> pointsRowsTable;
     protected Dictionary<Series, Series> seriesToRegressionSeriesTable;
     private double xMin, xMax, yMin, yMax;
+    protected bool showChartOnly = false;
 
     public new ScatterPlot Content {
       get { return (ScatterPlot)base.Content; }
       set { base.Content = value; }
     }
 
-    public bool ShowName {
-      get { return nameTextBox.Visible; }
+    public bool ShowChartOnly {
+      get { return showChartOnly; }
       set {
-        if (nameTextBox.Visible != value) {
-          foreach (Control c in Controls) {
-            if (c == chart) continue;
-            c.Visible = value;
-          }
-          chart.Dock = value ? DockStyle.None : DockStyle.Fill;
+        if (showChartOnly != value) {
+          showChartOnly = value;
+          UpdateControlsVisibility();
         }
       }
     }
@@ -136,6 +134,18 @@ namespace HeuristicLab.Analysis.Views {
           dialog.ShowDialog(this);
         }
       } else MessageBox.Show("Nothing to configure.");
+    }
+
+    protected void UpdateControlsVisibility() {
+      if (InvokeRequired)
+        Invoke(new Action(UpdateControlsVisibility));
+      else {
+        foreach (Control c in Controls) {
+          if (c == chart) continue;
+          c.Visible = !showChartOnly;
+        }
+        chart.Dock = showChartOnly ? DockStyle.Fill : DockStyle.None;
+      }
     }
 
     protected virtual void AddScatterPlotDataRows(IEnumerable<ScatterPlotDataRow> rows) {

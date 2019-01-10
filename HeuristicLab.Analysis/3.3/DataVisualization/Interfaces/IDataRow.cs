@@ -19,21 +19,10 @@
  */
 #endregion
 
-using System.Windows.Forms;
-using HeuristicLab.MainForm;
-using HeuristicLab.MainForm.WindowsForms;
+using HeuristicLab.Core;
 
-namespace HeuristicLab.Clients.Hive.Administrator.Views {
-  [View("Hive Administrator")]
-  [Content(typeof(HiveAdminClient), IsDefaultView = true)]
-  public partial class HiveAdministratorView : AsynchronousContentView {
-    public new HiveAdminClient Content {
-      get { return (HiveAdminClient)base.Content; }
-      set { base.Content = value; }
-    }
-
-    public HiveAdministratorView() {
-      InitializeComponent();
-    }
+namespace HeuristicLab.Analysis {
+  public interface IDataRow : INamedItem {
+    DataRowVisualProperties VisualProperties { get; set; }
   }
 }

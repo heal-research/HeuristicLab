@@ -31,7 +31,7 @@ using HEAL.Fossil;
 namespace HeuristicLab.Analysis {
   [Item("IndexedDataRow", "A data row that contains a series of points.")]
   [StorableType("0B0BB900-4C30-4485-82C2-C9E633110685")]
-  public class IndexedDataRow<T> : NamedItem {
+  public class IndexedDataRow<T> : NamedItem, IDataRow {
 
     private DataRowVisualProperties visualProperties;
     public DataRowVisualProperties VisualProperties {

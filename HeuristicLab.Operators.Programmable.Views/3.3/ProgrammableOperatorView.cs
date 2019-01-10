@@ -82,6 +82,7 @@ namespace HeuristicLab.Operators.Programmable {
       base.OnContentChanged();
       if (ProgrammableOperator == null) {
         codeEditor.UserCode = string.Empty;
+        codeEditor.ClearEditHistory();
         assembliesTreeView.Nodes.Clear();
         parameterCollectionView.Content = null;
       } else {
@@ -90,6 +91,7 @@ namespace HeuristicLab.Operators.Programmable {
         codeEditor.UserCode = ProgrammableOperator.Code;
         if (codeEditor.UserCode == string.Empty)
           codeEditor.UserCode = string.Format("    {0}", Environment.NewLine);
+        codeEditor.ClearEditHistory();
         InitializeAssemblyList();
         InitializeNamespacesList();
         codeEditor.AddAssemblies(ProgrammableOperator.SelectedAssemblies);
@@ -97,17 +99,20 @@ namespace HeuristicLab.Operators.Programmable {
         codeEditor.ShowCompileErrors(ProgrammableOperator.CompileErrors);
         showCodeButton.Enabled = !string.IsNullOrEmpty(ProgrammableOperator.CompilationUnitCode);
         parameterCollectionView.Content = ProgrammableOperator.Parameters;
-        if (ProgrammableOperator.CompileErrors == null) {
-          compilationLabel.ForeColor = SystemColors.ControlDarkDark;
-          compilationLabel.Text = "Not compiled";
-        } else if (ProgrammableOperator.CompileErrors.HasErrors) {
-          compilationLabel.ForeColor = Color.DarkRed;
-          compilationLabel.Text = "Compilation failed";
-        } else {
-          compilationLabel.ForeColor = Color.DarkGreen;
-          compilationLabel.Text = "Compilation successful";
-        }
+      }
+      UpdateCompilationLabel();
+    }
 
+    private void UpdateCompilationLabel() {
+      if (ProgrammableOperator == null || ProgrammableOperator.CompileErrors == null) {
+        compilationLabel.ForeColor = SystemColors.ControlDarkDark;
+        compilationLabel.Text = "Not compiled";
+      } else if (ProgrammableOperator.CompileErrors.HasErrors) {
+        compilationLabel.ForeColor = Color.DarkRed;
+        compilationLabel.Text = "Compilation failed";
+      } else {
+        compilationLabel.ForeColor = Color.DarkGreen;
+        compilationLabel.Text = "Compilation successful";
       }
     }
 
@@ -157,7 +162,6 @@ namespace HeuristicLab.Operators.Programmable {
         }
       }
       InitializeNamespacesList();
-      codeEditor.Prefix = GetGeneratedPrefix();
     }
     private void namespacesTreeView_AfterCheck(object sender, TreeViewEventArgs e) {
       if (initializing)
@@ -167,7 +171,6 @@ namespace HeuristicLab.Operators.Programmable {
       } else {
         ProgrammableOperator.UnselectNamespace(e.Node.FullPath);
       }
-      codeEditor.Prefix = GetGeneratedPrefix();
     }
     #endregion
 
@@ -189,10 +192,6 @@ namespace HeuristicLab.Operators.Programmable {
 
     private string GetGeneratedPrefix() {
       StringBuilder prefix = new StringBuilder();
-      foreach (var ns in ProgrammableOperator.GetSelectedAndValidNamespaces()) {
-        prefix.Append("using ").Append(ns).AppendLine(";");
-      }
-      prefix.AppendLine();
       prefix.Append("public class ").Append(ProgrammableOperator.CompiledTypeName).AppendLine(" {");
       prefix.Append("  ").Append(ProgrammableOperator.Signature).AppendLine(" {");
       return prefix.ToString();
@@ -202,12 +201,12 @@ namespace HeuristicLab.Operators.Programmable {
       this.Enabled = false;
       try {
         ProgrammableOperator.Compile();
-      }
-      catch (Exception ex) {
+      } catch (Exception ex) {
         ErrorHandling.ShowErrorDialog(this, ex);
       }
-      OnContentChanged();
       this.Enabled = true;
+      UpdateCompilationLabel();
+      codeEditor.ShowCompileErrors(ProgrammableOperator.CompileErrors);
     }
 
     private bool initializing = false;

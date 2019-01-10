@@ -70,8 +70,8 @@ namespace HeuristicLab.Problems.Orienteering.Views {
       // 
       // pictureBox
       // 
-      this.pictureBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+      this.pictureBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.pictureBox.BackColor = System.Drawing.Color.White;
       this.pictureBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
@@ -85,8 +85,8 @@ namespace HeuristicLab.Problems.Orienteering.Views {
       // tabControl
       // 
       this.tabControl.AllowDrop = true;
-      this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+      this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.tabControl.Controls.Add(this.visualizationTabPage);
       this.tabControl.Controls.Add(this.valueTabPage);
@@ -98,6 +98,7 @@ namespace HeuristicLab.Problems.Orienteering.Views {
       // 
       // visualizationTabPage
       // 
+      this.visualizationTabPage.BackColor = System.Drawing.SystemColors.Window;
       this.visualizationTabPage.Controls.Add(this.pictureBox);
       this.visualizationTabPage.Location = new System.Drawing.Point(4, 22);
       this.visualizationTabPage.Name = "visualizationTabPage";
@@ -105,10 +106,10 @@ namespace HeuristicLab.Problems.Orienteering.Views {
       this.visualizationTabPage.Size = new System.Drawing.Size(415, 279);
       this.visualizationTabPage.TabIndex = 0;
       this.visualizationTabPage.Text = "Visualization";
-      this.visualizationTabPage.UseVisualStyleBackColor = true;
       // 
       // valueTabPage
       // 
+      this.valueTabPage.BackColor = System.Drawing.SystemColors.Window;
       this.valueTabPage.Controls.Add(this.tourGroupBox);
       this.valueTabPage.Location = new System.Drawing.Point(4, 22);
       this.valueTabPage.Name = "valueTabPage";
@@ -116,12 +117,11 @@ namespace HeuristicLab.Problems.Orienteering.Views {
       this.valueTabPage.Size = new System.Drawing.Size(211, 370);
       this.valueTabPage.TabIndex = 1;
       this.valueTabPage.Text = "Value";
-      this.valueTabPage.UseVisualStyleBackColor = true;
       // 
       // tourGroupBox
       // 
-      this.tourGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+      this.tourGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.tourGroupBox.Controls.Add(this.tourViewHost);
       this.tourGroupBox.Location = new System.Drawing.Point(6, 6);
@@ -133,8 +133,8 @@ namespace HeuristicLab.Problems.Orienteering.Views {
       // 
       // tourViewHost
       // 
-      this.tourViewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+      this.tourViewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.tourViewHost.Caption = "View";
       this.tourViewHost.Content = null;
@@ -175,7 +175,7 @@ namespace HeuristicLab.Problems.Orienteering.Views {
       // 
       // qualityValueView
       // 
-      this.qualityValueView.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.qualityValueView.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.qualityValueView.Caption = "StringConvertibleValue View";
       this.qualityValueView.Content = null;
@@ -188,7 +188,7 @@ namespace HeuristicLab.Problems.Orienteering.Views {
       // 
       // distanceValueView
       // 
-      this.distanceValueView.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.distanceValueView.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.distanceValueView.Caption = "StringConvertibleValue View";
       this.distanceValueView.Content = null;
@@ -201,7 +201,7 @@ namespace HeuristicLab.Problems.Orienteering.Views {
       // 
       // penaltyValueView
       // 
-      this.penaltyValueView.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.penaltyValueView.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.penaltyValueView.Caption = "StringConvertibleValue View";
       this.penaltyValueView.Content = null;
