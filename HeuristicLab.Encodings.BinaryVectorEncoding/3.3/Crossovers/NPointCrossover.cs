@@ -24,7 +24,6 @@ using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -70,19 +69,19 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
     /// <param name="parent2">The second parent for crossover.</param>
     /// <param name="n">Number of crossover points.</param>
     /// <returns>The newly created binary vector, resulting from the N point crossover.</returns>
-    public static BinaryVector Apply(IRandom random, BinaryVector parent1, BinaryVector parent2, int n) {
+    public static BinaryVector Apply(IRandom random, BinaryVector parent1, BinaryVector parent2, IntValue n) {
       if (parent1.Length != parent2.Length)
         throw new ArgumentException("NPointCrossover: The parents are of different length.");
 
-      if (n > parent1.Length)
+      if (n.Value > parent1.Length)
         throw new ArgumentException("NPointCrossover: There cannot be more breakpoints than the size of the parents.");
 
-      if (n < 1)
+      if (n.Value < 1)
         throw new ArgumentException("NPointCrossover: N cannot be < 1.");
 
       int length = parent1.Length;
       bool[] result = new bool[length];
-      int[] breakpoints = new int[n];
+      int[] breakpoints = new int[n.Value];
 
       //choose break points
       List<int> breakpointPool = new List<int>();
@@ -90,7 +89,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
       for (int i = 0; i < length; i++)
         breakpointPool.Add(i);
 
-      for (int i = 0; i < n; i++) {
+      for (int i = 0; i < n.Value; i++) {
         int index = random.Next(breakpointPool.Count);
         breakpoints[i] = breakpointPool[index];
         breakpointPool.RemoveAt(index);
@@ -137,42 +136,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
 
       if (NParameter.ActualValue == null) throw new InvalidOperationException("NPointCrossover: Parameter " + NParameter.ActualName + " could not be found.");
 
-      return Apply(random, parents[0], parents[1], NParameter.ActualValue.Value);
-    }
-  }
-
-  [Item("N-point Crossover", "", ExcludeGenericTypeInfo = true)]
-  [StorableClass]
-  public sealed class NPointCrossover<TContext> : ParameterizedNamedItem, IBinaryCrossover<TContext>
-    where TContext : IMatingContext<BinaryVector>, IStochasticContext {
-
-    [Storable]
-    private IValueParameter<IntValue> nparameter;
-    public int N {
-      get { return nparameter.Value.Value; }
-      set {
-        if (value < 1) throw new ArgumentException("Cannot set N to less than 1.");
-        nparameter.Value.Value = value;
-      }
-    }
-
-    [StorableConstructor]
-    private NPointCrossover(bool deserializing) : base(deserializing) { }
-    private NPointCrossover(NPointCrossover<TContext> original, Cloner cloner)
-      : base(original, cloner) {
-      nparameter = cloner.Clone(original.nparameter);
-    }
-    public NPointCrossover() {
-      Parameters.Add(nparameter = new ValueParameter<IntValue>("N", "The number of crossover points.", new IntValue(1)));
-    }
-
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new NPointCrossover<TContext>(this, cloner);
-    }
-
-    public void Cross(TContext context) {
-      context.Child.Solution = NPointCrossover.Apply(context.Random, context.Parents.Item1.Solution, context.Parents.Item2.Solution, N);
+      return Apply(random, parents[0], parents[1], NParameter.ActualValue);
     }
   }
 }

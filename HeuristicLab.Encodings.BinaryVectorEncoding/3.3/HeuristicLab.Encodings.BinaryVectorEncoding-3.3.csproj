@@ -125,7 +125,6 @@
     <Compile Include="Crossovers\SinglePointCrossover.cs" />
     <Compile Include="Crossovers\NPointCrossover.cs" />
     <Compile Include="BinaryVector.cs" />
-    <Compile Include="Interfaces\IBinaryLocalSearch.cs" />
     <Compile Include="Interfaces\IBinaryVectorMultiNeighborhoodShakingOperator.cs" />
     <Compile Include="Interfaces\IBinaryVectorSolutionsOperator.cs" />
     <Compile Include="Interfaces\IBinaryVectorSolutionOperator.cs" />
@@ -139,10 +138,6 @@
     <Compile Include="BinaryVectorCrossover.cs" />
     <Compile Include="BinaryVectorManipulator.cs" />
     <Compile Include="Interfaces\IBinaryVectorMoveOperator.cs" />
-    <Compile Include="LocalSearch\ExhaustiveBitflip.cs" />
-    <Compile Include="Manipulators\MultiBitflipManipulator.cs" />
-    <Compile Include="Manipulators\SingleBitflipManipulator.cs" />
-    <Compile Include="Manipulators\BitflipManipulator.cs" />
     <Compile Include="Manipulators\SomePositionsBitflipManipulator.cs" />
     <Compile Include="Manipulators\SinglePositionBitflipManipulator.cs" />
     <Compile Include="Moves\OneBitflipMove\ExhaustiveOneBitflipMoveGenerator.cs" />
@@ -209,10 +204,6 @@
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
       <Name>HeuristicLab.PluginInfrastructure-3.3</Name>
       <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Random\3.3\HeuristicLab.Random-3.3.csproj">
-      <Project>{F4539FB6-4708-40C9-BE64-0A1390AEA197}</Project>
-      <Name>HeuristicLab.Random-3.3</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

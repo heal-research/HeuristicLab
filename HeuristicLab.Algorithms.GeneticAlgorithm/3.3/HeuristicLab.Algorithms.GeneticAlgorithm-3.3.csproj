@@ -114,9 +114,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BinaryCanonicalGeneticAlgorithm.cs" />
-    <Compile Include="CanonicalGeneticAlgorithm.cs" />
-    <Compile Include="EvolutionaryAlgorithmContext.cs" />
     <Compile Include="GeneticAlgorithm.cs" />
     <Compile Include="GeneticAlgorithmMainLoop.cs" />
     <Compile Include="IslandGeneticAlgorithm.cs" />
@@ -149,10 +146,6 @@
       <Project>{BBAB9DF5-5EF3-4BA8-ADE9-B36E82114937}</Project>
       <Name>HeuristicLab.Data-3.3</Name>
       <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Encodings.BinaryVectorEncoding\3.3\HeuristicLab.Encodings.BinaryVectorEncoding-3.3.csproj">
-      <Project>{66D249C3-A01D-42A8-82A2-919BC8EC3D83}</Project>
-      <Name>HeuristicLab.Encodings.BinaryVectorEncoding-3.3</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Operators\3.3\HeuristicLab.Operators-3.3.csproj">
       <Project>{23DA7FF4-D5B8-41B6-AA96-F0561D24F3EE}</Project>

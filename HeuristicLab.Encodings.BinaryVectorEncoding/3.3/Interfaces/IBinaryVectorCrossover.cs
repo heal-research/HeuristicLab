@@ -21,7 +21,6 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
-using HeuristicLab.Optimization.Crossover;
 
 namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   /// <summary>
@@ -31,7 +30,4 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
     ILookupParameter<ItemArray<BinaryVector>> ParentsParameter { get; }
     ILookupParameter<BinaryVector> ChildParameter { get; }
   }
-
-  // TODO: probably unecessary
-  public interface IBinaryCrossover<TContext> : ICrossover<TContext> { }
 }

@@ -80,7 +80,7 @@ namespace HeuristicLab.Optimization {
         handler(this, EventArgs.Empty);
     }
 
-    // TODO: There is no way to access the Operators collection other than through OperatorParameter.Value
+
     protected override IEnumerable<IItem> GetOperators() {
       if (Encoding == null) return base.GetOperators();
       return base.GetOperators().Concat(Encoding.Operators);
