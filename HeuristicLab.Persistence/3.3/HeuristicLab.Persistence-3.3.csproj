@@ -118,8 +118,8 @@
     <Reference Include="Google.Protobuf, Version=3.6.1.0, Culture=neutral, PublicKeyToken=a7d26565bac4d604, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Google.Protobuf.3.6.1\lib\net45\Google.Protobuf.dll</HintPath>
     </Reference>
-    <Reference Include="HEAL.Fossil, Version=1.0.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\HEAL.Fossil.1.0.0\lib\netstandard2.0\HEAL.Fossil.dll</HintPath>
+    <Reference Include="HEAL.Fossil, Version=1.0.1.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\HEAL.Fossil.1.0.1\lib\netstandard2.0\HEAL.Fossil.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -128,6 +128,9 @@
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Drawing.Common, Version=4.0.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Drawing.Common.4.5.1\lib\net461\System.Drawing.Common.dll</HintPath>
+    </Reference>
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.Xml" />
   </ItemGroup>
@@ -137,9 +140,6 @@
     <Compile Include="Auxiliary\TypeLoader.cs" />
     <Compile Include="Auxiliary\TypeNameParser.cs" />
     <Compile Include="Auxiliary\ReflectionTools.cs" />
-    <Compile Include="Transformers\BitmapTransformer.cs" />
-    <Compile Include="Transformers\KnownStorableTypesMap.cs" />
-    <Compile Include="Transformers\FontTransformer.cs" />
     <None Include="packages.config" />
     <None Include="Plugin.cs.frame" />
     <Compile Include="Core\Configuration.cs" />
@@ -307,5 +307,7 @@ $SolutionDir/PreBuildEvent.sh
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Transformers\" />
+  </ItemGroup>
 </Project>

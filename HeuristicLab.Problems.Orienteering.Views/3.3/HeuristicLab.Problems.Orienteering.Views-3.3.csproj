@@ -115,6 +115,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="HeuristicLab.snk" />
     <None Include="Plugin.cs.frame" />
     <None Include="Properties\AssemblyInfo.cs.frame" />
