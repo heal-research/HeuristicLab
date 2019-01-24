@@ -59,6 +59,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       Assert.AreEqual("(SIN((3*'x')) * (-3))", Derive("cos(3*x)", "x"));
       Assert.AreEqual("(1 / (SQR(COS((3*'x'))) * 0.333333333333333))", Derive("tan(3*x)", "x")); // diff(tan(f(x)), x) = 1.0 / cos²(f(x)), simplifier puts constant factor into the denominator
 
+      Assert.AreEqual("((9*'x') / ABS((3*'x')))", Derive("abs(3*x)", "x"));
+      Assert.AreEqual("(SQR('x') * 3)", Derive("cube(x)", "x"));
+      Assert.AreEqual("(1 / (SQR(CUBEROOT('x')) * 3))", Derive("cuberoot(x)", "x"));
+
       Assert.AreEqual("0", Derive("(a+b)/(x+SQR(x))", "y")); // df(a,b,x) / dy = 0
 
       {
