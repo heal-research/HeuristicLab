@@ -30,6 +30,7 @@ using HEAL.Fossil;
 using HeuristicLab.Algorithms.GeneticAlgorithm;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
+using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Persistence.Core;
 using HeuristicLab.Persistence.Default.Xml;
@@ -133,7 +134,7 @@ namespace HeuristicLab.Persistence.Fossil.Tests {
 
     [TestMethod]
     [TestCategory("Persistence.Fossil")]
-    [TestProperty("Time", "short")]
+    [TestProperty("Time", "long")]
     public void TestLoadingSamples() {
       var path = @"C:\reps\hl-core\branches\2520_PersistenceReintegration\HeuristicLab.Optimizer\3.3\Documents";
       var serializer = new ProtoBufSerializer();
@@ -163,6 +164,34 @@ namespace HeuristicLab.Persistence.Fossil.Tests {
         }
       }
     }
+    [TestMethod]
+    [TestCategory("Persistence.Fossil")]
+    [TestProperty("Time", "long")]
+    public void TestLoadingRunAndStoreSamples() {
+      var path = @"C:\reps\hl-core\branches\2520_PersistenceReintegration\HeuristicLab.Optimizer\3.3\Documents";
+      var serializer = new ProtoBufSerializer();
+      foreach (var fileName in Directory.EnumerateFiles(path, "*.hl")) {
+        var original = XmlParser.Deserialize(fileName);
+
+        var exec = original as IExecutable;
+        if (exec != null) {
+          exec.Paused += (sender, e) => {
+            serializer.Serialize(exec, fileName + "_paused.proto");
+            Console.WriteLine("Paused File: " + fileName);
+          };
+          exec.Stopped += (sender, e) => {
+            serializer.Serialize(exec, fileName + "_stopped.proto");
+            Console.WriteLine("Stopped File: " + fileName);
+          };
+          var t = exec.StartAsync();
+          System.Threading.Thread.Sleep(20000); // wait 20 secs
+          if (exec.ExecutionState == ExecutionState.Started) { // only if not already stopped
+            exec.Pause();
+          }
+        }
+      }
+    }
+
 
     [TestMethod]
     [TestCategory("Persistence.Fossil")]
