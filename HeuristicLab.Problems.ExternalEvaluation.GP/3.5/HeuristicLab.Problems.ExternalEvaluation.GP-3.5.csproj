@@ -131,6 +131,7 @@
     <None Include="packages.config" />
     <None Include="Plugin.cs.frame" />
     <Compile Include="ExternalEvaluationExpressionGrammar.cs" />
+    <Compile Include="SymbolicExpressionTreeProtobufConverter.cs" />
     <Compile Include="ExternalEvaluationSymbolicExpressionTreeBinaryConverter.cs" />
     <Compile Include="ExternalEvaluationSymbolicExpressionTreeConverter.cs" />
     <Compile Include="ExternalEvaluationSymbolicExpressionTreeStringConverter.cs" />

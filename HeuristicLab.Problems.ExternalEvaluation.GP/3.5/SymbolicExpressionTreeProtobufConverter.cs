@@ -25,26 +25,26 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HEAL.Fossil;
-using System;
 
 namespace HeuristicLab.Problems.ExternalEvaluation.GP {
-  [Item("SymbolicExpressionTreeBinaryConverter", "Converts a symbolic expression tree into a binary representation by prefix iteration over all nodes in the tree. The binary format is defined in HeuristicLab.Persistence.")]
-  [StorableType("E3C9DE32-6EF2-4BA5-AFDF-23AE7D198AC6")]
-  [Obsolete("Use the SymbolicExpressionTreeProtobufConverter instead; The SymbolicExpressionTreeBinaryConverter uses the old serialization format and will be removed in the next major release of HeuristicLab.")]
-  public class SymbolicExpressionTreeBinaryConverter : SymbolicExpressionTreeConverter {
+  [Item("SymbolicExpressionTreeProtobufConverter", "Converts a symbolic expression tree into a binary representation. The binary format is based on Google.Protobuf and defined in HeuristicLab.Persistence.")]
+  [StorableType("95569F3E-0953-472E-BC20-78DBD6E572D6")]
+  public class SymbolicExpressionTreeProtobufConverter : SymbolicExpressionTreeConverter {
     [StorableConstructor]
-    protected SymbolicExpressionTreeBinaryConverter(StorableConstructorFlag _) : base(_) { }
-    protected SymbolicExpressionTreeBinaryConverter(SymbolicExpressionTreeBinaryConverter original, Cloner cloner)
+    protected SymbolicExpressionTreeProtobufConverter(StorableConstructorFlag _) : base(_) { }
+    protected SymbolicExpressionTreeProtobufConverter(SymbolicExpressionTreeProtobufConverter original, Cloner cloner)
       : base(original, cloner) {
     }
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new SymbolicExpressionTreeBinaryConverter(this, cloner);
+      return new SymbolicExpressionTreeProtobufConverter(this, cloner);
     }
-    public SymbolicExpressionTreeBinaryConverter() : base() { }
+    public SymbolicExpressionTreeProtobufConverter() : base() { }
 
     protected override void ConvertSymbolicExpressionTree(SymbolicExpressionTree tree, string name, SolutionMessage.Builder builder) {
       using (MemoryStream memoryStream = new MemoryStream()) {
-        Persistence.Default.Xml.XmlGenerator.Serialize(tree, memoryStream);
+        var ser = new ProtoBufSerializer();
+        ser.Serialize(tree, memoryStream, disposeStream: false);
+        memoryStream.Flush();
         byte[] byteRep = memoryStream.ToArray();
         SolutionMessage.Types.RawVariable.Builder rawVariable = SolutionMessage.Types.RawVariable.CreateBuilder();
         rawVariable.SetName(name).SetData(ByteString.CopyFrom(byteRep));
