@@ -23,16 +23,13 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using HEAL.Fossil;
+using HeuristicLab.Persistence.Default.Xml;
 
 namespace HeuristicLab.Clients.Hive {
   public static class PersistenceUtil {
     public static byte[] Serialize(object obj, out IEnumerable<Type> types) {
-      using (MemoryStream memStream = new MemoryStream()) {
-        throw new NotImplementedException("Not supported by HEAL.Fossil yet."); // TODO
-        // XmlGenerator.Serialize(obj, memStream, ConfigurationService.Instance.GetConfiguration(new XmlFormat()), false, out types);
-        // byte[] jobByteArray = memStream.ToArray();
-        // return jobByteArray;
-      }
+      var ser = new ProtoBufSerializer();
+      return ser.Serialize(obj, out types);
     }
 
     public static byte[] Serialize(object obj) {
@@ -42,7 +39,14 @@ namespace HeuristicLab.Clients.Hive {
 
     public static T Deserialize<T>(byte[] sjob) {
       var ser = new ProtoBufSerializer();
-      return (T)ser.Deserialize(sjob);
+      try {
+        return (T)ser.Deserialize(sjob);
+      } catch (Exception) {
+        // retry with old persistence
+        using (MemoryStream memStream = new MemoryStream(sjob)) {
+          return XmlParser.Deserialize<T>(memStream);
+        }
+      }
     }
   }
 }
