@@ -24,7 +24,7 @@ using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Persistence.Auxiliary;
 using HeuristicLab.Persistence.Core;
-using HEAL.Fossil;
+using HEAL.Attic;
 using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.Persistence.Default.Xml.Primitive;
 using HeuristicLab.Persistence.Interfaces;

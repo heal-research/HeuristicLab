@@ -21,7 +21,7 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("TranslocationMove", "A move that changes three edges by performing a translocation.")]

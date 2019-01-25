@@ -24,7 +24,7 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HEAL.Fossil;
+using HEAL.Attic;
 using HeuristicLab.Random;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableType("A968620F-339E-4C96-B39A-8FC8E42D6509")]

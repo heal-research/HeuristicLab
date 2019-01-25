@@ -26,7 +26,7 @@ using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Common.Resources;
 using HeuristicLab.Core;
-using HEAL.Fossil;
+using HEAL.Attic;
 using HeuristicLab.Persistence.Default.Xml;
 
 namespace HeuristicLab.Scripting {

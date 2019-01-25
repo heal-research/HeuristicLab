@@ -22,7 +22,7 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HEAL.Fossil;
+using HEAL.Attic;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableType("640A38A9-CDEE-4928-BC4A-B69AD2328FB8")]
   [Item("Logarithm", "Symbol that represents the logarithm function.")]

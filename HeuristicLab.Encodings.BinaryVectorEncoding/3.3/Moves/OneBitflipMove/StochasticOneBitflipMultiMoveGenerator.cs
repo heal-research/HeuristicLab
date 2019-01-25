@@ -25,7 +25,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   [Item("StochasticOneBitflipMultiMoveGenerator", "Randomly samples n from all possible one bitflip moves from a given BinaryVector.")]

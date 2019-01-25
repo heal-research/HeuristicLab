@@ -22,7 +22,7 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HEAL.Fossil;
+using HEAL.Attic;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableType("98360DAA-C01A-42B3-8AB1-B18E6C0835BB")]
   [Item("Exponential", "Symbol that represents the exponential function.")]

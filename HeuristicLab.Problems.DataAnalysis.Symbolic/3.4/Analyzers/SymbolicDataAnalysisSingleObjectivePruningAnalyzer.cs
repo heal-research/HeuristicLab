@@ -30,7 +30,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableType("83603E95-3CBD-476C-B11F-B30C80ACD0D3")]

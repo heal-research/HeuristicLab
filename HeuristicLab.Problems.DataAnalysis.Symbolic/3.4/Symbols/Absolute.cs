@@ -22,7 +22,7 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HEAL.Fossil;
+using HEAL.Attic;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableType("E848B148-A03E-4B01-9CBD-03E033636D32")]
   [Item("Absolute", "Symbol that represents the absolute value function abs(x).")]

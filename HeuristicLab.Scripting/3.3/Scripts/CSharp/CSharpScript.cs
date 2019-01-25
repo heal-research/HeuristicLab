@@ -24,7 +24,7 @@ using System.Linq;
 using System.Reflection;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Scripting {
   [Item("C# Script", "An empty C# script.")]

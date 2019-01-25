@@ -20,7 +20,7 @@
 #endregion
 
 using System.Collections.Generic;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Trading {
   [StorableType("f0f78fec-6361-4032-b6d1-e36fbbf63381")]

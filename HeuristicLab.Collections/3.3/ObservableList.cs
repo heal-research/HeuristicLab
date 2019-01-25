@@ -19,7 +19,7 @@
  */
 #endregion
 
-using HEAL.Fossil;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using System;
 using System.Collections;

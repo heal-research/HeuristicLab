@@ -24,7 +24,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.IntegerVectorEncoding;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding.PriorityRulesVector {
   [Item("PriorityRulesVectorEncoding", "Represents an encoding for a Scheduling Problem.")]

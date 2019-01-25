@@ -27,7 +27,7 @@ using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.QuadraticAssignment.Algorithms {
   [Item("RobustTabooSearchOperator", "Performs an iteration of the robust taboo search algorithm as descrbied in Taillard 1991.")]

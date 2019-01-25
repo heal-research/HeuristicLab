@@ -23,7 +23,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 using HeuristicLab.Common;
-using HEAL.Fossil;
+using HEAL.Attic;
 using HeuristicLab.Scripting;
 
 namespace HeuristicLab.Problems.ExternalEvaluation {

@@ -21,7 +21,7 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Fossil;
+using HEAL.Attic;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {

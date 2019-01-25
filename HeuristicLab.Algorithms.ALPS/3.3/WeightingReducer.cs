@@ -26,7 +26,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.ALPS {
   [Item("WeightingReducer", "An operator that combines two values based on the weight of the lower (0.0) and higher (1.0) value.")]

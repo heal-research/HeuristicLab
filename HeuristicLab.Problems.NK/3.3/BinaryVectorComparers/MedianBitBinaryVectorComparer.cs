@@ -23,7 +23,7 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.NK {
   [Item("Median Bit Binary Vector Comparer", "Compares two binary vectors by the median positive bit location")]

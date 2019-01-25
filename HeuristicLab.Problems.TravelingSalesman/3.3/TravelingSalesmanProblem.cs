@@ -31,7 +31,7 @@ using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HEAL.Fossil;
+using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Problems.Instances;
 

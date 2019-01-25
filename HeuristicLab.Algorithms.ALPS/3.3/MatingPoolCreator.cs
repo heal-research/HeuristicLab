@@ -24,7 +24,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.ALPS {
   [Item("MatingPoolCreator", "An operator which creates mating pools based on a set of sub-populations. For each sub-population, the individuals from the previous sub-population are copied into the current sub-population.")]

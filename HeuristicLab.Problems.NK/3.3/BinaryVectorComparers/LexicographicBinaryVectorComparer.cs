@@ -23,7 +23,7 @@ using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.NK {
   [Item("Lexicographic Binary Vector Comparer", "Compares two binary vectors lexicographically")]

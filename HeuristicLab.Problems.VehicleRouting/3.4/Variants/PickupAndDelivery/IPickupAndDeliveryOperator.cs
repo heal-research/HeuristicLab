@@ -20,7 +20,7 @@
 #endregion
 
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.VehicleRouting.Variants {
   [StorableType("D2F69F8C-357D-4EC7-AC78-EE04324A27C6")]

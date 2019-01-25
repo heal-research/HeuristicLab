@@ -26,7 +26,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TestFunctions {
   [Item("AdditiveMoveEvaluator", "Base class for evaluating an additive move.")]

@@ -33,7 +33,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Common.Resources;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Auxiliary;
-using HEAL.Fossil;
+using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 using Microsoft.CSharp;
 

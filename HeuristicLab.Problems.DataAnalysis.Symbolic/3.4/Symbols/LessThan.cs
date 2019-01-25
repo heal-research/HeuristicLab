@@ -22,7 +22,7 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HEAL.Fossil;
+using HEAL.Attic;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableType("1CDA8B1E-9CA1-4D55-BFB8-557BD2FB2D1C")]
   [Item("LessThan", "Symbol that represents a less than relation.")]

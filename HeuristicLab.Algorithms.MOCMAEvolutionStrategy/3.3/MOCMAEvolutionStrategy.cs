@@ -31,7 +31,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Fossil;
+using HEAL.Attic;
 using HeuristicLab.Problems.TestFunctions.MultiObjective;
 using HeuristicLab.Random;
 

@@ -25,7 +25,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Parameters;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.QuadraticAssignment {
   [Item("QAPSwap2MoveEvaluator", "Evaluated a swap-2 move on a QAP solution.")]

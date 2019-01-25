@@ -21,7 +21,7 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
   [Item("MultiEncoding Crossover", "Applies different crossovers to cross a multi-encoding.")]

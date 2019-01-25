@@ -23,7 +23,7 @@ using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.RealVectorEncoding;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
   [Item("DTLZ7", "Testfunction as defined as DTLZ6 in http://repository.ias.ac.in/81671/ [30.11.15] NOTE: The website http://people.ee.ethz.ch/~sop/download/supplementary/testproblems/dtlz7/index.php [16.12.2015] lables this function as DTLZ7")]

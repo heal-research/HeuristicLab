@@ -21,7 +21,7 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   [StorableType("aa89fd6f-db49-457d-abc9-5600aa8f24e5")]

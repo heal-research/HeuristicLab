@@ -26,7 +26,7 @@ using System.Linq;
 using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Fossil;
+using HEAL.Attic;
 using HeuristicLab.Problems.DataAnalysis;
 using LibSVM;
 

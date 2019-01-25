@@ -23,7 +23,7 @@ using System;
 using System.Threading;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Scripting {
   [Item("Executable Script", "An executable script.")]

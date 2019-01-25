@@ -24,7 +24,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.ALPS {
   [Item("OldestAverageYoungestAgeCalculator", "An operator which calculates the oldest, average and youngest age of solutions in the scope tree.")]

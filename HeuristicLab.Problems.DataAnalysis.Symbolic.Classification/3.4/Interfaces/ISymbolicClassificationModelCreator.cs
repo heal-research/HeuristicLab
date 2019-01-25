@@ -22,7 +22,7 @@
 #endregion
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
   [StorableType("a21179da-5417-4e8c-8f8a-6ddc83b16ab1")]

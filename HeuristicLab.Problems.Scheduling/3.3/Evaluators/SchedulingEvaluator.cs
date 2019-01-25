@@ -27,7 +27,7 @@ using HeuristicLab.Encodings.ScheduleEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.Scheduling {
   [Item("SchedulingEvaluator", "First applies the decoder operator to obtain a schedule from an encoding and then applies the evaluator to obtain a quality.")]

@@ -27,7 +27,7 @@ using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [Item("Excel String Formatter", "String formatter for string representations of symbolic data analysis expressions in Excel syntax.")]

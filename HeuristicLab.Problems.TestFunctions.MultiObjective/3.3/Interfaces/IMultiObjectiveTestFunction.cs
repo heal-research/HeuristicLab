@@ -22,7 +22,7 @@
 using System.Collections.Generic;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.RealVectorEncoding;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
   [StorableType("1E60FF82-D730-4C44-B772-80B63B87A932")]

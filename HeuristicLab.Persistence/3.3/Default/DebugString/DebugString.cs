@@ -19,7 +19,7 @@
  */
 #endregion
 
-using HEAL.Fossil;
+using HEAL.Attic;
 using HeuristicLab.Persistence.Interfaces;
 
 namespace HeuristicLab.Persistence.Default.DebugString {

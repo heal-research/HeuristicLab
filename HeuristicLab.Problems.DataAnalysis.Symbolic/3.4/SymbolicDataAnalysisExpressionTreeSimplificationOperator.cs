@@ -24,7 +24,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [Item("SymbolicExpressionTreeSimplificationOperator", "Simplifies symbolic expression trees encoding a mathematical formula.")]

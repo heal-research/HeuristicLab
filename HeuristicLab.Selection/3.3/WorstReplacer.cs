@@ -24,7 +24,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Selection {
   [Item("WorstReplacer", "Replaces the worst sub-scopes of the remaining scope with all those (or the best if there are more) from the selected scope.")]

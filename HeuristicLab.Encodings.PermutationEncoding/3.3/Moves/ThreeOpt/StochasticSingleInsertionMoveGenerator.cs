@@ -26,7 +26,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("StochasticInsertionMultiMoveGenerator", "Generates all possible insertion moves (3-opt) from a few numbers in a given permutation.")]

@@ -25,7 +25,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.PTSP {
   [Item("Stochastic 2.5-MultiMoveGenerator", "Randomly samples n from all possible inversion and shift moves (2.5-opt) from a given permutation.")]

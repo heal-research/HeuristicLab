@@ -26,7 +26,7 @@ using HeuristicLab.Encodings.ScheduleEncoding;
 using HeuristicLab.Encodings.ScheduleEncoding.PriorityRulesVector;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.Scheduling {
   [Item("JobSequencingMatrixDecoder", "Applies the GifflerThompson algorithm to create an active schedule from a JobSequencing Matrix.")]

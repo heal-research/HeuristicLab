@@ -24,7 +24,7 @@ using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Core {
   /// <summary>

@@ -22,7 +22,7 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HEAL.Fossil;
+using HEAL.Attic;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableType("C4F429C2-B26A-4BD8-AB6A-3EBE45D3EE25")]
   [Item("HyperbolicCosineIntegral", "Symbol that represents the hyperbolic cosine integral.")]

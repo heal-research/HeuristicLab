@@ -21,7 +21,7 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.RealVectorEncoding;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
   [StorableType("D79FD6F1-CB7D-4374-8F82-A6A98B35E95D")]

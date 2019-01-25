@@ -23,7 +23,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("InversionMoveTabuMaker", "Declares a given inversion move (2-opt) as tabu, by adding its attributes to the tabu list and also store the solution quality or the move quality (whichever is better).")]

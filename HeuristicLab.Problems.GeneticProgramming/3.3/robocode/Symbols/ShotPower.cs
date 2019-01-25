@@ -21,7 +21,7 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.GeneticProgramming.Robocode {
   [StorableType("95B53DAD-A47C-49CD-8157-6DF34A750F68")]

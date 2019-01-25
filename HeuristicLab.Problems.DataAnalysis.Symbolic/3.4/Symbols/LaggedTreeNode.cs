@@ -23,7 +23,7 @@ using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HEAL.Fossil;
+using HEAL.Attic;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableType("B5DF4207-7FDD-478D-B2FD-E52D8B7CD709")]
   public class LaggedTreeNode : SymbolicExpressionTreeNode, ILaggedTreeNode {

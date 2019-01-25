@@ -22,7 +22,7 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.GeneticProgramming.LawnMower {
   [StorableType("99ADBE85-803D-4463-8BF2-5F825E14F7BD")]

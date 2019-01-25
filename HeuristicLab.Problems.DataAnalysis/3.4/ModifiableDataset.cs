@@ -28,7 +28,7 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis {
   [Item("ModifiableDataset", "Represents a dataset containing data that should be analyzed, which can be modified by adding or replacing variables and values.")]

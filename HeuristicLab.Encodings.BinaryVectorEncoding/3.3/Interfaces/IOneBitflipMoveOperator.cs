@@ -20,7 +20,7 @@
 #endregion
 
 using HeuristicLab.Core;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   [StorableType("f59dc211-20bf-4c50-8a87-54c0d37735c7")]

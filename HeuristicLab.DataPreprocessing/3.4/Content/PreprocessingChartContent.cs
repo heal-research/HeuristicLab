@@ -28,7 +28,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Common.Resources;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.DataPreprocessing {
   [Item("PreprocessingChart", "Represents a preprocessing chart.")]

@@ -24,7 +24,7 @@ using System;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Encodings.RealVectorEncoding;
-using HEAL.Fossil;
+using HEAL.Attic;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Algorithms.MOCMAEvolutionStrategy {

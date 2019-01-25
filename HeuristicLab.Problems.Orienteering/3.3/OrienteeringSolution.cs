@@ -25,7 +25,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.IntegerVectorEncoding;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.Orienteering {
   [Item("OrienteeringSolution", "Represents a Orienteering solution which can be visualized in the GUI.")]

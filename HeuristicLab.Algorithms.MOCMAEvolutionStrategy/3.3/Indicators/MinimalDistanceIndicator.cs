@@ -26,7 +26,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Optimization;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.MOCMAEvolutionStrategy {
   [Item("MinimalDistanceIndicator", "Selection of Offspring based on distance to nearest neighbour")]

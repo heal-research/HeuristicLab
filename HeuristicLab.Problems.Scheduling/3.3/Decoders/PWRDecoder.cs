@@ -26,7 +26,7 @@ using HeuristicLab.Encodings.ScheduleEncoding;
 using HeuristicLab.Encodings.ScheduleEncoding.PermutationWithRepetition;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.Scheduling {
   [Item("PWRDecoder", "An item used to convert a PWR-individual into a generalized schedule.")]

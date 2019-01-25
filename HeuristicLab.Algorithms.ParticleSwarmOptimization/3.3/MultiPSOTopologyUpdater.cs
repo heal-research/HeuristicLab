@@ -27,7 +27,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
   [Item("Multi PSO Topology Updater", "Splits swarm into NrOfSwarms non-overlapping sub-swarms. Swarms are re-grouped every regroupingPeriod iteration. The operator is implemented as described in Liang, J.J. and Suganthan, P.N 2005. Dynamic multi-swarm particle swarm optimizer. IEEE Swarm Intelligence Symposium, pp. 124-129.")]

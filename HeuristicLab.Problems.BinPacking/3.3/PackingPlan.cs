@@ -21,7 +21,7 @@
 
 using System;
 using System.Linq;
-using HEAL.Fossil;
+using HEAL.Attic;
 using HeuristicLab.Core;
 using HeuristicLab.Common;
 using HeuristicLab.Data;

@@ -25,7 +25,7 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HEAL.Fossil;
+using HEAL.Attic;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableType("511B0319-0180-4C2E-81AD-3A8936BE4DE8")]
   [Item("FactorVariable", "Represents a categorical variable (comparable to factors as in R).")]

@@ -27,7 +27,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.LinearLinkageEncoding {
   [Item("Swap2MoveMaker", "Peforms a swap-2 move on a given grouping and updates the quality.")]

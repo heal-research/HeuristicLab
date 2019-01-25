@@ -23,7 +23,7 @@ using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization.Operators;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   [Item("Hamming Similarity Calculator for BinaryVector", "Calculates the solution similarity based on the Hamming distance between two binary vectors.")]

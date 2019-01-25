@@ -23,7 +23,7 @@ using System;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.LinearLinkageEncoding {
   [Item("Random Linear Linkage Creator", "Creates a random linear linkage LLE encoded solution (similar to MaxGroups set to N).")]

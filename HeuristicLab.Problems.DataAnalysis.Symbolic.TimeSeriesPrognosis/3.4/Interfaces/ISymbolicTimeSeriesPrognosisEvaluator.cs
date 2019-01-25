@@ -21,7 +21,7 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis {
   [StorableType("4c456fb4-5910-4903-a6f8-f981b4dd37b5")]

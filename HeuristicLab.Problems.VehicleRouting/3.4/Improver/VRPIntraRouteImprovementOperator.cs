@@ -22,7 +22,7 @@
 using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Fossil;
+using HEAL.Attic;
 using HeuristicLab.Problems.VehicleRouting.Encodings.Potvin;
 
 namespace HeuristicLab.Problems.VehicleRouting {

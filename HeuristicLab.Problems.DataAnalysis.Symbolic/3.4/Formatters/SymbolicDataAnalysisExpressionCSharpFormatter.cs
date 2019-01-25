@@ -28,7 +28,7 @@ using System.Text.RegularExpressions;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [Item("C# Symbolic Expression Tree Formatter", "A string formatter that converts symbolic expression trees to C# code.")]

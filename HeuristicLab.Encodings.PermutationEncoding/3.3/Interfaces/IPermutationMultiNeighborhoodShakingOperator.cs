@@ -21,7 +21,7 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [StorableType("60adeb1e-63fc-463d-8b9a-406e7a75e48a")]

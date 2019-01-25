@@ -21,7 +21,7 @@
 
 using System;
 using HeuristicLab.Common;
-using HEAL.Fossil;
+using HEAL.Attic;
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   [StorableType("70BA57A9-F8AB-428B-BBB9-113FA5137774")]
   public sealed class ArgumentTreeNode : SymbolicExpressionTreeTerminalNode {

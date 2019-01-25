@@ -23,7 +23,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
   [Item("Single-Objective Heuristic OptimizationProblem", "A base class for single-objective heuristic optimization problems.")]

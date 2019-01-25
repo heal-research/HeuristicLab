@@ -24,7 +24,7 @@ using System.Collections;
 using System.Collections.Generic;
 using HeuristicLab.Persistence.Auxiliary;
 using HeuristicLab.Persistence.Core;
-using HEAL.Fossil;
+using HEAL.Attic;
 using HeuristicLab.Persistence.Interfaces;
 
 namespace HeuristicLab.Persistence.Default.CompositeSerializers {

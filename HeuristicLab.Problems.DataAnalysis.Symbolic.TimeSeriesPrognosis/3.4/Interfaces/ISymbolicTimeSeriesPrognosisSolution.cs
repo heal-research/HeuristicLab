@@ -1,4 +1,4 @@
-﻿using HEAL.Fossil;
+﻿using HEAL.Attic;
 #region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)

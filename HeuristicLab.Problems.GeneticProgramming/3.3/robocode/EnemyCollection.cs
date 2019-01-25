@@ -26,7 +26,7 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.GeneticProgramming.Robocode {
   [Item("EnemyCollection", "A collection of enemy robots for the Robocode genetic programming problem.")]

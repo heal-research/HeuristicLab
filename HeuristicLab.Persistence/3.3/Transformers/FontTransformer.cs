@@ -21,7 +21,7 @@
 
 using System;
 using System.Drawing;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Persistence.Transformers {
 

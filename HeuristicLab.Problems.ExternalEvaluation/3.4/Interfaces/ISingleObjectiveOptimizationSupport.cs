@@ -22,7 +22,7 @@
 using System.Collections.Generic;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.ExternalEvaluation {
   [StorableType("09d522e0-c10f-474c-b7c0-7d7f98e63f44")]

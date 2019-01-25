@@ -23,7 +23,7 @@ using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Clients.Hive.Jobs {
   [Item("Optimizer Task", "Represents Task which executes a IOptimizer object.")]

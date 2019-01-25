@@ -22,7 +22,7 @@
 using System;
 using System.Collections;
 using System.Text;
-using HEAL.Fossil;
+using HEAL.Attic;
 using HeuristicLab.Persistence.Auxiliary;
 
 namespace HeuristicLab.Persistence.Default.Xml.Compact {

@@ -24,7 +24,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.VehicleRouting {
   [Item("BestAverageWorstTimeWindowedVRPToursCalculator", "An operator which calculates the current best, average and worst properties of VRP tours in the scope tree.")]

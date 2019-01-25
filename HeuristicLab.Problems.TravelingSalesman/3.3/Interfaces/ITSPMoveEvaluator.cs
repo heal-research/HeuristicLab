@@ -21,7 +21,7 @@
 
 using System;
 using HeuristicLab.Optimization;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TravelingSalesman {
   [StorableType("2EFBA5C1-6503-4910-9EF8-F6A5D8FBAFEF")]

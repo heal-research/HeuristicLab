@@ -21,7 +21,7 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Fossil;
+using HEAL.Attic;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableType("217049E2-47B0-430A-808B-F667D5EEAE39")]
   [Item("Integral", "Represents the integral over the specified subtree.")]

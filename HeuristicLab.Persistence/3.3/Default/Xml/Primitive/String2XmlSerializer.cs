@@ -22,7 +22,7 @@
 using System;
 using System.Text;
 using System.Text.RegularExpressions;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Persistence.Default.Xml.Primitive {
 

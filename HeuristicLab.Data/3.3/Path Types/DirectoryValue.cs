@@ -22,7 +22,7 @@
 using System.IO;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Data {
   [Item("DirectoryValue", "Represents the path to a directory.")]

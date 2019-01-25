@@ -19,7 +19,7 @@
  */
 #endregion
 using HeuristicLab.Core;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   [StorableType("57da67bb-c9c6-4cc1-a2eb-6c2ee8cb0363")]

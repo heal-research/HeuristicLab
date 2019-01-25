@@ -25,7 +25,7 @@ using System.ComponentModel;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Analysis {
   /// <summary>

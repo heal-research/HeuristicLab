@@ -24,7 +24,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Optimization.Operators {
   [Item("QualityComparator", "Compares two qualities and creates a boolean flag that indicates if the left side is better than the right side.")]

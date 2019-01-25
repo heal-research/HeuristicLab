@@ -25,7 +25,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   [Item("OneBitflipMoveMaker", "Peforms a one bitflip move on a given BitVector and updates the quality.")]

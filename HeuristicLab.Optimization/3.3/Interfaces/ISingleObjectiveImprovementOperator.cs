@@ -20,7 +20,7 @@
 #endregion
 
 using HeuristicLab.Core;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
   [StorableType("0b9d5c35-7879-46e0-9fd4-36dd104ccde7")]

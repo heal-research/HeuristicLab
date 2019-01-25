@@ -22,7 +22,7 @@
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   [StorableType("24dca301-a0f6-472f-9859-27f292f69458")]

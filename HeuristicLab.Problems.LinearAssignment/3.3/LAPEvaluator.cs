@@ -21,7 +21,7 @@
 #endregion
 
 using HeuristicLab.Operators;
-using HEAL.Fossil;
+using HEAL.Attic;
 using HeuristicLab.Core;
 using HeuristicLab.Common;
 using HeuristicLab.Data;

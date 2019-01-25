@@ -21,7 +21,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
   [StorableType("231ae77d-4352-4a70-8662-5f3d5d44f095")]

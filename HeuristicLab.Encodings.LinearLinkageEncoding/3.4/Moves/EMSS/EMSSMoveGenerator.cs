@@ -24,7 +24,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.LinearLinkageEncoding {
   [Item("EMSSMoveGenerator", "Base class for all EMSS move generators (extract, merge, shift, and split).")]

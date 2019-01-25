@@ -21,7 +21,7 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("Edge", "An edge between two integer nodes and a flag for the direction.")]

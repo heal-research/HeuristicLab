@@ -23,7 +23,7 @@ using System.Drawing;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
   [StorableType("3BF7AD0E-8D55-4033-974A-01DB16F9E41A")]

@@ -28,7 +28,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   [Item("MultiRealVectorManipulator", "Randomly selects and applies one of its manipulators every time it is called.")]

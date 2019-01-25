@@ -23,7 +23,7 @@ using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.PTSP {
   [Item("DistanceMatrix", "Represents a distance matrix of a Probabilistic Traveling Salesman Problem.")]

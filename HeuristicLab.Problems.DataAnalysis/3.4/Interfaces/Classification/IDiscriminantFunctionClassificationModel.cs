@@ -21,7 +21,7 @@
 
 using System;
 using System.Collections.Generic;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis {
   [StorableType("ea474735-61d0-4ada-8970-ac1d78ce4d15")]

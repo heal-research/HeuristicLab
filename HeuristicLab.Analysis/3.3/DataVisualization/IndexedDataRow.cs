@@ -26,7 +26,7 @@ using System.Linq;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Analysis {
   [Item("IndexedDataRow", "A data row that contains a series of points.")]

@@ -28,7 +28,7 @@ using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.QuadraticAssignment {
   [Item("QAPExhaustiveInversionLocalImprovement", "Takes a solution and finds the local optimum with respect to the inversion neighborhood by decending along the steepest gradient.")]

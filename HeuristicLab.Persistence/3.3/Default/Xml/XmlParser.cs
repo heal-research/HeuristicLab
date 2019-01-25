@@ -25,7 +25,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Xml;
-using HEAL.Fossil;
+using HEAL.Attic;
 using HeuristicLab.Persistence.Core;
 using HeuristicLab.Persistence.Core.Tokens;
 using HeuristicLab.Persistence.Interfaces;

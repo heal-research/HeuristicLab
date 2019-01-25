@@ -22,7 +22,7 @@
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 using HeuristicLab.Problems.VehicleRouting.ProblemInstances;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.VehicleRouting.Interfaces {
   [StorableType("C3423687-3CBE-41E4-9227-FF4F1D6912E1")]

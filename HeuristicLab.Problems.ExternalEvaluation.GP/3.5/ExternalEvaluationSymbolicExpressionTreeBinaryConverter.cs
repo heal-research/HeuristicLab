@@ -24,7 +24,7 @@ using Google.ProtocolBuffers;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HEAL.Fossil;
+using HEAL.Attic;
 using System;
 
 namespace HeuristicLab.Problems.ExternalEvaluation.GP {

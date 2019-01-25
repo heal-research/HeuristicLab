@@ -25,7 +25,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.QuadraticAssignment {
   [StorableType("8B15F5F0-4C42-4143-B7F5-2462C78BC49C")]

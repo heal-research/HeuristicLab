@@ -23,7 +23,7 @@ using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization.Operators;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.LinearLinkageEncoding {
   [Item("Hamming Similarity Calculator for LinearLinkage", "Calculates the hamming similarity for two linear linkage encoded solutions.")]

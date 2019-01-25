@@ -21,7 +21,7 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.LinearLinkageEncoding {
   [StorableType("66ba6974-d27b-4c42-b9bd-b91a764d8f15")]

@@ -23,7 +23,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HEAL.Fossil;
+using HEAL.Attic;
 using System.Collections.Generic;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 

@@ -26,7 +26,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
   [Item("Random Distinct Topology Initializer", "Each particle is informed by exactly k+1 distinct other particles (including itself).")]

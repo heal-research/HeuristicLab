@@ -23,7 +23,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.TabuSearch {
   [Item("TabuListCreator", "An operator that creates a new empty tabu list. It can also replace an existing tabu list with a new empty one.")]

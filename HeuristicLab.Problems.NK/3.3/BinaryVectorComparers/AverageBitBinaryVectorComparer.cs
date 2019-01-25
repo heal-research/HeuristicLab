@@ -23,7 +23,7 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.NK {
   [Item("Average Bit Binary Vector Comparer", "Compares two binary vectors by their average positive bit location")]

@@ -28,7 +28,7 @@ using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.QuadraticAssignment {
   [Item("QAPExhaustiveSwap2LocalImprovement", "Takes a solution and finds the local optimum with respect to the swap2 neighborhood by decending along the steepest gradient.")]

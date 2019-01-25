@@ -21,7 +21,7 @@
 
 using HeuristicLab.Optimization;
 using HeuristicLab.Core;
-using HEAL.Fossil;
+using HEAL.Attic;
 using HeuristicLab.Data;
 using HeuristicLab.Common;
 using HeuristicLab.Parameters;

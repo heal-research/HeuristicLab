@@ -21,7 +21,7 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.PTSP {
   [StorableType("C21E0AC3-85BD-4F40-8DD6-E79A019278E1")]

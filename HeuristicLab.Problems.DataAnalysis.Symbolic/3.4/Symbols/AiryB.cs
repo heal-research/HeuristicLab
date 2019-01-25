@@ -22,7 +22,7 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HEAL.Fossil;
+using HEAL.Attic;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableType("FF61B6CC-700F-44D3-9D1A-F3BF2F084FE4")]
   [Item("AiryB", "Symbol that represents the Airy B function.")]

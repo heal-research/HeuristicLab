@@ -21,7 +21,7 @@
 
 using System.Collections.Generic;
 using HeuristicLab.Common;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   [StorableType("70D190B2-22F4-41E5-9938-EFD1B14ECF43")]

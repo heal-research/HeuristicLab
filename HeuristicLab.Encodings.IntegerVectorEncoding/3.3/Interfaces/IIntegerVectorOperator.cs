@@ -20,7 +20,7 @@
 #endregion
 
 using HeuristicLab.Core;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   [StorableType("8caffc56-bdf0-465e-87ba-882441dfbd0d")]

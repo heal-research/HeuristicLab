@@ -22,7 +22,7 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HEAL.Fossil;
+using HEAL.Attic;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableType("2E0DFA26-2513-4F86-B276-F35AE8F4C1CA")]
   [Item("SineIntegral", "Symbol that represents the sine integral.")]

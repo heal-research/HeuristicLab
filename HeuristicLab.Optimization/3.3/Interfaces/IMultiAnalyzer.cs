@@ -21,7 +21,7 @@
 
 
 using HeuristicLab.Core;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
   [StorableType("7f691603-fb68-4ea0-8085-d7f01df378e6")]

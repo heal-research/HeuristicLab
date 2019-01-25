@@ -26,7 +26,7 @@ using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.LinearAssignment {
   [Item("LinearAssignmentProblemSolver", "Uses the hungarian algorithm to solve linear assignment problems.")]

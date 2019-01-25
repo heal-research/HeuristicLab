@@ -58,7 +58,7 @@ using System.Collections.Generic;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Fossil;
+using HEAL.Attic;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {

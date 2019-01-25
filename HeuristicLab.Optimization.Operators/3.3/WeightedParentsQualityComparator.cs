@@ -27,7 +27,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Optimization.Operators {
   [Item("WeightedParentsQualityComparator", "Compares the quality against that of its parents (assumes the parents are subscopes to the child scope). This operator works with any number of subscopes > 0.")]

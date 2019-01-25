@@ -25,7 +25,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   // Greedy Function Approximation: A Gradient Boosting Machine (page 9) 

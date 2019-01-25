@@ -27,7 +27,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.GrammaticalEvolution {
   [StorableType("ce854ef0-6bf9-453f-8638-9db029eb01c6")]

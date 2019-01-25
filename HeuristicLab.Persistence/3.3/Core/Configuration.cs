@@ -21,7 +21,7 @@
 
 using System;
 using System.Collections.Generic;
-using HEAL.Fossil;
+using HEAL.Attic;
 using HeuristicLab.Persistence.Interfaces;
 
 namespace HeuristicLab.Persistence.Core {

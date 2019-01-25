@@ -24,7 +24,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Collections {
   [StorableType("4FF5E444-9E4A-4590-AF60-2377BC91D389")]

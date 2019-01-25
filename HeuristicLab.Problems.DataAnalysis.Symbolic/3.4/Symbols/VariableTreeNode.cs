@@ -20,7 +20,7 @@
 #endregion
 
 using HeuristicLab.Common;
-using HEAL.Fossil;
+using HEAL.Attic;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableType("E60C4216-A6BA-48DE-BA66-389B9946B70A")]
   public sealed class VariableTreeNode : VariableTreeNodeBase {

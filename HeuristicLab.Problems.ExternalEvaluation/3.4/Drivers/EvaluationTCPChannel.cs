@@ -25,7 +25,7 @@ using System.Net.Sockets;
 using Google.ProtocolBuffers;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.ExternalEvaluation {
   [Item("EvaluationTCPChannel", "A channel that creates a TCP connection over a network.")]

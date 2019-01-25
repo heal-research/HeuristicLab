@@ -20,7 +20,7 @@
 #endregion
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableType("46b43be7-4607-4e1a-83f0-f51da9338de6")]

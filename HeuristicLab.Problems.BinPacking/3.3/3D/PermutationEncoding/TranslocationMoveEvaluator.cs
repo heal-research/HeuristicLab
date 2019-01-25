@@ -22,7 +22,7 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.BinPacking3D {
   [Item("TranslocationMoveEvaluator", "Move evaluator for insertion or translocation moves.")]

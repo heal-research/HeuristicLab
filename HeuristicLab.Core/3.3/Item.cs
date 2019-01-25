@@ -22,7 +22,7 @@
 using System;
 using System.Drawing;
 using HeuristicLab.Common;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Core {
   /// <summary>

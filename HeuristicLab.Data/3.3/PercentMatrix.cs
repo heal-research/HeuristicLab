@@ -23,7 +23,7 @@ using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Data {
   [Item("PercentMatrix", "Represents a matrix of double values in percent.")]

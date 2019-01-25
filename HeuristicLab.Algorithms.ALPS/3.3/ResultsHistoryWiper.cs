@@ -26,7 +26,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.ALPS {
   [Item("ResultsHistoryWiper", "An operator that removes the history of a ResultsCollection by setting all values in all DataTables to NaN.")]

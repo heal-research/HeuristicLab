@@ -23,7 +23,7 @@ using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.ExternalEvaluation {
   [Item("TimeSpanValueConverter", "Converts a TimeSpanValue and adds it to the SolutionMessage's StringVars. The format is d.hh:mm:ss, e.g. 1113.10:55:00 (1113 days 10 hours, 55 minutes, 0 seconds).")]

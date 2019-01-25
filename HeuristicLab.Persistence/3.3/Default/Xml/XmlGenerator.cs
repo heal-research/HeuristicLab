@@ -26,7 +26,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Threading;
-using HEAL.Fossil;
+using HEAL.Attic;
 using HeuristicLab.Persistence.Core;
 using HeuristicLab.Persistence.Core.Tokens;
 using HeuristicLab.Persistence.Interfaces;

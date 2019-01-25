@@ -21,7 +21,7 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("Swap2MoveAbsoluteAttribute", "Specifies the tabu attributes for a swap-2 move on an absolute position permutation.")]

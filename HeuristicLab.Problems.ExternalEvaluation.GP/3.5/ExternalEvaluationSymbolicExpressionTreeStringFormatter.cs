@@ -23,7 +23,7 @@ using System.Text;
 using System.Linq;
 using HeuristicLab.Core;
 using HeuristicLab.Common;
-using HEAL.Fossil;
+using HEAL.Attic;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
 using System;

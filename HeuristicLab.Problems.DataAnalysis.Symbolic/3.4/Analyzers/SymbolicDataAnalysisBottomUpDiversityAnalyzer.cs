@@ -22,7 +22,7 @@
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [Item("SymbolicDataAnalysisBottomUpDiversityAnalyzer", "A diversity analyzer based on the bottom-up distance between trees.")]

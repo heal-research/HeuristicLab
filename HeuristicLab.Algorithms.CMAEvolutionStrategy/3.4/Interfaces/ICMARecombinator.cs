@@ -24,7 +24,7 @@
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using System;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.CMAEvolutionStrategy {
   [StorableType("33524FCA-B31B-415E-BC53-87C126CAF124")]

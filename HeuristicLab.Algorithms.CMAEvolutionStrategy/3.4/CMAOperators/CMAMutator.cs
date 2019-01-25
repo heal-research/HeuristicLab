@@ -27,7 +27,7 @@ using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Fossil;
+using HEAL.Attic;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Algorithms.CMAEvolutionStrategy {

@@ -22,7 +22,7 @@
 using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Data {
   [Item("DoubleArray", "Represents an array of double values.")]

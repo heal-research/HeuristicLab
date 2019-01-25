@@ -21,7 +21,7 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [StorableType("D3D40EAC-F695-4069-9A3A-861CE2997E37")]

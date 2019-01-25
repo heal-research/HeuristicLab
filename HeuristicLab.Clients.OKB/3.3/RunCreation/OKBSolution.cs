@@ -21,7 +21,7 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Fossil;
+using HEAL.Attic;
 using System;
 
 namespace HeuristicLab.Clients.OKB.RunCreation {

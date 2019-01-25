@@ -26,7 +26,7 @@ using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
-using HEAL.Fossil;
+using HEAL.Attic;
 using HeuristicLab.Persistence.Default.Xml;
 using System;
 using System.Collections.Generic;

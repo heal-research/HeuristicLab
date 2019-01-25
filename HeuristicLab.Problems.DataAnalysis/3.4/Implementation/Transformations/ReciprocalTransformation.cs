@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Fossil;
+using HEAL.Attic;
 namespace HeuristicLab.Problems.DataAnalysis {
   [StorableType("8D242A5A-5EBB-4618-958E-A7EF34151508")]
   [Item("Reciprocal Transformation", "f(x) = 1 / x | Represents a reciprocal transformation.")]

@@ -23,7 +23,7 @@ using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization.Operators;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   [Item("Euclidean Similarity Calculator for IntegerVector", "Calculates the solution similarity based on the Euclidean distance and a transformation into (0;1] between two integer vectors.")]

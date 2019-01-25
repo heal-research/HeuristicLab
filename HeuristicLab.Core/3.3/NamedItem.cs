@@ -21,7 +21,7 @@
 
 using System;
 using HeuristicLab.Common;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Core {
   [Item("NamedItem", "Base class for items which have a name and an optional description.")]

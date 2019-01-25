@@ -25,7 +25,7 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.LinearLinkageEncoding {
   [Item("ExhaustiveEMSSMoveGenerator", "Generates all possible extract, merge, shift, and split (EMSS) moves from a given LLE solution.")]

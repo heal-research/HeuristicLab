@@ -22,7 +22,7 @@
 using Google.ProtocolBuffers;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.ExternalEvaluation {
   [StorableType("04901da1-d785-4124-a989-2a9c6bd1a81c")]

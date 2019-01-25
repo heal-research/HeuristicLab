@@ -27,7 +27,7 @@ using HeuristicLab.Encodings.IntegerVectorEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.Orienteering {
   [StorableType("6E07CAD7-20ED-4507-B2BB-B7393D9BBB95")]

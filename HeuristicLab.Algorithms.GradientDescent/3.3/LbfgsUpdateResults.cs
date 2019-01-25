@@ -26,7 +26,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.GradientDescent {
   [StorableType("926B028B-4EAA-48DD-8920-BCED7274AC77")]

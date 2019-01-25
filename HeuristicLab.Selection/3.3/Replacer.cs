@@ -26,7 +26,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Selection {
   [Item("Replacer", "Generic replacer that replaces sub-scopes of the remaining scope with those from the selected scope.")]

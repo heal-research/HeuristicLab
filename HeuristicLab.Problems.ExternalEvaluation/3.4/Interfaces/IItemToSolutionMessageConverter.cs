@@ -21,7 +21,7 @@
 
 using System;
 using HeuristicLab.Core;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.ExternalEvaluation {
   [StorableType("581f5e17-68dc-42a0-8bc0-e0ac8992ed7b")]

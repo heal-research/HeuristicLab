@@ -23,7 +23,7 @@ using System;
 using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("UniformLikeCrossover", "The ULX crossover tries to maintain the position in the permutation. It randomly chooses from left to right one of its parents' alleles at each position. Missing entries are then filled randomly later. It is described in Tate, D. M. and Smith, A. E. 1995. A genetic approach to the quadratic assignment problem. Computers & Operations Research, vol. 22, pp. 73-83.")]

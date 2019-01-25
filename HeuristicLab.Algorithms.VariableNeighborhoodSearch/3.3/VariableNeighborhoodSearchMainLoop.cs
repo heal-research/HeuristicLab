@@ -26,7 +26,7 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HEAL.Fossil;
+using HEAL.Attic;
 using HeuristicLab.Selection;
 
 namespace HeuristicLab.Algorithms.VariableNeighborhoodSearch {

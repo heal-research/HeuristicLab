@@ -21,7 +21,7 @@
 
 using System;
 using HeuristicLab.Core;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.BinPacking {
   [StorableType("612b4eb0-946e-4690-ba43-8dd0e5520e8b")]

@@ -25,7 +25,7 @@ using System.Drawing;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Common.Resources;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Core {
   [Item("DirectedGraph", "Generic class representing a directed graph with custom vertices and content")]

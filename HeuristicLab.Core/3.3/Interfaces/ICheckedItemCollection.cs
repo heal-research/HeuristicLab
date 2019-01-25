@@ -21,7 +21,7 @@
 
 using System.Collections.Generic;
 using HeuristicLab.Collections;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Core {
   [StorableType("2703977d-5991-4491-a2e5-a98914a45b34")]

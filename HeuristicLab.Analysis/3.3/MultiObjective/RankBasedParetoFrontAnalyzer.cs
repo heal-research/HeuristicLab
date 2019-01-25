@@ -26,7 +26,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Analysis {
   [Item("RankBasedParetoFrontAnalyzer", "Uses the rank value that is computed by e.g. the NSGA2's fast non dominated sort operator to collect all solutions and their qualities of front 0 (the current Pareto front).")]

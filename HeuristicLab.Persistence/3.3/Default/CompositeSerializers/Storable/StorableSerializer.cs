@@ -25,7 +25,7 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Text;
-using HEAL.Fossil;
+using HEAL.Attic;
 using HeuristicLab.Persistence.Core;
 using HeuristicLab.Persistence.Interfaces;
 

@@ -22,7 +22,7 @@
 using System.Drawing;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.DataPreprocessing {
   [Item("Multi Scatter Plot", "Represents a multi scatter plot.")]

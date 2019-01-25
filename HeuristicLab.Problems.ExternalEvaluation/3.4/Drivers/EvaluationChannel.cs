@@ -22,7 +22,7 @@
 using Google.ProtocolBuffers;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.ExternalEvaluation {
   [Item("EvaluationChannel", "Abstract base class for channels to be used in an external evaluation problem.")]

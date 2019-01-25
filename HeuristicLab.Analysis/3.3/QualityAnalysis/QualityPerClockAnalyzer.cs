@@ -27,7 +27,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Analysis {
   [Item("QualityPerClockAnalyzer", @"Creates a plot of the solution quality with respect to the elapsed wall-clock time.")]

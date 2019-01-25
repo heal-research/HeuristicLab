@@ -21,7 +21,7 @@
 
 using System;
 using System.Text;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Persistence.Interfaces {
 

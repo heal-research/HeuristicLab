@@ -21,7 +21,7 @@
 
 using Google.ProtocolBuffers;
 using HeuristicLab.Core;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.ExternalEvaluation {
   [StorableType("8e62ba0d-03f5-4243-8411-3bd5f14c42be")]

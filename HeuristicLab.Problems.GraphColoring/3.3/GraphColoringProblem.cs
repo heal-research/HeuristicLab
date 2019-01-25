@@ -29,7 +29,7 @@ using HeuristicLab.Encodings.LinearLinkageEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HEAL.Fossil;
+using HEAL.Attic;
 using HeuristicLab.Problems.Instances;
 
 namespace HeuristicLab.Problems.GraphColoring {

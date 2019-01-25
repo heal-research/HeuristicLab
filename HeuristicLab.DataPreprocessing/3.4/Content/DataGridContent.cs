@@ -26,7 +26,7 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HEAL.Fossil;
+using HEAL.Attic;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.DataPreprocessing {

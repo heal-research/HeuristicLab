@@ -21,7 +21,7 @@
 
 using System;
 using System.Collections.Generic;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Operators.Views.GraphVisualization {
   [StorableType("1416F47D-BEFC-4127-AC55-971099AAD93D")]

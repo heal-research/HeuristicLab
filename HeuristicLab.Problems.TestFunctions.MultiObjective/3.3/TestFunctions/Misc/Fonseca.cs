@@ -24,7 +24,7 @@ using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.RealVectorEncoding;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
   [Item("Fonseca", "Fonseca and Flemming function from // https://en.wikipedia.org/wiki/Test_functions_for_optimization [30.11.2015]")]

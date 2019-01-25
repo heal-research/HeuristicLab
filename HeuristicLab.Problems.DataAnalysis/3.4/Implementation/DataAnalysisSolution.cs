@@ -24,7 +24,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using HeuristicLab.Common;
 using HeuristicLab.Optimization;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis {
   /// <summary>

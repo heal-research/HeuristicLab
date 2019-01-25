@@ -19,7 +19,7 @@
  */
 #endregion
 
-using HEAL.Fossil;
+using HEAL.Attic;
 namespace HeuristicLab.Core {
   [StorableType("8518F185-8222-414D-8AAF-0273D7B09A0E")]
   public class ConstraintOperation {

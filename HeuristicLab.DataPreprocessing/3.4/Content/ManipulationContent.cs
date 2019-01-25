@@ -25,7 +25,7 @@ using System.Drawing;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.DataPreprocessing {
   [Item("Manipulation", "Represents the available manipulations on a data set.")]

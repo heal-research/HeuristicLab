@@ -26,7 +26,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
   [Item("SPSO Random Topology Initializer", "Each particle informs k+1 other particles (including itself). The same particle (including itself) can be informed multiple times.")]

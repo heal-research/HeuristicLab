@@ -30,7 +30,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.BinPacking3D {
   [StorableType("32c0ea29-26aa-45f2-8e7f-a2d9beab75b9")]

@@ -26,7 +26,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("InversionMoveHardTabuCriterion", @"For relative postion encoded permutations it prevents readding of previously deleted edges as well as deleting previously added edges.

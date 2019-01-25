@@ -23,7 +23,7 @@ using System.ComponentModel;
 using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("Task", "Represents a task that has to be scheduled.")]

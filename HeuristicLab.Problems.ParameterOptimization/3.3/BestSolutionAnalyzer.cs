@@ -27,7 +27,7 @@ using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.ParameterOptimization {
   [Item("BestSolutionAnalyzer", "Tracks the best parameter vector solution of the current algorithm run.")]

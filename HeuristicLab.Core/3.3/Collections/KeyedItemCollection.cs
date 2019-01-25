@@ -24,7 +24,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Core {
   [Item("KeyedItemCollection", "Represents a keyed collection of items.")]

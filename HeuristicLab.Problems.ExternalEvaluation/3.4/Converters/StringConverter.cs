@@ -23,7 +23,7 @@ using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.ExternalEvaluation {
   [Item("StringConverter", "Converts a StringValue, StringArray, StringMatrix, IStringConvertibleValue, IStringConvertibleArray, or IStringConvertibleMatrix and adds it to the SolutionMessage's StringVars or StringArrayVars. A matrix is encoded as array by concatenating all rows and setting length as the length of a row.")]

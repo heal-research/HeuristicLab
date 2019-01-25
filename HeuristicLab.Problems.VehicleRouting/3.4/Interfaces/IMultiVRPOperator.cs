@@ -21,7 +21,7 @@
 
 using System.Collections.Generic;
 using HeuristicLab.Core;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.VehicleRouting.Interfaces {
   [StorableType("4ED07F1F-AC5F-4771-8916-AF7DD576C581")]

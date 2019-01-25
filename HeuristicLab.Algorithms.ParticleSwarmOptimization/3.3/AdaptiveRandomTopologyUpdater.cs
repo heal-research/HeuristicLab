@@ -25,7 +25,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
   [Item("SPSO Adaptive Random Topology Updater", "Each unsuccessful iteration the topology initializer is applied again.")]

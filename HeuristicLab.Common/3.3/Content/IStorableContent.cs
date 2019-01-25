@@ -19,7 +19,7 @@
  */
 #endregion
 
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Common {
   [StorableType("25b6ffb1-8689-4ad7-81ed-bcc5065ee2a8")]

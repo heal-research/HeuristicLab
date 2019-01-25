@@ -23,7 +23,7 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using System.Collections.Generic;
 using HeuristicLab.Core;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableType("2564fc97-080d-4153-8f3a-db764bd06d09")]

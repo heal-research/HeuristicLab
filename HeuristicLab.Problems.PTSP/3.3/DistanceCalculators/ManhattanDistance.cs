@@ -22,7 +22,7 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HEAL.Fossil;
+using HEAL.Attic;
 using HeuristicLab.Problems.Instances;
 
 namespace HeuristicLab.Problems.PTSP {

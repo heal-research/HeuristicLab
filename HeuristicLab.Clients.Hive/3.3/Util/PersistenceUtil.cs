@@ -22,7 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using HEAL.Fossil;
+using HEAL.Attic;
 using HeuristicLab.Persistence.Default.Xml;
 
 namespace HeuristicLab.Clients.Hive {

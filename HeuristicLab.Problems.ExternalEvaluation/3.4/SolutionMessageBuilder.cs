@@ -25,7 +25,7 @@ using System.Linq;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.ExternalEvaluation {
   [Item("SolutionMessageBuilder", "Holds and uses a number of converters to translate HeuristicLab objects into appropriate fields of a solution message.")]

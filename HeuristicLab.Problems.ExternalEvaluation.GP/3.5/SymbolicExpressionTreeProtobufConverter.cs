@@ -24,7 +24,7 @@ using Google.ProtocolBuffers;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.ExternalEvaluation.GP {
   [Item("SymbolicExpressionTreeProtobufConverter", "Converts a symbolic expression tree into a binary representation. The binary format is based on Google.Protobuf and defined in HeuristicLab.Persistence.")]

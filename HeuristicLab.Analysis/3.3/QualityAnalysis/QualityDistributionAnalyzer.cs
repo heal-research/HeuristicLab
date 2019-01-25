@@ -26,7 +26,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Analysis.QualityAnalysis {
   [Item("QualityDistributionAnalyzer", "Analyzes the distribution of the quality values in that it adds a Histogram of them into the result collection.")]

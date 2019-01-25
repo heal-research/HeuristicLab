@@ -23,7 +23,7 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.NK {
   [Item("RandomInteractionsInitializer", "Randomly assignes interactions across all bits")]

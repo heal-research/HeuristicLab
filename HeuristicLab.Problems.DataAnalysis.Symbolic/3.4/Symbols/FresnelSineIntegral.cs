@@ -22,7 +22,7 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HEAL.Fossil;
+using HEAL.Attic;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableType("CEB592FC-E402-4A7C-A207-E4048F87DB82")]
   [Item("FresnelSineIntegral", "Symbol that represents the Fresnel sine integral.")]

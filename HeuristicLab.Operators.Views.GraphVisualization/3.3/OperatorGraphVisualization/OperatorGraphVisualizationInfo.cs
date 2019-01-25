@@ -26,7 +26,7 @@ using System.Linq;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Operators.Views.GraphVisualization {
   [StorableType("24376FA2-D635-4E10-85CC-FFE57C0788F9")]

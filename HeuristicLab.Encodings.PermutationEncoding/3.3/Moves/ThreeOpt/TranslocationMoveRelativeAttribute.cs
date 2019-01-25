@@ -21,7 +21,7 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("TranslocationMoveRelativeAttribute", "Specifies the tabu attributes for a translocation and insertion move (3-opt) on relative permutation encodings.")]

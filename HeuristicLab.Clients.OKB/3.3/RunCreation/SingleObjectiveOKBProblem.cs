@@ -23,7 +23,7 @@ using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Clients.OKB.RunCreation {
   [Item("OKB Problem (single-objective)", "Represents a single-objective problem which is stored in the OKB.")]

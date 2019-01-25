@@ -19,9 +19,9 @@
  */
 #endregion
 
-using HEAL.Fossil;
+using HEAL.Attic;
 
-namespace HeuristicLab.Persistence.Fossil.Tests {
+namespace HeuristicLab.Persistence.Attic.Tests {
 
   [StorableType("E0862640-FD57-4F1B-929D-03E38D8EA5D3")]
   class DemoClass {

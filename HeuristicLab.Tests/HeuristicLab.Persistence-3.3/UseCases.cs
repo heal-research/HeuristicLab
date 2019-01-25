@@ -30,7 +30,7 @@ using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using HEAL.Fossil;
+using HEAL.Attic;
 using HeuristicLab.Algorithms.GeneticAlgorithm;
 using HeuristicLab.Persistence.Auxiliary;
 using HeuristicLab.Persistence.Core;

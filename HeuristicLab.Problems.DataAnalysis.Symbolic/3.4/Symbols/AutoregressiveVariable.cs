@@ -21,7 +21,7 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Fossil;
+using HEAL.Attic;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableType("AA17605D-3F9A-4C52-89F5-34AF2AF4999C")]
   [Item("AutoregressiveTargetVariable", "Represents a variable value with a time offset.")]

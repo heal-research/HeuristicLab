@@ -22,7 +22,7 @@
 using System;
 using System.Linq;
 using HeuristicLab.Core;
-using HEAL.Fossil;
+using HEAL.Attic;
 using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.BinPacking3D {

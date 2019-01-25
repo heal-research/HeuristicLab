@@ -22,7 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using HEAL.Fossil;
+using HEAL.Attic;
 using HeuristicLab.Persistence.Auxiliary;
 using HeuristicLab.Persistence.Core;
 using HeuristicLab.Persistence.Core.Tokens;

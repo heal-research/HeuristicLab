@@ -24,7 +24,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HEAL.Fossil;
+using HEAL.Attic;
 using System;
 
 namespace HeuristicLab.Algorithms.CMAEvolutionStrategy {

@@ -21,7 +21,7 @@
 
 using System;
 using System.Drawing;
-using HEAL.Fossil;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Common.Resources;
 using HeuristicLab.Core;

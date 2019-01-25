@@ -22,7 +22,7 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Parameters;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Operators {
   [Item("LocalRandomCreator", "Creates a local pseudo random number generator from a global random number generator.")]

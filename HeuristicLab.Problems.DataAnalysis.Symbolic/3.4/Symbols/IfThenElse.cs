@@ -22,7 +22,7 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HEAL.Fossil;
+using HEAL.Attic;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableType("8AD33C34-9F5C-4F58-8C4C-25EA7F0A8C97")]
   [Item("IfThenElse", "Symbol that represents a conditional operator.")]

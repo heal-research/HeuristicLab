@@ -1,4 +1,4 @@
-﻿using HEAL.Fossil;
+﻿using HEAL.Attic;
 #region License Information
 
 /* HeuristicLab

@@ -21,7 +21,7 @@
 
 using System;
 using System.Collections.Generic;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Persistence.Transformers {
   public class KnownStorableTypesMap : IStorableTypeMap {

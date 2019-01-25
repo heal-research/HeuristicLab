@@ -22,7 +22,7 @@
 using System;
 using System.Reflection;
 using System.Reflection.Emit;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Persistence.Core {
 

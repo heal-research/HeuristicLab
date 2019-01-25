@@ -21,7 +21,7 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("InversionMoveRelativeAttribute", "Specifies the tabu attributes for an inversion move (2-opt) on a relative position permutation.")]

@@ -22,7 +22,7 @@
 using System;
 using System.Reflection;
 using System.Text;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
 

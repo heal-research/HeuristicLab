@@ -24,7 +24,7 @@ using System.IO;
 using Google.ProtocolBuffers;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.ExternalEvaluation {
   [Item("EvaluationStreamChannel", "A channel that communicates via an input and an output stream.")]

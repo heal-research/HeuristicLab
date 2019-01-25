@@ -21,7 +21,7 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TravelingSalesman {
   [StorableType("D500AB51-6750-44D3-B1CA-0DF2DCB43758")]

@@ -23,7 +23,7 @@ using System;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.CMAEvolutionStrategy {
   [Item("CMA Log-weighted Recombinator", "Calculates weighted mean based on a logarithmic decreasing weights.")]

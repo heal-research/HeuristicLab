@@ -20,7 +20,7 @@
 #endregion
 
 using HeuristicLab.Common;
-using HEAL.Fossil;
+using HEAL.Attic;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   [StorableType("7EB90F03-4385-474F-BDE7-3B133E8FEAAB")]
   public abstract class SymbolicRegressionSingleObjectiveEvaluator : SymbolicDataAnalysisSingleObjectiveEvaluator<IRegressionProblemData>, ISymbolicRegressionSingleObjectiveEvaluator {  

@@ -25,7 +25,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Analysis {
   [Item("ParetoFrontAnalyzer", "Analyzer for multiobjective problems that collects and presents the current Pareto front as double matrix as well as the solution scopes that lie on the current front.")]

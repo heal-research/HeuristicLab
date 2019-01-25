@@ -22,7 +22,7 @@ using System.Collections.Generic;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Optimization;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.MOCMAEvolutionStrategy {
   [StorableType("5f3f2453-dbf0-46d8-be15-8b6bb9f88592")]

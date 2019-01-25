@@ -25,7 +25,7 @@ using System.IO;
 using Google.ProtocolBuffers;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.ExternalEvaluation {
   [Item("EvaluationProcessChannel", "A channel that launches an external application in a new process and communicates with that process via stdin and stdout.")]

@@ -20,7 +20,7 @@
 #endregion
 
 using System;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.DataPreprocessing {
   [StorableType("9f0c478b-6b6b-42a1-ad0a-6bc2769cd593")]

@@ -23,7 +23,7 @@ using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.BinPacking3D {
   [Item("Extreme-point Permutation Decoder (3d) Base", "Base class for decoders")]

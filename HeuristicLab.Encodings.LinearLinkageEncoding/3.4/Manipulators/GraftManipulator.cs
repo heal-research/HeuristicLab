@@ -23,7 +23,7 @@ using System;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.LinearLinkageEncoding {
   [Item("Graft Manipulator", "Performs graft mutation as described in Du, J., Korkmaz, E.E., Alhajj, R., and Barker, K. 2004. Novel Clustering Approach that employs Genetic Algorithm with New Representation Scheme and Multiple Objectives. Data Warehousing and Knowledge Discovery, pp. 219-228. Springer Berlin Heidelberg.")]

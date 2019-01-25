@@ -23,7 +23,7 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.ScheduleEncoding;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.Scheduling {
   [Item("Makespan Evaluator", "Represents an evaluator using the maximum makespan of a schedule.")]

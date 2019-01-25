@@ -22,7 +22,7 @@ using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.RealVectorEncoding;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
   [Item("DTLZ8", "Testfunction as defined as DTLZ7 in http://repository.ias.ac.in/81671/ [30.11.15]. There has been a renumbering therefore the numbers do not match")]

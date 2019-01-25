@@ -23,7 +23,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using HeuristicLab.Common;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Core {
   [Item("ThreadSafeLog", "A thread-safe log for logging string messages.")]

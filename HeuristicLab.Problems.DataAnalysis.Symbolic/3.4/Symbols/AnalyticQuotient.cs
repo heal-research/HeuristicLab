@@ -22,7 +22,7 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HEAL.Fossil;
+using HEAL.Attic;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableType("1BFD8CB7-7377-4130-9903-1E9A76349285")]
   [Item("Analytic Quotient", "The analytic quotient function aq(a,b) = a / sqrt(b²+1) can be used as an " +

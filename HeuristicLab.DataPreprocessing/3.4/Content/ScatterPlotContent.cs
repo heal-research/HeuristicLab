@@ -25,7 +25,7 @@ using System.Linq;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Fossil;
+using HEAL.Attic;
 using HeuristicLab.Visualization.ChartControlsExtensions;
 
 namespace HeuristicLab.DataPreprocessing {

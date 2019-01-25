@@ -20,7 +20,7 @@
 #endregion
 
 using HeuristicLab.Common;
-using HEAL.Fossil;
+using HEAL.Attic;
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   [StorableType("0DEAAC29-2BC7-4018-8CAA-ACF77F8C89C8")]
   public sealed class DefunTreeNode : SymbolicExpressionTreeTopLevelNode {

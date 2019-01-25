@@ -26,7 +26,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.TabuSearch {
   [StorableType("C5A3D76E-4E1F-472A-8727-D8506F3BEFEA")]

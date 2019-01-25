@@ -25,7 +25,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using Google.Protobuf;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Persistence {
   [Transformer("D0ADB806-2DFD-459D-B5DA-14B5F1152534", 404)]

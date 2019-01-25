@@ -22,7 +22,7 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HEAL.Fossil;
+using HEAL.Attic;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableType("189FCA77-9541-4F5B-9215-7AEA995C6203")]
   [Item("ExponentialIntegralEi", "Symbol that represents the exponential integral (e_i).")]

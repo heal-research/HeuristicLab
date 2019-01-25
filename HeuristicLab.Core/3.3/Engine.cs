@@ -23,7 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using HeuristicLab.Common;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Core {
   [Item("Engine", "A base class for engines.")]

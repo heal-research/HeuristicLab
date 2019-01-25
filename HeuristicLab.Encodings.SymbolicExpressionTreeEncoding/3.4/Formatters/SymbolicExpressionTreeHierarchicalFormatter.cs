@@ -24,7 +24,7 @@
 using System.IO;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   [Item("Hierarchical Formatter", "Formatter for symbolic expression trees that uses special characters for drawing a tree in text-mode.")]

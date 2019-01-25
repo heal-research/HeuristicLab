@@ -20,7 +20,7 @@
 #endregion
 
 using HeuristicLab.Data;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.Orienteering {
   [StorableType("A7F34447-A3C9-4FB5-B52F-5143434B4084")]

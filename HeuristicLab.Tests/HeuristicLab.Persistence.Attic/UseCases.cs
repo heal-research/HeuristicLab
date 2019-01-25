@@ -26,7 +26,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using HEAL.Fossil;
+using HEAL.Attic;
 using HeuristicLab.Algorithms.GeneticAlgorithm;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
@@ -36,7 +36,7 @@ using HeuristicLab.Persistence.Core;
 using HeuristicLab.Persistence.Default.Xml;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab.Persistence.Fossil.Tests {
+namespace HeuristicLab.Persistence.Attic.Tests {
   [TestClass]
   public class UseCases {
 
@@ -56,7 +56,7 @@ namespace HeuristicLab.Persistence.Fossil.Tests {
     }
 
     [TestMethod]
-    [TestCategory("Persistence.Fossil")]
+    [TestCategory("Persistence.Attic")]
     [TestProperty("Time", "short")]
     public void BitmapTest() {
       Icon icon = System.Drawing.SystemIcons.Hand;
@@ -72,7 +72,7 @@ namespace HeuristicLab.Persistence.Fossil.Tests {
 
 
     [TestMethod]
-    [TestCategory("Persistence.Fossil")]
+    [TestCategory("Persistence.Attic")]
     [TestProperty("Time", "short")]
     public void FontTest() {
       List<Font> fonts = new List<Font>() {
@@ -90,7 +90,7 @@ namespace HeuristicLab.Persistence.Fossil.Tests {
     }
 
     [TestMethod]
-    [TestCategory("Persistence.Fossil")]
+    [TestCategory("Persistence.Attic")]
     [TestProperty("Time", "medium")]
     public void ConcurrencyTest() {
       int n = 20;
@@ -108,7 +108,7 @@ namespace HeuristicLab.Persistence.Fossil.Tests {
     }
 
     [TestMethod]
-    [TestCategory("Persistence.Fossil")]
+    [TestCategory("Persistence.Attic")]
     [TestProperty("Time", "medium")]
     public void ConcurrentBitmapTest() {
       Bitmap b = new Bitmap(300, 300);
@@ -133,7 +133,7 @@ namespace HeuristicLab.Persistence.Fossil.Tests {
 
 
     [TestMethod]
-    [TestCategory("Persistence.Fossil")]
+    [TestCategory("Persistence.Attic")]
     [TestProperty("Time", "long")]
     public void TestLoadingSamples() {
       var path = @"C:\reps\hl-core\branches\2520_PersistenceReintegration\HeuristicLab.Optimizer\3.3\Documents";
@@ -152,7 +152,7 @@ namespace HeuristicLab.Persistence.Fossil.Tests {
                 var g = Mapper.StaticCache.GetGuid(t);
               }
             } catch (Exception e) {
-              Console.WriteLine($"type {t.FullName} in {fileName} is not registered with a GUID in HEAL.Fossil");
+              Console.WriteLine($"type {t.FullName} in {fileName} is not registered with a GUID in HEAL.Attic");
               ok = false;
             }
           }
@@ -165,7 +165,7 @@ namespace HeuristicLab.Persistence.Fossil.Tests {
       }
     }
     [TestMethod]
-    [TestCategory("Persistence.Fossil")]
+    [TestCategory("Persistence.Attic")]
     [TestProperty("Time", "long")]
     public void TestLoadingRunAndStoreSamples() {
       var path = @"C:\reps\hl-core\branches\2520_PersistenceReintegration\HeuristicLab.Optimizer\3.3\Documents";
@@ -194,7 +194,7 @@ namespace HeuristicLab.Persistence.Fossil.Tests {
 
 
     [TestMethod]
-    [TestCategory("Persistence.Fossil")]
+    [TestCategory("Persistence.Attic")]
     [TestProperty("Time", "short")]
     public void TestIndexedDataTable() {
       var dt = new IndexedDataTable<int>("test", "test description");
@@ -212,7 +212,7 @@ namespace HeuristicLab.Persistence.Fossil.Tests {
     }
 
     [TestMethod]
-    [TestCategory("Persistence.Fossil")]
+    [TestCategory("Persistence.Attic")]
     [TestProperty("Time", "short")]
     public void TestPoint2d() {
       var tag = new IntValue(10);

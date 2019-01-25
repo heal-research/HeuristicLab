@@ -21,7 +21,7 @@
 
 using System;
 using HeuristicLab.Common;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Core {
   [Item("Arc", "A graph arc connecting two graph vertices, that can have a weight, label, and data object for holding additional info")]

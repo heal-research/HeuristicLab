@@ -24,7 +24,7 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.ExternalEvaluation {
   [Item("BoolConverter", "Converts a ValueTypeValue<bool>, ValueTypeArray<bool>, or ValueTypeMatrix<bool> and adds it to the SolutionMessage's BoolVars or BoolArrayVars. A matrix is encoded as array by concatenating all rows and setting length as the length of a row.")]

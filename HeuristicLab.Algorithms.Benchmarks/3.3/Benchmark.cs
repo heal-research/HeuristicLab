@@ -25,7 +25,7 @@ using System.Threading;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.Benchmarks {
   [Item("Benchmark", "Base class for benchmarks.")]

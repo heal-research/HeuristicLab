@@ -23,7 +23,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Operators {
   [Item("SubScopesCounter", "Counts the number of direct sub-scopes and increments or assigns it to the value given in the parameter.")]

@@ -25,7 +25,7 @@ using System.Reflection;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
-using HEAL.Fossil;
+using HEAL.Attic;
 using HeuristicLab.Scripting;
 
 namespace HeuristicLab.Problems.Programmable {

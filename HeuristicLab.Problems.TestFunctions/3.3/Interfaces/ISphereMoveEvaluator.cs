@@ -20,7 +20,7 @@
 #endregion
 
 using HeuristicLab.Data;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TestFunctions {
   [StorableType("809AA7D1-C759-4949-AF3C-D2DC5B180C22")]

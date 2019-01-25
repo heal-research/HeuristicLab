@@ -24,7 +24,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
-using HEAL.Fossil;
+using HEAL.Attic;
 using HeuristicLab.Persistence.Auxiliary;
 using HeuristicLab.Persistence.Core.Tokens;
 using HeuristicLab.Persistence.Interfaces;

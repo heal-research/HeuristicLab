@@ -26,7 +26,7 @@ using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.PTSP {
   [Item("TwoPointFiveMoveMaker", "Peforms an inversion and shift (2.5-opt) on a given permutation and updates the quality.")]

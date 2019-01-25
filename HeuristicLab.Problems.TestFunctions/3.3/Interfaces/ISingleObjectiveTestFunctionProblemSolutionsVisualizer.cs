@@ -22,7 +22,7 @@
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Optimization;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TestFunctions {
   [StorableType("A1DDF420-B389-40A4-B9BD-D071A557D24A")]

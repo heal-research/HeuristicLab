@@ -23,7 +23,7 @@ using System;
 using System.Drawing;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Data {
   [StorableType("06A7697C-2C25-49AF-95A2-DDB14D2F7B81")]

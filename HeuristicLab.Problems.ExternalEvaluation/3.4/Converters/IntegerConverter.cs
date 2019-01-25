@@ -24,7 +24,7 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.ExternalEvaluation {
   [Item("IntegerConverter", "Converts a ValueTypeValue<int>, ValueTypeArray<int>, or ValueTypeMatrix<int> and adds it to the SolutionMessage's IntegerVars or IntegerArrayVars. A matrix is encoded as array by concatenating all rows and setting length as the length of a row.")]

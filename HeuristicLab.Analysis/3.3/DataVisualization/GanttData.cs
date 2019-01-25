@@ -28,7 +28,7 @@ using System.Drawing;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Analysis {
   [Item("Gantt Data", "Data of a Gantt visualization")]

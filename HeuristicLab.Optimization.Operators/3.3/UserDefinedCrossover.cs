@@ -21,7 +21,7 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Optimization.Operators {
   [Item("UserDefinedCrossover", "A crossover that can be customized with operators which it will execute one after another.")]

@@ -21,7 +21,7 @@
 
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Common {
   [StorableType("fa583e6f-b8cf-4046-b144-4c1938caa418")]

@@ -23,7 +23,7 @@
 #endregion
 
 using HeuristicLab.Problems.DataAnalysis;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.GrammaticalEvolution {
   [StorableType("d02447bf-6490-4497-8d46-18bfd65fdce9")]

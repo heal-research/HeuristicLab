@@ -31,7 +31,7 @@ using HeuristicLab.Encodings.BinaryVectorEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.Binary {
   [StorableType("2F6FEB34-BD19-47AF-9484-7F48565C0C43")]

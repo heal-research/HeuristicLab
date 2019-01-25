@@ -25,7 +25,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Parameters;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.PTSP {
   [Item("PTSP Estimated Inversion Move Evaluator", "Evaluates an inversion move (2-opt) over several realizations of tours by summing up the length of all added edges and subtracting the length of all deleted edges.")]

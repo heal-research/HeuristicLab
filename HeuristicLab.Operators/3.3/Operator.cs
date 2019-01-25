@@ -25,7 +25,7 @@ using System.Linq;
 using System.Threading;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Operators {
   /// <summary>

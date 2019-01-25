@@ -22,7 +22,7 @@
 using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.LinearLinkageEncoding {
   [Item("Group Crossover", "The Group Crossover is implemented as described in Korkmaz, E.E. 2010. Multi-objective Genetic Algorithms for grouping problems. Applied Intelligence 33(2), pp. 179-192.")]

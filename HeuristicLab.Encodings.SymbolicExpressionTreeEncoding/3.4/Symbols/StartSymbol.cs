@@ -21,7 +21,7 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Fossil;
+using HEAL.Attic;
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   [StorableType("37172E73-BBC8-448F-B694-60705C5B4E53")]
   [Item(StartSymbol.StartSymbolName, StartSymbol.StartSymbolDescription)]

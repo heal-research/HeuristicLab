@@ -24,7 +24,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HEAL.Fossil;
+using HEAL.Attic;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis {
   [StorableType("938BBDA4-0A01-4144-932D-AF1DA30E9747")]
   public abstract class SymbolicTimeSeriesPrognosisSingleObjectiveEvaluator : SymbolicDataAnalysisSingleObjectiveEvaluator<ITimeSeriesPrognosisProblemData>, ISymbolicTimeSeriesPrognosisSingleObjectiveEvaluator {

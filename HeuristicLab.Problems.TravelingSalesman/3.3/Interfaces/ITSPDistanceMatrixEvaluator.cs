@@ -20,7 +20,7 @@
 #endregion
 
 using HeuristicLab.Core;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TravelingSalesman {
   [StorableType("ADEAB327-E563-42D6-845C-E9D412586A4C")]

@@ -20,7 +20,7 @@
 #endregion
 
 using HeuristicLab.Core;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.BinPacking2D {
   [StorableType("347e0b15-f3ae-42a1-be51-0dae36e95d4c")]

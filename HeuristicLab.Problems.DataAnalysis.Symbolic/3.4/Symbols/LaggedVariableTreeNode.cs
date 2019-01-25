@@ -22,7 +22,7 @@
 using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Fossil;
+using HEAL.Attic;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableType("0B35397B-5634-44DB-9350-9EC41E5D4A45")]
   public sealed class LaggedVariableTreeNode : VariableTreeNodeBase, ILaggedTreeNode {

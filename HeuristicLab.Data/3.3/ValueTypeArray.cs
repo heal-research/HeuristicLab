@@ -27,7 +27,7 @@ using System.Linq;
 using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Data {
   [Item("ValueTypeArray", "An abstract base class for representing arrays of value types.")]

@@ -21,7 +21,7 @@
 
 using System;
 using System.Globalization;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 
 namespace HeuristicLab.Persistence.Default.Xml.Primitive {

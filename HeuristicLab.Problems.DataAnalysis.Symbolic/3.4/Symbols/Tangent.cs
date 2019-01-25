@@ -22,7 +22,7 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HEAL.Fossil;
+using HEAL.Attic;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableType("636D006E-C4A5-494B-8E26-566B42A9B4AF")]
   [Item("Tangent", "Symbol that represents the tangent trigonometric function.")]

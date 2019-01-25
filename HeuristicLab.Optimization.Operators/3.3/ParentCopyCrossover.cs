@@ -23,7 +23,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Optimization.Operators {
   [Item("ParentCopyCrossover", "This operator creates an offspring by creating a clone of a randomly chosen parent. It can be used in situations where no crossover should occur after selection.")]

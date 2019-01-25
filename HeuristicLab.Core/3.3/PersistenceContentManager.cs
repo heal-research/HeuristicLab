@@ -22,7 +22,7 @@
 using System.Threading;
 using HeuristicLab.Common;
 using HeuristicLab.Persistence.Default.Xml;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Core {
   public class PersistenceContentManager : ContentManager {

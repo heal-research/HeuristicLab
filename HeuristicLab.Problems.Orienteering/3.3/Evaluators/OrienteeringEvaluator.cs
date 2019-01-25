@@ -26,7 +26,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.IntegerVectorEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.Orienteering {
   [Item("OrienteeringEvaluator", "Operator to evaluate a solution to the orienteering problem.")]

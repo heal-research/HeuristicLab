@@ -30,7 +30,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Fossil;
+using HEAL.Attic;
 using static HeuristicLab.Problems.DataAnalysis.Symbolic.SymbolicExpressionHashExtensions;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Analyzers {

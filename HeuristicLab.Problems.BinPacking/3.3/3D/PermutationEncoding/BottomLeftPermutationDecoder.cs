@@ -20,7 +20,7 @@
 #endregion
 
 using HeuristicLab.Core;
-using HEAL.Fossil;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using System.Collections.Generic;
 using HeuristicLab.Encodings.PermutationEncoding;

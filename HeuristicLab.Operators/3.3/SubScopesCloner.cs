@@ -20,7 +20,7 @@
 #endregion
 
 using HeuristicLab.Core;
-using HEAL.Fossil;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Parameters;
 using HeuristicLab.Data;

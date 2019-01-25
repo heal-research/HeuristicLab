@@ -22,7 +22,7 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HEAL.Fossil;
+using HEAL.Attic;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableType("459E521B-A921-4A0F-B63D-B298DA2CDD11")]
   [Item("Average", "Symbol that represents the average (arithmetic mean) function.")]

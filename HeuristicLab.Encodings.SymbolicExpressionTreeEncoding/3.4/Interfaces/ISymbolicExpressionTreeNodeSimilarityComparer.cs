@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using HeuristicLab.Core;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   [StorableType("c4de8ab2-616d-4c73-9f9c-59545ac38199")]

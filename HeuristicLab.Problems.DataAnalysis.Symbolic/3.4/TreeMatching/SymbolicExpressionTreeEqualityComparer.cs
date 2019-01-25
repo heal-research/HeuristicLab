@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableType("535830d4-551e-4b53-97e3-9605bd7e785f")]

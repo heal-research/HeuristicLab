@@ -23,7 +23,7 @@ using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.CMAEvolutionStrategy {
   [Item("CMAParameters", "CMA-ES controls many strategy parameters that guide the search and which are combined in this class.")]

@@ -22,7 +22,7 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
   [Item("SingleObjectiveQualityTerminator", "A termination criterion which uses a quality parameter (eg. current best quality) for termination.")]

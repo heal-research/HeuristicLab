@@ -21,7 +21,7 @@
 
 #endregion
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
   [StorableType("fc2ba966-c965-462b-8c5d-8c40998548a7")]

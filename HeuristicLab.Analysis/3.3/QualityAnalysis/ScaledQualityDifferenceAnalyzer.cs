@@ -25,7 +25,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Analysis.QualityAnalysis {
   [Item("ScaledQualityDifferenceAnalyzer", @"Calculates the quality value relative to a certain range given with a minimum and a maximum value.

@@ -26,7 +26,7 @@ using HeuristicLab.Encodings.ScheduleEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.Scheduling {
   [Item("SchedulingAnalyzer", "Represents the generalized form of Analyzers for Scheduling Problems.")]

@@ -26,7 +26,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Selection {
   [Item("GenderSpecificSelection", "Brings two parents together by sampling each with a different selection scheme (Wagner, S. and Affenzeller, M. 2005. SexualGA: Gender-Specific Selection for Genetic Algorithms. Proceedings of the 9th World Multi-Conference on Systemics, Cybernetics and Informatics (WMSCI), pp. 76-81).")]

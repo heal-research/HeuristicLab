@@ -24,7 +24,7 @@ using System.Drawing;
 using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Data {
   [Item("DoubleValue", "Represents a double value.")]

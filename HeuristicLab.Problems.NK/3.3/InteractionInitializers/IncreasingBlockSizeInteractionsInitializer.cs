@@ -25,7 +25,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.NK {
   [Item("IncreasingBlockSizeInteractionsInitializer", "Randomly assignes interactions across all bits but makes sure that different numbers of ineractions are applied to different bits.")]

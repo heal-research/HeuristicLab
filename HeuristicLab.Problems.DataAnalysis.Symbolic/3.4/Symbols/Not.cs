@@ -22,7 +22,7 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HEAL.Fossil;
+using HEAL.Attic;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableType("5AC7B0DB-F1F8-49AA-AB01-28BD49B41378")]
   [Item("Not", "Symbol that represents the boolean NOT operator.")]

@@ -24,7 +24,7 @@ using System.Drawing;
 using System.Threading;
 using System.Threading.Tasks;
 using HeuristicLab.Common;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Core {
   [Item("Executable", "A base class for executables.")]

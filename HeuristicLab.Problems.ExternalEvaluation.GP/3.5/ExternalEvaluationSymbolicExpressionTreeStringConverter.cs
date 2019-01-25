@@ -23,7 +23,7 @@ using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.ExternalEvaluation.GP {
   [Item("SymbolicExpressionTreeStringConverter", "Converts a symbolic expression tree into a string representation by iterating over all nodes in a prefix way. The string is added to the SolutionMessage's StringVars.")]

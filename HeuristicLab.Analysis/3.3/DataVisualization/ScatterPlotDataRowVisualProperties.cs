@@ -23,7 +23,7 @@ using System;
 using System.ComponentModel;
 using System.Drawing;
 using HeuristicLab.Common;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Analysis {
   /// <summary>

@@ -20,7 +20,7 @@
 #endregion
 
 using HeuristicLab.Optimization;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.Knapsack {
   [StorableType("B7D22238-9840-4293-A12E-6EEF7D7298FD")]

@@ -28,7 +28,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.IntegerVectorEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Fossil;
+using HEAL.Attic;
 using HeuristicLab.Problems.GeneticProgramming.ArtificialAnt;
 using HeuristicLab.Problems.GrammaticalEvolution.Mappers;
 using HeuristicLab.Random;

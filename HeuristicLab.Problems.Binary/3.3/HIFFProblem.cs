@@ -25,7 +25,7 @@ using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
-using HEAL.Fossil;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.Binary {
   [Item("Hierararchical If and only If problem (HIFF)", "Genome evaluated in nested subsets to see if each subset contains either all 0s or all 1s.")]
