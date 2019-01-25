@@ -29,7 +29,9 @@ namespace HeuristicLab.Clients.Hive {
   public static class PersistenceUtil {
     public static byte[] Serialize(object obj, out IEnumerable<Type> types) {
       var ser = new ProtoBufSerializer();
-      return ser.Serialize(obj, out types);
+      var bytes = ser.Serialize(obj, out SerializationInfo info);
+      types = info.SerializedTypes;
+      return bytes;
     }
 
     public static byte[] Serialize(object obj) {

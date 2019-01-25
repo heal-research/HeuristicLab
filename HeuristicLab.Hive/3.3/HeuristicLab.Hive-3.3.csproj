@@ -92,7 +92,7 @@
       <HintPath>..\..\packages\Google.Protobuf.3.6.1\lib\net45\Google.Protobuf.dll</HintPath>
     </Reference>
     <Reference Include="HEAL.Fossil, Version=1.0.2.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\HEAL.Fossil.1.0.2-pre-02\lib\netstandard2.0\HEAL.Fossil.dll</HintPath>
+      <HintPath>..\..\packages\HEAL.Fossil.1.0.2-pre-03\lib\netstandard2.0\HEAL.Fossil.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
