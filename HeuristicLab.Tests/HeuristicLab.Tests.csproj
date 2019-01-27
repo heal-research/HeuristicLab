@@ -680,7 +680,6 @@
     <Compile Include="TestRandom.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
     <None Include="Builder.testsettings">
       <SubType>Designer</SubType>
     </None>
