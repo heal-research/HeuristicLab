@@ -40,10 +40,8 @@ namespace HeuristicLab.Core {
     }
 
     protected override void SaveContent(IStorableContent content, string filename, bool compressed, CancellationToken cancellationToken) {
-      // XmlGenerator.Serialize(content, filename, compressed ? CompressionLevel.Optimal : CompressionLevel.NoCompression, cancellationToken);
-      // store files with the new persistence format
       var ser = new ProtoBufSerializer();
-      ser.Serialize(content, filename); // TODO: support cancellation
+      ser.Serialize(content, filename, cancellationToken); 
     }
   }
 }
