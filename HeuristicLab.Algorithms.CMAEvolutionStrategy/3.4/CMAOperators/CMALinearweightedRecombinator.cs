@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,15 +21,15 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.CMAEvolutionStrategy {
   [Item("CMA Linear-weighted Recombinator", "Calculates weighted mean using linear decreasing weights.")]
-  [StorableClass]
+  [StorableType("628D27E7-AD3F-418B-A44D-E5338017CA69")]
   public class CMALinearweightedRecombinator : CMARecombinator {
 
     [StorableConstructor]
-    protected CMALinearweightedRecombinator(bool deserializing) : base(deserializing) { }
+    protected CMALinearweightedRecombinator(StorableConstructorFlag _) : base(_) { }
     protected CMALinearweightedRecombinator(CMALinearweightedRecombinator original, Cloner cloner) : base(original, cloner) { }
     public CMALinearweightedRecombinator() : base() { }
 

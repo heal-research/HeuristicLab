@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -27,12 +27,12 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   [Item("BinaryVectorEncoding", "Describes a binary vector encoding.")]
-  [StorableClass]
+  [StorableType("889C5E1A-3FBF-4AB3-AB2E-199A781503B5")]
   public sealed class BinaryVectorEncoding : Encoding<IBinaryVectorCreator> {
     #region Encoding Parameters
     [Storable]
@@ -59,7 +59,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
     }
 
     [StorableConstructor]
-    private BinaryVectorEncoding(bool deserializing) : base(deserializing) { }
+    private BinaryVectorEncoding(StorableConstructorFlag _) : base(_) { }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       RegisterParameterEvents();

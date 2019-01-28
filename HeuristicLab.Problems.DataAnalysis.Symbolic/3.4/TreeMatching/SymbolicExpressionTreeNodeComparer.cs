@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,8 +21,10 @@
 
 using System;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
+  [StorableType("eabf848e-d10c-499e-8c48-c771232ede0e")]
   // this comparer considers that a < b if the type of a is "greater" than the type of b, for example:
   // - A function node is "greater" than a terminal node
   // - A variable terminal is "greater" than a constant terminal

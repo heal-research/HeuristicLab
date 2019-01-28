@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,14 +24,14 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Analysis {
   /// <summary>
   /// An operator which calculates the minimum, average and maximum of a value in the scope tree.
   /// </summary>
   [Item("MinAverageMaxValueCalculator", "An operator which calculates the minimum, average and maximum of a value in the scope tree.")]
-  [StorableClass]
+  [StorableType("C10C55BB-737F-4A0A-BAB0-F3DAC28FBCB8")]
   public sealed class MinAverageMaxValueCalculator : SingleSuccessorOperator {
     public ScopeTreeLookupParameter<DoubleValue> ValueParameter {
       get { return (ScopeTreeLookupParameter<DoubleValue>)Parameters["Value"]; }
@@ -48,7 +48,7 @@ namespace HeuristicLab.Analysis {
 
     #region Storing & Cloning
     [StorableConstructor]
-    private MinAverageMaxValueCalculator(bool deserializing) : base(deserializing) { }
+    private MinAverageMaxValueCalculator(StorableConstructorFlag _) : base(_) { }
     private MinAverageMaxValueCalculator(MinAverageMaxValueCalculator original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new MinAverageMaxValueCalculator(this, cloner);

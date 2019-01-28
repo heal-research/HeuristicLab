@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,9 +21,6 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -32,14 +29,13 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
 using HeuristicLab.Problems.GrammaticalEvolution.Mappers;
-using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.GrammaticalEvolution {
-  [StorableClass]
+  [StorableType("3E723725-9141-4259-BB1D-BACE36657086")]
   public abstract class GESymbolicDataAnalysisEvaluator<T> : SingleSuccessorOperator,
     IGESymbolicDataAnalysisEvaluator<T>, ISymbolicDataAnalysisInterpreterOperator, ISymbolicDataAnalysisBoundedOperator, IStochasticOperator
   where T : class, IDataAnalysisProblemData {
@@ -105,7 +101,7 @@ namespace HeuristicLab.Problems.GrammaticalEvolution {
 
 
     [StorableConstructor]
-    protected GESymbolicDataAnalysisEvaluator(bool deserializing) : base(deserializing) { }
+    protected GESymbolicDataAnalysisEvaluator(StorableConstructorFlag _) : base(_) { }
     protected GESymbolicDataAnalysisEvaluator(GESymbolicDataAnalysisEvaluator<T> original, Cloner cloner)
       : base(original, cloner) {
     }

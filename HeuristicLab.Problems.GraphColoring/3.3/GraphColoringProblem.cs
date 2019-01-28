@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -29,14 +29,14 @@ using HeuristicLab.Encodings.LinearLinkageEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.Instances;
 
 namespace HeuristicLab.Problems.GraphColoring {
   public enum FitnessFunction { Prioritized, Penalized }
   [Item("Graph Coloring Problem (GCP)", "Attempts to find a coloring using a minimal number of colors that doesn't produce a conflict.")]
   [Creatable(CreatableAttribute.Categories.CombinatorialProblems, Priority = 135)]
-  [StorableClass]
+  [StorableType("007BD5F0-196C-4045-AC5D-BF287927C3DC")]
   public sealed class GraphColoringProblem : SingleObjectiveBasicProblem<LinearLinkageEncoding>, IProblemInstanceConsumer<GCPData>, IProblemInstanceExporter<GCPData> {
 
     public override bool Maximization {
@@ -64,7 +64,7 @@ namespace HeuristicLab.Problems.GraphColoring {
     }
 
     [StorableConstructor]
-    private GraphColoringProblem(bool deserializing) : base(deserializing) { }
+    private GraphColoringProblem(StorableConstructorFlag _) : base(_) { }
     private GraphColoringProblem(GraphColoringProblem original, Cloner cloner)
       : base(original, cloner) {
       adjacencyListParameter = cloner.Clone(original.adjacencyListParameter);

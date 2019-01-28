@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,11 +26,11 @@ using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.PTSP {
   [Item("TwoPointFiveMoveMaker", "Peforms an inversion and shift (2.5-opt) on a given permutation and updates the quality.")]
-  [StorableClass]
+  [StorableType("6D5923B3-47CA-47AF-8C93-9BA7134BE5BA")]
   public class TwoPointFiveMoveMaker : SingleSuccessorOperator, ITwoPointFiveMoveOperator, IMoveMaker {
     public override bool CanChangeName {
       get { return false; }
@@ -50,7 +50,7 @@ namespace HeuristicLab.Problems.PTSP {
     }
 
     [StorableConstructor]
-    protected TwoPointFiveMoveMaker(bool deserializing) : base(deserializing) { }
+    protected TwoPointFiveMoveMaker(StorableConstructorFlag _) : base(_) { }
     protected TwoPointFiveMoveMaker(TwoPointFiveMoveMaker original, Cloner cloner) : base(original, cloner) { }
     public TwoPointFiveMoveMaker()
       : base() {

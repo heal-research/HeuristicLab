@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -31,12 +31,12 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.ExternalEvaluation {
   [Item("External Evaluation Problem (single-objective)", "A problem that is evaluated in a different process.")]
   [Creatable(CreatableAttribute.Categories.ExternalEvaluationProblems, Priority = 100)]
-  [StorableClass]
+  [StorableType("115EB3A5-A8A8-4A2E-9799-9485FE896DEC")]
   // BackwardsCompatibility3.3
   // Rename class to SingleObjectiveExternalEvaluationProblem
   public class ExternalEvaluationProblem : SingleObjectiveBasicProblem<IEncoding>, IExternalEvaluationProblem {
@@ -87,7 +87,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     #endregion
 
     [StorableConstructor]
-    protected ExternalEvaluationProblem(bool deserializing) : base(deserializing) { }
+    protected ExternalEvaluationProblem(StorableConstructorFlag _) : base(_) { }
     protected ExternalEvaluationProblem(ExternalEvaluationProblem original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new ExternalEvaluationProblem(this, cloner);

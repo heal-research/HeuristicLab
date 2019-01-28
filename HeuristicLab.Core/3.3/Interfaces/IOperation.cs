@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,8 +20,10 @@
 #endregion
 
 using HeuristicLab.Common;
+using HEAL.Attic;
 
 namespace HeuristicLab.Core {
+  [StorableType("72828f38-f8f6-48cd-b792-b415f3e70524")]
   /// <summary>
   /// Interface which represents an operation.
   /// </summary>

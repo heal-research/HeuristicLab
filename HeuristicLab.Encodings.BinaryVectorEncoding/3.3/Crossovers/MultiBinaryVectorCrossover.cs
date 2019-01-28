@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -27,12 +27,12 @@ using HeuristicLab.Core;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   [Item("MultiBinaryVectorCrossover", "Randomly selects and applies one of its crossovers every time it is called.")]
-  [StorableClass]
+  [StorableType("0ACAFFFB-E57A-4171-9D6D-A20B7A7B935E")]
   public class MultiBinaryVectorCrossover : StochasticMultiBranch<IBinaryVectorCrossover>, IBinaryVectorCrossover, IStochasticOperator {
     public override bool CanChangeName {
       get { return false; }
@@ -50,7 +50,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
     }
 
     [StorableConstructor]
-    protected MultiBinaryVectorCrossover(bool deserializing) : base(deserializing) { }
+    protected MultiBinaryVectorCrossover(StorableConstructorFlag _) : base(_) { }
     protected MultiBinaryVectorCrossover(MultiBinaryVectorCrossover original, Cloner cloner) : base(original, cloner) { }
     public MultiBinaryVectorCrossover()
       : base() {

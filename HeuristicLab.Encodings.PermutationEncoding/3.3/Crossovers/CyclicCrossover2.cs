@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,7 +22,7 @@
 using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   /// <summary>
@@ -33,10 +33,10 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
   /// Then all empty positions are filled from the second parent.
   /// </remarks>
   [Item("CyclicCrossover2", "An operator which performs the cyclic crossover on two permutations. It is implemented as described in Affenzeller, M. et al. 2009. Genetic Algorithms and Genetic Programming - Modern Concepts and Practical Applications. CRC Press. p. 136.")]
-  [StorableClass]
+  [StorableType("B1550E88-0F0B-452F-94EC-F457761A58F3")]
   public class CyclicCrossover2 : PermutationCrossover {
     [StorableConstructor]
-    protected CyclicCrossover2(bool deserializing) : base(deserializing) { }
+    protected CyclicCrossover2(StorableConstructorFlag _) : base(_) { }
     protected CyclicCrossover2(CyclicCrossover2 original, Cloner cloner) : base(original, cloner) { }
     public CyclicCrossover2() : base() { }
 

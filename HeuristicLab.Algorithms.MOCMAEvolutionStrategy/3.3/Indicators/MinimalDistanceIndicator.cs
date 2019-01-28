@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,16 +26,16 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.MOCMAEvolutionStrategy {
   [Item("MinimalDistanceIndicator", "Selection of Offspring based on distance to nearest neighbour")]
-  [StorableClass]
+  [StorableType("FBBD4517-164C-4DEE-B87D-49B99172EDF4")]
   internal class MinimalDistanceIndicator : Item, IIndicator {
 
     #region Constructor and Cloning
     [StorableConstructor]
-    protected MinimalDistanceIndicator(bool deserializing) : base(deserializing) { }
+    protected MinimalDistanceIndicator(StorableConstructorFlag _) : base(_) { }
     protected MinimalDistanceIndicator(MinimalDistanceIndicator original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) { return new MinimalDistanceIndicator(this, cloner); }
     public MinimalDistanceIndicator() { }

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,18 +21,18 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
   [Item("Von Neumann Topology Initializer", "Every particle is informed by the two following and the two previous particles wrapping around at the beginning and the end of the swarm (in addition each particle also informs itself).")]
-  [StorableClass]
+  [StorableType("F1516EBD-DA8D-462E-94DD-44391191ED8A")]
   public sealed class VonNeumannTopologyInitializer : TopologyInitializer {
 
     #region Construction & Cloning
 
     [StorableConstructor]
-    private VonNeumannTopologyInitializer(bool deserializing) : base(deserializing) { }
+    private VonNeumannTopologyInitializer(StorableConstructorFlag _) : base(_) { }
     private VonNeumannTopologyInitializer(VonNeumannTopologyInitializer original, Cloner cloner) : base(original, cloner) { }
     public VonNeumannTopologyInitializer() : base() { }
 

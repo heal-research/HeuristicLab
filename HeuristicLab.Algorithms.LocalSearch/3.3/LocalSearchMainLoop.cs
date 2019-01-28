@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,7 +25,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Selection;
 
 namespace HeuristicLab.Algorithms.LocalSearch {
@@ -33,7 +33,7 @@ namespace HeuristicLab.Algorithms.LocalSearch {
   /// An operator which represents a local search.
   /// </summary>
   [Item("LocalSearchMainLoop", "An operator which represents the main loop of a best improvement local search (if only a single move is generated in each iteration it is a first improvement local search).")]
-  [StorableClass]
+  [StorableType("629DEE28-5E94-44C2-AFDA-83F7F0128091")]
   public sealed class LocalSearchMainLoop : AlgorithmOperator {
     #region Parameter properties
     public ValueLookupParameter<IRandom> RandomParameter {
@@ -81,7 +81,7 @@ namespace HeuristicLab.Algorithms.LocalSearch {
     #endregion
 
     [StorableConstructor]
-    private LocalSearchMainLoop(bool deserializing) : base(deserializing) { }
+    private LocalSearchMainLoop(StorableConstructorFlag _) : base(_) { }
     public LocalSearchMainLoop()
       : base() {
       Initialize();

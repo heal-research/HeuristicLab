@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,17 +22,17 @@
 using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Optimization.Operators {
   /// <summary>
   /// Modifies the value by square rooted fall (fast fall initially, slow fall to the end) or rise (fast rise initially, slow rise to the end).
   /// </summary>
   [Item("SquareRootDiscreteDoubleValueModifier", "Modifies the value by square rooted fall (fast fall initially, slow fall to the end) or rise (fast rise initially, slow rise to the end).")]
-  [StorableClass]
+  [StorableType("0D62E89E-87D9-4F4F-889E-D64CB4CCBF6E")]
   public class SquareRootDiscreteDoubleValueModifier : DiscreteDoubleValueModifier {
     [StorableConstructor]
-    protected SquareRootDiscreteDoubleValueModifier(bool deserializing) : base(deserializing) { }
+    protected SquareRootDiscreteDoubleValueModifier(StorableConstructorFlag _) : base(_) { }
     protected SquareRootDiscreteDoubleValueModifier(SquareRootDiscreteDoubleValueModifier original, Cloner cloner) : base(original, cloner) { }
     public SquareRootDiscreteDoubleValueModifier() : base() { }
 

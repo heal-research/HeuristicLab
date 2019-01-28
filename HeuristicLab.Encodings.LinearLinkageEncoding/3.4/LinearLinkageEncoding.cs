@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -27,12 +27,12 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Encodings.LinearLinkageEncoding {
   [Item("Linear Linkage Encoding", "Describes a linear linkage (LLE) encoding.")]
-  [StorableClass]
+  [StorableType("7AE11F39-E6BD-4FC7-8112-0A5EDCBFBDB6")]
   public sealed class LinearLinkageEncoding : Encoding<ILinearLinkageCreator> {
     #region encoding parameters
     [Storable]
@@ -58,7 +58,7 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
     }
 
     [StorableConstructor]
-    private LinearLinkageEncoding(bool deserializing) : base(deserializing) { }
+    private LinearLinkageEncoding(StorableConstructorFlag _) : base(_) { }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       RegisterParameterEvents();

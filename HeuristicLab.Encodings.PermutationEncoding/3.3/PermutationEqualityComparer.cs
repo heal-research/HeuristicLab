@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,9 +24,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using HeuristicLab.PluginInfrastructure;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [NonDiscoverableType]
+  [StorableType("9e0bdbda-0d76-4032-bc69-f5acbbfd5d37")]
   public class PermutationEqualityComparer : EqualityComparer<Permutation> {
     public override bool Equals(Permutation x, Permutation y) {
       if (ReferenceEquals(x, y)) return true;

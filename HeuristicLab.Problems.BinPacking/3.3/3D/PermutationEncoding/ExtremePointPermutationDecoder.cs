@@ -19,22 +19,20 @@
  */
 #endregion
 
-using System;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using System.Collections.Generic;
 using HeuristicLab.Encodings.PermutationEncoding;
-using System.Linq;
 
 
 namespace HeuristicLab.Problems.BinPacking3D {
   [Item("Extreme-point Permutation Decoder (3d)", "Decodes the permutation and creates a packing solution candidate")]
-  [StorableClass]
+  [StorableType("1232374B-6C9C-46A2-B7C2-97F484597D44")]
   public class ExtremePointPermutationDecoder : ExtremePointPermutationDecoderBase {
 
     [StorableConstructor]
-    protected ExtremePointPermutationDecoder(bool deserializing) : base(deserializing) { }
+    protected ExtremePointPermutationDecoder(StorableConstructorFlag _) : base(_) { }
     protected ExtremePointPermutationDecoder(ExtremePointPermutationDecoder original, Cloner cloner)
       : base(original, cloner) {
     }

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,16 +21,16 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   [NonDiscoverableType]
-  [StorableClass]
+  [StorableType("0E43AC76-6CD1-4371-90A6-05F7C5B05EC8")]
   [Item("RampedHalfAndHalfTreeCreator", "An operator that creates new symbolic expression trees in an alternate way: half the trees are created usign the 'Grow' method while the other half are created using the 'Full' method")]
   public class RampedHalfAndHalfTreeCreator : SymbolicExpressionTreeCreator {
     [StorableConstructor]
-    protected RampedHalfAndHalfTreeCreator(bool deserializing) : base(deserializing) { }
+    protected RampedHalfAndHalfTreeCreator(StorableConstructorFlag _) : base(_) { }
     protected RampedHalfAndHalfTreeCreator(RampedHalfAndHalfTreeCreator original, Cloner cloner) : base(original, cloner) { }
 
     public RampedHalfAndHalfTreeCreator() : base() { }

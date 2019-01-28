@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,7 +22,7 @@
 using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Analysis {
@@ -35,10 +35,10 @@ namespace HeuristicLab.Analysis {
   [Obsolete]
   [NonDiscoverableType]
   [Item("SingleObjectivePopulationDiversityAnalyzer", "An operator for analyzing the solution diversity in a population.")]
-  [StorableClass]
+  [StorableType("71612344-657C-4270-8A44-5D521C0118A8")]
   public class SingleObjectivePopulationDiversityAnalyzer : PopulationSimilarityAnalyzer {
     [StorableConstructor]
-    protected SingleObjectivePopulationDiversityAnalyzer(bool deserializing) : base(deserializing) { }
+    protected SingleObjectivePopulationDiversityAnalyzer(StorableConstructorFlag _) : base(_) { }
     protected SingleObjectivePopulationDiversityAnalyzer(SingleObjectivePopulationDiversityAnalyzer original, Cloner cloner) : base(original, cloner) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {

@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,9 +22,9 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
-  [StorableClass]
+  [StorableType("C4F429C2-B26A-4BD8-AB6A-3EBE45D3EE25")]
   [Item("HyperbolicCosineIntegral", "Symbol that represents the hyperbolic cosine integral.")]
   public sealed class HyperbolicCosineIntegral : Symbol {
     private const int minimumArity = 1;
@@ -38,7 +38,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     [StorableConstructor]
-    private HyperbolicCosineIntegral(bool deserializing) : base(deserializing) { }
+    private HyperbolicCosineIntegral(StorableConstructorFlag _) : base(_) { }
     private HyperbolicCosineIntegral(HyperbolicCosineIntegral original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new HyperbolicCosineIntegral(this, cloner);

@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -28,14 +28,14 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   /// <summary>
   /// An operator that analyzes the training best symbolic regression solution for multi objective symbolic regression problems.
   /// </summary>
   [Item("SymbolicRegressionMultiObjectiveTrainingBestSolutionAnalyzer", "An operator that analyzes the training best symbolic regression solution for multi objective symbolic regression problems.")]
-  [StorableClass]
+  [StorableType("431B0046-3115-493F-BD15-E3DA98E3E9C7")]
   public sealed class SymbolicRegressionMultiObjectiveTrainingBestSolutionAnalyzer : SymbolicDataAnalysisMultiObjectiveTrainingBestSolutionAnalyzer<ISymbolicRegressionSolution>,
     ISymbolicDataAnalysisInterpreterOperator, ISymbolicDataAnalysisBoundedOperator {
     private const string ProblemDataParameterName = "ProblemData";
@@ -74,7 +74,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     }
 
     [StorableConstructor]
-    private SymbolicRegressionMultiObjectiveTrainingBestSolutionAnalyzer(bool deserializing) : base(deserializing) { }
+    private SymbolicRegressionMultiObjectiveTrainingBestSolutionAnalyzer(StorableConstructorFlag _) : base(_) { }
     private SymbolicRegressionMultiObjectiveTrainingBestSolutionAnalyzer(SymbolicRegressionMultiObjectiveTrainingBestSolutionAnalyzer original, Cloner cloner) : base(original, cloner) { }
     public SymbolicRegressionMultiObjectiveTrainingBestSolutionAnalyzer()
       : base() {

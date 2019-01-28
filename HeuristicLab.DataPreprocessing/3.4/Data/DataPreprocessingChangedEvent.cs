@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,8 +20,10 @@
 #endregion
 
 using System;
+using HEAL.Attic;
 
 namespace HeuristicLab.DataPreprocessing {
+  [StorableType("f06da8c5-5c95-4e20-81c7-d264517d9981")]
   public enum DataPreprocessingChangedEventType {
     DeleteColumn,
     AddColumn,

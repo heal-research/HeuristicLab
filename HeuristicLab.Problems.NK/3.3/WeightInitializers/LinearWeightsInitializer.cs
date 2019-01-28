@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,14 +22,14 @@
 using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.NK {
   [Item("LinearWeightsInitializer", "Assigns linear increasing weights.")]
-  [StorableClass]
+  [StorableType("355BD81C-E35B-4260-91DD-2B1729682E61")]
   public sealed class LinearWeightsInitializer : ParameterizedNamedItem, IWeightsInitializer {
     [StorableConstructor]
-    private LinearWeightsInitializer(bool deserializing) : base(deserializing) { }
+    private LinearWeightsInitializer(StorableConstructorFlag _) : base(_) { }
     private LinearWeightsInitializer(LinearWeightsInitializer original, Cloner cloner)
       : base(original, cloner) {
     }

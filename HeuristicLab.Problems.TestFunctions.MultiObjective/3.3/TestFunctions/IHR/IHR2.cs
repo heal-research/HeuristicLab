@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,11 +23,11 @@ using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.RealVectorEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
   [Item("IHR2", "Testfunction as defined as IHR2 in \"Igel, C., Hansen, N., & Roth, S. (2007). Covariance matrix adaptation for multi-objective optimization. Evolutionary computation, 15(1), 1-28.\" [24.06.16]")]
-  [StorableClass]
+  [StorableType("3E06E73F-61CD-4B99-99A8-84E6E9C0EFC9")]
   public class IHR2 : IHR {
     protected override IEnumerable<double[]> GetOptimalParetoFront(int objectives) {
       List<double[]> res = new List<double[]>();
@@ -45,7 +45,7 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
     }
 
     [StorableConstructor]
-    protected IHR2(bool deserializing) : base(deserializing) { }
+    protected IHR2(StorableConstructorFlag _) : base(_) { }
     protected IHR2(IHR2 original, Cloner cloner) : base(original, cloner) { }
     public IHR2() : base() {
     }

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,11 +22,11 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinTwoOptStarMoveEvaluator", "Evaluates a two opt star move for a VRP representation. ")]
-  [StorableClass]
+  [StorableType("5CB2E8F6-191E-4EBE-B832-18BECC9BB19B")]
   public sealed class PotvinTwoOptStarMoveEvaluator : PotvinMoveEvaluator, IPotvinTwoOptStarMoveOperator {
     public ILookupParameter<PotvinTwoOptStarMove> TwoOptStarMoveParameter {
       get { return (ILookupParameter<PotvinTwoOptStarMove>)Parameters["PotvinTwoOptStarMove"]; }
@@ -36,7 +36,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       get { return TwoOptStarMoveParameter; }
     }
     [StorableConstructor]
-    private PotvinTwoOptStarMoveEvaluator(bool deserializing) : base(deserializing) { }
+    private PotvinTwoOptStarMoveEvaluator(StorableConstructorFlag _) : base(_) { }
 
     public PotvinTwoOptStarMoveEvaluator()
       : base() {

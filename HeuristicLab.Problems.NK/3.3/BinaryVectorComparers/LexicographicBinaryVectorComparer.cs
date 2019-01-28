@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,14 +23,14 @@ using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.NK {
   [Item("Lexicographic Binary Vector Comparer", "Compares two binary vectors lexicographically")]
-  [StorableClass]
+  [StorableType("E107BAC1-B863-4704-9129-F258B0974285")]
   public sealed class LexicographicBinaryVectorComparer : Item, IBinaryVectorComparer {
     [StorableConstructor]
-    private LexicographicBinaryVectorComparer(bool deserializing) : base(deserializing) { }
+    private LexicographicBinaryVectorComparer(StorableConstructorFlag _) : base(_) { }
     private LexicographicBinaryVectorComparer(LexicographicBinaryVectorComparer original, Cloner cloner)
       : base(original, cloner) { }
     public LexicographicBinaryVectorComparer() { }

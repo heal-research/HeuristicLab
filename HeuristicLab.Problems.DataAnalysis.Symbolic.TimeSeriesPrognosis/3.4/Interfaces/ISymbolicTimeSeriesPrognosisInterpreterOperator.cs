@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,8 +20,10 @@
 #endregion
 
 using HeuristicLab.Core;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis {
+  [StorableType("ba7cd995-7dee-4dae-b698-4dc4f9587e4b")]
   public interface ISymbolicTimeSeriesPrognosisInterpreterOperator : IOperator {
     ILookupParameter<ISymbolicTimeSeriesPrognosisExpressionTreeInterpreter> SymbolicTimeSeriesPrognosisInterpreterParameter { get; }
   }

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,12 +25,12 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.NK {
 
   [Item("NK BitFlip Move Evaluator", "Evaluates a single bit flip on an NK landscape.")]
-  [StorableClass]
+  [StorableType("58DA2DE8-6FEB-464F-9B25-E2CA676D530E")]
   public class NKBitFlipMoveEvaluator : NKMoveEvaluator, IOneBitflipMoveOperator {
     public ILookupParameter<OneBitflipMove> OneBitflipMoveParameter {
       get { return (ILookupParameter<OneBitflipMove>)Parameters["OneBitflipMove"]; }
@@ -40,7 +40,7 @@ namespace HeuristicLab.Problems.NK {
     }
 
     [StorableConstructor]
-    protected NKBitFlipMoveEvaluator(bool deserializing) : base(deserializing) { }
+    protected NKBitFlipMoveEvaluator(StorableConstructorFlag _) : base(_) { }
     protected NKBitFlipMoveEvaluator(NKBitFlipMoveEvaluator original, Cloner cloner)
       : base(original, cloner) { }
     public NKBitFlipMoveEvaluator()

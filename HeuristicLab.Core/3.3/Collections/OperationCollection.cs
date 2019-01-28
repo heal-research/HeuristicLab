@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,10 +22,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Core {
-  [StorableClass]
+  [StorableType("EDE09772-7C20-4B51-90FF-5867B1D91ABE")]
   public sealed class OperationCollection : DeepCloneable, IList<IOperation>, IOperation {
     [Storable]
     private IList<IOperation> operations;
@@ -38,7 +38,7 @@ namespace HeuristicLab.Core {
     }
 
     [StorableConstructor]
-    private OperationCollection(bool deserializing) { }
+    private OperationCollection(StorableConstructorFlag _) { }
     private OperationCollection(OperationCollection original, Cloner cloner)
       : base(original, cloner) {
       operations = new List<IOperation>(original.Select(x => cloner.Clone(x)));

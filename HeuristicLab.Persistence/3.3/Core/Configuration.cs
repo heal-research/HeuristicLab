@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,7 +21,7 @@
 
 using System;
 using System.Collections.Generic;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Persistence.Interfaces;
 
 namespace HeuristicLab.Persistence.Core {
@@ -49,13 +49,16 @@ namespace HeuristicLab.Persistence.Core {
     public IFormat Format { get; private set; }
 
     [StorableConstructor]
-    protected Configuration(bool isDeserializing) {
+    protected Configuration(StorableConstructorFlag _) {
       compositeSerializerCache = new Dictionary<Type, ICompositeSerializer>();
-      if (isDeserializing)
-        return;
+    }
+
+    public Configuration() {
+      compositeSerializerCache = new Dictionary<Type, ICompositeSerializer>();
       primitiveSerializers = new Dictionary<Type, IPrimitiveSerializer>();
       compositeSerializers = new List<ICompositeSerializer>();
     }
+
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Configuration"/> class.
@@ -66,7 +69,7 @@ namespace HeuristicLab.Persistence.Core {
     public Configuration(IFormat format,
         IEnumerable<IPrimitiveSerializer> primitiveSerializers,
         IEnumerable<ICompositeSerializer> compositeSerializers)
-      : this(false) {
+      : this() {
       this.Format = format;
       this.compositeSerializers.AddRange(compositeSerializers);
       foreach (var primitiveSerializer in primitiveSerializers) {
@@ -130,7 +133,7 @@ namespace HeuristicLab.Persistence.Core {
     /// </summary>
     /// <returns>A new <see cref="Configuration"/></returns>
     public Configuration Copy() {
-      var config = new Configuration(false);
+      var config = new Configuration();
       config.Format = Format;
       foreach (var ps in primitiveSerializers)
         config.primitiveSerializers.Add(

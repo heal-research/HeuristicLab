@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,12 +21,12 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   /// <summary>
   /// Symbol for invoking automatically defined functions
   /// </summary>
-  [StorableClass]
+  [StorableType("F98DAAD3-1FCB-490B-9D28-160ED9718441")]
   [Item(InvokeFunction.InvokeFunctionName, InvokeFunction.InvokeFunctionDescription)]
   public sealed class InvokeFunction : Symbol, IReadOnlySymbol {
     public const string InvokeFunctionName = "InvokeFunction";
@@ -48,7 +48,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
 
     [StorableConstructor]
-    private InvokeFunction(bool deserializing) : base(deserializing) { }
+    private InvokeFunction(StorableConstructorFlag _) : base(_) { }
     private InvokeFunction(InvokeFunction original, Cloner cloner)
       : base(original, cloner) {
       functionName = original.functionName;

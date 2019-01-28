@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,13 +23,13 @@ using System;
 using System.ComponentModel;
 using System.Drawing;
 using HeuristicLab.Common;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Analysis {
   /// <summary>
   /// Visual properties of a ScatterPlotDataRow.
   /// </summary>
-  [StorableClass]
+  [StorableType("3336A12E-A464-438E-9A37-B87790AE963A")]
   public class ScatterPlotDataRowVisualProperties : DeepCloneable, INotifyPropertyChanged {
     #region PointStyle
     public enum ScatterPlotDataRowPointStyle {
@@ -205,7 +205,7 @@ namespace HeuristicLab.Analysis {
     #endregion
 
     [StorableConstructor]
-    protected ScatterPlotDataRowVisualProperties(bool deserializing) : base() { }
+    protected ScatterPlotDataRowVisualProperties(StorableConstructorFlag _) { }
     protected ScatterPlotDataRowVisualProperties(ScatterPlotDataRowVisualProperties original, Cloner cloner)
       : base(original, cloner) {
       this.color = original.color;

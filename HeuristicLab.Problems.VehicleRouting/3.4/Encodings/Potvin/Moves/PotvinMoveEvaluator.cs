@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,15 +21,15 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.VehicleRouting.Encodings.General;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinMoveEvaluator", "Evaluates a Potvin VRP move.")]
-  [StorableClass]
+  [StorableType("FB26DFD5-3822-4C28-9295-88D20B7DCC5E")]
   public abstract class PotvinMoveEvaluator : VRPMoveEvaluator, IPotvinOperator {
     [StorableConstructor]
-    protected PotvinMoveEvaluator(bool deserializing) : base(deserializing) { }
+    protected PotvinMoveEvaluator(StorableConstructorFlag _) : base(_) { }
 
     public PotvinMoveEvaluator()
       : base() {

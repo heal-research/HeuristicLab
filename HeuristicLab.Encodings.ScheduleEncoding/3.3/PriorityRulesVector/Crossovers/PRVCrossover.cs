@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,15 +21,15 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding.PriorityRulesVector {
   [Item("PRVCrossover", "An operator which crosses two PRV representations.")]
-  [StorableClass]
+  [StorableType("D5AD4BED-029A-4424-8512-F2F7E10D748D")]
   public abstract class PRVCrossover : ScheduleCrossover, IPRVOperator {
 
     [StorableConstructor]
-    protected PRVCrossover(bool deserializing) : base(deserializing) { }
+    protected PRVCrossover(StorableConstructorFlag _) : base(_) { }
     protected PRVCrossover(PRVCrossover original, Cloner cloner) : base(original, cloner) { }
     public PRVCrossover()
       : base() {

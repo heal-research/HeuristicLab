@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,8 +21,10 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.IntegerVectorEncoding {
+  [StorableType("c39d6a9a-430c-47d8-97d9-8430cb6050ff")]
   public interface IBoundedIntegerVectorOperator : IIntegerVectorOperator {
     /// <summary>
     /// The bounds parameter must contain at least one row and at least two columns. The first two columns specify min and max values, the last column specifies the step size, but is optional (1 is assumed if omitted).

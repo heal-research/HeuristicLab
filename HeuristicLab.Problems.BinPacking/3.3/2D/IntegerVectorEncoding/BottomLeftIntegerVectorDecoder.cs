@@ -19,20 +19,18 @@
  */
 #endregion
 
-using System.Linq;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using System.Collections.Generic;
-using HeuristicLab.Encodings.IntegerVectorEncoding;
 
 namespace HeuristicLab.Problems.BinPacking2D {
   [Item("Bottom-left IntegerVector Decoder (2d)", "Decodes the integer vector and creates a packing solution candidate")]
-  [StorableClass]
+  [StorableType("27643FED-BADA-48BF-8A71-38C35D160961")]
   public class BottomLeftIntegerVectorDecoder : IntegerVectorDecoderBase {
 
     [StorableConstructor]
-    protected BottomLeftIntegerVectorDecoder(bool deserializing) : base(deserializing) { }
+    protected BottomLeftIntegerVectorDecoder(StorableConstructorFlag _) : base(_) { }
     protected BottomLeftIntegerVectorDecoder(BottomLeftIntegerVectorDecoder original, Cloner cloner)
       : base(original, cloner) {
     }

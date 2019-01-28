@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,14 +24,14 @@ using System.Globalization;
 using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Data {
   [Item("TimeSpanValue", "Represents a duration of time.")]
-  [StorableClass]
+  [StorableType("03DA3BC6-4041-4444-ACF1-AEEAE2EF6AB5")]
   public class TimeSpanValue : ValueTypeValue<TimeSpan>, IComparable, IStringConvertibleValue {
     [StorableConstructor]
-    protected TimeSpanValue(bool deserializing) : base(deserializing) { }
+    protected TimeSpanValue(StorableConstructorFlag _) : base(_) { }
     protected TimeSpanValue(TimeSpanValue original, Cloner cloner)
       : base(original, cloner) {
     }

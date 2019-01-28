@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,13 +25,13 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
   /// <summary>
   /// Represents a symbolic classification solution (model + data) and attributes of the solution like accuracy and complexity
   /// </summary>
-  [StorableClass]
+  [StorableType("C2829CEB-8D34-4FAB-B9AE-23937071B53F")]
   [Item(Name = "SymbolicClassificationSolution", Description = "Represents a symbolic classification solution (model + data) and attributes of the solution like accuracy and complexity.")]
   public sealed class SymbolicClassificationSolution : ClassificationSolution, ISymbolicClassificationSolution {
     private const string ModelLengthResultName = "ModelLength";
@@ -56,7 +56,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     }
 
     [StorableConstructor]
-    private SymbolicClassificationSolution(bool deserializing) : base(deserializing) { }
+    private SymbolicClassificationSolution(StorableConstructorFlag _) : base(_) { }
     private SymbolicClassificationSolution(SymbolicClassificationSolution original, Cloner cloner)
       : base(original, cloner) {
     }

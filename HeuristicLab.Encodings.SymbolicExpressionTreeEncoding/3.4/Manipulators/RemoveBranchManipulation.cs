@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,11 +25,11 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
-  [StorableClass]
+  [StorableType("639F837E-3AF9-4783-9AC2-0A4DC8991FED")]
   [Item("RemoveBranchManipulation", "Removes a random sub-tree of the input tree and fixes the tree by generating random subtrees if necessary..")]
   public sealed class RemoveBranchManipulation : SymbolicExpressionTreeManipulator, ISymbolicExpressionTreeSizeConstraintOperator {
     private const int MAX_TRIES = 100;
@@ -53,7 +53,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     #endregion
 
     [StorableConstructor]
-    private RemoveBranchManipulation(bool deserializing) : base(deserializing) { }
+    private RemoveBranchManipulation(StorableConstructorFlag _) : base(_) { }
     private RemoveBranchManipulation(RemoveBranchManipulation original, Cloner cloner) : base(original, cloner) { }
     public RemoveBranchManipulation()
       : base() {

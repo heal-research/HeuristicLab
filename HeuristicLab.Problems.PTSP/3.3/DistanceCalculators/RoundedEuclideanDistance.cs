@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,16 +22,16 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.Instances;
 
 namespace HeuristicLab.Problems.PTSP {
   [Item("Rounded Euclidean Distance", "Calculates the euclidean distance and rounds it to the nearest integer.")]
-  [StorableClass]
+  [StorableType("5AE6854F-505E-438A-8668-2758FEF20861")]
   public sealed class RoundedEuclideanDistance : DistanceCalculator {
 
     [StorableConstructor]
-    private RoundedEuclideanDistance(bool deserializing) : base(deserializing) { }
+    private RoundedEuclideanDistance(StorableConstructorFlag _) : base(_) { }
     private RoundedEuclideanDistance(RoundedEuclideanDistance original, Cloner cloner) : base(original, cloner) { }
     public RoundedEuclideanDistance() { }
 

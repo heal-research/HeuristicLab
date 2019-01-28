@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,12 +23,12 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.ParameterOptimization;
 
 namespace HeuristicLab.Problems.ExternalEvaluation.Scilab {
   [Item("Scilab Parameter Optimization Problem", "Optimization of a parameter vector which is evaluated in Scilab.")]
-  [StorableClass]
+  [StorableType("247B26FF-0C43-44EA-A768-183B9B60653B")]
   [Creatable(CreatableAttribute.Categories.ExternalEvaluationProblems, Priority = 120)]
   public class ScilabParameterOptimizationProblem : ParameterOptimizationProblem {
     private const string QualityVariableParameterName = "QualityVariableName";
@@ -62,7 +62,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation.Scilab {
     #endregion
 
     [StorableConstructor]
-    protected ScilabParameterOptimizationProblem(bool deserializing) : base(deserializing) { }
+    protected ScilabParameterOptimizationProblem(StorableConstructorFlag _) : base(_) { }
     protected ScilabParameterOptimizationProblem(ScilabParameterOptimizationProblem original, Cloner cloner)
       : base(original, cloner) {
     }

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -27,8 +27,10 @@ using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.GrammaticalEvolution {
+  [StorableType("ce854ef0-6bf9-453f-8638-9db029eb01c6")]
   public interface IGESymbolicDataAnalysisProblem : IDataAnalysisProblem, IHeuristicOptimizationProblem {
 
     IValueParameter<ISymbolicDataAnalysisGrammar> SymbolicExpressionTreeGrammarParameter { get; }
@@ -46,5 +48,6 @@ namespace HeuristicLab.Problems.GrammaticalEvolution {
     IntRange ValidationPartition { get; }
   }
 
+  [StorableType("763c58e2-dc9b-440d-b1d0-5b6c9524242c")]
   public interface IGESymbolicDataAnalysisSingleObjectiveProblem : IGESymbolicDataAnalysisProblem, ISingleObjectiveHeuristicOptimizationProblem { }
 }

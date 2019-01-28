@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,8 +22,10 @@
 using System;
 using System.Collections.Generic;
 using HeuristicLab.Common;
+using HEAL.Attic;
 
 namespace HeuristicLab.Clients.Hive {
+  [StorableType("2590428E-5F97-48EC-AE82-E2F614BEF34C")]
   public partial class Task : LightweightTask {
 
     public Task() {

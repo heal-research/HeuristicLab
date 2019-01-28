@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,19 +22,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis {
   /// <summary>
   /// Represents a regression data analysis solution
   /// </summary>
-  [StorableClass]
+  [StorableType("00A95897-4AA4-406B-B304-5D19AA30C4B1")]
   public class RegressionSolution : RegressionSolutionBase {
     protected readonly Dictionary<int, double> evaluationCache;
 
     [StorableConstructor]
-    protected RegressionSolution(bool deserializing)
-      : base(deserializing) {
+    protected RegressionSolution(StorableConstructorFlag _) : base(_) {
       evaluationCache = new Dictionary<int, double>();
     }
     protected RegressionSolution(RegressionSolution original, Cloner cloner)

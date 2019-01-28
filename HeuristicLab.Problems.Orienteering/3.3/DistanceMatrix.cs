@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,17 +24,17 @@ using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.Orienteering {
   /// <summary>
   /// Represents a distance matrix of a Orienteering Salesman Problem.
   /// </summary>
   [Item("DistanceMatrix", "Represents a distance matrix of a Orienteering Problem.")]
-  [StorableClass]
+  [StorableType("8318D250-3F2D-4A4D-9833-AB4EA453A3A4")]
   public sealed class DistanceMatrix : DoubleMatrix {
     [StorableConstructor]
-    private DistanceMatrix(bool deserializing) : base(deserializing) { }
+    private DistanceMatrix(StorableConstructorFlag _) : base(_) { }
     private DistanceMatrix(DistanceMatrix original, Cloner cloner) {
       throw new NotSupportedException("Distance matrices cannot be cloned.");
     }

@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,10 +25,10 @@ using System.Drawing;
 using System.Linq;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Core {
-  [StorableClass]
+  [StorableType("C2660C9F-3886-458E-80DF-06EEE9BB3C21")]
   [Item("ItemSet", "Represents a set of items.")]
   public class ItemSet<T> : ObservableSet<T>, IItemSet<T> where T : class, IItem {
     public virtual string ItemName {
@@ -48,7 +48,7 @@ namespace HeuristicLab.Core {
     }
 
     [StorableConstructor]
-    protected ItemSet(bool deserializing) : base(deserializing) { }
+    protected ItemSet(StorableConstructorFlag _) : base(_) { }
     protected ItemSet(ItemSet<T> original, Cloner cloner) {
       cloner.RegisterClonedObject(original, this);
       set = new HashSet<T>(original.Select(cloner.Clone), original.set.Comparer);

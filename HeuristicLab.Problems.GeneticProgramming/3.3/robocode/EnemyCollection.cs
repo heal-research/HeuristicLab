@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,11 +26,11 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.GeneticProgramming.Robocode {
   [Item("EnemyCollection", "A collection of enemy robots for the Robocode genetic programming problem.")]
-  [StorableClass]
+  [StorableType("78324566-09C2-4D2F-A54F-79613934D7F1")]
   public class EnemyCollection : CheckedItemList<StringValue> {
     private const string sampleRobotToSelect = "sample.Crazy";
 
@@ -38,7 +38,7 @@ namespace HeuristicLab.Problems.GeneticProgramming.Robocode {
     public string RobocodePath { get; set; }
 
     [StorableConstructor]
-    protected EnemyCollection(bool deserializing) : base(deserializing) { }
+    protected EnemyCollection(StorableConstructorFlag _) : base(_) { }
     protected EnemyCollection(EnemyCollection original, Cloner cloner)
       : base(original, cloner) {
       RobocodePath = original.RobocodePath;

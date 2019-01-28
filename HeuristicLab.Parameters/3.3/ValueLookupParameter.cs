@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,14 +23,14 @@ using System;
 using System.Drawing;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Parameters {
   /// <summary>
   /// A parameter whose value is either defined in the parameter itself or is retrieved from the scope.
   /// </summary>
   [Item("ValueLookupParameter", "A parameter whose value is either defined in the parameter itself or is retrieved from or written to a scope.")]
-  [StorableClass]
+  [StorableType("B34BB41A-CF50-4275-9BCD-1861EBA7C58F")]
   public class ValueLookupParameter<T> : LookupParameter<T>, IValueLookupParameter<T> where T : class, IItem {
     public override Image ItemImage {
       get {
@@ -79,7 +79,7 @@ namespace HeuristicLab.Parameters {
 
     #region Constructors
     [StorableConstructor]
-    protected ValueLookupParameter(bool deserializing) : base(deserializing) { }
+    protected ValueLookupParameter(StorableConstructorFlag _) : base(_) { }
     protected ValueLookupParameter(ValueLookupParameter<T> original, Cloner cloner)
       : base(original, cloner) {
       value = cloner.Clone(original.value);

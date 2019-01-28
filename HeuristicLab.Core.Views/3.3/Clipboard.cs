@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -27,6 +27,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.MainForm;
 using HeuristicLab.Persistence.Default.Xml;
@@ -155,10 +156,16 @@ namespace HeuristicLab.Core.Views {
       string[] items = Directory.GetFiles(ItemsPath);
       foreach (string filename in items) {
         try {
-          T item = XmlParser.Deserialize<T>(filename);
+          var ser = new ProtoBufSerializer();
+          T item = (T)ser.Deserialize(filename);
           OnItemLoaded(item, progressBar.Maximum / items.Length);
+        } catch (Exception) {
+          try {
+            // try old format if protobuf deserialization fails
+            T item = XmlParser.Deserialize<T>(filename);
+            OnItemLoaded(item, progressBar.Maximum / items.Length);
+          } catch (Exception) { }
         }
-        catch (Exception) { }
       }
       OnAllItemsLoaded();
     }
@@ -198,7 +205,8 @@ namespace HeuristicLab.Core.Views {
         try {
           i++;
           SetEnabledStateOfContentViews(item, false);
-          XmlGenerator.Serialize(item, ItemsPath + Path.DirectorySeparatorChar + i.ToString("00000000") + ".hl", CompressionLevel.Optimal);
+          var ser = new ProtoBufSerializer();
+          ser.Serialize(item, ItemsPath + Path.DirectorySeparatorChar + i.ToString("00000000") + ".hl");
           OnItemSaved(item, progressBar.Maximum / listView.Items.Count);
         }
         catch (Exception) { }

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,12 +23,12 @@ using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Clients.OKB.RunCreation {
   [Item("Empty Algorithm", "A dummy algorithm which serves as a placeholder and cannot be executed.")]
-  [StorableClass]
+  [StorableType("C98C8322-5A78-4518-A94D-FA20F12AB8D3")]
   [NonDiscoverableType]
   public sealed class EmptyAlgorithm : HeuristicLab.Optimization.Algorithm {
     private string exceptionMessage;
@@ -54,8 +54,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
     #endregion
 
     [StorableConstructor]
-    private EmptyAlgorithm(bool deserializing)
-      : base(deserializing) {
+    private EmptyAlgorithm(StorableConstructorFlag _) : base(_) {
       this.results = new ResultCollection();
     }
     private EmptyAlgorithm(EmptyAlgorithm original, Cloner cloner)

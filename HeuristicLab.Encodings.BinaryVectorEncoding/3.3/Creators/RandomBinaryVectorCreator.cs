@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,14 +24,14 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   /// <summary>
   /// Generates a new random binary vector with each element randomly initialized.
   /// </summary>
   [Item("RandomBinaryVectorCreator", "An operator which creates a new random binary vector with each element randomly initialized.")]
-  [StorableClass]
+  [StorableType("D5BF4C14-1C0B-4589-835E-BA337D325E31")]
   public sealed class RandomBinaryVectorCreator : BinaryVectorCreator {
     private const string TrueProbabilityParameterName = "TrueProbability";
 
@@ -45,7 +45,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
     }
 
     [StorableConstructor]
-    private RandomBinaryVectorCreator(bool deserializing) : base(deserializing) { }
+    private RandomBinaryVectorCreator(StorableConstructorFlag _) : base(_) { }
     private RandomBinaryVectorCreator(RandomBinaryVectorCreator original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) { return new RandomBinaryVectorCreator(this, cloner); }
     public RandomBinaryVectorCreator()

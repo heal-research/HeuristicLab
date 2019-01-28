@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,11 +25,11 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.DataPreprocessing.Filter;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.DataPreprocessing {
   [Item("Filter", "Represents the filter grid.")]
-  [StorableClass]
+  [StorableType("A1676153-6E8F-48B5-8FC4-EB0E8060179D")]
   public class FilterContent : PreprocessingContent, IViewShortcut {
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Filter; }
@@ -82,8 +82,7 @@ namespace HeuristicLab.DataPreprocessing {
     }
 
     [StorableConstructor]
-    protected FilterContent(bool deserializing)
-      : base(deserializing) { }
+    protected FilterContent(StorableConstructorFlag _) : base(_) { }
     #endregion
   }
 }

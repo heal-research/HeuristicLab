@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,14 +25,14 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.SimulatedAnnealing {
   /// <summary>
   /// An operator which represents a simulated annealing.
   /// </summary>
   [Item("SimulatedAnnealingMainLoop", "An operator which represents the main loop of a simulated annealing algorithm.")]
-  [StorableClass]
+  [StorableType("ADDF6A58-21CD-4224-94BF-FE6AE5CBEE3A")]
   public sealed class SimulatedAnnealingMainLoop : AlgorithmOperator {
     #region Parameter properties
     public ValueLookupParameter<IRandom> RandomParameter {
@@ -92,7 +92,7 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
     #endregion
 
     [StorableConstructor]
-    private SimulatedAnnealingMainLoop(bool deserializing) : base(deserializing) { }
+    private SimulatedAnnealingMainLoop(StorableConstructorFlag _) : base(_) { }
     private SimulatedAnnealingMainLoop(SimulatedAnnealingMainLoop original, Cloner cloner)
       : base(original, cloner) {
     }

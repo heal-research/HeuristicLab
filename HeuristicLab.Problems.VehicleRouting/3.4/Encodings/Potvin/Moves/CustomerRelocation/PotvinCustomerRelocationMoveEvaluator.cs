@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,11 +23,11 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinCustomerRelocationMoveEvaluator", "Evaluates a customer relocation move for a VRP representation. ")]
-  [StorableClass]
+  [StorableType("6289C1EA-7223-4BCC-97FD-884E668B6AF4")]
   public sealed class PotvinCustomerRelocationMoveEvaluator : PotvinMoveEvaluator, IPotvinCustomerRelocationMoveOperator {
     public ILookupParameter<PotvinCustomerRelocationMove> CustomerRelocationMoveParameter {
       get { return (ILookupParameter<PotvinCustomerRelocationMove>)Parameters["PotvinCustomerRelocationMove"]; }
@@ -50,7 +50,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
     }
 
     [StorableConstructor]
-    private PotvinCustomerRelocationMoveEvaluator(bool deserializing) : base(deserializing) { }
+    private PotvinCustomerRelocationMoveEvaluator(StorableConstructorFlag _) : base(_) { }
 
     public PotvinCustomerRelocationMoveEvaluator()
       : base() {

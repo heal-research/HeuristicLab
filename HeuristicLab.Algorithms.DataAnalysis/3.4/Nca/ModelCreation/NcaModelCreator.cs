@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,12 +26,12 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [Item("NcaModelCreator", "Creates an NCA model with a given matrix.")]
-  [StorableClass]
+  [StorableType("30D2840C-1FE3-4A45-97FF-294C93D33D8C")]
   public class NcaModelCreator : SingleSuccessorOperator, INcaModelCreator {
 
     public ILookupParameter<IntValue> KParameter {
@@ -59,7 +59,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     [StorableConstructor]
-    protected NcaModelCreator(bool deserializing) : base(deserializing) { }
+    protected NcaModelCreator(StorableConstructorFlag _) : base(_) { }
     protected NcaModelCreator(NcaModelCreator original, Cloner cloner) : base(original, cloner) { }
     public NcaModelCreator() {
       Parameters.Add(new LookupParameter<IntValue>("K", "How many neighbors should be considered for classification."));

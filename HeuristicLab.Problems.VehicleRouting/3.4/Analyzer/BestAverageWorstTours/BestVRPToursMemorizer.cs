@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,11 +25,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.VehicleRouting {
   [Item("BestVRPToursMemorizer", "An operator that updates the best VRP tour found so far in the scope three.")]
-  [StorableClass]
+  [StorableType("3E5AF7DC-B85A-453B-8502-DC4FF45EE637")]
   public class BestVRPToursMemorizer : SingleSuccessorOperator {
     public ScopeTreeLookupParameter<DoubleValue> DistanceParameter {
       get { return (ScopeTreeLookupParameter<DoubleValue>)Parameters["Distance"]; }
@@ -56,7 +56,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
     }
 
     [StorableConstructor]
-    protected BestVRPToursMemorizer(bool deserializing) : base(deserializing) { }
+    protected BestVRPToursMemorizer(StorableConstructorFlag _) : base(_) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new BestVRPToursMemorizer(this, cloner);

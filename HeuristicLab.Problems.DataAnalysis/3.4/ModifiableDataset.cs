@@ -1,7 +1,7 @@
 ﻿#region License Information
 
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -28,14 +28,14 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis {
   [Item("ModifiableDataset", "Represents a dataset containing data that should be analyzed, which can be modified by adding or replacing variables and values.")]
-  [StorableClass]
+  [StorableType("4B9DA9DD-10C4-4609-8F87-B35ECD7A7487")]
   public sealed class ModifiableDataset : Dataset, IStringConvertibleMatrix {
     [StorableConstructor]
-    private ModifiableDataset(bool deserializing) : base(deserializing) { }
+    private ModifiableDataset(StorableConstructorFlag _) : base(_) { }
 
     private ModifiableDataset(ModifiableDataset original, Cloner cloner) : base(original, cloner) {
       variableNames = new List<string>(original.variableNames);

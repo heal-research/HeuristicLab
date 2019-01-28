@@ -22,14 +22,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Core;
 using HeuristicLab.Common;
 using HeuristicLab.Problems.BinPacking;
 
 namespace HeuristicLab.Problems.BinPacking3D {
   [Item("BinPacking3D", "Represents a single-bin packing for a 3D bin-packing problem.")]
-  [StorableClass]
+  [StorableType("34D86A6D-F75F-4F62-9FB6-D7FEA738CECD")]
   public class BinPacking3D : BinPacking<PackingPosition, PackingShape, PackingItem> {
 
     [Storable]
@@ -42,7 +42,7 @@ namespace HeuristicLab.Problems.BinPacking3D {
       InitializeOccupationLayers();
     }
     [StorableConstructor]
-    protected BinPacking3D(bool deserializing) : base(deserializing) { }
+    protected BinPacking3D(StorableConstructorFlag _) : base(_) { }
     protected BinPacking3D(BinPacking3D original, Cloner cloner)
       : base(original, cloner) {
       this.ResidualSpace = new Dictionary<PackingPosition, Tuple<int, int, int>>();

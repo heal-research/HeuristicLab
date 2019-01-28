@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,21 +23,21 @@ using System.Collections.Generic;
 using System.Drawing;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Analysis {
   /// <summary>
   /// Represents history values of heat maps.
   /// </summary>
   [Item("HeatMapHistory", "Represents history values of heat maps.")]
-  [StorableClass]
+  [StorableType("7E282E3E-673B-4D98-AB51-48DE22E50E43")]
   public class HeatMapHistory : ItemCollection<HeatMap> {
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Cab; }
     }
 
     [StorableConstructor]
-    protected HeatMapHistory(bool deserializing) : base(deserializing) { }
+    protected HeatMapHistory(StorableConstructorFlag _) : base(_) { }
     protected HeatMapHistory(HeatMapHistory original, Cloner cloner) : base(original, cloner) { }
     public HeatMapHistory() : base() { }
     public HeatMapHistory(IEnumerable<HeatMap> collection) : base(new ItemCollection<HeatMap>(collection)) { }

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,7 +24,7 @@ using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Persistence.Auxiliary;
 using HeuristicLab.Persistence.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.Persistence.Default.Xml.Primitive;
 using HeuristicLab.Persistence.Interfaces;
@@ -43,7 +43,7 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers {
   public sealed class Number2StringSerializer : ICompositeSerializer {
 
     [StorableConstructor]
-    private Number2StringSerializer(bool deserializing) { }
+    private Number2StringSerializer(StorableConstructorFlag _) { }
     public Number2StringSerializer() { }
 
     private static readonly Dictionary<Type, IPrimitiveSerializer> numberSerializerMap;

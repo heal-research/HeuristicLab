@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  * and the BEACON Center for the Study of Evolution in Action.
  * 
  * This file is part of HeuristicLab.
@@ -22,8 +22,10 @@
 
 using System.Collections.Generic;
 using HeuristicLab.Problems.DataAnalysis;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
+  [StorableType("e6c22779-7059-416d-8804-0022406b7136")]
   public interface IGradientBoostedTreesModel : IRegressionModel {
     IEnumerable<IRegressionModel> Models { get; }
     IEnumerable<double> Weights { get; }

@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,14 +24,14 @@ using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Parameters {
   /// <summary>
   /// A generic parameter representing instances of type T which are collected from or written to scope tree.
   /// </summary>
   [Item("ScopeTreeLookupParameter", "A generic parameter representing instances of type T which are collected from or written to scope tree.")]
-  [StorableClass]
+  [StorableType("51F36637-C22C-4CDC-B34B-F49CA7896E35")]
   public class ScopeTreeLookupParameter<T> : LookupParameter<ItemArray<T>>, IScopeTreeLookupParameter<T> where T : class, IItem {
     [Storable]
     private int depth;
@@ -47,7 +47,7 @@ namespace HeuristicLab.Parameters {
     }
 
     [StorableConstructor]
-    protected ScopeTreeLookupParameter(bool deserializing) : base(deserializing) { }
+    protected ScopeTreeLookupParameter(StorableConstructorFlag _) : base(_) { }
     protected ScopeTreeLookupParameter(ScopeTreeLookupParameter<T> original, Cloner cloner)
       : base(original, cloner) {
       depth = original.depth;

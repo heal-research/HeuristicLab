@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,21 +23,20 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.VehicleRouting.Encodings.General;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaCrossover", "An operator which crosses two VRP representations.")]
-  [StorableClass]
+  [StorableType("64C6C851-64D6-42B7-B077-627F3E5791F4")]
   public abstract class AlbaCrossover : VRPCrossover, IAlbaOperator, IVRPCrossover, IStochasticOperator {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }
     }
 
     [StorableConstructor]
-    protected AlbaCrossover(bool deserializing)
-      : base(deserializing) {
+    protected AlbaCrossover(StorableConstructorFlag _) : base(_) {
     }
 
     public AlbaCrossover()

@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,7 +26,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Problems.VehicleRouting.Variants;
 using HeuristicLab.Problems.VehicleRouting.ProblemInstances;
@@ -36,7 +36,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
   /// An operator for analyzing the best solution of Vehicle Routing Problems.
   /// </summary>
   [Item("BestTimeWindowedVRPSolutionAnalyzer", "An operator for analyzing the best solution of time windowed Vehicle Routing Problems.")]
-  [StorableClass]
+  [StorableType("2804825D-064C-4AF5-970B-3F17796579D9")]
   public sealed class BestTimeWindowedVRPSolutionAnalyzer : SingleSuccessorOperator, IAnalyzer, ITimeWindowedOperator, ISingleObjectiveOperator {
     public ILookupParameter<IVRPProblemInstance> ProblemInstanceParameter {
       get { return (ILookupParameter<IVRPProblemInstance>)Parameters["ProblemInstance"]; }
@@ -67,7 +67,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
     }
 
     [StorableConstructor]
-    private BestTimeWindowedVRPSolutionAnalyzer(bool deserializing) : base(deserializing) { }
+    private BestTimeWindowedVRPSolutionAnalyzer(StorableConstructorFlag _) : base(_) { }
 
     public BestTimeWindowedVRPSolutionAnalyzer()
       : base() {

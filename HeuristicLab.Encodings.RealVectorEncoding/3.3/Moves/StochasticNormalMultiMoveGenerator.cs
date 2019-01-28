@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,12 +24,12 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   [Item("StochasticNormalMultiMoveGenerator", "Generates normal distributed moves from a given real vector.")]
-  [StorableClass]
+  [StorableType("2FCED1E2-2F4F-440A-9402-AA908DF0887B")]
   public class StochasticNormalMultiMoveGenerator : AdditiveMoveGenerator, IMultiMoveGenerator {
     public IValueLookupParameter<DoubleValue> SigmaParameter {
       get { return (IValueLookupParameter<DoubleValue>)Parameters["Sigma"]; }
@@ -39,7 +39,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     }
 
     [StorableConstructor]
-    protected StochasticNormalMultiMoveGenerator(bool deserializing) : base(deserializing) { }
+    protected StochasticNormalMultiMoveGenerator(StorableConstructorFlag _) : base(_) { }
     protected StochasticNormalMultiMoveGenerator(StochasticNormalMultiMoveGenerator original, Cloner cloner) : base(original, cloner) { }
     public StochasticNormalMultiMoveGenerator()
       : base() {

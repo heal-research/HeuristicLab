@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,11 +24,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   [Item("StochasticPolynomialMultiMoveGenerator", "Generates polynomial moves from a given real vector.")]
-  [StorableClass]
+  [StorableType("94B0F4BE-E2CE-4521-8351-AAA21611D589")]
   public class StochasticPolynomialMultiMoveGenerator : AdditiveMoveGenerator, IMultiMoveGenerator {
     /// <summary>
     /// The maximum manipulation parameter specifies the range of the manipulation. The value specified here is the highest value the mutation will ever add to the current value.
@@ -48,7 +48,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     }
 
     [StorableConstructor]
-    protected StochasticPolynomialMultiMoveGenerator(bool deserializing) : base(deserializing) { }
+    protected StochasticPolynomialMultiMoveGenerator(StorableConstructorFlag _) : base(_) { }
     protected StochasticPolynomialMultiMoveGenerator(StochasticPolynomialMultiMoveGenerator original, Cloner cloner) : base(original, cloner) { }
     public StochasticPolynomialMultiMoveGenerator()
       : base() {

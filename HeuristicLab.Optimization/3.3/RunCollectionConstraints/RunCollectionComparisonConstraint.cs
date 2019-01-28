@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,14 +24,14 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
-  [StorableClass]
+  [StorableType("655E544A-F75E-4020-BA97-F511CB4D059F")]
   [Item("RunCollectionComparisonConstraint", "A constraint which compares the members of the contained runs with the constraint data.")]
   public class RunCollectionComparisonConstraint : ComparisonConstraint, IRunCollectionColumnConstraint {
     [StorableConstructor]
-    protected RunCollectionComparisonConstraint(bool deserializing) : base(deserializing) { }
+    protected RunCollectionComparisonConstraint(StorableConstructorFlag _) : base(_) { }
 
     protected RunCollectionComparisonConstraint(RunCollectionComparisonConstraint original, Cloner cloner)
       : base(original, cloner) {

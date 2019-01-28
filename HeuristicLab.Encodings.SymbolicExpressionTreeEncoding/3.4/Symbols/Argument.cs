@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,12 +21,12 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   /// <summary>
   /// Symbol for function arguments
   /// </summary>
-  [StorableClass]
+  [StorableType("B0D02BED-6A67-469E-9A7C-8651C3805329")]
   [Item(Argument.ArgumentName, Argument.ArgumentDescription)]
   public sealed class Argument : Symbol, IReadOnlySymbol {
     public const string ArgumentName = "Argument";
@@ -48,7 +48,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
 
     [StorableConstructor]
-    private Argument(bool deserializing) : base(deserializing) { }
+    private Argument(StorableConstructorFlag _) : base(_) { }
     private Argument(Argument original, Cloner cloner)
       : base(original, cloner) {
       argumentIndex = original.argumentIndex;

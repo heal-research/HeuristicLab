@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,14 +25,14 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   [Item("Mean squared error & Tree size Evaluator", "Calculates the mean squared error and the tree size of a symbolic regression solution.")]
-  [StorableClass]
+  [StorableType("B1EFB303-9C37-4CBB-8269-BDBC223D9086")]
   public class SymbolicRegressionMultiObjectiveMeanSquaredErrorSolutionSizeEvaluator : SymbolicRegressionMultiObjectiveEvaluator {
     [StorableConstructor]
-    protected SymbolicRegressionMultiObjectiveMeanSquaredErrorSolutionSizeEvaluator(bool deserializing) : base(deserializing) { }
+    protected SymbolicRegressionMultiObjectiveMeanSquaredErrorSolutionSizeEvaluator(StorableConstructorFlag _) : base(_) { }
     protected SymbolicRegressionMultiObjectiveMeanSquaredErrorSolutionSizeEvaluator(SymbolicRegressionMultiObjectiveMeanSquaredErrorSolutionSizeEvaluator original, Cloner cloner)
       : base(original, cloner) {
     }

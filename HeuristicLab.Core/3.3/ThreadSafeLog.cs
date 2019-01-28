@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,11 +23,11 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using HeuristicLab.Common;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Core {
   [Item("ThreadSafeLog", "A thread-safe log for logging string messages.")]
-  [StorableClass]
+  [StorableType("0A124395-EB0B-4005-AE4C-C1828A3608CA")]
   public sealed class ThreadSafeLog : Item, ILog, IStorableContent {
     public string Filename { get; set; }
     private ConcurrentQueue<string> messages;
@@ -49,7 +49,7 @@ namespace HeuristicLab.Core {
     }
 
     [StorableConstructor]
-    private ThreadSafeLog(bool deserializing) : base(deserializing) { }
+    private ThreadSafeLog(StorableConstructorFlag _) : base(_) { }
     private ThreadSafeLog(ThreadSafeLog original, Cloner cloner)
       : base(original, cloner) {
       this.messages = new ConcurrentQueue<string>(original.messages);

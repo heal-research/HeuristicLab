@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,11 +25,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.ALPS {
   [Item("AlpsOffspringSelector", "Selects among the offspring population those that are designated successful and discards the unsuccessful offspring, except for some lucky losers. It expects the parent scopes to be below the first sub-scope, and offspring scopes to be below the second sub-scope separated again in two sub-scopes, the first with the failed offspring and the second with successful offspring.")]
-  [StorableClass]
+  [StorableType("69C49365-AF9B-474A-A994-7115469B03B7")]
   public class AlpsOffspringSelector : SingleSuccessorOperator {
     public IValueLookupParameter<DoubleValue> MaximumSelectionPressureParameter {
       get { return (IValueLookupParameter<DoubleValue>)Parameters["MaximumSelectionPressure"]; }
@@ -68,7 +68,7 @@ namespace HeuristicLab.Algorithms.ALPS {
     }
 
     [StorableConstructor]
-    protected AlpsOffspringSelector(bool deserializing) : base(deserializing) { }
+    protected AlpsOffspringSelector(StorableConstructorFlag _) : base(_) { }
     protected AlpsOffspringSelector(AlpsOffspringSelector original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new AlpsOffspringSelector(this, cloner);

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,16 +23,16 @@ using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization.Operators;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("Hamming Similarity Calculator for Permutation", "An operator that performs similarity calculation between two permutation-encoded solutions.")]
-  [StorableClass]
+  [StorableType("CD7CC097-C46E-42A5-82BF-E47CEB945B9B")]
   public sealed class HammingSimilarityCalculator : SingleObjectiveSolutionSimilarityCalculator {
     protected override bool IsCommutative { get { return true; } }
 
     [StorableConstructor]
-    private HammingSimilarityCalculator(bool deserializing) : base(deserializing) { }
+    private HammingSimilarityCalculator(StorableConstructorFlag _) : base(_) { }
     private HammingSimilarityCalculator(HammingSimilarityCalculator original, Cloner cloner) : base(original, cloner) { }
     public HammingSimilarityCalculator() : base() { }
 

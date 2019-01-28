@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,13 +24,13 @@ using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis {
   /// <summary>
   /// Represents discriminant function classification data analysis models.
   /// </summary>
-  [StorableClass]
+  [StorableType("E7A8648D-C938-499F-A712-185542095708")]
   [Item("DiscriminantFunctionClassificationModel", "Represents a classification model that uses a discriminant function and classification thresholds.")]
   public class DiscriminantFunctionClassificationModel : ClassificationModel, IDiscriminantFunctionClassificationModel {
     public override IEnumerable<string> VariablesUsedForPrediction {
@@ -67,7 +67,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
 
     [StorableConstructor]
-    protected DiscriminantFunctionClassificationModel(bool deserializing) : base(deserializing) { }
+    protected DiscriminantFunctionClassificationModel(StorableConstructorFlag _) : base(_) { }
     protected DiscriminantFunctionClassificationModel(DiscriminantFunctionClassificationModel original, Cloner cloner)
       : base(original, cloner) {
       model = cloner.Clone(original.model);

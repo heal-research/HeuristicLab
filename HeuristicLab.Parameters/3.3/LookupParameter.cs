@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,14 +23,14 @@ using System;
 using System.Threading;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Parameters {
   /// <summary>
   /// A parameter whose value is retrieved from the scope.
   /// </summary>
   [Item("LookupParameter", "A parameter whose value is retrieved from or written to a scope.")]
-  [StorableClass]
+  [StorableType("84FE5F33-94B8-4E30-B1CB-CD15314FB83B")]
   public class LookupParameter<T> : Parameter, IStatefulItem, ILookupParameter<T> where T : class, IItem {
     [Storable]
     private string actualName;
@@ -77,8 +77,7 @@ namespace HeuristicLab.Parameters {
     }
 
     [StorableConstructor]
-    protected LookupParameter(bool deserializing)
-      : base(deserializing) {
+    protected LookupParameter(StorableConstructorFlag _) : base(_) {
       cachedActualValues = new Lazy<ThreadLocal<IItem>>(() => { return new ThreadLocal<IItem>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
       executionContexts = new Lazy<ThreadLocal<IExecutionContext>>(() => { return new ThreadLocal<IExecutionContext>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
     }

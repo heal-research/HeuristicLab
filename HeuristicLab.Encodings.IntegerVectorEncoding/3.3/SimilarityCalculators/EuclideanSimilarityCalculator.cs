@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,11 +23,11 @@ using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization.Operators;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   [Item("Euclidean Similarity Calculator for IntegerVector", "Calculates the solution similarity based on the Euclidean distance and a transformation into (0;1] between two integer vectors.")]
-  [StorableClass]
+  [StorableType("479842EF-3426-4355-A064-7B235DC1D5E2")]
   public sealed class EuclideanSimilarityCalculator : SingleObjectiveSolutionSimilarityCalculator {
     protected override bool IsCommutative {
       get { return true; }
@@ -46,7 +46,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
     }
 
     [StorableConstructor]
-    private EuclideanSimilarityCalculator(bool deserializing) : base(deserializing) { }
+    private EuclideanSimilarityCalculator(StorableConstructorFlag _) : base(_) { }
     private EuclideanSimilarityCalculator(EuclideanSimilarityCalculator original, Cloner cloner)
       : base(original, cloner) {
       scaling = original.scaling;

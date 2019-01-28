@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,11 +24,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding.PermutationWithRepetition {
   [Item("PermutationWithRepetitionRandomCreator", "Creates PWR-individuals at random.")]
-  [StorableClass]
+  [StorableType("6E753916-C0FD-4585-B6A6-47FD66ED098F")]
   public class PWRRandomCreator : ScheduleCreator, IStochasticOperator {
 
     public ILookupParameter<IRandom> RandomParameter {
@@ -42,7 +42,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.PermutationWithRepetition {
     }
 
     [StorableConstructor]
-    protected PWRRandomCreator(bool deserializing) : base(deserializing) { }
+    protected PWRRandomCreator(StorableConstructorFlag _) : base(_) { }
     protected PWRRandomCreator(PWRRandomCreator original, Cloner cloner) : base(original, cloner) { }
     public PWRRandomCreator()
       : base() {

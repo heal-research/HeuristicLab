@@ -4,10 +4,10 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  [StorableClass]
+  [StorableType("F0DC4951-64DF-4058-8E87-748D0FA1AA21")]
   [Item("Shift Standard Distribution Transformation", "f(x) = ((x - m_org) / s_org ) * s_tar + m_tar | Represents Transformation to unit standard deviation and additional linear transformation to a target Mean and Standard deviation")]
   public class ShiftStandardDistributionTransformation : Transformation<double> {
     protected const string OriginalMeanParameterName = "Original Mean";
@@ -51,7 +51,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     #endregion
 
     [StorableConstructor]
-    protected ShiftStandardDistributionTransformation(bool deserializing) : base(deserializing) { }
+    protected ShiftStandardDistributionTransformation(StorableConstructorFlag _) : base(_) { }
     protected ShiftStandardDistributionTransformation(ShiftStandardDistributionTransformation original, Cloner cloner)
       : base(original, cloner) {
     }

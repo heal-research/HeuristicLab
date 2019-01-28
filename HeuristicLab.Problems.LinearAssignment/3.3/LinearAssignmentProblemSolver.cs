@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,11 +26,11 @@ using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.LinearAssignment {
   [Item("LinearAssignmentProblemSolver", "Uses the hungarian algorithm to solve linear assignment problems.")]
-  [StorableClass]
+  [StorableType("ABF202CC-44E4-4208-9EBF-1A104806358F")]
   public sealed class LinearAssignmentProblemSolver : SingleSuccessorOperator, ISingleObjectiveOperator {
     private const int UNASSIGNED = -1;
 
@@ -48,7 +48,7 @@ namespace HeuristicLab.Problems.LinearAssignment {
     }
 
     [StorableConstructor]
-    private LinearAssignmentProblemSolver(bool deserializing) : base(deserializing) { }
+    private LinearAssignmentProblemSolver(StorableConstructorFlag _) : base(_) { }
     private LinearAssignmentProblemSolver(LinearAssignmentProblemSolver original, Cloner cloner) : base(original, cloner) { }
     public LinearAssignmentProblemSolver()
       : base() {

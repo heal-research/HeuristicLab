@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,12 +25,12 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis {
 
   [Item("Transformation", "Represents the base class for a transformation.")]
-  [StorableClass]
+  [StorableType("46B380CC-6CDE-40FC-9BB4-E3FF82BA35EA")]
   public abstract class Transformation : ParameterizedNamedItem, ITransformation {
     protected const string ColumnParameterName = "Column";
     #region parameter properties
@@ -48,7 +48,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     #endregion
 
     [StorableConstructor]
-    protected Transformation(bool deserializing) : base(deserializing) { }
+    protected Transformation(StorableConstructorFlag _) : base(_) { }
     protected Transformation(Transformation original, Cloner cloner) : base(original, cloner) { }
     protected Transformation(IEnumerable<string> allowedColumns) {
       var allowed = new ItemSet<StringValue>(allowedColumns.Select(e => new StringValue(e)));
@@ -57,11 +57,11 @@ namespace HeuristicLab.Problems.DataAnalysis {
   }
 
   [Item("Transformation", "Represents the base class for a transformation.")]
-  [StorableClass]
+  [StorableType("F244DB89-72EA-4B41-89FA-C2E14F30AD29")]
   public abstract class Transformation<T> : Transformation, ITransformation<T> {
 
     [StorableConstructor]
-    protected Transformation(bool deserializing) : base(deserializing) { }
+    protected Transformation(StorableConstructorFlag _) : base(_) { }
     protected Transformation(Transformation<T> original, Cloner cloner) : base(original, cloner) { }
     protected Transformation(IEnumerable<string> allowedColumns) : base(allowedColumns) { }
 

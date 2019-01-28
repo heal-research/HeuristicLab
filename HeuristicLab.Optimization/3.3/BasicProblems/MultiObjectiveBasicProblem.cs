@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,21 +19,19 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
-  [StorableClass]
+  [StorableType("6F2EC371-0309-4848-B7B1-C9B9C7E3436F")]
   public abstract class MultiObjectiveBasicProblem<TEncoding> : BasicProblem<TEncoding, MultiObjectiveEvaluator>, IMultiObjectiveHeuristicOptimizationProblem, IMultiObjectiveProblemDefinition
   where TEncoding : class, IEncoding {
     [StorableConstructor]
-    protected MultiObjectiveBasicProblem(bool deserializing) : base(deserializing) { }
+    protected MultiObjectiveBasicProblem(StorableConstructorFlag _) : base(_) { }
 
     protected MultiObjectiveBasicProblem(MultiObjectiveBasicProblem<TEncoding> original, Cloner cloner)
       : base(original, cloner) {

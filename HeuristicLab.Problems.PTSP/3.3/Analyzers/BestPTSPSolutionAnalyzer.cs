@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -27,14 +27,14 @@ using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.PTSP {
   /// <summary>
   /// An operator for analyzing the best solution of probabilistic traveling salesman problems given in path representation.
   /// </summary>
   [Item("BestPTSPSolutionAnalyzer", "An operator for analyzing the best solution of Probabilistic Traveling Salesman Problems given in path representation using city coordinates.")]
-  [StorableClass]
+  [StorableType("459505F0-379B-4903-A388-8612FD732EE7")]
   public sealed class BestPTSPSolutionAnalyzer : SingleSuccessorOperator, IAnalyzer, ISingleObjectiveOperator {
     public bool EnabledByDefault {
       get { return true; }
@@ -69,7 +69,7 @@ namespace HeuristicLab.Problems.PTSP {
     }
 
     [StorableConstructor]
-    private BestPTSPSolutionAnalyzer(bool deserializing) : base(deserializing) { }
+    private BestPTSPSolutionAnalyzer(StorableConstructorFlag _) : base(_) { }
     private BestPTSPSolutionAnalyzer(BestPTSPSolutionAnalyzer original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new BestPTSPSolutionAnalyzer(this, cloner);

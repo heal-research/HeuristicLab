@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -29,14 +29,14 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
   /// <summary>
   /// An operator for analyzing the solution diversity in a population.
   /// </summary>
   [Item("SuccessfulOffspringAnalyzer", "An operator for analyzing certain properties in the successful offspring. The properties to be analyzed can be specified in the CollectedValues parameter.")]
-  [StorableClass]
+  [StorableType("22674F63-CD16-4494-9699-3E5298714618")]
   public sealed class SuccessfulOffspringAnalyzer : SingleSuccessorOperator, IAnalyzer {
     public bool EnabledByDefault {
       get { return false; }
@@ -70,7 +70,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       return new SuccessfulOffspringAnalyzer(this, cloner);
     }
     [StorableConstructor]
-    private SuccessfulOffspringAnalyzer(bool deserializing) : base(deserializing) { }
+    private SuccessfulOffspringAnalyzer(StorableConstructorFlag _) : base(_) { }
     private SuccessfulOffspringAnalyzer(SuccessfulOffspringAnalyzer original, Cloner cloner) : base(original, cloner) { }
     public SuccessfulOffspringAnalyzer()
       : base() {

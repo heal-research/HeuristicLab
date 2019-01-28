@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,10 +20,10 @@
 #endregion
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Optimization;
-using HeuristicLab.Parameters;
+using HEAL.Attic;
+
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
+  [StorableType("f2c0ca54-a2a9-49b8-9f5f-734368000f68")]
   public interface ISymbolicDataAnalysisSingleObjectiveAnalyzer : ISymbolicDataAnalysisAnalyzer {
     IScopeTreeLookupParameter<DoubleValue> QualityParameter { get; }
     ILookupParameter<BoolValue> MaximizationParameter { get; }

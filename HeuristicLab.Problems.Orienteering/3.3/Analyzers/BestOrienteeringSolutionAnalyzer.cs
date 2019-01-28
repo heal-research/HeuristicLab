@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -27,10 +27,10 @@ using HeuristicLab.Encodings.IntegerVectorEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.Orienteering {
-  [StorableClass]
+  [StorableType("6E07CAD7-20ED-4507-B2BB-B7393D9BBB95")]
   public sealed class BestOrienteeringSolutionAnalyzer : SingleSuccessorOperator, IAnalyzer {
     public bool EnabledByDefault {
       get { return true; }
@@ -78,7 +78,7 @@ namespace HeuristicLab.Problems.Orienteering {
     }
 
     [StorableConstructor]
-    private BestOrienteeringSolutionAnalyzer(bool deserializing) : base(deserializing) { }
+    private BestOrienteeringSolutionAnalyzer(StorableConstructorFlag _) : base(_) { }
     private BestOrienteeringSolutionAnalyzer(BestOrienteeringSolutionAnalyzer original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new BestOrienteeringSolutionAnalyzer(this, cloner);

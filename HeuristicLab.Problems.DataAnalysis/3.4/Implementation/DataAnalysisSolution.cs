@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,13 +24,13 @@ using System.Collections.Generic;
 using System.Drawing;
 using HeuristicLab.Common;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis {
   /// <summary>
   /// Abstract base class for data analysis solutions
   /// </summary>
-  [StorableClass]
+  [StorableType("339E0EAD-07D7-44C5-8E1D-AE9B2AA9A67D")]
   public abstract class DataAnalysisSolution : ResultCollection, IDataAnalysisSolution {
     private const string ModelResultName = "Model";
     private const string ProblemDataResultName = "ProblemData";
@@ -71,7 +71,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     #endregion
 
     [StorableConstructor]
-    protected DataAnalysisSolution(bool deserializing) : base(deserializing) { }
+    protected DataAnalysisSolution(StorableConstructorFlag _) : base(_) { }
     protected DataAnalysisSolution(DataAnalysisSolution original, Cloner cloner)
       : base(original, cloner) {
       name = original.Name;

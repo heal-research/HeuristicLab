@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -28,13 +28,13 @@ using System.Threading;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Clients.Hive {
 
   [Item("Hive Task", "Represents a hive task.")]
-  [StorableClass]
+  [StorableType("AB546F71-AB78-44AF-9954-1A269D278C56")]
   public class HiveTask : NamedItem, IItemTree<HiveTask>, IDisposable {
     protected static object locker = new object();
     protected ReaderWriterLockSlim childHiveTasksLock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
@@ -169,7 +169,7 @@ namespace HeuristicLab.Clients.Hive {
 
     #region Constructors and Cloning
     [StorableConstructor]
-    protected HiveTask(bool deserializing) { }
+    protected HiveTask(StorableConstructorFlag _) : base(_) { }
 
     public HiveTask()
       : base() {
@@ -540,7 +540,7 @@ namespace HeuristicLab.Clients.Hive {
   }
 
   [Item("Hive Task", "Represents a hive task.")]
-  [StorableClass]
+  [StorableType("F185C6FD-7282-4EE1-9F76-C4DD32C69207")]
   public class HiveTask<T> : HiveTask where T : ItemTask {
 
     public new T ItemTask {
@@ -551,7 +551,7 @@ namespace HeuristicLab.Clients.Hive {
     #region Constructors and Cloning
     public HiveTask() : base() { }
     [StorableConstructor]
-    protected HiveTask(bool deserializing) { }
+    protected HiveTask(StorableConstructorFlag _) : base(_) { }
     public HiveTask(T itemTask) : base(itemTask, true) { }
     protected HiveTask(HiveTask<T> original, Cloner cloner)
       : base(original, cloner) {

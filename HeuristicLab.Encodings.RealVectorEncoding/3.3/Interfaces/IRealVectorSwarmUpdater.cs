@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,9 +20,11 @@
 #endregion
 
 using HeuristicLab.Core;
-using HeuristicLab.Optimization; 
+using HeuristicLab.Optimization;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
+  [StorableType("d8a15c9c-e2e8-4494-bc0e-97ccad304757")]
   public interface IRealVectorSwarmUpdater : ISwarmUpdater, IRealVectorOperator {
     IScopeTreeLookupParameter<RealVector> NeighborBestParameter { get; }
     IScopeTreeLookupParameter<RealVector> PersonalBestParameter { get; }

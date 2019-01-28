@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  * and the BEACON Center for the Study of Evolution in Action.
  * 
  * This file is part of HeuristicLab.
@@ -22,8 +22,10 @@
 
 using System.Collections.Generic;
 using HeuristicLab.Core;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
+  [StorableType("588270d5-61ee-4906-b30f-841f64cd6724")]
   // represents an interface for loss functions used by gradient boosting
   // target represents the target vector  (original targets from the problem data, never changed)
   // pred   represents the current vector of predictions (a weighted combination of models learned so far, this vector is updated after each step)

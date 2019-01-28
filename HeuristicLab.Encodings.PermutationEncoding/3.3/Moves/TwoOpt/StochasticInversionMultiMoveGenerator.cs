@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,11 +24,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("StochasticInversionMultiMoveGenerator", "Randomly samples n from all possible inversion moves (2-opt) from a given permutation.")]
-  [StorableClass]
+  [StorableType("7CFC07A2-6610-4716-96BE-ABC84A6DA4C6")]
   public class StochasticInversionMultiMoveGenerator : InversionMoveGenerator, IMultiMoveGenerator, IStochasticOperator {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
@@ -43,7 +43,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     }
 
     [StorableConstructor]
-    protected StochasticInversionMultiMoveGenerator(bool deserializing) : base(deserializing) { }
+    protected StochasticInversionMultiMoveGenerator(StorableConstructorFlag _) : base(_) { }
     protected StochasticInversionMultiMoveGenerator(StochasticInversionMultiMoveGenerator original, Cloner cloner) : base(original, cloner) { }
     public StochasticInversionMultiMoveGenerator()
       : base() {

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,16 +21,16 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   [Item("Velocity Initializer (SPSO 2011)", "Initializes the velocity vector.")]
-  [StorableClass]
+  [StorableType("E844F8B9-068B-433D-8693-9416CA9140FB")]
   public class SPSO2011VelocityInitializer : SPSOVelocityInitializer {
     
     #region Construction & Cloning
     [StorableConstructor]
-    protected SPSO2011VelocityInitializer(bool deserializing) : base(deserializing) { }
+    protected SPSO2011VelocityInitializer(StorableConstructorFlag _) : base(_) { }
     protected SPSO2011VelocityInitializer(SPSO2011VelocityInitializer original, Cloner cloner) : base(original, cloner) { }
     public SPSO2011VelocityInitializer() : base() { }
     public override IDeepCloneable Clone(Cloner cloner) {

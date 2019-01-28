@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,7 +25,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   /// <summary>
@@ -36,7 +36,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   /// 'worse' solution by the factor beta.
   /// </summary>
   [Item("RoundedBlendAlphaBetaCrossover", "The rounded blend alpha beta crossover (BLX-a-b) for integer vectors is similar to the blend alpha crossover (BLX-a), but distinguishes between the better and worse of the parents. The interval from which to choose the new offspring can be extended beyond the better parent by specifying a higher alpha value, and beyond the worse parent by specifying a higher beta value. The new offspring is sampled uniformly in the extended range and rounded to the next feasible integer.")]
-  [StorableClass]
+  [StorableType("E9786DA1-C713-44EA-AD2A-BBE371712BA2")]
   public class RoundedBlendAlphaBetaCrossover : BoundedIntegerVectorCrossover, ISingleObjectiveOperator {
     /// <summary>
     /// Whether the problem is a maximization or minimization problem.
@@ -64,7 +64,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
     }
 
     [StorableConstructor]
-    protected RoundedBlendAlphaBetaCrossover(bool deserializing) : base(deserializing) { }
+    protected RoundedBlendAlphaBetaCrossover(StorableConstructorFlag _) : base(_) { }
     protected RoundedBlendAlphaBetaCrossover(RoundedBlendAlphaBetaCrossover original, Cloner cloner) : base(original, cloner) { }
     /// <summary>
     /// Initializes a new instance of <see cref="RoundedBlendAlphaBetaCrossover"/> with four additional parameters

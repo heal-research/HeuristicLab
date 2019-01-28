@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -27,7 +27,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Optimization.Operators;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TravelingSalesman {
   /// <summary>
@@ -37,10 +37,10 @@ namespace HeuristicLab.Problems.TravelingSalesman {
   /// The operator incrementally assimilates the initiating solution into the guiding solution and vice versa by correcting edges as needed.
   /// </remarks>
   [Item("TSPSimultaneousPathRelinker", "An operator that relinks paths between traveling salesman solutions starting from both ends. The operator incrementally assimilates the initiating solution into the guiding solution and vice versa by correcting edges as needed.")]
-  [StorableClass]
+  [StorableType("D44D112E-5139-4848-8A2B-66CFC5784EE4")]
   public sealed class TSPSimultaneousPathRelinker : SingleObjectivePathRelinker {
     [StorableConstructor]
-    private TSPSimultaneousPathRelinker(bool deserializing) : base(deserializing) { }
+    private TSPSimultaneousPathRelinker(StorableConstructorFlag _) : base(_) { }
     private TSPSimultaneousPathRelinker(TSPSimultaneousPathRelinker original, Cloner cloner) : base(original, cloner) { }
     public TSPSimultaneousPathRelinker() : base() { }
 

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -31,13 +31,13 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Algorithms.Benchmarks {
   [Item("Benchmark Algorithm", "An algorithm to execute performance benchmarks (Linpack, Dhrystone, Whetstone, etc.).")]
   [Creatable(CreatableAttribute.Categories.TestingAndAnalysis, Priority = 130)]
-  [StorableClass]
+  [StorableType("8E76490C-E5DA-4F09-8E94-10009FC4124D")]
   public sealed class BenchmarkAlgorithm : IAlgorithm, IStorableContent {
     private CancellationTokenSource cancellationTokenSource;
 
@@ -216,7 +216,7 @@ namespace HeuristicLab.Algorithms.Benchmarks {
 
     #region Constructors
     [StorableConstructor]
-    private BenchmarkAlgorithm(bool deserializing) { }
+    private BenchmarkAlgorithm(StorableConstructorFlag _) { }
     private BenchmarkAlgorithm(BenchmarkAlgorithm original, Cloner cloner) {
       if (original.ExecutionState == ExecutionState.Started) throw new InvalidOperationException(string.Format("Clone not allowed in execution state \"{0}\".", ExecutionState));
       cloner.RegisterClonedObject(original, this);

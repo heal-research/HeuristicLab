@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -28,14 +28,14 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Analysis {
   /// <summary>
   /// An operator for analyzing the solution similarity in a population.
   /// </summary>
   [Item("PopulationSimilarityAnalyzer", "An operator for analyzing the solution similarity in a population.")]
-  [StorableClass]
+  [StorableType("56A495B0-573F-421A-99E2-24D67D8DB686")]
   public class PopulationSimilarityAnalyzer : SingleSuccessorOperator, IAnalyzer, ISimilarityBasedOperator {
     private const string DiversityResultNameParameterName = "DiversityResultsName";
     private const string ExecuteInParallelParameterName = "ExecuteInParallel";
@@ -95,7 +95,7 @@ namespace HeuristicLab.Analysis {
     }
 
     [StorableConstructor]
-    protected PopulationSimilarityAnalyzer(bool deserializing) : base(deserializing) { }
+    protected PopulationSimilarityAnalyzer(StorableConstructorFlag _) : base(_) { }
 
     protected PopulationSimilarityAnalyzer(PopulationSimilarityAnalyzer original, Cloner cloner)
       : base(original, cloner) {

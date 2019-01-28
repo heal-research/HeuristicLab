@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,12 +22,12 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Clients.OKB.RunCreation {
   [Item("Empty Problem", "A dummy problem which serves as a placeholder and cannot be solved.")]
-  [StorableClass]
+  [StorableType("10132D57-7177-42A2-97B9-B77D89AADE6A")]
   [NonDiscoverableType]
   public sealed class EmptyProblem : HeuristicOptimizationProblem<EmptyEvaluator, EmptySolutionCreator> {
     public override bool CanChangeName {
@@ -38,7 +38,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
     }
 
     [StorableConstructor]
-    private EmptyProblem(bool deserializing) : base(deserializing) { }
+    private EmptyProblem(StorableConstructorFlag _) : base(_) { }
     private EmptyProblem(EmptyProblem original, Cloner cloner) : base(original, cloner) { }
     public EmptyProblem()
       : base() {

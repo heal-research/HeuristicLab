@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,14 +23,14 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   /// <summary>
   /// A base class for operators that manipulate int-valued vectors.
   /// </summary>
   [Item("IntegerVectorManipulator", "A base class for operators that manipulate int-valued vectors.")]
-  [StorableClass]
+  [StorableType("CE399EA5-7FAD-4070-A89D-A0FC3431B02D")]
   public abstract class IntegerVectorManipulator : IntegerVectorOperator, IIntegerVectorManipulator, IStochasticOperator {
     public override bool CanChangeName {
       get { return false; }
@@ -43,7 +43,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
     }
 
     [StorableConstructor]
-    protected IntegerVectorManipulator(bool deserializing) : base(deserializing) { }
+    protected IntegerVectorManipulator(StorableConstructorFlag _) : base(_) { }
     protected IntegerVectorManipulator(IntegerVectorManipulator original, Cloner cloner) : base(original, cloner) { }
     protected IntegerVectorManipulator()
       : base() {

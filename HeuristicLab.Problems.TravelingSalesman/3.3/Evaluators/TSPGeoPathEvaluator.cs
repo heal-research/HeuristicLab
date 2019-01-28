@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,20 +22,20 @@
 using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TravelingSalesman {
   /// <summary>
   /// An operator which evaluates TSP solutions given in path representation using the GEO distance metric (globe coordinates).
   /// </summary>
   [Item("TSPGeoPathEvaluator", "An operator which evaluates TSP solutions given in path representation using the GEO distance metric (globe coordinates).")]
-  [StorableClass]
+  [StorableType("A69C2CE3-6A89-4991-9743-4DE8F07149B9")]
   public sealed class TSPGeoPathEvaluator : TSPCoordinatesPathEvaluator {
     private const double PI = 3.141592;
     private const double RADIUS = 6378.388;
 
     [StorableConstructor]
-    private TSPGeoPathEvaluator(bool deserializing) : base(deserializing) { }
+    private TSPGeoPathEvaluator(StorableConstructorFlag _) : base(_) { }
     private TSPGeoPathEvaluator(TSPGeoPathEvaluator original, Cloner cloner) : base(original, cloner) { }
     public TSPGeoPathEvaluator() : base() { }
 

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,13 +24,13 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.VehicleRouting.Encodings.General;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaTranslocationMoveSoftTabuCriterion", "An operator which checks if translocation moves are tabu using a soft criterion for a VRP representation.  It is implemented as described in Alba, E. and Dorronsoro, B. (2004). Solving the Vehicle Routing Problem by Using Cellular Genetic Algorithms.")]
-  [StorableClass]
+  [StorableType("E1E314E4-11E8-40F8-BC26-A49D42810E79")]
   public sealed class AlbaTranslocationMoveSoftTabuCriterion : VRPMoveOperator, IAlbaTranslocationMoveOperator, ITabuChecker, IAlbaOperator {
     [Storable]
     private TranslocationMoveSoftTabuCriterion tabuChecker;
@@ -64,7 +64,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
     }
 
     [StorableConstructor]
-    private AlbaTranslocationMoveSoftTabuCriterion(bool deserializing) : base(deserializing) { }
+    private AlbaTranslocationMoveSoftTabuCriterion(StorableConstructorFlag _) : base(_) { }
 
     public AlbaTranslocationMoveSoftTabuCriterion()
       : base() {

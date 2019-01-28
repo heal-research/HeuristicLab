@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,10 +25,10 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.GradientDescent {
-  [StorableClass]
+  [StorableType("DC5D8418-FD1E-4D4C-AEF6-79F77AD8A5D9")]
   [Item(Name = "LBFGS MakeStep", Description = "Makes a step in the LM-BFGS optimization algorithm.")]
   public sealed class LbfgsMakeStep : SingleSuccessorOperator {
     private const string TerminationCriterionParameterName = "TerminationCriterion";
@@ -53,7 +53,7 @@ namespace HeuristicLab.Algorithms.GradientDescent {
     #endregion
 
     [StorableConstructor]
-    private LbfgsMakeStep(bool deserializing) : base(deserializing) { }
+    private LbfgsMakeStep(StorableConstructorFlag _) : base(_) { }
     private LbfgsMakeStep(LbfgsMakeStep original, Cloner cloner) : base(original, cloner) { }
     public LbfgsMakeStep()
       : base() {

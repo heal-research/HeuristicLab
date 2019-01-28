@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,8 +20,10 @@
 #endregion
 
 using System.Collections.Generic;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
+  [StorableType("09d35061-7098-4f29-957d-c2a2319fe954")]
   public class StandardEdgeEqualityComparer : EqualityComparer<Edge> {
     public override bool Equals(Edge x, Edge y) {
       bool inDirection = x.Source == y.Source && x.Target == y.Target;

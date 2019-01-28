@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,11 +22,11 @@
 using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting {
-  [StorableClass]
+  [StorableType("99571884-A90B-413D-BC14-59431785CFFF")]
   public class Tour : Item {
     [Storable]
     public List<int> Stops { get; private set; }
@@ -45,7 +45,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
     }
 
     [StorableConstructor]
-    protected Tour(bool deserializing) : base(deserializing) { }
+    protected Tour(StorableConstructorFlag _) : base(_) { }
 
     public double GetTourLength(IVRPProblemInstance instance, IVRPEncoding solution) {
       double length = 0;

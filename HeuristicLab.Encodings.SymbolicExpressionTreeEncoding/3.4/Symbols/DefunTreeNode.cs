@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,9 +20,9 @@
 #endregion
 
 using HeuristicLab.Common;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
-  [StorableClass]
+  [StorableType("0DEAAC29-2BC7-4018-8CAA-ACF77F8C89C8")]
   public sealed class DefunTreeNode : SymbolicExpressionTreeTopLevelNode {
     private int numberOfArguments;
     [Storable]
@@ -38,7 +38,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
 
     [StorableConstructor]
-    private DefunTreeNode(bool deserializing) : base(deserializing) { }
+    private DefunTreeNode(StorableConstructorFlag _) : base(_) { }
     private DefunTreeNode(DefunTreeNode original, Cloner cloner)
       : base(original, cloner) {
       functionName = original.functionName;

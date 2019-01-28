@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,7 +26,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Problems.VehicleRouting.Variants;
 using HeuristicLab.Problems.VehicleRouting.ProblemInstances;
@@ -36,7 +36,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
   /// An operator for analyzing the best solution of Vehicle Routing Problems.
   /// </summary>
   [Item("BestPickupAndDeliveryVRPSolutionAnalyzer", "An operator for analyzing the best solution of Pickup and Delivery Routing Problems.")]
-  [StorableClass]
+  [StorableType("81CA703F-038E-4D41-BB3F-25E04EC46AF9")]
   public sealed class BestPickupAndDeliveryVRPSolutionAnalyzer : SingleSuccessorOperator, IAnalyzer, IPickupAndDeliveryOperator, ISingleObjectiveOperator {
     public ILookupParameter<IVRPProblemInstance> ProblemInstanceParameter {
       get { return (ILookupParameter<IVRPProblemInstance>)Parameters["ProblemInstance"]; }
@@ -64,7 +64,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
     }
 
     [StorableConstructor]
-    private BestPickupAndDeliveryVRPSolutionAnalyzer(bool deserializing) : base(deserializing) { }
+    private BestPickupAndDeliveryVRPSolutionAnalyzer(StorableConstructorFlag _) : base(_) { }
 
     public BestPickupAndDeliveryVRPSolutionAnalyzer()
       : base() {

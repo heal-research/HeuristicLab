@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,11 +25,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.PTSP {
   [Item("PTSP Analytical Inversion Move Evaluator", "Evaluates an inversion move (2-opt) by a full solution evaluation.")]
-  [StorableClass]
+  [StorableType("D24FF41B-DA6E-42C6-9304-21EF01BFC61B")]
   public class PTSPAnalyticalInversionMoveEvaluator : AnalyticalPTSPMoveEvaluator, IPermutationInversionMoveOperator {
 
     public ILookupParameter<InversionMove> InversionMoveParameter {
@@ -37,7 +37,7 @@ namespace HeuristicLab.Problems.PTSP {
     }
 
     [StorableConstructor]
-    protected PTSPAnalyticalInversionMoveEvaluator(bool deserializing) : base(deserializing) { }
+    protected PTSPAnalyticalInversionMoveEvaluator(StorableConstructorFlag _) : base(_) { }
     protected PTSPAnalyticalInversionMoveEvaluator(PTSPAnalyticalInversionMoveEvaluator original, Cloner cloner) : base(original, cloner) { }
     public PTSPAnalyticalInversionMoveEvaluator()
       : base() {

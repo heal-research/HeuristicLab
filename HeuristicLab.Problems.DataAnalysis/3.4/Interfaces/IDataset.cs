@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,8 +24,10 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis {
+  [StorableType("55cc9211-2136-41a0-a5bc-0d51e915d1b4")]
   public interface IDataset : IItem, IStringConvertibleMatrix {
     IEnumerable<string> VariableNames { get; }
     IEnumerable<string> DoubleVariables { get; }

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -27,10 +27,10 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.GradientDescent {
-  [StorableClass]
+  [StorableType("649D495C-EBEA-4627-8552-989F80C04545")]
   [Item(Name = "LBFGS Initializer", Description = "Initializes the necessary data structures for the LM-BFGS algorithm.")]
   public sealed class LbfgsInitializer : SingleSuccessorOperator {
     private const string PointParameterName = "Point";
@@ -68,7 +68,7 @@ namespace HeuristicLab.Algorithms.GradientDescent {
     #endregion
 
     [StorableConstructor]
-    private LbfgsInitializer(bool deserializing) : base(deserializing) { }
+    private LbfgsInitializer(StorableConstructorFlag _) : base(_) { }
     private LbfgsInitializer(LbfgsInitializer original, Cloner cloner) : base(original, cloner) { }
     public LbfgsInitializer()
       : base() {

@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,14 +24,14 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Selection {
   /// <summary>
   /// A base class for selection operators which consider a single double quality value for selection.
   /// </summary>
   [Item("SingleObjectiveSelector", "A base class for selection operators which consider a single double quality value for selection.")]
-  [StorableClass]
+  [StorableType("50A55690-CD32-4675-B74F-E6B6D860587E")]
   public abstract class SingleObjectiveSelector : Selector, ISingleObjectiveOperator {
     protected IValueParameter<BoolValue> CopySelectedParameter {
       get { return (IValueParameter<BoolValue>)Parameters["CopySelected"]; }
@@ -52,7 +52,7 @@ namespace HeuristicLab.Selection {
     }
 
     [StorableConstructor]
-    protected SingleObjectiveSelector(bool deserializing) : base(deserializing) { }
+    protected SingleObjectiveSelector(StorableConstructorFlag _) : base(_) { }
     protected SingleObjectiveSelector(SingleObjectiveSelector original, Cloner cloner) : base(original, cloner) { }
 
     protected SingleObjectiveSelector()

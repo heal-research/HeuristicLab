@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,14 +25,14 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Problems.VehicleRouting.Variants;
 
 namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
   [Item("SingleDepotVRPProblemInstance", "Represents a single depot VRP instance.")]
-  [StorableClass]
+  [StorableType("A45435DD-F615-45C6-8456-5A49EE5D3C8E")]
   public class SingleDepotVRPProblemInstance : VRPProblemInstance, ISingleDepotProblemInstance {
     protected override IEnumerable<IOperator> GetOperators() {
       return ApplicationManager.Manager.GetInstances<ISingleDepotOperator>().Cast<IOperator>();
@@ -63,7 +63,7 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
     }
 
     [StorableConstructor]
-    protected SingleDepotVRPProblemInstance(bool deserializing) : base(deserializing) { }
+    protected SingleDepotVRPProblemInstance(StorableConstructorFlag _) : base(_) { }
 
     public SingleDepotVRPProblemInstance() {
     }

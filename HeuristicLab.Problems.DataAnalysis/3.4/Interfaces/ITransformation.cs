@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,13 +21,16 @@
 
 using System.Collections.Generic;
 using HeuristicLab.Core;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis {
+  [StorableType("6d791015-1439-40e6-a0ba-a8c49c0ddba9")]
   public interface ITransformation : IParameterizedItem {
     string ShortName { get; }
     string Column { get; }
   }
 
+  [StorableType("a200b865-5010-46ae-9070-094ac272f3a8")]
   public interface ITransformation<T> : ITransformation {
     void ConfigureParameters(IEnumerable<T> data);
     IEnumerable<T> ConfigureAndApply(IEnumerable<T> data);

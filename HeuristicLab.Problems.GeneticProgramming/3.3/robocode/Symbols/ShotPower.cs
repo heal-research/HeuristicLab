@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,20 +19,18 @@
  */
 #endregion
 
-using System.Collections.Generic;
-using System.Globalization;
 using HeuristicLab.Common;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.GeneticProgramming.Robocode {
-  [StorableClass]
+  [StorableType("95B53DAD-A47C-49CD-8157-6DF34A750F68")]
   public class ShotPower : Symbol {
     public override int MinimumArity { get { return 0; } }
     public override int MaximumArity { get { return 0; } }
 
     [StorableConstructor]
-    protected ShotPower(bool deserializing) : base(deserializing) { }
+    protected ShotPower(StorableConstructorFlag _) : base(_) { }
     protected ShotPower(ShotPower original, Cloner cloner) : base(original, cloner) { }
 
     public ShotPower() : base("ShotPower", "The power of a shot between 0.1 and 3.") { }

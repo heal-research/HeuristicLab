@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,13 +19,9 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Optimization;
 using HeuristicLab.Data;
@@ -35,7 +31,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// Represents a k-Means clustering solution for a clustering problem which can be visualized in the GUI.
   /// </summary>
   [Item("k-Means clustering solution", "Represents a k-Means solution for a clustering problem which can be visualized in the GUI.")]
-  [StorableClass]
+  [StorableType("E46AD906-04C4-4BEB-977D-BBC80E97C874")]
   public sealed class KMeansClusteringSolution : ClusteringSolution {
     private const string TrainingIntraClusterSumOfSquaresResultName = "Intra-cluster sum of squares (training)";
     private const string TestIntraClusterSumOfSquaresResultName = "Intra-cluster sum of squares (test)";
@@ -45,7 +41,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     [StorableConstructor]
-    private KMeansClusteringSolution(bool deserializing) : base(deserializing) { }
+    private KMeansClusteringSolution(StorableConstructorFlag _) : base(_) { }
     private KMeansClusteringSolution(KMeansClusteringSolution original, Cloner cloner)
       : base(original, cloner) {
     }

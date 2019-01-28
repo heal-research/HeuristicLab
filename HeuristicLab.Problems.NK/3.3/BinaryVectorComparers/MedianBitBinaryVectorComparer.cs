@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,14 +23,14 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.NK {
   [Item("Median Bit Binary Vector Comparer", "Compares two binary vectors by the median positive bit location")]
-  [StorableClass]
+  [StorableType("C750F13C-F775-4A53-8725-DB26F38DC229")]
   public sealed class MedianBitBinaryVectorComparer : Item, IBinaryVectorComparer {
     [StorableConstructor]
-    private MedianBitBinaryVectorComparer(bool deserializing) : base(deserializing) { }
+    private MedianBitBinaryVectorComparer(StorableConstructorFlag _) : base(_) { }
     private MedianBitBinaryVectorComparer(MedianBitBinaryVectorComparer original, Cloner cloner)
       : base(original, cloner) { }
     public MedianBitBinaryVectorComparer() { }

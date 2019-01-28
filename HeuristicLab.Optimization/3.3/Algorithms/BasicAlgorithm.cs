@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,10 +23,10 @@ using System;
 using System.Threading;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
-  [StorableClass]
+  [StorableType("EFBEE5EB-B15B-4FBB-A210-C4E36898B89D")]
   public abstract class BasicAlgorithm : Algorithm, IStorableContent {
 
     private bool pausePending;
@@ -51,7 +51,7 @@ namespace HeuristicLab.Optimization {
     }
 
     [StorableConstructor]
-    protected BasicAlgorithm(bool deserializing) : base(deserializing) { }
+    protected BasicAlgorithm(StorableConstructorFlag _) : base(_) { }
     protected BasicAlgorithm(BasicAlgorithm original, Cloner cloner)
       : base(original, cloner) {
       results = cloner.Clone(original.Results);

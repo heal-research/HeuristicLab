@@ -1,7 +1,7 @@
 ﻿#region License Information
 
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,9 +24,11 @@
 using System.IO;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   [Item("Hierarchical Formatter", "Formatter for symbolic expression trees that uses special characters for drawing a tree in text-mode.")]
+  [StorableType("0a9ad135-ced1-4c3b-94ff-b1fb41193515")]
   public sealed class SymbolicExpressionTreeHierarchicalFormatter : NamedItem, ISymbolicExpressionTreeStringFormatter {
     private SymbolicExpressionTreeHierarchicalFormatter(SymbolicExpressionTreeHierarchicalFormatter original, Cloner cloner)
       : base(original, cloner) {

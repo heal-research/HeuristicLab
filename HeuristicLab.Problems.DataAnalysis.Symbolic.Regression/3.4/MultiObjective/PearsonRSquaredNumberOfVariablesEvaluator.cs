@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,14 +26,14 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   [Item("Pearson R² & Number of Variables Evaluator", "Calculates the Pearson R² and the number of used variables of a symbolic regression solution.")]
-  [StorableClass]
+  [StorableType("DF68BE26-D76C-4CB7-BB38-CBBB4391FE86")]
   public class PearsonRSquaredNumberOfVariablesEvaluator : SymbolicRegressionMultiObjectiveEvaluator {
     [StorableConstructor]
-    protected PearsonRSquaredNumberOfVariablesEvaluator(bool deserializing) : base(deserializing) { }
+    protected PearsonRSquaredNumberOfVariablesEvaluator(StorableConstructorFlag _) : base(_) { }
     protected PearsonRSquaredNumberOfVariablesEvaluator(PearsonRSquaredNumberOfVariablesEvaluator original, Cloner cloner)
       : base(original, cloner) {
     }

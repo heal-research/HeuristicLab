@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,12 +21,12 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.VehicleRouting.Encodings.General;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinCustomerRelocationMoveAttribute", "Customer relocation move attribute")]
-  [StorableClass]
+  [StorableType("4B8240FA-38A4-40F7-AB7E-04632C710598")]
   public class PotvinCustomerRelocationMoveAttribute : VRPMoveAttribute {
     [Storable]
     public int Tour { get; private set; }
@@ -34,7 +34,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
     public int City { get; private set; }
 
     [StorableConstructor]
-    protected PotvinCustomerRelocationMoveAttribute(bool deserializing) : base(deserializing) { }
+    protected PotvinCustomerRelocationMoveAttribute(StorableConstructorFlag _) : base(_) { }
     protected PotvinCustomerRelocationMoveAttribute(PotvinCustomerRelocationMoveAttribute original, Cloner cloner)
       : base(original, cloner) {
       this.Tour = original.Tour;

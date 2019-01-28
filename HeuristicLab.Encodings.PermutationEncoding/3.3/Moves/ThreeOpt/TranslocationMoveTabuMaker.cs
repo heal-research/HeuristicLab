@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,11 +23,11 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("TranslocationMoveTabuMaker", "Declares a given translocation or insertion move (3-opt) as tabu, by adding its attributes to the tabu list.")]
-  [StorableClass]
+  [StorableType("A5B9AC7B-3A83-4BF4-914A-A0FD17AE8A94")]
   public class TranslocationMoveTabuMaker : TabuMaker, IPermutationTranslocationMoveOperator {
     public ILookupParameter<Permutation> PermutationParameter {
       get { return (ILookupParameter<Permutation>)Parameters["Permutation"]; }
@@ -37,7 +37,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     }
 
     [StorableConstructor]
-    protected TranslocationMoveTabuMaker(bool deserializing) : base(deserializing) { }
+    protected TranslocationMoveTabuMaker(StorableConstructorFlag _) : base(_) { }
     protected TranslocationMoveTabuMaker(TranslocationMoveTabuMaker original, Cloner cloner) : base(original, cloner) { }
     public TranslocationMoveTabuMaker()
       : base() {

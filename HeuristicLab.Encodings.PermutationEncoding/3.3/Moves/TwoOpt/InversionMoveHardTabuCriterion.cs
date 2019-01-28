@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,14 +26,14 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("InversionMoveHardTabuCriterion", @"For relative postion encoded permutations it prevents readding of previously deleted edges as well as deleting previously added edges.
   For absolute position encoded permutations it prevents moving a number if it was previously moved.
 
 If the aspiration condition is activated, a move will not be considered tabu against a move in the tabu list if it leads to a better solution than the quality recorded with the move in the tabu list.")]
-  [StorableClass]
+  [StorableType("E5212C75-4A9E-4F9F-920E-D76D11E72874")]
   public class InversionMoveHardTabuCriterion : SingleSuccessorOperator, IPermutationInversionMoveOperator, ITabuChecker {
     public override bool CanChangeName {
       get { return false; }
@@ -66,7 +66,7 @@ If the aspiration condition is activated, a move will not be considered tabu aga
     }
 
     [StorableConstructor]
-    protected InversionMoveHardTabuCriterion(bool deserializing) : base(deserializing) { }
+    protected InversionMoveHardTabuCriterion(StorableConstructorFlag _) : base(_) { }
     protected InversionMoveHardTabuCriterion(InversionMoveHardTabuCriterion original, Cloner cloner) : base(original, cloner) { }
     public InversionMoveHardTabuCriterion()
       : base() {

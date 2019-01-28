@@ -1,7 +1,7 @@
 ﻿#region License Information
 
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -27,10 +27,10 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
-  [StorableClass]
+  [StorableType("75843B4E-C69C-423A-87BD-A64619D380BB")]
   [Item("SymbolicRegressionPruningOperator", "An operator which prunes symbolic regression trees.")]
   public class SymbolicRegressionPruningOperator : SymbolicDataAnalysisExpressionPruningOperator {
     private const string EvaluatorParameterName = "Evaluator";
@@ -49,7 +49,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     }
 
     [StorableConstructor]
-    protected SymbolicRegressionPruningOperator(bool deserializing) : base(deserializing) { }
+    protected SymbolicRegressionPruningOperator(StorableConstructorFlag _) : base(_) { }
 
     public SymbolicRegressionPruningOperator(ISymbolicDataAnalysisSolutionImpactValuesCalculator impactValuesCalculator)
       : base(impactValuesCalculator) {

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -29,12 +29,12 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   [Item("MultiSymbolicExpressionTreeManipulator", "Randomly selects and applies one of its manipulators every time it is called.")]
-  [StorableClass]
+  [StorableType("0A0ED8D8-69D4-4F58-A4FD-6D97F27B4009")]
   public sealed class MultiSymbolicExpressionTreeManipulator : StochasticMultiBranch<ISymbolicExpressionTreeManipulator>,
     ISymbolicExpressionTreeManipulator,
     IStochasticOperator,
@@ -63,7 +63,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     #endregion
 
     [StorableConstructor]
-    private MultiSymbolicExpressionTreeManipulator(bool deserializing) : base(deserializing) { }
+    private MultiSymbolicExpressionTreeManipulator(StorableConstructorFlag _) : base(_) { }
     private MultiSymbolicExpressionTreeManipulator(MultiSymbolicExpressionTreeManipulator original, Cloner cloner) : base(original, cloner) { }
     public MultiSymbolicExpressionTreeManipulator()
       : base() {

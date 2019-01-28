@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,11 +25,11 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.ParameterOptimization {
   [Item("ParameterVectorEvaluator", "An base class for other parameter vector evaluators.")]
-  [StorableClass]
+  [StorableType("4AE154F0-068C-4CC0-873D-22BE3B7CACC9")]
   public abstract class ParameterVectorEvaluator : SingleSuccessorOperator, IParameterVectorEvaluator {
     private const string QualityParameterName = "Quality";
     private const string ProblemSizeParameterName = "ProblemSize";
@@ -53,7 +53,7 @@ namespace HeuristicLab.Problems.ParameterOptimization {
 
 
     [StorableConstructor]
-    protected ParameterVectorEvaluator(bool deserializing) : base(deserializing) { }
+    protected ParameterVectorEvaluator(StorableConstructorFlag _) : base(_) { }
     protected ParameterVectorEvaluator(ParameterVectorEvaluator original, Cloner cloner)
       : base(original, cloner) {
     }

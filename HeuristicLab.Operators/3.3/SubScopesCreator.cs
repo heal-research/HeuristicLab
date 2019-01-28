@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,14 +23,14 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Operators {
   /// <summary>
   /// An operator which adds new and empty sub-scopes to the current scope.
   /// </summary>
   [Item("SubScopesCreator", "An operator which adds new and empty sub-scopes to the current scope.")]
-  [StorableClass]
+  [StorableType("E9669404-045B-45CA-A922-9C81ACBBAF0C")]
   public class SubScopesCreator : SingleSuccessorOperator {
     public ValueLookupParameter<IntValue> NumberOfSubScopesParameter {
       get { return (ValueLookupParameter<IntValue>)Parameters["NumberOfSubScopes"]; }
@@ -43,7 +43,7 @@ namespace HeuristicLab.Operators {
     }
 
     [StorableConstructor]
-    protected SubScopesCreator(bool deserializing) : base(deserializing) { }
+    protected SubScopesCreator(StorableConstructorFlag _) : base(_) { }
     protected SubScopesCreator(SubScopesCreator original, Cloner cloner)
       : base(original, cloner) {
     }

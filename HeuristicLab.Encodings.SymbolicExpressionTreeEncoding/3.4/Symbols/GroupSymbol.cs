@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,10 +23,10 @@ using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
-  [StorableClass]
+  [StorableType("B9D90B52-04E2-4B18-A293-160061DAD57F")]
   public sealed class GroupSymbol : Symbol {
     private const int minimumArity = 0;
     private const int maximumArity = 0;
@@ -49,7 +49,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
 
     [StorableConstructor]
-    private GroupSymbol(bool deserializing) : base(deserializing) { }
+    private GroupSymbol(StorableConstructorFlag _) : base(_) { }
     private GroupSymbol(GroupSymbol original, Cloner cloner)
       : base(original, cloner) {
       symbols = new ObservableSet<ISymbol>(original.Symbols.Select(s => cloner.Clone(s)));

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,14 +22,14 @@
 using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaIntraRouteInversionManipulator", "An operator which applies the SLS operation to a VRP representation. It is implemented as described in Alba, E. and Dorronsoro, B. (2004). Solving the Vehicle Routing Problem by Using Cellular Genetic Algorithms.")]
-  [StorableClass]
+  [StorableType("B64561D5-BFB8-47CB-A9D9-3F17A9510B45")]
   public sealed class AlbaIntraRouteInversionManipulator : AlbaManipulator {
     [StorableConstructor]
-    private AlbaIntraRouteInversionManipulator(bool deserializing) : base(deserializing) { }
+    private AlbaIntraRouteInversionManipulator(StorableConstructorFlag _) : base(_) { }
 
     public AlbaIntraRouteInversionManipulator()
       : base() {

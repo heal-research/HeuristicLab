@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,14 +26,14 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   /// <summary>
   /// An operator that tracks the min average and max length of symbolic expression trees.
   /// </summary>
   [Item("MinAverageMaxSymbolicExpressionTreeLengthAnalyzer", "An operator that tracks the min avgerage and max length of symbolic expression trees.")]
-  [StorableClass]
+  [StorableType("65606B5F-4F92-4E79-9B53-9A72398A9F1B")]
   public sealed class MinAverageMaxSymbolicExpressionTreeLengthAnalyzer : AlgorithmOperator, ISymbolicExpressionTreeAnalyzer {
     private const string SymbolicExpressionTreeParameterName = "SymbolicExpressionTree";
     private const string SymbolicExpressionTreeLengthParameterName = "SymbolicExpressionTreeLength";
@@ -69,7 +69,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     #endregion
 
     [StorableConstructor]
-    private MinAverageMaxSymbolicExpressionTreeLengthAnalyzer(bool deserializing) : base() { }
+    private MinAverageMaxSymbolicExpressionTreeLengthAnalyzer(StorableConstructorFlag _) : base(_) { }
     private MinAverageMaxSymbolicExpressionTreeLengthAnalyzer(MinAverageMaxSymbolicExpressionTreeLengthAnalyzer original, Cloner cloner)
       : base(original, cloner) {
       valueAnalyzer = cloner.Clone(original.valueAnalyzer);

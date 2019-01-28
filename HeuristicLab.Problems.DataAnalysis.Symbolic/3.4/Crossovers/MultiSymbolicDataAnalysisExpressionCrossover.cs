@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -29,12 +29,12 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [Item("MultiSymbolicDataAnalysisExpressionCrossover", "Randomly selects and applies one of its crossovers every time it is called.")]
-  [StorableClass]
+  [StorableType("AD80D64F-64E6-42F7-B1D3-AFDE6AF96EC4")]
   public class MultiSymbolicDataAnalysisExpressionCrossover<T> : StochasticMultiBranch<ISymbolicExpressionTreeCrossover>,
     ISymbolicDataAnalysisExpressionCrossover<T> where T : class, IDataAnalysisProblemData {
     private const string ParentsParameterName = "Parents";
@@ -86,7 +86,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     #endregion
 
     [StorableConstructor]
-    protected MultiSymbolicDataAnalysisExpressionCrossover(bool deserializing) : base(deserializing) { }
+    protected MultiSymbolicDataAnalysisExpressionCrossover(StorableConstructorFlag _) : base(_) { }
     protected MultiSymbolicDataAnalysisExpressionCrossover(MultiSymbolicDataAnalysisExpressionCrossover<T> original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) { return new MultiSymbolicDataAnalysisExpressionCrossover<T>(this, cloner); }
     public MultiSymbolicDataAnalysisExpressionCrossover()

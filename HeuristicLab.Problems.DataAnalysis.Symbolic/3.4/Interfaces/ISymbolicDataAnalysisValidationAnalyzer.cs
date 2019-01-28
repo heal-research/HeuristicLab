@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,7 +20,10 @@
 #endregion
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HEAL.Attic;
+
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
+  [StorableType("c758eecc-12c0-46d8-839e-5c59af7ff095")]
   public interface ISymbolicDataAnalysisValidationAnalyzer<T, U> : ISymbolicDataAnalysisAnalyzer, ISymbolicDataAnalysisInterpreterOperator
     where T : class,ISymbolicDataAnalysisEvaluator<U>
     where U : class, IDataAnalysisProblemData {

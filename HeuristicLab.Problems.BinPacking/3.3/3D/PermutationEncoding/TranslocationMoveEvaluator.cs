@@ -22,11 +22,11 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.BinPacking3D {
   [Item("TranslocationMoveEvaluator", "Move evaluator for insertion or translocation moves.")]
-  [StorableClass]
+  [StorableType("76E856C1-3DB9-44EC-A995-2CD667B69753")]
   public sealed class TranslocationMoveEvaluator : MoveEvaluatorBase<Permutation, TranslocationMove>, IPermutationTranslocationMoveOperator {
     public ILookupParameter<TranslocationMove> TranslocationMoveParameter {
       get { return MoveParameter; }
@@ -35,7 +35,7 @@ namespace HeuristicLab.Problems.BinPacking3D {
       get { return EncodedSolutionParameter; }
     }
     [StorableConstructor]
-    private TranslocationMoveEvaluator(bool deserializing) : base(deserializing) { }
+    private TranslocationMoveEvaluator(StorableConstructorFlag _) : base(_) { }
     private TranslocationMoveEvaluator(TranslocationMoveEvaluator original, Cloner cloner) : base(original, cloner) { }
     public TranslocationMoveEvaluator()
       : base() {

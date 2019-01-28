@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,12 +21,12 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [Item("NCA Classification Solution", "")]
-  [StorableClass]
+  [StorableType("3FE3A37F-2926-43EB-AC77-3C80654D93AA")]
   public class NcaClassificationSolution : ClassificationSolution, INcaClassificationSolution {
 
     public new INcaModel Model {
@@ -35,7 +35,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     [StorableConstructor]
-    protected NcaClassificationSolution(bool deserializing) : base(deserializing) { }
+    protected NcaClassificationSolution(StorableConstructorFlag _) : base(_) { }
     protected NcaClassificationSolution(NcaClassificationSolution original, Cloner cloner)
       : base(original, cloner) {
     }

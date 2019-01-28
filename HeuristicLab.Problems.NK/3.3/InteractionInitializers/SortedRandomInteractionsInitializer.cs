@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,12 +25,12 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.NK {
   [Item("SortedRandomInteractionsInitializer", "Randomly assigns interactions across all bits and sorts components according to bit affinity.")]
-  [StorableClass]
+  [StorableType("33F27348-DC65-4DCF-88EC-383379EEEA0C")]
   public sealed class SortedRandomInteractionsInitializer : ParameterizedNamedItem, IInteractionInitializer {
     public IConstrainedValueParameter<IBinaryVectorComparer> ComparerParameter {
       get { return (IConstrainedValueParameter<IBinaryVectorComparer>)Parameters["Comparer"]; }
@@ -40,7 +40,7 @@ namespace HeuristicLab.Problems.NK {
     }
 
     [StorableConstructor]
-    private SortedRandomInteractionsInitializer(bool serializing) : base(serializing) { }
+    private SortedRandomInteractionsInitializer(StorableConstructorFlag _) : base(_) { }
     private SortedRandomInteractionsInitializer(SortedRandomInteractionsInitializer original, Cloner cloner) : base(original, cloner) { }
     public SortedRandomInteractionsInitializer() {
       Parameters.Add(new ConstrainedValueParameter<IBinaryVectorComparer>("Comparer", "Comparison for sorting of component functions."));

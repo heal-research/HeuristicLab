@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,18 +25,18 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.NK {
   [Item("ExponentialDistributionWeightsInitializer", "Assigns exponentially decreasing weights using the rate parameter lambda.")]
-  [StorableClass]
+  [StorableType("F67982B7-A94B-4876-977A-34DB44B40739")]
   public sealed class ExponentialDistributionWeightsInitializer : ParameterizedNamedItem, IWeightsInitializer {
     public IValueParameter<DoubleValue> LambdaParameter {
       get { return (IValueParameter<DoubleValue>)Parameters["Lambda"]; }
     }
 
     [StorableConstructor]
-    private ExponentialDistributionWeightsInitializer(bool deserializing) : base(deserializing) { }
+    private ExponentialDistributionWeightsInitializer(StorableConstructorFlag _) : base(_) { }
     private ExponentialDistributionWeightsInitializer(ExponentialDistributionWeightsInitializer original, Cloner cloner)
       : base(original, cloner) {
     }

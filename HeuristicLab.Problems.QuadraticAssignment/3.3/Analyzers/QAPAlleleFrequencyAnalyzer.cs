@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,14 +26,14 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.QuadraticAssignment {
   /// <summary>
   /// An operator for analyzing the frequency of alleles in solutions of Quadratic Assignment Problems.
   /// </summary>
   [Item("QAPAlleleFrequencyAnalyzer", "An operator for analyzing the frequency of alleles in solutions of Quadratic Assignment Problems.")]
-  [StorableClass]
+  [StorableType("490E5FD6-A269-4F5F-AC07-12056CDFFC7F")]
   public sealed class QAPAlleleFrequencyAnalyzer : AlleleFrequencyAnalyzer<Permutation> {
     public LookupParameter<DoubleMatrix> WeightsParameter {
       get { return (LookupParameter<DoubleMatrix>)Parameters["Weights"]; }
@@ -43,7 +43,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
     }
 
     [StorableConstructor]
-    private QAPAlleleFrequencyAnalyzer(bool deserializing) : base(deserializing) { }
+    private QAPAlleleFrequencyAnalyzer(StorableConstructorFlag _) : base(_) { }
     private QAPAlleleFrequencyAnalyzer(QAPAlleleFrequencyAnalyzer original, Cloner cloner) : base(original, cloner) { }
     public QAPAlleleFrequencyAnalyzer()
       : base() {

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,18 +23,18 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Optimization.Operators {
   [Item("UserDefinedEvaluator", "An evaluator that can be customized with operators which it will execute one after another.")]
-  [StorableClass]
+  [StorableType("BE378550-EAD2-4D4B-A2FD-3CBC563B2C2B")]
   public class UserDefinedEvaluator : UserDefinedOperator, ISingleObjectiveEvaluator {
     public ILookupParameter<DoubleValue> QualityParameter {
       get { return (ILookupParameter<DoubleValue>)Parameters["Quality"]; }
     }
 
     [StorableConstructor]
-    protected UserDefinedEvaluator(bool deserializing) : base(deserializing) { }
+    protected UserDefinedEvaluator(StorableConstructorFlag _) : base(_) { }
     protected UserDefinedEvaluator(UserDefinedEvaluator original, Cloner cloner) : base(original, cloner) { }
     public UserDefinedEvaluator()
       : base() {

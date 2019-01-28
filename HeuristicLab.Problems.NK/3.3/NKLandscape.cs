@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -27,7 +27,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Problems.Binary;
 using HeuristicLab.Random;
@@ -35,7 +35,7 @@ using HeuristicLab.Random;
 namespace HeuristicLab.Problems.NK {
   [Item("NK Landscape", "Represents an NK landscape optimization problem.")]
   [Creatable(CreatableAttribute.Categories.CombinatorialProblems, Priority = 215)]
-  [StorableClass]
+  [StorableType("04294537-87F2-4A9F-BC14-7D4CA700F326")]
   public sealed class NKLandscape : BinaryProblem {
     public override bool Maximization {
       get { return false; }
@@ -135,7 +135,7 @@ namespace HeuristicLab.Problems.NK {
     }
 
     [StorableConstructor]
-    private NKLandscape(bool deserializing) : base(deserializing) { }
+    private NKLandscape(StorableConstructorFlag _) : base(_) { }
     private NKLandscape(NKLandscape original, Cloner cloner)
       : base(original, cloner) {
       random = (MersenneTwister)original.random.Clone(cloner);

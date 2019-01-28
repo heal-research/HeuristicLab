@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,7 +19,7 @@
  */
 #endregion
 
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Persistence.Interfaces;
 
 namespace HeuristicLab.Persistence.Default.DebugString {
@@ -38,7 +38,7 @@ namespace HeuristicLab.Persistence.Default.DebugString {
     public string Data { get; set; }
 
     [StorableConstructor]
-    protected DebugString(bool deserializing) { }
+    protected DebugString(StorableConstructorFlag _) { }
     private DebugString() { }
 
     /// <summary>

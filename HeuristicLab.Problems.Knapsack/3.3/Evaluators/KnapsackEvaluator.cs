@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,14 +26,14 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.Knapsack {
   /// <summary>
   /// A base class for operators which evaluate Knapsack solutions given in BinaryVector encoding.
   /// </summary>
   [Item("KnapsackEvaluator", "Evaluates solutions for the Knapsack problem.")]
-  [StorableClass]
+  [StorableType("905F6A31-FDC1-48EA-9229-DA23956F1929")]
   public class KnapsackEvaluator : InstrumentedOperator, IKnapsackEvaluator {
     public ILookupParameter<DoubleValue> QualityParameter {
       get { return (ILookupParameter<DoubleValue>)Parameters["Quality"]; }
@@ -69,7 +69,7 @@ namespace HeuristicLab.Problems.Knapsack {
     }
 
     [StorableConstructor]
-    protected KnapsackEvaluator(bool deserializing) : base(deserializing) { }
+    protected KnapsackEvaluator(StorableConstructorFlag _) : base(_) { }
     protected KnapsackEvaluator(KnapsackEvaluator original, Cloner cloner) : base(original, cloner) { }
     public KnapsackEvaluator()
       : base() {
@@ -88,6 +88,7 @@ namespace HeuristicLab.Problems.Knapsack {
       return new KnapsackEvaluator(this, cloner);
     }
 
+    [StorableType(StorableMemberSelection.AllFields, "0968A5F3-5E3A-4357-A042-06E4BDEAFA6C")]
     public struct KnapsackEvaluation {
       public DoubleValue Quality;
       public DoubleValue SumWeights;

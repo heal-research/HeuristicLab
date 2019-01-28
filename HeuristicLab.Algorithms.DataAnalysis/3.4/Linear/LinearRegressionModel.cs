@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,14 +25,14 @@ using System.Drawing;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>
   /// Represents a linear regression model
   /// </summary>
-  [StorableClass]
+  [StorableType("B65FB0CA-7333-41FE-8156-FF141C54F5AF")]
   [Item("Linear Regression Model", "Represents a linear regression model.")]
   public sealed class LinearRegressionModel : RegressionModel, IConfidenceRegressionModel {
     public static new Image StaticItemImage {
@@ -74,8 +74,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     [StorableConstructor]
-    private LinearRegressionModel(bool deserializing)
-      : base(deserializing) {
+    private LinearRegressionModel(StorableConstructorFlag _) : base(_) {
     }
     private LinearRegressionModel(LinearRegressionModel original, Cloner cloner)
       : base(original, cloner) {

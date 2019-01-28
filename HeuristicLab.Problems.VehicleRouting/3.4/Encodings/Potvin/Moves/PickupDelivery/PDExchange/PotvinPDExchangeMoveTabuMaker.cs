@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,12 +25,12 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinPDExchangeMoveTabuMaker", "Declares a given exchange move as tabu.")]
-  [StorableClass]
+  [StorableType("3B1A4A09-3A59-4763-A946-118F65576A2E")]
   public class PotvinPDExchangeMoveTabuMaker : SingleSuccessorOperator, ITabuMaker, IPotvinPDExchangeMoveOperator, IPotvinOperator, ISingleObjectiveOperator {
     public LookupParameter<ItemList<IItem>> TabuListParameter {
       get { return (LookupParameter<ItemList<IItem>>)Parameters["TabuList"]; }
@@ -76,7 +76,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
     }
 
     [StorableConstructor]
-    protected PotvinPDExchangeMoveTabuMaker(bool deserializing) : base(deserializing) { }
+    protected PotvinPDExchangeMoveTabuMaker(StorableConstructorFlag _) : base(_) { }
     protected PotvinPDExchangeMoveTabuMaker(PotvinPDExchangeMoveTabuMaker original, Cloner cloner) : base(original, cloner) { }
     public PotvinPDExchangeMoveTabuMaker()
       : base() {

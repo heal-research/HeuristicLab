@@ -1,7 +1,7 @@
 ﻿#region License Information
 
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -27,15 +27,15 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
-  [StorableClass]
+  [StorableType("A1B9F4C8-5E29-493C-A483-2AC68453BC63")]
   public abstract class SymbolicExpressionTreeProblem : SingleObjectiveBasicProblem<SymbolicExpressionTreeEncoding> {
 
     // persistence
     [StorableConstructor]
-    protected SymbolicExpressionTreeProblem(bool deserializing) : base(deserializing) { }
+    protected SymbolicExpressionTreeProblem(StorableConstructorFlag _) : base(_) { }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() { }
 

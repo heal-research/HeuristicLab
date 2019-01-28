@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,7 +24,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Optimization.Operators {
 
@@ -39,7 +39,7 @@ For a slow change initially use a value > 1 for `Base`.
 For a steep change initially use a value < 1 for `Base`.
 Negative slopes are automatically generated if the start value is greater than the end value.
 If you use `base`=1 you will get a linear interpolation.")]
-  [StorableClass]
+  [StorableType("349D17F2-44D8-46EB-813F-E6D6E73B007F")]
   public class GeneralizedExponentialDiscreteDoubleValueModifier : DiscreteDoubleValueModifier {
 
     protected ValueLookupParameter<DoubleValue> BaseParameter {
@@ -48,7 +48,7 @@ If you use `base`=1 you will get a linear interpolation.")]
     private double Base { get { return BaseParameter.Value.Value; } }
 
     [StorableConstructor]
-    protected GeneralizedExponentialDiscreteDoubleValueModifier(bool deserializing) : base(deserializing) { }
+    protected GeneralizedExponentialDiscreteDoubleValueModifier(StorableConstructorFlag _) : base(_) { }
     protected GeneralizedExponentialDiscreteDoubleValueModifier(GeneralizedExponentialDiscreteDoubleValueModifier original, Cloner cloner) : base(original, cloner) { }
     public GeneralizedExponentialDiscreteDoubleValueModifier() {
       Parameters.Add(new ValueLookupParameter<DoubleValue>("Base", "Base of the exponential function. Must be > 0. If > 1 steep in the end, if < 1 steep at the start, if == 1 linear interpolation.", new DoubleValue(0.00001)));

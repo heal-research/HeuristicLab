@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -28,7 +28,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
@@ -37,7 +37,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// </summary>
   [Item("Neural Network Classification (NN)", "Neural network classification data analysis algorithm (wrapper for ALGLIB). Further documentation: http://www.alglib.net/dataanalysis/neuralnetworks.php")]
   [Creatable(CreatableAttribute.Categories.DataAnalysisClassification, Priority = 130)]
-  [StorableClass]
+  [StorableType("8D44A55B-B162-42D6-A761-A420F4D107C4")]
   public sealed class NeuralNetworkClassification : FixedDataAnalysisAlgorithm<IClassificationProblem> {
     private const string DecayParameterName = "Decay";
     private const string HiddenLayersParameterName = "HiddenLayers";
@@ -107,7 +107,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
 
     [StorableConstructor]
-    private NeuralNetworkClassification(bool deserializing) : base(deserializing) { }
+    private NeuralNetworkClassification(StorableConstructorFlag _) : base(_) { }
     private NeuralNetworkClassification(NeuralNetworkClassification original, Cloner cloner)
       : base(original, cloner) {
       RegisterEventHandlers();

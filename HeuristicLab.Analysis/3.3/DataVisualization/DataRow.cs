@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,14 +25,14 @@ using System.ComponentModel;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Analysis {
   /// <summary>
   /// A row of data values.
   /// </summary>
   [Item("DataRow", "A row of data values.")]
-  [StorableClass]
+  [StorableType("34A66F23-0FBB-414C-81C8-D3AA1C470446")]
   public class DataRow : NamedItem , IDataRow {
     private DataRowVisualProperties visualProperties;
     public DataRowVisualProperties VisualProperties {
@@ -69,7 +69,7 @@ namespace HeuristicLab.Analysis {
     #endregion
 
     [StorableConstructor]
-    protected DataRow(bool deserializing) : base(deserializing) { }
+    protected DataRow(StorableConstructorFlag _) : base(_) { }
     protected DataRow(DataRow original, Cloner cloner)
       : base(original, cloner) {
       this.VisualProperties = (DataRowVisualProperties)cloner.Clone(original.visualProperties);

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,11 +23,11 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinPDExchangeMoveEvaluator", "Evaluates a exchange move for a PDP representation. ")]
-  [StorableClass]
+  [StorableType("092A4B82-1387-4887-9E0A-88F7D01862F6")]
   public sealed class PotvinPDExchangeMoveEvaluator : PotvinMoveEvaluator, IPotvinPDExchangeMoveOperator {
     public ILookupParameter<PotvinPDExchangeMove> PDExchangeMoveParameter {
       get { return (ILookupParameter<PotvinPDExchangeMove>)Parameters["PotvinPDExchangeMove"]; }
@@ -50,7 +50,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
     }
 
     [StorableConstructor]
-    private PotvinPDExchangeMoveEvaluator(bool deserializing) : base(deserializing) { }
+    private PotvinPDExchangeMoveEvaluator(StorableConstructorFlag _) : base(_) { }
 
     public PotvinPDExchangeMoveEvaluator()
       : base() {

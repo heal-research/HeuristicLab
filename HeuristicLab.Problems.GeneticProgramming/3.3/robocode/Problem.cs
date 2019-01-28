@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,10 +25,10 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.GeneticProgramming.Robocode {
-  [StorableClass]
+  [StorableType("0B4FE44B-3044-4531-8CA9-3C4D3BB3A4BB")]
   [Creatable(CreatableAttribute.Categories.GeneticProgrammingProblems, Priority = 360)]
   [Item("Robocode Problem", "Evolution of a robocode program in java using genetic programming.")]
   public class Problem : SymbolicExpressionTreeProblem {
@@ -66,7 +66,7 @@ namespace HeuristicLab.Problems.GeneticProgramming.Robocode {
     #endregion
 
     [StorableConstructor]
-    protected Problem(bool deserializing) : base(deserializing) { }
+    protected Problem(StorableConstructorFlag _) : base(_) { }
     protected Problem(Problem original, Cloner cloner)
       : base(original, cloner) {
       RegisterEventHandlers();

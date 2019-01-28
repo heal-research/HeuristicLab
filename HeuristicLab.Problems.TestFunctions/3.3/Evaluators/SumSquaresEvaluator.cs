@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,14 +23,14 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TestFunctions {
   /// <summary>
   /// The Sum Squares function is defined as sum(i * x_i * x_i) for i = 1..n
   /// </summary>
   [Item("SumSquaresEvaluator", "Evaluates the sum squares function on a given point. The optimum of this function is 0 at the origin. The Sum Squares function is defined as sum(i * x_i * x_i) for i = 1..n.")]
-  [StorableClass]
+  [StorableType("B7DFB7C7-0218-4D42-85F0-E427E99DB621")]
   public class SumSquaresEvaluator : SingleObjectiveTestFunctionProblemEvaluator {
     public override string FunctionName { get { return "SumSquares"; } }
     /// <summary>
@@ -65,7 +65,7 @@ namespace HeuristicLab.Problems.TestFunctions {
     }
 
     [StorableConstructor]
-    protected SumSquaresEvaluator(bool deserializing) : base(deserializing) { }
+    protected SumSquaresEvaluator(StorableConstructorFlag _) : base(_) { }
     protected SumSquaresEvaluator(SumSquaresEvaluator original, Cloner cloner) : base(original, cloner) { }
     public SumSquaresEvaluator() : base() { }
 

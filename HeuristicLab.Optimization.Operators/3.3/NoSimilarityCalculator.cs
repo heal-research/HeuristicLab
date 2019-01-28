@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 
@@ -30,10 +31,12 @@ namespace HeuristicLab.Optimization.Operators {
   /// The item always considers two solutions to be distinct.
   /// </remarks>
   [Item("NoSimilarityCalculator", "An item that performs similarity calculation between two solutions. The item always considers two solutions to be distinct.")]
+  [StorableType("dd0dc63b-f691-4132-963e-eab3e1bc366a")]
   public sealed class NoSimilarityCalculator : SingleObjectiveSolutionSimilarityCalculator {
     protected override bool IsCommutative { get { return true; } }
 
-    private NoSimilarityCalculator(bool deserializing) : base(deserializing) { }
+    [StorableConstructor]
+    private NoSimilarityCalculator(StorableConstructorFlag _) : base(_) { }
     private NoSimilarityCalculator(NoSimilarityCalculator original, Cloner cloner) : base(original, cloner) { }
     public NoSimilarityCalculator() : base() { }
 

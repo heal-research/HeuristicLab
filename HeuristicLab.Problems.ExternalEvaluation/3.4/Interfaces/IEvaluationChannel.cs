@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,8 +21,10 @@
 
 using Google.ProtocolBuffers;
 using HeuristicLab.Core;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.ExternalEvaluation {
+  [StorableType("8e62ba0d-03f5-4243-8411-3bd5f14c42be")]
   public interface IEvaluationChannel : INamedItem {
     /// <summary>
     /// A flag that describes whether the channel has been initialized or not.

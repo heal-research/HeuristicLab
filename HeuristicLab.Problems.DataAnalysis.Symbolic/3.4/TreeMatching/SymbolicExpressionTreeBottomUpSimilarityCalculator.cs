@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -27,12 +27,12 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Optimization.Operators;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 using NodeMap = System.Collections.Generic.Dictionary<HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ISymbolicExpressionTreeNode, HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ISymbolicExpressionTreeNode>;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
-  [StorableClass]
+  [StorableType("63ACB7A4-137F-468F-BE42-A4CA6B62C63B")]
   [Item("SymbolicExpressionTreeBottomUpSimilarityCalculator", "A similarity calculator which uses the tree bottom-up distance as a similarity metric.")]
   public class SymbolicExpressionTreeBottomUpSimilarityCalculator : SolutionSimilarityCalculator {
     private readonly HashSet<string> commutativeSymbols = new HashSet<string> { "Addition", "Multiplication", "Average", "And", "Or", "Xor" };
@@ -44,8 +44,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public bool MatchVariableWeights { get; set; }
 
     [StorableConstructor]
-    protected SymbolicExpressionTreeBottomUpSimilarityCalculator(bool deserializing)
-      : base(deserializing) {
+    protected SymbolicExpressionTreeBottomUpSimilarityCalculator(StorableConstructorFlag _) : base(_) {
     }
 
     protected SymbolicExpressionTreeBottomUpSimilarityCalculator(SymbolicExpressionTreeBottomUpSimilarityCalculator original, Cloner cloner)

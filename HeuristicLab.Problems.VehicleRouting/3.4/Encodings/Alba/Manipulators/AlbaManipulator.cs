@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,20 +23,20 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.VehicleRouting.Encodings.General;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaManipulator", "An operator which manipulates a VRP representation.")]
-  [StorableClass]
+  [StorableType("D482A064-C423-4B72-BFFA-95C3A86356E8")]
   public abstract class AlbaManipulator : VRPManipulator, IAlbaOperator, IVRPManipulator, IStochasticOperator {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }
     }
 
     [StorableConstructor]
-    protected AlbaManipulator(bool deserializing) : base(deserializing) { }
+    protected AlbaManipulator(StorableConstructorFlag _) : base(_) { }
 
     public AlbaManipulator()
       : base() {

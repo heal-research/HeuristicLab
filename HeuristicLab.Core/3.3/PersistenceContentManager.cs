@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,21 +19,29 @@
  */
 #endregion
 
-using System.IO.Compression;
 using System.Threading;
 using HeuristicLab.Common;
 using HeuristicLab.Persistence.Default.Xml;
+using HEAL.Attic;
 
 namespace HeuristicLab.Core {
   public class PersistenceContentManager : ContentManager {
     public PersistenceContentManager() : base() { }
 
     protected override IStorableContent LoadContent(string filename) {
-      return XmlParser.Deserialize<IStorableContent>(filename);
+      // first try to load using the new persistence format
+      try {
+        var ser = new ProtoBufSerializer();
+        return (IStorableContent)ser.Deserialize(filename);
+      } catch (PersistenceException e) {
+        // try old format if new format fails
+        return XmlParser.Deserialize<IStorableContent>(filename);
+      }
     }
 
     protected override void SaveContent(IStorableContent content, string filename, bool compressed, CancellationToken cancellationToken) {
-      XmlGenerator.Serialize(content, filename, compressed ? CompressionLevel.Optimal : CompressionLevel.NoCompression, cancellationToken);
+      var ser = new ProtoBufSerializer();
+      ser.Serialize(content, filename, cancellationToken); 
     }
   }
 }

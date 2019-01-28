@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,11 +23,11 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Optimization.Operators {
   [Item("ParentCopyCrossover", "This operator creates an offspring by creating a clone of a randomly chosen parent. It can be used in situations where no crossover should occur after selection.")]
-  [StorableClass]
+  [StorableType("B97DCEBA-B631-4D12-997A-665C33B86C70")]
   public class ParentCopyCrossover : InstrumentedOperator, ICrossover, IStochasticOperator {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
@@ -35,7 +35,7 @@ namespace HeuristicLab.Optimization.Operators {
 
 
     [StorableConstructor]
-    protected ParentCopyCrossover(bool deserializing) : base(deserializing) { }
+    protected ParentCopyCrossover(StorableConstructorFlag _) : base(_) { }
     protected ParentCopyCrossover(ParentCopyCrossover original, Cloner cloner) : base(original, cloner) { }
     public ParentCopyCrossover()
       : base() {

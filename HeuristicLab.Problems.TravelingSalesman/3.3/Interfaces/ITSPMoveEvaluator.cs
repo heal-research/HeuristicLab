@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,8 +21,10 @@
 
 using System;
 using HeuristicLab.Optimization;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TravelingSalesman {
+  [StorableType("2EFBA5C1-6503-4910-9EF8-F6A5D8FBAFEF")]
   public interface ITSPMoveEvaluator : ISingleObjectiveMoveEvaluator, IMoveOperator {
     Type EvaluatorType { get; }
   }

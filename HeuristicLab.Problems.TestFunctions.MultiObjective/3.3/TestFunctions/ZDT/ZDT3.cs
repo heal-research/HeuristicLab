@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,18 +22,18 @@ using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.RealVectorEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
   [Item("ZDT3", "ZDT3 function as defined in http://www.tik.ee.ethz.ch/sop/download/supplementary/testproblems/ [30.11.2015]")]
-  [StorableClass]
+  [StorableType("89C250F4-DC30-4852-AE6E-E3936569A2BA")]
   public class ZDT3 : ZDT {
     protected override double GetBestKnownHypervolume(int objectives) {
       return 128.77811613069076060;
     }
 
     [StorableConstructor]
-    protected ZDT3(bool deserializing) : base(deserializing) { }
+    protected ZDT3(StorableConstructorFlag _) : base(_) { }
     protected ZDT3(ZDT3 original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new ZDT3(this, cloner);

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,18 +21,17 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   /// <summary>
   /// A base class for operators that manipulate real-valued vectors.
   /// </summary>
   [Item("SymbolicExpressionTreeManipulator", "A base class for operators that manipulate symbolic expression trees.")]
-  [StorableClass]
+  [StorableType("9391A979-616B-4808-80E7-99D8802599AF")]
   public abstract class SymbolicExpressionTreeManipulator : SymbolicExpressionTreeOperator, ISymbolicExpressionTreeManipulator {
     [StorableConstructor]
-    protected SymbolicExpressionTreeManipulator(bool deserializing) : base(deserializing) { }
+    protected SymbolicExpressionTreeManipulator(StorableConstructorFlag _) : base(_) { }
     protected SymbolicExpressionTreeManipulator(SymbolicExpressionTreeManipulator original, Cloner cloner) : base(original, cloner) { }
     public SymbolicExpressionTreeManipulator()
       : base() {

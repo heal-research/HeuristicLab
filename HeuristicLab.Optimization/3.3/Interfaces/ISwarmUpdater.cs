@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,8 +21,10 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
+  [StorableType("cb751cac-1ba7-42c3-87a3-cb1bf0d13add")]
   public interface ISwarmUpdater : IOperator {
     IScopeTreeLookupParameter<DoubleValue> QualityParameter { get; }
     IScopeTreeLookupParameter<DoubleValue> NeighborBestQualityParameter { get; }

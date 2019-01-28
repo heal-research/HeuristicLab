@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -27,11 +27,11 @@ using System.Linq;
 using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Data {
   [Item("StringMatrix", "Represents a matrix of strings.")]
-  [StorableClass]
+  [StorableType("0BFE5727-D2CF-418C-94BE-A8A0BBA195D8")]
   public class StringMatrix : Item, IEnumerable<string>, IStringConvertibleMatrix {
     private const int maximumToStringLength = 100;
 
@@ -142,7 +142,7 @@ namespace HeuristicLab.Data {
     }
 
     [StorableConstructor]
-    protected StringMatrix(bool deserializing) : base(deserializing) { }
+    protected StringMatrix(StorableConstructorFlag _) : base(_) { }
     protected StringMatrix(StringMatrix original, Cloner cloner)
       : base(original, cloner) {
       this.matrix = (string[,])original.matrix.Clone();

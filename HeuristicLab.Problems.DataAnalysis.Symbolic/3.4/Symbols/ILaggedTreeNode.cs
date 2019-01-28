@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,7 +21,10 @@
 
 
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
+using HEAL.Attic;
+
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
+  [StorableType("9396d5df-6a2e-4cd1-ac5a-36ca8d391927")]
   public interface ILaggedTreeNode : ISymbolicExpressionTreeNode {
     int Lag { get; set; }
   }

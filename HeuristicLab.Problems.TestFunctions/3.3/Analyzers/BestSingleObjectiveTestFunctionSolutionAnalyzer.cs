@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -27,14 +27,14 @@ using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TestFunctions {
   /// <summary>
   /// An operator for analyzing the best solution for a SingleObjectiveTestFunction problem.
   /// </summary>
   [Item("BestSingleObjectiveTestFunctionSolutionAnalyzer", "An operator for analyzing the best solution for a SingleObjectiveTestFunction problem.")]
-  [StorableClass]
+  [StorableType("A0F04F9F-DD27-44D8-A1F6-B289F1F40DE2")]
   public class BestSingleObjectiveTestFunctionSolutionAnalyzer : SingleSuccessorOperator, IBestSingleObjectiveTestFunctionSolutionAnalyzer {
     public virtual bool EnabledByDefault {
       get { return true; }
@@ -75,7 +75,7 @@ namespace HeuristicLab.Problems.TestFunctions {
     }
 
     [StorableConstructor]
-    protected BestSingleObjectiveTestFunctionSolutionAnalyzer(bool deserializing) : base(deserializing) { }
+    protected BestSingleObjectiveTestFunctionSolutionAnalyzer(StorableConstructorFlag _) : base(_) { }
     protected BestSingleObjectiveTestFunctionSolutionAnalyzer(BestSingleObjectiveTestFunctionSolutionAnalyzer original, Cloner cloner) : base(original, cloner) { }
     public BestSingleObjectiveTestFunctionSolutionAnalyzer()
       : base() {

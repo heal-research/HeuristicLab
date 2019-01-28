@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,12 +26,12 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Clients.OKB.RunCreation {
   [Item("EmptyMultiObjectiveEvaluator", "A dummy multi-objective evaluator which throws an exception when executed.")]
-  [StorableClass]
+  [StorableType("5E0EF79B-C771-4B6A-AAFD-598A1FF2D3AA")]
   [NonDiscoverableType]
   public sealed class EmptyMultiObjectiveEvaluator : Operator, IMultiObjectiveEvaluator {
     private string exceptionMessage;
@@ -56,7 +56,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
     #endregion
 
     [StorableConstructor]
-    private EmptyMultiObjectiveEvaluator(bool deserializing) : base(deserializing) { }
+    private EmptyMultiObjectiveEvaluator(StorableConstructorFlag _) : base(_) { }
     private EmptyMultiObjectiveEvaluator(EmptyMultiObjectiveEvaluator original, Cloner cloner)
       : base(original, cloner) {
       exceptionMessage = original.exceptionMessage;

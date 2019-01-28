@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,20 +22,20 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.VehicleRouting.Encodings.General;
 using HeuristicLab.Problems.VehicleRouting.Variants;
 
 namespace HeuristicLab.Problems.VehicleRouting {
   [Item("MultiVRPMoveEvaluator", "Evaluates a move for the VRP representation.")]
-  [StorableClass]
+  [StorableType("CF6F48D1-D488-4266-8F46-68EC1A0A7828")]
   public sealed class MultiVRPMoveEvaluator : VRPMoveEvaluator, IMultiVRPMoveOperator, IGeneralVRPOperator {
     public override ILookupParameter VRPMoveParameter {
       get { return (ILookupParameter)Parameters["VRPMove"]; }
     }
 
     [StorableConstructor]
-    private MultiVRPMoveEvaluator(bool deserializing) : base(deserializing) { }
+    private MultiVRPMoveEvaluator(StorableConstructorFlag _) : base(_) { }
 
     public MultiVRPMoveEvaluator()
       : base() {

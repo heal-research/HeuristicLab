@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,9 +21,10 @@
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
-
+  [StorableType("868522CB-CA0A-4908-8108-86D2464F0FAE")]
   public interface IMultiObjectiveTestFunctionAnalyzer : IAnalyzer, IMultiObjectiveOperator {
     IScopeTreeLookupParameter<DoubleArray> QualitiesParameter { get; }
     ILookupParameter<ResultCollection> ResultsParameter { get; }

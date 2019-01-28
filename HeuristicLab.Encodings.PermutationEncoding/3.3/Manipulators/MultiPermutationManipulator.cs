@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -27,12 +27,12 @@ using HeuristicLab.Core;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("MultiPermutationManipulator", "Randomly selects and applies one of its manipulators every time it is called.")]
-  [StorableClass]
+  [StorableType("21EA3717-C907-490B-82E7-34A0B1A94EB0")]
   public class MultiPermutationManipulator : StochasticMultiBranch<IPermutationManipulator>, IPermutationManipulator, IStochasticOperator {
     public override bool CanChangeName {
       get { return false; }
@@ -46,7 +46,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     }
 
     [StorableConstructor]
-    protected MultiPermutationManipulator(bool deserializing) : base(deserializing) { }
+    protected MultiPermutationManipulator(StorableConstructorFlag _) : base(_) { }
     protected MultiPermutationManipulator(MultiPermutationManipulator original, Cloner cloner) : base(original, cloner) { }
     public MultiPermutationManipulator()
       : base() {

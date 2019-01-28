@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -27,14 +27,14 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Analysis {
   /// <summary>
   /// An operator which analyzes a value in the scope tree.
   /// </summary>
   [Item("ValueAnalyzer", "An operator which analyzes a value in the scope tree (current scope and children).")]
-  [StorableClass]
+  [StorableType("A906F087-28A5-4E0B-897B-B0FD1B286ACE")]
   public sealed class ValueAnalyzer : AlgorithmOperator, IAnalyzer {
     #region Parameter properties
     public ScopeTreeLookupParameter<DoubleValue> ValueParameter {
@@ -62,7 +62,7 @@ namespace HeuristicLab.Analysis {
 
     #region Storing & Cloning
     [StorableConstructor]
-    private ValueAnalyzer(bool deserializing) : base(deserializing) { }
+    private ValueAnalyzer(StorableConstructorFlag _) : base(_) { }
     private ValueAnalyzer(ValueAnalyzer original, Cloner cloner)
       : base(original, cloner) {
       Initialize();

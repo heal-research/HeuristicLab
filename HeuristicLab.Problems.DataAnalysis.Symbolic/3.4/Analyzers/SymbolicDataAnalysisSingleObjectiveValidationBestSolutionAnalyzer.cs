@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -28,14 +28,14 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   /// <summary>
   /// An operator that analyzes the validation best symbolic data analysis solution for single objective symbolic data analysis problems.
   /// </summary>
   [Item("SymbolicDataAnalysisSingleObjectiveValidationBestSolutionAnalyzer", "An operator that analyzes the validation best symbolic data analysis solution for single objective symbolic data analysis problems.")]
-  [StorableClass]
+  [StorableType("6A84F46D-0CC3-400D-BC3B-D7C6A86D958D")]
   public abstract class SymbolicDataAnalysisSingleObjectiveValidationBestSolutionAnalyzer<S, T, U> : SymbolicDataAnalysisSingleObjectiveValidationAnalyzer<T, U>, IIterationBasedOperator
     where S : class, ISymbolicDataAnalysisSolution
     where T : class, ISymbolicDataAnalysisSingleObjectiveEvaluator<U>
@@ -82,7 +82,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     #endregion
 
     [StorableConstructor]
-    protected SymbolicDataAnalysisSingleObjectiveValidationBestSolutionAnalyzer(bool deserializing) : base(deserializing) { }
+    protected SymbolicDataAnalysisSingleObjectiveValidationBestSolutionAnalyzer(StorableConstructorFlag _) : base(_) { }
     protected SymbolicDataAnalysisSingleObjectiveValidationBestSolutionAnalyzer(SymbolicDataAnalysisSingleObjectiveValidationBestSolutionAnalyzer<S, T, U> original, Cloner cloner) : base(original, cloner) { }
     public SymbolicDataAnalysisSingleObjectiveValidationBestSolutionAnalyzer()
       : base() {

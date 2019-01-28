@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,27 +20,26 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   /// <summary>
   /// Formats mathematical expressions in infix form. E.g. x1 * (3.0 * x2 + x3)
   /// </summary>
-  [StorableClass]
+  [StorableType("6FE2C83D-A594-4ABF-B101-5AEAEA6D3E3D")]
   [Item("Infix Symbolic Expression Tree Formatter", "A string formatter that converts symbolic expression trees to infix expressions.")]
 
   public sealed class InfixExpressionFormatter : NamedItem, ISymbolicExpressionTreeStringFormatter {
 
 
     [StorableConstructor]
-    private InfixExpressionFormatter(bool deserializing) : base(deserializing) { }
+    private InfixExpressionFormatter(StorableConstructorFlag _) : base(_) { }
     private InfixExpressionFormatter(InfixExpressionFormatter original, Cloner cloner) : base(original, cloner) { }
     public InfixExpressionFormatter()
       : base() {

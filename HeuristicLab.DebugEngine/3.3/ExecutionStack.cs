@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,11 +24,11 @@ using System.Linq;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.DebugEngine {
 
-  [StorableClass]
+  [StorableType("FE481B4B-BA25-4889-AAC7-6C88D852D971")]
   public class ExecutionStack : ObservableList<IOperation>, IContent, IDeepCloneable {
 
     public ExecutionStack() : base() { }
@@ -36,7 +36,7 @@ namespace HeuristicLab.DebugEngine {
     public ExecutionStack(IEnumerable<IOperation> collection) : base(collection) { }
 
     [StorableConstructor]
-    protected ExecutionStack(bool deserializing) : base(deserializing) { }
+    protected ExecutionStack(StorableConstructorFlag _) : base(_) { }
     protected ExecutionStack(ExecutionStack original, Cloner cloner) {
       cloner.RegisterClonedObject(original, this);
       AddRange(original.Select(op => cloner.Clone(op)));

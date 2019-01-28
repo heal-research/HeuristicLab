@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,14 +22,14 @@
 using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
   [Item("PrinsExhaustiveLSManipulator", "An operator which manipulates a VRP representation by using the exhaustive Prins local search.  It is implemented as described in Prins, C. (2004). A simple and effective evolutionary algorithm for the vehicle routing problem. Computers & Operations Research, 12:1985-2002.")]
-  [StorableClass]
+  [StorableType("D0C880A5-B777-436D-9E01-0A450C1327C5")]
   public sealed class PrinsExhaustiveLSManipulator : PrinsLSManipulator {
     [StorableConstructor]
-    private PrinsExhaustiveLSManipulator(bool deserializing) : base(deserializing) { }
+    private PrinsExhaustiveLSManipulator(StorableConstructorFlag _) : base(_) { }
 
     public PrinsExhaustiveLSManipulator()
       : base() {

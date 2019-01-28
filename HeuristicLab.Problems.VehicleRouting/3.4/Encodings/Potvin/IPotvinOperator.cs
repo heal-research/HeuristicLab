@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,8 +20,10 @@
 #endregion
 
 using HeuristicLab.Problems.VehicleRouting.Variants;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
+  [StorableType("90265685-321B-4E34-AD9F-30FA917F07A0")]
   public interface IPotvinOperator :
     ISingleDepotOperator, IHomogenousCapacitatedOperator, ITimeWindowedOperator,
     IMultiDepotOperator, IHeterogenousCapacitatedOperator {

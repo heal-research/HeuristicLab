@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,10 +23,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis {
+  [StorableType("849e42d3-8934-419d-9aff-64ad81c06b67")]
   public class Interval : IEquatable<Interval> {
+    [Storable]
     public double LowerBound { get; private set; }
+    [Storable]
     public double UpperBound { get; private set; }
 
     public Interval(double lowerBound, double upperBound) {

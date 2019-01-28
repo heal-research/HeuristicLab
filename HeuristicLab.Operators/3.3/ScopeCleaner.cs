@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,14 +22,14 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Operators {
   /// <summary>
   /// An operator which removes all variables and sub-scopes from the current scope.
   /// </summary>
   [Item("ScopeCleaner", "An operator which removes all variables and sub-scopes from the current scope.")]
-  [StorableClass]
+  [StorableType("A18BFE15-F006-4603-9F66-A6EAABB0FCBF")]
   public sealed class ScopeCleaner : SingleSuccessorOperator {
     private ScopeParameter CurrentScopeParameter {
       get { return (ScopeParameter)Parameters["CurrentScope"]; }
@@ -39,7 +39,7 @@ namespace HeuristicLab.Operators {
     }
 
     [StorableConstructor]
-    private ScopeCleaner(bool deserializing) : base(deserializing) { }
+    private ScopeCleaner(StorableConstructorFlag _) : base(_) { }
     private ScopeCleaner(ScopeCleaner original, Cloner cloner)
       : base(original, cloner) {
     }

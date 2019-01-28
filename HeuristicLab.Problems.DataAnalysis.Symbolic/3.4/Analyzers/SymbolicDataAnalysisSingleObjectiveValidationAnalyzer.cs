@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -27,14 +27,14 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   /// <summary>
   /// Abstract base class for symbolic data analysis analyzers that validate a solution on a separate data partition using the evaluator.
   /// </summary>
-  [StorableClass]
+  [StorableType("B1A1F3CC-5C21-42F4-BED0-831E0D4AD1F6")]
   public abstract class SymbolicDataAnalysisSingleObjectiveValidationAnalyzer<T, U> : SymbolicDataAnalysisSingleObjectiveAnalyzer,
     ISymbolicDataAnalysisValidationAnalyzer<T, U>, IStochasticOperator
     where T : class, ISymbolicDataAnalysisSingleObjectiveEvaluator<U>
@@ -72,7 +72,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     #endregion
 
     [StorableConstructor]
-    protected SymbolicDataAnalysisSingleObjectiveValidationAnalyzer(bool deserializing) : base(deserializing) { }
+    protected SymbolicDataAnalysisSingleObjectiveValidationAnalyzer(StorableConstructorFlag _) : base(_) { }
     protected SymbolicDataAnalysisSingleObjectiveValidationAnalyzer(SymbolicDataAnalysisSingleObjectiveValidationAnalyzer<T, U> original, Cloner cloner)
       : base(original, cloner) {
     }

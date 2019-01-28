@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,12 +23,12 @@ using System;
 using System.Drawing;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Clients.OKB.RunCreation {
   [Item("ItemWrapper", "A wrapper which wraps an IItem.")]
-  [StorableClass]
+  [StorableType("27F3E8E3-AC7D-415E-BF16-7E05EF6E1549")]
   [NonDiscoverableType]
   public class ItemWrapper<T> : IItem where T : class, IItem {
     private T wrappedItem;
@@ -73,7 +73,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
     #endregion
 
     [StorableConstructor]
-    protected ItemWrapper(bool deserializing) { }
+    protected ItemWrapper(StorableConstructorFlag _) { }
     protected ItemWrapper(ItemWrapper<T> original, Cloner cloner) {
       cloner.RegisterClonedObject(original, this);
       wrappedItem = cloner.Clone(original.wrappedItem);

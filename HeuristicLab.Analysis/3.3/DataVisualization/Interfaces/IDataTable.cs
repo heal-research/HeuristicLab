@@ -20,8 +20,10 @@
 #endregion
 
 using HeuristicLab.Core;
+using HEAL.Attic;
 
 namespace HeuristicLab.Analysis {
+  [StorableType("DB6B8542-8A0D-43C1-B5EE-C4D2E8983CDF")]
   public interface IDataTable<TDataRow> : INamedItem where TDataRow : class, IDataRow {
     DataTableVisualProperties VisualProperties { get; set; }
     NamedItemCollection<TDataRow> Rows { get; }

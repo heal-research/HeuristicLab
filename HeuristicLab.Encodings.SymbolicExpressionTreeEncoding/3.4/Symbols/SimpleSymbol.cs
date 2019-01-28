@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,11 +21,11 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
-  [StorableClass]
+  [StorableType("71CF8C14-65CB-4393-9D46-2673A69C0729")]
   [Item("SimpleSymbol", "Represents a symbol that is identified by its name.")]
   [NonDiscoverableType]
   public sealed class SimpleSymbol : Symbol {
@@ -49,7 +49,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
 
     [StorableConstructor]
-    private SimpleSymbol(bool deserializing) : base(deserializing) { }
+    private SimpleSymbol(StorableConstructorFlag _) : base(_) { }
 
     private SimpleSymbol(SimpleSymbol original, Cloner cloner)
       : base(original, cloner) {

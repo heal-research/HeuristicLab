@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,11 +21,11 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   [Item("OneBitflipMoveAttribute", "Describes the attributes (move quality and index) of a single bitflip move.")]
-  [StorableClass]
+  [StorableType("D5CD3F76-E016-417F-B916-7666683A42D7")]
   public class OneBitflipMoveAttribute : Item {
     [Storable]
     public double MoveQuality { get; protected set; }
@@ -33,7 +33,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
     public int Index { get; protected set; }
 
     [StorableConstructor]
-    protected OneBitflipMoveAttribute(bool deserializing) : base(deserializing) { }
+    protected OneBitflipMoveAttribute(StorableConstructorFlag _) : base(_) { }
     protected OneBitflipMoveAttribute(OneBitflipMoveAttribute original, Cloner cloner)
       : base(original, cloner) {
       this.MoveQuality = original.MoveQuality;

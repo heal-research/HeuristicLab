@@ -1,7 +1,7 @@
 
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -28,14 +28,14 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>
   /// Base class for Gaussian process data analysis algorithms (regression and classification).
   /// </summary>
-  [StorableClass]
+  [StorableType("A5070F15-8E44-44DC-92E1-000826E933D3")]
   public abstract class GaussianProcessBase : EngineAlgorithm {
     protected const string MeanFunctionParameterName = "MeanFunction";
     protected const string CovarianceFunctionParameterName = "CovarianceFunction";
@@ -98,7 +98,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     #endregion
 
     [StorableConstructor]
-    protected GaussianProcessBase(bool deserializing) : base(deserializing) { }
+    protected GaussianProcessBase(StorableConstructorFlag _) : base(_) { }
     protected GaussianProcessBase(GaussianProcessBase original, Cloner cloner)
       : base(original, cloner) {
     }

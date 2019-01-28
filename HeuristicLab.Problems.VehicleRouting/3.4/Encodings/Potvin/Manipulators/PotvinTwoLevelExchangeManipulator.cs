@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,15 +21,15 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinTwoLevelExchangeManipulator", "The 2M operator which manipulates a VRP representation.  It is implemented as described in Potvin, J.-Y. and Bengio, S. (1996). The Vehicle Routing Problem with Time Windows - Part II: Genetic Search. INFORMS Journal of Computing, 8:165–172.")]
-  [StorableClass]
+  [StorableType("FB992182-9FD8-4B08-A48C-97378E85DAD5")]
   public sealed class PotvinTwoLevelExchangeManipulator : PotvinManipulator {
     [StorableConstructor]
-    private PotvinTwoLevelExchangeManipulator(bool deserializing) : base(deserializing) { }
+    private PotvinTwoLevelExchangeManipulator(StorableConstructorFlag _) : base(_) { }
 
     public PotvinTwoLevelExchangeManipulator() : base() { }
 

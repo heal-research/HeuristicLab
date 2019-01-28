@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,14 +24,14 @@ using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>
   /// Represents a multinomial logit model for classification
   /// </summary>
-  [StorableClass]
+  [StorableType("AC4174A4-9FBC-4B07-9239-1E0E6F86034D")]
   [Item("Multinomial Logit Model", "Represents a multinomial logit model for classification.")]
   public sealed class MultinomialLogitModel : ClassificationModel {
 
@@ -59,10 +59,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private List<KeyValuePair<string, IEnumerable<string>>> factorVariables;
 
     [StorableConstructor]
-    private MultinomialLogitModel(bool deserializing)
-      : base(deserializing) {
-      if (deserializing)
-        logitModel = new alglib.logitmodel();
+    private MultinomialLogitModel(StorableConstructorFlag _) : base(_) {
+      logitModel = new alglib.logitmodel();
     }
     private MultinomialLogitModel(MultinomialLogitModel original, Cloner cloner)
       : base(original, cloner) {

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,11 +24,11 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
   [Item("ThresholdTerminator", "Base class for all termination criteria which specifies some threshold.")]
-  [StorableClass]
+  [StorableType("E5D99104-54B2-471D-B27A-07CC737804A6")]
   public abstract class ThresholdTerminator<T> : Terminator where T : class, IItem, IStringConvertibleValue, new() {
     [Storable]
     private IFixedValueParameter<T> thresholdParameter;
@@ -51,7 +51,7 @@ namespace HeuristicLab.Optimization {
     }
 
     [StorableConstructor]
-    protected ThresholdTerminator(bool deserializing) : base(deserializing) { }
+    protected ThresholdTerminator(StorableConstructorFlag _) : base(_) { }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       Initialize();

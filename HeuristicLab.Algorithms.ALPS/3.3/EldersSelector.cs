@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,13 +25,13 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Selection;
 
 namespace HeuristicLab.Algorithms.ALPS {
 
   [Item("EldersSelector", "Select all individuals which are too old for their current layer.")]
-  [StorableClass]
+  [StorableType("5C81CE34-F8D4-4B92-A2E4-A62332D68B1C")]
   public sealed class EldersSelector : Selector {
     public IScopeTreeLookupParameter<DoubleValue> AgeParameter {
       get { return (IScopeTreeLookupParameter<DoubleValue>)Parameters["Age"]; }
@@ -47,8 +47,7 @@ namespace HeuristicLab.Algorithms.ALPS {
     }
 
     [StorableConstructor]
-    private EldersSelector(bool deserializing)
-      : base(deserializing) { }
+    private EldersSelector(StorableConstructorFlag _) : base(_) { }
     private EldersSelector(EldersSelector original, Cloner cloner)
       : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {

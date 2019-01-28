@@ -1,7 +1,7 @@
 ﻿#region License Information
 
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,15 +25,15 @@ using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.Binary {
   [Item("Hierararchical If and only If problem (HIFF)", "Genome evaluated in nested subsets to see if each subset contains either all 0s or all 1s.")]
-  [StorableClass]
+  [StorableType("8AC6D94E-E7B4-4216-B2CA-8E142E7A1391")]
   [Creatable(CreatableAttribute.Categories.CombinatorialProblems, Priority = 220)]
   public class HIFFProblem : BinaryProblem {
     [StorableConstructor]
-    protected HIFFProblem(bool deserializing) : base(deserializing) { }
+    protected HIFFProblem(StorableConstructorFlag _) : base(_) { }
     protected HIFFProblem(HIFFProblem original, Cloner cloner)
       : base(original, cloner) {
     }

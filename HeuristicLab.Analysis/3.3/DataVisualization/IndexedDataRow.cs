@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,11 +26,11 @@ using System.Linq;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Analysis {
   [Item("IndexedDataRow", "A data row that contains a series of points.")]
-  [StorableClass]
+  [StorableType("0B0BB900-4C30-4485-82C2-C9E633110685")]
   public class IndexedDataRow<T> : NamedItem, IDataRow {
 
     private DataRowVisualProperties visualProperties;
@@ -80,7 +80,7 @@ namespace HeuristicLab.Analysis {
     #endregion
 
     [StorableConstructor]
-    protected IndexedDataRow(bool deserializing) : base(deserializing) { }
+    protected IndexedDataRow(StorableConstructorFlag _) : base(_) { }
     protected IndexedDataRow(IndexedDataRow<T> original, Cloner cloner)
       : base(original, cloner) {
       values = new ObservableList<Tuple<T, double>>(original.values.Select(x => Tuple.Create<T, double>(x.Item1, x.Item2)).ToList());

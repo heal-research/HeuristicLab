@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,14 +22,14 @@
 using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Data {
   [Item("DateTimeValue", "Represents a date and time value.")]
-  [StorableClass]
+  [StorableType("1D9B8F20-F460-481F-BE4A-4A8616DA14B5")]
   public class DateTimeValue : ValueTypeValue<DateTime>, IComparable, IStringConvertibleValue {
     [StorableConstructor]
-    protected DateTimeValue(bool deserializing) : base(deserializing) { }
+    protected DateTimeValue(StorableConstructorFlag _) : base(_) { }
     protected DateTimeValue(DateTimeValue original, Cloner cloner)
       : base(original, cloner) {
     }

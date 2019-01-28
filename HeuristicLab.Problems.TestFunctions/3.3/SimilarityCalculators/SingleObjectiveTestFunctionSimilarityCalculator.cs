@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,7 +25,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Optimization.Operators;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TestFunctions {
   /// <summary>
@@ -35,7 +35,7 @@ namespace HeuristicLab.Problems.TestFunctions {
   /// The operator calculates the similarity based on the euclidean distance of the two solutions in n-dimensional space.
   /// </remarks>
   [Item("SingleObjectiveTestFunctionSimilarityCalculator", "An operator that performs similarity calculation between two test functions solutions. The operator calculates the similarity based on the euclidean distance of the two solutions in n-dimensional space.")]
-  [StorableClass]
+  [StorableType("E6CD365A-5554-42D5-8A5B-6CE3B916A375")]
   public sealed class SingleObjectiveTestFunctionSimilarityCalculator : SingleObjectiveSolutionSimilarityCalculator {
     protected override bool IsCommutative { get { return true; } }
 
@@ -43,7 +43,7 @@ namespace HeuristicLab.Problems.TestFunctions {
     public DoubleMatrix Bounds { get; set; }
 
     [StorableConstructor]
-    private SingleObjectiveTestFunctionSimilarityCalculator(bool deserializing) : base(deserializing) { }
+    private SingleObjectiveTestFunctionSimilarityCalculator(StorableConstructorFlag _) : base(_) { }
     private SingleObjectiveTestFunctionSimilarityCalculator(SingleObjectiveTestFunctionSimilarityCalculator original, Cloner cloner)
       : base(original, cloner) {
       this.Bounds = cloner.Clone(original.Bounds);

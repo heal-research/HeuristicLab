@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  * and the BEACON Center for the Study of Evolution in Action.
  * 
  * This file is part of HeuristicLab.
@@ -26,12 +26,12 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   // loss function for quantile regression
   // Generalized Boosted Models - A Guide To The gbm Package, Greg Ridgeway, August 2007, page 11 
-  [StorableClass]
+  [StorableType("B8EF6C18-C1A8-4B43-8FEA-A6900287ADDD")]
   [Item("QuantileRegressionloss", "Loss function for quantile regression")]
   public sealed class QuantileRegressionLoss : ParameterizedNamedItem, ILossFunction {
     public IFixedValueParameter<PercentValue> AlphaParameter {
@@ -101,7 +101,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     #region item implementation
     [StorableConstructor]
-    private QuantileRegressionLoss(bool deserializing) : base(deserializing) { }
+    private QuantileRegressionLoss(StorableConstructorFlag _) : base(_) { }
 
     private QuantileRegressionLoss(QuantileRegressionLoss original, Cloner cloner)
       : base(original, cloner) {

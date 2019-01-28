@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -28,13 +28,13 @@ using HeuristicLab.Core;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Problems.VehicleRouting.Variants;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
   [Item("MultiVRPSolutionManipulator", "Randomly selects and applies one of its manipulators every time it is called.")]
-  [StorableClass]
+  [StorableType("9EE8B958-A511-40EC-A3DA-0F0CE0BF6524")]
   public class MultiVRPSolutionManipulator : StochasticMultiBranch<IVRPManipulator>, IVRPManipulator, IGeneralVRPOperator, IMultiVRPOperator, IStochasticOperator {
     public override bool CanChangeName {
       get { return false; }
@@ -53,7 +53,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
     }
 
     [StorableConstructor]
-    protected MultiVRPSolutionManipulator(bool deserializing) : base(deserializing) { }
+    protected MultiVRPSolutionManipulator(StorableConstructorFlag _) : base(_) { }
     public MultiVRPSolutionManipulator()
       : base() {
       Parameters.Add(new LookupParameter<IVRPProblemInstance>("ProblemInstance", "The VRP problem instance"));

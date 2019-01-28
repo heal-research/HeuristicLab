@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -29,7 +29,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
 using HeuristicLab.Problems.DataAnalysis.Symbolic.Regression;
@@ -41,7 +41,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// </summary>
   [Item("Nonlinear Regression (NLR)", "Nonlinear regression (curve fitting) data analysis algorithm (wrapper for ALGLIB).")]
   [Creatable(CreatableAttribute.Categories.DataAnalysisRegression, Priority = 120)]
-  [StorableClass]
+  [StorableType("06E970EA-D366-4F46-BDC5-7156B5787BEF")]
   public sealed class NonlinearRegression : FixedDataAnalysisAlgorithm<IRegressionProblem> {
     private const string RegressionSolutionResultName = "Regression solution";
     private const string ModelStructureParameterName = "Model structure";
@@ -115,7 +115,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     [StorableConstructor]
-    private NonlinearRegression(bool deserializing) : base(deserializing) { }
+    private NonlinearRegression(StorableConstructorFlag _) : base(_) { }
     private NonlinearRegression(NonlinearRegression original, Cloner cloner)
       : base(original, cloner) {
     }

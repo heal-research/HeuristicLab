@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,14 +23,14 @@ using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.PTSP {
   [Item("DistanceMatrix", "Represents a distance matrix of a Probabilistic Traveling Salesman Problem.")]
-  [StorableClass]
+  [StorableType("C1E6E275-FA8C-448F-AB49-8779EB0738BE")]
   public sealed class DistanceMatrix : DoubleMatrix {
     [StorableConstructor]
-    private DistanceMatrix(bool deserializing) : base(deserializing) { }
+    private DistanceMatrix(StorableConstructorFlag _) : base(_) { }
     public DistanceMatrix() : base() { }
     public DistanceMatrix(int rows, int columns) : base(rows, columns) { }
     public DistanceMatrix(int rows, int columns, IEnumerable<string> columnNames) : base(rows, columns, columnNames) { }

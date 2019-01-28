@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,19 +24,19 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators.Programmable;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Optimization.Operators {
 
   [Item("ProgrammableAnalyzer", "An analyzer that can be programmed for arbitrary needs.")]
-  [StorableClass]
+  [StorableType("6C821E9E-098E-409B-B281-9B530C1F5835")]
   public class ProgrammableAnalyzer : ProgrammableSingleSuccessorOperator, IAnalyzer {
     public virtual bool EnabledByDefault {
       get { return false; }
     }
 
     [StorableConstructor]
-    protected ProgrammableAnalyzer(bool deserializing) : base(deserializing) { }
+    protected ProgrammableAnalyzer(StorableConstructorFlag _) : base(_) { }
     protected ProgrammableAnalyzer(ProgrammableAnalyzer original, Cloner cloner)
       : base(original, cloner) {
     }

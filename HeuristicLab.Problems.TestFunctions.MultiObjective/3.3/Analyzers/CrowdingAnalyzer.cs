@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,10 +25,10 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
-  [StorableClass]
+  [StorableType("F06FB45C-051E-4AD8-BD82-16DA9DCBCACB")]
   [Item("CrowdingAnalyzer", "The mean crowding distance for each point of the Front (see Multi-Objective Performance Metrics - Shodhganga for more information)")]
   public class CrowdingAnalyzer : MOTFAnalyzer {
 
@@ -41,7 +41,7 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
     }
 
     [StorableConstructor]
-    protected CrowdingAnalyzer(bool deserializing) : base(deserializing) { }
+    protected CrowdingAnalyzer(StorableConstructorFlag _) : base(_) { }
     public CrowdingAnalyzer(CrowdingAnalyzer original, Cloner cloner)
       : base(original, cloner) {
     }

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -28,12 +28,13 @@ using HeuristicLab.Common;
 using HeuristicLab.Common.Resources;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.DataPreprocessing {
   [Item("PreprocessingChart", "Represents a preprocessing chart.")]
-  [StorableClass]
+  [StorableType("7EDAFA6E-E4B1-4150-BB57-280A9F9E61D8")]
   public class PreprocessingChartContent : PreprocessingContent, IViewShortcut {
+    [StorableType("d4c1c81a-f0c5-496f-8264-76b75572c0fc")]
     public enum LegendOrder {
       Alphabetically,
       Appearance
@@ -72,8 +73,7 @@ namespace HeuristicLab.DataPreprocessing {
     }
 
     [StorableConstructor]
-    protected PreprocessingChartContent(bool deserializing)
-      : base(deserializing) { }
+    protected PreprocessingChartContent(StorableConstructorFlag _) : base(_) { }
     #endregion
 
     public DataRow CreateDataRow(string variableName, DataRowVisualProperties.DataRowChartType chartType) {

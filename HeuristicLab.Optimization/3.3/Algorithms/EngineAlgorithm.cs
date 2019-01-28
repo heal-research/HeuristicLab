@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,7 +23,7 @@ using System;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Optimization {
@@ -31,7 +31,7 @@ namespace HeuristicLab.Optimization {
   /// A base class for algorithms which use an engine for execution.
   /// </summary>
   [Item("EngineAlgorithm", "A base class for algorithms which use an engine for execution.")]
-  [StorableClass]
+  [StorableType("C3D2307F-9B15-4D3B-900E-616B58268ED6")]
   public abstract class EngineAlgorithm : Algorithm {
     [Storable]
     private OperatorGraph operatorGraph;
@@ -112,7 +112,7 @@ namespace HeuristicLab.Optimization {
       Initialize();
     }
     [StorableConstructor]
-    protected EngineAlgorithm(bool deserializing) : base(deserializing) { }
+    protected EngineAlgorithm(StorableConstructorFlag _) : base(_) { }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       Initialize();

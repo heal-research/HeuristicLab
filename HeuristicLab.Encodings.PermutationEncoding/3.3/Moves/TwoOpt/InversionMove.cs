@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,14 +21,14 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("InversionMove", "Item that describes an inversion move (2-opt).")]
-  [StorableClass]
+  [StorableType("864C1259-8419-410F-8DD1-2C2751B1AF6B")]
   public class InversionMove : TwoIndexMove {
     [StorableConstructor]
-    protected InversionMove(bool deserializing) : base(deserializing) { }
+    protected InversionMove(StorableConstructorFlag _) : base(_) { }
     protected InversionMove(InversionMove original, Cloner cloner) : base(original, cloner) { }
     public InversionMove() : base() { }
     public InversionMove(int index1, int index2) : base(index1, index2, null) { }

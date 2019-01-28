@@ -20,18 +20,18 @@
 #endregion
 
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Encodings.IntegerVectorEncoding;
 
 namespace HeuristicLab.Problems.BinPacking3D {
-  [StorableClass]
+  [StorableType("19C0AA6B-8FC5-4EA9-A441-5C4F5AD4C38E")]
   public abstract class IntegerVectorDecoderBase : Item, IDecoder<IntegerVector> {
 
     [StorableConstructor]
-    protected IntegerVectorDecoderBase(bool deserializing) : base(deserializing) { }
+    protected IntegerVectorDecoderBase(StorableConstructorFlag _) : base(_) { }
     protected IntegerVectorDecoderBase(IntegerVectorDecoderBase original, Cloner cloner)
       : base(original, cloner) {
     }

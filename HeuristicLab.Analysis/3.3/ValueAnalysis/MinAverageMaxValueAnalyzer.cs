@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -27,14 +27,14 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Analysis {
   /// <summary>
   /// An operator which analyzes the minimum, average and maximum of a value in the scope tree.
   /// </summary>
   [Item("MinAverageMaxValueAnalyzer", "An operator which analyzes the minimum, average and maximum of a value in the scope tree.")]
-  [StorableClass]
+  [StorableType("D305BB40-F613-4DB5-8778-C0278551CAA3")]
   public sealed class MinAverageMaxValueAnalyzer : AlgorithmOperator, IAnalyzer {
     #region Parameter properties
     public ScopeTreeLookupParameter<DoubleValue> ValueParameter {
@@ -89,7 +89,7 @@ namespace HeuristicLab.Analysis {
 
     #region Storing & Cloning
     [StorableConstructor]
-    private MinAverageMaxValueAnalyzer(bool deserializing) : base(deserializing) { }
+    private MinAverageMaxValueAnalyzer(StorableConstructorFlag _) : base(_) { }
     private MinAverageMaxValueAnalyzer(MinAverageMaxValueAnalyzer original, Cloner cloner)
       : base(original, cloner) {
       resultsCollector = cloner.Clone(original.resultsCollector);

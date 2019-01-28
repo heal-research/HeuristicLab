@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -27,11 +27,11 @@ using HeuristicLab.Encodings.ScheduleEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.Scheduling {
   [Item("SchedulingEvaluator", "First applies the decoder operator to obtain a schedule from an encoding and then applies the evaluator to obtain a quality.")]
-  [StorableClass]
+  [StorableType("A7AED7B7-C431-4E39-A002-8CBCA6223BCD")]
   public class SchedulingEvaluator : InstrumentedOperator, ISchedulingEvaluator, IStochasticOperator {
 
     public IValueLookupParameter<IScheduleDecoder> ScheduleDecoderParameter {
@@ -58,7 +58,7 @@ namespace HeuristicLab.Problems.Scheduling {
     }
 
     [StorableConstructor]
-    protected SchedulingEvaluator(bool deserializing) : base(deserializing) { }
+    protected SchedulingEvaluator(StorableConstructorFlag _) : base(_) { }
     protected SchedulingEvaluator(SchedulingEvaluator original, Cloner cloner) : base(original, cloner) { }
     public SchedulingEvaluator()
       : base() {

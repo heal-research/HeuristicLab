@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,11 +21,11 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   [Item("OneIndexMove", "A move on a binary vector that is specified by 1 index")]
-  [StorableClass]
+  [StorableType("C7948F7F-EC47-4752-9E18-9299123189D1")]
   public class OneIndexMove : Item {
     [Storable]
     public int Index { get; protected set; }
@@ -33,7 +33,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
     public BinaryVector BinaryVector { get; protected set; }
 
     [StorableConstructor]
-    protected OneIndexMove(bool deserializing) : base(deserializing) { }
+    protected OneIndexMove(StorableConstructorFlag _) : base(_) { }
     protected OneIndexMove(OneIndexMove original, Cloner cloner)
       : base(original, cloner) {
       this.Index = original.Index;

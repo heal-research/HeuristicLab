@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,10 +20,12 @@
 #endregion
 
 using System.Collections.Generic;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
 
   public static class NonDominatedSelect {
+    [StorableType("5EDA6CC0-30C6-4B71-8713-F84BB61B1180")]
     public enum DominationResult { Dominates, IsDominated, IsNonDominated };
 
     public static IEnumerable<double[]> SelectNonDominatedVectors(IEnumerable<double[]> qualities, bool[] maximization, bool dominateOnEqualQualities) {

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,7 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Persistence.Auxiliary {
 
@@ -103,7 +103,7 @@ namespace HeuristicLab.Persistence.Auxiliary {
 
 
     [StorableConstructor]
-    protected TypeName(bool deserializing) { }
+    protected TypeName(StorableConstructorFlag _) { }
     /// <summary>
     /// Initializes a new instance of the <see cref="TypeName"/> class.
     /// </summary>

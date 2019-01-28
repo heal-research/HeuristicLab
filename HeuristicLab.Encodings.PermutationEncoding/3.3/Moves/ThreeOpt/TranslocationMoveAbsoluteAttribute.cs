@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,11 +21,11 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("TranslocationMoveAbsoluteAttribute", "Specifies the tabu attributes for a translocation and insertion move (3-opt) on absolute permutation encodings.")]
-  [StorableClass]
+  [StorableType("6E434731-DD9F-4CCD-A929-C6522EA4A301")]
   public class TranslocationMoveAbsoluteAttribute : PermutationMoveAttribute {
     [Storable]
     public int[] Number { get; private set; }
@@ -35,7 +35,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     public int NewPosition { get; private set; }
 
     [StorableConstructor]
-    protected TranslocationMoveAbsoluteAttribute(bool deserializing) : base(deserializing) { }
+    protected TranslocationMoveAbsoluteAttribute(StorableConstructorFlag _) : base(_) { }
     protected TranslocationMoveAbsoluteAttribute(TranslocationMoveAbsoluteAttribute original, Cloner cloner)
       : base(original, cloner) {
       this.Number = (int[])original.Number.Clone();

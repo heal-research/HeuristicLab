@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,14 +24,14 @@ using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Core {
   /// <summary>
   /// Represents a list of checked items.
   /// </summary>
   /// <typeparam name="T">The element type (base type is IItem)</typeparam>
-  [StorableClass]
+  [StorableType("83222907-689C-484B-8431-BA85DF516761")]
   [Item("CheckedItemList", "Represents a list of items that can be checked or unchecked.")]
   public class CheckedItemList<T> : ItemList<T>, ICheckedItemList<T> where T : class, IItem {
     [Storable]
@@ -53,7 +53,7 @@ namespace HeuristicLab.Core {
     /// </summary>
     /// <param name="deserializing"></param>
     [StorableConstructor]
-    protected CheckedItemList(bool deserializing) : base(deserializing) { }
+    protected CheckedItemList(StorableConstructorFlag _) : base(_) { }
     protected CheckedItemList(CheckedItemList<T> original, Cloner cloner)
       : base(original, cloner) {
       list = new List<T>(original.Select(x => (T)cloner.Clone(x)));

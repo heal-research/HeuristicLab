@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -27,11 +27,11 @@ using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.QuadraticAssignment.Algorithms {
   [Item("RobustTabooSearchOperator", "Performs an iteration of the robust taboo search algorithm as descrbied in Taillard 1991.")]
-  [StorableClass]
+  [StorableType("D4916F45-70B0-4D02-8377-6E82BA079167")]
   public sealed class RobustTabooSeachOperator : SingleSuccessorOperator, IIterationBasedOperator, IStochasticOperator, ISingleObjectiveOperator {
 
     #region Parameter Properties
@@ -102,7 +102,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Algorithms {
     #endregion
 
     [StorableConstructor]
-    private RobustTabooSeachOperator(bool deserializing) : base(deserializing) { }
+    private RobustTabooSeachOperator(StorableConstructorFlag _) : base(_) { }
     private RobustTabooSeachOperator(RobustTabooSeachOperator original, Cloner cloner)
       : base(original, cloner) {
     }

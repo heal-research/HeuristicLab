@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,11 +25,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.VehicleRouting {
   [Item("BestCapacitatedVRPToursMemorizer", "An operator that updates the best VRP tour found so far in the scope three.")]
-  [StorableClass]
+  [StorableType("888B45AA-2037-49EB-ACD9-36F7D593D320")]
   public class BestCapacitatedVRPToursMemorizer : SingleSuccessorOperator {
     public ScopeTreeLookupParameter<DoubleValue> OverloadParameter {
       get { return (ScopeTreeLookupParameter<DoubleValue>)Parameters["Overload"]; }
@@ -55,7 +55,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
     }
 
     [StorableConstructor]
-    protected BestCapacitatedVRPToursMemorizer(bool deserializing) : base(deserializing) { }
+    protected BestCapacitatedVRPToursMemorizer(StorableConstructorFlag _) : base(_) { }
 
     public override IOperation Apply() {
       int i = OverloadParameter.ActualValue.Select((x, index) => new { index, x.Value }).OrderBy(x => x.Value).First().index;

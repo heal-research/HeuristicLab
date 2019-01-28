@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -28,7 +28,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.DataAnalysis;
 using LibSVM;
 
@@ -38,7 +38,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// </summary>
   [Item("Support Vector Regression (SVM)", "Support vector machine regression data analysis algorithm (wrapper for libSVM).")]
   [Creatable(CreatableAttribute.Categories.DataAnalysisRegression, Priority = 110)]
-  [StorableClass]
+  [StorableType("645A21E5-EF07-46BF-AA04-A616165F0EF4")]
   public sealed class SupportVectorRegression : FixedDataAnalysisAlgorithm<IRegressionProblem> {
     private const string SvmTypeParameterName = "SvmType";
     private const string KernelTypeParameterName = "KernelType";
@@ -105,7 +105,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
     #endregion
     [StorableConstructor]
-    private SupportVectorRegression(bool deserializing) : base(deserializing) { }
+    private SupportVectorRegression(StorableConstructorFlag _) : base(_) { }
     private SupportVectorRegression(SupportVectorRegression original, Cloner cloner)
       : base(original, cloner) {
     }

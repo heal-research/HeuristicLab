@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -27,14 +27,14 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.ScatterSearch {
   /// <summary>
   /// An operator that updates the reference set.
   /// </summary>
   [Item("ReferenceSetUpdateMethod", "An operator that updates the reference set.")]
-  [StorableClass]
+  [StorableType("478625DC-87BD-4111-98D1-45A9939198C8")]
   public sealed class ReferenceSetUpdateMethod : SingleSuccessorOperator {
     #region Parameter properties
     public ScopeParameter CurrentScopeParameter {
@@ -58,7 +58,7 @@ namespace HeuristicLab.Algorithms.ScatterSearch {
     #endregion
 
     [StorableConstructor]
-    private ReferenceSetUpdateMethod(bool deserializing) : base(deserializing) { }
+    private ReferenceSetUpdateMethod(StorableConstructorFlag _) : base(_) { }
     private ReferenceSetUpdateMethod(ReferenceSetUpdateMethod original, Cloner cloner) : base(original, cloner) { }
     public ReferenceSetUpdateMethod()
       : base() {

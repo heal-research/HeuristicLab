@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,8 +20,10 @@
 #endregion
 
 using HeuristicLab.Core;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.BinaryVectorEncoding {
+  [StorableType("f59dc211-20bf-4c50-8a87-54c0d37735c7")]
   public interface IOneBitflipMoveOperator : IBinaryVectorMoveOperator {
     ILookupParameter<OneBitflipMove> OneBitflipMoveParameter { get; }
   }
