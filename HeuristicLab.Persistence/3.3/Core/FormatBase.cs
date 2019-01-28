@@ -28,7 +28,7 @@ namespace HeuristicLab.Persistence.Interfaces {
   /// Common base class for defining a new serialization format.
   /// </summary>
   /// <typeparam name="SerialDataFormat">The type of the serial data format.</typeparam>
-  [StorableClass]
+  [StorableType("4EC2B779-0778-4B95-BF4F-5F88C1C1FF1F")]
   public abstract class FormatBase<SerialDataFormat> : IFormat<SerialDataFormat> where SerialDataFormat : ISerialData {
 
     /// <summary>

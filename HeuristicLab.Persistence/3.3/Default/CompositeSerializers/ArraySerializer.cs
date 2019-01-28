@@ -27,7 +27,7 @@ using HeuristicLab.Persistence.Interfaces;
 
 namespace HeuristicLab.Persistence.Default.CompositeSerializers {
 
-  [StorableClass]
+  [StorableType("EBEA3A72-AF1D-44BF-8A09-1645402E0715")]
   internal sealed class ArraySerializer : ICompositeSerializer {
 
     [StorableConstructor]

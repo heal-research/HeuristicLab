@@ -27,7 +27,7 @@ namespace HeuristicLab.Persistence.Default.DebugString {
   /// <summary>
   /// Simple write-only format for debugging purposes.
   /// </summary>
-  [StorableClass]
+  [StorableType("961AC268-6669-4B0E-A2B5-38C99BA63FD9")]
   public class DebugStringFormat : FormatBase<DebugString> {
     /// <summary>
     /// Gets the format's name.

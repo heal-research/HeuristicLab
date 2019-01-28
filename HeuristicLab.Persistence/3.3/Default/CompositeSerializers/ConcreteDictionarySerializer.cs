@@ -29,7 +29,7 @@ using HeuristicLab.Persistence.Interfaces;
 
 namespace HeuristicLab.Persistence.Default.CompositeSerializers {
 
-  [StorableClass]
+  [StorableType("5C0B5959-CFCA-4067-9D4D-540846D8F6EF")]
   internal sealed class ConcreteDictionarySerializer : ICompositeSerializer {
 
     [StorableConstructor]

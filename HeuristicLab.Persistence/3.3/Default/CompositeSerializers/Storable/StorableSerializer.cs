@@ -38,7 +38,7 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
   /// storable mode can be set to <c>AllFields</c>, <c>AllProperties</c>
   /// or <c>AllFieldsAndAllProperties</c>.
   /// </summary>
-  [StorableClass]
+  [StorableType("F60343E8-4337-4171-A50A-6A57D09267ED")]
   public sealed class StorableSerializer : ICompositeSerializer {
 
     public StorableSerializer() {

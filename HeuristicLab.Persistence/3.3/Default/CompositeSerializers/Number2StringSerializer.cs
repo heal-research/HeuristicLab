@@ -39,7 +39,7 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers {
   /// This serializer has Priorty below zero and is disabled by default
   /// but can be useful in generating custom serializers.
   /// </summary>
-  [StorableClass]
+  [StorableType("CD4E3C0C-C766-42EA-B968-C6EBD0FAA637")]
   public sealed class Number2StringSerializer : ICompositeSerializer {
 
     [StorableConstructor]

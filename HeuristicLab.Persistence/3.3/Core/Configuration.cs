@@ -31,7 +31,7 @@ namespace HeuristicLab.Persistence.Core {
   /// for a certain seraial format. The configuration can be obtained from the
   /// <c>ConfigurationService</c>.
   /// </summary>
-  [StorableClass]
+  [StorableType("72F8B3EA-0BC3-43A8-9B58-EF798C154CF3")]
   public class Configuration {
 
     [Storable]

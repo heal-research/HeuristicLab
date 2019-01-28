@@ -28,7 +28,7 @@ namespace HeuristicLab.Persistence.Default.Xml {
   /// <summary>
   /// XML friendly encapsulation of string data.
   /// </summary>
-  [StorableClass]
+  [StorableType("C7207D30-79F0-47C7-B151-6E96A594F75C")]
   public class XmlString : ISerialData {
 
     /// <summary>

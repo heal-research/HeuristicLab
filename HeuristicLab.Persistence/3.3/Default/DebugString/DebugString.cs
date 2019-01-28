@@ -27,7 +27,7 @@ namespace HeuristicLab.Persistence.Default.DebugString {
   /// <summary>
   /// Simple write-only format for debugging purposes.
   /// </summary>
-  [StorableClass]
+  [StorableType("11A7D76E-AB88-43E1-97E8-D195959C34A2")]
   public class DebugString : ISerialData {
 
     /// <summary>

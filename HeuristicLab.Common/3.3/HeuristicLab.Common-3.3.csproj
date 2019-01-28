@@ -142,6 +142,7 @@
     <Compile Include="Constants.cs" />
     <Compile Include="ArrayExtensions.cs" />
     <Compile Include="ExceptionExtensions.cs" />
+    <Compile Include="Plugin.cs" />
     <Compile Include="Statistics\EmpiricalCumulativeDistributionFunction.cs" />
     <Compile Include="ListExtensions.cs" />
     <Compile Include="Point2D.cs" />
@@ -153,7 +154,6 @@
     <Compile Include="Content\IContent.cs" />
     <Compile Include="Statistics\EnumerableStatisticExtensions.cs" />
     <Compile Include="IDeepCloneable.cs" />
-    <Compile Include="Plugin.cs" />
     <Compile Include="ReferenceEqualityComparer.cs" />
     <Compile Include="SequenceGenerator.cs" />
     <Compile Include="TimeSpanHelper.cs" />

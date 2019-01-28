@@ -30,9 +30,10 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   [Item("Hierarchical Formatter", "Formatter for symbolic expression trees that uses special characters for drawing a tree in text-mode.")]
   [StorableType("0a9ad135-ced1-4c3b-94ff-b1fb41193515")]
   public sealed class SymbolicExpressionTreeHierarchicalFormatter : NamedItem, ISymbolicExpressionTreeStringFormatter {
-    private SymbolicExpressionTreeHierarchicalFormatter(SymbolicExpressionTreeHierarchicalFormatter original, Cloner cloner)
-      : base(original, cloner) {
-    }
+    [StorableConstructor]
+    private SymbolicExpressionTreeHierarchicalFormatter(StorableConstructorFlag _) : base(_) { }
+
+    private SymbolicExpressionTreeHierarchicalFormatter(SymbolicExpressionTreeHierarchicalFormatter original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new SymbolicExpressionTreeHierarchicalFormatter(this, cloner);
     }

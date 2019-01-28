@@ -30,7 +30,7 @@ using HeuristicLab.Persistence.Interfaces;
 
 namespace HeuristicLab.Persistence.Default.CompositeSerializers {
 
-  [StorableClass]
+  [StorableType("44392644-F6AE-48F3-B0D8-08D3ED7DA307")]
   internal sealed class NumberEnumerable2StringSerializer : ICompositeSerializer {
 
     [StorableConstructor]

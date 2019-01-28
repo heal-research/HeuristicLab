@@ -32,7 +32,7 @@ namespace HeuristicLab.Persistence.Auxiliary {
   /// be used to compare versions and ignore extended assembly
   /// attributes.
   /// </summary>
-  [StorableClass]
+  [StorableType("843C9419-B662-4902-BE18-2ABEB1BF61F0")]
   public class TypeName {
 
     /// <summary>

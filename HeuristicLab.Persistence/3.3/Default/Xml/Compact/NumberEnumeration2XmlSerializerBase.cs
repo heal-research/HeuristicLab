@@ -27,7 +27,7 @@ using HeuristicLab.Persistence.Auxiliary;
 
 namespace HeuristicLab.Persistence.Default.Xml.Compact {
 
-  [StorableClass]
+  [StorableType("B4D23353-9322-4005-BAF2-AB3034DEE34A")]
   internal abstract class NumberEnumeration2XmlSerializerBase<T> : CompactXmlSerializerBase<T> where T : IEnumerable {
 
     protected virtual char Separator { get { return ';'; } }

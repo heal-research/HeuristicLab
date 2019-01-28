@@ -28,7 +28,7 @@ namespace HeuristicLab.Persistence.Default.Xml {
   /// A simple XML format, that can be used to either stream
   /// or save to a file.
   /// </summary>
-  [StorableClass]
+  [StorableType("4E9895D9-BB30-43A6-AB35-4263FFDE3C0E")]
   public class XmlFormat : FormatBase<XmlString> {
     /// <summary>
     /// Gets the format's name.

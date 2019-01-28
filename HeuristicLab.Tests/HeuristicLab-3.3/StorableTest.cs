@@ -41,13 +41,26 @@ namespace HeuristicLab.Tests {
       StringBuilder errorMessage = new StringBuilder();
 
       foreach (Type storableType in ApplicationManager.Manager.GetTypes(typeof(object))
-        .Where(StorableClassAttribute.IsStorableClass)) {
+        .Where(StorableTypeAttribute.IsStorableType)) {
         //test only types contained in HL plugin assemblies
+        if (!storableType.Namespace.StartsWith("HeuristicLab")) continue;
         if (storableType.Namespace.Contains(".Tests")) continue;
         if (!PluginLoader.Assemblies.Contains(storableType.Assembly)) continue;
 
+        if (storableType.IsEnum || storableType.IsInterface) continue;
+        var storableFields = storableType
+          .GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)
+          .Where(fi => StorableAttribute.IsStorable(fi));
+        var storableProps = storableType
+          .GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)
+          .Where(fi => StorableAttribute.IsStorable(fi));
+
+        // a storable constructor should be given but is not absolutely required.
+        // when there are no storable fields then a storable ctor has no real purpose.
+        if (!storableFields.Any() && !storableProps.Any()) continue;
+
         IEnumerable<ConstructorInfo> ctors = storableType.GetConstructors(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
-        ConstructorInfo storableConstructor = ctors.Where(c => c.GetParameters().Count() == 1 && c.GetParameters().First().ParameterType == typeof(bool)).FirstOrDefault();
+        ConstructorInfo storableConstructor = ctors.Where(c => c.GetParameters().Count() == 1 && c.GetParameters().First().ParameterType == typeof(HEAL.Attic.StorableConstructorFlag)).FirstOrDefault();
         if (storableConstructor == null) errorMessage.Append(Environment.NewLine + storableType.ToString() + ": No storable constructor is defined.");
         else {
           if (storableType.IsSealed && !storableConstructor.IsPrivate)
@@ -68,15 +81,15 @@ namespace HeuristicLab.Tests {
 
       foreach (var type in ApplicationManager.Manager.GetTypes(typeof(object), onlyInstantiable: false, includeGenericTypeDefinitions: true)
         .Where(t => t.Namespace != null && !t.Namespace.Contains(".Tests"))
-        .Where(t => !StorableClassAttribute.IsStorableClass(t))) {
+        .Where(t => !StorableTypeAttribute.IsStorableType(t))) {
         var members = type.GetMembers(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.DeclaredOnly);
         var storableConstructor = members.SingleOrDefault(m => Attribute.IsDefined(m, typeof(StorableConstructorAttribute), inherit: false));
         var storableMembers = members.Where(m => Attribute.IsDefined(m, typeof(StorableAttribute), inherit: false));
 
         if (storableConstructor != null) {
-          errorMessage.Append(Environment.NewLine + type.Namespace + "." + type.GetPrettyName() + ": Contains a storable constructor but is not a storable class.");
+          errorMessage.Append(Environment.NewLine + type.Namespace + "." + type.GetPrettyName() + ": Contains a storable constructor but is not a storable type.");
         } else if (storableMembers.Any()) {
-          errorMessage.Append(Environment.NewLine + type.Namespace + "." + type.GetPrettyName() + ": Contains at least one storable member but is not a storable class.");
+          errorMessage.Append(Environment.NewLine + type.Namespace + "." + type.GetPrettyName() + ": Contains at least one storable member but is not a storable type.");
         }
       }
       Assert.IsTrue(errorMessage.Length == 0, errorMessage.ToString());

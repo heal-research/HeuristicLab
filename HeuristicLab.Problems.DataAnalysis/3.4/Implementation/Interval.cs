@@ -33,6 +33,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
     [Storable]
     public double UpperBound { get; private set; }
 
+    [StorableConstructor]
+    protected Interval(StorableConstructorFlag _) { }
+
     public Interval(double lowerBound, double upperBound) {
       if (lowerBound > upperBound)
         throw new ArgumentException("LowerBound must be smaller than UpperBound.");
