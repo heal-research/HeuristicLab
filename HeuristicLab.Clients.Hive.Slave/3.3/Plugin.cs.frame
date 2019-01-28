@@ -35,7 +35,6 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
   [PluginDependency("HeuristicLab.Common", "3.3")]
   [PluginDependency("HeuristicLab.Core", "3.3")]
   [PluginDependency("HeuristicLab.Hive", "3.3")]
-  [PluginDependency("HeuristicLab.Persistence", "3.3")]
   public class HeuristicLabClientsHiveSlavePlugin : PluginBase {
   }
 }
