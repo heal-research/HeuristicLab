@@ -26,12 +26,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("HeuristiclLab.MathematicalOptimization.Views")]
-[assembly: AssemblyDescription("Views for mathematical optimization")]
+[assembly: AssemblyTitle("HeuristiclLab.ExactOptimization.Views")]
+[assembly: AssemblyDescription("Views for exact optimization")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("HEAL")]
 [assembly: AssemblyProduct("HeuristicLab")]
-[assembly: AssemblyCopyright("(c) 2002-2018 HEAL")]
+[assembly: AssemblyCopyright("(c) 2002-2019 HEAL")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

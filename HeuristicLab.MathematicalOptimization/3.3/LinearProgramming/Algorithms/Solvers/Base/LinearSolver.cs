@@ -33,7 +33,7 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
+namespace HeuristicLab.ExactOptimization.LinearProgramming {
 
   [StorableClass]
   public class LinearSolver : ParameterizedNamedItem, ILinearSolver, IDisposable {
@@ -48,7 +48,8 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
 
     public LinearSolver() {
       Parameters.Add(problemTypeParam =
-        new ValueParameter<EnumValue<ProblemType>>(nameof(ProblemType), new EnumValue<ProblemType>()));
+        new ValueParameter<EnumValue<ProblemType>>(nameof(ProblemType),
+          new EnumValue<ProblemType>(ProblemType.MixedIntegerProgramming)));
       Parameters.Add(solverSpecificParametersParam =
         new FixedValueParameter<TextValue>(nameof(SolverSpecificParameters), new TextValue()));
     }
@@ -64,26 +65,23 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
       solverSpecificParametersParam = cloner.Clone(original.solverSpecificParametersParam);
     }
 
-    public double DualTolerance { get; set; } = MPSolverParameters.kDefaultDualTolerance;
-
-    public string ExportModel { get; set; }
+    public double DualTolerance { get; set; } = SolverParameters.DefaultDualTolerance;
 
     public bool Incrementality { get; set; } =
-          MPSolverParameters.kDefaultIncrementality == MPSolverParameters.INCREMENTALITY_ON;
+      SolverParameters.DefaultIncrementality == SolverParameters.IncrementalityValues.IncrementalityOn;
 
-    public LpAlgorithmValues LpAlgorithm { get; set; }
-
-    public bool Presolve { get; set; } = MPSolverParameters.kDefaultPresolve == MPSolverParameters.PRESOLVE_ON;
-
-    public double PrimalTolerance { get; set; } = MPSolverParameters.kDefaultPrimalTolerance;
+    public SolverParameters.LpAlgorithmValues LpAlgorithm { get; set; }
+    protected virtual Solver.OptimizationProblemType OptimizationProblemType { get; }
+    public bool Presolve { get; set; } = SolverParameters.DefaultPresolve == SolverParameters.PresolveValues.PresolveOn;
+    public double PrimalTolerance { get; set; } = SolverParameters.DefaultPrimalTolerance;
 
     public ProblemType ProblemType {
       get => problemTypeParam.Value.Value;
       set => problemTypeParam.Value.Value = value;
     }
 
-    public double RelativeGapTolerance { get; set; } = MPSolverParameters.kDefaultRelativeMipGap;
-
+    public IValueParameter<EnumValue<ProblemType>> ProblemTypeParameter => problemTypeParam;
+    public double RelativeGapTolerance { get; set; } = SolverParameters.DefaultRelativeMipGap;
     public bool Scaling { get; set; }
 
     public string SolverSpecificParameters {
@@ -91,10 +89,10 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
       set => solverSpecificParametersParam.Value.Value = value;
     }
 
+    public IFixedValueParameter<TextValue> SolverSpecificParametersParameter => solverSpecificParametersParam;
     public virtual bool SupportsPause => true;
     public virtual bool SupportsStop => true;
     public virtual TimeSpan TimeLimit { get; set; } = TimeSpan.Zero;
-    protected virtual OptimizationProblemType OptimizationProblemType { get; }
 
     public override IDeepCloneable Clone(Cloner cloner) => new LinearSolver(this, cloner);
 
@@ -117,15 +115,14 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
     }
 
     public bool ExportAsProto(string fileName, ProtoWriteFormat writeFormat = ProtoWriteFormat.ProtoBinary) =>
-      solver != null && solver.ExportModelAsProtoFormat(fileName, (int)writeFormat);
+      solver != null && solver.ExportModelAsProtoFormat(fileName, (Google.OrTools.LinearSolver.ProtoWriteFormat)writeFormat);
 
-    public SolverResponseStatus ImportFromMps(string fileName, bool? fixedFormat) => solver == null
-      ? SolverResponseStatus.Abnormal
-      : (SolverResponseStatus)solver.ImportModelFromMpsFormat(fileName, fixedFormat.HasValue, fixedFormat ?? false);
+    public MPSolverResponseStatus ImportFromMps(string fileName, bool? fixedFormat) =>
+      solver?.ImportModelFromMpsFormat(fileName, fixedFormat.HasValue, fixedFormat ?? false) ??
+      (MPSolverResponseStatus)SolverResponseStatus.Abnormal;
 
-    public SolverResponseStatus ImportFromProto(string fileName) => solver == null
-      ? SolverResponseStatus.Abnormal
-      : (SolverResponseStatus)solver.ImportModelFromProtoFormat(fileName);
+    public MPSolverResponseStatus ImportFromProto(string fileName) =>
+      solver?.ImportModelFromProtoFormat(fileName) ?? (MPSolverResponseStatus)SolverResponseStatus.Abnormal;
 
     public bool InterruptSolve() => solver?.InterruptSolve() ?? false;
 
@@ -134,15 +131,15 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
       solver = null;
     }
 
-    public virtual void Solve(ILinearProgrammingProblemDefinition problemDefintion, ref TimeSpan executionTime,
+    public virtual void Solve(ILinearProblemDefinition problemDefintion,
       ResultCollection results, CancellationToken cancellationToken) =>
-      Solve(problemDefintion, ref executionTime, results);
+      Solve(problemDefintion, results);
 
-    public virtual void Solve(ILinearProgrammingProblemDefinition problemDefinition, ref TimeSpan executionTime,
+    public virtual void Solve(ILinearProblemDefinition problemDefinition,
       ResultCollection results) =>
       Solve(problemDefinition, results, TimeLimit);
 
-    public virtual void Solve(ILinearProgrammingProblemDefinition problemDefinition, ResultCollection results,
+    public virtual void Solve(ILinearProblemDefinition problemDefinition, ResultCollection results,
       TimeSpan timeLimit) {
       if (solver == null) {
         solver = CreateSolver(OptimizationProblemType);
@@ -157,52 +154,19 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
 
       ResultStatus resultStatus;
 
-      using (var parameters = new MPSolverParameters()) {
-        parameters.SetDoubleParam(MPSolverParameters.RELATIVE_MIP_GAP, RelativeGapTolerance);
-        parameters.SetDoubleParam(MPSolverParameters.PRIMAL_TOLERANCE, PrimalTolerance);
-        parameters.SetDoubleParam(MPSolverParameters.DUAL_TOLERANCE, DualTolerance);
-        parameters.SetIntegerParam(MPSolverParameters.PRESOLVE,
-          Presolve ? MPSolverParameters.PRESOLVE_ON : MPSolverParameters.PRESOLVE_OFF);
-        parameters.SetIntegerParam(MPSolverParameters.LP_ALGORITHM, (int)LpAlgorithm);
-        parameters.SetIntegerParam(MPSolverParameters.INCREMENTALITY,
-          Incrementality ? MPSolverParameters.INCREMENTALITY_ON : MPSolverParameters.INCREMENTALITY_OFF);
-        parameters.SetIntegerParam(MPSolverParameters.SCALING,
-          Scaling ? MPSolverParameters.SCALING_ON : MPSolverParameters.SCALING_OFF);
+      using (var parameters = new SolverParameters()) {
+        parameters.SetDoubleParam(SolverParameters.DoubleParam.RelativeMipGap, RelativeGapTolerance);
+        parameters.SetDoubleParam(SolverParameters.DoubleParam.PrimalTolerance, PrimalTolerance);
+        parameters.SetDoubleParam(SolverParameters.DoubleParam.DualTolerance, DualTolerance);
+        parameters.SetIntegerParam(SolverParameters.IntegerParam.Presolve,
+          (int)(Presolve ? SolverParameters.PresolveValues.PresolveOn : SolverParameters.PresolveValues.PresolveOff));
+        parameters.SetIntegerParam(SolverParameters.IntegerParam.Incrementality,
+          (int)(Incrementality ? SolverParameters.IncrementalityValues.IncrementalityOn : SolverParameters.IncrementalityValues.IncrementalityOff));
+        parameters.SetIntegerParam(SolverParameters.IntegerParam.Scaling,
+          (int)(Scaling ? SolverParameters.ScalingValues.ScalingOn : SolverParameters.ScalingValues.ScalingOff));
 
         if (!solver.SetSolverSpecificParametersAsString(SolverSpecificParameters))
           throw new ArgumentException("Solver specific parameters could not be set.");
-
-        if (!string.IsNullOrWhiteSpace(ExportModel)) {
-          var fileInfo = new FileInfo(ExportModel);
-
-          if (!fileInfo.Directory?.Exists ?? false) {
-            Directory.CreateDirectory(fileInfo.Directory.FullName);
-          }
-
-          bool exportSuccessful;
-          switch (fileInfo.Extension) {
-            case ".lp":
-              exportSuccessful = ExportAsLp(ExportModel);
-              break;
-
-            case ".mps":
-              exportSuccessful = ExportAsMps(ExportModel);
-              break;
-
-            case ".prototxt":
-              exportSuccessful = ExportAsProto(ExportModel, ProtoWriteFormat.ProtoText);
-              break;
-
-            case ".bin": // remove file extension as it is added by OR-Tools
-              exportSuccessful = ExportAsProto(Path.ChangeExtension(ExportModel, null));
-              break;
-
-            default:
-              throw new NotSupportedException("File format selected to export model is not supported.");
-          }
-        }
-
-        // TODO: show warning if file export didn't work (if exportSuccessful is false)
 
         resultStatus = (ResultStatus)solver.Solve(parameters);
       }
@@ -210,10 +174,8 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
       var objectiveValue = solver.Objective()?.Value();
 
       problemDefinition.Analyze(solver, results);
-      results.AddOrUpdateResult("ResultStatus", new EnumValue<ResultStatus>(resultStatus));
-      results.AddOrUpdateResult("BestObjectiveValue", new DoubleValue(objectiveValue ?? double.NaN));
 
-      if (solver.IsMIP()) {
+      if (solver.IsMip()) {
         var objectiveBound = solver.Objective()?.BestBound();
         var absoluteGap = objectiveValue.HasValue && objectiveBound.HasValue
           ? Math.Abs(objectiveBound.Value - objectiveValue.Value)
@@ -223,15 +185,22 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
           ? absoluteGap.Value / (1e-10 + Math.Abs(objectiveValue.Value))
           : (double?)null;
 
+        if (resultStatus == ResultStatus.Optimal && absoluteGap.HasValue && !absoluteGap.Value.IsAlmost(0)) {
+          resultStatus = ResultStatus.OptimalWithinTolerance;
+        }
+
         results.AddOrUpdateResult("BestObjectiveBound", new DoubleValue(objectiveBound ?? double.NaN));
         results.AddOrUpdateResult("AbsoluteGap", new DoubleValue(absoluteGap ?? double.NaN));
         results.AddOrUpdateResult("RelativeGap", new PercentValue(relativeGap ?? double.NaN));
       }
 
+      results.AddOrUpdateResult("ResultStatus", new EnumValue<ResultStatus>(resultStatus));
+      results.AddOrUpdateResult("BestObjectiveValue", new DoubleValue(objectiveValue ?? double.NaN));
+
       results.AddOrUpdateResult("NumberOfConstraints", new IntValue(solver.NumConstraints()));
       results.AddOrUpdateResult("NumberOfVariables", new IntValue(solver.NumVariables()));
 
-      if (solver.IsMIP() && solver.Nodes() >= 0) {
+      if (solver.IsMip() && solver.Nodes() >= 0) {
         results.AddOrUpdateResult(nameof(solver.Nodes), new DoubleValue(solver.Nodes()));
       }
 
@@ -242,7 +211,7 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
       results.AddOrUpdateResult(nameof(solver.SolverVersion), new StringValue(solver.SolverVersion()));
     }
 
-    protected virtual Solver CreateSolver(OptimizationProblemType optimizationProblemType, string libraryName = null) {
+    protected virtual Solver CreateSolver(Solver.OptimizationProblemType optimizationProblemType, string libraryName = null) {
       if (!string.IsNullOrEmpty(libraryName) && !File.Exists(libraryName)) {
         var paths = new List<string> {
           Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath)
@@ -255,7 +224,7 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
       }
 
       try {
-        solver = new Solver(Name, (int)optimizationProblemType, libraryName ?? string.Empty);
+        solver = new Solver(Name, optimizationProblemType, libraryName ?? string.Empty);
       } catch {
         throw new InvalidOperationException($"Could not create {optimizationProblemType}.");
       }

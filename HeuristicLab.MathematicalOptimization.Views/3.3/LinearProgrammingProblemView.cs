@@ -20,36 +20,32 @@
 #endregion
 
 using System;
-using System.Windows.Forms;
 using HeuristicLab.Core.Views;
+using HeuristicLab.ExactOptimization.LinearProgramming;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
-using HeuristicLab.MathematicalOptimization.LinearProgramming;
-using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.MathematicalOptimization.Views {
+namespace HeuristicLab.ExactOptimization.Views {
 
   [View(nameof(LinearProgrammingProblemView))]
-  [Content(typeof(LinearProgrammingProblem), true)]
+  [Content(typeof(LinearProblem), IsDefaultView = true)]
   public partial class LinearProgrammingProblemView : ItemView {
     protected ViewHost definitionView;
-
-    private TypeSelectorDialog problemTypeSelectorDialog;
 
     public LinearProgrammingProblemView() {
       InitializeComponent();
       definitionView = ViewHost;
     }
 
-    public new LinearProgrammingProblem Content {
-      get => (LinearProgrammingProblem)base.Content;
+    public new LinearProblem Content {
+      get => (LinearProblem)base.Content;
       set => base.Content = value;
     }
 
     protected override void DeregisterContentEvents() {
       base.DeregisterContentEvents();
-      Content.ProblemDefinitionChanged -= ContentOnProblemDefinitionChanged;
       Content.NameChanged -= ContentOnNameChanged;
+      Content.ProblemDefinitionChanged -= ContentOnProblemDefinitionChanged;
     }
 
     protected override void OnContentChanged() {
@@ -68,46 +64,12 @@ namespace HeuristicLab.MathematicalOptimization.Views {
       base.RegisterContentEvents();
     }
 
-    private void changeModelTypeButton_Click(object sender, EventArgs e) {
-      if (problemTypeSelectorDialog == null) {
-        problemTypeSelectorDialog = new TypeSelectorDialog { Caption = "Select Model Type" };
-        problemTypeSelectorDialog.TypeSelector.Caption = "Available Model Types";
-        problemTypeSelectorDialog.TypeSelector.Configure(typeof(ILinearProgrammingProblemDefinition), false, true);
-      }
-      if (problemTypeSelectorDialog.ShowDialog(this) == DialogResult.OK) {
-        try {
-          Content.ProblemDefinition =
-            (ILinearProgrammingProblemDefinition)problemTypeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType();
-        } catch (Exception ex) {
-          ErrorHandling.ShowErrorDialog(this, ex);
-        }
-      }
-    }
-
     private void ContentOnNameChanged(object sender, EventArgs eventArgs) {
       Caption = Content.Name;
     }
 
     private void ContentOnProblemDefinitionChanged(object sender, EventArgs eventArgs) {
-      var problemDefinition = ((LinearProgrammingProblem)sender).ProblemDefinition;
-      definitionView.Content = problemDefinition;
-
-      switch (problemDefinition) {
-        case null:
-          modelTypeNameLabel.Text = "none";
-          break;
-
-        case ProgrammableLinearProgrammingProblemDefinition _:
-          modelTypeNameLabel.Text = "Script";
-          break;
-
-        case FileBasedLinearProgrammingProblemDefinition _:
-          modelTypeNameLabel.Text = "File";
-          break;
-
-        default:
-          throw new NotImplementedException("Unknown problem definition type.");
-      }
+      definitionView.Content = ((LinearProblem)sender).ProblemDefinition;
     }
   }
 }

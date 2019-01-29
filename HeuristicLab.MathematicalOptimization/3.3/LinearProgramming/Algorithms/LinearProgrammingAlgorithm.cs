@@ -29,22 +29,16 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
+namespace HeuristicLab.ExactOptimization.LinearProgramming {
 
-  [Item("Linear/Mixed Integer Programming (LP/MIP)", "Linear/mixed integer programming implemented in several solvers. " +
-    "See also https://dev.heuristiclab.com/trac.fcgi/wiki/Documentation/Howto/LinearMixedIntegerProgramming")] // TODO: update link
+  [Item("Mixed-Integer Linear Programming (LP, MIP)", "Linear/mixed integer programming implemented in several solvers. " +
+    "See also https://dev.heuristiclab.com/trac.fcgi/wiki/Documentation/Reference/ExactOptimization")]
   [Creatable(CreatableAttribute.Categories.ExactAlgorithms)]
   [StorableClass]
-  public class LinearProgrammingAlgorithm : BasicAlgorithm {
+  public sealed class LinearProgrammingAlgorithm : BasicAlgorithm {
 
     [Storable]
     private readonly IFixedValueParameter<DoubleValue> dualToleranceParam;
-
-    [Storable]
-    private readonly IFixedValueParameter<FileValue> exportModelParam;
-
-    [Storable]
-    private readonly IFixedValueParameter<EnumValue<LpAlgorithmValues>> lpAlgorithmParam;
 
     [Storable]
     private readonly IFixedValueParameter<BoolValue> presolveParam;
@@ -64,93 +58,37 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
     [Storable]
     private IConstrainedValueParameter<ILinearSolver> linearSolverParam;
 
-    public LinearProgrammingAlgorithm() {
-      Parameters.Add(linearSolverParam =
-        new ConstrainedValueParameter<ILinearSolver>(nameof(LinearSolver), "The solver used to solve the model."));
+    #region Problem Properties
 
-      ILinearSolver defaultSolver;
-      linearSolverParam.ValidValues.Add(new BopSolver());
-      linearSolverParam.ValidValues.Add(defaultSolver = new CoinOrSolver());
-      linearSolverParam.ValidValues.Add(new CplexSolver());
-      linearSolverParam.ValidValues.Add(new GlopSolver());
-      linearSolverParam.ValidValues.Add(new GlpkSolver());
-      linearSolverParam.ValidValues.Add(new GurobiSolver());
-      linearSolverParam.ValidValues.Add(new ScipSolver());
-      linearSolverParam.Value = defaultSolver;
-
-      Parameters.Add(relativeGapToleranceParam = new FixedValueParameter<PercentValue>(nameof(RelativeGapTolerance),
-        "Limit for relative MIP gap.", new PercentValue(MPSolverParameters.kDefaultRelativeMipGap)));
-      Parameters.Add(timeLimitParam = new FixedValueParameter<TimeSpanValue>(nameof(TimeLimit),
-        "Limit for runtime. Set to zero for unlimited runtime.", new TimeSpanValue()));
-      Parameters.Add(presolveParam =
-        new FixedValueParameter<BoolValue>(nameof(Presolve), "Advanced usage: presolve mode.", new BoolValue()));
-      Parameters.Add(lpAlgorithmParam = new FixedValueParameter<EnumValue<LpAlgorithmValues>>(nameof(LpAlgorithm),
-        "Algorithm to solve linear programs.", new EnumValue<LpAlgorithmValues>(LpAlgorithmValues.DualSimplex)));
-      Parameters.Add(dualToleranceParam = new FixedValueParameter<DoubleValue>(nameof(DualTolerance),
-        "Advanced usage: tolerance for dual feasibility of basic solutions.",
-        new DoubleValue(MPSolverParameters.kDefaultDualTolerance)));
-      Parameters.Add(primalToleranceParam = new FixedValueParameter<DoubleValue>(nameof(PrimalTolerance),
-        "Advanced usage: tolerance for primal feasibility of basic solutions. " +
-        "This does not control the integer feasibility tolerance of integer " +
-        "solutions for MIP or the tolerance used during presolve.",
-        new DoubleValue(MPSolverParameters.kDefaultPrimalTolerance)));
-      Parameters.Add(scalingParam = new FixedValueParameter<BoolValue>(nameof(Scaling),
-        "Advanced usage: enable or disable matrix scaling.", new BoolValue()));
-      Parameters.Add(exportModelParam =
-        new FixedValueParameter<FileValue>(nameof(ExportModel),
-          "Path of the file the model should be exported to. Run the algorithm to export the model.",
-          new FileValue {
-            SaveFile = true,
-            FileDialogFilter = "CPLEX LP File (*.lp)|*.lp|" +
-                               "Mathematical Programming System File (*.mps)|*.mps|" +
-                               "Google OR-Tools Protocol Buffers Text File (*.prototxt)|*.prototxt|" +
-                               "Google OR-Tools Protocol Buffers Binary File (*.bin)|*.bin"
-          }));
-
-      Problem = new LinearProgrammingProblem();
+    public new LinearProblem Problem {
+      get => (LinearProblem)base.Problem;
+      set => base.Problem = value;
     }
 
-    [StorableConstructor]
-    protected LinearProgrammingAlgorithm(bool deserializing)
-      : base(deserializing) {
-    }
+    public override Type ProblemType { get; } = typeof(LinearProblem);
 
-    protected LinearProgrammingAlgorithm(LinearProgrammingAlgorithm original, Cloner cloner)
-      : base(original, cloner) {
-      linearSolverParam = cloner.Clone(original.linearSolverParam);
-      relativeGapToleranceParam = cloner.Clone(original.relativeGapToleranceParam);
-      timeLimitParam = cloner.Clone(original.timeLimitParam);
-      presolveParam = cloner.Clone(original.presolveParam);
-      lpAlgorithmParam = cloner.Clone(original.lpAlgorithmParam);
-      dualToleranceParam = cloner.Clone(original.dualToleranceParam);
-      primalToleranceParam = cloner.Clone(original.primalToleranceParam);
-      scalingParam = cloner.Clone(original.scalingParam);
-      exportModelParam = cloner.Clone(original.exportModelParam);
-    }
+    #endregion
+    #region Parameter Properties
+
+    public IFixedValueParameter<DoubleValue> DualToleranceParameter => dualToleranceParam;
+    public IConstrainedValueParameter<ILinearSolver> LinearSolverParameter => linearSolverParam;
+    public IFixedValueParameter<BoolValue> PresolveParameter => presolveParam;
+    public IFixedValueParameter<DoubleValue> PrimalToleranceParameter => primalToleranceParam;
+    public IFixedValueParameter<PercentValue> RelativeGapToleranceParameter => relativeGapToleranceParam;
+    public IFixedValueParameter<BoolValue> ScalingParameter => scalingParam;
+    public IFixedValueParameter<TimeSpanValue> TimeLimitParameter => timeLimitParam;
+
+    #endregion
+    #region Properties
 
     public double DualTolerance {
       get => dualToleranceParam.Value.Value;
       set => dualToleranceParam.Value.Value = value;
     }
 
-    public string ExportModel {
-      get => exportModelParam.Value.Value;
-      set => exportModelParam.Value.Value = value;
-    }
-
     public ILinearSolver LinearSolver {
       get => linearSolverParam.Value;
       set => linearSolverParam.Value = value;
-    }
-
-    public IConstrainedValueParameter<ILinearSolver> LinearSolverParameter {
-      get => linearSolverParam;
-      set => linearSolverParam = value;
-    }
-
-    public LpAlgorithmValues LpAlgorithm {
-      get => lpAlgorithmParam.Value.Value;
-      set => lpAlgorithmParam.Value.Value = value;
     }
 
     public bool Presolve {
@@ -163,19 +101,10 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
       set => primalToleranceParam.Value.Value = value;
     }
 
-    public new LinearProgrammingProblem Problem {
-      get => (LinearProgrammingProblem)base.Problem;
-      set => base.Problem = value;
-    }
-
-    public override Type ProblemType { get; } = typeof(LinearProgrammingProblem);
-
     public double RelativeGapTolerance {
       get => relativeGapToleranceParam.Value.Value;
       set => relativeGapToleranceParam.Value.Value = value;
     }
-
-    public override ResultCollection Results { get; } = new ResultCollection();
 
     public bool Scaling {
       get => scalingParam.Value.Value;
@@ -183,12 +112,63 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
     }
 
     public override bool SupportsPause => LinearSolver.SupportsPause;
-
     public override bool SupportsStop => LinearSolver.SupportsStop;
 
     public TimeSpan TimeLimit {
       get => timeLimitParam.Value.Value;
       set => timeLimitParam.Value.Value = value;
+    }
+
+    #endregion
+
+    public LinearProgrammingAlgorithm() {
+      Parameters.Add(linearSolverParam =
+        new ConstrainedValueParameter<ILinearSolver>(nameof(LinearSolver), "The solver used to solve the model."));
+
+      ILinearSolver defaultSolver;
+      linearSolverParam.ValidValues.Add(defaultSolver = new CoinOrSolver());
+      linearSolverParam.ValidValues.Add(new CplexSolver());
+      linearSolverParam.ValidValues.Add(new GlopSolver());
+      linearSolverParam.ValidValues.Add(new GurobiSolver());
+      linearSolverParam.ValidValues.Add(new ScipSolver());
+      linearSolverParam.Value = defaultSolver;
+
+      Parameters.Add(relativeGapToleranceParam = new FixedValueParameter<PercentValue>(nameof(RelativeGapTolerance),
+        "Limit for relative MIP gap.", new PercentValue(SolverParameters.DefaultRelativeMipGap)));
+      Parameters.Add(timeLimitParam = new FixedValueParameter<TimeSpanValue>(nameof(TimeLimit),
+        "Limit for runtime. Set to zero for unlimited runtime.",
+        new TimeSpanValue(new TimeSpan(0, 1, 0))));
+      Parameters.Add(presolveParam =
+        new FixedValueParameter<BoolValue>(nameof(Presolve), "Advanced usage: presolve mode.",
+          new BoolValue(SolverParameters.DefaultPresolve == SolverParameters.PresolveValues.PresolveOn)) { Hidden = true });
+      Parameters.Add(dualToleranceParam = new FixedValueParameter<DoubleValue>(nameof(DualTolerance),
+        "Advanced usage: tolerance for dual feasibility of basic solutions.",
+        new DoubleValue(SolverParameters.DefaultDualTolerance)) { Hidden = true });
+      Parameters.Add(primalToleranceParam = new FixedValueParameter<DoubleValue>(nameof(PrimalTolerance),
+        "Advanced usage: tolerance for primal feasibility of basic solutions. " +
+        "This does not control the integer feasibility tolerance of integer " +
+        "solutions for MIP or the tolerance used during presolve.",
+        new DoubleValue(SolverParameters.DefaultPrimalTolerance)) { Hidden = true });
+      Parameters.Add(scalingParam = new FixedValueParameter<BoolValue>(nameof(Scaling),
+        "Advanced usage: enable or disable matrix scaling.", new BoolValue()) { Hidden = true });
+
+      Problem = new LinearProblem();
+    }
+
+    [StorableConstructor]
+    private LinearProgrammingAlgorithm(bool deserializing)
+      : base(deserializing) {
+    }
+
+    private LinearProgrammingAlgorithm(LinearProgrammingAlgorithm original, Cloner cloner)
+      : base(original, cloner) {
+      linearSolverParam = cloner.Clone(original.linearSolverParam);
+      relativeGapToleranceParam = cloner.Clone(original.relativeGapToleranceParam);
+      timeLimitParam = cloner.Clone(original.timeLimitParam);
+      presolveParam = cloner.Clone(original.presolveParam);
+      dualToleranceParam = cloner.Clone(original.dualToleranceParam);
+      primalToleranceParam = cloner.Clone(original.primalToleranceParam);
+      scalingParam = cloner.Clone(original.scalingParam);
     }
 
     public override IDeepCloneable Clone(Cloner cloner) => new LinearProgrammingAlgorithm(this, cloner);
@@ -215,15 +195,11 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
     protected override void Run(CancellationToken cancellationToken) {
       LinearSolver.PrimalTolerance = PrimalTolerance;
       LinearSolver.DualTolerance = DualTolerance;
-      LinearSolver.LpAlgorithm = LpAlgorithm;
       LinearSolver.Presolve = Presolve;
       LinearSolver.RelativeGapTolerance = RelativeGapTolerance;
       LinearSolver.Scaling = Scaling;
       LinearSolver.TimeLimit = TimeLimit;
-      LinearSolver.ExportModel = ExportModel;
-      var executionTime = ExecutionTime;
-      ExecutionTimeChanged += (sender, args) => executionTime = ExecutionTime;
-      LinearSolver.Solve(Problem.ProblemDefinition, ref executionTime, Results, cancellationToken);
+      LinearSolver.Solve(Problem.ProblemDefinition, Results, cancellationToken);
     }
   }
 }

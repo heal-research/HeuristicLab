@@ -20,13 +20,14 @@
 #endregion
 
 using System;
+using Google.OrTools.LinearSolver;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
+namespace HeuristicLab.ExactOptimization.LinearProgramming {
 
   [Item("CPLEX", "CPLEX (https://www.ibm.com/analytics/cplex-optimizer) must be installed and licenced.")]
   [StorableClass]
@@ -39,8 +40,11 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
         "CPLEX Parameter File Version 12.8.0" + Environment.NewLine +
         "# for file format, see https://www.ibm.com/support/knowledgecenter/SSSA5P_12.8.0/ilog.odms.cplex.help/CPLEX/FileFormats/topics/PRM.html" + Environment.NewLine +
         "# for parameters, see https://www.ibm.com/support/knowledgecenter/SSSA5P_12.8.0/ilog.odms.cplex.help/CPLEX/Parameters/topics/introListTopical.html" + Environment.NewLine +
-        "# example:" + Environment.NewLine +
-        "# CPXPARAM_RandomSeed 10" + Environment.NewLine;
+        "# examples:" + Environment.NewLine +
+        "# CPXPARAM_RandomSeed 10" + Environment.NewLine +
+        "# CPXPARAM_LPMethod 4 # Barrier (LP)" + Environment.NewLine +
+        "# CPXPARAM_MIP_Strategy_SubAlgorithm 4 # Barrier (MIP)" + Environment.NewLine +
+        "# CPXPARAM_MIP_Strategy_Search 2 # Apply dynamic search (MIP)" + Environment.NewLine;
     }
 
     [StorableConstructor]
@@ -52,9 +56,11 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
       : base(original, cloner) {
     }
 
-    protected override OptimizationProblemType OptimizationProblemType =>
+    protected override Solver.OptimizationProblemType OptimizationProblemType =>
       ProblemType == ProblemType.LinearProgramming
-        ? OptimizationProblemType.CplexLinearProgramming
-        : OptimizationProblemType.CplexMixedIntegerProgramming;
+        ? Solver.OptimizationProblemType.CplexLinearProgramming
+        : Solver.OptimizationProblemType.CplexMixedIntegerProgramming;
+
+    public override IDeepCloneable Clone(Cloner cloner) => new CplexSolver(this, cloner);
   }
 }

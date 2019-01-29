@@ -25,7 +25,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
+namespace HeuristicLab.ExactOptimization.LinearProgramming {
 
   [StorableClass]
   public class ExternalIncrementalLinearSolver : IncrementalLinearSolver, IExternalLinearSolver {
@@ -52,7 +52,9 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
       set => libraryNameParam.Value.Value = value;
     }
 
-    protected override Solver CreateSolver(OptimizationProblemType optimizationProblemType,
+    public IFixedValueParameter<FileValue> LibraryNameParameter => libraryNameParam;
+
+    protected override Solver CreateSolver(Solver.OptimizationProblemType optimizationProblemType,
       string libraryName = null) => base.CreateSolver(optimizationProblemType, LibraryName);
   }
 }

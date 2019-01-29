@@ -21,7 +21,7 @@
 
 using Google.OrTools.LinearSolver;
 
-namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
+namespace HeuristicLab.ExactOptimization.LinearProgramming {
 
   public static class LinearSolverExtensions {
 

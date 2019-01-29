@@ -20,12 +20,13 @@
 #endregion
 
 using System;
+using Google.OrTools.LinearSolver;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
+namespace HeuristicLab.ExactOptimization.LinearProgramming {
 
   [Item("Glop", "Glop (https://developers.google.com/optimization/lp/glop) can be used out of the box.")]
   [StorableClass]
@@ -36,8 +37,9 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
       SolverSpecificParameters =
         "# for file format, see Protocol Buffers text format (https://developers.google.com/protocol-buffers/docs/overview#whynotxml)" + Environment.NewLine +
         "# for parameters, see https://github.com/google/or-tools/blob/v6.10/ortools/glop/parameters.proto" + Environment.NewLine +
-        "# example:" + Environment.NewLine +
-        "# random_seed: 10" + Environment.NewLine;
+        "# examples:" + Environment.NewLine +
+        "# random_seed: 10" + Environment.NewLine +
+        "# use_dual_simplex: true (LP)" + Environment.NewLine;
     }
 
     [StorableConstructor]
@@ -49,7 +51,9 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
       : base(original, cloner) {
     }
 
-    protected override OptimizationProblemType OptimizationProblemType =>
-      OptimizationProblemType.GlopLinearProgramming;
+    protected override Solver.OptimizationProblemType OptimizationProblemType =>
+      Solver.OptimizationProblemType.GlopLinearProgramming;
+
+    public override IDeepCloneable Clone(Cloner cloner) => new GlopSolver(this, cloner);
   }
 }

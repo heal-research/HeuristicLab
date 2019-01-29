@@ -21,6 +21,7 @@
 
 using System;
 using System.Threading;
+using Google.OrTools.LinearSolver;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -28,7 +29,7 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
+namespace HeuristicLab.ExactOptimization.LinearProgramming {
 
   [Item("SCIP", "SCIP (http://scip.zib.de/) must be installed and licenced.")]
   [StorableClass]
@@ -42,8 +43,10 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
         (EnumValue<ProblemType>)new EnumValue<ProblemType>(ProblemType.MixedIntegerProgramming).AsReadOnly();
       SolverSpecificParameters =
         "# for file format and parameters, see https://scip.zib.de/doc/html/PARAMETERS.php" + Environment.NewLine +
-        "# example:" + Environment.NewLine +
-        "# branching/random/seed = 10" + Environment.NewLine;
+        "# examples:" + Environment.NewLine +
+        "# branching/random/seed = 10" + Environment.NewLine +
+        "# lp/initalgorithm = b # Barrier (root node of MIP)" + Environment.NewLine +
+        "# lp/resolvealgorithm = b # Barrier (MIP)" + Environment.NewLine;
     }
 
     [StorableConstructor]
@@ -55,14 +58,16 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
       : base(original, cloner) {
     }
 
+    protected override Solver.OptimizationProblemType OptimizationProblemType =>
+      Solver.OptimizationProblemType.ScipMixedIntegerProgramming;
+
     protected override TimeSpan IntermediateTimeLimit => timeLimit += QualityUpdateInterval;
 
-    protected override OptimizationProblemType OptimizationProblemType =>
-          OptimizationProblemType.ScipMixedIntegerProgramming;
+    public override IDeepCloneable Clone(Cloner cloner) => new ScipSolver(this, cloner);
 
-    public override void Solve(ILinearProgrammingProblemDefinition problemDefintion, ref TimeSpan executionTime, ResultCollection results, CancellationToken cancellationToken) {
+    public override void Solve(ILinearProblemDefinition problemDefintion, ResultCollection results, CancellationToken cancellationToken) {
       timeLimit = TimeSpan.Zero;
-      base.Solve(problemDefintion, ref executionTime, results, cancellationToken);
+      base.Solve(problemDefintion, results, cancellationToken);
     }
   }
 }

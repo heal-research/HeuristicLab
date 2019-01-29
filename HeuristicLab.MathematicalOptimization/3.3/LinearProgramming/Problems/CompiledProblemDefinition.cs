@@ -19,11 +19,25 @@
  */
 #endregion
 
-namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
+using HeuristicLab.Common;
+using HeuristicLab.Core;
 
-  public abstract class CompiledProblemDefinition {
+namespace HeuristicLab.ExactOptimization.LinearProgramming {
+
+  public class CompiledProblemDefinition : Item {
+
+    public CompiledProblemDefinition() {
+    }
+
+    protected CompiledProblemDefinition(CompiledProblemDefinition original, Cloner cloner) : base(original, cloner) {
+    }
+
     public dynamic vars { get; set; }
 
-    public abstract void Initialize();
+    public override IDeepCloneable Clone(Cloner cloner) =>
+      new CompiledProblemDefinition(this, cloner);
+
+    public virtual void Initialize() {
+    }
   }
 }

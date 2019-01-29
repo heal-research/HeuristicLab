@@ -19,7 +19,9 @@
  */
 #endregion
 
-namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
+using Google.OrTools.LinearSolver;
+
+namespace HeuristicLab.ExactOptimization.LinearProgramming {
 
   public enum SolverResponseStatus {
     Optimal = 0,

@@ -21,11 +21,11 @@
 
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.MathematicalOptimization {
+namespace HeuristicLab.ExactOptimization {
 
-  [Plugin("HeuristicLab.MathematicalOptimization", "Provides support for mathematical optimization based on Google OR-Tools. " +
+  [Plugin("HeuristicLab.ExactOptimization", "Provides support for exact optimization based on Google OR-Tools. " +
     "Requires the Microsoft Visual C++ 2017 Redistributable (x64) - 14.16.27012: https://aka.ms/vs/15/release/vc_redist.x64.exe", "3.3.15.$WCREV$")]
-  [PluginFile("HeuristicLab.MathematicalOptimization-3.3.dll", PluginFileType.Assembly)]
+  [PluginFile("HeuristicLab.ExactOptimization-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Analysis", "3.3")]
   [PluginDependency("HeuristicLab.Collections", "3.3")]
   [PluginDependency("HeuristicLab.Common", "3.3")]
@@ -38,6 +38,6 @@ namespace HeuristicLab.MathematicalOptimization {
   [PluginDependency("HeuristicLab.Persistence", "3.3")]
   [PluginDependency("HeuristicLab.Problems.Programmable", "3.3")]
   [PluginDependency("HeuristicLab.Scripting", "3.3")]
-  public class HeuristicLabMathematicalOptimizationPlugin : PluginBase {
+  public class HeuristicLabExactOptimizationPlugin : PluginBase {
   }
 }

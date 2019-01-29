@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace HeuristicLab.MathematicalOptimization.Properties {
+namespace HeuristicLab.ExactOptimization.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]

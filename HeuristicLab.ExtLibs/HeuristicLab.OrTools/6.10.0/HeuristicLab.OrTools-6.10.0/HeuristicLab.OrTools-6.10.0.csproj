@@ -111,12 +111,6 @@
     <None Include="HeuristicLab.snk" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="glpk-license.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="glpk_4_65.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="Google.OrTools-license.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

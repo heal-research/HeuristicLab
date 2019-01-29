@@ -21,7 +21,7 @@
 
 using System;
 
-namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
+namespace HeuristicLab.ExactOptimization.LinearProgramming {
 
   public interface IIncrementalLinearSolver : ILinearSolver {
     TimeSpan QualityUpdateInterval { get; set; }

@@ -108,6 +108,9 @@ namespace HeuristicLab.Optimization {
     public override void Stop() {
       // CancellationToken.ThrowIfCancellationRequested() must be called from within the Run method, otherwise stop does nothing
       // alternatively check the IsCancellationRequested property of the cancellation token
+      if (!SupportsStop)
+        throw new NotSupportedException("Stop is not supported by this algorithm.");
+
       base.Stop();
       if (ExecutionState == ExecutionState.Paused) OnStopped();
       else if (CancellationTokenSource != null) CancellationTokenSource.Cancel();

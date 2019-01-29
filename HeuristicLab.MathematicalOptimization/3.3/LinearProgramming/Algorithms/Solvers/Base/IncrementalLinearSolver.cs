@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using HeuristicLab.Analysis;
@@ -30,17 +31,21 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
+namespace HeuristicLab.ExactOptimization.LinearProgramming {
 
   [StorableClass]
   public class IncrementalLinearSolver : LinearSolver, IIncrementalLinearSolver {
-    [Storable] protected readonly IValueParameter<TimeSpanValue> qualityUpdateIntervalParam;
 
-    private IndexedDataRow<double> bpcRow;
+    [Storable]
+    protected readonly IValueParameter<TimeSpanValue> qualityUpdateIntervalParam;
 
-    private IndexedDataRow<double> qpcRow;
+    private readonly Stopwatch stopwatch = new Stopwatch();
 
-    [Storable] private IndexedDataTable<double> qualityPerClock;
+    [Storable]
+    private TimeSpan executionTime = TimeSpan.Zero;
+
+    [Storable]
+    private IndexedDataTable<double> qualityPerClock;
 
     public IncrementalLinearSolver() {
       Parameters.Add(qualityUpdateIntervalParam =
@@ -76,13 +81,22 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
       set => qualityUpdateIntervalParam.Value.Value = value;
     }
 
+    public IValueParameter<TimeSpanValue> QualityUpdateIntervalParameter => qualityUpdateIntervalParam;
+
     public virtual bool SupportsQualityUpdate => true;
+
     protected virtual TimeSpan IntermediateTimeLimit => QualityUpdateInterval;
 
-    public override void Solve(ILinearProgrammingProblemDefinition problemDefinition, ref TimeSpan executionTime,
+    public override void Reset() {
+      base.Reset();
+      stopwatch.Reset();
+      executionTime = TimeSpan.Zero;
+    }
+
+    public override void Solve(ILinearProblemDefinition problemDefinition,
       ResultCollection results, CancellationToken cancellationToken) {
       if (!SupportsQualityUpdate || QualityUpdateInterval == TimeSpan.Zero) {
-        base.Solve(problemDefinition, ref executionTime, results, cancellationToken);
+        base.Solve(problemDefinition, results, cancellationToken);
         return;
       }
 
@@ -101,7 +115,10 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
         if (cancellationToken.IsCancellationRequested)
           return;
 
+        stopwatch.Start();
         Solve(problemDefinition, results, IntermediateTimeLimit);
+        stopwatch.Stop();
+        executionTime += stopwatch.Elapsed;
         UpdateQuality(results, executionTime);
 
         var resultStatus = ((EnumValue<ResultStatus>)results["ResultStatus"].Value).Value;
@@ -119,11 +136,19 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
     }
 
     private void UpdateQuality(ResultCollection results, TimeSpan executionTime) {
+      IndexedDataRow<double> qpcRow;
+      IndexedDataRow<double> bpcRow;
+
       if (!results.Exists(r => r.Name == "QualityPerClock")) {
         qualityPerClock = new IndexedDataTable<double>("Quality per Clock");
         qpcRow = new IndexedDataRow<double>("Objective Value");
         bpcRow = new IndexedDataRow<double>("Bound");
+        qualityPerClock.Rows.Add(qpcRow);
+        qualityPerClock.Rows.Add(bpcRow);
         results.AddOrUpdateResult("QualityPerClock", qualityPerClock);
+      } else {
+        qpcRow = qualityPerClock.Rows["Objective Value"];
+        bpcRow = qualityPerClock.Rows["Bound"];
       }
 
       var resultStatus = ((EnumValue<ResultStatus>)results["ResultStatus"].Value).Value;
@@ -132,14 +157,13 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
         return;
 
       var objective = ((DoubleValue)results["BestObjectiveValue"].Value).Value;
-      var bound = solver.IsMIP() ? ((DoubleValue)results["BestObjectiveBound"].Value).Value : double.NaN;
+      var bound = solver.IsMip() ? ((DoubleValue)results["BestObjectiveBound"].Value).Value : double.NaN;
       var time = executionTime.TotalSeconds;
 
       if (!qpcRow.Values.Any()) {
         if (!double.IsInfinity(objective) && !double.IsNaN(objective)) {
           qpcRow.Values.Add(Tuple.Create(time, objective));
           qpcRow.Values.Add(Tuple.Create(time, objective));
-          qualityPerClock.Rows.Add(qpcRow);
           results.AddOrUpdateResult("BestObjectiveValueFoundAt", new TimeSpanValue(TimeSpan.FromSeconds(time)));
         }
       } else {
@@ -151,14 +175,13 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
         }
       }
 
-      if (!solver.IsMIP())
+      if (!solver.IsMip())
         return;
 
       if (!bpcRow.Values.Any()) {
         if (!double.IsInfinity(bound) && !double.IsNaN(bound)) {
           bpcRow.Values.Add(Tuple.Create(time, bound));
           bpcRow.Values.Add(Tuple.Create(time, bound));
-          qualityPerClock.Rows.Add(bpcRow);
         }
       } else {
         var previousBest = bpcRow.Values.Last().Item2;

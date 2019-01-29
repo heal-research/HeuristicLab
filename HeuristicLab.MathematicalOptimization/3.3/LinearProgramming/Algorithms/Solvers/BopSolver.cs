@@ -20,13 +20,14 @@
 #endregion
 
 using System;
+using Google.OrTools.LinearSolver;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
+namespace HeuristicLab.ExactOptimization.LinearProgramming {
 
   [Item("BOP", "BOP (https://developers.google.com/optimization/reference/bop/bop_solver/) can be used out of the box.")]
   [StorableClass]
@@ -51,7 +52,9 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
       : base(deserializing) {
     }
 
-    protected override OptimizationProblemType OptimizationProblemType =>
-               OptimizationProblemType.BopIntegerProgramming;
+    protected override Solver.OptimizationProblemType OptimizationProblemType =>
+      Solver.OptimizationProblemType.BopIntegerProgramming;
+
+    public override IDeepCloneable Clone(Cloner cloner) => new BopSolver(this, cloner);
   }
 }

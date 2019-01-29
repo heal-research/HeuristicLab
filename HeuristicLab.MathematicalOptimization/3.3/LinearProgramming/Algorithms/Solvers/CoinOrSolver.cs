@@ -19,13 +19,12 @@
  */
 #endregion
 
-using System;
+using Google.OrTools.LinearSolver;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
+namespace HeuristicLab.ExactOptimization.LinearProgramming {
 
   [Item("Clp/Cbc", "Clp (https://projects.coin-or.org/Clp) and Cbc (https://projects.coin-or.org/Cbc) can be used out of the box.")]
   [StorableClass]
@@ -50,14 +49,11 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
 
     public override bool SupportsStop => false;
 
-    protected override OptimizationProblemType OptimizationProblemType =>
+    protected override Solver.OptimizationProblemType OptimizationProblemType =>
       ProblemType == ProblemType.LinearProgramming
-        ? OptimizationProblemType.ClpLinearProgramming
-        : OptimizationProblemType.CbcMixedIntegerProgramming;
+        ? Solver.OptimizationProblemType.ClpLinearProgramming
+        : Solver.OptimizationProblemType.CbcMixedIntegerProgramming;
 
-    public override void Solve(ILinearProgrammingProblemDefinition problemDefinition, ResultCollection results, TimeSpan timeLimit) {
-      // TODO: warning that solver cannot be stopped or paused
-      base.Solve(problemDefinition, results, timeLimit);
-    }
+    public override IDeepCloneable Clone(Cloner cloner) => new CoinOrSolver(this, cloner);
   }
 }

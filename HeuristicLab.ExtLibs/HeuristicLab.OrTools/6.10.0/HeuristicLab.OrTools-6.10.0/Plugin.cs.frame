@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -34,19 +35,13 @@ namespace HeuristicLab.OrTools {
   [PluginFile("Google.OrTools.runtime.win-x64.dll", PluginFileType.NativeDll)]
   [PluginFile("Google.OrTools_version.txt", PluginFileType.Data)]
   [PluginFile("Google.Protobuf.dll", PluginFileType.Assembly)]
-  [PluginFile("glpk_4_65.dll", PluginFileType.NativeDll)]
-  [PluginFile("glpk-license.txt", PluginFileType.License)]
   public class HeuristicLabOrToolsPlugin : PluginBase {
 
-    ~HeuristicLabOrToolsPlugin() {
-      OnUnload(); // HACK: remove once ticket #2961 is resolved
-    }
-
     public override void OnUnload() {
-      base.OnUnload();
-
+      // HACK: free handle to native DLL used temporarily by the Hive Slave
+      // should be solved for all native DLLs used by the Hive Slave
       var dllDir = new FileInfo(GetType().Assembly.Location).Directory;
-      if (dllDir == null)
+      if (dllDir == null || !dllDir.FullName.Contains(Path.DirectorySeparatorChar + "PluginTemp" + Path.DirectorySeparatorChar))
         return;
 
       var nativeDlls = GetType().GetCustomAttributes(typeof(PluginFileAttribute), true)
@@ -55,6 +50,9 @@ namespace HeuristicLab.OrTools {
         .Select(pf => pf.FileName);
 
       foreach (var nativeDll in dllDir.EnumerateFiles().Where(f => nativeDlls.Contains(f.Name))) {
+        if (Process.GetCurrentProcess().Modules.Cast<ProcessModule>().All(m => m.ModuleName != nativeDll.Name))
+          continue;
+
         var handle = LoadLibrary(nativeDll.FullName);
         if (handle == IntPtr.Zero)
           continue;

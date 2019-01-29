@@ -19,7 +19,7 @@
  */
 #endregion
 
-namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
+namespace HeuristicLab.ExactOptimization.LinearProgramming {
 
   public interface IExternalLinearSolver : ILinearSolver {
     string LibraryName { get; set; }

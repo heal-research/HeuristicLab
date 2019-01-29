@@ -24,16 +24,10 @@ using System.Threading;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 
-namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
+namespace HeuristicLab.ExactOptimization.LinearProgramming {
 
   public interface ILinearSolver : IParameterizedNamedItem {
     double DualTolerance { get; set; }
-
-    string ExportModel { get; set; }
-
-    bool Incrementality { get; set; }
-
-    LpAlgorithmValues LpAlgorithm { get; set; }
 
     bool Presolve { get; set; }
 
@@ -55,9 +49,9 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
 
     void Reset();
 
-    void Solve(ILinearProgrammingProblemDefinition problemDefintion, ref TimeSpan executionTime, ResultCollection results);
+    void Solve(ILinearProblemDefinition problemDefintion, ResultCollection results);
 
-    void Solve(ILinearProgrammingProblemDefinition problemDefintion, ref TimeSpan executionTime,
+    void Solve(ILinearProblemDefinition problemDefintion,
       ResultCollection results, CancellationToken cancellationToken);
   }
 }

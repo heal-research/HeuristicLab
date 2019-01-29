@@ -464,9 +464,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.Graph
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Algorithms.MOCMAEvolutionStrategy-3.3", "HeuristicLab.Algorithms.MOCMAEvolutionStrategy\3.3\HeuristicLab.Algorithms.MOCMAEvolutionStrategy-3.3.csproj", "{0E2E224F-E9B2-41F3-B510-09183EEBA2AF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.MathematicalOptimization-3.3", "HeuristicLab.MathematicalOptimization\3.3\HeuristicLab.MathematicalOptimization-3.3.csproj", "{FA3B9270-48B7-4C77-9FEA-2A6EDE82E909}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.ExactOptimization-3.3", "HeuristicLab.MathematicalOptimization\3.3\HeuristicLab.ExactOptimization-3.3.csproj", "{FA3B9270-48B7-4C77-9FEA-2A6EDE82E909}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.MathematicalOptimization.Views-3.3", "HeuristicLab.MathematicalOptimization.Views\3.3\HeuristicLab.MathematicalOptimization.Views-3.3.csproj", "{D1D69043-17E6-4B8C-BF41-0799C7E56032}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.ExactOptimization.Views-3.3", "HeuristicLab.MathematicalOptimization.Views\3.3\HeuristicLab.ExactOptimization.Views-3.3.csproj", "{D1D69043-17E6-4B8C-BF41-0799C7E56032}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

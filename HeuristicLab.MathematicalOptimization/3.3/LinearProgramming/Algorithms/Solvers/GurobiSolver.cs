@@ -20,13 +20,14 @@
 #endregion
 
 using System;
+using Google.OrTools.LinearSolver;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
+namespace HeuristicLab.ExactOptimization.LinearProgramming {
 
   [Item("Gurobi", "Gurobi (http://www.gurobi.com/) must be installed and licenced.")]
   [StorableClass]
@@ -38,8 +39,10 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
       SolverSpecificParameters =
         "# for file format, see http://www.gurobi.com/documentation/8.1/refman/prm_format.html" + Environment.NewLine +
         "# for parameters, see http://www.gurobi.com/documentation/8.1/refman/parameters.html" + Environment.NewLine +
-        "# example:" + Environment.NewLine +
-        "# Seed 10" + Environment.NewLine;
+        "# examples:" + Environment.NewLine +
+        "# Seed 10" + Environment.NewLine +
+        "# Method 2 # Barrier (LP, root node of MIP)" + Environment.NewLine +
+        "# NodeMethod 2 # Barrier (MIP)" + Environment.NewLine;
     }
 
     protected GurobiSolver(GurobiSolver original, Cloner cloner)
@@ -52,9 +55,11 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
       : base(deserializing) {
     }
 
-    protected override OptimizationProblemType OptimizationProblemType =>
+    protected override Solver.OptimizationProblemType OptimizationProblemType =>
       ProblemType == ProblemType.LinearProgramming
-        ? OptimizationProblemType.GurobiLinearProgramming
-        : OptimizationProblemType.GurobiMixedIntegerProgramming;
+        ? Solver.OptimizationProblemType.GurobiLinearProgramming
+        : Solver.OptimizationProblemType.GurobiMixedIntegerProgramming;
+
+    public override IDeepCloneable Clone(Cloner cloner) => new GurobiSolver(this, cloner);
   }
 }

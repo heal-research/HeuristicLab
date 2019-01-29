@@ -19,13 +19,14 @@
  */
 #endregion
 
+using Google.OrTools.LinearSolver;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
+namespace HeuristicLab.ExactOptimization.LinearProgramming {
 
   [Item("GLPK", "GLPK (https://www.gnu.org/software/glpk/) can be used out of the box.")]
   [StorableClass]
@@ -48,9 +49,11 @@ namespace HeuristicLab.MathematicalOptimization.LinearProgramming {
 
     public override bool SupportsPause => false;
 
-    protected override OptimizationProblemType OptimizationProblemType =>
+    protected override Solver.OptimizationProblemType OptimizationProblemType =>
       ProblemType == ProblemType.LinearProgramming
-        ? OptimizationProblemType.GlpkLinearProgramming
-        : OptimizationProblemType.GlpkMixedIntegerProgramming;
+        ? Solver.OptimizationProblemType.GlpkLinearProgramming
+        : Solver.OptimizationProblemType.GlpkMixedIntegerProgramming;
+
+    public override IDeepCloneable Clone(Cloner cloner) => new GlpkSolver(this, cloner);
   }
 }
