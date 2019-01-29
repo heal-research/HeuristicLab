@@ -34,6 +34,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Persistence.Core;
 using HeuristicLab.Persistence.Default.Xml;
+using HeuristicLab.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HeuristicLab.Persistence.Attic.Tests {
@@ -131,12 +132,31 @@ namespace HeuristicLab.Persistence.Attic.Tests {
       Task.WaitAll(tasks);
     }
 
+    private void CreateAllSamples() {
+      var asm = this.GetType().Assembly;
+      foreach (var t in asm.GetTypes()) {
+        var attrs = t.GetCustomAttributes<TestClassAttribute>();
+        if (attrs.Any()) {
+          try {
+            var testObj = Activator.CreateInstance(t);
+            foreach (var mi in t.GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)) {
+              var mAttrs = mi.GetCustomAttributes<TestCategoryAttribute>();
+              var testCategories = mAttrs.SelectMany(mattr => mattr.TestCategories);
+              if (testCategories.Any(tc => tc == "Samples.Create")) {
+                mi.Invoke(testObj, new object[0]);
+              }
+            }
+          } catch (Exception) { }
+        }
+      }
+    }
 
     [TestMethod]
     [TestCategory("Persistence.Attic")]
     [TestProperty("Time", "long")]
     public void TestLoadingSamples() {
-      var path = @"C:\reps\hl-core\branches\2520_PersistenceReintegration\HeuristicLab.Optimizer\3.3\Documents";
+      CreateAllSamples();
+      var path = SamplesUtils.SamplesDirectory;
       var serializer = new ProtoBufSerializer();
       foreach (var fileName in Directory.EnumerateFiles(path, "*.hl")) {
         var original = XmlParser.Deserialize(fileName);
@@ -161,14 +181,17 @@ namespace HeuristicLab.Persistence.Attic.Tests {
           serializer.Serialize(original, fileName + ".proto");
           var newVersion = serializer.Deserialize(fileName + ".proto");
           Console.WriteLine("File: " + fileName);
+          File.Delete(fileName + ".proto");
         }
       }
     }
+
     [TestMethod]
     [TestCategory("Persistence.Attic")]
     [TestProperty("Time", "long")]
     public void TestLoadingRunAndStoreSamples() {
-      var path = @"C:\reps\hl-core\branches\2520_PersistenceReintegration\HeuristicLab.Optimizer\3.3\Documents";
+      CreateAllSamples();
+      var path = SamplesUtils.SamplesDirectory;
       var serializer = new ProtoBufSerializer();
       foreach (var fileName in Directory.EnumerateFiles(path, "*.hl")) {
         var original = XmlParser.Deserialize(fileName);
@@ -177,11 +200,13 @@ namespace HeuristicLab.Persistence.Attic.Tests {
         if (exec != null) {
           exec.Paused += (sender, e) => {
             serializer.Serialize(exec, fileName + "_paused.proto");
-            Console.WriteLine("Paused File: " + fileName);
+            Console.WriteLine("Serialized paused file: " + fileName);
+            File.Delete(fileName + "_paused.proto");
           };
           exec.Stopped += (sender, e) => {
             serializer.Serialize(exec, fileName + "_stopped.proto");
-            Console.WriteLine("Stopped File: " + fileName);
+            Console.WriteLine("Serialized stopped file: " + fileName);
+            File.Delete(fileName + "_stopped.proto");
           };
           var t = exec.StartAsync();
           System.Threading.Thread.Sleep(20000); // wait 20 secs
