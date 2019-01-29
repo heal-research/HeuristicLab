@@ -23,6 +23,7 @@ using System.Threading;
 using HeuristicLab.Common;
 using HeuristicLab.Persistence.Default.Xml;
 using HEAL.Attic;
+using System;
 
 namespace HeuristicLab.Core {
   public class PersistenceContentManager : ContentManager {
@@ -33,7 +34,7 @@ namespace HeuristicLab.Core {
       try {
         var ser = new ProtoBufSerializer();
         return (IStorableContent)ser.Deserialize(filename);
-      } catch (PersistenceException e) {
+      } catch (Exception) {
         // try old format if new format fails
         return XmlParser.Deserialize<IStorableContent>(filename);
       }
