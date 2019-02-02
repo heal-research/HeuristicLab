@@ -110,7 +110,7 @@
       <HintPath>..\..\packages\Google.Protobuf.3.6.1\lib\net45\Google.Protobuf.dll</HintPath>
     </Reference>
     <Reference Include="HEAL.Attic, Version=1.0.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\HEAL.Attic.1.0.0-pre02\lib\net461\HEAL.Attic.dll</HintPath>
+      <HintPath>..\..\packages\HEAL.Attic.1.0.0-pre03\lib\net461\HEAL.Attic.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
