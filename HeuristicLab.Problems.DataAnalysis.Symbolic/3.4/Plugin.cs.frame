@@ -45,6 +45,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [PluginDependency("HeuristicLab.Problems.DataAnalysis", "3.4")]
   [PluginDependency("HeuristicLab.Problems.Instances", "3.3")]
   [PluginDependency("HeuristicLab.Random", "3.3")]
+  [PluginDependency("HeuristicLab.Selection", "3.3")]
   public class HeuristicLabProblemsDataAnalysisSymbolicPlugin : PluginBase {
   }
 }
