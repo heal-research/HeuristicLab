@@ -106,12 +106,6 @@
       <HintPath>..\..\bin\AutoDiff-1.0.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Google.Protobuf, Version=3.6.1.0, Culture=neutral, PublicKeyToken=a7d26565bac4d604, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Google.Protobuf.3.6.1\lib\net45\Google.Protobuf.dll</HintPath>
-    </Reference>
-    <Reference Include="HEAL.Attic, Version=1.0.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\HEAL.Attic.1.0.0-pre03\lib\net461\HEAL.Attic.dll</HintPath>
-    </Reference>
     <Reference Include="HeuristicLab.Problems.DataAnalysis.Symbolic.NativeInterpreter-0.1, Version=0.0.0.1, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\bin\HeuristicLab.Problems.DataAnalysis.Symbolic.NativeInterpreter-0.1.dll</HintPath>
@@ -122,9 +116,6 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Drawing" />
-    <Reference Include="System.Drawing.Common, Version=4.0.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Drawing.Common.4.5.1\lib\net461\System.Drawing.Common.dll</HintPath>
-    </Reference>
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -294,7 +285,6 @@
     <Compile Include="TreeMatching\SymbolicExpressionTreeNodeEqualityComparer.cs" />
     <Compile Include="TreeMatching\SymbolicExpressionTreePhenotypicSimilarityCalculator.cs" />
     <None Include="HeuristicLab.snk" />
-    <None Include="packages.config" />
     <None Include="Plugin.cs.frame" />
     <None Include="Properties\AssemblyInfo.cs.frame" />
     <Compile Include="Evaluators\SymbolicDataAnalysisMultiObjectiveEvaluator.cs" />
@@ -411,6 +401,14 @@
       <Project>{2C36CD4F-E5F5-43A4-801A-201EA895FE17}</Project>
       <Name>HeuristicLab.Selection-3.3</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="HEAL.Attic">
+      <Version>1.0.0-pre03</Version>
+    </PackageReference>
+    <PackageReference Include="System.Numerics.Vectors">
+      <Version>4.5.0</Version>
+    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

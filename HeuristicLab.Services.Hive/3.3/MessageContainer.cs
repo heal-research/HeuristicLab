@@ -21,6 +21,7 @@
 
 using System;
 using System.Runtime.Serialization;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
