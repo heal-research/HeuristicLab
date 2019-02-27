@@ -114,7 +114,7 @@ Try {
     "Building `"$($solution.Name)`" ($config|$platform) ..."
     $args = @(
       $solution.FullName,
-      "/t:Build",
+      "/t:Restore,Build",
       "/p:Configuration=`"$config`",Platform=`"$platform`"",
       "/m", "/nologo", "/verbosity:q", "/clp:ErrorsOnly"
     )
