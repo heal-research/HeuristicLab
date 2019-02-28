@@ -200,11 +200,13 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     public static Interval Square(Interval a) {
-      return Power(a, new Interval(2, 2));
+      if (a.UpperBound <= 0) return new Interval(a.UpperBound * a.UpperBound, a.LowerBound * a.LowerBound);     // interval is negative
+      else if (a.LowerBound >= 0) return new Interval(a.LowerBound * a.LowerBound, a.UpperBound * a.UpperBound); // interval is positive
+      else return new Interval(0, Math.Max(a.LowerBound*a.LowerBound, a.UpperBound*a.UpperBound)); // interval goes over zero
     }
 
-    public static Interval Cubic(Interval a) {
-      return Power(a, new Interval(3, 3));
+    public static Interval Cube(Interval a) {
+      return new Interval(Math.Pow(a.LowerBound, 3), Math.Pow(a.UpperBound, 3));
     }
 
     public static Interval Root(Interval a, Interval b) {
@@ -215,11 +217,13 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     public static Interval SquareRoot(Interval a) {
-      return Root(a, new Interval(2, 2));
+      if (a.LowerBound < 0) return new Interval(double.NaN, double.NaN);
+      return new Interval(Math.Sqrt(a.LowerBound), Math.Sqrt(a.UpperBound));
     }
 
     public static Interval CubicRoot(Interval a) {
-      return Root(a, new Interval(3, 3));
+      if (a.LowerBound < 0) return new Interval(double.NaN, double.NaN);
+      return new Interval(Math.Pow(a.LowerBound, 1.0/3), Math.Pow(a.UpperBound, 1.0/3));
     }
     #endregion
   }
