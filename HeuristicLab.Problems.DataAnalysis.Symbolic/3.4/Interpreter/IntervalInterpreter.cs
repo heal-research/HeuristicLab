@@ -87,7 +87,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var instructions = PrepareInterpreterState(tree, variableRanges);
       var outputInterval = Evaluate(instructions, ref instructionCount);
 
-      return outputInterval;
+      // because of numerical errors the bounds might be incorrect
+      if (outputInterval.LowerBound <= outputInterval.UpperBound)
+        return outputInterval;
+      else
+        return new Interval(outputInterval.UpperBound, outputInterval.LowerBound);
     }
 
 
@@ -101,9 +105,21 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var instructions = PrepareInterpreterState(tree, variableRanges);
       var outputInterval = Evaluate(instructions, ref instructionCount, intervals);
 
-      nodeIntervals = intervals;
+      // fix incorrect intervals if necessary (could occur because of numerical errors)
+      nodeIntervals = new Dictionary<ISymbolicExpressionTreeNode, Interval>();
+      foreach(var kvp in intervals) {
+        var interval = kvp.Value;
+        if (interval.IsInfiniteOrUndefined || interval.LowerBound <= interval.UpperBound)
+          nodeIntervals.Add(kvp.Key, interval);
+        else
+          nodeIntervals.Add(kvp.Key, new Interval(interval.UpperBound, interval.LowerBound));
+      }
 
-      return outputInterval;
+      // because of numerical errors the bounds might be incorrect
+      if (outputInterval.IsInfiniteOrUndefined || outputInterval.LowerBound <= outputInterval.UpperBound)
+        return outputInterval;
+      else
+        return new Interval(outputInterval.UpperBound, outputInterval.LowerBound);
     }
 
 
