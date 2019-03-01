@@ -50,6 +50,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
       Assert.AreEqual<Interval>(Interval.Multiply(Interval.Multiply(a, b), c), new Interval(-6, 6));
       //([-1, 1] * [0, 3]) * [-2, 2] = [-6, 6]
       Assert.AreEqual<Interval>(Interval.Multiply(Interval.Multiply(a, c), b), new Interval(-6, 6));
+
+      // [-2, 0] * [-2, 0]  = [0, 4]
+      Assert.AreEqual<Interval>(new Interval(0, 4), Interval.Multiply(new Interval(-2, 0), new Interval(-2, 0)));
     }
 
     [TestMethod]

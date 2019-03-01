@@ -123,7 +123,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       double v4 = a.UpperBound * b.UpperBound;
 
       double min = Math.Min(Math.Min(v1, v2), Math.Min(v3, v4));
-      double max = Math.Max(Math.Min(v1, v2), Math.Max(v3, v4));
+      double max = Math.Max(Math.Max(v1, v2), Math.Max(v3, v4));
       return new Interval(min, max);
     }
 
