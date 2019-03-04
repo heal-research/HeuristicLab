@@ -84,6 +84,7 @@ namespace HeuristicLab.Common {
              typeof(Delegate).IsAssignableFrom(type) ||
              typeof(Pointer).IsAssignableFrom(type) ||
              type.Namespace == "System.Reflection.Emit" ||
+             type.Namespace == "System.Net.Sockets" ||
              (type.HasElementType && ExcludeType(type.GetElementType()));
     }
 
