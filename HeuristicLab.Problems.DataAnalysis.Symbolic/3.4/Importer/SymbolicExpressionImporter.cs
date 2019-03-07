@@ -52,6 +52,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         {"SIN",new Sine()},
         {"COS", new Cosine()},
         {"TAN", new Tangent()},
+        {"TANH", new HyperbolicTangent ()},
         {"AIRYA", new AiryA()},
         {"AIRYB", new AiryB()},
         {"BESSEL", new Bessel()},

@@ -158,7 +158,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
               Tan(instr.buf, code[c].buf);
               break;
             }
-
+          case OpCodes.Tanh: {
+              Tanh(instr.buf, code[c].buf);
+              break;
+            }
           case OpCodes.Absolute: {
               Absolute(instr.buf, code[c].buf);
               break;
