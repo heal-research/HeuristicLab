@@ -34,7 +34,7 @@ namespace HeuristicLab.Optimization {
   [PluginDependency("HeuristicLab.Data", "3.3")]
   [PluginDependency("HeuristicLab.Operators", "3.3")]
   [PluginDependency("HeuristicLab.Parameters", "3.3")]
-  [PluginDependency("HeuristicLab.Persistence", "3.3")]
+  [PluginDependency("HeuristicLab.Attic", "1.0")]
   public class HeuristicLabOptimizationPlugin : PluginBase {
   }
 }

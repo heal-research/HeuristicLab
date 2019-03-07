@@ -30,7 +30,7 @@ namespace HeuristicLab.Common {
   /// </summary>
   [Plugin("HeuristicLab.Common", "3.3.15.$WCREV$")]
   [PluginFile("HeuristicLab.Common-3.3.dll", PluginFileType.Assembly)]
-  [PluginDependency("HeuristicLab.Persistence", "3.3")]
+  [PluginDependency("HeuristicLab.Attic", "1.0")]
   public class HeuristicLabCommonPlugin : PluginBase {
   }
 }

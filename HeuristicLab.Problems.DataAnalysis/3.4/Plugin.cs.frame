@@ -35,7 +35,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
   [PluginDependency("HeuristicLab.Data", "3.3")]
   [PluginDependency("HeuristicLab.Optimization","3.3")]
   [PluginDependency("HeuristicLab.Parameters", "3.3")]
-  [PluginDependency("HeuristicLab.Persistence", "3.3")]
+  [PluginDependency("HeuristicLab.Attic", "1.0")]
   [PluginDependency("HeuristicLab.Problems.Instances", "3.3")]  
   [PluginDependency("HeuristicLab.Random", "3.3")]
   public class HeuristicLabProblemsDataAnalysisPlugin : PluginBase {

@@ -33,7 +33,7 @@ namespace HeuristicLab.Scripting.Views {
   [PluginDependency("HeuristicLab.Scripting", "3.3")]
   [PluginDependency("HeuristicLab.MainForm", "3.3")]
   [PluginDependency("HeuristicLab.MainForm.WindowsForms", "3.3")]
-  [PluginDependency("HeuristicLab.Persistence", "3.3")]
+  [PluginDependency("HeuristicLab.Attic", "1.0")]
   public class HeuristicLabScriptingViewsPlugin : PluginBase {
   }
 }

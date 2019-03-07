@@ -301,8 +301,10 @@ $SolutionDir/PreBuildEvent.sh
     <Folder Include="Transformers\" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="HEAL.Attic">
-      <Version>1.0.0-pre03</Version>
-    </PackageReference>
+    <Reference Include="HEAL.Attic, Version=1.0.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\HEAL.Attic.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
   </ItemGroup>
 </Project>

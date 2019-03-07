@@ -25,6 +25,7 @@ namespace HeuristicLab.DebugEngine {
 
   [Plugin("HeuristicLab.DebugEngine", "3.3.15.$WCREV$")]
   [PluginFile("HeuristicLab.DebugEngine-3.3.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.Attic", "1.0")]  
   [PluginDependency("HeuristicLab.Collections", "3.3")]
   [PluginDependency("HeuristicLab.Common", "3.3")]
   [PluginDependency("HeuristicLab.Common.Resources", "3.3")]
