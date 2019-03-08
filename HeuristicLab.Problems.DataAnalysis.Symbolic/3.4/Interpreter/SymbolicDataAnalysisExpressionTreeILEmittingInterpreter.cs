@@ -285,7 +285,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             il.Emit(System.Reflection.Emit.OpCodes.Call, tan);
             return;
           }
-        case OpCodes.Tan: {
+        case OpCodes.Tanh: {
             CompileInstructions(il, state, ds);
             il.Emit(System.Reflection.Emit.OpCodes.Call, tanh);
             return;

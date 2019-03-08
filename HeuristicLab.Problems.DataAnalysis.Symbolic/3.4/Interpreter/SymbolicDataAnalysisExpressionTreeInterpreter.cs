@@ -216,9 +216,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         case OpCodes.Tan: {
             return Math.Tan(Evaluate(dataset, ref row, state));
           }
-        case OpCodes.Tanh: {
-            return Math.Tanh(Evaluate(dataset, ref row, state));
-          }
         case OpCodes.Square: {
             return Math.Pow(Evaluate(dataset, ref row, state), 2);
           }
