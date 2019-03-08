@@ -44,6 +44,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private static readonly MethodInfo Sin = typeof(Math).GetMethod("Sin", new[] { typeof(double) });
     private static readonly MethodInfo Cos = typeof(Math).GetMethod("Cos", new[] { typeof(double) });
     private static readonly MethodInfo Tan = typeof(Math).GetMethod("Tan", new[] { typeof(double) });
+    private static readonly MethodInfo Tanh = typeof(Math).GetMethod("Tanh", new[] { typeof(double) });
     private static readonly MethodInfo Sqrt = typeof(Math).GetMethod("Sqrt", new[] { typeof(double) });
     private static readonly MethodInfo Floor = typeof(Math).GetMethod("Floor", new[] { typeof(double) });
     private static readonly MethodInfo Round = typeof(Math).GetMethod("Round", new[] { typeof(double) });
@@ -221,6 +222,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         case OpCodes.Tan: {
             var arg = MakeExpr(node.GetSubtree(0), variableIndices, row, columns);
             return Expression.Call(Tan, arg);
+          }
+        case OpCodes.Tanh: {
+            var arg = MakeExpr(node.GetSubtree(0), variableIndices, row, columns);
+            return Expression.Call(Tanh, arg);
           }
         case OpCodes.Square: {
             var arg = MakeExpr(node.GetSubtree(0), variableIndices, row, columns);

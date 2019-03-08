@@ -44,6 +44,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private static MethodInfo cos = typeof(Math).GetMethod("Cos", new Type[] { typeof(double) });
     private static MethodInfo sin = typeof(Math).GetMethod("Sin", new Type[] { typeof(double) });
     private static MethodInfo tan = typeof(Math).GetMethod("Tan", new Type[] { typeof(double) });
+    private static MethodInfo tanh = typeof(Math).GetMethod("Tanh", new Type[] { typeof(double) });
     private static MethodInfo exp = typeof(Math).GetMethod("Exp", new Type[] { typeof(double) });
     private static MethodInfo log = typeof(Math).GetMethod("Log", new Type[] { typeof(double) });
     private static MethodInfo power = typeof(Math).GetMethod("Pow", new Type[] { typeof(double), typeof(double) });
@@ -282,6 +283,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         case OpCodes.Tan: {
             CompileInstructions(il, state, ds);
             il.Emit(System.Reflection.Emit.OpCodes.Call, tan);
+            return;
+          }
+        case OpCodes.Tan: {
+            CompileInstructions(il, state, ds);
+            il.Emit(System.Reflection.Emit.OpCodes.Call, tanh);
             return;
           }
         case OpCodes.Power: {
