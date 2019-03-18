@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -54,13 +54,13 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     #endregion
 
     #region Parameter Properties
-    private ValueParameter<IntValue> SeedParameter {
+    public IValueParameter<IntValue> SeedParameter {
       get { return (ValueParameter<IntValue>)Parameters["Seed"]; }
     }
-    private ValueParameter<BoolValue> SetSeedRandomlyParameter {
+    public IValueParameter<BoolValue> SetSeedRandomlyParameter {
       get { return (ValueParameter<BoolValue>)Parameters["SetSeedRandomly"]; }
     }
-    private ValueParameter<IntValue> PopulationSizeParameter {
+    public IValueParameter<IntValue> PopulationSizeParameter {
       get { return (ValueParameter<IntValue>)Parameters["PopulationSize"]; }
     }
     public IConstrainedValueParameter<ISelector> SelectorParameter {
@@ -69,49 +69,49 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     public IConstrainedValueParameter<ICrossover> CrossoverParameter {
       get { return (IConstrainedValueParameter<ICrossover>)Parameters["Crossover"]; }
     }
-    private ValueParameter<PercentValue> MutationProbabilityParameter {
+    public IValueParameter<PercentValue> MutationProbabilityParameter {
       get { return (ValueParameter<PercentValue>)Parameters["MutationProbability"]; }
     }
     public IConstrainedValueParameter<IManipulator> MutatorParameter {
       get { return (IConstrainedValueParameter<IManipulator>)Parameters["Mutator"]; }
     }
-    private ValueParameter<IntValue> ElitesParameter {
+    public IValueParameter<IntValue> ElitesParameter {
       get { return (ValueParameter<IntValue>)Parameters["Elites"]; }
     }
-    private IFixedValueParameter<BoolValue> ReevaluateElitesParameter {
+    public IFixedValueParameter<BoolValue> ReevaluateElitesParameter {
       get { return (IFixedValueParameter<BoolValue>)Parameters["ReevaluateElites"]; }
     }
-    private ValueParameter<IntValue> MaximumGenerationsParameter {
+    public IValueParameter<IntValue> MaximumGenerationsParameter {
       get { return (ValueParameter<IntValue>)Parameters["MaximumGenerations"]; }
     }
-    private ValueLookupParameter<DoubleValue> SuccessRatioParameter {
+    public IValueLookupParameter<DoubleValue> SuccessRatioParameter {
       get { return (ValueLookupParameter<DoubleValue>)Parameters["SuccessRatio"]; }
     }
-    private ValueLookupParameter<DoubleValue> ComparisonFactorLowerBoundParameter {
+    public IValueLookupParameter<DoubleValue> ComparisonFactorLowerBoundParameter {
       get { return (ValueLookupParameter<DoubleValue>)Parameters["ComparisonFactorLowerBound"]; }
     }
-    private ValueLookupParameter<DoubleValue> ComparisonFactorUpperBoundParameter {
+    public IValueLookupParameter<DoubleValue> ComparisonFactorUpperBoundParameter {
       get { return (ValueLookupParameter<DoubleValue>)Parameters["ComparisonFactorUpperBound"]; }
     }
     public IConstrainedValueParameter<IDiscreteDoubleValueModifier> ComparisonFactorModifierParameter {
       get { return (IConstrainedValueParameter<IDiscreteDoubleValueModifier>)Parameters["ComparisonFactorModifier"]; }
     }
-    private ValueLookupParameter<DoubleValue> MaximumSelectionPressureParameter {
+    public IValueLookupParameter<DoubleValue> MaximumSelectionPressureParameter {
       get { return (ValueLookupParameter<DoubleValue>)Parameters["MaximumSelectionPressure"]; }
     }
-    private ValueLookupParameter<BoolValue> OffspringSelectionBeforeMutationParameter {
+    public IValueLookupParameter<BoolValue> OffspringSelectionBeforeMutationParameter {
       get { return (ValueLookupParameter<BoolValue>)Parameters["OffspringSelectionBeforeMutation"]; }
     }
-    private ValueLookupParameter<IntValue> SelectedParentsParameter {
+    public IValueLookupParameter<IntValue> SelectedParentsParameter {
       get { return (ValueLookupParameter<IntValue>)Parameters["SelectedParents"]; }
     }
-    private ValueParameter<MultiAnalyzer> AnalyzerParameter {
+    public IValueParameter<MultiAnalyzer> AnalyzerParameter {
       get { return (ValueParameter<MultiAnalyzer>)Parameters["Analyzer"]; }
     }
-    private ValueParameter<IntValue> MaximumEvaluatedSolutionsParameter {
+    public IValueParameter<IntValue> MaximumEvaluatedSolutionsParameter {
       get { return (ValueParameter<IntValue>)Parameters["MaximumEvaluatedSolutions"]; }
     }
-    private IFixedValueParameter<BoolValue> FillPopulationWithParentsParameter {
+    public IFixedValueParameter<BoolValue> FillPopulationWithParentsParameter {
       get { return (IFixedValueParameter<BoolValue>)Parameters["FillPopulationWithParents"]; }
     }
     #endregion
@@ -227,6 +227,17 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       }
       if (!Parameters.ContainsKey("FillPopulationWithParents"))
         Parameters.Add(new FixedValueParameter<BoolValue>("FillPopulationWithParents", "True if the population should be filled with parent individual or false if worse children should be used when the maximum selection pressure is exceeded.", new BoolValue(false)) { Hidden = true });
+
+      var optionalMutatorParameter = MutatorParameter as OptionalConstrainedValueParameter<IManipulator>;
+      if (optionalMutatorParameter != null) {
+        Parameters.Remove(optionalMutatorParameter);
+        Parameters.Add(new ConstrainedValueParameter<IManipulator>("Mutator", "The operator used to mutate solutions."));
+        foreach (var m in optionalMutatorParameter.ValidValues)
+          MutatorParameter.ValidValues.Add(m);
+        if (optionalMutatorParameter.Value == null) MutationProbability.Value = 0; // to guarantee that the old configuration results in the same behavior
+        else Mutator = optionalMutatorParameter.Value;
+        optionalMutatorParameter.ValidValues.Clear(); // to avoid dangling references to the old parameter its valid values are cleared
+      }
       #endregion
 
       Initialize();
@@ -249,7 +260,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       Parameters.Add(new ConstrainedValueParameter<ISelector>("Selector", "The operator used to select solutions for reproduction."));
       Parameters.Add(new ConstrainedValueParameter<ICrossover>("Crossover", "The operator used to cross solutions."));
       Parameters.Add(new ValueParameter<PercentValue>("MutationProbability", "The probability that the mutation operator is applied on a solution.", new PercentValue(0.05)));
-      Parameters.Add(new OptionalConstrainedValueParameter<IManipulator>("Mutator", "The operator used to mutate solutions."));
+      Parameters.Add(new ConstrainedValueParameter<IManipulator>("Mutator", "The operator used to mutate solutions."));
       Parameters.Add(new ValueParameter<IntValue>("Elites", "The numer of elite solutions which are kept in each generation.", new IntValue(1)));
       Parameters.Add(new FixedValueParameter<BoolValue>("ReevaluateElites", "Flag to determine if elite individuals should be reevaluated (i.e., if stochastic fitness functions are used.)", new BoolValue(false)) { Hidden = true });
       Parameters.Add(new ValueParameter<IntValue>("MaximumGenerations", "The maximum number of generations which should be processed.", new IntValue(1000)));
@@ -486,12 +497,19 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     private void UpdateMutators() {
       IManipulator oldMutator = MutatorParameter.Value;
       MutatorParameter.ValidValues.Clear();
+      IManipulator defaultMutator = Problem.Operators.OfType<IManipulator>().FirstOrDefault();
+
       foreach (IManipulator mutator in Problem.Operators.OfType<IManipulator>().OrderBy(x => x.Name))
         MutatorParameter.ValidValues.Add(mutator);
+
       if (oldMutator != null) {
         IManipulator mutator = MutatorParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldMutator.GetType());
         if (mutator != null) MutatorParameter.Value = mutator;
+        else oldMutator = null;
       }
+
+      if (oldMutator == null && defaultMutator != null)
+        MutatorParameter.Value = defaultMutator;
     }
     private void UpdateAnalyzers() {
       Analyzer.Operators.Clear();

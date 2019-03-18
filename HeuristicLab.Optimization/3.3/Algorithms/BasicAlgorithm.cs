@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,17 +21,25 @@
 
 using System;
 using System.Threading;
-using System.Threading.Tasks;
 using HeuristicLab.Common;
+using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Optimization {
   [StorableClass]
   public abstract class BasicAlgorithm : Algorithm, IStorableContent {
+
+    private bool pausePending;
+    private DateTime lastUpdateTime;
+
     public string Filename { get; set; }
 
+    public abstract bool SupportsPause { get; }
+
     [Storable]
-    private ResultCollection results;
+    private bool initialized;
+    [Storable]
+    private readonly ResultCollection results;
     public override ResultCollection Results {
       get { return results; }
     }
@@ -47,6 +55,7 @@ namespace HeuristicLab.Optimization {
     protected BasicAlgorithm(BasicAlgorithm original, Cloner cloner)
       : base(original, cloner) {
       results = cloner.Clone(original.Results);
+      initialized = original.initialized;
     }
     protected BasicAlgorithm()
       : base() {
@@ -57,45 +66,50 @@ namespace HeuristicLab.Optimization {
       if (Problem == null) return;
       base.Prepare();
       results.Clear();
+      initialized = false;
       OnPrepared();
     }
 
-    public override void Start() {
-      base.Start();
-      CancellationTokenSource = new CancellationTokenSource();
-
+    public override void Start(CancellationToken cancellationToken) {
+      base.Start(cancellationToken);
+      CancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+      pausePending = false;
       OnStarted();
-      Task task = Task.Factory.StartNew(Run, cancellationTokenSource.Token, cancellationTokenSource.Token);
-      task.ContinueWith(t => {
-        try {
-          t.Wait();
-        } catch (AggregateException ex) {
-          try {
-            ex.Flatten().Handle(x => x is OperationCanceledException);
-          } catch (AggregateException remaining) {
-            if (remaining.InnerExceptions.Count == 1) OnExceptionOccurred(remaining.InnerExceptions[0]);
-            else OnExceptionOccurred(remaining);
-          }
-        }
-        CancellationTokenSource.Dispose();
-        CancellationTokenSource = null;
-        OnStopped();
-      });
+
+      try {
+        Run((object)cancellationTokenSource.Token);
+      } catch (OperationCanceledException) {
+      } catch (AggregateException ae) {
+        ae.FlattenAndHandle(new[] { typeof(OperationCanceledException) }, e => OnExceptionOccurred(e));
+      } catch (Exception e) {
+        OnExceptionOccurred(e);
+      }
+
+      CancellationTokenSource.Dispose();
+      CancellationTokenSource = null;
+      if (pausePending) OnPaused();
+      else OnStopped();
     }
 
     public override void Pause() {
-      throw new NotSupportedException("Pause is not supported in basic algorithms.");
+      // CancellationToken.ThrowIfCancellationRequested() must be called from within the Run method, otherwise pause does nothing
+      // alternatively check the IsCancellationRequested property of the cancellation token
+      if (!SupportsPause)
+        throw new NotSupportedException("Pause is not supported by this algorithm.");
+
+      base.Pause();
+      pausePending = true;
+      if (CancellationTokenSource != null) CancellationTokenSource.Cancel();
     }
 
     public override void Stop() {
       // CancellationToken.ThrowIfCancellationRequested() must be called from within the Run method, otherwise stop does nothing
       // alternatively check the IsCancellationRequested property of the cancellation token
       base.Stop();
-      CancellationTokenSource.Cancel();
+      if (ExecutionState == ExecutionState.Paused) OnStopped();
+      else if (CancellationTokenSource != null) CancellationTokenSource.Cancel();
     }
 
-
-    private DateTime lastUpdateTime;
     private void Run(object state) {
       CancellationToken cancellationToken = (CancellationToken)state;
       lastUpdateTime = DateTime.UtcNow;
@@ -104,6 +118,9 @@ namespace HeuristicLab.Optimization {
       timer.Elapsed += new System.Timers.ElapsedEventHandler(timer_Elapsed);
       timer.Start();
       try {
+        if (!initialized)
+          Initialize(cancellationToken);
+        initialized = true;
         Run(cancellationToken);
       } finally {
         timer.Elapsed -= new System.Timers.ElapsedEventHandler(timer_Elapsed);
@@ -112,6 +129,7 @@ namespace HeuristicLab.Optimization {
       }
     }
 
+    protected virtual void Initialize(CancellationToken cancellationToken) { }
     protected abstract void Run(CancellationToken cancellationToken);
 
     #region Events

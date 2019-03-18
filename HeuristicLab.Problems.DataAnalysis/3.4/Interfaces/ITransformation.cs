@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -29,6 +29,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
   }
 
   public interface ITransformation<T> : ITransformation {
+    void ConfigureParameters(IEnumerable<T> data);
+    IEnumerable<T> ConfigureAndApply(IEnumerable<T> data);
     IEnumerable<T> Apply(IEnumerable<T> data);
   }
 }

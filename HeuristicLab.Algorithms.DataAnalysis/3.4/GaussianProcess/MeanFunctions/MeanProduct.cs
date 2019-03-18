@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -72,7 +72,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
 
-    public ParameterizedMeanFunction GetParameterizedMeanFunction(double[] p, IEnumerable<int> columnIndices) {
+    public ParameterizedMeanFunction GetParameterizedMeanFunction(double[] p, int[] columnIndices) {
       var factorMf = new List<ParameterizedMeanFunction>();
       int totalNumberOfParameters = GetNumberOfParameters(numberOfVariables);
       int[] factorIndexMap = new int[totalNumberOfParameters]; // maps k-th hyperparameter to the correct mean-term

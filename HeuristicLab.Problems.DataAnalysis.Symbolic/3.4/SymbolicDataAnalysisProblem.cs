@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using HeuristicLab.Common;
@@ -207,31 +208,56 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     protected virtual void UpdateGrammar() {
-      SymbolicExpressionTreeGrammar.MaximumFunctionArguments = MaximumFunctionArguments.Value;
-      SymbolicExpressionTreeGrammar.MaximumFunctionDefinitions = MaximumFunctionDefinitions.Value;
-      foreach (var varSymbol in SymbolicExpressionTreeGrammar.Symbols.OfType<HeuristicLab.Problems.DataAnalysis.Symbolic.Variable>()) {
+      var problemData = ProblemData;
+      var ds = problemData.Dataset;
+      var grammar = SymbolicExpressionTreeGrammar;
+      grammar.MaximumFunctionArguments = MaximumFunctionArguments.Value;
+      grammar.MaximumFunctionDefinitions = MaximumFunctionDefinitions.Value;
+      foreach (var varSymbol in grammar.Symbols.OfType<HeuristicLab.Problems.DataAnalysis.Symbolic.VariableBase>()) {
         if (!varSymbol.Fixed) {
-          varSymbol.AllVariableNames = ProblemData.InputVariables.Select(x => x.Value);
-          varSymbol.VariableNames = ProblemData.AllowedInputVariables;
+          varSymbol.AllVariableNames = problemData.InputVariables.Select(x => x.Value).Where(x => ds.VariableHasType<double>(x));
+          varSymbol.VariableNames = problemData.AllowedInputVariables.Where(x => ds.VariableHasType<double>(x));
         }
       }
-      foreach (var varSymbol in SymbolicExpressionTreeGrammar.Symbols.OfType<HeuristicLab.Problems.DataAnalysis.Symbolic.VariableCondition>()) {
-        if (!varSymbol.Fixed) {
-          varSymbol.AllVariableNames = ProblemData.InputVariables.Select(x => x.Value);
-          varSymbol.VariableNames = ProblemData.AllowedInputVariables;
+      foreach (var factorSymbol in grammar.Symbols.OfType<BinaryFactorVariable>()) {
+        if (!factorSymbol.Fixed) {
+          factorSymbol.AllVariableNames = problemData.InputVariables.Select(x => x.Value).Where(x => ds.VariableHasType<string>(x));
+          factorSymbol.VariableNames = problemData.AllowedInputVariables.Where(x => ds.VariableHasType<string>(x));
+          factorSymbol.VariableValues = factorSymbol.VariableNames
+            .ToDictionary(varName => varName, varName => ds.GetStringValues(varName).Distinct().ToList());
+        }
+      }
+      foreach (var factorSymbol in grammar.Symbols.OfType<FactorVariable>()) {
+        if (!factorSymbol.Fixed) {
+          factorSymbol.AllVariableNames = problemData.InputVariables.Select(x => x.Value).Where(x => ds.VariableHasType<string>(x));
+          factorSymbol.VariableNames = problemData.AllowedInputVariables.Where(x => ds.VariableHasType<string>(x));
+          factorSymbol.VariableValues = factorSymbol.VariableNames
+            .ToDictionary(varName => varName,
+            varName => ds.GetStringValues(varName).Distinct()
+            .Select((n, i) => Tuple.Create(n, i))
+            .ToDictionary(tup => tup.Item1, tup => tup.Item2));
         }
       }
     }
 
     private void InitializeOperators() {
-      Operators.AddRange(ApplicationManager.Manager.GetInstances<ISymbolicExpressionTreeOperator>());
-      Operators.AddRange(ApplicationManager.Manager.GetInstances<ISymbolicDataAnalysisExpressionCrossover<T>>());
-      Operators.Add(new SymbolicExpressionSymbolFrequencyAnalyzer());
-      Operators.Add(new SymbolicDataAnalysisVariableFrequencyAnalyzer());
-      Operators.Add(new MinAverageMaxSymbolicExpressionTreeLengthAnalyzer());
-      Operators.Add(new SymbolicExpressionTreeLengthAnalyzer());
-      Operators.Add(new SymbolicExpressionTreeBottomUpSimilarityCalculator());
-      Operators.Add(new SymbolicDataAnalysisBottomUpDiversityAnalyzer(Operators.OfType<SymbolicExpressionTreeBottomUpSimilarityCalculator>().First()));
+      var operators = new HashSet<IItem>(new TypeEqualityComparer<IItem>());
+      operators.Add(new SubtreeCrossover());
+      operators.Add(new MultiSymbolicExpressionTreeManipulator());
+
+      foreach (var op in ApplicationManager.Manager.GetInstances<ISymbolicExpressionTreeOperator>())
+        operators.Add(op);
+      foreach (var op in ApplicationManager.Manager.GetInstances<ISymbolicDataAnalysisExpressionCrossover<T>>())
+        operators.Add(op);
+
+      operators.Add(new SymbolicExpressionSymbolFrequencyAnalyzer());
+      operators.Add(new SymbolicDataAnalysisVariableFrequencyAnalyzer());
+      operators.Add(new MinAverageMaxSymbolicExpressionTreeLengthAnalyzer());
+      operators.Add(new SymbolicExpressionTreeLengthAnalyzer());
+      operators.Add(new SymbolicExpressionTreeBottomUpSimilarityCalculator());
+      operators.Add(new SymbolicDataAnalysisBottomUpDiversityAnalyzer(operators.OfType<SymbolicExpressionTreeBottomUpSimilarityCalculator>().First()));
+
+      Operators.AddRange(operators);
       ParameterizeOperators();
     }
 

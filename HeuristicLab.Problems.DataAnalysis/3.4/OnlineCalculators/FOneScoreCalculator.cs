@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -35,6 +35,11 @@ namespace HeuristicLab.Problems.DataAnalysis {
       if (!errorState.Equals(OnlineCalculatorError.None)) {
         return double.NaN;
       }
+      //only one class has been present => F1 score cannot be calculated
+      if (confusionMatrix.GetLength(0) != 2 || confusionMatrix.GetLength(1) != 2) {
+        return double.NaN;
+      }
+
       return CalculateFOne(confusionMatrix);
     }
 

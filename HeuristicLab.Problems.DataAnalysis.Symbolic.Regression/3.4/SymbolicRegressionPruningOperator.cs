@@ -1,7 +1,7 @@
 ﻿#region License Information
 
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -68,7 +68,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     }
 
     protected override ISymbolicDataAnalysisModel CreateModel(ISymbolicExpressionTree tree, ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, IDataAnalysisProblemData problemData, DoubleLimit estimationLimits) {
-      return new SymbolicRegressionModel(tree, interpreter, estimationLimits.Lower, estimationLimits.Upper);
+      var regressionProblemData = (IRegressionProblemData)problemData;
+      return new SymbolicRegressionModel(regressionProblemData.TargetVariable, tree, interpreter, estimationLimits.Lower, estimationLimits.Upper);
     }
 
     protected override double Evaluate(IDataAnalysisModel model) {
@@ -82,7 +83,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
     public static ISymbolicExpressionTree Prune(ISymbolicExpressionTree tree, SymbolicRegressionSolutionImpactValuesCalculator impactValuesCalculator, ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, IRegressionProblemData problemData, DoubleLimit estimationLimits, IEnumerable<int> rows, double nodeImpactThreshold = 0.0, bool pruneOnlyZeroImpactNodes = false) {
       var clonedTree = (ISymbolicExpressionTree)tree.Clone();
-      var model = new SymbolicRegressionModel(clonedTree, interpreter, estimationLimits.Lower, estimationLimits.Upper);
+      var model = new SymbolicRegressionModel(problemData.TargetVariable, clonedTree, interpreter, estimationLimits.Lower, estimationLimits.Upper);
       var nodes = clonedTree.Root.GetSubtree(0).GetSubtree(0).IterateNodesPrefix().ToList(); // skip the nodes corresponding to the ProgramRootSymbol and the StartSymbol
 
       double qualityForImpactsCalculation = double.NaN; // pass a NaN value initially so the impact calculator will calculate the quality

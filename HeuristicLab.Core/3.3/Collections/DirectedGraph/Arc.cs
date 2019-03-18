@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -38,7 +38,7 @@ namespace HeuristicLab.Core {
     public string Label {
       get { return label; }
       set {
-        if (label.Equals(value)) return;
+        if (label == value) return;
         label = value;
         OnChanged(this, EventArgs.Empty);
       }
@@ -82,7 +82,7 @@ namespace HeuristicLab.Core {
   }
 
   [StorableClass]
-  public class Arc<T> : Arc, IArc<T> where T : class,IDeepCloneable {
+  public class Arc<T> : Arc, IArc<T> where T : class, IDeepCloneable {
     [Storable]
     protected T data;
     public T Data {

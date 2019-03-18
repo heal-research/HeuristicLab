@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,21 +19,20 @@
  */
 #endregion
 
-using System.Collections.Generic;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>
   /// Interface to represent a Gaussian process posterior
   /// </summary>
-  public interface IGaussianProcessModel : IRegressionModel {
+  public interface IGaussianProcessModel : IConfidenceRegressionModel {
     double NegativeLogLikelihood { get; }
+    double LooCvNegativeLogPseudoLikelihood { get; }
     double SigmaNoise { get; }
     IMeanFunction MeanFunction { get; }
     ICovarianceFunction CovarianceFunction { get; }
     double[] HyperparameterGradients { get; }
 
-    IEnumerable<double> GetEstimatedVariance(IDataset ds, IEnumerable<int> rows);
     void FixParameters();
   }
 }

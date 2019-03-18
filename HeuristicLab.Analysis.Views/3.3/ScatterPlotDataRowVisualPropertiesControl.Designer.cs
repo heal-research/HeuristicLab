@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -44,6 +44,7 @@ namespace HeuristicLab.Analysis.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
+      this.components = new System.ComponentModel.Container();
       this.pointStyleComboBox = new System.Windows.Forms.ComboBox();
       this.colorDialog = new System.Windows.Forms.ColorDialog();
       this.colorButton = new System.Windows.Forms.Button();
@@ -55,7 +56,18 @@ namespace HeuristicLab.Analysis.Views {
       this.displayNameTextBox = new System.Windows.Forms.TextBox();
       this.label9 = new System.Windows.Forms.Label();
       this.label7 = new System.Windows.Forms.Label();
+      this.label4 = new System.Windows.Forms.Label();
+      this.regressionTypeComboBox = new System.Windows.Forms.ComboBox();
+      this.regressionGroupBox = new System.Windows.Forms.GroupBox();
+      this.isRegressionVisibleInLegendCheckBox = new System.Windows.Forms.CheckBox();
+      this.polynomialRegressionOrderNumericUpDown = new System.Windows.Forms.NumericUpDown();
+      this.orderLabel = new System.Windows.Forms.Label();
+      this.regressionLegendTextBox = new System.Windows.Forms.TextBox();
+      this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+      this.clearColorButton = new System.Windows.Forms.Button();
       ((System.ComponentModel.ISupportInitialize)(this.pointSizeNumericUpDown)).BeginInit();
+      this.regressionGroupBox.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.polynomialRegressionOrderNumericUpDown)).BeginInit();
       this.SuspendLayout();
       // 
       // pointStyleComboBox
@@ -170,9 +182,123 @@ namespace HeuristicLab.Analysis.Views {
       this.label7.TabIndex = 2;
       this.label7.Text = "&Visible in Legend:";
       // 
+      // label4
+      // 
+      this.label4.AutoSize = true;
+      this.label4.Location = new System.Drawing.Point(6, 22);
+      this.label4.Name = "label4";
+      this.label4.Size = new System.Drawing.Size(34, 13);
+      this.label4.TabIndex = 7;
+      this.label4.Text = "Type:";
+      // 
+      // regressionTypeComboBox
+      // 
+      this.regressionTypeComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.regressionTypeComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.regressionTypeComboBox.FormattingEnabled = true;
+      this.regressionTypeComboBox.Location = new System.Drawing.Point(93, 19);
+      this.regressionTypeComboBox.Name = "regressionTypeComboBox";
+      this.regressionTypeComboBox.Size = new System.Drawing.Size(147, 21);
+      this.regressionTypeComboBox.TabIndex = 8;
+      this.regressionTypeComboBox.SelectedValueChanged += new System.EventHandler(this.regressionTypeComboBox_SelectedValueChanged);
+      // 
+      // regressionGroupBox
+      // 
+      this.regressionGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.regressionGroupBox.Controls.Add(this.isRegressionVisibleInLegendCheckBox);
+      this.regressionGroupBox.Controls.Add(this.regressionTypeComboBox);
+      this.regressionGroupBox.Controls.Add(this.polynomialRegressionOrderNumericUpDown);
+      this.regressionGroupBox.Controls.Add(this.orderLabel);
+      this.regressionGroupBox.Controls.Add(this.regressionLegendTextBox);
+      this.regressionGroupBox.Controls.Add(this.label4);
+      this.regressionGroupBox.Location = new System.Drawing.Point(3, 136);
+      this.regressionGroupBox.Name = "regressionGroupBox";
+      this.regressionGroupBox.Size = new System.Drawing.Size(336, 74);
+      this.regressionGroupBox.TabIndex = 9;
+      this.regressionGroupBox.TabStop = false;
+      this.regressionGroupBox.Text = "&Regression";
+      // 
+      // isRegressionVisibleInLegendCheckBox
+      // 
+      this.isRegressionVisibleInLegendCheckBox.AutoSize = true;
+      this.isRegressionVisibleInLegendCheckBox.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+      this.isRegressionVisibleInLegendCheckBox.Location = new System.Drawing.Point(6, 48);
+      this.isRegressionVisibleInLegendCheckBox.Name = "isRegressionVisibleInLegendCheckBox";
+      this.isRegressionVisibleInLegendCheckBox.Size = new System.Drawing.Size(68, 17);
+      this.isRegressionVisibleInLegendCheckBox.TabIndex = 13;
+      this.isRegressionVisibleInLegendCheckBox.Text = "Legend: ";
+      this.isRegressionVisibleInLegendCheckBox.UseVisualStyleBackColor = true;
+      this.isRegressionVisibleInLegendCheckBox.CheckedChanged += new System.EventHandler(this.isRegressionVisibleInLegendCheckBox_CheckedChanged);
+      // 
+      // polynomialRegressionOrderNumericUpDown
+      // 
+      this.polynomialRegressionOrderNumericUpDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.polynomialRegressionOrderNumericUpDown.Location = new System.Drawing.Point(285, 20);
+      this.polynomialRegressionOrderNumericUpDown.Margin = new System.Windows.Forms.Padding(9, 3, 3, 3);
+      this.polynomialRegressionOrderNumericUpDown.Maximum = new decimal(new int[] {
+            6,
+            0,
+            0,
+            0});
+      this.polynomialRegressionOrderNumericUpDown.Minimum = new decimal(new int[] {
+            2,
+            0,
+            0,
+            0});
+      this.polynomialRegressionOrderNumericUpDown.Name = "polynomialRegressionOrderNumericUpDown";
+      this.polynomialRegressionOrderNumericUpDown.Size = new System.Drawing.Size(45, 20);
+      this.polynomialRegressionOrderNumericUpDown.TabIndex = 11;
+      this.toolTip.SetToolTip(this.polynomialRegressionOrderNumericUpDown, "Order only available for Polynomial");
+      this.polynomialRegressionOrderNumericUpDown.Value = new decimal(new int[] {
+            2,
+            0,
+            0,
+            0});
+      this.polynomialRegressionOrderNumericUpDown.ValueChanged += new System.EventHandler(this.polynomialRegressionOrderNumericUpDown_ValueChanged);
+      // 
+      // orderLabel
+      // 
+      this.orderLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.orderLabel.AutoSize = true;
+      this.orderLabel.Location = new System.Drawing.Point(246, 22);
+      this.orderLabel.Name = "orderLabel";
+      this.orderLabel.Size = new System.Drawing.Size(36, 13);
+      this.orderLabel.TabIndex = 12;
+      this.orderLabel.Text = "Order:";
+      // 
+      // regressionLegendTextBox
+      // 
+      this.regressionLegendTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.regressionLegendTextBox.Location = new System.Drawing.Point(93, 46);
+      this.regressionLegendTextBox.Name = "regressionLegendTextBox";
+      this.regressionLegendTextBox.Size = new System.Drawing.Size(237, 20);
+      this.regressionLegendTextBox.TabIndex = 10;
+      this.regressionLegendTextBox.Validated += new System.EventHandler(this.regressionLegendTextBox_Validated);
+      // 
+      // clearColorButton
+      // 
+      this.clearColorButton.BackColor = System.Drawing.SystemColors.ActiveCaption;
+      this.clearColorButton.Cursor = System.Windows.Forms.Cursors.Default;
+      this.clearColorButton.FlatAppearance.BorderSize = 0;
+      this.clearColorButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.clearColorButton.ForeColor = System.Drawing.Color.Transparent;
+      this.clearColorButton.Location = new System.Drawing.Point(125, 65);
+      this.clearColorButton.Margin = new System.Windows.Forms.Padding(0);
+      this.clearColorButton.Name = "clearColorButton";
+      this.clearColorButton.Size = new System.Drawing.Size(15, 16);
+      this.clearColorButton.TabIndex = 11;
+      this.clearColorButton.TabStop = false;
+      this.clearColorButton.UseVisualStyleBackColor = false;
+      this.clearColorButton.Click += new System.EventHandler(this.clearColorButton_Click);
+      // 
       // ScatterPlotDataRowVisualPropertiesControl
       // 
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
+      this.Controls.Add(this.clearColorButton);
+      this.Controls.Add(this.regressionGroupBox);
       this.Controls.Add(this.pointSizeNumericUpDown);
       this.Controls.Add(this.isVisibleInLegendCheckBox);
       this.Controls.Add(this.label9);
@@ -184,8 +310,11 @@ namespace HeuristicLab.Analysis.Views {
       this.Controls.Add(this.label1);
       this.Controls.Add(this.colorButton);
       this.Name = "ScatterPlotDataRowVisualPropertiesControl";
-      this.Size = new System.Drawing.Size(342, 135);
+      this.Size = new System.Drawing.Size(342, 215);
       ((System.ComponentModel.ISupportInitialize)(this.pointSizeNumericUpDown)).EndInit();
+      this.regressionGroupBox.ResumeLayout(false);
+      this.regressionGroupBox.PerformLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.polynomialRegressionOrderNumericUpDown)).EndInit();
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -204,5 +333,14 @@ namespace HeuristicLab.Analysis.Views {
     private System.Windows.Forms.TextBox displayNameTextBox;
     private System.Windows.Forms.Label label9;
     private System.Windows.Forms.Label label3;
+    private System.Windows.Forms.Label label4;
+    private System.Windows.Forms.ComboBox regressionTypeComboBox;
+    private System.Windows.Forms.GroupBox regressionGroupBox;
+    private System.Windows.Forms.TextBox regressionLegendTextBox;
+    private System.Windows.Forms.NumericUpDown polynomialRegressionOrderNumericUpDown;
+    private System.Windows.Forms.Label orderLabel;
+    private System.Windows.Forms.ToolTip toolTip;
+    private System.Windows.Forms.CheckBox isRegressionVisibleInLegendCheckBox;
+    private System.Windows.Forms.Button clearColorButton;
   }
 }

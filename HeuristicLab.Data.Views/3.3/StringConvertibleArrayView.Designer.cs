@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -65,7 +65,7 @@ namespace HeuristicLab.Data.Views {
       // lengthTextBox
       // 
       this.lengthTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.lengthTextBox.Location = new System.Drawing.Point(52, 0);
       this.lengthTextBox.Name = "lengthTextBox";
       this.lengthTextBox.Size = new System.Drawing.Size(372, 20);
@@ -79,13 +79,14 @@ namespace HeuristicLab.Data.Views {
       this.dataGridView.AllowUserToAddRows = false;
       this.dataGridView.AllowUserToDeleteRows = false;
       this.dataGridView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.dataGridView.ClipboardCopyMode = System.Windows.Forms.DataGridViewClipboardCopyMode.EnableWithoutHeaderText;
+            | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.dataGridView.ClipboardCopyMode = System.Windows.Forms.DataGridViewClipboardCopyMode.Disable;
       this.dataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
       this.dataGridView.ColumnHeadersVisible = false;
       this.dataGridView.Location = new System.Drawing.Point(0, 26);
       this.dataGridView.Name = "dataGridView";
+      this.dataGridView.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.AutoSizeToDisplayedHeaders;
       this.dataGridView.Size = new System.Drawing.Size(424, 378);
       this.dataGridView.TabIndex = 2;
       this.dataGridView.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView_CellEndEdit);
@@ -100,7 +101,6 @@ namespace HeuristicLab.Data.Views {
       // 
       // StringConvertibleArrayView
       // 
-      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.Controls.Add(this.dataGridView);
       this.Controls.Add(this.lengthTextBox);

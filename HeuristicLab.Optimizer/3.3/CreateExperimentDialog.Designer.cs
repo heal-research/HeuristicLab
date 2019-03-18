@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -146,8 +146,8 @@ namespace HeuristicLab.Optimizer {
       // 
       // repetitionsNumericUpDown
       // 
-      this.repetitionsNumericUpDown.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.repetitionsNumericUpDown.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.repetitionsNumericUpDown.Location = new System.Drawing.Point(113, 28);
       this.repetitionsNumericUpDown.Maximum = new decimal(new int[] {
             1000000,
@@ -233,9 +233,9 @@ namespace HeuristicLab.Optimizer {
       // 
       // tabControl
       // 
-      this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.tabControl.Controls.Add(this.parametersTabPage);
       this.tabControl.Controls.Add(this.instancesTabPage);
       this.tabControl.Location = new System.Drawing.Point(15, 54);
@@ -286,6 +286,7 @@ namespace HeuristicLab.Optimizer {
       this.parametersListView.Location = new System.Drawing.Point(0, 0);
       this.parametersListView.MultiSelect = false;
       this.parametersListView.Name = "parametersListView";
+      this.parametersListView.ShowItemToolTips = true;
       this.parametersListView.Size = new System.Drawing.Size(155, 285);
       this.parametersListView.TabIndex = 0;
       this.parametersListView.UseCompatibleStateImageBehavior = false;
@@ -309,9 +310,9 @@ namespace HeuristicLab.Optimizer {
       // 
       // stringConvertibleArrayView
       // 
-      this.stringConvertibleArrayView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.stringConvertibleArrayView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.stringConvertibleArrayView.Caption = "StringConvertibleArray View";
       this.stringConvertibleArrayView.Content = null;
       this.stringConvertibleArrayView.Location = new System.Drawing.Point(16, 39);
@@ -331,9 +332,9 @@ namespace HeuristicLab.Optimizer {
       // 
       // choicesListView
       // 
-      this.choicesListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.choicesListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.choicesListView.CheckBoxes = true;
       this.choicesListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader2});
@@ -377,9 +378,9 @@ namespace HeuristicLab.Optimizer {
       // 
       // instancesTreeView
       // 
-      this.instancesTreeView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.instancesTreeView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.instancesTreeView.CheckBoxes = true;
       this.instancesTreeView.Location = new System.Drawing.Point(6, 35);
       this.instancesTreeView.Name = "instancesTreeView";
@@ -421,8 +422,8 @@ namespace HeuristicLab.Optimizer {
       // 
       // experimentCreationProgressBar
       // 
-      this.experimentCreationProgressBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.experimentCreationProgressBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.experimentCreationProgressBar.Location = new System.Drawing.Point(187, 377);
       this.experimentCreationProgressBar.Name = "experimentCreationProgressBar";
       this.experimentCreationProgressBar.Size = new System.Drawing.Size(134, 23);
@@ -431,7 +432,6 @@ namespace HeuristicLab.Optimizer {
       // 
       // CreateExperimentDialog
       // 
-      this.AcceptButton = this.okButton;
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.CancelButton = this.cancelButton;
       this.ClientSize = new System.Drawing.Size(414, 412);

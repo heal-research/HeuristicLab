@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -64,9 +64,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
       thresholds = (double[])original.thresholds.Clone();
       thresholdCalculator = cloner.Clone(original.thresholdCalculator);
     }
-    public SymbolicDiscriminantFunctionClassificationModel(ISymbolicExpressionTree tree, ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, IDiscriminantFunctionThresholdCalculator thresholdCalculator,
+    public SymbolicDiscriminantFunctionClassificationModel(string targetVariable, ISymbolicExpressionTree tree, ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, IDiscriminantFunctionThresholdCalculator thresholdCalculator,
       double lowerEstimationLimit = double.MinValue, double upperEstimationLimit = double.MaxValue)
-      : base(tree, interpreter, lowerEstimationLimit, upperEstimationLimit) {
+      : base(targetVariable, tree, interpreter, lowerEstimationLimit, upperEstimationLimit) {
       this.thresholds = new double[0];
       this.classValues = new double[0];
       this.ThresholdCalculator = thresholdCalculator;

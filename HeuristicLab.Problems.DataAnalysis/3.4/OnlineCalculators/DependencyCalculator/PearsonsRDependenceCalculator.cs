@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -33,6 +33,16 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public double Calculate(IEnumerable<double> originalValues, IEnumerable<double> estimatedValues, out OnlineCalculatorError errorState) {
       return OnlinePearsonsRCalculator.Calculate(originalValues, estimatedValues, out errorState);
+    }
+
+    public double Calculate(IEnumerable<Tuple<double, double>> values, out OnlineCalculatorError errorState) {
+      var calculator = new OnlinePearsonsRCalculator();
+      foreach (var tuple in values) {
+        calculator.Add(tuple.Item1, tuple.Item2);
+        if (calculator.ErrorState != OnlineCalculatorError.None) break;
+      }
+      errorState = calculator.ErrorState;
+      return calculator.R;
     }
   }
 }

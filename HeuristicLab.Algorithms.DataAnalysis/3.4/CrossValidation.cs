@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -32,12 +33,19 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
+using HeuristicLab.Random;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [Item("Cross Validation (CV)", "Cross-validation wrapper for data analysis algorithms.")]
   [Creatable(CreatableAttribute.Categories.DataAnalysis, Priority = 100)]
   [StorableClass]
   public sealed class CrossValidation : ParameterizedNamedItem, IAlgorithm, IStorableContent {
+    [Storable]
+    private int seed;
+
+    private SemaphoreSlim availableWorkers; // limits the number of concurrent algorithm executions
+    private ManualResetEventSlim allAlgorithmsFinished; // this indicates that all started algorithms have been paused or stopped
+
     public CrossValidation()
       : base() {
       name = ItemName;
@@ -55,6 +63,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       numberOfWorkers = new IntValue(1);
       samplesStart = new IntValue(0);
       samplesEnd = new IntValue(0);
+      shuffleSamples = new BoolValue(false);
       storeAlgorithmInEachRun = false;
 
       RegisterEvents();
@@ -70,6 +79,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code, remove with 3.4
+      if (shuffleSamples == null) shuffleSamples = new BoolValue(false);
+      #endregion
+
       RegisterEvents();
       if (Algorithm != null) RegisterAlgorithmEvents();
     }
@@ -88,6 +102,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       numberOfWorkers = cloner.Clone(original.numberOfWorkers);
       samplesStart = cloner.Clone(original.samplesStart);
       samplesEnd = cloner.Clone(original.samplesEnd);
+      shuffleSamples = cloner.Clone(original.shuffleSamples);
+      seed = original.seed;
+
       RegisterEvents();
       if (Algorithm != null) RegisterAlgorithmEvents();
     }
@@ -169,7 +186,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public ResultCollection Results {
       get { return results; }
     }
-
+    [Storable]
+    private BoolValue shuffleSamples;
+    public BoolValue ShuffleSamples {
+      get { return shuffleSamples; }
+    }
     [Storable]
     private IntValue folds;
     public IntValue Folds {
@@ -251,6 +272,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     public void Prepare() {
+      if (startPending) return;
       if (ExecutionState == ExecutionState.Started)
         throw new InvalidOperationException(string.Format("Prepare not allowed in execution state \"{0}\".", ExecutionState));
       results.Clear();
@@ -265,17 +287,36 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       Prepare();
     }
 
+    private bool startPending;
     public void Start() {
-      if ((ExecutionState != ExecutionState.Prepared) && (ExecutionState != ExecutionState.Paused))
-        throw new InvalidOperationException(string.Format("Start not allowed in execution state \"{0}\".", ExecutionState));
+      Start(CancellationToken.None);
+    }
+    public void Start(CancellationToken cancellationToken) {
+      lock (locker) {
+        if (startPending) return;
+        startPending = true;
+      }
 
-      if (Algorithm != null) {
+      try {
+        if ((ExecutionState != ExecutionState.Prepared) && (ExecutionState != ExecutionState.Paused))
+          throw new InvalidOperationException(string.Format("Start not allowed in execution state \"{0}\".", ExecutionState));
+        seed = new FastRandom().NextInt();
+
+        if (Algorithm == null) return;
         //create cloned algorithms
         if (clonedAlgorithms.Count == 0) {
           int testSamplesCount = (SamplesEnd.Value - SamplesStart.Value) / Folds.Value;
-
+          IDataset shuffledDataset = null;
           for (int i = 0; i < Folds.Value; i++) {
-            IAlgorithm clonedAlgorithm = (IAlgorithm)algorithm.Clone();
+            var cloner = new Cloner();
+            if (ShuffleSamples.Value) {
+              var random = new FastRandom(seed);
+              var dataAnalysisProblem = (IDataAnalysisProblem)algorithm.Problem;
+              var dataset = (Dataset)dataAnalysisProblem.ProblemData.Dataset;
+              shuffledDataset = shuffledDataset ?? dataset.Shuffle(random);
+              cloner.RegisterClonedObject(dataset, shuffledDataset);
+            }
+            IAlgorithm clonedAlgorithm = cloner.Clone(Algorithm);
             clonedAlgorithm.Name = algorithm.Name + " Fold " + i;
             IDataAnalysisProblem problem = clonedAlgorithm.Problem as IDataAnalysisProblem;
             ISymbolicDataAnalysisProblem symbolicProblem = problem as ISymbolicDataAnalysisProblem;
@@ -302,61 +343,72 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
           }
         }
 
-        //start prepared or paused cloned algorithms
-        int startedAlgorithms = 0;
-        foreach (IAlgorithm clonedAlgorithm in clonedAlgorithms) {
-          if (startedAlgorithms < NumberOfWorkers.Value) {
-            if (clonedAlgorithm.ExecutionState == ExecutionState.Prepared ||
-                clonedAlgorithm.ExecutionState == ExecutionState.Paused) {
+        OnStarted();
+      } finally {
+        if (startPending) startPending = false;
+      }
 
-              // start and wait until the alg is started 
-              using (var signal = new ManualResetEvent(false)) {
-                EventHandler signalSetter = (sender, args) => { signal.Set(); };
-                clonedAlgorithm.Started += signalSetter;
-                clonedAlgorithm.Start();
-                signal.WaitOne();
-                clonedAlgorithm.Started -= signalSetter;
+      availableWorkers = new SemaphoreSlim(NumberOfWorkers.Value, NumberOfWorkers.Value);
+      allAlgorithmsFinished = new ManualResetEventSlim(false);
 
-                startedAlgorithms++;
-              }
-            }
+      var startedTasks = new List<Task>(clonedAlgorithms.Count);
+
+      //start prepared or paused cloned algorithms
+      foreach (IAlgorithm clonedAlgorithm in clonedAlgorithms) {
+        if (pausePending || stopPending || ExecutionState != ExecutionState.Started) break;
+        if (clonedAlgorithm.ExecutionState == ExecutionState.Prepared ||
+            clonedAlgorithm.ExecutionState == ExecutionState.Paused) {
+          availableWorkers.Wait();
+          lock (locker) {
+            if (pausePending || stopPending || ExecutionState != ExecutionState.Started) break;
+            var task = clonedAlgorithm.StartAsync(cancellationToken);
+            startedTasks.Add(task);
           }
         }
-        OnStarted();
       }
+
+      allAlgorithmsFinished.Wait();
+
+      Task.WaitAll(startedTasks.ToArray()); // to get exceptions not handled within the tasks
+    }
+
+    public async Task StartAsync() { await StartAsync(CancellationToken.None); }
+    public async Task StartAsync(CancellationToken cancellationToken) {
+      await AsyncHelper.DoAsync(Start, cancellationToken);
     }
 
     private bool pausePending;
     public void Pause() {
+      if (startPending) return;
       if (ExecutionState != ExecutionState.Started)
         throw new InvalidOperationException(string.Format("Pause not allowed in execution state \"{0}\".", ExecutionState));
       if (!pausePending) {
         pausePending = true;
-        PauseAllClonedAlgorithms();
-      }
-    }
-    private void PauseAllClonedAlgorithms() {
-      foreach (IAlgorithm clonedAlgorithm in clonedAlgorithms) {
-        if (clonedAlgorithm.ExecutionState == ExecutionState.Started)
-          clonedAlgorithm.Pause();
+        lock (locker) {
+          var toPause = clonedAlgorithms.Where(x => x.ExecutionState == ExecutionState.Started).ToList();
+          foreach (var optimizer in toPause) {
+            // a race-condition may occur when the optimizer has changed the state by itself in the meantime
+            try { optimizer.Pause(); } catch (InvalidOperationException) { }
+          }
+        }
       }
     }
 
     private bool stopPending;
     public void Stop() {
+      if (startPending) return;
       if ((ExecutionState != ExecutionState.Started) && (ExecutionState != ExecutionState.Paused))
         throw new InvalidOperationException(string.Format("Stop not allowed in execution state \"{0}\".",
                                                           ExecutionState));
       if (!stopPending) {
         stopPending = true;
-        StopAllClonedAlgorithms();
-      }
-    }
-    private void StopAllClonedAlgorithms() {
-      foreach (IAlgorithm clonedAlgorithm in clonedAlgorithms) {
-        if (clonedAlgorithm.ExecutionState == ExecutionState.Started ||
-            clonedAlgorithm.ExecutionState == ExecutionState.Paused)
-          clonedAlgorithm.Stop();
+        lock (locker) {
+          var toStop = clonedAlgorithms.Where(x => x.ExecutionState == ExecutionState.Started || x.ExecutionState == ExecutionState.Paused).ToList();
+          foreach (var optimizer in toStop) {
+            // a race-condition may occur when the optimizer has changed the state by itself in the meantime
+            try { optimizer.Stop(); } catch (InvalidOperationException) { }
+          }
+        }
       }
     }
 
@@ -421,6 +473,12 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       foreach (KeyValuePair<string, List<IRegressionSolution>> solutions in resultSolutions) {
         // clone manually to correctly clone references between cloned root objects 
         Cloner cloner = new Cloner();
+        if (ShuffleSamples.Value) {
+          var dataset = (Dataset)Problem.ProblemData.Dataset;
+          var random = new FastRandom(seed);
+          var shuffledDataset = dataset.Shuffle(random);
+          cloner.RegisterClonedObject(dataset, shuffledDataset);
+        }
         var problemDataClone = (IRegressionProblemData)cloner.Clone(Problem.ProblemData);
         // set partitions of problem data clone correctly
         problemDataClone.TrainingPartition.Start = SamplesStart.Value; problemDataClone.TrainingPartition.End = SamplesEnd.Value;
@@ -450,9 +508,14 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
       var aggregatedResults = new List<IResult>();
       foreach (KeyValuePair<string, List<IClassificationSolution>> solutions in resultSolutions) {
-        // clone manually to correctly clone references between cloned root objects 
-        Cloner cloner = new Cloner();
-        var problemDataClone = (IClassificationProblemData)cloner.Clone(Problem.ProblemData);
+        // at least one algorithm (GBT with logistic regression loss) produces a classification solution even though the original problem is a regression problem.
+        var targetVariable = solutions.Value.First().ProblemData.TargetVariable;
+        var dataset = (Dataset)Problem.ProblemData.Dataset;
+        if (ShuffleSamples.Value) {
+          var random = new FastRandom(seed);
+          dataset = dataset.Shuffle(random);
+        }
+        var problemDataClone = new ClassificationProblemData(dataset, Problem.ProblemData.AllowedInputVariables, targetVariable);
         // set partitions of problem data clone correctly
         problemDataClone.TrainingPartition.Start = SamplesStart.Value; problemDataClone.TrainingPartition.End = SamplesEnd.Value;
         problemDataClone.TestPartition.Start = SamplesStart.Value; problemDataClone.TestPartition.End = SamplesEnd.Value;
@@ -535,12 +598,16 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private void RegisterAlgorithmEvents() {
       algorithm.ProblemChanged += new EventHandler(Algorithm_ProblemChanged);
       algorithm.ExecutionStateChanged += new EventHandler(Algorithm_ExecutionStateChanged);
-      if (Problem != null) Problem.Reset += new EventHandler(Problem_Reset);
+      if (Problem != null) {
+        Problem.Reset += new EventHandler(Problem_Reset);
+      }
     }
     private void DeregisterAlgorithmEvents() {
       algorithm.ProblemChanged -= new EventHandler(Algorithm_ProblemChanged);
       algorithm.ExecutionStateChanged -= new EventHandler(Algorithm_ExecutionStateChanged);
-      if (Problem != null) Problem.Reset -= new EventHandler(Problem_Reset);
+      if (Problem != null) {
+        Problem.Reset -= new EventHandler(Problem_Reset);
+      }
     }
     private void Algorithm_ProblemChanged(object sender, EventArgs e) {
       if (algorithm.Problem != null && !(algorithm.Problem is IDataAnalysisProblem)) {
@@ -558,11 +625,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       if (handler != null) handler(this, EventArgs.Empty);
       ConfigureProblem();
     }
-
     private void Problem_Reset(object sender, EventArgs e) {
       ConfigureProblem();
     }
-
     private void ConfigureProblem() {
       SamplesStart.Value = 0;
       if (Problem != null) {
@@ -588,11 +653,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     private void Algorithm_ExecutionStateChanged(object sender, EventArgs e) {
       switch (Algorithm.ExecutionState) {
-        case ExecutionState.Prepared: OnPrepared();
+        case ExecutionState.Prepared:
+          OnPrepared();
           break;
         case ExecutionState.Started: throw new InvalidOperationException("Algorithm template can not be started.");
         case ExecutionState.Paused: throw new InvalidOperationException("Algorithm template can not be paused.");
-        case ExecutionState.Stopped: OnStopped();
+        case ExecutionState.Stopped:
+          OnStopped();
           break;
       }
     }
@@ -642,6 +709,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       algorithm.Stopped -= new EventHandler(ClonedAlgorithm_Stopped);
     }
     private void ClonedAlgorithm_ExceptionOccurred(object sender, EventArgs<Exception> e) {
+      Pause();
       OnExceptionOccurred(e.Value);
     }
     private void ClonedAlgorithm_ExecutionTimeChanged(object sender, EventArgs e) {
@@ -660,25 +728,25 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     private void ClonedAlgorithm_Paused(object sender, EventArgs e) {
       lock (locker) {
-        if (pausePending && clonedAlgorithms.All(alg => alg.ExecutionState != ExecutionState.Started))
+        availableWorkers.Release();
+        if (clonedAlgorithms.All(alg => alg.ExecutionState != ExecutionState.Started)) {
           OnPaused();
+          allAlgorithmsFinished.Set();
+        }
       }
     }
 
     private void ClonedAlgorithm_Stopped(object sender, EventArgs e) {
       lock (locker) {
-        if (!stopPending && ExecutionState == ExecutionState.Started) {
-          IAlgorithm preparedAlgorithm = clonedAlgorithms.FirstOrDefault(alg => alg.ExecutionState == ExecutionState.Prepared ||
-                                                                                alg.ExecutionState == ExecutionState.Paused);
-          if (preparedAlgorithm != null) preparedAlgorithm.Start();
-        }
-        if (ExecutionState != ExecutionState.Stopped) {
-          if (clonedAlgorithms.All(alg => alg.ExecutionState == ExecutionState.Stopped))
-            OnStopped();
-          else if (stopPending &&
-                   clonedAlgorithms.All(
-                     alg => alg.ExecutionState == ExecutionState.Prepared || alg.ExecutionState == ExecutionState.Stopped))
-            OnStopped();
+        // if the algorithm was in paused state, its worker has already been released
+        if (availableWorkers.CurrentCount < NumberOfWorkers.Value)
+          availableWorkers.Release();
+        if (clonedAlgorithms.All(alg => alg.ExecutionState == ExecutionState.Stopped)) {
+          OnStopped();
+          allAlgorithmsFinished.Set();
+        } else if (stopPending && clonedAlgorithms.All(alg => alg.ExecutionState == ExecutionState.Prepared || alg.ExecutionState == ExecutionState.Stopped)) {
+          OnStopped();
+          allAlgorithmsFinished.Set();
         }
       }
     }
@@ -705,6 +773,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
     public event EventHandler Started;
     private void OnStarted() {
+      startPending = false;
       ExecutionState = ExecutionState.Started;
       EventHandler handler = Started;
       if (handler != null) handler(this, EventArgs.Empty);
@@ -722,6 +791,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       Dictionary<string, IItem> collectedResults = new Dictionary<string, IItem>();
       AggregateResultValues(collectedResults);
       results.AddRange(collectedResults.Select(x => new Result(x.Key, x.Value)).Cast<IResult>().ToArray());
+      clonedAlgorithms.Clear();
       runsCounter++;
       runs.Add(new Run(string.Format("{0} Run {1}", Name, runsCounter), this));
       ExecutionState = ExecutionState.Stopped;

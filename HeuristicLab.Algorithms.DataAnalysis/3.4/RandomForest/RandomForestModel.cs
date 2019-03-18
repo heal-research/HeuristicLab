@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,8 +24,10 @@ using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.DataAnalysis;
+using HeuristicLab.Problems.DataAnalysis.Symbolic;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>
@@ -33,7 +35,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// </summary>
   [StorableClass]
   [Item("RandomForestModel", "Represents a random forest for regression and classification.")]
-  public sealed class RandomForestModel : NamedItem, IRandomForestModel {
+  public sealed class RandomForestModel : ClassificationModel, IRandomForestModel {
     // not persisted
     private alglib.decisionforest randomForest;
     private alglib.decisionforest RandomForest {
@@ -42,6 +44,14 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         if (randomForest.innerobj.trees == null || randomForest.innerobj.trees.Length == 0) RecalculateModel();
         return randomForest;
       }
+    }
+
+    public override IEnumerable<string> VariablesUsedForPrediction {
+      get { return originalTrainingData.AllowedInputVariables; }
+    }
+
+    public int NumberOfTrees {
+      get { return nTrees; }
     }
 
     // instead of storing the data of the model itself
@@ -58,7 +68,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private double r;
     [Storable]
     private double m;
-
 
     [StorableConstructor]
     private RandomForestModel(bool deserializing)
@@ -90,10 +99,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     // random forest models can only be created through the static factory methods CreateRegressionModel and CreateClassificationModel
-    private RandomForestModel(alglib.decisionforest randomForest,
+    private RandomForestModel(string targetVariable, alglib.decisionforest randomForest,
       int seed, IDataAnalysisProblemData originalTrainingData,
       int nTrees, double r, double m, double[] classValues = null)
-      : base() {
+      : base(targetVariable) {
       this.name = ItemName;
       this.description = ItemDescription;
       // the model itself
@@ -129,7 +138,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     public IEnumerable<double> GetEstimatedValues(IDataset dataset, IEnumerable<int> rows) {
-      double[,] inputData = AlglibUtil.PrepareInputMatrix(dataset, AllowedInputVariables, rows);
+      double[,] inputData = dataset.ToArray(AllowedInputVariables, rows);
       AssertInputMatrix(inputData);
 
       int n = inputData.GetLength(0);
@@ -146,8 +155,26 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
     }
 
-    public IEnumerable<double> GetEstimatedClassValues(IDataset dataset, IEnumerable<int> rows) {
-      double[,] inputData = AlglibUtil.PrepareInputMatrix(dataset, AllowedInputVariables, rows);
+    public IEnumerable<double> GetEstimatedVariances(IDataset dataset, IEnumerable<int> rows) {
+      double[,] inputData = dataset.ToArray(AllowedInputVariables, rows);
+      AssertInputMatrix(inputData);
+
+      int n = inputData.GetLength(0);
+      int columns = inputData.GetLength(1);
+      double[] x = new double[columns];
+      double[] ys = new double[this.RandomForest.innerobj.ntrees];
+
+      for (int row = 0; row < n; row++) {
+        for (int column = 0; column < columns; column++) {
+          x[column] = inputData[row, column];
+        }
+        alglib.dforest.dfprocessraw(RandomForest.innerobj, x, ref ys);
+        yield return ys.VariancePop();
+      }
+    }
+
+    public override IEnumerable<double> GetEstimatedClassValues(IDataset dataset, IEnumerable<int> rows) {
+      double[,] inputData = dataset.ToArray(AllowedInputVariables, rows);
       AssertInputMatrix(inputData);
 
       int n = inputData.GetLength(0);
@@ -173,50 +200,124 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
     }
 
-    public IRandomForestRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData) {
-      return new RandomForestRegressionSolution(new RegressionProblemData(problemData), this);
+    public ISymbolicExpressionTree ExtractTree(int treeIdx) {
+      var rf = RandomForest;
+      // hoping that the internal representation of alglib is stable
+
+      // TREE FORMAT
+      // W[Offs]      -   size of sub-array (for the tree)
+      //     node info:
+      // W[K+0]       -   variable number        (-1 for leaf mode)
+      // W[K+1]       -   threshold              (class/value for leaf node)
+      // W[K+2]       -   ">=" branch index      (absent for leaf node)
+
+      // skip irrelevant trees
+      int offset = 0;
+      for (int i = 0; i < treeIdx - 1; i++) {
+        offset = offset + (int)Math.Round(rf.innerobj.trees[offset]);
+      }
+
+      var constSy = new Constant();
+      var varCondSy = new VariableCondition() { IgnoreSlope = true };
+
+      var node = CreateRegressionTreeRec(rf.innerobj.trees, offset, offset + 1, constSy, varCondSy);
+
+      var startNode = new StartSymbol().CreateTreeNode();
+      startNode.AddSubtree(node);
+      var root = new ProgramRootSymbol().CreateTreeNode();
+      root.AddSubtree(startNode);
+      return new SymbolicExpressionTree(root);
     }
-    IRegressionSolution IRegressionModel.CreateRegressionSolution(IRegressionProblemData problemData) {
-      return CreateRegressionSolution(problemData);
+
+    private ISymbolicExpressionTreeNode CreateRegressionTreeRec(double[] trees, int offset, int k, Constant constSy, VariableCondition varCondSy) {
+
+      // alglib source for evaluation of one tree (dfprocessinternal)
+      // offs = 0
+      //
+      // Set pointer to the root
+      //
+      // k = offs + 1;
+      // 
+      // //
+      // // Navigate through the tree
+      // //
+      // while (true) {
+      //   if ((double)(df.trees[k]) == (double)(-1)) {
+      //     if (df.nclasses == 1) {
+      //       y[0] = y[0] + df.trees[k + 1];
+      //     } else {
+      //       idx = (int)Math.Round(df.trees[k + 1]);
+      //       y[idx] = y[idx] + 1;
+      //     }
+      //     break;
+      //   }
+      //   if ((double)(x[(int)Math.Round(df.trees[k])]) < (double)(df.trees[k + 1])) {
+      //     k = k + innernodewidth;
+      //   } else {
+      //     k = offs + (int)Math.Round(df.trees[k + 2]);
+      //   }
+      // }
+
+      if ((double)(trees[k]) == (double)(-1)) {
+        var constNode = (ConstantTreeNode)constSy.CreateTreeNode();
+        constNode.Value = trees[k + 1];
+        return constNode;
+      } else {
+        var condNode = (VariableConditionTreeNode)varCondSy.CreateTreeNode();
+        condNode.VariableName = AllowedInputVariables[(int)Math.Round(trees[k])];
+        condNode.Threshold = trees[k + 1];
+        condNode.Slope = double.PositiveInfinity;
+
+        var left = CreateRegressionTreeRec(trees, offset, k + 3, constSy, varCondSy);
+        var right = CreateRegressionTreeRec(trees, offset, offset + (int)Math.Round(trees[k + 2]), constSy, varCondSy);
+
+        condNode.AddSubtree(left); // not 100% correct because interpreter uses: if(x <= thres) left() else right() and RF uses if(x < thres) left() else right() (see above)
+        condNode.AddSubtree(right);
+        return condNode;
+      }
     }
-    public IRandomForestClassificationSolution CreateClassificationSolution(IClassificationProblemData problemData) {
-      return new RandomForestClassificationSolution(new ClassificationProblemData(problemData), this);
+
+
+    public IRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData) {
+      return new RandomForestRegressionSolution(this, new RegressionProblemData(problemData));
     }
-    IClassificationSolution IClassificationModel.CreateClassificationSolution(IClassificationProblemData problemData) {
-      return CreateClassificationSolution(problemData);
+    public override IClassificationSolution CreateClassificationSolution(IClassificationProblemData problemData) {
+      return new RandomForestClassificationSolution(this, new ClassificationProblemData(problemData));
     }
 
     public static RandomForestModel CreateRegressionModel(IRegressionProblemData problemData, int nTrees, double r, double m, int seed,
       out double rmsError, out double outOfBagRmsError, out double avgRelError, out double outOfBagAvgRelError) {
-      return CreateRegressionModel(problemData, problemData.TrainingIndices, nTrees, r, m, seed, out rmsError, out avgRelError, out outOfBagAvgRelError, out outOfBagRmsError);
+      return CreateRegressionModel(problemData, problemData.TrainingIndices, nTrees, r, m, seed,
+       rmsError: out rmsError, outOfBagRmsError: out outOfBagRmsError, avgRelError: out avgRelError, outOfBagAvgRelError: out outOfBagAvgRelError);
     }
 
     public static RandomForestModel CreateRegressionModel(IRegressionProblemData problemData, IEnumerable<int> trainingIndices, int nTrees, double r, double m, int seed,
       out double rmsError, out double outOfBagRmsError, out double avgRelError, out double outOfBagAvgRelError) {
       var variables = problemData.AllowedInputVariables.Concat(new string[] { problemData.TargetVariable });
-      double[,] inputMatrix = AlglibUtil.PrepareInputMatrix(problemData.Dataset, variables, trainingIndices);
+      double[,] inputMatrix = problemData.Dataset.ToArray(variables, trainingIndices);
 
       alglib.dfreport rep;
       var dForest = CreateRandomForestModel(seed, inputMatrix, nTrees, r, m, 1, out rep);
 
       rmsError = rep.rmserror;
+      outOfBagRmsError = rep.oobrmserror;
       avgRelError = rep.avgrelerror;
       outOfBagAvgRelError = rep.oobavgrelerror;
-      outOfBagRmsError = rep.oobrmserror;
 
-      return new RandomForestModel(dForest, seed, problemData, nTrees, r, m);
+      return new RandomForestModel(problemData.TargetVariable, dForest, seed, problemData, nTrees, r, m);
     }
 
     public static RandomForestModel CreateClassificationModel(IClassificationProblemData problemData, int nTrees, double r, double m, int seed,
       out double rmsError, out double outOfBagRmsError, out double relClassificationError, out double outOfBagRelClassificationError) {
-      return CreateClassificationModel(problemData, problemData.TrainingIndices, nTrees, r, m, seed, out rmsError, out outOfBagRmsError, out relClassificationError, out outOfBagRelClassificationError);
+      return CreateClassificationModel(problemData, problemData.TrainingIndices, nTrees, r, m, seed, 
+        out rmsError, out outOfBagRmsError, out relClassificationError, out outOfBagRelClassificationError);
     }
 
     public static RandomForestModel CreateClassificationModel(IClassificationProblemData problemData, IEnumerable<int> trainingIndices, int nTrees, double r, double m, int seed,
       out double rmsError, out double outOfBagRmsError, out double relClassificationError, out double outOfBagRelClassificationError) {
 
       var variables = problemData.AllowedInputVariables.Concat(new string[] { problemData.TargetVariable });
-      double[,] inputMatrix = AlglibUtil.PrepareInputMatrix(problemData.Dataset, variables, trainingIndices);
+      double[,] inputMatrix = problemData.Dataset.ToArray(variables, trainingIndices);
 
       var classValues = problemData.ClassValues.ToArray();
       int nClasses = classValues.Length;
@@ -241,7 +342,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       relClassificationError = rep.relclserror;
       outOfBagRelClassificationError = rep.oobrelclserror;
 
-      return new RandomForestModel(dForest, seed, problemData, nTrees, r, m, classValues);
+      return new RandomForestModel(problemData.TargetVariable, dForest, seed, problemData, nTrees, r, m, classValues);
     }
 
     private static alglib.decisionforest CreateRandomForestModel(int seed, double[,] inputMatrix, int nTrees, double r, double m, int nClasses, out alglib.dfreport rep) {

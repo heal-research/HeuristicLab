@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,7 +24,7 @@ using System.Collections.Generic;
 using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  public class OnlineMeanAbsolutePercentageErrorCalculator : IOnlineCalculator {
+  public class OnlineMeanAbsolutePercentageErrorCalculator : DeepCloneable, IOnlineCalculator {
 
     private double sre;
     private int n;
@@ -36,6 +36,17 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public OnlineMeanAbsolutePercentageErrorCalculator() {
       Reset();
+    }
+
+    protected OnlineMeanAbsolutePercentageErrorCalculator(OnlineMeanAbsolutePercentageErrorCalculator original, Cloner cloner = null)
+      : base(original, cloner) {
+      sre = original.sre;
+      n = original.n;
+      errorState = original.errorState;
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new OnlineMeanAbsolutePercentageErrorCalculator(this, cloner);
     }
 
     #region IOnlineCalculator Members

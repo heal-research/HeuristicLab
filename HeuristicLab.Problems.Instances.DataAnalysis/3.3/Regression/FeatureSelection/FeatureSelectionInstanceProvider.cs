@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -40,17 +40,30 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     public override string ReferencePublication {
       get { return ""; }
     }
+    public int Seed { get; private set; }
+
+    public FeatureSelectionInstanceProvider() : base() {
+      Seed = (int)DateTime.Now.Ticks;
+    }
+
+    public FeatureSelectionInstanceProvider(int seed) : base() {
+      Seed = seed;
+    }
+
 
     public override IEnumerable<IDataDescriptor> GetDataDescriptors() {
       var sizes = new int[] { 50, 100, 200 };
       var pp = new double[] { 0.1, 0.25, 0.5 };
       var noiseRatios = new double[] { 0.01, 0.05, 0.1, 0.2 };
-      var mt = new MersenneTwister();
-      var xGenerator = new NormalDistributedRandom(mt, 0, 1);
-      var weightGenerator = new UniformDistributedRandom(mt, 0, 10);
+      var rand = new MersenneTwister((uint)Seed); // use fixed seed for deterministic problem generation
+
       return (from size in sizes
               from p in pp
               from noiseRatio in noiseRatios
+              let instanceSeed = rand.Next()
+              let mt = new MersenneTwister((uint)instanceSeed)
+              let xGenerator = new NormalDistributedRandom(mt, 0, 1)
+              let weightGenerator = new UniformDistributedRandom(mt, 0, 10)
               select new FeatureSelection(size, p, noiseRatio, xGenerator, weightGenerator))
               .Cast<IDataDescriptor>()
               .ToList();

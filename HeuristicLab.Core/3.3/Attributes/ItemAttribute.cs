@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -38,21 +38,22 @@ namespace HeuristicLab.Core {
       get { return description; }
       set { description = value == null ? string.Empty : value; }
     }
+    public bool ExcludeGenericTypeInfo { get; set; }
 
-    public ItemAttribute() {
-      Name = string.Empty;
-      Description = string.Empty;
-    }
-    public ItemAttribute(string name, string description) {
+    public ItemAttribute() : this(string.Empty, string.Empty, false) { }
+    public ItemAttribute(string name, string description) : this(name, description, false) { }
+    public ItemAttribute(string name, string description, bool excludeGenericTypeInfo) {
       Name = name;
       Description = description;
+      ExcludeGenericTypeInfo = excludeGenericTypeInfo;
     }
 
     public static string GetName(Type type) {
       object[] attribs = type.GetCustomAttributes(typeof(ItemAttribute), false);
       if (attribs.Length > 0) {
-        string name = ((ItemAttribute)attribs[0]).Name;
-        if (type.IsGenericType) {
+        var attribute = (ItemAttribute)attribs[0];
+        string name = attribute.Name;
+        if (!attribute.ExcludeGenericTypeInfo && type.IsGenericType) {
           name += "<";
           Type[] typeParams = type.GetGenericArguments();
           if (typeParams.Length > 0) {

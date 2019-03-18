@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -183,50 +183,6 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
       executorQueue.AddMessage(ExecutorMessageType.TaskStarted);
     }
     #endregion
-
-    public Tuple<TaskData, DateTime> GetTaskDataSnapshot() {
-      if (taskDataInvalid) return null;
-
-      Tuple<TaskData, DateTime> snapshot = null;
-      if (task == null) {
-        if (CurrentException == null) {
-          CurrentException = new Exception("Task with id " + this.TaskId + " is null, sending empty task");
-        }
-      } else {
-        var taskData = new TaskData();
-
-        var pausedTrigger = new EventWaitHandle(false, EventResetMode.ManualReset);
-        EventHandler pausedHandler = null;
-        pausedHandler = (s, e) => {
-          task.TaskPaused -= pausedHandler;
-          task.TaskPaused += Task_TaskPaused;
-          pausedTrigger.Set();
-        };
-
-        task.TaskPaused -= Task_TaskPaused;
-        task.TaskPaused += pausedHandler;
-        task.Pause();
-        pausedTrigger.WaitOne();
-
-        taskData.Data = PersistenceUtil.Serialize(task);
-        var timestamp = DateTime.Now;
-
-        EventHandler startedHandler = null;
-        startedHandler = (s, e) => {
-          task.TaskStarted -= startedHandler;
-          task.TaskStarted += Task_TaskStarted;
-        };
-
-        task.TaskStarted -= Task_TaskStarted;
-        task.TaskStarted += startedHandler;
-        task.Start();
-
-        taskData.TaskId = TaskId;
-        snapshot = Tuple.Create(taskData, timestamp);
-      }
-
-      return snapshot;
-    }
 
     public TaskData GetTaskData() {
       if (taskDataInvalid) return null;

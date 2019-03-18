@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,11 +23,13 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Optimization;
+using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
@@ -252,9 +254,11 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
       Operators.AddRange(ApplicationManager.Manager.GetInstances<IQAPLocalImprovementOperator>());
       Operators.Add(new BestQAPSolutionAnalyzer());
       Operators.Add(new QAPAlleleFrequencyAnalyzer());
-      Operators.Add(new QAPPopulationDiversityAnalyzer());
 
+      Operators.Add(new HammingSimilarityCalculator());
       Operators.Add(new QAPSimilarityCalculator());
+      Operators.Add(new QualitySimilarityCalculator());
+      Operators.Add(new PopulationSimilarityAnalyzer(Operators.OfType<ISolutionSimilarityCalculator>()));
       Parameterize();
     }
     private void Parameterize() {
@@ -320,10 +324,14 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
             o.MoveQualityParameter.ActualName = moveQualityName;
         }
       }
-      var similarityCalculator = Operators.OfType<QAPSimilarityCalculator>().SingleOrDefault();
-      if (similarityCalculator != null) {
+      foreach (var similarityCalculator in Operators.OfType<ISolutionSimilarityCalculator>()) {
         similarityCalculator.SolutionVariableName = Encoding.Name;
         similarityCalculator.QualityVariableName = Evaluator.QualityParameter.ActualName;
+        var qapsimcalc = similarityCalculator as QAPSimilarityCalculator;
+        if (qapsimcalc != null) {
+          qapsimcalc.Weights = Weights;
+          qapsimcalc.Distances = Distances;
+        }
       }
 
       if (operators.Count > 0) Encoding.ConfigureOperators(operators);

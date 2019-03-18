@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,13 +25,12 @@ using System.Linq;
 
 namespace HeuristicLab.DataPreprocessing.Views {
   class FindPreprocessingItemsIterator : IFindPreprocessingItemsIterator {
-
     private IDictionary<int, IList<int>> items;
     private Tuple<int, int> currentCell;
 
     public FindPreprocessingItemsIterator(IDictionary<int, IList<int>> items) {
       this.items = items;
-      Reset(); 
+      Reset();
     }
 
     public void SetStartCell(int columnIndex, int rowIndex) {

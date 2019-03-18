@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -31,6 +31,14 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
 
     private IDictionary<string, Color> categories = new Dictionary<string, Color>();
     private IDictionary<string, int> rowNames = new Dictionary<string, int>();
+
+    public string Title {
+      get { return chart.Titles[0].Text; }
+      set {
+        chart.Titles[0].Text = value ?? string.Empty;
+        chart.Titles[0].Visible = value != null;
+      }
+    }
 
     public GanttChart() {
       InitializeComponent();

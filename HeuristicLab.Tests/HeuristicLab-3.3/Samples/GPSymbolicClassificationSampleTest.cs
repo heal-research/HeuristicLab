@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -99,7 +99,8 @@ namespace HeuristicLab.Tests {
       var grammar = new TypeCoherentExpressionGrammar();
       grammar.ConfigureAsDefaultClassificationGrammar();
       grammar.Symbols.OfType<VariableCondition>().Single().Enabled = false;
-      var varSymbol = grammar.Symbols.OfType<Variable>().Where(x => !(x is LaggedVariable)).Single();
+      foreach (var varSy in grammar.Symbols.OfType<VariableBase>()) varSy.VariableChangeProbability = 1.0; // for backwards compatibilty
+      var varSymbol = grammar.Symbols.OfType<Variable>().Single();
       varSymbol.WeightMu = 1.0;
       varSymbol.WeightSigma = 1.0;
       varSymbol.WeightManipulatorMu = 0.0;

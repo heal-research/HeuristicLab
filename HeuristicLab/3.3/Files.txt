@@ -1,9 +1,0 @@
-﻿; This line is skipped. DO NOT TOUCH THIS line!
-; List of files that are to be copied to the installation directory
-
-HeuristicLab 3.3.exe
-HeuristicLab 3.3.exe.config
-*.dll
-*.txt
-mathjax.zip
-displayModelFrame.html

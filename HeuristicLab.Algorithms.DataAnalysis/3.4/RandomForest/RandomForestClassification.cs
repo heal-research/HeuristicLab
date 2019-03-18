@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System.Threading;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -131,7 +132,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     #region random forest
-    protected override void Run() {
+    protected override void Run(CancellationToken cancellationToken) {
       double rmsError, relClassificationError, outOfBagRmsError, outOfBagRelClassificationError;
       if (SetSeedRandomly) Seed = new System.Random().Next();
 
@@ -142,21 +143,23 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       Results.Add(new Result("Relative classification error (out-of-bag)", "The out-of-bag relative classification error  of the random forest regression solution.", new PercentValue(outOfBagRelClassificationError)));
 
       if (CreateSolution) {
-        var solution = new RandomForestClassificationSolution((IClassificationProblemData)Problem.ProblemData.Clone(), model);
+        var solution = new RandomForestClassificationSolution(model, (IClassificationProblemData)Problem.ProblemData.Clone());
         Results.Add(new Result(RandomForestClassificationModelResultName, "The random forest classification solution.", solution));
       }
     }
-    
+
     // keep for compatibility with old API
     public static RandomForestClassificationSolution CreateRandomForestClassificationSolution(IClassificationProblemData problemData, int nTrees, double r, double m, int seed,
       out double rmsError, out double relClassificationError, out double outOfBagRmsError, out double outOfBagRelClassificationError) {
-      var model = CreateRandomForestClassificationModel(problemData, nTrees, r, m, seed, out rmsError, out relClassificationError, out outOfBagRmsError, out outOfBagRelClassificationError);
-      return new RandomForestClassificationSolution((IClassificationProblemData)problemData.Clone(), model);
+      var model = CreateRandomForestClassificationModel(problemData, nTrees, r, m, seed,
+        out rmsError, out relClassificationError, out outOfBagRmsError, out outOfBagRelClassificationError);
+      return new RandomForestClassificationSolution(model, (IClassificationProblemData)problemData.Clone());
     }
 
     public static RandomForestModel CreateRandomForestClassificationModel(IClassificationProblemData problemData, int nTrees, double r, double m, int seed,
       out double rmsError, out double relClassificationError, out double outOfBagRmsError, out double outOfBagRelClassificationError) {
-      return RandomForestModel.CreateClassificationModel(problemData, nTrees, r, m, seed, out rmsError, out relClassificationError, out outOfBagRmsError, out outOfBagRelClassificationError);
+      return RandomForestModel.CreateClassificationModel(problemData, nTrees, r, m, seed,
+       rmsError: out rmsError, relClassificationError: out relClassificationError, outOfBagRmsError: out outOfBagRmsError, outOfBagRelClassificationError: out outOfBagRelClassificationError);
     }
     #endregion
   }

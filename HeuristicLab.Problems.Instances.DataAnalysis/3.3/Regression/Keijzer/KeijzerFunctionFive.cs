@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
   public class KeijzerFunctionFive : ArtificialRegressionDataDescriptor {
@@ -44,12 +45,20 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     protected override int TrainingPartitionEnd { get { return 1000; } }
     protected override int TestPartitionStart { get { return 1000; } }
     protected override int TestPartitionEnd { get { return 11000; } }
+    public int Seed { get; private set; }
 
+    public KeijzerFunctionFive() : this((int)System.DateTime.Now.Ticks) {
+    }
+    public KeijzerFunctionFive(int seed) : base() {
+      Seed = seed;
+    }
     protected override List<List<double>> GenerateValues() {
       List<List<double>> data = new List<List<double>>();
-      data.Add(ValueGenerator.GenerateUniformDistributedValues(TestPartitionEnd, -1, 1).ToList());
-      data.Add(ValueGenerator.GenerateUniformDistributedValues(TestPartitionEnd, 1, 2).ToList());
-      data.Add(ValueGenerator.GenerateUniformDistributedValues(TestPartitionEnd, -1, 1).ToList());
+      var rand = new MersenneTwister((uint)Seed);
+
+      data.Add(ValueGenerator.GenerateUniformDistributedValues(rand.Next(), TestPartitionEnd, -1, 1).ToList());
+      data.Add(ValueGenerator.GenerateUniformDistributedValues(rand.Next(), TestPartitionEnd, 1, 2).ToList());
+      data.Add(ValueGenerator.GenerateUniformDistributedValues(rand.Next(), TestPartitionEnd, -1, 1).ToList());
 
       double x, y, z;
       List<double> results = new List<double>();

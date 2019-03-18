@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -48,15 +48,15 @@ namespace HeuristicLab.Problems.Programmable {
     private const int ProblemSize = 100;
     public override bool Maximization { get { return false; } }
 
-    private bool[,] allowedTogether;
+    private bool[,] adjacencyMatrix;
     
     public override void Initialize() {
       Encoding.Length = ProblemSize;
-      allowedTogether = new bool[ProblemSize, ProblemSize];
+      adjacencyMatrix = new bool[ProblemSize, ProblemSize];
       var random = new System.Random(13);
       for (var i = 0; i < ProblemSize - 1; i++)
         for (var j = i + 1; j < ProblemSize; j++)
-          allowedTogether[i, j] = allowedTogether[j, i] = random.Next(2) == 0;
+          adjacencyMatrix[i, j] = adjacencyMatrix[j, i] = random.Next(2) == 0;
     }
 
     public override double Evaluate(LinearLinkage solution, IRandom random) {
@@ -65,10 +65,11 @@ namespace HeuristicLab.Problems.Programmable {
       for (var i = 0; i < groups.Count; i++) {
         for (var j = 0; j < groups[i].Count; j++)
           for (var k = j + 1; k < groups[i].Count; k++)
-            if (!allowedTogether[groups[i][j], groups[i][k]]) penalty++;
+            if (!adjacencyMatrix[groups[i][j], groups[i][k]]) penalty++;
       }
-      if (penalty > 0) return penalty + ProblemSize;
-      else return groups.Count;
+      var result = groups.Count;
+      if (penalty > 0) result += penalty + ProblemSize;
+      return result;
     }
 
     public override void Analyze(LinearLinkage[] solutions, double[] qualities, ResultCollection results, IRandom random) { }
@@ -101,9 +102,9 @@ namespace HeuristicLab.Problems.Programmable {
       var ga = CreateGaGroupingProblemSample();
       ga.SetSeedRandomly.Value = false;
       SamplesUtils.RunAlgorithm(ga);
-      Assert.AreEqual(26, SamplesUtils.GetDoubleResult(ga, "BestQuality"));
-      Assert.AreEqual(27.58, SamplesUtils.GetDoubleResult(ga, "CurrentAverageQuality"));
-      Assert.AreEqual(105, SamplesUtils.GetDoubleResult(ga, "CurrentWorstQuality"));
+      Assert.AreEqual(127, SamplesUtils.GetDoubleResult(ga, "BestQuality"));
+      Assert.AreEqual(129,38, SamplesUtils.GetDoubleResult(ga, "CurrentAverageQuality"));
+      Assert.AreEqual(132, SamplesUtils.GetDoubleResult(ga, "CurrentWorstQuality"));
       Assert.AreEqual(99100, SamplesUtils.GetIntResult(ga, "EvaluatedSolutions"));
     }
 
@@ -117,8 +118,8 @@ namespace HeuristicLab.Problems.Programmable {
       problem.ProblemScript.Compile();
       #endregion
       #region Algorithm Configuration
-      ga.Name = "Genetic Algorithm - Grouping Problem";
-      ga.Description = "A genetic algorithm which solves a grouping problem using the linear linkage encoding.";
+      ga.Name = "Genetic Algorithm - Graph Coloring";
+      ga.Description = "A genetic algorithm which solves a graph coloring problem using the linear linkage encoding.";
       ga.Problem = problem;
       SamplesUtils.ConfigureGeneticAlgorithmParameters<TournamentSelector, MultiLinearLinkageCrossover, MultiLinearLinkageManipulator>(
         ga, 100, 1, 1000, 0.05, 2);

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,8 +19,14 @@
  */
 #endregion
 
+using System.Collections.Generic;
+
 namespace HeuristicLab.Problems.DataAnalysis {
   public interface IRegressionProblemData : IDataAnalysisProblemData {
     string TargetVariable { get; set; }
+
+    IEnumerable<double> TargetVariableValues { get; }
+    IEnumerable<double> TargetVariableTrainingValues { get; }
+    IEnumerable<double> TargetVariableTestValues { get; }
   }
 }

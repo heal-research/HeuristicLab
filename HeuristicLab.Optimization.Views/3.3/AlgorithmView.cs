@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -132,7 +132,9 @@ namespace HeuristicLab.Optimization.Views {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_ProblemChanged), sender, e);
       else {
-        problemViewHost.ViewType = null;
+        if (problemViewHost.Content != null && Content.Problem != null &&
+          problemViewHost.Content.GetType() != Content.Problem.GetType())
+          problemViewHost.ViewType = null;
         problemViewHost.Content = Content.Problem;
       }
     }

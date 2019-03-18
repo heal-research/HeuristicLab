@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,6 +22,8 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Threading;
+using System.Threading.Tasks;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -236,21 +238,31 @@ namespace HeuristicLab.Optimization {
         if (clearRuns) runs.Clear();
         batchRunAction = BatchRunAction.Prepare;
         // a race-condition may occur when the optimizer has changed the state by itself in the meantime
-        try { Optimizer.Prepare(clearRuns); }
-        catch (InvalidOperationException) { }
+        try { Optimizer.Prepare(clearRuns); } catch (InvalidOperationException) { }
       } else {
         ExecutionState = ExecutionState.Stopped;
       }
     }
     public void Start() {
+      Start(CancellationToken.None);
+    }
+    public void Start(CancellationToken cancellationToken) {
       if ((ExecutionState != ExecutionState.Prepared) && (ExecutionState != ExecutionState.Paused))
         throw new InvalidOperationException(string.Format("Start not allowed in execution state \"{0}\".", ExecutionState));
       if (Optimizer == null) return;
       batchRunAction = BatchRunAction.Start;
       if (Optimizer.ExecutionState == ExecutionState.Stopped) Optimizer.Prepare();
-      // a race-condition may occur when the optimizer has changed the state by itself in the meantime
-      try { Optimizer.Start(); }
-      catch (InvalidOperationException) { }
+      for (int i = repetitionsCounter; i < repetitions; i++) {
+        // a race-condition may occur when the optimizer has changed the state by itself in the meantime
+        try { Optimizer.Start(cancellationToken); } catch (InvalidOperationException) { }
+        if (ExecutionState == ExecutionState.Paused || ExecutionState == ExecutionState.Stopped) break;
+        Optimizer.Prepare();
+        if (ExecutionState == ExecutionState.Paused || ExecutionState == ExecutionState.Stopped) break;
+      }
+    }
+    public async Task StartAsync() { await StartAsync(CancellationToken.None); }
+    public async Task StartAsync(CancellationToken cancellationToken) {
+      await AsyncHelper.DoAsync(Start, cancellationToken);
     }
     public void Pause() {
       if (ExecutionState != ExecutionState.Started)
@@ -259,8 +271,7 @@ namespace HeuristicLab.Optimization {
       batchRunAction = BatchRunAction.Pause;
       if (Optimizer.ExecutionState != ExecutionState.Started) return;
       // a race-condition may occur when the optimizer has changed the state by itself in the meantime
-      try { Optimizer.Pause(); }
-      catch (InvalidOperationException) { }
+      try { Optimizer.Pause(); } catch (InvalidOperationException) { } catch (NotSupportedException) { }
     }
     public void Stop() {
       if ((ExecutionState != ExecutionState.Started) && (ExecutionState != ExecutionState.Paused))
@@ -272,8 +283,7 @@ namespace HeuristicLab.Optimization {
         return;
       }
       // a race-condition may occur when the optimizer has changed the state by itself in the meantime
-      try { Optimizer.Stop(); }
-      catch (InvalidOperationException) { }
+      try { Optimizer.Stop(); } catch (InvalidOperationException) { }
     }
 
     #region Events
@@ -394,10 +404,8 @@ namespace HeuristicLab.Optimization {
       if (batchRunAction == BatchRunAction.Stop) OnStopped();
       else if (repetitionsCounter >= repetitions) OnStopped();
       else if (batchRunAction == BatchRunAction.Pause) OnPaused();
-      else if (batchRunAction == BatchRunAction.Start) {
-        Optimizer.Prepare();
-        Optimizer.Start();
-      } else if (executionState == ExecutionState.Started) {
+      else if (batchRunAction == BatchRunAction.Start) return;
+      else if (executionState == ExecutionState.Started) {
         // if the batch run hasn't been started but the inner optimizer was run then pause
         OnPaused();
       } else OnStopped();

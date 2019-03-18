@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
+using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
   public class RationalPolynomialThreeDimensional : ArtificialRegressionDataDescriptor {
@@ -45,14 +46,21 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     protected override int TrainingPartitionEnd { get { return 300; } }
     protected override int TestPartitionStart { get { return 300; } }
     protected override int TestPartitionEnd { get { return 300 + (15 * 12 * 15); } }
+    public int Seed { get; private set; }
 
+    public RationalPolynomialThreeDimensional() : this((int)DateTime.Now.Ticks) { }
+
+    public RationalPolynomialThreeDimensional(int seed) : base() {
+      Seed = seed;
+    }
     protected override List<List<double>> GenerateValues() {
       List<List<double>> data = new List<List<double>>();
 
       int n = 300;
-      data.Add(ValueGenerator.GenerateUniformDistributedValues(n, 0.05, 2).ToList());
-      data.Add(ValueGenerator.GenerateUniformDistributedValues(n, 1, 2).ToList());
-      data.Add(ValueGenerator.GenerateUniformDistributedValues(n, 0.05, 2).ToList());
+      var rand = new MersenneTwister((uint)Seed);
+      data.Add(ValueGenerator.GenerateUniformDistributedValues(rand.Next(), n, 0.05, 2).ToList());
+      data.Add(ValueGenerator.GenerateUniformDistributedValues(rand.Next(), n, 1, 2).ToList());
+      data.Add(ValueGenerator.GenerateUniformDistributedValues(rand.Next(), n, 0.05, 2).ToList());
 
       List<List<double>> testData = new List<List<double>>() { 
         SequenceGenerator.GenerateSteps(-0.05m, 2.05m, 0.15m).Select(v => (double)v).ToList(), 

@@ -119,7 +119,16 @@
     <Compile Include="Interfaces\IRealVectorMultiNeighborhoodShakingOperator.cs" />
     <Compile Include="Interfaces\IRealVectorSolutionsOperator.cs" />
     <Compile Include="Interfaces\IRealVectorSolutionOperator.cs" />
+    <Compile Include="ParticleOperators\RealVectorNeighborhoodParticleUpdater.cs" />
     <Compile Include="ParticleOperators\RealVectorParticleCreator.cs" />
+    <Compile Include="ParticleOperators\RealVectorParticleUpdater.cs" />
+    <Compile Include="ParticleOperators\RealVectorSwarmUpdater.cs" />
+    <Compile Include="ParticleOperators\RealVectorTotallyConnectedParticleUpdater.cs" />
+    <Compile Include="ParticleOperators\SPSO2007VelocityInitializer.cs" />
+    <Compile Include="ParticleOperators\SPSOVelocityInitializer.cs" />
+    <Compile Include="ParticleOperators\SPSO2011ParticleUpdater.cs" />
+    <Compile Include="ParticleOperators\SPSO2007ParticleUpdater.cs" />
+    <Compile Include="ParticleOperators\SPSOParticleCreator.cs" />
     <Compile Include="Crossovers\BlendAlphaBetaCrossover.cs" />
     <Compile Include="Interfaces\IRealVectorManipulator.cs" />
     <Compile Include="Interfaces\IRealVectorOperator.cs" />
@@ -131,15 +140,15 @@
     <Compile Include="Interfaces\IRealVectorParticleUpdater.cs" />
     <Compile Include="Interfaces\IRealVectorSwarmUpdater.cs" />
     <Compile Include="Manipulators\SelfAdaptiveNormalAllPositionsManipulator.cs" />
-    <Compile Include="ParticleOperators\RealVectorNeighborhoodParticleUpdater.cs" />
-    <Compile Include="ParticleOperators\RealVectorParticleUpdater.cs" />
-    <Compile Include="ParticleOperators\RealVectorSwarmUpdater.cs" />
-    <Compile Include="ParticleOperators\RealVectorTotallyConnectedParticleUpdater.cs" />
+    <Compile Include="ParticleOperators\SPSOParticleUpdater.cs" />
+    <Compile Include="ParticleOperators\SPSO2011VelocityInitializer.cs" />
+    <Compile Include="ParticleOperators\SPSOSwarmUpdater.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="RealVectorCreator.cs" />
     <Compile Include="RealVectorCrossover.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RealVectorEncoding.cs" />
+    <Compile Include="RealVectorEqualityComparer.cs" />
     <Compile Include="RealVectorManipulator.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -185,6 +194,8 @@
     <Compile Include="Manipulators\UniformOnePositionManipulator.cs" />
     <Compile Include="ReflectiveBoundsChecker.cs" />
     <Compile Include="ShakingOperators\RealVectorShakingOperator.cs" />
+    <Compile Include="SimilarityCalculators\EuclideanSimilarityCalculator.cs" />
+    <Compile Include="SimilarityCalculators\HammingSimilarityCalculator.cs" />
     <Compile Include="StrategyParameters\StdDevStrategyVectorCreator.cs" />
     <Compile Include="StrategyParameters\StdDevStrategyVectorCrossover.cs" />
     <Compile Include="StrategyParameters\StdDevStrategyVectorManipulator.cs" />

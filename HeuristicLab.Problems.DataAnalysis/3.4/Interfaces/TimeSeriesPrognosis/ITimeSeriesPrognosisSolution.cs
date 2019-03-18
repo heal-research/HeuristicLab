@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,6 +26,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
     new ITimeSeriesPrognosisProblemData ProblemData { get; set; }
 
     IEnumerable<IEnumerable<double>> GetPrognosedValues(IEnumerable<int> rows, IEnumerable<int> horizon);
+
+    IEnumerable<double> PrognosedTestValues { get; }
 
     double TrainingTheilsUStatisticAR1 { get; }
     double TestTheilsUStatisticAR1 { get; }

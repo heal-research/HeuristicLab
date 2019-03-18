@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,12 +26,14 @@ namespace HeuristicLab.Problems.Instances.TSPLIB {
 
     internal string InstanceIdentifier { get; set; }
     internal string SolutionIdentifier { get; set; }
+    internal double? BestQuality { get; set; }
 
-    internal TSPLIBDataDescriptor(string name, string description, string instanceIdentifier, string solutionIdentifier) {
+    internal TSPLIBDataDescriptor(string name, string description, string instanceIdentifier, string solutionIdentifier, double? bestQuality) {
       this.Name = name;
       this.Description = description;
       this.InstanceIdentifier = instanceIdentifier;
       this.SolutionIdentifier = solutionIdentifier;
+      this.BestQuality = bestQuality;
     }
   }
 }

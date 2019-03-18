@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -62,11 +62,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     private class ModelsView : ItemCollectionView<IRegressionSolution> {
       protected override void SetEnabledStateOfControls() {
         base.SetEnabledStateOfControls();
-        addButton.Enabled = Content != null && !Content.IsReadOnly && !Locked;
-        removeButton.Enabled = Content != null && !Content.IsReadOnly && !Locked && itemsListView.SelectedItems.Count > 0;
+        addButton.Enabled = false;
+        removeButton.Enabled = Content != null && !Content.IsReadOnly && !Locked && !ReadOnly && itemsListView.SelectedItems.Count > 0;
         itemsListView.Enabled = Content != null && !Locked;
         detailsGroupBox.Enabled = Content != null && itemsListView.SelectedItems.Count == 1;
+        sortAscendingButton.Enabled = false;
+        sortDescendingButton.Enabled = false;
       }
+
+      //forbid sorting
+      protected override void SortItemsListView(SortOrder sortOrder) { }
 
       protected override void itemsListView_DragEnter(object sender, DragEventArgs e) {
         validDragOperation = false;

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -27,12 +27,16 @@ using System.Windows.Forms.DataVisualization.Charting;
 
 namespace HeuristicLab.Visualization.ChartControlsExtensions {
   public partial class EnhancedChart : Chart {
+
     private ImageExportDialog exportDialog;
+
+    private ImageExportDialog ExportDialog {
+      get { return exportDialog ?? (exportDialog = new ImageExportDialog(this)); }
+    }
 
     public EnhancedChart()
       : base() {
       InitializeComponent();
-      exportDialog = new ImageExportDialog(this);
       EnableDoubleClickResetsZoom = true;
       EnableMiddleClickPanning = true;
       CustomizeAllChartAreas();
@@ -74,7 +78,7 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
         HitTestResult result = HitTest(e.X, e.Y);
         if (result.ChartArea != null && (result.ChartElementType == ChartElementType.PlottingArea || result.ChartElementType == ChartElementType.Gridlines)) {
           foreach (var axis in result.ChartArea.Axes)
-            axis.ScaleView.ZoomReset(int.MaxValue);
+            axis.ScaleView.ZoomReset(0);
         }
       }
       base.OnMouseDoubleClick(e);
@@ -165,7 +169,7 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
     }
 
     private void exportToolStripMenuItem_Click(object sender, EventArgs e) {
-      exportDialog.ShowDialog();
+      ExportDialog.ShowDialog();
     }
 
     private void copyImageToClipboardBitmapToolStripMenuItem_Click(object sender, EventArgs e) {

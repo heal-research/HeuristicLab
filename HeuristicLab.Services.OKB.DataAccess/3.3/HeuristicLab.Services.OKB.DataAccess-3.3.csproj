@@ -127,6 +127,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CharacteristicType.cs" />
     <Compile Include="ValueNameType.cs" />
     <Compile Include="ValueNameCategory.cs" />
     <Compile Include="OKB.designer.cs">

@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -43,6 +43,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     private const string EstimationLimitsParameterName = "EstimationLimits";
     private const string MaximumSymbolicExpressionTreeLengthParameterName = "MaximumSymbolicExpressionTreeLength";
     private const string ValidationPartitionParameterName = "ValidationPartition";
+    private const string AnalyzeTestErrorParameterName = "Analyze Test Error";
 
     #region parameter properties
     public ILookupParameter<IRegressionProblemData> ProblemDataParameter {
@@ -61,7 +62,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     public IValueLookupParameter<IntRange> ValidationPartitionParameter {
       get { return (IValueLookupParameter<IntRange>)Parameters[ValidationPartitionParameterName]; }
     }
+
+    public IFixedValueParameter<BoolValue> AnalyzeTestErrorParameter {
+      get { return (IFixedValueParameter<BoolValue>)Parameters[AnalyzeTestErrorParameterName]; }
+    }
     #endregion
+
+    public bool AnalyzeTestError {
+      get { return AnalyzeTestErrorParameter.Value.Value; }
+      set { AnalyzeTestErrorParameter.Value.Value = value; }
+    }
 
     [StorableConstructor]
     private SymbolicRegressionMultiObjectiveTrainingBestSolutionAnalyzer(bool deserializing) : base(deserializing) { }
@@ -73,6 +83,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       Parameters.Add(new ValueLookupParameter<DoubleLimit>(EstimationLimitsParameterName, "The lower and upper limit for the estimated values produced by the symbolic regression model.") { Hidden = true });
       Parameters.Add(new LookupParameter<IntValue>(MaximumSymbolicExpressionTreeLengthParameterName, "Maximal length of the symbolic expression.") { Hidden = true });
       Parameters.Add(new ValueLookupParameter<IntRange>(ValidationPartitionParameterName, "The validation partition."));
+      Parameters.Add(new FixedValueParameter<BoolValue>(AnalyzeTestErrorParameterName, "Flag whether the test error should be displayed in the Pareto-Front", new BoolValue(false)));
     }
 
     [StorableHook(HookType.AfterDeserialization)]
@@ -81,6 +92,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         Parameters.Add(new LookupParameter<IntValue>(MaximumSymbolicExpressionTreeLengthParameterName, "Maximal length of the symbolic expression.") { Hidden = true });
       if (!Parameters.ContainsKey(ValidationPartitionParameterName))
         Parameters.Add(new ValueLookupParameter<IntRange>(ValidationPartitionParameterName, "The validation partition."));
+      if (!Parameters.ContainsKey(AnalyzeTestErrorParameterName))
+        Parameters.Add(new FixedValueParameter<BoolValue>(AnalyzeTestErrorParameterName, "Flag whether the test error should be displayed in the Pareto-Front", new BoolValue(false)));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -88,7 +101,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     }
 
     protected override ISymbolicRegressionSolution CreateSolution(ISymbolicExpressionTree bestTree, double[] bestQuality) {
-      var model = new SymbolicRegressionModel((ISymbolicExpressionTree)bestTree.Clone(), SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper);
+      var model = new SymbolicRegressionModel(ProblemDataParameter.ActualValue.TargetVariable, (ISymbolicExpressionTree)bestTree.Clone(), SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper);
       if (ApplyLinearScalingParameter.ActualValue.Value) model.Scale(ProblemDataParameter.ActualValue);
       return new SymbolicRegressionSolution(model, (IRegressionProblemData)ProblemDataParameter.ActualValue.Clone());
     }
@@ -130,9 +143,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       }
 
       qualityToTreeSize.Rows.Clear();
-      var trainingRow = new ScatterPlotDataRow("Training NMSE", "", sizeParetoFront.Select(x => new Point2D<double>(x.Model.SymbolicExpressionTree.Length, x.TrainingNormalizedMeanSquaredError)));
+      var trainingRow = new ScatterPlotDataRow("Training NMSE", "", sizeParetoFront.Select(x => new Point2D<double>(x.Model.SymbolicExpressionTree.Length, x.TrainingNormalizedMeanSquaredError, x)));
       trainingRow.VisualProperties.PointSize = 8;
       qualityToTreeSize.Rows.Add(trainingRow);
+
+      if (AnalyzeTestError) {
+        var testRow = new ScatterPlotDataRow("Test NMSE", "",
+          sizeParetoFront.Select(x => new Point2D<double>(x.Model.SymbolicExpressionTree.Length, x.TestNormalizedMeanSquaredError, x)));
+        testRow.VisualProperties.PointSize = 8;
+        qualityToTreeSize.Rows.Add(testRow);
+      }
 
       var validationPartition = ValidationPartitionParameter.ActualValue;
       if (validationPartition.Size != 0) {

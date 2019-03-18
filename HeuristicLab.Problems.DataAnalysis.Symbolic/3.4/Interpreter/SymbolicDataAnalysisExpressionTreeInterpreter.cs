@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -142,6 +143,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         if (instr.opCode == OpCodes.Variable) {
           var variableTreeNode = (VariableTreeNode)instr.dynamicNode;
           instr.data = dataset.GetReadOnlyDoubleValues(variableTreeNode.VariableName);
+        } else if (instr.opCode == OpCodes.FactorVariable) {
+          var factorTreeNode = instr.dynamicNode as FactorVariableTreeNode;
+          instr.data = dataset.GetReadOnlyStringValues(factorTreeNode.VariableName);
+        } else if (instr.opCode == OpCodes.BinaryFactorVariable) {
+          var factorTreeNode = instr.dynamicNode as BinaryFactorVariableTreeNode;
+          instr.data = dataset.GetReadOnlyStringValues(factorTreeNode.VariableName);
         } else if (instr.opCode == OpCodes.LagVariable) {
           var laggedVariableTreeNode = (LaggedVariableTreeNode)instr.dynamicNode;
           instr.data = dataset.GetReadOnlyDoubleValues(laggedVariableTreeNode.VariableName);
@@ -454,6 +461,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             var variableTreeNode = (VariableTreeNode)currentInstr.dynamicNode;
             return ((IList<double>)currentInstr.data)[row] * variableTreeNode.Weight;
           }
+        case OpCodes.BinaryFactorVariable: {
+            if (row < 0 || row >= dataset.Rows) return double.NaN;
+            var factorVarTreeNode = currentInstr.dynamicNode as BinaryFactorVariableTreeNode;
+            return ((IList<string>)currentInstr.data)[row] == factorVarTreeNode.VariableValue ? factorVarTreeNode.Weight : 0;
+          }
+        case OpCodes.FactorVariable: {
+            if (row < 0 || row >= dataset.Rows) return double.NaN;
+            var factorVarTreeNode = currentInstr.dynamicNode as FactorVariableTreeNode;
+            return factorVarTreeNode.GetValue(((IList<string>)currentInstr.data)[row]);
+          }
         case OpCodes.LagVariable: {
             var laggedVariableTreeNode = (LaggedVariableTreeNode)currentInstr.dynamicNode;
             int actualRow = row + laggedVariableTreeNode.Lag;
@@ -470,14 +487,27 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         case OpCodes.VariableCondition: {
             if (row < 0 || row >= dataset.Rows) return double.NaN;
             var variableConditionTreeNode = (VariableConditionTreeNode)currentInstr.dynamicNode;
-            double variableValue = ((IList<double>)currentInstr.data)[row];
-            double x = variableValue - variableConditionTreeNode.Threshold;
-            double p = 1 / (1 + Math.Exp(-variableConditionTreeNode.Slope * x));
+            if (!variableConditionTreeNode.Symbol.IgnoreSlope) {
+              double variableValue = ((IList<double>)currentInstr.data)[row];
+              double x = variableValue - variableConditionTreeNode.Threshold;
+              double p = 1 / (1 + Math.Exp(-variableConditionTreeNode.Slope * x));
 
-            double trueBranch = Evaluate(dataset, ref row, state);
-            double falseBranch = Evaluate(dataset, ref row, state);
+              double trueBranch = Evaluate(dataset, ref row, state);
+              double falseBranch = Evaluate(dataset, ref row, state);
 
-            return trueBranch * p + falseBranch * (1 - p);
+              return trueBranch * p + falseBranch * (1 - p);
+            } else {
+              // strict threshold
+              double variableValue = ((IList<double>)currentInstr.data)[row];
+              if (variableValue <= variableConditionTreeNode.Threshold) {
+                var left = Evaluate(dataset, ref row, state);
+                state.SkipInstructions();
+                return left;
+              } else {
+                state.SkipInstructions();
+                return Evaluate(dataset, ref row, state);
+              }
+            }
           }
         default:
           throw new NotSupportedException();

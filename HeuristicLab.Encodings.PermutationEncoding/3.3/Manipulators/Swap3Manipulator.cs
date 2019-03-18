@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -56,7 +56,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     /// <param name="permutation">The permutation to manipulate.</param>
     public static void Apply(IRandom random, Permutation permutation) {
       if (permutation.Length < 3) throw new ArgumentException("Swap3Manipulator: The permutation must be at least of size 3.", "permutation");
-      int index1, index2, index3, temp;
+      int index1, index2, index3;
 
       do {
         index1 = random.Next(permutation.Length);
@@ -64,14 +64,8 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
         index3 = random.Next(permutation.Length);
       } while (index1 == index2 || index2 == index3 || index1 == index3);
 
-      // swap positions 1 and 2
-      temp = permutation[index1];
-      permutation[index1] = permutation[index2];
-      permutation[index2] = temp;
-      // swap positions 2 and 3
-      temp = permutation[index2];
-      permutation[index2] = permutation[index3];
-      permutation[index3] = temp;
+      permutation.Swap(index1, index2);
+      permutation.Swap(index2, index3);
     }
 
     /// <summary>

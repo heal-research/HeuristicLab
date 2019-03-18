@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -43,7 +43,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       var instances = data.TrainingIndices.Count();
       var attributes = data.AllowedInputVariables.Count();
 
-      var pcaDs = AlglibUtil.PrepareInputMatrix(data.Dataset, data.AllowedInputVariables, data.TrainingIndices);
+      var pcaDs = data.Dataset.ToArray(data.AllowedInputVariables, data.TrainingIndices);
 
       int info;
       double[] varianceValues;

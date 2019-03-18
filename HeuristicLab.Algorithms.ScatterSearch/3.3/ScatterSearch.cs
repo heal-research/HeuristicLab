@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -161,8 +161,8 @@ namespace HeuristicLab.Algorithms.ScatterSearch {
     private void AfterDeserialization() {
       // BackwardsCompatibility3.3
       #region Backwards compatible code, remove with 3.4
-      if (Parameters.ContainsKey("SimilarityCalculator") && Parameters["SimilarityCalculator"] is IConstrainedValueParameter<ISingleObjectiveSolutionSimilarityCalculator>) {
 #pragma warning disable 0618
+      if (Parameters.ContainsKey("SimilarityCalculator") && Parameters["SimilarityCalculator"] is IConstrainedValueParameter<ISingleObjectiveSolutionSimilarityCalculator>) {
         var oldParameter = (IConstrainedValueParameter<ISingleObjectiveSolutionSimilarityCalculator>)Parameters["SimilarityCalculator"];
 #pragma warning restore 0618
         Parameters.Remove(oldParameter);

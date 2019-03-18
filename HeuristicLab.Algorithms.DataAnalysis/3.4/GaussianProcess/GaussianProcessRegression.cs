@@ -1,7 +1,7 @@
 
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -38,7 +38,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   [Item("Gaussian Process Regression", "Gaussian process regression data analysis algorithm.")]
   [Creatable(CreatableAttribute.Categories.DataAnalysisRegression, Priority = 160)]
   [StorableClass]
-  public sealed class GaussianProcessRegression : GaussianProcessBase, IStorableContent {
+  public sealed class GaussianProcessRegression : GaussianProcessBase, IStorableContent, IDataAnalysisAlgorithm<IRegressionProblem> {
     public string Filename { get; set; }
 
     public override Type ProblemType { get { return typeof(IRegressionProblem); } }

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -36,9 +36,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     public const string TRAININGSAMPLES = "Training Samples";
     public const string TESTSAMPLES = "Test Samples";
 
-    public static readonly IList<string> Partitions = new List<string>() { ALLSAMPLES, TRAININGSAMPLES, TESTSAMPLES };
+    public static readonly IList<string> Partitions = new List<string>() { ALLSAMPLES, TRAININGSAMPLES, TESTSAMPLES }.AsReadOnly();
 
-    protected FeatureCorrelationCalculator fcc;
+    protected AbstractFeatureCorrelationCalculator CorrelationCalculator { get; set; }
 
     public new DataAnalysisProblemData Content {
       get { return (DataAnalysisProblemData)base.Content; }
@@ -48,35 +48,38 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     protected AbstractFeatureCorrelationView() {
       InitializeComponent();
       dataView.FormatPattern = "0.000";
-      fcc = new FeatureCorrelationCalculator();
       var calculators = ApplicationManager.Manager.GetInstances<IDependencyCalculator>();
       var calcList = calculators.OrderBy(c => c.Name).Select(c => new { Name = c.Name, Calculator = c }).ToList();
       correlationCalcComboBox.ValueMember = "Calculator";
       correlationCalcComboBox.DisplayMember = "Name";
       correlationCalcComboBox.DataSource = calcList;
-      correlationCalcComboBox.SelectedItem = calcList.First(c => c.Calculator.GetType().Equals(typeof(PearsonsRDependenceCalculator)));
+      correlationCalcComboBox.SelectedItem = calcList.First(c => c.Calculator.GetType() == typeof(PearsonsRDependenceCalculator));
       partitionComboBox.DataSource = Partitions;
       partitionComboBox.SelectedItem = TRAININGSAMPLES;
       progressPanel.Visible = false;
     }
 
+    protected override void OnClosing(FormClosingEventArgs e) {
+      base.OnClosing(e);
+      CorrelationCalculator.TryCancelCalculation();
+    }
+
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
-      fcc.ProgressCalculation += new FeatureCorrelationCalculator.ProgressCalculationHandler(Content_ProgressCalculation);
-      fcc.CorrelationCalculationFinished += new FeatureCorrelationCalculator.CorrelationCalculationFinishedHandler(Content_CorrelationCalculationFinished);
+      CorrelationCalculator.ProgressChanged += FeatureCorrelation_ProgressChanged;
+      CorrelationCalculator.CorrelationCalculationFinished += FeatureCorrelation_CalculationFinished;
     }
 
     protected override void DeregisterContentEvents() {
-      fcc.CorrelationCalculationFinished -= new FeatureCorrelationCalculator.CorrelationCalculationFinishedHandler(Content_CorrelationCalculationFinished);
-      fcc.ProgressCalculation -= new FeatureCorrelationCalculator.ProgressCalculationHandler(Content_ProgressCalculation);
+      CorrelationCalculator.ProgressChanged -= FeatureCorrelation_ProgressChanged;
+      CorrelationCalculator.CorrelationCalculationFinished -= FeatureCorrelation_CalculationFinished;
       base.DeregisterContentEvents();
     }
 
     protected override void OnContentChanged() {
       base.OnContentChanged();
-      fcc.TryCancelCalculation();
+      CorrelationCalculator.TryCancelCalculation();
       if (Content != null) {
-        fcc.ProblemData = Content;
         CalculateCorrelation();
       } else {
         progressPanel.Visible = false;
@@ -105,7 +108,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     }
 
     protected abstract void CalculateCorrelation();
-    protected abstract void Content_CorrelationCalculationFinished(object sender, FeatureCorrelationCalculator.CorrelationCalculationFinishedArgs e);
+
+    protected abstract void FeatureCorrelation_CalculationFinished(object sender,
+      AbstractFeatureCorrelationCalculator.CorrelationCalculationFinishedArgs e);
 
     protected void UpdateDataView(DoubleMatrix correlation) {
       IDependencyCalculator calc = (IDependencyCalculator)correlationCalcComboBox.SelectedValue;
@@ -120,7 +125,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       dataView.Enabled = true;
     }
 
-    protected void Content_ProgressCalculation(object sender, ProgressChangedEventArgs e) {
+    protected void FeatureCorrelation_ProgressChanged(object sender, ProgressChangedEventArgs e) {
       if (!progressPanel.Visible && e.ProgressPercentage != progressBar.Maximum) {
         progressPanel.Show();
       } else if (e.ProgressPercentage == progressBar.Maximum) {

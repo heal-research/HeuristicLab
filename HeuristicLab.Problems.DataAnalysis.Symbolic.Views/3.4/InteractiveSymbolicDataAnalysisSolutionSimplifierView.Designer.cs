@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -186,7 +186,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.treeChart.ModifyTree = null;
       this.treeChart.Name = "treeChart";
       this.treeChart.Size = new System.Drawing.Size(201, 348);
-      this.treeChart.Spacing = 5;
       this.treeChart.SuspendRepaint = false;
       this.treeChart.TabIndex = 0;
       this.treeChart.TextFont = new System.Drawing.Font("Times New Roman", 8F);

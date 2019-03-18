@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -54,15 +54,16 @@ namespace HeuristicLab.Clients.Hive.JobManager {
     }
 
     public override void Execute() {
-      IContentView activeView = MainFormManager.MainForm.ActiveView as IContentView;
-      var content = activeView.Content as IItem;
+      IContentView activeView = (IContentView)MainFormManager.MainForm.ActiveView;
+      var content = (IItem)activeView.Content;
+      var clonedConent = (IItem)content.Clone();
 
       //IOptimizer and IExecutables need some special care
-      if (content is IOptimizer) {
-        ((IOptimizer)content).Runs.Clear();
+      if (clonedConent is IOptimizer) {
+        ((IOptimizer)clonedConent).Runs.Clear();
       }
-      if (content is IExecutable) {
-        IExecutable exec = content as IExecutable;
+      if (clonedConent is IExecutable) {
+        IExecutable exec = clonedConent as IExecutable;
         if (exec.ExecutionState != ExecutionState.Prepared) {
           exec.Prepare();
         }
@@ -70,12 +71,12 @@ namespace HeuristicLab.Clients.Hive.JobManager {
 
       HiveClient.Instance.Refresh();
 
-      ItemTask hiveTask = ItemTask.GetItemTaskForItem(content);
+      ItemTask hiveTask = ItemTask.GetItemTaskForItem(clonedConent);
       HiveTask task = hiveTask.CreateHiveTask();
       RefreshableJob rJob = new RefreshableJob();
-      rJob.Job.Name = content.ToString();
+      rJob.Job.Name = clonedConent.ToString();
       rJob.HiveTasks.Add(task);
-      task.ItemTask.ComputeInParallel = content is Experiment || content is BatchRun;
+      task.ItemTask.ComputeInParallel = clonedConent is Experiment || clonedConent is BatchRun;
 
       MainFormManager.MainForm.ShowContent(rJob);
     }

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
   public class VariousInstanceProvider : ArtificialRegressionInstanceProvider {
@@ -36,14 +37,21 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     public override string ReferencePublication {
       get { return ""; }
     }
+    public int Seed { get; private set; }
 
+    public VariousInstanceProvider() : this((int)DateTime.Now.Ticks) { }
+
+    public VariousInstanceProvider(int seed) : base() {
+      Seed = seed;
+    }
     public override IEnumerable<IDataDescriptor> GetDataDescriptors() {
       List<IDataDescriptor> descriptorList = new List<IDataDescriptor>();
-      descriptorList.Add(new BreimanOne());
-      descriptorList.Add(new FriedmanOne());
-      descriptorList.Add(new FriedmanTwo());
-      descriptorList.Add(new PolyTen());
-      descriptorList.Add(new SpatialCoevolution());
+      var rand = new MersenneTwister((uint)Seed);
+      descriptorList.Add(new BreimanOne(rand.Next()));
+      descriptorList.Add(new FriedmanOne(rand.Next()));
+      descriptorList.Add(new FriedmanTwo(rand.Next()));
+      descriptorList.Add(new PolyTen(rand.Next()));
+      descriptorList.Add(new SpatialCoevolution(rand.Next()));
       return descriptorList;
     }
   }

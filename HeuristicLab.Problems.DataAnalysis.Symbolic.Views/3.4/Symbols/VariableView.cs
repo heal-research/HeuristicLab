@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -28,17 +28,16 @@ using HeuristicLab.Core.Views;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views;
 using HeuristicLab.MainForm;
-using HeuristicLab.MainForm.WindowsForms;
 
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
   [View("Variable View")]
-  [Content(typeof(Variable), true)]
+  [Content(typeof(VariableBase), true)]
   public partial class VariableView : SymbolView {
     private CheckedItemCollectionView<StringValue> variableNamesView;
 
-    public new Variable Content {
-      get { return (Variable)base.Content; }
+    public new VariableBase Content {
+      get { return (VariableBase)base.Content; }
       set { base.Content = value; }
     }
 
@@ -100,6 +99,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       additiveWeightChangeSigmaTextBox.ReadOnly = ReadOnly;
       multiplicativeWeightChangeSigmaTextBox.Enabled = Content != null;
       multiplicativeWeightChangeSigmaTextBox.ReadOnly = ReadOnly;
+      varChangeProbTextBox.Enabled = Content != null;
+      varChangeProbTextBox.ReadOnly = ReadOnly;
     }
 
     #region content event handlers
@@ -174,6 +175,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
         errorProvider.SetError(multiplicativeWeightChangeSigmaTextBox, "Invalid value");
       }
     }
+
+    private void VarProbTextBox_TextChanged(object sender, EventArgs e) {
+      double prob;
+      if (double.TryParse(varChangeProbTextBox.Text, out prob) && prob >= 0.0 && prob <= 1.0) {
+        Content.VariableChangeProbability = prob;
+        errorProvider.SetError(varChangeProbTextBox, string.Empty);
+      } else {
+        errorProvider.SetError(varChangeProbTextBox, "Invalid value");
+      }
+    }
     #endregion
 
     #region helpers
@@ -183,6 +194,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
         weightInitializationSigmaTextBox.Text = string.Empty;
         additiveWeightChangeSigmaTextBox.Text = string.Empty;
         multiplicativeWeightChangeSigmaTextBox.Text = string.Empty;
+        varChangeProbTextBox.Text = string.Empty;
         // temporarily deregister to prevent circular calling of events
         DeregisterVariableNamesViewContentEvents();
         variableNamesView.Content.Clear();
@@ -200,9 +212,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
         weightInitializationSigmaTextBox.Text = Content.WeightSigma.ToString();
         additiveWeightChangeSigmaTextBox.Text = Content.WeightManipulatorSigma.ToString();
         multiplicativeWeightChangeSigmaTextBox.Text = Content.MultiplicativeWeightManipulatorSigma.ToString();
+        varChangeProbTextBox.Text = Content.VariableChangeProbability.ToString();
       }
       SetEnabledStateOfControls();
     }
     #endregion
+
   }
 }

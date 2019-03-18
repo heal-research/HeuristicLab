@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,6 +21,7 @@
 
 using System;
 using System.Linq;
+using System.Threading;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -62,7 +63,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.TimeSeries {
       Problem = new TimeSeriesPrognosisProblem();
     }
 
-    protected override void Run() {
+    protected override void Run(CancellationToken cancellationToken) {
       double rmsError, cvRmsError;
       var solution = CreateAutoRegressiveSolution(Problem.ProblemData, TimeOffset, out rmsError, out cvRmsError);
       Results.Add(new Result("Autoregressive solution", "The autoregressive time series prognosis solution.", solution));
@@ -113,27 +114,15 @@ namespace HeuristicLab.Algorithms.DataAnalysis.TimeSeries {
 
       alglib.lrunpack(lm, out coefficients, out nFeatures);
 
-
-      ISymbolicExpressionTree tree = new SymbolicExpressionTree(new ProgramRootSymbol().CreateTreeNode());
-      ISymbolicExpressionTreeNode startNode = new StartSymbol().CreateTreeNode();
-      tree.Root.AddSubtree(startNode);
-      ISymbolicExpressionTreeNode addition = new Addition().CreateTreeNode();
-      startNode.AddSubtree(addition);
-
-      for (int i = 0; i < timeOffset; i++) {
-        LaggedVariableTreeNode node = (LaggedVariableTreeNode)new LaggedVariable().CreateTreeNode();
-        node.VariableName = targetVariable;
-        node.Weight = coefficients[i];
-        node.Lag = (i + 1) * -1;
-        addition.AddSubtree(node);
-      }
-
-      ConstantTreeNode cNode = (ConstantTreeNode)new Constant().CreateTreeNode();
-      cNode.Value = coefficients[coefficients.Length - 1];
-      addition.AddSubtree(cNode);
+      var tree = LinearModelToTreeConverter.CreateTree(
+        variableNames: Enumerable.Repeat(problemData.TargetVariable, nFeatures).ToArray(),
+        lags: Enumerable.Range(0, timeOffset).Select(i => (i + 1) * -1).ToArray(),
+        coefficients: coefficients.Take(nFeatures).ToArray(),
+        @const: coefficients[nFeatures]
+        );
 
       var interpreter = new SymbolicTimeSeriesPrognosisExpressionTreeInterpreter(problemData.TargetVariable);
-      var model = new SymbolicTimeSeriesPrognosisModel(tree, interpreter);
+      var model = new SymbolicTimeSeriesPrognosisModel(problemData.TargetVariable, tree, interpreter);
       var solution = model.CreateTimeSeriesPrognosisSolution((ITimeSeriesPrognosisProblemData)problemData.Clone());
       return solution;
     }

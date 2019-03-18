@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -372,7 +372,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       var model = Solution.Model;
       //mean model
       double trainingMean = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, problemData.TrainingIndices).Average();
-      var meanModel = new ConstantModel(trainingMean);
+      var meanModel = new ConstantModel(trainingMean, problemData.TargetVariable);
 
       //AR1 model
       double alpha, beta;
@@ -394,7 +394,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       double trainingMAE = OnlineMeanAbsoluteErrorCalculator.Calculate(originalTrainingValues, estimatedTrainingValues, out errorState);
       PrognosisTrainingMeanAbsoluteError = errorState == OnlineCalculatorError.None ? trainingMAE : double.NaN;
       double trainingR = OnlinePearsonsRCalculator.Calculate(originalTrainingValues, estimatedTrainingValues, out errorState);
-      PrognosisTrainingRSquared = errorState == OnlineCalculatorError.None ? trainingR*trainingR : double.NaN;
+      PrognosisTrainingRSquared = errorState == OnlineCalculatorError.None ? trainingR * trainingR : double.NaN;
       double trainingRelError = OnlineMeanAbsolutePercentageErrorCalculator.Calculate(originalTrainingValues, estimatedTrainingValues, out errorState);
       PrognosisTrainingRelativeError = errorState == OnlineCalculatorError.None ? trainingRelError : double.NaN;
       double trainingNMSE = OnlineNormalizedMeanSquaredErrorCalculator.Calculate(originalTrainingValues, estimatedTrainingValues, out errorState);
@@ -430,7 +430,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       double testMAE = OnlineMeanAbsoluteErrorCalculator.Calculate(originalTestValues, estimatedTestValues, out errorState);
       PrognosisTestMeanAbsoluteError = errorState == OnlineCalculatorError.None ? testMAE : double.NaN;
       double testR = OnlinePearsonsRCalculator.Calculate(originalTestValues, estimatedTestValues, out errorState);
-      PrognosisTestRSquared = errorState == OnlineCalculatorError.None ? testR*testR : double.NaN;
+      PrognosisTestRSquared = errorState == OnlineCalculatorError.None ? testR * testR : double.NaN;
       double testRelError = OnlineMeanAbsolutePercentageErrorCalculator.Calculate(originalTestValues, estimatedTestValues, out errorState);
       PrognosisTestRelativeError = errorState == OnlineCalculatorError.None ? testRelError : double.NaN;
       double testNMSE = OnlineNormalizedMeanSquaredErrorCalculator.Calculate(originalTestValues, estimatedTestValues, out errorState);
@@ -447,7 +447,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       if (problemData.TrainingIndices.Any()) {
         //mean model
         double trainingMean = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, problemData.TrainingIndices).Average();
-        var meanModel = new ConstantModel(trainingMean);
+        var meanModel = new ConstantModel(trainingMean, problemData.TargetVariable);
 
         //AR1 model
         double alpha, beta;

@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -29,6 +29,12 @@ using System.Security;
 using System.Threading;
 
 namespace HeuristicLab.Common {
+
+  [AttributeUsage(AttributeTargets.Field)]
+  // this attribute can be used to mark fields that should be excluded from object graph traversal
+  public class ExcludeFromObjectGraphTraversalAttribute : Attribute {
+  }
+
   public static class ObjectExtensions {
     public static IEnumerable<T> ToEnumerable<T>(this T obj) {
       yield return obj;
@@ -65,6 +71,7 @@ namespace HeuristicLab.Common {
     ///   * Primitives (Boolean, Byte, SByte, Int16, UInt16, Int32, UInt32, Int64, UInt64, IntPtr, UIntPtr, Char, Double, Single)
     ///   * string, decimal, DateTime
     ///   * Arrays of types not collected
+    ///   * All types from System.Reflection.Emit
     /// </summary>
     private static bool ExcludeType(Type type) {
       return type.IsPrimitive ||
@@ -76,7 +83,7 @@ namespace HeuristicLab.Common {
              type == typeof(DateTime[]) ||
              typeof(Delegate).IsAssignableFrom(type) ||
              typeof(Pointer).IsAssignableFrom(type) ||
-             type == typeof(System.Reflection.Emit.SignatureHelper) ||
+             type.Namespace == "System.Reflection.Emit" ||
              (type.HasElementType && ExcludeType(type.GetElementType()));
     }
 
@@ -111,15 +118,19 @@ namespace HeuristicLab.Common {
           yield return value;
         }
       } else {
-        if (!fieldInfos.ContainsKey(type))
-          fieldInfos[type] = type.GetAllFields().ToArray();
-        foreach (FieldInfo f in fieldInfos[type]) {
+        FieldInfo[] fieldInfo;
+        if (!fieldInfos.TryGetValue(type, out fieldInfo)) {
+          fieldInfo = type.GetAllFields()
+            .Where(fi => !Attribute.IsDefined(fi, typeof(ExcludeFromObjectGraphTraversalAttribute)))
+            .ToArray();
+          fieldInfos.Add(type, fieldInfo);
+        }
+        foreach (FieldInfo f in fieldInfo) {
           if (excludeStaticMembers && f.IsStatic) continue;
           object fieldValue;
           try {
             fieldValue = f.GetValue(obj);
-          }
-          catch (SecurityException) {
+          } catch (SecurityException) {
             continue;
           }
           if (excludedMembers.Contains(fieldValue)) continue;

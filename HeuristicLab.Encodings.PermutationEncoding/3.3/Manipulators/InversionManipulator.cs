@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -59,11 +59,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     }
 
     public static void Apply(Permutation permutation, int breakPoint1, int breakPoint2) {
-      for (int i = 0; i <= (breakPoint2 - breakPoint1) / 2; i++) {  // invert permutation between breakpoints
-        int temp = permutation[breakPoint1 + i];
-        permutation[breakPoint1 + i] = permutation[breakPoint2 - i];
-        permutation[breakPoint2 - i] = temp;
-      }
+      permutation.Reverse(breakPoint1, breakPoint2 - breakPoint1 + 1);
     }
 
     /// <summary>

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,7 +20,6 @@
 #endregion
 
 using System;
-using System.Threading;
 using HeuristicLab.Scripting;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -32,13 +31,9 @@ namespace HeuristicLab.Tests {
     public const string ScriptSourceFileExtension = ".cs";
 
     public static void RunScript(CSharpScript s) {
-      var trigger = new EventWaitHandle(false, EventResetMode.ManualReset);
       Exception ex = null;
-
-      s.ScriptExecutionFinished += (sender, e) => { ex = e.Value; trigger.Set(); };
-      s.ExecuteAsync();
-      trigger.WaitOne();
-
+      s.ScriptExecutionFinished += (sender, e) => { ex = e.Value; };
+      s.Execute();
       Assert.IsNull(ex);
     }
 

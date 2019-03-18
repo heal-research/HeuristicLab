@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -123,9 +124,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
     public NeuralNetworkEnsembleClassification()
       : base() {
-      var validHiddenLayerValues = new ItemSet<IntValue>(new IntValue[] { 
-        (IntValue)new IntValue(0).AsReadOnly(), 
-        (IntValue)new IntValue(1).AsReadOnly(), 
+      var validHiddenLayerValues = new ItemSet<IntValue>(new IntValue[] {
+        (IntValue)new IntValue(0).AsReadOnly(),
+        (IntValue)new IntValue(1).AsReadOnly(),
         (IntValue)new IntValue(2).AsReadOnly() });
       var selectedHiddenLayerValue = (from v in validHiddenLayerValues
                                       where v.Value == 1
@@ -153,7 +154,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     #region neural network ensemble
-    protected override void Run() {
+    protected override void Run(CancellationToken cancellationToken) {
       double rmsError, avgRelError, relClassError;
       var solution = CreateNeuralNetworkEnsembleClassificationSolution(Problem.ProblemData, EnsembleSize, HiddenLayers, NodesInFirstHiddenLayer, NodesInSecondHiddenLayer, Decay, Restarts, out rmsError, out avgRelError, out relClassError);
       Results.Add(new Result(NeuralNetworkEnsembleClassificationModelResultName, "The neural network ensemble classification solution.", solution));
@@ -168,7 +169,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       string targetVariable = problemData.TargetVariable;
       IEnumerable<string> allowedInputVariables = problemData.AllowedInputVariables;
       IEnumerable<int> rows = problemData.TrainingIndices;
-      double[,] inputMatrix = AlglibUtil.PrepareInputMatrix(dataset, allowedInputVariables.Concat(new string[] { targetVariable }), rows);
+      double[,] inputMatrix = dataset.ToArray(allowedInputVariables.Concat(new string[] { targetVariable }), rows);
       if (inputMatrix.Cast<double>().Any(x => double.IsNaN(x) || double.IsInfinity(x)))
         throw new NotSupportedException("Neural network ensemble classification does not support NaN or infinity values in the input dataset.");
 
@@ -203,7 +204,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       avgRelError = alglib.mlpeavgrelerror(mlpEnsemble, inputMatrix, nRows);
       relClassError = alglib.mlperelclserror(mlpEnsemble, inputMatrix, nRows);
       var problemDataClone = (IClassificationProblemData)problemData.Clone();
-      return new NeuralNetworkEnsembleClassificationSolution(problemDataClone, new NeuralNetworkEnsembleModel(mlpEnsemble, targetVariable, allowedInputVariables, problemDataClone.ClassValues.ToArray()));
+      return new NeuralNetworkEnsembleClassificationSolution(new NeuralNetworkEnsembleModel(mlpEnsemble, targetVariable, allowedInputVariables, problemDataClone.ClassValues.ToArray()), problemDataClone);
     }
     #endregion
   }

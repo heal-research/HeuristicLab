@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -33,7 +33,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// </summary>
   [StorableClass]
   [Item("NeuralNetworkModel", "Represents a neural network for regression and classification.")]
-  public sealed class NeuralNetworkModel : NamedItem, INeuralNetworkModel {
+  public sealed class NeuralNetworkModel : ClassificationModel, INeuralNetworkModel {
 
     private alglib.multilayerperceptron multiLayerPerceptron;
     public alglib.multilayerperceptron MultiLayerPerceptron {
@@ -47,8 +47,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
     }
 
-    [Storable]
-    private string targetVariable;
+    public override IEnumerable<string> VariablesUsedForPrediction {
+      get { return allowedInputVariables; }
+    }
+
     [Storable]
     private string[] allowedInputVariables;
     [Storable]
@@ -73,17 +75,15 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       multiLayerPerceptron.innerobj.weights = (double[])original.multiLayerPerceptron.innerobj.weights.Clone();
       multiLayerPerceptron.innerobj.x = (double[])original.multiLayerPerceptron.innerobj.x.Clone();
       multiLayerPerceptron.innerobj.y = (double[])original.multiLayerPerceptron.innerobj.y.Clone();
-      targetVariable = original.targetVariable;
       allowedInputVariables = (string[])original.allowedInputVariables.Clone();
       if (original.classValues != null)
         this.classValues = (double[])original.classValues.Clone();
     }
     public NeuralNetworkModel(alglib.multilayerperceptron multiLayerPerceptron, string targetVariable, IEnumerable<string> allowedInputVariables, double[] classValues = null)
-      : base() {
+      : base(targetVariable) {
       this.name = ItemName;
       this.description = ItemDescription;
       this.multiLayerPerceptron = multiLayerPerceptron;
-      this.targetVariable = targetVariable;
       this.allowedInputVariables = allowedInputVariables.ToArray();
       if (classValues != null)
         this.classValues = (double[])classValues.Clone();
@@ -94,7 +94,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     public IEnumerable<double> GetEstimatedValues(IDataset dataset, IEnumerable<int> rows) {
-      double[,] inputData = AlglibUtil.PrepareInputMatrix(dataset, allowedInputVariables, rows);
+      double[,] inputData = dataset.ToArray(allowedInputVariables, rows);
 
       int n = inputData.GetLength(0);
       int columns = inputData.GetLength(1);
@@ -110,8 +110,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
     }
 
-    public IEnumerable<double> GetEstimatedClassValues(IDataset dataset, IEnumerable<int> rows) {
-      double[,] inputData = AlglibUtil.PrepareInputMatrix(dataset, allowedInputVariables, rows);
+    public override IEnumerable<double> GetEstimatedClassValues(IDataset dataset, IEnumerable<int> rows) {
+      double[,] inputData = dataset.ToArray( allowedInputVariables, rows);
 
       int n = inputData.GetLength(0);
       int columns = inputData.GetLength(1);
@@ -136,17 +136,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
     }
 
-    public INeuralNetworkRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData) {
-      return new NeuralNetworkRegressionSolution(new RegressionProblemData(problemData), this);
+    public IRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData) {
+      return new NeuralNetworkRegressionSolution(this, new RegressionProblemData(problemData));
     }
-    IRegressionSolution IRegressionModel.CreateRegressionSolution(IRegressionProblemData problemData) {
-      return CreateRegressionSolution(problemData);
-    }
-    public INeuralNetworkClassificationSolution CreateClassificationSolution(IClassificationProblemData problemData) {
-      return new NeuralNetworkClassificationSolution(new ClassificationProblemData(problemData), this);
-    }
-    IClassificationSolution IClassificationModel.CreateClassificationSolution(IClassificationProblemData problemData) {
-      return CreateClassificationSolution(problemData);
+    public override IClassificationSolution CreateClassificationSolution(IClassificationProblemData problemData) {
+      return new NeuralNetworkClassificationSolution(this, new ClassificationProblemData(problemData));
     }
 
     #region events

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -36,6 +36,7 @@ namespace HeuristicLab.Problems.GrammaticalEvolution {
   /// <summary>
   /// Abstract base class for GenotypeToPhenotypeMappers
   /// </summary>
+  [StorableClass]
   public abstract class GenotypeToPhenotypeMapper : IntegerVectorOperator, IGenotypeToPhenotypeMapper {
 
     [StorableConstructor]

@@ -169,7 +169,9 @@
     <Compile Include="SlaveStatusInfo.cs" />
     <Compile Include="StatusCommons.cs" />
     <Compile Include="WcfService.cs" />
-    <None Include="app.config" />
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Plugin.cs.frame" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -184,10 +186,6 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
-  </PropertyGroup>
-  <PropertyGroup>
     <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
 set ProjectDir=$(ProjectDir)
 set SolutionDir=$(SolutionDir)
@@ -199,7 +197,26 @@ export ProjectDir=$(ProjectDir)
 export SolutionDir=$(SolutionDir)
 
 $SolutionDir/PreBuildEvent.sh
-</PreBuildEvent>
+    </PreBuildEvent>
+    <PostBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">
+      set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
+      set ProjectDir=$(ProjectDir)
+      set SolutionDir=$(SolutionDir)
+      set OutDir=$(OutDir)
+      set TargetDir=$(TargetDir)
+      set Platform=$(PlatformName)
+      set Configuration=$(ConfigurationName)
+
+      call "$(SolutionDir)MergeConfigs.cmd"
+    </PostBuildEvent>
+    <PostBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">
+export OutDir=$(OutDir)
+export ProjectDir=$(ProjectDir)
+export SolutionDir=$(SolutionDir)
+export TargetDir=$(TargetDir)
+
+$SolutionDir/MergeConfigs.sh
+    </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

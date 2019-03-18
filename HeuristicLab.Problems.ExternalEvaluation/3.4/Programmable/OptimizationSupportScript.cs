@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,7 +26,8 @@ using HeuristicLab.Common;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Scripting;
 
-namespace HeuristicLab.Problems.ExternalEvaluation.Programmable {
+namespace HeuristicLab.Problems.ExternalEvaluation {
+  [StorableClass]
   public abstract class OptimizationSupportScript<T> : Script
     where T : class {
 
@@ -67,6 +68,9 @@ namespace HeuristicLab.Problems.ExternalEvaluation.Programmable {
         return compiledInstance;
       }
       private set { compiledInstance = value; }
+    }
+    public dynamic Instance {
+      get { return compiledInstance; }
     }
 
     public override Assembly Compile() {

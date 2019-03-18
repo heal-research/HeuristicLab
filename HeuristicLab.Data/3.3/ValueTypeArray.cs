@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -32,7 +32,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Data {
   [Item("ValueTypeArray", "An abstract base class for representing arrays of value types.")]
   [StorableClass]
-  public abstract class ValueTypeArray<T> : Item, IEnumerable<T> where T : struct {
+  public abstract class ValueTypeArray<T> : Item, IValueTypeArray<T> where T : struct {
     private const int maximumToStringLength = 100;
 
     public static new Image StaticItemImage {
@@ -74,6 +74,20 @@ namespace HeuristicLab.Data {
       }
       #endregion
     }
+
+    [Storable]
+    protected bool resizable = true;
+    public bool Resizable {
+      get { return resizable; }
+      set {
+        if (resizable != value) {
+          resizable = value;
+          OnResizableChanged();
+        }
+      }
+    }
+
+
     public virtual T this[int index] {
       get { return array[index]; }
       set {
@@ -102,29 +116,38 @@ namespace HeuristicLab.Data {
       : base(original, cloner) {
       this.array = (T[])original.array.Clone();
       this.readOnly = original.readOnly;
+      this.resizable = original.resizable;
       this.elementNames = new List<string>(original.elementNames);
     }
     protected ValueTypeArray() {
       array = new T[0];
       readOnly = false;
+      resizable = true;
       elementNames = new List<string>();
     }
     protected ValueTypeArray(int length) {
       array = new T[length];
       readOnly = false;
+      resizable = true;
       elementNames = new List<string>();
     }
     protected ValueTypeArray(T[] elements) {
       if (elements == null) throw new ArgumentNullException();
       array = (T[])elements.Clone();
       readOnly = false;
+      resizable = true;
       elementNames = new List<string>();
     }
 
-    public virtual ValueTypeArray<T> AsReadOnly() {
+    public virtual IValueTypeArray AsReadOnly() {
       ValueTypeArray<T> readOnlyValueTypeArray = (ValueTypeArray<T>)this.Clone();
       readOnlyValueTypeArray.readOnly = true;
       return readOnlyValueTypeArray;
+    }
+
+    public T[] CloneAsArray() {
+      //mkommend: this works because T must be a value type (struct constraint);
+      return (T[])array.Clone();
     }
 
     public override string ToString() {
@@ -152,6 +175,12 @@ namespace HeuristicLab.Data {
       return GetEnumerator();
     }
 
+    public event EventHandler ResizableChanged;
+    protected virtual void OnResizableChanged() {
+      EventHandler handler = ResizableChanged;
+      if (handler != null)
+        handler(this, EventArgs.Empty);
+    }
     public event EventHandler ElementNamesChanged;
     protected virtual void OnElementNamesChanged() {
       EventHandler handler = ElementNamesChanged;

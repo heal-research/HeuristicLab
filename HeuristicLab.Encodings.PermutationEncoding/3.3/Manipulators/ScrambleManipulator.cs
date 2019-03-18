@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -56,6 +57,12 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
       breakPoint1 = random.Next(permutation.Length - 1);
       breakPoint2 = random.Next(breakPoint1 + 1, permutation.Length);
 
+      // TODO: Use Fisher-Yates-Shuffle rather than complicated code below
+      // scrambledIndices = Enumerable.Range(0, breakPoint2 - breakPoint1 + 1).Shuffle(random).ToArray();
+      // Also, it would be more memory-efficient to change here and Apply(Permutation, int, int[]) below to interpret scrambleArray as values, not indices
+      // Don't forget the move generator
+      // BackwardsCompatibility3.3
+      #region This whole code should be replaced by above line when going for 3.4
       scrambledIndices = new int[breakPoint2 - breakPoint1 + 1];
       remainingIndices = new int[breakPoint2 - breakPoint1 + 1];
       for (int i = 0; i < remainingIndices.Length; i++) {  // initialise indices
@@ -76,15 +83,13 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
           index++;
         }
       }
+      #endregion
 
       Apply(permutation, breakPoint1, scrambledIndices);
     }
 
     public static void Apply(Permutation permutation, int startIndex, int[] scrambleArray) {
-      Permutation original = (Permutation)permutation.Clone();
-      for (int i = 0; i < scrambleArray.Length; i++) {  // scramble permutation between breakpoints
-        permutation[startIndex + i] = original[startIndex + scrambleArray[i]];
-      }
+      permutation.Replace(startIndex, scrambleArray.Select(x => permutation[startIndex + x]).ToArray());
     }
 
     /// <summary>

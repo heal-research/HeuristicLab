@@ -112,9 +112,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AdaptiveRandomTopologyUpdater.cs" />
     <Compile Include="MultiPSOTopologyUpdater.cs" />
     <Compile Include="ParticleSwarmOptimizationMainLoop.cs" />
     <Compile Include="Plugin.cs" />
+    <Compile Include="SPSORandomTopologyInitializer.cs" />
     <Compile Include="RandomTopologyInitializer.cs" />
     <Compile Include="VonNeumannTopologyInitializer.cs" />
     <Compile Include="RingTopologyInitializer.cs" />

@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,16 +22,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using HeuristicLab.Core;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Clients.OKB.Query {
@@ -102,9 +99,9 @@ namespace HeuristicLab.Clients.OKB.Query {
         while (ids.Count() > 0) {
           cancellationToken.ThrowIfCancellationRequested();
           if (AllValueNamesChecked()) {
-            runs.AddRange(QueryClient.Instance.GetRuns(ids.Take(batchSize), includeBinaryValues).Select(x => ConvertToOptimizationRun(x)));
+            runs.AddRange(QueryClient.Instance.GetRuns(ids.Take(batchSize), includeBinaryValues).Select(x => QueryClient.Instance.ConvertToOptimizationRun(x)));
           } else {
-            runs.AddRange(QueryClient.Instance.GetRunsWithValues(ids.Take(batchSize), includeBinaryValues, valueNames).Select(x => ConvertToOptimizationRun(x)));
+            runs.AddRange(QueryClient.Instance.GetRunsWithValues(ids.Take(batchSize), includeBinaryValues, valueNames).Select(x => QueryClient.Instance.ConvertToOptimizationRun(x)));
           }
           ids = ids.Skip(batchSize);
           Invoke(new Action(() => {
@@ -123,12 +120,10 @@ namespace HeuristicLab.Clients.OKB.Query {
           SetEnabledStateOfControls();
           try {
             t.Wait();
-          }
-          catch (AggregateException ex) {
+          } catch (AggregateException ex) {
             try {
               ex.Flatten().Handle(x => x is OperationCanceledException);
-            }
-            catch (AggregateException remaining) {
+            } catch (AggregateException remaining) {
               if (remaining.InnerExceptions.Count == 1) ErrorHandling.ShowErrorDialog(this, "Refresh results failed.", remaining.InnerExceptions[0]);
               else ErrorHandling.ShowErrorDialog(this, "Refresh results failed.", remaining);
             }
@@ -192,49 +187,6 @@ namespace HeuristicLab.Clients.OKB.Query {
       constraintsCheckedListBox.Items.Clear();
       constraintsCheckedListBox.Items.AddRange(QueryClient.Instance.ValueNames.ToArray());
       SetCheckedState(true);
-    }
-
-    private Optimization.IRun ConvertToOptimizationRun(Run run) {
-      Optimization.Run optRun = new Optimization.Run();
-      foreach (Value value in run.ParameterValues)
-        optRun.Parameters.Add(value.Name, ConvertToItem(value));
-      foreach (Value value in run.ResultValues)
-        optRun.Results.Add(value.Name, ConvertToItem(value));
-      return optRun;
-    }
-
-    private IItem ConvertToItem(Value value) {
-      if (value is BinaryValue) {
-        IItem item = null;
-        BinaryValue binaryValue = (BinaryValue)value;
-        if (binaryValue.Value != null) {
-          using (MemoryStream stream = new MemoryStream(binaryValue.Value)) {
-            try {
-              item = XmlParser.Deserialize<IItem>(stream);
-            }
-            catch (Exception) { }
-            stream.Close();
-          }
-        }
-        return item != null ? item : new Data.StringValue(value.DataType.Name);
-      } else if (value is BoolValue) {
-        return new Data.BoolValue(((BoolValue)value).Value);
-      } else if (value is FloatValue) {
-        return new Data.DoubleValue(((FloatValue)value).Value);
-      } else if (value is PercentValue) {
-        return new Data.PercentValue(((PercentValue)value).Value);
-      } else if (value is DoubleValue) {
-        return new Data.DoubleValue(((DoubleValue)value).Value);
-      } else if (value is IntValue) {
-        return new Data.IntValue((int)((IntValue)value).Value);
-      } else if (value is LongValue) {
-        return new Data.IntValue((int)((LongValue)value).Value);
-      } else if (value is StringValue) {
-        return new Data.StringValue(((StringValue)value).Value);
-      } else if (value is TimeSpanValue) {
-        return new Data.TimeSpanValue(TimeSpan.FromSeconds((long)((TimeSpanValue)value).Value));
-      }
-      return null;
     }
 
     private void SetCheckedState(bool val) {

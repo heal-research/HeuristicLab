@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -282,6 +282,11 @@ namespace HeuristicLab.Problems.DataAnalysis {
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       RegisterParameterEvents();
+
+      classNamesCache = new List<string>();
+      for (int i = 0; i < ClassNamesParameter.Value.Rows; i++)
+        classNamesCache.Add(ClassNamesParameter.Value[i, 0]);
+
       // BackwardsCompatibility3.4
       #region Backwards compatible code, remove with 3.5
       if (!Parameters.ContainsKey(PositiveClassParameterName)) {
@@ -296,6 +301,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
     protected ClassificationProblemData(ClassificationProblemData original, Cloner cloner)
       : base(original, cloner) {
       RegisterParameterEvents();
+      classNamesCache = new List<string>();
+      for (int i = 0; i < ClassNamesParameter.Value.Rows; i++)
+        classNamesCache.Add(ClassNamesParameter.Value[i, 0]);
     }
     public override IDeepCloneable Clone(Cloner cloner) {
       if (this == emptyProblemData) return emptyProblemData;
@@ -311,10 +319,11 @@ namespace HeuristicLab.Problems.DataAnalysis {
       TestPartition.Start = classificationProblemData.TestPartition.Start;
       TestPartition.End = classificationProblemData.TestPartition.End;
 
-      PositiveClass = classificationProblemData.PositiveClass;
-
       for (int i = 0; i < classificationProblemData.ClassNames.Count(); i++)
         ClassNamesParameter.Value[i, 0] = classificationProblemData.ClassNames.ElementAt(i);
+
+      //mkommend: The positive class depends on the class names and as a result must only be set after the classe names parameter.
+      PositiveClass = classificationProblemData.PositiveClass;
 
       for (int i = 0; i < Classes; i++) {
         for (int j = 0; j < Classes; j++) {

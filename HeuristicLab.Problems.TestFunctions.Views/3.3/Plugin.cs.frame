@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,8 +25,10 @@ namespace HeuristicLab.Problems.TestFunctions.Views {
   /// <summary>
   /// Plugin class for HeuristicLab.Problems.TestFunctions.Views plugin
   /// </summary>
-  [Plugin("HeuristicLab.Problems.TestFunctions.Views", "3.3.13.$WCREV$")]
+  [Plugin("HeuristicLab.Problems.TestFunctions.Views", "3.3.15.$WCREV$")]
   [PluginFile("HeuristicLab.Problems.TestFunctions.Views-3.3.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.Analysis", "3.3")]
+  [PluginDependency("HeuristicLab.Analysis.Views", "3.3")]
   [PluginDependency("HeuristicLab.Collections", "3.3")]
   [PluginDependency("HeuristicLab.Common", "3.3")]
   [PluginDependency("HeuristicLab.Core", "3.3")]
@@ -38,6 +40,7 @@ namespace HeuristicLab.Problems.TestFunctions.Views {
   [PluginDependency("HeuristicLab.Optimization", "3.3")]
   [PluginDependency("HeuristicLab.Optimization.Views", "3.3")]
   [PluginDependency("HeuristicLab.Problems.TestFunctions", "3.3")]
+  [PluginDependency("HeuristicLab.Problems.TestFunctions.MultiObjective", "3.3")]
   public class HeuristicLabProblemsTestFunctionsViewsPlugin : PluginBase {
   }
 }

@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -33,8 +33,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// </summary>
   [StorableClass]
   [Item("NearestNeighbourModel", "Represents a nearest neighbour model for regression and classification.")]
-  public sealed class NearestNeighbourModel : NamedItem, INearestNeighbourModel {
+  public sealed class NearestNeighbourModel : ClassificationModel, INearestNeighbourModel {
 
+    private readonly object kdTreeLockObject = new object();
     private alglib.nearestneighbor.kdtree kdTree;
     public alglib.nearestneighbor.kdtree KDTree {
       get { return kdTree; }
@@ -47,14 +48,21 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
     }
 
-    [Storable]
-    private string targetVariable;
+
+    public override IEnumerable<string> VariablesUsedForPrediction {
+      get { return allowedInputVariables; }
+    }
+
     [Storable]
     private string[] allowedInputVariables;
     [Storable]
     private double[] classValues;
     [Storable]
     private int k;
+    [Storable(DefaultValue = null)]
+    private double[] weights; // not set for old versions loaded from disk
+    [Storable(DefaultValue = null)]
+    private double[] offsets; // not set for old versions loaded from disk
 
     [StorableConstructor]
     private NearestNeighbourModel(bool deserializing)
@@ -90,25 +98,52 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       kdTree.xy = (double[,])original.kdTree.xy.Clone();
 
       k = original.k;
-      targetVariable = original.targetVariable;
+      isCompatibilityLoaded = original.IsCompatibilityLoaded;
+      if (!IsCompatibilityLoaded) {
+        weights = new double[original.weights.Length];
+        Array.Copy(original.weights, weights, weights.Length);
+        offsets = new double[original.offsets.Length];
+        Array.Copy(original.offsets, this.offsets, this.offsets.Length);
+      }
       allowedInputVariables = (string[])original.allowedInputVariables.Clone();
       if (original.classValues != null)
         this.classValues = (double[])original.classValues.Clone();
     }
-    public NearestNeighbourModel(IDataset dataset, IEnumerable<int> rows, int k, string targetVariable, IEnumerable<string> allowedInputVariables, double[] classValues = null) {
+    public NearestNeighbourModel(IDataset dataset, IEnumerable<int> rows, int k, string targetVariable, IEnumerable<string> allowedInputVariables, IEnumerable<double> weights = null, double[] classValues = null)
+      : base(targetVariable) {
       Name = ItemName;
       Description = ItemDescription;
       this.k = k;
-      this.targetVariable = targetVariable;
       this.allowedInputVariables = allowedInputVariables.ToArray();
-
-      var inputMatrix = AlglibUtil.PrepareInputMatrix(dataset,
-                                   allowedInputVariables.Concat(new string[] { targetVariable }),
-                                   rows);
+      double[,] inputMatrix;
+      if (IsCompatibilityLoaded) {
+        // no scaling
+        inputMatrix = dataset.ToArray(
+          this.allowedInputVariables.Concat(new string[] { targetVariable }),
+          rows);
+      } else {
+        this.offsets = this.allowedInputVariables
+          .Select(name => dataset.GetDoubleValues(name, rows).Average() * -1)
+          .Concat(new double[] { 0 }) // no offset for target variable
+          .ToArray();
+        if (weights == null) {
+          // automatic determination of weights (all features should have variance = 1)
+          this.weights = this.allowedInputVariables
+            .Select(name => 1.0 / dataset.GetDoubleValues(name, rows).StandardDeviationPop())
+            .Concat(new double[] { 1.0 }) // no scaling for target variable
+            .ToArray();
+        } else {
+          // user specified weights (+ 1 for target)
+          this.weights = weights.Concat(new double[] { 1.0 }).ToArray();
+          if (this.weights.Length - 1 != this.allowedInputVariables.Length)
+            throw new ArgumentException("The number of elements in the weight vector must match the number of input variables");
+        }
+        inputMatrix = CreateScaledData(dataset, this.allowedInputVariables.Concat(new string[] { targetVariable }), rows, this.offsets, this.weights);
+      }
 
       if (inputMatrix.Cast<double>().Any(x => double.IsNaN(x) || double.IsInfinity(x)))
         throw new NotSupportedException(
-          "Nearest neighbour classification does not support NaN or infinity values in the input dataset.");
+          "Nearest neighbour model does not support NaN or infinity values in the input dataset.");
 
       this.kdTree = new alglib.nearestneighbor.kdtree();
 
@@ -130,17 +165,29 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       alglib.nearestneighbor.kdtreebuild(inputMatrix, nRows, inputMatrix.GetLength(1) - 1, 1, 2, kdTree);
     }
 
+    private static double[,] CreateScaledData(IDataset dataset, IEnumerable<string> variables, IEnumerable<int> rows, double[] offsets, double[] factors) {
+      var transforms =
+        variables.Select(
+          (_, colIdx) =>
+            new LinearTransformation(variables) { Addend = offsets[colIdx] * factors[colIdx], Multiplier = factors[colIdx] });
+      return dataset.ToArray(variables, transforms, rows);
+    }
+
     public override IDeepCloneable Clone(Cloner cloner) {
       return new NearestNeighbourModel(this, cloner);
     }
 
     public IEnumerable<double> GetEstimatedValues(IDataset dataset, IEnumerable<int> rows) {
-      double[,] inputData = AlglibUtil.PrepareInputMatrix(dataset, allowedInputVariables, rows);
+      double[,] inputData;
+      if (IsCompatibilityLoaded) {
+        inputData = dataset.ToArray(allowedInputVariables, rows);
+      } else {
+        inputData = CreateScaledData(dataset, allowedInputVariables, rows, offsets, weights);
+      }
 
       int n = inputData.GetLength(0);
       int columns = inputData.GetLength(1);
       double[] x = new double[columns];
-      double[] y = new double[1];
       double[] dists = new double[k];
       double[,] neighbours = new double[k, columns + 1];
 
@@ -148,13 +195,16 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         for (int column = 0; column < columns; column++) {
           x[column] = inputData[row, column];
         }
-        int actNeighbours = alglib.nearestneighbor.kdtreequeryknn(kdTree, x, k, false);
-        alglib.nearestneighbor.kdtreequeryresultsdistances(kdTree, ref dists);
-        alglib.nearestneighbor.kdtreequeryresultsxy(kdTree, ref neighbours);
+        int numNeighbours;
+        lock (kdTreeLockObject) { // gkronber: the following calls change the kdTree data structure
+          numNeighbours = alglib.nearestneighbor.kdtreequeryknn(kdTree, x, k, false);
+          alglib.nearestneighbor.kdtreequeryresultsdistances(kdTree, ref dists);
+          alglib.nearestneighbor.kdtreequeryresultsxy(kdTree, ref neighbours);
+        }
 
         double distanceWeightedValue = 0.0;
         double distsSum = 0.0;
-        for (int i = 0; i < actNeighbours; i++) {
+        for (int i = 0; i < numNeighbours; i++) {
           distanceWeightedValue += neighbours[i, columns] / dists[i];
           distsSum += 1.0 / dists[i];
         }
@@ -162,10 +212,14 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
     }
 
-    public IEnumerable<double> GetEstimatedClassValues(IDataset dataset, IEnumerable<int> rows) {
+    public override IEnumerable<double> GetEstimatedClassValues(IDataset dataset, IEnumerable<int> rows) {
       if (classValues == null) throw new InvalidOperationException("No class values are defined.");
-      double[,] inputData = AlglibUtil.PrepareInputMatrix(dataset, allowedInputVariables, rows);
-
+      double[,] inputData;
+      if (IsCompatibilityLoaded) {
+        inputData = dataset.ToArray(allowedInputVariables, rows);
+      } else {
+        inputData = CreateScaledData(dataset, allowedInputVariables, rows, offsets, weights);
+      }
       int n = inputData.GetLength(0);
       int columns = inputData.GetLength(1);
       double[] x = new double[columns];
@@ -177,12 +231,15 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         for (int column = 0; column < columns; column++) {
           x[column] = inputData[row, column];
         }
-        int actNeighbours = alglib.nearestneighbor.kdtreequeryknn(kdTree, x, k, false);
-        alglib.nearestneighbor.kdtreequeryresultsdistances(kdTree, ref dists);
-        alglib.nearestneighbor.kdtreequeryresultsxy(kdTree, ref neighbours);
-
+        int numNeighbours;
+        lock (kdTreeLockObject) {
+          // gkronber: the following calls change the kdTree data structure
+          numNeighbours = alglib.nearestneighbor.kdtreequeryknn(kdTree, x, k, false);
+          alglib.nearestneighbor.kdtreequeryresultsdistances(kdTree, ref dists);
+          alglib.nearestneighbor.kdtreequeryresultsxy(kdTree, ref neighbours);
+        }
         Array.Clear(y, 0, y.Length);
-        for (int i = 0; i < actNeighbours; i++) {
+        for (int i = 0; i < numNeighbours; i++) {
           int classValue = (int)Math.Round(neighbours[i, columns]);
           y[classValue]++;
         }
@@ -200,17 +257,12 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
     }
 
-    public INearestNeighbourRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData) {
-      return new NearestNeighbourRegressionSolution(new RegressionProblemData(problemData), this);
-    }
+
     IRegressionSolution IRegressionModel.CreateRegressionSolution(IRegressionProblemData problemData) {
-      return CreateRegressionSolution(problemData);
+      return new NearestNeighbourRegressionSolution(this, new RegressionProblemData(problemData));
     }
-    public INearestNeighbourClassificationSolution CreateClassificationSolution(IClassificationProblemData problemData) {
-      return new NearestNeighbourClassificationSolution(new ClassificationProblemData(problemData), this);
-    }
-    IClassificationSolution IClassificationModel.CreateClassificationSolution(IClassificationProblemData problemData) {
-      return CreateClassificationSolution(problemData);
+    public override IClassificationSolution CreateClassificationSolution(IClassificationProblemData problemData) {
+      return new NearestNeighbourClassificationSolution(this, new ClassificationProblemData(problemData));
     }
 
     #region events
@@ -222,6 +274,17 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
     #endregion
 
+
+    // BackwardsCompatibility3.3
+    #region Backwards compatible code, remove with 3.4
+
+    private bool isCompatibilityLoaded = false; // new kNN models have the value false, kNN models loaded from disc have the value true
+    [Storable(DefaultValue = true)]
+    public bool IsCompatibilityLoaded {
+      get { return isCompatibilityLoaded; }
+      set { isCompatibilityLoaded = value; }
+    }
+    #endregion
     #region persistence
     [Storable]
     public double KDTreeApproxF {

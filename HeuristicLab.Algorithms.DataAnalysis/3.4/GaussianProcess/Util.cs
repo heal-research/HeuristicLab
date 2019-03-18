@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,13 +22,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using HeuristicLab.Core;
-using HeuristicLab.Data;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   internal static class Util {
-    public static double ScalarProd(IEnumerable<double> v, IEnumerable<double> u) {
-      return v.Zip(u, (vi, ui) => vi * ui).Sum();
+    public static double ScalarProd(double[] v, double[] u) {
+      if (v.Length != u.Length) throw new InvalidOperationException();
+      double prod = 0.0;
+      for (int i = 0; i < v.Length; i++)
+        prod += v[i] * u[i];
+      return prod;
     }
 
     public static double SqrDist(IEnumerable<double> x, IEnumerable<double> y) {
@@ -40,29 +42,30 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return d * d;
     }
 
-    public static double SqrDist(double[,] x, int i, int j, double scale = 1.0, IEnumerable<int> columnIndices = null) {
-      return SqrDist(x, i, x, j, scale, columnIndices);
+    public static double SqrDist(double[,] x, int i, int j, int[] columnIndices, double scale = 1.0) {
+      return SqrDist(x, i, x, j, columnIndices, scale);
     }
 
-    public static double SqrDist(double[,] x, int i, double[,] xt, int j, double scale = 1.0, IEnumerable<int> columnIndices = null) {
+    public static double SqrDist(double[,] x, int i, double[,] xt, int j, int[] columnIndices, double scale = 1.0) {
       double ss = 0.0;
-      if (columnIndices == null) columnIndices = Enumerable.Range(0, x.GetLength(1));
-      foreach (int columnIndex in columnIndices) {
+      if (columnIndices == null) columnIndices = Enumerable.Range(0, x.GetLength(1)).ToArray();
+      for (int c = 0; c < columnIndices.Length; c++) {
+        var columnIndex = columnIndices[c];
         double d = x[i, columnIndex] - xt[j, columnIndex];
         ss += d * d;
       }
       return scale * scale * ss;
     }
 
-    public static double SqrDist(double[,] x, int i, int j, double[] scale, IEnumerable<int> columnIndices = null) {
+    public static double SqrDist(double[,] x, int i, int j, double[] scale, int[] columnIndices) {
       return SqrDist(x, i, x, j, scale, columnIndices);
     }
 
-    public static double SqrDist(double[,] x, int i, double[,] xt, int j, double[] scale, IEnumerable<int> columnIndices = null) {
+    public static double SqrDist(double[,] x, int i, double[,] xt, int j, double[] scale, int[] columnIndices) {
       double ss = 0.0;
-      if (columnIndices == null) columnIndices = Enumerable.Range(0, x.GetLength(1));
       int scaleIndex = 0;
-      foreach (int columnIndex in columnIndices) {
+      for (int c = 0; c < columnIndices.Length; c++) {
+        var columnIndex = columnIndices[c];
         double d = x[i, columnIndex] - xt[j, columnIndex];
         ss += d * d * scale[scaleIndex] * scale[scaleIndex];
         scaleIndex++;
@@ -72,29 +75,28 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         throw new ArgumentException("Lengths of scales and covariance functions does not match.");
       return ss;
     }
-    public static double ScalarProd(double[,] x, int i, int j, double scale = 1.0, IEnumerable<int> columnIndices = null) {
-      return ScalarProd(x, i, x, j, scale, columnIndices);
+    public static double ScalarProd(double[,] x, int i, int j, int[] columnIndices, double scale = 1.0) {
+      return ScalarProd(x, i, x, j, columnIndices, scale);
     }
 
-    public static double ScalarProd(double[,] x, int i, double[,] xt, int j, double scale = 1.0, IEnumerable<int> columnIndices = null) {
+    public static double ScalarProd(double[,] x, int i, double[,] xt, int j, int[] columnIndices, double scale = 1.0) {
       double sum = 0.0;
-      if (columnIndices == null) columnIndices = Enumerable.Range(0, x.GetLength(1));
-      foreach (int columnIndex in columnIndices) {
+      for (int c = 0; c < columnIndices.Length; c++) {
+        var columnIndex = columnIndices[c];
         sum += x[i, columnIndex] * xt[j, columnIndex];
       }
       return scale * scale * sum;
     }
-    public static double ScalarProd(double[,] x, int i, int j, double[] scale, IEnumerable<int> columnIndices = null) {
+    public static double ScalarProd(double[,] x, int i, int j, double[] scale, int[] columnIndices) {
       return ScalarProd(x, i, x, j, scale, columnIndices);
     }
 
-    public static double ScalarProd(double[,] x, int i, double[,] xt, int j, double[] scale, IEnumerable<int> columnIndices = null) {
+    public static double ScalarProd(double[,] x, int i, double[,] xt, int j, double[] scale, int[] columnIndices) {
       double sum = 0.0;
-      if (columnIndices == null) columnIndices = Enumerable.Range(0, x.GetLength(1));
       int scaleIndex = 0;
-      foreach (int columnIndex in columnIndices) {
+      for (int c = 0; c < columnIndices.Length; c++, scaleIndex++) {
+        var columnIndex = columnIndices[c];
         sum += x[i, columnIndex] * scale[scaleIndex] * xt[j, columnIndex] * scale[scaleIndex];
-        scaleIndex++;
       }
       // must be at the end of scale after iterating over columnIndices
       if (scaleIndex != scale.Length)

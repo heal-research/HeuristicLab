@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  * and the BEACON Center for the Study of Evolution in Action.
  * 
  * This file is part of HeuristicLab.
@@ -95,7 +95,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         models = new List<IRegressionModel>();
         weights = new List<double>();
         // add constant model
-        models.Add(new ConstantModel(f0));
+        models.Add(new ConstantModel(f0, problemData.TargetVariable));
         weights.Add(1.0);
       }
 
@@ -147,6 +147,12 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     // for custom stepping & termination
     public static IGbmState CreateGbmState(IRegressionProblemData problemData, ILossFunction lossFunction, uint randSeed, int maxSize = 3, double r = 0.66, double m = 0.5, double nu = 0.01) {
+      // check input variables. Only double variables are allowed.
+      var invalidInputs =
+        problemData.AllowedInputVariables.Where(name => !problemData.Dataset.VariableHasType<double>(name));
+      if (invalidInputs.Any())
+        throw new NotSupportedException("Gradient tree boosting only supports real-valued variables. Unsupported inputs: " + string.Join(", ", invalidInputs));
+
       return new GbmState(problemData, lossFunction, randSeed, maxSize, r, m, nu);
     }
 

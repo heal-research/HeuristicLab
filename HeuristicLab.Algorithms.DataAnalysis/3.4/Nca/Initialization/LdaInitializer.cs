@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -43,9 +43,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       var instances = data.TrainingIndices.Count();
       var attributes = data.AllowedInputVariables.Count();
 
-      var ldaDs = AlglibUtil.PrepareInputMatrix(data.Dataset,
-                                                data.AllowedInputVariables.Concat(data.TargetVariable.ToEnumerable()),
-                                                data.TrainingIndices);
+      var ldaDs = data.Dataset.ToArray(
+                                       data.AllowedInputVariables.Concat(data.TargetVariable.ToEnumerable()),
+                                       data.TrainingIndices);
 
       // map class values to sequential natural numbers (required by alglib)
       var uniqueClasses = data.Dataset.GetDoubleValues(data.TargetVariable, data.TrainingIndices)

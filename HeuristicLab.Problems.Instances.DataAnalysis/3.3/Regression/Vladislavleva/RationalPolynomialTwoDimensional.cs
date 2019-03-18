@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
+using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
   public class RationalPolynomialTwoDimensional : ArtificialRegressionDataDescriptor {
@@ -46,6 +47,13 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     protected override int TestPartitionStart { get { return 50; } }
     protected override int TestPartitionEnd { get { return 50 + (34 * 34); } }
 
+    public int Seed { get; private set; }
+
+    public RationalPolynomialTwoDimensional() : this((int)DateTime.Now.Ticks) { }
+
+    public RationalPolynomialTwoDimensional(int seed) : base() {
+      Seed = seed;
+    }
     protected override List<List<double>> GenerateValues() {
       List<List<double>> data = new List<List<double>>();
 
@@ -53,9 +61,10 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
 
       List<List<double>> testData = new List<List<double>>() { oneVariableTestData, oneVariableTestData };
       var combinations = ValueGenerator.GenerateAllCombinationsOfValuesInLists(testData).ToList<IEnumerable<double>>();
+      var rand = new MersenneTwister((uint)Seed);
 
       for (int i = 0; i < AllowedInputVariables.Count(); i++) {
-        data.Add(ValueGenerator.GenerateUniformDistributedValues(50, 0.05, 6.05).ToList());
+        data.Add(ValueGenerator.GenerateUniformDistributedValues(rand.Next(), 50, 0.05, 6.05).ToList());
         data[i].AddRange(combinations[i]);
       }
 

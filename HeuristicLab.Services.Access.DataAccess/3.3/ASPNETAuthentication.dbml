@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?><Database Name="HeuristicLab.Authentication" Class="ASPNETAuthenticationDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
-  <Connection Mode="AppSettings" ConnectionString="Data Source=.;Initial Catalog=HeuristicLab.Authentication;Integrated Security=True" SettingsObjectName="HeuristicLab.Services.Access.DataAccess.Properties.Settings" SettingsPropertyName="HeuristicLab_AuthenticationConnectionString" Provider="System.Data.SqlClient" />
+  <Connection Mode="AppSettings" ConnectionString="Data Source=.\SQLEXPRESS;Integrated Security=SSPI;Initial Catalog=HeuristicLab.Authentication" SettingsObjectName="HeuristicLab.Services.Access.DataAccess.Properties.Settings" SettingsPropertyName="HeuristicLab_AuthenticationConnectionString" Provider="System.Data.SqlClient" />
   <Table Name="dbo.aspnet_Applications" Member="aspnet_Applications">
     <Type Name="aspnet_Application">
       <Column Name="ApplicationName" Type="System.String" DbType="NVarChar(256) NOT NULL" CanBeNull="false" />

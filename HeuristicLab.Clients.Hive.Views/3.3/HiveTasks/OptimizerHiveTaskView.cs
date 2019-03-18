@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -72,7 +72,7 @@ namespace HeuristicLab.Clients.Hive.Views {
     #endregion
 
     #region Child Control Events
-    private void restartButton_Click(object sender, EventArgs e) {
+    private void startButton_Click(object sender, EventArgs e) {
       var task = System.Threading.Tasks.Task.Factory.StartNew(ResumeTaskAsync);
       task.ContinueWith((t) => {
         Content.Progress.Finish();
@@ -118,7 +118,7 @@ namespace HeuristicLab.Clients.Hive.Views {
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
 
-      this.restartButton.Enabled = Content != null && Content.IsControllable && !Content.Task.Command.HasValue && (Content.Task.State == TaskState.Paused || Content.Task.State == TaskState.Failed || Content.Task.State == TaskState.Aborted);
+      this.startButton.Enabled = Content != null && Content.IsControllable && !Content.Task.Command.HasValue && (Content.Task.State == TaskState.Paused);
       this.pauseButton.Enabled = Content != null && Content.IsControllable && !Content.Task.Command.HasValue && Content.Task.State == TaskState.Calculating;
       this.stopButton.Enabled = Content != null && Content.IsControllable && !Content.Task.Command.HasValue && (Content.Task.State == TaskState.Calculating || Content.Task.State == TaskState.Waiting || Content.Task.State == TaskState.Paused);
     }

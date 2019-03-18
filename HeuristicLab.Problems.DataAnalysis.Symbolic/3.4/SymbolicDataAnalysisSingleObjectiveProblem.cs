@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -72,7 +72,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       MaximizationParameter.Hidden = true;
     }
 
-    public SymbolicDataAnalysisSingleObjectiveProblem(T problemData, U evaluator, V solutionCreator)
+    protected SymbolicDataAnalysisSingleObjectiveProblem(T problemData, U evaluator, V solutionCreator)
       : base(problemData, evaluator, solutionCreator) {
       Parameters.Add(new FixedValueParameter<BoolValue>(MaximizationParameterName, "Set to false if the problem should be minimized."));
       Parameters.Add(new FixedValueParameter<DoubleValue>(BestKnownQualityParameterName, "The quality of the best known solution of this problem."));

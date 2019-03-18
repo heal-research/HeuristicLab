@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,7 +22,6 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
-using System.Threading.Tasks;
 using HeuristicLab.Common;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -81,30 +80,25 @@ namespace HeuristicLab.Core {
       base.OnPrepared();
     }
 
-    public override void Start() {
-      base.Start();
-      cancellationTokenSource = new CancellationTokenSource();
+    public override void Start(CancellationToken cancellationToken) {
+      base.Start(cancellationToken);
+      cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
       stopPending = false;
-      Task task = Task.Factory.StartNew(Run, cancellationTokenSource.Token, cancellationTokenSource.Token);
-      task.ContinueWith(t => {
-        try {
-          t.Wait();
-        }
-        catch (AggregateException ex) {
-          try {
-            ex.Flatten().Handle(x => x is OperationCanceledException);
-          }
-          catch (AggregateException remaining) {
-            if (remaining.InnerExceptions.Count == 1) OnExceptionOccurred(remaining.InnerExceptions[0]);
-            else OnExceptionOccurred(remaining);
-          }
-        }
-        cancellationTokenSource.Dispose();
-        cancellationTokenSource = null;
-        if (stopPending) executionStack.Clear();
-        if (executionStack.Count == 0) OnStopped();
-        else OnPaused();
-      });
+
+      try {
+        Run((object)cancellationTokenSource.Token);
+      } catch (OperationCanceledException) {
+      } catch (AggregateException ae) {
+        ae.FlattenAndHandle(new[] { typeof(OperationCanceledException) }, e => OnExceptionOccurred(e));
+      } catch (Exception e) {
+        OnExceptionOccurred(e);
+      }
+
+      cancellationTokenSource.Dispose();
+      cancellationTokenSource = null;
+      if (stopPending) executionStack.Clear();
+      if (executionStack.Count == 0) OnStopped();
+      else OnPaused();
     }
     protected override void OnStarted() {
       Log.LogMessage("Engine started");
@@ -151,8 +145,7 @@ namespace HeuristicLab.Core {
       timer.Start();
       try {
         Run(cancellationToken);
-      }
-      finally {
+      } finally {
         timer.Elapsed -= new System.Timers.ElapsedEventHandler(timer_Elapsed);
         timer.Stop();
         ExecutionTime += DateTime.UtcNow - lastUpdateTime;

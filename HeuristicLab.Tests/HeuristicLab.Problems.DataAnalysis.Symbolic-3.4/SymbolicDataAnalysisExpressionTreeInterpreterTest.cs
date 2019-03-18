@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -181,12 +181,25 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       EvaluateAdf(interpreter, ds);
     }
 
+    /// <summary>
+    ///A test for Evaluate
+    ///</summary>
+    [TestMethod]
+    [TestCategory("Problems.DataAnalysis.Symbolic")]
+    [TestProperty("Time", "short")]
+    public void ILEmittingInterpreterTestEvaluation() {
+      var interpreter = new SymbolicDataAnalysisExpressionTreeILEmittingInterpreter();
+      EvaluateTerminals(interpreter, ds);
+      EvaluateOperations(interpreter, ds);
+      EvaluateLaggedOperations(interpreter, ds);
+      EvaluateSpecialFunctions(interpreter, ds);
+    }
+
     [TestMethod]
     [TestCategory("Problems.DataAnalysis.Symbolic")]
     [TestProperty("Time", "short")]
     public void CompiledInterpreterTestEvaluation() {
       var interpreter = new SymbolicDataAnalysisExpressionCompiledTreeInterpreter();
-      // ADFs are not supported by the compiled tree interpreter
       EvaluateTerminals(interpreter, ds);
       EvaluateOperations(interpreter, ds);
       EvaluateSpecialFunctions(interpreter, ds);
@@ -409,8 +422,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       Action<double> checkPsi = (x) => {
         try {
           Evaluate(interpreter, ds, "(psi " + x + ")", 0, alglib.psi(x));
-        }
-        catch (alglib.alglibexception) { // ignore cases where alglib throws an exception
+        } catch (alglib.alglibexception) { // ignore cases where alglib throws an exception
         }
       };
       Action<double> checkDawson = (x) => {

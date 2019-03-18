@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,6 +20,7 @@
 #endregion
 
 using System.Linq;
+using System.Threading;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
@@ -48,7 +49,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return new ZeroR(this, cloner);
     }
 
-    protected override void Run() {
+    protected override void Run(CancellationToken cancellationToken) {
       var solution = CreateZeroRSolution(Problem.ProblemData);
       Results.Add(new Result("ZeroR solution", "The simplest possible classifier, ZeroR always predicts the majority class.", solution));
     }
@@ -63,7 +64,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       var dominantClass = targetValues.GroupBy(x => x).ToDictionary(g => g.Key, g => g.Count())
         .MaxItems(kvp => kvp.Value).Select(x => x.Key).First();
 
-      var model = new ConstantModel(dominantClass);
+      var model = new ConstantModel(dominantClass, target);
       var solution = model.CreateClassificationSolution(problemData);
       return solution;
     }

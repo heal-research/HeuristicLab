@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -184,12 +184,12 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
         double maximumAllowedTreeLength = MaximumSymbolicExpressionTreeLengthParameter.ActualValue.Value;
 
         treeLengthsTableRow.VisualProperties.ChartType = DataRowVisualProperties.DataRowChartType.Histogram;
-        treeLengthsTableRow.VisualProperties.ExactBins = false;
+        treeLengthsTable.VisualProperties.HistogramExactBins = false;
 
         int range = maxLength - minLength;
         if (range == 0) range = 1;
         // the following trick should result in an integer intervalWidth of 1,2,4,...
-        treeLengthsTableRow.VisualProperties.Bins = range;
+        treeLengthsTable.VisualProperties.HistogramBins = range;
 
         if (maxLength <= 25) // [0,25]
           treeLengthsTableRow.VisualProperties.ScaleFactor = 1.0;

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,10 +19,10 @@
  */
 #endregion
 
+using HeuristicLab.Services.OKB.RunCreation.DataTransfer;
 using System.Collections.Generic;
 using System.Net.Security;
 using System.ServiceModel;
-using HeuristicLab.Services.OKB.RunCreation.DataTransfer;
 
 namespace HeuristicLab.Services.OKB.RunCreation {
   /// <summary>
@@ -43,6 +43,36 @@ namespace HeuristicLab.Services.OKB.RunCreation {
     byte[] GetProblemData(long problemId);
 
     [OperationContract]
+    [FaultContract(typeof(MissingProblem))]
+    IEnumerable<Solution> GetSolutions(long problemId);
+
+    [OperationContract]
+    Solution GetSolution(long solutionId);
+
+    [OperationContract]
+    [FaultContract(typeof(MissingSolution))]
+    byte[] GetSolutionData(long solutionId);
+
+    [OperationContract]
+    long AddSolution(Solution solution, byte[] data);
+
+    [OperationContract]
+    void DeleteSolution(Solution solution);
+
+    [OperationContract]
     void AddRun(Run run);
+
+    [OperationContract]
+    IEnumerable<Value> GetCharacteristicValues(long problemId);
+
+    [OperationContract]
+    [FaultContract(typeof(MissingProblem))]
+    [FaultContract(typeof(UnknownCharacteristicType))]
+    void SetCharacteristicValue(long problemId, Value value);
+
+    [OperationContract]
+    [FaultContract(typeof(MissingProblem))]
+    [FaultContract(typeof(UnknownCharacteristicType))]
+    void SetCharacteristicValues(long problemId, Value[] values);
   }
 }

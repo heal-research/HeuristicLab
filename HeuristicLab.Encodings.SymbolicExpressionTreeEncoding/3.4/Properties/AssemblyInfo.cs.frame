@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -31,7 +31,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("HeuristicLab")]
-[assembly: AssemblyCopyright("(c) 2002-2015 HEAL")]
+[assembly: AssemblyCopyright("(c) 2002-2018 HEAL")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -44,4 +44,4 @@ using System.Runtime.InteropServices;
 [assembly: Guid("B4A9B316-6336-478B-84E5-16F773DE2512")]
 
 [assembly: AssemblyVersion("3.4.0.0")]
-[assembly: AssemblyFileVersion("3.4.9.$WCREV$")]
+[assembly: AssemblyFileVersion("3.4.11.$WCREV$")]

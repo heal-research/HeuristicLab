@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
@@ -173,18 +174,49 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
 
     [StorableConstructor]
     protected MultiDepotVRPProblemInstance(bool deserializing) : base(deserializing) { }
-
+    protected MultiDepotVRPProblemInstance(MultiDepotVRPProblemInstance original, Cloner cloner)
+      : base(original, cloner) {
+      AttachEventHandlers();
+    }
     public MultiDepotVRPProblemInstance() {
       Parameters.Add(new ValueParameter<IntValue>("Depots", "The number of depots", new IntValue(0)));
       Parameters.Add(new ValueParameter<IntArray>("VehicleDepotAssignment", "The assignment of vehicles to depots", new IntArray()));
+      AttachEventHandlers();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new MultiDepotVRPProblemInstance(this, cloner);
     }
 
-    protected MultiDepotVRPProblemInstance(MultiDepotVRPProblemInstance original, Cloner cloner)
-      : base(original, cloner) {
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      AttachEventHandlers();
     }
+
+    private void AttachEventHandlers() {
+      DepotsParameter.ValueChanged += DepotsParameter_ValueChanged;
+      Depots.ValueChanged += Depots_ValueChanged;
+      VehicleDepotAssignmentParameter.ValueChanged += VehicleDepotAssignmentParameter_ValueChanged;
+      VehicleDepotAssignment.Reset += VehicleDepotAssignment_Changed;
+      VehicleDepotAssignment.ItemChanged += VehicleDepotAssignment_Changed;
+    }
+
+    #region Event handlers
+    private void DepotsParameter_ValueChanged(object sender, EventArgs e) {
+      Depots.ValueChanged += Depots_ValueChanged;
+      EvalBestKnownSolution();
+    }
+    private void Depots_ValueChanged(object sender, EventArgs e) {
+      EvalBestKnownSolution();
+    }
+    private void VehicleDepotAssignmentParameter_ValueChanged(object sender, EventArgs e) {
+      VehicleDepotAssignment.Reset += VehicleDepotAssignment_Changed;
+      VehicleDepotAssignment.ItemChanged += VehicleDepotAssignment_Changed;
+      EvalBestKnownSolution();
+    }
+    private void VehicleDepotAssignment_Changed(object sender, EventArgs e) {
+      EvalBestKnownSolution();
+    }
+    #endregion
   }
 }

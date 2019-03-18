@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -92,6 +92,7 @@ namespace HeuristicLab.Problems.Programmable {
 
     private void RegisterEvents() {
       ProblemScript.ProblemDefinitionChanged += (o, e) => OnProblemDefinitionChanged();
+      ProblemScript.NameChanged += (o, e) => OnProblemScriptNameChanged();
     }
 
     private void OnProblemDefinitionChanged() {
@@ -101,6 +102,13 @@ namespace HeuristicLab.Problems.Programmable {
 
       OnOperatorsChanged();
       OnReset();
+    }
+    protected override void OnNameChanged() {
+      base.OnNameChanged();
+      ProblemScript.Name = Name;
+    }
+    private void OnProblemScriptNameChanged() {
+      Name = ProblemScript.Name;
     }
 
     public override bool[] Maximization {

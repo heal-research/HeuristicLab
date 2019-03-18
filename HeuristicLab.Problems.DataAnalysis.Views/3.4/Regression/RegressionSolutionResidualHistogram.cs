@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -95,6 +95,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         CalculateResidualParameters(residuals, out roundedMax, out intervalWidth);
 
         ChartArea chartArea = chart.ChartAreas[0];
+        chartArea.AxisX.Title = string.Format("Residuals ({0})", Content.ProblemData.TargetVariable);
         chartArea.AxisX.Minimum = -roundedMax - intervalWidth;
         chartArea.AxisX.Maximum = roundedMax + intervalWidth;
         // get the highest frequency of a residual of any series

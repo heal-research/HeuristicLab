@@ -20,15 +20,15 @@
     <Setting Name="AnonymousUserName" Type="System.String" Scope="Application">
       <Value Profile="(Default)">anonymous</Value>
     </Setting>
+    <Setting Name="MaxEndpointRetries" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">3</Value>
+    </Setting>
     <Setting Name="EndpointConfigurationPriorities" Type="System.Collections.Specialized.StringCollection" Scope="Application">
       <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
 &lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
-  &lt;string&gt;netTcpBinding_IHiveService&lt;/string&gt;
-  &lt;string&gt;wsHttpBinding_IHiveService&lt;/string&gt;
+  &lt;string&gt;NetBinding_IHiveService&lt;/string&gt;
+  &lt;string&gt;WSHttpBinding_IHiveService&lt;/string&gt;
 &lt;/ArrayOfString&gt;</Value>
-    </Setting>
-    <Setting Name="MaxEndpointRetries" Type="System.Int32" Scope="Application">
-      <Value Profile="(Default)">3</Value>
     </Setting>
   </Settings>
 </SettingsFile>

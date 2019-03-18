@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,46 +19,32 @@
  */
 #endregion
 
-using System.Collections.Generic;
-using System.ComponentModel;
+using System;
 using System.Linq;
-using System.Windows.Forms;
-using HeuristicLab.Data;
+using HeuristicLab.Data.Views;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
-using HeuristicLab.PluginInfrastructure;
-using System;
-using HeuristicLab.DataPreprocessing;
-using HeuristicLab.Problems.DataAnalysis.Views;
 
-namespace HeuristicLab.Problems.DataAnalysis.Views {
+namespace HeuristicLab.DataPreprocessing.Views {
   [View("Preprocessing Feature Correlation View")]
-  [Content(typeof(CorrelationMatrixContent), false)]
+  [Content(typeof(CorrelationMatrixContent), true)]
   public partial class PreprocessingFeatureCorrelationView : AsynchronousContentView {
-
-    public new CorrelationMatrixContent Content
-    {
-      get { return (CorrelationMatrixContent) base.Content; }
+    public new CorrelationMatrixContent Content {
+      get { return (CorrelationMatrixContent)base.Content; }
       set { base.Content = value; }
     }
 
-    FeatureCorrelationView correlationView;
-
     public PreprocessingFeatureCorrelationView() {
       InitializeComponent();
-      correlationView = new FeatureCorrelationView();
-      correlationView.Dock = DockStyle.Fill;
-      this.Controls.Add(correlationView);
     }
-
 
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
-      Content.Changed += Data_Changed;      
+      Content.Changed += Data_Changed;
     }
 
     protected override void DeregisterContentEvents() {
-      Content.Changed -= Data_Changed;      
+      Content.Changed -= Data_Changed;
       base.DeregisterContentEvents();
     }
 
@@ -68,12 +54,32 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
     protected override void OnContentChanged() {
       base.OnContentChanged();
-      if (Content == null) {
-        correlationView.Content = null;
-        return;
-      }
-
-      correlationView.Content = Content.ProblemData;
+      correlationView.Content = Content != null ? Content.ProblemData : null;
     }
+
+    #region Check Variables
+    private void checkAllButton_Click(object sender, System.EventArgs e) {
+      SetVisibility(x => true);
+    }
+    private void checkInputsTargetButton_Click(object sender, System.EventArgs e) {
+      var ppd = Content.PreprocessingData;
+      SetVisibility(x => ppd.InputVariables.Contains(x) || ppd.TargetVariable == x);
+    }
+    private void uncheckAllButton_Click(object sender, System.EventArgs e) {
+      SetVisibility(x => false);
+    }
+    private void SetVisibility(Func<string, bool> check) {
+      var dataView = (EnhancedStringConvertibleMatrixView)correlationView.Controls.Find("DataView", searchAllChildren: true).Single();
+      var ppd = Content.PreprocessingData;
+      var visibilities = ppd.VariableNames.Where((v, i) => ppd.VariableHasType<double>(i)).Select(check).ToList();
+      if (dataView.Content.Rows != dataView.Content.Columns || dataView.Content.Rows != visibilities.Count)
+        return;
+
+      dataView.ColumnVisibility = visibilities;
+      dataView.RowVisibility = visibilities;
+      dataView.UpdateColumnHeaders();
+      dataView.UpdateRowHeaders();
+    }
+    #endregion
   }
 }

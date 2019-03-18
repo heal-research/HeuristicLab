@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -31,10 +31,8 @@ using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.DataPreprocessing.Views {
   [View("CheckedTransformationList View")]
-  //[Content(typeof(RunCollectionConstraintCollection), true)]
   [Content(typeof(ICheckedItemList<ITransformation>), false)]
   public partial class CheckedTransformationListView : CheckedItemListView<ITransformation> {
-
     public CheckedTransformationListView() {
       InitializeComponent();
       itemsGroupBox.Text = "Transformations";
@@ -52,11 +50,10 @@ namespace HeuristicLab.DataPreprocessing.Views {
         try {
           // TODO: Avoid accessing parent view
           var transformationView = (TransformationView)Parent;
-          var columnNames = transformationView.Content.Data.VariableNames;
+          var columnNames = transformationView.Content.PreprocessingData.VariableNames;
 
           return (ITransformation)typeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType(new[] { columnNames });
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
           ErrorHandling.ShowErrorDialog(this, ex);
         }
       }

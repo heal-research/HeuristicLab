@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,8 +20,6 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -83,18 +81,18 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       if (p.Length != c) throw new ArgumentException("The length of the parameter vector does not match the number of free parameters for CovarianceNoise", "p");
     }
 
-    public ParameterizedCovarianceFunction GetParameterizedCovarianceFunction(double[] p, IEnumerable<int> columnIndices) {
+    public ParameterizedCovarianceFunction GetParameterizedCovarianceFunction(double[] p, int[] columnIndices) {
       double scale;
       GetParameterValues(p, out scale);
       var fixedScale = HasFixedScaleParameter;
       // create functions
       var cov = new ParameterizedCovarianceFunction();
       cov.Covariance = (x, i, j) => i == j ? scale : 0.0;
-      cov.CrossCovariance = (x, xt, i, j) => Util.SqrDist(x, i, xt, j, 1.0, columnIndices) < 1e-9 ? scale : 0.0;
+      cov.CrossCovariance = (x, xt, i, j) => Util.SqrDist(x, i, xt, j, columnIndices, 1.0) < 1e-9 ? scale : 0.0;
       if (fixedScale)
-        cov.CovarianceGradient = (x, i, j) => Enumerable.Empty<double>();
+        cov.CovarianceGradient = (x, i, j) => new double[0];
       else
-        cov.CovarianceGradient = (x, i, j) => Enumerable.Repeat(i == j ? 2.0 * scale : 0.0, 1);
+        cov.CovarianceGradient = (x, i, j) => new double[1] { i == j ? 2.0 * scale : 0.0 };
       return cov;
     }
   }

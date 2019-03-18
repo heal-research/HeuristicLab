@@ -121,6 +121,12 @@
     <Compile Include="InteractiveSymbolicRegressionSolutionSimplifierView.Designer.cs">
       <DependentUpon>InteractiveSymbolicRegressionSolutionSimplifierView.cs</DependentUpon>
     </Compile>
+    <Compile Include="SymbolicRegressionModelMathView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SymbolicRegressionModelMathView.designer.cs">
+      <DependentUpon>SymbolicRegressionModelMathView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Plugin.cs" />
     <Compile Include="SymbolicRegressionSolutionResponseFunctionView.cs">
       <SubType>UserControl</SubType>

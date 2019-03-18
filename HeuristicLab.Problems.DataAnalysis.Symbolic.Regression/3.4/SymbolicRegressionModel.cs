@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -32,15 +33,34 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   [StorableClass]
   [Item(Name = "Symbolic Regression Model", Description = "Represents a symbolic regression model.")]
   public class SymbolicRegressionModel : SymbolicDataAnalysisModel, ISymbolicRegressionModel {
-
+    [Storable]
+    private string targetVariable;
+    public string TargetVariable {
+      get { return targetVariable; }
+      set {
+        if (string.IsNullOrEmpty(value) || targetVariable == value) return;
+        targetVariable = value;
+        OnTargetVariableChanged(this, EventArgs.Empty);
+      }
+    }
 
     [StorableConstructor]
-    protected SymbolicRegressionModel(bool deserializing) : base(deserializing) { }
-    protected SymbolicRegressionModel(SymbolicRegressionModel original, Cloner cloner) : base(original, cloner) { }
+    protected SymbolicRegressionModel(bool deserializing)
+      : base(deserializing) {
+      targetVariable = string.Empty;
+    }
 
-    public SymbolicRegressionModel(ISymbolicExpressionTree tree, ISymbolicDataAnalysisExpressionTreeInterpreter interpreter,
+    protected SymbolicRegressionModel(SymbolicRegressionModel original, Cloner cloner)
+      : base(original, cloner) {
+      this.targetVariable = original.targetVariable;
+    }
+
+    public SymbolicRegressionModel(string targetVariable, ISymbolicExpressionTree tree,
+      ISymbolicDataAnalysisExpressionTreeInterpreter interpreter,
       double lowerEstimationLimit = double.MinValue, double upperEstimationLimit = double.MaxValue)
-      : base(tree, interpreter, lowerEstimationLimit, upperEstimationLimit) { }
+      : base(tree, interpreter, lowerEstimationLimit, upperEstimationLimit) {
+      this.targetVariable = targetVariable;
+    }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new SymbolicRegressionModel(this, cloner);
@@ -61,5 +81,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     public void Scale(IRegressionProblemData problemData) {
       Scale(problemData, problemData.TargetVariable);
     }
+
+    #region events
+    public event EventHandler TargetVariableChanged;
+    private void OnTargetVariableChanged(object sender, EventArgs args) {
+      var changed = TargetVariableChanged;
+      if (changed != null)
+        changed(sender, args);
+    }
+    #endregion
   }
 }

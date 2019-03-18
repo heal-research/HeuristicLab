@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -87,6 +87,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
+      if (string.IsNullOrEmpty(Model.TargetVariable))
+        Model.TargetVariable = this.ProblemData.TargetVariable;
+
       if (!this.ContainsKey(TrainingNormalizedGiniCoefficientResultName))
         Add(new Result(TrainingNormalizedGiniCoefficientResultName, "Normalized Gini coefficient of the model on the training partition.", new DoubleValue()));
       if (!this.ContainsKey(TestNormalizedGiniCoefficientResultName))
@@ -127,6 +130,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
       TrainingNormalizedGiniCoefficient = trainingNormalizedGini;
       TestNormalizedGiniCoefficient = testNormalizedGini;
+
+      ClassificationPerformanceMeasures.Reset();
 
       trainingPerformanceCalculator.Calculate(originalTrainingClassValues, estimatedTrainingClassValues);
       if (trainingPerformanceCalculator.ErrorState == OnlineCalculatorError.None)

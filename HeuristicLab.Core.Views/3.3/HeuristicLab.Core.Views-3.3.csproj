@@ -121,6 +121,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="Plugin.cs.frame" />
     <Compile Include="BreadcrumbViewHost.cs">
       <SubType>UserControl</SubType>
@@ -164,7 +165,18 @@
     <Compile Include="NestingLevelErrorControl.Designer.cs">
       <DependentUpon>NestingLevelErrorControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="ParameterizedItemView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ParameterizedItemView.Designer.cs">
+      <DependentUpon>ParameterizedItemView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Plugin.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
     <Compile Include="VariableValueView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -322,6 +334,10 @@
     <Compile Include="VariableView.Designer.cs">
       <DependentUpon>VariableView.cs</DependentUpon>
     </Compile>
+    <None Include="Properties\Settings.settings">
+      <Generator>PublicSettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />

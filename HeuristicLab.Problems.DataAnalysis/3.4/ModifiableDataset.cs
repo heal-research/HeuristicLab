@@ -1,7 +1,7 @@
 ﻿#region License Information
 
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -55,7 +55,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public override IDeepCloneable Clone(Cloner cloner) { return new ModifiableDataset(this, cloner); }
     public ModifiableDataset() : base() { }
 
-    public ModifiableDataset(Dataset dataset) : base(dataset) { }
     public ModifiableDataset(IEnumerable<string> variableNames, IEnumerable<IList> variableValues) : base(variableNames, variableValues) { }
 
     public void ReplaceRow(int row, IEnumerable<object> values) {
@@ -73,6 +72,16 @@ namespace HeuristicLab.Problems.DataAnalysis {
         variableValues[variableNames[i]][row] = list[i];
       }
       OnReset();
+    }
+
+    public void ReplaceVariable(string variableName, IList values) {
+      if (!variableValues.ContainsKey(variableName))
+        throw new ArgumentException(string.Format("Variable {0} is not present in the dataset.", variableName));
+      if (values.Count != variableValues[variableName].Count)
+        throw new ArgumentException("The number of values must coincide with the number of dataset rows.");
+      if (GetVariableType(variableName) != values[0].GetType())
+        throw new ArgumentException("The type of the provided value does not match the variable type.");
+      variableValues[variableName] = values;
     }
 
     public void AddRow(IEnumerable<object> values) {

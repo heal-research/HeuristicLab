@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,7 +24,7 @@ using HeuristicLab.Core;
 using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
-  [View("RegressionSolution View")]
+  [View("Solution View")]
   [Content(typeof(RegressionSolutionBase), false)]
   public partial class RegressionSolutionView : DataAnalysisSolutionView {
     public RegressionSolutionView() {

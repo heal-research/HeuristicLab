@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -116,7 +116,9 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
     }
 
     private void AttachEventHandlers() {
-      PickupDeliveryLocationParameter.ValueChanged += new EventHandler(PickupDeliveryLocationParameter_ValueChanged);
+      PickupDeliveryLocationParameter.ValueChanged += PickupDeliveryLocationParameter_ValueChanged;
+      PickupDeliveryLocation.Reset += PickupDeliveryLocation_Changed;
+      PickupDeliveryLocation.ItemChanged += PickupDeliveryLocation_Changed;
     }
 
     public override void InitializeState() {
@@ -127,11 +129,11 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
 
     #region Event handlers
     void PickupDeliveryLocationParameter_ValueChanged(object sender, EventArgs e) {
-      PickupDeliveryLocationParameter.Value.ItemChanged += new EventHandler<EventArgs<int>>(Value_ItemChanged);
+      PickupDeliveryLocation.Reset += PickupDeliveryLocation_Changed;
+      PickupDeliveryLocation.ItemChanged += PickupDeliveryLocation_Changed;
       EvalBestKnownSolution();
     }
-
-    void Value_ItemChanged(object sender, EventArgs<int> e) {
+    private void PickupDeliveryLocation_Changed(object sender, EventArgs e) {
       EvalBestKnownSolution();
     }
     #endregion

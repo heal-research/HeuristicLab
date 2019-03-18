@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -32,13 +33,32 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
   [StorableClass]
   [Item(Name = "SymbolicClassificationModel", Description = "Represents a symbolic classification model.")]
   public abstract class SymbolicClassificationModel : SymbolicDataAnalysisModel, ISymbolicClassificationModel {
+    [Storable]
+    private string targetVariable;
+    public string TargetVariable {
+      get { return targetVariable; }
+      set {
+        if (string.IsNullOrEmpty(value) || targetVariable == value) return;
+        targetVariable = value;
+        OnTargetVariableChanged(this, EventArgs.Empty);
+      }
+    }
 
     [StorableConstructor]
-    protected SymbolicClassificationModel(bool deserializing) : base(deserializing) { }
-    protected SymbolicClassificationModel(SymbolicClassificationModel original, Cloner cloner) : base(original, cloner) { }
-    protected SymbolicClassificationModel(ISymbolicExpressionTree tree, ISymbolicDataAnalysisExpressionTreeInterpreter interpreter,
-      double lowerEstimationLimit = double.MinValue, double upperEstimationLimit = double.MaxValue)
-      : base(tree, interpreter, lowerEstimationLimit, upperEstimationLimit) { }
+    protected SymbolicClassificationModel(bool deserializing)
+      : base(deserializing) {
+      targetVariable = string.Empty;
+    }
+
+    protected SymbolicClassificationModel(SymbolicClassificationModel original, Cloner cloner)
+      : base(original, cloner) {
+      targetVariable = original.targetVariable;
+    }
+
+    protected SymbolicClassificationModel(string targetVariable, ISymbolicExpressionTree tree, ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, double lowerEstimationLimit = double.MinValue, double upperEstimationLimit = double.MaxValue)
+      : base(tree, interpreter, lowerEstimationLimit, upperEstimationLimit) {
+      this.targetVariable = targetVariable;
+    }
 
     public abstract IEnumerable<double> GetEstimatedClassValues(IDataset dataset, IEnumerable<int> rows);
     public abstract void RecalculateModelParameters(IClassificationProblemData problemData, IEnumerable<int> rows);
@@ -52,5 +72,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     public void Scale(IClassificationProblemData problemData) {
       Scale(problemData, problemData.TargetVariable);
     }
+
+    #region events
+    public event EventHandler TargetVariableChanged;
+    private void OnTargetVariableChanged(object sender, EventArgs args) {
+      var changed = TargetVariableChanged;
+      if (changed != null)
+        changed(sender, args);
+    }
+    #endregion
   }
 }

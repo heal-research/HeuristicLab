@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,8 +19,6 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
@@ -35,6 +33,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   public interface IMeanFunction : IItem {
     int GetNumberOfParameters(int numberOfVariables);
     void SetParameter(double[] p);
-    ParameterizedMeanFunction GetParameterizedMeanFunction(double[] p, IEnumerable<int> columnIndices);
+    ParameterizedMeanFunction GetParameterizedMeanFunction(double[] p, int[] columnIndices);
   }
 }

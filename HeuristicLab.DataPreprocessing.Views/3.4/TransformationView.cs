@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -27,11 +27,9 @@ using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.DataPreprocessing.Views {
-
   [View("Transformation View")]
   [Content(typeof(TransformationContent), true)]
   public partial class TransformationView : AsynchronousContentView {
-
     public new TransformationContent Content {
       get { return (TransformationContent)base.Content; }
       set { base.Content = value; }
@@ -51,18 +49,12 @@ namespace HeuristicLab.DataPreprocessing.Views {
       }
     }
 
-    /// <summary>
-    /// Adds eventhandlers to the current instance.
-    /// </summary>
     protected override void RegisterContentEvents() {
-      Content.FilterLogic.FilterChanged += FilterLogic_FilterChanged;
+      Content.PreprocessingData.FilterChanged += FilterLogic_FilterChanged;
     }
 
-    /// <summary>
-    /// Removes the eventhandlers from the current instance.
-    /// </summary>
     protected override void DeregisterContentEvents() {
-      Content.FilterLogic.FilterChanged -= FilterLogic_FilterChanged;
+      Content.PreprocessingData.FilterChanged -= FilterLogic_FilterChanged;
     }
 
     void FilterLogic_FilterChanged(object sender, EventArgs e) {
@@ -72,7 +64,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
     }
 
     private void CheckFilters() {
-      if (Content.FilterLogic.IsFiltered) {
+      if (Content.PreprocessingData.IsFiltered) {
         applyButton.Enabled = false;
         lblFilterNotice.Visible = true;
       } else {
@@ -89,7 +81,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
         return;
       }
 
-      var transformator = new PreprocessingTransformator(Content.Data);
+      var transformator = new PreprocessingTransformator(Content.PreprocessingData);
       bool preserve = preserveColumnsCheckbox.CheckState == CheckState.Checked;
       string errorMsg;
       bool success = transformator.ApplyTransformations(transformations, preserve, out errorMsg);

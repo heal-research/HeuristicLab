@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -29,8 +29,10 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
   [NonDiscoverableType]
   public class PermutationEqualityComparer : EqualityComparer<Permutation> {
     public override bool Equals(Permutation x, Permutation y) {
-      if (x.PermutationType != y.PermutationType) return false;
+      if (ReferenceEquals(x, y)) return true;
+      if (x == null || y == null) return false;
       if (x.Length != y.Length) return false;
+      if (x.PermutationType != y.PermutationType) return false;
       switch (x.PermutationType) {
         case PermutationTypes.Absolute:
           return EqualsAbsolute(x, y);
@@ -66,7 +68,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     }
 
     public override int GetHashCode(Permutation obj) {
-      if (obj == null) return 0;
+      if (obj == null) throw new ArgumentNullException("obj", "PermutationEqualityComparer: Cannot compute hash value of null.");
       return GenerateHashString(obj).GetHashCode();
     }
 

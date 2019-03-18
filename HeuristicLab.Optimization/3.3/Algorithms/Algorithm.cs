@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,6 +23,8 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -202,8 +204,15 @@ namespace HeuristicLab.Optimization {
       Prepare();
     }
     public virtual void Start() {
+      Start(CancellationToken.None);
+    }
+    public virtual void Start(CancellationToken cancellationToken) {
       if ((ExecutionState != ExecutionState.Prepared) && (ExecutionState != ExecutionState.Paused))
         throw new InvalidOperationException(string.Format("Start not allowed in execution state \"{0}\".", ExecutionState));
+    }
+    public virtual async Task StartAsync() { await StartAsync(CancellationToken.None); }
+    public virtual async Task StartAsync(CancellationToken cancellationToken) {
+      await AsyncHelper.DoAsync(Start, cancellationToken);
     }
     public virtual void Pause() {
       if (ExecutionState != ExecutionState.Started)
@@ -288,14 +297,25 @@ namespace HeuristicLab.Optimization {
     }
     public event EventHandler Stopped;
     protected virtual void OnStopped() {
-      foreach (IStatefulItem statefulObject in this.GetObjectGraphObjects(new HashSet<object>() { Runs }).OfType<IStatefulItem>()) {
-        statefulObject.ClearState();
+      try {
+        foreach (
+          IStatefulItem statefulObject in
+          this.GetObjectGraphObjects(new HashSet<object>() {Runs}).OfType<IStatefulItem>()) {
+          statefulObject.ClearState();
+        }
+        runsCounter++;
+        try {
+          runs.Add(new Run(string.Format("{0} Run {1}", Name, runsCounter), this));
+        }
+        catch (ArgumentException e) {
+          OnExceptionOccurred(new InvalidOperationException("Run creation failed.", e));
+        }
+      }    
+      finally {
+        ExecutionState = ExecutionState.Stopped;
+        EventHandler handler = Stopped;
+        if (handler != null) handler(this, EventArgs.Empty);
       }
-      runsCounter++;
-      runs.Add(new Run(string.Format("{0} Run {1}", Name, runsCounter), this));
-      ExecutionState = ExecutionState.Stopped;
-      EventHandler handler = Stopped;
-      if (handler != null) handler(this, EventArgs.Empty);
     }
     public event EventHandler<EventArgs<Exception>> ExceptionOccurred;
     protected virtual void OnExceptionOccurred(Exception exception) {

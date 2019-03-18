@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -38,7 +38,9 @@ namespace ParameterlessPopulationPyramid.Test {
       solver.SetSeedRandomly = false;
       PrivateObject hidden = new PrivateObject(solver);
       try {
-        hidden.Invoke("Run", new CancellationToken());
+        var ct = new CancellationToken();
+        hidden.Invoke("Initialize", ct);
+        hidden.Invoke("Run", ct);
       } catch (OperationCanceledException) {
         // Ignore
       }

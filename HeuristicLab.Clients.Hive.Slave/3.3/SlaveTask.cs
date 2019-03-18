@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -162,18 +162,6 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
     private void AppDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e) {
       DisposeAppDomain();
       OnTaskFailed(new Exception("Unhandled exception: " + e.ExceptionObject.ToString()));
-    }
-
-    public Tuple<TaskData, DateTime> GetTaskDataSnapshot() {
-      Tuple<TaskData, DateTime> snapshot = null;
-      try {
-        snapshot = executor.GetTaskDataSnapshot();
-        if (snapshot == null) return Tuple.Create(originalTaskData, DateTime.Now);
-      }
-      catch (Exception ex) {
-        EventLogManager.LogException(ex);
-      }
-      return snapshot;
     }
 
     public TaskData GetTaskData() {

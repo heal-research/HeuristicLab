@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,15 +19,16 @@
  */
 #endregion
 
-using HeuristicLab.Optimization;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Problems.DataAnalysis;
-using HeuristicLab.Core;
-using System.Collections.Generic;
+
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>
   /// Interface to represent a random forest model for either regression or classification
   /// </summary>
-  public interface IRandomForestModel : IRegressionModel, IClassificationModel {
+  public interface IRandomForestModel : IConfidenceRegressionModel, IClassificationModel {
+    int NumberOfTrees { get; }
+    ISymbolicExpressionTree ExtractTree(int treeIdx); // returns a specific tree from the random forest as a ISymbolicRegressionModel
   }
 }

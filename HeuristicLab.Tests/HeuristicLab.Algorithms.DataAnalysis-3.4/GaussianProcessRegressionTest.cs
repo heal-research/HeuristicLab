@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,7 +21,6 @@
 
 using System;
 using System.Linq;
-using System.Threading;
 using HeuristicLab.Common;
 using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Problems.Instances.DataAnalysis;
@@ -38,7 +37,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Tests {
       set { testContextInstance = value; }
     }
 
-    private EventWaitHandle trigger = new AutoResetEvent(false);
     private Exception ex;
 
     [TestMethod]
@@ -49,6 +47,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Tests {
 
       var alg = new GaussianProcessRegression();
       alg.Engine = new HeuristicLab.SequentialEngine.SequentialEngine();
+      alg.SetSeedRandomly = false;
 
       alg.Problem = new RegressionProblem();
       var provider = new RegressionCSVInstanceProvider();
@@ -64,11 +63,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Tests {
       alg.Problem.ProblemDataParameter.Value = problemData;
 
       alg.ExceptionOccurred += new EventHandler<EventArgs<Exception>>(cv_ExceptionOccurred);
-      alg.Stopped += new EventHandler(cv_Stopped);
 
       alg.Prepare();
       alg.Start();
-      trigger.WaitOne();
       if (ex != null) throw ex;
 
       TestContext.WriteLine("Runtime: {0}", alg.ExecutionTime.ToString());
@@ -76,10 +73,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Tests {
 
     private void cv_ExceptionOccurred(object sender, EventArgs<Exception> e) {
       ex = e.Value;
-    }
-
-    private void cv_Stopped(object sender, EventArgs e) {
-      trigger.Set();
     }
   }
 }

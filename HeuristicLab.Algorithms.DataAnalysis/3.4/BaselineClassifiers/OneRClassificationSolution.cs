@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -27,15 +27,15 @@ using HeuristicLab.Problems.DataAnalysis;
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
   [Item(Name = "OneR Classification Solution", Description = "Represents a OneR classification solution which uses only a single feature with potentially multiple thresholds for class prediction.")]
-  public class OneRClassificationSolution : ClassificationSolution {
+  public sealed class OneRClassificationSolution : ClassificationSolution {
     public new OneRClassificationModel Model {
       get { return (OneRClassificationModel)base.Model; }
       set { base.Model = value; }
     }
 
     [StorableConstructor]
-    protected OneRClassificationSolution(bool deserializing) : base(deserializing) { }
-    protected OneRClassificationSolution(OneRClassificationSolution original, Cloner cloner) : base(original, cloner) { }
+    private OneRClassificationSolution(bool deserializing) : base(deserializing) { }
+    private OneRClassificationSolution(OneRClassificationSolution original, Cloner cloner) : base(original, cloner) { }
     public OneRClassificationSolution(OneRClassificationModel model, IClassificationProblemData problemData)
       : base(model, problemData) {
       RecalculateResults();

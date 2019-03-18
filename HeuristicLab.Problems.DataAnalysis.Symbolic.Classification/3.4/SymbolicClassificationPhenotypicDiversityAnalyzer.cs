@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -124,7 +124,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
         var estimationLimits = EstimationLimitsParameter.ActualValue;
         var evaluatedValues = new ItemArray<DoubleArray>(trees.Length);
         for (int i = 0; i < trees.Length; ++i) {
-          var model = (IDiscriminantFunctionClassificationModel)modelCreator.CreateSymbolicDiscriminantFunctionClassificationModel(trees[i], interpreter, estimationLimits.Lower, estimationLimits.Upper);
+          var model = (IDiscriminantFunctionClassificationModel)modelCreator.CreateSymbolicDiscriminantFunctionClassificationModel(problemData.TargetVariable, trees[i], interpreter, estimationLimits.Lower, estimationLimits.Upper);
           model.RecalculateModelParameters(problemData, rows);
           var values = UseClassValues ? model.GetEstimatedClassValues(ds, rows) : model.GetEstimatedValues(ds, rows);
           evaluatedValues[i] = new DoubleArray(values.ToArray());

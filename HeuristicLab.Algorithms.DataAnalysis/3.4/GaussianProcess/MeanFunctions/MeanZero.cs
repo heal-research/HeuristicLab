@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,8 +19,6 @@
  */
 #endregion
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -49,7 +47,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       if (p.Length > 0) throw new ArgumentException("No parameters allowed for zero mean function.", "p");
     }
 
-    public ParameterizedMeanFunction GetParameterizedMeanFunction(double[] p, IEnumerable<int> columnIndices) {
+    public ParameterizedMeanFunction GetParameterizedMeanFunction(double[] p, int[] columnIndices) {
       if (p.Length > 0) throw new ArgumentException("No parameters allowed for zero mean function.", "p");
       var mf = new ParameterizedMeanFunction();
       mf.Mean = (x, i) => 0.0;

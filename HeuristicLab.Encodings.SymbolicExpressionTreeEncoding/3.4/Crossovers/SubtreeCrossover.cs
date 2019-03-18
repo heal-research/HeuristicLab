@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -94,8 +94,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
 
       int childLength = crossoverPoint0.Child != null ? crossoverPoint0.Child.GetLength() : 0;
       // calculate the max length and depth that the inserted branch can have 
-      int maxInsertedBranchLength = maxTreeLength - (parent0.Length - childLength);
-      int maxInsertedBranchDepth = maxTreeDepth - parent0.Root.GetBranchLevel(crossoverPoint0.Parent);
+      int maxInsertedBranchLength = Math.Max(0, maxTreeLength - (parent0.Length - childLength));
+      int maxInsertedBranchDepth = Math.Max(0, maxTreeDepth - parent0.Root.GetBranchLevel(crossoverPoint0.Parent));
 
       List<ISymbolicExpressionTreeNode> allowedBranches = new List<ISymbolicExpressionTreeNode>();
       parent1.Root.ForEachNodePostfix((n) => {
@@ -110,6 +110,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
         return parent0;
       } else {
         var selectedBranch = SelectRandomBranch(random, allowedBranches, internalCrossoverPointProbability);
+        if (selectedBranch != null)
+          selectedBranch = (ISymbolicExpressionTreeNode)selectedBranch.Clone();
 
         if (crossoverPoint0.Child != null) {
           // manipulate the tree of parent0 in place

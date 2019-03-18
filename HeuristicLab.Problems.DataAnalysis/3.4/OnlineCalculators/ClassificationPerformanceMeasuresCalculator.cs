@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,15 +22,28 @@
 using System;
 using System.Collections.Generic;
 using HeuristicLab.Common;
-using HeuristicLab.Problems.DataAnalysis.OnlineCalculators;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  public class ClassificationPerformanceMeasuresCalculator {
+  public class ClassificationPerformanceMeasuresCalculator : DeepCloneable {
 
     public ClassificationPerformanceMeasuresCalculator(string positiveClassName, double positiveClassValue) {
       this.positiveClassName = positiveClassName;
       this.positiveClassValue = positiveClassValue;
       Reset();
+    }
+
+    protected ClassificationPerformanceMeasuresCalculator(ClassificationPerformanceMeasuresCalculator original, Cloner cloner)
+      : base(original, cloner) {
+      positiveClassName = original.positiveClassName;
+      positiveClassValue = original.positiveClassValue;
+      truePositiveCount = original.truePositiveCount;
+      falsePositiveCount = original.falsePositiveCount;
+      trueNegativeCount = original.trueNegativeCount;
+      falseNegativeCount = original.falseNegativeCount;
+      errorState = original.errorState;
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new ClassificationPerformanceMeasuresCalculator(this, cloner);
     }
 
     #region Properties

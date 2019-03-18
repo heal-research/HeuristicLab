@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -132,12 +132,12 @@ namespace HeuristicLab.Optimizer {
     }
 
     private void FillGroupLookup() {
-      var standardProblems = new List<string> { "ALPSGA_TSP", "ES_Griewank", "GA_Grouping", "GA_TSP", "GA_VRP", "GE_ArtificialAnt",
-                "IslandGA_TSP", "LS_Knapsack", "PSO_Schwefel", "RAPGA_JSSP",
-                "SA_Rastrigin", "SGP_SantaFe","GP_Multiplexer", "SS_VRP", "TS_TSP", "TS_VRP", "VNS_OP", "VNS_TSP"
+      var standardProblems = new List<string> { "ALPSGA_TSP", "ES_Griewank", "OSES_Griewank", "GA_Grouping", "GA_TSP", "GA_VRP", "GE_ArtificialAnt",
+                "IslandGA_TSP", "LS_Knapsack", "PSO_Rastrigin", "RAPGA_JSSP",
+                "SA_Rastrigin", "SGP_SantaFe", "GP_Multiplexer", "SGP_Robocode", "SS_VRP", "TS_TSP", "TS_VRP", "VNS_OP", "VNS_TSP", "GA_BPP"
         };
       groupLookup[standardProblemsGroup] = standardProblems;
-      var dataAnalysisProblems = new List<string> { "ALPSGP_SymReg", "SGP_SymbClass", "SGP_SymbReg", "OSGP_TimeSeries", "GE_SymbReg", "GPR" };
+      var dataAnalysisProblems = new List<string> { "ALPSGP_SymReg", "SGP_SymbClass", "SGP_SymbReg","OSGP_SymReg", "OSGP_TimeSeries", "GE_SymbReg", "GPR" };
       groupLookup[dataAnalysisGroup] = dataAnalysisProblems;
       var scripts = new List<string> { "GA_QAP_Script", "GUI_Automation_Script", "OSGA_Rastrigin_Script",
                                        "GridSearch_RF_Classification_Script", "GridSearch_RF_Regression_Script",

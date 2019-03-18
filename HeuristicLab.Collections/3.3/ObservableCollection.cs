@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,11 +19,12 @@
  */
 #endregion
 
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using System.Linq;
 
 namespace HeuristicLab.Collections {
   [StorableClass]
@@ -95,13 +96,13 @@ namespace HeuristicLab.Collections {
     }
     public void AddRange(IEnumerable<T> collection) {
       int capacity = list.Capacity;
-      int count = list.Count;
-      list.AddRange(collection);
-      if (list.Count != count) {
+      ICollection<T> items = collection as ICollection<T> ?? collection.ToList();
+      list.AddRange(items);
+      if (items.Count > 0) {
         if (list.Capacity != capacity)
           OnPropertyChanged("Capacity");
         OnPropertyChanged("Count");
-        OnItemsAdded(collection);
+        OnItemsAdded(items);
       }
     }
 

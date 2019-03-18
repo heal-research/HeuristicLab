@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,6 +22,7 @@
 using System.IO;
 using System.Linq;
 using HeuristicLab.Algorithms.GeneticAlgorithm;
+using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.Problems.GeneticProgramming.Robocode;
@@ -48,12 +49,14 @@ namespace HeuristicLab.Tests {
       GeneticAlgorithm ga = new GeneticAlgorithm();
 
       #region Problem Configuration
-      Problem antProblem = new Problem();
+      Problem robocodeProblem = new Problem();
+      if (!robocodeProblem.Enemies.CheckedItems.Any())
+        robocodeProblem.Enemies.Add(new StringValue("sample.Crazy"));
       #endregion
       #region Algorithm Configuration
       ga.Name = "Genetic Programming - Robocode Java Source";
       ga.Description = "A standard genetic programming algorithm to evolve the java source code for a robocode bot (see http://robocode.sourceforge.net/). An installation of Java SE Developmen Kit (JDK) >= 1.6 is necessary to run this sample.";
-      ga.Problem = antProblem;
+      ga.Problem = robocodeProblem;
       SamplesUtils.ConfigureGeneticAlgorithmParameters<TournamentSelector, SubtreeCrossover, MultiSymbolicExpressionTreeArchitectureManipulator>(
         ga, 50, 1, 50, 0.15, 2);
 

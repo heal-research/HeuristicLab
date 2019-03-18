@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -114,6 +114,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       constant.MinValue = -20;
       constant.MaxValue = 20;
       var variableSymbol = new HeuristicLab.Problems.DataAnalysis.Symbolic.Variable();
+      var binFactorVariable = new BinaryFactorVariable();
+      var factorVariable = new FactorVariable();
       var laggedVariable = new LaggedVariable();
       laggedVariable.InitialFrequency = 0.0;
       var autoregressiveVariable = new AutoregressiveTargetVariable();
@@ -122,14 +124,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
       var allSymbols = new List<Symbol>() { add, sub, mul, div, mean, sin, cos, tan, log, square, pow, sqrt, root, exp,
         airyA, airyB, bessel, cosineIntegral, dawson, erf, expIntegralEi, fresnelCosineIntegral, fresnelSineIntegral, gamma, hypCosineIntegral, hypSineIntegral, norm, psi, sineIntegral,
-        @if, gt, lt, and, or, not,xor, timeLag, integral, derivative, constant, variableSymbol, laggedVariable,autoregressiveVariable, variableCondition };
+        @if, gt, lt, and, or, not,xor, timeLag, integral, derivative, constant, variableSymbol, binFactorVariable, factorVariable, laggedVariable,autoregressiveVariable, variableCondition };
       var unaryFunctionSymbols = new List<Symbol>() { square, sqrt, sin, cos, tan, log, exp, not, timeLag, integral, derivative,
         airyA, airyB, bessel, cosineIntegral, dawson, erf, expIntegralEi, fresnelCosineIntegral, fresnelSineIntegral, gamma, hypCosineIntegral, hypSineIntegral, norm, psi, sineIntegral
       };
 
       var binaryFunctionSymbols = new List<Symbol>() { pow, root, gt, lt, variableCondition };
       var ternarySymbols = new List<Symbol>() { add, sub, mul, div, mean, and, or, xor };
-      var terminalSymbols = new List<Symbol>() { variableSymbol, constant, laggedVariable, autoregressiveVariable };
+      var terminalSymbols = new List<Symbol>() { variableSymbol, binFactorVariable, factorVariable, constant, laggedVariable, autoregressiveVariable };
 
       foreach (var symb in allSymbols)
         AddSymbol(symb);

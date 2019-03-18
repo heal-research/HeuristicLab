@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -28,7 +28,7 @@ using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableClass]
-  public sealed class VariableConditionTreeNode : SymbolicExpressionTreeNode {
+  public sealed class VariableConditionTreeNode : SymbolicExpressionTreeNode, IVariableTreeNode {
     #region properties
     public new VariableCondition Symbol {
       get { return (VariableCondition)base.Symbol; }
@@ -95,11 +95,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     public override string ToString() {
-      if (slope.IsAlmost(0.0))
+      if (slope.IsAlmost(0.0) || Symbol.IgnoreSlope) {
+        return variableName + " < " + threshold.ToString("E4");
+      } else {
         return variableName + " > " + threshold.ToString("E4") + Environment.NewLine +
-          "slope: " + slope.ToString("E4");
-      else
-        return variableName + " > " + threshold.ToString("E4");
+               "slope: " + slope.ToString("E4");
+      }
     }
   }
 }

@@ -119,12 +119,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BinaryVectorEncoding.cs" />
+    <Compile Include="BinaryVectorEqualityComparer.cs" />
     <Compile Include="Creators\RandomBinaryVectorCreator.cs" />
     <Compile Include="Crossovers\MultiBinaryVectorCrossover.cs" />
     <Compile Include="Crossovers\UniformCrossover.cs" />
     <Compile Include="Crossovers\SinglePointCrossover.cs" />
     <Compile Include="Crossovers\NPointCrossover.cs" />
     <Compile Include="BinaryVector.cs" />
+    <Compile Include="SimilarityCalculators\HammingSimilarityCalculator.cs" />
     <Compile Include="Interfaces\IBinaryVectorMultiNeighborhoodShakingOperator.cs" />
     <Compile Include="Interfaces\IBinaryVectorSolutionsOperator.cs" />
     <Compile Include="Interfaces\IBinaryVectorSolutionOperator.cs" />

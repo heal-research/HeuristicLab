@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -40,6 +40,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
       double d = HoeffD(originalValues, estimatedValues, out errorState);
       if (errorState != OnlineCalculatorError.None) return double.NaN;
       return d;
+    }
+
+    public double Calculate(IEnumerable<Tuple<double, double>> values, out OnlineCalculatorError errorState) {
+      return HoeffD(values.Select(v => v.Item1), values.Select(v => v.Item2), out errorState);
     }
 
     /// <summary>

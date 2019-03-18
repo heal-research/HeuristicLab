@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -46,7 +46,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis {
       return new SymbolicTimeSeriesPrognosisModel(this, cloner);
     }
 
-    public SymbolicTimeSeriesPrognosisModel(ISymbolicExpressionTree tree, ISymbolicTimeSeriesPrognosisExpressionTreeInterpreter interpreter, double lowerLimit = double.MinValue, double upperLimit = double.MaxValue) : base(tree, interpreter, lowerLimit, upperLimit) { }
+    public SymbolicTimeSeriesPrognosisModel(string targetVariable, ISymbolicExpressionTree tree, ISymbolicTimeSeriesPrognosisExpressionTreeInterpreter interpreter, double lowerLimit = double.MinValue, double upperLimit = double.MaxValue) : base(targetVariable, tree, interpreter, lowerLimit, upperLimit) { }
 
     public IEnumerable<IEnumerable<double>> GetPrognosedValues(IDataset dataset, IEnumerable<int> rows, IEnumerable<int> horizons) {
       var estimatedValues = Interpreter.GetSymbolicExpressionTreeValues(SymbolicExpressionTree, dataset, rows, horizons);

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,7 +23,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using HeuristicLab.Algorithms.GeneticAlgorithm;
 using HeuristicLab.Common;
@@ -40,6 +39,19 @@ namespace HeuristicLab.Tests {
     public TestContext TestContext {
       get { return testContextInstance; }
       set { testContextInstance = value; }
+    }
+
+    [TestMethod]
+    [Description("Verify that the object graph traversal is working by checking the number of objects after traversal.")]
+    [TestCategory("General")]
+    [TestCategory("Essential")]
+    [TestProperty("Time", "medium")]
+    public void TestObjectGraphTraversal() {
+      GeneticAlgorithm ga = (GeneticAlgorithm)XmlParser.Deserialize(@"Test Resources\GA_SymbReg.hl");
+      var objects = ga.GetObjectGraphObjects().ToList();
+
+      // Should be 3982, but count may change slightly as members are added or removed
+      Assert.IsTrue(objects.Count > 1, "Number of objects in the object graph seems to small.");
     }
 
     [TestMethod]
@@ -111,8 +123,7 @@ namespace HeuristicLab.Tests {
         sw.Start();
         algs.Add(ga);
 
-        var cancellationTokenSource = new CancellationTokenSource();
-        ga.StartSync(cancellationTokenSource.Token);
+        ga.Start();
         sw.Stop();
         TestContext.WriteLine("{0}: {1} ", i, sw.Elapsed);
         sw.Reset();
@@ -143,7 +154,7 @@ namespace HeuristicLab.Tests {
           Console.WriteLine("{0}; Objects before execution: {1}", ga.Name, ga.GetObjectGraphObjects().Count());
           var sw = new Stopwatch();
           sw.Start();
-          ga.StartSync(new CancellationToken());
+          ga.Start();
           sw.Stop();
           Console.WriteLine("{0}; Objects after execution: {1}", ga.Name, ga.GetObjectGraphObjects().Count());
           Console.WriteLine("{0}; ExecutionTime: {1} ", ga.Name, sw.Elapsed);

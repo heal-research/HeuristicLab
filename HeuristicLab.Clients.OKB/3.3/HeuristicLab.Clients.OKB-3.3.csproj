@@ -113,6 +113,12 @@
     <Compile Include="Administration\ServiceClient\Problem.cs" />
     <Compile Include="Administration\ServiceClient\ProblemClass.cs" />
     <Compile Include="OKBRoles.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="RunCreation\OKBSolution.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Query\QueryClient.cs" />
     <Compile Include="Query\ServiceClient\CombinedFilter.cs" />
@@ -155,16 +161,30 @@
     <Compile Include="RunCreation\OKBAlgorithm.cs" />
     <Compile Include="RunCreation\OKBProblem.cs" />
     <Compile Include="RunCreation\OKBRun.cs" />
+    <Compile Include="RunCreation\SingleObjectiveOKBSolution.cs" />
     <Compile Include="RunCreation\RunCreationClient.cs" />
     <Compile Include="RunCreation\ServiceClient\Algorithm.cs" />
+    <Compile Include="RunCreation\ServiceClient\BoolValue.cs" />
+    <Compile Include="RunCreation\ServiceClient\TimeSpanValue.cs" />
+    <Compile Include="RunCreation\ServiceClient\StringValue.cs" />
+    <Compile Include="RunCreation\ServiceClient\PercentValue.cs" />
+    <Compile Include="RunCreation\ServiceClient\DoubleValue.cs" />
+    <Compile Include="RunCreation\ServiceClient\FloatValue.cs" />
+    <Compile Include="RunCreation\ServiceClient\LongValue.cs" />
+    <Compile Include="RunCreation\ServiceClient\IntValue.cs" />
     <Compile Include="RunCreation\ServiceClient\Problem.cs" />
     <Compile Include="RunCreation\ServiceClient\RunCreationServiceClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RunCreation\ServiceClient\Value.cs" />
     <Compile Include="RunCreation\SingleObjectiveOKBProblem.cs" />
     <None Include="app.config" />
     <None Include="Plugin.cs.frame" />
     <None Include="Properties\AssemblyInfo.cs.frame" />
     <None Include="Administration\ServiceClient\GenerateServiceClient.cmd" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
     <None Include="Query\ServiceClient\GenerateServiceClient.cmd" />
     <None Include="RunCreation\ServiceClient\GenerateServiceClient.cmd" />
   </ItemGroup>

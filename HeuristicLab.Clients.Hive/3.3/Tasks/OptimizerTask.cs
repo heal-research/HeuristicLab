@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -95,12 +95,12 @@ namespace HeuristicLab.Clients.Hive.Jobs {
       Item.Prepare();
     }
 
-    public override void Start() {
+    public override async void Start() {
       if ((Item is Experiment && OptimizerAsExperiment.Optimizers.Count == 0) || // experiment would not fire OnStopped if it has 0 optimizers
           (Item is BatchRun && OptimizerAsBatchRun.Optimizer == null)) { // batchrun would not fire OnStopped if algorithm == null
         OnTaskStopped();
       } else {
-        Item.Start();
+        await Item.StartAsync();
       }
     }
 

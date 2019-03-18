@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -175,6 +175,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
+      if (string.IsNullOrEmpty(Model.TargetVariable))
+        Model.TargetVariable = this.ProblemData.TargetVariable;
+
       // BackwardsCompatibility3.4
       #region Backwards compatible code, remove with 3.5
       if (!ContainsKey(TrainingMeanAbsoluteErrorResultName)) {
@@ -229,9 +232,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
       TestMeanAbsoluteError = errorState == OnlineCalculatorError.None ? testMAE : double.NaN;
 
       double trainingR = OnlinePearsonsRCalculator.Calculate(originalTrainingValues, estimatedTrainingValues, out errorState);
-      TrainingRSquared = errorState == OnlineCalculatorError.None ? trainingR*trainingR : double.NaN;
+      TrainingRSquared = errorState == OnlineCalculatorError.None ? trainingR * trainingR : double.NaN;
       double testR = OnlinePearsonsRCalculator.Calculate(originalTestValues, estimatedTestValues, out errorState);
-      TestRSquared = errorState == OnlineCalculatorError.None ? testR*testR : double.NaN;
+      TestRSquared = errorState == OnlineCalculatorError.None ? testR * testR : double.NaN;
 
       double trainingRelError = OnlineMeanAbsolutePercentageErrorCalculator.Calculate(originalTrainingValues, estimatedTrainingValues, out errorState);
       TrainingRelativeError = errorState == OnlineCalculatorError.None ? trainingRelError : double.NaN;

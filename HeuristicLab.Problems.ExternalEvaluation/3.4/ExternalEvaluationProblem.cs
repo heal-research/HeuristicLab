@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -58,9 +58,17 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     public IFixedValueParameter<SingleObjectiveOptimizationSupportScript> SupportScriptParameter {
       get { return (IFixedValueParameter<SingleObjectiveOptimizationSupportScript>)Parameters["SupportScript"]; }
     }
+
+    private IFixedValueParameter<BoolValue> MaximizationParameter {
+      get { return (IFixedValueParameter<BoolValue>)Parameters["Maximization"]; }
+    }
     #endregion
 
     #region Properties
+    public new IEncoding<ISolution> Encoding {
+      get { return base.Encoding; }
+      set { base.Encoding = value; }
+    }
     public EvaluationCache Cache {
       get { return CacheParameter.Value; }
     }
@@ -99,6 +107,10 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     #region Single Objective Problem Overrides
     public override bool Maximization {
       get { return Parameters.ContainsKey("Maximization") && ((IValueParameter<BoolValue>)Parameters["Maximization"]).Value.Value; }
+    }
+
+    public virtual void SetMaximization(bool maximization) {
+      MaximizationParameter.Value.Value = maximization;
     }
 
     public override double Evaluate(ISolution individual, IRandom random) {

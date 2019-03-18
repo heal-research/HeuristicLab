@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -30,43 +30,48 @@ using HeuristicLab.Problems.DataAnalysis;
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
   [Item("OneR Classification Model", "A model that uses intervals for one variable to determine the class.")]
-  public class OneRClassificationModel : NamedItem, IClassificationModel {
+  public sealed class OneRClassificationModel : ClassificationModel {
+    public override IEnumerable<string> VariablesUsedForPrediction {
+      get { return new[] { Variable }; }
+    }
+
     [Storable]
-    protected string variable;
+    private string variable;
     public string Variable {
       get { return variable; }
     }
 
     [Storable]
-    protected double[] splits;
+    private double[] splits;
     public double[] Splits {
       get { return splits; }
     }
 
     [Storable]
-    protected double[] classes;
+    private double[] classes;
     public double[] Classes {
       get { return classes; }
     }
 
     [Storable]
-    protected double missingValuesClass;
+    private double missingValuesClass;
     public double MissingValuesClass {
       get { return missingValuesClass; }
     }
 
     [StorableConstructor]
-    protected OneRClassificationModel(bool deserializing) : base(deserializing) { }
-    protected OneRClassificationModel(OneRClassificationModel original, Cloner cloner)
+    private OneRClassificationModel(bool deserializing) : base(deserializing) { }
+    private OneRClassificationModel(OneRClassificationModel original, Cloner cloner)
       : base(original, cloner) {
       this.variable = (string)original.variable;
       this.splits = (double[])original.splits.Clone();
       this.classes = (double[])original.classes.Clone();
+      this.missingValuesClass = original.missingValuesClass;
     }
     public override IDeepCloneable Clone(Cloner cloner) { return new OneRClassificationModel(this, cloner); }
 
-    public OneRClassificationModel(string variable, double[] splits, double[] classes, double missingValuesClass = double.NaN)
-      : base() {
+    public OneRClassificationModel(string targetVariable, string variable, double[] splits, double[] classes, double missingValuesClass = double.NaN)
+      : base(targetVariable) {
       if (splits.Length != classes.Length) {
         throw new ArgumentException("Number of splits and classes has to be equal.");
       }
@@ -83,7 +88,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     // uses sorting to return the values in the order of rows, instead of using nested for loops
     // to avoid O(n²) runtime
-    public IEnumerable<double> GetEstimatedClassValues(IDataset dataset, IEnumerable<int> rows) {
+    public override IEnumerable<double> GetEstimatedClassValues(IDataset dataset, IEnumerable<int> rows) {
       var values = dataset.GetDoubleValues(Variable, rows).ToArray();
       var rowsArray = rows.ToArray();
       var order = Enumerable.Range(0, rowsArray.Length).ToArray();
@@ -107,7 +112,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return estimated;
     }
 
-    public IClassificationSolution CreateClassificationSolution(IClassificationProblemData problemData) {
+    public override IClassificationSolution CreateClassificationSolution(IClassificationProblemData problemData) {
       return new OneRClassificationSolution(this, new ClassificationProblemData(problemData));
     }
 

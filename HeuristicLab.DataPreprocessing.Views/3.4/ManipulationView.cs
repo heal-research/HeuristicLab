@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,7 +20,6 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
@@ -30,17 +29,19 @@ using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 
 namespace HeuristicLab.DataPreprocessing.Views {
-
   [View("Manipulation Chart View")]
   [Content(typeof(ManipulationContent), true)]
   public partial class ManipulationView : ItemView {
-
     private Action[] validators;
     private Action[] manipulations;
 
+    public new ManipulationContent Content {
+      get { return (ManipulationContent)base.Content; }
+      set { base.Content = value; }
+    }
+
     public ManipulationView() {
       InitializeComponent();
-      cmbReplaceWith.SelectedIndex = 0;
       tabsData.Appearance = TabAppearance.FlatButtons;
       tabsData.ItemSize = new Size(0, 1);
       tabsData.SizeMode = TabSizeMode.Fixed;
@@ -48,42 +49,33 @@ namespace HeuristicLab.DataPreprocessing.Views {
       tabsPreview.ItemSize = new Size(0, 1);
       tabsPreview.SizeMode = TabSizeMode.Fixed;
 
-      validators = new Action[] { 
-        ()=>validateDeleteColumnsInfo(),
-        ()=>validateDeleteColumnsVariance(),
-        ()=>validateDeleteRowsInfo(),
-        ()=>validateReplaceWith(),
-        ()=>validateShuffle()
+      validators = new Action[] {
+        () => ValidateDeleteColumnsInfo(),
+        () => ValidateDeleteColumnsVariance(),
+        () => ValidateDeleteRowsInfo(),
       };
 
-      manipulations = new Action[] { 
-        ()=>Content.ManipulationLogic.DeleteColumnsWithMissingValuesGreater(getDeleteColumnsInfo()),
-        ()=>Content.ManipulationLogic.DeleteColumnsWithVarianceSmaller(getDeleteColumnsVariance()),
-        ()=>Content.ManipulationLogic.DeleteRowsWithMissingValuesGreater(getRowsColumnsInfo()),
-        ()=>replaceMissingValues(),
-        ()=>Content.ManipulationLogic.Shuffle(shuffleSeparatelyCheckbox.Checked)
+      manipulations = new Action[] {
+        () => Content.DeleteColumnsWithMissingValuesGreater(GetDeleteColumnsInfo()),
+        () => Content.DeleteColumnsWithVarianceSmaller(GetDeleteColumnsVariance()),
+        () => Content.DeleteRowsWithMissingValuesGreater(GetRowsColumnsInfo()),
       };
     }
 
     protected override void OnContentChanged() {
       base.OnContentChanged();
       if (Content != null) {
-        cmbVariableNames.Items.Clear();
-        foreach (var name in Content.ManipulationLogic.VariableNames) {
-          cmbVariableNames.Items.Add(name);
-        }
-        cmbVariableNames.SelectedIndex = 0;
         CheckFilters();
       }
     }
 
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
-      Content.FilterLogic.FilterChanged += FilterLogic_FilterChanged;
+      Content.PreprocessingData.FilterChanged += FilterLogic_FilterChanged;
     }
 
     protected override void DeregisterContentEvents() {
-      Content.FilterLogic.FilterChanged -= FilterLogic_FilterChanged;
+      Content.PreprocessingData.FilterChanged -= FilterLogic_FilterChanged;
       base.DeregisterContentEvents();
     }
 
@@ -94,7 +86,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
     }
 
     private void CheckFilters() {
-      if (Content.FilterLogic.IsFiltered) {
+      if (Content.PreprocessingData.IsFiltered) {
         tabsPreview.SelectedIndex = 0;
         lstMethods.Enabled = false;
         tabsData.Enabled = false;
@@ -110,58 +102,34 @@ namespace HeuristicLab.DataPreprocessing.Views {
       }
     }
 
-    private double getDeleteColumnsInfo() {
+    private double GetDeleteColumnsInfo() {
       return double.Parse(txtDeleteColumnsInfo.Text);
     }
 
-    private double getDeleteColumnsVariance() {
+    private double GetDeleteColumnsVariance() {
       return double.Parse(txtDeleteColumnsVariance.Text);
     }
 
-    private double getRowsColumnsInfo() {
+    private double GetRowsColumnsInfo() {
       return double.Parse(txtDeleteRowsInfo.Text);
     }
 
-    private void replaceMissingValues() {
-      var allIndices = Content.SearchLogic.GetMissingValueIndices();
-      var columnIndex = cmbVariableNames.SelectedIndex;
-      var columnIndices = new Dictionary<int, IList<int>>{
-          {columnIndex,   allIndices[columnIndex]}
-      };
-
-      switch (cmbReplaceWith.SelectedIndex) {
-        case 0: //Value
-          Content.ManipulationLogic.ReplaceIndicesByValue(columnIndices, txtReplaceValue.Text);
-          break;
-        case 1: //Average
-          Content.ManipulationLogic.ReplaceIndicesByAverageValue(columnIndices);
-          break;
-        case 2: //Median
-          Content.ManipulationLogic.ReplaceIndicesByMedianValue(columnIndices);
-          break;
-        case 3: //Most Common
-          Content.ManipulationLogic.ReplaceIndicesByMostCommonValue(columnIndices);
-          break;
-        case 4: //Random
-          Content.ManipulationLogic.ReplaceIndicesByRandomValue(columnIndices);
-          break;
-      }
-    }
-
-    private void validateDeleteColumnsInfo() {
-      validateDoubleTextBox(txtDeleteColumnsInfo.Text);
+    private void ValidateDeleteColumnsInfo() {
+      ValidateDoubleTextBox(txtDeleteColumnsInfo.Text);
       if (btnApply.Enabled) {
-        var filteredColumns = Content.ManipulationLogic.ColumnsWithMissingValuesGreater(getDeleteColumnsInfo());
+        var filteredColumns = Content.ColumnsWithMissingValuesGreater(GetDeleteColumnsInfo());
         int count = filteredColumns.Count;
-        int columnCount = Content.FilterLogic.PreprocessingData.Columns;
-        lblPreviewColumnsInfo.Text = count + " column" + (count > 1 || count == 0 ? "s" : "") + " of " + columnCount + " (" + string.Format("{0:F2}%", 100d / columnCount * count) + ") were detected with more than " + txtDeleteColumnsInfo.Text + "% missing values.";
-        if (count > 0) {
+        int columnCount = Content.PreprocessingData.Columns;
+        lblPreviewColumnsInfo.Text = string.Format("{0} column{1} of {2} ({3}) were detected with more than {4}% missing values.", count, (count > 1 || count == 0 ? "s" : ""), columnCount, string.Format("{0:F2}%", 100d / columnCount * count), txtDeleteColumnsInfo.Text);
+
+        //only display column names more than 0 and fewer than 50 are affected
+        if (count > 0 && count < 50) {
           StringBuilder sb = new StringBuilder();
           sb.Append(Environment.NewLine);
           sb.Append("Columns: ");
-          sb.Append(Content.SearchLogic.VariableNames.ElementAt(filteredColumns.ElementAt(0)));
+          sb.Append(Content.PreprocessingData.VariableNames.ElementAt(filteredColumns.ElementAt(0)));
           for (int i = 1; i < filteredColumns.Count; i++) {
-            string columnName = Content.SearchLogic.VariableNames.ElementAt(filteredColumns.ElementAt(i));
+            string columnName = Content.PreprocessingData.VariableNames.ElementAt(filteredColumns.ElementAt(i));
             sb.Append(", ");
             sb.Append(columnName);
           }
@@ -169,28 +137,30 @@ namespace HeuristicLab.DataPreprocessing.Views {
           sb.Append("Please press the button \"Apply Manipulation\" if you wish to delete those columns.");
 
           lblPreviewColumnsInfo.Text += sb.ToString();
-        } else {
-          btnApply.Enabled = false;
         }
+
+        btnApply.Enabled = count > 0;
       } else {
         lblPreviewColumnsInfo.Text = "Preview not possible yet - please input the limit above.";
       }
     }
 
-    private void validateDeleteColumnsVariance() {
-      validateDoubleTextBox(txtDeleteColumnsVariance.Text);
+    private void ValidateDeleteColumnsVariance() {
+      ValidateDoubleTextBox(txtDeleteColumnsVariance.Text);
       if (btnApply.Enabled) {
-        var filteredColumns = Content.ManipulationLogic.ColumnsWithVarianceSmaller(getDeleteColumnsVariance());
+        var filteredColumns = Content.ColumnsWithVarianceSmaller(GetDeleteColumnsVariance());
         int count = filteredColumns.Count;
-        int columnCount = Content.FilterLogic.PreprocessingData.Columns;
-        lblPreviewColumnsVariance.Text = count + " column" + (count > 1 || count == 0 ? "s" : "") + " of " + columnCount + " (" + string.Format("{0:F2}%", 100d / columnCount * count) + ") were detected with a variance smaller than " + txtDeleteColumnsVariance.Text + ".";
-        if (count > 0) {
+        int columnCount = Content.PreprocessingData.Columns;
+        lblPreviewColumnsVariance.Text = string.Format("{0} column{1} of {2} ({3}) were detected with a variance smaller than {4}.", count, (count > 1 || count == 0 ? "s" : ""), columnCount, string.Format("{0:F2}%", 100d / columnCount * count), txtDeleteColumnsVariance.Text);
+
+        //only display column names more than 0 and fewer than 50 are affected
+        if (count > 0 && count < 50) {
           StringBuilder sb = new StringBuilder();
           sb.Append(Environment.NewLine);
           sb.Append("Columns: ");
-          sb.Append(Content.SearchLogic.VariableNames.ElementAt(filteredColumns.ElementAt(0)));
+          sb.Append(Content.PreprocessingData.VariableNames.ElementAt(filteredColumns.ElementAt(0)));
           for (int i = 1; i < filteredColumns.Count; i++) {
-            string columnName = Content.SearchLogic.VariableNames.ElementAt(filteredColumns.ElementAt(i));
+            string columnName = Content.PreprocessingData.VariableNames.ElementAt(filteredColumns.ElementAt(i));
             sb.Append(", ");
             sb.Append(columnName);
           }
@@ -198,19 +168,19 @@ namespace HeuristicLab.DataPreprocessing.Views {
           sb.Append("Please press the button \"Apply Manipulation\" if you wish to delete those columns.");
 
           lblPreviewColumnsVariance.Text += sb.ToString();
-        } else {
-          btnApply.Enabled = false;
         }
+
+        btnApply.Enabled = count > 0;
       } else {
         lblPreviewColumnsVariance.Text = "Preview not possible yet - please input the limit for the variance above.";
       }
     }
 
-    private void validateDeleteRowsInfo() {
-      validateDoubleTextBox(txtDeleteRowsInfo.Text);
+    private void ValidateDeleteRowsInfo() {
+      ValidateDoubleTextBox(txtDeleteRowsInfo.Text);
       if (btnApply.Enabled) {
-        int count = Content.ManipulationLogic.RowsWithMissingValuesGreater(getRowsColumnsInfo()).Count;
-        int rowCount = Content.FilterLogic.PreprocessingData.Rows;
+        int count = Content.RowsWithMissingValuesGreater(GetRowsColumnsInfo()).Count;
+        int rowCount = Content.PreprocessingData.Rows;
         lblPreviewRowsInfo.Text = count + " row" + (count > 1 || count == 0 ? "s" : "") + " of " + rowCount + " (" + string.Format("{0:F2}%", 100d / rowCount * count) + ") were detected with more than " + txtDeleteRowsInfo.Text + "% missing values.";
         if (count > 0) {
           lblPreviewRowsInfo.Text += Environment.NewLine + Environment.NewLine + "Please press the button \"Apply Manipulation\" if you wish to delete those rows.";
@@ -220,52 +190,6 @@ namespace HeuristicLab.DataPreprocessing.Views {
       } else {
         lblPreviewRowsInfo.Text = "Preview not possible yet - please input the limit above.";
       }
-    }
-
-    private void validateReplaceWith() {
-      btnApply.Enabled = false;
-      string replaceWith = (string)cmbReplaceWith.SelectedItem;
-      int columnIndex = cmbVariableNames.SelectedIndex;
-
-      if (cmbReplaceWith.SelectedIndex == 0) {
-        string errorMessage;
-        string replaceValue = txtReplaceValue.Text;
-        if (string.IsNullOrEmpty(replaceValue)) {
-          lblPreviewReplaceMissingValues.Text = "Preview not possible yet - please input the text which will be used as replacement.";
-        } else if (!Content.ManipulationLogic.PreProcessingData.Validate(txtReplaceValue.Text, out errorMessage, columnIndex)) {
-          lblPreviewReplaceMissingValues.Text = "Preview not possible yet - " + errorMessage;
-        } else {
-          btnApply.Enabled = true;
-        }
-        replaceWith = "\"" + replaceValue + "\"";
-      } else {
-        btnApply.Enabled = true;
-      }
-      if (btnApply.Enabled) {
-        var allIndices = Content.SearchLogic.GetMissingValueIndices();
-        int count = allIndices[columnIndex].Count;
-        int cellCount = Content.FilterLogic.PreprocessingData.Rows * Content.FilterLogic.PreprocessingData.Columns;
-        lblPreviewReplaceMissingValues.Text = count + " cell" + (count > 1 || count == 0 ? "s" : "")
-          + " of " + cellCount + " (" + string.Format("{0:F2}%", 100d / cellCount * count) + ") were detected with missing values which would be replaced with " + replaceWith;
-        if (count > 0) {
-          lblPreviewReplaceMissingValues.Text += Environment.NewLine + Environment.NewLine + "Please press the button \"Apply Manipulation\" if you wish to perform the replacement.";
-        } else {
-          btnApply.Enabled = false;
-        }
-      }
-    }
-
-    private void validateShuffle() {
-      btnApply.Enabled = true;
-      lblShuffleProperties.Enabled = false;
-      lblShuffleProperties.Visible = false;
-      shuffleSeparatelyCheckbox.Enabled = true;
-      shuffleSeparatelyCheckbox.Visible = true;
-    }
-
-    public new ManipulationContent Content {
-      get { return (ManipulationContent)base.Content; }
-      set { base.Content = value; }
     }
 
     private void lstMethods_SelectedIndexChanged(object sender, System.EventArgs e) {
@@ -292,18 +216,10 @@ namespace HeuristicLab.DataPreprocessing.Views {
         case 2:
           lblPreviewRowsInfo.Text = "rows successfully deleted.";
           break;
-        case 3:
-          lblPreviewReplaceMissingValues.Text = "missing values successfully replaced.";
-          btnApply.Enabled = false;
-          break;
-        case 4:
-          lblPreviewShuffle.Text = "dataset shuffled successfully.";
-          btnApply.Enabled = false;
-          break;
       }
     }
 
-    private void validateDoubleTextBox(String text) {
+    private void ValidateDoubleTextBox(String text) {
       btnApply.Enabled = false;
       if (!string.IsNullOrEmpty(text)) {
         double percent;
@@ -314,26 +230,15 @@ namespace HeuristicLab.DataPreprocessing.Views {
     }
 
     private void txtDeleteColumnsInfo_TextChanged(object sender, EventArgs e) {
-      validateDeleteColumnsInfo();
+      ValidateDeleteColumnsInfo();
     }
 
     private void txtDeleteColumnsVariance_TextChanged(object sender, EventArgs e) {
-      validateDeleteColumnsVariance();
+      ValidateDeleteColumnsVariance();
     }
 
     private void txtDeleteRowsInfo_TextChanged(object sender, EventArgs e) {
-      validateDeleteRowsInfo();
-    }
-
-    private void cmbReplaceWith_SelectedIndexChanged(object sender, EventArgs e) {
-      bool isReplaceWithValueSelected = cmbReplaceWith.SelectedIndex == 0;
-      lblValueColon.Visible = isReplaceWithValueSelected;
-      txtReplaceValue.Visible = isReplaceWithValueSelected;
-      validateReplaceWith();
-    }
-
-    private void txtReplaceValue_TextChanged(object sender, EventArgs e) {
-      validateReplaceWith();
+      ValidateDeleteRowsInfo();
     }
   }
 }

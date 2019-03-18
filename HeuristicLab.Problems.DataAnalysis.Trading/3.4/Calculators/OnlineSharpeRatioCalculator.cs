@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -30,8 +30,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Trading {
 
     public double SharpeRatio {
       get {
-        if (meanAndVarianceCalculator.Variance > 0)
-          return meanAndVarianceCalculator.Mean / Math.Sqrt(meanAndVarianceCalculator.Variance);
+        if (meanAndVarianceCalculator.PopulationVariance > 0)
+          return meanAndVarianceCalculator.Mean / Math.Sqrt(meanAndVarianceCalculator.PopulationVariance);
         else return 0.0;
       }
     }
@@ -45,7 +45,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Trading {
     #region IOnlineCalculator Members
     public OnlineCalculatorError ErrorState {
       get {
-        return meanAndVarianceCalculator.MeanErrorState | meanAndVarianceCalculator.VarianceErrorState | profitCalculator.ErrorState;
+        return meanAndVarianceCalculator.MeanErrorState | meanAndVarianceCalculator.PopulationVarianceErrorState | profitCalculator.ErrorState;
       }
     }
     public double Value {

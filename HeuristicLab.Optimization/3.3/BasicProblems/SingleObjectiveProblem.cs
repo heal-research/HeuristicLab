@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
@@ -111,6 +112,39 @@ namespace HeuristicLab.Optimization {
 
     public virtual bool IsBetter(double quality, double bestQuality) {
       return (Maximization && quality > bestQuality || !Maximization && quality < bestQuality);
+    }
+
+    protected Tuple<TSolution, double> GetBestSolution(TSolution[] solutions, double[] qualities) {
+      return GetBestSolution(solutions, qualities, Maximization);
+    }
+    public static Tuple<TSolution, double> GetBestSolution(TSolution[] solutions, double[] qualities, bool maximization) {
+      var zipped = solutions.Zip(qualities, (s, q) => new { Solution = s, Quality = q });
+      var best = (maximization ? zipped.OrderByDescending(z => z.Quality) : zipped.OrderBy(z => z.Quality)).First();
+      return Tuple.Create(best.Solution, best.Quality);
+    }
+
+    protected override void OnOperatorsChanged() {
+      base.OnOperatorsChanged();
+      if (Encoding != null) {
+        PruneMultiObjectiveOperators(Encoding);
+        var combinedEncoding = Encoding as CombinedEncoding;
+        if (combinedEncoding != null) {
+          foreach (var encoding in combinedEncoding.Encodings.ToList()) {
+            PruneMultiObjectiveOperators(encoding);
+          }
+        }
+      }
+    }
+
+    private void PruneMultiObjectiveOperators(IEncoding encoding) {
+      if (encoding.Operators.Any(x => x is IMultiObjectiveOperator && !(x is ISingleObjectiveOperator)))
+        encoding.Operators = encoding.Operators.Where(x => !(x is IMultiObjectiveOperator) || x is ISingleObjectiveOperator).ToList();
+
+      foreach (var multiOp in Encoding.Operators.OfType<IMultiOperator>()) {
+        foreach (var moOp in multiOp.Operators.Where(x => x is IMultiObjectiveOperator).ToList()) {
+          multiOp.RemoveOperator(moOp);
+        }
+      }
     }
 
     protected override void OnEvaluatorChanged() {

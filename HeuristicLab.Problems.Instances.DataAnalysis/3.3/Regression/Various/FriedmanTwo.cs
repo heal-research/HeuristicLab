@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -42,12 +42,19 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     protected override int TestPartitionStart { get { return 5000; } }
     protected override int TestPartitionEnd { get { return 10000; } }
 
-    protected static FastRandom rand = new FastRandom();
+    public int Seed { get; private set; }
 
+    public FriedmanTwo() : this((int)DateTime.Now.Ticks) { }
+
+    public FriedmanTwo(int seed) : base() {
+      Seed = seed;
+    }
     protected override List<List<double>> GenerateValues() {
       List<List<double>> data = new List<List<double>>();
+      var rand = new MersenneTwister((uint)Seed);
+
       for (int i = 0; i < AllowedInputVariables.Count(); i++) {
-        data.Add(ValueGenerator.GenerateUniformDistributedValues(10000, 0, 1).ToList());
+        data.Add(ValueGenerator.GenerateUniformDistributedValues(rand.Next(), 10000, 0, 1).ToList());
       }
 
       double x1, x2, x3, x4, x5;

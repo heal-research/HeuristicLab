@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -51,7 +51,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis {
     }
 
     protected override ISymbolicTimeSeriesPrognosisSolution CreateSolution(ISymbolicExpressionTree bestTree, double bestQuality) {
-      var model = new SymbolicTimeSeriesPrognosisModel((ISymbolicExpressionTree)bestTree.Clone(), SymbolicDataAnalysisTreeInterpreterParameter.ActualValue as ISymbolicTimeSeriesPrognosisExpressionTreeInterpreter, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper);
+      var model = new SymbolicTimeSeriesPrognosisModel(ProblemDataParameter.ActualValue.TargetVariable, (ISymbolicExpressionTree)bestTree.Clone(), SymbolicDataAnalysisTreeInterpreterParameter.ActualValue as ISymbolicTimeSeriesPrognosisExpressionTreeInterpreter, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper);
       if (ApplyLinearScalingParameter.ActualValue.Value) model.Scale(ProblemDataParameter.ActualValue);
 
       return new SymbolicTimeSeriesPrognosisSolution(model, (ITimeSeriesPrognosisProblemData)ProblemDataParameter.ActualValue.Clone());

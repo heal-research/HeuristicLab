@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,13 +20,10 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace HeuristicLab.Problems.Instances {
   public enum DistanceMeasure { Direct, Euclidean, RoundedEuclidean, UpperEuclidean, Geo, Manhattan, Maximum, Att };
-  
+
   public static class DistanceHelper {
     /// <summary>
     /// If only the coordinates are given, can calculate the distance matrix.
@@ -34,7 +31,7 @@ namespace HeuristicLab.Problems.Instances {
     /// <returns>A full distance matrix between all cities.</returns>
     public static double[,] GetDistanceMatrix(DistanceMeasure distanceMeasure, double[,] coordinates, double[,] distances, int dimension) {
       if (distances != null) return distances;
-      
+
       distances = new double[dimension, dimension];
       for (int i = 0; i < dimension - 1; i++)
         for (int j = i + 1; j < dimension; j++) {
@@ -43,6 +40,29 @@ namespace HeuristicLab.Problems.Instances {
         }
 
       return distances;
+    }
+
+    public static double GetDistance(DistanceMeasure distanceMeasure, double x1, double y1, double x2, double y2) {
+      switch (distanceMeasure) {
+        case DistanceMeasure.Att:
+          return AttDistance(x1, y1, x2, y2);
+        case DistanceMeasure.Direct:
+          throw new ArgumentException("Direct distance measure requires distance matrix for distance calculation.");
+        case DistanceMeasure.Euclidean:
+          return EuclideanDistance(x1, y1, x2, y2);
+        case DistanceMeasure.Geo:
+          return GeoDistance(x1, y1, x2, y2);
+        case DistanceMeasure.Manhattan:
+          return ManhattanDistance(x1, y1, x2, y2);
+        case DistanceMeasure.Maximum:
+          return MaximumDistance(x1, y1, x2, y2);
+        case DistanceMeasure.RoundedEuclidean:
+          return Math.Round(EuclideanDistance(x1, y1, x2, y2));
+        case DistanceMeasure.UpperEuclidean:
+          return Math.Ceiling(EuclideanDistance(x1, y1, x2, y2));
+        default:
+          throw new InvalidOperationException("Distance measure is not known.");
+      }
     }
 
     #region Private Helpers

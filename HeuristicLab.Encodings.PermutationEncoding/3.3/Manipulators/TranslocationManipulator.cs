@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -64,26 +64,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     }
 
     public static void Apply(Permutation permutation, int breakPoint1, int breakPoint2, int insertPoint) {
-      Permutation original = (Permutation)permutation.Clone();
-
-      int i = 0;  // index in new permutation
-      int j = 0;  // index in old permutation
-      while (i < original.Length) {
-        if (i == insertPoint) {  // copy translocated area
-          for (int k = breakPoint1; k <= breakPoint2; k++) {
-            permutation[i] = original[k];
-            i++;
-          }
-        }
-        if (j == breakPoint1) {  // skip area between breakpoints
-          j = breakPoint2 + 1;
-        }
-        if ((i < original.Length) && (j < original.Length)) {
-          permutation[i] = original[j];
-          i++;
-          j++;
-        }
-      }
+      permutation.Move(breakPoint1, breakPoint2, insertPoint);
     }
 
     /// <summary>

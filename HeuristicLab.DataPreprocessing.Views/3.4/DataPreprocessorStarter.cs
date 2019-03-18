@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,6 +20,7 @@
 #endregion
 
 using System.Windows.Forms;
+using HeuristicLab.Core;
 using HeuristicLab.MainForm;
 using HeuristicLab.Optimization;
 using HeuristicLab.Problems.DataAnalysis;
@@ -27,12 +28,11 @@ using HeuristicLab.Problems.DataAnalysis.Views;
 
 namespace HeuristicLab.DataPreprocessing.Views {
   public class DataPreprocessorStarter : IDataPreprocessorStarter {
-
     public void Start(IDataAnalysisProblemData problemData, IContentView currentView) {
       IAlgorithm algorithm;
       IDataAnalysisProblem problem;
       GetMostOuterContent(currentView as Control, out algorithm, out problem);
-      var context = new PreprocessingContext(problemData, algorithm, problem);
+      var context = new PreprocessingContext(problemData, algorithm ?? problem ?? problemData as IItem);
       MainFormManager.MainForm.ShowContent(context);
     }
 
@@ -41,7 +41,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
       problem = null;
 
       while (control != null) {
-        IContentView contentView = control as IContentView;
+        var contentView = control as IContentView;
         if (contentView != null) {
           var newAlgorithm = contentView.Content as IAlgorithm;
           if (newAlgorithm != null)

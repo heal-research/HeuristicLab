@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -166,7 +166,6 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       startButton.Enabled = !Locked;
       pauseButton.Enabled = !Locked;
       stopButton.Enabled = !Locked;
-      resetButton.Enabled = !Locked;
     }
 
     protected override void SetEnabledStateOfControls() {
@@ -187,7 +186,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
           this.searchButton.Enabled = Content.IsControllable && Content.ExecutionState == ExecutionState.Prepared && !alreadyUploaded && !Content.IsProgressing;
           this.jobsTreeView.ReadOnly = !Content.IsControllable || Content.ExecutionState != ExecutionState.Prepared || alreadyUploaded || Content.IsProgressing;
 
-          this.refreshAutomaticallyCheckBox.Enabled = Content.IsControllable && alreadyUploaded && jobsLoaded && Content.ExecutionState == ExecutionState.Started && !Content.IsProgressing;
+          this.refreshAutomaticallyCheckBox.Enabled = Content.IsControllable && alreadyUploaded && jobsLoaded && (Content.ExecutionState == ExecutionState.Started || Content.ExecutionState == ExecutionState.Paused) && !Content.IsProgressing;
           this.refreshButton.Enabled = Content.IsDownloadable && alreadyUploaded && !Content.IsProgressing;
 
           this.UnloadButton.Enabled = Content.HiveTasks != null && Content.HiveTasks.Count > 0 && alreadyUploaded && !Content.IsProgressing;
@@ -379,7 +378,6 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
         Content.Log.LogException(t.Exception);
       }, TaskContinuationOptions.OnlyOnFaulted);
     }
-    private void resetButton_Click(object sender, EventArgs e) { }
 
     private void PauseJobAsync(object job) {
       Content.Progress.Start("Pausing job...");
@@ -437,12 +435,11 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
     #region Helpers
     private void SetEnabledStateOfExecutableButtons() {
       if (Content == null) {
-        startButton.Enabled = pauseButton.Enabled = stopButton.Enabled = resetButton.Enabled = false;
+        startButton.Enabled = pauseButton.Enabled = stopButton.Enabled = false;
       } else {
         startButton.Enabled = Content.IsControllable && Content.HiveTasks != null && Content.HiveTasks.Count > 0 && (Content.ExecutionState == ExecutionState.Prepared || Content.ExecutionState == ExecutionState.Paused) && !Content.IsProgressing;
         pauseButton.Enabled = Content.IsControllable && Content.ExecutionState == ExecutionState.Started && !Content.IsProgressing;
-        stopButton.Enabled = Content.IsControllable && Content.ExecutionState == ExecutionState.Started && !Content.IsProgressing;
-        resetButton.Enabled = false;
+        stopButton.Enabled = Content.IsControllable && (Content.ExecutionState == ExecutionState.Started || Content.ExecutionState == ExecutionState.Paused) && !Content.IsProgressing;
       }
     }
     #endregion

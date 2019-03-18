@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -33,7 +33,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// </summary>
   [StorableClass]
   [Item("NeuralNetworkEnsembleModel", "Represents a neural network ensemble for regression and classification.")]
-  public sealed class NeuralNetworkEnsembleModel : NamedItem, INeuralNetworkEnsembleModel {
+  public sealed class NeuralNetworkEnsembleModel : ClassificationModel, INeuralNetworkEnsembleModel {
 
     private alglib.mlpensemble mlpEnsemble;
     public alglib.mlpensemble MultiLayerPerceptronEnsemble {
@@ -45,6 +45,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
           OnChanged(EventArgs.Empty);
         }
       }
+    }
+
+    public override IEnumerable<string> VariablesUsedForPrediction {
+      get { return allowedInputVariables; }
     }
 
     [Storable]
@@ -71,7 +75,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         this.classValues = (double[])original.classValues.Clone();
     }
     public NeuralNetworkEnsembleModel(alglib.mlpensemble mlpEnsemble, string targetVariable, IEnumerable<string> allowedInputVariables, double[] classValues = null)
-      : base() {
+      : base(targetVariable) {
       this.name = ItemName;
       this.description = ItemDescription;
       this.mlpEnsemble = mlpEnsemble;
@@ -86,7 +90,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     public IEnumerable<double> GetEstimatedValues(IDataset dataset, IEnumerable<int> rows) {
-      double[,] inputData = AlglibUtil.PrepareInputMatrix(dataset, allowedInputVariables, rows);
+      double[,] inputData = dataset.ToArray(allowedInputVariables, rows);
 
       int n = inputData.GetLength(0);
       int columns = inputData.GetLength(1);
@@ -102,8 +106,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
     }
 
-    public IEnumerable<double> GetEstimatedClassValues(IDataset dataset, IEnumerable<int> rows) {
-      double[,] inputData = AlglibUtil.PrepareInputMatrix(dataset, allowedInputVariables, rows);
+    public override IEnumerable<double> GetEstimatedClassValues(IDataset dataset, IEnumerable<int> rows) {
+      double[,] inputData = dataset.ToArray(allowedInputVariables, rows);
 
       int n = inputData.GetLength(0);
       int columns = inputData.GetLength(1);
@@ -128,17 +132,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
     }
 
-    public INeuralNetworkEnsembleRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData) {
-      return new NeuralNetworkEnsembleRegressionSolution(new RegressionEnsembleProblemData(problemData), this);
+    public IRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData) {
+      return new NeuralNetworkEnsembleRegressionSolution(this, new RegressionEnsembleProblemData(problemData));
     }
-    IRegressionSolution IRegressionModel.CreateRegressionSolution(IRegressionProblemData problemData) {
-      return CreateRegressionSolution(problemData);
-    }
-    public INeuralNetworkEnsembleClassificationSolution CreateClassificationSolution(IClassificationProblemData problemData) {
-      return new NeuralNetworkEnsembleClassificationSolution(new ClassificationEnsembleProblemData(problemData), this);
-    }
-    IClassificationSolution IClassificationModel.CreateClassificationSolution(IClassificationProblemData problemData) {
-      return CreateClassificationSolution(problemData);
+    public override IClassificationSolution CreateClassificationSolution(IClassificationProblemData problemData) {
+      return new NeuralNetworkEnsembleClassificationSolution(this, new ClassificationEnsembleProblemData(problemData));
     }
 
     #region events

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -80,7 +80,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
     }
 
-    public ParameterizedCovarianceFunction GetParameterizedCovarianceFunction(double[] p, IEnumerable<int> columnIndices) {
+    public ParameterizedCovarianceFunction GetParameterizedCovarianceFunction(double[] p, int[] columnIndices) {
       double[] inverseLength;
       GetParameterValues(p, out inverseLength);
       var fixedInverseLength = HasFixedInverseLengthParameter;
@@ -89,18 +89,21 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       cov.Covariance = (x, i, j) => Util.ScalarProd(x, i, j, inverseLength, columnIndices);
       cov.CrossCovariance = (x, xt, i, j) => Util.ScalarProd(x, i, xt, j, inverseLength, columnIndices);
       if (fixedInverseLength)
-        cov.CovarianceGradient = (x, i, j) => Enumerable.Empty<double>();
+        cov.CovarianceGradient = (x, i, j) => new double[0];
       else
         cov.CovarianceGradient = (x, i, j) => GetGradient(x, i, j, inverseLength, columnIndices);
       return cov;
     }
 
-    private static IEnumerable<double> GetGradient(double[,] x, int i, int j, double[] inverseLength, IEnumerable<int> columnIndices) {
+    private static IList<double> GetGradient(double[,] x, int i, int j, double[] inverseLength, int[] columnIndices) {
       int k = 0;
-      foreach (int columnIndex in columnIndices) {
-        yield return -2.0 * x[i, columnIndex] * x[j, columnIndex] * inverseLength[k] * inverseLength[k];
+      var g = new List<double>(columnIndices.Length);
+      for (int c = 0; c < columnIndices.Length; c++) {
+        var columnIndex = columnIndices[c];
+        g.Add(-2.0 * x[i, columnIndex] * x[j, columnIndex] * inverseLength[k] * inverseLength[k]);
         k++;
       }
+      return g;
     }
   }
 }

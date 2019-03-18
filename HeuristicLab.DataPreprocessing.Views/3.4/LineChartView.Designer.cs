@@ -1,4 +1,25 @@
-﻿namespace HeuristicLab.DataPreprocessing.Views {
+﻿#region License Information
+/* HeuristicLab
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ *
+ * This file is part of HeuristicLab.
+ *
+ * HeuristicLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * HeuristicLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
+ */
+#endregion
+
+namespace HeuristicLab.DataPreprocessing.Views {
   partial class LineChartView {
     /// <summary> 
     /// Required designer variable.
@@ -25,16 +46,26 @@
     private void InitializeComponent() {
       this.optionsBox = new System.Windows.Forms.GroupBox();
       this.allInOneCheckBox = new System.Windows.Forms.CheckBox();
+      ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
+      this.splitContainer.Panel1.SuspendLayout();
+      this.splitContainer.SuspendLayout();
       this.optionsBox.SuspendLayout();
       this.SuspendLayout();
       // 
+      // splitContainer
+      // 
+      // 
+      // splitContainer.Panel1
+      // 
+      this.splitContainer.Panel1.Controls.Add(this.optionsBox);
+      // 
       // optionsBox
       // 
-      this.optionsBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
       this.optionsBox.Controls.Add(this.allInOneCheckBox);
-      this.optionsBox.Location = new System.Drawing.Point(4, 262);
+      this.optionsBox.Dock = System.Windows.Forms.DockStyle.Bottom;
+      this.optionsBox.Location = new System.Drawing.Point(0, 357);
       this.optionsBox.Name = "optionsBox";
-      this.optionsBox.Size = new System.Drawing.Size(151, 134);
+      this.optionsBox.Size = new System.Drawing.Size(180, 46);
       this.optionsBox.TabIndex = 7;
       this.optionsBox.TabStop = false;
       this.optionsBox.Text = "Options";
@@ -56,9 +87,10 @@
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.Controls.Add(this.optionsBox);
       this.Name = "LineChartView";
-      this.Controls.SetChildIndex(this.optionsBox, 0);
+      this.splitContainer.Panel1.ResumeLayout(false);
+      ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();
+      this.splitContainer.ResumeLayout(false);
       this.optionsBox.ResumeLayout(false);
       this.optionsBox.PerformLayout();
       this.ResumeLayout(false);

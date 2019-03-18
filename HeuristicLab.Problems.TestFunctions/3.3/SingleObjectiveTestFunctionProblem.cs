@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -161,8 +161,9 @@ namespace HeuristicLab.Problems.TestFunctions {
       Operators.Add(new SingleObjectiveTestFunctionImprovementOperator());
       Operators.Add(new SingleObjectiveTestFunctionPathRelinker());
       Operators.Add(new SingleObjectiveTestFunctionSimilarityCalculator());
+      Operators.Add(new HammingSimilarityCalculator());
+      Operators.Add(new EuclideanSimilarityCalculator());
       Operators.Add(new QualitySimilarityCalculator());
-      Operators.Add(new NoSimilarityCalculator());
       Operators.Add(new AdditiveMoveEvaluator());
 
       Operators.Add(new BestSingleObjectiveTestFunctionSolutionAnalyzer());
@@ -186,6 +187,20 @@ namespace HeuristicLab.Problems.TestFunctions {
         op.QualityParameter.Hidden = true;
         foreach (var movOp in Encoding.Operators.OfType<IRealVectorAdditiveMoveQualityOperator>())
           movOp.MoveQualityParameter.ActualName = op.MoveQualityParameter.ActualName;
+      }
+      foreach (var op in Operators.OfType<IRealVectorParticleCreator>()) {
+        // TODO: unified encoding parameters
+        op.RealVectorParameter.ActualName = ((IRealVectorSolutionOperator)Encoding.SolutionCreator).RealVectorParameter.ActualName;
+        op.RealVectorParameter.Hidden = true;
+        op.BoundsParameter.ActualName = BoundsParameter.Name;
+        op.BoundsParameter.Hidden = true;
+      }
+      foreach (var op in Operators.OfType<IRealVectorParticleUpdater>()) {
+        // TODO: unified encoding parameters
+        op.RealVectorParameter.ActualName = ((IRealVectorSolutionOperator)Encoding.SolutionCreator).RealVectorParameter.ActualName;
+        op.RealVectorParameter.Hidden = true;
+        op.BoundsParameter.ActualName = BoundsParameter.Name;
+        op.BoundsParameter.Hidden = true;
       }
       foreach (var op in Operators.OfType<IRealVectorSwarmUpdater>()) {
         op.MaximizationParameter.ActualName = MaximizationParameter.Name;

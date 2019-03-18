@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,6 +21,8 @@
 
 using System;
 using System.Drawing;
+using System.Threading;
+using System.Threading.Tasks;
 using HeuristicLab.Common;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -82,8 +84,15 @@ namespace HeuristicLab.Core {
       ExecutionTime = TimeSpan.Zero;
     }
     public virtual void Start() {
+      Start(CancellationToken.None);
+    }
+    public virtual void Start(CancellationToken cancellationToken) {
       if ((ExecutionState != ExecutionState.Prepared) && (ExecutionState != ExecutionState.Paused))
         throw new InvalidOperationException(string.Format("Start not allowed in execution state \"{0}\".", ExecutionState));
+    }
+    public virtual async Task StartAsync() { await StartAsync(CancellationToken.None); }
+    public virtual async Task StartAsync(CancellationToken cancellationToken) {
+      await AsyncHelper.DoAsync(Start, cancellationToken);
     }
     public virtual void Pause() {
       if (ExecutionState != ExecutionState.Started)

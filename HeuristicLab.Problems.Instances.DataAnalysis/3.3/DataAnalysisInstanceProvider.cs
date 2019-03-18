@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,6 +22,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -34,11 +35,23 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     where TData : class, IDataAnalysisProblemData
     where ImportType : DataAnalysisImportType {
 
+    public event ProgressChangedEventHandler ProgressChanged;
 
     public TData ImportData(string path, ImportType type, DataAnalysisCSVFormat csvFormat) {
       TableFileParser csvFileParser = new TableFileParser();
+      csvFileParser.Encoding = csvFormat.Encoding;
+      long fileSize = new FileInfo(path).Length;
+      csvFileParser.ProgressChanged += (sender, e) => {
+        OnProgressChanged(e / (double)fileSize);
+      };
       csvFileParser.Parse(path, csvFormat.NumberFormatInfo, csvFormat.DateTimeFormatInfo, csvFormat.Separator, csvFormat.VariableNamesAvailable);
       return ImportData(path, type, csvFileParser);
+    }
+
+    protected virtual void OnProgressChanged(double d) {
+      var handler = ProgressChanged;
+      if (handler != null)
+        handler(this, new ProgressChangedEventArgs((int)(100 * d), null));
     }
 
     protected virtual TData ImportData(string path, ImportType type, TableFileParser csvFileParser) {
@@ -88,9 +101,13 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
         }
         strBuilder.AppendLine();
       }
-
-      using (var writer = new StreamWriter(path)) {
-        writer.Write(strBuilder);
+      using (var fileStream = new FileStream(path, FileMode.Create)) {
+        Encoding encoding = Encoding.GetEncoding(Encoding.Default.CodePage,
+          new EncoderReplacementFallback("*"),
+          new DecoderReplacementFallback("*"));
+        using (var writer = new StreamWriter(fileStream, encoding)) {
+          writer.Write(strBuilder);
+        }
       }
     }
   }

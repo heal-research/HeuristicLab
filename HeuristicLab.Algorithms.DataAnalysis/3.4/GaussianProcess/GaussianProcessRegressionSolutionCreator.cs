@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -40,6 +40,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private const string TrainingRSquaredResultName = "Training R²";
     private const string TestRSquaredResultName = "Test R²";
     private const string CreateSolutionParameterName = "CreateSolution";
+    private const string NegLogPseudoLikelihood = "Negative log pseudo-likelihood (LOO-CV)";
 
     #region Parameter Properties
     public ILookupParameter<IRegressionProblemData> ProblemDataParameter {
@@ -107,10 +108,14 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
           results.Add(new Result(TestRSquaredResultName,
                                  "The Pearson's R² of the Gaussian process solution on the test partition.",
                                  new DoubleValue(s.TestRSquared)));
+          results.Add(new Result(NegLogPseudoLikelihood,
+                                 "The negative log pseudo-likelihood (from leave-one-out-cross-validation).", 
+                                 new DoubleValue(m.LooCvNegativeLogPseudoLikelihood)));
         } else {
           results[SolutionParameterName].Value = s;
           results[TrainingRSquaredResultName].Value = new DoubleValue(s.TrainingRSquared);
           results[TestRSquaredResultName].Value = new DoubleValue(s.TestRSquared);
+          results[NegLogPseudoLikelihood].Value = new DoubleValue(m.LooCvNegativeLogPseudoLikelihood);
         }
       }
       return base.Apply();

@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -40,18 +40,39 @@ namespace HeuristicLab.Problems.DataAnalysis {
     protected const string TransformationsParameterName = "Transformations";
 
     #region parameter properites
+    //mkommend: inserted parameter caching due to performance reasons
+    private IFixedValueParameter<Dataset> datasetParameter;
     public IFixedValueParameter<Dataset> DatasetParameter {
-      get { return (IFixedValueParameter<Dataset>)Parameters[DatasetParameterName]; }
+      get {
+        if (datasetParameter == null) datasetParameter = (IFixedValueParameter<Dataset>)Parameters[DatasetParameterName];
+        return datasetParameter;
+      }
     }
+
+    private IFixedValueParameter<ReadOnlyCheckedItemList<StringValue>> inputVariablesParameter;
     public IFixedValueParameter<ReadOnlyCheckedItemList<StringValue>> InputVariablesParameter {
-      get { return (IFixedValueParameter<ReadOnlyCheckedItemList<StringValue>>)Parameters[InputVariablesParameterName]; }
+      get {
+        if (inputVariablesParameter == null) inputVariablesParameter = (IFixedValueParameter<ReadOnlyCheckedItemList<StringValue>>)Parameters[InputVariablesParameterName];
+        return inputVariablesParameter;
+      }
     }
+
+    private IFixedValueParameter<IntRange> trainingPartitionParameter;
     public IFixedValueParameter<IntRange> TrainingPartitionParameter {
-      get { return (IFixedValueParameter<IntRange>)Parameters[TrainingPartitionParameterName]; }
+      get {
+        if (trainingPartitionParameter == null) trainingPartitionParameter = (IFixedValueParameter<IntRange>)Parameters[TrainingPartitionParameterName];
+        return trainingPartitionParameter;
+      }
     }
+
+    private IFixedValueParameter<IntRange> testPartitionParameter;
     public IFixedValueParameter<IntRange> TestPartitionParameter {
-      get { return (IFixedValueParameter<IntRange>)Parameters[TestPartitionParameterName]; }
+      get {
+        if (testPartitionParameter == null) testPartitionParameter = (IFixedValueParameter<IntRange>)Parameters[TestPartitionParameterName];
+        return testPartitionParameter;
+      }
     }
+
     public IFixedValueParameter<ReadOnlyItemList<ITransformation>> TransformationsParameter {
       get { return (IFixedValueParameter<ReadOnlyItemList<ITransformation>>)Parameters[TransformationsParameterName]; }
     }
@@ -72,6 +93,11 @@ namespace HeuristicLab.Problems.DataAnalysis {
       get { return InputVariables.CheckedItems.Select(x => x.Value.Value); }
     }
 
+    public double[,] AllowedInputsTrainingValues {
+      get { return Dataset.ToArray(AllowedInputVariables, TrainingIndices); }
+    }
+
+    public double[,] AllowedInputsTestValues { get { return Dataset.ToArray(AllowedInputVariables, TestIndices); } }
     public IntRange TrainingPartition {
       get { return TrainingPartitionParameter.Value; }
     }
@@ -79,6 +105,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
       get { return TestPartitionParameter.Value; }
     }
 
+    public virtual IEnumerable<int> AllIndices {
+      get { return Enumerable.Range(0, Dataset.Rows); }
+    }
     public virtual IEnumerable<int> TrainingIndices {
       get {
         return Enumerable.Range(TrainingPartition.Start, Math.Max(0, TrainingPartition.End - TrainingPartition.Start))
@@ -98,8 +127,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public virtual bool IsTrainingSample(int index) {
       return index >= 0 && index < Dataset.Rows &&
-        TrainingPartition.Start <= index && index < TrainingPartition.End &&
-        (index < TestPartition.Start || TestPartition.End <= index);
+             TrainingPartition.Start <= index && index < TrainingPartition.End &&
+             (index < TestPartition.Start || TestPartition.End <= index);
     }
 
     public virtual bool IsTestSample(int index) {
@@ -127,12 +156,13 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     protected DataAnalysisProblemData(IDataset dataset, IEnumerable<string> allowedInputVariables, IEnumerable<ITransformation> transformations = null) {
       if (dataset == null) throw new ArgumentNullException("The dataset must not be null.");
-      if (allowedInputVariables == null) throw new ArgumentNullException("The allowedInputVariables must not be null.");
+      if (allowedInputVariables == null) throw new ArgumentNullException("The allowed input variables must not be null.");
 
-      if (allowedInputVariables.Except(dataset.DoubleVariables).Any())
-        throw new ArgumentException("All allowed input variables must be present in the dataset and of type double.");
+      if (allowedInputVariables.Except(dataset.DoubleVariables).Except(dataset.StringVariables).Any())
+        throw new ArgumentException("All allowed input variables must be present in the dataset and of type double or string.");
 
-      var inputVariables = new CheckedItemList<StringValue>(dataset.DoubleVariables.Select(x => new StringValue(x)));
+      var variables = dataset.VariableNames.Where(variable => dataset.VariableHasType<double>(variable) || dataset.VariableHasType<string>(variable));
+      var inputVariables = new CheckedItemList<StringValue>(variables.Select(x => new StringValue(x)));
       foreach (StringValue x in inputVariables)
         inputVariables.SetItemCheckedState(x, allowedInputVariables.Contains(x.Value));
 
@@ -210,10 +240,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
         var variable = data.InputVariables.FirstOrDefault(i => i.Value == inputVariable.Value);
         InputVariables.SetItemCheckedState(inputVariable, variable != null && data.InputVariables.ItemChecked(variable));
       }
-
-      TrainingPartition.Start = TrainingPartition.End = 0;
-      TestPartition.Start = 0;
-      TestPartition.End = Dataset.Rows;
     }
   }
 }

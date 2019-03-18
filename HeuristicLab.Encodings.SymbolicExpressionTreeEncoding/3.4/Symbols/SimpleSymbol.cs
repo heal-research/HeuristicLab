@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -58,6 +58,10 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new SimpleSymbol(this, cloner);
+    }
+
+    public SimpleSymbol(string name, int arity)
+      : this(name, string.Empty, arity, arity) {
     }
 
     public SimpleSymbol(string name, string description, int minimumArity, int maximumArity)

@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -33,6 +33,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
                                  "- Take two parent individuals P0 and P1\n" +
                                  "- Randomly choose a node N from P1\n" +
                                  "- Test all crossover points from P0 to determine the best location for N to be inserted")]
+  [StorableClass]
   public sealed class SymbolicDataAnalysisExpressionContextAwareCrossover<T> : SymbolicDataAnalysisExpressionCrossover<T> where T : class, IDataAnalysisProblemData {
     [StorableConstructor]
     private SymbolicDataAnalysisExpressionContextAwareCrossover(bool deserializing) : base(deserializing) { }

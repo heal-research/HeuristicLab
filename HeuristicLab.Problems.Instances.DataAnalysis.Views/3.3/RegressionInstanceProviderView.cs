@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,7 +20,7 @@
 #endregion
 
 using System;
-using System.IO;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using HeuristicLab.MainForm;
 using HeuristicLab.Problems.DataAnalysis;
@@ -40,21 +40,39 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
     }
 
     protected override void importButton_Click(object sender, EventArgs e) {
-      var importTypeDialog = new RegressionImportTypeDialog();
+      var importTypeDialog = new RegressionImportDialog();
       if (importTypeDialog.ShowDialog() == DialogResult.OK) {
         IRegressionProblemData instance = null;
-        try {
-          instance = Content.ImportData(importTypeDialog.Path, importTypeDialog.ImportType, importTypeDialog.CSVFormat);
-        } catch (IOException ex) {
-          ErrorWhileParsing(ex);
-          return;
-        }
-        try {
-          GenericConsumer.Load(instance);
-          instancesComboBox.SelectedIndex = -1;
-        } catch (IOException ex) {
-          ErrorWhileLoading(ex, importTypeDialog.Path);
-        }
+
+        Task.Factory.StartNew(() => {
+          var mainForm = (MainForm.WindowsForms.MainForm)MainFormManager.MainForm;
+          // lock active view and show progress bar
+          IContentView activeView = (IContentView)MainFormManager.MainForm.ActiveView;
+
+          try {
+            var progress = mainForm.AddOperationProgressToContent(activeView.Content,
+              "Loading problem instance.");
+
+            Content.ProgressChanged +=
+              (o, args) => { progress.ProgressValue = args.ProgressPercentage / 100.0; };
+
+            instance = Content.ImportData(importTypeDialog.Path, importTypeDialog.ImportType,
+              importTypeDialog.CSVFormat);
+          } catch (Exception ex) {
+            ErrorWhileParsing(ex);
+            return;
+          } finally {
+            mainForm.RemoveOperationProgressFromContent(activeView.Content);
+          }
+
+          try {
+            GenericConsumer.Load(instance);
+          } catch (Exception ex) {
+            ErrorWhileLoading(ex, importTypeDialog.Path);
+          } finally {
+            Invoke((Action)(() => instancesComboBox.SelectedIndex = -1));
+          }
+        });
       }
     }
   }

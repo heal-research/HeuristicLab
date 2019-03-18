@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,6 +24,8 @@ using System.Runtime.Serialization;
 namespace HeuristicLab.Services.OKB.Query.DataTransfer {
   [DataContract]
   public class Algorithm {
+    [DataMember]
+    public long Id { get; set; }
     [DataMember]
     public string Name { get; set; }
     [DataMember]

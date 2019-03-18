@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  * and the BEACON Center for the Study of Evolution in Action.
  * 
  * This file is part of HeuristicLab.
@@ -20,7 +20,6 @@
  */
 #endregion
 
-using System;
 using System.Linq;
 using System.Threading;
 using HeuristicLab.Analysis;
@@ -34,18 +33,10 @@ using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
-  [Item("Gradient Boosted Trees (GBT)", "Gradient boosted trees algorithm. Friedman, J. \"Greedy Function Approximation: A Gradient Boosting Machine\", IMS 1999 Reitz Lecture.")]
+  [Item("Gradient Boosted Trees (GBT)", "Gradient boosted trees algorithm. Specific implementation of gradient boosting for regression trees. Friedman, J. \"Greedy Function Approximation: A Gradient Boosting Machine\", IMS 1999 Reitz Lecture.")]
   [StorableClass]
   [Creatable(CreatableAttribute.Categories.DataAnalysisRegression, Priority = 125)]
-  public class GradientBoostedTreesAlgorithm : BasicAlgorithm {
-    public override Type ProblemType {
-      get { return typeof(IRegressionProblem); }
-    }
-    public new IRegressionProblem Problem {
-      get { return (IRegressionProblem)base.Problem; }
-      set { base.Problem = value; }
-    }
-
+  public class GradientBoostedTreesAlgorithm : FixedDataAnalysisAlgorithm<IRegressionProblem> {
     #region ParameterNames
     private const string IterationsParameterName = "Iterations";
     private const string MaxSizeParameterName = "Maximum Tree Size";
@@ -203,6 +194,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       var table = new DataTable("Qualities");
       table.Rows.Add(new DataRow("Loss (train)"));
       table.Rows.Add(new DataRow("Loss (test)"));
+      table.Rows["Loss (train)"].VisualProperties.StartIndexZero = true;
+      table.Rows["Loss (test)"].VisualProperties.StartIndexZero = true;
+
       Results.Add(new Result("Qualities", table));
       var curLoss = new DoubleValue();
       Results.Add(new Result("Loss (train)", curLoss));
@@ -262,13 +256,19 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
             new AccuracyMaximizationThresholdCalculator());
           var classificationProblemData = new ClassificationProblemData(problemData.Dataset,
             problemData.AllowedInputVariables, problemData.TargetVariable, problemData.Transformations);
-          classificationModel.RecalculateModelParameters(classificationProblemData, classificationProblemData.TrainingIndices);
+          classificationProblemData.TrainingPartition.Start = Problem.ProblemData.TrainingPartition.Start;
+          classificationProblemData.TrainingPartition.End = Problem.ProblemData.TrainingPartition.End;
+          classificationProblemData.TestPartition.Start = Problem.ProblemData.TestPartition.Start;
+          classificationProblemData.TestPartition.End = Problem.ProblemData.TestPartition.End;
+
+          classificationModel.SetThresholdsAndClassValues(new double[] { double.NegativeInfinity, 0.0 }, new[] { 0.0, 1.0 });
+
 
           var classificationSolution = new DiscriminantFunctionClassificationSolution(classificationModel, classificationProblemData);
           Results.Add(new Result("Solution", classificationSolution));
         } else {
           // otherwise we produce a regression solution
-          Results.Add(new Result("Solution", new RegressionSolution(model, problemData)));
+          Results.Add(new Result("Solution", new GradientBoostedTreesSolution(model, problemData)));
         }
       }
     }

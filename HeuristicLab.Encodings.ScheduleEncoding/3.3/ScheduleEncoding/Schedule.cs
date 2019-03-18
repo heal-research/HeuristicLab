@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -53,8 +53,8 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
     #endregion
 
     [StorableConstructor]
-    protected Schedule(bool deserializing) : base(deserializing) { }
-    protected Schedule(Schedule original, Cloner cloner)
+    private Schedule(bool deserializing) : base(deserializing) { }
+    private Schedule(Schedule original, Cloner cloner)
       : base(original, cloner) {
       this.resources = cloner.Clone(original.Resources);
       this.quality = original.Quality;
@@ -63,6 +63,8 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
       RegisterResourcesEvents();
     }
     public Schedule(int nrOfResources) {
+      Name = "Schedule";
+
       resources = new ItemList<Resource>();
       for (int i = 0; i < nrOfResources; i++) {
         Resources.Add(new Resource(i));

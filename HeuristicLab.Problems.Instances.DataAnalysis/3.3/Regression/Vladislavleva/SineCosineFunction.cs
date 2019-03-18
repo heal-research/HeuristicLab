@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
+using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
   public class SineCosineFunction : ArtificialRegressionDataDescriptor {
@@ -45,15 +46,22 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     protected override int TrainingPartitionEnd { get { return 30; } }
     protected override int TestPartitionStart { get { return 30; } }
     protected override int TestPartitionEnd { get { return 30 + (306 * 306); } }
+    public int Seed { get; private set; }
 
+    public SineCosineFunction() : this((int)DateTime.Now.Ticks) { }
+
+    public SineCosineFunction(int seed) : base() {
+      Seed = seed;
+    }
     protected override List<List<double>> GenerateValues() {
       List<List<double>> data = new List<List<double>>();
       List<double> oneVariableTestData = SequenceGenerator.GenerateSteps(-0.05m, 6.05m, 0.02m).Select(v => (double)v).ToList();
       List<List<double>> testData = new List<List<double>>() { oneVariableTestData, oneVariableTestData };
       var combinations = ValueGenerator.GenerateAllCombinationsOfValuesInLists(testData).ToList<IEnumerable<double>>();
 
+      var rand = new MersenneTwister((uint)Seed);
       for (int i = 0; i < AllowedInputVariables.Count(); i++) {
-        data.Add(ValueGenerator.GenerateUniformDistributedValues(30, 0.1, 5.9).ToList());
+        data.Add(ValueGenerator.GenerateUniformDistributedValues(rand.Next(), 30, 0.1, 5.9).ToList());
         data[i].AddRange(combinations[i]);
       }
 

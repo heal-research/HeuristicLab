@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -50,7 +50,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
       while (dividend > 0) {
         int modulo = (dividend - 1) % 26;
-        columnName = Convert.ToChar(65 + modulo).ToString() + columnName;
+        columnName = System.Convert.ToChar(65 + modulo) + columnName;
         dividend = (int)((dividend - modulo) / 26);
       }
 
@@ -59,41 +59,48 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     private readonly Dictionary<string, string> variableNameMapping = new Dictionary<string, string>();
     private int currentVariableIndex = 0;
-    private string GetColumnToVariableName(string variabelName) {
-      if (!variableNameMapping.ContainsKey(variabelName)) {
+    private string GetColumnToVariableName(string varName) {
+      if (!variableNameMapping.ContainsKey(varName)) {
         currentVariableIndex++;
-        variableNameMapping.Add(variabelName, GetExcelColumnName(currentVariableIndex));
+        variableNameMapping.Add(varName, GetExcelColumnName(currentVariableIndex));
       }
-      return string.Format("${0}1", variableNameMapping[variabelName]);
+      return string.Format("${0}1", variableNameMapping[varName]);
     }
     public string Format(ISymbolicExpressionTree symbolicExpressionTree) {
       return Format(symbolicExpressionTree, null);
     }
 
+
     public string Format(ISymbolicExpressionTree symbolicExpressionTree, IDataset dataset) {
+      if (dataset != null)
+        return FormatWithMapping(symbolicExpressionTree, CalculateVariableMapping(symbolicExpressionTree, dataset));
+      else return FormatWithMapping(symbolicExpressionTree, new Dictionary<string, string>());
+    }
+
+    public string FormatWithMapping(ISymbolicExpressionTree symbolicExpressionTree, Dictionary<string, string> variableNameMapping) {
+      foreach (var kvp in variableNameMapping) this.variableNameMapping.Add(kvp.Key, kvp.Value);
       var stringBuilder = new StringBuilder();
-      if (dataset != null) CalculateVariableMapping(symbolicExpressionTree, dataset);
 
       stringBuilder.Append("=");
       stringBuilder.Append(FormatRecursively(symbolicExpressionTree.Root));
 
-      foreach (var variable in variableNameMapping) {
+      foreach (var variable in this.variableNameMapping) {
         stringBuilder.AppendLine();
         stringBuilder.Append(variable.Key + " = " + variable.Value);
       }
       return stringBuilder.ToString();
     }
 
-    private void CalculateVariableMapping(ISymbolicExpressionTree tree, IDataset dataset) {
-      int columnIndex = 0;
+    private Dictionary<string, string> CalculateVariableMapping(ISymbolicExpressionTree tree, IDataset dataset) {
+      var mapping = new Dictionary<string, string>();
       int inputIndex = 0;
-      var usedVariables = tree.IterateNodesPrefix().OfType<VariableTreeNode>().Select(v => v.VariableName).Distinct();
+      var usedVariables = tree.IterateNodesPrefix().OfType<IVariableTreeNode>().Select(v => v.VariableName).Distinct().ToArray();
       foreach (var variable in dataset.VariableNames) {
-        columnIndex++;
         if (!usedVariables.Contains(variable)) continue;
         inputIndex++;
-        variableNameMapping[variable] = GetExcelColumnName(inputIndex);
+        mapping[variable] = GetExcelColumnName(inputIndex);
       }
+      return mapping;
     }
 
     private string FormatRecursively(ISymbolicExpressionTreeNode node) {
@@ -189,7 +196,27 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         VariableTreeNode variableTreeNode = node as VariableTreeNode;
         stringBuilder.Append(variableTreeNode.Weight.ToString(CultureInfo.InvariantCulture));
         stringBuilder.Append("*");
-        stringBuilder.Append(GetColumnToVariableName(variableTreeNode.VariableName));// + LagToString(currentLag));
+        stringBuilder.Append(GetColumnToVariableName(variableTreeNode.VariableName));
+      } else if (symbol is BinaryFactorVariable) {
+        var binFactorNode = node as BinaryFactorVariableTreeNode;
+        stringBuilder.AppendFormat("IF({0}=\"{1}\", {2}, 0)",
+          GetColumnToVariableName(binFactorNode.VariableName),
+          binFactorNode.VariableValue,
+          binFactorNode.Weight.ToString(CultureInfo.InvariantCulture)
+          );
+      } else if (symbol is FactorVariable) {
+        var factorNode = node as FactorVariableTreeNode;
+        var values = factorNode.Symbol.GetVariableValues(factorNode.VariableName).ToArray();
+        var w = factorNode.Weights;
+        // create nested if
+        for (int i = 0; i < values.Length; i++) {
+          stringBuilder.AppendFormat("IF({0}=\"{1}\", {2}, ",
+            GetColumnToVariableName(factorNode.VariableName),
+            values[i],
+            w[i].ToString(CultureInfo.InvariantCulture));
+        }
+        stringBuilder.Append("\"\""); // return empty string on unknown value
+        stringBuilder.Append(')', values.Length); // add closing parenthesis
       } else if (symbol is Power) {
         stringBuilder.Append("POWER(");
         stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
@@ -212,18 +239,29 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         stringBuilder.Append(")");
       } else if (symbol is VariableCondition) {
         VariableConditionTreeNode variableConditionTreeNode = node as VariableConditionTreeNode;
-        double threshold = variableConditionTreeNode.Threshold;
-        double slope = variableConditionTreeNode.Slope;
-        string p = "(1 / (1 + EXP(-" + slope.ToString(CultureInfo.InvariantCulture) + " * (" + GetColumnToVariableName(variableConditionTreeNode.VariableName) + "-" + threshold.ToString(CultureInfo.InvariantCulture) + "))))";
-        stringBuilder.Append("((");
-        stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
-        stringBuilder.Append("*");
-        stringBuilder.Append(p);
-        stringBuilder.Append(") + (");
-        stringBuilder.Append(FormatRecursively(node.GetSubtree(1)));
-        stringBuilder.Append("*(");
-        stringBuilder.Append("1 - " + p + ")");
-        stringBuilder.Append("))");
+        if (!variableConditionTreeNode.Symbol.IgnoreSlope) {
+          double threshold = variableConditionTreeNode.Threshold;
+          double slope = variableConditionTreeNode.Slope;
+          string p = "(1 / (1 + EXP(-" + slope.ToString(CultureInfo.InvariantCulture) + " * (" +
+                     GetColumnToVariableName(variableConditionTreeNode.VariableName) + "-" +
+                     threshold.ToString(CultureInfo.InvariantCulture) + "))))";
+          stringBuilder.Append("((");
+          stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
+          stringBuilder.Append("*");
+          stringBuilder.Append(p);
+          stringBuilder.Append(") + (");
+          stringBuilder.Append(FormatRecursively(node.GetSubtree(1)));
+          stringBuilder.Append("*(");
+          stringBuilder.Append("1 - " + p + ")");
+          stringBuilder.Append("))");
+        } else {
+          stringBuilder.AppendFormat(CultureInfo.InvariantCulture, "(IF({0} <= {1}, {2}, {3}))",
+            GetColumnToVariableName(variableConditionTreeNode.VariableName),
+            variableConditionTreeNode.Threshold,
+            FormatRecursively(node.GetSubtree(0)),
+            FormatRecursively(node.GetSubtree(1))
+            );
+        }
       } else if (symbol is Xor) {
         stringBuilder.Append("IF(");
         stringBuilder.Append("XOR(");

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -82,6 +82,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public const byte Norm = 42;
     public const byte Erf = 43;
     public const byte Bessel = 44;
+    public const byte FactorVariable = 46;
+    public const byte BinaryFactorVariable = 47;
+
 
     private static Dictionary<Type, byte> symbolToOpcode = new Dictionary<Type, byte>() {
        { typeof(Addition), OpCodes.Add },
@@ -129,7 +132,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       { typeof(AiryB), OpCodes.AiryB },
       { typeof(Norm), OpCodes.Norm},
       { typeof(Erf), OpCodes.Erf},
-      { typeof(Bessel), OpCodes.Bessel}   
+      { typeof(Bessel), OpCodes.Bessel},
+      { typeof(FactorVariable), OpCodes.FactorVariable },
+      { typeof(BinaryFactorVariable), OpCodes.BinaryFactorVariable }
     };
 
     public static byte MapSymbolToOpCode(ISymbolicExpressionTreeNode treeNode) {

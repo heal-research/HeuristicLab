@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -39,7 +39,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     protected NcaClassificationSolution(NcaClassificationSolution original, Cloner cloner)
       : base(original, cloner) {
     }
-    public NcaClassificationSolution(IClassificationProblemData problemData, INcaModel ncaModel)
+    public NcaClassificationSolution(INcaModel ncaModel, IClassificationProblemData problemData)
       : base(ncaModel, problemData) {
     }
 

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -1746,7 +1746,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Tests {
       int rows0 = x.GetLength(0);
       int rows1 = xt.GetLength(0);
       var actualCov = new double[rows0, rows1];
-      var covFunction = cf.GetParameterizedCovarianceFunction(hyp, Enumerable.Range(0, x.GetLength(1)));
+      var covFunction = cf.GetParameterizedCovarianceFunction(hyp, Enumerable.Range(0, x.GetLength(1)).ToArray());
       for (int i = 0; i < rows0; i++)
         for (int j = 0; j < rows1; j++)
           actualCov[i, j] = covFunction.CrossCovariance(x, xt, i, j);
@@ -1768,7 +1768,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Tests {
 
       int nHyp = mf.GetNumberOfParameters(x.GetLength(1));
       var hyp = Enumerable.Repeat(hypValue, nHyp).ToArray();
-      var meanFunction = mf.GetParameterizedMeanFunction(hyp, Enumerable.Range(0, x.GetLength(1)));
+      var meanFunction = mf.GetParameterizedMeanFunction(hyp, Enumerable.Range(0, x.GetLength(1)).ToArray());
 
       var m = Enumerable.Range(0, xt.GetLength(0)).Select(i => meanFunction.Mean(xt, i)).ToArray();
 

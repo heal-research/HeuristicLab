@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,10 +22,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.DataAnalysis;
@@ -59,7 +59,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     #region linear regression
-    protected override void Run() {
+    protected override void Run(CancellationToken cancellationToken) {
       double rmsError, cvRmsError;
       var solution = CreateLinearRegressionSolution(Problem.ProblemData, out rmsError, out cvRmsError);
       Results.Add(new Result(LinearRegressionModelResultName, "The linear regression solution.", solution));
@@ -72,7 +72,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       string targetVariable = problemData.TargetVariable;
       IEnumerable<string> allowedInputVariables = problemData.AllowedInputVariables;
       IEnumerable<int> rows = problemData.TrainingIndices;
-      double[,] inputMatrix = AlglibUtil.PrepareInputMatrix(dataset, allowedInputVariables.Concat(new string[] { targetVariable }), rows);
+      var doubleVariables = allowedInputVariables.Where(dataset.VariableHasType<double>);
+      var factorVariableNames = allowedInputVariables.Where(dataset.VariableHasType<string>);
+      var factorVariables = dataset.GetFactorVariableValues(factorVariableNames, rows);
+      double[,] binaryMatrix = dataset.ToArray(factorVariables, rows);
+      double[,] doubleVarMatrix = dataset.ToArray(doubleVariables.Concat(new string[] { targetVariable }), rows);
+      var inputMatrix = binaryMatrix.HorzCat(doubleVarMatrix);
+
       if (inputMatrix.Cast<double>().Any(x => double.IsNaN(x) || double.IsInfinity(x)))
         throw new NotSupportedException("Linear regression does not support NaN or infinity values in the input dataset.");
 
@@ -90,26 +96,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
       alglib.lrunpack(lm, out coefficients, out nFeatures);
 
-      ISymbolicExpressionTree tree = new SymbolicExpressionTree(new ProgramRootSymbol().CreateTreeNode());
-      ISymbolicExpressionTreeNode startNode = new StartSymbol().CreateTreeNode();
-      tree.Root.AddSubtree(startNode);
-      ISymbolicExpressionTreeNode addition = new Addition().CreateTreeNode();
-      startNode.AddSubtree(addition);
-
-      int col = 0;
-      foreach (string column in allowedInputVariables) {
-        VariableTreeNode vNode = (VariableTreeNode)new HeuristicLab.Problems.DataAnalysis.Symbolic.Variable().CreateTreeNode();
-        vNode.VariableName = column;
-        vNode.Weight = coefficients[col];
-        addition.AddSubtree(vNode);
-        col++;
-      }
-
-      ConstantTreeNode cNode = (ConstantTreeNode)new Constant().CreateTreeNode();
-      cNode.Value = coefficients[coefficients.Length - 1];
-      addition.AddSubtree(cNode);
-
-      SymbolicRegressionSolution solution = new SymbolicRegressionSolution(new SymbolicRegressionModel(tree, new SymbolicDataAnalysisExpressionTreeInterpreter()), (IRegressionProblemData)problemData.Clone());
+      int nFactorCoeff = binaryMatrix.GetLength(1);
+      int nVarCoeff = doubleVariables.Count();
+      var tree = LinearModelToTreeConverter.CreateTree(factorVariables, coefficients.Take(nFactorCoeff).ToArray(),
+        doubleVariables.ToArray(), coefficients.Skip(nFactorCoeff).Take(nVarCoeff).ToArray(), 
+        @const: coefficients[nFeatures]);
+      
+      SymbolicRegressionSolution solution = new SymbolicRegressionSolution(new SymbolicRegressionModel(problemData.TargetVariable, tree, new SymbolicDataAnalysisExpressionTreeLinearInterpreter()), (IRegressionProblemData)problemData.Clone());
       solution.Model.Name = "Linear Regression Model";
       solution.Name = "Linear Regression Solution";
       return solution;

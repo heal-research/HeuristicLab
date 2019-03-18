@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -301,27 +301,28 @@ namespace HeuristicLab.Algorithms.Benchmarks {
       cancellationTokenSource.Cancel();
     }
     public void Start() {
-      cancellationTokenSource = new CancellationTokenSource();
+      Start(CancellationToken.None);
+    }
+    public void Start(CancellationToken cancellationToken) {
+      cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
       OnStarted();
-      Task task = Task.Factory.StartNew(Run, cancellationTokenSource.Token, cancellationTokenSource.Token);
-      task.ContinueWith(t => {
-        try {
-          t.Wait();
-        }
-        catch (AggregateException ex) {
-          try {
-            ex.Flatten().Handle(x => x is OperationCanceledException);
-          }
-          catch (AggregateException remaining) {
-            if (remaining.InnerExceptions.Count == 1) OnExceptionOccurred(remaining.InnerExceptions[0]);
-            else OnExceptionOccurred(remaining);
-          }
-        }
 
-        cancellationTokenSource.Dispose();
-        cancellationTokenSource = null;
-        OnStopped();
-      });
+      try {
+        Run(cancellationTokenSource.Token);
+      } catch (OperationCanceledException) {
+      } catch (AggregateException ae) {
+        ae.FlattenAndHandle(new[] { typeof(OperationCanceledException) }, e => OnExceptionOccurred(e));
+      } catch (Exception e) {
+        OnExceptionOccurred(e);
+      }
+
+      cancellationTokenSource.Dispose();
+      cancellationTokenSource = null;
+      OnStopped();
+    }
+    public async Task StartAsync() { await StartAsync(CancellationToken.None); }
+    public async Task StartAsync(CancellationToken cancellationToken) {
+      await AsyncHelper.DoAsync(Start, cancellationToken);
     }
 
     private void Run(object state) {
@@ -345,10 +346,8 @@ namespace HeuristicLab.Algorithms.Benchmarks {
         }
         Benchmark.TimeLimit = timelimit;
         Benchmark.Run(cancellationToken, results);
-      }
-      catch (OperationCanceledException) {
-      }
-      finally {
+      } catch (OperationCanceledException) {
+      } finally {
         timer.Elapsed -= new System.Timers.ElapsedEventHandler(timer_Elapsed);
         timer.Stop();
         ExecutionTime += DateTime.UtcNow - lastUpdateTime;

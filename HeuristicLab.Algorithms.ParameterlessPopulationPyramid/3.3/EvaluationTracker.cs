@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  * and the BEACON Center for the Study of Evolution in Action.
  *
  * This file is part of HeuristicLab.
@@ -22,35 +22,40 @@
 
 using System;
 using System.Collections.Generic;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
 using HeuristicLab.Optimization;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
   // This code is based off the publication
   // B. W. Goldman and W. F. Punch, "Parameter-less Population Pyramid," GECCO, pp. 785–792, 2014
   // and the original source code in C++11 available from: https://github.com/brianwgoldman/Parameter-less_Population_Pyramid
-  internal sealed class EvaluationTracker : ISingleObjectiveProblemDefinition<BinaryVectorEncoding, BinaryVector> {
-    private readonly ISingleObjectiveProblemDefinition<BinaryVectorEncoding, BinaryVector> problem;
-
+  [StorableClass]
+  internal sealed class EvaluationTracker : Item, ISingleObjectiveProblemDefinition<BinaryVectorEncoding, BinaryVector> {
+    [Storable]
+    private SingleObjectiveProblem<BinaryVectorEncoding, BinaryVector> problem;
+    [Storable]
     private int maxEvaluations;
 
     #region Properties
+    [Storable]
     public double BestQuality {
       get;
       private set;
     }
-
+    [Storable]
     public int Evaluations {
       get;
       private set;
     }
-
+    [Storable]
     public int BestFoundOnEvaluation {
       get;
       private set;
     }
-
+    [Storable]
     public BinaryVector BestSolution {
       get;
       private set;
@@ -61,7 +66,24 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
     }
     #endregion
 
-    public EvaluationTracker(ISingleObjectiveProblemDefinition<BinaryVectorEncoding, BinaryVector> problem, int maxEvaluations) {
+
+    [StorableConstructor]
+    private EvaluationTracker(bool deserializing) : base(deserializing) { }
+
+    private EvaluationTracker(EvaluationTracker original, Cloner cloner)
+      : base(original, cloner) {
+      problem = cloner.Clone(original.problem);
+      maxEvaluations = original.maxEvaluations;
+      BestQuality = original.BestQuality;
+      Evaluations = original.Evaluations;
+      BestFoundOnEvaluation = original.BestFoundOnEvaluation;
+      BestSolution = cloner.Clone(original.BestSolution);
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new EvaluationTracker(this, cloner);
+    }
+
+    public EvaluationTracker(SingleObjectiveProblem<BinaryVectorEncoding, BinaryVector> problem, int maxEvaluations) {
       this.problem = problem;
       this.maxEvaluations = maxEvaluations;
       BestSolution = new BinaryVector(problem.Encoding.Length);

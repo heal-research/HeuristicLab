@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -42,7 +42,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private NeuralNetworkEnsembleClassificationSolution(NeuralNetworkEnsembleClassificationSolution original, Cloner cloner)
       : base(original, cloner) {
     }
-    public NeuralNetworkEnsembleClassificationSolution(IClassificationProblemData problemData, INeuralNetworkEnsembleModel nnModel)
+    public NeuralNetworkEnsembleClassificationSolution(INeuralNetworkEnsembleModel nnModel, IClassificationProblemData problemData)
       : base(nnModel, problemData) {
     }
 

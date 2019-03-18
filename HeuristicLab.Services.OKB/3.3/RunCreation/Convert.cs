@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -39,6 +39,17 @@ namespace HeuristicLab.Services.OKB.RunCreation {
       return new DT.Problem { Id = source.Id, Name = source.Name, Description = source.Description, ProblemClass = Convert.ToDto(source.ProblemClass), DataType = Convert.ToDto(source.DataType) };
     }
 
+    public static DT.SingleObjectiveSolution ToDto(DA.SingleObjectiveSolution source) {
+      if (source == null) return null;
+      return new DT.SingleObjectiveSolution() {
+        Id = source.Id,
+        ProblemId = source.ProblemId.Value,
+        RunId = source.RunId,
+        Quality = source.Quality,
+        DataType = ToDto(source.DataType)
+      };
+    }
+
     private static DT.DataType ToDto(DA.DataType source) {
       if (source == null) return null;
       return new DT.DataType { Name = source.Name, TypeName = source.TypeName };
@@ -67,6 +78,63 @@ namespace HeuristicLab.Services.OKB.RunCreation {
       foreach (var value in source.ResultValues)
         entity.Values.Add(Convert.ToEntity(value, entity, DA.ValueNameCategory.Result, okb, binCache));
       return entity;
+    }
+
+    public static DT.Value ToDto(DA.CharacteristicValue source) {
+      if (source == null) return null;
+      if (source.Characteristic.Type == DA.CharacteristicType.Bool) {
+        return new DT.BoolValue { Name = source.Characteristic.Name, DataType = Convert.ToDto(source.DataType), Value = source.BoolValue.GetValueOrDefault() };
+      } else if (source.Characteristic.Type == DA.CharacteristicType.Int) {
+        return new DT.IntValue { Name = source.Characteristic.Name, DataType = Convert.ToDto(source.DataType), Value = source.IntValue.GetValueOrDefault() };
+      } else if (source.Characteristic.Type == DA.CharacteristicType.TimeSpan) {
+        return new DT.TimeSpanValue { Name = source.Characteristic.Name, DataType = Convert.ToDto(source.DataType), Value = source.LongValue.GetValueOrDefault() };
+      } else if (source.Characteristic.Type == DA.CharacteristicType.Long) {
+        return new DT.LongValue { Name = source.Characteristic.Name, DataType = Convert.ToDto(source.DataType), Value = source.LongValue.GetValueOrDefault() };
+      } else if (source.Characteristic.Type == DA.CharacteristicType.Float) {
+        return new DT.FloatValue { Name = source.Characteristic.Name, DataType = Convert.ToDto(source.DataType), Value = source.FloatValue.GetValueOrDefault() };
+      } else if (source.Characteristic.Type == DA.CharacteristicType.Double) {
+        return new DT.DoubleValue { Name = source.Characteristic.Name, DataType = Convert.ToDto(source.DataType), Value = source.DoubleValue.GetValueOrDefault() };
+      } else if (source.Characteristic.Type == DA.CharacteristicType.Percent) {
+        return new DT.PercentValue { Name = source.Characteristic.Name, DataType = Convert.ToDto(source.DataType), Value = source.DoubleValue.GetValueOrDefault() };
+      } else if (source.Characteristic.Type == DA.CharacteristicType.String) {
+        return new DT.StringValue { Name = source.Characteristic.Name, DataType = Convert.ToDto(source.DataType), Value = source.StringValue };
+      } else {
+        throw new ArgumentException("Unknown characteristic type.", "source");
+      }
+    }
+
+    public static DA.CharacteristicValue ToEntity(DT.Value source, DA.OKBDataContext okb, DA.Problem problem, DA.CharacteristicType type) {
+      if (okb == null || problem == null || source == null || string.IsNullOrEmpty(source.Name)) throw new ArgumentNullException();
+      var entity = new DA.CharacteristicValue();
+      entity.Problem = problem;
+      entity.DataType = Convert.ToEntity(source.DataType, okb);
+      entity.Characteristic = Convert.ToEntity(source.Name, type, okb);
+      if (source is DT.BoolValue) {
+        entity.BoolValue = ((DT.BoolValue)source).Value;
+      } else if (source is DT.IntValue) {
+        entity.IntValue = ((DT.IntValue)source).Value;
+      } else if (source is DT.TimeSpanValue) {
+        entity.LongValue = ((DT.TimeSpanValue)source).Value;
+      } else if (source is DT.LongValue) {
+        entity.LongValue = ((DT.LongValue)source).Value;
+      } else if (source is DT.FloatValue) {
+        entity.FloatValue = ((DT.FloatValue)source).Value;
+      } else if (source is DT.DoubleValue) {
+        entity.DoubleValue = ((DT.DoubleValue)source).Value;
+      } else if (source is DT.PercentValue) {
+        entity.DoubleValue = ((DT.PercentValue)source).Value;
+      } else if (source is DT.StringValue) {
+        entity.StringValue = ((DT.StringValue)source).Value;
+      } else {
+        throw new ArgumentException("Unknown characteristic type.", "source");
+      }
+      return entity;
+    }
+
+    private static DA.Characteristic ToEntity(string name, DA.CharacteristicType type, DA.OKBDataContext okb) {
+      if (string.IsNullOrEmpty(name)) return null;
+      var entity = okb.Characteristics.FirstOrDefault(x => (x.Name == name) && (x.Type == type));
+      return entity ?? new DA.Characteristic() { Id = 0, Name = name, Type = type };
     }
 
     private static DA.Value ToEntity(DT.Value source, DA.Run run, DA.ValueNameCategory category, DA.OKBDataContext okb, List<DA.BinaryData> binCache) {
@@ -107,9 +175,9 @@ namespace HeuristicLab.Services.OKB.RunCreation {
       return entity;
     }
 
-    private static DA.DataType ToEntity(DT.DataType source, DA.OKBDataContext okb) {
+    public static DA.DataType ToEntity(DT.DataType source, DA.OKBDataContext okb) {
       if (source == null) return null;
-      var entity = okb.DataTypes.Where(x => (x.Name == source.Name) && (x.TypeName == source.TypeName)).FirstOrDefault();
+      var entity = okb.DataTypes.FirstOrDefault(x => (x.Name == source.Name) && (x.TypeName == source.TypeName));
       if (entity == null)
         entity = new DA.DataType() { Id = 0, Name = source.Name, TypeName = source.TypeName };
       return entity;
@@ -117,7 +185,7 @@ namespace HeuristicLab.Services.OKB.RunCreation {
 
     private static DA.ValueName ToEntity(string name, DA.ValueNameCategory category, DA.ValueNameType type, DA.OKBDataContext okb) {
       if (string.IsNullOrEmpty(name)) return null;
-      var entity = okb.ValueNames.Where(x => (x.Name == name) && (x.Category == category) && (x.Type == type)).FirstOrDefault();
+      var entity = okb.ValueNames.FirstOrDefault(x => (x.Name == name) && (x.Category == category) && (x.Type == type));
       if (entity == null)
         entity = new DA.ValueName() { Id = 0, Name = name, Category = category, Type = type };
       return entity;
@@ -130,17 +198,39 @@ namespace HeuristicLab.Services.OKB.RunCreation {
         hash = sha1.ComputeHash(data);
       }
 
-      var cachedBinaryData = binCache.Where(x => x.Hash.SequenceEqual(hash)).FirstOrDefault();
+      var cachedBinaryData = binCache.FirstOrDefault(x => x.Hash.SequenceEqual(hash));
       if (cachedBinaryData != null)
         return cachedBinaryData;
 
-      var entity = okb.BinaryDatas.Where(x => x.Hash.Equals(hash)).FirstOrDefault();
+      var entity = okb.BinaryDatas.FirstOrDefault(x => x.Hash.Equals(hash));
       if (entity == null) {
         entity = new DA.BinaryData() { Id = 0, Data = data, Hash = hash };
         binCache.Add(entity);
       }
 
       return entity;
+    }
+
+    public static DA.SingleObjectiveSolution ToEntity(DT.SingleObjectiveSolution source, byte[] data, DA.OKBDataContext okb) {
+      var sol = okb.SingleObjectiveSolutions.SingleOrDefault(x => x.Id == source.Id) ?? new DA.SingleObjectiveSolution() {
+        ProblemId = source.ProblemId,
+        RunId = source.RunId,
+        Quality = source.Quality
+      };
+      if (source.DataType != null) {
+        sol.DataType = ToEntity(source.DataType, okb);
+      }
+      if (data != null && data.Length > 0) {
+        byte[] hash;
+        using (var sha1 = SHA1.Create()) {
+          hash = sha1.ComputeHash(data);
+        }
+        sol.BinaryData = new DA.BinaryData() {
+          Data = data,
+          Hash = hash
+        };
+      }
+      return sol;
     }
     #endregion
   }

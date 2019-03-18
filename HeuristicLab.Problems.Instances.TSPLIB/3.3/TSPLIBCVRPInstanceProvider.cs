@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -35,7 +35,7 @@ namespace HeuristicLab.Problems.Instances.TSPLIB {
 
     protected override string FileExtension { get { return "vrp"; } }
 
-    protected override CVRPData LoadInstance(TSPLIBParser parser) {
+    protected override CVRPData LoadInstance(TSPLIBParser parser, IDataDescriptor descriptor = null) {
       parser.Parse();
       var instance = new CVRPData();
       instance.Dimension = parser.Dimension;
@@ -76,6 +76,10 @@ namespace HeuristicLab.Problems.Instances.TSPLIB {
     protected override void LoadSolution(TSPLIBParser parser, CVRPData instance) {
       parser.Parse();
       instance.BestKnownTour = parser.Tour;
+    }
+
+    protected override void LoadQuality(double? bestQuality, CVRPData instance) {
+      instance.BestKnownQuality = bestQuality;
     }
   }
 }

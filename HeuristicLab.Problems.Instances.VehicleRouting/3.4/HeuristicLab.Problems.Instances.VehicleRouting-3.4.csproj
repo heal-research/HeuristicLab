@@ -157,6 +157,7 @@
     <EmbeddedResource Include="Data\CordeauMD.opt.zip" />
     <EmbeddedResource Include="Data\CordeauMDTW.opt.zip" />
     <EmbeddedResource Include="Data\Homberger.opt.zip" />
+    <EmbeddedResource Include="Data\Solomon.opt.zip" />
     <None Include="Plugin.cs.frame" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

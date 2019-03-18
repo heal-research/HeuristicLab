@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -33,11 +33,21 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// </summary>
   [StorableClass]
   [Item("GaussianProcessModel", "Represents a Gaussian process posterior.")]
-  public sealed class GaussianProcessModel : NamedItem, IGaussianProcessModel {
+  public sealed class GaussianProcessModel : RegressionModel, IGaussianProcessModel {
+    public override IEnumerable<string> VariablesUsedForPrediction {
+      get { return allowedInputVariables; }
+    }
+
     [Storable]
     private double negativeLogLikelihood;
     public double NegativeLogLikelihood {
       get { return negativeLogLikelihood; }
+    }
+
+    [Storable]
+    private double loocvNegLogPseudoLikelihood;
+    public double LooCvNegativeLogPseudoLikelihood {
+      get { return loocvNegLogPseudoLikelihood; }
     }
 
     [Storable]
@@ -60,11 +70,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public IMeanFunction MeanFunction {
       get { return meanFunction; }
     }
-    [Storable]
-    private string targetVariable;
-    public string TargetVariable {
-      get { return targetVariable; }
-    }
+
     [Storable]
     private string[] allowedInputVariables;
     public string[] AllowedInputVariables {
@@ -127,7 +133,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         this.inputScaling = cloner.Clone(original.inputScaling);
       this.trainingDataset = cloner.Clone(original.trainingDataset);
       this.negativeLogLikelihood = original.negativeLogLikelihood;
-      this.targetVariable = original.targetVariable;
+      this.loocvNegLogPseudoLikelihood = original.loocvNegLogPseudoLikelihood;
       this.sqrSigmaNoise = original.sqrSigmaNoise;
       if (original.meanParameter != null) {
         this.meanParameter = (double[])original.meanParameter.Clone();
@@ -146,12 +152,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public GaussianProcessModel(IDataset ds, string targetVariable, IEnumerable<string> allowedInputVariables, IEnumerable<int> rows,
       IEnumerable<double> hyp, IMeanFunction meanFunction, ICovarianceFunction covarianceFunction,
       bool scaleInputs = true)
-      : base() {
+      : base(targetVariable) {
       this.name = ItemName;
       this.description = ItemDescription;
       this.meanFunction = (IMeanFunction)meanFunction.Clone();
       this.covarianceFunction = (ICovarianceFunction)covarianceFunction.Clone();
-      this.targetVariable = targetVariable;
       this.allowedInputVariables = allowedInputVariables.ToArray();
 
 
@@ -180,16 +185,17 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       x = GetData(ds, this.allowedInputVariables, this.trainingRows, this.inputScaling);
 
       IEnumerable<double> y;
-      y = ds.GetDoubleValues(targetVariable, rows);
+      y = ds.GetDoubleValues(TargetVariable, rows);
 
       int n = x.GetLength(0);
 
+      var columns = Enumerable.Range(0, x.GetLength(1)).ToArray();
       // calculate cholesky decomposed (lower triangular) covariance matrix
-      var cov = covarianceFunction.GetParameterizedCovarianceFunction(covarianceParameter, Enumerable.Range(0, x.GetLength(1)));
+      var cov = covarianceFunction.GetParameterizedCovarianceFunction(covarianceParameter, columns);
       this.l = CalculateL(x, cov, sqrSigmaNoise);
 
       // calculate mean
-      var mean = meanFunction.GetParameterizedMeanFunction(meanParameter, Enumerable.Range(0, x.GetLength(1)));
+      var mean = meanFunction.GetParameterizedMeanFunction(meanParameter, columns);
       double[] m = Enumerable.Range(0, x.GetLength(0))
         .Select(r => mean.Mean(x, r))
         .ToArray();
@@ -217,6 +223,23 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
       alglib.spdmatrixcholeskyinverse(ref lCopy, n, false, out info, out matInvRep);
       if (info != 1) throw new ArgumentException("Can't invert matrix to calculate gradients.");
+
+      // LOOCV log pseudo-likelihood (or log predictive probability) (GPML page 116 and 117)
+      var sumLoo = 0.0;
+      var ki = new double[n];
+      for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) ki[j] = cov.Covariance(x, i, j);
+        ki[i] += sqrSigmaNoise;
+
+        var yi = Util.ScalarProd(ki, alpha);
+        var yi_loo = yi - alpha[i] / (lCopy[i, i] / sqrSigmaNoise);
+        var s2_loo = 1.0 / (lCopy[i, i] / sqrSigmaNoise);
+        var err = ym[i] - yi_loo;
+        var nll_loo = 0.5 * Math.Log(2 * Math.PI * s2_loo) + 0.5 * err * err / s2_loo;
+        sumLoo += nll_loo;
+      }
+      loocvNegLogPseudoLikelihood = sumLoo;
+
       for (int i = 0; i < n; i++) {
         for (int j = 0; j <= i; j++)
           lCopy[i, j] = lCopy[i, j] / sqrSigmaNoise - alpha[i] * alpha[j];
@@ -226,8 +249,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
       double[] meanGradients = new double[meanFunction.GetNumberOfParameters(nAllowedVariables)];
       for (int k = 0; k < meanGradients.Length; k++) {
-        var meanGrad = Enumerable.Range(0, alpha.Length)
-        .Select(r => mean.Gradient(x, r, k));
+        var meanGrad = new double[alpha.Length];
+        for (int g = 0; g < meanGrad.Length; g++)
+          meanGrad[g] = mean.Gradient(x, g, k);
         meanGradients[k] = -Util.ScalarProd(meanGrad, alpha);
       }
 
@@ -235,13 +259,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       if (covGradients.Length > 0) {
         for (int i = 0; i < n; i++) {
           for (int j = 0; j < i; j++) {
-            var g = cov.CovarianceGradient(x, i, j).ToArray();
+            var g = cov.CovarianceGradient(x, i, j);
             for (int k = 0; k < covGradients.Length; k++) {
               covGradients[k] += lCopy[i, j] * g[k];
             }
           }
 
-          var gDiag = cov.CovarianceGradient(x, i, i).ToArray();
+          var gDiag = cov.CovarianceGradient(x, i, i);
           for (int k = 0; k < covGradients.Length; k++) {
             // diag
             covGradients[k] += 0.5 * lCopy[i, i] * gDiag[k];
@@ -258,9 +282,28 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     private static double[,] GetData(IDataset ds, IEnumerable<string> allowedInputs, IEnumerable<int> rows, Scaling scaling) {
       if (scaling != null) {
-        return AlglibUtil.PrepareAndScaleInputMatrix(ds, allowedInputs, rows, scaling);
+        // BackwardsCompatibility3.3
+        #region Backwards compatible code, remove with 3.4
+        // TODO: completely remove Scaling class
+        List<string> variablesList = allowedInputs.ToList();
+        List<int> rowsList = rows.ToList();
+
+        double[,] matrix = new double[rowsList.Count, variablesList.Count];
+
+        int col = 0;
+        foreach (string column in variablesList) {
+          var values = scaling.GetScaledValues(ds, column, rowsList);
+          int row = 0;
+          foreach (var value in values) {
+            matrix[row, col] = value;
+            row++;
+          }
+          col++;
+        }
+        return matrix;
+        #endregion
       } else {
-        return AlglibUtil.PrepareInputMatrix(ds, allowedInputs, rows);
+        return ds.ToArray(allowedInputs, rows);
       }
     }
 
@@ -297,14 +340,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     #region IRegressionModel Members
-    public IEnumerable<double> GetEstimatedValues(IDataset dataset, IEnumerable<int> rows) {
+    public override IEnumerable<double> GetEstimatedValues(IDataset dataset, IEnumerable<int> rows) {
       return GetEstimatedValuesHelper(dataset, rows);
     }
-    public GaussianProcessRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData) {
+    public override IRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData) {
       return new GaussianProcessRegressionSolution(this, new RegressionProblemData(problemData));
-    }
-    IRegressionSolution IRegressionModel.CreateRegressionSolution(IRegressionProblemData problemData) {
-      return CreateRegressionSolution(problemData);
     }
     #endregion
 
@@ -319,27 +359,29 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         double[,] newX = GetData(dataset, allowedInputVariables, rows, inputScaling);
         int newN = newX.GetLength(0);
 
-        var Ks = new double[newN, n];
-        var mean = meanFunction.GetParameterizedMeanFunction(meanParameter, Enumerable.Range(0, newX.GetLength(1)));
+        var Ks = new double[newN][];
+        var columns = Enumerable.Range(0, newX.GetLength(1)).ToArray();
+        var mean = meanFunction.GetParameterizedMeanFunction(meanParameter, columns);
         var ms = Enumerable.Range(0, newX.GetLength(0))
         .Select(r => mean.Mean(newX, r))
         .ToArray();
-        var cov = covarianceFunction.GetParameterizedCovarianceFunction(covarianceParameter, Enumerable.Range(0, newX.GetLength(1)));
+        var cov = covarianceFunction.GetParameterizedCovarianceFunction(covarianceParameter, columns);
         for (int i = 0; i < newN; i++) {
+          Ks[i] = new double[n];
           for (int j = 0; j < n; j++) {
-            Ks[i, j] = cov.CrossCovariance(x, newX, j, i);
+            Ks[i][j] = cov.CrossCovariance(x, newX, j, i);
           }
         }
 
         return Enumerable.Range(0, newN)
-          .Select(i => ms[i] + Util.ScalarProd(Util.GetRow(Ks, i), alpha));
+          .Select(i => ms[i] + Util.ScalarProd(Ks[i], alpha));
       } catch (alglib.alglibexception ae) {
         // wrap exception so that calling code doesn't have to know about alglib implementation
         throw new ArgumentException("There was a problem in the calculation of the Gaussian process model", ae);
       }
     }
 
-    public IEnumerable<double> GetEstimatedVariance(IDataset dataset, IEnumerable<int> rows) {
+    public IEnumerable<double> GetEstimatedVariances(IDataset dataset, IEnumerable<int> rows) {
       try {
         if (x == null) {
           x = GetData(trainingDataset, allowedInputVariables, trainingRows, inputScaling);
@@ -351,7 +393,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
         var kss = new double[newN];
         double[,] sWKs = new double[n, newN];
-        var cov = covarianceFunction.GetParameterizedCovarianceFunction(covarianceParameter, Enumerable.Range(0, x.GetLength(1)));
+        var columns = Enumerable.Range(0, newX.GetLength(1)).ToArray();
+        var cov = covarianceFunction.GetParameterizedCovarianceFunction(covarianceParameter, columns);
 
         if (l == null) {
           l = CalculateL(x, cov, sqrSigmaNoise);
@@ -371,7 +414,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         alglib.ablas.rmatrixlefttrsm(n, newN, l, 0, 0, false, false, 0, ref sWKs, 0, 0);
 
         for (int i = 0; i < newN; i++) {
-          var sumV = Util.ScalarProd(Util.GetCol(sWKs, i), Util.GetCol(sWKs, i));
+          var col = Util.GetCol(sWKs, i).ToArray();
+          var sumV = Util.ScalarProd(col, col);
           kss[i] += sqrSigmaNoise; // kss is V(f), add noise variance of predictive distibution to get V(y)
           kss[i] -= sumV;
           if (kss[i] < 0) kss[i] = 0;
@@ -382,5 +426,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         throw new ArgumentException("There was a problem in the calculation of the Gaussian process model", ae);
       }
     }
+
   }
 }

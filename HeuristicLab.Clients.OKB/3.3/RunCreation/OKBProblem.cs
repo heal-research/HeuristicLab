@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,15 +19,16 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Persistence.Default.Xml;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
+using System.Linq;
 
 namespace HeuristicLab.Clients.OKB.RunCreation {
   [Item("OKB Problem", "A base class for problems which are stored in the OKB.")]
@@ -62,9 +63,17 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
             OnEvaluatorChanged();
             OnOperatorsChanged();
             OnReset();
+
+            solutions.Clear();
           }
         }
       }
+    }
+
+    [Storable]
+    private ItemList<OKBSolution> solutions; 
+    public ItemList<OKBSolution> Solutions {
+      get { return solutions; }
     }
 
     public override Image ItemImage {
@@ -134,6 +143,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       : base(original, cloner) {
       problemId = original.problemId;
       problem = cloner.Clone(original.problem);
+      solutions = cloner.Clone(original.solutions);
       RegisterProblemEvents();
     }
     protected OKBProblem(IHeuristicOptimizationProblem initialProblem)
@@ -141,13 +151,14 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       if (initialProblem == null) throw new ArgumentNullException("initialProblem", "Initial problem cannot be null.");
       problemId = -1;
       problem = initialProblem;
+      solutions = new ItemList<OKBSolution>();
       RegisterProblemEvents();
     }
 
     public void Load(long problemId) {
       if (this.problemId != problemId) {
         IHeuristicOptimizationProblem problem;
-        byte[] problemData = RunCreationClient.GetProblemData(problemId);
+        byte[] problemData = RunCreationClient.Instance.GetProblemData(problemId);
         using (MemoryStream stream = new MemoryStream(problemData)) {
           problem = XmlParser.Deserialize<IHeuristicOptimizationProblem>(stream);
         }
@@ -156,6 +167,14 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
           Problem = problem;
         }
       }
+    }
+
+    public void RefreshSolutions() {
+      if (ProblemId != -1) {
+        var sols = RunCreationClient.Instance.GetSolutions(ProblemId).Select(OKBSolution.Convert).ToList();
+        foreach (var sol in sols) sol.DownloadData();
+        Solutions.Replace(sols);
+      } else Solutions.Clear();
     }
 
     public IProblem CloneProblem() {

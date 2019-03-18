@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -95,33 +95,19 @@ namespace HeuristicLab.Clients.Hive {
         jobs = new HiveItemCollection<RefreshableJob>();
         var jobsLoaded = HiveServiceLocator.Instance.CallHiveService<IEnumerable<Job>>(s => s.GetJobs());
 
-        foreach (var j in jobsLoaded) {
-          jobs.Add(new RefreshableJob(j));
+        try {
+          foreach (var j in jobsLoaded) {
+            jobs.Add(new RefreshableJob(j));
+          }
+        } catch (NullReferenceException) {
+          // jobs was set to null during ClearHiveClient
         }
-      }
-      catch {
+      } catch {
         jobs = null;
         throw;
-      }
-      finally {
+      } finally {
         OnRefreshed();
       }
-    }
-
-    public void RefreshAsync(Action<Exception> exceptionCallback) {
-      var call = new Func<Exception>(delegate() {
-        try {
-          Refresh();
-        }
-        catch (Exception ex) {
-          return ex;
-        }
-        return null;
-      });
-      call.BeginInvoke(delegate(IAsyncResult result) {
-        Exception ex = call.EndInvoke(result);
-        if (ex != null) exceptionCallback(ex);
-      }, null);
     }
     #endregion
 
@@ -145,16 +131,15 @@ namespace HeuristicLab.Clients.Hive {
       }
     }
     public static void StoreAsync(Action<Exception> exceptionCallback, IHiveItem item, CancellationToken cancellationToken) {
-      var call = new Func<Exception>(delegate() {
+      var call = new Func<Exception>(delegate () {
         try {
           Store(item, cancellationToken);
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
           return ex;
         }
         return null;
       });
-      call.BeginInvoke(delegate(IAsyncResult result) {
+      call.BeginInvoke(delegate (IAsyncResult result) {
         Exception ex = call.EndInvoke(result);
         if (ex != null) exceptionCallback(ex);
       }, null);
@@ -293,8 +278,7 @@ namespace HeuristicLab.Clients.Hive {
           tasks.Add(task);
         }
         TS.Task.WaitAll(tasks.ToArray());
-      }
-      finally {
+      } finally {
         refreshableJob.Job.Modified = false;
         refreshableJob.IsProgressing = false;
         refreshableJob.Progress.Finish();
@@ -393,8 +377,7 @@ namespace HeuristicLab.Clients.Hive {
         }
         taskUploadSemaphore.Release(); semaphoreReleased = true; // the semaphore has to be release before waitall!
         TS.Task.WaitAll(tasks.ToArray());
-      }
-      finally {
+      } finally {
         if (!semaphoreReleased) taskUploadSemaphore.Release();
       }
     }
@@ -440,12 +423,13 @@ namespace HeuristicLab.Clients.Hive {
         refreshableJob.HiveTasks = new ItemCollection<HiveTask>(parents);
         if (refreshableJob.IsFinished()) {
           refreshableJob.ExecutionState = Core.ExecutionState.Stopped;
+        } else if (refreshableJob.IsPaused()) {
+          refreshableJob.ExecutionState = Core.ExecutionState.Paused;
         } else {
           refreshableJob.ExecutionState = Core.ExecutionState.Started;
         }
         refreshableJob.OnLoaded();
-      }
-      finally {
+      } finally {
         refreshableJob.IsProgressing = false;
         refreshableJob.Progress.Finish();
         if (downloader != null) {
@@ -482,8 +466,7 @@ namespace HeuristicLab.Clients.Hive {
       TaskData taskData = HiveServiceLocator.Instance.CallHiveService(s => s.GetTaskData(jobId));
       try {
         return PersistenceUtil.Deserialize<ItemTask>(taskData.Data);
-      }
-      catch {
+      } catch {
         return null;
       }
     }
@@ -494,8 +477,7 @@ namespace HeuristicLab.Clients.Hive {
     /// </summary>
     public static void TryAndRepeat(Action action, int repetitions, string errorMessage, ILog log = null) {
       while (true) {
-        try { action(); return; }
-        catch (Exception e) {
+        try { action(); return; } catch (Exception e) {
           if (repetitions == 0) throw new HiveException(errorMessage, e);
           if (log != null) log.LogMessage(string.Format("{0}: {1} - will try again!", errorMessage, e.ToString()));
           repetitions--;

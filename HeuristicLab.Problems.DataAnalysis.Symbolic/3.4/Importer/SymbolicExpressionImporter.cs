@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -34,7 +34,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private const string ARGSTART = "ARG";
     private const string INVOKESTART = "CALL";
     private const string TIMELAGSTART = "LAG";
-    private Dictionary<string, Symbol> knownSymbols = new Dictionary<string, Symbol>() 
+    private Dictionary<string, Symbol> knownSymbols = new Dictionary<string, Symbol>()
       {
         {"+", new Addition()},
         {"/", new Division()},
@@ -44,6 +44,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         {"LOG", new Logarithm()},
         {"POW", new Power()},
         {"ROOT", new Root()},
+        {"SQR", new Square()},
+        {"SQRT", new SquareRoot()},
         {"SIN",new Sine()},
         {"COS", new Cosine()},
         {"TAN", new Tangent()},
@@ -73,6 +75,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         {"DIFF", new Derivative()},
         {"PROG", new ProgramRootSymbol()},
         {"MAIN", new StartSymbol()},
+        {"FACTOR", new FactorVariable() },
+        {"BINFACTOR", new BinaryFactorVariable()}
       };
 
     Constant constant = new Constant();
@@ -81,6 +85,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     Defun defun = new Defun();
     TimeLag timeLag = new TimeLag();
     Integral integral = new Integral();
+    FactorVariable factorVar = new FactorVariable();
+    BinaryFactorVariable binFactorVar = new BinaryFactorVariable();
 
     ProgramRootSymbol programRootSymbol = new ProgramRootSymbol();
     StartSymbol startSymbol = new StartSymbol();
@@ -135,6 +141,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           while (!tokens.Peek().Equals(Token.RPAR)) {
             tree.AddSubtree(ParseSexp(tokens));
           }
+        } else if (tokens.Peek().StringValue.StartsWith("FACTOR")) {
+          tree = ParseFactor(tokens);
+        } else if (tokens.Peek().StringValue.StartsWith("BINFACTOR")) {
+          tree = ParseBinaryFactor(tokens);
         } else {
           Token curToken = tokens.Dequeue();
           tree = CreateTree(curToken);
@@ -199,6 +209,50 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       t.VariableName = tokens.Dequeue().StringValue;
       return t;
     }
+
+    private ISymbolicExpressionTreeNode ParseFactor(Queue<Token> tokens) {
+      Token tok = tokens.Dequeue();
+      Debug.Assert(tok.StringValue == "FACTOR");
+      FactorVariableTreeNode t = (FactorVariableTreeNode)(new FactorVariable()).CreateTreeNode(); // create a new symbol each time on purpose
+      var varNameTok = tokens.Dequeue();
+      Debug.Assert(tok.Symbol == TokenSymbol.SYMB);
+      t.VariableName = varNameTok.StringValue;
+
+      var weights = new List<double>();
+      while (tokens.Peek().Symbol == TokenSymbol.NUMBER) {
+        weights.Add(tokens.Dequeue().DoubleValue);
+      }
+
+      t.Weights = weights.ToArray();
+
+      // create a set of (virtual) values to match the number of weights
+      t.Symbol.VariableNames = new string[] { t.VariableName };
+      t.Symbol.VariableValues = new[]
+      { new KeyValuePair<string, Dictionary<string,int>>(
+        t.VariableName,
+        weights.Select((_, i) => Tuple.Create(_,i)).ToDictionary(tup=>"X" + tup.Item2, tup=>tup.Item2)) };
+      return t;
+    }
+
+    private ISymbolicExpressionTreeNode ParseBinaryFactor(Queue<Token> tokens) {
+      Token tok = tokens.Dequeue();
+      Debug.Assert(tok.StringValue == "BINFACTOR");
+      var t = (BinaryFactorVariableTreeNode)binFactorVar.CreateTreeNode();
+      var varNameTok = tokens.Dequeue();
+      Debug.Assert(varNameTok.Symbol == TokenSymbol.SYMB);
+      t.VariableName = varNameTok.StringValue;
+
+      var varValTok = tokens.Dequeue();
+      Debug.Assert(varValTok.Symbol == TokenSymbol.SYMB);
+      t.VariableValue = varValTok.StringValue;
+
+      var weightTok = tokens.Dequeue();
+      Debug.Assert(weightTok.Symbol == TokenSymbol.NUMBER);
+      t.Weight = weightTok.DoubleValue;
+
+      return t;
+    }
+
 
     private ISymbolicExpressionTreeNode ParseLaggedVariable(Queue<Token> tokens) {
       Token varTok = tokens.Dequeue();

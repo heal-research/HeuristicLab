@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -88,8 +88,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       StringBuilder builder = new StringBuilder();
       var varTreeNode = tree as VariableTreeNode;
       var constTreeNode = tree as ConstantTreeNode;
+      var factorVarTreeNode = tree as FactorVariableTreeNode;
+      var binFactorVarTreeNode = tree as BinaryFactorVariableTreeNode;
       if (varTreeNode != null) {
         builder.Append("(var " + varTreeNode.VariableName);
+      } else if (factorVarTreeNode != null) {
+        builder.Append("(factor " + factorVarTreeNode.VariableName);
+      } else if (binFactorVarTreeNode != null) {
+        builder.Append("(factor " + binFactorVarTreeNode.VariableName + "=" + binFactorVarTreeNode.VariableValue);
       } else if (constTreeNode != null) {
         builder.Append("(const");
       } else {

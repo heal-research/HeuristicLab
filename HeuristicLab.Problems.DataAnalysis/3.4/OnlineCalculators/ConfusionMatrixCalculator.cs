@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,6 +26,10 @@ using System.Linq;
 namespace HeuristicLab.Problems.DataAnalysis {
   public class ConfusionMatrixCalculator {
     public static double[,] Calculate(IEnumerable<double> originalValues, IEnumerable<double> estimatedValues, out OnlineCalculatorError errorState) {
+      if (!originalValues.Any() || !estimatedValues.Any()) {
+        errorState = OnlineCalculatorError.InsufficientElementsAdded;
+        return null;
+      }
 
       Dictionary<double, int> classValueIndexMapping = new Dictionary<double, int>();
       int index = 0;

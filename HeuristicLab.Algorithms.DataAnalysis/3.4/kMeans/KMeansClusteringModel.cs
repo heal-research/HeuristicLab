@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -36,6 +36,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   public sealed class KMeansClusteringModel : NamedItem, IClusteringModel {
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Function; }
+    }
+
+    public IEnumerable<string> VariablesUsedForPrediction {
+      get { return allowedInputVariables; }
     }
 
     [Storable]

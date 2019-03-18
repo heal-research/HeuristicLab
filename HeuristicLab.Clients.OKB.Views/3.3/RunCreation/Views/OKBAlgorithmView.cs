@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -323,8 +323,8 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
     private void storeAlgorithmInEachRunCheckBox_CheckedChanged(object sender, EventArgs e) {
       if (Content != null) Content.StoreAlgorithmInEachRun = storeAlgorithmInEachRunCheckBox.Checked;
     }
-    private void startButton_Click(object sender, EventArgs e) {
-      Content.Start();
+    private async void startButton_Click(object sender, EventArgs e) {
+      await Content.StartAsync();
     }
     private void pauseButton_Click(object sender, EventArgs e) {
       Content.Pause();

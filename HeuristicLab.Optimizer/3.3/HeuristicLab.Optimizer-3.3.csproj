@@ -128,7 +128,6 @@
     <EmbeddedResource Include="Documents\SGP_SymbClass.hl" />
     <EmbeddedResource Include="Documents\SGP_SymbReg.hl" />
     <EmbeddedResource Include="Documents\VNS_TSP.hl" />
-    <EmbeddedResource Include="Documents\PSO_Schwefel.hl" />
     <EmbeddedResource Include="Documents\SS_VRP.hl" />
     <EmbeddedResource Include="Documents\RAPGA_JSSP.hl" />
     <EmbeddedResource Include="Documents\GPR.hl" />
@@ -148,8 +147,19 @@
     <EmbeddedResource Include="Documents\GA_Grouping.hl" />
     <EmbeddedResource Include="Documents\ALPSGP_SymReg.hl" />
     <EmbeddedResource Include="Documents\ALPSGA_TSP.hl" />
-    <None Include="Documents\SGP_Robocode.hl" />
+    <EmbeddedResource Include="Documents\GA_BPP.hl" />
+    <EmbeddedResource Include="Documents\OSES_Griewank.hl" />
+    <EmbeddedResource Include="Documents\SGP_Robocode.hl" />
+    <EmbeddedResource Include="Documents\PSO_Rastrigin.hl" />
+    <EmbeddedResource Include="Documents\OSGP_SymReg.hl" />
     <None Include="Plugin.cs.frame" />
+    <Compile Include="ChangeNestingLevelDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ChangeNestingLevelDialog.Designer.cs">
+      <DependentUpon>ChangeNestingLevelDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MenuItems\ChangeNestingLevelMenuItem.cs" />
     <Compile Include="OptimizerSingleDocumentMainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -224,7 +234,9 @@
     <Compile Include="ToolBarItems\NewToolBarItem.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
     <EmbeddedResource Include="Documents\FirstSteps.rtf" />
     <None Include="HeuristicLab.snk" />
     <None Include="Properties\AssemblyInfo.cs.frame" />

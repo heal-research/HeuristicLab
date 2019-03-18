@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,10 +19,11 @@
  */
 #endregion
 
-using HeuristicLab.Common;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using System;
 using System.ComponentModel;
 using System.Drawing;
+using HeuristicLab.Common;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Analysis {
   /// <summary>
@@ -30,6 +31,15 @@ namespace HeuristicLab.Analysis {
   /// </summary>
   [StorableClass]
   public class DataTableVisualProperties : DeepCloneable, INotifyPropertyChanged {
+
+    #region Histogram Aggregation
+    public enum DataTableHistogramAggregation {
+      Overlapping,
+      SideBySide,
+      Stacked
+    }
+    #endregion
+
     private Font titleFont;
     public Font TitleFont {
       get { return titleFont; }
@@ -354,6 +364,39 @@ namespace HeuristicLab.Analysis {
       }
     }
 
+    private int histogramBins;
+    public int HistogramBins {
+      get { return histogramBins; }
+      set {
+        if (histogramBins != value) {
+          histogramBins = value;
+          OnPropertyChanged("HistogramBins");
+        }
+      }
+    }
+
+    private bool histogramExactBins;
+    public bool HistogramExactBins {
+      get { return histogramExactBins; }
+      set {
+        if (histogramExactBins != value) {
+          histogramExactBins = value;
+          OnPropertyChanged("HistogramExactBins");
+        }
+      }
+    }
+
+    private DataTableHistogramAggregation histogramAggregation;
+    public DataTableHistogramAggregation HistogramAggregation {
+      get { return histogramAggregation; }
+      set {
+        if (histogramAggregation != value) {
+          histogramAggregation = value;
+          OnPropertyChanged("HistogramAggregation");
+        }
+      }
+    }
+
     #region Persistence Properties
     [Storable(Name = "TitleFont")]
     private Font StorableTitleFont {
@@ -500,6 +543,21 @@ namespace HeuristicLab.Analysis {
       get { return secondYAxisLogScale; }
       set { secondYAxisLogScale = value; }
     }
+    [Storable(Name = "HistogramBins", DefaultValue = 10)]
+    private int StorableHistogramBins {
+      get { return histogramBins; }
+      set { histogramBins = value; }
+    }
+    [Storable(Name = "HistogramExactBins", DefaultValue = false)]
+    private bool StorableHistogramExactBins {
+      get { return histogramExactBins; }
+      set { histogramExactBins = value; }
+    }
+    [Storable(Name = "HistogramAggregation", DefaultValue = DataTableHistogramAggregation.Overlapping)]
+    private DataTableHistogramAggregation StorableHistogramAggregation {
+      get { return histogramAggregation; }
+      set { histogramAggregation = value; }
+    }
     #endregion
 
     [StorableConstructor]
@@ -535,6 +593,9 @@ namespace HeuristicLab.Analysis {
       this.secondXAxisLogScale = original.secondXAxisLogScale;
       this.yAxisLogScale = original.yAxisLogScale;
       this.secondYAxisLogScale = original.secondYAxisLogScale;
+      this.histogramBins = original.histogramBins;
+      this.histogramExactBins = original.histogramExactBins;
+      this.histogramAggregation = original.histogramAggregation;
     }
     public DataTableVisualProperties() {
       this.titleColor = Color.Black;
@@ -564,6 +625,9 @@ namespace HeuristicLab.Analysis {
       this.secondXAxisLogScale = false;
       this.yAxisLogScale = false;
       this.secondYAxisLogScale = false;
+      histogramBins = 10;
+      histogramExactBins = false;
+      histogramAggregation = DataTableHistogramAggregation.Overlapping;
     }
     public DataTableVisualProperties(string title)
       : this() {

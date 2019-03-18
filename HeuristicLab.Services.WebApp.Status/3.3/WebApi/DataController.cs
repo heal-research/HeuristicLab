@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -90,7 +90,7 @@ namespace HeuristicLab.Services.WebApp.Status.WebApi {
           MaxCalculatingTime = lastCalculatingTimes != null ? lastCalculatingTimes.Max : 0,
           AvgWaitingTime = count > 0 ? (long)calculatingTasks.OrderBy(x => x.StartTime).Take(count).Average(x => x.InitialWaitingTime) : 0,
           AvgCalculatingTime = lastCalculatingTimes != null ? lastCalculatingTimes.Avg : 0,
-          TotalCpuTime = factTasks.Sum(x => Convert.ToInt64(x.CalculatingTime)),
+          TotalCpuTime = factTasks.Sum(x => (long?)x.CalculatingTime) ?? 0,
           StandardDeviationCalculatingTime = (long)StandardDeviation(completedTasks.Select(x => (double)x.CalculatingTime)),
           BeginDate = factTasks.Where(x => x.StartTime.HasValue).OrderBy(x => x.StartTime).Select(x => x.StartTime).FirstOrDefault()
         };

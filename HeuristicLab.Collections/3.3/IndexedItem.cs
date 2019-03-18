@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,16 +19,13 @@
  */
 #endregion
 
-using System;
-
 namespace HeuristicLab.Collections {
-  [Serializable]
   public struct IndexedItem<T> {
-    private int index;
+    private readonly int index;
     public int Index {
       get { return index; }
     }
-    private T value;
+    private readonly T value;
     public T Value {
       get { return value; }
     }
@@ -39,7 +36,7 @@ namespace HeuristicLab.Collections {
     }
 
     public override string ToString() {
-      return "[" + index.ToString() + ": " + value == null ? "null" : value.ToString() + "]";
+      return "[" + index + ": " + (value == null ? "null" : value.ToString()) + "]";
     }
   }
 }

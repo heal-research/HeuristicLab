@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,7 +22,7 @@
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.ExternalEvaluation.GP {
-  [Plugin("HeuristicLab.Problems.ExternalEvaluation.GP", "Provides a symbolic expression tree grammar and formatters for external evaluation problems.", "3.5.8.$WCREV$")]
+  [Plugin("HeuristicLab.Problems.ExternalEvaluation.GP", "Provides a symbolic expression tree grammar and formatters for external evaluation problems.", "3.5.10.$WCREV$")]
   [PluginFile("HeuristicLab.Problems.ExternalEvaluation.GP-3.5.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Common", "3.3")]
   [PluginDependency("HeuristicLab.Core", "3.3")]

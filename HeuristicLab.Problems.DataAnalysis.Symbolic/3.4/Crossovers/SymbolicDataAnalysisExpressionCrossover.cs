@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -31,6 +31,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
+  [StorableClass]
   public abstract class SymbolicDataAnalysisExpressionCrossover<T> : SymbolicExpressionTreeCrossover, ISymbolicDataAnalysisExpressionCrossover<T> where T : class, IDataAnalysisProblemData {
     private const string SymbolicDataAnalysisTreeInterpreterParameterName = "SymbolicExpressionTreeInterpreter";
     private const string ProblemDataParameterName = "ProblemData";

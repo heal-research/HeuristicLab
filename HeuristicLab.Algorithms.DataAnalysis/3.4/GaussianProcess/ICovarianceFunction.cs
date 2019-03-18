@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,16 +19,14 @@
  */
 #endregion
 
-using System;
 using System.Collections.Generic;
-using System.Linq.Expressions;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
 
   public delegate double CovarianceFunctionDelegate(double[,] x, int i, int j);
   public delegate double CrossCovarianceFunctionDelegate(double[,] x, double[,] xt, int i, int j);
-  public delegate IEnumerable<double> CovarianceGradientFunctionDelegate(double[,] x, int i, int j);
+  public delegate IList<double> CovarianceGradientFunctionDelegate(double[,] x, int i, int j);
 
   public class ParameterizedCovarianceFunction {
     public CovarianceFunctionDelegate Covariance { get; set; }
@@ -39,6 +37,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   public interface ICovarianceFunction : IItem {
     int GetNumberOfParameters(int numberOfVariables);
     void SetParameter(double[] p);
-    ParameterizedCovarianceFunction GetParameterizedCovarianceFunction(double[] p, IEnumerable<int> columnIndices);
+    ParameterizedCovarianceFunction GetParameterizedCovarianceFunction(double[] p, int[] columnIndices);
   }
 }

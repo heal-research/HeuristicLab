@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  * and the BEACON Center for the Study of Evolution in Action.
  * 
  * This file is part of HeuristicLab.
@@ -22,6 +22,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
@@ -42,19 +43,28 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
   [Creatable(CreatableAttribute.Categories.PopulationBasedAlgorithms, Priority = 400)]
   public class ParameterlessPopulationPyramid : BasicAlgorithm {
     public override Type ProblemType {
-      get { return typeof(ISingleObjectiveProblemDefinition<BinaryVectorEncoding, BinaryVector>); }
+      get { return typeof(SingleObjectiveProblem<BinaryVectorEncoding, BinaryVector>); }
     }
-    public new ISingleObjectiveProblemDefinition<BinaryVectorEncoding, BinaryVector> Problem {
-      get { return (ISingleObjectiveProblemDefinition<BinaryVectorEncoding, BinaryVector>)base.Problem; }
-      set { base.Problem = (IProblem)value; }
+    public new SingleObjectiveProblem<BinaryVectorEncoding, BinaryVector> Problem {
+      get { return (SingleObjectiveProblem<BinaryVectorEncoding, BinaryVector>)base.Problem; }
+      set { base.Problem = value; }
     }
 
+    [Storable]
     private readonly IRandom random = new MersenneTwister();
-    private List<Population> pyramid;
+    [Storable]
+    private List<Population> pyramid = new List<Population>();
+    [Storable]
     private EvaluationTracker tracker;
 
     // Tracks all solutions in Pyramid for quick membership checks
+
     private HashSet<BinaryVector> seen = new HashSet<BinaryVector>(new EnumerableBoolEqualityComparer());
+    [Storable]
+    private IEnumerable<BinaryVector> StorableSeen {
+      get { return seen; }
+      set { seen = new HashSet<BinaryVector>(value, new EnumerableBoolEqualityComparer()); }
+    }
 
     #region ParameterNames
     private const string MaximumIterationsParameterName = "Maximum Iterations";
@@ -151,18 +161,24 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
     }
     #endregion
 
+    public override bool SupportsPause { get { return true; } }
+
     [StorableConstructor]
     protected ParameterlessPopulationPyramid(bool deserializing) : base(deserializing) { }
 
     protected ParameterlessPopulationPyramid(ParameterlessPopulationPyramid original, Cloner cloner)
       : base(original, cloner) {
+      random = cloner.Clone(original.random);
+      pyramid = original.pyramid.Select(cloner.Clone).ToList();
+      tracker = cloner.Clone(original.tracker);
+      seen = new HashSet<BinaryVector>(original.seen.Select(cloner.Clone), new EnumerableBoolEqualityComparer());
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new ParameterlessPopulationPyramid(this, cloner);
     }
 
-    public ParameterlessPopulationPyramid() {
+    public ParameterlessPopulationPyramid() : base() {
       Parameters.Add(new FixedValueParameter<IntValue>(MaximumIterationsParameterName, "", new IntValue(Int32.MaxValue)));
       Parameters.Add(new FixedValueParameter<IntValue>(MaximumEvaluationsParameterName, "", new IntValue(Int32.MaxValue)));
       Parameters.Add(new FixedValueParameter<IntValue>(MaximumRuntimeParameterName, "The maximum runtime in seconds after which the algorithm stops. Use -1 to specify no limit for the runtime", new IntValue(3600)));
@@ -211,7 +227,7 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
       return fitness;
     }
 
-    protected override void Run(CancellationToken cancellationToken) {
+    protected override void Initialize(CancellationToken cancellationToken) {
       // Set up the algorithm
       if (SetSeedRandomly) Seed = new System.Random().Next();
       pyramid = new List<Population>();
@@ -240,12 +256,17 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
       table.Rows.Add(new DataRow("Solutions"));
       Results.Add(new Result("Stored Solutions", table));
 
+      base.Initialize(cancellationToken);
+    }
+
+    protected override void Run(CancellationToken cancellationToken) {
       // Loop until iteration limit reached or canceled.
-      for (ResultsIterations = 0; ResultsIterations < MaximumIterations; ResultsIterations++) {
+      while (ResultsIterations < MaximumIterations) {
         double fitness = double.NaN;
 
         try {
           fitness = iterate();
+          ResultsIterations++;
           cancellationToken.ThrowIfCancellationRequested();
         }
         finally {

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -36,8 +36,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       get { return (ILookupParameter<ISymbolicExpressionTree>)Parameters[SymbolicExpressionTreeParameterName]; }
     }
 
-    private readonly SymbolicDataAnalysisExpressionTreeSimplifier simplifier = new SymbolicDataAnalysisExpressionTreeSimplifier();
-
     [StorableConstructor]
     protected SymbolicDataAnalysisExpressionTreeSimplificationOperator(bool deserializing) : base(deserializing) { }
     protected SymbolicDataAnalysisExpressionTreeSimplificationOperator(SymbolicDataAnalysisExpressionTreeSimplificationOperator original, Cloner cloner)
@@ -52,8 +50,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     public override IOperation Apply() {
       var tree = SymbolicExpressionTreeParameter.ActualValue;
-      var simplifiedTree = simplifier.Simplify(tree);
-      simplifiedTree = simplifier.Simplify(simplifiedTree);
+      var simplifiedTree = TreeSimplifier.Simplify(tree);
+      simplifiedTree = TreeSimplifier.Simplify(simplifiedTree);
       SymbolicExpressionTreeParameter.ActualValue = simplifiedTree;
 
       return base.Apply();

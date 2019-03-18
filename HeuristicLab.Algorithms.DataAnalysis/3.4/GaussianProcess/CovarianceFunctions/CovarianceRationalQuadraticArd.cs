@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -120,7 +120,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       if (p.Length != c) throw new ArgumentException("The length of the parameter vector does not match the number of free parameters for CovarianceRationalQuadraticArd", "p");
     }
 
-    public ParameterizedCovarianceFunction GetParameterizedCovarianceFunction(double[] p, IEnumerable<int> columnIndices) {
+    public ParameterizedCovarianceFunction GetParameterizedCovarianceFunction(double[] p, int[] columnIndices) {
       double scale, shape;
       double[] inverseLength;
       GetParameterValues(p, out scale, out shape, out inverseLength);
@@ -143,23 +143,25 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return cov;
     }
 
-    private static IEnumerable<double> GetGradient(double[,] x, int i, int j, IEnumerable<int> columnIndices, double scale, double shape, double[] inverseLength,
+    private static IList<double> GetGradient(double[,] x, int i, int j, int[] columnIndices, double scale, double shape, double[] inverseLength,
       bool fixedInverseLength, bool fixedScale, bool fixedShape) {
       double d = i == j
                    ? 0.0
                    : Util.SqrDist(x, i, j, inverseLength, columnIndices);
       double b = 1 + 0.5 * d / shape;
       int k = 0;
+      var g = new List<double>(columnIndices.Length + 2);
       if (!fixedInverseLength) {
         foreach (var columnIndex in columnIndices) {
-          yield return
+          g.Add(
             scale * Math.Pow(b, -shape - 1) *
-            Util.SqrDist(x[i, columnIndex] * inverseLength[k], x[j, columnIndex] * inverseLength[k]);
+            Util.SqrDist(x[i, columnIndex] * inverseLength[k], x[j, columnIndex] * inverseLength[k]));
           k++;
         }
       }
-      if (!fixedScale) yield return 2 * scale * Math.Pow(b, -shape);
-      if (!fixedShape) yield return scale * Math.Pow(b, -shape) * (0.5 * d / b - shape * Math.Log(b));
+      if (!fixedScale) g.Add(2 * scale * Math.Pow(b, -shape));
+      if (!fixedShape) g.Add(scale * Math.Pow(b, -shape) * (0.5 * d / b - shape * Math.Log(b)));
+      return g;
     }
   }
 }

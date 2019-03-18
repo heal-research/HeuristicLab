@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,10 +19,12 @@
  */
 #endregion
 
+using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.DataAnalysis;
+using HeuristicLab.Problems.DataAnalysis.Symbolic.Regression;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>
@@ -30,11 +32,15 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// </summary>
   [Item("RandomForestRegressionSolution", "Represents a random forest solution for a regression problem which can be visualized in the GUI.")]
   [StorableClass]
-  public sealed class RandomForestRegressionSolution : RegressionSolution, IRandomForestRegressionSolution {
+  public sealed class RandomForestRegressionSolution : ConfidenceRegressionSolution, IRandomForestRegressionSolution {
 
     public new IRandomForestModel Model {
       get { return (IRandomForestModel)base.Model; }
       set { base.Model = value; }
+    }
+
+    public int NumberOfTrees {
+      get { return Model.NumberOfTrees; }
     }
 
     [StorableConstructor]
@@ -42,7 +48,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private RandomForestRegressionSolution(RandomForestRegressionSolution original, Cloner cloner)
       : base(original, cloner) {
     }
-    public RandomForestRegressionSolution(IRegressionProblemData problemData, IRandomForestModel randomForestModel)
+    public RandomForestRegressionSolution(IRandomForestModel randomForestModel, IRegressionProblemData problemData)
       : base(randomForestModel, problemData) {
     }
 

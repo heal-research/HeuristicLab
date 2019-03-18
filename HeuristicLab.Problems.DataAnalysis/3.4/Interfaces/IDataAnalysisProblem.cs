@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -33,6 +33,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
   public interface IDataAnalysisProblem<T> : IDataAnalysisProblem
   where T : class, IDataAnalysisProblemData {
     new IValueParameter<T> ProblemDataParameter { get; }
-    new T ProblemData { get; }
+    new T ProblemData { get; set; }
   }
 }

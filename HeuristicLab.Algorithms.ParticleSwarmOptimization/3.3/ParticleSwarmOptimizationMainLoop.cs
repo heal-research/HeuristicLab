@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -121,6 +121,7 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
       Placeholder swarmUpdaterPlaceholer1 = new Placeholder();
       Placeholder evaluatorPlaceholder = new Placeholder();
       Placeholder analyzerPlaceholder = new Placeholder();
+      Placeholder analyzer2Placeholder = new Placeholder();
       UniformSubScopesProcessor uniformSubScopeProcessor = new UniformSubScopesProcessor();
       Placeholder particleUpdaterPlaceholder = new Placeholder();
       Placeholder topologyUpdaterPlaceholder = new Placeholder();
@@ -191,6 +192,10 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
       conditionalBranch.Name = "ContinueIteration?";
       conditionalBranch.ConditionParameter.ActualName = "ContinueIteration";
       conditionalBranch.TrueBranch = analyzerPlaceholder;
+      conditionalBranch.FalseBranch = analyzer2Placeholder;
+
+      analyzer2Placeholder.Name = "(Analyzer)";
+      analyzer2Placeholder.OperatorParameter.ActualName = AnalyzerParameter.Name;
       #endregion
     }
 

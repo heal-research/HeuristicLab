@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -40,7 +40,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
     }
 
     protected override void importButton_Click(object sender, EventArgs e) {
-      var importTypeDialog = new DataAnalysisImportTypeDialog();
+      var importTypeDialog = new DataAnalysisImportDialog();
       if (importTypeDialog.ShowDialog() == DialogResult.OK) {
         IClusteringProblemData instance = null;
         try {

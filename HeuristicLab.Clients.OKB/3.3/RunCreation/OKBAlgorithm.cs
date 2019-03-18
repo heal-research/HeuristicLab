@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,11 +19,8 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
-using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using HeuristicLab.Clients.Access;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
@@ -31,6 +28,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Persistence.Default.Xml;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
+using System.Linq;
 
 namespace HeuristicLab.Clients.OKB.RunCreation {
   [Item("OKB Algorithm", "An algorithm which is stored in the OKB.")]
@@ -66,8 +68,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
 
             try {
               algorithm.Problem = problem;
-            }
-            catch (ArgumentException) {
+            } catch (ArgumentException) {
               algorithm.Problem = null;
             }
             algorithm.Prepare(true);
@@ -221,7 +222,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
     public void Load(long algorithmId) {
       if (this.algorithmId != algorithmId) {
         IAlgorithm algorithm;
-        byte[] algorithmData = RunCreationClient.GetAlgorithmData(algorithmId);
+        byte[] algorithmData = RunCreationClient.Instance.GetAlgorithmData(algorithmId);
         using (MemoryStream stream = new MemoryStream(algorithmData)) {
           algorithm = XmlParser.Deserialize<IAlgorithm>(stream);
         }
@@ -249,11 +250,18 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       Algorithm.Prepare(clearRuns);
     }
     public void Start() {
+      Start(CancellationToken.None);
+    }
+    public void Start(CancellationToken cancellationToken) {
       CheckUserPermissions();
       if (!ClientInformation.Instance.ClientExists && storeRunsAutomatically) {
         throw new MissingClientRegistrationException();
       }
-      Algorithm.Start();
+      Algorithm.Start(cancellationToken);
+    }
+    public async Task StartAsync() { await StartAsync(CancellationToken.None); }
+    public async Task StartAsync(CancellationToken cancellationToken) {
+      await AsyncHelper.DoAsync(Start, cancellationToken);
     }
     public void Pause() {
       Algorithm.Pause();

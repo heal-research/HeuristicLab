@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,6 +20,7 @@
 #endregion
 
 using System.Globalization;
+using System.Text;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
   public class DataAnalysisCSVFormat {
@@ -27,5 +28,6 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     public NumberFormatInfo NumberFormatInfo { get; set; }
     public DateTimeFormatInfo DateTimeFormatInfo { get; set; }
     public bool VariableNamesAvailable { get; set; }
+    public Encoding Encoding { get; set; }
   }
 }

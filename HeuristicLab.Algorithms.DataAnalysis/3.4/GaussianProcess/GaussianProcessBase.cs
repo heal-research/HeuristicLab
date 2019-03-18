@@ -1,7 +1,7 @@
 
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,6 +20,7 @@
  */
 #endregion
 
+using System.Linq;
 using HeuristicLab.Algorithms.GradientDescent;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -118,8 +119,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       Parameters[ScaleInputValuesParameterName].Hidden = true;
 
       // necessary for BFGS
-      Parameters.Add(new ValueParameter<BoolValue>("Maximization", new BoolValue(false)));
-      Parameters["Maximization"].Hidden = true;
+      Parameters.Add(new FixedValueParameter<BoolValue>("Maximization (BFGS)", new BoolValue(false)));
+      Parameters["Maximization (BFGS)"].Hidden = true;
 
       var randomCreator = new HeuristicLab.Random.RandomCreator();
       var gpInitializer = new GaussianProcessHyperparameterInitializer();
@@ -163,6 +164,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       modelCreator.OperatorParameter.ActualName = ModelCreatorParameterName;
       modelCreator.Successor = updateResults;
 
+      updateResults.MaximizationParameter.ActualName = "Maximization (BFGS)";
       updateResults.StateParameter.ActualName = bfgsInitializer.StateParameter.Name;
       updateResults.QualityParameter.ActualName = NegativeLogLikelihoodParameterName;
       updateResults.QualityGradientsParameter.ActualName = HyperparameterGradientsParameterName;
@@ -196,9 +198,14 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private void AfterDeserialization() {
       // BackwardsCompatibility3.4
       #region Backwards compatible code, remove with 3.5
-      if (!Parameters.ContainsKey("Maximization")) {
-        Parameters.Add(new ValueParameter<BoolValue>("Maximization", new BoolValue(false)));
-        Parameters["Maximization"].Hidden = true;
+      if (Parameters.ContainsKey("Maximization")) {
+        Parameters.Remove("Maximization");
+      }
+
+      if (!Parameters.ContainsKey("Maximization (BFGS)")) {
+        Parameters.Add(new FixedValueParameter<BoolValue>("Maximization (BFGS)", new BoolValue(false)));
+        Parameters["Maximization (BFGS)"].Hidden = true;
+        OperatorGraph.Operators.OfType<LbfgsUpdateResults>().First().MaximizationParameter.ActualName = "Maximization BFGS";
       }
 
       if (!Parameters.ContainsKey(ScaleInputValuesParameterName)) {

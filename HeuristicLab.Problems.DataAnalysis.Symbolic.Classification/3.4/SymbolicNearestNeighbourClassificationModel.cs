@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -54,8 +54,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
       trainedEstimatedValues = new List<double>(original.trainedEstimatedValues);
       trainedClasses = new List<double>(original.trainedClasses);
     }
-    public SymbolicNearestNeighbourClassificationModel(int k, ISymbolicExpressionTree tree, ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, double lowerEstimationLimit = double.MinValue, double upperEstimationLimit = double.MaxValue)
-      : base(tree, interpreter, lowerEstimationLimit, upperEstimationLimit) {
+    public SymbolicNearestNeighbourClassificationModel(string targetVariable, int k, ISymbolicExpressionTree tree, ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, double lowerEstimationLimit = double.MinValue, double upperEstimationLimit = double.MaxValue)
+      : base(targetVariable, tree, interpreter, lowerEstimationLimit, upperEstimationLimit) {
       this.k = k;
       frequencyComparer = new ClassFrequencyComparer();
 

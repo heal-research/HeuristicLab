@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,7 +25,6 @@ using System.Windows.Forms;
 
 namespace HeuristicLab.DataPreprocessing.Views {
   public partial class RenameColumnsDialog : Form {
-
     public IList<string> ColumnNames {
       get {
         var names = new List<string>(dataGridView.RowCount);

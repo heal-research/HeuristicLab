@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,6 +20,8 @@
 #endregion
 
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 using HeuristicLab.Common;
 
 namespace HeuristicLab.Core {
@@ -29,6 +31,9 @@ namespace HeuristicLab.Core {
 
     void Prepare();
     void Start();
+    void Start(CancellationToken cancellationToken);
+    Task StartAsync();
+    Task StartAsync(CancellationToken cancellationToken);
     void Pause();
     void Stop();
 

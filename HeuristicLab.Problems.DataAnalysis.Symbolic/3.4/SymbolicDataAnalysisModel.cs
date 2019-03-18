@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,7 +20,9 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
@@ -55,6 +57,19 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public ISymbolicDataAnalysisExpressionTreeInterpreter Interpreter {
       get { return interpreter; }
     }
+
+    public IEnumerable<string> VariablesUsedForPrediction {
+      get {
+        var variables =
+          SymbolicExpressionTree.IterateNodesPrefix()
+            .OfType<IVariableTreeNode>()
+            .Select(x => x.VariableName)
+            .Distinct();
+
+        return variables.OrderBy(x => x);
+      }
+    }
+
     #endregion
 
     [StorableConstructor]
@@ -159,5 +174,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       return node;
     }
     #endregion
+
   }
 }

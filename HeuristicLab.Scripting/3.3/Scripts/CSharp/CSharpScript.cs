@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -33,6 +33,9 @@ namespace HeuristicLab.Scripting {
   public class CSharpScript : ExecutableScript, IStorableContent {
     #region Fields & Properties
     private CSharpScriptBase compiledScript;
+    public dynamic Instance {
+      get { return compiledScript; }
+    }
 
     public string Filename { get; set; }
 

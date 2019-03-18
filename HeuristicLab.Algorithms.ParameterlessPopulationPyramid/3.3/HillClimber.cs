@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  * and the BEACON Center for the Study of Evolution in Action.
  *
  * This file is part of HeuristicLab.
@@ -46,6 +46,8 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
     private IRandom random;
 
     private const string IterationsParameterName = "Iterations";
+    private const string BestQualityResultName = "Best quality";
+    private const string IterationsResultName = "Iterations";
 
     public override Type ProblemType {
       get { return typeof(ISingleObjectiveProblemDefinition<BinaryVectorEncoding, BinaryVector>); }
@@ -55,6 +57,8 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
       set { base.Problem = (IProblem)value; }
     }
 
+    public override bool SupportsPause { get { return false; } }
+
     public IFixedValueParameter<IntValue> IterationsParameter {
       get { return (IFixedValueParameter<IntValue>)Parameters[IterationsParameterName]; }
     }
@@ -63,6 +67,17 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
       get { return IterationsParameter.Value.Value; }
       set { IterationsParameter.Value.Value = value; }
     }
+
+    #region ResultsProperties
+    private double ResultsBestQuality {
+      get { return ((DoubleValue)Results[BestQualityResultName].Value).Value; }
+      set { ((DoubleValue)Results[BestQualityResultName].Value).Value = value; }
+    }
+    private int ResultsIterations {
+      get { return ((IntValue)Results[IterationsResultName].Value).Value; }
+      set { ((IntValue)Results[IterationsResultName].Value).Value = value; }
+    }
+    #endregion
 
     [StorableConstructor]
     protected HillClimber(bool deserializing) : base(deserializing) { }
@@ -78,10 +93,17 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
       random = new MersenneTwister();
       Parameters.Add(new FixedValueParameter<IntValue>(IterationsParameterName, "", new IntValue(100)));
     }
+
+
+    protected override void Initialize(CancellationToken cancellationToken) {
+      Results.Add(new Result(BestQualityResultName, new DoubleValue(double.NaN)));
+      Results.Add(new Result(IterationsResultName, new IntValue(0)));
+      base.Initialize(cancellationToken);
+    }
     protected override void Run(CancellationToken cancellationToken) {
-      var BestQuality = new DoubleValue(double.NaN);
-      Results.Add(new Result("Best quality", BestQuality));
-      for (int iteration = 0; iteration < Iterations; iteration++) {
+      while (ResultsIterations < Iterations) {
+        cancellationToken.ThrowIfCancellationRequested();
+
         var solution = new BinaryVector(Problem.Encoding.Length);
         for (int i = 0; i < solution.Length; i++) {
           solution[i] = random.Next(2) == 1;
@@ -90,9 +112,11 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
         var fitness = Problem.Evaluate(solution, random);
 
         fitness = ImproveToLocalOptimum(Problem, solution, fitness, random);
-        if (double.IsNaN(BestQuality.Value) || Problem.IsBetter(fitness, BestQuality.Value)) {
-          BestQuality.Value = fitness;
+        if (double.IsNaN(ResultsBestQuality) || Problem.IsBetter(fitness, ResultsBestQuality)) {
+          ResultsBestQuality = fitness;
         }
+
+        ResultsIterations++;
       }
     }
     // In the GECCO paper, Section 2.1

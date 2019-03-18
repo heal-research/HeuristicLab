@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,15 +19,18 @@
  */
 #endregion
 
+using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   [Item("Neighborhood Particle Updater", "Updates the particle's position using (among other things) the best neighbor's position. Point = Point + Velocity*Inertia + (PersonalBestPoint-Point)*Phi_P*r_p + (BestNeighborPoint-Point)*Phi_G*r_g.")]
   [StorableClass]
-  public sealed class RealVectorNeighborhoodParticleUpdater : RealVectorParticleUpdater, ILocalParticleUpdater {
+  [NonDiscoverableType]
+  [Obsolete("Use SPSO2011ParticleUpdater")]
+  internal sealed class RealVectorNeighborhoodParticleUpdater : RealVectorParticleUpdater {
 
     #region Construction & Cloning
     [StorableConstructor]

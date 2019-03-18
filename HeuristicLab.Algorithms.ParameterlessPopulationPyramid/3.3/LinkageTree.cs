@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  * and the BEACON Center for the Study of Evolution in Action.
  *
  * This file is part of HeuristicLab.
@@ -26,19 +26,53 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
   // This code is based off the publication
   // B. W. Goldman and W. F. Punch, "Parameter-less Population Pyramid," GECCO, pp. 785–792, 2014
   // and the original source code in C++11 available from: https://github.com/brianwgoldman/Parameter-less_Population_Pyramid
-  public class LinkageTree {
+  [StorableClass]
+  public class LinkageTree : DeepCloneable {
+    [Storable]
     private readonly int[][][] occurances;
+    [Storable]
     private readonly List<int>[] clusters;
+    [Storable]
     private List<int> clusterOrdering;
+    [Storable]
     private readonly int length;
+    [Storable]
     private readonly IRandom rand;
+    [Storable]
     private bool rebuildRequired = false;
+
+
+    [StorableConstructor]
+    protected LinkageTree(bool deserializing) : base() { }
+
+
+    protected LinkageTree(LinkageTree original, Cloner cloner) : base(original, cloner) {
+      occurances = new int[original.occurances.Length][][];
+      //mkommend: first entry is not used, cf. ctor line 83
+      for (int i = 1; i < original.occurances.Length; i++) {
+        occurances[i] = new int[original.occurances[i].Length][];
+        for (int j = 0; j < original.occurances[i].Length; j++)
+          occurances[i][j] = original.occurances[i][j].ToArray();
+      }
+
+      clusters = original.clusters.Select(c => c.ToList()).ToArray();
+      clusterOrdering = new List<int>(original.clusterOrdering);
+      length = original.length;
+      rand = cloner.Clone(original.rand);
+      rebuildRequired = original.rebuildRequired;
+    }
+
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new LinkageTree(this, cloner);
+    }
 
     public LinkageTree(int length, IRandom rand) {
       this.length = length;
@@ -92,8 +126,8 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
 
     // Uses the frequency table to calcuate the entropy distance between two indices.
     // In the GECCO paper, calculates Equation 1
-    private int[] bits = new int[4];
     private double EntropyDistance(int i, int j) {
+      int[] bits = new int[4];
       // This ensures you are using the lower triangular part of "occurances"
       if (i < j) {
         int temp = i;
@@ -124,8 +158,8 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
     // "Optimal implementations of UPGMA and other common clustering algorithms"
     // by I. Gronau and S. Moran
     // In the GECCO paper, Figure 2 is a simplified version of this algorithm.
-    private double[][] distances;
     private void Rebuild() {
+      double[][] distances = null;
       if (distances == null) {
         distances = new double[clusters.Length * 2 - 1][];
         for (int i = 0; i < distances.Length; i++)

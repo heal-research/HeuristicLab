@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -90,6 +90,23 @@ namespace HeuristicLab.Optimization.Views {
     }
     public IEnumerable<IRun> SelectedRuns {
       get { return selectedRuns; }
+    }
+
+    public string SelectedXAxis {
+      get { return xAxisValue; }
+      set {
+        if (xAxisComboBox.Items.Contains(value)) {
+          xAxisComboBox.SelectedItem = value;
+        }
+      }
+    }
+    public string SelectedYAxis {
+      get { return yAxisValue; }
+      set {
+        if (yAxisComboBox.Items.Contains(value)) {
+          yAxisComboBox.SelectedItem = value;
+        }
+      }
     }
 
     protected override void RegisterContentEvents() {
@@ -226,12 +243,15 @@ namespace HeuristicLab.Optimization.Views {
       if (Content != null) {
         string[] additionalAxisDimension = Enum.GetNames(typeof(AxisDimension));
         this.xAxisComboBox.Items.AddRange(additionalAxisDimension);
-        this.xAxisComboBox.Items.AddRange(Matrix.ColumnNames.ToArray());
+        var comparer = new HeuristicLab.Common.NaturalStringComparer();
+        var sortedColumnNames = Matrix.ColumnNames.ToArray();
+        sortedColumnNames.StableSort(comparer);
+        this.xAxisComboBox.Items.AddRange(sortedColumnNames);
         this.yAxisComboBox.Items.AddRange(additionalAxisDimension);
-        this.yAxisComboBox.Items.AddRange(Matrix.ColumnNames.ToArray());
+        this.yAxisComboBox.Items.AddRange(sortedColumnNames);
         string[] additionalSizeDimension = Enum.GetNames(typeof(SizeDimension));
         this.sizeComboBox.Items.AddRange(additionalSizeDimension);
-        this.sizeComboBox.Items.AddRange(Matrix.ColumnNames.ToArray());
+        this.sizeComboBox.Items.AddRange(sortedColumnNames);
         this.sizeComboBox.SelectedItem = SizeDimension.Constant.ToString();
 
         bool changed = false;
@@ -414,8 +434,8 @@ namespace HeuristicLab.Optimization.Views {
         SizeDimension sizeDimension = (SizeDimension)Enum.Parse(typeof(SizeDimension), columnName);
         return GetValue(run, sizeDimension);
       } else {
-        int columnIndex = Matrix.ColumnNames.ToList().IndexOf(columnName);
-        IItem value = Content.GetValue(run, columnIndex);
+
+        IItem value = Content.GetValue(run, columnName);
         if (value == null)
           return null;
 
@@ -430,8 +450,10 @@ namespace HeuristicLab.Optimization.Views {
           ret = intValue.Value;
         else if (timeSpanValue != null) {
           ret = timeSpanValue.Value.TotalSeconds;
-        } else
+        } else {
+          int columnIndex = Matrix.ColumnNames.ToList().IndexOf(columnName);
           ret = GetCategoricalValue(columnIndex, value.ToString());
+        }
 
         return ret;
       }
@@ -601,32 +623,40 @@ namespace HeuristicLab.Optimization.Views {
       string tooltip;
       tooltip = run.Name + System.Environment.NewLine;
 
-      double? xValue = this.GetValue(run, (string)xAxisComboBox.SelectedItem);
-      double? yValue = this.GetValue(run, (string)yAxisComboBox.SelectedItem);
-      double? sizeValue = this.GetValue(run, (string)sizeComboBox.SelectedItem);
-
-      string xString = xValue == null ? string.Empty : xValue.Value.ToString();
-      string yString = yValue == null ? string.Empty : yValue.Value.ToString();
-      string sizeString = sizeValue == null ? string.Empty : sizeValue.Value.ToString();
-
-      //code to handle TimeSpanValues correct
-      int axisDimensionCount = Enum.GetNames(typeof(AxisDimension)).Count();
-      int columnIndex = xAxisComboBox.SelectedIndex - axisDimensionCount;
-      if (xValue.HasValue && columnIndex > 0 && Content.GetValue(0, columnIndex) is TimeSpanValue) {
-        TimeSpan time = TimeSpan.FromSeconds(xValue.Value);
-        xString = string.Format("{0:00}:{1:00}:{2:00.00}", (int)time.TotalHours, time.Minutes, time.Seconds);
-      }
-      columnIndex = yAxisComboBox.SelectedIndex - axisDimensionCount;
-      if (yValue.HasValue && columnIndex > 0 && Content.GetValue(0, columnIndex) is TimeSpanValue) {
-        TimeSpan time = TimeSpan.FromSeconds(yValue.Value);
-        yString = string.Format("{0:00}:{1:00}:{2:00.00}", (int)time.TotalHours, time.Minutes, time.Seconds);
-      }
+      string xString = GetTooltipValue(run, (string)xAxisComboBox.SelectedItem);
+      string yString = GetTooltipValue(run, (string)yAxisComboBox.SelectedItem);
+      string sizeString = GetTooltipValue(run, (string)sizeComboBox.SelectedItem);
 
       tooltip += xAxisComboBox.SelectedItem + " : " + xString + Environment.NewLine;
       tooltip += yAxisComboBox.SelectedItem + " : " + yString + Environment.NewLine;
       tooltip += sizeComboBox.SelectedItem + " : " + sizeString + Environment.NewLine;
 
       return tooltip;
+    }
+
+    private string GetTooltipValue(IRun run, string columnName) {
+      if (columnName == SizeDimension.Constant.ToString())
+        return string.Empty;
+
+      int columnIndex = Matrix.ColumnNames.ToList().IndexOf(columnName);
+
+      //handle non-numeric values correctly
+      if (categoricalMapping.ContainsKey(columnIndex)) {
+        return Content.GetValue(run, columnName).ToString();
+      }
+
+      double? value = GetValue(run, columnName);
+      if (!value.HasValue) return string.Empty;
+
+      string valueString = value.Value.ToString();
+
+      //code to handle TimeSpanValues correctly
+      if (columnIndex > 0 && Content.GetValue(0, columnIndex) is TimeSpanValue) {
+        TimeSpan time = TimeSpan.FromSeconds(value.Value);
+        valueString = string.Format("{0:00}:{1:00}:{2:00.00}", (int)time.TotalHours, time.Minutes, time.Seconds);
+      }
+
+      return valueString;
     }
     #endregion
 
@@ -725,25 +755,25 @@ namespace HeuristicLab.Optimization.Views {
       if (Content.Constraints.Contains(visibilityConstraint)) Content.Constraints.Remove(visibilityConstraint);
     }
     private void hideRunsToolStripMenuItem_Click(object sender, EventArgs e) {
-      //ToList is necessary to prevent lazy evaluation
-      HideRuns(selectedRuns.ToList());
+      HideRuns(selectedRuns);
       //could not use ClearSelectedRuns as the runs are not visible anymore
       selectedRuns.Clear();
     }
     private void hideRunsButton_Click(object sender, EventArgs e) {
-      //ToList is necessary to prevent lazy evaluation
-      HideRuns(selectedRuns.ToList());
+      HideRuns(selectedRuns);
       //could not use ClearSelectedRuns as the runs are not visible anymore
       selectedRuns.Clear();
     }
 
     private void HideRuns(IEnumerable<IRun> runs) {
+      Content.UpdateOfRunsInProgress = true;
       visibilityConstraint.Active = false;
       if (!Content.Constraints.Contains(visibilityConstraint)) Content.Constraints.Add(visibilityConstraint);
       foreach (var run in runs) {
         visibilityConstraint.ConstraintData.Add(run);
       }
       visibilityConstraint.Active = true;
+      Content.UpdateOfRunsInProgress = false;
     }
 
     private void ClearSelectedRuns() {

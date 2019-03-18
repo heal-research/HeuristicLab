@@ -107,6 +107,9 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -140,8 +143,9 @@
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
-    <None Include="CustomPostBuild.cmd" />
-    <None Include="CustomPostBuildTemplate_UpdateLocalInstallation.cmd" />
+    <None Include="app.manifest">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="HeuristicLab.snk" />
     <None Include="Properties\AssemblyInfo.cs.frame" />
     <None Include="Properties\Settings.settings">
@@ -165,12 +169,6 @@
     <None Include="GNU General Public License.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <Content Include="Files.txt">
-    </Content>
-    <Content Include="Files.x64.txt">
-    </Content>
-    <Content Include="Files.x86.txt">
-    </Content>
     <None Include="HeuristicLab 3.3 License.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -213,19 +211,22 @@ export SolutionDir=$(SolutionDir)
 
 $SolutionDir/PreBuildEvent.sh
 </PreBuildEvent>
-    <PostBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
-set ProjectDir=$(ProjectDir)
-set SolutionDir=$(SolutionDir)
-set Outdir=$(Outdir)
-set Platform=$(PlatformName)
-set Configuration=$(ConfigurationName)
+    <PostBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">
+      set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
+      set ProjectDir=$(ProjectDir)
+      set SolutionDir=$(SolutionDir)
+      set OutDir=$(OutDir)
+      set TargetDir=$(TargetDir)
+      set Platform=$(PlatformName)
+      set Configuration=$(ConfigurationName)
 
-call "$(SolutionDir)MergeConfigs.cmd"
-if exist "%25ProjectDir%25CustomPostBuild.cmd" call CustomPostBuild.cmd</PostBuildEvent>
+      call "$(SolutionDir)MergeConfigs.cmd"
+    </PostBuildEvent>
     <PostBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">
-export Outdir=$(Outdir)
+export OutDir=$(OutDir)
 export ProjectDir=$(ProjectDir)
 export SolutionDir=$(SolutionDir)
+export TargetDir=$(TargetDir)
 
 $SolutionDir/MergeConfigs.sh
 </PostBuildEvent>

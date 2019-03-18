@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Windows.Forms;
 using HeuristicLab.Core;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
@@ -56,6 +57,16 @@ namespace HeuristicLab.Optimization.Views {
           }
         }
       }
+    }
+
+    protected override void Item_ToStringChanged(object sender, EventArgs e) {
+      if (InvokeRequired) {
+        Invoke(new EventHandler(Item_ToStringChanged), sender, e);
+        return;
+      }
+
+      base.Item_ToStringChanged(sender, e);
+      Application.DoEvents();
     }
   }
 }

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -90,7 +90,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
       ModelCreatorParameter.ExecutionContext = context;
       ApplyLinearScalingParameter.ExecutionContext = context;
 
-      var model = ModelCreatorParameter.ActualValue.CreateSymbolicClassificationModel(tree, SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper);
+      var model = ModelCreatorParameter.ActualValue.CreateSymbolicClassificationModel(problemData.TargetVariable, tree, SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper);
       if (ApplyLinearScalingParameter.ActualValue.Value) model.Scale(problemData);
       model.RecalculateModelParameters(problemData, rows);
       double penalty = Calculate(model, problemData, rows);

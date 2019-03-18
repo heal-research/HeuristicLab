@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -26,6 +27,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.QuadraticAssignment {
   /// <summary>
@@ -33,7 +35,11 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
   /// </summary>
   [Item("QAPPopulationDiversityAnalyzer", "An operator for analyzing the diversity of solutions of Quadratic Assignment Problems regarding their structural identity (number of equal facilty->location assignments).")]
   [StorableClass]
-  public sealed class QAPPopulationDiversityAnalyzer : PopulationDiversityAnalyzer<Permutation> {
+  [Obsolete("Use the PopulationSimilarityAnalyzer in the HeuristicLab.Analysis plugin instead.")]
+  [NonDiscoverableType]
+#pragma warning disable 0612
+  internal sealed class QAPPopulationDiversityAnalyzer : PopulationDiversityAnalyzer<Permutation> {
+#pragma warning restore 0612
     public IValueParameter<BoolValue> UsePhenotypeSimilarityParameter {
       get { return (IValueParameter<BoolValue>)Parameters["UsePhenotypeSimilarity"]; }
     }
@@ -82,7 +88,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
         for (int j = i + 1; j < count; j++) {
           if (phenotypeSimilarity)
             similarities[i, j] = QAPPermutationProximityCalculator.CalculatePhenotypeSimilarity(solutions[i], solutions[j], weights, distances);
-          else similarities[i, j] = QAPPermutationProximityCalculator.CalculateGenotypeSimilarity(solutions[i], solutions[j]);
+          else similarities[i, j] = HammingSimilarityCalculator.CalculateSimilarity(solutions[i], solutions[j]);
           similarities[j, i] = similarities[i, j];
         }
       }

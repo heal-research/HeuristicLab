@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -152,6 +152,12 @@ namespace HeuristicLab.Problems.DataAnalysis {
       Add(new Result(TestFalseDiscoveryRateResultName, "The false discovery rate is the complement of the positive predictive value of the model on the test partition.", new PercentValue()));
       Add(new Result(TestF1ScoreResultName, "The F1 score of the model on the test partition.", new DoubleValue()));
       Add(new Result(TestMatthewsCorrelationResultName, "The Matthews correlation value of the model on the test partition.", new DoubleValue()));
+
+      Reset();
+    }
+
+
+    public void Reset() {
       TrainingTruePositiveRate = double.NaN;
       TrainingTrueNegativeRate = double.NaN;
       TrainingPositivePredictiveValue = double.NaN;

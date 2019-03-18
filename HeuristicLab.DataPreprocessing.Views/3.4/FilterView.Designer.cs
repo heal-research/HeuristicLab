@@ -1,7 +1,26 @@
-﻿namespace HeuristicLab.DataPreprocessing.Views
-{
-  partial class FilterView
-  {
+﻿#region License Information
+/* HeuristicLab
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ *
+ * This file is part of HeuristicLab.
+ *
+ * HeuristicLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * HeuristicLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
+ */
+#endregion
+
+namespace HeuristicLab.DataPreprocessing.Views {
+  partial class FilterView {
     /// <summary> 
     /// Required designer variable.
     /// </summary>
@@ -11,10 +30,8 @@
     /// Clean up any resources being used.
     /// </summary>
     /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-    protected override void Dispose(bool disposing)
-    {
-      if (disposing && (components != null))
-      {
+    protected override void Dispose(bool disposing) {
+      if (disposing && (components != null)) {
         components.Dispose();
       }
       base.Dispose(disposing);
@@ -26,10 +43,8 @@
     /// Required method for Designer support - do not modify 
     /// the contents of this method with the code editor.
     /// </summary>
-    private void InitializeComponent()
-    {
+    private void InitializeComponent() {
       this.groupBoxFilter = new System.Windows.Forms.GroupBox();
-      this.checkedFilterView = new HeuristicLab.DataPreprocessing.Views.CheckedFilterCollectionView();
       this.groupBoxFilterInfo = new System.Windows.Forms.GroupBox();
       this.lblPercentage = new System.Windows.Forms.Label();
       this.tbPercentage = new System.Windows.Forms.TextBox();
@@ -45,9 +60,12 @@
       this.label1 = new System.Windows.Forms.Label();
       this.label2 = new System.Windows.Forms.Label();
       this.label3 = new System.Windows.Forms.Label();
+      this.bottomPanel = new System.Windows.Forms.Panel();
+      this.checkedFilterView = new HeuristicLab.DataPreprocessing.Views.CheckedFilterCollectionView();
       this.groupBoxFilter.SuspendLayout();
       this.groupBoxFilterInfo.SuspendLayout();
       this.groupBox1.SuspendLayout();
+      this.bottomPanel.SuspendLayout();
       this.SuspendLayout();
       // 
       // groupBoxFilter
@@ -62,18 +80,6 @@
       this.groupBoxFilter.TabStop = false;
       this.groupBoxFilter.Text = "Filter";
       // 
-      // checkedFilterView
-      // 
-      this.checkedFilterView.Caption = "filterView";
-      this.checkedFilterView.Content = null;
-      this.checkedFilterView.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.checkedFilterView.Location = new System.Drawing.Point(3, 16);
-      this.checkedFilterView.Name = "checkedFilterView";
-      this.checkedFilterView.ReadOnly = false;
-      this.checkedFilterView.ShowDetails = true;
-      this.checkedFilterView.Size = new System.Drawing.Size(652, 308);
-      this.checkedFilterView.TabIndex = 0;
-      // 
       // groupBoxFilterInfo
       // 
       this.groupBoxFilterInfo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -86,7 +92,7 @@
       this.groupBoxFilterInfo.Controls.Add(this.lblTotal);
       this.groupBoxFilterInfo.Location = new System.Drawing.Point(4, 337);
       this.groupBoxFilterInfo.Name = "groupBoxFilterInfo";
-      this.groupBoxFilterInfo.Size = new System.Drawing.Size(659, 102);
+      this.groupBoxFilterInfo.Size = new System.Drawing.Size(658, 102);
       this.groupBoxFilterInfo.TabIndex = 1;
       this.groupBoxFilterInfo.TabStop = false;
       this.groupBoxFilterInfo.Text = "Filter Preview";
@@ -107,20 +113,20 @@
       this.tbPercentage.Enabled = false;
       this.tbPercentage.Location = new System.Drawing.Point(104, 71);
       this.tbPercentage.Name = "tbPercentage";
-      this.tbPercentage.Size = new System.Drawing.Size(549, 20);
+      this.tbPercentage.Size = new System.Drawing.Size(548, 20);
       this.tbPercentage.TabIndex = 10;
       // 
-      // tbFiltered
+      // tbRemaining
       // 
       this.tbRemaining.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.tbRemaining.Enabled = false;
       this.tbRemaining.Location = new System.Drawing.Point(104, 45);
       this.tbRemaining.Name = "tbRemaining";
-      this.tbRemaining.Size = new System.Drawing.Size(549, 20);
+      this.tbRemaining.Size = new System.Drawing.Size(548, 20);
       this.tbRemaining.TabIndex = 9;
       // 
-      // lblFiltered
+      // lblRemaining
       // 
       this.lblRemaining.AutoSize = true;
       this.lblRemaining.Location = new System.Drawing.Point(15, 47);
@@ -136,7 +142,7 @@
       this.tbTotal.Enabled = false;
       this.tbTotal.Location = new System.Drawing.Point(104, 19);
       this.tbTotal.Name = "tbTotal";
-      this.tbTotal.Size = new System.Drawing.Size(549, 20);
+      this.tbTotal.Size = new System.Drawing.Size(548, 20);
       this.tbTotal.TabIndex = 7;
       // 
       // lblTotal
@@ -150,10 +156,10 @@
       // 
       // applyFilterButton
       // 
-      this.applyFilterButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this.applyFilterButton.Anchor = System.Windows.Forms.AnchorStyles.Right;
       this.applyFilterButton.Cursor = System.Windows.Forms.Cursors.Default;
       this.applyFilterButton.Enabled = false;
-      this.applyFilterButton.Location = new System.Drawing.Point(554, 628);
+      this.applyFilterButton.Location = new System.Drawing.Point(559, 3);
       this.applyFilterButton.Name = "applyFilterButton";
       this.applyFilterButton.Size = new System.Drawing.Size(107, 23);
       this.applyFilterButton.TabIndex = 2;
@@ -163,11 +169,10 @@
       // 
       // rBtnOr
       // 
-      this.rBtnOr.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.rBtnOr.Anchor = System.Windows.Forms.AnchorStyles.Left;
       this.rBtnOr.AutoSize = true;
       this.rBtnOr.Cursor = System.Windows.Forms.Cursors.Default;
-      this.rBtnOr.Enabled = false;
-      this.rBtnOr.Location = new System.Drawing.Point(60, 634);
+      this.rBtnOr.Location = new System.Drawing.Point(53, 6);
       this.rBtnOr.Name = "rBtnOr";
       this.rBtnOr.Size = new System.Drawing.Size(36, 17);
       this.rBtnOr.TabIndex = 3;
@@ -176,12 +181,11 @@
       // 
       // rBtnAnd
       // 
-      this.rBtnAnd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.rBtnAnd.Anchor = System.Windows.Forms.AnchorStyles.Left;
       this.rBtnAnd.AutoSize = true;
       this.rBtnAnd.Checked = true;
       this.rBtnAnd.Cursor = System.Windows.Forms.Cursors.Default;
-      this.rBtnAnd.Enabled = false;
-      this.rBtnAnd.Location = new System.Drawing.Point(10, 634);
+      this.rBtnAnd.Location = new System.Drawing.Point(3, 6);
       this.rBtnAnd.Name = "rBtnAnd";
       this.rBtnAnd.Size = new System.Drawing.Size(44, 17);
       this.rBtnAnd.TabIndex = 4;
@@ -198,9 +202,9 @@
       this.groupBox1.Controls.Add(this.label1);
       this.groupBox1.Controls.Add(this.label2);
       this.groupBox1.Controls.Add(this.label3);
-      this.groupBox1.Location = new System.Drawing.Point(7, 445);
+      this.groupBox1.Location = new System.Drawing.Point(4, 445);
       this.groupBox1.Name = "groupBox1";
-      this.groupBox1.Size = new System.Drawing.Size(659, 130);
+      this.groupBox1.Size = new System.Drawing.Size(658, 130);
       this.groupBox1.TabIndex = 12;
       this.groupBox1.TabStop = false;
       this.groupBox1.Text = "Filter Info";
@@ -244,25 +248,47 @@
       this.label3.TabIndex = 6;
       this.label3.Text = "A filter specifies the data rows which should remain.";
       // 
+      // bottomPanel
+      // 
+      this.bottomPanel.Controls.Add(this.applyFilterButton);
+      this.bottomPanel.Controls.Add(this.rBtnAnd);
+      this.bottomPanel.Controls.Add(this.rBtnOr);
+      this.bottomPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
+      this.bottomPanel.Location = new System.Drawing.Point(0, 580);
+      this.bottomPanel.Name = "bottomPanel";
+      this.bottomPanel.Size = new System.Drawing.Size(670, 30);
+      this.bottomPanel.TabIndex = 13;
+      // 
+      // checkedFilterView
+      // 
+      this.checkedFilterView.Caption = "filterView";
+      this.checkedFilterView.Content = null;
+      this.checkedFilterView.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.checkedFilterView.Location = new System.Drawing.Point(3, 16);
+      this.checkedFilterView.Name = "checkedFilterView";
+      this.checkedFilterView.ReadOnly = false;
+      this.checkedFilterView.ShowDetails = true;
+      this.checkedFilterView.Size = new System.Drawing.Size(652, 308);
+      this.checkedFilterView.TabIndex = 0;
+      // 
       // FilterView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.Controls.Add(this.bottomPanel);
       this.Controls.Add(this.groupBox1);
-      this.Controls.Add(this.rBtnAnd);
-      this.Controls.Add(this.rBtnOr);
-      this.Controls.Add(this.applyFilterButton);
       this.Controls.Add(this.groupBoxFilterInfo);
       this.Controls.Add(this.groupBoxFilter);
       this.Name = "FilterView";
-      this.Size = new System.Drawing.Size(670, 660);
+      this.Size = new System.Drawing.Size(670, 610);
       this.groupBoxFilter.ResumeLayout(false);
       this.groupBoxFilterInfo.ResumeLayout(false);
       this.groupBoxFilterInfo.PerformLayout();
       this.groupBox1.ResumeLayout(false);
       this.groupBox1.PerformLayout();
+      this.bottomPanel.ResumeLayout(false);
+      this.bottomPanel.PerformLayout();
       this.ResumeLayout(false);
-      this.PerformLayout();
 
     }
 
@@ -285,7 +311,6 @@
     private System.Windows.Forms.Label label1;
     private System.Windows.Forms.Label label2;
     private System.Windows.Forms.Label label3;
-
-
+    private System.Windows.Forms.Panel bottomPanel;
   }
 }

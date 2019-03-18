@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -193,12 +193,14 @@ namespace HeuristicLab.Problems.VehicleRouting {
     }
 
     private void EvalBestKnownSolution() {
-      if (BestKnownSolution != null) {
+      if (BestKnownSolution == null) return;
+      try {
         //call evaluator
         BestKnownQuality = new DoubleValue(ProblemInstance.Evaluate(BestKnownSolution.Solution).Quality);
         BestKnownSolution.Quality = BestKnownQuality;
-      } else {
+      } catch {
         BestKnownQuality = null;
+        BestKnownSolution = null;
       }
     }
 
@@ -207,7 +209,13 @@ namespace HeuristicLab.Problems.VehicleRouting {
     }
 
     void ProblemInstance_EvaluationChanged(object sender, EventArgs e) {
-      EvalBestKnownSolution();
+      BestKnownQuality = null;
+      if (BestKnownSolution != null) {
+        // the tour is not valid if there are more vehicles in it than allowed
+        if (ProblemInstance.Vehicles.Value < BestKnownSolution.Solution.GetTours().Count) {
+          BestKnownSolution = null;
+        } else EvalBestKnownSolution();
+      }
     }
 
     void ProblemInstanceParameter_ValueChanged(object sender, EventArgs e) {
@@ -254,7 +262,6 @@ namespace HeuristicLab.Problems.VehicleRouting {
           ApplicationManager.Manager.GetInstances<IGeneralVRPOperator>().Cast<IOperator>()).OrderBy(op => op.Name));
         Operators.Add(new VRPSimilarityCalculator());
         Operators.Add(new QualitySimilarityCalculator());
-        Operators.Add(new NoSimilarityCalculator());
         Operators.Add(new PopulationSimilarityAnalyzer(Operators.OfType<ISolutionSimilarityCalculator>()));
 
         IVRPCreator defaultCreator = null;

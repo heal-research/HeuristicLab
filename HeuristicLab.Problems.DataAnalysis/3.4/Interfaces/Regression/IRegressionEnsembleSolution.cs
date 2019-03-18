@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,6 +26,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
     new IRegressionEnsembleModel Model { get; }
     new RegressionEnsembleProblemData ProblemData { get; set; }
     IItemCollection<IRegressionSolution> RegressionSolutions { get; }
-    IEnumerable<IEnumerable<double>> GetEstimatedValueVectors(IDataset dataset, IEnumerable<int> rows);
+    IEnumerable<IEnumerable<double>> GetEstimatedValueVectors(IEnumerable<int> rows);
   }
 }

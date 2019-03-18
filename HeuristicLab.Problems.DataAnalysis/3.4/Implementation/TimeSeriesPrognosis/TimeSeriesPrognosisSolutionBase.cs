@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -63,6 +63,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       set { base.ProblemData = value; }
     }
 
+    public abstract IEnumerable<double> PrognosedTestValues { get; }
     public abstract IEnumerable<IEnumerable<double>> GetPrognosedValues(IEnumerable<int> rows, IEnumerable<int> horizon);
 
     #region Results
@@ -149,7 +150,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     protected void CalculateTimeSeriesResults() {
       OnlineCalculatorError errorState;
       double trainingMean = ProblemData.TrainingIndices.Any() ? ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TrainingIndices).Average() : double.NaN;
-      var meanModel = new ConstantModel(trainingMean);
+      var meanModel = new ConstantModel(trainingMean, ProblemData.TargetVariable);
 
       double alpha, beta;
       IEnumerable<double> trainingStartValues = ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TrainingIndices.Select(r => r - 1).Where(r => r > 0)).ToList();

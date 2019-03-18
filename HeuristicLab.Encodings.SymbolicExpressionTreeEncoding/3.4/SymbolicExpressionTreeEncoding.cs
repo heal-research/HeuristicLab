@@ -1,7 +1,7 @@
 ﻿#region License Information
 
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -163,11 +163,11 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     public SymbolicExpressionTreeEncoding(ISymbolicExpressionGrammar grammar, int maximumLength, int maximumDepth) : this("SymbolicExpressionTree", grammar, maximumLength, maximumDepth) { }
     public SymbolicExpressionTreeEncoding(string name, ISymbolicExpressionGrammar grammar, int maximumLength, int maximumDepth)
       : base(name) {
-      treeLengthParameter = new FixedValueParameter<IntValue>("Maximum Tree Length", "Maximal length of the symbolic expression.", new IntValue(maximumLength));
-      treeDepthParameter = new FixedValueParameter<IntValue>("Maximum Tree Depth", "Maximal depth of the symbolic expression. The minimum depth needed for the algorithm is 3 because two levels are reserved for the ProgramRoot and the Start symbol.", new IntValue(maximumDepth));
-      grammarParameter = new ValueParameter<ISymbolicExpressionGrammar>("Grammar", "The grammar that should be used for symbolic expression tree.", grammar);
-      functionDefinitionsParameter = new FixedValueParameter<IntValue>("Function Definitions", "Maximal number of automatically defined functions", new IntValue(0));
-      functionArgumentsParameter = new FixedValueParameter<IntValue>("Function Arguments", "Maximal number of arguments of automatically defined functions.", new IntValue(0));
+      treeLengthParameter = new FixedValueParameter<IntValue>(Name + ".Maximum Tree Length", "Maximal length of the symbolic expression.", new IntValue(maximumLength));
+      treeDepthParameter = new FixedValueParameter<IntValue>(Name + ".Maximum Tree Depth", "Maximal depth of the symbolic expression. The minimum depth needed for the algorithm is 3 because two levels are reserved for the ProgramRoot and the Start symbol.", new IntValue(maximumDepth));
+      grammarParameter = new ValueParameter<ISymbolicExpressionGrammar>(Name + ".Grammar", "The grammar that should be used for symbolic expression tree.", grammar);
+      functionDefinitionsParameter = new FixedValueParameter<IntValue>(Name + ".Function Definitions", "Maximal number of automatically defined functions", new IntValue(0));
+      functionArgumentsParameter = new FixedValueParameter<IntValue>(Name + ".Function Arguments", "Maximal number of arguments of automatically defined functions.", new IntValue(0));
 
       Parameters.Add(treeLengthParameter);
       Parameters.Add(treeDepthParameter);

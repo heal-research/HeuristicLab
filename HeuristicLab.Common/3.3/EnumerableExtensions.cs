@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -96,6 +96,69 @@ namespace HeuristicLab.Common {
     public static IEnumerable<IEnumerable<T>> CartesianProduct<T>(this IEnumerable<IEnumerable<T>> sequences) {
       IEnumerable<IEnumerable<T>> result = new[] { Enumerable.Empty<T>() };
       return sequences.Where(s => s.Any()).Aggregate(result, (current, s) => (from seq in current from item in s select seq.Concat(new[] { item })));
+    }
+
+    /// <summary>
+    /// Compute all k-combinations of elements from the provided collection.
+    /// <param name="elements">The collection of elements</param>
+    /// <param name="k">The combination group size</param>
+    /// <returns>An enumerable sequence of all the possible k-combinations of elements</returns>
+    /// </summary>
+    public static IEnumerable<IEnumerable<T>> Combinations<T>(this IList<T> elements, int k) {
+      if (k > elements.Count)
+        throw new ArgumentException();
+
+      if (k == 1) {
+        foreach (var element in elements)
+          yield return new[] { element };
+        yield break;
+      }
+
+      int n = elements.Count;
+      var range = Enumerable.Range(0, k).ToArray();
+      var length = BinomialCoefficient(n, k);
+
+      for (int i = 0; i < length; ++i) {
+        yield return range.Select(x => elements[x]).ToArray();
+
+        if (i == length - 1) break;
+        var m = k - 1;
+        var max = n - 1;
+
+        while (range[m] == max) { --m; --max; }
+        range[m]++;
+        for (int j = m + 1; j < k; ++j) {
+          range[j] = range[j - 1] + 1;
+        }
+      }
+    }
+
+    /// <summary>
+    /// This function gets the total number of unique combinations based upon N and K,
+    /// where N is the total number of items and K is the size of the group.
+    /// It calculates the total number of unique combinations C(N, K) = N! / ( K! (N - K)! )
+    /// using the  recursion C(N+1, K+1) = (N+1 / K+1) * C(N, K).
+    /// <remarks>http://blog.plover.com/math/choose.html</remarks>
+    /// <remark>https://en.wikipedia.org/wiki/Binomial_coefficient#Multiplicative_formula</remark>
+    /// <param name="n">The number of elements</param>
+    /// <param name="k">The size of the group</param>
+    /// <returns>The binomial coefficient C(N, K)</returns>
+    /// </summary>
+    public static long BinomialCoefficient(long n, long k) {
+      if (k > n) return 0;
+      if (k == n) return 1;
+      if (k > n - k)
+        k = n - k;
+
+      // enable explicit overflow checking for very large coefficients
+      checked {
+        long r = 1;
+        for (long d = 1; d <= k; d++) {
+          r *= n--;
+          r /= d;
+        }
+        return r;
+      }
     }
   }
 }

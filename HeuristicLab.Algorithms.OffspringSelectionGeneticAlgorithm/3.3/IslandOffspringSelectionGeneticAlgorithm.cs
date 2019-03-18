@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -279,6 +279,17 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       }
       if (!Parameters.ContainsKey("FillPopulationWithParents"))
         Parameters.Add(new FixedValueParameter<BoolValue>("FillPopulationWithParents", "True if the population should be filled with parent individual or false if worse children should be used when the maximum selection pressure is exceeded.", new BoolValue(false)) { Hidden = true });
+
+      var optionalMutatorParameter = MutatorParameter as OptionalConstrainedValueParameter<IManipulator>;
+      if (optionalMutatorParameter != null) {
+        Parameters.Remove(optionalMutatorParameter);
+        Parameters.Add(new ConstrainedValueParameter<IManipulator>("Mutator", "The operator used to mutate solutions."));
+        foreach (var m in optionalMutatorParameter.ValidValues)
+          MutatorParameter.ValidValues.Add(m);
+        if (optionalMutatorParameter.Value == null) MutationProbability.Value = 0; // to guarantee that the old configuration results in the same behavior
+        else Mutator = optionalMutatorParameter.Value;
+        optionalMutatorParameter.ValidValues.Clear(); // to avoid dangling references to the old parameter its valid values are cleared
+      }
       #endregion
 
       Initialize();
@@ -310,7 +321,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       Parameters.Add(new ConstrainedValueParameter<ISelector>("Selector", "The operator used to select solutions for reproduction."));
       Parameters.Add(new ConstrainedValueParameter<ICrossover>("Crossover", "The operator used to cross solutions."));
       Parameters.Add(new ValueParameter<PercentValue>("MutationProbability", "The probability that the mutation operator is applied on a solution.", new PercentValue(0.05)));
-      Parameters.Add(new OptionalConstrainedValueParameter<IManipulator>("Mutator", "The operator used to mutate solutions."));
+      Parameters.Add(new ConstrainedValueParameter<IManipulator>("Mutator", "The operator used to mutate solutions."));
       Parameters.Add(new ValueParameter<IntValue>("Elites", "The numer of elite solutions which are kept in each generation.", new IntValue(1)));
       Parameters.Add(new FixedValueParameter<BoolValue>("ReevaluateElites", "Flag to determine if elite individuals should be reevaluated (i.e., if stochastic fitness functions are used.)", new BoolValue(false)) { Hidden = true });
       Parameters.Add(new ValueLookupParameter<DoubleValue>("SuccessRatio", "The ratio of successful to total children that should be achieved.", new DoubleValue(1)));
@@ -641,12 +652,19 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     private void UpdateMutators() {
       IManipulator oldMutator = MutatorParameter.Value;
       MutatorParameter.ValidValues.Clear();
+      IManipulator defaultMutator = Problem.Operators.OfType<IManipulator>().FirstOrDefault();
+
       foreach (IManipulator mutator in Problem.Operators.OfType<IManipulator>().OrderBy(x => x.Name))
         MutatorParameter.ValidValues.Add(mutator);
+
       if (oldMutator != null) {
         IManipulator mutator = MutatorParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldMutator.GetType());
         if (mutator != null) MutatorParameter.Value = mutator;
+        else oldMutator = null;
       }
+
+      if (oldMutator == null && defaultMutator != null)
+        MutatorParameter.Value = defaultMutator;
     }
     private void UpdateAnalyzers() {
       IslandAnalyzer.Operators.Clear();

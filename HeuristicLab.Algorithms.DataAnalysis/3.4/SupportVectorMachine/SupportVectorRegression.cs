@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -150,7 +151,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     #region support vector regression
-    protected override void Run() {
+    protected override void Run(CancellationToken cancellationToken) {
       IRegressionProblemData problemData = Problem.ProblemData;
       IEnumerable<string> selectedInputVariables = problemData.AllowedInputVariables;
       int nSv;

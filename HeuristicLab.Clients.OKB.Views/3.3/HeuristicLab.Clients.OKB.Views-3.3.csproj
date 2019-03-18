@@ -285,6 +285,12 @@
     <Compile Include="RunCreation\Views\OKBRunView.Designer.cs">
       <DependentUpon>OKBRunView.cs</DependentUpon>
     </Compile>
+    <Compile Include="RunCreation\Views\SingleObjectiveOKBSolutionView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="RunCreation\Views\SingleObjectiveOKBSolutionView.Designer.cs">
+      <DependentUpon>SingleObjectiveOKBSolutionView.cs</DependentUpon>
+    </Compile>
     <None Include="Plugin.cs.frame" />
     <None Include="Properties\AssemblyInfo.cs.frame" />
   </ItemGroup>
@@ -331,6 +337,10 @@
       <Project>{C36BD924-A541-4A00-AFA8-41701378DDC5}</Project>
       <Name>HeuristicLab.Core-3.3</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Data.Views\3.3\HeuristicLab.Data.Views-3.3.csproj">
+      <Project>{72104A0B-90E7-42F3-9ABE-9BBBADD4B943}</Project>
+      <Name>HeuristicLab.Data.Views-3.3</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Data\3.3\HeuristicLab.Data-3.3.csproj">
       <Project>{BBAB9DF5-5EF3-4BA8-ADE9-B36E82114937}</Project>

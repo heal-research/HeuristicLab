@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -42,6 +42,16 @@ namespace HeuristicLab.Analysis {
       Star6,
       Star10,
       Triangle
+    }
+    #endregion
+    #region
+    public enum ScatterPlotDataRowRegressionType {
+      None,
+      Linear,
+      Polynomial,
+      Exponential,
+      Logarithmic,
+      Power
     }
     #endregion
 
@@ -100,6 +110,51 @@ namespace HeuristicLab.Analysis {
         }
       }
     }
+    private ScatterPlotDataRowRegressionType regressionType;
+    public ScatterPlotDataRowRegressionType RegressionType {
+      get { return regressionType; }
+      set {
+        if (regressionType != value) {
+          regressionType = value;
+          OnPropertyChanged("RegressionType");
+        }
+      }
+    }
+    private int polynomialRegressionOrder;
+    public int PolynomialRegressionOrder {
+      get { return polynomialRegressionOrder; }
+      set {
+        if (polynomialRegressionOrder != value) {
+          polynomialRegressionOrder = value;
+          OnPropertyChanged("PolynomialRegressionOrder");
+        }
+      }
+    }
+    private bool isRegressionVisibleInLegend;
+    public bool IsRegressionVisibleInLegend {
+      get { return isRegressionVisibleInLegend; }
+      set {
+        if (isRegressionVisibleInLegend != value) {
+          isRegressionVisibleInLegend = value;
+          OnPropertyChanged("IsRegressionVisibleInLegend");
+        }
+      }
+    }
+    private string regressionDisplayName;
+    public string RegressionDisplayName {
+      get { return regressionDisplayName ?? string.Empty; }
+      set {
+        if (regressionDisplayName != value) {
+          if (value == null && regressionDisplayName != string.Empty) {
+            regressionDisplayName = string.Empty;
+            OnPropertyChanged("RegressionDisplayName");
+          } else if (value != null) {
+            regressionDisplayName = value;
+            OnPropertyChanged("RegressionDisplayName");
+          }
+        }
+      }
+    }
 
     #region Persistence Properties
     [Storable(Name = "Color")]
@@ -127,6 +182,26 @@ namespace HeuristicLab.Analysis {
       get { return displayName; }
       set { displayName = value; }
     }
+    [Storable(Name = "RegressionType")]
+    private ScatterPlotDataRowRegressionType StorableRegressionType {
+      get { return regressionType; }
+      set { regressionType = value; }
+    }
+    [Storable(Name = "PolynomialRegressionOrder", DefaultValue = 2)]
+    private int StorablePolynomialRegressionOrder {
+      get { return polynomialRegressionOrder; }
+      set { polynomialRegressionOrder = value; }
+    }
+    [Storable(Name = "IsRegressionVisibleInLegend", DefaultValue = true)]
+    private bool StorableIsRegressionVisibleInLegend {
+      get { return isRegressionVisibleInLegend; }
+      set { isRegressionVisibleInLegend = value; }
+    }
+    [Storable(Name = "RegressionDisplayName")]
+    private string StorableRegressionDisplayName {
+      get { return regressionDisplayName; }
+      set { regressionDisplayName = value; }
+    }
     #endregion
 
     [StorableConstructor]
@@ -138,6 +213,10 @@ namespace HeuristicLab.Analysis {
       this.pointSize = original.pointSize;
       this.displayName = original.displayName;
       this.isVisibleInLegend = original.isVisibleInLegend;
+      this.regressionType = original.regressionType;
+      this.polynomialRegressionOrder = original.polynomialRegressionOrder;
+      this.isRegressionVisibleInLegend = original.isRegressionVisibleInLegend;
+      this.regressionDisplayName = original.regressionDisplayName;
     }
     public ScatterPlotDataRowVisualProperties() {
       color = Color.Empty;
@@ -145,6 +224,10 @@ namespace HeuristicLab.Analysis {
       pointSize = 3;
       displayName = String.Empty;
       isVisibleInLegend = true;
+      regressionType = ScatterPlotDataRowRegressionType.None;
+      polynomialRegressionOrder = 2;
+      isRegressionVisibleInLegend = true;
+      regressionDisplayName = string.Empty;
     }
     public ScatterPlotDataRowVisualProperties(string displayName)
       : this() {

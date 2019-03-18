@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -18,7 +18,6 @@
  * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
  */
 #endregion
-
 
 namespace HeuristicLab.DataPreprocessing.Views {
   partial class ViewShortcutListView {
@@ -45,14 +44,39 @@ namespace HeuristicLab.DataPreprocessing.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
+      ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
+      this.splitContainer.Panel1.SuspendLayout();
+      this.splitContainer.Panel2.SuspendLayout();
+      this.splitContainer.SuspendLayout();
+      this.itemsGroupBox.SuspendLayout();
+      this.detailsGroupBox.SuspendLayout();
       this.SuspendLayout();
+      // 
+      // itemsListView
+      // 
+      this.itemsListView.Dock = System.Windows.Forms.DockStyle.Fill;
+      // 
+      // viewHost
+      // 
+      this.viewHost.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.viewHost.ViewsLabelVisible = false;
+      // 
+      // showDetailsCheckBox
+      // 
+      this.showDetailsCheckBox.Visible = false;
       // 
       // ViewShortcutListView
       // 
-      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.Name = "ViewShortcutListView";
       this.Size = new System.Drawing.Size(532, 383);
+      this.splitContainer.Panel1.ResumeLayout(false);
+      this.splitContainer.Panel2.ResumeLayout(false);
+      ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();
+      this.splitContainer.ResumeLayout(false);
+      this.itemsGroupBox.ResumeLayout(false);
+      this.detailsGroupBox.ResumeLayout(false);
       this.ResumeLayout(false);
+
     }
 
     #endregion

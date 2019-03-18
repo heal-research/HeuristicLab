@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -36,6 +36,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
                                        "- Randomly choose a node N from the P0\n" +
                                        "- Find the first node M that satisfies the semantic similarity criteria\n" +
                                        "- Swap N for M and return P0")]
+  [StorableClass]
   public sealed class SymbolicDataAnalysisExpressionSemanticSimilarityCrossover<T> : SymbolicDataAnalysisExpressionCrossover<T> where T : class, IDataAnalysisProblemData {
     private const string SemanticSimilarityRangeParameterName = "SemanticSimilarityRange";
 

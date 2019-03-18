@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -36,7 +36,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// </summary>
   [StorableClass]
   [Item("SupportVectorMachineModel", "Represents a support vector machine model.")]
-  public sealed class SupportVectorMachineModel : NamedItem, ISupportVectorMachineModel {
+  public sealed class SupportVectorMachineModel : ClassificationModel, ISupportVectorMachineModel {
+    public override IEnumerable<string> VariablesUsedForPrediction {
+      get { return allowedInputVariables; }
+    }
+
 
     private svm_model model;
     /// <summary>
@@ -82,8 +86,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     [Storable]
-    private string targetVariable;
-    [Storable]
     private string[] allowedInputVariables;
     [Storable]
     private double[] classValues; // only for SVM classification models
@@ -95,7 +97,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       // only using a shallow copy here! (gkronber)
       this.model = original.model;
       this.rangeTransform = original.rangeTransform;
-      this.targetVariable = original.targetVariable;
       this.allowedInputVariables = (string[])original.allowedInputVariables.Clone();
       if (original.classValues != null)
         this.classValues = (double[])original.classValues.Clone();
@@ -105,12 +106,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       this.classValues = classValues.ToArray();
     }
     public SupportVectorMachineModel(svm_model model, RangeTransform rangeTransform, string targetVariable, IEnumerable<string> allowedInputVariables)
-      : base() {
+      : base(targetVariable) {
       this.name = ItemName;
       this.description = ItemDescription;
       this.model = model;
       this.rangeTransform = rangeTransform;
-      this.targetVariable = targetVariable;
       this.allowedInputVariables = allowedInputVariables.ToArray();
     }
 
@@ -122,16 +122,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public IEnumerable<double> GetEstimatedValues(IDataset dataset, IEnumerable<int> rows) {
       return GetEstimatedValuesHelper(dataset, rows);
     }
-    public SupportVectorRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData) {
+    public IRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData) {
       return new SupportVectorRegressionSolution(this, new RegressionProblemData(problemData));
-    }
-    IRegressionSolution IRegressionModel.CreateRegressionSolution(IRegressionProblemData problemData) {
-      return CreateRegressionSolution(problemData);
     }
     #endregion
 
     #region IClassificationModel Members
-    public IEnumerable<double> GetEstimatedClassValues(IDataset dataset, IEnumerable<int> rows) {
+    public override IEnumerable<double> GetEstimatedClassValues(IDataset dataset, IEnumerable<int> rows) {
       if (classValues == null) throw new NotSupportedException();
       // return the original class value instead of the predicted value of the model
       // svm classification only works for integer classes
@@ -151,16 +148,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
     }
 
-    public SupportVectorClassificationSolution CreateClassificationSolution(IClassificationProblemData problemData) {
+    public override IClassificationSolution CreateClassificationSolution(IClassificationProblemData problemData) {
       return new SupportVectorClassificationSolution(this, new ClassificationProblemData(problemData));
-    }
-    IClassificationSolution IClassificationModel.CreateClassificationSolution(IClassificationProblemData problemData) {
-      return CreateClassificationSolution(problemData);
     }
     #endregion
     private IEnumerable<double> GetEstimatedValuesHelper(IDataset dataset, IEnumerable<int> rows) {
       // calculate predictions for the currently requested rows
-      svm_problem problem = SupportVectorMachineUtil.CreateSvmProblem(dataset, targetVariable, allowedInputVariables, rows);
+      svm_problem problem = SupportVectorMachineUtil.CreateSvmProblem(dataset, TargetVariable, allowedInputVariables, rows);
       svm_problem scaledProblem = rangeTransform.Scale(problem);
 
       for (int i = 0; i < problem.l; i++) {

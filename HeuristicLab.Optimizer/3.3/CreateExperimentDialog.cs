@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,7 +25,6 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Text;
-using System.Threading;
 using System.Windows.Forms;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -55,15 +54,14 @@ namespace HeuristicLab.Optimizer {
 
     private bool createBatchRun;
     private int repetitions;
-    private Dictionary<IProblemInstanceProvider, HashSet<IDataDescriptor>> instances;
-    private Dictionary<IValueParameter, IntArray> intParameters;
-    private Dictionary<IValueParameter, DoubleArray> doubleParameters;
-    private HashSet<IValueParameter> boolParameters;
-    private Dictionary<IValueParameter, HashSet<IItem>> multipleChoiceParameters;
-    private IItem optionalNullChoice = new BoolValue(); // any item will do
+    private readonly Dictionary<IProblemInstanceProvider, HashSet<IDataDescriptor>> instances;
+    private readonly Dictionary<IValueParameter, IntArray> intParameters;
+    private readonly Dictionary<IValueParameter, DoubleArray> doubleParameters;
+    private readonly HashSet<IValueParameter> boolParameters;
+    private readonly Dictionary<IValueParameter, HashSet<IItem>> multipleChoiceParameters;
+    private readonly IItem optionalNullChoice = new BoolValue(); // any item will do
 
     private StringBuilder failedInstances;
-    private EventWaitHandle backgroundWorkerWaitHandle = new ManualResetEvent(false);
     private bool suppressTreeViewEventHandling, suppressCheckAllNoneEventHandling;
 
     public CreateExperimentDialog() : this(null) { }
@@ -104,7 +102,6 @@ namespace HeuristicLab.Optimizer {
     private void okButton_Click(object sender, EventArgs e) {
       SetMode(DialogMode.CreatingExperiment);
       experimentCreationBackgroundWorker.RunWorkerAsync();
-      backgroundWorkerWaitHandle.WaitOne(); // make sure the background worker has started before exiting
     }
 
     #region Parameters variation
@@ -342,7 +339,8 @@ namespace HeuristicLab.Optimizer {
           var treeViewNodes = instancesTreeView.Nodes.OfType<TreeNode>().SelectMany(x => x.Nodes.OfType<TreeNode>());
           selectAllCheckBox.Checked = treeViewNodes.Count() == instances.SelectMany(x => x.Value).Count();
           selectNoneCheckBox.Checked = !treeViewNodes.Any(x => x.Checked);
-        } finally { suppressCheckAllNoneEventHandling = false; }
+        }
+        finally { suppressCheckAllNoneEventHandling = false; }
         UpdateVariationsLabel();
       }
     }
@@ -356,7 +354,8 @@ namespace HeuristicLab.Optimizer {
             SyncInstanceNode(n, false);
           }
         }
-      } finally { suppressTreeViewEventHandling = false; }
+      }
+      finally { suppressTreeViewEventHandling = false; }
     }
 
     private void SyncInstanceNode(TreeNode node, bool providerCheck = true) {
@@ -378,7 +377,8 @@ namespace HeuristicLab.Optimizer {
         suppressTreeViewEventHandling = true;
         try {
           node.Parent.Checked = allChecked;
-        } finally { suppressTreeViewEventHandling = false; }
+        }
+        finally { suppressTreeViewEventHandling = false; }
       }
     }
 
@@ -386,7 +386,8 @@ namespace HeuristicLab.Optimizer {
       if (!suppressCheckAllNoneEventHandling) {
         if (selectAllCheckBox.Checked) {
           suppressCheckAllNoneEventHandling = true;
-          try { selectNoneCheckBox.Checked = false; } finally { suppressCheckAllNoneEventHandling = false; }
+          try { selectNoneCheckBox.Checked = false; }
+          finally { suppressCheckAllNoneEventHandling = false; }
           try {
             suppressTreeViewEventHandling = true;
             foreach (TreeNode node in instancesTreeView.Nodes) {
@@ -395,7 +396,8 @@ namespace HeuristicLab.Optimizer {
                 SyncProviderNode(node);
               }
             }
-          } finally { suppressTreeViewEventHandling = false; }
+          }
+          finally { suppressTreeViewEventHandling = false; }
         }
         UpdateVariationsLabel();
       }
@@ -405,7 +407,8 @@ namespace HeuristicLab.Optimizer {
       if (!suppressCheckAllNoneEventHandling) {
         if (selectNoneCheckBox.Checked) {
           suppressCheckAllNoneEventHandling = true;
-          try { selectAllCheckBox.Checked = false; } finally { suppressCheckAllNoneEventHandling = false; }
+          try { selectAllCheckBox.Checked = false; }
+          finally { suppressCheckAllNoneEventHandling = false; }
           try {
             suppressTreeViewEventHandling = true;
             foreach (TreeNode node in instancesTreeView.Nodes) {
@@ -414,7 +417,8 @@ namespace HeuristicLab.Optimizer {
                 SyncProviderNode(node);
               }
             }
-          } finally { suppressTreeViewEventHandling = false; }
+          }
+          finally { suppressTreeViewEventHandling = false; }
         }
         UpdateVariationsLabel();
       }
@@ -481,7 +485,7 @@ namespace HeuristicLab.Optimizer {
                     && typeof(EnumValue<>).IsAssignableFrom(valueParam.Value.GetType().GetGenericTypeDefinition())))
             || typeof(OptionalConstrainedValueParameter<>).IsAssignableFrom(param.GetType().GetGenericTypeDefinition())
             || typeof(ConstrainedValueParameter<>).IsAssignableFrom(param.GetType().GetGenericTypeDefinition()))
-            parametersListView.Items.Add(new ListViewItem(param.Name) { Tag = param });
+            parametersListView.Items.Add(new ListViewItem(param.Name) { Tag = param, ToolTipText = param.Description });
         }
       }
     }
@@ -719,10 +723,14 @@ namespace HeuristicLab.Optimizer {
           #endregion
           var node = new TreeNode(desc.Name) { Tag = desc };
           providerNode.Nodes.Add(node);
-          if (providerNode.Nodes.Count == 1)
-            nodes.Add(providerNode);
         }
-        double progress = nodes.Count > 0 ? i / (double)nodes.Count : 0.0;
+
+        //Do not add instance providers without data descriptors
+        if (providerNode.Nodes.Count > 0) {
+          nodes.Add(providerNode);
+        }
+
+        double progress = nodes.Count > 0 ? i / (double)instanceProviders.Length : 0.0;
         instanceDiscoveryBackgroundWorker.ReportProgress((int)(100 * progress), provider.Name);
       }
       e.Result = nodes.ToArray();
@@ -743,17 +751,18 @@ namespace HeuristicLab.Optimizer {
             node.Collapse();
         }
         selectNoneCheckBox.Checked = true;
-      } catch { }
+      }
+      catch { }
       try {
         SetMode(DialogMode.Normal);
         if (e.Error != null) MessageBox.Show(e.Error.Message, "Error occurred", MessageBoxButtons.OK, MessageBoxIcon.Error);
-      } catch { }
+      }
+      catch { }
     }
     #endregion
 
     #region Experiment creation
     private void experimentCreationBackgroundWorker_DoWork(object sender, DoWorkEventArgs e) {
-      backgroundWorkerWaitHandle.Set(); // notify the ok button that we're busy now
       failedInstances = new StringBuilder();
       var localExperiment = new Experiment();
 
@@ -762,7 +771,8 @@ namespace HeuristicLab.Optimizer {
       if (totalInstances == 0) {
         try {
           AddParameterVariations(Optimizer, localExperiment, ref counter, totalVariations);
-        } catch (OperationCanceledException) {
+        }
+        catch (OperationCanceledException) {
           e.Cancel = true;
           return;
         }
@@ -774,7 +784,8 @@ namespace HeuristicLab.Optimizer {
             bool failed = false;
             try {
               ProblemInstanceManager.LoadData(provider, descriptor, (IProblemInstanceConsumer)algorithm.Problem);
-            } catch (Exception ex) {
+            }
+            catch (Exception ex) {
               failedInstances.AppendLine(descriptor.Name + ": " + ex.Message);
               failed = true;
             }
@@ -787,7 +798,8 @@ namespace HeuristicLab.Optimizer {
                 } else {
                   AddParameterVariations(algorithm, localExperiment, ref counter, totalVariations);
                 }
-              } catch (OperationCanceledException) {
+              }
+              catch (OperationCanceledException) {
                 e.Cancel = true;
                 return;
               }
@@ -882,7 +894,9 @@ namespace HeuristicLab.Optimizer {
             if (m.Key.Value != null && m.Key.Value.GetType().IsGenericType
                 && typeof(EnumValue<>).IsAssignableFrom(m.Key.Value.GetType().GetGenericTypeDefinition())) {
               var valueParam = (IValueParameter)variant.Parameters[m.Key.Name];
-              valueParam.Value = m.Value;
+              dynamic targetEnumValue = valueParam.Value;
+              dynamic sourceEnumValue = m.Value;
+              targetEnumValue.Value = sourceEnumValue.Value;
               variant.Name += m.Key.Name + "=" + m.Value + ", ";
             } else {
               dynamic variantParam = variant.Parameters[m.Key.Name];
@@ -936,7 +950,8 @@ namespace HeuristicLab.Optimizer {
           DialogResult = System.Windows.Forms.DialogResult.OK;
           Close();
         }
-      } catch { }
+      }
+      catch { }
     }
     #endregion
     #endregion

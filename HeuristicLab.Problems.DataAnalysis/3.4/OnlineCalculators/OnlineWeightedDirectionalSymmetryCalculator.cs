@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,7 +25,7 @@ using HeuristicLab.Common;
 
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  public class OnlineWeightedDirectionalSymmetryCalculator : IOnlineTimeSeriesCalculator {
+  public class OnlineWeightedDirectionalSymmetryCalculator : DeepCloneable, IOnlineTimeSeriesCalculator {
     private int n;
     private double correctSum;
     private double incorrectSum;
@@ -39,6 +39,18 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public OnlineWeightedDirectionalSymmetryCalculator() {
       Reset();
+    }
+
+    protected OnlineWeightedDirectionalSymmetryCalculator(OnlineWeightedDirectionalSymmetryCalculator original, Cloner cloner)
+      : base(original, cloner) {
+      n = original.n;
+      correctSum = original.correctSum;
+      incorrectSum = original.incorrectSum;
+      errorState = original.errorState;
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new OnlineWeightedDirectionalSymmetryCalculator(this, cloner);
     }
 
     public double Value {

@@ -154,8 +154,11 @@
     <Compile Include="BasicProblems\Operators\SingleObjectiveMoveGenerator.cs" />
     <Compile Include="BasicProblems\Operators\SingleObjectiveMoveMaker.cs" />
     <Compile Include="BasicProblems\SingleObjectiveProblem.cs" />
+    <Compile Include="Interfaces\ICharacteristicCalculator.cs" />
     <Compile Include="Interfaces\ILocalImprovementAlgorithmOperator.cs" />
     <Compile Include="Interfaces\IMultiObjectiveOperator.cs" />
+    <Compile Include="MultiObjective\DominationCalculator.cs" />
+    <Compile Include="Results\IResultParameter.cs" />
     <Compile Include="Interfaces\ISingleObjectiveOperator.cs" />
     <Compile Include="Interfaces\ISingleObjectivePathRelinker.cs" />
     <Compile Include="Interfaces\ISingleObjectiveImprovementOperator.cs" />
@@ -169,6 +172,7 @@
     <Compile Include="MetaOptimizers\BatchRun.cs" />
     <Compile Include="MetaOptimizers\Experiment.cs" />
     <Compile Include="MetaOptimizers\TimeLimitRun.cs" />
+    <Compile Include="Results\ResultParameter.cs" />
     <Compile Include="RunCollectionModification\RunCollectionRunRemover.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="RunCollectionModification\RunCollectionDiscretizer.cs" />
@@ -188,9 +192,7 @@
     <Compile Include="RunCollectionModification\Calculator.cs" />
     <Compile Include="Interfaces\IDiscreteDoubleMatrixModifier.cs" />
     <Compile Include="Algorithms\HeuristicOptimizationEngineAlgorithm.cs" />
-    <Compile Include="Interfaces\IGlobalParticleUpdater.cs" />
     <Compile Include="Interfaces\ILocalImprovementOperator.cs" />
-    <Compile Include="Interfaces\ILocalParticleUpdater.cs" />
     <Compile Include="Algorithms\HeuristicOptimizationAlgorithm.cs" />
     <Compile Include="Interfaces\IMultiNeighborhoodShakingOperator.cs" />
     <Compile Include="MoveHelper.cs" />
@@ -230,7 +232,7 @@
     <Compile Include="Interfaces\IOptimizer.cs" />
     <Compile Include="RunCollection.cs" />
     <Compile Include="Run.cs" />
-    <Compile Include="Interfaces\IResult.cs" />
+    <Compile Include="Results\IResult.cs" />
     <Compile Include="Interfaces\IDiscreteDoubleValueModifier.cs" />
     <Compile Include="Interfaces\IExhaustiveMoveGenerator.cs" />
     <Compile Include="Interfaces\IMoveOperator.cs" />
@@ -254,11 +256,11 @@
     <Compile Include="Interfaces\IStochasticOperator.cs" />
     <Compile Include="Interfaces\ITabuChecker.cs" />
     <Compile Include="Interfaces\ITabuMaker.cs" />
-    <Compile Include="Result.cs" />
+    <Compile Include="Results\Result.cs" />
     <Compile Include="Algorithms\UserDefinedAlgorithm.cs" />
     <Compile Include="Algorithms\EngineAlgorithm.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ResultCollection.cs" />
+    <Compile Include="Results\ResultCollection.cs" />
     <Compile Include="Problems\UserDefinedProblem.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,10 +25,9 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
-  [Plugin("HeuristicLab.Problems.DataAnalysis.Symbolic.Regression","Provides classes to perform symbolic regression (single- or multiobjective).", "3.4.9.$WCREV$")]
+  [Plugin("HeuristicLab.Problems.DataAnalysis.Symbolic.Regression","Provides classes to perform symbolic regression (single- or multiobjective).", "3.4.11.$WCREV$")]
   [PluginFile("HeuristicLab.Problems.DataAnalysis.Symbolic.Regression-3.4.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.ALGLIB", "3.7.0")]
-  [PluginDependency("HeuristicLab.AutoDiff", "1.0")]
   [PluginDependency("HeuristicLab.Analysis", "3.3")]
   [PluginDependency("HeuristicLab.Common", "3.3")]
   [PluginDependency("HeuristicLab.Collections", "3.3")]

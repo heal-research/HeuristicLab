@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,7 +24,7 @@ using System.Collections.Generic;
 using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  public class OnlinePearsonsRCalculator : IOnlineCalculator {
+  public class OnlinePearsonsRCalculator : DeepCloneable, IOnlineCalculator {
     private OnlineCovarianceCalculator covCalculator = new OnlineCovarianceCalculator();
     private OnlineMeanAndVarianceCalculator sxCalculator = new OnlineMeanAndVarianceCalculator();
     private OnlineMeanAndVarianceCalculator syCalculator = new OnlineMeanAndVarianceCalculator();
@@ -45,6 +45,16 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     public OnlinePearsonsRCalculator() { }
+
+    protected OnlinePearsonsRCalculator(OnlinePearsonsRCalculator original, Cloner cloner)
+      : base(original, cloner) {
+      covCalculator = cloner.Clone(original.covCalculator);
+      sxCalculator = cloner.Clone(original.sxCalculator);
+      syCalculator = cloner.Clone(original.syCalculator);
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new OnlinePearsonsRCalculator(this, cloner);
+    }
 
     #region IOnlineCalculator Members
     public OnlineCalculatorError ErrorState {

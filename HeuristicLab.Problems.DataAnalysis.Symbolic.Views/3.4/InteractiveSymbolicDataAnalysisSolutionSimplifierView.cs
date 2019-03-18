@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,10 +23,12 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using HeuristicLab.Common;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views;
+using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
@@ -35,15 +37,20 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
     private Dictionary<ISymbolicExpressionTreeNode, ISymbolicExpressionTreeNode> changedNodes;
     private Dictionary<ISymbolicExpressionTreeNode, double> nodeImpacts;
 
+    private readonly ISymbolicDataAnalysisSolutionImpactValuesCalculator impactCalculator;
+
+    private readonly IProgress progress = new Progress();
+
     private enum TreeState { Valid, Invalid }
     private TreeState treeState;
 
-    protected InteractiveSymbolicDataAnalysisSolutionSimplifierView() {
+    protected InteractiveSymbolicDataAnalysisSolutionSimplifierView(ISymbolicDataAnalysisSolutionImpactValuesCalculator impactCalculator) {
       InitializeComponent();
       foldedNodes = new Dictionary<ISymbolicExpressionTreeNode, ISymbolicExpressionTreeNode>();
       changedNodes = new Dictionary<ISymbolicExpressionTreeNode, ISymbolicExpressionTreeNode>();
       nodeImpacts = new Dictionary<ISymbolicExpressionTreeNode, double>();
       this.Caption = "Interactive Solution Simplifier";
+      this.impactCalculator = impactCalculator;
 
       // initialize the tree modifier that will be used to perform edit operations over the tree
       treeChart.ModifyTree = Modify;
@@ -111,7 +118,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
     private bool IsValid(ISymbolicExpressionTree tree) {
       treeChart.Tree = tree;
       treeChart.Repaint();
-      bool valid = !tree.IterateNodesPostfix().Any(node => node.SubtreeCount < GetMinArity(node.Symbol) || node.SubtreeCount > node.Symbol.MaximumArity);
+      // check if all nodes have a legal arity
+      var nodes = tree.IterateNodesPostfix().ToList();
+      bool valid = !nodes.Any(node => node.SubtreeCount < GetMinArity(node.Symbol) || node.SubtreeCount > node.Symbol.MaximumArity);
+
+      if (valid) {
+        // check if all variables are contained in the dataset
+        var variables = new HashSet<string>(Content.ProblemData.Dataset.DoubleVariables);
+        valid = nodes.OfType<VariableTreeNode>().All(x => variables.Contains(x.VariableName));
+      }
+
       if (valid) {
         btnOptimizeConstants.Enabled = true;
         btnSimplify.Enabled = true;
@@ -135,12 +151,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       Content.ModelChanged += Content_Changed;
       Content.ProblemDataChanged += Content_Changed;
       treeChart.Repainted += treeChart_Repainted;
+      MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>().AddOperationProgressToView(grpSimplify, progress);
     }
     protected override void DeregisterContentEvents() {
       base.DeregisterContentEvents();
       Content.ModelChanged -= Content_Changed;
       Content.ProblemDataChanged -= Content_Changed;
       treeChart.Repainted -= treeChart_Repainted;
+      MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>().RemoveOperationProgressFromView(grpSimplify, false);
     }
 
     private void Content_Changed(object sender, EventArgs e) {
@@ -159,24 +177,40 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
         PaintNodeImpacts();
     }
 
-    private void UpdateView() {
+    private async void UpdateView() {
       if (Content == null || Content.Model == null || Content.ProblemData == null) return;
       var tree = Content.Model.SymbolicExpressionTree;
       treeChart.Tree = tree.Root.SubtreeCount > 1 ? new SymbolicExpressionTree(tree.Root) : new SymbolicExpressionTree(tree.Root.GetSubtree(0).GetSubtree(0));
 
-      var impactAndReplacementValues = CalculateImpactAndReplacementValues(tree);
+      progress.Start("Calculate Impact and Replacement Values ...");
+      var impactAndReplacementValues = await Task.Run(() => CalculateImpactAndReplacementValues(tree));
+      await Task.Delay(500); // wait for progressbar to finish animation
       var replacementValues = impactAndReplacementValues.ToDictionary(x => x.Key, x => x.Value.Item2);
       foreach (var pair in replacementValues.Where(pair => !(pair.Key is ConstantTreeNode))) {
         foldedNodes[pair.Key] = MakeConstantTreeNode(pair.Value);
       }
       nodeImpacts = impactAndReplacementValues.ToDictionary(x => x.Key, x => x.Value.Item1);
+      progress.Finish();
       PaintNodeImpacts();
     }
 
-    protected abstract Dictionary<ISymbolicExpressionTreeNode, double> CalculateReplacementValues(ISymbolicExpressionTree tree);
-    protected abstract Dictionary<ISymbolicExpressionTreeNode, double> CalculateImpactValues(ISymbolicExpressionTree tree);
-    protected abstract Dictionary<ISymbolicExpressionTreeNode, Tuple<double, double>> CalculateImpactAndReplacementValues(ISymbolicExpressionTree tree);
+    protected virtual Dictionary<ISymbolicExpressionTreeNode, Tuple<double, double>> CalculateImpactAndReplacementValues(ISymbolicExpressionTree tree) {
+      var impactAndReplacementValues = new Dictionary<ISymbolicExpressionTreeNode, Tuple<double, double>>();
+      foreach (var node in tree.Root.GetSubtree(0).GetSubtree(0).IterateNodesPrefix()) {
+        double impactValue, replacementValue, newQualityForImpactsCalculation;
+        impactCalculator.CalculateImpactAndReplacementValues(Content.Model, node, Content.ProblemData, Content.ProblemData.TrainingIndices, out impactValue, out replacementValue, out newQualityForImpactsCalculation);
+        double newProgressValue = progress.ProgressValue + 1.0 / (tree.Length - 2);
+        progress.ProgressValue = Math.Min(newProgressValue, 1);
+        impactAndReplacementValues.Add(node, new Tuple<double, double>(impactValue, replacementValue));
+      }
+      return impactAndReplacementValues;
+    }
+
     protected abstract void UpdateModel(ISymbolicExpressionTree tree);
+
+    protected virtual ISymbolicExpressionTree OptimizeConstants(ISymbolicExpressionTree tree, IProgress progress) {
+      return tree;
+    }
 
     private static ConstantTreeNode MakeConstantTreeNode(double value) {
       var constant = new Constant { MinValue = value - 1, MaxValue = value + 1 };
@@ -258,11 +292,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
     }
 
     private void btnSimplify_Click(object sender, EventArgs e) {
-      var simplifier = new SymbolicDataAnalysisExpressionTreeSimplifier();
-      var simplifiedExpressionTree = simplifier.Simplify(Content.Model.SymbolicExpressionTree);
+      var simplifiedExpressionTree = TreeSimplifier.Simplify(Content.Model.SymbolicExpressionTree);
       UpdateModel(simplifiedExpressionTree);
     }
 
-    protected abstract void btnOptimizeConstants_Click(object sender, EventArgs e);
+    private async void btnOptimizeConstants_Click(object sender, EventArgs e) {
+      progress.Start("Optimizing Constants ...");
+      var tree = (ISymbolicExpressionTree)Content.Model.SymbolicExpressionTree.Clone();
+      var newTree = await Task.Run(() => OptimizeConstants(tree, progress));
+      await Task.Delay(500); // wait for progressbar to finish animation
+      UpdateModel(newTree); // UpdateModel calls Progress.Finish (via Content_Changed)
+    }
   }
 }

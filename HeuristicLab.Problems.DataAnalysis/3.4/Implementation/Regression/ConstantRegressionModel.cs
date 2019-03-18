@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -31,7 +31,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
   [StorableClass]
   [Item("Constant Regression Model", "A model that always returns the same constant value regardless of the presented input data.")]
   [Obsolete]
-  public class ConstantRegressionModel : NamedItem, IRegressionModel, IStringConvertibleValue {
+  public class ConstantRegressionModel : RegressionModel, IStringConvertibleValue {
+    public override IEnumerable<string> VariablesUsedForPrediction { get { return Enumerable.Empty<string>(); } }
+
     [Storable]
     private double constant;
     public double Constant {
@@ -45,22 +47,23 @@ namespace HeuristicLab.Problems.DataAnalysis {
       : base(original, cloner) {
       this.constant = original.constant;
     }
+
     public override IDeepCloneable Clone(Cloner cloner) { return new ConstantRegressionModel(this, cloner); }
 
-    public ConstantRegressionModel(double constant)
-      : base() {
+    public ConstantRegressionModel(double constant, string targetVariable)
+      : base(targetVariable) {
       this.name = ItemName;
       this.description = ItemDescription;
       this.constant = constant;
       this.ReadOnly = true; // changing a constant regression model is not supported
     }
 
-    public IEnumerable<double> GetEstimatedValues(IDataset dataset, IEnumerable<int> rows) {
+    public override IEnumerable<double> GetEstimatedValues(IDataset dataset, IEnumerable<int> rows) {
       return rows.Select(row => Constant);
     }
 
-    public IRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData) {
-      return new ConstantRegressionSolution(new ConstantModel(constant), new RegressionProblemData(problemData));
+    public override IRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData) {
+      return new ConstantRegressionSolution(new ConstantModel(constant, TargetVariable), new RegressionProblemData(problemData));
     }
 
     public override string ToString() {
@@ -81,7 +84,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
       throw new NotSupportedException(); // changing a constant regression model is not supported
     }
 
+#pragma warning disable 0067
     public event EventHandler ValueChanged;
+#pragma warning restore 0067
     #endregion
   }
 }

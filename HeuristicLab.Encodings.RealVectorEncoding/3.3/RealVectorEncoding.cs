@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -275,7 +275,6 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     }
     private void ConfigureParticleCreators(IEnumerable<IRealVectorParticleCreator> particleCreators) {
       foreach (var particleCreator in particleCreators) {
-        particleCreator.ProblemSizeParameter.ActualName = LengthParameter.Name;
       }
     }
     private void ConfigureParticleUpdaters(IEnumerable<IRealVectorParticleUpdater> particleUpdaters) {

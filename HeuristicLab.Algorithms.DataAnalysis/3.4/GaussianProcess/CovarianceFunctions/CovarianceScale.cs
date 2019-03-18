@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -86,7 +86,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
     }
 
-    public ParameterizedCovarianceFunction GetParameterizedCovarianceFunction(double[] p, IEnumerable<int> columnIndices) {
+    public ParameterizedCovarianceFunction GetParameterizedCovarianceFunction(double[] p, int[] columnIndices) {
       double scale;
       GetParameterValues(p, out scale);
       var fixedScale = HasFixedScaleParameter;
@@ -99,13 +99,15 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return cov;
     }
 
-    private static IEnumerable<double> GetGradient(double[,] x, int i, int j, IEnumerable<int> columnIndices, double scale, ParameterizedCovarianceFunction cov,
+    private static IList<double> GetGradient(double[,] x, int i, int j, int[] columnIndices, double scale, ParameterizedCovarianceFunction cov,
       bool fixedScale) {
+      var gr = new List<double>((!fixedScale ? 1 : 0) + cov.CovarianceGradient(x, i, j).Count);
       if (!fixedScale) {
-        yield return 2 * scale * cov.Covariance(x, i, j);
+        gr.Add(2 * scale * cov.Covariance(x, i, j));
       }
       foreach (var g in cov.CovarianceGradient(x, i, j))
-        yield return scale * g;
+        gr.Add(scale * g);
+      return gr;
     }
   }
 }

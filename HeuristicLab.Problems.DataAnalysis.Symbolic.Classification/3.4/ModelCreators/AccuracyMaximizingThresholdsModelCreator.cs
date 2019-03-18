@@ -1,7 +1,7 @@
 ﻿#region License Information
 
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -44,11 +44,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     public override IDeepCloneable Clone(Cloner cloner) { return new AccuracyMaximizingThresholdsModelCreator(this, cloner); }
 
 
-    public ISymbolicClassificationModel CreateSymbolicClassificationModel(ISymbolicExpressionTree tree, ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, double lowerEstimationLimit = double.MinValue, double upperEstimationLimit = double.MaxValue) {
-      return CreateSymbolicDiscriminantFunctionClassificationModel(tree, interpreter, lowerEstimationLimit, upperEstimationLimit);
+    public ISymbolicClassificationModel CreateSymbolicClassificationModel(string targetVariable, ISymbolicExpressionTree tree, ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, double lowerEstimationLimit = double.MinValue, double upperEstimationLimit = double.MaxValue) {
+      return CreateSymbolicDiscriminantFunctionClassificationModel(targetVariable, tree, interpreter, lowerEstimationLimit, upperEstimationLimit);
     }
-    public ISymbolicDiscriminantFunctionClassificationModel CreateSymbolicDiscriminantFunctionClassificationModel(ISymbolicExpressionTree tree, ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, double lowerEstimationLimit = double.MinValue, double upperEstimationLimit = double.MaxValue) {
-      return new SymbolicDiscriminantFunctionClassificationModel(tree, interpreter, new AccuracyMaximizationThresholdCalculator(), lowerEstimationLimit, upperEstimationLimit);
+    public ISymbolicDiscriminantFunctionClassificationModel CreateSymbolicDiscriminantFunctionClassificationModel(string targetVariable, ISymbolicExpressionTree tree, ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, double lowerEstimationLimit = double.MinValue, double upperEstimationLimit = double.MaxValue) {
+      return new SymbolicDiscriminantFunctionClassificationModel(targetVariable, tree, interpreter, new AccuracyMaximizationThresholdCalculator(), lowerEstimationLimit, upperEstimationLimit);
     }
 
   }

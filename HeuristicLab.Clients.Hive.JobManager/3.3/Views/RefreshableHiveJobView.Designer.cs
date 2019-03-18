@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -59,7 +59,6 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       this.logView = new HeuristicLab.Core.Views.LogView();
       this.startButton = new System.Windows.Forms.Button();
       this.stopButton = new System.Windows.Forms.Button();
-      this.resetButton = new System.Windows.Forms.Button();
       this.executionTimeLabel = new System.Windows.Forms.Label();
       this.executionTimeTextBox = new System.Windows.Forms.TextBox();
       this.pauseButton = new System.Windows.Forms.Button();
@@ -270,19 +269,6 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       this.stopButton.UseVisualStyleBackColor = true;
       this.stopButton.Click += new System.EventHandler(this.stopButton_Click);
       // 
-      // resetButton
-      // 
-      this.resetButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.resetButton.Enabled = false;
-      this.resetButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Restart;
-      this.resetButton.Location = new System.Drawing.Point(90, 536);
-      this.resetButton.Name = "resetButton";
-      this.resetButton.Size = new System.Drawing.Size(24, 24);
-      this.resetButton.TabIndex = 8;
-      this.toolTip.SetToolTip(this.resetButton, "Reset Experiment");
-      this.resetButton.UseVisualStyleBackColor = true;
-      this.resetButton.Click += new System.EventHandler(this.resetButton_Click);
-      // 
       // executionTimeLabel
       // 
       this.executionTimeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -485,7 +471,6 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       this.Controls.Add(this.pauseButton);
       this.Controls.Add(this.resourceIdsLabel);
       this.Controls.Add(this.stopButton);
-      this.Controls.Add(this.resetButton);
       this.Name = "RefreshableHiveJobView";
       this.Size = new System.Drawing.Size(717, 560);
       this.tabControl.ResumeLayout(false);
@@ -504,7 +489,6 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
 
     private System.Windows.Forms.Button startButton;
     private System.Windows.Forms.Button stopButton;
-    private System.Windows.Forms.Button resetButton;
     private System.Windows.Forms.Label executionTimeLabel;
     private System.Windows.Forms.TextBox executionTimeTextBox;
     private System.Windows.Forms.Button pauseButton;

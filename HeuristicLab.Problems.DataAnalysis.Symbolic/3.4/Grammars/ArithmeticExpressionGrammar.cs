@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -52,8 +52,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       constant.MinValue = -20;
       constant.MaxValue = 20;
       var variableSymbol = new HeuristicLab.Problems.DataAnalysis.Symbolic.Variable();
+      var binFactorVariableSymbol = new BinaryFactorVariable();
+      var factorVariableSymbol = new FactorVariable();
 
-      var allSymbols = new List<Symbol>() { add, sub, mul, div, constant, variableSymbol };
+      var allSymbols = new List<Symbol>() { add, sub, mul, div, constant, variableSymbol, binFactorVariableSymbol, factorVariableSymbol};
       var functionSymbols = new List<Symbol>() { add, sub, mul, div };
 
       foreach (var symb in allSymbols)
@@ -64,6 +66,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
       SetSubtreeCount(constant, 0, 0);
       SetSubtreeCount(variableSymbol, 0, 0);
+      SetSubtreeCount(binFactorVariableSymbol, 0, 0);
+      SetSubtreeCount(factorVariableSymbol, 0, 0);
 
       // allow each symbol as child of the start symbol
       foreach (var symb in allSymbols) {

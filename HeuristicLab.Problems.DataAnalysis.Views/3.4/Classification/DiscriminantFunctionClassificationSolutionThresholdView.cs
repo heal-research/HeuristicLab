@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -119,7 +119,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
           IEnumerator<string> classNameEnumerator = Content.ProblemData.ClassNames.GetEnumerator();
           IEnumerator<double> classValueEnumerator = Content.ProblemData.ClassValues.OrderBy(x => x).GetEnumerator();
           while (classNameEnumerator.MoveNext() && classValueEnumerator.MoveNext()) {
-            Series series = new Series(classNameEnumerator.Current);
+            Series series = new Series(Content.Model.TargetVariable + ": " + classNameEnumerator.Current);
             series.ChartType = SeriesChartType.FastPoint;
             series.Tag = classValueEnumerator.Current;
             chart.Series.Add(series);

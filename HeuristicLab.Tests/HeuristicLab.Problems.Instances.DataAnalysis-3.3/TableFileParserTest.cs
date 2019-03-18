@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,7 +20,10 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
+using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
@@ -44,7 +47,8 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual(parser.Values[3][0], 3.14);
-      } finally {
+      }
+      finally {
         File.Delete(tempFileName);
       }
     }
@@ -68,7 +72,8 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual(parser.Values[3][0], 3.14);
-      } finally {
+      }
+      finally {
         File.Delete(tempFileName);
       }
     }
@@ -91,7 +96,8 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual(parser.Values[3][0], 3.14);
-      } finally {
+      }
+      finally {
         File.Delete(tempFileName);
       }
     }
@@ -115,7 +121,8 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual(parser.Values[3][0], 3.14);
-      } finally {
+      }
+      finally {
         File.Delete(tempFileName);
       }
     }
@@ -138,7 +145,8 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual((double)parser.Values[3][0], 3);
-      } finally {
+      }
+      finally {
         File.Delete(tempFileName);
       }
     }
@@ -162,7 +170,8 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual((double)parser.Values[3][0], 3);
-      } finally {
+      }
+      finally {
         File.Delete(tempFileName);
       }
     }
@@ -185,7 +194,8 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual((double)parser.Values[3][0], 3);
-      } finally {
+      }
+      finally {
         File.Delete(tempFileName);
       }
     }
@@ -208,7 +218,8 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual((double)parser.Values[3][0], 3);
-      } finally {
+      }
+      finally {
         File.Delete(tempFileName);
       }
     }
@@ -232,7 +243,8 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual((double)parser.Values[3][0], 3);
-      } finally {
+      }
+      finally {
         File.Delete(tempFileName);
       }
     }
@@ -256,7 +268,8 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual((double)parser.Values[3][0], 3);
-      } finally {
+      }
+      finally {
         File.Delete(tempFileName);
       }
     }
@@ -280,7 +293,8 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual((double)parser.Values[3][0], 3.14);
-      } finally {
+      }
+      finally {
         File.Delete(tempFileName);
       }
     }
@@ -304,7 +318,8 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual((double)parser.Values[3][0], 3.14);
-      } finally {
+      }
+      finally {
         File.Delete(tempFileName);
       }
     }
@@ -327,7 +342,8 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual((double)parser.Values[3][0], 3.14);
-      } finally {
+      }
+      finally {
         File.Delete(tempFileName);
       }
     }
@@ -351,7 +367,8 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual((double)parser.Values[3][0], 3.14);
-      } finally {
+      }
+      finally {
         File.Delete(tempFileName);
       }
     }
@@ -374,7 +391,8 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual((double)parser.Values[3][0], 3);
-      } finally {
+      }
+      finally {
         File.Delete(tempFileName);
       }
     }
@@ -398,7 +416,8 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual((double)parser.Values[3][0], 3);
-      } finally {
+      }
+      finally {
         File.Delete(tempFileName);
       }
     }
@@ -421,7 +440,8 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
         parser.Parse(tempFileName, parser.AreColumnNamesInFirstLine(tempFileName));
         Assert.AreEqual(4, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
-      } finally {
+      }
+      finally {
         File.Delete(tempFileName);
       }
     }
@@ -444,7 +464,8 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual((double)parser.Values[3][0], 3.14);
-      } finally {
+      }
+      finally {
         File.Delete(tempFileName);
       }
     }
@@ -468,7 +489,8 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual((double)parser.Values[3][0], 3.14);
-      } finally {
+      }
+      finally {
         File.Delete(tempFileName);
       }
     }
@@ -491,7 +513,8 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual((double)parser.Values[3][0], 3.14);
-      } finally {
+      }
+      finally {
         File.Delete(tempFileName);
       }
     }
@@ -515,7 +538,8 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual((double)parser.Values[3][0], 3.14);
-      } finally {
+      }
+      finally {
         File.Delete(tempFileName);
       }
     }
@@ -536,7 +560,8 @@ c,3.0000,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
         parser.Parse(tempFileName, parser.AreColumnNamesInFirstLine(tempFileName));
         Assert.AreEqual(3, parser.Rows);
         Assert.AreEqual(4507, parser.Columns);
-      } finally {
+      }
+      finally {
         File.Delete(tempFileName);
       }
     }
@@ -559,7 +584,8 @@ c,3.0000,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual((double)parser.Values[3][0], 3);
-      } finally {
+      }
+      finally {
         File.Delete(tempFileName);
       }
     }
@@ -583,8 +609,323 @@ c,3.0000,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual((double)parser.Values[3][0], 3);
-      } finally {
+      }
+      finally {
         File.Delete(tempFileName);
+      }
+    }
+
+
+    [TestMethod]
+    [TestCategory("Problems.Instances")]
+    [TestProperty("Time", "short")]
+    public void ParseWithColumnTypeConversionDE() {
+      // If first entry of a column can be parsed as a double we assume all values are doubles.
+      // However, if any of the following entries cannot be parsed as a double we convert the whole column to a string column.
+      // Special care needs to be taken with missing values, NaN (n.def.) and infinity values.
+      // We only support DE-DE and InvariantCulture number formats
+      string tempFileName = Path.GetTempFileName();
+      var deCultureInfo = CultureInfo.GetCultureInfo("DE-DE");
+      WriteToFile(tempFileName,
+      "str\tdbl\tdbl\tdbl" + Environment.NewLine +
+      "1,3\t1,3\t0\t3" + Environment.NewLine +
+      "1,3\t\t0\t0" + Environment.NewLine +
+      "s\t" + double.NaN.ToString(deCultureInfo) + "\t0\t0" + Environment.NewLine + // double.NaN might have a different string representation on different systems (even when using the same CultureInfo)
+      "s\t" + double.PositiveInfinity.ToString(deCultureInfo) + "\t0\t0" + Environment.NewLine +
+      "s\t" + double.NegativeInfinity.ToString(deCultureInfo) + "\t0\t0" + Environment.NewLine +
+      "s\t0\t0\t0");
+      TableFileParser parser = new TableFileParser();
+      try {
+        parser.Parse(tempFileName,
+          deCultureInfo.NumberFormat,
+          deCultureInfo.DateTimeFormat,
+          '\t',
+          true);
+        Assert.AreEqual(6, parser.Rows);
+        Assert.AreEqual(4, parser.Columns);
+        Assert.IsTrue(parser.Values[0] is List<string>);
+        Assert.IsTrue(parser.Values[1] is List<double>);
+        Assert.IsTrue(parser.Values[2] is List<double>);
+        Assert.IsTrue(parser.Values[3] is List<double>);
+        Assert.IsTrue(double.IsNaN((double)parser.Values[1][1])); // missing value
+        Assert.IsTrue(double.IsNaN((double)parser.Values[1][2]));
+        Assert.IsTrue(double.IsPositiveInfinity((double)parser.Values[1][3])); // NOTE: in DE-DE NumberFormat just "unendlich" is not allowed (compare with InvariantCulture)
+        Assert.IsTrue(double.IsNegativeInfinity((double)parser.Values[1][4]));
+      }
+      finally {
+        File.Delete(tempFileName);
+      }
+    }
+
+    [TestMethod]
+    [TestCategory("Problems.Instances")]
+    [TestProperty("Time", "short")]
+    public void ParseWithColumnTypeConversionInvariant() {
+      // see ParseWithColumnTypeConversionDE above
+      // same routine only using invariant culture
+      string tempFileName = Path.GetTempFileName();
+      WriteToFile(tempFileName,
+      @"str,dbl,dbl,dbl
+1.3,1.3,0,3
+1.3,,0,0
+s,NaN,0,0
+s,Infinity,0,0
+s,-Infinity,0,0
+s,0,0,0");
+      TableFileParser parser = new TableFileParser();
+      try {
+        parser.Parse(tempFileName,
+          CultureInfo.InvariantCulture.NumberFormat,
+          CultureInfo.InvariantCulture.DateTimeFormat,
+          ',',
+          parser.AreColumnNamesInFirstLine(tempFileName));
+        Assert.AreEqual(6, parser.Rows);
+        Assert.AreEqual(4, parser.Columns);
+        Assert.IsTrue(parser.Values[0] is List<string>);
+        Assert.IsTrue(parser.Values[1] is List<double>);
+        Assert.IsTrue(parser.Values[2] is List<double>);
+        Assert.IsTrue(parser.Values[3] is List<double>);
+        Assert.IsTrue(double.IsNaN((double)parser.Values[1][1])); // missing value
+        Assert.IsTrue(double.IsNaN((double)parser.Values[1][2]));
+        Assert.IsTrue(double.IsPositiveInfinity((double)parser.Values[1][3])); // NOTE: in InvariantCulture +Infinity is not allowed (compare with DE-DE)
+        Assert.IsTrue(double.IsNegativeInfinity((double)parser.Values[1][4]));
+      }
+      finally {
+        File.Delete(tempFileName);
+      }
+    }
+
+
+    [TestMethod]
+    [TestCategory("Problems.Instances")]
+    [TestProperty("Time", "short")]
+    public void ParseWithTypeConversion() {
+      // the parser tries to determine the column type (double, datetime, string) by looking at the values in the first few rows
+      // if the values are of a different type then the type of the column is converted
+      {
+        // case 1 
+        // default for values is double and therefore a column with all missing values should be List<double> and contain NaN
+        var tmpFileName = Path.GetTempFileName();
+        WriteToFile(tmpFileName,
+          @"stringCol,note
+,missing val
+3.14,double
+");
+
+        TableFileParser parser = new TableFileParser();
+        try {
+          parser.Parse(tmpFileName,
+            CultureInfo.InvariantCulture.NumberFormat,
+            CultureInfo.InvariantCulture.DateTimeFormat,
+            separator: ',', columnNamesInFirstLine: true);
+          Assert.IsTrue(parser.Values[0] is List<double>);
+          Assert.AreEqual(double.NaN, parser.Values[0][0]);
+          Assert.AreEqual(3.14, parser.Values[0][1]);
+        }
+        finally {
+          File.Delete(tmpFileName);
+        }
+
+      }
+
+      {
+        // case 2
+        // 'The first missing values are replaced with double.NaN while the last ones with string.Empty.'
+
+        var tmpFileName = Path.GetTempFileName();
+        WriteToFile(tmpFileName,
+          @"stringCol,note
+,missing val
+3.14,
+,missing val
+str,a string --> column is converted to List<string>
+,missing val
+");
+
+        TableFileParser parser = new TableFileParser();
+        try {
+          parser.Parse(tmpFileName,
+            CultureInfo.InvariantCulture.NumberFormat,
+            CultureInfo.InvariantCulture.DateTimeFormat,
+            separator: ',', columnNamesInFirstLine: true);
+          Assert.IsTrue(parser.Values[0] is List<string>);
+          Assert.AreEqual(string.Empty, parser.Values[0][0]);
+          Assert.AreEqual("3.14", parser.Values[0][1]);
+          Assert.AreEqual(string.Empty, parser.Values[0][2]);
+          Assert.AreEqual("str", parser.Values[0][3]);
+          Assert.AreEqual(string.Empty, parser.Values[0][4]);
+        }
+        finally {
+          File.Delete(tmpFileName);
+        }
+      }
+
+      {
+        // case 3
+        // DateTime conversion to strings
+        var tmpFileName = Path.GetTempFileName();
+        WriteToFile(tmpFileName,
+          @"stringCol,note
+,missing val
+3.1.2016,
+,missing val
+str,a string --> column is converted to List<string>
+,missing val
+");
+
+        TableFileParser parser = new TableFileParser();
+        try {
+          parser.Parse(tmpFileName,
+            CultureInfo.InvariantCulture.NumberFormat,
+            CultureInfo.InvariantCulture.DateTimeFormat,
+            separator: ',', columnNamesInFirstLine: true);
+          Assert.IsTrue(parser.Values[0] is List<string>);
+          Assert.AreEqual(string.Empty, parser.Values[0][0]);
+          Assert.AreEqual("3.1.2016", parser.Values[0][1]);
+          Assert.AreEqual(string.Empty, parser.Values[0][2]);
+          Assert.AreEqual("str", parser.Values[0][3]);
+          Assert.AreEqual(string.Empty, parser.Values[0][4]);
+        }
+        finally {
+          File.Delete(tmpFileName);
+        }
+      }
+    }
+
+    [TestMethod]
+    [TestCategory("Problems.Instances")]
+    [TestProperty("Time", "short")]
+    public void ParseDateTime() {
+      {
+        // case 1 dates and datetimes should be parsed as datetime column
+        var tmpFileName = Path.GetTempFileName();
+        WriteToFile(tmpFileName,
+          @"stringCol,note
+19.6.2016,date
+19.6.2016 8:15,datetime 
+");
+
+        TableFileParser parser = new TableFileParser();
+        try {
+          parser.Parse(tmpFileName,
+            CultureInfo.GetCultureInfo("de-de").NumberFormat,
+            CultureInfo.GetCultureInfo("de-de").DateTimeFormat,
+            separator: ',', columnNamesInFirstLine: true);
+          Assert.IsTrue(parser.Values[0] is List<DateTime>);
+          Assert.AreEqual(new DateTime(2016, 6, 19), parser.Values[0][0]);
+          Assert.AreEqual(new DateTime(2016, 6, 19, 8, 15, 0), parser.Values[0][1]);
+
+          WriteToFile(tmpFileName,
+            @"stringCol,note
+2016/6/19,date
+2016/6/19 8:15,datetime 
+");
+
+          parser.Parse(tmpFileName,
+            CultureInfo.InvariantCulture.NumberFormat,
+            CultureInfo.InvariantCulture.DateTimeFormat,
+            separator: ',', columnNamesInFirstLine: true);
+          Assert.IsTrue(parser.Values[0] is List<DateTime>);
+          Assert.AreEqual(new DateTime(2016, 6, 19), parser.Values[0][0]);
+          Assert.AreEqual(new DateTime(2016, 6, 19, 8, 15, 0), parser.Values[0][1]);
+        }
+
+        finally {
+          File.Delete(tmpFileName);
+        }
+      }
+
+      {
+        // case 2 never parse time values as datetimes
+        var tmpFileName = Path.GetTempFileName();
+        WriteToFile(tmpFileName,
+          @"stringCol,note
+8:15,time value
+9:40,time value
+");
+
+        TableFileParser parser = new TableFileParser();
+        try {
+          parser.Parse(tmpFileName,
+            CultureInfo.InvariantCulture.NumberFormat,
+            CultureInfo.InvariantCulture.DateTimeFormat,
+            separator: ',', columnNamesInFirstLine: true);
+          Assert.IsTrue(parser.Values[0] is List<string>); // time values should be parsed as strings
+          Assert.AreEqual("8:15", parser.Values[0][0]);
+          Assert.AreEqual("9:40", parser.Values[0][1]);
+        }
+        finally {
+          File.Delete(tmpFileName);
+        }
+      }
+    }
+
+
+
+    [TestMethod]
+    [TestCategory("Problems.Instances")]
+    [TestProperty("Time", "short")]
+    public void CheckTypeConversionAndLongFiles() {
+      {
+        // case 1 incorrect input after 500 rows should lead to exceptions
+        var tmpFileName = Path.GetTempFileName();
+        // create input data
+        var sb = new StringBuilder();
+        sb.AppendLine("col1,col2");
+        for (int r = 0; r < 2000; r++) {
+          sb.AppendLine("3.15, 3.15");
+        }
+        // add a row with only one input value
+        sb.AppendLine("3.15");
+
+        WriteToFile(tmpFileName, sb.ToString());
+
+        TableFileParser parser = new TableFileParser();
+        try {
+          parser.Parse(tmpFileName,
+            CultureInfo.InvariantCulture.NumberFormat,
+            CultureInfo.InvariantCulture.DateTimeFormat,
+            separator: ',', columnNamesInFirstLine: true);
+          // Parse should fail with an exception
+          Assert.Fail("expected exception TableFileParser.DataFormatException");
+        }
+        catch (IOException) {
+          // ignore the expected exception
+        }
+
+        finally {
+          File.Delete(tmpFileName);
+        }
+      }
+      {
+        // case 2
+        var tmpFileName = Path.GetTempFileName();
+        // create input data
+        var sb = new StringBuilder();
+        sb.AppendLine("doubleCol,stringCol");
+        for (int r = 0; r < 2000; r++) {
+          sb.AppendLine("3.15, 3.15");
+        }
+        // add a row with a string value --> the column should be converted to string
+        sb.AppendLine("3.15,str");
+
+        WriteToFile(tmpFileName, sb.ToString());
+
+        TableFileParser parser = new TableFileParser();
+        try {
+          parser.Parse(tmpFileName,
+            CultureInfo.InvariantCulture.NumberFormat,
+            CultureInfo.InvariantCulture.DateTimeFormat,
+            separator: ',', columnNamesInFirstLine: true);
+          Assert.IsTrue(parser.Values[0] is List<double>);
+          Assert.IsTrue(parser.Values[1] is List<string>);
+          Assert.AreEqual(parser.Values[1][0], "3.15");
+          Assert.AreEqual(parser.Values[1][2000], "str");
+        }
+
+        finally {
+          File.Delete(tmpFileName);
+        }
       }
     }
 

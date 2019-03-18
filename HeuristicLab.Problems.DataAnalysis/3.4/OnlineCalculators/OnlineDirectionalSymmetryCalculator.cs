@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,7 +25,7 @@ using HeuristicLab.Common;
 
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  public class OnlineDirectionalSymmetryCalculator : IOnlineTimeSeriesCalculator {
+  public class OnlineDirectionalSymmetryCalculator : DeepCloneable, IOnlineTimeSeriesCalculator {
     private int n;
     private int nCorrect;
 
@@ -38,6 +38,17 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public OnlineDirectionalSymmetryCalculator() {
       Reset();
+    }
+
+    protected OnlineDirectionalSymmetryCalculator(OnlineDirectionalSymmetryCalculator original, Cloner cloner = null)
+      : base(original, cloner) {
+      n = original.n;
+      nCorrect = original.nCorrect;
+      errorState = original.errorState;
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new OnlineDirectionalSymmetryCalculator(this, cloner);
     }
 
     public double Value {
@@ -93,7 +104,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       errorState = dsCalculator.ErrorState;
       return dsCalculator.DirectionalSymmetry;
     }
-    
+
     public static double Calculate(IEnumerable<double> startValues, IEnumerable<IEnumerable<double>> actualContinuations, IEnumerable<IEnumerable<double>> predictedContinuations, out OnlineCalculatorError errorState) {
       IEnumerator<double> startValueEnumerator = startValues.GetEnumerator();
       IEnumerator<IEnumerable<double>> actualContinuationsEnumerator = actualContinuations.GetEnumerator();

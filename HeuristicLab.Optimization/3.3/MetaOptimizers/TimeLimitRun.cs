@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
@@ -237,7 +238,14 @@ namespace HeuristicLab.Optimization {
       Algorithm.Prepare(clearRuns);
     }
     public void Start() {
-      Algorithm.Start();
+      Start(CancellationToken.None);
+    }
+    public void Start(CancellationToken cancellationToken) {
+      Algorithm.Start(cancellationToken);
+    }
+    public async Task StartAsync() { await StartAsync(CancellationToken.None); }
+    public async Task StartAsync(CancellationToken cancellationToken) {
+      await AsyncHelper.DoAsync(Start, cancellationToken);
     }
     public void Pause() {
       Algorithm.Pause();

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -38,7 +38,7 @@ namespace HeuristicLab.Algorithms.NSGA2 {
   /// The Nondominated Sorting Genetic Algorithm II was introduced in Deb et al. 2002. A Fast and Elitist Multiobjective Genetic Algorithm: NSGA-II. IEEE Transactions on Evolutionary Computation, 6(2), pp. 182-197.
   /// </summary>
   [Item("NSGA-II", "The Nondominated Sorting Genetic Algorithm II was introduced in Deb et al. 2002. A Fast and Elitist Multiobjective Genetic Algorithm: NSGA-II. IEEE Transactions on Evolutionary Computation, 6(2), pp. 182-197.")]
-  [Creatable(CreatableAttribute.Categories.Algorithms, Priority = 100)]
+  [Creatable(CreatableAttribute.Categories.PopulationBasedAlgorithms, Priority = 135)]
   [StorableClass]
   public class NSGA2 : HeuristicOptimizationEngineAlgorithm, IStorableContent {
     public string Filename { get; set; }
@@ -175,7 +175,7 @@ namespace HeuristicLab.Algorithms.NSGA2 {
       Parameters.Add(new ValueParameter<PercentValue>("CrossoverProbability", "The probability that the crossover operator is applied on two parents.", new PercentValue(0.9)));
       Parameters.Add(new ConstrainedValueParameter<ICrossover>("Crossover", "The operator used to cross solutions."));
       Parameters.Add(new ValueParameter<PercentValue>("MutationProbability", "The probability that the mutation operator is applied on a solution.", new PercentValue(0.05)));
-      Parameters.Add(new OptionalConstrainedValueParameter<IManipulator>("Mutator", "The operator used to mutate solutions."));
+      Parameters.Add(new ConstrainedValueParameter<IManipulator>("Mutator", "The operator used to mutate solutions."));
       Parameters.Add(new ValueParameter<MultiAnalyzer>("Analyzer", "The operator used to analyze each generation.", new MultiAnalyzer()));
       Parameters.Add(new ValueParameter<IntValue>("MaximumGenerations", "The maximum number of generations which should be processed.", new IntValue(1000)));
       Parameters.Add(new ValueParameter<IntValue>("SelectedParents", "Each two parents form a new child, typically this value should be twice the population size, but because the NSGA-II is maximally elitist it can be any multiple of 2 greater than 0.", new IntValue(200)));
@@ -325,6 +325,16 @@ namespace HeuristicLab.Algorithms.NSGA2 {
       #region Backwards compatible code, remove with 3.4
       if (!Parameters.ContainsKey("DominateOnEqualQualities"))
         Parameters.Add(new FixedValueParameter<BoolValue>("DominateOnEqualQualities", "Flag which determines wether solutions with equal quality values should be treated as dominated.", new BoolValue(false)));
+      var optionalMutatorParameter = MutatorParameter as OptionalConstrainedValueParameter<IManipulator>;
+      if (optionalMutatorParameter != null) {
+        Parameters.Remove(optionalMutatorParameter);
+        Parameters.Add(new ConstrainedValueParameter<IManipulator>("Mutator", "The operator used to mutate solutions."));
+        foreach (var m in optionalMutatorParameter.ValidValues)
+          MutatorParameter.ValidValues.Add(m);
+        if (optionalMutatorParameter.Value == null) MutationProbability.Value = 0; // to guarantee that the old configuration results in the same behavior
+        else Mutator = optionalMutatorParameter.Value;
+        optionalMutatorParameter.ValidValues.Clear(); // to avoid dangling references to the old parameter its valid values are cleared
+      }
       #endregion
 
       PopulationSizeParameter.ValueChanged += new EventHandler(PopulationSizeParameter_ValueChanged);
@@ -396,12 +406,16 @@ namespace HeuristicLab.Algorithms.NSGA2 {
     private void UpdateMutators() {
       IManipulator oldMutator = MutatorParameter.Value;
       MutatorParameter.ValidValues.Clear();
+      IManipulator defaultMutator = Problem.Operators.OfType<IManipulator>().FirstOrDefault();
       foreach (IManipulator mutator in Problem.Operators.OfType<IManipulator>().OrderBy(x => x.Name))
         MutatorParameter.ValidValues.Add(mutator);
       if (oldMutator != null) {
         IManipulator mutator = MutatorParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldMutator.GetType());
         if (mutator != null) MutatorParameter.Value = mutator;
+        else oldMutator = null;
       }
+      if (oldMutator == null && defaultMutator != null)
+        MutatorParameter.Value = defaultMutator;
     }
     private void UpdateAnalyzers() {
       Analyzer.Operators.Clear();

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,7 +24,7 @@ using System.Collections.Generic;
 using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  public class OnlineAccuracyCalculator : IOnlineCalculator {
+  public class OnlineAccuracyCalculator : DeepCloneable, IOnlineCalculator {
 
     private int correctlyClassified;
     private int n;
@@ -37,6 +37,18 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public OnlineAccuracyCalculator() {
       Reset();
     }
+
+    protected OnlineAccuracyCalculator(OnlineAccuracyCalculator original, Cloner cloner)
+      : base(original, cloner) {
+      correctlyClassified = original.correctlyClassified;
+      n = original.n;
+      errorState = original.errorState;
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new OnlineAccuracyCalculator(this, cloner);
+    }
+
 
     #region IOnlineCalculator Members
     private OnlineCalculatorError errorState;
@@ -89,5 +101,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
         return accuracyCalculator.Accuracy;
       }
     }
+
   }
 }

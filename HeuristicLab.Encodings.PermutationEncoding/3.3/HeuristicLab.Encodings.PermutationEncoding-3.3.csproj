@@ -209,6 +209,7 @@
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ShakingOperators\PermutationShakingOperator.cs" />
+    <Compile Include="SimilarityCalculators\HammingSimilarityCalculator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />

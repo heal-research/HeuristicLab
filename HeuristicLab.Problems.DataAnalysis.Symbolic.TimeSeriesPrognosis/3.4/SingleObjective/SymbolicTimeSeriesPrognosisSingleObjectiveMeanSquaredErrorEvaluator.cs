@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -71,7 +71,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis {
         errorState = mseCalculator.ErrorState;
         mse = mseCalculator.MeanSquaredError;
       } else if (applyLinearScaling) { //first create model to perform linear scaling and afterwards calculate fitness for the scaled model
-        var model = new SymbolicTimeSeriesPrognosisModel((ISymbolicExpressionTree)solution.Clone(), interpreter, lowerEstimationLimit, upperEstimationLimit);
+        var model = new SymbolicTimeSeriesPrognosisModel(problemData.TargetVariable, (ISymbolicExpressionTree)solution.Clone(), interpreter, lowerEstimationLimit, upperEstimationLimit);
         model.Scale(problemData);
         var scaledSolution = model.SymbolicExpressionTree;
         estimatedValues = interpreter.GetSymbolicExpressionTreeValues(scaledSolution, problemData.Dataset, rows, horizions).SelectMany(x => x);

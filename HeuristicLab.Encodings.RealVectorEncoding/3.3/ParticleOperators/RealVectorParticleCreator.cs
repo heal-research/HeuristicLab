@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,17 +19,22 @@
  */
 #endregion
 
+using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
+using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   [Item("RealVectorParticleCreator", "Creates a particle with position, zero velocity vector and personal best.")]
   [StorableClass]
-  public class RealVectorParticleCreator : AlgorithmOperator, IRealVectorParticleCreator {
+  [NonDiscoverableType]
+  [Obsolete("Use SPSOParticleCreator")]
+  internal class RealVectorParticleCreator : AlgorithmOperator, IRealVectorParticleCreator {
 
     #region Parameters
     public ILookupParameter<IntValue> ProblemSizeParameter {
@@ -46,6 +51,9 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     }
     public ILookupParameter<RealVector> VelocityParameter {
       get { return (ILookupParameter<RealVector>)Parameters["Velocity"]; }
+    }
+    public ILookupParameter<ISolutionCreator> SolutionCreatorParameter {
+      get { return (ILookupParameter<ISolutionCreator>)Parameters["SolutionCreator"]; }
     }
     #endregion
 
@@ -69,6 +77,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       Parameters.Add(new LookupParameter<RealVector>("RealVector", "Particle's current solution"));
       Parameters.Add(new LookupParameter<RealVector>("PersonalBest", "Particle's personal best solution."));
       Parameters.Add(new LookupParameter<RealVector>("Velocity", "Particle's current velocity."));
+      Parameters.Add(new LookupParameter<ISolutionCreator>("SolutionCreator", "The operator that creates the initial position."));
 
       UniformRandomRealVectorCreator realVectorCreater = new UniformRandomRealVectorCreator();
       Assigner personalBestPositionAssigner = new Assigner();
@@ -93,7 +102,11 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       Velocity = new RealVector(ProblemSize);
       return base.Apply();
     }
-
-
+    
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      if (!Parameters.ContainsKey("SolutionCreator"))
+        Parameters.Add(new LookupParameter<ISolutionCreator>("SolutionCreator", "The operator that creates the initial position."));
+    }
   }
 }

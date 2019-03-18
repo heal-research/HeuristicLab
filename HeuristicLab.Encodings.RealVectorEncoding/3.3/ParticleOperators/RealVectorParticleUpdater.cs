@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,12 +26,15 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
 
   [Item("RealVectorParticleUpdater", "Updates a certain particle taking the current position and velocity into account, as well as the best point and the best point in a local neighborhood.")]
   [StorableClass]
-  public abstract class RealVectorParticleUpdater : SingleSuccessorOperator, IRealVectorParticleUpdater {
+  [NonDiscoverableType]
+  [Obsolete("Use SPSO2011ParticleUpdater")]
+  internal abstract class RealVectorParticleUpdater : SingleSuccessorOperator, IRealVectorParticleUpdater {
 
     public override bool CanChangeName {
       get { return false; }
@@ -61,6 +64,9 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     }
     public ILookupParameter<DoubleMatrix> CurrentVelocityBoundsParameter {
       get { return (ILookupParameter<DoubleMatrix>)Parameters["CurrentVelocityBounds"]; }
+    }
+    public ILookupParameter<DoubleValue> CurrentMaxVelocityParameter {
+      get { return (ILookupParameter<DoubleValue>)Parameters["CurrentMaxVelocity"]; }
     }
     public ILookupParameter<DoubleValue> InertiaParameter {
       get { return (ILookupParameter<DoubleValue>)Parameters["CurrentInertia"]; }
@@ -125,11 +131,18 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       Parameters.Add(new LookupParameter<RealVector>("NeighborBest", "Best neighboring solution."));
       Parameters.Add(new ValueLookupParameter<DoubleMatrix>("Bounds", "The lower and upper bounds for each dimension of the position vector for the current problem."));
       Parameters.Add(new LookupParameter<DoubleMatrix>("CurrentVelocityBounds", "Upper and lower bounds for the particle's velocity vector."));
+      Parameters.Add(new LookupParameter<DoubleValue>("CurrentMaxVelocity", "Maximum for the particle's velocity vector."));
       Parameters.Add(new LookupParameter<DoubleValue>("CurrentInertia", "The weight for the particle's velocity vector."));
       Parameters.Add(new LookupParameter<DoubleValue>("PersonalBestAttraction", "The weight for the particle's personal best position."));
       Parameters.Add(new LookupParameter<DoubleValue>("NeighborBestAttraction", "The weight for the global best position."));
     }
     #endregion
+    
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      if (!Parameters.ContainsKey("CurrentMaxVelocity"))
+        Parameters.Add(new LookupParameter<DoubleValue>("CurrentMaxVelocity", "Maximum for the particle's velocity vector."));
+    }
 
     protected void MoveParticle(RealVector velocity, RealVector position) {
       BoundsChecker.Apply(velocity, CurrentVelocityBounds);

@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -130,25 +130,22 @@ namespace HeuristicLab.Data.Views {
       columnsTextBox.Enabled = true;
       virtualRowIndices = Enumerable.Range(0, Content.Rows).ToArray();
 
-      if (Content.Columns == 0 && dataGridView.ColumnCount != Content.Columns && !Content.ReadOnly)
-        Content.Columns = dataGridView.ColumnCount;
-      else {
-        DataGridViewColumn[] columns = new DataGridViewColumn[Content.Columns];
-        for (int i = 0; i < columns.Length; ++i) {
-          var column = new DataGridViewTextBoxColumn();
-          column.FillWeight = 1;
-          columns[i] = column;
-        }
-        dataGridView.Columns.Clear();
-        dataGridView.Columns.AddRange(columns);
+
+      dataGridView.RowCount = 0;
+
+      DataGridViewColumn[] columns = new DataGridViewColumn[Content.Columns];
+      for (int i = 0; i < columns.Length; ++i) {
+        var column = new DataGridViewTextBoxColumn();
+        column.SortMode = DataGridViewColumnSortMode.Programmatic;
+        column.FillWeight = 1;
+        columns[i] = column;
       }
+      dataGridView.Columns.Clear();
 
-      //DataGridViews with rows but no columns are not allowed !
-      if (Content.Rows == 0 && dataGridView.RowCount != Content.Rows && !Content.ReadOnly)
-        Content.Rows = dataGridView.RowCount;
-      else
+      if (Content.Columns != 0) {
+        dataGridView.Columns.AddRange(columns);
         dataGridView.RowCount = Content.Rows;
-
+      }
 
       ClearSorting();
       UpdateColumnHeaders();
@@ -159,7 +156,7 @@ namespace HeuristicLab.Data.Views {
       dataGridView.Enabled = true;
     }
 
-    protected virtual void UpdateColumnHeaders() {
+    public virtual void UpdateColumnHeaders() {
       HashSet<string> invisibleColumnNames = new HashSet<string>(dataGridView.Columns.OfType<DataGridViewColumn>()
       .Where(c => !c.Visible && !string.IsNullOrEmpty(c.HeaderText)).Select(c => c.HeaderText));
 
@@ -171,7 +168,7 @@ namespace HeuristicLab.Data.Views {
         dataGridView.Columns[i].Visible = !invisibleColumnNames.Contains(dataGridView.Columns[i].HeaderText);
       }
     }
-    protected virtual void UpdateRowHeaders() {
+    public virtual void UpdateRowHeaders() {
       int index = dataGridView.FirstDisplayedScrollingRowIndex;
       if (index == -1) index = 0;
       int updatedRows = 0;
@@ -261,15 +258,19 @@ namespace HeuristicLab.Data.Views {
     #endregion
 
     #region DataGridView Events
+
     protected virtual void dataGridView_CellValidating(object sender, DataGridViewCellValidatingEventArgs e) {
-      if (!dataGridView.ReadOnly) {
-        string errorMessage;
-        if (Content != null && !Content.Validate(e.FormattedValue.ToString(), out errorMessage)) {
-          e.Cancel = true;
-          dataGridView.Rows[e.RowIndex].ErrorText = errorMessage;
-        }
+      if (dataGridView.ReadOnly) return;
+      if (Content == null) return;
+      if (Content.Rows <= e.RowIndex || Content.Columns <= e.ColumnIndex) return;
+
+      string errorMessage;
+      if (!Content.Validate(e.FormattedValue.ToString(), out errorMessage)) {
+        e.Cancel = true;
+        dataGridView.Rows[e.RowIndex].ErrorText = errorMessage;
       }
     }
+
     protected virtual void dataGridView_CellParsing(object sender, DataGridViewCellParsingEventArgs e) {
       if (!dataGridView.ReadOnly) {
         string value = e.Value.ToString();
@@ -439,7 +440,7 @@ namespace HeuristicLab.Data.Views {
           sortedColumnIndices.RemoveAt(sortedIndex);
       } else
         if (newSortOrder != SortOrder.None)
-          sortedColumnIndices.Add(new KeyValuePair<int, SortOrder>(columnIndex, newSortOrder));
+        sortedColumnIndices.Add(new KeyValuePair<int, SortOrder>(columnIndex, newSortOrder));
       Sort();
     }
 

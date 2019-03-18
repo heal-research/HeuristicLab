@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,15 +19,15 @@
  */
 #endregion
 
-using HeuristicLab.Collections;
-using HeuristicLab.Core.Views;
-using HeuristicLab.MainForm;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
+using HeuristicLab.Collections;
+using HeuristicLab.Core.Views;
+using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Analysis.Views {
   [View("DataTable View")]
@@ -35,10 +35,21 @@ namespace HeuristicLab.Analysis.Views {
   public partial class DataTableView : NamedItemView, IConfigureableView {
     protected List<Series> invisibleSeries;
     protected Dictionary<IObservableList<double>, DataRow> valuesRowsTable;
+    protected bool showChartOnly = false;
 
     public new DataTable Content {
       get { return (DataTable)base.Content; }
       set { base.Content = value; }
+    }
+
+    public bool ShowChartOnly {
+      get { return showChartOnly; }
+      set {
+        if (showChartOnly != value) {
+          showChartOnly = value;
+          UpdateControlsVisibility();
+        }
+      }
     }
 
     public DataTableView() {
@@ -47,6 +58,7 @@ namespace HeuristicLab.Analysis.Views {
       invisibleSeries = new List<Series>();
       chart.CustomizeAllChartAreas();
       chart.ChartAreas[0].CursorX.Interval = 1;
+      chart.ContextMenuStrip.Items.Add(configureToolStripMenuItem);
     }
 
     #region Event Handler Registration
@@ -101,6 +113,7 @@ namespace HeuristicLab.Analysis.Views {
       chart.Series.Clear();
       if (Content != null) {
         chart.Titles[0].Text = Content.Name;
+        chart.Titles[0].Visible = !string.IsNullOrEmpty(Content.Name);
         AddDataRows(Content.Rows);
         ConfigureChartArea(chart.ChartAreas[0]);
         RecalculateAxesScale(chart.ChartAreas[0]);
@@ -119,10 +132,25 @@ namespace HeuristicLab.Analysis.Views {
         }
       } else MessageBox.Show("Nothing to configure.");
     }
+
+    protected void UpdateControlsVisibility() {
+      if (InvokeRequired)
+        Invoke(new Action(UpdateControlsVisibility));
+      else {
+        foreach (Control c in Controls) {
+          if (c == chart) continue;
+          c.Visible = !showChartOnly;
+        }
+        chart.Dock = showChartOnly ? DockStyle.Fill : DockStyle.None;
+      }
+    }
+
     protected virtual void AddDataRows(IEnumerable<DataRow> rows) {
       foreach (var row in rows) {
         RegisterDataRowEvents(row);
-        var series = new Series(row.Name);
+        var series = new Series(row.Name) {
+          Tag = row
+        };
         if (row.VisualProperties.DisplayName.Trim() != String.Empty) series.LegendText = row.VisualProperties.DisplayName;
         else series.LegendText = row.Name;
         ConfigureSeries(series, row);
@@ -132,6 +160,7 @@ namespace HeuristicLab.Analysis.Views {
       ConfigureChartArea(chart.ChartAreas[0]);
       RecalculateAxesScale(chart.ChartAreas[0]);
       UpdateYCursorInterval();
+      UpdateHistogramTransparency();
     }
 
     protected virtual void RemoveDataRows(IEnumerable<DataRow> rows) {
@@ -178,7 +207,10 @@ namespace HeuristicLab.Analysis.Views {
           series.ChartType = SeriesChartType.FastPoint;
           break;
         case DataRowVisualProperties.DataRowChartType.Histogram:
-          series.ChartType = SeriesChartType.Column;
+          bool stacked = Content.VisualProperties.HistogramAggregation == DataTableVisualProperties.DataTableHistogramAggregation.Stacked;
+          series.ChartType = stacked ? SeriesChartType.StackedColumn : SeriesChartType.Column;
+          bool sideBySide = Content.VisualProperties.HistogramAggregation == DataTableVisualProperties.DataTableHistogramAggregation.SideBySide;
+          series.SetCustomProperty("DrawSideBySide", sideBySide ? "True" : "False");
           series.SetCustomProperty("PointWidth", "1");
           if (!series.Color.IsEmpty && series.Color.GetBrightness() < 0.25)
             series.BorderColor = Color.White;
@@ -214,6 +246,7 @@ namespace HeuristicLab.Analysis.Views {
       if (Content.VisualProperties.TitleFont != null) chart.Titles[0].Font = Content.VisualProperties.TitleFont;
       if (!Content.VisualProperties.TitleColor.IsEmpty) chart.Titles[0].ForeColor = Content.VisualProperties.TitleColor;
       chart.Titles[0].Text = Content.VisualProperties.Title;
+      chart.Titles[0].Visible = !string.IsNullOrEmpty(Content.VisualProperties.Title);
 
       if (Content.VisualProperties.AxisTitleFont != null) area.AxisX.TitleFont = Content.VisualProperties.AxisTitleFont;
       if (!Content.VisualProperties.AxisTitleColor.IsEmpty) area.AxisX.TitleForeColor = Content.VisualProperties.AxisTitleColor;
@@ -278,13 +311,36 @@ namespace HeuristicLab.Analysis.Views {
       this.chart.ChartAreas[0].CursorY.Interval = yZoomInterval;
     }
 
+    protected void UpdateHistogramTransparency() {
+      if (Content.Rows.Any(r => RequiresTransparency(r) && r.VisualProperties.Color.IsEmpty)) {
+        foreach (var series in chart.Series) // sync colors before applying palette colors
+          series.Color = ((DataRow)series.Tag).VisualProperties.Color;
+        chart.ApplyPaletteColors();
+      }
+
+      var numTransparent = Content.Rows.Count(RequiresTransparency);
+      if (numTransparent <= 1) return;
+      foreach (var series in chart.Series) {
+        var row = (DataRow)series.Tag;
+        if (!RequiresTransparency(row))
+          continue;
+        var baseColor = row.VisualProperties.Color;
+        if (baseColor.IsEmpty) baseColor = series.Color;
+        series.Color = Color.FromArgb(180, baseColor);
+      }
+    }
+    private bool RequiresTransparency(DataRow row) {
+      return row.VisualProperties.ChartType == DataRowVisualProperties.DataRowChartType.Histogram
+             && Content.VisualProperties.HistogramAggregation == DataTableVisualProperties.DataTableHistogramAggregation.Overlapping;
+    }
+
     #region Event Handlers
     #region Content Event Handlers
     protected override void Content_NameChanged(object sender, EventArgs e) {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_NameChanged), sender, e);
       else {
-        chart.Titles[0].Text = Content.Name;
+        Content.VisualProperties.Title = Content.Name;
         base.Content_NameChanged(sender, e);
       }
     }
@@ -294,6 +350,11 @@ namespace HeuristicLab.Analysis.Views {
       else {
         ConfigureChartArea(chart.ChartAreas[0]);
         RecalculateAxesScale(chart.ChartAreas[0]); // axes min/max could have changed
+
+        chart.Update(); // side-by-side and stacked histograms are not always correctly displayed without an update
+        // (chart update is required before the series are updated, otherwise the widths of the bars are updated incorrectly)
+        foreach (var row in Content.Rows.Where(r => r.VisualProperties.ChartType == DataRowVisualProperties.DataRowChartType.Histogram))
+          Row_VisualPropertiesChanged(row, EventArgs.Empty); // Histogram properties could have changed
       }
     }
     #endregion
@@ -336,10 +397,13 @@ namespace HeuristicLab.Analysis.Views {
       else {
         DataRow row = (DataRow)sender;
         Series series = chart.Series[row.Name];
-        series.Points.Clear();
+        ClearPoints(series.Points);
         ConfigureSeries(series, row);
-        FillSeriesWithRowValues(series, row);
-        RecalculateAxesScale(chart.ChartAreas[0]);
+        if (!invisibleSeries.Contains(series)) {
+          FillSeriesWithRowValues(series, row);
+          RecalculateAxesScale(chart.ChartAreas[0]);
+          UpdateHistogramTransparency();
+        }
       }
     }
     private void Row_NameChanged(object sender, EventArgs e) {
@@ -361,7 +425,7 @@ namespace HeuristicLab.Analysis.Views {
         if (row != null) {
           Series rowSeries = chart.Series[row.Name];
           if (!invisibleSeries.Contains(rowSeries)) {
-            rowSeries.Points.Clear();
+            ClearPoints(rowSeries.Points);
             FillSeriesWithRowValues(rowSeries, row);
             RecalculateAxesScale(chart.ChartAreas[0]);
             UpdateYCursorInterval();
@@ -378,7 +442,7 @@ namespace HeuristicLab.Analysis.Views {
         if (row != null) {
           Series rowSeries = chart.Series[row.Name];
           if (!invisibleSeries.Contains(rowSeries)) {
-            rowSeries.Points.Clear();
+            ClearPoints(rowSeries.Points);
             FillSeriesWithRowValues(rowSeries, row);
             RecalculateAxesScale(chart.ChartAreas[0]);
             UpdateYCursorInterval();
@@ -396,7 +460,7 @@ namespace HeuristicLab.Analysis.Views {
           Series rowSeries = chart.Series[row.Name];
           if (!invisibleSeries.Contains(rowSeries)) {
             if (row.VisualProperties.ChartType == DataRowVisualProperties.DataRowChartType.Histogram) {
-              rowSeries.Points.Clear();
+              ClearPoints(rowSeries.Points);
               FillSeriesWithRowValues(rowSeries, row);
             } else {
               foreach (IndexedItem<double> item in e.Items) {
@@ -423,7 +487,7 @@ namespace HeuristicLab.Analysis.Views {
         if (row != null) {
           Series rowSeries = chart.Series[row.Name];
           if (!invisibleSeries.Contains(rowSeries)) {
-            rowSeries.Points.Clear();
+            ClearPoints(rowSeries.Points);
             FillSeriesWithRowValues(rowSeries, row);
             RecalculateAxesScale(chart.ChartAreas[0]);
             UpdateYCursorInterval();
@@ -441,7 +505,7 @@ namespace HeuristicLab.Analysis.Views {
         if (row != null) {
           Series rowSeries = chart.Series[row.Name];
           if (!invisibleSeries.Contains(rowSeries)) {
-            rowSeries.Points.Clear();
+            ClearPoints(rowSeries.Points);
             FillSeriesWithRowValues(rowSeries, row);
             RecalculateAxesScale(chart.ChartAreas[0]);
             UpdateYCursorInterval();
@@ -450,6 +514,9 @@ namespace HeuristicLab.Analysis.Views {
       }
     }
     #endregion
+    private void configureToolStripMenuItem_Click(object sender, EventArgs e) {
+      ShowConfiguration();
+    }
     #endregion
 
     #region Chart Event Handlers
@@ -481,7 +548,7 @@ namespace HeuristicLab.Analysis.Views {
 
     private void ToggleSeriesVisible(Series series) {
       if (!invisibleSeries.Contains(series)) {
-        series.Points.Clear();
+        ClearPoints(series.Points);
         invisibleSeries.Add(series);
       } else {
         invisibleSeries.Remove(series);
@@ -501,7 +568,20 @@ namespace HeuristicLab.Analysis.Views {
     private void FillSeriesWithRowValues(Series series, DataRow row) {
       switch (row.VisualProperties.ChartType) {
         case DataRowVisualProperties.DataRowChartType.Histogram:
-          CalculateHistogram(series, row);
+          // when a single histogram is updated, all histograms must be updated. otherwise the value ranges may not be equal.
+          var histograms = Content.Rows
+            .Where(r => r.VisualProperties.ChartType == DataRowVisualProperties.DataRowChartType.Histogram)
+            .ToList();
+          CalculateHistogram(series, row, histograms);
+          foreach (var h in from r in histograms
+                            where r != row
+                            let s = chart.Series.FindByName(r.Name)
+                            where s != null
+                            where !invisibleSeries.Contains(s)
+                            select new { row = r, series = s }) {
+            ClearPoints(h.series.Points);
+            CalculateHistogram(h.series, h.row, histograms);
+          }
           break;
         default: {
             bool yLogarithmic = series.YAxisType == AxisType.Primary
@@ -525,37 +605,40 @@ namespace HeuristicLab.Analysis.Views {
       }
     }
 
-    protected virtual void CalculateHistogram(Series series, DataRow row) {
-      series.Points.Clear();
+    protected virtual void CalculateHistogram(Series series, DataRow row, IEnumerable<DataRow> histogramRows) {
+      ClearPoints(series.Points);
       if (!row.Values.Any()) return;
-      int bins = row.VisualProperties.Bins;
 
-      double minValue = row.Values.Min();
-      double maxValue = row.Values.Max();
-      double intervalWidth = (maxValue - minValue) / bins;
+      var validValues = histogramRows.SelectMany(r => r.Values).Where(x => !IsInvalidValue(x)).ToList();
+      if (!validValues.Any()) return;
+
+      int bins = Content.VisualProperties.HistogramBins;
+      decimal minValue = (decimal)validValues.Min();
+      decimal maxValue = (decimal)validValues.Max();
+      decimal intervalWidth = (maxValue - minValue) / bins;
       if (intervalWidth < 0) return;
       if (intervalWidth == 0) {
         series.Points.AddXY(minValue, row.Values.Count);
         return;
       }
 
-      if (!row.VisualProperties.ExactBins) {
-        intervalWidth = HumanRoundRange(intervalWidth);
+      if (!Content.VisualProperties.HistogramExactBins) {
+        intervalWidth = (decimal)HumanRoundRange((double)intervalWidth);
         minValue = Math.Floor(minValue / intervalWidth) * intervalWidth;
         maxValue = Math.Ceiling(maxValue / intervalWidth) * intervalWidth;
       }
 
-      double intervalCenter = intervalWidth / 2;
+      decimal intervalCenter = intervalWidth / 2;
 
-      double min = 0.0, max = 0.0;
+      decimal min = 0.0m, max = 0.0m;
       if (!Double.IsNaN(Content.VisualProperties.XAxisMinimumFixedValue) && !Content.VisualProperties.XAxisMinimumAuto)
-        min = Content.VisualProperties.XAxisMinimumFixedValue;
+        min = (decimal)Content.VisualProperties.XAxisMinimumFixedValue;
       else min = minValue;
       if (!Double.IsNaN(Content.VisualProperties.XAxisMaximumFixedValue) && !Content.VisualProperties.XAxisMaximumAuto)
-        max = Content.VisualProperties.XAxisMaximumFixedValue;
+        max = (decimal)Content.VisualProperties.XAxisMaximumFixedValue;
       else max = maxValue + intervalWidth;
 
-      double axisInterval = intervalWidth / row.VisualProperties.ScaleFactor;
+      double axisInterval = (double)intervalWidth / row.VisualProperties.ScaleFactor;
 
       var area = chart.ChartAreas[0];
       area.AxisX.Interval = axisInterval;
@@ -563,7 +646,7 @@ namespace HeuristicLab.Analysis.Views {
       series.SetCustomProperty("PointWidth", "1"); // 0.8 is the default value
 
       // get the range or intervals which define the grouping of the frequency values
-      var doubleRange = DoubleRange(min, max, intervalWidth).Skip(1).ToList();
+      var range = Range(min, max, intervalWidth).Skip(1).ToList();
 
       // aggregate the row values by unique key and frequency value
       var valueFrequencies = (from v in row.Values
@@ -572,16 +655,17 @@ namespace HeuristicLab.Analysis.Views {
                               group v by v into g
                               select new Tuple<double, double>(g.First(), g.Count())).ToList();
 
-      // shift the chart to the left so the bars are placed on the intervals
-      if (valueFrequencies.First().Item1 < doubleRange.First())
-        series.Points.Add(new DataPoint(min - intervalWidth, 0));
+      // ensure that each column is displayed completely on the chart by adding two dummy datapoints on the upper and lower range
+      series.Points.Add(new DataPoint((double)(min - intervalWidth), 0));
+      series.Points.Add(new DataPoint((double)(max + intervalWidth), 0));
 
       // add data points
       int j = 0;
-      foreach (var d in doubleRange) {
+      int overallCount = row.Values.Count(x => !IsInvalidValue(x));
+      foreach (var d in range) {
         double sum = 0.0;
         // sum the frequency values that fall within the same interval
-        while (j < valueFrequencies.Count && valueFrequencies[j].Item1 < d) {
+        while (j < valueFrequencies.Count && (decimal)valueFrequencies[j].Item1 < d) {
           sum += valueFrequencies[j].Item2;
           ++j;
         }
@@ -591,17 +675,17 @@ namespace HeuristicLab.Analysis.Views {
         string yAxisTitle = string.IsNullOrEmpty(Content.VisualProperties.YAxisTitle)
                               ? "Y"
                               : Content.VisualProperties.YAxisTitle;
-        series.Points.Add(new DataPoint(d - intervalCenter, sum) {
+        series.Points.Add(new DataPoint((double)(d - intervalCenter), sum) {
           ToolTip =
-            xAxisTitle + ": [" + (d - intervalWidth) + "-" + d + ")" + Environment.NewLine +
-            yAxisTitle + ": " + sum
+            string.Format("{0}: [{1} - {2})", xAxisTitle, (d - intervalWidth), d) + Environment.NewLine +
+            string.Format("{0}: {1} ({2:F2}%)", yAxisTitle, sum, sum / overallCount * 100)
         });
       }
     }
 
     #region Helpers
-    public static IEnumerable<double> DoubleRange(double min, double max, double step) {
-      double i;
+    public static IEnumerable<decimal> Range(decimal min, decimal max, decimal step) {
+      decimal i;
       for (i = min; i <= max; i += step)
         yield return i;
 
@@ -654,6 +738,14 @@ namespace HeuristicLab.Analysis.Views {
 
     protected static bool IsInvalidValue(double x) {
       return double.IsNaN(x) || x < (double)decimal.MinValue || x > (double)decimal.MaxValue;
+    }
+
+    // workaround for performance problem as described in https://stackoverflow.com/questions/5744930/datapointcollection-clear-performance
+    public static void ClearPoints(DataPointCollection points) {
+      points.SuspendUpdates();
+      while (points.Count > 0)
+        points.RemoveAt(points.Count - 1);
+      points.ResumeUpdates();
     }
     #endregion
   }

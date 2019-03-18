@@ -1,7 +1,7 @@
 ﻿#region License Information
 
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,11 +23,13 @@
 
 using System;
 using System.Linq;
+using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
 using HeuristicLab.Optimization;
+using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -60,6 +62,10 @@ namespace HeuristicLab.Problems.Binary {
       var lengthParameter = new FixedValueParameter<IntValue>("Length", "The length of the BinaryVector.", new IntValue(10));
       Parameters.Add(lengthParameter);
       Encoding.LengthParameter = lengthParameter;
+      Operators.Add(new HammingSimilarityCalculator());
+      Operators.Add(new QualitySimilarityCalculator());
+      Operators.Add(new PopulationSimilarityAnalyzer(Operators.OfType<ISolutionSimilarityCalculator>()));
+      Parameterize();
       RegisterEventHandlers();
     }
 
@@ -77,8 +83,16 @@ namespace HeuristicLab.Problems.Binary {
     protected override void OnEncodingChanged() {
       base.OnEncodingChanged();
       Encoding.LengthParameter = LengthParameter;
+      Parameterize();
     }
 
+    private void Parameterize() {
+      foreach (var similarityCalculator in Operators.OfType<ISolutionSimilarityCalculator>()) {
+        // TODO: BinaryVectorParameter is no more part of ISolutionCreator<BinaryVector>
+        similarityCalculator.SolutionVariableName = ((IBinaryVectorSolutionOperator)Encoding.SolutionCreator).BinaryVectorParameter.ActualName;
+        similarityCalculator.QualityVariableName = Evaluator.QualityParameter.ActualName;
+      }
+    }
 
     private void RegisterEventHandlers() {
       LengthParameter.Value.ValueChanged += LengthParameter_ValueChanged;

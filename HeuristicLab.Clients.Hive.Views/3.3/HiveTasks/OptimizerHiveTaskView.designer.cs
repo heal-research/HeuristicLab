@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -44,7 +44,7 @@ namespace HeuristicLab.Clients.Hive.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      this.restartButton = new System.Windows.Forms.Button();
+      this.startButton = new System.Windows.Forms.Button();
       this.pauseButton = new System.Windows.Forms.Button();
       this.stopButton = new System.Windows.Forms.Button();
       this.runsTabPage = new System.Windows.Forms.TabPage();
@@ -59,13 +59,13 @@ namespace HeuristicLab.Clients.Hive.Views {
       // 
       // detailsTabPage
       // 
-      this.detailsTabPage.Controls.Add(this.restartButton);
+      this.detailsTabPage.Controls.Add(this.startButton);
       this.detailsTabPage.Controls.Add(this.pauseButton);
       this.detailsTabPage.Controls.Add(this.stopButton);
       this.detailsTabPage.Controls.SetChildIndex(this.modifyItemButton, 0);
       this.detailsTabPage.Controls.SetChildIndex(this.stopButton, 0);
       this.detailsTabPage.Controls.SetChildIndex(this.pauseButton, 0);
-      this.detailsTabPage.Controls.SetChildIndex(this.restartButton, 0);
+      this.detailsTabPage.Controls.SetChildIndex(this.startButton, 0);
       // 
       // tabControl
       // 
@@ -78,16 +78,16 @@ namespace HeuristicLab.Clients.Hive.Views {
       // 
       this.modifyItemButton.Text = "Show/Modify Optimizer";
       // 
-      // restartButton
+      // startButton
       // 
-      this.restartButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.restartButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Restart;
-      this.restartButton.Location = new System.Drawing.Point(3, 348);
-      this.restartButton.Name = "restartButton";
-      this.restartButton.Size = new System.Drawing.Size(24, 24);
-      this.restartButton.TabIndex = 34;
-      this.restartButton.UseVisualStyleBackColor = true;
-      this.restartButton.Click += new System.EventHandler(this.restartButton_Click);
+      this.startButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.startButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Play;
+      this.startButton.Location = new System.Drawing.Point(3, 348);
+      this.startButton.Name = "startButton";
+      this.startButton.Size = new System.Drawing.Size(24, 24);
+      this.startButton.TabIndex = 34;
+      this.startButton.UseVisualStyleBackColor = true;
+      this.startButton.Click += new System.EventHandler(this.startButton_Click);
       // 
       // pauseButton
       // 
@@ -138,7 +138,6 @@ namespace HeuristicLab.Clients.Hive.Views {
       // 
       // OptimizerHiveTaskView
       // 
-      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.Name = "OptimizerHiveTaskView";
       this.stateLogTabPage.ResumeLayout(false);
@@ -155,7 +154,7 @@ namespace HeuristicLab.Clients.Hive.Views {
 
     #endregion
 
-    private System.Windows.Forms.Button restartButton;
+    private System.Windows.Forms.Button startButton;
     private System.Windows.Forms.Button pauseButton;
     private System.Windows.Forms.Button stopButton;
     private System.Windows.Forms.TabPage runsTabPage;

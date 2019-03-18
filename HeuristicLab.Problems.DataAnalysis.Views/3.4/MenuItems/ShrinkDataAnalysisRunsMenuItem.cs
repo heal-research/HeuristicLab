@@ -1,7 +1,7 @@
 ﻿#region License Information
 
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,17 +22,13 @@
 #endregion
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
-using HeuristicLab.Common;
 using HeuristicLab.MainForm;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimizer;
 
 using MenuItem = HeuristicLab.MainForm.WindowsForms.MenuItem;
-using ValuesType = System.Collections.Generic.Dictionary<string, System.Collections.IList>;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
   internal sealed class ShrinkDataAnalysisRunsMenuItem : MenuItem, IOptimizerUserInterfaceItemProvider {
@@ -78,62 +74,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       var mainForm = (MainForm.WindowsForms.MainForm)MainFormManager.MainForm;
       mainForm.AddOperationProgressToContent(activeView.Content, "Removing duplicate datasets.");
 
-      Action<IContentView> action = (view) => {
-        var variableValuesMapping = new Dictionary<ValuesType, ValuesType>();
-        foreach (var problemData in view.Content.GetObjectGraphObjects(excludeStaticMembers: true).OfType<IDataAnalysisProblemData>()) {
-          var dataset = problemData.Dataset as Dataset;
-          if (dataset == null) continue;
-          var originalValues = variableValuesGetter(dataset);
-          var matchingValues = GetEqualValues(originalValues, variableValuesMapping);
-          variableValuesSetter(dataset, matchingValues);
-        }
-      };
+      Action<IContentView> action = (view) => DatasetUtil.RemoveDuplicateDatasets(view.Content);
 
-      action.BeginInvoke(activeView, delegate(IAsyncResult result) {
+      action.BeginInvoke(activeView, delegate (IAsyncResult result) {
         action.EndInvoke(result);
         mainForm.RemoveOperationProgressFromContent(activeView.Content);
       }, null);
-    }
-
-    private static ValuesType GetEqualValues(ValuesType originalValues, Dictionary<ValuesType, ValuesType> variableValuesMapping) {
-      if (variableValuesMapping.ContainsKey(originalValues)) return variableValuesMapping[originalValues];
-
-      var matchingValues = variableValuesMapping.FirstOrDefault(kv => kv.Key == kv.Value && EqualVariableValues(originalValues, kv.Key)).Key ?? originalValues;
-      variableValuesMapping[originalValues] = matchingValues;
-      return matchingValues;
-    }
-
-    private static bool EqualVariableValues(ValuesType values1, ValuesType values2) {
-      //compare variable names for equality
-      if (!values1.Keys.SequenceEqual(values2.Keys)) return false;
-      foreach (var key in values1.Keys) {
-        var v1 = values1[key];
-        var v2 = values2[key];
-        if (v1.Count != v2.Count) return false;
-        for (int i = 0; i < v1.Count; i++) {
-          if (!v1[i].Equals(v2[i])) return false;
-        }
-      }
-      return true;
-    }
-
-    private static readonly Action<Dataset, Dictionary<string, IList>> variableValuesSetter;
-    private static readonly Func<Dataset, Dictionary<string, IList>> variableValuesGetter;
-    /// <summary>
-    /// The static initializer is used to create expressions for getting and setting the private variableValues field in the dataset.
-    /// This is done by expressions because the field is private and compiled expression calls are much faster compared to standad reflection calls.
-    /// </summary>
-    static ShrinkDataAnalysisRunsMenuItem() {
-      var dataset = Expression.Parameter(typeof(Dataset));
-      var variableValues = Expression.Parameter(typeof(ValuesType));
-      var valuesExpression = Expression.Field(dataset, "variableValues");
-      var assignExpression = Expression.Assign(valuesExpression, variableValues);
-
-      var variableValuesSetExpression = Expression.Lambda<Action<Dataset, ValuesType>>(assignExpression, dataset, variableValues);
-      variableValuesSetter = variableValuesSetExpression.Compile();
-
-      var variableValuesGetExpression = Expression.Lambda<Func<Dataset, ValuesType>>(valuesExpression, dataset);
-      variableValuesGetter = variableValuesGetExpression.Compile();
     }
   }
 }

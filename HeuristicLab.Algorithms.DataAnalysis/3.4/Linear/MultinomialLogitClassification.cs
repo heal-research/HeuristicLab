@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -56,7 +57,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     #region logit classification
-    protected override void Run() {
+    protected override void Run(CancellationToken cancellationToken) {
       double rmsError, relClassError;
       var solution = CreateLogitClassificationSolution(Problem.ProblemData, out rmsError, out relClassError);
       Results.Add(new Result(LogitClassificationModelResultName, "The logit classification solution.", solution));
@@ -67,9 +68,15 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public static IClassificationSolution CreateLogitClassificationSolution(IClassificationProblemData problemData, out double rmsError, out double relClassError) {
       var dataset = problemData.Dataset;
       string targetVariable = problemData.TargetVariable;
-      IEnumerable<string> allowedInputVariables = problemData.AllowedInputVariables;
+      var doubleVariableNames = problemData.AllowedInputVariables.Where(dataset.VariableHasType<double>);
+      var factorVariableNames = problemData.AllowedInputVariables.Where(dataset.VariableHasType<string>);
       IEnumerable<int> rows = problemData.TrainingIndices;
-      double[,] inputMatrix = AlglibUtil.PrepareInputMatrix(dataset, allowedInputVariables.Concat(new string[] { targetVariable }), rows);
+      double[,] inputMatrix = dataset.ToArray(doubleVariableNames.Concat(new string[] { targetVariable }), rows);
+
+      var factorVariableValues = dataset.GetFactorVariableValues(factorVariableNames, rows);
+      var factorMatrix = dataset.ToArray(factorVariableValues, rows);
+      inputMatrix = factorMatrix.HorzCat(inputMatrix);
+
       if (inputMatrix.Cast<double>().Any(x => double.IsNaN(x) || double.IsInfinity(x)))
         throw new NotSupportedException("Multinomial logit classification does not support NaN or infinity values in the input dataset.");
 
@@ -94,7 +101,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       rmsError = alglib.mnlrmserror(lm, inputMatrix, nRows);
       relClassError = alglib.mnlrelclserror(lm, inputMatrix, nRows);
 
-      MultinomialLogitClassificationSolution solution = new MultinomialLogitClassificationSolution((IClassificationProblemData)problemData.Clone(), new MultinomialLogitModel(lm, targetVariable, allowedInputVariables, classValues));
+      MultinomialLogitClassificationSolution solution = new MultinomialLogitClassificationSolution(new MultinomialLogitModel(lm, targetVariable, doubleVariableNames, factorVariableValues, classValues), (IClassificationProblemData)problemData.Clone());
       return solution;
     }
     #endregion

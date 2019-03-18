@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -42,7 +42,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       protected set { symbol = value; }
     }
 
-    // parent relation is not persisted or cloned (will be set on AddSubtree or RemoveSubtree)
+    [Storable]
     private ISymbolicExpressionTreeNode parent;
     public ISymbolicExpressionTreeNode Parent {
       get { return parent; }
@@ -86,7 +86,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     private void AfterDeserialization() {
       if (subtrees != null) {
         foreach (var subtree in subtrees)
-          subtree.Parent = this;
+          if (subtree.Parent == null)
+            subtree.Parent = this;
       }
     }
 
@@ -105,12 +106,13 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     public int GetLength() {
       if (length > 0) return length;
       else {
-        length = 1;
+        ushort l = 1;
         if (subtrees != null) {
           for (int i = 0; i < subtrees.Count; i++) {
-            checked { length += (ushort)subtrees[i].GetLength(); }
+            checked { l += (ushort)subtrees[i].GetLength(); }
           }
         }
+        length = l;
         return length;
       }
     }
@@ -118,10 +120,12 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     public int GetDepth() {
       if (depth > 0) return depth;
       else {
+        ushort d = 0;
         if (subtrees != null) {
-          for (int i = 0; i < subtrees.Count; i++) depth = Math.Max(depth, (ushort)subtrees[i].GetDepth());
+          for (int i = 0; i < subtrees.Count; i++) d = Math.Max(d, (ushort)subtrees[i].GetDepth());
         }
-        depth++;
+        d++;
+        depth = d;
         return depth;
       }
     }

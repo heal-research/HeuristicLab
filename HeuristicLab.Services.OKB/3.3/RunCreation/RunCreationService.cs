@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,12 +19,13 @@
  */
 #endregion
 
+using HeuristicLab.Services.Access;
+using HeuristicLab.Services.OKB.DataAccess;
+using System;
 using System.Collections.Generic;
 using System.Data.Linq;
 using System.Linq;
 using System.ServiceModel;
-using HeuristicLab.Services.Access;
-using HeuristicLab.Services.OKB.DataAccess;
 
 namespace HeuristicLab.Services.OKB.RunCreation {
   /// <summary>
@@ -125,6 +126,94 @@ namespace HeuristicLab.Services.OKB.RunCreation {
       }
     }
 
+    public IEnumerable<DataTransfer.Solution> GetSolutions(long problemId) {
+      roleVerifier.AuthenticateForAnyRole(OKBRoles.OKBAdministrator, OKBRoles.OKBUser);
+
+      using (OKBDataContext okb = new OKBDataContext()) {
+        var problem = okb.Problems.SingleOrDefault(x => x.Id == problemId);
+        if (problem == null) throw new FaultException<MissingProblem>(new MissingProblem(problemId));
+        // TODO: In case of multi-objective problems one has to check whether it contains single- or multi-objective problems
+        var result = problem.SingleObjectiveSolutions.Select(x => Convert.ToDto(x)).ToList();
+        if (roleVerifier.IsInRole(OKBRoles.OKBAdministrator)) {
+          return result;
+        } else {
+          var problemUsers = okb.ProblemUsers.Where(x => x.ProblemId == problemId).ToList();
+          if (problemUsers.Count == 0 || userManager.VerifyUser(userManager.CurrentUserId, problemUsers.Select(y => y.UserGroupId).ToList())) {
+            return result;
+          } else {
+            return null;
+          }
+        }
+      }
+    }
+
+    public DataTransfer.Solution GetSolution(long solutionId) {
+      roleVerifier.AuthenticateForAnyRole(OKBRoles.OKBAdministrator, OKBRoles.OKBUser);
+
+      using (OKBDataContext okb = new OKBDataContext()) {
+        // TODO: In case of multi-objective problems one has to check whether it contains single- or multi-objective problems
+        var result = Convert.ToDto(okb.SingleObjectiveSolutions.SingleOrDefault(x => x.Id == solutionId));
+        if (roleVerifier.IsInRole(OKBRoles.OKBAdministrator)) {
+          return result;
+        } else {
+          var problemUsers = okb.ProblemUsers.Where(x => x.ProblemId == result.ProblemId).ToList();
+          if (problemUsers.Count == 0 || userManager.VerifyUser(userManager.CurrentUserId, problemUsers.Select(y => y.UserGroupId).ToList())) {
+            return result;
+          } else {
+            return null;
+          }
+        }
+      }
+    }
+
+    public byte[] GetSolutionData(long solutionId) {
+      roleVerifier.AuthenticateForAnyRole(OKBRoles.OKBAdministrator, OKBRoles.OKBUser);
+
+      using (OKBDataContext okb = new OKBDataContext()) {
+        var solution = okb.SingleObjectiveSolutions.SingleOrDefault(x => x.Id == solutionId);
+        if (solution == null) throw new FaultException<MissingSolution>(new MissingSolution(solutionId));
+
+        var result = solution.BinaryData.Data.ToArray();
+        if (roleVerifier.IsInRole(OKBRoles.OKBAdministrator)) {
+          return result;
+        } else {
+          var problemUsers = okb.ProblemUsers.Where(x => x.ProblemId == solution.ProblemId).ToList();
+          if (problemUsers.Count == 0 || userManager.VerifyUser(userManager.CurrentUserId, problemUsers.Select(y => y.UserGroupId).ToList())) {
+            return result;
+          } else {
+            return null;
+          }
+        }
+      }
+    }
+
+    public long AddSolution(DataTransfer.Solution solution, byte[] data) {
+      roleVerifier.AuthenticateForAnyRole(OKBRoles.OKBAdministrator, OKBRoles.OKBUser);
+
+      using (OKBDataContext okb = new OKBDataContext()) {
+        var soSolution = solution as DataTransfer.SingleObjectiveSolution;
+        if (soSolution != null) {
+          DataAccess.SingleObjectiveSolution entity = Convert.ToEntity(soSolution, data, okb);
+          okb.SingleObjectiveSolutions.InsertOnSubmit(entity);
+          okb.SubmitChanges();
+          return entity.Id;
+        }
+      }
+      throw new FaultException(new FaultReason("The solution could not be added."));
+    }
+
+    public void DeleteSolution(DataTransfer.Solution solution) {
+      roleVerifier.AuthenticateForAnyRole(OKBRoles.OKBAdministrator, OKBRoles.OKBUser);
+
+      using (OKBDataContext okb = new OKBDataContext()) {
+        var soSolution = solution as DataTransfer.SingleObjectiveSolution;
+        if (soSolution != null) {
+          okb.SingleObjectiveSolutions.DeleteOnSubmit(okb.SingleObjectiveSolutions.Single(x => x.Id == soSolution.Id));
+          okb.SubmitChanges();
+        }
+      }
+    }
+
     public void AddRun(DataTransfer.Run run) {
       roleVerifier.AuthenticateForAnyRole(OKBRoles.OKBAdministrator, OKBRoles.OKBUser);
 
@@ -132,6 +221,91 @@ namespace HeuristicLab.Services.OKB.RunCreation {
         DataAccess.Run entity = Convert.ToEntity(run, okb);
         okb.Runs.InsertOnSubmit(entity);
         okb.SubmitChanges();
+      }
+    }
+
+    public IEnumerable<DataTransfer.Value> GetCharacteristicValues(long problemId) {
+      using (OKBDataContext okb = new OKBDataContext()) {
+        var prob = okb.Problems.SingleOrDefault(x => x.Id == problemId);
+        if (prob == null) return Enumerable.Empty<DataTransfer.Value>();
+        return prob.CharacteristicValues.Select(Convert.ToDto).ToArray();
+      }
+    }
+
+    public void SetCharacteristicValue(long problemId, DataTransfer.Value value) {
+      roleVerifier.AuthenticateForAnyRole(OKBRoles.OKBAdministrator, OKBRoles.OKBUser);
+
+      using (OKBDataContext okb = new OKBDataContext()) {
+        var problem = okb.Problems.SingleOrDefault(x => x.Id == problemId);
+        if (problem == null) throw new FaultException<MissingProblem>(new MissingProblem(problemId));
+
+        DoSetCharacteristicValue(okb, problem, value);
+        okb.SubmitChanges();
+      }
+    }
+
+    public void SetCharacteristicValues(long problemId, DataTransfer.Value[] values) {
+      roleVerifier.AuthenticateForAnyRole(OKBRoles.OKBAdministrator, OKBRoles.OKBUser);
+
+      using (OKBDataContext okb = new OKBDataContext()) {
+        var problem = okb.Problems.SingleOrDefault(x => x.Id == problemId);
+        if (problem == null) throw new FaultException<MissingProblem>(new MissingProblem(problemId));
+
+        foreach (var v in values) {
+          DoSetCharacteristicValue(okb, problem, v);
+        }
+        okb.SubmitChanges();
+      }
+    }
+
+    private void DoSetCharacteristicValue(OKBDataContext okb, Problem problem, DataTransfer.Value value) {
+      CharacteristicType characteristicType;
+      try {
+        characteristicType = GetCharacteristicType(value);
+      } catch (ArgumentException ex) {
+        throw new FaultException<UnknownCharacteristicType>(new UnknownCharacteristicType(ex.Message));
+      }
+
+      var entity = problem.CharacteristicValues.SingleOrDefault(x => x.Characteristic.Name == value.Name && x.Characteristic.Type == characteristicType);
+      if (entity != null) {
+        // Update
+        switch (characteristicType) {
+          case CharacteristicType.Bool: entity.BoolValue = ((DataTransfer.BoolValue)value).Value; break;
+          case CharacteristicType.Int: entity.IntValue = ((DataTransfer.IntValue)value).Value; break;
+          case CharacteristicType.Long: entity.LongValue = ((DataTransfer.LongValue)value).Value; break;
+          case CharacteristicType.Float: entity.FloatValue = ((DataTransfer.FloatValue)value).Value; break;
+          case CharacteristicType.Double: entity.DoubleValue = ((DataTransfer.DoubleValue)value).Value; break;
+          case CharacteristicType.Percent: entity.DoubleValue = ((DataTransfer.PercentValue)value).Value; break;
+          case CharacteristicType.String: entity.StringValue = ((DataTransfer.StringValue)value).Value; break;
+          case CharacteristicType.TimeSpan: entity.LongValue = ((DataTransfer.TimeSpanValue)value).Value; break;
+        }
+      } else {
+        // Insert
+        entity = Convert.ToEntity(value, okb, problem, characteristicType);
+        okb.CharacteristicValues.InsertOnSubmit(entity);
+      }
+
+    }
+
+    private CharacteristicType GetCharacteristicType(DataTransfer.Value source) {
+      if (source is DataTransfer.BoolValue) {
+        return CharacteristicType.Bool;
+      } else if (source is DataTransfer.IntValue) {
+        return CharacteristicType.Int;
+      } else if (source is DataTransfer.TimeSpanValue) {
+        return CharacteristicType.TimeSpan;
+      } else if (source is DataTransfer.LongValue) {
+        return CharacteristicType.Long;
+      } else if (source is DataTransfer.FloatValue) {
+        return CharacteristicType.Float;
+      } else if (source is DataTransfer.DoubleValue) {
+        return CharacteristicType.Double;
+      } else if (source is DataTransfer.PercentValue) {
+        return CharacteristicType.Percent;
+      } else if (source is DataTransfer.StringValue) {
+        return CharacteristicType.String;
+      } else {
+        throw new ArgumentException("Unknown characteristic type.", "source");
       }
     }
   }

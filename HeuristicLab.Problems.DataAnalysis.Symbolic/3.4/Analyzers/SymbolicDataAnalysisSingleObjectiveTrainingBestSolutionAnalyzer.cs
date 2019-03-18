@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -34,15 +34,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   /// </summary>
   [Item("SymbolicDataAnalysisSingleObjectiveTrainingBestSolutionAnalyzer", "An operator that analyzes the training best symbolic data analysis solution for single objective symbolic data analysis problems.")]
   [StorableClass]
-  public abstract class SymbolicDataAnalysisSingleObjectiveTrainingBestSolutionAnalyzer<T> : SymbolicDataAnalysisSingleObjectiveAnalyzer, IIterationBasedOperator
-
-    where T : class, ISymbolicDataAnalysisSolution {
+  public abstract class SymbolicDataAnalysisSingleObjectiveTrainingBestSolutionAnalyzer<T> : SymbolicDataAnalysisSingleObjectiveAnalyzer, IIterationBasedOperator where T : class, ISymbolicDataAnalysisSolution {
     private const string TrainingBestSolutionParameterName = "Best training solution";
     private const string TrainingBestSolutionQualityParameterName = "Best training solution quality";
     private const string TrainingBestSolutionGenerationParameterName = "Best training solution generation";
+    private const string TrainingBestSolutionsHistoryParameterName = "Best training solutions history";
     private const string UpdateAlwaysParameterName = "Always update best solution";
     private const string IterationsParameterName = "Iterations";
     private const string MaximumIterationsParameterName = "Maximum Iterations";
+    private const string StoreHistoryParameterName = "Store History";
 
     #region parameter properties
     public ILookupParameter<T> TrainingBestSolutionParameter {
@@ -54,6 +54,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public ILookupParameter<IntValue> TrainingBestSolutionGenerationParameter {
       get { return (ILookupParameter<IntValue>)Parameters[TrainingBestSolutionGenerationParameterName]; }
     }
+    public ILookupParameter<ItemList<T>> TrainingBestSolutionsHistoryParameter {
+      get { return (ILookupParameter<ItemList<T>>)Parameters[TrainingBestSolutionsHistoryParameterName]; }
+    }
     public IFixedValueParameter<BoolValue> UpdateAlwaysParameter {
       get { return (IFixedValueParameter<BoolValue>)Parameters[UpdateAlwaysParameterName]; }
     }
@@ -62,6 +65,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
     public IValueLookupParameter<IntValue> MaximumIterationsParameter {
       get { return (IValueLookupParameter<IntValue>)Parameters[MaximumIterationsParameterName]; }
+    }
+
+    public IFixedValueParameter<BoolValue> StoreHistoryParameter {
+      get { return (IFixedValueParameter<BoolValue>)Parameters[StoreHistoryParameterName]; }
     }
     #endregion
     #region properties
@@ -73,22 +80,31 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       get { return TrainingBestSolutionQualityParameter.ActualValue; }
       set { TrainingBestSolutionQualityParameter.ActualValue = value; }
     }
-    public BoolValue UpdateAlways {
-      get { return UpdateAlwaysParameter.Value; }
+    public bool UpdateAlways {
+      get { return UpdateAlwaysParameter.Value.Value; }
+      set { UpdateAlwaysParameter.Value.Value = value; }
+    }
+
+    public bool StoreHistory {
+      get { return StoreHistoryParameter.Value.Value; }
+      set { StoreHistoryParameter.Value.Value = value; }
     }
     #endregion
+
 
     [StorableConstructor]
     protected SymbolicDataAnalysisSingleObjectiveTrainingBestSolutionAnalyzer(bool deserializing) : base(deserializing) { }
     protected SymbolicDataAnalysisSingleObjectiveTrainingBestSolutionAnalyzer(SymbolicDataAnalysisSingleObjectiveTrainingBestSolutionAnalyzer<T> original, Cloner cloner) : base(original, cloner) { }
     public SymbolicDataAnalysisSingleObjectiveTrainingBestSolutionAnalyzer()
       : base() {
-      Parameters.Add(new LookupParameter<T>(TrainingBestSolutionParameterName, "The training best symbolic data analyis solution."));
+      Parameters.Add(new LookupParameter<T>(TrainingBestSolutionParameterName, "The best training symbolic data analyis solution."));
       Parameters.Add(new LookupParameter<DoubleValue>(TrainingBestSolutionQualityParameterName, "The quality of the training best symbolic data analysis solution."));
       Parameters.Add(new LookupParameter<IntValue>(TrainingBestSolutionGenerationParameterName, "The generation in which the best training solution was found."));
       Parameters.Add(new FixedValueParameter<BoolValue>(UpdateAlwaysParameterName, "Determines if the best training solution should always be updated regardless of its quality.", new BoolValue(false)));
       Parameters.Add(new LookupParameter<IntValue>(IterationsParameterName, "The number of performed iterations."));
       Parameters.Add(new ValueLookupParameter<IntValue>(MaximumIterationsParameterName, "The maximum number of performed iterations.") { Hidden = true });
+      Parameters.Add(new FixedValueParameter<BoolValue>(StoreHistoryParameterName, "Flag that determines whether all encountered best solutions should be stored as results.", new BoolValue(false)));
+      Parameters.Add(new LookupParameter<ItemList<T>>(TrainingBestSolutionsHistoryParameterName, "The history of the best training symbolic data analysis solutions."));
       UpdateAlwaysParameter.Hidden = true;
     }
 
@@ -104,9 +120,29 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         Parameters.Add(new LookupParameter<IntValue>(IterationsParameterName, "The number of performed iterations."));
       if (!Parameters.ContainsKey(MaximumIterationsParameterName))
         Parameters.Add(new ValueLookupParameter<IntValue>(MaximumIterationsParameterName, "The maximum number of performed iterations.") { Hidden = true });
+      if (!Parameters.ContainsKey(StoreHistoryParameterName))
+        Parameters.Add(new FixedValueParameter<BoolValue>(StoreHistoryParameterName, "Flag that determines whether all encountered best solutions should be stored as results.", new BoolValue(false)));
+      if (!Parameters.ContainsKey(TrainingBestSolutionsHistoryParameterName))
+        Parameters.Add(new LookupParameter<ItemList<T>>(TrainingBestSolutionsHistoryParameterName, "The history of the best training symbolic data analysis solutions."));
     }
 
     public override IOperation Apply() {
+      var results = ResultCollection;
+      #region create results
+      if (!results.ContainsKey(TrainingBestSolutionParameter.Name))
+        results.Add(new Result(TrainingBestSolutionParameter.Name, TrainingBestSolutionParameter.Description, typeof(T)));
+      if (!results.ContainsKey(TrainingBestSolutionQualityParameter.Name))
+        results.Add(new Result(TrainingBestSolutionQualityParameter.Name, TrainingBestSolutionQualityParameter.Description, typeof(DoubleValue)));
+      if (!results.ContainsKey(TrainingBestSolutionGenerationParameter.Name) && IterationsParameter.ActualValue != null)
+        results.Add(new Result(TrainingBestSolutionGenerationParameter.Name, TrainingBestSolutionGenerationParameter.Description, typeof(IntValue)));
+      if (StoreHistory && !results.ContainsKey(TrainingBestSolutionsHistoryParameter.Name)) {
+
+        results.Add(new Result(TrainingBestSolutionsHistoryParameter.Name, TrainingBestSolutionsHistoryParameter.Description, typeof(ItemList<T>)));
+        TrainingBestSolutionsHistoryParameter.ActualValue = new ItemList<T>();
+        results[TrainingBestSolutionsHistoryParameter.Name].Value = TrainingBestSolutionsHistoryParameter.ActualValue;
+      }
+      #endregion
+
       #region find best tree
       double bestQuality = Maximization.Value ? double.NegativeInfinity : double.PositiveInfinity;
       ISymbolicExpressionTree bestTree = null;
@@ -120,25 +156,20 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
       #endregion
 
-      var results = ResultCollection;
-      if (bestTree != null && (UpdateAlways.Value || TrainingBestSolutionQuality == null ||
+      if (bestTree != null && (UpdateAlways || TrainingBestSolutionQuality == null ||
         IsBetter(bestQuality, TrainingBestSolutionQuality.Value, Maximization.Value))) {
         TrainingBestSolution = CreateSolution(bestTree, bestQuality);
         TrainingBestSolutionQuality = new DoubleValue(bestQuality);
         if (IterationsParameter.ActualValue != null)
           TrainingBestSolutionGenerationParameter.ActualValue = new IntValue(IterationsParameter.ActualValue.Value);
 
-        if (!results.ContainsKey(TrainingBestSolutionParameter.Name)) {
-          results.Add(new Result(TrainingBestSolutionParameter.Name, TrainingBestSolutionParameter.Description, TrainingBestSolution));
-          results.Add(new Result(TrainingBestSolutionQualityParameter.Name, TrainingBestSolutionQualityParameter.Description, TrainingBestSolutionQuality));
-          if (TrainingBestSolutionGenerationParameter.ActualValue != null)
-            results.Add(new Result(TrainingBestSolutionGenerationParameter.Name, TrainingBestSolutionGenerationParameter.Description, TrainingBestSolutionGenerationParameter.ActualValue));
-        } else {
-          results[TrainingBestSolutionParameter.Name].Value = TrainingBestSolution;
-          results[TrainingBestSolutionQualityParameter.Name].Value = TrainingBestSolutionQuality;
-          if (TrainingBestSolutionGenerationParameter.ActualValue != null)
-            results[TrainingBestSolutionGenerationParameter.Name].Value = TrainingBestSolutionGenerationParameter.ActualValue;
+        results[TrainingBestSolutionParameter.Name].Value = TrainingBestSolution;
+        results[TrainingBestSolutionQualityParameter.Name].Value = TrainingBestSolutionQuality;
+        if (TrainingBestSolutionGenerationParameter.ActualValue != null)
+          results[TrainingBestSolutionGenerationParameter.Name].Value = TrainingBestSolutionGenerationParameter.ActualValue;
 
+        if (StoreHistory) {
+          TrainingBestSolutionsHistoryParameter.ActualValue.Add(TrainingBestSolution);
         }
       }
       return base.Apply();

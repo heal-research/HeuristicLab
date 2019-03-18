@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,7 +22,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using HeuristicLab.Algorithms.DataAnalysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -49,7 +48,6 @@ namespace HeuristicLab.Tests {
       }
     }
 
-    private EventWaitHandle trigger = new AutoResetEvent(false);
     private Exception ex;
 
     [TestMethod]
@@ -70,11 +68,9 @@ namespace HeuristicLab.Tests {
       cv.SamplesEnd.Value = 999;
 
       cv.ExceptionOccurred += new EventHandler<EventArgs<Exception>>(cv_ExceptionOccurred);
-      cv.Stopped += new EventHandler(cv_Stopped);
 
       cv.Prepare();
       cv.Start();
-      trigger.WaitOne();
       if (ex != null) throw ex;
 
       TestContext.WriteLine("Runtime: {0}", cv.ExecutionTime.ToString());
@@ -100,10 +96,6 @@ namespace HeuristicLab.Tests {
 
     private void cv_ExceptionOccurred(object sender, EventArgs<Exception> e) {
       ex = e.Value;
-    }
-
-    private void cv_Stopped(object sender, EventArgs e) {
-      trigger.Set();
     }
   }
 }

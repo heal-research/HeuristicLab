@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -365,7 +365,7 @@ namespace HeuristicLab.Problems.Instances.VehicleRouting {
             throw new InvalidDataException("Input file contains invalid demands.");
 
           int index = int.Parse(tokens[0]);
-          double value = double.Parse(tokens[1]);
+          double value = double.Parse(tokens[1], System.Globalization.CultureInfo.InvariantCulture);
 
           demands[index] = value;
         } else {

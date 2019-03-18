@@ -120,11 +120,11 @@
     <Compile Include="InteractiveSymbolicExpressionTreeChart.Designer.cs">
       <DependentUpon>InteractiveSymbolicExpressionTreeChart.cs</DependentUpon>
     </Compile>
-    <Compile Include="MathSymbolicDataAnalysisModelView.cs">
+    <Compile Include="SymbolicDataAnalysisModelMathView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="MathSymbolicDataAnalysisModelView.designer.cs">
-      <DependentUpon>MathSymbolicDataAnalysisModelView.cs</DependentUpon>
+    <Compile Include="SymbolicDataAnalysisModelMathView.designer.cs">
+      <DependentUpon>SymbolicDataAnalysisModelMathView.cs</DependentUpon>
     </Compile>
     <Compile Include="Plugin.cs" />
     <Compile Include="TextualSymbolicDataAnalysisModelView.cs">

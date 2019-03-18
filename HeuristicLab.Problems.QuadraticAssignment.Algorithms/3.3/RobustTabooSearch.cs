@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,6 +21,7 @@
 
 using System;
 using System.Linq;
+using System.Threading;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -337,7 +338,7 @@ Please note that the MinimumTabuTenure parameter has no effect in the new versio
       if (Problem != null) base.Prepare();
     }
 
-    public override void Start() {
+    public override void Start(CancellationToken cancellationToken) {
       if (ExecutionState == ExecutionState.Prepared) {
         int dim = Problem.Weights.Rows;
         IntMatrix shortTermMemory = new IntMatrix(dim, dim);
@@ -349,7 +350,7 @@ Please note that the MinimumTabuTenure parameter has no effect in the new versio
         GlobalScope.Variables.Add(new Variable("ShortTermMemory", shortTermMemory));
         GlobalScope.Variables.Add(new Variable("MoveQualityMatrix", new DoubleMatrix(dim, dim)));
       }
-      base.Start();
+      base.Start(cancellationToken);
     }
 
     private void UpdateProblemSpecificParameters() {

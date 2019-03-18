@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -48,39 +48,35 @@ namespace HeuristicLab.Analysis.Views {
       this.colorDialog = new System.Windows.Forms.ColorDialog();
       this.colorButton = new System.Windows.Forms.Button();
       this.startIndexZeroCheckBox = new System.Windows.Forms.CheckBox();
-      this.binsNumericUpDown = new System.Windows.Forms.NumericUpDown();
       this.label1 = new System.Windows.Forms.Label();
       this.label2 = new System.Windows.Forms.Label();
-      this.label3 = new System.Windows.Forms.Label();
       this.commonGroupBox = new System.Windows.Forms.GroupBox();
+      this.clearColorButton = new System.Windows.Forms.Button();
+      this.isVisibleInLegendCheckBox = new System.Windows.Forms.CheckBox();
+      this.label10 = new System.Windows.Forms.Label();
       this.displayNameTextBox = new System.Windows.Forms.TextBox();
       this.axisGroupBox = new System.Windows.Forms.GroupBox();
+      this.panel2 = new System.Windows.Forms.Panel();
       this.yAxisSecondaryRadioButton = new System.Windows.Forms.RadioButton();
-      this.xAxisPrimaryRadioButton = new System.Windows.Forms.RadioButton();
       this.yAxisPrimaryRadioButton = new System.Windows.Forms.RadioButton();
-      this.label5 = new System.Windows.Forms.Label();
+      this.panel1 = new System.Windows.Forms.Panel();
+      this.xAxisPrimaryRadioButton = new System.Windows.Forms.RadioButton();
       this.xAxisSecondaryRadioButton = new System.Windows.Forms.RadioButton();
+      this.label5 = new System.Windows.Forms.Label();
       this.label6 = new System.Windows.Forms.Label();
       this.label9 = new System.Windows.Forms.Label();
-      this.histoGramGroupBox = new System.Windows.Forms.GroupBox();
-      this.binsExactRadioButton = new System.Windows.Forms.RadioButton();
-      this.binsApproximatelyRadioButton = new System.Windows.Forms.RadioButton();
       this.lineChartGroupBox = new System.Windows.Forms.GroupBox();
       this.lineWidthNumericUpDown = new System.Windows.Forms.NumericUpDown();
       this.label4 = new System.Windows.Forms.Label();
       this.label7 = new System.Windows.Forms.Label();
       this.lineStyleComboBox = new System.Windows.Forms.ComboBox();
       this.label8 = new System.Windows.Forms.Label();
-      this.panel1 = new System.Windows.Forms.Panel();
-      this.panel2 = new System.Windows.Forms.Panel();
-      ((System.ComponentModel.ISupportInitialize)(this.binsNumericUpDown)).BeginInit();
       this.commonGroupBox.SuspendLayout();
       this.axisGroupBox.SuspendLayout();
-      this.histoGramGroupBox.SuspendLayout();
+      this.panel2.SuspendLayout();
+      this.panel1.SuspendLayout();
       this.lineChartGroupBox.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.lineWidthNumericUpDown)).BeginInit();
-      this.panel1.SuspendLayout();
-      this.panel2.SuspendLayout();
       this.SuspendLayout();
       // 
       // chartTypeComboBox
@@ -89,9 +85,9 @@ namespace HeuristicLab.Analysis.Views {
             | System.Windows.Forms.AnchorStyles.Right)));
       this.chartTypeComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.chartTypeComboBox.FormattingEnabled = true;
-      this.chartTypeComboBox.Location = new System.Drawing.Point(57, 45);
+      this.chartTypeComboBox.Location = new System.Drawing.Point(102, 45);
       this.chartTypeComboBox.Name = "chartTypeComboBox";
-      this.chartTypeComboBox.Size = new System.Drawing.Size(264, 21);
+      this.chartTypeComboBox.Size = new System.Drawing.Size(219, 21);
       this.chartTypeComboBox.TabIndex = 3;
       this.chartTypeComboBox.SelectedValueChanged += new System.EventHandler(this.chartTypeComboBox_SelectedValueChanged);
       // 
@@ -102,7 +98,7 @@ namespace HeuristicLab.Analysis.Views {
       // colorButton
       // 
       this.colorButton.BackColor = System.Drawing.SystemColors.Control;
-      this.colorButton.Location = new System.Drawing.Point(56, 72);
+      this.colorButton.Location = new System.Drawing.Point(102, 72);
       this.colorButton.Name = "colorButton";
       this.colorButton.Size = new System.Drawing.Size(23, 23);
       this.colorButton.TabIndex = 5;
@@ -119,26 +115,6 @@ namespace HeuristicLab.Analysis.Views {
       this.startIndexZeroCheckBox.TabIndex = 3;
       this.startIndexZeroCheckBox.UseVisualStyleBackColor = true;
       this.startIndexZeroCheckBox.CheckedChanged += new System.EventHandler(this.startIndexZeroCheckBox_CheckedChanged);
-      // 
-      // binsNumericUpDown
-      // 
-      this.binsNumericUpDown.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.binsNumericUpDown.Location = new System.Drawing.Point(57, 19);
-      this.binsNumericUpDown.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-      this.binsNumericUpDown.Name = "binsNumericUpDown";
-      this.binsNumericUpDown.Size = new System.Drawing.Size(97, 20);
-      this.binsNumericUpDown.TabIndex = 1;
-      this.binsNumericUpDown.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-      this.binsNumericUpDown.ValueChanged += new System.EventHandler(this.binsNumericUpDown_ValueChanged);
       // 
       // label1
       // 
@@ -158,19 +134,13 @@ namespace HeuristicLab.Analysis.Views {
       this.label2.TabIndex = 4;
       this.label2.Text = "&Color:";
       // 
-      // label3
-      // 
-      this.label3.AutoSize = true;
-      this.label3.Location = new System.Drawing.Point(6, 21);
-      this.label3.Name = "label3";
-      this.label3.Size = new System.Drawing.Size(30, 13);
-      this.label3.TabIndex = 0;
-      this.label3.Text = "&Bins:";
-      // 
       // commonGroupBox
       // 
       this.commonGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+      this.commonGroupBox.Controls.Add(this.clearColorButton);
+      this.commonGroupBox.Controls.Add(this.isVisibleInLegendCheckBox);
+      this.commonGroupBox.Controls.Add(this.label10);
       this.commonGroupBox.Controls.Add(this.displayNameTextBox);
       this.commonGroupBox.Controls.Add(this.axisGroupBox);
       this.commonGroupBox.Controls.Add(this.colorButton);
@@ -180,18 +150,54 @@ namespace HeuristicLab.Analysis.Views {
       this.commonGroupBox.Controls.Add(this.chartTypeComboBox);
       this.commonGroupBox.Location = new System.Drawing.Point(0, 0);
       this.commonGroupBox.Name = "commonGroupBox";
-      this.commonGroupBox.Size = new System.Drawing.Size(327, 174);
+      this.commonGroupBox.Size = new System.Drawing.Size(327, 199);
       this.commonGroupBox.TabIndex = 0;
       this.commonGroupBox.TabStop = false;
       this.commonGroupBox.Text = "Common";
+      // 
+      // clearColorButton
+      // 
+      this.clearColorButton.BackColor = System.Drawing.SystemColors.ActiveCaption;
+      this.clearColorButton.Cursor = System.Windows.Forms.Cursors.Default;
+      this.clearColorButton.FlatAppearance.BorderSize = 0;
+      this.clearColorButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.clearColorButton.ForeColor = System.Drawing.Color.Transparent;
+      this.clearColorButton.Location = new System.Drawing.Point(128, 76);
+      this.clearColorButton.Margin = new System.Windows.Forms.Padding(0);
+      this.clearColorButton.Name = "clearColorButton";
+      this.clearColorButton.Size = new System.Drawing.Size(15, 16);
+      this.clearColorButton.TabIndex = 10;
+      this.clearColorButton.TabStop = false;
+      this.clearColorButton.UseVisualStyleBackColor = false;
+      this.clearColorButton.Click += new System.EventHandler(this.clearColorButton_Click);
+      // 
+      // isVisibleInLegendCheckBox
+      // 
+      this.isVisibleInLegendCheckBox.AutoSize = true;
+      this.isVisibleInLegendCheckBox.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+      this.isVisibleInLegendCheckBox.Location = new System.Drawing.Point(102, 104);
+      this.isVisibleInLegendCheckBox.Name = "isVisibleInLegendCheckBox";
+      this.isVisibleInLegendCheckBox.Size = new System.Drawing.Size(15, 14);
+      this.isVisibleInLegendCheckBox.TabIndex = 8;
+      this.isVisibleInLegendCheckBox.UseVisualStyleBackColor = true;
+      this.isVisibleInLegendCheckBox.CheckedChanged += new System.EventHandler(this.isVisibleInLegendCheckBox_CheckedChanged);
+      // 
+      // label10
+      // 
+      this.label10.AutoSize = true;
+      this.label10.Location = new System.Drawing.Point(6, 104);
+      this.label10.Name = "label10";
+      this.label10.Size = new System.Drawing.Size(90, 13);
+      this.label10.TabIndex = 7;
+      this.label10.Text = "&Visible in Legend:";
       // 
       // displayNameTextBox
       // 
       this.displayNameTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.displayNameTextBox.Location = new System.Drawing.Point(57, 19);
+      this.displayNameTextBox.Location = new System.Drawing.Point(102, 19);
       this.displayNameTextBox.Name = "displayNameTextBox";
-      this.displayNameTextBox.Size = new System.Drawing.Size(264, 20);
+      this.displayNameTextBox.Size = new System.Drawing.Size(219, 20);
       this.displayNameTextBox.TabIndex = 1;
       this.displayNameTextBox.Validated += new System.EventHandler(this.displayNameTextBox_Validated);
       // 
@@ -204,12 +210,23 @@ namespace HeuristicLab.Analysis.Views {
       this.axisGroupBox.Controls.Add(this.panel1);
       this.axisGroupBox.Controls.Add(this.label5);
       this.axisGroupBox.Controls.Add(this.label6);
-      this.axisGroupBox.Location = new System.Drawing.Point(6, 101);
+      this.axisGroupBox.Location = new System.Drawing.Point(6, 126);
       this.axisGroupBox.Name = "axisGroupBox";
       this.axisGroupBox.Size = new System.Drawing.Size(315, 67);
       this.axisGroupBox.TabIndex = 6;
       this.axisGroupBox.TabStop = false;
       this.axisGroupBox.Text = "Axes";
+      // 
+      // panel2
+      // 
+      this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.panel2.Controls.Add(this.yAxisSecondaryRadioButton);
+      this.panel2.Controls.Add(this.yAxisPrimaryRadioButton);
+      this.panel2.Location = new System.Drawing.Point(51, 42);
+      this.panel2.Name = "panel2";
+      this.panel2.Size = new System.Drawing.Size(258, 17);
+      this.panel2.TabIndex = 7;
       // 
       // yAxisSecondaryRadioButton
       // 
@@ -223,18 +240,6 @@ namespace HeuristicLab.Analysis.Views {
       this.yAxisSecondaryRadioButton.UseVisualStyleBackColor = true;
       this.yAxisSecondaryRadioButton.CheckedChanged += new System.EventHandler(this.yAxisRadioButton_CheckedChanged);
       // 
-      // xAxisPrimaryRadioButton
-      // 
-      this.xAxisPrimaryRadioButton.AutoSize = true;
-      this.xAxisPrimaryRadioButton.Location = new System.Drawing.Point(0, 0);
-      this.xAxisPrimaryRadioButton.Name = "xAxisPrimaryRadioButton";
-      this.xAxisPrimaryRadioButton.Size = new System.Drawing.Size(59, 17);
-      this.xAxisPrimaryRadioButton.TabIndex = 1;
-      this.xAxisPrimaryRadioButton.TabStop = true;
-      this.xAxisPrimaryRadioButton.Text = "&Primary";
-      this.xAxisPrimaryRadioButton.UseVisualStyleBackColor = true;
-      this.xAxisPrimaryRadioButton.CheckedChanged += new System.EventHandler(this.xAxisRadioButton_CheckedChanged);
-      // 
       // yAxisPrimaryRadioButton
       // 
       this.yAxisPrimaryRadioButton.AutoSize = true;
@@ -247,14 +252,28 @@ namespace HeuristicLab.Analysis.Views {
       this.yAxisPrimaryRadioButton.UseVisualStyleBackColor = true;
       this.yAxisPrimaryRadioButton.CheckedChanged += new System.EventHandler(this.yAxisRadioButton_CheckedChanged);
       // 
-      // label5
+      // panel1
       // 
-      this.label5.AutoSize = true;
-      this.label5.Location = new System.Drawing.Point(6, 44);
-      this.label5.Name = "label5";
-      this.label5.Size = new System.Drawing.Size(39, 13);
-      this.label5.TabIndex = 3;
-      this.label5.Text = "&Y-Axis:";
+      this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.panel1.Controls.Add(this.xAxisPrimaryRadioButton);
+      this.panel1.Controls.Add(this.xAxisSecondaryRadioButton);
+      this.panel1.Location = new System.Drawing.Point(51, 19);
+      this.panel1.Name = "panel1";
+      this.panel1.Size = new System.Drawing.Size(258, 17);
+      this.panel1.TabIndex = 6;
+      // 
+      // xAxisPrimaryRadioButton
+      // 
+      this.xAxisPrimaryRadioButton.AutoSize = true;
+      this.xAxisPrimaryRadioButton.Location = new System.Drawing.Point(0, 0);
+      this.xAxisPrimaryRadioButton.Name = "xAxisPrimaryRadioButton";
+      this.xAxisPrimaryRadioButton.Size = new System.Drawing.Size(59, 17);
+      this.xAxisPrimaryRadioButton.TabIndex = 1;
+      this.xAxisPrimaryRadioButton.TabStop = true;
+      this.xAxisPrimaryRadioButton.Text = "&Primary";
+      this.xAxisPrimaryRadioButton.UseVisualStyleBackColor = true;
+      this.xAxisPrimaryRadioButton.CheckedChanged += new System.EventHandler(this.xAxisRadioButton_CheckedChanged);
       // 
       // xAxisSecondaryRadioButton
       // 
@@ -267,6 +286,15 @@ namespace HeuristicLab.Analysis.Views {
       this.xAxisSecondaryRadioButton.Text = "&Secondary";
       this.xAxisSecondaryRadioButton.UseVisualStyleBackColor = true;
       this.xAxisSecondaryRadioButton.CheckedChanged += new System.EventHandler(this.xAxisRadioButton_CheckedChanged);
+      // 
+      // label5
+      // 
+      this.label5.AutoSize = true;
+      this.label5.Location = new System.Drawing.Point(6, 44);
+      this.label5.Name = "label5";
+      this.label5.Size = new System.Drawing.Size(39, 13);
+      this.label5.TabIndex = 3;
+      this.label5.Text = "&Y-Axis:";
       // 
       // label6
       // 
@@ -286,47 +314,6 @@ namespace HeuristicLab.Analysis.Views {
       this.label9.TabIndex = 0;
       this.label9.Text = "&Name:";
       // 
-      // histoGramGroupBox
-      // 
-      this.histoGramGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.histoGramGroupBox.Controls.Add(this.binsExactRadioButton);
-      this.histoGramGroupBox.Controls.Add(this.binsApproximatelyRadioButton);
-      this.histoGramGroupBox.Controls.Add(this.binsNumericUpDown);
-      this.histoGramGroupBox.Controls.Add(this.label3);
-      this.histoGramGroupBox.Location = new System.Drawing.Point(0, 280);
-      this.histoGramGroupBox.Name = "histoGramGroupBox";
-      this.histoGramGroupBox.Size = new System.Drawing.Size(327, 47);
-      this.histoGramGroupBox.TabIndex = 2;
-      this.histoGramGroupBox.TabStop = false;
-      this.histoGramGroupBox.Text = "Histogram Properties";
-      // 
-      // binsExactRadioButton
-      // 
-      this.binsExactRadioButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.binsExactRadioButton.AutoSize = true;
-      this.binsExactRadioButton.Location = new System.Drawing.Point(269, 19);
-      this.binsExactRadioButton.Name = "binsExactRadioButton";
-      this.binsExactRadioButton.Size = new System.Drawing.Size(52, 17);
-      this.binsExactRadioButton.TabIndex = 3;
-      this.binsExactRadioButton.TabStop = true;
-      this.binsExactRadioButton.Text = "&Exact";
-      this.binsExactRadioButton.UseVisualStyleBackColor = true;
-      this.binsExactRadioButton.CheckedChanged += new System.EventHandler(this.binNumberRadioButton_CheckedChanged);
-      // 
-      // binsApproximatelyRadioButton
-      // 
-      this.binsApproximatelyRadioButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.binsApproximatelyRadioButton.AutoSize = true;
-      this.binsApproximatelyRadioButton.Location = new System.Drawing.Point(173, 19);
-      this.binsApproximatelyRadioButton.Name = "binsApproximatelyRadioButton";
-      this.binsApproximatelyRadioButton.Size = new System.Drawing.Size(90, 17);
-      this.binsApproximatelyRadioButton.TabIndex = 2;
-      this.binsApproximatelyRadioButton.TabStop = true;
-      this.binsApproximatelyRadioButton.Text = "&Approximately";
-      this.binsApproximatelyRadioButton.UseVisualStyleBackColor = true;
-      this.binsApproximatelyRadioButton.CheckedChanged += new System.EventHandler(this.binNumberRadioButton_CheckedChanged);
-      // 
       // lineChartGroupBox
       // 
       this.lineChartGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -337,7 +324,7 @@ namespace HeuristicLab.Analysis.Views {
       this.lineChartGroupBox.Controls.Add(this.label7);
       this.lineChartGroupBox.Controls.Add(this.lineStyleComboBox);
       this.lineChartGroupBox.Controls.Add(this.label8);
-      this.lineChartGroupBox.Location = new System.Drawing.Point(0, 180);
+      this.lineChartGroupBox.Location = new System.Drawing.Point(0, 205);
       this.lineChartGroupBox.Name = "lineChartGroupBox";
       this.lineChartGroupBox.Size = new System.Drawing.Size(327, 94);
       this.lineChartGroupBox.TabIndex = 1;
@@ -403,51 +390,24 @@ namespace HeuristicLab.Analysis.Views {
       this.label8.TabIndex = 0;
       this.label8.Text = "&Style:";
       // 
-      // panel1
-      // 
-      this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.panel1.Controls.Add(this.xAxisPrimaryRadioButton);
-      this.panel1.Controls.Add(this.xAxisSecondaryRadioButton);
-      this.panel1.Location = new System.Drawing.Point(51, 19);
-      this.panel1.Name = "panel1";
-      this.panel1.Size = new System.Drawing.Size(258, 17);
-      this.panel1.TabIndex = 6;
-      // 
-      // panel2
-      // 
-      this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.panel2.Controls.Add(this.yAxisSecondaryRadioButton);
-      this.panel2.Controls.Add(this.yAxisPrimaryRadioButton);
-      this.panel2.Location = new System.Drawing.Point(51, 42);
-      this.panel2.Name = "panel2";
-      this.panel2.Size = new System.Drawing.Size(258, 17);
-      this.panel2.TabIndex = 7;
-      // 
       // DataRowVisualPropertiesControl
       // 
-      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.Controls.Add(this.lineChartGroupBox);
-      this.Controls.Add(this.histoGramGroupBox);
       this.Controls.Add(this.commonGroupBox);
       this.Name = "DataRowVisualPropertiesControl";
-      this.Size = new System.Drawing.Size(327, 331);
-      ((System.ComponentModel.ISupportInitialize)(this.binsNumericUpDown)).EndInit();
+      this.Size = new System.Drawing.Size(327, 300);
       this.commonGroupBox.ResumeLayout(false);
       this.commonGroupBox.PerformLayout();
       this.axisGroupBox.ResumeLayout(false);
       this.axisGroupBox.PerformLayout();
-      this.histoGramGroupBox.ResumeLayout(false);
-      this.histoGramGroupBox.PerformLayout();
+      this.panel2.ResumeLayout(false);
+      this.panel2.PerformLayout();
+      this.panel1.ResumeLayout(false);
+      this.panel1.PerformLayout();
       this.lineChartGroupBox.ResumeLayout(false);
       this.lineChartGroupBox.PerformLayout();
       ((System.ComponentModel.ISupportInitialize)(this.lineWidthNumericUpDown)).EndInit();
-      this.panel1.ResumeLayout(false);
-      this.panel1.PerformLayout();
-      this.panel2.ResumeLayout(false);
-      this.panel2.PerformLayout();
       this.ResumeLayout(false);
 
     }
@@ -458,12 +418,9 @@ namespace HeuristicLab.Analysis.Views {
     private System.Windows.Forms.ColorDialog colorDialog;
     private System.Windows.Forms.Button colorButton;
     private System.Windows.Forms.CheckBox startIndexZeroCheckBox;
-    private System.Windows.Forms.NumericUpDown binsNumericUpDown;
     private System.Windows.Forms.Label label1;
     private System.Windows.Forms.Label label2;
-    private System.Windows.Forms.Label label3;
     private System.Windows.Forms.GroupBox commonGroupBox;
-    private System.Windows.Forms.GroupBox histoGramGroupBox;
     private System.Windows.Forms.RadioButton xAxisSecondaryRadioButton;
     private System.Windows.Forms.RadioButton yAxisSecondaryRadioButton;
     private System.Windows.Forms.RadioButton xAxisPrimaryRadioButton;
@@ -473,8 +430,6 @@ namespace HeuristicLab.Analysis.Views {
     private System.Windows.Forms.NumericUpDown lineWidthNumericUpDown;
     private System.Windows.Forms.Label label4;
     private System.Windows.Forms.Label label7;
-    private System.Windows.Forms.RadioButton binsExactRadioButton;
-    private System.Windows.Forms.RadioButton binsApproximatelyRadioButton;
     private System.Windows.Forms.ComboBox lineStyleComboBox;
     private System.Windows.Forms.Label label8;
     private System.Windows.Forms.Label label5;
@@ -483,5 +438,8 @@ namespace HeuristicLab.Analysis.Views {
     private System.Windows.Forms.Label label9;
     private System.Windows.Forms.Panel panel2;
     private System.Windows.Forms.Panel panel1;
+    private System.Windows.Forms.Label label10;
+    private System.Windows.Forms.CheckBox isVisibleInLegendCheckBox;
+    private System.Windows.Forms.Button clearColorButton;
   }
 }

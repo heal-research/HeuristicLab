@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -35,12 +35,12 @@ namespace HeuristicLab.Optimization.Views {
 
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
-      pauseButton.Enabled = false;
+      pauseButton.Enabled &= Content != null && Content.SupportsPause;
     }
 
     protected override void SetEnabledStateOfExecutableButtons() {
       base.SetEnabledStateOfExecutableButtons();
-      pauseButton.Enabled = false;
+      pauseButton.Enabled &= Content != null && Content.SupportsPause;
     }
   }
 }

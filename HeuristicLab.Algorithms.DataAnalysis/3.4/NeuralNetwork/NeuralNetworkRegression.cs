@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -169,7 +170,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
 
     #region neural network
-    protected override void Run() {
+    protected override void Run(CancellationToken cancellationToken) {
       double rmsError, avgRelError;
       var solution = CreateNeuralNetworkRegressionSolution(Problem.ProblemData, HiddenLayers, NodesInFirstHiddenLayer, NodesInSecondHiddenLayer, Decay, Restarts, out rmsError, out avgRelError);
       Results.Add(new Result(NeuralNetworkRegressionModelResultName, "The neural network regression solution.", solution));
@@ -183,7 +184,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       string targetVariable = problemData.TargetVariable;
       IEnumerable<string> allowedInputVariables = problemData.AllowedInputVariables;
       IEnumerable<int> rows = problemData.TrainingIndices;
-      double[,] inputMatrix = AlglibUtil.PrepareInputMatrix(dataset, allowedInputVariables.Concat(new string[] { targetVariable }), rows);
+      double[,] inputMatrix = dataset.ToArray(allowedInputVariables.Concat(new string[] { targetVariable }), rows);
       if (inputMatrix.Cast<double>().Any(x => double.IsNaN(x) || double.IsInfinity(x)))
         throw new NotSupportedException("Neural network regression does not support NaN or infinity values in the input dataset.");
 
@@ -206,7 +207,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       rmsError = alglib.mlprmserror(multiLayerPerceptron, inputMatrix, nRows);
       avgRelError = alglib.mlpavgrelerror(multiLayerPerceptron, inputMatrix, nRows);
 
-      return new NeuralNetworkRegressionSolution((IRegressionProblemData)problemData.Clone(), new NeuralNetworkModel(multiLayerPerceptron, targetVariable, allowedInputVariables));
+      return new NeuralNetworkRegressionSolution(new NeuralNetworkModel(multiLayerPerceptron, targetVariable, allowedInputVariables), (IRegressionProblemData)problemData.Clone());
     }
     #endregion
   }

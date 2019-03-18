@@ -23,6 +23,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <LangVersion>5</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -32,6 +33,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <LangVersion>5</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>
@@ -53,6 +55,7 @@
     <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
     <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
     <Prefer32Bit>false</Prefer32Bit>
+    <LangVersion>5</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>..\..\bin\</OutputPath>
@@ -70,6 +73,7 @@
     <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
     <Prefer32Bit>false</Prefer32Bit>
+    <LangVersion>5</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -85,6 +89,7 @@
     <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
     <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
     <Prefer32Bit>false</Prefer32Bit>
+    <LangVersion>5</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>..\..\bin\</OutputPath>
@@ -102,8 +107,13 @@
     <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
     <Prefer32Bit>false</Prefer32Bit>
+    <LangVersion>5</LangVersion>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ALGLIB-3.7.0, Version=3.7.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\ALGLIB-3.7.0.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -146,6 +156,20 @@
     <Compile Include="Regression\FeatureSelection\FeatureSelectionRegressionProblemData.cs" />
     <Compile Include="Regression\FeatureSelection\FeatureSelection.cs" />
     <Compile Include="Regression\FeatureSelection\FeatureSelectionInstanceProvider.cs" />
+    <Compile Include="Regression\MibaFriction\CF3.cs" />
+    <Compile Include="Regression\MibaFriction\Wear1.cs" />
+    <Compile Include="Regression\MibaFriction\Wear2.cs" />
+    <Compile Include="Regression\MibaFriction\Temp2.cs" />
+    <Compile Include="Regression\MibaFriction\Temp1.cs" />
+    <Compile Include="Regression\MibaFriction\NvhRating.cs" />
+    <Compile Include="Regression\MibaFriction\CF4.cs" />
+    <Compile Include="Regression\MibaFriction\CF2.cs" />
+    <Compile Include="Regression\MibaFriction\CF1.cs" />
+    <Compile Include="Regression\MibaFriction\MibaFrictionRegressionInstanceProvider.cs" />
+    <Compile Include="Regression\VariableNetworks\LinearVariableNetwork.cs" />
+    <Compile Include="Regression\VariableNetworks\GaussianProcessVariableNetwork.cs" />
+    <Compile Include="Regression\VariableNetworks\VariableNetwork.cs" />
+    <Compile Include="Regression\VariableNetworks\VariableNetworkInstanceProvider.cs" />
     <Compile Include="Regression\Keijzer\KeijzerFunctionFourteen.cs" />
     <Compile Include="Regression\Keijzer\KeijzerFunctionEleven.cs" />
     <Compile Include="Regression\Keijzer\KeijzerFunctionFive.cs" />
@@ -165,7 +189,7 @@
     <Compile Include="Regression\Korns\KornsFunctionEight.cs" />
     <Compile Include="Regression\Korns\KornsFunctionEleven.cs" />
     <Compile Include="Regression\Korns\KornsFunctionFive.cs" />
-    <Compile Include="Regression\Korns\KornsFunctionFiveteen.cs" />
+    <Compile Include="Regression\Korns\KornsFunctionFifteen.cs" />
     <Compile Include="Regression\Korns\KornsFunctionFour.cs" />
     <Compile Include="Regression\Korns\KornsFunctionFourteen.cs" />
     <Compile Include="Regression\Korns\KornsFunctionNine.cs" />
@@ -178,6 +202,8 @@
     <Compile Include="Regression\Korns\KornsFunctionTwelve.cs" />
     <Compile Include="Regression\Korns\KornsFunctionTwo.cs" />
     <Compile Include="Regression\Korns\KornsInstanceProvider.cs" />
+    <Compile Include="Regression\Friedman\FriedmanRandomFunction.cs" />
+    <Compile Include="Regression\Friedman\FriedmanRandomFunctionInstanceProvider.cs" />
     <Compile Include="Regression\Nguyen\NguyenFunctionEight.cs" />
     <Compile Include="Regression\Nguyen\NguyenFunctionEleven.cs" />
     <Compile Include="Regression\Nguyen\NguyenFunctionFive.cs" />
@@ -195,6 +221,7 @@
     <Compile Include="Regression\RealWorld\Powermeter.cs" />
     <Compile Include="Regression\RealWorld\Housing.cs" />
     <Compile Include="Regression\RealWorld\RealWorldRegressionInstanceProvider.cs" />
+    <Compile Include="Regression\RealWorld\SARCOS.cs" />
     <Compile Include="Regression\RealWorld\Tower.cs" />
     <Compile Include="Regression\RegressionDataDescriptor.cs" />
     <Compile Include="Regression\RegressionImportType.cs" />
@@ -228,6 +255,7 @@
     <None Include="Plugin.cs.frame" />
     <None Include="Properties\AssemblyInfo.cs.frame" />
     <EmbeddedResource Include="Regression\Data\RegressionRealWorld.zip" />
+    <EmbeddedResource Include="Regression\Data\MibaFriction.zip" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">

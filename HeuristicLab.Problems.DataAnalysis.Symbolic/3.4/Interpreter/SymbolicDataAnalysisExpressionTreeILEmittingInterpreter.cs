@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -65,6 +65,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private static MethodInfo norm = thisType.GetMethod("Norm", new Type[] { typeof(double) });
     private static MethodInfo erf = thisType.GetMethod("Erf", new Type[] { typeof(double) });
     private static MethodInfo bessel = thisType.GetMethod("Bessel", new Type[] { typeof(double) });
+    private static MethodInfo string_eq = typeof(string).GetMethod("Equals", new Type[] { typeof(string) });
     #endregion
 
     private const string CheckExpressionsWithIntervalArithmeticParameterName = "CheckExpressionsWithIntervalArithmetic";
@@ -258,7 +259,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
               CompileInstructions(il, state, ds);
               il.Emit(System.Reflection.Emit.OpCodes.Add);
             }
-            il.Emit(System.Reflection.Emit.OpCodes.Ldc_I4, nArgs);
+            il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, (double)nArgs);
             il.Emit(System.Reflection.Emit.OpCodes.Div);
             return;
           }
@@ -456,6 +457,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             CompileInstructions(il, state, ds);
             il.Emit(System.Reflection.Emit.OpCodes.Ldc_I4_0); // > 0
             il.Emit(System.Reflection.Emit.OpCodes.Cgt);
+            il.Emit(System.Reflection.Emit.OpCodes.Conv_R8); // convert to float64
             il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, 2.0); // * 2
             il.Emit(System.Reflection.Emit.OpCodes.Mul);
             il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, 1.0); // - 1
@@ -474,6 +476,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
               il.Emit(System.Reflection.Emit.OpCodes.Cgt);// > 0
               il.Emit(System.Reflection.Emit.OpCodes.Xor);
             }
+            il.Emit(System.Reflection.Emit.OpCodes.Conv_R8); // convert to float64
+
             il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, 2.0); // * 2
             il.Emit(System.Reflection.Emit.OpCodes.Mul);
             il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, 1.0); // - 1
@@ -485,6 +489,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             CompileInstructions(il, state, ds);
 
             il.Emit(System.Reflection.Emit.OpCodes.Cgt); // 1 (>) / 0 (otherwise)
+            il.Emit(System.Reflection.Emit.OpCodes.Conv_R8); // convert to float64
             il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, 2.0); // * 2
             il.Emit(System.Reflection.Emit.OpCodes.Mul);
             il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, 1.0); // - 1
@@ -495,6 +500,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             CompileInstructions(il, state, ds);
             CompileInstructions(il, state, ds);
             il.Emit(System.Reflection.Emit.OpCodes.Clt);
+            il.Emit(System.Reflection.Emit.OpCodes.Conv_R8); // convert to float64
             il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, 2.0); // * 2
             il.Emit(System.Reflection.Emit.OpCodes.Mul);
             il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, 1.0); // - 1

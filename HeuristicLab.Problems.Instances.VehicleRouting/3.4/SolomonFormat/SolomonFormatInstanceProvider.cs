@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,7 +20,7 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 
@@ -63,18 +63,21 @@ namespace HeuristicLab.Problems.Instances.VehicleRouting {
         string authors = ExtractValue(reader.ReadLine());
         string date = ExtractValue(reader.ReadLine());
         string reference = ExtractValue(reader.ReadLine());
-        reader.ReadLine(); // Solution
-
-        var routesQuery =
-          from line in reader.ReadAllLines()
-          where !string.IsNullOrEmpty(line)
-          let tokens = ExtractValue(line).Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
-          let stops = tokens.Select(int.Parse).Select(s => s - 1)
-          select stops;
-
-        var routes = routesQuery.Select(s => s.ToArray()).ToArray();
-
-        instance.BestKnownTour = routes;
+        switch (reader.ReadLine().Trim()) { // "Solution" or "Distance"
+          case "Solution":
+            var routesQuery = from line in reader.ReadAllLines()
+                              where !string.IsNullOrEmpty(line)
+                              let tokens = ExtractValue(line).Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
+                              let stops = tokens.Select(int.Parse).Select(s => s - 1)
+                              select stops;
+            var routes = routesQuery.Select(s => s.ToArray()).ToArray();
+            instance.BestKnownTour = routes;
+            break;
+          case "Distance":
+            double quality = double.Parse(reader.ReadLine(), CultureInfo.InvariantCulture);
+            instance.BestKnownQuality = quality;
+            break;
+        }
       }
     }
 

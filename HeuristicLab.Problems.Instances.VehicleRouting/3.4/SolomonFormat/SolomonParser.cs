@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -142,7 +142,7 @@ namespace HeuristicLab.Problems.Instances.VehicleRouting {
           throw new InvalidDataException("File has wrong format!");
 
         vehicles = int.Parse(m[0].Value);
-        capacity = double.Parse(m[1].Value);
+        capacity = double.Parse(m[1].Value, System.Globalization.CultureInfo.InvariantCulture);
 
         for (int i = 0; i < 4; i++) {
           reader.ReadLine();

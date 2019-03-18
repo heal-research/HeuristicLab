@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,7 +25,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableClass]
-  public sealed class LaggedVariableTreeNode : VariableTreeNode, ILaggedTreeNode {
+  public sealed class LaggedVariableTreeNode : VariableTreeNodeBase, ILaggedTreeNode {
     public new LaggedVariable Symbol {
       get { return (LaggedVariable)base.Symbol; }
     }

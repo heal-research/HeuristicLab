@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -66,7 +66,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         NegativeLogLikelihoodParameter.ActualValue = new DoubleValue(model.NegativeLogLikelihood);
         HyperparameterGradientsParameter.ActualValue = new RealVector(model.HyperparameterGradients);
         return base.Apply();
-      } catch (ArgumentException) { } catch (alglib.alglibexception) { }
+      } catch (ArgumentException) {
+      } catch (alglib.alglibexception) {
+      }
       NegativeLogLikelihoodParameter.ActualValue = new DoubleValue(1E300);
       HyperparameterGradientsParameter.ActualValue = new RealVector(Hyperparameter.Count());
       return base.Apply();

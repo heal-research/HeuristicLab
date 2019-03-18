@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?><Database Name="HeuristicLab.Hive" Class="HiveDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
-  <Connection Mode="AppSettings" ConnectionString="Data Source=localhost;Initial Catalog=HeuristicLab.Hive-3.3;Integrated Security=True" SettingsObjectName="HeuristicLab.Services.Hive.DataAccess.Settings" SettingsPropertyName="HeuristicLab_Hive_LinqConnectionString" Provider="System.Data.SqlClient" />
+  <Connection Mode="AppSettings" ConnectionString="Data Source=.\SQLEXPRESS;Integrated Security=SSPI;Initial Catalog=HeuristicLab.Hive-3.3" SettingsObjectName="HeuristicLab.Services.Hive.DataAccess.Settings" SettingsPropertyName="HeuristicLab_Hive_LinqConnectionString" Provider="System.Data.SqlClient" />
   <Table Name="dbo.AssignedResources" Member="AssignedResources">
     <Type Name="AssignedResource">
       <Column Name="ResourceId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />

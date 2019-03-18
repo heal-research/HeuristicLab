@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -28,7 +28,6 @@ using HeuristicLab.Core;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 using HeuristicLab.Optimization;
-using HeuristicLab.Optimization.Views;
 using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.PluginInfrastructure;
 
@@ -96,14 +95,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       }
     }
 
-    protected override void itemsListView_DoubleClick(object sender, EventArgs e) {
+    protected sealed override void itemsListView_DoubleClick(object sender, EventArgs e) {
       if (itemsListView.SelectedItems.Count != 1) return;
 
       IResult result = itemsListView.SelectedItems[0].Tag as IResult;
       Type viewType = itemsListView.SelectedItems[0].Tag as Type;
       if (result != null) {
-        IContentView view = MainFormManager.MainForm.ShowContent(result, typeof(ResultView));
+        IContentView view = MainFormManager.MainForm.ShowContent(result.Value);
         if (view != null) {
+          view.Caption = result.Name;
           view.ReadOnly = ReadOnly;
           view.Locked = Locked;
         }
@@ -141,6 +141,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
         var solution = (IDataAnalysisSolution)Content.Clone();
         problemData.AdjustProblemDataProperties(solution.ProblemData);
+
         solution.ProblemData = problemData;
         if (!solution.Name.EndsWith(" with loaded problemData"))
           solution.Name += " with loaded problemData";
@@ -212,7 +213,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     }
 
     protected override void itemsListView_DragDrop(object sender, DragEventArgs e) {
-      if (e.Effect == DragDropEffects.None) return;
+      if (e.Effect != DragDropEffects.Copy) return;
 
       IDataAnalysisProblemData problemData = null;
       var dropData = e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat);
@@ -226,12 +227,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       }
       if (problemData == null) return;
 
+      problemData = (IDataAnalysisProblemData)problemData.Clone();
+
       try {
         problemData.AdjustProblemDataProperties(Content.ProblemData);
         Content.ProblemData = problemData;
 
         if (!Content.Name.EndsWith(" with changed problemData"))
           Content.Name += " with changed problemData";
+        Content.Filename = string.Empty;
+        MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().UpdateTitle();
       }
       catch (InvalidOperationException invalidOperationException) {
         ErrorHandling.ShowErrorDialog(this, invalidOperationException);

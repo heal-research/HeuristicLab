@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -119,6 +119,40 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
       if (position >= Length) position = position % Length;
       while (position < 0) position += Length;
       return this[position];
+    }
+
+    public virtual void Swap(int i, int j) {
+      var h = array[i];
+      array[i] = array[j];
+      array[j] = h;
+      OnReset();
+    }
+
+    public virtual void Reverse(int startIndex, int length) {
+      Array.Reverse(array, startIndex, length);
+      if (length > 1) OnReset();
+    }
+
+    public virtual void Move(int startIndex, int endIndex, int insertIndex) {
+      if (insertIndex == startIndex) return;
+      if (insertIndex > startIndex && insertIndex <= endIndex) {
+        var start = endIndex + 1;
+        var end = endIndex + insertIndex - startIndex;
+        insertIndex = startIndex;
+        startIndex = start;
+        endIndex = end;
+      }
+      var original = (int[])array.Clone();
+      Array.Copy(original, startIndex, array, insertIndex, endIndex - startIndex + 1);
+      if (insertIndex > endIndex)
+        Array.Copy(original, endIndex + 1, array, startIndex, insertIndex - startIndex);
+      else Array.Copy(original, insertIndex, array, insertIndex + endIndex - startIndex + 1, startIndex - insertIndex);
+      OnReset();
+    }
+
+    public virtual void Replace(int startIndex, int[] replacement) {
+      Array.Copy(replacement, 0, array, startIndex, replacement.Length);
+      OnReset();
     }
 
     public event EventHandler PermutationTypeChanged;

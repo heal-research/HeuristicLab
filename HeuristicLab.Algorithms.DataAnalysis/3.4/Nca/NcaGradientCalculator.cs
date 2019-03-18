@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -98,8 +98,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         NcaMatrixGradientsParameter.ActualValue = gradients;
       }
 
-      var data = AlglibUtil.PrepareInputMatrix(problemData.Dataset, problemData.AllowedInputVariables,
-                                               problemData.TrainingIndices);
+      var data = problemData.Dataset.ToArray(problemData.AllowedInputVariables,
+                                             problemData.TrainingIndices);
       var classes = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, problemData.TrainingIndices).ToArray();
 
       var quality = Gradient(vector, gradients, data, classes, dimensions, neighborSamples, regularization);

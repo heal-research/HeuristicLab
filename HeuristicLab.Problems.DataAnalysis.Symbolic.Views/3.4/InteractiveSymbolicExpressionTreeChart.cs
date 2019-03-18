@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -101,7 +101,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
         dialog.ShowDialog(this);
         if (dialog.DialogResult != DialogResult.OK) return;
 
-        var symbol = dialog.SelectedSymbol();
+        var symbol = dialog.SelectedSymbol;
         var node = symbol.CreateTreeNode();
         if (node is ConstantTreeNode) {
           var constant = node as ConstantTreeNode;
@@ -109,7 +109,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
         } else if (node is VariableTreeNode) {
           var variable = node as VariableTreeNode;
           variable.Weight = double.Parse(dialog.variableWeightTextBox.Text);
-          variable.VariableName = dialog.variableNamesCombo.Text;
+          variable.VariableName = dialog.SelectedVariableName;
         } else if (node.Symbol.MinimumArity <= parent.SubtreeCount && node.Symbol.MaximumArity >= parent.SubtreeCount) {
           for (int i = parent.SubtreeCount - 1; i >= 0; --i) {
             var child = parent.GetSubtree(i);

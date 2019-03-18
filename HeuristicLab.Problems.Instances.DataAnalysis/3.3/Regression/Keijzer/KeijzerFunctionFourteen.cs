@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
+using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
   public class KeijzerFunctionFourteen : ArtificialRegressionDataDescriptor {
@@ -34,8 +35,9 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
         + "Authors: Maarten Keijzer" + Environment.NewLine
         + "Function: f(x, y) = 8 / (2 + x² + y²)" + Environment.NewLine
         + "range(train): 20 Train cases x,y = rnd(-3, 3)" + Environment.NewLine
-        + "range(test): x,y = [-3:0.01:3]" + Environment.NewLine
-        + "Function Set: x + y, x * y, 1/x, -x, sqrt(x)";
+        + "range(test): x,y = [-3:0.1:3]" + Environment.NewLine
+        + "Function Set: x + y, x * y, 1/x, -x, sqrt(x)" + Environment.NewLine
+        + "Comments: Reduced test set compared to original publication!";
       }
     }
     protected override string TargetVariable { get { return "F"; } }
@@ -44,17 +46,26 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     protected override int TrainingPartitionStart { get { return 0; } }
     protected override int TrainingPartitionEnd { get { return 20; } }
     protected override int TestPartitionStart { get { return 20; } }
-    protected override int TestPartitionEnd { get { return 20 + (601 * 601); } }
+    protected override int TestPartitionEnd { get { return 20 + (61 * 61); } }
+    public int Seed { get; private set; }
+
+    public KeijzerFunctionFourteen() : this((int)System.DateTime.Now.Ticks) {
+    }
+    public KeijzerFunctionFourteen(int seed) : base() {
+      Seed = seed;
+    }
+
 
     protected override List<List<double>> GenerateValues() {
       List<List<double>> data = new List<List<double>>();
-      List<double> oneVariableTestData = SequenceGenerator.GenerateSteps(-3, 3, 0.01m).Select(v => (double) v).ToList();
+      List<double> oneVariableTestData = SequenceGenerator.GenerateSteps(-3, 3, 0.1m).Select(v => (double)v).ToList();
       List<List<double>> testData = new List<List<double>>() { oneVariableTestData, oneVariableTestData };
 
       var combinations = ValueGenerator.GenerateAllCombinationsOfValuesInLists(testData).ToList();
+      var rand = new MersenneTwister((uint)Seed);
 
       for (int i = 0; i < AllowedInputVariables.Count(); i++) {
-        data.Add(ValueGenerator.GenerateUniformDistributedValues(20, -3, 3).ToList());
+        data.Add(ValueGenerator.GenerateUniformDistributedValues(rand.Next(), 20, -3, 3).ToList());
         data[i].AddRange(combinations[i]);
       }
 

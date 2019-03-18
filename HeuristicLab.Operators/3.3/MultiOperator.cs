@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -51,6 +52,8 @@ namespace HeuristicLab.Operators {
         }
       }
     }
+    
+    IEnumerable<IOperator> IMultiOperator.Operators { get { return operators.AsEnumerable(); } }
 
     [StorableConstructor]
     protected MultiOperator(bool deserializing) : base(deserializing) { }
@@ -68,6 +71,19 @@ namespace HeuristicLab.Operators {
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       Initialize();
+    }
+
+    public virtual bool AddOperator(IOperator op) {
+      var tOp = op as T;
+      if (tOp == null) return false;
+      operators.Add(tOp);
+      return true;
+    }
+
+    public virtual bool RemoveOperator(IOperator op) {
+      var tOp = op as T;
+      if (tOp == null) return false;
+      return operators.Remove(tOp);
     }
 
     private void Initialize() {

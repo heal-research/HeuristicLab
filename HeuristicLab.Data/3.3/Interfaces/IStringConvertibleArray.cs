@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,23 +19,12 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
 using HeuristicLab.Common;
 
 namespace HeuristicLab.Data {
-  public interface IStringConvertibleArray : IContent {
-    int Length { get; set; }
-    IEnumerable<string> ElementNames { get; set; }
-
-    bool ReadOnly { get; }
-
+  public interface IStringConvertibleArray : IContent, IValueTypeArray {
     bool Validate(string value, out string errorMessage);
     string GetValue(int index);
     bool SetValue(string value, int index);
-
-    event EventHandler ElementNamesChanged;
-    event EventHandler<EventArgs<int>> ItemChanged;
-    event EventHandler Reset;
   }
 }

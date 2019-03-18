@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
   public class KeijzerInstanceProvider : ArtificialRegressionInstanceProvider {
@@ -36,24 +37,32 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     public override string ReferencePublication {
       get { return "McDermott et al., 2012 \"Genetic Programming Needs Better Benchmarks\", in Proc. of GECCO 2012."; }
     }
+    public int Seed { get; private set; }
+
+    public KeijzerInstanceProvider() : this((int)System.DateTime.Now.Ticks) {
+    }
+    public KeijzerInstanceProvider(int seed) : base() {
+      Seed = seed;
+    }
 
     public override IEnumerable<IDataDescriptor> GetDataDescriptors() {
       List<IDataDescriptor> descriptorList = new List<IDataDescriptor>();
+      var rand = new MersenneTwister((uint)Seed);
       descriptorList.Add(new KeijzerFunctionOne());
       descriptorList.Add(new KeijzerFunctionTwo());
       descriptorList.Add(new KeijzerFunctionThree());
       descriptorList.Add(new KeijzerFunctionFour());
-      descriptorList.Add(new KeijzerFunctionFive());
+      descriptorList.Add(new KeijzerFunctionFive(rand.Next()));
       descriptorList.Add(new KeijzerFunctionSix());
       descriptorList.Add(new KeijzerFunctionSeven());
       descriptorList.Add(new KeijzerFunctionEight());
       descriptorList.Add(new KeijzerFunctionNine());
-      descriptorList.Add(new KeijzerFunctionTen());
-      descriptorList.Add(new KeijzerFunctionEleven());
-      descriptorList.Add(new KeijzerFunctionTwelve());
-      descriptorList.Add(new KeijzerFunctionThirteen());
-      descriptorList.Add(new KeijzerFunctionFourteen());
-      descriptorList.Add(new KeijzerFunctionFifteen());
+      descriptorList.Add(new KeijzerFunctionTen(rand.Next()));
+      descriptorList.Add(new KeijzerFunctionEleven(rand.Next()));
+      descriptorList.Add(new KeijzerFunctionTwelve(rand.Next()));
+      descriptorList.Add(new KeijzerFunctionThirteen(rand.Next()));
+      descriptorList.Add(new KeijzerFunctionFourteen(rand.Next()));
+      descriptorList.Add(new KeijzerFunctionFifteen(rand.Next()));
       return descriptorList;
     }
   }

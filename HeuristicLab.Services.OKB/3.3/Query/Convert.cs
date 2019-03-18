@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -45,7 +45,7 @@ namespace HeuristicLab.Services.OKB.Query {
 
     private static DT.Algorithm ToDto(DA.Algorithm source) {
       if (source == null) return null;
-      return new DT.Algorithm { Name = source.Name, Description = source.Description, AlgorithmClass = source.AlgorithmClass.Name, Platform = source.Platform.Name, DataType = Convert.ToDto(source.DataType) };
+      return new DT.Algorithm { Id = source.Id, Name = source.Name, Description = source.Description, AlgorithmClass = source.AlgorithmClass.Name, Platform = source.Platform.Name, DataType = Convert.ToDto(source.DataType) };
     }
 
     private static DT.Problem ToDto(DA.Problem source) {

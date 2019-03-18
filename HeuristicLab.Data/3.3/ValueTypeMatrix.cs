@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -192,6 +192,24 @@ namespace HeuristicLab.Data {
       ValueTypeMatrix<T> readOnlyValueTypeMatrix = (ValueTypeMatrix<T>)this.Clone();
       readOnlyValueTypeMatrix.readOnly = true;
       return readOnlyValueTypeMatrix;
+    }
+
+   
+    public T[,] CloneAsMatrix() {
+      //mkommend: this works because T must be a value type (struct constraint);
+      return (T[,])matrix.Clone();
+    }
+
+    public virtual IEnumerable<T> GetRow(int row) {
+      for (var col = 0; col < Columns; col++) {
+        yield return matrix[row, col];
+      }
+    }
+
+    public virtual IEnumerable<T> GetColumn(int col) {
+      for (var row = 0; row < Rows; row++) {
+        yield return matrix[row, col];
+      }
     }
 
     public override string ToString() {

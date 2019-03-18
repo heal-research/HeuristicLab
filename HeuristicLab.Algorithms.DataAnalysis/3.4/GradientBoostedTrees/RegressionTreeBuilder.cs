@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  * and the BEACON Center for the Study of Evolution in Action.
  * 
  * This file is part of HeuristicLab.
@@ -21,7 +21,6 @@
 #endregion
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -128,15 +127,15 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       Debug.Assert(m <= 1.0);
 
       // y and curPred are changed in gradient boosting
-      this.y = y; 
-      this.curPred = curPred; 
+      this.y = y;
+      this.curPred = curPred;
 
       // shuffle row idx
       HeuristicLab.Random.ListExtensions.ShuffleInPlace(idx, random);
 
       int nRows = idx.Count();
 
-      // shuffle variable idx
+      // shuffle variable names
       HeuristicLab.Random.ListExtensions.ShuffleInPlace(allowedVariables, random);
 
       // only select a part of the rows and columns randomly
@@ -175,11 +174,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       // process the priority queue to complete the tree
       CreateRegressionTreeFromQueue(maxSize, lossFunction);
 
-      return new RegressionTreeModel(tree.ToArray());
+      return new RegressionTreeModel(tree.ToArray(), problemData.TargetVariable);
     }
 
 
-    // processes potential splits from the queue as long as splits are left and the maximum size of the tree is not reached
+    // processes potential splits from the queue as long as splits are remaining and the maximum size of the tree is not reached
     private void CreateRegressionTreeFromQueue(int maxNodes, ILossFunction lossFunction) {
       while (queue.Any() && curTreeNodeIdx + 1 < maxNodes) { // two nodes are created in each loop
         var f = queue[queue.Count - 1]; // last element has the largest improvement
@@ -203,7 +202,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         var rightTreeIdx = CreateLeafNode(splitIdx + 1, endIdx, lossFunction);
 
         // overwrite existing leaf node with an internal node
-        tree[f.ParentNodeIdx] = new RegressionTreeModel.TreeNode(f.SplittingVariable, f.SplittingThreshold, leftTreeIdx, rightTreeIdx);
+        tree[f.ParentNodeIdx] = new RegressionTreeModel.TreeNode(f.SplittingVariable, f.SplittingThreshold, leftTreeIdx, rightTreeIdx, weightLeft: (splitIdx - startIdx + 1) / (double)(endIdx - startIdx + 1));
       }
     }
 

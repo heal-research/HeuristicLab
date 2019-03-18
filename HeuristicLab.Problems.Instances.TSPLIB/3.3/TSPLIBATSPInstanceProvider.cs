@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -35,7 +35,7 @@ namespace HeuristicLab.Problems.Instances.TSPLIB {
 
     protected override string FileExtension { get { return "atsp"; } }
 
-    protected override ATSPData LoadInstance(TSPLIBParser parser) {
+    protected override ATSPData LoadInstance(TSPLIBParser parser, IDataDescriptor descriptor = null) {
       var instance = new ATSPData();
 
       parser.Parse();
@@ -54,6 +54,10 @@ namespace HeuristicLab.Problems.Instances.TSPLIB {
     protected override void LoadSolution(TSPLIBParser parser, ATSPData instance) {
       parser.Parse();
       instance.BestKnownTour = parser.Tour.FirstOrDefault();
+    }
+
+    protected override void LoadQuality(double? bestQuality, ATSPData instance) {
+      instance.BestKnownQuality = bestQuality;
     }
   }
 }

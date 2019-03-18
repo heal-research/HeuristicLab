@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,13 +25,14 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.ScheduleEncoding;
 using HeuristicLab.Operators;
+using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.Scheduling {
   [Item("SchedulingEvaluator", "First applies the decoder operator to obtain a schedule from an encoding and then applies the evaluator to obtain a quality.")]
   [StorableClass]
-  public class SchedulingEvaluator : InstrumentedOperator, ISchedulingEvaluator {
+  public class SchedulingEvaluator : InstrumentedOperator, ISchedulingEvaluator, IStochasticOperator {
 
     public IValueLookupParameter<IScheduleDecoder> ScheduleDecoderParameter {
       get { return (IValueLookupParameter<IScheduleDecoder>)Parameters["ScheduleDecoder"]; }
@@ -48,6 +49,13 @@ namespace HeuristicLab.Problems.Scheduling {
     public ILookupParameter<DoubleValue> QualityParameter {
       get { return (ILookupParameter<DoubleValue>)Parameters["Quality"]; }
     }
+    // ABE: This parameter exists purely, because some IScheduleDecoders are stochastic...
+    // ... which could be solved by letting the algorithm parameterize them ...
+    // ... but they have to use the same RNG as the evaluator (due to parallel execution)...
+    // ... in particular relevant for Island-GA and ALPS (Local- vs GlobalRandom).
+    public ILookupParameter<IRandom> RandomParameter {
+      get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
+    }
 
     [StorableConstructor]
     protected SchedulingEvaluator(bool deserializing) : base(deserializing) { }
@@ -57,11 +65,22 @@ namespace HeuristicLab.Problems.Scheduling {
       Parameters.Add(new ValueLookupParameter<IScheduleDecoder>("ScheduleDecoder", "The decoding operator that is used to calculate a schedule from the used representation."));
       Parameters.Add(new ValueLookupParameter<IScheduleEvaluator>("ScheduleEvaluator", "The actual schedule evaluation operator."));
       Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The quality value aka fitness value of the solution."));
+      Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator to use."));
       QualityParameter.Hidden = true;
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new SchedulingEvaluator(this, cloner);
+    }
+    
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code, remove with 3.4
+      if (!Parameters.ContainsKey("Random")) {
+        Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator to use."));
+      }
+      #endregion
     }
 
     public override IOperation InstrumentedApply() {

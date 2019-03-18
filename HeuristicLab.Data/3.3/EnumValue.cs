@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -51,8 +51,6 @@ namespace HeuristicLab.Data {
     private EnumValue(bool deserializing) : base(deserializing) { }
     private EnumValue(EnumValue<T> original, Cloner cloner)
       : base(original, cloner) {
-      this.value = original.value;
-      this.readOnly = original.readOnly;
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {

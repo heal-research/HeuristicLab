@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,6 +24,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
 using HeuristicLab.Optimization.Operators;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.Knapsack {
   /// <summary>
@@ -33,7 +34,9 @@ namespace HeuristicLab.Problems.Knapsack {
   /// The operator calculates the similarity based on the number of elements the two solutions have in common.
   /// </remarks>
   [Item("KnapsackSimilarityCalculator", "An operator that performs similarity calculation between two knapsack solutions. The operator calculates the similarity based on the number of elements the two solutions have in common.")]
-  public sealed class KnapsackSimilarityCalculator : SingleObjectiveSolutionSimilarityCalculator {
+  [NonDiscoverableType]
+  [Obsolete("Please use the HammingSimilarityCalculator in the HeuristicLab.Encodings.BinaryVector plugin.")]
+  internal sealed class KnapsackSimilarityCalculator : SingleObjectiveSolutionSimilarityCalculator {
     protected override bool IsCommutative { get { return true; } }
 
     private KnapsackSimilarityCalculator(bool deserializing) : base(deserializing) { }

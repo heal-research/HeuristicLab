@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -262,8 +262,12 @@ namespace HeuristicLab.Services.Hive {
           var task = taskDao.GetById(taskId);
           if (task.State == DA.TaskState.Calculating || task.State == DA.TaskState.Transferring) {
             task.Command = DA.Command.Pause;
+          } else if (task.State != DA.TaskState.Paused
+                     && task.State != DA.TaskState.Aborted
+                     && task.State != DA.TaskState.Finished
+                     && task.State != DA.TaskState.Failed) {
+            UpdateTaskState(pm, task, DT.TaskState.Paused, null, null, string.Empty);
           }
-          UpdateTaskState(pm, task, DT.TaskState.Paused, null, null, string.Empty);
           pm.SubmitChanges();
         });
       }
@@ -961,14 +965,12 @@ namespace HeuristicLab.Services.Hive {
     private void UpdateTaskState(IPersistenceManager pm, DA.Task task, DT.TaskState taskState, Guid? slaveId, Guid? userId, string exception) {
       var stateLogDao = pm.StateLogDao;
       var taskStateEntity = taskState.ToEntity();
-      if (task.Command == DA.Command.Pause && task.State == DA.TaskState.Paused
-          || task.Command == DA.Command.Abort && task.State == DA.TaskState.Aborted
-          || task.Command == DA.Command.Stop && task.State == DA.TaskState.Aborted) {
-        task.Command = null;
-      } else if (taskStateEntity == DA.TaskState.Paused && task.Command != null) {
+
+      if (task.State == DA.TaskState.Transferring && taskStateEntity == DA.TaskState.Paused && task.Command == null) {
         // slave paused and uploaded the task (no user-command) -> set waiting.
         taskStateEntity = DA.TaskState.Waiting;
       }
+
       stateLogDao.Save(new DA.StateLog {
         State = taskStateEntity,
         DateTime = DateTime.Now,
@@ -977,7 +979,14 @@ namespace HeuristicLab.Services.Hive {
         SlaveId = slaveId,
         Exception = exception
       });
+
       task.State = taskStateEntity;
+
+      if (task.Command == DA.Command.Pause && task.State == DA.TaskState.Paused
+          || task.Command == DA.Command.Abort && task.State == DA.TaskState.Aborted
+          || task.Command == DA.Command.Stop && task.State == DA.TaskState.Aborted) {
+        task.Command = null;
+      }
     }
 
     private DA.Resource AuthorizeForResource(IPersistenceManager pm, Guid resourceId) {

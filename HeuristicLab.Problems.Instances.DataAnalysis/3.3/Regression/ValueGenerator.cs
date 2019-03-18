@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,16 +25,17 @@ using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
   internal static class ValueGenerator {
-    private static FastRandom rand = new FastRandom();
 
     /// <summary>
     /// Generates uniformly distributed values between start and end (inclusive!) 
     /// </summary>
+    /// <param name="seed">The seed for the random number generator</param>
     /// <param name="n">Number of values to generate.</param>
     /// <param name="start">The lower value (inclusive)</param>
     /// <param name="end">The upper value (inclusive)</param>
     /// <returns>An enumerable including n values in [start, end]</returns>
-    public static IEnumerable<double> GenerateUniformDistributedValues(int n, double start, double end) {
+    public static IEnumerable<double> GenerateUniformDistributedValues(int seed, int n, double start, double end) {
+      var rand = new FastRandom(seed);
       for (int i = 0; i < n; i++) {
         // we need to return a random value including end.
         // so we cannot use rand.NextDouble() as it returns a value strictly smaller than 1.
@@ -46,11 +47,13 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     /// <summary>
     /// Generates normally distributed values sampling from N(mu, sigma) 
     /// </summary>
+    /// <param name="seed">The seed for the random number generator</param>
     /// <param name="n">Number of values to generate.</param>
     /// <param name="mu">The mu parameter of the normal distribution</param>
     /// <param name="sigma">The sigma parameter of the normal distribution</param>
     /// <returns>An enumerable including n values ~ N(mu, sigma)</returns>
-    public static IEnumerable<double> GenerateNormalDistributedValues(int n, double mu, double sigma) {
+    public static IEnumerable<double> GenerateNormalDistributedValues(int seed, int n, double mu, double sigma) {
+      var rand = new FastRandom(seed);
       for (int i = 0; i < n; i++)
         yield return NormalDistributedRandom.NextDouble(rand, mu, sigma);
     }

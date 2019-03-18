@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,9 +20,10 @@
 #endregion
 
 using System.Collections.Generic;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  public class OnlineMeanAndVarianceCalculator {
+  public class OnlineMeanAndVarianceCalculator : DeepCloneable {
 
     private double m_oldM, m_newM, m_oldS, m_newS;
     private int n;
@@ -65,6 +66,20 @@ namespace HeuristicLab.Problems.DataAnalysis {
       Reset();
     }
 
+    protected OnlineMeanAndVarianceCalculator(OnlineMeanAndVarianceCalculator original, Cloner cloner = null)
+      : base(original, cloner) {
+      m_oldS = original.m_oldS;
+      m_oldM = original.m_oldM;
+      m_newS = original.m_newS;
+      m_newM = original.m_newM;
+      n = original.n;
+      errorState = original.errorState;
+      varianceErrorState = original.varianceErrorState;
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new OnlineMeanAndVarianceCalculator(this, cloner);
+    }
+
     public void Reset() {
       n = 0;
       errorState = OnlineCalculatorError.InsufficientElementsAdded;
@@ -74,7 +89,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public void Add(double x) {
       if (double.IsNaN(x) || double.IsInfinity(x) || x > 1E13 || x < -1E13 || (errorState & OnlineCalculatorError.InvalidValueAdded) > 0) {
         errorState = errorState | OnlineCalculatorError.InvalidValueAdded;
-        varianceErrorState = errorState | OnlineCalculatorError.InvalidValueAdded;
+        varianceErrorState = varianceErrorState | OnlineCalculatorError.InvalidValueAdded;
       } else {
         n++;
         // See Knuth TAOCP vol 2, 3rd edition, page 232

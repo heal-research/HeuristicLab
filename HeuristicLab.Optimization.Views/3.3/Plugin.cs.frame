@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,7 +25,7 @@ namespace HeuristicLab.Optimization.Views {
   /// <summary>
   /// Plugin class for HeuristicLab.Optimization.Views plugin.
   /// </summary>
-  [Plugin("HeuristicLab.Optimization.Views", "3.3.13.$WCREV$")]
+  [Plugin("HeuristicLab.Optimization.Views", "3.3.15.$WCREV$")]
   [PluginFile("HeuristicLab.Optimization.Views-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Analysis", "3.3")]
   [PluginDependency("HeuristicLab.Collections", "3.3")]
@@ -38,6 +38,7 @@ namespace HeuristicLab.Optimization.Views {
   [PluginDependency("HeuristicLab.MainForm", "3.3")]
   [PluginDependency("HeuristicLab.MainForm.WindowsForms", "3.3")]
   [PluginDependency("HeuristicLab.Optimization", "3.3")]
+  [PluginDependency("HeuristicLab.Parameters.Views", "3.3")]
   [PluginDependency("HeuristicLab.Problems.Instances", "3.3")]
   [PluginDependency("HeuristicLab.Problems.Instances.Views", "3.3")]
   [PluginDependency("HeuristicLab.Visualization.ChartControlsExtensions","3.3")]

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -268,7 +268,8 @@ namespace HeuristicLab.Random {
         // we don't actually perform the swap, we can forget about the
         // swapped element because we already returned it.
       }
-      yield return elements[0];
+      if (elements.Length > 0)
+        yield return elements[0];
     }
   }
 }

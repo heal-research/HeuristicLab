@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -78,9 +78,9 @@ namespace HeuristicLab.Clients.Hive {
 
     public override void Prepare() { }
 
-    public override void Start() {
+    public override async void Start() {
       Item.Prepare(initialOperation);
-      Item.Start();
+      await Item.StartAsync();
     }
 
     public override void Pause() {

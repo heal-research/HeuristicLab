@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -45,12 +45,15 @@ namespace HeuristicLab.Tests {
         typeof (HeuristicLab.Problems.TravelingSalesman.DistanceMatrix),
         typeof (HeuristicLab.Problems.DataAnalysis.ClassificationEnsembleSolution),
         typeof (HeuristicLab.Problems.DataAnalysis.RegressionEnsembleSolution),
-        typeof (HeuristicLab.Problems.Orienteering.DistanceMatrix)
+        typeof (HeuristicLab.Problems.Orienteering.DistanceMatrix),
+        typeof (HeuristicLab.Problems.PTSP.DistanceMatrix)
       };
       excludedTypes.Add(typeof(SymbolicExpressionGrammar).Assembly.GetType("HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.EmptySymbolicExpressionTreeGrammar"));
 
       foreach (var symbolType in ApplicationManager.Manager.GetTypes(typeof(HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbol)))
         excludedTypes.Add(symbolType);
+      // SimpleSymbol is a non-discoverable type and thus needs to be added manually
+      excludedTypes.Add(typeof(HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.SimpleSymbol));
       foreach (var grammarType in ApplicationManager.Manager.GetTypes(typeof(HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.SymbolicExpressionGrammarBase)))
         excludedTypes.Add(grammarType);
     }

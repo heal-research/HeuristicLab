@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,7 +20,6 @@
 #endregion
 
 using System.Collections.Generic;
-using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -30,10 +29,7 @@ namespace HeuristicLab.Core {
   public sealed class ScopeList : ItemList<IScope> {
     [StorableConstructor]
     private ScopeList(bool deserializing) : base(deserializing) { }
-    private ScopeList(ScopeList original, Cloner cloner)
-      : base(original, cloner) {
-      list = new List<IScope>(original.Select(x => cloner.Clone(x)));
-    }
+    private ScopeList(ScopeList original, Cloner cloner) : base(original, cloner) { }
     public ScopeList() : base() { }
     public ScopeList(int capacity) : base(capacity) { }
     public ScopeList(IEnumerable<IScope> collection) : base(collection) { }

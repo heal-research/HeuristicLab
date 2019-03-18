@@ -1,6 +1,26 @@
-﻿namespace HeuristicLab.DataPreprocessing.Views {
-  partial class DataCompletenessView
-  {
+﻿#region License Information
+/* HeuristicLab
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ *
+ * This file is part of HeuristicLab.
+ *
+ * HeuristicLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * HeuristicLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
+ */
+#endregion
+
+namespace HeuristicLab.DataPreprocessing.Views {
+  partial class DataCompletenessView {
     /// <summary> 
     /// Required designer variable.
     /// </summary>
@@ -38,6 +58,8 @@
             | System.Windows.Forms.AnchorStyles.Right)));
       chartArea1.Name = "ChartArea1";
       this.chart.ChartAreas.Add(chartArea1);
+      legend1.Alignment = System.Drawing.StringAlignment.Center;
+      legend1.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Top;
       legend1.Name = "Legend1";
       this.chart.Legends.Add(legend1);
       this.chart.Location = new System.Drawing.Point(4, 4);

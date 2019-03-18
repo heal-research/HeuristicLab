@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,6 +24,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
+  [StorableClass]
   public sealed class SimpleSymbolicExpressionGrammar : SymbolicExpressionGrammar {
     [StorableConstructor]
     private SimpleSymbolicExpressionGrammar(bool deserializing) : base(deserializing) { }

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -42,7 +42,7 @@ namespace HeuristicLab.PluginInfrastructure {
     }
 
     private static ICommandLineArgument ParseArgument(string entry) {
-      var regex = new Regex(@"^/[A-Za-z]+(:[A-Za-z0-9\s]+)?$");
+      var regex = new Regex(@"^/[A-Za-z]+(:\w[\w\s]*)?$");
       bool isFile = File.Exists(entry);
       if (!regex.IsMatch(entry) && !isFile) return null;
       if (!isFile) {

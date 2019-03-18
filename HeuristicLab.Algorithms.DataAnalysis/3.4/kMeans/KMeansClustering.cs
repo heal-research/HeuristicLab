@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -76,7 +77,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     #region k-Means clustering
-    protected override void Run() {
+    protected override void Run(CancellationToken cancellationToken) {
       var solution = CreateKMeansSolution(Problem.ProblemData, K.Value, Restarts.Value);
       Results.Add(new Result(KMeansSolutionResultName, "The k-Means clustering solution.", solution));
     }
@@ -88,7 +89,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       int info;
       double[,] centers;
       int[] xyc;
-      double[,] inputMatrix = AlglibUtil.PrepareInputMatrix(dataset, allowedInputVariables, rows);
+      double[,] inputMatrix = dataset.ToArray(allowedInputVariables, rows);
       if (inputMatrix.Cast<double>().Any(x => double.IsNaN(x) || double.IsInfinity(x)))
         throw new NotSupportedException("k-Means clustering does not support NaN or infinity values in the input dataset.");
 

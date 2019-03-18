@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -42,7 +42,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private NearestNeighbourClassificationSolution(NearestNeighbourClassificationSolution original, Cloner cloner)
       : base(original, cloner) {
     }
-    public NearestNeighbourClassificationSolution(IClassificationProblemData problemData, INearestNeighbourModel nnModel)
+    public NearestNeighbourClassificationSolution(INearestNeighbourModel nnModel, IClassificationProblemData problemData)
       : base(nnModel, problemData) {
     }
 

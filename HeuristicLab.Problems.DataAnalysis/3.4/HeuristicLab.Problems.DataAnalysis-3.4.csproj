@@ -118,6 +118,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DatasetExtensions.cs" />
+    <Compile Include="DatasetUtil.cs" />
     <Compile Include="DoubleLimit.cs" />
     <Compile Include="Implementation\Classification\ClassificationEnsembleModel.cs">
       <SubType>Code</SubType>
@@ -129,12 +130,16 @@
     <Compile Include="Implementation\Classification\ClassificationSolution.cs" />
     <Compile Include="Implementation\Classification\ClassificationEnsembleProblemData.cs" />
     <Compile Include="Implementation\Classification\ClassificationSolutionBase.cs" />
+    <Compile Include="Implementation\Classification\ClassificationSolutionVariableImpactsCalculator.cs" />
     <Compile Include="Implementation\Classification\ConstantClassificationSolution.cs" />
     <Compile Include="Implementation\Classification\DiscriminantFunctionClassificationSolutionBase.cs" />
+    <Compile Include="Implementation\Classification\ClassificationModel.cs" />
     <Compile Include="Implementation\Clustering\ClusteringProblem.cs" />
     <Compile Include="Implementation\Clustering\ClusteringProblemData.cs" />
     <Compile Include="Implementation\Clustering\ClusteringSolution.cs" />
     <Compile Include="Implementation\ConstantModel.cs" />
+    <Compile Include="Implementation\DataAnalysisModel.cs" />
+    <Compile Include="Implementation\Regression\ConfidenceBoundRegressionSolution.cs" />
     <Compile Include="Implementation\Regression\ConstantRegressionModel.cs" />
     <Compile Include="Implementation\Regression\ConstantRegressionSolution.cs" />
     <Compile Include="Implementation\Regression\RegressionEnsembleProblemData.cs" />
@@ -142,6 +147,8 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Implementation\Regression\RegressionEnsembleSolution.cs" />
+    <Compile Include="Implementation\Regression\RegressionModel.cs" />
+    <Compile Include="Implementation\Regression\RegressionSolutionVariableImpactsCalculator.cs" />
     <Compile Include="Implementation\TimeSeriesPrognosis\Models\ConstantTimeSeriesPrognosisModel.cs" />
     <Compile Include="Implementation\TimeSeriesPrognosis\Models\TimeSeriesPrognosisAutoRegressiveModel.cs" />
     <Compile Include="Implementation\TimeSeriesPrognosis\TimeSeriesPrognosisProblem.cs" />
@@ -170,6 +177,8 @@
     <Compile Include="Interfaces\IDependencyCalculator.cs" />
     <Compile Include="Interfaces\ITransformation.cs" />
     <Compile Include="Interfaces\ITransformationMapper.cs" />
+    <Compile Include="Interfaces\Regression\IConfidenceRegressionModel.cs" />
+    <Compile Include="Interfaces\Regression\IConfidenceRegressionSolution.cs" />
     <Compile Include="Interfaces\Regression\IRegressionEnsembleModel.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -311,6 +320,10 @@
       <Project>{3540E29E-4793-49E7-8EE2-FEA7F61C3994}</Project>
       <Name>HeuristicLab.Problems.Instances-3.3</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Random\3.3\HeuristicLab.Random-3.3.csproj">
+      <Project>{F4539FB6-4708-40C9-BE64-0A1390AEA197}</Project>
+      <Name>HeuristicLab.Random-3.3</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,11 +21,13 @@
 
 using System;
 using System.Linq;
+using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Optimization;
+using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
@@ -112,6 +114,12 @@ namespace HeuristicLab.Problems.ParameterOptimization {
       Operators.Add(strategyVectorManipulator);
       Operators.Add(new BestSolutionAnalyzer());
       Operators.Add(new BestSolutionsAnalyzer());
+
+      Operators.Add(new HammingSimilarityCalculator());
+      Operators.Add(new EuclideanSimilarityCalculator());
+      Operators.Add(new QualitySimilarityCalculator());
+      Operators.Add(new PopulationSimilarityAnalyzer(Operators.OfType<ISolutionSimilarityCalculator>()));
+
       UpdateParameters();
       UpdateStrategyVectorBounds();
 
@@ -146,6 +154,11 @@ namespace HeuristicLab.Problems.ParameterOptimization {
 
       foreach (var op in Operators.OfType<IRealVectorManipulator>())
         op.RealVectorParameter.ActualName = SolutionCreator.RealVectorParameter.ActualName;
+
+      foreach (var similarityCalculator in Operators.OfType<ISolutionSimilarityCalculator>()) {
+        similarityCalculator.SolutionVariableName = SolutionCreator.RealVectorParameter.ActualName;
+        similarityCalculator.QualityVariableName = Evaluator.QualityParameter.ActualName;
+      }
     }
 
     private void Bounds_ToStringChanged(object sender, EventArgs e) {

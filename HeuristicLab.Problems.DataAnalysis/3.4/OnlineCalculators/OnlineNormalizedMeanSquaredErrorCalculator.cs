@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,15 +21,16 @@
 
 using System;
 using System.Collections.Generic;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  public class OnlineNormalizedMeanSquaredErrorCalculator : IOnlineCalculator {
+  public class OnlineNormalizedMeanSquaredErrorCalculator : DeepCloneable, IOnlineCalculator {
     private OnlineMeanAndVarianceCalculator meanSquaredErrorCalculator;
     private OnlineMeanAndVarianceCalculator originalVarianceCalculator;
 
     public double NormalizedMeanSquaredError {
       get {
-        double var = originalVarianceCalculator.Variance;
+        double var = originalVarianceCalculator.PopulationVariance;
         double m = meanSquaredErrorCalculator.Mean;
         return var > 0 ? m / var : 0.0;
       }
@@ -41,9 +42,18 @@ namespace HeuristicLab.Problems.DataAnalysis {
       Reset();
     }
 
+    protected OnlineNormalizedMeanSquaredErrorCalculator(OnlineNormalizedMeanSquaredErrorCalculator original, Cloner cloner)
+      : base(original, cloner) {
+      meanSquaredErrorCalculator = cloner.Clone(original.meanSquaredErrorCalculator);
+      originalVarianceCalculator = cloner.Clone(original.originalVarianceCalculator);
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new OnlineNormalizedMeanSquaredErrorCalculator(this, cloner);
+    }
+
     #region IOnlineCalculator Members
     public OnlineCalculatorError ErrorState {
-      get { return meanSquaredErrorCalculator.MeanErrorState | originalVarianceCalculator.VarianceErrorState; }
+      get { return meanSquaredErrorCalculator.MeanErrorState | originalVarianceCalculator.PopulationVarianceErrorState; }
     }
     public double Value {
       get { return NormalizedMeanSquaredError; }
@@ -91,5 +101,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
         return normalizedMSECalculator.NormalizedMeanSquaredError;
       }
     }
+
+
   }
 }

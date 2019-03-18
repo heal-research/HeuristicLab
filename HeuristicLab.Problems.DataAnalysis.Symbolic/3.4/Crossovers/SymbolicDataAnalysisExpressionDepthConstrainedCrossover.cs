@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -35,6 +35,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
                                      "- HighLevel (upper 25% of the tree)\n" +
                                      "- Standard (mid 50% of the tree)\n" +
                                      "- LowLevel (lower 25% of the tree)")]
+  [StorableClass]
   public sealed class SymbolicDataAnalysisExpressionDepthConstrainedCrossover<T> :
     SymbolicDataAnalysisExpressionCrossover<T> where T : class, IDataAnalysisProblemData {
     private enum Ranges { HighLevel, Standard, LowLevel };

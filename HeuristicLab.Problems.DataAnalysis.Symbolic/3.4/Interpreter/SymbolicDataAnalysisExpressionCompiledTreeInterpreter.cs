@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -613,6 +613,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           }
         case OpCodes.VariableCondition: {
             var variableConditionTreeNode = (VariableConditionTreeNode)node;
+            if (variableConditionTreeNode.Symbol.IgnoreSlope) throw new NotSupportedException("Strict variable conditionals are not supported");
             var variableName = variableConditionTreeNode.VariableName;
             var indexExpr = Expression.Constant(variableIndices[variableName]);
             var valuesExpr = Expression.ArrayIndex(columns, indexExpr);

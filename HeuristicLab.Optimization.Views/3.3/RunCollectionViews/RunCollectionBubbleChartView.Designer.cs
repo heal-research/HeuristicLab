@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -138,6 +138,7 @@ namespace HeuristicLab.Optimization.Views {
       this.xAxisComboBox.Name = "xAxisComboBox";
       this.xAxisComboBox.Size = new System.Drawing.Size(400, 21);
       this.xAxisComboBox.TabIndex = 7;
+      this.xAxisComboBox.Sorted = false;
       this.xAxisComboBox.SelectedValueChanged += new System.EventHandler(this.AxisComboBox_SelectedValueChanged);
       // 
       // yAxisLabel
@@ -159,6 +160,7 @@ namespace HeuristicLab.Optimization.Views {
       this.yAxisComboBox.Name = "yAxisComboBox";
       this.yAxisComboBox.Size = new System.Drawing.Size(400, 21);
       this.yAxisComboBox.TabIndex = 5;
+      this.yAxisComboBox.Sorted = false;
       this.yAxisComboBox.SelectedValueChanged += new System.EventHandler(this.AxisComboBox_SelectedValueChanged);
       // 
       // yTrackBar
@@ -182,6 +184,7 @@ namespace HeuristicLab.Optimization.Views {
       this.sizeComboBox.Location = new System.Drawing.Point(613, 3);
       this.sizeComboBox.Name = "sizeComboBox";
       this.sizeComboBox.Size = new System.Drawing.Size(300, 21);
+      this.sizeComboBox.Sorted = false;
       this.sizeComboBox.TabIndex = 14;
       this.sizeComboBox.SelectedValueChanged += new System.EventHandler(this.AxisComboBox_SelectedValueChanged);
       // 
@@ -197,8 +200,8 @@ namespace HeuristicLab.Optimization.Views {
       // 
       // chart
       // 
-      this.chart.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+      this.chart.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       chartArea1.Name = "ChartArea1";
       this.chart.ChartAreas.Add(chartArea1);
@@ -263,7 +266,7 @@ namespace HeuristicLab.Optimization.Views {
       this.radioButtonGroup.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
       this.radioButtonGroup.Controls.Add(this.zoomButton);
       this.radioButtonGroup.Controls.Add(this.selectButton);
-      this.radioButtonGroup.Location = new System.Drawing.Point(3, 704);
+      this.radioButtonGroup.Location = new System.Drawing.Point(6, 679);
       this.radioButtonGroup.Name = "radioButtonGroup";
       this.radioButtonGroup.Size = new System.Drawing.Size(122, 32);
       this.radioButtonGroup.TabIndex = 19;
@@ -274,7 +277,7 @@ namespace HeuristicLab.Optimization.Views {
       this.colorRunsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
       this.colorRunsButton.Enabled = false;
       this.colorRunsButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-      this.colorRunsButton.Location = new System.Drawing.Point(131, 713);
+      this.colorRunsButton.Location = new System.Drawing.Point(6, 715);
       this.colorRunsButton.Name = "colorRunsButton";
       this.colorRunsButton.Size = new System.Drawing.Size(21, 21);
       this.colorRunsButton.TabIndex = 20;
@@ -316,7 +319,7 @@ namespace HeuristicLab.Optimization.Views {
       // 
       this.transparencyTrackBar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
       this.transparencyTrackBar.LargeChange = 16;
-      this.transparencyTrackBar.Location = new System.Drawing.Point(302, 715);
+      this.transparencyTrackBar.Location = new System.Drawing.Point(177, 717);
       this.transparencyTrackBar.Maximum = 254;
       this.transparencyTrackBar.Name = "transparencyTrackBar";
       this.transparencyTrackBar.Size = new System.Drawing.Size(64, 45);
@@ -330,7 +333,7 @@ namespace HeuristicLab.Optimization.Views {
       this.hideRunsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
       this.hideRunsButton.Enabled = false;
       this.hideRunsButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-      this.hideRunsButton.Location = new System.Drawing.Point(172, 713);
+      this.hideRunsButton.Location = new System.Drawing.Point(47, 715);
       this.hideRunsButton.Name = "hideRunsButton";
       this.hideRunsButton.Size = new System.Drawing.Size(43, 21);
       this.hideRunsButton.TabIndex = 26;
@@ -346,7 +349,7 @@ namespace HeuristicLab.Optimization.Views {
       this.colorDialogButton.Enabled = false;
       this.colorDialogButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       this.colorDialogButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-      this.colorDialogButton.Location = new System.Drawing.Point(152, 713);
+      this.colorDialogButton.Location = new System.Drawing.Point(27, 715);
       this.colorDialogButton.Name = "colorDialogButton";
       this.colorDialogButton.Size = new System.Drawing.Size(14, 21);
       this.colorDialogButton.TabIndex = 25;
@@ -389,7 +392,7 @@ namespace HeuristicLab.Optimization.Views {
       // 
       this.transparencyLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
       this.transparencyLabel.AutoSize = true;
-      this.transparencyLabel.Location = new System.Drawing.Point(233, 717);
+      this.transparencyLabel.Location = new System.Drawing.Point(108, 719);
       this.transparencyLabel.Name = "transparencyLabel";
       this.transparencyLabel.Size = new System.Drawing.Size(75, 13);
       this.transparencyLabel.TabIndex = 12;
@@ -451,9 +454,9 @@ namespace HeuristicLab.Optimization.Views {
     #endregion
 
     private System.Windows.Forms.Label xAxisLabel;
-    private System.Windows.Forms.ComboBox xAxisComboBox;
+    internal System.Windows.Forms.ComboBox xAxisComboBox;
     private System.Windows.Forms.Label yAxisLabel;
-    private System.Windows.Forms.ComboBox yAxisComboBox;
+    internal System.Windows.Forms.ComboBox yAxisComboBox;
     private System.Windows.Forms.TrackBar yTrackBar;
     private System.Windows.Forms.TrackBar xTrackBar;
     private System.Windows.Forms.Label xJitterlabel;
