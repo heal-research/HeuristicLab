@@ -23,10 +23,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [Item("LaTeX String Formatter", "Formatter for symbolic expression trees for import into LaTeX documents.")]
@@ -136,6 +136,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         strBuilder.Append(@"\cos \left( ");
       } else if (node.Symbol is Tangent) {
         strBuilder.Append(@"\tan \left( ");
+      } else if (node.Symbol is HyperbolicTangent) {
+        strBuilder.Append(@"\tanh \left( ");
       } else if (node.Symbol is AiryA) {
         strBuilder.Append(@"\operatorname{airy}_a \left( ");
       } else if (node.Symbol is AiryB) {
@@ -302,6 +304,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         throw new InvalidOperationException();
       } else if (node.Symbol is Tangent) {
         throw new InvalidOperationException();
+      } else if (node.Symbol is HyperbolicTangent) {
+        throw new InvalidOperationException();
       } else if (node.Symbol is AiryA) {
         throw new InvalidOperationException();
       } else if (node.Symbol is AiryB) {
@@ -397,6 +401,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       } else if (node.Symbol is Cosine) {
         strBuilder.Append(@" \right) ");
       } else if (node.Symbol is Tangent) {
+        strBuilder.Append(@" \right) ");
+      } else if (node.Symbol is HyperbolicTangent) {
         strBuilder.Append(@" \right) ");
       } else if (node.Symbol is AiryA) {
         strBuilder.Append(@" \right) ");

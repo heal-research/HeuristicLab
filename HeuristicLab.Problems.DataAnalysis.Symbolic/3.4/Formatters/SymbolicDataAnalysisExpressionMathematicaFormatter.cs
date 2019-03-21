@@ -23,10 +23,10 @@ using System;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [Item("Mathematica Symbolic Expression Tree Formatter", "A string formatter that converts symbolic expression trees to Mathematica expressions.")]
@@ -69,6 +69,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           FormatFunction(node, "Cos", strBuilder);
         } else if (node.Symbol is Tangent) {
           FormatFunction(node, "Tan", strBuilder);
+        } else if (node.Symbol is HyperbolicTangent) {
+          FormatFunction(node, "Tanh", strBuilder);
         } else if (node.Symbol is Exponential) {
           FormatFunction(node, "Exp", strBuilder);
         } else if (node.Symbol is Logarithm) {

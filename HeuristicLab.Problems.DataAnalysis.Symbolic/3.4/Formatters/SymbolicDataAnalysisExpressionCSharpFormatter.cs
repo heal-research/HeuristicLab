@@ -25,10 +25,10 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [Item("C# Symbolic Expression Tree Formatter", "A string formatter that converts symbolic expression trees to C# code.")]
@@ -55,7 +55,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       return strBuilder.ToString();
     }
 
-    private string VariableName2Identifier(string name) {     
+    private string VariableName2Identifier(string name) {
       /*
        * identifier-start-character:
        *    letter-character
@@ -130,6 +130,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           FormatSubtraction(node, strBuilder);
         } else if (node.Symbol is Tangent) {
           FormatFunction(node, "Math.Tan", strBuilder);
+        } else if (node.Symbol is HyperbolicTangent) {
+          FormatFunction(node, "Math.Tanh", strBuilder);
         } else if (node.Symbol is Square) {
           FormatSquare(node, strBuilder);
         } else if (node.Symbol is SquareRoot) {
