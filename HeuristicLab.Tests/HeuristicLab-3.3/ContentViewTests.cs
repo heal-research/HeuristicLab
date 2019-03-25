@@ -23,7 +23,6 @@ using System;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.MainForm;
-using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.PluginInfrastructure;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -37,6 +36,11 @@ namespace HeuristicLab.Tests {
     public void ContentViewAttributeTest() {
       //get all non-generic and instantiable classes which implement IContentView
       foreach (Type viewType in ApplicationManager.Manager.GetTypes(typeof(IContentView))) {
+        // jkarder: skip this test for the SymbolicDataAnalysisModelMathView (and for views that derive from it)
+        // reason: our new build agent cannot create an instance of this view due to the use of System.Windows.Forms.WebBrowser
+        if (typeof(HeuristicLab.Problems.DataAnalysis.Symbolic.Views.SymbolicDataAnalysisModelMathView).IsAssignableFrom(viewType))
+          continue;
+
         //get all ContentAttributes on the instantiable view
         foreach (ContentAttribute attribute in viewType.GetCustomAttributes(typeof(ContentAttribute), false).Cast<ContentAttribute>()) {
           Assert.IsTrue(attribute.ContentType == typeof(IContent) || attribute.ContentType.GetInterfaces().Contains(typeof(IContent)),
@@ -47,8 +51,7 @@ namespace HeuristicLab.Tests {
         var accessor = new PrivateObject(view);
         try {
           accessor.Invoke("OnContentChanged");
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
           Assert.Fail(viewType.ToString() + Environment.NewLine + ex.Message);
         }
       }
