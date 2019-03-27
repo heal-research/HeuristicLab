@@ -146,7 +146,6 @@
     <Compile Include="LinearProgramming\Algorithms\LinearProgrammingAlgorithm.cs" />
     <Compile Include="LinearProgramming\Algorithms\LinearSolverExtensions.cs" />
     <Compile Include="LinearProgramming\Algorithms\Solvers\Base\LinearSolver.cs" />
-    <Compile Include="LinearProgramming\Problems\ProblemDef.cs" />
     <Compile Include="LinearProgramming\Problems\ProgrammableLinearProblemDefinition.cs" />
     <Compile Include="LinearProgramming\Algorithms\ProtoWriteFormat.cs" />
     <Compile Include="LinearProgramming\Algorithms\SolverResponseStatus.cs" />
