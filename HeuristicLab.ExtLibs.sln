@@ -72,13 +72,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.SimSharp-3.0.1
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.IGraph-0.8.0-pre", "HeuristicLab.ExtLibs\HeuristicLab.Igraph\0.8.0-pre\HeuristicLab.Igraph-0.8.0-pre\HeuristicLab.IGraph-0.8.0-pre.csproj", "{088D34F2-32EA-43FF-BAA8-22428D5B66BE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.OrTools-7.0.0", "HeuristicLab.ExtLibs\HeuristicLab.OrTools\7.0.0\HeuristicLab.OrTools-7.0.0\HeuristicLab.OrTools-7.0.0.csproj", "{AEC895BC-C519-49D3-9A94-6B1C71AD6671}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.NativeInterpreter-0.1", "HeuristicLab.ExtLibs\HeuristicLab.NativeInterpreter\0.1\HeuristicLab.NativeInterpreter-0.1\HeuristicLab.NativeInterpreter-0.1.csproj", "{E05AC63F-6924-4C83-BD0A-EDF3C103C1D8}"EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.NativeInterpreter-0.1", "HeuristicLab.ExtLibs\HeuristicLab.NativeInterpreter\0.1\HeuristicLab.NativeInterpreter-0.1\HeuristicLab.NativeInterpreter-0.1.csproj", "{E05AC63F-6924-4C83-BD0A-EDF3C103C1D8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.MathJax-2.7.5", "HeuristicLab.ExtLibs\HeuristicLab.MathJax\2.7.5\HeuristicLab.MathJax-2.7.5\HeuristicLab.MathJax-2.7.5.csproj", "{31C09AD0-9610-4AFB-AE57-0F10AAC82BE5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Attic", "HeuristicLab.ExtLibs\HeuristicLab.Attic\1.0.0\HeuristicLab.Attic.csproj", "{44A10478-D290-43C2-9757-F08F5292FEA5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.OrTools-7.0.0", "HeuristicLab.ExtLibs\HeuristicLab.OrTools\7.0.0\HeuristicLab.OrTools-7.0.0\HeuristicLab.OrTools-7.0.0.csproj", "{AEC895BC-C519-49D3-9A94-6B1C71AD6671}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -470,18 +470,6 @@ Global
 		{088D34F2-32EA-43FF-BAA8-22428D5B66BE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{088D34F2-32EA-43FF-BAA8-22428D5B66BE}.Release|x64.ActiveCfg = Release|Any CPU
 		{088D34F2-32EA-43FF-BAA8-22428D5B66BE}.Release|x86.ActiveCfg = Release|Any CPU
-		{AEC895BC-C519-49D3-9A94-6B1C71AD6671}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AEC895BC-C519-49D3-9A94-6B1C71AD6671}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AEC895BC-C519-49D3-9A94-6B1C71AD6671}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{AEC895BC-C519-49D3-9A94-6B1C71AD6671}.Debug|x64.Build.0 = Debug|Any CPU
-		{AEC895BC-C519-49D3-9A94-6B1C71AD6671}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{AEC895BC-C519-49D3-9A94-6B1C71AD6671}.Debug|x86.Build.0 = Debug|Any CPU
-		{AEC895BC-C519-49D3-9A94-6B1C71AD6671}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AEC895BC-C519-49D3-9A94-6B1C71AD6671}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AEC895BC-C519-49D3-9A94-6B1C71AD6671}.Release|x64.ActiveCfg = Release|Any CPU
-		{AEC895BC-C519-49D3-9A94-6B1C71AD6671}.Release|x64.Build.0 = Release|Any CPU
-		{AEC895BC-C519-49D3-9A94-6B1C71AD6671}.Release|x86.ActiveCfg = Release|Any CPU
-		{AEC895BC-C519-49D3-9A94-6B1C71AD6671}.Release|x86.Build.0 = Release|Any CPU
 		{E05AC63F-6924-4C83-BD0A-EDF3C103C1D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E05AC63F-6924-4C83-BD0A-EDF3C103C1D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E05AC63F-6924-4C83-BD0A-EDF3C103C1D8}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -518,6 +506,18 @@ Global
 		{44A10478-D290-43C2-9757-F08F5292FEA5}.Release|x64.Build.0 = Release|Any CPU
 		{44A10478-D290-43C2-9757-F08F5292FEA5}.Release|x86.ActiveCfg = Release|Any CPU
 		{44A10478-D290-43C2-9757-F08F5292FEA5}.Release|x86.Build.0 = Release|Any CPU
+		{AEC895BC-C519-49D3-9A94-6B1C71AD6671}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AEC895BC-C519-49D3-9A94-6B1C71AD6671}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AEC895BC-C519-49D3-9A94-6B1C71AD6671}.Debug|x64.ActiveCfg = Debug|x64
+		{AEC895BC-C519-49D3-9A94-6B1C71AD6671}.Debug|x64.Build.0 = Debug|x64
+		{AEC895BC-C519-49D3-9A94-6B1C71AD6671}.Debug|x86.ActiveCfg = Debug|x86
+		{AEC895BC-C519-49D3-9A94-6B1C71AD6671}.Debug|x86.Build.0 = Debug|x86
+		{AEC895BC-C519-49D3-9A94-6B1C71AD6671}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AEC895BC-C519-49D3-9A94-6B1C71AD6671}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AEC895BC-C519-49D3-9A94-6B1C71AD6671}.Release|x64.ActiveCfg = Release|x64
+		{AEC895BC-C519-49D3-9A94-6B1C71AD6671}.Release|x64.Build.0 = Release|x64
+		{AEC895BC-C519-49D3-9A94-6B1C71AD6671}.Release|x86.ActiveCfg = Release|x86
+		{AEC895BC-C519-49D3-9A94-6B1C71AD6671}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
