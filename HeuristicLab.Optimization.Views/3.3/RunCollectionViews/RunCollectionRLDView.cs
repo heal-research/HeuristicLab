@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -29,6 +30,7 @@ using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using HeuristicLab.Analysis;
 using HeuristicLab.Collections;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Core.Views;
 using HeuristicLab.Data;
@@ -77,13 +79,16 @@ namespace HeuristicLab.Optimization.Views {
       set { base.Content = value; }
     }
 
+    private List<AlgorithmInstance> groups;
+
     private double[] targets;
     private double[] budgets;
     private bool targetsAreRelative = true;
     private bool showLabelsInTargetChart = true;
     private readonly BindingList<ProblemInstance> problems;
 
-    private bool suppressUpdates;
+    private bool updateInProgress;
+    private bool suppressContentEvents;
     private readonly IndexedDataTable<double> byCostDataTable;
     public IndexedDataTable<double> ByCostDataTable {
       get { return byCostDataTable; }
@@ -93,25 +98,27 @@ namespace HeuristicLab.Optimization.Views {
       InitializeComponent();
       invisibleTargetSeries = new List<Series>();
 
-      targetChart.CustomizeAllChartAreas();
-      targetChart.ChartAreas[0].CursorX.Interval = 1;
-      targetChart.SuppressExceptions = true;
-      byCostDataTable = new IndexedDataTable<double>("ECDF by Cost", "A data table containing the ECDF of function values (relative to best-known).") {
-        VisualProperties = {
-          YAxisTitle = "Proportion of runs",
-          YAxisMinimumFixedValue = 0,
-          YAxisMinimumAuto = false,
-          YAxisMaximumFixedValue = 1,
-          YAxisMaximumAuto = false
-        }
-      };
-      byCostViewHost.Content = byCostDataTable;
-      suppressUpdates = true;
-      relativeOrAbsoluteComboBox.SelectedItem = targetsAreRelative ? "relative" : "absolute";
-      problems = new BindingList<ProblemInstance>();
-      problemComboBox.DataSource = new BindingSource() { DataSource = problems };
-      problemComboBox.DataBindings.DefaultDataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged;
-      suppressUpdates = false;
+      try {
+        updateInProgress = true;
+        targetChart.CustomizeAllChartAreas();
+        targetChart.ChartAreas[0].CursorX.Interval = 1;
+        targetChart.SuppressExceptions = true;
+        byCostDataTable = new IndexedDataTable<double>("ECDF by Cost", "A data table containing the ECDF of function values (relative to best-known).") {
+          VisualProperties = {
+            YAxisTitle = "Proportion of runs",
+            YAxisMinimumFixedValue = 0,
+            YAxisMinimumAuto = false,
+            YAxisMaximumFixedValue = 1,
+            YAxisMaximumAuto = false
+          }
+        };
+        byCostViewHost.Content = byCostDataTable;
+
+        relativeOrAbsoluteComboBox.SelectedItem = targetsAreRelative ? "relative" : "absolute";
+        problems = new BindingList<ProblemInstance>();
+        problemComboBox.DataSource = new BindingSource() { DataSource = problems };
+        problemComboBox.DataBindings.DefaultDataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged;
+      } finally { updateInProgress = false; }
     }
 
     #region Content events
@@ -133,37 +140,47 @@ namespace HeuristicLab.Optimization.Views {
     }
 
     private void Content_ItemsAdded(object sender, CollectionItemsChangedEventArgs<IRun> e) {
-      if (suppressUpdates) return;
+      foreach (var run in e.Items) RegisterRunEvents(run);
+      if (suppressContentEvents) return;
       if (InvokeRequired) {
         Invoke(new CollectionItemsChangedEventHandler<IRun>(Content_ItemsAdded), sender, e);
         return;
       }
-      UpdateGroupAndProblemComboBox();
-      UpdateDataTableComboBox();
-      foreach (var run in e.Items)
-        RegisterRunEvents(run);
+      if (updateInProgress) return;
+      try {
+        updateInProgress = true;
+        UpdateComboBoxes();
+        GroupRuns();
+      } finally { updateInProgress = false; }
     }
     private void Content_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<IRun> e) {
-      if (suppressUpdates) return;
+      foreach (var run in e.Items) DeregisterRunEvents(run);
+      if (suppressContentEvents) return;
       if (InvokeRequired) {
         Invoke(new CollectionItemsChangedEventHandler<IRun>(Content_ItemsRemoved), sender, e);
         return;
       }
-      UpdateGroupAndProblemComboBox();
-      UpdateDataTableComboBox();
-      foreach (var run in e.Items)
-        DeregisterRunEvents(run);
+      if (updateInProgress) return;
+      try {
+        updateInProgress = true;
+        UpdateComboBoxes();
+        GroupRuns();
+      } finally { updateInProgress = false; }
     }
     private void Content_CollectionReset(object sender, CollectionItemsChangedEventArgs<IRun> e) {
-      if (suppressUpdates) return;
+      foreach (var run in e.OldItems) DeregisterRunEvents(run);
+      foreach (var run in e.Items) RegisterRunEvents(run);
+      if (suppressContentEvents) return;
       if (InvokeRequired) {
         Invoke(new CollectionItemsChangedEventHandler<IRun>(Content_CollectionReset), sender, e);
         return;
       }
-      UpdateGroupAndProblemComboBox();
-      UpdateDataTableComboBox();
-      foreach (var run in e.OldItems)
-        DeregisterRunEvents(run);
+      if (updateInProgress) return;
+      try {
+        updateInProgress = true;
+        UpdateComboBoxes();
+        GroupRuns();
+      } finally { updateInProgress = false; }
     }
     private void Content_AlgorithmNameChanged(object sender, EventArgs e) {
       if (InvokeRequired)
@@ -175,11 +192,14 @@ namespace HeuristicLab.Optimization.Views {
         Invoke(new EventHandler(Content_UpdateOfRunsInProgressChanged), sender, e);
         return;
       }
-      suppressUpdates = Content.UpdateOfRunsInProgress;
-      if (!suppressUpdates) {
-        UpdateDataTableComboBox();
-        UpdateGroupAndProblemComboBox();
-        UpdateRuns();
+      suppressContentEvents = Content.UpdateOfRunsInProgress;
+      if (!suppressContentEvents) {
+        if (updateInProgress) return;
+        try {
+          updateInProgress = true;
+          UpdateComboBoxes();
+          GroupRuns();
+        } finally { updateInProgress = false; }
       }
     }
 
@@ -190,12 +210,17 @@ namespace HeuristicLab.Optimization.Views {
       run.PropertyChanged -= run_PropertyChanged;
     }
     private void run_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-      if (suppressUpdates) return;
+      if (suppressContentEvents) return;
       if (InvokeRequired) {
         Invoke((Action<object, PropertyChangedEventArgs>)run_PropertyChanged, sender, e);
       } else {
-        if (e.PropertyName == "Visible")
-          UpdateRuns();
+        if (e.PropertyName == "Visible") {
+          if (updateInProgress) return;
+          try {
+            updateInProgress = true;
+            UpdateRuns();
+          } finally { updateInProgress = false; }
+        }
       }
     }
     #endregion
@@ -212,13 +237,16 @@ namespace HeuristicLab.Optimization.Views {
 
       UpdateCaption();
       if (Content != null) {
-        UpdateGroupAndProblemComboBox();
-        UpdateDataTableComboBox();
+        try {
+          updateInProgress = true;
+          UpdateComboBoxes();
+          UpdateRuns();
+        } finally { updateInProgress = false; }
       }
     }
 
 
-    private void UpdateGroupAndProblemComboBox() {
+    private void UpdateComboBoxes() {
       var selectedGroupItem = (string)groupComboBox.SelectedItem;
 
       var groupings = Content.ParameterNames.OrderBy(x => x).ToArray();
@@ -231,37 +259,7 @@ namespace HeuristicLab.Optimization.Views {
         groupComboBox.SelectedItem = groupComboBox.Items[0];
       }
 
-      var table = (string)dataTableComboBox.SelectedItem;
-      var problemDict = CalculateBestTargetPerProblemInstance(table);
-
-      var problemTypesDifferent = problemDict.Keys.Select(x => x.ProblemType).Where(x => !string.IsNullOrEmpty(x)).Distinct().Count() > 1;
-      var problemNamesDifferent = problemDict.Keys.Select(x => x.ProblemName).Where(x => !string.IsNullOrEmpty(x)).Distinct().Count() > 1;
-      var evaluatorDifferent = problemDict.Keys.Select(x => x.Evaluator).Where(x => !string.IsNullOrEmpty(x)).Distinct().Count() > 1;
-      var maximizationDifferent = problemDict.Keys.Select(x => x.Maximization).Distinct().Count() > 1;
-      var allEqual = !problemTypesDifferent && !problemNamesDifferent && !evaluatorDifferent && !maximizationDifferent;
-
-      var selectedProblemItem = (ProblemInstance)problemComboBox.SelectedItem;
-      problemComboBox.DataSource = null;
-      problemComboBox.Items.Clear();
-      problems.Clear();
-      problems.Add(ProblemInstance.MatchAll);
-      problemComboBox.DataSource = new BindingSource() { DataSource = problems };
-      problemComboBox.DataBindings.DefaultDataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged;
-      if (problems[0].Equals(selectedProblemItem)) problemComboBox.SelectedItem = problems[0];
-      foreach (var p in problemDict.ToList()) {
-        p.Key.BestKnownQuality = p.Value;
-        p.Key.DisplayProblemType = problemTypesDifferent;
-        p.Key.DisplayProblemName = problemNamesDifferent || allEqual;
-        p.Key.DisplayEvaluator = evaluatorDifferent;
-        p.Key.DisplayMaximization = maximizationDifferent;
-        problems.Add(p.Key);
-        if (p.Key.Equals(selectedProblemItem)) problemComboBox.SelectedItem = p.Key;
-      }
-      SetEnabledStateOfControls();
-    }
-
-    private void UpdateDataTableComboBox() {
-      string selectedItem = (string)dataTableComboBox.SelectedItem;
+      string selectedDataTable = (string)dataTableComboBox.SelectedItem;
 
       dataTableComboBox.Items.Clear();
       var dataTables = (from run in Content
@@ -270,11 +268,24 @@ namespace HeuristicLab.Optimization.Views {
                         select result.Key).Distinct().ToArray();
 
       dataTableComboBox.Items.AddRange(dataTables);
-      if (selectedItem != null && dataTableComboBox.Items.Contains(selectedItem)) {
-        dataTableComboBox.SelectedItem = selectedItem;
+      if (selectedDataTable != null && dataTableComboBox.Items.Contains(selectedDataTable)) {
+        dataTableComboBox.SelectedItem = selectedDataTable;
       } else if (dataTableComboBox.Items.Count > 0) {
         dataTableComboBox.SelectedItem = dataTableComboBox.Items[0];
       }
+
+      var selectedProblemItem = (ProblemInstance)problemComboBox.SelectedItem;
+      
+      UpdateProblemInstances();
+      
+      foreach (var p in problems) {
+        if (p.Equals(selectedProblemItem))
+          problemComboBox.SelectedItem = p;
+      }
+
+      if (selectedProblemItem == null && problems.Count > 1) problemComboBox.SelectedItem = problems[1];
+
+      SetEnabledStateOfControls();
     }
 
     protected override void SetEnabledStateOfControls() {
@@ -287,26 +298,63 @@ namespace HeuristicLab.Optimization.Views {
       generateTargetsButton.Enabled = targets != null;
     }
 
-    private IEnumerable<AlgorithmInstance> GroupRuns() {
+    private void GroupRuns() {
+      groups = new List<AlgorithmInstance>();
+
       var table = (string)dataTableComboBox.SelectedItem;
-      if (string.IsNullOrEmpty(table)) yield break;
+      if (string.IsNullOrEmpty(table)) return;
 
       var selectedGroup = (string)groupComboBox.SelectedItem;
-      if (string.IsNullOrEmpty(selectedGroup)) yield break;
+      if (string.IsNullOrEmpty(selectedGroup)) return;
 
       var selectedProblem = (ProblemInstance)problemComboBox.SelectedItem;
-      if (selectedProblem == null) yield break;
-      
-      foreach (var x in (from r in Content
-                         where (selectedGroup == AllInstances || r.Parameters.ContainsKey(selectedGroup))
-                           && selectedProblem.Match(r)
-                           && r.Results.ContainsKey(table)
-                           && r.Visible
-                         let key = selectedGroup == AllInstances ? AllInstances : r.Parameters[selectedGroup].ToString()
-                         group r by key into g
-                         select new AlgorithmInstance(g.Key, g, problems))) {
-        yield return x;
+      if (selectedProblem == null) return;
+
+      foreach (var alg in from r in Content
+                          where (selectedGroup == AllInstances || r.Parameters.ContainsKey(selectedGroup))
+                            && r.Visible
+                            && selectedProblem.Match(r)
+                          let key = selectedGroup == AllInstances
+                            ? AllInstances : r.Parameters[selectedGroup].ToString()
+                          group r by key into g
+                          select g) {
+        var trials = (from run in alg
+                     from pd in problems.Skip(1) // exclude artificial match all
+                     where pd.Match(run) && run.Results.ContainsKey(table)
+                     let cgraph = run.Results[table] as IndexedDataTable<double>
+                     where cgraph != null && cgraph.Rows.Count > 0
+                        && cgraph.Rows.First().Values.Count > 0
+                     group cgraph by pd into g
+                     select g).ToList();
+
+        if (trials.Count == 0) continue;
+        groups.Add(new AlgorithmInstance(alg.Key, trials));
       }
+    }
+
+    private void UpdateProblemInstances() {
+      try {
+        problems.Clear();
+        var table = (string)dataTableComboBox.SelectedItem;
+        
+        var problemDict = CalculateBestTargetPerProblemInstance(table);
+
+        var problemTypesDifferent = problemDict.Keys.Select(x => x.ProblemType).Where(x => !string.IsNullOrEmpty(x)).Distinct().Count() > 1;
+        var problemNamesDifferent = problemDict.Keys.Select(x => x.ProblemName).Where(x => !string.IsNullOrEmpty(x)).Distinct().Count() > 1;
+        var evaluatorDifferent = problemDict.Keys.Select(x => x.Evaluator).Where(x => !string.IsNullOrEmpty(x)).Distinct().Count() > 1;
+        var maximizationDifferent = problemDict.Keys.Select(x => x.Maximization).Distinct().Count() > 1;
+        var allEqual = !problemTypesDifferent && !problemNamesDifferent && !evaluatorDifferent && !maximizationDifferent;
+
+        problems.Add(ProblemInstance.MatchAll);
+        foreach (var p in problemDict.OrderBy(x => x.Key.ProblemName, new NaturalStringComparer()).ToList()) {
+          p.Key.BestKnownQuality = p.Value;
+          p.Key.DisplayProblemType = problemTypesDifferent;
+          p.Key.DisplayProblemName = problemNamesDifferent || allEqual;
+          p.Key.DisplayEvaluator = evaluatorDifferent;
+          p.Key.DisplayMaximization = maximizationDifferent;
+          problems.Add(p.Key);
+        }
+      } finally { ((BindingSource)problemComboBox.DataSource).ResetBindings(false); }
     }
 
     #region Performance analysis by (multiple) target(s)
@@ -320,9 +368,8 @@ namespace HeuristicLab.Optimization.Views {
       if (string.IsNullOrEmpty(table)) return;
 
       if (targets == null) GenerateDefaultTargets();
-
-      var algInstances = GroupRuns().ToList();
-      if (algInstances.Count == 0) return;
+      
+      if (groups.Count == 0) return;
 
       var xAxisTitles = new HashSet<string>();
 
@@ -336,22 +383,21 @@ namespace HeuristicLab.Optimization.Views {
 
       var aggregate = aggregateTargetsCheckBox.Checked;
       double minEff = double.MaxValue, maxEff = double.MinValue;
-      foreach (var alg in algInstances) {
+      foreach (var alg in groups) {
         var noRuns = 0;
         SortedList<double, int> epdfHits = null, epdfMisses = null;
         if (aggregate) {
           hits[alg.Name] = epdfHits = new SortedList<double, int>();
           misses[alg.Name] = epdfMisses = new SortedList<double, int>();
         }
-        foreach (var problem in alg.GetProblemInstances()) {
-          var max = problem.IsMaximization();
+        foreach (var problem in alg.GetCases().Where(x => x.Maximization.HasValue)) {
+          var max = problem.Maximization.Value;
           var absTargets = GetAbsoluteTargets(problem).ToArray();
-          foreach (var run in alg.GetRuns(problem)) {
+          foreach (var run in alg.GetTrials(problem)) {
             noRuns++;
-            var resultsTable = (IndexedDataTable<double>)run.Results[table];
-            xAxisTitles.Add(resultsTable.VisualProperties.XAxisTitle);
+            xAxisTitles.Add(run.XAxisName);
 
-            var efforts = absTargets.Select(t => GetEffortToHitTarget(resultsTable.Rows.First().Values, t, max)).ToArray();
+            var efforts = absTargets.Select(t => GetEffortToHitTarget(run, t, max)).ToArray();
             minEff = Math.Min(minEff, efforts.Min(x => x.Item2));
             maxEff = Math.Max(maxEff, efforts.Max(x => x.Item2));
             for (var idx = 0; idx < efforts.Length; idx++) {
@@ -390,7 +436,7 @@ namespace HeuristicLab.Optimization.Views {
       targetChart.ChartAreas[0].AxisX.IsLogarithmic = CanDisplayLogarithmic();
       targetChart.ChartAreas[0].CursorY.Interval = 0.05;
 
-      UpdateErtTables(algInstances);
+      UpdateErtTables();
     }
 
     private void DrawTargetsEcdf(Dictionary<string, SortedList<double, int>> hits, Dictionary<string, SortedList<double, int>> misses, Dictionary<string, int> noRuns) {
@@ -400,7 +446,7 @@ namespace HeuristicLab.Optimization.Views {
       var showMarkers = markerCheckBox.Checked;
       foreach (var list in hits) {
         var row = new Series(list.Key) {
-          ChartType = SeriesChartType.StepLine,
+          ChartType = list.Value.Count > 1000 ? SeriesChartType.FastLine : SeriesChartType.StepLine,
           BorderWidth = 3,
           Color = colors[colorCount],
           BorderDashStyle = lineStyles[lineStyleCount],
@@ -422,7 +468,7 @@ namespace HeuristicLab.Optimization.Views {
         var labelPrinted = false;
         foreach (var h in list.Value) {
           var prevmissedecdf = missedecdf;
-          while (moreMisses && iter.Current.Key <= h.Key) {
+          while (moreMisses && iter.Current.Key < h.Key) {
             if (!labelPrinted && row.Points.Count > 0) {
               var point = row.Points.Last();
               if (showLabelsInTargetChart)
@@ -437,11 +483,8 @@ namespace HeuristicLab.Optimization.Views {
             movingTargets -= iter.Current.Value;
             if (row.Points.Count > 0 && row.Points.Last().XValue == iter.Current.Key) {
               row.Points.Last().SetValueY(ecdf / movingTargets);
-              row.Points.Last().Color = Color.FromArgb(255 - (int)Math.Floor(255 * (prevmissedecdf / totalTargets)), colors[colorCount]);
             } else {
-              var dp = new DataPoint(iter.Current.Key, ecdf / movingTargets) {
-                Color = Color.FromArgb(255 - (int)Math.Floor(255 * (prevmissedecdf / totalTargets)), colors[colorCount])
-              };
+              var dp = new DataPoint(iter.Current.Key, ecdf / movingTargets);
               if (showMarkers) {
                 dp.MarkerStyle = MarkerStyle.Circle;
                 dp.MarkerBorderWidth = 1;
@@ -469,11 +512,8 @@ namespace HeuristicLab.Optimization.Views {
           ecdf += h.Value;
           if (row.Points.Count > 0 && row.Points.Last().XValue == h.Key) {
             row.Points.Last().SetValueY(ecdf / movingTargets);
-            row.Points.Last().Color = Color.FromArgb(255 - (int)Math.Floor(255 * (missedecdf / totalTargets)), colors[colorCount]);
           } else {
-            var dp = new DataPoint(h.Key, ecdf / movingTargets) {
-              Color = Color.FromArgb(255 - (int)Math.Floor(255 * (missedecdf / totalTargets)), colors[colorCount])
-            };
+            var dp = new DataPoint(h.Key, ecdf / movingTargets);
             if (showMarkers) {
               dp.MarkerStyle = MarkerStyle.Circle;
               dp.MarkerBorderWidth = 1;
@@ -491,17 +531,17 @@ namespace HeuristicLab.Optimization.Views {
         while (moreMisses) {
           // if there are misses beyond the last hit we extend the shaded area
           missedecdf += iter.Current.Value;
-          var dp = new DataPoint(iter.Current.Key, ecdf / movingTargets) {
-            Color = Color.FromArgb(255 - (int)Math.Floor(255 * (missedecdf / totalTargets)), colors[colorCount])
-          };
-          if (showMarkers) {
-            dp.MarkerStyle = MarkerStyle.Circle;
-            dp.MarkerBorderWidth = 1;
-            dp.MarkerSize = 5;
-          }
-          row.Points.Add(dp);
-          if (boundShadingCheckBox.Checked) {
-            rowShade.Points.Add(new DataPoint(iter.Current.Key, new[] {ecdf / totalTargets, (ecdf + missedecdf) / totalTargets}));
+          if (row.Points.Count == 0 || row.Points.Last().XValue < iter.Current.Key) {
+            var dp = new DataPoint(iter.Current.Key, ecdf / movingTargets);
+            if (showMarkers) {
+              dp.MarkerStyle = MarkerStyle.Circle;
+              dp.MarkerBorderWidth = 1;
+              dp.MarkerSize = 5;
+            }
+            row.Points.Add(dp);
+            if (boundShadingCheckBox.Checked) {
+              rowShade.Points.Add(new DataPoint(iter.Current.Key, new[] { ecdf / totalTargets, (ecdf + missedecdf) / totalTargets }));
+            }
           }
           moreMisses = iter.MoveNext();
 
@@ -516,7 +556,7 @@ namespace HeuristicLab.Optimization.Views {
           }
         }
 
-        if (!labelPrinted) {
+        if (!labelPrinted && row.Points.Count > 0) {
           var point = row.Points.Last();
           if (showLabelsInTargetChart)
             point.Label = row.Name;
@@ -553,7 +593,9 @@ namespace HeuristicLab.Optimization.Views {
 
     private IEnumerable<double> GetAbsoluteTargets(ProblemInstance pInstance) {
       if (!targetsAreRelative) return targets;
-      var maximization = pInstance.IsMaximization();
+      if (!pInstance.Maximization.HasValue) throw new ArgumentException("Problem doesn't specify if it is to be maximized or minimized.");
+
+      var maximization = pInstance.Maximization.Value;
       var bestKnown = pInstance.BestKnownQuality;
       if (double.IsNaN(bestKnown)) throw new ArgumentException("Problem instance does not have a defined best - known quality.");
       IEnumerable<double> tmp = null;
@@ -569,9 +611,10 @@ namespace HeuristicLab.Optimization.Views {
     }
 
     private double[] GetAbsoluteTargetsWorstToBest(ProblemInstance pInstance) {
-      if (double.IsNaN(pInstance.BestKnownQuality)) throw new ArgumentException("Problem instance does not have a defined best-known quality.");
+      if (targetsAreRelative && double.IsNaN(pInstance.BestKnownQuality)) throw new ArgumentException("Problem instance does not have a defined best-known quality.");
+      if (!pInstance.Maximization.HasValue) throw new ArgumentException("Problem doesn't specify if it is to be maximized or minimized.");
       var absTargets = GetAbsoluteTargets(pInstance);
-      return (pInstance.IsMaximization()
+      return (pInstance.Maximization.Value
         ? absTargets.OrderBy(x => x) : absTargets.OrderByDescending(x => x)).ToArray();
     }
 
@@ -581,26 +624,26 @@ namespace HeuristicLab.Optimization.Views {
     }
 
     private Tuple<bool, double> GetEffortToHitTarget(
-        ObservableList<Tuple<double, double>> convergenceGraph,
+        ConvergenceGraph cgraph,
         double absTarget, bool maximization) {
-      if (convergenceGraph.Count == 0)
+      if (cgraph.Points == 0)
         throw new ArgumentException("Convergence graph is empty.", "convergenceGraph");
       
-      var index = convergenceGraph.BinarySearch(Tuple.Create(0.0, absTarget), new TargetComparer(maximization));
+      var index = cgraph.BinarySearch(new ConvergenceGraphPoint(0.0, absTarget), new TargetComparer(maximization));
       if (index >= 0) {
-        return Tuple.Create(true, convergenceGraph[index].Item1);
+        return Tuple.Create(true, cgraph[index].Runlength);
       } else {
         index = ~index;
-        if (index >= convergenceGraph.Count)
-          return Tuple.Create(false, convergenceGraph.Last().Item1);
-        return Tuple.Create(true, convergenceGraph[index].Item1);
+        if (index >= cgraph.Points)
+          return Tuple.Create(false, cgraph.Last().Runlength);
+        return Tuple.Create(true, cgraph[index].Runlength);
       }
     }
 
-    private void UpdateErtTables(List<AlgorithmInstance> algorithmInstances) {
+    private void UpdateErtTables() {
       ertTableView.Content = null;
       var columns = targets.Length + 1;
-      var totalRows = algorithmInstances.Count * algorithmInstances.Max(x => x.GetNumberOfProblemInstances()) + algorithmInstances.Max(x => x.GetNumberOfProblemInstances());
+      var totalRows = groups.Count * groups.Max(x => x.GetNumberOfCases()) + groups.Max(x => x.GetNumberOfCases());
       var matrix = new StringMatrix(totalRows, columns);
       var rowNames = new List<string>();
       matrix.ColumnNames = targets.Select(x => targetsAreRelative ? (100 * x).ToString() + "%" : x.ToString())
@@ -610,11 +653,12 @@ namespace HeuristicLab.Optimization.Views {
       var tableName = (string)dataTableComboBox.SelectedItem;
       if (string.IsNullOrEmpty(tableName)) return;
       
-      var problems = algorithmInstances.SelectMany(x => x.GetProblemInstances()).Distinct().ToList();
+      var problems = groups.SelectMany(x => x.GetCases()).Distinct().ToList();
 
-      foreach (var problem in problems) {
-        var max = problem.IsMaximization();
+      foreach (var problem in problems.OrderBy(x => x.ProblemName, new NaturalStringComparer())) {
+        if (double.IsNaN(problem.BestKnownQuality) || !problem.Maximization.HasValue) continue;
         rowNames.Add(problem.ToString());
+        var max = problem.Maximization.Value;
         var absTargets = GetAbsoluteTargetsWorstToBest(problem);
         if (targetsAreRelative) {
           // print out the absolute target values
@@ -624,9 +668,9 @@ namespace HeuristicLab.Optimization.Views {
         }
         rowCount++;
 
-        foreach (var alg in algorithmInstances) {
+        foreach (var alg in groups) {
           rowNames.Add(alg.Name);
-          var runs = alg.GetRuns(problem).ToList();
+          var runs = alg.GetTrials(problem).ToList();
           if (runs.Count == 0) {
             matrix[rowCount, columns - 1] = "N/A";
             rowCount++;
@@ -634,7 +678,7 @@ namespace HeuristicLab.Optimization.Views {
           }
           var result = default(ErtCalculationResult);
           for (var i = 0; i < absTargets.Length; i++) {
-            result = ExpectedRuntimeHelper.CalculateErt(runs, tableName, absTargets[i], max);
+            result = ExpectedRuntimeHelper.CalculateErt(runs.Select(x => x.ToTuples()), absTargets[i], max);
             matrix[rowCount, i] = result.ToString();
           }
           matrix[rowCount, columns - 1] = targets.Length > 0 ? result.SuccessfulRuns + "/" + result.TotalRuns : "-";
@@ -657,21 +701,18 @@ namespace HeuristicLab.Optimization.Views {
       if (string.IsNullOrEmpty(table)) return;
 
       if (budgets == null) GenerateDefaultBudgets(table);
-
-      var algInstances = GroupRuns().ToList();
-      if (algInstances.Count == 0) return;
+      
+      if (groups.Count == 0) return;
 
       var colorCount = 0;
       var lineStyleCount = 0;
       
-      foreach (var alg in algInstances) {
+      foreach (var alg in groups) {
         var hits = new Dictionary<string, SortedList<double, double>>();
 
-        foreach (var problem in alg.GetProblemInstances()) {
-          foreach (var run in alg.GetRuns(problem)) {
-            var resultsTable = (IndexedDataTable<double>)run.Results[table];
-
-            CalculateHitsForEachBudget(hits, resultsTable.Rows.First(), problem, alg.Name);
+        foreach (var problem in alg.GetCases()) {
+          foreach (var run in alg.GetTrials(problem)) {
+            CalculateHitsForEachBudget(hits, run, problem, alg.Name);
           }
         }
 
@@ -704,9 +745,21 @@ namespace HeuristicLab.Optimization.Views {
     }
 
     private void GenerateDefaultBudgets(string table) {
-      var runs = Content;
-      var min = runs.Select(x => ((IndexedDataTable<double>)x.Results[table]).Rows.First().Values.Select(y => y.Item1).Min()).Min();
-      var max = runs.Select(x => ((IndexedDataTable<double>)x.Results[table]).Rows.First().Values.Select(y => y.Item1).Max()).Max();
+      var runs = Content.Where(x => x.Results.ContainsKey(table) && x.Results[table] is IndexedDataTable<double>)
+                        .Select(x => (IndexedDataTable<double>)x.Results[table])
+                        .Where(x => x.Rows.Count > 0 && x.Rows.First().Values.Count > 0)
+                        .Select(x => x.Rows.First())
+                        .ToList();
+      if (runs.Count == 0) {
+        budgets = new double[0];
+        suppressBudgetsEvents = true;
+        budgetsTextBox.Text = string.Empty;
+        suppressBudgetsEvents = false;
+        return;
+      }
+
+      var min = runs.Select(x => x.Values.Select(y => y.Item1).Min()).Min();
+      var max = runs.Select(x => x.Values.Select(y => y.Item1).Max()).Max();
       var points = 3;
       budgets = Enumerable.Range(1, points).Select(x => min + (x / (double)points) * (max - min)).ToArray();
       suppressBudgetsEvents = true;
@@ -714,19 +767,19 @@ namespace HeuristicLab.Optimization.Views {
       suppressBudgetsEvents = false;
     }
 
-    private void CalculateHitsForEachBudget(Dictionary<string, SortedList<double, double>> hits, IndexedDataRow<double> row, ProblemInstance problem, string groupName) {
-      var max = problem.IsMaximization();
+    private void CalculateHitsForEachBudget(Dictionary<string, SortedList<double, double>> hits, ConvergenceGraph cgraph, ProblemInstance problem, string groupName) {
+      var max = problem.Maximization.Value;
       var prevIndex = 0;
       foreach (var b in budgets) {
         var key = groupName + "-" + b;
-        var index = row.Values.BinarySearch(prevIndex, row.Values.Count - prevIndex, Tuple.Create(b, 0.0), new CostComparer());
+        var index = cgraph.BinarySearch(prevIndex, cgraph.Points - prevIndex, new ConvergenceGraphPoint(b, 0.0), new CostComparer());
         if (index < 0) {
           index = ~index;
-          if (index >= row.Values.Count) break; // the run wasn't long enough to use up budget b (or any subsequent larger one)
+          if (index >= cgraph.Points) break; // the run wasn't long enough to use up budget b (or any subsequent larger one)
         }
         if (!hits.ContainsKey(key)) hits.Add(key, new SortedList<double, double>());
-        var v = row.Values[index];
-        var relTgt = CalculateRelativeDifference(max, problem.BestKnownQuality, v.Item2) + 1;
+        var v = cgraph[index];
+        var relTgt = CalculateRelativeDifference(max, problem.BestKnownQuality, v.Quality) + 1;
         if (hits[key].ContainsKey(relTgt))
           hits[key][relTgt]++;
         else hits[key][relTgt] = 1.0;
@@ -742,29 +795,38 @@ namespace HeuristicLab.Optimization.Views {
     private void SynchronizeTargetTextBox() {
       if (InvokeRequired) Invoke((Action)SynchronizeTargetTextBox);
       else {
-        suppressTargetsEvents = true;
-        try {
-          if (targetsAreRelative)
-            targetsTextBox.Text = string.Join("% ; ", targets.Select(x => x * 100)) + "%";
-          else targetsTextBox.Text = string.Join(" ; ", targets);
-        } finally { suppressTargetsEvents = false; }
+        if (targetsAreRelative)
+          targetsTextBox.Text = string.Join("% ; ", targets.Select(x => x * 100)) + "%";
+        else targetsTextBox.Text = string.Join(" ; ", targets);
       }
     }
 
     private void groupComboBox_SelectedIndexChanged(object sender, EventArgs e) {
-      UpdateRuns();
-      SetEnabledStateOfControls();
+      if (updateInProgress) return;
+      try {
+        updateInProgress = true;
+        UpdateRuns();
+        SetEnabledStateOfControls();
+      } finally { updateInProgress = false; }
     }
     private void problemComboBox_SelectedIndexChanged(object sender, EventArgs e) {
-      UpdateRuns();
-      SetEnabledStateOfControls();
+      if (updateInProgress) return;
+      try {
+        updateInProgress = true;
+        UpdateRuns();
+        SetEnabledStateOfControls();
+      } finally { updateInProgress = false; }
     }
     private void dataTableComboBox_SelectedIndexChanged(object sender, EventArgs e) {
-      if (dataTableComboBox.SelectedIndex >= 0)
-        GenerateDefaultBudgets((string)dataTableComboBox.SelectedItem);
-      UpdateBestKnownQualities();
-      UpdateRuns();
-      SetEnabledStateOfControls();
+      if (updateInProgress) return;
+      try {
+        updateInProgress = true;
+        if (dataTableComboBox.SelectedIndex >= 0)
+          GenerateDefaultBudgets((string)dataTableComboBox.SelectedItem);
+        UpdateBestKnownQualities();
+        UpdateRuns();
+        SetEnabledStateOfControls();
+      } finally { updateInProgress = false; }
     }
 
     private void logScalingCheckBox_CheckedChanged(object sender, EventArgs e) {
@@ -777,65 +839,77 @@ namespace HeuristicLab.Optimization.Views {
     }
 
     #region Event handlers for target analysis
-    private bool suppressTargetsEvents;
     private void targetsTextBox_Validating(object sender, CancelEventArgs e) {
-      if (suppressTargetsEvents) return;
-      var targetStrings = targetsTextBox.Text.Split(new[] { '%', ';', '\t', ' ' }, StringSplitOptions.RemoveEmptyEntries);
-      var targetList = new List<decimal>();
-      foreach (var ts in targetStrings) {
-        decimal t;
-        if (!decimal.TryParse(ts, out t)) {
-          errorProvider.SetError(targetsTextBox, "Not all targets can be parsed: " + ts);
+      if (updateInProgress) return;
+      try {
+        updateInProgress = true;
+        var targetStrings = targetsTextBox.Text.Split(new[] { '%', ';', '\t', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+        var targetList = new List<decimal>();
+        foreach (var ts in targetStrings) {
+          decimal t;
+          if (!decimal.TryParse(ts, out t)) {
+            errorProvider.SetError(targetsTextBox, "Not all targets can be parsed: " + ts);
+            e.Cancel = true;
+            return;
+          }
+          if (targetsAreRelative)
+            targetList.Add(t / 100);
+          else targetList.Add(t);
+        }
+        if (targetList.Count == 0) {
+          errorProvider.SetError(targetsTextBox, "Give at least one target value!");
           e.Cancel = true;
           return;
         }
-        if (targetsAreRelative)
-          targetList.Add(t / 100);
-        else targetList.Add(t);
-      }
-      if (targetList.Count == 0) {
-        errorProvider.SetError(targetsTextBox, "Give at least one target value!");
-        e.Cancel = true;
-        return;
-      }
-      e.Cancel = false;
-      errorProvider.SetError(targetsTextBox, null);
-      targets = targetsAreRelative ? targetList.Select(x => (double)x).OrderByDescending(x => x).ToArray() : targetList.Select(x => (double)x).ToArray();
+        e.Cancel = false;
+        errorProvider.SetError(targetsTextBox, null);
+        targets = targetsAreRelative ? targetList.Select(x => (double)x).OrderByDescending(x => x).ToArray() : targetList.Select(x => (double)x).ToArray();
 
-      SynchronizeTargetTextBox();
-      UpdateResultsByTarget();
-      SetEnabledStateOfControls();
+        SynchronizeTargetTextBox();
+        UpdateResultsByTarget();
+        SetEnabledStateOfControls();
+
+      } finally { updateInProgress = false; }
     }
 
     private void aggregateTargetsCheckBox_CheckedChanged(object sender, EventArgs e) {
-      SuspendRepaint();
+      if (updateInProgress) return;
       try {
+        updateInProgress = true;
+        SuspendRepaint();
         UpdateResultsByTarget();
-      } finally { ResumeRepaint(true); }
+      } finally {
+        updateInProgress = false;
+        ResumeRepaint(true);
+      }
     }
 
     private void relativeOrAbsoluteComboBox_SelectedIndexChanged(object sender, EventArgs e) {
-      if (suppressUpdates) return;
-      var pd = (ProblemInstance)problemComboBox.SelectedItem;
-      if (!double.IsNaN(pd.BestKnownQuality)) {
-        var max = pd.IsMaximization();
-        if (targetsAreRelative) targets = GetAbsoluteTargets(pd).ToArray();
-        else {
-          // Rounding to 5 digits since it's certainly appropriate for this application
-          if (pd.BestKnownQuality > 0) {
-            targets = targets.Select(x => Math.Round(max ? 1.0 - (x / pd.BestKnownQuality) : (x / pd.BestKnownQuality) - 1.0, 5)).ToArray();
-          } else if (pd.BestKnownQuality < 0) {
-            targets = targets.Select(x => Math.Round(!max ? 1.0 - (x / pd.BestKnownQuality) : (x / pd.BestKnownQuality) - 1.0, 5)).ToArray();
+      if (updateInProgress) return;
+      try {
+        updateInProgress = true;
+        var pd = (ProblemInstance)problemComboBox.SelectedItem;
+        if (!double.IsNaN(pd.BestKnownQuality) && pd.Maximization.HasValue) {
+          var max = pd.Maximization.Value;
+          if (targetsAreRelative) targets = GetAbsoluteTargets(pd).ToArray();
+          else {
+            // Rounding to 5 digits since it's certainly appropriate for this application
+            if (pd.BestKnownQuality > 0) {
+              targets = targets.Select(x => Math.Round(max ? 1.0 - (x / pd.BestKnownQuality) : (x / pd.BestKnownQuality) - 1.0, 5)).ToArray();
+            } else if (pd.BestKnownQuality < 0) {
+              targets = targets.Select(x => Math.Round(!max ? 1.0 - (x / pd.BestKnownQuality) : (x / pd.BestKnownQuality) - 1.0, 5)).ToArray();
+            }
           }
         }
-      }
-      targetsAreRelative = (string)relativeOrAbsoluteComboBox.SelectedItem == "relative";
-      SynchronizeTargetTextBox();
-
-      try {
+        targetsAreRelative = (string)relativeOrAbsoluteComboBox.SelectedItem == "relative";
+        SynchronizeTargetTextBox();
+        
         SuspendRepaint();
         UpdateResultsByTarget();
-      } finally { ResumeRepaint(true); }
+      } finally {
+        updateInProgress = false;
+        ResumeRepaint(true);
+      }
     }
 
     private void generateTargetsButton_Click(object sender, EventArgs e) {
@@ -855,9 +929,12 @@ namespace HeuristicLab.Optimization.Views {
               ? dialog.Values.OrderByDescending(x => x).Select(x => (double)x / 100.0).ToArray()
               : dialog.Values.Select(x => (double)x).ToArray();
 
-            SynchronizeTargetTextBox();
-            UpdateResultsByTarget();
-            SetEnabledStateOfControls();
+            try {
+              updateInProgress = true;
+              SynchronizeTargetTextBox();
+              UpdateResultsByTarget();
+              SetEnabledStateOfControls();
+            } finally { updateInProgress = false; }
           }
         }
       }
@@ -868,18 +945,22 @@ namespace HeuristicLab.Optimization.Views {
       if (string.IsNullOrEmpty(table)) return;
       
       foreach (var run in Content) {
-        if (!run.Results.ContainsKey(table)) continue;
+        if (!run.Results.ContainsKey(table) || !(run.Results[table] is IndexedDataTable<double>)) continue;
         var resultsTable = (IndexedDataTable<double>)run.Results[table];
         var values = resultsTable.Rows.First().Values;
         var pd = new ProblemInstance(run);
+        if (!pd.Maximization.HasValue) continue;
         pd = problems.Single(x => x.Equals(pd));
-        var max = pd.IsMaximization();
+        if (targetsAreRelative && double.IsNaN(pd.BestKnownQuality)) continue;
+
+        var max = pd.Maximization.Value;
         var absTargets = GetAbsoluteTargetsWorstToBest(pd);
+        var cgraph = new ConvergenceGraph(resultsTable, max);
 
         var prevIndex = 0;
         for (var i = 0; i < absTargets.Length; i++) {
           var absTarget = absTargets[i];
-          var index = values.BinarySearch(prevIndex, values.Count - prevIndex, Tuple.Create(0.0, absTarget), new TargetComparer(max));
+          var index = cgraph.BinarySearch(prevIndex, values.Count - prevIndex, new ConvergenceGraphPoint(0.0, absTarget), new TargetComparer(max));
           if (index < 0) {
             index = ~index;
             if (index >= values.Count) break; // the target (and subsequent ones) wasn't achieved
@@ -892,18 +973,26 @@ namespace HeuristicLab.Optimization.Views {
     }
 
     private void markerCheckBox_CheckedChanged(object sender, EventArgs e) {
-      SuspendRepaint();
       try {
+        updateInProgress = true;
+        SuspendRepaint();
         UpdateResultsByTarget();
-      } finally { ResumeRepaint(true); }
+      } finally {
+        updateInProgress = false;
+        ResumeRepaint(true);
+      }
     }
 
     private void showLabelsCheckBox_CheckedChanged(object sender, EventArgs e) {
       showLabelsInTargetChart = showLabelsCheckBox.Checked;
-      SuspendRepaint();
       try {
+        updateInProgress = true;
+        SuspendRepaint();
         UpdateResultsByTarget();
-      } finally { ResumeRepaint(true); }
+      } finally {
+        updateInProgress = false;
+        ResumeRepaint(true);
+      }
     }
     #endregion
 
@@ -975,17 +1064,19 @@ namespace HeuristicLab.Optimization.Views {
         var resultsTable = (IndexedDataTable<double>)run.Results[table];
         var values = resultsTable.Rows.First().Values;
         var pd = new ProblemInstance(run);
+        if (!pd.Maximization.HasValue) continue;
         pd = problems.Single(x => x.Equals(pd));
-
+        var max = pd.Maximization.Value;
+        var cgraph = new ConvergenceGraph(resultsTable, max);
         var prevIndex = 0;
         foreach (var b in budgets) {
-          var index = values.BinarySearch(prevIndex, values.Count - prevIndex, Tuple.Create(b, 0.0), new CostComparer());
+          var index = cgraph.BinarySearch(prevIndex, values.Count - prevIndex, new ConvergenceGraphPoint(b, 0.0), new CostComparer());
           if (index < 0) {
             index = ~index;
             if (index >= values.Count) break; // the run wasn't long enough to use up budget b (or any subsequent larger one)
           }
           var v = values[index];
-          var tgt = targetsAreRelative ? CalculateRelativeDifference(pd.IsMaximization(), pd.BestKnownQuality, v.Item2) : v.Item2;
+          var tgt = targetsAreRelative ? CalculateRelativeDifference(max, pd.BestKnownQuality, v.Item2) : v.Item2;
           run.Results[table + (targetsAreRelative ? ".CostForRelTarget " : ".CostForAbsTarget ") + b] = new DoubleValue(tgt);
           prevIndex = index;
         }
@@ -1010,18 +1101,37 @@ namespace HeuristicLab.Optimization.Views {
 
     private Dictionary<ProblemInstance, double> CalculateBestTargetPerProblemInstance(string table) {
       if (table == null) table = string.Empty;
-      return (from r in Content
-              where r.Visible
-              let pd = new ProblemInstance(r)
-              let target = r.Parameters.ContainsKey("BestKnownQuality")
-                           && r.Parameters["BestKnownQuality"] is DoubleValue
-                ? ((DoubleValue)r.Parameters["BestKnownQuality"]).Value
-                : (r.Results.ContainsKey(table) && r.Results[table] is IndexedDataTable<double>
-                  ? ((IndexedDataTable<double>)r.Results[table]).Rows.First().Values.Last().Item2
-                  : double.NaN)
-              group target by pd into g
-              select new { Problem = g.Key, Target = g.Any(x => !double.IsNaN(x)) ? (g.Key.IsMaximization() ? g.Max() : g.Where(x => !double.IsNaN(x)).Min()) : double.NaN })
-        .ToDictionary(x => x.Problem, x => x.Target);
+      var dict = new Dictionary<ProblemInstance, double>();
+      foreach (var k in from r in Content where r.Visible let pd = new ProblemInstance(r) group r by pd into g select new { Problem = g.Key, Runs = g.ToList() }) {
+        var pd = k.Problem;
+        if (!pd.Maximization.HasValue) continue;
+        var values = GetQualityValues(k.Runs, table).ToList();
+        var target = double.NaN;
+        if (values.Count > 0) {
+          target = pd.Maximization.Value ? values.Max() : values.Min();
+        }
+        dict[pd] = target;
+      }
+      return dict;
+    }
+
+    private IEnumerable<double> GetQualityValues(List<IRun> runs, string table) {
+      foreach (var r in runs) {
+        IItem item;
+        if (r.Parameters.TryGetValue("BestKnownQuality", out item)) {
+          var dval = item as DoubleValue;
+          if (dval != null && !double.IsNaN(dval.Value))
+            yield return dval.Value;
+        }
+        if (r.Results.TryGetValue(table, out item)) {
+          var dt = item as IndexedDataTable<double>;
+          if (dt != null && dt.Rows.Count > 0 && dt.Rows.First().Values.Count > 0) {
+            var last = dt.Rows.First().Values.Last().Item2;
+            if (!double.IsNaN(last))
+              yield return Math.Round(last, 10);
+          }
+        }
+      }
     }
 
     private void UpdateRuns() {
@@ -1031,6 +1141,7 @@ namespace HeuristicLab.Optimization.Views {
       }
       SuspendRepaint();
       try {
+        GroupRuns();
         UpdateResultsByTarget();
         UpdateResultsByCost();
       } finally { ResumeRepaint(true); }
@@ -1135,6 +1246,7 @@ namespace HeuristicLab.Optimization.Views {
       else targetChart.Series.Insert(index, s);
     }
 
+    #region Helper classes
     private class AlgorithmInstance : INotifyPropertyChanged {
       private string name;
       public string Name {
@@ -1146,44 +1258,42 @@ namespace HeuristicLab.Optimization.Views {
         }
       }
 
-      private Dictionary<ProblemInstance, List<IRun>> performanceData;
+      private Dictionary<ProblemInstance, List<ConvergenceGraph>> performanceData;
 
-      public int GetNumberOfProblemInstances() {
+      public int GetNumberOfCases() {
         return performanceData.Count;
       }
 
-      public IEnumerable<ProblemInstance> GetProblemInstances() {
+      public IEnumerable<ProblemInstance> GetCases() {
         return performanceData.Keys;
       }
 
-      public int GetNumberOfRuns(ProblemInstance p) {
+      public int GetNumberOfTrials(ProblemInstance p) {
         if (p == ProblemInstance.MatchAll) return performanceData.Select(x => x.Value.Count).Sum();
-        List<IRun> runs;
-        if (performanceData.TryGetValue(p, out runs))
-          return runs.Count;
+        List<ConvergenceGraph> trials;
+        if (performanceData.TryGetValue(p, out trials))
+          return trials.Count;
 
         return 0;
       }
 
-      public IEnumerable<IRun> GetRuns(ProblemInstance p) {
+      public IEnumerable<ConvergenceGraph> GetTrials(ProblemInstance p) {
         if (p == ProblemInstance.MatchAll) return performanceData.SelectMany(x => x.Value);
-        List<IRun> runs;
-        if (performanceData.TryGetValue(p, out runs))
-          return runs;
+        List<ConvergenceGraph> trials;
+        if (performanceData.TryGetValue(p, out trials))
+          return trials;
 
-        return Enumerable.Empty<IRun>();
+        return Enumerable.Empty<ConvergenceGraph>();
       }
 
-      public AlgorithmInstance(string name, IEnumerable<IRun> runs, IEnumerable<ProblemInstance> problems) {
+      public AlgorithmInstance(string name, IEnumerable<IGrouping<ProblemInstance, IndexedDataTable<double>>> trials) {
         this.name = name;
 
-        var pDict = problems.ToDictionary(r => r, _ => new List<IRun>());
-        foreach (var y in runs) {
-          var pd = new ProblemInstance(y);
-          List<IRun> l;
-          if (pDict.TryGetValue(pd, out l)) l.Add(y);
+        performanceData = new Dictionary<ProblemInstance, List<ConvergenceGraph>>();
+        foreach (var t in trials) {
+          if (double.IsNaN(t.Key.BestKnownQuality) || !t.Key.Maximization.HasValue) continue;
+          performanceData[t.Key] = t.Select(c => new ConvergenceGraph(c, t.Key.Maximization.Value)).ToList();
         }
-        performanceData = pDict.Where(x => x.Value.Count > 0).ToDictionary(x => x.Key, x => x.Value);
       }
 
       public override bool Equals(object obj) {
@@ -1213,7 +1323,7 @@ namespace HeuristicLab.Optimization.Views {
         ProblemType = string.Empty;
         ProblemName = string.Empty;
         Evaluator = string.Empty;
-        Maximization = string.Empty;
+        Maximization = null;
         DisplayProblemType = false;
         DisplayProblemName = false;
         DisplayEvaluator = false;
@@ -1226,11 +1336,11 @@ namespace HeuristicLab.Optimization.Views {
         ProblemType = GetStringValueOrEmpty(run, "Problem Type");
         ProblemName = GetStringValueOrEmpty(run, "Problem Name");
         Evaluator = GetStringValueOrEmpty(run, "Evaluator");
-        Maximization = GetMaximizationValueOrEmpty(run, "Maximization");
+        Maximization = GetBoolValueOrEmpty(run, "Maximization");
         DisplayProblemType = !string.IsNullOrEmpty(ProblemType);
         DisplayProblemName = !string.IsNullOrEmpty(ProblemName);
         DisplayEvaluator = !string.IsNullOrEmpty(Evaluator);
-        DisplayMaximization = !string.IsNullOrEmpty(Maximization);
+        DisplayMaximization = Maximization.HasValue;
         matchAll = false;
         BestKnownQuality = GetDoubleValueOrNaN(run, "BestKnownQuality");
       }
@@ -1298,8 +1408,8 @@ namespace HeuristicLab.Optimization.Views {
           OnPropertyChanged("DisplayMaximization");
         }
       }
-      private string maximization;
-      public string Maximization {
+      private bool? maximization;
+      public bool? Maximization {
         get { return maximization; }
         set {
           if (maximization == value) return;
@@ -1317,16 +1427,12 @@ namespace HeuristicLab.Optimization.Views {
         }
       }
 
-      public bool IsMaximization() {
-        return Maximization == "MAX";
-      }
-
       public bool Match(IRun run) {
         return matchAll ||
-               GetStringValueOrEmpty(run, "Problem Type") == ProblemType
+               (GetStringValueOrEmpty(run, "Problem Type") == ProblemType
                && GetStringValueOrEmpty(run, "Problem Name") == ProblemName
                && GetStringValueOrEmpty(run, "Evaluator") == Evaluator
-               && GetMaximizationValueOrEmpty(run, "Maximization") == Maximization;
+               && GetBoolValueOrEmpty(run, "Maximization") == Maximization);
       }
 
       private double GetDoubleValueOrNaN(IRun run, string key) {
@@ -1347,13 +1453,13 @@ namespace HeuristicLab.Optimization.Views {
         return string.Empty;
       }
 
-      private string GetMaximizationValueOrEmpty(IRun run, string key) {
+      private bool? GetBoolValueOrEmpty(IRun run, string key) {
         IItem param;
         if (run.Parameters.TryGetValue(key, out param)) {
           var bv = param as BoolValue;
-          return bv != null ? (bv.Value ? "MAX" : "MIN") : string.Empty;
+          if (bv != null) return bv.Value;
         }
-        return string.Empty;
+        return null;
       }
 
       public override bool Equals(object obj) {
@@ -1374,7 +1480,7 @@ namespace HeuristicLab.Optimization.Views {
           (DisplayProblemType ? ProblemType : string.Empty),
           (DisplayProblemName ? ProblemName : string.Empty),
           (DisplayEvaluator ? Evaluator : string.Empty),
-          (DisplayMaximization ? Maximization : string.Empty),
+          (DisplayMaximization && Maximization.HasValue ? (Maximization.Value ? "MAX" : "MIN") : string.Empty),
           !double.IsNaN(BestKnownQuality) ? BestKnownQuality.ToString(CultureInfo.CurrentCulture.NumberFormat) : string.Empty }.Where(x => !string.IsNullOrEmpty(x)));
       }
 
@@ -1385,21 +1491,97 @@ namespace HeuristicLab.Optimization.Views {
       }
     }
 
-    private class CostComparer : Comparer<Tuple<double, double>> {
-      public override int Compare(Tuple<double, double> x, Tuple<double, double> y) {
-        return x.Item1.CompareTo(y.Item1);
+    private class CostComparer : Comparer<ConvergenceGraphPoint> {
+      public override int Compare(ConvergenceGraphPoint x, ConvergenceGraphPoint y) {
+        return x.Runlength.CompareTo(y.Runlength);
       }
     }
 
-    private class TargetComparer : Comparer<Tuple<double, double>> {
+    private class TargetComparer : Comparer<ConvergenceGraphPoint> {
       public bool Maximization { get; private set; }
       public TargetComparer(bool maximization) {
         Maximization = maximization;
       }
 
-      public override int Compare(Tuple<double, double> x, Tuple<double, double> y) {
-        return Maximization ? x.Item2.CompareTo(y.Item2) : y.Item2.CompareTo(x.Item2);
+      public override int Compare(ConvergenceGraphPoint x, ConvergenceGraphPoint y) {
+        return Maximization ? x.Quality.CompareTo(y.Quality) : y.Quality.CompareTo(x.Quality);
       }
     }
+
+    private class ConvergenceGraph : IEnumerable<ConvergenceGraphPoint> {
+      private List<ConvergenceGraphPoint> data;
+      private bool maximization;
+      private string xAxisLabel;
+
+      public string XAxisName { get { return xAxisLabel; } }
+
+      public int Points {
+        get { return data.Count; }
+      }
+
+      public double TotalRunlength {
+        get { return data.Last().Runlength; }
+      }
+
+      public double BestQuality {
+        get { return data.Last().Quality; }
+      }
+
+      public double QualityAt(double runlength) {
+        var point = data.SkipWhile(x => x.Runlength < runlength).FirstOrDefault();
+        if (point == null) return double.NaN;
+        return point.Quality;
+      }
+
+      public double RunlengthFor(double quality) {
+        var point = (maximization ? data.SkipWhile(x => x.Quality < quality) : data.SkipWhile(x => x.Quality > quality)).FirstOrDefault();
+        if (point == null) return double.NaN;
+        return point.Runlength;
+      }
+
+      public ConvergenceGraphPoint this[int point] {
+        get { return data[point]; }
+      }
+
+      public ConvergenceGraph(IndexedDataTable<double> table, bool maximization) {
+        data = table.Rows.First().Values.Select(x => new ConvergenceGraphPoint() { Runlength = x.Item1, Quality = x.Item2 }).ToList();
+        xAxisLabel = table.VisualProperties.XAxisTitle;
+        this.maximization = maximization;
+      }
+
+      public IEnumerator<ConvergenceGraphPoint> GetEnumerator() {
+        return data.GetEnumerator();
+      }
+
+      IEnumerator IEnumerable.GetEnumerator() {
+        return data.GetEnumerator();
+      }
+
+      public int BinarySearch(ConvergenceGraphPoint item, IComparer<ConvergenceGraphPoint> comparer) {
+        return data.BinarySearch(item, comparer);
+      }
+
+      public int BinarySearch(int index, int count, ConvergenceGraphPoint point, IComparer<ConvergenceGraphPoint> comparer) {
+        return data.BinarySearch(index, count, point, comparer);
+      }
+
+      public IEnumerable<Tuple<double, double>> ToTuples() {
+        return data.Select(x => Tuple.Create(x.Runlength, x.Quality));
+      }
+    }
+
+    private class ConvergenceGraphPoint {
+      public double Runlength { get; set; }
+      public double Quality { get; set; }
+
+      public ConvergenceGraphPoint() {
+
+      }
+      public ConvergenceGraphPoint(double runlength, double quality) {
+        Runlength = runlength;
+        Quality = quality;
+      }
+    }
+    #endregion
   }
 }
