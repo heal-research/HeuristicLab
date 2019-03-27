@@ -74,7 +74,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.MathJax-2.6.1"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.IGraph-0.8.0-pre", "HeuristicLab.ExtLibs\HeuristicLab.Igraph\0.8.0-pre\HeuristicLab.Igraph-0.8.0-pre\HeuristicLab.IGraph-0.8.0-pre.csproj", "{088D34F2-32EA-43FF-BAA8-22428D5B66BE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.OrTools-6.10.0", "HeuristicLab.ExtLibs\HeuristicLab.OrTools\6.10.0\HeuristicLab.OrTools-6.10.0\HeuristicLab.OrTools-6.10.0.csproj", "{AEC895BC-C519-49D3-9A94-6B1C71AD6671}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.OrTools-7.0.0", "HeuristicLab.ExtLibs\HeuristicLab.OrTools\7.0.0\HeuristicLab.OrTools-7.0.0\HeuristicLab.OrTools-7.0.0.csproj", "{AEC895BC-C519-49D3-9A94-6B1C71AD6671}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -114,9 +114,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\bin\Google.OrTools.dll</HintPath>
     </Reference>
-    <Reference Include="HeuristicLab.OrTools-6.10.0, Version=6.10.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+    <Reference Include="HeuristicLab.OrTools-7.0.0, Version=6.10.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\bin\HeuristicLab.OrTools-6.10.0.dll</HintPath>
+      <HintPath>..\..\bin\HeuristicLab.OrTools-7.0.0.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -146,6 +146,7 @@
     <Compile Include="LinearProgramming\Algorithms\LinearProgrammingAlgorithm.cs" />
     <Compile Include="LinearProgramming\Algorithms\LinearSolverExtensions.cs" />
     <Compile Include="LinearProgramming\Algorithms\Solvers\Base\LinearSolver.cs" />
+    <Compile Include="LinearProgramming\Problems\ProblemDef.cs" />
     <Compile Include="LinearProgramming\Problems\ProgrammableLinearProblemDefinition.cs" />
     <Compile Include="LinearProgramming\Algorithms\ProtoWriteFormat.cs" />
     <Compile Include="LinearProgramming\Algorithms\SolverResponseStatus.cs" />
@@ -207,6 +208,10 @@
       <Project>{BBAB9DF5-5EF3-4BA8-ADE9-B36E82114937}</Project>
       <Name>HeuristicLab.Data-3.3</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Encodings.BinaryVectorEncoding\3.3\HeuristicLab.Encodings.BinaryVectorEncoding-3.3.csproj">
+      <Project>{66D249C3-A01D-42A8-82A2-919BC8EC3D83}</Project>
+      <Name>HeuristicLab.Encodings.BinaryVectorEncoding-3.3</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Encodings.PermutationEncoding\3.3\HeuristicLab.Encodings.PermutationEncoding-3.3.csproj">
       <Project>{DBECB8B0-B166-4133-BAF1-ED67C3FD7FCA}</Project>
       <Name>HeuristicLab.Encodings.PermutationEncoding-3.3</Name>
@@ -226,6 +231,10 @@
     <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\3.3\HeuristicLab.PluginInfrastructure-3.3.csproj">
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
       <Name>HeuristicLab.PluginInfrastructure-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Problems.Knapsack\3.3\HeuristicLab.Problems.Knapsack-3.3.csproj">
+      <Project>{E10F395F-C8A6-48AD-B470-9AA7A1F43809}</Project>
+      <Name>HeuristicLab.Problems.Knapsack-3.3</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Problems.Programmable\3.3\HeuristicLab.Problems.Programmable-3.3.csproj">
       <Project>{EE07BFF8-B23D-41F5-8AD7-AC9598D7A2C9}</Project>

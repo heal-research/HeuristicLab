@@ -33,7 +33,7 @@ namespace HeuristicLab.ExactOptimization {
   [PluginDependency("HeuristicLab.Core", "3.3")]
   [PluginDependency("HeuristicLab.Data", "3.3")]
   [PluginDependency("HeuristicLab.Optimization", "3.3")]
-  [PluginDependency("HeuristicLab.OrTools", "6.10")]
+  [PluginDependency("HeuristicLab.OrTools", "7.0")]
   [PluginDependency("HeuristicLab.Parameters", "3.3")]
   [PluginDependency("HeuristicLab.Persistence", "3.3")]
   [PluginDependency("HeuristicLab.Problems.Programmable", "3.3")]

@@ -1,6 +1,0 @@
-﻿This version of Google OR-Tools is a custom build of a commit [1] in the
-runtimelinking branch of the Google OR-Tools C++ library available at
-GitHub [2]. The library was compiled with Visual Studio 2017 for x64.
-
-[1]: https://github.com/ddorfmeister/or-tools/commit/e13f4bb73f09966332206204d443747e3762555f
-[2]: https://github.com/google/or-tools
