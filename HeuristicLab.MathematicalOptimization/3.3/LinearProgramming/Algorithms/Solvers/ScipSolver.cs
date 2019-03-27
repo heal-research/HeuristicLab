@@ -31,7 +31,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.ExactOptimization.LinearProgramming {
 
-  [Item("SCIP", "SCIP (http://scip.zib.de/) must be installed and licenced.")]
+  [Item("SCIP", "SCIP (http://scip.zib.de/) must be installed and licensed.")]
   [StorableClass]
   public class ScipSolver : ExternalIncrementalLinearSolver {
     private TimeSpan timeLimit = TimeSpan.Zero;

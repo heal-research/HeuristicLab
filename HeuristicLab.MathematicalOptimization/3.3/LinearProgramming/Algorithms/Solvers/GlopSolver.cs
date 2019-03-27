@@ -39,7 +39,7 @@ namespace HeuristicLab.ExactOptimization.LinearProgramming {
         "# for parameters, see https://github.com/google/or-tools/blob/v6.10/ortools/glop/parameters.proto" + Environment.NewLine +
         "# examples:" + Environment.NewLine +
         "# random_seed: 10" + Environment.NewLine +
-        "# use_dual_simplex: true (LP)" + Environment.NewLine;
+        "# use_dual_simplex: true # Dual Simplex (LP)" + Environment.NewLine;
     }
 
     [StorableConstructor]

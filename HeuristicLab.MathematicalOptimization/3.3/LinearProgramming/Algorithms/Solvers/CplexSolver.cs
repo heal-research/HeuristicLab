@@ -29,7 +29,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.ExactOptimization.LinearProgramming {
 
-  [Item("CPLEX", "CPLEX (https://www.ibm.com/analytics/cplex-optimizer) must be installed and licenced.")]
+  [Item("CPLEX", "CPLEX (https://www.ibm.com/analytics/cplex-optimizer) must be installed and licensed.")]
   [StorableClass]
   public class CplexSolver : ExternalIncrementalLinearSolver {
 

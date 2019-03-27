@@ -29,7 +29,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.ExactOptimization.LinearProgramming {
 
-  [Item("Gurobi", "Gurobi (http://www.gurobi.com/) must be installed and licenced.")]
+  [Item("Gurobi", "Gurobi (http://www.gurobi.com/) must be installed and licensed.")]
   [StorableClass]
   public class GurobiSolver : ExternalIncrementalLinearSolver {
 
