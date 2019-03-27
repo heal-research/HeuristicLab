@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,13 +25,13 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Problems.VehicleRouting.Variants;
 
 namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
   [Item("MDCVRPPDTWEvaluator", "Represents a multi depot CVRPPDTW evaluator.")]
-  [StorableClass]
+  [StorableType("4C4D6FA1-A16B-47B5-99D8-7F3D7C3D286A")]
   public class MDCVRPPDTWEvaluator : MDCVRPTWEvaluator {
     public ILookupParameter<IntValue> PickupViolationsParameter {
       get { return (ILookupParameter<IntValue>)Parameters["PickupViolations"]; }
@@ -323,7 +323,7 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
     }
 
     [StorableConstructor]
-    protected MDCVRPPDTWEvaluator(bool deserializing) : base(deserializing) { }
+    protected MDCVRPPDTWEvaluator(StorableConstructorFlag _) : base(_) { }
 
     public MDCVRPPDTWEvaluator() {
       Parameters.Add(new LookupParameter<IntValue>("PickupViolations", "The number of pickup violations."));

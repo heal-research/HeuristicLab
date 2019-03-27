@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,8 +20,10 @@
 #endregion
 
 using HeuristicLab.Common;
+using HEAL.Attic;
 
 namespace HeuristicLab.Data {
+  [StorableType("27217641-0839-4757-b8f6-6422114b096d")]
   public interface IStringConvertibleArray : IContent, IValueTypeArray {
     bool Validate(string value, out string errorMessage);
     string GetValue(int index);

@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,21 +23,20 @@ using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis {
   /// <summary>
   /// Represents a classification solution that uses a discriminant function and classification thresholds.
   /// </summary>
-  [StorableClass]
+  [StorableType("A3480DF9-49E7-4329-AD23-57B4441033C1")]
   [Item("DiscriminantFunctionClassificationSolution", "Represents a classification solution that uses a discriminant function and classification thresholds.")]
   public class DiscriminantFunctionClassificationSolution : DiscriminantFunctionClassificationSolutionBase {
     protected readonly Dictionary<int, double> valueEvaluationCache;
     protected readonly Dictionary<int, double> classValueEvaluationCache;
 
     [StorableConstructor]
-    protected DiscriminantFunctionClassificationSolution(bool deserializing)
-      : base(deserializing) {
+    protected DiscriminantFunctionClassificationSolution(StorableConstructorFlag _) : base(_) {
       valueEvaluationCache = new Dictionary<int, double>();
       classValueEvaluationCache = new Dictionary<int, double>();
     }

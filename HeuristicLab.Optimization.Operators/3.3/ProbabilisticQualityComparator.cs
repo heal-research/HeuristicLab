@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,7 +24,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Optimization.Operators {
   /// <summary>
@@ -36,7 +36,7 @@ namespace HeuristicLab.Optimization.Operators {
   /// and T is the temperature (here called dampening).
   /// </remarks>
   [Item("ProbabilisticQualityComparator", "Compares two qualities and creates a boolean flag that indicates if the left side is better than the right side or if the difference in quality is acceptable given a certain probability.")]
-  [StorableClass]
+  [StorableType("E8467C96-D88F-4EFA-B3BF-78DBFA63B36A")]
   public class ProbabilisticQualityComparator : QualityComparator, IStochasticOperator {
     public ILookupParameter<DoubleValue> DampeningParameter {
       get { return (ILookupParameter<DoubleValue>)Parameters["Dampening"]; }
@@ -46,7 +46,7 @@ namespace HeuristicLab.Optimization.Operators {
     }
 
     [StorableConstructor]
-    protected ProbabilisticQualityComparator(bool deserializing) : base(deserializing) { }
+    protected ProbabilisticQualityComparator(StorableConstructorFlag _) : base(_) { }
     protected ProbabilisticQualityComparator(ProbabilisticQualityComparator original, Cloner cloner) : base(original, cloner) { }
     public ProbabilisticQualityComparator()
       : base() {

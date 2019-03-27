@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,11 +21,11 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("InversionMoveRelativeAttribute", "Specifies the tabu attributes for an inversion move (2-opt) on a relative position permutation.")]
-  [StorableClass]
+  [StorableType("92CFBF00-0D01-4EBA-9CED-EA1483C842F7")]
   public class InversionMoveRelativeAttribute : PermutationMoveAttribute {
     [Storable]
     public int Edge1Source { get; private set; }
@@ -37,7 +37,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     public int Edge2Target { get; private set; }
 
     [StorableConstructor]
-    protected InversionMoveRelativeAttribute(bool deserializing) : base(deserializing) { }
+    protected InversionMoveRelativeAttribute(StorableConstructorFlag _) : base(_) { }
     protected InversionMoveRelativeAttribute(InversionMoveRelativeAttribute original, Cloner cloner)
       : base(original, cloner) {
       this.Edge1Source = original.Edge1Source;

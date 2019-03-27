@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,16 +24,16 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.ExternalEvaluation {
   [Item("IntegerConverter", "Converts a ValueTypeValue<int>, ValueTypeArray<int>, or ValueTypeMatrix<int> and adds it to the SolutionMessage's IntegerVars or IntegerArrayVars. A matrix is encoded as array by concatenating all rows and setting length as the length of a row.")]
-  [StorableClass]
+  [StorableType("540B4803-05EC-4AB8-AFAC-A8E35A98F4D7")]
   public class IntegerConverter : Item, IItemToSolutionMessageConverter {
     private static readonly Type[] itemTypes = new Type[] { typeof(ValueTypeValue<int>), typeof(ValueTypeArray<int>), typeof(ValueTypeMatrix<int>) };
 
     [StorableConstructor]
-    protected IntegerConverter(bool deserializing) : base(deserializing) { }
+    protected IntegerConverter(StorableConstructorFlag _) : base(_) { }
     protected IntegerConverter(IntegerConverter original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new IntegerConverter(this, cloner);

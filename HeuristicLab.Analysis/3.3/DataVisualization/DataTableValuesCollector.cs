@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,14 +26,14 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Analysis {
   /// <summary>
   /// An operator which collects the actual values of parameters and adds them to a table of data values.
   /// </summary>
   [Item("DataTableValuesCollector", "An operator which collects the actual values of parameters and adds them to a table of data values.")]
-  [StorableClass]
+  [StorableType("B3409421-D7F0-4C79-B8F8-B7E77E7C554F")]
   public class DataTableValuesCollector : ValuesCollector {
     public ValueLookupParameter<DataTable> DataTableParameter {
       get { return (ValueLookupParameter<DataTable>)Parameters["DataTable"]; }
@@ -49,7 +49,7 @@ namespace HeuristicLab.Analysis {
 
     #region Storing & Cloning
     [StorableConstructor]
-    protected DataTableValuesCollector(bool deserializing) : base(deserializing) { }
+    protected DataTableValuesCollector(StorableConstructorFlag _) : base(_) { }
     protected DataTableValuesCollector(DataTableValuesCollector original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new DataTableValuesCollector(this, cloner);

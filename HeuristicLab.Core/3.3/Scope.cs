@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,14 +22,14 @@
 using System.Drawing;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Core {
   /// <summary>
   /// Hierarchical container of variables (and of subscopes).
   /// </summary>
   [Item("Scope", "A scope which contains variables and sub-scopes.")]
-  [StorableClass]
+  [StorableType("57AAC5CA-2EEF-4ECB-80DA-1B8F3B750A2B")]
   public sealed class Scope : NamedItem, IScope {
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.OrgChart; }
@@ -59,7 +59,7 @@ namespace HeuristicLab.Core {
     }
 
     [StorableConstructor]
-    private Scope(bool deserializing) : base(deserializing) { }
+    private Scope(StorableConstructorFlag _) : base(_) { }
     private Scope(Scope original, Cloner cloner)
       : base(original, cloner) {
       if (original.variables.Count > 0) variables = cloner.Clone(original.variables);

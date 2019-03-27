@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,8 +22,10 @@
 using System;
 using System.Collections.Generic;
 using HeuristicLab.Common;
+using HEAL.Attic;
 
 namespace HeuristicLab.Core {
+  [StorableType("e79c962e-b662-4502-bc32-cac6a83e4e83")]
   public interface IDirectedGraph : IItem {
     IEnumerable<IVertex> Vertices { get; }
     IEnumerable<IArc> Arcs { get; }

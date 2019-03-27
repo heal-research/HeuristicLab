@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,14 +26,14 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification.SingleObjective {
   [Item("Bounded Mean squared error Evaluator", "Calculates the bounded mean squared error of a symbolic classification solution (estimations above or below the class values are only penaltilized linearly.")]
-  [StorableClass]
+  [StorableType("3C4C86ED-3F6A-464F-B7B6-326A220085EC")]
   public class SymbolicClassificationSingleObjectiveBoundedMeanSquaredErrorEvaluator : SymbolicClassificationSingleObjectiveEvaluator {
     [StorableConstructor]
-    protected SymbolicClassificationSingleObjectiveBoundedMeanSquaredErrorEvaluator(bool deserializing) : base(deserializing) { }
+    protected SymbolicClassificationSingleObjectiveBoundedMeanSquaredErrorEvaluator(StorableConstructorFlag _) : base(_) { }
     protected SymbolicClassificationSingleObjectiveBoundedMeanSquaredErrorEvaluator(SymbolicClassificationSingleObjectiveBoundedMeanSquaredErrorEvaluator original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new SymbolicClassificationSingleObjectiveBoundedMeanSquaredErrorEvaluator(this, cloner);

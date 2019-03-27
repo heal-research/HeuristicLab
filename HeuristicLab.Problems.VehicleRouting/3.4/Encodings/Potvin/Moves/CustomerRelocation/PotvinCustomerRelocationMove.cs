@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,13 +22,13 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.VehicleRouting.Encodings.General;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinCustomerRelocationMove", "Item that describes a relocation move on a VRP representation.")]
-  [StorableClass]
+  [StorableType("4B91A311-EEEE-49A3-A260-A01238F1C268")]
   public class PotvinCustomerRelocationMove : Item, IVRPMove {
     [Storable]
     public IVRPEncoding Individual { get; protected set; }
@@ -72,7 +72,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
     }
 
     [StorableConstructor]
-    protected PotvinCustomerRelocationMove(bool deserializing) : base(deserializing) { }
+    protected PotvinCustomerRelocationMove(StorableConstructorFlag _) : base(_) { }
 
     #region IVRPMove Members
 

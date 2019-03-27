@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using System.Windows.Forms;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -77,11 +78,9 @@ namespace HeuristicLab.Optimizer {
         IView view = MainFormManager.MainForm.ShowContent(content);
         if (view == null)
           ErrorHandling.ShowErrorDialog("There is no view for the loaded item. It cannot be displayed.", new InvalidOperationException("No View Available"));
-      }
-      catch (Exception ex) {
+      } catch (Exception ex) {
         ErrorHandling.ShowErrorDialog((Control)MainFormManager.MainForm, "Cannot open file.", ex);
-      }
-      finally {
+      } finally {
         ((MainForm.WindowsForms.MainForm)MainFormManager.MainForm).ResetAppStartingCursor();
       }
     }
@@ -99,8 +98,9 @@ namespace HeuristicLab.Optimizer {
           SaveAs(view);
         else {
           MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().SetAppStartingCursor();
-          SetSaveOperationProgressInContentViews(content, true);
-          ContentManager.SaveAsync(content, content.Filename, true, SavingCompleted);
+          var cancellationTokenSource = new CancellationTokenSource();
+          AddProgressInContentViews(content, cancellationTokenSource);
+          ContentManager.SaveAsync(content, content.Filename, true, SavingCompleted, cancellationTokenSource.Token);
         }
       }
     }
@@ -131,12 +131,11 @@ namespace HeuristicLab.Optimizer {
 
         if (saveFileDialog.ShowDialog() == DialogResult.OK) {
           MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().SetAppStartingCursor();
-          SetSaveOperationProgressInContentViews(content, true, saveFileDialog.FileName);
-          if (saveFileDialog.FilterIndex == 1) {
-            ContentManager.SaveAsync(content, saveFileDialog.FileName, false, SavingCompleted);
-          } else {
-            ContentManager.SaveAsync(content, saveFileDialog.FileName, true, SavingCompleted);
-          }
+          bool compressed = saveFileDialog.FilterIndex != 1;
+          var cancellationTokenSource = new CancellationTokenSource();
+          AddProgressInContentViews(content, cancellationTokenSource, saveFileDialog.FileName);
+
+          ContentManager.SaveAsync(content, saveFileDialog.FileName, compressed, SavingCompleted, cancellationTokenSource.Token);
         }
       }
     }
@@ -144,27 +143,18 @@ namespace HeuristicLab.Optimizer {
       try {
         if (error != null) throw error;
         MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().UpdateTitle();
-      }
-      catch (Exception ex) {
+      } catch (OperationCanceledException) { // do nothing if canceled
+      } catch (Exception ex) {
         ErrorHandling.ShowErrorDialog((Control)MainFormManager.MainForm, "Cannot save file.", ex);
-      }
-      finally {
-        SetSaveOperationProgressInContentViews(content, false);
+      } finally {
+        Progress.Hide(content);
         MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().ResetAppStartingCursor();
       }
     }
 
-    private static void SetSaveOperationProgressInContentViews(IStorableContent content, bool showProgress, string fileName = null) {
-      HeuristicLab.MainForm.WindowsForms.MainForm mainForm = MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>();
-      #region Mono Compatibility
-      // removed the InvokeRequired check because of Mono
-      mainForm.Invoke((Action)delegate {
-        if (showProgress) {
-          mainForm.AddOperationProgressToContent(content, string.Format("Saving to file \"{0}\"...", Path.GetFileName(fileName ?? content.Filename)));
-        } else
-          mainForm.RemoveOperationProgressFromContent(content);
-      });
-      #endregion
+    private static void AddProgressInContentViews(IStorableContent content, CancellationTokenSource cancellationTokenSource, string fileName = null) {
+      string message = string.Format("Saving to file \"{0}\"...", Path.GetFileName(fileName ?? content.Filename));
+      Progress.Show(content, message, ProgressMode.Indeterminate, cancelRequestHandler: () => cancellationTokenSource.Cancel());
     }
   }
 }

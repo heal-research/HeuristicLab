@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -28,12 +28,12 @@ using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Analysis {
   [Item("IndexedDataTable", "A data table where the points are also given with a certain index.")]
-  [StorableClass]
-  public class IndexedDataTable<T> : NamedItem, IStringConvertibleMatrix {
+  [StorableType("1453C842-6312-4931-9B05-20399A0528D6")]
+  public class IndexedDataTable<T> : NamedItem, IStringConvertibleMatrix, IDataTable<IndexedDataRow<T>> {
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Performance; }
     }
@@ -74,7 +74,7 @@ namespace HeuristicLab.Analysis {
     #endregion
 
     [StorableConstructor]
-    protected IndexedDataTable(bool deserializing) : base(deserializing) { }
+    protected IndexedDataTable(StorableConstructorFlag _) : base(_) { }
     protected IndexedDataTable(IndexedDataTable<T> original, Cloner cloner)
       : base(original, cloner) {
       VisualProperties = (DataTableVisualProperties)cloner.Clone(original.visualProperties);
@@ -89,19 +89,37 @@ namespace HeuristicLab.Analysis {
     }
     public IndexedDataTable(string name)
       : base(name) {
-      VisualProperties = new DataTableVisualProperties();
+      VisualProperties = new DataTableVisualProperties(name);
       rows = new NamedItemCollection<IndexedDataRow<T>>();
       this.RegisterRowsEvents();
     }
     public IndexedDataTable(string name, string description)
       : base(name, description) {
-      VisualProperties = new DataTableVisualProperties();
+      VisualProperties = new DataTableVisualProperties(name);
       rows = new NamedItemCollection<IndexedDataRow<T>>();
       this.RegisterRowsEvents();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new IndexedDataTable<T>(this, cloner);
+    }
+
+    #region BackwardsCompatibility3.3
+    // Using the name as title is the old style
+    [Storable(DefaultValue = true)]
+    private bool useNameAsTitle = false;
+    #endregion
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code, remove with 3.4
+      // Previously, the Name of the IndexedDataTable was used as Title
+      if (useNameAsTitle && string.IsNullOrEmpty(VisualProperties.Title)) {
+        VisualProperties.Title = Name;
+        useNameAsTitle = false;
+      }
+      #endregion
     }
 
     public event EventHandler VisualPropertiesChanged;

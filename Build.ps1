@@ -18,46 +18,61 @@ Foreach ($loc in $locations) {
   }
 }
 
-if ($msBuildPath -eq $undefined) {
-  "Could not locate MSBuild, ABORTING ..."
-} else {
+Try {
+  If ($msBuildPath -eq $undefined) {
+    "Could not locate MSBuild, ABORTING ..."
+    Return
+  }
+
   $curPath = $MyInvocation.MyCommand.Path
   $curDir = Split-Path $curPath
 
   $slnFiles = Get-ChildItem $curDir -Filter *.sln
 
-  "Found the following solutions:"
+  If ($slnFiles.Count -le 0) {
+    "No solutions found, ABORTING ..."
+    Return
+  }
 
-  ""
-
-  $slnFiles | % { $i = 0 } { ("  {0}. `"{1}`"" -f ($i + 1), $_.Name); $i++ }
-
-  ""
-
-  $success = $false
-
-  # query solution to build
-  $slnIndex = -1
   $slnIndices = @()
-  Do {
-      $input = Read-Host "Which solution(s) to build? {1..$($slnFiles.Count)}"
-      $inputParts = $input -Split " "
 
-      Foreach ($part in $inputParts) {
-        If ($part -eq "") { Continue }
+  If ($slnFiles.Count -eq 1) {
+    "Selecting the only solution found: `"{0}`"" -f $slnFiles[0].Name
+    $slnIndices += 0
+  } Else {
+    "Found the following solutions:"
 
-        $success = [int]::TryParse($part, [ref]$slnIndex) -and ($slnIndex -gt 0) -and ($slnIndex -le $slnFiles.Count)
+    ""
 
-        If ($success) {
-          $slnIndices += $slnIndex - 1
-        } Else {
-          $slnIndices = @()
-          Break
+    $slnFiles | % { $i = 0 } { ("  {0}. `"{1}`"" -f ($i + 1), $_.Name); $i++ }
+
+    ""
+
+    $success = $false
+
+    # query solution to build
+    $slnIndex = -1
+    Do {
+        $input = Read-Host "Which solution(s) to build? (e.g.: 1 2 3) { 1..$($slnFiles.Count) }"
+        $inputParts = $input -Split " "
+
+        Foreach ($part in $inputParts) {
+          If ($part -eq "") { Continue }
+
+          $success = [int]::TryParse($part, [ref]$slnIndex) -and ($slnIndex -gt 0) -and ($slnIndex -le $slnFiles.Count)
+
+          If ($success) {
+            $slnIndices += $slnIndex - 1
+          } Else {
+            $slnIndices = @()
+            Break
+          }
         }
-      }
-  } While (-Not $success)
+    } While (-Not $success)
 
-  $slnIndices = $slnIndices | Select-Object -Unique
+    $slnIndices = $slnIndices | Select-Object -Unique
+  }
+
 
   # query configuration to build
   $config = "Release"
@@ -79,7 +94,7 @@ if ($msBuildPath -eq $undefined) {
 
   ""
 
-  if ($clean) {
+  If ($clean) {
     Foreach ($slnIndex in $slnIndices) {
       $solution = $slnFiles[$slnIndex]
       "Cleaning `"$($solution.Name)`" ..."
@@ -99,16 +114,17 @@ if ($msBuildPath -eq $undefined) {
     "Building `"$($solution.Name)`" ($config|$platform) ..."
     $args = @(
       $solution.FullName,
-      "/t:Build",
+      "/t:Restore,Build",
       "/p:Configuration=`"$config`",Platform=`"$platform`"",
       "/m", "/nologo", "/verbosity:q", "/clp:ErrorsOnly"
     )
     & $msBuildPath $args
     "===== BUILD FINISHED ====="
   }
+} Finally {
+  ""
+
+  Write-Host -NoNewline "Press any key to continue ... "
+
+  [void][System.Console]::ReadKey($true)
 }
-
-""
-
-Write-Host -NoNewline "Press any key to continue ... "
-[void][System.Console]::ReadKey($true)

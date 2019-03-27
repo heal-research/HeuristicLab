@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,13 +23,13 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   /// <summary>
   /// Abstract base class for single objective symbolic data analysis analyzers.
   /// </summary>
-  [StorableClass]
+  [StorableType("D5972132-2908-4878-97C5-C423164FCF65")]
   public abstract class SymbolicDataAnalysisSingleObjectiveAnalyzer : SymbolicDataAnalysisAnalyzer, ISymbolicDataAnalysisSingleObjectiveAnalyzer {
     private const string QualityParameterName = "Quality";
     private const string MaximizationParameterName = "Maximization";
@@ -55,7 +55,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
     #endregion
     [StorableConstructor]
-    protected SymbolicDataAnalysisSingleObjectiveAnalyzer(bool deserializing) : base(deserializing) { }
+    protected SymbolicDataAnalysisSingleObjectiveAnalyzer(StorableConstructorFlag _) : base(_) { }
     protected SymbolicDataAnalysisSingleObjectiveAnalyzer(SymbolicDataAnalysisSingleObjectiveAnalyzer original, Cloner cloner)
       : base(original, cloner) {
     }

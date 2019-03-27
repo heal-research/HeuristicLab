@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -33,14 +33,14 @@ using HeuristicLab.Common;
 using HeuristicLab.Common.Resources;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Auxiliary;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 using Microsoft.CSharp;
 
 namespace HeuristicLab.Operators.Programmable {
 
   [Item("ProgrammableOperator", "An operator that can be programmed for arbitrary needs.")]
-  [StorableClass]
+  [StorableType("741279E4-4C38-4D66-B9F1-03E0F8B47A78")]
   public class ProgrammableOperator : Operator, IParameterizedNamedItem, IStorableContent, IProgrammableItem {
 
     #region Fields & Properties
@@ -128,12 +128,10 @@ namespace HeuristicLab.Operators.Programmable {
 
     public void SelectNamespace(string ns) {
       namespaces.Add(ns);
-      OnSignatureChanged();
     }
 
     public void UnselectNamespace(string ns) {
       namespaces.Remove(ns);
-      OnSignatureChanged();
     }
 
     public IEnumerable<string> GetAllNamespaces(bool selectedAssembliesOnly) {
@@ -165,8 +163,7 @@ namespace HeuristicLab.Operators.Programmable {
     #region Construction & Initialization
 
     [StorableConstructor]
-    protected ProgrammableOperator(bool deserializing)
-      : base(deserializing) {
+    protected ProgrammableOperator(StorableConstructorFlag _) : base(_) {
       ProgrammableOperator.StaticInitialize();
       Assemblies = defaultAssemblyDict.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
       Plugins = defaultPluginDict.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.ToList());

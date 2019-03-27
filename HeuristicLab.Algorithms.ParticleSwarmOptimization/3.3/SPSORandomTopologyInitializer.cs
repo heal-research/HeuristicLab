@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,11 +26,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
   [Item("SPSO Random Topology Initializer", "Each particle informs k+1 other particles (including itself). The same particle (including itself) can be informed multiple times.")]
-  [StorableClass]
+  [StorableType("3A589247-0629-44E4-8A49-610DE0FEC642")]
   public sealed class SPSORandomTopologyInitializer : TopologyInitializer, IStochasticOperator {
     #region Parameters
     public ILookupParameter<IRandom> RandomParameter {
@@ -43,7 +43,7 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
     
     #region Construction & Cloning
     [StorableConstructor]
-    private SPSORandomTopologyInitializer(bool deserializing) : base(deserializing) { }
+    private SPSORandomTopologyInitializer(StorableConstructorFlag _) : base(_) { }
     private SPSORandomTopologyInitializer(SPSORandomTopologyInitializer original, Cloner cloner) : base(original, cloner) { }
     public SPSORandomTopologyInitializer() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "A random number generation."));

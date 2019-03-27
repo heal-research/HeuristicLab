@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,6 +25,7 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Text;
+using HEAL.Attic;
 using HeuristicLab.Persistence.Core;
 using HeuristicLab.Persistence.Interfaces;
 
@@ -32,12 +33,12 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
 
   /// <summary>
   /// Intended for serialization of all custom classes. Classes should have the
-  /// <c>[StorableClass]</c> attribute set. The default mode is to serialize
+  /// <c>[StorableType]</c> attribute set. The default mode is to serialize
   /// members with the <c>[Storable]</c> attribute set. Alternatively the
   /// storable mode can be set to <c>AllFields</c>, <c>AllProperties</c>
   /// or <c>AllFieldsAndAllProperties</c>.
   /// </summary>
-  [StorableClass]
+  [StorableType("F60343E8-4337-4171-A50A-6A57D09267ED")]
   public sealed class StorableSerializer : ICompositeSerializer {
 
     public StorableSerializer() {
@@ -48,7 +49,7 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
     }
 
     [StorableConstructor]
-    private StorableSerializer(bool deserializing) : this() { }
+    private StorableSerializer(StorableConstructorFlag _) { }
 
     #region ICompositeSerializer implementation
 
@@ -68,14 +69,15 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
     /// 	<c>true</c> if this instance can serialize the specified type; otherwise, <c>false</c>.
     /// </returns>
     public bool CanSerialize(Type type) {
-      var markedStorable = StorableReflection.HasStorableClassAttribute(type);
+      if (type.IsEnum || type.IsValueType) return false; // there are other more specific serializers for enums and structs
+      var markedStorable = StorableReflection.HasStorableTypeAttribute(type);
       if (GetConstructor(type) == null)
-        if (markedStorable)
+        if (markedStorable && !type.IsInterface)
           throw new Exception("[Storable] type has no default constructor and no [StorableConstructor]");
         else
           return false;
       if (!StorableReflection.IsEmptyOrStorableType(type, true))
-        if (markedStorable)
+        if (markedStorable && !type.IsInterface)
           throw new Exception("[Storable] type has non emtpy, non [Storable] base classes");
         else
           return false;
@@ -239,11 +241,12 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
         .GetConstructors(ALL_CONSTRUCTORS)
         .Where(ci => ci.GetCustomAttributes(typeof(StorableConstructorAttribute), false).Length > 0)) {
         if (ci.GetParameters().Length != 1 ||
-            ci.GetParameters()[0].ParameterType != typeof(bool))
-          throw new PersistenceException("StorableConstructor must have exactly one argument of type bool");
+            ci.GetParameters()[0].ParameterType != typeof(StorableConstructorFlag))
+          throw new PersistenceException("StorableConstructor must have exactly one argument of type StorableConstructorFlag");
         var dm = new DynamicMethod("", typeof(object), null, type, true);
         var ilgen = dm.GetILGenerator();
-        ilgen.Emit(OpCodes.Ldc_I4_1); // load true
+        var defaultFlagFieldInfo = typeof(StorableConstructorFlag).GetField("Default", BindingFlags.Static | BindingFlags.Public);
+        ilgen.Emit(OpCodes.Ldsfld, defaultFlagFieldInfo); // load the object
         ilgen.Emit(OpCodes.Newobj, ci);
         ilgen.Emit(OpCodes.Ret);
         return (Constructor)dm.CreateDelegate(typeof(Constructor));

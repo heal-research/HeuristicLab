@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,8 +22,10 @@
 using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HEAL.Attic;
 
 namespace HeuristicLab.Hive {
+  [StorableType("197BB925-85AD-4DAE-A5F8-9EC33C07A0AF")]
   public interface ITask : IDeepCloneable, ICloneable {
     TimeSpan ExecutionTime { get; }
 

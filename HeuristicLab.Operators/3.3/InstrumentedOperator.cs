@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,11 +24,11 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Operators {
   [Item("InstrumentedOperator", "A operator that can execute pre- and post actions.")]
-  [StorableClass]
+  [StorableType("FE448512-394C-471E-B7E4-077FA273C173")]
   public abstract class InstrumentedOperator : SingleSuccessorOperator, IInstrumentedOperator {
     private const string BeforeExecutionOperatorsParameterName = "BeforeExecutionOperators";
     private const string AfterExecutionOperatorsParameterName = "AfterExecutionOperators";
@@ -51,7 +51,7 @@ namespace HeuristicLab.Operators {
     }
 
     [StorableConstructor]
-    protected InstrumentedOperator(bool deserializing) : base(deserializing) { }
+    protected InstrumentedOperator(StorableConstructorFlag _) : base(_) { }
     protected InstrumentedOperator(InstrumentedOperator original, Cloner cloner)
       : base(original, cloner) {
     }

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,11 +26,11 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Selection {
   [Item("GenderSpecificSelection", "Brings two parents together by sampling each with a different selection scheme (Wagner, S. and Affenzeller, M. 2005. SexualGA: Gender-Specific Selection for Genetic Algorithms. Proceedings of the 9th World Multi-Conference on Systemics, Cybernetics and Informatics (WMSCI), pp. 76-81).")]
-  [StorableClass]
+  [StorableType("4707D6F3-A792-456A-87DB-0B1F82D5DBDC")]
   public class GenderSpecificSelector : AlgorithmOperator, ISingleObjectiveSelector, IStochasticOperator {
     #region Parameters
     public IValueLookupParameter<BoolValue> MaximizationParameter {
@@ -80,7 +80,7 @@ namespace HeuristicLab.Selection {
     #endregion
 
     [StorableConstructor]
-    protected GenderSpecificSelector(bool deserializing) : base(deserializing) { }
+    protected GenderSpecificSelector(StorableConstructorFlag _) : base(_) { }
     protected GenderSpecificSelector(GenderSpecificSelector original, Cloner cloner)
       : base(original, cloner) {
       Initialize();

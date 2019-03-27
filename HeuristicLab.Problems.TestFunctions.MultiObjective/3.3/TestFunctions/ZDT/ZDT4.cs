@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,11 +22,11 @@ using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.RealVectorEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
   [Item("ZDT4", "ZDT4 function as defined in http://www.tik.ee.ethz.ch/sop/download/supplementary/testproblems/ [30.11.2015]")]
-  [StorableClass]
+  [StorableType("489FC6F2-A461-4A0A-A5D2-145598A43283")]
   public class ZDT4 : ZDT {
     protected override double[,] GetBounds(int objectives) {
       double[,] bounds = new double[objectives, 2];
@@ -43,7 +43,7 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
     }
 
     [StorableConstructor]
-    protected ZDT4(bool deserializing) : base(deserializing) { }
+    protected ZDT4(StorableConstructorFlag _) : base(_) { }
     protected ZDT4(ZDT4 original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new ZDT4(this, cloner);

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,12 +25,12 @@ using System.Linq;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Visualization.ChartControlsExtensions;
 
 namespace HeuristicLab.DataPreprocessing {
   [Item("ScatterPlotContent", "")]
-  [StorableClass]
+  [StorableType("CF1014CB-9B19-4653-AEC2-630C231D89B2")]
   public abstract class ScatterPlotContent : PreprocessingChartContent {
     [Storable]
     public string GroupingVariable { get; set; }
@@ -46,8 +46,7 @@ namespace HeuristicLab.DataPreprocessing {
     }
 
     [StorableConstructor]
-    protected ScatterPlotContent(bool deserializing)
-      : base(deserializing) { }
+    protected ScatterPlotContent(StorableConstructorFlag _) : base(_) { }
     #endregion
 
     public static ScatterPlot CreateScatterPlot(IFilteredPreprocessingData preprocessingData, string variableNameX, string variableNameY, string variableNameGroup = "-", LegendOrder legendOrder = LegendOrder.Alphabetically) {

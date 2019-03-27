@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -35,19 +35,17 @@ using HeuristicLab.Common.Resources;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.ExternalEvaluation {
 
   [Item("EvaluationCache", "Cache for external evaluation values")]
-  [StorableClass]
+  [StorableType("FDB10541-FA1C-4CF9-8175-83A55700C052")]
   public class EvaluationCache : ParameterizedNamedItem {
 
     #region Types
     private sealed class CacheEntry {
-
       public readonly string Key;
-
       private QualityMessage message;
       private byte[] rawMessage;
 
@@ -198,7 +196,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
 
     #region Construction & Cloning
     [StorableConstructor]
-    protected EvaluationCache(bool deserializing) : base(deserializing) { }
+    protected EvaluationCache(StorableConstructorFlag _) : base(_) { }
     protected EvaluationCache(EvaluationCache original, Cloner cloner)
         : base(original, cloner) {
       SetCacheValues(original.GetCacheValues());

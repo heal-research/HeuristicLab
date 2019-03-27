@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,8 +25,10 @@
 using HeuristicLab.Core;
 using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Problems.DataAnalysis.Symbolic.Regression;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.GrammaticalEvolution {
+  [StorableType("7a1f572f-6ba7-4849-a6b7-57935f28215e")]
   public interface IGESymbolicRegressionSingleObjectiveEvaluator : IGESymbolicRegressionEvaluator,
                                                                    IGESymbolicDataAnalysisSingleObjectiveEvaluator<IRegressionProblemData> {
     IValueParameter<ISymbolicRegressionSingleObjectiveEvaluator> EvaluatorParameter { get; }

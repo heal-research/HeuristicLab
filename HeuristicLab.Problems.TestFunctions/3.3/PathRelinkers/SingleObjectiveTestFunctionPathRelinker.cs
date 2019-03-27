@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -28,7 +28,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TestFunctions {
   /// <summary>
@@ -39,7 +39,7 @@ namespace HeuristicLab.Problems.TestFunctions {
   /// The operator incrementally assimilates the initiating solution into the guiding solution by adapting the solution vector's elements.
   /// </remarks>
   [Item("SingleObjectiveTestFunctionPathRelinker", "An operator that relinks paths between test functions solutions. It is based on an implementation described in Duarte, A., Martí, R., and Gortazar, F. (2011). Path Relinking for Large Scale Global Optimization. Soft Computing, Vol. 15.")]
-  [StorableClass]
+  [StorableType("BBDCF6E0-AB7F-4A5B-8BFC-A2D2D1E56D5C")]
   public sealed class SingleObjectiveTestFunctionPathRelinker : SingleObjectivePathRelinker {
     #region Parameter properties
     public IValueParameter<IntValue> RelinkingIntensityParameter {
@@ -54,7 +54,7 @@ namespace HeuristicLab.Problems.TestFunctions {
     #endregion
 
     [StorableConstructor]
-    private SingleObjectiveTestFunctionPathRelinker(bool deserializing) : base(deserializing) { }
+    private SingleObjectiveTestFunctionPathRelinker(StorableConstructorFlag _) : base(_) { }
     private SingleObjectiveTestFunctionPathRelinker(SingleObjectiveTestFunctionPathRelinker original, Cloner cloner) : base(original, cloner) { }
     public SingleObjectiveTestFunctionPathRelinker()
       : base() {

@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,9 +21,9 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
-  [StorableClass]
+  [StorableType("04226CD8-A4BE-4D85-BB75-442A271C0E4E")]
   [Item(ProgramRootSymbol.ProgramRootSymbolName, ProgramRootSymbol.ProgramRootSymbolDescription)]
   public sealed class ProgramRootSymbol : Symbol, IReadOnlySymbol {
     public const string ProgramRootSymbolName = "ProgramRootSymbol";
@@ -39,7 +39,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
 
     [StorableConstructor]
-    private ProgramRootSymbol(bool deserializing) : base(deserializing) { }
+    private ProgramRootSymbol(StorableConstructorFlag _) : base(_) { }
     private ProgramRootSymbol(ProgramRootSymbol original, Cloner cloner) : base(original, cloner) { }
     public ProgramRootSymbol() : base(ProgramRootSymbol.ProgramRootSymbolName, ProgramRootSymbol.ProgramRootSymbolDescription) { }
 

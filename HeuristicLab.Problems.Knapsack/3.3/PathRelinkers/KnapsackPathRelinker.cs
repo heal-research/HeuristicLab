@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -27,7 +27,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
 using HeuristicLab.Optimization.Operators;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.Knapsack {
   /// <summary>
@@ -37,10 +37,10 @@ namespace HeuristicLab.Problems.Knapsack {
   /// The operator incrementally assimilates the initiating solution into the guiding solution by adding and removing elements as needed.
   /// </remarks>
   [Item("KnapsackPathRelinker", "An operator that relinks paths between knapsack solutions. The operator incrementally assimilates the initiating solution into the guiding solution by adding and removing elements as needed.")]
-  [StorableClass]
+  [StorableType("3A528AB4-5552-4979-B443-2943A3496BC3")]
   public sealed class KnapsackPathRelinker : SingleObjectivePathRelinker {
     [StorableConstructor]
-    private KnapsackPathRelinker(bool deserializing) : base(deserializing) { }
+    private KnapsackPathRelinker(StorableConstructorFlag _) : base(_) { }
     private KnapsackPathRelinker(KnapsackPathRelinker original, Cloner cloner) : base(original, cloner) { }
     public KnapsackPathRelinker() : base() { }
 

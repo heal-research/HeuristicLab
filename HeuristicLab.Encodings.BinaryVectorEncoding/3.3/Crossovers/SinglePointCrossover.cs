@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,7 +23,7 @@ using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   /// <summary>
@@ -33,11 +33,11 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   /// It is implemented based on the NPointCrossover
   /// </remarks>
   [Item("SinglePointCrossover", "Single point crossover for binary vectors. It is implemented based on the NPointCrossover.")]
-  [StorableClass]
+  [StorableType("40B6A5D5-8937-495E-8B98-2E4F8FD06D93")]
   public sealed class SinglePointCrossover : BinaryVectorCrossover {
 
     [StorableConstructor]
-    private SinglePointCrossover(bool deserializing) : base(deserializing) { }
+    private SinglePointCrossover(StorableConstructorFlag _) : base(_) { }
     private SinglePointCrossover(SinglePointCrossover original, Cloner cloner) : base(original, cloner) { }
     public SinglePointCrossover() : base() { }
 

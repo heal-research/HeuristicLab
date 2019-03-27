@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -49,8 +49,8 @@ namespace HeuristicLab.Tests {
       gpr.SetSeedRandomly = false;
       gpr.Seed = 1618551877;
       SamplesUtils.RunAlgorithm(gpr);
-      Assert.AreEqual(-940.60591737780555, SamplesUtils.GetDoubleResult(gpr, "NegativeLogLikelihood"));
-      Assert.AreEqual(0.99560909041069334, SamplesUtils.GetDoubleResult(gpr, "Training R²"));
+      Assert.AreEqual(-940.70700288855619, SamplesUtils.GetDoubleResult(gpr, "NegativeLogLikelihood"));
+      Assert.AreEqual(0.99563390794061979, SamplesUtils.GetDoubleResult(gpr, "Training R²"));
     }
 
     private GaussianProcessRegression CreateGaussianProcessRegressionSample() {

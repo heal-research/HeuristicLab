@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,12 +23,12 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaStochasticTranslocationSingleMoveGenerator", "An operator which generates a single translocation move for a VRP representation.  It is implemented as described in Alba, E. and Dorronsoro, B. (2004). Solving the Vehicle Routing Problem by Using Cellular Genetic Algorithms.")]
-  [StorableClass]
+  [StorableType("AB2D93A5-BECF-4ABE-B704-5DA883426CAF")]
   public sealed class AlbaStochasticTranslocationSingleMoveGenerator : AlbaMoveGenerator, IAlbaTranslocationMoveOperator {
     [Storable]
     private TranslocationMoveGenerator generator = new StochasticTranslocationSingleMoveGenerator();
@@ -54,7 +54,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
     }
 
     [StorableConstructor]
-    private AlbaStochasticTranslocationSingleMoveGenerator(bool deserializing) : base(deserializing) { }
+    private AlbaStochasticTranslocationSingleMoveGenerator(StorableConstructorFlag _) : base(_) { }
 
     public AlbaStochasticTranslocationSingleMoveGenerator()
       : base() {

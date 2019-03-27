@@ -1,6 +1,7 @@
-﻿#region License Information
+﻿using HEAL.Attic;
+#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,10 +20,9 @@
  */
 #endregion
 
-using HeuristicLab.Core;
-using HeuristicLab.Data;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
+  [StorableType("237e7ea7-1c57-4a3a-84f5-1193a0f67a16")]
   /// <summary>
   /// Interface for operators that manipulate symbolic expression trees.
   /// </summary>

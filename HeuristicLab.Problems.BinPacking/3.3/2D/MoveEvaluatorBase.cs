@@ -25,10 +25,10 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.BinPacking2D {
-  [StorableClass]
+  [StorableType("13553924-A74F-4897-ABAB-CD049CFD2B41")]
   public abstract class MoveEvaluatorBase<TSol, TMove> : SingleSuccessorOperator,
     ISingleObjectiveMoveEvaluator, ISingleObjectiveMoveOperator, IOperator<TSol>
     where TSol : class, IItem
@@ -60,7 +60,7 @@ namespace HeuristicLab.Problems.BinPacking2D {
 
 
     [StorableConstructor]
-    protected MoveEvaluatorBase(bool deserializing) : base(deserializing) { }
+    protected MoveEvaluatorBase(StorableConstructorFlag _) : base(_) { }
     protected MoveEvaluatorBase(MoveEvaluatorBase<TSol, TMove> original, Cloner cloner) : base(original, cloner) { }
     protected MoveEvaluatorBase()
       : base() {

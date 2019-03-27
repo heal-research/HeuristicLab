@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,12 +23,12 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinCustomerRelocationMoveTabuMaker", "Declares a given customer relocation move as tabu.")]
-  [StorableClass]
+  [StorableType("F2F78496-2059-4A16-B896-E1C779D913D0")]
   public class PotvinCustomerRelocationMoveTabuMaker : TabuMaker, IPotvinCustomerRelocationMoveOperator, IPotvinOperator {
     public ILookupParameter<PotvinCustomerRelocationMove> CustomerRelocationMoveParameter {
       get { return (ILookupParameter<PotvinCustomerRelocationMove>)Parameters["PotvinCustomerRelocationMove"]; }
@@ -44,7 +44,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
     }
 
     [StorableConstructor]
-    protected PotvinCustomerRelocationMoveTabuMaker(bool deserializing) : base(deserializing) { }
+    protected PotvinCustomerRelocationMoveTabuMaker(StorableConstructorFlag _) : base(_) { }
     protected PotvinCustomerRelocationMoveTabuMaker(PotvinCustomerRelocationMoveTabuMaker original, Cloner cloner) : base(original, cloner) { }
     public PotvinCustomerRelocationMoveTabuMaker()
       : base() {

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,11 +21,11 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("ScrambleMove", "Item that describes a scramble move.")]
-  [StorableClass]
+  [StorableType("DBE9C007-10AA-4B8A-8092-23C9ACBA411A")]
   public sealed class ScrambleMove : Item {
     [Storable]
     public int StartIndex { get; private set; }
@@ -33,7 +33,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     public int[] ScrambledIndices { get; private set; }
 
     [StorableConstructor]
-    private ScrambleMove(bool deserializing) : base(deserializing) { }
+    private ScrambleMove(StorableConstructorFlag _) : base(_) { }
     private ScrambleMove(ScrambleMove original, Cloner cloner)
       : base(original, cloner) {
       this.StartIndex = original.StartIndex;

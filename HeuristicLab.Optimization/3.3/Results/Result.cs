@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,14 +23,14 @@ using System;
 using System.Drawing;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
   /// <summary>
   /// Represents a result which has a name and a data type and holds an IItem.
   /// </summary>
   [Item("Result", "A result which has a name and a data type and holds an IItem.")]
-  [StorableClass]
+  [StorableType("219051C0-9D62-4CDE-9BA1-32233C81B678")]
   public sealed class Result : NamedItem, IResult, IStorableContent {
     public string Filename { get; set; }
 
@@ -75,7 +75,7 @@ namespace HeuristicLab.Optimization {
     }
 
     [StorableConstructor]
-    private Result(bool deserializing) : base(deserializing) { }
+    private Result(StorableConstructorFlag _) : base(_) { }
     private Result(Result original, Cloner cloner)
       : base(original, cloner) {
       dataType = original.dataType;

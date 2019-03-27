@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,16 +22,16 @@
 using System;
 using System.Collections.Generic;
 using HeuristicLab.Persistence.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Persistence.Interfaces;
 
 namespace HeuristicLab.Persistence.Default.CompositeSerializers {
 
-  [StorableClass]
+  [StorableType("1DBD47D9-312B-4572-8B66-C3BFFD004FD6")]
   internal sealed class EnumSerializer : ICompositeSerializer {
 
     [StorableConstructor]
-    private EnumSerializer(bool deserializing) { }
+    private EnumSerializer(StorableConstructorFlag _) { }
     public EnumSerializer() { }
 
     public int Priority {

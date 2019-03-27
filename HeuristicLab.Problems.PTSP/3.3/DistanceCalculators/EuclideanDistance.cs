@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,16 +22,16 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.Instances;
 
 namespace HeuristicLab.Problems.PTSP {
   [Item("Euclidean Distance", "Calculates the euclidean distance.")]
-  [StorableClass]
+  [StorableType("D769186D-11F8-4F67-A39A-4B78184334E7")]
   public sealed class EuclideanDistance : DistanceCalculator {
 
     [StorableConstructor]
-    private EuclideanDistance(bool deserializing) : base(deserializing) { }
+    private EuclideanDistance(StorableConstructorFlag _) : base(_) { }
     private EuclideanDistance(EuclideanDistance original, Cloner cloner) : base(original, cloner) { }
     public EuclideanDistance() { }
 

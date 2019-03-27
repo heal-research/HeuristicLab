@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,8 +20,10 @@
 #endregion
 
 using HeuristicLab.Core;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.IntegerVectorEncoding {
+  [StorableType("2b21442c-735f-4df3-a163-4e3147cd11a5")]
   public interface IIntegerVectorMultiNeighborhoodShakingOperator : IIntegerVectorOperator {
     ILookupParameter<IntegerVector> IntegerVectorParameter { get; }
   }

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,16 +24,16 @@ using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Encodings.LinearLinkageEncoding {
   [Item("Lowest Index Max Crossover", "The Lowest Index Max Crossover (LIMX) is implemented as described in Ülker, Ö., Özcan, E., Korkmaz, E. E. 2007. Linear linkage encoding in grouping problems: applications on graph coloring and timetabling. In Practice and Theory of Automated Timetabling VI, pp. 347-363. Springer Berlin Heidelberg.")]
-  [StorableClass]
+  [StorableType("CDD94469-9B80-4FBB-AC40-DADE1A9462F1")]
   public sealed class LowestIndexMaxCrossover : LinearLinkageCrossover {
 
     [StorableConstructor]
-    private LowestIndexMaxCrossover(bool deserializing) : base(deserializing) { }
+    private LowestIndexMaxCrossover(StorableConstructorFlag _) : base(_) { }
     private LowestIndexMaxCrossover(LowestIndexMaxCrossover original, Cloner cloner) : base(original, cloner) { }
     public LowestIndexMaxCrossover() { }
 

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -27,11 +27,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.LinearLinkageEncoding {
   [Item("LLE Shaking Operator", "A shaking operator for VNS which uses LLE manipulators to perform the shaking.")]
-  [StorableClass]
+  [StorableType("D08F5FA0-BEAC-4AAE-A69A-7EFEC26513BA")]
   public class LLEShakingOperator : ShakingOperator<ILinearLinkageManipulator>, IStochasticOperator, ILinearLinkageShakingOperator {
 
     public ILookupParameter<IRandom> RandomParameter {
@@ -47,7 +47,7 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
     }
 
     [StorableConstructor]
-    protected LLEShakingOperator(bool deserializing) : base(deserializing) { }
+    protected LLEShakingOperator(StorableConstructorFlag _) : base(_) { }
     protected LLEShakingOperator(LLEShakingOperator original, Cloner cloner) : base(original, cloner) { }
     public LLEShakingOperator()
       : base() {

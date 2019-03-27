@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -27,10 +27,10 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  [StorableClass]
+  [StorableType("203E6A27-4430-4A9E-825A-22C1B254F5E8")]
   [Item("Linear Transformation", "f(x) = k * x + d | Represents a linear transformation with multiplication and addition.")]
   public class LinearTransformation : Transformation<double> {
     protected const string MultiplierParameterName = "Multiplier";
@@ -65,7 +65,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     #endregion
 
     [StorableConstructor]
-    protected LinearTransformation(bool deserializing) : base(deserializing) { }
+    protected LinearTransformation(StorableConstructorFlag _) : base(_) { }
     protected LinearTransformation(LinearTransformation original, Cloner cloner)
       : base(original, cloner) {
     }

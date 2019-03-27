@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,11 +23,11 @@ using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.RealVectorEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
   [Item("ELLI", "to be aded")]
-  [StorableClass]
+  [StorableType("C4F3378F-169B-412C-8882-D733EF5388D9")]
   public class ELLI : MultiObjectiveTestFunction {
     protected override double[,] GetBounds(int objectives) {
       return new double[,] { { -10, 10 } };
@@ -57,7 +57,7 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
     }
 
     [StorableConstructor]
-    protected ELLI(bool deserializing) : base(deserializing) { }
+    protected ELLI(StorableConstructorFlag _) : base(_) { }
     protected ELLI(ELLI original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new ELLI(this, cloner);

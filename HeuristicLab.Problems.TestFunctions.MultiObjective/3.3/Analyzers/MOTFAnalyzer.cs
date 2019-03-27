@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,12 +25,12 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 
 namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
 
-  [StorableClass]
+  [StorableType("CFBB2CAB-C1B7-4F14-9A01-6D5624B7B681")]
   public abstract class MOTFAnalyzer : SingleSuccessorOperator, IMultiObjectiveTestFunctionAnalyzer {
     public virtual bool EnabledByDefault { get { return true; } }
 
@@ -53,7 +53,7 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
     protected MOTFAnalyzer(MOTFAnalyzer original, Cloner cloner) : base(original, cloner) { }
 
     [StorableConstructor]
-    protected MOTFAnalyzer(bool deserializing) : base(deserializing) { }
+    protected MOTFAnalyzer(StorableConstructorFlag _) : base(_) { }
     protected MOTFAnalyzer() {
       Parameters.Add(new ScopeTreeLookupParameter<DoubleArray>("Qualities", "The qualities of the parameter vector."));
       Parameters.Add(new LookupParameter<ResultCollection>("Results", "The results collection to write to."));

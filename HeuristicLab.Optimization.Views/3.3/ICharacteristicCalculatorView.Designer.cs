@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -65,6 +65,7 @@ namespace HeuristicLab.Optimization.Views {
       // 
       // parametersTabPage
       // 
+      this.parametersTabPage.BackColor = System.Drawing.SystemColors.Window;
       this.parametersTabPage.Controls.Add(this.parameterCollectionView);
       this.parametersTabPage.Location = new System.Drawing.Point(4, 22);
       this.parametersTabPage.Name = "parametersTabPage";
@@ -72,17 +73,16 @@ namespace HeuristicLab.Optimization.Views {
       this.parametersTabPage.Size = new System.Drawing.Size(756, 472);
       this.parametersTabPage.TabIndex = 0;
       this.parametersTabPage.Text = "Parameters";
-      this.parametersTabPage.UseVisualStyleBackColor = true;
       // 
       // characteristicsTabPage
       // 
+      this.characteristicsTabPage.BackColor = System.Drawing.SystemColors.Window;
       this.characteristicsTabPage.Location = new System.Drawing.Point(4, 22);
       this.characteristicsTabPage.Name = "characteristicsTabPage";
       this.characteristicsTabPage.Padding = new System.Windows.Forms.Padding(3);
       this.characteristicsTabPage.Size = new System.Drawing.Size(756, 472);
       this.characteristicsTabPage.TabIndex = 1;
       this.characteristicsTabPage.Text = "Characteristics";
-      this.characteristicsTabPage.UseVisualStyleBackColor = true;
       // 
       // parameterCollectionView
       // 

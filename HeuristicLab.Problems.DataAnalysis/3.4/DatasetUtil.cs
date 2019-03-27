@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -90,6 +90,22 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
         setValues(dataset, matchingValues);
       }
+    }
+
+    public static Dictionary<string, Interval> GetVariableRanges(IDataset dataset, IEnumerable<int> rows = null) {
+      Dictionary<string, Interval> variableRanges = new Dictionary<string, Interval>();
+
+      foreach (var variable in dataset.VariableNames) {
+        IEnumerable<double> values = null;
+
+        if (rows == null) values = dataset.GetDoubleValues(variable);
+        else values = dataset.GetDoubleValues(variable, rows);
+
+        var range = Interval.GetInterval(values);
+        variableRanges.Add(variable, range);
+      }
+
+      return variableRanges;
     }
 
     private static bool GetEqualValues(this Dictionary<ValuesType, ValuesType> variableValuesMapping, ValuesType originalValues, out ValuesType matchingValues) {

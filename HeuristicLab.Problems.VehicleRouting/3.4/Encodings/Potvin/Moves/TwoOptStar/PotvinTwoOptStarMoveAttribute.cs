@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,12 +21,12 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.VehicleRouting.Encodings.General;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinTwoOptStarMoveAttribute", "Two opt star move attribute")]
-  [StorableClass]
+  [StorableType("BE6E1C1B-335A-4FDB-9105-A7304380510E")]
   public class PotvinTwoOptStarMoveAttribute : VRPMoveAttribute {
     [Storable]
     public int Tour { get; private set; }
@@ -41,7 +41,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
     public double Tardiness { get; private set; }
 
     [StorableConstructor]
-    protected PotvinTwoOptStarMoveAttribute(bool deserializing) : base(deserializing) { }
+    protected PotvinTwoOptStarMoveAttribute(StorableConstructorFlag _) : base(_) { }
     protected PotvinTwoOptStarMoveAttribute(PotvinTwoOptStarMoveAttribute original, Cloner cloner)
       : base(original, cloner) {
       this.Tour = original.Tour;

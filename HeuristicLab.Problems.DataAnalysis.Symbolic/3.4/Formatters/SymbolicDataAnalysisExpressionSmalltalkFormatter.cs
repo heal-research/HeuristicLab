@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -159,6 +159,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       } else if (symbol is Tangent) {
         stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
         stringBuilder.Append(" tan");
+      } else if (symbol is HyperbolicTangent) {
+        stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
+        stringBuilder.Append(" tanh");
       } else if (symbol is Variable) {
         VariableTreeNode variableTreeNode = node as VariableTreeNode;
         stringBuilder.Append(variableTreeNode.Weight.ToString(CultureInfo.InvariantCulture));

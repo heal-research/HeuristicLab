@@ -1,6 +1,6 @@
-#region License Information
+﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -27,7 +27,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
@@ -36,22 +36,29 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// </summary>
   [Item("Nearest Neighbour Classification (kNN)", "Nearest neighbour classification data analysis algorithm (wrapper for ALGLIB).")]
   [Creatable(CreatableAttribute.Categories.DataAnalysisClassification, Priority = 150)]
-  [StorableClass]
+  [StorableType("98161D6F-D977-45EA-B899-E47EE017865E")]
   public sealed class NearestNeighbourClassification : FixedDataAnalysisAlgorithm<IClassificationProblem> {
     private const string KParameterName = "K";
     private const string NearestNeighbourClassificationModelResultName = "Nearest neighbour classification solution";
     private const string WeightsParameterName = "Weights";
-
+    private const string SelfMatchParameterName = "SelfMatch";
 
     #region parameter properties
     public IFixedValueParameter<IntValue> KParameter {
       get { return (IFixedValueParameter<IntValue>)Parameters[KParameterName]; }
+    }
+    public IFixedValueParameter<BoolValue> SelfMatchParameter {
+      get { return (IFixedValueParameter<BoolValue>)Parameters[SelfMatchParameterName]; }
     }
     public IValueParameter<DoubleArray> WeightsParameter {
       get { return (IValueParameter<DoubleArray>)Parameters[WeightsParameterName]; }
     }
     #endregion
     #region properties
+    public bool SelfMatch {
+      get { return SelfMatchParameter.Value.Value; }
+      set { SelfMatchParameter.Value.Value = value; }
+    }
     public int K {
       get { return KParameter.Value.Value; }
       set {
@@ -66,12 +73,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     #endregion
 
     [StorableConstructor]
-    private NearestNeighbourClassification(bool deserializing) : base(deserializing) { }
+    private NearestNeighbourClassification(StorableConstructorFlag _) : base(_) { }
     private NearestNeighbourClassification(NearestNeighbourClassification original, Cloner cloner)
       : base(original, cloner) {
     }
     public NearestNeighbourClassification()
       : base() {
+      Parameters.Add(new FixedValueParameter<BoolValue>(SelfMatchParameterName, "Should we use equal points for classification?", new BoolValue(false)));
       Parameters.Add(new FixedValueParameter<IntValue>(KParameterName, "The number of nearest neighbours to consider for regression.", new IntValue(3)));
       Parameters.Add(new OptionalValueParameter<DoubleArray>(WeightsParameterName, "Optional: use weights to specify individual scaling values for all features. If not set the weights are calculated automatically (each feature is scaled to unit variance)"));
       Problem = new ClassificationProblem();
@@ -82,6 +90,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       #region Backwards compatible code, remove with 3.4
       if (!Parameters.ContainsKey(WeightsParameterName)) {
         Parameters.Add(new OptionalValueParameter<DoubleArray>(WeightsParameterName, "Optional: use weights to specify individual scaling values for all features. If not set the weights are calculated automatically (each feature is scaled to unit variance)"));
+      }
+      if (!Parameters.ContainsKey(SelfMatchParameterName)) {
+        Parameters.Add(new FixedValueParameter<BoolValue>(SelfMatchParameterName, "Should we use equal points for classification?", new BoolValue(false)));
       }
       #endregion
     }
@@ -94,19 +105,20 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     protected override void Run(CancellationToken cancellationToken) {
       double[] weights = null;
       if (Weights != null) weights = Weights.CloneAsArray();
-      var solution = CreateNearestNeighbourClassificationSolution(Problem.ProblemData, K, weights);
+      var solution = CreateNearestNeighbourClassificationSolution(Problem.ProblemData, K, SelfMatch, weights);
       Results.Add(new Result(NearestNeighbourClassificationModelResultName, "The nearest neighbour classification solution.", solution));
     }
 
-    public static IClassificationSolution CreateNearestNeighbourClassificationSolution(IClassificationProblemData problemData, int k, double[] weights = null) {
+    public static IClassificationSolution CreateNearestNeighbourClassificationSolution(IClassificationProblemData problemData, int k, bool selfMatch = false, double[] weights = null) {
       var problemDataClone = (IClassificationProblemData)problemData.Clone();
-      return new NearestNeighbourClassificationSolution(Train(problemDataClone, k, weights), problemDataClone);
+      return new NearestNeighbourClassificationSolution(Train(problemDataClone, k, selfMatch, weights), problemDataClone);
     }
 
-    public static INearestNeighbourModel Train(IClassificationProblemData problemData, int k, double[] weights = null) {
+    public static INearestNeighbourModel Train(IClassificationProblemData problemData, int k, bool selfMatch = false, double[] weights = null) {
       return new NearestNeighbourModel(problemData.Dataset,
         problemData.TrainingIndices,
         k,
+        selfMatch,
         problemData.TargetVariable,
         problemData.AllowedInputVariables,
         weights,

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,16 +26,16 @@ using System.Windows.Forms;
 using HeuristicLab.Common.Resources;
 
 namespace HeuristicLab.Analysis.Views {
-  public partial class DataTableVisualPropertiesDialog : Form {
+  public partial class DataTableVisualPropertiesDialog<TDataRow> : Form where TDataRow : class, IDataRow {
     protected bool SuppressEvents { get; set; }
-    protected DataTable Content { get; private set; }
+    protected IDataTable<TDataRow> Content { get; private set; }
     private DataTableVisualProperties originalDataTableVPs;
     private Dictionary<string, DataRowVisualProperties> originalDataRowVPs;
 
     private HashSet<string> modifiedDisplayNames;
     public IEnumerable<string> RowsWithModifiedDisplayNames { get { return modifiedDisplayNames.AsEnumerable(); } }
 
-    public DataTableVisualPropertiesDialog(DataTable dataTable) {
+    public DataTableVisualPropertiesDialog(IDataTable<TDataRow> dataTable) {
       InitializeComponent();
       #region Prepare controls
       upButton.Text = string.Empty;
@@ -50,7 +50,7 @@ namespace HeuristicLab.Analysis.Views {
       Content = dataTable;
       originalDataTableVPs = (DataTableVisualProperties)Content.VisualProperties.Clone();
       originalDataRowVPs = new Dictionary<string, DataRowVisualProperties>();
-      foreach (DataRow row in Content.Rows)
+      foreach (var row in Content.Rows)
         originalDataRowVPs.Add(row.Name, (DataRowVisualProperties)row.VisualProperties.Clone());
 
       dataTableVisualPropertiesControl.Content = Content.VisualProperties;
@@ -61,13 +61,13 @@ namespace HeuristicLab.Analysis.Views {
     }
 
     private void RegisterContentEvents() {
-      foreach (DataRow row in Content.Rows) {
+      foreach (var row in Content.Rows) {
         row.VisualProperties.PropertyChanged += new PropertyChangedEventHandler(Row_VisualProperties_PropertyChanged);
       }
     }
 
     private void DeregisterContentEvents() {
-      foreach (DataRow row in Content.Rows) {
+      foreach (var row in Content.Rows) {
         row.VisualProperties.PropertyChanged -= new PropertyChangedEventHandler(Row_VisualProperties_PropertyChanged);
       }
     }
@@ -79,7 +79,7 @@ namespace HeuristicLab.Analysis.Views {
     }
 
     private void Row_VisualProperties_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-      foreach (DataRow row in Content.Rows) {
+      foreach (var row in Content.Rows) {
         if (e.PropertyName == "DisplayName" && row.VisualProperties == sender) {
           modifiedDisplayNames.Add(row.Name);
           break;
@@ -108,7 +108,7 @@ namespace HeuristicLab.Analysis.Views {
 
     private void cancelButton_Click(object sender, System.EventArgs e) {
       DialogResult = DialogResult.Cancel;
-      foreach (DataRow row in Content.Rows) {
+      foreach (var row in Content.Rows) {
         row.VisualProperties = originalDataRowVPs[row.Name];
       }
       modifiedDisplayNames.Clear();
@@ -159,7 +159,7 @@ namespace HeuristicLab.Analysis.Views {
     #region Helpers
     private void FillSeriesListView() {
       seriesListView.SelectedIndices.Clear();
-      foreach (DataRow row in Content.Rows) {
+      foreach (var row in Content.Rows) {
         seriesListView.Items.Add(new ListViewItem(row.Name, 0));
       }
       if (seriesListView.Items.Count > 0)
@@ -167,7 +167,7 @@ namespace HeuristicLab.Analysis.Views {
     }
 
     private void UpdateAllSeriesPositions() {
-      Dictionary<string, DataRow> rows = Content.Rows.ToDictionary(x => x.Name);
+      var rows = Content.Rows.ToDictionary(x => x.Name);
       Content.Rows.Clear();
       for (int i = 0; i < seriesListView.Items.Count; i++) {
         ListViewItem item = seriesListView.Items[i];

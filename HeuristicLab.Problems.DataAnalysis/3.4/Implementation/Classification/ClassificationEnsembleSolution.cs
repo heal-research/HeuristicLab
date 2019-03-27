@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,13 +26,13 @@ using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis {
   /// <summary>
   /// Represents classification solutions that contain an ensemble of multiple classification models
   /// </summary>
-  [StorableClass]
+  [StorableType("4CDD22EE-B53D-4899-A77E-C503FF9EBC8E")]
   [Item("Classification Ensemble Solution", "A classification solution that contains an ensemble of multiple classification models")]
   [Creatable(CreatableAttribute.Categories.DataAnalysisEnsembles, Priority = 110)]
   public sealed class ClassificationEnsembleSolution : ClassificationSolutionBase, IClassificationEnsembleSolution {
@@ -60,8 +60,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     private Dictionary<IClassificationModel, IntRange> testPartitions;
 
     [StorableConstructor]
-    private ClassificationEnsembleSolution(bool deserializing)
-      : base(deserializing) {
+    private ClassificationEnsembleSolution(StorableConstructorFlag _) : base(_) {
       classificationSolutions = new ItemCollection<IClassificationSolution>();
     }
     [StorableHook(HookType.AfterDeserialization)]

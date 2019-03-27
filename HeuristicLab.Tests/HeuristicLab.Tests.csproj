@@ -296,6 +296,11 @@
       <HintPath>..\bin\HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis-3.4.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="HeuristicLab.Problems.DataAnalysis.Symbolic.Views-3.4, Version=3.4.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\bin\HeuristicLab.Problems.DataAnalysis.Symbolic.Views-3.4.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="HeuristicLab.Problems.ExternalEvaluation-3.4, Version=3.4.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\bin\HeuristicLab.Problems.ExternalEvaluation-3.4.dll</HintPath>
@@ -581,13 +586,18 @@
     <Compile Include="HeuristicLab.IGraph\IGraphWrappersVectorTest.cs" />
     <Compile Include="HeuristicLab.Persistence-3.3\StorableAttributeTests.cs" />
     <Compile Include="HeuristicLab.Persistence-3.3\UseCases.cs" />
+    <Compile Include="HeuristicLab.Persistence.Attic\StorableAttributeTests.cs" />
+    <Compile Include="HeuristicLab.Persistence.Attic\UseCases.cs" />
     <Compile Include="HeuristicLab.PluginInfraStructure-3.3\TypeExtensionsTest.cs" />
+    <Compile Include="HeuristicLab.Problems.DataAnalysis-3.4\ClassificationVariableImpactCalculationTest.cs" />
+    <Compile Include="HeuristicLab.Problems.DataAnalysis-3.4\IntervalTest.cs" />
+    <Compile Include="HeuristicLab.Problems.DataAnalysis-3.4\RegressionVariableImpactCalculationTest.cs" />
     <Compile Include="HeuristicLab.Problems.DataAnalysis-3.4\ThresholdCalculatorsTest.cs" />
     <Compile Include="HeuristicLab.Problems.DataAnalysis-3.4\OnlineCalculatorPerformanceTest.cs" />
     <Compile Include="HeuristicLab.Problems.DataAnalysis-3.4\StatisticCalculatorsTest.cs" />
-    <Compile Include="HeuristicLab.Problems.DataAnalysis-3.4\VariableImpactCalculationTest.cs" />
     <Compile Include="HeuristicLab.Problems.DataAnalysis.Symbolic-3.4\DeriveTest.cs" />
     <Compile Include="HeuristicLab.Problems.DataAnalysis.Symbolic-3.4\InfixExpressionParserTest.cs" />
+    <Compile Include="HeuristicLab.Problems.DataAnalysis.Symbolic-3.4\IntervalInterpreterTest.cs" />
     <Compile Include="HeuristicLab.Problems.DataAnalysis.Symbolic-3.4\SymbolicExpressionTreeBottomUpSimilarityCalculatorTest.cs" />
     <Compile Include="HeuristicLab.Problems.DataAnalysis.Symbolic-3.4\SymbolicExpressionTreeMaxCommonSubtreeSimilarityCalculatorTest.cs" />
     <Compile Include="HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis-3.4\SymbolicDataAnalysisExpressionTreeInterpreterTest.cs" />
@@ -666,7 +676,6 @@
     <Compile Include="TestRandom.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
     <None Include="Builder.testsettings">
       <SubType>Designer</SubType>
     </None>
@@ -699,7 +708,13 @@
       <CustomToolNamespace>HeuristicLab.Tests</CustomToolNamespace>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Reference Include="HEAL.Attic, Version=1.0.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\HEAL.Attic.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

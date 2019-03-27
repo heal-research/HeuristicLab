@@ -19,13 +19,12 @@
  */
 #endregion
 
-using System;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Core;
 using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.BinPacking {
-  [StorableClass]
+  [StorableType("8ED65A4B-6F85-47EA-90C6-A4B47533E429")]
   // PackingPosition is immutable (and handled as value types concerning Equals and GetHashCode)
   public abstract class PackingPosition : Item, IPackingPosition {
     /// <summary>
@@ -47,7 +46,7 @@ namespace HeuristicLab.Problems.BinPacking {
     }
 
     [StorableConstructor]
-    protected PackingPosition(bool deserializing) : base(deserializing) { }
+    protected PackingPosition(StorableConstructorFlag _) : base(_) { }
     protected PackingPosition(PackingPosition original, Cloner cloner)
       : base(original, cloner) {
       assignedBin = original.AssignedBin;

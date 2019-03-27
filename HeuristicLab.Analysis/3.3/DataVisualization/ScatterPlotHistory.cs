@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,21 +23,21 @@ using System.Collections.Generic;
 using System.Drawing;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Analysis {
   /// <summary>
   /// Represents history values of scatter plots.
   /// </summary>
   [Item("ScatterPlotHistory", "Represents history values of scatter plots.")]
-  [StorableClass]
+  [StorableType("2FDE6993-8841-4E1B-BAD0-F0EAF0822C7E")]
   public class ScatterPlotHistory : ItemCollection<ScatterPlot> {
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Cab; }
     }
 
     [StorableConstructor]
-    protected ScatterPlotHistory(bool deserializing) : base(deserializing) { }
+    protected ScatterPlotHistory(StorableConstructorFlag _) : base(_) { }
     protected ScatterPlotHistory(ScatterPlotHistory original, Cloner cloner) : base(original, cloner) { }
     public ScatterPlotHistory() : base() { }
     public ScatterPlotHistory(IEnumerable<ScatterPlot> scatterPlots) : base(new ItemCollection<ScatterPlot>(scatterPlots)) { }

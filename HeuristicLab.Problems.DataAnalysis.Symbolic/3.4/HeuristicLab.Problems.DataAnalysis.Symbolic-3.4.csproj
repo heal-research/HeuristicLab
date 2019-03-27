@@ -106,6 +106,15 @@
       <HintPath>..\..\bin\AutoDiff-1.0.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="HEAL.Attic, Version=1.0.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\HEAL.Attic.dll</HintPath>
+    </Reference>
+    <Reference Include="HeuristicLab.Problems.DataAnalysis.Symbolic.NativeInterpreter-0.1, Version=0.0.0.1, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\HeuristicLab.Problems.DataAnalysis.Symbolic.NativeInterpreter-0.1.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -122,6 +131,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Analyzers\SymbolicDataAnalysisBottomUpDiversityAnalyzer.cs" />
+    <Compile Include="Analyzers\SymbolicDataAnalysisBuildingBlockAnalyzer.cs" />
     <Compile Include="Analyzers\SymbolicDataAnalysisSingleObjectivePruningAnalyzer.cs" />
     <Compile Include="Analyzers\SymbolicDataAnalysisSingleObjectiveValidationParetoBestSolutionAnalyzer.cs" />
     <Compile Include="Analyzers\SymbolicDataAnalysisSingleObjectiveTrainingParetoBestSolutionAnalyzer.cs" />
@@ -140,6 +150,7 @@
     <Compile Include="Converters\TreeSimplifier.cs" />
     <Compile Include="Converters\DerivativeCalculator.cs" />
     <Compile Include="Converters\TreeToAutoDiffTermConverter.cs" />
+    <Compile Include="Crossovers\SymbolicDataAnalysisExpressionDiversityPreservingCrossover.cs" />
     <Compile Include="Formatters\InfixExpressionFormatter.cs" />
     <Compile Include="Formatters\TSQLExpressionFormatter.cs" />
     <Compile Include="Formatters\SymbolicDataAnalysisExpressionMathematicaFormatter.cs" />
@@ -153,7 +164,13 @@
     <Compile Include="Interfaces\IModelBacktransformator.cs" />
     <Compile Include="Interfaces\IVariableTreeNode.cs" />
     <Compile Include="Interfaces\IVariableSymbol.cs" />
+    <Compile Include="Interpreter\BatchInstruction.cs" />
+    <Compile Include="Interpreter\BatchOperations.cs" />
+    <Compile Include="Interpreter\IntervalInterpreter.cs" />
     <Compile Include="Interpreter\SymbolicDataAnalysisExpressionCompiledTreeInterpreter.cs" />
+    <Compile Include="Interpreter\SymbolicDataAnalysisExpressionTreeBatchInterpreter.cs" />
+    <Compile Include="Interpreter\SymbolicDataAnalysisExpressionTreeNativeInterpreter.cs" />
+    <Compile Include="Selectors\DiversitySelector.cs" />
     <Compile Include="SymbolicDataAnalysisExpressionTreeSimplificationOperator.cs" />
     <Compile Include="SymbolicDataAnalysisModelComplexityCalculator.cs" />
     <Compile Include="SymbolicDataAnalysisExpressionPruningOperator.cs" />
@@ -201,6 +218,7 @@
     <Compile Include="SymbolicDataAnalysisProblem.cs" />
     <Compile Include="SymbolicDataAnalysisSolutionImpactValuesCalculator.cs" />
     <Compile Include="Symbols\Addition.cs" />
+    <Compile Include="Symbols\AnalyticQuotient.cs" />
     <Compile Include="Symbols\And.cs" />
     <Compile Include="Symbols\AutoregressiveVariable.cs" />
     <Compile Include="Symbols\Average.cs" />
@@ -211,8 +229,12 @@
     <Compile Include="Symbols\Bessel.cs" />
     <Compile Include="Symbols\BinaryFactorVariable.cs" />
     <Compile Include="Symbols\BinaryFactorVariableTreeNode.cs" />
+    <Compile Include="Symbols\Cube.cs" />
     <Compile Include="Symbols\FactorVariableTreeNode.cs" />
     <Compile Include="Symbols\FactorVariable.cs" />
+    <Compile Include="Symbols\Absolute.cs" />
+    <Compile Include="Symbols\CubeRoot.cs" />
+    <Compile Include="Symbols\HyperbolicTangent.cs" />
     <Compile Include="Symbols\VariableBase.cs" />
     <Compile Include="Symbols\VariableTreeNodeBase.cs" />
     <Compile Include="Symbols\Xor.cs" />
@@ -379,6 +401,10 @@
       <Project>{F4539FB6-4708-40C9-BE64-0A1390AEA197}</Project>
       <Name>HeuristicLab.Random-3.3</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Selection\3.3\HeuristicLab.Selection-3.3.csproj">
+      <Project>{2C36CD4F-E5F5-43A4-801A-201EA895FE17}</Project>
+      <Name>HeuristicLab.Selection-3.3</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

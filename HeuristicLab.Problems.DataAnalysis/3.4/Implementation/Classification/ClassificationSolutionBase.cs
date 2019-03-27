@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,16 +19,17 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.DataAnalysis.OnlineCalculators;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  [StorableClass]
+  [StorableType("60599497-EAF0-4DB0-B2E4-D58F34458D8F")]
   public abstract class ClassificationSolutionBase : DataAnalysisSolution, IClassificationSolution {
     private const string TrainingAccuracyResultName = "Accuracy (training)";
     private const string TestAccuracyResultName = "Accuracy (test)";
@@ -43,7 +44,13 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public new IClassificationProblemData ProblemData {
       get { return (IClassificationProblemData)base.ProblemData; }
-      set { base.ProblemData = value; }
+      set {
+        if (value == null) throw new ArgumentNullException("The problemData must not be null.");
+        string errorMessage = string.Empty;
+        if (!Model.IsProblemDataCompatible(value, out errorMessage)) throw new ArgumentException(errorMessage);
+
+        base.ProblemData = value;
+      }
     }
 
     #region Results
@@ -70,7 +77,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     #endregion
 
     [StorableConstructor]
-    protected ClassificationSolutionBase(bool deserializing) : base(deserializing) { }
+    protected ClassificationSolutionBase(StorableConstructorFlag _) : base(_) { }
     protected ClassificationSolutionBase(ClassificationSolutionBase original, Cloner cloner)
       : base(original, cloner) {
     }

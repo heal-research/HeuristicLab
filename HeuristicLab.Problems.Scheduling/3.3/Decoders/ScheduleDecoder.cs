@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,11 +24,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Encodings.ScheduleEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.Scheduling {
   [Item("ScheduleDecoder", "A schedule decoder translates a respresentation into an actual schedule.")]
-  [StorableClass]
+  [StorableType("B48CB500-3983-4D83-98A8-3BC8FB167211")]
   public abstract class ScheduleDecoder : SingleSuccessorOperator, IScheduleDecoder {
 
     public ILookupParameter<IScheduleEncoding> ScheduleEncodingParameter {
@@ -39,7 +39,7 @@ namespace HeuristicLab.Problems.Scheduling {
     }
 
     [StorableConstructor]
-    protected ScheduleDecoder(bool deserializing) : base(deserializing) { }
+    protected ScheduleDecoder(StorableConstructorFlag _) : base(_) { }
     protected ScheduleDecoder(ScheduleDecoder original, Cloner cloner) : base(original, cloner) { }
     public ScheduleDecoder()
       : base() {

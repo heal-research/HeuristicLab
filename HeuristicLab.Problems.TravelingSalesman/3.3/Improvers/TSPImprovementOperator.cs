@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -27,7 +27,7 @@ using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TravelingSalesman {
   /// <summary>
@@ -37,7 +37,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
   /// The operator tries to improve the traveling salesman solution by swapping two randomly chosen edges for a certain number of times.
   /// </remarks>
   [Item("TSPImprovementOperator", "An operator that improves traveling salesman solutions. The operator tries to improve the traveling salesman solution by swapping two randomly chosen edges for a certain number of times.")]
-  [StorableClass]
+  [StorableType("9C3B53A4-8FE7-45FC-833B-FF3DAE578010")]
   public sealed class TSPImprovementOperator : SingleSuccessorOperator, ISingleObjectiveImprovementOperator {
     #region Parameter properties
     public ScopeParameter CurrentScopeParameter {
@@ -76,7 +76,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     #endregion
 
     [StorableConstructor]
-    private TSPImprovementOperator(bool deserializing) : base(deserializing) { }
+    private TSPImprovementOperator(StorableConstructorFlag _) : base(_) { }
     private TSPImprovementOperator(TSPImprovementOperator original, Cloner cloner) : base(original, cloner) { }
     public TSPImprovementOperator()
       : base() {

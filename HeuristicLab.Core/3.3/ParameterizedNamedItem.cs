@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,14 +23,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Core {
   /// <summary>
   /// A base class for items which have a name and contain parameters.
   /// </summary>
   [Item("ParameterizedNamedItem", "A base class for items which have a name and contain parameters.")]
-  [StorableClass]
+  [StorableType("058C7952-437D-4EA0-9F12-23E8A67C5352")]
   public abstract class ParameterizedNamedItem : NamedItem, IParameterizedNamedItem {
     [Storable]
     private ParameterCollection parameters;
@@ -46,7 +46,7 @@ namespace HeuristicLab.Core {
     }
 
     [StorableConstructor]
-    protected ParameterizedNamedItem(bool deserializing) : base(deserializing) { }
+    protected ParameterizedNamedItem(StorableConstructorFlag _) : base(_) { }
     protected ParameterizedNamedItem(ParameterizedNamedItem original, Cloner cloner)
       : base(original, cloner) {
       parameters = cloner.Clone(original.parameters);

@@ -1,7 +1,7 @@
 ﻿#region License Information
 
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,8 +24,10 @@
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using System;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.CMAEvolutionStrategy {
+  [StorableType("33524FCA-B31B-415E-BC53-87C126CAF124")]
   public interface ICMARecombinator : IOperator {
     Type CMAType { get; }
 

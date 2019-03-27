@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,9 +20,11 @@
 #endregion
 
 using HeuristicLab.Collections;
+using HEAL.Attic;
 
 namespace HeuristicLab.Core {
+  [StorableType("7d77d9e1-bce1-4546-9efd-62834ea85d1c")]
   public interface IItemDictionary<TKey, TValue> : IObservableDictionary<TKey, TValue>, IItem
-    where TKey : class, IItem
-    where TValue : class, IItem { }
+      where TKey : class, IItem
+      where TValue : class, IItem { }
 }

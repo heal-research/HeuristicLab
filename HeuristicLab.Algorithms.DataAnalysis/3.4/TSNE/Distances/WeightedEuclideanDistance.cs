@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -27,11 +27,11 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
-  [StorableClass]
+  [StorableType("A660B39D-1B11-459D-98C2-65942E6D375C")]
   [Item("WeightedEuclideanDistance", "A weighted norm function that uses Euclidean distance √(Σ(w[i]²*(p1[i]-p2[i])²))")]
   public class WeightedEuclideanDistance : ParameterizedNamedItem, IDistance<IEnumerable<double>> {
     [Storable]
@@ -48,7 +48,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     #region HLConstructors & Cloning
     [StorableConstructor]
-    protected WeightedEuclideanDistance(bool deserializing) : base(deserializing) { }
+    protected WeightedEuclideanDistance(StorableConstructorFlag _) : base(_) { }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       RegisterParameterEvents();

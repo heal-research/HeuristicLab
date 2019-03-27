@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,20 +19,18 @@
  */
 #endregion
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
 
   [Item("RunCollection Value Remover", "Modifies a RunCollection by removing results or parameters.")]
-  [StorableClass]
+  [StorableType("300726A9-3E81-4F8E-A11F-4A5B3CDCA796")]
   public class RunCollectionValueRemover : ParameterizedNamedItem, IRunCollectionModifier {
     
     public ValueParameter<CheckedItemCollection<StringValue>> ValuesParameter {
@@ -45,7 +43,7 @@ namespace HeuristicLab.Optimization {
 
     #region Construction & Cloning    
     [StorableConstructor]
-    protected RunCollectionValueRemover(bool deserializing) : base(deserializing) { }
+    protected RunCollectionValueRemover(StorableConstructorFlag _) : base(_) { }
     protected RunCollectionValueRemover(RunCollectionValueRemover original, Cloner cloner)
       : base(original, cloner) {
     }

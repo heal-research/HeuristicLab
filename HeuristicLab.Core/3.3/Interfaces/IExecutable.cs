@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,8 +23,10 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using HeuristicLab.Common;
+using HEAL.Attic;
 
 namespace HeuristicLab.Core {
+  [StorableType("cd8822ef-1e2d-4aa1-ad33-7ec7546610f3")]
   public interface IExecutable : IItem {
     ExecutionState ExecutionState { get; }
     TimeSpan ExecutionTime { get; }

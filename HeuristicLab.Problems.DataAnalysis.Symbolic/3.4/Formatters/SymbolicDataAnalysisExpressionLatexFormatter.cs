@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,14 +23,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [Item("LaTeX String Formatter", "Formatter for symbolic expression trees for import into LaTeX documents.")]
-  [StorableClass]
+  [StorableType("D7186DFF-1596-4A58-B27D-974DF0D93E4F")]
   public sealed class SymbolicDataAnalysisExpressionLatexFormatter : NamedItem, ISymbolicExpressionTreeStringFormatter {
     private readonly List<KeyValuePair<string, double>> constants;
     private int constIndex;
@@ -40,7 +40,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private bool containsTimeSeriesSymbol;
 
     [StorableConstructor]
-    private SymbolicDataAnalysisExpressionLatexFormatter(bool deserializing) : base(deserializing) { }
+    private SymbolicDataAnalysisExpressionLatexFormatter(StorableConstructorFlag _) : base(_) { }
     private SymbolicDataAnalysisExpressionLatexFormatter(SymbolicDataAnalysisExpressionLatexFormatter original, Cloner cloner)
       : base(original, cloner) {
       constants = new List<KeyValuePair<string, double>>(original.constants);
@@ -136,6 +136,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         strBuilder.Append(@"\cos \left( ");
       } else if (node.Symbol is Tangent) {
         strBuilder.Append(@"\tan \left( ");
+      } else if (node.Symbol is HyperbolicTangent) {
+        strBuilder.Append(@"\tanh \left( ");
       } else if (node.Symbol is AiryA) {
         strBuilder.Append(@"\operatorname{airy}_a \left( ");
       } else if (node.Symbol is AiryB) {
@@ -302,6 +304,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         throw new InvalidOperationException();
       } else if (node.Symbol is Tangent) {
         throw new InvalidOperationException();
+      } else if (node.Symbol is HyperbolicTangent) {
+        throw new InvalidOperationException();
       } else if (node.Symbol is AiryA) {
         throw new InvalidOperationException();
       } else if (node.Symbol is AiryB) {
@@ -397,6 +401,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       } else if (node.Symbol is Cosine) {
         strBuilder.Append(@" \right) ");
       } else if (node.Symbol is Tangent) {
+        strBuilder.Append(@" \right) ");
+      } else if (node.Symbol is HyperbolicTangent) {
         strBuilder.Append(@" \right) ");
       } else if (node.Symbol is AiryA) {
         strBuilder.Append(@" \right) ");

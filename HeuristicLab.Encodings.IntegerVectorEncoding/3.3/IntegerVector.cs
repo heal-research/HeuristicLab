@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,14 +23,14 @@ using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.IntegerVectorEncoding {
-  [StorableClass]
+  [StorableType("2DDD33C1-4732-478B-83B1-17226A8F2B61")]
   [Item("IntegerVector", "Represents a vector of integer values.")]
   public class IntegerVector : IntArray {
     [StorableConstructor]
-    protected IntegerVector(bool deserializing) : base(deserializing) { }
+    protected IntegerVector(StorableConstructorFlag _) : base(_) { }
     protected IntegerVector(IntegerVector original, Cloner cloner) : base(original, cloner) { }
     public IntegerVector() : base() { }
     public IntegerVector(int length) : base(length) { }

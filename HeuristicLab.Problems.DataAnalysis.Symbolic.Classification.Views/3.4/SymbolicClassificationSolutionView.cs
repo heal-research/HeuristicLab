@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -59,9 +59,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification.Views {
 
         var name = exportFileDialog.FileName;
         using (BackgroundWorker bg = new BackgroundWorker()) {
-          MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>().AddOperationProgressToView(this, "Exportion solution to " + name + ".");
+          Progress.Show(this, "Exportion solution to " + name + ".", ProgressMode.Indeterminate);
           bg.DoWork += (o, a) => exporter.Export(Content, name);
-          bg.RunWorkerCompleted += (o, a) => MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>().RemoveOperationProgressFromView(this);
+          bg.RunWorkerCompleted += (o, a) => Progress.Hide(this);
           bg.RunWorkerAsync();
         }
       }

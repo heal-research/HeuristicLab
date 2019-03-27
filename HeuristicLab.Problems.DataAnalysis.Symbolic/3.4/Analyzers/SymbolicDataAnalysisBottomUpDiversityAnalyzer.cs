@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,14 +22,14 @@
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [Item("SymbolicDataAnalysisBottomUpDiversityAnalyzer", "A diversity analyzer based on the bottom-up distance between trees.")]
-  [StorableClass]
+  [StorableType("822FB7E4-3CFF-4413-90EB-96E90CE1D1D4")]
   public class SymbolicDataAnalysisBottomUpDiversityAnalyzer : PopulationSimilarityAnalyzer {
     [StorableConstructor]
-    protected SymbolicDataAnalysisBottomUpDiversityAnalyzer(bool deserializing) : base(deserializing) { }
+    protected SymbolicDataAnalysisBottomUpDiversityAnalyzer(StorableConstructorFlag _) : base(_) { }
 
     protected SymbolicDataAnalysisBottomUpDiversityAnalyzer(SymbolicDataAnalysisBottomUpDiversityAnalyzer original, Cloner cloner)
       : base(original, cloner) {

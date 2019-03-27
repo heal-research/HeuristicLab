@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.LinearLinkageEncoding.Creators {
   [Item("Max Group-size Linear Linkage Creator", "Creates a random linear linkage LLE encoded solution with a given maximum number of items per group.")]
-  [StorableClass]
+  [StorableType("5C9DEA79-60CC-44A5-B70E-FC11A588C307")]
   public class MaxGroupSizeLinearLinkageCreator: LinearLinkageCreator {
 
     public IValueLookupParameter<IntValue> MaxGroupSizeParameter {
@@ -22,7 +20,7 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding.Creators {
     }
 
     [StorableConstructor]
-    protected MaxGroupSizeLinearLinkageCreator(bool deserializing) : base(deserializing) { }
+    protected MaxGroupSizeLinearLinkageCreator(StorableConstructorFlag _) : base(_) { }
     protected MaxGroupSizeLinearLinkageCreator(MaxGroupSizeLinearLinkageCreator original, Cloner cloner) : base(original, cloner) { }
 
     public MaxGroupSizeLinearLinkageCreator() {

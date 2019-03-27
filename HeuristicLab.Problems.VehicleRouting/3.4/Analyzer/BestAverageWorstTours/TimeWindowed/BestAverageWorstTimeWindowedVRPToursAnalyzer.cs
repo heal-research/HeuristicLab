@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -28,7 +28,7 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Problems.VehicleRouting.Variants;
 
@@ -37,7 +37,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
   /// An operator which analyzes the best, average and worst quality of solutions in the scope tree.
   /// </summary>
   [Item("BestAverageWorstTimeWindowedVRPToursAnalyzer", "An operator which analyzes the best, average and worst properties of the VRP tours in the scope tree.")]
-  [StorableClass]
+  [StorableType("EBEDE5FC-0AA9-4F99-986A-5499A8C8C506")]
   public sealed class BestAverageWorstTimeWindowedVRPToursAnalyzer : AlgorithmOperator, IAnalyzer, ITimeWindowedOperator {
     #region Parameter properties
     public ILookupParameter<IVRPProblemInstance> ProblemInstanceParameter {
@@ -178,7 +178,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
       Initialize();
     }
     [StorableConstructor]
-    private BestAverageWorstTimeWindowedVRPToursAnalyzer(bool deserializing) : base() { }
+    private BestAverageWorstTimeWindowedVRPToursAnalyzer(StorableConstructorFlag _) : base(_) { }
 
     [StorableHook(HookType.AfterDeserialization)]
     private void Initialize() {

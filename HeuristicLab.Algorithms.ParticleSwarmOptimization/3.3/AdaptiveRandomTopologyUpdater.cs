@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,19 +19,17 @@
  */
 #endregion
 
-using System.Collections.Generic;
-using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
   [Item("SPSO Adaptive Random Topology Updater", "Each unsuccessful iteration the topology initializer is applied again.")]
-  [StorableClass]
+  [StorableType("F0FC17DF-44B3-4005-9CC3-EDBA7945544A")]
   public sealed class SPSOAdaptiveRandomTopologyUpdater : SingleSuccessorOperator, ITopologyUpdater, ISingleObjectiveOperator {
 
     public override bool CanChangeName {
@@ -58,7 +56,7 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
 
     #region Construction & Cloning
     [StorableConstructor]
-    private SPSOAdaptiveRandomTopologyUpdater(bool deserializing) : base(deserializing) { }
+    private SPSOAdaptiveRandomTopologyUpdater(StorableConstructorFlag _) : base(_) { }
     private SPSOAdaptiveRandomTopologyUpdater(SPSOAdaptiveRandomTopologyUpdater original, Cloner cloner) : base(original, cloner) { }
     public SPSOAdaptiveRandomTopologyUpdater()
       : base() {

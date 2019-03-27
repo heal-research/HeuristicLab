@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,10 +22,10 @@
 using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
-  [StorableClass]
+  [StorableType("927C21BD-8913-406F-ADEA-DA4FED3FE4A2")]
   [Item("SymbolicRegressionSolutionImpactValuesCalculator", "Calculate symbolic expression tree node impact values for regression problems.")]
   public class SymbolicRegressionSolutionImpactValuesCalculator : SymbolicDataAnalysisSolutionImpactValuesCalculator {
     public SymbolicRegressionSolutionImpactValuesCalculator() { }
@@ -35,7 +35,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       return new SymbolicRegressionSolutionImpactValuesCalculator(this, cloner);
     }
     [StorableConstructor]
-    protected SymbolicRegressionSolutionImpactValuesCalculator(bool deserializing) : base(deserializing) { }
+    protected SymbolicRegressionSolutionImpactValuesCalculator(StorableConstructorFlag _) : base(_) { }
 
     protected override double CalculateQualityForImpacts(ISymbolicDataAnalysisModel model, IDataAnalysisProblemData problemData, IEnumerable<int> rows) {
       var regressionModel = (ISymbolicRegressionModel)model;

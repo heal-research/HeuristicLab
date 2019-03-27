@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,10 +24,10 @@ using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  [StorableClass]
+  [StorableType("03116F5E-ABBF-4966-9428-E3DC67D1D03D")]
   public abstract class RegressionSolutionBase : DataAnalysisSolution, IRegressionSolution {
     protected const string TrainingMeanSquaredErrorResultName = "Mean squared error (training)";
     protected const string TestMeanSquaredErrorResultName = "Mean squared error (test)";
@@ -69,7 +69,13 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public new IRegressionProblemData ProblemData {
       get { return (IRegressionProblemData)base.ProblemData; }
-      set { base.ProblemData = value; }
+      set {
+        if (value == null) throw new ArgumentNullException("The problemData must not be null.");
+        string errorMessage = string.Empty;
+        if (!Model.IsProblemDataCompatible(value, out errorMessage)) throw new ArgumentException(errorMessage);
+
+        base.ProblemData = value;
+      }
     }
 
     public abstract IEnumerable<double> EstimatedValues { get; }
@@ -153,7 +159,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     #endregion
 
     [StorableConstructor]
-    protected RegressionSolutionBase(bool deserializing) : base(deserializing) { }
+    protected RegressionSolutionBase(StorableConstructorFlag _) : base(_) { }
     protected RegressionSolutionBase(RegressionSolutionBase original, Cloner cloner)
       : base(original, cloner) {
     }

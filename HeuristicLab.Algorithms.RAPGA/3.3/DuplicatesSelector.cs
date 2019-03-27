@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,7 +25,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Selection;
 
 namespace HeuristicLab.Algorithms.RAPGA {
@@ -36,14 +36,14 @@ namespace HeuristicLab.Algorithms.RAPGA {
   /// The remaining scope then contains unique solutions and the selected scope their duplicates.
   /// </remarks>
   [Item("DuplicatesSelector", "A selection operator which considers a single solution representation and selects duplicates. The remaining scope then contains unique solutions and the selected scope their duplicates.")]
-  [StorableClass]
+  [StorableType("08446059-0FB3-4B20-9D70-B73F2EEC2AAF")]
   public sealed class DuplicatesSelector : SingleObjectiveSelector {
     public IValueLookupParameter<ISolutionSimilarityCalculator> SimilarityCalculatorParameter {
       get { return (IValueLookupParameter<ISolutionSimilarityCalculator>)Parameters["SimilarityCalculator"]; }
     }
 
     [StorableConstructor]
-    private DuplicatesSelector(bool deserializing) : base(deserializing) { }
+    private DuplicatesSelector(StorableConstructorFlag _) : base(_) { }
     private DuplicatesSelector(DuplicatesSelector original, Cloner cloner) : base(original, cloner) { }
     public DuplicatesSelector()
       : base() {

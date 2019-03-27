@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,7 +26,7 @@ using System.Linq;
 using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.DataAnalysis;
 using LibSVM;
 
@@ -34,7 +34,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>
   /// Represents a support vector machine model.
   /// </summary>
-  [StorableClass]
+  [StorableType("669B0522-A27B-4DA6-B655-27C374D88C95")]
   [Item("SupportVectorMachineModel", "Represents a support vector machine model.")]
   public sealed class SupportVectorMachineModel : ClassificationModel, ISupportVectorMachineModel {
     public override IEnumerable<string> VariablesUsedForPrediction {
@@ -91,7 +91,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private double[] classValues; // only for SVM classification models
 
     [StorableConstructor]
-    private SupportVectorMachineModel(bool deserializing) : base(deserializing) { }
+    private SupportVectorMachineModel(StorableConstructorFlag _) : base(_) { }
     private SupportVectorMachineModel(SupportVectorMachineModel original, Cloner cloner)
       : base(original, cloner) {
       // only using a shallow copy here! (gkronber)
@@ -125,7 +125,25 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public IRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData) {
       return new SupportVectorRegressionSolution(this, new RegressionProblemData(problemData));
     }
+
+    public bool IsProblemDataCompatible(IRegressionProblemData problemData, out string errorMessage) {
+      return RegressionModel.IsProblemDataCompatible(this, problemData, out errorMessage);
+    }
     #endregion
+
+    public override bool IsProblemDataCompatible(IDataAnalysisProblemData problemData, out string errorMessage) {
+      if (problemData == null) throw new ArgumentNullException("problemData", "The provided problemData is null.");
+
+      var regressionProblemData = problemData as IRegressionProblemData;
+      if (regressionProblemData != null)
+        return IsProblemDataCompatible(regressionProblemData, out errorMessage);
+
+      var classificationProblemData = problemData as IClassificationProblemData;
+      if (classificationProblemData != null)
+        return IsProblemDataCompatible(classificationProblemData, out errorMessage);
+
+      throw new ArgumentException("The problem data is not a regression nor a classification problem data. Instead a " + problemData.GetType().GetPrettyName() + " was provided.", "problemData");
+    }
 
     #region IClassificationModel Members
     public override IEnumerable<double> GetEstimatedClassValues(IDataset dataset, IEnumerable<int> rows) {
@@ -152,6 +170,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return new SupportVectorClassificationSolution(this, new ClassificationProblemData(problemData));
     }
     #endregion
+
     private IEnumerable<double> GetEstimatedValuesHelper(IDataset dataset, IEnumerable<int> rows) {
       // calculate predictions for the currently requested rows
       svm_problem problem = SupportVectorMachineUtil.CreateSvmProblem(dataset, allowedInputVariables, rows);

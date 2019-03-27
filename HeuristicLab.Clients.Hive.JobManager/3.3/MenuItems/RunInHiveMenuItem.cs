@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -98,7 +98,7 @@ namespace HeuristicLab.Clients.Hive.JobManager {
           rJob.Job.ProjectId = selectedProject.Id;
           rJob.Job.ResourceIds = hiveResourceSelectorDialog.SelectedResources.Select(x => x.Id).ToList();
 
-          progress = MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>().AddOperationProgressToContent(this.content, "Uploading to Hive...");
+          progress = Progress.Show(this.content, "Uploading to Hive...", ProgressMode.Indeterminate);
           rJob.Progress = progress;
           progress.ProgressStateChanged += progress_ProgressStateChanged;
 
@@ -109,13 +109,13 @@ namespace HeuristicLab.Clients.Hive.JobManager {
 
     private void progress_ProgressStateChanged(object sender, EventArgs e) {
       if (progress.ProgressState != ProgressState.Started) {
-        MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>().RemoveOperationProgressFromContent(content);
+        Progress.Hide(content);
         progress.ProgressStateChanged -= progress_ProgressStateChanged;
       }
     }
 
     private void HandleEx(Exception ex) {
-      MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>().RemoveOperationProgressFromContent(content);
+      Progress.Hide(content);
       progress.ProgressStateChanged -= progress_ProgressStateChanged;
       ErrorHandling.ShowErrorDialog("Error uploading tasks", ex);
     }

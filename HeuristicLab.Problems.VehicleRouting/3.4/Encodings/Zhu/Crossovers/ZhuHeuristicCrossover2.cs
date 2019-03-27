@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,14 +22,14 @@
 using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Zhu {
   [Item("ZhuHeuristicCrossover2", "The Zhu Heuristic Crossover (Version 2). It is implemented as described in Zhu, K.Q. (2000). A New Genetic Algorithm For VRPTW. Proceedings of the International Conference on Artificial Intelligence.")]
-  [StorableClass]
+  [StorableType("69206FC0-4870-4C78-B8FD-6C6EF2ADDA31")]
   public sealed class ZhuHeuristicCrossover2 : ZhuCrossover {
     [StorableConstructor]
-    private ZhuHeuristicCrossover2(bool deserializing) : base(deserializing) { }
+    private ZhuHeuristicCrossover2(StorableConstructorFlag _) : base(_) { }
 
     public ZhuHeuristicCrossover2()
       : base() {

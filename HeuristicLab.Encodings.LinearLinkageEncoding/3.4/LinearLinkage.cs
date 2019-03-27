@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,15 +25,15 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.LinearLinkageEncoding {
   [Item("LinearLinkage", "Represents an LLE grouping of items.")]
-  [StorableClass]
+  [StorableType("91492281-3335-4F5A-82BA-BA76142DAD2D")]
   public sealed class LinearLinkage : IntArray {
 
     [StorableConstructor]
-    private LinearLinkage(bool deserializing) : base(deserializing) { }
+    private LinearLinkage(StorableConstructorFlag _) : base(_) { }
     private LinearLinkage(LinearLinkage original, Cloner cloner) : base(original, cloner) { }
     public LinearLinkage() { }
 

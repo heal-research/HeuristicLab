@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -28,8 +28,6 @@ using HeuristicLab.Clients.Access;
 using HeuristicLab.Common.Resources;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
-using System.Collections;
-using HeuristicLab.Common;
 
 namespace HeuristicLab.Clients.Hive.Administrator.Views {
   [View("ProjectView")]
@@ -78,12 +76,6 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     }
 
     #region Overrides
-    protected override void OnClosing(FormClosingEventArgs e) {
-      HiveAdminClient.Instance.Refreshed -= HiveAdminClient_Instance_Refreshed;
-      HiveAdminClient.Instance.Refreshing -= HiveAdminClient_Instance_Refreshing;
-      base.OnClosing(e);
-    }
-
     protected override void OnContentChanged() {
       base.OnContentChanged();
       if (Content == null) {
@@ -129,8 +121,9 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       }
     }
 
-    private void ProjectResourcesView_Load(object sender, EventArgs e) {
-
+    private void ProjectResourcesView_Disposed(object sender, EventArgs e) {
+      HiveAdminClient.Instance.Refreshed -= HiveAdminClient_Instance_Refreshed;
+      HiveAdminClient.Instance.Refreshing -= HiveAdminClient_Instance_Refreshing;
     }
 
     private void refreshButton_Click(object sender, EventArgs e) {
@@ -164,7 +157,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
         e.Cancel = true;
 
       var selectedResource = (Resource)e.Node.Tag;
-      if(HiveAdminClient.Instance.DisabledParentResources.Contains(selectedResource))
+      if (HiveAdminClient.Instance.DisabledParentResources.Contains(selectedResource))
         e.Cancel = true;
     }
 
@@ -178,19 +171,19 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
         e.Cancel = true;
         return;
       }
-        
+
       var checkedResource = (Resource)e.Node.Tag;
       if (checkedResource == null
         || checkedResource.Id == Guid.Empty
-        || HiveAdminClient.Instance.DisabledParentResources.Contains(checkedResource) 
+        || HiveAdminClient.Instance.DisabledParentResources.Contains(checkedResource)
         || newIncludedResources.Contains(checkedResource)) {
         e.Cancel = true;
       } else if (!IsAdmin()) {
-          if (!HiveAdminClient.Instance.CheckOwnershipOfParentProject(Content, UserInformation.Instance.User.Id) 
-            || !HiveAdminClient.Instance.GetAvailableProjectAncestors(Content.Id).Any() 
-            || projectExclusiveResources.Contains(checkedResource)) {
-            e.Cancel = true;
-          }
+        if (!HiveAdminClient.Instance.CheckOwnershipOfParentProject(Content, UserInformation.Instance.User.Id)
+          || !HiveAdminClient.Instance.GetAvailableProjectAncestors(Content.Id).Any()
+          || projectExclusiveResources.Contains(checkedResource)) {
+          e.Cancel = true;
+        }
       }
     }
 
@@ -231,7 +224,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       if (IsAdmin()) return resources;
 
       // get project specific assigned resources
-      var projectResources = resources.Where(x => 
+      var projectResources = resources.Where(x =>
         HiveAdminClient.Instance.ProjectResourceAssignments
           .Where(a => a.ProjectId == projectId)
           .Select(a => a.ResourceId)
@@ -241,7 +234,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       var projectIds = new HashSet<Guid>();
       HiveAdminClient.Instance.GetAvailableProjectAncestors(projectId).ToList().ForEach(x => projectIds.Add(x.Id));
 
-      var ancestorProjectResources = resources.Where(x => 
+      var ancestorProjectResources = resources.Where(x =>
         HiveAdminClient.Instance.ProjectResourceAssignments
           .Where(a => projectIds.Contains(a.ProjectId))
           .Select(a => a.ResourceId)
@@ -250,7 +243,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       // look down for included resources of ancestor projects
       HashSet<Resource> availableResources = new HashSet<Resource>(ancestorProjectResources);
       foreach (var r in ancestorProjectResources) {
-        foreach(var d in HiveAdminClient.Instance.GetAvailableResourceDescendants(r.Id)) {
+        foreach (var d in HiveAdminClient.Instance.GetAvailableResourceDescendants(r.Id)) {
           availableResources.Add(d);
         }
       }
@@ -266,7 +259,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
         foreach (var r in projectExclusiveResources.ToArray()) {
           foreach (var d in HiveAdminClient.Instance.GetAvailableResourceDescendants(r.Id)) {
             projectExclusiveResources.Add(d);
-          }  
+          }
         }
       }
 
@@ -285,13 +278,13 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     private void SetAssignedProjectResources(Guid projectId, IEnumerable<Guid> resourceIds, bool reassign, bool cascading, bool reassignCascading) {
       if (projectId == null || resourceIds == null) return;
       HiveServiceLocator.Instance.CallHiveService(s => {
-       s.SaveProjectResourceAssignments(projectId, resourceIds.ToList(), reassign, cascading, reassignCascading);
+        s.SaveProjectResourceAssignments(projectId, resourceIds.ToList(), reassign, cascading, reassignCascading);
       });
     }
 
     private void UpdateNewAssignedResources() {
-      for(int i = newAssignedResources.Count -1; i >= 0; i--) {
-        if(newAssignedResources.Intersect(HiveAdminClient.Instance.GetAvailableResourceAncestors(newAssignedResources.ElementAt(i).Id)).Any()) {
+      for (int i = newAssignedResources.Count - 1; i >= 0; i--) {
+        if (newAssignedResources.Intersect(HiveAdminClient.Instance.GetAvailableResourceAncestors(newAssignedResources.ElementAt(i).Id)).Any()) {
           newAssignedResources.Remove(newAssignedResources.ElementAt(i));
         }
       }
@@ -344,14 +337,14 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       var subResources = new HashSet<Resource>(resources.Union(disabledParentResources).Except(mainResources).OrderByDescending(x => x.Name));
 
       var stack = new Stack<Resource>(mainResources.OrderByDescending(x => x.Name));
-      
+
       Resource top = null;
       //bool nodeSelected = false;
       if (detailsViewHost != null && detailsViewHost.Content != null && detailsViewHost.Content is Resource) {
         var resourceId = ((Resource)detailsViewHost.Content).Id;
         top = resources.Where(x => x.Id == resourceId).FirstOrDefault();
       }
-      
+
 
       TreeNode currentNode = null;
       Resource currentResource = null;
@@ -365,7 +358,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
         var newResource = stack.Pop();
         var newNode = new TreeNode(newResource.Name) { Tag = newResource };
 
-        if(top == null && !disabledParentResources.Contains(newResource)) {
+        if (top == null && !disabledParentResources.Contains(newResource)) {
           top = newResource;
         }
 
@@ -394,9 +387,9 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
           newNode.ForeColor = grayTextColor;
         } else if (newAssignedResources.Contains(newResource)) {
           newNode.Checked = true;
-          if(!HiveRoles.CheckAdminUserPermissions()) {
-            if (!HiveAdminClient.Instance.CheckOwnershipOfParentProject(Content, UserInformation.Instance.User.Id) 
-              || !HiveAdminClient.Instance.GetAvailableProjectAncestors(Content.Id).Any() 
+          if (!HiveRoles.CheckAdminUserPermissions()) {
+            if (!HiveAdminClient.Instance.CheckOwnershipOfParentProject(Content, UserInformation.Instance.User.Id)
+              || !HiveAdminClient.Instance.GetAvailableProjectAncestors(Content.Id).Any()
               || projectExclusiveResources.Contains(newResource)) {
               newNode.ForeColor = SystemColors.GrayText;
               newNode.Text += IMMUTABLE_TAG;
@@ -451,7 +444,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
 
       bool expandUngroupedGroupNode = false;
       var ungroupedSlaves = subResources.OfType<Slave>().OrderBy(x => x.Name);
-      if(ungroupedSlaves.Any()) {
+      if (ungroupedSlaves.Any()) {
         ungroupedGroupNode = new TreeNode(UNGROUPED_GROUP_NAME) {
           ForeColor = SystemColors.GrayText,
           Tag = new SlaveGroup() {
@@ -485,14 +478,14 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
           ungroupedGroupNode.Nodes.Add(slaveNode);
         }
 
-        if(expandUngroupedGroupNode) ungroupedGroupNode.Expand();
+        if (expandUngroupedGroupNode) ungroupedGroupNode.Expand();
         treeView.Nodes.Add(ungroupedGroupNode);
       } else if (ungroupedGroupNode != null) {
         ungroupedGroupNode.Nodes.Clear();
       }
 
       treeView.BeforeCheck += treeView_BeforeCheck;
-      treeView.AfterCheck += treeView_AfterCheck;          
+      treeView.AfterCheck += treeView_AfterCheck;
 
       return top;
     }

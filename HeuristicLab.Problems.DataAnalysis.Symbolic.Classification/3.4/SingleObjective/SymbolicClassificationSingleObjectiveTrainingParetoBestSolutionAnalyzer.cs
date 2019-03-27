@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,14 +23,14 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
   /// <summary>
   /// An operator that collects the training Pareto-best symbolic classificatino solutions for single objective symbolic classificatino problems.
   /// </summary>
   [Item("SymbolicClassificationSingleObjectiveTrainingParetoBestSolutionAnalyzer", "An operator that collects the training Pareto-best symbolic classification solutions for single objective symbolic classification problems.")]
-  [StorableClass]
+  [StorableType("881573CA-7246-4203-B5C9-10793325A008")]
   public sealed class SymbolicClassificationSingleObjectiveTrainingParetoBestSolutionAnalyzer : SymbolicDataAnalysisSingleObjectiveTrainingParetoBestSolutionAnalyzer<IClassificationProblemData, ISymbolicClassificationSolution>, ISymbolicClassificationModelCreatorOperator {
     private const string ModelCreatorParameterName = "ModelCreator";
     #region parameter properties
@@ -43,7 +43,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     #endregion
 
     [StorableConstructor]
-    private SymbolicClassificationSingleObjectiveTrainingParetoBestSolutionAnalyzer(bool deserializing) : base(deserializing) { }
+    private SymbolicClassificationSingleObjectiveTrainingParetoBestSolutionAnalyzer(StorableConstructorFlag _) : base(_) { }
     private SymbolicClassificationSingleObjectiveTrainingParetoBestSolutionAnalyzer(SymbolicClassificationSingleObjectiveTrainingParetoBestSolutionAnalyzer original, Cloner cloner) : base(original, cloner) { }
     public SymbolicClassificationSingleObjectiveTrainingParetoBestSolutionAnalyzer()
       : base() {

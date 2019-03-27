@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,9 +22,11 @@
 using System;
 using System.Collections.Generic;
 using HeuristicLab.PluginInfrastructure;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   [NonDiscoverableType]
+  [StorableType("b9277027-dd39-4977-a8de-1b9854290f5e")]
   public class BinaryVectorEqualityComparer : EqualityComparer<BinaryVector> {
     public override bool Equals(BinaryVector x, BinaryVector y) {
       if (ReferenceEquals(x, y)) return true;

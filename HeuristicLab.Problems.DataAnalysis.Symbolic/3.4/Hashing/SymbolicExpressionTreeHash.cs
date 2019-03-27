@@ -1,4 +1,26 @@
-﻿using System.Collections.Generic;
+﻿#region License Information
+/* HeuristicLab
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ *
+ * This file is part of HeuristicLab.
+ *
+ * HeuristicLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * HeuristicLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
+ */
+#endregion
+
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using static HeuristicLab.Problems.DataAnalysis.Symbolic.SymbolicExpressionHashExtensions;
@@ -16,45 +38,41 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private static readonly Constant constant = new Constant();
 
     private static readonly ISymbolicExpressionTreeNodeComparer comparer = new SymbolicExpressionTreeNodeComparer();
+    private static ISymbolicExpressionTreeNode ActualRoot(this ISymbolicExpressionTree tree) => tree.Root.GetSubtree(0).GetSubtree(0);
 
-    public static int ComputeHash(this ISymbolicExpressionTree tree) {
-      return ComputeHash(tree.Root.GetSubtree(0).GetSubtree(0));
+    #region tree hashing
+    public static ulong[] Hash(this ISymbolicExpressionTree tree, bool simplify = false, bool strict = false) {
+      return tree.ActualRoot().Hash(simplify, strict);
     }
 
-    public static Dictionary<ISymbolicExpressionTreeNode, int> ComputeNodeHashes(this ISymbolicExpressionTree tree) {
-      var root = tree.Root.GetSubtree(0).GetSubtree(0);
-      var nodes = root.MakeNodes();
-      nodes.UpdateNodeSizes();
+    public static ulong[] Hash(this ISymbolicExpressionTreeNode node, bool simplify = false, bool strict = false) {
+      ulong hashFunction(byte[] input) => HashUtil.DJBHash(input);
 
-      for (int i = 0; i < nodes.Length; ++i) {
-        if (nodes[i].IsChild)
-          continue;
-        nodes[i].CalculatedHashValue = nodes.ComputeHash(i);
+      var hashNodes = simplify ? node.MakeNodes(strict).Simplify(hashFunction) : node.MakeNodes(strict).Sort(hashFunction);
+      var hashes = new ulong[hashNodes.Length];
+      for (int i = 0; i < hashes.Length; ++i) {
+        hashes[i] = hashNodes[i].CalculatedHashValue;
       }
-      return nodes.ToDictionary(x => x.Data, x => x.CalculatedHashValue);
+      return hashes;
     }
 
-    public static int ComputeHash(this ISymbolicExpressionTreeNode treeNode) {
-      var hashNodes = treeNode.MakeNodes();
-      var simplified = hashNodes.Simplify();
-      return ComputeHash(simplified);
+    public static ulong ComputeHash(this ISymbolicExpressionTree tree, bool simplify = false, bool strict = false) {
+      return ComputeHash(tree.ActualRoot(), simplify, strict);
     }
 
-    public static int ComputeHash(this HashNode<ISymbolicExpressionTreeNode>[] nodes) {
-      int hash = 1315423911;
-      foreach (var node in nodes)
-        hash ^= (hash << 5) + node.CalculatedHashValue + (hash >> 2);
-      return hash;
+    public static ulong ComputeHash(this ISymbolicExpressionTreeNode treeNode, bool simplify = false, bool strict = false) {
+      return treeNode.Hash(simplify, strict).Last();
     }
 
-    public static HashNode<ISymbolicExpressionTreeNode> ToHashNode(this ISymbolicExpressionTreeNode node) {
+    public static HashNode<ISymbolicExpressionTreeNode> ToHashNode(this ISymbolicExpressionTreeNode node, bool strict = false) {
       var symbol = node.Symbol;
       var name = symbol.Name;
-      if (symbol is Variable) {
-        var variableTreeNode = (VariableTreeNode)node;
-        name = variableTreeNode.VariableName;
+      if (node is ConstantTreeNode constantNode) {
+        name = strict ? constantNode.Value.ToString() : symbol.Name;
+      } else if (node is VariableTreeNode variableNode) {
+        name = strict ? variableNode.Weight.ToString() + variableNode.VariableName : variableNode.VariableName;
       }
-      var hash = name.GetHashCode();
+      var hash = (ulong)name.GetHashCode();
       var hashNode = new HashNode<ISymbolicExpressionTreeNode>(comparer) {
         Data = node,
         Arity = node.SubtreeCount,
@@ -78,9 +96,107 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       return hashNode;
     }
 
-    public static HashNode<ISymbolicExpressionTreeNode>[] MakeNodes(this ISymbolicExpressionTreeNode node) {
-      return node.IterateNodesPostfix().Select(ToHashNode).ToArray();
+    public static HashNode<ISymbolicExpressionTreeNode>[] MakeNodes(this ISymbolicExpressionTree tree, bool strict = false) {
+      return MakeNodes(tree.ActualRoot(), strict);
     }
+
+    public static HashNode<ISymbolicExpressionTreeNode>[] MakeNodes(this ISymbolicExpressionTreeNode node, bool strict = false) {
+      return node.IterateNodesPostfix().Select(x => x.ToHashNode(strict)).ToArray().UpdateNodeSizes();
+    }
+    #endregion
+
+    #region tree similarity
+    public static double ComputeSimilarity(ISymbolicExpressionTree t1, ISymbolicExpressionTree t2, bool simplify = false, bool strict = false) {
+      return ComputeSimilarity(t1.ActualRoot(), t2.ActualRoot(), simplify, strict);
+    }
+
+    public static double ComputeSimilarity(ISymbolicExpressionTreeNode t1, ISymbolicExpressionTreeNode t2, bool simplify = false, bool strict = false) {
+      var lh = t1.Hash(simplify, strict);
+      var rh = t2.Hash(simplify, strict);
+
+      Array.Sort(lh);
+      Array.Sort(rh);
+
+      return ComputeSimilarity(lh, rh);
+    }
+
+    // requires lhs and rhs to be sorted
+    public static int IntersectCount(this ulong[] lh, ulong[] rh) {
+      int count = 0;
+      for (int i = 0, j = 0; i < lh.Length && j < rh.Length;) {
+        var h1 = lh[i];
+        var h2 = rh[j];
+        if (h1 == h2) {
+          ++count;
+          ++i;
+          ++j;
+        } else if (h1 < h2) {
+          ++i;
+        } else if (h1 > h2) {
+          ++j;
+        }
+      }
+      return count;
+    }
+
+    public static IEnumerable<ulong> Intersect(this ulong[] lh, ulong[] rh) {
+      for (int i = 0, j = 0; i < lh.Length && j < rh.Length;) {
+        var h1 = lh[i];
+        var h2 = rh[j];
+        if (h1 == h2) {
+          yield return h1;
+          ++i;
+          ++j;
+        } else if (h1 < h2) {
+          ++i;
+        } else if (h1 > h2) {
+          ++j;
+        }
+      }
+    }
+
+    // this will only work if lh and rh are sorted
+    public static double ComputeSimilarity(ulong[] lh, ulong[] rh) {
+      return 2d * IntersectCount(lh, rh) / (lh.Length + rh.Length);
+    }
+
+    public static double ComputeAverageSimilarity(IList<ISymbolicExpressionTree> trees, bool simplify = false, bool strict = false) {
+      var total = trees.Count * (trees.Count - 1) / 2;
+      double avg = 0;
+      var hashes = new ulong[trees.Count][];
+      // build hash arrays
+      for (int i = 0; i < trees.Count; ++i) {
+        var nodes = trees[i].MakeNodes(strict);
+        hashes[i] = (simplify ? nodes.Simplify(HashUtil.DJBHash) : nodes.Sort(HashUtil.DJBHash)).Select(x => x.CalculatedHashValue).ToArray();
+        Array.Sort(hashes[i]);
+      }
+      // compute similarity matrix
+      for (int i = 0; i < trees.Count - 1; ++i) {
+        for (int j = i + 1; j < trees.Count; ++j) {
+          avg += ComputeSimilarity(hashes[i], hashes[j]);
+        }
+      }
+      return avg / total;
+    }
+
+    public static double[,] ComputeSimilarityMatrix(IList<ISymbolicExpressionTree> trees, bool simplify = false, bool strict = false) {
+      var sim = new double[trees.Count, trees.Count];
+      var hashes = new ulong[trees.Count][];
+      // build hash arrays
+      for (int i = 0; i < trees.Count; ++i) {
+        var nodes = trees[i].MakeNodes(strict);
+        hashes[i] = (simplify ? nodes.Simplify(HashUtil.DJBHash) : nodes.Sort(HashUtil.DJBHash)).Select(x => x.CalculatedHashValue).ToArray();
+        Array.Sort(hashes[i]);
+      }
+      // compute similarity matrix
+      for (int i = 0; i < trees.Count - 1; ++i) {
+        for (int j = i + 1; j < trees.Count; ++j) {
+          sim[i, j] = sim[j, i] = ComputeSimilarity(hashes[i], hashes[j]);
+        }
+      }
+      return sim;
+    }
+    #endregion
 
     #region parse a nodes array back into a tree
     public static ISymbolicExpressionTree ToTree(this HashNode<ISymbolicExpressionTreeNode>[] nodes) {
@@ -97,11 +213,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       for (int i = nodes.Length - 1; i >= 0; --i) {
         var node = nodes[i];
 
-        if (node.IsChild) {
+        if (node.IsLeaf) {
           if (node.Data is VariableTreeNode variable) {
             var variableTreeNode = (VariableTreeNode)treeNodes[i];
             variableTreeNode.VariableName = variable.VariableName;
-            variableTreeNode.Weight = 1;
+            variableTreeNode.Weight = variable.Weight;
           } else if (node.Data is ConstantTreeNode @const) {
             var constantTreeNode = (ConstantTreeNode)treeNodes[i];
             constantTreeNode.Value = @const.Value;
@@ -126,26 +242,26 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     #region tree simplification
     // these simplification methods rely on the assumption that child nodes of the current node have already been simplified
-    // (in other words simplification should be applied in a bottom-up fashion) 
+    // (in other words simplification should be applied in a bottom-up fashion)
     public static ISymbolicExpressionTree Simplify(ISymbolicExpressionTree tree) {
+      ulong hashFunction(byte[] bytes) => HashUtil.JSHash(bytes);
       var root = tree.Root.GetSubtree(0).GetSubtree(0);
       var nodes = root.MakeNodes();
-      var simplified = nodes.Simplify();
+      var simplified = nodes.Simplify(hashFunction);
       return simplified.ToTree();
     }
 
-    public static void SimplifyAddition(HashNode<ISymbolicExpressionTreeNode>[] nodes, int i) {
+    public static void SimplifyAddition(ref HashNode<ISymbolicExpressionTreeNode>[] nodes, int i) {
       // simplify additions of terms by eliminating terms with the same symbol and hash
       var children = nodes.IterateChildren(i);
 
+      // we always assume the child nodes are sorted
       var curr = children[0];
       var node = nodes[i];
 
       foreach (var j in children.Skip(1)) {
         if (nodes[j] == nodes[curr]) {
-          for (int k = j - nodes[j].Size; k <= j; ++k) {
-            nodes[k].Enabled = false;
-          }
+          nodes.SetEnabled(j, false);
           node.Arity--;
         } else {
           curr = j;
@@ -156,8 +272,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
     }
 
-    // simplify multiplications by reducing constants and div terms  
-    public static void SimplifyMultiplication(HashNode<ISymbolicExpressionTreeNode>[] nodes, int i) {
+    // simplify multiplications by reducing constants and div terms
+    public static void SimplifyMultiplication(ref HashNode<ISymbolicExpressionTreeNode>[] nodes, int i) {
       var node = nodes[i];
       var children = nodes.IterateChildren(i);
 
@@ -173,7 +289,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           for (int k = j + 1; k < children.Length; ++k) {
             var d = children[k];
             if (nodes[d].Data.Symbol is Constant) {
-              ((ConstantTreeNode)child.Data).Value *= ((ConstantTreeNode)nodes[d].Data).Value;
               nodes[d].Enabled = false;
               node.Arity--;
             } else {
@@ -206,11 +321,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
     }
 
-    public static void SimplifyDivision(HashNode<ISymbolicExpressionTreeNode>[] nodes, int i) {
+    public static void SimplifyDivision(ref HashNode<ISymbolicExpressionTreeNode>[] nodes, int i) {
       var node = nodes[i];
       var children = nodes.IterateChildren(i);
 
-      if (children.All(x => nodes[x].Data.Symbol is Constant)) {
+      var tmp = nodes;
+
+      if (children.All(x => tmp[x].Data.Symbol is Constant)) {
         var v = ((ConstantTreeNode)nodes[children.First()].Data).Value;
         if (node.Arity == 1) {
           v = 1 / v;
@@ -241,7 +358,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
     }
 
-    public static void SimplifyUnaryNode(HashNode<ISymbolicExpressionTreeNode>[] nodes, int i) {
+    public static void SimplifyUnaryNode(ref HashNode<ISymbolicExpressionTreeNode>[] nodes, int i) {
       // check if the child of the unary node is a constant, then the whole node can be simplified
       var parent = nodes[i];
       var child = nodes[i - 1];
@@ -256,9 +373,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
     }
 
-    public static void SimplifyBinaryNode(HashNode<ISymbolicExpressionTreeNode>[] nodes, int i) {
+    public static void SimplifyBinaryNode(ref HashNode<ISymbolicExpressionTreeNode>[] nodes, int i) {
       var children = nodes.IterateChildren(i);
-      if (children.All(x => nodes[x].Data.Symbol is Constant)) {
+      var tmp = nodes;
+      if (children.All(x => tmp[x].Data.Symbol is Constant)) {
         foreach (var j in children) {
           nodes[j].Enabled = false;
         }

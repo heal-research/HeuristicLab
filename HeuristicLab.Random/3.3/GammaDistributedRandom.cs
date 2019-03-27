@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,7 +22,7 @@
 using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.ExpressionGenerator {
@@ -32,7 +32,7 @@ namespace HeuristicLab.ExpressionGenerator {
   /// ACM Transactions on Mathematical Software, Vol. 26, No. 3, September 2000, Pages 363–372.
   /// </summary>
   [Item("GammaDistributedRandom", "A pseudo random number generator for gamma distributed random numbers.")]
-  [StorableClass]
+  [StorableType("5DA8921C-5026-4B20-9F64-2C6EF0BF8B33")]
   public sealed class GammaDistributedRandom : Item, IRandom {
     [Storable]
     private double shape;
@@ -62,7 +62,7 @@ namespace HeuristicLab.ExpressionGenerator {
     }
 
     [StorableConstructor]
-    private GammaDistributedRandom(bool deserializing) : base(deserializing) { }
+    private GammaDistributedRandom(StorableConstructorFlag _) : base(_) { }
 
     private GammaDistributedRandom(GammaDistributedRandom original, Cloner cloner) : base(original, cloner) {
     }

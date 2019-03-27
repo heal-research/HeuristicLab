@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,11 +25,11 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("ScrambleMoveMaker", "Peforms a scramble move on a given permutation and updates the quality.")]
-  [StorableClass]
+  [StorableType("5DC6735A-F109-4D86-98CF-B8CCB648D3D3")]
   public class ScrambleMoveMaker : SingleSuccessorOperator, IPermutationScrambleMoveOperator, IMoveMaker, ISingleObjectiveOperator {
     public override bool CanChangeName {
       get { return false; }
@@ -48,7 +48,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     }
 
     [StorableConstructor]
-    protected ScrambleMoveMaker(bool deserializing) : base(deserializing) { }
+    protected ScrambleMoveMaker(StorableConstructorFlag _) : base(_) { }
     protected ScrambleMoveMaker(ScrambleMoveMaker original, Cloner cloner) : base(original, cloner) { }
     public ScrambleMoveMaker()
       : base() {

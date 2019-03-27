@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -29,12 +29,12 @@ using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.Instances;
 
 namespace HeuristicLab.Problems.PTSP {
   [Item("Probabilistic Traveling Salesman Problem (PTSP)", "Represents a Probabilistic Traveling Salesman Problem.")]
-  [StorableClass]
+  [StorableType("4CB8ACF3-C3D4-4CC6-BB1F-986BDE16B30A")]
   public abstract class ProbabilisticTravelingSalesmanProblem : SingleObjectiveBasicProblem<PermutationEncoding>,
   IProblemInstanceConsumer<PTSPData> {
     protected bool SuppressEvents { get; set; }
@@ -95,7 +95,7 @@ namespace HeuristicLab.Problems.PTSP {
     }
 
     [StorableConstructor]
-    protected ProbabilisticTravelingSalesmanProblem(bool deserializing) : base(deserializing) { }
+    protected ProbabilisticTravelingSalesmanProblem(StorableConstructorFlag _) : base(_) { }
     protected ProbabilisticTravelingSalesmanProblem(ProbabilisticTravelingSalesmanProblem original, Cloner cloner)
       : base(original, cloner) {
       RegisterEventHandlers();

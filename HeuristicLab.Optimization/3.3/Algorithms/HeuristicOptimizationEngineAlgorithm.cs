@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,14 +22,14 @@
 using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
   /// <summary>
   /// A base class for heuristic optimization algorithms using an execution engine.
   /// </summary>
   [Item("Heuristic Optimization Enigne Algorithm", "A base class for heuristic optimization algorithms using an execution engine.")]
-  [StorableClass]
+  [StorableType("A741CA8C-D4DC-4917-8F71-95EA31C97890")]
   public abstract class HeuristicOptimizationEngineAlgorithm : EngineAlgorithm {
     public new IHeuristicOptimizationProblem Problem {
       get { return (IHeuristicOptimizationProblem)base.Problem; }
@@ -43,7 +43,7 @@ namespace HeuristicLab.Optimization {
     protected HeuristicOptimizationEngineAlgorithm(string name, string description, ParameterCollection parameters) : base(name, description, parameters) { }
 
     [StorableConstructor]
-    protected HeuristicOptimizationEngineAlgorithm(bool deserializing) : base(deserializing) { }
+    protected HeuristicOptimizationEngineAlgorithm(StorableConstructorFlag _) : base(_) { }
     protected HeuristicOptimizationEngineAlgorithm(HeuristicOptimizationEngineAlgorithm original, Cloner cloner) : base(original, cloner) { }
 
     #region Events

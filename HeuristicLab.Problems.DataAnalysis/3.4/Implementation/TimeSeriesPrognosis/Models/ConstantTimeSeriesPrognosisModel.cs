@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,15 +24,15 @@ using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  [StorableClass]
+  [StorableType("A69BF8CC-2A57-4FBE-A468-8D38F3B6BBA6")]
   [Item("Constant TimeSeries Model", "A time series model that returns for all prediciton the same constant value.")]
   [Obsolete]
   public class ConstantTimeSeriesPrognosisModel : ConstantRegressionModel, ITimeSeriesPrognosisModel {
     [StorableConstructor]
-    protected ConstantTimeSeriesPrognosisModel(bool deserializing) : base(deserializing) { }
+    protected ConstantTimeSeriesPrognosisModel(StorableConstructorFlag _) : base(_) { }
     protected ConstantTimeSeriesPrognosisModel(ConstantTimeSeriesPrognosisModel original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new ConstantTimeSeriesPrognosisModel(this, cloner);

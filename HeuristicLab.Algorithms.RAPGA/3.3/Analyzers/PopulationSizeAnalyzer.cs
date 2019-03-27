@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -27,14 +27,14 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.RAPGA {
   /// <summary>
   /// An operator which analyzes the size of the population in a scope tree.
   /// </summary>
   [Item("PopulationSizeAnalyzer", "An operator which analyzes the size of the population in a scope tree.")]
-  [StorableClass]
+  [StorableType("766717D5-F4B8-41E6-9E3F-A270CA53C311")]
   public sealed class PopulationSizeAnalyzer : AlgorithmOperator, IAnalyzer {
     #region Parameter properties
     public ILookupParameter<IntValue> CurrentPopulationSizeParameter {
@@ -68,7 +68,7 @@ namespace HeuristicLab.Algorithms.RAPGA {
 
     #region Storing & Cloning
     [StorableConstructor]
-    private PopulationSizeAnalyzer(bool deserializing) : base(deserializing) { }
+    private PopulationSizeAnalyzer(StorableConstructorFlag _) : base(_) { }
     private PopulationSizeAnalyzer(PopulationSizeAnalyzer original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new PopulationSizeAnalyzer(this, cloner);

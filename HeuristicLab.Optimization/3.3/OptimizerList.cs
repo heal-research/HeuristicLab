@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,17 +22,17 @@
 using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
   [Item("Optimizer List", "Represents a list of optimizers.")]
-  [StorableClass]
+  [StorableType("7C68A9CF-5FC6-46BF-BB75-B9CB8102539E")]
   public class OptimizerList : ItemList<IOptimizer> {
     public OptimizerList() : base() { }
     public OptimizerList(int capacity) : base(capacity) { }
     public OptimizerList(IEnumerable<IOptimizer> collection) : base(collection) { }
     [StorableConstructor]
-    protected OptimizerList(bool deserializing) : base(deserializing) { }
+    protected OptimizerList(StorableConstructorFlag _) : base(_) { }
     protected OptimizerList(OptimizerList original, Cloner cloner)
       : base(original, cloner) {
     }

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,19 +23,19 @@ using System;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   [NonDiscoverableType]
-  [StorableClass]
+  [StorableType("1A36CB91-B3AD-4D3D-B44F-2CA5508C55ED")]
   [Item("FullTreeCreator", "An operator that creates new symbolic expression trees using the 'Full' method")]
   public class FullTreeCreator : SymbolicExpressionTreeCreator,
                                  ISymbolicExpressionTreeSizeConstraintOperator,
                                  ISymbolicExpressionTreeGrammarBasedOperator {
 
     [StorableConstructor]
-    protected FullTreeCreator(bool deserializing) : base(deserializing) { }
+    protected FullTreeCreator(StorableConstructorFlag _) : base(_) { }
     protected FullTreeCreator(FullTreeCreator original, Cloner cloner) : base(original, cloner) { }
 
     public FullTreeCreator() : base() { }

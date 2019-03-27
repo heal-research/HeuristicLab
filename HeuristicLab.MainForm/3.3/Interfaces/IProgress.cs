@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,68 +23,37 @@ using System;
 using HeuristicLab.Common;
 
 namespace HeuristicLab.MainForm {
-  public enum ProgressState { Started = 1, Canceled = 2, Finished = 3 };
+  public enum ProgressState { Started, Finished, StopRequested, CancelRequested }
+  public enum ProgressMode { Determinate, Indeterminate }
 
   public interface IProgress : IContent {
-    /// <summary>
-    /// Gets or sets the currently associated status text with the progress.
-    /// </summary>
-    string Status { get; set; }
-    /// <summary>
-    /// Gets or sets the currently associated progress value in the range (0;1].
-    ///  Values outside this range are permitted and need to be handled in some feasible manner.
-    /// </summary>
-    double ProgressValue { get; set; }
-    /// <summary>
-    /// Gets or sets the current state of the progress. Every progress starts in state
-    /// Started and then becomes either Canceled or Finished.
-    /// If it is reused it may be Started again.
-    /// </summary>
     ProgressState ProgressState { get; }
-    /// <summary>
-    /// Returns whether the operation can be canceled or not.
-    /// This can change during the course of the progress.
-    /// </summary>
-    bool CanBeCanceled { get; }
 
+    string Message { get; set; }
+
+    ProgressMode ProgressMode { get; set; }
     /// <summary>
-    /// Requests the operation behind the process to cancel.
-    /// Check the !ProgressState property when the cancellation succeeded.
-    /// The corresponding event will also notify of a success.
+    /// Gets or sets the currently associated progress value in the range [0;1] (values outside the range are truncated).
+    /// Changing the ProgressValue when <c>ProgressMode</c> is <c>Indeterminate</c> raises an Exception.
     /// </summary>
-    /// <exception cref="NotSupportedException">Thrown when cancellation is not supported.</exception>
-    void Cancel();
-    /// <summary>
-    /// Sets the ProgressValue to 1 and the ProgressState to Finished.
-    /// </summary>
+    /// <exception cref="InvalidOperationException">Setting the ProgressValue-property while in the Indeterminate state is invalid.</exception>
+    double ProgressValue { get; set; }
+
+    bool CanBeStopped { get; set; }
+    bool CanBeCanceled { get; set; }
+
+    void Start(string message, ProgressMode mode = ProgressMode.Determinate);
     void Finish();
+    void Stop();
+    void Cancel();
 
-    /// <summary>
-    /// Starts or restarts a Progress. 
-    /// </summary>
-    void Start();
-
-    void Start(string status);
-
-    /// <summary>
-    /// The status text changed.
-    /// </summary>
-    event EventHandler StatusChanged;
-    /// <summary>
-    /// The value of the progress changed. This is the (0;1] progress value from starting to finish. Values outside this range are permitted and need to be handled in some feasible manner.
-    /// </summary>
-    event EventHandler ProgressValueChanged;
-    /// <summary>
-    /// The state of the progress changed. The handler is supposed to query the ProgressState property.
-    /// </summary>
     event EventHandler ProgressStateChanged;
-    /// <summary>
-    /// The progress' ability to cancel changed.
-    /// </summary>
+    event EventHandler MessageChanged;
+    event EventHandler ProgressBarModeChanged;
+    event EventHandler ProgressValueChanged;
+    event EventHandler CanBeStoppedChanged;
     event EventHandler CanBeCanceledChanged;
-    /// <summary>
-    /// A cancelation is requested.
-    /// </summary>
+    event EventHandler StopRequested;
     event EventHandler CancelRequested;
   }
 }

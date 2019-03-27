@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,8 +22,10 @@
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.IntegerVectorEncoding;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.Orienteering {
+  [StorableType("7E0D4527-4D8C-4FBA-BB3A-26F20B6463ED")]
   public interface IOrienteeringSolutionCreator : IIntegerVectorCreator {
     ILookupParameter<DistanceMatrix> DistanceMatrixParameter { get; }
     ILookupParameter<DoubleArray> ScoresParameter { get; }

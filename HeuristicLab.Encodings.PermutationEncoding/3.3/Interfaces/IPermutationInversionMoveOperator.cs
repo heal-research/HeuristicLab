@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,8 +20,10 @@
 #endregion
 
 using HeuristicLab.Core;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
+  [StorableType("79998345-30ae-4013-b891-68615ba19b7c")]
   public interface IPermutationInversionMoveOperator : IPermutationMoveOperator {
     ILookupParameter<InversionMove> InversionMoveParameter { get; }
   }

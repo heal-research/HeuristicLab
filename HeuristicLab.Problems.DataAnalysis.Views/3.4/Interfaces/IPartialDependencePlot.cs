@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,7 +24,7 @@ using System.Threading.Tasks;
 namespace HeuristicLab.Problems.DataAnalysis.Views {
   public interface IPartialDependencePlot {
     Task RecalculateAsync(bool updateOnFinish, bool resetYAxis);
-    double YMin { get;  }
+    double YMin { get; }
     double YMax { get; }
     double? FixedYAxisMin { get; set; }
     double? FixedYAxisMax { get; set; }

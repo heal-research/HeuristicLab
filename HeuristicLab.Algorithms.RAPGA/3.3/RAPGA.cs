@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -29,7 +29,7 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Random;
 
@@ -39,7 +39,7 @@ namespace HeuristicLab.Algorithms.RAPGA {
   /// </summary>
   [Item("RAPGA", "A relevant alleles preserving genetic algorithm (Affenzeller, M. et al. 2007. Self-adaptive population size adjustment for genetic algorithms. Proceedings of Computer Aided Systems Theory: EuroCAST 2007, Lecture Notes in Computer Science, pp 820–828. Springer).")]
   [Creatable(CreatableAttribute.Categories.PopulationBasedAlgorithms, Priority = 140)]
-  [StorableClass]
+  [StorableType("8E326660-354E-4016-B96B-A5B137F766D7")]
   public sealed class RAPGA : HeuristicOptimizationEngineAlgorithm, IStorableContent {
     public string Filename { get; set; }
 
@@ -196,7 +196,7 @@ namespace HeuristicLab.Algorithms.RAPGA {
     #endregion
 
     [StorableConstructor]
-    private RAPGA(bool deserializing) : base(deserializing) { }
+    private RAPGA(StorableConstructorFlag _) : base(_) { }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       // BackwardsCompatibility3.3

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,13 +23,13 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Problems.VehicleRouting.Variants;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinPDExchangeMoveMaker", "Peforms the exchange move on a given PDP encoding and updates the quality.")]
-  [StorableClass]
+  [StorableType("A12F7FAD-9226-45A2-B254-D3F1A8EB5BA3")]
   public class PotvinPDExchangeMoveMaker : PotvinMoveMaker, IPotvinPDExchangeMoveOperator, IMoveMaker {
     public ILookupParameter<PotvinPDExchangeMove> PDExchangeMoveParameter {
       get { return (ILookupParameter<PotvinPDExchangeMove>)Parameters["PotvinPDExchangeMove"]; }
@@ -40,7 +40,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
     }
 
     [StorableConstructor]
-    protected PotvinPDExchangeMoveMaker(bool deserializing) : base(deserializing) { }
+    protected PotvinPDExchangeMoveMaker(StorableConstructorFlag _) : base(_) { }
 
     public PotvinPDExchangeMoveMaker()
       : base() {

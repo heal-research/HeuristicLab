@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -28,15 +28,15 @@ using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Analysis {
   /// <summary>
   /// A table of data values.
   /// </summary>
   [Item("DataTable", "A table of data values.")]
-  [StorableClass]
-  public class DataTable : NamedItem, IStringConvertibleMatrix {
+  [StorableType("3DD78514-DBCE-4B2A-83B9-847FC67C264D")]
+  public class DataTable : NamedItem, IStringConvertibleMatrix, IDataTable<DataRow> {
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Performance; }
     }
@@ -82,7 +82,7 @@ namespace HeuristicLab.Analysis {
     #endregion
 
     [StorableConstructor]
-    protected DataTable(bool deserializing) : base(deserializing) { }
+    protected DataTable(StorableConstructorFlag _) : base(_) { }
     protected DataTable(DataTable original, Cloner cloner)
       : base(original, cloner) {
       VisualProperties = (DataTableVisualProperties)cloner.Clone(original.visualProperties);

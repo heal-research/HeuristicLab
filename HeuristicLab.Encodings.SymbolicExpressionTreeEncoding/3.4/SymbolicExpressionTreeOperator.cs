@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,14 +24,14 @@ using HeuristicLab.Core;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   /// <summary>
   /// A base class for operators for symbolic expression trees.
   /// </summary>
   [Item("SymbolicExpressionTreeOperator", "A base class for operators for symbolic expression trees.")]
-  [StorableClass]
+  [StorableType("09F2EC44-6249-4DDE-BA60-A4A3ACDF861B")]
   public abstract class SymbolicExpressionTreeOperator : InstrumentedOperator, IStochasticOperator, ISymbolicExpressionTreeOperator {
     private const string RandomParameterName = "Random";
     private const string SymbolicExpressionTreeParameterName = "SymbolicExpressionTree";
@@ -50,7 +50,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     #endregion
 
     [StorableConstructor]
-    protected SymbolicExpressionTreeOperator(bool deserializing) : base(deserializing) { }
+    protected SymbolicExpressionTreeOperator(StorableConstructorFlag _) : base(_) { }
     protected SymbolicExpressionTreeOperator(SymbolicExpressionTreeOperator original, Cloner cloner) : base(original, cloner) { }
     protected SymbolicExpressionTreeOperator()
       : base() {

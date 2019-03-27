@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,19 +19,18 @@
  */
 #endregion
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
 
   [Item("RunCollection Group Creater", "Regroups existing runs according to equal values in GroupBy and prefixes them according to their value in Prefix.")]
-  [StorableClass]
+  [StorableType("5D3A55DE-DC75-4932-B3D2-2C59810143A5")]
   public class RunCollectionGroupCreater : ParameterizedNamedItem, IRunCollectionModifier {
     
     public ValueParameter<ItemCollection<StringValue>> GroupByParameter {
@@ -47,7 +46,7 @@ namespace HeuristicLab.Optimization {
 
     #region Construction & Cloning
     [StorableConstructor]
-    protected RunCollectionGroupCreater(bool deserializing) : base(deserializing) { }
+    protected RunCollectionGroupCreater(StorableConstructorFlag _) : base(_) { }
     protected RunCollectionGroupCreater(RunCollectionGroupCreater original, Cloner cloner) : base(original, cloner) { }
     public RunCollectionGroupCreater() {
       Parameters.Add(new ValueParameter<ItemCollection<StringValue>>("GroupBy", "The variable that has to be the same for all members of a group.",

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,8 +21,10 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
+  [StorableType("39ea082e-0295-47c1-b07d-d37d87f53677")]
   public interface ITabuChecker : IOperator {
     ILookupParameter<BoolValue> MoveTabuParameter { get; }
     ILookupParameter<DoubleValue> MoveQualityParameter { get; }

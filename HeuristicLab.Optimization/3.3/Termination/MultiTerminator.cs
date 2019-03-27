@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -28,11 +28,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
   [Item("MultiTerminator", "A multi operator, containing termination criteria.")]
-  [StorableClass]
+  [StorableType("E03CCB0D-C76C-4DBC-94C5-8FED50E25D26")]
   public sealed class MultiTerminator : CheckedMultiOperator<ITerminator>, ITerminator {
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.FlagRed; }
@@ -43,7 +43,7 @@ namespace HeuristicLab.Optimization {
     }
 
     [StorableConstructor]
-    private MultiTerminator(bool deserializing) : base(deserializing) { }
+    private MultiTerminator(StorableConstructorFlag _) : base(_) { }
     private MultiTerminator(MultiTerminator original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) { return new MultiTerminator(this, cloner); }
 

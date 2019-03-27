@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,11 +25,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Selection {
   [Item("OffspringSelector", "Selects among the offspring population those that are designated successful and discards the unsuccessful offspring, except for some lucky losers. It expects the parent scopes to be below the first sub-scope, and offspring scopes to be below the second sub-scope separated again in two sub-scopes, the first with the failed offspring and the second with successful offspring.")]
-  [StorableClass]
+  [StorableType("20283BB2-C41B-404B-BDE2-4117D9719C45")]
   public class OffspringSelector : SingleSuccessorOperator {
     public ValueLookupParameter<DoubleValue> MaximumSelectionPressureParameter {
       get { return (ValueLookupParameter<DoubleValue>)Parameters["MaximumSelectionPressure"]; }
@@ -66,7 +66,7 @@ namespace HeuristicLab.Selection {
     }
 
     [StorableConstructor]
-    protected OffspringSelector(bool deserializing) : base(deserializing) { }
+    protected OffspringSelector(StorableConstructorFlag _) : base(_) { }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       // BackwardsCompatibility3.3

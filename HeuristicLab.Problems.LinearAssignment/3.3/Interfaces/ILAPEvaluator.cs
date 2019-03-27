@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,8 +23,10 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Optimization;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.LinearAssignment {
+  [StorableType("4B73438E-511A-4AF0-B7F1-B357F6092604")]
   public interface ILAPEvaluator : ISingleObjectiveEvaluator {
     ILookupParameter<DoubleMatrix> CostsParameter { get; }
     ILookupParameter<Permutation> AssignmentParameter { get; }

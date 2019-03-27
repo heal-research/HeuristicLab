@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,11 +23,11 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("Swap2MoveTabuMaker", "Declares a given swap-2 move as tabu, by adding its attributes to the tabu list and also store the solution quality or the move quality (whichever is better).")]
-  [StorableClass]
+  [StorableType("A6548572-AF42-46FF-9B8C-E00EB9B92DE4")]
   public class Swap2MoveTabuMaker : TabuMaker, IPermutationSwap2MoveOperator {
     public ILookupParameter<Permutation> PermutationParameter {
       get { return (ILookupParameter<Permutation>)Parameters["Permutation"]; }
@@ -37,7 +37,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     }
 
     [StorableConstructor]
-    protected Swap2MoveTabuMaker(bool deserializing) : base(deserializing) { }
+    protected Swap2MoveTabuMaker(StorableConstructorFlag _) : base(_) { }
     protected Swap2MoveTabuMaker(Swap2MoveTabuMaker original, Cloner cloner) : base(original, cloner) { }
     public Swap2MoveTabuMaker()
       : base() {

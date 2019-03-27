@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,14 +22,14 @@
 using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Data {
   [Item("BoolArray", "Represents an array of boolean values.")]
-  [StorableClass]
+  [StorableType("CBDDC242-3F94-4CA0-B2A8-E3B10F07DFB8")]
   public class BoolArray : StringConvertibleArray<bool> {
     [StorableConstructor]
-    protected BoolArray(bool deserializing) : base(deserializing) { }
+    protected BoolArray(StorableConstructorFlag _) : base(_) { }
     protected BoolArray(BoolArray original, Cloner cloner)
       : base(original, cloner) {
     }

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,7 +26,7 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Selection;
 
 namespace HeuristicLab.Algorithms.RAPGA {
@@ -34,7 +34,7 @@ namespace HeuristicLab.Algorithms.RAPGA {
   /// An operator which represents the main loop of a relevant alleles preserving genetic algorithm.
   /// </summary>
   [Item("RAPGAMainLoop", "An operator which represents the main loop of a relevant alleles preserving genetic algorithm.")]
-  [StorableClass]
+  [StorableType("31A887DE-2FE2-419A-9784-1BAE52067930")]
   public sealed class RAPGAMainLoop : AlgorithmOperator {
     #region Parameter properties
     public ValueLookupParameter<IRandom> RandomParameter {
@@ -110,7 +110,7 @@ namespace HeuristicLab.Algorithms.RAPGA {
     #endregion
 
     [StorableConstructor]
-    private RAPGAMainLoop(bool deserializing) : base(deserializing) { }
+    private RAPGAMainLoop(StorableConstructorFlag _) : base(_) { }
     private RAPGAMainLoop(RAPGAMainLoop original, Cloner cloner) : base(original, cloner) { }
     public RAPGAMainLoop()
       : base() {

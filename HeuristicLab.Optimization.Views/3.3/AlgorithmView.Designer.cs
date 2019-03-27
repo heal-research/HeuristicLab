@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -113,6 +113,7 @@ namespace HeuristicLab.Optimization.Views {
       // problemTabPage
       // 
       this.problemTabPage.AllowDrop = true;
+      this.problemTabPage.BackColor = System.Drawing.SystemColors.Window;
       this.problemTabPage.Controls.Add(this.problemViewHost);
       this.problemTabPage.Controls.Add(this.openProblemButton);
       this.problemTabPage.Controls.Add(this.newProblemButton);
@@ -122,7 +123,6 @@ namespace HeuristicLab.Optimization.Views {
       this.problemTabPage.Size = new System.Drawing.Size(671, 404);
       this.problemTabPage.TabIndex = 0;
       this.problemTabPage.Text = "Problem";
-      this.problemTabPage.UseVisualStyleBackColor = true;
       this.problemTabPage.DragDrop += new System.Windows.Forms.DragEventHandler(this.problemTabPage_DragDrop);
       this.problemTabPage.DragEnter += new System.Windows.Forms.DragEventHandler(this.problemTabPage_DragEnterOver);
       this.problemTabPage.DragOver += new System.Windows.Forms.DragEventHandler(this.problemTabPage_DragEnterOver);
@@ -167,6 +167,7 @@ namespace HeuristicLab.Optimization.Views {
       // 
       // parametersTabPage
       // 
+      this.parametersTabPage.BackColor = System.Drawing.SystemColors.Window;
       this.parametersTabPage.Controls.Add(this.parameterCollectionView);
       this.parametersTabPage.Location = new System.Drawing.Point(4, 22);
       this.parametersTabPage.Name = "parametersTabPage";
@@ -174,7 +175,6 @@ namespace HeuristicLab.Optimization.Views {
       this.parametersTabPage.Size = new System.Drawing.Size(671, 400);
       this.parametersTabPage.TabIndex = 1;
       this.parametersTabPage.Text = "Algorithm";
-      this.parametersTabPage.UseVisualStyleBackColor = true;
       // 
       // parameterCollectionView
       // 
@@ -192,6 +192,7 @@ namespace HeuristicLab.Optimization.Views {
       // 
       // resultsTabPage
       // 
+      this.resultsTabPage.BackColor = System.Drawing.SystemColors.Window;
       this.resultsTabPage.Controls.Add(this.resultsView);
       this.resultsTabPage.Location = new System.Drawing.Point(4, 22);
       this.resultsTabPage.Name = "resultsTabPage";
@@ -199,7 +200,6 @@ namespace HeuristicLab.Optimization.Views {
       this.resultsTabPage.Size = new System.Drawing.Size(671, 400);
       this.resultsTabPage.TabIndex = 2;
       this.resultsTabPage.Text = "Results";
-      this.resultsTabPage.UseVisualStyleBackColor = true;
       // 
       // resultsView
       // 
@@ -216,6 +216,7 @@ namespace HeuristicLab.Optimization.Views {
       // 
       // runsTabPage
       // 
+      this.runsTabPage.BackColor = System.Drawing.SystemColors.Window;
       this.runsTabPage.Controls.Add(this.storeAlgorithmInEachRunCheckBox);
       this.runsTabPage.Controls.Add(this.runsView);
       this.runsTabPage.Location = new System.Drawing.Point(4, 22);
@@ -224,7 +225,6 @@ namespace HeuristicLab.Optimization.Views {
       this.runsTabPage.Size = new System.Drawing.Size(671, 400);
       this.runsTabPage.TabIndex = 3;
       this.runsTabPage.Text = "Runs";
-      this.runsTabPage.UseVisualStyleBackColor = true;
       // 
       // storeAlgorithmInEachRunCheckBox
       // 

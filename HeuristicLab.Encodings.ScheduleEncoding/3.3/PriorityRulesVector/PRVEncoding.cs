@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,11 +24,11 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.IntegerVectorEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding.PriorityRulesVector {
   [Item("PriorityRulesVectorEncoding", "Represents an encoding for a Scheduling Problem.")]
-  [StorableClass]
+  [StorableType("D42AC200-1F87-451E-A953-803EF33BE953")]
   public class PRVEncoding : Item, IScheduleEncoding {
     [Storable]
     public IntegerVector PriorityRulesVector { get; set; }
@@ -42,7 +42,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.PriorityRulesVector {
     }
 
     [StorableConstructor]
-    protected PRVEncoding(bool deserializing) : base(deserializing) { }
+    protected PRVEncoding(StorableConstructorFlag _) : base(_) { }
     protected PRVEncoding(PRVEncoding original, Cloner cloner)
       : base(original, cloner) {
       this.nrOfRules = cloner.Clone(original.NrOfRules);

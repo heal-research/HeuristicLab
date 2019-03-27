@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,9 +24,6 @@ using System.Windows.Forms;
 
 namespace HeuristicLab.MainForm.WindowsForms {
   internal sealed partial class ProgressView : UserControl {
-    private const int defaultControlHeight = 88;
-    private const int collapsedControlHeight = 55;
-
     private readonly Control control;
     public Control Control {
       get { return control; }
@@ -39,21 +36,19 @@ namespace HeuristicLab.MainForm.WindowsForms {
 
     public ProgressView(Control control, IProgress content)
       : base() {
-      if (control == null) throw new ArgumentNullException("control", "The control is null.");
-      if (content == null) throw new ArgumentNullException("content", "The passed progress is null.");
+      if (control == null) throw new ArgumentNullException("control");
+      if (control.Parent == null) throw new InvalidOperationException("A Progress can only be shown on controls that have a Parent-control. Therefore, Dialogs and Forms cannot have an associated ProgressView.");
+      if (content == null) throw new ArgumentNullException("content");
       InitializeComponent();
 
       this.control = control;
       this.content = content;
-      if (content.ProgressState == ProgressState.Started)
+
+      if (content.ProgressState != ProgressState.Finished)
         ShowProgress();
       RegisterContentEvents();
     }
 
-    /// <summary> 
-    /// Clean up any resources being used.
-    /// </summary>
-    /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
     protected override void Dispose(bool disposing) {
       DeregisterContentEvents();
       HideProgress();
@@ -65,16 +60,43 @@ namespace HeuristicLab.MainForm.WindowsForms {
     }
 
     private void RegisterContentEvents() {
-      content.StatusChanged += new EventHandler(progress_StatusChanged);
-      content.ProgressValueChanged += new EventHandler(progress_ProgressValueChanged);
-      content.ProgressStateChanged += new EventHandler(Content_ProgressStateChanged);
-      content.CanBeCanceledChanged += new EventHandler(Content_CanBeCanceledChanged);
+      Content.ProgressStateChanged += new EventHandler(Content_ProgressStateChanged);
+      Content.MessageChanged += new EventHandler(Content_MessageChanged);
+      Content.ProgressBarModeChanged += new EventHandler(Content_ProgressBarModeChanged);
+      Content.ProgressValueChanged += new EventHandler(Content_ProgressValueChanged);
+      Content.CanBeStoppedChanged += new EventHandler(Content_CanBeStoppedChanged);
+      Content.CanBeCanceledChanged += new EventHandler(Content_CanBeCanceledChanged);
     }
     private void DeregisterContentEvents() {
-      content.StatusChanged -= new EventHandler(progress_StatusChanged);
-      content.ProgressValueChanged -= new EventHandler(progress_ProgressValueChanged);
-      content.ProgressStateChanged -= new EventHandler(Content_ProgressStateChanged);
-      content.CanBeCanceledChanged -= new EventHandler(Content_CanBeCanceledChanged);
+      Content.ProgressStateChanged -= new EventHandler(Content_ProgressStateChanged);
+      Content.MessageChanged -= new EventHandler(Content_MessageChanged);
+      Content.ProgressBarModeChanged -= new EventHandler(Content_ProgressBarModeChanged);
+      Content.ProgressValueChanged -= new EventHandler(Content_ProgressValueChanged);
+      Content.CanBeStoppedChanged -= new EventHandler(Content_CanBeStoppedChanged);
+      Content.CanBeCanceledChanged -= new EventHandler(Content_CanBeCanceledChanged);
+    }
+
+    private void Content_ProgressStateChanged(object sender, EventArgs e) {
+      UpdateProgressState();
+      UpdateButtonsState();
+    }
+
+    private void Content_MessageChanged(object sender, EventArgs e) {
+      UpdateProgressMessage();
+    }
+
+    private void Content_ProgressBarModeChanged(object sender, EventArgs e) {
+      UpdateProgressValue();
+    }
+    private void Content_ProgressValueChanged(object sender, EventArgs e) {
+      UpdateProgressValue();
+    }
+
+    private void Content_CanBeStoppedChanged(object sender, EventArgs e) {
+      UpdateButtonsState();
+    }
+    private void Content_CanBeCanceledChanged(object sender, EventArgs e) {
+      UpdateButtonsState();
     }
 
     private void ShowProgress() {
@@ -82,96 +104,97 @@ namespace HeuristicLab.MainForm.WindowsForms {
         Control.Invoke((Action)ShowProgress);
         return;
       }
-      int height = Content.CanBeCanceled ? Height : collapsedControlHeight;
+      if (Parent != null) return;
 
       Left = (Control.ClientRectangle.Width / 2) - (Width / 2);
-      Top = (Control.ClientRectangle.Height / 2) - (height / 2);
+      Top = (Control.ClientRectangle.Height / 2) - (Height / 2);
       Anchor = AnchorStyles.None;
 
-      control.Enabled = false;
+      UpdateProgressMessage();
+      UpdateProgressValue();
+      UpdateButtonsState();
+
+      Control.SuspendRepaint();
+      Control.Enabled = false;
       Parent = Control.Parent;
       BringToFront();
-
-      UpdateProgressValue();
-      UpdateProgressStatus();
-      UpdateCancelButton();
+      Control.ResumeRepaint(true);
       Visible = true;
     }
 
     private void HideProgress() {
-      if (InvokeRequired) Invoke((Action)HideProgress);
-      else {
-        control.Enabled = true;
-        Parent = null;
-        Visible = false;
+      if (Control.InvokeRequired) {
+        Control.Invoke((Action)HideProgress);
+        return;
       }
+      if (Parent == null) return;
+
+      Visible = false;
+      Control.SuspendRepaint();
+      Control.Enabled = true;
+      Control.ResumeRepaint(true);
+      Parent = null;
     }
 
-    private void progress_StatusChanged(object sender, EventArgs e) {
-      UpdateProgressStatus();
-    }
-
-    private void progress_ProgressValueChanged(object sender, EventArgs e) {
-      UpdateProgressValue();
-    }
-
-    private void Content_ProgressStateChanged(object sender, EventArgs e) {
-      switch (content.ProgressState) {
-        case ProgressState.Finished: HideProgress(); break;
-        case ProgressState.Canceled: HideProgress(); break;
-        case ProgressState.Started: ShowProgress(); break;
-        default: throw new NotSupportedException("The progress state " + content.ProgressState + " is not supported by the ProgressView.");
+    private void UpdateProgressState() {
+      if (Control.InvokeRequired) {
+        Control.Invoke((Action)UpdateProgressState);
+        return;
       }
+
+      if (Content.ProgressState != ProgressState.Finished)
+        ShowProgress();
+      else
+        HideProgress();
     }
 
-    private void Content_CanBeCanceledChanged(object sender, EventArgs e) {
-      UpdateCancelButton();
-    }
-
-    private void UpdateCancelButton() {
-      cancelButton.Visible = content != null && content.CanBeCanceled;
-      cancelButton.Enabled = content != null && content.CanBeCanceled;
-
-      if (content != null && content.CanBeCanceled) {
-        Height = defaultControlHeight;
-      } else if (content != null && !content.CanBeCanceled) {
-        Height = collapsedControlHeight;
+    private void UpdateProgressMessage() {
+      if (Control.InvokeRequired) {
+        Control.Invoke((Action)UpdateProgressMessage);
+        return;
       }
+
+      messageLabel.Text = content.Message;
     }
 
     private void UpdateProgressValue() {
-      // prevent problems with object disposal and invoke as suggested by http://stackoverflow.com/a/18647091
-      if (!IsHandleCreated) return;
       if (InvokeRequired) {
-        try {
-          Invoke((Action)UpdateProgressValue);
-        }
-        catch (InvalidOperationException) {
-          // swallow ObjectDisposedException 
-          // which might occur if the invoke call is executed after or while the control is disposing
-        }
-      } else {
-        if (content != null) {
-          double progressValue = content.ProgressValue;
-          if (progressValue <= 0.0 || progressValue > 1.0) {
-            progressBar.Style = ProgressBarStyle.Marquee;
-          } else {
-            progressBar.Style = ProgressBarStyle.Blocks;
-            progressBar.Value =
-              (int)Math.Round(progressBar.Minimum + progressValue * (progressBar.Maximum - progressBar.Minimum));
-          }
-        }
+        Invoke((Action)UpdateProgressValue);
+        return;
+      }
+
+      switch (Content.ProgressMode) {
+        case ProgressMode.Determinate:
+          progressBar.Style = ProgressBarStyle.Continuous;
+          progressBar.Value = (int)Math.Round(progressBar.Minimum + content.ProgressValue * (progressBar.Maximum - progressBar.Minimum));
+          break;
+        case ProgressMode.Indeterminate:
+          progressBar.Style = ProgressBarStyle.Marquee;
+          progressBar.Value = 0;
+          break;
+        default:
+          throw new NotImplementedException($"Invalid Progress Mode: {content.ProgressMode}");
       }
     }
 
-    private void UpdateProgressStatus() {
-      if (InvokeRequired) Invoke((Action)UpdateProgressStatus);
-      else if (content != null)
-        statusLabel.Text = content.Status;
+    private void UpdateButtonsState() {
+      if (Control.InvokeRequired) {
+        Control.Invoke((Action)UpdateButtonsState);
+        return;
+      }
+
+      stopButton.Visible = Content.CanBeStopped;
+      stopButton.Enabled = Content.CanBeStopped && content.ProgressState == ProgressState.Started;
+
+      cancelButton.Visible = Content.CanBeCanceled;
+      cancelButton.Enabled = Content.CanBeCanceled && content.ProgressState == ProgressState.Started;
     }
 
+    private void stopButton_Click(object sender, EventArgs e) {
+      Content.Stop();
+    }
     private void cancelButton_Click(object sender, EventArgs e) {
-      content.Cancel();
+      Content.Cancel();
     }
   }
 }

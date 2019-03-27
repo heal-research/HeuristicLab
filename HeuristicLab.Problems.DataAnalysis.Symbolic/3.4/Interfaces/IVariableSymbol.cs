@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,8 +20,10 @@
 #endregion
 
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
+using HEAL.Attic;
 
+namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
+  [StorableType("3b28c671-df09-4f2c-9292-b3510b593c5f")]
   /// <summary>
   /// Any symbol that references a variable (includes terminal as well as non-terminal symbols)
   /// </summary>

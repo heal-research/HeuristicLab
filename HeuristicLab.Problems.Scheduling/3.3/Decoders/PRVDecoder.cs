@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,11 +26,11 @@ using HeuristicLab.Encodings.ScheduleEncoding;
 using HeuristicLab.Encodings.ScheduleEncoding.PriorityRulesVector;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.Scheduling {
   [Item("JobSequencingMatrixDecoder", "Applies the GifflerThompson algorithm to create an active schedule from a JobSequencing Matrix.")]
-  [StorableClass]
+  [StorableType("4BECE53D-C72B-4F96-AE96-EA01E7DE4B92")]
   public class PRVDecoder : ScheduleDecoder, IStochasticOperator, IJSSPOperator {
 
     public ILookupParameter<IRandom> RandomParameter {
@@ -168,7 +168,7 @@ namespace HeuristicLab.Problems.Scheduling {
     #endregion
 
     [StorableConstructor]
-    protected PRVDecoder(bool deserializing) : base(deserializing) { }
+    protected PRVDecoder(StorableConstructorFlag _) : base(_) { }
     protected PRVDecoder(PRVDecoder original, Cloner cloner) : base(original, cloner) { }
     public PRVDecoder()
       : base() {

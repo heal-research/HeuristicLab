@@ -168,6 +168,11 @@
     <Compile Include="Regression\MibaFriction\MibaFrictionRegressionInstanceProvider.cs" />
     <Compile Include="Regression\PennML\PennMLRegressionDataDescriptor.cs" />
     <Compile Include="Regression\PennML\PennMLRegressionInstanceProvider.cs" />
+    <Compile Include="Regression\Physics\AircraftLift.cs" />
+    <Compile Include="Regression\Physics\AircraftMaximumLift.cs" />
+    <Compile Include="Regression\Physics\FluidDynamics.cs" />
+    <Compile Include="Regression\Physics\PhysicsInstanceProvider.cs" />
+    <Compile Include="Regression\Physics\RocketFuelFlow.cs" />
     <Compile Include="Regression\VariableNetworks\LinearVariableNetwork.cs" />
     <Compile Include="Regression\VariableNetworks\GaussianProcessVariableNetwork.cs" />
     <Compile Include="Regression\VariableNetworks\VariableNetwork.cs" />
@@ -310,7 +315,13 @@
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Reference Include="HEAL.Attic, Version=1.0.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\HEAL.Attic.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">set Path=%25Path%25;$(ProjectDir);$(SolutionDir)

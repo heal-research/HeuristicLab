@@ -92,18 +92,7 @@
     <AssemblyOriginatorKeyFile>HeuristicLab.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="HeuristicLab.Common-3.3">
-      <HintPath>..\..\bin\HeuristicLab.Common-3.3.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="HeuristicLab.Core-3.3">
-      <HintPath>..\..\bin\HeuristicLab.Core-3.3.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="HeuristicLab.Core.Views-3.3">
-      <HintPath>..\..\bin\HeuristicLab.Core.Views-3.3.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
+    <Reference Include="HeuristicLab.Core.Views-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec" />
     <Reference Include="HeuristicLab.MainForm-3.3">
       <HintPath>..\..\bin\HeuristicLab.MainForm-3.3.dll</HintPath>
       <Private>False</Private>

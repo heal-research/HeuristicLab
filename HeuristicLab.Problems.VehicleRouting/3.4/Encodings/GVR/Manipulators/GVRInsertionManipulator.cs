@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,14 +21,14 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.GVR {
   [Item("GVRInsertionManipulator", "An operator which manipulates a GVR representation by inserting a customer at another location. It is implemented as described in Pereira, F.B. et al (2002). GVR: a New Genetic Representation for the Vehicle Routing Problem. AICS 2002, LNAI 2464, pp. 95-102.")]
-  [StorableClass]
+  [StorableType("2DDACE2B-562A-40A5-86A4-B0BE34993869")]
   public sealed class GVRInsertionManipulator : GVRManipulator {
     [StorableConstructor]
-    private GVRInsertionManipulator(bool deserializing) : base(deserializing) { }
+    private GVRInsertionManipulator(StorableConstructorFlag _) : base(_) { }
 
     public GVRInsertionManipulator()
       : base() {

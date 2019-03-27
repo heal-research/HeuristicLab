@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,10 +23,10 @@ using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
-  [StorableClass]
+  [StorableType("E8BB7879-43C7-4B9A-B9AC-C9CC482BC0D7")]
   [Item(Name = "MeanSum", Description = "Sum of mean functions for Gaussian processes.")]
   public sealed class MeanSum : Item, IMeanFunction {
     [Storable]
@@ -39,7 +39,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     [StorableConstructor]
-    private MeanSum(bool deserializing) : base(deserializing) { }
+    private MeanSum(StorableConstructorFlag _) : base(_) { }
     private MeanSum(MeanSum original, Cloner cloner)
       : base(original, cloner) {
       this.terms = cloner.Clone(original.terms);

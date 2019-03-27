@@ -1,7 +1,7 @@
 ﻿#region License Information
 
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -28,11 +28,11 @@ using System.Drawing;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Analysis {
   [Item("Gantt Data", "Data of a Gantt visualization")]
-  [StorableClass]
+  [StorableType("5EF715EE-23B7-416D-85D0-28C61F81C55D")]
   public class GanttData : NamedItem {
 
     [Storable]
@@ -44,7 +44,7 @@ namespace HeuristicLab.Analysis {
     public ObservableDictionary<string, Color> CategoryColors { get { return categoryColors; } }
 
     [StorableConstructor]
-    protected GanttData(bool deserializing) : base(deserializing) {}
+    protected GanttData(StorableConstructorFlag _) : base(_) { }
     protected GanttData(GanttData original, Cloner cloner)
       : base(original, cloner) {
       rows = cloner.Clone(original.rows);
@@ -69,14 +69,14 @@ namespace HeuristicLab.Analysis {
   }
 
   [Item("Gantt Row", "Row of a Gantt chart")]
-  [StorableClass]
+  [StorableType("DDAA9C4C-CE19-4E0D-9AB2-02F8CDF2B8D4")]
   public class GanttRow : NamedItem {
     [Storable]
     private ItemList<GanttItem> items;
     public ItemList<GanttItem> Items { get { return items; } }
 
     [StorableConstructor]
-    protected GanttRow(bool deserializing) : base(deserializing) {}
+    protected GanttRow(StorableConstructorFlag _) : base(_) { }
     protected GanttRow(GanttRow original, Cloner cloner)
       : base(original, cloner) {
       items = cloner.Clone(original.items);
@@ -98,7 +98,7 @@ namespace HeuristicLab.Analysis {
   }
 
   [Item("Gantt Item", "Item of a Gantt chart row")]
-  [StorableClass]
+  [StorableType("E2CEFEAE-AEA4-4F1D-94D5-D7AA784982F5")]
   public class GanttItem : Item, INotifyPropertyChanged {
 
     [Storable]
@@ -157,7 +157,7 @@ namespace HeuristicLab.Analysis {
     }
 
     [StorableConstructor]
-    protected GanttItem(bool deserializing) : base(deserializing) { }
+    protected GanttItem(StorableConstructorFlag _) : base(_) { }
     protected GanttItem(GanttItem original, Cloner cloner)
       : base(original, cloner) {
       startDate = original.startDate;

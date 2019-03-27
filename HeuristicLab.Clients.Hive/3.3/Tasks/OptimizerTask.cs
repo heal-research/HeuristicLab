@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,11 +23,11 @@ using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Clients.Hive.Jobs {
   [Item("Optimizer Task", "Represents Task which executes a IOptimizer object.")]
-  [StorableClass]
+  [StorableType("9A59FAAF-3F5C-4629-B22D-714488DC2678")]
   public class OptimizerTask : ItemTask {
     public override HiveTask CreateHiveTask() {
       return new OptimizerHiveTask(this);
@@ -59,7 +59,7 @@ namespace HeuristicLab.Clients.Hive.Jobs {
       }
     }
     [StorableConstructor]
-    protected OptimizerTask(bool deserializing) { }
+    protected OptimizerTask(StorableConstructorFlag _) : base(_) { }
     protected OptimizerTask(OptimizerTask original, Cloner cloner)
       : base(original, cloner) {
       this.IndexInParentOptimizerList = original.IndexInParentOptimizerList;

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,17 +25,17 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [Item("C# Symbolic Expression Tree Formatter", "A string formatter that converts symbolic expression trees to C# code.")]
-  [StorableClass]
+  [StorableType("88298836-6087-405A-9354-D4E6864887EB")]
   public sealed class CSharpSymbolicExpressionTreeStringFormatter : NamedItem, ISymbolicExpressionTreeStringFormatter {
     [StorableConstructor]
-    private CSharpSymbolicExpressionTreeStringFormatter(bool deserializing) : base(deserializing) { }
+    private CSharpSymbolicExpressionTreeStringFormatter(StorableConstructorFlag _) : base(_) { }
     private CSharpSymbolicExpressionTreeStringFormatter(CSharpSymbolicExpressionTreeStringFormatter original, Cloner cloner) : base(original, cloner) { }
     public CSharpSymbolicExpressionTreeStringFormatter()
       : base() {
@@ -55,7 +55,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       return strBuilder.ToString();
     }
 
-    private string VariableName2Identifier(string name) {     
+    private string VariableName2Identifier(string name) {
       /*
        * identifier-start-character:
        *    letter-character
@@ -130,6 +130,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           FormatSubtraction(node, strBuilder);
         } else if (node.Symbol is Tangent) {
           FormatFunction(node, "Math.Tan", strBuilder);
+        } else if (node.Symbol is HyperbolicTangent) {
+          FormatFunction(node, "Math.Tanh", strBuilder);
         } else if (node.Symbol is Square) {
           FormatSquare(node, strBuilder);
         } else if (node.Symbol is SquareRoot) {

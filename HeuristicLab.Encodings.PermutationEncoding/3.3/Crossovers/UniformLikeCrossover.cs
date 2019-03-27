@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,14 +23,14 @@ using System;
 using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("UniformLikeCrossover", "The ULX crossover tries to maintain the position in the permutation. It randomly chooses from left to right one of its parents' alleles at each position. Missing entries are then filled randomly later. It is described in Tate, D. M. and Smith, A. E. 1995. A genetic approach to the quadratic assignment problem. Computers & Operations Research, vol. 22, pp. 73-83.")]
-  [StorableClass]
+  [StorableType("5FCF5C48-80A1-4A08-9561-F01FDCB8D20D")]
   public sealed class UniformLikeCrossover : PermutationCrossover {
     [StorableConstructor]
-    private UniformLikeCrossover(bool deserializing) : base(deserializing) { }
+    private UniformLikeCrossover(StorableConstructorFlag _) : base(_) { }
     private UniformLikeCrossover(UniformLikeCrossover original, Cloner cloner) : base(original, cloner) { }
     public UniformLikeCrossover() : base() { }
 

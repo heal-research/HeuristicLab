@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,14 +21,14 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Persistence.Default.Xml;
 using System;
 using System.IO;
 
 namespace HeuristicLab.Clients.OKB.RunCreation {
   [Item("OKB Solution (single-objective)", "")]
-  [StorableClass]
+  [StorableType("55C3DE30-17C6-4327-8C33-7CF62201E78E")]
   public sealed class SingleObjectiveOKBSolution : OKBSolution {
     [Storable]
     private double quality;
@@ -42,7 +42,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
     }
 
     [StorableConstructor]
-    private SingleObjectiveOKBSolution(bool deserializing) : base(deserializing) { }
+    private SingleObjectiveOKBSolution(StorableConstructorFlag _) : base(_) { }
     private SingleObjectiveOKBSolution(SingleObjectiveOKBSolution original, Cloner cloner)
       : base(original, cloner) {
       quality = original.quality;

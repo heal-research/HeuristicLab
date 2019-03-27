@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -87,11 +87,11 @@ namespace HeuristicLab.Services.Hive.DataAccess.Daos {
       CompiledQuery.Compile((DataContext db) =>
         (from job in db.GetTable<Job>()
          where job.State == JobState.StatisticsPending
-         && (from task in db.GetTable<Task>()
-             where task.JobId == job.JobId
-             select task.State == TaskState.Finished
-              || task.State == TaskState.Aborted
-              || task.State == TaskState.Failed).All(x => x)
+               && (from task in db.GetTable<Task>()
+                   where task.JobId == job.JobId
+                   select task).All(x => x.State == TaskState.Finished
+                                      || x.State == TaskState.Aborted
+                                      || x.State == TaskState.Failed)
          select job));
     #endregion
 

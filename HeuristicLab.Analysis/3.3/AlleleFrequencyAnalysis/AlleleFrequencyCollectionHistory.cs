@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,21 +23,21 @@ using System.Collections.Generic;
 using System.Drawing;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Analysis {
   /// <summary>
   /// Represents history values of allele frequencies collections.
   /// </summary>
   [Item("AlleleFrequencyCollectionHistory", "Represents history values of allele frequencies collections.")]
-  [StorableClass]
+  [StorableType("4474E8A9-AA2C-4FED-A906-535DC2AC44A3")]
   public class AlleleFrequencyCollectionHistory : ItemCollection<AlleleFrequencyCollection> {
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Cab; }
     }
 
     [StorableConstructor]
-    protected AlleleFrequencyCollectionHistory(bool deserializing) : base(deserializing) { }
+    protected AlleleFrequencyCollectionHistory(StorableConstructorFlag _) : base(_) { }
     protected AlleleFrequencyCollectionHistory(AlleleFrequencyCollectionHistory original, Cloner cloner) : base(original, cloner) { }
     public AlleleFrequencyCollectionHistory() : base() { }
     public AlleleFrequencyCollectionHistory(IEnumerable<AlleleFrequencyCollection> collections) : base(new ItemCollection<AlleleFrequencyCollection>(collections)) { }

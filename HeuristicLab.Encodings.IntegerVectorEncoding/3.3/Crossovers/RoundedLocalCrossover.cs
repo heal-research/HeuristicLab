@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,7 +23,7 @@ using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   /// <summary>
@@ -31,10 +31,10 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   /// </summary>cribed in Dumitrescu, D. et al. (2000), Evolutionary computation, CRC Press, Boca Raton, FL, p. 194.
   /// </remarks>
   [Item("RoundedLocalCrossover", @"The runded local crossover is similar to the arithmetic crossover, but uses a random alpha for each position x = alpha * p1 + (1-alpha) * p2.")]
-  [StorableClass]
+  [StorableType("2E21F322-85CD-4B67-AF9C-4119FAABB3C1")]
   public class RoundedLocalCrossover : BoundedIntegerVectorCrossover {
     [StorableConstructor]
-    protected RoundedLocalCrossover(bool deserializing) : base(deserializing) { }
+    protected RoundedLocalCrossover(StorableConstructorFlag _) : base(_) { }
     protected RoundedLocalCrossover(RoundedLocalCrossover original, Cloner cloner) : base(original, cloner) { }
     public RoundedLocalCrossover() : base() { }
 

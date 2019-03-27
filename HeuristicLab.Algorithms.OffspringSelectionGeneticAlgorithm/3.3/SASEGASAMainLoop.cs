@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,14 +26,14 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
   /// <summary>
   /// A SASEGASA main loop operator.
   /// </summary>
   [Item("SASEGASAMainLoop", "A SASEGASA main loop operator.")]
-  [StorableClass]
+  [StorableType("46667EF7-908F-4422-8A3E-AE03781EE494")]
   public sealed class SASEGASAMainLoop : AlgorithmOperator {
     #region Parameter Properties
     public ValueLookupParameter<IRandom> RandomParameter {
@@ -117,7 +117,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     #endregion
 
     [StorableConstructor]
-    private SASEGASAMainLoop(bool deserializing) : base(deserializing) { }
+    private SASEGASAMainLoop(StorableConstructorFlag _) : base(_) { }
     private SASEGASAMainLoop(SASEGASAMainLoop original, Cloner cloner)
       : base(original, cloner) {
     }

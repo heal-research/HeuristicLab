@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,11 +24,11 @@ using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.RealVectorEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
   [Item("Fonseca", "Fonseca and Flemming function from // https://en.wikipedia.org/wiki/Test_functions_for_optimization [30.11.2015]")]
-  [StorableClass]
+  [StorableType("CBB43DEB-9DD2-4365-A3CF-18F89F2A47B0")]
   public class Fonseca : MultiObjectiveTestFunction {
     protected override double[,] GetBounds(int objectives) {
       return new double[,] { { -4, 4 } };
@@ -51,7 +51,7 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
     }
 
     [StorableConstructor]
-    protected Fonseca(bool deserializing) : base(deserializing) { }
+    protected Fonseca(StorableConstructorFlag _) : base(_) { }
     protected Fonseca(Fonseca original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new Fonseca(this, cloner);

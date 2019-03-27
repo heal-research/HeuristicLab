@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,9 +22,11 @@
 using System;
 using System.ComponentModel;
 using System.Globalization;
+using HEAL.Attic;
 
 namespace HeuristicLab.Common {
   [Serializable]
+  [StorableType("9c4b8927-6b8e-490f-a367-78091ccf1494")]
   public struct Point2D<T> where T : struct, IEquatable<T> {
     public static readonly Point2D<T> Empty = new Point2D<T>();
 
@@ -32,6 +34,7 @@ namespace HeuristicLab.Common {
     public T X {
       get { return x; }
     }
+
     private T y;
     public T Y {
       get { return y; }

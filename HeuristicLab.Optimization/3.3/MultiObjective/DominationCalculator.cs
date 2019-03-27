@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,8 +21,10 @@
 
 using System;
 using System.Collections.Generic;
+using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
+  [StorableType("d76eb753-5088-4490-ad18-e78d3629c60b")]
   public enum DominationResult { Dominates, IsDominated, IsNonDominated };
 
   public static class DominationCalculator<T> {

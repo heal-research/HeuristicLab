@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,8 +21,10 @@
 
 using System;
 using System.Collections.Generic;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis {
+  [StorableType("ff091491-c895-41cb-9c45-f3b1a11637d4")]
   /// <summary>
   /// Interface for all classification models.
   /// <remarks>All methods and properties in in this interface must be implemented thread safely</remarks>
@@ -30,6 +32,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
   public interface IClassificationModel : IDataAnalysisModel {
     IEnumerable<double> GetEstimatedClassValues(IDataset dataset, IEnumerable<int> rows);
     IClassificationSolution CreateClassificationSolution(IClassificationProblemData problemData);
+    bool IsProblemDataCompatible(IClassificationProblemData problemData, out string errorMessage);
     string TargetVariable { get; set; }
     event EventHandler TargetVariableChanged;
   }

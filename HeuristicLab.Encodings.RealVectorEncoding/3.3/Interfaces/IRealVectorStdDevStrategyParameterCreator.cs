@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,8 +22,10 @@
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
+  [StorableType("36856de6-6cb5-4b8b-8a2b-2437fd5f5c28")]
   public interface IRealVectorStdDevStrategyParameterCreator : IRealVectorStdDevStrategyParameterOperator, IStrategyParameterCreator {
     ILookupParameter<RealVector> StrategyParameterParameter { get; }
     IValueLookupParameter<IntValue> LengthParameter { get; }

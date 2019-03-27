@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -29,7 +29,7 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Random;
 
@@ -39,7 +39,7 @@ namespace HeuristicLab.Algorithms.NSGA2 {
   /// </summary>
   [Item("NSGA-II", "The Nondominated Sorting Genetic Algorithm II was introduced in Deb et al. 2002. A Fast and Elitist Multiobjective Genetic Algorithm: NSGA-II. IEEE Transactions on Evolutionary Computation, 6(2), pp. 182-197.")]
   [Creatable(CreatableAttribute.Categories.PopulationBasedAlgorithms, Priority = 135)]
-  [StorableClass]
+  [StorableType("9F34A562-68E7-4C4A-B452-F915802BACDA")]
   public class NSGA2 : HeuristicOptimizationEngineAlgorithm, IStorableContent {
     public string Filename { get; set; }
 
@@ -161,7 +161,7 @@ namespace HeuristicLab.Algorithms.NSGA2 {
     private RankBasedParetoFrontAnalyzer paretoFrontAnalyzer;
 
     [StorableConstructor]
-    protected NSGA2(bool deserializing) : base(deserializing) { }
+    protected NSGA2(StorableConstructorFlag _) : base(_) { }
     protected NSGA2(NSGA2 original, Cloner cloner)
       : base(original, cloner) {
       paretoFrontAnalyzer = (RankBasedParetoFrontAnalyzer)cloner.Clone(original.paretoFrontAnalyzer);

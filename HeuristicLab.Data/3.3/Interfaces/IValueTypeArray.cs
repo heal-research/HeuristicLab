@@ -1,7 +1,7 @@
 ﻿#region License Information
 
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,8 +26,10 @@ using System.Collections;
 using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HEAL.Attic;
 
 namespace HeuristicLab.Data {
+  [StorableType("548de1d4-69b4-40b4-ba37-e770575f7315")]
   public interface IValueTypeArray : IItem, IEnumerable {
     bool ReadOnly { get; }
     IValueTypeArray AsReadOnly();
@@ -43,6 +45,7 @@ namespace HeuristicLab.Data {
     event EventHandler Reset;
   }
 
+  [StorableType("f9db5740-1c4f-4f62-a9a8-84b32a461ea8")]
   public interface IValueTypeArray<T> : IValueTypeArray, IEnumerable<T> where T : struct {
     T this[int index] { get; set; }
   }

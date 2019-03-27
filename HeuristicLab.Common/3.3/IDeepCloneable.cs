@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,8 +20,10 @@
 #endregion
 
 using System;
+using HEAL.Attic;
 
 namespace HeuristicLab.Common {
+  [StorableType("54fef53f-3ccc-4493-8973-a8bbdad32ba2")]
   public interface IDeepCloneable : ICloneable {
     /// <summary>
     /// Creates a deep clone of this instance.

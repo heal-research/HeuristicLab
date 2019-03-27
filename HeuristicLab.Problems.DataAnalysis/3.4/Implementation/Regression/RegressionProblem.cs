@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,16 +21,16 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  [StorableClass]
+  [StorableType("BD8AFF60-E8BE-4325-B1AC-08B7BDF37865")]
   [Item("Regression Problem", "A general regression problem.")]
   public class RegressionProblem : DataAnalysisProblem<IRegressionProblemData>, IRegressionProblem, IStorableContent {
     public string Filename { get; set; }
 
     [StorableConstructor]
-    protected RegressionProblem(bool deserializing) : base(deserializing) { }
+    protected RegressionProblem(StorableConstructorFlag _) : base(_) { }
     protected RegressionProblem(RegressionProblem original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) { return new RegressionProblem(this, cloner); }
 

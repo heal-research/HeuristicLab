@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,9 +23,9 @@ using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
-  [StorableClass]
+  [StorableType("5CD355EA-36E4-4E43-B8C4-9E9CF4CBC860")]
   [Item("Constant", "Represents a constant value.")]
   public sealed class Constant : Symbol {
     #region Properties
@@ -99,7 +99,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     #endregion
 
     [StorableConstructor]
-    private Constant(bool deserializing) : base(deserializing) { }
+    private Constant(StorableConstructorFlag _) : base(_) { }
     private Constant(Constant original, Cloner cloner)
       : base(original, cloner) {
       minValue = original.minValue;

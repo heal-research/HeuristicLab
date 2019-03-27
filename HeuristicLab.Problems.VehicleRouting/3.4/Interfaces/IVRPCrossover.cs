@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,8 +21,10 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.VehicleRouting.Interfaces {
+  [StorableType("FFAE16E2-265C-464E-9903-24154F6B0628")]
   public interface IVRPCrossover : IVRPOperator, ICrossover {
     ILookupParameter<ItemArray<IVRPEncoding>> ParentsParameter { get; }
     ILookupParameter<IVRPEncoding> ChildParameter { get; }

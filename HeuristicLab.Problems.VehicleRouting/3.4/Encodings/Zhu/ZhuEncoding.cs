@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,12 +24,12 @@ using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Zhu {
   [Item("ZhuEncoding", "Represents a Zhu encoding of VRP solutions. It is implemented as described in Zhu, K.Q. (2000). A New Genetic Algorithm For VRPTW. Proceedings of the International Conference on Artificial Intelligence.")]
-  [StorableClass]
+  [StorableType("1A5F5A1D-E4F5-4477-887E-45FC488BC459")]
   public class ZhuEncoding : General.PermutationEncoding {
     #region IVRPEncoding Members
     public override int GetTourIndex(Tour tour) {
@@ -107,8 +107,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Zhu {
     }
 
     [StorableConstructor]
-    protected ZhuEncoding(bool serializing)
-      : base(serializing) {
+    protected ZhuEncoding(StorableConstructorFlag _) : base(_) {
     }
 
     public static ZhuEncoding ConvertFrom(IVRPEncoding encoding, IVRPProblemInstance problemInstance) {

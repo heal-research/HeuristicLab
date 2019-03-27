@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,18 +22,18 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.RealVectorEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TestFunctions {
   [Item("AckleyAdditiveMoveEvaluator", "Class for evaluating an additive move on the Ackley function.")]
-  [StorableClass]
+  [StorableType("C28EF2FB-0EF2-4A69-910D-210A808A0420")]
   public class AckleyAdditiveMoveEvaluator : AdditiveMoveEvaluator {
     public override System.Type EvaluatorType {
       get { return typeof(AckleyEvaluator); }
     }
 
     [StorableConstructor]
-    protected AckleyAdditiveMoveEvaluator(bool deserializing) : base(deserializing) { }
+    protected AckleyAdditiveMoveEvaluator(StorableConstructorFlag _) : base(_) { }
     protected AckleyAdditiveMoveEvaluator(AckleyAdditiveMoveEvaluator original, Cloner cloner) : base(original, cloner) { }
     public AckleyAdditiveMoveEvaluator() : base() { }
 

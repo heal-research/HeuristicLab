@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,10 +23,10 @@ using System;
 using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  [StorableClass]
+  [StorableType("2998B895-4724-489C-A4CA-9ADD10C7CA49")]
   [Item("Regression Model", "Base class for all regression models.")]
   public abstract class RegressionModel : DataAnalysisModel, IRegressionModel {
     [Storable]
@@ -40,8 +40,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
       }
     }
 
-    protected RegressionModel(bool deserializing)
-      : base(deserializing) {
+    [StorableConstructor]
+    protected RegressionModel(StorableConstructorFlag _)
+      : base(_) {
       targetVariable = string.Empty;
     }
 
@@ -65,6 +66,34 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public abstract IEnumerable<double> GetEstimatedValues(IDataset dataset, IEnumerable<int> rows);
     public abstract IRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData);
+
+    public virtual bool IsProblemDataCompatible(IRegressionProblemData problemData, out string errorMessage) {
+      return IsProblemDataCompatible(this, problemData, out errorMessage);
+    }
+
+    public override bool IsProblemDataCompatible(IDataAnalysisProblemData problemData, out string errorMessage) {
+      if (problemData == null) throw new ArgumentNullException("problemData", "The provided problemData is null.");
+      var regressionProblemData = problemData as IRegressionProblemData;
+      if (regressionProblemData == null)
+        throw new ArgumentException("The problem data is not a regression problem data. Instead a " + problemData.GetType().GetPrettyName() + " was provided.", "problemData");
+      return IsProblemDataCompatible(regressionProblemData, out errorMessage);
+    }
+
+    public static bool IsProblemDataCompatible(IRegressionModel model, IRegressionProblemData problemData, out string errorMessage) {
+      if (model == null) throw new ArgumentNullException("model", "The provided model is null.");
+      if (problemData == null) throw new ArgumentNullException("problemData", "The provided problemData is null.");
+      errorMessage = string.Empty;
+
+      if (model.TargetVariable != problemData.TargetVariable)
+        errorMessage = string.Format("The target variable of the model {0} does not match the target variable of the problemData {1}.", model.TargetVariable, problemData.TargetVariable);
+
+      var evaluationErrorMessage = string.Empty;
+      var datasetCompatible = model.IsDatasetCompatible(problemData.Dataset, out evaluationErrorMessage);
+      if (!datasetCompatible)
+        errorMessage += evaluationErrorMessage;
+
+      return string.IsNullOrEmpty(errorMessage);
+    }
 
     #region events
     public event EventHandler TargetVariableChanged;

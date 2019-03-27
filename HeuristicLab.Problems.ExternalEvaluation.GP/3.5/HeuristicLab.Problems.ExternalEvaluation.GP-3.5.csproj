@@ -121,6 +121,7 @@
   <ItemGroup>
     <None Include="Plugin.cs.frame" />
     <Compile Include="ExternalEvaluationExpressionGrammar.cs" />
+    <Compile Include="SymbolicExpressionTreeProtobufConverter.cs" />
     <Compile Include="ExternalEvaluationSymbolicExpressionTreeBinaryConverter.cs" />
     <Compile Include="ExternalEvaluationSymbolicExpressionTreeConverter.cs" />
     <Compile Include="ExternalEvaluationSymbolicExpressionTreeStringConverter.cs" />
@@ -188,6 +189,13 @@
       <Name>HeuristicLab.Problems.ExternalEvaluation-3.4</Name>
       <Private>False</Private>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="HEAL.Attic, Version=1.0.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\HEAL.Attic.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

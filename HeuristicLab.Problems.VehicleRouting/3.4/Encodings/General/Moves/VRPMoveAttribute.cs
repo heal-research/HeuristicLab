@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,17 +21,17 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
   [Item("VRPMoveAttribute", "Base class for specifying a move attribute")]
-  [StorableClass]
+  [StorableType("61460C9F-D313-47C1-9894-A6A5E4852DBB")]
   public class VRPMoveAttribute : Item {
     [Storable]
     public double MoveQuality { get; protected set; }
 
     [StorableConstructor]
-    protected VRPMoveAttribute(bool deserializing) : base(deserializing) { }
+    protected VRPMoveAttribute(StorableConstructorFlag _) : base(_) { }
     protected VRPMoveAttribute(VRPMoveAttribute original, Cloner cloner)
       : base(original, cloner) {
       this.MoveQuality = original.MoveQuality;

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,12 +25,12 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaStochasticLambdaInterchangeSingleMoveGenerator", "Generates one random lambda interchange move from a given VRP encoding.  It is implemented as described in Alba, E. and Dorronsoro, B. (2004). Solving the Vehicle Routing Problem by Using Cellular Genetic Algorithms.")]
-  [StorableClass]
+  [StorableType("12D7E711-F3D7-47D7-BC57-57113752E269")]
   public sealed class AlbaStochasticLambdaInterchangeSingleMoveGenerator : AlbaLambdaInterchangeMoveGenerator,
     IStochasticOperator, ISingleMoveGenerator, IAlbaLambdaInterchangeMoveOperator {
     #region IMultiVRPMoveOperator Members
@@ -46,7 +46,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
     }
 
     [StorableConstructor]
-    private AlbaStochasticLambdaInterchangeSingleMoveGenerator(bool deserializing) : base(deserializing) { }
+    private AlbaStochasticLambdaInterchangeSingleMoveGenerator(StorableConstructorFlag _) : base(_) { }
 
     public AlbaStochasticLambdaInterchangeSingleMoveGenerator()
       : base() {

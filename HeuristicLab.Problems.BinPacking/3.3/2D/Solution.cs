@@ -21,17 +21,17 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.BinPacking;
 
 namespace HeuristicLab.Problems.BinPacking2D {
   [Item("Bin Packing Solution (2d)", "Represents a solution for a 2D bin packing problem.")]
-  [StorableClass]
+  [StorableType("9C014DEE-B1B3-447F-885E-5887E29DADF1")]
   public class Solution : PackingPlan<PackingPosition, PackingShape, PackingItem> {
     public Solution(PackingShape binShape) : this(binShape, false, false) { }
     public Solution(PackingShape binShape, bool useExtremePoints, bool stackingConstraints) : base(binShape, useExtremePoints, stackingConstraints) { }
     [StorableConstructor]
-    protected Solution(bool deserializing) : base(deserializing) { }
+    protected Solution(StorableConstructorFlag _) : base(_) { }
     protected Solution(Solution original, Cloner cloner)
       : base(original, cloner) {
     }

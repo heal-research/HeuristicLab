@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,11 +25,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
   [Item("Multi-objective Evaluator", "Calls the Evaluate method of the problem definition and writes the return value into the scope.")]
-  [StorableClass]
+  [StorableType("C5605ED8-0ED2-4C7B-97A1-E7EB68A4FDBF")]
   public class MultiObjectiveEvaluator : InstrumentedOperator, IMultiObjectiveEvaluationOperator, IStochasticOperator {
 
     public ILookupParameter<IRandom> RandomParameter {
@@ -47,7 +47,7 @@ namespace HeuristicLab.Optimization {
     public Func<Individual, IRandom, double[]> EvaluateFunc { get; set; }
 
     [StorableConstructor]
-    protected MultiObjectiveEvaluator(bool deserializing) : base(deserializing) { }
+    protected MultiObjectiveEvaluator(StorableConstructorFlag _) : base(_) { }
     protected MultiObjectiveEvaluator(MultiObjectiveEvaluator original, Cloner cloner) : base(original, cloner) { }
     public MultiObjectiveEvaluator() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator to use."));

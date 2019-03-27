@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,14 +22,14 @@
 using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
-  [StorableClass]
+  [StorableType("BB5992FF-783A-490E-91FE-C0782BD1CBB9")]
   [Item("CircularKernel", "A circular kernel function 2*pi*(acos(-d)-d*(1-d²)^(0.5)) where n = ||x-c|| and d = n/beta \n  As described in http://crsouza.com/2010/03/17/kernel-functions-for-machine-learning-applications/")]
   public class CircularKernel : KernelBase {
     [StorableConstructor]
-    protected CircularKernel(bool deserializing) : base(deserializing) { }
+    protected CircularKernel(StorableConstructorFlag _) : base(_) { }
 
     protected CircularKernel(CircularKernel original, Cloner cloner) : base(original, cloner) { }
 

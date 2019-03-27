@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,15 +22,15 @@
 using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.LinearLinkageEncoding {
   [Item("Single Point Crossover", "The single point crossover concatenates two linkage strings at a randomly chosen point.")]
-  [StorableClass]
+  [StorableType("1F1A83F4-659C-4A88-9A0C-4507257A3741")]
   public sealed class SinglePointCrossover : LinearLinkageCrossover {
 
     [StorableConstructor]
-    private SinglePointCrossover(bool deserializing) : base(deserializing) { }
+    private SinglePointCrossover(StorableConstructorFlag _) : base(_) { }
     private SinglePointCrossover(SinglePointCrossover original, Cloner cloner) : base(original, cloner) { }
     public SinglePointCrossover() { }
 

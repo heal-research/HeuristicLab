@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,14 +21,14 @@
 
 using System.Collections.Generic;
 using HeuristicLab.Common;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Core {
-  [StorableClass]
+  [StorableType("758F5674-7D98-4F44-800E-9E6B0B646938")]
   [Item("ValueParameterCollection", "Represents a collection of value parameters.")]
   public class ValueParameterCollection : NamedItemCollection<IValueParameter> {
     [StorableConstructor]
-    protected ValueParameterCollection(bool deserializing) : base(deserializing) { }
+    protected ValueParameterCollection(StorableConstructorFlag _) : base(_) { }
     protected ValueParameterCollection(ValueParameterCollection original, Cloner cloner) : base(original, cloner) { }
     public ValueParameterCollection() : base() { }
     public ValueParameterCollection(int capacity) : base(capacity) { }

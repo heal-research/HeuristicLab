@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -29,10 +29,10 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
-  [StorableClass]
+  [StorableType("DFA06F28-E224-4D93-9907-69792D24D1F9")]
   [Item("SymbolicDataAnalysisExpressionCompiledTreeInterpreter", "Interpreter that converts the tree into a Linq.Expression then compiles it.")]
   public sealed class SymbolicDataAnalysisExpressionCompiledTreeInterpreter : ParameterizedNamedItem, ISymbolicDataAnalysisExpressionTreeInterpreter {
     private const string CheckExpressionsWithIntervalArithmeticParameterName = "CheckExpressionsWithIntervalArithmetic";
@@ -40,9 +40,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private const string EvaluatedSolutionsParameterName = "EvaluatedSolutions";
 
     #region method info for the commonly called functions
+    private static readonly MethodInfo Abs = typeof(Math).GetMethod("Abs", new[] { typeof(double) });
     private static readonly MethodInfo Sin = typeof(Math).GetMethod("Sin", new[] { typeof(double) });
     private static readonly MethodInfo Cos = typeof(Math).GetMethod("Cos", new[] { typeof(double) });
     private static readonly MethodInfo Tan = typeof(Math).GetMethod("Tan", new[] { typeof(double) });
+    private static readonly MethodInfo Tanh = typeof(Math).GetMethod("Tanh", new[] { typeof(double) });
     private static readonly MethodInfo Sqrt = typeof(Math).GetMethod("Sqrt", new[] { typeof(double) });
     private static readonly MethodInfo Floor = typeof(Math).GetMethod("Floor", new[] { typeof(double) });
     private static readonly MethodInfo Round = typeof(Math).GetMethod("Round", new[] { typeof(double) });
@@ -96,8 +98,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     [StorableConstructor]
-    private SymbolicDataAnalysisExpressionCompiledTreeInterpreter(bool deserializing)
-      : base(deserializing) {
+    private SymbolicDataAnalysisExpressionCompiledTreeInterpreter(StorableConstructorFlag _) : base(_) {
     }
 
     public SymbolicDataAnalysisExpressionCompiledTreeInterpreter() :
@@ -206,6 +207,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             }
             return Expression.Divide(result, Expression.Constant((double)node.SubtreeCount));
           }
+        case OpCodes.Absolute: {
+            var arg = MakeExpr(node.GetSubtree(0), variableIndices, row, columns);
+            return Expression.Call(Abs, arg);
+          }
         case OpCodes.Cos: {
             var arg = MakeExpr(node.GetSubtree(0), variableIndices, row, columns);
             return Expression.Call(Cos, arg);
@@ -218,9 +223,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             var arg = MakeExpr(node.GetSubtree(0), variableIndices, row, columns);
             return Expression.Call(Tan, arg);
           }
+        case OpCodes.Tanh: {
+            var arg = MakeExpr(node.GetSubtree(0), variableIndices, row, columns);
+            return Expression.Call(Tanh, arg);
+          }
         case OpCodes.Square: {
             var arg = MakeExpr(node.GetSubtree(0), variableIndices, row, columns);
             return Expression.Power(arg, Expression.Constant(2.0));
+          }
+        case OpCodes.Cube: {
+            var arg = MakeExpr(node.GetSubtree(0), variableIndices, row, columns);
+            return Expression.Power(arg, Expression.Constant(3.0));
           }
         case OpCodes.Power: {
             var arg = MakeExpr(node.GetSubtree(0), variableIndices, row, columns);
@@ -230,6 +243,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         case OpCodes.SquareRoot: {
             var arg = MakeExpr(node.GetSubtree(0), variableIndices, row, columns);
             return Expression.Call(Sqrt, arg);
+          }
+        case OpCodes.CubeRoot: {
+            var arg = MakeExpr(node.GetSubtree(0), variableIndices, row, columns);
+            return Expression.Power(arg, Expression.Constant(1.0 / 3.0));
           }
         case OpCodes.Root: {
             var arg = MakeExpr(node.GetSubtree(0), variableIndices, row, columns);
@@ -492,6 +509,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
                 Expression.Assign(result, Expression.Constant(double.NaN)),
                 Expression.Assign(result, Expression.Call(Bessel, arg))),
               result);
+          }
+        case OpCodes.AnalyticQuotient: {
+            var x1 = MakeExpr(node.GetSubtree(0), variableIndices, row, columns);
+            var x2 = MakeExpr(node.GetSubtree(1), variableIndices, row, columns);
+            return Expression.Divide(x1, 
+              Expression.Call(Sqrt, 
+              Expression.Add(
+                Expression.Constant(1.0),
+                Expression.Multiply(x2, x2))));
           }
         case OpCodes.IfThenElse: {
             var test = MakeExpr(node.GetSubtree(0), variableIndices, row, columns);

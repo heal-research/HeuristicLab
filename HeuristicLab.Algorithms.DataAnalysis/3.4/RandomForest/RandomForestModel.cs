@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,7 +25,7 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
 
@@ -33,7 +33,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>
   /// Represents a random forest model for regression and classification
   /// </summary>
-  [StorableClass]
+  [StorableType("A4F688CD-1F42-4103-8449-7DE52AEF6C69")]
   [Item("RandomForestModel", "Represents a random forest for regression and classification.")]
   public sealed class RandomForestModel : ClassificationModel, IRandomForestModel {
     // not persisted
@@ -70,8 +70,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private double m;
 
     [StorableConstructor]
-    private RandomForestModel(bool deserializing)
-      : base(deserializing) {
+    private RandomForestModel(StorableConstructorFlag _) : base(_) {
       // for backwards compatibility (loading old solutions)
       randomForest = new alglib.decisionforest();
     }
@@ -283,6 +282,24 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
     public override IClassificationSolution CreateClassificationSolution(IClassificationProblemData problemData) {
       return new RandomForestClassificationSolution(this, new ClassificationProblemData(problemData));
+    }
+
+    public bool IsProblemDataCompatible(IRegressionProblemData problemData, out string errorMessage) {
+      return RegressionModel.IsProblemDataCompatible(this, problemData, out errorMessage);
+    }
+
+    public override bool IsProblemDataCompatible(IDataAnalysisProblemData problemData, out string errorMessage) {
+      if (problemData == null) throw new ArgumentNullException("problemData", "The provided problemData is null.");
+
+      var regressionProblemData = problemData as IRegressionProblemData;
+      if (regressionProblemData != null)
+        return IsProblemDataCompatible(regressionProblemData, out errorMessage);
+
+      var classificationProblemData = problemData as IClassificationProblemData;
+      if (classificationProblemData != null)
+        return IsProblemDataCompatible(classificationProblemData, out errorMessage);
+
+      throw new ArgumentException("The problem data is not a regression nor a classification problem data. Instead a " + problemData.GetType().GetPrettyName() + " was provided.", "problemData");
     }
 
     public static RandomForestModel CreateRegressionModel(IRegressionProblemData problemData, int nTrees, double r, double m, int seed,

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -99,6 +99,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Views {
       // 
       // tabPage1
       // 
+      this.tabPage1.BackColor = System.Drawing.SystemColors.Window;
       this.tabPage1.Controls.Add(this.pictureBox);
       this.tabPage1.Location = new System.Drawing.Point(4, 22);
       this.tabPage1.Name = "tabPage1";
@@ -106,10 +107,10 @@ namespace HeuristicLab.Problems.VehicleRouting.Views {
       this.tabPage1.Size = new System.Drawing.Size(454, 367);
       this.tabPage1.TabIndex = 0;
       this.tabPage1.Text = "Visualization";
-      this.tabPage1.UseVisualStyleBackColor = true;
       // 
       // tabPage2
       // 
+      this.tabPage2.BackColor = System.Drawing.SystemColors.Window;
       this.tabPage2.Controls.Add(this.parameterCollectionView);
       this.tabPage2.Location = new System.Drawing.Point(4, 22);
       this.tabPage2.Name = "tabPage2";
@@ -117,7 +118,6 @@ namespace HeuristicLab.Problems.VehicleRouting.Views {
       this.tabPage2.Size = new System.Drawing.Size(454, 367);
       this.tabPage2.TabIndex = 1;
       this.tabPage2.Text = "Parameters";
-      this.tabPage2.UseVisualStyleBackColor = true;
       // 
       // VRPProblemInstanceView
       // 

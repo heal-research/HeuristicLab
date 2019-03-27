@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,7 +25,7 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
@@ -33,10 +33,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
                                       "- Take two parent individuals P0 and P1\n" +
                                       "- Randomly choose a crossover point C from P0\n" +
                                       "- Test all nodes from P1 to determine the one that produces the best child when inserted at place C in P0")]
-  [StorableClass]
+  [StorableType("BC019C69-AA9D-4E98-B366-274EFD7922C4")]
   public sealed class SymbolicDataAnalysisExpressionDeterministicBestCrossover<T> : SymbolicDataAnalysisExpressionCrossover<T> where T : class, IDataAnalysisProblemData {
     [StorableConstructor]
-    private SymbolicDataAnalysisExpressionDeterministicBestCrossover(bool deserializing) : base(deserializing) { }
+    private SymbolicDataAnalysisExpressionDeterministicBestCrossover(StorableConstructorFlag _) : base(_) { }
     private SymbolicDataAnalysisExpressionDeterministicBestCrossover(SymbolicDataAnalysisExpressionCrossover<T> original, Cloner cloner)
       : base(original, cloner) {
     }

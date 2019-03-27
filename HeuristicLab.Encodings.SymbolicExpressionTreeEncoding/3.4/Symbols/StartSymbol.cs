@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,9 +21,9 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
-  [StorableClass]
+  [StorableType("37172E73-BBC8-448F-B694-60705C5B4E53")]
   [Item(StartSymbol.StartSymbolName, StartSymbol.StartSymbolDescription)]
   public sealed class StartSymbol : Symbol, IReadOnlySymbol {
     public const string StartSymbolName = "StartSymbol";
@@ -39,8 +39,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
 
     [StorableConstructor]
-    private StartSymbol(bool deserializing)
-      : base(deserializing) {
+    private StartSymbol(StorableConstructorFlag _) : base(_) {
     }
     private StartSymbol(StartSymbol original, Cloner cloner) : base(original, cloner) { }
     public StartSymbol() : base(StartSymbol.StartSymbolName, StartSymbol.StartSymbolDescription) { }

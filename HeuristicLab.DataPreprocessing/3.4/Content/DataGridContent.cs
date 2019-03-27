@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,12 +26,12 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.DataPreprocessing {
   [Item("Data Grid", "Represents a data grid.")]
-  [StorableClass]
+  [StorableType("DC6AE5CE-B0FA-4C8C-BDBB-D490C6DE4174")]
   public class DataGridContent : PreprocessingContent, IStringConvertibleMatrix, IViewShortcut {
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Table; }
@@ -84,8 +84,7 @@ namespace HeuristicLab.DataPreprocessing {
     }
 
     [StorableConstructor]
-    protected DataGridContent(bool deserializing)
-      : base(deserializing) { }
+    protected DataGridContent(StorableConstructorFlag _) : base(_) { }
     #endregion
 
     public void DeleteRows(IEnumerable<int> rows) {

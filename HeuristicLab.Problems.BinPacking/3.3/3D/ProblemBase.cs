@@ -1,7 +1,7 @@
 ﻿#region License Information
 
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -27,12 +27,12 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.Instances;
 
 namespace HeuristicLab.Problems.BinPacking3D {
   // in comparison to the 2d problem the 3d problem implementation also supports checking stacking constraints
-  [StorableClass]
+  [StorableType("11F0A7B9-EF53-435E-AE3B-200A269DE308")]
   public abstract class ProblemBase<TEnc, TSol> :
     SingleObjectiveBasicProblem<TEnc>, IProblemInstanceConsumer<BPPData>, IProblemInstanceExporter<BPPData>
     where TEnc : class, IEncoding
@@ -151,7 +151,7 @@ namespace HeuristicLab.Problems.BinPacking3D {
 
     // persistence
     [StorableConstructor]
-    protected ProblemBase(bool deserializing) : base(deserializing) { }
+    protected ProblemBase(StorableConstructorFlag _) : base(_) { }
 
     // cloning
     protected ProblemBase(ProblemBase<TEnc, TSol> original, Cloner cloner)

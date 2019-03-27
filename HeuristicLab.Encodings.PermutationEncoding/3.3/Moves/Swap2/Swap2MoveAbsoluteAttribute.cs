@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,11 +21,11 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("Swap2MoveAbsoluteAttribute", "Specifies the tabu attributes for a swap-2 move on an absolute position permutation.")]
-  [StorableClass]
+  [StorableType("BE525C05-D1EB-4A87-9282-CF6B88E0D667")]
   public class Swap2MoveAbsoluteAttribute : PermutationMoveAttribute {
     [Storable]
     public int Index1 { get; private set; }
@@ -37,7 +37,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     public int Number2 { get; private set; }
 
     [StorableConstructor]
-    protected Swap2MoveAbsoluteAttribute(bool deserializing) : base(deserializing) { }
+    protected Swap2MoveAbsoluteAttribute(StorableConstructorFlag _) : base(_) { }
     protected Swap2MoveAbsoluteAttribute(Swap2MoveAbsoluteAttribute original, Cloner cloner)
       : base(original, cloner) {
       this.Index1 = original.Index1;

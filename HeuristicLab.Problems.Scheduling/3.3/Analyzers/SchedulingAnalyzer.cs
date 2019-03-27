@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,18 +26,18 @@ using HeuristicLab.Encodings.ScheduleEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.Scheduling {
   [Item("SchedulingAnalyzer", "Represents the generalized form of Analyzers for Scheduling Problems.")]
-  [StorableClass]
+  [StorableType("59C3972B-1051-4CEE-A41C-B7AE0D05A3AC")]
   public abstract class SchedulingAnalyzer : SingleSuccessorOperator, IAnalyzer, ISingleObjectiveOperator {
     public virtual bool EnabledByDefault {
       get { return true; }
     }
 
     [StorableConstructor]
-    protected SchedulingAnalyzer(bool deserializing) : base(deserializing) { }
+    protected SchedulingAnalyzer(StorableConstructorFlag _) : base(_) { }
     protected SchedulingAnalyzer(SchedulingAnalyzer original, Cloner cloner)
       : base(original, cloner) {
     }

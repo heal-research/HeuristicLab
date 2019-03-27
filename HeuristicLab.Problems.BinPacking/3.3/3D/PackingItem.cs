@@ -20,7 +20,7 @@
 #endregion
 
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
@@ -28,7 +28,7 @@ using HeuristicLab.Problems.BinPacking;
 
 namespace HeuristicLab.Problems.BinPacking3D {
   [Item("PackingItem (3d)", "Represents a cuboidic packing-item for bin-packing problems.")]
-  [StorableClass]
+  [StorableType("413E8254-9600-42F9-B057-E57B502881FD")]
   public class PackingItem : PackingShape, IPackingItem {
     public IValueParameter<PackingShape> TargetBinParameter {
       get { return (IValueParameter<PackingShape>)Parameters["TargetBin"]; }
@@ -60,7 +60,7 @@ namespace HeuristicLab.Problems.BinPacking3D {
     }
 
     [StorableConstructor]
-    protected PackingItem(bool deserializing) : base(deserializing) { }
+    protected PackingItem(StorableConstructorFlag _) : base(_) { }
     protected PackingItem(PackingItem original, Cloner cloner)
       : base(original, cloner) {
       RegisterEvents();

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -30,7 +30,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
 using HeuristicLab.Random;
@@ -38,7 +38,7 @@ using HeuristicLab.Random;
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [Item("Cross Validation (CV)", "Cross-validation wrapper for data analysis algorithms.")]
   [Creatable(CreatableAttribute.Categories.DataAnalysis, Priority = 100)]
-  [StorableClass]
+  [StorableType("1C622121-AE5B-42FD-831C-FCA8F8E0AF8D")]
   public sealed class CrossValidation : ParameterizedNamedItem, IAlgorithm, IStorableContent {
     [Storable]
     private int seed;
@@ -74,8 +74,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     #region persistence and cloning
     [StorableConstructor]
-    private CrossValidation(bool deserializing)
-      : base(deserializing) {
+    private CrossValidation(StorableConstructorFlag _) : base(_) {
     }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
@@ -300,7 +299,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       try {
         if ((ExecutionState != ExecutionState.Prepared) && (ExecutionState != ExecutionState.Paused))
           throw new InvalidOperationException(string.Format("Start not allowed in execution state \"{0}\".", ExecutionState));
-        seed = new FastRandom().NextInt();
+        seed = RandomSeedGenerator.GetSeed();
 
         if (Algorithm == null) return;
         //create cloned algorithms

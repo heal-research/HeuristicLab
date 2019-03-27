@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,20 +22,20 @@
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
   [Item("MATLAB String Formatter", "String formatter for string representations of symbolic data analysis expressions in MATLAB syntax.")]
-  [StorableClass]
+  [StorableType("ADFB0A37-412D-4DD4-A174-F0103ADD7972")]
   public sealed class SymbolicDataAnalysisExpressionMATLABFormatter : NamedItem, ISymbolicExpressionTreeStringFormatter {
     private int currentLag;
 
     [StorableConstructor]
-    private SymbolicDataAnalysisExpressionMATLABFormatter(bool deserializing) : base(deserializing) { }
+    private SymbolicDataAnalysisExpressionMATLABFormatter(StorableConstructorFlag _) : base(_) { }
     private SymbolicDataAnalysisExpressionMATLABFormatter(SymbolicDataAnalysisExpressionMATLABFormatter original, Cloner cloner) : base(original, cloner) { }
     public SymbolicDataAnalysisExpressionMATLABFormatter()
       : base() {
@@ -251,6 +251,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         stringBuilder.Append(")");
       } else if (symbol is Tangent) {
         stringBuilder.Append("tan(");
+        stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
+        stringBuilder.Append(")");
+      } else if (symbol is HyperbolicTangent) {
+        stringBuilder.Append("tanh(");
         stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
         stringBuilder.Append(")");
       } else if (node.Symbol is AiryA) {

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,11 +25,11 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   [Item("StdDevStrategyVectorCrossover", "Crosses the strategy vector by using intermediate recombination (average crossover).")]
-  [StorableClass]
+  [StorableType("27583F67-4C80-4059-B4F9-80587C0DFB13")]
   public class StdDevStrategyVectorCrossover : SingleSuccessorOperator, IStochasticOperator, IIntegerVectorStdDevStrategyParameterCrossover {
     public override bool CanChangeName {
       get { return false; }
@@ -45,7 +45,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
     }
 
     [StorableConstructor]
-    protected StdDevStrategyVectorCrossover(bool deserializing) : base(deserializing) { }
+    protected StdDevStrategyVectorCrossover(StorableConstructorFlag _) : base(_) { }
     protected StdDevStrategyVectorCrossover(StdDevStrategyVectorCrossover original, Cloner cloner) : base(original, cloner) { }
     public StdDevStrategyVectorCrossover()
       : base() {

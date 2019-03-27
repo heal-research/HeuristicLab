@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,20 +23,20 @@ using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Problems.VehicleRouting.Variants;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinPDShiftExhaustiveMoveGenerator", "Generates shift moves from a given PDP encoding.")]
-  [StorableClass]
+  [StorableType("CD03F921-FC4D-49AD-BEA3-156C60AAD5BD")]
   public sealed class PotvinPDShiftExhaustiveMoveGenerator : PotvinPDShiftMoveGenerator, IExhaustiveMoveGenerator {
     public override IDeepCloneable Clone(Cloner cloner) {
       return new PotvinPDShiftExhaustiveMoveGenerator(this, cloner);
     }
 
     [StorableConstructor]
-    private PotvinPDShiftExhaustiveMoveGenerator(bool deserializing) : base(deserializing) { }
+    private PotvinPDShiftExhaustiveMoveGenerator(StorableConstructorFlag _) : base(_) { }
 
     public PotvinPDShiftExhaustiveMoveGenerator()
       : base() {

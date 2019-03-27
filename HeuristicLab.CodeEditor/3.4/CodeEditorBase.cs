@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -55,6 +55,8 @@ namespace HeuristicLab.CodeEditor {
     public virtual void ScrollAfterPrefix() { }
 
     public virtual void ScrollToPosition(int line, int column) { }
+
+    public virtual void ClearEditHistory() { }
 
     public virtual void ShowCompileErrors(CompilerErrorCollection compileErrors) { }
 

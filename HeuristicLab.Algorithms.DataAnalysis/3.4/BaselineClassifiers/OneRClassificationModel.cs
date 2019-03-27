@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,11 +24,11 @@ using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
-  [StorableClass]
+  [StorableType("C3365B2F-75D6-45F7-9DD9-CD80854F9D75")]
   [Item("OneR Classification Model", "A model that uses intervals for one variable to determine the class.")]
   public sealed class OneRClassificationModel : ClassificationModel {
     public override IEnumerable<string> VariablesUsedForPrediction {
@@ -60,7 +60,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     [StorableConstructor]
-    private OneRClassificationModel(bool deserializing) : base(deserializing) { }
+    private OneRClassificationModel(StorableConstructorFlag _) : base(_) { }
     private OneRClassificationModel(OneRClassificationModel original, Cloner cloner)
       : base(original, cloner) {
       this.variable = (string)original.variable;

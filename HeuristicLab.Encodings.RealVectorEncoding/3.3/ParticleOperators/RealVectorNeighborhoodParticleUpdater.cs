@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,19 +22,19 @@
 using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   [Item("Neighborhood Particle Updater", "Updates the particle's position using (among other things) the best neighbor's position. Point = Point + Velocity*Inertia + (PersonalBestPoint-Point)*Phi_P*r_p + (BestNeighborPoint-Point)*Phi_G*r_g.")]
-  [StorableClass]
+  [StorableType("D30B72C0-247D-466C-B677-0C99DBFEB2E4")]
   [NonDiscoverableType]
   [Obsolete("Use SPSO2011ParticleUpdater")]
   internal sealed class RealVectorNeighborhoodParticleUpdater : RealVectorParticleUpdater {
 
     #region Construction & Cloning
     [StorableConstructor]
-    private RealVectorNeighborhoodParticleUpdater(bool deserializing) : base(deserializing) { }
+    private RealVectorNeighborhoodParticleUpdater(StorableConstructorFlag _) : base(_) { }
     private RealVectorNeighborhoodParticleUpdater(RealVectorNeighborhoodParticleUpdater original, Cloner cloner) : base(original, cloner) { }
     public RealVectorNeighborhoodParticleUpdater() : base() { }
     public override IDeepCloneable Clone(Cloner cloner) {

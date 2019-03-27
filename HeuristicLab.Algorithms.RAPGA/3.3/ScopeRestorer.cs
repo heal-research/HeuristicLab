@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,7 +23,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.RAPGA {
   /// <summary>
@@ -33,7 +33,7 @@ namespace HeuristicLab.Algorithms.RAPGA {
   /// It adds all scopes in the list as sub-scopes to the current scope.
   /// </remarks>
   [Item("ScopeRestorer", "An operator that restores created offspring from a scope list. It adds all scopes in the list as sub-scopes to the current scope.")]
-  [StorableClass]
+  [StorableType("3246BDED-5177-4681-A2EF-2E9892AAED09")]
   public class ScopeRestorer : SingleSuccessorOperator {
     #region Parameter Properties
     public ScopeParameter CurrentScopeParameter {
@@ -54,7 +54,7 @@ namespace HeuristicLab.Algorithms.RAPGA {
     #endregion
 
     [StorableConstructor]
-    protected ScopeRestorer(bool deserializing) : base(deserializing) { }
+    protected ScopeRestorer(StorableConstructorFlag _) : base(_) { }
     protected ScopeRestorer(ScopeRestorer original, Cloner cloner) : base(original, cloner) { }
     public ScopeRestorer()
       : base() {

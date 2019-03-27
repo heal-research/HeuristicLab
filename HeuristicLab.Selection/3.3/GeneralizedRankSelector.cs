@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -27,14 +27,14 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Selection {
   /// <summary>
   /// The generalized rank selection operator selects qualities by rank with a varying focus on better qualities. It is implemented as described in Tate, D. M. and Smith, A. E. 1995. A genetic approach to the quadratic assignment problem. Computers & Operations Research, vol. 22, pp. 73-83.
   /// </summary>
   [Item("GeneralizedRankSelector", "The generalized rank selection operator selects qualities by rank with a varying focus on better qualities. It is implemented as described in Tate, D. M. and Smith, A. E. 1995. A genetic approach to the quadratic assignment problem. Computers & Operations Research, vol. 22, pp. 73-83.")]
-  [StorableClass]
+  [StorableType("6423609D-9C11-4CC5-99A1-39257A306DF6")]
   public sealed class GeneralizedRankSelector : StochasticSingleObjectiveSelector, ISelector {
 
     public IValueLookupParameter<DoubleValue> PressureParameter {
@@ -42,7 +42,7 @@ namespace HeuristicLab.Selection {
     }
 
     [StorableConstructor]
-    private GeneralizedRankSelector(bool deserializing) : base(deserializing) { }
+    private GeneralizedRankSelector(StorableConstructorFlag _) : base(_) { }
     private GeneralizedRankSelector(GeneralizedRankSelector original, Cloner cloner) : base(original, cloner) { }
     public GeneralizedRankSelector()
       : base() {

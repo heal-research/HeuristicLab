@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,10 +22,10 @@
 using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
-  [StorableClass]
+  [StorableType("9017554C-BB2A-45E1-9050-1260CB98D04A")]
   // conditionally positive definite. (need to add polynomials) see http://num.math.uni-goettingen.de/schaback/teaching/sc.pdf 
   [Item("MultiquadraticKernel", "A kernel function that uses the multi-quadratic function sqrt(1+||x-c||²/beta²). Similar to http://crsouza.com/2010/03/17/kernel-functions-for-machine-learning-applications/ with beta as a scaling factor.")]
   public class MultiquadraticKernel : KernelBase {
@@ -33,7 +33,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private const double C = 1.0;
 
     [StorableConstructor]
-    protected MultiquadraticKernel(bool deserializing) : base(deserializing) { }
+    protected MultiquadraticKernel(StorableConstructorFlag _) : base(_) { }
 
     protected MultiquadraticKernel(MultiquadraticKernel original, Cloner cloner) : base(original, cloner) { }
 

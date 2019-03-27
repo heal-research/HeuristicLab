@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,7 +26,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.QuadraticAssignment {
@@ -34,7 +34,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
   /// An operator for analyzing the diversity of solutions of Quadratic Assignment Problems regarding their structural identity (number of equal facilty->location assignments).
   /// </summary>
   [Item("QAPPopulationDiversityAnalyzer", "An operator for analyzing the diversity of solutions of Quadratic Assignment Problems regarding their structural identity (number of equal facilty->location assignments).")]
-  [StorableClass]
+  [StorableType("255DFAD4-14E4-4CFB-905F-BA521815F593")]
   [Obsolete("Use the PopulationSimilarityAnalyzer in the HeuristicLab.Analysis plugin instead.")]
   [NonDiscoverableType]
 #pragma warning disable 0612
@@ -51,7 +51,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
     }
 
     [StorableConstructor]
-    private QAPPopulationDiversityAnalyzer(bool deserializing) : base(deserializing) { }
+    private QAPPopulationDiversityAnalyzer(StorableConstructorFlag _) : base(_) { }
     private QAPPopulationDiversityAnalyzer(QAPPopulationDiversityAnalyzer original, Cloner cloner) : base(original, cloner) { }
     public QAPPopulationDiversityAnalyzer()
       : base() {

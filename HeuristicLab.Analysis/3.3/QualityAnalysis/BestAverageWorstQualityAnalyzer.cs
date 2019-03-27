@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -27,14 +27,14 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Analysis {
   /// <summary>
   /// An operator which analyzes the best, average and worst quality of solutions in the scope tree.
   /// </summary>
   [Item("BestAverageWorstQualityAnalyzer", "An operator which analyzes the best, average and worst quality of solutions in the scope tree.")]
-  [StorableClass]
+  [StorableType("D10450C6-A822-416E-ABC0-B2703317D5C1")]
   public sealed class BestAverageWorstQualityAnalyzer : AlgorithmOperator, IAnalyzer, ISingleObjectiveOperator {
     #region Parameter properties
     public ValueLookupParameter<BoolValue> MaximizationParameter {
@@ -86,7 +86,7 @@ namespace HeuristicLab.Analysis {
 
     #region Storing & Cloning
     [StorableConstructor]
-    private BestAverageWorstQualityAnalyzer(bool deserializing) : base(deserializing) { }
+    private BestAverageWorstQualityAnalyzer(StorableConstructorFlag _) : base(_) { }
     private BestAverageWorstQualityAnalyzer(BestAverageWorstQualityAnalyzer original, Cloner cloner)
       : base(original, cloner) {
       Initialize();

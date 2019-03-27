@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,14 +24,14 @@ using System.Drawing;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Parameters {
   /// <summary>
   /// A parameter whose value has to be chosen from a set of valid values or is null.
   /// </summary>
   [Item("OptionalConstrainedValueParameter", "A parameter whose value has to be chosen from a set of valid values or is null.")]
-  [StorableClass]
+  [StorableType("9B2BFAE8-CD6E-499C-83A0-401B6CEE3A08")]
   public class OptionalConstrainedValueParameter<T> : Parameter, IConstrainedValueParameter<T> where T : class, IItem {
     public override Image ItemImage {
       get {
@@ -87,7 +87,7 @@ namespace HeuristicLab.Parameters {
 
     #region Constructors
     [StorableConstructor]
-    protected OptionalConstrainedValueParameter(bool deserializing) : base(deserializing) { }
+    protected OptionalConstrainedValueParameter(StorableConstructorFlag _) : base(_) { }
     protected OptionalConstrainedValueParameter(OptionalConstrainedValueParameter<T> original, Cloner cloner)
       : base(original, cloner) {
       validValues = cloner.Clone(original.validValues);

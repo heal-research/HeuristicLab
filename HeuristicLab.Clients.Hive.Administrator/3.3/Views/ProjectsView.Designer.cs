@@ -193,7 +193,7 @@
       this.permissionsTabPage.Padding = new System.Windows.Forms.Padding(3);
       this.permissionsTabPage.Size = new System.Drawing.Size(577, 515);
       this.permissionsTabPage.TabIndex = 1;
-      this.permissionsTabPage.Text = "Permissions";
+      this.permissionsTabPage.Text = "Compute Permissions";
       this.permissionsTabPage.UseVisualStyleBackColor = true;
       // 
       // projectPermissionsView
@@ -259,6 +259,7 @@
       this.Name = "ProjectsView";
       this.Size = new System.Drawing.Size(853, 553);
       this.Load += new System.EventHandler(this.ProjectsView_Load);
+      this.Disposed += new System.EventHandler(this.ProjectsView_Disposed);
       this.splitContainer.Panel1.ResumeLayout(false);
       this.splitContainer.Panel2.ResumeLayout(false);
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();

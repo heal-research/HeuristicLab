@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,12 +24,12 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Clients.OKB.RunCreation {
   [Item("EmptySolutionCreator", "A dummy solution creator which throws an exception when executed.")]
-  [StorableClass]
+  [StorableType("A3793B3B-A85B-47D3-A3DB-D35565518598")]
   [NonDiscoverableType]
   public sealed class EmptySolutionCreator : Operator, ISolutionCreator {
     private string exceptionMessage;
@@ -50,7 +50,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
     #endregion
 
     [StorableConstructor]
-    private EmptySolutionCreator(bool deserializing) : base(deserializing) { }
+    private EmptySolutionCreator(StorableConstructorFlag _) : base(_) { }
     private EmptySolutionCreator(EmptySolutionCreator original, Cloner cloner)
       : base(original, cloner) {
       exceptionMessage = original.exceptionMessage;

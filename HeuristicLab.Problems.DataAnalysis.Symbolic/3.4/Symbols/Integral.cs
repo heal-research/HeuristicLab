@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,9 +21,9 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
-  [StorableClass]
+  [StorableType("217049E2-47B0-430A-808B-F667D5EEAE39")]
   [Item("Integral", "Represents the integral over the specified subtree.")]
   public sealed class Integral : LaggedSymbol {
     private const int minimumArity = 1;
@@ -37,7 +37,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     [StorableConstructor]
-    private Integral(bool deserializing) : base(deserializing) { }
+    private Integral(StorableConstructorFlag _) : base(_) { }
     private Integral(Integral original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) { return new Integral(this, cloner); }
 

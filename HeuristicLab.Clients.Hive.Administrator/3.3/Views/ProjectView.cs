@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2017 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -34,11 +34,9 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
   public partial class ProjectView : ItemView {
     private readonly object locker = new object();
 
-    private Guid persistedOwnerUserId;
-
     public new Project Content {
       get { return (Project)base.Content; }
-      set { base.Content = value; persistedOwnerUserId = Content != null ? Content.OwnerUserId : Guid.Empty; }
+      set { base.Content = value; }
     }
 
     public ProjectView() {
@@ -49,12 +47,6 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     }
 
     #region Overrides
-    protected override void OnClosing(FormClosingEventArgs e) {
-      AccessClient.Instance.Refreshed -= AccessClient_Instance_Refreshed;
-      AccessClient.Instance.Refreshing -= AccessClient_Instance_Refreshing;
-      base.OnClosing(e);
-    }
-
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
       Content.PropertyChanged += Content_PropertyChanged;
@@ -103,10 +95,13 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
         descriptionTextBox.Text = Content.Description;
 
         ownerComboBox.SelectedIndexChanged -= ownerComboBox_SelectedIndexChanged;
-        var users = AccessClient.Instance.UsersAndGroups.OfType<LightweightUser>();
-        if (!Content.ParentProjectId.HasValue) users = users.Where(x => x.Roles.Select(y => y.Name).Contains(HiveRoles.Administrator));
-        ownerComboBox.DataSource = users.ToList();
-        ownerComboBox.SelectedItem = users.FirstOrDefault(x => x.Id == Content.OwnerUserId);
+        if (AccessClient.Instance.UsersAndGroups != null) {
+          var users = AccessClient.Instance.UsersAndGroups.OfType<LightweightUser>();
+          if (!Content.ParentProjectId.HasValue) users = users.Where(x => x.Roles.Select(y => y.Name).Contains(HiveRoles.Administrator));
+          var projectOwnerId = Content.OwnerUserId;
+          ownerComboBox.DataSource = users.OrderBy(x => x.UserName).ToList();
+          ownerComboBox.SelectedItem = users.FirstOrDefault(x => x.Id == projectOwnerId);
+        }
         ownerComboBox.SelectedIndexChanged += ownerComboBox_SelectedIndexChanged;
 
         createdTextBox.Text = Content.DateCreated.ToString("ddd, dd.MM.yyyy, HH:mm:ss");
@@ -126,7 +121,6 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       bool enabled = Content != null && !Locked && !ReadOnly;
       nameTextBox.Enabled = enabled;
       descriptionTextBox.Enabled = enabled;
-      refreshButton.Enabled = enabled;
       ownerComboBox.Enabled = enabled;
       createdTextBox.Enabled = enabled;
       startDateTimePicker.Enabled = enabled;
@@ -160,8 +154,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     private void AccessClient_Instance_Refreshing(object sender, EventArgs e) {
       if (InvokeRequired) Invoke((Action<object, EventArgs>)AccessClient_Instance_Refreshing, sender, e);
       else {
-        var mainForm = MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>();
-        mainForm.AddOperationProgressToView(this, "Refreshing ...");
+        Progress.Show(this, "Refreshing ...", ProgressMode.Indeterminate);
         SetEnabledStateOfControls();
       }
     }
@@ -169,8 +162,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     private void AccessClient_Instance_Refreshed(object sender, EventArgs e) {
       if (InvokeRequired) Invoke((Action<object, EventArgs>)AccessClient_Instance_Refreshed, sender, e);
       else {
-        var mainForm = MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>();
-        mainForm.RemoveOperationProgressFromView(this);
+        Progress.Hide(this);
         SetEnabledStateOfControls();
       }
     }
@@ -182,28 +174,14 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
           ownerComboBox.SelectedIndexChanged -= ownerComboBox_SelectedIndexChanged;
           var users = AccessClient.Instance.UsersAndGroups.OfType<LightweightUser>();
           if (Content != null && !Content.ParentProjectId.HasValue) users = users.Where(x => x.Roles.Select(y => y.Name).Contains(HiveRoles.Administrator));
-          ownerComboBox.DataSource = users.ToList();
+          ownerComboBox.DataSource = users.OrderBy(x => x.UserName).ToList();
           ownerComboBox.SelectedIndexChanged += ownerComboBox_SelectedIndexChanged;
         });
     }
 
-    private async void refreshButton_Click(object sender, EventArgs e) {
-      lock (locker) {
-        if (!refreshButton.Enabled) return;
-        refreshButton.Enabled = false;
-      }
-
-      await SecurityExceptionUtil.TryAsyncAndReportSecurityExceptions(
-        action: () => UpdateUsers(),
-        finallyCallback: () => {
-          ownerComboBox.SelectedIndexChanged -= ownerComboBox_SelectedIndexChanged;
-          var users = AccessClient.Instance.UsersAndGroups.OfType<LightweightUser>();
-          if (Content != null && !Content.ParentProjectId.HasValue) users = users.Where(x => x.Roles.Select(y => y.Name).Contains(HiveRoles.Administrator));
-          ownerComboBox.DataSource = users.ToList();
-          ownerComboBox.SelectedItem = users.FirstOrDefault(x => x.Id == persistedOwnerUserId);
-          ownerComboBox.SelectedIndexChanged += ownerComboBox_SelectedIndexChanged;
-          refreshButton.Enabled = true;
-        });
+    private void ProjectView_Disposed(object sender, EventArgs e) {
+      AccessClient.Instance.Refreshed -= AccessClient_Instance_Refreshed;
+      AccessClient.Instance.Refreshing -= AccessClient_Instance_Refreshing;
     }
 
     private void nameTextBox_Validating(object sender, CancelEventArgs e) {

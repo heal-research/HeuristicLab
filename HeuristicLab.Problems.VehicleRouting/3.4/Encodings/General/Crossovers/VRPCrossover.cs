@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,12 +22,12 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
   [Item("VRPCrossover", "Crosses VRP solutions.")]
-  [StorableClass]
+  [StorableType("E26BAD0A-49E6-477C-AEA0-CB41552F0B2B")]
   public abstract class VRPCrossover : VRPOperator, IVRPCrossover {
     public ILookupParameter<ItemArray<IVRPEncoding>> ParentsParameter {
       get { return (ScopeTreeLookupParameter<IVRPEncoding>)Parameters["Parents"]; }
@@ -38,7 +38,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
     }
 
     [StorableConstructor]
-    protected VRPCrossover(bool deserializing) : base(deserializing) { }
+    protected VRPCrossover(StorableConstructorFlag _) : base(_) { }
 
     public VRPCrossover()
       : base() {

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,11 +22,11 @@
 using System.IO;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Data {
   [Item("FileValue", "Represents the path to a file.")]
-  [StorableClass]
+  [StorableType("55D686E9-29B7-41C2-8693-D1CA6E792765")]
   public class FileValue : PathValue {
     [Storable]
     private string fileDialogFilter;
@@ -43,7 +43,7 @@ namespace HeuristicLab.Data {
     public bool SaveFile { get; set; }
 
     [StorableConstructor]
-    protected FileValue(bool deserializing) : base(deserializing) { }
+    protected FileValue(StorableConstructorFlag _) : base(_) { }
     protected FileValue(FileValue original, Cloner cloner)
       : base(original, cloner) {
       fileDialogFilter = original.FileDialogFilter;

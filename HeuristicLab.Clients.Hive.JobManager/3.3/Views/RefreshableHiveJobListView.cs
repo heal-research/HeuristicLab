@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,7 +21,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using HeuristicLab.Collections;
@@ -46,13 +45,13 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       this.itemsListView.HeaderStyle = ColumnHeaderStyle.Clickable;
       this.itemsListView.FullRowSelect = true;
 
-      this.itemsListView.ListViewItemSorter = new ListViewItemComparer(new int[] { 2, 0 }, new SortOrder[] { SortOrder.Ascending, SortOrder.Ascending });      
+      this.itemsListView.ListViewItemSorter = new ListViewItemComparer(new int[] { 2, 0 }, new SortOrder[] { SortOrder.Ascending, SortOrder.Ascending });
 
       foreach (ColumnHeader c in this.itemsListView.Columns) {
         c.AutoResize(ColumnHeaderAutoResizeStyle.HeaderSize);
         int w = c.Width;
         c.AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
-        if(w > c.Width) {
+        if (w > c.Width) {
           c.AutoResize(ColumnHeaderAutoResizeStyle.HeaderSize);
         }
       }
@@ -119,7 +118,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
         var task = System.Threading.Tasks.Task.Factory.StartNew(DeleteHiveJobsAsync, items);
 
         task.ContinueWith((t) => {
-          MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().RemoveOperationProgressFromView(this);
+          Progress.Hide(this);
           ErrorHandling.ShowErrorDialog("An error occured while deleting the job. ", t.Exception);
         }, TaskContinuationOptions.OnlyOnFaulted);
 
@@ -130,11 +129,11 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
     }
 
     private void DeleteHiveJobsAsync(object items) {
-      MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().AddOperationProgressToView(this, "Deleting job...");
+      Progress.Show(this, "Deleting job...", ProgressMode.Indeterminate);
       foreach (RefreshableJob item in (List<RefreshableJob>)items) {
         Content.Remove(item);
       }
-      MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().RemoveOperationProgressFromView(this);
+      Progress.Hide(this);
     }
 
     protected override void Content_ItemsAdded(object sender, Collections.CollectionItemsChangedEventArgs<RefreshableJob> e) {
@@ -196,7 +195,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       listViewItem.SubItems.Insert(0, new ListViewItem.ListViewSubItem(listViewItem, item.Job.DateCreated.ToString()));
       listViewItem.SubItems.Insert(1, new ListViewItem.ListViewSubItem(listViewItem, item.Job.Name));
       listViewItem.SubItems.Insert(2, new ListViewItem.ListViewSubItem(listViewItem, HiveClient.Instance.GetProjectAncestry(item.Job.ProjectId)));
-      
+
       listViewItem.Group = GetListViewGroup(item.Job.OwnerUsername);
       return listViewItem;
     }

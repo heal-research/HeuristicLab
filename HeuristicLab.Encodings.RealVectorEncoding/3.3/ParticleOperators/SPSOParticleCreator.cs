@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,11 +25,11 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   [Item("Particle Creator (SPSO)", "Creates a particle with position, velocity vector and personal best.")]
-  [StorableClass]
+  [StorableType("A2BB1DB9-7E4A-4DEA-B469-612F26645E0B")]
   public class SPSOParticleCreator : AlgorithmOperator, IRealVectorParticleCreator, IStochasticOperator {
 
     #region Parameters
@@ -58,7 +58,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     
     #region Construction & Cloning
     [StorableConstructor]
-    protected SPSOParticleCreator(bool deserializing) : base(deserializing) { }
+    protected SPSOParticleCreator(StorableConstructorFlag _) : base(_) { }
     protected SPSOParticleCreator(SPSOParticleCreator original, Cloner cloner) : base(original, cloner) { }
     public SPSOParticleCreator()
       : base() {

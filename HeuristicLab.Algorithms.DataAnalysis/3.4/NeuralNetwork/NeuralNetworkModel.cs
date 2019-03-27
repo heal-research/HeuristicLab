@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,14 +24,14 @@ using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>
   /// Represents a neural network model for regression and classification
   /// </summary>
-  [StorableClass]
+  [StorableType("AEB9B960-FCA6-4A6D-BD5F-27BCE9CC5BEA")]
   [Item("NeuralNetworkModel", "Represents a neural network for regression and classification.")]
   public sealed class NeuralNetworkModel : ClassificationModel, INeuralNetworkModel {
 
@@ -47,10 +47,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     [Storable]
     private double[] classValues;
     [StorableConstructor]
-    private NeuralNetworkModel(bool deserializing)
-      : base(deserializing) {
-      if (deserializing)
-        multiLayerPerceptron = new alglib.multilayerperceptron();
+    private NeuralNetworkModel(StorableConstructorFlag _) : base(_) {
+      multiLayerPerceptron = new alglib.multilayerperceptron();
     }
     private NeuralNetworkModel(NeuralNetworkModel original, Cloner cloner)
       : base(original, cloner) {
@@ -131,6 +129,24 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         }
         yield return classValues[maxProbClassIndex];
       }
+    }
+
+    public bool IsProblemDataCompatible(IRegressionProblemData problemData, out string errorMessage) {
+      return RegressionModel.IsProblemDataCompatible(this, problemData, out errorMessage);
+    }
+
+    public override bool IsProblemDataCompatible(IDataAnalysisProblemData problemData, out string errorMessage) {
+      if (problemData == null) throw new ArgumentNullException("problemData", "The provided problemData is null.");
+
+      var regressionProblemData = problemData as IRegressionProblemData;
+      if (regressionProblemData != null)
+        return IsProblemDataCompatible(regressionProblemData, out errorMessage);
+
+      var classificationProblemData = problemData as IClassificationProblemData;
+      if (classificationProblemData != null)
+        return IsProblemDataCompatible(classificationProblemData, out errorMessage);
+
+      throw new ArgumentException("The problem data is not a regression nor a classification problem data. Instead a " + problemData.GetType().GetPrettyName() + " was provided.", "problemData");
     }
 
     public IRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData) {

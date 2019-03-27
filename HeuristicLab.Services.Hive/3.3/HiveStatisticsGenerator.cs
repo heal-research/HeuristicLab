@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -65,10 +65,10 @@ namespace HeuristicLab.Services.Hive {
           });
 
           pm.UseTransaction(() => {
-            UpdateFactTaskTable(pm);
             try {
-              pm.SubmitChanges();
+              UpdateFactTaskTable(pm);
               UpdateExistingDimJobs(pm);
+              FlagJobsForDeletion(pm);
               pm.SubmitChanges();
             }
             catch (DuplicateKeyException e) {
@@ -80,11 +80,6 @@ namespace HeuristicLab.Services.Hive {
             }
           });
         }
-
-        pm.UseTransaction(() => {
-          FlagJobsForDeletion(pm);
-          pm.SubmitChanges();
-        });
       }
     }
 

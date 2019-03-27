@@ -1,6 +1,7 @@
-﻿#region License Information
+﻿using HEAL.Attic;
+#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,6 +21,7 @@
 #endregion
 
 namespace HeuristicLab.Problems.DataAnalysis.Trading {
+  [StorableType("d9064ce1-75cc-4c53-9ee7-a6309bf19dfa")]
   public interface IProblemData : IDataAnalysisProblemData {
     string PriceChangeVariable { get; }
     double TransactionCosts { get; }

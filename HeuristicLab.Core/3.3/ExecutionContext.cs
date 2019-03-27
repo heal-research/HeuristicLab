@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,10 +21,10 @@
 
 using System;
 using HeuristicLab.Common;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Core {
-  [StorableClass]
+  [StorableType("83851945-1115-4C08-BD46-318A1FFC54E2")]
   public sealed class ExecutionContext : DeepCloneable, IExecutionContext, IAtomicOperation {
     [Storable]
     private IParameterizedItem parameterizedItem;
@@ -50,7 +50,7 @@ namespace HeuristicLab.Core {
     }
 
     [StorableConstructor]
-    private ExecutionContext(bool deserializing) { }
+    private ExecutionContext(StorableConstructorFlag _) { }
     private ExecutionContext(ExecutionContext original, Cloner cloner)
       : base(original, cloner) {
       parent = cloner.Clone(original.parent);

@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,13 +24,13 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Trading {
   /// <summary>
   /// Abstract base class for trading data analysis solutions
   /// </summary>
-  [StorableClass]
+  [StorableType("1AF0637D-7F29-4A57-8CC8-3AAFA402473F")]
   public abstract class Solution : DataAnalysisSolution, ISolution {
     private const string TrainingSharpeRatioResultName = "Sharpe ratio (training)";
     private const string TestSharpeRatioResultName = "Sharpe ratio (test)";
@@ -67,7 +67,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Trading {
     }
 
     [StorableConstructor]
-    protected Solution(bool deserializing) : base(deserializing) { }
+    protected Solution(StorableConstructorFlag _) : base(_) { }
     protected Solution(Solution original, Cloner cloner)
       : base(original, cloner) {
     }

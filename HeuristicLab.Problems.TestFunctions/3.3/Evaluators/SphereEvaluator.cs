@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,7 +25,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TestFunctions {
   /// <summary>
@@ -33,7 +33,7 @@ namespace HeuristicLab.Problems.TestFunctions {
   /// It is implemented as described in Beyer, H.-G. and Schwefel, H.-P. 2002. Evolution Strategies - A Comprehensive Introduction Natural Computing, 1, pp. 3-52.
   /// </summary>
   [Item("SphereEvaluator", "Evaluates the Sphere function y = C * ||X||^Alpha on a given point. The optimum of this function is 0 at the origin. It is implemented as described in Beyer, H.-G. and Schwefel, H.-P. 2002. Evolution Strategies - A Comprehensive Introduction Natural Computing, 1, pp. 3-52.")]
-  [StorableClass]
+  [StorableType("F40E2FAA-0491-41EA-9B25-57A87DD2AD25")]
   public class SphereEvaluator : SingleObjectiveTestFunctionProblemEvaluator {
     public override string FunctionName { get { return "Sphere"; } }
     /// <summary>
@@ -103,7 +103,7 @@ namespace HeuristicLab.Problems.TestFunctions {
     }
 
     [StorableConstructor]
-    protected SphereEvaluator(bool deserializing) : base(deserializing) { }
+    protected SphereEvaluator(StorableConstructorFlag _) : base(_) { }
     protected SphereEvaluator(SphereEvaluator original, Cloner cloner) : base(original, cloner) { }
     /// <summary>
     /// Initializes a new instance of the SphereEvaluator with two parameters (<c>C</c> and <c>Alpha</c>).

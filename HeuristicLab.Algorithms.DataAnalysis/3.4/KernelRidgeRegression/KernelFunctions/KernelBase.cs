@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,10 +25,10 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
-  [StorableClass]
+  [StorableType("3449B830-E1E5-4176-B56D-AA32235F061B")]
   public abstract class KernelBase : ParameterizedNamedItem, IKernel {
 
     private const string DistanceParameterName = "Distance";
@@ -59,7 +59,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     [StorableConstructor]
-    protected KernelBase(bool deserializing) : base(deserializing) { }
+    protected KernelBase(StorableConstructorFlag _) : base(_) { }
 
     protected KernelBase(KernelBase original, Cloner cloner)
       : base(original, cloner) {

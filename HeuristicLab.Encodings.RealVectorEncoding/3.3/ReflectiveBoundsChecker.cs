@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,7 +25,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// <summary>
@@ -33,7 +33,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// If not, the elements are mirrored at the bounds.
   /// </summary>
   [Item("ReflectiveBoundsChecker", "Checks if all elements of a real vector are inside the bounds. If not, elements are mirrored at the bounds.")]
-  [StorableClass]
+  [StorableType("9F043D1C-1F6F-4E53-95F5-ECDBD7C7FF90")]
   public class ReflectiveBoundsChecker : SingleSuccessorOperator, IRealVectorBoundsChecker {
     public LookupParameter<RealVector> RealVectorParameter {
       get { return (LookupParameter<RealVector>)Parameters["RealVector"]; }
@@ -43,7 +43,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     }
 
     [StorableConstructor]
-    protected ReflectiveBoundsChecker(bool deserializing) : base(deserializing) { }
+    protected ReflectiveBoundsChecker(StorableConstructorFlag _) : base(_) { }
     protected ReflectiveBoundsChecker(ReflectiveBoundsChecker original, Cloner cloner) : base(original, cloner) { }
     /// <summary>
     /// Initializes a new instance of <see cref="ReflectiveBoundsChecker"/> with two parameters

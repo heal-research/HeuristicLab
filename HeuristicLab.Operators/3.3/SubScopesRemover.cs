@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,14 +23,14 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Operators {
   /// <summary>
   /// An operator which removes all sub-scopes or one specified sub-scope from the current scope.
   /// </summary>
   [Item("SubScopesRemover", "An operator which removes all sub-scopes or one specified sub-scope from the current scope.")]
-  [StorableClass]
+  [StorableType("A9624A3A-F8E9-4B8C-AE89-D243987F3505")]
   public sealed class SubScopesRemover : SingleSuccessorOperator {
     private ValueParameter<BoolValue> RemoveAllSubScopesParameter {
       get { return (ValueParameter<BoolValue>)Parameters["RemoveAllSubScopes"]; }
@@ -51,7 +51,7 @@ namespace HeuristicLab.Operators {
     }
 
     [StorableConstructor]
-    private SubScopesRemover(bool deserializing) : base(deserializing) { }
+    private SubScopesRemover(StorableConstructorFlag _) : base(_) { }
     private SubScopesRemover(SubScopesRemover original, Cloner cloner)
       : base(original, cloner) {
     }

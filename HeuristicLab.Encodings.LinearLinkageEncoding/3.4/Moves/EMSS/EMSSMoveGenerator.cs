@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,11 +24,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.LinearLinkageEncoding {
   [Item("EMSSMoveGenerator", "Base class for all EMSS move generators (extract, merge, shift, and split).")]
-  [StorableClass]
+  [StorableType("471A0A7B-30DD-4B29-97EE-9B3F7FAED582")]
   public abstract class EMSSMoveGenerator : SingleSuccessorOperator, ILinearLinkageEMSSMoveOperator, IMoveGenerator {
     public override bool CanChangeName {
       get { return false; }
@@ -41,7 +41,7 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
     }
 
     [StorableConstructor]
-    protected EMSSMoveGenerator(bool deserializing) : base(deserializing) { }
+    protected EMSSMoveGenerator(StorableConstructorFlag _) : base(_) { }
     protected EMSSMoveGenerator(EMSSMoveGenerator original, Cloner cloner) : base(original, cloner) { }
     public EMSSMoveGenerator()
       : base() {

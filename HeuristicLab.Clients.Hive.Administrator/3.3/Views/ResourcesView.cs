@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2017 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -53,7 +53,6 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     private readonly Color grayTextColor = SystemColors.GrayText;
 
 
-
     private TreeNode ungroupedGroupNode;
 
     private Resource selectedResource = null;
@@ -63,6 +62,8 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     }
 
     private readonly object locker = new object();
+    private bool refreshingInternal = false;
+    private bool refreshingExternal = false;
 
     public new IItemList<Resource> Content {
       get { return (IItemList<Resource>)base.Content; }
@@ -77,19 +78,9 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
 
       HiveAdminClient.Instance.Refreshing += HiveAdminClient_Instance_Refreshing;
       HiveAdminClient.Instance.Refreshed += HiveAdminClient_Instance_Refreshed;
-      AccessClient.Instance.Refreshing += AccessClient_Instance_Refreshing;
-      AccessClient.Instance.Refreshed += AccessClient_Instance_Refreshed;
     }
 
     #region Overrides
-    protected override void OnClosing(FormClosingEventArgs e) {
-      AccessClient.Instance.Refreshed -= AccessClient_Instance_Refreshed;
-      AccessClient.Instance.Refreshing -= AccessClient_Instance_Refreshing;
-      HiveAdminClient.Instance.Refreshed -= HiveAdminClient_Instance_Refreshed;
-      HiveAdminClient.Instance.Refreshing -= HiveAdminClient_Instance_Refreshing;
-      base.OnClosing(e);
-    }
-
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
       Content.ItemsAdded += Content_ItemsAdded;
@@ -184,8 +175,12 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     private void HiveAdminClient_Instance_Refreshing(object sender, EventArgs e) {
       if (InvokeRequired) Invoke((Action<object, EventArgs>)HiveAdminClient_Instance_Refreshing, sender, e);
       else {
-        var mainForm = MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>();
-        mainForm.AddOperationProgressToView(this, "Refreshing ...");
+        lock (locker) {
+          if (refreshingExternal) return;
+          if (!refreshingInternal) refreshingExternal = true;
+        }
+
+        Progress.Show(this, "Refreshing ...", ProgressMode.Indeterminate);
         SetEnabledStateOfControls();
       }
     }
@@ -193,33 +188,21 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     private void HiveAdminClient_Instance_Refreshed(object sender, EventArgs e) {
       if (InvokeRequired) Invoke((Action<object, EventArgs>)HiveAdminClient_Instance_Refreshed, sender, e);
       else {
-        var mainForm = MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>();
-        mainForm.RemoveOperationProgressFromView(this);
-        SetEnabledStateOfControls();
-      }
-    }
+        if (refreshingExternal) refreshingExternal = false;
+        Content = HiveAdminClient.Instance.Resources;
 
-    private void AccessClient_Instance_Refreshing(object sender, EventArgs e) {
-      if (InvokeRequired) Invoke((Action<object, EventArgs>)AccessClient_Instance_Refreshing, sender, e);
-      else {
-        var mainForm = MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>();
-        mainForm.AddOperationProgressToView(this, "Refreshing ...");
-        SetEnabledStateOfControls();
-      }
-    }
-
-    private void AccessClient_Instance_Refreshed(object sender, EventArgs e) {
-      if (InvokeRequired) Invoke((Action<object, EventArgs>)AccessClient_Instance_Refreshed, sender, e);
-      else {
-        var mainForm = MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>();
-        mainForm.RemoveOperationProgressFromView(this);
+        Progress.Hide(this);
         SetEnabledStateOfControls();
       }
     }
 
     private async void ResourcesView_Load(object sender, EventArgs e) {
-      await SecurityExceptionUtil.TryAsyncAndReportSecurityExceptions(
-        action: () => UpdateResources());
+      await SecurityExceptionUtil.TryAsyncAndReportSecurityExceptions(() => UpdateResources());
+    }
+
+    private void ResourcesView_Disposed(object sender, EventArgs e) {
+      HiveAdminClient.Instance.Refreshed -= HiveAdminClient_Instance_Refreshed;
+      HiveAdminClient.Instance.Refreshing -= HiveAdminClient_Instance_Refreshing;
     }
 
     private async void btnRefresh_Click(object sender, EventArgs e) {
@@ -246,7 +229,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       Content.Add(group);
     }
 
-    private async void btnRemoveGroup_Click(object sender, EventArgs e) {      
+    private async void btnRemoveGroup_Click(object sender, EventArgs e) {
       var nodes = GetCheckedNodes(treeView.Nodes).ToList();
       var checkedResources = nodes.Select(x => x.Tag).OfType<Resource>().ToList();
       if (selectedResource == null && !checkedResources.Any()) return;
@@ -553,11 +536,17 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     }
 
     private void UpdateResources() {
+      lock (locker) {
+        if (refreshingInternal || refreshingExternal) return;
+        refreshingInternal = true;
+      }
+
       try {
         HiveAdminClient.Instance.Refresh();
-        Content = HiveAdminClient.Instance.Resources;
       } catch (AnonymousUserException) {
         ShowHiveInformationDialog();
+      } finally {
+        refreshingInternal = false;
       }
     }
 
@@ -573,7 +562,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
           if (newResources.Any(x => x.Id != Guid.Empty)) return;
           foreach (var nr in newResources) Content.Remove(nr);
 
-          HiveAdminClient.Delete(resource);          
+          HiveAdminClient.Delete(resource);
           UpdateResources();
         } else {
           SelectedResource = Content.FirstOrDefault(x => x.Id == resource.ParentResourceId);
@@ -587,12 +576,12 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     private void RemoveResource(IEnumerable<Resource> resources) {
       if (resources == null || !resources.Any()) return;
 
-      var ids = resources.Select(x => x.Id).ToList();      
+      var ids = resources.Select(x => x.Id).ToList();
       try {
         bool update = false;
-        foreach (var r in resources) {          
-          if (r.Id != Guid.Empty)  {
-            if(r.Id == SelectedResource.Id)
+        foreach (var r in resources) {
+          if (r.Id != Guid.Empty) {
+            if (r.Id == SelectedResource.Id)
               SelectedResource = HiveAdminClient.Instance.GetAvailableResourceAncestors(r.Id).LastOrDefault();
 
             // deal with all new, but not yet saved resources
@@ -750,7 +739,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       var resources = Content.Union(HiveAdminClient.Instance.DisabledParentResources).ToList();
 
       foreach (var r in resources) {
-        if(!resourceDescendants.ContainsKey(r.Id))
+        if (!resourceDescendants.ContainsKey(r.Id))
           resourceDescendants.Add(r.Id, new HashSet<Resource>());
       }
       foreach (var r in resources) {

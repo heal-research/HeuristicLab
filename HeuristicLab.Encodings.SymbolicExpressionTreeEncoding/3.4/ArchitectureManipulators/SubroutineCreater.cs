@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -27,7 +27,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
@@ -37,7 +37,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   /// As described in Koza, Bennett, Andre, Keane, Genetic Programming III - Darwinian Invention and Problem Solving, 1999, pp. 97
   /// </summary>
   [Item("SubroutineCreater", "Manipulates a symbolic expression by adding one new function-defining branch containing a proportion of a preexisting branch and by creating a reference to the new branch. As described in Koza, Bennett, Andre, Keane, Genetic Programming III - Darwinian Invention and Problem Solving, 1999, pp. 97")]
-  [StorableClass]
+  [StorableType("2F1F0953-534F-495C-B9C5-2C64D85E9AE2")]
   public sealed class SubroutineCreater : SymbolicExpressionTreeArchitectureManipulator, ISymbolicExpressionTreeSizeConstraintOperator {
     private const double ARGUMENT_CUTOFF_PROBABILITY = 0.05;
     private const string MaximumSymbolicExpressionTreeLengthParameterName = "MaximumSymbolicExpressionTreeLength";
@@ -59,7 +59,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
     #endregion
     [StorableConstructor]
-    private SubroutineCreater(bool deserializing) : base(deserializing) { }
+    private SubroutineCreater(StorableConstructorFlag _) : base(_) { }
     private SubroutineCreater(SubroutineCreater original, Cloner cloner) : base(original, cloner) { }
     public SubroutineCreater()
       : base() {

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,12 +26,12 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Encodings.LinearLinkageEncoding {
   [Item("Split Group Manipulator", "Performs a maximum of N split operations on the groups. An already split group may be split again.")]
-  [StorableClass]
+  [StorableType("789781B8-0047-4880-ACAF-077A934AD320")]
   public sealed class SplitGroupManipulator : LinearLinkageManipulator {
 
     public IValueLookupParameter<IntValue> NParameter {
@@ -39,7 +39,7 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
     }
 
     [StorableConstructor]
-    private SplitGroupManipulator(bool deserializing) : base(deserializing) { }
+    private SplitGroupManipulator(StorableConstructorFlag _) : base(_) { }
     private SplitGroupManipulator(SplitGroupManipulator original, Cloner cloner) : base(original, cloner) { }
     public SplitGroupManipulator() {
       Parameters.Add(new ValueLookupParameter<IntValue>("N", "The number of groups to split.", new IntValue(1)));

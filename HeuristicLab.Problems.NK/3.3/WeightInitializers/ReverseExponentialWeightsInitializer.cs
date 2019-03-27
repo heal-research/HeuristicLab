@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,14 +23,14 @@ using System;
 using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.NK {
   [Item("ReverseExponentialWeightsInitializer", "Assigns exponentially decreasing weights.")]
-  [StorableClass]
+  [StorableType("DF84DB40-3B0D-4047-ABAC-4962D970A08A")]
   public sealed class ReverseExponentialWeightsInitializer : ParameterizedNamedItem, IWeightsInitializer {
     [StorableConstructor]
-    private ReverseExponentialWeightsInitializer(bool deserializing) : base(deserializing) { }
+    private ReverseExponentialWeightsInitializer(StorableConstructorFlag _) : base(_) { }
     private ReverseExponentialWeightsInitializer(ReverseExponentialWeightsInitializer original, Cloner cloner)
       : base(original, cloner) {
     }

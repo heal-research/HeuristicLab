@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,14 +23,14 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
   /// <summary>
   /// An operator that collects the validation Pareto-best symbolic classification solutions for single objective symbolic classification problems.
   /// </summary>
   [Item("SymbolicClassificationSingleObjectiveValidationParetoBestSolutionAnalyzer", "An operator that collects the validation Pareto-best symbolic classification solutions for single objective symbolic classification problems.")]
-  [StorableClass]
+  [StorableType("DCD4AFE1-B6E5-4A97-BEB3-1BF3E336DD78")]
   public sealed class SymbolicClassificationSingleObjectiveValidationParetoBestSolutionAnalyzer : SymbolicDataAnalysisSingleObjectiveValidationParetoBestSolutionAnalyzer<ISymbolicClassificationSolution, ISymbolicClassificationSingleObjectiveEvaluator, IClassificationProblemData>, ISymbolicClassificationModelCreatorOperator {
     private const string ModelCreatorParameterName = "ModelCreator";
     #region parameter properties
@@ -43,7 +43,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     #endregion
 
     [StorableConstructor]
-    private SymbolicClassificationSingleObjectiveValidationParetoBestSolutionAnalyzer(bool deserializing) : base(deserializing) { }
+    private SymbolicClassificationSingleObjectiveValidationParetoBestSolutionAnalyzer(StorableConstructorFlag _) : base(_) { }
     private SymbolicClassificationSingleObjectiveValidationParetoBestSolutionAnalyzer(SymbolicClassificationSingleObjectiveValidationParetoBestSolutionAnalyzer original, Cloner cloner) : base(original, cloner) { }
     public SymbolicClassificationSingleObjectiveValidationParetoBestSolutionAnalyzer()
       : base() {

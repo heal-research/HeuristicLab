@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -27,14 +27,14 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Operators {
   /// <summary>
   /// Selects one of its branches (if there are any) given a list of relative probabilities.
   /// </summary>
   [Item("StochasticMultiBranch", "Selects one of its branches (if there are any) given a list of relative probabilities.")]
-  [StorableClass]
+  [StorableType("9BD4C2C2-945F-4FAD-AE19-28C0D66BE476")]
   public abstract class StochasticMultiBranch<T> : CheckedMultiOperator<T> where T : class, IOperator {
     /// <summary>
     /// Should return true if the StochasticMultiOperator should create a new child operation with the selected successor
@@ -61,7 +61,7 @@ namespace HeuristicLab.Operators {
     }
 
     [StorableConstructor]
-    protected StochasticMultiBranch(bool deserializing) : base(deserializing) { }
+    protected StochasticMultiBranch(StorableConstructorFlag _) : base(_) { }
     protected StochasticMultiBranch(StochasticMultiBranch<T> original, Cloner cloner)
       : base(original, cloner) {
     }
@@ -175,10 +175,10 @@ namespace HeuristicLab.Operators {
   /// Selects one of its branches (if there are any) given a list of relative probabilities.
   /// </summary>
   [Item("StochasticMultiBranch", "Selects one of its branches (if there are any) given a list of relative probabilities.")]
-  [StorableClass]
+  [StorableType("33C9B48B-10F7-4832-9F5F-1421A4467A87")]
   public class StochasticMultiBranch : StochasticMultiBranch<IOperator> {
     [StorableConstructor]
-    protected StochasticMultiBranch(bool deserializing) : base(deserializing) { }
+    protected StochasticMultiBranch(StorableConstructorFlag _) : base(_) { }
     protected StochasticMultiBranch(StochasticMultiBranch original, Cloner cloner)
       : base(original, cloner) {
     }

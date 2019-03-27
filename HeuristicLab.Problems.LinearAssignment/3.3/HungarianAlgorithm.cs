@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -27,7 +27,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.LinearAssignment {
   /// <summary>
@@ -35,7 +35,7 @@ namespace HeuristicLab.Problems.LinearAssignment {
   /// </summary>
   [Item("Hungarian Algorithm", "The Hungarian algorithm can be used to solve the linear assignment problem in O(n^3). It is also known as the Kuhn–Munkres algorithm or Munkres assignment algorithm.")]
   [Creatable(CreatableAttribute.Categories.SingleSolutionAlgorithms, Priority = 170)]
-  [StorableClass]
+  [StorableType("2A2C1C1B-E0C3-4757-873B-C3F7C6D11A01")]
   public sealed class HungarianAlgorithm : EngineAlgorithm, IStorableContent {
     public string Filename { get; set; }
 
@@ -66,7 +66,7 @@ namespace HeuristicLab.Problems.LinearAssignment {
     #endregion
 
     [StorableConstructor]
-    private HungarianAlgorithm(bool deserializing) : base(deserializing) { }
+    private HungarianAlgorithm(StorableConstructorFlag _) : base(_) { }
     private HungarianAlgorithm(HungarianAlgorithm original, Cloner cloner)
       : base(original, cloner) {
       RegisterEventHandlers();

@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -40,15 +40,19 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         {"/", new Division()},
         {"*", new Multiplication()},
         {"-", new Subtraction()},
+        {"ABS", new Absolute() },
         {"EXP", new Exponential()},
         {"LOG", new Logarithm()},
         {"POW", new Power()},
         {"ROOT", new Root()},
         {"SQR", new Square()},
         {"SQRT", new SquareRoot()},
+        {"CUBE", new Cube()},
+        {"CUBEROOT", new CubeRoot()},
         {"SIN",new Sine()},
         {"COS", new Cosine()},
         {"TAN", new Tangent()},
+        {"TANH", new HyperbolicTangent ()},
         {"AIRYA", new AiryA()},
         {"AIRYB", new AiryB()},
         {"BESSEL", new Bessel()},
@@ -64,6 +68,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         {"PSI", new Psi()},
         {"DAWSON", new Dawson()},
         {"EXPINT", new ExponentialIntegralEi()},
+        {"AQ", new AnalyticQuotient() },
         {"MEAN", new Average()},
         {"IF", new IfThenElse()},
         {">", new GreaterThan()},

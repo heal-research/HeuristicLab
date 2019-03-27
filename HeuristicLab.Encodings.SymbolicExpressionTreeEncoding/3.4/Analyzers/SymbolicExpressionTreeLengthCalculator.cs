@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,14 +24,14 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   /// <summary>
   /// An operator that outputs the length of a symbolic expression tree.
   /// </summary>
   [Item("SymbolicExpressionTreeLengthCalculator", "An operator that outputs the length of a symbolic expression tree.")]
-  [StorableClass]
+  [StorableType("33E2EF4F-AA65-4E23-9E8C-0D0674A4186B")]
   public sealed class SymbolicExpressionTreeLengthCalculator : SingleSuccessorOperator {
     private const string SymbolicExpressionTreeParameterName = "SymbolicExpressionTree";
     private const string SymbolicExpressionTreeLengthParameterName = "SymbolicExpressionTreeLength";
@@ -56,7 +56,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     #endregion
 
     [StorableConstructor]
-    private SymbolicExpressionTreeLengthCalculator(bool deserializing) : base(deserializing) { }
+    private SymbolicExpressionTreeLengthCalculator(StorableConstructorFlag _) : base(_) { }
     private SymbolicExpressionTreeLengthCalculator(SymbolicExpressionTreeLengthCalculator original, Cloner cloner) : base(original, cloner) { }
     public SymbolicExpressionTreeLengthCalculator()
       : base() {

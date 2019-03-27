@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,10 +25,10 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  [StorableClass]
+  [StorableType("CAE567A8-86A4-4554-BF89-79FFFB4204D1")]
   [Item("Constant Model", "A model that always returns the same constant value regardless of the presented input data.")]
   public class ConstantModel : RegressionModel, IClassificationModel, ITimeSeriesPrognosisModel, IStringConvertibleValue {
     public override IEnumerable<string> VariablesUsedForPrediction { get { return Enumerable.Empty<string>(); } }
@@ -42,7 +42,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     [StorableConstructor]
-    protected ConstantModel(bool deserializing) : base(deserializing) { }
+    protected ConstantModel(StorableConstructorFlag _) : base(_) { }
     protected ConstantModel(ConstantModel original, Cloner cloner)
       : base(original, cloner) {
       this.constant = original.constant;
@@ -80,6 +80,24 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public override string ToString() {
       return string.Format("Constant: {0}", GetValue());
+    }
+
+    public virtual bool IsProblemDataCompatible(IClassificationProblemData problemData, out string errorMessage) {
+      return ClassificationModel.IsProblemDataCompatible(this, problemData, out errorMessage);
+    }
+
+    public override bool IsProblemDataCompatible(IDataAnalysisProblemData problemData, out string errorMessage) {
+      if (problemData == null) throw new ArgumentNullException("problemData", "The provided problemData is null.");
+
+      var regressionProblemData = problemData as IRegressionProblemData;
+      if (regressionProblemData != null)
+        return IsProblemDataCompatible(regressionProblemData, out errorMessage);
+
+      var classificationProblemData = problemData as IClassificationProblemData;
+      if (classificationProblemData != null)
+        return IsProblemDataCompatible(classificationProblemData, out errorMessage);
+
+      throw new ArgumentException("The problem data is not a regression nor a classification problem data. Instead a " + problemData.GetType().GetPrettyName() + " was provided.", "problemData");
     }
 
     #region IStringConvertibleValue

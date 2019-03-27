@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -33,7 +33,6 @@ namespace HeuristicLab.Problems.TestFunctions {
     private double moveDistance;
     private RealVector vector;
 
-    private RealVectorAdditiveMoveWrapper(bool deserializing) : base(deserializing) { }
     private RealVectorAdditiveMoveWrapper(RealVectorAdditiveMoveWrapper original, Cloner cloner)
       : base(original, cloner) {
       this.dimension = original.dimension;

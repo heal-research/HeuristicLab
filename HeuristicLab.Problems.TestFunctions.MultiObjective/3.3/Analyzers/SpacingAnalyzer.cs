@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,10 +24,10 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
-  [StorableClass]
+  [StorableType("F32027A7-3116-4864-A404-820F866BFD65")]
   [Item("SpacingAnalyzer", "The spacing of the current front (see Multi-Objective Performance Metrics - Shodhganga for more information)")]
   public class SpacingAnalyzer : MOTFAnalyzer {
 
@@ -35,7 +35,7 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
       get { return (IResultParameter<DoubleValue>)Parameters["Spacing"]; }
     }
     [StorableConstructor]
-    protected SpacingAnalyzer(bool deserializing) : base(deserializing) { }
+    protected SpacingAnalyzer(StorableConstructorFlag _) : base(_) { }
 
 
     protected SpacingAnalyzer(SpacingAnalyzer original, Cloner cloner) : base(original, cloner) { }

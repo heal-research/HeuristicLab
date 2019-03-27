@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,11 +25,11 @@ using System.IO;
 using Google.ProtocolBuffers;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.ExternalEvaluation {
   [Item("EvaluationProcessChannel", "A channel that launches an external application in a new process and communicates with that process via stdin and stdout.")]
-  [StorableClass]
+  [StorableType("ECC07782-60E0-483C-8632-476697A058D2")]
   public class EvaluationProcessChannel : EvaluationChannel {
 
     #region Fields & Properties
@@ -63,7 +63,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
 
     #region Construction & Cloning
     [StorableConstructor]
-    protected EvaluationProcessChannel(bool deserializing) : base(deserializing) { }
+    protected EvaluationProcessChannel(StorableConstructorFlag _) : base(_) { }
     protected EvaluationProcessChannel(EvaluationProcessChannel original, Cloner cloner)
       : base(original, cloner) {
       executable = original.executable;

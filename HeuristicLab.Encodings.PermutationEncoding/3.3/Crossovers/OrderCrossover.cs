@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,7 +22,7 @@
 using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   /// <summary>
@@ -35,10 +35,10 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
   /// in the order they occur.
   /// </remarks>
   [Item("OrderCrossover", "An operator which performs an order crossover of two permutations. It is implemented as described in Eiben, A.E. and Smith, J.E. 2003. Introduction to Evolutionary Computation. Natural Computing Series, Springer-Verlag Berlin Heidelberg.")]
-  [StorableClass]
+  [StorableType("DEF33012-C7C5-4C09-8FCD-1145353D06A2")]
   public class OrderCrossover : PermutationCrossover {
     [StorableConstructor]
-    protected OrderCrossover(bool deserializing) : base(deserializing) { }
+    protected OrderCrossover(StorableConstructorFlag _) : base(_) { }
     protected OrderCrossover(OrderCrossover original, Cloner cloner) : base(original, cloner) { }
     public OrderCrossover() : base() { }
 

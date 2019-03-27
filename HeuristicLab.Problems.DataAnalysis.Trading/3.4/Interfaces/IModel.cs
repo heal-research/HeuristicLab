@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,7 +20,10 @@
 #endregion
 
 using System.Collections.Generic;
+using HEAL.Attic;
+
 namespace HeuristicLab.Problems.DataAnalysis.Trading {
+  [StorableType("5eda7fa0-a735-4192-ac49-70232306c034")]
   public interface IModel : IDataAnalysisModel {
     IEnumerable<double> GetSignals(IDataset dataset, IEnumerable<int> rows);
   }

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -37,6 +37,8 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
   /// Handles commands sent from the Hive Server and does all webservice calls for jobs. 
   /// </summary>
   public class Core : MarshalByRefObject {
+    private static readonly object locker = new object();
+
     private static HeartbeatManager heartbeatManager;
     public static HeartbeatManager HeartbeatManager {
       get { return heartbeatManager; }
@@ -239,9 +241,13 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
       try {
         task = wcfService.GetTask(taskId);
         if (task == null) throw new TaskNotFoundException(taskId);
-        if (ConfigManager.Instance.GetFreeCores() < task.CoresNeeded) throw new OutOfCoresException();
-        if (ConfigManager.Instance.GetFreeMemory() < task.MemoryNeeded) throw new OutOfMemoryException();
-        SlaveStatusInfo.IncrementUsedCores(task.CoresNeeded); usedCores = task.CoresNeeded;
+        lock (locker) {
+          // the amount of used cores/memory could exceed the amount of available cores/memory
+          // if HandleCalculateTask is called simultaneously from within two different tasks
+          if (ConfigManager.Instance.GetFreeCores() < task.CoresNeeded) throw new OutOfCoresException();
+          if (ConfigManager.Instance.GetFreeMemory() < task.MemoryNeeded) throw new OutOfMemoryException();
+          SlaveStatusInfo.IncrementUsedCores(task.CoresNeeded); usedCores = task.CoresNeeded;
+        }
         TaskData taskData = wcfService.GetTaskData(taskId);
         if (taskData == null) throw new TaskDataNotFoundException(taskId);
         task = wcfService.UpdateJobState(taskId, TaskState.Calculating, null);
@@ -399,6 +405,9 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
     }
 
     private void taskManager_TaskAborted(object sender, EventArgs<SlaveTask> e) {
+      var slaveTask = e.Value;
+      var task = wcfService.GetTask(slaveTask.TaskId);
+      wcfService.UpdateJobState(task.Id, TaskState.Aborted, null);
       SlaveStatusInfo.DecrementUsedCores(e.Value.CoresNeeded);
     }
     #endregion

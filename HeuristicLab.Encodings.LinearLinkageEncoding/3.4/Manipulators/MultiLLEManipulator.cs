@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,19 +22,18 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Encodings.LinearLinkageEncoding {
   [Item("Multi LLE Manipulator", "Randomly selects and applies one of its manipulators every time it is called.")]
-  [StorableClass]
+  [StorableType("7D22C9F6-BD21-4A21-BF8E-5F176D2260E1")]
   public class MultiLinearLinkageManipulator : StochasticMultiBranch<ILinearLinkageManipulator>, ILinearLinkageManipulator, IStochasticOperator {
     public override bool CanChangeName {
       get { return false; }
@@ -48,7 +47,7 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
     }
 
     [StorableConstructor]
-    protected MultiLinearLinkageManipulator(bool deserializing) : base(deserializing) { }
+    protected MultiLinearLinkageManipulator(StorableConstructorFlag _) : base(_) { }
     protected MultiLinearLinkageManipulator(MultiLinearLinkageManipulator original, Cloner cloner) : base(original, cloner) { }
     public MultiLinearLinkageManipulator()
       : base() {

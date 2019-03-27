@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,14 +26,14 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.ScatterSearch {
   /// <summary>
   /// An operator that updates the reference set and rebuilds the population.
   /// </summary>
   [Item("PopulationRebuildMethod", "An operator that updates the reference set and rebuilds the population.")]
-  [StorableClass]
+  [StorableType("B993B7E3-E510-4211-AD13-90517C810E34")]
   public sealed class PopulationRebuildMethod : SingleSuccessorOperator, ISingleObjectiveOperator {
     #region Parameter properties
     public ScopeParameter CurrentScopeParameter {
@@ -75,7 +75,7 @@ namespace HeuristicLab.Algorithms.ScatterSearch {
     #endregion
 
     [StorableConstructor]
-    private PopulationRebuildMethod(bool deserializing) : base(deserializing) { }
+    private PopulationRebuildMethod(StorableConstructorFlag _) : base(_) { }
     private PopulationRebuildMethod(PopulationRebuildMethod original, Cloner cloner) : base(original, cloner) { }
     public PopulationRebuildMethod()
       : base() {

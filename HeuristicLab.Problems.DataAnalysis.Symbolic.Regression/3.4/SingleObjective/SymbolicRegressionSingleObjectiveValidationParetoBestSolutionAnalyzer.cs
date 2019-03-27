@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,17 +22,17 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   /// <summary>
   /// An operator that collects the validation Pareto-best symbolic regression solutions for single objective symbolic regression problems.
   /// </summary>
   [Item("SymbolicRegressionSingleObjectiveValidationParetoBestSolutionAnalyzer", "An operator that collects the validation Pareto-best symbolic regression solutions for single objective symbolic regression problems.")]
-  [StorableClass]
+  [StorableType("B58782FE-FAC0-4B03-9210-CAE5CF74357B")]
   public sealed class SymbolicRegressionSingleObjectiveValidationParetoBestSolutionAnalyzer : SymbolicDataAnalysisSingleObjectiveValidationParetoBestSolutionAnalyzer<ISymbolicRegressionSolution, ISymbolicRegressionSingleObjectiveEvaluator, IRegressionProblemData> {
     [StorableConstructor]
-    private SymbolicRegressionSingleObjectiveValidationParetoBestSolutionAnalyzer(bool deserializing) : base(deserializing) { }
+    private SymbolicRegressionSingleObjectiveValidationParetoBestSolutionAnalyzer(StorableConstructorFlag _) : base(_) { }
     private SymbolicRegressionSingleObjectiveValidationParetoBestSolutionAnalyzer(SymbolicRegressionSingleObjectiveValidationParetoBestSolutionAnalyzer original, Cloner cloner) : base(original, cloner) { }
     public SymbolicRegressionSingleObjectiveValidationParetoBestSolutionAnalyzer() : base() { }
 

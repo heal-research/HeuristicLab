@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -28,11 +28,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [Item("SymbolicDataAnalysisAlleleFrequencyAnalyzer", "")]
-  [StorableClass]
+  [StorableType("36383269-BEEF-4B2C-A95E-5A3DCE6B2DB8")]
   public sealed class SymbolicDataAnalysisAlleleFrequencyAnalyzer : AlleleFrequencyAnalyzer<ISymbolicExpressionTree>, ISymbolicDataAnalysisAnalyzer {
     private const string AlleleTreeDepthParameterName = "AlleleTreeDepth";
 
@@ -57,7 +57,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     #endregion
 
     [StorableConstructor]
-    private SymbolicDataAnalysisAlleleFrequencyAnalyzer(bool deserializing) : base(deserializing) { }
+    private SymbolicDataAnalysisAlleleFrequencyAnalyzer(StorableConstructorFlag _) : base(_) { }
     private SymbolicDataAnalysisAlleleFrequencyAnalyzer(SymbolicDataAnalysisAlleleFrequencyAnalyzer original, Cloner cloner) : base(original, cloner) { }
     public SymbolicDataAnalysisAlleleFrequencyAnalyzer()
       : base() {

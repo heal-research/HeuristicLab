@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -29,10 +29,10 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
-  [StorableClass]
+  [StorableType("426718E3-2A57-4CA4-98A1-65EDD0B0BDBF")]
   [Item("SymbolicDataAnalysisExpressionTreeILEmittingInterpreter", "Interpreter for symbolic expression trees.")]
   public sealed class SymbolicDataAnalysisExpressionTreeILEmittingInterpreter : ParameterizedNamedItem, ISymbolicDataAnalysisExpressionTreeInterpreter {
     private static readonly Type thisType = typeof(SymbolicDataAnalysisExpressionTreeILEmittingInterpreter);
@@ -44,11 +44,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private static MethodInfo cos = typeof(Math).GetMethod("Cos", new Type[] { typeof(double) });
     private static MethodInfo sin = typeof(Math).GetMethod("Sin", new Type[] { typeof(double) });
     private static MethodInfo tan = typeof(Math).GetMethod("Tan", new Type[] { typeof(double) });
+    private static MethodInfo tanh = typeof(Math).GetMethod("Tanh", new Type[] { typeof(double) });
     private static MethodInfo exp = typeof(Math).GetMethod("Exp", new Type[] { typeof(double) });
     private static MethodInfo log = typeof(Math).GetMethod("Log", new Type[] { typeof(double) });
     private static MethodInfo power = typeof(Math).GetMethod("Pow", new Type[] { typeof(double), typeof(double) });
     private static MethodInfo round = typeof(Math).GetMethod("Round", new Type[] { typeof(double) });
     private static MethodInfo sqrt = typeof(Math).GetMethod("Sqrt", new Type[] { typeof(double) });
+    private static MethodInfo abs = typeof(Math).GetMethod("Abs", new Type[] { typeof(double) });
 
     private static MethodInfo airyA = thisType.GetMethod("AiryA", new Type[] { typeof(double) });
     private static MethodInfo airyB = thisType.GetMethod("AiryB", new Type[] { typeof(double) });
@@ -102,7 +104,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     #endregion
 
     [StorableConstructor]
-    private SymbolicDataAnalysisExpressionTreeILEmittingInterpreter(bool deserializing) : base(deserializing) { }
+    private SymbolicDataAnalysisExpressionTreeILEmittingInterpreter(StorableConstructorFlag _) : base(_) { }
 
     private SymbolicDataAnalysisExpressionTreeILEmittingInterpreter(SymbolicDataAnalysisExpressionTreeILEmittingInterpreter original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -263,6 +265,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             il.Emit(System.Reflection.Emit.OpCodes.Div);
             return;
           }
+        case OpCodes.Absolute: {
+            CompileInstructions(il, state, ds);
+            il.Emit(System.Reflection.Emit.OpCodes.Call, abs);
+            return;
+          }
         case OpCodes.Cos: {
             CompileInstructions(il, state, ds);
             il.Emit(System.Reflection.Emit.OpCodes.Call, cos);
@@ -276,6 +283,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         case OpCodes.Tan: {
             CompileInstructions(il, state, ds);
             il.Emit(System.Reflection.Emit.OpCodes.Call, tan);
+            return;
+          }
+        case OpCodes.Tanh: {
+            CompileInstructions(il, state, ds);
+            il.Emit(System.Reflection.Emit.OpCodes.Call, tanh);
             return;
           }
         case OpCodes.Power: {
@@ -310,9 +322,21 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             il.Emit(System.Reflection.Emit.OpCodes.Call, power);
             return;
           }
+        case OpCodes.Cube: {
+            CompileInstructions(il, state, ds);
+            il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, 3.0);
+            il.Emit(System.Reflection.Emit.OpCodes.Call, power);
+            return;
+          }
         case OpCodes.SquareRoot: {
             CompileInstructions(il, state, ds);
             il.Emit(System.Reflection.Emit.OpCodes.Call, sqrt);
+            return;
+          }
+        case OpCodes.CubeRoot: {
+            CompileInstructions(il, state, ds);
+            il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, 1.0 / 3.0);
+            il.Emit(System.Reflection.Emit.OpCodes.Call, power);
             return;
           }
         case OpCodes.AiryA: {
@@ -390,11 +414,23 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             il.Emit(System.Reflection.Emit.OpCodes.Call, sinIntegral);
             return;
           }
+        case OpCodes.AnalyticQuotient: {
+            CompileInstructions(il, state, ds); // x1
+            CompileInstructions(il, state, ds); // x2
+
+            il.Emit(System.Reflection.Emit.OpCodes.Dup);
+            il.Emit(System.Reflection.Emit.OpCodes.Mul); // x2*x2
+            il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, 1.0);
+            il.Emit(System.Reflection.Emit.OpCodes.Mul); // 1+x2*x2
+            il.Emit(System.Reflection.Emit.OpCodes.Call, sqrt);
+            il.Emit(System.Reflection.Emit.OpCodes.Div);
+            return;
+          }
         case OpCodes.IfThenElse: {
             Label end = il.DefineLabel();
             Label c1 = il.DefineLabel();
             CompileInstructions(il, state, ds);
-            il.Emit(System.Reflection.Emit.OpCodes.Ldc_I4_0); // > 0
+            il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, 0.0); // > 0
             il.Emit(System.Reflection.Emit.OpCodes.Cgt);
             il.Emit(System.Reflection.Emit.OpCodes.Brfalse, c1);
             CompileInstructions(il, state, ds);
@@ -409,12 +445,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             Label end = il.DefineLabel();
             CompileInstructions(il, state, ds);
             for (int i = 1; i < nArgs; i++) {
-              il.Emit(System.Reflection.Emit.OpCodes.Ldc_I4_0); // > 0
+              il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, 0.0); // > 0
               il.Emit(System.Reflection.Emit.OpCodes.Cgt);
               il.Emit(System.Reflection.Emit.OpCodes.Brfalse, falseBranch);
               CompileInstructions(il, state, ds);
             }
-            il.Emit(System.Reflection.Emit.OpCodes.Ldc_I4_0); // > 0
+            il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, 0.0); // > 0
             il.Emit(System.Reflection.Emit.OpCodes.Cgt);
             il.Emit(System.Reflection.Emit.OpCodes.Brfalse, falseBranch);
             il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, 1.0); // 1
@@ -434,7 +470,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
               Label nextArgBranch = il.DefineLabel();
               // complex definition because of special properties of NaN  
               il.Emit(System.Reflection.Emit.OpCodes.Dup);
-              il.Emit(System.Reflection.Emit.OpCodes.Ldc_I4_0); // <= 0        
+              il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, 0.0); // <= 0        
               il.Emit(System.Reflection.Emit.OpCodes.Ble, nextArgBranch);
               il.Emit(System.Reflection.Emit.OpCodes.Br, resultBranch);
               il.MarkLabel(nextArgBranch);
@@ -442,7 +478,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
               CompileInstructions(il, state, ds);
             }
             il.MarkLabel(resultBranch);
-            il.Emit(System.Reflection.Emit.OpCodes.Ldc_I4_0); // > 0
+            il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, 0.0); // > 0
             il.Emit(System.Reflection.Emit.OpCodes.Cgt);
             il.Emit(System.Reflection.Emit.OpCodes.Brtrue, trueBranch);
             il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, 1.0); // -1
@@ -455,7 +491,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           }
         case OpCodes.NOT: {
             CompileInstructions(il, state, ds);
-            il.Emit(System.Reflection.Emit.OpCodes.Ldc_I4_0); // > 0
+            il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, 0.0); // > 0
             il.Emit(System.Reflection.Emit.OpCodes.Cgt);
             il.Emit(System.Reflection.Emit.OpCodes.Conv_R8); // convert to float64
             il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, 2.0); // * 2
@@ -467,12 +503,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           }
         case OpCodes.XOR: {
             CompileInstructions(il, state, ds);
-            il.Emit(System.Reflection.Emit.OpCodes.Ldc_I4_0);
+            il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, 0.0);
             il.Emit(System.Reflection.Emit.OpCodes.Cgt);// > 0
 
             for (int i = 1; i < nArgs; i++) {
               CompileInstructions(il, state, ds);
-              il.Emit(System.Reflection.Emit.OpCodes.Ldc_I4_0);
+              il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, 0.0);
               il.Emit(System.Reflection.Emit.OpCodes.Cgt);// > 0
               il.Emit(System.Reflection.Emit.OpCodes.Xor);
             }

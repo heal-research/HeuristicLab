@@ -20,8 +20,10 @@
 #endregion
 
 using HeuristicLab.Core;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.BinPacking2D {
+  [StorableType("2b07154a-0861-426e-9a89-88269fec4865")]
   public interface IEvaluator : IItem {
     double Evaluate(Solution solution);
   }

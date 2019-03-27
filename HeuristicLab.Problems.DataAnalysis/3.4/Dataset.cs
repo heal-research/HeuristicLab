@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -27,14 +27,14 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis {
   [Item("Dataset", "Represents a dataset containing data that should be analyzed.")]
-  [StorableClass]
+  [StorableType("49F4D145-50D7-4497-8D8A-D190CD556CC8")]
   public class Dataset : NamedItem, IDataset {
     [StorableConstructor]
-    protected Dataset(bool deserializing) : base(deserializing) { }
+    protected Dataset(StorableConstructorFlag _) : base(_) { }
     protected Dataset(Dataset original, Cloner cloner)
       : base(original, cloner) {
       // no need to clone the variable values because these can't be modified
@@ -165,6 +165,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
         if (variableNames != null) throw new InvalidOperationException();
         variableNames = new List<string>(value);
       }
+    }
+
+    public bool ContainsVariable(string variableName) {
+      return variableValues.ContainsKey(variableName);
     }
     public IEnumerable<string> DoubleVariables {
       get { return variableValues.Where(p => p.Value is IList<double>).Select(p => p.Key); }

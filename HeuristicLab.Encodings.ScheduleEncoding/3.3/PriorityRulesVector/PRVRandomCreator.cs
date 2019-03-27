@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,11 +24,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding.PriorityRulesVector {
   [Item("PriorityRulesRandomCreator", "Creator class used to create PRV encoding objects for scheduling problems.")]
-  [StorableClass]
+  [StorableType("5FF2A11E-86F9-4A8B-8E1C-713D6801506C")]
   public class PRVRandomCreator : ScheduleCreator, IStochasticOperator {
 
     [Storable]
@@ -45,7 +45,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.PriorityRulesVector {
     }
 
     [StorableConstructor]
-    protected PRVRandomCreator(bool deserializing) : base(deserializing) { }
+    protected PRVRandomCreator(StorableConstructorFlag _) : base(_) { }
     protected PRVRandomCreator(PRVRandomCreator original, Cloner cloner)
       : base(original, cloner) {
       this.NrOfRules = cloner.Clone(original.NrOfRules);

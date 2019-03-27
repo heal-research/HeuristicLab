@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,18 +22,18 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.RealVectorEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TestFunctions {
   [Item("BoothAdditiveMoveEvaluator", "Class for evaluating an additive move on the Booth function.")]
-  [StorableClass]
+  [StorableType("869C2238-2423-42FC-A34E-54009D58365D")]
   public class BoothAdditiveMoveEvaluator : AdditiveMoveEvaluator {
     public override System.Type EvaluatorType {
       get { return typeof(BoothEvaluator); }
     }
 
     [StorableConstructor]
-    protected BoothAdditiveMoveEvaluator(bool deserializing) : base(deserializing) { }
+    protected BoothAdditiveMoveEvaluator(StorableConstructorFlag _) : base(_) { }
     protected BoothAdditiveMoveEvaluator(BoothAdditiveMoveEvaluator original, Cloner cloner) : base(original, cloner) { }
     public BoothAdditiveMoveEvaluator() : base() { }
 

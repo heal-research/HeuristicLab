@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -28,12 +28,12 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   [Item("MultiRealVectorCrossover", "Randomly selects and applies one of its crossovers every time it is called.")]
-  [StorableClass]
+  [StorableType("38437BE4-8B77-4347-A7F8-73D787942944")]
   public class MultiRealVectorCrossover : StochasticMultiBranch<IRealVectorCrossover>, IRealVectorCrossover, IStochasticOperator {
     public override bool CanChangeName {
       get { return false; }
@@ -53,7 +53,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     }
 
     [StorableConstructor]
-    protected MultiRealVectorCrossover(bool deserializing) : base(deserializing) { }
+    protected MultiRealVectorCrossover(StorableConstructorFlag _) : base(_) { }
     protected MultiRealVectorCrossover(MultiRealVectorCrossover original, Cloner cloner)
       : base(original, cloner) {
     }

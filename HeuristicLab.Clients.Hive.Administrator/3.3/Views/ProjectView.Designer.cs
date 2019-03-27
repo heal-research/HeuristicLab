@@ -38,8 +38,7 @@
       this.endDateTimePicker = new System.Windows.Forms.DateTimePicker();
       this.endLabel = new System.Windows.Forms.Label();
       this.indefiniteCheckBox = new System.Windows.Forms.CheckBox();
-      this.createdTextBox = new System.Windows.Forms.TextBox();
-      this.refreshButton = new System.Windows.Forms.Button();
+      this.createdTextBox = new System.Windows.Forms.TextBox();      
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
       this.SuspendLayout();
       // 
@@ -123,17 +122,6 @@
       this.ownerComboBox.TabIndex = 4;
       this.ownerComboBox.SelectedIndexChanged += new System.EventHandler(this.ownerComboBox_SelectedIndexChanged);
       // 
-      // refreshButton
-      // 
-      this.refreshButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Refresh;
-      this.refreshButton.Location = new System.Drawing.Point(278, 162);
-      this.refreshButton.Name = "refreshButton";
-      this.refreshButton.Size = new System.Drawing.Size(24, 24);
-      this.refreshButton.TabIndex = 5;
-      this.toolTip.SetToolTip(this.refreshButton, "Refresh data");
-      this.refreshButton.UseVisualStyleBackColor = true;
-      this.refreshButton.Click += new System.EventHandler(this.refreshButton_Click);
-      // 
       // createdLabel
       // 
       this.createdLabel.AutoSize = true;
@@ -206,7 +194,6 @@
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.Controls.Add(this.refreshButton);
       this.Controls.Add(this.createdTextBox);
       this.Controls.Add(this.indefiniteCheckBox);
       this.Controls.Add(this.endLabel);
@@ -225,6 +212,7 @@
       this.Name = "ProjectView";
       this.Size = new System.Drawing.Size(539, 271);
       this.Load += new System.EventHandler(this.ProjectView_Load);
+      this.Disposed += new System.EventHandler(this.ProjectView_Disposed);
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -246,8 +234,7 @@
     private System.Windows.Forms.DateTimePicker endDateTimePicker;
     private System.Windows.Forms.Label endLabel;
     private System.Windows.Forms.CheckBox indefiniteCheckBox;
-    private System.Windows.Forms.TextBox createdTextBox;
-    private System.Windows.Forms.Button refreshButton;
+    private System.Windows.Forms.TextBox createdTextBox;    
     private System.Windows.Forms.ToolTip toolTip;
   }
 }

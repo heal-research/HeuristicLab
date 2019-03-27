@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,15 +24,15 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   [Item("Mean squared error Evaluator", "Calculates the mean squared error of a symbolic regression solution.")]
-  [StorableClass]
+  [StorableType("8D4B5243-1635-46A6-AEF9-18C9BCB725DD")]
   public class SymbolicRegressionSingleObjectiveMeanSquaredErrorEvaluator : SymbolicRegressionSingleObjectiveEvaluator {
     public override bool Maximization { get { return false; } }
     [StorableConstructor]
-    protected SymbolicRegressionSingleObjectiveMeanSquaredErrorEvaluator(bool deserializing) : base(deserializing) { }
+    protected SymbolicRegressionSingleObjectiveMeanSquaredErrorEvaluator(StorableConstructorFlag _) : base(_) { }
     protected SymbolicRegressionSingleObjectiveMeanSquaredErrorEvaluator(SymbolicRegressionSingleObjectiveMeanSquaredErrorEvaluator original, Cloner cloner)
       : base(original, cloner) {
     }

@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,20 +19,20 @@
  */
 #endregion
 
-using System;
 using System.ComponentModel;
 using System.Drawing;
 using HeuristicLab.Common;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Analysis {
   /// <summary>
   /// Visual properties of a DataTable.
   /// </summary>
-  [StorableClass]
+  [StorableType("CA654495-8671-499A-B990-0E67E589B906")]
   public class DataTableVisualProperties : DeepCloneable, INotifyPropertyChanged {
 
     #region Histogram Aggregation
+    [StorableType("323A07AD-207C-4D45-B7EC-4E3E48F1E5C6")]
     public enum DataTableHistogramAggregation {
       Overlapping,
       SideBySide,
@@ -561,7 +561,7 @@ namespace HeuristicLab.Analysis {
     #endregion
 
     [StorableConstructor]
-    protected DataTableVisualProperties(bool deserializing) : base() { }
+    protected DataTableVisualProperties(StorableConstructorFlag _) { }
     protected DataTableVisualProperties(DataTableVisualProperties original, Cloner cloner)
       : base(original, cloner) {
       if (original.titleFont != null)

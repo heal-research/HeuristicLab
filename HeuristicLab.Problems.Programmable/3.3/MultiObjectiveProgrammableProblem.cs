@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,12 +26,12 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.Programmable {
   [Item("Programmable Problem (multi-objective)", "Represents a multi-objective problem that can be programmed with a script.")]
   [Creatable(CreatableAttribute.Categories.Problems, Priority = 120)]
-  [StorableClass]
+  [StorableType("1AA24077-4E1E-4FAE-8EC8-B6008DFD30B9")]
   public sealed class MultiObjectiveProgrammableProblem : MultiObjectiveBasicProblem<IEncoding>, IProgrammableItem {
     public static new Image StaticItemImage {
       get { return VSImageLibrary.Script; }
@@ -56,7 +56,7 @@ namespace HeuristicLab.Problems.Programmable {
     public override IDeepCloneable Clone(Cloner cloner) { return new MultiObjectiveProgrammableProblem(this, cloner); }
 
     [StorableConstructor]
-    private MultiObjectiveProgrammableProblem(bool deserializing) : base(deserializing) { }
+    private MultiObjectiveProgrammableProblem(StorableConstructorFlag _) : base(_) { }
     public MultiObjectiveProgrammableProblem()
       : base() {
       Parameters.Add(new FixedValueParameter<MultiObjectiveProblemDefinitionScript>("ProblemScript", "Defines the problem.", new MultiObjectiveProblemDefinitionScript() { Name = Name }));

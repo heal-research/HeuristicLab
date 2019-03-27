@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,16 +24,15 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
 using HeuristicLab.Operators;
-using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.Knapsack {
   /// <summary>
   /// A base class for operators which evaluate Knapsack moves.
   /// </summary>
   [Item("KnapsackMoveEvaluator", "A base class for operators which evaluate Knapsack moves.")]
-  [StorableClass]
+  [StorableType("F953FC74-8688-48E5-856D-E9D8A2411CA0")]
   public abstract class KnapsackMoveEvaluator : SingleSuccessorOperator, IKnapsackMoveEvaluator, IBinaryVectorMoveOperator {
     public ILookupParameter<DoubleValue> QualityParameter {
       get { return (ILookupParameter<DoubleValue>)Parameters["Quality"]; }
@@ -58,7 +57,7 @@ namespace HeuristicLab.Problems.Knapsack {
     }
 
     [StorableConstructor]
-    protected KnapsackMoveEvaluator(bool deserializing) : base(deserializing) { }
+    protected KnapsackMoveEvaluator(StorableConstructorFlag _) : base(_) { }
     protected KnapsackMoveEvaluator(KnapsackMoveEvaluator original, Cloner cloner) : base(original, cloner) { }
     protected KnapsackMoveEvaluator()
       : base() {

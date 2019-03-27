@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,10 +22,10 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Random;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
-  [StorableClass]
+  [StorableType("247DBD04-18F2-4184-B6F5-6E283BF06FD0")]
   public sealed class ConstantTreeNode : SymbolicExpressionTreeTerminalNode {
     public new Constant Symbol {
       get { return (Constant)base.Symbol; }
@@ -39,7 +39,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     [StorableConstructor]
-    private ConstantTreeNode(bool deserializing) : base(deserializing) { }
+    private ConstantTreeNode(StorableConstructorFlag _) : base(_) { }
 
     private ConstantTreeNode(ConstantTreeNode original, Cloner cloner)
       : base(original, cloner) {

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,11 +21,11 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
-  [StorableClass]
+  [StorableType("7A180AA0-E963-4714-A33A-2C87C4108B93")]
   [Item(Name = "OneR Classification Solution", Description = "Represents a OneR classification solution which uses only a single factor for class prediction.")]
   public sealed class OneFactorClassificationSolution : ClassificationSolution {
     public new OneFactorClassificationModel Model {
@@ -34,7 +34,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     [StorableConstructor]
-    private OneFactorClassificationSolution(bool deserializing) : base(deserializing) { }
+    private OneFactorClassificationSolution(StorableConstructorFlag _) : base(_) { }
     private OneFactorClassificationSolution(OneFactorClassificationSolution original, Cloner cloner) : base(original, cloner) { }
     public OneFactorClassificationSolution(OneFactorClassificationModel model, IClassificationProblemData problemData)
       : base(model, problemData) {

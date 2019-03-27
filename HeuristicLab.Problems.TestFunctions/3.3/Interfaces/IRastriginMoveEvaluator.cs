@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,8 +20,10 @@
 #endregion
 
 using HeuristicLab.Data;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TestFunctions {
+  [StorableType("DD1BC33E-735A-4C6C-8E90-FEE43772DDCE")]
   public interface IRastriginMoveEvaluator : ISingleObjectiveTestFunctionAdditiveMoveEvaluator {
     DoubleValue A { get; set; }
   }

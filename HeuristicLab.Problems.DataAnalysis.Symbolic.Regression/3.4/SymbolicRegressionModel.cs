@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,13 +24,13 @@ using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   /// <summary>
   /// Represents a symbolic regression model
   /// </summary>
-  [StorableClass]
+  [StorableType("2739C33E-4DDB-4285-9DFB-C056D900B2F2")]
   [Item(Name = "Symbolic Regression Model", Description = "Represents a symbolic regression model.")]
   public class SymbolicRegressionModel : SymbolicDataAnalysisModel, ISymbolicRegressionModel {
     [Storable]
@@ -45,8 +45,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     }
 
     [StorableConstructor]
-    protected SymbolicRegressionModel(bool deserializing)
-      : base(deserializing) {
+    protected SymbolicRegressionModel(StorableConstructorFlag _) : base(_) {
       targetVariable = string.Empty;
     }
 
@@ -80,6 +79,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
     public void Scale(IRegressionProblemData problemData) {
       Scale(problemData, problemData.TargetVariable);
+    }
+
+    public virtual bool IsProblemDataCompatible(IRegressionProblemData problemData, out string errorMessage) {
+      return RegressionModel.IsProblemDataCompatible(this, problemData, out errorMessage);
+    }
+
+    public override bool IsProblemDataCompatible(IDataAnalysisProblemData problemData, out string errorMessage) {
+      if (problemData == null) throw new ArgumentNullException("problemData", "The provided problemData is null.");
+      var regressionProblemData = problemData as IRegressionProblemData;
+      if (regressionProblemData == null)
+        throw new ArgumentException("The problem data is not a regression problem data. Instead a " + problemData.GetType().GetPrettyName() + " was provided.", "problemData");
+      return IsProblemDataCompatible(regressionProblemData, out errorMessage);
     }
 
     #region events

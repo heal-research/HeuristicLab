@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,12 +22,12 @@
 using System.Drawing;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.DataPreprocessing {
   [Item("Feature Correlation Matrix", "Represents the feature correlation matrix.")]
-  [StorableClass]
+  [StorableType("E6B5FD30-847E-4AA5-8638-9CD166E10C22")]
   public class CorrelationMatrixContent : PreprocessingContent, IViewShortcut {
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Gradient; }
@@ -62,8 +62,7 @@ namespace HeuristicLab.DataPreprocessing {
     }
 
     [StorableConstructor]
-    protected CorrelationMatrixContent(bool deserializing)
-      : base(deserializing) { }
+    protected CorrelationMatrixContent(StorableConstructorFlag _) : base(_) { }
     #endregion
 
     public event DataPreprocessingChangedEventHandler Changed {

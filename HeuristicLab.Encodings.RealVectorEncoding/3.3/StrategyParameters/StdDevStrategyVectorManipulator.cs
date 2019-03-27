@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,7 +26,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
@@ -34,7 +34,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// Mutates the endogenous strategy parameters.
   /// </summary>
   [Item("StdDevStrategyVectorManipulator", "Mutates the endogenous strategy parameters.")]
-  [StorableClass]
+  [StorableType("599385AA-FBA0-4EE2-8B6E-B937C73E5901")]
   public class StdDevStrategyVectorManipulator : SingleSuccessorOperator, IStochasticOperator, IRealVectorStdDevStrategyParameterManipulator {
     public override bool CanChangeName {
       get { return false; }
@@ -56,7 +56,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     }
 
     [StorableConstructor]
-    protected StdDevStrategyVectorManipulator(bool deserializing) : base(deserializing) { }
+    protected StdDevStrategyVectorManipulator(StorableConstructorFlag _) : base(_) { }
     protected StdDevStrategyVectorManipulator(StdDevStrategyVectorManipulator original, Cloner cloner) : base(original, cloner) { }
     /// <summary>
     /// Initializes a new instance of <see cref="StrategyVectorManipulator"/> with four 

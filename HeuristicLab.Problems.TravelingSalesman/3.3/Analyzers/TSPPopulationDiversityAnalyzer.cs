@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,7 +24,7 @@ using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.TravelingSalesman {
@@ -36,10 +36,10 @@ namespace HeuristicLab.Problems.TravelingSalesman {
   [Obsolete]
   [NonDiscoverableType]
   [Item("TSPPopulationDiversityAnalyzer", "An operator for analyzing the diversity of solutions of Traveling Salesman Problems given in path representation.")]
-  [StorableClass]
+  [StorableType("B68CC721-AC64-44A7-BFEA-B4F0ABE1402D")]
   public sealed class TSPPopulationDiversityAnalyzer : PopulationDiversityAnalyzer<Permutation> {
     [StorableConstructor]
-    private TSPPopulationDiversityAnalyzer(bool deserializing) : base(deserializing) { }
+    private TSPPopulationDiversityAnalyzer(StorableConstructorFlag _) : base(_) { }
     private TSPPopulationDiversityAnalyzer(TSPPopulationDiversityAnalyzer original, Cloner cloner) : base(original, cloner) { }
     public TSPPopulationDiversityAnalyzer() : base() { }
 

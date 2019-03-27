@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,9 +19,9 @@
  */
 #endregion
 
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 namespace HeuristicLab.Core {
-  [StorableClass]
+  [StorableType("8518F185-8222-414D-8AAF-0273D7B09A0E")]
   public class ConstraintOperation {
     public static readonly ConstraintOperation Equal = new ConstraintOperation(0, "Equal");
     public static readonly ConstraintOperation NotEqual = new ConstraintOperation(1, "Not equal");
@@ -38,7 +38,7 @@ namespace HeuristicLab.Core {
     private string name;
 
     [StorableConstructor]
-    protected ConstraintOperation(bool deserializing) { }
+    protected ConstraintOperation(StorableConstructorFlag _) { }
     protected ConstraintOperation(int value, string name) {
       this.value = value;
       this.name = name;

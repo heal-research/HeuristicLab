@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -42,7 +42,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     private const string SELECTED_TAG = ""; // " [selected]";
     private const string NOT_STORED_TAG = "*"; // " [not stored]";
     private const string CHANGES_NOT_STORED_TAG = "*"; // " [changes not stored]";
-    private const string INACTIVE_TAG = " [inactive]"; 
+    private const string INACTIVE_TAG = " [inactive]";
 
     private readonly Color selectedBackColor = Color.DodgerBlue;
     private readonly Color selectedForeColor = Color.White;
@@ -55,6 +55,8 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     }
 
     private readonly object locker = new object();
+    private bool refreshingInternal = false;
+    private bool refreshingExternal = false;
 
     public new IItemList<Project> Content {
       get { return (IItemList<Project>)base.Content; }
@@ -69,19 +71,9 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
 
       HiveAdminClient.Instance.Refreshing += HiveAdminClient_Instance_Refreshing;
       HiveAdminClient.Instance.Refreshed += HiveAdminClient_Instance_Refreshed;
-      AccessClient.Instance.Refreshing += AccessClient_Instance_Refreshing;
-      AccessClient.Instance.Refreshed += AccessClient_Instance_Refreshed;
     }
 
     #region Overrides
-    protected override void OnClosing(FormClosingEventArgs e) {
-      AccessClient.Instance.Refreshed -= AccessClient_Instance_Refreshed;
-      AccessClient.Instance.Refreshing -= AccessClient_Instance_Refreshing;
-      HiveAdminClient.Instance.Refreshed -= HiveAdminClient_Instance_Refreshed;
-      HiveAdminClient.Instance.Refreshing -= HiveAdminClient_Instance_Refreshing;
-      base.OnClosing(e);
-    }
-
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
       Content.ItemsAdded += Content_ItemsAdded;
@@ -110,11 +102,11 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     }
 
     protected override void SetEnabledStateOfControls() {
-      base.SetEnabledStateOfControls();      
+      base.SetEnabledStateOfControls();
 
-      bool locked = Content == null || Locked || ReadOnly;      
+      bool locked = Content == null || Locked || ReadOnly;
       bool parentOwner = selectedProject != null && HiveAdminClient.Instance.CheckOwnershipOfParentProject(selectedProject, UserInformation.Instance.User.Id);
-      bool selectedProjectDisabled = selectedProject == null 
+      bool selectedProjectDisabled = selectedProject == null
                                      || selectedProject != null && selectedProject.Id == Guid.Empty;
 
       bool selectedProjectHasJobs =
@@ -182,8 +174,12 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     private void HiveAdminClient_Instance_Refreshing(object sender, EventArgs e) {
       if (InvokeRequired) Invoke((Action<object, EventArgs>)HiveAdminClient_Instance_Refreshing, sender, e);
       else {
-        var mainForm = MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>();
-        mainForm.AddOperationProgressToView(this, "Refreshing ...");
+        lock (locker) {
+          if (refreshingExternal) return;
+          if (!refreshingInternal) refreshingExternal = true;
+        }
+
+        Progress.Show(this, "Refreshing ...", ProgressMode.Indeterminate);
         SetEnabledStateOfControls();
       }
     }
@@ -191,26 +187,10 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     private void HiveAdminClient_Instance_Refreshed(object sender, EventArgs e) {
       if (InvokeRequired) Invoke((Action<object, EventArgs>)HiveAdminClient_Instance_Refreshed, sender, e);
       else {
-        var mainForm = MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>();
-        mainForm.RemoveOperationProgressFromView(this);
-        SetEnabledStateOfControls();
-      }
-    }
+        if (refreshingExternal) refreshingExternal = false;
+        Content = HiveAdminClient.Instance.Projects;
 
-    private void AccessClient_Instance_Refreshing(object sender, EventArgs e) {
-      if (InvokeRequired) Invoke((Action<object, EventArgs>)AccessClient_Instance_Refreshing, sender, e);
-      else {
-        var mainForm = MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>();
-        mainForm.AddOperationProgressToView(this, "Refreshing ...");
-        SetEnabledStateOfControls();
-      }
-    }
-
-    private void AccessClient_Instance_Refreshed(object sender, EventArgs e) {
-      if (InvokeRequired) Invoke((Action<object, EventArgs>)AccessClient_Instance_Refreshed, sender, e);
-      else {
-        var mainForm = MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>();
-        mainForm.RemoveOperationProgressFromView(this);
+        Progress.Hide(this);
         SetEnabledStateOfControls();
       }
     }
@@ -218,6 +198,11 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     private async void ProjectsView_Load(object sender, EventArgs e) {
       await SecurityExceptionUtil.TryAsyncAndReportSecurityExceptions(
         action: () => UpdateProjects());
+    }
+
+    private void ProjectsView_Disposed(object sender, EventArgs e) {
+      HiveAdminClient.Instance.Refreshed -= HiveAdminClient_Instance_Refreshed;
+      HiveAdminClient.Instance.Refreshing -= HiveAdminClient_Instance_Refreshing;
     }
 
     private async void refreshButton_Click(object sender, EventArgs e) {
@@ -233,7 +218,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
         });
     }
 
-    private void addButton_Click(object sender, EventArgs e) {      
+    private void addButton_Click(object sender, EventArgs e) {
 
       if (selectedProject == null && !IsAdmin()) {
         MessageBox.Show(
@@ -243,7 +228,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
           MessageBoxIcon.Information);
         return;
       }
-      
+
       if (selectedProject != null && selectedProject.Id == Guid.Empty) {
         MessageBox.Show(
           "You cannot add a project to a not yet stored project.",
@@ -255,9 +240,9 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
 
       var project = new Project {
         Name = "New Project",
-        OwnerUserId = UserInformation.Instance.User.Id,        
+        OwnerUserId = UserInformation.Instance.User.Id,
       };
-      if(selectedProject != null) {
+      if (selectedProject != null) {
         project.ParentProjectId = selectedProject.Id;
         project.EndDate = selectedProject.EndDate;
       }
@@ -284,7 +269,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       if (result == DialogResult.Yes) {
         await SecurityExceptionUtil.TryAsyncAndReportSecurityExceptions(
           action: () => {
-            RemoveProject(selectedProject);  
+            RemoveProject(selectedProject);
           });
       }
       SetEnabledStateOfControls();
@@ -303,7 +288,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
           var projectsToSave = Content.Where(x => x.Id == Guid.Empty || x.Modified);
           foreach (var project in projectsToSave)
             project.Store();
-          
+
           UpdateProjects();
         },
         finallyCallback: () => saveProjectButton.Enabled = true);
@@ -315,7 +300,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       var node = projectsTreeView.GetNodeAt(e.Location);
       if (node == null) return;
       var p = (Project)node.Tag;
-      if(!HiveAdminClient.Instance.DisabledParentProjects.Contains(p)) ChangeSelectedProjectNode(node);
+      if (!HiveAdminClient.Instance.DisabledParentProjects.Contains(p)) ChangeSelectedProjectNode(node);
     }
 
     private void projectsTreeView_BeforeSelect(object sender, TreeViewCancelEventArgs e) {
@@ -356,7 +341,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
 
       if (targetNode == null) {
         treeView.Nodes.Add(sourceNode);
-      } else if(targetProject.Id != Guid.Empty) {
+      } else if (targetProject.Id != Guid.Empty) {
         targetNode.Nodes.Add(sourceNode);
         sourceProject.ParentProjectId = targetProject.Id;
       }
@@ -421,7 +406,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
         var newProject = stack.Pop();
         var newNode = new TreeNode(newProject.Name) { Tag = newProject };
         StyleTreeNode(newNode, newProject);
-      
+
         if (selectedProject == null && !disabledParentProjects.Contains(newProject)) {
           SelectedProject = newProject;
         }
@@ -518,11 +503,17 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     }
 
     private void UpdateProjects() {
+      lock (locker) {
+        if (refreshingInternal || refreshingExternal) return;
+        refreshingInternal = true;
+      }
+
       try {
         HiveAdminClient.Instance.Refresh();
-        Content = HiveAdminClient.Instance.Projects;
       } catch (AnonymousUserException) {
         ShowHiveInformationDialog();
+      } finally {
+        refreshingInternal = false;
       }
     }
 
@@ -532,9 +523,9 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       try {
         if (project.Id != Guid.Empty) {
           SelectedProject = HiveAdminClient.Instance.GetAvailableProjectAncestors(project.Id).LastOrDefault();
-          HiveAdminClient.Delete(project);          
+          HiveAdminClient.Delete(project);
           UpdateProjects();
-        } else {          
+        } else {
           SelectedProject = Content.FirstOrDefault(x => x.Id == project.ParentProjectId);
           Content.Remove(project);
         }

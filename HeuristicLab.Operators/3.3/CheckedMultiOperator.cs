@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,14 +24,14 @@ using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Operators {
   /// <summary>
   /// A base class for operators which apply arbitrary many other operators of a specific type that can be checked or unchecked.
   /// </summary>
   [Item("CheckedMultiOperator", "A base class for operators which apply arbitrary many other operators of a specific type that can be checked or unchecked.")]
-  [StorableClass]
+  [StorableType("7C166074-0171-4574-8689-8CDB75A9BB1A")]
   public abstract class CheckedMultiOperator<T> : MultiOperator<T>, ICheckedMultiOperator<T> where T : class, IOperator {
     /// <summary>
     /// Gets the operators of the checked multi operator
@@ -42,7 +42,7 @@ namespace HeuristicLab.Operators {
     }
 
     [StorableConstructor]
-    protected CheckedMultiOperator(bool deserializing) : base(deserializing) { }
+    protected CheckedMultiOperator(StorableConstructorFlag _) : base(_) { }
     protected CheckedMultiOperator(CheckedMultiOperator<T> original, Cloner cloner)
       : base(original, cloner) {
     }

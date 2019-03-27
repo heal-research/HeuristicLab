@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -28,7 +28,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.IntegerVectorEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.GeneticProgramming.ArtificialAnt;
 using HeuristicLab.Problems.GrammaticalEvolution.Mappers;
 using HeuristicLab.Random;
@@ -36,7 +36,7 @@ using HeuristicLab.Random;
 namespace HeuristicLab.Problems.GrammaticalEvolution {
   [Item("Grammatical Evolution Artificial Ant Problem (GE)", "Represents the Artificial Ant problem, implemented in Grammatical Evolution.")]
   [Creatable(CreatableAttribute.Categories.GeneticProgrammingProblems, Priority = 170)]
-  [StorableClass]
+  [StorableType("B6F0EBC4-FA3B-42E6-958F-404FA89C81FA")]
   public sealed class GEArtificialAntProblem : SingleObjectiveBasicProblem<IntegerVectorEncoding>, IStorableContent {
 
     #region Parameter Properties
@@ -63,7 +63,7 @@ namespace HeuristicLab.Problems.GrammaticalEvolution {
     #endregion
 
     [StorableConstructor]
-    private GEArtificialAntProblem(bool deserializing) : base(deserializing) { }
+    private GEArtificialAntProblem(StorableConstructorFlag _) : base(_) { }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() { }
 

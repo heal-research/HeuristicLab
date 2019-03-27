@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -29,14 +29,14 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   /// <summary>
   /// An operator that tracks the frequencies of distinct symbols in symbolic expression trees.
   /// </summary>
   [Item("SymbolicExpressionSymbolFrequencyAnalyzer", "An operator that tracks frequencies of symbols in symbolic expression trees.")]
-  [StorableClass]
+  [StorableType("0A7CA6D1-813C-41F8-88BF-715621BA049F")]
   public class SymbolicExpressionSymbolFrequencyAnalyzer : SingleSuccessorOperator, ISymbolicExpressionTreeAnalyzer {
     private const string SymbolicExpressionTreeParameterName = "SymbolicExpressionTree";
     private const string ResultsParameterName = "Results";
@@ -68,7 +68,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     #endregion
 
     [StorableConstructor]
-    protected SymbolicExpressionSymbolFrequencyAnalyzer(bool deserializing) : base(deserializing) { }
+    protected SymbolicExpressionSymbolFrequencyAnalyzer(StorableConstructorFlag _) : base(_) { }
     protected SymbolicExpressionSymbolFrequencyAnalyzer(SymbolicExpressionSymbolFrequencyAnalyzer original, Cloner cloner) : base(original, cloner) { }
     public SymbolicExpressionSymbolFrequencyAnalyzer()
       : base() {

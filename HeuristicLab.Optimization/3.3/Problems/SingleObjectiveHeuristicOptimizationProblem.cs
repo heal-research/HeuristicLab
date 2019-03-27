@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,11 +23,11 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
   [Item("Single-Objective Heuristic OptimizationProblem", "A base class for single-objective heuristic optimization problems.")]
-  [StorableClass]
+  [StorableType("DFD5588E-6AB2-4712-9083-A405EF21226F")]
   public abstract class SingleObjectiveHeuristicOptimizationProblem<T, U> : HeuristicOptimizationProblem<T, U>, ISingleObjectiveHeuristicOptimizationProblem
     where T : class, ISingleObjectiveEvaluator
     where U : class, ISolutionCreator {
@@ -35,7 +35,7 @@ namespace HeuristicLab.Optimization {
     private const string BestKnownQualityParameterName = "BestKnownQuality";
 
     [StorableConstructor]
-    protected SingleObjectiveHeuristicOptimizationProblem(bool deserializing) : base(deserializing) { }
+    protected SingleObjectiveHeuristicOptimizationProblem(StorableConstructorFlag _) : base(_) { }
     protected SingleObjectiveHeuristicOptimizationProblem(SingleObjectiveHeuristicOptimizationProblem<T, U> original, Cloner cloner) : base(original, cloner) { }
     protected SingleObjectiveHeuristicOptimizationProblem()
       : base() {

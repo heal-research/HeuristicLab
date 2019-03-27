@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,13 +26,13 @@ using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using System;
 using System.Linq;
 
 namespace HeuristicLab.Algorithms.CMAEvolutionStrategy {
   [Item("CMAUpdater", "Updates the covariance matrix and strategy parameters of CMA-ES.")]
-  [StorableClass]
+  [StorableType("872D120A-1CBE-4C01-8250-E34BF8BBD9DA")]
   public class CMAUpdater : SingleSuccessorOperator, ICMAUpdater, IIterationBasedOperator, ISingleObjectiveOperator {
 
     public Type CMAType {
@@ -78,7 +78,7 @@ namespace HeuristicLab.Algorithms.CMAEvolutionStrategy {
     #endregion
 
     [StorableConstructor]
-    protected CMAUpdater(bool deserializing) : base(deserializing) { }
+    protected CMAUpdater(StorableConstructorFlag _) : base(_) { }
     protected CMAUpdater(CMAUpdater original, Cloner cloner) : base(original, cloner) { }
     public CMAUpdater()
       : base() {

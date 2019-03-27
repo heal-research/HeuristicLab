@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,16 +20,14 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
-  [StorableClass]
+  [StorableType("6E29FC23-D11B-4F32-9101-DB2BF5B2F29E")]
   [Item(Name = "MeanConst", Description = "Constant mean function for Gaussian processes.")]
   public sealed class MeanConst : ParameterizedNamedItem, IMeanFunction {
     public IValueParameter<DoubleValue> ValueParameter {
@@ -37,7 +35,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     [StorableConstructor]
-    private MeanConst(bool deserializing) : base(deserializing) { }
+    private MeanConst(StorableConstructorFlag _) : base(_) { }
     private MeanConst(MeanConst original, Cloner cloner)
       : base(original, cloner) {
     }

@@ -21,7 +21,7 @@
 
 using System;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
@@ -29,7 +29,7 @@ using HeuristicLab.Problems.BinPacking;
 
 namespace HeuristicLab.Problems.BinPacking3D {
   [Item("PackingShape (3d)", "Represents the cuboid measures (width, height, depth) of a three-dimensional cuboidic bin-packing object.")]
-  [StorableClass]
+  [StorableType("87C5DC4E-A7E3-4853-B6C7-690B3F47DB57")]
   public class PackingShape : PackingShape<PackingPosition>, IComparable<PackingShape> {
     public IFixedValueParameter<IntValue> HeightParameter {
       get { return (IFixedValueParameter<IntValue>)Parameters["Height"]; }
@@ -57,7 +57,7 @@ namespace HeuristicLab.Problems.BinPacking3D {
     }
 
     [StorableConstructor]
-    protected PackingShape(bool deserializing) : base(deserializing) { }
+    protected PackingShape(StorableConstructorFlag _) : base(_) { }
     protected PackingShape(PackingShape original, Cloner cloner)
       : base(original, cloner) {
       RegisterEvents();
@@ -117,9 +117,9 @@ namespace HeuristicLab.Problems.BinPacking3D {
       if (other != null) return CompareTo(other);
       else throw new ArgumentException(string.Format("Cannot compare with object {0}", obj), "obj");
     }
-
     #endregion
 
+    [StorableType(StorableMemberSelection.AllFields, "6dc0b0e2-e165-44e0-a342-71974f0494e3")]
     private struct CuboidDiagonal {
       public int x1;
       public int y1;

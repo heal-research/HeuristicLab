@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,7 +22,7 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Trading.Symbolic {
@@ -30,11 +30,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Trading.Symbolic {
   /// An operator that analyzes the validation best symbolic trading solution for single objective symbolic trading problems.
   /// </summary>
   [Item("Validation-best Solution Analyzer (symbolic trading)", "An operator that analyzes the validation best symbolic trading solution for single objective symbolic trading problems.")]
-  [StorableClass]
+  [StorableType("BBDC9398-4D40-4170-B22F-77E36C68709F")]
   public sealed class ValidationBestSolutionAnalyzer : SymbolicDataAnalysisSingleObjectiveValidationBestSolutionAnalyzer<ISolution, ISingleObjectiveEvaluator, IProblemData> {
 
     [StorableConstructor]
-    private ValidationBestSolutionAnalyzer(bool deserializing) : base(deserializing) { }
+    private ValidationBestSolutionAnalyzer(StorableConstructorFlag _) : base(_) { }
     private ValidationBestSolutionAnalyzer(ValidationBestSolutionAnalyzer original, Cloner cloner) : base(original, cloner) { }
     public ValidationBestSolutionAnalyzer()
       : base() {

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,11 +23,11 @@ using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.RealVectorEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
   [Item("SchafferN1", "Schaffer function N.1 for mulitobjective optimization from // https://en.wikipedia.org/wiki/Test_functions_for_optimization [30.11.2015]")]
-  [StorableClass]
+  [StorableType("A676EB9C-ECA8-40D7-BA16-ADDDDD482092")]
   public class SchafferN1 : MultiObjectiveTestFunction {
     protected override double[,] GetBounds(int objectives) {
       return new double[,] { { -1e5, 1e5 } };
@@ -51,7 +51,7 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
     }
 
     [StorableConstructor]
-    protected SchafferN1(bool deserializing) : base(deserializing) { }
+    protected SchafferN1(StorableConstructorFlag _) : base(_) { }
     protected SchafferN1(SchafferN1 original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new SchafferN1(this, cloner);

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -18,6 +18,8 @@
  * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
  */
 #endregion
+
+using System.Windows.Forms;
 
 namespace HeuristicLab.Clients.Hive.JobManager.Views {
   partial class HiveProjectSelector {
@@ -113,6 +115,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       this.searchTextBox.TabIndex = 1;
       this.toolTip.SetToolTip(this.searchTextBox, "Enter string to search for resources");
       this.searchTextBox.TextChanged += new System.EventHandler(this.searchTextBox_TextChanged);
+      this.searchTextBox.MouseDown += new MouseEventHandler(this.searchTextBox_MouseDown);
       // 
       // splitContainer2
       // 
@@ -145,6 +148,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       this.projectsTreeView.ShowNodeToolTips = true;
       this.projectsTreeView.Size = new System.Drawing.Size(204, 410);
       this.projectsTreeView.TabIndex = 3;
+      this.projectsTreeView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.projectsTreeView_MouseDown);
       this.projectsTreeView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.projectsTreeView_MouseDoubleClick);
       this.projectsTreeView.BeforeSelect += new System.Windows.Forms.TreeViewCancelEventHandler(this.projectsTreeView_BeforeSelect);
       this.projectsTreeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.projectsTreeView_AfterSelect);

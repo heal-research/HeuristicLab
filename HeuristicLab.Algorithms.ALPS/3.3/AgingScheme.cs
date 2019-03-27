@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,11 +23,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Data;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.ALPS {
   /// <summary>
   /// Defines the growth of age limits for the layers.
   /// </summary>
+  [StorableType("136DA41B-0AC1-49A8-B4D9-DCE73BDB7110")]
   public enum AgingScheme {
     Linear,
     Fibonacci,

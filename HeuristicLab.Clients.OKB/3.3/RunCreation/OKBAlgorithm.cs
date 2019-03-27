@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,7 +26,7 @@ using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Persistence.Default.Xml;
 using System;
 using System.Collections.Generic;
@@ -37,7 +37,7 @@ using System.Linq;
 namespace HeuristicLab.Clients.OKB.RunCreation {
   [Item("OKB Algorithm", "An algorithm which is stored in the OKB.")]
   [Creatable(CreatableAttribute.Categories.TestingAndAnalysisOKB, Priority = 100)]
-  [StorableClass]
+  [StorableType("159620CA-BC90-48D9-8868-5D8940016BA0")]
   public sealed class OKBAlgorithm : Item, IAlgorithm, IStorableContent {
     public string Filename { get; set; }
 
@@ -182,7 +182,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
     #endregion
 
     [StorableConstructor]
-    private OKBAlgorithm(bool deserializing) : base(deserializing) { }
+    private OKBAlgorithm(StorableConstructorFlag _) : base(_) { }
     private OKBAlgorithm(OKBAlgorithm original, Cloner cloner)
       : base(original, cloner) {
       algorithmId = original.algorithmId;

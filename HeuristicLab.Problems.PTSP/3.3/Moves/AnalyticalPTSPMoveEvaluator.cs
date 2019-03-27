@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,11 +26,11 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.PTSP {
   [Item("AnalyticalPTSPMoveEvaluator", "A base class for operators which evaluate PTSP moves.")]
-  [StorableClass]
+  [StorableType("D23CCC08-AA7D-47C0-A465-FEAA16FECB80")]
   public abstract class AnalyticalPTSPMoveEvaluator : SingleSuccessorOperator, IAnalyticalPTSPMoveEvaluator {
 
     public override bool CanChangeName {
@@ -63,7 +63,7 @@ namespace HeuristicLab.Problems.PTSP {
     }
 
     [StorableConstructor]
-    protected AnalyticalPTSPMoveEvaluator(bool deserializing) : base(deserializing) { }
+    protected AnalyticalPTSPMoveEvaluator(StorableConstructorFlag _) : base(_) { }
     protected AnalyticalPTSPMoveEvaluator(AnalyticalPTSPMoveEvaluator original, Cloner cloner) : base(original, cloner) { }
     protected AnalyticalPTSPMoveEvaluator()
       : base() {

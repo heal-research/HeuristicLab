@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,13 +23,13 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis {
   /// <summary>
   /// Represents a symbolic time-series prognosis solution (model + data) and attributes of the solution like accuracy and complexity
   /// </summary>
-  [StorableClass]
+  [StorableType("7B8E8077-9304-44C0-941C-EF50210B09C4")]
   [Item(Name = "SymbolicTimeSeriesPrognosisSolution", Description = "Represents a symbolic time-series prognosis solution (model + data) and attributes of the solution like accuracy and complexity.")]
   public sealed class SymbolicTimeSeriesPrognosisSolution : TimeSeriesPrognosisSolution, ISymbolicTimeSeriesPrognosisSolution {
     private const string ModelLengthResultName = "Model Length";
@@ -53,7 +53,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis {
     }
 
     [StorableConstructor]
-    private SymbolicTimeSeriesPrognosisSolution(bool deserializing) : base(deserializing) { }
+    private SymbolicTimeSeriesPrognosisSolution(StorableConstructorFlag _) : base(_) { }
     private SymbolicTimeSeriesPrognosisSolution(SymbolicTimeSeriesPrognosisSolution original, Cloner cloner)
       : base(original, cloner) {
     }

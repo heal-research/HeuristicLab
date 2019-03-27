@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,14 +26,14 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Operators {
   /// <summary>
   /// An operator which contains multiple operators of which each is applied on one sub-scope at the given depth of the current scope. The first operator is applied on the first sub-scope, the second on the second, and so on.
   /// </summary>
   [Item("SubScopesProcessor", "An operator which contains multiple operators of which each is applied on one sub-scope at the given depth of the current scope. The first operator is applied on the first sub-scope, the second on the second, and so on.")]
-  [StorableClass]
+  [StorableType("A81F34BC-68D9-416D-9E6B-49652B4F7E98")]
   public sealed class SubScopesProcessor : MultiOperator<IOperator> {
     public ValueLookupParameter<BoolValue> ParallelParameter {
       get { return (ValueLookupParameter<BoolValue>)Parameters["Parallel"]; }
@@ -52,7 +52,7 @@ namespace HeuristicLab.Operators {
     }
 
     [StorableConstructor]
-    private SubScopesProcessor(bool deserializing) : base(deserializing) { }
+    private SubScopesProcessor(StorableConstructorFlag _) : base(_) { }
     private SubScopesProcessor(SubScopesProcessor original, Cloner cloner)
       : base(original, cloner) {
     }

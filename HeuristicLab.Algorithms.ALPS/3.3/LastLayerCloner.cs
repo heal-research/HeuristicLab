@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,11 +25,11 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.ALPS {
   [Item("LastLayerCloner", "An operator that creates a new layer by cloning the current last one.")]
-  [StorableClass]
+  [StorableType("A0EC32A3-DBB1-4941-BE2A-880C7812C57B")]
   public sealed class LastLayerCloner : SingleSuccessorOperator {
     public OperatorParameter NewLayerOperatorParameter {
       get { return (OperatorParameter)Parameters["NewLayerOperator"]; }
@@ -41,7 +41,7 @@ namespace HeuristicLab.Algorithms.ALPS {
     }
 
     [StorableConstructor]
-    private LastLayerCloner(bool deserializing) : base(deserializing) { }
+    private LastLayerCloner(StorableConstructorFlag _) : base(_) { }
 
     private LastLayerCloner(LastLayerCloner original, Cloner cloner)
       : base(original, cloner) {

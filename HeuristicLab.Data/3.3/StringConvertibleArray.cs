@@ -1,7 +1,7 @@
 ﻿#region License Information
 
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,14 +23,14 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Data {
   [Item("StringConvertibleArray", "Represents an array of string convertible values.")]
-  [StorableClass]
+  [StorableType("68FCA40B-4ACF-4D7A-B4FA-67DBA481125E")]
   public abstract class StringConvertibleArray<T> : ValueTypeArray<T>, IStringConvertibleArray where T : struct {
     [StorableConstructor]
-    protected StringConvertibleArray(bool deserializing) : base(deserializing) { }
+    protected StringConvertibleArray(StorableConstructorFlag _) : base(_) { }
     protected StringConvertibleArray(StringConvertibleArray<T> original, Cloner cloner)
       : base(original, cloner) { }
 

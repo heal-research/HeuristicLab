@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,14 +21,14 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaCustomerInsertionManipulator", "An operator which manipulates a VRP representation by inserting a customer in another place.  It is implemented as described in Alba, E. and Dorronsoro, B. (2004). Solving the Vehicle Routing Problem by Using Cellular Genetic Algorithms.")]
-  [StorableClass]
+  [StorableType("285F8CFD-4427-4A5C-920E-EBD33533FD80")]
   public sealed class AlbaCustomerInsertionManipulator : AlbaManipulator {
     [StorableConstructor]
-    private AlbaCustomerInsertionManipulator(bool deserializing) : base(deserializing) { }
+    private AlbaCustomerInsertionManipulator(StorableConstructorFlag _) : base(_) { }
 
     public AlbaCustomerInsertionManipulator()
       : base() {

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,11 +25,11 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
   [Item("ComparisonTerminator", "An termination criterion which compares two values.")]
-  [StorableClass]
+  [StorableType("4059C985-CA18-4C95-AC1C-BA8AAE64AD98")]
   public class ComparisonTerminator<T> : ThresholdTerminator<T> where T : class, IItem, IComparable, IStringConvertibleValue, new() {
     public ILookupParameter<T> ComparisonValueParameter {
       get { return (ILookupParameter<T>)Parameters["ComparisonValue"]; }
@@ -45,7 +45,7 @@ namespace HeuristicLab.Optimization {
     }
 
     [StorableConstructor]
-    protected ComparisonTerminator(bool deserializing) : base(deserializing) { }
+    protected ComparisonTerminator(StorableConstructorFlag _) : base(_) { }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       Initialize();

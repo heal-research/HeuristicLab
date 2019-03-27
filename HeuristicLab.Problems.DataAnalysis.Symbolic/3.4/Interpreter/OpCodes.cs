@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -45,7 +45,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public const byte AND = 13;
     public const byte OR = 14;
     public const byte NOT = 15;
-    public const byte XOR = 45;
 
 
     public const byte Average = 16;
@@ -82,8 +81,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public const byte Norm = 42;
     public const byte Erf = 43;
     public const byte Bessel = 44;
+    public const byte XOR = 45;
     public const byte FactorVariable = 46;
     public const byte BinaryFactorVariable = 47;
+    public const byte Absolute = 48;
+    public const byte AnalyticQuotient = 49;
+    public const byte Cube = 50;
+    public const byte CubeRoot = 51;
+
+    public const byte Tanh = 52;
 
 
     private static Dictionary<Type, byte> symbolToOpcode = new Dictionary<Type, byte>() {
@@ -94,6 +100,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       { typeof(Sine), OpCodes.Sin },
       { typeof(Cosine), OpCodes.Cos },
       { typeof(Tangent), OpCodes.Tan },
+      { typeof (HyperbolicTangent), OpCodes.Tanh},
       { typeof(Logarithm), OpCodes.Log },
       { typeof(Exponential), OpCodes.Exp },
       { typeof(IfThenElse), OpCodes.IfThenElse },
@@ -112,7 +119,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       { typeof(Argument), OpCodes.Arg },
       { typeof(Power),OpCodes.Power},
       { typeof(Root),OpCodes.Root},
-      { typeof(TimeLag), OpCodes.TimeLag}, 
+      { typeof(TimeLag), OpCodes.TimeLag},
       { typeof(Integral), OpCodes.Integral},
       { typeof(Derivative), OpCodes.Derivative},
       { typeof(VariableCondition),OpCodes.VariableCondition},
@@ -134,7 +141,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       { typeof(Erf), OpCodes.Erf},
       { typeof(Bessel), OpCodes.Bessel},
       { typeof(FactorVariable), OpCodes.FactorVariable },
-      { typeof(BinaryFactorVariable), OpCodes.BinaryFactorVariable }
+      { typeof(BinaryFactorVariable), OpCodes.BinaryFactorVariable },
+      { typeof(Absolute), OpCodes.Absolute },
+      { typeof(AnalyticQuotient), OpCodes.AnalyticQuotient },
+      { typeof(Cube), OpCodes.Cube },
+      { typeof(CubeRoot), OpCodes.CubeRoot }
     };
 
     public static byte MapSymbolToOpCode(ISymbolicExpressionTreeNode treeNode) {

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,18 +22,18 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.RealVectorEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TestFunctions {
   [Item("RosenbrockAdditiveMoveEvaluator", "Class for evaluating an additive move on the Rosenbrock function.")]
-  [StorableClass]
+  [StorableType("A4CE5DFB-BC5C-4024-AD0F-7E23D6A50FBD")]
   public class RosenbrockAdditiveMoveEvaluator : AdditiveMoveEvaluator {
     public override System.Type EvaluatorType {
       get { return typeof(RosenbrockEvaluator); }
     }
 
     [StorableConstructor]
-    protected RosenbrockAdditiveMoveEvaluator(bool deserializing) : base(deserializing) { }
+    protected RosenbrockAdditiveMoveEvaluator(StorableConstructorFlag _) : base(_) { }
     protected RosenbrockAdditiveMoveEvaluator(RosenbrockAdditiveMoveEvaluator original, Cloner cloner) : base(original, cloner) { }
     public RosenbrockAdditiveMoveEvaluator() : base() { }
 

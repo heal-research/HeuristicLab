@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,19 +24,19 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.TestFunctions.Evaluators;
 
 namespace HeuristicLab.Problems.TestFunctions {
   [Item("MultinormalAdditiveMoveEvaluator", "Class for evaluating an additive move on the multinormal function.")]
-  [StorableClass]
+  [StorableType("BF3794EF-E2C1-457C-8460-75EE179B0B30")]
   public class MultinormalAdditiveMoveEvaluator : AdditiveMoveEvaluator {
     public LookupParameter<ISingleObjectiveTestFunctionProblemEvaluator> EvaluatorParameter {
       get { return (LookupParameter<ISingleObjectiveTestFunctionProblemEvaluator>)Parameters["Evaluator"]; }
     }
 
     [StorableConstructor]
-    protected MultinormalAdditiveMoveEvaluator(bool deserializing) : base(deserializing) { }
+    protected MultinormalAdditiveMoveEvaluator(StorableConstructorFlag _) : base(_) { }
     protected MultinormalAdditiveMoveEvaluator(MultinormalAdditiveMoveEvaluator original, Cloner cloner) : base(original, cloner) { }
     public MultinormalAdditiveMoveEvaluator() {
       Parameters.Add(new LookupParameter<ISingleObjectiveTestFunctionProblemEvaluator>("Evaluator", ""));

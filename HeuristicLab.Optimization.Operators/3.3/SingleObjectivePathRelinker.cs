@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,14 +24,14 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Optimization.Operators {
   /// <summary>
   /// A base class for operators that perform path relinking between single objective solutions.
   /// </summary>
   [Item("SingleObjectivePathRelinker", "A base class for operators that perform path relinking between single objective solutions.")]
-  [StorableClass]
+  [StorableType("364CE8A7-0258-4EC1-BBDB-E40C944BD196")]
   public abstract class SingleObjectivePathRelinker : SingleSuccessorOperator, ISingleObjectivePathRelinker {
     #region Parameter properties
     public ScopeParameter CurrentScopeParameter {
@@ -58,7 +58,7 @@ namespace HeuristicLab.Optimization.Operators {
     #endregion
 
     [StorableConstructor]
-    protected SingleObjectivePathRelinker(bool deserializing) : base(deserializing) { }
+    protected SingleObjectivePathRelinker(StorableConstructorFlag _) : base(_) { }
     protected SingleObjectivePathRelinker(SingleObjectivePathRelinker original, Cloner cloner) : base(original, cloner) { }
     protected SingleObjectivePathRelinker()
       : base() {

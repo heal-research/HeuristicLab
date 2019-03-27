@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,7 +25,7 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
@@ -34,10 +34,10 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   /// As described in Koza, Bennett, Andre, Keane, Genetic Programming III - Darwinian Invention and Problem Solving, 1999, pp. 94
   /// </summary>
   [Item("ArgumentDuplicater", "Manipulates a symbolic expression by duplicating an existing argument node of a function-defining branch. As described in Koza, Bennett, Andre, Keane, Genetic Programming III - Darwinian Invention and Problem Solving, 1999, pp. 94")]
-  [StorableClass]
+  [StorableType("4F97833A-ECF6-436A-9634-1A9111302912")]
   public sealed class ArgumentDuplicater : SymbolicExpressionTreeArchitectureManipulator {
     [StorableConstructor]
-    private ArgumentDuplicater(bool deserializing) : base(deserializing) { }
+    private ArgumentDuplicater(StorableConstructorFlag _) : base(_) { }
     private ArgumentDuplicater(ArgumentDuplicater original, Cloner cloner) : base(original, cloner) { }
     public ArgumentDuplicater() : base() { }
 

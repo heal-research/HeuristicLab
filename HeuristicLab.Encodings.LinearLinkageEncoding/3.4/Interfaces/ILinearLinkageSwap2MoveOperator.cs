@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,8 +20,10 @@
 #endregion
 
 using HeuristicLab.Core;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.LinearLinkageEncoding {
+  [StorableType("92c361ee-2d07-4362-9ce5-d31fc205a112")]
   public interface ILinearLinkageSwap2MoveOperator : ILinearLinkageMoveOperator {
     ILookupParameter<Swap2Move> Swap2MoveParameter { get; }
   }

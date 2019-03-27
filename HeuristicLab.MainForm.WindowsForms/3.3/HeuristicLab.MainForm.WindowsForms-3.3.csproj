@@ -150,6 +150,7 @@
       <DependentUpon>InfoBox.cs</DependentUpon>
     </Compile>
     <Compile Include="Plugin.cs" />
+    <Compile Include="Progress.cs" />
     <Compile Include="Views\AsynchronousContentView.cs">
       <SubType>UserControl</SubType>
     </Compile>

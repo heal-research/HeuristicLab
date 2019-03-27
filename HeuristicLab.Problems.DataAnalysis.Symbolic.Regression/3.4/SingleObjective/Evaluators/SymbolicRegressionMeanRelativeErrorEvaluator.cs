@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,17 +26,17 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   [Item("Mean relative error Evaluator", "Evaluator for symbolic regression models that calculates the mean relative error avg( |y' - y| / (|y| + 1))." +
                                          "The +1 is necessary to handle data with the value of 0.0 correctly. " +
                                          "Notice: Linear scaling is ignored for this evaluator.")]
-  [StorableClass]
+  [StorableType("8A5AAF93-5338-4E11-B3B2-3D9274329E5F")]
   public class SymbolicRegressionMeanRelativeErrorEvaluator : SymbolicRegressionSingleObjectiveEvaluator {
     public override bool Maximization { get { return false; } }
     [StorableConstructor]
-    protected SymbolicRegressionMeanRelativeErrorEvaluator(bool deserializing) : base(deserializing) { }
+    protected SymbolicRegressionMeanRelativeErrorEvaluator(StorableConstructorFlag _) : base(_) { }
     protected SymbolicRegressionMeanRelativeErrorEvaluator(SymbolicRegressionMeanRelativeErrorEvaluator original, Cloner cloner)
       : base(original, cloner) {
     }

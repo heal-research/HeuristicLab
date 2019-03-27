@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,11 +24,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("InversionMoveGenerator", "Base class for all inversion (2-opt) move generators.")]
-  [StorableClass]
+  [StorableType("FB20D0B5-4A65-4718-9A92-90C421034BCF")]
   public abstract class InversionMoveGenerator : SingleSuccessorOperator, IPermutationInversionMoveOperator, IMoveGenerator {
     public override bool CanChangeName {
       get { return false; }
@@ -44,7 +44,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     }
 
     [StorableConstructor]
-    protected InversionMoveGenerator(bool deserializing) : base(deserializing) { }
+    protected InversionMoveGenerator(StorableConstructorFlag _) : base(_) { }
     protected InversionMoveGenerator(InversionMoveGenerator original, Cloner cloner) : base(original, cloner) { }
     public InversionMoveGenerator()
       : base() {

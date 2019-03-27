@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,8 +21,10 @@
 
 using System.Collections.Generic;
 using System.ComponentModel;
+using HEAL.Attic;
 
 namespace HeuristicLab.Collections {
+  [StorableType("ebdc610c-2f22-42c7-a72e-8a4ec682712f")]
   public interface IObservableArray<T> : IList<T>, INotifyObservableArrayItemsChanged<T>, INotifyPropertyChanged {
     int Length { get; }
 

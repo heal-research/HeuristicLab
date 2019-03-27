@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,18 +22,18 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.RealVectorEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TestFunctions {
   [Item("SchwefelAdditiveMoveEvaluator", "Class for evaluating an additive move on the Schwefel function.")]
-  [StorableClass]
+  [StorableType("BBCD57E2-4E1E-44E7-8943-8CCA5A6FFBB9")]
   public class SchwefelAdditiveMoveEvaluator : AdditiveMoveEvaluator {
     public override System.Type EvaluatorType {
       get { return typeof(SchwefelEvaluator); }
     }
 
     [StorableConstructor]
-    protected SchwefelAdditiveMoveEvaluator(bool deserializing) : base(deserializing) { }
+    protected SchwefelAdditiveMoveEvaluator(StorableConstructorFlag _) : base(_) { }
     protected SchwefelAdditiveMoveEvaluator(SchwefelAdditiveMoveEvaluator original, Cloner cloner) : base(original, cloner) { }
     public SchwefelAdditiveMoveEvaluator() : base() { }
 

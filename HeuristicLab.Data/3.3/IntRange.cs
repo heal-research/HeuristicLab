@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,10 +22,10 @@
 using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Data {
-  [StorableClass]
+  [StorableType("99F14850-864C-46FE-A048-04E3DA1D4B02")]
   [Item("IntRange", "Represents a range of values betweent start and end.")]
   public class IntRange : StringConvertibleValueTuple<IntValue, IntValue> {
 
@@ -42,7 +42,7 @@ namespace HeuristicLab.Data {
     }
 
     [StorableConstructor]
-    protected IntRange(bool deserializing) : base(deserializing) { }
+    protected IntRange(StorableConstructorFlag _) : base(_) { }
     protected IntRange(IntRange original, Cloner cloner)
       : base(original, cloner) {
     }

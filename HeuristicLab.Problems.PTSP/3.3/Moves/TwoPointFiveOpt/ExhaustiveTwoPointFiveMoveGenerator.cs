@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,15 +26,15 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.PTSP {
   [Item("Exhaustive 2.5-MoveGenerator", "Generates all possible inversion and shift moves (2.5-opt) from a given permutation.")]
-  [StorableClass]
+  [StorableType("DF95E561-1F47-4845-A58D-CEF32B14461B")]
   public sealed class ExhaustiveTwoPointFiveMoveGenerator : TwoPointFiveMoveGenerator, IExhaustiveMoveGenerator {
 
     [StorableConstructor]
-    private ExhaustiveTwoPointFiveMoveGenerator(bool deserializing) : base(deserializing) { }
+    private ExhaustiveTwoPointFiveMoveGenerator(StorableConstructorFlag _) : base(_) { }
     private ExhaustiveTwoPointFiveMoveGenerator(ExhaustiveTwoPointFiveMoveGenerator original, Cloner cloner) : base(original, cloner) { }
     public ExhaustiveTwoPointFiveMoveGenerator() : base() { }
 

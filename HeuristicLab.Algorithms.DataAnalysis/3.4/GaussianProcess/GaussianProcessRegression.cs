@@ -1,7 +1,7 @@
 
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,9 +25,8 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Problems.DataAnalysis;
 
@@ -37,7 +36,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// </summary>
   [Item("Gaussian Process Regression", "Gaussian process regression data analysis algorithm.")]
   [Creatable(CreatableAttribute.Categories.DataAnalysisRegression, Priority = 160)]
-  [StorableClass]
+  [StorableType("3A1DF0A2-66D1-47BB-8BE4-23003BD34271")]
   public sealed class GaussianProcessRegression : GaussianProcessBase, IStorableContent, IDataAnalysisAlgorithm<IRegressionProblem> {
     public string Filename { get; set; }
 
@@ -70,7 +69,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     #endregion
 
     [StorableConstructor]
-    private GaussianProcessRegression(bool deserializing) : base(deserializing) { }
+    private GaussianProcessRegression(StorableConstructorFlag _) : base(_) { }
     private GaussianProcessRegression(GaussianProcessRegression original, Cloner cloner)
       : base(original, cloner) {
       RegisterEventHandlers();

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,16 +22,16 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.Instances;
 
 namespace HeuristicLab.Problems.PTSP {
   [Item("Att Distance", "Calculates the att distance.")]
-  [StorableClass]
+  [StorableType("7A21281C-EED9-4FE0-A6B1-DE916A074739")]
   public sealed class AttDistance : DistanceCalculator {
 
     [StorableConstructor]
-    private AttDistance(bool deserializing) : base(deserializing) { }
+    private AttDistance(StorableConstructorFlag _) : base(_) { }
     private AttDistance(AttDistance original, Cloner cloner) : base(original, cloner) { }
     public AttDistance() { }
 

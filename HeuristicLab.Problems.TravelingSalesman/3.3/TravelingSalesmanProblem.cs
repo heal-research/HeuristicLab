@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -31,14 +31,14 @@ using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Problems.Instances;
 
 namespace HeuristicLab.Problems.TravelingSalesman {
   [Item("Traveling Salesman Problem (TSP)", "Represents a symmetric Traveling Salesman Problem.")]
   [Creatable(CreatableAttribute.Categories.CombinatorialProblems, Priority = 100)]
-  [StorableClass]
+  [StorableType("F0A3550C-2B8F-497D-BF32-5763F8D7592C")]
   public sealed class TravelingSalesmanProblem : SingleObjectiveHeuristicOptimizationProblem<ITSPEvaluator, IPermutationCreator>, IStorableContent,
     IProblemInstanceConsumer<TSPData> {
     private static readonly int DistanceMatrixSizeLimit = 1000;
@@ -98,7 +98,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     #endregion
 
     [StorableConstructor]
-    private TravelingSalesmanProblem(bool deserializing) : base(deserializing) { }
+    private TravelingSalesmanProblem(StorableConstructorFlag _) : base(_) { }
     private TravelingSalesmanProblem(TravelingSalesmanProblem original, Cloner cloner)
       : base(original, cloner) {
       RegisterEventHandlers();

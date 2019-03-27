@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,14 +26,14 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// <summary>
   /// A base class for operators that perform a crossover of real-valued vectors.
   /// </summary>
   [Item("RealVectorCrossover", "A base class for operators that perform a crossover of real-valued vectors.")]
-  [StorableClass]
+  [StorableType("4E51D1FF-056B-4A4D-8D90-3EB640EAF44A")]
   public abstract class RealVectorCrossover : InstrumentedOperator, IRealVectorCrossover, IStochasticOperator {
     public override bool CanChangeName {
       get { return false; }
@@ -60,7 +60,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     }
 
     [StorableConstructor]
-    protected RealVectorCrossover(bool deserializing) : base(deserializing) { }
+    protected RealVectorCrossover(StorableConstructorFlag _) : base(_) { }
     protected RealVectorCrossover(RealVectorCrossover original, Cloner cloner)
       : base(original, cloner) {
       RegisterEventHandlers();

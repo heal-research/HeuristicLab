@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,14 +25,14 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace HeuristicLab.Algorithms.CMAEvolutionStrategy {
   [Item("CMAInitializer", "Initializes the covariance matrix and step size variables.")]
-  [StorableClass]
+  [StorableType("AEE40FF4-A610-474B-B969-032A54D814CE")]
   public class CMAInitializer : SingleSuccessorOperator, ICMAInitializer, IIterationBasedOperator {
 
     public Type CMAType {
@@ -78,7 +78,7 @@ namespace HeuristicLab.Algorithms.CMAEvolutionStrategy {
     #endregion
 
     [StorableConstructor]
-    protected CMAInitializer(bool deserializing) : base(deserializing) { }
+    protected CMAInitializer(StorableConstructorFlag _) : base(_) { }
     protected CMAInitializer(CMAInitializer original, Cloner cloner) : base(original, cloner) { }
     public CMAInitializer()
       : base() {

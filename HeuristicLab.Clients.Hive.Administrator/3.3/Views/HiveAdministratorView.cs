@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -34,23 +34,6 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
 
     public HiveAdministratorView() {
       InitializeComponent();
-    }
-
-    #region Register Content Events
-    protected override void DeregisterContentEvents() {
-      base.DeregisterContentEvents();
-    }
-    protected override void RegisterContentEvents() {
-      base.RegisterContentEvents();
-    }
-    #endregion
-
-    protected override void OnContentChanged() {
-      base.OnContentChanged();
-    }
-
-    protected override void SetEnabledStateOfControls() {
-      base.SetEnabledStateOfControls();
     }
   }
 }

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,15 +22,15 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.IntegerVectorEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding.PriorityRulesVector {
   [Item("PRVSinglePointCrossover", "Represents a crossover operation swapping sequences of the parents to generate offspring.")]
-  [StorableClass]
+  [StorableType("7E148F4E-1993-44B5-B466-E1E441203498")]
   public class PRVSinglePointCrossover : PRVCrossover {
 
     [StorableConstructor]
-    protected PRVSinglePointCrossover(bool deserializing) : base(deserializing) { }
+    protected PRVSinglePointCrossover(StorableConstructorFlag _) : base(_) { }
     protected PRVSinglePointCrossover(PRVSinglePointCrossover original, Cloner cloner) : base(original, cloner) { }
     public PRVSinglePointCrossover() : base() { }
 
