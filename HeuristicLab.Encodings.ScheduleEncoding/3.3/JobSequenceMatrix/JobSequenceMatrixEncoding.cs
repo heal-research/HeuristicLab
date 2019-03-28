@@ -24,16 +24,16 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding {
-  [StorableClass]
+  [StorableType("9C090369-0214-42E6-8C3E-369751F5A9E1")]
   public sealed class JobSequenceMatrixEncoding : ScheduleEncoding<JSMEncoding> {
     [StorableConstructor]
-    private JobSequenceMatrixEncoding(bool deserializing) : base(deserializing) { }
+    private JobSequenceMatrixEncoding(StorableConstructorFlag _) : base(_) { }
     private JobSequenceMatrixEncoding(JobSequenceMatrixEncoding original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new JobSequenceMatrixEncoding(this, cloner);

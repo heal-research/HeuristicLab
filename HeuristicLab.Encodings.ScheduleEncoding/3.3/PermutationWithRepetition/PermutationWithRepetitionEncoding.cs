@@ -24,16 +24,16 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding {
-  [StorableClass]
+  [StorableType("468EF506-0749-469B-B9B9-36655AA0178D")]
   public sealed class PermutationWithRepetitionEncoding : ScheduleEncoding<PWREncoding> {
     [StorableConstructor]
-    private PermutationWithRepetitionEncoding(bool deserializing) : base(deserializing) { }
+    private PermutationWithRepetitionEncoding(StorableConstructorFlag _) : base(_) { }
     private PermutationWithRepetitionEncoding(PermutationWithRepetitionEncoding original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new PermutationWithRepetitionEncoding(this, cloner);

@@ -19,16 +19,16 @@
  */
 #endregion
 
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("DirectScheduleDecoder", "An item used to convert a direct schedule into a generalized schedule.")]
-  [StorableClass]
+  [StorableType("151C772B-6E6C-40D9-B171-F5626C676A5F")]
   public class DirectScheduleDecoder : ScheduleDecoder<Schedule> {
     [StorableConstructor]
-    protected DirectScheduleDecoder(bool deserializing) : base(deserializing) { }
+    protected DirectScheduleDecoder(StorableConstructorFlag _) : base(_) { }
     protected DirectScheduleDecoder(DirectScheduleDecoder original, Cloner cloner) : base(original, cloner) { }
     public DirectScheduleDecoder() : base() { }
 

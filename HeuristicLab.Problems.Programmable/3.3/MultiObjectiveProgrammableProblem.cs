@@ -20,13 +20,13 @@
 #endregion
 
 using System.Drawing;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Common.Resources;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 using HeuristicLab.Scripting;
 
 namespace HeuristicLab.Problems.Programmable {
@@ -60,7 +60,7 @@ namespace HeuristicLab.Problems.Programmable {
     }
 
     [StorableConstructor]
-    private MultiObjectiveProgrammableProblem(StorableConstructorFlag _) : base(_) { }
+    protected MultiObjectiveProgrammableProblem(StorableConstructorFlag _) : base(_) { }
     protected MultiObjectiveProgrammableProblem(MultiObjectiveProgrammableProblem<TEncoding, TSolution> original, Cloner cloner)
       : base(original, cloner) {
       RegisterEvents();

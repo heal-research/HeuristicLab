@@ -21,6 +21,7 @@
 
 using System.Collections.Generic;
 using System.Drawing;
+using HEAL.Attic;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Common.Resources;
@@ -28,7 +29,6 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 using HeuristicLab.Scripting;
 
 namespace HeuristicLab.Problems.Programmable {
@@ -71,7 +71,7 @@ namespace HeuristicLab.Problems.Programmable {
     }
 
     [StorableConstructor]
-    private SingleObjectiveProgrammableProblem(StorableConstructorFlag _) : base(_) { }
+    protected SingleObjectiveProgrammableProblem(StorableConstructorFlag _) : base(_) { }
     public SingleObjectiveProgrammableProblem()
       : base() {
       Parameters.Add(new FixedValueParameter<SingleObjectiveProblemDefinitionScript<TEncoding, TSolution>>("ProblemScript", "Defines the problem.", new SingleObjectiveProblemDefinitionScript<TEncoding, TSolution>() { Name = Name }));

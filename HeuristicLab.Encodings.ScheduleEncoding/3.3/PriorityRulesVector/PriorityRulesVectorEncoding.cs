@@ -24,15 +24,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding {
-  [StorableClass]
+  [StorableType("9C419EE5-F3A8-4F06-8263-7D37D3AE1C72")]
   public sealed class PriorityRulesVectorEncoding : ScheduleEncoding<PRVEncoding> {
 
     private IFixedValueParameter<IntValue> numberOfRulesParameter;
@@ -52,7 +52,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
 
 
     [StorableConstructor]
-    private PriorityRulesVectorEncoding(bool deserializing) : base(deserializing) { }
+    private PriorityRulesVectorEncoding(StorableConstructorFlag _) : base(_) { }
     private PriorityRulesVectorEncoding(PriorityRulesVectorEncoding original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new PriorityRulesVectorEncoding(this, cloner);

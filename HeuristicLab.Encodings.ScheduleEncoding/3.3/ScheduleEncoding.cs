@@ -24,15 +24,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding {
-  [StorableClass]
+  [StorableType("D2FB1AF9-EF13-4ED2-B3E9-D5BE4E5772EA")]
   public abstract class ScheduleEncoding<TSchedule> : Encoding<TSchedule>, IScheduleEncoding
   where TSchedule : class, ISchedule {
     #region Encoding Parameters
@@ -118,7 +118,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
     }
 
     [StorableConstructor]
-    protected ScheduleEncoding(bool deserializing) : base(deserializing) { }
+    protected ScheduleEncoding(StorableConstructorFlag _) : base(_) { }
     protected ScheduleEncoding(ScheduleEncoding<TSchedule> original, Cloner cloner)
       : base(original, cloner) {
       jobDataParameter = cloner.Clone(original.JobDataParameter);

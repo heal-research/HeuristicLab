@@ -22,10 +22,10 @@
 using System;
 using System.Linq;
 using System.Reflection;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
-using HEAL.Attic;
 using HeuristicLab.Scripting;
 
 namespace HeuristicLab.Problems.Programmable {
@@ -54,7 +54,7 @@ namespace HeuristicLab.Problems.Programmable {
   }
 
   [Item("ProblemDefinitionScript", "Script that defines the parameter vector and evaluates the solution for a programmable problem.")]
-  [StorableClass]
+  [StorableType("0B3AF22C-4744-4860-BBCF-A92046000847")]
   public abstract class ProblemDefinitionScript<TEncoding, TSolution> : ProblemDefinitionScript, IProblemDefinition<TEncoding, TSolution>
     where TEncoding : class, IEncoding<TSolution>
     where TSolution : class, ISolution {
@@ -78,7 +78,7 @@ namespace HeuristicLab.Problems.Programmable {
     }
 
     [StorableConstructor]
-    protected ProblemDefinitionScript(bool deserializing) : base(deserializing) { }
+    protected ProblemDefinitionScript(StorableConstructorFlag _) : base(_) { }
     protected ProblemDefinitionScript(ProblemDefinitionScript<TEncoding, TSolution> original, Cloner cloner)
       : base(original, cloner) {
       encoding = cloner.Clone(original.encoding);

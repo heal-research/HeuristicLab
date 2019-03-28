@@ -20,14 +20,14 @@
 #endregion
 
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("JobSequencingMatrixDecoder", "Applies the GifflerThompson algorithm to create an active schedule from a JobSequencing Matrix.")]
-  [StorableClass]
+  [StorableType("2D059957-AC7C-4B33-BADE-96706AEBAF29")]
   public class PRVDecoder : ScheduleDecoder<PRVEncoding> {
     #region Priority Rules
     //smallest number of remaining tasks
@@ -157,7 +157,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
     #endregion
 
     [StorableConstructor]
-    protected PRVDecoder(bool deserializing) : base(deserializing) { }
+    protected PRVDecoder(StorableConstructorFlag _) : base(_) { }
     protected PRVDecoder(PRVDecoder original, Cloner cloner) : base(original, cloner) { }
     public PRVDecoder() : base() { }
 

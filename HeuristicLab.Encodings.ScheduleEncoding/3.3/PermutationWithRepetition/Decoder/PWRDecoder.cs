@@ -19,17 +19,16 @@
  */
 #endregion
 
-using System;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("PWRDecoder", "An item used to convert a PWR-individual into a generalized schedule.")]
-  [StorableClass]
+  [StorableType("60D171BE-9704-40E1-9C63-0E56D95403CD")]
   public class PWRDecoder : ScheduleDecoder<PWREncoding> {
     [StorableConstructor]
-    protected PWRDecoder(bool deserializing) : base(deserializing) { }
+    protected PWRDecoder(StorableConstructorFlag _) : base(_) { }
     protected PWRDecoder(PWRDecoder original, Cloner cloner) : base(original, cloner) { }
     public PWRDecoder() : base() { }
 

@@ -22,17 +22,17 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("JobSequenceMatrixDecoder", "Applies the GifflerThompson algorithm to create an active schedule from a JobSequence Matrix.")]
-  [StorableClass]
+  [StorableType("BBE354C2-7599-43CC-ACDC-F8F0F65BE3F5")]
   public class JSMDecoder : ScheduleDecoder<JSMEncoding> {
 
     public IFixedValueParameter<EnumValue<JSMDecodingErrorPolicy>> DecodingErrorPolicyParameter {
@@ -51,7 +51,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
     }
 
     [StorableConstructor]
-    protected JSMDecoder(bool deserializing) : base(deserializing) { }
+    protected JSMDecoder(StorableConstructorFlag _) : base(_) { }
     protected JSMDecoder(JSMDecoder original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new JSMDecoder(this, cloner);
