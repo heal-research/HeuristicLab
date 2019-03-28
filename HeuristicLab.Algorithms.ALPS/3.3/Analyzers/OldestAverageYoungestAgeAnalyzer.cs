@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -28,11 +28,11 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.ALPS {
   [Item("OldestAverageYoungestAgeAnalyzer", "An operator which calculates the current oldest, average and youngest age in the scope tree.")]
-  [StorableClass]
+  [StorableType("1AE2C4EF-BFCB-439C-AD5E-00E7740FD3D0")]
   public sealed class OldestAverageYoungestAgeAnalyzer : AlgorithmOperator, IAnalyzer {
     #region Parameter properties
     public IScopeTreeLookupParameter<DoubleValue> AgeParameter {
@@ -66,7 +66,7 @@ namespace HeuristicLab.Algorithms.ALPS {
 
     #region Storing & Cloning
     [StorableConstructor]
-    private OldestAverageYoungestAgeAnalyzer(bool deserializing) : base(deserializing) { }
+    private OldestAverageYoungestAgeAnalyzer(StorableConstructorFlag _) : base(_) { }
     private OldestAverageYoungestAgeAnalyzer(OldestAverageYoungestAgeAnalyzer original, Cloner cloner)
       : base(original, cloner) {
       Initialize();

@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>HeuristicLab.Persistence</RootNamespace>
     <AssemblyName>HeuristicLab.Persistence-3.3</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -107,13 +107,13 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
   </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -133,7 +133,6 @@
     <Compile Include="Auxiliary\ReflectionTools.cs" />
     <None Include="Plugin.cs.frame" />
     <Compile Include="Core\Configuration.cs" />
-    <Compile Include="Core\PersistenceException.cs" />
     <Compile Include="Core\PrimitiveSerializerBase.cs" />
     <Compile Include="Core\FormatBase.cs" />
     <Compile Include="Auxiliary\TypeExtensions.cs" />
@@ -156,12 +155,7 @@
     <Compile Include="Default\CompositeSerializers\StackSerializer.cs" />
     <Compile Include="Default\CompositeSerializers\Storable\StorableReflection.cs" />
     <Compile Include="Default\CompositeSerializers\Storable\StorableMemberInfo.cs" />
-    <Compile Include="Default\CompositeSerializers\Storable\StorableClassType.cs" />
     <Compile Include="Core\DataMemberAccessor.cs" />
-    <Compile Include="Default\CompositeSerializers\Storable\StorableClassAttribute.cs" />
-    <Compile Include="Default\CompositeSerializers\Storable\StorableAttribute.cs" />
-    <Compile Include="Default\CompositeSerializers\Storable\StorableConstructorAttribute.cs" />
-    <Compile Include="Default\CompositeSerializers\Storable\StorableHookAttribute.cs" />
     <Compile Include="Default\CompositeSerializers\Storable\StorableSerializer.cs" />
     <Compile Include="Default\CompositeSerializers\StructSerializer.cs" />
     <Compile Include="Default\CompositeSerializers\TypeSerializer.cs" />
@@ -302,5 +296,15 @@ $SolutionDir/PreBuildEvent.sh
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Transformers\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="HEAL.Attic, Version=1.0.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\HEAL.Attic.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
   </ItemGroup>
 </Project>

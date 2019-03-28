@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,8 +21,10 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TravelingSalesman {
+  [StorableType("C9962138-AB3D-4C33-B5EC-9B526E0C6F82")]
   /// <summary>
   /// An interface which represents an evaluation operator which evaluates TSP solutions given in path representation using city coordinates.
   /// </summary>

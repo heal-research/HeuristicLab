@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -226,6 +226,47 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
         string.Format(CultureInfo.InvariantCulture, "(factor a 1.0 {0})", 3.0 / 0.0));
       AssertEqualAfterSimplification("(- (binfactor a x0 2.0) (factor a 2.0 3.0))", "(factor a 0.0 -3.0)");
       AssertEqualAfterSimplification("(- (factor a 2.0 3.0) (binfactor a x0 2.0))", "(factor a 0.0 3.0)");
+      #endregion
+
+      #region abs
+      AssertEqualAfterSimplification("(abs 2.0)", "2.0");
+      AssertEqualAfterSimplification("(abs -2.0)", "2.0"); // constant folding
+      AssertEqualAfterSimplification("(abs (exp (variable 2.0 x)))", "(exp (variable 2.0 x)))"); // exp is always positive
+      AssertEqualAfterSimplification("(abs (exp (variable 2.0 x)))", "(exp (variable 2.0 x)))"); // exp is always positive
+      AssertEqualAfterSimplification("(abs (sqr (variable 2.0 a)))", "(sqr (variable 2.0 a))"); // sqr is always positive
+      AssertEqualAfterSimplification("(abs (sqrt (variable 2.0 a)))", "(sqrt (variable 2.0 a))"); // sqrt is always positive (for our cases)
+      AssertEqualAfterSimplification("(abs (cuberoot (variable 2.0 a)))", "(cuberoot (variable 2.0 a))"); // cuberoot is always positive (for our cases)
+
+      AssertEqualAfterSimplification("(* (abs (variable 2.0 x)) 2.0)", "(abs (variable 4.0 x))");  // can multiply positive constants into abs
+      AssertEqualAfterSimplification("(* (abs (variable 2.0 x)) -2.0)", "(* (abs (variable 4.0 x)) -1.0)"); // for negative constants keep the sign
+
+      AssertEqualAfterSimplification("(abs (* (variable 1.0 a) (variable 2.0 b)))", "(* (abs (variable 1.0 a)) (abs (variable 1.0 b)) 2.0))");
+      AssertEqualAfterSimplification("(abs (/ (variable 1.0 a) (variable 2.0 b)))", "(/ (abs (variable 1.0 a)) (abs (variable 2.0 b))))");
+      #endregion
+
+      #region square and sqrt
+      AssertEqualAfterSimplification("(sqr (sqrt (variable 2.0 x)))", "(variable 2.0 x)");
+      AssertEqualAfterSimplification("(sqrt (sqr (variable 2.0 x)))", "(variable 2.0 x)");
+      AssertEqualAfterSimplification("(sqr (abs (variable 2.0 a)))", "(sqr (variable 2.0 a))");
+      AssertEqualAfterSimplification("(sqr (exp (variable 2.0 x)))", "(exp (variable 4.0 x))");
+
+      AssertEqualAfterSimplification("(sqr (* (variable 2.0 a) (variable 3.0 b) (variable 4.0 c)))",
+        "(* (sqr (variable 1.0 a)) (sqr (variable 1.0 b)) (sqr (variable 1.0 c)) 576)"); // 2²*3²*4²
+      #endregion
+
+      #region cube and cuberoot
+      AssertEqualAfterSimplification("(cube (cuberoot (variable 2.0 x)))", "(variable 2.0 x)");
+      AssertEqualAfterSimplification("(cuberoot (cube (variable 2.0 x)))", "(variable 2.0 x)");
+      AssertEqualAfterSimplification("(cube (exp (variable 2.0 x)))", "(exp (variable 6.0 x))");
+
+      AssertEqualAfterSimplification("(sqr (cube (variable 2.0 x)))", "(pow (variable 2.0 x) 6)");
+      AssertEqualAfterSimplification("(cube (sqr (variable 2.0 x)))", "(pow (variable 2.0 x) 6)");
+      #endregion
+
+      #region AQ
+      AssertEqualAfterSimplification("(* (aq (variable 1.0 x) (variable 1.0 y)) 2.0)", "(aq (variable 2.0 x) (variable 1.0 y))");
+      AssertEqualAfterSimplification("(/ (aq (variable 1.0 x) (variable 1.0 y)) 2.0)", "(aq (variable 0.5 x) (variable 1.0 y))");
+
       #endregion
     }
 

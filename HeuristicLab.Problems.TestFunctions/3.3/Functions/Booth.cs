@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,14 +24,14 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TestFunctions {
   /// <summary>
   /// The Booth function is implemented as described on http://www-optima.amp.i.kyoto-u.ac.jp/member/student/hedar/Hedar_files/TestGO_files/Page816.htm, last accessed April 12th, 2010.
   /// </summary>
   [Item("Booth", "Evaluates the Booth function on a given point. The optimum of this function is 0 at (1,3). It is implemented as described on http://www-optima.amp.i.kyoto-u.ac.jp/member/student/hedar/Hedar_files/TestGO_files/Page816.htm, last accessed April 12th, 2010.")]
-  [StorableClass]
+  [StorableType("3D0027F9-FC7B-4C34-8766-93C4A467767A")]
   public class Booth : SingleObjectiveTestFunction {
     /// <summary>
     /// Returns false as the Booth function is a minimization problem.
@@ -65,7 +65,7 @@ namespace HeuristicLab.Problems.TestFunctions {
     }
 
     [StorableConstructor]
-    protected Booth(bool deserializing) : base(deserializing) { }
+    protected Booth(StorableConstructorFlag _) : base(_) { }
     protected Booth(Booth original, Cloner cloner) : base(original, cloner) { }
     public Booth() : base() { }
 

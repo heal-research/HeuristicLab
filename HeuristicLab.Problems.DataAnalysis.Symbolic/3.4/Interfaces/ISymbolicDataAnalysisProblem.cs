@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,8 +23,10 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Optimization;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
+  [StorableType("17dc51c4-499c-49dc-b3ac-72364358f7e7")]
   public interface ISymbolicDataAnalysisProblem : IDataAnalysisProblem, IHeuristicOptimizationProblem {
     IValueParameter<ISymbolicDataAnalysisGrammar> SymbolicExpressionTreeGrammarParameter { get; }
     IValueParameter<ISymbolicDataAnalysisExpressionTreeInterpreter> SymbolicExpressionTreeInterpreterParameter { get; }
@@ -47,6 +49,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     IntRange ValidationPartition { get; }
   }
 
+  [StorableType("07b08ca0-40cb-433e-8aed-72df06a87d62")]
   public interface ISymbolicDataAnalysisSingleObjectiveProblem : ISymbolicDataAnalysisProblem, ISingleObjectiveProblem<SymbolicExpressionTreeEncoding, ISymbolicExpressionTree> { }
+  [StorableType("1c5a0cf4-1286-45d8-b126-a6f5ddccf7bf")]
   public interface ISymbolicDataAnalysisMultiObjectiveProblem : ISymbolicDataAnalysisProblem, IMultiObjectiveProblem<SymbolicExpressionTreeEncoding, ISymbolicExpressionTree> { }
 }

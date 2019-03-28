@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -88,7 +88,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       var ds = problemData.Dataset;
       var runs = new RunCollection();
       // determine relevant variables (at least two different values)
-      var doubleVars = ds.DoubleVariables.Where(vn => ds.GetDoubleValues(vn).Max() > ds.GetDoubleValues(vn).Min()).ToArray();
+      var doubleVars = ds.DoubleVariables.Where(vn => ds.GetDoubleValues(vn).Distinct().Skip(1).Any()).ToArray();
       var stringVars = ds.StringVariables.Where(vn => ds.GetStringValues(vn).Distinct().Skip(1).Any()).ToArray();
       var dateTimeVars = ds.DateTimeVariables.Where(vn => ds.GetDateTimeValues(vn).Distinct().Skip(1).Any()).ToArray();
 

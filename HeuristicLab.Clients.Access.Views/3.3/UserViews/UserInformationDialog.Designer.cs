@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -45,7 +45,7 @@ namespace HeuristicLab.Clients.Access.Views {
     /// </summary>
     private void InitializeComponent() {
       this.closeButton = new System.Windows.Forms.Button();
-      this.refreshableLightweightUserInformationView = new HeuristicLab.Clients.Access.Views.RefreshableLightweightUserInformationView();
+      this.refreshableLightweightUserInformationView = new HeuristicLab.Clients.Access.Views.RefreshableLightweightAccessClientInformationView();
       this.SuspendLayout();
       // 
       // closeButton
@@ -94,7 +94,7 @@ namespace HeuristicLab.Clients.Access.Views {
 
     #endregion
 
-    private RefreshableLightweightUserInformationView refreshableLightweightUserInformationView;
+    private RefreshableLightweightAccessClientInformationView refreshableLightweightUserInformationView;
     private System.Windows.Forms.Button closeButton;
   }
 }

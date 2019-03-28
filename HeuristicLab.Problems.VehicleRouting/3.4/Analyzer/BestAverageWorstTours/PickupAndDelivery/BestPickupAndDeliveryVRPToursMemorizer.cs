@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,11 +25,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.VehicleRouting {
   [Item("BestPickupAndDeliveryVRPToursMemorizer", "An operator that updates the best VRP tour found so far in the scope three.")]
-  [StorableClass]
+  [StorableType("F9371738-574B-4658-BB10-12F29C951F72")]
   public class BestPickupAndDeliveryVRPToursMemorizer : SingleSuccessorOperator {
     public ScopeTreeLookupParameter<IntValue> PickupViolationsParameter {
       get { return (ScopeTreeLookupParameter<IntValue>)Parameters["PickupViolations"]; }
@@ -55,7 +55,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
     }
 
     [StorableConstructor]
-    protected BestPickupAndDeliveryVRPToursMemorizer(bool deserializing) : base(deserializing) { }
+    protected BestPickupAndDeliveryVRPToursMemorizer(StorableConstructorFlag _) : base(_) { }
 
     public override IOperation Apply() {
       int i = PickupViolationsParameter.ActualValue.Select((x, index) => new { index, x.Value }).OrderBy(x => x.Value).First().index;

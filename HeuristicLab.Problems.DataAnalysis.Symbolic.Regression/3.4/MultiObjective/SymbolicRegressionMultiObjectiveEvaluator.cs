@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,10 +24,10 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
-  [StorableClass]
+  [StorableType("1BEEE472-95E7-45C3-BD47-883B5E3A672D")]
   public abstract class SymbolicRegressionMultiObjectiveEvaluator : SymbolicDataAnalysisMultiObjectiveEvaluator<IRegressionProblemData>, ISymbolicRegressionMultiObjectiveEvaluator {
     private const string DecimalPlacesParameterName = "Decimal Places";
     private const string UseConstantOptimizationParameterName = "Use constant optimization";
@@ -69,7 +69,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     }
 
     [StorableConstructor]
-    protected SymbolicRegressionMultiObjectiveEvaluator(bool deserializing) : base(deserializing) { }
+    protected SymbolicRegressionMultiObjectiveEvaluator(StorableConstructorFlag _) : base(_) { }
     protected SymbolicRegressionMultiObjectiveEvaluator(SymbolicRegressionMultiObjectiveEvaluator original, Cloner cloner)
       : base(original, cloner) {
     }

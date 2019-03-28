@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,18 +23,18 @@ using System;
 using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>
   /// The angular distance as defined as a normalized distance measure dependent on the angle between two vectors.
   /// </summary>
-  [StorableClass]
+  [StorableType("C87DE522-CB6D-485B-B2F7-6FE79B4E4DC6")]
   [Item("CosineDistance", "The angular distance as defined as a normalized distance measure dependent on the angle between two vectors.")]
   public class CosineDistance : DistanceBase<IEnumerable<double>> {
     #region HLConstructors & Cloning
     [StorableConstructor]
-    protected CosineDistance(bool deserializing) : base(deserializing) { }
+    protected CosineDistance(StorableConstructorFlag _) : base(_) { }
     protected CosineDistance(CosineDistance original, Cloner cloner)
       : base(original, cloner) { }
     public CosineDistance() { }

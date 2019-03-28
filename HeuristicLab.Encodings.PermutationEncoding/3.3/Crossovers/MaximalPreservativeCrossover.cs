@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,7 +22,7 @@
 using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   /// <summary>An operator which performs the maximal preservative crossover on two permutations.</summary>
@@ -35,10 +35,10 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
   /// If the length of the permutation is smaller than 15, the size of the segment is always equal to 3.
   /// </remarks>
   [Item("MaximalPreservativeCrossover", "An operator which performs the maximal preservative crossover on two permutations. It is implemented as described in Mühlenbein, H. 1991. Evolution in time and space - the parallel genetic algorithm. FOUNDATIONS OF GENETIC ALGORITHMS, pp. 316-337. Morgan Kaufmann.")]
-  [StorableClass]
+  [StorableType("FEC5CCFA-C7E6-4A2E-88C0-C537329BEE73")]
   public class MaximalPreservativeCrossover : PermutationCrossover {
     [StorableConstructor]
-    protected MaximalPreservativeCrossover(bool deserializing) : base(deserializing) { }
+    protected MaximalPreservativeCrossover(StorableConstructorFlag _) : base(_) { }
     protected MaximalPreservativeCrossover(MaximalPreservativeCrossover original, Cloner cloner) : base(original, cloner) { }
     public MaximalPreservativeCrossover() : base() { }
 

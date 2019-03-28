@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -28,14 +28,14 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Analysis {
   /// <summary>
   /// An operator for analyzing the frequency of alleles.
   /// </summary>
   [Item("AlleleFrequencyAnalyzer", "An operator for analyzing the frequency of alleles.")]
-  [StorableClass]
+  [StorableType("FB4ABEB4-E94E-4B79-9356-8AC48D8F77BE")]
   public abstract class AlleleFrequencyAnalyzer<T> : SingleSuccessorOperator, IAnalyzer, ISingleObjectiveOperator where T : class, ISolution {
     public virtual bool EnabledByDefault {
       get { return false; }
@@ -67,7 +67,7 @@ namespace HeuristicLab.Analysis {
     }
 
     [StorableConstructor]
-    protected AlleleFrequencyAnalyzer(bool deserializing) : base(deserializing) { }
+    protected AlleleFrequencyAnalyzer(StorableConstructorFlag _) : base(_) { }
     protected AlleleFrequencyAnalyzer(AlleleFrequencyAnalyzer<T> original, Cloner cloner) : base(original, cloner) { }
     public AlleleFrequencyAnalyzer()
       : base() {

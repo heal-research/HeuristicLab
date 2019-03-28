@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,10 +22,10 @@ using System;
 using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Encodings.RealVectorEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
-  [StorableClass]
+  [StorableType("A8192C08-A1DA-479A-9381-9B634761B521")]
   public abstract class ZDT : MultiObjectiveTestFunction {
     protected override IEnumerable<double[]> GetOptimalParetoFront(int objectives) {
       return ParetoFrontStore.GetParetoFront("ZDT.ParetoFronts." + this.ItemName);
@@ -48,7 +48,7 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
     }
 
     [StorableConstructor]
-    protected ZDT(bool deserializing) : base(deserializing) { }
+    protected ZDT(StorableConstructorFlag _) : base(_) { }
     protected ZDT(MultiObjectiveTestFunction original, Cloner cloner)
       : base(original, cloner) {
     }

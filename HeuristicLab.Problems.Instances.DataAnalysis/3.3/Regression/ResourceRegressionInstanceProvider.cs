@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,7 +24,6 @@ using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Reflection;
 using System.Text.RegularExpressions;
 using HeuristicLab.Problems.DataAnalysis;
 
@@ -61,7 +60,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     }
 
     protected virtual string GetResourceName(string fileName) {
-      return Assembly.GetExecutingAssembly().GetManifestResourceNames()
+      return GetType().Assembly.GetManifestResourceNames()
               .Where(x => Regex.Match(x, @".*\.Data\." + fileName).Success).SingleOrDefault();
     }
   }

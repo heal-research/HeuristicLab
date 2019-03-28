@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,13 +24,13 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.VehicleRouting.Encodings.General;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaStochasticLambdaInterchangeMultiMoveGenerator", "Generates multiple random lambda interchange moves from a given VRP encoding.  It is implemented as described in Alba, E. and Dorronsoro, B. (2004). Solving the Vehicle Routing Problem by Using Cellular Genetic Algorithms.")]
-  [StorableClass]
+  [StorableType("30C4BF89-1C6F-4A9D-B179-E04FFAD75A8B")]
   public sealed class AlbaStochasticLambdaInterchangeMultiMoveGenerator : AlbaLambdaInterchangeMoveGenerator, IStochasticOperator,
     IMultiMoveGenerator, IAlbaLambdaInterchangeMoveOperator, IMultiVRPMoveGenerator {
     public ILookupParameter<IRandom> RandomParameter {
@@ -42,7 +42,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
     }
 
     [StorableConstructor]
-    private AlbaStochasticLambdaInterchangeMultiMoveGenerator(bool deserializing) : base(deserializing) { }
+    private AlbaStochasticLambdaInterchangeMultiMoveGenerator(StorableConstructorFlag _) : base(_) { }
 
     public AlbaStochasticLambdaInterchangeMultiMoveGenerator()
       : base() {

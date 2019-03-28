@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -36,7 +36,7 @@ namespace HeuristicLab.Analysis.Views {
     public void ShowConfiguration() {
       DataTable current = viewHost.Content as DataTable;
       if (current == null) return;
-      using (DataTableVisualPropertiesDialog dialog = new DataTableVisualPropertiesDialog(current)) {
+      using (var dialog = new DataTableVisualPropertiesDialog<DataRow>(current)) {
         if (dialog.ShowDialog(this) != DialogResult.OK) return;
         HashSet<string> modifiedDisplayNames = new HashSet<string>(dialog.RowsWithModifiedDisplayNames);
         foreach (DataTable dt in Content) {

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,18 +22,21 @@
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
-  [StorableClass]
+  [StorableType("D6D34B11-7618-4F8E-AFC3-3E42DAA1E38C")]
   [Item("IndexedItemDistance", "A distance wrapper for indexed items")]
   internal class IndexedItemDistance<T> : DistanceBase<IndexedItem<T>> {
     [Storable]
     private readonly IDistance<T> dist;
 
     #region HLConstructors & Cloning
+
     [StorableConstructor]
-    protected IndexedItemDistance(bool deserializing) : base(deserializing) { }
+    protected IndexedItemDistance(StorableConstructorFlag _) : base(_) {
+    }
+
     protected IndexedItemDistance(IndexedItemDistance<T> original, Cloner cloner) : base(original, cloner) {
       dist = cloner.Clone(original.dist);
     }

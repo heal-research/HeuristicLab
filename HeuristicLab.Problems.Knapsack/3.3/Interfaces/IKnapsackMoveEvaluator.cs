@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,8 +22,10 @@
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.Knapsack {
+  [StorableType("68FE6DEB-F190-446B-9877-7BE56FB08585")]
   public interface IKnapsackMoveEvaluator : ISingleObjectiveMoveEvaluator, IMoveOperator {
     ILookupParameter<IntValue> KnapsackCapacityParameter { get; }
     ILookupParameter<IntArray> WeightsParameter { get; }

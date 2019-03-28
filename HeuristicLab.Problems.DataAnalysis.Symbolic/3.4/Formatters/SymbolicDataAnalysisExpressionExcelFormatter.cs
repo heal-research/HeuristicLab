@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,17 +24,17 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [Item("Excel String Formatter", "String formatter for string representations of symbolic data analysis expressions in Excel syntax.")]
-  [StorableClass]
+  [StorableType("46C46897-9C92-4CF1-81C9-700732700DD3")]
   public sealed class SymbolicDataAnalysisExpressionExcelFormatter : NamedItem, ISymbolicExpressionTreeStringFormatter {
     [StorableConstructor]
-    private SymbolicDataAnalysisExpressionExcelFormatter(bool deserializing) : base(deserializing) { }
+    private SymbolicDataAnalysisExpressionExcelFormatter(StorableConstructorFlag _) : base(_) { }
     private SymbolicDataAnalysisExpressionExcelFormatter(SymbolicDataAnalysisExpressionExcelFormatter original, Cloner cloner) : base(original, cloner) { }
     public SymbolicDataAnalysisExpressionExcelFormatter()
       : base() {
@@ -191,7 +191,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         stringBuilder.Append("TAN(");
         stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
         stringBuilder.Append(")");
-
+      } else if (symbol is HyperbolicTangent) {
+        stringBuilder.Append("TANH(");
+        stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
+        stringBuilder.Append(")");
       } else if (symbol is Variable) {
         VariableTreeNode variableTreeNode = node as VariableTreeNode;
         stringBuilder.Append(variableTreeNode.Weight.ToString(CultureInfo.InvariantCulture));

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -58,6 +58,11 @@ namespace HeuristicLab.Clients.Access.Views {
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
       this.showDetailsCheckBox.Enabled = false;
+      bool enabled = Content != null && !Locked;
+      addButton.Enabled = enabled;
+      removeButton.Enabled = enabled;
+      moveDownButton.Enabled = enabled;
+      moveUpButton.Enabled = enabled;
     }
 
     public event EventHandler SelectedUsersChanged;

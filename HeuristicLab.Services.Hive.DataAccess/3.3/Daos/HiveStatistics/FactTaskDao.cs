@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -65,7 +65,7 @@ namespace HeuristicLab.Services.Hive.DataAccess.Daos.HiveStatistics {
     public IQueryable<FactTask> GetByGroupId(Guid id) {
       return from factTask in Table
              join client in DimClientTable on factTask.LastClientId equals client.Id
-             where client.ResourceGroupId == id
+             where client.ParentResourceId == id
              select factTask;
     }
 

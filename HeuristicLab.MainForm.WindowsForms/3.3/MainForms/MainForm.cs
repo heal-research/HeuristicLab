@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -60,7 +60,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       get { return this.Text; }
       set {
         if (InvokeRequired) {
-          Action<string> action = delegate(string s) { this.Title = s; };
+          Action<string> action = delegate (string s) { this.Title = s; };
           Invoke(action, value);
         } else
           this.Text = value;
@@ -71,7 +71,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       get { return base.Cursor; }
       set {
         if (InvokeRequired) {
-          Action<Cursor> action = delegate(Cursor c) { this.Cursor = c; };
+          Action<Cursor> action = delegate (Cursor c) { this.Cursor = c; };
           Invoke(action, value);
         } else
           base.Cursor = value;
@@ -94,7 +94,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       protected set {
         if (this.activeView != value) {
           if (InvokeRequired) {
-            Action<IView> action = delegate(IView activeView) { this.ActiveView = activeView; };
+            Action<IView> action = delegate (IView activeView) { this.ActiveView = activeView; };
             Invoke(action, value);
           } else {
             this.activeView = value;
@@ -229,7 +229,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       return null;
     }
 
-    public IContentView ShowContent<T>(T content, bool reuseExistingView, IEqualityComparer<T> comparer = null) where T : class,IContent {
+    public IContentView ShowContent<T>(T content, bool reuseExistingView, IEqualityComparer<T> comparer = null) where T : class, IContent {
       if (content == null) throw new ArgumentNullException("Content cannot be null.");
       if (!reuseExistingView) return ShowContent(content);
 
@@ -352,10 +352,10 @@ namespace HeuristicLab.MainForm.WindowsForms {
     /// <summary>
     /// Adds a <see cref="ProgressView"/> to the <see cref="ContentView"/>s showing the specified content.
     /// </summary>
-    public IProgress AddOperationProgressToContent(IContent content, string progressMessage, bool addToObjectGraphObjects = true) {
+    internal void AddProgressToContent(IContent content, IProgress progress, bool addToObjectGraphObjects) {
       if (InvokeRequired) {
-        IProgress result = (IProgress)Invoke((Func<IContent, string, bool, IProgress>)AddOperationProgressToContent, content, progressMessage, addToObjectGraphObjects);
-        return result;
+        Invoke((Action<IContent, IProgress, bool>)AddProgressToContent, content, progress, addToObjectGraphObjects);
+        return;
       }
       if (contentProgressLookup.ContainsKey(content))
         throw new ArgumentException("A progress is already registered for the specified content.", "content");
@@ -370,27 +370,19 @@ namespace HeuristicLab.MainForm.WindowsForms {
       } else
         contentViews = contentViews.Where(v => v.Content == content);
 
-      var progress = new Progress(progressMessage, ProgressState.Started);
       foreach (var contentView in contentViews) {
         progressViews.Add(new ProgressView(contentView, progress));
       }
 
       contentProgressLookup[content] = progress;
-      return progress;
     }
 
     /// <summary>
     /// Adds a <see cref="ProgressView"/> to the specified view.
     /// </summary>
-    public IProgress AddOperationProgressToView(Control control, string progressMessage) {
-      var progress = new Progress(progressMessage, ProgressState.Started);
-      AddOperationProgressToView(control, progress);
-      return progress;
-    }
-
-    public void AddOperationProgressToView(Control control, IProgress progress) {
+    internal void AddProgressToControl(Control control, IProgress progress) {
       if (InvokeRequired) {
-        Invoke((Action<Control, IProgress>)AddOperationProgressToView, control, progress);
+        Invoke((Action<Control, IProgress>)AddProgressToControl, control, progress);
         return;
       }
       if (control == null) throw new ArgumentNullException("control", "The view must not be null.");
@@ -412,9 +404,9 @@ namespace HeuristicLab.MainForm.WindowsForms {
     /// <summary>
     /// Removes an existing <see cref="ProgressView"/> from the <see cref="ContentView"/>s showing the specified content.
     /// </summary>
-    public void RemoveOperationProgressFromContent(IContent content, bool finishProgress = true) {
+    internal void RemoveProgressFromContent(IContent content, bool finishProgress) {
       if (InvokeRequired) {
-        Invoke((Action<IContent, bool>)RemoveOperationProgressFromContent, content, finishProgress);
+        Invoke((Action<IContent, bool>)RemoveProgressFromContent, content, finishProgress);
         return;
       }
 
@@ -428,15 +420,14 @@ namespace HeuristicLab.MainForm.WindowsForms {
         progressViews.Remove(progressView);
       }
       contentProgressLookup.Remove(content);
-
     }
 
     /// <summary>
     /// Removes an existing <see cref="ProgressView"/> from the specified view.
     /// </summary>
-    public void RemoveOperationProgressFromView(Control control, bool finishProgress = true) {
+    internal void RemoveProgressFromControl(Control control, bool finishProgress) {
       if (InvokeRequired) {
-        Invoke((Action<Control, bool>)RemoveOperationProgressFromView, control, finishProgress);
+        Invoke((Action<Control, bool>)RemoveProgressFromControl, control, finishProgress);
         return;
       }
 
@@ -559,8 +550,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       System.Windows.Forms.ToolStripItem item = (System.Windows.Forms.ToolStripItem)sender;
       try {
         ((IActionUserInterfaceItem)item.Tag).Execute();
-      }
-      catch (Exception ex) {
+      } catch (Exception ex) {
         ErrorHandling.ShowErrorDialog((Control)MainFormManager.MainForm, ex);
       }
     }

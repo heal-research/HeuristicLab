@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,13 +26,13 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.ParameterOptimization;
 using ScilabConnector = DotNetScilab.Scilab;
 
 namespace HeuristicLab.Problems.ExternalEvaluation.Scilab {
   [Item("SciLabParameterVectorEvaluator", "An evaluator which takes a parameter vector and returns a quality value, calculated by a Scilab script.")]
-  [StorableClass]
+  [StorableType("B0EEB2BC-B35E-47AC-93DE-8B2C0EFF8650")]
   public sealed class ScilabParameterVectorEvaluator : ParameterVectorEvaluator {
     private const string MaximizationParameterName = "Maximization";
     private const string QualityVariableParameterName = "QualityVariableName";
@@ -55,7 +55,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation.Scilab {
     #endregion
 
     [StorableConstructor]
-    private ScilabParameterVectorEvaluator(bool deserializing) : base(deserializing) { }
+    private ScilabParameterVectorEvaluator(StorableConstructorFlag _) : base(_) { }
     private ScilabParameterVectorEvaluator(ScilabParameterVectorEvaluator original, Cloner cloner)
       : base(original, cloner) {
     }

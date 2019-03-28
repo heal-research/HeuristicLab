@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,10 +22,10 @@
 using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
-  [StorableClass]
+  [StorableType("54D82779-7A37-43E4-AFD6-0C3E8D24F6EE")]
   [Item("SymbolicClassificationSolutionImpactValuesCalculator", "Calculate symbolic expression tree node impact values for classification problems.")]
   public class SymbolicClassificationSolutionImpactValuesCalculator : SymbolicDataAnalysisSolutionImpactValuesCalculator {
     public SymbolicClassificationSolutionImpactValuesCalculator() { }
@@ -35,13 +35,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
       return new SymbolicClassificationSolutionImpactValuesCalculator(this, cloner);
     }
     [StorableConstructor]
-    protected SymbolicClassificationSolutionImpactValuesCalculator(bool deserializing) : base(deserializing) { }
+    protected SymbolicClassificationSolutionImpactValuesCalculator(StorableConstructorFlag _) : base(_) { }
 
     protected override double CalculateQualityForImpacts(ISymbolicDataAnalysisModel model, IDataAnalysisProblemData problemData, IEnumerable<int> rows) {
       var classificationModel = (ISymbolicClassificationModel)model;
       var classificationProblemData = (IClassificationProblemData)problemData;
       OnlineCalculatorError errorState;
       var dataset = problemData.Dataset;
+      classificationModel.RecalculateModelParameters(classificationProblemData, rows);
       var targetClassValues = dataset.GetDoubleValues(classificationProblemData.TargetVariable, rows);
       var originalClassValues = classificationModel.GetEstimatedClassValues(dataset, rows);
       var qualityForImpactsCalculation = OnlineAccuracyCalculator.Calculate(targetClassValues, originalClassValues, out errorState);

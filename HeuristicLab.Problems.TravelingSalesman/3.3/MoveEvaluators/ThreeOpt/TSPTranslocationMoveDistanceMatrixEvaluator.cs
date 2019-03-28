@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,14 +25,14 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TravelingSalesman {
   /// <summary>
   /// An operator to evaluate inversion moves (2-opt).
   /// </summary>
   [Item("TSPTranslocationMoveDistanceMatrixEvaluator", "Evaluates a translocation or insertion move (3-opt).")]
-  [StorableClass]
+  [StorableType("895EF1F3-6FE0-43C0-A6D4-7EEAB7B06841")]
   public class TSPTranslocationMoveDistanceMatrixEvaluator : TSPMoveEvaluator, IPermutationTranslocationMoveOperator {
     public override Type EvaluatorType {
       get { return typeof(TSPDistanceMatrixEvaluator); }
@@ -49,7 +49,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     }
 
     [StorableConstructor]
-    protected TSPTranslocationMoveDistanceMatrixEvaluator(bool deserializing) : base(deserializing) { }
+    protected TSPTranslocationMoveDistanceMatrixEvaluator(StorableConstructorFlag _) : base(_) { }
     protected TSPTranslocationMoveDistanceMatrixEvaluator(TSPTranslocationMoveDistanceMatrixEvaluator original, Cloner cloner) : base(original, cloner) { }
     public TSPTranslocationMoveDistanceMatrixEvaluator()
       : base() {

@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,20 +19,20 @@
  */
 #endregion
 
-using HeuristicLab.Collections;
-using HeuristicLab.Core.Views;
-using HeuristicLab.MainForm;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
+using HeuristicLab.Collections;
+using HeuristicLab.Core.Views;
+using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Analysis.Views {
   [View("IndexedDataTable View")]
   [Content(typeof(IndexedDataTable<>), true)]
-  public partial class IndexedDataTableView<T> : NamedItemView {
+  public partial class IndexedDataTableView<T> : NamedItemView, IConfigureableView {
     protected List<Series> invisibleSeries;
     protected Dictionary<IObservableList<Tuple<T, double>>, IndexedDataRow<T>> valuesRowsTable;
 
@@ -48,6 +48,7 @@ namespace HeuristicLab.Analysis.Views {
       chart.CustomizeAllChartAreas();
       chart.ChartAreas[0].CursorX.Interval = 1;
       chart.SuppressExceptions = true;
+      chart.ContextMenuStrip.Items.Add(configureToolStripMenuItem);
     }
 
     #region Event Handler Registration
@@ -132,6 +133,14 @@ namespace HeuristicLab.Analysis.Views {
       chart.Enabled = Content != null;
     }
 
+    public void ShowConfiguration() {
+      if (Content != null) {
+        using (var dialog = new DataTableVisualPropertiesDialog<IndexedDataRow<T>>(Content)) {
+          dialog.ShowDialog(this);
+        }
+      } else MessageBox.Show("Nothing to configure.");
+    }
+
     /// <summary>
     /// Add the DataRow as a series to the chart.
     /// </summary>
@@ -210,6 +219,8 @@ namespace HeuristicLab.Analysis.Views {
     private void ConfigureChartArea(ChartArea area) {
       if (Content.VisualProperties.TitleFont != null) chart.Titles[0].Font = Content.VisualProperties.TitleFont;
       if (!Content.VisualProperties.TitleColor.IsEmpty) chart.Titles[0].ForeColor = Content.VisualProperties.TitleColor;
+      chart.Titles[0].Text = Content.VisualProperties.Title;
+      chart.Titles[0].Visible = !string.IsNullOrEmpty(Content.VisualProperties.Title);
 
       if (Content.VisualProperties.AxisTitleFont != null) area.AxisX.TitleFont = Content.VisualProperties.AxisTitleFont;
       if (!Content.VisualProperties.AxisTitleColor.IsEmpty) area.AxisX.TitleForeColor = Content.VisualProperties.AxisTitleColor;
@@ -312,14 +323,6 @@ namespace HeuristicLab.Analysis.Views {
 
     #region Event Handlers
     #region Content Event Handlers
-    protected override void Content_NameChanged(object sender, EventArgs e) {
-      if (InvokeRequired)
-        Invoke(new EventHandler(Content_NameChanged), sender, e);
-      else {
-        chart.Titles[0].Text = Content.Name;
-        base.Content_NameChanged(sender, e);
-      }
-    }
     private void Content_VisualPropertiesChanged(object sender, EventArgs e) {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_VisualPropertiesChanged), sender, e);
@@ -507,6 +510,9 @@ namespace HeuristicLab.Analysis.Views {
       }
     }
     #endregion
+    private void configureToolStripMenuItem_Click(object sender, EventArgs e) {
+      ShowConfiguration();
+    }
     #endregion
 
     #region Chart Event Handlers

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,18 +22,18 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("DirectScheduleCrossover", "An operator which crosses two schedule representations.")]
-  [StorableClass]
+  [StorableType("841CA966-FDB0-4C0D-BBE2-6A3422DF94CD")]
   public abstract class DirectScheduleCrossover : ScheduleCrossover, IDirectScheduleOperator {
     public ILookupParameter<ItemList<Job>> JobDataParameter {
       get { return (LookupParameter<ItemList<Job>>)Parameters["JobData"]; }
     }
 
     [StorableConstructor]
-    protected DirectScheduleCrossover(bool deserializing) : base(deserializing) { }
+    protected DirectScheduleCrossover(StorableConstructorFlag _) : base(_) { }
     protected DirectScheduleCrossover(DirectScheduleCrossover original, Cloner cloner) : base(original, cloner) { }
     public DirectScheduleCrossover()
       : base() {

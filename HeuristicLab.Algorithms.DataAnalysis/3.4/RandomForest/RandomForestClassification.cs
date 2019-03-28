@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,7 +25,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
@@ -34,7 +34,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// </summary>
   [Item("Random Forest Classification (RF)", "Random forest classification data analysis algorithm (wrapper for ALGLIB).")]
   [Creatable(CreatableAttribute.Categories.DataAnalysisClassification, Priority = 120)]
-  [StorableClass]
+  [StorableType("73070CC7-E85E-4851-9F26-C537AE1CC1C0")]
   public sealed class RandomForestClassification : FixedDataAnalysisAlgorithm<IClassificationProblem> {
     private const string RandomForestClassificationModelResultName = "Random forest classification solution";
     private const string NumberOfTreesParameterName = "Number of trees";
@@ -92,7 +92,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     #endregion
 
     [StorableConstructor]
-    private RandomForestClassification(bool deserializing) : base(deserializing) { }
+    private RandomForestClassification(StorableConstructorFlag _) : base(_) { }
     private RandomForestClassification(RandomForestClassification original, Cloner cloner)
       : base(original, cloner) {
     }
@@ -134,7 +134,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     #region random forest
     protected override void Run(CancellationToken cancellationToken) {
       double rmsError, relClassificationError, outOfBagRmsError, outOfBagRelClassificationError;
-      if (SetSeedRandomly) Seed = new System.Random().Next();
+      if (SetSeedRandomly) Seed = Random.RandomSeedGenerator.GetSeed();
 
       var model = CreateRandomForestClassificationModel(Problem.ProblemData, NumberOfTrees, R, M, Seed, out rmsError, out relClassificationError, out outOfBagRmsError, out outOfBagRelClassificationError);
       Results.Add(new Result("Root mean square error", "The root of the mean of squared errors of the random forest regression solution on the training set.", new DoubleValue(rmsError)));

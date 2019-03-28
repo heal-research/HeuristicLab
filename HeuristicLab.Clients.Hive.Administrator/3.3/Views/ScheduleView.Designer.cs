@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -47,8 +47,6 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       this.components = new System.ComponentModel.Container();
       Calendar.DrawTool drawTool1 = new Calendar.DrawTool();
       this.dvOnline = new Calendar.DayView();
-      this.txttimeTo = new System.Windows.Forms.DateTimePicker();
-      this.txttimeFrom = new System.Windows.Forms.DateTimePicker();
       this.dtpTo = new System.Windows.Forms.DateTimePicker();
       this.groupBox1 = new System.Windows.Forms.GroupBox();
       this.dtpFrom = new System.Windows.Forms.DateTimePicker();
@@ -93,39 +91,18 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       this.dvOnline.TabIndex = 54;
       this.dvOnline.OnSelectionChanged += new System.EventHandler<System.EventArgs>(this.dvOnline_OnSelectionChanged);
       // 
-      // txttimeTo
-      // 
-      this.txttimeTo.CustomFormat = "HH:mm";
-      this.txttimeTo.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-      this.txttimeTo.Location = new System.Drawing.Point(164, 45);
-      this.txttimeTo.Name = "txttimeTo";
-      this.txttimeTo.ShowUpDown = true;
-      this.txttimeTo.Size = new System.Drawing.Size(73, 20);
-      this.txttimeTo.TabIndex = 40;
-      // 
-      // txttimeFrom
-      // 
-      this.txttimeFrom.CustomFormat = "HH:mm";
-      this.txttimeFrom.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-      this.txttimeFrom.Location = new System.Drawing.Point(164, 12);
-      this.txttimeFrom.Name = "txttimeFrom";
-      this.txttimeFrom.ShowUpDown = true;
-      this.txttimeFrom.Size = new System.Drawing.Size(73, 20);
-      this.txttimeFrom.TabIndex = 39;
-      // 
       // dtpTo
       // 
       this.dtpTo.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+      this.dtpTo.CustomFormat = "ddd, dd.MM.yyyy, HH:mm:ss";
       this.dtpTo.Location = new System.Drawing.Point(72, 45);
       this.dtpTo.Name = "dtpTo";
-      this.dtpTo.Size = new System.Drawing.Size(89, 20);
+      this.dtpTo.Size = new System.Drawing.Size(175, 20);
       this.dtpTo.TabIndex = 33;
       // 
       // groupBox1
       // 
       this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.groupBox1.Controls.Add(this.txttimeTo);
-      this.groupBox1.Controls.Add(this.txttimeFrom);
       this.groupBox1.Controls.Add(this.dtpTo);
       this.groupBox1.Controls.Add(this.dtpFrom);
       this.groupBox1.Controls.Add(this.chbade);
@@ -143,9 +120,10 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       // dtpFrom
       // 
       this.dtpFrom.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+      this.dtpFrom.CustomFormat = "ddd, dd.MM.yyyy, HH:mm:ss";
       this.dtpFrom.Location = new System.Drawing.Point(72, 12);
       this.dtpFrom.Name = "dtpFrom";
-      this.dtpFrom.Size = new System.Drawing.Size(89, 20);
+      this.dtpFrom.Size = new System.Drawing.Size(175, 20);
       this.dtpFrom.TabIndex = 32;
       // 
       // chbade
@@ -156,8 +134,8 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       this.chbade.Size = new System.Drawing.Size(90, 17);
       this.chbade.TabIndex = 31;
       this.chbade.Text = "All Day Event";
-      this.chbade.UseVisualStyleBackColor = true;
       this.chbade.CheckedChanged += new System.EventHandler(this.chbade_CheckedChanged);
+      this.chbade.UseVisualStyleBackColor = true;
       // 
       // btnRecurrence
       // 
@@ -219,7 +197,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       // btnSaveCal
       // 
       this.btnSaveCal.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.btnSaveCal.Image = HeuristicLab.Common.Resources.VSImageLibrary.PublishToWeb;
+      this.btnSaveCal.Image = HeuristicLab.Common.Resources.VSImageLibrary.Save;
       this.btnSaveCal.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
       this.btnSaveCal.Location = new System.Drawing.Point(640, 41);
       this.btnSaveCal.Name = "btnSaveCal";
@@ -272,9 +250,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
 
     #endregion
 
-    private System.Windows.Forms.DateTimePicker txttimeTo;
     private Calendar.DayView dvOnline;
-    private System.Windows.Forms.DateTimePicker txttimeFrom;
     private System.Windows.Forms.DateTimePicker dtpTo;
     private System.Windows.Forms.GroupBox groupBox1;
     private System.Windows.Forms.DateTimePicker dtpFrom;

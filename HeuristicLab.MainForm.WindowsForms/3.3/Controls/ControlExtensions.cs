@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -43,21 +43,6 @@ namespace HeuristicLab.MainForm.WindowsForms {
       else {
         SendMessage(control.Handle, WM_SETREDRAW, true, 0);
         if (refresh) control.Refresh();
-      }
-    }
-
-    public static IEnumerable<Control> GetNestedControls(this Control control, Func<Control, bool> condition = null) {
-      if (control == null) yield break;
-      if (condition == null) condition = (c) => true;
-
-      Queue<Control> unprocessed = new Queue<Control>();
-      unprocessed.Enqueue(control);
-
-      while (unprocessed.Count > 0) {
-        Control c = unprocessed.Dequeue();
-        if (condition(c)) yield return c;
-        foreach (Control child in c.Controls)
-          unprocessed.Enqueue(child);
       }
     }
   }

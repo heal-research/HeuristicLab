@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -96,6 +96,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       if (Content == null) return;
       var problemData = Content.ProblemData;
 
+      if (sharedFixedVariables != null) {
+        sharedFixedVariables.ItemChanged -= SharedFixedVariables_ItemChanged;
+        sharedFixedVariables.Reset -= SharedFixedVariables_Reset;
+      }
+
       // Init Y-axis range
       double min = double.MaxValue, max = double.MinValue;
       var trainingTarget = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, problemData.TrainingIndices);
@@ -119,21 +124,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       var allowedInputVariables =
         Content.ProblemData.Dataset.VariableNames.Where(v => inputvariables.Contains(v)).ToList();
 
-
       var doubleVariables = allowedInputVariables.Where(problemData.Dataset.VariableHasType<double>);
-      var doubleVariableValues = (IEnumerable<IList>)doubleVariables.Select(x => new List<double> { problemData.Dataset.GetDoubleValues(x, problemData.TrainingIndices).Median() });
+      var doubleVariableValues = (IEnumerable<IList>)doubleVariables.Select(x => new List<double> {
+        problemData.Dataset.GetDoubleValue(x, 0)
+      });
 
       var factorVariables = allowedInputVariables.Where(problemData.Dataset.VariableHasType<string>);
       var factorVariableValues = (IEnumerable<IList>)factorVariables.Select(x => new List<string> {
-        problemData.Dataset.GetStringValues(x, problemData.TrainingIndices)
-        .GroupBy(val => val).OrderByDescending(g => g.Count()).First().Key // most frequent value
+        problemData.Dataset.GetStringValue(x, 0)
       });
 
-      if (sharedFixedVariables != null)
-        sharedFixedVariables.ItemChanged -= SharedFixedVariables_ItemChanged;
-
       sharedFixedVariables = new ModifiableDataset(doubleVariables.Concat(factorVariables), doubleVariableValues.Concat(factorVariableValues));
-
+      variableValuesModeComboBox.SelectedItem = "Median"; // triggers UpdateVariableValue and changes shardFixedVariables
 
       // create controls
       partialDependencePlots.Clear();
@@ -165,7 +167,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
           density.Top = (int)(pdp.Height * 0.1);
         };
 
-        // Initially, the inner plot areas are not initialized for hidden charts (scollpanel, ...)
+        // Initially, the inner plot areas are not initialized for hidden charts (scrollpanel, ...)
         // This event handler listens for the paint event once (where everything is already initialized) to do some manual layouting.
         plot.ChartPostPaint += OnPartialDependencePlotPostPaint;
 
@@ -204,7 +206,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
           density.Top = (int)(pdp.Height * 0.1);
         };
 
-        // Initially, the inner plot areas are not initialized for hidden charts (scollpanel, ...)
+        // Initially, the inner plot areas are not initialized for hidden charts (scrollpanel, ...)
         // This event handler listens for the paint event once (where everything is already initialized) to do some manual layouting.
         plot.ChartPostPaint += OnFactorPartialDependencePlotPostPaint;
 
@@ -229,11 +231,23 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       variableListView.ItemChecked += variableListView_ItemChecked;
 
       sharedFixedVariables.ItemChanged += SharedFixedVariables_ItemChanged;
+      sharedFixedVariables.Reset += SharedFixedVariables_Reset;
+
+      rowNrNumericUpDown.Maximum = Content.ProblemData.Dataset.Rows - 1;
 
       RecalculateAndRelayoutCharts();
     }
 
     private void SharedFixedVariables_ItemChanged(object sender, EventArgs<int, int> e) {
+      SharedFixedVariablesChanged();
+    }
+    private void SharedFixedVariables_Reset(object sender, EventArgs e) {
+      SharedFixedVariablesChanged();
+    }
+    private void SharedFixedVariablesChanged() {
+      if (!setVariableValues) // set mode to "nothing" if change was not initiated from a "mode change"
+        variableValuesModeComboBox.SelectedIndex = -1;
+
       double yValue = Content.Model.GetEstimatedValues(sharedFixedVariables, new[] { 0 }).Single();
       string title = Content.ProblemData.TargetVariable + ": " + yValue.ToString("G5", CultureInfo.CurrentCulture);
       foreach (var chart in partialDependencePlots.Values) {
@@ -242,7 +256,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         }
       }
     }
-
 
     private void OnPartialDependencePlotPostPaint(object o, EventArgs e) {
       var plot = (PartialDependencePlot)o;
@@ -562,6 +575,89 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         pdp.Refresh();
         UpdateDensityChart(densityChart, variable);
       }
+    }
+
+    // flag that the current change is not triggered by a manual change from within a single plot
+    private bool setVariableValues = false;
+    private void variableValuesComboBox_SelectedValueChanged(object sender, EventArgs e) {
+      if (variableValuesModeComboBox.SelectedIndex == -1)
+        return; // changed to "manual" due to manual change of a variable
+      setVariableValues = true;
+      UpdateVariableValues();
+      setVariableValues = false;
+    }
+    private void rowNrNumericUpDown_ValueChanged(object sender, EventArgs e) {
+      if ((string)variableValuesModeComboBox.SelectedItem != "Row") {
+        variableValuesModeComboBox.SelectedItem = "Row"; // triggers UpdateVariableValues
+      } else {
+        setVariableValues = true;
+        UpdateVariableValues();
+        setVariableValues = false;
+      }
+    }
+    private void UpdateVariableValues() {
+      string mode = (string)variableValuesModeComboBox.SelectedItem;
+
+      var dataset = Content.ProblemData.Dataset;
+      object[] newRow;
+
+      if (mode == "Row") {
+        int rowNumber = (int)rowNrNumericUpDown.Value;
+        newRow = sharedFixedVariables.VariableNames
+          .Select<string, object>(variableName => {
+            if (dataset.DoubleVariables.Contains(variableName)) {
+              return dataset.GetDoubleValue(variableName, rowNumber);
+            } else if (dataset.StringVariables.Contains(variableName)) {
+              return dataset.GetStringValue(variableName, rowNumber);
+            } else {
+              throw new NotSupportedException("Only double and string(factor) columns are currently supported.");
+            }
+          }).ToArray();
+      } else {
+        newRow = sharedFixedVariables.VariableNames
+          .Select<string, object>(variableName => {
+            if (dataset.DoubleVariables.Contains(variableName)) {
+              var values = dataset.GetDoubleValues(variableName);
+              return
+                mode == "Mean" ? values.Average() :
+                mode == "Median" ? values.Median() :
+                mode == "Most Common" ? MostCommon(values) :
+                throw new NotSupportedException();
+            } else if (dataset.StringVariables.Contains(variableName)) {
+              var values = dataset.GetStringValues(variableName);
+              return
+                mode == "Mean" ? MostCommon(values) :
+                mode == "Median" ? MostCommon(values) :
+                mode == "Most Common" ? MostCommon(values) :
+                throw new NotSupportedException();
+            } else {
+              throw new NotSupportedException("Only double and string(factor) columns are currently supported.");
+            }
+          }).ToArray();
+      }
+
+      sharedFixedVariables.ReplaceRow(0, newRow);
+    }
+
+    private static T MostCommon<T>(IEnumerable<T> values) {
+      return values.GroupBy(x => x).OrderByDescending(g => g.Count()).Select(g => g.Key).First();
+    }
+
+    // ToolTips cannot be shown longer than 5000ms, only by using ToolTip.Show manually
+    // See: https://stackoverflow.com/questions/8225807/c-sharp-tooltip-doesnt-display-long-enough
+    private void variableValuesModeComboBox_MouseHover(object sender, EventArgs e) {
+      string tooltipText = @"Sets each variable to a specific value:
+    Row - Selects the value based on a specified row of the dataset.
+    Mean - Sets the value to the arithmetic mean of the variable.
+    Median - Sets the value to the median of the variable.
+    Most Common - Sets the value to the most common value of the variable (first if multiple).
+
+Note: For categorical values, the most common value is used when selecting Mean, Median or Most Common.";
+      toolTip.Show(tooltipText, variableValuesModeComboBox, 30000);
+      toolTip.Active = true;
+    }
+    private void variableValuesModeComboBox_MouseLeave(object sender, EventArgs e) {
+      toolTip.Active = false;
     }
   }
 }

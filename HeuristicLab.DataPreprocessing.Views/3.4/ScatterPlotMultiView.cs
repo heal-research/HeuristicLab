@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -456,7 +456,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
             Name = key.ToString(),
             Content = scatterPlot,
             Dock = DockStyle.Fill,
-            ShowName = false
+            ShowChartOnly = true
             //ShowLegend = false,
             //XAxisFormat = "G3"
           };

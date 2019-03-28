@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,14 +25,14 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// <summary>
   /// A base class for operators creating real-valued vectors.
   /// </summary>
   [Item("RealVectorCreator", "A base class for operators creating real-valued vectors.")]
-  [StorableClass]
+  [StorableType("C6A3C750-7BAF-4BE7-91CC-D8290F3B006E")]
   public abstract class RealVectorCreator : InstrumentedOperator, IRealVectorCreator, IStochasticOperator {
     public override bool CanChangeName {
       get { return false; }
@@ -52,7 +52,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     }
 
     [StorableConstructor]
-    protected RealVectorCreator(bool deserializing) : base(deserializing) { }
+    protected RealVectorCreator(StorableConstructorFlag _) : base(_) { }
     protected RealVectorCreator(RealVectorCreator original, Cloner cloner) : base(original, cloner) { }
     protected RealVectorCreator()
       : base() {

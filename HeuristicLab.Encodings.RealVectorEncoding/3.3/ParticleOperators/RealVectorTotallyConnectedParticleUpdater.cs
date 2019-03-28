@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,19 +22,19 @@
 using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   [Item("Totally Connected Particle Updater", "Updates the particle's position using (among other things) the global best position. Use together with the empty topology initialzer. Point = Point + Velocity*Inertia + (PersonalBestPoint-Point)*Phi_P*r_p + (BestPoint-Point)*Phi_G*r_g")]
-  [StorableClass]
+  [StorableType("39FC0C08-AE80-4FA1-8C04-F54DE266C19E")]
   [NonDiscoverableType]
   [Obsolete("Use SPSO2011ParticleUpdater")]
   internal sealed class RealVectorTotallyConnectedParticleUpdater : RealVectorParticleUpdater {
 
     #region Construction & Cloning
     [StorableConstructor]
-    private RealVectorTotallyConnectedParticleUpdater(bool deserializing) : base(deserializing) { }
+    private RealVectorTotallyConnectedParticleUpdater(StorableConstructorFlag _) : base(_) { }
     private RealVectorTotallyConnectedParticleUpdater(RealVectorTotallyConnectedParticleUpdater original, Cloner cloner) : base(original, cloner) { }
     public RealVectorTotallyConnectedParticleUpdater() : base() { }
     public override IDeepCloneable Clone(Cloner cloner) {

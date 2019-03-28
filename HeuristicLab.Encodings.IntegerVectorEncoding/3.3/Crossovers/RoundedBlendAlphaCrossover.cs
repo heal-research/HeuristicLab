@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,7 +24,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   /// <summary>
@@ -33,7 +33,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   /// integer. The interval is increased in both directions by the factor alpha.
   /// </summary>
   [Item("RoundedBlendAlphaCrossover", "The rounded blend alpha crossover (BLX-a) for integer vectors creates new offspring by sampling a new value in the range [min_i - d * alpha, max_i + d * alpha) at each position i and rounding the result to the next feasible integer. Here min_i and max_i are the smaller and larger value of the two parents at position i and d is max_i - min_i.")]
-  [StorableClass]
+  [StorableType("F371B342-7D0C-4ED9-8F3F-A641E82DC8F1")]
   public class RoundedBlendAlphaCrossover : BoundedIntegerVectorCrossover {
     /// <summary>
     /// The alpha parameter specifies how much the interval between the parents should be extended to the left and right.
@@ -46,7 +46,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
     }
 
     [StorableConstructor]
-    protected RoundedBlendAlphaCrossover(bool deserializing) : base(deserializing) { }
+    protected RoundedBlendAlphaCrossover(StorableConstructorFlag _) : base(_) { }
     protected RoundedBlendAlphaCrossover(RoundedBlendAlphaCrossover original, Cloner cloner) : base(original, cloner) { }
     /// <summary>
     /// Initializes a new instance of <see cref="RoundedBlendAlphaCrossover"/> with one parameter (<c>Alpha</c>).

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Threading;
 
 namespace HeuristicLab.Common {
   public abstract class ContentManager {
@@ -42,14 +43,13 @@ namespace HeuristicLab.Common {
     public static void LoadAsync(string filename, Action<IStorableContent, Exception> loadingCompletedCallback) {
       if (instance == null) throw new InvalidOperationException("ContentManager is not initialized.");
       var func = new Func<string, IStorableContent>(instance.LoadContent);
-      func.BeginInvoke(filename, delegate(IAsyncResult result) {
+      func.BeginInvoke(filename, delegate (IAsyncResult result) {
         Exception error = null;
         IStorableContent content = null;
         try {
           content = func.EndInvoke(result);
           content.Filename = filename;
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
           error = ex;
         }
         loadingCompletedCallback(content, error);
@@ -57,27 +57,26 @@ namespace HeuristicLab.Common {
     }
     protected abstract IStorableContent LoadContent(string filename);
 
-    public static void Save(IStorableContent content, string filename, bool compressed) {
+    public static void Save(IStorableContent content, string filename, bool compressed, CancellationToken cancellationToken = default(CancellationToken)) {
       if (instance == null) throw new InvalidOperationException("ContentManager is not initialized.");
-      instance.SaveContent(content, filename, compressed);
+      instance.SaveContent(content, filename, compressed, cancellationToken);
       content.Filename = filename;
     }
-    public static void SaveAsync(IStorableContent content, string filename, bool compressed, Action<IStorableContent, Exception> savingCompletedCallback) {
+    public static void SaveAsync(IStorableContent content, string filename, bool compressed, Action<IStorableContent, Exception> savingCompletedCallback, CancellationToken cancellationToken = default(CancellationToken)) {
       if (instance == null) throw new InvalidOperationException("ContentManager is not initialized.");
-      var action = new Action<IStorableContent, string, bool>(instance.SaveContent);
-      action.BeginInvoke(content, filename, compressed, delegate(IAsyncResult result) {
+      var action = new Action<IStorableContent, string, bool, CancellationToken>(instance.SaveContent);
+      action.BeginInvoke(content, filename, compressed, cancellationToken, delegate (IAsyncResult result) {
         Exception error = null;
         try {
           action.EndInvoke(result);
           content.Filename = filename;
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
           error = ex;
         }
         savingCompletedCallback(content, error);
       }, null);
 
     }
-    protected abstract void SaveContent(IStorableContent content, string filename, bool compressed);
+    protected abstract void SaveContent(IStorableContent content, string filename, bool compressed, CancellationToken cancellationToken);
   }
 }

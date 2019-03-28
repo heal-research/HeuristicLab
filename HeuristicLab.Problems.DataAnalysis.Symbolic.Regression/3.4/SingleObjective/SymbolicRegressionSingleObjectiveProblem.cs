@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,11 +24,11 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   [Item("Symbolic Regression Problem (single-objective)", "Represents a single objective symbolic regression problem.")]
-  [StorableClass]
+  [StorableType("7DDCF683-96FC-4F70-BF4F-FE3A0B0DE6E0")]
   [Creatable(CreatableAttribute.Categories.GeneticProgrammingProblems, Priority = 100)]
   public class SymbolicRegressionSingleObjectiveProblem : SymbolicDataAnalysisSingleObjectiveProblem<IRegressionProblemData, ISymbolicRegressionSingleObjectiveEvaluator, ISymbolicDataAnalysisSolutionCreator>, IRegressionProblem {
     private const double PunishmentFactor = 10;
@@ -48,7 +48,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     }
     #endregion
     [StorableConstructor]
-    protected SymbolicRegressionSingleObjectiveProblem(bool deserializing) : base(deserializing) { }
+    protected SymbolicRegressionSingleObjectiveProblem(StorableConstructorFlag _) : base(_) { }
     protected SymbolicRegressionSingleObjectiveProblem(SymbolicRegressionSingleObjectiveProblem original, Cloner cloner)
       : base(original, cloner) {
       RegisterEventHandlers();

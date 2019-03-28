@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,8 +24,10 @@ using System.Collections.Generic;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Problems.VehicleRouting.ProblemInstances;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.VehicleRouting.Interfaces {
+  [StorableType("B8E231D0-6BA9-4DCF-9585-95E46B280B47")]
   public interface IVRPProblemInstance : IParameterizedNamedItem {
     IVRPEvaluator SolutionEvaluator { get; set; }
     IVRPEvaluator MoveEvaluator { get; }

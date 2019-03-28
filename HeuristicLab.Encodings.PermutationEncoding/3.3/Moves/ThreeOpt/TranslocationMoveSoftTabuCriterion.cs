@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,14 +25,14 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("TranslocationMoveSoftTabuCriterion", @"For relative postion encoded permutations it just prevents readding of previously deleted edges, but allows deleting previously added edges.
   For absolute position encoded permutations it prevents moving a number to a position it has previously occupied.
 
 If the aspiration condition is activated, a move will not be considered tabu against a move in the tabu list if it leads to a better solution than the quality recorded with the move in the tabu list.")]
-  [StorableClass]
+  [StorableType("391C33EC-E235-4331-8121-97298E0FAE49")]
   public class TranslocationMoveSoftTabuCriterion : SingleSuccessorOperator, IPermutationTranslocationMoveQualityOperator, ITabuChecker {
     public override bool CanChangeName {
       get { return false; }
@@ -65,7 +65,7 @@ If the aspiration condition is activated, a move will not be considered tabu aga
     }
 
     [StorableConstructor]
-    protected TranslocationMoveSoftTabuCriterion(bool deserializing) : base(deserializing) { }
+    protected TranslocationMoveSoftTabuCriterion(StorableConstructorFlag _) : base(_) { }
     protected TranslocationMoveSoftTabuCriterion(TranslocationMoveSoftTabuCriterion original, Cloner cloner) : base(original, cloner) { }
     public TranslocationMoveSoftTabuCriterion()
       : base() {

@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,14 +24,14 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.GeneticProgramming.ArtificialAnt {
   /// <summary>
   /// Represents a trail of an artificial ant which can be visualized in the GUI.
   /// </summary>
   [Item("AntTrail", "Represents a trail of an artificial ant which can be visualized in the GUI.")]
-  [StorableClass]
+  [StorableType("6C666B13-1A69-4924-9ED7-4AC06151FDC6")]
   public sealed class Solution : Item {
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Image; }
@@ -54,7 +54,7 @@ namespace HeuristicLab.Problems.GeneticProgramming.ArtificialAnt {
 
     #region item cloning and persistence
     [StorableConstructor]
-    private Solution(bool deserializing) : base(deserializing) { }
+    private Solution(StorableConstructorFlag _) : base(_) { }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() { }
 

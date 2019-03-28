@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,18 +24,18 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("StochasticInversionSingleMoveGenerator", "Randomly samples a single from all possible inversion moves (2-opt) from a given permutation.")]
-  [StorableClass]
+  [StorableType("F7190264-4BE1-45A2-A908-E2C7869B4F1F")]
   public class StochasticInversionSingleMoveGenerator : InversionMoveGenerator, IStochasticOperator, ISingleMoveGenerator {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
     }
 
     [StorableConstructor]
-    protected StochasticInversionSingleMoveGenerator(bool deserializing) : base(deserializing) { }
+    protected StochasticInversionSingleMoveGenerator(StorableConstructorFlag _) : base(_) { }
     protected StochasticInversionSingleMoveGenerator(StochasticInversionSingleMoveGenerator original, Cloner cloner) : base(original, cloner) { }
     public StochasticInversionSingleMoveGenerator()
       : base() {

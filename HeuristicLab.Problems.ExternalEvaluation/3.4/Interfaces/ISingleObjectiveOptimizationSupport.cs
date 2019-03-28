@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,8 +22,10 @@
 using System.Collections.Generic;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.ExternalEvaluation {
+  [StorableType("09d522e0-c10f-474c-b7c0-7d7f98e63f44")]
   public interface ISingleObjectiveOptimizationSupport {
     void Analyze(ISolution[] individuals, double[] qualities, ResultCollection results, IRandom random);
     IEnumerable<ISolution> GetNeighbors(ISolution individual, IRandom random);

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,11 +24,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("ScheduleManipulator", "A scheduling manipulation operation.")]
-  [StorableClass]
+  [StorableType("200713D0-348F-432E-BE67-C9B5016FC741")]
   public abstract class ScheduleManipulator : InstrumentedOperator, IScheduleManipulator, IStochasticOperator {
 
     public ILookupParameter<ISchedule> ScheduleParameter {
@@ -40,7 +40,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
     }
 
     [StorableConstructor]
-    protected ScheduleManipulator(bool deserializing) : base(deserializing) { }
+    protected ScheduleManipulator(StorableConstructorFlag _) : base(_) { }
     protected ScheduleManipulator(ScheduleManipulator original, Cloner cloner) : base(original, cloner) { }
     public ScheduleManipulator()
       : base() {

@@ -20,13 +20,13 @@
 #endregion
 
 using System;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Core;
 using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.BinPacking2D {
   [Item("Packing Position (2d)", "Represents a packing-position associated with a two dimensional packing-problem.")]
-  [StorableClass]
+  [StorableType("7B0A0FD9-2D2C-4E03-BB66-674446A07587")]
   // PackingPosition is an immutable class (and handled as value type concerning Equals and GetHashCode())
   public class PackingPosition : BinPacking.PackingPosition, IComparable<PackingPosition> {
     [Storable]
@@ -38,7 +38,7 @@ namespace HeuristicLab.Problems.BinPacking2D {
     public int Y { get { return y; } }
 
     [StorableConstructor]
-    protected PackingPosition(bool deserializing) : base(deserializing) { }
+    protected PackingPosition(StorableConstructorFlag _) : base(_) { }
     protected PackingPosition(PackingPosition original, Cloner cloner)
       : base(original, cloner) {
       x = original.X;

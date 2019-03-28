@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,8 +23,10 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Optimization;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.ParameterOptimization {
+  [StorableType("E0AC81E2-503B-4DDD-9D5A-9D53FA1F31AD")]
   public interface IParameterVectorEvaluator : ISingleObjectiveEvaluator {
     ILookupParameter<IntValue> ProblemSizeParameter { get; }
     ILookupParameter<RealVector> ParameterVectorParameter { get; }

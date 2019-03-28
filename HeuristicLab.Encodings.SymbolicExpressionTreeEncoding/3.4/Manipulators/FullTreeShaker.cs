@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,11 +22,11 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
-  [StorableClass]
+  [StorableType("C8864746-308A-49F0-B76F-92D2C7E33574")]
   [Item("FullTreeShaker", "Manipulates all nodes that have local parameters.")]
   public sealed class FullTreeShaker : SymbolicExpressionTreeManipulator {
     private const string ShakingFactorParameterName = "ShakingFactor";
@@ -42,7 +42,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
     #endregion
     [StorableConstructor]
-    private FullTreeShaker(bool deserializing) : base(deserializing) { }
+    private FullTreeShaker(StorableConstructorFlag _) : base(_) { }
     private FullTreeShaker(FullTreeShaker original, Cloner cloner) : base(original, cloner) { }
     public FullTreeShaker()
       : base() {

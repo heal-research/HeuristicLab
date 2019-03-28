@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -164,19 +164,16 @@ namespace HeuristicLab.DataPreprocessing.Views {
       if (importDialog.ShowDialog() == DialogResult.OK) {
         await Task.Run(() => {
           TProblemData instance;
-          var mainForm = (MainForm.WindowsForms.MainForm)MainFormManager.MainForm;
           // lock active view and show progress bar
-          var activeView = (IContentView)MainFormManager.MainForm.ActiveView;
 
           try {
-            var progress = mainForm.AddOperationProgressToContent(activeView.Content, "Loading problem instance.");
-
+            var progress = Progress.Show(Content, "Loading problem instance.");
             instanceProvider.ProgressChanged += (o, args) => { progress.ProgressValue = args.ProgressPercentage / 100.0; };
 
             instance = instanceProvider.ImportData(importDialog.Path, getImportType(importDialog), importDialog.CSVFormat);
           } catch (IOException ex) {
             MessageBox.Show(string.Format("There was an error parsing the file: {0}", Environment.NewLine + ex.Message), "Error while parsing", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            mainForm.RemoveOperationProgressFromContent(activeView.Content);
+            Progress.Hide(Content);
             return;
           }
           try {
@@ -184,7 +181,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
           } catch (IOException ex) {
             MessageBox.Show(string.Format("This problem does not support loading the instance {0}: {1}", Path.GetFileName(importDialog.Path), Environment.NewLine + ex.Message), "Cannot load instance");
           } finally {
-            mainForm.RemoveOperationProgressFromContent(activeView.Content);
+            Progress.Hide(Content);
           }
         });
       }
@@ -221,13 +218,11 @@ namespace HeuristicLab.DataPreprocessing.Views {
           bool compressed = saveFileDialog.FilterIndex != 1;
           var storable = itemCreator() as IStorableContent;
           if (storable != null) {
-            var mainForm = (MainForm.WindowsForms.MainForm)MainFormManager.MainForm;
-            var activeView = (IContentView)MainFormManager.MainForm.ActiveView;
             try {
-              mainForm.AddOperationProgressToContent(activeView.Content, "Exporting data.");
+              Progress.Show(Content, "Exporting data.", ProgressMode.Indeterminate);
               ContentManager.Save(storable, saveFileDialog.FileName, compressed);
             } finally {
-              mainForm.RemoveOperationProgressFromContent(activeView.Content);
+              Progress.Hide(Content);
             }
           }
         });
@@ -243,11 +238,9 @@ namespace HeuristicLab.DataPreprocessing.Views {
 
       if (saveFileDialog.ShowDialog() == DialogResult.OK) {
         Task.Run(() => {
-          var mainForm = (MainForm.WindowsForms.MainForm)MainFormManager.MainForm;
-          var activeView = (IContentView)MainFormManager.MainForm.ActiveView;
           try {
             var problemData = Content.CreateNewProblemData();
-            mainForm.AddOperationProgressToContent(activeView.Content, "Exporting data.");
+            Progress.Show(Content, "Exporting data.", ProgressMode.Indeterminate);
             if (problemData is TimeSeriesPrognosisProblemData)
               Export(new TimeSeriesPrognosisCSVInstanceProvider(), problemData, saveFileDialog.FileName);
             else if (problemData is RegressionProblemData)
@@ -255,7 +248,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
             else if (problemData is ClassificationProblemData)
               Export(new ClassificationCSVInstanceProvider(), problemData, saveFileDialog.FileName);
           } finally {
-            mainForm.RemoveOperationProgressFromContent(activeView.Content);
+            Progress.Hide(Content);
           }
         });
       }

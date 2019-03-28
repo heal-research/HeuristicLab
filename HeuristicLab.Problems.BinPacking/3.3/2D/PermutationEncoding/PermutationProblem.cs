@@ -1,7 +1,7 @@
 ﻿#region License Information
 
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -28,16 +28,16 @@ using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.BinPacking2D {
   [Item("Bin Packing Problem (2D, permutation encoding) (BPP)", "Represents a two-dimensional bin-packing problem using only bins with identical measures and bins/items with rectangular shapes.")]
-  [StorableClass]
+  [StorableType("BE95CC5D-7FFD-4BC7-A2FF-7D71D3B951F6")]
   [Creatable(Category = CreatableAttribute.Categories.CombinatorialProblems, Priority = 300)]
   public sealed class PermutationProblem : ProblemBase<PermutationEncoding, Permutation> {
     // persistence
     [StorableConstructor]
-    private PermutationProblem(bool deserializing) : base(deserializing) { }
+    private PermutationProblem(StorableConstructorFlag _) : base(_) { }
 
     // cloning
     private PermutationProblem(PermutationProblem original, Cloner cloner)

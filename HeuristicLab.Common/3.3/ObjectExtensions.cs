@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -84,6 +84,7 @@ namespace HeuristicLab.Common {
              typeof(Delegate).IsAssignableFrom(type) ||
              typeof(Pointer).IsAssignableFrom(type) ||
              type.Namespace == "System.Reflection.Emit" ||
+             type.Namespace == "System.Net.Sockets" ||
              (type.HasElementType && ExcludeType(type.GetElementType()));
     }
 

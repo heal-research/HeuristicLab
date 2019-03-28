@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,7 +22,7 @@
 using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   /// <summary>
@@ -32,10 +32,10 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
   /// It is implemented as described in Syswerda, G. (1991). Schedule Optimization Using Genetic Algorithms. In Davis, L. (Ed.) Handbook of Genetic Algorithms, Van Nostrand Reinhold, New York, pp 332-349.
   /// </remarks>
   [Item("PositionBasedCrossover", "An operator which performs the position based crossover on two permutations. It is implemented as described in Syswerda, G. (1991). Schedule Optimization Using Genetic Algorithms. In Davis, L. (Ed.) Handbook of Genetic Algorithms, Van Nostrand Reinhold, New York, pp 332-349.")]
-  [StorableClass]
+  [StorableType("9C707A94-E432-4A1C-94F4-FA69ED639289")]
   public class PositionBasedCrossover : PermutationCrossover {
     [StorableConstructor]
-    protected PositionBasedCrossover(bool deserializing) : base(deserializing) { }
+    protected PositionBasedCrossover(StorableConstructorFlag _) : base(_) { }
     protected PositionBasedCrossover(PositionBasedCrossover original, Cloner cloner) : base(original, cloner) { }
     public PositionBasedCrossover() : base() { }
 

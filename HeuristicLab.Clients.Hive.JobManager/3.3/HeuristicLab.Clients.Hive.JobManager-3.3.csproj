@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>HeuristicLab.Clients.Hive.JobManager</RootNamespace>
     <AssemblyName>HeuristicLab.Clients.Hive.JobManager-3.3</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -104,6 +104,7 @@
   <ItemGroup>
     <Compile Include="ExtensionMethods\TreeNodeExtensions.cs" />
     <Compile Include="ListViewItemDateComparer.cs" />
+    <Compile Include="ListViewItemComparer.cs" />
     <Compile Include="MenuItems\CreateHiveJobMenuItem.cs" />
     <Compile Include="MenuItems\RunInHiveMenuItem.cs" />
     <Compile Include="Plugin.cs" />
@@ -158,6 +159,16 @@
     <None Include="HeuristicLab.snk" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\HeuristicLab.Clients.Access\3.3\HeuristicLab.Clients.Access-3.3.csproj">
+      <Project>{494f87f4-0f25-4d33-a382-10cdb2174d48}</Project>
+      <Name>HeuristicLab.Clients.Access-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Clients.Common\3.3\HeuristicLab.Clients.Common-3.3.csproj">
+      <Project>{730a9104-d4d1-4360-966b-e49b7571dda3}</Project>
+      <Name>HeuristicLab.Clients.Common-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Clients.Hive.Views\3.3\HeuristicLab.Clients.Hive.Views-3.3.csproj">
       <Project>{E1D6C801-892A-406A-B606-F158E36DD3C3}</Project>
       <Name>HeuristicLab.Clients.Hive.Views-3.3</Name>
@@ -233,6 +244,13 @@
       <Name>HeuristicLab.PluginInfrastructure-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="HEAL.Attic, Version=1.0.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\HEAL.Attic.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

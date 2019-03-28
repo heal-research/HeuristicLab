@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -208,6 +208,14 @@ namespace HeuristicLab.Clients.Hive.Views {
     private void priorityComboBox_SelectedIndexChanged(object sender, EventArgs e) {
       if (Content != null && Content.Task != null && Content.Task.Priority != priorityComboBox.SelectedIndex) {
         Content.Task.Priority = priorityComboBox.SelectedIndex;
+      }
+    }
+
+    private void coresNeededComboBox_SelectedIndexChanged(object sender, EventArgs e) {
+      if (Content != null && Content.Task != null) {
+        int cores;
+        if (int.TryParse(coresNeededComboBox.SelectedItem.ToString(), out cores) && Content.Task.CoresNeeded != cores)
+          Content.Task.CoresNeeded = cores;
       }
     }
   }

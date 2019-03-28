@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,21 +24,21 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TravelingSalesman {
   /// <summary>
   /// An operator to evaluate a translocation or insertion move.
   /// </summary>
   [Item("TSPTranslocationMovePathEvaluator", "Evaluates a translocation or insertion move (3-opt) by summing up the length of all added edges and subtracting the length of all deleted edges.")]
-  [StorableClass]
+  [StorableType("DC2FBCA3-B75F-4DA2-974E-334083159D93")]
   public abstract class TSPTranslocationMovePathEvaluator : TSPPathMoveEvaluator, IPermutationTranslocationMoveOperator {
     public ILookupParameter<TranslocationMove> TranslocationMoveParameter {
       get { return (ILookupParameter<TranslocationMove>)Parameters["TranslocationMove"]; }
     }
 
     [StorableConstructor]
-    protected TSPTranslocationMovePathEvaluator(bool deserializing) : base(deserializing) { }
+    protected TSPTranslocationMovePathEvaluator(StorableConstructorFlag _) : base(_) { }
     protected TSPTranslocationMovePathEvaluator(TSPTranslocationMovePathEvaluator original, Cloner cloner) : base(original, cloner) { }
     public TSPTranslocationMovePathEvaluator()
       : base() {

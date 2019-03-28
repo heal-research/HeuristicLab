@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -41,13 +41,13 @@ namespace HeuristicLab.Services.WebApp.Statistics.WebApi {
       return pm.UseTransaction(() => {
         var clientTimeData = factClientInfoDao.GetAll()
           .Join(dimClientDao.GetAll(), x => x.ClientId, y => y.Id, (x, y) => new {
-            y.ResourceGroupId,
+            y.ParentResourceId,
             x.IdleTime,
             x.OfflineTime,
             x.UnavailableTime
           })
-          .Where(x => x.ResourceGroupId == id)
-          .GroupBy(x => x.ResourceGroupId)
+          .Where(x => x.ParentResourceId == id)
+          .GroupBy(x => x.ParentResourceId)
           .Select(x => new {
             TotalIdleTime = x.Sum(y => y.IdleTime),
             TotalOfflineTime = x.Sum(y => y.OfflineTime),
@@ -67,14 +67,15 @@ namespace HeuristicLab.Services.WebApp.Statistics.WebApi {
             TransferTime = x.Sum(y => y.TransferTime)
           })
           .FirstOrDefault();
-        return (from client in dimClientDao.GetActiveClients().Where(x => x.ResourceGroupId == id)
+        return (from client in dimClientDao.GetAllOnlineSlaves().Where(x => x.ParentResourceId == id)
                 join info in factClientInfoDao.GetAll()
                   on client.Id equals info.ClientId into clientInfoJoin
                 from clientInfo in clientInfoJoin.OrderByDescending(x => x.Time).Take(1)
                 let offline = (clientInfo.SlaveState == DA.SlaveState.Offline)
+                let parent = client.ParentResourceId.HasValue ? dimClientDao.GetById(client.ParentResourceId.Value) : null
                 select new {
-                  ResourceGroupId = client.ResourceGroupId,
-                  GroupName = client.GroupName,
+                  ResourceGroupId = client.ParentResourceId,
+                  GroupName = parent != null ? parent.Name : null,
                   TotalCores = clientInfo.NumTotalCores,
                   UsedCores = offline ? 0 : clientInfo.NumUsedCores,
                   TotalMemory = clientInfo.TotalMemory,
@@ -113,13 +114,13 @@ namespace HeuristicLab.Services.WebApp.Statistics.WebApi {
       var pm = PersistenceManager;
       var dimClientDao = pm.DimClientDao;
       var factClientInfoDao = pm.FactClientInfoDao;
-      var data = (from client in dimClientDao.GetActiveClients()
+      var data = (from client in dimClientDao.GetAllOnlineSlaves()
                   join info in factClientInfoDao.GetAll()
                     on client.Id equals info.ClientId into clientInfoJoin
                   from clientInfo in clientInfoJoin.OrderByDescending(x => x.Time).Take(1)
                   let offline = (clientInfo.SlaveState == DA.SlaveState.Offline)
                   select new {
-                    ResourceGroupId = client.ResourceGroupId,
+                    ResourceGroupId = client.ParentResourceId,
                     TotalCores = clientInfo.NumTotalCores,
                     UsedCores = offline ? 0 : clientInfo.NumUsedCores,
                     TotalMemory = clientInfo.TotalMemory,
@@ -136,12 +137,11 @@ namespace HeuristicLab.Services.WebApp.Statistics.WebApi {
                     UsedMemory = x.Sum(y => y.UsedMemory),
                     CpuUtilization = x.Where(y => y.SlaveState != DA.SlaveState.Offline).Average(y => (double?)y.CpuUtilization) ?? 0.0
                   });
-      var query = dimClientDao.GetAll()
-        .GroupBy(x => new { x.ResourceGroupId, x.GroupName })
-        .Select(x => new {
-          Id = x.Key.ResourceGroupId ?? default(Guid),
-          Name = x.Key.GroupName
-        });
+
+      var query = dimClientDao.GetAllOnlineSlaveGroups().Select(x => new {
+        Id = x.ResourceId,
+        Name = x.Name
+      });
       return pm.UseTransaction(() => new DT.GroupPage {
         TotalGroups = query.Count(),
         Groups = query

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,12 +26,21 @@ using HeuristicLab.Services.Hive.DataAccess;
 using HeuristicLab.Services.Hive.DataAccess.Interfaces;
 using DA = HeuristicLab.Services.Hive.DataAccess;
 using DT = HeuristicLab.Services.Hive.DataTransfer;
-
+using System.Collections.Generic;
+using System.Linq;
 
 namespace HeuristicLab.Services.Hive {
   public class AuthorizationManager : IAuthorizationManager {
 
-    private const string NOT_AUTHORIZED = "Current user is not authorized to access the requested resource";
+    private const string NOT_AUTHORIZED_USERRESOURCE = "Current user is not authorized to access the requested resource";
+    private const string NOT_AUTHORIZED_USERPROJECT = "Current user is not authorized to access the requested project";
+    private const string NOT_AUTHORIZED_USERJOB = "Current user is not authorized to access the requested job";
+    private const string NOT_AUTHORIZED_PROJECTRESOURCE = "Selected project is not authorized to access the requested resource";
+    private const string USER_NOT_IDENTIFIED = "User could not be identified";
+    private const string JOB_NOT_EXISTENT = "Queried job could not be found";
+    private const string TASK_NOT_EXISTENT = "Queried task could not be found";
+    private const string PROJECT_NOT_EXISTENT = "Queried project could not be found";
+
     private IPersistenceManager PersistenceManager {
       get { return ServiceLocator.Instance.PersistenceManager; }
     }
@@ -46,38 +55,152 @@ namespace HeuristicLab.Services.Hive {
 
     public void Authorize(Guid userId) {
       if (userId != ServiceLocator.Instance.UserManager.CurrentUserId)
-        throw new SecurityException(NOT_AUTHORIZED);
+        throw new SecurityException(NOT_AUTHORIZED_USERRESOURCE);
     }
 
     public void AuthorizeForTask(Guid taskId, DT.Permission requiredPermission) {
       if (ServiceLocator.Instance.RoleVerifier.IsInRole(HiveRoles.Slave)) return; // slave-users can access all tasks
+      if (ServiceLocator.Instance.RoleVerifier.IsInRole(HiveRoles.Administrator)) return; // administrator can access all tasks
+      var currentUserId = UserManager.CurrentUserId;
       var pm = PersistenceManager;
       var taskDao = pm.TaskDao;
+      var projectDao = pm.ProjectDao;
       pm.UseTransaction(() => {
         var task = taskDao.GetById(taskId);
-        if (task == null) throw new SecurityException(NOT_AUTHORIZED);
+        if (task == null) throw new SecurityException(TASK_NOT_EXISTENT);
+
+        // check if user is granted to administer a job-parenting project
+        var administrationGrantedProjects = projectDao
+          .GetAdministrationGrantedProjectsForUser(currentUserId)
+          .ToList();
+        if (administrationGrantedProjects.Contains(task.Job.Project)) return;
+
         AuthorizeJob(pm, task.JobId, requiredPermission);
       });
     }
 
     public void AuthorizeForJob(Guid jobId, DT.Permission requiredPermission) {
+      if (ServiceLocator.Instance.RoleVerifier.IsInRole(HiveRoles.Administrator)) return; // administrator can access all jobs
+      var currentUserId = UserManager.CurrentUserId;
       var pm = PersistenceManager;
+      var jobDao = pm.JobDao;
+      var projectDao = pm.ProjectDao;
       pm.UseTransaction(() => {
+        var job = jobDao.GetById(jobId);
+        if(job == null) throw new SecurityException(JOB_NOT_EXISTENT);
+
+        // check if user is granted to administer a job-parenting project
+        var administrationGrantedProjects = projectDao
+          .GetAdministrationGrantedProjectsForUser(currentUserId)
+          .ToList();
+        if (administrationGrantedProjects.Contains(job.Project)) return;
+
         AuthorizeJob(pm, jobId, requiredPermission);
       });
     }
 
+    // authorize if user is admin or resource owner
     public void AuthorizeForResourceAdministration(Guid resourceId) {
+      var currentUserId = UserManager.CurrentUserId;
       var pm = PersistenceManager;
       var resourceDao = pm.ResourceDao;
       pm.UseTransaction(() => {
         var resource = resourceDao.GetById(resourceId);
-        if (resource == null) throw new SecurityException(NOT_AUTHORIZED);
-        if (resource.OwnerUserId != UserManager.CurrentUserId
+        if (resource == null) throw new SecurityException(NOT_AUTHORIZED_USERRESOURCE);
+
+        if (resource.OwnerUserId != currentUserId
             && !RoleVerifier.IsInRole(HiveRoles.Administrator)) {
-          throw new SecurityException(NOT_AUTHORIZED);
+          throw new SecurityException(NOT_AUTHORIZED_USERRESOURCE);
         }
       });
+    }
+
+    // authorize if user is admin, project owner or owner of a parent project
+    public void AuthorizeForProjectAdministration(Guid projectId, bool parentalOwnership) {
+      if (projectId == null || projectId == Guid.Empty) return;
+      var currentUserId = UserManager.CurrentUserId;
+      var pm = PersistenceManager;
+      var projectDao = pm.ProjectDao;
+      pm.UseTransaction(() => {
+        var project = projectDao.GetById(projectId);
+        if (project == null) throw new ArgumentException(PROJECT_NOT_EXISTENT);
+        if(!RoleVerifier.IsInRole(HiveRoles.Administrator)
+          && !project.ParentProjectId.HasValue) {
+          throw new SecurityException(NOT_AUTHORIZED_USERPROJECT);
+        }
+
+        List<Project> projectBranch = null;
+        if(parentalOwnership) projectBranch = projectDao.GetParentProjectsById(projectId).ToList();
+        else projectBranch = projectDao.GetCurrentAndParentProjectsById(projectId).ToList();
+
+        if(!RoleVerifier.IsInRole(HiveRoles.Administrator)
+            && !projectBranch.Select(x => x.OwnerUserId).Contains(currentUserId)) {
+          throw new SecurityException(NOT_AUTHORIZED_USERPROJECT);
+        }
+      });
+    }
+
+    // authorize if user is admin, or owner of a project or parent project, for which the resources are assigned to
+    public void AuthorizeForProjectResourceAdministration(Guid projectId, IEnumerable<Guid> resourceIds) {
+      if (projectId == null || projectId == Guid.Empty) return;
+      var currentUserId = UserManager.CurrentUserId;
+      var pm = PersistenceManager;
+      var projectDao = pm.ProjectDao;
+      var resourceDao = pm.ResourceDao;
+      var assignedProjectResourceDao = pm.AssignedProjectResourceDao;
+      pm.UseTransaction(() => {
+        // check if project exists (not necessary)
+        var project = projectDao.GetById(projectId);
+        if (project == null) throw new SecurityException(NOT_AUTHORIZED_USERRESOURCE);
+
+        // check if resourceIds exist
+        if (resourceIds != null && resourceIds.Any() && !resourceDao.CheckExistence(resourceIds))
+          throw new SecurityException(NOT_AUTHORIZED_USERRESOURCE);
+
+        // check if user is admin
+        if (RoleVerifier.IsInRole(HiveRoles.Administrator)) return;
+
+        // check if user is owner of the project or a parent project
+        var projectBranch = projectDao.GetCurrentAndParentProjectsById(projectId).ToList();
+        if (!projectBranch.Select(x => x.OwnerUserId).Contains(currentUserId)
+            && !RoleVerifier.IsInRole(HiveRoles.Administrator)) {
+          throw new SecurityException(NOT_AUTHORIZED_USERPROJECT);
+        }
+
+        // check if the all argument resourceIds are among the assigned resources of the owned projects
+        var grantedResourceIds = assignedProjectResourceDao.GetAllGrantedResourceIdsOfOwnedParentProjects(projectId, currentUserId).ToList();
+        if(resourceIds.Except(grantedResourceIds).Any()) {
+          throw new SecurityException(NOT_AUTHORIZED_USERRESOURCE);
+        }
+      });
+    }
+
+    // Check if a project is authorized to use a list of resources
+    public void AuthorizeProjectForResourcesUse(Guid projectId, IEnumerable<Guid> resourceIds) {
+      if (projectId == null || projectId == Guid.Empty || resourceIds == null || !resourceIds.Any()) return;
+      var pm = PersistenceManager;
+      var assignedProjectResourceDao = pm.AssignedProjectResourceDao;
+      if (!assignedProjectResourceDao.CheckProjectGrantedForResources(projectId, resourceIds))
+        throw new SecurityException(NOT_AUTHORIZED_PROJECTRESOURCE);
+    }
+
+    // Check if current user is authorized to use an explicit project (e.g. in order to add a job)
+    // note: administrators and project owner are NOT automatically granted
+    public void AuthorizeUserForProjectUse(Guid userId, Guid projectId) {
+      if(userId == null || userId == Guid.Empty) {
+        throw new SecurityException(USER_NOT_IDENTIFIED);
+      }
+      if(projectId == null) return;
+
+      var pm = PersistenceManager;
+      // collect current and group membership Ids
+      var userAndGroupIds = new List<Guid>() { userId };
+      userAndGroupIds.AddRange(UserManager.GetUserGroupIdsOfUser(userId));
+      // perform the actual check
+      var projectPermissionDao = pm.ProjectPermissionDao;
+      if (!projectPermissionDao.CheckUserGrantedForProject(projectId, userAndGroupIds)) {
+        throw new SecurityException(NOT_AUTHORIZED_USERPROJECT);
+      }
     }
 
     private DA.Permission GetPermissionForJob(IPersistenceManager pm, Guid jobId, Guid userId) {
@@ -92,11 +215,12 @@ namespace HeuristicLab.Services.Hive {
     }
 
     private void AuthorizeJob(IPersistenceManager pm, Guid jobId, DT.Permission requiredPermission) {
+      var currentUserId = UserManager.CurrentUserId;
       var requiredPermissionEntity = requiredPermission.ToEntity();
-      DA.Permission permission = GetPermissionForJob(pm, jobId, UserManager.CurrentUserId);
+      DA.Permission permission = GetPermissionForJob(pm, jobId, currentUserId);
       if (permission == Permission.NotAllowed
           || ((permission != requiredPermissionEntity) && requiredPermissionEntity == Permission.Full)) {
-        throw new SecurityException(NOT_AUTHORIZED);
+        throw new SecurityException(NOT_AUTHORIZED_USERJOB);
       }
     }
   }

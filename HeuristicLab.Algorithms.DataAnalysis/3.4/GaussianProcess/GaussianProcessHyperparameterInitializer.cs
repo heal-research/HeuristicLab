@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,11 +25,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
-  [StorableClass]
+  [StorableType("73A3AC0C-849D-409F-8B5A-E5A08292A985")]
   [Item(Name = "GaussianProcessHyperparameterInitializer",
     Description = "Initializers the hyperparameter vector based on the mean function, covariance function, and number of allowed input variables.")]
   public sealed class GaussianProcessHyperparameterInitializer : SingleSuccessorOperator {
@@ -66,7 +66,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     #endregion
 
     [StorableConstructor]
-    private GaussianProcessHyperparameterInitializer(bool deserializing) : base(deserializing) { }
+    private GaussianProcessHyperparameterInitializer(StorableConstructorFlag _) : base(_) { }
     private GaussianProcessHyperparameterInitializer(GaussianProcessHyperparameterInitializer original, Cloner cloner) : base(original, cloner) { }
     public GaussianProcessHyperparameterInitializer()
       : base() {

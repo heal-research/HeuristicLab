@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,7 +24,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// <summary>
@@ -35,7 +35,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// It is implemented as described in Deb, K. and Agrawal, R. B. 1995. Simulated binary crossover for continuous search space. Complex Systems, 9, pp. 115-148.
   /// </remarks>
   [Item("SimulatedBinaryCrossover", "The simulated binary crossover (SBX) is implemented as described in Deb, K. and Agrawal, R. B. 1995. Simulated binary crossover for continuous search space. Complex Systems, 9, pp. 115-148.")]
-  [StorableClass]
+  [StorableType("0A0686ED-BA7E-41A6-824E-134C4BF36408")]
   public class SimulatedBinaryCrossover : RealVectorCrossover {
     /// <summary>
     /// The parameter must be greater or equal than 0. Common values are in the range [0;5] and more often just [2;5].
@@ -45,7 +45,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     }
 
     [StorableConstructor]
-    protected SimulatedBinaryCrossover(bool deserializing) : base(deserializing) { }
+    protected SimulatedBinaryCrossover(StorableConstructorFlag _) : base(_) { }
     protected SimulatedBinaryCrossover(SimulatedBinaryCrossover original, Cloner cloner) : base(original, cloner) { }
     /// <summary>
     /// Initializes a new instance of <see cref="SimulatedBinaryCrossover"/> with one 

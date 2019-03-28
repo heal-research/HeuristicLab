@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,21 +24,21 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.Knapsack {
   /// <summary>
   /// An operator to evaluate one bitflip moves.
   /// </summary>
   [Item("KnapsackOneBitflipMoveEvaluator", "Base class for evaluating one bitflip moves.")]
-  [StorableClass]
+  [StorableType("E1BB4CCB-E9C3-4A16-8F03-3F619D4A4B0A")]
   public class KnapsackOneBitflipMoveEvaluator : KnapsackMoveEvaluator, IOneBitflipMoveOperator {
     public ILookupParameter<OneBitflipMove> OneBitflipMoveParameter {
       get { return (ILookupParameter<OneBitflipMove>)Parameters["OneBitflipMove"]; }
     }
 
     [StorableConstructor]
-    protected KnapsackOneBitflipMoveEvaluator(bool deserializing) : base(deserializing) { }
+    protected KnapsackOneBitflipMoveEvaluator(StorableConstructorFlag _) : base(_) { }
     protected KnapsackOneBitflipMoveEvaluator(KnapsackOneBitflipMoveEvaluator original, Cloner cloner) : base(original, cloner) { }
     public KnapsackOneBitflipMoveEvaluator()
       : base() {

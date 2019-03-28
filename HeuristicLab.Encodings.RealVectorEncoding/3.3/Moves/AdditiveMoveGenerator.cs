@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,11 +25,11 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   [Item("AdditiveMoveGenerator", "Base class for all additive move generators.")]
-  [StorableClass]
+  [StorableType("254F20A6-AB7F-4C7D-9EA7-9310FD56743F")]
   public abstract class AdditiveMoveGenerator : SingleSuccessorOperator, IRealVectorAdditiveMoveOperator, IMoveGenerator, IStochasticOperator {
     public override bool CanChangeName {
       get { return false; }
@@ -48,7 +48,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     }
 
     [StorableConstructor]
-    protected AdditiveMoveGenerator(bool deserializing) : base(deserializing) { }
+    protected AdditiveMoveGenerator(StorableConstructorFlag _) : base(_) { }
     protected AdditiveMoveGenerator(AdditiveMoveGenerator original, Cloner cloner) : base(original, cloner) { }
     public AdditiveMoveGenerator()
       : base() {

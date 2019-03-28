@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,11 +25,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
   [Item("Penalty Score Evaluator", "Calculates the penalty score of a symbolic classification solution.")]
-  [StorableClass]
+  [StorableType("59D79396-2CBD-4033-9752-52A44243D554")]
   public class SymbolicClassificationSingleObjectivePenaltyScoreEvaluator : SymbolicClassificationSingleObjectiveEvaluator, ISymbolicClassificationModelCreatorOperator {
     private const string ModelCreatorParameterName = "ModelCreator";
     public override bool Maximization { get { return false; } }
@@ -42,7 +42,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     }
 
     [StorableConstructor]
-    protected SymbolicClassificationSingleObjectivePenaltyScoreEvaluator(bool deserializing) : base(deserializing) { }
+    protected SymbolicClassificationSingleObjectivePenaltyScoreEvaluator(StorableConstructorFlag _) : base(_) { }
     protected SymbolicClassificationSingleObjectivePenaltyScoreEvaluator(SymbolicClassificationSingleObjectivePenaltyScoreEvaluator original, Cloner cloner) : base(original, cloner) { }
     public SymbolicClassificationSingleObjectivePenaltyScoreEvaluator()
       : base() {

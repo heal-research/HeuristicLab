@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -28,7 +28,7 @@ using HeuristicLab.MainForm.WindowsForms;
 namespace HeuristicLab.Clients.Access.Administration {
   [View("UserList View")]
   [Content(typeof(IItemList<User>), true)]
-  public partial class UserListView : ItemListView<User> {
+  public partial class UserListView : ItemCollectionView<User> {
     public UserListView() {
       InitializeComponent();
       itemsGroupBox.Text = "Users";

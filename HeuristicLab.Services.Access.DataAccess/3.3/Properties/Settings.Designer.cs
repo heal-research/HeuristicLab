@@ -12,7 +12,7 @@ namespace HeuristicLab.Services.Access.DataAccess.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "14.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.8.0.0")]
     public sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -26,8 +26,8 @@ namespace HeuristicLab.Services.Access.DataAccess.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
-        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=.\\SQLEXPRESS;Integrated Security=SSPI;Initial Catalog=HeuristicLab.Ac" +
-            "cessService")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=localhost;Integrated Security=SSPI;Initial Catalog=HeuristicLab.Acces" +
+            "sService")]
         public string HeuristicLab_ClientManagementConnectionString {
             get {
                 return ((string)(this["HeuristicLab_ClientManagementConnectionString"]));
@@ -37,8 +37,8 @@ namespace HeuristicLab.Services.Access.DataAccess.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
-        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=.\\SQLEXPRESS;Integrated Security=SSPI;Initial Catalog=HeuristicLab.Au" +
-            "thentication")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=localhost;Integrated Security=SSPI;Initial Catalog=HeuristicLab.Authe" +
+            "ntication")]
         public string HeuristicLab_AuthenticationConnectionString {
             get {
                 return ((string)(this["HeuristicLab_AuthenticationConnectionString"]));

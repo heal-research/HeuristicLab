@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,9 +20,10 @@
 #endregion
 
 using System.Collections.Generic;
-
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
+  [StorableType("4efb3867-0439-4b87-b479-f7daab7fc00c")]
   public interface IModelBacktransformator {
     ISymbolicDataAnalysisModel Backtransform(ISymbolicDataAnalysisModel model, IEnumerable<ITransformation> transformations, string targetVariable);
   }

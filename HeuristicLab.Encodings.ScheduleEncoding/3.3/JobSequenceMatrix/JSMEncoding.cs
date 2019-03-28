@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,11 +23,11 @@ using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("JobSequenceMatrixEncoding", "Represents an encoding for a scheduling Problem using a list of job sequences to deliver scheduleinformation.")]
-  [StorableClass]
+  [StorableType("8F19A51A-45F1-4C1D-BCD4-A9F57E40DDC5")]
   public class JSMEncoding : Item, ISchedule {
 
     [Storable]
@@ -36,7 +36,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
     public int RandomSeed { get; private set; }
 
     [StorableConstructor]
-    protected JSMEncoding(bool deserializing) : base(deserializing) { }
+    protected JSMEncoding(StorableConstructorFlag _) : base(_) { }
     protected JSMEncoding(JSMEncoding original, Cloner cloner)
       : base(original, cloner) {
       this.JobSequenceMatrix = cloner.Clone(original.JobSequenceMatrix);

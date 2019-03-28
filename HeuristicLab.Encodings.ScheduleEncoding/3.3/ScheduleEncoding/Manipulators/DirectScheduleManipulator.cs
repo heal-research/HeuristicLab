@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,18 +23,18 @@ using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("DirectScheduleManipulator", "An operator which manipulates a direct schedule representation.")]
-  [StorableClass]
+  [StorableType("B5E31B46-3C2B-4DA5-AA5F-C0A88A4A8A26")]
   public abstract class DirectScheduleManipulator : ScheduleManipulator, IDirectScheduleOperator {
     public ILookupParameter<ItemList<Job>> JobDataParameter {
       get { return (LookupParameter<ItemList<Job>>)Parameters["JobData"]; }
     }
 
     [StorableConstructor]
-    protected DirectScheduleManipulator(bool deserializing) : base(deserializing) { }
+    protected DirectScheduleManipulator(StorableConstructorFlag _) : base(_) { }
     protected DirectScheduleManipulator(DirectScheduleManipulator original, Cloner cloner) : base(original, cloner) { }
 
     public DirectScheduleManipulator()

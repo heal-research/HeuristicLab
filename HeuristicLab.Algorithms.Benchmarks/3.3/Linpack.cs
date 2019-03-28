@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,11 +26,11 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.Benchmarks {
   [Item("Linpack", "Linpack performance benchmark.")]
-  [StorableClass]
+  [StorableType("A480970C-E954-45F6-AFDE-BD99054E1BF7")]
   public sealed class Linpack : Benchmark {
     private const int DEFAULT_PSIZE = 1500;
 
@@ -44,7 +44,7 @@ namespace HeuristicLab.Algorithms.Benchmarks {
     private Stopwatch sw = new Stopwatch();
 
     [StorableConstructor]
-    private Linpack(bool deserializing) : base(deserializing) { }
+    private Linpack(StorableConstructorFlag _) : base(_) { }
     private Linpack(Linpack original, Cloner cloner) : base(original, cloner) { }
     public Linpack() { }
 

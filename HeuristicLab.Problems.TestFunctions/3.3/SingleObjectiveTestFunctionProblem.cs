@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -30,12 +30,12 @@ using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.Instances;
 
 namespace HeuristicLab.Problems.TestFunctions {
   [Item("Test Function (single-objective)", "Test function with real valued inputs and a single objective.")]
-  [StorableClass]
+  [StorableType("F0AB7236-2C9B-49DC-9D4F-A3558FD9E992")]
   [Creatable(CreatableAttribute.Categories.Problems, Priority = 90)]
   public sealed class SingleObjectiveTestFunctionProblem :
     SingleObjectiveProblem<RealVectorEncoding, RealVector>,
@@ -80,7 +80,7 @@ namespace HeuristicLab.Problems.TestFunctions {
     #endregion
 
     [StorableConstructor]
-    private SingleObjectiveTestFunctionProblem(bool deserializing) : base(deserializing) { }
+    private SingleObjectiveTestFunctionProblem(StorableConstructorFlag _) : base(_) { }
     private SingleObjectiveTestFunctionProblem(SingleObjectiveTestFunctionProblem original, Cloner cloner)
       : base(original, cloner) {
       RegisterEventHandlers();

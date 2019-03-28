@@ -1,6 +1,7 @@
-﻿#region License Information
+﻿using HEAL.Attic;
+#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,6 +23,7 @@
 
 
 namespace HeuristicLab.Operators.Views.GraphVisualization {
+  [StorableType("5a5d76a6-607b-418b-9de1-e30ea3e85f58")]
   internal class OperatorShape {
     //21.04.2011 mkommend
     //Do not delete this empty class, because this type was moved in to the plugin GraphVisualiation.Views

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,11 +24,11 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("PRVManipulator", "An operator which manipulates a PRV representation.")]
-  [StorableClass]
+  [StorableType("724A2141-E592-447E-9F51-5C69BD3A7D46")]
   public abstract class PRVManipulator : ScheduleManipulator, IPRVRulesOperator {
 
     public ILookupParameter<IntValue> NumberOfRulesParameter {
@@ -37,7 +37,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
 
 
     [StorableConstructor]
-    protected PRVManipulator(bool deserializing) : base(deserializing) { }
+    protected PRVManipulator(StorableConstructorFlag _) : base(_) { }
     protected PRVManipulator(PRVManipulator original, Cloner cloner) : base(original, cloner) { }
 
     public PRVManipulator()

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -28,7 +28,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     // op code of the function that determines what operation should be executed
     public byte opCode;
     // number of arguments of the current instruction
-    public byte nArguments;
+    public ushort nArguments;
     // an optional object value (addresses for calls, argument index for arguments)
     public object data;
   }

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -32,18 +32,34 @@ namespace HeuristicLab.Services.Hive.DataAccess.Daos.HiveStatistics {
       return GetByIdQuery(DataContext, id);
     }
 
-    public IQueryable<DimClient> GetActiveClients() {
-      return Table.Where(x => x.ExpirationTime == null);
+    public IQueryable<DimClient> GetAllOnlineClients() {
+      return Table.Where(x => x.DateExpired == null);
     }
 
-    public IQueryable<DimClient> GetExpiredClients() {
-      return Table.Where(x => x.ExpirationTime != null);
+    public IQueryable<DimClient> GetAllExpiredClients() {
+      return Table.Where(x => x.DateExpired != null);
+    }
+
+    public IQueryable<DimClient> GetAllOnlineSlaves() {
+      return Table.Where(x => x.DateExpired == null && x.ResourceType == "Slave");
+    }
+
+    public IQueryable<DimClient> GetAllOnlineSlaveGroups() {
+      return Table.Where(x => x.DateExpired == null && x.ResourceType == "GROUP");
+    }
+
+    public IQueryable<DimClient> GetAllExpiredSlaves() {
+      return Table.Where(x => x.DateExpired != null && x.ResourceType == "Slave");
+    }
+
+    public IQueryable<DimClient> GetAllExpiredSlaveGroups() {
+      return Table.Where(x => x.DateExpired != null && x.ResourceType == "GROUP");
     }
 
     public int UpdateExpirationTime(IEnumerable<Guid> ids, DateTime time) {
       string paramIds = string.Join(",", ids.Select(x => string.Format("'{0}'", x)));
       if (!string.IsNullOrWhiteSpace(paramIds)) {
-        string query = string.Format(UpdateExpirationTimeQuery, "{0}", paramIds);
+        string query = string.Format(UpdateDateExpiredQuery, "{0}", paramIds);
         return DataContext.ExecuteCommand(query, time);
       }
       return 0;
@@ -58,9 +74,9 @@ namespace HeuristicLab.Services.Hive.DataAccess.Daos.HiveStatistics {
     #endregion
 
     #region String queries
-    private const string UpdateExpirationTimeQuery =
+    private const string UpdateDateExpiredQuery =
       @"UPDATE [statistics].[DimClient] 
-           SET ExpirationTime = {0} 
+           SET DateExpired = {0} 
          WHERE Id IN ({1});";
     #endregion
   }

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -214,13 +214,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
       // Configure axis
       chart.CustomizeAllChartAreas();
-      chart.ChartAreas[0].CursorX.IsUserSelectionEnabled = true;
-      chart.ChartAreas[0].AxisX.ScaleView.Zoomable = true;
-      chart.ChartAreas[0].CursorX.Interval = 0;
+      chart.ChartAreas[0].CursorX.IsUserSelectionEnabled = false;
+      chart.ChartAreas[0].CursorY.IsUserSelectionEnabled = false;
 
-      chart.ChartAreas[0].CursorY.IsUserSelectionEnabled = true;
-      chart.ChartAreas[0].AxisY.ScaleView.Zoomable = true;
-      chart.ChartAreas[0].CursorY.Interval = 0;
+      chart.ChartAreas[0].Axes.ToList().ForEach(x => { x.ScaleView.Zoomable = false; });
 
       configToolStripMenuItem = new ToolStripMenuItem("Configuration");
       configToolStripMenuItem.Click += config_Click;
@@ -247,10 +244,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
       // add an event such that whenever a value is changed in the shared dataset, 
       // this change is reflected in the internal dataset (where the value becomes a whole column)
-      if (this.sharedFixedVariables != null)
+      if (this.sharedFixedVariables != null) {
         this.sharedFixedVariables.ItemChanged -= sharedFixedVariables_ItemChanged;
+        this.sharedFixedVariables.Reset -= sharedFixedVariables_Reset;
+      }
+
       this.sharedFixedVariables = sharedFixedVariables;
       this.sharedFixedVariables.ItemChanged += sharedFixedVariables_ItemChanged;
+      this.sharedFixedVariables.Reset += sharedFixedVariables_Reset;
 
       RecalculateTrainingLimits(initializeAxisRanges);
       RecalculateInternalDataset();
@@ -316,9 +317,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         calculationPendingLabel.Visible = false;
         if (updateOnFinish)
           Update();
-      }
-      catch (OperationCanceledException) { }
-      catch (AggregateException ae) {
+      } catch (OperationCanceledException) {
+      } catch (AggregateException ae) {
         if (!ae.InnerExceptions.Any(e => e is OperationCanceledException))
           throw;
       }
@@ -350,8 +350,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     }
 
     private void RecalculateTrainingLimits(bool initializeAxisRanges) {
-      trainingMin = solutions.Select(s => s.ProblemData.Dataset.GetDoubleValues(freeVariable, s.ProblemData.TrainingIndices).Min()).Max();
-      trainingMax = solutions.Select(s => s.ProblemData.Dataset.GetDoubleValues(freeVariable, s.ProblemData.TrainingIndices).Max()).Min();
+      trainingMin = solutions.Select(s => s.ProblemData.Dataset.GetDoubleValues(freeVariable, s.ProblemData.TrainingIndices).Where(x => !double.IsNaN(x)).Min()).Max();
+      trainingMax = solutions.Select(s => s.ProblemData.Dataset.GetDoubleValues(freeVariable, s.ProblemData.TrainingIndices).Where(x => !double.IsNaN(x)).Max()).Min();
 
       if (initializeAxisRanges) {
         double xmin, xmax, xinterval;
@@ -628,6 +628,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
       var variableName = variables[columnIndex];
       if (variableName == FreeVariable) return;
+
       if (internalDataset.VariableHasType<double>(variableName)) {
         var v = sharedFixedVariables.GetDoubleValue(variableName, rowIndex);
         var values = new List<double>(Enumerable.Repeat(v, internalDataset.Rows));
@@ -640,6 +641,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         // unsupported type 
         throw new NotSupportedException();
       }
+    }
+
+    private void sharedFixedVariables_Reset(object sender, EventArgs e) {
+      var newValue = sharedFixedVariables.GetDoubleValue(FreeVariable, 0);
+      VerticalLineAnnotation.X = newValue;
+      UpdateCursor(); // triggers update of InternalDataset
     }
 
     private void chart_AnnotationPositionChanging(object sender, AnnotationPositionChangingEventArgs e) {
@@ -660,7 +667,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     }
     private void UpdateCursor() {
       var x = VerticalLineAnnotation.X;
-      sharedFixedVariables.SetVariableValue(x, FreeVariable, 0);
+
+      if (!sharedFixedVariables.GetDoubleValue(FreeVariable, 0).IsAlmost(x))
+        sharedFixedVariables.SetVariableValue(x, FreeVariable, 0);
 
       if (ShowCursor) {
         chart.Titles[0].Text = FreeVariable + " : " + x.ToString("G5", CultureInfo.CurrentCulture);
@@ -701,6 +710,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
     private void config_Click(object sender, EventArgs e) {
       configurationDialog.ShowDialog(this);
+      OnZoomChanged(this, EventArgs.Empty);
     }
 
     private void chart_SelectionRangeChanged(object sender, CursorEventArgs e) {

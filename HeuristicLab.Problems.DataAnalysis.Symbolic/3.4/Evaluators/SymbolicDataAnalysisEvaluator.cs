@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -29,11 +29,11 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
-  [StorableClass]
+  [StorableType("61CB69D9-959B-4759-94EB-A969A519DDBB")]
   public abstract class SymbolicDataAnalysisEvaluator<T> : InstrumentedOperator,
     ISymbolicDataAnalysisEvaluator<T>, ISymbolicDataAnalysisInterpreterOperator, ISymbolicDataAnalysisBoundedOperator, IStochasticOperator
   where T : class, IDataAnalysisProblemData {
@@ -86,7 +86,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
 
     [StorableConstructor]
-    protected SymbolicDataAnalysisEvaluator(bool deserializing) : base(deserializing) { }
+    protected SymbolicDataAnalysisEvaluator(StorableConstructorFlag _) : base(_) { }
     protected SymbolicDataAnalysisEvaluator(SymbolicDataAnalysisEvaluator<T> original, Cloner cloner)
       : base(original, cloner) {
     }

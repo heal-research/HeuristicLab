@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,10 +24,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Collections {
-  [StorableClass]
+  [StorableType("44FF4DAE-F308-4B3B-8475-0B0327619657")]
   [Serializable]
   public class ObservableSet<T> : IObservableSet<T> {
     [Storable]
@@ -59,7 +59,7 @@ namespace HeuristicLab.Collections {
       set = new HashSet<T>(collection, comparer);
     }
     [StorableConstructor]
-    protected ObservableSet(bool deserializing) { }
+    protected ObservableSet(StorableConstructorFlag _) { }
     #endregion
 
     #region Access

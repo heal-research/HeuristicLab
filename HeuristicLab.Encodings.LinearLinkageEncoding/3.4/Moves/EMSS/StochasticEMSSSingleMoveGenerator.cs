@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,19 +25,19 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Encodings.LinearLinkageEncoding {
   [Item("StochasticEMSSSingleMoveGenerator", "Randomly samples a single from all possible EMSS moves (extract, merge, shift, and split) from a given lle grouping.")]
-  [StorableClass]
+  [StorableType("345211F0-E998-4C0E-B466-C2FC24D278E4")]
   public class StochasticEMSSSingleMoveGenerator : EMSSMoveGenerator, IStochasticOperator, ISingleMoveGenerator {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
     }
 
     [StorableConstructor]
-    protected StochasticEMSSSingleMoveGenerator(bool deserializing) : base(deserializing) { }
+    protected StochasticEMSSSingleMoveGenerator(StorableConstructorFlag _) : base(_) { }
     protected StochasticEMSSSingleMoveGenerator(StochasticEMSSSingleMoveGenerator original, Cloner cloner) : base(original, cloner) { }
     public StochasticEMSSSingleMoveGenerator()
       : base() {

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -44,45 +44,73 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
+      this.groupBoxVisualisation = new System.Windows.Forms.GroupBox();
       this.viewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
-      this.listBox = new System.Windows.Forms.ListBox();
+      this.listView = new System.Windows.Forms.ListView();
+      this.columnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+      this.groupBoxVisualisation.SuspendLayout();
       this.SuspendLayout();
+      // 
+      // groupBoxVisualisation
+      // 
+      this.groupBoxVisualisation.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.groupBoxVisualisation.Controls.Add(this.viewHost);
+      this.groupBoxVisualisation.Location = new System.Drawing.Point(169, 3);
+      this.groupBoxVisualisation.Name = "groupBoxVisualisation";
+      this.groupBoxVisualisation.Size = new System.Drawing.Size(177, 277);
+      this.groupBoxVisualisation.TabIndex = 2;
+      this.groupBoxVisualisation.TabStop = false;
+      this.groupBoxVisualisation.Text = "Representation";
       // 
       // viewHost
       // 
-      this.viewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
       this.viewHost.Caption = "View";
       this.viewHost.Content = null;
+      this.viewHost.Dock = System.Windows.Forms.DockStyle.Fill;
       this.viewHost.Enabled = false;
-      this.viewHost.Location = new System.Drawing.Point(126, 3);
+      this.viewHost.Location = new System.Drawing.Point(3, 16);
       this.viewHost.Name = "viewHost";
       this.viewHost.ReadOnly = false;
-      this.viewHost.Size = new System.Drawing.Size(220, 277);
+      this.viewHost.Size = new System.Drawing.Size(171, 258);
       this.viewHost.TabIndex = 0;
       this.viewHost.ViewsLabelVisible = true;
       this.viewHost.ViewType = null;
       // 
-      // listBox
+      // listView
       // 
-      this.listBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+      this.listView.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
-      this.listBox.Location = new System.Drawing.Point(3, 3);
-      this.listBox.Name = "listBox";
-      this.listBox.Size = new System.Drawing.Size(117, 277);
-      this.listBox.TabIndex = 1;
-      this.listBox.SelectedIndexChanged += new System.EventHandler(this.listBox_SelectedIndexChanged);
-      this.listBox.DoubleClick += new System.EventHandler(this.listBox_DoubleClick);
+      this.listView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader});
+      this.listView.FullRowSelect = true;
+      this.listView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+      this.listView.LabelWrap = false;
+      this.listView.Location = new System.Drawing.Point(3, 9);
+      this.listView.MultiSelect = false;
+      this.listView.Name = "listView";
+      this.listView.ShowGroups = false;
+      this.listView.Size = new System.Drawing.Size(160, 271);
+      this.listView.TabIndex = 1;
+      this.listView.UseCompatibleStateImageBehavior = false;
+      this.listView.View = System.Windows.Forms.View.Details;
+      this.listView.SelectedIndexChanged += new System.EventHandler(this.listView_SelectedIndexChanged);
+      this.listView.DoubleClick += new System.EventHandler(this.listView_DoubleClick);
+      // 
+      // columnHeader
+      // 
+      this.columnHeader.Width = 130;
       // 
       // GradientBoostedTreesModelView
       // 
       this.AllowDrop = true;
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
-      this.Controls.Add(this.viewHost);
-      this.Controls.Add(this.listBox);
+      this.Controls.Add(this.groupBoxVisualisation);
+      this.Controls.Add(this.listView);
       this.Name = "GradientBoostedTreesModelView";
       this.Size = new System.Drawing.Size(349, 289);
+      this.groupBoxVisualisation.ResumeLayout(false);
       this.ResumeLayout(false);
 
     }
@@ -90,10 +118,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
     #endregion
 
     private MainForm.WindowsForms.ViewHost viewHost;
-    private System.Windows.Forms.ListBox listBox;
-
-
-
-
+    private System.Windows.Forms.ListView listView;
+    private System.Windows.Forms.GroupBox groupBoxVisualisation;
+    private System.Windows.Forms.ColumnHeader columnHeader;
   }
 }

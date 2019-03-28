@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -31,14 +31,14 @@ using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Problems.Instances;
 
 namespace HeuristicLab.Problems.QuadraticAssignment {
   [Item("Quadratic Assignment Problem (QAP)", "The Quadratic Assignment Problem (QAP) can be described as the problem of assigning N facilities to N fixed locations such that there is exactly one facility in each location and that the sum of the distances multiplied by the connection strength between the facilities becomes minimal.")]
   [Creatable(CreatableAttribute.Categories.CombinatorialProblems, Priority = 140)]
-  [StorableClass]
+  [StorableType("A86B1F49-D8E6-45E4-8EFB-8F5CCA2F9DC7")]
   public sealed class QuadraticAssignmentProblem : SingleObjectiveProblem<PermutationEncoding, Permutation>,
     IProblemInstanceConsumer<QAPData>,
     IProblemInstanceConsumer<TSPData> {
@@ -110,7 +110,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
     #endregion
 
     [StorableConstructor]
-    private QuadraticAssignmentProblem(bool deserializing) : base(deserializing) { }
+    private QuadraticAssignmentProblem(StorableConstructorFlag _) : base(_) { }
     private QuadraticAssignmentProblem(QuadraticAssignmentProblem original, Cloner cloner)
       : base(original, cloner) {
       RegisterEventHandlers();

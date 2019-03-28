@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,14 +25,14 @@ using System.Linq;
 using System.Threading;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Operators {
   /// <summary>
   /// Base class for operators.
   /// </summary>
   [Item("Operator", "Base class for operators.")]
-  [StorableClass]
+  [StorableType("6AC01841-FF13-41B5-87E4-181F10D08835")]
   public abstract partial class Operator : ParameterizedNamedItem, IOperator, IStatefulItem {
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Method; }
@@ -75,8 +75,7 @@ namespace HeuristicLab.Operators {
     }
 
     [StorableConstructor]
-    protected Operator(bool deserializing)
-      : base(deserializing) {
+    protected Operator(StorableConstructorFlag _) : base(_) {
       executionContexts = new Lazy<ThreadLocal<IExecutionContext>>(() => { return new ThreadLocal<IExecutionContext>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
     }
     protected Operator(Operator original, Cloner cloner)

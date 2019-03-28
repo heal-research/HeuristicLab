@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>HeuristicLab.Services.Hive.DataAccess</RootNamespace>
     <AssemblyName>HeuristicLab.Services.Hive.DataAccess-3.3</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -103,23 +103,27 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Plugin.cs.frame" />
-    <Compile Include="Daos\AssignedResourceDao.cs" />
+    <Compile Include="Daos\AssignedJobResourceDao.cs" />
+    <Compile Include="Daos\AssignedProjectResourceDao.cs" />
     <Compile Include="Daos\DowntimeDao.cs" />
     <Compile Include="Daos\GenericDao.cs" />
     <Compile Include="Daos\HiveStatistics\DimClientDao.cs" />
     <Compile Include="Daos\HiveStatistics\DimJobDao.cs" />
+    <Compile Include="Daos\HiveStatistics\DimProjectDao.cs" />
     <Compile Include="Daos\HiveStatistics\DimTimeDao.cs" />
     <Compile Include="Daos\HiveStatistics\DimUserDao.cs" />
     <Compile Include="Daos\HiveStatistics\FactClientInfoDao.cs" />
+    <Compile Include="Daos\HiveStatistics\FactProjectInfoDao.cs" />
     <Compile Include="Daos\HiveStatistics\FactTaskDao.cs" />
     <Compile Include="Daos\JobDao.cs" />
     <Compile Include="Daos\JobPermissionDao.cs" />
     <Compile Include="Daos\LifecycleDao.cs" />
     <Compile Include="Daos\PluginDao.cs" />
     <Compile Include="Daos\PluginDataDao.cs" />
+    <Compile Include="Daos\ProjectDao.cs" />
+    <Compile Include="Daos\ProjectPermissionDao.cs" />
     <Compile Include="Daos\RequiredPluginDao.cs" />
     <Compile Include="Daos\ResourceDao.cs" />
-    <Compile Include="Daos\ResourcePermissionDao.cs" />
     <Compile Include="Daos\SlaveDao.cs" />
     <Compile Include="Daos\SlaveGroupDao.cs" />
     <Compile Include="Daos\StateLogDao.cs" />
@@ -127,6 +131,7 @@
     <Compile Include="Daos\TaskDataDao.cs" />
     <Compile Include="Daos\UserPriorityDao.cs" />
     <Compile Include="Data\TableInformation.cs" />
+    <Compile Include="Enums\JobState.cs" />
     <Compile Include="Interfaces\IGenericDao.cs" />
     <Compile Include="Enums\Command.cs" />
     <Compile Include="Enums\DowntimeType.cs" />

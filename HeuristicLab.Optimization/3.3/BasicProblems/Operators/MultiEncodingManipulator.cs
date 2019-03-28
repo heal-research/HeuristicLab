@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,14 +21,14 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
   [Item("MultiEncoding Manipulator", "Applies different manipulators to change a multi-encoding.")]
-  [StorableClass]
+  [StorableType("574D0530-47E8-4FD9-8AC8-B8EA2DE3C203")]
   public sealed class MultiEncodingManipulator : MultiEncodingOperator<IManipulator>, IManipulator {
     [StorableConstructor]
-    private MultiEncodingManipulator(bool deserializing) : base(deserializing) { }
+    private MultiEncodingManipulator(StorableConstructorFlag _) : base(_) { }
     private MultiEncodingManipulator(MultiEncodingManipulator original, Cloner cloner) : base(original, cloner) { }
     public MultiEncodingManipulator() : base() { }
 

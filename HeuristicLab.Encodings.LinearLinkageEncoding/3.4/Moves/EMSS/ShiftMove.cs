@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,11 +22,11 @@
 using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.LinearLinkageEncoding {
   [Item("Shift Move", "Shifts an item from one group to another.")]
-  [StorableClass]
+  [StorableType("577C4FAF-A02C-4896-8EEB-54360989A4B3")]
   public sealed class ShiftMove : EMSSMove {
     [Storable]
     private int previousItemOfOldGroup;
@@ -46,7 +46,7 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
     private bool NewGroupClosed { get { return PreviousItemOfNewGroup == NextItemOfNewGroup; } }
 
     [StorableConstructor]
-    private ShiftMove(bool deserializing) : base(deserializing) { }
+    private ShiftMove(StorableConstructorFlag _) : base(_) { }
     private ShiftMove(ShiftMove original, Cloner cloner)
       : base(original, cloner) {
       previousItemOfOldGroup = original.previousItemOfOldGroup;

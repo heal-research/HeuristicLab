@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -30,13 +30,13 @@ using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.LinearAssignment {
   [Item("Linear Assignment Problem (LAP)", "In the linear assignment problem (LAP) an assignment of workers to jobs has to be found such that each worker is assigned to exactly one job, each job is assigned to exactly one worker and the sum of the resulting costs is minimal (or maximal).")]
   [Creatable(CreatableAttribute.Categories.CombinatorialProblems, Priority = 130)]
-  [StorableClass]
+  [StorableType("7766E004-A93D-4CA6-8012-AE5E8F4C4D85")]
   public sealed class LinearAssignmentProblem : SingleObjectiveHeuristicOptimizationProblem<ILAPEvaluator, IPermutationCreator>,
     ISingleObjectiveProblem<PermutationEncoding,Permutation>, IStorableContent {
     public static readonly string CostsDescription = "The cost matrix that describes the assignment of rows to columns.";
@@ -94,7 +94,7 @@ namespace HeuristicLab.Problems.LinearAssignment {
     private BestLAPSolutionAnalyzer bestLAPSolutionAnalyzer;
 
     [StorableConstructor]
-    private LinearAssignmentProblem(bool deserializing) : base(deserializing) { }
+    private LinearAssignmentProblem(StorableConstructorFlag _) : base(_) { }
     private LinearAssignmentProblem(LinearAssignmentProblem original, Cloner cloner)
       : base(original, cloner) {
       this.bestLAPSolutionAnalyzer = cloner.Clone(original.bestLAPSolutionAnalyzer);

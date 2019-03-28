@@ -1,7 +1,7 @@
 ﻿#region License Information
 
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,8 +24,10 @@
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding {
+  [StorableType("09b9d24c-2576-495a-b06c-338d095cba0d")]
   public interface IScheduleEncoding : IEncoding<ISchedule> {
     IFixedValueParameter<ItemList<Job>> JobDataParameter { get; set; }
     IFixedValueParameter<IntValue> JobsParameter { get; set; }

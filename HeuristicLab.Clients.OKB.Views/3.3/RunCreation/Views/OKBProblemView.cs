@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -71,11 +71,11 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       downloadCharacteristicsButton.Text = string.Empty;
       downloadCharacteristicsButton.Image = VSImageLibrary.Refresh;
       uploadCharacteristicsButton.Text = string.Empty;
-      uploadCharacteristicsButton.Image = VSImageLibrary.PublishToWeb;
+      uploadCharacteristicsButton.Image = VSImageLibrary.Save;
       refreshSolutionsButton.Text = string.Empty;
       refreshSolutionsButton.Image = VSImageLibrary.Refresh;
       uploadSolutionsButton.Text = string.Empty;
-      uploadSolutionsButton.Image = VSImageLibrary.PublishToWeb;
+      uploadSolutionsButton.Image = VSImageLibrary.Save;
     }
 
     private void CalculatorListOnChanged(object sender, EventArgs e) {

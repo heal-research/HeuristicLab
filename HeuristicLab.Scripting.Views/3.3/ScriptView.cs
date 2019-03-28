@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -81,8 +81,10 @@ namespace HeuristicLab.Scripting.Views {
       base.OnContentChanged();
       if (Content == null) {
         codeEditor.UserCode = string.Empty;
+        codeEditor.ClearEditHistory();
       } else {
         codeEditor.UserCode = Content.Code;
+        codeEditor.ClearEditHistory();
         codeEditor.AddAssembliesAsync(Content.GetAssemblies());
         if (Content.CompileErrors == null) {
           UpdateInfoTextLabel(NotCompiledMessage, SystemColors.ControlText);
@@ -177,15 +179,13 @@ namespace HeuristicLab.Scripting.Views {
     private bool progressViewCreated;
 
     private void AddProgressView(string progressMessage) {
-      var mainForm = MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>();
-      mainForm.AddOperationProgressToView(this, progressMessage);
+      Progress.Show(this, progressMessage, ProgressMode.Indeterminate);
       progressViewCreated = true;
     }
 
     private void RemoveProgressView() {
       if (!progressViewCreated) return;
-      var mainForm = MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>();
-      mainForm.RemoveOperationProgressFromView(this);
+      Progress.Hide(this);
       progressViewCreated = false;
     }
     #endregion

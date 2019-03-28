@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -29,18 +29,12 @@ namespace HeuristicLab.Clients.Hive.Slave.Views {
   [Plugin("HeuristicLab.Clients.Hive.Slave.Views", "3.3.15.$WCREV$")]
   [PluginFile("HeuristicLab.Clients.Hive.Slave.Views-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Clients.Hive.SlaveCore", "3.3")]
-  [PluginDependency("HeuristicLab.Collections", "3.3")]
   [PluginDependency("HeuristicLab.Common", "3.3")]
   [PluginDependency("HeuristicLab.Common.Resources", "3.3")]
   [PluginDependency("HeuristicLab.Core", "3.3")]
   [PluginDependency("HeuristicLab.Core.Views", "3.3")]
-  [PluginDependency("HeuristicLab.Data", "3.3")]
-  [PluginDependency("HeuristicLab.Data.Views", "3.3")]
   [PluginDependency("HeuristicLab.MainForm", "3.3")]
   [PluginDependency("HeuristicLab.MainForm.WindowsForms", "3.3")]
-  [PluginDependency("HeuristicLab.Optimization", "3.3")]
-  [PluginDependency("HeuristicLab.Optimizer", "3.3")]
-  [PluginDependency("HeuristicLab.Persistence", "3.3")]
   public class HeuristicLabClientsHiveSlaveViewsPlugin : PluginBase {
   }
 }

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,16 +21,15 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
-  [StorableClass]
+  [StorableType("FB94F333-B32A-44FB-A561-CBDE76693D20")]
   [Item("SymbolicDataAnalysisExpressionTreeInterpreter", "Interpreter for symbolic expression trees including automatically defined functions.")]
   public class SymbolicDataAnalysisExpressionTreeInterpreter : ParameterizedNamedItem,
     ISymbolicDataAnalysisExpressionTreeInterpreter {
@@ -69,7 +68,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     #endregion
 
     [StorableConstructor]
-    protected SymbolicDataAnalysisExpressionTreeInterpreter(bool deserializing) : base(deserializing) { }
+    protected SymbolicDataAnalysisExpressionTreeInterpreter(StorableConstructorFlag _) : base(_) { }
 
     protected SymbolicDataAnalysisExpressionTreeInterpreter(SymbolicDataAnalysisExpressionTreeInterpreter original,
       Cloner cloner)
@@ -202,6 +201,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             }
             return sum / currentInstr.nArguments;
           }
+        case OpCodes.Absolute: {
+            return Math.Abs(Evaluate(dataset, ref row, state));
+          }
+        case OpCodes.Tanh: {
+            return Math.Tanh(Evaluate(dataset, ref row, state));
+          }
         case OpCodes.Cos: {
             return Math.Cos(Evaluate(dataset, ref row, state));
           }
@@ -214,6 +219,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         case OpCodes.Square: {
             return Math.Pow(Evaluate(dataset, ref row, state), 2);
           }
+        case OpCodes.Cube: {
+            return Math.Pow(Evaluate(dataset, ref row, state), 3);
+          }
         case OpCodes.Power: {
             double x = Evaluate(dataset, ref row, state);
             double y = Math.Round(Evaluate(dataset, ref row, state));
@@ -221,6 +229,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           }
         case OpCodes.SquareRoot: {
             return Math.Sqrt(Evaluate(dataset, ref row, state));
+          }
+        case OpCodes.CubeRoot: {
+            return Math.Pow(Evaluate(dataset, ref row, state), 1.0 / 3.0);
           }
         case OpCodes.Root: {
             double x = Evaluate(dataset, ref row, state);
@@ -339,6 +350,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             var x = Evaluate(dataset, ref row, state);
             if (double.IsNaN(x)) return double.NaN;
             else return alglib.besseli0(x);
+          }
+
+        case OpCodes.AnalyticQuotient: {
+            var x1 = Evaluate(dataset, ref row, state);
+            var x2 = Evaluate(dataset, ref row, state);
+            return x1 / Math.Pow(1 + x2 * x2, 0.5);
           }
         case OpCodes.IfThenElse: {
             double condition = Evaluate(dataset, ref row, state);

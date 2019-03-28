@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,11 +21,11 @@
 
 using System;
 using HeuristicLab.Common;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Core {
   [Item("Arc", "A graph arc connecting two graph vertices, that can have a weight, label, and data object for holding additional info")]
-  [StorableClass]
+  [StorableType("E91E40A2-FE77-49F0-866E-5127F3C1AC79")]
   public class Arc : Item, IArc {
     [Storable]
     public IVertex Source { get; private set; }
@@ -57,7 +57,7 @@ namespace HeuristicLab.Core {
 
 
     [StorableConstructor]
-    protected Arc(bool deserializing) : base(deserializing) { }
+    protected Arc(StorableConstructorFlag _) : base(_) { }
 
     public Arc(IVertex source, IVertex target) {
       Source = source;
@@ -81,7 +81,7 @@ namespace HeuristicLab.Core {
     }
   }
 
-  [StorableClass]
+  [StorableType("5F06782E-3BD2-4A9D-B030-BE1D6A6B714F")]
   public class Arc<T> : Arc, IArc<T> where T : class, IDeepCloneable {
     [Storable]
     protected T data;
@@ -104,8 +104,9 @@ namespace HeuristicLab.Core {
         Data = cloner.Clone(original.Data);
     }
 
-    public Arc(bool deserializing)
-      : base(deserializing) {
+    [StorableConstructor]
+    public Arc(StorableConstructorFlag _)
+      : base(_) {
     }
 
     public Arc(IVertex source, IVertex target)

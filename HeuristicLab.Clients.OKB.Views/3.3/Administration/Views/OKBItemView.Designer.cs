@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -51,7 +51,7 @@ namespace HeuristicLab.Clients.OKB.Administration {
       // 
       // storeButton
       // 
-      this.storeButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.PublishToWeb;
+      this.storeButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Save;
       this.storeButton.Location = new System.Drawing.Point(0, 0);
       this.storeButton.Name = "storeButton";
       this.storeButton.Size = new System.Drawing.Size(24, 24);

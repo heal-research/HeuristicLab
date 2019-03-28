@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,11 +25,11 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Analysis {
   [Item("ParetoFrontAnalyzer", "Analyzer for multiobjective problems that collects and presents the current Pareto front as double matrix as well as the solution scopes that lie on the current front.")]
-  [StorableClass]
+  [StorableType("972CEB70-3D0D-4602-97B1-B02DC7FBD9E8")]
   public abstract class ParetoFrontAnalyzer : SingleSuccessorOperator, IAnalyzer, IMultiObjectiveOperator {
     public virtual bool EnabledByDefault {
       get { return true; }
@@ -43,7 +43,7 @@ namespace HeuristicLab.Analysis {
     }
 
     [StorableConstructor]
-    protected ParetoFrontAnalyzer(bool deserializing) : base(deserializing) { }
+    protected ParetoFrontAnalyzer(StorableConstructorFlag _) : base(_) { }
     protected ParetoFrontAnalyzer(ParetoFrontAnalyzer original, Cloner cloner) : base(original, cloner) { }
     public ParetoFrontAnalyzer() {
       Parameters.Add(new ScopeTreeLookupParameter<DoubleArray>("Qualities", "The vector of qualities of each solution."));

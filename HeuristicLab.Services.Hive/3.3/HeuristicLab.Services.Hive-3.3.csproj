@@ -11,7 +11,7 @@
     <RootNamespace>HeuristicLab.Services.Hive</RootNamespace>
     <AssemblyName>HeuristicLab.Services.Hive-3.3</AssemblyName>
     <ProjectTypeGuids>{3D9AD99F-2412-4246-B90B-4EAA41C64699};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -104,7 +104,6 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.Linq" />
-    <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Transactions" />
@@ -118,9 +117,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Converter.cs" />
+    <Compile Include="DataTransfer\AssignedJobResource.cs" />
+    <Compile Include="DataTransfer\AssignedProjectResource.cs" />
     <Compile Include="DataTransfer\Command.cs" />
+    <Compile Include="DataTransfer\JobState.cs" />
+    <Compile Include="DataTransfer\Project.cs" />
+    <Compile Include="DataTransfer\ProjectPermission.cs" />
     <Compile Include="DataTransfer\UserPriority.cs" />
-    <Compile Include="DataTransfer\ResourcePermission.cs" />
     <Compile Include="DataTransfer\Downtime.cs" />
     <Compile Include="DataTransfer\Heartbeat.cs" />
     <Compile Include="DataTransfer\Job.cs" />
@@ -148,7 +151,9 @@
     <Compile Include="Scheduler\TaskInfoForScheduler.cs" />
     <Compile Include="Scheduler\JobInfoForScheduler.cs" />
     <Compile Include="Scheduler\RoundRobinTaskScheduler.cs" />
-    <None Include="app.config" />
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Plugin.cs.frame" />
     <None Include="Properties\AssemblyInfo.cs.frame" />
     <Compile Include="Manager\HeartbeatManager.cs" />
@@ -192,7 +197,13 @@
   <ItemGroup>
     <None Include="HeuristicLab.snk" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Reference Include="HEAL.Attic, Version=1.0.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\HEAL.Attic.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>

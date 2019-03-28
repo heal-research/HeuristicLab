@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,14 +25,14 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("ExhaustiveInsertionMoveGenerator", "Generates all possible insertion moves (3-opt) from a given permutation.")]
-  [StorableClass]
+  [StorableType("D3E672A7-97F5-4E21-B151-F7CE465A4DBB")]
   public class ExhaustiveInsertionMoveGenerator : TranslocationMoveGenerator, IExhaustiveMoveGenerator {
     [StorableConstructor]
-    protected ExhaustiveInsertionMoveGenerator(bool deserializing) : base(deserializing) { }
+    protected ExhaustiveInsertionMoveGenerator(StorableConstructorFlag _) : base(_) { }
     protected ExhaustiveInsertionMoveGenerator(ExhaustiveInsertionMoveGenerator original, Cloner cloner) : base(original, cloner) { }
     public ExhaustiveInsertionMoveGenerator() : base() { }
 

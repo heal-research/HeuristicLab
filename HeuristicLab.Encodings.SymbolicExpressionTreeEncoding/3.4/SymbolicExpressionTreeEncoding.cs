@@ -1,7 +1,7 @@
 ﻿#region License Information
 
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -29,12 +29,12 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   [Item("SymbolicExpressionTreeEncoding", "Describes a symbolic expression tree encoding.")]
-  [StorableClass]
+  [StorableType("3FDE530B-771F-4280-921F-20DA50A139BA")]
   public sealed class SymbolicExpressionTreeEncoding : Encoding<ISymbolicExpressionTree> {
     #region Encoding Parameters
     [Storable]
@@ -157,7 +157,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     #endregion
 
     [StorableConstructor]
-    private SymbolicExpressionTreeEncoding(bool deserializing) : base(deserializing) { }
+    private SymbolicExpressionTreeEncoding(StorableConstructorFlag _) : base(_) { }
     public SymbolicExpressionTreeEncoding() : this(new SimpleSymbolicExpressionGrammar()) { }
     public SymbolicExpressionTreeEncoding(ISymbolicExpressionGrammar grammar) : this("SymbolicExpressionTree", grammar, 50, 50) { }
     public SymbolicExpressionTreeEncoding(ISymbolicExpressionGrammar grammar, int maximumLength, int maximumDepth) : this("SymbolicExpressionTree", grammar, maximumLength, maximumDepth) { }

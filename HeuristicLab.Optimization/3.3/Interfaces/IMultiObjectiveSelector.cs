@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,8 +21,10 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
+  [StorableType("df0370eb-6483-4bf9-a18f-dae937c32f4f")]
   /// <summary>
   /// An interface which represents a selection operator for selecting solutions of multi-objective optimization problems.
   /// </summary>

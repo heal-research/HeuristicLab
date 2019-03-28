@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,17 +22,17 @@
 using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TravelingSalesman {
   /// <summary>
   /// An operator to evaluate translocation or insertion moves (3-opt).
   /// </summary>
   [Item("TSPTranslocationMoveEuclideanPathEvaluator", "Operator for evaluating a translocation or insertion move (3-opt) based on euclidean distances.")]
-  [StorableClass]
+  [StorableType("7686F16C-12E5-4FE8-8417-BA32B39D8817")]
   public class TSPTranslocationMoveEuclideanPathEvaluator : TSPTranslocationMovePathEvaluator {
     [StorableConstructor]
-    protected TSPTranslocationMoveEuclideanPathEvaluator(bool deserializing) : base(deserializing) { }
+    protected TSPTranslocationMoveEuclideanPathEvaluator(StorableConstructorFlag _) : base(_) { }
     protected TSPTranslocationMoveEuclideanPathEvaluator(TSPTranslocationMoveEuclideanPathEvaluator original, Cloner cloner) : base(original, cloner) { }
     public TSPTranslocationMoveEuclideanPathEvaluator() : base() { }
 

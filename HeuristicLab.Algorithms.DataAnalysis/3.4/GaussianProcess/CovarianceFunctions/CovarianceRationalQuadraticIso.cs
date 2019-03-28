@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,10 +25,10 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
-  [StorableClass]
+  [StorableType("358BE57A-13C8-40BB-B344-217984D4EB0F")]
   [Item(Name = "CovarianceRationalQuadraticIso",
     Description = "Isotropic rational quadratic covariance function for Gaussian processes.")]
   public sealed class CovarianceRationalQuadraticIso : ParameterizedNamedItem, ICovarianceFunction {
@@ -56,8 +56,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
 
     [StorableConstructor]
-    private CovarianceRationalQuadraticIso(bool deserializing)
-      : base(deserializing) {
+    private CovarianceRationalQuadraticIso(StorableConstructorFlag _) : base(_) {
     }
 
     private CovarianceRationalQuadraticIso(CovarianceRationalQuadraticIso original, Cloner cloner)

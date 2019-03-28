@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,14 +23,14 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TestFunctions {
   /// <summary>
   /// The Zakharov function is implemented as described in Hedar, A. & Fukushima, M. 2004. Heuristic pattern search and its hybridization with simulated annealing for nonlinear global optimization. Optimization Methods and Software 19, pp. 291-308, Taylor & Francis.
   /// </summary>
   [Item("Zakharov", "Evaluates the Zakharov function on a given point. The optimum of this function is 0 at the origin. It is implemented as described in Hedar, A. & Fukushima, M. 2004. Heuristic pattern search and its hybridization with simulated annealing for nonlinear global optimization. Optimization Methods and Software 19, pp. 291-308, Taylor & Francis.")]
-  [StorableClass]
+  [StorableType("AB90340D-E5D0-4397-A5C3-8C7590F1727A")]
   public class Zakharov : SingleObjectiveTestFunction {
     /// <summary>
     /// Returns false as the Zakharov function is a minimization problem.
@@ -68,7 +68,7 @@ namespace HeuristicLab.Problems.TestFunctions {
     }
 
     [StorableConstructor]
-    protected Zakharov(bool deserializing) : base(deserializing) { }
+    protected Zakharov(StorableConstructorFlag _) : base(_) { }
     protected Zakharov(Zakharov original, Cloner cloner) : base(original, cloner) { }
     public Zakharov() : base() { }
 

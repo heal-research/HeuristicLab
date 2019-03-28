@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,7 +24,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// <summary>
@@ -37,7 +37,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// The default value for alpha is 0.5.
   /// </remarks>
   [Item("BlendAlphaCrossover", "The blend alpha crossover (BLX-a) for real vectors creates new offspring by sampling a new value in the range [min_i - d * alpha, max_i + d * alpha) at each position i. Here min_i and max_i are the smaller and larger value of the two parents at position i and d is max_i - min_i. It is implemented as described in Takahashi, M. and Kita, H. 2001. A crossover operator using independent component analysis for real-coded genetic algorithms Proceedings of the 2001 Congress on Evolutionary Computation, pp. 643-649.")]
-  [StorableClass]
+  [StorableType("A56EA6B8-79A2-4762-B651-BEBAB95F8E8E")]
   public class BlendAlphaCrossover : RealVectorCrossover {
     /// <summary>
     /// The alpha parameter specifies how much the interval between the parents should be extended to the left and right.
@@ -50,7 +50,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     }
 
     [StorableConstructor]
-    protected BlendAlphaCrossover(bool deserializing) : base(deserializing) { }
+    protected BlendAlphaCrossover(StorableConstructorFlag _) : base(_) { }
     protected BlendAlphaCrossover(BlendAlphaCrossover original, Cloner cloner) : base(original, cloner) { }
     /// <summary>
     /// Initializes a new instance of <see cref="BlendAlphaCrossover"/> with one parameter (<c>Alpha</c>).

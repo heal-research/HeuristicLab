@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,10 +25,10 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
-  [StorableClass]
+  [StorableType("43619638-9D00-4951-8138-8CCD0786E784")]
   public abstract class MultiEncodingOperator<T> : InstrumentedOperator, IEncodingOperator<CombinedSolution>, IMultiEncodingOperator where T : class, IOperator {
     public ILookupParameter<CombinedSolution> SolutionParameter {
       get { return (ILookupParameter<CombinedSolution>)Parameters["Solution"]; }
@@ -38,8 +38,9 @@ namespace HeuristicLab.Optimization {
       get { return (ILookupParameter<IEncoding<CombinedSolution>>)Parameters["Encoding"]; }
     }
 
+        encoding.OperatorsChanged += Encoding_OperatorsChanged;
     [StorableConstructor]
-    protected MultiEncodingOperator(bool deserializing) : base(deserializing) { }
+    protected MultiEncodingOperator(StorableConstructorFlag _) : base(_) { }
     protected MultiEncodingOperator(MultiEncodingOperator<T> original, Cloner cloner) : base(original, cloner) { }
     protected MultiEncodingOperator()
       : base() {

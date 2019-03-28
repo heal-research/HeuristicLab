@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,14 +24,14 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Selection {
   /// <summary>
   /// An operator which selects sub-scopes from left to right.
   /// </summary>
   [Item("LeftSelector", "An operator which selects sub-scopes from left to right.")]
-  [StorableClass]
+  [StorableType("7D249BF4-0D6A-4AED-9F1A-128F3BEF66B4")]
   public sealed class LeftSelector : Selector {
     private IValueParameter<BoolValue> CopySelectedParameter {
       get { return (IValueParameter<BoolValue>)Parameters["CopySelected"]; }
@@ -46,7 +46,7 @@ namespace HeuristicLab.Selection {
     }
 
     [StorableConstructor]
-    private LeftSelector(bool deserializing) : base(deserializing) { }
+    private LeftSelector(StorableConstructorFlag _) : base(_) { }
     private LeftSelector(LeftSelector original, Cloner cloner)
       : base(original, cloner) {
     }

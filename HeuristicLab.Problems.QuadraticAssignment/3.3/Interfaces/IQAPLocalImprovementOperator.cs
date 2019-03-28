@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,8 +22,10 @@
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.QuadraticAssignment {
+  [StorableType("B7B8A58B-40C5-471E-BFB8-3B62FF3109CB")]
   public interface IQAPLocalImprovementOperator : IPermutationLocalImprovementOperator {
     ILookupParameter<DoubleMatrix> DistancesParameter { get; }
     ILookupParameter<BoolValue> MaximizationParameter { get; }

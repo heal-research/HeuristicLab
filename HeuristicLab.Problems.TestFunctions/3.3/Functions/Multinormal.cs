@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -28,12 +28,12 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.TestFunctions.Evaluators {
   [Item("Multinormal", "Evaluates a random multinormal function on a given point.")]
-  [StorableClass]
+  [StorableType("55E0E22B-43BD-4408-8A78-8F918E66AFB1")]
   public class Multinormal : SingleObjectiveTestFunction {
 
     private ItemList<RealVector> centers {
@@ -90,7 +90,7 @@ namespace HeuristicLab.Problems.TestFunctions.Evaluators {
     }
 
     [StorableConstructor]
-    protected Multinormal(bool deserializing) : base(deserializing) { }
+    protected Multinormal(StorableConstructorFlag _) : base(_) { }
     protected Multinormal(Multinormal original, Cloner cloner) : base(original, cloner) { }
     public Multinormal() {
       Parameters.Add(new ValueParameter<ItemList<RealVector>>("Centers", "Centers of normal distributions"));

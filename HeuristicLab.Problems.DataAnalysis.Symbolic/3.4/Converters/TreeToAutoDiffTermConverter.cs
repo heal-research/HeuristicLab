@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -75,7 +75,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private static readonly Func<Term, UnaryFunc> tan = UnaryFunc.Factory(
       eval: Math.Tan,
       diff: x => 1 + Math.Tan(x) * Math.Tan(x));
-
+    private static readonly Func<Term, UnaryFunc> tanh = UnaryFunc.Factory(
+      eval: Math.Tanh,
+      diff: x => 1 - Math.Tanh(x) * Math.Tanh(x));
     private static readonly Func<Term, UnaryFunc> erf = UnaryFunc.Factory(
       eval: alglib.errorfunction,
       diff: x => 2.0 * Math.Exp(-(x * x)) / Math.Sqrt(Math.PI));
@@ -83,6 +85,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private static readonly Func<Term, UnaryFunc> norm = UnaryFunc.Factory(
       eval: alglib.normaldistribution,
       diff: x => -(Math.Exp(-(x * x)) * Math.Sqrt(Math.Exp(x * x)) * x) / Math.Sqrt(2 * Math.PI));
+
+    private static readonly Func<Term, UnaryFunc> abs = UnaryFunc.Factory(
+      eval: Math.Abs,
+      diff: x => Math.Sign(x)
+      );
 
     #endregion
 
@@ -212,6 +219,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         if (terms.Count == 1) return 1.0 / terms[0];
         else return terms.Aggregate((a, b) => new AutoDiff.Product(a, 1.0 / b));
       }
+      if (node.Symbol is Absolute) {
+        var x1 = ConvertToAutoDiff(node.GetSubtree(0));
+        return abs(x1);
+      }
+      if (node.Symbol is AnalyticQuotient) {
+        var x1 = ConvertToAutoDiff(node.GetSubtree(0));
+        var x2 = ConvertToAutoDiff(node.GetSubtree(1));
+        return x1 / (TermBuilder.Power(1 + x2 * x2, 0.5));
+      }
       if (node.Symbol is Logarithm) {
         return AutoDiff.TermBuilder.Log(
           ConvertToAutoDiff(node.GetSubtree(0)));
@@ -228,6 +244,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         return AutoDiff.TermBuilder.Power(
           ConvertToAutoDiff(node.GetSubtree(0)), 0.5);
       }
+      if (node.Symbol is Cube) {
+        return AutoDiff.TermBuilder.Power(
+          ConvertToAutoDiff(node.GetSubtree(0)), 3.0);
+      }
+      if (node.Symbol is CubeRoot) {
+        return AutoDiff.TermBuilder.Power(
+          ConvertToAutoDiff(node.GetSubtree(0)), 1.0/3.0);
+      }
       if (node.Symbol is Sine) {
         return sin(
           ConvertToAutoDiff(node.GetSubtree(0)));
@@ -238,6 +262,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
       if (node.Symbol is Tangent) {
         return tan(
+          ConvertToAutoDiff(node.GetSubtree(0)));
+      }
+      if (node.Symbol is HyperbolicTangent) {
+        return tanh(
           ConvertToAutoDiff(node.GetSubtree(0)));
       }
       if (node.Symbol is Erf) {
@@ -298,9 +326,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           !(n.Symbol is Sine) &&
           !(n.Symbol is Cosine) &&
           !(n.Symbol is Tangent) &&
+          !(n.Symbol is HyperbolicTangent) &&
           !(n.Symbol is Erf) &&
           !(n.Symbol is Norm) &&
-          !(n.Symbol is StartSymbol)
+          !(n.Symbol is StartSymbol) &&
+          !(n.Symbol is Absolute) &&
+          !(n.Symbol is AnalyticQuotient) &&
+          !(n.Symbol is Cube) &&
+          !(n.Symbol is CubeRoot)
         select n).Any();
       return !containsUnknownSymbol;
     }

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,19 +24,19 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinLocalSearchManipulator", "The LSM operator which manipulates a VRP representation.  It is implemented as described in Potvin, J.-Y. and Bengio, S. (1996). The Vehicle Routing Problem with Time Windows - Part II: Genetic Search. INFORMS Journal of Computing, 8:165–172.")]
-  [StorableClass]
+  [StorableType("EF16AD46-5C58-4846-95CF-3C3DF78D2F68")]
   public sealed class PotvinLocalSearchManipulator : PotvinManipulator, IVRPLocalSearchManipulator {
     public IValueParameter<IntValue> Iterations {
       get { return (IValueParameter<IntValue>)Parameters["Iterations"]; }
     }
 
     [StorableConstructor]
-    private PotvinLocalSearchManipulator(bool deserializing) : base(deserializing) { }
+    private PotvinLocalSearchManipulator(StorableConstructorFlag _) : base(_) { }
 
     public PotvinLocalSearchManipulator()
       : base() {

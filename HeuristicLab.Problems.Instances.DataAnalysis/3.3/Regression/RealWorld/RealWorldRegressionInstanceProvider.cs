@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,9 +21,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.IO.Compression;
-using System.Linq;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
   public class RegressionRealWorldInstanceProvider : ResourceRegressionInstanceProvider {
@@ -46,11 +43,11 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
 
     public override IEnumerable<IDataDescriptor> GetDataDescriptors() {
       List<ResourceRegressionDataDescriptor> descriptorList = new List<ResourceRegressionDataDescriptor>();
-      descriptorList.Add(new ChemicalOne() { ResourceName = "Chemical-I.csv" });
-      descriptorList.Add(new Housing() { ResourceName = "Housing.csv" });
-      descriptorList.Add(new Tower() { ResourceName = "Tower.txt" });
-      descriptorList.Add(new Powermeter() { ResourceName = "Powermeter.txt" });
-      descriptorList.Add(new SARCOS() { ResourceName = "SARCOS - Inverse Dynamics.txt" });
+      descriptorList.Add(new ChemicalOne());
+      descriptorList.Add(new Housing());
+      descriptorList.Add(new Tower());
+      descriptorList.Add(new Powermeter());
+      descriptorList.Add(new SARCOS());
       return descriptorList;
     }
   }

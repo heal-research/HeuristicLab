@@ -1,5 +1,5 @@
 ﻿/* HeuristicLab
- * Copyright (C) 2002-2016 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
  */
-USE [HeuristicLab.Hive-3.3]
+USE [HeuristicLab.Hive-3.4]
 
 EXEC sp_configure filestream_access_level, 2
 GO
@@ -24,10 +24,16 @@ RECONFIGURE
 GO 
 
 SET ARITHABORT ON
-CREATE TABLE [dbo].[AssignedResources](
+
+CREATE TABLE [dbo].[AssignedProjectResource](
   [ResourceId] UniqueIdentifier NOT NULL,
-  [TaskId] UniqueIdentifier NOT NULL,
-  CONSTRAINT [PK_dbo.ResourceIdTaskId] PRIMARY KEY ([ResourceId], [TaskId])
+  [ProjectId] UniqueIdentifier NOT NULL,
+  CONSTRAINT [PK_dbo.ResourceIdProjectId] PRIMARY KEY ([ResourceId], [ProjectId])
+  )
+CREATE TABLE [dbo].[AssignedJobResource](
+  [ResourceId] UniqueIdentifier NOT NULL,
+  [JobId] UniqueIdentifier NOT NULL,
+  CONSTRAINT [PK_dbo.ResourceIdJobId] PRIMARY KEY ([ResourceId], [JobId])
   )
 CREATE TABLE [dbo].[Plugin](
   [PluginId] UniqueIdentifier NOT NULL,
@@ -66,12 +72,6 @@ CREATE TABLE [dbo].[Resource](
   [OwnerUserId] UniqueIdentifier,
   CONSTRAINT [PK_dbo.Resource] PRIMARY KEY ([ResourceId])
   )
-CREATE TABLE [dbo].[ResourcePermission](
-  [ResourceId] UniqueIdentifier NOT NULL,
-  [GrantedUserId] UniqueIdentifier NOT NULL,
-  [GrantedByUserId] UniqueIdentifier NOT NULL,
-  CONSTRAINT [PK_dbo.ResourcePermission] PRIMARY KEY ([ResourceId], [GrantedUserId])
-  )
 CREATE TABLE [dbo].[Task](
   [TaskId] UniqueIdentifier NOT NULL,
   [TaskState] VarChar(30) NOT NULL,
@@ -102,9 +102,10 @@ CREATE TABLE [dbo].[Job](
   [JobId] UniqueIdentifier NOT NULL,
   [Name] VarChar(MAX) NOT NULL,
   [Description] VarChar(MAX),
-  [ResourceIds] VarChar(MAX),
   [OwnerUserId] UniqueIdentifier NOT NULL,
   [DateCreated] DateTime NOT NULL,
+  [ProjectId] UniqueIdentifier NOT NULL,
+  [JobState] VarChar(30) NOT NULL,
   CONSTRAINT [PK_dbo.Job] PRIMARY KEY ([JobId])
   )
 CREATE TABLE [dbo].[TaskData](
@@ -147,34 +148,60 @@ CREATE TABLE [UserPriority](
   [DateEnqueued] DateTime NOT NULL,
   CONSTRAINT [PK_UserPriority] PRIMARY KEY ([UserId])
   )
-ALTER TABLE [dbo].[AssignedResources]
-  ADD CONSTRAINT [Resource_AssignedResource] FOREIGN KEY ([ResourceId]) REFERENCES [dbo].[Resource]([ResourceId])
-ALTER TABLE [dbo].[AssignedResources]
-  ADD CONSTRAINT [Task_AssignedResource] FOREIGN KEY ([TaskId]) REFERENCES [dbo].[Task]([TaskId])
+CREATE TABLE [dbo].[Project](
+  [ProjectId] UniqueIdentifier NOT NULL,
+  [ParentProjectId] UniqueIdentifier,
+  [DateCreated] DateTime NOT NULL,
+  [Name] VarChar(MAX) NOT NULL,
+  [Description] VarChar(MAX),
+  [OwnerUserId] UniqueIdentifier NOT NULL,
+  [StartDate] DateTime NOT NULL,
+  [EndDate] DateTime,
+  CONSTRAINT [PK_dbo.Project] PRIMARY KEY ([ProjectId])
+  )
+CREATE TABLE [dbo].[ProjectPermission](
+  [ProjectId] UniqueIdentifier NOT NULL,
+  [GrantedUserId] UniqueIdentifier NOT NULL,
+  [GrantedByUserId] UniqueIdentifier NOT NULL,
+  CONSTRAINT [PK_dbo.ProjectPermission] PRIMARY KEY ([ProjectId], [GrantedUserId])
+  )
+
+ALTER TABLE [dbo].[AssignedProjectResource]
+  ADD CONSTRAINT [Resource_AssignedProjectResource] FOREIGN KEY ([ResourceId]) REFERENCES [dbo].[Resource]([ResourceId]) ON UPDATE CASCADE ON DELETE CASCADE;
+ALTER TABLE [dbo].[AssignedProjectResource]
+  ADD CONSTRAINT [Project_AssignedProjectResource] FOREIGN KEY ([ProjectId]) REFERENCES [dbo].[Project]([ProjectId]) ON UPDATE CASCADE ON DELETE CASCADE;
+ALTER TABLE [dbo].[AssignedJobResource]
+  ADD CONSTRAINT [Resource_AssignedJobResource] FOREIGN KEY ([ResourceId]) REFERENCES [dbo].[Resource]([ResourceId]) ON UPDATE CASCADE ON DELETE CASCADE;
+ALTER TABLE [dbo].[AssignedJobResource]
+  ADD CONSTRAINT [Job_AssignedJobResource] FOREIGN KEY ([JobId]) REFERENCES [dbo].[Job]([JobId]) ON UPDATE CASCADE ON DELETE CASCADE;
 ALTER TABLE [dbo].[RequiredPlugins]
-  ADD CONSTRAINT [Plugin_RequiredPlugin] FOREIGN KEY ([PluginId]) REFERENCES [dbo].[Plugin]([PluginId])
+  ADD CONSTRAINT [Plugin_RequiredPlugin] FOREIGN KEY ([PluginId]) REFERENCES [dbo].[Plugin]([PluginId]) ON UPDATE CASCADE ON DELETE CASCADE;
 ALTER TABLE [dbo].[RequiredPlugins]
-  ADD CONSTRAINT [Task_RequiredPlugin] FOREIGN KEY ([TaskId]) REFERENCES [dbo].[Task]([TaskId])
+  ADD CONSTRAINT [Task_RequiredPlugin] FOREIGN KEY ([TaskId]) REFERENCES [dbo].[Task]([TaskId]) ON UPDATE CASCADE ON DELETE CASCADE;
 ALTER TABLE [dbo].[Resource]
-  ADD CONSTRAINT [Resource_Resource] FOREIGN KEY ([ParentResourceId]) REFERENCES [dbo].[Resource]([ResourceId])
-ALTER TABLE [dbo].[ResourcePermission]
-  ADD CONSTRAINT [Resource_ResourcePermission] FOREIGN KEY ([ResourceId]) REFERENCES [dbo].[Resource]([ResourceId])
+  ADD CONSTRAINT [Resource_Resource] FOREIGN KEY ([ParentResourceId]) REFERENCES [dbo].[Resource]([ResourceId]);
 ALTER TABLE [dbo].[Task]
-  ADD CONSTRAINT [Task_Task] FOREIGN KEY ([ParentTaskId]) REFERENCES [dbo].[Task]([TaskId])
+  ADD CONSTRAINT [Task_Task] FOREIGN KEY ([ParentTaskId]) REFERENCES [dbo].[Task]([TaskId]);
 ALTER TABLE [dbo].[Task]
-  ADD CONSTRAINT [Job_Job] FOREIGN KEY ([JobId]) REFERENCES [dbo].[Job]([JobId])
+  ADD CONSTRAINT [Job_Task] FOREIGN KEY ([JobId]) REFERENCES [dbo].[Job]([JobId]) ON UPDATE CASCADE ON DELETE CASCADE;
 ALTER TABLE [dbo].[Downtime]
-  ADD CONSTRAINT [Resource_Downtime] FOREIGN KEY ([ResourceId]) REFERENCES [dbo].[Resource]([ResourceId])
+  ADD CONSTRAINT [Resource_Downtime] FOREIGN KEY ([ResourceId]) REFERENCES [dbo].[Resource]([ResourceId]) ON UPDATE CASCADE ON DELETE CASCADE;
+ALTER TABLE [dbo].[Job]
+	ADD CONSTRAINT [Project_Job] FOREIGN KEY ([ProjectId]) REFERENCES [dbo].[Project]([ProjectId]);
 ALTER TABLE [dbo].[TaskData]
-  ADD CONSTRAINT [Task_TaskData] FOREIGN KEY ([TaskId]) REFERENCES [dbo].[Task]([TaskId])
+  ADD CONSTRAINT [Task_TaskData] FOREIGN KEY ([TaskId]) REFERENCES [dbo].[Task]([TaskId]) ON UPDATE CASCADE ON DELETE CASCADE;
 ALTER TABLE [dbo].[PluginData]
-  ADD CONSTRAINT [Plugin_PluginData] FOREIGN KEY ([PluginId]) REFERENCES [dbo].[Plugin]([PluginId])
+  ADD CONSTRAINT [Plugin_PluginData] FOREIGN KEY ([PluginId]) REFERENCES [dbo].[Plugin]([PluginId]) ON UPDATE CASCADE ON DELETE CASCADE;
 ALTER TABLE [dbo].[StateLog]
-  ADD CONSTRAINT [Task_StateLog] FOREIGN KEY ([TaskId]) REFERENCES [dbo].[Task]([TaskId])
+  ADD CONSTRAINT [Task_StateLog] FOREIGN KEY ([TaskId]) REFERENCES [dbo].[Task]([TaskId]) ON UPDATE CASCADE ON DELETE CASCADE;
 ALTER TABLE [dbo].[StateLog]
-  ADD CONSTRAINT [Resource_StateLog] FOREIGN KEY ([SlaveId]) REFERENCES [dbo].[Resource]([ResourceId])
+  ADD CONSTRAINT [Resource_StateLog] FOREIGN KEY ([SlaveId]) REFERENCES [dbo].[Resource]([ResourceId]) ON UPDATE CASCADE ON DELETE CASCADE;
 ALTER TABLE [dbo].[JobPermission]
-  ADD CONSTRAINT [Job_JobPermission] FOREIGN KEY ([JobId]) REFERENCES [dbo].[Job]([JobId])
+  ADD CONSTRAINT [Job_JobPermission] FOREIGN KEY ([JobId]) REFERENCES [dbo].[Job]([JobId]) ON UPDATE CASCADE ON DELETE CASCADE;
+ALTER TABLE [dbo].[Project]
+  ADD CONSTRAINT [Project_Project] FOREIGN KEY ([ParentProjectId]) REFERENCES [dbo].[Project]([ProjectId]);
+ALTER TABLE [dbo].[ProjectPermission]
+  ADD CONSTRAINT [Project_ProjectPermission] FOREIGN KEY ([ProjectId]) REFERENCES [dbo].[Project]([ProjectId]) ON UPDATE CASCADE ON DELETE CASCADE;
 
 GO
 CREATE SCHEMA [statistics]
@@ -191,18 +218,18 @@ CREATE TABLE [statistics].[DimTime] (
 );
 CREATE TABLE [statistics].[DimClient] (
     [Id]               UNIQUEIDENTIFIER CONSTRAINT [DF_DimClient_Id] DEFAULT (newsequentialid()) NOT NULL,
-    [Name]             VARCHAR (MAX)    NOT NULL,
     [ResourceId]       UNIQUEIDENTIFIER NOT NULL,
-    [ExpirationTime]   DATETIME         NULL,
-    [ResourceGroupId]  UNIQUEIDENTIFIER NULL,
-    [ResourceGroup2Id] UNIQUEIDENTIFIER NULL,
-    [GroupName]        VARCHAR (MAX)    NULL,
-    [GroupName2]       VARCHAR (MAX)    NULL,
+	[ParentResourceId] UNIQUEIDENTIFIER NULL,
+	[Name]             VARCHAR (MAX)    NOT NULL,
+	[ResourceType]     VARCHAR (MAX)    NULL,
+	[DateCreated]      DATETIME         NOT NULL,
+    [DateExpired]      DATETIME         NULL
     CONSTRAINT [PK_DimClient] PRIMARY KEY CLUSTERED ([Id] ASC)
 );
 CREATE TABLE [statistics].[DimJob] (
     [JobId]          UNIQUEIDENTIFIER NOT NULL,
     [UserId]         UNIQUEIDENTIFIER NOT NULL,
+	[ProjectId]      UNIQUEIDENTIFIER NOT NULL,
     [JobName]        VARCHAR (MAX)    NOT NULL,
     [UserName]       VARCHAR (MAX)    NOT NULL,
     [DateCreated]    DATETIME		  NOT NULL,
@@ -211,10 +238,37 @@ CREATE TABLE [statistics].[DimJob] (
     [DateCompleted]  DATETIME		  NULL,
     CONSTRAINT [PK_DimJob] PRIMARY KEY CLUSTERED ([JobId] ASC)
 );
+CREATE TABLE [statistics].[DimProject] (
+    [Id]               UNIQUEIDENTIFIER CONSTRAINT [DF_DimProject_Id] DEFAULT (newsequentialid()) NOT NULL,
+    [ProjectId]        UNIQUEIDENTIFIER NOT NULL,
+	[ParentProjectId]  UNIQUEIDENTIFIER NULL,
+	[Name]             VARCHAR (MAX)    NOT NULL,
+	[Description]      VARCHAR (MAX)    NULL,
+	[OwnerUserId]      UNIQUEIDENTIFIER NOT NULL,
+	[StartDate]        DATETIME         NOT NULL,
+    [EndDate]          DATETIME         NULL,
+	[DateCreated]      DATETIME         NOT NULL,
+    [DateExpired]      DATETIME         NULL
+	CONSTRAINT [PK_DimProject] PRIMARY KEY CLUSTERED ([Id] ASC)
+);
 CREATE TABLE [statistics].[DimUser] (
     [UserId] UNIQUEIDENTIFIER NOT NULL,
     [Name]   VARCHAR (MAX)    NOT NULL,
     CONSTRAINT [PK_DimUser] PRIMARY KEY CLUSTERED ([UserId] ASC)
+);
+
+
+
+CREATE TABLE [statistics].[FactProjectInfo] (
+	[ProjectId]		UNIQUEIDENTIFIER NOT NULL,
+	[Time]			DATETIME		 NOT NULL,
+	[NumTotalCores]	INT				 NOT NULL,
+	[NumUsedCores]  INT				 NOT NULL,
+	[TotalMemory]	INT				 NOT NULL,
+	[UsedMemory]	INT				 NOT NULL
+	CONSTRAINT [PK_FactProjectInfo] PRIMARY KEY CLUSTERED ([ProjectId] ASC, [Time] ASC),
+	CONSTRAINT [FK_FactProjectInfo_DimTime] FOREIGN KEY ([Time]) REFERENCES [statistics].[DimTime] ([Time]),
+	CONSTRAINT [FK_FactProjectInfo_DimProject] FOREIGN KEY ([ProjectId]) REFERENCES [statistics].[DimProject] ([Id])
 );
 CREATE TABLE [statistics].[FactClientInfo] (
     [ClientId]             UNIQUEIDENTIFIER NOT NULL,

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -27,14 +27,14 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Problems.VehicleRouting.Variants;
 
 namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
   [Item("MultiDepotVRPProblemInstance", "Represents a multi depot VRP instance.")]
-  [StorableClass]
+  [StorableType("20788CA4-8AA0-4A57-8118-0D7C3FEF1AA4")]
   public class MultiDepotVRPProblemInstance : VRPProblemInstance, IMultiDepotProblemInstance {
     protected IValueParameter<IntValue> DepotsParameter {
       get { return (IValueParameter<IntValue>)Parameters["Depots"]; }
@@ -173,7 +173,7 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
     }
 
     [StorableConstructor]
-    protected MultiDepotVRPProblemInstance(bool deserializing) : base(deserializing) { }
+    protected MultiDepotVRPProblemInstance(StorableConstructorFlag _) : base(_) { }
     protected MultiDepotVRPProblemInstance(MultiDepotVRPProblemInstance original, Cloner cloner)
       : base(original, cloner) {
       AttachEventHandlers();

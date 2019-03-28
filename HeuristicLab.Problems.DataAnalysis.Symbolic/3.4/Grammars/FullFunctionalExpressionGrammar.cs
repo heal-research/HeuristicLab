@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,14 +24,14 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
-  [StorableClass]
+  [StorableType("44B0829C-1CB5-4BE9-9514-BBA54FAB2912")]
   [Item("FullFunctionalExpressionGrammar", "Represents a grammar for functional expressions using all available functions.")]
   public class FullFunctionalExpressionGrammar : SymbolicExpressionGrammar, ISymbolicDataAnalysisGrammar {
     [StorableConstructor]
-    protected FullFunctionalExpressionGrammar(bool deserializing) : base(deserializing) { }
+    protected FullFunctionalExpressionGrammar(StorableConstructorFlag _) : base(_) { }
     protected FullFunctionalExpressionGrammar(FullFunctionalExpressionGrammar original, Cloner cloner) : base(original, cloner) { }
     public FullFunctionalExpressionGrammar()
       : base(ItemAttribute.GetName(typeof(FullFunctionalExpressionGrammar)), ItemAttribute.GetDescription(typeof(FullFunctionalExpressionGrammar))) {
@@ -47,19 +47,26 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var sub = new Subtraction();
       var mul = new Multiplication();
       var div = new Division();
+      var aq = new AnalyticQuotient();
       var mean = new Average();
       var sin = new Sine();
       var cos = new Cosine();
       var tan = new Tangent();
       var log = new Logarithm();
+      var abs = new Absolute();
+      var tanh = new HyperbolicTangent();
       var pow = new Power();
       pow.InitialFrequency = 0.0;
       var square = new Square();
       square.InitialFrequency = 0.0;
+      var cube = new Cube();
+      cube.InitialFrequency = 0.0;
       var root = new Root();
       root.InitialFrequency = 0.0;
       var sqrt = new SquareRoot();
       sqrt.InitialFrequency = 0.0;
+      var cubeRoot = new CubeRoot();
+      cubeRoot.InitialFrequency = 0.0;
       var airyA = new AiryA();
       airyA.InitialFrequency = 0.0;
       var airyB = new AiryB();
@@ -122,14 +129,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       autoregressiveVariable.InitialFrequency = 0.0;
       autoregressiveVariable.Enabled = false;
 
-      var allSymbols = new List<Symbol>() { add, sub, mul, div, mean, sin, cos, tan, log, square, pow, sqrt, root, exp,
+      var allSymbols = new List<Symbol>() { add, sub, mul, div, aq, mean, abs, sin, cos, tan, log, square, cube, pow, sqrt, cubeRoot, root, exp, tanh,
         airyA, airyB, bessel, cosineIntegral, dawson, erf, expIntegralEi, fresnelCosineIntegral, fresnelSineIntegral, gamma, hypCosineIntegral, hypSineIntegral, norm, psi, sineIntegral,
         @if, gt, lt, and, or, not,xor, timeLag, integral, derivative, constant, variableSymbol, binFactorVariable, factorVariable, laggedVariable,autoregressiveVariable, variableCondition };
-      var unaryFunctionSymbols = new List<Symbol>() { square, sqrt, sin, cos, tan, log, exp, not, timeLag, integral, derivative,
+      var unaryFunctionSymbols = new List<Symbol>() { abs, square, sqrt, cube, cubeRoot, sin, cos, tan, log, exp, tanh, not, timeLag, integral, derivative,
         airyA, airyB, bessel, cosineIntegral, dawson, erf, expIntegralEi, fresnelCosineIntegral, fresnelSineIntegral, gamma, hypCosineIntegral, hypSineIntegral, norm, psi, sineIntegral
       };
 
-      var binaryFunctionSymbols = new List<Symbol>() { pow, root, gt, lt, variableCondition };
+      var binaryFunctionSymbols = new List<Symbol>() { pow, root, gt, lt, aq, variableCondition };
       var ternarySymbols = new List<Symbol>() { add, sub, mul, div, mean, and, or, xor };
       var terminalSymbols = new List<Symbol>() { variableSymbol, binFactorVariable, factorVariable, constant, laggedVariable, autoregressiveVariable };
 

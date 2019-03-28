@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,11 +21,11 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("Edge", "An edge between two integer nodes and a flag for the direction.")]
-  [StorableClass]
+  [StorableType("68E0DF31-81CC-4561-B118-000AC925464D")]
   public class Edge : Item {
     [Storable]
     public int Source { get; private set; }
@@ -35,7 +35,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     public bool Bidirectional { get; private set; }
 
     [StorableConstructor]
-    protected Edge(bool deserializing) : base(deserializing) { }
+    protected Edge(StorableConstructorFlag _) : base(_) { }
     protected Edge(Edge original, Cloner cloner)
       : base(original, cloner) {
       Source = original.Source;

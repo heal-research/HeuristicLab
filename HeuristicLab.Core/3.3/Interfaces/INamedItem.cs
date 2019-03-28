@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,8 +21,10 @@
 
 using System;
 using HeuristicLab.Common;
+using HEAL.Attic;
 
 namespace HeuristicLab.Core {
+  [StorableType("4337aaa9-688c-43cb-b980-463cb1704e31")]
   public interface INamedItem : IItem {
     string Name { get; set; }
     bool CanChangeName { get; }

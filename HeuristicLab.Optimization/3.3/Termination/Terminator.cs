@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,11 +26,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
   [Item("Terminator", "A base class for all termination criteria.")]
-  [StorableClass]
+  [StorableType("E5DC984C-95B3-40F1-9D35-7B6E90A26B8A")]
   public abstract class Terminator : SingleSuccessorOperator, ITerminator {
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.FlagRed; }
@@ -41,7 +41,7 @@ namespace HeuristicLab.Optimization {
     }
 
     [StorableConstructor]
-    protected Terminator(bool deserializing) : base(deserializing) { }
+    protected Terminator(StorableConstructorFlag _) : base(_) { }
     protected Terminator(Terminator original, Cloner cloner) : base(original, cloner) { }
 
     protected Terminator()

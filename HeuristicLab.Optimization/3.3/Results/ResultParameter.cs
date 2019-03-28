@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,11 +25,11 @@ using HeuristicLab.Common;
 using HeuristicLab.Common.Resources;
 using HeuristicLab.Core;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
   [Item("ResultParameter", "A parameter whose value is written to a result collection.")]
-  [StorableClass]
+  [StorableType("CF10EF50-82B6-4A98-82C0-3C5ECED48904")]
   public sealed class ResultParameter<T> : LookupParameter<T>, IResultParameter<T> where T : class, IItem {
     public override Image ItemImage { get { return VSImageLibrary.Exception; } }
     public override bool CanChangeDescription { get { return true; } }
@@ -60,7 +60,7 @@ namespace HeuristicLab.Optimization {
     }
 
     [StorableConstructor]
-    private ResultParameter(bool deserializing) : base(deserializing) { }
+    private ResultParameter(StorableConstructorFlag _) : base(_) { }
     private ResultParameter(ResultParameter<T> original, Cloner cloner)
       : base(original, cloner) {
       resultCollectionName = original.resultCollectionName;

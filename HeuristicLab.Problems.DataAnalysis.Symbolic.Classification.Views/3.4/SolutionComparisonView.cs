@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -90,6 +90,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification.Views {
 
       var newDs = new Dataset(variableNames, variableValues);
       var newProblemData = new ClassificationProblemData(newDs, variableNames.Take(variableNames.Length - 1), variableNames.Last());
+      newProblemData.PositiveClass = problemData.PositiveClass;
       newProblemData.TrainingPartition.Start = problemData.TrainingPartition.Start;
       newProblemData.TrainingPartition.End = problemData.TrainingPartition.End;
       newProblemData.TestPartition.Start = problemData.TestPartition.Start;

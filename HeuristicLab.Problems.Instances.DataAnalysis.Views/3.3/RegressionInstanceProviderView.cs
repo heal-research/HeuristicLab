@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -45,24 +45,20 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
         IRegressionProblemData instance = null;
 
         Task.Factory.StartNew(() => {
-          var mainForm = (MainForm.WindowsForms.MainForm)MainFormManager.MainForm;
+          var activeView = (IContentView)MainFormManager.MainForm.ActiveView;
+          var content = activeView.Content;
           // lock active view and show progress bar
-          IContentView activeView = (IContentView)MainFormManager.MainForm.ActiveView;
-
           try {
-            var progress = mainForm.AddOperationProgressToContent(activeView.Content,
-              "Loading problem instance.");
+            var progress = Progress.Show(content, "Loading problem instance.");
 
-            Content.ProgressChanged +=
-              (o, args) => { progress.ProgressValue = args.ProgressPercentage / 100.0; };
+            Content.ProgressChanged += (o, args) => { progress.ProgressValue = args.ProgressPercentage / 100.0; };
 
-            instance = Content.ImportData(importTypeDialog.Path, importTypeDialog.ImportType,
-              importTypeDialog.CSVFormat);
+            instance = Content.ImportData(importTypeDialog.Path, importTypeDialog.ImportType, importTypeDialog.CSVFormat);
           } catch (Exception ex) {
             ErrorWhileParsing(ex);
             return;
           } finally {
-            mainForm.RemoveOperationProgressFromContent(activeView.Content);
+            Progress.Hide(content);
           }
 
           try {

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,14 +25,14 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   [Item("Pearson R² & Tree Complexity Evaluator", "Calculates the Pearson R² and the tree complexity of a symbolic regression solution.")]
-  [StorableClass]
+  [StorableType("FD8705F5-1CFE-4410-A013-48E193EFADC9")]
   public class PearsonRSquaredTreeComplexityEvaluator : SymbolicRegressionMultiObjectiveEvaluator {
     [StorableConstructor]
-    protected PearsonRSquaredTreeComplexityEvaluator(bool deserializing) : base(deserializing) { }
+    protected PearsonRSquaredTreeComplexityEvaluator(StorableConstructorFlag _) : base(_) { }
     protected PearsonRSquaredTreeComplexityEvaluator(PearsonRSquaredTreeComplexityEvaluator original, Cloner cloner)
       : base(original, cloner) {
     }

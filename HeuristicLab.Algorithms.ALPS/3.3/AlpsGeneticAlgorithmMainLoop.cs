@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,13 +26,13 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Selection;
 
 namespace HeuristicLab.Algorithms.ALPS {
 
   [Item("AlpsGeneticAlgorithmMainLoop", "An ALPS genetic algorithm main loop operator.")]
-  [StorableClass]
+  [StorableType("3DDD5DE1-4ACF-4E85-9A4C-30D930C44B56")]
   public sealed class AlpsGeneticAlgorithmMainLoop : AlgorithmOperator {
     #region Parameter Properties
     public IValueLookupParameter<IRandom> GlobalRandomParameter {
@@ -120,8 +120,7 @@ namespace HeuristicLab.Algorithms.ALPS {
     #endregion
 
     [StorableConstructor]
-    private AlpsGeneticAlgorithmMainLoop(bool deserializing)
-      : base(deserializing) { }
+    private AlpsGeneticAlgorithmMainLoop(StorableConstructorFlag _) : base(_) { }
     private AlpsGeneticAlgorithmMainLoop(AlpsGeneticAlgorithmMainLoop original, Cloner cloner)
       : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {

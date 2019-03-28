@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -61,7 +61,7 @@ namespace HeuristicLab.Problems.TestFunctions.Views {
       this.scatterPlotView.Location = new System.Drawing.Point(3, 37);
       this.scatterPlotView.Name = "scatterPlotView";
       this.scatterPlotView.ReadOnly = false;
-      this.scatterPlotView.ShowName = false;
+      this.scatterPlotView.ShowChartOnly = true;
       this.scatterPlotView.Size = new System.Drawing.Size(615, 342);
       this.scatterPlotView.TabIndex = 3;
       // 

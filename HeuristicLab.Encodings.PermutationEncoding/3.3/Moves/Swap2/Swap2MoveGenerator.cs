@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,11 +24,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("Swap2MoveGenerator", "Base class for all swap-2 move generators.")]
-  [StorableClass]
+  [StorableType("A509FD36-5472-4664-BCB7-D1E4C4449614")]
   public abstract class Swap2MoveGenerator : SingleSuccessorOperator, IPermutationSwap2MoveOperator, IMoveGenerator {
     public override bool CanChangeName {
       get { return false; }
@@ -44,7 +44,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     }
 
     [StorableConstructor]
-    protected Swap2MoveGenerator(bool deserializing) : base(deserializing) { }
+    protected Swap2MoveGenerator(StorableConstructorFlag _) : base(_) { }
     protected Swap2MoveGenerator(Swap2MoveGenerator original, Cloner cloner) : base(original, cloner) { }
     public Swap2MoveGenerator()
       : base() {

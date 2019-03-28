@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  * and the BEACON Center for the Study of Evolution in Action.
  * 
  * This file is part of HeuristicLab.
@@ -31,7 +31,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
 using HeuristicLab.Problems.DataAnalysis.Symbolic.Regression;
@@ -41,7 +41,7 @@ using HeuristicLab.Selection;
 namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
   [Item("Gradient Boosting Machine Regression (GBM)",
     "Gradient boosting for any regression base learner (e.g. MCTS symbolic regression)")]
-  [StorableClass]
+  [StorableType("98B340D7-DB23-40F9-A9CC-C3E652E92671")]
   [Creatable(CreatableAttribute.Categories.DataAnalysisRegression, Priority = 350)]
   public class GradientBoostingRegressionAlgorithm : FixedDataAnalysisAlgorithm<IRegressionProblem> {
 
@@ -158,8 +158,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
     #endregion
 
     [StorableConstructor]
-    protected GradientBoostingRegressionAlgorithm(bool deserializing)
-      : base(deserializing) {
+    protected GradientBoostingRegressionAlgorithm(StorableConstructorFlag _) : base(_) {
     }
 
     protected GradientBoostingRegressionAlgorithm(GradientBoostingRegressionAlgorithm original, Cloner cloner)
@@ -209,7 +208,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
 
     protected override void Run(CancellationToken cancellationToken) {
       // Set up the algorithm
-      if (SetSeedRandomly) Seed = new System.Random().Next();
+      if (SetSeedRandomly) Seed = RandomSeedGenerator.GetSeed();
       var rand = new MersenneTwister((uint)Seed);
 
       // Set up the results display
@@ -257,7 +256,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
           cancellationToken.ThrowIfCancellationRequested();
 
           modifiableDataset.RemoveVariable(targetVarName);
-          modifiableDataset.AddVariable(targetVarName, curY.Concat(curYTest));
+          modifiableDataset.AddVariable(targetVarName, curY.Concat(curYTest).ToList());
 
           SampleTrainingData(rand, modifiableDataset, rRows, problemData.Dataset, curY, problemData.TargetVariable, problemData.TrainingIndices); // all training indices from the original problem data are allowed 
           var modifiableProblemData = new RegressionProblemData(modifiableDataset,

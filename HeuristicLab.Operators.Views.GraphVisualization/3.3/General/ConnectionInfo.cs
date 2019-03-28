@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,13 +22,13 @@
 using System;
 using System.Linq;
 using HeuristicLab.Common;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Operators.Views.GraphVisualization {
-  [StorableClass]
+  [StorableType("92043EDD-87B0-42E9-A66F-230CC955C6D3")]
   public class ConnectionInfo : DeepCloneable, IConnectionInfo {
     [StorableConstructor]
-    protected ConnectionInfo(bool deserializing) : base() { }
+    protected ConnectionInfo(StorableConstructorFlag _) { }
     protected ConnectionInfo(ConnectionInfo original, Cloner cloner)
       : base(original, cloner) {
       from = cloner.Clone(original.from);

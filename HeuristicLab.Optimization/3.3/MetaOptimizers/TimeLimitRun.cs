@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,11 +26,11 @@ using System.Drawing;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using HEAL.Attic;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Common.Resources;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Optimization {
   /// <summary>
@@ -38,7 +38,7 @@ namespace HeuristicLab.Optimization {
   /// </summary>
   [Item("Timelimit Run", "A run in which an optimizer is executed a certain maximum time.")]
   [Creatable(CreatableAttribute.Categories.TestingAndAnalysis, Priority = 115)]
-  [StorableClass]
+  [StorableType("85A1AB82-689F-4925-B888-B3886707BE88")]
   public sealed class TimeLimitRun : NamedItem, IOptimizer, IStorableContent, INotifyPropertyChanged {
     public string Filename { get; set; }
 
@@ -61,7 +61,7 @@ namespace HeuristicLab.Optimization {
       set {
         if (maximumExecutionTime == value) return;
         maximumExecutionTime = value;
-        OnPropertyChanged("MaximumExecutionTime");
+        OnPropertyChanged(nameof(MaximumExecutionTime));
       }
     }
 
@@ -76,7 +76,7 @@ namespace HeuristicLab.Optimization {
         snapshotTimes = value;
         snapshotTimes.Sort();
         FindNextSnapshotTimeIndex(ExecutionTime);
-        OnPropertyChanged("SnapshotTimes");
+        OnPropertyChanged(nameof(SnapshotTimes));
       }
     }
 
@@ -88,7 +88,7 @@ namespace HeuristicLab.Optimization {
       set {
         if (storeAlgorithmInEachSnapshot == value) return;
         storeAlgorithmInEachSnapshot = value;
-        OnPropertyChanged("StoreAlgorithmInEachSnapshot");
+        OnPropertyChanged(nameof(StoreAlgorithmInEachSnapshot));
       }
     }
 
@@ -99,13 +99,21 @@ namespace HeuristicLab.Optimization {
       set {
         if (snapshots == value) return;
         snapshots = value;
-        OnPropertyChanged("Snapshots");
+        OnPropertyChanged(nameof(Snapshots));
       }
     }
 
     #region Inherited Properties
+    [Storable]
+    private ExecutionState executionState;
     public ExecutionState ExecutionState {
-      get { return (Algorithm != null) ? Algorithm.ExecutionState : ExecutionState.Stopped; }
+      get { return executionState; }
+      private set {
+        if (executionState == value) return;
+        executionState = value;
+        OnExecutionStateChanged();
+        OnPropertyChanged(nameof(ExecutionState));
+      }
     }
 
     public TimeSpan ExecutionTime {
@@ -118,13 +126,19 @@ namespace HeuristicLab.Optimization {
       get { return algorithm; }
       set {
         if (algorithm == value) return;
+        if (ExecutionState == ExecutionState.Started || ExecutionState == ExecutionState.Paused)
+          throw new InvalidOperationException("Cannot change algorithm while the TimeLimitRun is running or paused.");
         if (algorithm != null) DeregisterAlgorithmEvents();
         algorithm = value;
+        if (algorithm != null) RegisterAlgorithmEvents();
+        OnPropertyChanged(nameof(Algorithm));
+        OnPropertyChanged(nameof(NestedOptimizers));
         if (algorithm != null) {
-          RegisterAlgorithmEvents();
-        }
-        OnPropertyChanged("Algorithm");
-        Prepare();
+          if (algorithm.ExecutionState == ExecutionState.Started || algorithm.ExecutionState == ExecutionState.Paused)
+            throw new InvalidOperationException("Cannot assign a running or paused algorithm to a TimeLimitRun.");
+          Prepare();
+          if (algorithm.ExecutionState == ExecutionState.Stopped) OnStopped();
+        } else OnStopped();
       }
     }
 
@@ -136,7 +150,7 @@ namespace HeuristicLab.Optimization {
         if (value == null) throw new ArgumentNullException();
         if (runs == value) return;
         runs = value;
-        OnPropertyChanged("Runs");
+        OnPropertyChanged(nameof(Runs));
       }
     }
 
@@ -151,7 +165,7 @@ namespace HeuristicLab.Optimization {
     #endregion
 
     [StorableConstructor]
-    private TimeLimitRun(bool deserializing) : base(deserializing) { }
+    private TimeLimitRun(StorableConstructorFlag _) : base(_) { }
     private TimeLimitRun(TimeLimitRun original, Cloner cloner)
       : base(original, cloner) {
       maximumExecutionTime = original.maximumExecutionTime;
@@ -159,6 +173,7 @@ namespace HeuristicLab.Optimization {
       snapshotTimesIndex = original.snapshotTimesIndex;
       snapshots = cloner.Clone(original.snapshots);
       storeAlgorithmInEachSnapshot = original.storeAlgorithmInEachSnapshot;
+      executionState = original.executionState;
       algorithm = cloner.Clone(original.algorithm);
       runs = cloner.Clone(original.runs);
 
@@ -168,6 +183,7 @@ namespace HeuristicLab.Optimization {
       : base() {
       name = ItemName;
       description = ItemDescription;
+      executionState = ExecutionState.Stopped;
       maximumExecutionTime = TimeSpan.FromMinutes(.5);
       snapshotTimes = new ObservableList<TimeSpan>(new[] {
           TimeSpan.FromSeconds(5),
@@ -181,23 +197,27 @@ namespace HeuristicLab.Optimization {
     public TimeLimitRun(string name)
       : base(name) {
       description = ItemDescription;
+      executionState = ExecutionState.Stopped;
       maximumExecutionTime = TimeSpan.FromMinutes(.5);
       snapshotTimes = new ObservableList<TimeSpan>(new[] {
           TimeSpan.FromSeconds(5),
           TimeSpan.FromSeconds(10),
           TimeSpan.FromSeconds(15) });
       snapshotTimesIndex = 0;
+      snapshots = new RunCollection();
       Runs = new RunCollection { OptimizerName = Name };
       Initialize();
     }
     public TimeLimitRun(string name, string description)
       : base(name, description) {
+      executionState = ExecutionState.Stopped;
       maximumExecutionTime = TimeSpan.FromMinutes(.5);
       snapshotTimes = new ObservableList<TimeSpan>(new[] {
           TimeSpan.FromSeconds(5),
           TimeSpan.FromSeconds(10),
           TimeSpan.FromSeconds(15) });
       snapshotTimesIndex = 0;
+      snapshots = new RunCollection();
       Runs = new RunCollection { OptimizerName = Name };
       Initialize();
     }
@@ -210,6 +230,12 @@ namespace HeuristicLab.Optimization {
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       Initialize();
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code, remove with 3.4
+      if (Algorithm != null && executionState != Algorithm.ExecutionState) {
+        executionState = Algorithm.ExecutionState;
+      } else if (Algorithm == null) executionState = ExecutionState.Stopped;
+      #endregion
     }
 
     private void Initialize() {
@@ -235,6 +261,7 @@ namespace HeuristicLab.Optimization {
       Prepare(false);
     }
     public void Prepare(bool clearRuns) {
+      if (Algorithm == null) return;
       Algorithm.Prepare(clearRuns);
     }
     public void Start() {
@@ -279,26 +306,31 @@ namespace HeuristicLab.Optimization {
     }
     public event EventHandler Prepared;
     private void OnPrepared() {
+      ExecutionState = ExecutionState.Prepared;
       var handler = Prepared;
       if (handler != null) handler(this, EventArgs.Empty);
     }
     public event EventHandler Started;
     private void OnStarted() {
+      ExecutionState = ExecutionState.Started;
       var handler = Started;
       if (handler != null) handler(this, EventArgs.Empty);
     }
     public event EventHandler Paused;
     private void OnPaused() {
+      ExecutionState = ExecutionState.Paused;
       var handler = Paused;
       if (handler != null) handler(this, EventArgs.Empty);
     }
     public event EventHandler Stopped;
     private void OnStopped() {
+      ExecutionState = ExecutionState.Stopped;
       var handler = Stopped;
       if (handler != null) handler(this, EventArgs.Empty);
     }
     public event EventHandler<EventArgs<Exception>> ExceptionOccurred;
     private void OnExceptionOccurred(Exception exception) {
+      ExecutionState = ExecutionState.Paused;
       var handler = ExceptionOccurred;
       if (handler != null) handler(this, new EventArgs<Exception>(exception));
     }
@@ -308,7 +340,6 @@ namespace HeuristicLab.Optimization {
     private void RegisterAlgorithmEvents() {
       algorithm.ExceptionOccurred += Algorithm_ExceptionOccurred;
       algorithm.ExecutionTimeChanged += Algorithm_ExecutionTimeChanged;
-      algorithm.ExecutionStateChanged += Algorithm_ExecutionStateChanged;
       algorithm.Paused += Algorithm_Paused;
       algorithm.Prepared += Algorithm_Prepared;
       algorithm.Started += Algorithm_Started;
@@ -317,7 +348,6 @@ namespace HeuristicLab.Optimization {
     private void DeregisterAlgorithmEvents() {
       algorithm.ExceptionOccurred -= Algorithm_ExceptionOccurred;
       algorithm.ExecutionTimeChanged -= Algorithm_ExecutionTimeChanged;
-      algorithm.ExecutionStateChanged -= Algorithm_ExecutionStateChanged;
       algorithm.Paused -= Algorithm_Paused;
       algorithm.Prepared -= Algorithm_Prepared;
       algorithm.Started -= Algorithm_Started;
@@ -338,17 +368,13 @@ namespace HeuristicLab.Optimization {
       }
       OnExecutionTimeChanged();
     }
-    private void Algorithm_ExecutionStateChanged(object sender, EventArgs e) {
-      OnExecutionStateChanged();
-    }
     private void Algorithm_Paused(object sender, EventArgs e) {
       var action = pausedForTermination ? ExecutionState.Stopped : (pausedForSnapshot ? ExecutionState.Started : ExecutionState.Paused);
       if (pausedForSnapshot || pausedForTermination) {
         pausedForSnapshot = pausedForTermination = false;
         MakeSnapshot();
         FindNextSnapshotTimeIndex(ExecutionTime);
-      }
-      OnPaused();
+      } else OnPaused();
       if (action == ExecutionState.Started) Algorithm.Start();
       else if (action == ExecutionState.Stopped) Algorithm.Stop();
     }
@@ -358,16 +384,21 @@ namespace HeuristicLab.Optimization {
       OnPrepared();
     }
     private void Algorithm_Started(object sender, EventArgs e) {
-      OnStarted();
+      if (ExecutionState == ExecutionState.Prepared || ExecutionState == ExecutionState.Paused)
+        OnStarted();
+      if (ExecutionState == ExecutionState.Stopped)
+        throw new InvalidOperationException("Algorithm was started although TimeLimitRun was in state Stopped.");
+      // otherwise the algorithm was just started after being snapshotted
     }
     private void Algorithm_Stopped(object sender, EventArgs e) {
-      var cloner = new Cloner();
-      var algRun = cloner.Clone(Algorithm.Runs.Last());
-      var clonedSnapshots = cloner.Clone(snapshots);
-      algRun.Results.Add("TimeLimitRunSnapshots", clonedSnapshots);
-      Runs.Add(algRun);
-      Algorithm.Runs.Clear();
-      OnStopped();
+      try {
+        var cloner = new Cloner();
+        var algRun = cloner.Clone(Algorithm.Runs.Last());
+        var clonedSnapshots = cloner.Clone(snapshots);
+        algRun.Results.Add("TimeLimitRunSnapshots", clonedSnapshots);
+        Runs.Add(algRun);
+        Algorithm.Runs.Clear();
+      } finally { OnStopped(); }
     }
     #endregion
     #endregion
@@ -376,7 +407,7 @@ namespace HeuristicLab.Optimization {
       var index = 0;
       while (index < snapshotTimes.Count && snapshotTimes[index] <= reference) {
         index++;
-      };
+      }
       snapshotTimesIndex = index;
     }
 

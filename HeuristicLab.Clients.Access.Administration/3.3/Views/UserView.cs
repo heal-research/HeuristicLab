@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -63,6 +63,12 @@ namespace HeuristicLab.Clients.Access.Administration {
 
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
+      bool enabled = Content != null && !Locked;
+      
+      userNameTextBox.ReadOnly = !enabled;
+      fullNameTextBox.ReadOnly = !enabled;
+      emailTextBox.ReadOnly = !enabled;
+
       if (Content == null) {
         resetPasswordButton.Enabled = false;
       } else {

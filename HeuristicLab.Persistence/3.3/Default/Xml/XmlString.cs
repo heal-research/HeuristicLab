@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,7 +20,7 @@
 #endregion
 
 using System.Text;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Persistence.Interfaces;
 
 namespace HeuristicLab.Persistence.Default.Xml {
@@ -28,7 +28,7 @@ namespace HeuristicLab.Persistence.Default.Xml {
   /// <summary>
   /// XML friendly encapsulation of string data.
   /// </summary>
-  [StorableClass]
+  [StorableType("C7207D30-79F0-47C7-B151-6E96A594F75C")]
   public class XmlString : ISerialData {
 
     /// <summary>
@@ -40,7 +40,7 @@ namespace HeuristicLab.Persistence.Default.Xml {
     public string Data { get; private set; }
 
     [StorableConstructor]
-    protected XmlString(bool deserializing) { }
+    protected XmlString(StorableConstructorFlag _) { }
     private XmlString() { }
 
     /// <summary>

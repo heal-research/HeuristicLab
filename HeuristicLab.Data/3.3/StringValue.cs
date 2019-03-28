@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,11 +23,11 @@ using System;
 using System.Drawing;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Data {
   [Item("StringValue", "Represents a string.")]
-  [StorableClass]
+  [StorableType("1091C8E5-4480-447C-8EB3-AA260C59976D")]
   public class StringValue : Item, IComparable, IStringConvertibleValue {
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Field; }
@@ -55,7 +55,7 @@ namespace HeuristicLab.Data {
     }
 
     [StorableConstructor]
-    protected StringValue(bool deserializing) : base(deserializing) { }
+    protected StringValue(StorableConstructorFlag _) : base(_) { }
     protected StringValue(StringValue original, Cloner cloner)
       : base(original, cloner) {
       this.value = original.value != null ? original.value : string.Empty;

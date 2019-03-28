@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,10 +26,10 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
-  [StorableClass]
+  [StorableType("88CB6895-6CD8-4F81-8E3D-905EEBB7E77A")]
   [Item(Name = "CovarianceSquaredExponentialArd", Description = "Squared exponential covariance function with automatic relevance determination for Gaussian processes.")]
   public sealed class CovarianceSquaredExponentialArd : ParameterizedNamedItem, ICovarianceFunction {
     public IValueParameter<DoubleValue> ScaleParameter {
@@ -47,7 +47,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     [StorableConstructor]
-    private CovarianceSquaredExponentialArd(bool deserializing) : base(deserializing) { }
+    private CovarianceSquaredExponentialArd(StorableConstructorFlag _) : base(_) { }
     private CovarianceSquaredExponentialArd(CovarianceSquaredExponentialArd original, Cloner cloner)
       : base(original, cloner) {
     }

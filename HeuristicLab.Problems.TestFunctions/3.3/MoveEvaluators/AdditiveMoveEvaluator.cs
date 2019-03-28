@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,11 +25,11 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TestFunctions {
   [Item("AdditiveMoveEvaluator", "Base class for evaluating an additive move.")]
-  [StorableClass]
+  [StorableType("3B4F3C57-78CE-4881-8E3B-6E784A495734")]
   public class AdditiveMoveEvaluator : SingleSuccessorOperator, ISingleObjectiveTestFunctionAdditiveMoveEvaluator {
 
     public override bool CanChangeName {
@@ -53,7 +53,7 @@ namespace HeuristicLab.Problems.TestFunctions {
     }
 
     [StorableConstructor]
-    protected AdditiveMoveEvaluator(bool deserializing) : base(deserializing) { }
+    protected AdditiveMoveEvaluator(StorableConstructorFlag _) : base(_) { }
     protected AdditiveMoveEvaluator(AdditiveMoveEvaluator original, Cloner cloner) : base(original, cloner) { }
     public AdditiveMoveEvaluator()
       : base() {

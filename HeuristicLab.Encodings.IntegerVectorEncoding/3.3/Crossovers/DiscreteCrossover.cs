@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,7 +22,7 @@
 using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   /// <summary>
@@ -32,10 +32,10 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   /// It is implemented as described in Gwiazda, T.D. 2006. Genetic algorithms reference Volume I Crossover for single-objective numerical optimization problems, p.17.
   /// </remarks>
   [Item("DiscreteCrossover", "Discrete crossover for integer vectors. It is implemented as described in Gwiazda, T.D. 2006. Genetic algorithms reference Volume I Crossover for single-objective numerical optimization problems, p.17.")]
-  [StorableClass]
+  [StorableType("64C79AA5-1D77-4CF4-A19B-9646F270E4D8")]
   public class DiscreteCrossover : IntegerVectorCrossover {
     [StorableConstructor]
-    protected DiscreteCrossover(bool deserializing) : base(deserializing) { }
+    protected DiscreteCrossover(StorableConstructorFlag _) : base(_) { }
     protected DiscreteCrossover(DiscreteCrossover original, Cloner cloner) : base(original, cloner) { }
     public DiscreteCrossover() : base() { }
 

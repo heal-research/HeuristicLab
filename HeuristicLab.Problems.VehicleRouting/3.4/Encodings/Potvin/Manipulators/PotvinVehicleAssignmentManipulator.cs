@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,14 +23,14 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.VehicleRouting.Encodings.General;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Problems.VehicleRouting.Variants;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinVehicleAssignmentMainpulator", "A manipulator that changes the vehicle assignment")]
-  [StorableClass]
+  [StorableType("57755DA2-B9CB-4A9F-B32C-988BFC06365A")]
   public sealed class PotvinVehicleAssignmentMainpulator : VRPManipulator, ITimeWindowedOperator,
     IMultiDepotOperator, IHeterogenousCapacitatedOperator {
     public IValueParameter<IPermutationManipulator> VehicleAssignmentManipuator {
@@ -42,7 +42,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
     }
 
     [StorableConstructor]
-    private PotvinVehicleAssignmentMainpulator(bool deserializing) : base(deserializing) { }
+    private PotvinVehicleAssignmentMainpulator(StorableConstructorFlag _) : base(_) { }
 
     public PotvinVehicleAssignmentMainpulator()
       : base() {

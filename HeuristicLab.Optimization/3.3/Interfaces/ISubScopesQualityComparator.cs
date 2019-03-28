@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,8 +21,10 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
+  [StorableType("8efcf623-6ea3-4010-a7b2-d3788b8648d1")]
   public interface ISubScopesQualityComparator {
     ILookupParameter<DoubleValue> LeftSideParameter { get; }
     ILookupParameter<ItemArray<DoubleValue>> RightSideParameter { get; }

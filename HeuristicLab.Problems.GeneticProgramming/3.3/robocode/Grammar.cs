@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,10 +22,10 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.GeneticProgramming.Robocode {
-  [StorableClass]
+  [StorableType("DC5FF90A-AD5A-4A56-8A9B-F117D2B842AD")]
   [Item("Robocode Grammar", "The grammar for the Robocode GP problem.")]
   public class Grammar : SymbolicExpressionGrammar {
     private const string EventsName = "Events";
@@ -38,7 +38,7 @@ namespace HeuristicLab.Problems.GeneticProgramming.Robocode {
     private const string NumericalOperatorsName = "Numerical Operators";
 
     [StorableConstructor]
-    protected Grammar(bool deserializing) : base(deserializing) { }
+    protected Grammar(StorableConstructorFlag _) : base(_) { }
     protected Grammar(Grammar original, Cloner cloner) : base(original, cloner) { }
 
     public Grammar()

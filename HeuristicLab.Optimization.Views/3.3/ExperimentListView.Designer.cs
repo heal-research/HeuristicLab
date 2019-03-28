@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -110,6 +110,7 @@ namespace HeuristicLab.Optimization.Views {
       // 
       // optimizersTabPage
       // 
+      this.optimizersTabPage.BackColor = System.Drawing.SystemColors.Window;
       this.optimizersTabPage.Controls.Add(this.optimizerListView);
       this.optimizersTabPage.Location = new System.Drawing.Point(4, 22);
       this.optimizersTabPage.Name = "optimizersTabPage";
@@ -117,7 +118,6 @@ namespace HeuristicLab.Optimization.Views {
       this.optimizersTabPage.Size = new System.Drawing.Size(671, 401);
       this.optimizersTabPage.TabIndex = 1;
       this.optimizersTabPage.Text = "Optimizers";
-      this.optimizersTabPage.UseVisualStyleBackColor = true;
       // 
       // optimizerListView
       // 
@@ -134,6 +134,7 @@ namespace HeuristicLab.Optimization.Views {
       // 
       // runsTabPage
       // 
+      this.runsTabPage.BackColor = System.Drawing.SystemColors.Window;
       this.runsTabPage.Controls.Add(this.runsViewHost);
       this.runsTabPage.Location = new System.Drawing.Point(4, 22);
       this.runsTabPage.Name = "runsTabPage";
@@ -141,7 +142,6 @@ namespace HeuristicLab.Optimization.Views {
       this.runsTabPage.Size = new System.Drawing.Size(671, 401);
       this.runsTabPage.TabIndex = 2;
       this.runsTabPage.Text = "Runs";
-      this.runsTabPage.UseVisualStyleBackColor = true;
       // 
       // runsViewHost
       // 

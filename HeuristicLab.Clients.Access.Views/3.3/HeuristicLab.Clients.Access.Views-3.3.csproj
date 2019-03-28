@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>HeuristicLab.Clients.Access.Views</RootNamespace>
     <AssemblyName>HeuristicLab.Clients.Access.Views-3.3</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -146,11 +146,11 @@
     <Compile Include="UserViews\LightweightUserInformationView.Designer.cs">
       <DependentUpon>LightweightUserInformationView.cs</DependentUpon>
     </Compile>
-    <Compile Include="UserViews\RefreshableLightweightUserInformationView.cs">
+    <Compile Include="UserViews\RefreshableLightweightAccessClientInformationView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UserViews\RefreshableLightweightUserInformationView.Designer.cs">
-      <DependentUpon>RefreshableLightweightUserInformationView.cs</DependentUpon>
+    <Compile Include="UserViews\RefreshableLightweightAccessClientInformationView.Designer.cs">
+      <DependentUpon>RefreshableLightweightAccessClientInformationView.cs</DependentUpon>
     </Compile>
     <Compile Include="UserViews\LightweightUserView.cs">
       <SubType>UserControl</SubType>
@@ -158,11 +158,17 @@
     <Compile Include="UserViews\LightweightUserView.Designer.cs">
       <DependentUpon>LightweightUserView.cs</DependentUpon>
     </Compile>
-    <Compile Include="UserViews\RefreshableLightweightUserView.cs">
+    <Compile Include="UserViews\RefreshableLightweightAccessClientView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UserViews\RefreshableLightweightUserView.Designer.cs">
-      <DependentUpon>RefreshableLightweightUserView.cs</DependentUpon>
+    <Compile Include="UserViews\RefreshableLightweightAccessClientView.Designer.cs">
+      <DependentUpon>RefreshableLightweightAccessClientView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserViews\RefreshableLightweightUserInformationView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserViews\RefreshableLightweightUserInformationView.Designer.cs">
+      <DependentUpon>RefreshableLightweightUserInformationView.cs</DependentUpon>
     </Compile>
     <Compile Include="UserViews\RefreshableView.cs">
       <SubType>UserControl</SubType>
@@ -244,6 +250,13 @@
       <Name>HeuristicLab.PluginInfrastructure-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="HEAL.Attic, Version=1.0.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\HEAL.Attic.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -27,12 +27,12 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   [Item("IntegerVectorEncoding", "Describes an integer vector encoding.")]
-  [StorableClass]
+  [StorableType("15D6E55E-C39F-4784-8350-14A0FD47CF0E")]
   public sealed class IntegerVectorEncoding : Encoding<IntegerVector> {
     #region Encoding Parameters
     [Storable]
@@ -77,7 +77,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
     }
 
     [StorableConstructor]
-    private IntegerVectorEncoding(bool deserializing) : base(deserializing) { }
+    private IntegerVectorEncoding(StorableConstructorFlag _) : base(_) { }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       RegisterParameterEvents();

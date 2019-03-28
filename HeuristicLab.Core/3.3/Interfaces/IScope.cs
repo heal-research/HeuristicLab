@@ -1,6 +1,7 @@
+using HEAL.Attic;
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,6 +21,7 @@
 #endregion
 
 namespace HeuristicLab.Core {
+  [StorableType("450b2586-6164-4f3a-9acc-65a0f3442c9e")]
   /// <summary>
   /// Hierarchical container of variables (and of subscopes).
   /// </summary>

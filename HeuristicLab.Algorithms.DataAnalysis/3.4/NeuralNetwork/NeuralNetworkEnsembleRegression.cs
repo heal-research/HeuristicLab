@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -28,7 +28,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
@@ -37,7 +37,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// </summary>
   [Item("Neural Network Ensemble Regression (NN)", "Neural network ensemble regression data analysis algorithm (wrapper for ALGLIB). Further documentation: http://www.alglib.net/dataanalysis/mlpensembles.php")]
   [Creatable(CreatableAttribute.Categories.DataAnalysisRegression, Priority = 140)]
-  [StorableClass]
+  [StorableType("FD50BD78-3586-4C31-87AE-5490E717F4E7")]
   public sealed class NeuralNetworkEnsembleRegression : FixedDataAnalysisAlgorithm<IRegressionProblem> {
     private const string EnsembleSizeParameterName = "EnsembleSize";
     private const string DecayParameterName = "Decay";
@@ -118,15 +118,15 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
 
     [StorableConstructor]
-    private NeuralNetworkEnsembleRegression(bool deserializing) : base(deserializing) { }
+    private NeuralNetworkEnsembleRegression(StorableConstructorFlag _) : base(_) { }
     private NeuralNetworkEnsembleRegression(NeuralNetworkEnsembleRegression original, Cloner cloner)
       : base(original, cloner) {
     }
     public NeuralNetworkEnsembleRegression()
       : base() {
-      var validHiddenLayerValues = new ItemSet<IntValue>(new IntValue[] { 
-        (IntValue)new IntValue(0).AsReadOnly(), 
-        (IntValue)new IntValue(1).AsReadOnly(), 
+      var validHiddenLayerValues = new ItemSet<IntValue>(new IntValue[] {
+        (IntValue)new IntValue(0).AsReadOnly(),
+        (IntValue)new IntValue(1).AsReadOnly(),
         (IntValue)new IntValue(2).AsReadOnly() });
       var selectedHiddenLayerValue = (from v in validHiddenLayerValues
                                       where v.Value == 1
@@ -169,7 +169,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       IEnumerable<string> allowedInputVariables = problemData.AllowedInputVariables;
       IEnumerable<int> rows = problemData.TrainingIndices;
       double[,] inputMatrix = dataset.ToArray(allowedInputVariables.Concat(new string[] { targetVariable }), rows);
-      if (inputMatrix.Cast<double>().Any(x => double.IsNaN(x) || double.IsInfinity(x)))
+      if (inputMatrix.ContainsNanOrInfinity())
         throw new NotSupportedException("Neural network ensemble regression does not support NaN or infinity values in the input dataset.");
 
       alglib.mlpensemble mlpEnsemble = null;

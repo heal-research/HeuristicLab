@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,13 +20,13 @@
 #endregion
 
 using HeuristicLab.Common;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
-  [StorableClass]
+  [StorableType("48C7BDD3-9EED-4D61-AF72-A895556052A7")]
   public abstract class SymbolicClassificationSingleObjectiveEvaluator : SymbolicDataAnalysisSingleObjectiveEvaluator<IClassificationProblemData>, ISymbolicClassificationSingleObjectiveEvaluator {
     [StorableConstructor]
-    protected SymbolicClassificationSingleObjectiveEvaluator(bool deserializing) : base(deserializing) { }
+    protected SymbolicClassificationSingleObjectiveEvaluator(StorableConstructorFlag _) : base(_) { }
     protected SymbolicClassificationSingleObjectiveEvaluator(SymbolicClassificationSingleObjectiveEvaluator original, Cloner cloner)
       : base(original, cloner) {
     }

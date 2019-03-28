@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -146,7 +146,7 @@ namespace HeuristicLab.Optimizer {
       // 
       // repetitionsNumericUpDown
       // 
-      this.repetitionsNumericUpDown.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.repetitionsNumericUpDown.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.repetitionsNumericUpDown.Location = new System.Drawing.Point(113, 28);
       this.repetitionsNumericUpDown.Maximum = new decimal(new int[] {
@@ -233,8 +233,8 @@ namespace HeuristicLab.Optimizer {
       // 
       // tabControl
       // 
-      this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+      this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.tabControl.Controls.Add(this.parametersTabPage);
       this.tabControl.Controls.Add(this.instancesTabPage);
@@ -246,6 +246,7 @@ namespace HeuristicLab.Optimizer {
       // 
       // parametersTabPage
       // 
+      this.parametersTabPage.BackColor = System.Drawing.SystemColors.Window;
       this.parametersTabPage.Controls.Add(this.parametersSplitContainer);
       this.parametersTabPage.Location = new System.Drawing.Point(4, 22);
       this.parametersTabPage.Name = "parametersTabPage";
@@ -253,7 +254,6 @@ namespace HeuristicLab.Optimizer {
       this.parametersTabPage.Size = new System.Drawing.Size(379, 291);
       this.parametersTabPage.TabIndex = 1;
       this.parametersTabPage.Text = "Parameter Variations";
-      this.parametersTabPage.UseVisualStyleBackColor = true;
       // 
       // parametersSplitContainer
       // 
@@ -310,8 +310,8 @@ namespace HeuristicLab.Optimizer {
       // 
       // stringConvertibleArrayView
       // 
-      this.stringConvertibleArrayView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+      this.stringConvertibleArrayView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.stringConvertibleArrayView.Caption = "StringConvertibleArray View";
       this.stringConvertibleArrayView.Content = null;
@@ -332,8 +332,8 @@ namespace HeuristicLab.Optimizer {
       // 
       // choicesListView
       // 
-      this.choicesListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+      this.choicesListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.choicesListView.CheckBoxes = true;
       this.choicesListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
@@ -353,6 +353,7 @@ namespace HeuristicLab.Optimizer {
       // 
       // instancesTabPage
       // 
+      this.instancesTabPage.BackColor = System.Drawing.SystemColors.Window;
       this.instancesTabPage.Controls.Add(this.label1);
       this.instancesTabPage.Controls.Add(this.instanceDiscoveryProgressBar);
       this.instancesTabPage.Controls.Add(this.selectNoneCheckBox);
@@ -365,7 +366,6 @@ namespace HeuristicLab.Optimizer {
       this.instancesTabPage.Size = new System.Drawing.Size(379, 291);
       this.instancesTabPage.TabIndex = 0;
       this.instancesTabPage.Text = "Problem Instances";
-      this.instancesTabPage.UseVisualStyleBackColor = true;
       // 
       // label1
       // 
@@ -378,8 +378,8 @@ namespace HeuristicLab.Optimizer {
       // 
       // instancesTreeView
       // 
-      this.instancesTreeView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+      this.instancesTreeView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.instancesTreeView.CheckBoxes = true;
       this.instancesTreeView.Location = new System.Drawing.Point(6, 35);
@@ -422,7 +422,7 @@ namespace HeuristicLab.Optimizer {
       // 
       // experimentCreationProgressBar
       // 
-      this.experimentCreationProgressBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+      this.experimentCreationProgressBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.experimentCreationProgressBar.Location = new System.Drawing.Point(187, 377);
       this.experimentCreationProgressBar.Name = "experimentCreationProgressBar";

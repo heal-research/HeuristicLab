@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,11 +25,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
   [Item("Single-objective MoveMaker", "Applies a move.")]
-  [StorableClass]
+  [StorableType("C0ABF392-C825-4B98-8FB9-5749A9091FD6")]
   public class SingleObjectiveMoveMaker<TSolution> : InstrumentedOperator, IMoveMaker, ISingleObjectiveMoveOperator
   where TSolution : class, ISolution {
     public ILookupParameter<IEncoding<TSolution>> EncodingParameter {
@@ -45,7 +45,7 @@ namespace HeuristicLab.Optimization {
     }
 
     [StorableConstructor]
-    protected SingleObjectiveMoveMaker(bool deserializing) : base(deserializing) { }
+    protected SingleObjectiveMoveMaker(StorableConstructorFlag _) : base(_) { }
     protected SingleObjectiveMoveMaker(SingleObjectiveMoveMaker<TSolution> original, Cloner cloner) : base(original, cloner) { }
     public SingleObjectiveMoveMaker() {
       Parameters.Add(new LookupParameter<IEncoding<TSolution>>("Encoding", "An item that holds the problem's encoding."));

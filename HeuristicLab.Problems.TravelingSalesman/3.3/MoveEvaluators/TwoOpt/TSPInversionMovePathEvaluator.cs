@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,21 +24,21 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TravelingSalesman {
   /// <summary>
   /// An operator to evaluate inversion moves (2-opt).
   /// </summary>
   [Item("TSPInversionMovePathEvaluator", "Evaluates an inversion move (2-opt) by summing up the length of all added edges and subtracting the length of all deleted edges.")]
-  [StorableClass]
+  [StorableType("0D180690-C01E-4F64-94D9-C6F713EA195B")]
   public abstract class TSPInversionMovePathEvaluator : TSPPathMoveEvaluator, IPermutationInversionMoveOperator {
     public ILookupParameter<InversionMove> InversionMoveParameter {
       get { return (ILookupParameter<InversionMove>)Parameters["InversionMove"]; }
     }
 
     [StorableConstructor]
-    protected TSPInversionMovePathEvaluator(bool deserializing) : base(deserializing) { }
+    protected TSPInversionMovePathEvaluator(StorableConstructorFlag _) : base(_) { }
     protected TSPInversionMovePathEvaluator(TSPInversionMovePathEvaluator original, Cloner cloner) : base(original, cloner) { }
     public TSPInversionMovePathEvaluator()
       : base() {

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,6 +22,7 @@
 namespace HeuristicLab.Services.Access {
   public interface IRoleVerifier {
     bool IsInRole(string role);
+    bool IsUserInRole(string username, string role);
     bool IsInAnyRole(params string[] roles);
     bool IsInAllRoles(params string[] roles);
     void AuthenticateForAnyRole(params string[] roles);

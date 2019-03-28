@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,13 +22,13 @@
 using System;
 using System.Drawing;
 using HeuristicLab.Common;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Core {
   /// <summary>
   /// Represents the base class for all basic item types.
   /// </summary>
-  [StorableClass]
+  [StorableType("E7F13DE4-F9A2-4ADC-AB92-5BBA0588CD2D")]
   [Item("Item", "Base class for all HeuristicLab items.")]
   public abstract class Item : IItem {
     public virtual string ItemName {
@@ -48,7 +48,7 @@ namespace HeuristicLab.Core {
     }
 
     [StorableConstructor]
-    protected Item(bool deserializing) { }
+    protected Item(StorableConstructorFlag _) { }
     protected Item(Item original, Cloner cloner) {
       cloner.RegisterClonedObject(original, this);
     }

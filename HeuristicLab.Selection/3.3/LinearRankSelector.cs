@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,17 +26,17 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Selection {
   /// <summary>
   /// A linear rank selection operator which considers the rank based on a single double quality value for selection.
   /// </summary>
   [Item("LinearRankSelector", "A linear rank selection operator which considers the rank based on a single double quality value for selection.")]
-  [StorableClass]
+  [StorableType("A1DFD3CF-9CA2-452D-BCF4-D2B5316C1765")]
   public sealed class LinearRankSelector : StochasticSingleObjectiveSelector, ISingleObjectiveSelector {
     [StorableConstructor]
-    private LinearRankSelector(bool deserializing) : base(deserializing) { }
+    private LinearRankSelector(StorableConstructorFlag _) : base(_) { }
     private LinearRankSelector(LinearRankSelector original, Cloner cloner)
       : base(original, cloner) {
     }

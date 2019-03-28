@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,8 +21,10 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Problems.DataAnalysis;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
+  [StorableType("4e8ff5de-c353-47cb-baa7-1a9be8f89456")]
   public interface INcaInitializer : IOperator {
     /// <summary>
     /// Calculates an initial projection for the NCA to start from.

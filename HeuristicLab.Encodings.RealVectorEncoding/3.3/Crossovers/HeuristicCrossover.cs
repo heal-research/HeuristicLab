@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,7 +25,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// <summary>
@@ -36,7 +36,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// It is implemented as described in Wright, A.H. (1994), Genetic algorithms for real parameter optimization, Foundations of Genetic Algorithms, G.J.E. Rawlins (Ed.), Morgan Kaufmann, San Mateo, CA, 205-218.
   /// </remarks>
   [Item("HeuristicCrossover", "The heuristic crossover produces offspring that extend the better parent in direction from the worse to the better parent. It is implemented as described in Wright, A.H. (1994), Genetic algorithms for real parameter optimization, Foundations of Genetic Algorithms, G.J.E. Rawlins (Ed.), Morgan Kaufmann, San Mateo, CA, 205-218.")]
-  [StorableClass]
+  [StorableType("CBD8F372-73EA-4D52-8D35-A3D2D514B96A")]
   public class HeuristicCrossover : RealVectorCrossover, ISingleObjectiveOperator {
     /// <summary>
     /// Whether the problem is a maximization or minimization problem.
@@ -52,7 +52,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     }
 
     [StorableConstructor]
-    protected HeuristicCrossover(bool deserializing) : base(deserializing) { }
+    protected HeuristicCrossover(StorableConstructorFlag _) : base(_) { }
     protected HeuristicCrossover(HeuristicCrossover original, Cloner cloner) : base(original, cloner) { }
     /// <summary>
     /// Initializes a new instance of <see cref="HeuristicCrossover"/> with two variable infos

@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,17 +22,17 @@
 using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis {
   /// <summary>
   /// Base class for threshold calculators for discriminant function classification models.
   /// </summary>
-  [StorableClass]
+  [StorableType("F56CDC6C-D4F5-4B2D-A7C4-04E0D2255699")]
   public abstract class ThresholdCalculator : NamedItem, IDiscriminantFunctionThresholdCalculator {
 
     [StorableConstructor]
-    protected ThresholdCalculator(bool deserializing) : base(deserializing) { }
+    protected ThresholdCalculator(StorableConstructorFlag _) : base(_) { }
     protected ThresholdCalculator(ThresholdCalculator original, Cloner cloner)
       : base(original, cloner) {
     }

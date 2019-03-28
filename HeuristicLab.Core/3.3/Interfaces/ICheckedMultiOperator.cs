@@ -1,6 +1,7 @@
-﻿#region License Information
+﻿using HEAL.Attic;
+#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,7 +22,8 @@
 
 
 namespace HeuristicLab.Core {
-  public interface ICheckedMultiOperator<T> : IMultiOperator<T> where T : class,IOperator {
+  [StorableType("c6eee993-706f-4390-bfac-1f779e45c448")]
+  public interface ICheckedMultiOperator<T> : IMultiOperator<T> where T : class, IOperator {
     new ICheckedItemList<T> Operators { get; }
   }
 }

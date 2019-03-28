@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,12 +25,12 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Selection;
 
 namespace HeuristicLab.Algorithms.EvolutionStrategy {
   [Item("WithoutRepeatingBatchedRandomSelector", "Selects m batches of n parents where in each batch the n parents are drawn without repeating.")]
-  [StorableClass]
+  [StorableType("FF9A96DC-8B6D-40D2-99A2-D91A4C990E15")]
   public class WithoutRepeatingBatchedRandomSelector : StochasticSelector {
     public override bool CanChangeName {
       get { return true; }
@@ -43,7 +43,7 @@ namespace HeuristicLab.Algorithms.EvolutionStrategy {
     }
 
     [StorableConstructor]
-    protected WithoutRepeatingBatchedRandomSelector(bool deserializing) : base(deserializing) { }
+    protected WithoutRepeatingBatchedRandomSelector(StorableConstructorFlag _) : base(_) { }
     protected WithoutRepeatingBatchedRandomSelector(WithoutRepeatingBatchedRandomSelector original, Cloner cloner)
       : base(original, cloner) {
     }

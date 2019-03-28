@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -27,7 +27,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Problems.Instances;
 
@@ -35,7 +35,7 @@ using HeuristicLab.Problems.Instances;
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [Item("Gaussian Process Covariance Optimization Problem", "")]
   [Creatable(CreatableAttribute.Categories.GeneticProgrammingProblems, Priority = 300)]
-  [StorableClass]
+  [StorableType("A3EA7CE7-78FA-48FF-9DD5-FBE5AB770A99")]
   public sealed class GaussianProcessCovarianceOptimizationProblem : SymbolicExpressionTreeProblem, IStatefulItem, IRegressionProblem, IProblemInstanceConsumer<IRegressionProblemData>, IProblemInstanceExporter<IRegressionProblemData> {
     #region static variables and ctor
     private static readonly CovarianceMaternIso maternIso1;
@@ -380,7 +380,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     // persistence
     [StorableConstructor]
-    private GaussianProcessCovarianceOptimizationProblem(bool deserializing) : base(deserializing) { }
+    private GaussianProcessCovarianceOptimizationProblem(StorableConstructorFlag _) : base(_) { }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
     }

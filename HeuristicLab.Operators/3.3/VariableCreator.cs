@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,14 +22,14 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Operators {
   /// <summary>
   /// An operator which collects the actual values of parameters and clones them into the current scope.
   /// </summary>
   [Item("VariableCreator", "An operator which collects the actual values of parameters and clones them into the current scope.")]
-  [StorableClass]
+  [StorableType("FF3526E7-216C-4F4B-8BBF-F3F67E9FE671")]
   public class VariableCreator : ValuesCollector {
     protected ScopeParameter CurrentScopeParameter {
       get { return (ScopeParameter)Parameters["CurrentScope"]; }
@@ -39,7 +39,7 @@ namespace HeuristicLab.Operators {
     }
 
     [StorableConstructor]
-    protected VariableCreator(bool deserializing) : base(deserializing) { }
+    protected VariableCreator(StorableConstructorFlag _) : base(_) { }
     protected VariableCreator(VariableCreator original, Cloner cloner)
       : base(original, cloner) {
     }

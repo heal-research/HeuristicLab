@@ -20,8 +20,10 @@
 #endregion
 
 using HeuristicLab.Core;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.BinPacking2D {
+  [StorableType("347e0b15-f3ae-42a1-be51-0dae36e95d4c")]
   public interface IOperator<TSol> : IItem {
     ILookupParameter<ReadOnlyItemList<PackingItem>> ItemsParameter { get; }
     ILookupParameter<PackingShape> BinShapeParameter { get; }

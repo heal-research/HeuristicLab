@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,7 +24,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
@@ -37,7 +37,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// The strategy vector can be of smaller length than the solution vector, in which case values are taken from the beginning again once the end of the strategy vector is reached.
   /// </remarks>
   [Item("SelfAdaptiveNormalAllPositionsManipulator", "This manipulation operator adds a value sigma_i * N(0,1) to the current value in each position i. The values for sigma_i are looked up dynamically. If there are less elements in the strategy vector than positions, then the strategy vector is cycled. It is implemented as described in Beyer, H.-G. and Schwefel, H.-P. 2002. Evolution Strategies - A Comprehensive Introduction Natural Computing, 1, pp. 3-52.")]
-  [StorableClass]
+  [StorableType("7F5FC5F4-9F99-4856-AF88-02C67CAF0251")]
   // BackwardsCompatibility3.3
   // Rename class to match file- and itemname when upgrading to 3.4
   public class NormalAllPositionsManipulator : RealVectorManipulator, ISelfAdaptiveManipulator {
@@ -56,7 +56,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     }
 
     [StorableConstructor]
-    protected NormalAllPositionsManipulator(bool deserializing) : base(deserializing) { }
+    protected NormalAllPositionsManipulator(StorableConstructorFlag _) : base(_) { }
     protected NormalAllPositionsManipulator(NormalAllPositionsManipulator original, Cloner cloner) : base(original, cloner) { }
     /// <summary>
     /// Initializes a new instance of <see cref="NormalAllPositionsManipulator"/> with one

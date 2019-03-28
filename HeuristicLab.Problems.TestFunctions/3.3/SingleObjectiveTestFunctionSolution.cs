@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,14 +26,14 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TestFunctions {
   /// <summary>
   /// Represents a SingleObjectiveTestFunctionSolution solution.
   /// </summary>
   [Item("SingleObjectiveTestFunctionSolution", "Represents a SingleObjectiveTestFunction solution.")]
-  [StorableClass]
+  [StorableType("F1CC46D2-10F1-4D14-AEF0-A575B67A0955")]
   public class SingleObjectiveTestFunctionSolution : Item {
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Image; }
@@ -122,7 +122,7 @@ namespace HeuristicLab.Problems.TestFunctions {
     }
 
     [StorableConstructor]
-    protected SingleObjectiveTestFunctionSolution(bool deserializing) : base(deserializing) { }
+    protected SingleObjectiveTestFunctionSolution(StorableConstructorFlag _) : base(_) { }
     protected SingleObjectiveTestFunctionSolution(SingleObjectiveTestFunctionSolution original, Cloner cloner)
       : base(original, cloner) {
       bestKnownRealVector = cloner.Clone(original.bestKnownRealVector);

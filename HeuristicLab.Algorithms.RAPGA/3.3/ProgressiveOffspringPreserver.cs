@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,7 +26,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.RAPGA {
   /// <summary>
@@ -36,7 +36,7 @@ namespace HeuristicLab.Algorithms.RAPGA {
   /// The operator also performs duplication control.
   /// </remarks>
   [Item("ProgressiveOffspringPreserver", "An operator that progressively selects offspring by adding it to a scope list. The operator also performs duplication control.")]
-  [StorableClass]
+  [StorableType("36A99B15-7DF3-481A-8D76-24BF4ED7B6F8")]
   public sealed class ProgressiveOffspringPreserver : SingleSuccessorOperator {
     #region Parameter Properties
     public ScopeParameter CurrentScopeParameter {
@@ -72,7 +72,7 @@ namespace HeuristicLab.Algorithms.RAPGA {
     #endregion
 
     [StorableConstructor]
-    private ProgressiveOffspringPreserver(bool deserializing) : base(deserializing) { }
+    private ProgressiveOffspringPreserver(StorableConstructorFlag _) : base(_) { }
     private ProgressiveOffspringPreserver(ProgressiveOffspringPreserver original, Cloner cloner) : base(original, cloner) { }
     public ProgressiveOffspringPreserver()
       : base() {

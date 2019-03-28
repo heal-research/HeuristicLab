@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,11 +24,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
   [Item("Symbolic Classification Problem (multi-objective)", "Represents a multi objective symbolic classfication problem.")]
-  [StorableClass]
+  [StorableType("3CD66D22-59F2-43BA-A357-AA84C403EE61")]
   [Creatable(CreatableAttribute.Categories.GeneticProgrammingProblems, Priority = 130)]
   public class SymbolicClassificationMultiObjectiveProblem : SymbolicDataAnalysisMultiObjectiveProblem<IClassificationProblemData, ISymbolicClassificationMultiObjectiveEvaluator, ISymbolicDataAnalysisSolutionCreator>, IClassificationProblem {
     private const double PunishmentFactor = 10;
@@ -56,7 +56,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     }
     #endregion
     [StorableConstructor]
-    protected SymbolicClassificationMultiObjectiveProblem(bool deserializing) : base(deserializing) { }
+    protected SymbolicClassificationMultiObjectiveProblem(StorableConstructorFlag _) : base(_) { }
     protected SymbolicClassificationMultiObjectiveProblem(SymbolicClassificationMultiObjectiveProblem original, Cloner cloner)
       : base(original, cloner) {
       RegisterEventHandlers();

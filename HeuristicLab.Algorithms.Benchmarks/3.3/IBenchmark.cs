@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,8 +23,10 @@ using System;
 using System.Threading;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.Benchmarks {
+  [StorableType("FFCF9EC9-35CE-43C2-85CF-F90CEA6058BC")]
   public interface IBenchmark : IItem {
     byte[][] ChunkData { get; set; }
     TimeSpan TimeLimit { get; set; }

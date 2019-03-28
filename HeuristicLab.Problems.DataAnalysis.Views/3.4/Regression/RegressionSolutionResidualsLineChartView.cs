@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -37,7 +37,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       var problemData = Content.ProblemData;
       var target = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, idx).ToArray();
       for (int i = 0; i < idx.Length; i++) {
-        x[i] = target[i] - x[i];
+        if (!double.IsInfinity(target[i]) && !double.IsNaN(target[i]) &&
+            !double.IsInfinity(x[i]) && !double.IsNaN(x[i])) {
+          x[i] = target[i] - x[i];
+        } else {
+          x[i] = 0.0;
+        }
       }
     }
 

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,11 +25,11 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
   [Item("Encoding", "Base class for describing different encodings.")]
-  [StorableClass]
+  [StorableType("395B1372-FA54-4649-9EBE-5402A0AA9494")]
   public abstract class Encoding<TSolution> : ParameterizedNamedItem, IEncoding<TSolution>
     where TSolution : class,ISolution {
     public override sealed bool CanChangeName {
@@ -79,7 +79,7 @@ namespace HeuristicLab.Optimization {
 
 
     [StorableConstructor]
-    protected Encoding(bool deserializing) : base(deserializing) { }
+    protected Encoding(StorableConstructorFlag _) : base(_) { }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       RegisterEventHandlers();

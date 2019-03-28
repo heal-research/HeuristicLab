@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -27,21 +27,21 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Selection {
   /// <summary>
   /// A tournament selection operator which considers a single double quality value for selection.
   /// </summary>
   [Item("TournamentSelector", "A tournament selection operator which considers a single double quality value for selection.")]
-  [StorableClass]
+  [StorableType("84B5B6EA-A3A0-4E06-B663-DE451306A1CE")]
   public sealed class TournamentSelector : StochasticSingleObjectiveSelector, ISingleObjectiveSelector {
     public ValueLookupParameter<IntValue> GroupSizeParameter {
       get { return (ValueLookupParameter<IntValue>)Parameters["GroupSize"]; }
     }
 
     [StorableConstructor]
-    private TournamentSelector(bool deserializing) : base(deserializing) { }
+    private TournamentSelector(StorableConstructorFlag _) : base(_) { }
     private TournamentSelector(TournamentSelector original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new TournamentSelector(this, cloner);

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,20 +21,20 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.VehicleRouting.Encodings.General;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaCreator", "A VRP creator.")]
-  [StorableClass]
+  [StorableType("95DC1B24-02C9-4AF0-8A00-21A47AFB9E39")]
   public abstract class AlbaCreator : VRPCreator, IAlbaOperator, IVRPCreator {
     public override bool CanChangeName {
       get { return false; }
     }
 
     [StorableConstructor]
-    protected AlbaCreator(bool deserializing) : base(deserializing) { }
+    protected AlbaCreator(StorableConstructorFlag _) : base(_) { }
 
     public AlbaCreator()
       : base() {

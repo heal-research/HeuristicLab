@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,14 +25,14 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.QuadraticAssignment {
   /// <summary>
   /// A base class for operators which evaluate QAP solutions.
   /// </summary>
   [Item("QAPMoveEvaluator", "A base class for operators which evaluate moves.")]
-  [StorableClass]
+  [StorableType("71C3A4D8-F5BB-4539-AD28-B969D7F0D879")]
   public abstract class QAPMoveEvaluator : SingleSuccessorOperator, IQAPMoveEvaluator {
 
     public override bool CanChangeName {
@@ -56,7 +56,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
     }
 
     [StorableConstructor]
-    protected QAPMoveEvaluator(bool deserializing) : base(deserializing) { }
+    protected QAPMoveEvaluator(StorableConstructorFlag _) : base(_) { }
     protected QAPMoveEvaluator(QAPMoveEvaluator original, Cloner cloner) : base(original, cloner) { }
     protected QAPMoveEvaluator()
       : base() {

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -30,11 +30,11 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Creators {
-  [StorableClass]
+  [StorableType("8E932C08-6D00-4055-9525-DBF28420DAB0")]
   public class MultiSymbolicDataAnalysisExpressionCreator : StochasticMultiBranch<ISymbolicDataAnalysisSolutionCreator>,
     ISymbolicDataAnalysisSolutionCreator,
     ISymbolicExpressionTreeSizeConstraintOperator,
@@ -71,7 +71,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Creators {
     #endregion
 
     [StorableConstructor]
-    protected MultiSymbolicDataAnalysisExpressionCreator(bool deserializing) : base(deserializing) { }
+    protected MultiSymbolicDataAnalysisExpressionCreator(StorableConstructorFlag _) : base(_) { }
     protected MultiSymbolicDataAnalysisExpressionCreator(MultiSymbolicDataAnalysisExpressionCreator original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) { return new MultiSymbolicDataAnalysisExpressionCreator(this, cloner); }
     public MultiSymbolicDataAnalysisExpressionCreator()

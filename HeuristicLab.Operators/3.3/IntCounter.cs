@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,14 +23,14 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Operators {
   /// <summary>
   /// An operator which increments an integer variable.
   /// </summary>
   [Item("IntCounter", "An operator which increments an integer variable.")]
-  [StorableClass]
+  [StorableType("053589D0-CEF2-465C-98F8-0A1FB7206B60")]
   public sealed class IntCounter : SingleSuccessorOperator {
 
     public LookupParameter<IntValue> ValueParameter {
@@ -45,7 +45,7 @@ namespace HeuristicLab.Operators {
     }
 
     [StorableConstructor]
-    private IntCounter(bool deserializing) : base(deserializing) { }
+    private IntCounter(StorableConstructorFlag _) : base(_) { }
     private IntCounter(IntCounter original, Cloner cloner)
       : base(original, cloner) {
     }

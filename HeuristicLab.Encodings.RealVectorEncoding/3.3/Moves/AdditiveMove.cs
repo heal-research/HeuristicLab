@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,11 +21,11 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   [Item("AdditiveMove", "A move on a real vector that that represents an additive change in one dimension.")]
-  [StorableClass]
+  [StorableType("D7E22627-2AB5-44A9-BD4D-9D1C5E45A150")]
   public class AdditiveMove : Item {
     [Storable]
     public int Dimension { get; protected set; }
@@ -35,7 +35,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     public RealVector RealVector { get; protected set; }
 
     [StorableConstructor]
-    protected AdditiveMove(bool deserializing) : base(deserializing) { }
+    protected AdditiveMove(StorableConstructorFlag _) : base(_) { }
     protected AdditiveMove(AdditiveMove original, Cloner cloner)
       : base(original, cloner) {
       this.Dimension = original.Dimension;

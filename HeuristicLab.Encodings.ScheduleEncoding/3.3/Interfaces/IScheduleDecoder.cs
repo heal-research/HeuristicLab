@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,8 +20,10 @@
 #endregion
 
 using HeuristicLab.Core;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding {
+  [StorableType("010C752F-0F5E-4B93-8695-8DD74903DBE7")]
   public interface IScheduleDecoder : IScheduleOperator {
     ILookupParameter<ISchedule> ScheduleEncodingParameter { get; }
     ILookupParameter<Schedule> ScheduleParameter { get; }

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -73,7 +73,8 @@ namespace HeuristicLab.Services.WebApp.Statistics.WebApi {
                 join info in factClientInfoDao.GetAll()
                   on client.Id equals info.ClientId into clientInfoJoin
                 from clientInfo in clientInfoJoin.OrderByDescending(x => x.Time).Take(1)
-                let offline = (client.ExpirationTime != null || clientInfo.SlaveState == SlaveState.Offline)
+                let offline = (client.DateExpired != null || clientInfo.SlaveState == SlaveState.Offline)
+                let parent = client.ParentResourceId.HasValue ? dimClientDao.GetById(client.ParentResourceId.Value) : null
                 select new DT.ClientDetails {
                   Id = client.Id,
                   Name = client.Name,
@@ -84,8 +85,8 @@ namespace HeuristicLab.Services.WebApp.Statistics.WebApi {
                   CpuUtilization = offline ? 0 : clientInfo.CpuUtilization,
                   State = offline ? SlaveState.Offline.ToString() : clientInfo.SlaveState.ToString(),
                   LastUpdate = clientInfo.Time,
-                  GroupId = client.ResourceGroupId,
-                  GroupName = client.GroupName,
+                  GroupId = client.ParentResourceId,
+                  GroupName = parent != null ? parent.Name : null,
                   UpTime = offline ? 0 : upTime,
                   TotalUnavailableTime = timeData != null ? timeData.TotalUnavailableTime : 0,
                   TotalCalculatingTime = taskTimeData != null ? taskTimeData.TotalCalculatingTime : 0,
@@ -116,12 +117,13 @@ namespace HeuristicLab.Services.WebApp.Statistics.WebApi {
       var dimClientDao = pm.DimClientDao;
       var factClientInfoDao = pm.FactClientInfoDao;
       return pm.UseTransaction(() => {
-        var clients = expired ? dimClientDao.GetExpiredClients() : dimClientDao.GetActiveClients();
+        var clients = expired ? dimClientDao.GetAllExpiredSlaves() : dimClientDao.GetAllOnlineSlaves();
         var query = (from client in clients
                      join info in factClientInfoDao.GetAll()
                        on client.Id equals info.ClientId into clientInfoJoin
                      from clientInfo in clientInfoJoin.OrderByDescending(x => x.Time).Take(1)
                      let offline = (expired || clientInfo.SlaveState == SlaveState.Offline)
+                     let parent = client.ParentResourceId.HasValue ? dimClientDao.GetById(client.ParentResourceId.Value) : null
                      select new DT.Client {
                        Id = client.Id,
                        Name = client.Name,
@@ -131,8 +133,8 @@ namespace HeuristicLab.Services.WebApp.Statistics.WebApi {
                        UsedMemory = offline ? 0 : clientInfo.UsedMemory,
                        CpuUtilization = offline ? 0 : clientInfo.CpuUtilization,
                        State = offline ? SlaveState.Offline.ToString() : clientInfo.SlaveState.ToString(),
-                       GroupId = client.ResourceGroupId,
-                       GroupName = client.GroupName,
+                       GroupId = client.ParentResourceId,
+                       GroupName = parent != null ? parent.Name : null,
                        IsAllowedToCalculate = clientInfo.IsAllowedToCalculate
                      });
         return new DT.ClientPage {
@@ -199,13 +201,14 @@ namespace HeuristicLab.Services.WebApp.Statistics.WebApi {
       var dimClientDao = pm.DimClientDao;
       var factClientInfoDao = pm.FactClientInfoDao;
       return pm.UseTransaction(() => {
-        var clients = expired ? dimClientDao.GetExpiredClients() : dimClientDao.GetActiveClients();
-        clients = clients.Where(x => x.ResourceGroupId == id);
+        var clients = expired ? dimClientDao.GetAllExpiredClients() : dimClientDao.GetAllOnlineClients();
+        clients = clients.Where(x => x.ParentResourceId == id);
         var query = (from client in clients
                      join info in factClientInfoDao.GetAll()
                        on client.Id equals info.ClientId into clientInfoJoin
                      from clientInfo in clientInfoJoin.OrderByDescending(x => x.Time).Take(1)
                      let offline = (expired || clientInfo.SlaveState == SlaveState.Offline)
+                     let parent = client.ParentResourceId.HasValue ? dimClientDao.GetById(client.ParentResourceId.Value) : null
                      select new DT.Client {
                        Id = client.Id,
                        Name = client.Name,
@@ -215,8 +218,8 @@ namespace HeuristicLab.Services.WebApp.Statistics.WebApi {
                        UsedMemory = offline ? 0 : clientInfo.UsedMemory,
                        CpuUtilization = offline ? 0 : clientInfo.CpuUtilization,
                        State = offline ? SlaveState.Offline.ToString() : clientInfo.SlaveState.ToString(),
-                       GroupId = client.ResourceGroupId,
-                       GroupName = client.GroupName,
+                       GroupId = client.ParentResourceId,
+                       GroupName = parent != null ? parent.Name : null,
                        IsAllowedToCalculate = clientInfo.IsAllowedToCalculate
                      });
         return new DT.ClientPage {
@@ -246,7 +249,7 @@ namespace HeuristicLab.Services.WebApp.Statistics.WebApi {
           fact => fact.ClientId,
           client => client.Id,
           (fact, client) => new {
-            client.ResourceGroupId,
+            client.ParentResourceId,
             fact.Time,
             fact.CpuUtilization,
             fact.NumTotalCores,
@@ -254,7 +257,7 @@ namespace HeuristicLab.Services.WebApp.Statistics.WebApi {
             fact.TotalMemory,
             fact.UsedMemory
           })
-        .Where(x => x.ResourceGroupId == id)
+        .Where(x => x.ParentResourceId == id)
         .ToList();
       var clientStatus = new DT.ClientStatus {
         CpuUtilization = 0,

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,9 +23,10 @@ using System.Drawing;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Operators {
+  [StorableType("1080f82a-f4cd-41db-a474-6578a4b9ec82")]
   public enum ReductionOperations {
     Sum,
     Product,
@@ -39,14 +40,14 @@ namespace HeuristicLab.Operators {
   }
 
   [Item("ReductionOperation", "Represents a certain type of reduction operation.")]
-  [StorableClass]
+  [StorableType("32D733BA-9331-46D2-8BB3-95E23431F00B")]
   public class ReductionOperation : ValueTypeValue<ReductionOperations> {
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Enum; }
     }
 
     [StorableConstructor]
-    protected ReductionOperation(bool deserializing) : base(deserializing) { }
+    protected ReductionOperation(StorableConstructorFlag _) : base(_) { }
     protected ReductionOperation(ReductionOperation original, Cloner cloner) : base(original, cloner) { }
     public ReductionOperation() : base() { }
     public ReductionOperation(ReductionOperations type) : base(type) { }

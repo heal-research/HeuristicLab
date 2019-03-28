@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,7 +21,7 @@
 
 using System;
 using System.Text;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Persistence.Interfaces {
 
@@ -31,7 +31,7 @@ namespace HeuristicLab.Persistence.Interfaces {
   /// </summary>
   /// <typeparam name="Source">The source type.</typeparam>
   /// <typeparam name="SerialData">The serialized type.</typeparam>
-  [StorableClass]
+  [StorableType("A43393DF-4A1F-42A0-BA2D-1DFEA04EBD97")]
   public abstract class PrimitiveSerializerBase<Source, SerialData> :
       IPrimitiveSerializer<Source, SerialData>
       where SerialData : ISerialData {

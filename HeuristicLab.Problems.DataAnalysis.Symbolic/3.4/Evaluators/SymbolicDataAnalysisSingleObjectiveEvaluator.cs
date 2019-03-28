@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,17 +19,16 @@
  */
 #endregion
 
-using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using System.Collections.Generic;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
-  [StorableClass]
+  [StorableType("0547D067-792A-462C-90B9-BE09E91CE255")]
   public abstract class SymbolicDataAnalysisSingleObjectiveEvaluator<T> : SymbolicDataAnalysisEvaluator<T>, ISymbolicDataAnalysisSingleObjectiveEvaluator<T>
    where T : class, IDataAnalysisProblemData {
     private const string QualityParameterName = "Quality";
@@ -42,7 +41,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public abstract bool Maximization { get; }
     #endregion
     [StorableConstructor]
-    protected SymbolicDataAnalysisSingleObjectiveEvaluator(bool deserializing) : base(deserializing) { }
+    protected SymbolicDataAnalysisSingleObjectiveEvaluator(StorableConstructorFlag _) : base(_) { }
     protected SymbolicDataAnalysisSingleObjectiveEvaluator(SymbolicDataAnalysisSingleObjectiveEvaluator<T> original, Cloner cloner)
       : base(original, cloner) {
     }

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,18 +25,18 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.QuadraticAssignment {
   [Item("QAPSwap2MoveEvaluator", "Evaluated a swap-2 move on a QAP solution.")]
-  [StorableClass]
+  [StorableType("7BB50BA8-2690-4752-B129-91A520DB5829")]
   public class QAPSwap2MoveEvaluator : QAPMoveEvaluator, IPermutationSwap2MoveOperator {
     public ILookupParameter<Swap2Move> Swap2MoveParameter {
       get { return (ILookupParameter<Swap2Move>)Parameters["Swap2Move"]; }
     }
 
     [StorableConstructor]
-    protected QAPSwap2MoveEvaluator(bool deserializing) : base(deserializing) { }
+    protected QAPSwap2MoveEvaluator(StorableConstructorFlag _) : base(_) { }
     protected QAPSwap2MoveEvaluator(QAPSwap2MoveEvaluator original, Cloner cloner)
       : base(original, cloner) {
     }

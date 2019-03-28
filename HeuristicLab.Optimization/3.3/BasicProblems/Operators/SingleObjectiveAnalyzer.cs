@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -27,11 +27,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
   [Item("Single-objective Analyzer", "Calls the script's Analyze method to be able to write into the results collection.")]
-  [StorableClass]
+  [StorableType("3D20F8E2-CE11-4021-A05B-CFCB02C0FD6F")]
   public sealed class SingleObjectiveAnalyzer<TSolution> : SingleSuccessorOperator, ISingleObjectiveAnalysisOperator<TSolution>, IAnalyzer, IStochasticOperator
   where TSolution : class, ISolution {
     public bool EnabledByDefault { get { return true; } }
@@ -55,7 +55,7 @@ namespace HeuristicLab.Optimization {
     public Action<TSolution[], double[], ResultCollection, IRandom> AnalyzeAction { get; set; }
 
     [StorableConstructor]
-    private SingleObjectiveAnalyzer(bool deserializing) : base(deserializing) { }
+    private SingleObjectiveAnalyzer(StorableConstructorFlag _) : base(_) { }
     private SingleObjectiveAnalyzer(SingleObjectiveAnalyzer<TSolution> original, Cloner cloner) : base(original, cloner) { }
     public SingleObjectiveAnalyzer() {
       Parameters.Add(new LookupParameter<IEncoding<TSolution>>("Encoding", "An item that holds the problem's encoding."));

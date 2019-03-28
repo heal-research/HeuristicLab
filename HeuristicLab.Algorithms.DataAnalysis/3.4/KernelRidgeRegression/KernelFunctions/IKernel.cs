@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,8 +21,10 @@
 
 
 using System;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
+  [StorableType("adb61694-6937-4c93-aa8d-902b54811e37")]
   public interface IKernel : ICovarianceFunction {
     double? Beta { get; set; } // a kernel parameter
     IDistance Distance { get; set; } // the distance function to use

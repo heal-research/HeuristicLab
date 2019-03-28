@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,17 +21,17 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Operators {
   /// <summary>
   /// An operator which represents an empty statement.
   /// </summary>
   [Item("EmptyOperator", "An operator which represents an empty statement.")]
-  [StorableClass]
+  [StorableType("E385372F-A82C-4C27-8D93-A5366F454A17")]
   public sealed class EmptyOperator : SingleSuccessorOperator {
     [StorableConstructor]
-    private EmptyOperator(bool deserializing) : base(deserializing) { }
+    private EmptyOperator(StorableConstructorFlag _) : base(_) { }
     private EmptyOperator(EmptyOperator original, Cloner cloner)
       : base(original, cloner) {
     }

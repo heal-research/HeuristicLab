@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,14 +25,14 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Optimization.Operators {
   /// <summary>
   /// An operator which collects the actual values of parameters and adds them to a collection of results.
   /// </summary>
   [Item("ResultsCollector", "An operator which collects the actual values of parameters and adds them to a collection of results.")]
-  [StorableClass]
+  [StorableType("AAC0CE73-E492-48FB-9645-7AC282ECD860")]
   public class ResultsCollector : ValuesCollector {
     public ValueLookupParameter<ResultCollection> ResultsParameter {
       get { return (ValueLookupParameter<ResultCollection>)Parameters["Results"]; }
@@ -47,7 +47,7 @@ namespace HeuristicLab.Optimization.Operators {
     }
 
     [StorableConstructor]
-    protected ResultsCollector(bool deserializing) : base(deserializing) { }
+    protected ResultsCollector(StorableConstructorFlag _) : base(_) { }
     protected ResultsCollector(ResultsCollector original, Cloner cloner) : base(original, cloner) { }
     public ResultsCollector()
       : base() {

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,7 +26,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   [Item("Log Residual Evaluator", "Evaluator for symbolic regression models that calculates the mean of logarithmic absolute residuals avg(log( 1 + abs(y' - y)))" + 
@@ -37,10 +37,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
                                   "effect that smaller residuals have a stronger impact on the total quality compared to the large residuals." +
                                   "This effects GP convergence because functional fragments which are necessary to explain small variations are also more likely" +
                                   " to stay in the population. This is useful even when the actual objective function is mean of squared errors.")]
-  [StorableClass]
+  [StorableType("8CEA1A56-167D-481B-9167-C1DED8E06680")]
   public class SymbolicRegressionLogResidualEvaluator : SymbolicRegressionSingleObjectiveEvaluator {
     [StorableConstructor]
-    protected SymbolicRegressionLogResidualEvaluator(bool deserializing) : base(deserializing) { }
+    protected SymbolicRegressionLogResidualEvaluator(StorableConstructorFlag _) : base(_) { }
     protected SymbolicRegressionLogResidualEvaluator(SymbolicRegressionLogResidualEvaluator original, Cloner cloner)
       : base(original, cloner) {
     }

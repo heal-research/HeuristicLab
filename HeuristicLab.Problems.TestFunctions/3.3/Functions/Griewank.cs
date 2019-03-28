@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,7 +24,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TestFunctions {
   /// <summary>
@@ -33,7 +33,7 @@ namespace HeuristicLab.Problems.TestFunctions {
   /// Here it is implemented as described (without the modifications) in Locatelli, M. 2003. A note on the Griewank test function. Journal of Global Optimization 25, pp. 169-174, Springer.
   /// </summary>
   [Item("Griewank", "Evaluates the Griewank function on a given point. The optimum of this function is 0 at the origin. It is introduced by Griewank A.O. 1981 and implemented as described (without the modifications) in Locatelli, M. 2003. A note on the Griewank test function. Journal of Global Optimization 25, pp. 169-174, Springer.")]
-  [StorableClass]
+  [StorableType("9FA738E6-EB3C-4C64-92FE-3F7F0F823639")]
   public class Griewank : SingleObjectiveTestFunction {
     /// <summary>
     /// Returns false as the Griewank function is a minimization problem.
@@ -67,7 +67,7 @@ namespace HeuristicLab.Problems.TestFunctions {
     }
 
     [StorableConstructor]
-    protected Griewank(bool deserializing) : base(deserializing) { }
+    protected Griewank(StorableConstructorFlag _) : base(_) { }
     protected Griewank(Griewank original, Cloner cloner) : base(original, cloner) { }
     public Griewank() : base() { }
 

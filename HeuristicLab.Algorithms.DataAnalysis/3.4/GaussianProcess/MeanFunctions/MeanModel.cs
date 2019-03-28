@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,11 +24,11 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
-  [StorableClass]
+  [StorableType("4A05BC94-CC08-45E0-989A-516B1C1CC956")]
   [Item(Name = "MeanModel", Description = "A mean function for Gaussian processes that uses a regression solution created with a different algorithm to calculate the mean.")]
   // essentially an adaptor which maps from IMeanFunction to IRegressionSolution
   public sealed class MeanModel : ParameterizedNamedItem, IMeanFunction {
@@ -41,7 +41,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     [StorableConstructor]
-    private MeanModel(bool deserializing) : base(deserializing) { }
+    private MeanModel(StorableConstructorFlag _) : base(_) { }
     private MeanModel(MeanModel original, Cloner cloner)
       : base(original, cloner) {
     }

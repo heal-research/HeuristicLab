@@ -19,20 +19,19 @@
  */
 #endregion
 
-using System;
 using System.Linq;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.BinPacking3D {
   // NOTE: same implementation as for 2d problem
   [Item("Bin-Utilization Evaluator (3d)", "Calculates the overall utilization of bin space.")]
-  [StorableClass]
+  [StorableType("D6743552-FF6F-4D9B-AFC2-38FF3D25DEB9")]
   public class BinUtilizationEvaluator : Item, IEvaluator {
 
     [StorableConstructor]
-    protected BinUtilizationEvaluator(bool deserializing) : base(deserializing) { }
+    protected BinUtilizationEvaluator(StorableConstructorFlag _) : base(_) { }
     protected BinUtilizationEvaluator(BinUtilizationEvaluator original, Cloner cloner)
       : base(original, cloner) {
     }

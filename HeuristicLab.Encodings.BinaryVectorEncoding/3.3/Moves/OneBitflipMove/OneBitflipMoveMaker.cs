@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,11 +25,11 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   [Item("OneBitflipMoveMaker", "Peforms a one bitflip move on a given BitVector and updates the quality.")]
-  [StorableClass]
+  [StorableType("13029FD8-4A99-4EA6-A4AA-8877B86582B8")]
   public class OneBitflipMoveMaker : SingleSuccessorOperator, IOneBitflipMoveQualityOperator, IMoveMaker, ISingleObjectiveOperator {
     public override bool CanChangeName {
       get { return false; }
@@ -48,7 +48,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
     }
 
     [StorableConstructor]
-    protected OneBitflipMoveMaker(bool deserializing) : base(deserializing) { }
+    protected OneBitflipMoveMaker(StorableConstructorFlag _) : base(_) { }
     protected OneBitflipMoveMaker(OneBitflipMoveMaker original, Cloner cloner) : base(original, cloner) { }
     public OneBitflipMoveMaker()
       : base() {

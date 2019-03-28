@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,8 +22,10 @@
 using System;
 using System.Collections.Generic;
 using HeuristicLab.Core;
+using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
+  [StorableType("fda56e0b-9392-4711-9af1-55211bfa24ac")]
   internal interface INeighborBasedOperator<TSolution> : IEncodingOperator<TSolution>
   where TSolution : class, ISolution {
     Func<TSolution, IRandom, IEnumerable<TSolution>> GetNeighborsFunc { get; set; }

@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,14 +24,14 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Selection {
   /// <summary>
   /// A base class for selection operators.
   /// </summary>
   [Item("Selector", "A base class for selection operators.")]
-  [StorableClass]
+  [StorableType("88363FF9-09A4-4A31-A099-D3C86E84947D")]
   public abstract class Selector : InstrumentedOperator {
     public override bool CanChangeName {
       get { return false; }
@@ -45,7 +45,7 @@ namespace HeuristicLab.Selection {
     }
 
     [StorableConstructor]
-    protected Selector(bool deserializing) : base(deserializing) { }
+    protected Selector(StorableConstructorFlag _) : base(_) { }
     protected Selector(Selector original, Cloner cloner) : base(original, cloner) { }
 
     protected Selector()

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,12 +23,12 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.VehicleRouting.Encodings.Alba;
 
 namespace HeuristicLab.Problems.VehicleRouting {
   [Item("AlbaTranslocationMoveEvaluator", "Evaluates a translocation or insertion move (3-opt) for a VRP representation.  It is implemented as described in Alba, E. and Dorronsoro, B. (2004). Solving the Vehicle Routing Problem by Using Cellular Genetic Algorithms.")]
-  [StorableClass]
+  [StorableType("36E23651-0091-4CE9-869F-BACA65464D72")]
   public sealed class AlbaTranslocationMoveEvaluator : AlbaMoveEvaluator, IAlbaTranslocationMoveOperator {
     public ILookupParameter<TranslocationMove> TranslocationMoveParameter {
       get { return (ILookupParameter<TranslocationMove>)Parameters["TranslocationMove"]; }
@@ -40,7 +40,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
     }
 
     [StorableConstructor]
-    private AlbaTranslocationMoveEvaluator(bool deserializing) : base(deserializing) { }
+    private AlbaTranslocationMoveEvaluator(StorableConstructorFlag _) : base(_) { }
 
     public AlbaTranslocationMoveEvaluator()
       : base() {

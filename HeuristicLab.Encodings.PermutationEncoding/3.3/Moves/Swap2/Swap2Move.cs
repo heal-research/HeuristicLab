@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,14 +21,14 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("Swap2Move", "Item that describes a swap-2 move.")]
-  [StorableClass]
+  [StorableType("50250010-F7BF-4F72-9093-D9F5FE01B8BF")]
   public class Swap2Move : TwoIndexMove {
     [StorableConstructor]
-    protected Swap2Move(bool deserializing) : base(deserializing) { }
+    protected Swap2Move(StorableConstructorFlag _) : base(_) { }
     protected Swap2Move(Swap2Move original, Cloner cloner) : base(original, cloner) { }
     public Swap2Move() : base() { }
     public Swap2Move(int index1, int index2) : base(index1, index2, null) { }

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,10 +25,9 @@ using System.Threading;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
 using HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis;
@@ -36,7 +35,7 @@ using HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis;
 namespace HeuristicLab.Algorithms.DataAnalysis.TimeSeries {
   [Item("Autoregressive Modeling (AR)", "Timeseries modeling algorithm that creates AR-N models.")]
   [Creatable(CreatableAttribute.Categories.DataAnalysis, Priority = 130)]
-  [StorableClass]
+  [StorableType("3BB9D723-944A-420F-A44A-A86F6FB4DABE")]
   public class AutoregressiveModeling : FixedDataAnalysisAlgorithm<ITimeSeriesPrognosisProblem> {
     private const string TimeOffesetParameterName = "Maximum Time Offset";
 
@@ -51,7 +50,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.TimeSeries {
     }
 
     [StorableConstructor]
-    protected AutoregressiveModeling(bool deserializing) : base(deserializing) { }
+    protected AutoregressiveModeling(StorableConstructorFlag _) : base(_) { }
     protected AutoregressiveModeling(AutoregressiveModeling original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new AutoregressiveModeling(this, cloner);
@@ -96,7 +95,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.TimeSeries {
       for (int i = 0; i < inputMatrix.GetLength(0); i++)
         inputMatrix[i, timeOffset] = targetValues[i + problemData.TrainingPartition.Start];
 
-      if (inputMatrix.Cast<double>().Any(x => double.IsNaN(x) || double.IsInfinity(x)))
+      if (inputMatrix.ContainsNanOrInfinity())
         throw new NotSupportedException("Linear regression does not support NaN or infinity values in the input dataset.");
 
 

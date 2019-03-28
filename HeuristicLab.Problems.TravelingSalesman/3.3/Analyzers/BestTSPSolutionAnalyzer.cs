@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -27,14 +27,14 @@ using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TravelingSalesman {
   /// <summary>
   /// An operator for analyzing the best solution of Traveling Salesman Problems given in path representation using city coordinates.
   /// </summary>
   [Item("BestTSPSolutionAnalyzer", "An operator for analyzing the best solution of Traveling Salesman Problems given in path representation using city coordinates.")]
-  [StorableClass]
+  [StorableType("86D3A4A2-C91C-46D4-9644-10F88F94FEA1")]
   public sealed class BestTSPSolutionAnalyzer : SingleSuccessorOperator, IAnalyzer, ISingleObjectiveOperator {
     public bool EnabledByDefault {
       get { return true; }
@@ -66,7 +66,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     }
 
     [StorableConstructor]
-    private BestTSPSolutionAnalyzer(bool deserializing) : base(deserializing) { }
+    private BestTSPSolutionAnalyzer(StorableConstructorFlag _) : base(_) { }
     private BestTSPSolutionAnalyzer(BestTSPSolutionAnalyzer original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new BestTSPSolutionAnalyzer(this, cloner);

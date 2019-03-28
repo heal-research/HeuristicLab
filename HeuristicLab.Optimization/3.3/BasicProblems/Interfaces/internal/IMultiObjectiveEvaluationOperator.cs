@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,8 +21,10 @@
 
 using System;
 using HeuristicLab.Core;
+using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
+  [StorableType("89da568c-70a2-48fb-8e6b-ea078bb6fc3f")]
   internal interface IMultiObjectiveEvaluationOperator<TSolution> : IMultiObjectiveEvaluator, IEncodingOperator<TSolution>
   where TSolution : class, ISolution {
     Func<TSolution, IRandom, double[]> EvaluateFunc { get; set; }

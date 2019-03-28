@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,7 +24,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.TestFunctions {
@@ -32,7 +32,7 @@ namespace HeuristicLab.Problems.TestFunctions {
   /// A function that returns a random variable in [0;1) independent of the inputs.
   /// </summary
   [Item("Random", "Returns a random value in [0;1) that is independent of the inputs.")]
-  [StorableClass]
+  [StorableType("8D56248E-D85B-49C0-92C1-E1D53F729202")]
   public class Random : SingleObjectiveTestFunction {
     /// <summary>
     /// It does not really matter.
@@ -70,7 +70,7 @@ namespace HeuristicLab.Problems.TestFunctions {
     }
 
     [StorableConstructor]
-    protected Random(bool deserializing) : base(deserializing) { }
+    protected Random(StorableConstructorFlag _) : base(_) { }
     protected Random(Random original, Cloner cloner) : base(original, cloner) { }
     public Random()
       : base() {

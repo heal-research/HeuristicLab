@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,14 +25,14 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Analysis {
   /// <summary>
   /// An operator which calculates the best, average and worst quality of solutions in the scope tree.
   /// </summary>
   [Item("BestAverageWorstQualityCalculator", "An operator which calculates the best, average and worst quality of solutions in the scope tree.")]
-  [StorableClass]
+  [StorableType("29E14C28-D4F7-4F26-9D18-61867457A693")]
   public sealed class BestAverageWorstQualityCalculator : SingleSuccessorOperator, ISingleObjectiveOperator {
     public ValueLookupParameter<BoolValue> MaximizationParameter {
       get { return (ValueLookupParameter<BoolValue>)Parameters["Maximization"]; }
@@ -52,7 +52,7 @@ namespace HeuristicLab.Analysis {
 
     #region Storing & Cloning
     [StorableConstructor]
-    private BestAverageWorstQualityCalculator(bool deserializing) : base(deserializing) { }
+    private BestAverageWorstQualityCalculator(StorableConstructorFlag _) : base(_) { }
     private BestAverageWorstQualityCalculator(BestAverageWorstQualityCalculator original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new BestAverageWorstQualityCalculator(this, cloner);

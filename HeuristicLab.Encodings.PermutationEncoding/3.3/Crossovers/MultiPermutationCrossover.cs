@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -27,12 +27,12 @@ using HeuristicLab.Core;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("MultiPermutationCrossover", "Randomly selects and applies one of its crossovers every time it is called.")]
-  [StorableClass]
+  [StorableType("C4F47F2E-FAF5-4AC6-B8AB-42F8A11D8703")]
   public class MultiPermutationCrossover : StochasticMultiBranch<IPermutationCrossover>, IPermutationCrossover, IStochasticOperator {
     public override bool CanChangeName {
       get { return false; }
@@ -50,7 +50,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     }
 
     [StorableConstructor]
-    protected MultiPermutationCrossover(bool deserializing) : base(deserializing) { }
+    protected MultiPermutationCrossover(StorableConstructorFlag _) : base(_) { }
     protected MultiPermutationCrossover(MultiPermutationCrossover original, Cloner cloner) : base(original, cloner) { }
     public MultiPermutationCrossover()
       : base() {

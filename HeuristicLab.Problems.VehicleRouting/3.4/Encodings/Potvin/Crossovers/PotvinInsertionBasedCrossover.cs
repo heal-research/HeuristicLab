@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,7 +21,7 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using System.Collections.Generic;
 using HeuristicLab.Data;
 using System;
@@ -31,14 +31,14 @@ using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinInsertionBasedCrossover", "The IBX crossover for VRP representations. It is implemented as described in Berger, J and Solois, M and Begin, R (1998). A hybrid genetic algorithm for the vehicle routing problem with time windows. LNCS 1418. Springer, London 114-127.")]
-  [StorableClass]
+  [StorableType("441CEAB7-A2E2-4217-8E44-EA99312F72E6")]
   public sealed class PotvinInsertionBasedCrossover : PotvinCrossover {
     public IValueParameter<IntValue> Length {
       get { return (IValueParameter<IntValue>)Parameters["Length"]; }
     }
 
     [StorableConstructor]
-    private PotvinInsertionBasedCrossover(bool deserializing) : base(deserializing) { }
+    private PotvinInsertionBasedCrossover(StorableConstructorFlag _) : base(_) { }
     private PotvinInsertionBasedCrossover(PotvinInsertionBasedCrossover original, Cloner cloner)
       : base(original, cloner) {
     }

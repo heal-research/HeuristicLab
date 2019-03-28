@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,8 +22,10 @@
 using Google.ProtocolBuffers;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.ExternalEvaluation {
+  [StorableType("04901da1-d785-4124-a989-2a9c6bd1a81c")]
   public interface IExternalEvaluationProblem : IProblem {
 
     EvaluationCache Cache { get; }

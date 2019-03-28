@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,11 +23,11 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaIntraRouteInversionMoveMaker", "Peforms the SLS move on a given VRP encoding and updates the quality.  It is implemented as described in Alba, E. and Dorronsoro, B. (2004). Solving the Vehicle Routing Problem by Using Cellular Genetic Algorithms.")]
-  [StorableClass]
+  [StorableType("B2A4AD5F-E09B-4F2F-BAE4-8E80F84DAA67")]
   public class AlbaIntraRouteInversionMoveMaker : AlbaMoveMaker, IAlbaIntraRouteInversionMoveOperator, IMoveMaker {
     public ILookupParameter<AlbaIntraRouteInversionMove> IntraRouteInversionMoveParameter {
       get { return (ILookupParameter<AlbaIntraRouteInversionMove>)Parameters["AlbaIntraRouteInversionMove"]; }
@@ -38,7 +38,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
     }
 
     [StorableConstructor]
-    protected AlbaIntraRouteInversionMoveMaker(bool deserializing) : base(deserializing) { }
+    protected AlbaIntraRouteInversionMoveMaker(StorableConstructorFlag _) : base(_) { }
 
     public AlbaIntraRouteInversionMoveMaker()
       : base() {

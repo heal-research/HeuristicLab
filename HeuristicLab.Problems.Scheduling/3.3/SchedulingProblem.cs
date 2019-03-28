@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,19 +19,19 @@
  */
 #endregion
 
-//using HeuristicLab.Common;
-//using HeuristicLab.Core;
-//using HeuristicLab.Encodings.ScheduleEncoding;
-//using HeuristicLab.Optimization;
-//using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Common;
+using HeuristicLab.Core;
+using HeuristicLab.Encodings.ScheduleEncoding;
+using HeuristicLab.Optimization;
+using HEAL.Attic;
 
-//namespace HeuristicLab.Problems.Scheduling {
-//  [Item("SchedulingProblem", "Abstract class that represents a Scheduling Problem")]
-//  [StorableClass]
-//  public abstract class SchedulingProblem : SingleObjectiveHeuristicOptimizationProblem<ISchedulingEvaluator, IScheduleCreator> {
-//    [StorableConstructor]
-//    protected SchedulingProblem(bool deserializing) : base(deserializing) { }
-//    protected SchedulingProblem(SchedulingProblem original, Cloner cloner) : base(original, cloner) { }
-//    protected SchedulingProblem(ISchedulingEvaluator evaluator, IScheduleCreator creator) : base(evaluator, creator) { }
-//  }
-//}
+namespace HeuristicLab.Problems.Scheduling {
+  [Item("SchedulingProblem", "Abstract class that represents a Scheduling Problem")]
+  [StorableType("D3EFE88B-7725-40DF-861F-37B17314D3F5")]
+  public abstract class SchedulingProblem : SingleObjectiveHeuristicOptimizationProblem<ISchedulingEvaluator, IScheduleCreator> {
+    [StorableConstructor]
+    protected SchedulingProblem(StorableConstructorFlag _) : base(_) { }
+    protected SchedulingProblem(SchedulingProblem original, Cloner cloner) : base(original, cloner) { }
+    protected SchedulingProblem(ISchedulingEvaluator evaluator, IScheduleCreator creator) : base(evaluator, creator) { }
+  }
+}

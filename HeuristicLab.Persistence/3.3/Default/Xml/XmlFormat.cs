@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,7 +19,7 @@
  */
 #endregion
 
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Persistence.Interfaces;
 
 namespace HeuristicLab.Persistence.Default.Xml {
@@ -28,7 +28,7 @@ namespace HeuristicLab.Persistence.Default.Xml {
   /// A simple XML format, that can be used to either stream
   /// or save to a file.
   /// </summary>
-  [StorableClass]
+  [StorableType("4E9895D9-BB30-43A6-AB35-4263FFDE3C0E")]
   public class XmlFormat : FormatBase<XmlString> {
     /// <summary>
     /// Gets the format's name.
@@ -37,7 +37,7 @@ namespace HeuristicLab.Persistence.Default.Xml {
     public override string Name { get { return "XML"; } }
 
     [StorableConstructor]
-    protected XmlFormat(bool deserializing) : base(deserializing) { }
+    protected XmlFormat(StorableConstructorFlag _) : base(_) { }
     public XmlFormat() { }
   }
 

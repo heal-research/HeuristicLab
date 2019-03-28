@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>HeuristicLab.MainForm.WindowsForms</RootNamespace>
     <AssemblyName>HeuristicLab.MainForm.WindowsForms-3.3</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -150,6 +150,7 @@
       <DependentUpon>InfoBox.cs</DependentUpon>
     </Compile>
     <Compile Include="Plugin.cs" />
+    <Compile Include="Progress.cs" />
     <Compile Include="Views\AsynchronousContentView.cs">
       <SubType>UserControl</SubType>
     </Compile>

@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,9 +24,9 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
-  [StorableClass]
+  [StorableType("36A22322-0627-4E25-A468-F2A788AF6D46")]
   [Item("TypeCoherentExpressionGrammar", "Represents a grammar for functional expressions in which special syntactic constraints are enforced so that boolean and real-valued expressions are not mixed.")]
   public class TypeCoherentExpressionGrammar : SymbolicExpressionGrammar, ISymbolicDataAnalysisGrammar {
     private const string ArithmeticFunctionsName = "Arithmetic Functions";
@@ -43,7 +43,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private const string TimeSeriesSymbolsName = "Time Series Symbols";
 
     [StorableConstructor]
-    protected TypeCoherentExpressionGrammar(bool deserializing) : base(deserializing) { }
+    protected TypeCoherentExpressionGrammar(StorableConstructorFlag _) : base(_) { }
     protected TypeCoherentExpressionGrammar(TypeCoherentExpressionGrammar original, Cloner cloner) : base(original, cloner) { }
     public TypeCoherentExpressionGrammar()
       : base(ItemAttribute.GetName(typeof(TypeCoherentExpressionGrammar)), ItemAttribute.GetDescription(typeof(TypeCoherentExpressionGrammar))) {
@@ -68,7 +68,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var square = new Square();
       var root = new Root();
       var sqrt = new SquareRoot();
+      var cube = new Cube();
+      var cubeRoot = new CubeRoot();
       var exp = new Exponential();
+      var abs = new Absolute();
 
       var airyA = new AiryA();
       var airyB = new AiryB();
@@ -81,10 +84,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var fresnelSineIntegral = new FresnelSineIntegral();
       var gamma = new Gamma();
       var hypCosineIntegral = new HyperbolicCosineIntegral();
+      var tanh = new HyperbolicTangent();
       var hypSineIntegral = new HyperbolicSineIntegral();
       var norm = new Norm();
       var psi = new Psi();
       var sineIntegral = new SineIntegral();
+      var analyticalQuotient = new AnalyticQuotient();
 
       var @if = new IfThenElse();
       var gt = new GreaterThan();
@@ -111,14 +116,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
       #region group symbol declaration
       var arithmeticSymbols = new GroupSymbol(ArithmeticFunctionsName, new List<ISymbol>() { add, sub, mul, div, mean });
-      var trigonometricSymbols = new GroupSymbol(TrigonometricFunctionsName, new List<ISymbol>() { sin, cos, tan });
-      var exponentialAndLogarithmicSymbols = new GroupSymbol(ExponentialFunctionsName, new List<ISymbol> { exp, log });
-      var specialFunctions = new GroupSymbol(SpecialFunctionsName, new List<ISymbol> { airyA, airyB, bessel, cosineIntegral, dawson, erf, expIntegralEi,
-        fresnelCosineIntegral,fresnelSineIntegral,gamma,hypCosineIntegral,hypSineIntegral,norm, psi, sineIntegral});
+      var trigonometricSymbols = new GroupSymbol(TrigonometricFunctionsName, new List<ISymbol>() { sin, cos, tan, tanh});
+      var exponentialAndLogarithmicSymbols = new GroupSymbol(ExponentialFunctionsName, new List<ISymbol> { exp, log});
+      var specialFunctions = new GroupSymbol(SpecialFunctionsName, new List<ISymbol> { abs, airyA, airyB, bessel, cosineIntegral, dawson, erf, expIntegralEi,
+        fresnelCosineIntegral,fresnelSineIntegral,gamma,hypCosineIntegral,hypSineIntegral,norm, psi, sineIntegral, analyticalQuotient});
       var terminalSymbols = new GroupSymbol(TerminalsName, new List<ISymbol> { constant, variableSymbol, binFactorVariable, factorVariable });
       var realValuedSymbols = new GroupSymbol(RealValuedSymbolsName, new List<ISymbol>() { arithmeticSymbols, trigonometricSymbols, exponentialAndLogarithmicSymbols, specialFunctions, terminalSymbols });
 
-      var powerSymbols = new GroupSymbol(PowerFunctionsName, new List<ISymbol> { square, pow, sqrt, root });
+      var powerSymbols = new GroupSymbol(PowerFunctionsName, new List<ISymbol> { square, pow, sqrt, root, cube, cubeRoot });
 
       var conditionSymbols = new GroupSymbol(ConditionsName, new List<ISymbol> { @if, variableCondition });
       var comparisonSymbols = new GroupSymbol(ComparisonsName, new List<ISymbol> { gt, lt });
@@ -139,9 +144,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       SetSubtreeCount(pow, 2, 2);
       SetSubtreeCount(root, 2, 2);
       SetSubtreeCount(square, 1, 1);
+      SetSubtreeCount(cube, 1, 1);
       SetSubtreeCount(sqrt, 1, 1);
+      SetSubtreeCount(cubeRoot, 1, 1);
       SetSubtreeCount(exponentialAndLogarithmicSymbols, 1, 1);
-      SetSubtreeCount(specialFunctions, 1, 1);
+      foreach(var sy in specialFunctions.Symbols.Except(new[] { analyticalQuotient})) {
+        SetSubtreeCount(sy, 1, 1);
+      }
+      SetSubtreeCount(analyticalQuotient, 2, 2);
+
       SetSubtreeCount(terminalSymbols, 0, 0);
 
       SetSubtreeCount(@if, 3, 3);
@@ -230,6 +241,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     public void ConfigureAsDefaultRegressionGrammar() {
       Symbols.First(s => s is Average).Enabled = false;
+      Symbols.First(s => s is Absolute).Enabled = false;
+      Symbols.First(s => s is HyperbolicTangent).Enabled = false;
       Symbols.First(s => s.Name == TrigonometricFunctionsName).Enabled = false;
       Symbols.First(s => s.Name == PowerFunctionsName).Enabled = false;
       Symbols.First(s => s.Name == SpecialFunctionsName).Enabled = false;
@@ -241,6 +254,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       Symbols.First(s => s is Average).Enabled = false;
       Symbols.First(s => s is VariableCondition).Enabled = false;
       Symbols.First(s => s is Xor).Enabled = false;
+      Symbols.First(s => s is Absolute).Enabled = false;
+      Symbols.First(s => s is HyperbolicTangent).Enabled = false;
       Symbols.First(s => s.Name == TrigonometricFunctionsName).Enabled = false;
       Symbols.First(s => s.Name == ExponentialFunctionsName).Enabled = false;
       Symbols.First(s => s.Name == SpecialFunctionsName).Enabled = false;
@@ -250,6 +265,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     public void ConfigureAsDefaultTimeSeriesPrognosisGrammar() {
       Symbols.First(s => s is Average).Enabled = false;
+      Symbols.First(s => s is Absolute).Enabled = false;
+      Symbols.First(s => s is HyperbolicTangent).Enabled = false;
       Symbols.First(s => s.Name == TrigonometricFunctionsName).Enabled = false;
       Symbols.First(s => s.Name == PowerFunctionsName).Enabled = false;
       Symbols.First(s => s.Name == ConditionalSymbolsName).Enabled = false;

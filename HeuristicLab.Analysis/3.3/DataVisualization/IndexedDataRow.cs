@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,19 +19,19 @@
  */
 #endregion
 
-using HeuristicLab.Collections;
-using HeuristicLab.Common;
-using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using HeuristicLab.Collections;
+using HeuristicLab.Common;
+using HeuristicLab.Core;
+using HEAL.Attic;
 
 namespace HeuristicLab.Analysis {
   [Item("IndexedDataRow", "A data row that contains a series of points.")]
-  [StorableClass]
-  public class IndexedDataRow<T> : NamedItem {
+  [StorableType("0B0BB900-4C30-4485-82C2-C9E633110685")]
+  public class IndexedDataRow<T> : NamedItem, IDataRow {
 
     private DataRowVisualProperties visualProperties;
     public DataRowVisualProperties VisualProperties {
@@ -57,15 +57,30 @@ namespace HeuristicLab.Analysis {
       get { return visualProperties; }
       set { visualProperties = value; }
     }
-    [Storable(Name = "values")]
+    // BackwardsCompatibility3.3
+    #region Backwards compatible code, remove with 3.4
+    // tuples are stored inefficiently
+    [Storable(Name = "values", AllowOneWay = true)]
     private IEnumerable<Tuple<T, double>> StorableValues {
-      get { return values; }
       set { values = new ObservableList<Tuple<T, double>>(value); }
+    }
+    #endregion
+    private T[] storableX;
+    [Storable(Name = "x")]
+    private T[] StorableX {
+      get { return Values.Select(x => x.Item1).ToArray(); }
+      set { storableX = value; }
+    }
+    private double[] storableY;
+    [Storable(Name = "y")]
+    private double[] StorableY {
+      get { return Values.Select(x => x.Item2).ToArray(); }
+      set { storableY = value; }
     }
     #endregion
 
     [StorableConstructor]
-    protected IndexedDataRow(bool deserializing) : base(deserializing) { }
+    protected IndexedDataRow(StorableConstructorFlag _) : base(_) { }
     protected IndexedDataRow(IndexedDataRow<T> original, Cloner cloner)
       : base(original, cloner) {
       values = new ObservableList<Tuple<T, double>>(original.values.Select(x => Tuple.Create<T, double>(x.Item1, x.Item2)).ToList());
@@ -107,6 +122,15 @@ namespace HeuristicLab.Analysis {
     protected override void OnNameChanged() {
       base.OnNameChanged();
       VisualProperties.DisplayName = Name;
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      if (storableX != null && storableY != null) {
+        values = new ObservableList<Tuple<T, double>>(storableX.Zip(storableY, (x, y) => Tuple.Create(x, y)));
+        storableX = null;
+        storableY = null;
+      } else if (values == null) throw new InvalidOperationException("Deserialization problem with IndexedDataRow.");
     }
   }
 }

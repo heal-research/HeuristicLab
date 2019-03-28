@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -28,7 +28,7 @@ using HeuristicLab.MainForm.WindowsForms;
 namespace HeuristicLab.Clients.Access.Administration {
   [View("RoleList View")]
   [Content(typeof(IItemList<Role>), true)]
-  public partial class RoleListView : ItemListView<Role> {
+  public partial class RoleListView : ItemCollectionView<Role> {
     public RoleListView() {
       InitializeComponent();
       itemsGroupBox.Text = "Roles";

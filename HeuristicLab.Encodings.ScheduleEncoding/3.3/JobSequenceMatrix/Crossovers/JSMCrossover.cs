@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,15 +21,15 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("JSMCrossover", "An operator which crosses two JSM representations.")]
-  [StorableClass]
+  [StorableType("09F360FC-2AA0-4C05-98E1-0BE700355C96")]
   public abstract class JSMCrossover : ScheduleCrossover, IJSMOperator {
 
     [StorableConstructor]
-    protected JSMCrossover(bool deserializing) : base(deserializing) { }
+    protected JSMCrossover(StorableConstructorFlag _) : base(_) { }
     protected JSMCrossover(JSMCrossover original, Cloner cloner) : base(original, cloner) { }
 
     public JSMCrossover() : base() { }

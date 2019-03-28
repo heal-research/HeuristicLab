@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,18 +23,17 @@ using System;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
 using HeuristicLab.Encodings.ScheduleEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.Scheduling {
   [Item("Mean tardiness Evaluator", "Represents an evaluator using the mean tardiness of a schedule.")]
-  [StorableClass]
+  [StorableType("75C00D86-4C81-43EC-A2D4-60736509C97E")]
   public class MeanTardinessEvaluator : ScheduleEvaluator, IJSSPOperator {
 
     [StorableConstructor]
-    protected MeanTardinessEvaluator(bool deserializing) : base(deserializing) { }
+    protected MeanTardinessEvaluator(StorableConstructorFlag _) : base(_) { }
     protected MeanTardinessEvaluator(MeanTardinessEvaluator original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new MeanTardinessEvaluator(this, cloner);

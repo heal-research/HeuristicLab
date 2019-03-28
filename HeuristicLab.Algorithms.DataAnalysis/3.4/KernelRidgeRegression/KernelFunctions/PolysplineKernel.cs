@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,10 +24,10 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
-  [StorableClass]
+  [StorableType("0618DE2C-6A69-4086-ADE1-F983AC626F42")]
   // conditionally positive definite. (need to add polynomials) see http://num.math.uni-goettingen.de/schaback/teaching/sc.pdf 
   [Item("PolysplineKernel", "A kernel function that uses the polyharmonic function (||x-c||/Beta)^Degree as given in http://num.math.uni-goettingen.de/schaback/teaching/sc.pdf with beta as a scaling parameters.")]
   public class PolysplineKernel : KernelBase {
@@ -43,7 +43,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     [StorableConstructor]
-    protected PolysplineKernel(bool deserializing) : base(deserializing) { }
+    protected PolysplineKernel(StorableConstructorFlag _) : base(_) { }
 
     protected PolysplineKernel(PolysplineKernel original, Cloner cloner) : base(original, cloner) { }
 

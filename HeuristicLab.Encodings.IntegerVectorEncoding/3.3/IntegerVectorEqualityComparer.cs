@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,9 +22,11 @@
 using System;
 using System.Collections.Generic;
 using HeuristicLab.PluginInfrastructure;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   [NonDiscoverableType]
+  [StorableType("33f5a8c1-8230-495f-8b8e-475bf69ac9a4")]
   public class IntegerVectorEqualityComparer : EqualityComparer<IntegerVector> {
     public override bool Equals(IntegerVector x, IntegerVector y) {
       if (ReferenceEquals(x, y)) return true;

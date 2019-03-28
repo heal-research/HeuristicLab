@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,7 +22,7 @@
 using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   /// <summary>
@@ -32,10 +32,10 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
   /// The operator first determines all cycles in the permutation and then composes the offspring by alternating between the cycles of the two parents.
   /// </remarks>
   [Item("CyclicCrossover", "An operator which performs the cyclic crossover on two permutations. It is implemented as described in Eiben, A.E. and Smith, J.E. 2003. Introduction to Evolutionary Computation. Natural Computing Series, Springer-Verlag Berlin Heidelberg.")]
-  [StorableClass]
+  [StorableType("7C4797B7-A154-4702-AEEB-5511A170858B")]
   public class CyclicCrossover : PermutationCrossover {
     [StorableConstructor]
-    protected CyclicCrossover(bool deserializing) : base(deserializing) { }
+    protected CyclicCrossover(StorableConstructorFlag _) : base(_) { }
     protected CyclicCrossover(CyclicCrossover original, Cloner cloner) : base(original, cloner) { }
     public CyclicCrossover() : base() { }
 

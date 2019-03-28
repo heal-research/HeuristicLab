@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -28,11 +28,11 @@ using System.Text.RegularExpressions;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
 
-  [StorableClass]
+  [StorableType("6C41AF6F-5F02-4510-B1B5-222651C4021B")]
   public class Calculator : IDeepCloneable {
 
     #region Fields & Properties
@@ -53,7 +53,7 @@ namespace HeuristicLab.Optimization {
     #region Construction & Cloning
 
     [StorableConstructor]
-    protected Calculator(bool deserializing) { }
+    protected Calculator(StorableConstructorFlag _) { }
     public Calculator() { }
     protected Calculator(Calculator original, Cloner cloner) {
       cloner.RegisterClonedObject(original, this);

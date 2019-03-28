@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,10 +25,10 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
-  [StorableClass]
+  [StorableType("B5F37A3E-1004-4C24-ADDE-C830757A9ABE")]
   [Item(Name = "MeanLinear", Description = "Linear mean function for Gaussian processes.")]
   public sealed class MeanLinear : ParameterizedNamedItem, IMeanFunction {
     public IValueParameter<DoubleArray> WeightsParameter {
@@ -36,7 +36,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     [StorableConstructor]
-    private MeanLinear(bool deserializing) : base(deserializing) { }
+    private MeanLinear(StorableConstructorFlag _) : base(_) { }
     private MeanLinear(MeanLinear original, Cloner cloner)
       : base(original, cloner) {
     }

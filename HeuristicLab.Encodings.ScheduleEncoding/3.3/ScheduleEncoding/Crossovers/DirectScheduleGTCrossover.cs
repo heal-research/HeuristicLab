@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,11 +23,11 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("DirectScheduleGTCrossover", "Represents a crossover using the GT-Algorithm to cross two direct schedule representations.")]
-  [StorableClass]
+  [StorableType("07921864-BC23-431D-BA28-B302691F7FF8")]
   public class DirectScheduleGTCrossover : DirectScheduleCrossover {
 
     public IValueLookupParameter<DoubleValue> MutationProbabilityParameter {
@@ -35,7 +35,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
     }
 
     [StorableConstructor]
-    protected DirectScheduleGTCrossover(bool deserializing) : base(deserializing) { }
+    protected DirectScheduleGTCrossover(StorableConstructorFlag _) : base(_) { }
     protected DirectScheduleGTCrossover(DirectScheduleGTCrossover original, Cloner cloner) : base(original, cloner) { }
     public DirectScheduleGTCrossover()
       : base() {

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,11 +25,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
   [Item("Single-objective MoveEvaluator", "Evaluates a parameter vector that results from a move.")]
-  [StorableClass]
+  [StorableType("EE4B1EBA-50BF-40C7-B338-F4A9D9CC554E")]
   public class SingleObjectiveMoveEvaluator<TSolution> : SingleSuccessorOperator, ISingleObjectiveEvaluationOperator<TSolution>, ISingleObjectiveMoveEvaluator, IStochasticOperator, ISingleObjectiveMoveOperator
   where TSolution : class, ISolution {
 
@@ -52,7 +52,7 @@ namespace HeuristicLab.Optimization {
     public Func<TSolution, IRandom, double> EvaluateFunc { get; set; }
 
     [StorableConstructor]
-    protected SingleObjectiveMoveEvaluator(bool deserializing) : base(deserializing) { }
+    protected SingleObjectiveMoveEvaluator(StorableConstructorFlag _) : base(_) { }
     protected SingleObjectiveMoveEvaluator(SingleObjectiveMoveEvaluator<TSolution> original, Cloner cloner) : base(original, cloner) { }
     public SingleObjectiveMoveEvaluator() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator to use."));

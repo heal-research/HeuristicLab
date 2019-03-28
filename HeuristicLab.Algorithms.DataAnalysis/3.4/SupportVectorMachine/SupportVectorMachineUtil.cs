@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -34,14 +34,23 @@ using LibSVM;
 namespace HeuristicLab.Algorithms.DataAnalysis {
   public class SupportVectorMachineUtil {
     /// <summary>
-    /// Transforms <paramref name="problemData"/> into a data structure as needed by libSVM.
+    /// Transforms <paramref name="dataset"/> into a data structure as needed by libSVM.
     /// </summary>
-    /// <param name="problemData">The problem data to transform</param>
+    /// <param name="dataset">The source dataset</param>
+    /// <param name="targetVariable">The target variable</param>
+    /// <param name="inputVariables">The selected input variables to include in the svm_problem.</param>
     /// <param name="rowIndices">The rows of the dataset that should be contained in the resulting SVM-problem</param>
     /// <returns>A problem data type that can be used to train a support vector machine.</returns>
     public static svm_problem CreateSvmProblem(IDataset dataset, string targetVariable, IEnumerable<string> inputVariables, IEnumerable<int> rowIndices) {
-      double[] targetVector = dataset.GetDoubleValues(targetVariable, rowIndices).ToArray();
-      svm_node[][] nodes = new svm_node[targetVector.Length][];
+      double[] targetVector ;
+      var nRows = rowIndices.Count();
+      if (string.IsNullOrEmpty(targetVariable)) {
+        // if the target variable is not set (e.g. for prediction of a trained model) we just use a zero vector
+        targetVector = new double[nRows];
+      } else {
+        targetVector = dataset.GetDoubleValues(targetVariable, rowIndices).ToArray();
+      }
+      svm_node[][] nodes = new svm_node[nRows][];
       int maxNodeIndex = 0;
       int svmProblemRowIndex = 0;
       List<string> inputVariablesList = inputVariables.ToList();
@@ -62,6 +71,18 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         nodes[svmProblemRowIndex++] = tempRow.ToArray();
       }
       return new svm_problem { l = targetVector.Length, y = targetVector, x = nodes };
+    }
+
+    /// <summary>
+    /// Transforms <paramref name="dataset"/> into a data structure as needed by libSVM for prediction.
+    /// </summary>
+    /// <param name="dataset">The problem data to transform</param>
+    /// <param name="inputVariables">The selected input variables to include in the svm_problem.</param>
+    /// <param name="rowIndices">The rows of the dataset that should be contained in the resulting SVM-problem</param>
+    /// <returns>A problem data type that can be used for prediction with a trained support vector machine.</returns>
+    public static svm_problem CreateSvmProblem(IDataset dataset, IEnumerable<string> inputVariables, IEnumerable<int> rowIndices) {
+      // for prediction we don't need a target variable
+      return CreateSvmProblem(dataset, string.Empty, inputVariables, rowIndices);
     }
 
     /// <summary>

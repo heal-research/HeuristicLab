@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -27,7 +27,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
@@ -35,9 +35,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
                                      "- HighLevel (upper 25% of the tree)\n" +
                                      "- Standard (mid 50% of the tree)\n" +
                                      "- LowLevel (lower 25% of the tree)")]
-  [StorableClass]
+  [StorableType("E48D1FEB-8D3F-4394-9AD4-7C4A24116FD4")]
   public sealed class SymbolicDataAnalysisExpressionDepthConstrainedCrossover<T> :
     SymbolicDataAnalysisExpressionCrossover<T> where T : class, IDataAnalysisProblemData {
+    [StorableType("24941bf7-da85-44e9-9e01-44c285ac41c3")]
     private enum Ranges { HighLevel, Standard, LowLevel };
     private const string DepthRangeParameterName = "DepthRange";
 
@@ -54,7 +55,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     #endregion
 
     [StorableConstructor]
-    private SymbolicDataAnalysisExpressionDepthConstrainedCrossover(bool deserializing) : base(deserializing) { }
+    private SymbolicDataAnalysisExpressionDepthConstrainedCrossover(StorableConstructorFlag _) : base(_) { }
     private SymbolicDataAnalysisExpressionDepthConstrainedCrossover(SymbolicDataAnalysisExpressionCrossover<T> original, Cloner cloner)
       : base(original, cloner) { }
     public SymbolicDataAnalysisExpressionDepthConstrainedCrossover()

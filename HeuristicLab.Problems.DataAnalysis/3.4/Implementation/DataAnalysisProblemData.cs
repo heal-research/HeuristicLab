@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,16 +22,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  [StorableClass]
+  [StorableType("85AE1542-D563-434F-A760-1D181EFC2101")]
   public abstract class DataAnalysisProblemData : ParameterizedNamedItem, IDataAnalysisProblemData {
     protected const string DatasetParameterName = "Dataset";
     protected const string InputVariablesParameterName = "InputVariables";
@@ -143,7 +142,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       RegisterEventHandlers();
     }
     [StorableConstructor]
-    protected DataAnalysisProblemData(bool deserializing) : base(deserializing) { }
+    protected DataAnalysisProblemData(StorableConstructorFlag _) : base(_) { }
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
@@ -162,7 +161,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
         throw new ArgumentException("All allowed input variables must be present in the dataset and of type double or string.");
 
       var variables = dataset.VariableNames.Where(variable => dataset.VariableHasType<double>(variable) || dataset.VariableHasType<string>(variable));
-      var inputVariables = new CheckedItemList<StringValue>(variables.Select(x => new StringValue(x)));
+      var inputVariables = new CheckedItemList<StringValue>(variables.Select(x => new StringValue(x).AsReadOnly()));
       foreach (StringValue x in inputVariables)
         inputVariables.SetItemCheckedState(x, allowedInputVariables.Contains(x.Value));
 
@@ -205,41 +204,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
     protected virtual void OnChanged() {
       var listeners = Changed;
       if (listeners != null) listeners(this, EventArgs.Empty);
-    }
-
-    protected virtual bool IsProblemDataCompatible(IDataAnalysisProblemData problemData, out string errorMessage) {
-      errorMessage = string.Empty;
-      if (problemData == null) throw new ArgumentNullException("problemData", "The provided problemData is null.");
-
-      //check allowed input variables
-      StringBuilder message = new StringBuilder();
-      var variables = new HashSet<string>(problemData.InputVariables.Select(x => x.Value));
-      foreach (var item in AllowedInputVariables) {
-        if (!variables.Contains(item))
-          message.AppendLine("Input variable '" + item + "' is not present in the new problem data.");
-      }
-
-      if (message.Length != 0) {
-        errorMessage = message.ToString();
-        return false;
-      }
-      return true;
-
-    }
-
-    public virtual void AdjustProblemDataProperties(IDataAnalysisProblemData problemData) {
-      DataAnalysisProblemData data = problemData as DataAnalysisProblemData;
-      if (data == null) throw new ArgumentException("The problem data is not a data analysis problem data. Instead a " + problemData.GetType().GetPrettyName() + " was provided.", "problemData");
-
-      string errorMessage;
-      if (!data.IsProblemDataCompatible(this, out errorMessage)) {
-        throw new InvalidOperationException(errorMessage);
-      }
-
-      foreach (var inputVariable in InputVariables) {
-        var variable = data.InputVariables.FirstOrDefault(i => i.Value == inputVariable.Value);
-        InputVariables.SetItemCheckedState(inputVariable, variable != null && data.InputVariables.ItemChecked(variable));
-      }
     }
   }
 }

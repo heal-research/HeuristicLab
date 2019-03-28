@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -28,13 +28,13 @@ using HeuristicLab.Core;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Problems.VehicleRouting.Variants;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
   [Item("MultiVRPSolutionCrossover", "Randomly selects and applies one of its crossovers every time it is called.")]
-  [StorableClass]
+  [StorableType("68B26F83-1FF1-42B9-BDB8-606EC8C462C7")]
   public class MultiVRPSolutionCrossover : StochasticMultiBranch<IVRPCrossover>, IVRPCrossover, IGeneralVRPOperator, IMultiVRPOperator, IStochasticOperator {
     public override bool CanChangeName {
       get { return false; }
@@ -57,7 +57,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
 
 
     [StorableConstructor]
-    protected MultiVRPSolutionCrossover(bool deserializing) : base(deserializing) { }
+    protected MultiVRPSolutionCrossover(StorableConstructorFlag _) : base(_) { }
     public MultiVRPSolutionCrossover()
       : base() {
       Parameters.Add(new LookupParameter<IVRPProblemInstance>("ProblemInstance", "The VRP problem instance"));

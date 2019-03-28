@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -30,16 +30,18 @@ namespace HeuristicLab.Services.Hive.DataAccess.Interfaces {
     DataContext DataContext { get; }
 
     #region Hive daos
-    AssignedResourceDao AssignedResourceDao { get; }
+    AssignedJobResourceDao AssignedJobResourceDao { get; }
+    AssignedProjectResourceDao AssignedProjectResourceDao { get; }
     DowntimeDao DowntimeDao { get; }
     JobDao JobDao { get; }
     JobPermissionDao JobPermissionDao { get; }
     LifecycleDao LifecycleDao { get; }
     PluginDao PluginDao { get; }
     PluginDataDao PluginDataDao { get; }
+    ProjectDao ProjectDao { get; }
+    ProjectPermissionDao ProjectPermissionDao { get; }
     RequiredPluginDao RequiredPluginDao { get; }
     ResourceDao ResourceDao { get; }
-    ResourcePermissionDao ResourcePermissionDao { get; }
     SlaveDao SlaveDao { get; }
     SlaveGroupDao SlaveGroupDao { get; }
     StateLogDao StateLogDao { get; }
@@ -55,6 +57,8 @@ namespace HeuristicLab.Services.Hive.DataAccess.Interfaces {
     DimUserDao DimUserDao { get; }
     FactClientInfoDao FactClientInfoDao { get; }
     FactTaskDao FactTaskDao { get; }
+    DimProjectDao DimProjectDao { get; }
+    FactProjectInfoDao FactProjectInfoDao { get; }
     #endregion
 
     #region Transaction management

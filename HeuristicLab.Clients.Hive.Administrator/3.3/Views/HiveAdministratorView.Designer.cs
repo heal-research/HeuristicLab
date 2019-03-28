@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -28,47 +28,45 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
       this.tabAdmin = new System.Windows.Forms.TabControl();
-      this.tabSlaves = new System.Windows.Forms.TabPage();
-      this.imageListUsers = new System.Windows.Forms.ImageList(this.components);
+      this.tabResources = new System.Windows.Forms.TabPage();
       this.resourcesView = new HeuristicLab.Clients.Hive.Administrator.Views.ResourcesView();
+      this.tabProjects = new System.Windows.Forms.TabPage();
+      this.imageListUsers = new System.Windows.Forms.ImageList(this.components);
+      this.projectsView = new HeuristicLab.Clients.Hive.Administrator.Views.ProjectsView();
       this.tabAdmin.SuspendLayout();
-      this.tabSlaves.SuspendLayout();
+      this.tabResources.SuspendLayout();
+      this.tabProjects.SuspendLayout();
       this.SuspendLayout();
       // 
       // tabAdmin
       // 
-      this.tabAdmin.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.tabAdmin.Controls.Add(this.tabSlaves);
+      this.tabAdmin.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.tabAdmin.Controls.Add(this.tabResources);
+      this.tabAdmin.Controls.Add(this.tabProjects);
       this.tabAdmin.Location = new System.Drawing.Point(3, 0);
       this.tabAdmin.Name = "tabAdmin";
       this.tabAdmin.SelectedIndex = 0;
       this.tabAdmin.Size = new System.Drawing.Size(742, 546);
       this.tabAdmin.TabIndex = 0;
       // 
-      // tabSlaves
+      // tabResources
       // 
-      this.tabSlaves.Controls.Add(this.resourcesView);
-      this.tabSlaves.Location = new System.Drawing.Point(4, 22);
-      this.tabSlaves.Name = "tabSlaves";
-      this.tabSlaves.Padding = new System.Windows.Forms.Padding(3);
-      this.tabSlaves.Size = new System.Drawing.Size(734, 520);
-      this.tabSlaves.TabIndex = 3;
-      this.tabSlaves.Text = "Slaves";
-      this.tabSlaves.UseVisualStyleBackColor = true;
-      // 
-      // imageListUsers
-      // 
-      this.imageListUsers.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
-      this.imageListUsers.ImageSize = new System.Drawing.Size(16, 16);
-      this.imageListUsers.TransparentColor = System.Drawing.Color.Transparent;
+      this.tabResources.Controls.Add(this.resourcesView);
+      this.tabResources.Location = new System.Drawing.Point(4, 22);
+      this.tabResources.Name = "tabResources";
+      this.tabResources.Padding = new System.Windows.Forms.Padding(3);
+      this.tabResources.Size = new System.Drawing.Size(734, 520);
+      this.tabResources.TabIndex = 3;
+      this.tabResources.Text = "Resources";
+      this.tabResources.UseVisualStyleBackColor = true;
       // 
       // resourcesView
       // 
-      this.resourcesView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.resourcesView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.resourcesView.Caption = "ResourcesView";
       this.resourcesView.Content = null;
       this.resourcesView.Location = new System.Drawing.Point(0, 0);
@@ -77,15 +75,44 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       this.resourcesView.Size = new System.Drawing.Size(734, 520);
       this.resourcesView.TabIndex = 0;
       // 
-      // HiveAdministrationView
+      // tabProjects
       // 
-      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+      this.tabProjects.Controls.Add(this.projectsView);
+      this.tabProjects.Location = new System.Drawing.Point(4, 22);
+      this.tabProjects.Name = "tabProjects";
+      this.tabProjects.Size = new System.Drawing.Size(734, 520);
+      this.tabProjects.TabIndex = 4;
+      this.tabProjects.Text = "Projects";
+      this.tabProjects.UseVisualStyleBackColor = true;
+      // 
+      // imageListUsers
+      // 
+      this.imageListUsers.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
+      this.imageListUsers.ImageSize = new System.Drawing.Size(16, 16);
+      this.imageListUsers.TransparentColor = System.Drawing.Color.Transparent;
+      // 
+      // projectsView
+      // 
+      this.projectsView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.projectsView.Caption = "Resources View";
+      this.projectsView.Content = null;
+      this.projectsView.Location = new System.Drawing.Point(0, 0);
+      this.projectsView.Name = "projectsView";
+      this.projectsView.ReadOnly = false;
+      this.projectsView.Size = new System.Drawing.Size(734, 520);
+      this.projectsView.TabIndex = 0;
+      // 
+      // HiveAdministratorView
+      // 
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.Controls.Add(this.tabAdmin);
-      this.Name = "HiveAdministrationView";
+      this.Name = "HiveAdministratorView";
       this.Size = new System.Drawing.Size(745, 546);
       this.tabAdmin.ResumeLayout(false);
-      this.tabSlaves.ResumeLayout(false);
+      this.tabResources.ResumeLayout(false);
+      this.tabProjects.ResumeLayout(false);
       this.ResumeLayout(false);
 
     }
@@ -94,7 +121,8 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
 
     private System.ComponentModel.IContainer components;
     private System.Windows.Forms.ImageList imageListUsers;
-    private System.Windows.Forms.TabPage tabSlaves;
-
+    private System.Windows.Forms.TabPage tabResources;
+    private System.Windows.Forms.TabPage tabProjects;
+    private ProjectsView projectsView;
   }
 }

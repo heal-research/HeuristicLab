@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>HeuristicLab.Clients.Hive.Views</RootNamespace>
     <AssemblyName>HeuristicLab.Clients.Hive.Views-3.3</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -100,6 +100,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions\FixedNumericUpDown.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="HiveInformationDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -167,6 +170,9 @@
     </Compile>
     <Compile Include="StateLog\StateLogView.designer.cs">
       <DependentUpon>StateLogView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TreeView\NoDoubleClickTreeView.cs">
+      <SubType>Component</SubType>
     </Compile>
     <None Include="Plugin.cs.frame" />
     <Compile Include="Plugin.cs" />
@@ -257,6 +263,13 @@
       <Name>HeuristicLab.Visualization.ChartControlsExtensions-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="HEAL.Attic, Version=1.0.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\HEAL.Attic.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

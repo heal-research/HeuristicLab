@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -27,14 +27,14 @@ using HeuristicLab.Encodings.BinaryVectorEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.Knapsack {
   /// <summary>
   /// An operator for analyzing the best solution for a Knapsack problem.
   /// </summary>
   [Item("BestKnapsackSolutionAnalyzer", "An operator for analyzing the best solution for a Knapsack problem.")]
-  [StorableClass]
+  [StorableType("40BCB11E-F9C9-4749-A4FF-831BD8342D1A")]
   public class BestKnapsackSolutionAnalyzer : SingleSuccessorOperator, IBinaryVectorSolutionsOperator, IAnalyzer, ISingleObjectiveOperator {
     public virtual bool EnabledByDefault {
       get { return true; }
@@ -72,7 +72,7 @@ namespace HeuristicLab.Problems.Knapsack {
     }
 
     [StorableConstructor]
-    protected BestKnapsackSolutionAnalyzer(bool deserializing) : base(deserializing) { }
+    protected BestKnapsackSolutionAnalyzer(StorableConstructorFlag _) : base(_) { }
     protected BestKnapsackSolutionAnalyzer(BestKnapsackSolutionAnalyzer original, Cloner cloner) : base(original, cloner) { }
     public BestKnapsackSolutionAnalyzer()
       : base() {

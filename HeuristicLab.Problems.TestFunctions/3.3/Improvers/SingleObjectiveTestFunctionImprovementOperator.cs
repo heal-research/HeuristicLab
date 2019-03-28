@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,7 +26,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TestFunctions {
   /// <summary>
@@ -37,7 +37,7 @@ namespace HeuristicLab.Problems.TestFunctions {
   /// The operator uses an implementation of the Nelder-Mead method with adaptive parameters as described in Gao, F. and Han, L. (2010). Implementing the Nelder-Mead simplex algorithm with adaptive parameters. Computational Optimization and Applications, Vol. 51. Springer. and conducts relection, expansion, contraction and reduction on the test functions solution.
   /// </remarks>
   [Item("SingleObjectiveTestFunctionImprovementOperator", "An operator that improves test functions solutions. It is implemented as described in Laguna, M. and Martí, R. (2003). Scatter Search: Methodology and Implementations in C. Operations Research/Computer Science Interfaces Series, Vol. 24. Springer.")]
-  [StorableClass]
+  [StorableType("4F33884D-D763-4F3A-9DC1-F3DF8EF7F48E")]
   public sealed class SingleObjectiveTestFunctionImprovementOperator : SingleSuccessorOperator, ISingleObjectiveTestFunctionImprovementOperator {
     #region Parameter properties
     public IValueParameter<DoubleValue> AlphaParameter {
@@ -82,7 +82,7 @@ namespace HeuristicLab.Problems.TestFunctions {
     #endregion
 
     [StorableConstructor]
-    private SingleObjectiveTestFunctionImprovementOperator(bool deserializing) : base(deserializing) { }
+    private SingleObjectiveTestFunctionImprovementOperator(StorableConstructorFlag _) : base(_) { }
     private SingleObjectiveTestFunctionImprovementOperator(SingleObjectiveTestFunctionImprovementOperator original, Cloner cloner) : base(original, cloner) { }
     public SingleObjectiveTestFunctionImprovementOperator()
       : base() {

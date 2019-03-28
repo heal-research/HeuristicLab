@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,14 +23,14 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TestFunctions {
   /// <summary>
   /// Base class for a test function evaluator.
   /// </summary>
   [Item("Single-Objective Function", "Base class for single objective functions.")]
-  [StorableClass]
+  [StorableType("2775A51F-C97B-4D2E-9B25-9E2591A961CB")]
   public abstract class SingleObjectiveTestFunction : ParameterizedNamedItem, ISingleObjectiveTestFunction {
     /// <summary>
     /// These operators should not change their name through the GUI
@@ -60,7 +60,7 @@ namespace HeuristicLab.Problems.TestFunctions {
     public abstract int MaximumProblemSize { get; }
 
     [StorableConstructor]
-    protected SingleObjectiveTestFunction(bool deserializing) : base(deserializing) { }
+    protected SingleObjectiveTestFunction(StorableConstructorFlag _) : base(_) { }
     protected SingleObjectiveTestFunction(SingleObjectiveTestFunction original, Cloner cloner) : base(original, cloner) { }
     protected SingleObjectiveTestFunction() : base() { }
 

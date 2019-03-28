@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -44,8 +44,10 @@ namespace HeuristicLab.Clients.Access.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
+      components = new System.ComponentModel.Container();
       System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RefreshableView));
       this.refreshButton = new System.Windows.Forms.Button();
+      this.toolTip = new System.Windows.Forms.ToolTip(this.components);
       this.SuspendLayout();
       // 
       // refreshButton
@@ -55,6 +57,7 @@ namespace HeuristicLab.Clients.Access.Views {
       this.refreshButton.Name = "refreshButton";
       this.refreshButton.Size = new System.Drawing.Size(24, 24);
       this.refreshButton.TabIndex = 1;
+      this.toolTip.SetToolTip(this.refreshButton, "Refresh data");
       this.refreshButton.UseVisualStyleBackColor = true;
       this.refreshButton.Click += new System.EventHandler(this.refreshButton_Click);
       // 
@@ -71,6 +74,7 @@ namespace HeuristicLab.Clients.Access.Views {
 
     #endregion
 
+    private System.Windows.Forms.ToolTip toolTip;
     protected System.Windows.Forms.Button refreshButton;
   }
 }

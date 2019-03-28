@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -30,6 +30,8 @@ namespace HeuristicLab.Services.Access {
     MembershipUser GetUserByName(string username);
     MembershipUser GetUserById(Guid userId);
     string GetUserNameById(Guid userId);
+    IEnumerable<Guid> GetUserGroupIdsOfUser(Guid userId);
     bool VerifyUser(Guid userId, List<Guid> allowedUserGroups);
+    IEnumerable<DataTransfer.UserGroupMapping> GetUserGroupMapping();
   }
 }

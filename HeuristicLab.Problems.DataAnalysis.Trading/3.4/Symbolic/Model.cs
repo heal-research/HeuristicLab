@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,24 +19,25 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Trading.Symbolic {
   /// <summary>
   /// Represents a symbolic trading model
   /// </summary>
-  [StorableClass]
+  [StorableType("EDBE6BAD-B331-4301-AA8C-234196942DF4")]
   [Item(Name = "Model (symbolic trading)", Description = "Represents a symbolic trading model.")]
   public class Model : SymbolicDataAnalysisModel, IModel {
 
     [StorableConstructor]
-    protected Model(bool deserializing) : base(deserializing) { }
+    protected Model(StorableConstructorFlag _) : base(_) { }
     protected Model(Model original, Cloner cloner)
       : base(original, cloner) { }
     public Model(ISymbolicExpressionTree tree, ISymbolicDataAnalysisExpressionTreeInterpreter interpreter)
@@ -51,6 +52,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Trading.Symbolic {
       ISymbolicExpressionTree tree = SymbolicExpressionTree;
       return GetSignals(interpreter.GetSymbolicExpressionTreeValues(tree, dataset, rows));
     }
+
+    public override bool IsProblemDataCompatible(IDataAnalysisProblemData problemData, out string errorMessage) {
+      if (problemData == null) throw new ArgumentNullException("problemData", "The provided problemData is null.");
+      return IsDatasetCompatible(problemData.Dataset, out errorMessage);
+    }
+
 
     // Transforms an enumerable of real values to an enumerable of trading signals (buy(1) / hold(0) / sell(-1))
     public static IEnumerable<double> GetSignals(IEnumerable<double> xs) {

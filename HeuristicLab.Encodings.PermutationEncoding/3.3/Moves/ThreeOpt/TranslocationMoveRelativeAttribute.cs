@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,11 +21,11 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("TranslocationMoveRelativeAttribute", "Specifies the tabu attributes for a translocation and insertion move (3-opt) on relative permutation encodings.")]
-  [StorableClass]
+  [StorableType("95F01C10-D383-4E5C-AC30-CB88E3263A00")]
   public class TranslocationMoveRelativeAttribute : PermutationMoveAttribute {
     [Storable]
     public int Edge1Source { get; private set; }
@@ -41,7 +41,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     public int Edge3Target { get; private set; }
 
     [StorableConstructor]
-    protected TranslocationMoveRelativeAttribute(bool deserializing) : base(deserializing) { }
+    protected TranslocationMoveRelativeAttribute(StorableConstructorFlag _) : base(_) { }
     protected TranslocationMoveRelativeAttribute(TranslocationMoveRelativeAttribute original, Cloner cloner)
       : base(original, cloner) {
       this.Edge1Source = original.Edge1Source;

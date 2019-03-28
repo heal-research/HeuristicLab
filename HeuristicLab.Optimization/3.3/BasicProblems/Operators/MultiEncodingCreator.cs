@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,15 +23,15 @@ using System;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
   [Item("MultiEncodingCreator", "Contains solution creators that together create a multi-encoding.")]
-  [StorableClass]
+  [StorableType("E261B506-6F74-4BC4-8164-5ACE20FBC319")]
   public sealed class MultiEncodingCreator : MultiEncodingOperator<ISolutionCreator>, ISolutionCreator<CombinedSolution> {
 
     [StorableConstructor]
-    private MultiEncodingCreator(bool deserializing) : base(deserializing) { }
+    private MultiEncodingCreator(StorableConstructorFlag _) : base(_) { }
     private MultiEncodingCreator(MultiEncodingCreator original, Cloner cloner) : base(original, cloner) { }
     public MultiEncodingCreator() : base() { }
 

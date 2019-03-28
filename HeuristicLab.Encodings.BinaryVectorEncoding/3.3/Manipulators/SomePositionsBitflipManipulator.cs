@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,7 +24,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   /// <summary>
@@ -34,7 +34,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   /// It is implemented as described in Eiben, A.E. and Smith, J.E. 2003. Introduction to Evolutionary Computation. Natural Computing Series, Springer-Verlag Berlin Heidelberg, p. 43.
   /// </remarks>
   [Item("SomePositionsBitflipManipulator", "Flips some bits of a binary vector, each position is flipped with a probability of pm. It is implemented as described in Eiben, A.E. and Smith, J.E. 2003. Introduction to Evolutionary Computation. Natural Computing Series, Springer-Verlag Berlin Heidelberg, p. 43.")]
-  [StorableClass]
+  [StorableType("058E0380-0BFB-4E39-82DC-C4E3CCD8EAF5")]
   public sealed class SomePositionsBitflipManipulator : BinaryVectorManipulator {
     /// <summary>
     /// Mmutation probability for each position.
@@ -44,7 +44,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
     }
 
     [StorableConstructor]
-    private SomePositionsBitflipManipulator(bool deserializing) : base(deserializing) { }
+    private SomePositionsBitflipManipulator(StorableConstructorFlag _) : base(_) { }
     private SomePositionsBitflipManipulator(SomePositionsBitflipManipulator original, Cloner cloner) : base(original, cloner) { }
     /// <summary>
     /// Initializes a new instance of <see cref="NPointCrossover"/>

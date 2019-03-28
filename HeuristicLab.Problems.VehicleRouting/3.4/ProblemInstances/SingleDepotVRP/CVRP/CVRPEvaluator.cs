@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,13 +23,13 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Problems.VehicleRouting.Variants;
 
 namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
   [Item("CVRPEvaluator", "Represents a single depot CVRP evaluator.")]
-  [StorableClass]
+  [StorableType("7253D8EC-5F91-4E5F-99E0-45AF10AEA9AF")]
   public class CVRPEvaluator : VRPEvaluator {
     public ILookupParameter<DoubleValue> OverloadParameter {
       get { return (ILookupParameter<DoubleValue>)Parameters["Overload"]; }
@@ -139,7 +139,7 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
     }
 
     [StorableConstructor]
-    protected CVRPEvaluator(bool deserializing) : base(deserializing) { }
+    protected CVRPEvaluator(StorableConstructorFlag _) : base(_) { }
 
     public CVRPEvaluator() {
       Parameters.Add(new LookupParameter<DoubleValue>("Overload", "The overload."));

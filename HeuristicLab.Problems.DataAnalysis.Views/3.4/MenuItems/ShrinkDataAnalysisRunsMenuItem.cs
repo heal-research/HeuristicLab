@@ -1,7 +1,7 @@
 ﻿#region License Information
 
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -71,14 +71,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
     public override void Execute() {
       IContentView activeView = (IContentView)MainFormManager.MainForm.ActiveView;
-      var mainForm = (MainForm.WindowsForms.MainForm)MainFormManager.MainForm;
-      mainForm.AddOperationProgressToContent(activeView.Content, "Removing duplicate datasets.");
+      var content = activeView.Content;
+      Progress.Show(content, "Removing duplicate datasets.", ProgressMode.Indeterminate);
 
       Action<IContentView> action = (view) => DatasetUtil.RemoveDuplicateDatasets(view.Content);
 
       action.BeginInvoke(activeView, delegate (IAsyncResult result) {
         action.EndInvoke(result);
-        mainForm.RemoveOperationProgressFromContent(activeView.Content);
+        Progress.Hide(content);
       }, null);
     }
   }

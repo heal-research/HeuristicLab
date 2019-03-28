@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,11 +26,11 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.ExternalEvaluation {
   [Item("EvaluationServiceClient", "An RPC client that evaluates a solution.")]
-  [StorableClass]
+  [StorableType("97F11C34-F32B-4AD2-92FB-F4A12311C962")]
   public class EvaluationServiceClient : ParameterizedNamedItem, IEvaluationServiceClient {
 
     public override bool CanChangeName { get { return false; } }
@@ -52,7 +52,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
 
     #region Construction & Cloning
     [StorableConstructor]
-    protected EvaluationServiceClient(bool deserializing) : base(deserializing) { }
+    protected EvaluationServiceClient(StorableConstructorFlag _) : base(_) { }
     protected EvaluationServiceClient(EvaluationServiceClient original, Cloner cloner)
       : base(original, cloner) {
       RegisterEvents();
@@ -149,6 +149,8 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
         name = String.Format("{0} ServiceClient", ChannelParameter.Value.Name);
       OnNameChanged();
     }
+
+    [StorableType("9f1ab6e1-fe6e-4624-afbd-9bfdfdb75d44")]
     #endregion
 
     private class ReceiveAsyncInfo {

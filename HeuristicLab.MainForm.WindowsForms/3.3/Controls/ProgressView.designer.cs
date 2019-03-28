@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,7 +26,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
     /// </summary>
     private System.ComponentModel.IContainer components = null;
 
-   
+
     #region Component Designer generated code
 
     /// <summary> 
@@ -35,9 +35,12 @@ namespace HeuristicLab.MainForm.WindowsForms {
     /// </summary>
     private void InitializeComponent() {
       this.progressBar = new System.Windows.Forms.ProgressBar();
-      this.statusLabel = new System.Windows.Forms.Label();
-      this.cancelButton = new System.Windows.Forms.Button();
+      this.messageLabel = new System.Windows.Forms.Label();
+      this.borderPanel = new System.Windows.Forms.Panel();
       this.panel = new System.Windows.Forms.Panel();
+      this.stopButton = new System.Windows.Forms.Button();
+      this.cancelButton = new System.Windows.Forms.Button();
+      this.borderPanel.SuspendLayout();
       this.panel.SuspendLayout();
       this.SuspendLayout();
       // 
@@ -47,23 +50,60 @@ namespace HeuristicLab.MainForm.WindowsForms {
             | System.Windows.Forms.AnchorStyles.Right)));
       this.progressBar.Location = new System.Drawing.Point(3, 3);
       this.progressBar.Name = "progressBar";
-      this.progressBar.Size = new System.Drawing.Size(352, 23);
+      this.progressBar.Size = new System.Drawing.Size(366, 23);
       this.progressBar.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
       this.progressBar.TabIndex = 0;
       // 
-      // statusLabel
+      // messageLabel
       // 
-      this.statusLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.messageLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.messageLabel.Location = new System.Drawing.Point(0, 0);
+      this.messageLabel.Name = "messageLabel";
+      this.messageLabel.Padding = new System.Windows.Forms.Padding(0, 0, 3, 0);
+      this.messageLabel.Size = new System.Drawing.Size(217, 23);
+      this.messageLabel.TabIndex = 1;
+      this.messageLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+      // 
+      // borderPanel
+      // 
+      this.borderPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.statusLabel.Location = new System.Drawing.Point(3, 33);
-      this.statusLabel.Name = "statusLabel";
-      this.statusLabel.Size = new System.Drawing.Size(352, 17);
-      this.statusLabel.TabIndex = 1;
+      this.borderPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+      this.borderPanel.Controls.Add(this.panel);
+      this.borderPanel.Controls.Add(this.progressBar);
+      this.borderPanel.Location = new System.Drawing.Point(0, 0);
+      this.borderPanel.Name = "borderPanel";
+      this.borderPanel.Size = new System.Drawing.Size(374, 62);
+      this.borderPanel.TabIndex = 3;
+      // 
+      // panel
+      // 
+      this.panel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.panel.Controls.Add(this.messageLabel);
+      this.panel.Controls.Add(this.stopButton);
+      this.panel.Controls.Add(this.cancelButton);
+      this.panel.Location = new System.Drawing.Point(3, 32);
+      this.panel.Name = "panel";
+      this.panel.Size = new System.Drawing.Size(367, 23);
+      this.panel.TabIndex = 4;
+      // 
+      // stopButton
+      // 
+      this.stopButton.Dock = System.Windows.Forms.DockStyle.Right;
+      this.stopButton.Location = new System.Drawing.Point(217, 0);
+      this.stopButton.Name = "stopButton";
+      this.stopButton.Size = new System.Drawing.Size(75, 23);
+      this.stopButton.TabIndex = 3;
+      this.stopButton.Text = "Stop";
+      this.stopButton.UseVisualStyleBackColor = true;
+      this.stopButton.Click += new System.EventHandler(this.stopButton_Click);
       // 
       // cancelButton
       // 
-      this.cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.cancelButton.Location = new System.Drawing.Point(280, 53);
+      this.cancelButton.Dock = System.Windows.Forms.DockStyle.Right;
+      this.cancelButton.Location = new System.Drawing.Point(292, 0);
       this.cancelButton.Name = "cancelButton";
       this.cancelButton.Size = new System.Drawing.Size(75, 23);
       this.cancelButton.TabIndex = 2;
@@ -71,26 +111,13 @@ namespace HeuristicLab.MainForm.WindowsForms {
       this.cancelButton.UseVisualStyleBackColor = true;
       this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
       // 
-      // panel
-      // 
-      this.panel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.panel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-      this.panel.Controls.Add(this.progressBar);
-      this.panel.Controls.Add(this.cancelButton);
-      this.panel.Controls.Add(this.statusLabel);
-      this.panel.Location = new System.Drawing.Point(0, 0);
-      this.panel.Name = "panel";
-      this.panel.Size = new System.Drawing.Size(360, 88);
-      this.panel.TabIndex = 3;
-      // 
       // ProgressView
       // 
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
-      this.Controls.Add(this.panel);
+      this.Controls.Add(this.borderPanel);
       this.Name = "ProgressView";
-      this.Size = new System.Drawing.Size(360, 88);
+      this.Size = new System.Drawing.Size(374, 62);
+      this.borderPanel.ResumeLayout(false);
       this.panel.ResumeLayout(false);
       this.ResumeLayout(false);
 
@@ -99,8 +126,10 @@ namespace HeuristicLab.MainForm.WindowsForms {
     #endregion
 
     private System.Windows.Forms.ProgressBar progressBar;
-    private System.Windows.Forms.Label statusLabel;
-    private System.Windows.Forms.Button cancelButton;
+    private System.Windows.Forms.Label messageLabel;
+    private System.Windows.Forms.Panel borderPanel;
+    private System.Windows.Forms.Button stopButton;
     private System.Windows.Forms.Panel panel;
+    private System.Windows.Forms.Button cancelButton;
   }
 }

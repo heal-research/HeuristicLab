@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,11 +23,11 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using HeuristicLab.Common;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Core {
   [Item("Engine", "A base class for engines.")]
-  [StorableClass]
+  [StorableType("C6DD096E-726E-4AA7-B5CA-D19CB502E24E")]
   public abstract class Engine : Executable, IEngine {
     [Storable]
     protected ILog log;
@@ -48,7 +48,7 @@ namespace HeuristicLab.Core {
     #endregion
 
     [StorableConstructor]
-    protected Engine(bool deserializing) : base(deserializing) { }
+    protected Engine(StorableConstructorFlag _) : base(_) { }
     protected Engine(Engine original, Cloner cloner)
       : base(original, cloner) {
       log = cloner.Clone(original.log);

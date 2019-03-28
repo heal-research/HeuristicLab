@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -27,14 +27,14 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.Instances;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.PTSP {
   [Item("Estimated Probabilistic Traveling Salesman Problem (PTSP)", "Represents a probabilistic traveling salesman problem where the expected tour length is estimated by averaging over the length of tours on a number of, so called, realizations.")]
   [Creatable(CreatableAttribute.Categories.CombinatorialProblems)]
-  [StorableClass]
+  [StorableType("D1F1DE71-54E3-40B6-856F-685CD71D97F9")]
   public sealed class EstimatedProbabilisticTravelingSalesmanProblem : ProbabilisticTravelingSalesmanProblem {
 
     #region Parameter Properties
@@ -59,7 +59,7 @@ namespace HeuristicLab.Problems.PTSP {
     #endregion
 
     [StorableConstructor]
-    private EstimatedProbabilisticTravelingSalesmanProblem(bool deserializing) : base(deserializing) { }
+    private EstimatedProbabilisticTravelingSalesmanProblem(StorableConstructorFlag _) : base(_) { }
     private EstimatedProbabilisticTravelingSalesmanProblem(EstimatedProbabilisticTravelingSalesmanProblem original, Cloner cloner)
       : base(original, cloner) {
       RegisterEventHandlers();

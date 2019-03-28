@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -173,7 +173,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       // 
       this.foldsNumericUpDown.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.foldsNumericUpDown.Location = new System.Drawing.Point(55, 26);
+      this.foldsNumericUpDown.Location = new System.Drawing.Point(55, 27);
       this.foldsNumericUpDown.Maximum = new decimal(new int[] {
             50,
             0,
@@ -185,7 +185,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
             0,
             0});
       this.foldsNumericUpDown.Name = "foldsNumericUpDown";
-      this.foldsNumericUpDown.Size = new System.Drawing.Size(154, 20);
+      this.foldsNumericUpDown.Size = new System.Drawing.Size(248, 20);
       this.foldsNumericUpDown.TabIndex = 3;
       this.foldsNumericUpDown.ThousandsSeparator = true;
       this.foldsNumericUpDown.Value = new decimal(new int[] {
@@ -209,7 +209,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       // 
       this.workersNumericUpDown.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.workersNumericUpDown.Location = new System.Drawing.Point(55, 0);
+      this.workersNumericUpDown.Location = new System.Drawing.Point(55, 1);
       this.workersNumericUpDown.Maximum = new decimal(new int[] {
             50,
             0,
@@ -302,6 +302,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       // 
       // algorithmTabPage
       // 
+      this.algorithmTabPage.BackColor = System.Drawing.SystemColors.Window;
       this.algorithmTabPage.AllowDrop = true;
       this.algorithmTabPage.Controls.Add(this.algorithmNamedItemView);
       this.algorithmTabPage.Controls.Add(this.algorithmTabControl);
@@ -313,7 +314,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       this.algorithmTabPage.Size = new System.Drawing.Size(608, 367);
       this.algorithmTabPage.TabIndex = 0;
       this.algorithmTabPage.Text = "Algorithm";
-      this.algorithmTabPage.UseVisualStyleBackColor = true;
       this.algorithmTabPage.DragDrop += new System.Windows.Forms.DragEventHandler(this.algorithmTabPage_DragDrop);
       this.algorithmTabPage.DragEnter += new System.Windows.Forms.DragEventHandler(this.algorithmTabPage_DragEnterOver);
       this.algorithmTabPage.DragOver += new System.Windows.Forms.DragEventHandler(this.algorithmTabPage_DragEnterOver);
@@ -346,6 +346,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       // 
       // algorithmProblemTabPage
       // 
+      this.algorithmProblemTabPage.BackColor = System.Drawing.SystemColors.Window;
       this.algorithmProblemTabPage.AllowDrop = true;
       this.algorithmProblemTabPage.Controls.Add(this.openProblemButton);
       this.algorithmProblemTabPage.Controls.Add(this.algorithmProblemViewHost);
@@ -356,7 +357,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       this.algorithmProblemTabPage.Size = new System.Drawing.Size(586, 270);
       this.algorithmProblemTabPage.TabIndex = 0;
       this.algorithmProblemTabPage.Text = "Problem";
-      this.algorithmProblemTabPage.UseVisualStyleBackColor = true;
       this.algorithmProblemTabPage.DragDrop += new System.Windows.Forms.DragEventHandler(this.algorithmProblemTabPage_DragDrop);
       this.algorithmProblemTabPage.DragEnter += new System.Windows.Forms.DragEventHandler(this.algorithmProblemTabPage_DragEnterOver);
       this.algorithmProblemTabPage.DragOver += new System.Windows.Forms.DragEventHandler(this.algorithmProblemTabPage_DragEnterOver);
@@ -401,6 +401,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       // 
       // algorithmParametersTabPage
       // 
+      this.algorithmParametersTabPage.BackColor = System.Drawing.SystemColors.Window;
       this.algorithmParametersTabPage.Controls.Add(this.algorithmParameterCollectionView);
       this.algorithmParametersTabPage.Location = new System.Drawing.Point(4, 22);
       this.algorithmParametersTabPage.Name = "algorithmParametersTabPage";
@@ -408,7 +409,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       this.algorithmParametersTabPage.Size = new System.Drawing.Size(586, 270);
       this.algorithmParametersTabPage.TabIndex = 1;
       this.algorithmParametersTabPage.Text = "Parameters";
-      this.algorithmParametersTabPage.UseVisualStyleBackColor = true;
       // 
       // algorithmParameterCollectionView
       // 
@@ -447,6 +447,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       // 
       // resultsTabPage
       // 
+      this.resultsTabPage.BackColor = System.Drawing.SystemColors.Window;
       this.resultsTabPage.Controls.Add(this.resultCollectionView);
       this.resultsTabPage.Location = new System.Drawing.Point(4, 22);
       this.resultsTabPage.Name = "resultsTabPage";
@@ -454,7 +455,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       this.resultsTabPage.Size = new System.Drawing.Size(608, 367);
       this.resultsTabPage.TabIndex = 1;
       this.resultsTabPage.Text = "Results";
-      this.resultsTabPage.UseVisualStyleBackColor = true;
       // 
       // resultCollectionView
       // 
@@ -470,6 +470,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       // 
       // runsTabPage
       // 
+      this.runsTabPage.BackColor = System.Drawing.SystemColors.Window;
       this.runsTabPage.Controls.Add(this.storeAlgorithmInEachRunCheckBox);
       this.runsTabPage.Controls.Add(this.runCollectionView);
       this.runsTabPage.Location = new System.Drawing.Point(4, 22);
@@ -478,7 +479,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       this.runsTabPage.Size = new System.Drawing.Size(608, 367);
       this.runsTabPage.TabIndex = 2;
       this.runsTabPage.Text = "Runs";
-      this.runsTabPage.UseVisualStyleBackColor = true;
       // 
       // storeAlgorithmInEachRunCheckBox
       // 

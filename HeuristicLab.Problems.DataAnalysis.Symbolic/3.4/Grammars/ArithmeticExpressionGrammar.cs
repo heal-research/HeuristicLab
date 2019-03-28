@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,17 +23,17 @@ using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [NonDiscoverableType]
-  [StorableClass]
+  [StorableType("FCBA02B7-5D29-42F5-A64C-A60AD8EA475D")]
   [Item("ArithmeticExpressionGrammar", "Represents a grammar for functional expressions using only arithmetic operations.")]
   public class ArithmeticExpressionGrammar : SymbolicExpressionGrammar, ISymbolicDataAnalysisGrammar {
 
     [StorableConstructor]
-    protected ArithmeticExpressionGrammar(bool deserializing) : base(deserializing) { }
+    protected ArithmeticExpressionGrammar(StorableConstructorFlag _) : base(_) { }
     protected ArithmeticExpressionGrammar(ArithmeticExpressionGrammar original, Cloner cloner) : base(original, cloner) { }
     public ArithmeticExpressionGrammar()
       : base(ItemAttribute.GetName(typeof(ArithmeticExpressionGrammar)), ItemAttribute.GetDescription(typeof(ArithmeticExpressionGrammar))) {

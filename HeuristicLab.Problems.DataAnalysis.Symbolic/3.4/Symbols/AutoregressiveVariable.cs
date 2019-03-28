@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,13 +21,13 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
-  [StorableClass]
+  [StorableType("AA17605D-3F9A-4C52-89F5-34AF2AF4999C")]
   [Item("AutoregressiveTargetVariable", "Represents a variable value with a time offset.")]
   public sealed class AutoregressiveTargetVariable : LaggedVariable {
     [StorableConstructor]
-    private AutoregressiveTargetVariable(bool deserializing) : base(deserializing) { }
+    private AutoregressiveTargetVariable(StorableConstructorFlag _) : base(_) { }
     private AutoregressiveTargetVariable(AutoregressiveTargetVariable original, Cloner cloner)
       : base(original, cloner) {
     }

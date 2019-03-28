@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,14 +26,14 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
   /// <summary>
   /// An island offspring selection genetic algorithm main loop operator.
   /// </summary>
   [Item("IslandOffspringSelectionGeneticAlgorithmMainLoop", "An island offspring selection genetic algorithm main loop operator.")]
-  [StorableClass]
+  [StorableType("C7F1B472-A58A-46DA-AF59-C9D971AF9F3A")]
   public sealed class IslandOffspringSelectionGeneticAlgorithmMainLoop : AlgorithmOperator {
     #region Parameter Properties
     public ValueLookupParameter<IRandom> RandomParameter {
@@ -135,7 +135,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     #endregion
 
     [StorableConstructor]
-    private IslandOffspringSelectionGeneticAlgorithmMainLoop(bool deserializing) : base(deserializing) { }
+    private IslandOffspringSelectionGeneticAlgorithmMainLoop(StorableConstructorFlag _) : base(_) { }
     private IslandOffspringSelectionGeneticAlgorithmMainLoop(IslandOffspringSelectionGeneticAlgorithmMainLoop original, Cloner cloner)
       : base(original, cloner) {
     }

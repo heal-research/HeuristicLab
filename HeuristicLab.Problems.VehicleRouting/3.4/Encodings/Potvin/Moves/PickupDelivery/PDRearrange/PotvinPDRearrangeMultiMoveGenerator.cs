@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,13 +25,13 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.VehicleRouting.Encodings.General;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinPDRearrangeMultiMoveGenerator", "Generates rearrange moves from a given PDP encoding.")]
-  [StorableClass]
+  [StorableType("99EF9C29-4174-4637-84F9-CE8622E4994C")]
   public sealed class PotvinPDRearrangeMultiMoveGenerator : PotvinPDRearrangeMoveGenerator, IMultiMoveGenerator, IMultiVRPMoveGenerator {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
@@ -46,7 +46,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
     }
 
     [StorableConstructor]
-    private PotvinPDRearrangeMultiMoveGenerator(bool deserializing) : base(deserializing) { }
+    private PotvinPDRearrangeMultiMoveGenerator(StorableConstructorFlag _) : base(_) { }
 
     public PotvinPDRearrangeMultiMoveGenerator()
       : base() {

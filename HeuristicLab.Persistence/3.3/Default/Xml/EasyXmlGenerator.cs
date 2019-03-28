@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using HEAL.Attic;
 using HeuristicLab.Persistence.Auxiliary;
 using HeuristicLab.Persistence.Core;
 using HeuristicLab.Persistence.Core.Tokens;
@@ -180,7 +181,7 @@ namespace HeuristicLab.Persistence.Default.Xml {
     public static void Serialize(object obj, Stream stream, Configuration config) {
       try {
         using (StreamWriter writer = new StreamWriter(stream)) {
-          Serializer serializer = new Serializer(obj, config);
+          Core.Serializer serializer = new Core.Serializer(obj, config);
           serializer.InterleaveTypeInformation = true;
           ReadableXmlGenerator generator = new ReadableXmlGenerator();
           foreach (ISerializationToken token in serializer) {

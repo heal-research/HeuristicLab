@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -31,11 +31,13 @@ namespace HeuristicLab.Services.Hive.DataTransfer {
     [DataMember]
     public DateTime DateCreated { get; set; }
     [DataMember]
-    public string ResourceNames { get; set; }
+    public Guid ProjectId { get; set; }
     [DataMember]
     public Permission Permission { get; set; } // the permission for the currently logged in user
     [DataMember]
     public string OwnerUsername { get; set; }
+    [DataMember]
+    public JobState State { get; set; }
 
     /* ==== some computed statistics ==== */
     [DataMember]

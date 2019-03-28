@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -45,7 +45,7 @@ namespace HeuristicLab.Clients.Hive.Views {
 
     protected override void Job_ItemChanged(object sender, EventArgs e) {
       if (Content != null && Content.Task != null && Content.ItemTask.Item != null) {
-        Content.ExecuteReadActionOnItemTask(new Action(delegate() {
+        Content.ExecuteReadActionOnItemTask(new Action(delegate () {
           runCollectionViewHost.Content = Content.ItemTask.Item.Runs;
         }));
       } else {
@@ -57,12 +57,12 @@ namespace HeuristicLab.Clients.Hive.Views {
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
       Content.IsControllableChanged += new EventHandler(Content_IsControllableChanged);
-      MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().AddOperationProgressToView(this, Content.Progress);
+      Progress.Show(this, Content.Progress);
     }
 
     protected override void DeregisterContentEvents() {
       Content.IsControllableChanged -= new EventHandler(Content_IsControllableChanged);
-      MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().RemoveOperationProgressFromView(this, false);
+      Progress.Hide(this, false);
       base.DeregisterContentEvents();
     }
 
@@ -98,19 +98,19 @@ namespace HeuristicLab.Clients.Hive.Views {
     #endregion
 
     private void PauseTaskAsync() {
-      Content.Progress.Start("Pausing task. Please be patient for the command to take effect.");
+      Content.Progress.Start("Pausing task. Please be patient for the command to take effect.", ProgressMode.Indeterminate);
       Content.Pause();
       Content.Progress.Finish();
     }
 
     private void StopTaskAsync() {
-      Content.Progress.Start("Stopping task. Please be patient for the command to take effect.");
+      Content.Progress.Start("Stopping task. Please be patient for the command to take effect.", ProgressMode.Indeterminate);
       Content.Stop();
       Content.Progress.Finish();
     }
 
     private void ResumeTaskAsync() {
-      Content.Progress.Start("Resuming task. Please be patient for the command to take effect.");
+      Content.Progress.Start("Resuming task. Please be patient for the command to take effect.", ProgressMode.Indeterminate);
       Content.Restart();
       Content.Progress.Finish();
     }

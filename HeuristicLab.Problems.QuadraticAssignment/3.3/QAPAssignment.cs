@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,11 +24,11 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.QuadraticAssignment {
   [Item("QAP Assignment", "Represents a solution to the QAP.")]
-  [StorableClass]
+  [StorableType("7ED6596B-3179-4CE5-8132-498735E536F7")]
   public sealed class QAPAssignment : Item, INotifyPropertyChanged {
 
     [Storable]
@@ -76,7 +76,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
     }
 
     [StorableConstructor]
-    private QAPAssignment(bool deserializing) : base(deserializing) { }
+    private QAPAssignment(StorableConstructorFlag _) : base(_) { }
     private QAPAssignment(QAPAssignment original, Cloner cloner)
       : base(original, cloner) {
       distances = cloner.Clone(original.distances);

@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,14 +23,14 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
   /// <summary>
   /// An operator that analyzes the training best symbolic classification solution for single objective symbolic classification problems.
   /// </summary>
   [Item("SymbolicClassificationSingleObjectiveTrainingBestSolutionAnalyzer", "An operator that analyzes the training best symbolic classification solution for single objective symbolic classification problems.")]
-  [StorableClass]
+  [StorableType("1E179E22-DD6C-4914-8FAA-AB8F7F9B7F7F")]
   public sealed class SymbolicClassificationSingleObjectiveTrainingBestSolutionAnalyzer : SymbolicDataAnalysisSingleObjectiveTrainingBestSolutionAnalyzer<ISymbolicClassificationSolution>,
     ISymbolicDataAnalysisInterpreterOperator, ISymbolicDataAnalysisBoundedOperator, ISymbolicClassificationModelCreatorOperator {
     private const string ProblemDataParameterName = "ProblemData";
@@ -57,7 +57,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
 
 
     [StorableConstructor]
-    private SymbolicClassificationSingleObjectiveTrainingBestSolutionAnalyzer(bool deserializing) : base(deserializing) { }
+    private SymbolicClassificationSingleObjectiveTrainingBestSolutionAnalyzer(StorableConstructorFlag _) : base(_) { }
     private SymbolicClassificationSingleObjectiveTrainingBestSolutionAnalyzer(SymbolicClassificationSingleObjectiveTrainingBestSolutionAnalyzer original, Cloner cloner) : base(original, cloner) { }
     public SymbolicClassificationSingleObjectiveTrainingBestSolutionAnalyzer()
       : base() {

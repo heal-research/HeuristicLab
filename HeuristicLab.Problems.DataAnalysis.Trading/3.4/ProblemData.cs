@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,10 +26,10 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Trading {
-  [StorableClass]
+  [StorableType("0E535043-BE86-4AF8-8DA1-C82E459F67AB")]
   [Item("TradingProblemData", "Represents an item containing all data defining a trading problem.")]
   public sealed class ProblemData : DataAnalysisProblemData, IProblemData {
     private const string PriceChangeVariableParameterName = "PriceChangeVariable";
@@ -1610,7 +1610,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Trading {
     }
 
     [StorableConstructor]
-    private ProblemData(bool deserializing) : base(deserializing) { }
+    private ProblemData(StorableConstructorFlag _) : base(_) { }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       RegisterParameterEvents();
@@ -1647,35 +1647,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Trading {
     }
     private void PriceVariableParameter_ValueChanged(object sender, EventArgs e) {
       if (Dataset.GetReadOnlyDoubleValues(PriceChangeVariable).Min() >= 0) throw new ArgumentException("The target variable must contain changes (deltas) of the asset price over time.");
-      OnChanged();
-    }
-
-    public override void AdjustProblemDataProperties(IDataAnalysisProblemData problemData) {
-      var data = problemData as ProblemData;
-      if (data == null) throw new ArgumentException("The problem data is not a problem data set for trading. Instead a " + problemData.GetType().GetPrettyName() + " was provided.", "problemData");
-
-      string errorMessage;
-      if (!data.IsProblemDataCompatible(this, out errorMessage)) {
-        throw new InvalidOperationException(errorMessage);
-      }
-
-      base.AdjustProblemDataProperties(data);
-
-      var toDelete = PriceChangeVariableParameter.ValidValues.ToList();
-      foreach (var entry in data.PriceChangeVariableParameter.ValidValues) {
-        if (toDelete.Any(x => x.Value == entry.Value)) {
-          toDelete.RemoveAll(x => x.Value == entry.Value);
-        } else {
-          PriceChangeVariableParameter.ValidValues.Add(new StringValue(entry.Value));
-        }
-      }
-      PriceChangeVariableParameter.Value =
-        PriceChangeVariableParameter.ValidValues.Single(v => v.Value == data.PriceChangeVariable);
-
-      foreach (var varToDelete in toDelete) PriceChangeVariableParameter.ValidValues.Remove(varToDelete);
-
-      TransactionCostsParameter.Value.Value = data.TransactionCosts;
-
       OnChanged();
     }
   }

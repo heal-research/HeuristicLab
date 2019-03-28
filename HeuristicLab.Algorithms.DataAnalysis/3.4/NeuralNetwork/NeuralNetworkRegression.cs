@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -28,7 +28,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
@@ -37,7 +37,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// </summary>
   [Item("Neural Network Regression (NN)", "Neural network regression data analysis algorithm (wrapper for ALGLIB). Further documentation: http://www.alglib.net/dataanalysis/neuralnetworks.php")]
   [Creatable(CreatableAttribute.Categories.DataAnalysisRegression, Priority = 130)]
-  [StorableClass]
+  [StorableType("F9EEA27B-43FF-4296-A4B9-CC024CD1778C")]
   public sealed class NeuralNetworkRegression : FixedDataAnalysisAlgorithm<IRegressionProblem> {
     private const string DecayParameterName = "Decay";
     private const string HiddenLayersParameterName = "HiddenLayers";
@@ -107,16 +107,16 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
 
     [StorableConstructor]
-    private NeuralNetworkRegression(bool deserializing) : base(deserializing) { }
+    private NeuralNetworkRegression(StorableConstructorFlag _) : base(_) { }
     private NeuralNetworkRegression(NeuralNetworkRegression original, Cloner cloner)
       : base(original, cloner) {
       RegisterEventHandlers();
     }
     public NeuralNetworkRegression()
       : base() {
-      var validHiddenLayerValues = new ItemSet<IntValue>(new IntValue[] { 
-        (IntValue)new IntValue(0).AsReadOnly(), 
-        (IntValue)new IntValue(1).AsReadOnly(), 
+      var validHiddenLayerValues = new ItemSet<IntValue>(new IntValue[] {
+        (IntValue)new IntValue(0).AsReadOnly(),
+        (IntValue)new IntValue(1).AsReadOnly(),
         (IntValue)new IntValue(2).AsReadOnly() });
       var selectedHiddenLayerValue = (from v in validHiddenLayerValues
                                       where v.Value == 1
@@ -185,7 +185,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       IEnumerable<string> allowedInputVariables = problemData.AllowedInputVariables;
       IEnumerable<int> rows = problemData.TrainingIndices;
       double[,] inputMatrix = dataset.ToArray(allowedInputVariables.Concat(new string[] { targetVariable }), rows);
-      if (inputMatrix.Cast<double>().Any(x => double.IsNaN(x) || double.IsInfinity(x)))
+      if (inputMatrix.ContainsNanOrInfinity())
         throw new NotSupportedException("Neural network regression does not support NaN or infinity values in the input dataset.");
 
       alglib.multilayerperceptron multiLayerPerceptron = null;

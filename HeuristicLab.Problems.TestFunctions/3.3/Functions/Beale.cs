@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,7 +24,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TestFunctions {
   /// <summary>
@@ -32,7 +32,7 @@ namespace HeuristicLab.Problems.TestFunctions {
   /// It is implemented as described in Moré, J.J., Garbow, B., and Hillstrom, K. 1981. Testing unconstrained optimization software. ACM Transactions on Mathematical Software 7, pp. 136-140, ACM.
   /// </summary>
   [Item("Beale", "Evaluates the Beale function on a given point. The optimum of this function is 0 at (3,0.5). It is implemented as described in Moré, J.J., Garbow, B., and Hillstrom, K. 1981. Testing unconstrained optimization software. ACM Transactions on Mathematical Software 7, pp. 136-140, ACM.")]
-  [StorableClass]
+  [StorableType("EC1E155C-65ED-4603-A442-357ECC1E8F3D")]
   public class Beale : SingleObjectiveTestFunction {
     /// <summary>
     /// Returns false as the Beale function is a minimization problem.
@@ -66,7 +66,7 @@ namespace HeuristicLab.Problems.TestFunctions {
     }
 
     [StorableConstructor]
-    protected Beale(bool deserializing) : base(deserializing) { }
+    protected Beale(StorableConstructorFlag _) : base(_) { }
     protected Beale(Beale original, Cloner cloner) : base(original, cloner) { }
     public Beale() : base() { }
 

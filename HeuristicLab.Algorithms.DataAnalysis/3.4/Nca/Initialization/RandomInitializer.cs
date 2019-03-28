@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,19 +24,19 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [Item("Random", "Initializes the matrix randomly.")]
-  [StorableClass]
+  [StorableType("C799E0AA-1DC5-44BF-98F9-6CFEF5521BBC")]
   public sealed class RandomInitializer : NcaInitializer, IStochasticOperator {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
     }
 
     [StorableConstructor]
-    private RandomInitializer(bool deserializing) : base(deserializing) { }
+    private RandomInitializer(StorableConstructorFlag _) : base(_) { }
     private RandomInitializer(RandomInitializer original, Cloner cloner) : base(original, cloner) { }
     public RandomInitializer()
       : base() {

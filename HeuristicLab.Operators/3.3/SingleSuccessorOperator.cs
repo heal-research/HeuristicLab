@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,14 +22,14 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Operators {
   /// <summary>
   /// A base class for operators which have only one successor.
   /// </summary>
   [Item("SingleSuccessorOperator", "A base class for operators which have only one successor.")]
-  [StorableClass]
+  [StorableType("2A75BE8A-26AA-49CD-8152-42AA97C0FF45")]
   public abstract class SingleSuccessorOperator : Operator {
     protected OperatorParameter SuccessorParameter {
       get { return (OperatorParameter)Parameters["Successor"]; }
@@ -40,7 +40,7 @@ namespace HeuristicLab.Operators {
     }
 
     [StorableConstructor]
-    protected SingleSuccessorOperator(bool deserializing) : base(deserializing) { }
+    protected SingleSuccessorOperator(StorableConstructorFlag _) : base(_) { }
     protected SingleSuccessorOperator(SingleSuccessorOperator original, Cloner cloner)
       : base(original, cloner) {
     }

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,8 +20,10 @@
 #endregion
 
 using HeuristicLab.Core;
+using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
+  [StorableType("84f50ceb-5d6b-492e-a50b-b52ca5a34721")]
   public interface ISimilarityBasedOperator : IOperator {
     IConstrainedValueParameter<ISolutionSimilarityCalculator> SimilarityCalculatorParameter { get; }
   }

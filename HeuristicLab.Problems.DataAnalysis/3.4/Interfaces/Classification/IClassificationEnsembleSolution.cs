@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,7 +21,10 @@
 
 using System.Collections.Generic;
 using HeuristicLab.Core;
+using HEAL.Attic;
+
 namespace HeuristicLab.Problems.DataAnalysis {
+  [StorableType("b966443d-a221-46df-83d1-49adaae1adbe")]
   public interface IClassificationEnsembleSolution : IClassificationSolution {
     new IClassificationEnsembleModel Model { get; }
     IItemCollection<IClassificationSolution> ClassificationSolutions { get; }

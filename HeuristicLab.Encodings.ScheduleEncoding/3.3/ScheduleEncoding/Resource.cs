@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,11 +23,11 @@ using System.Linq;
 using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("ResourceClass", "Represents a resource used in scheduling problems.")]
-  [StorableClass]
+  [StorableType("32C052AF-8397-4908-8044-507509871A3F")]
   public sealed class Resource : Item {
 
     [Storable]
@@ -43,7 +43,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
     }
 
     [StorableConstructor]
-    private Resource(bool deserializing) : base(deserializing) { }
+    private Resource(StorableConstructorFlag _) : base(_) { }
     private Resource(Resource original, Cloner cloner)
       : base(original, cloner) {
       this.Index = original.Index;

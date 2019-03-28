@@ -1,7 +1,7 @@
 ﻿#region License Information
 
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -36,11 +36,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private static readonly Multiplication mulSymbol = new Multiplication();
     private static readonly Division divSymbol = new Division();
     private static readonly Constant constSymbol = new Constant();
+    private static readonly Absolute absSymbol = new Absolute();
     private static readonly Logarithm logSymbol = new Logarithm();
     private static readonly Exponential expSymbol = new Exponential();
     private static readonly Root rootSymbol = new Root();
     private static readonly Square sqrSymbol = new Square();
     private static readonly SquareRoot sqrtSymbol = new SquareRoot();
+    private static readonly AnalyticQuotient aqSymbol = new AnalyticQuotient();
+    private static readonly Cube cubeSymbol = new Cube();
+    private static readonly CubeRoot cubeRootSymbol = new CubeRoot();
     private static readonly Power powSymbol = new Power();
     private static readonly Sine sineSymbol = new Sine();
     private static readonly Cosine cosineSymbol = new Cosine();
@@ -130,6 +134,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       return node.Symbol is Average;
     }
 
+    private static bool IsAbsolute(ISymbolicExpressionTreeNode node) {
+      return node.Symbol is Absolute;
+    }
+
     // exponential
     private static bool IsLog(ISymbolicExpressionTreeNode node) {
       return node.Symbol is Logarithm;
@@ -151,6 +159,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       return node.Symbol is SquareRoot;
     }
 
+    private static bool IsCube(ISymbolicExpressionTreeNode node) {
+      return node.Symbol is Cube;
+    }
+
+    private static bool IsCubeRoot(ISymbolicExpressionTreeNode node) {
+      return node.Symbol is CubeRoot;
+    }
+
     private static bool IsPower(ISymbolicExpressionTreeNode node) {
       return node.Symbol is Power;
     }
@@ -166,6 +182,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     private static bool IsTangent(ISymbolicExpressionTreeNode node) {
       return node.Symbol is Tangent;
+    }
+
+    private static bool IsAnalyticalQuotient(ISymbolicExpressionTreeNode node) {
+      return node.Symbol is AnalyticQuotient;
     }
 
     // boolean
@@ -242,6 +262,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public static ISymbolicExpressionTreeNode GetSimplifiedTree(ISymbolicExpressionTreeNode original) {
       if (IsConstant(original) || IsVariableBase(original)) {
         return (ISymbolicExpressionTreeNode)original.Clone();
+      } else if (IsAbsolute(original)) {
+        return SimplifyAbsolute(original);
       } else if (IsAddition(original)) {
         return SimplifyAddition(original);
       } else if (IsSubtraction(original)) {
@@ -260,6 +282,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         return SimplifySquare(original);
       } else if (IsSquareRoot(original)) {
         return SimplifySquareRoot(original);
+      } else if (IsCube(original)) {
+        return SimplifyCube(original);
+      } else if (IsCubeRoot(original)) {
+        return SimplifyCubeRoot(original);
       } else if (IsPower(original)) {
         return SimplifyPower(original);
       } else if (IsRoot(original)) {
@@ -270,6 +296,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         return SimplifyCosine(original);
       } else if (IsTangent(original)) {
         return SimplifyTangent(original);
+      } else if (IsAnalyticalQuotient(original)) {
+        return SimplifyAnalyticalQuotient(original);
       } else if (IsIfThenElse(original)) {
         return SimplifyIfThenElse(original);
       } else if (IsGreaterThan(original)) {
@@ -379,6 +407,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
     }
 
+    private static ISymbolicExpressionTreeNode SimplifyAbsolute(ISymbolicExpressionTreeNode original) {
+      return MakeAbs(GetSimplifiedTree(original.GetSubtree(0)));
+    }
+
     private static ISymbolicExpressionTreeNode SimplifyNot(ISymbolicExpressionTreeNode original) {
       return MakeNot(GetSimplifiedTree(original.GetSubtree(0)));
     }
@@ -431,6 +463,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private static ISymbolicExpressionTreeNode SimplifySquareRoot(ISymbolicExpressionTreeNode original) {
       return MakeSquareRoot(GetSimplifiedTree(original.GetSubtree(0)));
     }
+    private static ISymbolicExpressionTreeNode SimplifyCube(ISymbolicExpressionTreeNode original) {
+      return MakeCube(GetSimplifiedTree(original.GetSubtree(0)));
+    }
+
+    private static ISymbolicExpressionTreeNode SimplifyCubeRoot(ISymbolicExpressionTreeNode original) {
+      return MakeCubeRoot(GetSimplifiedTree(original.GetSubtree(0)));
+    }
 
     private static ISymbolicExpressionTreeNode SimplifyLog(ISymbolicExpressionTreeNode original) {
       return MakeLog(GetSimplifiedTree(original.GetSubtree(0)));
@@ -442,6 +481,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     private static ISymbolicExpressionTreeNode SimplifyPower(ISymbolicExpressionTreeNode original) {
       return MakePower(GetSimplifiedTree(original.GetSubtree(0)), GetSimplifiedTree(original.GetSubtree(1)));
+    }
+
+    private static ISymbolicExpressionTreeNode SimplifyAnalyticalQuotient(ISymbolicExpressionTreeNode original) {
+      return MakeAnalyticalQuotient(GetSimplifiedTree(original.GetSubtree(0)), GetSimplifiedTree(original.GetSubtree(1)));
     }
 
     private static ISymbolicExpressionTreeNode SimplifyTimeLag(ISymbolicExpressionTreeNode original) {
@@ -729,10 +772,96 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         return MakeBinFactor(binFactor.Symbol, binFactor.VariableName, binFactor.VariableValue, binFactor.Weight * binFactor.Weight);
       } else if (IsSquareRoot(node)) {
         return node.GetSubtree(0);
+      } else if (IsMultiplication(node)) {
+        // sqr( x * y ) = sqr(x) * sqr(y)
+        var mulNode = mulSymbol.CreateTreeNode();
+        foreach (var subtree in node.Subtrees) {
+          mulNode.AddSubtree(MakeSquare(subtree));
+        }
+        return mulNode;
+      } else if (IsAbsolute(node)) {
+        return MakeSquare(node.GetSubtree(0)); // sqr(abs(x)) = sqr(x)
+      } else if (IsExp(node)) {
+        return MakeExp(MakeProduct(node.GetSubtree(0), MakeConstant(2.0))); // sqr(exp(x)) = exp(2x)
+      } else if (IsCube(node)) {
+        return MakePower(node.GetSubtree(0), MakeConstant(6));
       } else {
         var sqrNode = sqrSymbol.CreateTreeNode();
         sqrNode.AddSubtree(node);
         return sqrNode;
+      }
+    }
+
+    private static ISymbolicExpressionTreeNode MakeCube(ISymbolicExpressionTreeNode node) {
+      if (IsConstant(node)) {
+        var constT = node as ConstantTreeNode;
+        return MakeConstant(constT.Value * constT.Value * constT.Value);
+      } else if (IsFactor(node)) {
+        var factNode = node as FactorVariableTreeNode;
+        return MakeFactor(factNode.Symbol, factNode.VariableName, factNode.Weights.Select(w => w * w * w));
+      } else if (IsBinFactor(node)) {
+        var binFactor = node as BinaryFactorVariableTreeNode;
+        return MakeBinFactor(binFactor.Symbol, binFactor.VariableName, binFactor.VariableValue, binFactor.Weight * binFactor.Weight * binFactor.Weight);
+      } else if (IsCubeRoot(node)) {
+        return node.GetSubtree(0); // NOTE: not really accurate because cuberoot(x) with negative x is evaluated to NaN and after this simplification we evaluate as x
+      } else if (IsExp(node)) {
+        return MakeExp(MakeProduct(node.GetSubtree(0), MakeConstant(3)));
+      } else if (IsSquare(node)) {
+        return MakePower(node.GetSubtree(0), MakeConstant(6));
+      } else {
+        var cubeNode = cubeSymbol.CreateTreeNode();
+        cubeNode.AddSubtree(node);
+        return cubeNode;
+      }
+    }
+
+    private static ISymbolicExpressionTreeNode MakeAbs(ISymbolicExpressionTreeNode node) {
+      if (IsConstant(node)) {
+        var constT = node as ConstantTreeNode;
+        return MakeConstant(Math.Abs(constT.Value));
+      } else if (IsFactor(node)) {
+        var factNode = node as FactorVariableTreeNode;
+        return MakeFactor(factNode.Symbol, factNode.VariableName, factNode.Weights.Select(w => Math.Abs(w)));
+      } else if (IsBinFactor(node)) {
+        var binFactor = node as BinaryFactorVariableTreeNode;
+        return MakeBinFactor(binFactor.Symbol, binFactor.VariableName, binFactor.VariableValue, Math.Abs(binFactor.Weight));
+      } else if (IsSquare(node) || IsExp(node) || IsSquareRoot(node) || IsCubeRoot(node)) {
+        return node; // abs(sqr(x)) = sqr(x), abs(exp(x)) = exp(x) ...
+      } else if (IsMultiplication(node)) {
+        var mul = mulSymbol.CreateTreeNode();
+        foreach (var st in node.Subtrees) {
+          mul.AddSubtree(MakeAbs(st));
+        }
+        return mul;
+      } else if (IsDivision(node)) {
+        var div = divSymbol.CreateTreeNode();
+        foreach (var st in node.Subtrees) {
+          div.AddSubtree(MakeAbs(st));
+        }
+        return div;
+      } else {
+        var absNode = absSymbol.CreateTreeNode();
+        absNode.AddSubtree(node);
+        return absNode;
+      }
+    }
+
+    // constant folding only
+    private static ISymbolicExpressionTreeNode MakeAnalyticalQuotient(ISymbolicExpressionTreeNode a, ISymbolicExpressionTreeNode b) {
+      if (IsConstant(b)) {
+        var c = b as ConstantTreeNode;
+        return MakeFraction(a, MakeConstant(Math.Sqrt(1.0 + c.Value * c.Value)));
+      } else if (IsFactor(b)) {
+        var factNode = b as FactorVariableTreeNode;
+        return MakeFraction(a, MakeFactor(factNode.Symbol, factNode.VariableName, factNode.Weights.Select(w => Math.Sqrt(1.0 + w * w))));
+      } else if (IsBinFactor(b)) {
+        var binFactor = b as BinaryFactorVariableTreeNode;
+        return MakeFraction(a, MakeBinFactor(binFactor.Symbol, binFactor.VariableName, binFactor.VariableValue, Math.Sqrt(1.0 + binFactor.Weight * binFactor.Weight)));
+      } else {
+        var aqNode = aqSymbol.CreateTreeNode();
+        aqNode.AddSubtree(a);
+        aqNode.AddSubtree(b);
+        return aqNode;
       }
     }
 
@@ -747,11 +876,30 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         var binFactor = node as BinaryFactorVariableTreeNode;
         return MakeBinFactor(binFactor.Symbol, binFactor.VariableName, binFactor.VariableValue, Math.Sqrt(binFactor.Weight));
       } else if (IsSquare(node)) {
-        return node.GetSubtree(0);
+        return node.GetSubtree(0); // NOTE: not really accurate because sqrt(x) with negative x is evaluated to NaN and after this simplification we evaluate as x
       } else {
         var sqrtNode = sqrtSymbol.CreateTreeNode();
         sqrtNode.AddSubtree(node);
         return sqrtNode;
+      }
+    }
+
+    private static ISymbolicExpressionTreeNode MakeCubeRoot(ISymbolicExpressionTreeNode node) {
+      if (IsConstant(node)) {
+        var constT = node as ConstantTreeNode;
+        return MakeConstant(Math.Pow(constT.Value, 1.0 / 3.0));
+      } else if (IsFactor(node)) {
+        var factNode = node as FactorVariableTreeNode;
+        return MakeFactor(factNode.Symbol, factNode.VariableName, factNode.Weights.Select(w => Math.Pow(w, 1.0 / 3.0)));
+      } else if (IsBinFactor(node)) {
+        var binFactor = node as BinaryFactorVariableTreeNode;
+        return MakeBinFactor(binFactor.Symbol, binFactor.VariableName, binFactor.VariableValue, Math.Sqrt(Math.Pow(binFactor.Weight, 1.0 / 3.0)));
+      } else if (IsCube(node)) {
+        return node.GetSubtree(0);
+      } else {
+        var cubeRootNode = cubeRootSymbol.CreateTreeNode();
+        cubeRootNode.AddSubtree(node);
+        return cubeRootNode;
       }
     }
 
@@ -926,6 +1074,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       } else if (IsDivision(b)) {
         // a / (b1 / b2) => (a * b2) / b1
         return MakeFraction(MakeProduct(a, b.GetSubtree(1)), b.GetSubtree(0));
+      } else if (IsAnalyticalQuotient(a)) {
+        return MakeAnalyticalQuotient(a.GetSubtree(0), MakeProduct(a.GetSubtree(1), b));
       } else {
         var div = divSymbol.CreateTreeNode();
         div.AddSubtree(a);
@@ -1120,6 +1270,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       } else if (IsConstant(b) && ((ConstantTreeNode)b).Value.IsAlmost(1.0)) {
         // $ * 1.0 => $
         return a;
+      } else if (IsConstant(b) && ((ConstantTreeNode)b).Value.IsAlmost(0.0)) {
+        return MakeConstant(0);
       } else if (IsConstant(b) && IsVariableBase(a)) {
         // multiply constants into variables weights
         ((VariableTreeNodeBase)a).Weight *= ((ConstantTreeNode)b).Value;
@@ -1152,6 +1304,21 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         a.AddSubtree(GetSimplifiedTree(b));
         MergeVariablesAndConstantsInProduct(a);
         return a;
+      } else if (IsAbsolute(a) && IsAbsolute(b)) {
+        return MakeAbs(MakeProduct(a.GetSubtree(0), b.GetSubtree(0)));
+      } else if (IsAbsolute(a) && IsConstant(b)) {
+        var constNode = b as ConstantTreeNode;
+        var posF = Math.Abs(constNode.Value);
+        if (constNode.Value > 0) {
+          return MakeAbs(MakeProduct(a.GetSubtree(0), MakeConstant(posF)));
+        } else {
+          var mul = mulSymbol.CreateTreeNode();
+          mul.AddSubtree(MakeAbs(MakeProduct(a.GetSubtree(0), MakeConstant(posF))));
+          mul.AddSubtree(MakeConstant(-1.0));
+          return mul;
+        }
+      } else if (IsAnalyticalQuotient(a)) {
+        return MakeAnalyticalQuotient(MakeProduct(a.GetSubtree(0), b), a.GetSubtree(1));
       } else {
         var mul = mulSymbol.CreateTreeNode();
         mul.AddSubtree(a);

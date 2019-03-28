@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -30,7 +30,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Random;
@@ -43,7 +43,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   [Item("t-Distributed Stochastic Neighbor Embedding (tSNE)", "t-Distributed Stochastic Neighbor Embedding projects the data in a low " +
                                                               "dimensional space to allow visual cluster identification. Implemented similar to: https://lvdmaaten.github.io/tsne/#implementations (Barnes-Hut t-SNE). Described in : https://lvdmaaten.github.io/publications/papers/JMLR_2014.pdf")]
   [Creatable(CreatableAttribute.Categories.DataAnalysis, Priority = 100)]
-  [StorableClass]
+  [StorableType("1CE58B5E-C319-4DEB-B66B-994171370B06")]
   public sealed class TSNEAlgorithm : BasicAlgorithm {
     public override bool SupportsPause {
       get { return true; }
@@ -209,7 +209,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     #region Constructors & Cloning
     [StorableConstructor]
-    private TSNEAlgorithm(bool deserializing) : base(deserializing) { }
+    private TSNEAlgorithm(StorableConstructorFlag _) : base(_) { }
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
@@ -274,7 +274,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       var wdist = DistanceFunction as WeightedEuclideanDistance;
       if (wdist != null) wdist.Initialize(problemData);
       if (state == null) {
-        if (SetSeedRandomly) Seed = new System.Random().Next();
+        if (SetSeedRandomly) Seed = RandomSeedGenerator.GetSeed();
         var random = new MersenneTwister((uint)Seed);
         var dataset = problemData.Dataset;
         var allowedInputVariables = problemData.AllowedInputVariables.ToArray();

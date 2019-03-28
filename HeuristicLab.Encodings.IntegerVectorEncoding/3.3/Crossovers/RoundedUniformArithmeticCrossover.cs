@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,14 +24,14 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   /// <summary>
   /// The rounded uniform arithmetic crossover (continuous recombination) constructs an offspring by calculating x = alpha * p1 + (1-alpha) * p2 for a position x in the vector with a given probability (otherwise p1 is taken at this position).
   /// </summary>
   [Item("RoundedUniformSomePositionsArithmeticCrossover", "The uniform some positions arithmetic crossover (continuous recombination) constructs an offspring by calculating x = alpha * p1 + (1-alpha) * p2 for a position x in the vector with a given probability (otherwise p1 is taken at this position).")]
-  [StorableClass]
+  [StorableType("8393AFC2-FAA5-47A8-A1E3-E6DEABE71B2F")]
   public class RoundedUniformArithmeticCrossover : BoundedIntegerVectorCrossover, IBoundedIntegerVectorOperator {
 
     /// <summary>
@@ -48,7 +48,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
     }
 
     [StorableConstructor]
-    protected RoundedUniformArithmeticCrossover(bool deserializing) : base(deserializing) { }
+    protected RoundedUniformArithmeticCrossover(StorableConstructorFlag _) : base(_) { }
     protected RoundedUniformArithmeticCrossover(RoundedUniformArithmeticCrossover original, Cloner cloner) : base(original, cloner) { }
     /// <summary>
     /// Initializes a new instance with two parameters (<c>Alpha</c> and <c>Probability</c>).

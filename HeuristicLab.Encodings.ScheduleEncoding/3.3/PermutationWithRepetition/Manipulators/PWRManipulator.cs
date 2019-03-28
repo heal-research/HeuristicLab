@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,15 +22,15 @@
 using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("PWRManipulator", "An operator which manipulates a PWR representation.")]
-  [StorableClass]
+  [StorableType("22287F17-B833-40E0-AE6C-F1136DCF4997")]
   public abstract class PWRManipulator : ScheduleManipulator, IPWROperator {
 
     [StorableConstructor]
-    protected PWRManipulator(bool deserializing) : base(deserializing) { }
+    protected PWRManipulator(StorableConstructorFlag _) : base(_) { }
     protected PWRManipulator(PWRManipulator original, Cloner cloner) : base(original, cloner) { }
     public PWRManipulator() : base() { }
 

@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,14 +21,14 @@
 
 using System.Collections.Generic;
 using HeuristicLab.Common;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Core {
-  [StorableClass]
+  [StorableType("D8670057-029C-449C-914C-0342A0DCB2C5")]
   [Item("ScopeList", "Represents a list of scopes.")]
   public sealed class ScopeList : ItemList<IScope> {
     [StorableConstructor]
-    private ScopeList(bool deserializing) : base(deserializing) { }
+    private ScopeList(StorableConstructorFlag _) : base(_) { }
     private ScopeList(ScopeList original, Cloner cloner) : base(original, cloner) { }
     public ScopeList() : base() { }
     public ScopeList(int capacity) : base(capacity) { }

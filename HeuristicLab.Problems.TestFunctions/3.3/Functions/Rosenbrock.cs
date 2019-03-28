@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,7 +24,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TestFunctions {
   /// <summary>
@@ -35,7 +35,7 @@ namespace HeuristicLab.Problems.TestFunctions {
 For 2 and 3 dimensions the single minimum of this function is 0 at (1,1,...,1), for 4 to 30 dimensions there is an additional local minimum close to (-1,1,...,1).
 It is unknown how many local minima there are for dimensions greater than 30.
 It is implemented as generalized Rosenbrock function for which the 2 dimensional function is a special case, as for example given in Shang, Y.-W. and Qiu, Y.-H. 2006. A Note on the Extended Rosenbrock Function. Evolutionary Computation 14, pp. 119-126, MIT Press.")]
-  [StorableClass]
+  [StorableType("20C31FDB-4F7D-4563-B955-F4F8B34DFF3E")]
   public class Rosenbrock : SingleObjectiveTestFunction {
     /// <summary>
     /// Returns false as the Rosenbrock function is a minimization problem.
@@ -69,7 +69,7 @@ It is implemented as generalized Rosenbrock function for which the 2 dimensional
     }
 
     [StorableConstructor]
-    protected Rosenbrock(bool deserializing) : base(deserializing) { }
+    protected Rosenbrock(StorableConstructorFlag _) : base(_) { }
     protected Rosenbrock(Rosenbrock original, Cloner cloner) : base(original, cloner) { }
     public Rosenbrock() : base() { }
 

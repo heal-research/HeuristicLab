@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,10 +26,10 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  [StorableClass]
+  [StorableType("1C8DCCCF-4E2A-421D-9C61-7C017D584054")]
   [Item("ClassificationProblemData", "Represents an item containing all data defining a classification problem.")]
   public class ClassificationProblemData : DataAnalysisProblemData, IClassificationProblemData, IStorableContent {
     protected const string TargetVariableParameterName = "TargetVariable";
@@ -278,7 +278,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
 
     [StorableConstructor]
-    protected ClassificationProblemData(bool deserializing) : base(deserializing) { }
+    protected ClassificationProblemData(StorableConstructorFlag _) : base(_) { }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       RegisterParameterEvents();
@@ -466,54 +466,5 @@ namespace HeuristicLab.Problems.DataAnalysis {
       OnChanged();
     }
     #endregion
-
-    protected override bool IsProblemDataCompatible(IDataAnalysisProblemData problemData, out string errorMessage) {
-      if (problemData == null) throw new ArgumentNullException("problemData", "The provided problemData is null.");
-      IClassificationProblemData classificationProblemData = problemData as IClassificationProblemData;
-      if (classificationProblemData == null)
-        throw new ArgumentException("The problem data is no classification problem data. Instead a " + problemData.GetType().GetPrettyName() + " was provided.", "problemData");
-
-      var returnValue = base.IsProblemDataCompatible(classificationProblemData, out errorMessage);
-      //check targetVariable
-      if (classificationProblemData.InputVariables.All(var => var.Value != TargetVariable)) {
-        errorMessage = string.Format("The target variable {0} is not present in the new problem data.", TargetVariable)
-                       + Environment.NewLine + errorMessage;
-        return false;
-      }
-
-      var newClassValues = classificationProblemData.Dataset.GetDoubleValues(TargetVariable).Distinct().OrderBy(x => x);
-      if (!newClassValues.SequenceEqual(ClassValues)) {
-        errorMessage = errorMessage + string.Format("The class values differ in the provided classification problem data.");
-        returnValue = false;
-      }
-
-      var newPositivieClassName = classificationProblemData.PositiveClass;
-      if (newPositivieClassName != PositiveClass) {
-        errorMessage = errorMessage + string.Format("The positive class differs in the provided classification problem data.");
-        returnValue = false;
-      }
-
-      return returnValue;
-    }
-
-    public override void AdjustProblemDataProperties(IDataAnalysisProblemData problemData) {
-      if (problemData == null) throw new ArgumentNullException("problemData", "The provided problemData is null.");
-      ClassificationProblemData classificationProblemData = problemData as ClassificationProblemData;
-      if (classificationProblemData == null)
-        throw new ArgumentException("The problem data is not a classification problem data. Instead a " + problemData.GetType().GetPrettyName() + " was provided.", "problemData");
-
-      base.AdjustProblemDataProperties(problemData);
-      TargetVariable = classificationProblemData.TargetVariable;
-      for (int i = 0; i < classificationProblemData.ClassNames.Count(); i++)
-        ClassNamesParameter.Value[i, 0] = classificationProblemData.ClassNames.ElementAt(i);
-
-      PositiveClass = classificationProblemData.PositiveClass;
-
-      for (int i = 0; i < Classes; i++) {
-        for (int j = 0; j < Classes; j++) {
-          ClassificationPenaltiesParameter.Value[i, j] = classificationProblemData.GetClassificationPenalty(ClassValuesCache[i], ClassValuesCache[j]);
-        }
-      }
-    }
   }
 }

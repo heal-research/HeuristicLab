@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -62,13 +62,17 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       this.executionTimeLabel = new System.Windows.Forms.Label();
       this.executionTimeTextBox = new System.Windows.Forms.TextBox();
       this.pauseButton = new System.Windows.Forms.Button();
-      this.resourceIdsLabel = new System.Windows.Forms.Label();
-      this.resourceNamesTextBox = new System.Windows.Forms.TextBox();
+      this.projectLabel = new System.Windows.Forms.Label();
+      this.projectNameTextBox = new System.Windows.Forms.TextBox();
       this.nameLabel = new System.Windows.Forms.Label();
       this.nameTextBox = new System.Windows.Forms.TextBox();
+      this.descriptionLabel = new System.Windows.Forms.Label();
+      this.descriptionTextBox = new System.Windows.Forms.TextBox();
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
       this.refreshButton = new System.Windows.Forms.Button();
+      this.updateButton = new System.Windows.Forms.Button();
       this.UnloadButton = new System.Windows.Forms.Button();
+      this.searchButton = new System.Windows.Forms.Button();
       this.refreshAutomaticallyCheckBox = new System.Windows.Forms.CheckBox();
       this.infoGroupBox = new System.Windows.Forms.GroupBox();
       this.finishedTextBox = new System.Windows.Forms.TextBox();
@@ -77,7 +81,6 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       this.finishedLabel = new System.Windows.Forms.Label();
       this.calculatingLabel = new System.Windows.Forms.Label();
       this.jobsLabel = new System.Windows.Forms.Label();
-      this.searchButton = new System.Windows.Forms.Button();
       this.tabControl.SuspendLayout();
       this.tasksTabPage.SuspendLayout();
       this.permissionTabPage.SuspendLayout();
@@ -90,15 +93,15 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       // tabControl
       // 
       this.tabControl.AllowDrop = true;
-      this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+      this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.tabControl.Controls.Add(this.tasksTabPage);
       this.tabControl.Controls.Add(this.permissionTabPage);
       this.tabControl.Controls.Add(this.runsTabPage);
       this.tabControl.Controls.Add(this.stateTabPage);
       this.tabControl.Controls.Add(this.logTabPage);
-      this.tabControl.Location = new System.Drawing.Point(0, 78);
+      this.tabControl.Location = new System.Drawing.Point(0, 106);
       this.tabControl.Name = "tabControl";
       this.tabControl.SelectedIndex = 0;
       this.tabControl.Size = new System.Drawing.Size(717, 452);
@@ -118,8 +121,8 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       // jobsTreeView
       // 
       this.jobsTreeView.AllowDrop = true;
-      this.jobsTreeView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+      this.jobsTreeView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.jobsTreeView.Caption = "ItemTree View";
       this.jobsTreeView.Content = null;
@@ -150,14 +153,14 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       this.refreshPermissionsButton.Name = "refreshPermissionsButton";
       this.refreshPermissionsButton.Size = new System.Drawing.Size(24, 24);
       this.refreshPermissionsButton.TabIndex = 23;
-      this.toolTip.SetToolTip(this.refreshPermissionsButton, "Refresh Data");
+      this.toolTip.SetToolTip(this.refreshPermissionsButton, "Refresh data");
       this.refreshPermissionsButton.UseVisualStyleBackColor = true;
       this.refreshPermissionsButton.Click += new System.EventHandler(this.refreshPermissionsButton_Click);
       // 
       // hiveExperimentPermissionListView
       // 
-      this.hiveExperimentPermissionListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+      this.hiveExperimentPermissionListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.hiveExperimentPermissionListView.Caption = "HiveExperimentPermissionList View";
       this.hiveExperimentPermissionListView.Content = null;
@@ -182,8 +185,8 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       // 
       // runCollectionViewHost
       // 
-      this.runCollectionViewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+      this.runCollectionViewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.runCollectionViewHost.Caption = "View";
       this.runCollectionViewHost.Content = null;
@@ -208,8 +211,8 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       // 
       // stateLogViewHost
       // 
-      this.stateLogViewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+      this.stateLogViewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.stateLogViewHost.Caption = "StateLog View";
       this.stateLogViewHost.Content = null;
@@ -234,8 +237,8 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       // 
       // logView
       // 
-      this.logView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+      this.logView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.logView.Caption = "Log View";
       this.logView.Content = null;
@@ -249,10 +252,10 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       // 
       this.startButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
       this.startButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Play;
-      this.startButton.Location = new System.Drawing.Point(0, 536);
+      this.startButton.Location = new System.Drawing.Point(0, 564);
       this.startButton.Name = "startButton";
       this.startButton.Size = new System.Drawing.Size(24, 24);
-      this.startButton.TabIndex = 5;
+      this.startButton.TabIndex = 4;
       this.toolTip.SetToolTip(this.startButton, "Start/Resume Experiment");
       this.startButton.UseVisualStyleBackColor = true;
       this.startButton.Click += new System.EventHandler(this.startButton_Click);
@@ -261,10 +264,10 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       // 
       this.stopButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
       this.stopButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Stop;
-      this.stopButton.Location = new System.Drawing.Point(60, 536);
+      this.stopButton.Location = new System.Drawing.Point(60, 564);
       this.stopButton.Name = "stopButton";
       this.stopButton.Size = new System.Drawing.Size(24, 24);
-      this.stopButton.TabIndex = 7;
+      this.stopButton.TabIndex = 6;
       this.toolTip.SetToolTip(this.stopButton, "Stop Experiment");
       this.stopButton.UseVisualStyleBackColor = true;
       this.stopButton.Click += new System.EventHandler(this.stopButton_Click);
@@ -273,71 +276,91 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       // 
       this.executionTimeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.executionTimeLabel.AutoSize = true;
-      this.executionTimeLabel.Location = new System.Drawing.Point(491, 543);
+      this.executionTimeLabel.Location = new System.Drawing.Point(491, 571);
       this.executionTimeLabel.Name = "executionTimeLabel";
       this.executionTimeLabel.Size = new System.Drawing.Size(83, 13);
-      this.executionTimeLabel.TabIndex = 9;
+      this.executionTimeLabel.TabIndex = 100;
       this.executionTimeLabel.Text = "&Execution Time:";
       // 
       // executionTimeTextBox
       // 
       this.executionTimeTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.executionTimeTextBox.Location = new System.Drawing.Point(580, 540);
+      this.executionTimeTextBox.Location = new System.Drawing.Point(580, 568);
       this.executionTimeTextBox.Name = "executionTimeTextBox";
       this.executionTimeTextBox.ReadOnly = true;
       this.executionTimeTextBox.Size = new System.Drawing.Size(137, 20);
-      this.executionTimeTextBox.TabIndex = 10;
+      this.executionTimeTextBox.TabIndex = 100;
       // 
       // pauseButton
       // 
       this.pauseButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
       this.pauseButton.Enabled = false;
       this.pauseButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Pause;
-      this.pauseButton.Location = new System.Drawing.Point(30, 536);
+      this.pauseButton.Location = new System.Drawing.Point(30, 564);
       this.pauseButton.Name = "pauseButton";
       this.pauseButton.Size = new System.Drawing.Size(24, 24);
-      this.pauseButton.TabIndex = 6;
+      this.pauseButton.TabIndex = 5;
       this.toolTip.SetToolTip(this.pauseButton, "Pause Experiment");
       this.pauseButton.UseVisualStyleBackColor = true;
       this.pauseButton.Click += new System.EventHandler(this.pauseButton_Click);
       // 
-      // resourceIdsLabel
+      // projectLabel
       // 
-      this.resourceIdsLabel.AutoSize = true;
-      this.resourceIdsLabel.Location = new System.Drawing.Point(3, 56);
-      this.resourceIdsLabel.Name = "resourceIdsLabel";
-      this.resourceIdsLabel.Size = new System.Drawing.Size(61, 13);
-      this.resourceIdsLabel.TabIndex = 12;
-      this.resourceIdsLabel.Text = "Resources:";
+      this.projectLabel.AutoSize = true;
+      this.projectLabel.Location = new System.Drawing.Point(3, 83);
+      this.projectLabel.Name = "projectLabel";
+      this.projectLabel.Size = new System.Drawing.Size(43, 13);
+      this.projectLabel.TabIndex = 100;
+      this.projectLabel.Text = "Project:";
       // 
-      // resourceNamesTextBox
+      // projectNameTextBox
       // 
-      this.resourceNamesTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+      this.projectNameTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.resourceNamesTextBox.Location = new System.Drawing.Point(70, 52);
-      this.resourceNamesTextBox.Name = "resourceNamesTextBox";
-      this.resourceNamesTextBox.Size = new System.Drawing.Size(471, 20);
-      this.resourceNamesTextBox.TabIndex = 2;
-      this.resourceNamesTextBox.Validated += new System.EventHandler(this.resourceNamesTextBox_Validated);
+      this.projectNameTextBox.Location = new System.Drawing.Point(100, 80);
+      this.projectNameTextBox.Name = "projectNameTextBox";
+      this.projectNameTextBox.ReadOnly = true;
+      this.projectNameTextBox.Size = new System.Drawing.Size(471, 20);
+      this.projectNameTextBox.TabIndex = 100;
+      this.projectNameTextBox.Validated += new System.EventHandler(this.resourceNamesTextBox_Validated);
       // 
       // nameLabel
       // 
       this.nameLabel.AutoSize = true;
-      this.nameLabel.Location = new System.Drawing.Point(3, 30);
+      this.nameLabel.Location = new System.Drawing.Point(3, 35);
       this.nameLabel.Name = "nameLabel";
       this.nameLabel.Size = new System.Drawing.Size(38, 13);
-      this.nameLabel.TabIndex = 20;
+      this.nameLabel.TabIndex = 100;
       this.nameLabel.Text = "Name:";
       // 
       // nameTextBox
       // 
-      this.nameTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+      this.nameTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.nameTextBox.Location = new System.Drawing.Point(70, 27);
+      this.nameTextBox.Location = new System.Drawing.Point(71, 32);
       this.nameTextBox.Name = "nameTextBox";
-      this.nameTextBox.Size = new System.Drawing.Size(501, 20);
+      this.nameTextBox.Size = new System.Drawing.Size(500, 20);
       this.nameTextBox.TabIndex = 1;
       this.nameTextBox.Validated += new System.EventHandler(this.nameTextBox_Validated);
+      // 
+      // descriptionLabel
+      // 
+      this.descriptionLabel.AutoSize = true;
+      this.descriptionLabel.Location = new System.Drawing.Point(3, 59);
+      this.descriptionLabel.Name = "descriptionLabel";
+      this.descriptionLabel.Size = new System.Drawing.Size(63, 13);
+      this.descriptionLabel.TabIndex = 100;
+      this.descriptionLabel.Text = "Description:";
+      // 
+      // descriptionTextBox
+      // 
+      this.descriptionTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.descriptionTextBox.Location = new System.Drawing.Point(71, 56);
+      this.descriptionTextBox.Name = "descriptionTextBox";
+      this.descriptionTextBox.Size = new System.Drawing.Size(500, 20);
+      this.descriptionTextBox.TabIndex = 2;
+      this.descriptionTextBox.Validated += new System.EventHandler(this.descriptionTextBox_Validated);
       // 
       // refreshButton
       // 
@@ -345,29 +368,51 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       this.refreshButton.Location = new System.Drawing.Point(3, 0);
       this.refreshButton.Name = "refreshButton";
       this.refreshButton.Size = new System.Drawing.Size(24, 24);
-      this.refreshButton.TabIndex = 22;
+      this.refreshButton.TabIndex = 7;
       this.toolTip.SetToolTip(this.refreshButton, "Refresh Data");
       this.refreshButton.UseVisualStyleBackColor = true;
       this.refreshButton.Click += new System.EventHandler(this.refreshButton_Click);
       // 
+      // updateButton
+      // 
+      this.updateButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Save;
+      this.updateButton.Location = new System.Drawing.Point(30, 0);
+      this.updateButton.Name = "updateButton";
+      this.updateButton.Size = new System.Drawing.Size(24, 24);
+      this.updateButton.TabIndex = 8;
+      this.toolTip.SetToolTip(this.updateButton, "Update Job (Name, Project, Resources)");
+      this.updateButton.UseVisualStyleBackColor = true;
+      this.updateButton.Click += new System.EventHandler(this.updateButton_Click);
+      // 
       // UnloadButton
       // 
       this.UnloadButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Disconnect;
-      this.UnloadButton.Location = new System.Drawing.Point(30, 0);
+      this.UnloadButton.Location = new System.Drawing.Point(57, 0);
       this.UnloadButton.Name = "UnloadButton";
       this.UnloadButton.Size = new System.Drawing.Size(24, 24);
-      this.UnloadButton.TabIndex = 27;
+      this.UnloadButton.TabIndex = 9;
       this.toolTip.SetToolTip(this.UnloadButton, "Unload Job");
       this.UnloadButton.UseVisualStyleBackColor = true;
       this.UnloadButton.Click += new System.EventHandler(this.UnloadButton_Click);
       // 
+      // searchButton
+      // 
+      this.searchButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Zoom;
+      this.searchButton.Location = new System.Drawing.Point(71, 79);
+      this.searchButton.Name = "searchButton";
+      this.searchButton.Size = new System.Drawing.Size(24, 24);
+      this.searchButton.TabIndex = 3;
+      this.toolTip.SetToolTip(this.searchButton, "Select project and resources");
+      this.searchButton.UseVisualStyleBackColor = true;
+      this.searchButton.Click += new System.EventHandler(this.searchButton_Click);
+      // 
       // refreshAutomaticallyCheckBox
       // 
       this.refreshAutomaticallyCheckBox.AutoSize = true;
-      this.refreshAutomaticallyCheckBox.Location = new System.Drawing.Point(70, 3);
+      this.refreshAutomaticallyCheckBox.Location = new System.Drawing.Point(100, 3);
       this.refreshAutomaticallyCheckBox.Name = "refreshAutomaticallyCheckBox";
       this.refreshAutomaticallyCheckBox.Size = new System.Drawing.Size(127, 17);
-      this.refreshAutomaticallyCheckBox.TabIndex = 24;
+      this.refreshAutomaticallyCheckBox.TabIndex = 100;
       this.refreshAutomaticallyCheckBox.Text = "&Refresh automatically";
       this.refreshAutomaticallyCheckBox.UseVisualStyleBackColor = true;
       this.refreshAutomaticallyCheckBox.CheckedChanged += new System.EventHandler(this.refreshAutomaticallyCheckBox_CheckedChanged);
@@ -381,7 +426,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       this.infoGroupBox.Controls.Add(this.finishedLabel);
       this.infoGroupBox.Controls.Add(this.calculatingLabel);
       this.infoGroupBox.Controls.Add(this.jobsLabel);
-      this.infoGroupBox.Location = new System.Drawing.Point(580, 5);
+      this.infoGroupBox.Location = new System.Drawing.Point(578, 16);
       this.infoGroupBox.Name = "infoGroupBox";
       this.infoGroupBox.Size = new System.Drawing.Size(133, 89);
       this.infoGroupBox.TabIndex = 25;
@@ -390,30 +435,30 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       // 
       // finishedTextBox
       // 
-      this.finishedTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+      this.finishedTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.finishedTextBox.Location = new System.Drawing.Point(74, 64);
       this.finishedTextBox.Name = "finishedTextBox";
       this.finishedTextBox.Size = new System.Drawing.Size(53, 20);
-      this.finishedTextBox.TabIndex = 5;
+      this.finishedTextBox.TabIndex = 100;
       // 
       // calculatingTextBox
       // 
-      this.calculatingTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+      this.calculatingTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.calculatingTextBox.Location = new System.Drawing.Point(74, 40);
       this.calculatingTextBox.Name = "calculatingTextBox";
       this.calculatingTextBox.Size = new System.Drawing.Size(53, 20);
-      this.calculatingTextBox.TabIndex = 4;
+      this.calculatingTextBox.TabIndex = 100;
       // 
       // jobsTextBox
       // 
-      this.jobsTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+      this.jobsTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.jobsTextBox.Location = new System.Drawing.Point(74, 16);
       this.jobsTextBox.Name = "jobsTextBox";
       this.jobsTextBox.Size = new System.Drawing.Size(53, 20);
-      this.jobsTextBox.TabIndex = 3;
+      this.jobsTextBox.TabIndex = 100;
       // 
       // finishedLabel
       // 
@@ -421,7 +466,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       this.finishedLabel.Location = new System.Drawing.Point(6, 67);
       this.finishedLabel.Name = "finishedLabel";
       this.finishedLabel.Size = new System.Drawing.Size(49, 13);
-      this.finishedLabel.TabIndex = 2;
+      this.finishedLabel.TabIndex = 100;
       this.finishedLabel.Text = "Finished:";
       // 
       // calculatingLabel
@@ -430,7 +475,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       this.calculatingLabel.Location = new System.Drawing.Point(6, 43);
       this.calculatingLabel.Name = "calculatingLabel";
       this.calculatingLabel.Size = new System.Drawing.Size(62, 13);
-      this.calculatingLabel.TabIndex = 1;
+      this.calculatingLabel.TabIndex = 100;
       this.calculatingLabel.Text = "Calculating:";
       // 
       // jobsLabel
@@ -439,40 +484,32 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       this.jobsLabel.Location = new System.Drawing.Point(6, 19);
       this.jobsLabel.Name = "jobsLabel";
       this.jobsLabel.Size = new System.Drawing.Size(46, 13);
-      this.jobsLabel.TabIndex = 0;
+      this.jobsLabel.TabIndex = 100;
       this.jobsLabel.Text = "Waiting:";
-      // 
-      // searchButton
-      // 
-      this.searchButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.searchButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Zoom;
-      this.searchButton.Location = new System.Drawing.Point(547, 50);
-      this.searchButton.Name = "searchButton";
-      this.searchButton.Size = new System.Drawing.Size(24, 24);
-      this.searchButton.TabIndex = 26;
-      this.searchButton.UseVisualStyleBackColor = true;
-      this.searchButton.Click += new System.EventHandler(this.searchButton_Click);
       // 
       // RefreshableHiveJobView
       // 
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
-      this.Controls.Add(this.UnloadButton);
       this.Controls.Add(this.searchButton);
       this.Controls.Add(this.infoGroupBox);
       this.Controls.Add(this.refreshAutomaticallyCheckBox);
       this.Controls.Add(this.refreshButton);
+      this.Controls.Add(this.updateButton);
+      this.Controls.Add(this.UnloadButton);
       this.Controls.Add(this.nameTextBox);
       this.Controls.Add(this.nameLabel);
+      this.Controls.Add(this.descriptionTextBox);
+      this.Controls.Add(this.descriptionLabel);
       this.Controls.Add(this.tabControl);
       this.Controls.Add(this.startButton);
       this.Controls.Add(this.executionTimeTextBox);
       this.Controls.Add(this.executionTimeLabel);
-      this.Controls.Add(this.resourceNamesTextBox);
+      this.Controls.Add(this.projectNameTextBox);
       this.Controls.Add(this.pauseButton);
-      this.Controls.Add(this.resourceIdsLabel);
+      this.Controls.Add(this.projectLabel);
       this.Controls.Add(this.stopButton);
       this.Name = "RefreshableHiveJobView";
-      this.Size = new System.Drawing.Size(717, 560);
+      this.Size = new System.Drawing.Size(717, 588);
       this.tabControl.ResumeLayout(false);
       this.tasksTabPage.ResumeLayout(false);
       this.permissionTabPage.ResumeLayout(false);
@@ -492,16 +529,20 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
     private System.Windows.Forms.Label executionTimeLabel;
     private System.Windows.Forms.TextBox executionTimeTextBox;
     private System.Windows.Forms.Button pauseButton;
-    private System.Windows.Forms.Label resourceIdsLabel;
-    private System.Windows.Forms.TextBox resourceNamesTextBox;
+    private System.Windows.Forms.Label projectLabel;
+    private System.Windows.Forms.TextBox projectNameTextBox;
     private System.Windows.Forms.TabPage logTabPage;
     private Core.Views.LogView logView;
     private System.Windows.Forms.TabPage tasksTabPage;
     private HeuristicLab.Clients.Hive.Views.HiveTaskItemTreeView jobsTreeView;
     private System.Windows.Forms.Label nameLabel;
     private System.Windows.Forms.TextBox nameTextBox;
+    private System.Windows.Forms.Label descriptionLabel;
+    private System.Windows.Forms.TextBox descriptionTextBox;
     private System.Windows.Forms.ToolTip toolTip;
     private System.Windows.Forms.Button refreshButton;
+    private System.Windows.Forms.Button updateButton;
+    private System.Windows.Forms.Button UnloadButton;
     private System.Windows.Forms.CheckBox refreshAutomaticallyCheckBox;
     private System.Windows.Forms.GroupBox infoGroupBox;
     private System.Windows.Forms.TextBox finishedTextBox;
@@ -519,7 +560,5 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
     private MainForm.WindowsForms.ViewHost runCollectionViewHost;
     private System.Windows.Forms.Button searchButton;
     private MainForm.WindowsForms.DragOverTabControl tabControl;
-    private System.Windows.Forms.Button UnloadButton;
-
   }
 }

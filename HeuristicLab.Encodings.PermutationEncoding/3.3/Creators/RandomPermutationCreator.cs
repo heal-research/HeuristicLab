@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,14 +25,14 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   /// <summary>
   /// An operator which creates a new random permutation of integer values.
   /// </summary>
   [Item("RandomPermutationCreator", "An operator which creates a new random permutation of integer values.")]
-  [StorableClass]
+  [StorableType("527B14A9-DB58-4507-8C3F-1DE1EF4C4A2B")]
   public sealed class RandomPermutationCreator : InstrumentedOperator, IPermutationCreator, IStochasticOperator {
     public override bool CanChangeName {
       get { return false; }
@@ -57,7 +57,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     }
 
     [StorableConstructor]
-    private RandomPermutationCreator(bool deserializing) : base(deserializing) { }
+    private RandomPermutationCreator(StorableConstructorFlag _) : base(_) { }
     private RandomPermutationCreator(RandomPermutationCreator original, Cloner cloner) : base(original, cloner) { }
     public RandomPermutationCreator()
       : base() {

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,8 +20,10 @@
 #endregion
 
 using HeuristicLab.Core;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding {
+  [StorableType("bbf5a74f-4a40-4294-a982-bac04408ae7d")]
   public interface IDirectScheduleOperator : IOperator {
     ILookupParameter<ItemList<Job>> JobDataParameter { get; }
   }

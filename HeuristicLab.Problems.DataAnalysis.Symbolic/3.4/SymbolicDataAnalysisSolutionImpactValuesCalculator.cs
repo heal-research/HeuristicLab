@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,28 +24,30 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
-  [StorableClass]
+  [StorableType("E725708A-508E-47DC-B667-DAA569FD1DC2")]
   [Item("SymbolicDataAnalysisSolutionImpactValuesCalculator", "Calculates the impact values and replacements values for symbolic expression tree nodes.")]
   public abstract class SymbolicDataAnalysisSolutionImpactValuesCalculator : Item, ISymbolicDataAnalysisSolutionImpactValuesCalculator {
     protected SymbolicDataAnalysisSolutionImpactValuesCalculator() { }
     protected SymbolicDataAnalysisSolutionImpactValuesCalculator(SymbolicDataAnalysisSolutionImpactValuesCalculator original, Cloner cloner)
       : base(original, cloner) { }
     [StorableConstructor]
-    protected SymbolicDataAnalysisSolutionImpactValuesCalculator(bool deserializing) : base(deserializing) { }
+    protected SymbolicDataAnalysisSolutionImpactValuesCalculator(StorableConstructorFlag _) : base(_) { }
 
     public virtual void CalculateImpactAndReplacementValues(ISymbolicDataAnalysisModel model, ISymbolicExpressionTreeNode node, IDataAnalysisProblemData problemData, IEnumerable<int> rows,
         out double impactValue, out double replacementValue, out double newQualityForImpactsCalculation,
         double qualityForImpactsCalculation = double.NaN) {
-      if (double.IsNaN(qualityForImpactsCalculation))
-        qualityForImpactsCalculation = CalculateQualityForImpacts(model, problemData, rows);
 
       var cloner = new Cloner();
       var tempModel = cloner.Clone(model);
-      var tempModelNode = (ISymbolicExpressionTreeNode)cloner.GetClone(node);
 
+      if (double.IsNaN(qualityForImpactsCalculation)) {
+        qualityForImpactsCalculation = CalculateQualityForImpacts(tempModel, problemData, rows);
+      }
+
+      var tempModelNode = (ISymbolicExpressionTreeNode)cloner.GetClone(node);
       var tempModelParentNode = tempModelNode.Parent;
       int i = tempModelParentNode.IndexOfSubtree(tempModelNode);
 
@@ -53,7 +55,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       double bestImpactValue = double.PositiveInfinity;
       newQualityForImpactsCalculation = qualityForImpactsCalculation; // initialize
       // try the potentially reasonable replacement values and use the best one
-      foreach (var repValue in CalculateReplacementValues(node, model.SymbolicExpressionTree, model.Interpreter, problemData.Dataset, problemData.TrainingIndices)) {
+      foreach (var repValue in CalculateReplacementValues(node, model.SymbolicExpressionTree, model.Interpreter, problemData.Dataset, rows)) {
         tempModelParentNode.RemoveSubtree(i);
 
         var constantNode = new ConstantTreeNode(new Constant()) { Value = repValue };

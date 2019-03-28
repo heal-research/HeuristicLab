@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -40,7 +40,10 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
 
     protected override void OnActiveViewChanged(object sender, EventArgs e) {
       IContentView activeView = MainFormManager.MainForm.ActiveView as IContentView;
-      ToolStripItem.Enabled = (activeView != null) && (activeView.Content != null) && ((activeView.Content is Experiment) || (activeView.Content is RunCollection) || (activeView.Content is IOptimizer)) && !activeView.Locked && OKBRoles.CheckUserPermissions();
+
+      ToolStripItem.Enabled = (activeView != null) && (activeView.Content != null)
+        && ((activeView.Content is Experiment) || (activeView.Content is RunCollection) || (activeView.Content is IOptimizer))
+        && !activeView.Locked;
     }
 
     public override void Execute() {

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -31,11 +31,11 @@ using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Common.Resources;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using Microsoft.CSharp;
 
 namespace HeuristicLab.Scripting {
-  [StorableClass]
+  [StorableType("0FA4F218-E1F5-4C09-9C2F-12B32D4EC373")]
   public abstract class Script : NamedItem, IProgrammableItem {
     #region Fields & Properties
     public static new Image StaticItemImage {
@@ -65,7 +65,7 @@ namespace HeuristicLab.Scripting {
 
     #region Construction & Initialization
     [StorableConstructor]
-    protected Script(bool deserializing) : base(deserializing) { }
+    protected Script(StorableConstructorFlag _) : base(_) { }
     protected Script(Script original, Cloner cloner)
       : base(original, cloner) {
       code = original.code;

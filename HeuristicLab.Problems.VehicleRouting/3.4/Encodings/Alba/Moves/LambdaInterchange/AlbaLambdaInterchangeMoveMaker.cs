@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,11 +23,11 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaLambdaInterchangeMoveMaker", "Peforms a lambda interchange moves on a given VRP encoding and updates the quality. It is implemented as described in Alba, E. and Dorronsoro, B. (2004). Solving the Vehicle Routing Problem by Using Cellular Genetic Algorithms.")]
-  [StorableClass]
+  [StorableType("C9622972-70BC-428D-9181-08B8A4D5B076")]
   public class AlbaLambdaInterchangeMoveMaker : AlbaMoveMaker, IAlbaLambdaInterchangeMoveOperator, IMoveMaker {
     public override bool CanChangeName {
       get { return false; }
@@ -41,7 +41,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
     }
 
     [StorableConstructor]
-    protected AlbaLambdaInterchangeMoveMaker(bool deserializing) : base(deserializing) { }
+    protected AlbaLambdaInterchangeMoveMaker(StorableConstructorFlag _) : base(_) { }
 
     public AlbaLambdaInterchangeMoveMaker()
       : base() {

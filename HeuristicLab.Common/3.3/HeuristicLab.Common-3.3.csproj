@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>HeuristicLab.Common</RootNamespace>
     <AssemblyName>HeuristicLab.Common-3.3</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -132,6 +132,7 @@
     <Compile Include="Constants.cs" />
     <Compile Include="ArrayExtensions.cs" />
     <Compile Include="ExceptionExtensions.cs" />
+    <Compile Include="Plugin.cs" />
     <Compile Include="Statistics\EmpiricalCumulativeDistributionFunction.cs" />
     <Compile Include="ListExtensions.cs" />
     <Compile Include="Point2D.cs" />
@@ -143,7 +144,6 @@
     <Compile Include="Content\IContent.cs" />
     <Compile Include="Statistics\EnumerableStatisticExtensions.cs" />
     <Compile Include="IDeepCloneable.cs" />
-    <Compile Include="Plugin.cs" />
     <Compile Include="ReferenceEqualityComparer.cs" />
     <Compile Include="SequenceGenerator.cs" />
     <Compile Include="TimeSpanHelper.cs" />
@@ -182,6 +182,13 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="HEAL.Attic, Version=1.0.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\HEAL.Attic.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

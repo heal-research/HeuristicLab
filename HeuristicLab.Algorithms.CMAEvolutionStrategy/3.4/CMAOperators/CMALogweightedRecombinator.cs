@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,15 +23,15 @@ using System;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.CMAEvolutionStrategy {
   [Item("CMA Log-weighted Recombinator", "Calculates weighted mean based on a logarithmic decreasing weights.")]
-  [StorableClass]
+  [StorableType("83A47E81-FF87-4A28-AEB4-DE453B55B680")]
   public class CMALogweightedRecombinator : CMARecombinator {
 
     [StorableConstructor]
-    protected CMALogweightedRecombinator(bool deserializing) : base(deserializing) { }
+    protected CMALogweightedRecombinator(StorableConstructorFlag _) : base(_) { }
     protected CMALogweightedRecombinator(CMALogweightedRecombinator original, Cloner cloner) : base(original, cloner) { }
     public CMALogweightedRecombinator() : base() { }
 

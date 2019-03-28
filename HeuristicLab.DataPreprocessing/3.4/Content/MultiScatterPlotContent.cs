@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,11 +22,11 @@
 using System.Drawing;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.DataPreprocessing {
   [Item("Multi Scatter Plot", "Represents a multi scatter plot.")]
-  [StorableClass]
+  [StorableType("1F55FF9A-2EE3-4A5B-BEF4-8F19D9A3A54D")]
   public class MultiScatterPlotContent : ScatterPlotContent {
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Performance; }
@@ -45,8 +45,7 @@ namespace HeuristicLab.DataPreprocessing {
     }
 
     [StorableConstructor]
-    protected MultiScatterPlotContent(bool deserializing)
-      : base(deserializing) { }
+    protected MultiScatterPlotContent(StorableConstructorFlag _) : base(_) { }
     #endregion
   }
 }

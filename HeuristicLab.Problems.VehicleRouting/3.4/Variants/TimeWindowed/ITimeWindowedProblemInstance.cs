@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,8 +21,10 @@
 
 using HeuristicLab.Data;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.VehicleRouting.Variants {
+  [StorableType("5E6207F9-10E5-4428-BC6E-C583389F9D86")]
   public interface ITimeWindowedProblemInstance : IVRPProblemInstance {
     DoubleArray ReadyTime { get; }
     DoubleArray DueTime { get; }

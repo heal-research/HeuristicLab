@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,11 +25,11 @@ using System.Linq;
 using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("Schedule", "Represents the general solution for scheduling problems.")]
-  [StorableClass]
+  [StorableType("EA6D14A3-7FA6-4B4B-B7F6-40B42657D398")]
   public class Schedule : NamedItem, ISchedule {
 
     #region Properties
@@ -53,7 +53,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
     #endregion
 
     [StorableConstructor]
-    private Schedule(bool deserializing) : base(deserializing) { }
+    private Schedule(StorableConstructorFlag _) : base(_) { }
     private Schedule(Schedule original, Cloner cloner)
       : base(original, cloner) {
       this.resources = cloner.Clone(original.Resources);

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,11 +25,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.PTSP {
   [Item("PTSP Analytical Insertion Move Evaluator", "Evaluates an insertion move (1-shift) by a full solution evaluation")]
-  [StorableClass]
+  [StorableType("FEB94986-2AD5-4A6E-89D9-A3954212810B")]
   public class PTSPAnalyticalInsertionMoveEvaluator : AnalyticalPTSPMoveEvaluator, IPermutationTranslocationMoveOperator {
 
     public ILookupParameter<TranslocationMove> TranslocationMoveParameter {
@@ -37,7 +37,7 @@ namespace HeuristicLab.Problems.PTSP {
     }
 
     [StorableConstructor]
-    protected PTSPAnalyticalInsertionMoveEvaluator(bool deserializing) : base(deserializing) { }
+    protected PTSPAnalyticalInsertionMoveEvaluator(StorableConstructorFlag _) : base(_) { }
     protected PTSPAnalyticalInsertionMoveEvaluator(PTSPAnalyticalInsertionMoveEvaluator original, Cloner cloner) : base(original, cloner) { }
     public PTSPAnalyticalInsertionMoveEvaluator()
       : base() {

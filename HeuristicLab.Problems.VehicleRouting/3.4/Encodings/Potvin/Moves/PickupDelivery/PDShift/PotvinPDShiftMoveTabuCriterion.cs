@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,13 +25,13 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Problems.VehicleRouting.Variants;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinPDShiftTabuCriterion", @"Checks if a certain shift move is tabu.")]
-  [StorableClass]
+  [StorableType("1A782EF0-0FC4-4C97-BEB7-5A6855785E5A")]
   public class PotvinPDShiftTabuCriterion : SingleSuccessorOperator, IPotvinPDShiftMoveOperator, ITabuChecker, IPotvinOperator, IVRPMoveOperator {
     public override bool CanChangeName {
       get { return false; }
@@ -82,7 +82,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
     }
 
     [StorableConstructor]
-    protected PotvinPDShiftTabuCriterion(bool deserializing) : base(deserializing) { }
+    protected PotvinPDShiftTabuCriterion(StorableConstructorFlag _) : base(_) { }
     protected PotvinPDShiftTabuCriterion(PotvinPDShiftTabuCriterion original, Cloner cloner) : base(original, cloner) { }
     public PotvinPDShiftTabuCriterion()
       : base() {

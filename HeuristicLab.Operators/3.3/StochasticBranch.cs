@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,14 +23,14 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Operators {
   /// <summary>
   /// A branch of two operators which are executed with a specified probability.
   /// </summary>
   [Item("StochasticBranch", "A branch of two operators which are executed with a specified probability.")]
-  [StorableClass]
+  [StorableType("5B4F6317-501A-4D29-A6D7-0B926BAD0A88")]
   public class StochasticBranch : SingleSuccessorOperator {
     public LookupParameter<IRandom> RandomParameter {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }
@@ -54,7 +54,7 @@ namespace HeuristicLab.Operators {
     }
 
     [StorableConstructor]
-    protected StochasticBranch(bool deserializing) : base(deserializing) { }
+    protected StochasticBranch(StorableConstructorFlag _) : base(_) { }
     protected StochasticBranch(StochasticBranch original, Cloner cloner)
       : base(original, cloner) {
     }

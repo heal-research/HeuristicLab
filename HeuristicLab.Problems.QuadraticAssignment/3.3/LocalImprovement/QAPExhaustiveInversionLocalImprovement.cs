@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -28,11 +28,11 @@ using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.QuadraticAssignment {
   [Item("QAPExhaustiveInversionLocalImprovement", "Takes a solution and finds the local optimum with respect to the inversion neighborhood by decending along the steepest gradient.")]
-  [StorableClass]
+  [StorableType("7A0F7835-87A6-4C3E-BEE2-E1BA6F67972B")]
   public class QAPExhaustiveInversionLocalImprovement : SingleSuccessorOperator, IQAPLocalImprovementOperator, ISingleObjectiveOperator {
 
     public ILookupParameter<IntValue> LocalIterationsParameter {
@@ -72,7 +72,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
     }
 
     [StorableConstructor]
-    protected QAPExhaustiveInversionLocalImprovement(bool deserializing) : base(deserializing) { }
+    protected QAPExhaustiveInversionLocalImprovement(StorableConstructorFlag _) : base(_) { }
     protected QAPExhaustiveInversionLocalImprovement(QAPExhaustiveInversionLocalImprovement original, Cloner cloner)
       : base(original, cloner) {
     }

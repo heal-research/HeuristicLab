@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,28 +24,19 @@ using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>
   /// Represents a neural network model for regression and classification
   /// </summary>
-  [StorableClass]
+  [StorableType("AEB9B960-FCA6-4A6D-BD5F-27BCE9CC5BEA")]
   [Item("NeuralNetworkModel", "Represents a neural network for regression and classification.")]
   public sealed class NeuralNetworkModel : ClassificationModel, INeuralNetworkModel {
 
+    private object mlpLocker = new object();
     private alglib.multilayerperceptron multiLayerPerceptron;
-    public alglib.multilayerperceptron MultiLayerPerceptron {
-      get { return multiLayerPerceptron; }
-      set {
-        if (value != multiLayerPerceptron) {
-          if (value == null) throw new ArgumentNullException();
-          multiLayerPerceptron = value;
-          OnChanged(EventArgs.Empty);
-        }
-      }
-    }
 
     public override IEnumerable<string> VariablesUsedForPrediction {
       get { return allowedInputVariables; }
@@ -56,10 +47,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     [Storable]
     private double[] classValues;
     [StorableConstructor]
-    private NeuralNetworkModel(bool deserializing)
-      : base(deserializing) {
-      if (deserializing)
-        multiLayerPerceptron = new alglib.multilayerperceptron();
+    private NeuralNetworkModel(StorableConstructorFlag _) : base(_) {
+      multiLayerPerceptron = new alglib.multilayerperceptron();
     }
     private NeuralNetworkModel(NeuralNetworkModel original, Cloner cloner)
       : base(original, cloner) {
@@ -105,13 +94,16 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         for (int column = 0; column < columns; column++) {
           x[column] = inputData[row, column];
         }
-        alglib.mlpprocess(multiLayerPerceptron, x, ref y);
+        // NOTE: mlpprocess changes data in multiLayerPerceptron and is therefore not thread-save!
+        lock (mlpLocker) {
+          alglib.mlpprocess(multiLayerPerceptron, x, ref y);
+        }
         yield return y[0];
       }
     }
 
     public override IEnumerable<double> GetEstimatedClassValues(IDataset dataset, IEnumerable<int> rows) {
-      double[,] inputData = dataset.ToArray( allowedInputVariables, rows);
+      double[,] inputData = dataset.ToArray(allowedInputVariables, rows);
 
       int n = inputData.GetLength(0);
       int columns = inputData.GetLength(1);
@@ -122,7 +114,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         for (int column = 0; column < columns; column++) {
           x[column] = inputData[row, column];
         }
-        alglib.mlpprocess(multiLayerPerceptron, x, ref y);
+        // NOTE: mlpprocess changes data in multiLayerPerceptron and is therefore not thread-save!
+        lock (mlpLocker) {
+          alglib.mlpprocess(multiLayerPerceptron, x, ref y);
+        }
         // find class for with the largest probability value
         int maxProbClassIndex = 0;
         double maxProb = y[0];
@@ -136,21 +131,30 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
     }
 
+    public bool IsProblemDataCompatible(IRegressionProblemData problemData, out string errorMessage) {
+      return RegressionModel.IsProblemDataCompatible(this, problemData, out errorMessage);
+    }
+
+    public override bool IsProblemDataCompatible(IDataAnalysisProblemData problemData, out string errorMessage) {
+      if (problemData == null) throw new ArgumentNullException("problemData", "The provided problemData is null.");
+
+      var regressionProblemData = problemData as IRegressionProblemData;
+      if (regressionProblemData != null)
+        return IsProblemDataCompatible(regressionProblemData, out errorMessage);
+
+      var classificationProblemData = problemData as IClassificationProblemData;
+      if (classificationProblemData != null)
+        return IsProblemDataCompatible(classificationProblemData, out errorMessage);
+
+      throw new ArgumentException("The problem data is not a regression nor a classification problem data. Instead a " + problemData.GetType().GetPrettyName() + " was provided.", "problemData");
+    }
+
     public IRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData) {
       return new NeuralNetworkRegressionSolution(this, new RegressionProblemData(problemData));
     }
     public override IClassificationSolution CreateClassificationSolution(IClassificationProblemData problemData) {
       return new NeuralNetworkClassificationSolution(this, new ClassificationProblemData(problemData));
     }
-
-    #region events
-    public event EventHandler Changed;
-    private void OnChanged(EventArgs e) {
-      var handlers = Changed;
-      if (handlers != null)
-        handlers(this, e);
-    }
-    #endregion
 
     #region persistence
     [Storable]

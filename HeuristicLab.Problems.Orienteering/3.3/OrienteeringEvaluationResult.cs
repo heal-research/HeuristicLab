@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,11 +20,22 @@
 #endregion
 
 using HeuristicLab.Data;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.Orienteering {
+  [StorableType("A7F34447-A3C9-4FB5-B52F-5143434B4084")]
   public class OrienteeringEvaluationResult {
+    [Storable]
     public DoubleValue Quality;
+    [Storable]
     public DoubleValue Penalty;
+    [Storable]
     public DoubleValue Distance;
+
+    [StorableConstructor]
+    protected OrienteeringEvaluationResult(StorableConstructorFlag _) {
+    }
+
+    public OrienteeringEvaluationResult() { }
   }
 }

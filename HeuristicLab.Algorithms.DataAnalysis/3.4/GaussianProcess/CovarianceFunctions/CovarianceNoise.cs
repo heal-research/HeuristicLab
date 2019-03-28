@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,10 +24,10 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
-  [StorableClass]
+  [StorableType("C6AEEC11-1F8D-40D1-8D8A-DCCCE886E46C")]
   [Item(Name = "CovarianceNoise",
     Description = "Noise covariance function for Gaussian processes.")]
   public sealed class CovarianceNoise : ParameterizedNamedItem, ICovarianceFunction {
@@ -39,8 +39,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     [StorableConstructor]
-    private CovarianceNoise(bool deserializing)
-      : base(deserializing) {
+    private CovarianceNoise(StorableConstructorFlag _) : base(_) {
     }
 
     private CovarianceNoise(CovarianceNoise original, Cloner cloner)

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,11 +23,11 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinPDRearrangeMoveEvaluator", "Evaluates a rearrange move for a PDP representation. ")]
-  [StorableClass]
+  [StorableType("4B60C6C0-7D1E-49E8-B1FF-240A5A52CD62")]
   public sealed class PotvinPDRearrangeMoveEvaluator : PotvinMoveEvaluator, IPotvinPDRearrangeMoveOperator {
     public ILookupParameter<PotvinPDRearrangeMove> PDRearrangeMoveParameter {
       get { return (ILookupParameter<PotvinPDRearrangeMove>)Parameters["PotvinPDRearrangeMove"]; }
@@ -50,7 +50,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
     }
 
     [StorableConstructor]
-    private PotvinPDRearrangeMoveEvaluator(bool deserializing) : base(deserializing) { }
+    private PotvinPDRearrangeMoveEvaluator(StorableConstructorFlag _) : base(_) { }
 
     public PotvinPDRearrangeMoveEvaluator()
       : base() {

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,15 +23,15 @@ using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.ExternalEvaluation.Programmable;
 
 namespace HeuristicLab.Problems.ExternalEvaluation {
   [Item("ProblemDefinitionScript", "Script that defines the parameter vector and evaluates the solution for a programmable problem.")]
-  [StorableClass]
+  [StorableType("3EB74171-6ECB-4479-861E-DA4EB39FE70C")]
   public sealed class SingleObjectiveOptimizationSupportScript : OptimizationSupportScript<ISingleObjectiveOptimizationSupport>, ISingleObjectiveOptimizationSupport {
     [StorableConstructor]
-    private SingleObjectiveOptimizationSupportScript(bool deserializing) : base(deserializing) { }
+    private SingleObjectiveOptimizationSupportScript(StorableConstructorFlag _) : base(_) { }
     private SingleObjectiveOptimizationSupportScript(SingleObjectiveOptimizationSupportScript original, Cloner cloner) : base(original, cloner) { }
     public SingleObjectiveOptimizationSupportScript() : base(Templates.CompiledSingleObjectiveOptimizationSupport) { }
 

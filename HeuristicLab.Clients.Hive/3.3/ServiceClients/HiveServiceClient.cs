@@ -25,9 +25,12 @@ namespace HeuristicLab.Clients.Hive
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.Hive.Slave))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.Hive.SlaveGroup))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.Hive.Plugin))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.Hive.Project))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.Hive.AssignedJobResource))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.Hive.JobPermission))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.Hive.PluginData))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.Hive.ResourcePermission))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.Hive.ProjectPermission))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.Hive.AssignedProjectResource))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.Hive.Downtime))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.Hive.UserPriority))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.Hive.LightweightTask))]
@@ -210,6 +213,7 @@ namespace HeuristicLab.Clients.Hive
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.Hive.Slave))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.Hive.SlaveGroup))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.Hive.Plugin))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.Hive.Project))]
     public partial class NamedHiveItem : HeuristicLab.Clients.Hive.HiveItem
     {
         
@@ -283,7 +287,10 @@ namespace HeuristicLab.Clients.Hive
         private HeuristicLab.Clients.Hive.Permission PermissionField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string ResourceNamesField;
+        private System.Guid ProjectIdField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private HeuristicLab.Clients.Hive.JobState StateField;
         
         [System.Runtime.Serialization.DataMemberAttribute()]
         public int CalculatingCount
@@ -405,18 +412,35 @@ namespace HeuristicLab.Clients.Hive
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public string ResourceNames
+        public System.Guid ProjectId
         {
             get
             {
-                return this.ResourceNamesField;
+                return this.ProjectIdField;
             }
             set
             {
-                if ((object.ReferenceEquals(this.ResourceNamesField, value) != true))
+                if ((this.ProjectIdField.Equals(value) != true))
                 {
-                    this.ResourceNamesField = value;
-                    this.RaisePropertyChanged("ResourceNames");
+                    this.ProjectIdField = value;
+                    this.RaisePropertyChanged("ProjectId");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public HeuristicLab.Clients.Hive.JobState State
+        {
+            get
+            {
+                return this.StateField;
+            }
+            set
+            {
+                if ((this.StateField.Equals(value) != true))
+                {
+                    this.StateField = value;
+                    this.RaisePropertyChanged("State");
                 }
             }
         }
@@ -838,6 +862,162 @@ namespace HeuristicLab.Clients.Hive
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="Project", Namespace="http://schemas.datacontract.org/2004/07/HeuristicLab.Services.Hive.DataTransfer")]
+    [System.SerializableAttribute()]
+    public partial class Project : HeuristicLab.Clients.Hive.NamedHiveItem
+    {
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.DateTime DateCreatedField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Nullable<System.DateTime> EndDateField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Guid OwnerUserIdField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Nullable<System.Guid> ParentProjectIdField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.DateTime StartDateField;
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.DateTime DateCreated
+        {
+            get
+            {
+                return this.DateCreatedField;
+            }
+            set
+            {
+                if ((this.DateCreatedField.Equals(value) != true))
+                {
+                    this.DateCreatedField = value;
+                    this.RaisePropertyChanged("DateCreated");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Nullable<System.DateTime> EndDate
+        {
+            get
+            {
+                return this.EndDateField;
+            }
+            set
+            {
+                if ((this.EndDateField.Equals(value) != true))
+                {
+                    this.EndDateField = value;
+                    this.RaisePropertyChanged("EndDate");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Guid OwnerUserId
+        {
+            get
+            {
+                return this.OwnerUserIdField;
+            }
+            set
+            {
+                if ((this.OwnerUserIdField.Equals(value) != true))
+                {
+                    this.OwnerUserIdField = value;
+                    this.RaisePropertyChanged("OwnerUserId");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Nullable<System.Guid> ParentProjectId
+        {
+            get
+            {
+                return this.ParentProjectIdField;
+            }
+            set
+            {
+                if ((this.ParentProjectIdField.Equals(value) != true))
+                {
+                    this.ParentProjectIdField = value;
+                    this.RaisePropertyChanged("ParentProjectId");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.DateTime StartDate
+        {
+            get
+            {
+                return this.StartDateField;
+            }
+            set
+            {
+                if ((this.StartDateField.Equals(value) != true))
+                {
+                    this.StartDateField = value;
+                    this.RaisePropertyChanged("StartDate");
+                }
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="AssignedJobResource", Namespace="http://schemas.datacontract.org/2004/07/HeuristicLab.Services.Hive.DataTransfer")]
+    [System.SerializableAttribute()]
+    public partial class AssignedJobResource : HeuristicLab.Clients.Hive.HiveItem
+    {
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Guid JobIdField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Guid ResourceIdField;
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Guid JobId
+        {
+            get
+            {
+                return this.JobIdField;
+            }
+            set
+            {
+                if ((this.JobIdField.Equals(value) != true))
+                {
+                    this.JobIdField = value;
+                    this.RaisePropertyChanged("JobId");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Guid ResourceId
+        {
+            get
+            {
+                return this.ResourceIdField;
+            }
+            set
+            {
+                if ((this.ResourceIdField.Equals(value) != true))
+                {
+                    this.ResourceIdField = value;
+                    this.RaisePropertyChanged("ResourceId");
+                }
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
     [System.Runtime.Serialization.DataContractAttribute(Name="JobPermission", Namespace="http://schemas.datacontract.org/2004/07/HeuristicLab.Services.Hive.DataTransfer")]
     [System.SerializableAttribute()]
     public partial class JobPermission : HeuristicLab.Clients.Hive.HiveItem
@@ -994,9 +1174,9 @@ namespace HeuristicLab.Clients.Hive
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="ResourcePermission", Namespace="http://schemas.datacontract.org/2004/07/HeuristicLab.Services.Hive.DataTransfer")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="ProjectPermission", Namespace="http://schemas.datacontract.org/2004/07/HeuristicLab.Services.Hive.DataTransfer")]
     [System.SerializableAttribute()]
-    public partial class ResourcePermission : HeuristicLab.Clients.Hive.HiveItem
+    public partial class ProjectPermission : HeuristicLab.Clients.Hive.HiveItem
     {
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
@@ -1006,7 +1186,7 @@ namespace HeuristicLab.Clients.Hive
         private System.Guid GrantedUserIdField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.Guid ResourceIdField;
+        private System.Guid ProjectIdField;
         
         [System.Runtime.Serialization.DataMemberAttribute()]
         public System.Guid GrantedByUserId
@@ -1038,6 +1218,54 @@ namespace HeuristicLab.Clients.Hive
                 {
                     this.GrantedUserIdField = value;
                     this.RaisePropertyChanged("GrantedUserId");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Guid ProjectId
+        {
+            get
+            {
+                return this.ProjectIdField;
+            }
+            set
+            {
+                if ((this.ProjectIdField.Equals(value) != true))
+                {
+                    this.ProjectIdField = value;
+                    this.RaisePropertyChanged("ProjectId");
+                }
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="AssignedProjectResource", Namespace="http://schemas.datacontract.org/2004/07/HeuristicLab.Services.Hive.DataTransfer")]
+    [System.SerializableAttribute()]
+    public partial class AssignedProjectResource : HeuristicLab.Clients.Hive.HiveItem
+    {
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Guid ProjectIdField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Guid ResourceIdField;
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Guid ProjectId
+        {
+            get
+            {
+                return this.ProjectIdField;
+            }
+            set
+            {
+                if ((this.ProjectIdField.Equals(value) != true))
+                {
+                    this.ProjectIdField = value;
+                    this.RaisePropertyChanged("ProjectId");
                 }
             }
         }
@@ -1614,6 +1842,21 @@ namespace HeuristicLab.Clients.Hive
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="JobState", Namespace="http://schemas.datacontract.org/2004/07/HeuristicLab.Services.Hive.DataTransfer")]
+    public enum JobState : int
+    {
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        Online = 0,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        StatisticsPending = 1,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        DeletionPending = 2,
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
     [System.Runtime.Serialization.DataContractAttribute(Name="CpuArchitecture", Namespace="http://schemas.datacontract.org/2004/07/HeuristicLab.Services.Hive.DataTransfer")]
     public enum CpuArchitecture : int
     {
@@ -2099,7 +2342,7 @@ namespace HeuristicLab.Clients.Hive
     {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IHiveService/AddTask", ReplyAction="http://tempuri.org/IHiveService/AddTaskResponse")]
-        System.Guid AddTask(HeuristicLab.Clients.Hive.Task task, HeuristicLab.Clients.Hive.TaskData taskData, System.Collections.Generic.List<System.Guid> resourceIds);
+        System.Guid AddTask(HeuristicLab.Clients.Hive.Task task, HeuristicLab.Clients.Hive.TaskData taskData);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IHiveService/AddChildTask", ReplyAction="http://tempuri.org/IHiveService/AddChildTaskResponse")]
         System.Guid AddChildTask(System.Guid parentTaskId, HeuristicLab.Clients.Hive.Task task, HeuristicLab.Clients.Hive.TaskData taskData);
@@ -2140,14 +2383,26 @@ namespace HeuristicLab.Clients.Hive
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IHiveService/GetJobs", ReplyAction="http://tempuri.org/IHiveService/GetJobsResponse")]
         System.Collections.Generic.List<HeuristicLab.Clients.Hive.Job> GetJobs();
         
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IHiveService/GetJobsByProjectId", ReplyAction="http://tempuri.org/IHiveService/GetJobsByProjectIdResponse")]
+        System.Collections.Generic.List<HeuristicLab.Clients.Hive.Job> GetJobsByProjectId(System.Guid projectId);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IHiveService/GetJobsByProjectIds", ReplyAction="http://tempuri.org/IHiveService/GetJobsByProjectIdsResponse")]
+        System.Collections.Generic.List<HeuristicLab.Clients.Hive.Job> GetJobsByProjectIds(System.Collections.Generic.List<System.Guid> projectIds);
+        
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IHiveService/AddJob", ReplyAction="http://tempuri.org/IHiveService/AddJobResponse")]
-        System.Guid AddJob(HeuristicLab.Clients.Hive.Job jobDto);
+        System.Guid AddJob(HeuristicLab.Clients.Hive.Job jobDto, System.Collections.Generic.List<System.Guid> resourceIds);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IHiveService/UpdateJob", ReplyAction="http://tempuri.org/IHiveService/UpdateJobResponse")]
-        void UpdateJob(HeuristicLab.Clients.Hive.Job jobDto);
+        void UpdateJob(HeuristicLab.Clients.Hive.Job jobDto, System.Collections.Generic.List<System.Guid> resourceIds);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IHiveService/DeleteJob", ReplyAction="http://tempuri.org/IHiveService/DeleteJobResponse")]
-        void DeleteJob(System.Guid JobId);
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IHiveService/UpdateJobState", ReplyAction="http://tempuri.org/IHiveService/UpdateJobStateResponse")]
+        void UpdateJobState(System.Guid JobId, HeuristicLab.Clients.Hive.JobState jobState);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IHiveService/UpdateJobStates", ReplyAction="http://tempuri.org/IHiveService/UpdateJobStatesResponse")]
+        void UpdateJobStates(System.Collections.Generic.List<System.Guid> jobIds, HeuristicLab.Clients.Hive.JobState jobState);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IHiveService/GetAssignedResourcesForJob", ReplyAction="http://tempuri.org/IHiveService/GetAssignedResourcesForJobResponse")]
+        System.Collections.Generic.List<HeuristicLab.Clients.Hive.AssignedJobResource> GetAssignedResourcesForJob(System.Guid jobId);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IHiveService/GrantPermission", ReplyAction="http://tempuri.org/IHiveService/GrantPermissionResponse")]
         void GrantPermission(System.Guid jobId, System.Guid grantedUserId, HeuristicLab.Clients.Hive.Permission permission);
@@ -2183,14 +2438,49 @@ namespace HeuristicLab.Clients.Hive
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IHiveService/GetPluginDatas", ReplyAction="http://tempuri.org/IHiveService/GetPluginDatasResponse")]
         System.Collections.Generic.List<HeuristicLab.Clients.Hive.PluginData> GetPluginDatas(System.Collections.Generic.List<System.Guid> pluginIds);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IHiveService/GrantResourcePermissions", ReplyAction="http://tempuri.org/IHiveService/GrantResourcePermissionsResponse")]
-        void GrantResourcePermissions(System.Guid resourceId, System.Collections.Generic.List<System.Guid> grantedUserIds);
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IHiveService/AddProject", ReplyAction="http://tempuri.org/IHiveService/AddProjectResponse")]
+        System.Guid AddProject(HeuristicLab.Clients.Hive.Project projectDto);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IHiveService/RevokeResourcePermissions", ReplyAction="http://tempuri.org/IHiveService/RevokeResourcePermissionsResponse")]
-        void RevokeResourcePermissions(System.Guid resourceId, System.Collections.Generic.List<System.Guid> grantedUserIds);
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IHiveService/UpdateProject", ReplyAction="http://tempuri.org/IHiveService/UpdateProjectResponse")]
+        void UpdateProject(HeuristicLab.Clients.Hive.Project projectDto);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IHiveService/GetResourcePermissions", ReplyAction="http://tempuri.org/IHiveService/GetResourcePermissionsResponse")]
-        System.Collections.Generic.List<HeuristicLab.Clients.Hive.ResourcePermission> GetResourcePermissions(System.Guid resourceId);
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IHiveService/DeleteProject", ReplyAction="http://tempuri.org/IHiveService/DeleteProjectResponse")]
+        void DeleteProject(System.Guid projectId);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IHiveService/GetProject", ReplyAction="http://tempuri.org/IHiveService/GetProjectResponse")]
+        HeuristicLab.Clients.Hive.Project GetProject(System.Guid projectId);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IHiveService/GetProjects", ReplyAction="http://tempuri.org/IHiveService/GetProjectsResponse")]
+        System.Collections.Generic.List<HeuristicLab.Clients.Hive.Project> GetProjects();
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IHiveService/GetProjectsForAdministration", ReplyAction="http://tempuri.org/IHiveService/GetProjectsForAdministrationResponse")]
+        System.Collections.Generic.List<HeuristicLab.Clients.Hive.Project> GetProjectsForAdministration();
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IHiveService/GetProjectGenealogy", ReplyAction="http://tempuri.org/IHiveService/GetProjectGenealogyResponse")]
+        System.Collections.Generic.Dictionary<System.Guid, System.Collections.Generic.List<System.Guid>> GetProjectGenealogy();
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IHiveService/GetProjectNames", ReplyAction="http://tempuri.org/IHiveService/GetProjectNamesResponse")]
+        System.Collections.Generic.Dictionary<System.Guid, string> GetProjectNames();
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IHiveService/SaveProjectPermissions", ReplyAction="http://tempuri.org/IHiveService/SaveProjectPermissionsResponse")]
+        void SaveProjectPermissions(System.Guid projectId, System.Collections.Generic.List<System.Guid> grantedUserIds, bool reassign, bool cascading, bool reassignCascading);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IHiveService/GetProjectPermissions", ReplyAction="http://tempuri.org/IHiveService/GetProjectPermissionsResponse")]
+        System.Collections.Generic.List<HeuristicLab.Clients.Hive.ProjectPermission> GetProjectPermissions(System.Guid projectId);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IHiveService/SaveProjectResourceAssignments", ReplyAction="http://tempuri.org/IHiveService/SaveProjectResourceAssignmentsResponse")]
+        void SaveProjectResourceAssignments(System.Guid projectId, System.Collections.Generic.List<System.Guid> resourceIds, bool reassign, bool cascading, bool reassignCascading);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IHiveService/GetAssignedResourcesForProject", ReplyAction="http://tempuri.org/IHiveService/GetAssignedResourcesForProjectResponse")]
+        System.Collections.Generic.List<HeuristicLab.Clients.Hive.AssignedProjectResource> GetAssignedResourcesForProject(System.Guid projectId);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IHiveService/GetAssignedResourcesForProjectAdministration", ReplyAction="http://tempuri.org/IHiveService/GetAssignedResourcesForProjectAdministrationRespo" +
+            "nse")]
+        System.Collections.Generic.List<HeuristicLab.Clients.Hive.AssignedProjectResource> GetAssignedResourcesForProjectAdministration(System.Guid projectId);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IHiveService/GetAssignedResourcesForProjectsAdministration", ReplyAction="http://tempuri.org/IHiveService/GetAssignedResourcesForProjectsAdministrationResp" +
+            "onse")]
+        System.Collections.Generic.List<HeuristicLab.Clients.Hive.AssignedProjectResource> GetAssignedResourcesForProjectsAdministration(System.Collections.Generic.List<System.Guid> projectIds);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IHiveService/AddSlave", ReplyAction="http://tempuri.org/IHiveService/AddSlaveResponse")]
         System.Guid AddSlave(HeuristicLab.Clients.Hive.Slave slave);
@@ -2206,6 +2496,18 @@ namespace HeuristicLab.Clients.Hive
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IHiveService/GetSlaveGroups", ReplyAction="http://tempuri.org/IHiveService/GetSlaveGroupsResponse")]
         System.Collections.Generic.List<HeuristicLab.Clients.Hive.SlaveGroup> GetSlaveGroups();
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IHiveService/GetSlavesForAdministration", ReplyAction="http://tempuri.org/IHiveService/GetSlavesForAdministrationResponse")]
+        System.Collections.Generic.List<HeuristicLab.Clients.Hive.Slave> GetSlavesForAdministration();
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IHiveService/GetSlaveGroupsForAdministration", ReplyAction="http://tempuri.org/IHiveService/GetSlaveGroupsForAdministrationResponse")]
+        System.Collections.Generic.List<HeuristicLab.Clients.Hive.SlaveGroup> GetSlaveGroupsForAdministration();
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IHiveService/GetResourceGenealogy", ReplyAction="http://tempuri.org/IHiveService/GetResourceGenealogyResponse")]
+        System.Collections.Generic.Dictionary<System.Guid, System.Collections.Generic.List<System.Guid>> GetResourceGenealogy();
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IHiveService/GetResourceNames", ReplyAction="http://tempuri.org/IHiveService/GetResourceNamesResponse")]
+        System.Collections.Generic.Dictionary<System.Guid, string> GetResourceNames();
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IHiveService/UpdateSlave", ReplyAction="http://tempuri.org/IHiveService/UpdateSlaveResponse")]
         void UpdateSlave(HeuristicLab.Clients.Hive.Slave slave);
@@ -2252,6 +2554,12 @@ namespace HeuristicLab.Clients.Hive
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IHiveService/GetUserIdByUsername", ReplyAction="http://tempuri.org/IHiveService/GetUserIdByUsernameResponse")]
         System.Guid GetUserIdByUsername(string username);
         
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IHiveService/GetUserGroupTree", ReplyAction="http://tempuri.org/IHiveService/GetUserGroupTreeResponse")]
+        System.Collections.Generic.Dictionary<System.Guid, System.Collections.Generic.List<System.Guid>> GetUserGroupTree();
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IHiveService/CheckAccessToAdminAreaGranted", ReplyAction="http://tempuri.org/IHiveService/CheckAccessToAdminAreaGrantedResponse")]
+        bool CheckAccessToAdminAreaGranted();
+        
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IHiveService/GetUserPriorities", ReplyAction="http://tempuri.org/IHiveService/GetUserPrioritiesResponse")]
         System.Collections.Generic.List<HeuristicLab.Clients.Hive.UserPriority> GetUserPriorities();
     }
@@ -2290,9 +2598,9 @@ namespace HeuristicLab.Clients.Hive
         {
         }
         
-        public System.Guid AddTask(HeuristicLab.Clients.Hive.Task task, HeuristicLab.Clients.Hive.TaskData taskData, System.Collections.Generic.List<System.Guid> resourceIds)
+        public System.Guid AddTask(HeuristicLab.Clients.Hive.Task task, HeuristicLab.Clients.Hive.TaskData taskData)
         {
-            return base.Channel.AddTask(task, taskData, resourceIds);
+            return base.Channel.AddTask(task, taskData);
         }
         
         public System.Guid AddChildTask(System.Guid parentTaskId, HeuristicLab.Clients.Hive.Task task, HeuristicLab.Clients.Hive.TaskData taskData)
@@ -2360,19 +2668,39 @@ namespace HeuristicLab.Clients.Hive
             return base.Channel.GetJobs();
         }
         
-        public System.Guid AddJob(HeuristicLab.Clients.Hive.Job jobDto)
+        public System.Collections.Generic.List<HeuristicLab.Clients.Hive.Job> GetJobsByProjectId(System.Guid projectId)
         {
-            return base.Channel.AddJob(jobDto);
+            return base.Channel.GetJobsByProjectId(projectId);
         }
         
-        public void UpdateJob(HeuristicLab.Clients.Hive.Job jobDto)
+        public System.Collections.Generic.List<HeuristicLab.Clients.Hive.Job> GetJobsByProjectIds(System.Collections.Generic.List<System.Guid> projectIds)
         {
-            base.Channel.UpdateJob(jobDto);
+            return base.Channel.GetJobsByProjectIds(projectIds);
         }
         
-        public void DeleteJob(System.Guid JobId)
+        public System.Guid AddJob(HeuristicLab.Clients.Hive.Job jobDto, System.Collections.Generic.List<System.Guid> resourceIds)
         {
-            base.Channel.DeleteJob(JobId);
+            return base.Channel.AddJob(jobDto, resourceIds);
+        }
+        
+        public void UpdateJob(HeuristicLab.Clients.Hive.Job jobDto, System.Collections.Generic.List<System.Guid> resourceIds)
+        {
+            base.Channel.UpdateJob(jobDto, resourceIds);
+        }
+        
+        public void UpdateJobState(System.Guid JobId, HeuristicLab.Clients.Hive.JobState jobState)
+        {
+            base.Channel.UpdateJobState(JobId, jobState);
+        }
+        
+        public void UpdateJobStates(System.Collections.Generic.List<System.Guid> jobIds, HeuristicLab.Clients.Hive.JobState jobState)
+        {
+            base.Channel.UpdateJobStates(jobIds, jobState);
+        }
+        
+        public System.Collections.Generic.List<HeuristicLab.Clients.Hive.AssignedJobResource> GetAssignedResourcesForJob(System.Guid jobId)
+        {
+            return base.Channel.GetAssignedResourcesForJob(jobId);
         }
         
         public void GrantPermission(System.Guid jobId, System.Guid grantedUserId, HeuristicLab.Clients.Hive.Permission permission)
@@ -2430,19 +2758,74 @@ namespace HeuristicLab.Clients.Hive
             return base.Channel.GetPluginDatas(pluginIds);
         }
         
-        public void GrantResourcePermissions(System.Guid resourceId, System.Collections.Generic.List<System.Guid> grantedUserIds)
+        public System.Guid AddProject(HeuristicLab.Clients.Hive.Project projectDto)
         {
-            base.Channel.GrantResourcePermissions(resourceId, grantedUserIds);
+            return base.Channel.AddProject(projectDto);
         }
         
-        public void RevokeResourcePermissions(System.Guid resourceId, System.Collections.Generic.List<System.Guid> grantedUserIds)
+        public void UpdateProject(HeuristicLab.Clients.Hive.Project projectDto)
         {
-            base.Channel.RevokeResourcePermissions(resourceId, grantedUserIds);
+            base.Channel.UpdateProject(projectDto);
         }
         
-        public System.Collections.Generic.List<HeuristicLab.Clients.Hive.ResourcePermission> GetResourcePermissions(System.Guid resourceId)
+        public void DeleteProject(System.Guid projectId)
         {
-            return base.Channel.GetResourcePermissions(resourceId);
+            base.Channel.DeleteProject(projectId);
+        }
+        
+        public HeuristicLab.Clients.Hive.Project GetProject(System.Guid projectId)
+        {
+            return base.Channel.GetProject(projectId);
+        }
+        
+        public System.Collections.Generic.List<HeuristicLab.Clients.Hive.Project> GetProjects()
+        {
+            return base.Channel.GetProjects();
+        }
+        
+        public System.Collections.Generic.List<HeuristicLab.Clients.Hive.Project> GetProjectsForAdministration()
+        {
+            return base.Channel.GetProjectsForAdministration();
+        }
+        
+        public System.Collections.Generic.Dictionary<System.Guid, System.Collections.Generic.List<System.Guid>> GetProjectGenealogy()
+        {
+            return base.Channel.GetProjectGenealogy();
+        }
+        
+        public System.Collections.Generic.Dictionary<System.Guid, string> GetProjectNames()
+        {
+            return base.Channel.GetProjectNames();
+        }
+        
+        public void SaveProjectPermissions(System.Guid projectId, System.Collections.Generic.List<System.Guid> grantedUserIds, bool reassign, bool cascading, bool reassignCascading)
+        {
+            base.Channel.SaveProjectPermissions(projectId, grantedUserIds, reassign, cascading, reassignCascading);
+        }
+        
+        public System.Collections.Generic.List<HeuristicLab.Clients.Hive.ProjectPermission> GetProjectPermissions(System.Guid projectId)
+        {
+            return base.Channel.GetProjectPermissions(projectId);
+        }
+        
+        public void SaveProjectResourceAssignments(System.Guid projectId, System.Collections.Generic.List<System.Guid> resourceIds, bool reassign, bool cascading, bool reassignCascading)
+        {
+            base.Channel.SaveProjectResourceAssignments(projectId, resourceIds, reassign, cascading, reassignCascading);
+        }
+        
+        public System.Collections.Generic.List<HeuristicLab.Clients.Hive.AssignedProjectResource> GetAssignedResourcesForProject(System.Guid projectId)
+        {
+            return base.Channel.GetAssignedResourcesForProject(projectId);
+        }
+        
+        public System.Collections.Generic.List<HeuristicLab.Clients.Hive.AssignedProjectResource> GetAssignedResourcesForProjectAdministration(System.Guid projectId)
+        {
+            return base.Channel.GetAssignedResourcesForProjectAdministration(projectId);
+        }
+        
+        public System.Collections.Generic.List<HeuristicLab.Clients.Hive.AssignedProjectResource> GetAssignedResourcesForProjectsAdministration(System.Collections.Generic.List<System.Guid> projectIds)
+        {
+            return base.Channel.GetAssignedResourcesForProjectsAdministration(projectIds);
         }
         
         public System.Guid AddSlave(HeuristicLab.Clients.Hive.Slave slave)
@@ -2468,6 +2851,26 @@ namespace HeuristicLab.Clients.Hive
         public System.Collections.Generic.List<HeuristicLab.Clients.Hive.SlaveGroup> GetSlaveGroups()
         {
             return base.Channel.GetSlaveGroups();
+        }
+        
+        public System.Collections.Generic.List<HeuristicLab.Clients.Hive.Slave> GetSlavesForAdministration()
+        {
+            return base.Channel.GetSlavesForAdministration();
+        }
+        
+        public System.Collections.Generic.List<HeuristicLab.Clients.Hive.SlaveGroup> GetSlaveGroupsForAdministration()
+        {
+            return base.Channel.GetSlaveGroupsForAdministration();
+        }
+        
+        public System.Collections.Generic.Dictionary<System.Guid, System.Collections.Generic.List<System.Guid>> GetResourceGenealogy()
+        {
+            return base.Channel.GetResourceGenealogy();
+        }
+        
+        public System.Collections.Generic.Dictionary<System.Guid, string> GetResourceNames()
+        {
+            return base.Channel.GetResourceNames();
         }
         
         public void UpdateSlave(HeuristicLab.Clients.Hive.Slave slave)
@@ -2543,6 +2946,16 @@ namespace HeuristicLab.Clients.Hive
         public System.Guid GetUserIdByUsername(string username)
         {
             return base.Channel.GetUserIdByUsername(username);
+        }
+        
+        public System.Collections.Generic.Dictionary<System.Guid, System.Collections.Generic.List<System.Guid>> GetUserGroupTree()
+        {
+            return base.Channel.GetUserGroupTree();
+        }
+        
+        public bool CheckAccessToAdminAreaGranted()
+        {
+            return base.Channel.CheckAccessToAdminAreaGranted();
         }
         
         public System.Collections.Generic.List<HeuristicLab.Clients.Hive.UserPriority> GetUserPriorities()

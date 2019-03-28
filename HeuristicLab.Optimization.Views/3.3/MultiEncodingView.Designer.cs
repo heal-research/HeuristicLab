@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -209,6 +209,7 @@ namespace HeuristicLab.Optimization.Views {
       // 
       // encodingsTabPage
       // 
+      this.encodingsTabPage.BackColor = System.Drawing.SystemColors.Window;
       this.encodingsTabPage.Controls.Add(this.encodingsGroupBox);
       this.encodingsTabPage.Location = new System.Drawing.Point(4, 22);
       this.encodingsTabPage.Name = "encodingsTabPage";
@@ -216,10 +217,10 @@ namespace HeuristicLab.Optimization.Views {
       this.encodingsTabPage.Size = new System.Drawing.Size(655, 445);
       this.encodingsTabPage.TabIndex = 0;
       this.encodingsTabPage.Text = "Encodings";
-      this.encodingsTabPage.UseVisualStyleBackColor = true;
       // 
       // parametersTabPage
       // 
+      this.parametersTabPage.BackColor = System.Drawing.SystemColors.Window;
       this.parametersTabPage.Controls.Add(this.parameterCollectionView);
       this.parametersTabPage.Location = new System.Drawing.Point(4, 22);
       this.parametersTabPage.Name = "parametersTabPage";
@@ -227,7 +228,6 @@ namespace HeuristicLab.Optimization.Views {
       this.parametersTabPage.Size = new System.Drawing.Size(655, 445);
       this.parametersTabPage.TabIndex = 1;
       this.parametersTabPage.Text = "Parameters";
-      this.parametersTabPage.UseVisualStyleBackColor = true;
       // 
       // MultiEncodingView
       // 

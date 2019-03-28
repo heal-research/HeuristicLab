@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,15 +23,15 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("JSMJobbasedOrderCrossover", "Represents a crossover operation swapping subsequences of the parents to generate offspring.")]
-  [StorableClass]
+  [StorableType("3D9540B9-6834-4C34-8D5D-001FBF442344")]
   public class JSMJOXCrossover : JSMCrossover {
 
     [StorableConstructor]
-    protected JSMJOXCrossover(bool deserializing) : base(deserializing) { }
+    protected JSMJOXCrossover(StorableConstructorFlag _) : base(_) { }
     protected JSMJOXCrossover(JSMJOXCrossover original, Cloner cloner) : base(original, cloner) { }
     public JSMJOXCrossover() : base() { }
 

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,8 +23,10 @@ using System;
 using System.Collections.Generic;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis {
+  [StorableType("3f50defe-1f79-4122-a96b-11ca90202210")]
   public interface IDataAnalysisProblemData : INamedItem {
     bool IsEmpty { get; }
 
@@ -48,7 +50,5 @@ namespace HeuristicLab.Problems.DataAnalysis {
     bool IsTestSample(int index);
 
     event EventHandler Changed;
-
-    void AdjustProblemDataProperties(IDataAnalysisProblemData problemData);
   }
 }

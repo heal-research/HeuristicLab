@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,11 +24,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("ScheduleCrossover", "A scheduling crossover operation.")]
-  [StorableClass]
+  [StorableType("04561B60-401B-4F80-91CA-369DF203B763")]
   public abstract class ScheduleCrossover : InstrumentedOperator, IScheduleCrossover, IStochasticOperator {
 
     public ILookupParameter<ISchedule> ChildParameter {
@@ -42,7 +42,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
     }
 
     [StorableConstructor]
-    protected ScheduleCrossover(bool deserializing) : base(deserializing) { }
+    protected ScheduleCrossover(StorableConstructorFlag _) : base(_) { }
     protected ScheduleCrossover(ScheduleCrossover original, Cloner cloner) : base(original, cloner) { }
     public ScheduleCrossover()
       : base() {

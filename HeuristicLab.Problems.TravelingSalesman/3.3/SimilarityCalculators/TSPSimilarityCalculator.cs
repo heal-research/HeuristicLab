@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
@@ -36,10 +37,12 @@ namespace HeuristicLab.Problems.TravelingSalesman {
   [Item("TSPSimilarityCalculator", "An operator that performs similarity calculation between two traveling salesman solutions. The operator calculates the similarity based on the number of edges the two solutions have in common.")]
   [Obsolete("This operator is similar to the Hamming similarity calculator in the Encodings.PermutationEncoding namespace")]
   [NonDiscoverableType]
+  [StorableType("0216BF57-995F-4F23-B422-F2C571314C5A")]
   internal sealed class TSPSimilarityCalculator : SingleObjectiveSolutionSimilarityCalculator {
     protected override bool IsCommutative { get { return true; } }
 
-    private TSPSimilarityCalculator(bool deserializing) : base(deserializing) { }
+    [StorableConstructor]
+    private TSPSimilarityCalculator(StorableConstructorFlag _) : base(_) { }
     private TSPSimilarityCalculator(TSPSimilarityCalculator original, Cloner cloner) : base(original, cloner) { }
     public TSPSimilarityCalculator() : base() { }
 

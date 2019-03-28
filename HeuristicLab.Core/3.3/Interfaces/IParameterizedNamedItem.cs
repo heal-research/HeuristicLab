@@ -1,6 +1,7 @@
+using HEAL.Attic;
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,6 +21,7 @@
 #endregion
 
 namespace HeuristicLab.Core {
+  [StorableType("c0d522cc-b7ce-4db6-9e93-0c8d158fb465")]
   /// <summary>
   /// An interface which represents an item which has a name and contains parameters.
   /// </summary>

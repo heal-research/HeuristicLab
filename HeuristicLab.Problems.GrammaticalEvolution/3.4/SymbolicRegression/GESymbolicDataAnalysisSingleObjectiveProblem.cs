@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -29,12 +29,12 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.IntegerVectorEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
 
 namespace HeuristicLab.Problems.GrammaticalEvolution {
-  [StorableClass]
+  [StorableType("27E01C21-6772-4CE5-8301-EF3102D1BB28")]
   public abstract class GESymbolicDataAnalysisSingleObjectiveProblem<T, U, V> : GESymbolicDataAnalysisProblem<T, U, V>,
                                                                                 IGESymbolicDataAnalysisSingleObjectiveProblem
     where T : class, IDataAnalysisProblemData
@@ -71,7 +71,7 @@ namespace HeuristicLab.Problems.GrammaticalEvolution {
     #endregion
 
     [StorableConstructor]
-    protected GESymbolicDataAnalysisSingleObjectiveProblem(bool deserializing) : base(deserializing) { }
+    protected GESymbolicDataAnalysisSingleObjectiveProblem(StorableConstructorFlag _) : base(_) { }
     protected GESymbolicDataAnalysisSingleObjectiveProblem(GESymbolicDataAnalysisSingleObjectiveProblem<T, U, V> original, Cloner cloner)
       : base(original, cloner) {
       RegisterEventHandler();

@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,13 +25,13 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
   /// <summary>
   /// Represents a symbolic classification solution (model + data) and attributes of the solution like accuracy and complexity
   /// </summary>
-  [StorableClass]
+  [StorableType("83BEB8F0-DEF7-4E51-876D-9819BA10F2E8")]
   [Item(Name = "SymbolicDiscriminantFunctionClassificationSolution", Description = "Represents a symbolic classification solution (model + data) and attributes of the solution like accuracy and complexity.")]
   public sealed class SymbolicDiscriminantFunctionClassificationSolution : DiscriminantFunctionClassificationSolution, ISymbolicClassificationSolution {
     private const string ModelLengthResultName = "Model Length";
@@ -101,7 +101,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     }
 
     [StorableConstructor]
-    private SymbolicDiscriminantFunctionClassificationSolution(bool deserializing) : base(deserializing) { }
+    private SymbolicDiscriminantFunctionClassificationSolution(StorableConstructorFlag _) : base(_) { }
     private SymbolicDiscriminantFunctionClassificationSolution(SymbolicDiscriminantFunctionClassificationSolution original, Cloner cloner)
       : base(original, cloner) {
     }

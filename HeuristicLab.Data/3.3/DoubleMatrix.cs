@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,14 +23,14 @@ using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Data {
   [Item("DoubleMatrix", "Represents a matrix of double values.")]
-  [StorableClass]
+  [StorableType("EFF3CA0C-100C-4DD4-9EFF-2EF3CB0DE793")]
   public class DoubleMatrix : ValueTypeMatrix<double>, IStringConvertibleMatrix {
     [StorableConstructor]
-    protected DoubleMatrix(bool deserializing) : base(deserializing) { }
+    protected DoubleMatrix(StorableConstructorFlag _) : base(_) { }
     protected DoubleMatrix(DoubleMatrix original, Cloner cloner)
       : base(original, cloner) {
     }

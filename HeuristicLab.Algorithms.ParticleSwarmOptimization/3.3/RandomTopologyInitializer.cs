@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,11 +26,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
   [Item("Random Distinct Topology Initializer", "Each particle is informed by exactly k+1 distinct other particles (including itself).")]
-  [StorableClass]
+  [StorableType("50A4DB55-5C5C-4C0E-A438-6C7DE14EA8A6")]
   public sealed class RandomTopologyInitializer : TopologyInitializer, IStochasticOperator {
     #region Parameters
     public ILookupParameter<IRandom> RandomParameter {
@@ -43,7 +43,7 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
     
     #region Construction & Cloning
     [StorableConstructor]
-    private RandomTopologyInitializer(bool deserializing) : base(deserializing) { }
+    private RandomTopologyInitializer(StorableConstructorFlag _) : base(_) { }
     private RandomTopologyInitializer(RandomTopologyInitializer original, Cloner cloner) : base(original, cloner) { }
     public RandomTopologyInitializer() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "A random number generation."));

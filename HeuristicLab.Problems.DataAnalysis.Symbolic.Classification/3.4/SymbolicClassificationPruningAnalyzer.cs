@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,11 +23,11 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
   [Item("SymbolicClassificationPruningAnalyzer", "An analyzer that prunes introns from the population.")]
-  [StorableClass]
+  [StorableType("26701D59-DEB6-4CBF-89DC-C5C3F310B634")]
   public sealed class SymbolicClassificationPruningAnalyzer : SymbolicDataAnalysisSingleObjectivePruningAnalyzer {
     private const string PruningOperatorParameterName = "PruningOperator";
     public IValueParameter<SymbolicClassificationPruningOperator> PruningOperatorParameter {
@@ -42,7 +42,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     public override IDeepCloneable Clone(Cloner cloner) { return new SymbolicClassificationPruningAnalyzer(this, cloner); }
 
     [StorableConstructor]
-    private SymbolicClassificationPruningAnalyzer(bool deserializing) : base(deserializing) { }
+    private SymbolicClassificationPruningAnalyzer(StorableConstructorFlag _) : base(_) { }
 
     public SymbolicClassificationPruningAnalyzer() {
       Parameters.Add(new ValueParameter<SymbolicClassificationPruningOperator>(PruningOperatorParameterName, "The operator used to prune trees", new SymbolicClassificationPruningOperator(new SymbolicClassificationSolutionImpactValuesCalculator())));

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,9 +21,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.IO.Compression;
-using System.Linq;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
   public class MibaFrictionRegressionInstanceProvider : ResourceRegressionInstanceProvider {
@@ -46,15 +43,15 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
 
     public override IEnumerable<IDataDescriptor> GetDataDescriptors() {
       List<ResourceRegressionDataDescriptor> descriptorList = new List<ResourceRegressionDataDescriptor>();
-      descriptorList.Add(new CF1() { ResourceName = "CF1.csv" });
-      descriptorList.Add(new CF2() { ResourceName = "CF2.csv" });
-      descriptorList.Add(new CF3() { ResourceName = "CF3.csv" });
-      descriptorList.Add(new CF4() { ResourceName = "CF4.csv" });
-      descriptorList.Add(new NvhRating() { ResourceName = "NvhRating.csv" });
-      descriptorList.Add(new Temp1() { ResourceName = "Temp1.csv" });
-      descriptorList.Add(new Temp2() { ResourceName = "Temp2.csv" });
-      descriptorList.Add(new Wear1() { ResourceName = "Wear1.csv" });
-      descriptorList.Add(new Wear2() { ResourceName = "Wear2.csv" });
+      descriptorList.Add(new CF1());
+      descriptorList.Add(new CF2());
+      descriptorList.Add(new CF3());
+      descriptorList.Add(new CF4());
+      descriptorList.Add(new NvhRating());
+      descriptorList.Add(new Temp1());
+      descriptorList.Add(new Temp2());
+      descriptorList.Add(new Wear1());
+      descriptorList.Add(new Wear2());
 
       return descriptorList;
     }

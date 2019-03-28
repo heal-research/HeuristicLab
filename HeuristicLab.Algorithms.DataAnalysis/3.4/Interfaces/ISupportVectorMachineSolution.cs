@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,11 +19,11 @@
  */
 #endregion
 
-using HeuristicLab.Optimization;
 using HeuristicLab.Problems.DataAnalysis;
-using HeuristicLab.Core;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
+  [StorableType("598d2904-58e5-4a2f-8cd4-378ed3fa6132")]
   /// <summary>
   /// Interface to represent a support vector solution (either regression or classification)
   /// </summary>

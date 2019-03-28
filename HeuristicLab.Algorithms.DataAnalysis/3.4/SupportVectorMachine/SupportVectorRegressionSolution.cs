@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,7 +21,7 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
@@ -29,7 +29,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// Represents a support vector solution for a regression problem which can be visualized in the GUI.
   /// </summary>
   [Item("SupportVectorRegressionSolution", "Represents a support vector solution for a regression problem which can be visualized in the GUI.")]
-  [StorableClass]
+  [StorableType("B23D2178-B9B5-4553-A633-DE359AB69BE9")]
   public sealed class SupportVectorRegressionSolution : RegressionSolution, ISupportVectorMachineSolution {
 
     public new ISupportVectorMachineModel Model {
@@ -38,7 +38,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     [StorableConstructor]
-    private SupportVectorRegressionSolution(bool deserializing) : base(deserializing) { }
+    private SupportVectorRegressionSolution(StorableConstructorFlag _) : base(_) { }
     private SupportVectorRegressionSolution(SupportVectorRegressionSolution original, Cloner cloner)
       : base(original, cloner) {
     }

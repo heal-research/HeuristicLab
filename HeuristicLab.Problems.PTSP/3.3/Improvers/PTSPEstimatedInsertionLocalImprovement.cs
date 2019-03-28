@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -28,7 +28,7 @@ using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.PTSP {
   /// <summary>
@@ -38,7 +38,7 @@ namespace HeuristicLab.Problems.PTSP {
   /// The operator tries to improve the probabilistic traveling salesman solution by inserting a city in the tour between two other cities for a certain number of times.
   /// </remarks>
   [Item("PTSP Estimated Insertion Local Improvement", "An operator that improves probabilistic traveling salesman solutions. The operator tries to improve the probabilistic traveling salesman solution by swapping two randomly chosen edges for a certain number of times.")]
-  [StorableClass]
+  [StorableType("B2D60579-A97D-4E44-B11C-61CDA6EBEBA7")]
   public sealed class PTSPEstimatedInsertionLocalImprovement : SingleSuccessorOperator, IEstimatedPTSPOperator, ILocalImprovementOperator {
 
     public ILookupParameter<IntValue> LocalIterationsParameter {
@@ -78,7 +78,7 @@ namespace HeuristicLab.Problems.PTSP {
     }
 
     [StorableConstructor]
-    private PTSPEstimatedInsertionLocalImprovement(bool deserializing) : base(deserializing) { }
+    private PTSPEstimatedInsertionLocalImprovement(StorableConstructorFlag _) : base(_) { }
     private PTSPEstimatedInsertionLocalImprovement(PTSPEstimatedInsertionLocalImprovement original, Cloner cloner) : base(original, cloner) { }
     public PTSPEstimatedInsertionLocalImprovement()
       : base() {

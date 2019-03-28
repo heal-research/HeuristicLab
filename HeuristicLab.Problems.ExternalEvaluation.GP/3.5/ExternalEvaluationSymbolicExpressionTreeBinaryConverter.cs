@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,14 +24,16 @@ using Google.ProtocolBuffers;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
+using System;
 
 namespace HeuristicLab.Problems.ExternalEvaluation.GP {
-  [Item("SymbolicExpressionTreeBinaryConverter", "Converts a symbolic expression tree into a binary representation by iterating over all nodes in a prefix way. The binary format is defined in HeuristicLab.Persistence.")]
-  [StorableClass]
+  [Item("SymbolicExpressionTreeBinaryConverter", "Converts a symbolic expression tree into a binary representation by prefix iteration over all nodes in the tree. The binary format is defined in HeuristicLab.Persistence.")]
+  [StorableType("E3C9DE32-6EF2-4BA5-AFDF-23AE7D198AC6")]
+  [Obsolete("Use the SymbolicExpressionTreeProtobufConverter instead; The SymbolicExpressionTreeBinaryConverter uses the old serialization format and will be removed in the next major release of HeuristicLab.")]
   public class SymbolicExpressionTreeBinaryConverter : SymbolicExpressionTreeConverter {
     [StorableConstructor]
-    protected SymbolicExpressionTreeBinaryConverter(bool deserializing) : base(deserializing) { }
+    protected SymbolicExpressionTreeBinaryConverter(StorableConstructorFlag _) : base(_) { }
     protected SymbolicExpressionTreeBinaryConverter(SymbolicExpressionTreeBinaryConverter original, Cloner cloner)
       : base(original, cloner) {
     }

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,14 +24,14 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TestFunctions {
   /// <summary>
   /// The Matyas function is implemented as described on http://www-optima.amp.i.kyoto-u.ac.jp/member/student/hedar/Hedar_files/TestGO_files/Page2213.htm, last accessed April 12th, 2010.
   /// </summary>
   [Item("Matyas", "Evaluates the Matyas function on a given point. The optimum of this function is 0 at the origin. It is implemented as described on http://www-optima.amp.i.kyoto-u.ac.jp/member/student/hedar/Hedar_files/TestGO_files/Page2213.htm, last accessed April 12th, 2010.")]
-  [StorableClass]
+  [StorableType("5C665115-42A4-4E19-AA2F-59BEB973215C")]
   public class Matyas : SingleObjectiveTestFunction {
     /// <summary>
     /// Returns false as the Matyas function is a minimization problem.
@@ -65,7 +65,7 @@ namespace HeuristicLab.Problems.TestFunctions {
     }
 
     [StorableConstructor]
-    protected Matyas(bool deserializing) : base(deserializing) { }
+    protected Matyas(StorableConstructorFlag _) : base(_) { }
     protected Matyas(Matyas original, Cloner cloner) : base(original, cloner) { }
     public Matyas() : base() { }
 

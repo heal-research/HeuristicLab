@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,14 +21,14 @@
 
 using System.Collections.Generic;
 using HeuristicLab.Common;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Core {
-  [StorableClass]
+  [StorableType("FC16764E-EA5C-4D53-953B-3BEE85C7C376")]
   [Item("OperatorSet", "Represents a set of operators.")]
   public class OperatorSet : ItemSet<IOperator> {
     [StorableConstructor]
-    protected OperatorSet(bool deserializing) : base(deserializing) { }
+    protected OperatorSet(StorableConstructorFlag _) : base(_) { }
     protected OperatorSet(OperatorSet original, Cloner cloner) : base(original, cloner) { }
     public OperatorSet() : base() { }
     public OperatorSet(IEnumerable<IOperator> collection) : base(collection) { }

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,11 +22,11 @@ using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.RealVectorEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
   [Item("DTLZ1", "Testfunction as defined as DTLZ1 in http://repository.ias.ac.in/81671/ [30.11.15]")]
-  [StorableClass]
+  [StorableType("1DBE5FE4-049B-4BAD-AE2B-4951D0D3D616")]
   public class DTLZ1 : DTLZ {
     protected override double GetBestKnownHypervolume(int objectives) {
       if (objectives == 2) return 120 + 7.0 / 8;
@@ -34,7 +34,7 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
     }
 
     [StorableConstructor]
-    protected DTLZ1(bool deserializing) : base(deserializing) { }
+    protected DTLZ1(StorableConstructorFlag _) : base(_) { }
     protected DTLZ1(DTLZ1 original, Cloner cloner) : base(original, cloner) { }
     public DTLZ1() : base() {
     }

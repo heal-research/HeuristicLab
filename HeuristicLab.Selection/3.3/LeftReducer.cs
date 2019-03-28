@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,17 +23,17 @@ using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Selection {
   /// <summary>
   /// An operator which reduces to the sub-scopes of the leftmost sub-scope of the current scope.
   /// </summary>
   [Item("LeftReducer", "An operator which reduces to the sub-scopes of the leftmost sub-scope of the current scope.")]
-  [StorableClass]
+  [StorableType("AFD2FF4E-2F84-491D-9ED2-540E94F8B6B3")]
   public sealed class LeftReducer : Reducer, IReducer {
     [StorableConstructor]
-    private LeftReducer(bool deserializing) : base(deserializing) { }
+    private LeftReducer(StorableConstructorFlag _) : base(_) { }
     private LeftReducer(LeftReducer original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new LeftReducer(this, cloner);

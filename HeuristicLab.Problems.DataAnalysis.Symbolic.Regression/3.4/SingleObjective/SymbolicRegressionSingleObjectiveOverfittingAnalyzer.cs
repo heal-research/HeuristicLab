@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -27,11 +27,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   [Item("SymbolicRegressionSingleObjectiveOverfittingAnalyzer", "Calculates and tracks correlation of training and validation fitness of symbolic regression models.")]
-  [StorableClass]
+  [StorableType("AE1F0A23-BEB1-47AF-8ECF-DBCFD32AA5A9")]
   public sealed class SymbolicRegressionSingleObjectiveOverfittingAnalyzer : SymbolicDataAnalysisSingleObjectiveValidationAnalyzer<ISymbolicRegressionSingleObjectiveEvaluator, IRegressionProblemData> {
     private const string TrainingValidationCorrelationParameterName = "Training and validation fitness correlation";
     private const string TrainingValidationCorrelationTableParameterName = "Training and validation fitness correlation table";
@@ -58,7 +58,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     #endregion
 
     [StorableConstructor]
-    private SymbolicRegressionSingleObjectiveOverfittingAnalyzer(bool deserializing) : base(deserializing) { }
+    private SymbolicRegressionSingleObjectiveOverfittingAnalyzer(StorableConstructorFlag _) : base(_) { }
     private SymbolicRegressionSingleObjectiveOverfittingAnalyzer(SymbolicRegressionSingleObjectiveOverfittingAnalyzer original, Cloner cloner) : base(original, cloner) { }
     public SymbolicRegressionSingleObjectiveOverfittingAnalyzer()
       : base() {

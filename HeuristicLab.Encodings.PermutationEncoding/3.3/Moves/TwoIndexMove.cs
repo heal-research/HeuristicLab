@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,11 +21,11 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("TwoIndexMove", "A move on a permutation that is specified by 2 indices.")]
-  [StorableClass]
+  [StorableType("B2415ECB-30EE-4FD6-96F6-1170B5BD85DE")]
   public class TwoIndexMove : Item {
     [Storable]
     public int Index1 { get; protected set; }
@@ -35,7 +35,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     public Permutation Permutation { get; protected set; }
 
     [StorableConstructor]
-    protected TwoIndexMove(bool deserializing) : base(deserializing) { }
+    protected TwoIndexMove(StorableConstructorFlag _) : base(_) { }
     protected TwoIndexMove(TwoIndexMove original, Cloner cloner)
       : base(original, cloner) {
       this.Index1 = original.Index1;

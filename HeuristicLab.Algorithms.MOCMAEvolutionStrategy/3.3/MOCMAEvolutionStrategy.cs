@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  * and the BEACON Center for the Study of Evolution in Action.
  * 
  * This file is part of HeuristicLab.
@@ -31,14 +31,14 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.TestFunctions.MultiObjective;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Algorithms.MOCMAEvolutionStrategy {
   [Item("Multi-Objective CMA Evolution Strategy (MOCMAES)", "A multi objective evolution strategy based on covariance matrix adaptation. Code is based on 'Covariance Matrix Adaptation for Multi - objective Optimization' by Igel, Hansen and Roth")]
   [Creatable(CreatableAttribute.Categories.PopulationBasedAlgorithms, Priority = 210)]
-  [StorableClass]
+  [StorableType("C10264E3-E4C6-4735-8E94-0DC116E8908D")]
   public class MOCMAEvolutionStrategy : BasicAlgorithm {
     public override Type ProblemType {
       get { return typeof(MultiObjectiveBasicProblem<RealVectorEncoding>); }
@@ -264,7 +264,7 @@ namespace HeuristicLab.Algorithms.MOCMAEvolutionStrategy {
     }
 
     [StorableConstructor]
-    protected MOCMAEvolutionStrategy(bool deserializing) : base(deserializing) { }
+    protected MOCMAEvolutionStrategy(StorableConstructorFlag _) : base(_) { }
 
     protected MOCMAEvolutionStrategy(MOCMAEvolutionStrategy original, Cloner cloner) : base(original, cloner) {
       random = cloner.Clone(original.random);
@@ -284,7 +284,7 @@ namespace HeuristicLab.Algorithms.MOCMAEvolutionStrategy {
 
     #region Initialization
     protected override void Initialize(CancellationToken cancellationToken) {
-      if (SetSeedRandomly) Seed = new System.Random().Next();
+      if (SetSeedRandomly) Seed = RandomSeedGenerator.GetSeed();
       random.Reset(Seed);
       gauss = new NormalDistributedRandom(random, 0, 1);
 

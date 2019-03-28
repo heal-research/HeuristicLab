@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,11 +25,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.PTSP {
   [Item("PTSP Estimated Inversion Move Evaluator", "Evaluates an inversion move (2-opt) over several realizations of tours by summing up the length of all added edges and subtracting the length of all deleted edges.")]
-  [StorableClass]
+  [StorableType("9E418FA4-7721-40D2-9FDC-DB82723F7DBF")]
   public class PTSPEstimatedInversionMoveEvaluator : EstimatedPTSPMoveEvaluator, IPermutationInversionMoveOperator {
 
     public ILookupParameter<InversionMove> InversionMoveParameter {
@@ -37,7 +37,7 @@ namespace HeuristicLab.Problems.PTSP {
     }
 
     [StorableConstructor]
-    protected PTSPEstimatedInversionMoveEvaluator(bool deserializing) : base(deserializing) { }
+    protected PTSPEstimatedInversionMoveEvaluator(StorableConstructorFlag _) : base(_) { }
     protected PTSPEstimatedInversionMoveEvaluator(PTSPEstimatedInversionMoveEvaluator original, Cloner cloner) : base(original, cloner) { }
     public PTSPEstimatedInversionMoveEvaluator()
       : base() {

@@ -5,10 +5,10 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  [StorableClass]
+  [StorableType("D3330C77-060A-4F75-A0C5-47AC81C5F2DF")]
   [Item("Logarithmic Transformation", "f(x) = log(x, b) | Represents a logarithmic transformation.")]
   public class LogarithmicTransformation : Transformation<double> {
     protected const string BaseParameterName = "Base";
@@ -29,7 +29,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     #endregion
 
     [StorableConstructor]
-    protected LogarithmicTransformation(bool deserializing) : base(deserializing) { }
+    protected LogarithmicTransformation(StorableConstructorFlag _) : base(_) { }
     protected LogarithmicTransformation(LogarithmicTransformation original, Cloner cloner)
       : base(original, cloner) {
     }

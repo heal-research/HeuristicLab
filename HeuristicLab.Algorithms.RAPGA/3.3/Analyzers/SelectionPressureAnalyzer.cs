@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -27,14 +27,14 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.RAPGA {
   /// <summary>
   /// An operator which analyzes the actual selection pressure.
   /// </summary>
   [Item("SelectionPressureAnalyzer", "An operator which analyzes the actual selection pressure.")]
-  [StorableClass]
+  [StorableType("D09EA429-381C-43EC-B033-36B113886CB8")]
   public sealed class SelectionPressureAnalyzer : AlgorithmOperator, IAnalyzer {
     #region Parameter properties
     public ILookupParameter<DoubleValue> ActualSelectionPressureParameter {
@@ -62,7 +62,7 @@ namespace HeuristicLab.Algorithms.RAPGA {
 
     #region Storing & Cloning
     [StorableConstructor]
-    private SelectionPressureAnalyzer(bool deserializing) : base(deserializing) { }
+    private SelectionPressureAnalyzer(StorableConstructorFlag _) : base(_) { }
     private SelectionPressureAnalyzer(SelectionPressureAnalyzer original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new SelectionPressureAnalyzer(this, cloner);

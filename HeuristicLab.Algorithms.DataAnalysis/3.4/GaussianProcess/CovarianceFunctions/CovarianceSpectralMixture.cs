@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,10 +26,10 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
-  [StorableClass]
+  [StorableType("FF180FAF-851D-425E-AC0B-25930CE9604C")]
   [Item(Name = "CovarianceSpectralMixture",
     Description = "The spectral mixture kernel described in Wilson A. G. and Adams R.P., Gaussian Process Kernels for Pattern Discovery and Exptrapolation, ICML 2013.")]
   public sealed class CovarianceSpectralMixture : ParameterizedNamedItem, ICovarianceFunction {
@@ -63,8 +63,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     [StorableConstructor]
-    private CovarianceSpectralMixture(bool deserializing)
-      : base(deserializing) {
+    private CovarianceSpectralMixture(StorableConstructorFlag _) : base(_) {
     }
 
     private CovarianceSpectralMixture(CovarianceSpectralMixture original, Cloner cloner)

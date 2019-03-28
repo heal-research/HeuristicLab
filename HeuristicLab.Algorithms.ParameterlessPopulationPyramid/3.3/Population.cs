@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  * and the BEACON Center for the Study of Evolution in Action.
  *
  * This file is part of HeuristicLab.
@@ -25,13 +25,13 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
   // This code is based off the publication
   // B. W. Goldman and W. F. Punch, "Parameter-less Population Pyramid," GECCO, pp. 785–792, 2014
   // and the original source code in C++11 available from: https://github.com/brianwgoldman/Parameter-less_Population_Pyramid
-  [StorableClass]
+  [StorableType("E09EB41C-B95C-40DF-BF60-8F1E21E9892F")]
   public class Population : DeepCloneable {
     [Storable]
     public List<BinaryVector> Solutions {
@@ -46,7 +46,7 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
 
 
     [StorableConstructor]
-    protected Population(bool deserializing) : base() { }
+    protected Population(StorableConstructorFlag _) { }
 
 
     protected Population(Population original, Cloner cloner) : base(original, cloner) {

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,18 +23,18 @@ using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.IntegerVectorEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("PermutationWithRepetitionEncoding", "Represents a encoding for a standard JobShop Scheduling Problem.")]
-  [StorableClass]
+  [StorableType("31A66AC4-897D-4986-A6FC-DC301DC06278")]
   public class PWREncoding : Item, ISchedule {
 
     [Storable]
     public IntegerVector PermutationWithRepetition { get; set; }
 
     [StorableConstructor]
-    protected PWREncoding(bool deserializing) : base(deserializing) { }
+    protected PWREncoding(StorableConstructorFlag _) : base(_) { }
     protected PWREncoding(PWREncoding original, Cloner cloner)
       : base(original, cloner) {
       this.PermutationWithRepetition = cloner.Clone(original.PermutationWithRepetition);

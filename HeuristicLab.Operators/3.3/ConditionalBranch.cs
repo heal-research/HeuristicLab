@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,14 +23,14 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Operators {
   /// <summary>
   /// A branch of two operators whose executions depend on a condition.
   /// </summary>
   [Item("ConditionalBranch", "A branch of two operators whose executions depend on a boolean condition. If the boolean condition is not present, the false branch is executed.")]
-  [StorableClass]
+  [StorableType("DAE01CA9-CE0C-48BB-BA7B-6BF380B02862")]
   public class ConditionalBranch : SingleSuccessorOperator {
     public LookupParameter<BoolValue> ConditionParameter {
       get { return (LookupParameter<BoolValue>)Parameters["Condition"]; }
@@ -51,7 +51,7 @@ namespace HeuristicLab.Operators {
     }
 
     [StorableConstructor]
-    protected ConditionalBranch(bool deserializing) : base(deserializing) { }
+    protected ConditionalBranch(StorableConstructorFlag _) : base(_) { }
     protected ConditionalBranch(ConditionalBranch original, Cloner cloner)
       : base(original, cloner) {
     }

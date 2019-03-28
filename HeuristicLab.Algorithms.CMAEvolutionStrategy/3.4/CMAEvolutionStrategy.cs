@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -30,14 +30,14 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Algorithms.CMAEvolutionStrategy {
   [Item("CMA Evolution Strategy (CMAES)", "An evolution strategy based on covariance matrix adaptation.")]
   [Creatable(CreatableAttribute.Categories.PopulationBasedAlgorithms, Priority = 210)]
-  [StorableClass]
+  [StorableType("92CB2910-2D63-49A4-94DE-54DBA0CF2180")]
   public sealed class CMAEvolutionStrategy : HeuristicOptimizationEngineAlgorithm, IStorableContent {
     public string Filename { get; set; }
     #region Strings
@@ -224,7 +224,7 @@ namespace HeuristicLab.Algorithms.CMAEvolutionStrategy {
     #endregion
 
     [StorableConstructor]
-    private CMAEvolutionStrategy(bool deserializing) : base(deserializing) { }
+    private CMAEvolutionStrategy(StorableConstructorFlag _) : base(_) { }
     private CMAEvolutionStrategy(CMAEvolutionStrategy original, Cloner cloner)
       : base(original, cloner) {
       qualityAnalyzer = cloner.Clone(original.qualityAnalyzer);

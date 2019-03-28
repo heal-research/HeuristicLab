@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,10 +24,10 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Optimization.Operators;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
-  [StorableClass]
+  [StorableType("2634824A-D8E6-4047-9146-79EDF50BEED8")]
   [Item("SymbolicExpressionTreeMaxCommonSubtreeSimilarityCalculator", "A similarity calculator based on the size of the maximum common subtree between two trees")]
   public class SymbolicExpressionTreeMaxCommonSubtreeSimilarityCalculator : SolutionSimilarityCalculator {
     [Storable]
@@ -45,7 +45,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     protected override bool IsCommutative { get { return true; } }
 
     [StorableConstructor]
-    protected SymbolicExpressionTreeMaxCommonSubtreeSimilarityCalculator(bool deserializing) : base(deserializing) { }
+    protected SymbolicExpressionTreeMaxCommonSubtreeSimilarityCalculator(StorableConstructorFlag _) : base(_) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new SymbolicExpressionTreeMaxCommonSubtreeSimilarityCalculator(this, cloner);

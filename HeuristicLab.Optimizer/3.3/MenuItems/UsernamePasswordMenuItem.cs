@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,6 +21,7 @@
 
 using System.Collections.Generic;
 using System.Windows.Forms;
+using HeuristicLab.Clients.Access;
 using HeuristicLab.Clients.Common;
 using HeuristicLab.MainForm;
 
@@ -42,6 +43,7 @@ namespace HeuristicLab.Optimizer.MenuItems {
     public override void Execute() {
       using (PasswordDialog dialog = new PasswordDialog()) {
         dialog.ShowDialog((IWin32Window)MainFormManager.MainForm);
+        UserInformation.Instance.Refresh();
       }
     }
   }

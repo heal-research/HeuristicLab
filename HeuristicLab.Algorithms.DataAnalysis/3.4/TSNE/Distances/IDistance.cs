@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,9 +21,11 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using HEAL.Attic;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
+  [StorableType("168066b5-a14b-4d87-b3fb-6bac363e9c98")]
   public interface IDistance<in T> : IDistance {
     /// <summary>
     /// Calculates a distance measure between two objects.
@@ -42,7 +44,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     IComparer<T> GetDistanceComparer(T item);
   }
 
-
+  [StorableType("3e44c812-79ad-404d-95e9-8d9c3467110c")]
   public interface IDistance : IItem {
     double Get(object x, object y);
     IComparer GetDistanceComparer(object item);

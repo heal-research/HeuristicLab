@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -48,7 +48,7 @@ namespace HeuristicLab.Clients.Access.Administration {
       this.label2 = new System.Windows.Forms.Label();
       this.groupNameTextBox = new System.Windows.Forms.TextBox();
       this.idTextBox = new System.Windows.Forms.TextBox();
-      this.refreshableLightweightUserView = new HeuristicLab.Clients.Access.Views.RefreshableLightweightUserView();
+      this.refreshableLightweightUserView = new HeuristicLab.Clients.Access.Views.RefreshableLightweightAccessClientView();
       this.storeButton = new System.Windows.Forms.Button();
       this.SuspendLayout();
       // 
@@ -84,7 +84,7 @@ namespace HeuristicLab.Clients.Access.Administration {
       // 
       this.idTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.idTextBox.Enabled = false;
+      this.idTextBox.ReadOnly = true;
       this.idTextBox.Location = new System.Drawing.Point(79, 29);
       this.idTextBox.Name = "idTextBox";
       this.idTextBox.Size = new System.Drawing.Size(675, 20);
@@ -107,7 +107,7 @@ namespace HeuristicLab.Clients.Access.Administration {
       // storeButton
       // 
       this.storeButton.Enabled = false;
-      this.storeButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.PublishToWeb;
+      this.storeButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Save;
       this.storeButton.Location = new System.Drawing.Point(31, 58);
       this.storeButton.Name = "storeButton";
       this.storeButton.Size = new System.Drawing.Size(24, 24);
@@ -138,7 +138,7 @@ namespace HeuristicLab.Clients.Access.Administration {
     private System.Windows.Forms.Label label2;
     private System.Windows.Forms.TextBox groupNameTextBox;
     private System.Windows.Forms.TextBox idTextBox;
-    private Views.RefreshableLightweightUserView refreshableLightweightUserView;
+    private Views.RefreshableLightweightAccessClientView refreshableLightweightUserView;
     private System.Windows.Forms.Button storeButton;
   }
 }

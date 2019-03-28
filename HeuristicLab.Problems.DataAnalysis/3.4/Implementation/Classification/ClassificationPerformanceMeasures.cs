@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,10 +23,10 @@ using System;
 using HeuristicLab.Common;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  [StorableClass]
+  [StorableType("6F44E140-22CF-48D3-B100-B6013F2B6608")]
   public class ClassificationPerformanceMeasuresResultCollection : ResultCollection {
     #region result names
     protected const string ClassificationPositiveClassNameResultName = "Classification positive class";
@@ -53,8 +53,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       AddMeasures();
     }
     [StorableConstructor]
-    protected ClassificationPerformanceMeasuresResultCollection(bool deserializing)
-      : base(deserializing) {
+    protected ClassificationPerformanceMeasuresResultCollection(StorableConstructorFlag _) : base(_) {
     }
 
     protected ClassificationPerformanceMeasuresResultCollection(ClassificationPerformanceMeasuresResultCollection original, Cloner cloner)

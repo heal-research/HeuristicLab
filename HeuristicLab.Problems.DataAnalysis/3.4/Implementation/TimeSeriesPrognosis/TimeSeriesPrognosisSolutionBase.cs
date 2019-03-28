@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,10 +24,10 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  [StorableClass]
+  [StorableType("DF08D8C4-90F8-456E-855B-C8F487FF7B51")]
   public abstract class TimeSeriesPrognosisSolutionBase : RegressionSolutionBase, ITimeSeriesPrognosisSolution {
     #region result names
     protected const string TrainingDirectionalSymmetryResultName = "Average directional symmetry (training)";
@@ -127,7 +127,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     [StorableConstructor]
-    protected TimeSeriesPrognosisSolutionBase(bool deserializing) : base(deserializing) { }
+    protected TimeSeriesPrognosisSolutionBase(StorableConstructorFlag _) : base(_) { }
     protected TimeSeriesPrognosisSolutionBase(TimeSeriesPrognosisSolutionBase original, Cloner cloner) : base(original, cloner) { }
     protected TimeSeriesPrognosisSolutionBase(ITimeSeriesPrognosisModel model, ITimeSeriesPrognosisProblemData problemData)
       : base(model, problemData) {

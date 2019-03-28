@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,12 +26,14 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     public static LinearInstruction[] Compile(ISymbolicExpressionTree tree, Func<ISymbolicExpressionTreeNode, byte> opCodeMapper) {
       var root = tree.Root.GetSubtree(0).GetSubtree(0);
       var code = new LinearInstruction[root.GetLength()];
-      code[0] = new LinearInstruction { dynamicNode = root, nArguments = (byte)root.SubtreeCount, opCode = opCodeMapper(root) };
+      if (root.SubtreeCount > ushort.MaxValue) throw new ArgumentException("Number of subtrees is too big (>65.535)");
+      code[0] = new LinearInstruction { dynamicNode = root, nArguments = (ushort)root.SubtreeCount, opCode = opCodeMapper(root) };
       int c = 1, i = 0;
       foreach (var node in root.IterateNodesBreadth()) {
         for (int j = 0; j < node.SubtreeCount; ++j) {
           var s = node.GetSubtree(j);
-          code[c + j] = new LinearInstruction { dynamicNode = s, nArguments = (byte)s.SubtreeCount, opCode = opCodeMapper(s) };
+          if (s.SubtreeCount > ushort.MaxValue) throw new ArgumentException("Number of subtrees is too big (>65.535)");
+          code[c + j] = new LinearInstruction { dynamicNode = s, nArguments = (ushort)s.SubtreeCount, opCode = opCodeMapper(s) };
         }
         code[i].childIndex = c;
         c += node.SubtreeCount;

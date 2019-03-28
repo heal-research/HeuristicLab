@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -108,8 +108,10 @@ namespace HeuristicLab.CodeEditor {
     public override string UserCode {
       get { return Doc.GetText(prefix.Length, Doc.TextLength - suffix.Length - prefix.Length); }
       set {
-        if (Doc.Text == value) return;
-        Doc.Replace(prefix.Length, Doc.TextLength - suffix.Length - prefix.Length, value);
+        var curLength = Doc.TextLength - suffix.Length - prefix.Length;
+        var curUserCode = Doc.GetText(prefix.Length, curLength);
+        if (curUserCode == value) return;
+        Doc.Replace(prefix.Length, curLength, value);
       }
     }
 
@@ -272,6 +274,10 @@ namespace HeuristicLab.CodeEditor {
       assemblyLoader.RemoveAssembly(a);
     }
     #endregion
+
+    public override void ClearEditHistory() {
+      Doc.UndoStack.ClearAll();
+    }
 
     public override void ScrollToPosition(int line, int column) {
       var segment = GetSegmentAtLocation(line, column);

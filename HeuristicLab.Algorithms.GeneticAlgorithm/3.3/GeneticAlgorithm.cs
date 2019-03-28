@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,6 +21,7 @@
 
 using System;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -29,7 +30,6 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Random;
 
@@ -39,7 +39,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
   /// </summary>
   [Item("Genetic Algorithm (GA)", "A genetic algorithm.")]
   [Creatable(CreatableAttribute.Categories.PopulationBasedAlgorithms, Priority = 100)]
-  [StorableClass]
+  [StorableType("B63D21BD-D6AE-474B-A319-AC92CCB30AF6")]
   public sealed class GeneticAlgorithm : HeuristicOptimizationEngineAlgorithm, IStorableContent {
     public string Filename { get; set; }
 
@@ -212,7 +212,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       Initialize();
     }
     [StorableConstructor]
-    private GeneticAlgorithm(bool deserializing) : base(deserializing) { }
+    private GeneticAlgorithm(StorableConstructorFlag _) : base(_) { }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       // BackwardsCompatibility3.3

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,19 +24,18 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.ALPS {
   [Item("MatingPoolCreator", "An operator which creates mating pools based on a set of sub-populations. For each sub-population, the individuals from the previous sub-population are copied into the current sub-population.")]
-  [StorableClass]
+  [StorableType("F8B8EAF4-84FC-4E38-B3CB-82EEDBAFE083")]
   public sealed class MatingPoolCreator : SingleSuccessorOperator {
     public IValueLookupParameter<IntValue> MatingPoolRangeParameter {
       get { return (IValueLookupParameter<IntValue>)Parameters["MatingPoolRange"]; }
     }
 
     [StorableConstructor]
-    private MatingPoolCreator(bool deserializing)
-      : base(deserializing) { }
+    private MatingPoolCreator(StorableConstructorFlag _) : base(_) { }
     private MatingPoolCreator(MatingPoolCreator original, Cloner cloner)
       : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {

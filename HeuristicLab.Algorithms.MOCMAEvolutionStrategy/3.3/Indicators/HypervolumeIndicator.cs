@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,15 +26,15 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.TestFunctions.MultiObjective;
 namespace HeuristicLab.Algorithms.MOCMAEvolutionStrategy {
   [Item("HypervolumeIndicator", "Selection of Offspring based on contributing Hypervolume")]
-  [StorableClass]
+  [StorableType("ADF439D6-64E4-4C92-A4D3-E8C05B050406")]
   internal class HypervolumeIndicator : Item, IIndicator {
     #region Constructors and Cloning
     [StorableConstructor]
-    protected HypervolumeIndicator(bool deserializing) : base(deserializing) { }
+    protected HypervolumeIndicator(StorableConstructorFlag _) : base(_) { }
     protected HypervolumeIndicator(HypervolumeIndicator original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) { return new HypervolumeIndicator(this, cloner); }
     public HypervolumeIndicator() { }

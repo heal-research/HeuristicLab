@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -28,7 +28,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Encodings.IntegerVectorEncoding {
@@ -36,7 +36,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   /// A shaking operator for VNS.
   /// </summary>
   [Item("IntegerVectorShakingOperator", "A shaking operator for VNS which uses available manipulation operators to perform the shaking.")]
-  [StorableClass]
+  [StorableType("852155D8-B96F-4AAA-A9F9-5358F317C015")]
   public class IntegerVectorShakingOperator : ShakingOperator<IIntegerVectorManipulator>, IIntegerVectorMultiNeighborhoodShakingOperator, IStochasticOperator, IBoundedIntegerVectorOperator {
 
     public ILookupParameter<IntegerVector> IntegerVectorParameter {
@@ -52,7 +52,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
     }
 
     [StorableConstructor]
-    protected IntegerVectorShakingOperator(bool deserializing) : base(deserializing) { }
+    protected IntegerVectorShakingOperator(StorableConstructorFlag _) : base(_) { }
     protected IntegerVectorShakingOperator(IntegerVectorShakingOperator original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new IntegerVectorShakingOperator(this, cloner);

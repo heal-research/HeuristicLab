@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -40,7 +40,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation.Views {
       refreshButton.Text = string.Empty;
       refreshButton.Image = VSImageLibrary.Refresh;
       uploadButton.Text = string.Empty;
-      uploadButton.Image = VSImageLibrary.PublishToWeb;
+      uploadButton.Image = VSImageLibrary.Save;
     }
 
     protected override void RegisterContentEvents() {

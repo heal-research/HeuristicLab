@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,18 +26,18 @@ using HeuristicLab.Core;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.ALPS {
   [Item("ResultsHistoryWiper", "An operator that removes the history of a ResultsCollection by setting all values in all DataTables to NaN.")]
-  [StorableClass]
+  [StorableType("98514FF7-CE23-446F-9ACB-901FDF056CF0")]
   public sealed class ResultsHistoryWiper : SingleSuccessorOperator {
     public ILookupParameter<ResultCollection> ResultsParameter {
       get { return (ILookupParameter<ResultCollection>)Parameters["Results"]; }
     }
 
     [StorableConstructor]
-    private ResultsHistoryWiper(bool deserializing) : base(deserializing) {
+    private ResultsHistoryWiper(StorableConstructorFlag _) : base(_) {
     }
 
     private ResultsHistoryWiper(ResultsHistoryWiper original, Cloner cloner)

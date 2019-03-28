@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,14 +23,14 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis {
   /// <summary>
   /// An operator that analyzes the validation best symbolic time-series prognosis solution for single objective symbolic time-series prognosis problems.
   /// </summary>
   [Item("SymbolicTimeSeriesPrognosisSingleObjectiveValidationBestSolutionAnalyzer", "An operator that analyzes the validation best symbolic time-series prognosis solution for single objective symbolic time-series prognosis problems.")]
-  [StorableClass]
+  [StorableType("642E4242-0FEF-45E6-BCE4-94D755256799")]
   public sealed class SymbolicTimeSeriesPrognosisSingleObjectiveValidationBestSolutionAnalyzer : SymbolicDataAnalysisSingleObjectiveValidationBestSolutionAnalyzer<ISymbolicTimeSeriesPrognosisSolution, ISymbolicTimeSeriesPrognosisSingleObjectiveEvaluator, ITimeSeriesPrognosisProblemData>, ISymbolicDataAnalysisBoundedOperator {
     private const string EstimationLimitsParameterName = "EstimationLimits";
     #region parameter properties
@@ -40,7 +40,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis {
     #endregion
 
     [StorableConstructor]
-    private SymbolicTimeSeriesPrognosisSingleObjectiveValidationBestSolutionAnalyzer(bool deserializing) : base(deserializing) { }
+    private SymbolicTimeSeriesPrognosisSingleObjectiveValidationBestSolutionAnalyzer(StorableConstructorFlag _) : base(_) { }
     private SymbolicTimeSeriesPrognosisSingleObjectiveValidationBestSolutionAnalyzer(SymbolicTimeSeriesPrognosisSingleObjectiveValidationBestSolutionAnalyzer original, Cloner cloner) : base(original, cloner) { }
     public SymbolicTimeSeriesPrognosisSingleObjectiveValidationBestSolutionAnalyzer()
       : base() {

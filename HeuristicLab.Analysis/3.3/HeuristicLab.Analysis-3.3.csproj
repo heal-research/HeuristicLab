@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>HeuristicLab.Analysis</RootNamespace>
     <AssemblyName>HeuristicLab.Analysis-3.3</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -133,6 +133,8 @@
     <Compile Include="DataVisualization\GanttData.cs" />
     <Compile Include="DataVisualization\IndexedDataRow.cs" />
     <Compile Include="DataVisualization\IndexedDataTable.cs" />
+    <Compile Include="DataVisualization\Interfaces\IDataRow.cs" />
+    <Compile Include="DataVisualization\Interfaces\IDataTable.cs" />
     <Compile Include="DataVisualization\ScatterPlotDataRowVisualProperties.cs" />
     <Compile Include="DataVisualization\ScatterPlotDataRow.cs" />
     <Compile Include="DataVisualization\ScatterPlotVisualProperties.cs" />
@@ -258,7 +260,13 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Reference Include="HEAL.Attic, Version=1.0.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\HEAL.Attic.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

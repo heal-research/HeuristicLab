@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,12 +19,11 @@
  */
 #endregion
 
-using HeuristicLab.Optimization;
 using HeuristicLab.Problems.DataAnalysis;
-using HeuristicLab.Core;
-using System.Collections.Generic;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
+  [StorableType("21800d09-cdf8-4faf-a832-0a709ab84f33")]
   /// <summary>
   /// Interface to represent a neural network model for either regression or classification
   /// </summary>
