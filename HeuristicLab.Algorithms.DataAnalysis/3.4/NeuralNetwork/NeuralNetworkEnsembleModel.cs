@@ -182,7 +182,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         mlpEnsemble.innerobj.network.columnsigmas = value;
       }
     }
-    [Storable(AllowOneWay = true)]
+    [Storable]
     private double[] MultiLayerPerceptronEnsembleDfdnet {
       set {
         mlpEnsemble.innerobj.network.dfdnet = value;
@@ -196,17 +196,17 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         mlpEnsemble.innerobj.ensemblesize = value;
       }
     }
-    [Storable(AllowOneWay = true)]
+    [Storable]
     private double[] MultiLayerPerceptronEnsembleNeurons {
       set { mlpEnsemble.innerobj.network.neurons = value; }
     }
-    [Storable(AllowOneWay = true)]
+    [Storable]
     private double[] MultiLayerPerceptronEnsembleSerializedMlp {
       set {
         mlpEnsemble.innerobj.network.dfdnet = value;
       }
     }
-    [Storable(AllowOneWay = true)]
+    [Storable]
     private int[] MultiLayerPerceptronStuctinfo {
       set {
         mlpEnsemble.innerobj.network.structinfo = value;

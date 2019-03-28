@@ -60,7 +60,7 @@ namespace HeuristicLab.Analysis {
     // BackwardsCompatibility3.3
     #region Backwards compatible code, remove with 3.4
     // tuples are stored inefficiently
-    [Storable(Name = "values", AllowOneWay = true)]
+    [Storable(Name = "values")]
     private IEnumerable<Tuple<T, double>> StorableValues {
       set { values = new ObservableList<Tuple<T, double>>(value); }
     }

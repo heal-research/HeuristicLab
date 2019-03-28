@@ -133,7 +133,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     #region Backwards compatible code, remove with 3.5
     private double[,] storableData;
     //name alias used to suppport backwards compatibility
-    [Storable(Name = "data", AllowOneWay = true)]
+    [Storable(Name = "data")]
     private double[,] StorableData { set { storableData = value; } }
 
     [StorableHook(HookType.AfterDeserialization)]

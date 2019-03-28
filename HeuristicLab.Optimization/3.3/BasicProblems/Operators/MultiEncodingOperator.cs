@@ -38,7 +38,6 @@ namespace HeuristicLab.Optimization {
       get { return (ILookupParameter<IEncoding<CombinedSolution>>)Parameters["Encoding"]; }
     }
 
-        encoding.OperatorsChanged += Encoding_OperatorsChanged;
     [StorableConstructor]
     protected MultiEncodingOperator(StorableConstructorFlag _) : base(_) { }
     protected MultiEncodingOperator(MultiEncodingOperator<T> original, Cloner cloner) : base(original, cloner) { }

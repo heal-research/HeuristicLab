@@ -111,7 +111,7 @@ namespace HeuristicLab.Optimization {
     }
     // BackwardsCompatibility3.3
     #region Backwards compatible code (remove with 3.4)
-    [Storable(AllowOneWay = true)]
+    [Storable(Name ="algorithm")]
     private IAlgorithm algorithm {
       set { optimizer = value; }
     }

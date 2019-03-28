@@ -23,18 +23,18 @@ using System;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
   [Item("CombinedSolution", "A solution that consists of other solutions.")]
-  [StorableClass]
+  [StorableType("B5ED00CB-E533-4ED6-AB2D-95BF7A654AAD")]
   public sealed class CombinedSolution : Item, ISolution {
 
     private CombinedEncoding Encoding { get; set; }
     private IScope Scope { get; set; }
 
     [StorableConstructor]
-    private CombinedSolution(bool deserializing) : base(deserializing) { }
+    private CombinedSolution(StorableConstructorFlag _) : base(_) { }
     private CombinedSolution(CombinedSolution original, Cloner cloner)
       : base(original, cloner) {
       Encoding = cloner.Clone(original.Encoding);
