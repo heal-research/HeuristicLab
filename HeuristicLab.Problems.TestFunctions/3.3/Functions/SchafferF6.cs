@@ -20,22 +20,21 @@
 #endregion
 
 using System;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.TestFunctions {
   /// <summary>
-  /// The generalized Rastrigin function y = 0.5 + (Sin^2(Sqrt(x^2 + y^2)) - 0.5) / (1 + 0.001 * (x^2 + y^2))^2 is a multimodal function that has its optimal value 0 at the origin.
-
+  /// The Schaffer F6 function y = 0.5 + (Sin^2(Sqrt(x^2 + y^2)) - 0.5) / (1 + 0.001 * (x^2 + y^2))^2 is a multimodal function that has its optimal value 0 at the origin.
   /// </summary
-  [Item("SchafferF6", "Evaluates the Schaffer F6 function y = 0.5 + (Sin^2(Sqrt(x^2 + y^2)) - 0.5) / (1 + 0.001 * (x^2 + y^2))^2 on a given point. The optimum of this function is 0 at the origin. It is implemented as described in Eiben, A.E. and Smith, J.E. 2003. Introduction to Evolutionary Computation. Natural Computing Series, Springer-Verlag Berlin Heidelberg.")]
-  [StorableClass]
+  [Item("SchafferF6", "Evaluates the Schaffer F6 function y = 0.5 + (Sin^2(Sqrt(x^2 + y^2)) - 0.5) / (1 + 0.001 * (x^2 + y^2))^2 on a given point. The optimum of this function is 0 at the origin.")]
+  [StorableType("FC160F97-DB25-403E-882F-7BEBA0F01E01")]
   public class SchafferF6 : SingleObjectiveTestFunction {
     /// <summary>
-    /// Returns false as the Rastrigin function is a minimization problem.
+    /// Returns false as the Schaffer F6 function is a minimization problem.
     /// </summary>
     public override bool Maximization {
       get { return false; }
@@ -70,7 +69,7 @@ namespace HeuristicLab.Problems.TestFunctions {
     }
 
     [StorableConstructor]
-    protected SchafferF6(bool deserializing) : base(deserializing) { }
+    protected SchafferF6(StorableConstructorFlag _) : base(_) { }
     protected SchafferF6(SchafferF6 original, Cloner cloner) : base(original, cloner) { }
     public SchafferF6() : base() { }
 
@@ -82,7 +81,7 @@ namespace HeuristicLab.Problems.TestFunctions {
     /// Evaluates the test function for a specific <paramref name="point"/>.
     /// </summary>
     /// <param name="point">N-dimensional point for which the test function should be evaluated.</param>
-    /// <returns>The result value of the Rastrigin function at the given point.</returns>
+    /// <returns>The result value of the Schaffer F6 function at the given point.</returns>
     public static double Apply(RealVector point) {
       if (point.Length != 2) throw new ArgumentException("The SchafferF6 can only be evaluated for two dimenional vectors");
       var sumSquare = point[0] * point[0] + point[1] * point[1];
