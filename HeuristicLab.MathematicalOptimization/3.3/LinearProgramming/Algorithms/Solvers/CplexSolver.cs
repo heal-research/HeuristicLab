@@ -25,12 +25,12 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.ExactOptimization.LinearProgramming {
 
   [Item("CPLEX", "CPLEX (https://www.ibm.com/analytics/cplex-optimizer) must be installed and licensed.")]
-  [StorableClass]
+  [StorableType("E3478254-F3A8-4085-A9DA-DB79D0A50347")]
   public class CplexSolver : ExternalIncrementalLinearSolver {
 
     public CplexSolver() {
@@ -48,9 +48,7 @@ namespace HeuristicLab.ExactOptimization.LinearProgramming {
     }
 
     [StorableConstructor]
-    protected CplexSolver(bool deserializing)
-      : base(deserializing) {
-    }
+    protected CplexSolver(StorableConstructorFlag _) : base(_) { }
 
     protected CplexSolver(CplexSolver original, Cloner cloner)
       : base(original, cloner) {

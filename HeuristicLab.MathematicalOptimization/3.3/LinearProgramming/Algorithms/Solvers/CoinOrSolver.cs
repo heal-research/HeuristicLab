@@ -22,12 +22,12 @@
 using Google.OrTools.LinearSolver;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.ExactOptimization.LinearProgramming {
 
   [Item("Clp/Cbc", "Clp (https://projects.coin-or.org/Clp) and Cbc (https://projects.coin-or.org/Cbc) can be used out of the box.")]
-  [StorableClass]
+  [StorableType("53148A15-C754-4CCA-AFAA-200916CDB7F5")]
   public class CoinOrSolver : IncrementalLinearSolver {
 
     public CoinOrSolver() {
@@ -39,9 +39,7 @@ namespace HeuristicLab.ExactOptimization.LinearProgramming {
     }
 
     [StorableConstructor]
-    protected CoinOrSolver(bool deserializing)
-      : base(deserializing) {
-    }
+    protected CoinOrSolver(StorableConstructorFlag _) : base(_) { }
 
     public override bool SupportsPause => false;
 

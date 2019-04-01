@@ -27,15 +27,15 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.ExactOptimization.LinearProgramming.Templates;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.Programmable;
 using HeuristicLab.Scripting;
+using HEAL.Attic;
 
 namespace HeuristicLab.ExactOptimization.LinearProgramming {
 
   [Item("Programmable Linear Problem Definition (LP, MIP)",
     "Script that defines the model for a linear/mixed integer programming problem.")]
-  [StorableClass]
+  [StorableType("830F82CF-9FF1-4619-A75E-E43E208565F0")]
   public sealed class ProgrammableLinearProblemDefinition : Script, ILinearProblemDefinition,
     IStorableContent {
     private readonly object compileLock = new object();
@@ -55,8 +55,7 @@ namespace HeuristicLab.ExactOptimization.LinearProgramming {
     }
 
     [StorableConstructor]
-    private ProgrammableLinearProblemDefinition(bool deserializing) : base(deserializing) {
-    }
+    private ProgrammableLinearProblemDefinition(StorableConstructorFlag _) : base(_) { }
 
     private ProgrammableLinearProblemDefinition(ProgrammableLinearProblemDefinition original,
       Cloner cloner) : base(original, cloner) {

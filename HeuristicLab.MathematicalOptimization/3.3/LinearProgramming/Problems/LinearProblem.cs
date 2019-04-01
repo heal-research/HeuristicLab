@@ -30,12 +30,12 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.ExactOptimization.LinearProgramming {
 
   [Item("Mixed-Integer Linear Programming Problem (LP, MIP)", "Represents a linear/mixed integer problem.")]
-  [StorableClass]
+  [StorableType("0F6BD4A4-8C70-4922-9BA1-1F372820DD76")]
   public sealed class LinearProblem : Problem, IStorableContent {
 
     [Storable]
@@ -53,8 +53,7 @@ namespace HeuristicLab.ExactOptimization.LinearProgramming {
     }
 
     [StorableConstructor]
-    private LinearProblem(bool deserializing) : base(deserializing) {
-    }
+    private LinearProblem(StorableConstructorFlag _) : base(_) { }
 
     public event EventHandler ProblemDefinitionChanged;
 

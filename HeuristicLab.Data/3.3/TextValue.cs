@@ -21,11 +21,11 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Data {
   [Item("TextValue", "Represents a multiline string.")]
-  [StorableClass]
+  [StorableType("136E9CD4-D340-44B1-A7CE-CF1A70D1C032")]
   public class TextValue : StringValue, ITextValue {
 
     public TextValue() {
@@ -39,7 +39,7 @@ namespace HeuristicLab.Data {
     }
 
     [StorableConstructor]
-    protected TextValue(bool deserializing) : base(deserializing) { }
+    protected TextValue(StorableConstructorFlag _) : base(_) { }
 
     protected TextValue(TextValue original, Cloner cloner)
       : base(original, cloner) {

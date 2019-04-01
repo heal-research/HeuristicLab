@@ -24,12 +24,12 @@ using Google.OrTools.LinearSolver;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.ExactOptimization.LinearProgramming {
 
   [Item("Glop", "Glop (https://developers.google.com/optimization/lp/glop) can be used out of the box.")]
-  [StorableClass]
+  [StorableType("A05DA123-2779-4175-991E-C4790C5C2E00")]
   public class GlopSolver : IncrementalLinearSolver {
 
     public GlopSolver() {
@@ -43,9 +43,7 @@ namespace HeuristicLab.ExactOptimization.LinearProgramming {
     }
 
     [StorableConstructor]
-    protected GlopSolver(bool deserializing)
-      : base(deserializing) {
-    }
+    protected GlopSolver(StorableConstructorFlag _) : base(_) { }
 
     protected GlopSolver(GlopSolver original, Cloner cloner)
       : base(original, cloner) {

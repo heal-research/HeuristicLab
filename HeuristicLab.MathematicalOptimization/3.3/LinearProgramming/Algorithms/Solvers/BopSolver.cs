@@ -25,12 +25,12 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.ExactOptimization.LinearProgramming {
 
   [Item("BOP", "BOP (https://developers.google.com/optimization/reference/bop/bop_solver/) can be used out of the box.")]
-  [StorableClass]
+  [StorableType("6AE85366-34FC-42C3-B1A3-BFC976CCE830")]
   public class BopSolver : IncrementalLinearSolver {
 
     public BopSolver() {
@@ -48,9 +48,7 @@ namespace HeuristicLab.ExactOptimization.LinearProgramming {
     }
 
     [StorableConstructor]
-    protected BopSolver(bool deserializing)
-      : base(deserializing) {
-    }
+    protected BopSolver(StorableConstructorFlag _) : base(_) { }
 
     protected override Solver.OptimizationProblemType OptimizationProblemType =>
       Solver.OptimizationProblemType.BopIntegerProgramming;

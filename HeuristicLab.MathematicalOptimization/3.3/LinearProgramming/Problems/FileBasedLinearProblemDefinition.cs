@@ -28,12 +28,12 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.ExactOptimization.LinearProgramming {
 
   [Item("Linear Problem Definition File (MPS, OR-Tools Protocol Buffers Files)", "File that defines the model for linear/mixed integer programming problem.")]
-  [StorableClass]
+  [StorableType("8779D26D-37DB-4595-A4E9-C7F29B870802")]
   public sealed class FileBasedLinearProblemDefinition : ParameterizedNamedItem, ILinearProblemDefinition {
 
     [Storable]
@@ -62,7 +62,7 @@ namespace HeuristicLab.ExactOptimization.LinearProgramming {
     }
 
     [StorableConstructor]
-    private FileBasedLinearProblemDefinition(bool deserializing) : base(deserializing) { }
+    private FileBasedLinearProblemDefinition(StorableConstructorFlag _) : base(_) { }
 
     public new static Image StaticItemImage => VSImageLibrary.File;
 

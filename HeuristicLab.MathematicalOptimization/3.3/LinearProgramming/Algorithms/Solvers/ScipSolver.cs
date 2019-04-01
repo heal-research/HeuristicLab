@@ -27,12 +27,12 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.ExactOptimization.LinearProgramming {
 
   [Item("SCIP", "SCIP (http://scip.zib.de/) must be installed and licensed.")]
-  [StorableClass]
+  [StorableType("A4185E0D-25AE-48C4-8136-A764780683D5")]
   public class ScipSolver : ExternalIncrementalLinearSolver {
     private TimeSpan timeLimit = TimeSpan.Zero;
 
@@ -50,9 +50,7 @@ namespace HeuristicLab.ExactOptimization.LinearProgramming {
     }
 
     [StorableConstructor]
-    protected ScipSolver(bool deserializing)
-      : base(deserializing) {
-    }
+    protected ScipSolver(StorableConstructorFlag _) : base(_) { }
 
     protected ScipSolver(ScipSolver original, Cloner cloner)
       : base(original, cloner) {

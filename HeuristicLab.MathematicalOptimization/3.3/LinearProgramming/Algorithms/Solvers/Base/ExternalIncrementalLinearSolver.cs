@@ -23,11 +23,11 @@ using Google.OrTools.LinearSolver;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.ExactOptimization.LinearProgramming {
 
-  [StorableClass]
+  [StorableType("CF3FC8B1-37DF-4A08-9DE5-AB578E1132DD")]
   public class ExternalIncrementalLinearSolver : IncrementalLinearSolver, IExternalLinearSolver {
     protected const string FileDialogFilter = "Dynamic-Link Library (*.dll)|*.dll|All Files (*.*)|*.*";
 
@@ -38,9 +38,7 @@ namespace HeuristicLab.ExactOptimization.LinearProgramming {
     }
 
     [StorableConstructor]
-    protected ExternalIncrementalLinearSolver(bool deserializing)
-      : base(deserializing) {
-    }
+    protected ExternalIncrementalLinearSolver(StorableConstructorFlag _) : base(_) { }
 
     protected ExternalIncrementalLinearSolver(ExternalIncrementalLinearSolver original, Cloner cloner)
       : base(original, cloner) {

@@ -31,11 +31,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.ExactOptimization.LinearProgramming {
 
-  [StorableClass]
+  [StorableType("D0657902-BE8B-4826-B832-FDA84E9B24C3")]
   public class LinearSolver : ParameterizedNamedItem, ILinearSolver, IDisposable {
 
     [Storable]
@@ -55,9 +55,7 @@ namespace HeuristicLab.ExactOptimization.LinearProgramming {
     }
 
     [StorableConstructor]
-    protected LinearSolver(bool deserializing)
-      : base(deserializing) {
-    }
+    protected LinearSolver(StorableConstructorFlag _) : base(_) { }
 
     protected LinearSolver(LinearSolver original, Cloner cloner)
       : base(original, cloner) {

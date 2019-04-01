@@ -25,12 +25,12 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.ExactOptimization.LinearProgramming {
 
   [Item("Gurobi", "Gurobi (http://www.gurobi.com/) must be installed and licensed.")]
-  [StorableClass]
+  [StorableType("2C567159-8C09-4B5F-BFF8-D72561686C6B")]
   public class GurobiSolver : ExternalIncrementalLinearSolver {
 
     public GurobiSolver() {
@@ -51,9 +51,7 @@ namespace HeuristicLab.ExactOptimization.LinearProgramming {
     }
 
     [StorableConstructor]
-    protected GurobiSolver(bool deserializing)
-      : base(deserializing) {
-    }
+    protected GurobiSolver(StorableConstructorFlag _) : base(_) { }
 
     protected override Solver.OptimizationProblemType OptimizationProblemType =>
       ProblemType == ProblemType.LinearProgramming

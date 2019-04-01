@@ -29,11 +29,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.ExactOptimization.LinearProgramming {
 
-  [StorableClass]
+  [StorableType("8730ECDD-8F38-47C2-B0D9-2B1F38FC0A27")]
   public class IncrementalLinearSolver : LinearSolver, IIncrementalLinearSolver {
 
     [Storable]
@@ -64,9 +64,7 @@ namespace HeuristicLab.ExactOptimization.LinearProgramming {
     }
 
     [StorableConstructor]
-    protected IncrementalLinearSolver(bool deserializing)
-      : base(deserializing) {
-    }
+    protected IncrementalLinearSolver(StorableConstructorFlag _) : base(_) { }
 
     protected IncrementalLinearSolver(IncrementalLinearSolver original, Cloner cloner)
       : base(original, cloner) {

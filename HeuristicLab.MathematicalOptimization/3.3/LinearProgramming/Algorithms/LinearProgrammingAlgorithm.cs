@@ -27,14 +27,14 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.ExactOptimization.LinearProgramming {
 
   [Item("Mixed-Integer Linear Programming (LP, MIP)", "Linear/mixed integer programming implemented in several solvers. " +
     "See also https://dev.heuristiclab.com/trac.fcgi/wiki/Documentation/Reference/ExactOptimization")]
   [Creatable(CreatableAttribute.Categories.ExactAlgorithms)]
-  [StorableClass]
+  [StorableType("D6BAE020-6315-4C8A-928F-E47C67F3BE8F")]
   public sealed class LinearProgrammingAlgorithm : BasicAlgorithm {
 
     [Storable]
@@ -156,9 +156,7 @@ namespace HeuristicLab.ExactOptimization.LinearProgramming {
     }
 
     [StorableConstructor]
-    private LinearProgrammingAlgorithm(bool deserializing)
-      : base(deserializing) {
-    }
+    private LinearProgrammingAlgorithm(StorableConstructorFlag _) : base(_) { }
 
     private LinearProgrammingAlgorithm(LinearProgrammingAlgorithm original, Cloner cloner)
       : base(original, cloner) {

@@ -24,12 +24,12 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.ExactOptimization.LinearProgramming {
 
   [Item("GLPK", "GLPK (https://www.gnu.org/software/glpk/) can be used out of the box.")]
-  [StorableClass]
+  [StorableType("CD1F0577-D68A-483B-8811-17E04573B3F2")]
   public class GlpkSolver : ExternalLinearSolver {
 
     public GlpkSolver() {
@@ -43,9 +43,7 @@ namespace HeuristicLab.ExactOptimization.LinearProgramming {
     }
 
     [StorableConstructor]
-    protected GlpkSolver(bool deserializing)
-      : base(deserializing) {
-    }
+    protected GlpkSolver(StorableConstructorFlag _) : base(_) { }
 
     public override bool SupportsPause => false;
 
