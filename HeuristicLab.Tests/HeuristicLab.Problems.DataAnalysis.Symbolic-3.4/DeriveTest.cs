@@ -65,6 +65,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
 
       Assert.AreEqual("0", Derive("(a+b)/(x+SQR(x))", "y")); // df(a,b,x) / dy = 0
 
+
+      Assert.AreEqual("('a' * 'b' * 'c')", Derive("a*b*c*d", "d"));
+      Assert.AreEqual("('a' / ('b' * 'c' * SQR('d') * (-1)))", Derive("a/b/c/d", "d")); 
+
       {
         // special case: Inv(x) using only one argument to the division symbol
         // f(x) = 1/x
