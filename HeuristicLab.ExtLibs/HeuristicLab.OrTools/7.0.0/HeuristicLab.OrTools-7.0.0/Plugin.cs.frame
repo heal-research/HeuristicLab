@@ -34,7 +34,6 @@ namespace HeuristicLab.OrTools {
   [PluginFile("Google.OrTools-license.txt", PluginFileType.License)]
   [PluginFile("Google.OrTools.runtime.win-x64.dll", PluginFileType.NativeDll)]
   [PluginFile("Google.OrTools_version.txt", PluginFileType.Data)]
-  [PluginFile("Google.Protobuf.dll", PluginFileType.Assembly)]
   public class HeuristicLabOrToolsPlugin : PluginBase {
 
     public override void OnUnload() {
