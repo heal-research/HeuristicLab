@@ -39,9 +39,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       var interpreter = new IntervalInterpreter();
       Interval result;
       if (variableRanges == null)
-        result = interpreter.GetSymbolicExressionTreeInterval(tree, problemData.Dataset, problemData.AllIndices);
+        result = interpreter.GetSymbolicExpressionTreeInterval(tree, problemData.Dataset, problemData.AllIndices);
       else
-        result = interpreter.GetSymbolicExressionTreeInterval(tree, variableRanges);
+        result = interpreter.GetSymbolicExpressionTreeInterval(tree, variableRanges);
 
       Assert.AreEqual(expectedResult, result);
     }
