@@ -226,7 +226,7 @@
       <Name>HeuristicLab.MainForm-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.MathematicalOptimization\3.3\HeuristicLab.ExactOptimization-3.3.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.ExactOptimization\3.3\HeuristicLab.ExactOptimization-3.3.csproj">
       <Project>{fa3b9270-48b7-4c77-9fea-2a6ede82e909}</Project>
       <Name>HeuristicLab.ExactOptimization-3.3</Name>
       <Private>False</Private>
