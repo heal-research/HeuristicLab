@@ -68,18 +68,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public void ClearState() { }
     #endregion
 
-    public Interval GetSymbolicExressionTreeInterval(ISymbolicExpressionTree tree, IDataset dataset, IEnumerable<int> rows = null) {
+    public Interval GetSymbolicExpressionTreeInterval(ISymbolicExpressionTree tree, IDataset dataset, IEnumerable<int> rows = null) {
       var variableRanges = DatasetUtil.GetVariableRanges(dataset, rows);
-      return GetSymbolicExressionTreeInterval(tree, variableRanges);
+      return GetSymbolicExpressionTreeInterval(tree, variableRanges);
     }
 
-    public Interval GetSymbolicExressionTreeIntervals(ISymbolicExpressionTree tree, IDataset dataset,
+    public Interval GetSymbolicExpressionTreeIntervals(ISymbolicExpressionTree tree, IDataset dataset,
       out Dictionary<ISymbolicExpressionTreeNode, Interval> nodeIntervals, IEnumerable<int> rows = null) {
       var variableRanges = DatasetUtil.GetVariableRanges(dataset, rows);
-      return GetSymbolicExressionTreeIntervals(tree, variableRanges, out nodeIntervals);
+      return GetSymbolicExpressionTreeIntervals(tree, variableRanges, out nodeIntervals);
     }
 
-    public Interval GetSymbolicExressionTreeInterval(ISymbolicExpressionTree tree, Dictionary<string, Interval> variableRanges) {
+    public Interval GetSymbolicExpressionTreeInterval(ISymbolicExpressionTree tree, Dictionary<string, Interval> variableRanges) {
       lock (syncRoot) {
         EvaluatedSolutions++;
       }
@@ -95,7 +95,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
 
-    public Interval GetSymbolicExressionTreeIntervals(ISymbolicExpressionTree tree,
+    public Interval GetSymbolicExpressionTreeIntervals(ISymbolicExpressionTree tree,
       Dictionary<string, Interval> variableRanges, out Dictionary<ISymbolicExpressionTreeNode, Interval> nodeIntervals) {
       lock (syncRoot) {
         EvaluatedSolutions++;
@@ -107,7 +107,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
       // fix incorrect intervals if necessary (could occur because of numerical errors)
       nodeIntervals = new Dictionary<ISymbolicExpressionTreeNode, Interval>();
-      foreach(var kvp in intervals) {
+      foreach (var kvp in intervals) {
         var interval = kvp.Value;
         if (interval.IsInfiniteOrUndefined || interval.LowerBound <= interval.UpperBound)
           nodeIntervals.Add(kvp.Key, interval);
