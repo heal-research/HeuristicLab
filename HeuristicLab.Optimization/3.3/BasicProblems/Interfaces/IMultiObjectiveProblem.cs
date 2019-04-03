@@ -22,9 +22,9 @@
 #endregion
 
 namespace HeuristicLab.Optimization {
-  public interface IMultiObjectiveProblem<TEncoding, TSolution> : IProblem<TEncoding, TSolution>, IMultiObjectiveHeuristicOptimizationProblem
-    where TEncoding : class, IEncoding<TSolution>
-    where TSolution : class, ISolution {
+  public interface IMultiObjectiveProblem<TEncoding, TEncodedSolution> : IProblem<TEncoding, TEncodedSolution>, IMultiObjectiveHeuristicOptimizationProblem
+    where TEncoding : class, IEncoding<TEncodedSolution>
+    where TEncodedSolution : class, IEncodedSolution {
 
   }
 }

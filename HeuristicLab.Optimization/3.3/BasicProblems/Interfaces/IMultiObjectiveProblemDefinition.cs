@@ -19,16 +19,16 @@
  */
 #endregion
 
-using HeuristicLab.Core;
 using HEAL.Attic;
+using HeuristicLab.Core;
 
 namespace HeuristicLab.Optimization {
   [StorableType("39eacdb5-80a0-425d-902a-00eb3e1d6610")]
-  public interface IMultiObjectiveProblemDefinition<TEncoding, TSolution> : IProblemDefinition<TEncoding, TSolution>
-    where TEncoding : class, IEncoding<TSolution>
-    where TSolution : class, ISolution {
+  public interface IMultiObjectiveProblemDefinition<TEncoding, TEncodedSolution> : IProblemDefinition<TEncoding, TEncodedSolution>
+    where TEncoding : class, IEncoding<TEncodedSolution>
+    where TEncodedSolution : class, IEncodedSolution {
     bool[] Maximization { get; }
-    double[] Evaluate(TSolution individual, IRandom random);
-    void Analyze(TSolution[] individuals, double[][] qualities, ResultCollection results, IRandom random);
+    double[] Evaluate(TEncodedSolution individual, IRandom random);
+    void Analyze(TEncodedSolution[] individuals, double[][] qualities, ResultCollection results, IRandom random);
   }
 }

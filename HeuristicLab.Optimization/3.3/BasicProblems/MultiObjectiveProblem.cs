@@ -20,25 +20,25 @@
 #endregion
 
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
   [StorableType("6F2EC371-0309-4848-B7B1-C9B9C7E3436F")]
-  public abstract class MultiObjectiveProblem<TEncoding, TSolution> :
-    Problem<TEncoding, TSolution, MultiObjectiveEvaluator<TSolution>>,
-    IMultiObjectiveProblem<TEncoding, TSolution>,
-    IMultiObjectiveProblemDefinition<TEncoding, TSolution>
-    where TEncoding : class, IEncoding<TSolution>
-    where TSolution : class, ISolution {
+  public abstract class MultiObjectiveProblem<TEncoding, TEncodedSolution> :
+    Problem<TEncoding, TEncodedSolution, MultiObjectiveEvaluator<TEncodedSolution>>,
+    IMultiObjectiveProblem<TEncoding, TEncodedSolution>,
+    IMultiObjectiveProblemDefinition<TEncoding, TEncodedSolution>
+    where TEncoding : class, IEncoding<TEncodedSolution>
+    where TEncodedSolution : class, IEncodedSolution {
 
     [StorableConstructor]
     protected MultiObjectiveProblem(StorableConstructorFlag _) : base(_) { }
 
-    protected MultiObjectiveProblem(MultiObjectiveProblem<TEncoding, TSolution> original, Cloner cloner)
+    protected MultiObjectiveProblem(MultiObjectiveProblem<TEncoding, TEncodedSolution> original, Cloner cloner)
       : base(original, cloner) {
       ParameterizeOperators();
     }
@@ -48,7 +48,7 @@ namespace HeuristicLab.Optimization {
       Parameters.Add(new ValueParameter<BoolArray>("Maximization", "Set to false if the problem should be minimized.", (BoolArray)new BoolArray(Maximization).AsReadOnly()));
 
       Operators.Add(Evaluator);
-      Operators.Add(new MultiObjectiveAnalyzer<TSolution>());
+      Operators.Add(new MultiObjectiveAnalyzer<TEncodedSolution>());
 
       ParameterizeOperators();
     }
@@ -59,9 +59,9 @@ namespace HeuristicLab.Optimization {
     }
 
     public abstract bool[] Maximization { get; }
-    public abstract double[] Evaluate(TSolution individual, IRandom random);
-    public virtual void Analyze(TSolution[] individuals, double[][] qualities, ResultCollection results, IRandom random) { }
-    
+    public abstract double[] Evaluate(TEncodedSolution individual, IRandom random);
+    public virtual void Analyze(TEncodedSolution[] individuals, double[][] qualities, ResultCollection results, IRandom random) { }
+
     protected override void OnOperatorsChanged() {
       base.OnOperatorsChanged();
       if (Encoding != null) {
@@ -92,9 +92,9 @@ namespace HeuristicLab.Optimization {
     }
 
     private void ParameterizeOperators() {
-      foreach (var op in Operators.OfType<IMultiObjectiveEvaluationOperator<TSolution>>())
+      foreach (var op in Operators.OfType<IMultiObjectiveEvaluationOperator<TEncodedSolution>>())
         op.EvaluateFunc = Evaluate;
-      foreach (var op in Operators.OfType<IMultiObjectiveAnalysisOperator<TSolution>>())
+      foreach (var op in Operators.OfType<IMultiObjectiveAnalysisOperator<TEncodedSolution>>())
         op.AnalyzeAction = Analyze;
     }
 

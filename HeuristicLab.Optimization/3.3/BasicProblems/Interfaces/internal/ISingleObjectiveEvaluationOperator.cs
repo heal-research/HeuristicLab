@@ -25,8 +25,8 @@ using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
   [StorableType("5a9cf334-4815-4f0e-a2f8-f3d4edfcc829")]
-  internal interface ISingleObjectiveEvaluationOperator<TSolution> : ISingleObjectiveEvaluator, IEncodingOperator<TSolution>
-  where TSolution : class, ISolution {
-    Func<TSolution, IRandom, double> EvaluateFunc { get; set; }
+  internal interface ISingleObjectiveEvaluationOperator<TEncodedSolution> : ISingleObjectiveEvaluator, IEncodingOperator<TEncodedSolution>
+  where TEncodedSolution : class, IEncodedSolution {
+    Func<TEncodedSolution, IRandom, double> EvaluateFunc { get; set; }
   }
 }

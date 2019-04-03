@@ -23,9 +23,9 @@
 
 namespace HeuristicLab.Optimization {
   [StorableType("747a3cea-b9ba-4322-a5c2-050cd7e16e2a")]
-  public interface IProblemDefinition<TEncoding, TSolution>
-    where TEncoding : class, IEncoding<TSolution>
-    where TSolution : class, ISolution {
+  public interface IProblemDefinition<TEncoding, TEncodedSolution>
+    where TEncoding : class, IEncoding<TEncodedSolution>
+    where TEncodedSolution : class, IEncodedSolution {
     TEncoding Encoding { get; }
   }
 }

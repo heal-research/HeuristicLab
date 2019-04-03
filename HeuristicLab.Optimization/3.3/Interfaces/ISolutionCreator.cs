@@ -19,8 +19,8 @@
  */
 #endregion
 
-using HeuristicLab.Core;
 using HEAL.Attic;
+using HeuristicLab.Core;
 
 namespace HeuristicLab.Optimization {
   [StorableType("f9bb063d-383f-4d29-936e-ae4fa9ebc10f")]
@@ -29,7 +29,7 @@ namespace HeuristicLab.Optimization {
   /// </summary>
   public interface ISolutionCreator : IOperator { }
 
-  public interface ISolutionCreator<TSolution> : ISolutionCreator where TSolution : class, ISolution {
-    //ILookupParameter<TSolution> SolutionParameter { get; } // TODO: unify encoding specific parameters by defining ISolutionOperator and ISolutionsOperator
+  public interface ISolutionCreator<TEncodedSolution> : ISolutionCreator where TEncodedSolution : class, IEncodedSolution {
+    //ILookupParameter<TEncodedSolution> SolutionParameter { get; } // TODO: unify encoding specific parameters by defining ISolutionOperator and ISolutionsOperator
   }
 }

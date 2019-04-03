@@ -29,7 +29,7 @@ using HEAL.Attic;
 namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   [StorableType("2DDD33C1-4732-478B-83B1-17226A8F2B61")]
   [Item("IntegerVector", "Represents a vector of integer values.")]
-  public class IntegerVector : IntArray, ISolution {
+  public class IntegerVector : IntArray, IEncodedSolution {
     [StorableConstructor]
     protected IntegerVector(StorableConstructorFlag _) : base(_) { }
     protected IntegerVector(IntegerVector original, Cloner cloner) : base(original, cloner) { }

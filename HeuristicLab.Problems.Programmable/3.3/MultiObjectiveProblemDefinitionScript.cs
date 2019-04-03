@@ -19,42 +19,42 @@
  */
 #endregion
 
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
-using HEAL.Attic;
 
 namespace HeuristicLab.Problems.Programmable {
   [Item("Multi-objective Problem Definition Script", "Script that defines the parameter vector and evaluates the solution for a programmable problem.")]
   [StorableType("17741D64-CF9D-4CCF-9892-0590C325D4E6")]
-  public sealed class MultiObjectiveProblemDefinitionScript<TEncoding, TSolution> : ProblemDefinitionScript<TEncoding, TSolution>, IMultiObjectiveProblemDefinition<TEncoding, TSolution>, IStorableContent
-    where TEncoding : class, IEncoding<TSolution>
-    where TSolution : class, ISolution {
+  public sealed class MultiObjectiveProblemDefinitionScript<TEncoding, TEncodedSolution> : ProblemDefinitionScript<TEncoding, TEncodedSolution>, IMultiObjectiveProblemDefinition<TEncoding, TEncodedSolution>, IStorableContent
+    where TEncoding : class, IEncoding<TEncodedSolution>
+    where TEncodedSolution : class, IEncodedSolution {
     public string Filename { get; set; }
 
-    private new IMultiObjectiveProblemDefinition<TEncoding, TSolution> CompiledProblemDefinition {
-      get { return (IMultiObjectiveProblemDefinition<TEncoding, TSolution>)base.CompiledProblemDefinition; }
+    private new IMultiObjectiveProblemDefinition<TEncoding, TEncodedSolution> CompiledProblemDefinition {
+      get { return (IMultiObjectiveProblemDefinition<TEncoding, TEncodedSolution>)base.CompiledProblemDefinition; }
     }
 
     [StorableConstructor]
     private MultiObjectiveProblemDefinitionScript(StorableConstructorFlag _) : base(_) { }
-    private MultiObjectiveProblemDefinitionScript(MultiObjectiveProblemDefinitionScript<TEncoding, TSolution> original, Cloner cloner) : base(original, cloner) { }
+    private MultiObjectiveProblemDefinitionScript(MultiObjectiveProblemDefinitionScript<TEncoding, TEncodedSolution> original, Cloner cloner) : base(original, cloner) { }
     public MultiObjectiveProblemDefinitionScript(string codeTemplate) : base(codeTemplate) { }
     public MultiObjectiveProblemDefinitionScript() : base() { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new MultiObjectiveProblemDefinitionScript<TEncoding, TSolution>(this, cloner);
+      return new MultiObjectiveProblemDefinitionScript<TEncoding, TEncodedSolution>(this, cloner);
     }
 
-    bool[] IMultiObjectiveProblemDefinition<TEncoding, TSolution>.Maximization {
+    bool[] IMultiObjectiveProblemDefinition<TEncoding, TEncodedSolution>.Maximization {
       get { return CompiledProblemDefinition.Maximization; }
     }
 
-    double[] IMultiObjectiveProblemDefinition<TEncoding, TSolution>.Evaluate(TSolution individual, IRandom random) {
+    double[] IMultiObjectiveProblemDefinition<TEncoding, TEncodedSolution>.Evaluate(TEncodedSolution individual, IRandom random) {
       return CompiledProblemDefinition.Evaluate(individual, random);
     }
 
-    void IMultiObjectiveProblemDefinition<TEncoding, TSolution>.Analyze(TSolution[] individuals, double[][] qualities, ResultCollection results, IRandom random) {
+    void IMultiObjectiveProblemDefinition<TEncoding, TEncodedSolution>.Analyze(TEncodedSolution[] individuals, double[][] qualities, ResultCollection results, IRandom random) {
       CompiledProblemDefinition.Analyze(individuals, qualities, results, random);
     }
   }

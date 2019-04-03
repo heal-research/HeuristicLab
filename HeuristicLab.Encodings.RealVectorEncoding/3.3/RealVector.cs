@@ -29,7 +29,7 @@ using HEAL.Attic;
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   [StorableType("C4213FB3-77C3-4814-A7A3-0151B0FF5270")]
   [Item("RealVector", "Represents a vector of real values.")]
-  public class RealVector : DoubleArray, ISolution {
+  public class RealVector : DoubleArray, IEncodedSolution {
     [StorableConstructor]
     protected RealVector(StorableConstructorFlag _) : base(_) { }
     protected RealVector(RealVector original, Cloner cloner) : base(original, cloner) { }

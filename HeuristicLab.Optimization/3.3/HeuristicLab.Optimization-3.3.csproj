@@ -142,7 +142,7 @@
     <Compile Include="BasicProblems\Interfaces\IProblemDefinition.cs" />
     <Compile Include="BasicProblems\Interfaces\ISingleObjectiveMoveOperator.cs" />
     <Compile Include="BasicProblems\Interfaces\ISingleObjectiveProblemDefinition.cs" />
-    <Compile Include="BasicProblems\Interfaces\ISolution.cs" />
+    <Compile Include="BasicProblems\Interfaces\IEncodedSolution.cs" />
     <Compile Include="BasicProblems\MultiObjectiveProblem.cs" />
     <Compile Include="BasicProblems\Operators\MultiObjectiveAnalyzer.cs" />
     <Compile Include="BasicProblems\Operators\MultiObjectiveEvaluator.cs" />

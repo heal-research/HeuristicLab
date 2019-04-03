@@ -27,7 +27,7 @@ using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   [StorableType("433dd098-7813-4226-aa76-a41d63c25f81")]
-  public interface ISymbolicExpressionTree : IItem, ISolution {
+  public interface ISymbolicExpressionTree : IItem, IEncodedSolution {
     ISymbolicExpressionTreeNode Root { get; set; }
     int Length { get; }
     int Depth { get; }

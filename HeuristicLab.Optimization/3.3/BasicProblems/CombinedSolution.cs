@@ -21,14 +21,14 @@
 
 using System;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
   [Item("CombinedSolution", "A solution that consists of other solutions.")]
   [StorableType("B5ED00CB-E533-4ED6-AB2D-95BF7A654AAD")]
-  public sealed class CombinedSolution : Item, ISolution {
+  public sealed class CombinedSolution : Item, IEncodedSolution {
 
     private CombinedEncoding Encoding { get; set; }
     private IScope Scope { get; set; }
@@ -49,9 +49,9 @@ namespace HeuristicLab.Optimization {
       return new CombinedSolution(this, cloner);
     }
 
-    public ISolution this[string name] {
-      get { return ScopeUtil.GetSolution(Scope, name); }
-      set { ScopeUtil.CopySolutionToScope(Scope, name, value); }
+    public IEncodedSolution this[string name] {
+      get { return ScopeUtil.GetEncodedSolution(Scope, name); }
+      set { ScopeUtil.CopyEncodedSolutionToScope(Scope, name, value); }
     }
 
     public TEncoding GetEncoding<TEncoding>() where TEncoding : IEncoding {
@@ -65,8 +65,8 @@ namespace HeuristicLab.Optimization {
       return encoding;
     }
 
-    public TSolution GetSolution<TSolution>(string name) where TSolution : class, ISolution {
-      return (TSolution)ScopeUtil.GetSolution(Scope, name);
+    public TEncodedSolution GetEncodedSolution<TEncodedSolution>(string name) where TEncodedSolution : class, IEncodedSolution {
+      return (TEncodedSolution)ScopeUtil.GetEncodedSolution(Scope, name);
     }
   }
 }

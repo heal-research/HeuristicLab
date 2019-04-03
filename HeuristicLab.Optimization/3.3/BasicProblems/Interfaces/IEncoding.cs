@@ -21,8 +21,8 @@
 
 using System;
 using System.Collections.Generic;
-using HeuristicLab.Core;
 using HEAL.Attic;
+using HeuristicLab.Core;
 
 namespace HeuristicLab.Optimization {
   [StorableType("d70b2675-246c-489c-a91b-b2e19a1616a3")]
@@ -39,8 +39,8 @@ namespace HeuristicLab.Optimization {
     event EventHandler SolutionCreatorChanged;
   }
 
-  public interface IEncoding<TSolution> : IEncoding
-    where TSolution : class, ISolution {
-    //new ISolutionCreator<TSolution> SolutionCreator { get; }
+  public interface IEncoding<TEncodedSolution> : IEncoding
+    where TEncodedSolution : class, IEncodedSolution {
+    //new ISolutionCreator<TEncodedSolution> SolutionCreator { get; }
   }
 }

@@ -20,50 +20,50 @@
 #endregion
 
 using System;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
   [Item("Multi-objective Evaluator", "Calls the Evaluate method of the problem definition and writes the return value into the scope.")]
   [StorableType("C5605ED8-0ED2-4C7B-97A1-E7EB68A4FDBF")]
-  public class MultiObjectiveEvaluator<TSolution> : InstrumentedOperator, IMultiObjectiveEvaluationOperator<TSolution>, IStochasticOperator
-  where TSolution : class, ISolution {
+  public class MultiObjectiveEvaluator<TEncodedSolution> : InstrumentedOperator, IMultiObjectiveEvaluationOperator<TEncodedSolution>, IStochasticOperator
+  where TEncodedSolution : class, IEncodedSolution {
 
     public ILookupParameter<IRandom> RandomParameter {
       get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
     }
 
-    public ILookupParameter<IEncoding<TSolution>> EncodingParameter {
-      get { return (ILookupParameter<IEncoding<TSolution>>)Parameters["Encoding"]; }
+    public ILookupParameter<IEncoding<TEncodedSolution>> EncodingParameter {
+      get { return (ILookupParameter<IEncoding<TEncodedSolution>>)Parameters["Encoding"]; }
     }
 
     public ILookupParameter<DoubleArray> QualitiesParameter {
       get { return (ILookupParameter<DoubleArray>)Parameters["Qualities"]; }
     }
 
-    public Func<TSolution, IRandom, double[]> EvaluateFunc { get; set; }
+    public Func<TEncodedSolution, IRandom, double[]> EvaluateFunc { get; set; }
 
     [StorableConstructor]
     protected MultiObjectiveEvaluator(StorableConstructorFlag _) : base(_) { }
-    protected MultiObjectiveEvaluator(MultiObjectiveEvaluator<TSolution> original, Cloner cloner) : base(original, cloner) { }
+    protected MultiObjectiveEvaluator(MultiObjectiveEvaluator<TEncodedSolution> original, Cloner cloner) : base(original, cloner) { }
     public MultiObjectiveEvaluator() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator to use."));
-      Parameters.Add(new LookupParameter<IEncoding<TSolution>>("Encoding", "An item that holds the problem's encoding."));
+      Parameters.Add(new LookupParameter<IEncoding<TEncodedSolution>>("Encoding", "An item that holds the problem's encoding."));
       Parameters.Add(new LookupParameter<DoubleArray>("Qualities", "The qualities of the parameter vector."));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new MultiObjectiveEvaluator<TSolution>(this, cloner);
+      return new MultiObjectiveEvaluator<TEncodedSolution>(this, cloner);
     }
 
     public override IOperation InstrumentedApply() {
       var random = RandomParameter.ActualValue;
       var encoding = EncodingParameter.ActualValue;
-      var solution = ScopeUtil.GetSolution(ExecutionContext.Scope, encoding);
+      var solution = ScopeUtil.GetEncodedSolution(ExecutionContext.Scope, encoding);
       QualitiesParameter.ActualValue = new DoubleArray(EvaluateFunc(solution, random));
       return base.InstrumentedApply();
     }

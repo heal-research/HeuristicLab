@@ -22,17 +22,17 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
   [Item("Encoding", "Base class for describing different encodings.")]
   [StorableType("395B1372-FA54-4649-9EBE-5402A0AA9494")]
-  public abstract class Encoding<TSolution> : ParameterizedNamedItem, IEncoding<TSolution>
-    where TSolution : class,ISolution {
-    public override sealed bool CanChangeName {
+  public abstract class Encoding<TEncodedSolution> : ParameterizedNamedItem, IEncoding<TEncodedSolution>
+    where TEncodedSolution : class, IEncodedSolution {
+    public sealed override bool CanChangeName {
       get { return false; }
     }
 
@@ -47,13 +47,13 @@ namespace HeuristicLab.Optimization {
     public IEnumerable<IOperator> Operators {
       get { return encodingOperators; }
       set {
-        if (!value.OfType<ISolutionCreator<TSolution>>().Any())
+        if (!value.OfType<ISolutionCreator<TEncodedSolution>>().Any())
           throw new ArgumentException("The provided operators contain no suitable solution creator");
         encodingOperators.Clear();
         foreach (var op in value) encodingOperators.Add(op);
 
-        ISolutionCreator<TSolution> newSolutionCreator = (ISolutionCreator<TSolution>)encodingOperators.FirstOrDefault(o => o.GetType() == SolutionCreator.GetType()) ??
-                               encodingOperators.OfType<ISolutionCreator<TSolution>>().First();
+        ISolutionCreator<TEncodedSolution> newSolutionCreator = (ISolutionCreator<TEncodedSolution>)encodingOperators.FirstOrDefault(o => o.GetType() == SolutionCreator.GetType()) ??
+                               encodingOperators.OfType<ISolutionCreator<TEncodedSolution>>().First();
         SolutionCreator = newSolutionCreator;
         OnOperatorsChanged();
       }
@@ -66,8 +66,8 @@ namespace HeuristicLab.Optimization {
     ISolutionCreator IEncoding.SolutionCreator {
       get { return SolutionCreator; }
     }
-    public ISolutionCreator<TSolution> SolutionCreator {
-      get { return (ISolutionCreator<TSolution>)SolutionCreatorParameter.Value; }
+    public ISolutionCreator<TEncodedSolution> SolutionCreator {
+      get { return (ISolutionCreator<TEncodedSolution>)SolutionCreatorParameter.Value; }
       set {
         if (value == null) throw new ArgumentNullException("SolutionCreator must not be null.");
         encodingOperators.Remove(SolutionCreator);
@@ -85,7 +85,7 @@ namespace HeuristicLab.Optimization {
       RegisterEventHandlers();
     }
 
-    protected Encoding(Encoding<TSolution> original, Cloner cloner)
+    protected Encoding(Encoding<TEncodedSolution> original, Cloner cloner)
       : base(original, cloner) {
       encodingOperators = cloner.Clone(original.encodingOperators);
 
@@ -94,7 +94,7 @@ namespace HeuristicLab.Optimization {
 
     protected Encoding(string name)
       : base(name) {
-      Parameters.Add(new ValueParameter<ISolutionCreator<TSolution>>(name + ".SolutionCreator", "The operator to create a solution."));
+      Parameters.Add(new ValueParameter<ISolutionCreator<TEncodedSolution>>(name + ".SolutionCreator", "The operator to create a solution."));
       Parameters.Add(new FixedValueParameter<ReadOnlyItemSet<IOperator>>(name + ".Operators", "The operators that the encoding specifies.", encodingOperators.AsReadOnly()));
 
       RegisterEventHandlers();

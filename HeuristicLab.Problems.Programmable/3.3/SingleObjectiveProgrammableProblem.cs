@@ -35,9 +35,9 @@ namespace HeuristicLab.Problems.Programmable {
   [Item("Programmable Problem (single-objective)", "Represents a single-objective problem that can be programmed with a script.")]
   [Creatable(CreatableAttribute.Categories.Problems, Priority = 110)]
   [StorableType("44944E6B-E95E-4805-8F0A-0C0F7D761DB9")]
-  public class SingleObjectiveProgrammableProblem<TEncoding, TSolution> : SingleObjectiveProblem<TEncoding, TSolution>, IProgrammableItem, IProgrammableProblem
-    where TEncoding : class, IEncoding<TSolution>
-    where TSolution : class, ISolution {
+  public class SingleObjectiveProgrammableProblem<TEncoding, TEncodedSolution> : SingleObjectiveProblem<TEncoding, TEncodedSolution>, IProgrammableItem, IProgrammableProblem
+    where TEncoding : class, IEncoding<TEncodedSolution>
+    where TEncodedSolution : class, IEncodedSolution {
     protected static readonly string ENCODING_NAMESPACE = "ENCODING_NAMESPACE";
     protected static readonly string ENCODING_CLASS = "ENCODING_CLASS";
     protected static readonly string SOLUTION_CLASS = "SOLUTION_CLASS";
@@ -46,41 +46,41 @@ namespace HeuristicLab.Problems.Programmable {
       get { return VSImageLibrary.Script; }
     }
 
-    private FixedValueParameter<SingleObjectiveProblemDefinitionScript<TEncoding, TSolution>> SingleObjectiveProblemScriptParameter {
-      get { return (FixedValueParameter<SingleObjectiveProblemDefinitionScript<TEncoding, TSolution>>)Parameters["ProblemScript"]; }
+    private FixedValueParameter<SingleObjectiveProblemDefinitionScript<TEncoding, TEncodedSolution>> SingleObjectiveProblemScriptParameter {
+      get { return (FixedValueParameter<SingleObjectiveProblemDefinitionScript<TEncoding, TEncodedSolution>>)Parameters["ProblemScript"]; }
     }
 
     Script IProgrammableProblem.ProblemScript {
       get { return ProblemScript; }
     }
-    public SingleObjectiveProblemDefinitionScript<TEncoding, TSolution> ProblemScript {
+    public SingleObjectiveProblemDefinitionScript<TEncoding, TEncodedSolution> ProblemScript {
       get { return SingleObjectiveProblemScriptParameter.Value; }
     }
 
-    public ISingleObjectiveProblemDefinition<TEncoding, TSolution> ProblemDefinition {
+    public ISingleObjectiveProblemDefinition<TEncoding, TEncodedSolution> ProblemDefinition {
       get { return SingleObjectiveProblemScriptParameter.Value; }
     }
 
-    protected SingleObjectiveProgrammableProblem(SingleObjectiveProgrammableProblem<TEncoding, TSolution> original, Cloner cloner)
+    protected SingleObjectiveProgrammableProblem(SingleObjectiveProgrammableProblem<TEncoding, TEncodedSolution> original, Cloner cloner)
       : base(original, cloner) {
       RegisterEvents();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new SingleObjectiveProgrammableProblem<TEncoding, TSolution>(this, cloner);
+      return new SingleObjectiveProgrammableProblem<TEncoding, TEncodedSolution>(this, cloner);
     }
 
     [StorableConstructor]
     protected SingleObjectiveProgrammableProblem(StorableConstructorFlag _) : base(_) { }
     public SingleObjectiveProgrammableProblem()
       : base() {
-      Parameters.Add(new FixedValueParameter<SingleObjectiveProblemDefinitionScript<TEncoding, TSolution>>("ProblemScript", "Defines the problem.", new SingleObjectiveProblemDefinitionScript<TEncoding, TSolution>() { Name = Name }));
+      Parameters.Add(new FixedValueParameter<SingleObjectiveProblemDefinitionScript<TEncoding, TEncodedSolution>>("ProblemScript", "Defines the problem.", new SingleObjectiveProblemDefinitionScript<TEncoding, TEncodedSolution>() { Name = Name }));
       ProblemScript.Encoding = (TEncoding)Encoding.Clone();
 
       var codeTemplate = ScriptTemplates.SingleObjectiveProblem_Template;
       codeTemplate = codeTemplate.Replace(ENCODING_NAMESPACE, typeof(TEncoding).Namespace);
       codeTemplate = codeTemplate.Replace(ENCODING_CLASS, typeof(TEncoding).Name);
-      codeTemplate = codeTemplate.Replace(SOLUTION_CLASS, typeof(TSolution).Name);
+      codeTemplate = codeTemplate.Replace(SOLUTION_CLASS, typeof(TEncodedSolution).Name);
       ProblemScript.Code = codeTemplate;
 
       Operators.Add(new BestScopeSolutionAnalyzer());
@@ -117,14 +117,14 @@ namespace HeuristicLab.Problems.Programmable {
       get { return Parameters.ContainsKey("ProblemScript") && ProblemDefinition.Maximization; }
     }
 
-    public override double Evaluate(TSolution individual, IRandom random) {
+    public override double Evaluate(TEncodedSolution individual, IRandom random) {
       return ProblemDefinition.Evaluate(individual, random);
     }
 
-    public override void Analyze(TSolution[] individuals, double[] qualities, ResultCollection results, IRandom random) {
+    public override void Analyze(TEncodedSolution[] individuals, double[] qualities, ResultCollection results, IRandom random) {
       ProblemDefinition.Analyze(individuals, qualities, results, random);
     }
-    public override IEnumerable<TSolution> GetNeighbors(TSolution individual, IRandom random) {
+    public override IEnumerable<TEncodedSolution> GetNeighbors(TEncodedSolution individual, IRandom random) {
       return ProblemDefinition.GetNeighbors(individual, random);
     }
   }

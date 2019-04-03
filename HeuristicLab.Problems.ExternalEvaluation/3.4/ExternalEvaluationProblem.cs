@@ -39,7 +39,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
   [StorableType("115EB3A5-A8A8-4A2E-9799-9485FE896DEC")]
   // BackwardsCompatibility3.3
   // Rename class to SingleObjectiveExternalEvaluationProblem
-  public class ExternalEvaluationProblem : SingleObjectiveProblem<IEncoding<ISolution>, ISolution>, IExternalEvaluationProblem {
+  public class ExternalEvaluationProblem : SingleObjectiveProblem<IEncoding<IEncodedSolution>, IEncodedSolution>, IExternalEvaluationProblem {
 
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Type; }
@@ -65,7 +65,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     #endregion
 
     #region Properties
-    public new IEncoding<ISolution> Encoding {
+    public new IEncoding<IEncodedSolution> Encoding {
       get { return base.Encoding; }
       set { base.Encoding = value; }
     }
@@ -113,7 +113,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       MaximizationParameter.Value.Value = maximization;
     }
 
-    public override double Evaluate(ISolution individual, IRandom random) {
+    public override double Evaluate(IEncodedSolution individual, IRandom random) {
       var qualityMessage = Evaluate(BuildSolutionMessage(individual));
       if (!qualityMessage.HasExtension(SingleObjectiveQualityMessage.QualityMessage_))
         throw new InvalidOperationException("The received message is not a SingleObjectiveQualityMessage.");
@@ -125,11 +125,11 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
         : Cache.GetValue(solutionMessage, EvaluateOnNextAvailableClient, GetQualityMessageExtensions());
     }
 
-    public override void Analyze(ISolution[] individuals, double[] qualities, ResultCollection results, IRandom random) {
+    public override void Analyze(IEncodedSolution[] individuals, double[] qualities, ResultCollection results, IRandom random) {
       OptimizationSupport.Analyze(individuals, qualities, results, random);
     }
 
-    public override IEnumerable<ISolution> GetNeighbors(ISolution individual, IRandom random) {
+    public override IEnumerable<IEncodedSolution> GetNeighbors(IEncodedSolution individual, IRandom random) {
       return OptimizationSupport.GetNeighbors(individual, random);
     }
     #endregion
@@ -166,12 +166,12 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       }
     }
 
-    private SolutionMessage BuildSolutionMessage(ISolution solution, int solutionId = 0) {
+    private SolutionMessage BuildSolutionMessage(IEncodedSolution solution, int solutionId = 0) {
       lock (clientLock) {
         SolutionMessage.Builder protobufBuilder = SolutionMessage.CreateBuilder();
         protobufBuilder.SolutionId = solutionId;
         var scope = new Scope();
-        ScopeUtil.CopySolutionToScope(scope, Encoding, solution);
+        ScopeUtil.CopyEncodedSolutionToScope(scope, Encoding, solution);
         foreach (var variable in scope.Variables) {
           try {
             MessageBuilder.AddToMessage(variable.Value, variable.Name, protobufBuilder);

@@ -20,20 +20,20 @@
 #endregion
 
 using System;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
   [Item("Single-objective MoveMaker", "Applies a move.")]
   [StorableType("C0ABF392-C825-4B98-8FB9-5749A9091FD6")]
-  public class SingleObjectiveMoveMaker<TSolution> : InstrumentedOperator, IMoveMaker, ISingleObjectiveMoveOperator
-  where TSolution : class, ISolution {
-    public ILookupParameter<IEncoding<TSolution>> EncodingParameter {
-      get { return (ILookupParameter<IEncoding<TSolution>>)Parameters["Encoding"]; }
+  public class SingleObjectiveMoveMaker<TEncodedSolution> : InstrumentedOperator, IMoveMaker, ISingleObjectiveMoveOperator
+  where TEncodedSolution : class, IEncodedSolution {
+    public ILookupParameter<IEncoding<TEncodedSolution>> EncodingParameter {
+      get { return (ILookupParameter<IEncoding<TEncodedSolution>>)Parameters["Encoding"]; }
     }
 
     public ILookupParameter<DoubleValue> QualityParameter {
@@ -46,23 +46,23 @@ namespace HeuristicLab.Optimization {
 
     [StorableConstructor]
     protected SingleObjectiveMoveMaker(StorableConstructorFlag _) : base(_) { }
-    protected SingleObjectiveMoveMaker(SingleObjectiveMoveMaker<TSolution> original, Cloner cloner) : base(original, cloner) { }
+    protected SingleObjectiveMoveMaker(SingleObjectiveMoveMaker<TEncodedSolution> original, Cloner cloner) : base(original, cloner) { }
     public SingleObjectiveMoveMaker() {
-      Parameters.Add(new LookupParameter<IEncoding<TSolution>>("Encoding", "An item that holds the problem's encoding."));
+      Parameters.Add(new LookupParameter<IEncoding<TEncodedSolution>>("Encoding", "An item that holds the problem's encoding."));
       Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The quality of the parameter vector."));
       Parameters.Add(new LookupParameter<DoubleValue>("MoveQuality", "The quality of the move."));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new SingleObjectiveMoveMaker<TSolution>(this, cloner);
+      return new SingleObjectiveMoveMaker<TEncodedSolution>(this, cloner);
     }
 
     public override IOperation InstrumentedApply() {
       if (MoveQualityParameter.ActualValue == null) throw new InvalidOperationException("Move has not been evaluated!");
 
       var encoding = EncodingParameter.ActualValue;
-      var solution = ScopeUtil.GetSolution(ExecutionContext.Scope, encoding);
-      ScopeUtil.CopySolutionToScope(ExecutionContext.Scope.Parent.Parent, encoding, solution);
+      var solution = ScopeUtil.GetEncodedSolution(ExecutionContext.Scope, encoding);
+      ScopeUtil.CopyEncodedSolutionToScope(ExecutionContext.Scope.Parent.Parent, encoding, solution);
 
       if (QualityParameter.ActualValue == null) QualityParameter.ActualValue = new DoubleValue(MoveQualityParameter.ActualValue.Value);
       else QualityParameter.ActualValue.Value = MoveQualityParameter.ActualValue.Value;

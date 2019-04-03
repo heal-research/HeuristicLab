@@ -19,12 +19,12 @@
  */
 #endregion
 
-using HeuristicLab.Core;
 using HEAL.Attic;
+using HeuristicLab.Core;
 
 namespace HeuristicLab.Optimization {
   [StorableType("20faaf8b-dd4f-4f0e-a772-4c4dec7fcccb")]
-  public interface IEncodingOperator<TSolution> : IOperator where TSolution : class, ISolution {
-    ILookupParameter<IEncoding<TSolution>> EncodingParameter { get; }
+  public interface IEncodingOperator<TEncodedSolution> : IOperator where TEncodedSolution : class, IEncodedSolution {
+    ILookupParameter<IEncoding<TEncodedSolution>> EncodingParameter { get; }
   }
 }

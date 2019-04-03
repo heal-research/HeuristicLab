@@ -20,18 +20,18 @@
 #endregion
 
 using System.Collections.Generic;
-using HeuristicLab.Core;
 using HEAL.Attic;
+using HeuristicLab.Core;
 
 namespace HeuristicLab.Optimization {
   [StorableType("7ec7bf7e-aaa7-4681-828b-3401cf67e2b3")]
-  public interface ISingleObjectiveProblemDefinition<TEncoding, TSolution> : IProblemDefinition<TEncoding, TSolution>
-    where TEncoding : class, IEncoding<TSolution>
-    where TSolution : class, ISolution {
+  public interface ISingleObjectiveProblemDefinition<TEncoding, TEncodedSolution> : IProblemDefinition<TEncoding, TEncodedSolution>
+    where TEncoding : class, IEncoding<TEncodedSolution>
+    where TEncodedSolution : class, IEncodedSolution {
     bool Maximization { get; }
-    double Evaluate(TSolution solution, IRandom random);
-    void Analyze(TSolution[] solutions, double[] qualities, ResultCollection results, IRandom random);
-    IEnumerable<TSolution> GetNeighbors(TSolution solution, IRandom random);
+    double Evaluate(TEncodedSolution solution, IRandom random);
+    void Analyze(TEncodedSolution[] solutions, double[] qualities, ResultCollection results, IRandom random);
+    IEnumerable<TEncodedSolution> GetNeighbors(TEncodedSolution solution, IRandom random);
     bool IsBetter(double quality, double bestQuality);
   }
 }

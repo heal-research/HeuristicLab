@@ -32,14 +32,14 @@ using HEAL.Attic;
 namespace HeuristicLab.Optimization {
   [Item("Single-objective Improver", "Improves a solution by calling GetNeighbors and Evaluate of the corresponding problem definition.")]
   [StorableType("7A917E09-920C-4B47-9599-67371101B35F")]
-  public sealed class SingleObjectiveImprover<TSolution> : SingleSuccessorOperator, INeighborBasedOperator<TSolution>, IImprovementOperator, ISingleObjectiveEvaluationOperator<TSolution>, IStochasticOperator
-    where TSolution : class, ISolution {
+  public sealed class SingleObjectiveImprover<TEncodedSolution> : SingleSuccessorOperator, INeighborBasedOperator<TEncodedSolution>, IImprovementOperator, ISingleObjectiveEvaluationOperator<TEncodedSolution>, IStochasticOperator
+    where TEncodedSolution : class, IEncodedSolution {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
     }
 
-    public ILookupParameter<IEncoding<TSolution>> EncodingParameter {
-      get { return (ILookupParameter<IEncoding<TSolution>>)Parameters["Encoding"]; }
+    public ILookupParameter<IEncoding<TEncodedSolution>> EncodingParameter {
+      get { return (ILookupParameter<IEncoding<TEncodedSolution>>)Parameters["Encoding"]; }
     }
 
     public ILookupParameter<DoubleValue> QualityParameter {
@@ -62,15 +62,15 @@ namespace HeuristicLab.Optimization {
       get { return (ILookupParameter<IntValue>)Parameters["LocalEvaluatedSolutions"]; }
     }
 
-    public Func<TSolution, IRandom, double> EvaluateFunc { get; set; }
-    public Func<TSolution, IRandom, IEnumerable<TSolution>> GetNeighborsFunc { get; set; }
+    public Func<TEncodedSolution, IRandom, double> EvaluateFunc { get; set; }
+    public Func<TEncodedSolution, IRandom, IEnumerable<TEncodedSolution>> GetNeighborsFunc { get; set; }
 
     [StorableConstructor]
     private SingleObjectiveImprover(StorableConstructorFlag _) : base(_) { }
-    private SingleObjectiveImprover(SingleObjectiveImprover<TSolution> original, Cloner cloner) : base(original, cloner) { }
+    private SingleObjectiveImprover(SingleObjectiveImprover<TEncodedSolution> original, Cloner cloner) : base(original, cloner) { }
     public SingleObjectiveImprover() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator to use."));
-      Parameters.Add(new LookupParameter<IEncoding<TSolution>>("Encoding", "An item that holds the problem's encoding."));
+      Parameters.Add(new LookupParameter<IEncoding<TEncodedSolution>>("Encoding", "An item that holds the problem's encoding."));
       Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The quality of the parameter vector."));
       Parameters.Add(new LookupParameter<BoolValue>("Maximization", "Whether the problem should be minimized or maximized."));
       Parameters.Add(new ValueLookupParameter<IntValue>("ImprovementAttempts", "The number of improvement attempts the operator should perform.", new IntValue(100)));
@@ -79,7 +79,7 @@ namespace HeuristicLab.Optimization {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new SingleObjectiveImprover<TSolution>(this, cloner);
+      return new SingleObjectiveImprover<TEncodedSolution>(this, cloner);
     }
 
     public override IOperation Apply() {
@@ -88,12 +88,12 @@ namespace HeuristicLab.Optimization {
       var maximize = MaximizationParameter.ActualValue.Value;
       var maxAttempts = ImprovementAttemptsParameter.ActualValue.Value;
       var sampleSize = SampleSizeParameter.ActualValue.Value;
-      var solution = ScopeUtil.GetSolution(ExecutionContext.Scope, encoding);
+      var solution = ScopeUtil.GetEncodedSolution(ExecutionContext.Scope, encoding);
       var quality = QualityParameter.ActualValue == null ? EvaluateFunc(solution, random) : QualityParameter.ActualValue.Value;
 
       var count = 0;
       for (var i = 0; i < maxAttempts; i++) {
-        TSolution best = default(TSolution);
+        TEncodedSolution best = default(TEncodedSolution);
         var bestQuality = quality;
         foreach (var neighbor in GetNeighborsFunc(solution, random).Take(sampleSize)) {
           var q = EvaluateFunc(neighbor, random);
@@ -110,7 +110,7 @@ namespace HeuristicLab.Optimization {
       LocalEvaluatedSolutionsParameter.ActualValue = new IntValue(count);
       QualityParameter.ActualValue = new DoubleValue(quality);
 
-      ScopeUtil.CopySolutionToScope(ExecutionContext.Scope, encoding, solution);
+      ScopeUtil.CopyEncodedSolutionToScope(ExecutionContext.Scope, encoding, solution);
       return base.Apply();
     }
   }

@@ -22,22 +22,22 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
   [StorableType("D877082E-9E77-4CB1-ABDB-35F63878E116")]
-  public abstract class Problem<TEncoding, TSolution, TEvaluator> : Problem,
-    IHeuristicOptimizationProblem, IProblemDefinition<TEncoding, TSolution>, IStorableContent
-    where TEncoding : class, IEncoding<TSolution>
-    where TSolution : class, ISolution
+  public abstract class Problem<TEncoding, TEncodedSolution, TEvaluator> : Problem,
+    IHeuristicOptimizationProblem, IProblemDefinition<TEncoding, TEncodedSolution>, IStorableContent
+    where TEncoding : class, IEncoding<TEncodedSolution>
+    where TEncodedSolution : class, IEncodedSolution
     where TEvaluator : class, IEvaluator {
 
     public string Filename { get; set; } // TODO: Really okay here? should be in Problem (non-generic)
 
-    //TODO remove parametr for encoding?
+    //TODO remove parameter for encoding?
     protected IValueParameter<TEncoding> EncodingParameter {
       get { return (IValueParameter<TEncoding>)Parameters["Encoding"]; }
     }
@@ -114,7 +114,7 @@ namespace HeuristicLab.Optimization {
       RegisterEvents();
     }
 
-    protected Problem(Problem<TEncoding, TSolution, TEvaluator> original, Cloner cloner)
+    protected Problem(Problem<TEncoding, TEncodedSolution, TEvaluator> original, Cloner cloner)
       : base(original, cloner) {
       oldEncoding = cloner.Clone(original.oldEncoding);
       RegisterEvents();
@@ -151,7 +151,7 @@ namespace HeuristicLab.Optimization {
       }
       oldEncoding = Encoding;
 
-      foreach (var op in Operators.OfType<IEncodingOperator<TSolution>>())
+      foreach (var op in Operators.OfType<IEncodingOperator<TEncodedSolution>>())
         op.EncodingParameter.ActualName = EncodingParameter.Name;
 
       //var multiEncoding = Encoding as MultiEncoding;

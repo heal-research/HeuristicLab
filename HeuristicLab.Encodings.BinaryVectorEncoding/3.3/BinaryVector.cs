@@ -28,7 +28,7 @@ using HEAL.Attic;
 namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   [StorableType("B349929A-675C-41F4-AEB9-EEA3121E73A9")]
   [Item("BinaryVector", "Represents a vector of binary values.")]
-  public class BinaryVector : BoolArray, ISolution {
+  public class BinaryVector : BoolArray, IEncodedSolution {
     [StorableConstructor]
     protected BinaryVector(StorableConstructorFlag _) : base(_) { }
     protected BinaryVector(BinaryVector original, Cloner cloner) : base(original, cloner) { }

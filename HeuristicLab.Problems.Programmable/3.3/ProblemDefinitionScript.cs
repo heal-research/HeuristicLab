@@ -55,9 +55,9 @@ namespace HeuristicLab.Problems.Programmable {
 
   [Item("ProblemDefinitionScript", "Script that defines the parameter vector and evaluates the solution for a programmable problem.")]
   [StorableType("0B3AF22C-4744-4860-BBCF-A92046000847")]
-  public abstract class ProblemDefinitionScript<TEncoding, TSolution> : ProblemDefinitionScript, IProblemDefinition<TEncoding, TSolution>
-    where TEncoding : class, IEncoding<TSolution>
-    where TSolution : class, ISolution {
+  public abstract class ProblemDefinitionScript<TEncoding, TEncodedSolution> : ProblemDefinitionScript, IProblemDefinition<TEncoding, TEncodedSolution>
+    where TEncoding : class, IEncoding<TEncodedSolution>
+    where TEncodedSolution : class, IEncodedSolution {
 
     [Storable]
     private bool codeChanged;
@@ -69,7 +69,7 @@ namespace HeuristicLab.Problems.Programmable {
       set { encoding = value; }
     }
 
-    TEncoding IProblemDefinition<TEncoding, TSolution>.Encoding {
+    TEncoding IProblemDefinition<TEncoding, TEncodedSolution>.Encoding {
       get { return Encoding; }
     }
 
@@ -79,7 +79,7 @@ namespace HeuristicLab.Problems.Programmable {
 
     [StorableConstructor]
     protected ProblemDefinitionScript(StorableConstructorFlag _) : base(_) { }
-    protected ProblemDefinitionScript(ProblemDefinitionScript<TEncoding, TSolution> original, Cloner cloner)
+    protected ProblemDefinitionScript(ProblemDefinitionScript<TEncoding, TEncodedSolution> original, Cloner cloner)
       : base(original, cloner) {
       encoding = cloner.Clone(original.encoding);
       codeChanged = original.codeChanged;
@@ -92,8 +92,8 @@ namespace HeuristicLab.Problems.Programmable {
     }
 
     private readonly object compileLock = new object();
-    private volatile CompiledProblemDefinition<TEncoding, TSolution> compiledProblemDefinition;
-    protected CompiledProblemDefinition<TEncoding, TSolution> CompiledProblemDefinition {
+    private volatile CompiledProblemDefinition<TEncoding, TEncodedSolution> compiledProblemDefinition;
+    protected CompiledProblemDefinition<TEncoding, TEncodedSolution> CompiledProblemDefinition {
       get {
         // double checked locking pattern
         if (compiledProblemDefinition == null) {
@@ -118,14 +118,14 @@ namespace HeuristicLab.Problems.Programmable {
     private Assembly Compile(bool fireChanged) {
       var assembly = base.Compile();
       var types = assembly.GetTypes();
-      if (!types.Any(x => typeof(CompiledProblemDefinition<TEncoding, TSolution>).IsAssignableFrom(x)))
+      if (!types.Any(x => typeof(CompiledProblemDefinition<TEncoding, TEncodedSolution>).IsAssignableFrom(x)))
         throw new ProblemDefinitionScriptException("The compiled code doesn't contain a problem definition." + Environment.NewLine + "The problem definition must be a subclass of CompiledProblemDefinition.");
-      if (types.Count(x => typeof(CompiledProblemDefinition<TEncoding, TSolution>).IsAssignableFrom(x)) > 1)
+      if (types.Count(x => typeof(CompiledProblemDefinition<TEncoding, TEncodedSolution>).IsAssignableFrom(x)) > 1)
         throw new ProblemDefinitionScriptException("The compiled code contains multiple problem definitions." + Environment.NewLine + "Only one subclass of CompiledProblemDefinition is allowed.");
 
-      CompiledProblemDefinition<TEncoding, TSolution> inst;
+      CompiledProblemDefinition<TEncoding, TEncodedSolution> inst;
       try {
-        inst = (CompiledProblemDefinition<TEncoding, TSolution>)Activator.CreateInstance(types.Single(x => typeof(CompiledProblemDefinition<TEncoding, TSolution>).IsAssignableFrom(x)));
+        inst = (CompiledProblemDefinition<TEncoding, TEncodedSolution>)Activator.CreateInstance(types.Single(x => typeof(CompiledProblemDefinition<TEncoding, TEncodedSolution>).IsAssignableFrom(x)));
       } catch (Exception e) {
         compiledProblemDefinition = null;
         throw new ProblemDefinitionScriptException("Instantiating the problem definition failed." + Environment.NewLine + "Check your default constructor.", e);

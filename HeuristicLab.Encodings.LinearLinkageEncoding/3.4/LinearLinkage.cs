@@ -31,7 +31,7 @@ using HEAL.Attic;
 namespace HeuristicLab.Encodings.LinearLinkageEncoding {
   [Item("LinearLinkage", "Represents an LLE grouping of items.")]
   [StorableType("91492281-3335-4F5A-82BA-BA76142DAD2D")]
-  public sealed class LinearLinkage : IntArray, ISolution {
+  public sealed class LinearLinkage : IntArray, IEncodedSolution {
 
     [StorableConstructor]
     private LinearLinkage(StorableConstructorFlag _) : base(_) { }

@@ -22,20 +22,20 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
   [StorableType("2697320D-0259-44BB-BD71-7EE1B10F664C")]
-  public abstract class SingleObjectiveProblem<TEncoding, TSolution> :
-    Problem<TEncoding, TSolution, SingleObjectiveEvaluator<TSolution>>,
-    ISingleObjectiveProblem<TEncoding, TSolution>,
-    ISingleObjectiveProblemDefinition<TEncoding, TSolution>
-    where TEncoding : class, IEncoding<TSolution>
-    where TSolution : class, ISolution {
+  public abstract class SingleObjectiveProblem<TEncoding, TEncodedSolution> :
+    Problem<TEncoding, TEncodedSolution, SingleObjectiveEvaluator<TEncodedSolution>>,
+    ISingleObjectiveProblem<TEncoding, TEncodedSolution>,
+    ISingleObjectiveProblemDefinition<TEncoding, TEncodedSolution>
+    where TEncoding : class, IEncoding<TEncodedSolution>
+    where TEncodedSolution : class, IEncodedSolution {
 
     protected IValueParameter<DoubleValue> BestKnownQualityParameter {
       get { return (IValueParameter<DoubleValue>)Parameters["BestKnownQuality"]; }
@@ -63,7 +63,7 @@ namespace HeuristicLab.Optimization {
     [StorableConstructor]
     protected SingleObjectiveProblem(StorableConstructorFlag _) : base(_) { }
 
-    protected SingleObjectiveProblem(SingleObjectiveProblem<TEncoding, TSolution> original, Cloner cloner)
+    protected SingleObjectiveProblem(SingleObjectiveProblem<TEncoding, TEncodedSolution> original, Cloner cloner)
       : base(original, cloner) {
       ParameterizeOperators();
     }
@@ -74,11 +74,11 @@ namespace HeuristicLab.Optimization {
       Parameters.Add(new OptionalValueParameter<DoubleValue>("BestKnownQuality", "The quality of the best known solution of this problem."));
 
       Operators.Add(Evaluator);
-      Operators.Add(new SingleObjectiveAnalyzer<TSolution>());
-      Operators.Add(new SingleObjectiveImprover<TSolution>());
-      Operators.Add(new SingleObjectiveMoveEvaluator<TSolution>());
-      Operators.Add(new SingleObjectiveMoveGenerator<TSolution>());
-      Operators.Add(new SingleObjectiveMoveMaker<TSolution>());
+      Operators.Add(new SingleObjectiveAnalyzer<TEncodedSolution>());
+      Operators.Add(new SingleObjectiveImprover<TEncodedSolution>());
+      Operators.Add(new SingleObjectiveMoveEvaluator<TEncodedSolution>());
+      Operators.Add(new SingleObjectiveMoveGenerator<TEncodedSolution>());
+      Operators.Add(new SingleObjectiveMoveMaker<TEncodedSolution>());
 
       ParameterizeOperators();
     }
@@ -89,11 +89,11 @@ namespace HeuristicLab.Optimization {
       Parameters.Add(new OptionalValueParameter<DoubleValue>("BestKnownQuality", "The quality of the best known solution of this problem."));
 
       Operators.Add(Evaluator);
-      Operators.Add(new SingleObjectiveAnalyzer<TSolution>());
-      Operators.Add(new SingleObjectiveImprover<TSolution>());
-      Operators.Add(new SingleObjectiveMoveEvaluator<TSolution>());
-      Operators.Add(new SingleObjectiveMoveGenerator<TSolution>());
-      Operators.Add(new SingleObjectiveMoveMaker<TSolution>());
+      Operators.Add(new SingleObjectiveAnalyzer<TEncodedSolution>());
+      Operators.Add(new SingleObjectiveImprover<TEncodedSolution>());
+      Operators.Add(new SingleObjectiveMoveEvaluator<TEncodedSolution>());
+      Operators.Add(new SingleObjectiveMoveGenerator<TEncodedSolution>());
+      Operators.Add(new SingleObjectiveMoveMaker<TEncodedSolution>());
 
       ParameterizeOperators();
     }
@@ -104,20 +104,20 @@ namespace HeuristicLab.Optimization {
     }
 
     public abstract bool Maximization { get; }
-    public abstract double Evaluate(TSolution solution, IRandom random);
-    public virtual void Analyze(TSolution[] solutions, double[] qualities, ResultCollection results, IRandom random) { }
-    public virtual IEnumerable<TSolution> GetNeighbors(TSolution solution, IRandom random) {
-      return Enumerable.Empty<TSolution>();
+    public abstract double Evaluate(TEncodedSolution solution, IRandom random);
+    public virtual void Analyze(TEncodedSolution[] solutions, double[] qualities, ResultCollection results, IRandom random) { }
+    public virtual IEnumerable<TEncodedSolution> GetNeighbors(TEncodedSolution solution, IRandom random) {
+      return Enumerable.Empty<TEncodedSolution>();
     }
 
     public virtual bool IsBetter(double quality, double bestQuality) {
       return (Maximization && quality > bestQuality || !Maximization && quality < bestQuality);
     }
 
-    protected Tuple<TSolution, double> GetBestSolution(TSolution[] solutions, double[] qualities) {
+    protected Tuple<TEncodedSolution, double> GetBestSolution(TEncodedSolution[] solutions, double[] qualities) {
       return GetBestSolution(solutions, qualities, Maximization);
     }
-    public static Tuple<TSolution, double> GetBestSolution(TSolution[] solutions, double[] qualities, bool maximization) {
+    public static Tuple<TEncodedSolution, double> GetBestSolution(TEncodedSolution[] solutions, double[] qualities, bool maximization) {
       var zipped = solutions.Zip(qualities, (s, q) => new { Solution = s, Quality = q });
       var best = (maximization ? zipped.OrderByDescending(z => z.Quality) : zipped.OrderBy(z => z.Quality)).First();
       return Tuple.Create(best.Solution, best.Quality);
@@ -153,11 +153,11 @@ namespace HeuristicLab.Optimization {
     }
 
     private void ParameterizeOperators() {
-      foreach (var op in Operators.OfType<ISingleObjectiveEvaluationOperator<TSolution>>())
+      foreach (var op in Operators.OfType<ISingleObjectiveEvaluationOperator<TEncodedSolution>>())
         op.EvaluateFunc = Evaluate;
-      foreach (var op in Operators.OfType<ISingleObjectiveAnalysisOperator<TSolution>>())
+      foreach (var op in Operators.OfType<ISingleObjectiveAnalysisOperator<TEncodedSolution>>())
         op.AnalyzeAction = Analyze;
-      foreach (var op in Operators.OfType<INeighborBasedOperator<TSolution>>())
+      foreach (var op in Operators.OfType<INeighborBasedOperator<TEncodedSolution>>())
         op.GetNeighborsFunc = GetNeighbors;
     }
 

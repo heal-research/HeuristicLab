@@ -36,7 +36,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
   [Item("External Evaluation Problem (multi-objective)", "A multi-objective problem that is evaluated in a different process.")]
   [Creatable(CreatableAttribute.Categories.ExternalEvaluationProblems, Priority = 200)]
   [StorableType("CCA50199-A6AB-4C84-B4FA-0262CAF416EC")]
-  public class MultiObjectiveExternalEvaluationProblem : MultiObjectiveProblem<IEncoding<ISolution>, ISolution>, IExternalEvaluationProblem {
+  public class MultiObjectiveExternalEvaluationProblem : MultiObjectiveProblem<IEncoding<IEncodedSolution>, IEncodedSolution>, IExternalEvaluationProblem {
 
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Type; }
@@ -62,7 +62,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     #endregion
 
     #region Properties
-    public new IEncoding<ISolution> Encoding {
+    public new IEncoding<IEncodedSolution> Encoding {
       get { return base.Encoding; }
       set { base.Encoding = value; }
     }
@@ -113,7 +113,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
         array[i] = maximization[i];
     }
 
-    public override double[] Evaluate(ISolution individual, IRandom random) {
+    public override double[] Evaluate(IEncodedSolution individual, IRandom random) {
       var qualityMessage = Evaluate(BuildSolutionMessage(individual));
       if (!qualityMessage.HasExtension(MultiObjectiveQualityMessage.QualityMessage_))
         throw new InvalidOperationException("The received message is not a MultiObjectiveQualityMessage.");
@@ -125,7 +125,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
         : Cache.GetValue(solutionMessage, EvaluateOnNextAvailableClient, GetQualityMessageExtensions());
     }
 
-    public override void Analyze(ISolution[] individuals, double[][] qualities, ResultCollection results, IRandom random) {
+    public override void Analyze(IEncodedSolution[] individuals, double[][] qualities, ResultCollection results, IRandom random) {
       OptimizationSupport.Analyze(individuals, qualities, results, random);
     }
 
@@ -163,12 +163,12 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       }
     }
 
-    private SolutionMessage BuildSolutionMessage(ISolution solution, int solutionId = 0) {
+    private SolutionMessage BuildSolutionMessage(IEncodedSolution solution, int solutionId = 0) {
       lock (clientLock) {
         SolutionMessage.Builder protobufBuilder = SolutionMessage.CreateBuilder();
         protobufBuilder.SolutionId = solutionId;
         var scope = new Scope();
-        ScopeUtil.CopySolutionToScope(scope, Encoding, solution);
+        ScopeUtil.CopyEncodedSolutionToScope(scope, Encoding, solution);
         foreach (var variable in scope.Variables) {
           try {
             MessageBuilder.AddToMessage(variable.Value, variable.Name, protobufBuilder);

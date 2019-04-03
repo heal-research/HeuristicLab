@@ -26,6 +26,6 @@ using HEAL.Attic;
 namespace HeuristicLab.Problems.ExternalEvaluation {
   [StorableType("f924ef9c-d824-40d2-89b2-6dd1220df98b")]
   public interface IMultiObjectiveOptimizationSupport {
-    void Analyze(ISolution[] individuals, double[][] qualities, ResultCollection results, IRandom random);
+    void Analyze(IEncodedSolution[] individuals, double[][] qualities, ResultCollection results, IRandom random);
   }
 }

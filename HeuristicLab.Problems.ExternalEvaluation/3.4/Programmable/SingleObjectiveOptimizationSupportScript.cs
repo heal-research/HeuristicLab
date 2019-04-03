@@ -39,11 +39,11 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       return new SingleObjectiveOptimizationSupportScript(this, cloner);
     }
 
-    void ISingleObjectiveOptimizationSupport.Analyze(ISolution[] individuals, double[] qualities, ResultCollection results, IRandom random) {
+    void ISingleObjectiveOptimizationSupport.Analyze(IEncodedSolution[] individuals, double[] qualities, ResultCollection results, IRandom random) {
       CompiledInstance.Analyze(individuals, qualities, results, random);
     }
 
-    IEnumerable<ISolution> ISingleObjectiveOptimizationSupport.GetNeighbors(ISolution individual, IRandom random) {
+    IEnumerable<IEncodedSolution> ISingleObjectiveOptimizationSupport.GetNeighbors(IEncodedSolution individual, IRandom random) {
       return CompiledInstance.GetNeighbors(individual, random);
     }
   }

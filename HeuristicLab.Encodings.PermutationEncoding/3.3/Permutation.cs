@@ -29,7 +29,7 @@ using HEAL.Attic;
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("Permutation", "Represents a permutation of integer values.")]
   [StorableType("FBBCFA53-C1AE-4069-907B-99C720F5AC51")]
-  public class Permutation : IntArray, ISolution {
+  public class Permutation : IntArray, IEncodedSolution {
     [Storable]
     private PermutationTypes permutationType;
     /// <summary>

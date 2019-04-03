@@ -20,13 +20,13 @@
 #endregion
 
 using System;
-using HeuristicLab.Core;
 using HEAL.Attic;
+using HeuristicLab.Core;
 
 namespace HeuristicLab.Optimization {
   [StorableType("c9325602-3262-48a4-8985-03657fb0b34f")]
-  internal interface IMultiObjectiveAnalysisOperator<TSolution> : IEncodingOperator<TSolution>, IAnalyzer, IMultiObjectiveOperator
-  where TSolution : class, ISolution {
-    Action<TSolution[], double[][], ResultCollection, IRandom> AnalyzeAction { get; set; }
+  internal interface IMultiObjectiveAnalysisOperator<TEncodedSolution> : IEncodingOperator<TEncodedSolution>, IAnalyzer, IMultiObjectiveOperator
+  where TEncodedSolution : class, IEncodedSolution {
+    Action<TEncodedSolution[], double[][], ResultCollection, IRandom> AnalyzeAction { get; set; }
   }
 }

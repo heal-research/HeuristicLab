@@ -20,49 +20,49 @@
 #endregion
 
 using System.Collections.Generic;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
-using HEAL.Attic;
 
 namespace HeuristicLab.Problems.Programmable {
   [Item("Single-objective Problem Definition Script", "Script that defines the parameter vector and evaluates the solution for a programmable problem.")]
   [StorableType("D0B2A649-EDDE-4A6E-A3B5-F40F5FD1B2C0")]
-  public sealed class SingleObjectiveProblemDefinitionScript<TEncoding, TSolution> : ProblemDefinitionScript<TEncoding, TSolution>, ISingleObjectiveProblemDefinition<TEncoding, TSolution>, IStorableContent
-    where TEncoding : class, IEncoding<TSolution>
-    where TSolution : class, ISolution {
+  public sealed class SingleObjectiveProblemDefinitionScript<TEncoding, TEncodedSolution> : ProblemDefinitionScript<TEncoding, TEncodedSolution>, ISingleObjectiveProblemDefinition<TEncoding, TEncodedSolution>, IStorableContent
+    where TEncoding : class, IEncoding<TEncodedSolution>
+    where TEncodedSolution : class, IEncodedSolution {
     public string Filename { get; set; }
 
-    private new ISingleObjectiveProblemDefinition<TEncoding, TSolution> CompiledProblemDefinition {
-      get { return (ISingleObjectiveProblemDefinition<TEncoding, TSolution>)base.CompiledProblemDefinition; }
+    private new ISingleObjectiveProblemDefinition<TEncoding, TEncodedSolution> CompiledProblemDefinition {
+      get { return (ISingleObjectiveProblemDefinition<TEncoding, TEncodedSolution>)base.CompiledProblemDefinition; }
     }
 
     [StorableConstructor]
     private SingleObjectiveProblemDefinitionScript(StorableConstructorFlag _) : base(_) { }
-    private SingleObjectiveProblemDefinitionScript(SingleObjectiveProblemDefinitionScript<TEncoding, TSolution> original, Cloner cloner) : base(original, cloner) { }
+    private SingleObjectiveProblemDefinitionScript(SingleObjectiveProblemDefinitionScript<TEncoding, TEncodedSolution> original, Cloner cloner) : base(original, cloner) { }
     public SingleObjectiveProblemDefinitionScript(string codeTemplate) : base(codeTemplate) { }
     public SingleObjectiveProblemDefinitionScript() { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new SingleObjectiveProblemDefinitionScript<TEncoding, TSolution>(this, cloner);
+      return new SingleObjectiveProblemDefinitionScript<TEncoding, TEncodedSolution>(this, cloner);
     }
 
-    bool ISingleObjectiveProblemDefinition<TEncoding, TSolution>.Maximization {
+    bool ISingleObjectiveProblemDefinition<TEncoding, TEncodedSolution>.Maximization {
       get { return CompiledProblemDefinition.Maximization; }
     }
 
-    double ISingleObjectiveProblemDefinition<TEncoding, TSolution>.Evaluate(TSolution individual, IRandom random) {
+    double ISingleObjectiveProblemDefinition<TEncoding, TEncodedSolution>.Evaluate(TEncodedSolution individual, IRandom random) {
       return CompiledProblemDefinition.Evaluate(individual, random);
     }
 
-    void ISingleObjectiveProblemDefinition<TEncoding, TSolution>.Analyze(TSolution[] individuals, double[] qualities, ResultCollection results, IRandom random) {
+    void ISingleObjectiveProblemDefinition<TEncoding, TEncodedSolution>.Analyze(TEncodedSolution[] individuals, double[] qualities, ResultCollection results, IRandom random) {
       CompiledProblemDefinition.Analyze(individuals, qualities, results, random);
     }
-    IEnumerable<TSolution> ISingleObjectiveProblemDefinition<TEncoding, TSolution>.GetNeighbors(TSolution individual, IRandom random) {
+    IEnumerable<TEncodedSolution> ISingleObjectiveProblemDefinition<TEncoding, TEncodedSolution>.GetNeighbors(TEncodedSolution individual, IRandom random) {
       return CompiledProblemDefinition.GetNeighbors(individual, random);
     }
 
-    bool ISingleObjectiveProblemDefinition<TEncoding, TSolution>.IsBetter(double quality, double bestQuality) {
+    bool ISingleObjectiveProblemDefinition<TEncoding, TEncodedSolution>.IsBetter(double quality, double bestQuality) {
       return CompiledProblemDefinition.IsBetter(quality, bestQuality);
     }
   }

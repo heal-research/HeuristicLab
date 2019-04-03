@@ -38,7 +38,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       return new MultiObjectiveOptimizationSupportScript(this, cloner);
     }
 
-    void IMultiObjectiveOptimizationSupport.Analyze(ISolution[] individuals, double[][] qualities, ResultCollection results, IRandom random) {
+    void IMultiObjectiveOptimizationSupport.Analyze(IEncodedSolution[] individuals, double[][] qualities, ResultCollection results, IRandom random) {
       CompiledInstance.Analyze(individuals, qualities, results, random);
     }
   }
