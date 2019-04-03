@@ -30,7 +30,7 @@ using HeuristicLab.Parameters;
 namespace HeuristicLab.Optimization {
   [Item("Single-objective MoveMaker", "Applies a move.")]
   [StorableType("C0ABF392-C825-4B98-8FB9-5749A9091FD6")]
-  public class SingleObjectiveMoveMaker<TEncodedSolution> : InstrumentedOperator, IMoveMaker, ISingleObjectiveMoveOperator
+  internal sealed class SingleObjectiveMoveMaker<TEncodedSolution> : InstrumentedOperator, IMoveMaker, ISingleObjectiveMoveOperator
   where TEncodedSolution : class, IEncodedSolution {
     public ILookupParameter<IEncoding<TEncodedSolution>> EncodingParameter {
       get { return (ILookupParameter<IEncoding<TEncodedSolution>>)Parameters["Encoding"]; }
@@ -45,8 +45,8 @@ namespace HeuristicLab.Optimization {
     }
 
     [StorableConstructor]
-    protected SingleObjectiveMoveMaker(StorableConstructorFlag _) : base(_) { }
-    protected SingleObjectiveMoveMaker(SingleObjectiveMoveMaker<TEncodedSolution> original, Cloner cloner) : base(original, cloner) { }
+    private SingleObjectiveMoveMaker(StorableConstructorFlag _) : base(_) { }
+    private SingleObjectiveMoveMaker(SingleObjectiveMoveMaker<TEncodedSolution> original, Cloner cloner) : base(original, cloner) { }
     public SingleObjectiveMoveMaker() {
       Parameters.Add(new LookupParameter<IEncoding<TEncodedSolution>>("Encoding", "An item that holds the problem's encoding."));
       Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The quality of the parameter vector."));

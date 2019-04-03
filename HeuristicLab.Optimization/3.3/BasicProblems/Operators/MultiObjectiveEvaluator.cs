@@ -30,7 +30,7 @@ using HeuristicLab.Parameters;
 namespace HeuristicLab.Optimization {
   [Item("Multi-objective Evaluator", "Calls the Evaluate method of the problem definition and writes the return value into the scope.")]
   [StorableType("C5605ED8-0ED2-4C7B-97A1-E7EB68A4FDBF")]
-  public class MultiObjectiveEvaluator<TEncodedSolution> : InstrumentedOperator, IMultiObjectiveEvaluationOperator<TEncodedSolution>, IStochasticOperator
+  public sealed class MultiObjectiveEvaluator<TEncodedSolution> : InstrumentedOperator, IMultiObjectiveEvaluationOperator<TEncodedSolution>, IStochasticOperator
   where TEncodedSolution : class, IEncodedSolution {
 
     public ILookupParameter<IRandom> RandomParameter {
@@ -48,8 +48,8 @@ namespace HeuristicLab.Optimization {
     public Func<TEncodedSolution, IRandom, double[]> EvaluateFunc { get; set; }
 
     [StorableConstructor]
-    protected MultiObjectiveEvaluator(StorableConstructorFlag _) : base(_) { }
-    protected MultiObjectiveEvaluator(MultiObjectiveEvaluator<TEncodedSolution> original, Cloner cloner) : base(original, cloner) { }
+    private MultiObjectiveEvaluator(StorableConstructorFlag _) : base(_) { }
+    private MultiObjectiveEvaluator(MultiObjectiveEvaluator<TEncodedSolution> original, Cloner cloner) : base(original, cloner) { }
     public MultiObjectiveEvaluator() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator to use."));
       Parameters.Add(new LookupParameter<IEncoding<TEncodedSolution>>("Encoding", "An item that holds the problem's encoding."));

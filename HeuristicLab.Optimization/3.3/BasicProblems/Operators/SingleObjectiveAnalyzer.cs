@@ -32,7 +32,7 @@ using HeuristicLab.Parameters;
 namespace HeuristicLab.Optimization {
   [Item("Single-objective Analyzer", "Calls the script's Analyze method to be able to write into the results collection.")]
   [StorableType("3D20F8E2-CE11-4021-A05B-CFCB02C0FD6F")]
-  public sealed class SingleObjectiveAnalyzer<TEncodedSolution> : SingleSuccessorOperator, ISingleObjectiveAnalysisOperator<TEncodedSolution>, IAnalyzer, IStochasticOperator
+  internal sealed class SingleObjectiveAnalyzer<TEncodedSolution> : SingleSuccessorOperator, ISingleObjectiveAnalysisOperator<TEncodedSolution>, IAnalyzer, IStochasticOperator
   where TEncodedSolution : class, IEncodedSolution {
     public bool EnabledByDefault { get { return true; } }
 

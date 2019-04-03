@@ -22,17 +22,17 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
   [Item("Single-objective Improver", "Improves a solution by calling GetNeighbors and Evaluate of the corresponding problem definition.")]
   [StorableType("7A917E09-920C-4B47-9599-67371101B35F")]
-  public sealed class SingleObjectiveImprover<TEncodedSolution> : SingleSuccessorOperator, INeighborBasedOperator<TEncodedSolution>, IImprovementOperator, ISingleObjectiveEvaluationOperator<TEncodedSolution>, IStochasticOperator
+  internal sealed class SingleObjectiveImprover<TEncodedSolution> : SingleSuccessorOperator, INeighborBasedOperator<TEncodedSolution>, IImprovementOperator, ISingleObjectiveEvaluationOperator<TEncodedSolution>, IStochasticOperator
     where TEncodedSolution : class, IEncodedSolution {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (ILookupParameter<IRandom>)Parameters["Random"]; }

@@ -26,7 +26,7 @@ using HEAL.Attic;
 namespace HeuristicLab.Optimization {
   [Item("MultiEncoding Crossover", "Applies different crossovers to cross a multi-encoding.")]
   [StorableType("BB0A04E2-899D-460C-82A2-5E4CEEDE8996")]
-  public sealed class MultiEncodingCrossover : MultiEncodingOperator<ICrossover>, ICrossover {
+  internal sealed class MultiEncodingCrossover : MultiEncodingOperator<ICrossover>, ICrossover {
 
     [StorableConstructor]
     private MultiEncodingCrossover(StorableConstructorFlag _) : base(_) { }

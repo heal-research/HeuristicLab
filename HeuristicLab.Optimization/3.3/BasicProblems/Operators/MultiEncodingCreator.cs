@@ -28,7 +28,7 @@ using HEAL.Attic;
 namespace HeuristicLab.Optimization {
   [Item("MultiEncodingCreator", "Contains solution creators that together create a multi-encoding.")]
   [StorableType("E261B506-6F74-4BC4-8164-5ACE20FBC319")]
-  public sealed class MultiEncodingCreator : MultiEncodingOperator<ISolutionCreator>, ISolutionCreator<CombinedSolution> {
+  internal sealed class MultiEncodingCreator : MultiEncodingOperator<ISolutionCreator>, ISolutionCreator<CombinedSolution> {
 
     [StorableConstructor]
     private MultiEncodingCreator(StorableConstructorFlag _) : base(_) { }

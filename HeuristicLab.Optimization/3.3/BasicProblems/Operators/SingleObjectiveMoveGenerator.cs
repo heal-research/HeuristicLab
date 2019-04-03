@@ -23,17 +23,17 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
   [Item("Single-objective MoveGenerator", "Calls the GetNeighbors method of the problem definition to obtain the moves.")]
   [StorableType("CB37E7D8-EAC3-4061-9D39-20538CD1064D")]
-  public class SingleObjectiveMoveGenerator<TEncodedSolution> : SingleSuccessorOperator, INeighborBasedOperator<TEncodedSolution>, IMultiMoveGenerator, IStochasticOperator, ISingleObjectiveMoveOperator
+  internal sealed class SingleObjectiveMoveGenerator<TEncodedSolution> : SingleSuccessorOperator, INeighborBasedOperator<TEncodedSolution>, IMultiMoveGenerator, IStochasticOperator, ISingleObjectiveMoveOperator
   where TEncodedSolution : class, IEncodedSolution {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
@@ -50,8 +50,8 @@ namespace HeuristicLab.Optimization {
     public Func<TEncodedSolution, IRandom, IEnumerable<TEncodedSolution>> GetNeighborsFunc { get; set; }
 
     [StorableConstructor]
-    protected SingleObjectiveMoveGenerator(StorableConstructorFlag _) : base(_) { }
-    protected SingleObjectiveMoveGenerator(SingleObjectiveMoveGenerator<TEncodedSolution> original, Cloner cloner)
+    private SingleObjectiveMoveGenerator(StorableConstructorFlag _) : base(_) { }
+    private SingleObjectiveMoveGenerator(SingleObjectiveMoveGenerator<TEncodedSolution> original, Cloner cloner)
       : base(original, cloner) { }
     public SingleObjectiveMoveGenerator() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator to use."));

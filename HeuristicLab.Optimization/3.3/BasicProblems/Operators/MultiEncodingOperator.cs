@@ -29,7 +29,7 @@ using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
   [StorableType("43619638-9D00-4951-8138-8CCD0786E784")]
-  public abstract class MultiEncodingOperator<T> : InstrumentedOperator, IEncodingOperator<CombinedSolution>, IMultiEncodingOperator where T : class, IOperator {
+  internal abstract class MultiEncodingOperator<T> : InstrumentedOperator, IEncodingOperator<CombinedSolution>, IMultiEncodingOperator where T : class, IOperator {
     public ILookupParameter<CombinedSolution> SolutionParameter {
       get { return (ILookupParameter<CombinedSolution>)Parameters["Solution"]; }
     }

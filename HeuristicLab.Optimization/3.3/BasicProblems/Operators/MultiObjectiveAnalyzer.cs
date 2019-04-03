@@ -32,7 +32,7 @@ using HeuristicLab.Parameters;
 namespace HeuristicLab.Optimization {
   [Item("Multi-objective Analyzer", "Calls the Analyze method of the problem definition.")]
   [StorableType("903FE3D1-3179-4EA5-A7E1-63DE26239F9B")]
-  public class MultiObjectiveAnalyzer<TEncodedSolution> : SingleSuccessorOperator, IMultiObjectiveAnalysisOperator<TEncodedSolution>, IStochasticOperator
+  internal sealed class MultiObjectiveAnalyzer<TEncodedSolution> : SingleSuccessorOperator, IMultiObjectiveAnalysisOperator<TEncodedSolution>, IStochasticOperator
   where TEncodedSolution : class, IEncodedSolution {
     public bool EnabledByDefault { get { return true; } }
 
@@ -55,8 +55,8 @@ namespace HeuristicLab.Optimization {
     public Action<TEncodedSolution[], double[][], ResultCollection, IRandom> AnalyzeAction { get; set; }
 
     [StorableConstructor]
-    protected MultiObjectiveAnalyzer(StorableConstructorFlag _) : base(_) { }
-    protected MultiObjectiveAnalyzer(MultiObjectiveAnalyzer<TEncodedSolution> original, Cloner cloner) : base(original, cloner) { }
+    private MultiObjectiveAnalyzer(StorableConstructorFlag _) : base(_) { }
+    private MultiObjectiveAnalyzer(MultiObjectiveAnalyzer<TEncodedSolution> original, Cloner cloner) : base(original, cloner) { }
     public MultiObjectiveAnalyzer() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator to use."));
       Parameters.Add(new LookupParameter<IEncoding<TEncodedSolution>>("Encoding", "An item that holds the problem's encoding."));

@@ -30,7 +30,7 @@ using HeuristicLab.Parameters;
 namespace HeuristicLab.Optimization {
   [Item("Single-objective MoveEvaluator", "Evaluates a parameter vector that results from a move.")]
   [StorableType("EE4B1EBA-50BF-40C7-B338-F4A9D9CC554E")]
-  public class SingleObjectiveMoveEvaluator<TEncodedSolution> : SingleSuccessorOperator, ISingleObjectiveEvaluationOperator<TEncodedSolution>, ISingleObjectiveMoveEvaluator, IStochasticOperator, ISingleObjectiveMoveOperator
+  internal sealed class SingleObjectiveMoveEvaluator<TEncodedSolution> : SingleSuccessorOperator, ISingleObjectiveEvaluationOperator<TEncodedSolution>, ISingleObjectiveMoveEvaluator, IStochasticOperator, ISingleObjectiveMoveOperator
   where TEncodedSolution : class, IEncodedSolution {
 
     public ILookupParameter<IRandom> RandomParameter {
@@ -52,8 +52,8 @@ namespace HeuristicLab.Optimization {
     public Func<TEncodedSolution, IRandom, double> EvaluateFunc { get; set; }
 
     [StorableConstructor]
-    protected SingleObjectiveMoveEvaluator(StorableConstructorFlag _) : base(_) { }
-    protected SingleObjectiveMoveEvaluator(SingleObjectiveMoveEvaluator<TEncodedSolution> original, Cloner cloner) : base(original, cloner) { }
+    private SingleObjectiveMoveEvaluator(StorableConstructorFlag _) : base(_) { }
+    private SingleObjectiveMoveEvaluator(SingleObjectiveMoveEvaluator<TEncodedSolution> original, Cloner cloner) : base(original, cloner) { }
     public SingleObjectiveMoveEvaluator() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator to use."));
       Parameters.Add(new LookupParameter<IEncoding<TEncodedSolution>>("Encoding", "An item that holds the problem's encoding."));

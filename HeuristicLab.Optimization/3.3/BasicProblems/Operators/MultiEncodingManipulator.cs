@@ -19,14 +19,14 @@
  */
 #endregion
 
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
   [Item("MultiEncoding Manipulator", "Applies different manipulators to change a multi-encoding.")]
   [StorableType("574D0530-47E8-4FD9-8AC8-B8EA2DE3C203")]
-  public sealed class MultiEncodingManipulator : MultiEncodingOperator<IManipulator>, IManipulator {
+  internal sealed class MultiEncodingManipulator : MultiEncodingOperator<IManipulator>, IManipulator {
     [StorableConstructor]
     private MultiEncodingManipulator(StorableConstructorFlag _) : base(_) { }
     private MultiEncodingManipulator(MultiEncodingManipulator original, Cloner cloner) : base(original, cloner) { }
