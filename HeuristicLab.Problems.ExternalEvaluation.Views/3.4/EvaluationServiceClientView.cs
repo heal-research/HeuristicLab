@@ -35,37 +35,5 @@ namespace HeuristicLab.Problems.ExternalEvaluation.Views {
     public EvaluationServiceClientView() {
       InitializeComponent();
     }
-
-    protected override void DeregisterContentEvents() {
-      // TODO: Deregister your event handlers here
-      base.DeregisterContentEvents();
-    }
-
-    protected override void RegisterContentEvents() {
-      base.RegisterContentEvents();
-      // TODO: Register your event handlers here
-    }
-
-    #region Event Handlers (Content)
-    // TODO: Put event handlers of the content here
-    #endregion
-
-    protected override void OnContentChanged() {
-      base.OnContentChanged();
-      if (Content == null) {
-        // TODO: Add code when content has been changed and is null
-      } else {
-        // TODO: Add code when content has been changed and is not null
-      }
-    }
-
-    protected override void SetEnabledStateOfControls() {
-      base.SetEnabledStateOfControls();
-      // TODO: Enable or disable controls based on whether the content is null or the view is set readonly
-    }
-
-    #region Event Handlers (child controls)
-    // TODO: Put event handlers of child controls here.
-    #endregion
   }
 }

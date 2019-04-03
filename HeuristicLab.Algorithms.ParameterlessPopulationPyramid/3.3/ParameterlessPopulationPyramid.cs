@@ -24,6 +24,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using HEAL.Attic;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -31,7 +32,6 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
@@ -45,6 +45,8 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
     public override Type ProblemType {
       get { return typeof(SingleObjectiveProblem<BinaryVectorEncoding, BinaryVector>); }
     }
+    // TODO: Type of this property should be ISingleObjectiveProblemDefinition instead of the SingleObjectiveProblem
+    //       However, this requires that BasicAlgorithm's Problem property is also changed
     public new SingleObjectiveProblem<BinaryVectorEncoding, BinaryVector> Problem {
       get { return (SingleObjectiveProblem<BinaryVectorEncoding, BinaryVector>)base.Problem; }
       set { base.Problem = value; }
