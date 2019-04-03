@@ -26,9 +26,9 @@ using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Problems.Programmable.Views {
-  [View("Single-Objective Scriptable Problem View")]
+  [View("Programmable Problem View")]
   [Content(typeof(IProgrammableProblem), true)]
-  public partial class SingleObjectiveProgrammableProblemView : ItemView {
+  public partial class ProgrammableProblemView : ItemView {
     protected ViewHost ScriptView;
 
     public new IProgrammableProblem Content {
@@ -36,7 +36,7 @@ namespace HeuristicLab.Problems.Programmable.Views {
       set { base.Content = value; }
     }
 
-    public SingleObjectiveProgrammableProblemView() {
+    public ProgrammableProblemView() {
       InitializeComponent();
       ScriptView = new ViewHost() { ViewsLabelVisible = false, Dock = DockStyle.Fill };
       Controls.Add(ScriptView);
@@ -53,20 +53,14 @@ namespace HeuristicLab.Problems.Programmable.Views {
     }
 
     protected override void RegisterContentEvents() {
-      //Content.ProblemDefinitionParameter.ValueChanged += ProblemDefinitionParameterOnValueChanged;
       Content.NameChanged += ContentOnNameChanged;
       base.RegisterContentEvents();
     }
 
     protected override void DeregisterContentEvents() {
       base.DeregisterContentEvents();
-      //Content.ProblemDefinitionParameter.ValueChanged -= ProblemDefinitionParameterOnValueChanged;
       Content.NameChanged -= ContentOnNameChanged;
     }
-
-    //private void ProblemDefinitionParameterOnValueChanged(object sender, EventArgs eventArgs) {
-    //  DefinitionView.Content = Content.ProblemDefinitionParameter.Value;
-    //}
 
     private void ContentOnNameChanged(object sender, EventArgs eventArgs) {
       Caption = Content.Name;

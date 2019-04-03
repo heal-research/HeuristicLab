@@ -20,7 +20,7 @@
 #endregion
 
 namespace HeuristicLab.Problems.Programmable.Views {
-  partial class SingleObjectiveProgrammableProblemView {
+  partial class ProgrammableProblemView {
     /// <summary> 
     /// Required designer variable.
     /// </summary>
