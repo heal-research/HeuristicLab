@@ -54,8 +54,8 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     public IScopeTreeLookupParameter<DoubleValue> NeighborBestQualityParameter {
       get { return (IScopeTreeLookupParameter<DoubleValue>)Parameters["NeighborBestQuality"]; }
     }
-    public IScopeTreeLookupParameter<RealVector> RealVectorsParameter {
-      get { return (IScopeTreeLookupParameter<RealVector>)Parameters["RealVectors"]; }
+    public IScopeTreeLookupParameter<RealVector> RealVectorParameter {
+      get { return (IScopeTreeLookupParameter<RealVector>)Parameters["RealVector"]; }
     }
     public IScopeTreeLookupParameter<RealVector> PersonalBestParameter {
       get { return (IScopeTreeLookupParameter<RealVector>)Parameters["PersonalBest"]; }
@@ -168,7 +168,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     public override IOperation Apply() {
       var max = MaximizationParameter.ActualValue.Value;
       // Update of the personal bests
-      var points = RealVectorsParameter.ActualValue;
+      var points = RealVectorParameter.ActualValue;
       var qualities = QualityParameter.ActualValue;
       var particles = points.Select((p, i) => new { Particle = p, Index = i })
         .Zip(qualities, (p, q) => Tuple.Create(p.Index, p.Particle, q.Value)).ToList();

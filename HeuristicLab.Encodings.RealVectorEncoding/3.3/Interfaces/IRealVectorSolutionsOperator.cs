@@ -23,6 +23,6 @@ using HeuristicLab.Core;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   public interface IRealVectorSolutionsOperator : IRealVectorOperator {
-    IScopeTreeLookupParameter<RealVector> RealVectorsParameter { get; }
+    IScopeTreeLookupParameter<RealVector> RealVectorParameter { get; }
   }
 }

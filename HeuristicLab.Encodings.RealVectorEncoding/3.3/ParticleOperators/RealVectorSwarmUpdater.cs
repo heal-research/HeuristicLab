@@ -55,7 +55,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     public IScopeTreeLookupParameter<DoubleValue> NeighborBestQualityParameter {
       get { return (IScopeTreeLookupParameter<DoubleValue>)Parameters["NeighborBestQuality"]; }
     }
-    public IScopeTreeLookupParameter<RealVector> RealVectorsParameter {
+    public IScopeTreeLookupParameter<RealVector> RealVectorParameter {
       get { return (IScopeTreeLookupParameter<RealVector>)Parameters["RealVectors"]; }
     }
     public IScopeTreeLookupParameter<RealVector> PersonalBestParameter {
@@ -133,7 +133,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       set { NeighborBestQualityParameter.ActualValue = value; }
     }
     private ItemArray<RealVector> RealVectors {
-      get { return RealVectorsParameter.ActualValue; }
+      get { return RealVectorParameter.ActualValue; }
     }
     private ItemArray<RealVector> PersonalBest {
       get { return PersonalBestParameter.ActualValue; }

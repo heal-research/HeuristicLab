@@ -306,7 +306,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     }
     private void ConfigureRealVectorSolutionsOperators(IEnumerable<IRealVectorSolutionsOperator> solutionsOperators) {
       foreach (var solutionsOperator in solutionsOperators)
-        solutionsOperator.RealVectorsParameter.ActualName = Name;
+        solutionsOperator.RealVectorParameter.ActualName = Name;
     }
     private void ConfigureRealVectorBoundedOperators(IEnumerable<IRealVectorBoundedOperator> boundedOperators) {
       foreach (var boundedOperator in boundedOperators) {

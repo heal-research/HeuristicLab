@@ -43,7 +43,7 @@ namespace HeuristicLab.Problems.TestFunctions {
     public LookupParameter<BoolValue> MaximizationParameter {
       get { return (LookupParameter<BoolValue>)Parameters["Maximization"]; }
     }
-    public IScopeTreeLookupParameter<RealVector> RealVectorsParameter {
+    public IScopeTreeLookupParameter<RealVector> RealVectorParameter {
       get { return (IScopeTreeLookupParameter<RealVector>)Parameters["RealVectors"]; }
     }
     public IScopeTreeLookupParameter<DoubleValue> QualityParameter {
@@ -84,7 +84,7 @@ namespace HeuristicLab.Problems.TestFunctions {
       Parameters.Add(new ValueLookupParameter<DoubleMatrix>("Bounds", "The bounds of the function."));
 
       MaximizationParameter.Hidden = true;
-      RealVectorsParameter.Hidden = true;
+      RealVectorParameter.Hidden = true;
       QualityParameter.Hidden = true;
       BestSolutionParameter.Hidden = true;
       BestKnownSolutionParameter.Hidden = true;
@@ -99,7 +99,7 @@ namespace HeuristicLab.Problems.TestFunctions {
     }
 
     public override IOperation Apply() {
-      ItemArray<RealVector> realVectors = RealVectorsParameter.ActualValue;
+      ItemArray<RealVector> realVectors = RealVectorParameter.ActualValue;
       ItemArray<DoubleValue> qualities = QualityParameter.ActualValue;
       bool max = MaximizationParameter.ActualValue.Value;
       DoubleValue bestKnownQuality = BestKnownQualityParameter.ActualValue;
