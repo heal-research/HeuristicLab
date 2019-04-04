@@ -166,7 +166,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       return new Interval(sinValues.Min(), sinValues.Max());
     }
     public static Interval Cosine(Interval a) {
-      return Interval.Sine(Interval.Subtract(a, new Interval(Math.PI / 2, Math.PI / 2)));
+      return Interval.Sine(Interval.Add(a, new Interval(Math.PI / 2, Math.PI / 2)));
     }
     public static Interval Tangens(Interval a) {
       return Interval.Divide(Interval.Sine(a), Interval.Cosine(a));
