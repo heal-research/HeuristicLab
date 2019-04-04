@@ -172,6 +172,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
               AnalyticQuotient(instr.buf, code[c + 1].buf);
               break;
             }
+          default: throw new NotSupportedException($"This interpreter does not support {(OpCode)instr.opcode}");
         }
       }
     }
