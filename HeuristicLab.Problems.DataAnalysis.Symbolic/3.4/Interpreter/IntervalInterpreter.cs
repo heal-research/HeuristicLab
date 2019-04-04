@@ -217,6 +217,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             result = Interval.Tangens(argumentInterval);
             break;
           }
+        case OpCodes.Tanh: {
+            var argumentInterval = Evaluate(instructions, ref instructionCounter, nodeIntervals);
+            result = Interval.HyperbolicTangent(argumentInterval);
+            break;
+          }
         //Exponential functions
         case OpCodes.Log: {
             var argumentInterval = Evaluate(instructions, ref instructionCounter, nodeIntervals);

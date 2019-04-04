@@ -170,6 +170,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
     public static Interval Tangens(Interval a) {
       return Interval.Divide(Interval.Sine(a), Interval.Cosine(a));
+    }  
+    public static Interval HyperbolicTangent(Interval a) {
+      return new Interval(Math.Tanh(a.LowerBound), Math.Tanh(a.UpperBound));
     }
 
     public static Interval Logarithm(Interval a) {
