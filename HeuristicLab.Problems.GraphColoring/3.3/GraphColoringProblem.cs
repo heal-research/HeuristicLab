@@ -21,6 +21,7 @@
 
 using System;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -29,7 +30,6 @@ using HeuristicLab.Encodings.LinearLinkageEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 using HeuristicLab.Problems.Instances;
 
 namespace HeuristicLab.Problems.GraphColoring {
@@ -37,7 +37,8 @@ namespace HeuristicLab.Problems.GraphColoring {
   [Item("Graph Coloring Problem (GCP)", "Attempts to find a coloring using a minimal number of colors that doesn't produce a conflict.")]
   [Creatable(CreatableAttribute.Categories.CombinatorialProblems, Priority = 135)]
   [StorableType("007BD5F0-196C-4045-AC5D-BF287927C3DC")]
-  public sealed class GraphColoringProblem : SingleObjectiveBasicProblem<LinearLinkageEncoding>, IProblemInstanceConsumer<GCPData>, IProblemInstanceExporter<GCPData> {
+  public sealed class GraphColoringProblem : SingleObjectiveProblem<LinearLinkageEncoding, LinearLinkage>,
+    IProblemInstanceConsumer<GCPData>, IProblemInstanceExporter<GCPData> {
 
     public override bool Maximization {
       get { return false; }
@@ -73,7 +74,6 @@ namespace HeuristicLab.Problems.GraphColoring {
       RegisterEventHandlers();
     }
     public GraphColoringProblem() {
-      Encoding = new LinearLinkageEncoding("lle");
       Parameters.Add(adjacencyListParameter = new ValueParameter<IntMatrix>("Adjacency List", "The adjacency list that describes the (symmetric) edges in the graph with nodes from 0 to N-1."));
       Parameters.Add(fitnessFunctionParameter = new ValueParameter<EnumValue<FitnessFunction>>("Fitness Function", "The function to use for evaluating the quality of a solution.", new EnumValue<FitnessFunction>(FitnessFunction.Penalized)));
       Parameters.Add(bestKnownColorsParameter = new OptionalValueParameter<IntValue>("BestKnownColors", "The least amount of colors in a valid coloring."));
@@ -129,9 +129,9 @@ namespace HeuristicLab.Problems.GraphColoring {
       OnReset();
     }
 
-    public override double Evaluate(Individual individual, IRandom random) {
+    public override double Evaluate(LinearLinkage lle, IRandom random) {
       var adjList = adjacencyListParameter.Value;
-      var llee = individual.LinearLinkage(Encoding.Name).ToEndLinks(); // LLE-e encoding uses the highest indexed member as group number
+      var llee = lle.ToEndLinks(); // LLE-e encoding uses the highest indexed member as group number
 
       switch (FitnessFunction) {
         case FitnessFunction.Prioritized: {
@@ -168,13 +168,13 @@ namespace HeuristicLab.Problems.GraphColoring {
       public int ConflictCount { get; set; }
     }
 
-    public override void Analyze(Individual[] individuals, double[] qualities, ResultCollection results, IRandom random) {
-      var orderedIndividuals = individuals.Zip(qualities, (i, q) => new { Individual = i, Quality = q }).OrderBy(z => z.Quality);
-      var best = Maximization ? orderedIndividuals.Last().Individual.LinearLinkage(Encoding.Name) : orderedIndividuals.First().Individual.LinearLinkage(Encoding.Name);
+    public override void Analyze(LinearLinkage[] lles, double[] qualities, ResultCollection results, IRandom random) {
+      var orderedIndividuals = lles.Zip(qualities, (i, q) => new { LLE = i, Quality = q }).OrderBy(z => z.Quality);
+      var best = Maximization ? orderedIndividuals.Last().LLE : orderedIndividuals.First().LLE;
         
-      var lle = best.ToEndLinks();
-      var colors = lle.Distinct().Count();
-      var conflicts = CalculateConflicts(lle);
+      var llee = best.ToEndLinks();
+      var colors = llee.Distinct().Count();
+      var conflicts = CalculateConflicts(llee);
       
       IResult res;
       int bestColors = int.MaxValue, bestConflicts = int.MaxValue;
@@ -198,17 +198,36 @@ namespace HeuristicLab.Problems.GraphColoring {
         if (improvement)
           ((IntValue)res.Value).Value = bestColors = colors;
       }
-      if (!results.TryGetValue("Best Solution", out res)) {
-        res = new Result("Best Solution", (LinearLinkage)best.Clone());
-        results.Add(res);
+      if (!results.ContainsKey("Best Encoded Solution") || improvement)
+        results.AddOrUpdateResult("Best Encoded Solution", (LinearLinkage)best.Clone());
+
+      if (!results.TryGetValue("Best Solution", out res) || !(res.Value is IntMatrix)) {
+        var matrix = new IntMatrix(llee.Length, 2) { ColumnNames = new[] { "Node", "Color" } };
+        UpdateMatrix(llee, matrix);
+        res = new Result("Best Solution", matrix);
+        results.AddOrUpdateResult("Best Solution", matrix);
       } else {
-        if (improvement)
-          res.Value = (LinearLinkage)best.Clone();
+        if (improvement) {
+          UpdateMatrix(llee, (IntMatrix)res.Value);
+        }
       }
 
       if (conflicts == 0) {
         if (BestKnownColorsParameter.Value == null || BestKnownColorsParameter.Value.Value > colors)
           BestKnownColorsParameter.Value = new IntValue(colors);
+      }
+    }
+
+    private static void UpdateMatrix(int[] llee, IntMatrix matrix) {
+      var assign = llee.Select((v, i) => new { Node = i, Color = v }).OrderBy(x => x.Color);
+      var color = 0;
+      var prev = -1;
+      foreach (var a in assign) {
+        if (prev >= 0 && prev != a.Color)
+          color++;
+        matrix[a.Node, 0] = a.Node;
+        matrix[a.Node, 1] = color;
+        prev = a.Color;
       }
     }
 
