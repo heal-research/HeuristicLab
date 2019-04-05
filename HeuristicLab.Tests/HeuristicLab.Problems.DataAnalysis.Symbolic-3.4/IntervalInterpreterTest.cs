@@ -87,11 +87,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       localVarRanges.Add("x4", new Interval(-Math.PI, Math.PI));
       localVarRanges.Add("x5", new Interval(Math.PI/4, Math.PI*3.0/4));
 
-      EvaluateTest("sin(x1)", new Interval(Math.Sin(-1), Math.Sin(1)), localVarRanges);
-      EvaluateTest("sin(x2)", new Interval(-1, 0), localVarRanges);
-      EvaluateTest("sin(x3)", new Interval(0, 1), localVarRanges);
-      EvaluateTest("sin(x4)", new Interval(-1, 1), localVarRanges);
-      EvaluateTest("sin(x5)", new Interval(Math.Sin(Math.PI/4), 1), localVarRanges);
+      EvaluateTest("sin(x1)", new Interval(Math.Sin(-1), Math.Sin(1)), localVarRanges, 1E-8, 1E-8);
+      EvaluateTest("sin(x2)", new Interval(-1, 0), localVarRanges, 1E-8, 1E-8);
+      EvaluateTest("sin(x3)", new Interval(0, 1), localVarRanges, 1E-8, 1E-8);
+      EvaluateTest("sin(x4)", new Interval(-1, 1), localVarRanges, 1E-8, 1E-8);
+      EvaluateTest("sin(x5)", new Interval(Math.Sin(Math.PI/4), 1), localVarRanges, 1E-8, 1E-8);
     }
 
     [TestMethod]
@@ -109,11 +109,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       localVarRanges.Add("x4", new Interval(-Math.PI, Math.PI));
       localVarRanges.Add("x5", new Interval(Math.PI / 4, Math.PI * 3.0 / 4));
 
-      EvaluateTest("cos(x1)", new Interval(Math.Cos(-1), 1), localVarRanges);
-      EvaluateTest("cos(x2)", new Interval(0, 1), localVarRanges);
-      EvaluateTest("cos(x3)", new Interval(0, 1), localVarRanges);
-      EvaluateTest("cos(x4)", new Interval(-1, 1), localVarRanges);
-      EvaluateTest("cos(x5)", new Interval(Math.Cos(Math.PI *3.0/ 4), Math.Cos(Math.PI/ 4)), localVarRanges);
+      EvaluateTest("cos(x1)", new Interval(Math.Cos(-1), 1), localVarRanges, 1E-8, 1E-8);
+      EvaluateTest("cos(x2)", new Interval(0, 1), localVarRanges, 1E-8, 1E-8);
+      EvaluateTest("cos(x3)", new Interval(0, 1), localVarRanges, 1E-8, 1E-8);
+      EvaluateTest("cos(x4)", new Interval(-1, 1), localVarRanges, 1E-8, 1E-8);
+      EvaluateTest("cos(x5)", new Interval(Math.Cos(Math.PI *3.0/ 4), Math.Cos(Math.PI/ 4)), localVarRanges, 1E-8, 1E-8);
 
     }
 
