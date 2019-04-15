@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Analysis;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
@@ -31,7 +32,6 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Random;
 using HeuristicLab.Selection;
@@ -560,6 +560,7 @@ namespace HeuristicLab.Algorithms.ALPS {
     }
     protected override void Problem_OperatorsChanged(object sender, EventArgs e) {
       base.Problem_OperatorsChanged(sender, e);
+      foreach (IOperator op in Problem.Operators.OfType<IOperator>()) ParameterizeStochasticOperator(op);
       ParameterizeIterationBasedOperators();
       UpdateCrossovers();
       UpdateMutators();
