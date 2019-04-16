@@ -43,7 +43,7 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
       DisentangledName = attribute.Name;
       DefaultValue = attribute.DefaultValue;
       MemberInfo = memberInfo;
-      if (!attribute.AllowOneWay)
+      if (!string.IsNullOrEmpty(attribute.OldName))
         CheckPropertyAccess(memberInfo as PropertyInfo);
     }
     public StorableMemberInfo(MemberInfo memberInfo, bool allowOneWay) {

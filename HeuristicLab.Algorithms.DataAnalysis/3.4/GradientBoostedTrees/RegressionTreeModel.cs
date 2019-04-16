@@ -90,7 +90,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     #region old storable format
     // remove with HL 3.4
-    [Storable(AllowOneWay = true)]
+    [Storable(OldName = "SerializedTree")]
     // to prevent storing the references to data caches in nodes
     // seemingly, it is bad (performance-wise) to persist tuples (tuples are used as keys in a dictionary)
     private Tuple<string, double, int, int>[] SerializedTree {

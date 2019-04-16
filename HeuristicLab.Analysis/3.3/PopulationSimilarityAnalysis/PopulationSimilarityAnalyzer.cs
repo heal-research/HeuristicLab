@@ -43,7 +43,7 @@ namespace HeuristicLab.Analysis {
 
     #region Backwards compatible code, remove with 3.4
     private ISolutionSimilarityCalculator oldSimilarityCalculator;
-    [Storable(AllowOneWay = true, Name = "SimilarityCalculator")]
+    [Storable(OldName = "SimilarityCalculator")]
     [Obsolete]
     private ISolutionSimilarityCalculator SimilarityCalculator { set { oldSimilarityCalculator = value; } }
     #endregion

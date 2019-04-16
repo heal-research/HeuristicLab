@@ -106,17 +106,17 @@ namespace HeuristicLab.Analysis {
     // BackwardsCompatibility3.3
     #region Backwards compatible code, remove with 3.4
     private ObservableList<PointF> points;
-    [Storable(Name = "points", AllowOneWay = true)]
+    [Storable(OldName = "points")]
     private ObservableList<PointF> StorablePoints {
       set { points = value; }
     }
     private string xAxisName;
-    [Storable(Name = "xAxisName", AllowOneWay = true)]
+    [Storable(OldName = "xAxisName")]
     private string StorableXAxisName {
       set { xAxisName = value; }
     }
     private string yAxisName;
-    [Storable(Name = "yAxisName", AllowOneWay = true)]
+    [Storable(OldName = "yAxisName")]
     private string StorableYAxisName {
       set { yAxisName = value; }
     }
