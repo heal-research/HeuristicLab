@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{44A10478-D290-43C2-9757-F08F5292FEA5}</ProjectGuid>
+    <ProjectGuid>{44B10478-D290-43D3-9757-C08F5292FEA5}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>HeuristicLab.Attic</RootNamespace>
-    <AssemblyName>HeuristicLab.Attic</AssemblyName>
+    <RootNamespace>HeuristicLab.Protobuf</RootNamespace>
+    <AssemblyName>HeuristicLab.Protobuf</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -36,7 +36,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="HeuristicLab.PluginInfrastructure-3.3">
-      <HintPath>..\..\..\..\bin\HeuristicLab.PluginInfrastructure-3.3.dll</HintPath>
+      <HintPath>$(SolutionDir)\bin\HeuristicLab.PluginInfrastructure-3.3.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -57,20 +57,14 @@
     <None Include="Properties\AssemblyInfo.cs.frame" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="HEAL.Attic.License.txt">
+    <Content Include="Google.Protobuf.License.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="HEAL.Attic">
-      <Version>1.0.0</Version>
+    <PackageReference Include="Google.Protobuf">
+      <Version>3.6.1</Version>
     </PackageReference>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\HeuristicLab.Protobuf\3.6.1\HeuristicLab.Protobuf.csproj">
-      <Project>{44b10478-d290-43d3-9757-c08f5292fea5}</Project>
-      <Name>HeuristicLab.Protobuf</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

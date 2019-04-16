@@ -25,13 +25,10 @@ using System.Linq;
 using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.Attic {
-  [Plugin("HeuristicLab.Attic","HeuristicLab wrapper for HEAL.Attic nuget package which provides efficient serialization and deserialization of object graphs.","1.0.0.$WCREV$")]  
-  [PluginFile("HeuristicLab.Attic.dll", PluginFileType.Assembly)]
-  [PluginFile("HEAL.Attic.dll", PluginFileType.Assembly)]
-  [PluginFile("HEAL.Attic.License.txt", PluginFileType.License)]
-  [PluginFile("System.Drawing.Common.dll", PluginFileType.Assembly)]
-  [PluginDependency("HeuristicLab.Protobuf", "3.6.1")]
-  public class Plugin : PluginBase {
-  }
+namespace HeuristicLab.Protobuf {
+  [Plugin("HeuristicLab.Protobuf","HeuristicLab wrapper for Google.Protobuf nuget package","3.6.1.$WCREV$")]  
+  [PluginFile("HeuristicLab.Protobuf.dll", PluginFileType.Assembly)]
+  [PluginFile("Google.Protobuf.dll", PluginFileType.Assembly)]
+  [PluginFile("Google.Protobuf.License.txt", PluginFileType.License)]
+  public class Plugin : PluginBase { }
 }
