@@ -33,7 +33,7 @@ namespace HeuristicLab.ExactOptimization.LinearProgramming {
   public class GlopSolver : IncrementalLinearSolver {
 
     public GlopSolver() {
-      problemTypeParam.Value = (EnumValue<ProblemType>)problemTypeParam.Value.AsReadOnly();
+      problemTypeParam.Value = (EnumValue<ProblemType>)new EnumValue<ProblemType>(ProblemType.LinearProgramming).AsReadOnly();
       SolverSpecificParameters =
         "# for file format, see Protocol Buffers text format (https://developers.google.com/protocol-buffers/docs/overview#whynotxml)" + Environment.NewLine +
         "# for parameters, see https://github.com/google/or-tools/blob/v6.10/ortools/glop/parameters.proto" + Environment.NewLine +
