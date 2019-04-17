@@ -35,6 +35,10 @@ namespace HeuristicLab.Optimization {
     where TEncoding : class, IEncoding<TEncodedSolution>
     where TEncodedSolution : class, IEncodedSolution {
 
+    protected IValueParameter<BoolArray> MaximizationParameter {
+      get { return (IValueParameter<BoolArray>)Parameters["Maximization"]; }
+    }
+
     [StorableConstructor]
     protected MultiObjectiveProblem(StorableConstructorFlag _) : base(_) { }
 
@@ -43,8 +47,16 @@ namespace HeuristicLab.Optimization {
       ParameterizeOperators();
     }
 
-    protected MultiObjectiveProblem()
-      : base() {
+    protected MultiObjectiveProblem() : base() {
+      Parameters.Add(new ValueParameter<BoolArray>("Maximization", "Set to false if the problem should be minimized.", (BoolArray)new BoolArray(Maximization).AsReadOnly()));
+
+      Operators.Add(Evaluator);
+      Operators.Add(new MultiObjectiveAnalyzer<TEncodedSolution>());
+
+      ParameterizeOperators();
+    }
+
+    protected MultiObjectiveProblem(TEncoding encoding) : base(encoding) {
       Parameters.Add(new ValueParameter<BoolArray>("Maximization", "Set to false if the problem should be minimized.", (BoolArray)new BoolArray(Maximization).AsReadOnly()));
 
       Operators.Add(Evaluator);
@@ -58,9 +70,10 @@ namespace HeuristicLab.Optimization {
       ParameterizeOperators();
     }
 
+    public int Objectives => Maximization.Length;
     public abstract bool[] Maximization { get; }
-    public abstract double[] Evaluate(TEncodedSolution individual, IRandom random);
-    public virtual void Analyze(TEncodedSolution[] individuals, double[][] qualities, ResultCollection results, IRandom random) { }
+    public abstract double[] Evaluate(TEncodedSolution solution, IRandom random);
+    public virtual void Analyze(TEncodedSolution[] solutions, double[][] qualities, ResultCollection results, IRandom random) { }
 
     protected override void OnOperatorsChanged() {
       if (Encoding != null) {

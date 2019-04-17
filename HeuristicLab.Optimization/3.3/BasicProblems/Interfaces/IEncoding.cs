@@ -39,8 +39,9 @@ namespace HeuristicLab.Optimization {
     event EventHandler SolutionCreatorChanged;
   }
 
+  [StorableType("DB23907F-BE6E-44E4-9596-3D3BF1532631")]
   public interface IEncoding<TEncodedSolution> : IEncoding
-    where TEncodedSolution : class, IEncodedSolution {
+      where TEncodedSolution : class, IEncodedSolution {
     //new ISolutionCreator<TEncodedSolution> SolutionCreator { get; }
   }
 }

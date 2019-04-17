@@ -78,6 +78,8 @@ namespace HeuristicLab.Problems.Programmable {
       : base(encoding) { }
 
     #region ISingleObjectiveProblemDefinition<TEncoding,TEncodedSolution> Members
+
+    public int Objectives => Maximization.Length;
     public abstract bool[] Maximization { get; }
     public abstract double[] Evaluate(TEncodedSolution individual, IRandom random);
     public abstract void Analyze(TEncodedSolution[] individuals, double[][] qualities, ResultCollection results, IRandom random);

@@ -29,6 +29,7 @@ namespace HeuristicLab.Optimization {
   /// </summary>
   public interface ISolutionCreator : IOperator { }
 
+  [StorableType("76F17DA0-A81C-4E16-B591-38541D73C370")]
   public interface ISolutionCreator<TEncodedSolution> : ISolutionCreator where TEncodedSolution : class, IEncodedSolution {
     //ILookupParameter<TEncodedSolution> SolutionParameter { get; } // TODO: unify encoding specific parameters by defining ISolutionOperator and ISolutionsOperator
   }

@@ -46,6 +46,8 @@ namespace HeuristicLab.Problems.Programmable {
       return new MultiObjectiveProblemDefinitionScript<TEncoding, TEncodedSolution>(this, cloner);
     }
 
+    int IMultiObjectiveProblemDefinition<TEncoding, TEncodedSolution>.Objectives => CompiledProblemDefinition.Objectives;
+
     bool[] IMultiObjectiveProblemDefinition<TEncoding, TEncodedSolution>.Maximization {
       get { return CompiledProblemDefinition.Maximization; }
     }

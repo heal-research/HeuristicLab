@@ -68,8 +68,7 @@ namespace HeuristicLab.Optimization {
       ParameterizeOperators();
     }
 
-    protected SingleObjectiveProblem()
-      : base() {
+    protected SingleObjectiveProblem() : base() {
       Parameters.Add(new FixedValueParameter<BoolValue>("Maximization", "Set to false if the problem should be minimized.", (BoolValue)new BoolValue(Maximization).AsReadOnly()) { Hidden = true });
       Parameters.Add(new OptionalValueParameter<DoubleValue>("BestKnownQuality", "The quality of the best known solution of this problem."));
 
@@ -83,8 +82,7 @@ namespace HeuristicLab.Optimization {
       ParameterizeOperators();
     }
 
-    protected SingleObjectiveProblem(TEncoding encoding)
-      : base(encoding) {
+    protected SingleObjectiveProblem(TEncoding encoding) : base(encoding) {
       Parameters.Add(new FixedValueParameter<BoolValue>("Maximization", "Set to false if the problem should be minimized.", (BoolValue)new BoolValue(Maximization).AsReadOnly()) { Hidden = true });
       Parameters.Add(new OptionalValueParameter<DoubleValue>("BestKnownQuality", "The quality of the best known solution of this problem."));
 

@@ -27,8 +27,10 @@ namespace HeuristicLab.Optimization {
   public interface IMultiObjectiveProblemDefinition<TEncoding, TEncodedSolution> : IProblemDefinition<TEncoding, TEncodedSolution>
     where TEncoding : class, IEncoding<TEncodedSolution>
     where TEncodedSolution : class, IEncodedSolution {
+
+    int Objectives { get; }
     bool[] Maximization { get; }
-    double[] Evaluate(TEncodedSolution individual, IRandom random);
-    void Analyze(TEncodedSolution[] individuals, double[][] qualities, ResultCollection results, IRandom random);
+    double[] Evaluate(TEncodedSolution solution, IRandom random);
+    void Analyze(TEncodedSolution[] solutions, double[][] qualities, ResultCollection results, IRandom random);
   }
 }
