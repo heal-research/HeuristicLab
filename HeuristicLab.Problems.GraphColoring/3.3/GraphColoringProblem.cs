@@ -33,6 +33,7 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Problems.Instances;
 
 namespace HeuristicLab.Problems.GraphColoring {
+  [StorableType("88078013-834F-40AC-9298-B8E1C4B393D3")]
   public enum FitnessFunction { Prioritized, Penalized }
   [Item("Graph Coloring Problem (GCP)", "Attempts to find a coloring using a minimal number of colors that doesn't produce a conflict.")]
   [Creatable(CreatableAttribute.Categories.CombinatorialProblems, Priority = 135)]
@@ -171,11 +172,11 @@ namespace HeuristicLab.Problems.GraphColoring {
     public override void Analyze(LinearLinkage[] lles, double[] qualities, ResultCollection results, IRandom random) {
       var orderedIndividuals = lles.Zip(qualities, (i, q) => new { LLE = i, Quality = q }).OrderBy(z => z.Quality);
       var best = Maximization ? orderedIndividuals.Last().LLE : orderedIndividuals.First().LLE;
-        
+
       var llee = best.ToEndLinks();
       var colors = llee.Distinct().Count();
       var conflicts = CalculateConflicts(llee);
-      
+
       IResult res;
       int bestColors = int.MaxValue, bestConflicts = int.MaxValue;
       var improvement = false;
