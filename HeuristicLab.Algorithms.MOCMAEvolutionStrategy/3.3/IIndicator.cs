@@ -19,10 +19,10 @@
  */
 #endregion
 using System.Collections.Generic;
+using HEAL.Attic;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Optimization;
-using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.MOCMAEvolutionStrategy {
   [StorableType("5f3f2453-dbf0-46d8-be15-8b6bb9f88592")]
@@ -35,6 +35,6 @@ namespace HeuristicLab.Algorithms.MOCMAEvolutionStrategy {
     /// <param name="front">a front which will be evaluated</param>
     /// <param name="problem">The problem on which the front is evaluated (!! The function itself will NOT be evluated only bounds referencePoints & other metadata will be used</param>
     /// <returns>the index of the least contributing point according to any type of quality criteria</returns>
-    int LeastContributer(IReadOnlyList<Individual> front, MultiObjectiveBasicProblem<RealVectorEncoding> problem);
+    int LeastContributer(IReadOnlyList<Individual> front, MultiObjectiveProblem<RealVectorEncoding, RealVector> problem);
   }
 }

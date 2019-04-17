@@ -22,11 +22,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Optimization;
-using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.MOCMAEvolutionStrategy {
   [Item("MinimalDistanceIndicator", "Selection of Offspring based on distance to nearest neighbour")]
@@ -41,7 +41,7 @@ namespace HeuristicLab.Algorithms.MOCMAEvolutionStrategy {
     public MinimalDistanceIndicator() { }
     #endregion
 
-    public int LeastContributer(IReadOnlyList<Individual> front, MultiObjectiveBasicProblem<RealVectorEncoding> problem) {
+    public int LeastContributer(IReadOnlyList<Individual> front, MultiObjectiveProblem<RealVectorEncoding, RealVector> problem) {
       var extracted = front.Select(x => x.PenalizedFitness).ToArray();
       if (extracted.Length <= 2) return 0;
       var distances = CalcDistances(extracted);

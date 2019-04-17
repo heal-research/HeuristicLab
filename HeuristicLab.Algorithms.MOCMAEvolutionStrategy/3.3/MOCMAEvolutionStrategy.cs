@@ -24,6 +24,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using HEAL.Attic;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -31,7 +32,6 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 using HeuristicLab.Problems.TestFunctions.MultiObjective;
 using HeuristicLab.Random;
 
@@ -41,10 +41,10 @@ namespace HeuristicLab.Algorithms.MOCMAEvolutionStrategy {
   [StorableType("C10264E3-E4C6-4735-8E94-0DC116E8908D")]
   public class MOCMAEvolutionStrategy : BasicAlgorithm {
     public override Type ProblemType {
-      get { return typeof(MultiObjectiveBasicProblem<RealVectorEncoding>); }
+      get { return typeof(MultiObjectiveProblem<RealVectorEncoding, RealVector>); }
     }
-    public new MultiObjectiveBasicProblem<RealVectorEncoding> Problem {
-      get { return (MultiObjectiveBasicProblem<RealVectorEncoding>)base.Problem; }
+    public new MultiObjectiveProblem<RealVectorEncoding, RealVector> Problem {
+      get { return (MultiObjectiveProblem<RealVectorEncoding, RealVector>)base.Problem; }
       set { base.Problem = value; }
     }
     public override bool SupportsPause {
@@ -360,7 +360,7 @@ namespace HeuristicLab.Algorithms.MOCMAEvolutionStrategy {
         ResultsBestKnownHypervolume = Hypervolume.Calculate(problem.BestKnownFront.ToJaggedArray(), problem.TestFunction.ReferencePoint(problem.Objectives), Problem.Maximization);
         ResultsDifferenceBestKnownHypervolume = ResultsBestKnownHypervolume;
       }
-      ResultsScatterPlot = new ParetoFrontScatterPlot(new double[0][], new double[0][], problem.BestKnownFront.ToJaggedArray(), problem.Objectives, problem.ProblemSize);
+      ResultsScatterPlot = new ParetoFrontScatterPlot(new double[0][], new double[0][], problem.BestKnownFront.ToJaggedArray(), Problem.Objectives, Problem.Encoding.Length);
     }
     #endregion
 
@@ -408,7 +408,7 @@ namespace HeuristicLab.Algorithms.MOCMAEvolutionStrategy {
       }
     }
     private double[] Evaluate(RealVector x) {
-      var res = Problem.Evaluate(new SingleEncodingIndividual(Problem.Encoding, new Scope { Variables = { new Variable(Problem.Encoding.Name, x) } }), random);
+      var res = Problem.Evaluate(x, random);
       return res;
     }
     private double[] Penalize(RealVector x, RealVector t, IEnumerable<double> fitness) {
@@ -494,8 +494,7 @@ namespace HeuristicLab.Algorithms.MOCMAEvolutionStrategy {
       ResultsSpacingDataLine.Values.Add(ResultsSpacing);
       ResultsHypervolumeDifferenceDataLine.Values.Add(ResultsDifferenceBestKnownHypervolume);
 
-      Problem.Analyze(
-        solutions.Select(x => (Optimization.Individual)new SingleEncodingIndividual(Problem.Encoding, new Scope { Variables = { new Variable(Problem.Encoding.Name, x.Mean) } })).ToArray(),
+      Problem.Analyze(solutions.Select(x => x.Mean).ToArray(),
         solutions.Select(x => x.Fitness).ToArray(),
         Results,
         random);

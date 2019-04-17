@@ -21,10 +21,10 @@
 
 using System;
 using System.Collections.Generic;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.RealVectorEncoding;
-using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
   [Item("Fonseca", "Fonseca and Flemming function from // https://en.wikipedia.org/wiki/Test_functions_for_optimization [30.11.2015]")]
@@ -34,7 +34,7 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
       return new double[,] { { -4, 4 } };
     }
 
-    protected override bool[] GetMaximization(int objecitves) {
+    protected override bool[] GetMaximization(int objectives) {
       return new bool[2];
     }
 

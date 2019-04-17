@@ -21,25 +21,22 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 using HeuristicLab.Problems.Instances;
 
 namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
   [StorableType("AB0C6A73-C432-46FD-AE3B-9841EAB2478C")]
   [Creatable(CreatableAttribute.Categories.Problems, Priority = 95)]
   [Item("Test Function (multi-objective)", "Test functions with real valued inputs and multiple objectives.")]
-  public class MultiObjectiveTestFunctionProblem : MultiObjectiveBasicProblem<RealVectorEncoding>, IProblemInstanceConsumer<MOTFData> {
+  public class MultiObjectiveTestFunctionProblem : MultiObjectiveProblem<RealVectorEncoding, RealVector>, IProblemInstanceConsumer<MOTFData> {
 
     #region Parameter Properties
-    public IValueParameter<BoolArray> MaximizationParameter {
-      get { return (IValueParameter<BoolArray>)Parameters["Maximization"]; }
-    }
     public IFixedValueParameter<IntValue> ProblemSizeParameter {
       get { return (IFixedValueParameter<IntValue>)Parameters["ProblemSize"]; }
     }
@@ -64,8 +61,9 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
     #region Properties
     public override bool[] Maximization {
       get {
-        if (!Parameters.ContainsKey("Maximization")) return new bool[2];
-        return MaximizationParameter.Value.ToArray();
+        //necessary because of virtual member call in base ctor
+        if (!Parameters.ContainsKey("TestFunction")) return new bool[0];
+        return TestFunction.Maximization(Objectives).ToArray();
       }
     }
 
@@ -135,8 +133,8 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
     }
 
 
-    public override void Analyze(Individual[] individuals, double[][] qualities, ResultCollection results, IRandom random) {
-      base.Analyze(individuals, qualities, results, random);
+    public override void Analyze(RealVector[] solutions, double[][] qualities, ResultCollection results, IRandom random) {
+      base.Analyze(solutions, qualities, results, random);
       if (results.ContainsKey("Pareto Front")) {
         ((DoubleMatrix)results["Pareto Front"].Value).SortableView = true;
       }
@@ -155,13 +153,10 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
       return new double[0];
     }
 
-    public double[] Evaluate(RealVector individual) {
-      return TestFunction.Evaluate(individual, Objectives);
+    public override double[] Evaluate(RealVector solution, IRandom random) {
+      return TestFunction.Evaluate(solution, Objectives);
     }
 
-    public override double[] Evaluate(Individual individual, IRandom random) {
-      return Evaluate(individual.RealVector());
-    }
 
     public void Load(MOTFData data) {
       TestFunction = data.TestFunction;

@@ -22,9 +22,9 @@
 
 using System;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Encodings.RealVectorEncoding;
-using HEAL.Attic;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Algorithms.MOCMAEvolutionStrategy {

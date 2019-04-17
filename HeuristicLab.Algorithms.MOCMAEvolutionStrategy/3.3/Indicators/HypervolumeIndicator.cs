@@ -22,11 +22,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Optimization;
-using HEAL.Attic;
 using HeuristicLab.Problems.TestFunctions.MultiObjective;
 namespace HeuristicLab.Algorithms.MOCMAEvolutionStrategy {
   [Item("HypervolumeIndicator", "Selection of Offspring based on contributing Hypervolume")]
@@ -40,9 +40,10 @@ namespace HeuristicLab.Algorithms.MOCMAEvolutionStrategy {
     public HypervolumeIndicator() { }
     #endregion
 
-    public int LeastContributer(IReadOnlyList<Individual> front, MultiObjectiveBasicProblem<RealVectorEncoding> problem) {
+    public int LeastContributer(IReadOnlyList<Individual> front, MultiObjectiveProblem<RealVectorEncoding, RealVector> problem) {
       var frontCopy = front.Select(x => x.PenalizedFitness).ToList();
       if (frontCopy.Count <= 1) return 0;
+      //TODO discuss with bwerth
       var p = problem as MultiObjectiveTestFunctionProblem;
       var refPoint = BuildReferencePoint(p != null ? frontCopy.Concat(new[] { p.ReferencePoint.CloneAsArray() }) : frontCopy, problem.Maximization);
       var contributions = Enumerable.Range(0, frontCopy.Count).Select(i => Contribution(frontCopy, i, problem.Maximization, refPoint));

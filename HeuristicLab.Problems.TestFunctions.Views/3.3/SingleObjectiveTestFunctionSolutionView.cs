@@ -147,7 +147,7 @@ namespace HeuristicLab.Problems.TestFunctions.Views {
       }
       pictureBox.Refresh();
       DoubleMatrix bounds = Content.Bounds;
-      if (bounds == null) bounds = Content.Evaluator.Bounds;
+      if (bounds == null) bounds = Content.Bounds;
       double xMin = bounds[0, 0], xMax = bounds[0, 1], yMin = bounds[1 % bounds.Rows, 0], yMax = bounds[1 % bounds.Rows, 1];
       double xStep = backgroundImage.Width / (xMax - xMin), yStep = backgroundImage.Height / (yMax - yMin);
 
