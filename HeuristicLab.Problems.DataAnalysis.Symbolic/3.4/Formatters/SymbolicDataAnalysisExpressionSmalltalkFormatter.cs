@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using System.Globalization;
 using System.Text;
 using HeuristicLab.Common;
@@ -68,6 +69,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           stringBuilder.Append(" > 0)");
         }
         stringBuilder.Append(") ifTrue:[1] ifFalse:[-1]");
+      } else if (symbol is Absolute) {
+        stringBuilder.Append($"({FormatRecursively(node.GetSubtree(0))}) abs");
+      } else if (symbol is AnalyticQuotient) {
+        stringBuilder.Append($"({FormatRecursively(node.GetSubtree(0))}) / (1 + ({FormatPower(node.GetSubtree(1), "2")})) sqrt");
       } else if (symbol is Average) {
         stringBuilder.Append("(1/");
         stringBuilder.Append(node.SubtreeCount);
@@ -83,6 +88,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       } else if (symbol is Cosine) {
         stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
         stringBuilder.Append(" cos");
+      } else if (symbol is Cube) {
+        stringBuilder.Append(FormatPower(node.GetSubtree(0), "3"));
+      } else if (symbol is CubeRoot) {
+        stringBuilder.Append(FormatPower(node.GetSubtree(0), "(1/3)"));
       } else if (symbol is Division) {
         if (node.SubtreeCount == 1) {
           stringBuilder.Append("1/");
@@ -145,6 +154,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       } else if (symbol is Sine) {
         stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
         stringBuilder.Append(" sin");
+      } else if (symbol is Square) {
+        stringBuilder.Append(FormatPower(node.GetSubtree(0), "2"));
+      } else if (symbol is SquareRoot) {
+        stringBuilder.Append(FormatPower(node.GetSubtree(0), "(1/2)"));
       } else if (symbol is Subtraction) {
         if (node.SubtreeCount == 1) {
           stringBuilder.Append("-1*");
@@ -181,6 +194,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       stringBuilder.Append(")");
 
       return stringBuilder.ToString();
+    }
+
+    private string FormatPower(ISymbolicExpressionTreeNode node, string exponent) {
+      return $"(({FormatRecursively(node)}) log * {exponent}) exp ";
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {

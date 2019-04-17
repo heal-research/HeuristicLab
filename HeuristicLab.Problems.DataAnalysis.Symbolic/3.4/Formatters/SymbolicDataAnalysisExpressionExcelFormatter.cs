@@ -118,6 +118,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           stringBuilder.Append(FormatRecursively(node.GetSubtree(i)));
         }
         stringBuilder.Append(")");
+      } else if (symbol is Absolute) {
+        stringBuilder.Append($"ABS({FormatRecursively(node.GetSubtree(0))})");
+      } else if (symbol is AnalyticQuotient) {
+        stringBuilder.Append($"({FormatRecursively(node.GetSubtree(0))}) / SQRT(1 + POWER({FormatRecursively(node.GetSubtree(1))}, 2))");
       } else if (symbol is Average) {
         stringBuilder.Append("(1/(");
         stringBuilder.Append(node.SubtreeCount);
@@ -136,6 +140,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         stringBuilder.Append("COS(");
         stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
         stringBuilder.Append(")");
+      } else if (symbol is Cube) {
+        stringBuilder.Append($"POWER({FormatRecursively(node.GetSubtree(0))}, 3)");
+      } else if (symbol is CubeRoot) {
+        stringBuilder.Append($"POWER({FormatRecursively(node.GetSubtree(0))}, 1/3)");
       } else if (symbol is Division) {
         if (node.SubtreeCount == 1) {
           stringBuilder.Append("1/(");
