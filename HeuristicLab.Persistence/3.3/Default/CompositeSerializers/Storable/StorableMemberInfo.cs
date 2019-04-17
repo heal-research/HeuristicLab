@@ -40,10 +40,10 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
       }
     }
     public StorableMemberInfo(StorableAttribute attribute, MemberInfo memberInfo) {
-      DisentangledName = attribute.Name;
+      DisentangledName = string.IsNullOrEmpty(attribute.OldName) ? attribute.Name : attribute.OldName;
       DefaultValue = attribute.DefaultValue;
       MemberInfo = memberInfo;
-      if (string.IsNullOrEmpty(attribute.OldName))
+      if (string.IsNullOrEmpty(attribute.OldName) && !attribute.AllowOneWay)
         CheckPropertyAccess(memberInfo as PropertyInfo);
     }
     public StorableMemberInfo(MemberInfo memberInfo, bool allowOneWay) {
