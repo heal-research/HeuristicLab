@@ -83,7 +83,7 @@ namespace HeuristicLab.Optimization {
     #region properties
     // BackwardsCompatibility3.3
     #region Backwards compatible code, remove with 3.4
-    [Storable(Name = "Operators", AllowOneWay = true)]
+    [Storable(OldName = "Operators")]
     private IEnumerable<IOperator> StorableOperators {
       set {
         IParameter operatorsParam;

@@ -33,17 +33,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       variableRanges.Add("x2", new Interval(4, 6));
     }
 
-    private void EvaluateTest(string expression, Interval expectedResult, Dictionary<string, Interval> variableRanges = null) {
+    private void EvaluateTest(string expression, Interval expectedResult, Dictionary<string, Interval> variableRanges = null, double lowerDelta =0, double upperDelta = 0) {
       var parser = new InfixExpressionParser();
       var tree = parser.Parse(expression);
       var interpreter = new IntervalInterpreter();
       Interval result;
       if (variableRanges == null)
-        result = interpreter.GetSymbolicExressionTreeInterval(tree, problemData.Dataset, problemData.AllIndices);
+        result = interpreter.GetSymbolicExpressionTreeInterval(tree, problemData.Dataset, problemData.AllIndices);
       else
-        result = interpreter.GetSymbolicExressionTreeInterval(tree, variableRanges);
+        result = interpreter.GetSymbolicExpressionTreeInterval(tree, variableRanges);
 
-      Assert.AreEqual(expectedResult, result);
+      Assert.AreEqual(expectedResult.LowerBound, result.LowerBound, lowerDelta);
+      Assert.AreEqual(expectedResult.UpperBound, result.UpperBound, upperDelta);
     }
 
 
@@ -78,6 +79,19 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       EvaluateTest("sin(x1+x2)", new Interval(-1, 1));
       EvaluateTest("sin(x1+x2)", new Interval(-1, 1), variableRanges);
       EvaluateTest("sin(1+2)", new Interval(Math.Sin(3), Math.Sin(3)));
+
+      var localVarRanges = new Dictionary<string, Interval>();
+      localVarRanges.Add("x1", new Interval(-1, 1));
+      localVarRanges.Add("x2", new Interval(-(Math.PI / 2), 0));
+      localVarRanges.Add("x3", new Interval(0, Math.PI / 2));
+      localVarRanges.Add("x4", new Interval(-Math.PI, Math.PI));
+      localVarRanges.Add("x5", new Interval(Math.PI/4, Math.PI*3.0/4));
+
+      EvaluateTest("sin(x1)", new Interval(Math.Sin(-1), Math.Sin(1)), localVarRanges, 1E-8, 1E-8);
+      EvaluateTest("sin(x2)", new Interval(-1, 0), localVarRanges, 1E-8, 1E-8);
+      EvaluateTest("sin(x3)", new Interval(0, 1), localVarRanges, 1E-8, 1E-8);
+      EvaluateTest("sin(x4)", new Interval(-1, 1), localVarRanges, 1E-8, 1E-8);
+      EvaluateTest("sin(x5)", new Interval(Math.Sin(Math.PI/4), 1), localVarRanges, 1E-8, 1E-8);
     }
 
     [TestMethod]
@@ -86,8 +100,59 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
     public void TestIntervalInterpreterCos() {
       EvaluateTest("cos(x1+x2)", new Interval(-1, 1));
       EvaluateTest("cos(x1+x2)", new Interval(-1, 1), variableRanges);
-      EvaluateTest("cos(1+2)", new Interval(Math.Sin(3 - Math.PI / 2), Math.Sin(3 - Math.PI / 2)));
+      EvaluateTest("cos(1+2)", new Interval(Math.Sin(3 + Math.PI / 2), Math.Sin(3 + Math.PI / 2)));
+
+      var localVarRanges = new Dictionary<string, Interval>();
+      localVarRanges.Add("x1", new Interval(-1, 1));
+      localVarRanges.Add("x2", new Interval(-(Math.PI / 2), 0));
+      localVarRanges.Add("x3", new Interval(0, Math.PI / 2));
+      localVarRanges.Add("x4", new Interval(-Math.PI, Math.PI));
+      localVarRanges.Add("x5", new Interval(Math.PI / 4, Math.PI * 3.0 / 4));
+
+      EvaluateTest("cos(x1)", new Interval(Math.Cos(-1), 1), localVarRanges, 1E-8, 1E-8);
+      EvaluateTest("cos(x2)", new Interval(0, 1), localVarRanges, 1E-8, 1E-8);
+      EvaluateTest("cos(x3)", new Interval(0, 1), localVarRanges, 1E-8, 1E-8);
+      EvaluateTest("cos(x4)", new Interval(-1, 1), localVarRanges, 1E-8, 1E-8);
+      EvaluateTest("cos(x5)", new Interval(Math.Cos(Math.PI *3.0/ 4), Math.Cos(Math.PI/ 4)), localVarRanges, 1E-8, 1E-8);
+
     }
+
+    [TestMethod]
+    [TestCategory("Problems.DataAnalysis.Symbolic")]
+    [TestProperty("Time", "short")]
+    public void TestIntervalInterpreterTan() {
+      // critical values:
+      // lim tan(x) = -inf for x => -pi/2
+      // lim tan(x) = +inf for x =>  pi/2
+      var variableRanges = new Dictionary<string, Interval>();
+      variableRanges.Add("x1", new Interval(-1, 1));
+      variableRanges.Add("x2", new Interval(-(Math.PI / 2), 0));
+      variableRanges.Add("x3", new Interval(0, Math.PI / 2));
+      variableRanges.Add("x4", new Interval(-Math.PI, Math.PI));
+
+      EvaluateTest("tan(x1)", new Interval(Math.Tan(-1), Math.Tan(1)), variableRanges, 1E-8, 1E-8);
+      EvaluateTest("tan(x2)", new Interval(double.NegativeInfinity, 0), variableRanges, 0, 1E-8);
+      EvaluateTest("tan(x3)", new Interval(0, 8.16588936419192E+15), variableRanges, 0, 1E6); // actually upper bound should be infinity.
+      EvaluateTest("tan(x4)", new Interval(double.NegativeInfinity, double.PositiveInfinity), variableRanges);
+    }
+
+    [TestMethod]
+    [TestCategory("Problems.DataAnalysis.Symbolic")]
+    [TestProperty("Time", "short")]
+    public void TestIntervalInterpreterTanh() {
+      // critical values:
+      // lim tanh(x) = -1 for x => -inf
+      // lim tanh(x) =  1 for x =>  inf
+      var variableRanges = new Dictionary<string, Interval>();
+      variableRanges.Add("x1", new Interval(-1, 1));
+      variableRanges.Add("x2", new Interval(double.NegativeInfinity, 0));
+      variableRanges.Add("x3", new Interval(0, double.PositiveInfinity));
+
+      EvaluateTest("tanh(x1)", new Interval(Math.Tanh(-1), Math.Tanh(1)), variableRanges);
+      EvaluateTest("tanh(x2)", new Interval(-1, 0), variableRanges);
+      EvaluateTest("tanh(x3)", new Interval(0, 1), variableRanges);
+    }
+
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis.Symbolic")]

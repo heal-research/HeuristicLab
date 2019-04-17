@@ -136,10 +136,22 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           FormatSquare(node, strBuilder);
         } else if (node.Symbol is SquareRoot) {
           FormatFunction(node, "Math.Sqrt", strBuilder);
+        } else if (node.Symbol is Cube) {
+          FormatPower(node, strBuilder, "3");
+        } else if (node.Symbol is CubeRoot) {
+          FormatPower(node, strBuilder, "1.0/3");
         } else if (node.Symbol is Power) {
           FormatFunction(node, "Math.Pow", strBuilder);
         } else if (node.Symbol is Root) {
           FormatRoot(node, strBuilder);
+        } else if (node.Symbol is Absolute) {
+          FormatFunction(node, "Math.Abs", strBuilder);
+        } else if (node.Symbol is AnalyticQuotient) {
+          strBuilder.Append("(");
+          FormatRecursively(node.GetSubtree(0), strBuilder);
+          strBuilder.Append(" / Math.Sqrt(1 + Math.Pow(");
+          FormatRecursively(node.GetSubtree(1), strBuilder);
+          strBuilder.Append(" , 2) )");
         } else {
           throw new NotSupportedException("Formatting of symbol: " + node.Symbol + " not supported for C# symbolic expression tree formatter.");
         }
@@ -172,9 +184,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     private void FormatSquare(ISymbolicExpressionTreeNode node, StringBuilder strBuilder) {
+      FormatPower(node, strBuilder, "2");
+    }
+    private void FormatPower(ISymbolicExpressionTreeNode node, StringBuilder strBuilder, string exponent) {
       strBuilder.Append("Math.Pow(");
       FormatRecursively(node.GetSubtree(0), strBuilder);
-      strBuilder.Append(", 2)");
+      strBuilder.Append($", {exponent})");
     }
 
     private void FormatRoot(ISymbolicExpressionTreeNode node, StringBuilder strBuilder) {

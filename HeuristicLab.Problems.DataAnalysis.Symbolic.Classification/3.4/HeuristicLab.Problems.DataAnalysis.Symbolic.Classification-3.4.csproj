@@ -125,6 +125,8 @@
     <Compile Include="ModelCreators\NearestNeighborModelCreator.cs" />
     <Compile Include="ModelCreators\NormalDistributedThresholdsModelCreator.cs" />
     <Compile Include="MultiObjective\SymbolicClassificationMultiObjectiveValidationBestSolutionAnalyzer.cs" />
+    <Compile Include="SingleObjective\SymbolicClassificationSingleObjectiveWeightedPerformanceMeasuresEvaluator.cs" />
+    <Compile Include="SingleObjective\SymbolicClassificationSingleObjectiveWeightedResidualsMeanSquaredErrorEvaluator.cs" />
     <Compile Include="SymbolicClassificationPhenotypicDiversityAnalyzer.cs" />
     <Compile Include="SymbolicClassificationPruningAnalyzer.cs" />
     <Compile Include="SymbolicClassificationSolutionImpactValuesCalculator.cs" />

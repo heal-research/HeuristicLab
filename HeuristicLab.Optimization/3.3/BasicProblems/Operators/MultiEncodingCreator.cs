@@ -21,22 +21,38 @@
 
 using System;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Attic;
+using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Optimization {
   [Item("MultiEncodingCreator", "Contains solution creators that together create a multi-encoding.")]
   [StorableType("E261B506-6F74-4BC4-8164-5ACE20FBC319")]
-  public sealed class MultiEncodingCreator : MultiEncodingOperator<ISolutionCreator>, ISolutionCreator {
+  public sealed class MultiEncodingCreator : MultiEncodingOperator<ISolutionCreator>, ISolutionCreator, IStochasticOperator {
+    public ILookupParameter<IRandom> RandomParameter {
+      get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
+    }
+
+    public override string OperatorPrefix => "Creator";
+
     [StorableConstructor]
     private MultiEncodingCreator(StorableConstructorFlag _) : base(_) { }
 
     private MultiEncodingCreator(MultiEncodingCreator original, Cloner cloner) : base(original, cloner) { }
-    public MultiEncodingCreator() { }
+    public MultiEncodingCreator() {
+      Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator used by the individual operators."));
+    }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new MultiEncodingCreator(this, cloner);
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      if (!Parameters.ContainsKey("Random")) {
+        Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator used by the individual operators."));
+      }
     }
 
     public override void AddEncoding(IEncoding encoding) {

@@ -55,6 +55,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       if (node.Subtrees.Any()) {
         if (node.Symbol is Addition) {
           FormatFunction(node, "Plus", strBuilder);
+        } else if (node.Symbol is Absolute) {
+          FormatFunction(node, "Abs", strBuilder);
+        } else if (node.Symbol is AnalyticQuotient) {
+          strBuilder.Append("[");
+          FormatRecursively(node.GetSubtree(0), strBuilder);
+          strBuilder.Append("]/Sqrt[ 1 + Power[");
+          FormatRecursively(node.GetSubtree(1), strBuilder);
+          strBuilder.Append(", 2]]");
         } else if (node.Symbol is Average) {
           FormatAverage(node, strBuilder);
         } else if (node.Symbol is Multiplication) {
@@ -103,6 +111,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           FormatSquare(node, strBuilder);
         } else if (node.Symbol is SquareRoot) {
           FormatFunction(node, "Sqrt", strBuilder);
+        } else if (node.Symbol is Cube) {
+          FormatPower(node, strBuilder, "3");
+        } else if (node.Symbol is CubeRoot) {
+          FormatPower(node, strBuilder, "1/3");
         } else if (node.Symbol is Power) {
           FormatFunction(node, "Power", strBuilder);
         } else if (node.Symbol is Root) {
@@ -204,9 +216,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     private void FormatSquare(ISymbolicExpressionTreeNode node, StringBuilder strBuilder) {
+      FormatPower(node, strBuilder, "2");
+    }
+
+    private void FormatPower(ISymbolicExpressionTreeNode node, StringBuilder strBuilder, string exponent) {
       strBuilder.Append("Power[");
       FormatRecursively(node.GetSubtree(0), strBuilder);
-      strBuilder.Append(", 2]");
+      strBuilder.Append($", {exponent}]");
     }
 
     private void FormatRoot(ISymbolicExpressionTreeNode node, StringBuilder strBuilder) {

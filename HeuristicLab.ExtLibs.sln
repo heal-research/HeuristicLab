@@ -66,9 +66,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EPPlus-4.0.3", "HeuristicLa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.EPPlus-4.0.3", "HeuristicLab.ExtLibs\HeuristicLab.EPPlus\4.0.3\HeuristicLab.EPPlus-4.0.3\HeuristicLab.EPPlus-4.0.3.csproj", "{675A6EE4-DE7C-413E-8BEF-EB21E0384C87}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimSharp-3.0.11", "HeuristicLab.ExtLibs\HeuristicLab.SimSharp\3.0.11\SimSharp-3.0.11\SimSharp-3.0.11.csproj", "{9FE9C740-7859-4D01-AD07-7D4E15A6320B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimSharp-3.1.1", "HeuristicLab.ExtLibs\HeuristicLab.SimSharp\3.1.1\SimSharp-3.1.1\SimSharp-3.1.1.csproj", "{9FE9C740-7859-4D01-AD07-7D4E15A6320B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.SimSharp-3.0.11", "HeuristicLab.ExtLibs\HeuristicLab.SimSharp\3.0.11\HeuristicLab.SimSharp-3.0.11\HeuristicLab.SimSharp-3.0.11.csproj", "{5C93CAF7-AE6A-4540-95B2-5DA6761A2677}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.SimSharp-3.1.1", "HeuristicLab.ExtLibs\HeuristicLab.SimSharp\3.1.1\HeuristicLab.SimSharp-3.1.1\HeuristicLab.SimSharp-3.1.1.csproj", "{5C93CAF7-AE6A-4540-95B2-5DA6761A2677}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.IGraph-0.8.0-pre", "HeuristicLab.ExtLibs\HeuristicLab.Igraph\0.8.0-pre\HeuristicLab.Igraph-0.8.0-pre\HeuristicLab.IGraph-0.8.0-pre.csproj", "{088D34F2-32EA-43FF-BAA8-22428D5B66BE}"
 EndProject
@@ -79,6 +79,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Attic", "HeuristicLab.ExtLibs\HeuristicLab.Attic\1.0.0\HeuristicLab.Attic.csproj", "{44A10478-D290-43C2-9757-F08F5292FEA5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.OrTools-7.0.0", "HeuristicLab.ExtLibs\HeuristicLab.OrTools\7.0.0\HeuristicLab.OrTools-7.0.0\HeuristicLab.OrTools-7.0.0.csproj", "{AEC895BC-C519-49D3-9A94-6B1C71AD6671}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Protobuf", "HeuristicLab.ExtLibs\HeuristicLab.Protobuf\3.6.1\HeuristicLab.Protobuf.csproj", "{44B10478-D290-43D3-9757-C08F5292FEA5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -518,6 +520,18 @@ Global
 		{AEC895BC-C519-49D3-9A94-6B1C71AD6671}.Release|x64.Build.0 = Release|x64
 		{AEC895BC-C519-49D3-9A94-6B1C71AD6671}.Release|x86.ActiveCfg = Release|x86
 		{AEC895BC-C519-49D3-9A94-6B1C71AD6671}.Release|x86.Build.0 = Release|x86
+		{44B10478-D290-43D3-9757-C08F5292FEA5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{44B10478-D290-43D3-9757-C08F5292FEA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{44B10478-D290-43D3-9757-C08F5292FEA5}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{44B10478-D290-43D3-9757-C08F5292FEA5}.Debug|x64.Build.0 = Debug|Any CPU
+		{44B10478-D290-43D3-9757-C08F5292FEA5}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{44B10478-D290-43D3-9757-C08F5292FEA5}.Debug|x86.Build.0 = Debug|Any CPU
+		{44B10478-D290-43D3-9757-C08F5292FEA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{44B10478-D290-43D3-9757-C08F5292FEA5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{44B10478-D290-43D3-9757-C08F5292FEA5}.Release|x64.ActiveCfg = Release|Any CPU
+		{44B10478-D290-43D3-9757-C08F5292FEA5}.Release|x64.Build.0 = Release|Any CPU
+		{44B10478-D290-43D3-9757-C08F5292FEA5}.Release|x86.ActiveCfg = Release|Any CPU
+		{44B10478-D290-43D3-9757-C08F5292FEA5}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
