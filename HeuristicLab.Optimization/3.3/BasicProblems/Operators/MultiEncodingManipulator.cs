@@ -22,17 +22,33 @@
 using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Optimization {
   [Item("MultiEncoding Manipulator", "Applies different manipulators to change a multi-encoding.")]
   [StorableType("574D0530-47E8-4FD9-8AC8-B8EA2DE3C203")]
   internal sealed class MultiEncodingManipulator : MultiEncodingOperator<IManipulator>, IManipulator {
+    public ILookupParameter<IRandom> RandomParameter {
+      get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
+    }
+
+    public override string OperatorPrefix => "Manipulator";
     [StorableConstructor]
     private MultiEncodingManipulator(StorableConstructorFlag _) : base(_) { }
     private MultiEncodingManipulator(MultiEncodingManipulator original, Cloner cloner) : base(original, cloner) { }
-    public MultiEncodingManipulator() : base() { }
+
+    public MultiEncodingManipulator() : base() {
+      Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator used by the individual operators."));
+    }
 
     public override IDeepCloneable Clone(Cloner cloner) { return new MultiEncodingManipulator(this, cloner); }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      if (!Parameters.ContainsKey("Random")) {
+        Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator used by the individual operators."));
+      }
+    }
 
   }
 }

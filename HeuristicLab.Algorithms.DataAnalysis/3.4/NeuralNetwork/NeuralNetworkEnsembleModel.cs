@@ -143,7 +143,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       if (classificationProblemData != null)
         return IsProblemDataCompatible(classificationProblemData, out errorMessage);
 
-      throw new ArgumentException("The problem data is not a regression nor a classification problem data. Instead a " + problemData.GetType().GetPrettyName() + " was provided.", "problemData");
+      throw new ArgumentException("The problem data is not compatible with this neural network ensemble. Instead a " + problemData.GetType().GetPrettyName() + " was provided.", "problemData");
     }
 
     public IRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData) {
@@ -152,7 +152,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public override IClassificationSolution CreateClassificationSolution(IClassificationProblemData problemData) {
       return new NeuralNetworkEnsembleClassificationSolution(this, new ClassificationEnsembleProblemData(problemData));
     }
-   
+
     #region persistence
     [Storable]
     private string MultiLayerPerceptronEnsembleNetwork {
@@ -182,7 +182,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         mlpEnsemble.innerobj.network.columnsigmas = value;
       }
     }
-    [Storable]
+    [Storable(OldName = "MultiLayerPerceptronEnsembleDfdnet")]
     private double[] MultiLayerPerceptronEnsembleDfdnet {
       set {
         mlpEnsemble.innerobj.network.dfdnet = value;
@@ -196,17 +196,17 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         mlpEnsemble.innerobj.ensemblesize = value;
       }
     }
-    [Storable]
+    [Storable(OldName = "MultiLayerPerceptronEnsembleNeurons")]
     private double[] MultiLayerPerceptronEnsembleNeurons {
       set { mlpEnsemble.innerobj.network.neurons = value; }
     }
-    [Storable]
+    [Storable(OldName = "MultiLayerPerceptronEnsembleSerializedMlp")]
     private double[] MultiLayerPerceptronEnsembleSerializedMlp {
       set {
         mlpEnsemble.innerobj.network.dfdnet = value;
       }
     }
-    [Storable]
+    [Storable(OldName = "MultiLayerPerceptronStuctinfo")]
     private int[] MultiLayerPerceptronStuctinfo {
       set {
         mlpEnsemble.innerobj.network.structinfo = value;

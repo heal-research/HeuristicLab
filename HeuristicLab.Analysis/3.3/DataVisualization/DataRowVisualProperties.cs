@@ -226,11 +226,11 @@ namespace HeuristicLab.Analysis {
     internal bool? ExactBins { get; private set; }
     internal DataRowHistogramAggregation? Aggregation { get; private set; }
 
-    [Storable(Name = "Bins")]
+    [Storable(OldName = "Bins")]
     private int StorableBins { set { Bins = value; } }
-    [Storable(Name = "ExactBins")]
+    [Storable(OldName = "ExactBins")]
     private bool StorableExactBins { set { ExactBins = value; } }
-    [Storable(Name = "Aggregation")]
+    [Storable(OldName = "Aggregation")]
     private DataRowHistogramAggregation StorableAggregation { set { Aggregation = value; } }
     #endregion
 

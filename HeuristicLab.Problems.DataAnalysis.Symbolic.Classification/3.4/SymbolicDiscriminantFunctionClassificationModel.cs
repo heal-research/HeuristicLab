@@ -111,8 +111,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     }
 
     public override IEnumerable<double> GetEstimatedClassValues(IDataset dataset, IEnumerable<int> rows) {
+      var estimatedValues = GetEstimatedValues(dataset, rows);
+      return GetEstimatedClassValues(estimatedValues);
+    }
+    public IEnumerable<double> GetEstimatedClassValues(IEnumerable<double> estimatedValues) {
       if (!Thresholds.Any() && !ClassValues.Any()) throw new ArgumentException("No thresholds and class values were set for the current symbolic classification model.");
-      foreach (var x in GetEstimatedValues(dataset, rows)) {
+      foreach (var x in estimatedValues) {
         int classIndex = 0;
         // find first threshold value which is larger than x => class index = threshold index + 1
         for (int i = 0; i < thresholds.Length; i++) {
@@ -122,7 +126,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
         yield return classValues.ElementAt(classIndex - 1);
       }
     }
-
 
     public override ISymbolicClassificationSolution CreateClassificationSolution(IClassificationProblemData problemData) {
       return CreateDiscriminantClassificationSolution(problemData);

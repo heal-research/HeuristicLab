@@ -174,7 +174,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
       ProblemInstance.SolutionEvaluator = EvaluatorParameter.Value;
     }
 
-    [Storable(Name = "operators")]
+    [Storable(OldName = "operators")]
     private List<IOperator> StorableOperators {
       set { Operators.AddRange(value); }
     }

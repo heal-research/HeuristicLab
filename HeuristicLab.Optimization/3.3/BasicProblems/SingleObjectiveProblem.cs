@@ -124,7 +124,6 @@ namespace HeuristicLab.Optimization {
     }
 
     protected override void OnOperatorsChanged() {
-      base.OnOperatorsChanged();
       if (Encoding != null) {
         PruneMultiObjectiveOperators(Encoding);
         var combinedEncoding = Encoding as CombinedEncoding;
@@ -134,6 +133,7 @@ namespace HeuristicLab.Optimization {
           }
         }
       }
+      base.OnOperatorsChanged();
     }
 
     private void PruneMultiObjectiveOperators(IEncoding encoding) {

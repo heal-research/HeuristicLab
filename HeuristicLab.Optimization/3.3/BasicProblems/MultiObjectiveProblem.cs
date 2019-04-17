@@ -63,7 +63,6 @@ namespace HeuristicLab.Optimization {
     public virtual void Analyze(TEncodedSolution[] individuals, double[][] qualities, ResultCollection results, IRandom random) { }
 
     protected override void OnOperatorsChanged() {
-      base.OnOperatorsChanged();
       if (Encoding != null) {
         PruneSingleObjectiveOperators(Encoding);
         var combinedEncoding = Encoding as CombinedEncoding;
@@ -73,6 +72,7 @@ namespace HeuristicLab.Optimization {
           }
         }
       }
+      base.OnOperatorsChanged();
     }
 
     private void PruneSingleObjectiveOperators(IEncoding encoding) {

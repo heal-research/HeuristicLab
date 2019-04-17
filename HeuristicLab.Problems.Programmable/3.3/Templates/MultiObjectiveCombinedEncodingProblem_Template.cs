@@ -6,11 +6,12 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Problems.Programmable;
-//using HeuristicLab.Encodings.BinaryVectorEncoding;
-//using HeuristicLab.Encodings.IntegerVectorEncoding;
-//using HeuristicLab.Encodings.RealVectorEncoding;
-//using HeuristicLab.Encodings.PermutationEncoding;
-//using HeuristicLab.Encodings.LinearLinkageEncoding;
+using HeuristicLab.Encodings.BinaryVectorEncoding;
+using HeuristicLab.Encodings.IntegerVectorEncoding;
+using HeuristicLab.Encodings.RealVectorEncoding;
+using HeuristicLab.Encodings.PermutationEncoding;
+using HeuristicLab.Encodings.LinearLinkageEncoding;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 
 namespace HeuristicLab.Problems.Programmable {
   public class CompiledSingleObjectiveProblemDefinition : CompiledMultiObjectiveProblemDefinition<CombinedEncoding, CombinedSolution> {
@@ -20,9 +21,9 @@ namespace HeuristicLab.Problems.Programmable {
       // Use vars.yourVariable to access variables in the variable store i.e. yourVariable
       // Define e.g. the length of the solution encoding or the solution creator by modifying the Encoding property
       // Add additional initialization code e.g. private variables that you need for evaluating
-      //Encoding.Add(new BinaryVectorEncoding("b") { Length = 10 });
+      Encoding.Add(new BinaryVectorEncoding("b") { Length = 10 });
       //Encoding.Add(new IntegerVectorEncoding("i") { Length = 10, Bounds = new IntMatrix(new int[,] { { -100, 100 } }) });
-      //Encoding.Add(new RealVectorEncoding("r") { Length = 10, Bounds = new DoubleMatrix(new double[,] { { -100, 100 } }) });
+      Encoding.Add(new RealVectorEncoding("r") { Length = 10, Bounds = new DoubleMatrix(new double[,] { { -100, 100 } }) });
       //Encoding.Add(new PermutationEncoding("p") { Length = 20, Type = PermutationTypes.Absolute });
       //Encoding.Add(new LinearLinkageEncoding("lle") { Length = 30 });
     }
@@ -30,10 +31,10 @@ namespace HeuristicLab.Problems.Programmable {
     public override double[] Evaluate(CombinedSolution solution, IRandom random) {
       // Use vars.yourVariable to access variables in the variable store i.e. yourVariable
       var quality = new[] { 0.0, 0.0 };
-      //var b = solution.GetSolution<BinaryVector>("b");
-      //quality[0] = b.Count(x => x); // one max!
-      //var r = solution.GetSolution<RealVector>("r");
-      //quality[1] = r.Select((i, v) => new { Idx = i, Val = v }).Sum(x => b[x.Idx] ? x.Val * x.Val : 0.0); // sphere
+      var b = solution.GetEncodedSolution<BinaryVector>("b");
+      quality[0] = b.Count(x => x); // one max!
+      var r = solution.GetEncodedSolution<RealVector>("r");
+      quality[1] = r.Select((i, v) => new { Idx = i, Val = v }).Sum(x => b[x.Idx] ? x.Val * x.Val : 0.0); // sphere
 
       // NOTE: Check the Maximization property above (true or false)!
       return quality;

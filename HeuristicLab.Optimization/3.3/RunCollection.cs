@@ -124,7 +124,7 @@ namespace HeuristicLab.Optimization {
 
     // BackwardsCompatibility3.3
     #region Backwards compatible code, remove with 3.4
-    [Storable]
+    [Storable(OldName = "AlgorithmName")]
     private string AlgorithmName {
       set { optimizerName = value; }
     }

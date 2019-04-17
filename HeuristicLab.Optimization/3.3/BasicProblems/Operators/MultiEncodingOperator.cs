@@ -21,11 +21,11 @@
 
 using System;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
   [StorableType("43619638-9D00-4951-8138-8CCD0786E784")]
@@ -38,6 +38,8 @@ namespace HeuristicLab.Optimization {
       get { return (ILookupParameter<IEncoding<CombinedSolution>>)Parameters["Encoding"]; }
     }
 
+    public abstract string OperatorPrefix { get; }
+
     [StorableConstructor]
     protected MultiEncodingOperator(StorableConstructorFlag _) : base(_) { }
     protected MultiEncodingOperator(MultiEncodingOperator<T> original, Cloner cloner) : base(original, cloner) { }
@@ -48,16 +50,16 @@ namespace HeuristicLab.Optimization {
     }
 
     public override IOperation InstrumentedApply() {
-      var operations = Parameters.Select(p => p.ActualValue).OfType<IOperator>().Select(op => ExecutionContext.CreateOperation(op));
+      var operations = Parameters.Select(p => p.ActualValue).OfType<IOperator>().Select(op => ExecutionContext.CreateChildOperation(op));
       return new OperationCollection(operations);
     }
 
     public virtual void AddEncoding(IEncoding encoding) {
-      if (Parameters.ContainsKey(encoding.Name)) throw new ArgumentException(string.Format("Encoding {0} was already added.", encoding.Name));
+      if (Parameters.ContainsKey(OperatorPrefix + "." + encoding.Name)) throw new ArgumentException(string.Format("Encoding {0} was already added.", encoding.Name));
 
       encoding.OperatorsChanged += Encoding_OperatorsChanged;
 
-      var param = new ConstrainedValueParameter<T>(encoding.Name, new ItemSet<T>(encoding.Operators.OfType<T>()));
+      var param = new ConstrainedValueParameter<T>(OperatorPrefix + "." + encoding.Name, new ItemSet<T>(encoding.Operators.OfType<T>()));
       param.Value = param.ValidValues.First();
       Parameters.Add(param);
     }
@@ -65,13 +67,13 @@ namespace HeuristicLab.Optimization {
     public virtual bool RemoveEncoding(IEncoding encoding) {
       if (!Parameters.ContainsKey(encoding.Name)) throw new ArgumentException(string.Format("Encoding {0} was not added to the MultiEncoding.", encoding.Name));
       encoding.OperatorsChanged -= Encoding_OperatorsChanged;
-      return Parameters.Remove(encoding.Name);
+      return Parameters.Remove(OperatorPrefix + "." + encoding.Name);
     }
 
     protected IConstrainedValueParameter<T> GetParameter(IEncoding encoding) {
-      if (!Parameters.ContainsKey(encoding.Name)) throw new ArgumentException(string.Format("Encoding {0} was not added to the MultiEncoding.", encoding.Name));
+      if (!Parameters.ContainsKey(OperatorPrefix + "." + encoding.Name)) throw new ArgumentException(string.Format("Encoding {0} was not added to the MultiEncoding.", encoding.Name));
 
-      return (IConstrainedValueParameter<T>)Parameters[encoding.Name];
+      return (IConstrainedValueParameter<T>)Parameters[OperatorPrefix + "." + encoding.Name];
     }
 
     private void Encoding_OperatorsChanged(object sender, EventArgs e) {

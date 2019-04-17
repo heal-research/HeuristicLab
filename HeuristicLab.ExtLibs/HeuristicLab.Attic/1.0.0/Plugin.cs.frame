@@ -30,8 +30,8 @@ namespace HeuristicLab.Attic {
   [PluginFile("HeuristicLab.Attic.dll", PluginFileType.Assembly)]
   [PluginFile("HEAL.Attic.dll", PluginFileType.Assembly)]
   [PluginFile("HEAL.Attic.License.txt", PluginFileType.License)]
-  [PluginFile("Google.Protobuf.dll", PluginFileType.Assembly)]
   [PluginFile("System.Drawing.Common.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.Protobuf", "3.6.1")]
   public class Plugin : PluginBase {
   }
 }

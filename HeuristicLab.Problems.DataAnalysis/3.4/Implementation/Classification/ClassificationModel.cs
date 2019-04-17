@@ -74,7 +74,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       if (problemData == null) throw new ArgumentNullException("problemData", "The provided problemData is null.");
       var classificationProblemData = problemData as IClassificationProblemData;
       if (classificationProblemData == null)
-        throw new ArgumentException("The problem data is not a regression problem data. Instead a " + problemData.GetType().GetPrettyName() + " was provided.", "problemData");
+        throw new ArgumentException("The problem data is not compatible with this classification model. Instead a " + problemData.GetType().GetPrettyName() + " was provided.", "problemData");
       return IsProblemDataCompatible(classificationProblemData, out errorMessage);
     }
 

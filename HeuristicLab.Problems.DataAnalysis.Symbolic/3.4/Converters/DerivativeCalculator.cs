@@ -82,17 +82,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
         if (branch.SubtreeCount >= 2) {
           var f = (ISymbolicExpressionTreeNode)branch.GetSubtree(0).Clone();
-          var g = (ISymbolicExpressionTreeNode)branch.GetSubtree(1).Clone();
           var fprime = Derive(f, variableName);
-          var gprime = Derive(g, variableName);
-          var fgPrime = Sum(Product(f, gprime), Product(fprime, g));
-          for (int i = 2; i < branch.SubtreeCount; i++) {
+          for (int i = 1; i < branch.SubtreeCount; i++) {
+            var g = (ISymbolicExpressionTreeNode)branch.GetSubtree(i).Clone();
             var fg = Product((ISymbolicExpressionTreeNode)f.Clone(), (ISymbolicExpressionTreeNode)g.Clone());
-            var h = (ISymbolicExpressionTreeNode)branch.GetSubtree(i).Clone();
-            var hPrime = Derive(h, variableName);
-            fgPrime = Sum(Product(fgPrime, h), Product(fg, hPrime));
+            var gPrime = Derive(g, variableName);
+            var fgPrime = Sum(Product(fprime, g), Product(gPrime, f));
+            // prepare for next iteration
+            f = fg;
+            fprime = fgPrime;
           }
-          return fgPrime;
+          return fprime;
         } else
           // multiplication with only one argument has no effect -> derive the argument
           return Derive(branch.GetSubtree(0), variableName);

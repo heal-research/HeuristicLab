@@ -45,14 +45,26 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
 
     protected override ISymbolicExpressionTree OptimizeConstants(ISymbolicExpressionTree tree, IProgress progress) {
       const int constOptIterations = 50;
+      const int maxRepetitions = 1000;
       var regressionProblemData = Content.ProblemData;
       var model = Content.Model;
-      SymbolicRegressionConstantOptimizationEvaluator.OptimizeConstants(model.Interpreter, tree, regressionProblemData, regressionProblemData.TrainingIndices,
-        applyLinearScaling: true, maxIterations: constOptIterations, updateVariableWeights: true, lowerEstimationLimit: model.LowerEstimationLimit, upperEstimationLimit: model.UpperEstimationLimit,
-        iterationCallback: (args, func, obj) => {
-          double newProgressValue = progress.ProgressValue + 1.0 / (constOptIterations + 2); // (maxIterations + 2) iterations are reported
-          progress.ProgressValue = Math.Min(newProgressValue, 1.0);
-        });
+      progress.CanBeStopped = true;
+      var prevResult = 0.0;
+      var result = 0.0;
+      int reps = 0;
+
+      do {
+        prevResult = result;
+        result = SymbolicRegressionConstantOptimizationEvaluator.OptimizeConstants(model.Interpreter, tree, regressionProblemData, regressionProblemData.TrainingIndices,
+          applyLinearScaling: true, maxIterations: constOptIterations, updateVariableWeights: true, lowerEstimationLimit: model.LowerEstimationLimit, upperEstimationLimit: model.UpperEstimationLimit,
+          iterationCallback: (args, func, obj) => {
+            double newProgressValue = progress.ProgressValue + 1.0 / (constOptIterations + 2); // (maxIterations + 2) iterations are reported
+            progress.ProgressValue = Math.Min(newProgressValue, 1.0);
+          });
+        reps++;
+      } while (prevResult < result && reps < maxRepetitions &&
+               progress.ProgressState != ProgressState.StopRequested &&
+               progress.ProgressState != ProgressState.CancelRequested);
       return tree;
     }
   }
