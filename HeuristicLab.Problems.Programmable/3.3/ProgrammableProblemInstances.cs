@@ -44,7 +44,7 @@ namespace HeuristicLab.Problems.Programmable {
     private SingleObjectiveBinaryVectorProgrammableProblem(SingleObjectiveBinaryVectorProgrammableProblem original, Cloner cloner) : base(original, cloner) { }
 
     public SingleObjectiveBinaryVectorProgrammableProblem()
-      : base() {
+      : base(new BinaryVectorEncoding()) {
       var codeTemplate = ScriptTemplates.SingleObjectiveProblem_Template;
       codeTemplate = codeTemplate.Replace(ENCODING_NAMESPACE, "HeuristicLab.Encodings.BinaryVectorEncoding");
       codeTemplate = codeTemplate.Replace(ENCODING_CLASS, "BinaryVectorEncoding");
@@ -68,7 +68,7 @@ namespace HeuristicLab.Problems.Programmable {
     private SingleObjectiveIntegerVectorProgrammableProblem(SingleObjectiveIntegerVectorProgrammableProblem original, Cloner cloner) : base(original, cloner) { }
 
     public SingleObjectiveIntegerVectorProgrammableProblem()
-      : base() {
+      : base(new IntegerVectorEncoding()) {
       var codeTemplate = ScriptTemplates.SingleObjectiveProblem_Template;
       codeTemplate = codeTemplate.Replace(ENCODING_NAMESPACE, "HeuristicLab.Encodings.IntegerVectorEncoding");
       codeTemplate = codeTemplate.Replace(ENCODING_CLASS, "IntegerVectorEncoding");
@@ -91,7 +91,7 @@ namespace HeuristicLab.Problems.Programmable {
     private SingleObjectiveRealVectorProgrammableProblem(SingleObjectiveRealVectorProgrammableProblem original, Cloner cloner) : base(original, cloner) { }
 
     public SingleObjectiveRealVectorProgrammableProblem()
-      : base() {
+      : base(new RealVectorEncoding()) {
       var codeTemplate = ScriptTemplates.SingleObjectiveProblem_Template;
       codeTemplate = codeTemplate.Replace(ENCODING_NAMESPACE, "HeuristicLab.Encodings.RealVectorEncoding");
       codeTemplate = codeTemplate.Replace(ENCODING_CLASS, "RealVectorEncoding");
@@ -114,7 +114,7 @@ namespace HeuristicLab.Problems.Programmable {
     private SingleObjectivePermutationProgrammableProblem(SingleObjectivePermutationProgrammableProblem original, Cloner cloner) : base(original, cloner) { }
 
     public SingleObjectivePermutationProgrammableProblem()
-      : base() {
+      : base(new PermutationEncoding()) {
       var codeTemplate = ScriptTemplates.SingleObjectiveProblem_Template;
       codeTemplate = codeTemplate.Replace(ENCODING_NAMESPACE, "HeuristicLab.Encodings.PermutationEncoding");
       codeTemplate = codeTemplate.Replace(ENCODING_CLASS, "PermutationEncoding");
@@ -136,7 +136,7 @@ namespace HeuristicLab.Problems.Programmable {
     private SingleObjectiveSymbolicExpressionTreeProgrammableProblem(StorableConstructorFlag _) : base(_) { }
     private SingleObjectiveSymbolicExpressionTreeProgrammableProblem(SingleObjectiveSymbolicExpressionTreeProgrammableProblem original, Cloner cloner) : base(original, cloner) { }
     public SingleObjectiveSymbolicExpressionTreeProgrammableProblem()
-      : base() {
+      : base(new SymbolicExpressionTreeEncoding()) {
       var codeTemplate = ScriptTemplates.SingleObjectiveProblem_Template;
       codeTemplate = codeTemplate.Replace(ENCODING_NAMESPACE, "HeuristicLab.Encodings.SymbolicExpressionTreeEncoding");
       codeTemplate = codeTemplate.Replace(ENCODING_CLASS, "SymbolicExpressionTreeEncoding");
@@ -158,7 +158,7 @@ namespace HeuristicLab.Problems.Programmable {
     private SingleObjectiveLinearLinkageProgrammableProblem(StorableConstructorFlag _) : base(_) { }
     private SingleObjectiveLinearLinkageProgrammableProblem(SingleObjectiveLinearLinkageProgrammableProblem original, Cloner cloner) : base(original, cloner) { }
     public SingleObjectiveLinearLinkageProgrammableProblem()
-      : base() {
+      : base(new LinearLinkageEncoding()) {
       var codeTemplate = ScriptTemplates.SingleObjectiveProblem_Template;
       codeTemplate = codeTemplate.Replace(ENCODING_NAMESPACE, "HeuristicLab.Encodings.LinearLinkageEncoding");
       codeTemplate = codeTemplate.Replace(ENCODING_CLASS, "LinearLinkageEncoding");
@@ -181,7 +181,7 @@ namespace HeuristicLab.Problems.Programmable {
     private SingleObjectiveCombinedEncodingProgrammableProblem(SingleObjectiveCombinedEncodingProgrammableProblem original, Cloner cloner) : base(original, cloner) { }
 
     public SingleObjectiveCombinedEncodingProgrammableProblem()
-      : base() {
+      : base(new CombinedEncoding()) {
       ProblemScript.Code = ScriptTemplates.SingleObjectiveCombinedEncodingProblem_Template;
     }
 
@@ -203,7 +203,7 @@ namespace HeuristicLab.Problems.Programmable {
     private MultiObjectiveBinaryVectorProgrammableProblem(MultiObjectiveBinaryVectorProgrammableProblem original, Cloner cloner) : base(original, cloner) { }
 
     public MultiObjectiveBinaryVectorProgrammableProblem()
-      : base() {
+      : base(new BinaryVectorEncoding()) {
       var codeTemplate = ScriptTemplates.MultiObjectiveProblem_Template;
       codeTemplate = codeTemplate.Replace(ENCODING_NAMESPACE, "HeuristicLab.Encodings.BinaryVectorEncoding");
       codeTemplate = codeTemplate.Replace(ENCODING_CLASS, "BinaryVectorEncoding");
@@ -227,7 +227,7 @@ namespace HeuristicLab.Problems.Programmable {
     private MultiObjectiveIntegerVectorProgrammableProblem(MultiObjectiveIntegerVectorProgrammableProblem original, Cloner cloner) : base(original, cloner) { }
 
     public MultiObjectiveIntegerVectorProgrammableProblem()
-      : base() {
+      : base(new IntegerVectorEncoding()) {
       var codeTemplate = ScriptTemplates.MultiObjectiveProblem_Template;
       codeTemplate = codeTemplate.Replace(ENCODING_NAMESPACE, "HeuristicLab.Encodings.IntegerVectorEncoding");
       codeTemplate = codeTemplate.Replace(ENCODING_CLASS, "IntegerVectorEncoding");
@@ -250,7 +250,7 @@ namespace HeuristicLab.Problems.Programmable {
     private MultiObjectiveRealVectorProgrammableProblem(MultiObjectiveRealVectorProgrammableProblem original, Cloner cloner) : base(original, cloner) { }
 
     public MultiObjectiveRealVectorProgrammableProblem()
-      : base() {
+      : base(new RealVectorEncoding()) {
       var codeTemplate = ScriptTemplates.MultiObjectiveProblem_Template;
       codeTemplate = codeTemplate.Replace(ENCODING_NAMESPACE, "HeuristicLab.Encodings.RealVectorEncoding");
       codeTemplate = codeTemplate.Replace(ENCODING_CLASS, "RealVectorEncoding");
@@ -272,7 +272,7 @@ namespace HeuristicLab.Problems.Programmable {
     private MultiObjectivePermutationProgrammableProblem(StorableConstructorFlag _) : base(_) { }
     private MultiObjectivePermutationProgrammableProblem(MultiObjectivePermutationProgrammableProblem original, Cloner cloner) : base(original, cloner) { }
     public MultiObjectivePermutationProgrammableProblem()
-      : base() {
+      : base(new PermutationEncoding()) {
       var codeTemplate = ScriptTemplates.MultiObjectiveProblem_Template;
       codeTemplate = codeTemplate.Replace(ENCODING_NAMESPACE, "HeuristicLab.Encodings.PermutationEncoding");
       codeTemplate = codeTemplate.Replace(ENCODING_CLASS, "PermutationEncoding");
@@ -294,7 +294,7 @@ namespace HeuristicLab.Problems.Programmable {
     private MultiObjectiveSymbolicExpressionTreeProgrammableProblem(StorableConstructorFlag _) : base(_) { }
     private MultiObjectiveSymbolicExpressionTreeProgrammableProblem(MultiObjectiveSymbolicExpressionTreeProgrammableProblem original, Cloner cloner) : base(original, cloner) { }
     public MultiObjectiveSymbolicExpressionTreeProgrammableProblem()
-      : base() {
+      : base(new SymbolicExpressionTreeEncoding()) {
       var codeTemplate = ScriptTemplates.MultiObjectiveProblem_Template;
       codeTemplate = codeTemplate.Replace(ENCODING_NAMESPACE, "HeuristicLab.Encodings.SymbolicExpressionTreeEncoding");
       codeTemplate = codeTemplate.Replace(ENCODING_CLASS, "SymbolicExpressionTreeEncoding");
@@ -316,7 +316,7 @@ namespace HeuristicLab.Problems.Programmable {
     private MultiObjectiveLinearLinkageProgrammableProblem(StorableConstructorFlag _) : base(_) { }
     private MultiObjectiveLinearLinkageProgrammableProblem(MultiObjectiveLinearLinkageProgrammableProblem original, Cloner cloner) : base(original, cloner) { }
     public MultiObjectiveLinearLinkageProgrammableProblem()
-      : base() {
+      : base(new LinearLinkageEncoding()) {
       var codeTemplate = ScriptTemplates.MultiObjectiveProblem_Template;
       codeTemplate = codeTemplate.Replace(ENCODING_NAMESPACE, "HeuristicLab.Encodings.LinearLinkageEncoding");
       codeTemplate = codeTemplate.Replace(ENCODING_CLASS, "LinearLinkageEncoding");
@@ -339,7 +339,7 @@ namespace HeuristicLab.Problems.Programmable {
     private MultiObjectiveCombinedEncodingProgrammableProblem(MultiObjectiveCombinedEncodingProgrammableProblem original, Cloner cloner) : base(original, cloner) { }
 
     public MultiObjectiveCombinedEncodingProgrammableProblem()
-      : base() {
+      : base(new CombinedEncoding()) {
       ProblemScript.Code = ScriptTemplates.MultiObjectiveCombinedEncodingProblem_Template;
     }
 

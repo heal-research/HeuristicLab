@@ -70,11 +70,11 @@ namespace HeuristicLab.Problems.Programmable {
       return new MultiObjectiveProgrammableProblem<TEncoding, TEncodedSolution>(this, cloner);
     }
 
-    public MultiObjectiveProgrammableProblem()
-      : base() {
+    public MultiObjectiveProgrammableProblem(TEncoding encoding)
+      : base(encoding) {
       Parameters.Add(new FixedValueParameter<MultiObjectiveProblemDefinitionScript<TEncoding, TEncodedSolution>>("ProblemScript", "Defines the problem.",
         new MultiObjectiveProblemDefinitionScript<TEncoding, TEncodedSolution>() { Name = Name }));
-      ProblemScript.Encoding = (TEncoding)Encoding.Clone();
+      ProblemScript.Encoding = (TEncoding)encoding.Clone();
 
       var codeTemplate = ScriptTemplates.MultiObjectiveProblem_Template;
       codeTemplate = codeTemplate.Replace(ENCODING_NAMESPACE, typeof(TEncoding).Namespace);

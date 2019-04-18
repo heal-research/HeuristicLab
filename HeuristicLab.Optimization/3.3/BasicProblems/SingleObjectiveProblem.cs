@@ -67,7 +67,7 @@ namespace HeuristicLab.Optimization {
       : base(original, cloner) {
       ParameterizeOperators();
     }
-
+  
     protected SingleObjectiveProblem() : base() {
       Parameters.Add(new FixedValueParameter<BoolValue>("Maximization", "Set to false if the problem should be minimized.", (BoolValue)new BoolValue(Maximization).AsReadOnly()) { Hidden = true });
       Parameters.Add(new OptionalValueParameter<DoubleValue>("BestKnownQuality", "The quality of the best known solution of this problem."));

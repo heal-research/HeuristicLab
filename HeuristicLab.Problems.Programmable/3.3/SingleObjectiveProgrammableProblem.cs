@@ -72,10 +72,10 @@ namespace HeuristicLab.Problems.Programmable {
 
     [StorableConstructor]
     protected SingleObjectiveProgrammableProblem(StorableConstructorFlag _) : base(_) { }
-    public SingleObjectiveProgrammableProblem()
-      : base() {
+    public SingleObjectiveProgrammableProblem(TEncoding encoding)
+      : base(encoding) {
       Parameters.Add(new FixedValueParameter<SingleObjectiveProblemDefinitionScript<TEncoding, TEncodedSolution>>("ProblemScript", "Defines the problem.", new SingleObjectiveProblemDefinitionScript<TEncoding, TEncodedSolution>() { Name = Name }));
-      ProblemScript.Encoding = (TEncoding)Encoding.Clone();
+      ProblemScript.Encoding = (TEncoding)encoding.Clone();
 
       var codeTemplate = ScriptTemplates.SingleObjectiveProblem_Template;
       codeTemplate = codeTemplate.Replace(ENCODING_NAMESPACE, typeof(TEncoding).Namespace);
