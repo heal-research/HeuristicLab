@@ -23,13 +23,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using HeuristicLab.Problems.DataAnalysis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab.Tests.HeuristicLab.Problems.DataAnalysis {
-
-  [TestClass()]
-  public class ClassificationVariableImpactCalculationTest {
+namespace HeuristicLab.Problems.DataAnalysis.Tests {
+  [TestClass]
+  public class DatasetTest {
     private TestContext testContextInstance;
     /// <summary>
     ///Gets or sets the test context which provides
