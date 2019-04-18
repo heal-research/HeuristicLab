@@ -31,9 +31,8 @@ using HeuristicLab.Scripting;
 
 namespace HeuristicLab.Problems.Programmable {
   [Item("Programmable Problem (multi-objective)", "Represents a multi-objective problem that can be programmed with a script.")]
-  [Creatable(CreatableAttribute.Categories.Problems, Priority = 120)]
   [StorableType("1AA24077-4E1E-4FAE-8EC8-B6008DFD30B9")]
-  public class MultiObjectiveProgrammableProblem<TEncoding, TEncodedSolution> : MultiObjectiveProblem<TEncoding, TEncodedSolution>, IProgrammableItem, IProgrammableProblem
+  public abstract class MultiObjectiveProgrammableProblem<TEncoding, TEncodedSolution> : MultiObjectiveProblem<TEncoding, TEncodedSolution>, IProgrammableItem, IProgrammableProblem
     where TEncoding : class, IEncoding<TEncodedSolution>
     where TEncodedSolution : class, IEncodedSolution {
     protected static readonly string ENCODING_NAMESPACE = "ENCODING_NAMESPACE";
@@ -64,10 +63,6 @@ namespace HeuristicLab.Problems.Programmable {
     protected MultiObjectiveProgrammableProblem(MultiObjectiveProgrammableProblem<TEncoding, TEncodedSolution> original, Cloner cloner)
       : base(original, cloner) {
       RegisterEvents();
-    }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new MultiObjectiveProgrammableProblem<TEncoding, TEncodedSolution>(this, cloner);
     }
 
     public MultiObjectiveProgrammableProblem(TEncoding encoding)
