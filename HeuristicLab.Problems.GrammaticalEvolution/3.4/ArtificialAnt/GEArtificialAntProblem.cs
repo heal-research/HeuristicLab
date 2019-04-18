@@ -22,13 +22,13 @@
 #endregion
 
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.IntegerVectorEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 using HeuristicLab.Problems.GeneticProgramming.ArtificialAnt;
 using HeuristicLab.Problems.GrammaticalEvolution.Mappers;
 using HeuristicLab.Random;
@@ -84,14 +84,14 @@ namespace HeuristicLab.Problems.GrammaticalEvolution {
       return new GEArtificialAntProblem(this, cloner);
     }
 
-    public GEArtificialAntProblem()
-      : base() {
+    public GEArtificialAntProblem() : base(new IntegerVectorEncoding()) {
       wrappedAntProblem = new HeuristicLab.Problems.GeneticProgramming.ArtificialAnt.Problem();
       Parameters.Add(new ValueParameter<BoolMatrix>("World", "The world for the artificial ant with scattered food items.", wrappedAntProblem.World));
       Parameters.Add(new FixedValueParameter<IntValue>("MaximumTimeSteps", "The number of time steps the artificial ant has available to collect all food items.", new IntValue(600)));
       Parameters.Add(new ValueParameter<IGenotypeToPhenotypeMapper>("GenotypeToPhenotypeMapper", "Maps the genotype (an integer vector) to the phenotype (a symbolic expression tree).", new DepthFirstMapper()));
 
-      Encoding = new IntegerVectorEncoding(30) { Bounds = new IntMatrix(new int[,] { { 0, 100 } }) };
+      Encoding.Length = 30;
+      Encoding.Bounds = new IntMatrix(new int[,] { { 0, 100 } });
 
       BestKnownQuality = wrappedAntProblem.BestKnownQuality;
     }

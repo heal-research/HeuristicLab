@@ -23,12 +23,12 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 
 
 namespace HeuristicLab.Problems.GeneticProgramming.Boolean {
@@ -80,14 +80,13 @@ namespace HeuristicLab.Problems.GeneticProgramming.Boolean {
 
 
     public MultiplexerProblem()
-      : base() {
+      : base(new SymbolicExpressionTreeEncoding()) {
       Parameters.Add(new FixedValueParameter<IntValue>(NumberOfBitsParameterName,
         "The number of bits for the input parameter for the multiplexer function. This is the sum of the number of address bits and the number of input lines. E.g. the 11-MUX has 3 address bits and 8 input lines",
         new IntValue(11)));
 
-      var g = new SimpleSymbolicExpressionGrammar(); // will be replaced in update grammar
-      Encoding = new SymbolicExpressionTreeEncoding(g, 100, 17);
-
+      Encoding.TreeLength = 100;
+      Encoding.TreeDepth = 17;
       UpdateGrammar();
       RegisterEventHandlers();
     }

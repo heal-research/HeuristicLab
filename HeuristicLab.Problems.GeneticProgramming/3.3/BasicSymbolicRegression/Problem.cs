@@ -22,11 +22,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Problems.Instances;
 
@@ -80,12 +80,11 @@ namespace HeuristicLab.Problems.GeneticProgramming.BasicSymbolicRegression {
     public override IDeepCloneable Clone(Cloner cloner) { return new Problem(this, cloner); }
     #endregion
 
-    public Problem()
-      : base() {
+    public Problem() : base(new SymbolicExpressionTreeEncoding()) {
       Parameters.Add(new ValueParameter<IRegressionProblemData>(ProblemDataParameterName, "The data for the regression problem", new RegressionProblemData()));
 
-      var g = new SimpleSymbolicExpressionGrammar(); // empty grammar is replaced in UpdateGrammar()
-      base.Encoding = new SymbolicExpressionTreeEncoding(g, 100, 17);
+      Encoding.TreeLength = 100;
+      Encoding.TreeDepth = 17;
 
       UpdateGrammar();
       RegisterEventHandlers();

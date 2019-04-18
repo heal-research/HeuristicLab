@@ -23,11 +23,11 @@
 
 using System;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
-using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   [StorableType("A1B9F4C8-5E29-493C-A483-2AC68453BC63")]
@@ -45,7 +45,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       : base(original, cloner) {
     }
 
-    protected SymbolicExpressionTreeProblem() : base() { }
+    protected SymbolicExpressionTreeProblem(SymbolicExpressionTreeEncoding encoding) : base(encoding) { }
 
     public override void Analyze(ISymbolicExpressionTree[] trees, double[] qualities, ResultCollection results,
       IRandom random) {
@@ -62,6 +62,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
           IsBetter(bestQuality, ((DoubleValue)results["Best Solution Quality"].Value).Value)) {
         var bestIdx = Array.IndexOf(qualities, bestQuality);
         var bestClone = (IItem)trees[bestIdx].Clone();
+
         results["Best Solution"].Value = bestClone;
         results["Best Solution Quality"].Value = new DoubleValue(bestQuality);
       }

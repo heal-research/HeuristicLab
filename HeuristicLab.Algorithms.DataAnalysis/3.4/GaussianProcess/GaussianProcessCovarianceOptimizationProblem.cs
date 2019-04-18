@@ -21,13 +21,13 @@
 
 using System;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Problems.Instances;
 
@@ -58,6 +58,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private static readonly CovarianceRationalQuadraticArd ratQuadraticArd;
     private static readonly CovarianceSquaredExponentialArd sqrExpArd;
     private static readonly CovarianceSquaredExponentialIso sqrExpIso;
+
+    private static readonly SymbolicExpressionTreeEncoding defaultEncoding;
 
     static GaussianProcessCovarianceOptimizationProblem() {
       // cumbersome initialization because of ConstrainedValueParameters
@@ -149,12 +151,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     [Storable]
     private ICovarianceFunction covFunc;
 
-    public GaussianProcessCovarianceOptimizationProblem()
-      : base() {
+    public GaussianProcessCovarianceOptimizationProblem() : base(new SymbolicExpressionTreeEncoding()) {
       Parameters.Add(new ValueParameter<IRegressionProblemData>(ProblemDataParameterName, "The data for the regression problem", new RegressionProblemData()));
       Parameters.Add(new FixedValueParameter<IntValue>(ConstantOptIterationsParameterName, "Number of optimization steps for hyperparameter values", new IntValue(50)));
       Parameters.Add(new FixedValueParameter<IntValue>(RestartsParameterName, "The number of random restarts for constant optimization.", new IntValue(10)));
       Parameters["Restarts"].Hidden = true;
+
+
       var g = new SimpleSymbolicExpressionGrammar();
       g.AddSymbols(new string[] { "Sum", "Product" }, 2, 2);
       g.AddTerminalSymbols(new string[]
@@ -180,7 +183,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         "SquaredExponentialArd",
         "SquaredExponentialIso"
       });
-      base.Encoding = new SymbolicExpressionTreeEncoding(g, 10, 5);
+
+      Encoding.TreeLength = 10;
+      Encoding.TreeDepth = 5;
+      Encoding.Grammar = g;
     }
 
     public void InitializeState() { ClearState(); }
@@ -326,8 +332,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         bestObjValue[0] = Math.Max(bestObjValue[0], -func); // problem itself is a maximization problem
         var gradients = model.HyperparameterGradients;
         Array.Copy(gradients, grad, gradients.Length);
-      }
-      catch (ArgumentException) {
+      } catch (ArgumentException) {
         // building the GaussianProcessModel might fail, in this case we return the worst possible objective value
         func = 1.0E+300;
         Array.Clear(grad, 0, grad.Length);

@@ -22,12 +22,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 
 
 namespace HeuristicLab.Problems.GeneticProgramming.Boolean {
@@ -77,11 +77,11 @@ namespace HeuristicLab.Problems.GeneticProgramming.Boolean {
     #endregion
 
     public EvenParityProblem()
-      : base() {
+      : base(new SymbolicExpressionTreeEncoding()) {
       Parameters.Add(new FixedValueParameter<IntValue>(NumberOfBitsParameterName, "The number of bits for the input parameter for the even parity function", new IntValue(4)));
 
-      var g = new SimpleSymbolicExpressionGrammar(); // will be replaced in update grammar
-      Encoding = new SymbolicExpressionTreeEncoding(g, 100, 17);
+      Encoding.TreeLength = 100;
+      Encoding.TreeDepth = 17;
 
       UpdateGrammar();
       RegisterEventHandlers();

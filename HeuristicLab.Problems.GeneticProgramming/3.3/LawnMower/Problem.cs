@@ -21,13 +21,13 @@
 
 using System;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.GeneticProgramming.LawnMower {
@@ -61,8 +61,7 @@ namespace HeuristicLab.Problems.GeneticProgramming.LawnMower {
     }
     #endregion
 
-    public Problem()
-      : base() {
+    public Problem() : base(new SymbolicExpressionTreeEncoding()) {
       Parameters.Add(new FixedValueParameter<IntValue>(LawnWidthParameterName, "Width of the lawn.", new IntValue(8)));
       Parameters.Add(new FixedValueParameter<IntValue>(LawnLengthParameterName, "Length of the lawn.", new IntValue(8)));
 
@@ -76,7 +75,9 @@ namespace HeuristicLab.Problems.GeneticProgramming.LawnMower {
         g.AddTerminalSymbol(string.Format("{0},{1}", fastRand.Next(0, 32), fastRand.Next(0, 32)));
       }
 
-      Encoding = new SymbolicExpressionTreeEncoding(g, 1000, 17);
+      Encoding.TreeLength = 1000;
+      Encoding.TreeDepth = 17;
+      Encoding.Grammar = g;
     }
 
     public override void Analyze(ISymbolicExpressionTree[] trees, double[] qualities, ResultCollection results, IRandom random) {
