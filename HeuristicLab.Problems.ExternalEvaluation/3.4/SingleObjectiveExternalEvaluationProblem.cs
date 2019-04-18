@@ -26,6 +26,7 @@ using System.Linq;
 using System.Threading;
 using Google.ProtocolBuffers;
 using HEAL.Attic;
+using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -33,10 +34,12 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Problems.ExternalEvaluation {
-  [Item("External Evaluation Problem (multi-objective)", "A multi-objective problem that is evaluated in a different process.")]
-  [Creatable(CreatableAttribute.Categories.ExternalEvaluationProblems, Priority = 200)]
-  [StorableType("CCA50199-A6AB-4C84-B4FA-0262CAF416EC")]
-  public class MultiObjectiveExternalEvaluationProblem<TEncoding, TEncodedSolution> : MultiObjectiveProblem<TEncoding, TEncodedSolution>, IExternalEvaluationProblem
+  [Item("External Evaluation Problem (single-objective)", "A problem that is evaluated in a different process.")]
+  [Creatable(CreatableAttribute.Categories.ExternalEvaluationProblems, Priority = 100)]
+  [StorableType("115EB3A5-A8A8-4A2E-9799-9485FE896DEC")]
+  // BackwardsCompatibility3.3
+  // Rename class to SingleObjectiveExternalEvaluationProblem
+  public class ExternalEvaluationProblem<TEncoding, TEncodedSolution> : SingleObjectiveProblem<TEncoding, TEncodedSolution>, IExternalEvaluationProblem
     where TEncoding : class, IEncoding<TEncodedSolution>
     where TEncodedSolution : class, IEncodedSolution {
 
@@ -54,8 +57,8 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     public IValueParameter<SolutionMessageBuilder> MessageBuilderParameter {
       get { return (IValueParameter<SolutionMessageBuilder>)Parameters["MessageBuilder"]; }
     }
-    public IFixedValueParameter<MultiObjectiveOptimizationSupportScript<TEncodedSolution>> SupportScriptParameter {
-      get { return (IFixedValueParameter<MultiObjectiveOptimizationSupportScript<TEncodedSolution>>)Parameters["SupportScript"]; }
+    public IFixedValueParameter<SingleObjectiveOptimizationSupportScript<TEncodedSolution>> SupportScriptParameter {
+      get { return (IFixedValueParameter<SingleObjectiveOptimizationSupportScript<TEncodedSolution>>)Parameters["SupportScript"]; }
     }
     #endregion
 
@@ -73,49 +76,46 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     public SolutionMessageBuilder MessageBuilder {
       get { return MessageBuilderParameter.Value; }
     }
-    public MultiObjectiveOptimizationSupportScript<TEncodedSolution> OptimizationSupportScript {
+    public SingleObjectiveOptimizationSupportScript<TEncodedSolution> OptimizationSupportScript {
       get { return SupportScriptParameter.Value; }
     }
-    private IMultiObjectiveOptimizationSupport<TEncodedSolution> OptimizationSupport {
+    private ISingleObjectiveOptimizationSupport<TEncodedSolution> OptimizationSupport {
       get { return SupportScriptParameter.Value; }
     }
     #endregion
 
     [StorableConstructor]
-    protected MultiObjectiveExternalEvaluationProblem(StorableConstructorFlag _) : base(_) { }
-    protected MultiObjectiveExternalEvaluationProblem(MultiObjectiveExternalEvaluationProblem<TEncoding, TEncodedSolution> original, Cloner cloner) : base(original, cloner) { }
+    protected ExternalEvaluationProblem(StorableConstructorFlag _) : base(_) { }
+    protected ExternalEvaluationProblem(ExternalEvaluationProblem<TEncoding, TEncodedSolution> original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new MultiObjectiveExternalEvaluationProblem<TEncoding, TEncodedSolution>(this, cloner);
+      return new ExternalEvaluationProblem<TEncoding, TEncodedSolution>(this, cloner);
     }
-    public MultiObjectiveExternalEvaluationProblem(TEncoding encoding)
+    public ExternalEvaluationProblem(TEncoding encoding)
       : base(encoding) {
       Parameters.Remove("Maximization"); // readonly in base class
-      Parameters.Add(new FixedValueParameter<BoolArray>("Maximization", "Set to false if the problem should be minimized.", new BoolArray()));
+      Parameters.Add(new FixedValueParameter<BoolValue>("Maximization", "Set to false if the problem should be minimized.", new BoolValue()));
       Parameters.Add(new OptionalValueParameter<EvaluationCache>("Cache", "Cache of previously evaluated solutions."));
       Parameters.Add(new ValueParameter<CheckedItemCollection<IEvaluationServiceClient>>("Clients", "The clients that are used to communicate with the external application.", new CheckedItemCollection<IEvaluationServiceClient>() { new EvaluationServiceClient() }));
       Parameters.Add(new ValueParameter<SolutionMessageBuilder>("MessageBuilder", "The message builder that converts from HeuristicLab objects to SolutionMessage representation.", new SolutionMessageBuilder()) { Hidden = true });
-      Parameters.Add(new FixedValueParameter<MultiObjectiveOptimizationSupportScript<TEncodedSolution>>("SupportScript", "A script that can analyze the results of the optimization.", new MultiObjectiveOptimizationSupportScript<TEncodedSolution>()));
+      Parameters.Add(new FixedValueParameter<SingleObjectiveOptimizationSupportScript<TEncodedSolution>>("SupportScript", "A script that can provide neighborhood and analyze the results of the optimization.", new SingleObjectiveOptimizationSupportScript<TEncodedSolution>()));
+
+      Operators.Add(new BestScopeSolutionAnalyzer());
     }
 
-    #region Multi Objective Problem Overrides
-    public override bool[] Maximization {
-      get {
-        return Parameters.ContainsKey("Maximization") ? ((IValueParameter<BoolArray>)Parameters["Maximization"]).Value.ToArray() : new bool[0];
-      }
+    #region Single Objective Problem Overrides
+    public override bool Maximization {
+      get { return Parameters.ContainsKey("Maximization") && ((IValueParameter<BoolValue>)Parameters["Maximization"]).Value.Value; }
     }
 
-    public virtual void SetMaximization(bool[] maximization) {
-      ((IStringConvertibleArray)MaximizationParameter.Value).Length = maximization.Length;
-      var array = MaximizationParameter.Value;
-      for (var i = 0; i < maximization.Length; i++)
-        array[i] = maximization[i];
+    public virtual void SetMaximization(bool maximization) {
+      MaximizationParameter.Value.Value = maximization;
     }
 
-    public override double[] Evaluate(TEncodedSolution individual, IRandom random) {
-      var qualityMessage = Evaluate(BuildSolutionMessage(individual));
-      if (!qualityMessage.HasExtension(MultiObjectiveQualityMessage.QualityMessage_))
-        throw new InvalidOperationException("The received message is not a MultiObjectiveQualityMessage.");
-      return qualityMessage.GetExtension(MultiObjectiveQualityMessage.QualityMessage_).QualitiesList.ToArray();
+    public override double Evaluate(TEncodedSolution solution, IRandom random) {
+      var qualityMessage = Evaluate(BuildSolutionMessage(solution));
+      if (!qualityMessage.HasExtension(SingleObjectiveQualityMessage.QualityMessage_))
+        throw new InvalidOperationException("The received message is not a SingleObjectiveQualityMessage.");
+      return qualityMessage.GetExtension(SingleObjectiveQualityMessage.QualityMessage_).Quality;
     }
     public virtual QualityMessage Evaluate(SolutionMessage solutionMessage) {
       return Cache == null
@@ -123,15 +123,18 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
         : Cache.GetValue(solutionMessage, EvaluateOnNextAvailableClient, GetQualityMessageExtensions());
     }
 
-    public override void Analyze(TEncodedSolution[] individuals, double[][] qualities, ResultCollection results, IRandom random) {
-      OptimizationSupport.Analyze(individuals, qualities, results, random);
+    public override void Analyze(TEncodedSolution[] solutions, double[] qualities, ResultCollection results, IRandom random) {
+      OptimizationSupport.Analyze(solutions, qualities, results, random);
     }
 
+    public override IEnumerable<TEncodedSolution> GetNeighbors(TEncodedSolution solutions, IRandom random) {
+      return OptimizationSupport.GetNeighbors(solutions, random);
+    }
     #endregion
 
     public virtual ExtensionRegistry GetQualityMessageExtensions() {
       var extensions = ExtensionRegistry.CreateInstance();
-      extensions.Add(MultiObjectiveQualityMessage.QualityMessage_);
+      extensions.Add(SingleObjectiveQualityMessage.QualityMessage_);
       return extensions;
     }
 

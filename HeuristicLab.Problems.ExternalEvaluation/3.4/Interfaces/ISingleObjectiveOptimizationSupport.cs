@@ -20,14 +20,17 @@
 #endregion
 
 using System.Collections.Generic;
+using HEAL.Attic;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
-using HEAL.Attic;
 
 namespace HeuristicLab.Problems.ExternalEvaluation {
   [StorableType("09d522e0-c10f-474c-b7c0-7d7f98e63f44")]
-  public interface ISingleObjectiveOptimizationSupport {
-    void Analyze(IEncodedSolution[] individuals, double[] qualities, ResultCollection results, IRandom random);
-    IEnumerable<IEncodedSolution> GetNeighbors(IEncodedSolution individual, IRandom random);
+  public interface ISingleObjectiveOptimizationSupport<TEncodedSolution>
+    where TEncodedSolution : IDeepCloneable {
+
+    void Analyze(TEncodedSolution[] individuals, double[] qualities, ResultCollection results, IRandom random);
+    IEnumerable<TEncodedSolution> GetNeighbors(TEncodedSolution individual, IRandom random);
   }
 }

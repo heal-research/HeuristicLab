@@ -19,13 +19,13 @@
  */
 #endregion
 
+using HEAL.Attic;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
-using HEAL.Attic;
 
 namespace HeuristicLab.Problems.ExternalEvaluation {
   [StorableType("f924ef9c-d824-40d2-89b2-6dd1220df98b")]
-  public interface IMultiObjectiveOptimizationSupport {
-    void Analyze(IEncodedSolution[] individuals, double[][] qualities, ResultCollection results, IRandom random);
+  public interface IMultiObjectiveOptimizationSupport<TEncodedSolution> {
+    void Analyze(TEncodedSolution[] individuals, double[][] qualities, ResultCollection results, IRandom random);
   }
 }

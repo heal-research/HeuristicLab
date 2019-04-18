@@ -19,7 +19,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation.Programmable {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Templates {
@@ -61,19 +61,16 @@ namespace HeuristicLab.Problems.ExternalEvaluation.Programmable {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to using System;
-        ///using System.Linq;
-        ///using System.Collections.Generic;
-        ///using HeuristicLab.Common;
-        ///using HeuristicLab.Core;
-        ///using HeuristicLab.Data;
+        ///   Looks up a localized string similar to using HeuristicLab.Core;
         ///using HeuristicLab.Optimization;
+        ///using ENCODING_NAMESPACE;
         ///
         ///namespace HeuristicLab.Problems.ExternalEvaluation {
-        ///  public class CompiledMultiObjectiveOptimizationSupport : CompiledOptimizationSupport, IMultiObjectiveOptimizationSupport {
+        ///  public class CompiledMultiObjectiveOptimizationSupport : CompiledOptimizationSupport, IMultiObjectiveOptimizationSupport&lt;SOLUTION_CLASS&gt; {
         ///
-        ///    public void Analyze(Individual[] individuals, double[][] qualities, ResultCollection results, IRandom random) {
-        ///      // Use vars.yourVaria [rest of string was truncated]&quot;;.
+        ///    public void Analyze(SOLUTION_CLASS[] solutions, double[][] qualities, ResultCollection results, IRandom random) {
+        ///      // Use vars.yourVariable to access variables in the variable store i.e. yourVariable
+        ///      // Write [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string CompiledMultiObjectiveOptimizationSupport {
             get {
@@ -82,19 +79,17 @@ namespace HeuristicLab.Problems.ExternalEvaluation.Programmable {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to using System;
-        ///using System.Linq;
-        ///using System.Collections.Generic;
+        ///   Looks up a localized string similar to using System.Collections.Generic;
         ///using HeuristicLab.Common;
         ///using HeuristicLab.Core;
-        ///using HeuristicLab.Data;
         ///using HeuristicLab.Optimization;
+        ///using ENCODING_NAMESPACE;
         ///
         ///namespace HeuristicLab.Problems.ExternalEvaluation {
-        ///  public class CompiledSingleObjectiveOptimizationSupport : CompiledOptimizationSupport, ISingleObjectiveOptimizationSupport {
+        ///  public class CompiledSingleObjectiveOptimizationSupport : CompiledOptimizationSupport, ISingleObjectiveOptimizationSupport&lt;SOLUTION_CLASS&gt; {
         ///
-        ///    public void Analyze(Individual[] individuals, double[] qualities, ResultCollection results, IRandom random) {
-        ///      // Use vars.yourVaria [rest of string was truncated]&quot;;.
+        ///    public void Analyze(SOLUTION_CLASS[] solutions, double[] qualities, ResultCollection results, IRandom random) {
+        ///      // Use vars.yourVariable to access va [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string CompiledSingleObjectiveOptimizationSupport {
             get {
