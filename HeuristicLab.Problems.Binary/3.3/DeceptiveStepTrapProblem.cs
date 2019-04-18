@@ -21,12 +21,12 @@
 
 #endregion
 
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 
 namespace HeuristicLab.Problems.Binary {
   [Item("Deceptive Step Trap Problem", "Genome encodes completely separable blocks, where each block deceptive with fitness plateaus.")]
@@ -54,8 +54,7 @@ namespace HeuristicLab.Problems.Binary {
       set { StepSizeParameter.Value.Value = value; }
     }
 
-    public DeceptiveStepTrapProblem()
-      : base() {
+    public DeceptiveStepTrapProblem() : base() {
       Parameters.Add(new FixedValueParameter<IntValue>(StepSizeParameterName, "", new IntValue(2)));
       RegisterParameterEvents();
     }

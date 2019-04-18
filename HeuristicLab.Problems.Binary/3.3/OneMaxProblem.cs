@@ -21,22 +21,21 @@
 
 using System;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
-using HEAL.Attic;
 
 namespace HeuristicLab.Problems.Binary {
   [Item("One Max Problem", "Represents a problem whose objective is to maximize the number of true values.")]
   [Creatable(CreatableAttribute.Categories.CombinatorialProblems, Priority = 210)]
   [StorableType("A290ADDE-33F5-4607-ABC0-19349CD0FBF1")]
-  public class OneMaxProblem : BinaryProblem {
+  public class OneMaxProblem : BinaryVectorProblem {
     public override bool Maximization {
       get { return true; }
     }
 
-    public OneMaxProblem()
-      : base() {
+    public OneMaxProblem() : base() {
       Encoding.Length = 10;
       BestKnownQuality = Encoding.Length;
     }

@@ -36,7 +36,7 @@ namespace HeuristicLab.Problems.NK {
   [Item("NK Landscape", "Represents an NK landscape optimization problem.")]
   [Creatable(CreatableAttribute.Categories.CombinatorialProblems, Priority = 215)]
   [StorableType("04294537-87F2-4A9F-BC14-7D4CA700F326")]
-  public sealed class NKLandscape : BinaryProblem {
+  public sealed class NKLandscape : BinaryVectorProblem {
     public override bool Maximization {
       get { return false; }
     }

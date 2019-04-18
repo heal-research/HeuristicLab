@@ -23,20 +23,19 @@
 
 using System;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Encodings.BinaryVectorEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 
-namespace HeuristicLab.Problems.Binary {
+namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   [StorableType("2F6FEB34-BD19-47AF-9484-7F48565C0C43")]
-  public abstract class BinaryProblem : SingleObjectiveProblem<BinaryVectorEncoding, BinaryVector> {
-    public virtual int Length {
+  public abstract class BinaryVectorProblem : SingleObjectiveProblem<BinaryVectorEncoding, BinaryVector> {
+    public int Length {
       get { return Encoding.Length; }
       set { Encoding.Length = value; }
     }
@@ -46,25 +45,26 @@ namespace HeuristicLab.Problems.Binary {
     }
 
     [StorableConstructor]
-    protected BinaryProblem(StorableConstructorFlag _) : base(_) { }
+    protected BinaryVectorProblem(StorableConstructorFlag _) : base(_) { }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       RegisterEventHandlers();
     }
 
-    protected BinaryProblem(BinaryProblem original, Cloner cloner)
+    protected BinaryVectorProblem(BinaryVectorProblem original, Cloner cloner)
       : base(original, cloner) {
       RegisterEventHandlers();
     }
 
-    protected BinaryProblem()
-      : base() {
+    protected BinaryVectorProblem() : base(new BinaryVectorEncoding()) {
       var lengthParameter = new FixedValueParameter<IntValue>("Length", "The length of the BinaryVector.", new IntValue(10));
       Parameters.Add(lengthParameter);
       Encoding.LengthParameter = lengthParameter;
+
       Operators.Add(new HammingSimilarityCalculator());
       Operators.Add(new QualitySimilarityCalculator());
       Operators.Add(new PopulationSimilarityAnalyzer(Operators.OfType<ISolutionSimilarityCalculator>()));
+
       Parameterize();
       RegisterEventHandlers();
     }
@@ -88,8 +88,7 @@ namespace HeuristicLab.Problems.Binary {
 
     private void Parameterize() {
       foreach (var similarityCalculator in Operators.OfType<ISolutionSimilarityCalculator>()) {
-        // TODO: BinaryVectorParameter is no more part of ISolutionCreator<BinaryVector>
-        similarityCalculator.SolutionVariableName = ((IBinaryVectorSolutionOperator)Encoding.SolutionCreator).BinaryVectorParameter.ActualName;
+        similarityCalculator.SolutionVariableName = Encoding.Name;
         similarityCalculator.QualityVariableName = Evaluator.QualityParameter.ActualName;
       }
     }

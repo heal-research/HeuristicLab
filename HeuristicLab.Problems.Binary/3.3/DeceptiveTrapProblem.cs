@@ -22,18 +22,18 @@
 #endregion
 
 using System;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 
 namespace HeuristicLab.Problems.Binary {
   [Item("Deceptive Trap Problem", "Genome encodes completely separable blocks, where each block is fully deceptive.")]
   [StorableType("399FFE01-2B76-4DBF-B363-8BB65FE95A5D")]
   [Creatable(CreatableAttribute.Categories.CombinatorialProblems, Priority = 230)]
-  public class DeceptiveTrapProblem : BinaryProblem {
+  public class DeceptiveTrapProblem : BinaryVectorProblem {
     [StorableConstructor]
     protected DeceptiveTrapProblem(StorableConstructorFlag _) : base(_) { }
     protected DeceptiveTrapProblem(DeceptiveTrapProblem original, Cloner cloner)
@@ -62,8 +62,7 @@ namespace HeuristicLab.Problems.Binary {
       get { return TrapSize; }
     }
 
-    public DeceptiveTrapProblem()
-      : base() {
+    public DeceptiveTrapProblem() : base() {
       Parameters.Add(new FixedValueParameter<IntValue>(TrapSizeParameterName, "", new IntValue(7)));
       Encoding.Length = 49;
     }

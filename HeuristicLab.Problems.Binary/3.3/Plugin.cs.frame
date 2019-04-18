@@ -27,14 +27,12 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.Problems.Binary {
   [Plugin("HeuristicLab.Problems.Binary","Provides binary benchmark problems.", "3.3.15.$WCREV$")]
   [PluginFile("HeuristicLab.Problems.Binary-3.3.dll", PluginFileType.Assembly)]
-  [PluginDependency("HeuristicLab.Analysis", "3.3")]
   [PluginDependency("HeuristicLab.Collections", "3.3")]
   [PluginDependency("HeuristicLab.Common", "3.3")]
   [PluginDependency("HeuristicLab.Core", "3.3")]
   [PluginDependency("HeuristicLab.Data", "3.3")]
   [PluginDependency("HeuristicLab.Encodings.BinaryVectorEncoding", "3.3")]
   [PluginDependency("HeuristicLab.Optimization", "3.3")]
-  [PluginDependency("HeuristicLab.Optimization.Operators", "3.3")]
   [PluginDependency("HeuristicLab.Parameters", "3.3")]
   [PluginDependency("HeuristicLab.Attic", "1.0")]
   public class HeuristicLabProblemsBinaryPlugin : PluginBase {

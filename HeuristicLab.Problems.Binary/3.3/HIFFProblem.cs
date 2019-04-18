@@ -22,16 +22,16 @@
 #endregion
 
 using System;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
-using HEAL.Attic;
 
 namespace HeuristicLab.Problems.Binary {
   [Item("Hierararchical If and only If problem (HIFF)", "Genome evaluated in nested subsets to see if each subset contains either all 0s or all 1s.")]
   [StorableType("8AC6D94E-E7B4-4216-B2CA-8E142E7A1391")]
   [Creatable(CreatableAttribute.Categories.CombinatorialProblems, Priority = 220)]
-  public class HIFFProblem : BinaryProblem {
+  public class HIFFProblem : BinaryVectorProblem {
     [StorableConstructor]
     protected HIFFProblem(StorableConstructorFlag _) : base(_) { }
     protected HIFFProblem(HIFFProblem original, Cloner cloner)
@@ -45,8 +45,7 @@ namespace HeuristicLab.Problems.Binary {
       get { return true; }
     }
 
-    public HIFFProblem()
-      : base() {
+    public HIFFProblem() : base() {
       Encoding.Length = 64;
     }
     // In the GECCO paper, Section 4.1
