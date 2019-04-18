@@ -14,7 +14,7 @@ using HeuristicLab.Encodings.LinearLinkageEncoding;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 
 namespace HeuristicLab.Problems.Programmable {
-  public class CompiledSingleObjectiveProblemDefinition : CompiledMultiObjectiveProblemDefinition<CombinedEncoding, CombinedSolution> {
+  public class CompiledMultiObjectiveProblemDefinition : CompiledMultiObjectiveProblemDefinition<CombinedEncoding, CombinedSolution> {
     public override bool[] Maximization { get { return new[] { true, false }; } }
 
     public override void Initialize() {

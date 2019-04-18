@@ -9,7 +9,7 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Problems.Programmable;
 
 namespace HeuristicLab.Problems.Programmable {
-  public class CompiledSingleObjectiveProblemDefinition : CompiledMultiObjectiveProblemDefinition<ENCODING_CLASS, SOLUTION_CLASS> {
+  public class CompiledMultiObjectiveProblemDefinition : CompiledMultiObjectiveProblemDefinition<ENCODING_CLASS, SOLUTION_CLASS> {
     public override bool[] Maximization { get { return new[] { false, false }; } }
 
     public override void Initialize() {
