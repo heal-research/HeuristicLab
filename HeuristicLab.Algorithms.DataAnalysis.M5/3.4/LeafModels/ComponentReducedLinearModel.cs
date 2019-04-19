@@ -27,7 +27,7 @@ using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableType("4E5B8317-648D-4A5A-A3F7-A1A5BEB9AA69")]
-  public class ComponentReducedLinearModel : RegressionModel {
+  public sealed class ComponentReducedLinearModel : RegressionModel {
     [Storable]
     private IRegressionModel Model;
     [Storable]

@@ -29,7 +29,7 @@ using HEAL.Attic;
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableType("D67152AA-3533-45D2-B77B-4A0742FB4B92")]
   [Item("NoPruning", "No pruning")]
-  public class NoPruning : ParameterizedNamedItem, IPruning {
+  public sealed class NoPruning : ParameterizedNamedItem, IPruning {
     #region Constructors & Cloning
     [StorableConstructor]
     private NoPruning(StorableConstructorFlag _) : base(_) { }

@@ -28,7 +28,7 @@ using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableType("A6293516-C146-469D-B248-31B866A1D94F")]
-  public class RegressionTreeParameters : Item {
+  public sealed class RegressionTreeParameters : Item {
     private readonly ISplitter splitter;
     private readonly IPruning pruning;
     private readonly ILeafModel leafModel;

@@ -31,7 +31,7 @@ using HEAL.Attic;
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableType("F34A0ED9-2CF6-4DEE-850D-08790663B66D")]
   [Item("ComplexLeaf", "A leaf type that uses an arbitrary RegressionAlgorithm to create leaf models")]
-  public class ComplexLeaf : LeafBase {
+  public sealed class ComplexLeaf : LeafBase {
     public const string RegressionParameterName = "Regression";
     public IValueParameter<IDataAnalysisAlgorithm<IRegressionProblem>> RegressionParameter {
       get { return (IValueParameter<IDataAnalysisAlgorithm<IRegressionProblem>>)Parameters[RegressionParameterName]; }

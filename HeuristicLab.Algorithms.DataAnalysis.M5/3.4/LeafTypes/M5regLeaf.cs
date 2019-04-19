@@ -31,7 +31,7 @@ using HEAL.Attic;
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableType("0AED959D-78C3-4927-BDCF-473D0AEE32AA")]
   [Item("M5regLeaf", "A leaf type that uses regularized linear models as leaf models.")]
-  public class M5regLeaf : LeafBase {
+  public sealed class M5regLeaf : LeafBase {
     #region Constructors & Cloning
     [StorableConstructor]
     private M5regLeaf(StorableConstructorFlag _) : base(_) { }

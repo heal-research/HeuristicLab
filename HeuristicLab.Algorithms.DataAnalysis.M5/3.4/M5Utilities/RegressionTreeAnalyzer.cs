@@ -245,7 +245,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
 
     [StorableType("D5540C63-310B-4D6F-8A3D-6C1A08DE7F80")]
-    private class TextSymbol : Symbol {
+    private sealed class TextSymbol : Symbol {
       [StorableConstructor]
       private TextSymbol(StorableConstructorFlag _) : base(_) { }
       private TextSymbol(Symbol original, Cloner cloner) : base(original, cloner) { }

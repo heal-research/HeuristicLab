@@ -29,7 +29,7 @@ using HEAL.Attic;
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableType("EC3A5009-EE84-4E1A-A537-20F6F1224842")]
   [Item("CorrelationSplitter", "An experimental split selector that uses correlation coefficients")]
-  public class CorrelationSplitter : SplitterBase {
+  public sealed class CorrelationSplitter : SplitterBase {
     public const string OrderParameterName = "Order";
     public IFixedValueParameter<DoubleValue> OrderParameter {
       get { return (IFixedValueParameter<DoubleValue>)Parameters[OrderParameterName]; }
