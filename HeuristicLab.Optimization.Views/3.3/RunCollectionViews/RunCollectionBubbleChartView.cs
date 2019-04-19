@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
@@ -442,6 +443,7 @@ namespace HeuristicLab.Optimization.Views {
         DoubleValue doubleValue = value as DoubleValue;
         IntValue intValue = value as IntValue;
         TimeSpanValue timeSpanValue = value as TimeSpanValue;
+        DateTimeValue dateTimeValue = value as DateTimeValue;
         double? ret = null;
         if (doubleValue != null) {
           if (!double.IsNaN(doubleValue.Value) && !double.IsInfinity(doubleValue.Value))
@@ -450,6 +452,8 @@ namespace HeuristicLab.Optimization.Views {
           ret = intValue.Value;
         else if (timeSpanValue != null) {
           ret = timeSpanValue.Value.TotalSeconds;
+        } else if (dateTimeValue != null) {
+          ret = dateTimeValue.Value.ToOADate();
         } else {
           int columnIndex = Matrix.ColumnNames.ToList().IndexOf(columnName);
           ret = GetCategoricalValue(columnIndex, value.ToString());
@@ -530,11 +534,17 @@ namespace HeuristicLab.Optimization.Views {
       //code to handle TimeSpanValues correct
       int axisDimensionCount = Enum.GetNames(typeof(AxisDimension)).Count();
       int columnIndex = xAxisComboBox.SelectedIndex - axisDimensionCount;
-      if (columnIndex >= 0 && Content.GetValue(0, columnIndex) is TimeSpanValue)
-        this.chart.ChartAreas[0].CursorX.Interval = 1;
+      if (columnIndex >= 0) {
+        var value = Content.GetValue(0, columnIndex);
+        if (value is TimeSpanValue || value is DateTimeValue)
+          this.chart.ChartAreas[0].CursorX.Interval = 1;
+      }
       columnIndex = yAxisComboBox.SelectedIndex - axisDimensionCount;
-      if (columnIndex >= 0 && Content.GetValue(0, columnIndex) is TimeSpanValue)
-        this.chart.ChartAreas[0].CursorY.Interval = 1;
+      if (columnIndex >= 0) {
+        var value = Content.GetValue(0, columnIndex);
+        if (value is TimeSpanValue || value is DateTimeValue)
+          this.chart.ChartAreas[0].CursorY.Interval = 1;
+      }
     }
 
     #region Drag & drop and tooltip
@@ -731,6 +741,13 @@ namespace HeuristicLab.Optimization.Views {
         for (double i = axis.Minimum; i <= axis.Maximum; i += axis.LabelStyle.Interval) {
           TimeSpan time = TimeSpan.FromSeconds(i);
           string x = string.Format("{0:00}:{1:00}:{2:00}", time.Hours, time.Minutes, time.Seconds);
+          axis.CustomLabels.Add(i - axis.LabelStyle.Interval / 2, i + axis.LabelStyle.Interval / 2, x);
+        }
+      } else if (dimension > 0 && Content.GetValue(0, dimension) is DateTimeValue) {
+        this.chart.ChartAreas[0].RecalculateAxesScale();
+        for (double i = axis.Minimum; i <= axis.Maximum; i += axis.LabelStyle.Interval) {
+          DateTime dt = DateTime.FromOADate(i);
+          string x = dt.ToString(CultureInfo.CurrentCulture);
           axis.CustomLabels.Add(i - axis.LabelStyle.Interval / 2, i + axis.LabelStyle.Interval / 2, x);
         }
       }
