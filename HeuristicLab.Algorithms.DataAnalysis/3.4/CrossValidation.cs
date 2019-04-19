@@ -300,7 +300,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       try {
         if ((ExecutionState != ExecutionState.Prepared) && (ExecutionState != ExecutionState.Paused))
           throw new InvalidOperationException(string.Format("Start not allowed in execution state \"{0}\".", ExecutionState));
-        seed = new FastRandom().NextInt();
+        seed = RandomSeedGenerator.GetSeed();
 
         if (Algorithm == null) return;
         //create cloned algorithms

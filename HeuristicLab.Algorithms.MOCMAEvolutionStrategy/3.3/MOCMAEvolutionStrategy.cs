@@ -284,7 +284,7 @@ namespace HeuristicLab.Algorithms.MOCMAEvolutionStrategy {
 
     #region Initialization
     protected override void Initialize(CancellationToken cancellationToken) {
-      if (SetSeedRandomly) Seed = new System.Random().Next();
+      if (SetSeedRandomly) Seed = RandomSeedGenerator.GetSeed();
       random.Reset(Seed);
       gauss = new NormalDistributedRandom(random, 0, 1);
 

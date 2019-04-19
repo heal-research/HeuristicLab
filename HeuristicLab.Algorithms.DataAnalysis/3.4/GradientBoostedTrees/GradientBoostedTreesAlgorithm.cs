@@ -186,7 +186,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     protected override void Run(CancellationToken cancellationToken) {
       // Set up the algorithm
-      if (SetSeedRandomly) Seed = new System.Random().Next();
+      if (SetSeedRandomly) Seed = Random.RandomSeedGenerator.GetSeed();
 
       // Set up the results display
       var iterations = new IntValue(0);
