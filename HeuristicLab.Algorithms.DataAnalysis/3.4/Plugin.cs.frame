@@ -36,6 +36,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   [PluginDependency("HeuristicLab.Common.Resources", "3.3")]
   [PluginDependency("HeuristicLab.Core", "3.3")]
   [PluginDependency("HeuristicLab.Data", "3.3")]
+  [PluginDependency("HeuristicLab.Encodings.PermutationEncoding", "3.3")]
   [PluginDependency("HeuristicLab.Encodings.RealVectorEncoding", "3.3")]
   [PluginDependency("HeuristicLab.Encodings.SymbolicExpressionTreeEncoding", "3.4")]
   [PluginDependency("HeuristicLab.Operators", "3.3")]
