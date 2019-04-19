@@ -31,7 +31,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Analysis {
   [Item("IndexedDataRow", "A data row that contains a series of points.")]
   [StorableClass]
-  public class IndexedDataRow<T> : NamedItem {
+  public class IndexedDataRow<T> : NamedItem, IDataRow {
 
     private DataRowVisualProperties visualProperties;
     public DataRowVisualProperties VisualProperties {

@@ -33,7 +33,7 @@ namespace HeuristicLab.Analysis {
   /// </summary>
   [Item("DataRow", "A row of data values.")]
   [StorableClass]
-  public class DataRow : NamedItem {
+  public class DataRow : NamedItem , IDataRow {
     private DataRowVisualProperties visualProperties;
     public DataRowVisualProperties VisualProperties {
       get { return visualProperties; }
