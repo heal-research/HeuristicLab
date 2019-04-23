@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Random;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -60,9 +59,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
     private void TestMatchedNodes(string expr1, string expr2, int expected, bool strict) {
       var t1 = parser.Parse(expr1);
       var t2 = parser.Parse(expr2);
-
-      Console.WriteLine(SymbolicExpressionTreeHierarchicalFormatter.FormatTree(t1));
-      Console.WriteLine(SymbolicExpressionTreeHierarchicalFormatter.FormatTree(t2));
 
       var map = SymbolicExpressionTreeBottomUpSimilarityCalculator.ComputeBottomUpMapping(t1, t2, strict);
       Console.WriteLine($"Count: {map.Count}");
