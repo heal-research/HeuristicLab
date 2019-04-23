@@ -132,7 +132,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           stringBuilder.Append(FormatRecursively(node.GetSubtree(i)));
           stringBuilder.Append(")");
         }
-        stringBuilder.Append(")");
+        stringBuilder.Append("))");
       } else if (symbol is Constant) {
         ConstantTreeNode constantTreeNode = node as ConstantTreeNode;
         stringBuilder.Append(constantTreeNode.Value.ToString(CultureInfo.InvariantCulture));
