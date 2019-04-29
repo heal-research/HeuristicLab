@@ -22,13 +22,13 @@
 using System;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 
 
 namespace HeuristicLab.Problems.GeneticProgramming.ArtificialAnt {
@@ -127,6 +127,7 @@ namespace HeuristicLab.Problems.GeneticProgramming.ArtificialAnt {
       g.AddSymbols(new string[] { "Prog3" }, 3, 3);
       g.AddTerminalSymbols(new string[] { "Move", "Left", "Right" });
       base.Encoding = new SymbolicExpressionTreeEncoding(g, 20, 10);
+      base.Encoding.GrammarParameter.ReadOnly = true;
     }
 
 
