@@ -21,9 +21,9 @@
 
 using System;
 using System.Drawing;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Attic;
 
 namespace HeuristicLab.Parameters {
   /// <summary>
@@ -44,6 +44,7 @@ namespace HeuristicLab.Parameters {
     public T Value {
       get { return this.value; }
       set {
+        if (ReadOnly) throw new InvalidOperationException("Cannot set the value of a readonly parameter.");
         if (value != this.value) {
           DeregisterValueEvents();
           this.value = value;
@@ -65,6 +66,17 @@ namespace HeuristicLab.Parameters {
       }
     }
 
+    [Storable(DefaultValue = false)]
+    private bool readOnly;
+    public bool ReadOnly {
+      get { return readOnly; }
+      set {
+        if (value == readOnly) return;
+        readOnly = value;
+        OnReadOnlyChanged();
+      }
+    }
+
     [Storable(DefaultValue = true)]
     private bool getsCollected;
     public bool GetsCollected {
@@ -83,27 +95,32 @@ namespace HeuristicLab.Parameters {
     protected ValueLookupParameter(ValueLookupParameter<T> original, Cloner cloner)
       : base(original, cloner) {
       value = cloner.Clone(original.value);
+      readOnly = original.readOnly;
       getsCollected = original.getsCollected;
       RegisterValueEvents();
     }
     public ValueLookupParameter()
       : base() {
+      this.readOnly = false;
       this.Hidden = false;
       this.getsCollected = true;
     }
     public ValueLookupParameter(string name)
       : base(name) {
+      this.readOnly = false;
       this.Hidden = false;
       this.getsCollected = true;
     }
     public ValueLookupParameter(string name, bool getsCollected)
       : base(name) {
+      this.readOnly = false;
       this.Hidden = false;
       this.getsCollected = getsCollected;
     }
     public ValueLookupParameter(string name, T value)
       : base(name) {
       this.value = value;
+      this.readOnly = false;
       this.Hidden = false;
       this.getsCollected = true;
       RegisterValueEvents();
@@ -111,23 +128,27 @@ namespace HeuristicLab.Parameters {
     public ValueLookupParameter(string name, T value, bool getsCollected)
       : base(name) {
       this.value = value;
+      this.readOnly = false;
       this.Hidden = false;
       this.getsCollected = getsCollected;
       RegisterValueEvents();
     }
     public ValueLookupParameter(string name, string description)
       : base(name, description) {
+      this.readOnly = false;
       this.Hidden = false;
       this.getsCollected = true;
     }
     public ValueLookupParameter(string name, string description, bool getsCollected)
       : base(name, description) {
+      this.readOnly = false;
       this.Hidden = false;
       this.getsCollected = getsCollected;
     }
     public ValueLookupParameter(string name, string description, T value)
       : base(name, description) {
       this.value = value;
+      this.readOnly = false;
       this.Hidden = false;
       this.getsCollected = true;
       RegisterValueEvents();
@@ -135,17 +156,20 @@ namespace HeuristicLab.Parameters {
     public ValueLookupParameter(string name, string description, T value, bool getsCollected)
       : base(name, description) {
       this.value = value;
+      this.readOnly = false;
       this.Hidden = false;
       this.getsCollected = getsCollected;
       RegisterValueEvents();
     }
     public ValueLookupParameter(string name, string description, string actualName)
       : base(name, description, actualName) {
+      this.readOnly = false;
       this.Hidden = false;
       this.getsCollected = true;
     }
     public ValueLookupParameter(string name, string description, string actualName, bool getsCollected)
       : base(name, description, actualName) {
+      this.readOnly = false;
       this.Hidden = false;
       this.getsCollected = getsCollected;
     }
@@ -175,6 +199,11 @@ namespace HeuristicLab.Parameters {
       if (handler != null) handler(this, EventArgs.Empty);
       OnItemImageChanged();
       OnToStringChanged();
+    }
+    public event EventHandler ReadOnlyChanged;
+    protected virtual void OnReadOnlyChanged() {
+      EventHandler handler = ReadOnlyChanged;
+      if (handler != null) handler(this, EventArgs.Empty);
     }
     public event EventHandler GetsCollectedChanged;
     protected virtual void OnGetsCollectedChanged() {
