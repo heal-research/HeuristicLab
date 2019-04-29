@@ -112,6 +112,8 @@
     <None Include="Properties\AssemblyInfo.cs.frame" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IntegerVectorMultiObjectiveProblem.cs" />
+    <Compile Include="IntegerVectorProblem.cs" />
     <Compile Include="BoundedIntegerVectorCrossover.cs" />
     <Compile Include="BoundedIntegerVectorManipulator.cs" />
     <Compile Include="Creators\UniformRandomIntegerVectorCreator.cs" />
@@ -178,6 +180,11 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\HeuristicLab.Analysis\3.3\HeuristicLab.Analysis-3.3.csproj">
+      <Project>{887425b4-4348-49ed-a457-b7d2c26ddbf9}</Project>
+      <Name>HeuristicLab.Analysis-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">
       <Project>{958B43BC-CC5C-4FA2-8628-2B3B01D890B6}</Project>
       <Name>HeuristicLab.Collections-3.3</Name>

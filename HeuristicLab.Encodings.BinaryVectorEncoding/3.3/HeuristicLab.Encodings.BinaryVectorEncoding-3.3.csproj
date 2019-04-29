@@ -118,6 +118,7 @@
     <None Include="Properties\AssemblyInfo.cs.frame" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BinaryVectorMultiObjectiveProblem.cs" />
     <Compile Include="BinaryVectorProblem.cs" />
     <Compile Include="BinaryVectorEncoding.cs" />
     <Compile Include="BinaryVectorEqualityComparer.cs" />
