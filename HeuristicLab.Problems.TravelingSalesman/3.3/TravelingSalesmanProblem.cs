@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -31,7 +32,6 @@ using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Problems.Instances;
 
@@ -209,7 +209,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       ValueParameter<DoubleMatrix> oldCoordinates = (Parameters["Coordinates"] as ValueParameter<DoubleMatrix>);
       if (oldCoordinates != null) {
         Parameters.Remove(oldCoordinates);
-        Parameters.Add(new OptionalValueParameter<DoubleMatrix>("Coordinates", "The x- and y-Coordinates of the cities.", oldCoordinates.Value, oldCoordinates.GetsCollected));
+        Parameters.Add(new OptionalValueParameter<DoubleMatrix>("Coordinates", "The x- and y-Coordinates of the cities.", oldCoordinates.Value) { GetsCollected = oldCoordinates.GetsCollected });
       }
 
       if (Operators.Count == 0) InitializeOperators();

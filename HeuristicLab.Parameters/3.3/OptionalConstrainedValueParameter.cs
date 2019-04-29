@@ -122,25 +122,11 @@ namespace HeuristicLab.Parameters {
       this.getsCollected = true;
       Initialize();
     }
-    public OptionalConstrainedValueParameter(string name, bool getsCollected)
-      : base(name, typeof(T)) {
-      this.validValues = new ItemSet<T>();
-      this.readOnly = false;
-      this.getsCollected = getsCollected;
-      Initialize();
-    }
     public OptionalConstrainedValueParameter(string name, ItemSet<T> validValues)
       : base(name, typeof(T)) {
       this.validValues = validValues;
       this.readOnly = false;
       this.getsCollected = true;
-      Initialize();
-    }
-    public OptionalConstrainedValueParameter(string name, ItemSet<T> validValues, bool getsCollected)
-      : base(name, typeof(T)) {
-      this.validValues = validValues;
-      this.readOnly = false;
-      this.getsCollected = getsCollected;
       Initialize();
     }
     public OptionalConstrainedValueParameter(string name, ItemSet<T> validValues, T value)
@@ -151,26 +137,11 @@ namespace HeuristicLab.Parameters {
       this.getsCollected = true;
       Initialize();
     }
-    public OptionalConstrainedValueParameter(string name, ItemSet<T> validValues, T value, bool getsCollected)
-      : base(name, typeof(T)) {
-      this.validValues = validValues;
-      this.value = value;
-      this.readOnly = false;
-      this.getsCollected = getsCollected;
-      Initialize();
-    }
     public OptionalConstrainedValueParameter(string name, string description)
       : base(name, description, typeof(T)) {
       this.validValues = new ItemSet<T>();
       this.readOnly = false;
       this.getsCollected = true;
-      Initialize();
-    }
-    public OptionalConstrainedValueParameter(string name, string description, bool getsCollected)
-      : base(name, description, typeof(T)) {
-      this.validValues = new ItemSet<T>();
-      this.readOnly = false;
-      this.getsCollected = getsCollected;
       Initialize();
     }
     public OptionalConstrainedValueParameter(string name, string description, ItemSet<T> validValues)
@@ -180,27 +151,12 @@ namespace HeuristicLab.Parameters {
       this.getsCollected = true;
       Initialize();
     }
-    public OptionalConstrainedValueParameter(string name, string description, ItemSet<T> validValues, bool getsCollected)
-      : base(name, description, typeof(T)) {
-      this.validValues = validValues;
-      this.readOnly = false;
-      this.getsCollected = getsCollected;
-      Initialize();
-    }
     public OptionalConstrainedValueParameter(string name, string description, ItemSet<T> validValues, T value)
       : base(name, description, typeof(T)) {
       this.validValues = validValues;
       this.value = value;
       this.readOnly = false;
       this.getsCollected = true;
-      Initialize();
-    }
-    public OptionalConstrainedValueParameter(string name, string description, ItemSet<T> validValues, T value, bool getsCollected)
-      : base(name, description, typeof(T)) {
-      this.validValues = validValues;
-      this.value = value;
-      this.readOnly = false;
-      this.getsCollected = getsCollected;
       Initialize();
     }
     #endregion

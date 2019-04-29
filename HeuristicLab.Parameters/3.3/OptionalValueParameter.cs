@@ -136,25 +136,11 @@ namespace HeuristicLab.Parameters {
       this.getsCollected = true;
       this.reactOnValueToStringChangedAndValueItemImageChanged = true;
     }
-    public OptionalValueParameter(string name, bool getsCollected)
-      : base(name, typeof(T)) {
-      this.readOnly = false;
-      this.getsCollected = getsCollected;
-      this.reactOnValueToStringChangedAndValueItemImageChanged = true;
-    }
     public OptionalValueParameter(string name, T value)
       : base(name, typeof(T)) {
       this.value = value;
       this.readOnly = false;
       this.getsCollected = true;
-      this.reactOnValueToStringChangedAndValueItemImageChanged = true;
-      RegisterValueEvents();
-    }
-    public OptionalValueParameter(string name, T value, bool getsCollected)
-      : base(name, typeof(T)) {
-      this.value = value;
-      this.readOnly = false;
-      this.getsCollected = getsCollected;
       this.reactOnValueToStringChangedAndValueItemImageChanged = true;
       RegisterValueEvents();
     }
@@ -164,25 +150,12 @@ namespace HeuristicLab.Parameters {
       this.getsCollected = true;
       this.reactOnValueToStringChangedAndValueItemImageChanged = true;
     }
-    public OptionalValueParameter(string name, string description, bool getsCollected)
-      : base(name, description, typeof(T)) {
-      this.readOnly = false;
-      this.getsCollected = getsCollected;
-      this.reactOnValueToStringChangedAndValueItemImageChanged = true;
-    }
+
     public OptionalValueParameter(string name, string description, T value)
       : base(name, description, typeof(T)) {
       this.value = value;
       this.readOnly = false;
       this.getsCollected = true;
-      this.reactOnValueToStringChangedAndValueItemImageChanged = true;
-      RegisterValueEvents();
-    }
-    public OptionalValueParameter(string name, string description, T value, bool getsCollected)
-      : base(name, description, typeof(T)) {
-      this.value = value;
-      this.readOnly = false;
-      this.getsCollected = getsCollected;
       this.reactOnValueToStringChangedAndValueItemImageChanged = true;
       RegisterValueEvents();
     }

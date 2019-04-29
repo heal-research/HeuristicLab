@@ -111,12 +111,6 @@ namespace HeuristicLab.Parameters {
       this.Hidden = false;
       this.getsCollected = true;
     }
-    public ValueLookupParameter(string name, bool getsCollected)
-      : base(name) {
-      this.readOnly = false;
-      this.Hidden = false;
-      this.getsCollected = getsCollected;
-    }
     public ValueLookupParameter(string name, T value)
       : base(name) {
       this.value = value;
@@ -125,25 +119,11 @@ namespace HeuristicLab.Parameters {
       this.getsCollected = true;
       RegisterValueEvents();
     }
-    public ValueLookupParameter(string name, T value, bool getsCollected)
-      : base(name) {
-      this.value = value;
-      this.readOnly = false;
-      this.Hidden = false;
-      this.getsCollected = getsCollected;
-      RegisterValueEvents();
-    }
     public ValueLookupParameter(string name, string description)
       : base(name, description) {
       this.readOnly = false;
       this.Hidden = false;
       this.getsCollected = true;
-    }
-    public ValueLookupParameter(string name, string description, bool getsCollected)
-      : base(name, description) {
-      this.readOnly = false;
-      this.Hidden = false;
-      this.getsCollected = getsCollected;
     }
     public ValueLookupParameter(string name, string description, T value)
       : base(name, description) {
@@ -153,25 +133,11 @@ namespace HeuristicLab.Parameters {
       this.getsCollected = true;
       RegisterValueEvents();
     }
-    public ValueLookupParameter(string name, string description, T value, bool getsCollected)
-      : base(name, description) {
-      this.value = value;
-      this.readOnly = false;
-      this.Hidden = false;
-      this.getsCollected = getsCollected;
-      RegisterValueEvents();
-    }
     public ValueLookupParameter(string name, string description, string actualName)
       : base(name, description, actualName) {
       this.readOnly = false;
       this.Hidden = false;
       this.getsCollected = true;
-    }
-    public ValueLookupParameter(string name, string description, string actualName, bool getsCollected)
-      : base(name, description, actualName) {
-      this.readOnly = false;
-      this.Hidden = false;
-      this.getsCollected = getsCollected;
     }
     #endregion
 

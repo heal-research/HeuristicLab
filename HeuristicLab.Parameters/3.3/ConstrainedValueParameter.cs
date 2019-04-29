@@ -21,10 +21,10 @@
 
 using System;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Attic;
 
 namespace HeuristicLab.Parameters {
   /// <summary>
@@ -46,17 +46,11 @@ namespace HeuristicLab.Parameters {
     protected ConstrainedValueParameter(ConstrainedValueParameter<T> original, Cloner cloner) : base(original, cloner) { }
     public ConstrainedValueParameter() : base() { }
     public ConstrainedValueParameter(string name) : base(name) { }
-    public ConstrainedValueParameter(string name, bool getsCollected) : base(name, getsCollected) { }
     public ConstrainedValueParameter(string name, ItemSet<T> validValues) : base(name, validValues) { }
-    public ConstrainedValueParameter(string name, ItemSet<T> validValues, bool getsCollected) : base(name, validValues, getsCollected) { }
     public ConstrainedValueParameter(string name, ItemSet<T> validValues, T value) : base(name, validValues, value) { }
-    public ConstrainedValueParameter(string name, ItemSet<T> validValues, T value, bool getsCollected) : base(name, validValues, value, getsCollected) { }
     public ConstrainedValueParameter(string name, string description) : base(name, description) { }
-    public ConstrainedValueParameter(string name, string description, bool getsCollected) : base(name, description, getsCollected) { }
     public ConstrainedValueParameter(string name, string description, ItemSet<T> validValues) : base(name, description, validValues) { }
-    public ConstrainedValueParameter(string name, string description, ItemSet<T> validValues, bool getsCollected) : base(name, description, validValues, getsCollected) { }
     public ConstrainedValueParameter(string name, string description, ItemSet<T> validValues, T value) : base(name, description, validValues, value) { }
-    public ConstrainedValueParameter(string name, string description, ItemSet<T> validValues, T value, bool getsCollected) : base(name, description, validValues, value, getsCollected) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new ConstrainedValueParameter<T>(this, cloner);
