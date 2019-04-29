@@ -37,7 +37,7 @@ using HeuristicLab.Parameters;
 namespace HeuristicLab.Problems.ExternalEvaluation {
   #region single-objective
   [Item("Binary Vector External Evaluation Problem (single-objective)", "Represents a binary vector single-objective problem that is evaluated by a separate process.")]
-  [Creatable(CreatableAttribute.Categories.ExternalEvaluationProblems, Priority = 100)]
+  [Creatable(CreatableAttribute.Categories.ExternalEvaluationProblemsSingleObjective, Priority = 100)]
   [StorableType("4ea0ded8-4451-4011-b88e-4d0680721b01")]
   public sealed class SingleObjectiveBinaryVectorExternalEvaluationProblem : ExternalEvaluationProblem<BinaryVectorEncoding, BinaryVector> {
 
@@ -60,7 +60,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
   }
 
   [Item("Integer Vector External Evaluation Problem (single-objective)", "Represents an integer vector single-objective problem that is evaluated by a separate process.")]
-  [Creatable(CreatableAttribute.Categories.ExternalEvaluationProblems, Priority = 101)]
+  [Creatable(CreatableAttribute.Categories.ExternalEvaluationProblemsSingleObjective, Priority = 101)]
   [StorableType("46465e8c-11d8-4d02-8c45-de41a08db7fa")]
   public sealed class SingleObjectiveIntegerVectorExternalEvaluationProblem : ExternalEvaluationProblem<IntegerVectorEncoding, IntegerVector> {
 
@@ -83,7 +83,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
   }
 
   [Item("Real Vector External Evaluation Problem (single-objective)", "Represents a real vector single-objective problem that is evaluated by a separate process.")]
-  [Creatable(CreatableAttribute.Categories.ExternalEvaluationProblems, Priority = 102)]
+  [Creatable(CreatableAttribute.Categories.ExternalEvaluationProblemsSingleObjective, Priority = 102)]
   [StorableType("637f091f-6601-494e-bafb-2a8ea474210c")]
   public sealed class SingleObjectiveRealVectorExternalEvaluationProblem : ExternalEvaluationProblem<RealVectorEncoding, RealVector> {
 
@@ -106,7 +106,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
   }
 
   [Item("Permutation External Evaluation Problem (single-objective)", "Represents a permutation single-objective problem that is evaluated by a separate process.")]
-  [Creatable(CreatableAttribute.Categories.ExternalEvaluationProblems, Priority = 103)]
+  [Creatable(CreatableAttribute.Categories.ExternalEvaluationProblemsSingleObjective, Priority = 103)]
   [StorableType("ad9d45f8-b97e-49a7-b3d2-487d9a2cbdf9")]
   public sealed class SingleObjectivePermutationExternalEvaluationProblem : ExternalEvaluationProblem<PermutationEncoding, Permutation> {
 
@@ -129,7 +129,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
   }
 
   [Item("Symbolic Expression Tree External Evaluation Problem (single-objective)", "Represents a symbolic expression tree single-objective problem that is evaluated by a separate process.")]
-  [Creatable(CreatableAttribute.Categories.ExternalEvaluationProblems, Priority = 104)]
+  [Creatable(CreatableAttribute.Categories.ExternalEvaluationProblemsSingleObjective, Priority = 104)]
   [StorableType("9b3ee4a8-7076-4edd-ae7e-4188bc49aaa3")]
   public sealed class SingleObjectiveSymbolicExpressionTreeExternalEvaluationProblem : ExternalEvaluationProblem<SymbolicExpressionTreeEncoding, ISymbolicExpressionTree> {
 
@@ -155,7 +155,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
   }
 
   [Item("Linear Linkage External Evaluation Problem (single-objective)", "Represents a linear linkage single-objective problem that is evaluated by a separate process.")]
-  [Creatable(CreatableAttribute.Categories.ExternalEvaluationProblems, Priority = 105)]
+  [Creatable(CreatableAttribute.Categories.ExternalEvaluationProblemsSingleObjective, Priority = 105)]
   [StorableType("945a35d9-89a8-4423-9ea0-21829ac68887")]
   public sealed class SingleObjectiveLinearLinkageExternalEvaluationProblem : ExternalEvaluationProblem<LinearLinkageEncoding, LinearLinkage> {
 
@@ -178,7 +178,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
   }
 
   [Item("Combined Encoding External Evaluation Problem (single-objective)", "Represents a combined encoding single-objective problem that is evaluated by a separate process.")]
-  [Creatable(CreatableAttribute.Categories.ExternalEvaluationProblems, Priority = 1000)]
+  [Creatable(CreatableAttribute.Categories.ExternalEvaluationProblemsSingleObjective, Priority = 1000)]
   [StorableType("0effb975-c1ff-4485-afc9-5f4cf30ac62b")]
   public sealed class SingleObjectiveCombinedEncodingExternalEvaluationProblem : ExternalEvaluationProblem<CombinedEncoding, CombinedSolution> {
 
@@ -195,7 +195,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
 
   #region multi-objective
   [Item("Binary Vector External Evaluation Problem (multi-objective)", "Represents a binary vector multi-objective problem that is evaluated by a separate process.")]
-  [Creatable(CreatableAttribute.Categories.ExternalEvaluationProblems, Priority = 100)]
+  [Creatable(CreatableAttribute.Categories.ExternalEvaluationProblemsMultiObjective, Priority = 100)]
   [StorableType("f14c7e88-b74d-4cad-ae55-83daf7b4c288")]
   public sealed class MultiObjectiveBinaryVectorExternalEvaluationProblem : MultiObjectiveExternalEvaluationProblem<BinaryVectorEncoding, BinaryVector> {
 
@@ -218,7 +218,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
   }
 
   [Item("Integer Vector External Evaluation Problem (multi-objective)", "Represents an integer vector multi-objective problem that is evaluated by a separate process.")]
-  [Creatable(CreatableAttribute.Categories.ExternalEvaluationProblems, Priority = 101)]
+  [Creatable(CreatableAttribute.Categories.ExternalEvaluationProblemsMultiObjective, Priority = 101)]
   [StorableType("90a82c2f-6c37-4ffd-8495-bee278c583d3")]
   public sealed class MultiObjectiveIntegerVectorExternalEvaluationProblem : MultiObjectiveExternalEvaluationProblem<IntegerVectorEncoding, IntegerVector> {
 
@@ -241,7 +241,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
   }
 
   [Item("Real Vector External Evaluation Problem (multi-objective)", "Represents a real vector multi-objective problem that is evaluated by a separate process.")]
-  [Creatable(CreatableAttribute.Categories.ExternalEvaluationProblems, Priority = 102)]
+  [Creatable(CreatableAttribute.Categories.ExternalEvaluationProblemsMultiObjective, Priority = 102)]
   [StorableType("38e1d068-d569-48c5-bad6-cbdd685b7c6b")]
   public sealed class MultiObjectiveRealVectorExternalEvaluationProblem : MultiObjectiveExternalEvaluationProblem<RealVectorEncoding, RealVector> {
 
@@ -264,7 +264,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
   }
 
   [Item("Permutation External Evaluation Problem (multi-objective)", "Represents a permutation multi-objective problem that is evaluated by a separate process.")]
-  [Creatable(CreatableAttribute.Categories.ExternalEvaluationProblems, Priority = 103)]
+  [Creatable(CreatableAttribute.Categories.ExternalEvaluationProblemsMultiObjective, Priority = 103)]
   [StorableType("f1b265b0-ac7c-4c36-b346-5b3f2c37694b")]
   public sealed class MultiObjectivePermutationExternalEvaluationProblem : MultiObjectiveExternalEvaluationProblem<PermutationEncoding, Permutation> {
 
@@ -287,7 +287,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
   }
 
   [Item("Symbolic Expression Tree External Evaluation Problem (multi-objective)", "Represents a symbolic expression tree multi-objective problem that is evaluated by a separate process.")]
-  [Creatable(CreatableAttribute.Categories.ExternalEvaluationProblems, Priority = 104)]
+  [Creatable(CreatableAttribute.Categories.ExternalEvaluationProblemsMultiObjective, Priority = 104)]
   [StorableType("fb6834e2-2d56-4711-a3f8-5e0ab55cd040")]
   public sealed class MultiObjectiveSymbolicExpressionTreeExternalEvaluationProblem : MultiObjectiveExternalEvaluationProblem<SymbolicExpressionTreeEncoding, ISymbolicExpressionTree> {
 
@@ -313,7 +313,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
   }
 
   [Item("Linear Linkage External Evaluation Problem (multi-objective)", "Represents a linear linkage multi-objective problem that is evaluated by a separate process.")]
-  [Creatable(CreatableAttribute.Categories.ExternalEvaluationProblems, Priority = 105)]
+  [Creatable(CreatableAttribute.Categories.ExternalEvaluationProblemsMultiObjective, Priority = 105)]
   [StorableType("ed0c1129-651d-465f-87b0-f412f3e3b3d1")]
   public sealed class MultiObjectiveLinearLinkageExternalEvaluationProblem : MultiObjectiveExternalEvaluationProblem<LinearLinkageEncoding, LinearLinkage> {
 
@@ -336,7 +336,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
   }
 
   [Item("Combined Encoding External Evaluation Problem (multi-objective)", "Represents a combined encoding multi-objective problem that is evaluated by a separate process.")]
-  [Creatable(CreatableAttribute.Categories.ExternalEvaluationProblems, Priority = 1000)]
+  [Creatable(CreatableAttribute.Categories.ExternalEvaluationProblemsMultiObjective, Priority = 1000)]
   [StorableType("5f136869-1750-4d96-ba7e-b25edd2bcab1")]
   public sealed class MultiObjectiveCombinedEncodingExternalEvaluationProblem : MultiObjectiveExternalEvaluationProblem<CombinedEncoding, CombinedSolution> {
 
