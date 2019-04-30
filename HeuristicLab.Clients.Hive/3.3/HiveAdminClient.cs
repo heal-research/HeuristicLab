@@ -20,12 +20,12 @@
 #endregion
 
 using System;
-using System.Threading;
-using HeuristicLab.Common;
-using HeuristicLab.Core;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using HeuristicLab.Clients.Access;
+using HeuristicLab.Common;
+using HeuristicLab.Core;
 
 namespace HeuristicLab.Clients.Hive {
   [Item("Hive Administrator", "Hive Administrator")]
@@ -76,7 +76,7 @@ namespace HeuristicLab.Clients.Hive {
       set {
         if (value != jobs)
           jobs = value;
-        }
+      }
     }
 
     private Dictionary<Guid, List<LightweightTask>> tasks;
@@ -165,17 +165,10 @@ namespace HeuristicLab.Clients.Hive {
           var projectIds = projects.Select(p => p.Id).ToList();
           if (projectIds.Any()) {
             service.GetAssignedResourcesForProjectsAdministration(projectIds)
-              .ForEach(a => projectResourceAssignments.Add(a));
-            projectIds.ForEach(p => jobs.Add(p, new HiveItemCollection<RefreshableJob>()));
+                   .ForEach(a => projectResourceAssignments.Add(a));
+
             var unsortedJobs = service.GetJobsByProjectIds(projectIds)
-              .OrderBy(x => x.DateCreated).ToList();
-
-            unsortedJobs.Where(j => j.State == JobState.DeletionPending).ToList().ForEach(j => jobs[j.ProjectId].Add(new RefreshableJob(j)));
-            unsortedJobs.Where(j => j.State == JobState.StatisticsPending).ToList().ForEach(j => jobs[j.ProjectId].Add(new RefreshableJob(j)));
-            unsortedJobs.Where(j => j.State == JobState.Online).ToList().ForEach(j => jobs[j.ProjectId].Add(new RefreshableJob(j)));
-
-            foreach (var job in jobs.SelectMany(x => x.Value))
-              LoadLightweightJob(job);
+                                      .OrderBy(x => x.DateCreated).ToList();
 
             projectNames = service.GetProjectNames();
             resourceNames = service.GetResourceNames();
@@ -186,62 +179,12 @@ namespace HeuristicLab.Clients.Hive {
         UpdateProjectGenealogy();
         RefreshDisabledParentProjects();
         RefreshDisabledParentResources();
-      }
-      catch {
+      } catch {
         throw;
-      }
-      finally {
+      } finally {
         OnRefreshed();
       }
     }
-
-    //public void UpdateResourceGenealogy(IItemList<Resource> resources) {
-    //  resourceAncestors.Clear();
-    //  resourceDescendants.Clear();
-
-    //  foreach (var r in resources) {
-    //    resourceAncestors.Add(r.Id, new HashSet<Resource>());
-    //    resourceDescendants.Add(r.Id, new HashSet<Resource>());
-    //  }
-
-    //  foreach (var r in resources) {
-    //    var parentResourceId = r.ParentResourceId;
-    //    while (parentResourceId != null) {
-    //      var parent = resources.SingleOrDefault(x => x.Id == parentResourceId);
-    //      if (parent != null) {
-    //        resourceAncestors[r.Id].Add(parent);
-    //        resourceDescendants[parent.Id].Add(r);
-    //        parentResourceId = parent.ParentResourceId;
-    //      } else {
-    //        parentResourceId = null;
-    //      }
-    //    }
-    //  }
-    //}
-
-    //public void UpdateProjectGenealogy(IItemList<Project> projects) {
-    //  projectAncestors.Clear();
-    //  projectDescendants.Clear();
-
-    //  foreach (var p in projects) {
-    //    projectAncestors.Add(p.Id, new HashSet<Project>());
-    //    projectDescendants.Add(p.Id, new HashSet<Project>());
-    //  }
-
-    //  foreach (var p in projects) {
-    //    var parentProjectId = p.ParentProjectId;
-    //    while (parentProjectId != null) {
-    //      var parent = projects.SingleOrDefault(x => x.Id == parentProjectId);
-    //      if (parent != null) {
-    //        projectAncestors[p.Id].Add(parent);
-    //        projectDescendants[parent.Id].Add(p);
-    //        parentProjectId = parent.ParentProjectId;
-    //      } else {
-    //        parentProjectId = null;
-    //      }
-    //    }
-    //  }
-    //}
 
     private void UpdateResourceGenealogy() {
       resourceAncestors.Clear();
@@ -313,23 +256,20 @@ namespace HeuristicLab.Clients.Hive {
       }
     }
 
-    public void RefreshJobs() {
-      var projectIds = new List<Guid>();
-      jobs = new Dictionary<Guid, HiveItemCollection<RefreshableJob>>();
-      tasks = new Dictionary<Guid, List<LightweightTask>>();
-
+    public void RefreshJobs(Guid projectId) {
       HiveServiceLocator.Instance.CallHiveService(service => {
-        service.GetProjectsForAdministration().ForEach(p => projectIds.Add(p.Id));
-        if(projectIds.Any()) {
-          projectIds.ForEach(p => jobs.Add(p, new HiveItemCollection<RefreshableJob>()));
-          var unsortedJobs = service.GetJobsByProjectIds(projectIds)
-            .OrderBy(x => x.DateCreated).ToList();
-          
+        var projectIds = new HashSet<Guid>(service.GetProjectsForAdministration().Select(x => x.Id));
+        if (projectIds.Contains(projectId)) {
+          jobs.Add(projectId, new HiveItemCollection<RefreshableJob>());
+
+          var unsortedJobs = service.GetJobsByProjectId(projectId)
+                                    .OrderBy(x => x.DateCreated).ToList();
+
           unsortedJobs.Where(j => j.State == JobState.DeletionPending).ToList().ForEach(j => jobs[j.ProjectId].Add(new RefreshableJob(j)));
           unsortedJobs.Where(j => j.State == JobState.StatisticsPending).ToList().ForEach(j => jobs[j.ProjectId].Add(new RefreshableJob(j)));
           unsortedJobs.Where(j => j.State == JobState.Online).ToList().ForEach(j => jobs[j.ProjectId].Add(new RefreshableJob(j)));
 
-          foreach(var job in jobs.SelectMany(x => x.Value))
+          foreach (var job in jobs.SelectMany(x => x.Value))
             LoadLightweightJob(job);
         }
       });
@@ -343,13 +283,13 @@ namespace HeuristicLab.Clients.Hive {
         tasks[job.Id].Clear();
         tasks[job.Id].AddRange(lightweightTasks);
       } else {
-        tasks.Add(job.Id, new List<LightweightTask>(lightweightTasks));        
+        tasks.Add(job.Id, new List<LightweightTask>(lightweightTasks));
       }
 
       if (lightweightTasks != null && lightweightTasks.Count > 0 && lightweightTasks.All(x => x.Id != Guid.Empty)) {
         if (lightweightTasks.All(x =>
-          x.State == TaskState.Finished 
-          || x.State == TaskState.Aborted 
+          x.State == TaskState.Finished
+          || x.State == TaskState.Aborted
           || x.State == TaskState.Failed)) {
           refreshableJob.ExecutionState = ExecutionState.Stopped;
           refreshableJob.RefreshAutomatically = false;
@@ -365,8 +305,8 @@ namespace HeuristicLab.Clients.Hive {
              .Any(x => x.State == TaskState.Paused)) {
           refreshableJob.ExecutionState = ExecutionState.Paused;
           refreshableJob.RefreshAutomatically = false;
-        } else if (lightweightTasks.Any(x => x.State == TaskState.Calculating 
-                                  || x.State == TaskState.Transferring 
+        } else if (lightweightTasks.Any(x => x.State == TaskState.Calculating
+                                  || x.State == TaskState.Transferring
                                   || x.State == TaskState.Waiting)) {
           refreshableJob.ExecutionState = ExecutionState.Started;
         }
@@ -376,7 +316,7 @@ namespace HeuristicLab.Clients.Hive {
     }
 
     public void SortJobs() {
-      for(int i = 0; i < jobs.Count; i++) {
+      for (int i = 0; i < jobs.Count; i++) {
         var projectId = jobs.Keys.ElementAt(i);
         var unsortedJobs = jobs.Values.ElementAt(i);
 
@@ -402,11 +342,9 @@ namespace HeuristicLab.Clients.Hive {
           HiveServiceLocator.Instance.CallHiveService(service => {
             service.GetDowntimesForResource(downtimeForResourceId).ForEach(d => downtimes.Add(d));
           });
-        }
-        catch {
+        } catch {
           throw;
-        }
-        finally {
+        } finally {
           OnRefreshed();
         }
       }
@@ -520,7 +458,7 @@ namespace HeuristicLab.Clients.Hive {
     }
 
     public IEnumerable<Project> GetAvailableProjectDescendants(Guid id) {
-      if(projectDescendants.ContainsKey(id)) return projects.Where(x => projectDescendants[id].Contains(x.Id));
+      if (projectDescendants.ContainsKey(id)) return projects.Where(x => projectDescendants[id].Contains(x.Id));
       else return Enumerable.Empty<Project>();
     }
 
@@ -544,7 +482,7 @@ namespace HeuristicLab.Clients.Hive {
     }
 
     public bool CheckAccessToAdminAreaGranted() {
-      if(projects != null) {
+      if (projects != null) {
         return projects.Count > 0;
       } else {
         bool accessGranted = false;
@@ -560,7 +498,7 @@ namespace HeuristicLab.Clients.Hive {
 
       if (res.OwnerUserId == userId) {
         return true;
-      } else if(resourceAncestors.ContainsKey(res.Id)) {
+      } else if (resourceAncestors.ContainsKey(res.Id)) {
         return GetAvailableResourceAncestors(res.Id).Where(x => x.OwnerUserId == userId).Any();
       }
 
@@ -582,7 +520,7 @@ namespace HeuristicLab.Clients.Hive {
     public bool CheckOwnershipOfParentProject(Project pro, Guid userId) {
       if (pro == null || userId == Guid.Empty) return false;
 
-      if(projectAncestors.ContainsKey(pro.Id)) {
+      if (projectAncestors.ContainsKey(pro.Id)) {
         return GetAvailableProjectAncestors(pro.Id).Any(x => x.OwnerUserId == userId);
       }
 
@@ -612,7 +550,7 @@ namespace HeuristicLab.Clients.Hive {
       } else if (parent != null && (!IsAdmin() && parent.OwnerUserId != UserInformation.Instance.User.Id && !CheckOwnershipOfParentProject(parent, UserInformation.Instance.User.Id))) {
         // ... if the user is no admin nor owner of the new parent or grand..grandparents
         changePossible = false;
-      } else if(parent != null && projectDescendants.ContainsKey(child.Id)) {
+      } else if (parent != null && projectDescendants.ContainsKey(child.Id)) {
         // ... if the new parent is among the moved project's descendants
         changePossible = !GetAvailableProjectDescendants(child.Id).Where(x => x.Id == parent.Id).Any();
       }
@@ -629,7 +567,7 @@ namespace HeuristicLab.Clients.Hive {
       // ... or the new parent is not stored yet
       // ... or the new parent is a slave
       // ... or there is not parental change
-      if (child == null 
+      if (child == null
         || child == parent
         || (parent != null && parent.Id == Guid.Empty)
         || (parent != null && parent is Slave)
@@ -644,7 +582,7 @@ namespace HeuristicLab.Clients.Hive {
     }
 
     public IEnumerable<Resource> GetAssignedResourcesForJob(Guid jobId) {
-      var assignedJobResource =  HiveServiceLocator.Instance.CallHiveService(service => service.GetAssignedResourcesForJob(jobId));
+      var assignedJobResource = HiveServiceLocator.Instance.CallHiveService(service => service.GetAssignedResourcesForJob(jobId));
       return Resources.Where(x => assignedJobResource.Select(y => y.ResourceId).Contains(x.Id));
     }
 
