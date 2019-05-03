@@ -136,7 +136,8 @@ namespace HeuristicLab.ExactOptimization.LinearProgramming {
       }
 
       if (!exportSuccessful)
-        throw new InvalidDataException("Model could not be exported.");
+        throw new InvalidOperationException($"Model could not be exported. " +
+          $"For details, see the log files in '{LinearSolver.LogDirectory}'.");
     }
 
     [StorableHook(HookType.AfterDeserialization)]

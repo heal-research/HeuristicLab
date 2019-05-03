@@ -46,6 +46,15 @@ namespace HeuristicLab.ExactOptimization.LinearProgramming {
     [Storable]
     protected IFixedValueParameter<TextValue> solverSpecificParametersParam;
 
+    public static string LogDirectory { get; }
+
+    static LinearSolver() {
+      var solver = new Solver("", Solver.OptimizationProblemType.CbcMixedIntegerProgramming);
+      LogDirectory = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+      Directory.CreateDirectory(LogDirectory);
+      solver.InitLogging(Assembly.GetExecutingAssembly().Location, LogDirectory);
+    }
+
     public LinearSolver() {
       Parameters.Add(problemTypeParam =
         new ValueParameter<EnumValue<ProblemType>>(nameof(ProblemType),
