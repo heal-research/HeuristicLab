@@ -87,7 +87,6 @@ namespace HeuristicLab.ExactOptimization.LinearProgramming {
 
     public override void Reset() {
       base.Reset();
-      stopwatch.Reset();
       executionTime = TimeSpan.Zero;
     }
 
@@ -113,7 +112,7 @@ namespace HeuristicLab.ExactOptimization.LinearProgramming {
         if (cancellationToken.IsCancellationRequested)
           return;
 
-        stopwatch.Start();
+        stopwatch.Restart();
         Solve(problemDefinition, results, IntermediateTimeLimit);
         stopwatch.Stop();
         executionTime += stopwatch.Elapsed;
