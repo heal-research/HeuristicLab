@@ -101,7 +101,7 @@ namespace HeuristicLab.Parameters.Views {
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
       valueGroupBox.Enabled = Content != null;
-      valueComboBox.Enabled = (valueComboBox.Items.Count > 0) && !Content.ReadOnly && !ReadOnly;
+      valueComboBox.Enabled = Content != null && valueComboBox.Items.Count > 0 && !Content.ReadOnly && !ReadOnly;
       showInRunCheckBox.Enabled = Content != null && !ReadOnly;
     }
 
