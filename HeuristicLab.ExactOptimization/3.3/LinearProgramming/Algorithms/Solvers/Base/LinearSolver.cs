@@ -173,7 +173,8 @@ namespace HeuristicLab.ExactOptimization.LinearProgramming {
           (int)(Scaling ? SolverParameters.ScalingValues.ScalingOn : SolverParameters.ScalingValues.ScalingOff));
 
         if (!solver.SetSolverSpecificParametersAsString(SolverSpecificParameters))
-          throw new ArgumentException("Solver specific parameters could not be set.");
+          throw new ArgumentException("Solver specific parameters could not be set. " +
+            $"For details, see the log files in '{LogDirectory}'.");
 
         resultStatus = (ResultStatus)solver.Solve(parameters);
       }
@@ -233,11 +234,12 @@ namespace HeuristicLab.ExactOptimization.LinearProgramming {
       try {
         solver = new Solver(Name, optimizationProblemType, libraryName ?? string.Empty);
       } catch {
-        throw new InvalidOperationException($"Could not create {optimizationProblemType}.");
+        solver = null;
       }
 
       if (solver == null)
-        throw new InvalidOperationException($"Could not create {optimizationProblemType}.");
+        throw new InvalidOperationException($"Could not create {optimizationProblemType}. " +
+          $"For details, see the log files in '{LogDirectory}'.");
 
       solver.SuppressOutput();
       return solver;
