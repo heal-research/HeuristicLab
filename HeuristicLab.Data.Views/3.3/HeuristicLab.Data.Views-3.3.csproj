@@ -220,6 +220,12 @@
     <Compile Include="StringConvertibleMatrixView.Designer.cs">
       <DependentUpon>StringConvertibleMatrixView.cs</DependentUpon>
     </Compile>
+    <Compile Include="TextValueView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TextValueView.Designer.cs">
+      <DependentUpon>TextValueView.cs</DependentUpon>
+    </Compile>
     <Compile Include="StringConvertibleValueView.cs">
       <SubType>UserControl</SubType>
     </Compile>
