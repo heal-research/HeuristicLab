@@ -91,7 +91,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       } else if (symbol is Cube) {
         stringBuilder.Append(FormatPower(node.GetSubtree(0), "3"));
       } else if (symbol is CubeRoot) {
-        stringBuilder.Append(FormatPower(node.GetSubtree(0), "(1/3)"));
+        stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
+        stringBuilder.Append(" cbrt");
       } else if (symbol is Division) {
         if (node.SubtreeCount == 1) {
           stringBuilder.Append("1/");

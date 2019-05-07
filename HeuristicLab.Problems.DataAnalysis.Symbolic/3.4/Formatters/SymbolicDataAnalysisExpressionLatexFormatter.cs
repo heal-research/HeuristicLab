@@ -137,7 +137,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       } else if (node.Symbol is Cube) {
         strBuilder.Append(@"\left(");
       } else if (node.Symbol is CubeRoot) {
-        strBuilder.Append(@"\left(");
+        strBuilder.Append(@"\operatorname{cbrt}\left(");
       } else if (node.Symbol is Sine) {
         strBuilder.Append(@"\sin \left( ");
       } else if (node.Symbol is Cosine) {
@@ -419,7 +419,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       } else if (node.Symbol is Cube) {
         strBuilder.Append(@"\right)^3");
       } else if (node.Symbol is CubeRoot) {
-        strBuilder.Append(@"\right)^\frac{1}{3}");
+        strBuilder.Append(@"\right)");
       } else if (node.Symbol is Sine) {
         strBuilder.Append(@" \right) ");
       } else if (node.Symbol is Cosine) {

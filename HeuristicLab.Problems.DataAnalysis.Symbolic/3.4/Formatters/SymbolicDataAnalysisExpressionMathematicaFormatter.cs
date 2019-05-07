@@ -114,7 +114,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         } else if (node.Symbol is Cube) {
           FormatPower(node, strBuilder, "3");
         } else if (node.Symbol is CubeRoot) {
-          FormatPower(node, strBuilder, "1/3");
+          strBuilder.Append("CubeRoot[");
+          FormatRecursively(node.GetSubtree(0), strBuilder);
+          strBuilder.Append("]");
         } else if (node.Symbol is Power) {
           FormatFunction(node, "Power", strBuilder);
         } else if (node.Symbol is Root) {

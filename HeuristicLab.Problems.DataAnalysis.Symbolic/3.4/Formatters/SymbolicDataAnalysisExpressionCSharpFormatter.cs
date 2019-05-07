@@ -139,7 +139,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         } else if (node.Symbol is Cube) {
           FormatPower(node, strBuilder, "3");
         } else if (node.Symbol is CubeRoot) {
-          FormatPower(node, strBuilder, "1.0/3");
+          strBuilder.Append("Cbrt(");
+          FormatRecursively(node.GetSubtree(0), strBuilder);
+          strBuilder.Append(")");
         } else if (node.Symbol is Power) {
           FormatFunction(node, "Math.Pow", strBuilder);
         } else if (node.Symbol is Root) {
@@ -251,6 +253,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       strBuilder.AppendLine("namespace HeuristicLab.Models {");
       strBuilder.AppendLine("public static class Model {");
       GenerateAverageSource(strBuilder);
+      GenerateCbrtSource(strBuilder);
       GenerateIfThenElseSource(strBuilder);
       GenerateFactorSource(strBuilder);
       GenerateBinaryFactorSource(strBuilder);
@@ -292,6 +295,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private void GenerateAverageSource(StringBuilder strBuilder) {
       strBuilder.AppendLine("private static double Average(params double[] values) {");
       strBuilder.AppendLine("  return values.Average();");
+      strBuilder.AppendLine("}");
+    }
+    private void GenerateCbrtSource(StringBuilder strBuilder) {
+      strBuilder.AppendLine("private static double Cbrt(double x) {");
+      strBuilder.AppendLine("  return x < 0 ? -Math.Pow(-x, 1.0 / 3.0) : Math.Pow(x, 1.0 / 3.0);");
       strBuilder.AppendLine("}");
     }
 

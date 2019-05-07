@@ -187,9 +187,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
         stringBuilder.Append(").^3");
       } else if (symbol is CubeRoot) {
-        stringBuilder.Append("(");
+        stringBuilder.Append("NTHROOT(");
         stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
-        stringBuilder.Append(").^(1/3)");
+        stringBuilder.Append(", 3)");
       } else if (symbol is GreaterThan) {
         stringBuilder.Append("((");
         stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));

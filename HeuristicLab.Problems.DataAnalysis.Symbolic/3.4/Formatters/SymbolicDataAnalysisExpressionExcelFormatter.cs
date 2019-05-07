@@ -143,7 +143,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       } else if (symbol is Cube) {
         stringBuilder.Append($"POWER({FormatRecursively(node.GetSubtree(0))}, 3)");
       } else if (symbol is CubeRoot) {
-        stringBuilder.Append($"POWER({FormatRecursively(node.GetSubtree(0))}, 1/3)");
+        var arg_expr = FormatRecursively(node.GetSubtree(0));
+        stringBuilder.Append($"IF({arg_expr} < 0, -POWER(-{arg_expr}, 1/3), POWER({arg_expr}, 1/3))");
       } else if (symbol is Division) {
         if (node.SubtreeCount == 1) {
           stringBuilder.Append("1/(");
