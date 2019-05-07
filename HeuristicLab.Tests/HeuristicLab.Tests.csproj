@@ -586,6 +586,7 @@
     <Compile Include="HeuristicLab.IGraph\IGraphWrappersVectorTest.cs" />
     <Compile Include="HeuristicLab.Persistence-3.3\StorableAttributeTests.cs" />
     <Compile Include="HeuristicLab.Persistence-3.3\UseCases.cs" />
+    <Compile Include="HeuristicLab.Persistence.Attic\PersistenceConsistencyChecks.cs" />
     <Compile Include="HeuristicLab.Persistence.Attic\StorableAttributeTests.cs" />
     <Compile Include="HeuristicLab.Persistence.Attic\UseCases.cs" />
     <Compile Include="HeuristicLab.PluginInfraStructure-3.3\TypeExtensionsTest.cs" />
