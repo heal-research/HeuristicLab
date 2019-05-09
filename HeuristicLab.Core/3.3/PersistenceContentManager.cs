@@ -23,6 +23,7 @@ using System.Threading;
 using HeuristicLab.Common;
 using HeuristicLab.Persistence.Default.Xml;
 using HEAL.Attic;
+using System;
 
 namespace HeuristicLab.Core {
   public class PersistenceContentManager : ContentManager {
@@ -31,12 +32,16 @@ namespace HeuristicLab.Core {
     protected override IStorableContent LoadContent(string filename) {
       // first try to load using the new persistence format
       var ser = new ProtoBufSerializer();
-      var o = (IStorableContent)ser.Deserialize(filename, out SerializationInfo info);
-      if (info.SerializedTypes != null) {
-        return o;
+      try {
+        return (IStorableContent)ser.Deserialize(filename, out SerializationInfo info);
+      } catch (Exception e) {
+        try {
+          // try old format if new format fails
+          return XmlParser.Deserialize<IStorableContent>(filename);
+        } catch (Exception e2) {
+          throw new AggregateException($"Cannot open file {filename}", e, e2);
+        }
       }
-      // try old format if new format fails
-      return XmlParser.Deserialize<IStorableContent>(filename);
     }
 
     protected override void SaveContent(IStorableContent content, string filename, bool compressed, CancellationToken cancellationToken) {
