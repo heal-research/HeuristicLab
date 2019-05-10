@@ -20,11 +20,13 @@
 #endregion
 
 using Google.OrTools.LinearSolver;
+using HEAL.Attic;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 
 namespace HeuristicLab.ExactOptimization.LinearProgramming {
 
+  [StorableType("4C6CEA85-0197-4A92-A969-C2F964F56388")]
   public interface ILinearProblemDefinition : IItem {
 
     void Analyze(Solver solver, ResultCollection results);

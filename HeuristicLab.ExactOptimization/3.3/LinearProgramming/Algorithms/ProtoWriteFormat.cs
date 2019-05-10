@@ -19,8 +19,11 @@
  */
 #endregion
 
+using HEAL.Attic;
+
 namespace HeuristicLab.ExactOptimization.LinearProgramming {
 
+  [StorableType("BBFFAAAC-F9F6-40A9-BC6E-683257F03E2B")]
   public enum ProtoWriteFormat {
     ProtoText,
     ProtoBinary,

@@ -19,10 +19,11 @@
  */
 #endregion
 
-using Google.OrTools.LinearSolver;
+using HEAL.Attic;
 
 namespace HeuristicLab.ExactOptimization.LinearProgramming {
 
+  [StorableType("D6947706-E560-4D5C-8022-C6F1F20DCD8B")]
   public enum SolverResponseStatus {
     Optimal = 0,
     Feasible = 1,

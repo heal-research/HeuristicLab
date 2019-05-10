@@ -20,9 +20,11 @@
 #endregion
 
 using System;
+using HEAL.Attic;
 
 namespace HeuristicLab.ExactOptimization.LinearProgramming {
 
+  [StorableType("D9B54575-1F8A-4A09-9C62-7492C06535B0")]
   public interface IIncrementalLinearSolver : ILinearSolver {
     TimeSpan QualityUpdateInterval { get; set; }
     bool SupportsQualityUpdate { get; }

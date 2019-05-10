@@ -19,8 +19,11 @@
  */
 #endregion
 
+using HEAL.Attic;
+
 namespace HeuristicLab.ExactOptimization.LinearProgramming {
 
+  [StorableType("5892CCCB-7D74-4748-B221-DA12C90B682B")]
   public interface IExternalLinearSolver : ILinearSolver {
     string LibraryName { get; set; }
   }
