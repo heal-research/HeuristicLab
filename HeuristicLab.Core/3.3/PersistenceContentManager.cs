@@ -30,18 +30,11 @@ namespace HeuristicLab.Core {
     public PersistenceContentManager() : base() { }
 
     protected override IStorableContent LoadContent(string filename) {
-      // first try to load using the new persistence format
+      bool useOldPersistence = XmlParser.CanOpen(filename);
+      if (useOldPersistence) return XmlParser.Deserialize<IStorableContent>(filename);
+
       var ser = new ProtoBufSerializer();
-      try {
-        return (IStorableContent)ser.Deserialize(filename, out SerializationInfo info);
-      } catch (Exception e) {
-        try {
-          // try old format if new format fails
-          return XmlParser.Deserialize<IStorableContent>(filename);
-        } catch (Exception e2) {
-          throw new AggregateException($"Cannot open file {filename}", e, e2);
-        }
-      }
+      return (IStorableContent)ser.Deserialize(filename, out SerializationInfo info);
     }
 
     protected override void SaveContent(IStorableContent content, string filename, bool compressed, CancellationToken cancellationToken) {
