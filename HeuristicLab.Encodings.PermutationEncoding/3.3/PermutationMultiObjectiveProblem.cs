@@ -29,28 +29,33 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 
-namespace HeuristicLab.Encodings.IntegerVectorEncoding {
-  [StorableType("11916b0f-4c34-4ece-acae-e28d11211b43")]
-  public abstract class IntegerVectorMultiObjectiveProblem : MultiObjectiveProblem<IntegerVectorEncoding, IntegerVector> {
+namespace HeuristicLab.Encodings.PermutationEncoding {
+  [StorableType("7bc5215b-c181-40d0-a758-d7c19a356e18")]
+  public abstract class PermutationMultiObjectiveProblem : MultiObjectiveProblem<PermutationEncoding, Permutation> {
     public int Length {
       get { return Encoding.Length; }
       set { Encoding.Length = value; }
     }
 
+    public PermutationTypes Type {
+      get { return Encoding.Type; }
+      set { Encoding.Type = value; }
+    }
+
     [StorableConstructor]
-    protected IntegerVectorMultiObjectiveProblem(StorableConstructorFlag _) : base(_) { }
+    protected PermutationMultiObjectiveProblem(StorableConstructorFlag _) : base(_) { }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       RegisterEventHandlers();
     }
 
-    protected IntegerVectorMultiObjectiveProblem(IntegerVectorMultiObjectiveProblem original, Cloner cloner)
+    protected PermutationMultiObjectiveProblem(PermutationMultiObjectiveProblem original, Cloner cloner)
       : base(original, cloner) {
       RegisterEventHandlers();
     }
 
-    protected IntegerVectorMultiObjectiveProblem() : this(new IntegerVectorEncoding() { Length = 10 }) { }
-    protected IntegerVectorMultiObjectiveProblem(IntegerVectorEncoding encoding) : base(encoding) {
+    protected PermutationMultiObjectiveProblem() : this(new PermutationEncoding() { Length = 10, Type = PermutationTypes.Absolute }) { }
+    protected PermutationMultiObjectiveProblem(PermutationEncoding encoding) : base(encoding) {
       EncodingParameter.ReadOnly = true;
 
       Operators.Add(new HammingSimilarityCalculator());
@@ -60,7 +65,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
       RegisterEventHandlers();
     }
 
-    public override void Analyze(IntegerVector[] individuals, double[][] qualities, ResultCollection results, IRandom random) {
+    public override void Analyze(Permutation[] individuals, double[][] qualities, ResultCollection results, IRandom random) {
       base.Analyze(individuals, qualities, results, random);
       // TODO: Calculate Pareto front and add to results
     }
@@ -79,8 +84,10 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
 
     private void RegisterEventHandlers() {
       Encoding.LengthParameter.Value.ValueChanged += LengthParameter_ValueChanged;
+      Encoding.PermutationTypeParameter.Value.ValueChanged += TypeParameter_ValueChanged;
     }
 
     protected virtual void LengthParameter_ValueChanged(object sender, EventArgs e) { }
+    protected virtual void TypeParameter_ValueChanged(object sender, EventArgs e) { }
   }
 }

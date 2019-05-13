@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -31,7 +32,6 @@ using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Problems.Instances;
 
@@ -39,7 +39,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
   [Item("Quadratic Assignment Problem (QAP)", "The Quadratic Assignment Problem (QAP) can be described as the problem of assigning N facilities to N fixed locations such that there is exactly one facility in each location and that the sum of the distances multiplied by the connection strength between the facilities becomes minimal.")]
   [Creatable(CreatableAttribute.Categories.CombinatorialProblems, Priority = 140)]
   [StorableType("A86B1F49-D8E6-45E4-8EFB-8F5CCA2F9DC7")]
-  public sealed class QuadraticAssignmentProblem : SingleObjectiveProblem<PermutationEncoding, Permutation>,
+  public sealed class QuadraticAssignmentProblem : PermutationProblem,
     IProblemInstanceConsumer<QAPData>,
     IProblemInstanceConsumer<TSPData> {
 

@@ -27,10 +27,8 @@ using HEAL.Attic;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
-using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   [StorableType("2F6FEB34-BD19-47AF-9484-7F48565C0C43")]
@@ -38,10 +36,6 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
     public int Length {
       get { return Encoding.Length; }
       set { Encoding.Length = value; }
-    }
-
-    private IFixedValueParameter<IntValue> LengthParameter {
-      get { return (IFixedValueParameter<IntValue>)Parameters["Length"]; }
     }
 
     [StorableConstructor]
@@ -56,10 +50,9 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
       RegisterEventHandlers();
     }
 
-    protected BinaryVectorProblem() : base(new BinaryVectorEncoding()) {
-      var lengthParameter = new FixedValueParameter<IntValue>("Length", "The length of the BinaryVector.", new IntValue(10));
-      Parameters.Add(lengthParameter);
-      Encoding.LengthParameter = lengthParameter;
+    protected BinaryVectorProblem() : this(new BinaryVectorEncoding() { Length = 10 }) { }
+    protected BinaryVectorProblem(BinaryVectorEncoding encoding) : base(encoding) {
+      EncodingParameter.ReadOnly = true;
 
       Operators.Add(new HammingSimilarityCalculator());
       Operators.Add(new QualitySimilarityCalculator());
@@ -74,15 +67,11 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
       var orderedIndividuals = individuals.Zip(qualities, (i, q) => new { Individual = i, Quality = q }).OrderBy(z => z.Quality);
       var best = Maximization ? orderedIndividuals.Last().Individual : orderedIndividuals.First().Individual;
 
-      if (!results.ContainsKey("Best Solution")) {
-        results.Add(new Result("Best Solution", typeof(BinaryVector)));
-      }
-      results["Best Solution"].Value = (IItem)best.Clone();
+      results.AddOrUpdateResult("Best Solution", (IItem)best.Clone());
     }
 
     protected override void OnEncodingChanged() {
       base.OnEncodingChanged();
-      Encoding.LengthParameter = LengthParameter;
       Parameterize();
     }
 
@@ -94,7 +83,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
     }
 
     private void RegisterEventHandlers() {
-      LengthParameter.Value.ValueChanged += LengthParameter_ValueChanged;
+      Encoding.LengthParameter.Value.ValueChanged += LengthParameter_ValueChanged;
     }
 
     protected virtual void LengthParameter_ValueChanged(object sender, EventArgs e) { }

@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -30,13 +31,12 @@ using HeuristicLab.Encodings.BinaryVectorEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 
 namespace HeuristicLab.Problems.Knapsack {
   [Item("Knapsack Problem (KSP)", "Represents a Knapsack problem.")]
   [Creatable(CreatableAttribute.Categories.CombinatorialProblems, Priority = 200)]
   [StorableType("8CEDAFA2-6E0A-4D4B-B6C6-F85CC58B824E")]
-  public sealed class KnapsackProblem : SingleObjectiveProblem<BinaryVectorEncoding, BinaryVector> {
+  public sealed class KnapsackProblem : BinaryVectorProblem {
     public override bool Maximization { get { return true; } }
 
     #region Parameter Properties

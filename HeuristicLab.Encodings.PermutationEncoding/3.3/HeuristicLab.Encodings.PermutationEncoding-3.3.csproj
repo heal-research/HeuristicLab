@@ -114,6 +114,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PermutationMultiObjectiveProblem.cs" />
+    <Compile Include="PermutationProblem.cs" />
     <Compile Include="Creators\RandomPermutationCreator.cs" />
     <Compile Include="Crossovers\CosaCrossover.cs" />
     <Compile Include="Crossovers\CyclicCrossover.cs" />
@@ -217,6 +219,11 @@
     <None Include="Properties\AssemblyInfo.cs.frame" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\HeuristicLab.Analysis\3.3\HeuristicLab.Analysis-3.3.csproj">
+      <Project>{887425b4-4348-49ed-a457-b7d2c26ddbf9}</Project>
+      <Name>HeuristicLab.Analysis-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">
       <Project>{958B43BC-CC5C-4FA2-8628-2B3B01D890B6}</Project>
       <Name>HeuristicLab.Collections-3.3</Name>

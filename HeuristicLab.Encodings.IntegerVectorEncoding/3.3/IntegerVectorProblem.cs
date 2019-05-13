@@ -27,10 +27,8 @@ using HEAL.Attic;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
-using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   [StorableType("c6081457-a3de-45ce-9f47-e0eb1c851bd2")]
@@ -38,10 +36,6 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
     public int Length {
       get { return Encoding.Length; }
       set { Encoding.Length = value; }
-    }
-
-    private IFixedValueParameter<IntValue> LengthParameter {
-      get { return (IFixedValueParameter<IntValue>)Parameters["Length"]; }
     }
 
     [StorableConstructor]
@@ -56,10 +50,9 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
       RegisterEventHandlers();
     }
 
-    protected IntegerVectorProblem() : base(new IntegerVectorEncoding()) {
-      var lengthParameter = new FixedValueParameter<IntValue>("Length", "The length of the IntegerVector.", new IntValue(10));
-      Parameters.Add(lengthParameter);
-      Encoding.LengthParameter = lengthParameter;
+    protected IntegerVectorProblem() : this(new IntegerVectorEncoding() { Length = 10 }) { }
+    protected IntegerVectorProblem(IntegerVectorEncoding encoding) : base(encoding) {
+      EncodingParameter.ReadOnly = true;
 
       Operators.Add(new HammingSimilarityCalculator());
       Operators.Add(new QualitySimilarityCalculator());
@@ -74,15 +67,11 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
       var orderedIndividuals = individuals.Zip(qualities, (i, q) => new { Individual = i, Quality = q }).OrderBy(z => z.Quality);
       var best = Maximization ? orderedIndividuals.Last().Individual : orderedIndividuals.First().Individual;
 
-      if (!results.ContainsKey("Best Solution")) {
-        results.Add(new Result("Best Solution", typeof(IntegerVector)));
-      }
-      results["Best Solution"].Value = (IItem)best.Clone();
+      results.AddOrUpdateResult("Best Solution", (IItem)best.Clone());
     }
 
     protected override void OnEncodingChanged() {
       base.OnEncodingChanged();
-      Encoding.LengthParameter = LengthParameter;
       Parameterize();
     }
 
@@ -94,7 +83,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
     }
 
     private void RegisterEventHandlers() {
-      LengthParameter.Value.ValueChanged += LengthParameter_ValueChanged;
+      Encoding.LengthParameter.Value.ValueChanged += LengthParameter_ValueChanged;
     }
 
     protected virtual void LengthParameter_ValueChanged(object sender, EventArgs e) { }

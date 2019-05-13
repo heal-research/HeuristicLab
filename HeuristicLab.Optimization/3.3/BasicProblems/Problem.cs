@@ -95,9 +95,9 @@ namespace HeuristicLab.Optimization {
 
     protected Problem()
       : base() {
-      Parameters.Add(new ValueParameter<TEncoding>("Encoding", "Describes the configuration of the encoding, what the variables are called, what type they are and their bounds if any."));
-      Parameters.Add(new ValueParameter<TEvaluator>("Evaluator", "The operator used to evaluate a solution."));
-
+      Parameters.Add(new ValueParameter<TEncoding>("Encoding", "Describes the configuration of the encoding, what the variables are called, what type they are and their bounds if any.") { Hidden = true });
+      Parameters.Add(new ValueParameter<TEvaluator>("Evaluator", "The operator used to evaluate a solution.") { Hidden = true });
+      
       if (Encoding != null) {
         oldEncoding = Encoding;
         Parameterize();
@@ -106,8 +106,8 @@ namespace HeuristicLab.Optimization {
     }
     protected Problem(TEncoding encoding) {
       if (encoding == null) throw new ArgumentNullException("encoding");
-      Parameters.Add(new ValueParameter<TEncoding>("Encoding", "Describes the configuration of the encoding, what the variables are called, what type they are and their bounds if any.", encoding));
-      Parameters.Add(new ValueParameter<TEvaluator>("Evaluator", "The operator used to evaluate a solution."));
+      Parameters.Add(new ValueParameter<TEncoding>("Encoding", "Describes the configuration of the encoding, what the variables are called, what type they are and their bounds if any.", encoding) { Hidden = true });
+      Parameters.Add(new ValueParameter<TEvaluator>("Evaluator", "The operator used to evaluate a solution.") { Hidden = true });
 
       oldEncoding = Encoding;
       Parameterize();

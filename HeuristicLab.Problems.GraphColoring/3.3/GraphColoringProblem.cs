@@ -38,7 +38,7 @@ namespace HeuristicLab.Problems.GraphColoring {
   [Item("Graph Coloring Problem (GCP)", "Attempts to find a coloring using a minimal number of colors that doesn't produce a conflict.")]
   [Creatable(CreatableAttribute.Categories.CombinatorialProblems, Priority = 135)]
   [StorableType("007BD5F0-196C-4045-AC5D-BF287927C3DC")]
-  public sealed class GraphColoringProblem : SingleObjectiveProblem<LinearLinkageEncoding, LinearLinkage>,
+  public sealed class GraphColoringProblem : LinearLinkageProblem,
     IProblemInstanceConsumer<GCPData>, IProblemInstanceExporter<GCPData> {
 
     public override bool Maximization {

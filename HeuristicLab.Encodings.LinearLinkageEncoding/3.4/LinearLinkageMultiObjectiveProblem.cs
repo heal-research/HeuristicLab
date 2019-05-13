@@ -29,28 +29,28 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 
-namespace HeuristicLab.Encodings.IntegerVectorEncoding {
-  [StorableType("11916b0f-4c34-4ece-acae-e28d11211b43")]
-  public abstract class IntegerVectorMultiObjectiveProblem : MultiObjectiveProblem<IntegerVectorEncoding, IntegerVector> {
+namespace HeuristicLab.Encodings.LinearLinkageEncoding {
+  [StorableType("ad8b6097-a26b-440c-bfd4-92e5ecf17894")]
+  public abstract class LinearLinkageMultiObjectiveProblem : MultiObjectiveProblem<LinearLinkageEncoding, LinearLinkage> {
     public int Length {
       get { return Encoding.Length; }
       set { Encoding.Length = value; }
     }
 
     [StorableConstructor]
-    protected IntegerVectorMultiObjectiveProblem(StorableConstructorFlag _) : base(_) { }
+    protected LinearLinkageMultiObjectiveProblem(StorableConstructorFlag _) : base(_) { }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       RegisterEventHandlers();
     }
 
-    protected IntegerVectorMultiObjectiveProblem(IntegerVectorMultiObjectiveProblem original, Cloner cloner)
+    protected LinearLinkageMultiObjectiveProblem(LinearLinkageMultiObjectiveProblem original, Cloner cloner)
       : base(original, cloner) {
       RegisterEventHandlers();
     }
 
-    protected IntegerVectorMultiObjectiveProblem() : this(new IntegerVectorEncoding() { Length = 10 }) { }
-    protected IntegerVectorMultiObjectiveProblem(IntegerVectorEncoding encoding) : base(encoding) {
+    protected LinearLinkageMultiObjectiveProblem() : this(new LinearLinkageEncoding() { Length = 10 }) { }
+    protected LinearLinkageMultiObjectiveProblem(LinearLinkageEncoding encoding) : base(new LinearLinkageEncoding()) {
       EncodingParameter.ReadOnly = true;
 
       Operators.Add(new HammingSimilarityCalculator());
@@ -60,9 +60,11 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
       RegisterEventHandlers();
     }
 
-    public override void Analyze(IntegerVector[] individuals, double[][] qualities, ResultCollection results, IRandom random) {
+    public override void Analyze(LinearLinkage[] individuals, double[][] qualities, ResultCollection results, IRandom random) {
       base.Analyze(individuals, qualities, results, random);
-      // TODO: Calculate Pareto front and add to results
+
+      var result = DominationCalculator<LinearLinkage>.CalculateBestParetoFront(individuals, qualities, Maximization);
+      // TODO: Add results
     }
 
     protected override void OnEncodingChanged() {

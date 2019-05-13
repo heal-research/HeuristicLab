@@ -28,41 +28,46 @@ using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
+using HeuristicLab.Optimization.Operators;
 
-namespace HeuristicLab.Encodings.IntegerVectorEncoding {
-  [StorableType("11916b0f-4c34-4ece-acae-e28d11211b43")]
-  public abstract class IntegerVectorMultiObjectiveProblem : MultiObjectiveProblem<IntegerVectorEncoding, IntegerVector> {
+namespace HeuristicLab.Encodings.LinearLinkageEncoding {
+  [StorableType("fb4cfc7c-dc7c-4da6-843f-0dad7d3d7981")]
+  public abstract class LinearLinkageProblem : SingleObjectiveProblem<LinearLinkageEncoding, LinearLinkage> {
     public int Length {
       get { return Encoding.Length; }
       set { Encoding.Length = value; }
     }
 
     [StorableConstructor]
-    protected IntegerVectorMultiObjectiveProblem(StorableConstructorFlag _) : base(_) { }
+    protected LinearLinkageProblem(StorableConstructorFlag _) : base(_) { }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       RegisterEventHandlers();
     }
 
-    protected IntegerVectorMultiObjectiveProblem(IntegerVectorMultiObjectiveProblem original, Cloner cloner)
+    protected LinearLinkageProblem(LinearLinkageProblem original, Cloner cloner)
       : base(original, cloner) {
       RegisterEventHandlers();
     }
 
-    protected IntegerVectorMultiObjectiveProblem() : this(new IntegerVectorEncoding() { Length = 10 }) { }
-    protected IntegerVectorMultiObjectiveProblem(IntegerVectorEncoding encoding) : base(encoding) {
+    protected LinearLinkageProblem() : this(new LinearLinkageEncoding() { Length = 10 }) { }
+    protected LinearLinkageProblem(LinearLinkageEncoding encoding) : base(encoding) {
       EncodingParameter.ReadOnly = true;
 
       Operators.Add(new HammingSimilarityCalculator());
+      Operators.Add(new QualitySimilarityCalculator());
       Operators.Add(new PopulationSimilarityAnalyzer(Operators.OfType<ISolutionSimilarityCalculator>()));
 
       Parameterize();
       RegisterEventHandlers();
     }
 
-    public override void Analyze(IntegerVector[] individuals, double[][] qualities, ResultCollection results, IRandom random) {
+    public override void Analyze(LinearLinkage[] individuals, double[] qualities, ResultCollection results, IRandom random) {
       base.Analyze(individuals, qualities, results, random);
-      // TODO: Calculate Pareto front and add to results
+      var orderedIndividuals = individuals.Zip(qualities, (i, q) => new { Individual = i, Quality = q }).OrderBy(z => z.Quality);
+      var best = Maximization ? orderedIndividuals.Last().Individual : orderedIndividuals.First().Individual;
+
+      results.AddOrUpdateResult("Best Solution", (Item)best.Clone());
     }
 
     protected override void OnEncodingChanged() {
@@ -73,7 +78,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
     private void Parameterize() {
       foreach (var similarityCalculator in Operators.OfType<ISolutionSimilarityCalculator>()) {
         similarityCalculator.SolutionVariableName = Encoding.Name;
-        similarityCalculator.QualityVariableName = Evaluator.QualitiesParameter.ActualName;
+        similarityCalculator.QualityVariableName = Evaluator.QualityParameter.ActualName;
       }
     }
 

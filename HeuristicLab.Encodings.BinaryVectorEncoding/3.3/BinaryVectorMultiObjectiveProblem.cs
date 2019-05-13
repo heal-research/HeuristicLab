@@ -27,9 +27,7 @@ using HEAL.Attic;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
 using HeuristicLab.Optimization;
-using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   [StorableType("b64caac0-a23a-401a-bb7e-ffa3e22b80ea")]
@@ -37,10 +35,6 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
     public int Length {
       get { return Encoding.Length; }
       set { Encoding.Length = value; }
-    }
-
-    private IFixedValueParameter<IntValue> LengthParameter {
-      get { return (IFixedValueParameter<IntValue>)Parameters["Length"]; }
     }
 
     [StorableConstructor]
@@ -55,10 +49,9 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
       RegisterEventHandlers();
     }
 
-    protected BinaryVectorMultiObjectiveProblem() : base(new BinaryVectorEncoding()) {
-      var lengthParameter = new FixedValueParameter<IntValue>("Length", "The length of the BinaryVector.", new IntValue(10));
-      Parameters.Add(lengthParameter);
-      Encoding.LengthParameter = lengthParameter;
+    protected BinaryVectorMultiObjectiveProblem() : this(new BinaryVectorEncoding() { Length = 10 }) { }
+    protected BinaryVectorMultiObjectiveProblem(BinaryVectorEncoding encoding) : base(encoding) {
+      EncodingParameter.ReadOnly = true;
 
       Operators.Add(new HammingSimilarityCalculator());
       Operators.Add(new PopulationSimilarityAnalyzer(Operators.OfType<ISolutionSimilarityCalculator>()));
@@ -74,7 +67,6 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
 
     protected override void OnEncodingChanged() {
       base.OnEncodingChanged();
-      Encoding.LengthParameter = LengthParameter;
       Parameterize();
     }
 
@@ -86,7 +78,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
     }
 
     private void RegisterEventHandlers() {
-      LengthParameter.Value.ValueChanged += LengthParameter_ValueChanged;
+      Encoding.LengthParameter.Value.ValueChanged += LengthParameter_ValueChanged;
     }
 
     protected virtual void LengthParameter_ValueChanged(object sender, EventArgs e) { }
