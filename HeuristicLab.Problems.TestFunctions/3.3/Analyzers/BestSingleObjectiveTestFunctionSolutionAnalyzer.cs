@@ -19,7 +19,9 @@
  */
 #endregion
 
+using System;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -27,14 +29,18 @@ using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.TestFunctions {
+  // BackwardsCompatibility3.3
+  #region Backwards compatible code, remove with 3.4
   /// <summary>
   /// An operator for analyzing the best solution for a SingleObjectiveTestFunction problem.
   /// </summary>
   [Item("BestSingleObjectiveTestFunctionSolutionAnalyzer", "An operator for analyzing the best solution for a SingleObjectiveTestFunction problem.")]
   [StorableType("A0F04F9F-DD27-44D8-A1F6-B289F1F40DE2")]
+  [NonDiscoverableType]
+  [Obsolete("Use the Analyze method of the test function problem class")]
   public class BestSingleObjectiveTestFunctionSolutionAnalyzer : SingleSuccessorOperator, IBestSingleObjectiveTestFunctionSolutionAnalyzer {
     public virtual bool EnabledByDefault {
       get { return true; }
@@ -144,4 +150,5 @@ namespace HeuristicLab.Problems.TestFunctions {
       return base.Apply();
     }
   }
+  #endregion
 }

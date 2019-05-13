@@ -22,23 +22,21 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Optimization;
-using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 using HeuristicLab.Problems.Instances;
 
 namespace HeuristicLab.Problems.TestFunctions {
   [Item("Test Function (single-objective)", "Test function with real valued inputs and a single objective.")]
   [StorableType("F0AB7236-2C9B-49DC-9D4F-A3558FD9E992")]
   [Creatable(CreatableAttribute.Categories.Problems, Priority = 90)]
-  public sealed class SingleObjectiveTestFunctionProblem :
-    SingleObjectiveProblem<RealVectorEncoding, RealVector>,
+  public sealed class SingleObjectiveTestFunctionProblem : RealVectorProblem,
     IProblemInstanceConsumer<SOTFData> {
 
     public override bool Maximization {
@@ -72,10 +70,6 @@ namespace HeuristicLab.Problems.TestFunctions {
     public ISingleObjectiveTestFunction TestFunction {
       get { return TestFunctionParameter.Value; }
       set { TestFunctionParameter.Value = value; }
-    }
-
-    private BestSingleObjectiveTestFunctionSolutionAnalyzer BestSingleObjectiveTestFunctionSolutionAnalyzer {
-      get { return Operators.OfType<BestSingleObjectiveTestFunctionSolutionAnalyzer>().FirstOrDefault(); }
     }
     #endregion
 
@@ -120,6 +114,50 @@ namespace HeuristicLab.Problems.TestFunctions {
       return TestFunction.Evaluate(individual);
     }
 
+    public override void Analyze(RealVector[] realVectors, double[] qualities, ResultCollection results, IRandom random) {
+
+      bool max = Maximization;
+      DoubleValue bestKnownQuality = BestKnownQualityParameter.Value;
+      SingleObjectiveTestFunctionSolution solution = null;
+      if (results.TryGetValue("Best Solution", out var res)) {
+        solution = (SingleObjectiveTestFunctionSolution)res.Value;
+      }
+
+      int i = -1;
+      if (!max) i = qualities.Select((x, index) => new { index, quality = x }).OrderBy(x => x.quality).First().index;
+      else i = qualities.Select((x, index) => new { index, quality = x }).OrderByDescending(x => x.quality).First().index;
+
+      if (bestKnownQuality == null ||
+          max && qualities[i] > bestKnownQuality.Value
+          || !max && qualities[i] < bestKnownQuality.Value) {
+        BestKnownQualityParameter.Value = new DoubleValue(qualities[i]);
+        BestKnownSolutionParameter.Value = (RealVector)realVectors[i].Clone();
+        if (solution != null)
+          solution.BestKnownRealVector = BestKnownSolutionParameter.Value;
+      }
+
+      if (solution == null) {
+        solution = new SingleObjectiveTestFunctionSolution((RealVector)realVectors[i].Clone(),
+                                                           new DoubleValue(qualities[i]),
+                                                           TestFunctionParameter.Value);
+        solution.Population = realVectors[i].Length == 2
+          ? new ItemArray<RealVector>(realVectors.Select(x => x.Clone()).Cast<RealVector>())
+          : null;
+        solution.BestKnownRealVector = BestKnownSolutionParameter.Value;
+        solution.Bounds = BoundsParameter.Value;
+        results.Add(new Result("Best Solution", solution));
+      } else {
+        if (max && qualities[i] > solution.BestQuality.Value
+          || !max && qualities[i] < solution.BestQuality.Value) {
+          solution.BestRealVector = (RealVector)realVectors[i].Clone();
+          solution.BestQuality = new DoubleValue(qualities[i]);
+        }
+        solution.Population = realVectors[i].Length == 2
+          ? new ItemArray<RealVector>(realVectors.Select(x => x.Clone()).Cast<RealVector>())
+          : null;
+      }
+    }
+
     #region Events
     protected override void OnEncodingChanged() {
       base.OnEncodingChanged();
@@ -161,25 +199,23 @@ namespace HeuristicLab.Problems.TestFunctions {
       Operators.Add(new SingleObjectiveTestFunctionImprovementOperator());
       Operators.Add(new SingleObjectiveTestFunctionPathRelinker());
       Operators.Add(new SingleObjectiveTestFunctionSimilarityCalculator());
-      Operators.Add(new HammingSimilarityCalculator());
       Operators.Add(new EuclideanSimilarityCalculator());
-      Operators.Add(new QualitySimilarityCalculator());
       Operators.Add(new AdditiveMoveEvaluator());
 
-      Operators.Add(new BestSingleObjectiveTestFunctionSolutionAnalyzer());
-      Operators.Add(new PopulationSimilarityAnalyzer(Operators.OfType<ISolutionSimilarityCalculator>()));
       Parameterize();
     }
 
     private void Parameterize() {
       var operators = new List<IItem>();
-      if (BestSingleObjectiveTestFunctionSolutionAnalyzer != null) {
-        operators.Add(BestSingleObjectiveTestFunctionSolutionAnalyzer);
-        BestSingleObjectiveTestFunctionSolutionAnalyzer.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
-        BestSingleObjectiveTestFunctionSolutionAnalyzer.BestKnownQualityParameter.ActualName = BestKnownQualityParameter.Name;
-        BestSingleObjectiveTestFunctionSolutionAnalyzer.BestKnownSolutionParameter.ActualName = BestKnownSolutionParameter.Name;
-        BestSingleObjectiveTestFunctionSolutionAnalyzer.MaximizationParameter.ActualName = MaximizationParameter.Name;
-        BestSingleObjectiveTestFunctionSolutionAnalyzer.TestFunctionParameter.ActualName = TestFunctionParameter.Name;
+      foreach (var op in Operators.OfType<PopulationSimilarityAnalyzer>()) {
+        var calcs = Operators.OfType<ISolutionSimilarityCalculator>().ToArray();
+        op.SimilarityCalculatorParameter.ValidValues.Clear();
+        foreach (var c in calcs) {
+          // TODO: unified encoding parameters
+          c.SolutionVariableName = ((IRealVectorSolutionOperator)Encoding.SolutionCreator).RealVectorParameter.ActualName;
+          c.QualityVariableName = Evaluator.QualityParameter.ActualName;
+          op.SimilarityCalculatorParameter.ValidValues.Add(c);
+        }
       }
       foreach (var op in Operators.OfType<ISingleObjectiveTestFunctionAdditiveMoveEvaluator>()) {
         operators.Add(op);

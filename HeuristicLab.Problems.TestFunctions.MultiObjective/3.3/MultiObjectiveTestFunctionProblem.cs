@@ -34,7 +34,8 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
   [StorableType("AB0C6A73-C432-46FD-AE3B-9841EAB2478C")]
   [Creatable(CreatableAttribute.Categories.Problems, Priority = 95)]
   [Item("Test Function (multi-objective)", "Test functions with real valued inputs and multiple objectives.")]
-  public class MultiObjectiveTestFunctionProblem : MultiObjectiveProblem<RealVectorEncoding, RealVector>, IProblemInstanceConsumer<MOTFData> {
+  public class MultiObjectiveTestFunctionProblem : RealVectorMultiObjectiveProblem,
+    IProblemInstanceConsumer<MOTFData> {
 
     #region Parameter Properties
     public IFixedValueParameter<IntValue> ProblemSizeParameter {
