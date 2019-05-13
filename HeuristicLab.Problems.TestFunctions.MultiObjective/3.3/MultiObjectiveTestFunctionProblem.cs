@@ -72,7 +72,7 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
       get { return ProblemSizeParameter.Value.Value; }
       set { ProblemSizeParameter.Value.Value = value; }
     }
-    public int Objectives {
+    public new int Objectives {
       get { return ObjectivesParameter.Value.Value; }
       set { ObjectivesParameter.Value.Value = value; }
     }

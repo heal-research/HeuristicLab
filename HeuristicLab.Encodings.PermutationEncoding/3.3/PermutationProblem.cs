@@ -67,12 +67,10 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
       RegisterEventHandlers();
     }
 
-    public override void Analyze(Permutation[] individuals, double[] qualities, ResultCollection results, IRandom random) {
-      base.Analyze(individuals, qualities, results, random);
-      var orderedIndividuals = individuals.Zip(qualities, (i, q) => new { Individual = i, Quality = q }).OrderBy(z => z.Quality);
-      var best = Maximization ? orderedIndividuals.Last().Individual : orderedIndividuals.First().Individual;
-
-      results.AddOrUpdateResult("Best Solution", (IItem)best.Clone());
+    public override void Analyze(Permutation[] permutations, double[] qualities, ResultCollection results, IRandom random) {
+      base.Analyze(permutations, qualities, results, random);
+      var best = GetBestSolution(permutations, qualities);
+      results.AddOrUpdateResult("Best Solution", (IItem)best.Item1.Clone());
     }
 
     protected override void OnEncodingChanged() {

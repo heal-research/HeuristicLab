@@ -115,47 +115,35 @@ namespace HeuristicLab.Problems.TestFunctions {
     }
 
     public override void Analyze(RealVector[] realVectors, double[] qualities, ResultCollection results, IRandom random) {
+      var best = GetBestSolution(realVectors, qualities);
 
-      bool max = Maximization;
       DoubleValue bestKnownQuality = BestKnownQualityParameter.Value;
+      RealVector bestKnownSolution = null;
+      var bestKnownUpdate = bestKnownQuality == null || IsBetter(best.Item2, bestKnownQuality.Value);
+      if (bestKnownUpdate) {
+        if (bestKnownQuality != null) bestKnownQuality.Value = best.Item2;
+        else BestKnownQualityParameter.Value = bestKnownQuality = new DoubleValue(best.Item2);
+        BestKnownSolutionParameter.Value = bestKnownSolution = (RealVector)best.Item1.Clone();
+      }
+
       SingleObjectiveTestFunctionSolution solution = null;
       if (results.TryGetValue("Best Solution", out var res)) {
         solution = (SingleObjectiveTestFunctionSolution)res.Value;
-      }
-
-      int i = -1;
-      if (!max) i = qualities.Select((x, index) => new { index, quality = x }).OrderBy(x => x.quality).First().index;
-      else i = qualities.Select((x, index) => new { index, quality = x }).OrderByDescending(x => x.quality).First().index;
-
-      if (bestKnownQuality == null ||
-          max && qualities[i] > bestKnownQuality.Value
-          || !max && qualities[i] < bestKnownQuality.Value) {
-        BestKnownQualityParameter.Value = new DoubleValue(qualities[i]);
-        BestKnownSolutionParameter.Value = (RealVector)realVectors[i].Clone();
-        if (solution != null)
-          solution.BestKnownRealVector = BestKnownSolutionParameter.Value;
-      }
-
-      if (solution == null) {
-        solution = new SingleObjectiveTestFunctionSolution((RealVector)realVectors[i].Clone(),
-                                                           new DoubleValue(qualities[i]),
-                                                           TestFunctionParameter.Value);
-        solution.Population = realVectors[i].Length == 2
-          ? new ItemArray<RealVector>(realVectors.Select(x => x.Clone()).Cast<RealVector>())
-          : null;
-        solution.BestKnownRealVector = BestKnownSolutionParameter.Value;
-        solution.Bounds = BoundsParameter.Value;
-        results.Add(new Result("Best Solution", solution));
-      } else {
-        if (max && qualities[i] > solution.BestQuality.Value
-          || !max && qualities[i] < solution.BestQuality.Value) {
-          solution.BestRealVector = (RealVector)realVectors[i].Clone();
-          solution.BestQuality = new DoubleValue(qualities[i]);
+        if (IsBetter(best.Item2, solution.BestQuality.Value)) {
+          solution.BestRealVector = (RealVector)best.Item1.Clone();
+          solution.BestQuality = new DoubleValue(best.Item2);
         }
-        solution.Population = realVectors[i].Length == 2
-          ? new ItemArray<RealVector>(realVectors.Select(x => x.Clone()).Cast<RealVector>())
-          : null;
+      } else {
+        solution = new SingleObjectiveTestFunctionSolution((RealVector)best.Item1.Clone(),
+                                                           new DoubleValue(best.Item2),
+                                                           TestFunctionParameter.Value) {
+          BestKnownRealVector = bestKnownSolution,
+          Bounds = BoundsParameter.Value
+        };
+        results.Add(new Result("Best Solution", solution));
       }
+      if (best.Item1.Length == 2) solution.Population = new ItemArray<RealVector>(realVectors.Select(x => (RealVector)x.Clone()));
+      if (bestKnownUpdate) solution.BestKnownRealVector = bestKnownSolution;
     }
 
     #region Events

@@ -21,12 +21,12 @@
 
 using System;
 using System.Collections.Generic;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
   /// <summary>
@@ -70,7 +70,7 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
     /// Returns whether the actual function constitutes a maximization or minimization problem.
     /// </summary>
     public bool[] Maximization(int objectives) {
-      CheckObjectives(objectives);
+      ThrowIfObjectivesOutOfRange(objectives);
       return GetMaximization(objectives);
     }
     protected abstract bool[] GetMaximization(int objectives);
@@ -78,7 +78,7 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
     /// Gets the lower and upper bound of the function.
     /// </summary>
     public double[,] Bounds(int objectives) {
-      CheckObjectives(objectives);
+      ThrowIfObjectivesOutOfRange(objectives);
       return GetBounds(objectives);
     }
     protected abstract double[,] GetBounds(int objectives);
@@ -87,7 +87,7 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
     /// retrieves the optimal pareto front (if known from a file)
     /// </summary>
     public IEnumerable<double[]> OptimalParetoFront(int objectives) {
-      CheckObjectives(objectives);
+      ThrowIfObjectivesOutOfRange(objectives);
       return GetOptimalParetoFront(objectives);
     }
     protected abstract IEnumerable<double[]> GetOptimalParetoFront(int objectives);
@@ -96,7 +96,7 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
     /// returns a Reference Point for Hypervolume calculation (default=(11|11))
     /// </summary>
     public double[] ReferencePoint(int objectives) {
-      CheckObjectives(objectives);
+      ThrowIfObjectivesOutOfRange(objectives);
       return GetReferencePoint(objectives);
     }
     protected abstract double[] GetReferencePoint(int objectives);
@@ -105,7 +105,7 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
     /// returns the best known Hypervolume for this test function   (default=-1) 
     /// </summary>     
     public virtual double OptimalHypervolume(int objectives) {
-      CheckObjectives(objectives);
+      ThrowIfObjectivesOutOfRange(objectives);
       return GetBestKnownHypervolume(objectives);
     }
 
@@ -113,14 +113,13 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
       return -1;
     }
 
-    protected void CheckObjectives(int objectives) {
+    protected void ThrowIfObjectivesOutOfRange(int objectives) {
       if (objectives < MinimumObjectives) throw new ArgumentException(string.Format("There must be at least {0} objectives", MinimumObjectives));
       if (objectives > MaximumObjectives) throw new ArgumentException(string.Format("There must be at most {0} objectives", MaximumObjectives));
     }
 
     [StorableConstructor]
     protected MultiObjectiveTestFunction(StorableConstructorFlag _) : base(_) { }
-
     protected MultiObjectiveTestFunction(MultiObjectiveTestFunction original, Cloner cloner)
       : base(original, cloner) {
       MinimumObjectives = original.MinimumObjectives;
@@ -128,7 +127,6 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
       MinimumSolutionLength = original.MinimumSolutionLength;
       MaximumSolutionLength = original.MaximumSolutionLength;
     }
-
     protected MultiObjectiveTestFunction(int minimumObjectives, int maximumObjectives, int minimumSolutionLength, int maximumSolutionLength)
       : base() {
       Parameters.Add(new FixedValueParameter<IntValue>("Minimum Objectives",

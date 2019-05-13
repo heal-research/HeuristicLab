@@ -62,12 +62,11 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       RegisterEventHandlers();
     }
 
-    public override void Analyze(RealVector[] individuals, double[] qualities, ResultCollection results, IRandom random) {
-      base.Analyze(individuals, qualities, results, random);
-      var orderedIndividuals = individuals.Zip(qualities, (i, q) => new { Individual = i, Quality = q }).OrderBy(z => z.Quality);
-      var best = Maximization ? orderedIndividuals.Last().Individual : orderedIndividuals.First().Individual;
+    public override void Analyze(RealVector[] vectors, double[] qualities, ResultCollection results, IRandom random) {
+      base.Analyze(vectors, qualities, results, random);
+      var best = GetBestSolution(vectors, qualities);
 
-      results.AddOrUpdateResult("Best Solution", (IItem)best.Clone());
+      results.AddOrUpdateResult("Best Solution", (IItem)best.Item1.Clone());
     }
 
     protected override void OnEncodingChanged() {
