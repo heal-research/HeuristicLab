@@ -85,7 +85,6 @@ namespace HeuristicLab.Problems.GeneticProgramming.BasicSymbolicRegression {
 
       Encoding.TreeLength = 100;
       Encoding.TreeDepth = 17;
-      Encoding.GrammarParameter.ReadOnly = true;
 
       UpdateGrammar();
       RegisterEventHandlers();

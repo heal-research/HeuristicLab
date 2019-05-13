@@ -72,7 +72,7 @@ namespace HeuristicLab.Problems.GeneticProgramming.Robocode {
       RegisterEventHandlers();
     }
 
-    public Problem() : base(new SymbolicExpressionTreeEncoding()) {
+    public Problem() : base(new SymbolicExpressionTreeEncoding(new Grammar(), maximumLength: 1000, maximumDepth: 10)) {
       DirectoryValue robocodeDir = new DirectoryValue { Value = @"robocode" };
 
       var robotList = EnemyCollection.ReloadEnemies(robocodeDir.Value);
@@ -83,10 +83,6 @@ namespace HeuristicLab.Problems.GeneticProgramming.Robocode {
       Parameters.Add(new FixedValueParameter<IntValue>(NrOfRoundsParameterName, "Number of rounds a robot has to fight against each opponent.", new IntValue(3)));
       Parameters.Add(new ValueParameter<EnemyCollection>(EnemiesParameterName, "The enemies that should be battled.", robotList));
 
-      Encoding.TreeLength = 1000;
-      Encoding.TreeDepth = 10;
-      Encoding.Grammar = new Grammar();
-      Encoding.GrammarParameter.ReadOnly = true;
       Encoding.FunctionArguments = 0;
       Encoding.FunctionDefinitions = 0;
 

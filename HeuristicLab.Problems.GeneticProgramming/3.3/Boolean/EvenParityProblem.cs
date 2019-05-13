@@ -95,9 +95,13 @@ namespace HeuristicLab.Problems.GeneticProgramming.Boolean {
       for (int i = 0; i < NumberOfBits; i++)
         g.AddTerminalSymbol(string.Format("{0}", i));
 
+      Encoding.GrammarParameter.ReadOnly = false;
       Encoding.Grammar = g;
+      Encoding.GrammarParameter.ReadOnly = true;
 
+      BestKnownQualityParameter.ReadOnly = false;
       BestKnownQuality = Math.Pow(2, NumberOfBits); // this is a benchmark problem (the best achievable quality is known for a given number of bits)
+      BestKnownQualityParameter.ReadOnly = true;
     }
 
 

@@ -24,12 +24,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
@@ -166,6 +166,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       treeLengthParameter = new FixedValueParameter<IntValue>(Name + ".Maximum Tree Length", "Maximal length of the symbolic expression.", new IntValue(maximumLength));
       treeDepthParameter = new FixedValueParameter<IntValue>(Name + ".Maximum Tree Depth", "Maximal depth of the symbolic expression. The minimum depth needed for the algorithm is 3 because two levels are reserved for the ProgramRoot and the Start symbol.", new IntValue(maximumDepth));
       grammarParameter = new ValueParameter<ISymbolicExpressionGrammar>(Name + ".Grammar", "The grammar that should be used for symbolic expression tree.", grammar);
+      grammarParameter.ReadOnly = true;
       functionDefinitionsParameter = new FixedValueParameter<IntValue>(Name + ".Function Definitions", "Maximal number of automatically defined functions", new IntValue(0));
       functionArgumentsParameter = new FixedValueParameter<IntValue>(Name + ".Function Arguments", "Maximal number of arguments of automatically defined functions.", new IntValue(0));
 

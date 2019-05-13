@@ -85,9 +85,8 @@ namespace HeuristicLab.Problems.GeneticProgramming.Boolean {
         "The number of bits for the input parameter for the multiplexer function. This is the sum of the number of address bits and the number of input lines. E.g. the 11-MUX has 3 address bits and 8 input lines",
         new IntValue(11)));
 
-      var g = new SimpleSymbolicExpressionGrammar(); // will be replaced in update grammar
-      Encoding = new SymbolicExpressionTreeEncoding(g, 100, 17);
-      Encoding.GrammarParameter.ReadOnly = true;
+      Encoding.TreeLength = 100;
+      Encoding.TreeDepth = 17;
 
       UpdateGrammar();
       RegisterEventHandlers();
@@ -114,7 +113,9 @@ namespace HeuristicLab.Problems.GeneticProgramming.Boolean {
       Encoding.Grammar = g;
       Encoding.GrammarParameter.ReadOnly = true;
 
+      BestKnownQualityParameter.ReadOnly = false;
       BestKnownQuality = Math.Pow(2, NumberOfBits); // this is a benchmark problem (the best achievable quality is known for a given number of bits)
+      BestKnownQualityParameter.ReadOnly = true;
     }
 
 

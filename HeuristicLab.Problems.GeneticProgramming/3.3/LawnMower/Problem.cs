@@ -77,7 +77,9 @@ namespace HeuristicLab.Problems.GeneticProgramming.LawnMower {
 
       Encoding.TreeLength = 1000;
       Encoding.TreeDepth = 17;
+      Encoding.GrammarParameter.ReadOnly = false;
       Encoding.Grammar = g;
+      Encoding.GrammarParameter.ReadOnly = true;
     }
 
     public override void Analyze(ISymbolicExpressionTree[] trees, double[] qualities, ResultCollection results, IRandom random) {

@@ -81,8 +81,8 @@ namespace HeuristicLab.Problems.GeneticProgramming.ArtificialAnt {
     public IValueParameter<BoolMatrix> WorldParameter {
       get { return (IValueParameter<BoolMatrix>)Parameters["World"]; }
     }
-    public IValueParameter<IntValue> MaxTimeStepsParameter {
-      get { return (IValueParameter<IntValue>)Parameters["MaximumTimeSteps"]; }
+    public IFixedValueParameter<IntValue> MaxTimeStepsParameter {
+      get { return (IFixedValueParameter<IntValue>)Parameters["MaximumTimeSteps"]; }
     }
     #endregion
 
@@ -91,9 +91,9 @@ namespace HeuristicLab.Problems.GeneticProgramming.ArtificialAnt {
       get { return WorldParameter.Value; }
       set { WorldParameter.Value = value; }
     }
-    public IntValue MaxTimeSteps {
-      get { return MaxTimeStepsParameter.Value; }
-      set { MaxTimeStepsParameter.Value = value; }
+    public int MaxTimeSteps {
+      get { return MaxTimeStepsParameter.Value.Value; }
+      set { MaxTimeStepsParameter.Value.Value = value; }
     }
     #endregion
 
@@ -118,7 +118,7 @@ namespace HeuristicLab.Problems.GeneticProgramming.ArtificialAnt {
     public Problem() : base(new SymbolicExpressionTreeEncoding()) {
       BoolMatrix world = new BoolMatrix(ToBoolMatrix(santaFeAntTrail));
       Parameters.Add(new ValueParameter<BoolMatrix>("World", "The world for the artificial ant with scattered food items.", world));
-      Parameters.Add(new ValueParameter<IntValue>("MaximumTimeSteps", "The number of time steps the artificial ant has available to collect all food items.", new IntValue(600)));
+      Parameters.Add(new FixedValueParameter<IntValue>("MaximumTimeSteps", "The number of time steps the artificial ant has available to collect all food items.", new IntValue(600)));
 
       var g = new SimpleSymbolicExpressionGrammar();
       g.AddSymbols(new string[] { "IfFoodAhead", "Prog2" }, 2, 2);
@@ -127,14 +127,17 @@ namespace HeuristicLab.Problems.GeneticProgramming.ArtificialAnt {
 
       Encoding.TreeLength = 20;
       Encoding.TreeDepth = 10;
+      Encoding.GrammarParameter.ReadOnly = false;
       Encoding.Grammar = g;
-      base.BestKnownQuality = 89;
-      base.Encoding.GrammarParameter.ReadOnly = true;
+      Encoding.GrammarParameter.ReadOnly = true;
+
+      BestKnownQuality = 89;
+      BestKnownQualityParameter.ReadOnly = true;
     }
 
 
     public override double Evaluate(ISymbolicExpressionTree tree, IRandom random) {
-      var interpreter = new Interpreter(tree, World, MaxTimeSteps.Value);
+      var interpreter = new Interpreter(tree, World, MaxTimeSteps);
       interpreter.Run();
       return interpreter.FoodEaten;
     }
@@ -145,9 +148,9 @@ namespace HeuristicLab.Problems.GeneticProgramming.ArtificialAnt {
       var bestIdx = Array.IndexOf(qualities, bestQuality);
 
       if (!results.ContainsKey(bestSolutionResultName)) {
-        results.Add(new Result(bestSolutionResultName, new Solution(World, trees[bestIdx], MaxTimeSteps.Value, qualities[bestIdx])));
+        results.Add(new Result(bestSolutionResultName, new Solution(World, trees[bestIdx], MaxTimeSteps, qualities[bestIdx])));
       } else if (((Solution)(results[bestSolutionResultName].Value)).Quality < qualities[bestIdx]) {
-        results[bestSolutionResultName].Value = new Solution(World, trees[bestIdx], MaxTimeSteps.Value, qualities[bestIdx]);
+        results[bestSolutionResultName].Value = new Solution(World, trees[bestIdx], MaxTimeSteps, qualities[bestIdx]);
       }
     }
 

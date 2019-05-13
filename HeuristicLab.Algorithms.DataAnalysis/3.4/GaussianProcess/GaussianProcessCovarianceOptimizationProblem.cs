@@ -59,8 +59,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private static readonly CovarianceSquaredExponentialArd sqrExpArd;
     private static readonly CovarianceSquaredExponentialIso sqrExpIso;
 
-    private static readonly SymbolicExpressionTreeEncoding defaultEncoding;
-
     static GaussianProcessCovarianceOptimizationProblem() {
       // cumbersome initialization because of ConstrainedValueParameters
       maternIso1 = new CovarianceMaternIso(); SetConstrainedValueParameter(maternIso1.DParameter, 1);
@@ -186,7 +184,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
       Encoding.TreeLength = 10;
       Encoding.TreeDepth = 5;
+      Encoding.GrammarParameter.ReadOnly = false;
       Encoding.Grammar = g;
+      Encoding.GrammarParameter.ReadOnly = true;
     }
 
     public void InitializeState() { ClearState(); }
