@@ -16,6 +16,7 @@
 #define hl_tanh vdt::fast_tanh
 #define hl_sqrt vdt::fast_sqrt
 #define hl_pow vdt::fast_pow
+#define hl_cbrt std::cbrt
 #define hl_round vdt::fast_round
 #define hl_inv vdt::fast_inv
 #else
@@ -27,6 +28,7 @@
 #define hl_tanh std::tanh
 #define hl_sqrt std::sqrt
 #define hl_pow std::pow
+#define hl_cbrt std::cbrt
 #define hl_round std::round
 #define hl_inv(x) 1. / x;
 
@@ -55,6 +57,7 @@ inline void tanh(double* __restrict a, double const * __restrict b) noexcept { F
 inline void sqrt(double* __restrict a, double const * __restrict b) noexcept { FOR(i) a[i] = hl_sqrt(b[i]); }
 inline void pow(double* __restrict a, double const * __restrict b) noexcept { FOR(i) a[i] = hl_pow(a[i], hl_round(b[i])); };
 inline void root(double* __restrict a, double const * __restrict b) noexcept { FOR(i) a[i] = hl_pow(a[i], 1. / hl_round(b[i])); };
+inline void cbrt(double* __restrict a, double const * __restrict b) noexcept { FOR(i) a[i] = hl_cbrt(b[i]); };
 inline void square(double* __restrict a, double const * __restrict b) noexcept { FOR(i) a[i] = hl_pow(b[i], 2.); };
 inline void inv(double* __restrict a, double const * __restrict b) noexcept { FOR(i) a[i] = hl_inv(b[i]); }
 inline void neg(double* __restrict a, double const * __restrict b) noexcept { FOR(i) a[i] = -b[i]; }
@@ -80,6 +83,7 @@ inline void tan(double* __restrict a) noexcept { FOR(i) a[i] = hl_tan(a[i]); }
 inline void tanh(double* __restrict a) noexcept { FOR(i) a[i] = hl_tanh(a[i]); }
 inline void round(double* __restrict a) noexcept { FOR(i) a[i] = hl_round(a[i]); }
 inline void square(double* __restrict a) noexcept { FOR(i) a[i] = hl_pow(a[i], 2.); }
+inline void cbrt(double* __restrict a) noexcept { FOR(i) a[i] = hl_cbrt(a[i]); }
 
 #undef FOR
 #endif

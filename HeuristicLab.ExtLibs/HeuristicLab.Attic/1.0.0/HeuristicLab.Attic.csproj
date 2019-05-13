@@ -35,9 +35,6 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="HeuristicLab.PluginInfrastructure-3.3">
-      <HintPath>..\..\..\..\bin\HeuristicLab.PluginInfrastructure-3.3.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -67,6 +64,11 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\HeuristicLab.PluginInfrastructure\3.3\HeuristicLab.PluginInfrastructure-3.3.csproj">
+      <Project>{94186a6a-5176-4402-ae83-886557b53cca}</Project>
+      <Name>HeuristicLab.PluginInfrastructure-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Protobuf\3.6.1\HeuristicLab.Protobuf.csproj">
       <Project>{44b10478-d290-43d3-9757-c08f5292fea5}</Project>
       <Name>HeuristicLab.Protobuf</Name>

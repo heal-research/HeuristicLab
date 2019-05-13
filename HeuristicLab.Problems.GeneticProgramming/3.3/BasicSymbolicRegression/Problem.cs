@@ -85,6 +85,7 @@ namespace HeuristicLab.Problems.GeneticProgramming.BasicSymbolicRegression {
 
       Encoding.TreeLength = 100;
       Encoding.TreeDepth = 17;
+      Encoding.GrammarParameter.ReadOnly = true;
 
       UpdateGrammar();
       RegisterEventHandlers();
@@ -175,7 +176,9 @@ namespace HeuristicLab.Problems.GeneticProgramming.BasicSymbolicRegression {
         g.AddTerminalSymbol(newErcSy);
       }
 
+      Encoding.GrammarParameter.ReadOnly = false;
       Encoding.Grammar = g;
+      Encoding.GrammarParameter.ReadOnly = true;
     }
     #endregion
 

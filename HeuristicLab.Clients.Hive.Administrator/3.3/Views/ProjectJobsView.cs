@@ -25,12 +25,12 @@ using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using HeuristicLab.MainForm;
-using HeuristicLab.MainForm.WindowsForms;
-using HeuristicLab.Core.Views;
-using HeuristicLab.Data;
 using HeuristicLab.Clients.Hive.Views;
 using HeuristicLab.Core;
+using HeuristicLab.Core.Views;
+using HeuristicLab.Data;
+using HeuristicLab.MainForm;
+using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Clients.Hive.Administrator.Views {
   [View("ProjectView")]
@@ -296,13 +296,13 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     }
 
     private void RefreshJobs() {
-      HiveAdminClient.Instance.RefreshJobs();
+      HiveAdminClient.Instance.RefreshJobs(Content.Id);
       UpdateJobs();
       SetEnabledStateOfControls();
     }
 
     private StringMatrix CreateValueMatrix() {
-      if (Content == null || Content.Id == Guid.Empty)
+      if (Content == null || Content.Id == Guid.Empty || !HiveAdminClient.Instance.Jobs.ContainsKey(Content.Id))
         return new StringMatrix();
 
       var jobs = HiveAdminClient.Instance.Jobs[Content.Id];
@@ -351,15 +351,13 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
             }
 
             matrixView.DataGridView.AutoResizeColumns();
-            matrixView.DataGridView.Columns[0].MinimumWidth = 90;
-            matrixView.DataGridView.Columns[1].MinimumWidth = 108;
           }
         }
       }
     }
 
     private void RefreshJobsAsync() {
-      HiveAdminClient.Instance.RefreshJobs();
+      HiveAdminClient.Instance.RefreshJobs(Content.Id);
       UpdateJobs();
     }
 

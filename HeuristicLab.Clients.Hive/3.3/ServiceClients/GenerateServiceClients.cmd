@@ -12,7 +12,7 @@ IF "%HOST%"=="" SET HOST=services.heuristiclab.com
 SET /P GENERATECONFIG=Would you like to generate the configuration file? [y]: 
 IF "%GENERATECONFIG%"=="" SET GENERATECONFIG=y
 
-SET ARGS=http://%HOST%/Hive-3.3/HiveService.svc?wsdl ^
+SET ARGS=http://%HOST%/Hive-3.4/HiveService.svc?wsdl ^
 /out:HiveServiceClient ^
 /namespace:*,HeuristicLab.Clients.Hive ^
 /collectionType:System.Collections.Generic.List`1 ^

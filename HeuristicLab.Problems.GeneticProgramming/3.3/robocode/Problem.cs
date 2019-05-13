@@ -86,6 +86,7 @@ namespace HeuristicLab.Problems.GeneticProgramming.Robocode {
       Encoding.TreeLength = 1000;
       Encoding.TreeDepth = 10;
       Encoding.Grammar = new Grammar();
+      Encoding.GrammarParameter.ReadOnly = true;
       Encoding.FunctionArguments = 0;
       Encoding.FunctionDefinitions = 0;
 

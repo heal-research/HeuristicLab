@@ -19,13 +19,13 @@
  */
 #endregion
 
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 using HeuristicLab.Selection;
 
 namespace HeuristicLab.Algorithms.ALPS {
@@ -265,11 +265,11 @@ namespace HeuristicLab.Algorithms.ALPS {
       mutator1.Successor = variableCreator1;
 
       variableCreator1.Name = "MutatedOffspring = true";
-      variableCreator1.CollectedValues.Add(new ValueParameter<BoolValue>("MutatedOffspring", null, new BoolValue(true), false));
+      variableCreator1.CollectedValues.Add(new ValueParameter<BoolValue>("MutatedOffspring", null, new BoolValue(true)) { GetsCollected = false });
       variableCreator1.Successor = null;
 
       variableCreator2.Name = "MutatedOffspring = false";
-      variableCreator2.CollectedValues.Add(new ValueParameter<BoolValue>("MutatedOffspring", null, new BoolValue(false), false));
+      variableCreator2.CollectedValues.Add(new ValueParameter<BoolValue>("MutatedOffspring", null, new BoolValue(false)) { GetsCollected = false });
       variableCreator2.Successor = null;
 
       conditionalSelector.ConditionParameter.ActualName = "MutatedOffspring";

@@ -25,6 +25,7 @@ using System.Linq;
 using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Optimization {
@@ -188,6 +189,21 @@ namespace HeuristicLab.Optimization {
 
       newEncoding.ConfigureOperators(operators);
       newEncoding.Operators = operators;
+    }
+
+    protected override IEnumerable<KeyValuePair<string, IItem>> GetCollectedValues(IValueParameter param) {
+      if (param.Value == null) yield break;
+      if (param.GetsCollected) {
+        if (param == EncodingParameter) // store only the name of the encoding
+          yield return new KeyValuePair<string, IItem>(String.Empty, new StringValue(EncodingParameter.Value.Name));
+        else yield return new KeyValuePair<string, IItem>(String.Empty, param.Value);
+      }
+      var parameterizedItem = param.Value as IParameterizedItem;
+      if (parameterizedItem != null) {
+        var children = new Dictionary<string, IItem>();
+        parameterizedItem.CollectParameterValues(children);
+        foreach (var child in children) yield return child;
+      }
     }
   }
 }

@@ -61,6 +61,7 @@ namespace HeuristicLab.Parameters.Views {
     /// <remarks>Calls <see cref="ViewBase.RemoveItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void DeregisterContentEvents() {
       Content.GetsCollectedChanged -= new EventHandler(Content_GetsCollectedChanged);
+      Content.ReadOnlyChanged -= new EventHandler(Content_ReadOnlyChanged);
       Content.ValidValues.ItemsAdded -= new CollectionItemsChangedEventHandler<T>(ValidValues_ItemsAdded);
       Content.ValidValues.ItemsRemoved -= new CollectionItemsChangedEventHandler<T>(ValidValues_ItemsRemoved);
       Content.ValidValues.CollectionReset -= new CollectionItemsChangedEventHandler<T>(ValidValues_CollectionReset);
@@ -75,6 +76,7 @@ namespace HeuristicLab.Parameters.Views {
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
       Content.GetsCollectedChanged += new EventHandler(Content_GetsCollectedChanged);
+      Content.ReadOnlyChanged += new EventHandler(Content_ReadOnlyChanged);
       Content.ValidValues.ItemsAdded += new CollectionItemsChangedEventHandler<T>(ValidValues_ItemsAdded);
       Content.ValidValues.ItemsRemoved += new CollectionItemsChangedEventHandler<T>(ValidValues_ItemsRemoved);
       Content.ValidValues.CollectionReset += new CollectionItemsChangedEventHandler<T>(ValidValues_CollectionReset);
@@ -99,7 +101,7 @@ namespace HeuristicLab.Parameters.Views {
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
       valueGroupBox.Enabled = Content != null;
-      valueComboBox.Enabled = (valueComboBox.Items.Count > 0) && !ReadOnly;
+      valueComboBox.Enabled = Content != null && valueComboBox.Items.Count > 0 && !Content.ReadOnly && !ReadOnly;
       showInRunCheckBox.Enabled = Content != null && !ReadOnly;
     }
 
@@ -151,6 +153,13 @@ namespace HeuristicLab.Parameters.Views {
         Invoke(new CollectionItemsChangedEventHandler<T>(ValidValues_CollectionReset), sender, e);
       else
         FillValueComboBox();
+    }
+    protected virtual void Content_ReadOnlyChanged(object sender, EventArgs e) {
+      if (InvokeRequired)
+        Invoke(new EventHandler(Content_ReadOnlyChanged), sender, e);
+      else {
+        SetEnabledStateOfControls();
+      }
     }
     protected virtual void Content_GetsCollectedChanged(object sender, EventArgs e) {
       if (InvokeRequired)

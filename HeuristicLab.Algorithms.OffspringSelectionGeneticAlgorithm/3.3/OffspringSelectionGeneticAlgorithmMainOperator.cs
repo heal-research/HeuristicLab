@@ -19,13 +19,13 @@
  */
 #endregion
 
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 using HeuristicLab.Selection;
 
 namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
@@ -217,10 +217,10 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       mutator1.OperatorParameter.ActualName = MutatorParameter.Name;
 
       variableCreator1.Name = "MutatedOffspring = true";
-      variableCreator1.CollectedValues.Add(new ValueParameter<BoolValue>("MutatedOffspring", null, new BoolValue(true), false));
+      variableCreator1.CollectedValues.Add(new ValueParameter<BoolValue>("MutatedOffspring", null, new BoolValue(true)) { GetsCollected = false });
 
       variableCreator2.Name = "MutatedOffspring = false";
-      variableCreator2.CollectedValues.Add(new ValueParameter<BoolValue>("MutatedOffspring", null, new BoolValue(false), false));
+      variableCreator2.CollectedValues.Add(new ValueParameter<BoolValue>("MutatedOffspring", null, new BoolValue(false)) { GetsCollected = false });
 
       conditionalSelector.ConditionParameter.ActualName = "MutatedOffspring";
       conditionalSelector.ConditionParameter.Depth = 1;

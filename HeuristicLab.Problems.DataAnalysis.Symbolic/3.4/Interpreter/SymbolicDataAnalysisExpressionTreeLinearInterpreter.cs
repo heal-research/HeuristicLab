@@ -244,7 +244,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         } else if (instr.opCode == OpCodes.SquareRoot) {
           instr.value = Math.Sqrt(code[instr.childIndex].value);
         } else if (instr.opCode == OpCodes.CubeRoot) {
-          instr.value = Math.Pow(code[instr.childIndex].value, 1.0 / 3.0);
+          var arg = code[instr.childIndex].value;
+          instr.value = arg < 0 ? -Math.Pow(-arg, 1.0 / 3.0) : Math.Pow(arg, 1.0 / 3.0);
         } else if (instr.opCode == OpCodes.Root) {
           double x = code[instr.childIndex].value;
           double y = Math.Round(code[instr.childIndex + 1].value);

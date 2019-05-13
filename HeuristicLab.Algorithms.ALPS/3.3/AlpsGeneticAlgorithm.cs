@@ -443,9 +443,9 @@ namespace HeuristicLab.Algorithms.ALPS {
     protected override void OnProblemChanged() {
       base.OnProblemChanged();
       ParameterizeStochasticOperator(Problem.SolutionCreator);
-      ParameterizeStochasticOperatorForLayer(Problem.Evaluator);
       foreach (var @operator in Problem.Operators.OfType<IOperator>())
         ParameterizeStochasticOperator(@operator);
+      ParameterizeStochasticOperatorForLayer(Problem.Evaluator);
 
       ParameterizeIterationBasedOperators();
 
@@ -477,7 +477,6 @@ namespace HeuristicLab.Algorithms.ALPS {
     protected override void Problem_SolutionCreatorChanged(object sender, EventArgs e) {
       base.Problem_SolutionCreatorChanged(sender, e);
       ParameterizeStochasticOperator(Problem.SolutionCreator);
-      ParameterizeStochasticOperatorForLayer(Problem.Evaluator);
 
       Problem.Evaluator.QualityParameter.ActualNameChanged += Evaluator_QualityParameter_ActualNameChanged;
 
@@ -486,11 +485,7 @@ namespace HeuristicLab.Algorithms.ALPS {
     }
     protected override void Problem_EvaluatorChanged(object sender, EventArgs e) {
       base.Problem_EvaluatorChanged(sender, e);
-
       ParameterizeStochasticOperatorForLayer(Problem.Evaluator);
-
-      foreach (var @operator in Problem.Operators.OfType<IOperator>())
-        ParameterizeStochasticOperator(@operator);
 
       UpdateAnalyzers();
 
@@ -501,6 +496,7 @@ namespace HeuristicLab.Algorithms.ALPS {
     protected override void Problem_OperatorsChanged(object sender, EventArgs e) {
       base.Problem_OperatorsChanged(sender, e);
       foreach (IOperator op in Problem.Operators.OfType<IOperator>()) ParameterizeStochasticOperator(op);
+      ParameterizeStochasticOperatorForLayer(Problem.Evaluator);
       ParameterizeIterationBasedOperators();
       UpdateCrossovers();
       UpdateMutators();

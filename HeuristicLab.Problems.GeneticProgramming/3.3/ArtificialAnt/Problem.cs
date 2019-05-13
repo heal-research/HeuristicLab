@@ -129,6 +129,7 @@ namespace HeuristicLab.Problems.GeneticProgramming.ArtificialAnt {
       Encoding.TreeDepth = 10;
       Encoding.Grammar = g;
       base.BestKnownQuality = 89;
+      base.Encoding.GrammarParameter.ReadOnly = true;
     }
 
 

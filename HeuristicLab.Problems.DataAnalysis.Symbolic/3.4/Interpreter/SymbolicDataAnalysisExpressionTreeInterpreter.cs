@@ -231,7 +231,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             return Math.Sqrt(Evaluate(dataset, ref row, state));
           }
         case OpCodes.CubeRoot: {
-            return Math.Pow(Evaluate(dataset, ref row, state), 1.0 / 3.0);
+            var arg = Evaluate(dataset, ref row, state);
+            return arg < 0 ? -Math.Pow(-arg, 1.0 / 3.0) : Math.Pow(arg, 1.0 / 3.0);
           }
         case OpCodes.Root: {
             double x = Evaluate(dataset, ref row, state);

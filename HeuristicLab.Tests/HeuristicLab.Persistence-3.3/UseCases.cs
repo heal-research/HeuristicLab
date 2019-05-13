@@ -1353,6 +1353,9 @@ namespace HeuristicLab.Persistence.Tests {
 
       public OneWayTest() { this.value = "default"; }
       public string value;
+
+#pragma warning disable CS0618 // Type or member is obsolete
+      // test allow one way for old persistence
       [Storable(AllowOneWay = true)]
       public string ReadOnly {
         get { return "ReadOnly"; }
@@ -1361,6 +1364,7 @@ namespace HeuristicLab.Persistence.Tests {
       public string WriteOnly {
         set { this.value = value; }
       }
+#pragma warning restore CS0618 // Type or member is obsolete
     }
 
     [TestMethod]

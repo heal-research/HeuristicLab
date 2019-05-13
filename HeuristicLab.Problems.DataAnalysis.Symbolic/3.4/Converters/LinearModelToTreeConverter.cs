@@ -37,29 +37,36 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       string[] variableNames, double[] coefficients,
       double @const = 0) {
 
-      if (factorCoefficients.Length == 0 && coefficients.Length == 0) throw new ArgumentException();
+      if (factorCoefficients.Length == 0 && coefficients.Length == 0 && @const==0) throw new ArgumentException();
+
+      // Combine both trees
+      ISymbolicExpressionTreeNode add = (new Addition()).CreateTreeNode();
 
       // Create tree for double variables
-      ISymbolicExpressionTree tree = null;      
       if (coefficients.Length > 0) {
-        tree = CreateTree(variableNames, new int[variableNames.Length], coefficients, @const);
-        if (factorCoefficients.Length == 0) return tree;
+        var varTree = CreateTree(variableNames, new int[variableNames.Length], coefficients);
+        foreach (var varNode in varTree.IterateNodesPrefix().OfType<VariableTreeNode>())
+          add.AddSubtree(varNode);
       }
 
       // Create tree for string variables
-      ISymbolicExpressionTree factorTree = null;      
       if (factorCoefficients.Length > 0) {
-        factorTree = CreateTree(factors, factorCoefficients, @const);
-        if (tree == null) return factorTree;  
+        var factorTree = CreateTree(factors, factorCoefficients);
+        foreach (var binFactorNode in factorTree.IterateNodesPrefix().OfType<BinaryFactorVariableTreeNode>())
+          add.AddSubtree(binFactorNode);
       }
 
-      // Combine both trees
-      ISymbolicExpressionTreeNode add = tree.Root.GetSubtree(0).GetSubtree(0);
-      foreach (var binFactorNode in factorTree.IterateNodesPrefix().OfType<BinaryFactorVariableTreeNode>())
-        add.InsertSubtree(add.SubtreeCount - 1, binFactorNode);
-      return tree;
+      if (@const!=0.0) {
+        ConstantTreeNode cNode = (ConstantTreeNode)new Constant().CreateTreeNode();
+        cNode.Value = @const;
+        add.AddSubtree(cNode);
+      }
 
-      throw new ArgumentException();
+      ISymbolicExpressionTree tree = new SymbolicExpressionTree(new ProgramRootSymbol().CreateTreeNode());
+      ISymbolicExpressionTreeNode startNode = new StartSymbol().CreateTreeNode();
+      tree.Root.AddSubtree(startNode);
+      startNode.AddSubtree(add);
+      return tree;
     }
 
     public static ISymbolicExpressionTree CreateTree(string[] variableNames, int[] lags, double[] coefficients,

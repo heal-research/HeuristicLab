@@ -246,7 +246,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           }
         case OpCodes.CubeRoot: {
             var arg = MakeExpr(node.GetSubtree(0), variableIndices, row, columns);
-            return Expression.Power(arg, Expression.Constant(1.0 / 3.0));
+            return Expression.Condition(Expression.LessThan(arg, Expression.Constant(0.0)),
+              Expression.Negate(Expression.Power(Expression.Negate(arg), Expression.Constant(1.0 / 3.0))),
+              Expression.Power(arg, Expression.Constant(1.0 / 3.0)));
           }
         case OpCodes.Root: {
             var arg = MakeExpr(node.GetSubtree(0), variableIndices, row, columns);
@@ -513,8 +515,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         case OpCodes.AnalyticQuotient: {
             var x1 = MakeExpr(node.GetSubtree(0), variableIndices, row, columns);
             var x2 = MakeExpr(node.GetSubtree(1), variableIndices, row, columns);
-            return Expression.Divide(x1, 
-              Expression.Call(Sqrt, 
+            return Expression.Divide(x1,
+              Expression.Call(Sqrt,
               Expression.Add(
                 Expression.Constant(1.0),
                 Expression.Multiply(x2, x2))));

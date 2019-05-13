@@ -335,8 +335,22 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           }
         case OpCodes.CubeRoot: {
             CompileInstructions(il, state, ds);
+            var c1 = il.DefineLabel();
+            var end = il.DefineLabel();
+
+            il.Emit(System.Reflection.Emit.OpCodes.Dup); // x
+            il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, 0.0);
+            il.Emit(System.Reflection.Emit.OpCodes.Clt); // x < 0?
+            il.Emit(System.Reflection.Emit.OpCodes.Brfalse, c1);
+            il.Emit(System.Reflection.Emit.OpCodes.Neg); // x = -x
             il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, 1.0 / 3.0);
             il.Emit(System.Reflection.Emit.OpCodes.Call, power);
+            il.Emit(System.Reflection.Emit.OpCodes.Neg); // -Math.Pow(-x, 1/3)
+            il.Emit(System.Reflection.Emit.OpCodes.Br, end);
+            il.MarkLabel(c1);
+            il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, 1.0 / 3.0);
+            il.Emit(System.Reflection.Emit.OpCodes.Call, power);
+            il.MarkLabel(end);
             return;
           }
         case OpCodes.AiryA: {
