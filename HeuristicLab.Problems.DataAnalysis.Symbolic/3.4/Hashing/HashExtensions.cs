@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   public static class SymbolicExpressionHashExtensions {
@@ -48,8 +49,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       private HashNode() { }
 
       public int CompareTo(HashNode<T> other) {
-        var res = Comparer.Compare(Data, other.Data);
-        return res == 0 ? CalculatedHashValue.CompareTo(other.CalculatedHashValue) : res;
+        return CalculatedHashValue.CompareTo(other.CalculatedHashValue);
       }
 
       public override string ToString() {
@@ -102,32 +102,30 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     public static HashNode<T>[] Simplify<T>(this HashNode<T>[] nodes, Func<byte[], ulong> hashFunction) where T : class {
-      var reduced = nodes.UpdateNodeSizes().Reduce().Sort(hashFunction);
-
-      for (int i = 0; i < reduced.Length; ++i) {
-        var node = reduced[i];
-        if (node.IsLeaf) {
-          continue;
+      bool simplified = false;
+      nodes = nodes.UpdateNodeSizes().Reduce().Sort(hashFunction);
+      do {
+        if (simplified) {
+          simplified = false;
+          nodes = nodes.Where(x => x.Enabled).ToArray().UpdateNodeSizes().Reduce().Sort(hashFunction);
         }
-        node.Simplify?.Invoke(ref reduced, i);
-      }
-      // detect if anything was simplified
-      var count = 0;
-      foreach (var node in reduced) {
-        if (!node.Enabled) { ++count; }
-      }
-      if (count == 0) {
-        return reduced;
-      }
 
-      var simplified = new HashNode<T>[reduced.Length - count];
-      int j = 0;
-      foreach (var node in reduced) {
-        if (node.Enabled) {
-          simplified[j++] = node;
+        for (int i = 0; i < nodes.Length; ++i) {
+          var node = nodes[i];
+          if (node.IsLeaf) {
+            continue;
+          }
+          node.Simplify?.Invoke(ref nodes, i);
+          for (int j = i - node.Size; j < i; ++j) {
+            // detect if anything was simplified
+            if (!nodes[j].Enabled) {
+              simplified = true;
+              break;
+            }
+          }
         }
-      }
-      return simplified.UpdateNodeSizes().Reduce().Sort(hashFunction);
+      } while (simplified);
+      return nodes.UpdateNodeSizes().Sort(hashFunction);
     }
 
     public static HashNode<T>[] Sort<T>(this HashNode<T>[] nodes, Func<byte[], ulong> hashFunction) where T : class {
@@ -206,7 +204,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       return nodes;
     }
 
-    private static HashNode<T>[] Reduce<T>(this HashNode<T>[] nodes) where T : class {
+    public static HashNode<T>[] Reduce<T>(this HashNode<T>[] nodes) where T : class {
       int count = 0;
       for (int i = 0; i < nodes.Length; ++i) {
         var node = nodes[i];
