@@ -171,6 +171,7 @@
     <Compile Include="Interpreter\SymbolicDataAnalysisExpressionTreeBatchInterpreter.cs" />
     <Compile Include="Interpreter\SymbolicDataAnalysisExpressionTreeNativeInterpreter.cs" />
     <Compile Include="Selectors\DiversitySelector.cs" />
+    <Compile Include="SymbolicDataAnalysisExpressionTreeAverageSimilarityCalculator.cs" />
     <Compile Include="SymbolicDataAnalysisExpressionTreeSimplificationOperator.cs" />
     <Compile Include="SymbolicDataAnalysisModelComplexityCalculator.cs" />
     <Compile Include="SymbolicDataAnalysisExpressionPruningOperator.cs" />

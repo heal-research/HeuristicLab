@@ -21,25 +21,30 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   [Item("Pearson R² & Average Similarity Evaluator", "Calculates the Pearson R² and the average similarity of a symbolic regression solution candidate.")]
   [StorableType("FE514989-E619-48B8-AC8E-9A2202708F65")]
   public class PearsonRSquaredAverageSimilarityEvaluator : SymbolicRegressionMultiObjectiveEvaluator {
     private const string StrictSimilarityParameterName = "StrictSimilarity";
+    private const string AverageSimilarityParameterName = "AverageSimilarity";
 
     private readonly object locker = new object();
 
+    private readonly SymbolicDataAnalysisExpressionTreeAverageSimilarityCalculator SimilarityCalculator = new SymbolicDataAnalysisExpressionTreeAverageSimilarityCalculator();
+
     public IFixedValueParameter<BoolValue> StrictSimilarityParameter {
       get { return (IFixedValueParameter<BoolValue>)Parameters[StrictSimilarityParameterName]; }
+    }
+
+    public ILookupParameter<DoubleValue> AverageSimilarityParameter {
+      get { return (ILookupParameter<DoubleValue>)Parameters[AverageSimilarityParameterName]; }
     }
 
     public bool StrictSimilarity {
@@ -57,9 +62,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
     public PearsonRSquaredAverageSimilarityEvaluator() : base() {
       Parameters.Add(new FixedValueParameter<BoolValue>(StrictSimilarityParameterName, "Use strict similarity calculation.", new BoolValue(false)));
+      Parameters.Add(new LookupParameter<DoubleValue>(AverageSimilarityParameterName));
     }
 
-    public override IEnumerable<bool> Maximization { get { return new bool[2] { true, false }; } } // maximize R² and minimize model complexity 
+    public override IEnumerable<bool> Maximization { get { return new bool[2] { true, false }; } } // maximize R² and minimize average similarity 
 
     public override IOperation InstrumentedApply() {
       IEnumerable<int> rows = GenerateRowsToEvaluate();
@@ -72,63 +78,50 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       if (UseConstantOptimization) {
         SymbolicRegressionConstantOptimizationEvaluator.OptimizeConstants(interpreter, solution, problemData, rows, applyLinearScaling, ConstantOptimizationIterations, updateVariableWeights: ConstantOptimizationUpdateVariableWeights, lowerEstimationLimit: estimationLimits.Lower, upperEstimationLimit: estimationLimits.Upper);
       }
-      double[] qualities = Calculate(interpreter, solution, estimationLimits.Lower, estimationLimits.Upper, problemData, rows, applyLinearScaling, DecimalPlaces);
-      QualitiesParameter.ActualValue = new DoubleArray(qualities);
-      return base.InstrumentedApply();
-    }
 
-    public double[] Calculate(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, ISymbolicExpressionTree solution, double lowerEstimationLimit, double upperEstimationLimit, IRegressionProblemData problemData, IEnumerable<int> rows, bool applyLinearScaling, int decimalPlaces) {
-      double r2 = SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.Calculate(interpreter, solution, lowerEstimationLimit, upperEstimationLimit, problemData, rows, applyLinearScaling);
-      if (decimalPlaces >= 0)
-        r2 = Math.Round(r2, decimalPlaces);
+      double r2 = SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.Calculate(interpreter, solution, estimationLimits.Lower, estimationLimits.Upper, problemData, rows, applyLinearScaling);
 
-      var variables = ExecutionContext.Scope.Variables;
-      if (!variables.ContainsKey("AverageSimilarity")) {
-        lock (locker) {
-          CalculateAverageSimilarities(ExecutionContext.Scope.Parent.SubScopes.Where(x => x.Variables.ContainsKey("SymbolicExpressionTree")).ToArray(), StrictSimilarity);
+      if (DecimalPlaces >= 0)
+        r2 = Math.Round(r2, DecimalPlaces);
 
+      lock (locker) {
+        if (AverageSimilarityParameter.ActualValue == null) {
+          var context = new ExecutionContext(null, SimilarityCalculator, ExecutionContext.Scope.Parent);
+          SimilarityCalculator.StrictSimilarity = StrictSimilarity;
+          SimilarityCalculator.Execute(context, CancellationToken);
         }
       }
+      var avgSimilarity = AverageSimilarityParameter.ActualValue.Value;
 
-      double avgSim = ((DoubleValue)variables["AverageSimilarity"].Value).Value;
-      return new double[2] { r2, avgSim };
+      QualitiesParameter.ActualValue = new DoubleArray(new[] { r2, avgSimilarity });
+      return base.InstrumentedApply();
     }
 
     public override double[] Evaluate(IExecutionContext context, ISymbolicExpressionTree tree, IRegressionProblemData problemData, IEnumerable<int> rows) {
       SymbolicDataAnalysisTreeInterpreterParameter.ExecutionContext = context;
+      AverageSimilarityParameter.ExecutionContext = context;
       EstimationLimitsParameter.ExecutionContext = context;
       ApplyLinearScalingParameter.ExecutionContext = context;
-      // DecimalPlaces parameter is a FixedValueParameter and doesn't need the context.
 
-      double[] quality = Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, tree, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper, problemData, rows, ApplyLinearScalingParameter.ActualValue.Value, DecimalPlaces);
+      var estimationLimits = EstimationLimitsParameter.ActualValue;
+      var applyLinearScaling = ApplyLinearScalingParameter.ActualValue.Value;
+
+      double r2 = SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, tree, estimationLimits.Lower, estimationLimits.Upper, problemData, rows, applyLinearScaling);
+
+      lock (locker) {
+        if (AverageSimilarityParameter.ActualValue == null) {
+          var ctx = new ExecutionContext(null, SimilarityCalculator, context.Scope.Parent);
+          SimilarityCalculator.StrictSimilarity = StrictSimilarity;
+          SimilarityCalculator.Execute(context, CancellationToken);
+        }
+      }
+      var avgSimilarity = AverageSimilarityParameter.ActualValue.Value;
 
       SymbolicDataAnalysisTreeInterpreterParameter.ExecutionContext = null;
       EstimationLimitsParameter.ExecutionContext = null;
       ApplyLinearScalingParameter.ExecutionContext = null;
 
-      return quality;
-    }
-
-    private readonly Stopwatch sw = new Stopwatch();
-    public void CalculateAverageSimilarities(IScope[] treeScopes, bool strict) {
-      var trees = treeScopes.Select(x => (ISymbolicExpressionTree)x.Variables["SymbolicExpressionTree"].Value).ToArray();
-      var similarityMatrix = SymbolicExpressionTreeHash.ComputeSimilarityMatrix(trees, simplify: false, strict: strict);
-
-      for (int i = 0; i < treeScopes.Length; ++i) {
-        var scope = treeScopes[i];
-        var avgSimilarity = 0d;
-        for (int j = 0; j < trees.Length; ++j) {
-          if (i == j) continue;
-          avgSimilarity += similarityMatrix[i, j];
-        }
-        avgSimilarity /= trees.Length - 1;
-
-        if (scope.Variables.ContainsKey("AverageSimilarity")) {
-          ((DoubleValue)scope.Variables["AverageSimilarity"].Value).Value = avgSimilarity;
-        } else {
-          scope.Variables.Add(new Core.Variable("AverageSimilarity", new DoubleValue(avgSimilarity)));
-        }
-      }
+      return new[] { r2, avgSimilarity };
     }
   }
 }
