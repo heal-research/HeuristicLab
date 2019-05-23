@@ -27,9 +27,11 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableType("F30B6562-ECEC-42A0-B7D6-E55390FC0412")]
+  [NonDiscoverableType]
   public class SymbolicDataAnalysisExpressionTreeAverageSimilarityCalculator : InstrumentedOperator {
     private const string SymbolicExpressionTreeParameterName = "SymbolicExpressionTree";
     private const string AverageSimilarityParameterName = "AverageSimilarity";
