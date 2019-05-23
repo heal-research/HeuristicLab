@@ -37,7 +37,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private static readonly Cosine cos = new Cosine();
     private static readonly Constant constant = new Constant();
 
-    private static readonly ISymbolicExpressionTreeNodeComparer comparer = new SymbolicExpressionTreeNodeComparer();
     private static ISymbolicExpressionTreeNode ActualRoot(this ISymbolicExpressionTree tree) => tree.Root.GetSubtree(0).GetSubtree(0);
 
     #region tree hashing
@@ -73,7 +72,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         name = strict ? variableNode.Weight.ToString() + variableNode.VariableName : variableNode.VariableName;
       }
       var hash = (ulong)name.GetHashCode();
-      var hashNode = new HashNode<ISymbolicExpressionTreeNode>(comparer) {
+      var hashNode = new HashNode<ISymbolicExpressionTreeNode> {
         Data = node,
         Arity = node.SubtreeCount,
         Size = node.SubtreeCount,

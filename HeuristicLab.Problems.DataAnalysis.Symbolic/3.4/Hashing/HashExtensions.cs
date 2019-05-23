@@ -20,7 +20,6 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
@@ -38,15 +37,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       public delegate void SimplifyAction(ref HashNode<T>[] nodes, int i);
       public SimplifyAction Simplify;
 
-      public IComparer<T> Comparer;
+      //public IComparer<T> Comparer;
 
       public bool IsLeaf => Arity == 0;
 
-      public HashNode(IComparer<T> comparer) {
-        Comparer = comparer;
-      }
+      //public HashNode(IComparer<T> comparer) {
+      //  Comparer = comparer;
+      //}
 
-      private HashNode() { }
+      //public HashNode() { }
 
       public int CompareTo(HashNode<T> other) {
         return CalculatedHashValue.CompareTo(other.CalculatedHashValue);
