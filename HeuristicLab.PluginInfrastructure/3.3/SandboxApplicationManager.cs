@@ -70,6 +70,16 @@ namespace HeuristicLab.PluginInfrastructure {
       : base() {
       loadedAssemblies = new Dictionary<string, Assembly>();
       loadedPlugins = new List<IPlugin>();
+
+      AppDomain.CurrentDomain.DomainUnload += CurrentDomain_DomainUnload;
+    }
+
+    /// <summary>
+    /// The sandbox application manager can also be used to load plugins even when no actual application is executed.
+    /// In such cases, plugins that have been loaded also have to be unloaded again before the application domain is unloaded.
+    /// </summary>
+    private void CurrentDomain_DomainUnload(object sender, EventArgs e) {
+      UnloadPlugins();
     }
 
     /// <summary>
@@ -110,6 +120,23 @@ namespace HeuristicLab.PluginInfrastructure {
     }
 
     /// <summary>
+    /// Unloads the <paramref name="plugins"/> that were loaded into this application domain.
+    /// </summary>
+    private void UnloadPlugins() {
+      // unload plugins in reverse order
+      foreach (var plugin in loadedPlugins.Reverse<IPlugin>()) {
+        plugin.OnUnload();
+      }
+      loadedPlugins.Clear(); // remove all plugins once unloaded
+
+      foreach (var desc in PluginDescriptionIterator.IterateDependenciesBottomUp(plugins.Where(x => x.PluginState != PluginState.Disabled))) {
+        desc.Unload();
+        OnPluginUnloaded(new PluginInfrastructureEventArgs(desc));
+      }
+      plugins.Clear(); // remove all plugin descriptions once unloaded
+    }
+
+    /// <summary>
     /// Runs the application declared in <paramref name="appInfo"/>.
     /// This is a synchronous call. When the application is terminated all plugins are unloaded.
     /// </summary>
@@ -118,16 +145,8 @@ namespace HeuristicLab.PluginInfrastructure {
       IApplication runnablePlugin = (IApplication)Activator.CreateInstance(appInfo.DeclaringAssemblyName, appInfo.DeclaringTypeName).Unwrap();
       try {
         runnablePlugin.Run(args);
-      }
-      finally {
-        // unload plugins in reverse order
-        foreach (var plugin in loadedPlugins.Reverse<IPlugin>()) {
-          plugin.OnUnload();
-        }
-        foreach (var desc in PluginDescriptionIterator.IterateDependenciesBottomUp(plugins.Where(x => x.PluginState != PluginState.Disabled))) {
-          desc.Unload();
-          OnPluginUnloaded(new PluginInfrastructureEventArgs(desc));
-        }
+      } finally {
+        UnloadPlugins();
       }
     }
 
