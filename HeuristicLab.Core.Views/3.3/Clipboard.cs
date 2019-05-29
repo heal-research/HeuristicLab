@@ -23,14 +23,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.MainForm;
-using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Core.Views {

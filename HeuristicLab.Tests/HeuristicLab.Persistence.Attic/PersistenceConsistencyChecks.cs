@@ -17,7 +17,6 @@ namespace HeuristicLab.Tests.Persistence.Attic {
 
       var dict = new Dictionary<Guid, string>();
       var duplicates = new Dictionary<string, string>();
-      //get all non-generic and instantiable classes which implement IContentView
       foreach (Type type in ApplicationManager.Manager.GetTypes(typeof(object))) {
         var attr = StorableTypeAttribute.GetStorableTypeAttribute(type);
         if (attr == null)
