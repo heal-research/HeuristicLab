@@ -29,7 +29,6 @@ using System.Windows.Forms;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.MainForm;
-using HeuristicLab.Persistence.Default.Xml;
 
 namespace HeuristicLab.Optimizer {
   [View("Start Page")]
@@ -120,7 +119,7 @@ namespace HeuristicLab.Optimizer {
       try {
         using (var stream = assembly.GetManifestResourceStream(name)) {
           WriteStreamToTempFile(stream, path); // create a file in a temporary folder (persistence cannot load these files directly from the stream)
-          var item = XmlParser.Deserialize<INamedItem>(path);
+          var item = (INamedItem)ContentManager.Load(path);
           OnSampleLoaded(item, group, 1.0 / count);
         }
       } catch (Exception) {

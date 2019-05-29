@@ -156,15 +156,10 @@ namespace HeuristicLab.Core.Views {
       string[] items = Directory.GetFiles(ItemsPath);
       foreach (string filename in items) {
         try {
-          var ser = new ProtoBufSerializer();
-          T item = (T)ser.Deserialize(filename);
+          T item = (T)ContentManager.Load(filename);
           OnItemLoaded(item, progressBar.Maximum / items.Length);
-        } catch (Exception) {
-          try {
-            // try old format if protobuf deserialization fails
-            T item = XmlParser.Deserialize<T>(filename);
-            OnItemLoaded(item, progressBar.Maximum / items.Length);
-          } catch (Exception) { }
+        } catch(Exception) {
+          // ignore if loading a clipboad item fails.
         }
       }
       OnAllItemsLoaded();
