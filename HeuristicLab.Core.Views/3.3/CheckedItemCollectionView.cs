@@ -33,6 +33,8 @@ namespace HeuristicLab.Core.Views {
   [Content(typeof(CheckedItemCollection<>), true)]
   [Content(typeof(ReadOnlyCheckedItemCollection<>), true)]
   public partial class CheckedItemCollectionView<T> : ItemCollectionView<T> where T : class, IItem {
+    private bool suppressCheckedEvents;
+
     public new ICheckedItemCollection<T> Content {
       get { return (ICheckedItemCollection<T>)base.Content; }
       set { base.Content = value; }
@@ -83,15 +85,24 @@ namespace HeuristicLab.Core.Views {
         e.NewValue = e.CurrentValue;
         doubleClick = false;
       } else {
-        var checkedItem = (T)itemsListView.Items[e.Index].Tag;
         bool check = e.NewValue == CheckState.Checked;
-        if (Content.ItemChecked(checkedItem) != check) {
-          if (!ReadOnly && !Locked) Content.SetItemCheckedState(checkedItem, check);
-          else e.NewValue = e.CurrentValue;
-        }
+        var checkedItem = (T)itemsListView.Items[e.Index].Tag;
+        if (Content.ItemChecked(checkedItem) == check) return;
+
+        suppressCheckedEvents = true;
+        try {
+          if (itemsListView.SelectedIndices.Count > 1
+            && itemsListView.SelectedIndices.Contains(e.Index)) {
+            if (!ReadOnly && !Locked) Content.SetItemCheckedState(itemsListView.SelectedItems.Cast<ListViewItem>().Select(x => (T)x.Tag), check);
+            else e.NewValue = e.CurrentValue;
+          } else {
+            if (!ReadOnly && !Locked) Content.SetItemCheckedState(checkedItem, check);
+            else e.NewValue = e.CurrentValue;
+          }
+        } finally { suppressCheckedEvents = false; }
       }
     }
-    protected void itemsListView_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e) {
+    protected void itemsListView_MouseDown(object sender, MouseEventArgs e) {
       if (e.Clicks > 1)
         doubleClick = true;
     }
@@ -102,7 +113,7 @@ namespace HeuristicLab.Core.Views {
       if (InvokeRequired)
         Invoke(new CollectionItemsChangedEventHandler<T>(Content_CheckedItemsChanged), sender, e);
       else {
-        UpdateCheckedItemState(e.Items);
+        if (!suppressCheckedEvents) UpdateCheckedItemState(e.Items);
         SetNumberOfCheckItems();
       }
     }
@@ -129,13 +140,16 @@ namespace HeuristicLab.Core.Views {
     }
 
     private void UpdateCheckedItemState(IEnumerable<T> items) {
-      foreach (T item in items) {
-        foreach (ListViewItem listViewItem in GetListViewItemsForItem(item)) {
-          var isChecked = Content.ItemChecked(item);
-          if (listViewItem.Checked != isChecked)
-            listViewItem.Checked = isChecked;
+      itemsListView.BeginUpdate();
+      try {
+        foreach (T item in items) {
+          foreach (ListViewItem listViewItem in GetListViewItemsForItem(item)) {
+            var isChecked = Content.ItemChecked(item);
+            if (listViewItem.Checked != isChecked)
+              listViewItem.Checked = isChecked;
+          }
         }
-      }
+      } finally { itemsListView.EndUpdate(); itemsListView.Refresh(); }
     }
   }
 }

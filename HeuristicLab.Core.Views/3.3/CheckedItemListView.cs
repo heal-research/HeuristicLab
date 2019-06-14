@@ -36,6 +36,8 @@ namespace HeuristicLab.Core.Views {
   [Content(typeof(ICheckedItemList<>), true)]
   [Content(typeof(ReadOnlyCheckedItemList<>), true)]
   public partial class CheckedItemListView<T> : ItemListView<T> where T : class, IItem {
+    private bool suppressCheckedEvents;
+
     public new ICheckedItemList<T> Content {
       get { return (ICheckedItemList<T>)base.Content; }
       set { base.Content = value; }
@@ -85,12 +87,21 @@ namespace HeuristicLab.Core.Views {
         e.NewValue = e.CurrentValue;
         doubleClick = false;
       } else {
-        var checkedItem = (T)itemsListView.Items[e.Index].Tag;
         bool check = e.NewValue == CheckState.Checked;
-        if (Content.ItemChecked(checkedItem) != check) {
-          if (!ReadOnly && !Locked) Content.SetItemCheckedState(checkedItem, check);
-          else e.NewValue = e.CurrentValue;
-        }
+        if (Content.ItemChecked(e.Index) == check) return;
+
+        suppressCheckedEvents = true;
+        try {
+          if (itemsListView.SelectedIndices.Count > 1
+            && itemsListView.SelectedIndices.Contains(e.Index)) {
+            if (!ReadOnly && !Locked) Content.SetItemCheckedState(itemsListView.SelectedIndices.Cast<int>(), check);
+            else e.NewValue = e.CurrentValue;
+          } else {
+            var checkedItem = (T)itemsListView.Items[e.Index].Tag;
+            if (!ReadOnly && !Locked) Content.SetItemCheckedState(checkedItem, check);
+            else e.NewValue = e.CurrentValue;
+          }
+        } finally { suppressCheckedEvents = false; }
       }
     }
 
@@ -138,7 +149,7 @@ namespace HeuristicLab.Core.Views {
       if (InvokeRequired)
         Invoke(new CollectionItemsChangedEventHandler<IndexedItem<T>>(Content_CheckedItemsChanged), sender, e);
       else {
-        UpdateCheckedItemState(e.Items);
+        if (!suppressCheckedEvents) UpdateCheckedItemState(e.Items);
         SetNumberOfCheckItems();
       }
     }
@@ -174,11 +185,14 @@ namespace HeuristicLab.Core.Views {
     }
 
     private void UpdateCheckedItemState(IEnumerable<IndexedItem<T>> items) {
-      foreach (var item in items) {
-        var isChecked = Content.ItemChecked(item.Value);
-        if (itemsListView.Items[item.Index].Checked != isChecked)
-          itemsListView.Items[item.Index].Checked = isChecked;
-      }
+      itemsListView.BeginUpdate();
+      try {
+        foreach (var item in items) {
+          var isChecked = Content.ItemChecked(item.Value);
+          if (itemsListView.Items[item.Index].Checked != isChecked)
+            itemsListView.Items[item.Index].Checked = isChecked;
+        }
+      } finally { itemsListView.EndUpdate(); itemsListView.Refresh(); }
     }
   }
 }
