@@ -352,6 +352,10 @@ namespace HeuristicLab.Core.Views {
         }
       }
     }
+    protected virtual void itemsListView_Layout(object sender, LayoutEventArgs e) {
+      if (itemsListView.Columns.Count == 1)
+        AdjustListViewColumnSizes();
+    }
     #endregion
 
     #region Button Events
@@ -492,16 +496,22 @@ namespace HeuristicLab.Core.Views {
         T item = (T)sender;
         foreach (ListViewItem listViewItem in GetListViewItemsForItem(item))
           UpdateListViewItemText(listViewItem);
-        AdjustListViewColumnSizes();
+        if (itemsListView.Columns.Count > 1)
+          AdjustListViewColumnSizes();
       }
     }
     #endregion
 
     #region Helpers
     protected virtual void AdjustListViewColumnSizes() {
-      if (itemsListView.Items.Count > 0) {
-        for (int i = 0; i < itemsListView.Columns.Count; i++)
-          itemsListView.Columns[i].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
+      if (itemsListView.Columns.Count == 1) {
+        if (itemsListView.Columns[0].Width != itemsListView.ClientSize.Width)
+          itemsListView.Columns[0].Width = itemsListView.ClientSize.Width;
+      } else {
+        if (itemsListView.Items.Count > 0) {
+          for (int i = 0; i < itemsListView.Columns.Count; i++)
+            itemsListView.Columns[i].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
+        }
       }
     }
     protected virtual void RebuildImageList() {
