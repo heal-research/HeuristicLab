@@ -22,10 +22,12 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Windows.Forms;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.MainForm;
@@ -115,17 +117,12 @@ namespace HeuristicLab.Optimizer {
     }
 
     private void LoadSample(string name, Assembly assembly, ListViewGroup group, int count) {
-      string path = Path.GetTempFileName();
-      try {
-        using (var stream = assembly.GetManifestResourceStream(name)) {
-          WriteStreamToTempFile(stream, path); // create a file in a temporary folder (persistence cannot load these files directly from the stream)
-          var item = (INamedItem)ContentManager.Load(path);
+      using (var stream = assembly.GetManifestResourceStream(name)) {
+        var serializer = new ProtoBufSerializer();
+        // TODO remove deflateStream with next release of HEAL.Attic
+        using (var deflateStream = new DeflateStream(stream, CompressionMode.Decompress, true)) {
+          var item = (NamedItem)serializer.Deserialize(deflateStream, false);
           OnSampleLoaded(item, group, 1.0 / count);
-        }
-      } catch (Exception) {
-      } finally {
-        if (File.Exists(path)) {
-          File.Delete(path); // make sure we remove the temporary file
         }
       }
     }
@@ -197,13 +194,5 @@ namespace HeuristicLab.Optimizer {
       Properties.Settings.Default.ShowStartPage = showStartPageCheckBox.Checked;
       Properties.Settings.Default.Save();
     }
-
-    #region Helpers
-    private void WriteStreamToTempFile(Stream stream, string path) {
-      using (FileStream output = new FileStream(path, FileMode.Create, FileAccess.Write)) {
-        stream.CopyTo(output);
-      }
-    }
-    #endregion
   }
 }
