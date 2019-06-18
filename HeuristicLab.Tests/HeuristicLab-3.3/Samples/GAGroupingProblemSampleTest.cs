@@ -20,9 +20,9 @@
 #endregion
 
 using System.IO;
+using HEAL.Attic;
 using HeuristicLab.Algorithms.GeneticAlgorithm;
 using HeuristicLab.Encodings.LinearLinkageEncoding;
-using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.Problems.Programmable;
 using HeuristicLab.Selection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -31,6 +31,9 @@ namespace HeuristicLab.Tests {
   [TestClass]
   public class GAGroupingProblemSampleTest {
     private const string SampleFileName = "GA_Grouping";
+
+    private static readonly ProtoBufSerializer serializer = new ProtoBufSerializer();
+
     #region Code
     private const string ProblemCode = @"
 using System;
@@ -95,7 +98,7 @@ namespace HeuristicLab.Problems.Programmable {
     public void CreateGaGroupingProblemSampleTest() {
       var ga = CreateGaGroupingProblemSample();
       string path = Path.Combine(SamplesUtils.SamplesDirectory, SampleFileName + SamplesUtils.SampleFileExtension);
-      XmlGenerator.Serialize(ga, path);
+      serializer.Serialize(ga, path);
     }
 
     [TestMethod]

@@ -21,9 +21,9 @@
 
 using System.IO;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Algorithms.RAPGA;
 using HeuristicLab.Encodings.ScheduleEncoding.JobSequenceMatrix;
-using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.Problems.Scheduling;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -31,6 +31,7 @@ namespace HeuristicLab.Tests {
   [TestClass]
   public class RAPGASchedulingSampleTest {
     private const string SampleFileName = "RAPGA_JSSP";
+    private static readonly ProtoBufSerializer serializer = new ProtoBufSerializer();
 
     [TestMethod]
     [TestCategory("Samples.Create")]
@@ -38,7 +39,7 @@ namespace HeuristicLab.Tests {
     public void CreateRAPGASchedulingSampleTest() {
       var ss = CreateRAPGASchedulingSample();
       string path = Path.Combine(SamplesUtils.SamplesDirectory, SampleFileName + SamplesUtils.SampleFileExtension);
-      XmlGenerator.Serialize(ss, path);
+      serializer.Serialize(ss, path);
     }
 
     [TestMethod]

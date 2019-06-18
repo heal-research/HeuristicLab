@@ -21,10 +21,10 @@
 
 using System.IO;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Algorithms.LocalSearch;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
-using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.Problems.Knapsack;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -32,6 +32,7 @@ namespace HeuristicLab.Tests {
   [TestClass]
   public class LocalSearchKnapsackSampleTest {
     private const string SampleFileName = "LS_Knapsack";
+    private static readonly ProtoBufSerializer serializer = new ProtoBufSerializer();
 
     [TestMethod]
     [TestCategory("Samples.Create")]
@@ -39,7 +40,7 @@ namespace HeuristicLab.Tests {
     public void CreateLocalSearchKnapsackSampleTest() {
       var ls = CreateLocalSearchKnapsackSample();
       string path = Path.Combine(SamplesUtils.SamplesDirectory, SampleFileName + SamplesUtils.SampleFileExtension);
-      XmlGenerator.Serialize(ls, path);
+      serializer.Serialize(ls, path);
     }
     [TestMethod]
     [TestCategory("Samples.Execute")]

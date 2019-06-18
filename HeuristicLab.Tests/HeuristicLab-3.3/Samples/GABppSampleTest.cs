@@ -20,10 +20,9 @@
 #endregion
 
 using System.IO;
-using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Algorithms.GeneticAlgorithm;
 using HeuristicLab.Encodings.PermutationEncoding;
-using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.Problems.BinPacking3D;
 using HeuristicLab.Selection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -33,13 +32,15 @@ namespace HeuristicLab.Tests {
   public class GABppSampleTest {
     private const string SampleFileName = "GA_BPP";
 
+    private static readonly ProtoBufSerializer serializer = new ProtoBufSerializer();
+
     [TestMethod]
     [TestCategory("Samples.Create")]
     [TestProperty("Time", "medium")]
     public void CreateGaBppSampleTest() {
       var ga = CreateGaBppSample();
       string path = Path.Combine(SamplesUtils.SamplesDirectory, SampleFileName + SamplesUtils.SampleFileExtension);
-      XmlGenerator.Serialize(ga, path);
+      serializer.Serialize(ga, path);
     }
 
     [TestMethod]

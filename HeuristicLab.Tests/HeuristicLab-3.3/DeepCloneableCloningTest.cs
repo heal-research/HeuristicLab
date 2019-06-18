@@ -22,17 +22,19 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.PluginInfrastructure;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HeuristicLab.Tests {
   [TestClass]
   public class DeepCloneableCloningTest {
+    private static readonly ProtoBufSerializer serializer = new ProtoBufSerializer();
+
     private TestContext testContextInstance;
     public TestContext TestContext {
       get { return testContextInstance; }
@@ -65,7 +67,7 @@ namespace HeuristicLab.Tests {
     [TestCategory("Essential")]
     [TestProperty("Time", "long")]
     public void TestCloningFinishedExperiment() {
-      Experiment experiment = (Experiment)XmlParser.Deserialize(@"Test Resources\SamplesExperimentFinished.hl");
+      Experiment experiment = (Experiment)serializer.Deserialize(@"Test Resources\SamplesExperimentFinished.hl");
 
       Experiment clone = (Experiment)experiment.Clone(new Cloner());
       var intersections = CheckTotalInequality(experiment, clone).Where(x => x.GetType().FullName.StartsWith("HeuristicLab"));

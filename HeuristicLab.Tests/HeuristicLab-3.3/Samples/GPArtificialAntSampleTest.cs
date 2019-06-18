@@ -21,9 +21,9 @@
 
 using System.IO;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Algorithms.GeneticAlgorithm;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.Problems.GeneticProgramming.ArtificialAnt;
 using HeuristicLab.Selection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -33,13 +33,15 @@ namespace HeuristicLab.Tests {
   public class GPArtificialAntSampleTest {
     private const string SampleFileName = "SGP_SantaFe";
 
+    private static readonly ProtoBufSerializer serializer = new ProtoBufSerializer();
+
     [TestMethod]
     [TestCategory("Samples.Create")]
     [TestProperty("Time", "medium")]
     public void CreateGpArtificialAntSampleTest() {
       var ga = CreateGpArtificialAntSample();
       string path = Path.Combine(SamplesUtils.SamplesDirectory, SampleFileName + SamplesUtils.SampleFileExtension);
-      XmlGenerator.Serialize(ga, path);
+      serializer.Serialize(ga, path);
     }
 
     [TestMethod]

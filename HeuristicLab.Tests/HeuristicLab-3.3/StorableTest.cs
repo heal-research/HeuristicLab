@@ -26,7 +26,6 @@ using System.Reflection;
 using System.Text;
 using HEAL.Attic;
 using HeuristicLab.Common;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

@@ -275,7 +275,6 @@ namespace HeuristicLab.Persistence.Attic.Tests {
 
       for (int i = 0; i < REPS; i++) {
         var original = XmlParser.Deserialize(fileName);
-        byte[] buf;
         System.GC.Collect();
         var collection0 = System.GC.CollectionCount(0);
         var collection1 = System.GC.CollectionCount(1);
