@@ -154,9 +154,14 @@ namespace HeuristicLab.Core.Views {
       string[] items = Directory.GetFiles(ItemsPath);
       foreach (string filename in items) {
         try {
-          T item = (T)ContentManager.Load(filename);
+          T item = null;
+          if (HeuristicLab.Persistence.Default.Xml.XmlParser.CanOpen(filename)) {
+            item = HeuristicLab.Persistence.Default.Xml.XmlParser.Deserialize<T>(filename);
+          } else {
+            item = (T)new ProtoBufSerializer().Deserialize(filename);
+          }
           OnItemLoaded(item, progressBar.Maximum / items.Length);
-        } catch(Exception) {
+        } catch (Exception) {
           // ignore if loading a clipboad item fails.
         }
       }
