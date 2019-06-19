@@ -334,7 +334,7 @@ namespace HeuristicLab.Persistence.Attic.Tests {
       var path = SamplesUtils.SamplesDirectory;
       var serializer = new ProtoBufSerializer();
       foreach (var fileName in Directory.EnumerateFiles(path, "*.hl")) {
-        var original = XmlParser.Deserialize(fileName);
+        var original = serializer.Deserialize(fileName);
         var ok = true;
         foreach (var t in original.GetObjectGraphObjects().Select(o => o.GetType())) {
           if (
@@ -369,7 +369,7 @@ namespace HeuristicLab.Persistence.Attic.Tests {
       var path = SamplesUtils.SamplesDirectory;
       var serializer = new ProtoBufSerializer();
       foreach (var fileName in Directory.EnumerateFiles(path, "*.hl")) {
-        var original = XmlParser.Deserialize(fileName);
+        var original = serializer.Deserialize(fileName);
 
         var exec = original as IExecutable;
         if (exec != null) {
