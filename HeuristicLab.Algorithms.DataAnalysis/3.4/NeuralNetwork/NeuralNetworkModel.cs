@@ -146,7 +146,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       if (classificationProblemData != null)
         return IsProblemDataCompatible(classificationProblemData, out errorMessage);
 
-      throw new ArgumentException("The problem data is not a regression nor a classification problem data. Instead a " + problemData.GetType().GetPrettyName() + " was provided.", "problemData");
+      throw new ArgumentException("The problem data is not compatible with this neural network. Instead a " + problemData.GetType().GetPrettyName() + " was provided.", "problemData");
     }
 
     public IRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData) {

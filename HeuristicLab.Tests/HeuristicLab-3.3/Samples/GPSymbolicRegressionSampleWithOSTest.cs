@@ -23,9 +23,9 @@
 using System;
 using System.IO;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
 using HeuristicLab.Problems.DataAnalysis.Symbolic.Regression;
@@ -39,13 +39,15 @@ namespace HeuristicLab.Tests {
     private const string SampleFileName = "OSGP_SymReg";
     private const int seed = 12345;
 
+    private static readonly ProtoBufSerializer serializer = new ProtoBufSerializer();
+
     [TestMethod]
     [TestCategory("Samples.Create")]
     [TestProperty("Time", "medium")]
     public void CreateGPSymbolicRegressionSampleWithOSTest() {
       var osga = CreateGpSymbolicRegressionSample();
       string path = Path.Combine(SamplesUtils.SamplesDirectory, SampleFileName + SamplesUtils.SampleFileExtension);
-      XmlGenerator.Serialize(osga, path);
+      serializer.Serialize(osga, path);
     }
     [TestMethod]
     [TestCategory("Samples.Execute")]
@@ -66,12 +68,12 @@ namespace HeuristicLab.Tests {
         // We tracked down the ConstantOptimizationEvaluator as a possible cause but have not
         // been able to identify the real cause. Presumably, execution on a Xeon and a Core i7 processor 
         // leads to different results. 
-        Assert.AreEqual(0.90811178793448177, SamplesUtils.GetDoubleResult(osga, "BestQuality"), 1E-8, Environment.NewLine + "Best Quality differs.");
-        Assert.AreEqual(0.87264498853305739, SamplesUtils.GetDoubleResult(osga, "CurrentAverageQuality"), 1E-8, Environment.NewLine + "Current Average Quality differs.");
-        Assert.AreEqual(0.75425658608938817, SamplesUtils.GetDoubleResult(osga, "CurrentWorstQuality"), 1E-8, Environment.NewLine + "Current Worst Quality differs.");
-        Assert.AreEqual(8900, SamplesUtils.GetIntResult(osga, "EvaluatedSolutions"), Environment.NewLine + "Evaluated Solutions differ.");
-        Assert.AreEqual(0.90811178793448177, bestTrainingSolution.TrainingRSquared, 1E-8, Environment.NewLine + "Best Training Solution Training R² differs.");
-        // Assert.AreEqual(0.896290231994223, bestTrainingSolution.TestRSquared, 1E-8, Environment.NewLine + "Best Training Solution Test R² differs.");
+        Assert.AreEqual(0.99174959007940156, SamplesUtils.GetDoubleResult(osga, "BestQuality"), 1E-8, Environment.NewLine + "Best Quality differs.");
+        Assert.AreEqual(0.9836083751914968, SamplesUtils.GetDoubleResult(osga, "CurrentAverageQuality"), 1E-8, Environment.NewLine + "Current Average Quality differs.");
+        Assert.AreEqual(0.98298394717065463, SamplesUtils.GetDoubleResult(osga, "CurrentWorstQuality"), 1E-8, Environment.NewLine + "Current Worst Quality differs.");
+        Assert.AreEqual(10100, SamplesUtils.GetIntResult(osga, "EvaluatedSolutions"), Environment.NewLine + "Evaluated Solutions differ.");
+        Assert.AreEqual(0.99174959007940156, bestTrainingSolution.TrainingRSquared, 1E-8, Environment.NewLine + "Best Training Solution Training R² differs.");
+        Assert.AreEqual(0.8962902319942232, bestTrainingSolution.TestRSquared, 1E-8, Environment.NewLine + "Best Training Solution Test R² differs.");
       } else {
         Assert.AreEqual(0.9971536312165723, SamplesUtils.GetDoubleResult(osga, "BestQuality"), 1E-8, Environment.NewLine + "Best Qualitiy differs.");
         Assert.AreEqual(0.98382832370544937, SamplesUtils.GetDoubleResult(osga, "CurrentAverageQuality"), 1E-8, Environment.NewLine + "Current Average Quality differs.");

@@ -20,10 +20,10 @@
 #endregion
 
 using System.IO;
+using HEAL.Attic;
 using HeuristicLab.Algorithms.EvolutionStrategy;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
-using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.Problems.TestFunctions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -32,13 +32,15 @@ namespace HeuristicLab.Tests {
   public class EsGriewankSampleTest {
     private const string SampleFileName = "ES_Griewank";
 
+    private static readonly ProtoBufSerializer serializer = new ProtoBufSerializer();
+
     [TestMethod]
     [TestCategory("Samples.Create")]
     [TestProperty("Time", "medium")]
     public void CreateEsGriewankSampleTest() {
       var es = CreateEsGriewankSample();
       string path = Path.Combine(SamplesUtils.SamplesDirectory, SampleFileName + SamplesUtils.SampleFileExtension);
-      XmlGenerator.Serialize(es, path);
+      serializer.Serialize(es, path);
     }
 
     [TestMethod]

@@ -236,7 +236,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       gbt.SetSeedRandomly = false;
       gbt.Iterations = 5000;
       gbt.MaxSize = 20;
-      gbt.CreateSolution = false;
+      gbt.ModelCreation = GradientBoostedTrees.ModelCreation.QualityOnly;
       #endregion
 
       gbt.Start();
@@ -264,7 +264,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       gbt.MaxSize = 20;
       gbt.Nu = 0.02;
       gbt.LossFunctionParameter.Value = gbt.LossFunctionParameter.ValidValues.First(l => l.ToString().Contains("Absolute"));
-      gbt.CreateSolution = false;
+      gbt.ModelCreation = GradientBoostedTrees.ModelCreation.QualityOnly;
       #endregion
 
       gbt.Start();
@@ -292,7 +292,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       gbt.MaxSize = 20;
       gbt.Nu = 0.005;
       gbt.LossFunctionParameter.Value = gbt.LossFunctionParameter.ValidValues.First(l => l.ToString().Contains("Relative"));
-      gbt.CreateSolution = false;
+      gbt.ModelCreation = GradientBoostedTrees.ModelCreation.QualityOnly;
       #endregion
 
       gbt.Start();

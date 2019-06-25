@@ -21,8 +21,8 @@
 
 using System.IO;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Algorithms.DataAnalysis;
-using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Problems.Instances.DataAnalysis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -32,13 +32,15 @@ namespace HeuristicLab.Tests {
   public class GaussianProcessRegressionSampleTest {
     private const string SampleFileName = "GPR";
 
+    private static readonly ProtoBufSerializer serializer = new ProtoBufSerializer();
+
     [TestMethod]
     [TestCategory("Samples.Create")]
     [TestProperty("Time", "medium")]
     public void CreateGaussianProcessRegressionSampleTest() {
       var gpr = CreateGaussianProcessRegressionSample();
       string path = Path.Combine(SamplesUtils.SamplesDirectory, SampleFileName + SamplesUtils.SampleFileExtension);
-      XmlGenerator.Serialize(gpr, path);
+      serializer.Serialize(gpr, path);
     }
 
     [TestMethod]
@@ -49,8 +51,8 @@ namespace HeuristicLab.Tests {
       gpr.SetSeedRandomly = false;
       gpr.Seed = 1618551877;
       SamplesUtils.RunAlgorithm(gpr);
-      Assert.AreEqual(-940.60591737780555, SamplesUtils.GetDoubleResult(gpr, "NegativeLogLikelihood"));
-      Assert.AreEqual(0.99560909041069334, SamplesUtils.GetDoubleResult(gpr, "Training R²"));
+      Assert.AreEqual(-940.70700288855619, SamplesUtils.GetDoubleResult(gpr, "NegativeLogLikelihood"));
+      Assert.AreEqual(0.99563390794061979, SamplesUtils.GetDoubleResult(gpr, "Training R²"));
     }
 
     private GaussianProcessRegression CreateGaussianProcessRegressionSample() {

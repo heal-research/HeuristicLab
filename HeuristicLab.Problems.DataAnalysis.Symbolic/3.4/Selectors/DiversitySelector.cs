@@ -99,8 +99,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     #region Events
     private void RegisterParameterEventHandlers() {
-      SelectorParameter.ValueChanged += new EventHandler(SelectorParameter_ValueChanged);
-      CopySelected.ValueChanged += new EventHandler(CopySelected_ValueChanged);
+      SelectorParameter.ValueChanged += SelectorParameter_ValueChanged;
+      CopySelectedParameter.ValueChanged += CopySelectedParameter_ValueChanged;
+      CopySelected.ValueChanged += CopySelected_ValueChanged;
+    }
+
+    private void CopySelectedParameter_ValueChanged(object sender, EventArgs e) {
+      if (CopySelected.Value != true) {
+        CopySelected.Value = true;
+      }
+      CopySelected.ValueChanged += CopySelected_ValueChanged;
     }
 
     private void SelectorParameter_ValueChanged(object sender, EventArgs e) {

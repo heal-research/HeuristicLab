@@ -100,6 +100,29 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     [ThreadStatic]
     private IDataset dataset;
 
+    private static readonly HashSet<byte> supportedOpCodes = new HashSet<byte>() {
+      (byte)OpCode.Constant,
+      (byte)OpCode.Variable,
+      (byte)OpCode.Add,
+      (byte)OpCode.Sub,
+      (byte)OpCode.Mul,
+      (byte)OpCode.Div,
+      (byte)OpCode.Exp,
+      (byte)OpCode.Log,
+      (byte)OpCode.Sin,
+      (byte)OpCode.Cos,
+      (byte)OpCode.Tan,
+      (byte)OpCode.Tanh,
+      (byte)OpCode.Power,
+      (byte)OpCode.Root,
+      (byte)OpCode.SquareRoot,
+      (byte)OpCode.Square,
+      (byte)OpCode.CubeRoot,
+      (byte)OpCode.Cube,
+      (byte)OpCode.Absolute,
+      (byte)OpCode.AnalyticQuotient
+    };
+
     public IEnumerable<double> GetSymbolicExpressionTreeValues(ISymbolicExpressionTree tree, IDataset dataset, IEnumerable<int> rows) {
       if (!rows.Any()) return Enumerable.Empty<double>();
 
@@ -107,7 +130,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         InitCache(dataset);
       }
 
-      var code = Compile(tree, OpCodes.MapSymbolToOpCode);
+      byte mapSupportedSymbols(ISymbolicExpressionTreeNode node) {        
+        var opCode = OpCodes.MapSymbolToOpCode(node);
+        if (supportedOpCodes.Contains(opCode)) return opCode;
+        else throw new NotSupportedException($"The native interpreter does not support {node.Symbol.Name}");
+      };
+      var code = Compile(tree, mapSupportedSymbols);
 
       var rowsArray = rows.ToArray();
       var result = new double[rowsArray.Length];

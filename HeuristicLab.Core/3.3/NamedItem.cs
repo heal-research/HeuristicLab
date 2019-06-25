@@ -29,7 +29,7 @@ namespace HeuristicLab.Core {
   public abstract class NamedItem : Item, INamedItem {
     [Storable]
     protected string name;
-    /// <inheritdoc/>
+    /// Gets and sets the name of the item.
     /// <remarks>Calls <see cref="OnNameChanging"/> and also <see cref="OnNameChanged"/> 
     /// eventually in the setter.</remarks>
     public string Name {
@@ -73,7 +73,7 @@ namespace HeuristicLab.Core {
       description = original.description;
     }
     /// <summary>
-    /// Initializes a new instance of <see cref="Variable"/> with name <c>Anonymous</c> 
+    /// Initializes a new instance of <see cref="NamedItem"/> with name and description <c>string.Empty</c> 
     /// and value <c>null</c>.
     /// </summary>
     protected NamedItem() {
@@ -81,16 +81,17 @@ namespace HeuristicLab.Core {
       description = string.Empty;
     }
     /// <summary>
-    /// Initializes a new instance of <see cref="Variable"/> with the specified <paramref name="name"/>
-    /// and the specified <paramref name="value"/>.
+    /// Initializes a new instance of <see cref="NamedItem"/> with the specified <paramref name="name"/>
     /// </summary>
     /// <param name="name">The name of the current instance.</param>
-    /// <param name="value">The value of the current instance.</param>
     protected NamedItem(string name) {
       if (name == null) this.name = string.Empty;
       else this.name = name;
       description = string.Empty;
     }
+    /// <summary>
+    /// Initializes a new instance of <see cref="NamedItem"/> with the specified <paramref name="name"/> and <paramref name="description"/>.
+    /// </summary>
     protected NamedItem(string name, string description) {
       if (name == null) this.name = string.Empty;
       else this.name = name;
@@ -99,7 +100,7 @@ namespace HeuristicLab.Core {
     }
 
     /// <summary>
-    /// Gets the string representation of the current instance in the format: <c>Name: [null|Value]</c>.
+    /// Gets the string representation of the current instance.
     /// </summary>
     /// <returns>The current instance as a string.</returns>
     public override string ToString() {
@@ -121,7 +122,7 @@ namespace HeuristicLab.Core {
     /// <summary>
     /// Fires a new <c>NameChanged</c> event.
     /// </summary>
-    /// <remarks>Calls <see cref="ItemBase.OnChanged"/>.</remarks>
+    /// <remarks>Calls <see cref="Item.OnToStringChanged"/>.</remarks>
     protected virtual void OnNameChanged() {
       var handler = NameChanged;
       if (handler != null) handler(this, EventArgs.Empty);
@@ -132,7 +133,6 @@ namespace HeuristicLab.Core {
     /// <summary>
     /// Fires a new <c>DescriptionChanged</c> event.
     /// </summary>
-    /// <remarks>Calls <see cref="ItemBase.OnChanged"/>.</remarks>
     protected virtual void OnDescriptionChanged() {
       var handler = DescriptionChanged;
       if (handler != null) handler(this, EventArgs.Empty);

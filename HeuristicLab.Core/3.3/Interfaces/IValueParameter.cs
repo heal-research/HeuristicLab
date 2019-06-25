@@ -26,8 +26,10 @@ namespace HeuristicLab.Core {
   [StorableType("e4920b59-6bf5-4c43-997c-7f5434cd98d2")]
   public interface IValueParameter : IParameter {
     IItem Value { get; set; }
+    bool ReadOnly { get; set; }
     bool GetsCollected { get; set; }
     event EventHandler ValueChanged;
+    event EventHandler ReadOnlyChanged;
     event EventHandler GetsCollectedChanged;
   }
 

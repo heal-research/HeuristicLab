@@ -220,7 +220,6 @@ namespace HeuristicLab.Core.Views {
     #region ListView Events
     protected virtual void itemsListView_SelectedIndexChanged(object sender, EventArgs e) {
       removeButton.Enabled = (Content != null) && !Content.IsReadOnly && !ReadOnly && itemsListView.SelectedItems.Count > 0;
-      AdjustListViewColumnSizes();
       if (showDetailsCheckBox.Checked) {
         if (itemsListView.SelectedItems.Count == 1) {
           T item = (T)itemsListView.SelectedItems[0].Tag;
@@ -326,6 +325,10 @@ namespace HeuristicLab.Core.Views {
         }
       }
     }
+    protected virtual void itemsListView_Layout(object sender, LayoutEventArgs e) {
+      if (itemsListView.Columns.Count == 1)
+        AdjustListViewColumnSizes();
+    }
     #endregion
 
     #region Button Events
@@ -422,7 +425,8 @@ namespace HeuristicLab.Core.Views {
         T item = (T)sender;
         foreach (ListViewItem listViewItem in GetListViewItemsForItem(item))
           UpdateListViewItemText(listViewItem);
-        AdjustListViewColumnSizes();
+        if (itemsListView.Columns.Count > 1)
+          AdjustListViewColumnSizes();
       }
     }
     #endregion
@@ -434,9 +438,14 @@ namespace HeuristicLab.Core.Views {
       itemsListView.Sorting = SortOrder.None;
     }
     protected virtual void AdjustListViewColumnSizes() {
-      if (itemsListView.Items.Count > 0) {
-        for (int i = 0; i < itemsListView.Columns.Count; i++)
-          itemsListView.Columns[i].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
+      if (itemsListView.Columns.Count == 1) {
+        if (itemsListView.Columns[0].Width != itemsListView.ClientSize.Width)
+          itemsListView.Columns[0].Width = itemsListView.ClientSize.Width;
+      } else {
+        if (itemsListView.Items.Count > 0) {
+          for (int i = 0; i < itemsListView.Columns.Count; i++)
+            itemsListView.Columns[i].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
+        }
       }
     }
     protected virtual void RebuildImageList() {

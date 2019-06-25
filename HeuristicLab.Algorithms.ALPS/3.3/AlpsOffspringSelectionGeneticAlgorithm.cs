@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Analysis;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
@@ -31,7 +32,6 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Random;
 using HeuristicLab.Selection;
@@ -506,9 +506,9 @@ namespace HeuristicLab.Algorithms.ALPS {
     protected override void OnProblemChanged() {
       base.OnProblemChanged();
       ParameterizeStochasticOperator(Problem.SolutionCreator);
-      ParameterizeStochasticOperatorForLayer(Problem.Evaluator);
       foreach (var @operator in Problem.Operators.OfType<IOperator>())
         ParameterizeStochasticOperator(@operator);
+      ParameterizeStochasticOperatorForLayer(Problem.Evaluator);
 
       ParameterizeIterationBasedOperators();
 
@@ -540,7 +540,6 @@ namespace HeuristicLab.Algorithms.ALPS {
     protected override void Problem_SolutionCreatorChanged(object sender, EventArgs e) {
       base.Problem_SolutionCreatorChanged(sender, e);
       ParameterizeStochasticOperator(Problem.SolutionCreator);
-      ParameterizeStochasticOperatorForLayer(Problem.Evaluator);
 
       Problem.Evaluator.QualityParameter.ActualNameChanged += Evaluator_QualityParameter_ActualNameChanged;
 
@@ -549,8 +548,7 @@ namespace HeuristicLab.Algorithms.ALPS {
     }
     protected override void Problem_EvaluatorChanged(object sender, EventArgs e) {
       base.Problem_EvaluatorChanged(sender, e);
-      foreach (var @operator in Problem.Operators.OfType<IOperator>())
-        ParameterizeStochasticOperator(@operator);
+      ParameterizeStochasticOperatorForLayer(Problem.Evaluator);
 
       UpdateAnalyzers();
 
@@ -560,6 +558,8 @@ namespace HeuristicLab.Algorithms.ALPS {
     }
     protected override void Problem_OperatorsChanged(object sender, EventArgs e) {
       base.Problem_OperatorsChanged(sender, e);
+      foreach (IOperator op in Problem.Operators.OfType<IOperator>()) ParameterizeStochasticOperator(op);
+      ParameterizeStochasticOperatorForLayer(Problem.Evaluator);
       ParameterizeIterationBasedOperators();
       UpdateCrossovers();
       UpdateMutators();

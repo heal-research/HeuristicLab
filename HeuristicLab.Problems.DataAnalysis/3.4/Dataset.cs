@@ -24,10 +24,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis {
   [Item("Dataset", "Represents a dataset containing data that should be analyzed.")]
@@ -114,6 +114,44 @@ namespace HeuristicLab.Problems.DataAnalysis {
       }
     }
 
+    public static Dataset FromRowData(IEnumerable<string> variableNames, double[,] data) {
+      var colWise = new List<IList>(data.GetLength(1));
+      for (var col = 0; col < data.GetLength(1); col++) {
+        var column = new List<double>(data.GetLength(0));
+        for (var row = 0; row < data.GetLength(0); row++) {
+          column.Add(data[row, col]);
+        }
+        colWise.Add(column);
+      }
+      return new Dataset(variableNames, colWise);
+    }
+
+    public static Dataset FromRowData(IEnumerable<string> variableNames, IEnumerable<IList> data) {
+      var vnames = variableNames.ToList();
+      var transposed = new List<IList>();
+      var iter = data.GetEnumerator();
+      if (!iter.MoveNext()) throw new ArgumentException("Data does not contain any rows", nameof(data));
+      for (var i = 0; i < iter.Current.Count; i++) {
+        if (i >= vnames.Count) throw new ArgumentException("There are more variables in data, than variable names.", nameof(variableNames));
+        if (iter.Current[i] == null) throw new ArgumentException("Null values are not supported.", nameof(data));
+        if (!IsAllowedType(iter.Current[i].GetType())) throw new ArgumentException("Data contains types that are not allowed.", nameof(data));
+        if (iter.Current[i] is double d)
+          transposed.Add(new List<double>() { d });
+        else if (iter.Current[i] is DateTime dt)
+          transposed.Add(new List<DateTime>() { dt });
+        else if (iter.Current[i] is string s)
+          transposed.Add(new List<string>() { s });
+        else throw new NotSupportedException(string.Format("Variable {0} has type {1}. This is not supported when converting from row-wise data.", vnames[i], iter.Current[i].GetType()));
+      }
+      if (transposed.Count < vnames.Count) throw new ArgumentException("There are less variables in data, than variable names.", nameof(variableNames));
+      while (iter.MoveNext()) {
+        for (var i = 0; i < iter.Current.Count; i++)
+          if (transposed[i].Add(iter.Current[i]) < 0)
+            throw new ArgumentException(string.Format("Variable {0} has invalid value ({1})", vnames[i], iter.Current[i]), nameof(data));
+      }
+      return new Dataset(vnames, transposed);
+    }
+
     public ModifiableDataset ToModifiable() {
       return new ModifiableDataset(variableNames, variableNames.Select(v => variableValues[v]), true);
     }
@@ -132,8 +170,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     #region Backwards compatible code, remove with 3.5
     private double[,] storableData;
-    //name alias used to suppport backwards compatibility
-    [Storable(Name = "data", AllowOneWay = true)]
+    //name alias used to support backwards compatibility
+    [Storable(OldName = "data")]
     private double[,] StorableData { set { storableData = value; } }
 
     [StorableHook(HookType.AfterDeserialization)]

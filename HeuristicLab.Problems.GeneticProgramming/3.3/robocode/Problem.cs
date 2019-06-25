@@ -19,13 +19,13 @@
  */
 #endregion
 
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 
 namespace HeuristicLab.Problems.GeneticProgramming.Robocode {
   [StorableType("0B4FE44B-3044-4531-8CA9-3C4D3BB3A4BB")]
@@ -85,6 +85,7 @@ namespace HeuristicLab.Problems.GeneticProgramming.Robocode {
       Parameters.Add(new ValueParameter<EnemyCollection>(EnemiesParameterName, "The enemies that should be battled.", robotList));
 
       Encoding = new SymbolicExpressionTreeEncoding(new Grammar(), 1000, 10);
+      Encoding.GrammarParameter.ReadOnly = true;
       Encoding.FunctionArguments = 0;
       Encoding.FunctionDefinitions = 0;
 
@@ -133,7 +134,7 @@ namespace HeuristicLab.Problems.GeneticProgramming.Robocode {
       RobocodePathParameter.Value.StringValue.ValueChanged += RobocodePathParameter_ValueChanged;
     }
 
-    void RobocodePathParameter_ValueChanged(object sender, System.EventArgs e) {
+    private void RobocodePathParameter_ValueChanged(object sender, System.EventArgs e) {
       EnemiesParameter.Value.RobocodePath = RobocodePathParameter.Value.Value;
     }
   }

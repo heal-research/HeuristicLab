@@ -20,9 +20,9 @@
 #endregion
 
 using System.IO;
+using HEAL.Attic;
 using HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
 using HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis;
 using HeuristicLab.Selection;
@@ -33,13 +33,15 @@ namespace HeuristicLab.Tests {
   public class GPTimeSeriesSampleTest {
     private const string SampleFileName = "OSGP_TimeSeries";
 
+    private static readonly ProtoBufSerializer serializer = new ProtoBufSerializer();
+
     [TestMethod]
     [TestCategory("Samples.Create")]
     [TestProperty("Time", "medium")]
     public void CreateGpTimeSeriesSampleTest() {
       var ga = CreateGpTimeSeriesSample();
       string path = Path.Combine(SamplesUtils.SamplesDirectory, SampleFileName + SamplesUtils.SampleFileExtension);
-      XmlGenerator.Serialize(ga, path);
+      serializer.Serialize(ga, path);
     }
     [TestMethod]
     [TestCategory("Samples.Execute")]

@@ -28,7 +28,7 @@ using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 
 namespace HeuristicLab.DataPreprocessing.Views {
-  [View("Histogram View")]
+  [View("Data Completeness Chart")]
   [Content(typeof(DataCompletenessChartContent), true)]
   public partial class DataCompletenessView : ItemView {
     //series colors

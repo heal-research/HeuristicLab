@@ -22,10 +22,10 @@
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
@@ -125,6 +125,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           stringBuilder.Append(FormatRecursively(node.GetSubtree(i)));
         }
         stringBuilder.Append(")");
+      } else if (symbol is Absolute) {
+        stringBuilder.Append($"abs({FormatRecursively(node.GetSubtree(0))})");
+      } else if (symbol is AnalyticQuotient) {
+        stringBuilder.Append($"({FormatRecursively(node.GetSubtree(0))}) / sqrt(1 + ({FormatRecursively(node.GetSubtree(1))}).^2)");
       } else if (symbol is And) {
         stringBuilder.Append("((");
         for (int i = 0; i < node.SubtreeCount; i++) {
@@ -178,6 +182,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         stringBuilder.Append("sqrt(");
         stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
         stringBuilder.Append(")");
+      } else if (symbol is Cube) {
+        stringBuilder.Append("(");
+        stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
+        stringBuilder.Append(").^3");
+      } else if (symbol is CubeRoot) {
+        stringBuilder.Append("NTHROOT(");
+        stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
+        stringBuilder.Append(", 3)");
       } else if (symbol is GreaterThan) {
         stringBuilder.Append("((");
         stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
@@ -251,6 +263,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         stringBuilder.Append(")");
       } else if (symbol is Tangent) {
         stringBuilder.Append("tan(");
+        stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
+        stringBuilder.Append(")");
+      } else if (symbol is HyperbolicTangent) {
+        stringBuilder.Append("tanh(");
         stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
         stringBuilder.Append(")");
       } else if (node.Symbol is AiryA) {

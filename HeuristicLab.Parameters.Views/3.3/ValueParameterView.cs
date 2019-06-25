@@ -73,6 +73,7 @@ namespace HeuristicLab.Parameters.Views {
     /// <remarks>Calls <see cref="ViewBase.RemoveItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void DeregisterContentEvents() {
       Content.GetsCollectedChanged -= new EventHandler(Content_GetsCollectedChanged);
+      Content.ReadOnlyChanged -= new EventHandler(Content_ReadOnlyChanged);
       Content.ValueChanged -= new EventHandler(Content_ValueChanged);
       base.DeregisterContentEvents();
     }
@@ -84,6 +85,7 @@ namespace HeuristicLab.Parameters.Views {
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
       Content.GetsCollectedChanged += new EventHandler(Content_GetsCollectedChanged);
+      Content.ReadOnlyChanged += new EventHandler(Content_ReadOnlyChanged);
       Content.ValueChanged += new EventHandler(Content_ValueChanged);
     }
 
@@ -102,8 +104,8 @@ namespace HeuristicLab.Parameters.Views {
 
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
-      setValueButton.Enabled = Content != null && !(Content is IFixedValueParameter) && !ReadOnly;
-      clearValueButton.Enabled = Content != null && Content.Value != null && !(Content is IFixedValueParameter) && !(Content is ValueParameter<T>) && !ReadOnly;
+      setValueButton.Enabled = Content != null && !Content.ReadOnly && !(Content is IFixedValueParameter) && !ReadOnly;
+      clearValueButton.Enabled = Content != null && !Content.ReadOnly && Content.Value != null && !(Content is IFixedValueParameter) && !(Content is ValueParameter<T>) && !ReadOnly;
       showInRunCheckBox.Enabled = Content != null && !ReadOnly;
     }
 
@@ -112,10 +114,18 @@ namespace HeuristicLab.Parameters.Views {
         Invoke(new EventHandler(Content_ValueChanged), sender, e);
       else {
         SetDataTypeTextBoxText();
-        setValueButton.Enabled = Content != null && !(Content is IFixedValueParameter) && !ReadOnly;
-        clearValueButton.Enabled = Content != null && Content.Value != null && !(Content is IFixedValueParameter<T>) && !(Content is ValueParameter<T>) && !ReadOnly;
+        setValueButton.Enabled = Content != null && !Content.ReadOnly && !(Content is IFixedValueParameter) && !ReadOnly;
+        clearValueButton.Enabled = Content != null && !Content.ReadOnly && Content.Value != null && !(Content is IFixedValueParameter<T>) && !(Content is ValueParameter<T>) && !ReadOnly;
         valueViewHost.ViewType = null;
         valueViewHost.Content = Content != null ? Content.Value : null;
+      }
+    }
+
+    protected virtual void Content_ReadOnlyChanged(object sender, EventArgs e) {
+      if (InvokeRequired)
+        Invoke(new EventHandler(Content_ReadOnlyChanged), sender, e);
+      else {
+        SetEnabledStateOfControls();
       }
     }
     protected virtual void Content_GetsCollectedChanged(object sender, EventArgs e) {
@@ -134,8 +144,7 @@ namespace HeuristicLab.Parameters.Views {
       if (typeSelectorDialog.ShowDialog(this) == DialogResult.OK) {
         try {
           Content.Value = (T)typeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType();
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
           ErrorHandling.ShowErrorDialog(this, ex);
         }
       }

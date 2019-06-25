@@ -20,9 +20,9 @@
 #endregion
 
 using System;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Attic;
 
 namespace HeuristicLab.Parameters {
   /// <summary>
@@ -30,7 +30,7 @@ namespace HeuristicLab.Parameters {
   /// </summary>
   [Item("FixedValueParameter", "A parameter whose value is defined in the parameter itself and cannot be set.")]
   [StorableType("7787B99D-5F32-4639-B47A-76CB4D204392")]
-  public class FixedValueParameter<T> : ValueParameter<T>, IFixedValueParameter<T> where T : class,IItem, new() {
+  public class FixedValueParameter<T> : ValueParameter<T>, IFixedValueParameter<T> where T : class, IItem, new() {
 
     public override T Value {
       get { return base.Value; }
@@ -45,13 +45,9 @@ namespace HeuristicLab.Parameters {
 
     public FixedValueParameter() : base() { }
     public FixedValueParameter(string name) : base(name) { }
-    public FixedValueParameter(string name, bool getsCollected) : base(name, getsCollected) { }
     public FixedValueParameter(string name, T value) : base(name, value) { }
-    public FixedValueParameter(string name, T value, bool getsCollected) : base(name, value, getsCollected) { }
     public FixedValueParameter(string name, string description) : base(name, description) { }
-    public FixedValueParameter(string name, string description, bool getsCollected) : base(name, description, getsCollected) { }
     public FixedValueParameter(string name, string description, T value) : base(name, description, value) { }
-    public FixedValueParameter(string name, string description, T value, bool getsCollected) : base(name, description, value, getsCollected) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new FixedValueParameter<T>(this, cloner);

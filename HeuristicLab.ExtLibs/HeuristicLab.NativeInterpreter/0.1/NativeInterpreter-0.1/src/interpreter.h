@@ -63,61 +63,66 @@ inline double evaluate(instruction *code, int len, int row) noexcept
                 }
             case OpCodes::Exp:
                 {
-                    in.value = std::exp(code[in.childIndex].value);
+                    in.value = hl_exp(code[in.childIndex].value);
                     break;
                 }
             case OpCodes::Log:
                 {
-                    in.value = std::log(code[in.childIndex].value);
+                    in.value = hl_log(code[in.childIndex].value);
                     break;
                 }
             case OpCodes::Sin:
                 {
-                    in.value = std::sin(code[in.childIndex].value);
+                    in.value = hl_sin(code[in.childIndex].value);
                     break;
                 }
             case OpCodes::Cos:
                 {
-                    in.value = std::cos(code[in.childIndex].value);
+                    in.value = hl_cos(code[in.childIndex].value);
                     break;
                 }
             case OpCodes::Tan:
                 {
-                    in.value = std::tan(code[in.childIndex].value);
+                    in.value = hl_tan(code[in.childIndex].value);
+                    break;
+                }
+            case OpCodes::Tanh:
+                {
+                    in.value = hl_tanh(code[in.childIndex].value);
                     break;
                 }
             case OpCodes::Power:
                 {
                     double x = code[in.childIndex].value;
-                    double y = std::round(code[in.childIndex + 1].value);
-                    in.value = std::pow(x, y);
+                    double y = hl_round(code[in.childIndex + 1].value);
+                    in.value = hl_pow(x, y);
                     break;
                 }
             case OpCodes::Root:
                 {
                     double x = code[in.childIndex].value;
-                    double y = std::round(code[in.childIndex + 1].value);
-                    in.value = std::pow(x, 1 / y);
+                    double y = hl_round(code[in.childIndex + 1].value);
+                    in.value = hl_pow(x, 1 / y);
                     break;
                 }
             case OpCodes::Sqrt:
                 {
-                    in.value = std::pow(code[in.childIndex].value, 1./2.);
+                    in.value = hl_pow(code[in.childIndex].value, 1./2.);
                     break;
                 }
             case OpCodes::Square:
                 {
-                    in.value = std::pow(code[in.childIndex].value, 2.);
+                    in.value = hl_pow(code[in.childIndex].value, 2.);
                     break;
                 }
             case OpCodes::CubeRoot:
                 {
-                    in.value = std::pow(code[in.childIndex].value, 1./3.);
+                    in.value = hl_cbrt(code[in.childIndex].value);
                     break;
                 }
             case OpCodes::Cube:
                 {
-                    in.value = std::pow(code[in.childIndex].value, 3.);
+                    in.value = hl_pow(code[in.childIndex].value, 3.);
                     break;
                 }
             case OpCodes::Absolute:
@@ -129,7 +134,7 @@ inline double evaluate(instruction *code, int len, int row) noexcept
                 {
                     double x = code[in.childIndex].value;
                     double y = code[in.childIndex + 1].value;
-                    in.value = x / std::sqrt(1 + y*y);
+                    in.value = x / hl_sqrt(1 + y*y);
                     break;
                 }
             default: in.value = NAN;
@@ -227,6 +232,11 @@ inline void evaluate(instruction* code, int len, int* __restrict rows, int rowIn
                     tan(in.buf, code[in.childIndex].buf);
                     break;
                 }
+            case OpCodes::Tanh:
+                {
+                    tanh(in.buf, code[in.childIndex].buf);
+                    break;
+                }
             case OpCodes::Log:
                 {
                     log(in.buf, code[in.childIndex].buf);
@@ -261,7 +271,7 @@ inline void evaluate(instruction* code, int len, int* __restrict rows, int rowIn
                 }
             case OpCodes::CubeRoot:
                 {
-                    pow(in.buf, code[in.childIndex].buf, 1./3.);
+                    cbrt(in.buf, code[in.childIndex].buf);
                     break;
                 }
             case OpCodes::Cube:

@@ -296,6 +296,11 @@
       <HintPath>..\bin\HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis-3.4.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="HeuristicLab.Problems.DataAnalysis.Symbolic.Views-3.4, Version=3.4.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\bin\HeuristicLab.Problems.DataAnalysis.Symbolic.Views-3.4.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="HeuristicLab.Problems.ExternalEvaluation-3.4, Version=3.4.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\bin\HeuristicLab.Problems.ExternalEvaluation-3.4.dll</HintPath>
@@ -581,10 +586,12 @@
     <Compile Include="HeuristicLab.IGraph\IGraphWrappersVectorTest.cs" />
     <Compile Include="HeuristicLab.Persistence-3.3\StorableAttributeTests.cs" />
     <Compile Include="HeuristicLab.Persistence-3.3\UseCases.cs" />
+    <Compile Include="HeuristicLab.Persistence.Attic\PersistenceConsistencyChecks.cs" />
     <Compile Include="HeuristicLab.Persistence.Attic\StorableAttributeTests.cs" />
     <Compile Include="HeuristicLab.Persistence.Attic\UseCases.cs" />
     <Compile Include="HeuristicLab.PluginInfraStructure-3.3\TypeExtensionsTest.cs" />
     <Compile Include="HeuristicLab.Problems.DataAnalysis-3.4\ClassificationVariableImpactCalculationTest.cs" />
+    <Compile Include="HeuristicLab.Problems.DataAnalysis-3.4\DatasetTest.cs" />
     <Compile Include="HeuristicLab.Problems.DataAnalysis-3.4\IntervalTest.cs" />
     <Compile Include="HeuristicLab.Problems.DataAnalysis-3.4\RegressionVariableImpactCalculationTest.cs" />
     <Compile Include="HeuristicLab.Problems.DataAnalysis-3.4\ThresholdCalculatorsTest.cs" />
