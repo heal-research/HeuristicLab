@@ -26,9 +26,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis.GradientBoostedTrees {
 
   /// <summary>
   /// Defines what part of the Model should be stored.
-  /// Quality - only the resulting Quality will be stored.
-  /// Parameter - only the parameters will be stored, the models can be calculated afterwards
-  /// Complete - the complete model will be stored (consider the amount of memory needed)
+  /// QualityOnly - no solution will be created.
+  /// SurrogateModel - only the parameters will be stored, the model is calculated during deserialization
+  /// Model - the complete model will be stored (consider the amount of memory needed)
   /// </summary>
   [StorableType("EE55C357-C4B3-4662-B40B-D1D06A851809")]
   public enum ModelCreation {
