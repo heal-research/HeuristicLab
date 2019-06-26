@@ -33,9 +33,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   [Item("Gradient boosted trees model", "")]
   // this is essentially a collection of weighted regression models
   public sealed class GradientBoostedTreesModel : RegressionModel, IGradientBoostedTreesModel {
-    // BackwardsCompatibility3.4 for allowing deserialization & serialization of old models
-    #region Backwards compatible code, remove with 3.5
-
     [Storable(Name = "models")]
     private IList<IRegressionModel> __persistedModels {
       set {
@@ -52,7 +49,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
       get { return weights; }
     }
-    #endregion
 
     public override IEnumerable<string> VariablesUsedForPrediction {
       get { return models.SelectMany(x => x.VariablesUsedForPrediction).Distinct().OrderBy(x => x); }
