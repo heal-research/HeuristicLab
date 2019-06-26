@@ -268,7 +268,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         IRegressionModel model = state.GetModel();
 
         if (ModelCreation == ModelCreation.SurrogateModel) {
-          model = new GradientBoostedTreesModelSurrogate(problemData, (uint)Seed, lossFunction, Iterations, MaxSize, R, M, Nu, (GradientBoostedTreesModel)model);
+          model = new GradientBoostedTreesModelSurrogate((GradientBoostedTreesModel)model, problemData, (uint)Seed, lossFunction, Iterations, MaxSize, R, M, Nu);
         }
 
         // for logistic regression we produce a classification solution
