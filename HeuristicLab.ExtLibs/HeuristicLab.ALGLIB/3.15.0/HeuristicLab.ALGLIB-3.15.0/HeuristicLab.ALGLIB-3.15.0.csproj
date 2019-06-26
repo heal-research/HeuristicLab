@@ -82,6 +82,7 @@
     <None Include="Properties\AssemblyInfo.cs.frame" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="ALGLIB changes by HEAL.txt" />
     <Content Include="ALGLIB License-3.15.0.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
