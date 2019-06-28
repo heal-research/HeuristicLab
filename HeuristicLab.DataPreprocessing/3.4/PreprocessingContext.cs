@@ -30,7 +30,7 @@ using HeuristicLab.Problems.DataAnalysis;
 namespace HeuristicLab.DataPreprocessing {
   [Item("PreprocessingContext", "PreprocessingContext")]
   [StorableType("52D31B2B-7D48-482B-B875-5FCE0F8397A8")]
-  public class PreprocessingContext : NamedItem, IStorableContent {
+  public class PreprocessingContext : NamedItem {
     public string Filename { get; set; }
 
     [Storable]
