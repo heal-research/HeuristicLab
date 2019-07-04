@@ -142,6 +142,12 @@
     <Compile Include="OneFactorClassificationModelView.Designer.cs">
       <DependentUpon>OneFactorClassificationModelView.cs</DependentUpon>
     </Compile>
+    <Compile Include="LinearRegressionModelView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="LinearRegressionModelView.Designer.cs">
+      <DependentUpon>LinearRegressionModelView.cs</DependentUpon>
+    </Compile>
     <Compile Include="RandomForestModelView.cs">
       <SubType>UserControl</SubType>
     </Compile>
