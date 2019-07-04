@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using HeuristicLab.Common;
@@ -39,7 +40,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
 
     private readonly ISymbolicDataAnalysisSolutionImpactValuesCalculator impactCalculator;
 
-    private readonly IProgress progress = new Progress();
+    private readonly Progress progress = new Progress();
+    private CancellationTokenSource cancellationTokenSource;
 
     private enum TreeState { Valid, Invalid }
     private TreeState treeState;
@@ -151,14 +153,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       Content.ModelChanged += Content_Changed;
       Content.ProblemDataChanged += Content_Changed;
       treeChart.Repainted += treeChart_Repainted;
-      MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>().AddOperationProgressToView(grpSimplify, progress);
+      Progress.ShowOnControl(grpSimplify, progress);
+      progress.StopRequested += progress_StopRequested;
     }
     protected override void DeregisterContentEvents() {
       base.DeregisterContentEvents();
       Content.ModelChanged -= Content_Changed;
       Content.ProblemDataChanged -= Content_Changed;
       treeChart.Repainted -= treeChart_Repainted;
-      MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>().RemoveOperationProgressFromView(grpSimplify, false);
+      Progress.HideFromControl(grpSimplify, false);
+      progress.StopRequested -= progress_StopRequested;
     }
 
     private void Content_Changed(object sender, EventArgs e) {
@@ -177,26 +181,36 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
         PaintNodeImpacts();
     }
 
+    private void progress_StopRequested(object sender, EventArgs e) {
+      cancellationTokenSource.Cancel();
+    }
+
     private async void UpdateView() {
       if (Content == null || Content.Model == null || Content.ProblemData == null) return;
       var tree = Content.Model.SymbolicExpressionTree;
       treeChart.Tree = tree.Root.SubtreeCount > 1 ? new SymbolicExpressionTree(tree.Root) : new SymbolicExpressionTree(tree.Root.GetSubtree(0).GetSubtree(0));
 
       progress.Start("Calculate Impact and Replacement Values ...");
+      progress.CanBeStopped = true;
+      cancellationTokenSource = new CancellationTokenSource();
       var impactAndReplacementValues = await Task.Run(() => CalculateImpactAndReplacementValues(tree));
-      await Task.Delay(500); // wait for progressbar to finish animation
+      try {
+        await Task.Delay(500, cancellationTokenSource.Token); // wait for progressbar to finish animation
+      } catch (OperationCanceledException) { }
       var replacementValues = impactAndReplacementValues.ToDictionary(x => x.Key, x => x.Value.Item2);
       foreach (var pair in replacementValues.Where(pair => !(pair.Key is ConstantTreeNode))) {
         foldedNodes[pair.Key] = MakeConstantTreeNode(pair.Value);
       }
       nodeImpacts = impactAndReplacementValues.ToDictionary(x => x.Key, x => x.Value.Item1);
       progress.Finish();
+      progress.CanBeStopped = false;
       PaintNodeImpacts();
     }
 
     protected virtual Dictionary<ISymbolicExpressionTreeNode, Tuple<double, double>> CalculateImpactAndReplacementValues(ISymbolicExpressionTree tree) {
       var impactAndReplacementValues = new Dictionary<ISymbolicExpressionTreeNode, Tuple<double, double>>();
       foreach (var node in tree.Root.GetSubtree(0).GetSubtree(0).IterateNodesPrefix()) {
+        if (progress.ProgressState == ProgressState.StopRequested) continue;
         double impactValue, replacementValue, newQualityForImpactsCalculation;
         impactCalculator.CalculateImpactAndReplacementValues(Content.Model, node, Content.ProblemData, Content.ProblemData.TrainingIndices, out impactValue, out replacementValue, out newQualityForImpactsCalculation);
         double newProgressValue = progress.ProgressValue + 1.0 / (tree.Length - 2);

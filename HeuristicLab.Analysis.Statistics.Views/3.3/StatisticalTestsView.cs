@@ -355,8 +355,7 @@ namespace HeuristicLab.Analysis.Statistics.Views {
         return;
 
       if (data != null && data.All(x => x != null)) {
-        MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>()
-          .AddOperationProgressToView(this, "Calculating...");
+        Progress.Show(this, "Calculating...", ProgressMode.Indeterminate);
 
         string curItem = (string)groupCompComboBox.SelectedItem;
         Task.Factory.StartNew(() => CalculateValuesAsync(curItem));
@@ -368,7 +367,7 @@ namespace HeuristicLab.Analysis.Statistics.Views {
       CalculateNormalityTest();
       CalculatePairwiseTest(groupName);
 
-      MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>().RemoveOperationProgressFromView(this);
+      Progress.Hide(this);
     }
 
     private void CalculatePairwise(string groupName) {
@@ -376,14 +375,14 @@ namespace HeuristicLab.Analysis.Statistics.Views {
       if (!VerifyDataLength(false))
         return;
 
-      MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>().AddOperationProgressToView(pairwiseTestGroupBox, "Calculating...");
+      Progress.ShowOnControl(pairwiseTestGroupBox, "Calculating...", ProgressMode.Indeterminate);
       Task.Factory.StartNew(() => CalculatePairwiseAsync(groupName));
     }
 
     private void CalculatePairwiseAsync(string groupName) {
       CalculatePairwiseTest(groupName);
 
-      MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>().RemoveOperationProgressFromView(pairwiseTestGroupBox);
+      Progress.HideFromControl(pairwiseTestGroupBox);
     }
 
     private void CalculateAllGroupsTest() {

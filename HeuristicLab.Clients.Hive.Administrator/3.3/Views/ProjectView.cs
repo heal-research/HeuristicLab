@@ -125,7 +125,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       base.SetEnabledStateOfControls();
       bool enabled = Content != null && !Locked && !ReadOnly;
       nameTextBox.Enabled = enabled;
-      descriptionTextBox.Enabled = enabled;      
+      descriptionTextBox.Enabled = enabled;
       ownerComboBox.Enabled = enabled;
       createdTextBox.Enabled = enabled;
       startDateTimePicker.Enabled = enabled;
@@ -159,8 +159,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     private void AccessClient_Instance_Refreshing(object sender, EventArgs e) {
       if (InvokeRequired) Invoke((Action<object, EventArgs>)AccessClient_Instance_Refreshing, sender, e);
       else {
-        var mainForm = MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>();
-        mainForm.AddOperationProgressToView(this, "Refreshing ...");
+        Progress.Show(this, "Refreshing ...", ProgressMode.Indeterminate);
         SetEnabledStateOfControls();
       }
     }
@@ -168,8 +167,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     private void AccessClient_Instance_Refreshed(object sender, EventArgs e) {
       if (InvokeRequired) Invoke((Action<object, EventArgs>)AccessClient_Instance_Refreshed, sender, e);
       else {
-        var mainForm = MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>();
-        mainForm.RemoveOperationProgressFromView(this);
+        Progress.Hide(this);
         SetEnabledStateOfControls();
       }
     }

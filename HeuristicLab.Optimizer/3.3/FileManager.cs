@@ -77,11 +77,9 @@ namespace HeuristicLab.Optimizer {
         IView view = MainFormManager.MainForm.ShowContent(content);
         if (view == null)
           ErrorHandling.ShowErrorDialog("There is no view for the loaded item. It cannot be displayed.", new InvalidOperationException("No View Available"));
-      }
-      catch (Exception ex) {
+      } catch (Exception ex) {
         ErrorHandling.ShowErrorDialog((Control)MainFormManager.MainForm, "Cannot open file.", ex);
-      }
-      finally {
+      } finally {
         ((MainForm.WindowsForms.MainForm)MainFormManager.MainForm).ResetAppStartingCursor();
       }
     }
@@ -144,11 +142,9 @@ namespace HeuristicLab.Optimizer {
       try {
         if (error != null) throw error;
         MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().UpdateTitle();
-      }
-      catch (Exception ex) {
+      } catch (Exception ex) {
         ErrorHandling.ShowErrorDialog((Control)MainFormManager.MainForm, "Cannot save file.", ex);
-      }
-      finally {
+      } finally {
         SetSaveOperationProgressInContentViews(content, false);
         MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().ResetAppStartingCursor();
       }
@@ -160,9 +156,9 @@ namespace HeuristicLab.Optimizer {
       // removed the InvokeRequired check because of Mono
       mainForm.Invoke((Action)delegate {
         if (showProgress) {
-          mainForm.AddOperationProgressToContent(content, string.Format("Saving to file \"{0}\"...", Path.GetFileName(fileName ?? content.Filename)));
+          Progress.Show(content, string.Format("Saving to file \"{0}\"...", Path.GetFileName(fileName ?? content.Filename)));
         } else
-          mainForm.RemoveOperationProgressFromContent(content);
+          Progress.Hide(content);
       });
       #endregion
     }

@@ -179,15 +179,13 @@ namespace HeuristicLab.Scripting.Views {
     private bool progressViewCreated;
 
     private void AddProgressView(string progressMessage) {
-      var mainForm = MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>();
-      mainForm.AddOperationProgressToView(this, progressMessage);
+      Progress.Show(this, progressMessage, ProgressMode.Indeterminate);
       progressViewCreated = true;
     }
 
     private void RemoveProgressView() {
       if (!progressViewCreated) return;
-      var mainForm = MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>();
-      mainForm.RemoveOperationProgressFromView(this);
+      Progress.Hide(this);
       progressViewCreated = false;
     }
     #endregion
