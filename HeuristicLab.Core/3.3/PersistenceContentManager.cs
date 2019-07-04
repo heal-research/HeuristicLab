@@ -20,6 +20,7 @@
 #endregion
 
 using System.IO.Compression;
+using System.Threading;
 using HeuristicLab.Common;
 using HeuristicLab.Persistence.Default.Xml;
 
@@ -31,8 +32,8 @@ namespace HeuristicLab.Core {
       return XmlParser.Deserialize<IStorableContent>(filename);
     }
 
-    protected override void SaveContent(IStorableContent content, string filename, bool compressed) {
-      XmlGenerator.Serialize(content, filename, compressed ? CompressionLevel.Optimal : CompressionLevel.NoCompression);
+    protected override void SaveContent(IStorableContent content, string filename, bool compressed, CancellationToken cancellationToken) {
+      XmlGenerator.Serialize(content, filename, compressed ? CompressionLevel.Optimal : CompressionLevel.NoCompression, cancellationToken);
     }
   }
 }
