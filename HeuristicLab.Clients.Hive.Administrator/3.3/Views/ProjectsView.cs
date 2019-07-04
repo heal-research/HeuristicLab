@@ -55,6 +55,8 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     }
 
     private readonly object locker = new object();
+    private bool refreshingInternal = false;
+    private bool refreshingExternal = false;
 
     public new IItemList<Project> Content {
       get { return (IItemList<Project>)base.Content; }
@@ -69,19 +71,9 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
 
       HiveAdminClient.Instance.Refreshing += HiveAdminClient_Instance_Refreshing;
       HiveAdminClient.Instance.Refreshed += HiveAdminClient_Instance_Refreshed;
-      AccessClient.Instance.Refreshing += AccessClient_Instance_Refreshing;
-      AccessClient.Instance.Refreshed += AccessClient_Instance_Refreshed;
     }
 
     #region Overrides
-    protected override void OnClosing(FormClosingEventArgs e) {
-      AccessClient.Instance.Refreshed -= AccessClient_Instance_Refreshed;
-      AccessClient.Instance.Refreshing -= AccessClient_Instance_Refreshing;
-      HiveAdminClient.Instance.Refreshed -= HiveAdminClient_Instance_Refreshed;
-      HiveAdminClient.Instance.Refreshing -= HiveAdminClient_Instance_Refreshing;
-      base.OnClosing(e);
-    }
-
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
       Content.ItemsAdded += Content_ItemsAdded;
@@ -182,6 +174,11 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     private void HiveAdminClient_Instance_Refreshing(object sender, EventArgs e) {
       if (InvokeRequired) Invoke((Action<object, EventArgs>)HiveAdminClient_Instance_Refreshing, sender, e);
       else {
+        lock (locker) {
+          if (refreshingExternal) return;
+          if (!refreshingInternal) refreshingExternal = true;
+        }
+
         Progress.Show(this, "Refreshing ...", ProgressMode.Indeterminate);
         SetEnabledStateOfControls();
       }
@@ -190,22 +187,9 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     private void HiveAdminClient_Instance_Refreshed(object sender, EventArgs e) {
       if (InvokeRequired) Invoke((Action<object, EventArgs>)HiveAdminClient_Instance_Refreshed, sender, e);
       else {
-        Progress.Hide(this);
-        SetEnabledStateOfControls();
-      }
-    }
+        if (refreshingExternal) refreshingExternal = false;
+        Content = HiveAdminClient.Instance.Projects;
 
-    private void AccessClient_Instance_Refreshing(object sender, EventArgs e) {
-      if (InvokeRequired) Invoke((Action<object, EventArgs>)AccessClient_Instance_Refreshing, sender, e);
-      else {
-        Progress.Show(this, "Refreshing ...", ProgressMode.Indeterminate);
-        SetEnabledStateOfControls();
-      }
-    }
-
-    private void AccessClient_Instance_Refreshed(object sender, EventArgs e) {
-      if (InvokeRequired) Invoke((Action<object, EventArgs>)AccessClient_Instance_Refreshed, sender, e);
-      else {
         Progress.Hide(this);
         SetEnabledStateOfControls();
       }
@@ -214,6 +198,11 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     private async void ProjectsView_Load(object sender, EventArgs e) {
       await SecurityExceptionUtil.TryAsyncAndReportSecurityExceptions(
         action: () => UpdateProjects());
+    }
+
+    private void ProjectsView_Disposed(object sender, EventArgs e) {
+      HiveAdminClient.Instance.Refreshed -= HiveAdminClient_Instance_Refreshed;
+      HiveAdminClient.Instance.Refreshing -= HiveAdminClient_Instance_Refreshing;
     }
 
     private async void refreshButton_Click(object sender, EventArgs e) {
@@ -514,11 +503,17 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     }
 
     private void UpdateProjects() {
+      lock (locker) {
+        if (refreshingInternal || refreshingExternal) return;
+        refreshingInternal = true;
+      }
+
       try {
         HiveAdminClient.Instance.Refresh();
-        Content = HiveAdminClient.Instance.Projects;
       } catch (AnonymousUserException) {
         ShowHiveInformationDialog();
+      } finally {
+        refreshingInternal = false;
       }
     }
 

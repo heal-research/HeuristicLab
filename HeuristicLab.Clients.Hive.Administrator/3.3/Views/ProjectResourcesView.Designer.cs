@@ -170,7 +170,7 @@
       this.Controls.Add(this.refreshButton);
       this.Name = "ProjectResourcesView";
       this.Size = new System.Drawing.Size(830, 494);
-      this.Load += new System.EventHandler(this.ProjectResourcesView_Load);
+      this.Disposed += new System.EventHandler(this.ProjectResourcesView_Disposed);
       this.splitContainer.Panel1.ResumeLayout(false);
       this.splitContainer.Panel2.ResumeLayout(false);
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();

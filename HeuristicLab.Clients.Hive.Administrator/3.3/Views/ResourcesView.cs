@@ -53,7 +53,6 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     private readonly Color grayTextColor = SystemColors.GrayText;
 
 
-
     private TreeNode ungroupedGroupNode;
 
     private Resource selectedResource = null;
@@ -63,6 +62,8 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     }
 
     private readonly object locker = new object();
+    private bool refreshingInternal = false;
+    private bool refreshingExternal = false;
 
     public new IItemList<Resource> Content {
       get { return (IItemList<Resource>)base.Content; }
@@ -77,19 +78,9 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
 
       HiveAdminClient.Instance.Refreshing += HiveAdminClient_Instance_Refreshing;
       HiveAdminClient.Instance.Refreshed += HiveAdminClient_Instance_Refreshed;
-      AccessClient.Instance.Refreshing += AccessClient_Instance_Refreshing;
-      AccessClient.Instance.Refreshed += AccessClient_Instance_Refreshed;
     }
 
     #region Overrides
-    protected override void OnClosing(FormClosingEventArgs e) {
-      AccessClient.Instance.Refreshed -= AccessClient_Instance_Refreshed;
-      AccessClient.Instance.Refreshing -= AccessClient_Instance_Refreshing;
-      HiveAdminClient.Instance.Refreshed -= HiveAdminClient_Instance_Refreshed;
-      HiveAdminClient.Instance.Refreshing -= HiveAdminClient_Instance_Refreshing;
-      base.OnClosing(e);
-    }
-
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
       Content.ItemsAdded += Content_ItemsAdded;
@@ -184,6 +175,11 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     private void HiveAdminClient_Instance_Refreshing(object sender, EventArgs e) {
       if (InvokeRequired) Invoke((Action<object, EventArgs>)HiveAdminClient_Instance_Refreshing, sender, e);
       else {
+        lock (locker) {
+          if (refreshingExternal) return;
+          if (!refreshingInternal) refreshingExternal = true;
+        }
+
         Progress.Show(this, "Refreshing ...", ProgressMode.Indeterminate);
         SetEnabledStateOfControls();
       }
@@ -192,30 +188,21 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     private void HiveAdminClient_Instance_Refreshed(object sender, EventArgs e) {
       if (InvokeRequired) Invoke((Action<object, EventArgs>)HiveAdminClient_Instance_Refreshed, sender, e);
       else {
-        Progress.Hide(this);
-        SetEnabledStateOfControls();
-      }
-    }
+        if (refreshingExternal) refreshingExternal = false;
+        Content = HiveAdminClient.Instance.Resources;
 
-    private void AccessClient_Instance_Refreshing(object sender, EventArgs e) {
-      if (InvokeRequired) Invoke((Action<object, EventArgs>)AccessClient_Instance_Refreshing, sender, e);
-      else {
-        Progress.Show(this, "Refreshing ...", ProgressMode.Indeterminate);
-        SetEnabledStateOfControls();
-      }
-    }
-
-    private void AccessClient_Instance_Refreshed(object sender, EventArgs e) {
-      if (InvokeRequired) Invoke((Action<object, EventArgs>)AccessClient_Instance_Refreshed, sender, e);
-      else {
         Progress.Hide(this);
         SetEnabledStateOfControls();
       }
     }
 
     private async void ResourcesView_Load(object sender, EventArgs e) {
-      await SecurityExceptionUtil.TryAsyncAndReportSecurityExceptions(
-        action: () => UpdateResources());
+      await SecurityExceptionUtil.TryAsyncAndReportSecurityExceptions(() => UpdateResources());
+    }
+
+    private void ResourcesView_Disposed(object sender, EventArgs e) {
+      HiveAdminClient.Instance.Refreshed -= HiveAdminClient_Instance_Refreshed;
+      HiveAdminClient.Instance.Refreshing -= HiveAdminClient_Instance_Refreshing;
     }
 
     private async void btnRefresh_Click(object sender, EventArgs e) {
@@ -549,11 +536,17 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     }
 
     private void UpdateResources() {
+      lock (locker) {
+        if (refreshingInternal || refreshingExternal) return;
+        refreshingInternal = true;
+      }
+
       try {
         HiveAdminClient.Instance.Refresh();
-        Content = HiveAdminClient.Instance.Resources;
       } catch (AnonymousUserException) {
         ShowHiveInformationDialog();
+      } finally {
+        refreshingInternal = false;
       }
     }
 
