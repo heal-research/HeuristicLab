@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
@@ -43,7 +44,13 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public new IClassificationProblemData ProblemData {
       get { return (IClassificationProblemData)base.ProblemData; }
-      set { base.ProblemData = value; }
+      set {
+        if (value == null) throw new ArgumentNullException("The problemData must not be null.");
+        string errorMessage = string.Empty;
+        if (!Model.IsProblemDataCompatible(value, out errorMessage)) throw new ArgumentException(errorMessage);
+
+        base.ProblemData = value;
+      }
     }
 
     #region Results

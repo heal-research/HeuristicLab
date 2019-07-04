@@ -66,6 +66,34 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public abstract IEnumerable<double> GetEstimatedValues(IDataset dataset, IEnumerable<int> rows);
     public abstract IRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData);
 
+    public virtual bool IsProblemDataCompatible(IRegressionProblemData problemData, out string errorMessage) {
+      return IsProblemDataCompatible(this, problemData, out errorMessage);
+    }
+
+    public override bool IsProblemDataCompatible(IDataAnalysisProblemData problemData, out string errorMessage) {
+      if (problemData == null) throw new ArgumentNullException("problemData", "The provided problemData is null.");
+      var regressionProblemData = problemData as IRegressionProblemData;
+      if (regressionProblemData == null)
+        throw new ArgumentException("The problem data is not compatible with this regression model. Instead a " + problemData.GetType().GetPrettyName() + " was provided.", "problemData");
+      return IsProblemDataCompatible(regressionProblemData, out errorMessage);
+    }
+
+    public static bool IsProblemDataCompatible(IRegressionModel model, IRegressionProblemData problemData, out string errorMessage) {
+      if (model == null) throw new ArgumentNullException("model", "The provided model is null.");
+      if (problemData == null) throw new ArgumentNullException("problemData", "The provided problemData is null.");
+      errorMessage = string.Empty;
+
+      if (model.TargetVariable != problemData.TargetVariable)
+        errorMessage = string.Format("The target variable of the model {0} does not match the target variable of the problemData {1}.", model.TargetVariable, problemData.TargetVariable);
+
+      var evaluationErrorMessage = string.Empty;
+      var datasetCompatible = model.IsDatasetCompatible(problemData.Dataset, out evaluationErrorMessage);
+      if (!datasetCompatible)
+        errorMessage += evaluationErrorMessage;
+
+      return string.IsNullOrEmpty(errorMessage);
+    }
+
     #region events
     public event EventHandler TargetVariableChanged;
     private void OnTargetVariableChanged(object sender, EventArgs args) {

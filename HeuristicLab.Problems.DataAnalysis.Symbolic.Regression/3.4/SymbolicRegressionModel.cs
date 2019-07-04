@@ -82,6 +82,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       Scale(problemData, problemData.TargetVariable);
     }
 
+    public virtual bool IsProblemDataCompatible(IRegressionProblemData problemData, out string errorMessage) {
+      return RegressionModel.IsProblemDataCompatible(this, problemData, out errorMessage);
+    }
+
+    public override bool IsProblemDataCompatible(IDataAnalysisProblemData problemData, out string errorMessage) {
+      if (problemData == null) throw new ArgumentNullException("problemData", "The provided problemData is null.");
+      var regressionProblemData = problemData as IRegressionProblemData;
+      if (regressionProblemData == null)
+        throw new ArgumentException("The problem data is not compatible with this symbolic regression model. Instead a " + problemData.GetType().GetPrettyName() + " was provided.", "problemData");
+      return IsProblemDataCompatible(regressionProblemData, out errorMessage);
+    }
+
     #region events
     public event EventHandler TargetVariableChanged;
     private void OnTargetVariableChanged(object sender, EventArgs args) {

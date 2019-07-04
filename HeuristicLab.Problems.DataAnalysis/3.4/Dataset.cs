@@ -166,6 +166,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
         variableNames = new List<string>(value);
       }
     }
+
+    public bool ContainsVariable(string variableName) {
+      return variableValues.ContainsKey(variableName);
+    }
     public IEnumerable<string> DoubleVariables {
       get { return variableValues.Where(p => p.Value is IList<double>).Select(p => p.Key); }
     }
