@@ -10,7 +10,7 @@
 
 - Visual Studio
 
-    `cmake -G "Microsoft Visual Studio 15 2017 [arch]" <path-to-repository>`. Leave `arch` empty for x86 or `Win64` for x64. 
+    `cmake -G "Visual Studio 15 2017 [arch]" <path-to-repository>`. Leave `arch` empty for x86 or `Win64` for x64. 
     
     `cmake --build . --config Release`
 

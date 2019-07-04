@@ -103,6 +103,8 @@ namespace HeuristicLab.Tests {
       var power = grammar.Symbols.OfType<Power>().Single();
       var squareroot = grammar.Symbols.OfType<SquareRoot>().Single();
       var root = grammar.Symbols.OfType<Root>().Single();
+      var cube = grammar.Symbols.OfType<Cube>().Single();
+      var cuberoot = grammar.Symbols.OfType<CubeRoot>().Single();
       var log = grammar.Symbols.OfType<Logarithm>().Single();
       var exp = grammar.Symbols.OfType<Exponential>().Single();
       var sine = grammar.Symbols.OfType<Sine>().Single();
@@ -129,6 +131,8 @@ namespace HeuristicLab.Tests {
         grammar.RemoveAllowedChildSymbol(squareroot, allowed, 0);
       grammar.AddAllowedChildSymbol(squareroot, variable);
 
+      cube.Enabled = false;
+      cuberoot.Enabled = false;
       root.Enabled = false;
 
       log.Enabled = true;

@@ -40,6 +40,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private const string EvaluatedSolutionsParameterName = "EvaluatedSolutions";
 
     #region method info for the commonly called functions
+    private static readonly MethodInfo Abs = typeof(Math).GetMethod("Abs", new[] { typeof(double) });
     private static readonly MethodInfo Sin = typeof(Math).GetMethod("Sin", new[] { typeof(double) });
     private static readonly MethodInfo Cos = typeof(Math).GetMethod("Cos", new[] { typeof(double) });
     private static readonly MethodInfo Tan = typeof(Math).GetMethod("Tan", new[] { typeof(double) });
@@ -206,6 +207,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             }
             return Expression.Divide(result, Expression.Constant((double)node.SubtreeCount));
           }
+        case OpCodes.Absolute: {
+            var arg = MakeExpr(node.GetSubtree(0), variableIndices, row, columns);
+            return Expression.Call(Abs, arg);
+          }
         case OpCodes.Cos: {
             var arg = MakeExpr(node.GetSubtree(0), variableIndices, row, columns);
             return Expression.Call(Cos, arg);
@@ -222,6 +227,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             var arg = MakeExpr(node.GetSubtree(0), variableIndices, row, columns);
             return Expression.Power(arg, Expression.Constant(2.0));
           }
+        case OpCodes.Cube: {
+            var arg = MakeExpr(node.GetSubtree(0), variableIndices, row, columns);
+            return Expression.Power(arg, Expression.Constant(3.0));
+          }
         case OpCodes.Power: {
             var arg = MakeExpr(node.GetSubtree(0), variableIndices, row, columns);
             var power = MakeExpr(node.GetSubtree(1), variableIndices, row, columns);
@@ -230,6 +239,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         case OpCodes.SquareRoot: {
             var arg = MakeExpr(node.GetSubtree(0), variableIndices, row, columns);
             return Expression.Call(Sqrt, arg);
+          }
+        case OpCodes.CubeRoot: {
+            var arg = MakeExpr(node.GetSubtree(0), variableIndices, row, columns);
+            return Expression.Power(arg, Expression.Constant(1.0 / 3.0));
           }
         case OpCodes.Root: {
             var arg = MakeExpr(node.GetSubtree(0), variableIndices, row, columns);
@@ -492,6 +505,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
                 Expression.Assign(result, Expression.Constant(double.NaN)),
                 Expression.Assign(result, Expression.Call(Bessel, arg))),
               result);
+          }
+        case OpCodes.AnalyticQuotient: {
+            var x1 = MakeExpr(node.GetSubtree(0), variableIndices, row, columns);
+            var x2 = MakeExpr(node.GetSubtree(1), variableIndices, row, columns);
+            return Expression.Divide(x1, 
+              Expression.Call(Sqrt, 
+              Expression.Add(
+                Expression.Constant(1.0),
+                Expression.Multiply(x2, x2))));
           }
         case OpCodes.IfThenElse: {
             var test = MakeExpr(node.GetSubtree(0), variableIndices, row, columns);

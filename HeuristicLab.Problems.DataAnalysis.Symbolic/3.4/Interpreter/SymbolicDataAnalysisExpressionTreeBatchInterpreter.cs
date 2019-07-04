@@ -110,7 +110,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             }
 
           case OpCodes.Root: {
-              Root(instr.buf, code[c].buf);
+              Load(instr.buf, code[c].buf);
+              Root(instr.buf, code[c + 1].buf);
               break;
             }
 
@@ -119,8 +120,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
               break;
             }
 
+          case OpCodes.Cube: {
+              Cube(instr.buf, code[c].buf);
+              break;
+            }
+          case OpCodes.CubeRoot: {
+              CubeRoot(instr.buf, code[c].buf);
+              break;
+            }
+
           case OpCodes.Power: {
-              Pow(instr.buf, code[c].buf);
+              Load(instr.buf, code[c].buf);
+              Pow(instr.buf, code[c + 1].buf);
               break;
             }
 
@@ -148,6 +159,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
               Tan(instr.buf, code[c].buf);
               break;
             }
+
+          case OpCodes.Absolute: {
+              Absolute(instr.buf, code[c].buf);
+              break;
+            }
+
+          case OpCodes.AnalyticQuotient: {
+              Load(instr.buf, code[c].buf);
+              AnalyticQuotient(instr.buf, code[c + 1].buf);
+              break;
+            }
         }
       }
     }
@@ -171,6 +193,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var code = Compile(tree, dataset, OpCodes.MapSymbolToOpCode);
       var remainingRows = rows.Length % BATCHSIZE;
       var roundedTotal = rows.Length - remainingRows;
+
+      // TODO: evaluated solutions are not counted
 
       var result = new double[rows.Length];
 
