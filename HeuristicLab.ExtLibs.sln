@@ -66,9 +66,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EPPlus-4.0.3", "HeuristicLa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.EPPlus-4.0.3", "HeuristicLab.ExtLibs\HeuristicLab.EPPlus\4.0.3\HeuristicLab.EPPlus-4.0.3\HeuristicLab.EPPlus-4.0.3.csproj", "{675A6EE4-DE7C-413E-8BEF-EB21E0384C87}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimSharp-3.0.11", "HeuristicLab.ExtLibs\HeuristicLab.SimSharp\3.0.11\SimSharp-3.0.11\SimSharp-3.0.11.csproj", "{9FE9C740-7859-4D01-AD07-7D4E15A6320B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimSharp-3.1.1", "HeuristicLab.ExtLibs\HeuristicLab.SimSharp\3.1.1\SimSharp-3.1.1\SimSharp-3.1.1.csproj", "{9FE9C740-7859-4D01-AD07-7D4E15A6320B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.SimSharp-3.0.11", "HeuristicLab.ExtLibs\HeuristicLab.SimSharp\3.0.11\HeuristicLab.SimSharp-3.0.11\HeuristicLab.SimSharp-3.0.11.csproj", "{5C93CAF7-AE6A-4540-95B2-5DA6761A2677}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.SimSharp-3.1.1", "HeuristicLab.ExtLibs\HeuristicLab.SimSharp\3.1.1\HeuristicLab.SimSharp-3.1.1\HeuristicLab.SimSharp-3.1.1.csproj", "{5C93CAF7-AE6A-4540-95B2-5DA6761A2677}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.IGraph-0.8.0-pre", "HeuristicLab.ExtLibs\HeuristicLab.Igraph\0.8.0-pre\HeuristicLab.Igraph-0.8.0-pre\HeuristicLab.IGraph-0.8.0-pre.csproj", "{088D34F2-32EA-43FF-BAA8-22428D5B66BE}"
 EndProject
