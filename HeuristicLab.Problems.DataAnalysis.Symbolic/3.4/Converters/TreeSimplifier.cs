@@ -1120,6 +1120,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       } else if (IsConstant(b) && ((ConstantTreeNode)b).Value.IsAlmost(1.0)) {
         // $ * 1.0 => $
         return a;
+      } else if (IsConstant(b) && ((ConstantTreeNode)b).Value.IsAlmost(0.0)) {
+        return MakeConstant(0);
       } else if (IsConstant(b) && IsVariableBase(a)) {
         // multiply constants into variables weights
         ((VariableTreeNodeBase)a).Weight *= ((ConstantTreeNode)b).Value;
