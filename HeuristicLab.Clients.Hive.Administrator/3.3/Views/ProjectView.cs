@@ -95,11 +95,13 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
         descriptionTextBox.Text = Content.Description;
 
         ownerComboBox.SelectedIndexChanged -= ownerComboBox_SelectedIndexChanged;
-        var users = AccessClient.Instance.UsersAndGroups.OfType<LightweightUser>();
-        if (!Content.ParentProjectId.HasValue) users = users.Where(x => x.Roles.Select(y => y.Name).Contains(HiveRoles.Administrator));
-        var projectOwnerId = Content.OwnerUserId;
-        ownerComboBox.DataSource = users.OrderBy(x => x.UserName).ToList();
-        ownerComboBox.SelectedItem = users.FirstOrDefault(x => x.Id == projectOwnerId);
+        if (AccessClient.Instance.UsersAndGroups != null) {
+          var users = AccessClient.Instance.UsersAndGroups.OfType<LightweightUser>();
+          if (!Content.ParentProjectId.HasValue) users = users.Where(x => x.Roles.Select(y => y.Name).Contains(HiveRoles.Administrator));
+          var projectOwnerId = Content.OwnerUserId;
+          ownerComboBox.DataSource = users.OrderBy(x => x.UserName).ToList();
+          ownerComboBox.SelectedItem = users.FirstOrDefault(x => x.Id == projectOwnerId);
+        }
         ownerComboBox.SelectedIndexChanged += ownerComboBox_SelectedIndexChanged;
 
         createdTextBox.Text = Content.DateCreated.ToString("ddd, dd.MM.yyyy, HH:mm:ss");
