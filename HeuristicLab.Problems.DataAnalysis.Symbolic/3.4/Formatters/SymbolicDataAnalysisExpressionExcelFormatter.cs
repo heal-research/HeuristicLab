@@ -119,7 +119,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         }
         stringBuilder.Append(")");
       } else if (symbol is Average) {
-        stringBuilder.Append("(1/");
+        stringBuilder.Append("(1/(");
         stringBuilder.Append(node.SubtreeCount);
         stringBuilder.Append(")*(");
         for (int i = 0; i < node.SubtreeCount; i++) {
@@ -128,7 +128,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           stringBuilder.Append(FormatRecursively(node.GetSubtree(i)));
           stringBuilder.Append(")");
         }
-        stringBuilder.Append(")");
+        stringBuilder.Append("))");
       } else if (symbol is Constant) {
         ConstantTreeNode constantTreeNode = node as ConstantTreeNode;
         stringBuilder.Append(constantTreeNode.Value.ToString(CultureInfo.InvariantCulture));
@@ -138,8 +138,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         stringBuilder.Append(")");
       } else if (symbol is Division) {
         if (node.SubtreeCount == 1) {
-          stringBuilder.Append("1/");
+          stringBuilder.Append("1/(");
           stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
+          stringBuilder.Append(")");
         } else {
           stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
           stringBuilder.Append("/(");
