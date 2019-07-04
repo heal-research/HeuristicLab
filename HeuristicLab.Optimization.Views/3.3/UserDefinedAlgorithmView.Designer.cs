@@ -107,13 +107,13 @@ namespace HeuristicLab.Optimization.Views {
       // 
       // globalScopeTabPage
       // 
+      this.globalScopeTabPage.BackColor = System.Drawing.SystemColors.Window;
       this.globalScopeTabPage.Controls.Add(this.globalScopeView);
       this.globalScopeTabPage.Location = new System.Drawing.Point(4, 22);
       this.globalScopeTabPage.Name = "globalScopeTabPage";
       this.globalScopeTabPage.Size = new System.Drawing.Size(705, 441);
       this.globalScopeTabPage.TabIndex = 6;
       this.globalScopeTabPage.Text = "Global Scope";
-      this.globalScopeTabPage.UseVisualStyleBackColor = true;
       // 
       // globalScopeView
       // 

@@ -264,7 +264,6 @@ namespace HeuristicLab.Optimization.Views {
       this.byTargetTabPage.Size = new System.Drawing.Size(646, 387);
       this.byTargetTabPage.TabIndex = 0;
       this.byTargetTabPage.Text = "Performance by Target";
-      this.byTargetTabPage.UseVisualStyleBackColor = false;
       // 
       // relativeOrAbsoluteComboBox
       // 
@@ -365,7 +364,6 @@ namespace HeuristicLab.Optimization.Views {
       this.byCostTabPage.Size = new System.Drawing.Size(646, 387);
       this.byCostTabPage.TabIndex = 1;
       this.byCostTabPage.Text = "Performance by Cost";
-      this.byCostTabPage.UseVisualStyleBackColor = false;
       // 
       // byCostViewHost
       // 
@@ -416,7 +414,6 @@ namespace HeuristicLab.Optimization.Views {
       this.byTableTabPage.Size = new System.Drawing.Size(646, 387);
       this.byTableTabPage.TabIndex = 2;
       this.byTableTabPage.Text = "Expected Runtime Tables";
-      this.byTableTabPage.UseVisualStyleBackColor = false;
       // 
       // ertTableView
       // 

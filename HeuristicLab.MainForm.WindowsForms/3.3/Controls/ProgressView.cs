@@ -114,9 +114,11 @@ namespace HeuristicLab.MainForm.WindowsForms {
       UpdateProgressValue();
       UpdateButtonsState();
 
+      Control.SuspendRepaint();
       Control.Enabled = false;
       Parent = Control.Parent;
       BringToFront();
+      Control.ResumeRepaint(true);
       Visible = true;
     }
 
@@ -128,7 +130,9 @@ namespace HeuristicLab.MainForm.WindowsForms {
       if (Parent == null) return;
 
       Visible = false;
+      Control.SuspendRepaint();
       Control.Enabled = true;
+      Control.ResumeRepaint(true);
       Parent = null;
     }
 

@@ -89,6 +89,7 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
       // 
       // parametersTabPage
       // 
+      this.parametersTabPage.BackColor = System.Drawing.SystemColors.Window;
       this.parametersTabPage.Controls.Add(this.parameterCollectionView);
       this.parametersTabPage.Location = new System.Drawing.Point(4, 22);
       this.parametersTabPage.Name = "parametersTabPage";
@@ -96,10 +97,10 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
       this.parametersTabPage.Size = new System.Drawing.Size(503, 280);
       this.parametersTabPage.TabIndex = 0;
       this.parametersTabPage.Text = "Parameters";
-      this.parametersTabPage.UseVisualStyleBackColor = true;
       // 
       // visualizationTabPage
       // 
+      this.visualizationTabPage.BackColor = System.Drawing.SystemColors.Window;
       this.visualizationTabPage.Controls.Add(this.pathTSPTourView);
       this.visualizationTabPage.Location = new System.Drawing.Point(4, 22);
       this.visualizationTabPage.Name = "visualizationTabPage";
@@ -107,7 +108,6 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
       this.visualizationTabPage.Size = new System.Drawing.Size(503, 280);
       this.visualizationTabPage.TabIndex = 1;
       this.visualizationTabPage.Text = "Visualization";
-      this.visualizationTabPage.UseVisualStyleBackColor = true;
       // 
       // pathTSPTourView
       // 
