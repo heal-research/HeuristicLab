@@ -51,14 +51,25 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       return new InfixExpressionFormatter(this, cloner);
     }
 
-    public string Format(ISymbolicExpressionTree symbolicExpressionTree) {
+    /// <summary>
+    /// Produces an infix expression for a given expression tree.
+    /// </summary>
+    /// <param name="symbolicExpressionTree">The tree representation of the expression.</param>
+    /// <param name="numberFormat">Number format that should be used for numeric parameters (e.g. NumberFormatInfo.InvariantInfo (default)).</param>
+    /// <param name="formatString">The format string for numeric parameters (e.g. \"G4\" to limit to 4 digits, default is \"G\")</param>
+    /// <returns>Infix expression</returns>
+    public string Format(ISymbolicExpressionTree symbolicExpressionTree, NumberFormatInfo numberFormat, string formatString="G") {
       // skip root and start symbols
       StringBuilder strBuilder = new StringBuilder();
-      FormatRecursively(symbolicExpressionTree.Root.GetSubtree(0).GetSubtree(0), strBuilder);
+      FormatRecursively(symbolicExpressionTree.Root.GetSubtree(0).GetSubtree(0), strBuilder, numberFormat, formatString);
       return strBuilder.ToString();
     }
 
-    private void FormatRecursively(ISymbolicExpressionTreeNode node, StringBuilder strBuilder) {
+    public string Format(ISymbolicExpressionTree symbolicExpressionTree) {
+      return Format(symbolicExpressionTree, NumberFormatInfo.InvariantInfo);
+    }
+
+    private static void FormatRecursively(ISymbolicExpressionTreeNode node, StringBuilder strBuilder, NumberFormatInfo numberFormat, string formatString) {
       if (node.SubtreeCount > 1) {
         var token = GetToken(node.Symbol);
         // operators
@@ -66,20 +77,20 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             token == "*" || token == "/" || token == "AND" ||
             token == "^") {
           strBuilder.Append("(");
-          FormatRecursively(node.Subtrees.First(), strBuilder);
+          FormatRecursively(node.Subtrees.First(), strBuilder, numberFormat, formatString);
 
           foreach (var subtree in node.Subtrees.Skip(1)) {
             strBuilder.Append(" ").Append(token).Append(" ");
-            FormatRecursively(subtree, strBuilder);
+            FormatRecursively(subtree, strBuilder, numberFormat, formatString);
           }
           strBuilder.Append(")");
         } else {
           // function with multiple arguments
           strBuilder.Append(token).Append("(");
-          FormatRecursively(node.Subtrees.First(), strBuilder);
+          FormatRecursively(node.Subtrees.First(), strBuilder, numberFormat, formatString);
           foreach (var subtree in node.Subtrees.Skip(1)) {
             strBuilder.Append(", ");
-            FormatRecursively(subtree, strBuilder);
+            FormatRecursively(subtree, strBuilder, numberFormat, formatString);
           }
           strBuilder.Append(")");
         }
@@ -87,17 +98,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         var token = GetToken(node.Symbol);
         if (token == "-" || token == "NOT") {
           strBuilder.Append("(").Append(token).Append("(");
-          FormatRecursively(node.GetSubtree(0), strBuilder);
+          FormatRecursively(node.GetSubtree(0), strBuilder, numberFormat, formatString);
           strBuilder.Append("))");
         } else if (token == "/") {
           strBuilder.Append("1/");
-          FormatRecursively(node.GetSubtree(0), strBuilder);
+          FormatRecursively(node.GetSubtree(0), strBuilder, numberFormat, formatString);
         } else if (token == "+" || token == "*") {
-          FormatRecursively(node.GetSubtree(0), strBuilder);
+          FormatRecursively(node.GetSubtree(0), strBuilder, numberFormat, formatString);
         } else {
           // function with only one argument
           strBuilder.Append(token).Append("(");
-          FormatRecursively(node.GetSubtree(0), strBuilder);
+          FormatRecursively(node.GetSubtree(0), strBuilder, numberFormat, formatString);
           strBuilder.Append(")");
         }
       } else {
@@ -106,7 +117,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           var varNode = node as LaggedVariableTreeNode;
           if (!varNode.Weight.IsAlmost(1.0)) {
             strBuilder.Append("(");
-            strBuilder.AppendFormat(CultureInfo.InvariantCulture, "{0}", varNode.Weight);
+            strBuilder.Append(varNode.Weight.ToString(formatString, numberFormat));
             strBuilder.Append("*");
           }
           strBuilder.Append("LAG(");
@@ -116,13 +127,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             strBuilder.AppendFormat("'{0}'", varNode.VariableName);
           }
           strBuilder.Append(", ")
-            .AppendFormat(CultureInfo.InvariantCulture, "{0}", varNode.Lag)
+            .AppendFormat(numberFormat, "{0}", varNode.Lag)
             .Append(")");
         } else if (node.Symbol is Variable) {
           var varNode = node as VariableTreeNode;
           if (!varNode.Weight.IsAlmost(1.0)) {
             strBuilder.Append("(");
-            strBuilder.AppendFormat(CultureInfo.InvariantCulture, "{0}", varNode.Weight);
+            strBuilder.Append(varNode.Weight.ToString(formatString, numberFormat));
             strBuilder.Append("*");
           }
           if (varNode.VariableName.Contains("'")) {
@@ -141,12 +152,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             strBuilder.AppendFormat("'{0}'", factorNode.VariableName);
           }
           strBuilder.AppendFormat("[{0}]",
-            string.Join(", ", factorNode.Weights.Select(w => w.ToString(CultureInfo.InvariantCulture))));
+            string.Join(", ", factorNode.Weights.Select(w => w.ToString(formatString, numberFormat))));
         } else if (node.Symbol is BinaryFactorVariable) {
           var factorNode = node as BinaryFactorVariableTreeNode;
           if (!factorNode.Weight.IsAlmost(1.0)) {
             strBuilder.Append("(");
-            strBuilder.AppendFormat(CultureInfo.InvariantCulture, "{0}", factorNode.Weight);
+            strBuilder.Append(factorNode.Weight.ToString(formatString, numberFormat));
             strBuilder.Append("*");
           }
           if (factorNode.VariableName.Contains("'")) {
@@ -168,14 +179,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         } else if (node.Symbol is Constant) {
           var constNode = node as ConstantTreeNode;
           if (constNode.Value >= 0.0)
-            strBuilder.AppendFormat(CultureInfo.InvariantCulture, "{0}", constNode.Value);
+            strBuilder.Append(constNode.Value.ToString(formatString, numberFormat));
           else
-            strBuilder.AppendFormat(CultureInfo.InvariantCulture, "({0})", constNode.Value); // (-1
+            strBuilder.Append("(").Append(constNode.Value.ToString(formatString, numberFormat)).Append(")"); // (-1
         }
       }
     }
 
-    private string GetToken(ISymbol symbol) {
+    private static string GetToken(ISymbol symbol) {
       var tok = InfixExpressionParser.knownSymbols.GetBySecond(symbol).FirstOrDefault();
       if (tok == null)
         throw new ArgumentException(string.Format("Unknown symbol {0} found.", symbol.Name));
