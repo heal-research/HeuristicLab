@@ -95,15 +95,20 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
     private void HiveClient_Instance_Refreshing(object sender, EventArgs e) {
       if (InvokeRequired) Invoke((Action<object, EventArgs>)HiveClient_Instance_Refreshing, sender, e);
       else {
-        Progress.ShowOnControl(this, "Refreshing", ProgressMode.Indeterminate);
         refreshButton.Enabled = false;
+        okButton.Enabled = false;
+        cancelButton.Enabled = false;
+        // Progress cannot be shown on dialog (no parent control), thus it is shown on the selector
+        Progress.Show(hiveResourceSelector, "Refreshing", ProgressMode.Indeterminate);
       }
     }
 
     private void HiveClient_Instance_Refreshed(object sender, EventArgs e) {
       if (InvokeRequired) Invoke((Action<object, EventArgs>)HiveClient_Instance_Refreshed, sender, e);
       else {
-        Progress.HideFromControl(this);
+        Progress.Hide(hiveResourceSelector);
+        okButton.Enabled = true;
+        cancelButton.Enabled = true;
         refreshButton.Enabled = true;
       }
     }

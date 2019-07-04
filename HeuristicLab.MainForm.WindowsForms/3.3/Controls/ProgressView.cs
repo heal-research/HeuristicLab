@@ -37,6 +37,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
     public ProgressView(Control control, IProgress content)
       : base() {
       if (control == null) throw new ArgumentNullException("control");
+      if (control.Parent == null) throw new InvalidOperationException("A Progress can only be shown on controls that have a Parent-control. Therefore, Dialogs and Forms cannot have an associated ProgressView.");
       if (content == null) throw new ArgumentNullException("content");
       InitializeComponent();
 
