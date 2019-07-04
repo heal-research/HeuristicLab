@@ -193,7 +193,7 @@
       this.permissionsTabPage.Padding = new System.Windows.Forms.Padding(3);
       this.permissionsTabPage.Size = new System.Drawing.Size(577, 515);
       this.permissionsTabPage.TabIndex = 1;
-      this.permissionsTabPage.Text = "Permissions";
+      this.permissionsTabPage.Text = "Compute Permissions";
       this.permissionsTabPage.UseVisualStyleBackColor = true;
       // 
       // projectPermissionsView
