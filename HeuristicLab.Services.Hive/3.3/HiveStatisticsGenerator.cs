@@ -65,10 +65,10 @@ namespace HeuristicLab.Services.Hive {
           });
 
           pm.UseTransaction(() => {
-            UpdateFactTaskTable(pm);
             try {
-              pm.SubmitChanges();
+              UpdateFactTaskTable(pm);
               UpdateExistingDimJobs(pm);
+              FlagJobsForDeletion(pm);
               pm.SubmitChanges();
             }
             catch (DuplicateKeyException e) {
@@ -80,11 +80,6 @@ namespace HeuristicLab.Services.Hive {
             }
           });
         }
-
-        pm.UseTransaction(() => {
-          FlagJobsForDeletion(pm);
-          pm.SubmitChanges();
-        });
       }
     }
 
