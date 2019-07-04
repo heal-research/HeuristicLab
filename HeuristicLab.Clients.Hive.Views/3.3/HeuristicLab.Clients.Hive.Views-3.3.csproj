@@ -100,6 +100,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions\FixedNumericUpDown.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="HiveInformationDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -167,6 +170,9 @@
     </Compile>
     <Compile Include="StateLog\StateLogView.designer.cs">
       <DependentUpon>StateLogView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TreeView\NoDoubleClickTreeView.cs">
+      <SubType>Component</SubType>
     </Compile>
     <None Include="Plugin.cs.frame" />
     <Compile Include="Plugin.cs" />

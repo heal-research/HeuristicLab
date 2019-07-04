@@ -65,7 +65,7 @@ namespace HeuristicLab.Clients.Access.Administration {
       // 
       this.storeButton.Enabled = false;
       this.storeButton.Location = new System.Drawing.Point(33, 3);
-      this.storeButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.PublishToWeb;
+      this.storeButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Save;
       this.storeButton.Name = "storeButton";
       this.storeButton.Size = new System.Drawing.Size(24, 24);
       this.storeButton.TabIndex = 3;

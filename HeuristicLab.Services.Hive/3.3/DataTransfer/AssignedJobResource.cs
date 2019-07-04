@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2017 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,15 +25,12 @@ using System.Runtime.Serialization;
 namespace HeuristicLab.Services.Hive.DataTransfer {
   [DataContract]
   [Serializable]
-  public class ResourcePermission : HiveItem {
-    // info: this class is derived from HiveItem to simplify handling on the client side, altough it does not have a Id.
+  public class AssignedJobResource : HiveItem {
+    [DataMember]
+    public Guid JobId { get; set; }
     [DataMember]
     public Guid ResourceId { get; set; }
-    [DataMember]
-    public Guid GrantedUserId { get; set; }
-    [DataMember]
-    public Guid GrantedByUserId { get; set; }
 
-    public ResourcePermission() { }
+    public AssignedJobResource() { }
   }
 }

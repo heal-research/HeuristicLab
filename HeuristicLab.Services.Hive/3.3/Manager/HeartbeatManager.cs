@@ -141,63 +141,75 @@ namespace HeuristicLab.Services.Hive.Manager {
     /// </summary>
     private IEnumerable<MessageContainer> UpdateTasks(IPersistenceManager pm, Heartbeat heartbeat, bool isAllowedToCalculate) {
       var taskDao = pm.TaskDao;
-      var assignedResourceDao = pm.AssignedResourceDao;
+      var jobDao = pm.JobDao;
+      var assignedJobResourceDao = pm.AssignedJobResourceDao;
       var actions = new List<MessageContainer>();
       if (heartbeat.JobProgress == null || !heartbeat.JobProgress.Any())
         return actions;
 
-      if (!isAllowedToCalculate && heartbeat.JobProgress.Count != 0) {
-        actions.Add(new MessageContainer(MessageContainer.MessageType.PauseAll));
-      } else {
-        // select all tasks and statelogs with one query
-        var taskIds = heartbeat.JobProgress.Select(x => x.Key).ToList();
-        var taskInfos = pm.UseTransaction(() =>
-          (from task in taskDao.GetAll()
-           where taskIds.Contains(task.TaskId)
-           let lastStateLog = task.StateLogs.OrderByDescending(x => x.DateTime).FirstOrDefault()
-           select new {
-             TaskId = task.TaskId,
-             Command = task.Command,
-             SlaveId = lastStateLog != null ? lastStateLog.SlaveId : default(Guid)
-           }).ToList()
-        );
+      var jobIdsWithStatisticsPending = jobDao.GetJobIdsByState(DA.JobState.StatisticsPending).ToList();
 
-        // process the jobProgresses
-        foreach (var jobProgress in heartbeat.JobProgress) {
-          var progress = jobProgress;
-          var curTask = taskInfos.SingleOrDefault(x => x.TaskId == progress.Key);
-          if (curTask == null) {
-            actions.Add(new MessageContainer(MessageContainer.MessageType.AbortTask, progress.Key));
-            LogFactory.GetLogger(this.GetType().Namespace).Log("Task on slave " + heartbeat.SlaveId + " does not exist in DB: " + jobProgress.Key);
-          } else {
-            var slaveId = curTask.SlaveId;
-            if (slaveId == Guid.Empty || slaveId != heartbeat.SlaveId) {
-              // assigned slave does not match heartbeat
-              actions.Add(new MessageContainer(MessageContainer.MessageType.AbortTask, curTask.TaskId));
-              LogFactory.GetLogger(this.GetType().Namespace).Log("The slave " + heartbeat.SlaveId + " is not supposed to calculate task: " + curTask.TaskId);
-            } else if (!assignedResourceDao.TaskIsAllowedToBeCalculatedBySlave(curTask.TaskId, heartbeat.SlaveId)) {
-              // assigned resources ids of task do not match with slaveId (and parent resourceGroupIds); this might happen when slave is moved to different group
+      // select all tasks and statelogs with one query
+      var taskIds = heartbeat.JobProgress.Select(x => x.Key).ToList();
+      var taskInfos = pm.UseTransaction(() =>
+        (from task in taskDao.GetAll()
+          where taskIds.Contains(task.TaskId)
+          let lastStateLog = task.StateLogs.OrderByDescending(x => x.DateTime).FirstOrDefault()
+          select new {
+            TaskId = task.TaskId,
+            JobId = task.JobId,
+            State = task.State,
+            Command = task.Command,
+            SlaveId = lastStateLog != null ? lastStateLog.SlaveId : default(Guid)
+          }).ToList()
+      );
+
+      // process the jobProgresses
+      foreach (var jobProgress in heartbeat.JobProgress) {
+        var progress = jobProgress;
+        var curTask = taskInfos.SingleOrDefault(x => x.TaskId == progress.Key);
+        if (curTask == null) {
+          actions.Add(new MessageContainer(MessageContainer.MessageType.AbortTask, progress.Key));
+          LogFactory.GetLogger(this.GetType().Namespace).Log("Task on slave " + heartbeat.SlaveId + " does not exist in DB: " + jobProgress.Key);
+        } else if (jobIdsWithStatisticsPending.Contains(curTask.JobId)) {
+          // parenting job of current task has been requested for deletion (indicated by job state "Statistics Pending")
+          // update task execution time
+          pm.UseTransaction(() => {
+            taskDao.UpdateExecutionTime(curTask.TaskId, progress.Value.TotalMilliseconds);
+          });
+          actions.Add(new MessageContainer(MessageContainer.MessageType.AbortTask, curTask.TaskId));
+          LogFactory.GetLogger(this.GetType().Namespace).Log("Abort task " + curTask.TaskId + " on slave " + heartbeat.SlaveId + ". The parenting job " + curTask.JobId + " was requested to be deleted.");
+        } else if (curTask.SlaveId == Guid.Empty || curTask.SlaveId != heartbeat.SlaveId) {
+          // assigned slave does not match heartbeat
+          actions.Add(new MessageContainer(MessageContainer.MessageType.AbortTask, curTask.TaskId));
+          LogFactory.GetLogger(this.GetType().Namespace).Log("The slave " + heartbeat.SlaveId + " is not supposed to calculate task: " + curTask.TaskId);
+        } else if (!isAllowedToCalculate) {
+          actions.Add(new MessageContainer(MessageContainer.MessageType.PauseTask, curTask.TaskId));
+          LogFactory.GetLogger(this.GetType().Namespace).Log("The slave " + heartbeat.SlaveId + " is not allowed to calculate any tasks tue to a downtime. The task is paused.");
+        } else if (!assignedJobResourceDao.CheckJobGrantedForResource(curTask.JobId, heartbeat.SlaveId)) {
+          // slaveId (and parent resourceGroupIds) are not among the assigned resources ids for task-parenting job
+          // this might happen when (a) job-resource assignment has been changed (b) slave is moved to different group
+          actions.Add(new MessageContainer(MessageContainer.MessageType.PauseTask, curTask.TaskId));
+          LogFactory.GetLogger(this.GetType().Namespace).Log("The slave " + heartbeat.SlaveId + " is not granted to calculate task: " + curTask.TaskId + " of job: " + curTask.JobId);
+        } else {
+          // update task execution time
+          pm.UseTransaction(() => {
+            taskDao.UpdateExecutionTime(curTask.TaskId, progress.Value.TotalMilliseconds);
+          });
+          switch (curTask.Command) {
+            case DA.Command.Stop:
+              actions.Add(new MessageContainer(MessageContainer.MessageType.StopTask, curTask.TaskId));
+              break;
+            case DA.Command.Pause:
               actions.Add(new MessageContainer(MessageContainer.MessageType.PauseTask, curTask.TaskId));
-            } else {
-              // update task execution time
-              pm.UseTransaction(() => {
-                taskDao.UpdateExecutionTime(curTask.TaskId, progress.Value.TotalMilliseconds);
-              });
-              switch (curTask.Command) {
-                case DA.Command.Stop:
-                  actions.Add(new MessageContainer(MessageContainer.MessageType.StopTask, curTask.TaskId));
-                  break;
-                case DA.Command.Pause:
-                  actions.Add(new MessageContainer(MessageContainer.MessageType.PauseTask, curTask.TaskId));
-                  break;
-                case DA.Command.Abort:
-                  actions.Add(new MessageContainer(MessageContainer.MessageType.AbortTask, curTask.TaskId));
-                  break;
-              }
-            }
+              break;
+            case DA.Command.Abort:
+              actions.Add(new MessageContainer(MessageContainer.MessageType.AbortTask, curTask.TaskId));
+              break;
           }
         }
-      }
+        
+      } 
       return actions;
     }
   }

@@ -41,7 +41,7 @@ namespace HeuristicLab.Clients.OKB.Administration {
       this.tabControl = new System.Windows.Forms.TabControl();
       this.usersTabPage = new System.Windows.Forms.TabPage();
       this.storeUsersButton = new System.Windows.Forms.Button();
-      this.refreshableLightweightUserView = new HeuristicLab.Clients.Access.Views.RefreshableLightweightUserView();
+      this.refreshableLightweightUserView = new HeuristicLab.Clients.Access.Views.RefreshableLightweightAccessClientView();
       this.dataTabPage = new System.Windows.Forms.TabPage();
       this.noViewAvailableLabel = new System.Windows.Forms.Label();
       this.dataViewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
@@ -146,7 +146,7 @@ namespace HeuristicLab.Clients.OKB.Administration {
       // 
       // storeUsersButton
       // 
-      this.storeUsersButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.PublishToWeb;
+      this.storeUsersButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Save;
       this.storeUsersButton.Location = new System.Drawing.Point(37, 9);
       this.storeUsersButton.Name = "storeUsersButton";
       this.storeUsersButton.Size = new System.Drawing.Size(24, 24);
@@ -249,7 +249,7 @@ namespace HeuristicLab.Clients.OKB.Administration {
       // 
       // storeDataButton
       // 
-      this.storeDataButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.PublishToWeb;
+      this.storeDataButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Save;
       this.storeDataButton.Location = new System.Drawing.Point(36, 6);
       this.storeDataButton.Name = "storeDataButton";
       this.storeDataButton.Size = new System.Drawing.Size(24, 24);
@@ -393,7 +393,7 @@ namespace HeuristicLab.Clients.OKB.Administration {
     private System.Windows.Forms.SaveFileDialog saveFileDialog;
     private MainForm.WindowsForms.ViewHost dataViewHost;
     private System.Windows.Forms.Label noViewAvailableLabel;
-    private Access.Views.RefreshableLightweightUserView refreshableLightweightUserView;
+    private Access.Views.RefreshableLightweightAccessClientView refreshableLightweightUserView;
 
   }
 }

@@ -21,6 +21,7 @@
 
 using System.Collections.Generic;
 using System.Windows.Forms;
+using HeuristicLab.Clients.Access;
 using HeuristicLab.Clients.Common;
 using HeuristicLab.MainForm;
 
@@ -42,6 +43,7 @@ namespace HeuristicLab.Optimizer.MenuItems {
     public override void Execute() {
       using (PasswordDialog dialog = new PasswordDialog()) {
         dialog.ShowDialog((IWin32Window)MainFormManager.MainForm);
+        UserInformation.Instance.Refresh();
       }
     }
   }

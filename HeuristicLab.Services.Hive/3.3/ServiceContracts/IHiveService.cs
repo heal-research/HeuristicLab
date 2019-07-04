@@ -30,8 +30,9 @@ namespace HeuristicLab.Services.Hive.ServiceContracts {
   [ServiceContract(ProtectionLevel = ProtectionLevel.EncryptAndSign)]
   public interface IHiveService {
     #region Task Methods
+
     [OperationContract]
-    Guid AddTask(Task task, TaskData taskData, IEnumerable<Guid> resourceIds);
+    Guid AddTask(Task task, TaskData taskData);
 
     [OperationContract]
     Guid AddChildTask(Guid parentTaskId, Task task, TaskData taskData);
@@ -77,13 +78,25 @@ namespace HeuristicLab.Services.Hive.ServiceContracts {
     IEnumerable<Job> GetJobs();
 
     [OperationContract]
-    Guid AddJob(Job jobDto);
+    IEnumerable<Job> GetJobsByProjectId(Guid projectId);
 
     [OperationContract]
-    void UpdateJob(Job jobDto);
+    IEnumerable<Job> GetJobsByProjectIds(IEnumerable<Guid> projectIds);
 
     [OperationContract]
-    void DeleteJob(Guid JobId);
+    Guid AddJob(Job jobDto, IEnumerable<Guid> resourceIds);
+
+    [OperationContract]
+    void UpdateJob(Job jobDto, IEnumerable<Guid> resourceIds);
+
+    [OperationContract]
+    void UpdateJobState(Guid JobId, JobState jobState);
+
+    [OperationContract]
+    void UpdateJobStates(IEnumerable<Guid> jobIds, JobState jobState);
+
+    [OperationContract]
+    IEnumerable<AssignedJobResource> GetAssignedResourcesForJob(Guid jobId);
     #endregion
 
     #region JobPermission Methods
@@ -131,15 +144,64 @@ namespace HeuristicLab.Services.Hive.ServiceContracts {
     IEnumerable<PluginData> GetPluginDatas(List<Guid> pluginIds);
     #endregion
 
-    #region ResourcePermission Methods
+    #region Project Methods
     [OperationContract]
-    void GrantResourcePermissions(Guid resourceId, Guid[] grantedUserIds);
+    Guid AddProject(Project projectDto);
 
     [OperationContract]
-    void RevokeResourcePermissions(Guid resourceId, Guid[] grantedUserIds);
+    void UpdateProject(Project projectDto);
 
     [OperationContract]
-    IEnumerable<ResourcePermission> GetResourcePermissions(Guid resourceId);
+    void DeleteProject(Guid projectId);
+
+    [OperationContract]
+    Project GetProject(Guid projectId);
+
+    [OperationContract]
+    IEnumerable<Project> GetProjects();
+
+    [OperationContract]
+    IEnumerable<Project> GetProjectsForAdministration();
+
+    [OperationContract]
+    IDictionary<Guid, HashSet<Guid>> GetProjectGenealogy();
+
+    [OperationContract]
+    IDictionary<Guid, string> GetProjectNames();
+    #endregion
+
+    #region ProjectPermission Methods
+    [OperationContract]
+    void SaveProjectPermissions(Guid projectId, List<Guid> grantedUserIds, bool reassign, bool cascading, bool reassignCascading);
+
+    //[OperationContract]
+    //void GrantProjectPermissions(Guid projectId, List<Guid> grantedUserIds, bool cascading);
+
+    //[OperationContract]
+    //void RevokeProjectPermissions(Guid projectId, List<Guid> grantedUserIds, bool cascading);
+
+    [OperationContract]
+    IEnumerable<ProjectPermission> GetProjectPermissions(Guid projectId);
+    #endregion
+
+    #region AssignedProjectResource Methods
+    [OperationContract]
+    void SaveProjectResourceAssignments(Guid projectId, List<Guid> resourceIds, bool reassign, bool cascading, bool reassignCascading);
+
+    //[OperationContract]
+    //void AssignProjectResources(Guid projectId, List<Guid> resourceIds, bool cascading);
+
+    //[OperationContract]
+    //void UnassignProjectResources(Guid projectId, List<Guid> resourceIds, bool cascading);
+
+    [OperationContract]
+    IEnumerable<AssignedProjectResource> GetAssignedResourcesForProject(Guid projectId);
+
+    [OperationContract]
+    IEnumerable<AssignedProjectResource> GetAssignedResourcesForProjectAdministration(Guid projectId);
+
+    [OperationContract]
+    IEnumerable<AssignedProjectResource> GetAssignedResourcesForProjectsAdministration(IEnumerable<Guid> projectIds);
     #endregion
 
     #region Slave Methods
@@ -157,6 +219,18 @@ namespace HeuristicLab.Services.Hive.ServiceContracts {
 
     [OperationContract]
     IEnumerable<SlaveGroup> GetSlaveGroups();
+
+    [OperationContract]
+    IEnumerable<Slave> GetSlavesForAdministration();
+
+    [OperationContract]
+    IEnumerable<SlaveGroup> GetSlaveGroupsForAdministration();
+
+    [OperationContract]
+    IDictionary<Guid, HashSet<Guid>> GetResourceGenealogy();
+
+    [OperationContract]
+    IDictionary<Guid, string> GetResourceNames();
 
     [OperationContract]
     void UpdateSlave(Slave slave);
@@ -206,6 +280,12 @@ namespace HeuristicLab.Services.Hive.ServiceContracts {
 
     [OperationContract]
     Guid GetUserIdByUsername(string username);
+
+    [OperationContract]
+    Dictionary<Guid, HashSet<Guid>> GetUserGroupTree();
+
+    [OperationContract]
+    bool CheckAccessToAdminAreaGranted();
     #endregion
 
     #region UserPriorities Methods

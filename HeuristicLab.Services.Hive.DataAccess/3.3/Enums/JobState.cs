@@ -19,17 +19,27 @@
  */
 #endregion
 
-using System.Linq;
-using HeuristicLab.Clients.Access;
+using System;
 
-namespace HeuristicLab.Clients.Hive.Administrator {
-  public static class HiveRoles {
-    public const string Administrator = "Hive Administrator";
-    public const string User = "Hive User";
-    public const string Slave = "Hive Slave";
+namespace HeuristicLab.Services.Hive.DataAccess {
+  [Serializable]
+  public enum JobState {
+    /// <summary>
+    /// A job is online as long as he is no other state.
+    /// </summary>
+    Online,
 
-    public static bool CheckAdminUserPermissions() {
-      return UserInformation.Instance.UserExists && UserInformation.Instance.User.Roles.Any(x => x.Name == HiveRoles.Administrator);
-    }
-  }
+    /// <summary>
+    /// A job is in StatisticsPending if its deletion has been requested,
+    /// but the final generation of statistics hasn't been performed yet.
+    /// </summary>
+    StatisticsPending,
+
+    /// <summary>
+    /// A job is in DeletionPending if its deletion has been requested,
+    /// the final generation of statistics has already been performed,
+    /// but the eventual deletion of the job is still pending. 
+    /// </summary>
+    DeletionPending
+  };
 }
