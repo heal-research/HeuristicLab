@@ -127,6 +127,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Analyzers\SymbolicDataAnalysisBottomUpDiversityAnalyzer.cs" />
+    <Compile Include="Analyzers\SymbolicDataAnalysisBuildingBlockAnalyzer.cs" />
     <Compile Include="Analyzers\SymbolicDataAnalysisSingleObjectivePruningAnalyzer.cs" />
     <Compile Include="Analyzers\SymbolicDataAnalysisSingleObjectiveValidationParetoBestSolutionAnalyzer.cs" />
     <Compile Include="Analyzers\SymbolicDataAnalysisSingleObjectiveTrainingParetoBestSolutionAnalyzer.cs" />
@@ -145,10 +146,14 @@
     <Compile Include="Converters\TreeSimplifier.cs" />
     <Compile Include="Converters\DerivativeCalculator.cs" />
     <Compile Include="Converters\TreeToAutoDiffTermConverter.cs" />
+    <Compile Include="Crossovers\SymbolicDataAnalysisExpressionDiversityPreservingCrossover.cs" />
     <Compile Include="Formatters\InfixExpressionFormatter.cs" />
     <Compile Include="Formatters\TSQLExpressionFormatter.cs" />
     <Compile Include="Formatters\SymbolicDataAnalysisExpressionMathematicaFormatter.cs" />
     <Compile Include="Formatters\SymbolicDataAnalysisExpressionCSharpFormatter.cs" />
+    <Compile Include="Hashing\HashExtensions.cs" />
+    <Compile Include="Hashing\HashUtil.cs" />
+    <Compile Include="Hashing\SymbolicExpressionTreeHash.cs" />
     <Compile Include="Importer\InfixExpressionParser.cs" />
     <Compile Include="Importer\SymbolicExpressionImporter.cs" />
     <Compile Include="Importer\Token.cs" />
