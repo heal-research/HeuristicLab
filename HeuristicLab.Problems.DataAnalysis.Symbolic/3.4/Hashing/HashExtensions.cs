@@ -24,6 +24,10 @@ using System.Linq;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   public static class SymbolicExpressionHashExtensions {
+    /// <summary>
+    /// Holds data that is necessary to handle tree nodes in hashing / simplification.
+    /// </summary>
+    /// <typeparam name="T">The tree node type</typeparam>
     public sealed class HashNode<T> : IComparable<HashNode<T>>, IEquatable<HashNode<T>> where T : class {
       public T Data;
       public int Arity;
@@ -37,15 +41,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       public delegate void SimplifyAction(ref HashNode<T>[] nodes, int i);
       public SimplifyAction Simplify;
 
-      //public IComparer<T> Comparer;
-
       public bool IsLeaf => Arity == 0;
-
-      //public HashNode(IComparer<T> comparer) {
-      //  Comparer = comparer;
-      //}
-
-      //public HashNode() { }
 
       public int CompareTo(HashNode<T> other) {
         return CalculatedHashValue.CompareTo(other.CalculatedHashValue);
@@ -169,10 +165,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     /// <summary>
-    /// Get a function node's child indicest
+    /// Get a function node's child indices
     /// </summary>
     /// <typeparam name="T">The data type encapsulated by a hash node</typeparam>
-    /// <param name="nodes">An array of hash nodes with up-to-date node sizes</param>
+    /// <param name="nodes">An array of hash nodes with up-to-date node sizes (see UpdateNodeSizes)</param>
     /// <param name="i">The index in the array of hash nodes of the node whose children we want to iterate</param>
     /// <returns>An array containing child indices</returns>
     public static int[] IterateChildren<T>(this HashNode<T>[] nodes, int i) where T : class {
@@ -187,6 +183,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       return children;
     }
 
+    /// <summary>
+    /// Determines size of each branch and sets the results for each node.
+    /// </summary>
+    /// <typeparam name="T">The data type encapsulated by a hash node</typeparam>
+    /// <param name="nodes">An array of hash nodes in postfix order.</param>
+    /// <returns>The array with updated node sizes. The array is not copied.</returns>
     public static HashNode<T>[] UpdateNodeSizes<T>(this HashNode<T>[] nodes) where T : class {
       for (int i = 0; i < nodes.Length; ++i) {
         var node = nodes[i];
@@ -195,7 +197,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           continue;
         }
         node.Size = node.Arity;
-
+        // visit all children and sum up their size (assumes postfix order).
         for (int j = i - 1, k = 0; k < node.Arity; j -= 1 + nodes[j].Size, ++k) {
           node.Size += nodes[j].Size;
         }
@@ -203,6 +205,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       return nodes;
     }
 
+    // disables duplicate branches and removes the disabled nodes
     public static HashNode<T>[] Reduce<T>(this HashNode<T>[] nodes) where T : class {
       int count = 0;
       for (int i = 0; i < nodes.Length; ++i) {

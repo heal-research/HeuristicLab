@@ -47,7 +47,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public static ulong[] Hash(this ISymbolicExpressionTreeNode node, bool simplify = false, bool strict = false) {
       ulong hashFunction(byte[] input) => HashUtil.DJBHash(input);
 
-      var hashNodes = simplify ? node.MakeNodes(strict).Simplify(hashFunction) : node.MakeNodes(strict).Sort(hashFunction);
+      var hashNodes = simplify ? node.MakeNodes(strict).Simplify(hashFunction) : node.MakeNodes(strict).Sort(hashFunction); // simplify sorts implicitly
       var hashes = new ulong[hashNodes.Length];
       for (int i = 0; i < hashes.Length; ++i) {
         hashes[i] = hashNodes[i].CalculatedHashValue;
@@ -209,6 +209,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public static ISymbolicExpressionTreeNode ToSubtree(this HashNode<ISymbolicExpressionTreeNode>[] nodes) {
       var treeNodes = nodes.Select(x => x.Data.Symbol.CreateTreeNode()).ToArray();
 
+      // construct tree top down (assumes postfix order for nodes)
       for (int i = nodes.Length - 1; i >= 0; --i) {
         var node = nodes[i];
 
@@ -243,8 +244,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     // these simplification methods rely on the assumption that child nodes of the current node have already been simplified
     // (in other words simplification should be applied in a bottom-up fashion)
     public static ISymbolicExpressionTree Simplify(ISymbolicExpressionTree tree) {
-      ulong hashFunction(byte[] bytes) => HashUtil.JSHash(bytes);
-      var root = tree.Root.GetSubtree(0).GetSubtree(0);
+      ulong hashFunction(byte[] bytes) => HashUtil.DJBHash(bytes);
+      var root = tree.ActualRoot();
       var nodes = root.MakeNodes();
       var simplified = nodes.Simplify(hashFunction);
       return simplified.ToTree();
@@ -368,6 +369,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       if (childSymbol is Constant) {
         nodes[i].Enabled = false;
       } else if ((parentSymbol is Exponential && childSymbol is Logarithm) || (parentSymbol is Logarithm && childSymbol is Exponential)) {
+        // exp(log(x)) == x only for positive x. We consider this as equivalent for hashing anyway.
         child.Enabled = parent.Enabled = false;
       }
     }
