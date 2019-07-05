@@ -37,7 +37,7 @@ using HEAL.Attic;
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableType("FC8D8E5A-D16D-41BB-91CF-B2B35D17ADD7")]
   [Creatable(CreatableAttribute.Categories.DataAnalysisRegression, Priority = 95)]
-  [Item("Decision tree regression", "A regression tree / rule set learner")]
+  [Item("Decision Tree Regression (DT)", "A regression tree / rule set learner")]
   public sealed class DecisionTreeRegression : FixedDataAnalysisAlgorithm<IRegressionProblem> {
     public override bool SupportsPause {
       get { return true; }

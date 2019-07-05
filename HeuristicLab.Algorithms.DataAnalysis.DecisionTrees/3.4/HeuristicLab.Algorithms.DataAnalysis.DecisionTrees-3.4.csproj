@@ -7,8 +7,8 @@
     <ProjectGuid>{541A53F3-E6A7-402F-91BB-D76041CDD9FD}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>HeuristicLab.Algorithms.DataAnalysis.M5</RootNamespace>
-    <AssemblyName>HeuristicLab.Algorithms.DataAnalysis.M5-3.4</AssemblyName>
+    <RootNamespace>HeuristicLab.Algorithms.DataAnalysis</RootNamespace>
+    <AssemblyName>HeuristicLab.Algorithms.DataAnalysis.DecisionTrees-3.4</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
