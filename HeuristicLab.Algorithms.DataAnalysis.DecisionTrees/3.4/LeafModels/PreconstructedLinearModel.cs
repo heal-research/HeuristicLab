@@ -27,7 +27,7 @@ using HeuristicLab.Problems.DataAnalysis;
 using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
-  //mulitdimensional extension of http://www2.stat.duke.edu/~tjl13/s101/slides/unit6lec3H.pdf
+  // multidimensional extension of http://www2.stat.duke.edu/~tjl13/s101/slides/unit6lec3H.pdf
   [StorableType("15F2295C-28C1-48C3-8DCB-9470823C6734")]
   internal sealed class PreconstructedLinearModel : RegressionModel {
     [Storable]

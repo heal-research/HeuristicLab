@@ -27,7 +27,7 @@ using HeuristicLab.Problems.DataAnalysis;
 using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
-  // mulitdimensional extension of http://www2.stat.duke.edu/~tjl13/s101/slides/unit6lec3H.pdf
+  // multidimensional extension of http://www2.stat.duke.edu/~tjl13/s101/slides/unit6lec3H.pdf
   [StorableType("42E9766F-207F-47B1-890C-D5DFCF469838")]
   public class DampenedModel : RegressionModel {
     [Storable]
