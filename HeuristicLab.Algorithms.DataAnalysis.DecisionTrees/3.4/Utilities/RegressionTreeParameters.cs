@@ -29,12 +29,19 @@ using HEAL.Attic;
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableType("A6293516-C146-469D-B248-31B866A1D94F")]
   public sealed class RegressionTreeParameters : Item {
+    [Storable]
     private readonly ISplitter splitter;
+    [Storable]
     private readonly IPruning pruning;
+    [Storable]
     private readonly ILeafModel leafModel;
+    [Storable]
     private readonly int minLeafSize;
+    [Storable]
     private readonly IRegressionProblemData problemData;
+    [Storable]
     private readonly IRandom random;
+
     public ISplitter Splitter {
       get { return splitter; }
     }

@@ -30,6 +30,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableType("C20C7DF1-CE33-4CCD-88D3-E145CFE239AC")]
   public class RegressionNodeModel : RegressionModel {
     #region Properties
+    [Storable]
     public double PruningStrength = double.NaN;
     private IReadOnlyList<string> Variables {
       get {
