@@ -27,7 +27,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// </summary>
   [Plugin("HeuristicLab.Algorithms.DataAnalysis.DecisionTrees", "Provides algorithms for decision trees for regression", "3.4.0.$WCREV$")]
   [PluginFile("HeuristicLab.Algorithms.DataAnalysis.DecisionTrees-3.4.dll", PluginFileType.Assembly)]
-  [PluginDependency("HeuristicLab.ALGLIB", "3.7")]
+  [PluginDependency("HeuristicLab.ALGLIB", "3.15")]
   [PluginDependency("HeuristicLab.Attic", "1.0")]
   [PluginDependency("HeuristicLab.Algorithms.DataAnalysis", "3.4")]
   [PluginDependency("HeuristicLab.Algorithms.DataAnalysis.Glmnet", "3.4")]

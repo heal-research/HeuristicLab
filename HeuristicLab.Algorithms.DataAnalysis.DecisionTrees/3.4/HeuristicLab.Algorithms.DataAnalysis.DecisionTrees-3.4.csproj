@@ -44,9 +44,9 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ALGLIB-3.7.0, Version=3.7.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+    <Reference Include="ALGLIB-3.15.0, Version=3.15.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\bin\ALGLIB-3.7.0.dll</HintPath>
+      <HintPath>..\..\bin\ALGLIB-3.15.0.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
