@@ -23,10 +23,10 @@ using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>
-  /// Plugin class for HeuristicLab.Algorithms.DataAnalysis plugin.
+  /// Plugin class.
   /// </summary>
-  [Plugin("HeuristicLab.Algorithms.DataAnalysis.M5", "Provides the M5' regression algorithm", "3.4.0.$WCREV$")]
-  [PluginFile("HeuristicLab.Algorithms.DataAnalysis.M5-3.4.dll", PluginFileType.Assembly)]
+  [Plugin("HeuristicLab.Algorithms.DataAnalysis.DecisionTrees", "Provides algorithms for decision trees for regression", "3.4.0.$WCREV$")]
+  [PluginFile("HeuristicLab.Algorithms.DataAnalysis.DecisionTrees-3.4.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.ALGLIB", "3.7")]
   [PluginDependency("HeuristicLab.Attic", "1.0")]
   [PluginDependency("HeuristicLab.Algorithms.DataAnalysis", "3.4")]

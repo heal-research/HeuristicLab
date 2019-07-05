@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{CCC5D1F9-0551-4BF3-8898-E4C44B52E5A6}</ProjectGuid>
+    <ProjectGuid>{541A53F3-E6A7-402F-91BB-D76041CDD9FD}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>HeuristicLab.Algorithms.DataAnalysis.M5</RootNamespace>
@@ -66,6 +66,7 @@
     <None Include="Properties\AssemblyInfo.cs.frame" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DecisionTreeRegression.cs" />
     <Compile Include="Interfaces\ILeafModel.cs" />
     <Compile Include="Interfaces\IM5Model.cs" />
     <Compile Include="Interfaces\IPruning.cs" />
@@ -81,11 +82,6 @@
     <Compile Include="LeafTypes\LinearLeaf.cs" />
     <Compile Include="LeafTypes\M5Leaf.cs" />
     <Compile Include="LeafTypes\M5regLeaf.cs" />
-    <Compile Include="M5Regression.cs" />
-    <Compile Include="M5Utilities\PrincipleComponentTransformation.cs" />
-    <Compile Include="M5Utilities\RegressionTreeAnalyzer.cs" />
-    <Compile Include="M5Utilities\RegressionTreeParameters.cs" />
-    <Compile Include="M5Utilities\RegressionTreeUtilities.cs" />
     <Compile Include="MetaModels\RegressionNodeModel.cs" />
     <Compile Include="MetaModels\RegressionNodeTreeModel.cs" />
     <Compile Include="MetaModels\RegressionRuleModel.cs" />
@@ -101,6 +97,10 @@
     <Compile Include="Splitting\OrderImpurityCalculator.cs" />
     <Compile Include="Splitting\SplitterBase.cs" />
     <Compile Include="Splitting\UnivariateOnlineLR.cs" />
+    <Compile Include="Utilities\PrincipleComponentTransformation.cs" />
+    <Compile Include="Utilities\RegressionTreeAnalyzer.cs" />
+    <Compile Include="Utilities\RegressionTreeParameters.cs" />
+    <Compile Include="Utilities\RegressionTreeUtilities.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\HeuristicLab.Algorithms.DataAnalysis.Glmnet\3.4\HeuristicLab.Algorithms.DataAnalysis.Glmnet-3.4.csproj">
