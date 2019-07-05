@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HeuristicLab.Common;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
@@ -53,8 +54,8 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     }
 
     protected override string TargetVariable { get { return "f(X)"; } }
-    protected override string[] VariableNames { get { return new string[] { "x1", "x2", "x3", "x4", "x5", "x6", "x7", "x8", "x9", "x10", "x11", "x12", "x13", "x14", "x15", "x16", "x17", "x18", "f(X)" }; } }
-    protected override string[] AllowedInputVariables { get { return VariableNames.Except(new string[] { TargetVariable }).ToArray(); } }
+    protected override string[] VariableNames { get { return new string[] { "x1", "x2", "x3", "x4", "x5", "x6", "x7", "x8", "x9", "x10", "x11", "x12", "x13", "x14", "x15", "x16", "x17", "x18", "f(X)", "f(X)_noise" }; } }
+    protected override string[] AllowedInputVariables { get { return VariableNames.Except(new string[] { "f(X)", "f(X)_noise" }).ToArray(); } }
     protected override int TrainingPartitionStart { get { return 0; } }
     protected override int TrainingPartitionEnd { get { return 100; } }
     protected override int TestPartitionStart { get { return 100; } }
@@ -105,6 +106,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
 
 
       List<double> fx = new List<double>();
+      List<double> fx_noise = new List<double>();
       data.Add(x1);
       data.Add(x2);
       data.Add(x3);
@@ -124,6 +126,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       data.Add(x17);
       data.Add(x18);
       data.Add(fx);
+      data.Add(fx_noise);
 
       for (int i = 0; i < x1.Count; i++) {
         double fxi = x1[i];
@@ -137,6 +140,9 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
 
         fx.Add(fxi);
       }
+
+      var sigma_noise = 0.05 * fx.StandardDeviationPop();
+      fx_noise.AddRange(fx.Select(fxi => fxi + NormalDistributedRandom.NextDouble(rand, 0, sigma_noise)));
 
       return data;
     }
