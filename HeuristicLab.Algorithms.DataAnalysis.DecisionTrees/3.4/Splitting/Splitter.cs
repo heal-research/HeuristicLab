@@ -29,7 +29,7 @@ using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableType("502B1429-7A28-45C1-A60A-93E72CB3AF4A")]
-  [Item("M5Splitter", "A split selector that uses the ratio between Variances^(1/Order) to determine good splits.")]
+  [Item("Splitter", "A split selector that uses the ratio between Variances^(1/Order) to determine good splits.")]
   public sealed class M5Splitter : SplitterBase {
     public const string OrderParameterName = "Order";
     public IFixedValueParameter<DoubleValue> OrderParameter {

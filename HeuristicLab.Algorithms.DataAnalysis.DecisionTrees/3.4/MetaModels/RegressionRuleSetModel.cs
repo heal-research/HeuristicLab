@@ -76,7 +76,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     #region IM5Model
     public void Build(IReadOnlyList<int> trainingRows, IReadOnlyList<int> pruningRows, IScope stateScope, ResultCollection results, CancellationToken cancellationToken) {
-      var regressionTreeParams = (RegressionTreeParameters)stateScope.Variables[M5Regression.RegressionTreeParameterVariableName].Value;
+      var regressionTreeParams = (RegressionTreeParameters)stateScope.Variables[DecisionTreeRegression.RegressionTreeParameterVariableName].Value;
       var ruleSetState = (RuleSetState)stateScope.Variables[RuleSetStateVariableName].Value;
 
       if (ruleSetState.Code <= 0) {

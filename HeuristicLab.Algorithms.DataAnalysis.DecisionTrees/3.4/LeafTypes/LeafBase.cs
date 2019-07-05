@@ -71,7 +71,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     public void Build(RegressionNodeTreeModel tree, IReadOnlyList<int> trainingRows, IScope stateScope, CancellationToken cancellationToken) {
-      var parameters = (RegressionTreeParameters)stateScope.Variables[M5Regression.RegressionTreeParameterVariableName].Value;
+      var parameters = (RegressionTreeParameters)stateScope.Variables[DecisionTreeRegression.RegressionTreeParameterVariableName].Value;
       var state = (LeafBuildingState)stateScope.Variables[LeafBuildingStateVariableName].Value;
 
       if (state.Code == 0) {

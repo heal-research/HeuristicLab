@@ -82,7 +82,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     #endregion
 
     public void Build(IReadOnlyList<int> trainingRows, IReadOnlyList<int> pruningRows, IScope statescope, ResultCollection results, CancellationToken cancellationToken) {
-      var regressionTreeParams = (RegressionTreeParameters)statescope.Variables[M5Regression.RegressionTreeParameterVariableName].Value;
+      var regressionTreeParams = (RegressionTreeParameters)statescope.Variables[DecisionTreeRegression.RegressionTreeParameterVariableName].Value;
       variables = regressionTreeParams.AllowedInputVariables.ToList();
 
       //build tree and select node with maximum coverage
@@ -108,7 +108,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     public void Update(IReadOnlyList<int> rows, IScope statescope, CancellationToken cancellationToken) {
-      var regressionTreeParams = (RegressionTreeParameters)statescope.Variables[M5Regression.RegressionTreeParameterVariableName].Value;
+      var regressionTreeParams = (RegressionTreeParameters)statescope.Variables[DecisionTreeRegression.RegressionTreeParameterVariableName].Value;
       int np;
       RuleModel = regressionTreeParams.LeafModel.BuildModel(rows, regressionTreeParams, cancellationToken, out np);
     }

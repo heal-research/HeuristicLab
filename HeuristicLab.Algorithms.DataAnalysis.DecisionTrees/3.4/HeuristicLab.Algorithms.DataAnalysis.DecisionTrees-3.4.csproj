@@ -67,8 +67,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DecisionTreeRegression.cs" />
+    <Compile Include="Interfaces\IDecisionTreeModel.cs" />
     <Compile Include="Interfaces\ILeafModel.cs" />
-    <Compile Include="Interfaces\IM5Model.cs" />
     <Compile Include="Interfaces\IPruning.cs" />
     <Compile Include="Interfaces\ISplitter.cs" />
     <Compile Include="LeafModels\ComponentReducedLinearModel.cs" />
@@ -78,10 +78,10 @@
     <Compile Include="LeafTypes\ComponentReductionLinearLeaf.cs" />
     <Compile Include="LeafTypes\ConstantLeaf.cs" />
     <Compile Include="LeafTypes\GaussianProcessLeaf.cs" />
+    <Compile Include="LeafTypes\Leaf.cs" />
     <Compile Include="LeafTypes\LeafBase.cs" />
     <Compile Include="LeafTypes\LinearLeaf.cs" />
-    <Compile Include="LeafTypes\M5Leaf.cs" />
-    <Compile Include="LeafTypes\M5regLeaf.cs" />
+    <Compile Include="LeafTypes\RegularizedLeaf.cs" />
     <Compile Include="MetaModels\RegressionNodeModel.cs" />
     <Compile Include="MetaModels\RegressionNodeTreeModel.cs" />
     <Compile Include="MetaModels\RegressionRuleModel.cs" />
@@ -92,9 +92,9 @@
     <Compile Include="Pruning\NoPruning.cs" />
     <Compile Include="Splitting\CorrelationImpurityCalculator.cs" />
     <Compile Include="Splitting\CorrelationSplitter.cs" />
-    <Compile Include="Splitting\M5Splitter.cs" />
     <Compile Include="Splitting\NeumaierSum.cs" />
     <Compile Include="Splitting\OrderImpurityCalculator.cs" />
+    <Compile Include="Splitting\Splitter.cs" />
     <Compile Include="Splitting\SplitterBase.cs" />
     <Compile Include="Splitting\UnivariateOnlineLR.cs" />
     <Compile Include="Utilities\PrincipleComponentTransformation.cs" />

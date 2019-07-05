@@ -29,7 +29,7 @@ using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableType("347CA25D-FB37-4C4F-9B61-9D79288B2B28")]
-  [Item("LinearLeaf", "A leaf type that uses linear models as leaf models. This is the standard for M5' regression")]
+  [Item("LinearLeaf", "A leaf type that uses linear models as leaf models. This is the standard for decision tree regression")]
   public class LinearLeaf : LeafBase {
     #region Constructors & Cloning
     [StorableConstructor]

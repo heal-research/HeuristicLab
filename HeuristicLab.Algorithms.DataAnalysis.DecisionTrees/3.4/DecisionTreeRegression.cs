@@ -37,8 +37,8 @@ using HEAL.Attic;
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableType("FC8D8E5A-D16D-41BB-91CF-B2B35D17ADD7")]
   [Creatable(CreatableAttribute.Categories.DataAnalysisRegression, Priority = 95)]
-  [Item("M5RegressionTree", "A M5 regression tree / rule set")]
-  public sealed class M5Regression : FixedDataAnalysisAlgorithm<IRegressionProblem> {
+  [Item("Decision tree regression", "A regression tree / rule set learner")]
+  public sealed class DecisionTreeRegression : FixedDataAnalysisAlgorithm<IRegressionProblem> {
     public override bool SupportsPause {
       get { return true; }
     }
@@ -134,17 +134,17 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     #region Constructors and Cloning
     [StorableConstructor]
-    private M5Regression(StorableConstructorFlag _) : base(_) { }
-    private M5Regression(M5Regression original, Cloner cloner) : base(original, cloner) {
+    private DecisionTreeRegression(StorableConstructorFlag _) : base(_) { }
+    private DecisionTreeRegression(DecisionTreeRegression original, Cloner cloner) : base(original, cloner) {
       stateScope = cloner.Clone(stateScope);
     }
-    public M5Regression() {
+    public DecisionTreeRegression() {
       var modelSet = new ItemSet<ILeafModel>(ApplicationManager.Manager.GetInstances<ILeafModel>());
       var pruningSet = new ItemSet<IPruning>(ApplicationManager.Manager.GetInstances<IPruning>());
       var splitterSet = new ItemSet<ISplitter>(ApplicationManager.Manager.GetInstances<ISplitter>());
       Parameters.Add(new FixedValueParameter<BoolValue>(GenerateRulesParameterName, "Whether a set of rules or a decision tree shall be created (default=false)", new BoolValue(false)));
       Parameters.Add(new FixedValueParameter<PercentValue>(HoldoutSizeParameterName, "How much of the training set shall be reserved for pruning (default=20%).", new PercentValue(0.2)));
-      Parameters.Add(new ConstrainedValueParameter<ISplitter>(SplitterParameterName, "The type of split function used to create node splits (default='M5Splitter').", splitterSet, splitterSet.OfType<M5Splitter>().First()));
+      Parameters.Add(new ConstrainedValueParameter<ISplitter>(SplitterParameterName, "The type of split function used to create node splits (default='Splitter').", splitterSet, splitterSet.OfType<M5Splitter>().First()));
       Parameters.Add(new FixedValueParameter<IntValue>(MinimalNodeSizeParameterName, "The minimal number of samples in a leaf node (default=1).", new IntValue(1)));
       Parameters.Add(new ConstrainedValueParameter<ILeafModel>(LeafModelParameterName, "The type of model used for the nodes (default='LinearLeaf').", modelSet, modelSet.OfType<LinearLeaf>().First()));
       Parameters.Add(new ConstrainedValueParameter<IPruning>(PruningTypeParameterName, "The type of pruning used (default='ComplexityPruning').", pruningSet, pruningSet.OfType<ComplexityPruning>().First()));
@@ -154,7 +154,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       Problem = new RegressionProblem();
     }
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new M5Regression(this, cloner);
+      return new DecisionTreeRegression(this, cloner);
     }
     #endregion
 
@@ -203,10 +203,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       //reduce RegressionProblemData to AllowedInput & Target column wise and to TrainingSet row wise
       var doubleVars = new HashSet<string>(problemData.Dataset.DoubleVariables);
       var vars = problemData.AllowedInputVariables.Concat(new[] {problemData.TargetVariable}).ToArray();
-      if (vars.Any(v => !doubleVars.Contains(v))) throw new NotSupportedException("M5 regression supports only double valued input or output features.");
+      if (vars.Any(v => !doubleVars.Contains(v))) throw new NotSupportedException("Decision tree regression supports only double valued input or output features.");
       var doubles = vars.Select(v => problemData.Dataset.GetDoubleValues(v, problemData.TrainingIndices).ToArray()).ToArray();
       if (doubles.Any(v => v.Any(x => double.IsNaN(x) || double.IsInfinity(x))))
-        throw new NotSupportedException("M5 regression does not support NaN or infinity values in the input dataset.");
+        throw new NotSupportedException("Decision tree regression does not support NaN or infinity values in the input dataset.");
       var trainingData = new Dataset(vars, doubles);
       var pd = new RegressionProblemData(trainingData, problemData.AllowedInputVariables, problemData.TargetVariable);
       pd.TrainingPartition.End = pd.TestPartition.Start = pd.TestPartition.End = pd.Dataset.Rows;
@@ -282,7 +282,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
       var ruleSet = solution.Model as RegressionRuleSetModel;
       if (ruleSet != null) {
-        results.Add(RegressionTreeAnalyzer.CreateRulesResult(ruleSet, problemData, "M5Rules", true));
+        results.Add(RegressionTreeAnalyzer.CreateRulesResult(ruleSet, problemData, "Rules", true));
         frequencies = RegressionTreeAnalyzer.GetRuleVariableFrequences(ruleSet);
         results.Add(RegressionTreeAnalyzer.CreateCoverageDiagram(ruleSet, problemData));
       }

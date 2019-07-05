@@ -70,7 +70,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     #region IM5Model
     public void Build(IReadOnlyList<int> trainingRows, IReadOnlyList<int> pruningRows, IScope statescope, ResultCollection results, CancellationToken cancellationToken) {
-      var regressionTreeParams = (RegressionTreeParameters)statescope.Variables[M5Regression.RegressionTreeParameterVariableName].Value;
+      var regressionTreeParams = (RegressionTreeParameters)statescope.Variables[DecisionTreeRegression.RegressionTreeParameterVariableName].Value;
       //start with one node
       if (Root == null)
         Root = RegressionNodeModel.CreateNode(regressionTreeParams.TargetVariable, regressionTreeParams);
@@ -86,18 +86,18 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     public void Update(IReadOnlyList<int> rows, IScope statescope, CancellationToken cancellationToken) {
-      var regressionTreeParams = (RegressionTreeParameters)statescope.Variables[M5Regression.RegressionTreeParameterVariableName].Value;
+      var regressionTreeParams = (RegressionTreeParameters)statescope.Variables[DecisionTreeRegression.RegressionTreeParameterVariableName].Value;
       regressionTreeParams.LeafModel.Build(this, rows, statescope, cancellationToken);
     }
 
     public static void Initialize(IScope stateScope) {
-      var param = (RegressionTreeParameters)stateScope.Variables[M5Regression.RegressionTreeParameterVariableName].Value;
+      var param = (RegressionTreeParameters)stateScope.Variables[DecisionTreeRegression.RegressionTreeParameterVariableName].Value;
       stateScope.Variables.Add(new Variable(RootVariableName, RegressionNodeModel.CreateNode(param.TargetVariable, param)));
     }
     #endregion
 
     public void BuildModel(IReadOnlyList<int> trainingRows, IReadOnlyList<int> pruningRows, IScope statescope, ResultCollection results, CancellationToken cancellationToken) {
-      var regressionTreeParams = (RegressionTreeParameters)statescope.Variables[M5Regression.RegressionTreeParameterVariableName].Value;
+      var regressionTreeParams = (RegressionTreeParameters)statescope.Variables[DecisionTreeRegression.RegressionTreeParameterVariableName].Value;
       //start with one node
       Root = RegressionNodeModel.CreateNode(regressionTreeParams.TargetVariable, regressionTreeParams);
 

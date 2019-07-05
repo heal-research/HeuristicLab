@@ -85,7 +85,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     public void Prune(RegressionNodeTreeModel treeModel, IReadOnlyList<int> trainingRows, IReadOnlyList<int> pruningRows, IScope statescope, CancellationToken cancellationToken) {
-      var regressionTreeParams = (RegressionTreeParameters)statescope.Variables[M5Regression.RegressionTreeParameterVariableName].Value;
+      var regressionTreeParams = (RegressionTreeParameters)statescope.Variables[DecisionTreeRegression.RegressionTreeParameterVariableName].Value;
       var state = (PruningState)statescope.Variables[PruningStateVariableName].Value;
 
       var leaf = FastPruning ? new LinearLeaf() : regressionTreeParams.LeafModel;

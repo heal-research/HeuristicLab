@@ -47,7 +47,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     public void Split(RegressionNodeTreeModel tree, IReadOnlyList<int> trainingRows, IScope stateScope, CancellationToken cancellationToken) {
-      var regressionTreeParams = (RegressionTreeParameters)stateScope.Variables[M5Regression.RegressionTreeParameterVariableName].Value;
+      var regressionTreeParams = (RegressionTreeParameters)stateScope.Variables[DecisionTreeRegression.RegressionTreeParameterVariableName].Value;
       var splittingState = (SplittingState)stateScope.Variables[SplittingStateVariableName].Value;
       var variables = regressionTreeParams.AllowedInputVariables.ToArray();
       var target = regressionTreeParams.TargetVariable;

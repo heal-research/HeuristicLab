@@ -468,8 +468,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.ExactOptimizat
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.ExactOptimization.Views-3.3", "HeuristicLab.ExactOptimization.Views\3.3\HeuristicLab.ExactOptimization.Views-3.3.csproj", "{D1D69043-17E6-4B8C-BF41-0799C7E56032}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Algorithms.DataAnalysis.M5-3.4", "HeuristicLab.Algorithms.DataAnalysis.M5\3.4\HeuristicLab.Algorithms.DataAnalysis.M5-3.4.csproj", "{CCC5D1F9-0551-4BF3-8898-E4C44B52E5A6}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Algorithms.DataAnalysis.DecisionTrees-3.4", "HeuristicLab.Algorithms.DataAnalysis.DecisionTrees\3.4\HeuristicLab.Algorithms.DataAnalysis.DecisionTrees-3.4.csproj", "{541A53F3-E6A7-402F-91BB-D76041CDD9FD}"
 EndProject
 Global
@@ -2282,18 +2280,6 @@ Global
 		{D1D69043-17E6-4B8C-BF41-0799C7E56032}.Release|x64.Build.0 = Release|x64
 		{D1D69043-17E6-4B8C-BF41-0799C7E56032}.Release|x86.ActiveCfg = Release|x86
 		{D1D69043-17E6-4B8C-BF41-0799C7E56032}.Release|x86.Build.0 = Release|x86
-		{CCC5D1F9-0551-4BF3-8898-E4C44B52E5A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CCC5D1F9-0551-4BF3-8898-E4C44B52E5A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CCC5D1F9-0551-4BF3-8898-E4C44B52E5A6}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{CCC5D1F9-0551-4BF3-8898-E4C44B52E5A6}.Debug|x64.Build.0 = Debug|Any CPU
-		{CCC5D1F9-0551-4BF3-8898-E4C44B52E5A6}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{CCC5D1F9-0551-4BF3-8898-E4C44B52E5A6}.Debug|x86.Build.0 = Debug|Any CPU
-		{CCC5D1F9-0551-4BF3-8898-E4C44B52E5A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CCC5D1F9-0551-4BF3-8898-E4C44B52E5A6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CCC5D1F9-0551-4BF3-8898-E4C44B52E5A6}.Release|x64.ActiveCfg = Release|Any CPU
-		{CCC5D1F9-0551-4BF3-8898-E4C44B52E5A6}.Release|x64.Build.0 = Release|Any CPU
-		{CCC5D1F9-0551-4BF3-8898-E4C44B52E5A6}.Release|x86.ActiveCfg = Release|Any CPU
-		{CCC5D1F9-0551-4BF3-8898-E4C44B52E5A6}.Release|x86.Build.0 = Release|Any CPU
 		{541A53F3-E6A7-402F-91BB-D76041CDD9FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{541A53F3-E6A7-402F-91BB-D76041CDD9FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{541A53F3-E6A7-402F-91BB-D76041CDD9FD}.Debug|x64.ActiveCfg = Debug|Any CPU
