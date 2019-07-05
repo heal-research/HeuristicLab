@@ -35,7 +35,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
           "Chen Chen, Changtong Luo, Zonglin Jiang, \"A multilevel block building algorithm for fast " +
           "modeling generalized separable systems\", Expert Systems with Applications, Volume 109, 2018, " +
           "Pages 25-34 https://doi.org/10.1016/j.eswa.2018.05.021. " + Environment.NewLine +
-          "Function: C_L = C_Lα (α - α0) + C_Lδ_e δ_e S_HT / S_ref" + Environment.NewLine +
+          "Function: C_L = C_Lα (α + α0) + C_Lδ_e δ_e S_HT / S_ref" + Environment.NewLine +
           "the lift coefficient of the main airfoil C_Lα ∈ [0.4, 0.8]," + Environment.NewLine +
           "tha angle of attack α ∈ [5°, 10°]," + Environment.NewLine +
           "the lift coefficient of the horizontal tail C_Lδ_e ∈ [0.4, 0.8]," + Environment.NewLine +
@@ -47,8 +47,8 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     }
 
     protected override string TargetVariable { get { return "C_L"; } }
-    protected override string[] VariableNames { get { return new string[] { "C_Lα", "α", "α0", "C_Lδ_e", "δ_e", "S_HT", "C_L", "C_L_noise" }; } }
-    protected override string[] AllowedInputVariables { get { return new string[] { "C_Lα", "α", "α0", "C_Lδ_e", "δ_e", "S_HT" }; } }
+    protected override string[] VariableNames { get { return new string[] { "C_Lα", "α", "C_Lδ_e", "δ_e", "S_HT", "S_ref", "C_L", "C_L_noise" }; } }
+    protected override string[] AllowedInputVariables { get { return new string[] { "C_Lα", "α", "C_Lδ_e", "δ_e", "S_HT", "S_ref" }; } }
     protected override int TrainingPartitionStart { get { return 0; } }
     protected override int TrainingPartitionEnd { get { return 100; } }
     protected override int TestPartitionStart { get { return 100; } }
