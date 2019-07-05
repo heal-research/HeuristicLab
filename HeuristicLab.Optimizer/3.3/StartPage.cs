@@ -22,7 +22,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -119,11 +118,8 @@ namespace HeuristicLab.Optimizer {
     private void LoadSample(string name, Assembly assembly, ListViewGroup group, int count) {
       using (var stream = assembly.GetManifestResourceStream(name)) {
         var serializer = new ProtoBufSerializer();
-        // TODO remove deflateStream with next release of HEAL.Attic
-        using (var deflateStream = new DeflateStream(stream, CompressionMode.Decompress, true)) {
-          var item = (NamedItem)serializer.Deserialize(deflateStream, false);
-          OnSampleLoaded(item, group, 1.0 / count);
-        }
+        var item = (NamedItem)serializer.Deserialize(stream, false);
+        OnSampleLoaded(item, group, 1.0 / count);
       }
     }
 
