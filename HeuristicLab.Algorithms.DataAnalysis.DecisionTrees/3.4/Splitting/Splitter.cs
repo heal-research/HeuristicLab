@@ -30,7 +30,7 @@ using HEAL.Attic;
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableType("502B1429-7A28-45C1-A60A-93E72CB3AF4A")]
   [Item("Splitter", "A split selector that uses the ratio between Variances^(1/Order) to determine good splits.")]
-  public sealed class M5Splitter : SplitterBase {
+  public sealed class Splitter : SplitterBase {
     public const string OrderParameterName = "Order";
     public IFixedValueParameter<DoubleValue> OrderParameter {
       get { return (IFixedValueParameter<DoubleValue>)Parameters[OrderParameterName]; }
@@ -42,13 +42,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     #region Constructors & Cloning
     [StorableConstructor]
-    private M5Splitter(StorableConstructorFlag _) { }
-    private M5Splitter(M5Splitter original, Cloner cloner) : base(original, cloner) { }
-    public M5Splitter() {
+    private Splitter(StorableConstructorFlag _) { }
+    private Splitter(Splitter original, Cloner cloner) : base(original, cloner) { }
+    public Splitter() {
       Parameters.Add(new FixedValueParameter<DoubleValue>(OrderParameterName, "The exponent in the split calculation sum (x_i - x_avg)^Order (default=5).", new DoubleValue(5)));
     }
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new M5Splitter(this, cloner);
+      return new Splitter(this, cloner);
     }
     #endregion
 

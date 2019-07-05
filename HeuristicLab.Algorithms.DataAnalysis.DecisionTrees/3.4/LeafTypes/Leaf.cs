@@ -30,15 +30,15 @@ using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableType("58517042-5318-4087-B098-AC75F0208BA0")]
-  [Item("M5Leaf", "A leaf type that uses regularized linear models with feature selection as leaf models.")]
-  public sealed class M5Leaf : LeafBase {
+  [Item("Leaf", "A leaf type that uses regularized linear models with feature selection as leaf models.")]
+  public sealed class Leaf : LeafBase {
     #region Constructors & Cloning
     [StorableConstructor]
-    private M5Leaf(StorableConstructorFlag _) : base(_) { }
-    private M5Leaf(M5Leaf original, Cloner cloner) : base(original, cloner) { }
-    public M5Leaf() { }
+    private Leaf(StorableConstructorFlag _) : base(_) { }
+    private Leaf(Leaf original, Cloner cloner) : base(original, cloner) { }
+    public Leaf() { }
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new M5Leaf(this, cloner);
+      return new Leaf(this, cloner);
     }
     #endregion
 
@@ -47,7 +47,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       get { return false; }
     }
     public override IRegressionModel Build(IRegressionProblemData pd, IRandom random, CancellationToken cancellationToken, out int numberOfParameters) {
-      if (pd.Dataset.Rows == 0) throw new ArgumentException("The number of training instances is too small to create an M5 leaf model");
+      if (pd.Dataset.Rows == 0) throw new ArgumentException("The number of training instances is too small to create a leaf model");
 
       if (pd.Dataset.Rows == 1)
         return new ConstantLeaf().Build(pd, random, cancellationToken, out numberOfParameters);

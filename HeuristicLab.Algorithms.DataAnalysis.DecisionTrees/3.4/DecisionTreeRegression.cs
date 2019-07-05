@@ -144,7 +144,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       var splitterSet = new ItemSet<ISplitter>(ApplicationManager.Manager.GetInstances<ISplitter>());
       Parameters.Add(new FixedValueParameter<BoolValue>(GenerateRulesParameterName, "Whether a set of rules or a decision tree shall be created (default=false)", new BoolValue(false)));
       Parameters.Add(new FixedValueParameter<PercentValue>(HoldoutSizeParameterName, "How much of the training set shall be reserved for pruning (default=20%).", new PercentValue(0.2)));
-      Parameters.Add(new ConstrainedValueParameter<ISplitter>(SplitterParameterName, "The type of split function used to create node splits (default='Splitter').", splitterSet, splitterSet.OfType<M5Splitter>().First()));
+      Parameters.Add(new ConstrainedValueParameter<ISplitter>(SplitterParameterName, "The type of split function used to create node splits (default='Splitter').", splitterSet, splitterSet.OfType<Splitter>().First()));
       Parameters.Add(new FixedValueParameter<IntValue>(MinimalNodeSizeParameterName, "The minimal number of samples in a leaf node (default=1).", new IntValue(1)));
       Parameters.Add(new ConstrainedValueParameter<ILeafModel>(LeafModelParameterName, "The type of model used for the nodes (default='LinearLeaf').", modelSet, modelSet.OfType<LinearLeaf>().First()));
       Parameters.Add(new ConstrainedValueParameter<IPruning>(PruningTypeParameterName, "The type of pruning used (default='ComplexityPruning').", pruningSet, pruningSet.OfType<ComplexityPruning>().First()));
@@ -177,7 +177,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public static IRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData, IRandom random, ILeafModel leafModel = null, ISplitter splitter = null, IPruning pruning = null,
       bool useHoldout = false, double holdoutSize = 0.2, int minimumLeafSize = 1, bool generateRules = false, ResultCollection results = null, CancellationToken? cancellationToken = null) {
       if (leafModel == null) leafModel = new LinearLeaf();
-      if (splitter == null) splitter = new M5Splitter();
+      if (splitter == null) splitter = new Splitter();
       if (cancellationToken == null) cancellationToken = CancellationToken.None;
       if (pruning == null) pruning = new ComplexityPruning();
 
@@ -186,7 +186,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return model.CreateRegressionSolution(problemData);
     }
 
-    public static void UpdateModel(IM5Model model, IRegressionProblemData problemData, IRandom random, ILeafModel leafModel, CancellationToken? cancellationToken = null) {
+    public static void UpdateModel(IDecisionTreeModel model, IRegressionProblemData problemData, IRandom random, ILeafModel leafModel, CancellationToken? cancellationToken = null) {
       if (cancellationToken == null) cancellationToken = CancellationToken.None;
       var regressionTreeParameters = new RegressionTreeParameters(leafModel, problemData, random);
       var scope = new Scope();
@@ -243,7 +243,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     private static IRegressionModel Build(IScope stateScope, ResultCollection results, CancellationToken cancellationToken) {
       var regressionTreeParams = (RegressionTreeParameters)stateScope.Variables[RegressionTreeParameterVariableName].Value;
-      var model = (IM5Model)stateScope.Variables[ModelVariableName].Value;
+      var model = (IDecisionTreeModel)stateScope.Variables[ModelVariableName].Value;
       var trainingRows = (IntArray)stateScope.Variables[TrainingSetVariableName].Value;
       var pruningRows = (IntArray)stateScope.Variables[PruningSetVariableName].Value;
       if (1 > trainingRows.Length)

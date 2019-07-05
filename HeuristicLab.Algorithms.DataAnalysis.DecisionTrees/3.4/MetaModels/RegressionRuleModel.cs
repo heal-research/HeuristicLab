@@ -32,7 +32,7 @@ using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableType("425AF262-A756-4E9A-B76F-4D2480BEA4FD")]
-  public class RegressionRuleModel : RegressionModel, IM5Model {
+  public class RegressionRuleModel : RegressionModel, IDecisionTreeModel {
     #region Properties
     [Storable]
     public string[] SplitAttributes { get; set; }

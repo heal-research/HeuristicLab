@@ -32,7 +32,7 @@ using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableType("7B4D9AE9-0456-4029-80A6-CCB5E33CE356")]
-  public class RegressionRuleSetModel : RegressionModel, IM5Model {
+  public class RegressionRuleSetModel : RegressionModel, IDecisionTreeModel {
     private const string NumRulesResultName = "Number of rules";
     private const string CoveredInstancesResultName = "Covered instances";
     public const string RuleSetStateVariableName = "RuleSetState";
@@ -74,7 +74,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
     #endregion
 
-    #region IM5Model
+    #region IDecisionTreeModel
     public void Build(IReadOnlyList<int> trainingRows, IReadOnlyList<int> pruningRows, IScope stateScope, ResultCollection results, CancellationToken cancellationToken) {
       var regressionTreeParams = (RegressionTreeParameters)stateScope.Variables[DecisionTreeRegression.RegressionTreeParameterVariableName].Value;
       var ruleSetState = (RuleSetState)stateScope.Variables[RuleSetStateVariableName].Value;

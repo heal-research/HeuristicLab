@@ -30,15 +30,15 @@ using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableType("0AED959D-78C3-4927-BDCF-473D0AEE32AA")]
-  [Item("M5regLeaf", "A leaf type that uses regularized linear models as leaf models.")]
-  public sealed class M5regLeaf : LeafBase {
+  [Item("RegularizedLeaf", "A leaf type that uses regularized linear models as leaf models.")]
+  public sealed class RegularizedLeaf : LeafBase {
     #region Constructors & Cloning
     [StorableConstructor]
-    private M5regLeaf(StorableConstructorFlag _) : base(_) { }
-    private M5regLeaf(M5regLeaf original, Cloner cloner) : base(original, cloner) { }
-    public M5regLeaf() { }
+    private RegularizedLeaf(StorableConstructorFlag _) : base(_) { }
+    private RegularizedLeaf(RegularizedLeaf original, Cloner cloner) : base(original, cloner) { }
+    public RegularizedLeaf() { }
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new M5regLeaf(this, cloner);
+      return new RegularizedLeaf(this, cloner);
     }
     #endregion
 

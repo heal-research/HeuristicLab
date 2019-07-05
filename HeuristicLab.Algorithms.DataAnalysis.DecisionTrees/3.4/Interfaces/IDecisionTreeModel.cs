@@ -28,7 +28,7 @@ using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableType("A5399E6A-6A4D-4616-A1CD-CE12FE670F12")]
-  public interface IM5Model : IRegressionModel {
+  public interface IDecisionTreeModel : IRegressionModel {
     void Build(IReadOnlyList<int> trainingRows, IReadOnlyList<int> pruningRows, IScope stateScope, ResultCollection results, CancellationToken cancellationToken);
     void Update(IReadOnlyList<int> rows, IScope stateScope, CancellationToken cancellationToken);
   }

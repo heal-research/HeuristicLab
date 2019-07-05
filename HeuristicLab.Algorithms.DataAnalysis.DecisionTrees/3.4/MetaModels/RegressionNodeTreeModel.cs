@@ -31,7 +31,7 @@ using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableType("FAF1F955-82F3-4824-9759-9D2846E831AE")]
-  public class RegressionNodeTreeModel : RegressionModel, IM5Model {
+  public class RegressionNodeTreeModel : RegressionModel, IDecisionTreeModel {
     public const string NumCurrentLeafsResultName = "Number of current leafs";
     public const string RootVariableName = "Root";
     #region Properties
@@ -68,7 +68,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
     #endregion
 
-    #region IM5Model
+    #region IDecisionTreeModel
     public void Build(IReadOnlyList<int> trainingRows, IReadOnlyList<int> pruningRows, IScope statescope, ResultCollection results, CancellationToken cancellationToken) {
       var regressionTreeParams = (RegressionTreeParameters)statescope.Variables[DecisionTreeRegression.RegressionTreeParameterVariableName].Value;
       //start with one node

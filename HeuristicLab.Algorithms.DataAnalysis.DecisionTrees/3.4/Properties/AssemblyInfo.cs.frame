@@ -27,8 +27,8 @@ using HeuristicLab.PluginInfrastructure;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("HeuristicLab.Algorithms.DataAnalysis.M5")]
-[assembly: AssemblyDescription("Provides the M5' regression algorithm")]
+[assembly: AssemblyTitle("HeuristicLab.Algorithms.DataAnalysis.DecisionTrees")]
+[assembly: AssemblyDescription("Provides algorithms for learning decision trees for regression.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("HeuristicLab")]
