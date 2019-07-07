@@ -21,75 +21,118 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
+  public enum OpCode : byte {
+    Add = 1,
+    Sub = 2,
+    Mul = 3,
+    Div = 4,
+    Sin = 5,
+    Cos = 6,
+    Tan = 7,
+    Log = 8,
+    Exp = 9,
+    IfThenElse = 10,
+    GT = 11,
+    LT = 12,
+    AND = 13,
+    OR = 14,
+    NOT = 15,
+    Average = 16,
+    Call = 17,
+    Variable = 18,
+    LagVariable = 19,
+    Constant = 20,
+    Arg = 21,
+    Power = 22,
+    Root = 23,
+    TimeLag = 24,
+    Integral = 25,
+    Derivative = 26,
+    VariableCondition = 27,
+    Square = 28,
+    SquareRoot = 29,
+    Gamma = 30,
+    Psi = 31,
+    Dawson = 32,
+    ExponentialIntegralEi = 33,
+    CosineIntegral = 34,
+    SineIntegral = 35,
+    HyperbolicCosineIntegral = 36,
+    HyperbolicSineIntegral = 37,
+    FresnelCosineIntegral = 38,
+    FresnelSineIntegral = 39,
+    AiryA = 40,
+    AiryB = 41,
+    Norm = 42,
+    Erf = 43,
+    Bessel = 44,
+    XOR = 45,
+    FactorVariable = 46,
+    BinaryFactorVariable = 47,
+    Absolute = 48,
+    AnalyticQuotient = 49,
+    Cube = 50,
+    CubeRoot = 51,
+    Tanh = 52,
+  };
   public static class OpCodes {
-    public const byte Add = 1;
-    public const byte Sub = 2;
-    public const byte Mul = 3;
-    public const byte Div = 4;
-
-    public const byte Sin = 5;
-    public const byte Cos = 6;
-    public const byte Tan = 7;
-
-    public const byte Log = 8;
-    public const byte Exp = 9;
-
-    public const byte IfThenElse = 10;
-
-    public const byte GT = 11;
-    public const byte LT = 12;
-
-    public const byte AND = 13;
-    public const byte OR = 14;
-    public const byte NOT = 15;
-
-
-    public const byte Average = 16;
-
-    public const byte Call = 17;
-
-    public const byte Variable = 18;
-    public const byte LagVariable = 19;
-    public const byte Constant = 20;
-    public const byte Arg = 21;
-
-    public const byte Power = 22;
-    public const byte Root = 23;
-    public const byte TimeLag = 24;
-    public const byte Integral = 25;
-    public const byte Derivative = 26;
-
-    public const byte VariableCondition = 27;
-
-    public const byte Square = 28;
-    public const byte SquareRoot = 29;
-    public const byte Gamma = 30;
-    public const byte Psi = 31;
-    public const byte Dawson = 32;
-    public const byte ExponentialIntegralEi = 33;
-    public const byte CosineIntegral = 34;
-    public const byte SineIntegral = 35;
-    public const byte HyperbolicCosineIntegral = 36;
-    public const byte HyperbolicSineIntegral = 37;
-    public const byte FresnelCosineIntegral = 38;
-    public const byte FresnelSineIntegral = 39;
-    public const byte AiryA = 40;
-    public const byte AiryB = 41;
-    public const byte Norm = 42;
-    public const byte Erf = 43;
-    public const byte Bessel = 44;
-    public const byte XOR = 45;
-    public const byte FactorVariable = 46;
-    public const byte BinaryFactorVariable = 47;
-    public const byte Absolute = 48;
-    public const byte AnalyticQuotient = 49;
-    public const byte Cube = 50;
-    public const byte CubeRoot = 51;
-
-    public const byte Tanh = 52;
+    // constants for API compatibility only
+    public const byte Add = (byte)OpCode.Add;
+    public const byte Sub =(byte)OpCode.Sub;
+    public const byte Mul =(byte)OpCode.Mul;
+    public const byte Div =(byte)OpCode.Div;
+    public const byte Sin =(byte)OpCode.Sin;
+    public const byte Cos =(byte)OpCode.Cos;
+    public const byte Tan =(byte)OpCode.Tan;
+    public const byte Log =(byte)OpCode.Log;
+    public const byte Exp = (byte)OpCode.Exp;
+    public const byte IfThenElse = (byte)OpCode.IfThenElse;
+    public const byte GT = (byte)OpCode.GT;
+    public const byte LT = (byte)OpCode.LT;
+    public const byte AND = (byte)OpCode.AND;
+    public const byte OR = (byte)OpCode.OR;
+    public const byte NOT = (byte)OpCode.NOT;
+    public const byte Average = (byte)OpCode.Average;
+    public const byte Call = (byte)OpCode.Call;
+    public const byte Variable = (byte)OpCode.Variable;
+    public const byte LagVariable = (byte)OpCode.LagVariable;
+    public const byte Constant = (byte)OpCode.Constant;
+    public const byte Arg = (byte)OpCode.Arg;
+    public const byte Power = (byte)OpCode.Power;
+    public const byte Root = (byte)OpCode.Root;
+    public const byte TimeLag = (byte)OpCode.TimeLag;
+    public const byte Integral = (byte)OpCode.Integral;
+    public const byte Derivative = (byte)OpCode.Derivative;
+    public const byte VariableCondition = (byte)OpCode.VariableCondition;
+    public const byte Square = (byte)OpCode.Square;
+    public const byte SquareRoot = (byte)OpCode.SquareRoot;
+    public const byte Gamma = (byte)OpCode.Gamma;
+    public const byte Psi = (byte)OpCode.Psi;
+    public const byte Dawson = (byte)OpCode.Dawson;
+    public const byte ExponentialIntegralEi = (byte)OpCode.ExponentialIntegralEi;
+    public const byte CosineIntegral = (byte)OpCode.CosineIntegral;
+    public const byte SineIntegral = (byte)OpCode.SineIntegral;
+    public const byte HyperbolicCosineIntegral = (byte)OpCode.HyperbolicCosineIntegral;
+    public const byte HyperbolicSineIntegral = (byte)OpCode.HyperbolicSineIntegral;
+    public const byte FresnelCosineIntegral = (byte)OpCode.FresnelCosineIntegral;
+    public const byte FresnelSineIntegral = (byte)OpCode.FresnelSineIntegral;
+    public const byte AiryA = (byte)OpCode.AiryA;
+    public const byte AiryB = (byte)OpCode.AiryB;
+    public const byte Norm = (byte)OpCode.Norm;
+    public const byte Erf = (byte)OpCode.Erf;
+    public const byte Bessel = (byte)OpCode.Bessel;
+    public const byte XOR = (byte)OpCode.XOR;
+    public const byte FactorVariable = (byte)OpCode.FactorVariable;
+    public const byte BinaryFactorVariable = (byte)OpCode.BinaryFactorVariable;
+    public const byte Absolute = (byte)OpCode.Absolute;
+    public const byte AnalyticQuotient = (byte)OpCode.AnalyticQuotient;
+    public const byte Cube = (byte)OpCode.Cube;
+    public const byte CubeRoot = (byte)OpCode.CubeRoot;
+    public const byte Tanh = (byte)OpCode.Tanh;
 
 
     private static Dictionary<Type, byte> symbolToOpcode = new Dictionary<Type, byte>() {
@@ -149,8 +192,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     };
 
     public static byte MapSymbolToOpCode(ISymbolicExpressionTreeNode treeNode) {
-      byte opCode;
-      if (symbolToOpcode.TryGetValue(treeNode.Symbol.GetType(), out opCode)) return opCode;
+      if (symbolToOpcode.TryGetValue(treeNode.Symbol.GetType(), out byte opCode)) return opCode;
       else throw new NotSupportedException("Symbol: " + treeNode.Symbol);
     }
   }

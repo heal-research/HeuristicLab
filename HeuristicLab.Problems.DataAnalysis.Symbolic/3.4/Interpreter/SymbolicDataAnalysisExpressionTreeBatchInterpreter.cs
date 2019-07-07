@@ -62,7 +62,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
               LoadData(instr, rows, rowIndex, batchSize);
               break;
             }
-
+          case OpCodes.Constant: break; // nothing to do here, don't remove because we want to prevent falling into the default case here.
           case OpCodes.Add: {
               Load(instr.buf, code[c].buf);
               for (int j = 1; j < n; ++j) {
@@ -172,6 +172,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
               AnalyticQuotient(instr.buf, code[c + 1].buf);
               break;
             }
+          default: throw new NotSupportedException($"This interpreter does not support {(OpCode)instr.opcode}");
         }
       }
     }
