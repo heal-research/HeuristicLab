@@ -22,10 +22,10 @@
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
@@ -251,6 +251,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         stringBuilder.Append(")");
       } else if (symbol is Tangent) {
         stringBuilder.Append("tan(");
+        stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
+        stringBuilder.Append(")");
+      } else if (symbol is HyperbolicTangent) {
+        stringBuilder.Append("tanh(");
         stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
         stringBuilder.Append(")");
       } else if (node.Symbol is AiryA) {

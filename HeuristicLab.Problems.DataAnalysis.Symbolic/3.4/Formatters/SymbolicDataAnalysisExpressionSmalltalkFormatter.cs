@@ -159,6 +159,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       } else if (symbol is Tangent) {
         stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
         stringBuilder.Append(" tan");
+      } else if (symbol is HyperbolicTangent) {
+        stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
+        stringBuilder.Append(" tanh");
       } else if (symbol is Variable) {
         VariableTreeNode variableTreeNode = node as VariableTreeNode;
         stringBuilder.Append(variableTreeNode.Weight.ToString(CultureInfo.InvariantCulture));

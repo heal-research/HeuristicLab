@@ -68,6 +68,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       for (int i = 0; i < BATCHSIZE; ++i)
         a[i] = Math.Tan(b[i]);
     }
+    public static void Tanh(double[] a, double[] b) {
+      for (int i = 0; i < BATCHSIZE; ++i)
+        a[i] = Math.Tanh(b[i]);
+    }
 
     public static void Pow(double[] a, double[] b) {
       for (int i = 0; i < BATCHSIZE; ++i)

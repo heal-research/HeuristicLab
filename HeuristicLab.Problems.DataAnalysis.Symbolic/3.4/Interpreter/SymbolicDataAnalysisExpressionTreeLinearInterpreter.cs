@@ -225,6 +225,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           instr.value = s / instr.nArguments;
         } else if (instr.opCode == OpCodes.Absolute) {
           instr.value = Math.Abs(code[instr.childIndex].value);
+        } else if (instr.opCode == OpCodes.Tanh) {
+          instr.value = Math.Tanh(code[instr.childIndex].value);
         } else if (instr.opCode == OpCodes.Cos) {
           instr.value = Math.Cos(code[instr.childIndex].value);
         } else if (instr.opCode == OpCodes.Sin) {

@@ -89,6 +89,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public const byte Cube = 50;
     public const byte CubeRoot = 51;
 
+    public const byte Tanh = 52;
+
 
     private static Dictionary<Type, byte> symbolToOpcode = new Dictionary<Type, byte>() {
        { typeof(Addition), OpCodes.Add },
@@ -98,6 +100,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       { typeof(Sine), OpCodes.Sin },
       { typeof(Cosine), OpCodes.Cos },
       { typeof(Tangent), OpCodes.Tan },
+      { typeof (HyperbolicTangent), OpCodes.Tanh},
       { typeof(Logarithm), OpCodes.Log },
       { typeof(Exponential), OpCodes.Exp },
       { typeof(IfThenElse), OpCodes.IfThenElse },

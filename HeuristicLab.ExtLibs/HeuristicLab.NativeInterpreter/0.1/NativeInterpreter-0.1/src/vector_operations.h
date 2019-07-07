@@ -13,18 +13,23 @@
 #define hl_sin vdt::fast_sin
 #define hl_cos vdt::fast_cos
 #define hl_tan vdt::fast_tan
+#define hl_tanh vdt::fast_tanh
 #define hl_sqrt vdt::fast_sqrt
 #define hl_pow vdt::fast_pow
 #define hl_round vdt::fast_round
+#define hl_inv vdt::fast_inv
 #else
 #define hl_exp std::exp
 #define hl_log std::log
 #define hl_sin std::sin
 #define hl_cos std::cos
 #define hl_tan std::tan
+#define hl_tanh std::tanh
 #define hl_sqrt std::sqrt
 #define hl_pow std::pow
 #define hl_round std::round
+#define hl_inv(x) 1. / x;
+
 #endif
 
 constexpr int BATCHSIZE = 64;
@@ -46,11 +51,12 @@ inline void log(double* __restrict a, double const * __restrict b) noexcept { FO
 inline void sin(double* __restrict a, double const * __restrict b) noexcept { FOR(i) a[i] = hl_sin(b[i]); }
 inline void cos(double* __restrict a, double const * __restrict b) noexcept { FOR(i) a[i] = hl_cos(b[i]); }
 inline void tan(double* __restrict a, double const * __restrict b) noexcept { FOR(i) a[i] = hl_tan(b[i]); }
+inline void tanh(double* __restrict a, double const * __restrict b) noexcept { FOR(i) a[i] = hl_tanh(b[i]); }
 inline void sqrt(double* __restrict a, double const * __restrict b) noexcept { FOR(i) a[i] = hl_sqrt(b[i]); }
 inline void pow(double* __restrict a, double const * __restrict b) noexcept { FOR(i) a[i] = hl_pow(a[i], hl_round(b[i])); };
 inline void root(double* __restrict a, double const * __restrict b) noexcept { FOR(i) a[i] = hl_pow(a[i], 1. / hl_round(b[i])); };
 inline void square(double* __restrict a, double const * __restrict b) noexcept { FOR(i) a[i] = hl_pow(b[i], 2.); };
-inline void inv(double* __restrict a, double const * __restrict b) noexcept { FOR(i) a[i] = 1. / b[i]; }
+inline void inv(double* __restrict a, double const * __restrict b) noexcept { FOR(i) a[i] = hl_inv(b[i]); }
 inline void neg(double* __restrict a, double const * __restrict b) noexcept { FOR(i) a[i] = -b[i]; }
 inline void abs(double* __restrict a, double const * __restrict b) noexcept { FOR(i) a[i] = std::fabs(b[i]); }
 inline void analytical_quotient(double* __restrict a, double const * __restrict b) noexcept { FOR(i) a[i] /= hl_sqrt(b[i]*b[i] + 1.); }
@@ -65,11 +71,13 @@ inline void pow(double* __restrict dst, double const * __restrict src, double s)
 
 // vector operations
 inline void neg(double* __restrict a) noexcept { FOR(i) a[i] = -a[i]; }
-inline void inv(double* __restrict a) noexcept { FOR(i) a[i] = 1. / a[i]; }
+inline void inv(double* __restrict a) noexcept { FOR(i) a[i] = hl_inv(a[i]); }
 inline void exp(double* __restrict a) noexcept { FOR(i) a[i] = hl_exp(a[i]); }
 inline void log(double* __restrict a) noexcept { FOR(i) a[i] = hl_log(a[i]); }
 inline void sin(double* __restrict a) noexcept { FOR(i) a[i] = hl_sin(a[i]); }
 inline void cos(double* __restrict a) noexcept { FOR(i) a[i] = hl_cos(a[i]); }
+inline void tan(double* __restrict a) noexcept { FOR(i) a[i] = hl_tan(a[i]); }
+inline void tanh(double* __restrict a) noexcept { FOR(i) a[i] = hl_tanh(a[i]); }
 inline void round(double* __restrict a) noexcept { FOR(i) a[i] = hl_round(a[i]); }
 inline void square(double* __restrict a) noexcept { FOR(i) a[i] = hl_pow(a[i], 2.); }
 

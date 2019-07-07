@@ -75,7 +75,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private static readonly Func<Term, UnaryFunc> tan = UnaryFunc.Factory(
       eval: Math.Tan,
       diff: x => 1 + Math.Tan(x) * Math.Tan(x));
-
+    private static readonly Func<Term, UnaryFunc> tanh = UnaryFunc.Factory(
+      eval: Math.Tanh,
+      diff: x => 1 - Math.Tanh(x) * Math.Tanh(x));
     private static readonly Func<Term, UnaryFunc> erf = UnaryFunc.Factory(
       eval: alglib.errorfunction,
       diff: x => 2.0 * Math.Exp(-(x * x)) / Math.Sqrt(Math.PI));
@@ -262,6 +264,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         return tan(
           ConvertToAutoDiff(node.GetSubtree(0)));
       }
+      if (node.Symbol is HyperbolicTangent) {
+        return tanh(
+          ConvertToAutoDiff(node.GetSubtree(0)));
+      }
       if (node.Symbol is Erf) {
         return erf(
           ConvertToAutoDiff(node.GetSubtree(0)));
@@ -320,6 +326,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           !(n.Symbol is Sine) &&
           !(n.Symbol is Cosine) &&
           !(n.Symbol is Tangent) &&
+          !(n.Symbol is HyperbolicTangent) &&
           !(n.Symbol is Erf) &&
           !(n.Symbol is Norm) &&
           !(n.Symbol is StartSymbol) &&
