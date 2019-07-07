@@ -47,6 +47,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private static readonly Division divSy = new Division();
     private static readonly Cosine cosSy = new Cosine();
     private static readonly Square sqrSy = new Square();
+    private static readonly Absolute absSy = new Absolute();
+    private static readonly SquareRoot sqrtSy = new SquareRoot();
 
     public static ISymbolicExpressionTreeNode Derive(ISymbolicExpressionTreeNode branch, string variableName) {
       if (branch.Symbol is Constant) {
@@ -80,17 +82,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
         if (branch.SubtreeCount >= 2) {
           var f = (ISymbolicExpressionTreeNode)branch.GetSubtree(0).Clone();
-          var g = (ISymbolicExpressionTreeNode)branch.GetSubtree(1).Clone();
           var fprime = Derive(f, variableName);
-          var gprime = Derive(g, variableName);
-          var fgPrime = Sum(Product(f, gprime), Product(fprime, g));
-          for (int i = 2; i < branch.SubtreeCount; i++) {
+          for (int i = 1; i < branch.SubtreeCount; i++) {
+            var g = (ISymbolicExpressionTreeNode)branch.GetSubtree(i).Clone();
             var fg = Product((ISymbolicExpressionTreeNode)f.Clone(), (ISymbolicExpressionTreeNode)g.Clone());
-            var h = (ISymbolicExpressionTreeNode)branch.GetSubtree(i).Clone();
-            var hPrime = Derive(h, variableName);
-            fgPrime = Sum(Product(fgPrime, h), Product(fg, hPrime));
+            var gPrime = Derive(g, variableName);
+            var fgPrime = Sum(Product(fprime, g), Product(gPrime, f));
+            // prepare for next iteration
+            f = fg;
+            fprime = fgPrime;
           }
-          return fgPrime;
+          return fprime;
         } else
           // multiplication with only one argument has no effect -> derive the argument
           return Derive(branch.GetSubtree(0), variableName);
@@ -136,6 +138,28 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         var f = (ISymbolicExpressionTreeNode)branch.Clone();
         var u = (ISymbolicExpressionTreeNode)branch.GetSubtree(0).Clone();
         return Product(Div(CreateConstant(1.0), Product(CreateConstant(2.0), f)), Derive(u, variableName));
+      }
+      if (branch.Symbol is CubeRoot) {
+        var f = (ISymbolicExpressionTreeNode)branch.Clone();
+        var u = (ISymbolicExpressionTreeNode)branch.GetSubtree(0).Clone();
+        return Product(Div(CreateConstant(1.0), Product(CreateConstant(3.0), Square(f))), Derive(u, variableName));
+      }
+      if (branch.Symbol is Cube) {
+        var f = (ISymbolicExpressionTreeNode)branch.GetSubtree(0).Clone();
+        return Product(Product(CreateConstant(3.0), Square(f)), Derive(f, variableName));
+      }
+      if (branch.Symbol is Absolute) {
+        var f = (ISymbolicExpressionTreeNode)branch.GetSubtree(0).Clone();
+        var absf = Abs((ISymbolicExpressionTreeNode)f.Clone());
+        return Product(Div(f, absf), Derive(f, variableName));
+      }
+      if (branch.Symbol is AnalyticQuotient) {
+        // aq(a(x), b(x)) = a(x) / sqrt(b(x)²+1)
+        var a = (ISymbolicExpressionTreeNode)branch.GetSubtree(0).Clone();
+        var b = (ISymbolicExpressionTreeNode)branch.GetSubtree(1).Clone();
+
+        var definition = Div(a, SquareRoot(Sum(Square(b), CreateConstant(1.0))));
+        return Derive(definition, variableName);
       }
       if (branch.Symbol is Sine) {
         var u = (ISymbolicExpressionTreeNode)branch.GetSubtree(0).Clone();
@@ -194,10 +218,20 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       cos.AddSubtree(f);
       return cos;
     }
+    private static ISymbolicExpressionTreeNode Abs(ISymbolicExpressionTreeNode f) {
+      var abs = absSy.CreateTreeNode();
+      abs.AddSubtree(f);
+      return abs;
+    }
     private static ISymbolicExpressionTreeNode Square(ISymbolicExpressionTreeNode f) {
       var sqr = sqrSy.CreateTreeNode();
       sqr.AddSubtree(f);
       return sqr;
+    }
+    private static ISymbolicExpressionTreeNode SquareRoot(ISymbolicExpressionTreeNode f) {
+      var sqrt = sqrtSy.CreateTreeNode();
+      sqrt.AddSubtree(f);
+      return sqrt;
     }
 
     private static ISymbolicExpressionTreeNode CreateConstant(double v) {
@@ -220,6 +254,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           !(n.Symbol is Exponential) &&
           !(n.Symbol is Square) &&
           !(n.Symbol is SquareRoot) &&
+          !(n.Symbol is Cube) &&
+          !(n.Symbol is CubeRoot) &&
+          !(n.Symbol is Absolute) &&
+          !(n.Symbol is AnalyticQuotient) &&
           !(n.Symbol is Sine) &&
           !(n.Symbol is Cosine) &&
           !(n.Symbol is Tangent) &&
